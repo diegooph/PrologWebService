@@ -1,7 +1,7 @@
-package br.com.zalf.prolog.webservice.gente.unidade;
+package br.com.zalf.prolog.webservice.geral.unidade;
 
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Regional;
-import br.com.zalf.prolog.webservice.gente.unidade._model.UnidadeVisualizacao;
+import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeVisualizacao;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;

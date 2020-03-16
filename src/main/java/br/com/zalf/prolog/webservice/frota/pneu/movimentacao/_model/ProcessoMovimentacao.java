@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model;
 
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
-import br.com.zalf.prolog.webservice.gente.unidade._model.Unidade;
+import br.com.zalf.prolog.webservice.geral.unidade._model.Unidade;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -12,10 +12,7 @@ import java.util.List;
  * Created by luiz on 03/04/17.
  */
 public class ProcessoMovimentacao {
-    @Nullable
-    private Long codigo;
-    @NotNull
-    private Unidade unidade;
+
     @NotNull
     private final List<Movimentacao> movimentacoes;
     @NotNull
@@ -24,13 +21,17 @@ public class ProcessoMovimentacao {
     private final Date data;
     @Nullable
     private final String observacao;
+    @Nullable
+    private Long codigo;
+    @NotNull
+    private Unidade unidade;
 
-    public ProcessoMovimentacao(@Nullable Long codigo,
-                                @NotNull Unidade unidade,
-                                @NotNull List<Movimentacao> movimentacoes,
-                                @NotNull Colaborador colaborador,
-                                @NotNull Date data,
-                                @Nullable String observacao) {
+    public ProcessoMovimentacao(@Nullable final Long codigo,
+                                @NotNull final Unidade unidade,
+                                @NotNull final List<Movimentacao> movimentacoes,
+                                @NotNull final Colaborador colaborador,
+                                @NotNull final Date data,
+                                @Nullable final String observacao) {
         this.codigo = codigo;
         this.unidade = unidade;
         this.movimentacoes = movimentacoes;
@@ -43,7 +44,7 @@ public class ProcessoMovimentacao {
         return unidade;
     }
 
-    public void setUnidade(Unidade unidade) {
+    public void setUnidade(final Unidade unidade) {
         this.unidade = unidade;
     }
 
@@ -51,7 +52,7 @@ public class ProcessoMovimentacao {
         return codigo;
     }
 
-    public void setCodigo(Long codigo) {
+    public void setCodigo(final Long codigo) {
         this.codigo = codigo;
     }
 

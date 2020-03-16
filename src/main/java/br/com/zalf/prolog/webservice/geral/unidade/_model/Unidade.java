@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.gente.unidade._model;
+package br.com.zalf.prolog.webservice.geral.unidade._model;
 
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Equipe;
 import com.google.gson.annotations.SerializedName;
@@ -25,7 +25,7 @@ public class Unidade {
     public Unidade() {
     }
 
-    public Unidade(Long codigo, String nome, List<String> listEquipe) {
+    public Unidade(final Long codigo, final String nome, final List<String> listEquipe) {
         this.codigo = codigo;
         this.nome = nome;
         this.listNomesEquipes = listEquipe;
@@ -35,7 +35,7 @@ public class Unidade {
         return codigo;
     }
 
-    public void setCodigo(Long codigo) {
+    public void setCodigo(final Long codigo) {
         this.codigo = codigo;
     }
 
@@ -43,7 +43,7 @@ public class Unidade {
         return nome;
     }
 
-    public void setNome(String nome) {
+    public void setNome(final String nome) {
         this.nome = nome;
     }
 
@@ -51,7 +51,7 @@ public class Unidade {
         return listNomesEquipes;
     }
 
-    public void setListNomesEquipes(List<String> listNomesEquipes) {
+    public void setListNomesEquipes(final List<String> listNomesEquipes) {
         this.listNomesEquipes = listNomesEquipes;
     }
 
@@ -59,7 +59,7 @@ public class Unidade {
         return equipes;
     }
 
-    public void setEquipes(List<Equipe> equipes) {
+    public void setEquipes(final List<Equipe> equipes) {
         this.equipes = equipes;
     }
 
@@ -73,15 +73,18 @@ public class Unidade {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj == null)
+    public boolean equals(final Object obj) {
+        if (obj == null) {
             return false;
+        }
 
-        if (!(obj instanceof Unidade))
+        if (!(obj instanceof Unidade)) {
             return false;
+        }
 
-        if (obj == this)
+        if (obj == this) {
             return true;
+        }
 
         final Unidade unidade = (Unidade) obj;
         return !(codigo == null || unidade.codigo == null) && codigo.equals(unidade.codigo);

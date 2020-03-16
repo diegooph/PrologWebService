@@ -1,14 +1,14 @@
 package test.br.com.zalf.prolog.webservice.pilares.gente.controlejornada;
 
-import br.com.zalf.prolog.webservice.gente.colaborador.model.Cargo;
-import br.com.zalf.prolog.webservice.gente.unidade._model.Unidade;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.database.DatabaseManager;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Cargo;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.Icone;
 import br.com.zalf.prolog.webservice.gente.controlejornada.tipomarcacao.FormulaCalculoJornada;
 import br.com.zalf.prolog.webservice.gente.controlejornada.tipomarcacao.TipoDescontadoJornada;
 import br.com.zalf.prolog.webservice.gente.controlejornada.tipomarcacao.TipoMarcacao;
 import br.com.zalf.prolog.webservice.gente.controlejornada.tipomarcacao.TipoMarcacaoService;
+import br.com.zalf.prolog.webservice.geral.unidade._model.Unidade;
 import org.jetbrains.annotations.NotNull;
 import org.junit.After;
 import org.junit.Before;
@@ -33,11 +33,13 @@ public class TipoMarcacaoTest extends BaseTest {
     @NotNull
     private final TipoMarcacaoService service = new TipoMarcacaoService();
 
+    @Override
     @Before
     public void initialize() {
         DatabaseManager.init();
     }
 
+    @Override
     @After
     public void destroy() {
         DatabaseManager.finish();

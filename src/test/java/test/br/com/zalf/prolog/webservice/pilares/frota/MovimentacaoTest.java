@@ -1,9 +1,11 @@
 package test.br.com.zalf.prolog.webservice.pilares.frota;
 
-import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
-import br.com.zalf.prolog.webservice.gente.unidade._model.Unidade;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
+import br.com.zalf.prolog.webservice.frota.pneu.PneuService;
+import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu;
+import br.com.zalf.prolog.webservice.frota.pneu._model.PneuAnalise;
+import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.MovimentacaoService;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.Movimentacao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.ProcessoMovimentacao;
@@ -11,13 +13,11 @@ import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.destino.Dest
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.destino.DestinoEstoque;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.origem.OrigemAnalise;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.origem.OrigemEstoque;
-import br.com.zalf.prolog.webservice.frota.pneu.PneuService;
-import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu;
-import br.com.zalf.prolog.webservice.frota.pneu._model.PneuAnalise;
-import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico._model.PneuServicoRealizado;
 import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico._model.PneuServicoRealizadoIncrementaVida;
 import br.com.zalf.prolog.webservice.frota.pneu.recapadoras.Recapadora;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
+import br.com.zalf.prolog.webservice.geral.unidade._model.Unidade;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Assert;
 import org.junit.Test;
@@ -157,7 +157,7 @@ public class MovimentacaoTest extends BaseTest {
     }
 
     private PneuServicoRealizado createServicoVulcanizacao() {
-        PneuServicoRealizado vulcanizacao = new PneuServicoRealizado();
+        final PneuServicoRealizado vulcanizacao = new PneuServicoRealizado();
         vulcanizacao.setCodPneuTipoServico(2L);
         vulcanizacao.setCodUnidade(5L);
         vulcanizacao.setCodPneu(pneuComum.getCodigo());

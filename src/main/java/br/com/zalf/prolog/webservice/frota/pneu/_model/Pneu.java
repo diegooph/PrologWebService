@@ -1,13 +1,13 @@
 package br.com.zalf.prolog.webservice.frota.pneu._model;
 
-import br.com.zalf.prolog.webservice.gente.colaborador.model.Empresa;
-import br.com.zalf.prolog.webservice.gente.colaborador.model.Regional;
-import br.com.zalf.prolog.webservice.gente.unidade._model.Unidade;
 import br.com.zalf.prolog.webservice.commons.gson.Exclude;
 import br.com.zalf.prolog.webservice.commons.gson.RuntimeTypeAdapterFactory;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Empresa;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Regional;
+import br.com.zalf.prolog.webservice.geral.unidade._model.Unidade;
 import com.google.common.math.DoubleMath;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -25,13 +25,10 @@ import static br.com.zalf.prolog.webservice.commons.util.ProLogPosicaoPneuOrdemM
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public abstract class Pneu {
-    public enum Problema {
-        NUMERO_INCORRETO, PRESSAO_INDISPONIVEL
-    }
 
-    private static final String TAG = Pneu.class.getSimpleName();
     public static final int DOT_LENGTH = 4;
-
+    public static final Comparator<Pneu> POSICAO_PNEU_COMPARATOR = Comparator.comparingInt(p -> fromPosicao(p.getPosicao()));
+    private static final String TAG = Pneu.class.getSimpleName();
     @Nullable
     private List<Problema> problemas;
     // Caso o pneu esteja com problema de NUMERO_INCORRETO (pneu instalado
@@ -141,11 +138,31 @@ public abstract class Pneu {
         final RuntimeTypeAdapterFactory<Pneu> factory = RuntimeTypeAdapterFactory
                 .of(Pneu.class, "tipo");
         final PneuTipo[] values = PneuTipo.values();
-        //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < values.length; i++) {
             factory.registerSubtype(values[i].getClazz(), values[i].asString());
         }
         return factory;
+    }
+
+    public static boolean isDotValid(@NotNull final String dot) {
+        if (dot.length() != DOT_LENGTH || !StringUtils.isIntegerValuePositive(dot)) {
+            return false;
+        }
+
+        try {
+            final int semanaAno = Integer.parseInt(dot.substring(0, 2));
+
+            // Consideramos apenas os DOTs de pneus fabricados após o ano 2000. Esses possuem 2
+            // caracteres para o ano.
+            final int ano = Integer.parseInt(dot.substring(2, 4)) + 2000;
+
+            Log.d(TAG, "Ano: " + ano);
+
+            return semanaAno <= 53;
+        } catch (final Exception ex) {
+            Log.e(TAG, "Erro ao validar o DOT: " + dot, ex);
+        }
+        return false;
     }
 
     @NotNull
@@ -177,7 +194,7 @@ public abstract class Pneu {
         return pneuNovoNuncaRodado;
     }
 
-    public void setPneuNovoNuncaRodado(Boolean pneuNovoNuncaRodado) {
+    public void setPneuNovoNuncaRodado(final Boolean pneuNovoNuncaRodado) {
         if (pneuNovoNuncaRodado && vidaAtual > 1) {
             throw new IllegalStateException("Um pneu não pode ao mesmo tempo ser 'novo' e ter uma vida maior do que '1'!");
         }
@@ -189,7 +206,7 @@ public abstract class Pneu {
         return banda;
     }
 
-    public void setBanda(@Deprecated Banda banda) {
+    public void setBanda(@Deprecated final Banda banda) {
         this.banda = banda;
     }
 
@@ -197,7 +214,7 @@ public abstract class Pneu {
         return codPneuProblema;
     }
 
-    public void setCodPneuProblema(String codPneuProblema) {
+    public void setCodPneuProblema(final String codPneuProblema) {
         this.codPneuProblema = codPneuProblema;
     }
 
@@ -206,7 +223,7 @@ public abstract class Pneu {
         return problemas;
     }
 
-    public void setProblemas(@Nullable List<Problema> problemas) {
+    public void setProblemas(@Nullable final List<Problema> problemas) {
         this.problemas = problemas;
     }
 
@@ -214,7 +231,7 @@ public abstract class Pneu {
         return pressaoAtual;
     }
 
-    public void setPressaoAtual(double pressaoAtual) {
+    public void setPressaoAtual(final double pressaoAtual) {
         this.pressaoAtual = pressaoAtual;
     }
 
@@ -222,7 +239,7 @@ public abstract class Pneu {
         return codigo;
     }
 
-    public void setCodigo(Long codigo) {
+    public void setCodigo(final Long codigo) {
         this.codigo = codigo;
     }
 
@@ -231,7 +248,7 @@ public abstract class Pneu {
         return modelo;
     }
 
-    public void setModelo(@Deprecated ModeloPneu modelo) {
+    public void setModelo(@Deprecated final ModeloPneu modelo) {
         this.modelo = modelo;
     }
 
@@ -241,7 +258,7 @@ public abstract class Pneu {
     }
 
     @Deprecated
-    public void setMarca(@Deprecated Marca marca) {
+    public void setMarca(@Deprecated final Marca marca) {
         this.marca = marca;
     }
 
@@ -249,7 +266,7 @@ public abstract class Pneu {
         return dimensao;
     }
 
-    public void setDimensao(Dimensao dimensao) {
+    public void setDimensao(final Dimensao dimensao) {
         this.dimensao = dimensao;
     }
 
@@ -257,7 +274,7 @@ public abstract class Pneu {
         return pressaoCorreta;
     }
 
-    public void setPressaoCorreta(double pressaoCorreta) {
+    public void setPressaoCorreta(final double pressaoCorreta) {
         this.pressaoCorreta = pressaoCorreta;
     }
 
@@ -270,7 +287,7 @@ public abstract class Pneu {
         return sulcosAtuais;
     }
 
-    public void setSulcosAtuais(@Nullable Sulcos sulcosAtuais) {
+    public void setSulcosAtuais(@Nullable final Sulcos sulcosAtuais) {
         this.sulcosAtuais = sulcosAtuais;
         this.temSulcosAtuais = sulcosAtuais != null;
     }
@@ -279,7 +296,7 @@ public abstract class Pneu {
         return status;
     }
 
-    public void setStatus(StatusPneu status) {
+    public void setStatus(final StatusPneu status) {
         this.status = status;
     }
 
@@ -287,7 +304,7 @@ public abstract class Pneu {
         return codRegionalAlocado;
     }
 
-    public void setCodRegionalAlocado(Long codRegionalAlocado) {
+    public void setCodRegionalAlocado(final Long codRegionalAlocado) {
         this.codRegionalAlocado = codRegionalAlocado;
     }
 
@@ -295,7 +312,7 @@ public abstract class Pneu {
         return codUnidadeAlocado;
     }
 
-    public void setCodUnidadeAlocado(Long codUnidadeAlocado) {
+    public void setCodUnidadeAlocado(final Long codUnidadeAlocado) {
         this.codUnidadeAlocado = codUnidadeAlocado;
     }
 
@@ -303,7 +320,7 @@ public abstract class Pneu {
         return posicao;
     }
 
-    public void setPosicao(int posicao) {
+    public void setPosicao(final int posicao) {
         this.posicao = posicao;
     }
 
@@ -311,7 +328,7 @@ public abstract class Pneu {
         return vidaAtual;
     }
 
-    public void setVidaAtual(int vidaAtual) {
+    public void setVidaAtual(final int vidaAtual) {
         if (pneuNovoNuncaRodado != null && pneuNovoNuncaRodado && vidaAtual > 1) {
             throw new IllegalStateException("Um pneu não pode ao mesmo tempo ser 'novo' e ter uma vida maior do que 1!");
         }
@@ -322,7 +339,7 @@ public abstract class Pneu {
         return vidasTotal;
     }
 
-    public void setVidasTotal(int vidasTotal) {
+    public void setVidasTotal(final int vidasTotal) {
         this.vidasTotal = vidasTotal;
     }
 
@@ -334,7 +351,7 @@ public abstract class Pneu {
         return valor;
     }
 
-    public void setValor(BigDecimal valor) {
+    public void setValor(final BigDecimal valor) {
         this.valor = valor.setScale(2, BigDecimal.ROUND_HALF_UP);
     }
 
@@ -346,7 +363,7 @@ public abstract class Pneu {
         return dot;
     }
 
-    public void setDot(String dot) {
+    public void setDot(final String dot) {
         this.dot = dot;
     }
 
@@ -396,8 +413,6 @@ public abstract class Pneu {
         }
     }
 
-    public static final Comparator<Pneu> POSICAO_PNEU_COMPARATOR = Comparator.comparingInt(p -> fromPosicao(p.getPosicao()));
-
     @Override
     public String toString() {
         return "Pneu{" +
@@ -425,7 +440,12 @@ public abstract class Pneu {
                 '}';
     }
 
+    public enum Problema {
+        NUMERO_INCORRETO, PRESSAO_INDISPONIVEL
+    }
+
     public static class Dimensao {
+
         public long codigo;
         public int altura;
         public int largura;
@@ -476,27 +496,5 @@ public abstract class Pneu {
                     ", aro=" + aro +
                     '}';
         }
-    }
-
-    public static boolean isDotValid(@NotNull final String dot) {
-        //noinspection ConstantConditions
-        if (dot.length() != DOT_LENGTH || !StringUtils.isIntegerValuePositive(dot)) {
-            return false;
-        }
-
-        try {
-            final int semanaAno = Integer.parseInt(dot.substring(0, 2));
-
-            // Consideramos apenas os DOTs de pneus fabricados após o ano 2000. Esses possuem 2
-            // caracteres para o ano.
-            final int ano = Integer.parseInt(dot.substring(2, 4)) + 2000;
-
-            Log.d(TAG, "Ano: " + ano);
-
-            return semanaAno <= 53;
-        } catch (Exception ex) {
-            Log.e(TAG, "Erro ao validar o DOT: " + dot, ex);
-        }
-        return false;
     }
 }

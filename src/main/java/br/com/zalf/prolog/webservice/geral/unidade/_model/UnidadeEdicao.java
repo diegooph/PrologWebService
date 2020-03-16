@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.gente.unidade._model;
+package br.com.zalf.prolog.webservice.geral.unidade._model;
 
 import org.jetbrains.annotations.Nullable;
 

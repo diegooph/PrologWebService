@@ -1,9 +1,9 @@
-package br.com.zalf.prolog.webservice.gente.unidade;
+package br.com.zalf.prolog.webservice.geral.unidade;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.gente.unidade._model.UnidadeEdicao;
-import br.com.zalf.prolog.webservice.gente.unidade._model.UnidadeVisualizacao;
+import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeEdicao;
+import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeVisualizacao;
 import org.jetbrains.annotations.NotNull;
 
 import javax.ws.rs.QueryParam;

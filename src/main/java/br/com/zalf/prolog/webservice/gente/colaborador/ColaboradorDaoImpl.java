@@ -1,14 +1,14 @@
 package br.com.zalf.prolog.webservice.gente.colaborador;
 
 import br.com.zalf.prolog.webservice.Injection;
-import br.com.zalf.prolog.webservice.gente.colaborador.model.*;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
-import br.com.zalf.prolog.webservice.gente.empresa.EmpresaDao;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.*;
 import br.com.zalf.prolog.webservice.gente.controlejornada.DadosIntervaloChangedListener;
-import br.com.zalf.prolog.webservice.gente.unidade._model.Unidade;
+import br.com.zalf.prolog.webservice.gente.empresa.EmpresaDao;
+import br.com.zalf.prolog.webservice.geral.unidade._model.Unidade;
 import br.com.zalf.prolog.webservice.permissao.Visao;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilar;
 import com.google.common.base.Preconditions;
@@ -99,7 +99,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
             } else {
                 throw new SQLException("Erro ao inserir o colaborador");
             }
-        } catch (Throwable e) {
+        } catch (final Throwable e) {
             if (conn != null) {
                 conn.rollback();
             }
@@ -186,7 +186,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
             } else {
                 throw new SQLException("Erro ao atualizar o colaborador com CPF: " + colaborador.getCpf());
             }
-        } catch (Throwable e) {
+        } catch (final Throwable e) {
             if (conn != null) {
                 conn.rollback();
             }
@@ -268,7 +268,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
             } else {
                 throw new SQLException("Erro ao inativar colaborador com CPF: " + cpf);
             }
-        } catch (Throwable e) {
+        } catch (final Throwable e) {
             if (conn != null) {
                 conn.rollback();
             }
@@ -279,7 +279,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
     }
 
     @Override
-    public Colaborador getByCpf(Long cpf, boolean apenasAtivos) throws SQLException {
+    public Colaborador getByCpf(final Long cpf, final boolean apenasAtivos) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -380,8 +380,8 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
     }
 
     @Override
-    public List<Colaborador> getMotoristasAndAjudantes(Long codUnidade) throws SQLException {
-        List<Colaborador> list = new ArrayList<>();
+    public List<Colaborador> getMotoristasAndAjudantes(final Long codUnidade) throws SQLException {
+        final List<Colaborador> list = new ArrayList<>();
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -444,7 +444,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
     }
 
     @Override
-    public boolean verifyIfCpfExists(Long cpf, Long codUnidade) throws SQLException {
+    public boolean verifyIfCpfExists(final Long cpf, final Long codUnidade) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -539,7 +539,9 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
     }
 
     @Override
-    public boolean colaboradorTemAcessoFuncao(@NotNull Long cpf, int codPilar, int codFuncaoProLog) throws SQLException {
+    public boolean colaboradorTemAcessoFuncao(@NotNull final Long cpf,
+                                              final int codPilar,
+                                              final int codFuncaoProLog) throws SQLException {
         ResultSet rSet = null;
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -627,8 +629,8 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
         }
     }
 
-    private Visao getVisaoByCpf(Long cpf) throws SQLException {
-        Visao visao = new Visao();
+    private Visao getVisaoByCpf(final Long cpf) throws SQLException {
+        final Visao visao = new Visao();
         List<Pilar> pilares;
         ResultSet rSet = null;
         Connection conn = null;
@@ -655,14 +657,14 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
         return visao;
     }
 
-    private Cargo createFuncao(ResultSet rSet) throws SQLException {
+    private Cargo createFuncao(final ResultSet rSet) throws SQLException {
         final Cargo f = new Cargo();
         f.setCodigo(rSet.getLong("CODIGO_CARGO"));
         f.setNome(rSet.getString("NOME_CARGO"));
         return f;
     }
 
-    private Colaborador createColaborador(ResultSet rSet) throws SQLException {
+    private Colaborador createColaborador(final ResultSet rSet) throws SQLException {
         final Colaborador c = new Colaborador();
         c.setCodigo(rSet.getLong("CODIGO"));
         c.setAtivo(rSet.getBoolean("STATUS_ATIVO"));

@@ -1,11 +1,14 @@
 package br.com.zalf.prolog.webservice.gente.colaborador.error;
 
-import br.com.zalf.prolog.webservice.gente.colaborador.model.*;
-import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
 import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.commons.util.ValidationUtils;
+import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
-import br.com.zalf.prolog.webservice.gente.unidade._model.Unidade;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Cargo;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Equipe;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Setor;
+import br.com.zalf.prolog.webservice.geral.unidade._model.Unidade;
 import br.com.zalf.prolog.webservice.permissao.Permissao;
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
@@ -39,9 +42,9 @@ public class ColaboradorValidator {
             validacaoNivelPermissao(colaborador.getCodPermissao());
             validacaoEquipe(colaborador.getEquipe());
             validacaoPis(colaborador.getPis());
-        } catch (GenericException e) {
+        } catch (final GenericException e) {
             throw e;
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new GenericException(e.getMessage(), null);
         }
     }
@@ -137,8 +140,9 @@ public class ColaboradorValidator {
     }
 
     private static void validacaoPis(@Nullable final String pis) throws Exception {
-        if (pis == null || pis.isEmpty())
+        if (pis == null || pis.isEmpty()) {
             return;
+        }
 
         if (pis.length() < MAX_LENGTH_PIS) {
             throw new GenericException("PIS inválido\nO PIS deve conter onze dígitos", "PIS informado:" + pis);

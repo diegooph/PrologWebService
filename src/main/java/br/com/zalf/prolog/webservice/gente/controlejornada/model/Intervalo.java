@@ -1,9 +1,9 @@
 package br.com.zalf.prolog.webservice.gente.controlejornada.model;
 
-import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
-import br.com.zalf.prolog.webservice.gente.unidade._model.Unidade;
 import br.com.zalf.prolog.webservice.commons.FonteDataHora;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.gente.controlejornada.tipomarcacao.TipoMarcacao;
+import br.com.zalf.prolog.webservice.geral.unidade._model.Unidade;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -54,11 +54,15 @@ public class Intervalo {
         return codigo;
     }
 
+    public void setCodigo(final Long codigo) {
+        this.codigo = codigo;
+    }
+
     public FonteDataHora getFonteDataHoraInicio() {
         return fonteDataHoraInicio;
     }
 
-    public void setFonteDataHoraInicio(FonteDataHora fonteDataHoraInicio) {
+    public void setFonteDataHoraInicio(final FonteDataHora fonteDataHoraInicio) {
         this.fonteDataHoraInicio = fonteDataHoraInicio;
     }
 
@@ -66,19 +70,15 @@ public class Intervalo {
         return fonteDataHoraFim;
     }
 
-    public void setFonteDataHoraFim(FonteDataHora fonteDataHoraFim) {
+    public void setFonteDataHoraFim(final FonteDataHora fonteDataHoraFim) {
         this.fonteDataHoraFim = fonteDataHoraFim;
-    }
-
-    public void setCodigo(Long codigo) {
-        this.codigo = codigo;
     }
 
     public TipoMarcacao getTipo() {
         return tipo;
     }
 
-    public void setTipo(TipoMarcacao tipo) {
+    public void setTipo(final TipoMarcacao tipo) {
         this.tipo = tipo;
     }
 
@@ -86,7 +86,7 @@ public class Intervalo {
         return dataHoraInicio;
     }
 
-    public void setDataHoraInicio(LocalDateTime dataHoraInicio) {
+    public void setDataHoraInicio(final LocalDateTime dataHoraInicio) {
         this.dataHoraInicio = dataHoraInicio;
     }
 
@@ -94,7 +94,7 @@ public class Intervalo {
         return dataHoraFim;
     }
 
-    public void setDataHoraFim(LocalDateTime dataHoraFim) {
+    public void setDataHoraFim(final LocalDateTime dataHoraFim) {
         this.dataHoraFim = dataHoraFim;
     }
 
@@ -102,7 +102,7 @@ public class Intervalo {
         return localizacaoInicio;
     }
 
-    public void setLocalizacaoInicio(Localizacao localizacaoInicio) {
+    public void setLocalizacaoInicio(final Localizacao localizacaoInicio) {
         this.localizacaoInicio = localizacaoInicio;
     }
 
@@ -110,7 +110,7 @@ public class Intervalo {
         return localizacaoFim;
     }
 
-    public void setLocalizacaoFim(Localizacao localizacaoFim) {
+    public void setLocalizacaoFim(final Localizacao localizacaoFim) {
         this.localizacaoFim = localizacaoFim;
     }
 
@@ -118,7 +118,7 @@ public class Intervalo {
         return colaborador;
     }
 
-    public void setColaborador(Colaborador colaborador) {
+    public void setColaborador(final Colaborador colaborador) {
         this.colaborador = colaborador;
     }
 
@@ -126,7 +126,7 @@ public class Intervalo {
         return valido;
     }
 
-    public void setValido(Boolean valido) {
+    public void setValido(final Boolean valido) {
         this.valido = valido;
     }
 
@@ -134,7 +134,7 @@ public class Intervalo {
         return edicoes;
     }
 
-    public void setEdicoes(List<EdicaoIntervalo> edicoes) {
+    public void setEdicoes(final List<EdicaoIntervalo> edicoes) {
         this.edicoes = edicoes;
     }
 
@@ -142,7 +142,7 @@ public class Intervalo {
         return justificativaEstouro;
     }
 
-    public void setJustificativaEstouro(String justificativaEstouro) {
+    public void setJustificativaEstouro(final String justificativaEstouro) {
         this.justificativaEstouro = justificativaEstouro;
     }
 
@@ -150,7 +150,7 @@ public class Intervalo {
         return justificativaTempoRecomendado;
     }
 
-    public void setJustificativaTempoRecomendado(String justificativaTempoRecomendado) {
+    public void setJustificativaTempoRecomendado(final String justificativaTempoRecomendado) {
         this.justificativaTempoRecomendado = justificativaTempoRecomendado;
     }
 
@@ -158,7 +158,7 @@ public class Intervalo {
         return tempoDecorrido;
     }
 
-    public void setTempoDecorrido(Duration tempoDecorrido) {
+    public void setTempoDecorrido(final Duration tempoDecorrido) {
         this.tempoDecorrido = tempoDecorrido;
     }
 

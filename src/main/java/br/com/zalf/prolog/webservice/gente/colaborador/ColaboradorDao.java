@@ -1,11 +1,11 @@
 package br.com.zalf.prolog.webservice.gente.colaborador;
 
+import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.gente.colaborador.model.ColaboradorEdicao;
 import br.com.zalf.prolog.webservice.gente.colaborador.model.ColaboradorInsercao;
-import br.com.zalf.prolog.webservice.gente.unidade._model.Unidade;
-import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
 import br.com.zalf.prolog.webservice.gente.controlejornada.DadosIntervaloChangedListener;
+import br.com.zalf.prolog.webservice.geral.unidade._model.Unidade;
 import br.com.zalf.prolog.webservice.permissao.pilares.FuncaoProLog;
 import org.jetbrains.annotations.NotNull;
 

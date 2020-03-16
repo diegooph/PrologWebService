@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.gente.colaborador.model;
 
 import br.com.zalf.prolog.webservice.commons.util.StringUtils;
-import br.com.zalf.prolog.webservice.gente.unidade._model.Unidade;
+import br.com.zalf.prolog.webservice.geral.unidade._model.Unidade;
 import br.com.zalf.prolog.webservice.permissao.Visao;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -77,7 +77,7 @@ public class Colaborador {
 		return equipe;
 	}
 
-	public void setEquipe(Equipe equipe) {
+	public void setEquipe(final Equipe equipe) {
 		this.equipe = equipe;
 	}
 
@@ -85,7 +85,7 @@ public class Colaborador {
 		return funcao;
 	}
 
-	public void setFuncao(Cargo cargo) {
+	public void setFuncao(final Cargo cargo) {
 		this.funcao = cargo;
 	}
 
@@ -93,7 +93,7 @@ public class Colaborador {
 		return setor;
 	}
 
-	public void setSetor(Setor setor) {
+	public void setSetor(final Setor setor) {
 		this.setor = setor;
 	}
 
@@ -101,7 +101,7 @@ public class Colaborador {
 		return visao;
 	}
 
-	public void setVisao(Visao visao) {
+	public void setVisao(final Visao visao) {
 		this.visao = visao;
 	}
 
@@ -109,8 +109,16 @@ public class Colaborador {
 		return cpf;
 	}
 
+	public void setCpf(final Long cpf) {
+		this.cpf = cpf;
+	}
+
 	public String getPis() {
 		return pis;
+	}
+
+	public void setPis(final String pis) {
+		this.pis = pis;
 	}
 
 	public String getCpfAsString() {
@@ -118,19 +126,11 @@ public class Colaborador {
 		return String.format("%011d", cpf);
 	}
 
-	public void setCpf(Long cpf) {
-		this.cpf = cpf;
-	}
-
-	public void setPis(String pis) {
-		this.pis = pis;
-	}
-
 	public Date getDataNascimento() {
 		return dataNascimento;
 	}
 
-	public void setDataNascimento(Date dataNascimento) {
+	public void setDataNascimento(final Date dataNascimento) {
 		this.dataNascimento = dataNascimento;
 	}
 
@@ -138,7 +138,7 @@ public class Colaborador {
 		return nome;
 	}
 
-	public void setNome(String nome) {
+	public void setNome(final String nome) {
 		this.nome = nome;
 	}
 
@@ -146,7 +146,7 @@ public class Colaborador {
 		return matriculaAmbev;
 	}
 
-	public void setMatriculaAmbev(int matriculaAmbev) {
+	public void setMatriculaAmbev(final int matriculaAmbev) {
 		this.matriculaAmbev = matriculaAmbev;
 	}
 
@@ -154,7 +154,7 @@ public class Colaborador {
 		return matriculaTrans;
 	}
 
-	public void setMatriculaTrans(int matriculaTrans) {
+	public void setMatriculaTrans(final int matriculaTrans) {
 		this.matriculaTrans = matriculaTrans;
 	}
 
@@ -162,7 +162,7 @@ public class Colaborador {
 		return dataAdmissao;
 	}
 
-	public void setDataAdmissao(Date dataAdmissao) {
+	public void setDataAdmissao(final Date dataAdmissao) {
 		this.dataAdmissao = dataAdmissao;
 	}
 
@@ -170,7 +170,7 @@ public class Colaborador {
 		return dataDemissao;
 	}
 
-	public void setDataDemissao(Date dataDemissao) {
+	public void setDataDemissao(final Date dataDemissao) {
 		this.dataDemissao = dataDemissao;
 	}
 
@@ -178,7 +178,7 @@ public class Colaborador {
 		return ativo;
 	}
 
-	public void setAtivo(Boolean ativo) {
+	public void setAtivo(final Boolean ativo) {
 		this.ativo = ativo;
 	}
 
@@ -186,7 +186,7 @@ public class Colaborador {
 		return codPermissao;
 	}
 
-	public void setCodPermissao(Integer codPermissao) {
+	public void setCodPermissao(final Integer codPermissao) {
 		this.codPermissao = codPermissao;
 	}
 
@@ -194,7 +194,7 @@ public class Colaborador {
 		return unidade;
 	}
 
-	public void setUnidade(Unidade unidade) {
+	public void setUnidade(final Unidade unidade) {
 		this.unidade = unidade;
 		this.codUnidade = unidade.getCodigo();
 	}
@@ -203,7 +203,7 @@ public class Colaborador {
 		return empresa;
 	}
 
-	public void setEmpresa(Empresa empresa) {
+	public void setEmpresa(final Empresa empresa) {
 		this.empresa = empresa;
 		this.codEmpresa = empresa.getCodigo();
 	}
@@ -212,7 +212,7 @@ public class Colaborador {
 		return regional;
 	}
 
-	public void setRegional(Regional regional) {
+	public void setRegional(final Regional regional) {
 		this.regional = regional;
 	}
 
@@ -224,19 +224,31 @@ public class Colaborador {
 		return unidade.getCodigo();
 	}
 
-	public void setTzUnidade(String tzUnidade) { this.tzUnidade = tzUnidade; }
+	public String getTzUnidade() {
+		return this.tzUnidade;
+	}
 
-	public String getTzUnidade(){ return this.tzUnidade; }
+	public void setTzUnidade(final String tzUnidade) {
+		this.tzUnidade = tzUnidade;
+	}
 
 	@Nullable
-	public ColaboradorTelefone getTelefone() { return telefone; }
+	public ColaboradorTelefone getTelefone() {
+		return telefone;
+	}
 
-	public void setTelefone(@Nullable final ColaboradorTelefone telefone) { this.telefone = telefone; }
+	public void setTelefone(@Nullable final ColaboradorTelefone telefone) {
+		this.telefone = telefone;
+	}
 
 	@Nullable
-	public String getEmail() { return email; }
+	public String getEmail() {
+		return email;
+	}
 
-	public void setEmail(@Nullable final String email) { this.email = email; }
+	public void setEmail(@Nullable final String email) {
+		this.email = email;
+	}
 
 	public String getDataNascimentoAsString() {
 		final Format formatter = new SimpleDateFormat(DATA_FORMATTER);

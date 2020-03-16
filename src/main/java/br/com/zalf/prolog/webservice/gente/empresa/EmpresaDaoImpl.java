@@ -1,16 +1,18 @@
 package br.com.zalf.prolog.webservice.gente.empresa;
 
-import br.com.zalf.prolog.webservice.gente.colaborador.model.*;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.*;
 import br.com.zalf.prolog.webservice.gente.controlejornada.DadosIntervaloChangedListener;
-import br.com.zalf.prolog.webservice.gente.unidade._model.Unidade;
+import br.com.zalf.prolog.webservice.geral.unidade._model.Unidade;
 import br.com.zalf.prolog.webservice.permissao.Visao;
-import br.com.zalf.prolog.webservice.permissao.pilares.*;
+import br.com.zalf.prolog.webservice.permissao.pilares.FuncaoProLog;
+import br.com.zalf.prolog.webservice.permissao.pilares.Pilar;
+import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import org.jetbrains.annotations.NotNull;
 
 import javax.ws.rs.core.NoContentException;
@@ -23,17 +25,6 @@ import java.util.List;
 
 public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 
-    private final String TAG = EmpresaDaoImpl.class.getSimpleName();
-
-    private final String BUSCA_EQUIPES_BY_COD_UNIDADE = "SELECT E.CODIGO, E.NOME "
-            + "FROM EQUIPE E JOIN UNIDADE U ON U.CODIGO = E.COD_UNIDADE "
-            + "WHERE U.CODIGO = ?";
-
-    private final String UPDATE_EQUIPE = "UPDATE EQUIPE SET NOME = (?) "
-            + "FROM TOKEN_AUTENTICACAO TA WHERE CODIGO = ?	"
-            + "AND TA.CPF_COLABORADOR=? "
-            + "AND TA.TOKEN=?";
-
     private static final String BUSCA_EMPRESA_REGIONAL_UNIDADE_EQUIPE_BY_CPF = ""
             + "select emp.codigo as cod_empresa, emp.nome nome_empresa, "
             + "reg.codigo as cod_regional, reg.regiao nome_regional, "
@@ -43,17 +34,14 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
             + "join empresa emp on emp.codigo = u.cod_empresa "
             + "join regional reg on reg.codigo = u.cod_regional "
             + "join equipe e on e.codigo = c.cod_equipe where c.cpf = ?";
-
     private static final String BUSCA_UNIDADE_BY_REGIONAL = " SELECT DISTINCT U.CODIGO, U.NOME "
             + " FROM UNIDADE U JOIN REGIONAL REG ON REG.CODIGO = U.COD_REGIONAL "
             + " JOIN EMPRESA E ON U.COD_EMPRESA = E.CODIGO"
             + " WHERE REG.CODIGO = ? AND E.CODIGO = ? ORDER BY 2 ";
-
     private static final String BUSCA_EQUIPE_BY_UNIDADE = "SELECT DISTINCT E.NOME, E.CODIGO "
             + "FROM EQUIPE E JOIN UNIDADE U ON U.CODIGO = E.COD_UNIDADE "
             + "WHERE U.CODIGO = ?"
             + "ORDER BY 1";
-
     private static final String BUSCA_EMPRESA_REGIONAL_UNIDADE_BY_CPF = "select emp.codigo as cod_empresa, emp.nome as nome_empresa,"
             + " reg.codigo as cod_regional, reg.regiao nome_regional,"
             + " u.codigo as cod_unidade, u.nome as nome_unidade "
@@ -61,18 +49,15 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
             + "join empresa emp on emp.codigo = u.cod_empresa "
             + "join regional reg on reg.codigo = u.cod_regional "
             + "where c.cpf = ?";
-
     private static final String BUSCA_CODIGO_PERMISSAO_BY_CPF = "select c.cod_permissao "
             + "from colaborador c "
             + "where c.cpf = ?";
-
     private static final String BUSCA_REGIONAL = "select distinct reg.codigo, reg.regiao, e.codigo as codigo_empresa, e.nome as nome_empresa "
             + "from unidade u join empresa e on e.codigo = u.cod_empresa "
             + "join regional reg on reg.codigo = u.cod_regional	"
             + "where e.codigo in (select c.cod_empresa	"
             + "from colaborador c	where c.cpf = ?"
             + " ORDER BY 1)";
-
     private static final String BUSCA_REGIONAL_BY_CPF = "select distinct reg.codigo, reg.regiao, e.codigo as cod_empresa, e.nome as nome_empresa "
             + "from regional reg "
             + "left join unidade u on u.cod_regional = reg.codigo "
@@ -82,6 +67,14 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
             + "from colaborador c join unidade u on u.codigo = c.cod_unidade "
             + "join regional r on r.codigo = u.cod_regional	"
             + "where c.cpf=?)";
+    private final String TAG = EmpresaDaoImpl.class.getSimpleName();
+    private final String BUSCA_EQUIPES_BY_COD_UNIDADE = "SELECT E.CODIGO, E.NOME "
+            + "FROM EQUIPE E JOIN UNIDADE U ON U.CODIGO = E.COD_UNIDADE "
+            + "WHERE U.CODIGO = ?";
+    private final String UPDATE_EQUIPE = "UPDATE EQUIPE SET NOME = (?) "
+            + "FROM TOKEN_AUTENTICACAO TA WHERE CODIGO = ?	"
+            + "AND TA.CPF_COLABORADOR=? "
+            + "AND TA.TOKEN=?";
 
     //TODO: Verificar a viabilidade de implementar um método para exclusão de uma equipe,
     //a equipe está ligada como fk de colaborador e fk de calendário
@@ -91,7 +84,8 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
     }
 
     @Override
-    public AbstractResponse insertEquipe(@NotNull Long codUnidade, @NotNull Equipe equipe) throws SQLException {
+    public AbstractResponse insertEquipe(@NotNull final Long codUnidade,
+                                         @NotNull final Equipe equipe) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -114,7 +108,9 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
     }
 
     @Override
-    public boolean updateEquipe(@NotNull Long codUnidade, @NotNull Long codEquipe, @NotNull Equipe equipe) throws SQLException {
+    public boolean updateEquipe(@NotNull final Long codUnidade,
+                                @NotNull final Long codEquipe,
+                                @NotNull final Equipe equipe) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
@@ -123,7 +119,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
             stmt.setString(1, equipe.getNome());
             stmt.setLong(2, codEquipe);
             stmt.setLong(3, codUnidade);
-            int count = stmt.executeUpdate();
+            final int count = stmt.executeUpdate();
             if (count == 0) {
                 throw new SQLException("Erro ao atualizar a equipe");
             }
@@ -134,7 +130,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
     }
 
     @Override
-    public Equipe getEquipe(Long codUnidade, Long codEquipe) throws SQLException {
+    public Equipe getEquipe(final Long codUnidade, final Long codEquipe) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -157,7 +153,8 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
     }
 
     @Override
-    public AbstractResponse insertSetor(@NotNull Long codUnidade, @NotNull Setor setor) throws SQLException {
+    public AbstractResponse insertSetor(@NotNull final Long codUnidade,
+                                        @NotNull final Setor setor) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -178,7 +175,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
     }
 
     @Override
-    public Setor getSetor(Long codUnidade, Long codSetor) throws SQLException {
+    public Setor getSetor(final Long codUnidade, final Long codSetor) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -201,7 +198,9 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
     }
 
     @Override
-    public boolean updateSetor(@NotNull Long codUnidade, @NotNull Long codSetor, @NotNull Setor setor) throws SQLException {
+    public boolean updateSetor(@NotNull final Long codUnidade,
+                               @NotNull final Long codSetor,
+                               @NotNull final Setor setor) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
@@ -210,7 +209,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
             stmt.setString(1, setor.getNome());
             stmt.setLong(2, codSetor);
             stmt.setLong(3, codUnidade);
-            int count = stmt.executeUpdate();
+            final int count = stmt.executeUpdate();
             if (count == 0) {
                 throw new SQLException("Erro ao atualizar o setor");
             }
@@ -221,7 +220,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
     }
 
     @Override
-    public List<Equipe> getEquipesByCodUnidade(Long codUnidade) throws SQLException {
+    public List<Equipe> getEquipesByCodUnidade(final Long codUnidade) throws SQLException {
         final List<Equipe> listEquipe = new ArrayList<>();
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -241,7 +240,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
     }
 
     @Override
-    public Cargo getCargo(Long codEmpresa, Long codCargo) throws SQLException {
+    public Cargo getCargo(final Long codEmpresa, final Long codCargo) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -263,14 +262,14 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
     }
 
     @Override
-    public Visao getVisaoCargo(Long codUnidade, Long codCargo) throws SQLException {
+    public Visao getVisaoCargo(final Long codUnidade, final Long codCargo) throws SQLException {
         final Visao visao = new Visao();
         visao.setPilares(getPilaresCargo(codUnidade, codCargo));
         return visao;
     }
 
     @Override
-    public Visao getVisaoUnidade(Long codUnidade) throws SQLException {
+    public Visao getVisaoUnidade(final Long codUnidade) throws SQLException {
         final List<Pilar> pilares;
         ResultSet rSet = null;
         Connection conn = null;
@@ -295,7 +294,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
         return visao;
     }
 
-    private List<Pilar> getPilaresCargo(Long codUnidade, Long codCargo) throws SQLException {
+    private List<Pilar> getPilaresCargo(final Long codUnidade, final Long codCargo) throws SQLException {
         final List<Pilar> pilares;
         ResultSet rSet = null;
         Connection conn = null;
@@ -319,7 +318,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
     }
 
     @Override
-    public List<Pilar> createPilares(ResultSet rSet) throws SQLException {
+    public List<Pilar> createPilares(final ResultSet rSet) throws SQLException {
         final List<Pilar> pilares = new ArrayList<>();
         List<FuncaoProLog> funcoes = new ArrayList<>();
         Pilar pilar = null;
@@ -346,14 +345,14 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
         return pilares;
     }
 
-    private FuncaoProLog createFuncaoProLog(ResultSet rSet) throws SQLException {
+    private FuncaoProLog createFuncaoProLog(final ResultSet rSet) throws SQLException {
         final FuncaoProLog funcao = new FuncaoProLog();
         funcao.setCodigo(rSet.getInt("COD_FUNCAO"));
         funcao.setDescricao(rSet.getString("FUNCAO"));
         return funcao;
     }
 
-    private Pilar createPilar(ResultSet rSet) throws SQLException {
+    private Pilar createPilar(final ResultSet rSet) throws SQLException {
         final Pilar pilar = new Pilar();
         pilar.codigo = rSet.getInt("COD_PILAR");
         pilar.nome = rSet.getString("PILAR");
@@ -361,7 +360,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
     }
 
     @Override
-    public List<Setor> getSetorByCodUnidade(Long codUnidade) throws SQLException {
+    public List<Setor> getSetorByCodUnidade(final Long codUnidade) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -385,7 +384,9 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
     }
 
     @Override
-    public List<HolderMapaTracking> getResumoAtualizacaoDados(int ano, int mes, Long codUnidade) throws SQLException, NoContentException {
+    public List<HolderMapaTracking> getResumoAtualizacaoDados(final int ano,
+                                                              final int mes,
+                                                              final Long codUnidade) throws SQLException, NoContentException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -466,7 +467,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
      * Busca dos filtros para os relatórios a partir da permissão cadastrada.
      */
     @Override
-    public List<Empresa> getFiltros(Long cpf) throws SQLException {
+    public List<Empresa> getFiltros(final Long cpf) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -505,14 +506,14 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
         return listEmpresa;
     }
 
-    private Equipe createEquipe(ResultSet rset) throws SQLException {
+    private Equipe createEquipe(final ResultSet rset) throws SQLException {
         final Equipe equipe = new Equipe();
         equipe.setCodigo(rset.getLong("CODIGO"));
         equipe.setNome(rset.getString("NOME"));
         return equipe;
     }
 
-    private Cargo createCargo(ResultSet rSet) throws SQLException {
+    private Cargo createCargo(final ResultSet rSet) throws SQLException {
         final Cargo cargo = new Cargo();
         cargo.setCodigo(rSet.getLong("CODIGO"));
         cargo.setNome(rSet.getString("NOME"));
@@ -520,7 +521,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
     }
 
     // buscar permisões para colaboradores com permissão = 3 = tudo
-    private List<Empresa> getPermissao3(Long cpf) throws SQLException {
+    private List<Empresa> getPermissao3(final Long cpf) throws SQLException {
         final List<Empresa> listEmpresa = new ArrayList<>();
         final Empresa empresa = new Empresa();
         final List<Regional> listRegional = new ArrayList<>();
@@ -552,10 +553,10 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
     }
 
     // burcar permissoes para colaboradores com permissao = 2 = regional
-    private List<Empresa> getPermissao2(Long cpf) throws SQLException {
-        List<Empresa> listEmpresa = new ArrayList<>();
-        Empresa empresa = new Empresa();
-        List<Regional> listRegional = new ArrayList<>();
+    private List<Empresa> getPermissao2(final Long cpf) throws SQLException {
+        final List<Empresa> listEmpresa = new ArrayList<>();
+        final Empresa empresa = new Empresa();
+        final List<Regional> listRegional = new ArrayList<>();
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -568,7 +569,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
             rSet = stmt.executeQuery();
 
             while (rSet.next()) { // rset com os codigos e nomes da regionais
-                Regional regional = new Regional();
+                final Regional regional = new Regional();
                 empresa.setCodigo(rSet.getLong("COD_EMPRESA"));
                 empresa.setNome(rSet.getString("NOME_EMPRESA"));
                 regional.setCodigo(rSet.getLong("CODIGO"));
@@ -585,13 +586,13 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
     }
 
     // buscar permissoes para colaboradores com permissao = 1 = local, gerente
-    private List<Empresa> getPermissao1(Long cpf) throws SQLException {
-        List<Empresa> listEmpresa = new ArrayList<>();
-        List<Regional> listRegional = new ArrayList<>();
-        List<Unidade> listUnidade = new ArrayList<>();
-        Empresa empresa = new Empresa();
-        Regional regional = new Regional();
-        Unidade unidade = new Unidade();
+    private List<Empresa> getPermissao1(final Long cpf) throws SQLException {
+        final List<Empresa> listEmpresa = new ArrayList<>();
+        final List<Regional> listRegional = new ArrayList<>();
+        final List<Unidade> listUnidade = new ArrayList<>();
+        final Empresa empresa = new Empresa();
+        final Regional regional = new Regional();
+        final Unidade unidade = new Unidade();
 
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -625,15 +626,15 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
     }
 
     // buscar permissoes para colaboradores com permissao = 0 = local, supervisor, busca apenas a sala que o cpf pertence
-    private List<Empresa> getPermissao0(Long cpf) throws SQLException {
-        List<Empresa> listEmpresa = new ArrayList<>();
-        List<Regional> listRegional = new ArrayList<>();
-        List<Unidade> listUnidade = new ArrayList<>();
-        List<Equipe> equipes = new ArrayList<>();
-        List<String> listEquipe = new ArrayList<>();
-        Empresa empresa = new Empresa();
-        Regional regional = new Regional();
-        Unidade unidade = new Unidade();
+    private List<Empresa> getPermissao0(final Long cpf) throws SQLException {
+        final List<Empresa> listEmpresa = new ArrayList<>();
+        final List<Regional> listRegional = new ArrayList<>();
+        final List<Unidade> listUnidade = new ArrayList<>();
+        final List<Equipe> equipes = new ArrayList<>();
+        final List<String> listEquipe = new ArrayList<>();
+        final Empresa empresa = new Empresa();
+        final Regional regional = new Regional();
+        final Unidade unidade = new Unidade();
 
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -652,8 +653,8 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
                 regional.setNome(rSet.getString("NOME_REGIONAL"));
                 unidade.setCodigo(rSet.getLong("COD_UNIDADE"));
                 unidade.setNome(rSet.getString("NOME_UNIDADE"));
-                String nomeEquipe = rSet.getString("NOME_EQUIPE");
-                Long codEquipe = rSet.getLong("COD_EQUIPE");
+                final String nomeEquipe = rSet.getString("NOME_EQUIPE");
+                final Long codEquipe = rSet.getLong("COD_EQUIPE");
                 empresa.setNome(rSet.getString("NOME_EMPRESA"));
                 listEmpresa.add(empresa);
                 listUnidade.add(unidade);
@@ -671,11 +672,11 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
         return listEmpresa;
     }
 
-    private void setUnidadesByRegional(Regional regional, Long codEmpresa) throws SQLException {
+    private void setUnidadesByRegional(final Regional regional, final Long codEmpresa) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        List<Unidade> listUnidades = new ArrayList<>();
+        final List<Unidade> listUnidades = new ArrayList<>();
         try {
 
             conn = getConnection();
@@ -685,7 +686,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
             rSet = stmt.executeQuery();
 
             while (rSet.next()) {
-                Unidade unidade = new Unidade();
+                final Unidade unidade = new Unidade();
                 unidade.setCodigo(rSet.getLong("CODIGO"));
                 unidade.setNome(rSet.getString("NOME"));
                 setEquipesByUnidade(unidade);
@@ -698,12 +699,12 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 
     }
 
-    private void setEquipesByUnidade(Unidade unidade) throws SQLException {
+    private void setEquipesByUnidade(final Unidade unidade) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        List<String> listEquipes = new ArrayList<>();
-        List<Equipe> equipes = new ArrayList<>();
+        final List<String> listEquipes = new ArrayList<>();
+        final List<Equipe> equipes = new ArrayList<>();
         try {
 
             conn = getConnection();
@@ -712,7 +713,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
             rSet = stmt.executeQuery();
 
             while (rSet.next()) {
-                Equipe equipe = createEquipe(rSet);
+                final Equipe equipe = createEquipe(rSet);
                 listEquipes.add(equipe.getNome());
                 equipes.add(equipe);
             }
@@ -724,7 +725,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
     }
 
     @Override
-    public Long getCodEquipeByCodUnidadeByNome(Long codUnidade, String nomeEquipe) throws SQLException {
+    public Long getCodEquipeByCodUnidadeByNome(final Long codUnidade, final String nomeEquipe) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -774,7 +775,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
                 for (final FuncaoProLog funcao : pilar.funcoes) {
                     stmt.setInt(3, funcao.getCodigo());
                     stmt.setInt(4, pilar.codigo);
-                    int count = stmt.executeUpdate();
+                    final int count = stmt.executeUpdate();
                     if (count == 0) {
                         throw new SQLException("Erro ao vincular a permissão "
                                 + funcao.getCodigo() + " do ProLog ao cargo "
@@ -794,7 +795,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 
             // Tudo certo, commita.
             conn.commit();
-        } catch (Throwable e) {
+        } catch (final Throwable e) {
             if (conn != null) {
                 conn.rollback();
             }
@@ -829,7 +830,9 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
         }
     }
 
-    private void deleteCargoFuncaoProlog(Long codCargo, Long codUnidade, Connection conn) throws SQLException {
+    private void deleteCargoFuncaoProlog(final Long codCargo,
+                                         final Long codUnidade,
+                                         final Connection conn) throws SQLException {
         final PreparedStatement stmt = conn.prepareStatement("DELETE FROM CARGO_FUNCAO_PROLOG_V11 WHERE " +
                 "COD_UNIDADE = ? AND COD_FUNCAO_COLABORADOR = ? " +
                 "AND COD_PILAR_PROLOG IN (SELECT COD_PILAR FROM UNIDADE_PILAR_PROLOG WHERE COD_UNIDADE = ?);");
@@ -841,7 +844,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
     }
 
     @Override
-    public Long insertFuncao(Cargo cargo, Long codUnidade) throws SQLException {
+    public Long insertFuncao(final Cargo cargo, final Long codUnidade) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -856,7 +859,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
             if (rSet.next()) {
                 return rSet.getLong("CODIGO");
             }
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             conn.rollback();
             throw e;
         } finally {
