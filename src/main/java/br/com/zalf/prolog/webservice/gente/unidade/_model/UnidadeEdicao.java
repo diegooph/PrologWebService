@@ -20,24 +20,29 @@ public class UnidadeEdicao {
     private String nomeUnidade;
 
     @Nullable
+    private String codAuxiliar;
+
+    @Nullable
     private String latitude;
 
     @Nullable
     private String longitude;
 
+    @NotNull
     public Long getCodUnidade() {
         return codUnidade;
     }
 
-    public void setCodUnidade(final Long codUnidade) {
+    public void setCodUnidade(@NotNull final Long codUnidade) {
         this.codUnidade = codUnidade;
     }
 
+    @NotNull
     public String getNomeUnidade() {
         return nomeUnidade;
     }
 
-    public void setNomeUnidade(final String nomeUnidade) {
+    public void setNomeUnidade(@NotNull final String nomeUnidade) {
         this.nomeUnidade = nomeUnidade;
     }
 
@@ -57,6 +62,15 @@ public class UnidadeEdicao {
 
     public void setLongitude(@Nullable final String longitude) {
         this.longitude = longitude;
+    }
+
+    @Nullable
+    public String getCodAuxiliar() {
+        return codAuxiliar;
+    }
+
+    public void setCodAuxiliar(@Nullable final String codAuxiliar) {
+        this.codAuxiliar = codAuxiliar;
     }
 
 }
