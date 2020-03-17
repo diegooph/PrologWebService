@@ -10,6 +10,14 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface MotivoDao {
 
-    void insert(@NotNull MotivoTrocaInsercao motivoTrocaInsercao);
+    /**
+     * Insere um {@link MotivoTrocaInsercao colaborador} no banco de dados.
+     * <p>
+     * Todos os dados são obrigatórios.
+     *
+     * @param motivoTrocaInsercao Dados do motivo de troca a ser inserido.
+     * @throws Throwable Caso qualquer erro ocorra.
+     */
+    void insert(@NotNull final MotivoTrocaInsercao motivoTrocaInsercao) throws Throwable;
 
 }
