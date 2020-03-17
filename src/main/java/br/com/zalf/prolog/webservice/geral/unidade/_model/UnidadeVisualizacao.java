@@ -17,8 +17,7 @@ public final class UnidadeVisualizacao {
     public final Long codUnidade;
     @NotNull
     public final String nomeUnidade;
-    @NotNull
-    public final Integer totalColaboradores;
+    public final int totalColaboradores;
     @NotNull
     public final Long codRegional;
     @NotNull
@@ -27,8 +26,7 @@ public final class UnidadeVisualizacao {
     public final String timezoneUnidade;
     @NotNull
     public final LocalDateTime dataHoraCadastroUnidade;
-    @NotNull
-    public final Boolean unidadeAtiva;
+    public final boolean unidadeAtiva;
     @Nullable
     public final String codAuxiliar;
     @Nullable
