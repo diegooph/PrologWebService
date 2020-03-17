@@ -41,7 +41,6 @@ public final class UnidadeDaoImpl extends DatabaseConnection implements UnidadeD
             bindValueOrNull(stmt, 4, unidade.getLatitudeUnidade(), SqlType.TEXT);
             bindValueOrNull(stmt, 5, unidade.getLongitudeUnidade(), SqlType.TEXT);
             stmt.executeQuery();
-            conn.commit();
         } finally {
             close(conn, stmt);
         }
