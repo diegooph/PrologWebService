@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.geral.unidade;
 
-import br.com.zalf.prolog.webservice.gente.colaborador.model.Regional;
 import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeVisualizacao;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,14 +20,11 @@ public final class UnidadeConverter {
     @NotNull
     static UnidadeVisualizacao createUnidadeVisualizacao(
             @NotNull final ResultSet rSet) throws Throwable {
-        final Regional regional = new Regional();
-        regional.setCodigo(rSet.getLong("CODIGO_REGIONAL_UNIDADE"));
-        regional.setNome(rSet.getString("NOME_REGIAO_REGIONAL_UNIDADE"));
-
         return new UnidadeVisualizacao(rSet.getLong("CODIGO_UNIDADE"),
                 rSet.getString("NOME_UNIDADE"),
                 rSet.getInt("TOTAL_COLABORADORES_UNIDADE"),
-                regional,
+                rSet.getLong("CODIGO_REGIONAL_UNIDADE"),
+                rSet.getString("NOME_REGIAO_REGIONAL_UNIDADE"),
                 rSet.getString("TIMEZONE_UNIDADE"),
                 rSet.getObject("DATA_HORA_CADASTRO_UNIDADE", LocalDateTime.class),
                 rSet.getBoolean("STATUS_ATIVO_UNIDADE"),

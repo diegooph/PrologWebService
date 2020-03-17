@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.geral.unidade._model;
 
-import br.com.zalf.prolog.webservice.gente.colaborador.model.Regional;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -21,7 +20,9 @@ public final class UnidadeVisualizacao {
     @NotNull
     public final Integer totalColaboradores;
     @NotNull
-    public final Regional regional;
+    public final Long codRegional;
+    @NotNull
+    public final String nomeRegional;
     @NotNull
     public final String timezoneUnidade;
     @NotNull
