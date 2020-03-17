@@ -2,17 +2,16 @@ package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno;
 
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.Afericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.ConfiguracaoNovaAfericaoPlaca;
+import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosAfericaoAvulsa;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosAfericaoRealizadaPlaca;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosTipoVeiculoConfiguracaoAfericao;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosUnidadeRestricao;
 import com.google.common.collect.BiMap;
-import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosAfericaoAvulsa;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
 import java.util.List;
 import java.util.Map;
-import java.util.List;
 
 /**
  * Created on 12/03/20
@@ -59,7 +58,6 @@ public interface SistemaProtheusNepomucenoDao {
     List<InfosAfericaoAvulsa> getInfosAfericaoAvulsa(@NotNull final Connection conn,
                                                      @NotNull final Long codUnidade,
                                                      @NotNull final List<String> codPneus) throws  Throwable;
-                                 @NotNull final Long codUnidade) throws Throwable;
 
     @NotNull
     String getCodFiliais(@NotNull final Connection conn, @NotNull final List<Long> codUnidades) throws Throwable;
