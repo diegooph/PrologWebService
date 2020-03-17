@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.interno.autenticacao;
 
+import br.com.zalf.prolog.webservice.interno.autenticacao._model.PrologInternalUser;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -8,7 +9,6 @@ import org.jetbrains.annotations.NotNull;
  * @author Thais Francisco (https://github.com/thaisksf)
  */
 public interface AutenticacaoLoginSenhaDao {
-
 
     /**
      * Método para criar usuário e senha.
@@ -23,8 +23,8 @@ public interface AutenticacaoLoginSenhaDao {
     /**
      * Método para verificar se usuário e senha existem.
      *
-     * @param authorization Código de autorização.
+     * @param internalUser Usuário interno do Prolog.
      * @throws Throwable Se algum erro ocorrer.
      */
-    String verifyUsernamePassword(@NotNull final String authorization) throws Throwable;
+    void verifyUsernamePassword(@NotNull final PrologInternalUser internalUser) throws Throwable;
 }

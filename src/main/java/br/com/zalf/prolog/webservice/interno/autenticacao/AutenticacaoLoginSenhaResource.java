@@ -17,7 +17,7 @@ import javax.ws.rs.core.MediaType;
 @Path("/autenticacao")
 @Consumes({MediaType.MULTIPART_FORM_DATA})
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-public class AutenticacaoLoginSenhaResource {
+public final class AutenticacaoLoginSenhaResource {
     @NotNull
     private final AutenticacaoLoginSenhaService service = new AutenticacaoLoginSenhaService();
 
@@ -29,10 +29,8 @@ public class AutenticacaoLoginSenhaResource {
             @HeaderParam("password") @Required final String password) throws ProLogException {
         try {
             service.createUsernamePassword(username, password);
-        } catch (Throwable throwable) {
+        } catch (final Throwable throwable) {
             throwable.printStackTrace();
         }
     }
-
-
 }

@@ -8,6 +8,8 @@ import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.interno.autenticacao.AutenticacaoLoginSenhaValidator;
+import br.com.zalf.prolog.webservice.interno.autenticacao._model.PrologInternalUser;
+import br.com.zalf.prolog.webservice.interno.autenticacao._model.PrologInternalUserFactory;
 import br.com.zalf.prolog.webservice.interno.implantacao.conferencia._model.TipoImport;
 import br.com.zalf.prolog.webservice.interno.implantacao.conferencia.frota.pneu._model.PneuPlanilha;
 import org.apache.commons.io.IOUtils;
@@ -38,9 +40,10 @@ public final class PneuConferenciaService {
                                                      @NotNull final InputStream fileInputStream,
                                                      @NotNull final FormDataContentDisposition fileDetail) throws ProLogException {
         try {
-            final String usuario = new AutenticacaoLoginSenhaValidator().verifyUsernamePassword(authorization);
+            final PrologInternalUser internalUser = PrologInternalUserFactory.fromHeaderAuthorization(authorization);
+            new AutenticacaoLoginSenhaValidator().verifyUsernamePassword(internalUser);
             final File file = createFileFromImport(codUnidade, fileInputStream, fileDetail);
-            readAndInsertImport(codEmpresa, codUnidade, usuario, file);
+            readAndInsertImport(codEmpresa, codUnidade, internalUser.getUsername(), file);
             return Response.ok("Upload realizado com sucesso!");
         } catch (final Throwable throwable) {
             Log.e(TAG, "Erro ao verificar planilha de import de pneus", throwable);
@@ -50,7 +53,6 @@ public final class PneuConferenciaService {
         }
     }
 
-    @SuppressWarnings("Duplicates")
     @NotNull
     private File createFileFromImport(@NotNull final Long codUnidade,
                                       @NotNull final InputStream fileInputStream,
@@ -64,7 +66,7 @@ public final class PneuConferenciaService {
             IOUtils.copy(fileInputStream, out);
             IOUtils.closeQuietly(out);
             return file;
-        } catch (IOException e) {
+        } catch (final IOException e) {
             Log.e(TAG, "Erro ao ler arquivo do import", e);
             throw Injection
                     .provideProLogExceptionHandler()
@@ -78,9 +80,9 @@ public final class PneuConferenciaService {
                                      @NotNull final File file) throws ProLogException {
         try {
             final List<PneuPlanilha> pneuPlanilha = PneuPlanilhaReader.readListFromCsvFilePath(file);
-            String jsonPlanilha = GsonUtils.getGson().toJson(pneuPlanilha);
+            final String jsonPlanilha = GsonUtils.getGson().toJson(pneuPlanilha);
             dao.importPlanilhaPneus(codEmpresa, codUnidade, usuario, jsonPlanilha, TipoImport.PNEU );
-        } catch (Throwable e) {
+        } catch (final Throwable e) {
             Log.e(TAG, "Erro ao enviar dados para o BD", e);
             throw Injection
                     .provideProLogExceptionHandler()

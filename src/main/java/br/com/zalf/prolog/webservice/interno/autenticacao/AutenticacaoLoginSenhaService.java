@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-public class AutenticacaoLoginSenhaService {
+public final class AutenticacaoLoginSenhaService {
     @NotNull
     private static final String TAG = AutenticacaoLoginSenhaService.class.getSimpleName();
     @NotNull
@@ -20,7 +20,7 @@ public class AutenticacaoLoginSenhaService {
                                 @NotNull final String password) throws ProLogException {
         try {
             dao.createUsernamePassword(username, password);
-        } catch (Throwable e) {
+        } catch (final Throwable e) {
             Log.e(TAG, "Erro ao enviar dados para o BD", e);
             throw Injection
                     .provideProLogExceptionHandler()
