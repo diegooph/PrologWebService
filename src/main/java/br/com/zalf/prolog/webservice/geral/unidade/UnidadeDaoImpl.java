@@ -31,7 +31,7 @@ public final class UnidadeDaoImpl extends DatabaseConnection implements UnidadeD
         try {
             conn = getConnection();
             conn.setAutoCommit(false);
-            stmt = conn.prepareStatement("SELECT FUNC_GENTE_UPDATE_UNIDADE(" +
+            stmt = conn.prepareStatement("SELECT FUNC_UNIDADE_ATUALIZA(" +
                     "F_COD_UNIDADE := ?," +
                     "F_NOME_UNIDADE := ?," +
                     "F_COD_AUXILIAR_UNIDADE := ?," +
@@ -66,7 +66,7 @@ public final class UnidadeDaoImpl extends DatabaseConnection implements UnidadeD
         try {
             conn = getConnection();
 
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_GENTE_GET_UNIDADE_BY_COD_UNIDADE(" +
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_UNIDADE_VISUALIZACAO(" +
                     "F_COD_UNIDADE := ?)");
             stmt.setLong(1, codUnidade);
 
@@ -92,7 +92,7 @@ public final class UnidadeDaoImpl extends DatabaseConnection implements UnidadeD
         try {
             conn = getConnection();
 
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_GENTE_GET_UNIDADES_BY_COD_EMPRESA_AND_COD_REGIONAL(" +
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_UNIDADE_LISTAGEM(" +
                     "F_COD_EMPRESA := ?," +
                     "F_COD_REGIONAL := ?);");
             stmt.setLong(1, codEmpresa);
