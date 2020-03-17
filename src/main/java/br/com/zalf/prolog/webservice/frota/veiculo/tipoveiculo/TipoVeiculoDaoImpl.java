@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.veiculo.tipoveiculo;
 
 import br.com.zalf.prolog.webservice.commons.util.NullIf;
+import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import org.jetbrains.annotations.NotNull;
@@ -11,6 +12,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static br.com.zalf.prolog.webservice.commons.util.StatementUtils.bindValueOrNull;
+import static br.com.zalf.prolog.webservice.commons.util.StringUtils.trimToNull;
 
 /**
  * Created on 22/02/19.
@@ -34,7 +38,7 @@ public final class TipoVeiculoDaoImpl extends DatabaseConnection implements Tipo
             stmt.setLong(2, tipoVeiculo.getCodDiagrama());
             stmt.setString(3, tipoVeiculo.getNome().trim());
             stmt.setBoolean(4, true);
-            stmt.setString(5, tipoVeiculo.getCodAuxiliar().trim());
+            bindValueOrNull(stmt, 5, trimToNull(tipoVeiculo.getCodAuxiliar()), SqlType.TEXT);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return rSet.getLong("CODIGO");
@@ -57,7 +61,7 @@ public final class TipoVeiculoDaoImpl extends DatabaseConnection implements Tipo
             stmt.setLong(1, tipoVeiculo.getCodigo());
             stmt.setString(2, tipoVeiculo.getNome().trim());
             stmt.setLong(3, tipoVeiculo.getCodDiagrama());
-            stmt.setString(4, tipoVeiculo.getCodAuxiliar().trim());
+            bindValueOrNull(stmt, 4, trimToNull(tipoVeiculo.getCodAuxiliar()), SqlType.TEXT);
             rSet = stmt.executeQuery();
             if (!rSet.next() || rSet.getInt(1) <= 0) {
                 throw new SQLException("Erro ao atualizar o tipo de veículo: " + tipoVeiculo.getCodigo());
