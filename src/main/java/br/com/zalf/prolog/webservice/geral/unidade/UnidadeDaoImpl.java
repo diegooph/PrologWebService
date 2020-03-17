@@ -11,6 +11,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static br.com.zalf.prolog.webservice.commons.util.StatementUtils.bindValueOrNull;
@@ -26,34 +27,23 @@ public final class UnidadeDaoImpl extends DatabaseConnection implements UnidadeD
     public void update(@NotNull final UnidadeEdicao unidade) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
-        final ResultSet rSet = null;
-
         try {
             conn = getConnection();
-            conn.setAutoCommit(false);
             stmt = conn.prepareStatement("SELECT FUNC_UNIDADE_ATUALIZA(" +
                     "F_COD_UNIDADE := ?," +
                     "F_NOME_UNIDADE := ?," +
                     "F_COD_AUXILIAR_UNIDADE := ?," +
                     "F_LATITUDE_UNIDADE := ?," +
                     "F_LONGITUDE_UNIDADE := ?);");
-
             stmt.setLong(1, unidade.getCodUnidade());
             stmt.setString(2, unidade.getNomeUnidade());
             bindValueOrNull(stmt, 3, unidade.getCodAuxiliarUnidade(), SqlType.TEXT);
             bindValueOrNull(stmt, 4, unidade.getLatitudeUnidade(), SqlType.TEXT);
             bindValueOrNull(stmt, 5, unidade.getLongitudeUnidade(), SqlType.TEXT);
-
             stmt.executeQuery();
-
             conn.commit();
-        } catch (final Throwable e) {
-            if (conn != null) {
-                conn.rollback();
-            }
-            throw e;
         } finally {
-            close(conn, stmt, rSet);
+            close(conn, stmt);
         }
     }
 
@@ -65,21 +55,18 @@ public final class UnidadeDaoImpl extends DatabaseConnection implements UnidadeD
         ResultSet rSet = null;
         try {
             conn = getConnection();
-
             stmt = conn.prepareStatement("SELECT * FROM FUNC_UNIDADE_VISUALIZACAO(" +
                     "F_COD_UNIDADE := ?)");
             stmt.setLong(1, codUnidade);
-
             rSet = stmt.executeQuery();
-
-            while (rSet.next()) {
+            if (rSet.next()) {
                 return UnidadeConverter.createUnidadeVisualizacao(rSet);
+            } else {
+                throw new IllegalStateException("Nenhuma unidade encontrada com o código: " + codUnidade);
             }
         } finally {
             close(conn, stmt, rSet);
         }
-
-        return null;
     }
 
     @NotNull
@@ -91,24 +78,23 @@ public final class UnidadeDaoImpl extends DatabaseConnection implements UnidadeD
         ResultSet rSet = null;
         try {
             conn = getConnection();
-
             stmt = conn.prepareStatement("SELECT * FROM FUNC_UNIDADE_LISTAGEM(" +
                     "F_COD_EMPRESA := ?," +
                     "F_COD_REGIONAL := ?);");
             stmt.setLong(1, codEmpresa);
             bindValueOrNull(stmt, 2, codRegional, SqlType.BIGINT);
-
             rSet = stmt.executeQuery();
-
-            final List<UnidadeVisualizacao> unidadesVisualizacao = new ArrayList<UnidadeVisualizacao>();
-            while (rSet.next()) {
-                unidadesVisualizacao.add(UnidadeConverter.createUnidadeVisualizacao(rSet));
+            if (rSet.next()) {
+                final List<UnidadeVisualizacao> unidadesVisualizacao = new ArrayList<UnidadeVisualizacao>();
+                do {
+                    unidadesVisualizacao.add(UnidadeConverter.createUnidadeVisualizacao(rSet));
+                } while (rSet.next());
+                return unidadesVisualizacao;
+            } else {
+                return Collections.emptyList();
             }
-
-            return unidadesVisualizacao;
         } finally {
             close(conn, stmt, rSet);
         }
     }
-
 }
