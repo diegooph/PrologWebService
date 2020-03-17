@@ -9,7 +9,7 @@ import java.util.List;
  * Created by jean on 27/01/16.
  * Unidade de uma empresa, contém uma ou mais equipes (salas).
  */
-public class Unidade {
+public final class Unidade {
 
     private Long codigo;
     private String nome;

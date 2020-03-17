@@ -20,7 +20,7 @@ import static br.com.zalf.prolog.webservice.commons.util.StatementUtils.bindValu
  *
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
-public class UnidadeDaoImpl extends DatabaseConnection implements UnidadeDao {
+public final class UnidadeDaoImpl extends DatabaseConnection implements UnidadeDao {
 
     @Override
     public void update(@NotNull final UnidadeEdicao unidade) throws Throwable {

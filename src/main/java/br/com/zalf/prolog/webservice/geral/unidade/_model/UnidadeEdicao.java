@@ -10,7 +10,7 @@ import javax.validation.constraints.Size;
  *
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
-public class UnidadeEdicao {
+public final class UnidadeEdicao {
 
     @NotNull(message = "O código da unidade é obrigatório.")
     private Long codUnidade;

@@ -5,8 +5,8 @@ import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeEdicao;
 import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeVisualizacao;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.ws.rs.QueryParam;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -15,9 +15,9 @@ import java.util.List;
  *
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
-public class UnidadeService {
-
+public final class UnidadeService {
     private static final String TAG = UnidadeService.class.getSimpleName();
+    @NotNull
     private final UnidadeDao dao = Injection.provideUnidadeDao();
 
     public boolean updateUnidade(@NotNull final UnidadeEdicao unidadeEdicao) {
@@ -31,7 +31,7 @@ public class UnidadeService {
     }
 
     @NotNull
-    public UnidadeVisualizacao getUnidadeByCodigo(final Long codUnidade) throws Throwable {
+    public UnidadeVisualizacao getUnidadeByCodigo(@NotNull final Long codUnidade) throws Throwable {
         try {
             return dao.getUnidadeByCodigo(codUnidade);
         } catch (final SQLException e) {
@@ -43,8 +43,8 @@ public class UnidadeService {
 
     @NotNull
     public List<UnidadeVisualizacao> getUnidadesListagem(
-            @QueryParam("codEmpresa") final Long codEmpresa,
-            @QueryParam("codRegional") final Long codRegional) throws Throwable {
+            @NotNull final Long codEmpresa,
+            @Nullable final Long codRegional) throws Throwable {
         try {
             return dao.getUnidadesListagem(codEmpresa, codRegional);
         } catch (final SQLException e) {

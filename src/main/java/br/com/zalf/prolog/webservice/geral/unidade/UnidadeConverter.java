@@ -17,6 +17,7 @@ public final class UnidadeConverter {
         throw new IllegalStateException(UnidadeConverter.class.getSimpleName() + " cannot be instantiated!");
     }
 
+    @NotNull
     static UnidadeVisualizacao createUnidadeVisualizacao(
             @NotNull final ResultSet rSet) throws Throwable {
         final Regional regional = new Regional();

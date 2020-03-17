@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
  *
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
-public class UnidadeVisualizacao {
+public final class UnidadeVisualizacao {
 
     @NotNull
     public Long codUnidade;

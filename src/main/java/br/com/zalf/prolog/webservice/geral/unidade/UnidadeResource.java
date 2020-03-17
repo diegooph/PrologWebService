@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeVisualizacao;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
+import org.jetbrains.annotations.NotNull;
 
 import javax.validation.Valid;
 import javax.ws.rs.*;
@@ -20,8 +21,8 @@ import java.util.List;
 @DebugLog
 @Path("/unidades")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-public class UnidadeResource {
-
+public final class UnidadeResource {
+    @NotNull
     private final UnidadeService service = new UnidadeService();
 
     @PUT
@@ -49,5 +50,4 @@ public class UnidadeResource {
                                                          @QueryParam("codRegional") final Long codRegional) throws Throwable {
         return service.getUnidadesListagem(codEmpresa, codRegional);
     }
-
 }
