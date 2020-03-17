@@ -15,7 +15,7 @@ public final class PrologInternalUserFactory {
 
     @NotNull
     public static PrologInternalUser fromHeaderAuthorization(@NotNull final String headerAuthorization) {
-        if (headerAuthorization.startsWith(AuthType.BASIC.value())) {
+        if (!headerAuthorization.startsWith(AuthType.BASIC.value())) {
             throw new NotAuthorizedException("headerAuthorization is not using BASIC Authentication!");
         }
 
