@@ -1,8 +1,8 @@
 package br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao;
 
-import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
-import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.*;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
+import br.com.zalf.prolog.webservice.geral.unidade._model.Unidade;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;

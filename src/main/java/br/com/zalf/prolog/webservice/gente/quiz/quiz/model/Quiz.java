@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.quiz.quiz.model;
 
-import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 
 import java.time.LocalDateTime;
 import java.util.List;

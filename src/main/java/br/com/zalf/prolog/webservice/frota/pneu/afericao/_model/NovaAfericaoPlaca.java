@@ -1,9 +1,9 @@
 package br.com.zalf.prolog.webservice.frota.pneu.afericao._model;
 
-import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
+import br.com.zalf.prolog.webservice.geral.unidade._model.Unidade;
 
 import java.util.List;
 
@@ -36,7 +36,7 @@ public final class NovaAfericaoPlaca extends NovaAfericao {
         return veiculo;
     }
 
-    public void setVeiculo(Veiculo veiculo) {
+    public void setVeiculo(final Veiculo veiculo) {
         this.veiculo = veiculo;
     }
 
@@ -44,7 +44,7 @@ public final class NovaAfericaoPlaca extends NovaAfericao {
         return estepesVeiculo;
     }
 
-    public void setEstepesVeiculo(List<Pneu> estepesVeiculo) {
+    public void setEstepesVeiculo(final List<Pneu> estepesVeiculo) {
         this.estepesVeiculo = estepesVeiculo;
     }
 

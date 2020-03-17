@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.raizen.produtividade.model.itens;
 
-import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 
 import java.time.LocalDate;
 

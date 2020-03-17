@@ -1,12 +1,12 @@
 package br.com.zalf.prolog.webservice.frota.pneu.servico._model;
 
-import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
-import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.commons.gson.Exclude;
 import br.com.zalf.prolog.webservice.commons.gson.RuntimeTypeAdapterFactory;
+import br.com.zalf.prolog.webservice.frota.pneu._model.PneuComum;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.AfericaoPlaca;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.ProcessoMovimentacao;
-import br.com.zalf.prolog.webservice.frota.pneu._model.PneuComum;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
+import br.com.zalf.prolog.webservice.geral.unidade._model.Unidade;
 import com.google.gson.Gson;
 
 import java.time.LocalDateTime;
@@ -72,7 +72,7 @@ public abstract class Servico {
         return codigo;
     }
 
-    public void setCodigo(Long codigo) {
+    public void setCodigo(final Long codigo) {
         this.codigo = codigo;
     }
 
@@ -80,7 +80,7 @@ public abstract class Servico {
         return codAfericao;
     }
 
-    public void setCodAfericao(Long codAfericao) {
+    public void setCodAfericao(final Long codAfericao) {
         this.codAfericao = codAfericao;
     }
 
@@ -96,7 +96,7 @@ public abstract class Servico {
         return tipoServico;
     }
 
-    public void setTipoServico(TipoServico tipoServico) {
+    public void setTipoServico(final TipoServico tipoServico) {
         this.tipoServico = tipoServico;
     }
 
@@ -104,7 +104,7 @@ public abstract class Servico {
         return dataHoraAbertura;
     }
 
-    public void setDataHoraAbertura(LocalDateTime dataHoraAbertura) {
+    public void setDataHoraAbertura(final LocalDateTime dataHoraAbertura) {
         this.dataHoraAbertura = dataHoraAbertura;
     }
 
@@ -112,7 +112,7 @@ public abstract class Servico {
         return dataHoraFechamento;
     }
 
-    public void setDataHoraFechamento(LocalDateTime dataHoraFechamento) {
+    public void setDataHoraFechamento(final LocalDateTime dataHoraFechamento) {
         this.dataHoraFechamento = dataHoraFechamento;
     }
 
@@ -120,7 +120,7 @@ public abstract class Servico {
         return pneuComProblema;
     }
 
-    public void setPneuComProblema(PneuComum pneuComProblema) {
+    public void setPneuComProblema(final PneuComum pneuComProblema) {
         this.pneuComProblema = pneuComProblema;
     }
 
@@ -128,7 +128,7 @@ public abstract class Servico {
         return colaboradorResponsavelFechamento;
     }
 
-    public void setColaboradorResponsavelFechamento(Colaborador colaboradorResponsavelFechamento) {
+    public void setColaboradorResponsavelFechamento(final Colaborador colaboradorResponsavelFechamento) {
         this.colaboradorResponsavelFechamento = colaboradorResponsavelFechamento;
     }
 
@@ -136,7 +136,7 @@ public abstract class Servico {
         return qtdApontamentos;
     }
 
-    public void setQtdApontamentos(int qtdApontamentos) {
+    public void setQtdApontamentos(final int qtdApontamentos) {
         this.qtdApontamentos = qtdApontamentos;
     }
 
@@ -144,7 +144,7 @@ public abstract class Servico {
         return kmVeiculoMomentoFechamento;
     }
 
-    public void setKmVeiculoMomentoFechamento(long kmVeiculoMomentoFechamento) {
+    public void setKmVeiculoMomentoFechamento(final long kmVeiculoMomentoFechamento) {
         this.kmVeiculoMomentoFechamento = kmVeiculoMomentoFechamento;
     }
 
@@ -152,7 +152,7 @@ public abstract class Servico {
         return placaVeiculo;
     }
 
-    public void setPlacaVeiculo(String placaVeiculo) {
+    public void setPlacaVeiculo(final String placaVeiculo) {
         this.placaVeiculo = placaVeiculo;
     }
 
@@ -160,7 +160,7 @@ public abstract class Servico {
         return tempoRealizacaoServicoInMillis;
     }
 
-    public void setTempoRealizacaoServicoInMillis(long tempoRealizacaoServicoInMillis) {
+    public void setTempoRealizacaoServicoInMillis(final long tempoRealizacaoServicoInMillis) {
         this.tempoRealizacaoServicoInMillis = tempoRealizacaoServicoInMillis;
     }
 
@@ -172,7 +172,7 @@ public abstract class Servico {
         return pressaoColetadaFechamento;
     }
 
-    public void setPressaoColetadaFechamento(Double pressaoColetadaFechamento) {
+    public void setPressaoColetadaFechamento(final Double pressaoColetadaFechamento) {
         this.pressaoColetadaFechamento = pressaoColetadaFechamento;
     }
 
@@ -180,7 +180,7 @@ public abstract class Servico {
         return fechadoAutomaticamenteMovimentacao;
     }
 
-    public void setFechadoAutomaticamenteMovimentacao(boolean fechadoAutomaticamenteMovimentacao) {
+    public void setFechadoAutomaticamenteMovimentacao(final boolean fechadoAutomaticamenteMovimentacao) {
         this.fechadoAutomaticamenteMovimentacao = fechadoAutomaticamenteMovimentacao;
     }
 
@@ -188,7 +188,7 @@ public abstract class Servico {
         return fechadoAutomaticamenteIntegracao;
     }
 
-    public void setFechadoAutomaticamenteIntegracao(boolean fechadoAutomaticamenteIntegracao) {
+    public void setFechadoAutomaticamenteIntegracao(final boolean fechadoAutomaticamenteIntegracao) {
         this.fechadoAutomaticamenteIntegracao = fechadoAutomaticamenteIntegracao;
     }
 }

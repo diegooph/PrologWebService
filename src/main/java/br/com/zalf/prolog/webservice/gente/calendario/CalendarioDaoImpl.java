@@ -1,16 +1,16 @@
 package br.com.zalf.prolog.webservice.gente.calendario;
 
-import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
-import br.com.zalf.prolog.webservice.colaborador.model.Cargo;
-import br.com.zalf.prolog.webservice.colaborador.model.Equipe;
-import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
-import br.com.zalf.prolog.webservice.empresa.EmpresaDao;
+import br.com.zalf.prolog.webservice.database.DatabaseConnection;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Cargo;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Equipe;
+import br.com.zalf.prolog.webservice.gente.empresa.EmpresaDao;
+import br.com.zalf.prolog.webservice.geral.unidade._model.Unidade;
 
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -62,7 +62,7 @@ public class CalendarioDaoImpl extends DatabaseConnection implements CalendarioD
     }
 
     @Override
-    public List<Evento> getEventosByCpf(Long cpf) throws SQLException {
+    public List<Evento> getEventosByCpf(final Long cpf) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -96,8 +96,12 @@ public class CalendarioDaoImpl extends DatabaseConnection implements CalendarioD
 
     @Override
     @Deprecated
-    public List<Evento> getAll(long dataInicial, long dataFinal, Long codEmpresa, String codUnidade,
-                               String nomeEquipe, String codFuncao) throws SQLException {
+    public List<Evento> getAll(final long dataInicial,
+                               final long dataFinal,
+                               final Long codEmpresa,
+                               final String codUnidade,
+                               final String nomeEquipe,
+                               final String codFuncao) throws SQLException {
         Connection conn = null;
         ResultSet rSet = null;
         PreparedStatement stmt = null;
@@ -172,7 +176,7 @@ public class CalendarioDaoImpl extends DatabaseConnection implements CalendarioD
 
     @Override
     @Deprecated
-    public boolean delete(Long codUnidade, Long codEvento) throws SQLException {
+    public boolean delete(final Long codUnidade, final Long codEvento) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
 
@@ -181,7 +185,7 @@ public class CalendarioDaoImpl extends DatabaseConnection implements CalendarioD
             stmt = conn.prepareStatement("DELETE FROM calendario WHERE cod_unidade = ? AND codigo = ?");
             stmt.setLong(1, codUnidade);
             stmt.setLong(2, codEvento);
-            int count = stmt.executeUpdate();
+            final int count = stmt.executeUpdate();
             if (count > 0) {
                 return true;
             }
@@ -193,7 +197,10 @@ public class CalendarioDaoImpl extends DatabaseConnection implements CalendarioD
 
     @Override
     @Deprecated
-    public AbstractResponse insert(Evento evento, String codUnidade, String codFuncao, String nomeEquipe) throws
+    public AbstractResponse insert(final Evento evento,
+                                   final String codUnidade,
+                                   final String codFuncao,
+                                   final String nomeEquipe) throws
             SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -231,8 +238,12 @@ public class CalendarioDaoImpl extends DatabaseConnection implements CalendarioD
         }
     }
 
+    @Override
     @Deprecated
-    public boolean update(Evento evento, String codUnidade, String codFuncao, String nomeEquipe) throws SQLException {
+    public boolean update(final Evento evento,
+                          final String codUnidade,
+                          final String codFuncao,
+                          final String nomeEquipe) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         final EmpresaDao empresaDao = Injection.provideEmpresaDao();
@@ -258,7 +269,7 @@ public class CalendarioDaoImpl extends DatabaseConnection implements CalendarioD
             stmt.setString(6, evento.getLocal());
             stmt.setLong(7, evento.getCodigo());
             stmt.setLong(8, Long.parseLong(codUnidade));
-            int count = stmt.executeUpdate();
+            final int count = stmt.executeUpdate();
             return count > 0;
         } finally {
             closeConnection(conn, stmt, null);

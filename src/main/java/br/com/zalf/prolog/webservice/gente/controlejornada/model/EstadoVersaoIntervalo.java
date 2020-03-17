@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.gente.controlejornada.model;
 
-import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
-import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
+import br.com.zalf.prolog.webservice.geral.unidade._model.Unidade;
 
 public enum EstadoVersaoIntervalo {
     VERSAO_DESATUALIZADA("VERSAO_DESATUALIZADA"),
@@ -16,7 +16,7 @@ public enum EstadoVersaoIntervalo {
 
     private final String key;
 
-    EstadoVersaoIntervalo(String key) {
+    EstadoVersaoIntervalo(final String key) {
         this.key = key;
     }
 

@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.veiculo.tipoveiculo;
 
-import br.com.zalf.prolog.webservice.colaborador.model.Empresa;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Empresa;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import org.jetbrains.annotations.NotNull;
 

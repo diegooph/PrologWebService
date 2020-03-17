@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.faleConosco;
 
-import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 
 import java.sql.SQLException;
 import java.util.List;

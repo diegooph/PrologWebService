@@ -24,6 +24,7 @@ public class PermissoesTest {
         testPilarSeguranca();
         testPilarGente();
         testPilarEntrega();
+        testPilarGeral();
     }
 
     @Test
@@ -46,7 +47,12 @@ public class PermissoesTest {
         testPermissoesPilar(getConstantValues(Pilares.Entrega.class));
     }
 
-    private void testPermissoesPilar(List<Integer> permissoesPilar) throws Exception {
+    @Test
+    public void testPilarGeral() throws Exception {
+        testPermissoesPilar(getConstantValues(Pilares.Geral.class));
+    }
+
+    private void testPermissoesPilar(final List<Integer> permissoesPilar) {
         assertNotNull(permissoesPilar);
         assertTrue(permissoesPilar.size() > 0);
         System.out.println(permissoesPilar);
@@ -58,14 +64,14 @@ public class PermissoesTest {
         }
     }
 
-    private List<Integer> getConstantValues(Class<?> clazz) throws Exception {
+    private List<Integer> getConstantValues(final Class<?> clazz) throws Exception {
         final List<Integer> constantValues = new ArrayList<>();
         addConstansOfClass(clazz, constantValues);
         return constantValues;
     }
 
-    private void addConstansOfClass(Class<?> clazz, List<Integer> constantValues) throws Exception {
-        for (Field field : clazz.getDeclaredFields()) {
+    private void addConstansOfClass(final Class<?> clazz, final List<Integer> constantValues) throws Exception {
+        for (final Field field : clazz.getDeclaredFields()) {
             final int modifiers = field.getModifiers();
             if (Modifier.isPublic(modifiers) && Modifier.isStatic(modifiers) && Modifier.isFinal(modifiers)) {
                 constantValues.add((Integer) field.get(null));
@@ -73,7 +79,7 @@ public class PermissoesTest {
         }
         final Class<?>[] classes = clazz.getClasses();
         if (classes != null && classes.length != 0) {
-            for (Class<?> aClass : classes) {
+            for (final Class<?> aClass : classes) {
                 addConstansOfClass(aClass, constantValues);
             }
         }
