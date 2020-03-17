@@ -81,18 +81,14 @@ public final class UnidadeDaoImpl extends DatabaseConnection implements UnidadeD
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM FUNC_UNIDADE_LISTAGEM(" +
                     "F_COD_EMPRESA := ?," +
-                    "F_COD_REGIONAL := ?);");
+                    "F_COD_REGIONAIS := ?);");
             stmt.setLong(1, codEmpresa);
-
             if (codigosRegionais == null) {
-
                 stmt.setNull(2, Types.NULL);
             } else {
                 stmt.setArray(2, PostgresUtils.listToArray(conn, SqlType.BIGINT, codigosRegionais));
             }
-
             rSet = stmt.executeQuery();
-
             if (rSet.next()) {
                 final List<UnidadeVisualizacaoListagem> unidadesVisualizacao = new ArrayList<UnidadeVisualizacaoListagem>();
                 do {

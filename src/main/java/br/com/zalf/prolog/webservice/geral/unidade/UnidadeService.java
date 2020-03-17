@@ -52,7 +52,7 @@ public final class UnidadeService {
         } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao buscar lista de unidades da empresa.\n" +
                     "Código da Empresa: %d\n" +
-                    "Código da Regional: %d", codEmpresa, codigosRegionais), t);
+                    "Código da Regional: %s", codEmpresa, codigosRegionais), t);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao atualizar unidades, tente novamente.");
