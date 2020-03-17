@@ -2,7 +2,9 @@ package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno;
 
 import br.com.zalf.prolog.webservice.database.DatabaseConnectionProvider;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.*;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
+import br.com.zalf.prolog.webservice.integracao.PosicaoPneuMapper;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.*;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.data.ProtheusNepomucenoRequesterImpl;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
@@ -81,12 +83,13 @@ public final class SistemaProtheusNepomuceno extends Sistema {
     public CronogramaAfericao getCronogramaAfericao(@NotNull final List<Long> codUnidades) throws Throwable {
         Connection conn = null;
         final DatabaseConnectionProvider connectionProvider = new DatabaseConnectionProvider();
-        final SistemaProtheusNepomucenoDaoImpl sistemaProtheusNepomucenoDaoImpl = new SistemaProtheusNepomucenoDaoImpl();
         try {
             conn = connectionProvider.provideDatabaseConnection();
             // Podemos, com toda certeza, utilizar codUnidades.get(0) pois no mínimo teremos uma unidade nesta lista.
             final Long codEmpresa = getIntegradorProLog().getCodEmpresaByCodUnidadeProLog(conn, codUnidades.get(0));
 
+            final SistemaProtheusNepomucenoDaoImpl sistemaProtheusNepomucenoDaoImpl =
+                    new SistemaProtheusNepomucenoDaoImpl();
             final Map<String, InfosUnidadeRestricao> unidadeRestricao =
                     sistemaProtheusNepomucenoDaoImpl.getInfosUnidadeRestricao(conn, codUnidades);
             final Map<String, InfosTipoVeiculoConfiguracaoAfericao> tipoVeiculoConfiguracao =
@@ -141,7 +144,37 @@ public final class SistemaProtheusNepomuceno extends Sistema {
     public NovaAfericaoPlaca getNovaAfericaoPlaca(@NotNull final Long codUnidade,
                                                   @NotNull final String placaVeiculo,
                                                   @NotNull final String tipoAfericao) throws Throwable {
-        return super.getNovaAfericaoPlaca(codUnidade, placaVeiculo, tipoAfericao);
+        Connection conn = null;
+        final DatabaseConnectionProvider connectionProvider = new DatabaseConnectionProvider();
+        final SistemaProtheusNepomucenoDaoImpl sistemaProtheusNepomucenoDaoImpl = new SistemaProtheusNepomucenoDaoImpl();
+        try {
+            conn = connectionProvider.provideDatabaseConnection();
+            final Long codEmpresa = getIntegradorProLog().getCodEmpresaByCodUnidadeProLog(conn, codUnidade);
+
+            final String url = getIntegradorProLog()
+                    .getUrl(conn, codEmpresa, getSistemaKey(), MetodoIntegrado.GET_VEICULO_NOVA_AFERICAO_PLACA);
+            final String codFilial = sistemaProtheusNepomucenoDaoImpl.getCodAuxiliarUnidade(conn, codUnidade);
+            final VeiculoAfericaoProtheusNepomuceno veiculoAfericao =
+                    requester.getPlacaPneusAfericaoPlaca(url, codFilial, placaVeiculo);
+
+            final ConfiguracaoNovaAfericaoPlaca configuracaoAfericao =
+                    sistemaProtheusNepomucenoDaoImpl.getConfigNovaAfericaoPlaca(
+                            conn,
+                            codUnidade,
+                            veiculoAfericao.getCodEstruturaVeiculo());
+            final PosicaoPneuMapper posicaoPneuMapper = new PosicaoPneuMapper(
+                    sistemaProtheusNepomucenoDaoImpl
+                            .getMapeamentoPosicoesProlog(conn, codEmpresa, veiculoAfericao.getCodEstruturaVeiculo()));
+            final Short codDiagramaPlaca =
+                    sistemaProtheusNepomucenoDaoImpl
+                            .getCodDiagramaByCodEstrutura(conn, codEmpresa, veiculoAfericao.getCodEstruturaVeiculo());
+            final Veiculo veiculo =
+                    ProtheusNepomucenoConverter
+                            .createVeiculoProlog(codUnidade,codDiagramaPlaca, veiculoAfericao, posicaoPneuMapper);
+            return ProtheusNepomucenoConverter.createNovaAfericaoPlacaProlog(veiculo, configuracaoAfericao);
+        } finally {
+            connectionProvider.closeResources(conn);
+        }
     }
 
     @Override

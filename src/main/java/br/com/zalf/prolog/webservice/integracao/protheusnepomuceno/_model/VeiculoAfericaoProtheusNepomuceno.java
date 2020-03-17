@@ -115,4 +115,9 @@ public final class VeiculoAfericaoProtheusNepomuceno {
 
     @NotNull
     public String getCodEstruturaVeiculo() { return codEstruturaVeiculo; }
+
+    @NotNull
+    public List<PneuAplicadoProtheusNepomuceno> getPneusAplicados() {
+        return pneusAplicados;
+    }
 }

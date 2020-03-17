@@ -1,9 +1,11 @@
 package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno;
 
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.Afericao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.ConfiguracaoNovaAfericaoPlaca;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosAfericaoRealizadaPlaca;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosTipoVeiculoConfiguracaoAfericao;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosUnidadeRestricao;
+import com.google.common.collect.BiMap;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
@@ -51,4 +53,21 @@ public interface SistemaProtheusNepomucenoDao {
             @NotNull final Connection conn,
             @NotNull final Long codEmpresa,
             @NotNull final List<String> placasNepomuceno) throws Throwable;
+
+    @NotNull
+    ConfiguracaoNovaAfericaoPlaca getConfigNovaAfericaoPlaca(
+            @NotNull final Connection conn,
+            @NotNull final Long codUnidade,
+            @NotNull final String codEstruturaVeiculo) throws Throwable;
+
+    @NotNull
+    BiMap<String, Integer> getMapeamentoPosicoesProlog(
+            @NotNull final Connection conn,
+            @NotNull final Long codEmpresa,
+            @NotNull final String codEstruturaVeiculo) throws Throwable;
+
+    @NotNull
+    Short getCodDiagramaByCodEstrutura(@NotNull final Connection conn,
+                                       @NotNull final Long codEmpresa,
+                                       @NotNull final String codEstruturaVeiculo) throws Throwable;
 }

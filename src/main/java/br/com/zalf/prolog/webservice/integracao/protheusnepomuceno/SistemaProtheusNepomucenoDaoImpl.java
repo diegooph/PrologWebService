@@ -6,9 +6,12 @@ import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.Afericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.AfericaoPlaca;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.ConfiguracaoNovaAfericaoPlaca;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosAfericaoRealizadaPlaca;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosTipoVeiculoConfiguracaoAfericao;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosUnidadeRestricao;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.*;
@@ -312,6 +315,132 @@ public final class SistemaProtheusNepomucenoDaoImpl extends DatabaseConnection i
                         "placasNepomuceno: " + placasNepomuceno.toString());
             }
             return afericaoRealizadaPlaca;
+        } finally {
+            close(stmt, rSet);
+        }
+    }
+
+    @NotNull
+    @Override
+    public ConfiguracaoNovaAfericaoPlaca getConfigNovaAfericaoPlaca(
+            @NotNull final Connection conn,
+            @NotNull final Long codUnidade,
+            @NotNull final String codEstruturaVeiculo) throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = conn.prepareStatement("SELECT PRU.SULCO_MINIMO_DESCARTE, " +
+                    "       PRU.SULCO_MINIMO_RECAPAGEM, " +
+                    "       PRU.TOLERANCIA_INSPECAO, " +
+                    "       PRU.TOLERANCIA_CALIBRAGEM, " +
+                    "       PRU.PERIODO_AFERICAO_SULCO, " +
+                    "       PRU.PERIODO_AFERICAO_PRESSAO, " +
+                    "       CONFIG_PODE_AFERIR.PODE_AFERIR_SULCO, " +
+                    "       CONFIG_PODE_AFERIR.PODE_AFERIR_PRESSAO, " +
+                    "       CONFIG_PODE_AFERIR.PODE_AFERIR_SULCO_PRESSAO, " +
+                    "       CONFIG_PODE_AFERIR.PODE_AFERIR_ESTEPE, " +
+                    "       CONFIG_ALERTA_SULCO.VARIACAO_ACEITA_SULCO_MENOR_MILIMETROS, " +
+                    "       CONFIG_ALERTA_SULCO.VARIACAO_ACEITA_SULCO_MAIOR_MILIMETROS, " +
+                    "       CONFIG_ALERTA_SULCO.BLOQUEAR_VALORES_MENORES, " +
+                    "       CONFIG_ALERTA_SULCO.BLOQUEAR_VALORES_MAIORES, " +
+                    "       CONFIG_ALERTA_SULCO.USA_DEFAULT_PROLOG AS VARIACOES_SULCO_DEFAULT_PROLOG " +
+                    "FROM FUNC_AFERICAO_GET_CONFIG_TIPO_AFERICAO_VEICULO(?) AS CONFIG_PODE_AFERIR " +
+                    "         JOIN VIEW_AFERICAO_CONFIGURACAO_ALERTA_SULCO AS CONFIG_ALERTA_SULCO " +
+                    "              ON CONFIG_PODE_AFERIR.COD_UNIDADE_CONFIGURACAO = CONFIG_ALERTA_SULCO.COD_UNIDADE " +
+                    "         JOIN PNEU_RESTRICAO_UNIDADE PRU " +
+                    "              ON PRU.COD_UNIDADE = CONFIG_PODE_AFERIR.COD_UNIDADE_CONFIGURACAO " +
+                    "         JOIN VEICULO_TIPO VT ON VT.COD_AUXILIAR = ? " +
+                    "WHERE CONFIG_PODE_AFERIR.COD_UNIDADE_CONFIGURACAO = ? " +
+                    "  AND CONFIG_PODE_AFERIR.COD_TIPO_VEICULO = VT.CODIGO;");
+            stmt.setLong(1, codUnidade);
+            stmt.setLong(2, codUnidade);
+            stmt.setString(3, codEstruturaVeiculo);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return new ConfiguracaoNovaAfericaoPlaca(
+                        rSet.getBoolean("PODE_AFERIR_SULCO"),
+                        rSet.getBoolean("PODE_AFERIR_PRESSAO"),
+                        rSet.getBoolean("PODE_AFERIR_SULCO_PRESSAO"),
+                        rSet.getBoolean("PODE_AFERIR_ESTEPE"),
+                        rSet.getDouble("SULCO_MINIMO_DESCARTE"),
+                        rSet.getDouble("SULCO_MINIMO_RECAPAGEM"),
+                        rSet.getDouble("TOLERANCIA_INSPECAO"),
+                        rSet.getDouble("TOLERANCIA_CALIBRAGEM"),
+                        rSet.getInt("PERIODO_AFERICAO_SULCO"),
+                        rSet.getInt("PERIODO_AFERICAO_PRESSAO"),
+                        rSet.getDouble("VARIACAO_ACEITA_SULCO_MENOR_MILIMETROS"),
+                        rSet.getDouble("VARIACAO_ACEITA_SULCO_MAIOR_MILIMETROS"),
+                        rSet.getBoolean("VARIACOES_SULCO_DEFAULT_PROLOG"),
+                        rSet.getBoolean("BLOQUEAR_VALORES_MENORES"),
+                        rSet.getBoolean("BLOQUEAR_VALORES_MAIORES"));
+            } else {
+                throw new SQLException("Nenhuma configuração de aferição encontrada para a estrutura:\n" +
+                        "codUnidade: " + codUnidade + "\n" +
+                        "codEstruturaVeiculo: " + codEstruturaVeiculo);
+            }
+        } finally {
+            close(stmt, rSet);
+        }
+    }
+
+    @NotNull
+    @Override
+    public BiMap<String, Integer> getMapeamentoPosicoesProlog(
+            @NotNull final Connection conn,
+            @NotNull final Long codEmpresa,
+            @NotNull final String codEstruturaVeiculo) throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = conn.prepareStatement("SELECT " +
+                    "       PPNE.POSICAO_PROLOG AS POSICAO_PROLOG, " +
+                    "       PPNE.NOMENCLATURA AS NOMENCLATURA " +
+                    "FROM VEICULO_TIPO VT " +
+                    "JOIN PNEU_POSICAO_NOMENCLATURA_EMPRESA PPNE ON VT.COD_DIAGRAMA = PPNE.COD_DIAGRAMA " +
+                    "WHERE VT.COD_AUXILIAR = ? AND PPNE.COD_EMPRESA = ?;");
+            stmt.setString(1, codEstruturaVeiculo);
+            stmt.setLong(2, codEmpresa);
+            rSet = stmt.executeQuery();
+            final BiMap<String, Integer> posicoesPneusProlog = HashBiMap.create();
+            if (rSet.next()) {
+                do {
+                    posicoesPneusProlog.put(
+                            rSet.getString("NOMENCLATURA"),
+                            rSet.getInt("POSICAO_PROLOG"));
+                } while (rSet.next());
+            } else {
+                throw new SQLException("Nenhuma posição mapeada para a estrutura do veículo:\n" +
+                        "codEmpresa:" + codEmpresa + "\n" +
+                        "codEstruturaVeiculo: " + codEstruturaVeiculo);
+            }
+            return posicoesPneusProlog;
+        } finally {
+            close(stmt, rSet);
+        }
+    }
+
+    @NotNull
+    @Override
+    public Short getCodDiagramaByCodEstrutura(@NotNull final Connection conn,
+                                              @NotNull final Long codEmpresa,
+                                              @NotNull final String codEstruturaVeiculo) throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = conn.prepareStatement("SELECT VT.COD_DIAGRAMA " +
+                    "FROM VEICULO_TIPO VT " +
+                    "WHERE VT.COD_AUXILIAR = ? " +
+                    "  AND VT.COD_EMPRESA = ?;");
+            stmt.setString(1, codEstruturaVeiculo);
+            stmt.setLong(2, codEmpresa);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return rSet.getShort("COD_DIAGRAMA");
+            } else {
+                throw new SQLException("Nenhum diagrama encontrado para a estrutura do veículo:\n" +
+                        "codEmpresa:" + codEmpresa + "\n" +
+                        "codEstruturaVeiculo: " + codEstruturaVeiculo);
+            }
         } finally {
             close(stmt, rSet);
         }
