@@ -20,13 +20,11 @@ public final class UnidadeService {
     @NotNull
     private final UnidadeDao dao = Injection.provideUnidadeDao();
 
-    public boolean updateUnidade(@NotNull final UnidadeEdicao unidadeEdicao) {
+    public void updateUnidade(@NotNull final UnidadeEdicao unidadeEdicao) {
         try {
             dao.update(unidadeEdicao);
-            return true;
         } catch (final Throwable e) {
             Log.e(TAG, String.format("Erro ao atualizar a unidade %d", unidadeEdicao.getCodUnidade()), e);
-            return false;
         }
     }
 

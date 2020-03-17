@@ -29,12 +29,8 @@ public final class UnidadeResource {
     @Secured(permissions = {Pilares.Geral.Empresa.EDITAR})
     @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public Response updateUnidade(@Valid final UnidadeEdicao unidade) {
-        if (service.updateUnidade(unidade)) {
-            return Response.ok("Unidade atualizada com sucesso.");
-        } else {
-            return Response.error("Erro ao atualizar unidade.");
-
-        }
+        service.updateUnidade(unidade);
+        return Response.ok("Unidade atualizada com sucesso.");
     }
 
     @GET
