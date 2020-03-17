@@ -6,6 +6,9 @@ import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.Afericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.AfericaoPlaca;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.TipoMedicaoColetadaAfericao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.TipoProcessoColetaAfericao;
+import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosAfericaoAvulsa;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.ConfiguracaoNovaAfericaoPlaca;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosAfericaoRealizadaPlaca;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosTipoVeiculoConfiguracaoAfericao;
@@ -16,6 +19,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.sql.*;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -158,6 +162,47 @@ public final class SistemaProtheusNepomucenoDaoImpl extends DatabaseConnection i
         } finally {
             close(stmt, rSet);
         }
+    }
+
+    @NotNull
+    @Override
+    public List<InfosAfericaoAvulsa> getInfosAfericaoAvulsa(@NotNull final Connection conn,
+                                                     @NotNull final Long codUnidade,
+                                                     @NotNull final List<String> codPneus) throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = conn.prepareStatement("SELECT * FROM INTEGRACAO.FUNC_PNEU_AFERICAO_GET_INFOS_AFERICOES_INTEGRADA(" +
+                    "F_COD_UNIDADE := ?," +
+                    "F_COD_PNEUS_CLIENTE := ?);");
+            stmt.setLong(1, codUnidade);
+            stmt.setArray(2, PostgresUtils.listToArray(conn, SqlType.TEXT, codPneus));
+            rSet = stmt.executeQuery();
+
+            final List<InfosAfericaoAvulsa> infosAfericaoAvulsa = new ArrayList<>();
+            while (rSet.next()) {
+                infosAfericaoAvulsa.add(createInfosAfericaoAvulsa(rSet));
+            }
+
+            return infosAfericaoAvulsa;
+        } finally {
+            close(stmt, rSet);
+        }
+    };
+
+    @NotNull
+    private InfosAfericaoAvulsa createInfosAfericaoAvulsa(@NotNull final ResultSet rSet) throws Throwable{
+        return new InfosAfericaoAvulsa(
+                rSet.getLong("CODIGO_ULTIMA_AFERICAO"),
+                rSet.getString("COD_PNEU_PROLOG"),
+                rSet.getString("COD_PNEU_CLIENTE"),
+                rSet.getString("COD_PNEU_CLIENTE_AUXILIAR"),
+                rSet.getString("DATA_HORA_ULTIMA_AFERICAO"),
+                rSet.getString("NOME_COLABORADOR_AFERICAO"),
+                TipoMedicaoColetadaAfericao.fromString(rSet.getString("TIPO_MEDICAO_COLETADA")),
+                TipoProcessoColetaAfericao.fromString(rSet.getString("TIPO_PROCESSO_COLETA")),
+                rSet.getString("PLACA_APLICADO_QUANDO_AFERIDO")
+        );
     }
 
     @NotNull

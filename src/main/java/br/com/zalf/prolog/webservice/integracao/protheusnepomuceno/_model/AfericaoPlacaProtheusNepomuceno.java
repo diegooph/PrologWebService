@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model;
 
+import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.TipoMedicaoColetadaAfericao;
 import org.jetbrains.annotations.NotNull;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -69,14 +70,14 @@ public final class AfericaoPlacaProtheusNepomuceno {
     private final LocalDateTime dataHoraAfericaoUtc;
 
     /**
-     * Constante alfanumérica que representa o {@link TipoMedicaoAfericaoProtheusNepomuceno tipo de medição} que foi
+     * Constante alfanumérica que representa o {@link TipoMedicaoColetadaAfericao tipo de medição} que foi
      * utilizado para a captura de informações, podem ter sido utilizados 3 tipos:
-     * *{@link TipoMedicaoAfericaoProtheusNepomuceno#SULCO}
-     * *{@link TipoMedicaoAfericaoProtheusNepomuceno#PRESSAO}
-     * *{@link TipoMedicaoAfericaoProtheusNepomuceno#SULCO_PRESSAO}
+     * *{@link TipoMedicaoColetadaAfericao#SULCO}
+     * *{@link TipoMedicaoColetadaAfericao#PRESSAO}
+     * *{@link TipoMedicaoColetadaAfericao#SULCO_PRESSAO}
      */
     @NotNull
-    private final TipoMedicaoAfericaoProtheusNepomuceno tipoMedicaoColetadaAfericao;
+    private final TipoMedicaoColetadaAfericao tipoMedicaoColetadaAfericao;
 
     /**
      * Objeto que contém a lista de {@link MedicaoAfericaoProtheusNepomuceno medidas} capturadas em cada pneu aplicado
@@ -92,7 +93,7 @@ public final class AfericaoPlacaProtheusNepomuceno {
                                            @NotNull final Long kmMomentoAfericao,
                                            @NotNull final Long tempoRealizacaoAfericaoInMillis,
                                            @NotNull final LocalDateTime dataHoraAfericaoUtc,
-                                           @NotNull final TipoMedicaoAfericaoProtheusNepomuceno tipoMedicaoColetadaAfericao,
+                                           @NotNull final TipoMedicaoColetadaAfericao tipoMedicaoColetadaAfericao,
                                            @NotNull final List<MedicaoAfericaoProtheusNepomuceno> medicoes) {
         this.codEmpresa = codEmpresa;
         this.codUnidade = codUnidade;
@@ -119,7 +120,7 @@ public final class AfericaoPlacaProtheusNepomuceno {
                 101010L,
                 90000L,
                 LocalDateTime.now(),
-                TipoMedicaoAfericaoProtheusNepomuceno.SULCO_PRESSAO,
+                TipoMedicaoColetadaAfericao.SULCO_PRESSAO,
                 medicoes
         );
     }
@@ -146,7 +147,7 @@ public final class AfericaoPlacaProtheusNepomuceno {
     public LocalDateTime getDataHoraAfericaoUtc() { return dataHoraAfericaoUtc; }
 
     @NotNull
-    public TipoMedicaoAfericaoProtheusNepomuceno getTipoMedicaoColetadaAfericao() {
+    public TipoMedicaoColetadaAfericao getTipoMedicaoColetadaAfericao() {
         return tipoMedicaoColetadaAfericao;
     }
 
