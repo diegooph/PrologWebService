@@ -433,21 +433,27 @@ public final class Pilares {
 
     public static final class Geral extends Pilar {
 
+        public static final class Empresa {
+
+            /**
+             * Permite ao usuário acessar a listagem de regionais e unidades.
+             */
+            public static final int VISUALIZAR_ESTRUTURA = 503;
+            /**
+             * Permite ao usuário alterar o nome, as regionais e unidades da empresa.
+             */
+            public static final int EDITAR_ESTRUTURA = 502;
+
+            private Empresa() {
+            }
+
+        }
+
         public final class DispositivosMoveis {
 
             public static final int GESTAO = 501;
 
             private DispositivosMoveis() {
-            }
-
-        }
-
-        public final class Empresa {
-
-            public static final int VISUALIZAR = 503;
-            public static final int EDITAR = 502;
-
-            private Empresa() {
             }
 
         }

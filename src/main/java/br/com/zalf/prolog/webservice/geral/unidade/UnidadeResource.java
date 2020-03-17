@@ -26,7 +26,7 @@ public final class UnidadeResource {
     private final UnidadeService service = new UnidadeService();
 
     @PUT
-    @Secured(permissions = {Pilares.Geral.Empresa.EDITAR})
+    @Secured(permissions = {Pilares.Geral.Empresa.EDITAR_ESTRUTURA})
     @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public Response updateUnidade(@Valid final UnidadeEdicao unidade) {
         service.updateUnidade(unidade);
@@ -34,14 +34,14 @@ public final class UnidadeResource {
     }
 
     @GET
-    @Secured(permissions = {Pilares.Geral.Empresa.VISUALIZAR})
+    @Secured(permissions = {Pilares.Geral.Empresa.VISUALIZAR_ESTRUTURA, Pilares.Geral.Empresa.EDITAR_ESTRUTURA})
     @Path("/{codUnidade}")
     public UnidadeVisualizacao getUnidadeByCodigo(@PathParam("codUnidade") final Long codUnidade) {
         return service.getUnidadeByCodigo(codUnidade);
     }
 
     @GET
-    @Secured(permissions = {Pilares.Geral.Empresa.VISUALIZAR})
+    @Secured(permissions = {Pilares.Geral.Empresa.VISUALIZAR_ESTRUTURA, Pilares.Geral.Empresa.EDITAR_ESTRUTURA})
     public List<UnidadeVisualizacao> getUnidadesListagem(@QueryParam("codEmpresa") final Long codEmpresa,
                                                          @QueryParam("codRegional") final Long codRegional) {
         return service.getUnidadesListagem(codEmpresa, codRegional);
