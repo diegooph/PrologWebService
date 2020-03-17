@@ -31,9 +31,9 @@ public class UnidadeService {
     }
 
     @NotNull
-    public UnidadeVisualizacao getUnidadeByCodUnidade(final Long codUnidade) throws Throwable {
+    public UnidadeVisualizacao getUnidadeByCodigo(final Long codUnidade) throws Throwable {
         try {
-            return dao.getUnidadeByCodUnidade(codUnidade);
+            return dao.getUnidadeByCodigo(codUnidade);
         } catch (final SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar unidade. \n" +
                     "Código da Unidade: %s", codUnidade), e);
@@ -42,11 +42,11 @@ public class UnidadeService {
     }
 
     @NotNull
-    public List<UnidadeVisualizacao> getAllUnidadeByCodEmpresaAndCodRegional(
+    public List<UnidadeVisualizacao> getUnidadesListagem(
             @QueryParam("codEmpresa") final Long codEmpresa,
             @QueryParam("codRegional") final Long codRegional) throws Throwable {
         try {
-            return dao.getAllUnidadeByCodEmpresaAndCodRegional(codEmpresa, codRegional);
+            return dao.getUnidadesListagem(codEmpresa, codRegional);
         } catch (final SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar lista de unidades da empresa. \n" +
                     "Código da Empresa: %s\n" +

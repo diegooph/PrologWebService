@@ -59,7 +59,7 @@ public class UnidadeDaoImpl extends DatabaseConnection implements UnidadeDao {
 
     @NotNull
     @Override
-    public UnidadeVisualizacao getUnidadeByCodUnidade(@NotNull final Long codUnidade) throws Throwable {
+    public UnidadeVisualizacao getUnidadeByCodigo(@NotNull final Long codUnidade) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -84,8 +84,8 @@ public class UnidadeDaoImpl extends DatabaseConnection implements UnidadeDao {
 
     @NotNull
     @Override
-    public List<UnidadeVisualizacao> getAllUnidadeByCodEmpresaAndCodRegional(@NotNull final Long codEmpresa,
-                                                                             @Nullable final Long codRegional) throws Throwable {
+    public List<UnidadeVisualizacao> getUnidadesListagem(@NotNull final Long codEmpresa,
+                                                         @Nullable final Long codRegional) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;

@@ -30,7 +30,7 @@ public interface UnidadeDao {
      * @throws Throwable caso ocorrer erro no banco.
      */
     @NotNull
-    UnidadeVisualizacao getUnidadeByCodUnidade(@NotNull Long codUnidade) throws Throwable;
+    UnidadeVisualizacao getUnidadeByCodigo(@NotNull Long codUnidade) throws Throwable;
 
     /**
      * Busca todas as unidades baseado no código da empresa e da regional.
@@ -41,7 +41,7 @@ public interface UnidadeDao {
      * @throws Throwable caso ocorrer erro no banco.
      */
     @NotNull
-    List<UnidadeVisualizacao> getAllUnidadeByCodEmpresaAndCodRegional(@NotNull Long codEmpresa,
-                                                                      @Nullable Long codRegional) throws Throwable;
+    List<UnidadeVisualizacao> getUnidadesListagem(@NotNull Long codEmpresa,
+                                                  @Nullable Long codRegional) throws Throwable;
 
 }
