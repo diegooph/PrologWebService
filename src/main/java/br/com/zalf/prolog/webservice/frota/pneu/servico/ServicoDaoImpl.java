@@ -152,8 +152,9 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
         }
     }
 
+    @NotNull
     @Override
-    public ServicoHolder getServicoHolder(final String placa, final Long codUnidade) throws Throwable {
+    public ServicoHolder getServicoHolder(@NotNull final String placa, @NotNull final Long codUnidade) throws Throwable {
         final ServicoHolder holder = new ServicoHolder();
         holder.setPlacaVeiculo(placa);
 
@@ -162,17 +163,11 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
         //  Se não existirem serviços para a placa buscada, nada mais será setado no Holder.
         if (!servicos.isEmpty()) {
             Log.d(TAG, "Existem serviços para a placa: " + placa);
-
             final AfericaoDao afericaoDao = Injection.provideAfericaoDao();
             holder.setRestricao(afericaoDao.getRestricoesByPlaca(placa));
             if (contains(servicos, TipoServico.INSPECAO)) {
                 Log.d(TAG, "Contém inspeção");
                 holder.setAlternativasInspecao(getAlternativasInspecao());
-            }
-            if (contains(servicos, TipoServico.MOVIMENTACAO)) {
-                Log.d(TAG, "Contém movimentação");
-                final PneuDao pneuDao = Injection.providePneuDao();
-                holder.setPneusDisponiveis(pneuDao.getPneusByCodUnidadeByStatus(codUnidade, StatusPneu.ESTOQUE));
             }
         }
 

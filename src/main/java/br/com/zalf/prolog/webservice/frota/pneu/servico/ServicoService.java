@@ -37,14 +37,17 @@ public class ServicoService {
         }
     }
 
-    public ServicoHolder getServicoHolder(String placa, Long codUnidade) {
+    @NotNull
+    public ServicoHolder getServicoHolder(@NotNull final String placa, @NotNull final Long codUnidade) {
         try {
             return dao.getServicoHolder(placa, codUnidade);
-        } catch (Throwable e) {
-            Log.e(TAG, String.format("Erro ao buscar os serviços da placa. \n," +
-                    "Unidade: %d \n" +
-                    "Placa: %s", codUnidade, placa), e);
-            throw new RuntimeException(e);
+        } catch (final Throwable t) {
+            Log.e(TAG, String.format("Erro ao buscar os serviços da placa.\n" +
+                    "Unidade: %d\n" +
+                    "Placa: %s", codUnidade, placa), t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao buscar serviços, tente novamente");
         }
     }
 

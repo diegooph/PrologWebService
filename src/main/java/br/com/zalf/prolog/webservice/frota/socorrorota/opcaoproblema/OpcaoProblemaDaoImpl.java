@@ -8,7 +8,6 @@ import org.jetbrains.annotations.NotNull;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,7 +28,7 @@ public final class OpcaoProblemaDaoImpl extends DatabaseConnection implements Op
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_SOCORRO_ROTA_OPS_PROBLEM_DISP_ABERTURA_SOCORRO_BY_EMP(" +
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_SOCORRO_ROTA_OPCOES_PROBLEMAS_ABERTURA_BY_EMPRESA((" +
                     "F_COD_EMPRESA := ?);");
             stmt.setLong(1, codEmpresa);
             rSet = stmt.executeQuery();
@@ -175,4 +174,5 @@ public final class OpcaoProblemaDaoImpl extends DatabaseConnection implements Op
             close(conn, stmt);
         }
     }
+
 }

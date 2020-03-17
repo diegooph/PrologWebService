@@ -12,6 +12,7 @@ Change Log
 
 ### Features
 * Adiciona a quantidade de permissões na busca de cargos (PL-2532)
+* Criar configuração para saber se uma integração abre serviços de pneu (PLI-78)
 
 ### Refactors
 * Modifica update do pneu, permitindo atualizar vida total (PL-2145)
@@ -19,6 +20,9 @@ Change Log
 * Altera as interações com o banco de dados para implementar a amarração entre pneus e veículos (PL-1965)
 * Impedir que itens sejam resolvidos com data anterior à realização do check (PL-2500)
 * Remove arquivos de config antigos do eclipse
+* Remove lista de pneus disponíveis do `ServicoHolder` (PL-2510)
+* Bloqueia busca do `ServicoHolder` para apps <= 101 (PL-2510)
+* Refatora métodos do socorro-rota que ainda estavam em hardcode (PL-2577)
 
 <a name="v1.0.22"></a>
 ## Version [v1.0.22](https://github.com/luizfp/PrologWebService/compare/v1.0.21...v1.0.22) (2020-03-03)
