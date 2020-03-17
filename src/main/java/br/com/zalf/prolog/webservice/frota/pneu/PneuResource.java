@@ -86,17 +86,6 @@ public final class PneuResource {
         return service.getDimensoes();
     }
 
-    @POST
-    @Secured(permissions = Pilares.Frota.Pneu.VINCULAR_VEICULO)
-    @Path("/vincular/{placa}")
-    public Response vinculaPneuVeiculo(@PathParam("placa") String placa, List<PneuComum> pneus) {
-        if (service.vinculaPneuVeiculo(placa, pneus)) {
-            return Response.ok("Pneus vinculados com sucesso.");
-        } else {
-            return Response.error("Erro ao víncular os pneus ao veículo");
-        }
-    }
-
     @GET
     @Secured
     @Path("/unidades/{codUnidade}/{codPneu}")

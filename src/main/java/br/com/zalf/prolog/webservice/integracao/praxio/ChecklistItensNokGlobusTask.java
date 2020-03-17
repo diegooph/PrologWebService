@@ -168,11 +168,16 @@ public final class ChecklistItensNokGlobusTask implements Runnable {
                                 codChecklistProLog,
                                 getErrorMessage(throwable),
                                 throwable);
+                        // Após sincronizar os erros, podemos commitar a connection pois ela não será mais utilizada.
+                        conn.commit();
                     } catch (final Throwable error) {
                         // Caso ocorra algum erro ao salvar os logs de erro, fazemos rollback também.
                         conn.rollback();
                         Log.e(TAG, "Erro ao salvar mensagem de erro ao sincronizar checklist", error);
+                        throw error;
                     }
+                } else {
+                    Log.d(TAG, "Connection nula, nada foi logado");
                 }
                 // Avisamos sobre o erro ao sincronizar o checklist.
                 if (listener != null) {

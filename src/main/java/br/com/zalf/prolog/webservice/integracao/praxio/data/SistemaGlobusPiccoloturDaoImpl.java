@@ -44,6 +44,7 @@ public final class SistemaGlobusPiccoloturDaoImpl extends DatabaseConnection imp
                     checklistItensNokGlobus = new ChecklistItensNokGlobus(
                             rSet.getLong("COD_UNIDADE_CHECKLIST"),
                             codChecklistProLog,
+                            rSet.getLong("COD_MODELO_CHECKLIST"),
                             rSet.getString("CPF_COLABORADOR_REALIZACAO"),
                             rSet.getString("PLACA_VEICULO_CHECKLIST"),
                             rSet.getLong("KM_COLETADO_CHECKLIST"),

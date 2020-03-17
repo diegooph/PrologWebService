@@ -35,17 +35,17 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         try {
             conn = getConnection();
             conn.setAutoCommit(false);
-            stmt = conn.prepareStatement("INSERT INTO VEICULO (PLACA, COD_EMPRESA, COD_UNIDADE, KM, STATUS_ATIVO," +
-                    " COD_TIPO, COD_MODELO, COD_UNIDADE_CADASTRO) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?) RETURNING CODIGO;");
-            stmt.setString(1, veiculo.getPlacaVeiculo().toUpperCase());
-            stmt.setLong(2, veiculo.getCodEmpresaAlocado());
-            stmt.setLong(3, veiculo.getCodUnidadeAlocado());
-            stmt.setLong(4, veiculo.getKmAtualVeiculo());
-            stmt.setBoolean(5, true);
-            stmt.setLong(6, veiculo.getCodTipoVeiculo());
-            stmt.setLong(7, veiculo.getCodModeloVeiculo());
-            stmt.setLong(8, veiculo.getCodUnidadeAlocado());
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_VEICULO_INSERE_VEICULO(" +
+                    "F_COD_UNIDADE := ?," +
+                    "F_PLACA := ?, " +
+                    "F_KM_ATUAL := ?, " +
+                    "F_COD_MODELO := ?, " +
+                    "F_COD_TIPO := ?) AS CODIGO;");
+            stmt.setLong(1, veiculo.getCodUnidadeAlocado());
+            stmt.setString(2, veiculo.getPlacaVeiculo().toUpperCase());
+            stmt.setLong(3, veiculo.getKmAtualVeiculo());
+            stmt.setLong(4, veiculo.getCodModeloVeiculo());
+            stmt.setLong(5, veiculo.getCodTipoVeiculo());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 final long codVeiculoInserido = rSet.getLong("CODIGO");
@@ -84,24 +84,22 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
             conn = getConnection();
             conn.setAutoCommit(false);
 
-            // Verifica se está tentando atualizar o tipo de veículo tendo pneus aplicados.
-            final Veiculo veiculoBd = getVeiculoByPlaca(conn, placaOriginal, true);
-            final boolean tipoVeiculoAlterado = !veiculoBd.getCodTipo().equals(veiculo.getCodTipo());
-            if (tipoVeiculoAlterado && veiculoBd.getListPneus().size() > 0) {
-                throw new GenericException("Você só pode alterar o tipo de um veículo que não tem pneus aplicados");
-            }
+            // Busca armazena informações do veículo atual
+            final Veiculo veiculoBd = getVeiculoByPlaca(conn, placaOriginal, false);
+            // A verificação de pneus aplicados para alteração de tipo agora é feita diretamente na function
 
             // O 'veiculoBd' é o veículo antes de ser atualizado as informações.
             final long kmAntigoVeiculo = veiculoBd.getKmAtual();
             final long kmNovoVeiculo = veiculo.getKmAtual();
-            stmt = conn.prepareStatement("UPDATE VEICULO SET "
-                    + "KM = ?, COD_MODELO = ?, COD_EIXOS = ?, COD_TIPO = ? "
-                    + "WHERE PLACA = ? RETURNING CODIGO");
-            stmt.setLong(1, kmNovoVeiculo);
-            stmt.setLong(2, veiculo.getCodModelo());
-            stmt.setLong(3, veiculo.getEixos().codigo);
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_VEICULO_ATUALIZA_VEICULO(" +
+                    "F_PLACA := ?, " +
+                    "F_NOVO_KM := ?, " +
+                    "F_NOVO_COD_MODELO := ?, " +
+                    "F_NOVO_COD_TIPO := ?) AS CODIGO;");
+            stmt.setString(1, placaOriginal);
+            stmt.setLong(2, kmNovoVeiculo);
+            stmt.setLong(3, veiculo.getCodModelo());
             stmt.setLong(4, veiculo.getCodTipo());
-            stmt.setString(5, placaOriginal);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 final long codVeiculoAtualizado = rSet.getLong("CODIGO");
@@ -715,18 +713,19 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
                                     @NotNull final Long codPneu,
                                     final int posicaoPneuVeiculo) throws Throwable {
         PreparedStatement stmt = null;
+        ResultSet rSet = null;
         try {
-            stmt = conn.prepareStatement("INSERT INTO veiculo_pneu (placa, cod_pneu, cod_unidade, posicao) " +
-                    "VALUES (?, ?, ?, ?)");
-            stmt.setString(1, placa);
-            stmt.setLong(2, codPneu);
-            stmt.setLong(3, codUnidade);
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_VEICULO_INSERE_VEICULO_PNEU(?, ?, ?, ?) AS RESULT;");
+            stmt.setLong(1, codUnidade);
+            stmt.setString(2, placa);
+            stmt.setLong(3, codPneu);
             stmt.setInt(4, posicaoPneuVeiculo);
-            if (stmt.executeUpdate() == 0) {
+            rSet = stmt.executeQuery();
+            if (!rSet.next() || !rSet.getBoolean("RESULT")) {
                 throw new SQLException("Erro ao aplicar o pneu " + codPneu + " ao veículo " + placa);
             }
         } finally {
-            close(stmt);
+            close(stmt, rSet);
         }
     }
 

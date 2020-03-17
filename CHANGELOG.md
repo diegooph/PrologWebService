@@ -1,24 +1,42 @@
-Stage
+Change Log
 ==========
+
+STAGE
+* Altera forma de autenticação para usuários internos (PL-2550)
+
+<a name="v1.0.23"></a>
+## Version [v1.0.23](https://github.com/luizfp/PrologWebService/compare/v1.0.22...v1.0.23) (release-date) [unreleased]
 
 ### Features
 * Adiciona a quantidade de permissões na busca de cargos (PL-2532)
+* Criar configuração para saber se uma integração abre serviços de pneu (PLI-78)
 
 ### Refactors
 * Modifica update do pneu, permitindo atualizar vida total (PL-2145)
 * Diferencia a plataforma de execução das ações de socorro em rota (PL-2527)
-* Altera forma de autenticação para usuários internos (PL-2550)
+* Altera as interações com o banco de dados para implementar a amarração entre pneus e veículos (PL-1965)
+* Impedir que itens sejam resolvidos com data anterior à realização do check (PL-2500)
+* Remove arquivos de config antigos do eclipse
+* Remove lista de pneus disponíveis do `ServicoHolder` (PL-2510)
+* Bloqueia busca do `ServicoHolder` para apps <= 101 (PL-2510)
+* Refatora métodos do socorro-rota que ainda estavam em hardcode (PL-2577)
 
-Change Log
-==========
+<a name="v1.0.22"></a>
+## Version [v1.0.22](https://github.com/luizfp/PrologWebService/compare/v1.0.21...v1.0.22) (2020-03-03)
+
+### Bug Fixes
+* Corrige problema do último release onde faltavam as implementações da versão: v1.0.19
 
 <a name="v1.0.21"></a>
-## Version [v1.0.21](https://github.com/luizfp/PrologWebService/compare/v1.0.20...v1.0.21) (release-date) [unreleased]
+## Version [v1.0.21](https://github.com/luizfp/PrologWebService/compare/v1.0.20...v1.0.21) (2020-02-25)
+
+### Refactors
+* Adiciona codModeloChecklist no envio dos dados para o Globus (PLI-89)
 
 <a name="v1.0.20"></a>
 ## Version [v1.0.20](https://github.com/luizfp/PrologWebService/compare/v1.0.19...v1.0.20) (2020-02-25)
 
-### Recators
+### Refactors
 * Reestrutura mensagens de erro na sincronização dos checklists integrados (PLI-70)
 
 ### Bug Fixes
@@ -35,7 +53,7 @@ Change Log
 <a name="v1.0.18"></a>
 ## Version [v1.0.18](https://github.com/luizfp/PrologWebService/compare/v1.0.17...v1.0.18) (2020-02-13)
 
-### Recators
+### Refactors
 * Remove roteamento de tipos de veículos e cria busca específica para checklists (PL-2536)
 * Cria bloqueio de integração por unidades (PLI-71)
 
