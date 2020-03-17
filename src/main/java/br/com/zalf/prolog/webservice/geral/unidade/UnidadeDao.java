@@ -26,7 +26,7 @@ public interface UnidadeDao {
      * Busca uma unidade baseado no seu código.
      *
      * @param codUnidade um código de uma unidade.
-     * @return um {@link UnidadeVisualizacao}.
+     * @return uma {@link UnidadeVisualizacao unidade}.
      * @throws Throwable caso qualquer erro ocorrer.
      */
     @NotNull
@@ -34,6 +34,8 @@ public interface UnidadeDao {
 
     /**
      * Busca todas as unidades baseado no código da empresa e da regional.
+     * <p>
+     * O código da regional pode ser {@code null}, significando que o usuário quer trazer de todas as regionais.
      *
      * @param codEmpresa  um código de uma empresa;
      * @param codRegional um código de uma regional.
