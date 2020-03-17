@@ -39,8 +39,8 @@ public final class UnidadeResource {
 
     @GET
     @Secured(permissions = {Pilares.Geral.Empresa.VISUALIZAR})
-    @Path("/getByCodUnidade/{codUnidade}")
-    public UnidadeVisualizacao getUnidadeByCodUnidade(@PathParam("codUnidade") final Long codUnidade) throws Throwable {
+    @Path("/{codUnidade}")
+    public UnidadeVisualizacao getUnidadeByCodigo(@PathParam("codUnidade") final Long codUnidade) throws Throwable {
         return service.getUnidadeByCodigo(codUnidade);
     }
 
