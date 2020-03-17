@@ -36,14 +36,14 @@ public final class UnidadeResource {
     @GET
     @Secured(permissions = {Pilares.Geral.Empresa.VISUALIZAR})
     @Path("/{codUnidade}")
-    public UnidadeVisualizacao getUnidadeByCodigo(@PathParam("codUnidade") final Long codUnidade) throws Throwable {
+    public UnidadeVisualizacao getUnidadeByCodigo(@PathParam("codUnidade") final Long codUnidade) {
         return service.getUnidadeByCodigo(codUnidade);
     }
 
     @GET
     @Secured(permissions = {Pilares.Geral.Empresa.VISUALIZAR})
     public List<UnidadeVisualizacao> getUnidadesListagem(@QueryParam("codEmpresa") final Long codEmpresa,
-                                                         @QueryParam("codRegional") final Long codRegional) throws Throwable {
+                                                         @QueryParam("codRegional") final Long codRegional) {
         return service.getUnidadesListagem(codEmpresa, codRegional);
     }
 }

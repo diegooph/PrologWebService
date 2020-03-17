@@ -7,7 +7,6 @@ import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeVisualizacao;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -23,33 +22,40 @@ public final class UnidadeService {
     public void updateUnidade(@NotNull final UnidadeEdicao unidadeEdicao) {
         try {
             dao.update(unidadeEdicao);
-        } catch (final Throwable e) {
-            Log.e(TAG, String.format("Erro ao atualizar a unidade %d", unidadeEdicao.getCodUnidade()), e);
+        } catch (final Throwable t) {
+            Log.e(TAG, String.format("Erro ao atualizar a unidade %d", unidadeEdicao.getCodUnidade()), t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao atualizar unidade, tente novamente.");
         }
     }
 
     @NotNull
-    public UnidadeVisualizacao getUnidadeByCodigo(@NotNull final Long codUnidade) throws Throwable {
+    public UnidadeVisualizacao getUnidadeByCodigo(@NotNull final Long codUnidade) {
         try {
             return dao.getUnidadeByCodigo(codUnidade);
-        } catch (final SQLException e) {
-            Log.e(TAG, String.format("Erro ao buscar unidade. \n" +
-                    "Código da Unidade: %s", codUnidade), e);
-            return null;
+        } catch (final Throwable t) {
+            Log.e(TAG, String.format("Erro ao buscar unidade.\n" +
+                    "Código da Unidade: %d", codUnidade), t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao buscar unidade, tente novamente.");
         }
     }
 
     @NotNull
     public List<UnidadeVisualizacao> getUnidadesListagem(
             @NotNull final Long codEmpresa,
-            @Nullable final Long codRegional) throws Throwable {
+            @Nullable final Long codRegional) {
         try {
             return dao.getUnidadesListagem(codEmpresa, codRegional);
-        } catch (final SQLException e) {
-            Log.e(TAG, String.format("Erro ao buscar lista de unidades da empresa. \n" +
-                    "Código da Empresa: %s\n" +
-                    "Código da Regional: %s", codEmpresa, codRegional), e);
-            return null;
+        } catch (final Throwable t) {
+            Log.e(TAG, String.format("Erro ao buscar lista de unidades da empresa.\n" +
+                    "Código da Empresa: %d\n" +
+                    "Código da Regional: %d", codEmpresa, codRegional), t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao atualizar unidades, tente novamente.");
         }
     }
 

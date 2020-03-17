@@ -18,7 +18,7 @@ public interface UnidadeDao {
      * Atualiza os dados de uma {@link UnidadeEdicao unidade}.
      *
      * @param unidade Dados da unidade a ser atualizada.
-     * @throws Throwable Caso não seja possível atualizar as informações.
+     * @throws Throwable caso qualquer erro ocorrer.
      */
     void update(@NotNull final UnidadeEdicao unidade) throws Throwable;
 
@@ -27,7 +27,7 @@ public interface UnidadeDao {
      *
      * @param codUnidade um código de uma unidade.
      * @return um {@link UnidadeVisualizacao}.
-     * @throws Throwable caso ocorrer erro no banco.
+     * @throws Throwable caso qualquer erro ocorrer.
      */
     @NotNull
     UnidadeVisualizacao getUnidadeByCodigo(@NotNull final Long codUnidade) throws Throwable;
@@ -38,7 +38,7 @@ public interface UnidadeDao {
      * @param codEmpresa  um código de uma empresa;
      * @param codRegional um código de uma regional.
      * @return um {@link List<UnidadeVisualizacao>}.
-     * @throws Throwable caso ocorrer erro no banco.
+     * @throws Throwable caso qualquer erro ocorrer.
      */
     @NotNull
     List<UnidadeVisualizacao> getUnidadesListagem(@NotNull final Long codEmpresa,
