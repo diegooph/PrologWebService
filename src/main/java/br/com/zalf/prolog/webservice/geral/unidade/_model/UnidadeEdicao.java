@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.geral.unidade._model;
 
+import lombok.Data;
 import org.jetbrains.annotations.Nullable;
 
 import javax.validation.constraints.NotNull;
@@ -10,67 +11,17 @@ import javax.validation.constraints.Size;
  *
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
+@Data
 public final class UnidadeEdicao {
-
     @NotNull(message = "O código da unidade é obrigatório.")
-    private Long codUnidade;
-
+    private final Long codUnidade;
     @NotNull(message = "O nome da unidade não pode estar vazio.")
     @Size(max = 40, message = "O nome da precisa conter até 40 caracteres.")
-    private String nomeUnidade;
-
+    private final String nomeUnidade;
     @Nullable
-    private String codAuxiliarUnidade;
-
+    private final String codAuxiliarUnidade;
     @Nullable
-    private String latitudeUnidade;
-
+    private final String latitudeUnidade;
     @Nullable
-    private String longitudeUnidade;
-
-    @NotNull
-    public Long getCodUnidade() {
-        return codUnidade;
-    }
-
-    public void setCodUnidade(@NotNull final Long codUnidade) {
-        this.codUnidade = codUnidade;
-    }
-
-    @NotNull
-    public String getNomeUnidade() {
-        return nomeUnidade;
-    }
-
-    public void setNomeUnidade(@NotNull final String nomeUnidade) {
-        this.nomeUnidade = nomeUnidade;
-    }
-
-    @Nullable
-    public String getLatitudeUnidade() {
-        return latitudeUnidade;
-    }
-
-    public void setLatitudeUnidade(@Nullable final String latitudeUnidade) {
-        this.latitudeUnidade = latitudeUnidade;
-    }
-
-    @Nullable
-    public String getLongitudeUnidade() {
-        return longitudeUnidade;
-    }
-
-    public void setLongitudeUnidade(@Nullable final String longitudeUnidade) {
-        this.longitudeUnidade = longitudeUnidade;
-    }
-
-    @Nullable
-    public String getCodAuxiliarUnidade() {
-        return codAuxiliarUnidade;
-    }
-
-    public void setCodAuxiliarUnidade(@Nullable final String codAuxiliarUnidade) {
-        this.codAuxiliarUnidade = codAuxiliarUnidade;
-    }
-
+    private final String longitudeUnidade;
 }
