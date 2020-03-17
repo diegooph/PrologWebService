@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.geral.unidade;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeEdicao;
-import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeVisualizacao;
+import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeVisualizacaoListagem;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
@@ -36,14 +36,14 @@ public final class UnidadeResource {
     @GET
     @Secured(permissions = {Pilares.Geral.Empresa.VISUALIZAR_ESTRUTURA, Pilares.Geral.Empresa.EDITAR_ESTRUTURA})
     @Path("/{codUnidade}")
-    public UnidadeVisualizacao getUnidadeByCodigo(@PathParam("codUnidade") final Long codUnidade) {
+    public UnidadeVisualizacaoListagem getUnidadeByCodigo(@PathParam("codUnidade") final Long codUnidade) {
         return service.getUnidadeByCodigo(codUnidade);
     }
 
     @GET
     @Secured(permissions = {Pilares.Geral.Empresa.VISUALIZAR_ESTRUTURA, Pilares.Geral.Empresa.EDITAR_ESTRUTURA})
-    public List<UnidadeVisualizacao> getUnidadesListagem(@QueryParam("codEmpresa") final Long codEmpresa,
-                                                         @QueryParam("codRegional") final Long codRegional) {
+    public List<UnidadeVisualizacaoListagem> getUnidadesListagem(@QueryParam("codEmpresa") final Long codEmpresa,
+                                                                 @QueryParam("codRegional") final Long codRegional) {
         return service.getUnidadesListagem(codEmpresa, codRegional);
     }
 }

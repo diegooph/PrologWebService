@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.geral.unidade;
 
-import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeVisualizacao;
+import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeVisualizacaoListagem;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
@@ -18,9 +18,9 @@ public final class UnidadeConverter {
     }
 
     @NotNull
-    static UnidadeVisualizacao createUnidadeVisualizacao(
+    static UnidadeVisualizacaoListagem createUnidadeVisualizacaoListagem(
             @NotNull final ResultSet rSet) throws Throwable {
-        return new UnidadeVisualizacao(rSet.getLong("CODIGO_UNIDADE"),
+        return new UnidadeVisualizacaoListagem(rSet.getLong("CODIGO_UNIDADE"),
                 rSet.getString("NOME_UNIDADE"),
                 rSet.getInt("TOTAL_COLABORADORES_UNIDADE"),
                 rSet.getLong("CODIGO_REGIONAL_UNIDADE"),

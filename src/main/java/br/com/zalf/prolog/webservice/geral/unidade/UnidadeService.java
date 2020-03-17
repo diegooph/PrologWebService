@@ -3,7 +3,7 @@ package br.com.zalf.prolog.webservice.geral.unidade;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeEdicao;
-import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeVisualizacao;
+import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeVisualizacaoListagem;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,7 +31,7 @@ public final class UnidadeService {
     }
 
     @NotNull
-    public UnidadeVisualizacao getUnidadeByCodigo(@NotNull final Long codUnidade) {
+    public UnidadeVisualizacaoListagem getUnidadeByCodigo(@NotNull final Long codUnidade) {
         try {
             return dao.getUnidadeByCodigo(codUnidade);
         } catch (final Throwable t) {
@@ -44,7 +44,7 @@ public final class UnidadeService {
     }
 
     @NotNull
-    public List<UnidadeVisualizacao> getUnidadesListagem(
+    public List<UnidadeVisualizacaoListagem> getUnidadesListagem(
             @NotNull final Long codEmpresa,
             @Nullable final Long codRegional) {
         try {

@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.geral.unidade;
 
 import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeEdicao;
-import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeVisualizacao;
+import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeVisualizacaoListagem;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -26,11 +26,11 @@ public interface UnidadeDao {
      * Busca uma unidade baseado no seu código.
      *
      * @param codUnidade um código de uma unidade.
-     * @return uma {@link UnidadeVisualizacao unidade}.
+     * @return uma {@link UnidadeVisualizacaoListagem unidade}.
      * @throws Throwable caso qualquer erro ocorrer.
      */
     @NotNull
-    UnidadeVisualizacao getUnidadeByCodigo(@NotNull final Long codUnidade) throws Throwable;
+    UnidadeVisualizacaoListagem getUnidadeByCodigo(@NotNull final Long codUnidade) throws Throwable;
 
     /**
      * Busca todas as unidades baseado no código da empresa e da regional.
@@ -39,11 +39,11 @@ public interface UnidadeDao {
      *
      * @param codEmpresa  um código de uma empresa;
      * @param codRegional um código de uma regional.
-     * @return um {@link List<UnidadeVisualizacao>}.
+     * @return um {@link List< UnidadeVisualizacaoListagem >}.
      * @throws Throwable caso qualquer erro ocorrer.
      */
     @NotNull
-    List<UnidadeVisualizacao> getUnidadesListagem(@NotNull final Long codEmpresa,
-                                                  @Nullable final Long codRegional) throws Throwable;
+    List<UnidadeVisualizacaoListagem> getUnidadesListagem(@NotNull final Long codEmpresa,
+                                                          @Nullable final Long codRegional) throws Throwable;
 
 }

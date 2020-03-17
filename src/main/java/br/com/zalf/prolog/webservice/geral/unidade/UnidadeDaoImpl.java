@@ -3,7 +3,7 @@ package br.com.zalf.prolog.webservice.geral.unidade;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeEdicao;
-import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeVisualizacao;
+import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeVisualizacaoListagem;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -49,7 +49,7 @@ public final class UnidadeDaoImpl extends DatabaseConnection implements UnidadeD
 
     @NotNull
     @Override
-    public UnidadeVisualizacao getUnidadeByCodigo(@NotNull final Long codUnidade) throws Throwable {
+    public UnidadeVisualizacaoListagem getUnidadeByCodigo(@NotNull final Long codUnidade) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -60,7 +60,7 @@ public final class UnidadeDaoImpl extends DatabaseConnection implements UnidadeD
             stmt.setLong(1, codUnidade);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                return UnidadeConverter.createUnidadeVisualizacao(rSet);
+                return UnidadeConverter.createUnidadeVisualizacaoListagem(rSet);
             } else {
                 throw new IllegalStateException("Nenhuma unidade encontrada com o código: " + codUnidade);
             }
@@ -71,8 +71,8 @@ public final class UnidadeDaoImpl extends DatabaseConnection implements UnidadeD
 
     @NotNull
     @Override
-    public List<UnidadeVisualizacao> getUnidadesListagem(@NotNull final Long codEmpresa,
-                                                         @Nullable final Long codRegional) throws Throwable {
+    public List<UnidadeVisualizacaoListagem> getUnidadesListagem(@NotNull final Long codEmpresa,
+                                                                 @Nullable final Long codRegional) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -85,9 +85,9 @@ public final class UnidadeDaoImpl extends DatabaseConnection implements UnidadeD
             bindValueOrNull(stmt, 2, codRegional, SqlType.BIGINT);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                final List<UnidadeVisualizacao> unidadesVisualizacao = new ArrayList<UnidadeVisualizacao>();
+                final List<UnidadeVisualizacaoListagem> unidadesVisualizacao = new ArrayList<UnidadeVisualizacaoListagem>();
                 do {
-                    unidadesVisualizacao.add(UnidadeConverter.createUnidadeVisualizacao(rSet));
+                    unidadesVisualizacao.add(UnidadeConverter.createUnidadeVisualizacaoListagem(rSet));
                 } while (rSet.next());
                 return unidadesVisualizacao;
             } else {
