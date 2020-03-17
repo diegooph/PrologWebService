@@ -5,6 +5,7 @@ import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeVisualizacao;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
+import java.time.LocalDateTime;
 
 /**
  * Created on 2020-03-12
@@ -24,18 +25,16 @@ public final class UnidadeConverter {
         regional.setCodigo(rSet.getLong("CODIGO_REGIONAL_UNIDADE"));
         regional.setNome(rSet.getString("NOME_REGIAO_REGIONAL_UNIDADE"));
 
-        final UnidadeVisualizacao unidade = new UnidadeVisualizacao(rSet.getLong("CODIGO_UNIDADE"),
+        return new UnidadeVisualizacao(rSet.getLong("CODIGO_UNIDADE"),
                 rSet.getString("NOME_UNIDADE"),
                 rSet.getInt("TOTAL_COLABORADORES_UNIDADE"),
                 regional,
                 rSet.getString("TIMEZONE_UNIDADE"),
-                rSet.getTimestamp("DATA_HORA_CADASTRO_UNIDADE").toLocalDateTime(),
+                rSet.getObject("DATA_HORA_CADASTRO_UNIDADE", LocalDateTime.class),
                 rSet.getBoolean("STATUS_ATIVO_UNIDADE"),
                 rSet.getString("CODIGO_AUXILIAR_UNIDADE"),
                 rSet.getString("LATITUDE_UNIDADE"),
                 rSet.getString("LONGITUDE_UNIDADE"));
-
-        return unidade;
     }
 
 }
