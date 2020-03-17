@@ -8,7 +8,13 @@ import java.util.List;
 /**
  * Created by jean on 27/01/16.
  * Unidade de uma empresa, contém uma ou mais equipes (salas).
+ *
+ * @deprecated at 2020-03-17. Esse objeto é utilizado para inúmeros casos de uso, listagem, visualização, seleção e etc.
+ * Nosso novo padrão é termos um objeto para cada ação realizada no sistema.
+ * Isso já começou a ser migrado com os novos objetos para {@link UnidadeEdicao edição} e
+ * para {@link UnidadeVisualizacao visualização}.
  */
+@Deprecated
 public final class Unidade {
 
     private Long codigo;
