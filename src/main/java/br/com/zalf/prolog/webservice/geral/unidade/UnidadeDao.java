@@ -37,13 +37,13 @@ public interface UnidadeDao {
      * <p>
      * O código da regional pode ser {@code null}, significando que o usuário quer trazer de todas as regionais.
      *
-     * @param codEmpresa  um código de uma empresa;
-     * @param codRegional um código de uma regional.
+     * @param codEmpresa       um código de uma empresa;
+     * @param codigosRegionais um código de uma regional.
      * @return um {@link List< UnidadeVisualizacaoListagem >}.
      * @throws Throwable caso qualquer erro ocorrer.
      */
     @NotNull
     List<UnidadeVisualizacaoListagem> getUnidadesListagem(@NotNull final Long codEmpresa,
-                                                          @Nullable final Long codRegional) throws Throwable;
+                                                          @Nullable final List<Long> codigosRegionais) throws Throwable;
 
 }

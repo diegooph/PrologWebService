@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.geral.unidade;
 
+import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeEdicao;
@@ -10,6 +11,7 @@ import org.jetbrains.annotations.Nullable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -71,7 +73,7 @@ public final class UnidadeDaoImpl extends DatabaseConnection implements UnidadeD
     @NotNull
     @Override
     public List<UnidadeVisualizacaoListagem> getUnidadesListagem(@NotNull final Long codEmpresa,
-                                                                 @Nullable final Long codRegional) throws Throwable {
+                                                                 @Nullable final List<Long> codigosRegionais) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -81,8 +83,16 @@ public final class UnidadeDaoImpl extends DatabaseConnection implements UnidadeD
                     "F_COD_EMPRESA := ?," +
                     "F_COD_REGIONAL := ?);");
             stmt.setLong(1, codEmpresa);
-            bindValueOrNull(stmt, 2, codRegional, SqlType.BIGINT);
+
+            if (codigosRegionais == null) {
+
+                stmt.setNull(2, Types.NULL);
+            } else {
+                stmt.setArray(2, PostgresUtils.listToArray(conn, SqlType.BIGINT, codigosRegionais));
+            }
+
             rSet = stmt.executeQuery();
+
             if (rSet.next()) {
                 final List<UnidadeVisualizacaoListagem> unidadesVisualizacao = new ArrayList<UnidadeVisualizacaoListagem>();
                 do {
