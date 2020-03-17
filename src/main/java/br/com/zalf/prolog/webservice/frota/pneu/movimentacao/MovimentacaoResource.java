@@ -7,7 +7,7 @@ import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.ProcessoMovimentacao;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.motivo.Motivo;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.Motivo;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.AppVersionCodeHandler;
@@ -41,7 +41,7 @@ public class MovimentacaoResource {
             Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE,
             Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_DESCARTE})
     @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
-    public AbstractResponse insert(@HeaderParam("Authorization") String userToken,
+    public AbstractResponse insert(@HeaderParam("Authorization") final String userToken,
                                    @Required final ProcessoMovimentacao movimentacao) throws ProLogException {
         return service.insert(userToken, movimentacao);
     }

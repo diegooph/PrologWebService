@@ -11,10 +11,10 @@ import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.destino.DestinoAnalise;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.destino.DestinoDescarte;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.destino.DestinoVeiculo;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.motivo.Motivo;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.motivo.MotivoDescarte;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.origem.OrigemAnalise;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.origem.OrigemVeiculo;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.Motivo;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoDescarte;
 import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico.PneuServicoRealizadoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico._model.PneuServicoRealizado;
 import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico._model.PneuServicoRealizadoIncrementaVida;
@@ -56,7 +56,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
                     fecharServicosAutomaticamente);
             conn.commit();
             return codigoProcessoMovimentacao;
-        } catch (Throwable e) {
+        } catch (final Throwable e) {
             if (conn != null) {
                 conn.rollback();
             }
@@ -135,7 +135,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
 
     @NotNull
     @Override
-    public List<Motivo> getMotivos(@NotNull final Long codEmpresa, boolean onlyAtivos) throws Throwable {
+    public List<Motivo> getMotivos(@NotNull final Long codEmpresa, final boolean onlyAtivos) throws Throwable {
         final List<Motivo> motivos = new ArrayList<>();
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -195,7 +195,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
                                      @NotNull final ServicoDao servicoDao,
                                      @NotNull final ProcessoMovimentacao processoMov,
                                      @NotNull final OffsetDateTime dataHoraMovimentacao,
-                                     boolean fecharServicosAutomaticamente) throws Throwable {
+                                     final boolean fecharServicosAutomaticamente) throws Throwable {
         final PneuDao pneuDao = Injection.providePneuDao();
         final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
         final PneuServicoRealizadoDao pneuServicoRealizadoDao = Injection.providePneuServicoRealizadoDao();
@@ -208,7 +208,6 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
                     "cod_pneu, sulco_interno, sulco_central_interno, sulco_central_externo, sulco_externo, vida, " +
                     "observacao) VALUES (?,?,?,?,?,?,?,?,?) RETURNING codigo;");
             // Podemos realizar o suppress pois neste ponto já temos que possuir um código não nulo.
-            //noinspection ConstantConditions
             stmt.setLong(1, processoMov.getCodigo());
             stmt.setLong(2, codUnidade);
             for (final Movimentacao mov : processoMov.getMovimentacoes()) {
@@ -381,7 +380,6 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
         }
 
         boolean temIncrementaVida = false;
-        //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < servicosRealizados.size(); i++) {
             final PneuServicoRealizado servico = servicosRealizados.get(i);
             if (servico instanceof PneuServicoRealizadoIncrementaVida) {

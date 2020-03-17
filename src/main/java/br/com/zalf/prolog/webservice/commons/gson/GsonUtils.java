@@ -8,25 +8,28 @@ import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.dashboard.Color;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.ResponseImagemChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.*;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.AlternativaEdicaoSerializerDeserializer;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.AlternativaModeloChecklistEdicao;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.PergundaEdicaoSerializerDeserializer;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.PerguntaModeloChecklistEdicao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ResponseInsertModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.model.ChecklistOfflineSupport;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.listagem.OrdemServicoListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.visualizacao.OrdemServicoVisualizacao;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.visualizacao.item.ItemOrdemServicoVisualizacao;
+import br.com.zalf.prolog.webservice.frota.pneu._model.ModeloBanda;
+import br.com.zalf.prolog.webservice.frota.pneu._model.ModeloPneu;
+import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.Afericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.NovaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestinoEnum;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.destino.*;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.motivo.Motivo;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.motivo.MotivoDescarte;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.origem.Origem;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.origem.OrigemAnalise;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.origem.OrigemEstoque;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.origem.OrigemVeiculo;
-import br.com.zalf.prolog.webservice.frota.pneu._model.ModeloBanda;
-import br.com.zalf.prolog.webservice.frota.pneu._model.ModeloPneu;
-import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.Motivo;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoDescarte;
 import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico._model.PneuServicoRealizado;
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.QuantidadeServicos;
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.Servico;
@@ -51,12 +54,8 @@ public final class GsonUtils {
 
     private static final Gson sGson;
 
-    private GsonUtils() {
-
-    }
-
     static {
-        GsonBuilder builder = new GsonBuilder()
+        final GsonBuilder builder = new GsonBuilder()
                 .setDateFormat("yyyy-MM-dd'T'HH:mm:ss")
                 .serializeSpecialFloatingPointValues()
                 .registerTypeAdapter(Duration.class, new DurationDeserializer())
@@ -76,26 +75,26 @@ public final class GsonUtils {
             builder.setPrettyPrinting();
         }
 
-        RuntimeTypeAdapterFactory<Origem> adapterOrigem = RuntimeTypeAdapterFactory
+        final RuntimeTypeAdapterFactory<Origem> adapterOrigem = RuntimeTypeAdapterFactory
                 .of(Origem.class, "tipo")
                 .registerSubtype(OrigemEstoque.class, OrigemDestinoEnum.ESTOQUE.asString())
                 .registerSubtype(OrigemAnalise.class, OrigemDestinoEnum.ANALISE.asString())
                 .registerSubtype(OrigemVeiculo.class, OrigemDestinoEnum.VEICULO.asString());
 
-        RuntimeTypeAdapterFactory<Destino> adapterDestino = RuntimeTypeAdapterFactory
+        final RuntimeTypeAdapterFactory<Destino> adapterDestino = RuntimeTypeAdapterFactory
                 .of(Destino.class, "tipo")
                 .registerSubtype(DestinoDescarte.class, OrigemDestinoEnum.DESCARTE.asString())
                 .registerSubtype(DestinoAnalise.class, OrigemDestinoEnum.ANALISE.asString())
                 .registerSubtype(DestinoVeiculo.class, OrigemDestinoEnum.VEICULO.asString())
                 .registerSubtype(DestinoEstoque.class, OrigemDestinoEnum.ESTOQUE.asString());
 
-        RuntimeTypeAdapterFactory<Modelo> adapterModelo = RuntimeTypeAdapterFactory
+        final RuntimeTypeAdapterFactory<Modelo> adapterModelo = RuntimeTypeAdapterFactory
                 .of(Modelo.class, "tipo")
                 .registerSubtype(ModeloPneu.class, ModeloPneu.TIPO_MODELO_PNEU)
                 .registerSubtype(ModeloBanda.class, ModeloBanda.TIPO_MODELO_BANDA)
                 .registerSubtype(ModeloVeiculo.class, ModeloVeiculo.TIPO_MODELO_VEICULO);
 
-        RuntimeTypeAdapterFactory<Alternativa> adapterAlternativa = RuntimeTypeAdapterFactory
+        final RuntimeTypeAdapterFactory<Alternativa> adapterAlternativa = RuntimeTypeAdapterFactory
                 .of(Alternativa.class)
                 .registerSubtype(AlternativaEscolhaQuiz.class)
                 .registerSubtype(AlternativaOrdenamentoQuiz.class)
@@ -104,7 +103,7 @@ public final class GsonUtils {
                  * própria. */
                 .registerSubtype(Alternativa.class);
 
-        RuntimeTypeAdapterFactory<AbstractResponse> adapterResponse = RuntimeTypeAdapterFactory
+        final RuntimeTypeAdapterFactory<AbstractResponse> adapterResponse = RuntimeTypeAdapterFactory
                 .of(AbstractResponse.class)
                 .registerSubtype(Response.class)
                 .registerSubtype(ResponseWithCod.class)
@@ -112,7 +111,7 @@ public final class GsonUtils {
                 .registerSubtype(ResponseImagemChecklist.class)
                 .registerSubtype(ResponseInsertModeloChecklist.class);
 
-        RuntimeTypeAdapterFactory<Motivo> adapterMotivo = RuntimeTypeAdapterFactory
+        final RuntimeTypeAdapterFactory<Motivo> adapterMotivo = RuntimeTypeAdapterFactory
                 .of(Motivo.class, "tipo")
                 .registerSubtype(MotivoDescarte.class, MotivoDescarte.TIPO_MOTIVO_DESCARTE);
 
@@ -140,6 +139,10 @@ public final class GsonUtils {
         builder.registerTypeAdapterFactory(ApiPneuAlteracaoStatus.provideTypeAdapterFactory());
 
         sGson = builder.create();
+    }
+
+    private GsonUtils() {
+
     }
 
     public static Gson getGson() {

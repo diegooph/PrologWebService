@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.motivo;
+package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model;
 
 import br.com.zalf.prolog.webservice.commons.gson.Exclude;
 import org.jetbrains.annotations.NotNull;
@@ -19,10 +19,10 @@ public abstract class Motivo {
     public Motivo() {
     }
 
-    public Motivo(@NotNull String tipo,
-                  @NotNull Long codigo,
-                  @NotNull String motivo,
-                  boolean ativo) {
+    public Motivo(@NotNull final String tipo,
+                  @NotNull final Long codigo,
+                  @NotNull final String motivo,
+                  final boolean ativo) {
         this.tipo = tipo;
 
         this.codigo = codigo;
@@ -35,7 +35,7 @@ public abstract class Motivo {
         return tipo;
     }
 
-    public void setTipo(@NotNull String tipo) {
+    public void setTipo(@NotNull final String tipo) {
         this.tipo = tipo;
     }
 
@@ -44,7 +44,7 @@ public abstract class Motivo {
         return codigo;
     }
 
-    public void setCodigo(@NotNull Long codigo) {
+    public void setCodigo(@NotNull final Long codigo) {
         this.codigo = codigo;
     }
 
@@ -53,7 +53,7 @@ public abstract class Motivo {
         return motivo;
     }
 
-    public void setMotivo(@NotNull String motivo) {
+    public void setMotivo(@NotNull final String motivo) {
         this.motivo = motivo;
     }
 
@@ -61,7 +61,7 @@ public abstract class Motivo {
         return ativo;
     }
 
-    public void setAtivo(boolean ativo) {
+    public void setAtivo(final boolean ativo) {
         this.ativo = ativo;
     }
 

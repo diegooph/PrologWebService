@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.motivo;
+package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -16,10 +16,10 @@ public class MotivoDescarte extends Motivo {
         setTipo(TIPO_MOTIVO_DESCARTE);
     }
 
-    public MotivoDescarte(@NotNull Long codigo,
-                          @NotNull String motivo,
-                          boolean ativo,
-                          @NotNull Long codEmpresa) {
+    public MotivoDescarte(@NotNull final Long codigo,
+                          @NotNull final String motivo,
+                          final boolean ativo,
+                          @NotNull final Long codEmpresa) {
         super(TIPO_MOTIVO_DESCARTE, codigo, motivo, ativo);
         this.codEmpresa = codEmpresa;
     }
@@ -29,7 +29,7 @@ public class MotivoDescarte extends Motivo {
         return codEmpresa;
     }
 
-    public void setCodEmpresa(@NotNull Long codEmpresa) {
+    public void setCodEmpresa(@NotNull final Long codEmpresa) {
         this.codEmpresa = codEmpresa;
     }
 
