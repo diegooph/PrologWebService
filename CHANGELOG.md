@@ -1,19 +1,25 @@
-Stage
+Change Log
 ==========
+
+STAGE
+* Altera forma de autenticação para usuários internos (PL-2550)
+
+<a name="v1.0.23"></a>
+## Version [v1.0.23](https://github.com/luizfp/PrologWebService/compare/v1.0.22...v1.0.23) (release-date) [unreleased]
 
 ### Features
 * Adiciona a quantidade de permissões na busca de cargos (PL-2532)
+* Criar configuração para saber se uma integração abre serviços de pneu (PLI-78)
 
 ### Refactors
 * Modifica update do pneu, permitindo atualizar vida total (PL-2145)
 * Diferencia a plataforma de execução das ações de socorro em rota (PL-2527)
 * Altera as interações com o banco de dados para implementar a amarração entre pneus e veículos (PL-1965)
-
-Change Log
-==========
-
-<a name="v1.0.23"></a>
-## Version [v1.0.23](https://github.com/luizfp/PrologWebService/compare/v1.0.22...v1.0.23) (release-date) [unreleased]
+* Impedir que itens sejam resolvidos com data anterior à realização do check (PL-2500)
+* Remove arquivos de config antigos do eclipse
+* Remove lista de pneus disponíveis do `ServicoHolder` (PL-2510)
+* Bloqueia busca do `ServicoHolder` para apps <= 101 (PL-2510)
+* Refatora métodos do socorro-rota que ainda estavam em hardcode (PL-2577)
 
 <a name="v1.0.22"></a>
 ## Version [v1.0.22](https://github.com/luizfp/PrologWebService/compare/v1.0.21...v1.0.22) (2020-03-03)

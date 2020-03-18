@@ -31,9 +31,9 @@ public class SocorroRotaConverter {
     public static VeiculoAberturaSocorro createVeiculoAberturaSocorro(
             @NotNull final ResultSet rSet) throws SQLException {
         return new VeiculoAberturaSocorro(
-                rSet.getLong("CODIGO"),
-                rSet.getString("PLACA"),
-                rSet.getLong("KM"));
+                rSet.getLong("CODIGO_VEICULO"),
+                rSet.getString("PLACA_VEICULO"),
+                rSet.getLong("KM_ATUAL_VEICULO"));
     }
 
     @NotNull
