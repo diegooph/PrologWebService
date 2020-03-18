@@ -1,10 +1,8 @@
 Change Log
 ==========
 
-STAGE
-
 <a name="v1.0.23"></a>
-## Version [v1.0.23](https://github.com/luizfp/PrologWebService/compare/v1.0.22...v1.0.23) (release-date) [unreleased]
+## Version [v1.0.23](https://github.com/luizfp/PrologWebService/compare/v1.0.22...v1.0.23) (2020-03-18)
 
 ### Features
 * Adiciona a quantidade de permissões na busca de cargos (PL-2532)
