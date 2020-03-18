@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.controlejornada.ajustes.model.historico;
 
-import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.gente.controlejornada.ajustes.justificativa.JustificativaAjuste;
 import br.com.zalf.prolog.webservice.gente.controlejornada.ajustes.model.TipoAcaoAjuste;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.TipoInicioFim;

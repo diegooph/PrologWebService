@@ -1,8 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.servico;
 
 import br.com.zalf.prolog.webservice.Injection;
-import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
-import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
@@ -22,6 +20,8 @@ import br.com.zalf.prolog.webservice.frota.pneu.servico._model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
+import br.com.zalf.prolog.webservice.geral.unidade._model.Unidade;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -138,7 +138,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
     }
 
     @Override
-    public ServicosAbertosHolder getQuantidadeServicosAbertosVeiculo(Long codUnidade) throws SQLException {
+    public ServicosAbertosHolder getQuantidadeServicosAbertosVeiculo(final Long codUnidade) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -175,7 +175,8 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
     }
 
     @Override
-    public List<Servico> getServicosAbertosByPlaca(@NotNull String placa, @Nullable TipoServico tipoServico) throws SQLException {
+    public List<Servico> getServicosAbertosByPlaca(@NotNull final String placa,
+                                                   @Nullable final TipoServico tipoServico) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -253,7 +254,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
             final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
             veiculoDao.updateKmByPlaca(servico.getPlacaVeiculo(), servico.getKmVeiculoMomentoFechamento(), conn);
             conn.commit();
-        } catch (Throwable e) {
+        } catch (final Throwable e) {
             if (conn != null) {
                 conn.rollback();
             }
@@ -264,7 +265,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
     }
 
     @Override
-    public Servico getServicoByCod(Long codUnidade, Long codServico) throws SQLException {
+    public Servico getServicoByCod(final Long codUnidade, final Long codServico) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -283,7 +284,9 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
     }
 
     @Override
-    public ServicosFechadosHolder getQuantidadeServicosFechadosByVeiculo(Long codUnidade, long dataInicial, long dataFinal)
+    public ServicosFechadosHolder getQuantidadeServicosFechadosByVeiculo(final Long codUnidade,
+                                                                         final long dataInicial,
+                                                                         final long dataFinal)
             throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -305,7 +308,9 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
     }
 
     @Override
-    public ServicosFechadosHolder getQuantidadeServicosFechadosByPneu(Long codUnidade, long dataInicial, long dataFinal)
+    public ServicosFechadosHolder getQuantidadeServicosFechadosByPneu(final Long codUnidade,
+                                                                      final long dataInicial,
+                                                                      final long dataFinal)
             throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -327,7 +332,9 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
     }
 
     @Override
-    public List<Servico> getServicosFechados(Long codUnidade, long dataInicial, long dataFinal) throws SQLException {
+    public List<Servico> getServicosFechados(final Long codUnidade,
+                                             final long dataInicial,
+                                             final long dataFinal) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -342,7 +349,10 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
     }
 
     @Override
-    public List<Servico> getServicosFechadosPneu(Long codUnidade, Long codPneu, long dataInicial, long dataFinal)
+    public List<Servico> getServicosFechadosPneu(final Long codUnidade,
+                                                 final Long codPneu,
+                                                 final long dataInicial,
+                                                 final long dataFinal)
             throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -358,7 +368,10 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
     }
 
     @Override
-    public List<Servico> getServicosFechadosVeiculo(Long codUnidade, String placaVeiculo, long dataInicial, long dataFinal)
+    public List<Servico> getServicosFechadosVeiculo(final Long codUnidade,
+                                                    final String placaVeiculo,
+                                                    final long dataInicial,
+                                                    final long dataFinal)
             throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -431,7 +444,6 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
                 final Optional<DiagramaVeiculo> diagrama = veiculoDao.getDiagramaVeiculoByPlaca(veiculo.getPlaca());
                 // Fazemos direto um get() no Optional pois se não existir diagrama é melhor dar crash aqui do que no
                 // aplicativo, por exemplo.
-                //noinspection OptionalGetWithoutIsPresent,ConstantConditions
                 veiculo.setDiagrama(diagrama.get());
                 return veiculo;
             } else {

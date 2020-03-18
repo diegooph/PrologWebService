@@ -10,6 +10,7 @@ STAGE
 ### Features
 * Adiciona a quantidade de permissões na busca de cargos (PL-2532)
 * Criar configuração para saber se uma integração abre serviços de pneu (PLI-78)
+* Cria edição, visualização e listagem de unidade (PL-2588)
 
 ### Refactors
 * Modifica update do pneu, permitindo atualizar vida total (PL-2145)

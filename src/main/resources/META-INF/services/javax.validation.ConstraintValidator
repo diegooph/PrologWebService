@@ -1,2 +1,2 @@
-br.com.zalf.prolog.webservice.colaborador.constraints.validator.PisValidator
-br.com.zalf.prolog.webservice.colaborador.constraints.validator.TelefoneValidator
+br.com.zalf.prolog.webservice.gente.colaborador.constraints.validator.PisValidator
+br.com.zalf.prolog.webservice.gente.colaborador.constraints.validator.TelefoneValidator

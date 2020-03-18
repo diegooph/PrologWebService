@@ -1,10 +1,10 @@
 package br.com.zalf.prolog.webservice.gente.controlejornada.tipomarcacao;
 
-import br.com.zalf.prolog.webservice.colaborador.model.Cargo;
-import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Cargo;
 import br.com.zalf.prolog.webservice.gente.controlejornada.DadosIntervaloChangedListener;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.Icone;
+import br.com.zalf.prolog.webservice.geral.unidade._model.Unidade;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
@@ -59,7 +59,7 @@ public final class TipoMarcacaoDaoImpl extends DatabaseConnection implements Tip
             } else {
                 throw new SQLException("Erro ao inserir o Tipo de Intervalo de nome: " + tipoMarcacao.getNome());
             }
-        } catch (Throwable e) {
+        } catch (final Throwable e) {
             // Pegamos apenas para fazer o rollback, depois subimos o erro.
             if (conn != null) {
                 conn.rollback();
@@ -106,7 +106,7 @@ public final class TipoMarcacaoDaoImpl extends DatabaseConnection implements Tip
 
             // Se nem um erro aconteceu ao informar o intervaloListener, podemos commitar a alteração.
             conn.commit();
-        } catch (Throwable e) {
+        } catch (final Throwable e) {
             // Pegamos apenas para fazer o rollback, depois subimos o erro.
             if (conn != null) {
                 conn.rollback();

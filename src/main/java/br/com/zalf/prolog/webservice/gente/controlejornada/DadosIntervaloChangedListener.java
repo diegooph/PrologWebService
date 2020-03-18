@@ -1,11 +1,10 @@
 package br.com.zalf.prolog.webservice.gente.controlejornada;
 
 
-import br.com.zalf.prolog.webservice.colaborador.ColaboradorDao;
-import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
-import br.com.zalf.prolog.webservice.colaborador.model.ColaboradorEdicao;
-import br.com.zalf.prolog.webservice.colaborador.model.ColaboradorInsercao;
-import br.com.zalf.prolog.webservice.empresa.EmpresaDao;
+import br.com.zalf.prolog.webservice.gente.colaborador.ColaboradorDao;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.ColaboradorEdicao;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.ColaboradorInsercao;
+import br.com.zalf.prolog.webservice.gente.empresa.EmpresaDao;
 import br.com.zalf.prolog.webservice.permissao.Visao;
 import org.jetbrains.annotations.NotNull;
 
