@@ -144,16 +144,16 @@ import br.com.zalf.prolog.webservice.geral.dispositivomovel.DispositivoMovelDao;
 import br.com.zalf.prolog.webservice.geral.dispositivomovel.DispositivoMovelDaoImpl;
 import br.com.zalf.prolog.webservice.geral.unidade.UnidadeDao;
 import br.com.zalf.prolog.webservice.geral.unidade.UnidadeDaoImpl;
-import br.com.zalf.prolog.webservice.implantacao.autenticacao.ImplantacaoLoginSenhaDao;
-import br.com.zalf.prolog.webservice.implantacao.autenticacao.ImplantacaoLoginSenhaDaoImpl;
-import br.com.zalf.prolog.webservice.implantacao.conferencia.frota.pneu.PneuConferenciaDao;
-import br.com.zalf.prolog.webservice.implantacao.conferencia.frota.pneu.PneuConferenciaDaoImpl;
-import br.com.zalf.prolog.webservice.implantacao.conferencia.frota.veiculo.VeiculoConferenciaDao;
-import br.com.zalf.prolog.webservice.implantacao.conferencia.frota.veiculo.VeiculoConferenciaDaoImpl;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoDao;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoDaoImpl;
 import br.com.zalf.prolog.webservice.integracao.autenticacao.AutenticacaoIntegracaoDao;
 import br.com.zalf.prolog.webservice.integracao.autenticacao.AutenticacaoIntegracaoDaoImpl;
+import br.com.zalf.prolog.webservice.interno.autenticacao.AutenticacaoLoginSenhaDao;
+import br.com.zalf.prolog.webservice.interno.autenticacao.AutenticacaoLoginSenhaDaoImpl;
+import br.com.zalf.prolog.webservice.interno.implantacao.conferencia.frota.pneu.PneuConferenciaDao;
+import br.com.zalf.prolog.webservice.interno.implantacao.conferencia.frota.pneu.PneuConferenciaDaoImpl;
+import br.com.zalf.prolog.webservice.interno.implantacao.conferencia.frota.veiculo.VeiculoConferenciaDao;
+import br.com.zalf.prolog.webservice.interno.implantacao.conferencia.frota.veiculo.VeiculoConferenciaDaoImpl;
 import br.com.zalf.prolog.webservice.log.LogDao;
 import br.com.zalf.prolog.webservice.log.LogDaoImpl;
 import br.com.zalf.prolog.webservice.messaging.PushDao;
@@ -287,8 +287,8 @@ public final class Injection {
         return new MovimentacaoRelatorioDaoImpl();
     }
 
-    public static ImplantacaoLoginSenhaDao provideImplantacaoLoginSenhaDao() {
-        return new ImplantacaoLoginSenhaDaoImpl();
+    public static AutenticacaoLoginSenhaDao provideAutenticacaoLoginSenhaDao() {
+        return new AutenticacaoLoginSenhaDaoImpl();
     }
 
     @NotNull
