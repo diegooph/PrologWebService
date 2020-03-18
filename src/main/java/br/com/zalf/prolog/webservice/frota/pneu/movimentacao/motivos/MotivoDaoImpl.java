@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos;
 
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoTrocaInsercao;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoInsercao;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
@@ -17,7 +17,7 @@ public class MotivoDaoImpl extends DatabaseConnection implements MotivoDao {
 
     @Override
     @NotNull
-    public Long insert(@NotNull final MotivoTrocaInsercao motivoTrocaInsercao) throws Throwable {
+    public Long insert(@NotNull final MotivoInsercao motivoInsercao) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;

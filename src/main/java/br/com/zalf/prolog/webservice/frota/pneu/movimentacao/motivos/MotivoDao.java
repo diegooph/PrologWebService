@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos;
 
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoTrocaInsercao;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoInsercao;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -11,13 +11,13 @@ import org.jetbrains.annotations.NotNull;
 public interface MotivoDao {
 
     /**
-     * Insere um {@link MotivoTrocaInsercao colaborador} no banco de dados.
+     * Insere um {@link MotivoInsercao colaborador} no banco de dados.
      * <p>
      * Todos os dados são obrigatórios.
      *
-     * @param motivoTrocaInsercao Dados do motivo de troca a ser inserido.
+     * @param motivoInsercao Dados do motivo de troca a ser inserido.
      * @throws Throwable Caso qualquer erro ocorra.
      */
-    Long insert(@NotNull final MotivoTrocaInsercao motivoTrocaInsercao) throws Throwable;
+    Long insert(@NotNull final MotivoInsercao motivoInsercao) throws Throwable;
 
 }
