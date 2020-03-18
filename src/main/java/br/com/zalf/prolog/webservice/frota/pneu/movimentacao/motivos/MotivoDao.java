@@ -18,6 +18,6 @@ public interface MotivoDao {
      * @param motivoTrocaInsercao Dados do motivo de troca a ser inserido.
      * @throws Throwable Caso qualquer erro ocorra.
      */
-    void insert(@NotNull final MotivoTrocaInsercao motivoTrocaInsercao) throws Throwable;
+    Long insert(@NotNull final MotivoTrocaInsercao motivoTrocaInsercao) throws Throwable;
 
 }

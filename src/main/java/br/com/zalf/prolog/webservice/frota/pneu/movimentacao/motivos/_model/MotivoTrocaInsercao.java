@@ -14,16 +14,13 @@ import java.time.LocalDateTime;
 public class MotivoTrocaInsercao {
 
     @NotNull
-    private final Long codEmpresaMotivoTroca;
-
-    @NotNull
-    private final Long codMotivoTroca;
+    private final long codEmpresaMotivoTroca;
 
     @NotNull
     private final String descricaoMotivoTroca;
 
     @NotNull
-    private final Boolean ativoMotivoTroca;
+    private final boolean ativoMotivoTroca;
 
     @NotNull
     private final LocalDateTime dataHoraInsercaoMotivoTroca;
