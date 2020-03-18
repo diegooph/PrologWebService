@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.frota.pneu.relatorios;
 
-import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
@@ -9,6 +8,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.TipoMedicaoColet
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoDescarte;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios._model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.TipoServico;
+import br.com.zalf.prolog.webservice.geral.unidade._model.Unidade;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
