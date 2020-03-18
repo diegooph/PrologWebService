@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.controlejornada.ajustes.justificativa;
 
-import br.com.zalf.prolog.webservice.colaborador.model.Empresa;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Empresa;
 import org.jetbrains.annotations.NotNull;
 
 /**

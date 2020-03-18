@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.quiz.modelo;
 
-import br.com.zalf.prolog.webservice.colaborador.model.Cargo;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Cargo;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Required;

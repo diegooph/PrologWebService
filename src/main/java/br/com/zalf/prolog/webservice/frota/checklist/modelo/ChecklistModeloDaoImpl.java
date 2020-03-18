@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.checklist.modelo;
 
-import br.com.zalf.prolog.webservice.colaborador.model.Cargo;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Cargo;
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
 import br.com.zalf.prolog.webservice.commons.imagens.Galeria;
 import br.com.zalf.prolog.webservice.commons.imagens.ImagemProLog;

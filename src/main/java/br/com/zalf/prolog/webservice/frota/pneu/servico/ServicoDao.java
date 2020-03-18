@@ -1,12 +1,12 @@
 package br.com.zalf.prolog.webservice.frota.pneu.servico;
 
-import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu._model.PneuComum;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.Afericao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.Movimentacao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.ProcessoMovimentacao;
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.*;
+import br.com.zalf.prolog.webservice.geral.unidade._model.Unidade;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -29,7 +29,6 @@ public interface ServicoDao {
      * @return Código do {@link TipoServico} inserido no banco de dados.
      * @throws Throwable Se qualquer erro ocorrer na busca dos dados.
      */
-    @SuppressWarnings("UnusedReturnValue")
     @NotNull
     Long criaServico(@NotNull final Connection conn,
                      @NotNull final Long codUnidade,

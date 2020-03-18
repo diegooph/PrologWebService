@@ -1,10 +1,9 @@
 package br.com.zalf.prolog.webservice.frota.veiculo.model;
 
-
-import br.com.zalf.prolog.webservice.colaborador.model.Regional;
-import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Regional;
+import br.com.zalf.prolog.webservice.geral.unidade._model.Unidade;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -55,10 +54,10 @@ public class Veiculo {
     }
 
     public boolean temEstepe() {
-        if (listPneus == null)
+        if (listPneus == null) {
             return false;
+        }
 
-        //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < listPneus.size(); i++) {
             if (listPneus.get(i).getPosicao() >= 900) {
                 return true;
@@ -72,11 +71,11 @@ public class Veiculo {
     public List<Pneu> getEstepes() {
         final List<Pneu> estepes = new ArrayList<>();
 
-        //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < listPneus.size(); i++) {
             final Pneu pneu = listPneus.get(i);
-            if (pneu.isEstepe())
+            if (pneu.isEstepe()) {
                 estepes.add(pneu);
+            }
         }
 
         return estepes;
@@ -98,7 +97,7 @@ public class Veiculo {
         return marca;
     }
 
-    public void setMarca(Marca marca) {
+    public void setMarca(final Marca marca) {
         this.marca = marca;
     }
 
@@ -106,7 +105,7 @@ public class Veiculo {
         return modelo;
     }
 
-    public void setModelo(ModeloVeiculo modelo) {
+    public void setModelo(final ModeloVeiculo modelo) {
         this.modelo = modelo;
     }
 
@@ -114,7 +113,7 @@ public class Veiculo {
         return listPneus;
     }
 
-    public void setListPneus(List<Pneu> listPneus) {
+    public void setListPneus(final List<Pneu> listPneus) {
         this.listPneus = listPneus;
     }
 
@@ -122,7 +121,7 @@ public class Veiculo {
         return placa;
     }
 
-    public void setPlaca(String placa) {
+    public void setPlaca(final String placa) {
         this.placa = placa;
     }
 
@@ -130,7 +129,7 @@ public class Veiculo {
         return tipo;
     }
 
-    public void setTipo(TipoVeiculo tipo) {
+    public void setTipo(final TipoVeiculo tipo) {
         this.tipo = tipo;
     }
 
@@ -138,7 +137,7 @@ public class Veiculo {
         return eixos;
     }
 
-    public void setEixos(Eixos eixos) {
+    public void setEixos(final Eixos eixos) {
         this.eixos = eixos;
     }
 
@@ -146,7 +145,7 @@ public class Veiculo {
         return kmAtual;
     }
 
-    public void setKmAtual(Long km) {
+    public void setKmAtual(final Long km) {
         this.kmAtual = km;
     }
 
@@ -154,7 +153,7 @@ public class Veiculo {
         return ativo;
     }
 
-    public void setAtivo(boolean ativo) {
+    public void setAtivo(final boolean ativo) {
         this.ativo = ativo;
     }
 
@@ -162,7 +161,7 @@ public class Veiculo {
         return diagrama;
     }
 
-    public void setDiagrama(DiagramaVeiculo diagrama) {
+    public void setDiagrama(final DiagramaVeiculo diagrama) {
         this.diagrama = diagrama;
     }
 

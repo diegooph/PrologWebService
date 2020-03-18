@@ -3,7 +3,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.afericao;
 import br.com.zalf.prolog.webservice.Filtros;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
-import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.report.ReportTransformer;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
