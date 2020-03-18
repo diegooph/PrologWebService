@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.frota.socorrorota;
 
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
+import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
@@ -24,7 +25,6 @@ import java.util.List;
  */
 public final class SocorroRotaDaoImpl extends DatabaseConnection implements SocorroRotaDao {
 
-    @SuppressWarnings("Duplicates")
     @NotNull
     @Override
     public List<ColaboradorNotificacaoSocorroRota> getColaboradoresNotificacaoAbertura(
@@ -54,7 +54,6 @@ public final class SocorroRotaDaoImpl extends DatabaseConnection implements Soco
         }
     }
 
-    @SuppressWarnings("Duplicates")
     @NotNull
     @Override
     public List<ColaboradorNotificacaoSocorroRota> getColaboradoresNotificacaoAtendimento(
@@ -256,7 +255,7 @@ public final class SocorroRotaDaoImpl extends DatabaseConnection implements Soco
                     "F_VERSAO_PLATAFORMA_ORIGEM := ?::TEXT) AS CODIGO;");
             stmt.setLong(1, socorroRotaAtendimento.getCodSocorroRota());
             stmt.setLong(2, socorroRotaAtendimento.getCodColaborador());
-            stmt.setString(3, socorroRotaAtendimento.getObservacaoAtendimento());
+            stmt.setString(3, StringUtils.trimToNull(socorroRotaAtendimento.getObservacaoAtendimento()));
             // Ignoramos a data hora do objeto e usamos a do WS.
             stmt.setObject(4, Now.offsetDateTimeUtc());
             stmt.setString(5, socorroRotaAtendimento.getLocalizacao().getLatitude());
@@ -282,7 +281,6 @@ public final class SocorroRotaDaoImpl extends DatabaseConnection implements Soco
         }
     }
 
-    @SuppressWarnings("Duplicates")
     @NotNull
     @Override
     public Long invalidacaoSocorro(@NotNull final SocorroRotaInvalidacao socorroRotaInvalidacao) throws Throwable {
@@ -313,7 +311,7 @@ public final class SocorroRotaDaoImpl extends DatabaseConnection implements Soco
                     "F_VERSAO_PLATAFORMA_ORIGEM := ?::TEXT) AS CODIGO;");
             stmt.setLong(1, socorroRotaInvalidacao.getCodSocorroRota());
             stmt.setLong(2, socorroRotaInvalidacao.getCodColaborador());
-            stmt.setString(3, socorroRotaInvalidacao.getMotivoInvalidacao());
+            stmt.setString(3, StringUtils.trimToNull(socorroRotaInvalidacao.getMotivoInvalidacao()));
             // Ignoramos a data hora do objeto e usamos a do WS.
             stmt.setObject(4, Now.offsetDateTimeUtc());
             stmt.setString(5, socorroRotaInvalidacao.getUrlFoto1());
@@ -342,7 +340,6 @@ public final class SocorroRotaDaoImpl extends DatabaseConnection implements Soco
         }
     }
 
-    @SuppressWarnings("Duplicates")
     @NotNull
     @Override
     public Long finalizacaoSocorro(@NotNull final SocorroRotaFinalizacao socorroRotaFinalizacao) throws Throwable {
@@ -373,7 +370,7 @@ public final class SocorroRotaDaoImpl extends DatabaseConnection implements Soco
                     "F_VERSAO_PLATAFORMA_ORIGEM := ?::TEXT) AS CODIGO;");
             stmt.setLong(1, socorroRotaFinalizacao.getCodSocorroRota());
             stmt.setLong(2, socorroRotaFinalizacao.getCodColaborador());
-            stmt.setString(3, socorroRotaFinalizacao.getObservacaoFinalizacao());
+            stmt.setString(3, StringUtils.trimToNull(socorroRotaFinalizacao.getObservacaoFinalizacao()));
             // Ignoramos a data hora do objeto e usamos a do WS.
             stmt.setObject(4, Now.offsetDateTimeUtc());
             stmt.setString(5, socorroRotaFinalizacao.getUrlFoto1Finalizacao());
