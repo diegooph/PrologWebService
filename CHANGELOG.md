@@ -2,7 +2,6 @@ Change Log
 ==========
 
 STAGE
-* Altera forma de autenticação para usuários internos (PL-2550)
 
 <a name="v1.0.23"></a>
 ## Version [v1.0.23](https://github.com/luizfp/PrologWebService/compare/v1.0.22...v1.0.23) (release-date) [unreleased]
@@ -11,6 +10,7 @@ STAGE
 * Adiciona a quantidade de permissões na busca de cargos (PL-2532)
 * Criar configuração para saber se uma integração abre serviços de pneu (PLI-78)
 * Cria edição, visualização e listagem de unidade (PL-2588)
+* Altera forma de autenticação para usuários internos (PL-2550)
 
 ### Refactors
 * Modifica update do pneu, permitindo atualizar vida total (PL-2145)
