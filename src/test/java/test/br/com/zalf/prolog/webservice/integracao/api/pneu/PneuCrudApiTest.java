@@ -73,7 +73,7 @@ public final class PneuCrudApiTest extends BaseTest {
 
     @Test
     @DisplayName("Teste Inserção Carga Inicial de Pneus sem erros")
-    void adicionaCargaInicialPneuSemErroTest() throws Throwable {
+    void adicionaCargaInicia3lPneuSemErroTest() throws Throwable {
         //Cenário
         final List<ApiPneuCargaInicial> cargaInicial = new ArrayList<>();
         cargaInicial.add(criaPneuSemErroComCodigoClienteValido());
@@ -100,7 +100,7 @@ public final class PneuCrudApiTest extends BaseTest {
                             apiPneuCargaInicial.getCodUnidadePneu(),
                             COD_EMPRESA,
                             TOKEN_INTEGRACAO);
-            final ApiPneuCargaInicial apiPneuCargaInicialInfoPneu = buscaInformacoesPneu(
+            final ApiPneuCargaInicial apiPneuCargaInicialInfoPneu = buscaInformacoesPneuCargaInicial(
                     apiPneuCargaInicial.getCodigoSistemaIntegrado(),
                     apiPneuCargaInicial.getCodigoCliente(),
                     apiPneuCargaInicial.getCodUnidadePneu(),
@@ -575,8 +575,28 @@ public final class PneuCrudApiTest extends BaseTest {
                         apiPneuCadastro.getCodUnidadePneu(),
                         COD_EMPRESA,
                         TOKEN_INTEGRACAO);
+        final ApiPneuCadastro apiPneuCadastroInfoPneu = buscaInformacoesPneu(
+                apiPneuCadastro.getCodigoSistemaIntegrado(),
+                apiPneuCadastro.getCodigoCliente(),
+                apiPneuCadastro.getCodUnidadePneu(),
+                COD_EMPRESA);
+        //Valida todas as informações do pneu.
         assertThat(codSistemaIntegradoPneu).isNotNull();
         assertThat(apiPneuCadastro.getCodigoSistemaIntegrado()).isEqualTo(codSistemaIntegradoPneu);
+        assertThat(apiPneuCadastroInfoPneu.getCodigoSistemaIntegrado()).isEqualTo(apiPneuCadastro.
+                getCodigoSistemaIntegrado());
+        assertThat(apiPneuCadastroInfoPneu.getCodigoCliente()).isEqualTo(apiPneuCadastro.getCodigoCliente());
+        assertThat(apiPneuCadastroInfoPneu.getCodUnidadePneu()).isEqualTo(apiPneuCadastro.getCodUnidadePneu());
+        assertThat(apiPneuCadastroInfoPneu.getCodModeloPneu()).isEqualTo(apiPneuCadastro.getCodModeloPneu());
+        assertThat(apiPneuCadastroInfoPneu.getCodDimensaoPneu()).isEqualTo(apiPneuCadastro.getCodDimensaoPneu());
+        assertThat(apiPneuCadastroInfoPneu.getPressaoCorretaPneu()).isEqualTo(apiPneuCadastro.getPressaoCorretaPneu());
+        assertThat(apiPneuCadastroInfoPneu.getVidaAtualPneu()).isEqualTo(apiPneuCadastro.getVidaAtualPneu());
+        assertThat(apiPneuCadastroInfoPneu.getVidaTotalPneu()).isEqualTo(apiPneuCadastro.getVidaTotalPneu());
+        assertThat(apiPneuCadastroInfoPneu.getDotPneu()).isEqualTo(apiPneuCadastro.getDotPneu());
+        assertThat(apiPneuCadastroInfoPneu.getValorPneu()).isEqualTo(apiPneuCadastro.getValorPneu());
+        assertThat(apiPneuCadastroInfoPneu.getPneuNovoNuncaRodado()).isEqualTo(apiPneuCadastro.
+                getPneuNovoNuncaRodado());
+        assertThat(apiPneuCadastroInfoPneu.getCodModeloPneu()).isEqualTo(apiPneuCadastro.getCodModeloPneu());
     }
 
     @Test
@@ -1056,12 +1076,66 @@ public final class PneuCrudApiTest extends BaseTest {
             connectionProvider.closeResources(conn, stmt, rSet);
         }
     }
-
     //Método responsável por pegar todas as informações do pneu.
-    private ApiPneuCargaInicial buscaInformacoesPneu(@NotNull final Long codSistemaIntegrado,
-                                                     @NotNull final String codCliente,
-                                                     @NotNull final Long codUnidade,
-                                                     @NotNull final Long codEmpresa) throws Throwable {
+    private ApiPneuCadastro buscaInformacoesPneu(@NotNull final Long codSistemaIntegrado,
+                                                 @NotNull final String codCliente,
+                                                 @NotNull final Long codUnidade,
+                                                 @NotNull final Long codEmpresa) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        ApiPneuCadastro apiPneuCargaInicial = null;
+        try {
+            conn = connectionProvider.provideDatabaseConnection();
+            stmt = conn.prepareStatement("SELECT P.CODIGO_CLIENTE,\n" +
+                    "       P.COD_UNIDADE,\n" +
+                    "       P.COD_MODELO,\n" +
+                    "       P.COD_DIMENSAO,\n" +
+                    "       P.PRESSAO_RECOMENDADA,\n" +
+                    "       P.VIDA_ATUAL,\n" +
+                    "       P.VIDA_TOTAL,\n" +
+                    "       P.DOT,\n" +
+                    "       P.VALOR,\n" +
+                    "       P.PNEU_NOVO_NUNCA_RODADO,\n" +
+                    "       P.COD_MODELO_BANDA\n" +
+                    "FROM PNEU_DATA P\n" +
+                    "WHERE COD_EMPRESA = ?\n" +
+                    "  AND COD_UNIDADE = ?\n" +
+                    "  AND CODIGO_CLIENTE = ?;");
+            stmt.setLong(1, codEmpresa);
+            stmt.setLong(2, codUnidade);
+            stmt.setString(3, codCliente);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                apiPneuCargaInicial = new ApiPneuCadastro(
+                        codSistemaIntegrado,
+                        rSet.getString("CODIGO_CLIENTE"),
+                        rSet.getLong("COD_UNIDADE"),
+                        rSet.getLong("COD_MODELO"),
+                        rSet.getLong("COD_DIMENSAO"),
+                        rSet.getDouble("PRESSAO_RECOMENDADA"),
+                        rSet.getInt("VIDA_ATUAL"),
+                        rSet.getInt("VIDA_TOTAL"),
+                        rSet.getString("DOT"),
+                        rSet.getBigDecimal("VALOR"),
+                        rSet.getBoolean("PNEU_NOVO_NUNCA_RODADO"),
+                        rSet.getLong("COD_MODELO_BANDA"),
+                        new BigDecimal(0)
+                );
+            }
+            return apiPneuCargaInicial;
+        } catch (final Throwable throwable) {
+            throw new SQLException("Erro ao buscar informações do pneu");
+        } finally {
+            connectionProvider.closeResources(conn, stmt, rSet);
+        }
+    }
+
+        //Método responsável por pegar todas as informações do pneu na carga inicial.
+    private ApiPneuCargaInicial buscaInformacoesPneuCargaInicial(@NotNull final Long codSistemaIntegrado,
+                                                                 @NotNull final String codCliente,
+                                                                 @NotNull final Long codUnidade,
+                                                                 @NotNull final Long codEmpresa) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -1110,11 +1184,10 @@ public final class PneuCrudApiTest extends BaseTest {
             }
             return apiPneuCargaInicial;
         } catch (final Throwable throwable) {
-            throw new SQLException("Erro ao buscar informações do pneu");
+            throw new SQLException("Erro ao buscar informações do pneu para carga inicial");
         } finally {
             connectionProvider.closeResources(conn, stmt, rSet);
         }
-
     }
 
     //Método responsável por buscar vida atual do pneu cadastrado no prolog.
