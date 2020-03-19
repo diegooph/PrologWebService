@@ -53,6 +53,6 @@ public interface MotivoDao {
                                                         @NotNull String tokenAutenticacao) throws Throwable;
 
     @Nullable
-    void update(@NotNull MotivoEdicao motivoEdicao);
+    void update(@NotNull MotivoEdicao motivoEdicao) throws Throwable;
 
 }

@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoEdicao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoInsercao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoVisualizacaoListagem;
 import org.jetbrains.annotations.NotNull;
@@ -60,8 +61,9 @@ public class MotivoDaoImpl extends DatabaseConnection implements MotivoDao {
     }
 
     @Override
-    public @NotNull MotivoVisualizacaoListagem getMotivoByCodigo(@NotNull final Long codMotivo,
-                                                                 @NotNull final String tokenAutenticacao) throws Throwable {
+    @NotNull
+    public MotivoVisualizacaoListagem getMotivoByCodigo(@NotNull final Long codMotivo,
+                                                        @NotNull final String tokenAutenticacao) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -84,9 +86,10 @@ public class MotivoDaoImpl extends DatabaseConnection implements MotivoDao {
     }
 
     @Override
-    public @NotNull List<MotivoVisualizacaoListagem> getMotivosListagem(@NotNull final Long codEmpresa,
-                                                                        @Nullable final Boolean apenasAtivos,
-                                                                        @NotNull final String tokenAutenticacao) throws Throwable {
+    @NotNull
+    public List<MotivoVisualizacaoListagem> getMotivosListagem(@NotNull final Long codEmpresa,
+                                                               @Nullable final Boolean apenasAtivos,
+                                                               @NotNull final String tokenAutenticacao) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -110,6 +113,28 @@ public class MotivoDaoImpl extends DatabaseConnection implements MotivoDao {
             return motivos;
         } finally {
             close(conn, stmt, rSet);
+        }
+    }
+
+    @Override
+    @Nullable
+    public void update(final MotivoEdicao motivoEdicao) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT FUNC_MOTIVO_ATUALIZA(" +
+                    "F_COD_MOTIVO := ?," +
+                    "F_DESCRICAO_MOTIVO := ?," +
+                    "F_ATIVO_MOTIVO := ?);");
+
+            stmt.setLong(1, motivoEdicao.getCodMotivo());
+            stmt.setString(2, motivoEdicao.getDescricaoMotivo());
+            stmt.setBoolean(3, motivoEdicao.getAtivoMotivo());
+
+            stmt.executeQuery();
+        } finally {
+            close(conn, stmt);
         }
     }
 

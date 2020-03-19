@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos;
 
+import br.com.zalf.prolog.webservice.commons.network.Response;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoEdicao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoInsercao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoVisualizacaoListagem;
 import org.jetbrains.annotations.NotNull;
@@ -40,6 +42,12 @@ public final class MotivoResource {
                                                                @Nullable @QueryParam("apenasAtivos") final Boolean apenasAtivos,
                                                                @NotNull @HeaderParam("Authorization") final String tokenAutenticacao) {
         return motivoService.getMotivosListagem(codEmpresa, apenasAtivos, tokenAutenticacao);
+    }
+
+    @PUT
+    public Response update(final MotivoEdicao motivoEdicao) {
+        motivoService.update(motivoEdicao);
+        return Response.ok("Motivo atualizado com sucesso.");
     }
 
 }

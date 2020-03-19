@@ -8,7 +8,11 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
-public @Data class MotivoEdicao {
+public @Data
+class MotivoEdicao {
+
+    @NotNull
+    private final Long codMotivo;
 
     @NotNull
     private final String descricaoMotivo;
