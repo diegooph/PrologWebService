@@ -1,17 +1,21 @@
 package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos;
 
+import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoInsercao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoVisualizacaoListagem;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
+
+import static br.com.zalf.prolog.webservice.commons.util.StatementUtils.bindValueOrNull;
 
 /**
  * Created on 2020-03-17
@@ -81,6 +85,7 @@ public class MotivoDaoImpl extends DatabaseConnection implements MotivoDao {
 
     @Override
     public @NotNull List<MotivoVisualizacaoListagem> getMotivosListagem(@NotNull final Long codEmpresa,
+                                                                        @Nullable final Boolean apenasAtivos,
                                                                         @NotNull final String tokenAutenticacao) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -89,9 +94,12 @@ public class MotivoDaoImpl extends DatabaseConnection implements MotivoDao {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM FUNC_MOTIVO_LISTAGEM(" +
                     "F_COD_EMPRESA := ?," +
-                    "F_TOKEN := ?)");
+                    "F_TOKEN := ?," +
+                    "F_APENAS_ATIVOS := ?)");
             stmt.setLong(1, codEmpresa);
             stmt.setString(2, TokenCleaner.getOnlyToken(tokenAutenticacao));
+            bindValueOrNull(stmt, 3, apenasAtivos, SqlType.BOOLEAN);
+
             rSet = stmt.executeQuery();
 
             final List<MotivoVisualizacaoListagem> motivos = new ArrayList();

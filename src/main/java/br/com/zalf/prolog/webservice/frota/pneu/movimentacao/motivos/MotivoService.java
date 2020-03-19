@@ -5,6 +5,7 @@ import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoInsercao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoVisualizacaoListagem;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -47,9 +48,10 @@ public final class MotivoService {
 
     @NotNull
     public List<MotivoVisualizacaoListagem> getMotivosListagem(@NotNull final Long codEmpresa,
+                                                               @Nullable final Boolean apenasAtivos,
                                                                @NotNull final String tokenAutenticacao) {
         try {
-            return dao.getMotivosListagem(codEmpresa, tokenAutenticacao);
+            return dao.getMotivosListagem(codEmpresa, apenasAtivos, tokenAutenticacao);
         } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao buscar motivos, código da empresa: %d", codEmpresa), t);
             throw Injection

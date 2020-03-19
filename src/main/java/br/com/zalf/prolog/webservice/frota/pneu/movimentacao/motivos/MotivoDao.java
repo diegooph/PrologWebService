@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoInsercao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoVisualizacaoListagem;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -27,7 +28,8 @@ public interface MotivoDao {
     /**
      * Busca um motivo baseado no seu código.
      *
-     * @param codMotivo um código de um motivo.
+     * @param codMotivo         um código de um motivo.
+     * @param tokenAutenticacao token de autorização do header da requisição.
      * @return uma {@link MotivoVisualizacaoListagem motivo}.
      * @throws Throwable caso qualquer erro ocorrer.
      */
@@ -38,12 +40,15 @@ public interface MotivoDao {
     /**
      * Busca todos os motivos baseado no código da empresa.
      *
-     * @param codEmpresa um código de uma empresa;
+     * @param codEmpresa        um código de uma empresa;
+     * @param apenasAtivos      null, true ou false. Se true, traz apenas os ativos. Qualquer outro, traz todos.
+     * @param tokenAutenticacao token de autorização do header da requisição.
      * @return uma {@link List<MotivoVisualizacaoListagem> lista de motivos}.
      * @throws Throwable caso qualquer erro ocorrer.
      */
     @NotNull
     List<MotivoVisualizacaoListagem> getMotivosListagem(@NotNull final Long codEmpresa,
+                                                        @Nullable final Boolean apenasAtivos,
                                                         @NotNull String tokenAutenticacao) throws Throwable;
 
 }

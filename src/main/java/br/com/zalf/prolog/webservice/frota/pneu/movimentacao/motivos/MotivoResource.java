@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoInsercao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoVisualizacaoListagem;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.validation.Valid;
 import javax.ws.rs.*;
@@ -36,8 +37,9 @@ public final class MotivoResource {
 
     @GET
     public List<MotivoVisualizacaoListagem> getMotivosListagem(@NotNull @QueryParam("codEmpresa") final Long codEmpresa,
-                                                               @HeaderParam("Authorization") final String tokenAutenticacao) {
-        return motivoService.getMotivosListagem(codEmpresa, tokenAutenticacao);
+                                                               @Nullable @QueryParam("apenasAtivos") final Boolean apenasAtivos,
+                                                               @NotNull @HeaderParam("Authorization") final String tokenAutenticacao) {
+        return motivoService.getMotivosListagem(codEmpresa, apenasAtivos, tokenAutenticacao);
     }
 
 }
