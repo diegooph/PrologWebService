@@ -7,6 +7,8 @@ import org.jetbrains.annotations.NotNull;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 /**
  * Created on 2020-03-17
@@ -24,16 +26,22 @@ public class MotivoDaoImpl extends DatabaseConnection implements MotivoDao {
         try {
             conn = getConnection();
 
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_MOTIVO_TROCA_INSERE(" +
-                    "F_COD_EMPRESA_MOTIVO_TROCA := ?," +
-                    "F_DESRICAO_MOTIVO_TROCA := ?," +
-                    "F_ATIVO_MOTIVO_TROCA := ?," +
-                    "F_DATA_HORA_INSERCAO_MOTIVO_TROCA := ?)");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_MOTIVO_INSERE(" +
+                    "F_COD_EMPRESA_MOTIVO := ?," +
+                    "F_DESCRICAO_MOTIVO := ?," +
+                    "F_ATIVO_MOTIVO := ?," +
+                    "F_DATA_HORA_INSERCAO_MOTIVO := ?)" +
+                    "AS F_COD_MOTIVO");
+
+            stmt.setLong(1, motivoInsercao.getCodEmpresaMotivo());
+            stmt.setString(2, motivoInsercao.getDescricaoMotivo());
+            stmt.setBoolean(3, true);
+            stmt.setTimestamp(4, Timestamp.valueOf(LocalDateTime.now()));
 
             rSet = stmt.executeQuery();
 
-            while(rSet.next()) {
-                return rSet.getLong("F_COD_MOTIVO_TROCA");
+            while (rSet.next()) {
+                return rSet.getLong("F_COD_MOTIVO");
             }
 
         } finally {

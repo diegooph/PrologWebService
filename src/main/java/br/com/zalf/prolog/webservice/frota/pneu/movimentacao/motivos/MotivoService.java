@@ -3,7 +3,6 @@ package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoInsercao;
-import br.com.zalf.prolog.webservice.geral.unidade.UnidadeService;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -11,9 +10,9 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
-public class MotivoService {
+public final class MotivoService {
 
-    private static final String TAG = UnidadeService.class.getSimpleName();
+    private static final String TAG = MotivoService.class.getSimpleName();
 
     @NotNull
     private final MotivoDao dao = Injection.provideMotivoDao();
@@ -23,7 +22,7 @@ public class MotivoService {
         try {
             return dao.insert(motivo);
         } catch (final Throwable t) {
-            Log.e(TAG, String.format("Erro ao inserir motivo %s", motivo.getDescricaoMotivoTroca()), t);
+            Log.e(TAG, String.format("Erro ao inserir motivo %s", motivo.getDescricaoMotivo()), t);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao inserir motivo, tente novamente.");
