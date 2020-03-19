@@ -510,9 +510,35 @@ public final class PneuCrudApiTest extends BaseTest {
         final SuccessResponseIntegracao successResponseIntegracao =
                 apiCadastroPneuService.inserirPneuCadastro(TOKEN_INTEGRACAO, apiPneuCadastro);
 
-        //Verificações: Valida inserção;
-        assertThat(successResponseIntegracao).isNotNull();
-        assertThat(successResponseIntegracao.getMsg()).isNotEmpty();
+        //Valida se pneu foi inserido;
+        final ApiPneuCargaInicial apiPneuCargaInicialInfoPneuInserido = buscaInformacoesPneuCargaInicial(
+                apiPneuCadastro.getCodigoSistemaIntegrado(),
+                apiPneuCadastro.getCodigoCliente(),
+                apiPneuCadastro.getCodUnidadePneu(),
+                COD_EMPRESA);
+
+        //Valida todas as informações do pneu inserido;
+        assertThat(apiPneuCargaInicialInfoPneuInserido).isNotNull();
+        assertThat(apiPneuCargaInicialInfoPneuInserido.getCodigoSistemaIntegrado()).isEqualTo(apiPneuCadastro.
+                getCodigoSistemaIntegrado());
+        assertThat(apiPneuCargaInicialInfoPneuInserido.getCodigoSistemaIntegrado()).isEqualTo(apiPneuCadastro.
+                getCodigoSistemaIntegrado());
+        assertThat(apiPneuCargaInicialInfoPneuInserido.getCodigoCliente()).isEqualTo(apiPneuCadastro.
+                getCodigoCliente());
+        assertThat(apiPneuCargaInicialInfoPneuInserido.getCodUnidadePneu()).isEqualTo(apiPneuCadastro.
+                getCodUnidadePneu());
+        assertThat(apiPneuCargaInicialInfoPneuInserido.getCodModeloPneu()).isEqualTo(apiPneuCadastro.
+                getCodModeloPneu());
+        assertThat(apiPneuCargaInicialInfoPneuInserido.getCodDimensaoPneu()).isEqualTo(apiPneuCadastro.
+                getCodDimensaoPneu());
+        assertThat(apiPneuCargaInicialInfoPneuInserido.getPressaoCorretaPneu()).isEqualTo(apiPneuCadastro.
+                getPressaoCorretaPneu());
+        assertThat(apiPneuCargaInicialInfoPneuInserido.getVidaAtualPneu()).isEqualTo(apiPneuCadastro.
+                getVidaAtualPneu());
+        assertThat(apiPneuCargaInicialInfoPneuInserido.getVidaTotalPneu()).isEqualTo(apiPneuCadastro.
+                getVidaTotalPneu());
+        assertThat(apiPneuCargaInicialInfoPneuInserido.getPneuNovoNuncaRodado()).isEqualTo(apiPneuCadastro.
+                getPneuNovoNuncaRodado());
 
         //Usa pneu já inserido para carga inicial, mas o pneu agora passa a ter vida atual = 1;
         final List<ApiPneuCargaInicial> cargaInicial = new ArrayList<>();
@@ -537,6 +563,35 @@ public final class PneuCrudApiTest extends BaseTest {
         //Execução
         final List<ApiPneuCargaInicialResponse> apiPneuCargaInicialResponses =
                 apiCadastroPneuService.inserirCargaInicialPneu(TOKEN_INTEGRACAO, cargaInicial);
+
+        //Valida se pneu foi inserido;
+        final ApiPneuCargaInicial apiPneuCargaInicialInfoPneuAtualizado = buscaInformacoesPneuCargaInicial(
+                apiPneuCadastro.getCodigoSistemaIntegrado(),
+                apiPneuCadastro.getCodigoCliente(),
+                apiPneuCadastro.getCodUnidadePneu(),
+                COD_EMPRESA);
+
+        //Valida todas as informações do pneu inserido;
+        assertThat(apiPneuCargaInicialInfoPneuAtualizado).isNotNull();
+        assertThat(apiPneuCargaInicialInfoPneuAtualizado.getCodigoSistemaIntegrado()).isEqualTo(apiPneuCadastro.
+                getCodigoSistemaIntegrado());
+        assertThat(apiPneuCargaInicialInfoPneuAtualizado.getCodigoSistemaIntegrado()).isEqualTo(apiPneuCadastro.
+                getCodigoSistemaIntegrado());
+        assertThat(apiPneuCargaInicialInfoPneuAtualizado.getCodigoCliente()).isEqualTo(apiPneuCadastro.
+                getCodigoCliente());
+        assertThat(apiPneuCargaInicialInfoPneuAtualizado.getCodUnidadePneu()).isEqualTo(apiPneuCadastro.
+                getCodUnidadePneu());
+        assertThat(apiPneuCargaInicialInfoPneuAtualizado.getCodModeloPneu()).isEqualTo(apiPneuCadastro.
+                getCodModeloPneu());
+        assertThat(apiPneuCargaInicialInfoPneuAtualizado.getCodDimensaoPneu()).isEqualTo(apiPneuCadastro.
+                getCodDimensaoPneu());
+        assertThat(apiPneuCargaInicialInfoPneuAtualizado.getPressaoCorretaPneu()).isEqualTo(apiPneuCadastro.
+                getPressaoCorretaPneu());
+        assertThat(apiPneuCargaInicialInfoPneuAtualizado.getVidaAtualPneu()).isEqualTo(vidaAtualPneu);
+        assertThat(apiPneuCargaInicialInfoPneuAtualizado.getVidaTotalPneu()).isEqualTo(apiPneuCadastro.
+                getVidaTotalPneu());
+        assertThat(apiPneuCargaInicialInfoPneuAtualizado.getPneuNovoNuncaRodado()).isEqualTo(apiPneuCadastro.
+                getPneuNovoNuncaRodado());
 
         //Desativa configuração da empresa
         desativaSobrescritaPneuEmpresa(COD_EMPRESA);
