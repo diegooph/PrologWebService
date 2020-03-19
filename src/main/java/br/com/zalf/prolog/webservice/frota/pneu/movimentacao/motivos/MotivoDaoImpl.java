@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos;
 
+import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoInsercao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoVisualizacaoListagem;
@@ -8,8 +9,6 @@ import org.jetbrains.annotations.NotNull;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -38,7 +37,7 @@ public class MotivoDaoImpl extends DatabaseConnection implements MotivoDao {
             stmt.setLong(1, motivoInsercao.getCodEmpresaMotivo());
             stmt.setString(2, motivoInsercao.getDescricaoMotivo());
             stmt.setBoolean(3, true);
-            stmt.setTimestamp(4, Timestamp.valueOf(LocalDateTime.now()));
+            stmt.setObject(4, Now.offsetDateTimeUtc());
 
             rSet = stmt.executeQuery();
 
