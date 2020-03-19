@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos;
 
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoAtivacaoDesativacao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoEdicao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoInsercao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoVisualizacaoListagem;
@@ -62,6 +63,6 @@ public interface MotivoDao {
     void update(@NotNull MotivoEdicao motivoEdicao) throws Throwable;
 
     @Nullable
-    void ativaDesativaMotivo(@NotNull boolean ativo) throws Throwable;
+    void ativaDesativaMotivo(@NotNull MotivoAtivacaoDesativacao motivo) throws Throwable;
 
 }

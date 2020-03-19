@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoAtivacaoDesativacao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoEdicao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoInsercao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoVisualizacaoListagem;
@@ -45,8 +46,15 @@ public final class MotivoResource {
     }
 
     @PUT
-    public Response update(final MotivoEdicao motivoEdicao) {
+    public Response update(@NotNull final MotivoEdicao motivoEdicao) {
         motivoService.update(motivoEdicao);
+        return Response.ok("Motivo atualizado com sucesso.");
+    }
+
+    @PUT
+    @Path("/ativacaoDesativacao")
+    public Response ativaDesativaMotivo(@NotNull final MotivoAtivacaoDesativacao motivo) {
+        motivoService.ativaDesativaMotivo(motivo);
         return Response.ok("Motivo atualizado com sucesso.");
     }
 

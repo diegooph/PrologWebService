@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoAtivacaoDesativacao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoEdicao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoInsercao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoVisualizacaoListagem;
@@ -131,6 +132,26 @@ public class MotivoDaoImpl extends DatabaseConnection implements MotivoDao {
             stmt.setLong(1, motivoEdicao.getCodMotivo());
             stmt.setString(2, motivoEdicao.getDescricaoMotivo());
             stmt.setBoolean(3, motivoEdicao.getAtivoMotivo());
+
+            stmt.executeQuery();
+        } finally {
+            close(conn, stmt);
+        }
+    }
+
+    @Override
+    @Nullable
+    public void ativaDesativaMotivo(@NotNull final MotivoAtivacaoDesativacao motivo) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT FUNC_MOTIVO_ATIVA_DESATIVA(" +
+                    "F_COD_MOTIVO := ?," +
+                    "F_ATIVO_MOTIVO := ?);");
+
+            stmt.setLong(1, motivo.getCodMotivo());
+            stmt.setBoolean(2, motivo.isAtivoMotivo());
 
             stmt.executeQuery();
         } finally {
