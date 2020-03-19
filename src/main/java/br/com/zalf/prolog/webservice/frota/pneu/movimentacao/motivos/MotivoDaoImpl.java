@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -76,7 +77,25 @@ public class MotivoDaoImpl extends DatabaseConnection implements MotivoDao {
 
     @Override
     public @NotNull List<MotivoVisualizacaoListagem> getMotivosListagem(@NotNull final Long codEmpresa) throws Throwable {
-        return null;
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_MOTIVO_LISTAGEM(" +
+                    "F_COD_EMPRESA := ?)");
+            stmt.setLong(1, codEmpresa);
+            rSet = stmt.executeQuery();
+
+            final List<MotivoVisualizacaoListagem> motivos = new ArrayList();
+            while (rSet.next()) {
+                motivos.add(MotivoConverter.createMotivoVisualizacaoListagem(rSet));
+            }
+
+            return motivos;
+        } finally {
+            close(conn, stmt, rSet);
+        }
     }
 
 }

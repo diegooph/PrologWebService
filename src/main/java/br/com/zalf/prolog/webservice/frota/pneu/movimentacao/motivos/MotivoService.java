@@ -6,6 +6,8 @@ import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.Moti
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoVisualizacaoListagem;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 /**
  * Created on 2020-03-18
  *
@@ -39,6 +41,18 @@ public final class MotivoService {
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao buscar motivo, tente novamente.");
+        }
+    }
+
+    @NotNull
+    public List<MotivoVisualizacaoListagem> getMotivosListagem(@NotNull final Long codEmpresa) {
+        try {
+            return dao.getMotivosListagem(codEmpresa);
+        } catch (final Throwable t) {
+            Log.e(TAG, String.format("Erro ao buscar motivos, código da empresa: %d", codEmpresa), t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao buscar motivos, tente novamente.");
         }
     }
 

@@ -7,6 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 /**
  * Created on 2020-03-18
@@ -22,7 +23,7 @@ public final class MotivoResource {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    public Long insert(@Valid final MotivoInsercao motivo){
+    public Long insert(@Valid final MotivoInsercao motivo) {
         return motivoService.insert(motivo);
     }
 
@@ -30,6 +31,11 @@ public final class MotivoResource {
     @Path("/{codMotivo}")
     public MotivoVisualizacaoListagem getMotivoByCodigo(@NotNull @PathParam("codMotivo") final Long codMotivo) {
         return motivoService.getMotivoByCodigo(codMotivo);
+    }
+
+    @GET
+    public List<MotivoVisualizacaoListagem> getMotivosListagem(@NotNull @QueryParam("codEmpresa") final Long codEmpresa) {
+        return motivoService.getMotivosListagem(codEmpresa);
     }
 
 }
