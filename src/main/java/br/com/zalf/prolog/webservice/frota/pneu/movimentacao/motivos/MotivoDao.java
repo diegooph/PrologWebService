@@ -1,7 +1,10 @@
 package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos;
 
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoInsercao;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoVisualizacaoListagem;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 /**
  * Created on 2020-03-17
@@ -20,5 +23,25 @@ public interface MotivoDao {
      */
     @NotNull
     Long insert(@NotNull final MotivoInsercao motivoInsercao) throws Throwable;
+
+    /**
+     * Busca um motivo baseado no seu código.
+     *
+     * @param codMotivo um código de um motivo.
+     * @return uma {@link MotivoVisualizacaoListagem motivo}.
+     * @throws Throwable caso qualquer erro ocorrer.
+     */
+    @NotNull
+    MotivoVisualizacaoListagem getMotivoByCodigo(@NotNull Long codMotivo) throws Throwable;
+
+    /**
+     * Busca todos os motivos baseado no código da empresa.
+     *
+     * @param codEmpresa um código de uma empresa;
+     * @return uma {@link List<MotivoVisualizacaoListagem> lista de motivos}.
+     * @throws Throwable caso qualquer erro ocorrer.
+     */
+    @NotNull
+    List<MotivoVisualizacaoListagem> getMotivosListagem(@NotNull final Long codEmpresa) throws Throwable;
 
 }

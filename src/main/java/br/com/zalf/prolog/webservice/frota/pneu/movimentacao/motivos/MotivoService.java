@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoInsercao;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoVisualizacaoListagem;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -26,6 +27,18 @@ public final class MotivoService {
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao inserir motivo, tente novamente.");
+        }
+    }
+
+    @NotNull
+    public MotivoVisualizacaoListagem getMotivoByCodigo(@NotNull final Long codMotivo) {
+        try {
+            return dao.getMotivoByCodigo(codMotivo);
+        } catch (final Throwable t) {
+            Log.e(TAG, String.format("Erro ao buscar motivo %d", codMotivo), t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao buscar motivo, tente novamente.");
         }
     }
 
