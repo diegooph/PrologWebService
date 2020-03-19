@@ -10,6 +10,8 @@ import br.com.zalf.prolog.webservice.contato.EntreEmContatoDao;
 import br.com.zalf.prolog.webservice.contato.EntreEmContatoDaoImpl;
 import br.com.zalf.prolog.webservice.cs.nps.PesquisaNpsDao;
 import br.com.zalf.prolog.webservice.cs.nps.PesquisaNpsDaoImpl;
+import br.com.zalf.prolog.webservice.customfields.CampoPersonalizadoDao;
+import br.com.zalf.prolog.webservice.customfields.CampoPersonalizadoDaoImpl;
 import br.com.zalf.prolog.webservice.dashboard.DashboardDao;
 import br.com.zalf.prolog.webservice.dashboard.DashboardDaoImpl;
 import br.com.zalf.prolog.webservice.entrega.escaladiaria.EscalaDiariaDao;
@@ -556,6 +558,21 @@ public final class Injection {
         return new PesquisaNpsDaoImpl();
     }
 
+    @NotNull
+    public static UnidadeDao provideUnidadeDao() {
+        return new UnidadeDaoImpl();
+    }
+
+    @NotNull
+    public static CampoPersonalizadoDao provideCampoPersonalizadoDao() {
+        return new CampoPersonalizadoDaoImpl();
+    }
+
+    @NotNull
+    public static AutenticacaoIntegracaoDao provideAutenticacaoIntegracaoDao() {
+        return new AutenticacaoIntegracaoDaoImpl();
+    }
+
     // ================================================
     // OUTROS
     // ================================================
@@ -567,11 +584,6 @@ public final class Injection {
     @NotNull
     public static DadosChecklistOfflineChangedListener provideDadosChecklistOfflineChangedListener() {
         return new VersaoDadosChecklistOfflineAtualizador();
-    }
-
-    @NotNull
-    public static AutenticacaoIntegracaoDao provideAutenticacaoIntegracaoDao() {
-        return new AutenticacaoIntegracaoDaoImpl();
     }
 
     // ================================================
@@ -616,10 +628,4 @@ public final class Injection {
     private static PneuSqlExceptionTranslator providePneuSqlExceptionTranslator() {
         return new PneuSqlExceptionTranslator();
     }
-
-    @NotNull
-    public static UnidadeDao provideUnidadeDao() {
-        return new UnidadeDaoImpl();
-    }
-
 }

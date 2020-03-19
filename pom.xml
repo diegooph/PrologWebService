@@ -14,13 +14,6 @@
     </properties>
     <dependencies>
 
-        <!-- https://mvnrepository.com/artifact/org.springframework.data/spring-data-jdbc -->
-        <dependency>
-            <groupId>org.springframework.data</groupId>
-            <artifactId>spring-data-jdbc</artifactId>
-            <version>1.1.5.RELEASE</version>
-        </dependency>
-
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
