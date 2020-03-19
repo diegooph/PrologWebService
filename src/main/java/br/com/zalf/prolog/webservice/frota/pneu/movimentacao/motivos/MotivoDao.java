@@ -52,7 +52,16 @@ public interface MotivoDao {
                                                         @Nullable final Boolean apenasAtivos,
                                                         @NotNull String tokenAutenticacao) throws Throwable;
 
+    /**
+     * Realiza a atualização de um motivo.
+     *
+     * @param motivoEdicao um objeto de edição do motivo, com as informações necessárias para atualização.
+     * @throws Throwable caso qualquer erro ocorrer.
+     */
     @Nullable
     void update(@NotNull MotivoEdicao motivoEdicao) throws Throwable;
+
+    @Nullable
+    void ativaDesativaMotivo(@NotNull boolean ativo) throws Throwable;
 
 }
