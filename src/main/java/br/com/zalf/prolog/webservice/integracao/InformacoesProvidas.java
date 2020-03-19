@@ -45,6 +45,10 @@ public interface InformacoesProvidas {
                   @NotNull final MetodoIntegrado metodoIntegrado) throws Throwable;
 
     @NotNull
+    String getCodAuxiliarByCodUnidadeProlog(@NotNull final Connection conn,
+                                            @NotNull final Long codUnidadeProlog) throws Throwable;
+
+    @NotNull
     ApiAutenticacaoHolder getApiAutenticacaoHolder(@NotNull final Connection conn,
                                                    @NotNull final Long codEmpresa,
                                                    @NotNull final SistemaKey sistemaKey,

@@ -157,6 +157,26 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
 
     @NotNull
     @Override
+    public String getCodAuxiliarByCodUnidadeProlog(@NotNull final Connection conn,
+                                                   @NotNull final Long codUnidadeProlog) throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = conn.prepareStatement("SELECT U.COD_AUXILIAR FROM PUBLIC.UNIDADE U WHERE U.CODIGO = ?;");
+            stmt.setLong(1, codUnidadeProlog);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return rSet.getString("COD_AUXILIAR");
+            }
+            throw new SQLException("Não foi possível buscar o código auxiliar para a unidade:\n" +
+                    "codUnidadeProlog: " + codUnidadeProlog);
+        } finally {
+            close(stmt, rSet);
+        }
+    }
+
+    @NotNull
+    @Override
     public ApiAutenticacaoHolder getApiAutenticacaoHolder(
             @NotNull final Connection conn,
             @NotNull final Long codEmpresa,

@@ -94,6 +94,18 @@ public interface IntegracaoDao {
                   @NotNull final MetodoIntegrado metodoIntegrado) throws Throwable;
 
     /**
+     * Método responsável por retornar o Código Auxiliar mapeado para o código de Unidade Prolog.
+     *
+     * @param conn             Conexão com o banco de dados que será utilizada para buscar os dados.
+     * @param codUnidadeProlog Código da Unidade Prolog para buscar o código Auxiliar.
+     * @return String contendo o Código Auxiliar da Unidade Prolog.
+     * @throws Throwable Se algum erro acontecer.
+     */
+    @NotNull
+    String getCodAuxiliarByCodUnidadeProlog(@NotNull final Connection conn,
+                                            @NotNull final Long codUnidadeProlog) throws Throwable;
+
+    /**
      * Holder contendo as informações necessárias para autenticação de requisições.
      *
      * @param conn            Conexão que será utilizada para buscar os dados.

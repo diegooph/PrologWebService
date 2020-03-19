@@ -1,11 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno;
 
-import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.AfericaoAvulsa;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.AfericaoPlaca;
-import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.AfericaoAvulsaProtheusNepomuceno;
-import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.AfericaoPlacaProtheusNepomuceno;
-import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.MedicaoAfericaoProtheusNepomuceno;
+import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.frota.pneu._model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
@@ -13,11 +8,10 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeicul
 import br.com.zalf.prolog.webservice.integracao.PosicaoPneuMapper;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.*;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.time.LocalDateTime;
+import java.util.*;
 
 /**
  * Created on 3/10/20
@@ -31,6 +25,8 @@ public final class ProtheusNepomucenoConverter {
     private static final Long DEFAULT_COD_MODELO_PNEU = 1L;
     @NotNull
     private static final Long DEFAULT_COD_MODELO_BANDA = 1L;
+    private static final int COD_EMPRESA_INDEX = 0;
+    private static final int COD_UNIDADE_INDEX = 1;
 
     private ProtheusNepomucenoConverter() {
         throw new IllegalStateException(ProtheusNepomucenoConverter.class.getSimpleName() + " cannot be instantiated!");
@@ -42,12 +38,10 @@ public final class ProtheusNepomucenoConverter {
         // Separa o código de empresa e unidade do campo auxiliar.
         final String[] empresaUnidade = codAuxiliarUnidade.split(":");
 
-        // Cria a variável que conterá a listagem de medições.
         final List<MedicaoAfericaoProtheusNepomuceno> medicoes = new ArrayList<>();
-
-        // Percorre a lista de pneus aferidos e cria a lista de objetos de medição.
         for (Pneu pneu : afericaoPlaca.getPneusAferidos()) {
-            final MedicaoAfericaoProtheusNepomuceno medicao = new MedicaoAfericaoProtheusNepomuceno(
+            //noinspection ConstantConditions
+            medicoes.add(new MedicaoAfericaoProtheusNepomuceno(
                     pneu.getCodigoCliente(),
                     pneu.getCodigo(),
                     pneu.getVidaAtual(),
@@ -55,24 +49,18 @@ public final class ProtheusNepomucenoConverter {
                     pneu.getSulcosAtuais().getInterno(),
                     pneu.getSulcosAtuais().getCentralInterno(),
                     pneu.getSulcosAtuais().getCentralExterno(),
-                    pneu.getSulcosAtuais().getExterno()
-            );
-            medicoes.add(medicao);
+                    pneu.getSulcosAtuais().getExterno()));
         }
-
-        // Cria o objeto de aferição de placa que será enviado na integração.
-        final AfericaoPlacaProtheusNepomuceno afericaoPlacaProtheus = new AfericaoPlacaProtheusNepomuceno(
-                empresaUnidade[0],
-                empresaUnidade[1],
+        return new AfericaoPlacaProtheusNepomuceno(
+                empresaUnidade[COD_EMPRESA_INDEX],
+                empresaUnidade[COD_UNIDADE_INDEX],
                 afericaoPlaca.getVeiculo().getPlaca(),
-                String.valueOf(afericaoPlaca.getColaborador().getCpf()),
+                Colaborador.formatCpf(afericaoPlaca.getColaborador().getCpf()),
                 afericaoPlaca.getKmMomentoAfericao(),
                 afericaoPlaca.getTempoRealizacaoAfericaoInMillis(),
                 afericaoPlaca.getDataHora(),
                 afericaoPlaca.getTipoMedicaoColetadaAfericao(),
-                medicoes
-        );
-        return afericaoPlacaProtheus;
+                medicoes);
     }
 
     @NotNull
@@ -81,14 +69,8 @@ public final class ProtheusNepomucenoConverter {
         // Separa o código de empresa e unidade do campo auxiliar.
         final String[] empresaUnidade = codAuxiliarUnidade.split(":");
 
-        // Cria a variável que conterá a listagem de medições.
-        // Apesar de ser usado um array na estrutura, este deverá conter apenas um índice.
-        final List<MedicaoAfericaoProtheusNepomuceno> medicoes = new ArrayList<>();
-
-        // Cria a variável do pneu aferido para facilitar a manipulação.
         final Pneu pneu = afericaoAvulsa.getPneuAferido();
-
-        // Percorre a lista de pneus aferidos e cria a lista de objetos de medição.
+        //noinspection ConstantConditions
         final MedicaoAfericaoProtheusNepomuceno medicao = new MedicaoAfericaoProtheusNepomuceno(
                 pneu.getCodigoCliente(),
                 pneu.getCodigo(),
@@ -99,19 +81,14 @@ public final class ProtheusNepomucenoConverter {
                 pneu.getSulcosAtuais().getCentralExterno(),
                 pneu.getSulcosAtuais().getExterno()
         );
-        medicoes.add(medicao);
-
-        // Cria o objeto de aferição de placa que será enviado na integração.
-        final AfericaoAvulsaProtheusNepomuceno afericaoPlacaProtheus = new AfericaoAvulsaProtheusNepomuceno(
-                empresaUnidade[0],
-                empresaUnidade[1],
-                String.valueOf(afericaoAvulsa.getColaborador().getCpf()),
+        return new AfericaoAvulsaProtheusNepomuceno(
+                empresaUnidade[COD_EMPRESA_INDEX],
+                empresaUnidade[COD_UNIDADE_INDEX],
+                Colaborador.formatCpf(afericaoAvulsa.getColaborador().getCpf()),
                 afericaoAvulsa.getTempoRealizacaoAfericaoInMillis(),
                 afericaoAvulsa.getDataHora(),
                 afericaoAvulsa.getTipoMedicaoColetadaAfericao(),
-                medicoes
-        );
-        return afericaoPlacaProtheus;
+                Collections.singletonList(medicao));
     }
 
     @NotNull
@@ -270,5 +247,62 @@ public final class ProtheusNepomucenoConverter {
         novaAfericaoPlaca.setBloqueiaValoresMenores(configuracaoAfericao.isBloqueiaValoresMenores());
         novaAfericaoPlaca.setDeveAferirEstepes(configuracaoAfericao.isPodeAferirEstepe());
         return novaAfericaoPlaca;
+    }
+
+    @NotNull
+    public static NovaAfericaoAvulsa createNovaAfericaoAvulsaProlog(
+            @NotNull final PneuEstoqueProtheusNepomuceno pneuEstoqueNepomuceno,
+            @NotNull final ConfiguracaoNovaAfericaoAvulsa configuracaoAfericao,
+            @Nullable final InfosAfericaoAvulsa pneuInfoAfericaoAvulsa) {
+        final NovaAfericaoAvulsa novaAfericaoAvulsa = new NovaAfericaoAvulsa();
+        novaAfericaoAvulsa.setPneuParaAferir(ProtheusNepomucenoConverter
+                .createPneuAfericaoAvulsaProlog(pneuEstoqueNepomuceno, pneuInfoAfericaoAvulsa));
+        novaAfericaoAvulsa.setRestricao(Restricao.createRestricaoFrom(configuracaoAfericao));
+        novaAfericaoAvulsa.setBloqueiaValoresMaiores(configuracaoAfericao.isBloqueiaValoresMaiores());
+        novaAfericaoAvulsa.setBloqueiaValoresMenores(configuracaoAfericao.isBloqueiaValoresMenores());
+        novaAfericaoAvulsa.setVariacaoAceitaSulcoMaiorMilimetros(
+                configuracaoAfericao.getVariacaoAceitaSulcoMaiorMilimetros());
+        novaAfericaoAvulsa.setVariacaoAceitaSulcoMenorMilimetros(
+                configuracaoAfericao.getVariacaoAceitaSulcoMenorMilimetros());
+        return novaAfericaoAvulsa;
+    }
+
+    @NotNull
+    public static PneuAfericaoAvulsa createPneuAfericaoAvulsaProlog(
+            @NotNull final PneuEstoqueProtheusNepomuceno pneuEstoqueNepomuceno,
+            @Nullable final InfosAfericaoAvulsa pneuInfoAfericaoAvulsa) {
+        final PneuAfericaoAvulsa pneuAfericaoAvulsa = new PneuAfericaoAvulsa();
+        pneuAfericaoAvulsa.setPneu(createPneuEstoqueProlog(pneuEstoqueNepomuceno));
+        if (pneuInfoAfericaoAvulsa != null) {
+            pneuAfericaoAvulsa.setDataHoraUltimaAfericao(
+                    LocalDateTime.parse(pneuInfoAfericaoAvulsa.getDataHoraUltimaAfericao()));
+            pneuAfericaoAvulsa.setNomeColaboradorAfericao(pneuInfoAfericaoAvulsa.getNomeColaboradorAfericao());
+            pneuAfericaoAvulsa.setTipoMedicaoColetadaUltimaAfericao(
+                    pneuInfoAfericaoAvulsa.getTipoMedicaoColetadaAfericao());
+            pneuAfericaoAvulsa.setCodigoUltimaAfericao(pneuInfoAfericaoAvulsa.getCodUltimaAfericao());
+            pneuAfericaoAvulsa.setTipoProcessoAfericao(pneuInfoAfericaoAvulsa.getTipoProcessoColetaAfericao());
+            pneuAfericaoAvulsa.setPlacaAplicadoQuandoAferido(pneuInfoAfericaoAvulsa.getPlacaAplicadoQuandoAferido());
+        }
+        return pneuAfericaoAvulsa;
+    }
+
+    @NotNull
+    public static PneuEstoque createPneuEstoqueProlog(
+            @NotNull final PneuEstoqueProtheusNepomuceno pneuEstoqueNepomuceno) {
+        final PneuEstoque pneu = new PneuEstoque();
+        pneu.setCodigo(Long.valueOf(pneuEstoqueNepomuceno.getCodPneu()));
+        pneu.setCodigoCliente(pneuEstoqueNepomuceno.getCodigoCliente());
+        pneu.setPressaoCorreta(pneuEstoqueNepomuceno.getPressaoRecomendadaPneu());
+        pneu.setPressaoAtual(pneuEstoqueNepomuceno.getPressaoAtualPneu());
+        pneu.setVidaAtual(pneuEstoqueNepomuceno.getVidaAtualPneu());
+        pneu.setVidasTotal(pneuEstoqueNepomuceno.getVidaTotalPneu());
+
+        final Sulcos sulcos = new Sulcos();
+        sulcos.setInterno(pneuEstoqueNepomuceno.getSulcoInternoPneu());
+        sulcos.setCentralInterno(pneuEstoqueNepomuceno.getSulcoCentralInternoPneu());
+        sulcos.setCentralExterno(pneuEstoqueNepomuceno.getSulcoCentralExternoPneu());
+        sulcos.setExterno(pneuEstoqueNepomuceno.getSulcoExternoPneu());
+        pneu.setSulcosAtuais(sulcos);
+        return pneu;
     }
 }

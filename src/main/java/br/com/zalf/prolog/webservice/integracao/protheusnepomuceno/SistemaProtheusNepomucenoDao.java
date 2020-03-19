@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno;
 
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.Afericao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.ConfiguracaoNovaAfericaoAvulsa;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.ConfiguracaoNovaAfericaoPlaca;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosAfericaoAvulsa;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosAfericaoRealizadaPlaca;
@@ -34,30 +35,18 @@ public interface SistemaProtheusNepomucenoDao {
                 @NotNull final Afericao afericao) throws Throwable;
 
     /**
-     * Busca o código auxiliar a partir do código da unidade.
-     *
-     * @param conn             Conexão que será utilizada para inserir a aferição.
-     * @param codUnidade       Código da unidade no Prolog.
-     * @return Código auxiliar da unidade, usado na integração.
-     * @throws Throwable Se ocorrer algum erro na busca.
-     */
-    @NotNull
-    String getCodAuxiliarUnidade(@NotNull final Connection conn,
-                                 @NotNull final Long codUnidade) throws  Throwable;
-
-    /**
      * Busca as possíveis informações de aferições integradas de acordo com a lista de pneus e unidade.
      *
-     * @param conn             Conexão que será utilizada para inserir a aferição.
-     * @param codUnidade       Código da unidade.
-     * @param codPneus         Lista de códigos de pneus buscado do cliente.
+     * @param conn       Conexão que será utilizada para inserir a aferição.
+     * @param codUnidade Código da unidade.
+     * @param codPneus   Lista de códigos de pneus buscado do cliente.
      * @return Lista de registros de aferições integradas.
      * @throws Throwable Se ocorrer algum erro na busca.
      */
     @NotNull
     List<InfosAfericaoAvulsa> getInfosAfericaoAvulsa(@NotNull final Connection conn,
                                                      @NotNull final Long codUnidade,
-                                                     @NotNull final List<String> codPneus) throws  Throwable;
+                                                     @NotNull final List<String> codPneus) throws Throwable;
 
     @NotNull
     String getCodFiliais(@NotNull final Connection conn, @NotNull final List<Long> codUnidades) throws Throwable;
@@ -84,6 +73,10 @@ public interface SistemaProtheusNepomucenoDao {
             @NotNull final String codEstruturaVeiculo) throws Throwable;
 
     @NotNull
+    ConfiguracaoNovaAfericaoAvulsa getConfigNovaAfericaoAvulsa(@NotNull final Connection conn,
+                                                               @NotNull final Long codUnidade) throws Throwable;
+
+    @NotNull
     BiMap<String, Integer> getMapeamentoPosicoesProlog(
             @NotNull final Connection conn,
             @NotNull final Long codEmpresa,
@@ -93,4 +86,5 @@ public interface SistemaProtheusNepomucenoDao {
     Short getCodDiagramaByCodEstrutura(@NotNull final Connection conn,
                                        @NotNull final Long codEmpresa,
                                        @NotNull final String codEstruturaVeiculo) throws Throwable;
+
 }

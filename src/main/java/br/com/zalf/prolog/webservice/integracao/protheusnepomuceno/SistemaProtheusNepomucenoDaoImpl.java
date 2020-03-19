@@ -4,12 +4,8 @@ import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.Afericao;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.AfericaoPlaca;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.TipoMedicaoColetadaAfericao;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.TipoProcessoColetaAfericao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.*;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosAfericaoAvulsa;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.ConfiguracaoNovaAfericaoPlaca;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosAfericaoRealizadaPlaca;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosTipoVeiculoConfiguracaoAfericao;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosUnidadeRestricao;
@@ -24,12 +20,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static br.com.zalf.prolog.webservice.commons.util.StatementUtils.executeBatchAndValidate;
+
 /**
  * Created on 12/03/20
  *
  * @author Wellington Moraes (https://github.com/wvinim)
  */
 public final class SistemaProtheusNepomucenoDaoImpl extends DatabaseConnection implements SistemaProtheusNepomucenoDao {
+    private static final int EXECUTE_BATCH_SUCCESS = 0;
 
     @NotNull
     @Override
@@ -40,125 +39,40 @@ public final class SistemaProtheusNepomucenoDaoImpl extends DatabaseConnection i
         ResultSet rSet = null;
         try {
             stmt = conn.prepareStatement("SELECT * FROM INTEGRACAO.FUNC_PNEU_AFERICAO_INSERT_AFERICAO_INTEGRADA(" +
-                    "F_COD_UNIDADE_PROLOG := ?," +
-                    "F_CPF_AFERIDOR := ?, " +
-                    "F_PLACA_VEICULO := ?, " +
-                    "F_COD_TIPO_VEICULO_PROLOG := ?, " +
-                    "F_KM_VEICULO := ?, " +
-                    "F_TEMPO_REALIZACAO := ?, " +
-                    "F_DATA_HORA := ?, " +
-                    "F_TIPO_MEDICAO_COLETADA := ?, " +
-                    "F_TIPO_PROCESSO_COLETA := ?) AS COD_AFERICAO_INTEGRADA;");
-            stmt.setString(1, String.valueOf(codUnidade));
+                    "F_COD_UNIDADE_PROLOG => ?," +
+                    "F_CPF_AFERIDOR => ?, " +
+                    "F_PLACA_VEICULO => ?, " +
+                    "F_COD_TIPO_VEICULO_PROLOG => ?, " +
+                    "F_KM_VEICULO => ?, " +
+                    "F_TEMPO_REALIZACAO => ?, " +
+                    "F_DATA_HORA => ?, " +
+                    "F_TIPO_MEDICAO_COLETADA => ?, " +
+                    "F_TIPO_PROCESSO_COLETA => ?) AS COD_AFERICAO_INTEGRADA;");
+            stmt.setLong(1, codUnidade);
             stmt.setString(2, String.valueOf(afericao.getColaborador().getCpf()));
-            stmt.setString(6, String.valueOf(afericao.getTempoRealizacaoAfericaoInMillis()));
-            stmt.setString(7, String.valueOf(afericao.getDataHora().atOffset(ZoneOffset.UTC)));
-            stmt.setString(8, afericao.getTipoMedicaoColetadaAfericao().asString());
-            stmt.setString(9, afericao.getTipoProcessoColetaAfericao().asString());
-
             if (afericao instanceof AfericaoPlaca) {
                 final AfericaoPlaca afericaoPlaca = (AfericaoPlaca) afericao;
                 stmt.setString(3, afericaoPlaca.getVeiculo().getPlaca());
-                stmt.setString(4, String.valueOf(afericaoPlaca.getVeiculo().getCodTipo()));
+                stmt.setLong(4, afericaoPlaca.getVeiculo().getCodTipo());
                 stmt.setString(5, String.valueOf(afericaoPlaca.getKmMomentoAfericao()));
             } else {
                 stmt.setNull(3, Types.VARCHAR);
-                stmt.setNull(4, Types.VARCHAR);
+                stmt.setNull(4, Types.BIGINT);
                 stmt.setNull(5, Types.VARCHAR);
             }
-            Long codAfericaoIntegrada = null;
+            stmt.setLong(6, afericao.getTempoRealizacaoAfericaoInMillis());
+            stmt.setObject(7, afericao.getDataHora().atOffset(ZoneOffset.UTC));
+            stmt.setString(8, afericao.getTipoMedicaoColetadaAfericao().asString());
+            stmt.setString(9, afericao.getTipoProcessoColetaAfericao().asString());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                codAfericaoIntegrada = rSet.getLong("COD_AFERICAO_INTEGRADA");
-                afericao.setCodigo(codAfericaoIntegrada);
-                insertValores(conn, afericao);
-            }
-            if (codAfericaoIntegrada != null && codAfericaoIntegrada != 0) {
+                final long codAfericaoIntegrada = rSet.getLong("COD_AFERICAO_INTEGRADA");
+                internalInsertValoresAfericao(conn, codAfericaoIntegrada, afericao);
                 return codAfericaoIntegrada;
             } else {
-                throw new IllegalStateException("Não foi possível retornar o código da aferição realizada");
+                throw new IllegalStateException(
+                        "Não foi possível inserir a aferição realizada no schema de integração");
             }
-        } finally {
-            close(stmt, rSet);
-        }
-    }
-
-    private void insertValores(@NotNull final Connection conn,
-                               @NotNull final Afericao afericao) throws Throwable {
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            stmt = conn.prepareStatement("SELECT * FROM INTEGRACAO.FUNC_PNEU_AFERICAO_INSERT_AFERICAO_VALORES_INTEGRADA(" +
-                    "F_COD_AFERICAO_INTEGRADA := ?," +
-                    "F_COD_PNEU_PROLOG := ?, " +
-                    "F_COD_PNEU_CLIENTE := ?, " +
-                    "F_COD_PNEU_CLIENTE_AUXILIAR := ?, " +
-                    "F_VIDA_ATUAL := ?, " +
-                    "F_PSI := ?, " +
-                    "F_ALTURA_SULCO_INTERNO := ?, " +
-                    "F_ALTURA_SULCO_CENTRAL_INTERNO := ?, " +
-                    "F_ALTURA_SULCO_EXTERNO := ?, " +
-                    "F_ALTURA_SULCO_CENTRAL_EXTERNO := ?, " +
-                    "F_POSICAO_PROLOG := ?) AS COD_AFERICAO_INTEGRADA;");
-
-            final List<Pneu> pneusAferidos = afericao.getPneusAferidos();
-            for (Pneu pneu : pneusAferidos) {
-                stmt.setLong(1, afericao.getCodigo());
-                // A integração com o sistema da Nepomuceno não mantém pneus no Prolog
-                stmt.setNull(2, Types.VARCHAR);
-                stmt.setString(3, String.valueOf(pneu.getCodigo()));
-                stmt.setString(4, String.valueOf(pneu.getCodigoCliente()));
-                stmt.setString(5, String.valueOf(pneu.getVidaAtual()));
-
-                // Já aproveitamos esse switch para atualizar as medições do pneu na tabela PNEU.
-                switch (afericao.getTipoMedicaoColetadaAfericao()) {
-                    case SULCO_PRESSAO:
-                        stmt.setString(6, String.valueOf(pneu.getPressaoAtual()));
-                        stmt.setString(7, String.valueOf(pneu.getSulcosAtuais().getInterno()));
-                        stmt.setString(8, String.valueOf(pneu.getSulcosAtuais().getCentralInterno()));
-                        stmt.setString(9, String.valueOf(pneu.getSulcosAtuais().getExterno()));
-                        stmt.setString(10, String.valueOf(pneu.getSulcosAtuais().getCentralExterno()));
-                        break;
-                    case SULCO:
-                        stmt.setNull(6, Types.VARCHAR);
-                        stmt.setString(7, String.valueOf(pneu.getSulcosAtuais().getInterno()));
-                        stmt.setString(8, String.valueOf(pneu.getSulcosAtuais().getCentralInterno()));
-                        stmt.setString(9, String.valueOf(pneu.getSulcosAtuais().getExterno()));
-                        stmt.setString(10, String.valueOf(pneu.getSulcosAtuais().getCentralExterno()));
-                        break;
-                    case PRESSAO:
-                        stmt.setString(6, String.valueOf(pneu.getPressaoAtual()));
-                        stmt.setNull(7, Types.VARCHAR);
-                        stmt.setNull(8, Types.VARCHAR);
-                        stmt.setNull(9, Types.VARCHAR);
-                        stmt.setNull(10, Types.VARCHAR);
-                        break;
-                }
-                stmt.setString(11, String.valueOf(pneu.getPosicao()));
-                if (stmt.executeUpdate() == 0) {
-                    throw new SQLException("Não foi possível atualizar as medidas para o pneu: " + pneu.getCodigo());
-                }
-            }
-        } finally {
-            close(stmt, rSet);
-        }
-    }
-
-    @NotNull
-    @Override
-    public String getCodAuxiliarUnidade(@NotNull final Connection conn,
-                                        @NotNull final Long codUnidade) throws Throwable {
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            stmt = conn.prepareStatement("SELECT COD_AUXILIAR FROM PUBLIC.UNIDADE WHERE CODIGO = ?;");
-            stmt.setLong(1, codUnidade);
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                return rSet.getString("COD_AUXILIAR");
-            }
-
-            throw new SQLException("Não foi possível encontrar o código auxiliar da unidade: " + codUnidade);
         } finally {
             close(stmt, rSet);
         }
@@ -167,42 +81,26 @@ public final class SistemaProtheusNepomucenoDaoImpl extends DatabaseConnection i
     @NotNull
     @Override
     public List<InfosAfericaoAvulsa> getInfosAfericaoAvulsa(@NotNull final Connection conn,
-                                                     @NotNull final Long codUnidade,
-                                                     @NotNull final List<String> codPneus) throws Throwable {
+                                                            @NotNull final Long codUnidade,
+                                                            @NotNull final List<String> codPneus) throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            stmt = conn.prepareStatement("SELECT * FROM INTEGRACAO.FUNC_PNEU_AFERICAO_GET_INFOS_AFERICOES_INTEGRADA(" +
-                    "F_COD_UNIDADE := ?," +
-                    "F_COD_PNEUS_CLIENTE := ?);");
+            stmt = conn.prepareStatement(
+                    "SELECT * FROM INTEGRACAO.FUNC_PNEU_AFERICAO_GET_INFOS_AFERICOES_INTEGRADA(" +
+                            "F_COD_UNIDADE => ?," +
+                            "F_COD_PNEUS_CLIENTE => ?);");
             stmt.setLong(1, codUnidade);
             stmt.setArray(2, PostgresUtils.listToArray(conn, SqlType.TEXT, codPneus));
             rSet = stmt.executeQuery();
-
             final List<InfosAfericaoAvulsa> infosAfericaoAvulsa = new ArrayList<>();
             while (rSet.next()) {
                 infosAfericaoAvulsa.add(createInfosAfericaoAvulsa(rSet));
             }
-
             return infosAfericaoAvulsa;
         } finally {
             close(stmt, rSet);
         }
-    };
-
-    @NotNull
-    private InfosAfericaoAvulsa createInfosAfericaoAvulsa(@NotNull final ResultSet rSet) throws Throwable{
-        return new InfosAfericaoAvulsa(
-                rSet.getLong("CODIGO_ULTIMA_AFERICAO"),
-                rSet.getString("COD_PNEU_PROLOG"),
-                rSet.getString("COD_PNEU_CLIENTE"),
-                rSet.getString("COD_PNEU_CLIENTE_AUXILIAR"),
-                rSet.getString("DATA_HORA_ULTIMA_AFERICAO"),
-                rSet.getString("NOME_COLABORADOR_AFERICAO"),
-                TipoMedicaoColetadaAfericao.fromString(rSet.getString("TIPO_MEDICAO_COLETADA")),
-                TipoProcessoColetaAfericao.fromString(rSet.getString("TIPO_PROCESSO_COLETA")),
-                rSet.getString("PLACA_APLICADO_QUANDO_AFERIDO")
-        );
     }
 
     @NotNull
@@ -430,6 +328,53 @@ public final class SistemaProtheusNepomucenoDaoImpl extends DatabaseConnection i
 
     @NotNull
     @Override
+    public ConfiguracaoNovaAfericaoAvulsa getConfigNovaAfericaoAvulsa(@NotNull final Connection conn,
+                                                                      @NotNull final Long codUnidade) throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = conn.prepareStatement(
+                    "SELECT PRU.SULCO_MINIMO_DESCARTE                       AS SULCO_MINIMO_DESCARTE, " +
+                            "PRU.SULCO_MINIMO_RECAPAGEM                                 AS SULCO_MINIMO_RECAPAGEM, " +
+                            "PRU.TOLERANCIA_INSPECAO                                    AS TOLERANCIA_INSPECAO, " +
+                            "PRU.TOLERANCIA_CALIBRAGEM                                  AS TOLERANCIA_CALIBRAGEM, " +
+                            "PRU.PERIODO_AFERICAO_SULCO                                 AS PERIODO_AFERICAO_SULCO, " +
+                            "PRU.PERIODO_AFERICAO_PRESSAO                               AS PERIODO_AFERICAO_PRESSAO, " +
+                            "CONFIG_ALERTA_SULCO.VARIACAO_ACEITA_SULCO_MENOR_MILIMETROS AS VARIACAO_ACEITA_SULCO_MENOR_MILIMETROS, " +
+                            "CONFIG_ALERTA_SULCO.VARIACAO_ACEITA_SULCO_MAIOR_MILIMETROS AS VARIACAO_ACEITA_SULCO_MAIOR_MILIMETROS, " +
+                            "CONFIG_ALERTA_SULCO.BLOQUEAR_VALORES_MENORES               AS BLOQUEAR_VALORES_MENORES, " +
+                            "CONFIG_ALERTA_SULCO.BLOQUEAR_VALORES_MAIORES               AS BLOQUEAR_VALORES_MAIORES, " +
+                            "CONFIG_ALERTA_SULCO.USA_DEFAULT_PROLOG                     AS VARIACOES_SULCO_DEFAULT_PROLOG " +
+                            "FROM VIEW_AFERICAO_CONFIGURACAO_ALERTA_SULCO CONFIG_ALERTA_SULCO " +
+                            "   JOIN PNEU_RESTRICAO_UNIDADE PRU " +
+                            "       ON PRU.COD_UNIDADE = CONFIG_ALERTA_SULCO.COD_UNIDADE " +
+                            "WHERE CONFIG_ALERTA_SULCO.COD_UNIDADE = ?;");
+            stmt.setLong(1, codUnidade);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return new ConfiguracaoNovaAfericaoAvulsa(
+                        rSet.getDouble("SULCO_MINIMO_DESCARTE"),
+                        rSet.getDouble("SULCO_MINIMO_RECAPAGEM"),
+                        rSet.getDouble("TOLERANCIA_INSPECAO"),
+                        rSet.getDouble("TOLERANCIA_CALIBRAGEM"),
+                        rSet.getInt("PERIODO_AFERICAO_SULCO"),
+                        rSet.getInt("PERIODO_AFERICAO_PRESSAO"),
+                        rSet.getDouble("VARIACAO_ACEITA_SULCO_MENOR_MILIMETROS"),
+                        rSet.getDouble("VARIACAO_ACEITA_SULCO_MAIOR_MILIMETROS"),
+                        rSet.getBoolean("VARIACOES_SULCO_DEFAULT_PROLOG"),
+                        rSet.getBoolean("BLOQUEAR_VALORES_MENORES"),
+                        rSet.getBoolean("BLOQUEAR_VALORES_MAIORES"));
+            } else {
+                throw new SQLException("Nenhuma configuração de aferição encontrada para a estrutura:\n" +
+                        "codUnidade: " + codUnidade);
+            }
+        } finally {
+            close(stmt, rSet);
+        }
+    }
+
+    @NotNull
+    @Override
     public BiMap<String, Integer> getMapeamentoPosicoesProlog(
             @NotNull final Connection conn,
             @NotNull final Long codEmpresa,
@@ -489,5 +434,84 @@ public final class SistemaProtheusNepomucenoDaoImpl extends DatabaseConnection i
         } finally {
             close(stmt, rSet);
         }
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    private void internalInsertValoresAfericao(@NotNull final Connection conn,
+                                               @NotNull final Long codAfericaoInserida,
+                                               @NotNull final Afericao afericao) throws Throwable {
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement(
+                    "SELECT * FROM INTEGRACAO.FUNC_PNEU_AFERICAO_INSERT_AFERICAO_VALORES_INTEGRADA(" +
+                            "F_COD_AFERICAO_INTEGRADA => ?," +
+                            "F_COD_PNEU_PROLOG => ?, " +
+                            "F_COD_PNEU_CLIENTE => ?, " +
+                            "F_COD_PNEU_CLIENTE_AUXILIAR => ?, " +
+                            "F_VIDA_ATUAL => ?, " +
+                            "F_PSI => ?, " +
+                            "F_ALTURA_SULCO_INTERNO => ?, " +
+                            "F_ALTURA_SULCO_CENTRAL_INTERNO => ?, " +
+                            "F_ALTURA_SULCO_EXTERNO => ?, " +
+                            "F_ALTURA_SULCO_CENTRAL_EXTERNO => ?, " +
+                            "F_POSICAO_PROLOG => ?) AS COD_AFERICAO_INTEGRADA;");
+            for (Pneu pneu : afericao.getPneusAferidos()) {
+                stmt.setLong(1, codAfericaoInserida);
+                stmt.setString(2, String.valueOf(pneu.getCodigo()));
+                stmt.setString(3, String.valueOf(pneu.getCodigoCliente()));
+                stmt.setInt(4, pneu.getVidaAtual());
+                switch (afericao.getTipoMedicaoColetadaAfericao()) {
+                    case SULCO_PRESSAO:
+                        stmt.setDouble(5, pneu.getPressaoAtual());
+                        stmt.setDouble(6, pneu.getSulcosAtuais().getInterno());
+                        stmt.setDouble(7, pneu.getSulcosAtuais().getCentralInterno());
+                        stmt.setDouble(8, pneu.getSulcosAtuais().getExterno());
+                        stmt.setDouble(9, pneu.getSulcosAtuais().getCentralExterno());
+                        break;
+                    case SULCO:
+                        stmt.setNull(5, Types.REAL);
+                        stmt.setDouble(6, pneu.getSulcosAtuais().getInterno());
+                        stmt.setDouble(7, pneu.getSulcosAtuais().getCentralInterno());
+                        stmt.setDouble(8, pneu.getSulcosAtuais().getExterno());
+                        stmt.setDouble(9, pneu.getSulcosAtuais().getCentralExterno());
+                        break;
+                    case PRESSAO:
+                        stmt.setDouble(5, pneu.getPressaoAtual());
+                        stmt.setNull(6, Types.REAL);
+                        stmt.setNull(7, Types.REAL);
+                        stmt.setNull(8, Types.REAL);
+                        stmt.setNull(9, Types.REAL);
+                        break;
+                    default:
+                        throw new IllegalStateException(
+                                "Unexpected value: " + afericao.getTipoMedicaoColetadaAfericao());
+                }
+                if (afericao instanceof AfericaoPlaca) {
+                    stmt.setInt(11, pneu.getPosicao());
+                } else {
+                    stmt.setNull(11, Types.VARCHAR);
+                }
+                stmt.addBatch();
+            }
+            // Executamos as informações em lote, já que o processo não tem dependência entre as linhas.
+            executeBatchAndValidate(stmt, EXECUTE_BATCH_SUCCESS, "Erro ao salvar valores da aferiçãpo");
+        } finally {
+            close(stmt);
+        }
+    }
+
+    @NotNull
+    private InfosAfericaoAvulsa createInfosAfericaoAvulsa(@NotNull final ResultSet rSet) throws Throwable {
+        return new InfosAfericaoAvulsa(
+                rSet.getLong("CODIGO_ULTIMA_AFERICAO"),
+                rSet.getString("COD_PNEU_PROLOG"),
+                rSet.getString("COD_PNEU_CLIENTE"),
+                rSet.getString("COD_PNEU_CLIENTE_AUXILIAR"),
+                rSet.getString("DATA_HORA_ULTIMA_AFERICAO"),
+                rSet.getString("NOME_COLABORADOR_AFERICAO"),
+                TipoMedicaoColetadaAfericao.fromString(rSet.getString("TIPO_MEDICAO_COLETADA")),
+                TipoProcessoColetaAfericao.fromString(rSet.getString("TIPO_PROCESSO_COLETA")),
+                rSet.getString("PLACA_APLICADO_QUANDO_AFERIDO")
+        );
     }
 }

@@ -206,6 +206,17 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
 
     @NotNull
     @Override
+    public String getCodAuxiliarByCodUnidadeProlog(@NotNull final Connection conn,
+                                                   @NotNull final Long codUnidadeProlog) throws Throwable {
+        if (integracaoDao == null) {
+            integracaoDao = Injection.provideIntegracaoDao();
+        }
+
+        return integracaoDao.getCodAuxiliarByCodUnidadeProlog(conn, codUnidadeProlog);
+    }
+
+    @NotNull
+    @Override
     public ApiAutenticacaoHolder getApiAutenticacaoHolder(
             @NotNull final Connection conn,
             @NotNull final Long codEmpresa,
