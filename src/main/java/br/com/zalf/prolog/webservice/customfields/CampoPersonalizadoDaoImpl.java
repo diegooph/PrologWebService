@@ -5,10 +5,7 @@ import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Types;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -45,18 +42,19 @@ public final class CampoPersonalizadoDaoImpl extends DatabaseConnection implemen
             if (rSet.next()) {
                 final List<CampoPersonalizadoParaRealizacao> campos = new ArrayList<>();
                 do {
+                    final Array opcoesSelecao = rSet.getArray("OPCOES_SELECAO");
                     campos.add(new CampoPersonalizadoParaRealizacao(
                             rSet.getLong("COD_CAMPO"),
                             rSet.getLong("COD_EMPRESA"),
-                            rSet.getShort("COD_FUNCAO_PROLOG"),
+                            rSet.getShort("COD_FUNCAO_PROLOG_AGRUPAMENTO"),
                             TipoCampoPersonalizado.fromCodigo(rSet.getInt("COD_TIPO_CAMPO")),
-                            rSet.getString("NOME_CAMPO"),
-                            rSet.getString("DESCRICAO_CAMPO"),
-                            rSet.getString("TEXTO_AUXILIO_PREENCHIMENTO_CAMPO"),
+                            rSet.getString("NOME"),
+                            rSet.getString("DESCRICAO"),
+                            rSet.getString("TEXTO_AUXILIO_PREENCHIMENTO"),
                             rSet.getBoolean("PREENCHIMENTO_OBRIGATORIO"),
                             rSet.getString("MENSAGEM_CASO_CAMPO_NAO_PREENCHIDO"),
                             rSet.getBoolean("PERMITE_SELECAO_MULTIPLA"),
-                            ((String[]) rSet.getArray("OPCOES_SELECAO").getArray())));
+                            opcoesSelecao != null ? ((String[]) opcoesSelecao.getArray()) : null));
                 } while (rSet.next());
                 return campos;
             } else {
