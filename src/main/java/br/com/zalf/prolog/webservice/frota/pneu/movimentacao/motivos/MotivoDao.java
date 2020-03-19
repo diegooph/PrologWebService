@@ -32,7 +32,8 @@ public interface MotivoDao {
      * @throws Throwable caso qualquer erro ocorrer.
      */
     @NotNull
-    MotivoVisualizacaoListagem getMotivoByCodigo(@NotNull Long codMotivo) throws Throwable;
+    MotivoVisualizacaoListagem getMotivoByCodigo(@NotNull Long codMotivo,
+                                                 @NotNull final String tokenAutenticacao) throws Throwable;
 
     /**
      * Busca todos os motivos baseado no código da empresa.
@@ -42,6 +43,7 @@ public interface MotivoDao {
      * @throws Throwable caso qualquer erro ocorrer.
      */
     @NotNull
-    List<MotivoVisualizacaoListagem> getMotivosListagem(@NotNull final Long codEmpresa) throws Throwable;
+    List<MotivoVisualizacaoListagem> getMotivosListagem(@NotNull final Long codEmpresa,
+                                                        @NotNull String tokenAutenticacao) throws Throwable;
 
 }

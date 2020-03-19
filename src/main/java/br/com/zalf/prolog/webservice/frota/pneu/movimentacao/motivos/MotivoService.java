@@ -33,9 +33,10 @@ public final class MotivoService {
     }
 
     @NotNull
-    public MotivoVisualizacaoListagem getMotivoByCodigo(@NotNull final Long codMotivo) {
+    public MotivoVisualizacaoListagem getMotivoByCodigo(@NotNull final Long codMotivo,
+                                                        @NotNull final String tokenAutenticacao) {
         try {
-            return dao.getMotivoByCodigo(codMotivo);
+            return dao.getMotivoByCodigo(codMotivo, tokenAutenticacao);
         } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao buscar motivo %d", codMotivo), t);
             throw Injection
@@ -45,9 +46,10 @@ public final class MotivoService {
     }
 
     @NotNull
-    public List<MotivoVisualizacaoListagem> getMotivosListagem(@NotNull final Long codEmpresa) {
+    public List<MotivoVisualizacaoListagem> getMotivosListagem(@NotNull final Long codEmpresa,
+                                                               @NotNull final String tokenAutenticacao) {
         try {
-            return dao.getMotivosListagem(codEmpresa);
+            return dao.getMotivosListagem(codEmpresa, tokenAutenticacao);
         } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao buscar motivos, código da empresa: %d", codEmpresa), t);
             throw Injection

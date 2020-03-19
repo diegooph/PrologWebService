@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos;
 
+import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoInsercao;
@@ -55,15 +56,18 @@ public class MotivoDaoImpl extends DatabaseConnection implements MotivoDao {
     }
 
     @Override
-    public @NotNull MotivoVisualizacaoListagem getMotivoByCodigo(@NotNull final Long codMotivo) throws Throwable {
+    public @NotNull MotivoVisualizacaoListagem getMotivoByCodigo(@NotNull final Long codMotivo,
+                                                                 @NotNull final String tokenAutenticacao) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM FUNC_MOTIVO_VISUALIZACAO(" +
-                    "F_COD_MOTIVO := ?)");
+                    "F_COD_MOTIVO := ?," +
+                    "F_TOKEN := ?)");
             stmt.setLong(1, codMotivo);
+            stmt.setString(2, TokenCleaner.getOnlyToken(tokenAutenticacao));
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return MotivoConverter.createMotivoVisualizacaoListagem(rSet);
@@ -76,15 +80,18 @@ public class MotivoDaoImpl extends DatabaseConnection implements MotivoDao {
     }
 
     @Override
-    public @NotNull List<MotivoVisualizacaoListagem> getMotivosListagem(@NotNull final Long codEmpresa) throws Throwable {
+    public @NotNull List<MotivoVisualizacaoListagem> getMotivosListagem(@NotNull final Long codEmpresa,
+                                                                        @NotNull final String tokenAutenticacao) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM FUNC_MOTIVO_LISTAGEM(" +
-                    "F_COD_EMPRESA := ?)");
+                    "F_COD_EMPRESA := ?," +
+                    "F_TOKEN := ?)");
             stmt.setLong(1, codEmpresa);
+            stmt.setString(2, TokenCleaner.getOnlyToken(tokenAutenticacao));
             rSet = stmt.executeQuery();
 
             final List<MotivoVisualizacaoListagem> motivos = new ArrayList();

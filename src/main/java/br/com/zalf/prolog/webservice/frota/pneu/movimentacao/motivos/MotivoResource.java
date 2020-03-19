@@ -29,13 +29,15 @@ public final class MotivoResource {
 
     @GET
     @Path("/{codMotivo}")
-    public MotivoVisualizacaoListagem getMotivoByCodigo(@NotNull @PathParam("codMotivo") final Long codMotivo) {
-        return motivoService.getMotivoByCodigo(codMotivo);
+    public MotivoVisualizacaoListagem getMotivoByCodigo(@NotNull @PathParam("codMotivo") final Long codMotivo,
+                                                        @HeaderParam("Authorization") final String tokenAutenticacao) {
+        return motivoService.getMotivoByCodigo(codMotivo, tokenAutenticacao);
     }
 
     @GET
-    public List<MotivoVisualizacaoListagem> getMotivosListagem(@NotNull @QueryParam("codEmpresa") final Long codEmpresa) {
-        return motivoService.getMotivosListagem(codEmpresa);
+    public List<MotivoVisualizacaoListagem> getMotivosListagem(@NotNull @QueryParam("codEmpresa") final Long codEmpresa,
+                                                               @HeaderParam("Authorization") final String tokenAutenticacao) {
+        return motivoService.getMotivosListagem(codEmpresa, tokenAutenticacao);
     }
 
 }
