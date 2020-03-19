@@ -1,6 +1,6 @@
-package br.com.zalf.prolog.webservice.implantacao.conferencia.frota.pneu;
+package br.com.zalf.prolog.webservice.interno.implantacao.conferencia.frota.pneu;
 
-import br.com.zalf.prolog.webservice.implantacao.conferencia._model.TipoImport;
+import br.com.zalf.prolog.webservice.interno.implantacao.conferencia._model.TipoImport;
 import org.jetbrains.annotations.NotNull;
 
 /**

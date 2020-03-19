@@ -1,7 +1,7 @@
-package br.com.zalf.prolog.webservice.implantacao.conferencia;
+package br.com.zalf.prolog.webservice.interno.implantacao.conferencia;
 
-import br.com.zalf.prolog.webservice.implantacao.conferencia._model.ConferenciaDadosTabelaImport;
-import br.com.zalf.prolog.webservice.implantacao.conferencia._model.TipoImport;
+import br.com.zalf.prolog.webservice.interno.implantacao.conferencia._model.ConferenciaDadosTabelaImport;
+import br.com.zalf.prolog.webservice.interno.implantacao.conferencia._model.TipoImport;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;

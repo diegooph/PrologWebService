@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.implantacao.conferencia.frota.veiculo._model;
+package br.com.zalf.prolog.webservice.interno.implantacao.conferencia.frota.veiculo._model;
 
 import org.jetbrains.annotations.NotNull;
 

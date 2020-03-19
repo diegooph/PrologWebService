@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.implantacao.conferencia.frota.veiculo;
+package br.com.zalf.prolog.webservice.interno.implantacao.conferencia.frota.pneu;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
@@ -14,28 +14,27 @@ import javax.ws.rs.core.MediaType;
 import java.io.InputStream;
 
 /**
- * Created on 23/07/19.
+ * Created on 19/11/19.
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-@Path("/implantacoes/veiculos")
+@Path("/implantacoes/pneus")
 @Consumes({MediaType.MULTIPART_FORM_DATA})
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-public final class VeiculoConferenciaResource {
-
+public final class PneuConferenciaResource {
     @NotNull
-    private final VeiculoConferenciaService service = new VeiculoConferenciaService();
+    private final PneuConferenciaService service = new PneuConferenciaService();
 
     @POST
     @UsedBy(platforms = Platform.WEBSITE)
     @Path("/upload-planilha-import")
-    public Response getVerificacaoPlanilhaImportVeiculo(
+    public Response getVerificacaoPlanilhaImportPneu(
             @HeaderParam("Authorization") @Required final String authorization,
             @QueryParam("codEmpresa") @Required final Long codEmpresa,
             @QueryParam("codUnidade") @Required final Long codUnidade,
             @FormDataParam("file") @Required final InputStream fileInputStream,
             @FormDataParam("file") @Required final FormDataContentDisposition fileDetail) throws ProLogException {
-        return service.getVerificacaoPlanilhaImportVeiculo(
+        return service.getVerificacaoPlanilhaImportPneu(
                 authorization,
                 codEmpresa,
                 codUnidade,
@@ -43,3 +42,4 @@ public final class VeiculoConferenciaResource {
                 fileDetail);
     }
 }
+

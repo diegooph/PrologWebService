@@ -1,8 +1,8 @@
-package br.com.zalf.prolog.webservice.implantacao.conferencia.frota.veiculo;
+package br.com.zalf.prolog.webservice.interno.implantacao.conferencia.frota.veiculo;
 
 import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.commons.util.XlsxConverter;
-import br.com.zalf.prolog.webservice.implantacao.conferencia.frota.veiculo._model.VeiculoPlanilha;
+import br.com.zalf.prolog.webservice.interno.implantacao.conferencia.frota.veiculo._model.VeiculoPlanilha;
 import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvParserSettings;
 import org.apache.commons.io.FilenameUtils;

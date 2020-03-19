@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.implantacao.conferencia.frota.pneu;
+package br.com.zalf.prolog.webservice.interno.implantacao.conferencia.frota.pneu;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
@@ -7,9 +7,11 @@ import br.com.zalf.prolog.webservice.commons.util.Files;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
-import br.com.zalf.prolog.webservice.implantacao.autenticacao.ImplantacaoLoginSenhaValidator;
-import br.com.zalf.prolog.webservice.implantacao.conferencia._model.TipoImport;
-import br.com.zalf.prolog.webservice.implantacao.conferencia.frota.pneu._model.PneuPlanilha;
+import br.com.zalf.prolog.webservice.interno.autenticacao.AutenticacaoLoginSenhaValidator;
+import br.com.zalf.prolog.webservice.interno.autenticacao._model.PrologInternalUser;
+import br.com.zalf.prolog.webservice.interno.autenticacao._model.PrologInternalUserFactory;
+import br.com.zalf.prolog.webservice.interno.implantacao.conferencia._model.TipoImport;
+import br.com.zalf.prolog.webservice.interno.implantacao.conferencia.frota.pneu._model.PneuPlanilha;
 import org.apache.commons.io.IOUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.jetbrains.annotations.NotNull;
@@ -36,11 +38,15 @@ public final class PneuConferenciaService {
                                                      @NotNull final Long codEmpresa,
                                                      @NotNull final Long codUnidade,
                                                      @NotNull final InputStream fileInputStream,
-                                                     @NotNull final FormDataContentDisposition fileDetail) throws ProLogException {
+                                                     @NotNull final FormDataContentDisposition fileDetail) {
+        // Deve ficar fora do try/catch porque não queremos mascarar erros de autentação com erros do processo de
+        // import.
+        final PrologInternalUser internalUser = PrologInternalUserFactory.fromHeaderAuthorization(authorization);
+        new AutenticacaoLoginSenhaValidator().verifyUsernamePassword(internalUser);
+
         try {
-            final String usuario = new ImplantacaoLoginSenhaValidator().verifyUsernamePassword(authorization);
             final File file = createFileFromImport(codUnidade, fileInputStream, fileDetail);
-            readAndInsertImport(codEmpresa, codUnidade, usuario, file);
+            readAndInsertImport(codEmpresa, codUnidade, internalUser.getUsername(), file);
             return Response.ok("Upload realizado com sucesso!");
         } catch (final Throwable throwable) {
             Log.e(TAG, "Erro ao verificar planilha de import de pneus", throwable);
@@ -50,7 +56,6 @@ public final class PneuConferenciaService {
         }
     }
 
-    @SuppressWarnings("Duplicates")
     @NotNull
     private File createFileFromImport(@NotNull final Long codUnidade,
                                       @NotNull final InputStream fileInputStream,
@@ -64,7 +69,7 @@ public final class PneuConferenciaService {
             IOUtils.copy(fileInputStream, out);
             IOUtils.closeQuietly(out);
             return file;
-        } catch (IOException e) {
+        } catch (final IOException e) {
             Log.e(TAG, "Erro ao ler arquivo do import", e);
             throw Injection
                     .provideProLogExceptionHandler()
@@ -78,9 +83,9 @@ public final class PneuConferenciaService {
                                      @NotNull final File file) throws ProLogException {
         try {
             final List<PneuPlanilha> pneuPlanilha = PneuPlanilhaReader.readListFromCsvFilePath(file);
-            String jsonPlanilha = GsonUtils.getGson().toJson(pneuPlanilha);
+            final String jsonPlanilha = GsonUtils.getGson().toJson(pneuPlanilha);
             dao.importPlanilhaPneus(codEmpresa, codUnidade, usuario, jsonPlanilha, TipoImport.PNEU );
-        } catch (Throwable e) {
+        } catch (final Throwable e) {
             Log.e(TAG, "Erro ao enviar dados para o BD", e);
             throw Injection
                     .provideProLogExceptionHandler()

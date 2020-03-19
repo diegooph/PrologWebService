@@ -1,9 +1,9 @@
-package br.com.zalf.prolog.webservice.implantacao.conferencia.frota.veiculo;
+package br.com.zalf.prolog.webservice.interno.implantacao.conferencia.frota.veiculo;
 
-import br.com.zalf.prolog.webservice.implantacao.conferencia.ConferenciaDao;
-import br.com.zalf.prolog.webservice.implantacao.conferencia.ConferenciaDaoImpl;
-import br.com.zalf.prolog.webservice.implantacao.conferencia._model.ConferenciaDadosTabelaImport;
-import br.com.zalf.prolog.webservice.implantacao.conferencia._model.TipoImport;
+import br.com.zalf.prolog.webservice.interno.implantacao.conferencia.ConferenciaDao;
+import br.com.zalf.prolog.webservice.interno.implantacao.conferencia.ConferenciaDaoImpl;
+import br.com.zalf.prolog.webservice.interno.implantacao.conferencia._model.ConferenciaDadosTabelaImport;
+import br.com.zalf.prolog.webservice.interno.implantacao.conferencia._model.TipoImport;
 import org.jetbrains.annotations.NotNull;
 import org.postgresql.util.PGobject;
 
