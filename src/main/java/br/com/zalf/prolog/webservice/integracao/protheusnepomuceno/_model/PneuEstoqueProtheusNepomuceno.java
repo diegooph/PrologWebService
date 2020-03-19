@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Este objeto contém informações de pneus aplicados vindos do endpoint do cliente via integração.
@@ -117,19 +118,19 @@ public final class PneuEstoqueProtheusNepomuceno {
     /**
      * Atributo alfanumérico que representa o nome do modelo de banda.
      */
-    @NotNull
+    @Nullable
     private final String nomeModeloBanda;
 
     /**
      * Atributo alfanumérico que representa o código do modelo de banda.
      */
-    @NotNull
+    @Nullable
     private final String codModeloBanda;
 
     /**
      * Valor numérico da quantidade de sulcos do modelo de banda.
      */
-    @NotNull
+    @Nullable
     private final Integer qtdSulcosModeloBanda;
 
     public PneuEstoqueProtheusNepomuceno(@NotNull final String codPneu,
@@ -148,9 +149,9 @@ public final class PneuEstoqueProtheusNepomuceno {
                                          @NotNull final String nomeModeloPneu,
                                          @NotNull final String codModeloPneu,
                                          @NotNull final Integer qtdSulcosModeloPneu,
-                                         @NotNull final String nomeModeloBanda,
-                                         @NotNull final String codModeloBanda,
-                                         @NotNull final Integer qtdSulcosModeloBanda){
+                                         @Nullable final String nomeModeloBanda,
+                                         @Nullable final String codModeloBanda,
+                                         @Nullable final Integer qtdSulcosModeloBanda){
         this.codPneu = codPneu;
         this.codigoCliente = codigoCliente;
         this.codEmpresaPneu = codEmpresaPneu;
@@ -245,12 +246,12 @@ public final class PneuEstoqueProtheusNepomuceno {
     @NotNull
     public Integer getQtdSulcosModeloPneu() { return qtdSulcosModeloPneu; }
 
-    @NotNull
+    @Nullable
     public String getNomeModeloBanda() { return nomeModeloBanda; }
 
-    @NotNull
+    @Nullable
     public String getCodModeloBanda() { return codModeloBanda; }
 
-    @NotNull
+    @Nullable
     public Integer getQtdSulcosModeloBanda() { return qtdSulcosModeloBanda; }
 }

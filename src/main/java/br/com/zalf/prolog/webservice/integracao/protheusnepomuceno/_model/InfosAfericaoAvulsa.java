@@ -1,9 +1,12 @@
 package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model;
 
+import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.TipoMedicaoColetadaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.TipoProcessoColetaAfericao;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.time.LocalDateTime;
 
 /**
  * Objeto que contem as {@link InfosAfericaoAvulsa informações do pneu} e dados da última aferição.
@@ -23,7 +26,7 @@ public final class InfosAfericaoAvulsa {
      * Atributo alfanumérico que representa o código do pneu no prolog.
      */
     @Nullable
-    private final String codPneuProlog;
+    private final String codPneu;
 
     /**
      * Atributo alfanumérico que representa o código único do pneu no cliente.
@@ -32,16 +35,10 @@ public final class InfosAfericaoAvulsa {
     private final String codPneuCliente;
 
     /**
-     * Atributo alfanumérico que representa o código auxiliar do pneu, normalmente contém o número de fogo.
-     */
-    @NotNull
-    private final String codPneuAuxiliar;
-
-    /**
      * Atributo alfanumérico que representa a data da última aferição.
      */
     @NotNull
-    private final String dataHoraUltimaAfericao;
+    private final LocalDateTime dataHoraUltimaAfericao;
 
     /**
      * Atributo alfanumérico que representa o nome do último colaborador.
@@ -75,18 +72,16 @@ public final class InfosAfericaoAvulsa {
     private final String placaAplicadoQuandoAferido;
 
     public InfosAfericaoAvulsa(@NotNull final Long codUltimaAfericao,
-                               @Nullable final String codPneuProlog,
+                               @Nullable final String codPneu,
                                @NotNull final String codPneuCliente,
-                               @NotNull final String codPneuAuxiliar,
-                               @NotNull final String dataHoraUltimaAfericao,
+                               @NotNull final LocalDateTime dataHoraUltimaAfericao,
                                @NotNull final String nomeColaboradorAfericao,
                                @NotNull final TipoMedicaoColetadaAfericao tipoMedicaoColetadaAfericao,
                                @NotNull final TipoProcessoColetaAfericao tipoProcessoColetaAfericao,
                                @Nullable final String placaAplicadoQuandoAferido) {
         this.codUltimaAfericao = codUltimaAfericao;
-        this.codPneuProlog = codPneuProlog;
+        this.codPneu = codPneu;
         this.codPneuCliente = codPneuCliente;
-        this.codPneuAuxiliar = codPneuAuxiliar;
         this.dataHoraUltimaAfericao = dataHoraUltimaAfericao;
         this.nomeColaboradorAfericao = nomeColaboradorAfericao;
         this.tipoMedicaoColetadaAfericao = tipoMedicaoColetadaAfericao;
@@ -95,13 +90,12 @@ public final class InfosAfericaoAvulsa {
     }
 
     @NotNull
-    public static InfosAfericaoAvulsa getInfosAfericaoAvulsaDummy(){
+    public static InfosAfericaoAvulsa getInfosAfericaoAvulsaDummy() {
         return new InfosAfericaoAvulsa(
                 1L,
                 "1",
-                "1",
                 "P0001",
-                "2020-03-13 08:00:00",
+                Now.localDateTimeUtc(),
                 "John Doe",
                 TipoMedicaoColetadaAfericao.SULCO_PRESSAO,
                 TipoProcessoColetaAfericao.PLACA,
@@ -110,29 +104,42 @@ public final class InfosAfericaoAvulsa {
     }
 
     @NotNull
-    public Long getCodUltimaAfericao() { return codUltimaAfericao; }
+    public Long getCodUltimaAfericao() {
+        return codUltimaAfericao;
+    }
 
     @Nullable
-    public String getCodPneuProlog() { return codPneuProlog; }
+    public String getCodPneu() {
+        return codPneu;
+    }
 
     @NotNull
-    public String getCodPneuCliente() { return codPneuCliente; }
+    public String getCodPneuCliente() {
+        return codPneuCliente;
+    }
 
     @NotNull
-    public String getCodPneuAuxiliar() { return codPneuAuxiliar; }
+    public LocalDateTime getDataHoraUltimaAfericao() {
+        return dataHoraUltimaAfericao;
+    }
 
     @NotNull
-    public String getDataHoraUltimaAfericao() { return dataHoraUltimaAfericao; }
+    public String getNomeColaboradorAfericao() {
+        return nomeColaboradorAfericao;
+    }
 
     @NotNull
-    public String getNomeColaboradorAfericao() { return nomeColaboradorAfericao; }
+    public TipoMedicaoColetadaAfericao getTipoMedicaoColetadaAfericao() {
+        return tipoMedicaoColetadaAfericao;
+    }
 
     @NotNull
-    public TipoMedicaoColetadaAfericao getTipoMedicaoColetadaAfericao() { return tipoMedicaoColetadaAfericao; }
-
-    @NotNull
-    public TipoProcessoColetaAfericao getTipoProcessoColetaAfericao() { return tipoProcessoColetaAfericao; }
+    public TipoProcessoColetaAfericao getTipoProcessoColetaAfericao() {
+        return tipoProcessoColetaAfericao;
+    }
 
     @Nullable
-    public String getPlacaAplicadoQuandoAferido() { return placaAplicadoQuandoAferido; }
+    public String getPlacaAplicadoQuandoAferido() {
+        return placaAplicadoQuandoAferido;
+    }
 }

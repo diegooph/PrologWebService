@@ -14,6 +14,7 @@ import com.google.common.collect.HashBiMap;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -98,28 +99,6 @@ public final class SistemaProtheusNepomucenoDaoImpl extends DatabaseConnection i
                 infosAfericaoAvulsa.add(createInfosAfericaoAvulsa(rSet));
             }
             return infosAfericaoAvulsa;
-        } finally {
-            close(stmt, rSet);
-        }
-    }
-
-    @NotNull
-    @Override
-    public String getCodFiliais(@NotNull final Connection conn,
-                                @NotNull final List<Long> codUnidades) throws Throwable {
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            stmt = conn.prepareStatement("SELECT STRING_AGG(COD_AUXILIAR, '_') AS COD_AUXILIAR " +
-                    "FROM PUBLIC.UNIDADE WHERE CODIGO = ANY(?);");
-            stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                return rSet.getString("COD_AUXILIAR");
-            } else {
-                throw new SQLException("Nenhum código de filial mapeado para as unidades:\n" +
-                        "codUnidades: " + codUnidades.toString());
-            }
         } finally {
             close(stmt, rSet);
         }
@@ -436,6 +415,28 @@ public final class SistemaProtheusNepomucenoDaoImpl extends DatabaseConnection i
         }
     }
 
+    @NotNull
+    @Override
+    public String getCodFiliais(@NotNull final Connection conn,
+                                @NotNull final List<Long> codUnidades) throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = conn.prepareStatement("SELECT STRING_AGG(COD_AUXILIAR, '_') AS COD_AUXILIAR " +
+                    "FROM PUBLIC.UNIDADE WHERE CODIGO = ANY(?);");
+            stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return rSet.getString("COD_AUXILIAR");
+            } else {
+                throw new SQLException("Nenhum código de filial mapeado para as unidades:\n" +
+                        "codUnidades: " + codUnidades.toString());
+            }
+        } finally {
+            close(stmt, rSet);
+        }
+    }
+
     @SuppressWarnings("ConstantConditions")
     private void internalInsertValoresAfericao(@NotNull final Connection conn,
                                                @NotNull final Long codAfericaoInserida,
@@ -504,10 +505,9 @@ public final class SistemaProtheusNepomucenoDaoImpl extends DatabaseConnection i
     private InfosAfericaoAvulsa createInfosAfericaoAvulsa(@NotNull final ResultSet rSet) throws Throwable {
         return new InfosAfericaoAvulsa(
                 rSet.getLong("CODIGO_ULTIMA_AFERICAO"),
-                rSet.getString("COD_PNEU_PROLOG"),
+                rSet.getString("COD_PNEU"),
                 rSet.getString("COD_PNEU_CLIENTE"),
-                rSet.getString("COD_PNEU_CLIENTE_AUXILIAR"),
-                rSet.getString("DATA_HORA_ULTIMA_AFERICAO"),
+                rSet.getObject("DATA_HORA_ULTIMA_AFERICAO", LocalDateTime.class),
                 rSet.getString("NOME_COLABORADOR_AFERICAO"),
                 TipoMedicaoColetadaAfericao.fromString(rSet.getString("TIPO_MEDICAO_COLETADA")),
                 TipoProcessoColetaAfericao.fromString(rSet.getString("TIPO_PROCESSO_COLETA")),

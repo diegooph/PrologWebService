@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Este objeto contém informações de pneus aplicados vindos do endpoint do cliente via integração.
@@ -121,21 +122,24 @@ public final class PneuAplicadoProtheusNepomuceno {
     private final Integer qtdSulcosModeloPneu;
 
     /**
-     * Atributo alfanumérico que representa o nome do modelo de banda.
+     * Atributo alfanumérico que representa o nome do modelo de banda. Esse valor será nulo caso o pneu nunca tenha
+     * sido recapado.
      */
-    @NotNull
+    @Nullable
     private final String nomeModeloBanda;
 
     /**
-     * Atributo alfanumérico que representa o código do modelo de banda.
+     * Atributo alfanumérico que representa o código do modelo de banda. Esse valor será nulo caso o pneu nunca tenha
+     * sido recapado.
      */
-    @NotNull
+    @Nullable
     private final String codModeloBanda;
 
     /**
-     * Valor numérico da quantidade de sulcos do modelo de banda.
+     * Valor numérico da quantidade de sulcos do modelo de banda. Esse valor será nulo caso o pneu nunca tenha
+     * sido recapado.
      */
-    @NotNull
+    @Nullable
     private final Integer qtdSulcosModeloBanda;
 
     /**
@@ -161,9 +165,9 @@ public final class PneuAplicadoProtheusNepomuceno {
                                           @NotNull final String nomeModeloPneu,
                                           @NotNull final String codModeloPneu,
                                           @NotNull final Integer qtdSulcosModeloPneu,
-                                          @NotNull final String nomeModeloBanda,
-                                          @NotNull final String codModeloBanda,
-                                          @NotNull final Integer qtdSulcosModeloBanda,
+                                          @Nullable final String nomeModeloBanda,
+                                          @Nullable final String codModeloBanda,
+                                          @Nullable final Integer qtdSulcosModeloBanda,
                                           @NotNull final Boolean isPneuEstepe) {
         this.codPneu = codPneu;
         this.codigoCliente = codigoCliente;
@@ -300,17 +304,17 @@ public final class PneuAplicadoProtheusNepomuceno {
         return qtdSulcosModeloPneu;
     }
 
-    @NotNull
+    @Nullable
     public String getNomeModeloBanda() {
         return nomeModeloBanda;
     }
 
-    @NotNull
+    @Nullable
     public String getCodModeloBanda() {
         return codModeloBanda;
     }
 
-    @NotNull
+    @Nullable
     public Integer getQtdSulcosModeloBanda() {
         return qtdSulcosModeloBanda;
     }

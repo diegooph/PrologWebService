@@ -86,16 +86,15 @@ public final class SistemaProtheusNepomuceno extends Sistema {
             // Podemos, com toda certeza, utilizar codUnidades.get(0) pois no mínimo teremos uma unidade nesta lista.
             final Long codEmpresa = getIntegradorProLog().getCodEmpresaByCodUnidadeProLog(conn, codUnidades.get(0));
 
-            final SistemaProtheusNepomucenoDaoImpl sistemaProtheusNepomucenoDaoImpl =
-                    new SistemaProtheusNepomucenoDaoImpl();
+            final SistemaProtheusNepomucenoDaoImpl sistema = new SistemaProtheusNepomucenoDaoImpl();
             final Map<String, InfosUnidadeRestricao> unidadeRestricao =
-                    sistemaProtheusNepomucenoDaoImpl.getInfosUnidadeRestricao(conn, codUnidades);
+                    sistema.getInfosUnidadeRestricao(conn, codUnidades);
             final Map<String, InfosTipoVeiculoConfiguracaoAfericao> tipoVeiculoConfiguracao =
-                    sistemaProtheusNepomucenoDaoImpl.getInfosTipoVeiculoConfiguracaoAfericao(conn, codUnidades);
+                    sistema.getInfosTipoVeiculoConfiguracaoAfericao(conn, codUnidades);
 
             final String url = getIntegradorProLog()
                     .getUrl(conn, codEmpresa, getSistemaKey(), MetodoIntegrado.GET_VEICULOS_CRONOGRAMA_AFERICAO);
-            final String codFiliais = sistemaProtheusNepomucenoDaoImpl.getCodFiliais(conn, codUnidades);
+            final String codFiliais = sistema.getCodFiliais(conn, codUnidades);
             final List<VeiculoListagemProtheusNepomuceno> listagemVeiculos =
                     requester.getListagemVeiculosUnidadesSelecionadas(url, codFiliais);
             final List<String> placasNepomuceno = listagemVeiculos.stream()
@@ -104,7 +103,7 @@ public final class SistemaProtheusNepomuceno extends Sistema {
                     .collect(Collectors.toList());
 
             final Map<String, InfosAfericaoRealizadaPlaca> afericaoRealizadaPlaca =
-                    sistemaProtheusNepomucenoDaoImpl.getInfosAfericaoRealizadaPlaca(conn, codEmpresa, placasNepomuceno);
+                    sistema.getInfosAfericaoRealizadaPlaca(conn, codEmpresa, placasNepomuceno);
 
             // Aqui começamos a montar o cronograma
             final Map<String, ModeloPlacasAfericao> modelosEstruturaVeiculo = new HashMap<>();

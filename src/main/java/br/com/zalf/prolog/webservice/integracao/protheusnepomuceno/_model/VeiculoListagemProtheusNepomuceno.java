@@ -2,14 +2,14 @@ package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model;
 
 import org.jetbrains.annotations.NotNull;
 
+import static br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.ProtheusNepomucenoConstants.DEFAULT_EMPRESA_FILIAL_SEPARERTOR;
+
 /**
  * Created on 11/03/20
  *
  * @author Wellington Moraes (https://github.com/wvinim)
  */
 public final class VeiculoListagemProtheusNepomuceno {
-    @NotNull
-    private static final String EMPRESA_FILIAL_SEPARATOR = ":";
     /**
      * Atributo alfanumérico que representa a placa
      */
@@ -160,6 +160,6 @@ public final class VeiculoListagemProtheusNepomuceno {
 
     @NotNull
     public String getCodEmpresaFilialVeiculo() {
-        return this.getCodEmpresaVeiculo().concat(EMPRESA_FILIAL_SEPARATOR).concat(this.getCodFilialVeiculo());
+        return this.getCodEmpresaVeiculo().concat(DEFAULT_EMPRESA_FILIAL_SEPARERTOR).concat(this.getCodFilialVeiculo());
     }
 }
