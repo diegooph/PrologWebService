@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos;
 
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoEdicao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoInsercao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoVisualizacaoListagem;
 import org.jetbrains.annotations.NotNull;
@@ -50,5 +51,8 @@ public interface MotivoDao {
     List<MotivoVisualizacaoListagem> getMotivosListagem(@NotNull final Long codEmpresa,
                                                         @Nullable final Boolean apenasAtivos,
                                                         @NotNull String tokenAutenticacao) throws Throwable;
+
+    @Nullable
+    void update(@NotNull MotivoEdicao motivoEdicao);
 
 }
