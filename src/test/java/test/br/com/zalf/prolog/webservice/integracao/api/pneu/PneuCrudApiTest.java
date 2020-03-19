@@ -67,13 +67,17 @@ public final class PneuCrudApiTest extends BaseTest {
     }
 
     @NotNull
-    private Long geraValorAleatorio() {
+    private Long geraCodSistemaIntegrado() {
         return RANDOM.nextLong();
+    }
+
+    private String geraCodCliente() {
+        return "PN"+RANDOM.nextInt(999999);
     }
 
     @Test
     @DisplayName("Teste Inserção Carga Inicial de Pneus sem erros")
-    void adicionaCargaInicia3lPneuSemErroTest() throws Throwable {
+    void adicionaCargaInicialPneuSemErroTest() throws Throwable {
         //Cenário
         final List<ApiPneuCargaInicial> cargaInicial = new ArrayList<>();
         cargaInicial.add(criaPneuSemErroComCodigoClienteValido());
@@ -142,8 +146,8 @@ public final class PneuCrudApiTest extends BaseTest {
         final Long codUnidade = 909090L;
         final List<ApiPneuCargaInicial> cargaInicial = new ArrayList<>();
         cargaInicial.add(new ApiPneuCargaInicial(
-                geraValorAleatorio(),
-                geraValorAleatorio().toString(),
+                geraCodSistemaIntegrado(),
+                geraCodCliente(),
                 codUnidade,
                 129L,
                 1L,
@@ -178,8 +182,8 @@ public final class PneuCrudApiTest extends BaseTest {
         final Long codModeloPneu = 5754343L;
         final List<ApiPneuCargaInicial> cargaInicial = new ArrayList<>();
         cargaInicial.add(new ApiPneuCargaInicial(
-                geraValorAleatorio(),
-                geraValorAleatorio().toString(),
+                geraCodSistemaIntegrado(),
+                geraCodCliente(),
                 5L,
                 codModeloPneu,
                 1L,
@@ -214,8 +218,8 @@ public final class PneuCrudApiTest extends BaseTest {
         final Long codDimensao = 4543235L;
         final List<ApiPneuCargaInicial> cargaInicial = new ArrayList<>();
         cargaInicial.add(new ApiPneuCargaInicial(
-                geraValorAleatorio(),
-                geraValorAleatorio().toString(),
+                geraCodSistemaIntegrado(),
+                geraCodCliente(),
                 5L,
                 129L,
                 codDimensao,
@@ -250,8 +254,8 @@ public final class PneuCrudApiTest extends BaseTest {
         final Double codPressao = -120.0;
         final List<ApiPneuCargaInicial> cargaInicial = new ArrayList<>();
         cargaInicial.add(new ApiPneuCargaInicial(
-                geraValorAleatorio(),
-                geraValorAleatorio().toString(),
+                geraCodSistemaIntegrado(),
+                geraCodCliente(),
                 5L,
                 129L,
                 1L,
@@ -286,8 +290,8 @@ public final class PneuCrudApiTest extends BaseTest {
         final BigDecimal valorPneu = new BigDecimal(-1);
         final List<ApiPneuCargaInicial> cargaInicial = new ArrayList<>();
         cargaInicial.add(new ApiPneuCargaInicial(
-                geraValorAleatorio(),
-                geraValorAleatorio().toString(),
+                geraCodSistemaIntegrado(),
+                geraCodCliente(),
                 5L,
                 129L,
                 1L,
@@ -322,8 +326,8 @@ public final class PneuCrudApiTest extends BaseTest {
         final int vidaAtual = 5;
         final List<ApiPneuCargaInicial> cargaInicial = new ArrayList<>();
         cargaInicial.add(new ApiPneuCargaInicial(
-                geraValorAleatorio(),
-                geraValorAleatorio().toString(),
+                geraCodSistemaIntegrado(),
+                geraCodCliente(),
                 5L,
                 129L,
                 1L,
@@ -358,8 +362,8 @@ public final class PneuCrudApiTest extends BaseTest {
         final Long modeloBanda = -1L;
         final List<ApiPneuCargaInicial> cargaInicial = new ArrayList<>();
         cargaInicial.add(new ApiPneuCargaInicial(
-                geraValorAleatorio(),
-                geraValorAleatorio().toString(),
+                geraCodSistemaIntegrado(),
+                geraCodCliente(),
                 5L,
                 129L,
                 1L,
@@ -394,8 +398,8 @@ public final class PneuCrudApiTest extends BaseTest {
         final BigDecimal valorBanda = new BigDecimal(-1);
         final List<ApiPneuCargaInicial> cargaInicial = new ArrayList<>();
         cargaInicial.add(new ApiPneuCargaInicial(
-                geraValorAleatorio(),
-                geraValorAleatorio().toString(),
+                geraCodSistemaIntegrado(),
+                geraCodCliente(),
                 5L,
                 129L,
                 1L,
@@ -430,8 +434,8 @@ public final class PneuCrudApiTest extends BaseTest {
         final String placaVeiculo = "OOO9891";
         final List<ApiPneuCargaInicial> cargaInicial = new ArrayList<>();
         cargaInicial.add(new ApiPneuCargaInicial(
-                geraValorAleatorio(),
-                geraValorAleatorio().toString(),
+                geraCodSistemaIntegrado(),
+                geraCodCliente(),
                 5L,
                 129L,
                 1L,
@@ -466,8 +470,8 @@ public final class PneuCrudApiTest extends BaseTest {
         final int posicaoPneu = 7777;
         final List<ApiPneuCargaInicial> cargaInicial = new ArrayList<>();
         cargaInicial.add(new ApiPneuCargaInicial(
-                geraValorAleatorio(),
-                geraValorAleatorio().toString(),
+                geraCodSistemaIntegrado(),
+                geraCodCliente(),
                 5L,
                 129L,
                 1L,
@@ -660,8 +664,8 @@ public final class PneuCrudApiTest extends BaseTest {
         final Long codUnidade = 11153423L;
         //Cenário
         final ApiPneuCadastro apiPneuCadastro = new ApiPneuCadastro(
-                geraValorAleatorio(),
-                geraValorAleatorio().toString(),
+                geraCodSistemaIntegrado(),
+                geraCodCliente(),
                 codUnidade,
                 129L,
                 1L,
@@ -689,8 +693,8 @@ public final class PneuCrudApiTest extends BaseTest {
         final Long codModelo = 909090L;
         //Cenário
         final ApiPneuCadastro apiPneuCadastro = new ApiPneuCadastro(
-                geraValorAleatorio(),
-                geraValorAleatorio().toString(),
+                geraCodSistemaIntegrado(),
+                geraCodCliente(),
                 5L,
                 codModelo,
                 1L,
@@ -719,8 +723,8 @@ public final class PneuCrudApiTest extends BaseTest {
         final Long codModeloBanda = -1L;
         //Cenário
         final ApiPneuCadastro apiPneuCadastro = new ApiPneuCadastro(
-                geraValorAleatorio(),
-                geraValorAleatorio().toString(),
+                geraCodSistemaIntegrado(),
+                geraCodCliente(),
                 5L,
                 129L,
                 1L,
@@ -749,8 +753,8 @@ public final class PneuCrudApiTest extends BaseTest {
         final Long codDimensao = 9999999L;
         //Cenário
         final ApiPneuCadastro apiPneuCadastro = new ApiPneuCadastro(
-                geraValorAleatorio(),
-                geraValorAleatorio().toString(),
+                geraCodSistemaIntegrado(),
+                geraCodCliente(),
                 5L,
                 129L,
                 codDimensao,
@@ -779,8 +783,8 @@ public final class PneuCrudApiTest extends BaseTest {
         //Cenário
         final Double pressaoPneu = -120.0;
         final ApiPneuCadastro apiPneuCadastro = new ApiPneuCadastro(
-                geraValorAleatorio(),
-                geraValorAleatorio().toString(),
+                geraCodSistemaIntegrado(),
+                geraCodCliente(),
                 5L,
                 129L,
                 1L,
@@ -809,8 +813,8 @@ public final class PneuCrudApiTest extends BaseTest {
         //Cenário
         final int vidaAtual = 5;
         final ApiPneuCadastro apiPneuCadastro = new ApiPneuCadastro(
-                geraValorAleatorio(),
-                geraValorAleatorio().toString(),
+                geraCodSistemaIntegrado(),
+                geraCodCliente(),
                 5L,
                 129L,
                 1L,
@@ -838,8 +842,8 @@ public final class PneuCrudApiTest extends BaseTest {
     void adicionaPneuComErroVidaTotalInvalidaTest() {
         //Cenário
         final ApiPneuCadastro apiPneuCadastro = new ApiPneuCadastro(
-                geraValorAleatorio(),
-                geraValorAleatorio().toString(),
+                geraCodSistemaIntegrado(),
+                geraCodCliente(),
                 5L,
                 129L,
                 1L,
@@ -868,8 +872,8 @@ public final class PneuCrudApiTest extends BaseTest {
         //Cenário
         final BigDecimal valor = new BigDecimal(-1.00);
         final ApiPneuCadastro apiPneuCadastro = new ApiPneuCadastro(
-                geraValorAleatorio(),
-                geraValorAleatorio().toString(),
+                geraCodSistemaIntegrado(),
+                geraCodCliente(),
                 5L,
                 129L,
                 1L,
@@ -898,8 +902,8 @@ public final class PneuCrudApiTest extends BaseTest {
         //Cenário
         final BigDecimal valor = new BigDecimal(-1.00);
         final ApiPneuCadastro apiPneuCadastro = new ApiPneuCadastro(
-                geraValorAleatorio(),
-                geraValorAleatorio().toString(),
+                geraCodSistemaIntegrado(),
+                geraCodCliente(),
                 5L,
                 129L,
                 1L,
@@ -1005,7 +1009,8 @@ public final class PneuCrudApiTest extends BaseTest {
 
         //Verificações
         assertThat(throwable.getMessage())
-                .isEqualTo("O pneu de código interno " + codSistemaIntegrado + " não está mapeado no Sistema ProLog");
+                .isEqualTo("O pneu de código interno " + codSistemaIntegrado + " não está mapeado no " +
+                        "Sistema ProLog");
     }
 
     @Test
@@ -1408,8 +1413,8 @@ public final class PneuCrudApiTest extends BaseTest {
     @NotNull
     private ApiPneuCargaInicial criaPneuSemErroComCodigoClienteValido() {
         return new ApiPneuCargaInicial(
-                geraValorAleatorio(),
-                geraValorAleatorio().toString(),
+                geraCodSistemaIntegrado(),
+                geraCodCliente(),
                 5L,
                 129L,
                 1L,
@@ -1429,8 +1434,8 @@ public final class PneuCrudApiTest extends BaseTest {
     @NotNull
     private ApiPneuCargaInicial criaPneuSemErroComUnidadeValida() {
         return new ApiPneuCargaInicial(
-                geraValorAleatorio(),
-                geraValorAleatorio().toString(),
+                geraCodSistemaIntegrado(),
+                geraCodCliente(),
                 5L,
                 129L,
                 1L,
@@ -1450,8 +1455,8 @@ public final class PneuCrudApiTest extends BaseTest {
     @NotNull
     private ApiPneuCargaInicial criaPneuSemErroComModeloPneuValido() {
         return new ApiPneuCargaInicial(
-                geraValorAleatorio(),
-                geraValorAleatorio().toString(),
+                geraCodSistemaIntegrado(),
+                geraCodCliente(),
                 5L,
                 129L,
                 1L,
@@ -1471,8 +1476,8 @@ public final class PneuCrudApiTest extends BaseTest {
     @NotNull
     private ApiPneuCargaInicial criaPneuSemErroComDimensaoValida() {
         return new ApiPneuCargaInicial(
-                geraValorAleatorio(),
-                geraValorAleatorio().toString(),
+                geraCodSistemaIntegrado(),
+                geraCodCliente(),
                 5L,
                 129L,
                 1L,
@@ -1492,8 +1497,8 @@ public final class PneuCrudApiTest extends BaseTest {
     @NotNull
     private ApiPneuCargaInicial criaPneuSemErroComPressaoValida() {
         return new ApiPneuCargaInicial(
-                geraValorAleatorio(),
-                geraValorAleatorio().toString(),
+                geraCodSistemaIntegrado(),
+                geraCodCliente(),
                 5L,
                 129L,
                 1L,
@@ -1513,8 +1518,8 @@ public final class PneuCrudApiTest extends BaseTest {
     @NotNull
     private ApiPneuCargaInicial criaPneuSemErroComVidaAtualValida() {
         return new ApiPneuCargaInicial(
-                geraValorAleatorio(),
-                geraValorAleatorio().toString(),
+                geraCodSistemaIntegrado(),
+                geraCodCliente(),
                 5L,
                 129L,
                 1L,
@@ -1534,8 +1539,8 @@ public final class PneuCrudApiTest extends BaseTest {
     @NotNull
     private ApiPneuCargaInicial criaPneuSemErroComDotValido() {
         return new ApiPneuCargaInicial(
-                geraValorAleatorio(),
-                geraValorAleatorio().toString(),
+                geraCodSistemaIntegrado(),
+                geraCodCliente(),
                 5L,
                 129L,
                 1L,
@@ -1555,8 +1560,8 @@ public final class PneuCrudApiTest extends BaseTest {
     @NotNull
     private ApiPneuCargaInicial criaPneuSemErroComModeloDeBandaValido() {
         return new ApiPneuCargaInicial(
-                geraValorAleatorio(),
-                geraValorAleatorio().toString(),
+                geraCodSistemaIntegrado(),
+                geraCodCliente(),
                 5L,
                 129L,
                 1L,
@@ -1576,8 +1581,8 @@ public final class PneuCrudApiTest extends BaseTest {
     @NotNull
     private ApiPneuCargaInicial criaPneuSemErroComPlacaPneuValida() {
         return new ApiPneuCargaInicial(
-                geraValorAleatorio(),
-                geraValorAleatorio().toString(),
+                geraCodSistemaIntegrado(),
+                geraCodCliente(),
                 5L,
                 129L,
                 1L,
@@ -1597,8 +1602,8 @@ public final class PneuCrudApiTest extends BaseTest {
     @NotNull
     private ApiPneuCargaInicial criaPneuSemErroComPosicaoPneuValida() {
         return new ApiPneuCargaInicial(
-                geraValorAleatorio(),
-                geraValorAleatorio().toString(),
+                geraCodSistemaIntegrado(),
+                geraCodCliente(),
                 5L,
                 129L,
                 1L,
@@ -1619,8 +1624,8 @@ public final class PneuCrudApiTest extends BaseTest {
     @NotNull
     private ApiPneuCadastro criaPneuParaInsertSemErro() {
         return new ApiPneuCadastro(
-                geraValorAleatorio(),
-                geraValorAleatorio().toString(),
+                geraCodSistemaIntegrado(),
+                geraCodCliente(),
                 5L,
                 129L,
                 1L,
