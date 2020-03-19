@@ -1034,28 +1034,29 @@ public final class PneuCrudApiTest extends BaseTest {
 
     @Test
     @DisplayName("Teste atualiza status do pneu com código modelo de banda inválido")
-    void atualizaStatusPneuComErroCodigoModeloBandaInvalidoTest() {
-        final Long codModeloPneu = 10908787L;
+    void atualizaStatusPneuComErroCodigoModeloBandaInvalidoTest() throws Throwable {
+        final Long codModeloBandaPneu = 10908787L;
+        //Busca Pneu
+        ApiPneuCadastro apiPneuCadastro = buscaPneuUnidade( 5L, COD_EMPRESA);
         //Cenário
         final List<ApiPneuAlteracaoStatus> apiPneuAlteracaoStatus = new ArrayList<>();
-        apiPneuAlteracaoStatus.add(new ApiPneuAlteracaoStatusDescarte(
-                4650994675804429900L,
-                "-5565091848701232116",
-                5L,
+        apiPneuAlteracaoStatus.add(new ApiPneuAlteracaoStatusEstoque(
+                apiPneuCadastro.getCodigoSistemaIntegrado(),
+                apiPneuCadastro.getCodigoCliente(),
+                apiPneuCadastro.getCodUnidadePneu(),
                 "12345678910",
                 LocalDateTime.now(),
                 true,
-                codModeloPneu,
+                codModeloBandaPneu,
                 new BigDecimal(69.00)));
-
         //Excecução
         final Throwable throwable = assertThrows(
                 ProLogException.class,
                 () -> new ApiPneuService().atualizaStatusPneus(TOKEN_INTEGRACAO, apiPneuAlteracaoStatus));
-
         //Verificações
         assertThat(throwable.getMessage())
-                .isEqualTo("O modelo da banda do pneu " + codModeloPneu + " não está mapeado no Sistema ProLog");
+                .isEqualTo("O modelo da banda do pneu " + codModeloBandaPneu + " não está mapeado no " +
+                        "Sistema ProLog");
     }
 
     //Métodos com acesso ao banco de dados.
@@ -1164,6 +1165,56 @@ public final class PneuCrudApiTest extends BaseTest {
             if (rSet.next()) {
                 apiPneuCargaInicial = new ApiPneuCadastro(
                         codSistemaIntegrado,
+                        rSet.getString("CODIGO_CLIENTE"),
+                        rSet.getLong("COD_UNIDADE"),
+                        rSet.getLong("COD_MODELO"),
+                        rSet.getLong("COD_DIMENSAO"),
+                        rSet.getDouble("PRESSAO_RECOMENDADA"),
+                        rSet.getInt("VIDA_ATUAL"),
+                        rSet.getInt("VIDA_TOTAL"),
+                        rSet.getString("DOT"),
+                        rSet.getBigDecimal("VALOR"),
+                        rSet.getBoolean("PNEU_NOVO_NUNCA_RODADO"),
+                        rSet.getLong("COD_MODELO_BANDA"),
+                        new BigDecimal(0)
+                );
+            }
+            return apiPneuCargaInicial;
+        } catch (final Throwable throwable) {
+            throw new SQLException("Erro ao buscar informações do pneu");
+        } finally {
+            connectionProvider.closeResources(conn, stmt, rSet);
+        }
+    }
+    //Método responsável por pegar dados pneu.
+    private ApiPneuCadastro buscaPneuUnidade(@NotNull final Long codUnidade,
+                                             @NotNull Long codEmpresa) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        ApiPneuCadastro apiPneuCargaInicial = null;
+        try {
+            conn = connectionProvider.provideDatabaseConnection();
+            stmt = conn.prepareStatement("SELECT P.CODIGO_CLIENTE,\n" +
+                    "       P.COD_UNIDADE,\n" +
+                    "       P.COD_MODELO,\n" +
+                    "       P.COD_DIMENSAO,\n" +
+                    "       P.PRESSAO_RECOMENDADA,\n" +
+                    "       P.VIDA_ATUAL,\n" +
+                    "       P.VIDA_TOTAL,\n" +
+                    "       P.DOT,\n" +
+                    "       P.VALOR,\n" +
+                    "       P.PNEU_NOVO_NUNCA_RODADO,\n" +
+                    "       P.COD_MODELO_BANDA,\n" +
+                    "       IP.COD_PNEU_SISTEMA_INTEGRADO\n" +
+                    "FROM PNEU_DATA P JOIN INTEGRACAO.PNEU_CADASTRADO IP ON IP.COD_PNEU_CADASTRO_PROLOG = P.CODIGO " +
+                    "WHERE P.COD_EMPRESA = ? AND P.COD_UNIDADE = ?;");
+            stmt.setLong(1, codEmpresa);
+            stmt.setLong(2, codUnidade);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                apiPneuCargaInicial = new ApiPneuCadastro(
+                        rSet.getLong("COD_PNEU_SISTEMA_INTEGRADO"),
                         rSet.getString("CODIGO_CLIENTE"),
                         rSet.getLong("COD_UNIDADE"),
                         rSet.getLong("COD_MODELO"),
