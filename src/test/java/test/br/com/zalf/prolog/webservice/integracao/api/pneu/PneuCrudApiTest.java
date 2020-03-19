@@ -982,13 +982,15 @@ public final class PneuCrudApiTest extends BaseTest {
 
     @Test
     @DisplayName("Teste Atualiza status do pneu com erro no código sistema integrado")
-    void atualizaStatusPneuComErroCodSistemaIntegradoTest() {
+    void atualizaStatusPneuComErroCodSistemaIntegradoTest() throws Throwable {
         final Long codSistemaIntegrado = 611772312L;
+        //Busca Pneu
+        ApiPneuCadastro apiPneuCadastro = buscaPneuUnidade( 5L, COD_EMPRESA);
         //Cenário
         final List<ApiPneuAlteracaoStatus> apiPneuAlteracaoStatus = new ArrayList<>();
         apiPneuAlteracaoStatus.add(new ApiPneuAlteracaoStatusAnalise(
                 codSistemaIntegrado,
-                "71157",
+                apiPneuCadastro.getCodigoCliente(),
                 5L,
                 "03383283194",
                 LocalDateTime.now(),
@@ -1008,13 +1010,15 @@ public final class PneuCrudApiTest extends BaseTest {
 
     @Test
     @DisplayName("Teste atualiza status do pneu com código unidade inválido")
-    void atualizaStatusPneuComErroCodigoUnidadeInvalidoTest() {
+    void atualizaStatusPneuComErroCodigoUnidadeInvalidoTest() throws Throwable {
         final Long codUnidade = 115431234L;
+        //Busca Pneu
+        ApiPneuCadastro apiPneuCadastro = buscaPneuUnidade( 5L, COD_EMPRESA);
         //Cenário
         final List<ApiPneuAlteracaoStatus> apiPneuAlteracaoStatus = new ArrayList<>();
         apiPneuAlteracaoStatus.add(new ApiPneuAlteracaoStatusDescarte(
-                94617L,
-                "71157",
+                apiPneuCadastro.getCodigoSistemaIntegrado(),
+                apiPneuCadastro.getCodigoCliente(),
                 codUnidade,
                 "12345678910",
                 LocalDateTime.now(),
