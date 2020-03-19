@@ -2,7 +2,7 @@ Change Log
 ==========
 
 <a name="v1.0.24"></a>
-## Version [v1.0.24](https://github.com/luizfp/PrologWebService/compare/v1.0.23...v1.024) (release-date) [unreleased]
+## Version [v1.0.24](https://github.com/luizfp/PrologWebService/compare/v1.0.23...v1.0.24) (release-date) [unreleased]
 
 
 <a name="v1.0.23"></a>
