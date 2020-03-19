@@ -38,9 +38,9 @@ public final class DatabaseManager {
 //    private static final String TESTE_URL = "jdbc:postgresql://192.168.0.180:5432/prolog_delecao_checklist_1";
 //    private static final String TESTE_URL = "jdbc:postgresql://0.tcp.ngrok.io:16464/prolog_integracao_piccolotur_globus_1";
 //    private static final String TESTE_URL = "jdbc:postgresql://192.168.0.180:5432/prolog_integracao_rodalog_2";
-    private static final String TESTE_URL = "jdbc:postgresql://localhost:5432/prolog_clone_prod_janeiro_8_v1";
-    private static final String TESTE_USUARIO = "luiz";
-    private static final String TESTE_SENHA = "postgres";
+    private static final String TESTE_URL = "jdbc:postgresql://prolog-testes.csg59phgb0xp.sa-east-1.rds.amazonaws.com:5432/prolog_database_julho";
+    private static final String TESTE_USUARIO = "prolog_user_natan";
+    private static final String TESTE_SENHA = "aferequevai";
 
     private static DatabaseManager singleton;
     @NotNull
