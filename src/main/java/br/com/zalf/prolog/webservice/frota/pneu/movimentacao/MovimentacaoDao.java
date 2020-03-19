@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.movimentacao;
 
+import br.com.zalf.prolog.webservice.customfields.CampoPersonalizadoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.ProcessoMovimentacao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.motivo.Motivo;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoDao;
@@ -18,6 +19,7 @@ public interface MovimentacaoDao {
 
     @NotNull
     Long insert(@NotNull final ServicoDao servicoDao,
+                @NotNull final CampoPersonalizadoDao campoPersonalizadoDao,
                 @NotNull final ProcessoMovimentacao processoMovimentacao,
                 @NotNull final OffsetDateTime dataHoraMovimentacao,
                 final boolean fecharServicosAutomaticamente) throws Throwable;
@@ -25,6 +27,7 @@ public interface MovimentacaoDao {
     @NotNull
     Long insert(@NotNull final Connection conn,
                 @NotNull final ServicoDao servicoDao,
+                @NotNull final CampoPersonalizadoDao campoPersonalizadoDao,
                 @NotNull final ProcessoMovimentacao processoMovimentacao,
                 @NotNull final OffsetDateTime dataHoraMovimentacao,
                 final boolean fecharServicosAutomaticamente) throws Throwable;

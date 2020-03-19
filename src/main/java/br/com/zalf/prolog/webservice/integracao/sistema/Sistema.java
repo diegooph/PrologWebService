@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.sistema;
 
 import br.com.zalf.prolog.webservice.commons.report.Report;
+import br.com.zalf.prolog.webservice.customfields.CampoPersonalizadoDao;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.TipoChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
@@ -46,7 +47,7 @@ public abstract class Sistema implements OperacoesIntegradas {
     @NotNull
     private final String userToken;
 
-    protected Sistema(IntegradorProLog integradorProLog, SistemaKey sistemaKey, String userToken) {
+    protected Sistema(final IntegradorProLog integradorProLog, final SistemaKey sistemaKey, final String userToken) {
         this.integradorProLog = checkNotNull(integradorProLog, "integradorProLog não pode ser nulo!");
         this.sistemaKey = checkNotNull(sistemaKey, "sistemaKey não pode ser nulo!");
         this.userToken = checkNotNull(userToken, "userToken não pode ser nulo!");
@@ -96,20 +97,20 @@ public abstract class Sistema implements OperacoesIntegradas {
 
     @NotNull
     @Override
-    public List<Veiculo> getVeiculosAtivosByUnidade(@NotNull Long codUnidade, @Nullable Boolean ativos) throws
+    public List<Veiculo> getVeiculosAtivosByUnidade(@NotNull final Long codUnidade, @Nullable final Boolean ativos) throws
             Exception {
         return getIntegradorProLog().getVeiculosAtivosByUnidade(codUnidade, ativos);
     }
 
     @NotNull
     @Override
-    public List<TipoVeiculo> getTiposVeiculosFiltroChecklist(@NotNull Long codEmpresa) throws Throwable {
+    public List<TipoVeiculo> getTiposVeiculosFiltroChecklist(@NotNull final Long codEmpresa) throws Throwable {
         return getIntegradorProLog().getTiposVeiculosFiltroChecklist(codEmpresa);
     }
 
     @NotNull
     @Override
-    public List<String> getPlacasVeiculosByTipo(@NotNull Long codUnidade, @NotNull String codTipo) throws Exception {
+    public List<String> getPlacasVeiculosByTipo(@NotNull final Long codUnidade, @NotNull final String codTipo) throws Exception {
         return getIntegradorProLog().getPlacasVeiculosByTipo(codUnidade, codTipo);
     }
 
@@ -122,7 +123,7 @@ public abstract class Sistema implements OperacoesIntegradas {
 
     @NotNull
     @Override
-    public Veiculo getVeiculoByPlaca(@NotNull String placa, boolean withPneus) throws Exception {
+    public Veiculo getVeiculoByPlaca(@NotNull final String placa, final boolean withPneus) throws Exception {
         return getIntegradorProLog().getVeiculoByPlaca(placa, withPneus);
     }
 
@@ -134,9 +135,9 @@ public abstract class Sistema implements OperacoesIntegradas {
 
     @NotNull
     @Override
-    public NovaAfericaoPlaca getNovaAfericaoPlaca(@NotNull Long codUnidade,
-                                                  @NotNull String placaVeiculo,
-                                                  @NotNull String tipoAfericao) throws Throwable {
+    public NovaAfericaoPlaca getNovaAfericaoPlaca(@NotNull final Long codUnidade,
+                                                  @NotNull final String placaVeiculo,
+                                                  @NotNull final String tipoAfericao) throws Throwable {
         return getIntegradorProLog().getNovaAfericaoPlaca(codUnidade, placaVeiculo, tipoAfericao);
     }
 
@@ -165,19 +166,19 @@ public abstract class Sistema implements OperacoesIntegradas {
 
     @NotNull
     @Override
-    public Afericao getAfericaoByCodigo(@NotNull Long codUnidade, @NotNull Long codAfericao) throws Throwable {
+    public Afericao getAfericaoByCodigo(@NotNull final Long codUnidade, @NotNull final Long codAfericao) throws Throwable {
         return getIntegradorProLog().getAfericaoByCodigo(codUnidade, codAfericao);
     }
 
     @NotNull
     @Override
-    public List<AfericaoPlaca> getAfericoesPlacas(@NotNull Long codUnidade,
-                                                  @NotNull String codTipoVeiculo,
-                                                  @NotNull String placaVeiculo,
-                                                  @NotNull LocalDate dataInicial,
-                                                  @NotNull LocalDate dataFinal,
-                                                  int limit,
-                                                  long offset) throws Throwable {
+    public List<AfericaoPlaca> getAfericoesPlacas(@NotNull final Long codUnidade,
+                                                  @NotNull final String codTipoVeiculo,
+                                                  @NotNull final String placaVeiculo,
+                                                  @NotNull final LocalDate dataInicial,
+                                                  @NotNull final LocalDate dataFinal,
+                                                  final int limit,
+                                                  final long offset) throws Throwable {
         return getIntegradorProLog()
                 .getAfericoesPlacas(codUnidade, codTipoVeiculo, placaVeiculo, dataInicial, dataFinal, limit, offset);
     }
@@ -228,7 +229,7 @@ public abstract class Sistema implements OperacoesIntegradas {
 
     @NotNull
     @Override
-    public Checklist getChecklistByCodigo(@NotNull Long codChecklist) throws Exception {
+    public Checklist getChecklistByCodigo(@NotNull final Long codChecklist) throws Exception {
         return getIntegradorProLog().getChecklistByCodigo(codChecklist);
     }
 
@@ -238,7 +239,7 @@ public abstract class Sistema implements OperacoesIntegradas {
                                                       @NotNull final Long dataInicial,
                                                       @NotNull final Long dataFinal,
                                                       final int limit,
-                                                      final long offset, boolean resumido) throws Exception {
+                                                      final long offset, final boolean resumido) throws Exception {
         return getIntegradorProLog().getChecklistsByColaborador(cpf, dataInicial, dataFinal, limit, offset, resumido);
     }
 
@@ -330,11 +331,16 @@ public abstract class Sistema implements OperacoesIntegradas {
     @NotNull
     @Override
     public Long insert(@NotNull final ServicoDao servicoDao,
+                       @NotNull final CampoPersonalizadoDao campoPersonalizadoDao,
                        @NotNull final ProcessoMovimentacao processoMovimentacao,
                        @NotNull final OffsetDateTime dataHoraMovimentacao,
                        final boolean fecharServicosAutomaticamente) throws Throwable {
         return getIntegradorProLog()
-                .insert(servicoDao, processoMovimentacao, dataHoraMovimentacao, fecharServicosAutomaticamente);
+                .insert(servicoDao,
+                        campoPersonalizadoDao,
+                        processoMovimentacao,
+                        dataHoraMovimentacao,
+                        fecharServicosAutomaticamente);
     }
 
     @NotNull

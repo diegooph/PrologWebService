@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.movimentacao;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
+import br.com.zalf.prolog.webservice.customfields.*;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.frota.pneu.PneuDao;
@@ -35,12 +36,13 @@ import java.util.List;
 /**
  * Created by Zart on 03/03/17.
  */
-public class MovimentacaoDaoImpl extends DatabaseConnection implements MovimentacaoDao {
+public final class MovimentacaoDaoImpl extends DatabaseConnection implements MovimentacaoDao {
     private static final String TAG = MovimentacaoDaoImpl.class.getSimpleName();
 
     @NotNull
     @Override
     public Long insert(@NotNull final ServicoDao servicoDao,
+                       @NotNull final CampoPersonalizadoDao campoPersonalizadoDao,
                        @NotNull final ProcessoMovimentacao processoMovimentacao,
                        @NotNull final OffsetDateTime dataHoraMovimentacao,
                        final boolean fecharServicosAutomaticamente) throws Throwable {
@@ -51,12 +53,13 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
             final Long codigoProcessoMovimentacao = insert(
                     conn,
                     servicoDao,
+                    campoPersonalizadoDao,
                     processoMovimentacao,
                     dataHoraMovimentacao,
                     fecharServicosAutomaticamente);
             conn.commit();
             return codigoProcessoMovimentacao;
-        } catch (Throwable e) {
+        } catch (final Throwable e) {
             if (conn != null) {
                 conn.rollback();
             }
@@ -70,6 +73,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
     @Override
     public Long insert(@NotNull final Connection conn,
                        @NotNull final ServicoDao servicoDao,
+                       @NotNull final CampoPersonalizadoDao campoPersonalizadoDao,
                        @NotNull final ProcessoMovimentacao processoMovimentacao,
                        @NotNull final OffsetDateTime dataHoraMovimentacao,
                        final boolean fecharServicosAutomaticamente) throws Throwable {
@@ -94,6 +98,17 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
                         processoMovimentacao,
                         dataHoraMovimentacao,
                         fecharServicosAutomaticamente);
+                final List<CampoPersonalizadoResposta> respostas = processoMovimentacao.getRespostasCamposPersonalizados();
+                if (respostas != null && !respostas.isEmpty()) {
+                    campoPersonalizadoDao.salvaRespostasCamposPersonalizados(
+                            conn,
+                            CampoPersonalizadoFuncaoProlog.MOVIMENTACAO,
+                            respostas,
+                            new ColunaTabelaRespostaBuilder()
+                                    .addColunaEspecifica(
+                                            new ColunaTabelaResposta("cod_processo_movimentacao", codigoProcesso))
+                                    .getColunas());
+                }
                 return codigoProcesso;
             } else {
                 throw new SQLException("Erro ao inserir processo de movimentação");
@@ -135,7 +150,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
 
     @NotNull
     @Override
-    public List<Motivo> getMotivos(@NotNull final Long codEmpresa, boolean onlyAtivos) throws Throwable {
+    public List<Motivo> getMotivos(@NotNull final Long codEmpresa, final boolean onlyAtivos) throws Throwable {
         final List<Motivo> motivos = new ArrayList<>();
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -195,7 +210,7 @@ public class MovimentacaoDaoImpl extends DatabaseConnection implements Movimenta
                                      @NotNull final ServicoDao servicoDao,
                                      @NotNull final ProcessoMovimentacao processoMov,
                                      @NotNull final OffsetDateTime dataHoraMovimentacao,
-                                     boolean fecharServicosAutomaticamente) throws Throwable {
+                                     final boolean fecharServicosAutomaticamente) throws Throwable {
         final PneuDao pneuDao = Injection.providePneuDao();
         final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
         final PneuServicoRealizadoDao pneuServicoRealizadoDao = Injection.providePneuServicoRealizadoDao();
