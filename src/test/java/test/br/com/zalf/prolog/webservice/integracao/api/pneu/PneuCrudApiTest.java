@@ -38,7 +38,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public final class PneuCrudApiTest extends BaseTest {
     @NotNull
-    private static final String TOKEN_INTEGRACAO = "NATAN";
+    private String TOKEN_INTEGRACAO;
     @NotNull
     private static final Long COD_EMPRESA = 3L;
     @NotNull
@@ -51,28 +51,39 @@ public final class PneuCrudApiTest extends BaseTest {
 
     @BeforeAll
     public void initialize() {
-        DatabaseManager.init();
-        this.apiCadastroPneuService = new ApiCadastroPneuService();
-        this.apiPneuService = new ApiPneuService();
-        this.connectionProvider = new DatabaseConnectionProvider();
-        // TODO - inserir Token e CHAVES necessárias nas tabelas de integração.
+        try {
+            DatabaseManager.init();
+            this.apiCadastroPneuService = new ApiCadastroPneuService();
+            this.apiPneuService = new ApiPneuService();
+            this.connectionProvider = new DatabaseConnectionProvider();
+            TOKEN_INTEGRACAO = criaTokenIntegracaoParaEmpresa(COD_EMPRESA, geraTokenIntegracao());
+        } catch (final Throwable throwable) {
+            System.out.println(throwable);
+        }
         // TODO - Deixar os objetos ainda mais automatizados criando modelos de pneu e banda a cada vez que rodar o teste
         // TODO - Utilizar os código (modelos de pneu e banda) para criar os pneus
     }
 
     @AfterAll
     public void destroy() {
-        // TODO - remover Token das tabelas de integração.
-        DatabaseManager.finish();
+        try {
+            removeTokenIntegracaoCriado(COD_EMPRESA, TOKEN_INTEGRACAO);
+            DatabaseManager.finish();
+        } catch (final Throwable throwable) {
+            System.out.println(throwable);
+        }
     }
 
-    @NotNull
+    private String geraTokenIntegracao(){
+        return "TOKEN" + RANDOM.nextInt(999999999);
+    }
+
     private Long geraCodSistemaIntegrado() {
         return RANDOM.nextLong();
     }
 
     private String geraCodCliente() {
-        return "PN"+RANDOM.nextInt(999999);
+        return "PN" + RANDOM.nextInt(999999);
     }
 
     @Test
@@ -500,7 +511,8 @@ public final class PneuCrudApiTest extends BaseTest {
     }
 
     @Test
-    @DisplayName("Teste Carga Inicial de um pneu existente no banco com vida atual = 3 sendo sobrescrito para vida atual = 1")
+    @DisplayName("Teste Carga Inicial de um pneu existente no banco com vida atual = 3 sendo sobrescrito para vida " +
+            "atual = 1")
     void sobrescrevePneuJaCadastradoComVidaMenorQueAtualCargaInicialSemErroTest() throws Throwable {
         //Ativa configuração da empresa
         ativaSobrescritaPneuEmpresa(COD_EMPRESA);
@@ -744,7 +756,8 @@ public final class PneuCrudApiTest extends BaseTest {
 
         //Verificações
         assertThat(throwable.getMessage())
-                .isEqualTo("O modelo da banda " + codModeloBanda + " do pneu não está mapeado no Sistema ProLog");
+                .isEqualTo("O modelo da banda " + codModeloBanda + " do pneu não está mapeado no " +
+                        "Sistema ProLog");
     }
 
     @Test
@@ -774,7 +787,8 @@ public final class PneuCrudApiTest extends BaseTest {
 
         //Verificações
         assertThat(throwable.getMessage())
-                .isEqualTo("A dimensão de código " + codDimensao + " do pneu não está mapeada no Sistema ProLog");
+                .isEqualTo("A dimensão de código " + codDimensao + " do pneu não está mapeada no " +
+                        "Sistema ProLog");
     }
 
     @Test
@@ -1069,7 +1083,51 @@ public final class PneuCrudApiTest extends BaseTest {
     }
 
     //Métodos com acesso ao banco de dados.
-    //Configuração de sobrescrita de uma empresa.
+    //Método responśavel por criar TOKEN de autenticação.
+    private String criaTokenIntegracaoParaEmpresa(@NotNull Long codEmpresa,
+                                                  @NotNull String token) throws Throwable{
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = connectionProvider.provideDatabaseConnection();
+            stmt = conn.prepareStatement("INSERT INTO INTEGRACAO.TOKEN_INTEGRACAO(COD_EMPRESA, TOKEN_INTEGRACAO)" +
+                    "VALUES(?,?) RETURNING TOKEN_INTEGRACAO");
+            stmt.setLong(1, codEmpresa);
+            stmt.setString(2, token);
+            rSet = stmt.executeQuery();
+            if(rSet.next()){
+                return rSet.getString("TOKEN_INTEGRACAO");
+            } else {
+                return null;
+            }
+        } catch (final Throwable throwable) {
+            throw new SQLException("Erro ao criar TOKEN");
+        } finally {
+            connectionProvider.closeResources(conn, stmt, rSet);
+        }
+    }
+
+    //Método responsável por remover TOKEN de autenticação.
+    void removeTokenIntegracaoCriado(@NotNull Long codEmpresa,
+                                     @NotNull String token) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = connectionProvider.provideDatabaseConnection();
+            stmt = conn.prepareStatement("DELETE FROM INTEGRACAO.TOKEN_INTEGRACAO WHERE COD_EMPRESA = ? " +
+                    "AND TOKEN_INTEGRACAO = ?;");
+            stmt.setLong(1, codEmpresa);
+            stmt.setString(2, token);
+            stmt.executeUpdate();
+        } catch (final Throwable throwable) {
+            throw new SQLException("Erro ao deletar TOKEN");
+        } finally {
+            connectionProvider.closeResources(conn, stmt);
+        }
+    }
+
+    //Método responsável pela configuração de sobrescrita de uma empresa.
     void ativaSobrescritaPneuEmpresa(@NotNull final Long codEmpresa) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -1310,7 +1368,8 @@ public final class PneuCrudApiTest extends BaseTest {
                                              @NotNull final String codCliente,
                                              @NotNull final Long codUnidade,
                                              @NotNull final Long codEmpresa) throws Throwable {
-        Long codPneuCadastroProlog = buscaCodPneuCadastroProlog(codSistemaIntegrado, codCliente, codUnidade, codEmpresa);
+        Long codPneuCadastroProlog = buscaCodPneuCadastroProlog(codSistemaIntegrado, codCliente, codUnidade,
+                codEmpresa);
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -1680,7 +1739,8 @@ public final class PneuCrudApiTest extends BaseTest {
     }
 
     @NotNull
-    private ApiPneuAlteracaoStatus criaPneuParaAtualizarStatusEmUsoSemErro(ApiPneuCadastro apiPneuCadastro) throws Throwable {
+    private ApiPneuAlteracaoStatus criaPneuParaAtualizarStatusEmUsoSemErro(ApiPneuCadastro apiPneuCadastro)
+            throws Throwable {
         int posicao = 900;
         removePneuDeUmaPlacaPosicaoEspecifica(PLACA, posicao, 5L);
         return new ApiPneuAlteracaoStatusVeiculo(
