@@ -60,7 +60,6 @@ public final class PneuCrudApiTest extends BaseTest {
         } catch (final Throwable throwable) {
             System.out.println(throwable);
         }
-        // TODO - Deixar os objetos ainda mais automatizados criando modelos de pneu e banda a cada vez que rodar o teste
         // TODO - Utilizar os código (modelos de pneu e banda) para criar os pneus
     }
 
@@ -1149,6 +1148,59 @@ public final class PneuCrudApiTest extends BaseTest {
         }
     }
 
+    //Método responsável por buscar modelo banda pneu na empresa.
+    private Long buscaCodModeloBandaPneuEmpresa(@NotNull Long codEmpresa) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        List<Long> codModelosBandaEmpresa = new ArrayList<>();
+        try {
+            conn = connectionProvider.provideDatabaseConnection();
+            stmt = conn.prepareStatement("SELECT MB.CODIGO FROM MODELO_BANDA MB WHERE MB.COD_EMPRESA = ?");
+            stmt.setLong(1, codEmpresa);
+            rSet = stmt.executeQuery();
+            while(rSet.next()){
+                codModelosBandaEmpresa.add(rSet.getLong("CODIGO"));
+            }
+            if (!codModelosBandaEmpresa.isEmpty()) {
+                return codModelosBandaEmpresa.get(0);
+            } else {
+                throw new SQLException("Erro ao buscar código modelo banda do pneu");
+            }
+        } catch (final Throwable throwable) {
+            throw new SQLException("Erro ao buscar código modelo banda do pneu");
+        } finally {
+            connectionProvider.closeResources(conn, stmt, rSet);
+        }
+    }
+
+    //Método responsável por buscar modelo pneu na empresa.
+    private Long buscaCodModeloPneuEmpresa(@NotNull Long codEmpresa) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        List<Long> codModelosPneuEmpresa = new ArrayList<>();
+        try {
+            conn = connectionProvider.provideDatabaseConnection();
+            stmt = conn.prepareStatement("SELECT MP.CODIGO FROM MODELO_PNEU MP WHERE MP.COD_EMPRESA = ?");
+            stmt.setLong(1, codEmpresa);
+            rSet = stmt.executeQuery();
+            while(rSet.next()){
+                codModelosPneuEmpresa.add(rSet.getLong("CODIGO"));
+            }
+            if (!codModelosPneuEmpresa.isEmpty()) {
+                return codModelosPneuEmpresa.get(0);
+            } else {
+                throw new SQLException("Erro ao buscar código modelo do pneu");
+            }
+        } catch (final Throwable throwable) {
+            throw new SQLException("Erro ao buscar código modelo do pneu");
+        } finally {
+            connectionProvider.closeResources(conn, stmt, rSet);
+        }
+    }
+
+    //Método responsável por desativar sobrescrita do pneu.
     void desativaSobrescritaPneuEmpresa(@NotNull final Long codEmpresa) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -1164,6 +1216,8 @@ public final class PneuCrudApiTest extends BaseTest {
             connectionProvider.closeResources(conn, stmt);
         }
     }
+
+
 
     //Método responsável por buscar código sistema integrado de um pneu específico para o teste de inserção,
     private Long buscaCodSistemaIntegradoPneuInserido(@NotNull final Long codSistemaIntegrado,
@@ -1304,7 +1358,7 @@ public final class PneuCrudApiTest extends BaseTest {
         }
     }
 
-        //Método responsável por pegar todas as informações do pneu na carga inicial.
+    //Método responsável por pegar todas as informações do pneu na carga inicial.
     private ApiPneuCargaInicial buscaInformacoesPneuCargaInicial(@NotNull final Long codSistemaIntegrado,
                                                                  @NotNull final String codCliente,
                                                                  @NotNull final Long codUnidade,
@@ -1470,12 +1524,12 @@ public final class PneuCrudApiTest extends BaseTest {
 
     //Objetos Pneu para testes em Carga Inicial sem erro.
     @NotNull
-    private ApiPneuCargaInicial criaPneuSemErroComCodigoClienteValido() {
+    private ApiPneuCargaInicial criaPneuSemErroComCodigoClienteValido() throws Throwable {
         return new ApiPneuCargaInicial(
                 geraCodSistemaIntegrado(),
                 geraCodCliente(),
                 5L,
-                129L,
+                buscaCodModeloPneuEmpresa(COD_EMPRESA),
                 1L,
                 120.0,
                 1,
@@ -1483,7 +1537,7 @@ public final class PneuCrudApiTest extends BaseTest {
                 "1010",
                 new BigDecimal(1500.0),
                 false,
-                11L,
+                buscaCodModeloBandaPneuEmpresa(COD_EMPRESA),
                 new BigDecimal(500),
                 ApiStatusPneu.ESTOQUE,
                 null,
@@ -1491,12 +1545,12 @@ public final class PneuCrudApiTest extends BaseTest {
     }
 
     @NotNull
-    private ApiPneuCargaInicial criaPneuSemErroComUnidadeValida() {
+    private ApiPneuCargaInicial criaPneuSemErroComUnidadeValida() throws Throwable {
         return new ApiPneuCargaInicial(
                 geraCodSistemaIntegrado(),
                 geraCodCliente(),
                 5L,
-                129L,
+                buscaCodModeloPneuEmpresa(COD_EMPRESA),
                 1L,
                 120.0,
                 1,
@@ -1512,12 +1566,12 @@ public final class PneuCrudApiTest extends BaseTest {
     }
 
     @NotNull
-    private ApiPneuCargaInicial criaPneuSemErroComModeloPneuValido() {
+    private ApiPneuCargaInicial criaPneuSemErroComModeloPneuValido() throws Throwable {
         return new ApiPneuCargaInicial(
                 geraCodSistemaIntegrado(),
                 geraCodCliente(),
                 5L,
-                129L,
+                buscaCodModeloPneuEmpresa(COD_EMPRESA),
                 1L,
                 120.0,
                 1,
@@ -1533,12 +1587,12 @@ public final class PneuCrudApiTest extends BaseTest {
     }
 
     @NotNull
-    private ApiPneuCargaInicial criaPneuSemErroComDimensaoValida() {
+    private ApiPneuCargaInicial criaPneuSemErroComDimensaoValida() throws Throwable {
         return new ApiPneuCargaInicial(
                 geraCodSistemaIntegrado(),
                 geraCodCliente(),
                 5L,
-                129L,
+                buscaCodModeloPneuEmpresa(COD_EMPRESA),
                 1L,
                 120.0,
                 1,
@@ -1554,12 +1608,12 @@ public final class PneuCrudApiTest extends BaseTest {
     }
 
     @NotNull
-    private ApiPneuCargaInicial criaPneuSemErroComPressaoValida() {
+    private ApiPneuCargaInicial criaPneuSemErroComPressaoValida() throws Throwable {
         return new ApiPneuCargaInicial(
                 geraCodSistemaIntegrado(),
                 geraCodCliente(),
                 5L,
-                129L,
+                buscaCodModeloPneuEmpresa(COD_EMPRESA),
                 1L,
                 120.0,
                 1,
@@ -1575,12 +1629,12 @@ public final class PneuCrudApiTest extends BaseTest {
     }
 
     @NotNull
-    private ApiPneuCargaInicial criaPneuSemErroComVidaAtualValida() {
+    private ApiPneuCargaInicial criaPneuSemErroComVidaAtualValida() throws Throwable {
         return new ApiPneuCargaInicial(
                 geraCodSistemaIntegrado(),
                 geraCodCliente(),
                 5L,
-                129L,
+                buscaCodModeloPneuEmpresa(COD_EMPRESA),
                 1L,
                 120.0,
                 1,
@@ -1596,12 +1650,12 @@ public final class PneuCrudApiTest extends BaseTest {
     }
 
     @NotNull
-    private ApiPneuCargaInicial criaPneuSemErroComDotValido() {
+    private ApiPneuCargaInicial criaPneuSemErroComDotValido() throws Throwable {
         return new ApiPneuCargaInicial(
                 geraCodSistemaIntegrado(),
                 geraCodCliente(),
                 5L,
-                129L,
+                buscaCodModeloPneuEmpresa(COD_EMPRESA),
                 1L,
                 120.0,
                 1,
@@ -1617,12 +1671,12 @@ public final class PneuCrudApiTest extends BaseTest {
     }
 
     @NotNull
-    private ApiPneuCargaInicial criaPneuSemErroComModeloDeBandaValido() {
+    private ApiPneuCargaInicial criaPneuSemErroComModeloDeBandaValido() throws Throwable {
         return new ApiPneuCargaInicial(
                 geraCodSistemaIntegrado(),
                 geraCodCliente(),
                 5L,
-                129L,
+                buscaCodModeloPneuEmpresa(COD_EMPRESA),
                 1L,
                 120.0,
                 1,
@@ -1638,12 +1692,12 @@ public final class PneuCrudApiTest extends BaseTest {
     }
 
     @NotNull
-    private ApiPneuCargaInicial criaPneuSemErroComPlacaPneuValida() {
+    private ApiPneuCargaInicial criaPneuSemErroComPlacaPneuValida() throws Throwable {
         return new ApiPneuCargaInicial(
                 geraCodSistemaIntegrado(),
                 geraCodCliente(),
                 5L,
-                129L,
+                buscaCodModeloPneuEmpresa(COD_EMPRESA),
                 1L,
                 120.0,
                 1,
@@ -1651,7 +1705,7 @@ public final class PneuCrudApiTest extends BaseTest {
                 "1010",
                 new BigDecimal(1500.0),
                 false,
-                11L,
+                buscaCodModeloBandaPneuEmpresa(COD_EMPRESA),
                 new BigDecimal(100.00),
                 ApiStatusPneu.ESTOQUE,
                 "LLL1234",
@@ -1659,12 +1713,12 @@ public final class PneuCrudApiTest extends BaseTest {
     }
 
     @NotNull
-    private ApiPneuCargaInicial criaPneuSemErroComPosicaoPneuValida() {
+    private ApiPneuCargaInicial criaPneuSemErroComPosicaoPneuValida() throws Throwable {
         return new ApiPneuCargaInicial(
                 geraCodSistemaIntegrado(),
                 geraCodCliente(),
                 5L,
-                129L,
+                buscaCodModeloPneuEmpresa(COD_EMPRESA),
                 1L,
                 120.0,
                 1,
@@ -1672,7 +1726,7 @@ public final class PneuCrudApiTest extends BaseTest {
                 "1010",
                 new BigDecimal(1500.0),
                 false,
-                11L,
+                buscaCodModeloBandaPneuEmpresa(COD_EMPRESA),
                 new BigDecimal(100.00),
                 ApiStatusPneu.ESTOQUE,
                 "LLL1234",
@@ -1681,12 +1735,12 @@ public final class PneuCrudApiTest extends BaseTest {
 
     //Objeto Pneu preenchido para testes sem erro.
     @NotNull
-    private ApiPneuCadastro criaPneuParaInsertSemErro() {
+    private ApiPneuCadastro criaPneuParaInsertSemErro() throws Throwable {
         return new ApiPneuCadastro(
                 geraCodSistemaIntegrado(),
                 geraCodCliente(),
                 5L,
-                129L,
+                buscaCodModeloPneuEmpresa(COD_EMPRESA),
                 1L,
                 120.0,
                 3,
@@ -1694,7 +1748,7 @@ public final class PneuCrudApiTest extends BaseTest {
                 "1010",
                 new BigDecimal(1000.00),
                 false,
-                12L,
+                buscaCodModeloBandaPneuEmpresa(COD_EMPRESA),
                 new BigDecimal(100.00));
     }
 
@@ -1713,7 +1767,8 @@ public final class PneuCrudApiTest extends BaseTest {
     }
 
     @NotNull
-    private ApiPneuAlteracaoStatus criaPneuParaAtualizarStatusDescarteSemErro(ApiPneuCadastro apiPneuCadastro) {
+    private ApiPneuAlteracaoStatus criaPneuParaAtualizarStatusDescarteSemErro(ApiPneuCadastro apiPneuCadastro)
+            throws Throwable {
         return new ApiPneuAlteracaoStatusDescarte(
                 apiPneuCadastro.getCodigoSistemaIntegrado(),
                 apiPneuCadastro.getCodigoCliente(),
@@ -1721,12 +1776,13 @@ public final class PneuCrudApiTest extends BaseTest {
                 "12345678910",
                 LocalDateTime.now(),
                 true,
-                11L,
+                buscaCodModeloBandaPneuEmpresa(COD_EMPRESA),
                 new BigDecimal(400.00));
     }
 
     @NotNull
-    private ApiPneuAlteracaoStatus criaPneuParaAtualizarStatusEstoqueSemErro(ApiPneuCadastro apiPneuCadastro) {
+    private ApiPneuAlteracaoStatus criaPneuParaAtualizarStatusEstoqueSemErro(ApiPneuCadastro apiPneuCadastro)
+            throws Throwable {
         return new ApiPneuAlteracaoStatusEstoque(
                 apiPneuCadastro.getCodigoSistemaIntegrado(),
                 apiPneuCadastro.getCodigoCliente(),
@@ -1734,7 +1790,7 @@ public final class PneuCrudApiTest extends BaseTest {
                 "12345678910",
                 LocalDateTime.now(),
                 true,
-                12L,
+                buscaCodModeloBandaPneuEmpresa(COD_EMPRESA),
                 new BigDecimal(120.00));
     }
 
@@ -1752,7 +1808,7 @@ public final class PneuCrudApiTest extends BaseTest {
                 PLACA,
                 posicao,
                 true,
-                11L,
+                buscaCodModeloBandaPneuEmpresa(COD_EMPRESA),
                 new BigDecimal(300.00));
     }
 }
