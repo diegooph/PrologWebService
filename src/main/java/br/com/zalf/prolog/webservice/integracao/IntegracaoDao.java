@@ -5,7 +5,6 @@ import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.ApiAutenticacaoHolder;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
-import br.com.zalf.prolog.webservice.integracao.transport.MetodoIntegrado;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

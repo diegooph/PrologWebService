@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.integracao.transport;
+package br.com.zalf.prolog.webservice.integracao;
 
 import org.jetbrains.annotations.NotNull;
 
