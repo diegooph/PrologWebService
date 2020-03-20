@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Random;
 
 import static com.google.common.truth.Truth.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
@@ -1087,10 +1086,12 @@ public final class PneuCrudApiTest extends BaseTest {
         ResultSet rSet = null;
         try {
             conn = connectionProvider.provideDatabaseConnection();
-            stmt = conn.prepareStatement("INSERT INTO INTEGRACAO.TOKEN_INTEGRACAO(COD_EMPRESA, TOKEN_INTEGRACAO)" +
-                    "VALUES(?,?) RETURNING TOKEN_INTEGRACAO");
+            stmt = conn.prepareStatement("INSERT INTO INTEGRACAO.TOKEN_INTEGRACAO(COD_EMPRESA, TOKEN_INTEGRACAO) " +
+                    "VALUES (?, ?) ON CONFLICT (COD_EMPRESA) DO UPDATE SET TOKEN_INTEGRACAO = ?" +
+                    "RETURNING TOKEN_INTEGRACAO");
             stmt.setLong(1, codEmpresa);
             stmt.setString(2, token);
+            stmt.setString(3, token);
             rSet = stmt.executeQuery();
             if(rSet.next()){
                 return rSet.getString("TOKEN_INTEGRACAO");
