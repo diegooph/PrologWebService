@@ -60,7 +60,6 @@ public final class PneuCrudApiTest extends BaseTest {
         } catch (final Throwable throwable) {
             System.out.println(throwable);
         }
-        // TODO - Utilizar os código (modelos de pneu e banda) para criar os pneus
     }
 
     @AfterAll
@@ -74,7 +73,7 @@ public final class PneuCrudApiTest extends BaseTest {
     }
 
     private String geraTokenIntegracao(){
-        return "TOKEN" + RANDOM.nextInt(999999999);
+        return "TOKEN" + RANDOM.nextInt(999999);
     }
 
     private Long geraCodSistemaIntegrado() {
@@ -151,7 +150,7 @@ public final class PneuCrudApiTest extends BaseTest {
 
     @Test
     @DisplayName("Teste Carga Inicial com código da unidade inválido")
-    void adicionaCargaInicialPneuComErroCodUnidadeNaoExisteTest() {
+    void adicionaCargaInicialPneuComErroCodUnidadeNaoExisteTest() throws Throwable {
         //Cenário
         final Long codUnidade = 909090L;
         final List<ApiPneuCargaInicial> cargaInicial = new ArrayList<>();
@@ -159,7 +158,7 @@ public final class PneuCrudApiTest extends BaseTest {
                 geraCodSistemaIntegrado(),
                 geraCodCliente(),
                 codUnidade,
-                129L,
+                buscaCodModeloPneuEmpresa(COD_EMPRESA),
                 1L,
                 120.0,
                 1,
@@ -223,7 +222,7 @@ public final class PneuCrudApiTest extends BaseTest {
 
     @Test
     @DisplayName("Teste Carga Inicial com código dimensão inválido")
-    void adicionaCargaInicialPneuComErroCodDimensaoNaoExisteTest() {
+    void adicionaCargaInicialPneuComErroCodDimensaoNaoExisteTest() throws Throwable {
         //Cenário
         final Long codDimensao = 4543235L;
         final List<ApiPneuCargaInicial> cargaInicial = new ArrayList<>();
@@ -231,7 +230,7 @@ public final class PneuCrudApiTest extends BaseTest {
                 geraCodSistemaIntegrado(),
                 geraCodCliente(),
                 5L,
-                129L,
+                buscaCodModeloPneuEmpresa(COD_EMPRESA),
                 codDimensao,
                 120.0,
                 1,
@@ -259,7 +258,7 @@ public final class PneuCrudApiTest extends BaseTest {
 
     @Test
     @DisplayName("Teste Carga Inicial com pressão inválida")
-    void adicionaCargaInicialPneuComErroPressaoIncorretaTest() {
+    void adicionaCargaInicialPneuComErroPressaoIncorretaTest() throws Throwable {
         //Cenário
         final Double codPressao = -120.0;
         final List<ApiPneuCargaInicial> cargaInicial = new ArrayList<>();
@@ -267,7 +266,7 @@ public final class PneuCrudApiTest extends BaseTest {
                 geraCodSistemaIntegrado(),
                 geraCodCliente(),
                 5L,
-                129L,
+                buscaCodModeloPneuEmpresa(COD_EMPRESA),
                 1L,
                 codPressao,
                 1,
@@ -295,7 +294,7 @@ public final class PneuCrudApiTest extends BaseTest {
 
     @Test
     @DisplayName("Teste Carga Inicial com valor do pneu inválido")
-    void adicionaCargaInicialPneuComErroValorPneuInvalidoTest() {
+    void adicionaCargaInicialPneuComErroValorPneuInvalidoTest() throws Throwable {
         //Cenário
         final BigDecimal valorPneu = new BigDecimal(-1);
         final List<ApiPneuCargaInicial> cargaInicial = new ArrayList<>();
@@ -303,7 +302,7 @@ public final class PneuCrudApiTest extends BaseTest {
                 geraCodSistemaIntegrado(),
                 geraCodCliente(),
                 5L,
-                129L,
+                buscaCodModeloPneuEmpresa(COD_EMPRESA),
                 1L,
                 120.0,
                 1,
@@ -331,7 +330,7 @@ public final class PneuCrudApiTest extends BaseTest {
 
     @Test
     @DisplayName("Teste Carga Inicial com vida atual do pneu maior que a vida total")
-    void adicionaCargaInicialPneuComErroVidaAtualMaiorQueTotalTest() {
+    void adicionaCargaInicialPneuComErroVidaAtualMaiorQueTotalTest() throws Throwable {
         //Cenário
         final int vidaAtual = 5;
         final List<ApiPneuCargaInicial> cargaInicial = new ArrayList<>();
@@ -339,7 +338,7 @@ public final class PneuCrudApiTest extends BaseTest {
                 geraCodSistemaIntegrado(),
                 geraCodCliente(),
                 5L,
-                129L,
+                buscaCodModeloPneuEmpresa(COD_EMPRESA),
                 1L,
                 120.0,
                 vidaAtual,
@@ -367,7 +366,7 @@ public final class PneuCrudApiTest extends BaseTest {
 
     @Test
     @DisplayName("Teste Carga Inicial com modelo de banda inválido")
-    void adicionaCargaInicialPneuComErroModeloBandaInvalidoTest() {
+    void adicionaCargaInicialPneuComErroModeloBandaInvalidoTest() throws Throwable {
         //Cenário
         final Long modeloBanda = -1L;
         final List<ApiPneuCargaInicial> cargaInicial = new ArrayList<>();
@@ -375,7 +374,7 @@ public final class PneuCrudApiTest extends BaseTest {
                 geraCodSistemaIntegrado(),
                 geraCodCliente(),
                 5L,
-                129L,
+                buscaCodModeloPneuEmpresa(COD_EMPRESA),
                 1L,
                 120.0,
                 3,
@@ -398,12 +397,11 @@ public final class PneuCrudApiTest extends BaseTest {
         for (ApiPneuCargaInicialResponse apiPneuCargaInicialRespons : apiPneuCargaInicialResponses) {
             assertThat(apiPneuCargaInicialRespons.getSucesso()).isFalse();
         }
-
     }
 
     @Test
     @DisplayName("Teste Carga Inicial com valor da banda inválido")
-    void adicionaCargaInicialPneuComErroValorBandaInvalidoTest() {
+    void adicionaCargaInicialPneuComErroValorBandaInvalidoTest() throws Throwable {
         //Cenário
         final BigDecimal valorBanda = new BigDecimal(-1);
         final List<ApiPneuCargaInicial> cargaInicial = new ArrayList<>();
@@ -411,7 +409,7 @@ public final class PneuCrudApiTest extends BaseTest {
                 geraCodSistemaIntegrado(),
                 geraCodCliente(),
                 5L,
-                129L,
+                buscaCodModeloPneuEmpresa(COD_EMPRESA),
                 1L,
                 120.0,
                 3,
@@ -419,7 +417,7 @@ public final class PneuCrudApiTest extends BaseTest {
                 "1010",
                 new BigDecimal(1500.0),
                 false,
-                12L,
+                buscaCodModeloBandaPneuEmpresa(COD_EMPRESA),
                 valorBanda,
                 ApiStatusPneu.ESTOQUE,
                 null,
@@ -434,12 +432,11 @@ public final class PneuCrudApiTest extends BaseTest {
         for (ApiPneuCargaInicialResponse apiPneuCargaInicialRespons : apiPneuCargaInicialResponses) {
             assertThat(apiPneuCargaInicialRespons.getSucesso()).isFalse();
         }
-
     }
 
     @Test
     @DisplayName("Teste Carga Inicial com placa inválida")
-    void adicionaCargaInicialPneuComErroPlacaPneuNaoExisteTest() {
+    void adicionaCargaInicialPneuComErroPlacaPneuNaoExisteTest() throws Throwable {
         //Cenário
         final String placaVeiculo = "OOO9891";
         final List<ApiPneuCargaInicial> cargaInicial = new ArrayList<>();
@@ -447,7 +444,7 @@ public final class PneuCrudApiTest extends BaseTest {
                 geraCodSistemaIntegrado(),
                 geraCodCliente(),
                 5L,
-                129L,
+                buscaCodModeloPneuEmpresa(COD_EMPRESA),
                 1L,
                 120.0,
                 1,
@@ -455,7 +452,7 @@ public final class PneuCrudApiTest extends BaseTest {
                 "1010",
                 new BigDecimal(1500.0),
                 false,
-                7645L,
+                buscaCodModeloBandaPneuEmpresa(COD_EMPRESA),
                 new BigDecimal(400.00),
                 ApiStatusPneu.EM_USO,
                 placaVeiculo,
@@ -475,7 +472,7 @@ public final class PneuCrudApiTest extends BaseTest {
 
     @Test
     @DisplayName("Teste Carga Inicial com posição do pneu em relação ao veículo inválida")
-    void adicionaCargaInicialPneuComErroPosicaoPneuInvalidaTest() {
+    void adicionaCargaInicialPneuComErroPosicaoPneuInvalidaTest() throws Throwable {
         //Cenário
         final int posicaoPneu = 7777;
         final List<ApiPneuCargaInicial> cargaInicial = new ArrayList<>();
@@ -483,7 +480,7 @@ public final class PneuCrudApiTest extends BaseTest {
                 geraCodSistemaIntegrado(),
                 geraCodCliente(),
                 5L,
-                129L,
+                buscaCodModeloPneuEmpresa(COD_EMPRESA),
                 1L,
                 120.0,
                 1,
@@ -491,7 +488,7 @@ public final class PneuCrudApiTest extends BaseTest {
                 "1010",
                 new BigDecimal(1500.0),
                 false,
-                7645L,
+                buscaCodModeloBandaPneuEmpresa(COD_EMPRESA),
                 new BigDecimal(400.00),
                 ApiStatusPneu.EM_USO,
                 "PRO0004",
@@ -671,14 +668,14 @@ public final class PneuCrudApiTest extends BaseTest {
 
     @Test
     @DisplayName("Teste Inserção de um novo Pneu com unidade inválida")
-    void adicionaPneuComErroUnidadeInvalidaTest() {
+    void adicionaPneuComErroUnidadeInvalidaTest() throws Throwable {
         final Long codUnidade = 11153423L;
         //Cenário
         final ApiPneuCadastro apiPneuCadastro = new ApiPneuCadastro(
                 geraCodSistemaIntegrado(),
                 geraCodCliente(),
                 codUnidade,
-                129L,
+                buscaCodModeloPneuEmpresa(COD_EMPRESA),
                 1L,
                 120.0,
                 1,
@@ -686,7 +683,7 @@ public final class PneuCrudApiTest extends BaseTest {
                 "1010",
                 new BigDecimal(1000.00),
                 true,
-                12L,
+                buscaCodModeloBandaPneuEmpresa(COD_EMPRESA),
                 new BigDecimal(100.00));
 
         //Excecução
@@ -700,7 +697,7 @@ public final class PneuCrudApiTest extends BaseTest {
 
     @Test
     @DisplayName("Teste Inserção de um novo Pneu com código modelo inválido")
-    void adicionaPneuComErroCodModeloPneuInvalidoTest() {
+    void adicionaPneuComErroCodModeloPneuInvalidoTest() throws Throwable {
         final Long codModelo = 909090L;
         //Cenário
         final ApiPneuCadastro apiPneuCadastro = new ApiPneuCadastro(
@@ -715,7 +712,7 @@ public final class PneuCrudApiTest extends BaseTest {
                 "1010",
                 new BigDecimal(1000.00),
                 true,
-                12L,
+                buscaCodModeloBandaPneuEmpresa(COD_EMPRESA),
                 new BigDecimal(100.00));
 
         //Excecução
@@ -730,14 +727,14 @@ public final class PneuCrudApiTest extends BaseTest {
 
     @Test
     @DisplayName("Teste Inserção de um novo Pneu com código modelo banda inválido")
-    void adicionaPneuComErroCodModeloBandaInvalidoTest() {
+    void adicionaPneuComErroCodModeloBandaInvalidoTest() throws Throwable {
         final Long codModeloBanda = -1L;
         //Cenário
         final ApiPneuCadastro apiPneuCadastro = new ApiPneuCadastro(
                 geraCodSistemaIntegrado(),
                 geraCodCliente(),
                 5L,
-                129L,
+                buscaCodModeloPneuEmpresa(COD_EMPRESA),
                 1L,
                 120.0,
                 2,
@@ -761,14 +758,14 @@ public final class PneuCrudApiTest extends BaseTest {
 
     @Test
     @DisplayName("Teste Inserção de um novo Pneu com código dimensão inválido")
-    void adicionaPneuComErroCodDimensaoInvalidoTest() {
+    void adicionaPneuComErroCodDimensaoInvalidoTest() throws Throwable {
         final Long codDimensao = 9999999L;
         //Cenário
         final ApiPneuCadastro apiPneuCadastro = new ApiPneuCadastro(
                 geraCodSistemaIntegrado(),
                 geraCodCliente(),
                 5L,
-                129L,
+                buscaCodModeloPneuEmpresa(COD_EMPRESA),
                 codDimensao,
                 120.0,
                 1,
@@ -776,7 +773,7 @@ public final class PneuCrudApiTest extends BaseTest {
                 "1010",
                 new BigDecimal(1000.00),
                 true,
-                12L,
+                buscaCodModeloBandaPneuEmpresa(COD_EMPRESA),
                 new BigDecimal(100.00));
 
         //Excecução
@@ -792,14 +789,14 @@ public final class PneuCrudApiTest extends BaseTest {
 
     @Test
     @DisplayName("Teste Inserção de um novo Pneu com pressão inválida")
-    void adicionaPneuComErroPressaoInvalidaTest() {
+    void adicionaPneuComErroPressaoInvalidaTest() throws Throwable {
         //Cenário
         final Double pressaoPneu = -120.0;
         final ApiPneuCadastro apiPneuCadastro = new ApiPneuCadastro(
                 geraCodSistemaIntegrado(),
                 geraCodCliente(),
                 5L,
-                129L,
+                buscaCodModeloPneuEmpresa(COD_EMPRESA),
                 1L,
                 pressaoPneu,
                 1,
@@ -807,7 +804,7 @@ public final class PneuCrudApiTest extends BaseTest {
                 "1010",
                 new BigDecimal(1000.00),
                 true,
-                12L,
+                buscaCodModeloBandaPneuEmpresa(COD_EMPRESA),
                 new BigDecimal(100.00));
 
         //Excecução
@@ -822,14 +819,14 @@ public final class PneuCrudApiTest extends BaseTest {
 
     @Test
     @DisplayName("Teste Inserção de um novo Pneu com vida atual inválida")
-    void adicionaPneuComErroVidaAtualInvalidaTest() {
+    void adicionaPneuComErroVidaAtualInvalidaTest() throws Throwable {
         //Cenário
         final int vidaAtual = 5;
         final ApiPneuCadastro apiPneuCadastro = new ApiPneuCadastro(
                 geraCodSistemaIntegrado(),
                 geraCodCliente(),
                 5L,
-                129L,
+                buscaCodModeloPneuEmpresa(COD_EMPRESA),
                 1L,
                 120.0,
                 vidaAtual,
@@ -837,7 +834,7 @@ public final class PneuCrudApiTest extends BaseTest {
                 "1010",
                 new BigDecimal(1000.00),
                 true,
-                12L,
+                buscaCodModeloBandaPneuEmpresa(COD_EMPRESA),
                 new BigDecimal(100.00));
 
         //Excecução
@@ -852,13 +849,13 @@ public final class PneuCrudApiTest extends BaseTest {
 
     @Test
     @DisplayName("Teste Inserção de um novo Pneu com vida atual inválida")
-    void adicionaPneuComErroVidaTotalInvalidaTest() {
+    void adicionaPneuComErroVidaTotalInvalidaTest() throws Throwable {
         //Cenário
         final ApiPneuCadastro apiPneuCadastro = new ApiPneuCadastro(
                 geraCodSistemaIntegrado(),
                 geraCodCliente(),
                 5L,
-                129L,
+                buscaCodModeloPneuEmpresa(COD_EMPRESA),
                 1L,
                 120.0,
                 5,
@@ -866,7 +863,7 @@ public final class PneuCrudApiTest extends BaseTest {
                 "1010",
                 new BigDecimal(1000.00),
                 true,
-                12L,
+                buscaCodModeloBandaPneuEmpresa(COD_EMPRESA),
                 new BigDecimal(100.00));
 
         //Excecução
@@ -881,14 +878,14 @@ public final class PneuCrudApiTest extends BaseTest {
 
     @Test
     @DisplayName("Teste Inserção de um novo Pneu com valor pneu inválido")
-    void adicionaPneuComErroValorPneuInvalidoTest() {
+    void adicionaPneuComErroValorPneuInvalidoTest() throws Throwable {
         //Cenário
         final BigDecimal valor = new BigDecimal(-1.00);
         final ApiPneuCadastro apiPneuCadastro = new ApiPneuCadastro(
                 geraCodSistemaIntegrado(),
                 geraCodCliente(),
                 5L,
-                129L,
+                buscaCodModeloPneuEmpresa(COD_EMPRESA),
                 1L,
                 120.0,
                 1,
@@ -911,14 +908,14 @@ public final class PneuCrudApiTest extends BaseTest {
 
     @Test
     @DisplayName("Teste Inserção de um novo Pneu com valor banda inválido")
-    void adicionaPneuComErroValorBandaInvalidoTest() {
+    void adicionaPneuComErroValorBandaInvalidoTest() throws Throwable {
         //Cenário
         final BigDecimal valor = new BigDecimal(-1.00);
         final ApiPneuCadastro apiPneuCadastro = new ApiPneuCadastro(
                 geraCodSistemaIntegrado(),
                 geraCodCliente(),
                 5L,
-                129L,
+                buscaCodModeloPneuEmpresa(COD_EMPRESA),
                 1L,
                 120.0,
                 2,
@@ -926,7 +923,7 @@ public final class PneuCrudApiTest extends BaseTest {
                 "1010",
                 new BigDecimal(100.00),
                 false,
-                12L,
+                buscaCodModeloBandaPneuEmpresa(COD_EMPRESA),
                 valor);
 
         //Excecução
@@ -1041,7 +1038,7 @@ public final class PneuCrudApiTest extends BaseTest {
                 "12345678910",
                 LocalDateTime.now(),
                 true,
-                11L,
+                buscaCodModeloBandaPneuEmpresa(COD_EMPRESA),
                 new BigDecimal(69.00)));
 
         //Excecução
@@ -1217,8 +1214,6 @@ public final class PneuCrudApiTest extends BaseTest {
         }
     }
 
-
-
     //Método responsável por buscar código sistema integrado de um pneu específico para o teste de inserção,
     private Long buscaCodSistemaIntegradoPneuInserido(@NotNull final Long codSistemaIntegrado,
                                                       @NotNull final String codCliente,
@@ -1307,6 +1302,7 @@ public final class PneuCrudApiTest extends BaseTest {
             connectionProvider.closeResources(conn, stmt, rSet);
         }
     }
+
     //Método responsável por pegar dados pneu.
     private ApiPneuCadastro buscaPneuUnidade(@NotNull final Long codUnidade,
                                              @NotNull Long codEmpresa) throws Throwable {
@@ -1406,7 +1402,7 @@ public final class PneuCrudApiTest extends BaseTest {
                         new BigDecimal(0),
                         ApiStatusPneu.ESTOQUE,
                         null,
-                      900
+                        900
                 );
             }
             return apiPneuCargaInicial;
