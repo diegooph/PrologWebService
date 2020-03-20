@@ -41,6 +41,8 @@ public final class PneuCrudApiTest extends BaseTest {
     @NotNull
     private static final Long COD_EMPRESA = 3L;
     @NotNull
+    private static final Long COD_UNIDADE = 5L;
+    @NotNull
     private static String PLACA = "MMM0001";
     @NotNull
     private static final Random RANDOM = new Random();
@@ -158,7 +160,7 @@ public final class PneuCrudApiTest extends BaseTest {
                 geraCodCliente(),
                 codUnidade,
                 buscaCodModeloPneuEmpresa(COD_EMPRESA),
-                1L,
+                buscaCodDimensao(),
                 120.0,
                 1,
                 4,
@@ -185,16 +187,16 @@ public final class PneuCrudApiTest extends BaseTest {
 
     @Test
     @DisplayName("Teste Carga Inicial com código do modelo do pneu inválido")
-    void adicionaCargaInicialPneuComErroCodModeloPneuNaoExisteTest() {
+    void adicionaCargaInicialPneuComErroCodModeloPneuNaoExisteTest() throws Throwable {
         //Cenário
         final Long codModeloPneu = 5754343L;
         final List<ApiPneuCargaInicial> cargaInicial = new ArrayList<>();
         cargaInicial.add(new ApiPneuCargaInicial(
                 geraCodSistemaIntegrado(),
                 geraCodCliente(),
-                5L,
+                COD_UNIDADE,
                 codModeloPneu,
-                1L,
+                buscaCodDimensao(),
                 120.0,
                 1,
                 4,
@@ -228,7 +230,7 @@ public final class PneuCrudApiTest extends BaseTest {
         cargaInicial.add(new ApiPneuCargaInicial(
                 geraCodSistemaIntegrado(),
                 geraCodCliente(),
-                5L,
+                COD_UNIDADE,
                 buscaCodModeloPneuEmpresa(COD_EMPRESA),
                 codDimensao,
                 120.0,
@@ -264,9 +266,9 @@ public final class PneuCrudApiTest extends BaseTest {
         cargaInicial.add(new ApiPneuCargaInicial(
                 geraCodSistemaIntegrado(),
                 geraCodCliente(),
-                5L,
+                COD_UNIDADE,
                 buscaCodModeloPneuEmpresa(COD_EMPRESA),
-                1L,
+                buscaCodDimensao(),
                 codPressao,
                 1,
                 4,
@@ -300,9 +302,9 @@ public final class PneuCrudApiTest extends BaseTest {
         cargaInicial.add(new ApiPneuCargaInicial(
                 geraCodSistemaIntegrado(),
                 geraCodCliente(),
-                5L,
+                COD_UNIDADE,
                 buscaCodModeloPneuEmpresa(COD_EMPRESA),
-                1L,
+                buscaCodDimensao(),
                 120.0,
                 1,
                 4,
@@ -336,9 +338,9 @@ public final class PneuCrudApiTest extends BaseTest {
         cargaInicial.add(new ApiPneuCargaInicial(
                 geraCodSistemaIntegrado(),
                 geraCodCliente(),
-                5L,
+                COD_UNIDADE,
                 buscaCodModeloPneuEmpresa(COD_EMPRESA),
-                1L,
+                buscaCodDimensao(),
                 120.0,
                 vidaAtual,
                 4,
@@ -372,9 +374,9 @@ public final class PneuCrudApiTest extends BaseTest {
         cargaInicial.add(new ApiPneuCargaInicial(
                 geraCodSistemaIntegrado(),
                 geraCodCliente(),
-                5L,
+                COD_UNIDADE,
                 buscaCodModeloPneuEmpresa(COD_EMPRESA),
-                1L,
+                buscaCodDimensao(),
                 120.0,
                 3,
                 4,
@@ -407,9 +409,9 @@ public final class PneuCrudApiTest extends BaseTest {
         cargaInicial.add(new ApiPneuCargaInicial(
                 geraCodSistemaIntegrado(),
                 geraCodCliente(),
-                5L,
+                COD_UNIDADE,
                 buscaCodModeloPneuEmpresa(COD_EMPRESA),
-                1L,
+                buscaCodDimensao(),
                 120.0,
                 3,
                 4,
@@ -442,9 +444,9 @@ public final class PneuCrudApiTest extends BaseTest {
         cargaInicial.add(new ApiPneuCargaInicial(
                 geraCodSistemaIntegrado(),
                 geraCodCliente(),
-                5L,
+                COD_UNIDADE,
                 buscaCodModeloPneuEmpresa(COD_EMPRESA),
-                1L,
+                buscaCodDimensao(),
                 120.0,
                 1,
                 4,
@@ -478,9 +480,9 @@ public final class PneuCrudApiTest extends BaseTest {
         cargaInicial.add(new ApiPneuCargaInicial(
                 geraCodSistemaIntegrado(),
                 geraCodCliente(),
-                5L,
+                COD_UNIDADE,
                 buscaCodModeloPneuEmpresa(COD_EMPRESA),
-                1L,
+                buscaCodDimensao(),
                 120.0,
                 1,
                 4,
@@ -675,7 +677,7 @@ public final class PneuCrudApiTest extends BaseTest {
                 geraCodCliente(),
                 codUnidade,
                 buscaCodModeloPneuEmpresa(COD_EMPRESA),
-                1L,
+                buscaCodDimensao(),
                 120.0,
                 1,
                 4,
@@ -702,9 +704,9 @@ public final class PneuCrudApiTest extends BaseTest {
         final ApiPneuCadastro apiPneuCadastro = new ApiPneuCadastro(
                 geraCodSistemaIntegrado(),
                 geraCodCliente(),
-                5L,
+                COD_UNIDADE,
                 codModelo,
-                1L,
+                buscaCodDimensao(),
                 120.0,
                 1,
                 4,
@@ -732,9 +734,9 @@ public final class PneuCrudApiTest extends BaseTest {
         final ApiPneuCadastro apiPneuCadastro = new ApiPneuCadastro(
                 geraCodSistemaIntegrado(),
                 geraCodCliente(),
-                5L,
+                COD_UNIDADE,
                 buscaCodModeloPneuEmpresa(COD_EMPRESA),
-                1L,
+                buscaCodDimensao(),
                 120.0,
                 2,
                 4,
@@ -763,7 +765,7 @@ public final class PneuCrudApiTest extends BaseTest {
         final ApiPneuCadastro apiPneuCadastro = new ApiPneuCadastro(
                 geraCodSistemaIntegrado(),
                 geraCodCliente(),
-                5L,
+                COD_UNIDADE,
                 buscaCodModeloPneuEmpresa(COD_EMPRESA),
                 codDimensao,
                 120.0,
@@ -794,9 +796,9 @@ public final class PneuCrudApiTest extends BaseTest {
         final ApiPneuCadastro apiPneuCadastro = new ApiPneuCadastro(
                 geraCodSistemaIntegrado(),
                 geraCodCliente(),
-                5L,
+                COD_UNIDADE,
                 buscaCodModeloPneuEmpresa(COD_EMPRESA),
-                1L,
+                buscaCodDimensao(),
                 pressaoPneu,
                 1,
                 4,
@@ -824,9 +826,9 @@ public final class PneuCrudApiTest extends BaseTest {
         final ApiPneuCadastro apiPneuCadastro = new ApiPneuCadastro(
                 geraCodSistemaIntegrado(),
                 geraCodCliente(),
-                5L,
+                COD_UNIDADE,
                 buscaCodModeloPneuEmpresa(COD_EMPRESA),
-                1L,
+                buscaCodDimensao(),
                 120.0,
                 vidaAtual,
                 4,
@@ -853,9 +855,9 @@ public final class PneuCrudApiTest extends BaseTest {
         final ApiPneuCadastro apiPneuCadastro = new ApiPneuCadastro(
                 geraCodSistemaIntegrado(),
                 geraCodCliente(),
-                5L,
+                COD_UNIDADE,
                 buscaCodModeloPneuEmpresa(COD_EMPRESA),
-                1L,
+                buscaCodDimensao(),
                 120.0,
                 5,
                 1,
@@ -883,9 +885,9 @@ public final class PneuCrudApiTest extends BaseTest {
         final ApiPneuCadastro apiPneuCadastro = new ApiPneuCadastro(
                 geraCodSistemaIntegrado(),
                 geraCodCliente(),
-                5L,
+                COD_UNIDADE,
                 buscaCodModeloPneuEmpresa(COD_EMPRESA),
-                1L,
+                buscaCodDimensao(),
                 120.0,
                 1,
                 4,
@@ -913,9 +915,9 @@ public final class PneuCrudApiTest extends BaseTest {
         final ApiPneuCadastro apiPneuCadastro = new ApiPneuCadastro(
                 geraCodSistemaIntegrado(),
                 geraCodCliente(),
-                5L,
+                COD_UNIDADE,
                 buscaCodModeloPneuEmpresa(COD_EMPRESA),
-                1L,
+                buscaCodDimensao(),
                 120.0,
                 2,
                 4,
@@ -1004,7 +1006,7 @@ public final class PneuCrudApiTest extends BaseTest {
         apiPneuAlteracaoStatus.add(new ApiPneuAlteracaoStatusAnalise(
                 codSistemaIntegrado,
                 apiPneuCadastro.getCodigoCliente(),
-                5L,
+                COD_UNIDADE,
                 "03383283194",
                 LocalDateTime.now(),
                 false,
@@ -1193,6 +1195,31 @@ public final class PneuCrudApiTest extends BaseTest {
             }
         } catch (final Throwable throwable) {
             throw new SQLException("Erro ao buscar código modelo do pneu");
+        } finally {
+            connectionProvider.closeResources(conn, stmt, rSet);
+        }
+    }
+
+    //Método responsável por buscar um código de dimensão.
+    private Long buscaCodDimensao() throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        List<Long> dimensoes = new ArrayList<>();
+        try {
+            conn = connectionProvider.provideDatabaseConnection();
+            stmt = conn.prepareStatement("SELECT CODIGO FROM DIMENSAO_PNEU;");
+            rSet = stmt.executeQuery();
+            while(rSet.next()){
+                dimensoes.add(rSet.getLong("CODIGO"));
+            }
+            if (!dimensoes.isEmpty()) {
+                return dimensoes.get(0);
+            } else {
+                throw new SQLException("Erro ao buscar dimensão");
+            }
+        } catch (final Throwable throwable) {
+            throw new SQLException("Erro ao buscar dimensão");
         } finally {
             connectionProvider.closeResources(conn, stmt, rSet);
         }
@@ -1525,9 +1552,9 @@ public final class PneuCrudApiTest extends BaseTest {
         return new ApiPneuCargaInicial(
                 geraCodSistemaIntegrado(),
                 geraCodCliente(),
-                5L,
+                COD_UNIDADE,
                 buscaCodModeloPneuEmpresa(COD_EMPRESA),
-                1L,
+                buscaCodDimensao(),
                 120.0,
                 1,
                 4,
@@ -1546,9 +1573,9 @@ public final class PneuCrudApiTest extends BaseTest {
         return new ApiPneuCargaInicial(
                 geraCodSistemaIntegrado(),
                 geraCodCliente(),
-                5L,
+                COD_UNIDADE,
                 buscaCodModeloPneuEmpresa(COD_EMPRESA),
-                1L,
+                buscaCodDimensao(),
                 120.0,
                 1,
                 4,
@@ -1567,9 +1594,9 @@ public final class PneuCrudApiTest extends BaseTest {
         return new ApiPneuCargaInicial(
                 geraCodSistemaIntegrado(),
                 geraCodCliente(),
-                5L,
+                COD_UNIDADE,
                 buscaCodModeloPneuEmpresa(COD_EMPRESA),
-                1L,
+                buscaCodDimensao(),
                 120.0,
                 1,
                 4,
@@ -1588,9 +1615,9 @@ public final class PneuCrudApiTest extends BaseTest {
         return new ApiPneuCargaInicial(
                 geraCodSistemaIntegrado(),
                 geraCodCliente(),
-                5L,
+                COD_UNIDADE,
                 buscaCodModeloPneuEmpresa(COD_EMPRESA),
-                1L,
+                buscaCodDimensao(),
                 120.0,
                 1,
                 4,
@@ -1609,9 +1636,9 @@ public final class PneuCrudApiTest extends BaseTest {
         return new ApiPneuCargaInicial(
                 geraCodSistemaIntegrado(),
                 geraCodCliente(),
-                5L,
+                COD_UNIDADE,
                 buscaCodModeloPneuEmpresa(COD_EMPRESA),
-                1L,
+                buscaCodDimensao(),
                 120.0,
                 1,
                 4,
@@ -1630,9 +1657,9 @@ public final class PneuCrudApiTest extends BaseTest {
         return new ApiPneuCargaInicial(
                 geraCodSistemaIntegrado(),
                 geraCodCliente(),
-                5L,
+                COD_UNIDADE,
                 buscaCodModeloPneuEmpresa(COD_EMPRESA),
-                1L,
+                buscaCodDimensao(),
                 120.0,
                 1,
                 4,
@@ -1651,9 +1678,9 @@ public final class PneuCrudApiTest extends BaseTest {
         return new ApiPneuCargaInicial(
                 geraCodSistemaIntegrado(),
                 geraCodCliente(),
-                5L,
+                COD_UNIDADE,
                 buscaCodModeloPneuEmpresa(COD_EMPRESA),
-                1L,
+                buscaCodDimensao(),
                 120.0,
                 1,
                 4,
@@ -1672,9 +1699,9 @@ public final class PneuCrudApiTest extends BaseTest {
         return new ApiPneuCargaInicial(
                 geraCodSistemaIntegrado(),
                 geraCodCliente(),
-                5L,
+                COD_UNIDADE,
                 buscaCodModeloPneuEmpresa(COD_EMPRESA),
-                1L,
+                buscaCodDimensao(),
                 120.0,
                 1,
                 4,
@@ -1693,9 +1720,9 @@ public final class PneuCrudApiTest extends BaseTest {
         return new ApiPneuCargaInicial(
                 geraCodSistemaIntegrado(),
                 geraCodCliente(),
-                5L,
+                COD_UNIDADE,
                 buscaCodModeloPneuEmpresa(COD_EMPRESA),
-                1L,
+                buscaCodDimensao(),
                 120.0,
                 1,
                 4,
@@ -1714,9 +1741,9 @@ public final class PneuCrudApiTest extends BaseTest {
         return new ApiPneuCargaInicial(
                 geraCodSistemaIntegrado(),
                 geraCodCliente(),
-                5L,
+                COD_UNIDADE,
                 buscaCodModeloPneuEmpresa(COD_EMPRESA),
-                1L,
+                buscaCodDimensao(),
                 120.0,
                 1,
                 4,
@@ -1736,9 +1763,9 @@ public final class PneuCrudApiTest extends BaseTest {
         return new ApiPneuCadastro(
                 geraCodSistemaIntegrado(),
                 geraCodCliente(),
-                5L,
+                COD_UNIDADE,
                 buscaCodModeloPneuEmpresa(COD_EMPRESA),
-                1L,
+                buscaCodDimensao(),
                 120.0,
                 3,
                 4,
