@@ -72,4 +72,16 @@ public final class MotivoService {
         }
     }
 
+    @Nullable
+    public void delete(@NotNull final Long codMotivo, @NotNull final String tokenAutenticacao) {
+        try {
+            dao.delete(codMotivo, tokenAutenticacao);
+        } catch (final Throwable t) {
+            Log.e(TAG, String.format("Erro ao deletar motivo, código do motivo: %d", codMotivo), t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao deletar motivo, tente novamente.");
+        }
+    }
+
 }

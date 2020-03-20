@@ -136,4 +136,26 @@ public class MotivoDaoImpl extends DatabaseConnection implements MotivoDao {
         }
     }
 
+    @Override
+    @Nullable
+    public void delete(@NotNull final Long codMotivo, @NotNull final String tokenAutenticacao) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT FUNC_MOTIVO_DELETA(" +
+                    "F_COD_MOTIVO := ?," +
+                    "F_DATA_ULTIMA_ALTERACAO := ?," +
+                    "F_TOKEN_AUTENTICACAO := ?);");
+
+            stmt.setLong(1, codMotivo);
+            stmt.setObject(2, Now.offsetDateTimeUtc());
+            stmt.setString(3, TokenCleaner.getOnlyToken(tokenAutenticacao));
+
+            stmt.executeQuery();
+        } finally {
+            close(conn, stmt);
+        }
+    }
+
 }

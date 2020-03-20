@@ -20,7 +20,8 @@ public interface MotivoDao {
      * <p>
      * Todos os dados são obrigatórios.
      *
-     * @param motivoInsercao Dados do motivo de troca a ser inserido.
+     * @param motivoInsercao    Dados do motivo de troca a ser inserido.
+     * @param tokenAutenticacao o token de sessão do usuário;
      * @throws Throwable Caso qualquer erro ocorra.
      */
     @NotNull
@@ -53,10 +54,20 @@ public interface MotivoDao {
     /**
      * Realiza a atualização de um motivo.
      *
-     * @param motivoEdicao um objeto de edição do motivo, com as informações necessárias para atualização.
+     * @param motivoEdicao      um objeto de edição do motivo, com as informações necessárias para atualização.
+     * @param tokenAutenticacao o token de sessão do usuário;
      * @throws Throwable caso qualquer erro ocorrer.
      */
     @Nullable
     void update(@NotNull MotivoEdicao motivoEdicao, @NotNull final String tokenAutenticacao) throws Throwable;
+
+    /**
+     * Realiza a deleção de um motivo com base no ID.
+     *
+     * @param codMotivo um código de motivo.
+     * @throws Throwable caso qualquer erro ocorrer.
+     */
+    @Nullable
+    void delete(@NotNull final Long codMotivo, @NotNull final String tokenAutenticacao) throws Throwable;
 
 }
