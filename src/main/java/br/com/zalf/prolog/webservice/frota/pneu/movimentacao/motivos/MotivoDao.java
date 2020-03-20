@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos;
 
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoAtivacaoDesativacao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoEdicao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoInsercao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoVisualizacaoListagem;
@@ -25,7 +24,7 @@ public interface MotivoDao {
      * @throws Throwable Caso qualquer erro ocorra.
      */
     @NotNull
-    Long insert(@NotNull final MotivoInsercao motivoInsercao) throws Throwable;
+    Long insert(@NotNull final MotivoInsercao motivoInsercao, String tokenAutenticacao) throws Throwable;
 
     /**
      * Busca um motivo baseado no seu código.
@@ -43,14 +42,12 @@ public interface MotivoDao {
      * Busca todos os motivos baseado no código da empresa.
      *
      * @param codEmpresa        um código de uma empresa;
-     * @param apenasAtivos      null, true ou false. Se true, traz apenas os ativos. Qualquer outro, traz todos.
      * @param tokenAutenticacao token de autorização do header da requisição.
      * @return uma {@link List<MotivoVisualizacaoListagem> lista de motivos}.
      * @throws Throwable caso qualquer erro ocorrer.
      */
     @NotNull
     List<MotivoVisualizacaoListagem> getMotivosListagem(@NotNull final Long codEmpresa,
-                                                        @Nullable final Boolean apenasAtivos,
                                                         @NotNull String tokenAutenticacao) throws Throwable;
 
     /**
@@ -60,9 +57,6 @@ public interface MotivoDao {
      * @throws Throwable caso qualquer erro ocorrer.
      */
     @Nullable
-    void update(@NotNull MotivoEdicao motivoEdicao) throws Throwable;
-
-    @Nullable
-    void ativaDesativaMotivo(@NotNull MotivoAtivacaoDesativacao motivo) throws Throwable;
+    void update(@NotNull MotivoEdicao motivoEdicao, @NotNull final String tokenAutenticacao) throws Throwable;
 
 }

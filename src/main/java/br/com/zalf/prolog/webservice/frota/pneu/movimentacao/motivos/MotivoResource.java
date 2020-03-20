@@ -1,12 +1,10 @@
 package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoAtivacaoDesativacao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoEdicao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoInsercao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoVisualizacaoListagem;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import javax.validation.Valid;
 import javax.ws.rs.*;
@@ -27,8 +25,9 @@ public final class MotivoResource {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    public Long insert(@Valid final MotivoInsercao motivo) {
-        return motivoService.insert(motivo);
+    public Long insert(@Valid final MotivoInsercao motivo,
+                       @HeaderParam("Authorization") final String tokenAutorizacao) {
+        return motivoService.insert(motivo, tokenAutorizacao);
     }
 
     @GET
@@ -40,21 +39,14 @@ public final class MotivoResource {
 
     @GET
     public List<MotivoVisualizacaoListagem> getMotivosListagem(@NotNull @QueryParam("codEmpresa") final Long codEmpresa,
-                                                               @Nullable @QueryParam("apenasAtivos") final Boolean apenasAtivos,
                                                                @NotNull @HeaderParam("Authorization") final String tokenAutenticacao) {
-        return motivoService.getMotivosListagem(codEmpresa, apenasAtivos, tokenAutenticacao);
+        return motivoService.getMotivosListagem(codEmpresa, tokenAutenticacao);
     }
 
     @PUT
-    public Response update(@NotNull final MotivoEdicao motivoEdicao) {
-        motivoService.update(motivoEdicao);
-        return Response.ok("Motivo atualizado com sucesso.");
-    }
-
-    @PUT
-    @Path("/ativacaoDesativacao")
-    public Response ativaDesativaMotivo(@NotNull final MotivoAtivacaoDesativacao motivo) {
-        motivoService.ativaDesativaMotivo(motivo);
+    public Response update(@NotNull final MotivoEdicao motivoEdicao,
+                           @HeaderParam("Authorization") @NotNull final String tokenAutenticacao) {
+        motivoService.update(motivoEdicao, tokenAutenticacao);
         return Response.ok("Motivo atualizado com sucesso.");
     }
 

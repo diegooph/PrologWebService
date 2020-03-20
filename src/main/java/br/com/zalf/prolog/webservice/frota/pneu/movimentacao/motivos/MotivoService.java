@@ -2,7 +2,6 @@ package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoAtivacaoDesativacao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoEdicao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoInsercao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoVisualizacaoListagem;
@@ -24,9 +23,9 @@ public final class MotivoService {
     private final MotivoDao dao = Injection.provideMotivoDao();
 
     @NotNull
-    public Long insert(@NotNull final MotivoInsercao motivo) {
+    public Long insert(@NotNull final MotivoInsercao motivo, @NotNull final String tokenAutenticacao) {
         try {
-            return dao.insert(motivo);
+            return dao.insert(motivo, tokenAutenticacao);
         } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao inserir motivo %s", motivo.getDescricaoMotivo()), t);
             throw Injection
@@ -50,10 +49,9 @@ public final class MotivoService {
 
     @NotNull
     public List<MotivoVisualizacaoListagem> getMotivosListagem(@NotNull final Long codEmpresa,
-                                                               @Nullable final Boolean apenasAtivos,
                                                                @NotNull final String tokenAutenticacao) {
         try {
-            return dao.getMotivosListagem(codEmpresa, apenasAtivos, tokenAutenticacao);
+            return dao.getMotivosListagem(codEmpresa, tokenAutenticacao);
         } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao buscar motivos, código da empresa: %d", codEmpresa), t);
             throw Injection
@@ -63,26 +61,14 @@ public final class MotivoService {
     }
 
     @Nullable
-    public void update(final MotivoEdicao motivoEdicao) {
+    public void update(@NotNull final MotivoEdicao motivoEdicao, @NotNull final String tokenAutenticacao) {
         try {
-            dao.update(motivoEdicao);
+            dao.update(motivoEdicao, tokenAutenticacao);
         } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao atualizar motivo, código do motivo: %d", motivoEdicao.getCodMotivo()), t);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao atualizar motivo, tente novamente.");
-        }
-    }
-
-    @Nullable
-    public void ativaDesativaMotivo(final MotivoAtivacaoDesativacao motivo) {
-        try {
-            dao.ativaDesativaMotivo(motivo);
-        } catch (final Throwable t) {
-            Log.e(TAG, String.format("Erro ao ativar ou desativar um motivo, código do motivo: %d", motivo.getCodMotivo()), t);
-            throw Injection
-                    .provideProLogExceptionHandler()
-                    .map(t, "Erro ao ativar ou desativar um motivo, tente novamente.");
         }
     }
 

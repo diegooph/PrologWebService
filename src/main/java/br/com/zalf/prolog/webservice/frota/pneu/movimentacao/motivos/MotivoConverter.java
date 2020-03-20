@@ -24,9 +24,8 @@ public class MotivoConverter {
         return new MotivoVisualizacaoListagem(rSet.getLong("CODIGO_MOTIVO"),
                 rSet.getLong("CODIGO_EMPRESA"),
                 rSet.getString("DESCRICAO_MOTIVO"),
-                rSet.getBoolean("ATIVO_MOTIVO"),
-                rSet.getObject("DATA_HORA_CADASTRO_MOTIVO", LocalDateTime.class),
-                rSet.getObject("DATA_HORA_ULTIMA_ALTERACAO_MOTIVO", LocalDateTime.class));
+                rSet.getObject("DATA_HORA_ULTIMA_ALTERACAO_MOTIVO", LocalDateTime.class),
+                rSet.getString("NOME_COLABORADOR_ULTIMA_ALTERACAO"));
     }
 
 }

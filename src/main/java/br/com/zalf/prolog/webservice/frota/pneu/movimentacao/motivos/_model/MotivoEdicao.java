@@ -17,7 +17,4 @@ class MotivoEdicao {
     @NotNull
     private final String descricaoMotivo;
 
-    @NotNull
-    private final Boolean ativoMotivo;
-
 }

@@ -1,10 +1,8 @@
 package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos;
 
-import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoAtivacaoDesativacao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoEdicao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoInsercao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoVisualizacaoListagem;
@@ -17,8 +15,6 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-import static br.com.zalf.prolog.webservice.commons.util.StatementUtils.bindValueOrNull;
-
 /**
  * Created on 2020-03-17
  *
@@ -28,7 +24,8 @@ public class MotivoDaoImpl extends DatabaseConnection implements MotivoDao {
 
     @Override
     @NotNull
-    public Long insert(@NotNull final MotivoInsercao motivoInsercao) throws Throwable {
+    public Long insert(@NotNull final MotivoInsercao motivoInsercao,
+                       @NotNull final String tokenAutenticacao) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -38,19 +35,19 @@ public class MotivoDaoImpl extends DatabaseConnection implements MotivoDao {
             stmt = conn.prepareStatement("SELECT * FROM FUNC_MOTIVO_INSERE(" +
                     "F_COD_EMPRESA_MOTIVO := ?," +
                     "F_DESCRICAO_MOTIVO := ?," +
-                    "F_ATIVO_MOTIVO := ?," +
-                    "F_DATA_HORA_INSERCAO_MOTIVO := ?)" +
-                    "AS F_COD_MOTIVO");
+                    "F_DATA_HORA_INSERCAO_MOTIVO := ?," +
+                    "F_TOKEN_AUTENTICACAO := ?)" +
+                    "AS V_COD_MOTIVO");
 
             stmt.setLong(1, motivoInsercao.getCodEmpresaMotivo());
             stmt.setString(2, motivoInsercao.getDescricaoMotivo());
-            stmt.setBoolean(3, true);
-            stmt.setObject(4, Now.offsetDateTimeUtc());
+            stmt.setObject(3, Now.offsetDateTimeUtc());
+            stmt.setString(4, TokenCleaner.getOnlyToken(tokenAutenticacao));
 
             rSet = stmt.executeQuery();
 
             while (rSet.next()) {
-                return rSet.getLong("F_COD_MOTIVO");
+                return rSet.getLong("V_COD_MOTIVO");
             }
 
         } finally {
@@ -89,7 +86,6 @@ public class MotivoDaoImpl extends DatabaseConnection implements MotivoDao {
     @Override
     @NotNull
     public List<MotivoVisualizacaoListagem> getMotivosListagem(@NotNull final Long codEmpresa,
-                                                               @Nullable final Boolean apenasAtivos,
                                                                @NotNull final String tokenAutenticacao) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -98,11 +94,9 @@ public class MotivoDaoImpl extends DatabaseConnection implements MotivoDao {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM FUNC_MOTIVO_LISTAGEM(" +
                     "F_COD_EMPRESA := ?," +
-                    "F_TOKEN := ?," +
-                    "F_APENAS_ATIVOS := ?)");
+                    "F_TOKEN := ?)");
             stmt.setLong(1, codEmpresa);
             stmt.setString(2, TokenCleaner.getOnlyToken(tokenAutenticacao));
-            bindValueOrNull(stmt, 3, apenasAtivos, SqlType.BOOLEAN);
 
             rSet = stmt.executeQuery();
 
@@ -119,7 +113,8 @@ public class MotivoDaoImpl extends DatabaseConnection implements MotivoDao {
 
     @Override
     @Nullable
-    public void update(final MotivoEdicao motivoEdicao) throws Throwable {
+    public void update(@NotNull final MotivoEdicao motivoEdicao,
+                       @NotNull final String tokenAutenticacao) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
@@ -127,31 +122,13 @@ public class MotivoDaoImpl extends DatabaseConnection implements MotivoDao {
             stmt = conn.prepareStatement("SELECT FUNC_MOTIVO_ATUALIZA(" +
                     "F_COD_MOTIVO := ?," +
                     "F_DESCRICAO_MOTIVO := ?," +
-                    "F_ATIVO_MOTIVO := ?);");
+                    "F_DATA_ULTIMA_ALTERACAO := ?," +
+                    "F_TOKEN_AUTENTICACAO := ?);");
 
             stmt.setLong(1, motivoEdicao.getCodMotivo());
             stmt.setString(2, motivoEdicao.getDescricaoMotivo());
-            stmt.setBoolean(3, motivoEdicao.getAtivoMotivo());
-
-            stmt.executeQuery();
-        } finally {
-            close(conn, stmt);
-        }
-    }
-
-    @Override
-    @Nullable
-    public void ativaDesativaMotivo(@NotNull final MotivoAtivacaoDesativacao motivo) throws Throwable {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT FUNC_MOTIVO_ATIVA_DESATIVA(" +
-                    "F_COD_MOTIVO := ?," +
-                    "F_ATIVO_MOTIVO := ?);");
-
-            stmt.setLong(1, motivo.getCodMotivo());
-            stmt.setBoolean(2, motivo.isAtivoMotivo());
+            stmt.setObject(3, Now.offsetDateTimeUtc());
+            stmt.setString(4, TokenCleaner.getOnlyToken(tokenAutenticacao));
 
             stmt.executeQuery();
         } finally {
