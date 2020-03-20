@@ -51,7 +51,8 @@ public final class MotivoResource {
     }
 
     @DELETE
-    public Response delete(@NotNull final Long codMotivo,
+    @Path("/{codMotivo}")
+    public Response delete(@PathParam("codMotivo") @NotNull final Long codMotivo,
                            @HeaderParam("Authorization") @NotNull final String tokenAutenticacao) {
         motivoService.delete(codMotivo, tokenAutenticacao);
         return Response.ok("Motivo deletado com sucesso.");
