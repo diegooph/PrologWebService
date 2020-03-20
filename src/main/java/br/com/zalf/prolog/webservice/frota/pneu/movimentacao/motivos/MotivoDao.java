@@ -16,7 +16,7 @@ import java.util.List;
 public interface MotivoDao {
 
     /**
-     * Insere um {@link MotivoInsercao colaborador} no banco de dados.
+     * Insere um {@link MotivoInsercao motivo} no banco de dados.
      * <p>
      * Todos os dados são obrigatórios.
      *
@@ -28,7 +28,7 @@ public interface MotivoDao {
     Long insert(@NotNull final MotivoInsercao motivoInsercao, String tokenAutenticacao) throws Throwable;
 
     /**
-     * Busca um motivo baseado no seu código.
+     * Busca um {@link MotivoVisualizacaoListagem motivo} baseado no seu código.
      *
      * @param codMotivo         um código de um motivo.
      * @param tokenAutenticacao token de autorização do header da requisição.
@@ -40,7 +40,7 @@ public interface MotivoDao {
                                                  @NotNull final String tokenAutenticacao) throws Throwable;
 
     /**
-     * Busca todos os motivos baseado no código da empresa.
+     * Busca todos os {@link MotivoVisualizacaoListagem motivos} baseado no código da empresa.
      *
      * @param codEmpresa        um código de uma empresa;
      * @param tokenAutenticacao token de autorização do header da requisição.
@@ -52,7 +52,7 @@ public interface MotivoDao {
                                                         @NotNull String tokenAutenticacao) throws Throwable;
 
     /**
-     * Realiza a atualização de um motivo.
+     * Realiza a atualização de um {@link MotivoEdicao motivo}.
      *
      * @param motivoEdicao      um objeto de edição do motivo, com as informações necessárias para atualização.
      * @param tokenAutenticacao o token de sessão do usuário;
