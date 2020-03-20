@@ -11,6 +11,8 @@ import br.com.zalf.prolog.webservice.integracao.api.pneu.cadastro.model.ApiPneuC
 import br.com.zalf.prolog.webservice.integracao.api.pneu.cadastro.model.ApiPneuCargaInicialResponse;
 import br.com.zalf.prolog.webservice.integracao.api.pneu.cadastro.model.ApiStatusPneu;
 import br.com.zalf.prolog.webservice.integracao.api.pneu.model.*;
+import br.com.zalf.prolog.webservice.integracao.praxio.IntegracaoPraxioResource;
+import br.com.zalf.prolog.webservice.integracao.praxio.cadastro.VeiculoCadastroPraxio;
 import br.com.zalf.prolog.webservice.integracao.response.SuccessResponseIntegracao;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.*;
@@ -48,7 +50,9 @@ public final class PneuCrudApiTest extends BaseTest {
     private static final Random RANDOM = new Random();
     private ApiCadastroPneuService apiCadastroPneuService;
     private ApiPneuService apiPneuService;
+    private IntegracaoPraxioResource integracaoPraxioResource;
     private DatabaseConnectionProvider connectionProvider;
+
 
     @BeforeAll
     public void initialize() {
@@ -57,6 +61,7 @@ public final class PneuCrudApiTest extends BaseTest {
             this.apiCadastroPneuService = new ApiCadastroPneuService();
             this.apiPneuService = new ApiPneuService();
             this.connectionProvider = new DatabaseConnectionProvider();
+            this.integracaoPraxioResource = new IntegracaoPraxioResource();
             TOKEN_INTEGRACAO = criaTokenIntegracaoParaEmpresa(COD_EMPRESA, geraTokenIntegracao());
         } catch (final Throwable throwable) {
             System.out.println(throwable);
@@ -98,8 +103,6 @@ public final class PneuCrudApiTest extends BaseTest {
         cargaInicial.add(criaPneuSemErroComVidaAtualValida());
         cargaInicial.add(criaPneuSemErroComDotValido());
         cargaInicial.add(criaPneuSemErroComModeloDeBandaValido());
-        cargaInicial.add(criaPneuSemErroComPlacaPneuValida());
-        cargaInicial.add(criaPneuSemErroComPosicaoPneuValida());
 
         //Execução
         final List<ApiPneuCargaInicialResponse> apiPneuCargaInicialResponses =
@@ -114,7 +117,7 @@ public final class PneuCrudApiTest extends BaseTest {
                             apiPneuCargaInicial.getCodUnidadePneu(),
                             COD_EMPRESA,
                             TOKEN_INTEGRACAO);
-            final ApiPneuCargaInicial apiPneuCargaInicialInfoPneu = buscaInformacoesPneuCargaInicial(
+            final ApiPneuCargaInicial apiPneuCargaInicialInfoPneu = buscaInformacoesPneuCargaInicialEstoque(
                     apiPneuCargaInicial.getCodigoSistemaIntegrado(),
                     apiPneuCargaInicial.getCodigoCliente(),
                     apiPneuCargaInicial.getCodUnidadePneu(),
@@ -146,6 +149,74 @@ public final class PneuCrudApiTest extends BaseTest {
         assertThat(apiPneuCargaInicialResponses.size()).isEqualTo(cargaInicial.size());
         for (ApiPneuCargaInicialResponse apiPneuCargaInicialRespons : apiPneuCargaInicialResponses) {
             assertThat(apiPneuCargaInicialRespons.getSucesso()).isTrue();
+        }
+    }
+
+    @Test
+    @DisplayName("Teste Carga Inicial adicionando pneus em posições do veículo")
+    void adicionaCargaInicialPneuEmVeiculo() throws Throwable {
+        //Cria veículo.
+        VeiculoCadastroPraxio veiculoCadastroPraxio = criaVeiculoParaCadastro();
+
+        //Adiciona veículo.
+        final SuccessResponseIntegracao successResponseIntegracao = integracaoPraxioResource.
+                inserirVeiculoPraxio(TOKEN_INTEGRACAO, veiculoCadastroPraxio);
+
+        assertThat(successResponseIntegracao.getMsg()).isEqualTo("Veículo inserido no ProLog com sucesso");
+
+        final List<Integer> posicoesPlaca = buscaPosicaoesPlaca(veiculoCadastroPraxio.getPlacaVeiculo());
+        final List<ApiPneuCargaInicial> cargaInicial = new ArrayList<>();
+        for(int i = 0; i < posicoesPlaca.size(); i++){
+            //Cria pneu com as posições
+            cargaInicial.add(criaPneuComPosicoesEspecificas(posicoesPlaca.get(i),
+                    veiculoCadastroPraxio.getPlacaVeiculo()));
+        }
+        //Execução.
+        final List<ApiPneuCargaInicialResponse> apiPneuCargaInicialResponses =
+                apiCadastroPneuService.inserirCargaInicialPneu(TOKEN_INTEGRACAO, cargaInicial);
+
+        //Valida se todos pneus foram salvos com sucesso.
+        for(ApiPneuCargaInicialResponse apiPneuCargaInicialResponse : apiPneuCargaInicialResponses){
+            assertThat(apiPneuCargaInicialResponse.getMensagem()).isEqualTo("Pneu cadastrado com sucesso no " +
+                    "Sistema ProLog");
+        }
+
+        //Valida informações dos pneus salvos.
+        //Verifica se os pneus foram inseridos
+        for (ApiPneuCargaInicial apiPneuCargaInicial : cargaInicial) {
+            final Long codSistemaIntegradoPneu =
+                    buscaCodSistemaIntegradoPneuInserido(
+                            apiPneuCargaInicial.getCodigoSistemaIntegrado(),
+                            apiPneuCargaInicial.getCodigoCliente(),
+                            apiPneuCargaInicial.getCodUnidadePneu(),
+                            COD_EMPRESA,
+                            TOKEN_INTEGRACAO);
+            final ApiPneuCargaInicial apiPneuCargaInicialInfoPneu = buscaInformacoesPneuCargaInicialEmUso(
+                    apiPneuCargaInicial.getCodigoSistemaIntegrado(),
+                    apiPneuCargaInicial.getCodigoCliente(),
+                    apiPneuCargaInicial.getCodUnidadePneu(),
+                    COD_EMPRESA);
+            //Valida todas as informações do pneu
+            assertThat(codSistemaIntegradoPneu).isNotNull();
+            assertThat(codSistemaIntegradoPneu).isEqualTo(apiPneuCargaInicial.getCodigoSistemaIntegrado());
+            assertThat(apiPneuCargaInicialInfoPneu.getCodigoSistemaIntegrado()).isEqualTo(apiPneuCargaInicial.
+                    getCodigoSistemaIntegrado());
+            assertThat(apiPneuCargaInicialInfoPneu.getCodigoCliente()).isEqualTo(apiPneuCargaInicial.
+                    getCodigoCliente());
+            assertThat(apiPneuCargaInicialInfoPneu.getCodUnidadePneu()).isEqualTo(apiPneuCargaInicial.
+                    getCodUnidadePneu());
+            assertThat(apiPneuCargaInicialInfoPneu.getCodModeloPneu()).isEqualTo(apiPneuCargaInicial.
+                    getCodModeloPneu());
+            assertThat(apiPneuCargaInicialInfoPneu.getCodDimensaoPneu()).isEqualTo(apiPneuCargaInicial.
+                    getCodDimensaoPneu());
+            assertThat(apiPneuCargaInicialInfoPneu.getPressaoCorretaPneu()).isEqualTo(apiPneuCargaInicial.
+                    getPressaoCorretaPneu());
+            assertThat(apiPneuCargaInicialInfoPneu.getVidaAtualPneu()).isEqualTo(apiPneuCargaInicial.
+                    getVidaAtualPneu());
+            assertThat(apiPneuCargaInicialInfoPneu.getVidaTotalPneu()).isEqualTo(apiPneuCargaInicial.
+                    getVidaTotalPneu());
+            assertThat(apiPneuCargaInicialInfoPneu.getPneuNovoNuncaRodado()).isEqualTo(apiPneuCargaInicial.
+                    getPneuNovoNuncaRodado());
         }
     }
 
@@ -524,7 +595,7 @@ public final class PneuCrudApiTest extends BaseTest {
                 apiCadastroPneuService.inserirPneuCadastro(TOKEN_INTEGRACAO, apiPneuCadastro);
 
         //Valida se pneu foi inserido;
-        final ApiPneuCargaInicial apiPneuCargaInicialInfoPneuInserido = buscaInformacoesPneuCargaInicial(
+        final ApiPneuCargaInicial apiPneuCargaInicialInfoPneuInserido = buscaInformacoesPneuCargaInicialEstoque(
                 apiPneuCadastro.getCodigoSistemaIntegrado(),
                 apiPneuCadastro.getCodigoCliente(),
                 apiPneuCadastro.getCodUnidadePneu(),
@@ -578,7 +649,7 @@ public final class PneuCrudApiTest extends BaseTest {
                 apiCadastroPneuService.inserirCargaInicialPneu(TOKEN_INTEGRACAO, cargaInicial);
 
         //Valida se pneu foi inserido;
-        final ApiPneuCargaInicial apiPneuCargaInicialInfoPneuAtualizado = buscaInformacoesPneuCargaInicial(
+        final ApiPneuCargaInicial apiPneuCargaInicialInfoPneuAtualizado = buscaInformacoesPneuCargaInicialEstoque(
                 apiPneuCadastro.getCodigoSistemaIntegrado(),
                 apiPneuCadastro.getCodigoCliente(),
                 apiPneuCadastro.getCodUnidadePneu(),
@@ -1225,6 +1296,140 @@ public final class PneuCrudApiTest extends BaseTest {
         }
     }
 
+    //Método responsável por pegar modelo do veículo.
+    private Long buscaCodModeloVeiculo(@NotNull Long codEmpresa) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        List<Long> modelos = new ArrayList<>();
+        try {
+            conn = connectionProvider.provideDatabaseConnection();
+            stmt = conn.prepareStatement("SELECT CODIGO FROM MODELO_VEICULO WHERE COD_EMPRESA = ?;");
+            stmt.setLong(1, codEmpresa);
+            rSet = stmt.executeQuery();
+            while(rSet.next()){
+                modelos.add(rSet.getLong("CODIGO"));
+            }
+            if (!modelos.isEmpty()) {
+                return modelos.get(0);
+            } else {
+                throw new SQLException("Erro ao buscar modelo veículo");
+            }
+        } catch (final Throwable throwable) {
+            throw new SQLException("Erro ao buscar modelo veículo");
+        } finally {
+            connectionProvider.closeResources(conn, stmt, rSet);
+        }
+    }
+
+    //Método responsável por pegar tipo veículo.
+    private Long buscaCodTipoVeiculo(@NotNull Long codEmpresa) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        List<Long> tipos = new ArrayList<>();
+        try {
+            conn = connectionProvider.provideDatabaseConnection();
+            stmt = conn.prepareStatement("SELECT CODIGO FROM VEICULO_TIPO WHERE COD_EMPRESA = ?;");
+            stmt.setLong(1, codEmpresa);
+            rSet = stmt.executeQuery();
+            while(rSet.next()){
+                tipos.add(rSet.getLong("CODIGO"));
+            }
+            if (!tipos.isEmpty()) {
+                return tipos.get(0);
+            } else {
+                throw new SQLException("Erro ao buscar tipos veículo");
+            }
+        } catch (final Throwable throwable) {
+            throw new SQLException("Erro ao buscar tipos veículo");
+        } finally {
+            connectionProvider.closeResources(conn, stmt, rSet);
+        }
+    }
+
+    //Método responsável por buscar placa disponível na unidade.
+    private String buscaPlacaUnidade(@NotNull Long codUnidade) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        List<String> placas = new ArrayList<>();
+        try {
+            conn = connectionProvider.provideDatabaseConnection();
+            stmt = conn.prepareStatement("SELECT V.PLACA FROM VEICULO_DATA V WHERE V.COD_UNIDADE = ? " +
+                    "AND V.PLACA NOT IN (SELECT VP.PLACA FROM VEICULO_PNEU VP WHERE VP.COD_UNIDADE = ?);");
+            stmt.setLong(1, codUnidade);
+            stmt.setLong(2, codUnidade);
+            rSet = stmt.executeQuery();
+            while(rSet.next()){
+                placas.add(rSet.getString("PLACA"));
+            }
+            if (!placas.isEmpty()) {
+                return placas.get(0);
+            } else {
+                throw new SQLException("Erro ao buscar placa");
+            }
+        } catch (final Throwable throwable) {
+            throw new SQLException("Erro ao buscar placa");
+        } finally {
+            connectionProvider.closeResources(conn, stmt, rSet);
+        }
+    }
+
+    //Método responsável por inserir placa na integração.
+    private void adicionaPlacaEmIntegracao(@NotNull String placa,
+                                           @NotNull Long codEmpresa,
+                                           @NotNull Long codUnidade) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        LocalDateTime hora = LocalDateTime.now();
+        try {
+            conn = connectionProvider.provideDatabaseConnection();
+            stmt = conn.prepareStatement("INSERT INTO INTEGRACAO.VEICULO_CADASTRADO(COD_EMPRESA_CADASTRO, " +
+                    "COD_UNIDADE_CADASTRO, COD_VEICULO_CADASTRO_PROLOG, PLACA_VEICULO_CADASTRO, " +
+                    "DATA_HORA_CADASTRO_PROLOG, DATA_HORA_ULTIMA_EDICAO)\n" +
+                    "VALUES(?, ?, (SELECT CODIGO FROM VEICULO_DATA WHERE PLACA = ?), ?, ?, ?);");
+            stmt.setLong(1, codEmpresa);
+            stmt.setLong(2, codUnidade);
+            stmt.setString(3, placa);
+            stmt.setString(4, placa);
+            stmt.setObject(5, hora);
+            stmt.setObject(6, hora);
+            stmt.executeUpdate();
+        } catch (final Throwable throwable) {
+            throw new SQLException("Erro ao inserir placa");
+        } finally {
+            connectionProvider.closeResources(conn, stmt);
+        }
+    }
+
+    //Método responsável por pegar posições de uma placa;
+    private List<Integer> buscaPosicaoesPlaca(@NotNull String placa) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        List<Integer> posicoes = new ArrayList<>();
+        try {
+            conn = connectionProvider.provideDatabaseConnection();
+            stmt = conn.prepareStatement("SELECT VDPP.POSICAO_PROLOG FROM VEICULO_DIAGRAMA_POSICAO_PROLOG VDPP " +
+                    "WHERE VDPP.COD_DIAGRAMA = (SELECT VT.COD_DIAGRAMA FROM VEICULO_TIPO VT " +
+                    "WHERE VT.CODIGO = (SELECT V.COD_TIPO FROM VEICULO_DATA V WHERE V.PLACA = ?));");
+            stmt.setString(1, placa);
+            rSet = stmt.executeQuery();
+            while(rSet.next()){
+                posicoes.add(rSet.getInt("POSICAO_PROLOG"));
+            }
+            if (posicoes.isEmpty()) {
+                throw new SQLException("Erro ao buscar posições");
+            }
+            return posicoes;
+        } catch (final Throwable throwable) {
+            throw new SQLException("Erro ao buscar posições");
+        } finally {
+            connectionProvider.closeResources(conn, stmt, rSet);
+        }
+    }
+
     //Método responsável por desativar sobrescrita do pneu.
     void desativaSobrescritaPneuEmpresa(@NotNull final Long codEmpresa) throws Throwable {
         Connection conn = null;
@@ -1383,10 +1588,10 @@ public final class PneuCrudApiTest extends BaseTest {
     }
 
     //Método responsável por pegar todas as informações do pneu na carga inicial.
-    private ApiPneuCargaInicial buscaInformacoesPneuCargaInicial(@NotNull final Long codSistemaIntegrado,
-                                                                 @NotNull final String codCliente,
-                                                                 @NotNull final Long codUnidade,
-                                                                 @NotNull final Long codEmpresa) throws Throwable {
+    private ApiPneuCargaInicial buscaInformacoesPneuCargaInicialEstoque(@NotNull final Long codSistemaIntegrado,
+                                                                        @NotNull final String codCliente,
+                                                                        @NotNull final Long codUnidade,
+                                                                        @NotNull final Long codEmpresa) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -1429,6 +1634,65 @@ public final class PneuCrudApiTest extends BaseTest {
                         rSet.getLong("COD_MODELO_BANDA"),
                         new BigDecimal(0),
                         ApiStatusPneu.ESTOQUE,
+                        null,
+                        900
+                );
+            }
+            return apiPneuCargaInicial;
+        } catch (final Throwable throwable) {
+            throw new SQLException("Erro ao buscar informações do pneu para carga inicial");
+        } finally {
+            connectionProvider.closeResources(conn, stmt, rSet);
+        }
+    }
+
+    //Método responsável por pegar todas as informações do pneu na carga inicial.
+    private ApiPneuCargaInicial buscaInformacoesPneuCargaInicialEmUso(@NotNull final Long codSistemaIntegrado,
+                                                                      @NotNull final String codCliente,
+                                                                      @NotNull final Long codUnidade,
+                                                                      @NotNull final Long codEmpresa) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        ApiPneuCargaInicial apiPneuCargaInicial = null;
+        try {
+            conn = connectionProvider.provideDatabaseConnection();
+            stmt = conn.prepareStatement("SELECT P.CODIGO_CLIENTE,\n" +
+                    "       P.COD_UNIDADE,\n" +
+                    "       P.COD_MODELO,\n" +
+                    "       P.COD_DIMENSAO,\n" +
+                    "       P.PRESSAO_RECOMENDADA,\n" +
+                    "       P.VIDA_ATUAL,\n" +
+                    "       P.VIDA_TOTAL,\n" +
+                    "       P.DOT,\n" +
+                    "       P.VALOR,\n" +
+                    "       P.PNEU_NOVO_NUNCA_RODADO,\n" +
+                    "       P.COD_MODELO_BANDA,\n" +
+                    "       P.STATUS\n" +
+                    "FROM PNEU_DATA P\n" +
+                    "WHERE COD_EMPRESA = ?\n" +
+                    "  AND COD_UNIDADE = ?\n" +
+                    "  AND CODIGO_CLIENTE = ?;");
+            stmt.setLong(1, codEmpresa);
+            stmt.setLong(2, codUnidade);
+            stmt.setString(3, codCliente);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                apiPneuCargaInicial = new ApiPneuCargaInicial(
+                        codSistemaIntegrado,
+                        rSet.getString("CODIGO_CLIENTE"),
+                        rSet.getLong("COD_UNIDADE"),
+                        rSet.getLong("COD_MODELO"),
+                        rSet.getLong("COD_DIMENSAO"),
+                        rSet.getDouble("PRESSAO_RECOMENDADA"),
+                        rSet.getInt("VIDA_ATUAL"),
+                        rSet.getInt("VIDA_TOTAL"),
+                        rSet.getString("DOT"),
+                        new BigDecimal(0),
+                        rSet.getBoolean("PNEU_NOVO_NUNCA_RODADO"),
+                        rSet.getLong("COD_MODELO_BANDA"),
+                        new BigDecimal(0),
+                        ApiStatusPneu.EM_USO,
                         null,
                         900
                 );
@@ -1737,6 +2001,28 @@ public final class PneuCrudApiTest extends BaseTest {
     }
 
     @NotNull
+    private ApiPneuCargaInicial criaPneuComPosicoesEspecificas(@NotNull final int posicao,
+                                                               @NotNull final String placa) throws Throwable {
+        return new ApiPneuCargaInicial(
+                geraCodSistemaIntegrado(),
+                geraCodCliente(),
+                COD_UNIDADE,
+                buscaCodModeloPneuEmpresa(COD_EMPRESA),
+                buscaCodDimensao(),
+                120.0,
+                2,
+                4,
+                "1010",
+                new BigDecimal(1500.0),
+                false,
+                buscaCodModeloBandaPneuEmpresa(COD_EMPRESA),
+                new BigDecimal(100.00),
+                ApiStatusPneu.EM_USO,
+                placa,
+                posicao);
+    }
+
+    @NotNull
     private ApiPneuCargaInicial criaPneuSemErroComPosicaoPneuValida() throws Throwable {
         return new ApiPneuCargaInicial(
                 geraCodSistemaIntegrado(),
@@ -1834,5 +2120,16 @@ public final class PneuCrudApiTest extends BaseTest {
                 true,
                 buscaCodModeloBandaPneuEmpresa(COD_EMPRESA),
                 new BigDecimal(300.00));
+    }
+
+    //Método responsável por criar um novo veículo para cadastrar.
+    private VeiculoCadastroPraxio criaVeiculoParaCadastro() throws Throwable {
+        return new VeiculoCadastroPraxio(
+                COD_UNIDADE,
+                "PLA"+RANDOM.nextInt(9999),
+                1000L,
+                buscaCodModeloVeiculo(COD_EMPRESA),
+                buscaCodTipoVeiculo(COD_EMPRESA)
+        );
     }
 }
