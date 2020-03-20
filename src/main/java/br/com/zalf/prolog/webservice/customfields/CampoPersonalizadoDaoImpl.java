@@ -72,7 +72,7 @@ public final class CampoPersonalizadoDaoImpl extends DatabaseConnection implemen
                                                    @Nullable final List<ColunaTabelaResposta> colunasEspecificas)
             throws Throwable {
 
-        String sql = "insert into %s (cod_tipo_campo, cod_campo, resposta, resposta_lista_selecao %s) " +
+        String sql = "insert into %s (cod_tipo_campo, cod_campo, resposta, resposta_lista_selecao, %s) " +
                 "values (?, ?, ?, ? %s)";
         if (colunasEspecificas != null && !colunasEspecificas.isEmpty()) {
             final String nomesColunas = colunasEspecificas
@@ -124,7 +124,7 @@ public final class CampoPersonalizadoDaoImpl extends DatabaseConnection implemen
                 throw new IllegalStateException("Alguma das operações de insert em batch falhou!");
             }
         } finally {
-            close(conn, stmt);
+            close(stmt);
         }
     }
 }
