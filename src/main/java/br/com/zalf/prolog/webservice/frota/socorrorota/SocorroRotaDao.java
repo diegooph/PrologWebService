@@ -106,6 +106,24 @@ public interface SocorroRotaDao {
     Long atendimentoSocorro(@NotNull final SocorroRotaAtendimento socorroRotaAtendimento) throws Throwable;
 
     /**
+     * Registra no banco de dados o início de um deslocamento durante o atendimento de uma solicitação de socorro.
+     *
+     * @param deslocamentoInicio Objeto contendo as informações do início de deslocamento.
+     * @throws Throwable Se algum erro ocorrer.
+     */
+    @NotNull
+    void iniciaDeslocamento(@NotNull final SocorroRotaAtendimentoDeslocamento deslocamentoInicio) throws Throwable;
+
+    /**
+     * Registra no banco de dados o fim de um deslocamento durante o atendimento de uma solicitação de socorro.
+     *
+     * @param deslocamentoFim Objeto contendo as informações do fim de deslocamento.
+     * @throws Throwable Se algum erro ocorrer.
+     */
+    @NotNull
+    void finalizaDeslocamento(@NotNull final SocorroRotaAtendimentoDeslocamento deslocamentoFim) throws Throwable;
+
+    /**
      * Finaliza uma solicitação de socorro no banco de dados.
      *
      * @param socorroRotaFinalizacao Objeto contendo as informações para finalização de um socorro.

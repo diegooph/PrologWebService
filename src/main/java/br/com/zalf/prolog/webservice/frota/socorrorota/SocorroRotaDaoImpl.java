@@ -283,6 +283,95 @@ public final class SocorroRotaDaoImpl extends DatabaseConnection implements Soco
 
     @NotNull
     @Override
+    public void iniciaDeslocamento(@NotNull final SocorroRotaAtendimentoDeslocamento deslocamentoInicio) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = preparaDeslocamento(conn, deslocamentoInicio, false);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                if (!rSet.getBoolean(1)) {
+                    throw new Throwable("Erro ao iniciar um deslocamento.");
+                }
+            } else {
+                throw new Throwable("Erro ao registrar os dados do início do  deslocamento");
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+    @NotNull
+    @Override
+    public void finalizaDeslocamento(@NotNull final SocorroRotaAtendimentoDeslocamento deslocamentoFim) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = preparaDeslocamento(conn, deslocamentoFim, true);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                if (!rSet.getBoolean(1)) {
+                    throw new Throwable("Erro ao finalizar um deslocamento.");
+                }
+            } else {
+                throw new Throwable("Erro ao registrar os dados do fim do deslocamento");
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+    @NotNull
+    private PreparedStatement preparaDeslocamento(@NotNull final Connection conn,
+                                                  @NotNull final SocorroRotaAtendimentoDeslocamento deslocamento,
+                                                  final boolean fluxoFim) throws Throwable {
+        PreparedStatement stmt = null;
+        String funcDeslocamento = "FUNC_SOCORRO_ROTA_ATENDIMENTO_DESLOCAMENTO_INICIO";
+
+        if(fluxoFim){
+            funcDeslocamento = "FUNC_SOCORRO_ROTA_ATENDIMENTO_DESLOCAMENTO_FIM";
+        }
+        stmt = conn.prepareStatement("SELECT * FROM " + funcDeslocamento + "(" +
+                "F_COD_SOCORRO_ROTA := ?," +
+                "F_COD_COLABORADOR := ?," +
+                "F_DATA_HORA := ?," +
+                "F_LATITUDE := ?," +
+                "F_LONGITUDE := ?," +
+                "F_PRECISAO_LOCALIZACAO := ?," +
+                "F_ENDERECO_AUTOMATICO := ?," +
+                "F_DEVICE_ID := ?," +
+                "F_DEVICE_IMEI := ?," +
+                "F_DEVICE_UPTIME_MILLIS := ?," +
+                "F_ANDROID_API_VERSION := ?," +
+                "F_MARCA_DEVICE := ?," +
+                "F_MODELO_DEVICE := ?," +
+                "F_PLATAFORMA_ORIGEM := ?," +
+                "F_VERSAO_PLATAFORMA_ORIGEM := ?)");
+        stmt.setLong(1, deslocamento.getCodSocorroRota());
+        stmt.setLong(2, deslocamento.getCodColaborador());
+        // Ignoramos a data hora do objeto e usamos a do WS.
+        stmt.setObject(3, Now.offsetDateTimeUtc());
+        stmt.setString(4, deslocamento.getLocalizacao().getLatitude());
+        stmt.setString(5, deslocamento.getLocalizacao().getLongitude());
+        stmt.setObject(6, deslocamento.getLocalizacao().getPrecisaoLocalizacaoMetros(), SqlType.NUMERIC.asIntTypeJava());
+        stmt.setString(7, deslocamento.getEnderecoAutomatico());
+        stmt.setString(8, deslocamento.getDeviceId());
+        stmt.setString(9, deslocamento.getDeviceImei());
+        stmt.setLong(10, deslocamento.getDeviceUptimeMillis());
+        stmt.setInt(11, deslocamento.getAndroidApiVersion());
+        stmt.setString(12, deslocamento.getMarcaDevice());
+        stmt.setString(13, deslocamento.getModeloDevice());
+        stmt.setString(14, deslocamento.getPlataformaOrigem().asString());
+        stmt.setString(15, deslocamento.getVersaoPlataformaOrigem());
+        return stmt;
+    }
+
+    @NotNull
+    @Override
     public Long invalidacaoSocorro(@NotNull final SocorroRotaInvalidacao socorroRotaInvalidacao) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;

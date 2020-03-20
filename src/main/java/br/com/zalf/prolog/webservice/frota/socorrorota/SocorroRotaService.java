@@ -5,6 +5,7 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.imagens.FileFormatNotSupportException;
 import br.com.zalf.prolog.webservice.commons.imagens.ImagemProLog;
 import br.com.zalf.prolog.webservice.commons.imagens.UploadImageHelper;
+import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
@@ -149,6 +150,34 @@ public final class SocorroRotaService {
         return ResponseWithCod.ok(
                 "Solicitação de socorro atendida com sucesso.",
                 codSocorro);
+    }
+
+    @NotNull
+    Response iniciaDeslocamento(@NotNull final SocorroRotaAtendimentoDeslocamento deslocamentoInicio){
+        try {
+            dao.iniciaDeslocamento(deslocamentoInicio);
+            return Response.ok("Início de deslocamento registrado com sucesso.");
+        } catch (final Throwable t) {
+            final String errorMessage = "Erro ao registrar o início de deslocamento.";
+            Log.e(TAG, errorMessage, t);
+            throw Injection
+                    .providePneuExceptionHandler()
+                    .map(t, errorMessage);
+        }
+    }
+
+    @NotNull
+    Response finalizaDeslocamento(@NotNull final SocorroRotaAtendimentoDeslocamento deslocamentoFim){
+        try {
+            dao.finalizaDeslocamento(deslocamentoFim);
+            return Response.ok("Fim de deslocamento registrado com sucesso.");
+        } catch (final Throwable t) {
+            final String errorMessage = "Erro ao registrar a finalização de deslocamento.";
+            Log.e(TAG, errorMessage, t);
+            throw Injection
+                    .providePneuExceptionHandler()
+                    .map(t, errorMessage);
+        }
     }
 
     @NotNull
