@@ -4,12 +4,12 @@ import br.com.zalf.prolog.webservice.database.DatabaseConnectionProvider;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
+import br.com.zalf.prolog.webservice.integracao.MetodoIntegrado;
 import br.com.zalf.prolog.webservice.integracao.PosicaoPneuMapper;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.*;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.data.ProtheusNepomucenoRequesterImpl;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
-import br.com.zalf.prolog.webservice.integracao.MetodoIntegrado;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
@@ -97,6 +97,16 @@ public final class SistemaProtheusNepomuceno extends Sistema {
             final String codFiliais = sistema.getCodFiliais(conn, codUnidades);
             final List<VeiculoListagemProtheusNepomuceno> listagemVeiculos =
                     requester.getListagemVeiculosUnidadesSelecionadas(url, codFiliais);
+
+//            if (BuildConfig.DEBUG) {
+//                final List<VeiculoListagemProtheusNepomuceno> remove = listagemVeiculos.stream()
+//                        .filter(veiculo ->
+//                                !veiculo.getPlacaVeiculo().equals("AQH1688")
+//                                        && !veiculo.getPlacaVeiculo().equals("BTZ1077"))
+//                        .collect(Collectors.toList());
+//                listagemVeiculos.removeAll(remove);
+//            }
+
             final List<String> placasNepomuceno = listagemVeiculos.stream()
                     .map(VeiculoListagemProtheusNepomuceno::getPlacaVeiculo)
                     .distinct()
@@ -109,6 +119,16 @@ public final class SistemaProtheusNepomuceno extends Sistema {
             final Map<String, ModeloPlacasAfericao> modelosEstruturaVeiculo = new HashMap<>();
             final Map<String, List<ModeloPlacasAfericao.PlacaAfericao>> placasEstruturaVeiculo = new HashMap<>();
             for (final VeiculoListagemProtheusNepomuceno veiculo : listagemVeiculos) {
+                if (!placasEstruturaVeiculo.containsKey(veiculo.getCodModeloVeiculo())) {
+                    placasEstruturaVeiculo.put(veiculo.getCodModeloVeiculo(), new ArrayList<>());
+                }
+                placasEstruturaVeiculo.get(veiculo.getCodModeloVeiculo()).add(
+                        ProtheusNepomucenoConverter.createPlacaAfericaoProlog(
+                                veiculo,
+                                unidadeRestricao,
+                                tipoVeiculoConfiguracao,
+                                afericaoRealizadaPlaca));
+
                 if (!modelosEstruturaVeiculo.containsKey(veiculo.getCodModeloVeiculo())) {
                     modelosEstruturaVeiculo.put(
                             veiculo.getCodModeloVeiculo(),
@@ -116,18 +136,6 @@ public final class SistemaProtheusNepomuceno extends Sistema {
                                     veiculo,
                                     placasEstruturaVeiculo.get(veiculo.getCodModeloVeiculo())));
                 }
-
-                if (placasEstruturaVeiculo.containsKey(veiculo.getCodModeloVeiculo())) {
-                    placasEstruturaVeiculo.get(veiculo.getCodModeloVeiculo()).add(
-                            ProtheusNepomucenoConverter.createPlacaAfericaoProlog(
-                                    veiculo,
-                                    unidadeRestricao,
-                                    tipoVeiculoConfiguracao,
-                                    afericaoRealizadaPlaca));
-                } else {
-                    placasEstruturaVeiculo.put(veiculo.getCodModeloVeiculo(), new ArrayList<>());
-                }
-
             }
             return ProtheusNepomucenoConverter
                     .createCronogramaAfericaoProlog(modelosEstruturaVeiculo, listagemVeiculos.size());
@@ -160,11 +168,9 @@ public final class SistemaProtheusNepomuceno extends Sistema {
                             codUnidade,
                             veiculoAfericao.getCodEstruturaVeiculo());
             final PosicaoPneuMapper posicaoPneuMapper = new PosicaoPneuMapper(
-                    sistema
-                            .getMapeamentoPosicoesProlog(conn, codEmpresa, veiculoAfericao.getCodEstruturaVeiculo()));
+                    sistema.getMapeamentoPosicoesProlog(conn, codEmpresa, veiculoAfericao.getCodEstruturaVeiculo()));
             final Short codDiagramaPlaca =
-                    sistema
-                            .getCodDiagramaByCodEstrutura(conn, codEmpresa, veiculoAfericao.getCodEstruturaVeiculo());
+                    sistema.getCodDiagramaByCodEstrutura(conn, codEmpresa, veiculoAfericao.getCodEstruturaVeiculo());
             final Veiculo veiculo =
                     ProtheusNepomucenoConverter
                             .createVeiculoProlog(codUnidade, codDiagramaPlaca, veiculoAfericao, posicaoPneuMapper);
@@ -208,7 +214,10 @@ public final class SistemaProtheusNepomuceno extends Sistema {
                         .orElse(null);
                 pneusAfericaoAvulsa.add(
                         ProtheusNepomucenoConverter
-                                .createPneuAfericaoAvulsaProlog(pneuEstoqueNepomuceno, pneuInfoAfericaoAvulsa));
+                                .createPneuAfericaoAvulsaProlog(
+                                        codUnidade,
+                                        pneuEstoqueNepomuceno,
+                                        pneuInfoAfericaoAvulsa));
             }
             return pneusAfericaoAvulsa;
         } finally {
@@ -234,7 +243,10 @@ public final class SistemaProtheusNepomuceno extends Sistema {
             final String url = getIntegradorProLog()
                     .getUrl(conn, codEmpresaProlog, getSistemaKey(), MetodoIntegrado.GET_PNEU_NOVA_AFERICAO_AVULSA);
             final PneuEstoqueProtheusNepomuceno pneuEstoqueNepomuceno =
-                    requester.getPneuEmEstoqueAfericaoAvulsa(url, codAuxiliarUnidade, String.valueOf(codPneu));
+                    requester.getPneuEmEstoqueAfericaoAvulsa(
+                            url,
+                            codAuxiliarUnidade,
+                            ProtheusNepomucenoEncoderDecoder.decode(codPneu));
 
             // Busca as infos de aferição com base nos pneus da lista codPneus.
             final List<InfosAfericaoAvulsa> infosAfericaoAvulsa =
@@ -254,6 +266,7 @@ public final class SistemaProtheusNepomuceno extends Sistema {
 
             return ProtheusNepomucenoConverter
                     .createNovaAfericaoAvulsaProlog(
+                            codUnidade,
                             pneuEstoqueNepomuceno,
                             configuracaoAfericao,
                             pneuInfoAfericaoAvulsa);

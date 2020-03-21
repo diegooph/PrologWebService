@@ -42,9 +42,9 @@ public final class SistemaProtheusNepomucenoDaoImpl extends DatabaseConnection i
             stmt = conn.prepareStatement("SELECT * FROM INTEGRACAO.FUNC_PNEU_AFERICAO_INSERT_AFERICAO_INTEGRADA(" +
                     "F_COD_UNIDADE_PROLOG => ?," +
                     "F_CPF_AFERIDOR => ?, " +
-                    "F_PLACA_VEICULO => ?, " +
-                    "F_COD_TIPO_VEICULO_PROLOG => ?, " +
-                    "F_KM_VEICULO => ?, " +
+                    "F_PLACA_VEICULO => ?::TEXT, " +
+                    "F_COD_TIPO_VEICULO_PROLOG => ?::BIGINT, " +
+                    "F_KM_VEICULO => ?::TEXT, " +
                     "F_TEMPO_REALIZACAO => ?, " +
                     "F_DATA_HORA => ?, " +
                     "F_TIPO_MEDICAO_COLETADA => ?, " +
@@ -158,7 +158,7 @@ public final class SistemaProtheusNepomucenoDaoImpl extends DatabaseConnection i
                     "ACTAV.PODE_AFERIR_ESTEPE        AS PODE_AFERIR_ESTEPE " +
                     "FROM AFERICAO_CONFIGURACAO_TIPO_AFERICAO_VEICULO ACTAV " +
                     "         JOIN VEICULO_TIPO VT ON ACTAV.COD_TIPO_VEICULO = VT.CODIGO " +
-                    "WHERE COD_UNIDADE = ANY (?);");
+                    "WHERE COD_UNIDADE = ANY (?) AND VT.COD_AUXILIAR IS NOT NULL;");
             stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
             rSet = stmt.executeQuery();
             final Map<String, InfosTipoVeiculoConfiguracaoAfericao> tipoVeiculoConfiguracao = new HashMap<>();
@@ -275,8 +275,8 @@ public final class SistemaProtheusNepomucenoDaoImpl extends DatabaseConnection i
                     "WHERE CONFIG_PODE_AFERIR.COD_UNIDADE_CONFIGURACAO = ? " +
                     "  AND CONFIG_PODE_AFERIR.COD_TIPO_VEICULO = VT.CODIGO;");
             stmt.setLong(1, codUnidade);
-            stmt.setLong(2, codUnidade);
-            stmt.setString(3, codEstruturaVeiculo);
+            stmt.setString(2, codEstruturaVeiculo);
+            stmt.setLong(3, codUnidade);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return new ConfiguracaoNovaAfericaoPlaca(
@@ -445,17 +445,16 @@ public final class SistemaProtheusNepomucenoDaoImpl extends DatabaseConnection i
         try {
             stmt = conn.prepareStatement(
                     "SELECT * FROM INTEGRACAO.FUNC_PNEU_AFERICAO_INSERT_AFERICAO_VALORES_INTEGRADA(" +
-                            "F_COD_AFERICAO_INTEGRADA => ?," +
-                            "F_COD_PNEU_PROLOG => ?, " +
-                            "F_COD_PNEU_CLIENTE => ?, " +
-                            "F_COD_PNEU_CLIENTE_AUXILIAR => ?, " +
-                            "F_VIDA_ATUAL => ?, " +
-                            "F_PSI => ?, " +
-                            "F_ALTURA_SULCO_INTERNO => ?, " +
-                            "F_ALTURA_SULCO_CENTRAL_INTERNO => ?, " +
-                            "F_ALTURA_SULCO_EXTERNO => ?, " +
-                            "F_ALTURA_SULCO_CENTRAL_EXTERNO => ?, " +
-                            "F_POSICAO_PROLOG => ?) AS COD_AFERICAO_INTEGRADA;");
+                            "F_COD_AFERICAO_INTEGRADA => ?::BIGINT," +
+                            "F_COD_PNEU => ?::TEXT, " +
+                            "F_COD_PNEU_CLIENTE => ?::TEXT, " +
+                            "F_VIDA_ATUAL => ?::INTEGER, " +
+                            "F_PSI => ?::REAL, " +
+                            "F_ALTURA_SULCO_INTERNO => ?::REAL, " +
+                            "F_ALTURA_SULCO_CENTRAL_INTERNO => ?::REAL, " +
+                            "F_ALTURA_SULCO_CENTRAL_EXTERNO => ?::REAL, " +
+                            "F_ALTURA_SULCO_EXTERNO => ?::REAL, " +
+                            "F_POSICAO_PROLOG => ?::INTEGER) AS COD_AFERICAO_INTEGRADA;");
             for (Pneu pneu : afericao.getPneusAferidos()) {
                 stmt.setLong(1, codAfericaoInserida);
                 stmt.setString(2, String.valueOf(pneu.getCodigo()));
@@ -466,15 +465,15 @@ public final class SistemaProtheusNepomucenoDaoImpl extends DatabaseConnection i
                         stmt.setDouble(5, pneu.getPressaoAtual());
                         stmt.setDouble(6, pneu.getSulcosAtuais().getInterno());
                         stmt.setDouble(7, pneu.getSulcosAtuais().getCentralInterno());
-                        stmt.setDouble(8, pneu.getSulcosAtuais().getExterno());
-                        stmt.setDouble(9, pneu.getSulcosAtuais().getCentralExterno());
+                        stmt.setDouble(8, pneu.getSulcosAtuais().getCentralExterno());
+                        stmt.setDouble(9, pneu.getSulcosAtuais().getExterno());
                         break;
                     case SULCO:
                         stmt.setNull(5, Types.REAL);
                         stmt.setDouble(6, pneu.getSulcosAtuais().getInterno());
                         stmt.setDouble(7, pneu.getSulcosAtuais().getCentralInterno());
-                        stmt.setDouble(8, pneu.getSulcosAtuais().getExterno());
-                        stmt.setDouble(9, pneu.getSulcosAtuais().getCentralExterno());
+                        stmt.setDouble(8, pneu.getSulcosAtuais().getCentralExterno());
+                        stmt.setDouble(9, pneu.getSulcosAtuais().getExterno());
                         break;
                     case PRESSAO:
                         stmt.setDouble(5, pneu.getPressaoAtual());
@@ -488,9 +487,9 @@ public final class SistemaProtheusNepomucenoDaoImpl extends DatabaseConnection i
                                 "Unexpected value: " + afericao.getTipoMedicaoColetadaAfericao());
                 }
                 if (afericao instanceof AfericaoPlaca) {
-                    stmt.setInt(11, pneu.getPosicao());
+                    stmt.setInt(10, pneu.getPosicao());
                 } else {
-                    stmt.setNull(11, Types.VARCHAR);
+                    stmt.setNull(10, Types.VARCHAR);
                 }
                 stmt.addBatch();
             }

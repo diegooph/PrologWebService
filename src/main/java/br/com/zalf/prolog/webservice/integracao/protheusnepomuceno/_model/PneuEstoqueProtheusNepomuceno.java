@@ -151,7 +151,7 @@ public final class PneuEstoqueProtheusNepomuceno {
                                          @NotNull final Integer qtdSulcosModeloPneu,
                                          @Nullable final String nomeModeloBanda,
                                          @Nullable final String codModeloBanda,
-                                         @Nullable final Integer qtdSulcosModeloBanda){
+                                         @Nullable final Integer qtdSulcosModeloBanda) {
         this.codPneu = codPneu;
         this.codigoCliente = codigoCliente;
         this.codEmpresaPneu = codEmpresaPneu;
@@ -194,64 +194,105 @@ public final class PneuEstoqueProtheusNepomuceno {
                 3,
                 "DV-RM 226",
                 "89",
-                3
-        );
+                3);
     }
 
     @NotNull
-    public String getCodPneu() { return codPneu; }
+    public String getCodPneu() {
+        return codPneu;
+    }
 
     @NotNull
-    public String getCodigoCliente() { return codigoCliente; }
+    public String getCodigoCliente() {
+        return codigoCliente;
+    }
 
     @NotNull
-    public String getCodEmpresaPneu() { return codEmpresaPneu; }
+    public String getCodEmpresaPneu() {
+        return codEmpresaPneu;
+    }
 
     @NotNull
-    public String getCodUnidadePneu() { return codUnidadePneu; }
+    public String getCodUnidadePneu() {
+        return codUnidadePneu;
+    }
 
     @NotNull
-    public Integer getVidaAtualPneu() { return vidaAtualPneu; }
+    public Integer getVidaAtualPneu() {
+        return vidaAtualPneu;
+    }
 
     @NotNull
-    public Integer getVidaTotalPneu() { return vidaTotalPneu; }
+    public Integer getVidaTotalPneu() {
+        return vidaTotalPneu;
+    }
 
     @NotNull
-    public Double getPressaoRecomendadaPneu() { return pressaoRecomendadaPneu; }
+    public Double getPressaoRecomendadaPneu() {
+        return pressaoRecomendadaPneu;
+    }
 
     @NotNull
-    public Double getPressaoAtualPneu() { return pressaoAtualPneu; }
+    public Double getPressaoAtualPneu() {
+        return pressaoAtualPneu;
+    }
 
     @NotNull
-    public Double getSulcoInternoPneu() { return sulcoInternoPneu; }
+    public Double getSulcoInternoPneu() {
+        return sulcoInternoPneu;
+    }
 
     @NotNull
-    public Double getSulcoCentralInternoPneu() { return sulcoCentralInternoPneu; }
+    public Double getSulcoCentralInternoPneu() {
+        return sulcoCentralInternoPneu;
+    }
 
     @NotNull
-    public Double getSulcoCentralExternoPneu() { return sulcoCentralExternoPneu; }
+    public Double getSulcoCentralExternoPneu() {
+        return sulcoCentralExternoPneu;
+    }
 
     @NotNull
-    public Double getSulcoExternoPneu() { return sulcoExternoPneu; }
+    public Double getSulcoExternoPneu() {
+        return sulcoExternoPneu;
+    }
 
     @NotNull
-    public String getDotPneu() { return dotPneu; }
+    public String getDotPneu() {
+        return dotPneu;
+    }
 
     @NotNull
-    public String getNomeModeloPneu() { return nomeModeloPneu; }
+    public String getNomeModeloPneu() {
+        return nomeModeloPneu;
+    }
 
     @NotNull
-    public String getCodModeloPneu() { return codModeloPneu; }
+    public String getCodModeloPneu() {
+        return codModeloPneu;
+    }
 
     @NotNull
-    public Integer getQtdSulcosModeloPneu() { return qtdSulcosModeloPneu; }
+    public Integer getQtdSulcosModeloPneu() {
+        return qtdSulcosModeloPneu;
+    }
 
     @Nullable
-    public String getNomeModeloBanda() { return nomeModeloBanda; }
+    public String getNomeModeloBanda() {
+        return nomeModeloBanda;
+    }
 
     @Nullable
-    public String getCodModeloBanda() { return codModeloBanda; }
+    public String getCodModeloBanda() {
+        return codModeloBanda;
+    }
 
     @Nullable
-    public Integer getQtdSulcosModeloBanda() { return qtdSulcosModeloBanda; }
+    public Integer getQtdSulcosModeloBanda() {
+        return qtdSulcosModeloBanda;
+    }
+
+    public boolean isRecapado() {
+        return this.vidaAtualPneu > 1;
+    }
 }

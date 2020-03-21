@@ -39,7 +39,7 @@ public interface ProtheusNepomucenoRest {
     Call<PneuEstoqueProtheusNepomuceno> getPneuEmEstoqueAfericaoAvulsa(
             @Url @NotNull final String url,
             @Query("codFilial") @NotNull final String codFilial,
-            @Query("placaVeiculo") @NotNull final String placaVeiculo);
+            @Query("codPneu") @NotNull final String codPneu);
 
     @POST()
     Call<ResponseAfericaoProtheusNepomuceno> insertAfericaoAvulsa(

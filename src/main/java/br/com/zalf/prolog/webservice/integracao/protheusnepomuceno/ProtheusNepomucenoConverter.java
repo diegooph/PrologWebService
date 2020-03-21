@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno;
 import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.frota.pneu._model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.*;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.integracao.PosicaoPneuMapper;
@@ -71,8 +72,7 @@ public final class ProtheusNepomucenoConverter {
                 pneu.getSulcosAtuais().getInterno(),
                 pneu.getSulcosAtuais().getCentralInterno(),
                 pneu.getSulcosAtuais().getCentralExterno(),
-                pneu.getSulcosAtuais().getExterno()
-        );
+                pneu.getSulcosAtuais().getExterno());
         return new AfericaoAvulsaProtheusNepomuceno(
                 empresaUnidade[COD_EMPRESA_INDEX],
                 empresaUnidade[COD_UNIDADE_INDEX],
@@ -101,7 +101,7 @@ public final class ProtheusNepomucenoConverter {
                 qtdModeloSulcoOk++;
             } else if (placa.isAfericaoSulcoNoPrazo(placa.getMetaAfericaoSulco())) {
                 qtdModeloSulcoOk++;
-            } else {
+            } else if (placa.isAfericaoPressaoNoPrazo(placa.getMetaAfericaoPressao())) {
                 qtdModeloPressaoOk++;
             }
         }
@@ -120,17 +120,20 @@ public final class ProtheusNepomucenoConverter {
             @NotNull final Map<String, InfosAfericaoRealizadaPlaca> afericaoRealizadaPlaca) {
         final ModeloPlacasAfericao.PlacaAfericao placaAfericao = new ModeloPlacasAfericao.PlacaAfericao();
         placaAfericao.setPlaca(veiculo.getPlacaVeiculo());
+
         final InfosAfericaoRealizadaPlaca infosAfericaoRealizadaPlaca =
                 afericaoRealizadaPlaca.get(veiculo.getPlacaVeiculo());
         placaAfericao.setIntervaloUltimaAfericaoPressao(infosAfericaoRealizadaPlaca.getDiasUltimaAfericaoPressao());
         placaAfericao.setIntervaloUltimaAfericaoSulco(infosAfericaoRealizadaPlaca.getDiasUltimaAfericaoSulco());
-        placaAfericao.setQuantidadePneus(veiculo.getQtsPneusAplicadosVeiculo());
+        placaAfericao.setQuantidadePneus(veiculo.getQtdPneusAplicadosVeiculo());
+
         final InfosTipoVeiculoConfiguracaoAfericao infosTipoVeiculoConfiguracaoAfericao =
                 tipoVeiculoConfiguracao.get(veiculo.getCodEstruturaVeiculo());
         placaAfericao.setPodeAferirSulco(infosTipoVeiculoConfiguracaoAfericao.isPodeAferirSulco());
         placaAfericao.setPodeAferirPressao(infosTipoVeiculoConfiguracaoAfericao.isPodeAferirPressao());
         placaAfericao.setPodeAferirSulcoPressao(infosTipoVeiculoConfiguracaoAfericao.isPodeAferirSulcoPressao());
         placaAfericao.setPodeAferirEstepe(infosTipoVeiculoConfiguracaoAfericao.isPodeAferirEstepes());
+
         final InfosUnidadeRestricao infosUnidadeRestricao = unidadeRestricao.get(veiculo.getCodEmpresaFilialVeiculo());
         placaAfericao.setMetaAfericaoSulco(infosUnidadeRestricao.getPeriodoDiasAfericaoSulco());
         placaAfericao.setMetaAfericaoPressao(infosUnidadeRestricao.getPeriodoDiasAfericaoPressao());
@@ -160,16 +163,17 @@ public final class ProtheusNepomucenoConverter {
     }
 
     @NotNull
-    public static Veiculo createVeiculoProlog(@NotNull final Long codUnidade,
-                                              @NotNull final Short codDiagrama,
+    public static Veiculo createVeiculoProlog(@NotNull final Long codUnidadeProlog,
+                                              @NotNull final Short codDiagramaProlog,
                                               @NotNull final VeiculoAfericaoProtheusNepomuceno veiculoAfericao,
                                               @NotNull final PosicaoPneuMapper posicaoPneuMapper) {
         final Veiculo veiculo = new Veiculo();
         veiculo.setPlaca(veiculoAfericao.getPlacaVeiculo());
         veiculo.setKmAtual(veiculoAfericao.getKmAtualVeiculo());
-        veiculo.setCodUnidadeAlocado(codUnidade);
-        veiculo.setDiagrama(createDiagramaProlog(codDiagrama));
-        veiculo.setListPneus(createPneusProlog(codUnidade, veiculoAfericao.getPneusAplicados(), posicaoPneuMapper));
+        veiculo.setCodUnidadeAlocado(codUnidadeProlog);
+        veiculo.setDiagrama(createDiagramaProlog(codDiagramaProlog));
+        veiculo.setListPneus(
+                createPneusProlog(codUnidadeProlog, veiculoAfericao.getPneusAplicados(), posicaoPneuMapper));
         return veiculo;
     }
 
@@ -193,12 +197,13 @@ public final class ProtheusNepomucenoConverter {
 
     @NotNull
     public static NovaAfericaoAvulsa createNovaAfericaoAvulsaProlog(
+            @NotNull final Long codUnidadePneuAlocado,
             @NotNull final PneuEstoqueProtheusNepomuceno pneuEstoqueNepomuceno,
             @NotNull final ConfiguracaoNovaAfericaoAvulsa configuracaoAfericao,
             @Nullable final InfosAfericaoAvulsa pneuInfoAfericaoAvulsa) {
         final NovaAfericaoAvulsa novaAfericaoAvulsa = new NovaAfericaoAvulsa();
         novaAfericaoAvulsa.setPneuParaAferir(ProtheusNepomucenoConverter
-                .createPneuAfericaoAvulsaProlog(pneuEstoqueNepomuceno, pneuInfoAfericaoAvulsa));
+                .createPneuAfericaoAvulsaProlog(codUnidadePneuAlocado, pneuEstoqueNepomuceno, pneuInfoAfericaoAvulsa));
         novaAfericaoAvulsa.setRestricao(Restricao.createRestricaoFrom(configuracaoAfericao));
         novaAfericaoAvulsa.setBloqueiaValoresMaiores(configuracaoAfericao.isBloqueiaValoresMaiores());
         novaAfericaoAvulsa.setBloqueiaValoresMenores(configuracaoAfericao.isBloqueiaValoresMenores());
@@ -211,10 +216,11 @@ public final class ProtheusNepomucenoConverter {
 
     @NotNull
     public static PneuAfericaoAvulsa createPneuAfericaoAvulsaProlog(
+            @NotNull final Long codUnidadePneuAlocado,
             @NotNull final PneuEstoqueProtheusNepomuceno pneuEstoqueNepomuceno,
             @Nullable final InfosAfericaoAvulsa pneuInfoAfericaoAvulsa) {
         final PneuAfericaoAvulsa pneuAfericaoAvulsa = new PneuAfericaoAvulsa();
-        pneuAfericaoAvulsa.setPneu(createPneuEstoqueProlog(pneuEstoqueNepomuceno));
+        pneuAfericaoAvulsa.setPneu(createPneuEstoqueProlog(codUnidadePneuAlocado, pneuEstoqueNepomuceno));
         if (pneuInfoAfericaoAvulsa != null) {
             pneuAfericaoAvulsa.setDataHoraUltimaAfericao(pneuInfoAfericaoAvulsa.getDataHoraUltimaAfericao());
             pneuAfericaoAvulsa.setNomeColaboradorAfericao(pneuInfoAfericaoAvulsa.getNomeColaboradorAfericao());
@@ -229,14 +235,54 @@ public final class ProtheusNepomucenoConverter {
 
     @NotNull
     private static PneuEstoque createPneuEstoqueProlog(
+            @NotNull final Long codUnidadePneuAlocado,
             @NotNull final PneuEstoqueProtheusNepomuceno pneuEstoqueNepomuceno) {
         final PneuEstoque pneu = new PneuEstoque();
-        pneu.setCodigo(Long.valueOf(pneuEstoqueNepomuceno.getCodPneu()));
+        pneu.setCodigo(ProtheusNepomucenoEncoderDecoder.encode(pneuEstoqueNepomuceno.getCodigoCliente()));
         pneu.setCodigoCliente(pneuEstoqueNepomuceno.getCodigoCliente());
         pneu.setPressaoCorreta(pneuEstoqueNepomuceno.getPressaoRecomendadaPneu());
         pneu.setPressaoAtual(pneuEstoqueNepomuceno.getPressaoAtualPneu());
         pneu.setVidaAtual(pneuEstoqueNepomuceno.getVidaAtualPneu());
-        pneu.setVidasTotal(pneuEstoqueNepomuceno.getVidaTotalPneu());
+        pneu.setVidasTotal(10);
+        pneu.setCodUnidadeAlocado(codUnidadePneuAlocado);
+        pneu.setDimensao(new Pneu.Dimensao());
+
+        final Marca marcaPneu = new Marca();
+        marcaPneu.setCodigo(DEFAULT_COD_MARCA_PNEU);
+        marcaPneu.setNome("");
+        pneu.setMarca(marcaPneu);
+
+        final ModeloPneu modeloPneu = new ModeloPneu();
+        modeloPneu.setCodigo(DEFAULT_COD_MODELO_PNEU);
+        modeloPneu.setNome(pneuEstoqueNepomuceno.getNomeModeloPneu());
+        modeloPneu.setQuantidadeSulcos(pneuEstoqueNepomuceno.getQtdSulcosModeloPneu());
+        pneu.setModelo(modeloPneu);
+
+        if (pneuEstoqueNepomuceno.isRecapado()) {
+            final Banda banda = new Banda();
+            final Marca marcaBanda = new Marca();
+            marcaBanda.setCodigo(DEFAULT_COD_MARCA_PNEU);
+            marcaBanda.setNome("");
+            banda.setMarca(marcaBanda);
+
+            final ModeloBanda modeloBanda = new ModeloBanda();
+            modeloBanda.setCodigo(DEFAULT_COD_MARCA_PNEU);
+            modeloBanda.setNome(pneuEstoqueNepomuceno.getNomeModeloBanda());
+            //noinspection ConstantConditions
+            modeloBanda.setQuantidadeSulcos(pneuEstoqueNepomuceno.getQtdSulcosModeloBanda());
+            banda.setModelo(modeloBanda);
+            pneu.setBanda(banda);
+        } else {
+            // Caso o pneu é novo então as informações da Banda são reflexo da Marca e Modelo do pneu.
+            final Banda banda = new Banda();
+            final ModeloBanda modeloBanda = new ModeloBanda();
+            modeloBanda.setCodigo(modeloPneu.getCodigo());
+            modeloBanda.setNome(modeloPneu.getNome());
+            modeloBanda.setQuantidadeSulcos(modeloPneu.getQuantidadeSulcos());
+            banda.setModelo(modeloBanda);
+            banda.setMarca(marcaPneu);
+            pneu.setBanda(banda);
+        }
 
         final Sulcos sulcos = new Sulcos();
         sulcos.setInterno(pneuEstoqueNepomuceno.getSulcoInternoPneu());
@@ -248,24 +294,25 @@ public final class ProtheusNepomucenoConverter {
     }
 
     @NotNull
-    private static List<Pneu> createPneusProlog(@NotNull final Long codUnidade,
+    private static List<Pneu> createPneusProlog(@NotNull final Long codUnidadeProlog,
                                                 @NotNull final List<PneuAplicadoProtheusNepomuceno> pneusAplicados,
                                                 @NotNull final PosicaoPneuMapper posicaoPneuMapper) {
         final List<Pneu> pneus = new ArrayList<>();
         for (final PneuAplicadoProtheusNepomuceno pneuAplicado : pneusAplicados) {
-            pneus.add(createPneuProlog(codUnidade, pneuAplicado, posicaoPneuMapper));
+            pneus.add(createPneuProlog(codUnidadeProlog, pneuAplicado, posicaoPneuMapper));
         }
+        pneus.sort(Pneu.POSICAO_PNEU_COMPARATOR);
         return pneus;
     }
 
     @NotNull
-    private static Pneu createPneuProlog(@NotNull final Long codUnidade,
+    private static Pneu createPneuProlog(@NotNull final Long codUnidadeProlog,
                                          @NotNull final PneuAplicadoProtheusNepomuceno pneuAplicado,
                                          @NotNull final PosicaoPneuMapper posicaoPneuMapper) {
         final Pneu pneu = new PneuComum();
         pneu.setCodigoCliente(pneuAplicado.getCodigoCliente());
-        pneu.setCodigo(DEFAULT_COD_PNEU);
-        pneu.setCodUnidadeAlocado(codUnidade);
+        pneu.setCodigo(ProtheusNepomucenoEncoderDecoder.encode(pneuAplicado.getCodigoCliente()));
+        pneu.setCodUnidadeAlocado(codUnidadeProlog);
         pneu.setVidaAtual(pneuAplicado.getVidaAtualPneu());
         pneu.setVidasTotal(pneuAplicado.getVidaTotalPneu());
         pneu.setPosicao(posicaoPneuMapper.mapToProLog(pneuAplicado.getPosicaoAplicado()));
@@ -293,7 +340,7 @@ public final class ProtheusNepomucenoConverter {
     }
 
     @NotNull
-    private static DiagramaVeiculo createDiagramaProlog(@NotNull final Short codDiagrama) {
-        return new DiagramaVeiculo(codDiagrama, "", new HashSet<>(), "");
+    private static DiagramaVeiculo createDiagramaProlog(@NotNull final Short codDiagramaProlog) {
+        return new DiagramaVeiculo(codDiagramaProlog, "", new HashSet<>(), "");
     }
 }

@@ -67,8 +67,7 @@ public final class VeiculoListagemProtheusNepomuceno {
     /**
      * Valor numérico que representa a quantidade de pneus aplicados
      */
-    @NotNull
-    private final Integer qtsPneusAplicadosVeiculo;
+    private final int qtdPneusAplicadosVeiculo;
 
     public VeiculoListagemProtheusNepomuceno(@NotNull final String placaVeiculo,
                                              @NotNull final String codVeiculo,
@@ -79,7 +78,7 @@ public final class VeiculoListagemProtheusNepomuceno {
                                              @NotNull final String codModeloVeiculo,
                                              @NotNull final Long kmAtualVeiculo,
                                              @NotNull final String codEstruturaVeiculo,
-                                             @NotNull final Integer qtsPneusAplicadosVeiculo) {
+                                             final int qtdPneusAplicadosVeiculo) {
         this.placaVeiculo = placaVeiculo;
         this.codVeiculo = codVeiculo;
         this.codigoFrota = codigoFrota;
@@ -89,7 +88,7 @@ public final class VeiculoListagemProtheusNepomuceno {
         this.codModeloVeiculo = codModeloVeiculo;
         this.kmAtualVeiculo = kmAtualVeiculo;
         this.codEstruturaVeiculo = codEstruturaVeiculo;
-        this.qtsPneusAplicadosVeiculo = qtsPneusAplicadosVeiculo;
+        this.qtdPneusAplicadosVeiculo = qtdPneusAplicadosVeiculo;
     }
 
     @NotNull
@@ -104,8 +103,7 @@ public final class VeiculoListagemProtheusNepomuceno {
                 "123",
                 12L,
                 "F0001:M0001",
-                8
-        );
+                8);
     }
 
     @NotNull
@@ -153,9 +151,8 @@ public final class VeiculoListagemProtheusNepomuceno {
         return codEstruturaVeiculo;
     }
 
-    @NotNull
-    public Integer getQtsPneusAplicadosVeiculo() {
-        return qtsPneusAplicadosVeiculo;
+    public int getQtdPneusAplicadosVeiculo() {
+        return qtdPneusAplicadosVeiculo;
     }
 
     @NotNull

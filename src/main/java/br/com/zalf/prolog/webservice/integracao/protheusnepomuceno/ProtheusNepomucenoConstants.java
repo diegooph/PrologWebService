@@ -11,7 +11,7 @@ public final class ProtheusNepomucenoConstants {
     @NotNull
     public static final String DEFAULT_EMPRESA_FILIAL_SEPARERTOR = ":";
     @NotNull
-    static final Long DEFAULT_COD_PNEU = 1L;
+    static final Long DEFAULT_COD_MARCA_PNEU = 1L;
     @NotNull
     static final Long DEFAULT_COD_MODELO_PNEU = 1L;
     @NotNull
