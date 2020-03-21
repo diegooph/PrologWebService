@@ -8,6 +8,7 @@ import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosA
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosTipoVeiculoConfiguracaoAfericao;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosUnidadeRestricao;
 import com.google.common.collect.BiMap;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
@@ -144,13 +145,14 @@ public interface SistemaProtheusNepomucenoDao {
      * @param conn                Conexão que será utilizada para buscar a informação.
      * @param codEmpresa          Código da empresa a qual o diagrama será buscado.
      * @param codEstruturaVeiculo Código auxiliar do tipo de veículo, utilizado como base para identificar o diagrama.
-     * @return O código do diagrama mapeado para o tipo de veículo.
+     * @return Uma estruta de de par onde o primeiro valor é o código do tipo de veículo e o segundo valor é o
+     * código do diagrama.
      * @throws Throwable Se algum erro ocorrer.
      */
     @NotNull
-    Short getCodDiagramaByCodEstrutura(@NotNull final Connection conn,
-                                       @NotNull final Long codEmpresa,
-                                       @NotNull final String codEstruturaVeiculo) throws Throwable;
+    Pair<Long, Short> getCodTipoVeiculoCodDiagramaByCodEstrutura(@NotNull final Connection conn,
+                                                                 @NotNull final Long codEmpresa,
+                                                                 @NotNull final String codEstruturaVeiculo) throws Throwable;
 
     /**
      * Método utilizado para os códigos das Filiais mapeadas no Prolog. Para realizar a busca utilizamos como base os

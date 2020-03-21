@@ -18,7 +18,7 @@ final class ProtheusNepomucenoEncoderDecoder {
 
     @NotNull
     static Long encode(@NotNull final String codigo) {
-        if (codigo.length() > 8) {
+        if (codigo.length() <= 8) {
             return new BigInteger(codigo.getBytes()).longValueExact();
         } else {
             throw new GenericException("O código do pneus excede a quantidade de 8 caracteres:" +

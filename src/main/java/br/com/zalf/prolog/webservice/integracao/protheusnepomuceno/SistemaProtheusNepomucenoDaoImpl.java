@@ -11,6 +11,7 @@ import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosT
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosUnidadeRestricao;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.*;
@@ -54,7 +55,8 @@ public final class SistemaProtheusNepomucenoDaoImpl extends DatabaseConnection i
             if (afericao instanceof AfericaoPlaca) {
                 final AfericaoPlaca afericaoPlaca = (AfericaoPlaca) afericao;
                 stmt.setString(3, afericaoPlaca.getVeiculo().getPlaca());
-                stmt.setLong(4, afericaoPlaca.getVeiculo().getCodTipo());
+                // Setamos o código do tipo no nome do diagrama, como é uma informação que nós mesmos controlamos.
+                stmt.setLong(4, Long.parseLong(afericaoPlaca.getVeiculo().getDiagrama().getNome()));
                 stmt.setString(5, String.valueOf(afericaoPlaca.getKmMomentoAfericao()));
             } else {
                 stmt.setNull(3, Types.VARCHAR);
@@ -390,13 +392,15 @@ public final class SistemaProtheusNepomucenoDaoImpl extends DatabaseConnection i
 
     @NotNull
     @Override
-    public Short getCodDiagramaByCodEstrutura(@NotNull final Connection conn,
-                                              @NotNull final Long codEmpresa,
-                                              @NotNull final String codEstruturaVeiculo) throws Throwable {
+    public Pair<Long, Short> getCodTipoVeiculoCodDiagramaByCodEstrutura(
+            @NotNull final Connection conn,
+            @NotNull final Long codEmpresa,
+            @NotNull final String codEstruturaVeiculo) throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            stmt = conn.prepareStatement("SELECT VT.COD_DIAGRAMA " +
+            stmt = conn.prepareStatement("SELECT VT.CODIGO AS COD_TIPO_VEICULO, " +
+                    "VT.COD_DIAGRAMA AS COD_DIAGRAMA " +
                     "FROM VEICULO_TIPO VT " +
                     "WHERE VT.COD_AUXILIAR = ? " +
                     "  AND VT.COD_EMPRESA = ?;");
@@ -404,7 +408,7 @@ public final class SistemaProtheusNepomucenoDaoImpl extends DatabaseConnection i
             stmt.setLong(2, codEmpresa);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                return rSet.getShort("COD_DIAGRAMA");
+                return Pair.of(rSet.getLong("COD_TIPO_VEICULO"), rSet.getShort("COD_DIAGRAMA"));
             } else {
                 throw new SQLException("Nenhum diagrama encontrado para a estrutura do veículo:\n" +
                         "codEmpresa:" + codEmpresa + "\n" +
