@@ -17,10 +17,10 @@ public @Data class MotivoOrigemDestinoVisualizacaoListagem {
     private Long codMotivoOrigemDestino;
 
     @NotNull
-    private Long codEmpresa;
+    private String codEmpresa;
 
     @NotNull
-    private Long codMotivo;
+    private String codMotivo;
 
     @NotNull
     private OrigemDestinoEnum origem;
