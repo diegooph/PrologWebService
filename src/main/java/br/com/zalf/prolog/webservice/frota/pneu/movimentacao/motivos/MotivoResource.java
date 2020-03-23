@@ -1,8 +1,12 @@
 package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
+import br.com.zalf.prolog.webservice.commons.util.Platform;
+import br.com.zalf.prolog.webservice.commons.util.UsedBy;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestinoEnum;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoEdicao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoInsercao;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoListagemApp;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoVisualizacaoListagem;
 import org.jetbrains.annotations.NotNull;
 
@@ -56,6 +60,13 @@ public final class MotivoResource {
                            @HeaderParam("Authorization") @NotNull final String tokenAutenticacao) {
         motivoService.delete(codMotivo, tokenAutenticacao);
         return Response.ok("Motivo deletado com sucesso.");
+    }
+
+    @GET
+    @UsedBy(platforms = {Platform.ANDROID})
+    public List<MotivoListagemApp> getMotivosByOrigemAndDestino(@QueryParam("origem") @NotNull final OrigemDestinoEnum origem,
+                                                                @QueryParam("destino") @NotNull final OrigemDestinoEnum destino) {
+        return motivoService.getMotivosByOrigemAndDestino(origem, destino);
     }
 
 }
