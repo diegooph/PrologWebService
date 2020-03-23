@@ -7,6 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 /**
  * Created on 2020-03-20
@@ -32,6 +33,12 @@ public class MotivoOrigemDestinoResource {
     public MotivoOrigemDestinoVisualizacaoListagem getMotivoOrigemDestino(@NotNull @PathParam("codMotivoOrigemDestino") final Long codMotivoOrigemDestino,
                                                                           @HeaderParam("Authorization") final String tokenAutenticacao) {
         return motivoOrigemDestinoService.getMotivoOrigemDestino(codMotivoOrigemDestino, tokenAutenticacao);
+    }
+
+    @GET
+    public List<MotivoOrigemDestinoVisualizacaoListagem> getMotivosOrigemDestino(@NotNull @QueryParam("codEmpersa") final Long codEmpresa,
+                                                                                 @HeaderParam("Authorization") final String tokenAutenticacao) {
+        return motivoOrigemDestinoService.getMotivosOrigemDestino(codEmpresa, tokenAutenticacao);
     }
 
 }
