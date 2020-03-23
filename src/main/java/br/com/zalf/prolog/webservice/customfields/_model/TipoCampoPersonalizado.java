@@ -13,8 +13,7 @@ import org.jetbrains.annotations.NotNull;
 @AllArgsConstructor
 public enum TipoCampoPersonalizado {
     LISTA_SELECAO(1),
-    TEXTO_MULTILINHAS(2),
-    TEXTO_SINGLELINE(3);
+    TEXTO_MULTILINHAS(2);
 
     private final int codigoTipoCampo;
 
