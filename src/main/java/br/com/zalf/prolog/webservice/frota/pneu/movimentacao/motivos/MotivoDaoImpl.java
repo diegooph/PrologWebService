@@ -3,8 +3,10 @@ package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos;
 import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestinoEnum;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoEdicao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoInsercao;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoListagemApp;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoVisualizacaoListagem;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -155,6 +157,33 @@ public class MotivoDaoImpl extends DatabaseConnection implements MotivoDao {
             stmt.executeQuery();
         } finally {
             close(conn, stmt);
+        }
+    }
+
+    @Override
+    public @NotNull List<MotivoListagemApp> getMotivosByOrigemAndDestino(@NotNull final OrigemDestinoEnum origem,
+                                                                         @NotNull final OrigemDestinoEnum destino) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_MOTIVO_GET_BY_ORIGEM_DESTINO(" +
+                    "F_ORIGEM := ?," +
+                    "F_DESTINO := ?)");
+            stmt.setString(1, origem.asString());
+            stmt.setString(2, destino.asString());
+
+            rSet = stmt.executeQuery();
+
+            final List<MotivoListagemApp> motivos = new ArrayList();
+            while (rSet.next()) {
+                motivos.add(MotivoConverter.createMotivoListagemApp(rSet));
+            }
+
+            return motivos;
+        } finally {
+            close(conn, stmt, rSet);
         }
     }
 
