@@ -32,9 +32,10 @@ public class MotivoOrigemDestinoService {
     }
 
     @NotNull
-    public MotivoOrigemDestinoVisualizacaoListagem getMotivoOrigemDestino(@NotNull final Long codMotivoOrigemDestino) {
+    public MotivoOrigemDestinoVisualizacaoListagem getMotivoOrigemDestino(@NotNull final Long codMotivoOrigemDestino,
+                                                                          @NotNull final String tokenAutenticacao) {
         try {
-            return dao.getMotivoOrigemDestino(codMotivoOrigemDestino);
+            return dao.getMotivoOrigemDestino(codMotivoOrigemDestino, tokenAutenticacao);
         } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao buscar relação motivo, origem e destino %d", codMotivoOrigemDestino), t);
             throw Injection

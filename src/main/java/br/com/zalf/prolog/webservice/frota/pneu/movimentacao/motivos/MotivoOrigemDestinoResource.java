@@ -29,8 +29,9 @@ public class MotivoOrigemDestinoResource {
 
     @GET
     @Path("/{codMotivoOrigemDestino}")
-    public MotivoOrigemDestinoVisualizacaoListagem getMotivoOrigemDestino(@NotNull @PathParam("codMotivoOrigemDestino") final Long codMotivoOrigemDestino) {
-        return motivoOrigemDestinoService.getMotivoOrigemDestino(codMotivoOrigemDestino);
+    public MotivoOrigemDestinoVisualizacaoListagem getMotivoOrigemDestino(@NotNull @PathParam("codMotivoOrigemDestino") final Long codMotivoOrigemDestino,
+                                                                          @HeaderParam("Authorization") final String tokenAutenticacao) {
+        return motivoOrigemDestinoService.getMotivoOrigemDestino(codMotivoOrigemDestino, tokenAutenticacao);
     }
 
 }
