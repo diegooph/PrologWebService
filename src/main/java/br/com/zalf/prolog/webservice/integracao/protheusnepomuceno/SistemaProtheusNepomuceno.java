@@ -11,7 +11,6 @@ import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.*;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.data.ProtheusNepomucenoRequesterImpl;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
-import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
@@ -171,16 +170,13 @@ public final class SistemaProtheusNepomuceno extends Sistema {
                             veiculoAfericao.getCodEstruturaVeiculo());
             final PosicaoPneuMapper posicaoPneuMapper = new PosicaoPneuMapper(
                     sistema.getMapeamentoPosicoesProlog(conn, codEmpresa, veiculoAfericao.getCodEstruturaVeiculo()));
-            final Pair<Long, Short> codTipoVeiculoCodDiagramaProlog =
-                    sistema.getCodTipoVeiculoCodDiagramaByCodEstrutura(
-                            conn,
-                            codEmpresa,
-                            veiculoAfericao.getCodEstruturaVeiculo());
+            final Short codDiagramaProlog =
+                    sistema.getCodDiagramaByCodEstrutura(conn, codEmpresa, veiculoAfericao.getCodEstruturaVeiculo());
             final Veiculo veiculo =
                     ProtheusNepomucenoConverter
                             .createVeiculoProlog(
                                     codUnidade,
-                                    codTipoVeiculoCodDiagramaProlog,
+                                    codDiagramaProlog,
                                     veiculoAfericao,
                                     posicaoPneuMapper);
             return ProtheusNepomucenoConverter.createNovaAfericaoPlacaProlog(veiculo, configuracaoAfericao);

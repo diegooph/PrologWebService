@@ -8,7 +8,6 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.integracao.PosicaoPneuMapper;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.*;
-import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -165,14 +164,14 @@ public final class ProtheusNepomucenoConverter {
 
     @NotNull
     public static Veiculo createVeiculoProlog(@NotNull final Long codUnidadeProlog,
-                                              @NotNull final Pair<Long, Short> codTipoVeiculoCodDiagramaProlog,
+                                              @NotNull final Short codDiagramaProlog,
                                               @NotNull final VeiculoAfericaoProtheusNepomuceno veiculoAfericao,
                                               @NotNull final PosicaoPneuMapper posicaoPneuMapper) {
         final Veiculo veiculo = new Veiculo();
         veiculo.setPlaca(veiculoAfericao.getPlacaVeiculo());
         veiculo.setKmAtual(veiculoAfericao.getKmAtualVeiculo());
         veiculo.setCodUnidadeAlocado(codUnidadeProlog);
-        veiculo.setDiagrama(createDiagramaProlog(codTipoVeiculoCodDiagramaProlog));
+        veiculo.setDiagrama(createDiagramaProlog(codDiagramaProlog, veiculoAfericao.getCodEstruturaVeiculo()));
         veiculo.setListPneus(
                 createPneusProlog(codUnidadeProlog, veiculoAfericao.getPneusAplicados(), posicaoPneuMapper));
         return veiculo;
@@ -341,11 +340,12 @@ public final class ProtheusNepomucenoConverter {
     }
 
     @NotNull
-    private static DiagramaVeiculo createDiagramaProlog(
-            @NotNull final Pair<Long, Short> codTipoVeiculoCodDiagramaProlog) {
+    private static DiagramaVeiculo createDiagramaProlog(@NotNull final Short codDiagramaProlog,
+                                                        @NotNull final String codEstruturaVeiculo) {
         return new DiagramaVeiculo(
-                codTipoVeiculoCodDiagramaProlog.getRight(),
-                String.valueOf(codTipoVeiculoCodDiagramaProlog.getLeft()),
+                codDiagramaProlog,
+                // Utilizamos a propriedade 'nome' como metada para repassar o codEstruturaVeiculo.
+                codEstruturaVeiculo,
                 new HashSet<>(),
                 "");
     }
