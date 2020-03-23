@@ -1,12 +1,18 @@
 package br.com.zalf.prolog.webservice.customfields;
 
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
-import br.com.zalf.prolog.webservice.customfields._model.*;
+import br.com.zalf.prolog.webservice.customfields._model.CampoPersonalizadoFuncaoProlog;
+import br.com.zalf.prolog.webservice.customfields._model.CampoPersonalizadoParaRealizacao;
+import br.com.zalf.prolog.webservice.customfields._model.CampoPersonalizadoResposta;
+import br.com.zalf.prolog.webservice.customfields._model.ColunaTabelaResposta;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -31,31 +37,14 @@ public final class CampoPersonalizadoDaoImpl extends DatabaseConnection implemen
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("select * " +
-                    "from campo_personalizado_empresa cpe " +
-                    "         join movimentacao_campo_personalizado_unidade mcpu " +
-                    "              on cpe.codigo = mcpu.cod_campo " +
-                    "where cpe.status_ativo = true " +
-                    "  and mcpu.habilitado_para_uso = true " +
-                    "  and mcpu.cod_unidade = ?;");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_CAMPO_GET_DISPONIVEIS_MOVIMENTACAO(" +
+                    "F_COD_UNIDADE => ?);");
             stmt.setLong(1, codUnidade);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 final List<CampoPersonalizadoParaRealizacao> campos = new ArrayList<>();
                 do {
-                    final Array opcoesSelecao = rSet.getArray("OPCOES_SELECAO");
-                    campos.add(new CampoPersonalizadoParaRealizacao(
-                            rSet.getLong("COD_CAMPO"),
-                            rSet.getLong("COD_EMPRESA"),
-                            rSet.getShort("COD_FUNCAO_PROLOG_AGRUPAMENTO"),
-                            TipoCampoPersonalizado.fromCodigo(rSet.getInt("COD_TIPO_CAMPO")),
-                            rSet.getString("NOME"),
-                            rSet.getString("DESCRICAO"),
-                            rSet.getString("TEXTO_AUXILIO_PREENCHIMENTO"),
-                            rSet.getBoolean("PREENCHIMENTO_OBRIGATORIO"),
-                            rSet.getString("MENSAGEM_CASO_CAMPO_NAO_PREENCHIDO"),
-                            rSet.getBoolean("PERMITE_SELECAO_MULTIPLA"),
-                            opcoesSelecao != null ? ((String[]) opcoesSelecao.getArray()) : null));
+                    campos.add(CampoPersonalizadoConverter.createCampoPersonalizadoParaRealizacao(rSet));
                 } while (rSet.next());
                 return campos;
             } else {
