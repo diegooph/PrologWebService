@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos;
 
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoOrigemDestinoInsercao;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoOrigemDestinoVisualizacaoListagem;
 import org.jetbrains.annotations.NotNull;
 
 import javax.validation.Valid;
@@ -21,9 +22,15 @@ public class MotivoOrigemDestinoResource {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    public Long insert(@Valid final MotivoOrigemDestinoInsercao motivoOrigemDestinoInsercao,
-                         @HeaderParam("Authorization") @NotNull final String tokenAutenticacao) {
+    public Long insert(@NotNull @Valid final MotivoOrigemDestinoInsercao motivoOrigemDestinoInsercao,
+                       @NotNull @HeaderParam("Authorization") final String tokenAutenticacao) {
         return motivoOrigemDestinoService.insert(motivoOrigemDestinoInsercao, tokenAutenticacao);
+    }
+
+    @GET
+    @Path("/{codMotivoOrigemDestino}")
+    public MotivoOrigemDestinoVisualizacaoListagem getMotivoOrigemDestino(@NotNull @PathParam("codMotivoOrigemDestino") final Long codMotivoOrigemDestino) {
+        return motivoOrigemDestinoService.getMotivoOrigemDestino(codMotivoOrigemDestino);
     }
 
 }

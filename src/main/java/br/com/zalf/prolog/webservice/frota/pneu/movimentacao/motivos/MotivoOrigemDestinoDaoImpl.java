@@ -53,7 +53,6 @@ public class MotivoOrigemDestinoDaoImpl extends DatabaseConnection implements Mo
 
         } finally {
             close(conn, stmt);
-
         }
 
         return null;
