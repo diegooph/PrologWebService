@@ -22,7 +22,7 @@ public class MotivoConverter {
     static MotivoVisualizacaoListagem createMotivoVisualizacaoListagem(
             @NotNull final ResultSet rSet) throws Throwable {
         return new MotivoVisualizacaoListagem(rSet.getLong("CODIGO_MOTIVO"),
-                rSet.getLong("CODIGO_EMPRESA"),
+                rSet.getString("NOME_EMPRESA"),
                 rSet.getString("DESCRICAO_MOTIVO"),
                 rSet.getObject("DATA_HORA_ULTIMA_ALTERACAO_MOTIVO", LocalDateTime.class),
                 rSet.getString("NOME_COLABORADOR_ULTIMA_ALTERACAO"));
