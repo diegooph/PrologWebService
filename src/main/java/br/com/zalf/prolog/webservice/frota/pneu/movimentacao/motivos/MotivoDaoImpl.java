@@ -162,7 +162,8 @@ public class MotivoDaoImpl extends DatabaseConnection implements MotivoDao {
 
     @Override
     public @NotNull List<MotivoListagemApp> getMotivosByOrigemAndDestino(@NotNull final OrigemDestinoEnum origem,
-                                                                         @NotNull final OrigemDestinoEnum destino) throws Throwable {
+                                                                         @NotNull final OrigemDestinoEnum destino,
+                                                                         @NotNull final Long codEmpresa) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -170,9 +171,11 @@ public class MotivoDaoImpl extends DatabaseConnection implements MotivoDao {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM FUNC_MOTIVO_GET_BY_ORIGEM_DESTINO(" +
                     "F_ORIGEM := ?," +
-                    "F_DESTINO := ?)");
+                    "F_DESTINO := ?," +
+                    "F_COD_EMPRESA := ?);");
             stmt.setString(1, origem.asString());
             stmt.setString(2, destino.asString());
+            stmt.setLong(3, codEmpresa);
 
             rSet = stmt.executeQuery();
 
