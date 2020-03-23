@@ -28,6 +28,14 @@ public final class SocorroRotaAtendimentoVisualizacao {
     private final String modeloAparelhoAtendimentoSocorro;
     @Nullable
     private final String imeiAparelhoAtendimentoSocorro;
+    @Nullable
+    private final LocalDateTime dataHoraDeslocamentoInicio;
+    @Nullable
+    private final LocalizacaoSocorroRota localizacaoDescolamentoInicio;
+    @Nullable
+    private final LocalDateTime dataHoraDeslocamentoFim;
+    @Nullable
+    private final LocalizacaoSocorroRota localizacaoDescolamentoFim;
 
     public SocorroRotaAtendimentoVisualizacao(@NotNull final Long codColaboradorResponsavelAtendimento,
                                               @NotNull final String nomeResponsavelAtendimentoSocorro,
@@ -37,7 +45,11 @@ public final class SocorroRotaAtendimentoVisualizacao {
                                               @Nullable final String enderecoAutomaticoAtendimentoSocorro,
                                               @Nullable final String marcaAparelhoAtendimentoSocorro,
                                               @Nullable final String modeloAparelhoAtendimentoSocorro,
-                                              @Nullable final String imeiAparelhoAtendimentoSocorro) {
+                                              @Nullable final String imeiAparelhoAtendimentoSocorro,
+                                              @Nullable final LocalDateTime dataHoraDeslocamentoInicio,
+                                              @Nullable final LocalizacaoSocorroRota localizacaoDescolamentoInicio,
+                                              @Nullable final LocalDateTime dataHoraDeslocamentoFim,
+                                              @Nullable final LocalizacaoSocorroRota localizacaoDescolamentoFim) {
         this.codColaboradorResponsavelAtendimento = codColaboradorResponsavelAtendimento;
         this.nomeResponsavelAtendimentoSocorro = nomeResponsavelAtendimentoSocorro;
         this.observacaoAtendimento = observacaoAtendimento;
@@ -47,6 +59,10 @@ public final class SocorroRotaAtendimentoVisualizacao {
         this.marcaAparelhoAtendimentoSocorro = marcaAparelhoAtendimentoSocorro;
         this.modeloAparelhoAtendimentoSocorro = modeloAparelhoAtendimentoSocorro;
         this.imeiAparelhoAtendimentoSocorro = imeiAparelhoAtendimentoSocorro;
+        this.dataHoraDeslocamentoInicio = dataHoraDeslocamentoInicio;
+        this.localizacaoDescolamentoInicio = localizacaoDescolamentoInicio;
+        this.dataHoraDeslocamentoFim = dataHoraDeslocamentoFim;
+        this.localizacaoDescolamentoFim = localizacaoDescolamentoFim;
     }
 
     @NotNull
@@ -79,4 +95,16 @@ public final class SocorroRotaAtendimentoVisualizacao {
     public StatusSocorroRota getStatusReferencia() {
         return StatusSocorroRota.EM_ATENDIMENTO;
     }
+
+    @Nullable
+    public LocalDateTime getDataHoraDeslocamentoInicio() { return dataHoraDeslocamentoInicio; }
+
+    @Nullable
+    public LocalizacaoSocorroRota getLocalizacaoDescolamentoInicio() { return localizacaoDescolamentoInicio; }
+
+    @Nullable
+    public LocalDateTime getDataHoraDeslocamentoFim() { return dataHoraDeslocamentoFim; }
+
+    @Nullable
+    public LocalizacaoSocorroRota getLocalizacaoDescolamentoFim() { return localizacaoDescolamentoFim; }
 }
