@@ -452,13 +452,13 @@ public final class PneuCrudApiTest extends BaseTest {
                     getPneuNovoNuncaRodado());
         }
 
-        //Cria pneu para atualizar status em descarte.
+        //Cria pneu para atualizar status em análise.
         final List<ApiPneuAlteracaoStatus> apiPneuAlteracaoStatus = new ArrayList<>();
         for(int i = 0; i < cargaInicial.size(); i++){
             apiPneuAlteracaoStatus.add(criaPneuParaAtualizarStatusAnaliseSemErroCargaInicial(cargaInicial.get(i)));
         }
 
-        //Excecução (Atualiza os pneu para descarte).
+        //Excecução (Atualiza os pneu para análise).
         final SuccessResponseIntegracao successResponseIntegracaoPneusAtualizados =
                 apiPneuService.atualizaStatusPneus(TOKEN_INTEGRACAO, apiPneuAlteracaoStatus);
 
@@ -2406,9 +2406,9 @@ public final class PneuCrudApiTest extends BaseTest {
                 apiPneuCargaInicial.getCodUnidadePneu(),
                 "03383283194",
                 LocalDateTime.now(),
-                false,
-                null,
-                null);
+                true,
+                buscaCodModeloBandaPneuEmpresa(COD_EMPRESA),
+                new BigDecimal(400.00));
     }
 
     //Método responsável por criar um novo veículo para cadastrar.
