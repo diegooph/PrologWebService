@@ -36,7 +36,7 @@ public class MotivoOrigemDestinoResource {
     }
 
     @GET
-    public List<MotivoOrigemDestinoVisualizacaoListagem> getMotivosOrigemDestino(@NotNull @QueryParam("codEmpersa") final Long codEmpresa,
+    public List<MotivoOrigemDestinoVisualizacaoListagem> getMotivosOrigemDestino(@NotNull @QueryParam("codEmpresa") final Long codEmpresa,
                                                                                  @HeaderParam("Authorization") final String tokenAutenticacao) {
         return motivoOrigemDestinoService.getMotivosOrigemDestino(codEmpresa, tokenAutenticacao);
     }
