@@ -45,14 +45,11 @@ public final class PneuCrudApiTest extends BaseTest {
     @NotNull
     private static final Long COD_UNIDADE = 5L;
     @NotNull
-    private static String PLACA = "MMM0001";
-    @NotNull
     private static final Random RANDOM = new Random();
     private ApiCadastroPneuService apiCadastroPneuService;
     private ApiPneuService apiPneuService;
     private IntegracaoPraxioResource integracaoPraxioResource;
     private DatabaseConnectionProvider connectionProvider;
-
 
     @BeforeAll
     public void initialize() {
@@ -221,7 +218,8 @@ public final class PneuCrudApiTest extends BaseTest {
     }
 
     @Test
-    @DisplayName("Teste Carga Inicial adicionando pneus em posições do veículo logo após movendo todos eles para estoque")
+    @DisplayName("Teste Carga Inicial adicionando pneus em posições do veículo logo após movendo todos eles para " +
+            "estoque")
     void adicionaCargaInicialPneuEmVeiculoDepoisAtualizaTodosPneusParaEstoque() throws Throwable {
         //Cria veículo.
         VeiculoCadastroPraxio veiculoCadastroPraxio = criaVeiculoParaCadastro();
@@ -756,7 +754,8 @@ public final class PneuCrudApiTest extends BaseTest {
     @DisplayName("Teste Carga Inicial com placa inválida")
     void adicionaCargaInicialPneuComErroPlacaPneuNaoExisteTest() throws Throwable {
         //Cenário
-        final String placaVeiculo = "OOO9891";
+        final String placa = buscaPlacaUnidade(COD_UNIDADE);
+        final List<Integer> posicoes = buscaPosicaoesPlaca(placa);
         final List<ApiPneuCargaInicial> cargaInicial = new ArrayList<>();
         cargaInicial.add(new ApiPneuCargaInicial(
                 geraCodSistemaIntegrado(),
@@ -773,8 +772,8 @@ public final class PneuCrudApiTest extends BaseTest {
                 buscaCodModeloBandaPneuEmpresa(COD_EMPRESA),
                 new BigDecimal(400.00),
                 ApiStatusPneu.EM_USO,
-                placaVeiculo,
-                111));
+                placa+"ERRO",
+                posicoes.get(0)));
 
         //Execução
         final List<ApiPneuCargaInicialResponse> apiPneuCargaInicialResponses =
@@ -792,7 +791,8 @@ public final class PneuCrudApiTest extends BaseTest {
     @DisplayName("Teste Carga Inicial com posição do pneu em relação ao veículo inválida")
     void adicionaCargaInicialPneuComErroPosicaoPneuInvalidaTest() throws Throwable {
         //Cenário
-        final int posicaoPneu = 7777;
+        final String placa = buscaPlacaUnidade(COD_UNIDADE);
+        final List<Integer> posicoes = buscaPosicaoesPlaca(placa);
         final List<ApiPneuCargaInicial> cargaInicial = new ArrayList<>();
         cargaInicial.add(new ApiPneuCargaInicial(
                 geraCodSistemaIntegrado(),
@@ -809,8 +809,8 @@ public final class PneuCrudApiTest extends BaseTest {
                 buscaCodModeloBandaPneuEmpresa(COD_EMPRESA),
                 new BigDecimal(400.00),
                 ApiStatusPneu.EM_USO,
-                "PRO0004",
-                posicaoPneu));
+                placa,
+                posicoes.get(0) + 9090));
 
         //Execução
         final List<ApiPneuCargaInicialResponse> apiPneuCargaInicialResponses =
@@ -1837,7 +1837,8 @@ public final class PneuCrudApiTest extends BaseTest {
     private ApiPneuCargaInicial buscaInformacoesPneuCargaInicialEstoque(@NotNull final Long codSistemaIntegrado,
                                                                         @NotNull final String codCliente,
                                                                         @NotNull final Long codUnidade,
-                                                                        @NotNull final Long codEmpresa) throws Throwable {
+                                                                        @NotNull final Long codEmpresa)
+            throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -1896,7 +1897,8 @@ public final class PneuCrudApiTest extends BaseTest {
     private ApiPneuCargaInicial buscaInformacoesPneuCargaInicialEmUso(@NotNull final Long codSistemaIntegrado,
                                                                       @NotNull final String codCliente,
                                                                       @NotNull final Long codUnidade,
-                                                                      @NotNull final Long codEmpresa) throws Throwable {
+                                                                      @NotNull final Long codEmpresa) throws
+            Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -2226,27 +2228,6 @@ public final class PneuCrudApiTest extends BaseTest {
     }
 
     @NotNull
-    private ApiPneuCargaInicial criaPneuSemErroComPlacaPneuValida() throws Throwable {
-        return new ApiPneuCargaInicial(
-                geraCodSistemaIntegrado(),
-                geraCodCliente(),
-                COD_UNIDADE,
-                buscaCodModeloPneuEmpresa(COD_EMPRESA),
-                buscaCodDimensao(),
-                120.0,
-                1,
-                4,
-                "1010",
-                new BigDecimal(1500.0),
-                false,
-                buscaCodModeloBandaPneuEmpresa(COD_EMPRESA),
-                new BigDecimal(100.00),
-                ApiStatusPneu.ESTOQUE,
-                "LLL1234",
-                904);
-    }
-
-    @NotNull
     private ApiPneuCargaInicial criaPneuComPosicoesEspecificas(@NotNull final int posicao,
                                                                @NotNull final String placa) throws Throwable {
         return new ApiPneuCargaInicial(
@@ -2266,27 +2247,6 @@ public final class PneuCrudApiTest extends BaseTest {
                 ApiStatusPneu.EM_USO,
                 placa,
                 posicao);
-    }
-
-    @NotNull
-    private ApiPneuCargaInicial criaPneuSemErroComPosicaoPneuValida() throws Throwable {
-        return new ApiPneuCargaInicial(
-                geraCodSistemaIntegrado(),
-                geraCodCliente(),
-                COD_UNIDADE,
-                buscaCodModeloPneuEmpresa(COD_EMPRESA),
-                buscaCodDimensao(),
-                120.0,
-                1,
-                4,
-                "1010",
-                new BigDecimal(1500.0),
-                false,
-                buscaCodModeloBandaPneuEmpresa(COD_EMPRESA),
-                new BigDecimal(100.00),
-                ApiStatusPneu.ESTOQUE,
-                "LLL1234",
-                904);
     }
 
     //Objeto Pneu preenchido para testes sem erro.
@@ -2353,16 +2313,27 @@ public final class PneuCrudApiTest extends BaseTest {
     @NotNull
     private ApiPneuAlteracaoStatus criaPneuParaAtualizarStatusEmUsoSemErro(ApiPneuCadastro apiPneuCadastro)
             throws Throwable {
-        int posicao = 900;
-        removePneuDeUmaPlacaPosicaoEspecifica(PLACA, posicao, 5L);
+        //Cria veículo.
+        VeiculoCadastroPraxio veiculoCadastroPraxio = criaVeiculoParaCadastro();
+
+        //Adiciona veículo.
+        final SuccessResponseIntegracao successResponseIntegracao = integracaoPraxioResource.
+                inserirVeiculoPraxio(TOKEN_INTEGRACAO, veiculoCadastroPraxio);
+        //Verifica se veículo foi inserido.
+        assertThat(successResponseIntegracao.getMsg()).isEqualTo("Veículo inserido no ProLog com sucesso");
+
+        //Busca posições do veículo.
+        final List<Integer> posicoesPlaca = buscaPosicaoesPlaca(veiculoCadastroPraxio.getPlacaVeiculo());
+
+        //Cria Objeto.
         return new ApiPneuAlteracaoStatusVeiculo(
                 apiPneuCadastro.getCodigoSistemaIntegrado(),
                 apiPneuCadastro.getCodigoCliente(),
                 apiPneuCadastro.getCodUnidadePneu(),
                 "03383283194",
                 Now.localDateTimeUtc(),
-                PLACA,
-                posicao,
+                veiculoCadastroPraxio.getPlacaVeiculo(),
+                posicoesPlaca.get(0),
                 true,
                 buscaCodModeloBandaPneuEmpresa(COD_EMPRESA),
                 new BigDecimal(300.00));
