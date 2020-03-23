@@ -64,10 +64,10 @@ public final class MotivoResource {
 
     @GET
     @UsedBy(platforms = {Platform.ANDROID})
-    @Path("/{codEmpresa}")
-    public List<MotivoListagemApp> getMotivosByOrigemAndDestino(@NotNull final OrigemDestinoEnum origem,
-                                                                @NotNull final OrigemDestinoEnum destino,
-                                                                @NotNull final Long codEmpresa) {
+    @Path("/listagemResumida")
+    public List<MotivoListagemApp> getMotivosByOrigemAndDestino(@QueryParam("origem") @NotNull final OrigemDestinoEnum origem,
+                                                                @QueryParam("destino") @NotNull final OrigemDestinoEnum destino,
+                                                                @QueryParam("codEmpresa") @NotNull final Long codEmpresa) {
         return motivoService.getMotivosByOrigemAndDestino(origem, destino, codEmpresa);
     }
 
