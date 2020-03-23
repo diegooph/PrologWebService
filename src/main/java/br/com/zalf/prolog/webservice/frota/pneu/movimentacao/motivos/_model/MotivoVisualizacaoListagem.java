@@ -16,7 +16,7 @@ public @Data class MotivoVisualizacaoListagem {
     private final Long codMotivo;
 
     @NotNull
-    private final Long codEmpresa;
+    private final String nomeEmpresa;
 
     @NotNull
     private final String descricaoMotivo;
