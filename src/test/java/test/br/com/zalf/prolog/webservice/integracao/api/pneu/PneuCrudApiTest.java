@@ -250,7 +250,7 @@ public final class PneuCrudApiTest extends BaseTest {
         }
 
         //Valida informações dos pneus salvos.
-        //Verifica se os pneus foram inseridos.
+        //Verifica se os pneus foram inseridos com as informações corretas.
         for (ApiPneuCargaInicial apiPneuCargaInicial : cargaInicial) {
             final Long codSistemaIntegradoPneu =
                     buscaCodSistemaIntegradoPneuInserido(
@@ -264,7 +264,7 @@ public final class PneuCrudApiTest extends BaseTest {
                     apiPneuCargaInicial.getCodigoCliente(),
                     apiPneuCargaInicial.getCodUnidadePneu(),
                     COD_EMPRESA);
-            //Valida todas as informações do pneu.
+            //Valida todas as informações do pneu salvo.
             assertThat(codSistemaIntegradoPneu).isNotNull();
             assertThat(codSistemaIntegradoPneu).isEqualTo(apiPneuCargaInicial.getCodigoSistemaIntegrado());
             assertThat(apiPneuCargaInicialInfoPneu.getCodigoSistemaIntegrado()).isEqualTo(apiPneuCargaInicial.
@@ -287,17 +287,18 @@ public final class PneuCrudApiTest extends BaseTest {
                     getPneuNovoNuncaRodado());
         }
 
+        //Cria pneu para atualizar status em estoque.
         final List<ApiPneuAlteracaoStatus> apiPneuAlteracaoStatus = new ArrayList<>();
         for(int i = 0; i < cargaInicial.size(); i++){
             apiPneuAlteracaoStatus.add(criaPneuParaAtualizarStatusEstoqueSemErroCargaInicial(cargaInicial.get(i)));
         }
 
-        //Excecução
+        //Excecução (Atualiza os pneu para estoque).
         final SuccessResponseIntegracao successResponseIntegracaoPneusAtualizados =
                 apiPneuService.atualizaStatusPneus(TOKEN_INTEGRACAO, apiPneuAlteracaoStatus);
 
-        //Valida informações
-
+        //Valida informações se todos os pneus foram movidos para estoque.
+        assertThat(successResponseIntegracaoPneusAtualizados.getMsg()).isEqualTo("Pneus atualizados com sucesso");
     }
 
     @Test
