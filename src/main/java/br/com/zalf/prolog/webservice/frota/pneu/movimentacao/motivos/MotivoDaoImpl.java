@@ -170,8 +170,8 @@ public class MotivoDaoImpl extends DatabaseConnection implements MotivoDao {
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM FUNC_MOTIVO_GET_BY_ORIGEM_DESTINO(" +
-                    "F_ORIGEM := ?," +
-                    "F_DESTINO := ?," +
+                    "F_ORIGEM := ?::ORIGEM_DESTINO_TYPE," +
+                    "F_DESTINO := ?::ORIGEM_DESTINO_TYPE," +
                     "F_COD_EMPRESA := ?);");
             stmt.setString(1, origem.asString());
             stmt.setString(2, destino.asString());
