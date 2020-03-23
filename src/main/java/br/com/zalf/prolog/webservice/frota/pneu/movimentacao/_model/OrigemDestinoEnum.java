@@ -44,6 +44,16 @@ public enum OrigemDestinoEnum implements PermissoesValidatorString {
     }
 
     @NotNull
+    public static OrigemDestinoEnum getFromStatusPneu(final StatusPneu statusPneu) {
+        for (final OrigemDestinoEnum origemDestino : OrigemDestinoEnum.values()) {
+            if (origemDestino.asString().equalsIgnoreCase(statusPneu.asString())) {
+                return origemDestino;
+            }
+        }
+        throw new IllegalArgumentException("Nenhuma origemDestino encontrada para o StatusPneu: " + statusPneu.asString());
+    }
+
+    @NotNull
     public String asString() {
         return statusPneu.asString();
     }
