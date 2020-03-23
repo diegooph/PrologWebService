@@ -40,7 +40,7 @@ public class MotivoOrigemDestinoService {
             Log.e(TAG, String.format("Erro ao buscar relação motivo, origem e destino %d", codMotivoOrigemDestino), t);
             throw Injection
                     .provideProLogExceptionHandler()
-                    .map(t, "Erro ao inserir motivo, tente novamente.");
+                    .map(t, "Erro ao buscar relação motivo, origem e destino, tente novamente.");
         }
     }
 
