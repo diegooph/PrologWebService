@@ -30,8 +30,8 @@ public class MotivoOrigemDestinoDaoImpl extends DatabaseConnection implements Mo
             stmt = conn.prepareStatement("SELECT * FROM FUNC_MOTIVO_ORIGEM_DESTINO_INSERE(" +
                     "F_COD_MOTIVO := ?," +
                     "F_COD_EMPRESA := ?," +
-                    "F_ORIGEM := ?," +
-                    "F_DESTINO := ?," +
+                    "F_ORIGEM := ?::origem_destino_type," +
+                    "F_DESTINO := ?::origem_destino_type," +
                     "F_OBRIGATORIO := ?," +
                     "F_DATA_HORA_INSERCAO := ?," +
                     "F_TOKEN_AUTENTICACAO := ?)" +
@@ -39,8 +39,8 @@ public class MotivoOrigemDestinoDaoImpl extends DatabaseConnection implements Mo
 
             stmt.setLong(1, motivoOrigemDestinoInsercao.getCodMotivo());
             stmt.setLong(2, motivoOrigemDestinoInsercao.getCodEmpresa());
-            stmt.setString(3, motivoOrigemDestinoInsercao.getOrigemMovimentacao().toString());
-            stmt.setString(4, motivoOrigemDestinoInsercao.getDestinoMovimentacao().toString());
+            stmt.setString(3, motivoOrigemDestinoInsercao.getOrigemMovimentacao().asString());
+            stmt.setString(4, motivoOrigemDestinoInsercao.getDestinoMovimentacao().asString());
             stmt.setBoolean(5, true);
             stmt.setObject(6, Now.offsetDateTimeUtc());
             stmt.setString(7, TokenCleaner.getOnlyToken(tokenAutenticacao));
