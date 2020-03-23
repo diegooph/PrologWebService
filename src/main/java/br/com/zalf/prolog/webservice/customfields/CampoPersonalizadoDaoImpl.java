@@ -74,9 +74,12 @@ public final class CampoPersonalizadoDaoImpl extends DatabaseConnection implemen
                                                    @Nullable final List<ColunaTabelaResposta> colunasEspecificas)
             throws Throwable {
 
+        // SQL base, com nome da tabela, colunas e valores pendentes para serem setados dinamicamente.
         String sql = "insert into %s (cod_tipo_campo, cod_campo, resposta, resposta_lista_selecao, %s) " +
                 "values (?, ?, ?, ? %s)";
         if (colunasEspecificas != null && !colunasEspecificas.isEmpty()) {
+            // Como a tabela de respostas possui colunas específicas, precisamos formatar o SQL base para que contenha
+            // o nome e o ponto de interrogação (?) para cada uma dessas colunas.
             final String nomesColunas = colunasEspecificas
                     .stream()
                     .map(ColunaTabelaResposta::getNomeColuna)
@@ -102,6 +105,8 @@ public final class CampoPersonalizadoDaoImpl extends DatabaseConnection implemen
                     stmt.setNull(4, Types.NULL);
                 }
                 if (colunasEspecificas != null && !colunasEspecificas.isEmpty()) {
+                    // Se tiver colunas específicas, setamos os valores para cada uma delas. Utilizamos setObject(...)
+                    // e deixamos o driver inferir o tipo.
                     int nextParameterIndex = 5;
                     for (final ColunaTabelaResposta coluna : colunasEspecificas) {
                         stmt.setObject(nextParameterIndex, coluna.getValorColuna());

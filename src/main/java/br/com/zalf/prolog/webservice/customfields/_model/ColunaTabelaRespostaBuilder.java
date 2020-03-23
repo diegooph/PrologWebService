@@ -6,6 +6,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Classe utilitária para construir de forma encadeada diversas colunas específicas de cada tabela de respostas dos
+ * campos personalizados.
+ * Um exemplo de uso pode ser o seguinte:
+ * <pre>
+ *      new ColunaTabelaRespostaBuilder()
+ *          .addColunaEspecifica(new ColunaTabelaResposta("cod_processo_movimentacao", codigoProcesso))
+ *          .addColunaEspecifica(new ColunaTabelaResposta("cod_unidade", codigoUnidade))
+ *          .getColunas()
+ * </pre>
+ * <p>
  * Created on 2020-03-19
  *
  * @author Luiz Felipe (https://github.com/luizfp)

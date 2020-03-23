@@ -13,6 +13,14 @@ import lombok.Getter;
 public enum CampoPersonalizadoFuncaoProlog {
     MOVIMENTACAO(14, "movimentacao_campo_personalizado_resposta");
 
+    /**
+     * Código da funcionalidade que representa movimentação.
+     */
     private final int codFuncaoProlog;
+
+    /**
+     * Nome da tabela no banco de dados onde as respostas dos campos personalizados coletados em processos de
+     * movimentação serão salvas.
+     */
     private final String tableNameRespostas;
 }
