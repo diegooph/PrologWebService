@@ -530,6 +530,17 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
                 .insert(servicoDao, processoMovimentacao, dataHoraMovimentacao, fecharServicosAutomaticamente);
     }
 
+    @NotNull
+    @Override
+    public Long insertTipoVeiculo(@NotNull final TipoVeiculo tipoVeiculo) throws Throwable {
+        return tipoVeiculoDao.insertTipoVeiculo(tipoVeiculo);
+    }
+
+    @Override
+    public void updateTipoVeiculo(@NotNull final TipoVeiculo tipoVeiculo) throws Throwable {
+        tipoVeiculoDao.updateTipoVeiculo(tipoVeiculo);
+    }
+
     public static final class Builder {
         private VeiculoDao veiculoDao;
         private VeiculoTransferenciaDao veiculoTransferenciaDao;

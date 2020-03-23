@@ -9,7 +9,9 @@ import org.jetbrains.annotations.NotNull;
  */
 public final class ProtheusNepomucenoConstants {
     @NotNull
-    public static final String DEFAULT_EMPRESA_FILIAL_SEPARERTOR = ":";
+    public static final String DEFAULT_CODIGOS_SEPARERTOR = ":";
+    @NotNull
+    public static final String DEFAULT_COD_AUXILIAR_TIPO_VEICULO_SEPARERTOR = ",";
     @NotNull
     static final Long DEFAULT_COD_MARCA_PNEU = 1L;
     @NotNull

@@ -164,4 +164,14 @@ public interface SistemaProtheusNepomucenoDao {
     @NotNull
     String getCodFiliais(@NotNull final Connection conn, @NotNull final List<Long> codUnidades) throws Throwable;
 
+    /**
+     * Método utilizado para buscar os códigos auxiliares mapeados. Esse método não retorna, caso exisitir, o código
+     * auxiliar do próprio código de tipo de veículo sendo filtrado.
+     *
+     * @param codTipoVeiculo Código do tipo de veículo.
+     * @return Lista contendo os códigos auxiliares mapeados, exceto o codigo auxiliar do tipo de veículo filtrado.
+     * @throws Throwable Se algum erro acontecer.
+     */
+    @NotNull
+    List<String> verificaCodAuxiliarTipoVeiculoValido(@NotNull final Long codTipoVeiculo) throws Throwable;
 }

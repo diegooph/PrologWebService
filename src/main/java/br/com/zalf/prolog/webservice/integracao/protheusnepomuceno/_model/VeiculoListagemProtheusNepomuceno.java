@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model;
 
 import org.jetbrains.annotations.NotNull;
 
-import static br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.ProtheusNepomucenoConstants.DEFAULT_EMPRESA_FILIAL_SEPARERTOR;
+import static br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.ProtheusNepomucenoConstants.DEFAULT_CODIGOS_SEPARERTOR;
 
 /**
  * Created on 11/03/20
@@ -157,6 +157,6 @@ public final class VeiculoListagemProtheusNepomuceno {
 
     @NotNull
     public String getCodEmpresaFilialVeiculo() {
-        return this.getCodEmpresaVeiculo().concat(DEFAULT_EMPRESA_FILIAL_SEPARERTOR).concat(this.getCodFilialVeiculo());
+        return this.getCodEmpresaVeiculo().concat(DEFAULT_CODIGOS_SEPARERTOR).concat(this.getCodFilialVeiculo());
     }
 }

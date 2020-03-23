@@ -52,80 +52,11 @@ public abstract class Sistema implements OperacoesIntegradas {
         this.userToken = checkNotNull(userToken, "userToken não pode ser nulo!");
     }
 
-    @Override
-    public boolean insert(
-            @NotNull final VeiculoCadastro veiculo,
-            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
-        return getIntegradorProLog().insert(veiculo, checklistOfflineListener);
-    }
-
-    @Override
-    public boolean update(
-            @NotNull final String placaOriginal,
-            @NotNull final Veiculo veiculo,
-            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
-        return getIntegradorProLog().update(placaOriginal, veiculo, checklistOfflineListener);
-    }
-
-    @Override
-    public void updateStatus(
-            @NotNull final Long codUnidade,
-            @NotNull final String placa,
-            @NotNull final Veiculo veiculo,
-            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
-        getIntegradorProLog().updateStatus(codUnidade, placa, veiculo, checklistOfflineListener);
-    }
-
-    @Override
-    public boolean delete(
-            @NotNull final String placa,
-            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
-        return getIntegradorProLog().delete(placa, checklistOfflineListener);
-    }
-
-    @NotNull
-    @Override
-    public Long insertProcessoTransferenciaVeiculo(
-            @NotNull final ProcessoTransferenciaVeiculoRealizacao processoTransferenciaVeiculo,
-            @NotNull final DadosChecklistOfflineChangedListener dadosChecklistOfflineChangedListener) throws Throwable {
-        return getIntegradorProLog()
-                .insertProcessoTransferenciaVeiculo(
-                        processoTransferenciaVeiculo,
-                        dadosChecklistOfflineChangedListener);
-    }
-
-    @NotNull
-    @Override
-    public List<Veiculo> getVeiculosAtivosByUnidade(@NotNull Long codUnidade, @Nullable Boolean ativos) throws
-            Exception {
-        return getIntegradorProLog().getVeiculosAtivosByUnidade(codUnidade, ativos);
-    }
-
-    @NotNull
-    @Override
-    public List<TipoVeiculo> getTiposVeiculosFiltroChecklist(@NotNull Long codEmpresa) throws Throwable {
-        return getIntegradorProLog().getTiposVeiculosFiltroChecklist(codEmpresa);
-    }
-
-    @NotNull
-    @Override
-    public List<String> getPlacasVeiculosByTipo(@NotNull Long codUnidade, @NotNull String codTipo) throws Exception {
-        return getIntegradorProLog().getPlacasVeiculosByTipo(codUnidade, codTipo);
-    }
-
-    @NotNull
-    @Override
-    public List<ModeloChecklistSelecao> getModelosSelecaoRealizacao(@NotNull final Long codUnidade,
-                                                                    @NotNull final Long codCargo) throws Throwable {
-        return getIntegradorProLog().getModelosSelecaoRealizacao(codUnidade, codCargo);
-    }
-
-    @NotNull
-    @Override
-    public Veiculo getVeiculoByPlaca(@NotNull String placa, boolean withPneus) throws Exception {
-        return getIntegradorProLog().getVeiculoByPlaca(placa, withPneus);
-    }
-
+    // #################################################################################################################
+    // #################################################################################################################
+    // ####################################### OPERAÇÕES INTEGRADAS - AFERIÇÃO #########################################
+    // #################################################################################################################
+    // #################################################################################################################
     @NotNull
     @Override
     public CronogramaAfericao getCronogramaAfericao(@NotNull final List<Long> codUnidades) throws Throwable {
@@ -191,6 +122,11 @@ public abstract class Sistema implements OperacoesIntegradas {
                 .getAfericoesPlacas(codUnidade, codTipoVeiculo, placaVeiculo, dataInicial, dataFinal, limit, offset);
     }
 
+    // #################################################################################################################
+    // #################################################################################################################
+    // ####################################### OPERAÇÕES INTEGRADAS - CHECKLIST ########################################
+    // #################################################################################################################
+    // #################################################################################################################
     @NotNull
     @Override
     public ResultInsertModeloChecklist insertModeloChecklist(
@@ -218,6 +154,13 @@ public abstract class Sistema implements OperacoesIntegradas {
                 userToken);
     }
 
+    @NotNull
+    @Override
+    public List<ModeloChecklistSelecao> getModelosSelecaoRealizacao(@NotNull final Long codUnidade,
+                                                                    @NotNull final Long codCargo) throws Throwable {
+        return getIntegradorProLog().getModelosSelecaoRealizacao(codUnidade, codCargo);
+    }
+
     @Override
     public @NotNull ModeloChecklistRealizacao getModeloChecklistRealizacao(
             final @NotNull Long codModeloChecklist,
@@ -233,6 +176,12 @@ public abstract class Sistema implements OperacoesIntegradas {
                                 final boolean foiOffline,
                                 final boolean deveAbrirOs) throws Throwable {
         return getIntegradorProLog().insertChecklist(checklist, foiOffline, deveAbrirOs);
+    }
+
+    @NotNull
+    @Override
+    public List<TipoVeiculo> getTiposVeiculosFiltroChecklist(@NotNull Long codEmpresa) throws Throwable {
+        return getIntegradorProLog().getTiposVeiculosFiltroChecklist(codEmpresa);
     }
 
     @NotNull
@@ -284,6 +233,11 @@ public abstract class Sistema implements OperacoesIntegradas {
         return getIntegradorProLog().getFarolChecklist(codUnidade, dataInicial, dataFinal, itensCriticosRetroativos);
     }
 
+    // #################################################################################################################
+    // #################################################################################################################
+    // ############################## OPERAÇÕES INTEGRADAS - CHECKLIST ORDEM DE SERVIÇO ################################
+    // #################################################################################################################
+    // #################################################################################################################
     @Override
     public void resolverItem(@NotNull final ResolverItemOrdemServico item) throws Throwable {
         getIntegradorProLog().resolverItem(item);
@@ -294,6 +248,82 @@ public abstract class Sistema implements OperacoesIntegradas {
         getIntegradorProLog().resolverItens(itensResolucao);
     }
 
+    // #################################################################################################################
+    // #################################################################################################################
+    // ######################################## OPERAÇÕES INTEGRADAS - VEÍCULO #########################################
+    // #################################################################################################################
+    // #################################################################################################################
+    @Override
+    public boolean insert(
+            @NotNull final VeiculoCadastro veiculo,
+            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
+        return getIntegradorProLog().insert(veiculo, checklistOfflineListener);
+    }
+
+    @Override
+    public boolean update(
+            @NotNull final String placaOriginal,
+            @NotNull final Veiculo veiculo,
+            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
+        return getIntegradorProLog().update(placaOriginal, veiculo, checklistOfflineListener);
+    }
+
+    @Override
+    public void updateStatus(
+            @NotNull final Long codUnidade,
+            @NotNull final String placa,
+            @NotNull final Veiculo veiculo,
+            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
+        getIntegradorProLog().updateStatus(codUnidade, placa, veiculo, checklistOfflineListener);
+    }
+
+    @Override
+    public boolean delete(
+            @NotNull final String placa,
+            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
+        return getIntegradorProLog().delete(placa, checklistOfflineListener);
+    }
+
+    @NotNull
+    @Override
+    public List<Veiculo> getVeiculosAtivosByUnidade(@NotNull Long codUnidade, @Nullable Boolean ativos) throws
+            Exception {
+        return getIntegradorProLog().getVeiculosAtivosByUnidade(codUnidade, ativos);
+    }
+
+    @NotNull
+    @Override
+    public List<String> getPlacasVeiculosByTipo(@NotNull Long codUnidade, @NotNull String codTipo) throws Exception {
+        return getIntegradorProLog().getPlacasVeiculosByTipo(codUnidade, codTipo);
+    }
+
+    @NotNull
+    @Override
+    public Veiculo getVeiculoByPlaca(@NotNull String placa, boolean withPneus) throws Exception {
+        return getIntegradorProLog().getVeiculoByPlaca(placa, withPneus);
+    }
+
+    // #################################################################################################################
+    // #################################################################################################################
+    // ################################# OPERAÇÕES INTEGRADAS - VEÍCULO TRANSFERÊNCIA ##################################
+    // #################################################################################################################
+    // #################################################################################################################
+    @NotNull
+    @Override
+    public Long insertProcessoTransferenciaVeiculo(
+            @NotNull final ProcessoTransferenciaVeiculoRealizacao processoTransferenciaVeiculo,
+            @NotNull final DadosChecklistOfflineChangedListener dadosChecklistOfflineChangedListener) throws Throwable {
+        return getIntegradorProLog()
+                .insertProcessoTransferenciaVeiculo(
+                        processoTransferenciaVeiculo,
+                        dadosChecklistOfflineChangedListener);
+    }
+
+    // #################################################################################################################
+    // #################################################################################################################
+    // ########################################## OPERAÇÕES INTEGRADAS - PNEU ##########################################
+    // #################################################################################################################
+    // #################################################################################################################
     @NotNull
     @Override
     public Long insert(@NotNull final Pneu pneu, @NotNull final Long codUnidade) throws Throwable {
@@ -313,6 +343,11 @@ public abstract class Sistema implements OperacoesIntegradas {
         getIntegradorProLog().update(pneu, codUnidade, codOriginalPneu);
     }
 
+    // #################################################################################################################
+    // #################################################################################################################
+    // ################################### OPERAÇÕES INTEGRADAS - PNEU TRANSFERÊNCIA ###################################
+    // #################################################################################################################
+    // #################################################################################################################
     @NotNull
     @Override
     public Long insertTransferencia(@NotNull final PneuTransferenciaRealizacao pneuTransferenciaRealizacao,
@@ -322,6 +357,26 @@ public abstract class Sistema implements OperacoesIntegradas {
                 .insertTransferencia(pneuTransferenciaRealizacao, dataHoraSincronizacao, isTransferenciaFromVeiculo);
     }
 
+    // #################################################################################################################
+    // #################################################################################################################
+    // ###################################### OPERAÇÕES INTEGRADAS - MOVIMENTAÇÃO ######################################
+    // #################################################################################################################
+    // #################################################################################################################
+    @NotNull
+    @Override
+    public Long insert(@NotNull final ServicoDao servicoDao,
+                       @NotNull final ProcessoMovimentacao processoMovimentacao,
+                       @NotNull final OffsetDateTime dataHoraMovimentacao,
+                       final boolean fecharServicosAutomaticamente) throws Throwable {
+        return getIntegradorProLog()
+                .insert(servicoDao, processoMovimentacao, dataHoraMovimentacao, fecharServicosAutomaticamente);
+    }
+
+    // #################################################################################################################
+    // #################################################################################################################
+    // #################################### OPERAÇÕES INTEGRADAS - AFERIÇÃO SERVIÇO ####################################
+    // #################################################################################################################
+    // #################################################################################################################
     @NotNull
     @Override
     public VeiculoServico getVeiculoAberturaServico(@NotNull final Long codServico,
@@ -336,14 +391,20 @@ public abstract class Sistema implements OperacoesIntegradas {
         getIntegradorProLog().fechaServico(codUnidade, dataHorafechamentoServico, servico);
     }
 
+    // #################################################################################################################
+    // #################################################################################################################
+    // ###################################### OPERAÇÕES INTEGRADAS - TIPO VEICULO ######################################
+    // #################################################################################################################
+    // #################################################################################################################S
     @NotNull
     @Override
-    public Long insert(@NotNull final ServicoDao servicoDao,
-                       @NotNull final ProcessoMovimentacao processoMovimentacao,
-                       @NotNull final OffsetDateTime dataHoraMovimentacao,
-                       final boolean fecharServicosAutomaticamente) throws Throwable {
-        return getIntegradorProLog()
-                .insert(servicoDao, processoMovimentacao, dataHoraMovimentacao, fecharServicosAutomaticamente);
+    public Long insertTipoVeiculo(@NotNull final TipoVeiculo tipoVeiculo) throws Throwable {
+        return getIntegradorProLog().insertTipoVeiculo(tipoVeiculo);
+    }
+
+    @Override
+    public void updateTipoVeiculo(@NotNull final TipoVeiculo tipoVeiculo) throws Throwable {
+        getIntegradorProLog().updateTipoVeiculo(tipoVeiculo);
     }
 
     @NotNull

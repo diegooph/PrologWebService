@@ -439,6 +439,32 @@ public final class SistemaProtheusNepomucenoDaoImpl extends DatabaseConnection i
         }
     }
 
+    @NotNull
+    @Override
+    public List<String> verificaCodAuxiliarTipoVeiculoValido(@NotNull final Long codTipoVeiculo) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("select vt.cod_auxiliar as cod_auxiliar " +
+                    "from veiculo_tipo vt " +
+                    "where vt.codigo != ? " +
+                    "and vt.cod_empresa = (select cod_empresa from veiculo_tipo where codigo = ?) " +
+                    "and vt.cod_auxiliar is not null;");
+            stmt.setLong(1, codTipoVeiculo);
+            stmt.setLong(2, codTipoVeiculo);
+            rSet = stmt.executeQuery();
+            final List<String> codigosAuxiliares = new ArrayList<>();
+            while (rSet.next()) {
+                codigosAuxiliares.add(rSet.getString("cod_auxiliar"));
+            }
+            return codigosAuxiliares;
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
     @SuppressWarnings("ConstantConditions")
     private void internalInsertValoresAfericao(@NotNull final Connection conn,
                                                @NotNull final Long codAfericaoInserida,

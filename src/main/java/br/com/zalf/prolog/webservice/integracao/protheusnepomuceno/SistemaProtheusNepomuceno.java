@@ -2,7 +2,9 @@ package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno;
 
 import br.com.zalf.prolog.webservice.BuildConfig;
 import br.com.zalf.prolog.webservice.database.DatabaseConnectionProvider;
+import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.*;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.MetodoIntegrado;
@@ -32,6 +34,25 @@ public final class SistemaProtheusNepomuceno extends Sistema {
                                      @NotNull final String userToken) {
         super(integradorProLog, sistemaKey, userToken);
         this.requester = requester;
+    }
+
+    @NotNull
+    @Override
+    public Long insertTipoVeiculo(@NotNull final TipoVeiculo tipoVeiculo) throws Throwable {
+        // Validamos se o codAuxiliar está dentro dos padrões. Uma exception personalizada é lançada caso não estiver
+        // de acordo.
+        validateCodAuxiliar(tipoVeiculo.getCodigo(), tipoVeiculo.getCodAuxiliar());
+        // Usamos o fluxo padrão do Prolog, apenas validamos antes
+        return getIntegradorProLog().insertTipoVeiculo(tipoVeiculo);
+    }
+
+    @Override
+    public void updateTipoVeiculo(@NotNull final TipoVeiculo tipoVeiculo) throws Throwable {
+        // Validamos se o codAuxiliar está dentro dos padrões. Uma exception personalizada é lançada caso não estiver
+        // de acordo.
+        validateCodAuxiliar(tipoVeiculo.getCodigo(), tipoVeiculo.getCodAuxiliar());
+        // Usamos o fluxo padrão do Prolog, apenas validamos antes
+        getIntegradorProLog().updateTipoVeiculo(tipoVeiculo);
     }
 
     @Override
@@ -278,5 +299,32 @@ public final class SistemaProtheusNepomuceno extends Sistema {
         } finally {
             connectionProvider.closeResources(conn);
         }
+    }
+
+    private void validateCodAuxiliar(@NotNull final Long codTipoVeiculo,
+                                     @NotNull final String codAuxiliarTipoVeiculo) throws Throwable {
+        // Validamos se o código a ser cadastrado está no padrão
+        ProtheusNepomucenoUtils.validateCodAuxiliarTipoVeiculo(codAuxiliarTipoVeiculo);
+        final List<String> codsAuxiliares =
+                new SistemaProtheusNepomucenoDaoImpl().verificaCodAuxiliarTipoVeiculoValido(codTipoVeiculo);
+        final List<String> novosCodsAuxiliares =
+                ProtheusNepomucenoUtils.getCodAuxiliarTipoVeiculoAsArray(codAuxiliarTipoVeiculo);
+        // Estouramos uma exception com mensagem personalizada caso já existir qualquer código idêntico já mapeado.
+        codsAuxiliares
+                .stream()
+                .filter(codAuxiliar -> {
+                    for (final String novoCodAuxiliar : novosCodsAuxiliares) {
+                        if (codAuxiliar.contains(novoCodAuxiliar) || novoCodAuxiliar.contains(codAuxiliar)) {
+                            return true;
+                        }
+                    }
+                    return false;
+                })
+                .findAny()
+                .ifPresent(codAuxiliar -> {
+                    throw new GenericException(
+                            "O código auxiliar " + codAuxiliar +
+                                    " já está cadastrado em outro Tipo de Veículo e não pode ser repetido");
+                });
     }
 }

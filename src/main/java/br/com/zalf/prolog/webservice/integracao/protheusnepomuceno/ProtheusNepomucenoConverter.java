@@ -29,7 +29,7 @@ public final class ProtheusNepomucenoConverter {
     public static AfericaoPlacaProtheusNepomuceno convert(@NotNull final String codAuxiliarUnidade,
                                                           @NotNull final AfericaoPlaca afericaoPlaca) {
         // Separa o código de empresa e unidade do campo auxiliar.
-        final String[] empresaUnidade = codAuxiliarUnidade.split(DEFAULT_EMPRESA_FILIAL_SEPARERTOR);
+        final String[] empresaUnidade = codAuxiliarUnidade.split(DEFAULT_CODIGOS_SEPARERTOR);
 
         final List<MedicaoAfericaoProtheusNepomuceno> medicoes = new ArrayList<>();
         for (Pneu pneu : afericaoPlaca.getPneusAferidos()) {
@@ -60,7 +60,7 @@ public final class ProtheusNepomucenoConverter {
     public static AfericaoAvulsaProtheusNepomuceno convert(@NotNull final String codAuxiliarUnidade,
                                                            @NotNull final AfericaoAvulsa afericaoAvulsa) {
         // Separa o código de empresa e unidade do campo auxiliar.
-        final String[] empresaUnidade = codAuxiliarUnidade.split(DEFAULT_EMPRESA_FILIAL_SEPARERTOR);
+        final String[] empresaUnidade = codAuxiliarUnidade.split(DEFAULT_CODIGOS_SEPARERTOR);
 
         final Pneu pneu = afericaoAvulsa.getPneuAferido();
         //noinspection ConstantConditions
@@ -344,7 +344,7 @@ public final class ProtheusNepomucenoConverter {
                                                         @NotNull final String codEstruturaVeiculo) {
         return new DiagramaVeiculo(
                 codDiagramaProlog,
-                // Utilizamos a propriedade 'nome' como metada para repassar o codEstruturaVeiculo.
+                // Utilizamos a propriedade 'nome' como metadata para repassar o codEstruturaVeiculo.
                 codEstruturaVeiculo,
                 new HashSet<>(),
                 "");
