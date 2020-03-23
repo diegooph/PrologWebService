@@ -31,11 +31,11 @@ public final class SocorroRotaAtendimentoVisualizacao {
     @Nullable
     private final LocalDateTime dataHoraDeslocamentoInicio;
     @Nullable
-    private final LocalizacaoSocorroRota localizacaoDescolamentoInicio;
+    private final LocalizacaoDeslocamento localizacaoDescolamentoInicio;
     @Nullable
     private final LocalDateTime dataHoraDeslocamentoFim;
     @Nullable
-    private final LocalizacaoSocorroRota localizacaoDescolamentoFim;
+    private final LocalizacaoDeslocamento localizacaoDescolamentoFim;
 
     public SocorroRotaAtendimentoVisualizacao(@NotNull final Long codColaboradorResponsavelAtendimento,
                                               @NotNull final String nomeResponsavelAtendimentoSocorro,
@@ -47,9 +47,9 @@ public final class SocorroRotaAtendimentoVisualizacao {
                                               @Nullable final String modeloAparelhoAtendimentoSocorro,
                                               @Nullable final String imeiAparelhoAtendimentoSocorro,
                                               @Nullable final LocalDateTime dataHoraDeslocamentoInicio,
-                                              @Nullable final LocalizacaoSocorroRota localizacaoDescolamentoInicio,
+                                              @Nullable final LocalizacaoDeslocamento localizacaoDescolamentoInicio,
                                               @Nullable final LocalDateTime dataHoraDeslocamentoFim,
-                                              @Nullable final LocalizacaoSocorroRota localizacaoDescolamentoFim) {
+                                              @Nullable final LocalizacaoDeslocamento localizacaoDescolamentoFim) {
         this.codColaboradorResponsavelAtendimento = codColaboradorResponsavelAtendimento;
         this.nomeResponsavelAtendimentoSocorro = nomeResponsavelAtendimentoSocorro;
         this.observacaoAtendimento = observacaoAtendimento;
@@ -100,11 +100,11 @@ public final class SocorroRotaAtendimentoVisualizacao {
     public LocalDateTime getDataHoraDeslocamentoInicio() { return dataHoraDeslocamentoInicio; }
 
     @Nullable
-    public LocalizacaoSocorroRota getLocalizacaoDescolamentoInicio() { return localizacaoDescolamentoInicio; }
+    public LocalizacaoDeslocamento getLocalizacaoDescolamentoInicio() { return localizacaoDescolamentoInicio; }
 
     @Nullable
     public LocalDateTime getDataHoraDeslocamentoFim() { return dataHoraDeslocamentoFim; }
 
     @Nullable
-    public LocalizacaoSocorroRota getLocalizacaoDescolamentoFim() { return localizacaoDescolamentoFim; }
+    public LocalizacaoDeslocamento getLocalizacaoDescolamentoFim() { return localizacaoDescolamentoFim; }
 }
