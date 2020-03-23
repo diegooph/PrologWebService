@@ -53,7 +53,9 @@ public class SocorroRotaConverter {
                 rSet.getString("URL_FOTO_1_ABERTURA"),
                 rSet.getString("URL_FOTO_2_ABERTURA"),
                 rSet.getString("URL_FOTO_3_ABERTURA"),
-                StatusSocorroRota.fromString(rSet.getString("STATUS_ATUAL_SOCORRO_ROTA"))
+                StatusSocorroRota.fromString(rSet.getString("STATUS_ATUAL_SOCORRO_ROTA")),
+                rSet.getObject("DATA_HORA_DESLOCAMENTO_INICIO", LocalDateTime.class),
+                rSet.getObject("DATA_HORA_DESLOCAMENTO_FIM", LocalDateTime.class)
         );
     }
 
