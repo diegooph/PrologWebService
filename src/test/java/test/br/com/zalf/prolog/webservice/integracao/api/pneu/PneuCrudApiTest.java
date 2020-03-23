@@ -1622,33 +1622,6 @@ public final class PneuCrudApiTest extends BaseTest {
         }
     }
 
-    //Método responsável por inserir placa na integração.
-    private void adicionaPlacaEmIntegracao(@NotNull String placa,
-                                           @NotNull Long codEmpresa,
-                                           @NotNull Long codUnidade) throws Throwable {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        LocalDateTime hora = LocalDateTime.now();
-        try {
-            conn = connectionProvider.provideDatabaseConnection();
-            stmt = conn.prepareStatement("INSERT INTO INTEGRACAO.VEICULO_CADASTRADO(COD_EMPRESA_CADASTRO, " +
-                    "COD_UNIDADE_CADASTRO, COD_VEICULO_CADASTRO_PROLOG, PLACA_VEICULO_CADASTRO, " +
-                    "DATA_HORA_CADASTRO_PROLOG, DATA_HORA_ULTIMA_EDICAO)\n" +
-                    "VALUES(?, ?, (SELECT CODIGO FROM VEICULO_DATA WHERE PLACA = ?), ?, ?, ?);");
-            stmt.setLong(1, codEmpresa);
-            stmt.setLong(2, codUnidade);
-            stmt.setString(3, placa);
-            stmt.setString(4, placa);
-            stmt.setObject(5, hora);
-            stmt.setObject(6, hora);
-            stmt.executeUpdate();
-        } catch (final Throwable throwable) {
-            throw new SQLException("Erro ao inserir placa");
-        } finally {
-            connectionProvider.closeResources(conn, stmt);
-        }
-    }
-
     //Método responsável por pegar posições de uma placa;
     private List<Integer> buscaPosicaoesPlaca(@NotNull String placa) throws Throwable {
         Connection conn = null;
@@ -1897,8 +1870,8 @@ public final class PneuCrudApiTest extends BaseTest {
     private ApiPneuCargaInicial buscaInformacoesPneuCargaInicialEmUso(@NotNull final Long codSistemaIntegrado,
                                                                       @NotNull final String codCliente,
                                                                       @NotNull final Long codUnidade,
-                                                                      @NotNull final Long codEmpresa) throws
-            Throwable {
+                                                                      @NotNull final Long codEmpresa)
+            throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -2032,29 +2005,6 @@ public final class PneuCrudApiTest extends BaseTest {
             throw new SQLException("Erro ao verificar pneu");
         } finally {
             connectionProvider.closeResources(conn, stmt, rSet);
-        }
-    }
-
-    //Método responsável por remover um pneu de uma placa em uma posicao específica.
-    private void removePneuDeUmaPlacaPosicaoEspecifica(@NotNull final String placa,
-                                                       final int posicao,
-                                                       @NotNull final Long codUnidade) throws Throwable {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        try {
-            conn = connectionProvider.provideDatabaseConnection();
-            stmt = conn.prepareStatement("DELETE FROM VEICULO_PNEU WHERE " +
-                    "PLACA = ? AND " +
-                    "POSICAO = ? AND " +
-                    "COD_UNIDADE = ?;");
-            stmt.setString(1, placa);
-            stmt.setInt(2, posicao);
-            stmt.setLong(3, codUnidade);
-            stmt.executeUpdate();
-        } catch (final Throwable throwable) {
-            throw new SQLException("Erro ao deletar pneus da placa");
-        } finally {
-            connectionProvider.closeResources(conn, stmt);
         }
     }
 
