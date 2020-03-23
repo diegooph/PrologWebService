@@ -74,6 +74,6 @@ public interface MotivoDao {
 
     @NotNull
     List<MotivoListagemApp> getMotivosByOrigemAndDestino(@NotNull final OrigemDestinoEnum origem,
-                                                         @NotNull final OrigemDestinoEnum destino);
+                                                         @NotNull final OrigemDestinoEnum destino) throws Throwable;
 
 }
