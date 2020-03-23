@@ -32,6 +32,6 @@ public interface MotivoOrigemDestinoDao {
      */
     @NotNull
     MotivoOrigemDestinoVisualizacaoListagem getMotivoOrigemDestino(@NotNull final Long codMotivoOrigemDestino,
-                                                                   @NotNull final String tokenAutenticacao);
+                                                                   @NotNull final String tokenAutenticacao) throws Throwable;
 
 }
