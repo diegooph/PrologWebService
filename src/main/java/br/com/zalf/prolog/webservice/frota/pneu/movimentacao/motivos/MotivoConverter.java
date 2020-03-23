@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos;
 
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoListagemApp;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoVisualizacaoListagem;
 import br.com.zalf.prolog.webservice.geral.unidade.UnidadeConverter;
 import org.jetbrains.annotations.NotNull;
@@ -26,6 +27,12 @@ public class MotivoConverter {
                 rSet.getString("DESCRICAO_MOTIVO"),
                 rSet.getObject("DATA_HORA_ULTIMA_ALTERACAO_MOTIVO", LocalDateTime.class),
                 rSet.getString("NOME_COLABORADOR_ULTIMA_ALTERACAO"));
+    }
+
+    @NotNull
+    static MotivoListagemApp createMotivoListagemApp(@NotNull final ResultSet rSet) throws Throwable {
+        return new MotivoListagemApp(rSet.getLong("CODIGO_MOTIVO"),
+                rSet.getString("DESCRICAO_MOTIVO"));
     }
 
 }
