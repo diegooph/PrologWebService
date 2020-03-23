@@ -335,7 +335,8 @@ public final class SocorroRotaDaoImpl extends DatabaseConnection implements Soco
         if(fluxoFim){
             funcDeslocamento = "FUNC_SOCORRO_ROTA_ATENDIMENTO_DESLOCAMENTO_FIM";
         }
-        stmt = conn.prepareStatement("SELECT * FROM " + funcDeslocamento + "(" +
+
+        String sql = "SELECT * FROM %s (" +
                 "F_COD_SOCORRO_ROTA := ?," +
                 "F_COD_COLABORADOR := ?," +
                 "F_DATA_HORA := ?," +
@@ -350,7 +351,10 @@ public final class SocorroRotaDaoImpl extends DatabaseConnection implements Soco
                 "F_MARCA_DEVICE := ?," +
                 "F_MODELO_DEVICE := ?," +
                 "F_PLATAFORMA_ORIGEM := ?," +
-                "F_VERSAO_PLATAFORMA_ORIGEM := ?)");
+                "F_VERSAO_PLATAFORMA_ORIGEM := ?)";
+        sql = String.format(sql, funcDeslocamento);
+
+        stmt = conn.prepareStatement(sql);
         stmt.setLong(1, deslocamento.getCodSocorroRota());
         stmt.setLong(2, deslocamento.getCodColaborador());
         // Ignoramos a data hora do objeto e usamos a do WS.
