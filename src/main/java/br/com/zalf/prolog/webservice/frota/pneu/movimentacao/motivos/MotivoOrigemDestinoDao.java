@@ -16,10 +16,11 @@ public interface MotivoOrigemDestinoDao {
      * Todos os dados são obrigatórios.
      *
      * @param motivoOrigemDestinoInsercao um motivo origem destino a ser inserido.
-     * @param tokenAutenticacao o token de sessão do usuário;
+     * @param tokenAutenticacao           o token de sessão do usuário;
      * @throws Throwable Caso qualquer erro ocorra.
      */
     @NotNull
-    Long insert(@NotNull final MotivoOrigemDestinoInsercao motivoOrigemDestinoInsercao, String tokenAutenticacao) throws Throwable;
+    Long insert(@NotNull final MotivoOrigemDestinoInsercao motivoOrigemDestinoInsercao,
+                @NotNull final String tokenAutenticacao) throws Throwable;
 
 }

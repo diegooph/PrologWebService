@@ -10,10 +10,14 @@ import javax.validation.constraints.NotNull;
  *
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
-public @Data class MotivoOrigemDestinoInsercao {
+public @Data
+class MotivoOrigemDestinoInsercao {
 
     @NotNull
     private final Long codMotivo;
+
+    @NotNull
+    private final Long codEmpresa;
 
     @NotNull
     private final OrigemDestinoEnum origemMovimentacao;
