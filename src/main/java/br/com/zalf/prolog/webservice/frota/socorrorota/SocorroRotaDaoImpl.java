@@ -252,7 +252,8 @@ public final class SocorroRotaDaoImpl extends DatabaseConnection implements Soco
                     "F_MARCA_DEVICE_ATENDIMENTO := ?::TEXT," +
                     "F_MODELO_DEVICE_ATENDIMENTO := ?::TEXT," +
                     "F_PLATAFORMA_ORIGEM := ?::PROLOG_PLATAFORMA_SOCORRO_ROTA_TYPE," +
-                    "F_VERSAO_PLATAFORMA_ORIGEM := ?::TEXT) AS CODIGO;");
+                    "F_VERSAO_PLATAFORMA_ORIGEM := ?::TEXT," +
+                    "F_DESLOCAMENTO_INICIADO := ?) AS CODIGO;");
             stmt.setLong(1, socorroRotaAtendimento.getCodSocorroRota());
             stmt.setLong(2, socorroRotaAtendimento.getCodColaborador());
             stmt.setString(3, StringUtils.trimToNull(socorroRotaAtendimento.getObservacaoAtendimento()));
@@ -270,6 +271,7 @@ public final class SocorroRotaDaoImpl extends DatabaseConnection implements Soco
             stmt.setString(14, socorroRotaAtendimento.getModeloDevice());
             stmt.setString(15, socorroRotaAtendimento.getPlataformaOrigem().asString());
             stmt.setString(16, socorroRotaAtendimento.getVersaoPlataformaOrigem());
+            stmt.setBoolean(17, socorroRotaAtendimento.isDeslocamentoIniciado());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return rSet.getLong("CODIGO");
