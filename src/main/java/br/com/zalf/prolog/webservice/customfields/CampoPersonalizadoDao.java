@@ -1,5 +1,9 @@
 package br.com.zalf.prolog.webservice.customfields;
 
+import br.com.zalf.prolog.webservice.customfields._model.CampoPersonalizadoFuncaoProlog;
+import br.com.zalf.prolog.webservice.customfields._model.CampoPersonalizadoParaRealizacao;
+import br.com.zalf.prolog.webservice.customfields._model.CampoPersonalizadoResposta;
+import br.com.zalf.prolog.webservice.customfields._model.ColunaTabelaResposta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

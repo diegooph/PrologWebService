@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model;
 
-import br.com.zalf.prolog.webservice.customfields.CampoPersonalizadoResposta;
+import br.com.zalf.prolog.webservice.customfields._model.CampoPersonalizadoResposta;
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.geral.unidade._model.Unidade;
 import org.jetbrains.annotations.NotNull;

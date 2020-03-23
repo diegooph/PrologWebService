@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.customfields;
 
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
+import br.com.zalf.prolog.webservice.customfields._model.*;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -65,6 +66,7 @@ public final class CampoPersonalizadoDaoImpl extends DatabaseConnection implemen
         }
     }
 
+    @SuppressWarnings("SqlResolve")
     @Override
     public void salvaRespostasCamposPersonalizados(@NotNull final Connection conn,
                                                    @NotNull final CampoPersonalizadoFuncaoProlog funcaoProlog,

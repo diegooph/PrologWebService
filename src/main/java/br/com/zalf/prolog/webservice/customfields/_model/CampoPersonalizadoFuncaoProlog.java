@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.customfields;
+package br.com.zalf.prolog.webservice.customfields._model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

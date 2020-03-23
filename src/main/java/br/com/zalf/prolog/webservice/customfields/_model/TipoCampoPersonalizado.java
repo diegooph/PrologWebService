@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.customfields;
+package br.com.zalf.prolog.webservice.customfields._model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,7 +13,8 @@ import org.jetbrains.annotations.NotNull;
 @AllArgsConstructor
 public enum TipoCampoPersonalizado {
     LISTA_SELECAO(1),
-    TEXTO_MULTILINHAS(2);
+    TEXTO_MULTILINHAS(2),
+    TEXTO_SINGLELINE(3);
 
     private final int codigoTipoCampo;
 

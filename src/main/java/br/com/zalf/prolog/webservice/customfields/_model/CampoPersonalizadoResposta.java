@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.customfields;
+package br.com.zalf.prolog.webservice.customfields._model;
 
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
