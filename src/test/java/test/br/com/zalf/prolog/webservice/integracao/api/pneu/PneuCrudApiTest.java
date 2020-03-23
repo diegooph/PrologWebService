@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Random;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
@@ -76,7 +77,7 @@ public final class PneuCrudApiTest extends BaseTest {
     }
 
     private String geraTokenIntegracao(){
-        return "TOKEN" + RANDOM.nextInt(999999);
+        return "TOKEN" + RANDOM.nextInt(999999999);
     }
 
     private Long geraCodSistemaIntegrado() {
@@ -84,7 +85,7 @@ public final class PneuCrudApiTest extends BaseTest {
     }
 
     private String geraCodCliente() {
-        return "PN" + RANDOM.nextInt(999999);
+        return "PN" + RANDOM.nextInt(999999999);
     }
 
     @Test
@@ -460,6 +461,84 @@ public final class PneuCrudApiTest extends BaseTest {
         final SuccessResponseIntegracao successResponseIntegracaoPneusAtualizados =
                 apiPneuService.atualizaStatusPneus(TOKEN_INTEGRACAO, apiPneuAlteracaoStatus);
 
+        assertThat(successResponseIntegracaoPneusAtualizados.getMsg()).isEqualTo("Pneus atualizados com " +
+                "sucesso");
+    }
+
+    @Test
+    @DisplayName("Teste Carga Inicial adicionando dois pneus no veículo e logo após inverter as posições dos pneus")
+    void adicionaCargaInicialPneuEmVeiculoDepoisInvertePosicaoDosPneus() throws Throwable {
+        //Cria veículo.
+        VeiculoCadastroPraxio veiculoCadastroPraxio = criaVeiculoParaCadastro();
+
+        //Adiciona veículo.
+        final SuccessResponseIntegracao successResponseIntegracao = integracaoPraxioResource.
+                inserirVeiculoPraxio(TOKEN_INTEGRACAO, veiculoCadastroPraxio);
+
+        //Verifica se veículo foi salvo.
+        assertThat(successResponseIntegracao.getMsg()).isEqualTo("Veículo inserido no ProLog com sucesso");
+
+        //Busca posições do veículo criado.
+        final List<Integer> posicoesPlaca = buscaPosicaoesPlaca(veiculoCadastroPraxio.getPlacaVeiculo());
+
+        //Cria pneu com as posições para carga inicial.
+        final List<ApiPneuCargaInicial> cargaInicial = new ArrayList<>();
+        cargaInicial.add(criaPneuComPosicoesEspecificas(posicoesPlaca.get(0), veiculoCadastroPraxio.getPlacaVeiculo()));
+        cargaInicial.add(criaPneuComPosicoesEspecificas(posicoesPlaca.get(1), veiculoCadastroPraxio.getPlacaVeiculo()));
+
+        //Adiciona carga inicial.
+        final List<ApiPneuCargaInicialResponse> apiPneuCargaInicialResponses =
+                apiCadastroPneuService.inserirCargaInicialPneu(TOKEN_INTEGRACAO, cargaInicial);
+
+        //Valida se todos pneus foram salvos com sucesso.
+        for(ApiPneuCargaInicialResponse apiPneuCargaInicialResponse : apiPneuCargaInicialResponses){
+            assertThat(apiPneuCargaInicialResponse.getMensagem()).isEqualTo("Pneu cadastrado com sucesso no " +
+                    "Sistema ProLog");
+        }
+
+        for (ApiPneuCargaInicial apiPneuCargaInicial : cargaInicial) {
+            //Busca informações do pneu.
+            final ApiPneuCargaInicial apiPneuCargaInicialInfoPneu = buscaInformacoesPneuCargaInicialEmUso(
+                    apiPneuCargaInicial.getCodigoSistemaIntegrado(),
+                    apiPneuCargaInicial.getCodigoCliente(),
+                    apiPneuCargaInicial.getCodUnidadePneu(),
+                    COD_EMPRESA);
+            //Valida todas as informações do pneu salvo.
+            assertThat(apiPneuCargaInicialInfoPneu.getCodigoSistemaIntegrado()).isEqualTo(apiPneuCargaInicial.
+                    getCodigoSistemaIntegrado());
+            assertThat(apiPneuCargaInicialInfoPneu.getCodigoCliente()).isEqualTo(apiPneuCargaInicial.
+                    getCodigoCliente());
+            assertThat(apiPneuCargaInicialInfoPneu.getCodUnidadePneu()).isEqualTo(apiPneuCargaInicial.
+                    getCodUnidadePneu());
+            assertThat(apiPneuCargaInicialInfoPneu.getCodModeloPneu()).isEqualTo(apiPneuCargaInicial.
+                    getCodModeloPneu());
+            assertThat(apiPneuCargaInicialInfoPneu.getCodDimensaoPneu()).isEqualTo(apiPneuCargaInicial.
+                    getCodDimensaoPneu());
+            assertThat(apiPneuCargaInicialInfoPneu.getPressaoCorretaPneu()).isEqualTo(apiPneuCargaInicial.
+                    getPressaoCorretaPneu());
+            assertThat(apiPneuCargaInicialInfoPneu.getVidaAtualPneu()).isEqualTo(apiPneuCargaInicial.
+                    getVidaAtualPneu());
+            assertThat(apiPneuCargaInicialInfoPneu.getVidaTotalPneu()).isEqualTo(apiPneuCargaInicial.
+                    getVidaTotalPneu());
+            assertThat(apiPneuCargaInicialInfoPneu.getPneuNovoNuncaRodado()).isEqualTo(apiPneuCargaInicial.
+                    getPneuNovoNuncaRodado());
+            assertThat(apiPneuCargaInicialInfoPneu.getPlacaVeiculoPneuAplicado()).isEqualTo(apiPneuCargaInicial.
+                    getPlacaVeiculoPneuAplicado());
+            assertThat(apiPneuCargaInicialInfoPneu.getPosicaoPneuAplicado()).isEqualTo(apiPneuCargaInicial.
+                    getPosicaoPneuAplicado());
+        }
+        //Cria pneu para atualizar posições.
+        final List<ApiPneuAlteracaoStatus> apiPneuAlteracaoStatus = new ArrayList<>();
+
+        //Inverte posições.
+        apiPneuAlteracaoStatus.add(criaPneuParaTrocarPosicaoPneuEmUso(cargaInicial.get(0), posicoesPlaca.get(1)));
+        apiPneuAlteracaoStatus.add(criaPneuParaTrocarPosicaoPneuEmUso(cargaInicial.get(1), posicoesPlaca.get(0)));
+
+        //Atualiza pneus.
+        final SuccessResponseIntegracao successResponseIntegracaoPneusAtualizados =
+                apiPneuService.atualizaStatusPneus(TOKEN_INTEGRACAO, apiPneuAlteracaoStatus);
+
+        //Valida se os pneus foram atualizados corretamente.
         assertThat(successResponseIntegracaoPneusAtualizados.getMsg()).isEqualTo("Pneus atualizados com " +
                 "sucesso");
     }
@@ -1889,11 +1968,13 @@ public final class PneuCrudApiTest extends BaseTest {
                     "       P.VALOR,\n" +
                     "       P.PNEU_NOVO_NUNCA_RODADO,\n" +
                     "       P.COD_MODELO_BANDA,\n" +
-                    "       P.STATUS\n" +
-                    "FROM PNEU_DATA P\n" +
-                    "WHERE COD_EMPRESA = ?\n" +
-                    "  AND COD_UNIDADE = ?\n" +
-                    "  AND CODIGO_CLIENTE = ?;");
+                    "       P.STATUS,\n" +
+                    "       VP.PLACA,\n" +
+                    "       VP.POSICAO\n" +
+                    "FROM PNEU_DATA P  JOIN VEICULO_PNEU VP ON P.CODIGO = VP.COD_PNEU\n" +
+                    "WHERE P.COD_EMPRESA = ?\n" +
+                    "  AND P.COD_UNIDADE = ?\n" +
+                    "  AND P.CODIGO_CLIENTE = ?;");
             stmt.setLong(1, codEmpresa);
             stmt.setLong(2, codUnidade);
             stmt.setString(3, codCliente);
@@ -1914,8 +1995,8 @@ public final class PneuCrudApiTest extends BaseTest {
                         rSet.getLong("COD_MODELO_BANDA"),
                         new BigDecimal(0),
                         ApiStatusPneu.EM_USO,
-                        null,
-                        900
+                        rSet.getString("PLACA"),
+                        rSet.getInt("POSICAO")
                 );
             }
             return apiPneuCargaInicial;
@@ -2330,6 +2411,22 @@ public final class PneuCrudApiTest extends BaseTest {
                 true,
                 buscaCodModeloBandaPneuEmpresa(COD_EMPRESA),
                 new BigDecimal(400.00));
+    }
+
+    @NotNull
+    private ApiPneuAlteracaoStatus criaPneuParaTrocarPosicaoPneuEmUso(ApiPneuCargaInicial apiPneuCargaInicial,
+                                                                      int posicao) throws Throwable {
+        return new ApiPneuAlteracaoStatusVeiculo(
+                apiPneuCargaInicial.getCodigoSistemaIntegrado(),
+                apiPneuCargaInicial.getCodigoCliente(),
+                apiPneuCargaInicial.getCodUnidadePneu(),
+                "03383283194",
+                Now.localDateTimeUtc(),
+                apiPneuCargaInicial.getPlacaVeiculoPneuAplicado(),
+                posicao,
+                true,
+                buscaCodModeloBandaPneuEmpresa(COD_EMPRESA),
+                new BigDecimal(300.00));
     }
 
     //Método responsável por criar um novo veículo para cadastrar.
