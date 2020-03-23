@@ -24,7 +24,7 @@ public class MotivoOrigemDestinoService {
         try {
             return dao.insert(motivoOrigemDestinoInsercao, tokenAutenticacao);
         } catch (final Throwable t) {
-            Log.e(TAG, String.format("Erro ao inserir relação motivo, origem e destino %s", motivoOrigemDestinoInsercao.getCodMotivo()), t);
+            Log.e(TAG, String.format("Erro ao inserir relação motivo, origem e destino %d", motivoOrigemDestinoInsercao.getCodMotivo()), t);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao inserir motivo, tente novamente.");
@@ -33,7 +33,14 @@ public class MotivoOrigemDestinoService {
 
     @NotNull
     public MotivoOrigemDestinoVisualizacaoListagem getMotivoOrigemDestino(@NotNull final Long codMotivoOrigemDestino) {
-        return null;
+        try {
+            return dao.getMotivoOrigemDestino(codMotivoOrigemDestino);
+        } catch (final Throwable t) {
+            Log.e(TAG, String.format("Erro ao buscar relação motivo, origem e destino %d", codMotivoOrigemDestino), t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao inserir motivo, tente novamente.");
+        }
     }
 
 }
