@@ -5,7 +5,8 @@ import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaEdicao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaInsercao;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaVisualizacaoListagem;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaListagem;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaVisualizacao;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -60,8 +61,8 @@ public class MotivoRetiradaDaoImpl extends DatabaseConnection implements MotivoR
 
     @Override
     @NotNull
-    public MotivoRetiradaVisualizacaoListagem getMotivoByCodigo(@NotNull final Long codMotivo,
-                                                                @NotNull final String tokenAutenticacao) throws Throwable {
+    public MotivoRetiradaVisualizacao getMotivoByCodigo(@NotNull final Long codMotivo,
+                                                        @NotNull final String tokenAutenticacao) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -74,7 +75,7 @@ public class MotivoRetiradaDaoImpl extends DatabaseConnection implements MotivoR
             stmt.setString(2, TokenCleaner.getOnlyToken(tokenAutenticacao));
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                return MotivoRetiradaConverter.createMotivoVisualizacaoListagem(rSet);
+                return MotivoRetiradaConverter.createMotivoRetiradaVisualizacao(rSet);
             } else {
                 throw new IllegalStateException("Nenhum motivo encontrado com o código: " + codMotivo);
             }
@@ -85,8 +86,8 @@ public class MotivoRetiradaDaoImpl extends DatabaseConnection implements MotivoR
 
     @Override
     @NotNull
-    public List<MotivoRetiradaVisualizacaoListagem> getMotivosListagem(@NotNull final Long codEmpresa,
-                                                                       @NotNull final String tokenAutenticacao) throws Throwable {
+    public List<MotivoRetiradaListagem> getMotivosListagem(@NotNull final Long codEmpresa,
+                                                           @NotNull final String tokenAutenticacao) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -100,9 +101,9 @@ public class MotivoRetiradaDaoImpl extends DatabaseConnection implements MotivoR
 
             rSet = stmt.executeQuery();
 
-            final List<MotivoRetiradaVisualizacaoListagem> motivos = new ArrayList();
+            final List<MotivoRetiradaListagem> motivos = new ArrayList();
             while (rSet.next()) {
-                motivos.add(MotivoRetiradaConverter.createMotivoVisualizacaoListagem(rSet));
+                motivos.add(MotivoRetiradaConverter.createMotivoRetiradaListagem(rSet));
             }
 
             return motivos;

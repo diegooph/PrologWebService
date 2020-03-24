@@ -3,7 +3,8 @@ package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaEdicao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaInsercao;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaVisualizacaoListagem;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaListagem;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaVisualizacao;
 import org.jetbrains.annotations.NotNull;
 
 import javax.validation.Valid;
@@ -32,14 +33,14 @@ public final class MotivoRetiradaResource {
 
     @GET
     @Path("/{codMotivo}")
-    public MotivoRetiradaVisualizacaoListagem getMotivoByCodigo(@NotNull @PathParam("codMotivo") final Long codMotivo,
-                                                                @HeaderParam("Authorization") final String tokenAutenticacao) {
+    public MotivoRetiradaVisualizacao getMotivoByCodigo(@NotNull @PathParam("codMotivo") final Long codMotivo,
+                                                        @HeaderParam("Authorization") final String tokenAutenticacao) {
         return motivoRetiradaService.getMotivoByCodigo(codMotivo, tokenAutenticacao);
     }
 
     @GET
-    public List<MotivoRetiradaVisualizacaoListagem> getMotivosListagem(@NotNull @QueryParam("codEmpresa") final Long codEmpresa,
-                                                                       @NotNull @HeaderParam("Authorization") final String tokenAutenticacao) {
+    public List<MotivoRetiradaListagem> getMotivosListagem(@NotNull @QueryParam("codEmpresa") final Long codEmpresa,
+                                                           @NotNull @HeaderParam("Authorization") final String tokenAutenticacao) {
         return motivoRetiradaService.getMotivosListagem(codEmpresa, tokenAutenticacao);
     }
 

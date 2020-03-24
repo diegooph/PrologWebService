@@ -140,7 +140,7 @@ public class MotivoRetiradaOrigemDestinoDaoImpl extends DatabaseConnection imple
             final List<MotivoRetiradaListagem> motivos = new ArrayList();
 
             while (rSet.next()) {
-                motivos.add(MotivoRetiradaConverter.createMotivoRetiraListagem(rSet));
+                motivos.add(MotivoRetiradaConverter.createMotivoRetiradaListagem(rSet));
                 origemDestino.setObrigatorioMotivoRetirada(rSet.getBoolean("OBRIGATORIO"));
             }
 

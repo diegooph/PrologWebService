@@ -2,7 +2,8 @@ package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos;
 
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaEdicao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaInsercao;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaVisualizacaoListagem;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaListagem;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaVisualizacao;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -29,28 +30,28 @@ public interface MotivoRetiradaDao {
                 String tokenAutenticacao) throws Throwable;
 
     /**
-     * Busca um {@link MotivoRetiradaVisualizacaoListagem motivo} baseado no seu código.
+     * Busca um {@link MotivoRetiradaListagem motivo} baseado no seu código.
      *
      * @param codMotivo         um código de um motivo.
      * @param tokenAutenticacao token de autorização do header da requisição.
-     * @return uma {@link MotivoRetiradaVisualizacaoListagem motivo}.
+     * @return uma {@link MotivoRetiradaListagem motivo}.
      * @throws Throwable caso qualquer erro ocorrer.
      */
     @NotNull
-    MotivoRetiradaVisualizacaoListagem getMotivoByCodigo(@NotNull Long codMotivo,
-                                                         @NotNull final String tokenAutenticacao) throws Throwable;
+    MotivoRetiradaVisualizacao getMotivoByCodigo(@NotNull Long codMotivo,
+                                                 @NotNull final String tokenAutenticacao) throws Throwable;
 
     /**
-     * Busca todos os {@link MotivoRetiradaVisualizacaoListagem motivos} baseado no código da empresa.
+     * Busca todos os {@link MotivoRetiradaListagem motivos} baseado no código da empresa.
      *
      * @param codEmpresa        um código de uma empresa;
      * @param tokenAutenticacao token de autorização do header da requisição.
-     * @return uma {@link List< MotivoRetiradaVisualizacaoListagem > lista de motivos}.
+     * @return uma {@link List< MotivoRetiradaListagem > lista de motivos}.
      * @throws Throwable caso qualquer erro ocorrer.
      */
     @NotNull
-    List<MotivoRetiradaVisualizacaoListagem> getMotivosListagem(@NotNull final Long codEmpresa,
-                                                                @NotNull String tokenAutenticacao) throws Throwable;
+    List<MotivoRetiradaListagem> getMotivosListagem(@NotNull final Long codEmpresa,
+                                                    @NotNull String tokenAutenticacao) throws Throwable;
 
     /**
      * Realiza a atualização de um {@link MotivoRetiradaEdicao motivo}.

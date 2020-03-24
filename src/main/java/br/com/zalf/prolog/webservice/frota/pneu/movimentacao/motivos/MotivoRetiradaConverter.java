@@ -29,7 +29,7 @@ public class MotivoRetiradaConverter {
     }
 
     @NotNull
-    static MotivoRetiradaListagem createMotivoRetiraListagem(@NotNull final ResultSet rSet) throws Throwable {
+    static MotivoRetiradaListagem createMotivoRetiradaListagem(@NotNull final ResultSet rSet) throws Throwable {
         return new MotivoRetiradaListagem(rSet.getLong("CODIGO_MOTIVO"),
                 rSet.getString("DESCRICAO_MOTIVO"));
     }

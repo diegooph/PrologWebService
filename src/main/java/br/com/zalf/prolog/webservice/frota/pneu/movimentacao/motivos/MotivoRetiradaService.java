@@ -4,7 +4,8 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaEdicao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaInsercao;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaVisualizacaoListagem;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaListagem;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaVisualizacao;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -35,8 +36,8 @@ public final class MotivoRetiradaService {
     }
 
     @NotNull
-    public MotivoRetiradaVisualizacaoListagem getMotivoByCodigo(@NotNull final Long codMotivo,
-                                                                @NotNull final String tokenAutenticacao) {
+    public MotivoRetiradaVisualizacao getMotivoByCodigo(@NotNull final Long codMotivo,
+                                                        @NotNull final String tokenAutenticacao) {
         try {
             return dao.getMotivoByCodigo(codMotivo, tokenAutenticacao);
         } catch (final Throwable t) {
@@ -48,8 +49,8 @@ public final class MotivoRetiradaService {
     }
 
     @NotNull
-    public List<MotivoRetiradaVisualizacaoListagem> getMotivosListagem(@NotNull final Long codEmpresa,
-                                                                       @NotNull final String tokenAutenticacao) {
+    public List<MotivoRetiradaListagem> getMotivosListagem(@NotNull final Long codEmpresa,
+                                                           @NotNull final String tokenAutenticacao) {
         try {
             return dao.getMotivosListagem(codEmpresa, tokenAutenticacao);
         } catch (final Throwable t) {
