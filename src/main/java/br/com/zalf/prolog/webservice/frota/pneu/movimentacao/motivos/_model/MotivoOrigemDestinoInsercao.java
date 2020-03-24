@@ -20,6 +20,9 @@ class MotivoOrigemDestinoInsercao {
     private final Long codEmpresa;
 
     @NotNull
+    private final Long codUnidade;
+    
+    @NotNull
     private final OrigemDestinoEnum origemMovimentacao;
 
     @NotNull
