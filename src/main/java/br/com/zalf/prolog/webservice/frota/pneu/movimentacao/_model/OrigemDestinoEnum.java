@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model;
+ package br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model;
 
 import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
 import org.jetbrains.annotations.NotNull;

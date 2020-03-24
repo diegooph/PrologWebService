@@ -5,6 +5,7 @@ import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
+import br.com.zalf.prolog.webservice.customfields._model.CampoPersonalizadoParaRealizacao;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.ProcessoMovimentacao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.Motivo;
@@ -32,7 +33,7 @@ import java.util.List;
         targetVersionCode = 64,
         versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
         actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
-public class MovimentacaoResource {
+public final class MovimentacaoResource {
     private final MovimentacaoService service = new MovimentacaoService();
 
     @POST
@@ -79,5 +80,17 @@ public class MovimentacaoResource {
             @PathParam("codEmpresa") @Required final Long codEmpresa,
             @QueryParam("apenasAtivos") @Required final Boolean apenasAtivos) throws ProLogException {
         return service.getMotivos(codEmpresa, apenasAtivos);
+    }
+
+    @GET
+    @Secured(permissions = {
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_VEICULO_ESTOQUE,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_DESCARTE})
+    @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
+    @Path("/campos-personalizados")
+    public List<CampoPersonalizadoParaRealizacao> getCamposPersonalizadosRealizacao(
+            @QueryParam("codUnidade") @Required final Long codUnidade) throws ProLogException {
+        return service.getCamposPersonalizadosRealizacao(codUnidade);
     }
 }

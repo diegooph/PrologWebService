@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.praxio;
 
 import br.com.zalf.prolog.webservice.Injection;
+import br.com.zalf.prolog.webservice.customfields.CampoPersonalizadoDao;
 import br.com.zalf.prolog.webservice.database.DatabaseConnectionProvider;
 import br.com.zalf.prolog.webservice.errorhandling.exception.BloqueadoIntegracaoException;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
@@ -148,6 +149,7 @@ public final class SistemaGlobusPiccolotur extends Sistema {
     @NotNull
     @Override
     public Long insert(@NotNull final ServicoDao servicoDao,
+                       @NotNull final CampoPersonalizadoDao campoPersonalizadoDao,
                        @NotNull final ProcessoMovimentacao processoMovimentacao,
                        @NotNull final OffsetDateTime dataHoraMovimentacao,
                        final boolean fecharServicosAutomaticamente) throws Throwable {
@@ -205,6 +207,7 @@ public final class SistemaGlobusPiccolotur extends Sistema {
                             .provideMovimentacaoDao()
                             .insert(conn,
                                     servicoDao,
+                                    campoPersonalizadoDao,
                                     processoMovimentacao,
                                     dataHoraMovimentacao,
                                     fecharServicosAutomaticamente);

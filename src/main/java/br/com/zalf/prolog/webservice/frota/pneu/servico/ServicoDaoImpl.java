@@ -7,7 +7,6 @@ import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.pneu.PneuDao;
-import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.MovimentacaoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.Movimentacao;
@@ -217,6 +216,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
                     final Long codProcessoMovimentacao = movimentacaoDao.insert(
                             conn,
                             this,
+                            Injection.provideCampoPersonalizadoDao(),
                             processoMovimentacao,
                             dataHorafechamentoServico,
                             false);
