@@ -21,7 +21,7 @@ class MotivoOrigemDestinoInsercao {
 
     @NotNull
     private final Long codUnidade;
-    
+
     @NotNull
     private final OrigemDestinoEnum origemMovimentacao;
 
