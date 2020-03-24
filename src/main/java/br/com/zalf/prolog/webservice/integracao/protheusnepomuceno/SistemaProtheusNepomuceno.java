@@ -14,6 +14,7 @@ import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.data.Protheus
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.Connection;
 import java.util.*;
@@ -41,7 +42,7 @@ public final class SistemaProtheusNepomuceno extends Sistema {
     public Long insertTipoVeiculo(@NotNull final TipoVeiculo tipoVeiculo) throws Throwable {
         // Validamos se o codAuxiliar está dentro dos padrões. Uma exception personalizada é lançada caso não estiver
         // de acordo.
-        validateCodAuxiliar(tipoVeiculo.getCodigo(), tipoVeiculo.getCodAuxiliar());
+        validateCodAuxiliar(tipoVeiculo.getCodEmpresa(), tipoVeiculo.getCodigo(), tipoVeiculo.getCodAuxiliar());
         // Usamos o fluxo padrão do Prolog, apenas validamos antes
         return getIntegradorProLog().insertTipoVeiculo(tipoVeiculo);
     }
@@ -50,7 +51,7 @@ public final class SistemaProtheusNepomuceno extends Sistema {
     public void updateTipoVeiculo(@NotNull final TipoVeiculo tipoVeiculo) throws Throwable {
         // Validamos se o codAuxiliar está dentro dos padrões. Uma exception personalizada é lançada caso não estiver
         // de acordo.
-        validateCodAuxiliar(tipoVeiculo.getCodigo(), tipoVeiculo.getCodAuxiliar());
+        validateCodAuxiliar(tipoVeiculo.getCodEmpresa(), tipoVeiculo.getCodigo(), tipoVeiculo.getCodAuxiliar());
         // Usamos o fluxo padrão do Prolog, apenas validamos antes
         getIntegradorProLog().updateTipoVeiculo(tipoVeiculo);
     }
@@ -301,12 +302,18 @@ public final class SistemaProtheusNepomuceno extends Sistema {
         }
     }
 
-    private void validateCodAuxiliar(@NotNull final Long codTipoVeiculo,
-                                     @NotNull final String codAuxiliarTipoVeiculo) throws Throwable {
+    private void validateCodAuxiliar(@NotNull final Long codEmpresaTipoVeiculo,
+                                     @Nullable final Long codTipoVeiculo,
+                                     @Nullable final String codAuxiliarTipoVeiculo) throws Throwable {
+        if (codAuxiliarTipoVeiculo == null) {
+            // Não precisamos validar nada, se o código auxiliar for nulo.
+            return;
+        }
         // Validamos se o código a ser cadastrado está no padrão
         ProtheusNepomucenoUtils.validateCodAuxiliarTipoVeiculo(codAuxiliarTipoVeiculo);
         final List<String> codsAuxiliares =
-                new SistemaProtheusNepomucenoDaoImpl().verificaCodAuxiliarTipoVeiculoValido(codTipoVeiculo);
+                new SistemaProtheusNepomucenoDaoImpl()
+                        .verificaCodAuxiliarTipoVeiculoValido(codEmpresaTipoVeiculo, codTipoVeiculo);
         final List<String> novosCodsAuxiliares =
                 ProtheusNepomucenoUtils.getCodAuxiliarTipoVeiculoAsArray(codAuxiliarTipoVeiculo);
         // Estouramos uma exception com mensagem personalizada caso já existir qualquer código idêntico já mapeado.

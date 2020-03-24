@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
+import br.com.zalf.prolog.webservice.integracao.router.RouterTipoVeiculo;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -22,25 +23,28 @@ public final class TipoVeiculoService {
     private final TipoVeiculoDao dao = Injection.provideTipoVeiculoDao();
 
     @NotNull
-    public ResponseWithCod insertTipoVeiculoPorEmpresa(final TipoVeiculo tipoVeiculo) throws ProLogException {
+    public ResponseWithCod insertTipoVeiculoPorEmpresa(@NotNull final String userToken,
+                                                       @NotNull final TipoVeiculo tipoVeiculo) throws ProLogException {
         try {
+            final Long codTipoVeiculoInserido = RouterTipoVeiculo.create(dao, userToken).insertTipoVeiculo(tipoVeiculo);
             return ResponseWithCod.ok(
                     "Tipo de veículo inserido com sucesso",
-                    dao.insertTipoVeiculo(tipoVeiculo));
-        } catch (Throwable e) {
-            Log.e(TAG, "Erro ao inserir o tipo de veículo", e);
+                    codTipoVeiculoInserido);
+        } catch (@NotNull Throwable t) {
+            Log.e(TAG, "Erro ao inserir o tipo de veículo", t);
             throw Injection
                     .provideProLogExceptionHandler()
-                    .map(e, "Erro ao inserir o tipo de veículo, tente novamente");
+                    .map(t, "Erro ao inserir o tipo de veículo, tente novamente");
         }
     }
 
     @NotNull
-    public Response updateTipoVeiculo(final TipoVeiculo tipoVeiculo) throws ProLogException {
+    public Response updateTipoVeiculo(@NotNull final String userToken,
+                                      @NotNull final TipoVeiculo tipoVeiculo) throws ProLogException {
         try {
-            dao.updateTipoVeiculo(tipoVeiculo);
+            RouterTipoVeiculo.create(dao, userToken).updateTipoVeiculo(tipoVeiculo);
             return Response.ok("Tipo de veículo atualizado com sucesso");
-        } catch (final Throwable t) {
+        } catch (@NotNull final Throwable t) {
             Log.e(TAG, "Erro ao atualizar o tipo de veículo", t);
             throw Injection
                     .provideProLogExceptionHandler()

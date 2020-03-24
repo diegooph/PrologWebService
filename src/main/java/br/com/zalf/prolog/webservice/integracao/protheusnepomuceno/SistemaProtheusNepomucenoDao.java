@@ -9,6 +9,7 @@ import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosT
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosUnidadeRestricao;
 import com.google.common.collect.BiMap;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.Connection;
 import java.util.List;
@@ -168,10 +169,13 @@ public interface SistemaProtheusNepomucenoDao {
      * Método utilizado para buscar os códigos auxiliares mapeados. Esse método não retorna, caso exisitir, o código
      * auxiliar do próprio código de tipo de veículo sendo filtrado.
      *
-     * @param codTipoVeiculo Código do tipo de veículo.
+     * @param codEmpresaTipoVeiculo Código da empresa onde o tipo de veículo pertence.
+     * @param codTipoVeiculo        Código do tipo de veículo. Null caso o tipo de veículo ainda não estiver
+     *                              cadastrado.
      * @return Lista contendo os códigos auxiliares mapeados, exceto o codigo auxiliar do tipo de veículo filtrado.
      * @throws Throwable Se algum erro acontecer.
      */
     @NotNull
-    List<String> verificaCodAuxiliarTipoVeiculoValido(@NotNull final Long codTipoVeiculo) throws Throwable;
+    List<String> verificaCodAuxiliarTipoVeiculoValido(@NotNull final Long codEmpresaTipoVeiculo,
+                                                      @Nullable final Long codTipoVeiculo) throws Throwable;
 }
