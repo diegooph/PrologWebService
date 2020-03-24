@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model;
 
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Created on 2020-03-19
@@ -16,5 +17,8 @@ class MotivoRetiradaEdicao {
 
     @NotNull
     private final String descricaoMotivoRetirada;
+
+    @Nullable
+    private final String codAuxiliar;
 
 }
