@@ -6,6 +6,8 @@ import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
+import br.com.zalf.prolog.webservice.customfields.CampoPersonalizadoDaoImpl;
+import br.com.zalf.prolog.webservice.customfields._model.CampoPersonalizadoParaRealizacao;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.Movimentacao;
@@ -105,4 +107,17 @@ public class MovimentacaoService {
             throw Injection.provideProLogExceptionHandler().map(e, errorMessage);
         }
     }
+
+    @NotNull
+    public List<CampoPersonalizadoParaRealizacao> getCamposPersonalizadosRealizacao(@NotNull final Long codUnidade) {
+        try {
+            return new CampoPersonalizadoDaoImpl().getCamposParaRealizacaoMovimentacao(codUnidade);
+        } catch (final Throwable t) {
+            Log.e(TAG, String.format("Erro ao buscar os campos personalizados para a unidade %d", codUnidade), t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao buscar os campos personalizados, tente novamente");
+        }
+    }
+
 }
