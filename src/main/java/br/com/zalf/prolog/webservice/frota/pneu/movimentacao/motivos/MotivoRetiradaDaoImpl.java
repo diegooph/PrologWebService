@@ -32,7 +32,7 @@ public class MotivoRetiradaDaoImpl extends DatabaseConnection implements MotivoR
         try {
             conn = getConnection();
 
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_MOTIVO_INSERE(" +
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_MOTIVO_RETIRADA_INSERE(" +
                     "F_COD_EMPRESA_MOTIVO := ?," +
                     "F_DESCRICAO_MOTIVO := ?," +
                     "F_DATA_HORA_INSERCAO_MOTIVO := ?," +
@@ -67,7 +67,7 @@ public class MotivoRetiradaDaoImpl extends DatabaseConnection implements MotivoR
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_MOTIVO_VISUALIZACAO(" +
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_MOTIVO_RETIRADA_VISUALIZACAO(" +
                     "F_COD_MOTIVO := ?," +
                     "F_TOKEN := ?)");
             stmt.setLong(1, codMotivo);
@@ -92,7 +92,7 @@ public class MotivoRetiradaDaoImpl extends DatabaseConnection implements MotivoR
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_MOTIVO_LISTAGEM(" +
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_MOTIVO_RETIRADA_LISTAGEM(" +
                     "F_COD_EMPRESA := ?," +
                     "F_TOKEN := ?)");
             stmt.setLong(1, codEmpresa);
@@ -119,7 +119,7 @@ public class MotivoRetiradaDaoImpl extends DatabaseConnection implements MotivoR
         PreparedStatement stmt = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT FUNC_MOTIVO_ATUALIZA(" +
+            stmt = conn.prepareStatement("SELECT FUNC_MOTIVO_RETIRADA_ATUALIZA(" +
                     "F_COD_MOTIVO := ?," +
                     "F_DESCRICAO_MOTIVO := ?," +
                     "F_DATA_ULTIMA_ALTERACAO := ?," +
@@ -143,7 +143,7 @@ public class MotivoRetiradaDaoImpl extends DatabaseConnection implements MotivoR
         PreparedStatement stmt = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT FUNC_MOTIVO_DELETA(" +
+            stmt = conn.prepareStatement("SELECT FUNC_MOTIVO_RETIRADA_DELETA(" +
                     "F_COD_MOTIVO := ?," +
                     "F_DATA_ULTIMA_ALTERACAO := ?," +
                     "F_TOKEN_AUTENTICACAO := ?);");
