@@ -2,7 +2,9 @@ package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestinoEnum;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoOrigemDestinoInsercao;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoOrigemDestinoListagemApp;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoOrigemDestinoVisualizacaoListagem;
 import org.jetbrains.annotations.NotNull;
 
@@ -56,6 +58,20 @@ public class MotivoOrigemDestinoService {
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao buscar relação motivo, origem e destino, tente novamente.");
+        }
+    }
+
+    @NotNull
+    public List<MotivoOrigemDestinoListagemApp> getMotivosByOrigemAndDestino(@NotNull final OrigemDestinoEnum origem,
+                                                                             @NotNull final OrigemDestinoEnum destino,
+                                                                             @NotNull final Long codEmpresa) {
+        try {
+            return dao.getMotivosByOrigemAndDestino(origem, destino, codEmpresa);
+        } catch (final Throwable t) {
+            Log.e(TAG, String.format("Erro ao buscar relação motivo, origem e destino, para a origem %s e destino %s", origem.toString(), destino.toString()), t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao buscar motivos, tente novamente.");
         }
     }
 

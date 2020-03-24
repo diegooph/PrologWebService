@@ -1,9 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos;
 
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestinoEnum;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoEdicao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoInsercao;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoListagemApp;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoVisualizacaoListagem;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -71,10 +69,5 @@ public interface MotivoDao {
      */
     @Nullable
     void delete(@NotNull final Long codMotivo, @NotNull final String tokenAutenticacao) throws Throwable;
-
-    @NotNull
-    List<MotivoListagemApp> getMotivosByOrigemAndDestino(@NotNull final OrigemDestinoEnum origem,
-                                                         @NotNull final OrigemDestinoEnum destino,
-                                                         @NotNull final Long codEmpres) throws Throwable;
 
 }

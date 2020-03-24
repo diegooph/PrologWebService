@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos;
 
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoListagemApp;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoOrigemDestinoListagemApp;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoVisualizacaoListagem;
 import br.com.zalf.prolog.webservice.geral.unidade.UnidadeConverter;
 import org.jetbrains.annotations.NotNull;
@@ -30,8 +30,8 @@ public class MotivoConverter {
     }
 
     @NotNull
-    static MotivoListagemApp createMotivoListagemApp(@NotNull final ResultSet rSet) throws Throwable {
-        return new MotivoListagemApp(rSet.getLong("CODIGO_MOTIVO"),
+    static MotivoOrigemDestinoListagemApp createMotivoListagemApp(@NotNull final ResultSet rSet) throws Throwable {
+        return new MotivoOrigemDestinoListagemApp(rSet.getLong("CODIGO_MOTIVO"),
                 rSet.getString("DESCRICAO_MOTIVO"));
     }
 
