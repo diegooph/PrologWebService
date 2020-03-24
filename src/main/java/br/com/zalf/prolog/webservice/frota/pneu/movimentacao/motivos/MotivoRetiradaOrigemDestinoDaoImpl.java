@@ -4,10 +4,10 @@ import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestinoEnum;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaListagem;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaOrigemDestinoInsercao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaOrigemDestinoListagemMotivos;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaOrigemDestinoVisualizacaoListagem;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaVisualizacaoApp;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
@@ -137,10 +137,10 @@ public class MotivoRetiradaOrigemDestinoDaoImpl extends DatabaseConnection imple
             rSet = stmt.executeQuery();
 
             final MotivoRetiradaOrigemDestinoListagemMotivos origemDestino = new MotivoRetiradaOrigemDestinoListagemMotivos(origem, destino);
-            final List<MotivoRetiradaVisualizacaoApp> motivos = new ArrayList();
+            final List<MotivoRetiradaListagem> motivos = new ArrayList();
 
             while (rSet.next()) {
-                motivos.add(MotivoRetiradaConverter.createMotivoListagemApp(rSet));
+                motivos.add(MotivoRetiradaConverter.createMotivoRetiraListagem(rSet));
                 origemDestino.setObrigatorioMotivoRetirada(rSet.getBoolean("OBRIGATORIO"));
             }
 
