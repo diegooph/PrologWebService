@@ -1,8 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.movimentacao;
 
 import br.com.zalf.prolog.webservice.Injection;
-import br.com.zalf.prolog.webservice.gente.colaborador.ColaboradorService;
-import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Log;
@@ -13,7 +11,9 @@ import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.Movimentacao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.PermissoesMovimentacaoValidator;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.ProcessoMovimentacao;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.motivo.Motivo;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.Motivo;
+import br.com.zalf.prolog.webservice.gente.colaborador.ColaboradorService;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.integracao.router.RouterMovimentacao;
 import br.com.zalf.prolog.webservice.permissao.Visao;
 import org.jetbrains.annotations.NotNull;
@@ -56,6 +56,7 @@ public class MovimentacaoService {
                     RouterMovimentacao
                             .create(dao, userToken)
                             .insert(Injection.provideServicoDao(),
+                                    Injection.provideCampoPersonalizadoDao(),
                                     movimentacao,
                                     Now.offsetDateTimeUtc(),
                                     true);
@@ -74,7 +75,7 @@ public class MovimentacaoService {
             return ResponseWithCod.ok(
                     "Motivo de descarte inserido com sucesso",
                     dao.insertMotivo(motivo, codEmpresa));
-        } catch (Throwable e) {
+        } catch (final Throwable e) {
             final String errorMessage = "Erro ao inserir um novo motivo de descarte";
             Log.e(TAG, errorMessage, e);
             throw Injection.provideProLogExceptionHandler().map(e, errorMessage);
@@ -86,7 +87,7 @@ public class MovimentacaoService {
                                    @NotNull final Motivo motivo) throws ProLogException {
         try {
             dao.updateMotivoStatus(codEmpresa, codMotivo, motivo);
-        } catch (Throwable e) {
+        } catch (final Throwable e) {
             final String errorMessage = String.format("Erro ao atualizar motivo de descarte: %d", codMotivo);
             Log.e(TAG, errorMessage, e);
             throw Injection.provideProLogExceptionHandler().map(e, errorMessage);
@@ -98,7 +99,7 @@ public class MovimentacaoService {
                                    final boolean onlyAtivos) throws ProLogException {
         try {
             return dao.getMotivos(codEmpresa, onlyAtivos);
-        } catch (Throwable e) {
+        } catch (final Throwable e) {
             final String errorMessage = "Erro ao buscar lista de motivos de descarte";
             Log.e(TAG, errorMessage, e);
             throw Injection.provideProLogExceptionHandler().map(e, errorMessage);
