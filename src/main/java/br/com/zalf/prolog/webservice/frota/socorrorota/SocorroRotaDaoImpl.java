@@ -342,18 +342,18 @@ public final class SocorroRotaDaoImpl extends DatabaseConnection implements Soco
                 "F_COD_SOCORRO_ROTA := ?," +
                 "F_COD_COLABORADOR := ?," +
                 "F_DATA_HORA := ?," +
-                "F_LATITUDE := ?," +
-                "F_LONGITUDE := ?," +
+                "F_LATITUDE := ?::TEXT," +
+                "F_LONGITUDE := ?::TEXT," +
                 "F_PRECISAO_LOCALIZACAO := ?," +
-                "F_ENDERECO_AUTOMATICO := ?," +
-                "F_DEVICE_ID := ?," +
-                "F_DEVICE_IMEI := ?," +
+                "F_ENDERECO_AUTOMATICO := ?::TEXT," +
+                "F_DEVICE_ID := ?::TEXT," +
+                "F_DEVICE_IMEI := ?::TEXT," +
                 "F_DEVICE_UPTIME_MILLIS := ?," +
                 "F_ANDROID_API_VERSION := ?," +
-                "F_MARCA_DEVICE := ?," +
-                "F_MODELO_DEVICE := ?," +
-                "F_PLATAFORMA_ORIGEM := ?," +
-                "F_VERSAO_PLATAFORMA_ORIGEM := ?)";
+                "F_MARCA_DEVICE := ?::TEXT," +
+                "F_MODELO_DEVICE := ?::TEXT," +
+                "F_PLATAFORMA_ORIGEM := ?::PROLOG_PLATAFORMA_SOCORRO_ROTA_TYPE," +
+                "F_VERSAO_PLATAFORMA_ORIGEM := ?::TEXT)";
         sql = String.format(sql, funcDeslocamento);
 
         stmt = conn.prepareStatement(sql);

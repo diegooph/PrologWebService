@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.frota.socorrorota._model;
 
-import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -15,8 +14,7 @@ import java.time.LocalDateTime;
  *
  * @author Wellington Moraes (https://github.com/wvinim)
  */
-@Data
-public abstract class SocorroRotaAtendimentoDeslocamento {
+public final class SocorroRotaAtendimentoDeslocamento {
     /**
      * Código do socorro em rota em atendimento.
      */
@@ -100,4 +98,95 @@ public abstract class SocorroRotaAtendimentoDeslocamento {
      */
     @NotNull
     private final String versaoPlataformaOrigem;
+
+    public SocorroRotaAtendimentoDeslocamento(@NotNull final Long codSocorroRota,
+                                              @NotNull final Long codColaborador,
+                                              @NotNull final LocalDateTime dataHora,
+                                              @NotNull final LocalizacaoSocorroRota localizacao,
+                                              @Nullable final String enderecoAutomatico,
+                                              @Nullable final String deviceId,
+                                              @Nullable final String deviceImei,
+                                              final long deviceUptimeMillis,
+                                              final int androidApiVersion,
+                                              @Nullable final String marcaDevice,
+                                              @Nullable final String modeloDevice,
+                                              @NotNull final PrologPlatformSocorroRota plataformaOrigem,
+                                              @NotNull final String versaoPlataformaOrigem) {
+        this.codSocorroRota = codSocorroRota;
+        this.codColaborador = codColaborador;
+        this.dataHora = dataHora;
+        this.localizacao = localizacao;
+        this.enderecoAutomatico = enderecoAutomatico;
+        this.deviceId = deviceId;
+        this.deviceImei = deviceImei;
+        this.deviceUptimeMillis = deviceUptimeMillis;
+        this.androidApiVersion = androidApiVersion;
+        this.marcaDevice = marcaDevice;
+        this.modeloDevice = modeloDevice;
+        this.plataformaOrigem = plataformaOrigem;
+        this.versaoPlataformaOrigem = versaoPlataformaOrigem;
+    }
+
+    @NotNull
+    public Long getCodSocorroRota() {
+        return codSocorroRota;
+    }
+
+    @NotNull
+    public Long getCodColaborador() {
+        return codColaborador;
+    }
+
+    @NotNull
+    public LocalDateTime getDataHora() {
+        return dataHora;
+    }
+
+    @NotNull
+    public LocalizacaoSocorroRota getLocalizacao() {
+        return localizacao;
+    }
+
+    @Nullable
+    public String getEnderecoAutomatico() {
+        return enderecoAutomatico;
+    }
+
+    @Nullable
+    public String getDeviceId() {
+        return deviceId;
+    }
+
+    @Nullable
+    public String getDeviceImei() {
+        return deviceImei;
+    }
+
+    public long getDeviceUptimeMillis() {
+        return deviceUptimeMillis;
+    }
+
+    public int getAndroidApiVersion() {
+        return androidApiVersion;
+    }
+
+    @Nullable
+    public String getMarcaDevice() {
+        return marcaDevice;
+    }
+
+    @Nullable
+    public String getModeloDevice() {
+        return modeloDevice;
+    }
+
+    @NotNull
+    public PrologPlatformSocorroRota getPlataformaOrigem() {
+        return plataformaOrigem;
+    }
+
+    @NotNull
+    public String getVersaoPlataformaOrigem() {
+        return versaoPlataformaOrigem;
+    }
 }
