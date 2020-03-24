@@ -33,7 +33,7 @@ public class MotivoRetiradaOrigemDestinoDaoImpl extends DatabaseConnection imple
         try {
             conn = getConnection();
 
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_MOTIVO_ORIGEM_DESTINO_INSERE(" +
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_MOTIVO_RETIRADA_ORIGEM_DESTINO_INSERE(" +
                     "F_COD_MOTIVO := ?," +
                     "F_COD_EMPRESA := ?," +
                     "F_COD_UNIDADE :=?," +
@@ -74,7 +74,7 @@ public class MotivoRetiradaOrigemDestinoDaoImpl extends DatabaseConnection imple
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_MOTIVO_ORIGEM_DESTINO_VISUALIZACAO(" +
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_MOTIVO_RETIRADA_ORIGEM_DESTINO_VISUALIZACAO(" +
                     "F_COD_MOTIVO_ORIGEM_DESTINO := ?," +
                     "F_TOKEN := ?);");
             stmt.setLong(1, codMotivoOrigemDestino);
@@ -98,7 +98,7 @@ public class MotivoRetiradaOrigemDestinoDaoImpl extends DatabaseConnection imple
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_MOTIVO_ORIGEM_DESTINO_LISTAGEM(" +
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_MOTIVO_RETIRADA_ORIGEM_DESTINO_LISTAGEM(" +
                     "F_COD_EMPRESA := ?," +
                     "F_TOKEN := ?)");
             stmt.setLong(1, codEmpresa);
@@ -126,7 +126,7 @@ public class MotivoRetiradaOrigemDestinoDaoImpl extends DatabaseConnection imple
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_MOTIVO_GET_BY_ORIGEM_DESTINO(" +
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_MOTIVO_RETIRADA_GET_BY_ORIGEM_DESTINO(" +
                     "F_ORIGEM := ?::ORIGEM_DESTINO_TYPE," +
                     "F_DESTINO := ?::ORIGEM_DESTINO_TYPE," +
                     "F_COD_UNIDADE := ?);");
