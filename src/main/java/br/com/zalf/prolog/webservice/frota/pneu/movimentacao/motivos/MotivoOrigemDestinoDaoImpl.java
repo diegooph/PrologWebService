@@ -7,6 +7,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestin
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoOrigemDestinoInsercao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoOrigemDestinoListagemApp;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoOrigemDestinoVisualizacaoListagem;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoVisualizacaoApp;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
@@ -117,9 +118,9 @@ public class MotivoOrigemDestinoDaoImpl extends DatabaseConnection implements Mo
     }
 
     @Override
-    public @NotNull List<MotivoOrigemDestinoListagemApp> getMotivosByOrigemAndDestino(@NotNull final OrigemDestinoEnum origem,
-                                                                                      @NotNull final OrigemDestinoEnum destino,
-                                                                                      @NotNull final Long codEmpresa) throws Throwable {
+    public @NotNull MotivoOrigemDestinoListagemApp getMotivosByOrigemAndDestino(@NotNull final OrigemDestinoEnum origem,
+                                                                                @NotNull final OrigemDestinoEnum destino,
+                                                                                @NotNull final Long codUnidade) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -128,19 +129,24 @@ public class MotivoOrigemDestinoDaoImpl extends DatabaseConnection implements Mo
             stmt = conn.prepareStatement("SELECT * FROM FUNC_MOTIVO_GET_BY_ORIGEM_DESTINO(" +
                     "F_ORIGEM := ?::ORIGEM_DESTINO_TYPE," +
                     "F_DESTINO := ?::ORIGEM_DESTINO_TYPE," +
-                    "F_COD_EMPRESA := ?);");
+                    "F_COD_UNIDADE := ?);");
             stmt.setString(1, origem.asString());
             stmt.setString(2, destino.asString());
-            stmt.setLong(3, codEmpresa);
+            stmt.setLong(3, codUnidade);
 
             rSet = stmt.executeQuery();
 
-            final List<MotivoOrigemDestinoListagemApp> motivos = new ArrayList();
+            final MotivoOrigemDestinoListagemApp origemDestino = new MotivoOrigemDestinoListagemApp(origem, destino);
+            final List<MotivoVisualizacaoApp> motivos = new ArrayList();
+
             while (rSet.next()) {
                 motivos.add(MotivoConverter.createMotivoListagemApp(rSet));
+                origemDestino.setObrigatorio(rSet.getBoolean("OBRIGATORIO"));
             }
 
-            return motivos;
+            origemDestino.setMotivos(motivos);
+
+            return origemDestino;
         } finally {
             close(conn, stmt, rSet);
         }

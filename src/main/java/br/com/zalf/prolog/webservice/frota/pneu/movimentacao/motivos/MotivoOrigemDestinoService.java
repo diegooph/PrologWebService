@@ -62,11 +62,11 @@ public class MotivoOrigemDestinoService {
     }
 
     @NotNull
-    public List<MotivoOrigemDestinoListagemApp> getMotivosByOrigemAndDestino(@NotNull final OrigemDestinoEnum origem,
-                                                                             @NotNull final OrigemDestinoEnum destino,
-                                                                             @NotNull final Long codEmpresa) {
+    public MotivoOrigemDestinoListagemApp getMotivosByOrigemAndDestino(@NotNull final OrigemDestinoEnum origem,
+                                                                       @NotNull final OrigemDestinoEnum destino,
+                                                                       @NotNull final Long codUnidade) {
         try {
-            return dao.getMotivosByOrigemAndDestino(origem, destino, codEmpresa);
+            return dao.getMotivosByOrigemAndDestino(origem, destino, codUnidade);
         } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao buscar relação motivo, origem e destino, para a origem %s e destino %s", origem.toString(), destino.toString()), t);
             throw Injection

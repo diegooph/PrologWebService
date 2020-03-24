@@ -15,16 +15,16 @@ import java.util.List;
 public @Data
 class MotivoOrigemDestinoListagemApp {
 
-    @Nullable
-    private final List<MotivoVisualizacaoApp> motivos;
-
     @NotNull
     private final OrigemDestinoEnum origem;
 
     @NotNull
     private final OrigemDestinoEnum destino;
 
-    @NotNull
-    private final boolean obrigatorio;
+    @Nullable
+    private List<MotivoVisualizacaoApp> motivos;
+
+    @Nullable
+    private boolean obrigatorio;
 
 }
