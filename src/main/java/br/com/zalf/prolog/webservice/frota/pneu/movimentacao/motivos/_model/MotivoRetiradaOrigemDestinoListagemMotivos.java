@@ -13,7 +13,7 @@ import java.util.List;
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
 public @Data
-class MotivoOrigemDestinoListagemMotivos {
+class MotivoRetiradaOrigemDestinoListagemMotivos {
 
     @NotNull
     private final OrigemDestinoEnum origem;
@@ -22,7 +22,7 @@ class MotivoOrigemDestinoListagemMotivos {
     private final OrigemDestinoEnum destino;
 
     @Nullable
-    private List<MotivoVisualizacaoApp> motivos;
+    private List<MotivoRetiradaVisualizacaoApp> motivos;
 
     @Nullable
     private boolean obrigatorio;

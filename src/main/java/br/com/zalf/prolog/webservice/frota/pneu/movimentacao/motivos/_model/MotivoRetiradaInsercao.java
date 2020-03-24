@@ -11,12 +11,12 @@ import javax.validation.constraints.NotNull;
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
 @Data
-public class MotivoInsercao {
+public class MotivoRetiradaInsercao {
 
     @NotNull(message = "O código da empresa é obrigatório.")
     private final long codEmpresaMotivo;
 
     @NotBlank(message = "A descrição do motivo não pode sem branca.")
     private final String descricaoMotivo;
-    
+
 }

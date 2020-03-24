@@ -3,9 +3,9 @@ package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos;
 import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoEdicao;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoInsercao;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoVisualizacaoListagem;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaEdicao;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaInsercao;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaVisualizacaoListagem;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -20,11 +20,11 @@ import java.util.List;
  *
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
-public class MotivoDaoImpl extends DatabaseConnection implements MotivoDao {
+public class MotivoRetiradaDaoImpl extends DatabaseConnection implements MotivoRetiradaDao {
 
     @Override
     @NotNull
-    public Long insert(@NotNull final MotivoInsercao motivoInsercao,
+    public Long insert(@NotNull final MotivoRetiradaInsercao motivoRetiradaInsercao,
                        @NotNull final String tokenAutenticacao) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -39,8 +39,8 @@ public class MotivoDaoImpl extends DatabaseConnection implements MotivoDao {
                     "F_TOKEN_AUTENTICACAO := ?)" +
                     "AS V_COD_MOTIVO");
 
-            stmt.setLong(1, motivoInsercao.getCodEmpresaMotivo());
-            stmt.setString(2, motivoInsercao.getDescricaoMotivo());
+            stmt.setLong(1, motivoRetiradaInsercao.getCodEmpresaMotivo());
+            stmt.setString(2, motivoRetiradaInsercao.getDescricaoMotivo());
             stmt.setObject(3, Now.offsetDateTimeUtc());
             stmt.setString(4, TokenCleaner.getOnlyToken(tokenAutenticacao));
 
@@ -60,8 +60,8 @@ public class MotivoDaoImpl extends DatabaseConnection implements MotivoDao {
 
     @Override
     @NotNull
-    public MotivoVisualizacaoListagem getMotivoByCodigo(@NotNull final Long codMotivo,
-                                                        @NotNull final String tokenAutenticacao) throws Throwable {
+    public MotivoRetiradaVisualizacaoListagem getMotivoByCodigo(@NotNull final Long codMotivo,
+                                                                @NotNull final String tokenAutenticacao) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -74,7 +74,7 @@ public class MotivoDaoImpl extends DatabaseConnection implements MotivoDao {
             stmt.setString(2, TokenCleaner.getOnlyToken(tokenAutenticacao));
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                return MotivoConverter.createMotivoVisualizacaoListagem(rSet);
+                return MotivoRetiradaConverter.createMotivoVisualizacaoListagem(rSet);
             } else {
                 throw new IllegalStateException("Nenhum motivo encontrado com o código: " + codMotivo);
             }
@@ -85,8 +85,8 @@ public class MotivoDaoImpl extends DatabaseConnection implements MotivoDao {
 
     @Override
     @NotNull
-    public List<MotivoVisualizacaoListagem> getMotivosListagem(@NotNull final Long codEmpresa,
-                                                               @NotNull final String tokenAutenticacao) throws Throwable {
+    public List<MotivoRetiradaVisualizacaoListagem> getMotivosListagem(@NotNull final Long codEmpresa,
+                                                                       @NotNull final String tokenAutenticacao) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -100,9 +100,9 @@ public class MotivoDaoImpl extends DatabaseConnection implements MotivoDao {
 
             rSet = stmt.executeQuery();
 
-            final List<MotivoVisualizacaoListagem> motivos = new ArrayList();
+            final List<MotivoRetiradaVisualizacaoListagem> motivos = new ArrayList();
             while (rSet.next()) {
-                motivos.add(MotivoConverter.createMotivoVisualizacaoListagem(rSet));
+                motivos.add(MotivoRetiradaConverter.createMotivoVisualizacaoListagem(rSet));
             }
 
             return motivos;
@@ -113,7 +113,7 @@ public class MotivoDaoImpl extends DatabaseConnection implements MotivoDao {
 
     @Override
     @Nullable
-    public void update(@NotNull final MotivoEdicao motivoEdicao,
+    public void update(@NotNull final MotivoRetiradaEdicao motivoRetiradaEdicao,
                        @NotNull final String tokenAutenticacao) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -125,8 +125,8 @@ public class MotivoDaoImpl extends DatabaseConnection implements MotivoDao {
                     "F_DATA_ULTIMA_ALTERACAO := ?," +
                     "F_TOKEN_AUTENTICACAO := ?);");
 
-            stmt.setLong(1, motivoEdicao.getCodMotivo());
-            stmt.setString(2, motivoEdicao.getDescricaoMotivo());
+            stmt.setLong(1, motivoRetiradaEdicao.getCodMotivo());
+            stmt.setString(2, motivoRetiradaEdicao.getDescricaoMotivo());
             stmt.setObject(3, Now.offsetDateTimeUtc());
             stmt.setString(4, TokenCleaner.getOnlyToken(tokenAutenticacao));
 

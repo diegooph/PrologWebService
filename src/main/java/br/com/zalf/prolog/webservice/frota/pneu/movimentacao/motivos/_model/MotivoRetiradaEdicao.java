@@ -4,12 +4,12 @@ import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Created on 2020-03-24
+ * Created on 2020-03-19
  *
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
 public @Data
-class MotivoVisualizacaoApp {
+class MotivoRetiradaEdicao {
 
     @NotNull
     private final Long codMotivo;

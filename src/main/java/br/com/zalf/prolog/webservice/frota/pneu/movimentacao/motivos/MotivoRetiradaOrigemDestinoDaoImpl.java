@@ -4,10 +4,10 @@ import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestinoEnum;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoOrigemDestinoInsercao;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoOrigemDestinoListagemMotivos;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoOrigemDestinoVisualizacaoListagem;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoVisualizacaoApp;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaOrigemDestinoInsercao;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaOrigemDestinoListagemMotivos;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaOrigemDestinoVisualizacaoListagem;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaVisualizacaoApp;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
@@ -21,11 +21,11 @@ import java.util.List;
  *
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
-public class MotivoOrigemDestinoDaoImpl extends DatabaseConnection implements MotivoOrigemDestinoDao {
+public class MotivoRetiradaOrigemDestinoDaoImpl extends DatabaseConnection implements MotivoRetiradaOrigemDestinoDao {
 
     @Override
     @NotNull
-    public Long insert(@NotNull final MotivoOrigemDestinoInsercao motivoOrigemDestinoInsercao,
+    public Long insert(@NotNull final MotivoRetiradaOrigemDestinoInsercao motivoRetiradaOrigemDestinoInsercao,
                        @NotNull final String tokenAutenticacao) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -44,11 +44,11 @@ public class MotivoOrigemDestinoDaoImpl extends DatabaseConnection implements Mo
                     "F_TOKEN_AUTENTICACAO := ?)" +
                     "AS V_COD_MOTIVO_ORIGEM_DESTINO;");
 
-            stmt.setLong(1, motivoOrigemDestinoInsercao.getCodMotivo());
-            stmt.setLong(2, motivoOrigemDestinoInsercao.getCodEmpresa());
-            stmt.setLong(3, motivoOrigemDestinoInsercao.getCodUnidade());
-            stmt.setString(4, motivoOrigemDestinoInsercao.getOrigemMovimentacao().asString());
-            stmt.setString(5, motivoOrigemDestinoInsercao.getDestinoMovimentacao().asString());
+            stmt.setLong(1, motivoRetiradaOrigemDestinoInsercao.getCodMotivo());
+            stmt.setLong(2, motivoRetiradaOrigemDestinoInsercao.getCodEmpresa());
+            stmt.setLong(3, motivoRetiradaOrigemDestinoInsercao.getCodUnidade());
+            stmt.setString(4, motivoRetiradaOrigemDestinoInsercao.getOrigemMovimentacao().asString());
+            stmt.setString(5, motivoRetiradaOrigemDestinoInsercao.getDestinoMovimentacao().asString());
             stmt.setBoolean(6, true);
             stmt.setObject(7, Now.offsetDateTimeUtc());
             stmt.setString(8, TokenCleaner.getOnlyToken(tokenAutenticacao));
@@ -67,8 +67,8 @@ public class MotivoOrigemDestinoDaoImpl extends DatabaseConnection implements Mo
     }
 
     @Override
-    public @NotNull MotivoOrigemDestinoVisualizacaoListagem getMotivoOrigemDestino(@NotNull final Long codMotivoOrigemDestino,
-                                                                                   @NotNull final String tokenAutenticacao) throws Throwable {
+    public @NotNull MotivoRetiradaOrigemDestinoVisualizacaoListagem getMotivoOrigemDestino(@NotNull final Long codMotivoOrigemDestino,
+                                                                                           @NotNull final String tokenAutenticacao) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -81,7 +81,7 @@ public class MotivoOrigemDestinoDaoImpl extends DatabaseConnection implements Mo
             stmt.setString(2, TokenCleaner.getOnlyToken(tokenAutenticacao));
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                return MotivoOrigemDestinoConverter.createMotivoOrigemDestinoVisualizacaoListagem(rSet);
+                return MotivoRetiradaOrigemDestinoConverter.createMotivoOrigemDestinoVisualizacaoListagem(rSet);
             } else {
                 throw new IllegalStateException("Nenhuma relação motivo, origem e destino foi encontrada com o código: " + codMotivoOrigemDestino);
             }
@@ -91,8 +91,8 @@ public class MotivoOrigemDestinoDaoImpl extends DatabaseConnection implements Mo
     }
 
     @Override
-    public @NotNull List<MotivoOrigemDestinoVisualizacaoListagem> getMotivosOrigemDestino(@NotNull final Long codEmpresa,
-                                                                                          @NotNull final String tokenAutenticacao) throws Throwable {
+    public @NotNull List<MotivoRetiradaOrigemDestinoVisualizacaoListagem> getMotivosOrigemDestino(@NotNull final Long codEmpresa,
+                                                                                                  @NotNull final String tokenAutenticacao) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -106,9 +106,9 @@ public class MotivoOrigemDestinoDaoImpl extends DatabaseConnection implements Mo
 
             rSet = stmt.executeQuery();
 
-            final List<MotivoOrigemDestinoVisualizacaoListagem> motivosOrigemDestino = new ArrayList();
+            final List<MotivoRetiradaOrigemDestinoVisualizacaoListagem> motivosOrigemDestino = new ArrayList();
             while (rSet.next()) {
-                motivosOrigemDestino.add(MotivoOrigemDestinoConverter.createMotivoOrigemDestinoVisualizacaoListagem(rSet));
+                motivosOrigemDestino.add(MotivoRetiradaOrigemDestinoConverter.createMotivoOrigemDestinoVisualizacaoListagem(rSet));
             }
 
             return motivosOrigemDestino;
@@ -118,9 +118,9 @@ public class MotivoOrigemDestinoDaoImpl extends DatabaseConnection implements Mo
     }
 
     @Override
-    public @NotNull MotivoOrigemDestinoListagemMotivos getMotivosByOrigemAndDestinoAndUnidade(@NotNull final OrigemDestinoEnum origem,
-                                                                                              @NotNull final OrigemDestinoEnum destino,
-                                                                                              @NotNull final Long codUnidade) throws Throwable {
+    public @NotNull MotivoRetiradaOrigemDestinoListagemMotivos getMotivosByOrigemAndDestinoAndUnidade(@NotNull final OrigemDestinoEnum origem,
+                                                                                                      @NotNull final OrigemDestinoEnum destino,
+                                                                                                      @NotNull final Long codUnidade) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -136,11 +136,11 @@ public class MotivoOrigemDestinoDaoImpl extends DatabaseConnection implements Mo
 
             rSet = stmt.executeQuery();
 
-            final MotivoOrigemDestinoListagemMotivos origemDestino = new MotivoOrigemDestinoListagemMotivos(origem, destino);
-            final List<MotivoVisualizacaoApp> motivos = new ArrayList();
+            final MotivoRetiradaOrigemDestinoListagemMotivos origemDestino = new MotivoRetiradaOrigemDestinoListagemMotivos(origem, destino);
+            final List<MotivoRetiradaVisualizacaoApp> motivos = new ArrayList();
 
             while (rSet.next()) {
-                motivos.add(MotivoConverter.createMotivoListagemApp(rSet));
+                motivos.add(MotivoRetiradaConverter.createMotivoListagemApp(rSet));
                 origemDestino.setObrigatorio(rSet.getBoolean("OBRIGATORIO"));
             }
 

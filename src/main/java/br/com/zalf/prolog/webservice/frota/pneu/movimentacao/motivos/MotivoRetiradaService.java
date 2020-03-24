@@ -2,9 +2,9 @@ package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoEdicao;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoInsercao;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoVisualizacaoListagem;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaEdicao;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaInsercao;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaVisualizacaoListagem;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -15,15 +15,15 @@ import java.util.List;
  *
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
-public final class MotivoService {
+public final class MotivoRetiradaService {
 
-    private static final String TAG = MotivoService.class.getSimpleName();
-
-    @NotNull
-    private final MotivoDao dao = Injection.provideMotivoDao();
+    private static final String TAG = MotivoRetiradaService.class.getSimpleName();
 
     @NotNull
-    public Long insert(@NotNull final MotivoInsercao motivo, @NotNull final String tokenAutenticacao) {
+    private final MotivoRetiradaDao dao = Injection.provideMotivoDao();
+
+    @NotNull
+    public Long insert(@NotNull final MotivoRetiradaInsercao motivo, @NotNull final String tokenAutenticacao) {
         try {
             return dao.insert(motivo, tokenAutenticacao);
         } catch (final Throwable t) {
@@ -35,8 +35,8 @@ public final class MotivoService {
     }
 
     @NotNull
-    public MotivoVisualizacaoListagem getMotivoByCodigo(@NotNull final Long codMotivo,
-                                                        @NotNull final String tokenAutenticacao) {
+    public MotivoRetiradaVisualizacaoListagem getMotivoByCodigo(@NotNull final Long codMotivo,
+                                                                @NotNull final String tokenAutenticacao) {
         try {
             return dao.getMotivoByCodigo(codMotivo, tokenAutenticacao);
         } catch (final Throwable t) {
@@ -48,8 +48,8 @@ public final class MotivoService {
     }
 
     @NotNull
-    public List<MotivoVisualizacaoListagem> getMotivosListagem(@NotNull final Long codEmpresa,
-                                                               @NotNull final String tokenAutenticacao) {
+    public List<MotivoRetiradaVisualizacaoListagem> getMotivosListagem(@NotNull final Long codEmpresa,
+                                                                       @NotNull final String tokenAutenticacao) {
         try {
             return dao.getMotivosListagem(codEmpresa, tokenAutenticacao);
         } catch (final Throwable t) {
@@ -61,11 +61,12 @@ public final class MotivoService {
     }
 
     @Nullable
-    public void update(@NotNull final MotivoEdicao motivoEdicao, @NotNull final String tokenAutenticacao) {
+    public void update(@NotNull final MotivoRetiradaEdicao motivoRetiradaEdicao,
+                       @NotNull final String tokenAutenticacao) {
         try {
-            dao.update(motivoEdicao, tokenAutenticacao);
+            dao.update(motivoRetiradaEdicao, tokenAutenticacao);
         } catch (final Throwable t) {
-            Log.e(TAG, String.format("Erro ao atualizar motivo, código do motivo: %d", motivoEdicao.getCodMotivo()), t);
+            Log.e(TAG, String.format("Erro ao atualizar motivo, código do motivo: %d", motivoRetiradaEdicao.getCodMotivo()), t);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao atualizar motivo, tente novamente.");

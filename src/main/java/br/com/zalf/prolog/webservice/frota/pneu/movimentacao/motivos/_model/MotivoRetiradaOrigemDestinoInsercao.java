@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
 public @Data
-class MotivoOrigemDestinoInsercao {
+class MotivoRetiradaOrigemDestinoInsercao {
 
     @NotNull
     private final Long codMotivo;
