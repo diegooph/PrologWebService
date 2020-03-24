@@ -250,6 +250,9 @@ public final class MovimentacaoDaoImpl extends DatabaseConnection implements Mov
                     mov.setCodigo(rSet.getLong("CODIGO"));
                     insertOrigem(conn, pneuDao, veiculoDao, pneuServicoRealizadoDao, codUnidade, mov);
                     insertDestino(conn, veiculoDao, codUnidade, mov);
+                    if (mov.getCodMotivo() != null) {
+                        insertMotivoMovimento(conn, mov.getCodigo(), mov.getCodMotivo());
+                    }
                     if (fecharServicosAutomaticamente) {
                         fecharServicosPneu(
                                 conn,
@@ -312,6 +315,22 @@ public final class MovimentacaoDaoImpl extends DatabaseConnection implements Mov
         final OrigemDestinoValidator origemDestinoValidator = new OrigemDestinoValidator();
         for (final Movimentacao movimentacao : movimentacoes) {
             origemDestinoValidator.validate(movimentacao.getOrigem(), movimentacao.getDestino());
+        }
+    }
+
+    private void insertMotivoMovimento(@NotNull final Connection conn,
+                                       @NotNull final Long codMovimento,
+                                       @NotNull final Long codMotivo) throws Throwable {
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement("SELECT FUNC_MOVIMENTACAO_INSERE_MOTIVO_MOVIMENTO(" +
+                    "F_COD_MOVIMENTO := ?," +
+                    "F_COD_MOTIVO := ?);");
+            stmt.setLong(1, codMovimento);
+            stmt.setLong(2, codMotivo);
+            stmt.executeQuery();
+        } finally {
+            close(stmt);
         }
     }
 
