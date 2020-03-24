@@ -10,6 +10,8 @@ import br.com.zalf.prolog.webservice.contato.EntreEmContatoDao;
 import br.com.zalf.prolog.webservice.contato.EntreEmContatoDaoImpl;
 import br.com.zalf.prolog.webservice.cs.nps.PesquisaNpsDao;
 import br.com.zalf.prolog.webservice.cs.nps.PesquisaNpsDaoImpl;
+import br.com.zalf.prolog.webservice.customfields.CampoPersonalizadoDao;
+import br.com.zalf.prolog.webservice.customfields.CampoPersonalizadoDaoImpl;
 import br.com.zalf.prolog.webservice.dashboard.DashboardDao;
 import br.com.zalf.prolog.webservice.dashboard.DashboardDaoImpl;
 import br.com.zalf.prolog.webservice.entrega.escaladiaria.EscalaDiariaDao;
@@ -60,6 +62,10 @@ import br.com.zalf.prolog.webservice.frota.pneu.modelo.PneuMarcaModeloDao;
 import br.com.zalf.prolog.webservice.frota.pneu.modelo.PneuMarcaModeloDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.MovimentacaoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.MovimentacaoDaoImpl;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.MotivoDao;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.MotivoDaoImpl;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.MotivoOrigemDestinoDao;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.MotivoOrigemDestinoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.relatorios.MovimentacaoRelatorioDao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.relatorios.MovimentacaoRelatorioDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.nomenclatura.PneuNomenclaturaDao;
@@ -620,6 +626,21 @@ public final class Injection {
     @NotNull
     public static UnidadeDao provideUnidadeDao() {
         return new UnidadeDaoImpl();
+    }
+
+    @NotNull
+    public static CampoPersonalizadoDao provideCampoPersonalizadoDao() {
+        return new CampoPersonalizadoDaoImpl();
+    }
+
+    @NotNull
+    public static MotivoDao provideMotivoDao() {
+        return new MotivoDaoImpl();
+    }
+
+    @NotNull
+    public static MotivoOrigemDestinoDao provideMotivoOrigemDestinoDao() {
+        return new MotivoOrigemDestinoDaoImpl();
     }
 
 }
