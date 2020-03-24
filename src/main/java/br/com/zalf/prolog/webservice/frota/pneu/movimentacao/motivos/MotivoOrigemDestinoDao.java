@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos;
 
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestinoEnum;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoOrigemDestinoInsercao;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoOrigemDestinoListagemApp;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoOrigemDestinoListagemMotivos;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoOrigemDestinoVisualizacaoListagem;
 import org.jetbrains.annotations.NotNull;
 
@@ -51,8 +51,8 @@ public interface MotivoOrigemDestinoDao {
                                                                           @NotNull final String tokenAutenticacao) throws Throwable;
 
     @NotNull
-    MotivoOrigemDestinoListagemApp getMotivosByOrigemAndDestino(@NotNull final OrigemDestinoEnum origem,
-                                                                @NotNull final OrigemDestinoEnum destino,
-                                                                @NotNull final Long codUnidade) throws Throwable;
+    MotivoOrigemDestinoListagemMotivos getMotivosByOrigemAndDestino(@NotNull final OrigemDestinoEnum origem,
+                                                                    @NotNull final OrigemDestinoEnum destino,
+                                                                    @NotNull final Long codUnidade) throws Throwable;
 
 }

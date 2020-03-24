@@ -5,7 +5,7 @@ import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestinoEnum;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoOrigemDestinoInsercao;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoOrigemDestinoListagemApp;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoOrigemDestinoListagemMotivos;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoOrigemDestinoVisualizacaoListagem;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoVisualizacaoApp;
 import org.jetbrains.annotations.NotNull;
@@ -118,9 +118,9 @@ public class MotivoOrigemDestinoDaoImpl extends DatabaseConnection implements Mo
     }
 
     @Override
-    public @NotNull MotivoOrigemDestinoListagemApp getMotivosByOrigemAndDestino(@NotNull final OrigemDestinoEnum origem,
-                                                                                @NotNull final OrigemDestinoEnum destino,
-                                                                                @NotNull final Long codUnidade) throws Throwable {
+    public @NotNull MotivoOrigemDestinoListagemMotivos getMotivosByOrigemAndDestino(@NotNull final OrigemDestinoEnum origem,
+                                                                                    @NotNull final OrigemDestinoEnum destino,
+                                                                                    @NotNull final Long codUnidade) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -136,7 +136,7 @@ public class MotivoOrigemDestinoDaoImpl extends DatabaseConnection implements Mo
 
             rSet = stmt.executeQuery();
 
-            final MotivoOrigemDestinoListagemApp origemDestino = new MotivoOrigemDestinoListagemApp(origem, destino);
+            final MotivoOrigemDestinoListagemMotivos origemDestino = new MotivoOrigemDestinoListagemMotivos(origem, destino);
             final List<MotivoVisualizacaoApp> motivos = new ArrayList();
 
             while (rSet.next()) {

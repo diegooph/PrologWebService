@@ -4,7 +4,7 @@ import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestinoEnum;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoOrigemDestinoInsercao;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoOrigemDestinoListagemApp;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoOrigemDestinoListagemMotivos;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoOrigemDestinoVisualizacaoListagem;
 import org.jetbrains.annotations.NotNull;
 
@@ -48,9 +48,9 @@ public class MotivoOrigemDestinoResource {
     @GET
     @UsedBy(platforms = {Platform.ANDROID})
     @Path("/listagemResumida")
-    public MotivoOrigemDestinoListagemApp getMotivosByOrigemAndDestino(@QueryParam("origem") @NotNull final OrigemDestinoEnum origem,
-                                                                       @QueryParam("destino") @NotNull final OrigemDestinoEnum destino,
-                                                                       @QueryParam("codUnidade") @NotNull final Long codUnidade) {
+    public MotivoOrigemDestinoListagemMotivos getMotivosByOrigemAndDestino(@QueryParam("origem") @NotNull final OrigemDestinoEnum origem,
+                                                                           @QueryParam("destino") @NotNull final OrigemDestinoEnum destino,
+                                                                           @QueryParam("codUnidade") @NotNull final Long codUnidade) {
         return motivoOrigemDestinoService.getMotivosByOrigemAndDestino(origem, destino, codUnidade);
     }
 

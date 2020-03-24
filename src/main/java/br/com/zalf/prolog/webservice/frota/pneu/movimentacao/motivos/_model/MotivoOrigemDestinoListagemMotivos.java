@@ -13,7 +13,7 @@ import java.util.List;
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
 public @Data
-class MotivoOrigemDestinoListagemApp {
+class MotivoOrigemDestinoListagemMotivos {
 
     @NotNull
     private final OrigemDestinoEnum origem;
