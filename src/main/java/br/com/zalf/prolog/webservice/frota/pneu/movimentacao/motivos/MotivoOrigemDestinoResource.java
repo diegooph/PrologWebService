@@ -48,10 +48,10 @@ public class MotivoOrigemDestinoResource {
     @GET
     @UsedBy(platforms = {Platform.ANDROID})
     @Path("/listagemResumida")
-    public MotivoOrigemDestinoListagemMotivos getMotivosByOrigemAndDestino(@QueryParam("origem") @NotNull final OrigemDestinoEnum origem,
-                                                                           @QueryParam("destino") @NotNull final OrigemDestinoEnum destino,
-                                                                           @QueryParam("codUnidade") @NotNull final Long codUnidade) {
-        return motivoOrigemDestinoService.getMotivosByOrigemAndDestino(origem, destino, codUnidade);
+    public MotivoOrigemDestinoListagemMotivos getMotivosByOrigemAndDestinoAndUnidade(@QueryParam("origem") @NotNull final OrigemDestinoEnum origem,
+                                                                                     @QueryParam("destino") @NotNull final OrigemDestinoEnum destino,
+                                                                                     @QueryParam("codUnidade") @NotNull final Long codUnidade) {
+        return motivoOrigemDestinoService.getMotivosByOrigemAndDestinoAndUnidade(origem, destino, codUnidade);
     }
 
 }

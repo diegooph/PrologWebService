@@ -51,8 +51,8 @@ public interface MotivoOrigemDestinoDao {
                                                                           @NotNull final String tokenAutenticacao) throws Throwable;
 
     @NotNull
-    MotivoOrigemDestinoListagemMotivos getMotivosByOrigemAndDestino(@NotNull final OrigemDestinoEnum origem,
-                                                                    @NotNull final OrigemDestinoEnum destino,
-                                                                    @NotNull final Long codUnidade) throws Throwable;
+    MotivoOrigemDestinoListagemMotivos getMotivosByOrigemAndDestinoAndUnidade(@NotNull final OrigemDestinoEnum origem,
+                                                                              @NotNull final OrigemDestinoEnum destino,
+                                                                              @NotNull final Long codUnidade) throws Throwable;
 
 }

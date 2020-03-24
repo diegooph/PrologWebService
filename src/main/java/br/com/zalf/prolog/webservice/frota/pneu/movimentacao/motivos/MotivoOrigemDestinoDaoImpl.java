@@ -118,9 +118,9 @@ public class MotivoOrigemDestinoDaoImpl extends DatabaseConnection implements Mo
     }
 
     @Override
-    public @NotNull MotivoOrigemDestinoListagemMotivos getMotivosByOrigemAndDestino(@NotNull final OrigemDestinoEnum origem,
-                                                                                    @NotNull final OrigemDestinoEnum destino,
-                                                                                    @NotNull final Long codUnidade) throws Throwable {
+    public @NotNull MotivoOrigemDestinoListagemMotivos getMotivosByOrigemAndDestinoAndUnidade(@NotNull final OrigemDestinoEnum origem,
+                                                                                              @NotNull final OrigemDestinoEnum destino,
+                                                                                              @NotNull final Long codUnidade) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
