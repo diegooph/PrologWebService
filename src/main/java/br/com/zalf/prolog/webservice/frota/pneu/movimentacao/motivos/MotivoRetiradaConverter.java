@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos;
 
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaVisualizacaoApp;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaVisualizacaoListagem;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaListagem;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaVisualizacao;
 import br.com.zalf.prolog.webservice.geral.unidade.UnidadeConverter;
 import org.jetbrains.annotations.NotNull;
 
@@ -20,18 +20,17 @@ public class MotivoRetiradaConverter {
     }
 
     @NotNull
-    static MotivoRetiradaVisualizacaoListagem createMotivoVisualizacaoListagem(
+    static MotivoRetiradaVisualizacao createMotivoRetiradaVisualizacao(
             @NotNull final ResultSet rSet) throws Throwable {
-        return new MotivoRetiradaVisualizacaoListagem(rSet.getLong("CODIGO_MOTIVO"),
-                rSet.getString("NOME_EMPRESA"),
+        return new MotivoRetiradaVisualizacao(rSet.getLong("CODIGO_MOTIVO"),
                 rSet.getString("DESCRICAO_MOTIVO"),
                 rSet.getObject("DATA_HORA_ULTIMA_ALTERACAO_MOTIVO", LocalDateTime.class),
                 rSet.getString("NOME_COLABORADOR_ULTIMA_ALTERACAO"));
     }
 
     @NotNull
-    static MotivoRetiradaVisualizacaoApp createMotivoListagemApp(@NotNull final ResultSet rSet) throws Throwable {
-        return new MotivoRetiradaVisualizacaoApp(rSet.getLong("CODIGO_MOTIVO"),
+    static MotivoRetiradaListagem createMotivoRetiraListagem(@NotNull final ResultSet rSet) throws Throwable {
+        return new MotivoRetiradaListagem(rSet.getLong("CODIGO_MOTIVO"),
                 rSet.getString("DESCRICAO_MOTIVO"));
     }
 

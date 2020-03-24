@@ -22,7 +22,7 @@ class MotivoRetiradaOrigemDestinoListagemMotivos {
     private final OrigemDestinoEnum destinoMovimento;
 
     @Nullable
-    private List<MotivoRetiradaVisualizacaoApp> motivosRetirada;
+    private List<MotivoRetiradaListagem> motivosRetirada;
 
     @Nullable
     private boolean obrigatorioMotivoRetirada;
