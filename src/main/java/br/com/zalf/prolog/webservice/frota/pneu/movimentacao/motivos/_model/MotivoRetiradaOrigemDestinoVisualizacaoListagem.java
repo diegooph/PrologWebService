@@ -15,22 +15,22 @@ public @Data
 class MotivoRetiradaOrigemDestinoVisualizacaoListagem {
 
     @NotNull
-    private final Long codMotivoOrigemDestino;
+    private final Long codMotivoRetiradaOrigemDestino;
 
     @NotNull
-    private final String nomeEmpresa;
+    private final String nomeEmpresaMotivoRetirada;
 
     @NotNull
-    private final String descricaoMotivo;
+    private final String descricaoMotivoRetirada;
 
     @NotNull
-    private final OrigemDestinoEnum origem;
+    private final OrigemDestinoEnum origemMovimento;
 
     @NotNull
-    private final OrigemDestinoEnum destino;
+    private final OrigemDestinoEnum destinoMovimento;
 
     @NotNull
-    private final boolean obrigatorio;
+    private final boolean obrigatorioMotivoRetirada;
 
     @NotNull
     private final LocalDateTime dataHoraUltimaAlteracao;

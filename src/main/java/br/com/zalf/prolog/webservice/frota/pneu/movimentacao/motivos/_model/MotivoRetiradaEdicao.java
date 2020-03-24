@@ -12,9 +12,9 @@ public @Data
 class MotivoRetiradaEdicao {
 
     @NotNull
-    private final Long codMotivo;
+    private final Long codMotivoRetirada;
 
     @NotNull
-    private final String descricaoMotivo;
+    private final String descricaoMotivoRetirada;
 
 }

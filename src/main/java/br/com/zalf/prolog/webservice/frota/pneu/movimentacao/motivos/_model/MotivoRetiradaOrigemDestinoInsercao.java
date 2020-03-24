@@ -14,7 +14,7 @@ public @Data
 class MotivoRetiradaOrigemDestinoInsercao {
 
     @NotNull
-    private final Long codMotivo;
+    private final Long codMotivoRetirada;
 
     @NotNull
     private final Long codEmpresa;
@@ -29,6 +29,6 @@ class MotivoRetiradaOrigemDestinoInsercao {
     private final OrigemDestinoEnum destinoMovimentacao;
 
     @NotNull
-    private final boolean obrigatorioMotivo;
+    private final boolean obrigatorioMotivoRetirada;
 
 }

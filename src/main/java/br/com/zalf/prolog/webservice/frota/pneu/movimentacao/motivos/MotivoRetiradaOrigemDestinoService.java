@@ -29,7 +29,7 @@ public class MotivoRetiradaOrigemDestinoService {
         try {
             return dao.insert(motivoRetiradaOrigemDestinoInsercao, tokenAutenticacao);
         } catch (final Throwable t) {
-            Log.e(TAG, String.format("Erro ao inserir relação motivo, origem e destino %d", motivoRetiradaOrigemDestinoInsercao.getCodMotivo()), t);
+            Log.e(TAG, String.format("Erro ao inserir relação motivo, origem e destino %d", motivoRetiradaOrigemDestinoInsercao.getCodMotivoRetirada()), t);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao inserir motivo, tente novamente.");

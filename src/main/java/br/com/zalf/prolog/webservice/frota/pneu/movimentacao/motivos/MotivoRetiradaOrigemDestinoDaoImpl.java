@@ -44,7 +44,7 @@ public class MotivoRetiradaOrigemDestinoDaoImpl extends DatabaseConnection imple
                     "F_TOKEN_AUTENTICACAO := ?)" +
                     "AS V_COD_MOTIVO_ORIGEM_DESTINO;");
 
-            stmt.setLong(1, motivoRetiradaOrigemDestinoInsercao.getCodMotivo());
+            stmt.setLong(1, motivoRetiradaOrigemDestinoInsercao.getCodMotivoRetirada());
             stmt.setLong(2, motivoRetiradaOrigemDestinoInsercao.getCodEmpresa());
             stmt.setLong(3, motivoRetiradaOrigemDestinoInsercao.getCodUnidade());
             stmt.setString(4, motivoRetiradaOrigemDestinoInsercao.getOrigemMovimentacao().asString());
@@ -141,10 +141,10 @@ public class MotivoRetiradaOrigemDestinoDaoImpl extends DatabaseConnection imple
 
             while (rSet.next()) {
                 motivos.add(MotivoRetiradaConverter.createMotivoListagemApp(rSet));
-                origemDestino.setObrigatorio(rSet.getBoolean("OBRIGATORIO"));
+                origemDestino.setObrigatorioMotivoRetirada(rSet.getBoolean("OBRIGATORIO"));
             }
 
-            origemDestino.setMotivos(motivos);
+            origemDestino.setMotivosRetirada(motivos);
 
             return origemDestino;
         } finally {

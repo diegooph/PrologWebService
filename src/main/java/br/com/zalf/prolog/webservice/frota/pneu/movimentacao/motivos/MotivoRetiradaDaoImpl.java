@@ -39,8 +39,8 @@ public class MotivoRetiradaDaoImpl extends DatabaseConnection implements MotivoR
                     "F_TOKEN_AUTENTICACAO := ?)" +
                     "AS V_COD_MOTIVO");
 
-            stmt.setLong(1, motivoRetiradaInsercao.getCodEmpresaMotivo());
-            stmt.setString(2, motivoRetiradaInsercao.getDescricaoMotivo());
+            stmt.setLong(1, motivoRetiradaInsercao.getCodEmpresaMotivoRetirada());
+            stmt.setString(2, motivoRetiradaInsercao.getDescricaoMotivoRetirada());
             stmt.setObject(3, Now.offsetDateTimeUtc());
             stmt.setString(4, TokenCleaner.getOnlyToken(tokenAutenticacao));
 
@@ -125,8 +125,8 @@ public class MotivoRetiradaDaoImpl extends DatabaseConnection implements MotivoR
                     "F_DATA_ULTIMA_ALTERACAO := ?," +
                     "F_TOKEN_AUTENTICACAO := ?);");
 
-            stmt.setLong(1, motivoRetiradaEdicao.getCodMotivo());
-            stmt.setString(2, motivoRetiradaEdicao.getDescricaoMotivo());
+            stmt.setLong(1, motivoRetiradaEdicao.getCodMotivoRetirada());
+            stmt.setString(2, motivoRetiradaEdicao.getDescricaoMotivoRetirada());
             stmt.setObject(3, Now.offsetDateTimeUtc());
             stmt.setString(4, TokenCleaner.getOnlyToken(tokenAutenticacao));
 

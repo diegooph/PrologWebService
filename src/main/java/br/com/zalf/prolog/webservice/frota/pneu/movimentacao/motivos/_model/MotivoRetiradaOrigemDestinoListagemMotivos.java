@@ -16,15 +16,15 @@ public @Data
 class MotivoRetiradaOrigemDestinoListagemMotivos {
 
     @NotNull
-    private final OrigemDestinoEnum origem;
+    private final OrigemDestinoEnum origemMovimento;
 
     @NotNull
-    private final OrigemDestinoEnum destino;
+    private final OrigemDestinoEnum destinoMovimento;
 
     @Nullable
-    private List<MotivoRetiradaVisualizacaoApp> motivos;
+    private List<MotivoRetiradaVisualizacaoApp> motivosRetirada;
 
     @Nullable
-    private boolean obrigatorio;
+    private boolean obrigatorioMotivoRetirada;
 
 }

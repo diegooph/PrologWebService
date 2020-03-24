@@ -14,9 +14,9 @@ import javax.validation.constraints.NotNull;
 public class MotivoRetiradaInsercao {
 
     @NotNull(message = "O código da empresa é obrigatório.")
-    private final long codEmpresaMotivo;
+    private final long codEmpresaMotivoRetirada;
 
     @NotBlank(message = "A descrição do motivo não pode sem branca.")
-    private final String descricaoMotivo;
+    private final String descricaoMotivoRetirada;
 
 }

@@ -27,7 +27,7 @@ public final class MotivoRetiradaService {
         try {
             return dao.insert(motivo, tokenAutenticacao);
         } catch (final Throwable t) {
-            Log.e(TAG, String.format("Erro ao inserir motivo %s", motivo.getDescricaoMotivo()), t);
+            Log.e(TAG, String.format("Erro ao inserir motivo %s", motivo.getDescricaoMotivoRetirada()), t);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao inserir motivo, tente novamente.");
@@ -66,7 +66,7 @@ public final class MotivoRetiradaService {
         try {
             dao.update(motivoRetiradaEdicao, tokenAutenticacao);
         } catch (final Throwable t) {
-            Log.e(TAG, String.format("Erro ao atualizar motivo, código do motivo: %d", motivoRetiradaEdicao.getCodMotivo()), t);
+            Log.e(TAG, String.format("Erro ao atualizar motivo, código do motivo: %d", motivoRetiradaEdicao.getCodMotivoRetirada()), t);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao atualizar motivo, tente novamente.");

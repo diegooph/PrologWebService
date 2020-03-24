@@ -14,13 +14,13 @@ public @Data
 class MotivoRetiradaVisualizacaoListagem {
 
     @NotNull
-    private final Long codMotivo;
+    private final Long codMotivoRetirada;
 
     @NotNull
     private final String nomeEmpresa;
 
     @NotNull
-    private final String descricaoMotivo;
+    private final String descricaoMotivoRetirada;
 
     @NotNull
     private final LocalDateTime dataHoraUltimaAlteracaoMotivo;
