@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model;
 
 import lombok.Data;
+import org.jetbrains.annotations.Nullable;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -18,5 +19,8 @@ public class MotivoRetiradaInsercao {
 
     @NotBlank(message = "A descrição do motivo não pode sem branca.")
     private final String descricaoMotivoRetirada;
+
+    @Nullable
+    private final String codAuxiliar;
 
 }
