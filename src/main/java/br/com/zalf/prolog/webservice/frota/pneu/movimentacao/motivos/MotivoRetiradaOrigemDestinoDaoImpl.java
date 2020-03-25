@@ -51,7 +51,7 @@ public class MotivoRetiradaOrigemDestinoDaoImpl extends DatabaseConnection imple
                 stmt.setLong(2, unidade.getCodEmpresa());
                 stmt.setLong(3, unidade.getCodUnidade());
 
-                for (final MotivoRetiradaOrigemDestinoMotivosBatch origemDestino : unidade.getOrigensDestinos()) {
+                for (final MotivoRetiradaOrigemDestinoMotivos origemDestino : unidade.getOrigensDestinos()) {
                     stmt.setString(4, origemDestino.getOrigem().asString());
                     stmt.setString(5, origemDestino.getDestino().asString());
                     stmt.setBoolean(6, origemDestino.isObrigatorio());

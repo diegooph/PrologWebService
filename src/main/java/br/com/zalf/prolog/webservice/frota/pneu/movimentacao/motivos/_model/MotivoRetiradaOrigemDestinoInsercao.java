@@ -20,6 +20,6 @@ class MotivoRetiradaOrigemDestinoInsercao {
     private final Long codUnidade;
 
     @NotNull
-    private final List<MotivoRetiradaOrigemDestinoMotivosBatch> origensDestinos;
+    private final List<MotivoRetiradaOrigemDestinoMotivos> origensDestinos;
 
 }
