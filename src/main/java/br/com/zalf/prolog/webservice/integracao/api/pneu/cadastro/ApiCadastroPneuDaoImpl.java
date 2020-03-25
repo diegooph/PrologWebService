@@ -5,6 +5,7 @@ import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.integracao.api.pneu.cadastro.model.*;
 import org.jetbrains.annotations.NotNull;
 import org.postgresql.util.PSQLException;
@@ -216,7 +217,6 @@ public final class ApiCadastroPneuDaoImpl extends DatabaseConnection implements 
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        Long codProcessoTransferencia = null;
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM INTEGRACAO.FUNC_PNEU_TRANFERE_PNEU_ENTRE_UNIDADES(" +
@@ -228,23 +228,18 @@ public final class ApiCadastroPneuDaoImpl extends DatabaseConnection implements 
                     "F_DATA_HORA := ?) AS COD_PROCESSO");
             stmt.setLong(1, pneuTransferencia.getCodUnidadeOrigem());
             stmt.setLong(2, pneuTransferencia.getCodUnidadeDestino());
-            stmt.setLong(3, Long.parseLong(pneuTransferencia.getCpfColaboradorRealizacaoTransferencia()));
+            stmt.setLong(3, Colaborador.formatCpf(pneuTransferencia.
+                    getCpfColaboradorRealizacaoTransferencia()));
             stmt.setArray(4, PostgresUtils.listToArray(conn, SqlType.VARCHAR, pneuTransferencia.
                     getCodPneusTransferidos()));
             stmt.setString(5, pneuTransferencia.getObservacao());
             stmt.setObject(6, Now.offsetDateTimeUtc());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                codProcessoTransferencia = rSet.getLong("COD_PROCESSO");
+                return rSet.getLong("COD_PROCESSO");
+            } else {
+                throw new SQLException("Erro ao transferir o pneu no Sistema ProLog");
             }
-            return codProcessoTransferencia;
-        } catch (final SQLException sql) {
-            throw new SQLException(sql.getMessage());
-        } catch (final Throwable t) {
-            if (conn != null) {
-                conn.rollback();
-            }
-            throw t;
         } finally {
             close( conn, stmt, rSet);
         }

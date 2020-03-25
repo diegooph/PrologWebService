@@ -74,16 +74,18 @@ public final class ApiCadastroPneuService extends BaseIntegracaoService {
 
     @NotNull
     SuccessResponseIntegracao transferirPneu(final String tokenIntegracao,
-                                             final ApiPneuTransferencia pneuTransferencia) throws Throwable {
+                                             final ApiPneuTransferencia pneuTransferencia) throws ProLogException {
         try {
             ensureValidToken(tokenIntegracao, TAG);
             return new SuccessResponseIntegracao(
                     "Transferência de pneus realizada com sucesso no Sistema ProLog",
                     dao.transferirPneu(tokenIntegracao, pneuTransferencia));
         } catch (final Throwable t) {
+            Log.e(TAG, "Não foi possível realizar a transferência de pneus:\n" +
+                    "tokenIntegracao: " + tokenIntegracao, t);
             throw Injection
                     .provideProLogExceptionHandler()
-                    .map(t, t.getMessage());
+                    .map(t, "Não foi possível realizar a transferência de pneus no Sistema ProLog");
         }
     }
 }
