@@ -22,7 +22,7 @@ public class MotivoRetiradaOrigemDestinoDaoImpl extends DatabaseConnection imple
 
     @NotNull
     @Override
-    public List<Long> insert(@NotNull final List<MotivoRetiradaOrigemDestinoInsercaoBatch> origensDestinosMotivos,
+    public List<Long> insert(@NotNull final List<MotivoRetiradaOrigemDestinoInsercao> unidades,
                              @NotNull final String tokenAutenticacao) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -46,7 +46,7 @@ public class MotivoRetiradaOrigemDestinoDaoImpl extends DatabaseConnection imple
             stmt.setObject(7, Now.offsetDateTimeUtc());
             stmt.setString(8, TokenCleaner.getOnlyToken(tokenAutenticacao));
 
-            for (final MotivoRetiradaOrigemDestinoInsercaoBatch unidade : origensDestinosMotivos) {
+            for (final MotivoRetiradaOrigemDestinoInsercao unidade : unidades) {
 
                 stmt.setLong(2, unidade.getCodEmpresa());
                 stmt.setLong(3, unidade.getCodUnidade());

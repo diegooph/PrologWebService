@@ -4,7 +4,7 @@ import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestinoEnum;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaOrigemDestinoInsercaoBatch;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaOrigemDestinoInsercao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaOrigemDestinoListagemMotivos;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaOrigemDestinoVisualizacaoListagem;
 import org.jetbrains.annotations.NotNull;
@@ -29,9 +29,9 @@ public class MotivoRetiradaOrigemDestinoResource {
     @POST
     @Path("/batch")
     @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    public List<Long> insert(@NotNull @Valid @Required final List<MotivoRetiradaOrigemDestinoInsercaoBatch> origensDestinosMotivos,
+    public List<Long> insert(@NotNull @Valid @Required final List<MotivoRetiradaOrigemDestinoInsercao> unidades,
                              @NotNull @HeaderParam("Authorization") final String tokenAutenticacao) {
-        return motivoRetiradaOrigemDestinoService.insert(origensDestinosMotivos, tokenAutenticacao);
+        return motivoRetiradaOrigemDestinoService.insert(unidades, tokenAutenticacao);
     }
 
     @GET
