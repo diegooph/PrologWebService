@@ -50,6 +50,14 @@ public interface MotivoRetiradaOrigemDestinoDao {
     List<MotivoRetiradaOrigemDestinoVisualizacaoListagem> getMotivosOrigemDestino(@NotNull final Long codEmpresa,
                                                                                   @NotNull final String tokenAutenticacao) throws Throwable;
 
+    /**
+     * Busca uma lista de {@link MotivoRetiradaOrigemDestinoVisualizacaoListagem motivoOrigemDestino} no banco de dados.
+     *
+     * @param origem     a origem a ser utilizada de filtro.
+     * @param destino    o destino a ser usado de filtro.
+     * @param codUnidade o código da unidade dos motivos que estão sendo buscados.
+     * @throws Throwable Caso qualquer erro ocorra.
+     */
     @NotNull
     MotivoRetiradaOrigemDestinoListagemMotivos getMotivosByOrigemAndDestinoAndUnidade(@NotNull final OrigemDestinoEnum origem,
                                                                                       @NotNull final OrigemDestinoEnum destino,
