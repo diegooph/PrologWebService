@@ -81,7 +81,9 @@ public final class ApiCadastroPneuService extends BaseIntegracaoService {
                     "Transferência de pneus realizada com sucesso no Sistema ProLog",
                     dao.transferirPneu(tokenIntegracao, pneuTransferencia));
         } catch (final Throwable t) {
-            throw new Throwable(t.getMessage());
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, t.getMessage());
         }
     }
 }
