@@ -35,7 +35,8 @@ public class MotivoRetiradaOrigemDestinoResource {
     }
 
     @POST
-    @Consumes(MediaType.APPLICATION_JSON + ";charset-utf-8")
+    @Path("/batch")
+    @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public List<Long> insertBatch(@NotNull @Valid @Required final List<MotivoRetiradaOrigemDestinoInsercaoBatch> origensDestinosMotivos,
                                   @NotNull @HeaderParam("Authorization") final String tokenAutenticacao) {
         return motivoRetiradaOrigemDestinoService.insertBatch(origensDestinosMotivos, tokenAutenticacao);
