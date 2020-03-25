@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestinoEnum;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaOrigemDestinoInsercao;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaOrigemDestinoInsercaoBatch;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaOrigemDestinoListagemMotivos;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaOrigemDestinoVisualizacaoListagem;
 import org.jetbrains.annotations.NotNull;
@@ -33,6 +34,19 @@ public class MotivoRetiradaOrigemDestinoService {
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao inserir motivo, tente novamente.");
+        }
+    }
+
+    @NotNull
+    public List<Long> insertBatch(@NotNull final List<MotivoRetiradaOrigemDestinoInsercaoBatch> origensDestinosMotivos,
+                                  @NotNull final String tokenAutenticacao) {
+        try {
+            return dao.insertBatch(origensDestinosMotivos, tokenAutenticacao);
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao inserir uma lista de relação motivo, origem e destino.", t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao buscar relação motivo, origem e destino, tente novamente.");
         }
     }
 
