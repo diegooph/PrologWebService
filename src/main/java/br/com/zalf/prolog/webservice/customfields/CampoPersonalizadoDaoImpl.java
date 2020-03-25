@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.customfields;
 
+import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.customfields._model.CampoPersonalizadoFuncaoProlog;
 import br.com.zalf.prolog.webservice.customfields._model.CampoPersonalizadoParaRealizacao;
@@ -27,6 +28,7 @@ import static br.com.zalf.prolog.webservice.commons.util.PostgresUtils.listToArr
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public final class CampoPersonalizadoDaoImpl extends DatabaseConnection implements CampoPersonalizadoDao {
+    private static final String TAG = CampoPersonalizadoDaoImpl.class.getSimpleName();
 
     @NotNull
     @Override
@@ -63,6 +65,21 @@ public final class CampoPersonalizadoDaoImpl extends DatabaseConnection implemen
                                                    @Nullable final List<ColunaTabelaResposta> colunasEspecificas)
             throws Throwable {
 
+        final List<CampoPersonalizadoResposta> respostasFiltradas = respostas
+                .stream()
+                .filter(CampoPersonalizadoResposta::temResposta)
+                .collect(Collectors.toList());
+        // Logamos um warning nesses cenários pois não deveriam acontecer. Porém, optamos por não quebrar.
+        if (respostasFiltradas.size() <= 0) {
+            Log.w(TAG, "Nenhum dos campos possui uma resposta para podermos salvar");
+            return;
+        } else if (respostas.size() != respostasFiltradas.size()) {
+            // Nesse caso, não precisamos interromper o fluxo, pois ainda temos algo para salvar.
+            Log.w(TAG, String.format(
+                    "Recebemos '%d' campo(s) sem resposta definida",
+                    respostas.size() - respostasFiltradas.size()));
+        }
+
         // SQL base, com nome da tabela, colunas e valores pendentes para serem setados dinamicamente.
         String sql = "insert into %s (cod_tipo_campo, cod_campo, resposta, resposta_lista_selecao, %s) " +
                 "values (?, ?, ?, ? %s)";
@@ -84,7 +101,7 @@ public final class CampoPersonalizadoDaoImpl extends DatabaseConnection implemen
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement(sql);
-            for (final CampoPersonalizadoResposta resposta : respostas) {
+            for (final CampoPersonalizadoResposta resposta : respostasFiltradas) {
                 stmt.setLong(1, resposta.getTipoCampo().getCodigoTipoCampo());
                 stmt.setLong(2, resposta.getCodCampo());
                 stmt.setString(3, resposta.getResposta());
@@ -106,10 +123,10 @@ public final class CampoPersonalizadoDaoImpl extends DatabaseConnection implemen
             }
 
             final int[] batchResult = stmt.executeBatch();
-            if (batchResult.length != respostas.size()) {
+            if (batchResult.length != respostasFiltradas.size()) {
                 throw new IllegalStateException(
                         String.format("Insert affected incorrect number of rows. Expected: %d - Actual: %d",
-                                respostas.size(),
+                                respostasFiltradas.size(),
                                 batchResult.length));
             }
 

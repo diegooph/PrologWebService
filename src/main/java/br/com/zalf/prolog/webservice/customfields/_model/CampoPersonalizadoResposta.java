@@ -21,4 +21,8 @@ public final class CampoPersonalizadoResposta {
     private final String resposta;
     @Nullable
     private final List<String> respostaListaSelecao;
+
+    public boolean temResposta() {
+        return resposta != null || respostaListaSelecao != null;
+    }
 }
