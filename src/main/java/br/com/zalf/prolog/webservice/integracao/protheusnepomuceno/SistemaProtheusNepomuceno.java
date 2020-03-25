@@ -2,7 +2,6 @@ package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno;
 
 import br.com.zalf.prolog.webservice.BuildConfig;
 import br.com.zalf.prolog.webservice.database.DatabaseConnectionProvider;
-import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
@@ -10,6 +9,7 @@ import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.MetodoIntegrado;
 import br.com.zalf.prolog.webservice.integracao.PosicaoPneuMapper;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.*;
+import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.error.ProtheusNepomucenoException;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.data.ProtheusNepomucenoRequesterImpl;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
@@ -142,6 +142,14 @@ public final class SistemaProtheusNepomuceno extends Sistema {
             final Map<String, ModeloPlacasAfericao> modelosEstruturaVeiculo = new HashMap<>();
             final Map<String, List<ModeloPlacasAfericao.PlacaAfericao>> placasEstruturaVeiculo = new HashMap<>();
             for (final VeiculoListagemProtheusNepomuceno veiculo : listagemVeiculos) {
+                if (!tipoVeiculoConfiguracao.containsKey(veiculo.getCodEstruturaVeiculo())) {
+                    throw new ProtheusNepomucenoException(
+                            "Identificamos que a estrutura de veículo (" + veiculo.getCodEstruturaVeiculo() + ") " +
+                                    "não está configurada no Prolog.\n" +
+                                    "Por favor, solicite que esta esta estrutura seja cadastrada no Prolog para " +
+                                    "realizar as aferições.");
+                }
+
                 if (!placasEstruturaVeiculo.containsKey(veiculo.getCodModeloVeiculo())) {
                     placasEstruturaVeiculo.put(veiculo.getCodModeloVeiculo(), new ArrayList<>());
                 }
@@ -190,10 +198,26 @@ public final class SistemaProtheusNepomuceno extends Sistema {
                             conn,
                             codUnidade,
                             veiculoAfericao.getCodEstruturaVeiculo());
-            final PosicaoPneuMapper posicaoPneuMapper = new PosicaoPneuMapper(
-                    sistema.getMapeamentoPosicoesProlog(conn, codEmpresa, veiculoAfericao.getCodEstruturaVeiculo()));
             final Short codDiagramaProlog =
                     sistema.getCodDiagramaByCodEstrutura(conn, codEmpresa, veiculoAfericao.getCodEstruturaVeiculo());
+            if (codDiagramaProlog <= 0) {
+                throw new ProtheusNepomucenoException(
+                        "Identificamos aque a estrutura (" + veiculoAfericao.getCodEstruturaVeiculo() + ") " +
+                                "não está configurada no Prolog.\n" +
+                                "Por favor, solicite que esta esta estrutura seja cadastrada no Prolog para " +
+                                "realizar a aferição.");
+            }
+            final PosicaoPneuMapper posicaoPneuMapper = new PosicaoPneuMapper(
+                    sistema.getMapeamentoPosicoesProlog(conn, codEmpresa, veiculoAfericao.getCodEstruturaVeiculo()));
+
+            // Garantimos, antes de criar a nova aferição, que todas as posições estão mapeadas. Caso não estiverem,
+            // estouramos uma exception mostrando as posições não mapeadas.
+            ProtheusNepomucenoUtils
+                    .validatePosicoesMapeadasVeiculo(
+                            veiculoAfericao.getCodEstruturaVeiculo(),
+                            veiculoAfericao.getPosicoesPneusAplicados(),
+                            posicaoPneuMapper);
+
             final Veiculo veiculo =
                     ProtheusNepomucenoConverter
                             .createVeiculoProlog(
@@ -329,7 +353,7 @@ public final class SistemaProtheusNepomuceno extends Sistema {
                 })
                 .findAny()
                 .ifPresent(codAuxiliar -> {
-                    throw new GenericException(
+                    throw new ProtheusNepomucenoException(
                             "O código auxiliar " + codAuxiliar +
                                     " já está cadastrado em outro Tipo de Veículo e não pode ser repetido");
                 });

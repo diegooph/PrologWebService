@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.StatementUtils;
+import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.*;
@@ -115,13 +116,8 @@ public final class SistemaProtheusNepomucenoDaoImpl extends DatabaseConnection i
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            stmt = conn.prepareStatement("SELECT U.COD_AUXILIAR AS COD_AUXILIAR, " +
-                    "PRU.COD_UNIDADE AS COD_UNIDADE, " +
-                    "PRU.PERIODO_AFERICAO_SULCO AS PERIODO_DIAS_AFERICAO_SULCO, " +
-                    "PRU.PERIODO_AFERICAO_PRESSAO AS PERIODO_DIAS_AFERICAO_PRESSAO " +
-                    "FROM PNEU_RESTRICAO_UNIDADE PRU " +
-                    "         JOIN UNIDADE U ON PRU.COD_UNIDADE = U.CODIGO " +
-                    "WHERE COD_UNIDADE = ANY (?);");
+            stmt = conn.prepareStatement("select * " +
+                    "from integracao.func_pneu_afericao_get_infos_unidade_afericao(f_cod_unidades => ?);");
             stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
             rSet = stmt.executeQuery();
             final Map<String, InfosUnidadeRestricao> infosUnidadeRestricao = new HashMap<>();
@@ -152,16 +148,8 @@ public final class SistemaProtheusNepomucenoDaoImpl extends DatabaseConnection i
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            stmt = conn.prepareStatement("SELECT VT.COD_AUXILIAR                 AS COD_AUXILIAR, " +
-                    "ACTAV.COD_UNIDADE               AS COD_UNIDADE, " +
-                    "ACTAV.COD_TIPO_VEICULO          AS COD_TIPO_VEICULO, " +
-                    "ACTAV.PODE_AFERIR_SULCO         AS PODE_AFERIR_SULCO, " +
-                    "ACTAV.PODE_AFERIR_PRESSAO       AS PODE_AFERIR_PRESSAO, " +
-                    "ACTAV.PODE_AFERIR_SULCO_PRESSAO AS PODE_AFERIR_SULCO_PRESSAO, " +
-                    "ACTAV.PODE_AFERIR_ESTEPE        AS PODE_AFERIR_ESTEPE " +
-                    "FROM AFERICAO_CONFIGURACAO_TIPO_AFERICAO_VEICULO ACTAV " +
-                    "         JOIN VEICULO_TIPO VT ON ACTAV.COD_TIPO_VEICULO = VT.CODIGO " +
-                    "WHERE COD_UNIDADE = ANY (?) AND VT.COD_AUXILIAR IS NOT NULL;");
+            stmt = conn.prepareStatement("select * " +
+                    "from integracao.func_pneu_afericao_get_infos_configuracao_afericao(f_cod_unidades => ?);");
             stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
             rSet = stmt.executeQuery();
             final Map<String, InfosTipoVeiculoConfiguracaoAfericao> tipoVeiculoConfiguracao = new HashMap<>();
@@ -196,33 +184,13 @@ public final class SistemaProtheusNepomucenoDaoImpl extends DatabaseConnection i
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            stmt = conn.prepareStatement("WITH PLACAS AS (SELECT UNNEST(?) AS PLACA)\n" +
-                    "SELECT P.PLACA,\n" +
-                    "       COALESCE(INTERVALO_PRESSAO.INTERVALO, -1) :: INTEGER AS INTERVALO_PRESSAO,\n" +
-                    "       COALESCE(INTERVALO_SULCO.INTERVALO, -1) :: INTEGER   AS INTERVALO_SULCO\n" +
-                    "FROM PLACAS P\n" +
-                    "         LEFT JOIN INTEGRACAO.AFERICAO_INTEGRADA AI\n" +
-                    "                   ON P.PLACA = AI.PLACA_VEICULO AND AI.COD_EMPRESA_PROLOG::BIGINT = ?\n" +
-                    "         LEFT JOIN (SELECT AI.PLACA_VEICULO                                                  AS PLACA_INTERVALO,\n" +
-                    "                           EXTRACT(DAYS FROM (NOW()) -\n" +
-                    "                                             MAX(AI.DATA_HORA::TIMESTAMP WITH TIME ZONE AT TIME ZONE\n" +
-                    "                                                 TZ_UNIDADE(AI.COD_UNIDADE_PROLOG::BIGINT))) AS INTERVALO\n" +
-                    "                    FROM INTEGRACAO.AFERICAO_INTEGRADA AI\n" +
-                    "                    WHERE AI.TIPO_MEDICAO_COLETADA = 'PRESSAO'\n" +
-                    "                       OR AI.TIPO_MEDICAO_COLETADA = 'SULCO_PRESSAO'\n" +
-                    "                    GROUP BY AI.PLACA_VEICULO) AS INTERVALO_PRESSAO\n" +
-                    "                   ON INTERVALO_PRESSAO.PLACA_INTERVALO = P.PLACA\n" +
-                    "         LEFT JOIN (SELECT AI.PLACA_VEICULO                                                  AS PLACA_INTERVALO,\n" +
-                    "                           EXTRACT(DAYS FROM (NOW()) -\n" +
-                    "                                             MAX(AI.DATA_HORA::TIMESTAMP WITH TIME ZONE AT TIME ZONE\n" +
-                    "                                                 TZ_UNIDADE(AI.COD_UNIDADE_PROLOG::BIGINT))) AS INTERVALO\n" +
-                    "                    FROM INTEGRACAO.AFERICAO_INTEGRADA AI\n" +
-                    "                    WHERE AI.TIPO_MEDICAO_COLETADA = 'SULCO'\n" +
-                    "                       OR AI.TIPO_MEDICAO_COLETADA = 'SULCO_PRESSAO'\n" +
-                    "                    GROUP BY AI.PLACA_VEICULO) AS INTERVALO_SULCO\n" +
-                    "                   ON INTERVALO_SULCO.PLACA_INTERVALO = P.PLACA;");
-            stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.TEXT, placasNepomuceno));
-            stmt.setLong(2, codEmpresa);
+            stmt = conn.prepareStatement("select *" +
+                    "from integracao.func_pneu_afericao_get_infos_placas_aferidas(f_cod_empresa => ?, " +
+                    "                                                             f_placas_afericao => ?, " +
+                    "                                                             f_data_hora_atual => ?);");
+            stmt.setLong(1, codEmpresa);
+            stmt.setArray(2, PostgresUtils.listToArray(conn, SqlType.TEXT, placasNepomuceno));
+            stmt.setObject(3, Now.localDateTimeUtc());
             rSet = stmt.executeQuery();
             final Map<String, InfosAfericaoRealizadaPlaca> afericaoRealizadaPlaca = new HashMap<>();
             if (rSet.next()) {
@@ -254,34 +222,15 @@ public final class SistemaProtheusNepomucenoDaoImpl extends DatabaseConnection i
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            stmt = conn.prepareStatement("SELECT PRU.SULCO_MINIMO_DESCARTE, " +
-                    "       PRU.SULCO_MINIMO_RECAPAGEM, " +
-                    "       PRU.TOLERANCIA_INSPECAO, " +
-                    "       PRU.TOLERANCIA_CALIBRAGEM, " +
-                    "       PRU.PERIODO_AFERICAO_SULCO, " +
-                    "       PRU.PERIODO_AFERICAO_PRESSAO, " +
-                    "       CONFIG_PODE_AFERIR.PODE_AFERIR_SULCO, " +
-                    "       CONFIG_PODE_AFERIR.PODE_AFERIR_PRESSAO, " +
-                    "       CONFIG_PODE_AFERIR.PODE_AFERIR_SULCO_PRESSAO, " +
-                    "       CONFIG_PODE_AFERIR.PODE_AFERIR_ESTEPE, " +
-                    "       CONFIG_ALERTA_SULCO.VARIACAO_ACEITA_SULCO_MENOR_MILIMETROS, " +
-                    "       CONFIG_ALERTA_SULCO.VARIACAO_ACEITA_SULCO_MAIOR_MILIMETROS, " +
-                    "       CONFIG_ALERTA_SULCO.BLOQUEAR_VALORES_MENORES, " +
-                    "       CONFIG_ALERTA_SULCO.BLOQUEAR_VALORES_MAIORES, " +
-                    "       CONFIG_ALERTA_SULCO.USA_DEFAULT_PROLOG AS VARIACOES_SULCO_DEFAULT_PROLOG " +
-                    "FROM FUNC_AFERICAO_GET_CONFIG_TIPO_AFERICAO_VEICULO(?) AS CONFIG_PODE_AFERIR " +
-                    "         JOIN VIEW_AFERICAO_CONFIGURACAO_ALERTA_SULCO AS CONFIG_ALERTA_SULCO " +
-                    "              ON CONFIG_PODE_AFERIR.COD_UNIDADE_CONFIGURACAO = CONFIG_ALERTA_SULCO.COD_UNIDADE " +
-                    "         JOIN PNEU_RESTRICAO_UNIDADE PRU " +
-                    "              ON PRU.COD_UNIDADE = CONFIG_PODE_AFERIR.COD_UNIDADE_CONFIGURACAO " +
-                    "         JOIN VEICULO_TIPO VT ON VT.COD_AUXILIAR = ? " +
-                    "WHERE CONFIG_PODE_AFERIR.COD_UNIDADE_CONFIGURACAO = ? " +
-                    "  AND CONFIG_PODE_AFERIR.COD_TIPO_VEICULO = VT.CODIGO;");
+            stmt = conn.prepareStatement("select * " +
+                    "from integracao.func_pneu_afericao_get_config_nova_afericao_placa(" +
+                    "f_cod_unidade => ?, " +
+                    "f_cod_auxiliar_tipo_veiculo => ?);");
             stmt.setLong(1, codUnidade);
             stmt.setString(2, codEstruturaVeiculo);
-            stmt.setLong(3, codUnidade);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
+                //noinspection DuplicatedCode
                 return new ConfiguracaoNovaAfericaoPlaca(
                         rSet.getBoolean("PODE_AFERIR_SULCO"),
                         rSet.getBoolean("PODE_AFERIR_PRESSAO"),
@@ -315,22 +264,8 @@ public final class SistemaProtheusNepomucenoDaoImpl extends DatabaseConnection i
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            stmt = conn.prepareStatement(
-                    "SELECT PRU.SULCO_MINIMO_DESCARTE                       AS SULCO_MINIMO_DESCARTE, " +
-                            "PRU.SULCO_MINIMO_RECAPAGEM                                 AS SULCO_MINIMO_RECAPAGEM, " +
-                            "PRU.TOLERANCIA_INSPECAO                                    AS TOLERANCIA_INSPECAO, " +
-                            "PRU.TOLERANCIA_CALIBRAGEM                                  AS TOLERANCIA_CALIBRAGEM, " +
-                            "PRU.PERIODO_AFERICAO_SULCO                                 AS PERIODO_AFERICAO_SULCO, " +
-                            "PRU.PERIODO_AFERICAO_PRESSAO                               AS PERIODO_AFERICAO_PRESSAO, " +
-                            "CONFIG_ALERTA_SULCO.VARIACAO_ACEITA_SULCO_MENOR_MILIMETROS AS VARIACAO_ACEITA_SULCO_MENOR_MILIMETROS, " +
-                            "CONFIG_ALERTA_SULCO.VARIACAO_ACEITA_SULCO_MAIOR_MILIMETROS AS VARIACAO_ACEITA_SULCO_MAIOR_MILIMETROS, " +
-                            "CONFIG_ALERTA_SULCO.BLOQUEAR_VALORES_MENORES               AS BLOQUEAR_VALORES_MENORES, " +
-                            "CONFIG_ALERTA_SULCO.BLOQUEAR_VALORES_MAIORES               AS BLOQUEAR_VALORES_MAIORES, " +
-                            "CONFIG_ALERTA_SULCO.USA_DEFAULT_PROLOG                     AS VARIACOES_SULCO_DEFAULT_PROLOG " +
-                            "FROM VIEW_AFERICAO_CONFIGURACAO_ALERTA_SULCO CONFIG_ALERTA_SULCO " +
-                            "   JOIN PNEU_RESTRICAO_UNIDADE PRU " +
-                            "       ON PRU.COD_UNIDADE = CONFIG_ALERTA_SULCO.COD_UNIDADE " +
-                            "WHERE CONFIG_ALERTA_SULCO.COD_UNIDADE = ?;");
+            stmt = conn.prepareStatement("select * " +
+                            "from integracao.func_pneu_afericao_get_config_nova_afericao_avulsa(f_cod_unidade => ?);");
             stmt.setLong(1, codUnidade);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
@@ -364,28 +299,26 @@ public final class SistemaProtheusNepomucenoDaoImpl extends DatabaseConnection i
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            stmt = conn.prepareStatement("SELECT " +
-                    "       PPNE.POSICAO_PROLOG AS POSICAO_PROLOG, " +
-                    "       PPNE.NOMENCLATURA AS NOMENCLATURA " +
-                    "FROM VEICULO_TIPO VT " +
-                    "JOIN PNEU_POSICAO_NOMENCLATURA_EMPRESA PPNE ON VT.COD_DIAGRAMA = PPNE.COD_DIAGRAMA " +
-                    "WHERE VT.COD_AUXILIAR = ? AND PPNE.COD_EMPRESA = ?;");
-            stmt.setString(1, codEstruturaVeiculo);
-            stmt.setLong(2, codEmpresa);
+            stmt = conn.prepareStatement("select *" +
+                    "from integracao.func_pneu_afericao_get_mapeamento_posicoes_prolog(" +
+                    "f_cod_empresa => ?, " +
+                    "f_cod_auxiliar_tipo_veiculo => ?);");
+            stmt.setLong(1, codEmpresa);
+            stmt.setString(2, codEstruturaVeiculo);
             rSet = stmt.executeQuery();
-            final BiMap<String, Integer> posicoesPneusProlog = HashBiMap.create();
             if (rSet.next()) {
+                final BiMap<String, Integer> posicoesPneusProlog = HashBiMap.create();
                 do {
                     posicoesPneusProlog.put(
                             rSet.getString("NOMENCLATURA"),
                             rSet.getInt("POSICAO_PROLOG"));
                 } while (rSet.next());
+                return posicoesPneusProlog;
             } else {
                 throw new SQLException("Nenhuma posição mapeada para a estrutura do veículo:\n" +
                         "codEmpresa:" + codEmpresa + "\n" +
                         "codEstruturaVeiculo: " + codEstruturaVeiculo);
             }
-            return posicoesPneusProlog;
         } finally {
             close(stmt, rSet);
         }

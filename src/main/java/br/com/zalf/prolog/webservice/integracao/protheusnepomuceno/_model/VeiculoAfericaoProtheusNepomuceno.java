@@ -3,7 +3,9 @@ package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created on 11/03/20
@@ -19,7 +21,7 @@ public final class VeiculoAfericaoProtheusNepomuceno {
 
     /**
      * Atributo alfanumérico que representa a placa.
-    */
+     */
     @NotNull
     private final String placaVeiculo;
 
@@ -96,28 +98,53 @@ public final class VeiculoAfericaoProtheusNepomuceno {
     }
 
     @NotNull
-    public String getCodVeiculo() { return codVeiculo; }
+    public String getCodVeiculo() {
+        return codVeiculo;
+    }
 
     @NotNull
-    public String getPlacaVeiculo() { return placaVeiculo; }
+    public String getPlacaVeiculo() {
+        return placaVeiculo;
+    }
 
     @NotNull
-    public String getCodEmpresaVeiculo() { return codEmpresaVeiculo; }
+    public String getCodEmpresaVeiculo() {
+        return codEmpresaVeiculo;
+    }
 
     @NotNull
-    public String getCodUnidadeVeiculo() { return codUnidadeVeiculo; }
+    public String getCodUnidadeVeiculo() {
+        return codUnidadeVeiculo;
+    }
 
     @NotNull
-    public String getCodigoFrota() { return codigoFrota; }
+    public String getCodigoFrota() {
+        return codigoFrota;
+    }
 
     @NotNull
-    public Long getKmAtualVeiculo() { return kmAtualVeiculo; }
+    public Long getKmAtualVeiculo() {
+        return kmAtualVeiculo;
+    }
 
     @NotNull
-    public String getCodEstruturaVeiculo() { return codEstruturaVeiculo; }
+    public String getCodEstruturaVeiculo() {
+        return codEstruturaVeiculo;
+    }
 
     @NotNull
     public List<PneuAplicadoProtheusNepomuceno> getPneusAplicados() {
         return pneusAplicados;
+    }
+
+    @NotNull
+    public List<String> getPosicoesPneusAplicados() {
+        if (this.getPneusAplicados().isEmpty()) {
+            return Collections.emptyList();
+        }
+        return this.getPneusAplicados()
+                .stream()
+                .map(PneuAplicadoProtheusNepomuceno::getPosicaoAplicado)
+                .collect(Collectors.toList());
     }
 }
