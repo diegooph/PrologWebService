@@ -239,7 +239,7 @@ public final class ApiCadastroPneuDaoImpl extends DatabaseConnection implements 
                 throw new SQLException("Erro ao transferir o pneu no Sistema ProLog");
             }
         } finally {
-            close( conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 }
