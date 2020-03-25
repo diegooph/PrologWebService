@@ -3,7 +3,6 @@ package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestinoEnum;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaOrigemDestinoInsercao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaOrigemDestinoInsercaoBatch;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaOrigemDestinoListagemMotivos;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaOrigemDestinoVisualizacaoListagem;
@@ -23,19 +22,6 @@ public class MotivoRetiradaOrigemDestinoService {
 
     @NotNull
     private final MotivoRetiradaOrigemDestinoDao dao = Injection.provideMotivoOrigemDestinoDao();
-
-    @NotNull
-    public Long insert(@NotNull final MotivoRetiradaOrigemDestinoInsercao motivoRetiradaOrigemDestinoInsercao,
-                       @NotNull final String tokenAutenticacao) {
-        try {
-            return dao.insert(motivoRetiradaOrigemDestinoInsercao, tokenAutenticacao);
-        } catch (final Throwable t) {
-            Log.e(TAG, String.format("Erro ao inserir relação motivo, origem e destino %d", motivoRetiradaOrigemDestinoInsercao.getCodMotivoRetirada()), t);
-            throw Injection
-                    .provideProLogExceptionHandler()
-                    .map(t, "Erro ao inserir motivo, tente novamente.");
-        }
-    }
 
     @NotNull
     public List<Long> insert(@NotNull final List<MotivoRetiradaOrigemDestinoInsercaoBatch> origensDestinosMotivos,
