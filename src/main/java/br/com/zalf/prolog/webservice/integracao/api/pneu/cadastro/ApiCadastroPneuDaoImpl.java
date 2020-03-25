@@ -73,7 +73,7 @@ public final class ApiCadastroPneuDaoImpl extends DatabaseConnection implements 
                             pneuCargaInicial.getPlacaVeiculoPneuAplicado(), SqlType.VARCHAR);
                     bindValueOrNull(stmt, 16,
                             pneuCargaInicial.getPosicaoPneuAplicado(), SqlType.INTEGER);
-                    stmt.setObject(17, Now.offsetDateTimeUtc());
+                    stmt.setObject(17, Now.localDateTimeUtc());
                     stmt.setString(18, tokenIntegracao);
                     rSet = stmt.executeQuery();
                     final long codPneuProlog;
