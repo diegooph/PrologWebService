@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos;
 
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestinoEnum;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaOrigemDestinoInsercao;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaOrigemDestinoInsercaoBatch;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaOrigemDestinoListagemMotivos;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaOrigemDestinoVisualizacaoListagem;
 import org.jetbrains.annotations.NotNull;
@@ -27,6 +28,10 @@ public interface MotivoRetiradaOrigemDestinoDao {
     @NotNull
     Long insert(@NotNull final MotivoRetiradaOrigemDestinoInsercao motivoRetiradaOrigemDestinoInsercao,
                 @NotNull final String tokenAutenticacao) throws Throwable;
+
+    @NotNull
+    List<Long> insertBatch(@NotNull final List<MotivoRetiradaOrigemDestinoInsercaoBatch> origensDestinosMotivos,
+                           @NotNull final String tokenAutenticacao) throws Throwable;
 
     /**
      * Busca um {@link MotivoRetiradaOrigemDestinoVisualizacaoListagem motivoOrigemDestino} no banco de dados.
