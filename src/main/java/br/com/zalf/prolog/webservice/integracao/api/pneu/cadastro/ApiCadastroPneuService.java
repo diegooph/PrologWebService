@@ -8,6 +8,7 @@ import br.com.zalf.prolog.webservice.integracao.api.pneu.cadastro.model.*;
 import br.com.zalf.prolog.webservice.integracao.response.SuccessResponseIntegracao;
 import org.jetbrains.annotations.NotNull;
 
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -73,18 +74,14 @@ public final class ApiCadastroPneuService extends BaseIntegracaoService {
 
     @NotNull
     SuccessResponseIntegracao transferirPneu(final String tokenIntegracao,
-                                             final ApiPneuTransferencia pneuTransferencia) throws ProLogException {
+                                             final ApiPneuTransferencia pneuTransferencia) throws Throwable {
         try {
             ensureValidToken(tokenIntegracao, TAG);
             return new SuccessResponseIntegracao(
                     "Transferência de pneus realizada com sucesso no Sistema ProLog",
                     dao.transferirPneu(tokenIntegracao, pneuTransferencia));
         } catch (final Throwable t) {
-            Log.e(TAG, "Não foi possível realizar a transferência de pneus:\n" +
-                    "tokenIntegracao: " + tokenIntegracao, t);
-            throw Injection
-                    .provideProLogExceptionHandler()
-                    .map(t, "Não foi possível realizar a transferência de pneus no Sistema ProLog");
+            throw new Throwable(t.getMessage());
         }
     }
 }

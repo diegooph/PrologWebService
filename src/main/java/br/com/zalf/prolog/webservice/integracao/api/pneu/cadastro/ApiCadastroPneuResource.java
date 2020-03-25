@@ -64,7 +64,7 @@ public final class ApiCadastroPneuResource {
     @UsedBy(platforms = Platform.INTEGRACOES)
     public SuccessResponseIntegracao transferirPneu(
             @HeaderParam(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
-            @Required final ApiPneuTransferencia pneuTransferencia) throws ProLogException {
+            @Required final ApiPneuTransferencia pneuTransferencia) throws Throwable {
         return service.transferirPneu(tokenIntegracao, pneuTransferencia);
     }
 }

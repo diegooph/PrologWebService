@@ -225,19 +225,21 @@ public final class ApiCadastroPneuDaoImpl extends DatabaseConnection implements 
                     "F_CPF_COLABORADOR_TRANSFERENCIA := ?, " +
                     "F_LISTA_PNEUS := ?, " +
                     "F_OBSERVACAO := ?, " +
-                    "F_DATA_HORA := ?)");
+                    "F_DATA_HORA := ?) AS COD_PROCESSO");
             stmt.setLong(1, pneuTransferencia.getCodUnidadeOrigem());
             stmt.setLong(2, pneuTransferencia.getCodUnidadeDestino());
-            stmt.setString(3, pneuTransferencia.getCpfColaboradorRealizacaoTransferencia());
-            stmt.setArray(4, PostgresUtils.listToArray(conn, SqlType.BIGINT, pneuTransferencia.
+            stmt.setLong(3, Long.parseLong(pneuTransferencia.getCpfColaboradorRealizacaoTransferencia()));
+            stmt.setArray(4, PostgresUtils.listToArray(conn, SqlType.VARCHAR, pneuTransferencia.
                     getCodPneusTransferidos()));
             stmt.setString(5, pneuTransferencia.getObservacao());
             stmt.setObject(6, Now.offsetDateTimeUtc());
             rSet = stmt.executeQuery();
-            if(rSet.next()) {
-                codProcessoTransferencia = rSet.getLong("V_COD_PROCESSO_TRANSFERENCIA");
+            if (rSet.next()) {
+                codProcessoTransferencia = rSet.getLong("COD_PROCESSO");
             }
             return codProcessoTransferencia;
+        } catch (final SQLException sql) {
+            throw new SQLException(sql.getMessage());
         } catch (final Throwable t) {
             if (conn != null) {
                 conn.rollback();
