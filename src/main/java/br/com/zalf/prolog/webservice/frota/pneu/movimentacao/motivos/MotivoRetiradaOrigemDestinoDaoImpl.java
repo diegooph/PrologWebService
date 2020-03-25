@@ -46,7 +46,7 @@ public class MotivoRetiradaOrigemDestinoDaoImpl extends DatabaseConnection imple
             stmt.setLong(3, motivoRetiradaOrigemDestinoInsercao.getCodUnidade());
             stmt.setString(4, motivoRetiradaOrigemDestinoInsercao.getOrigemMovimentacao().asString());
             stmt.setString(5, motivoRetiradaOrigemDestinoInsercao.getDestinoMovimentacao().asString());
-            stmt.setBoolean(6, true);
+            stmt.setBoolean(6, motivoRetiradaOrigemDestinoInsercao.isObrigatorioMotivoRetirada());
             stmt.setObject(7, Now.offsetDateTimeUtc());
             stmt.setString(8, TokenCleaner.getOnlyToken(tokenAutenticacao));
 
