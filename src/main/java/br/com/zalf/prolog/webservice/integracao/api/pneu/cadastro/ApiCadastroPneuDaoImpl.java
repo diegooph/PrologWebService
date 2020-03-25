@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.integracao.api.pneu.cadastro;
 
-import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
@@ -11,7 +10,6 @@ import org.jetbrains.annotations.NotNull;
 import org.postgresql.util.PSQLException;
 
 import java.sql.*;
-import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 

@@ -8,7 +8,6 @@ import br.com.zalf.prolog.webservice.integracao.api.pneu.cadastro.model.*;
 import br.com.zalf.prolog.webservice.integracao.response.SuccessResponseIntegracao;
 import org.jetbrains.annotations.NotNull;
 
-import java.sql.SQLException;
 import java.util.List;
 
 /**
