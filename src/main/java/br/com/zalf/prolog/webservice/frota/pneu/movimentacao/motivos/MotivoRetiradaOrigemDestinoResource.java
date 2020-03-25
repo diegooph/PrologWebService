@@ -4,7 +4,6 @@ import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestinoEnum;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaOrigemDestinoInsercao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaOrigemDestinoInsercaoBatch;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaOrigemDestinoListagemMotivos;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaOrigemDestinoVisualizacaoListagem;
@@ -28,18 +27,11 @@ public class MotivoRetiradaOrigemDestinoResource {
     private final MotivoRetiradaOrigemDestinoService motivoRetiradaOrigemDestinoService = new MotivoRetiradaOrigemDestinoService();
 
     @POST
-    @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    public Long insert(@NotNull @Valid final MotivoRetiradaOrigemDestinoInsercao motivoRetiradaOrigemDestinoInsercao,
-                       @NotNull @HeaderParam("Authorization") final String tokenAutenticacao) {
-        return motivoRetiradaOrigemDestinoService.insert(motivoRetiradaOrigemDestinoInsercao, tokenAutenticacao);
-    }
-
-    @POST
     @Path("/batch")
     @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    public List<Long> insertBatch(@NotNull @Valid @Required final List<MotivoRetiradaOrigemDestinoInsercaoBatch> origensDestinosMotivos,
-                                  @NotNull @HeaderParam("Authorization") final String tokenAutenticacao) {
-        return motivoRetiradaOrigemDestinoService.insertBatch(origensDestinosMotivos, tokenAutenticacao);
+    public List<Long> insert(@NotNull @Valid @Required final List<MotivoRetiradaOrigemDestinoInsercaoBatch> origensDestinosMotivos,
+                             @NotNull @HeaderParam("Authorization") final String tokenAutenticacao) {
+        return motivoRetiradaOrigemDestinoService.insert(origensDestinosMotivos, tokenAutenticacao);
     }
 
     @GET

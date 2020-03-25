@@ -38,10 +38,10 @@ public class MotivoRetiradaOrigemDestinoService {
     }
 
     @NotNull
-    public List<Long> insertBatch(@NotNull final List<MotivoRetiradaOrigemDestinoInsercaoBatch> origensDestinosMotivos,
-                                  @NotNull final String tokenAutenticacao) {
+    public List<Long> insert(@NotNull final List<MotivoRetiradaOrigemDestinoInsercaoBatch> origensDestinosMotivos,
+                             @NotNull final String tokenAutenticacao) {
         try {
-            return dao.insertBatch(origensDestinosMotivos, tokenAutenticacao);
+            return dao.insert(origensDestinosMotivos, tokenAutenticacao);
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao inserir uma lista de relação motivo, origem e destino.", t);
             throw Injection
