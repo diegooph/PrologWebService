@@ -124,6 +124,8 @@ import br.com.zalf.prolog.webservice.gente.faleConosco.FaleConoscoDao;
 import br.com.zalf.prolog.webservice.gente.faleConosco.FaleConoscoDaoImpl;
 import br.com.zalf.prolog.webservice.gente.faleConosco.relatorios.FaleConoscoRelatorioDao;
 import br.com.zalf.prolog.webservice.gente.faleConosco.relatorios.FaleConoscoRelatorioDaoImpl;
+import br.com.zalf.prolog.webservice.gente.permissao.relatorios.PermissaoRelatorioDao;
+import br.com.zalf.prolog.webservice.gente.permissao.relatorios.PermissaoRelatorioDaoImpl;
 import br.com.zalf.prolog.webservice.gente.prontuarioCondutor.ProntuarioCondutorDao;
 import br.com.zalf.prolog.webservice.gente.prontuarioCondutor.ProntuarioCondutorDaoImpl;
 import br.com.zalf.prolog.webservice.gente.quiz.modelo.QuizModeloDao;
@@ -196,7 +198,8 @@ public final class Injection {
     }
 
     @NotNull
-    public static SocorroRotaRelatorioDao provideSocorroRotaRelatorioDao() { return new SocorroRotaRelatorioDaoImp();
+    public static SocorroRotaRelatorioDao provideSocorroRotaRelatorioDao() {
+        return new SocorroRotaRelatorioDaoImp();
     }
 
     @NotNull
@@ -235,6 +238,11 @@ public final class Injection {
     @NotNull
     public static ColaboradorDao provideColaboradorDao() {
         return new ColaboradorDaoImpl();
+    }
+
+    @NotNull
+    public static PermissaoRelatorioDao providePermissaoRelatorioDao() {
+        return new PermissaoRelatorioDaoImpl();
     }
 
     @NotNull
