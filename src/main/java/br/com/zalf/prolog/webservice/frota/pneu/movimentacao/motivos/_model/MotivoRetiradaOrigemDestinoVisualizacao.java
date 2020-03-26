@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
 public @Data
-class MotivoRetiradaOrigemDestinoVisualizacaoListagem {
+class MotivoRetiradaOrigemDestinoVisualizacao {
 
     @NotNull
     private final Long codMotivoRetiradaOrigemDestino;
