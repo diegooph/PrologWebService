@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice;
+package br.com.zalf.prolog.webservice.config;
 
 import br.com.zalf.prolog.webservice.commons.util.EnvironmentHelper;
 import io.sentry.Sentry;
@@ -15,7 +15,7 @@ import org.glassfish.jersey.server.monitoring.RequestEventListener;
 public class ProLogApplicationEventListener implements ApplicationEventListener {
 
     @Override
-    public void onEvent(ApplicationEvent applicationEvent) {
+    public void onEvent(final ApplicationEvent applicationEvent) {
         switch (applicationEvent.getType()) {
             case INITIALIZATION_APP_FINISHED:
                 Sentry.init(EnvironmentHelper.SENTRY_DSN);
@@ -24,7 +24,7 @@ public class ProLogApplicationEventListener implements ApplicationEventListener 
     }
 
     @Override
-    public RequestEventListener onRequest(RequestEvent requestEvent) {
+    public RequestEventListener onRequest(final RequestEvent requestEvent) {
         // Do nothing.
         return null;
     }
