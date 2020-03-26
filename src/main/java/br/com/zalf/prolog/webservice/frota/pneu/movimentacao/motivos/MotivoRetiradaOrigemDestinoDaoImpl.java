@@ -120,22 +120,28 @@ public class MotivoRetiradaOrigemDestinoDaoImpl extends DatabaseConnection imple
             final List<MotivoRetiradaOrigemDestinoListagem> unidades = new ArrayList();
 
             while (rSet.next()) {
-                final int tamanhoUnidades = unidades.size();
 
-                if (unidades.isEmpty() || unidades.get(tamanhoUnidades - 1).getCodUnidade() != rSet.getLong("codigo_unidade")) {
+                if (unidades.isEmpty() || unidades.get(unidades.size() - 1).getCodUnidade() != rSet.getLong("codigo_unidade")) {
                     unidades.add(MotivoRetiradaOrigemDestinoConverter.createMotivoRetiradaOrigemDestinoListagem(rSet));
                 } else {
-                    final int tamanhoRotasUltimaUnidade = unidades.get(tamanhoUnidades - 1).getOrigensDestinos().size();
+                    final MotivoRetiradaOrigemDestinoListagem ultimaUnidade = unidades.get(unidades.size() - 1);
+                    final List<MotivoRetiradaOrigemDestinoListagemMotivos> rotasUltimaUnidade = ultimaUnidade
+                            .getOrigensDestinos();
+                    final List<MotivoRetiradaListagem> ultimaListaMotivosRetirada = rotasUltimaUnidade.get(rotasUltimaUnidade.size() - 1).getMotivosRetirada();
 
-                    if (unidades.get(tamanhoUnidades - 1).getOrigensDestinos().get(tamanhoRotasUltimaUnidade - 1).getOrigemMovimento()
-                            != OrigemDestinoEnum.getFromStatusPneu(StatusPneu.fromString(rSet.getString("origem_movimento")))
+                    if (rotasUltimaUnidade.get(rotasUltimaUnidade.size() - 1).getOrigemMovimento()
+                            !=
+                            OrigemDestinoEnum.getFromStatusPneu(
+                                    StatusPneu.fromString(rSet.getString("origem_movimento")))
                             ||
-                            unidades.get(tamanhoUnidades - 1).getOrigensDestinos().get(tamanhoRotasUltimaUnidade - 1).getDestinoMovimento()
-                                    != OrigemDestinoEnum.getFromStatusPneu(StatusPneu.fromString(rSet.getString("destino_movimento")))) {
+                            rotasUltimaUnidade.get(rotasUltimaUnidade.size() - 1).getDestinoMovimento()
+                                    !=
+                                    OrigemDestinoEnum.getFromStatusPneu(
+                                            StatusPneu.fromString(rSet.getString("destino_movimento")))) {
 
-                        unidades.get(tamanhoUnidades - 1).getOrigensDestinos().add(MotivoRetiradaOrigemDestinoConverter.createMotivoRetiradaOrigemDestinoListagemMotivos(rSet));
+                        rotasUltimaUnidade.add(MotivoRetiradaOrigemDestinoConverter.createMotivoRetiradaOrigemDestinoListagemMotivos(rSet));
                     } else {
-                        unidades.get(tamanhoUnidades - 1).getOrigensDestinos().get(tamanhoRotasUltimaUnidade - 1).getMotivosRetirada().add(MotivoRetiradaOrigemDestinoConverter.createMotivoRetiradaListagem(rSet));
+                        ultimaListaMotivosRetirada.add(MotivoRetiradaOrigemDestinoConverter.createMotivoRetiradaListagem(rSet));
                     }
                 }
             }
