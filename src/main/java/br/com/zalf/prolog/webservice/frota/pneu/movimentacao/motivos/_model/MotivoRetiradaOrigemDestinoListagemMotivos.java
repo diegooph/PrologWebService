@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestinoEnum;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -23,7 +24,7 @@ class MotivoRetiradaOrigemDestinoListagemMotivos {
     @NotNull
     private final List<MotivoRetiradaListagem> motivosRetirada;
 
-    @NotNull
+    @Nullable
     private final boolean obrigatorioMotivoRetirada;
 
 }
