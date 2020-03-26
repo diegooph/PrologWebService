@@ -102,8 +102,7 @@ public class MotivoRetiradaOrigemDestinoDaoImpl extends DatabaseConnection imple
     }
 
     @Override
-    public @NotNull List<MotivoRetiradaOrigemDestinoVisualizacao> getMotivosOrigemDestino(@NotNull final Long codEmpresa,
-                                                                                          @NotNull final String tokenAutenticacao) throws Throwable {
+    public @NotNull List<MotivoRetiradaOrigemDestinoVisualizacao> getMotivosOrigemDestino(@NotNull final String tokenAutenticacao) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -129,8 +128,8 @@ public class MotivoRetiradaOrigemDestinoDaoImpl extends DatabaseConnection imple
     }
 
     @Override
-    public @NotNull MotivoRetiradaOrigemDestinoListagemMotivos getMotivosByOrigemAndDestinoAndUnidade(@NotNull final OrigemDestinoEnum origem,
-                                                                                                      @NotNull final OrigemDestinoEnum destino,
+    public @NotNull MotivoRetiradaOrigemDestinoListagemMotivos getMotivosByOrigemAndDestinoAndUnidade(@NotNull final OrigemDestinoEnum origemMovimento,
+                                                                                                      @NotNull final OrigemDestinoEnum destinoMovimento,
                                                                                                       @NotNull final Long codUnidade) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -141,13 +140,13 @@ public class MotivoRetiradaOrigemDestinoDaoImpl extends DatabaseConnection imple
                     "F_ORIGEM := ?::ORIGEM_DESTINO_TYPE," +
                     "F_DESTINO := ?::ORIGEM_DESTINO_TYPE," +
                     "F_COD_UNIDADE := ?);");
-            stmt.setString(1, origem.asString());
-            stmt.setString(2, destino.asString());
+            stmt.setString(1, origemMovimento.asString());
+            stmt.setString(2, destinoMovimento.asString());
             stmt.setLong(3, codUnidade);
 
             rSet = stmt.executeQuery();
 
-            final MotivoRetiradaOrigemDestinoListagemMotivos origemDestino = new MotivoRetiradaOrigemDestinoListagemMotivos(origem, destino);
+            final MotivoRetiradaOrigemDestinoListagemMotivos origemDestino = new MotivoRetiradaOrigemDestinoListagemMotivos(origemMovimento, destinoMovimento);
             final List<MotivoRetiradaListagem> motivos = new ArrayList();
 
             while (rSet.next()) {
