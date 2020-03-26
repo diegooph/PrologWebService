@@ -5,6 +5,7 @@ import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestinoEnum;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaOrigemDestinoInsercao;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaOrigemDestinoListagem;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaOrigemDestinoListagemMotivos;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaOrigemDestinoVisualizacao;
 import org.jetbrains.annotations.NotNull;
@@ -42,7 +43,7 @@ public class MotivoRetiradaOrigemDestinoResource {
 
     //todo: refatorar esse metodo para usar a func FUNC_MOTIVO_RETIRADA_ORIGEM_DESTINO_LISTAGEM E MUDA OS RECEBIMENTOS E OBJETO QUE RECEBE
     @GET
-    public List<MotivoRetiradaOrigemDestinoVisualizacao> getMotivosOrigemDestino(@HeaderParam("Authorization") final String tokenAutenticacao) {
+    public List<MotivoRetiradaOrigemDestinoListagem> getMotivosOrigemDestino(@HeaderParam("Authorization") final String tokenAutenticacao) {
         return motivoRetiradaOrigemDestinoService.getMotivosOrigemDestino(tokenAutenticacao);
     }
 

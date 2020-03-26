@@ -92,7 +92,7 @@ public class MotivoRetiradaOrigemDestinoDaoImpl extends DatabaseConnection imple
             stmt.setString(2, TokenCleaner.getOnlyToken(tokenAutenticacao));
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                return MotivoRetiradaOrigemDestinoConverter.createMotivoOrigemDestinoVisualizacaoListagem(rSet);
+                return MotivoRetiradaOrigemDestinoConverter.createMotivoRetiradaOrigemDestinoVisualizacao(rSet);
             } else {
                 throw new IllegalStateException("Nenhuma relação motivo, origem e destino foi encontrada com o código: " + codMotivoOrigemDestino);
             }
@@ -102,7 +102,7 @@ public class MotivoRetiradaOrigemDestinoDaoImpl extends DatabaseConnection imple
     }
 
     @Override
-    public @NotNull List<MotivoRetiradaOrigemDestinoVisualizacao> getMotivosOrigemDestino(@NotNull final String tokenAutenticacao) throws Throwable {
+    public @NotNull List<MotivoRetiradaOrigemDestinoListagem> getMotivosOrigemDestino(@NotNull final String tokenAutenticacao) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -114,12 +114,9 @@ public class MotivoRetiradaOrigemDestinoDaoImpl extends DatabaseConnection imple
 
             rSet = stmt.executeQuery();
 
-            final List<MotivoRetiradaOrigemDestinoVisualizacao> motivosOrigemDestino = new ArrayList();
-            while (rSet.next()) {
-                motivosOrigemDestino.add(MotivoRetiradaOrigemDestinoConverter.createMotivoOrigemDestinoVisualizacaoListagem(rSet));
-            }
+            final List<MotivoRetiradaOrigemDestinoListagem> unidades = new ArrayList();
 
-            return motivosOrigemDestino;
+            return MotivoRetiradaOrigemDestinoConverter.createMotivoRetiradaOrigemDestinoListagem(rSet);
         } finally {
             close(conn, stmt, rSet);
         }
