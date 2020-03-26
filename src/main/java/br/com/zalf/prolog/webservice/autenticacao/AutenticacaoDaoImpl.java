@@ -27,13 +27,13 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
 
     @NotNull
     @Override
-    public Autenticacao insertOrUpdate(@NotNull final Long cpf) throws SQLException {
+    public Autenticacao insertOrUpdate(@NotNull final Long cpf) throws Throwable {
         final String token = new SessionIdentifierGenerator().nextSessionId();
         return insert(cpf, token);
     }
 
     @Override
-    public boolean delete(@NotNull final String token) throws SQLException {
+    public boolean delete(@NotNull final String token) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
@@ -82,6 +82,7 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
         }
     }
 
+    @NotNull
     @Override
     public Optional<ColaboradorAutenticado> verifyIfUserExists(@NotNull final Long cpf,
                                                                @NotNull final LocalDate dataNascimento,

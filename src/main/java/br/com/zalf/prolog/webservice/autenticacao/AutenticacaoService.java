@@ -6,7 +6,6 @@ import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
 import br.com.zalf.prolog.webservice.interceptors.auth.ColaboradorAutenticado;
 import org.jetbrains.annotations.NotNull;
 
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Optional;
 
@@ -21,8 +20,8 @@ public class AutenticacaoService {
     Autenticacao insertOrUpdate(@NotNull final Long cpf) {
         try {
             return dao.insertOrUpdate(cpf);
-        } catch (final SQLException e) {
-            Log.e(TAG, String.format("Erro ao inserir o token para o cpf: %d", cpf), e);
+        } catch (final Throwable throwable) {
+            Log.e(TAG, String.format("Erro ao inserir o token para o cpf: %d", cpf), throwable);
             return new Autenticacao(Autenticacao.ERROR, cpf, "-1");
         }
     }
@@ -30,8 +29,8 @@ public class AutenticacaoService {
     public boolean delete(@NotNull final String token) {
         try {
             return dao.delete(token);
-        } catch (final SQLException e) {
-            Log.e(TAG, String.format("Erro ao deletar o token: %s", token), e);
+        } catch (final Throwable throwable) {
+            Log.e(TAG, String.format("Erro ao deletar o token: %s", token), throwable);
             return false;
         }
     }
