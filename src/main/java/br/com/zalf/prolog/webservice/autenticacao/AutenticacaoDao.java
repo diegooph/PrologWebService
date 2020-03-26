@@ -1,10 +1,12 @@
 package br.com.zalf.prolog.webservice.autenticacao;
 
+import br.com.zalf.prolog.webservice.interceptors.auth.ColaboradorAutenticado;
 import br.com.zalf.prolog.webservice.interceptors.auth.authenticator.StatusSecured;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.Optional;
 
 /**
  * Autenticação do usuário no sistema.
@@ -38,9 +40,11 @@ public interface AutenticacaoDao {
      * @param apenasUsuariosAtivos Indica se devemos considerar na verificação apenas usuário
      *                             que estão ativados no sistema (STATUS_ATIVO = true).
      * @return Boolean com o resultado da requisição.
-     * @throws SQLException Caso não seja possível realizar a busca.
+     * @throws Throwable Caso não seja possível realizar a busca.
      */
-    boolean verifyIfTokenExists(@NotNull final String token, final boolean apenasUsuariosAtivos) throws SQLException;
+    @NotNull
+    Optional<ColaboradorAutenticado> verifyIfTokenExists(@NotNull final String token,
+                                                         final boolean apenasUsuariosAtivos) throws Throwable;
 
     /**
      * Verifica a existência de um CPF e data de nascimento na base de dados.
@@ -50,11 +54,12 @@ public interface AutenticacaoDao {
      * @param apenasUsuariosAtivos Indica se devemos considerar na verificação apenas usuário
      *                             que estão ativados no sistema (STATUS_ATIVO = true).
      * @return Valor booleano que representa se o usuário está cadastrado no banco de dados.
-     * @throws SQLException Caso não seja possível verificar a existência no banco de dados.
+     * @throws Throwable Caso não seja possível verificar a existência no banco de dados.
      */
-    boolean verifyIfUserExists(@NotNull final Long cpf,
-                               @NotNull final LocalDate dataNascimento,
-                               final boolean apenasUsuariosAtivos) throws SQLException;
+    @NotNull
+    Optional<ColaboradorAutenticado> verifyIfUserExists(@NotNull final Long cpf,
+                                                        @NotNull final LocalDate dataNascimento,
+                                                        final boolean apenasUsuariosAtivos) throws Throwable;
 
     /**
      * Verifica se o usuário tem as permissões necessárias para acessar determinada função.
@@ -69,10 +74,10 @@ public interface AutenticacaoDao {
      * @throws Throwable Caso ocorra algum erro.
      */
     @NotNull
-    StatusSecured userHasPermission(@NotNull final String token,
-                                    @NotNull final int[] permissions,
-                                    final boolean needsToHaveAllPermissions,
-                                    final boolean apenasUsuariosAtivos) throws Throwable;
+    Optional<ColaboradorAutenticado> userHasPermission(@NotNull final String token,
+                                                       @NotNull final int[] permissions,
+                                                       final boolean needsToHaveAllPermissions,
+                                                       final boolean apenasUsuariosAtivos) throws Throwable;
 
     /**
      * Verifica se o usuário tem as permissões necessárias para acessar determinada função.
@@ -88,9 +93,9 @@ public interface AutenticacaoDao {
      * @throws Throwable Caso ocorra algum erro.
      */
     @NotNull
-    StatusSecured userHasPermission(final long cpf,
-                                    @NotNull final LocalDate dataNascimento,
-                                    @NotNull int[] permissions,
-                                    final boolean needsToHaveAllPermissions,
-                                    final boolean apenasUsuariosAtivos) throws Throwable;
+    Optional<ColaboradorAutenticado> userHasPermission(final long cpf,
+                                                       @NotNull final LocalDate dataNascimento,
+                                                       @NotNull int[] permissions,
+                                                       final boolean needsToHaveAllPermissions,
+                                                       final boolean apenasUsuariosAtivos) throws Throwable;
 }

@@ -14,16 +14,16 @@ import java.util.Date;
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class AutenticacaoResource {
     private static final String TAG = AutenticacaoResource.class.getSimpleName();
-    private AutenticacaoService service = new AutenticacaoService();
     @Deprecated
     private static final SimpleDateFormat FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+    private final AutenticacaoService service = new AutenticacaoService();
 
     @POST
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public Autenticacao authenticate(@FormParam("cpf") Long cpf,
-                                     @FormParam("dataNascimento") String dataNascimento) {
+    public Autenticacao authenticate(@FormParam("cpf") final Long cpf,
+                                     @FormParam("dataNascimento") final String dataNascimento) {
         Log.d(TAG, "CPF: " + cpf + "\nData: " + dataNascimento);
-        if (service.verifyIfUserExists(cpf, dataNascimento, true)) {
+        if (service.verifyIfUserExists(cpf, dataNascimento, true).isPresent()) {
             final Autenticacao autenticacao = service.insertOrUpdate(cpf);
             Log.d(TAG, autenticacao.getToken());
             return autenticacao;
@@ -35,7 +35,7 @@ public class AutenticacaoResource {
     @DELETE
     @Path("/{token}")
     @Secured
-    public Response delete(@PathParam("token") String token) {
+    public Response delete(@PathParam("token") final String token) {
         if (service.delete(token)) {
             return Response.ok("Token deletado com sucesso");
         } else {
@@ -54,8 +54,8 @@ public class AutenticacaoResource {
     @Path("/verifyLogin")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Deprecated
-    public Autenticacao verifyLogin(@FormParam("cpf") Long cpf,
-                                    @FormParam("dataNascimento") long dataNascimento) {
+    public Autenticacao verifyLogin(@FormParam("cpf") final Long cpf,
+                                    @FormParam("dataNascimento") final long dataNascimento) {
         Log.d(TAG, String.valueOf(cpf) + "data: " + String.valueOf(dataNascimento));
         return authenticate(cpf, FORMAT.format(new Date(dataNascimento)));
     }
