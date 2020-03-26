@@ -59,8 +59,7 @@ public class PermissaoRelatorioDaoImpl implements PermissaoRelatorioDao {
 
     @NotNull
     private PreparedStatement getPermissoesDetalhadasStmt(@NotNull final Connection conn,
-                                                          @NotNull final List<Long> codUnidades)
-            throws Throwable {
+                                                          @NotNull final List<Long> codUnidades) throws Throwable {
         final PreparedStatement stmt =
                 conn.prepareStatement("SELECT * FROM FUNC_COLABORADOR_RELATORIO_PERMISSOES_DETALHADAS(?);");
         stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
