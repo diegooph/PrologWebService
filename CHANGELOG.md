@@ -1,3 +1,8 @@
+#Stage
+
+### Refactors
+* Altera fluxo de transferência de pneus e veículos dentro da integração (PLI-80)
+
 Change Log
 ==========
 

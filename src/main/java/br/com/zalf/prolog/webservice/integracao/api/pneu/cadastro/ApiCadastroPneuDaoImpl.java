@@ -223,15 +223,17 @@ public final class ApiCadastroPneuDaoImpl extends DatabaseConnection implements 
                     "F_CPF_COLABORADOR_TRANSFERENCIA := ?, " +
                     "F_LISTA_PNEUS := ?, " +
                     "F_OBSERVACAO := ?, " +
+                    "F_TOKEN_INTEGRACAO := ?," +
                     "F_DATA_HORA := ?) AS COD_PROCESSO");
             stmt.setLong(1, pneuTransferencia.getCodUnidadeOrigem());
             stmt.setLong(2, pneuTransferencia.getCodUnidadeDestino());
-            stmt.setLong(3, Colaborador.formatCpf(pneuTransferencia.
-                    getCpfColaboradorRealizacaoTransferencia()));
-            stmt.setArray(4, PostgresUtils.listToArray(conn, SqlType.VARCHAR, pneuTransferencia.
-                    getCodPneusTransferidos()));
+            stmt.setLong(3,
+                    Colaborador.formatCpf(pneuTransferencia.getCpfColaboradorRealizacaoTransferencia()));
+            stmt.setArray(4,
+                    PostgresUtils.listToArray(conn, SqlType.TEXT, pneuTransferencia.getCodPneusTransferidos()));
             stmt.setString(5, pneuTransferencia.getObservacao());
-            stmt.setObject(6, Now.offsetDateTimeUtc());
+            stmt.setString(6, tokenIntegracao);
+            stmt.setObject(7, Now.offsetDateTimeUtc());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return rSet.getLong("COD_PROCESSO");
