@@ -5,7 +5,7 @@ import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestinoEnum;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaOrigemDestinoInsercao;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaOrigemDestinoListagemResumidaMotivos;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaOrigemDestinoListagemMotivos;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaOrigemDestinoVisualizacao;
 import org.jetbrains.annotations.NotNull;
 
@@ -49,9 +49,9 @@ public class MotivoRetiradaOrigemDestinoResource {
     @GET
     @UsedBy(platforms = {Platform.ANDROID})
     @Path("/listagemResumida")
-    public MotivoRetiradaOrigemDestinoListagemResumidaMotivos getMotivosByOrigemAndDestinoAndUnidade(@QueryParam("origemMovimento") @NotNull final OrigemDestinoEnum origemMovimento,
-                                                                                                     @QueryParam("destinoMovimento") @NotNull final OrigemDestinoEnum destinoMovimento,
-                                                                                                     @QueryParam("codUnidade") @NotNull final Long codUnidade) {
+    public MotivoRetiradaOrigemDestinoListagemMotivos getMotivosByOrigemAndDestinoAndUnidade(@QueryParam("origemMovimento") @NotNull final OrigemDestinoEnum origemMovimento,
+                                                                                             @QueryParam("destinoMovimento") @NotNull final OrigemDestinoEnum destinoMovimento,
+                                                                                             @QueryParam("codUnidade") @NotNull final Long codUnidade) {
         return motivoRetiradaOrigemDestinoService.getMotivosByOrigemAndDestinoAndUnidade(origemMovimento, destinoMovimento, codUnidade);
     }
 

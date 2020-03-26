@@ -4,7 +4,7 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestinoEnum;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaOrigemDestinoInsercao;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaOrigemDestinoListagemResumidaMotivos;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaOrigemDestinoListagemMotivos;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaOrigemDestinoVisualizacao;
 import org.jetbrains.annotations.NotNull;
 
@@ -62,9 +62,9 @@ public class MotivoRetiradaOrigemDestinoService {
     }
 
     @NotNull
-    public MotivoRetiradaOrigemDestinoListagemResumidaMotivos getMotivosByOrigemAndDestinoAndUnidade(@NotNull final OrigemDestinoEnum origemMovimento,
-                                                                                                     @NotNull final OrigemDestinoEnum destinoMovimento,
-                                                                                                     @NotNull final Long codUnidade) {
+    public MotivoRetiradaOrigemDestinoListagemMotivos getMotivosByOrigemAndDestinoAndUnidade(@NotNull final OrigemDestinoEnum origemMovimento,
+                                                                                             @NotNull final OrigemDestinoEnum destinoMovimento,
+                                                                                             @NotNull final Long codUnidade) {
         try {
             return dao.getMotivosByOrigemAndDestinoAndUnidade(origemMovimento, destinoMovimento, codUnidade);
         } catch (final Throwable t) {
