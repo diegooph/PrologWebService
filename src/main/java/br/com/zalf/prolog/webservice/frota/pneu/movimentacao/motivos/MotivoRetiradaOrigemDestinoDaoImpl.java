@@ -78,8 +78,8 @@ public class MotivoRetiradaOrigemDestinoDaoImpl extends DatabaseConnection imple
     }
 
     @Override
-    public @NotNull MotivoRetiradaOrigemDestinoVisualizacaoListagem getMotivoOrigemDestino(@NotNull final Long codMotivoOrigemDestino,
-                                                                                           @NotNull final String tokenAutenticacao) throws Throwable {
+    public @NotNull MotivoRetiradaOrigemDestinoVisualizacao getMotivoOrigemDestino(@NotNull final Long codMotivoOrigemDestino,
+                                                                                   @NotNull final String tokenAutenticacao) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -102,8 +102,8 @@ public class MotivoRetiradaOrigemDestinoDaoImpl extends DatabaseConnection imple
     }
 
     @Override
-    public @NotNull List<MotivoRetiradaOrigemDestinoVisualizacaoListagem> getMotivosOrigemDestino(@NotNull final Long codEmpresa,
-                                                                                                  @NotNull final String tokenAutenticacao) throws Throwable {
+    public @NotNull List<MotivoRetiradaOrigemDestinoVisualizacao> getMotivosOrigemDestino(@NotNull final Long codEmpresa,
+                                                                                          @NotNull final String tokenAutenticacao) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -117,7 +117,7 @@ public class MotivoRetiradaOrigemDestinoDaoImpl extends DatabaseConnection imple
 
             rSet = stmt.executeQuery();
 
-            final List<MotivoRetiradaOrigemDestinoVisualizacaoListagem> motivosOrigemDestino = new ArrayList();
+            final List<MotivoRetiradaOrigemDestinoVisualizacao> motivosOrigemDestino = new ArrayList();
             while (rSet.next()) {
                 motivosOrigemDestino.add(MotivoRetiradaOrigemDestinoConverter.createMotivoOrigemDestinoVisualizacaoListagem(rSet));
             }

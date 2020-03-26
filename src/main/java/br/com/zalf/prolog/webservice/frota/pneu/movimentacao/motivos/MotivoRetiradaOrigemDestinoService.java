@@ -5,7 +5,7 @@ import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestinoEnum;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaOrigemDestinoInsercao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaOrigemDestinoListagemMotivos;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaOrigemDestinoVisualizacaoListagem;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaOrigemDestinoVisualizacao;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -37,8 +37,8 @@ public class MotivoRetiradaOrigemDestinoService {
     }
 
     @NotNull
-    public MotivoRetiradaOrigemDestinoVisualizacaoListagem getMotivoOrigemDestino(@NotNull final Long codMotivoOrigemDestino,
-                                                                                  @NotNull final String tokenAutenticacao) {
+    public MotivoRetiradaOrigemDestinoVisualizacao getMotivoOrigemDestino(@NotNull final Long codMotivoOrigemDestino,
+                                                                          @NotNull final String tokenAutenticacao) {
         try {
             return dao.getMotivoOrigemDestino(codMotivoOrigemDestino, tokenAutenticacao);
         } catch (final Throwable t) {
@@ -50,12 +50,11 @@ public class MotivoRetiradaOrigemDestinoService {
     }
 
     @NotNull
-    public List<MotivoRetiradaOrigemDestinoVisualizacaoListagem> getMotivosOrigemDestino(@NotNull final Long codEmpresa,
-                                                                                         @NotNull final String tokenAutenticacao) {
+    public List<MotivoRetiradaOrigemDestinoVisualizacao> getMotivosOrigemDestino(@NotNull final String tokenAutenticacao) {
         try {
-            return dao.getMotivosOrigemDestino(codEmpresa, tokenAutenticacao);
+            return dao.getMotivosOrigemDestino(tokenAutenticacao);
         } catch (final Throwable t) {
-            Log.e(TAG, String.format("Erro ao buscar relação motivo, origem e destino, para a empresa de código %d", codEmpresa), t);
+            Log.e(TAG, "Erro ao buscar relações motivo, origem e destino.", t);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao buscar relação motivo, origem e destino, tente novamente.");
