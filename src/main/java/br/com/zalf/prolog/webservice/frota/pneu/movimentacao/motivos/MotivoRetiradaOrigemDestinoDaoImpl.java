@@ -12,7 +12,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -184,7 +183,7 @@ public class MotivoRetiradaOrigemDestinoDaoImpl extends DatabaseConnection imple
                 final MotivoRetiradaOrigemDestinoListagemMotivos origemDestino = new MotivoRetiradaOrigemDestinoListagemMotivos(origemMovimento, destinoMovimento, motivos, obrigatorioMotivoRetirada);
                 return origemDestino;
             } else {
-                return (MotivoRetiradaOrigemDestinoListagemMotivos) Collections.emptyList();
+                return new MotivoRetiradaOrigemDestinoListagemMotivos(origemMovimento, destinoMovimento, motivos, obrigatorioMotivoRetirada);
             }
         } finally {
             close(conn, stmt, rSet);
