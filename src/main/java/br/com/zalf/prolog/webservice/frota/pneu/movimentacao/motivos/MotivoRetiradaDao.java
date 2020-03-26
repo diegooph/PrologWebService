@@ -30,11 +30,11 @@ public interface MotivoRetiradaDao {
                 String tokenAutenticacao) throws Throwable;
 
     /**
-     * Busca um {@link MotivoRetiradaListagem motivo} baseado no seu código.
+     * Busca um {@link MotivoRetiradaVisualizacao motivo} baseado no seu código.
      *
      * @param codMotivo         um código de um motivo.
      * @param tokenAutenticacao token de autorização do header da requisição.
-     * @return uma {@link MotivoRetiradaListagem motivo}.
+     * @return uma {@link MotivoRetiradaVisualizacao motivo}.
      * @throws Throwable caso qualquer erro ocorrer.
      */
     @NotNull

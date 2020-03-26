@@ -39,7 +39,8 @@ public interface MotivoRetiradaOrigemDestinoDao {
                                                                    @NotNull final String tokenAutenticacao) throws Throwable;
 
     /**
-     * Busca uma lista de {@link MotivoRetiradaOrigemDestinoVisualizacao motivoOrigemDestino} no banco de dados.
+     * Busca uma lista de {@link MotivoRetiradaOrigemDestinoVisualizacao motivoOrigemDestino} no banco de dados
+     * com base nas unidades que o usuário tem permissão de editar, buscado através do token do usuário.
      *
      * @param tokenAutenticacao o token de sessão do usuário;
      * @throws Throwable Caso qualquer erro ocorra.
@@ -48,7 +49,8 @@ public interface MotivoRetiradaOrigemDestinoDao {
     List<MotivoRetiradaOrigemDestinoListagem> getMotivosOrigemDestino(@NotNull final String tokenAutenticacao) throws Throwable;
 
     /**
-     * Busca uma lista de {@link MotivoRetiradaOrigemDestinoListagemMotivos motivoOrigemDestino} no banco de dados.
+     * Busca uma lista de {@link MotivoRetiradaOrigemDestinoListagemMotivos motivoOrigemDestino} no banco de dados
+     * com base em uma origem, destino e unidade.
      *
      * @param origemMovimento  a origem a ser utilizada de filtro.
      * @param destinoMovimento o destino a ser usado de filtro.
