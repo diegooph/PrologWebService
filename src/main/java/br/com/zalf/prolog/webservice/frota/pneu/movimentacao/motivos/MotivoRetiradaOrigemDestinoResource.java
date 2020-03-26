@@ -41,7 +41,6 @@ public class MotivoRetiradaOrigemDestinoResource {
         return motivoRetiradaOrigemDestinoService.getMotivoOrigemDestino(codMotivoOrigemDestino, tokenAutenticacao);
     }
 
-    //todo: refatorar esse metodo para usar a func FUNC_MOTIVO_RETIRADA_ORIGEM_DESTINO_LISTAGEM E MUDA OS RECEBIMENTOS E OBJETO QUE RECEBE
     @GET
     public List<MotivoRetiradaOrigemDestinoListagem> getMotivosOrigemDestino(@HeaderParam("Authorization") final String tokenAutenticacao) {
         return motivoRetiradaOrigemDestinoService.getMotivosOrigemDestino(tokenAutenticacao);
