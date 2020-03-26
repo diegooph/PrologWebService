@@ -25,6 +25,6 @@ class MotivoRetiradaOrigemDestinoListagemMotivos {
     private final List<MotivoRetiradaListagem> motivosRetirada;
 
     @Nullable
-    private final boolean obrigatorioMotivoRetirada;
+    private final Boolean obrigatorioMotivoRetirada;
 
 }
