@@ -21,9 +21,9 @@ class MotivoRetiradaOrigemDestinoListagemMotivos {
     private final OrigemDestinoEnum destinoMovimento;
 
     @NotNull
-    private List<MotivoRetiradaListagem> motivosRetirada;
+    private final List<MotivoRetiradaListagem> motivosRetirada;
 
     @NotNull
-    private boolean obrigatorioMotivoRetirada;
+    private final boolean obrigatorioMotivoRetirada;
 
 }
