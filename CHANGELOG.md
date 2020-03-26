@@ -5,6 +5,7 @@ Change Log
 ### Features
 * Cria estrutura de campos personalizados (PL-2616)
 * Aplica fluxo de campos personalizados no processo de movimentação (PL-2616)
+* Cria estrutura para cadastro e configuração de motivos para o processo de movimentação (PL-2607)
 
 <a name="v1.0.24"></a>
 ## Version [v1.0.24](https://github.com/luizfp/PrologWebService/compare/v1.0.23...v1.0.24) (release-date) [unreleased]
