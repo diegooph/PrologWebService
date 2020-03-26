@@ -91,7 +91,7 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT C.CODIGO FROM COLABORADOR C WHERE C.CPF = ? " +
+            stmt = conn.prepareStatement("SELECT C.CODIGO AS COD_COLABORADOR FROM COLABORADOR C WHERE C.CPF = ? " +
                     "AND C.DATA_NASCIMENTO = ? AND C.STATUS_ATIVO::TEXT LIKE ?;");
             stmt.setLong(1, cpf);
             stmt.setObject(2, dataNascimento);
