@@ -128,9 +128,9 @@ public class MotivoRetiradaOrigemDestinoDaoImpl extends DatabaseConnection imple
     }
 
     @Override
-    public @NotNull MotivoRetiradaOrigemDestinoListagemMotivos getMotivosByOrigemAndDestinoAndUnidade(@NotNull final OrigemDestinoEnum origemMovimento,
-                                                                                                      @NotNull final OrigemDestinoEnum destinoMovimento,
-                                                                                                      @NotNull final Long codUnidade) throws Throwable {
+    public @NotNull MotivoRetiradaOrigemDestinoListagemResumidaMotivos getMotivosByOrigemAndDestinoAndUnidade(@NotNull final OrigemDestinoEnum origemMovimento,
+                                                                                                              @NotNull final OrigemDestinoEnum destinoMovimento,
+                                                                                                              @NotNull final Long codUnidade) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -146,7 +146,7 @@ public class MotivoRetiradaOrigemDestinoDaoImpl extends DatabaseConnection imple
 
             rSet = stmt.executeQuery();
 
-            final MotivoRetiradaOrigemDestinoListagemMotivos origemDestino = new MotivoRetiradaOrigemDestinoListagemMotivos(origemMovimento, destinoMovimento);
+            final MotivoRetiradaOrigemDestinoListagemResumidaMotivos origemDestino = new MotivoRetiradaOrigemDestinoListagemResumidaMotivos(origemMovimento, destinoMovimento);
             final List<MotivoRetiradaListagem> motivos = new ArrayList();
 
             while (rSet.next()) {

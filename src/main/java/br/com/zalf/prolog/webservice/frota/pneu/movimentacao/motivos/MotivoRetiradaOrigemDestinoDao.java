@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos;
 
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestinoEnum;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaOrigemDestinoInsercao;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaOrigemDestinoListagemMotivos;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaOrigemDestinoListagemResumidaMotivos;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaOrigemDestinoVisualizacao;
 import org.jetbrains.annotations.NotNull;
 
@@ -47,7 +47,7 @@ public interface MotivoRetiradaOrigemDestinoDao {
     List<MotivoRetiradaOrigemDestinoVisualizacao> getMotivosOrigemDestino(@NotNull final String tokenAutenticacao) throws Throwable;
 
     /**
-     * Busca uma lista de {@link MotivoRetiradaOrigemDestinoListagemMotivos motivoOrigemDestino} no banco de dados.
+     * Busca uma lista de {@link MotivoRetiradaOrigemDestinoListagemResumidaMotivos motivoOrigemDestino} no banco de dados.
      *
      * @param origemMovimento  a origem a ser utilizada de filtro.
      * @param destinoMovimento o destino a ser usado de filtro.
@@ -55,8 +55,8 @@ public interface MotivoRetiradaOrigemDestinoDao {
      * @throws Throwable Caso qualquer erro ocorra.
      */
     @NotNull
-    MotivoRetiradaOrigemDestinoListagemMotivos getMotivosByOrigemAndDestinoAndUnidade(@NotNull final OrigemDestinoEnum origemMovimento,
-                                                                                      @NotNull final OrigemDestinoEnum destinoMovimento,
-                                                                                      @NotNull final Long codUnidade) throws Throwable;
+    MotivoRetiradaOrigemDestinoListagemResumidaMotivos getMotivosByOrigemAndDestinoAndUnidade(@NotNull final OrigemDestinoEnum origemMovimento,
+                                                                                              @NotNull final OrigemDestinoEnum destinoMovimento,
+                                                                                              @NotNull final Long codUnidade) throws Throwable;
 
 }
