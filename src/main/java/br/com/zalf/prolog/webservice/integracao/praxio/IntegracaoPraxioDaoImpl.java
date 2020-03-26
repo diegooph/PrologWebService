@@ -137,54 +137,6 @@ final class IntegracaoPraxioDaoImpl extends DatabaseConnection implements Integr
         }
     }
 
-    public void taaransferirVeiculoPraxio(
-            @NotNull final String tokenIntegracao,
-            @NotNull final VeiculoTransferenciaPraxio veiculoTransferenciaPraxio) throws Throwable {
-        Connection conn = null;
-        try {
-            conn = getConnection();
-            conn.setAutoCommit(false);
-            final Long codVeiculo =
-                    Injection
-                            .provideVeiculoDao()
-                            .getCodVeiculoByPlaca(conn, veiculoTransferenciaPraxio.getPlacaTransferida());
-            final Long codEmpresa =
-                    Injection
-                            .provideIntegracaoDao()
-                            .getCodEmpresaByTokenIntegracao(conn, tokenIntegracao);
-            final Long codColaborador;
-            try {
-                codColaborador =
-                        Injection
-                                .provideColaboradorDao()
-                                .getCodColaboradorByCpf(
-                                        conn,
-                                        codEmpresa,
-                                        veiculoTransferenciaPraxio.getCpfColaboradorRealizacaoTransferencia());
-            } catch (final Throwable t) {
-                throw new GenericException(
-                        String.format(
-                                "Cpf %s não está cadastrado na base de dados do ProLog",
-                                veiculoTransferenciaPraxio.getCpfColaboradorRealizacaoTransferencia()));
-            }
-            Injection
-                    .provideVeiculoTransferenciaDao()
-                    .insertProcessoTransferenciaVeiculo(
-                            conn,
-                            CadastroVeiculoIntegracaoPraxioConverter
-                                    .convert(codEmpresa, codColaborador, codVeiculo, veiculoTransferenciaPraxio),
-                            Injection.provideDadosChecklistOfflineChangedListener());
-            conn.commit();
-        } catch (final Throwable t) {
-            if (conn != null) {
-                conn.rollback();
-            }
-            throw t;
-        } finally {
-            close(conn);
-        }
-    }
-
     @Override
     public void ativarDesativarVeiculoPraxio(@NotNull final String tokenIntegracao,
                                              @NotNull final String placaVeiculo,
