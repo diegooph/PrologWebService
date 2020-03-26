@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos;
 import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
+import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestinoEnum;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.*;
 import org.jetbrains.annotations.NotNull;
@@ -11,6 +12,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -108,6 +110,7 @@ public class MotivoRetiradaOrigemDestinoDaoImpl extends DatabaseConnection imple
         ResultSet rSet = null;
         try {
             conn = getConnection();
+
             stmt = conn.prepareStatement("SELECT * FROM FUNC_MOTIVO_RETIRADA_ORIGEM_DESTINO_LISTAGEM(" +
                     "F_TOKEN := ?)");
             stmt.setString(1, TokenCleaner.getOnlyToken(tokenAutenticacao));
@@ -116,10 +119,32 @@ public class MotivoRetiradaOrigemDestinoDaoImpl extends DatabaseConnection imple
 
             final List<MotivoRetiradaOrigemDestinoListagem> unidades = new ArrayList();
 
-            return MotivoRetiradaOrigemDestinoConverter.createMotivoRetiradaOrigemDestinoListagem(rSet);
+            while (rSet.next()) {
+                final int tamanhoUnidades = unidades.size();
+
+                if (unidades.isEmpty() || unidades.get(tamanhoUnidades - 1).getCodUnidade() != rSet.getLong("codigo_unidade")) {
+                    unidades.add(MotivoRetiradaOrigemDestinoConverter.createMotivoRetiradaOrigemDestinoListagem(rSet));
+                } else {
+                    final int tamanhoRotasUltimaUnidade = unidades.get(tamanhoUnidades - 1).getOrigensDestinos().size();
+
+                    if (unidades.get(tamanhoUnidades - 1).getOrigensDestinos().get(tamanhoRotasUltimaUnidade - 1).getOrigemMovimento()
+                            != OrigemDestinoEnum.getFromStatusPneu(StatusPneu.fromString(rSet.getString("origem_movimento")))
+                            ||
+                            unidades.get(tamanhoUnidades - 1).getOrigensDestinos().get(tamanhoRotasUltimaUnidade - 1).getDestinoMovimento()
+                                    != OrigemDestinoEnum.getFromStatusPneu(StatusPneu.fromString(rSet.getString("destino_movimento")))) {
+
+                        unidades.get(tamanhoUnidades - 1).getOrigensDestinos().add(MotivoRetiradaOrigemDestinoConverter.createMotivoRetiradaOrigemDestinoListagemMotivos(rSet));
+                    } else {
+                        unidades.get(tamanhoUnidades - 1).getOrigensDestinos().get(tamanhoRotasUltimaUnidade - 1).getMotivosRetirada().add(MotivoRetiradaOrigemDestinoConverter.createMotivoRetiradaListagem(rSet));
+                    }
+                }
+            }
+
+            return unidades;
         } finally {
             close(conn, stmt, rSet);
         }
+
     }
 
     @Override
@@ -141,17 +166,20 @@ public class MotivoRetiradaOrigemDestinoDaoImpl extends DatabaseConnection imple
 
             rSet = stmt.executeQuery();
 
-            final MotivoRetiradaOrigemDestinoListagemMotivos origemDestino = new MotivoRetiradaOrigemDestinoListagemMotivos(origemMovimento, destinoMovimento);
             final List<MotivoRetiradaListagem> motivos = new ArrayList();
+            Boolean obrigatorioMotivoRetirada = null;
 
             while (rSet.next()) {
                 motivos.add(MotivoRetiradaConverter.createMotivoRetiradaListagem(rSet));
-                origemDestino.setObrigatorioMotivoRetirada(rSet.getBoolean("OBRIGATORIO"));
+                obrigatorioMotivoRetirada = (rSet.getBoolean("OBRIGATORIO"));
             }
 
-            origemDestino.setMotivosRetirada(motivos);
-
-            return origemDestino;
+            if (obrigatorioMotivoRetirada != null && motivos.size() > 0) {
+                final MotivoRetiradaOrigemDestinoListagemMotivos origemDestino = new MotivoRetiradaOrigemDestinoListagemMotivos(origemMovimento, destinoMovimento, motivos, obrigatorioMotivoRetirada);
+                return origemDestino;
+            } else {
+                return (MotivoRetiradaOrigemDestinoListagemMotivos) Collections.emptyList();
+            }
         } finally {
             close(conn, stmt, rSet);
         }
