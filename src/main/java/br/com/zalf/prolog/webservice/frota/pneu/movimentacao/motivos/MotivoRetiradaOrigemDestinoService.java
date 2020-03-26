@@ -62,13 +62,13 @@ public class MotivoRetiradaOrigemDestinoService {
     }
 
     @NotNull
-    public MotivoRetiradaOrigemDestinoListagemMotivos getMotivosByOrigemAndDestinoAndUnidade(@NotNull final OrigemDestinoEnum origem,
-                                                                                             @NotNull final OrigemDestinoEnum destino,
+    public MotivoRetiradaOrigemDestinoListagemMotivos getMotivosByOrigemAndDestinoAndUnidade(@NotNull final OrigemDestinoEnum origemMovimento,
+                                                                                             @NotNull final OrigemDestinoEnum destinoMovimento,
                                                                                              @NotNull final Long codUnidade) {
         try {
-            return dao.getMotivosByOrigemAndDestinoAndUnidade(origem, destino, codUnidade);
+            return dao.getMotivosByOrigemAndDestinoAndUnidade(origemMovimento, destinoMovimento, codUnidade);
         } catch (final Throwable t) {
-            Log.e(TAG, String.format("Erro ao buscar relação motivo, origem e destino, para a origem %s e destino %s", origem.toString(), destino.toString()), t);
+            Log.e(TAG, String.format("Erro ao buscar relação motivo, origem e destino, para a origem %s e destino %s", origemMovimento.toString(), destinoMovimento.toString()), t);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao buscar motivos, tente novamente.");
