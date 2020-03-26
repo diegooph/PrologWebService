@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.integracao.praxio.afericao.AfericaoIntegracaoPraxioConverter;
 import br.com.zalf.prolog.webservice.integracao.praxio.afericao.MedicaoIntegracaoPraxio;
 import br.com.zalf.prolog.webservice.integracao.praxio.cadastro.CadastroVeiculoIntegracaoPraxioConverter;
@@ -116,6 +117,27 @@ final class IntegracaoPraxioDaoImpl extends DatabaseConnection implements Integr
 
     @Override
     public void transferirVeiculoPraxio(
+            @NotNull final String tokenIntegracao,
+            @NotNull final VeiculoTransferenciaPraxio veiculoTransferenciaPraxio) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_VEICULO_TRANSFERE_VEICULO(?,?,?,?,?,?)");
+            stmt.setLong(1, veiculoTransferenciaPraxio.getCodUnidadeOrigem());
+            stmt.setLong(2, veiculoTransferenciaPraxio.getCodUnidadeDestino());
+            stmt.setLong(3, Colaborador.formatCpf(veiculoTransferenciaPraxio.
+                    getCpfColaboradorRealizacaoTransferencia()));
+            stmt.setString(4, veiculoTransferenciaPraxio.getPlacaTransferida());
+            stmt.setString(5, veiculoTransferenciaPraxio.getObservacao());
+            stmt.setObject(6, Now.offsetDateTimeUtc());
+            stmt.executeQuery();
+        } finally {
+            close(conn, stmt);
+        }
+    }
+
+    public void taaransferirVeiculoPraxio(
             @NotNull final String tokenIntegracao,
             @NotNull final VeiculoTransferenciaPraxio veiculoTransferenciaPraxio) throws Throwable {
         Connection conn = null;
