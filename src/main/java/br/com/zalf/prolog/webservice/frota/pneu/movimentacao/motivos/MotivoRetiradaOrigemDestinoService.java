@@ -3,10 +3,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestinoEnum;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaOrigemDestinoInsercao;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaOrigemDestinoListagem;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaOrigemDestinoListagemMotivos;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaOrigemDestinoVisualizacao;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -73,6 +70,18 @@ public class MotivoRetiradaOrigemDestinoService {
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao buscar motivos, tente novamente.");
+        }
+    }
+
+    @NotNull
+    public List<OrigemDestinoListagem> getRotasExistentesByUnidade(@NotNull final Long codUnidade) {
+        try {
+            return dao.getRotasExistentesByUnidade(codUnidade);
+        } catch (final Throwable t) {
+            Log.e(TAG, String.format("Erro ao buscar relações origem e destino, para a a unidade %d", codUnidade), t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao buscar origens e destinos, tente novamente.");
         }
     }
 
