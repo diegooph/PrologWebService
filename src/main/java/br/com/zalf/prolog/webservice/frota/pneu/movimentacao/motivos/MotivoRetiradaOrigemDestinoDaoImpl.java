@@ -190,4 +190,31 @@ public class MotivoRetiradaOrigemDestinoDaoImpl extends DatabaseConnection imple
         }
     }
 
+    @Override
+    public @NotNull List<OrigemDestinoListagem> getRotasExistentesByUnidade(@NotNull final Long codUnidade) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_MOTIVO_RETIRADA_GET_ORIGEM_DESTINO_BY_UNIDADE(" +
+                    "F_COD_UNIDADE := ?);");
+
+            stmt.setLong(1, codUnidade);
+
+            rSet = stmt.executeQuery();
+
+            final List<OrigemDestinoListagem> origensDestinos = new ArrayList();
+
+            while (rSet.next()) {
+                origensDestinos.add(MotivoRetiradaOrigemDestinoConverter.createOrigemDestinoListagem(rSet));
+            }
+
+            return origensDestinos;
+
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
 }
