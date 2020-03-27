@@ -56,8 +56,9 @@ public class MotivoRetiradaOrigemDestinoResource {
     }
 
     @GET
+    @Path("/unidade/{codUnidade}")
     @UsedBy(platforms = {Platform.ANDROID})
-    public List<OrigemDestinoListagem> getRotasExistentesByUnidade(@QueryParam("codUnidade") @NotNull final Long codUnidade) {
+    public List<OrigemDestinoListagem> getRotasExistentesByUnidade(@PathParam("codUnidade") @NotNull final Long codUnidade) {
         return motivoRetiradaOrigemDestinoService.getRotasExistentesByUnidade(codUnidade);
     }
 
