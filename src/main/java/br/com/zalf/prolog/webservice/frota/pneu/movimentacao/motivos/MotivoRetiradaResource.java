@@ -1,10 +1,9 @@
 package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaEdicao;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaInsercao;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaListagem;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaVisualizacao;
+import br.com.zalf.prolog.webservice.commons.util.Platform;
+import br.com.zalf.prolog.webservice.commons.util.UsedBy;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.*;
 import org.jetbrains.annotations.NotNull;
 
 import javax.validation.Valid;
@@ -45,10 +44,19 @@ public final class MotivoRetiradaResource {
     }
 
     @PUT
+    @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public Response update(@NotNull final MotivoRetiradaEdicao motivoRetiradaEdicao,
                            @HeaderParam("Authorization") @NotNull final String tokenAutenticacao) {
         motivoRetiradaService.update(motivoRetiradaEdicao, tokenAutenticacao);
         return Response.ok("Motivo atualizado com sucesso.");
+    }
+
+    @GET
+    @Path("/historico")
+    @UsedBy(platforms = {Platform.ANDROID})
+    public List<MotivoRetiradaHistoricoListagem> getHistoricoByMotivoRetirada(@QueryParam("codMotivo") @NotNull final Long codMotivoRetirada,
+                                                                              @HeaderParam("Authorization") @NotNull final String tokenAutenticacao) {
+        return motivoRetiradaService.getHistoricoByMotivo(codMotivoRetirada, tokenAutenticacao);
     }
 
 }
