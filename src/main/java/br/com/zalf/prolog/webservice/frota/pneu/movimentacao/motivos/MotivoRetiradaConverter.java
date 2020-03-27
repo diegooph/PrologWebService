@@ -24,6 +24,8 @@ public class MotivoRetiradaConverter {
             @NotNull final ResultSet rSet) throws Throwable {
         return new MotivoRetiradaVisualizacao(rSet.getLong("CODIGO_MOTIVO"),
                 rSet.getString("DESCRICAO_MOTIVO"),
+                rSet.getBoolean("ATIVO_MOTIVO"),
+                rSet.getString("CODIGO_AUXILIAR"),
                 rSet.getObject("DATA_HORA_ULTIMA_ALTERACAO_MOTIVO", LocalDateTime.class),
                 rSet.getString("NOME_COLABORADOR_ULTIMA_ALTERACAO"));
     }
