@@ -18,6 +18,9 @@ class MotivoRetiradaEdicao {
     @NotNull
     private final String descricaoMotivoRetirada;
 
+    @NotNull
+    private final boolean ativoMotivoRetirada;
+
     @Nullable
     private final String codAuxiliar;
 
