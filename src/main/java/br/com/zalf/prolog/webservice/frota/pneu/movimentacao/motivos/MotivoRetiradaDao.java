@@ -70,6 +70,6 @@ public interface MotivoRetiradaDao {
      */
     @NotNull
     List<MotivoRetiradaHistoricoListagem> getHistoricoByMotivo(@NotNull Long codMotivoRetirada,
-                                                               @NotNull String tokenAutenticacao);
+                                                               @NotNull String tokenAutenticacao) throws Throwable;
 
 }
