@@ -22,6 +22,6 @@ class MotivoRetiradaEdicao {
     private final boolean ativoMotivoRetirada;
 
     @Nullable
-    private final String codAuxiliar;
+    private final String codAuxiliarMotivoRetirada;
 
 }
