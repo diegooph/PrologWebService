@@ -123,7 +123,7 @@ final class IntegracaoPraxioDaoImpl extends DatabaseConnection implements Integr
         PreparedStatement stmt = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_VEICULO_TRANSFERE_VEICULO(" +
+            stmt = conn.prepareStatement("SELECT * FROM INTEGRACAO.FUNC_VEICULO_TRANSFERE_VEICULO(" +
                     "F_COD_UNIDADE_ORIGEM := ?," +
                     "F_COD_UNIDADE_DESTINO := ?," +
                     "F_CPF_COLABORADOR_TRANSFERENCIA := ?," +
