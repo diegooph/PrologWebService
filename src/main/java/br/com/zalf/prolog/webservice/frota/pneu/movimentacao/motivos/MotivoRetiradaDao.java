@@ -1,9 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos;
 
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaEdicao;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaInsercao;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaListagem;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaVisualizacao;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -63,5 +60,16 @@ public interface MotivoRetiradaDao {
     @Nullable
     void update(@NotNull MotivoRetiradaEdicao motivoRetiradaEdicao,
                 @NotNull final String tokenAutenticacao) throws Throwable;
+
+    /**
+     * Realiza a busca de uma lista de todo o histórico de um {@link MotivoRetiradaHistoricoListagem motivo}.
+     *
+     * @param codMotivoRetirada um código que será utilizado para buscar o histórico.
+     * @param tokenAutenticacao o token de sessão do usuário;
+     * @throws Throwable caso qualquer erro ocorrer.
+     */
+    @NotNull
+    List<MotivoRetiradaHistoricoListagem> getHistoricoByMotivo(@NotNull Long codMotivoRetirada,
+                                                               @NotNull String tokenAutenticacao);
 
 }
