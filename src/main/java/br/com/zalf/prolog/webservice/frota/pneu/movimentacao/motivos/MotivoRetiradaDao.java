@@ -62,7 +62,7 @@ public interface MotivoRetiradaDao {
                 @NotNull final String tokenAutenticacao) throws Throwable;
 
     /**
-     * Realiza a busca de uma lista de todo o histórico de um {@link MotivoRetiradaHistoricoListagem motivo}.
+     * Realiza a busca de uma lista do histórico de um {@link MotivoRetiradaHistoricoListagem motivo}.
      *
      * @param codMotivoRetirada um código que será utilizado para buscar o histórico.
      * @param tokenAutenticacao o token de sessão do usuário;
