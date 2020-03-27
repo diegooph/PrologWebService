@@ -14,9 +14,6 @@ import java.time.LocalDateTime;
 public class MotivoRetiradaHistoricoListagem {
 
     @NotNull
-    private final Long codHistoricoRetirada;
-
-    @NotNull
     private final Long codMotivoRetirada;
 
     @NotNull
