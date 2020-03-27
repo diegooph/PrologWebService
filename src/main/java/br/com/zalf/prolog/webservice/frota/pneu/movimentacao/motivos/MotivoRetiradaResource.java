@@ -51,12 +51,4 @@ public final class MotivoRetiradaResource {
         return Response.ok("Motivo atualizado com sucesso.");
     }
 
-    @DELETE
-    @Path("/{codMotivo}")
-    public Response delete(@PathParam("codMotivo") @NotNull final Long codMotivo,
-                           @HeaderParam("Authorization") @NotNull final String tokenAutenticacao) {
-        motivoRetiradaService.delete(codMotivo, tokenAutenticacao);
-        return Response.ok("Motivo deletado com sucesso.");
-    }
-
 }

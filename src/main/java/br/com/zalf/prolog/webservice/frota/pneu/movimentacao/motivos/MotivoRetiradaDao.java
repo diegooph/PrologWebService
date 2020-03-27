@@ -64,13 +64,4 @@ public interface MotivoRetiradaDao {
     void update(@NotNull MotivoRetiradaEdicao motivoRetiradaEdicao,
                 @NotNull final String tokenAutenticacao) throws Throwable;
 
-    /**
-     * Realiza a deleção de um motivo com base no ID.
-     *
-     * @param codMotivo um código de motivo.
-     * @throws Throwable caso qualquer erro ocorrer.
-     */
-    @Nullable
-    void delete(@NotNull final Long codMotivo, @NotNull final String tokenAutenticacao) throws Throwable;
-
 }
