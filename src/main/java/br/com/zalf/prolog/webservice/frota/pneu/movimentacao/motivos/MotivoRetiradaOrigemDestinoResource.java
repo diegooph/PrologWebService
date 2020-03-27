@@ -29,6 +29,7 @@ public class MotivoRetiradaOrigemDestinoResource {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
+    @UsedBy(platforms = {Platform.WEBSITE})
     public List<Long> insert(@NotNull @Valid @Required final List<MotivoRetiradaOrigemDestinoInsercao> unidades,
                              @NotNull @HeaderParam("Authorization") final String tokenAutenticacao) {
         return motivoRetiradaOrigemDestinoService.insert(unidades, tokenAutenticacao);
@@ -36,12 +37,14 @@ public class MotivoRetiradaOrigemDestinoResource {
 
     @GET
     @Path("/{codMotivoOrigemDestino}")
+    @UsedBy(platforms = {Platform.WEBSITE})
     public MotivoRetiradaOrigemDestinoVisualizacao getMotivoOrigemDestino(@NotNull @PathParam("codMotivoOrigemDestino") final Long codMotivoOrigemDestino,
                                                                           @HeaderParam("Authorization") final String tokenAutenticacao) {
         return motivoRetiradaOrigemDestinoService.getMotivoOrigemDestino(codMotivoOrigemDestino, tokenAutenticacao);
     }
 
     @GET
+    @UsedBy(platforms = {Platform.WEBSITE})
     public List<MotivoRetiradaOrigemDestinoListagem> getMotivosOrigemDestino(@HeaderParam("Authorization") final String tokenAutenticacao) {
         return motivoRetiradaOrigemDestinoService.getMotivosOrigemDestino(tokenAutenticacao);
     }
