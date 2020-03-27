@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos;
 
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaHistoricoListagem;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaListagem;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaVisualizacao;
 import br.com.zalf.prolog.webservice.geral.unidade.UnidadeConverter;
@@ -34,6 +35,16 @@ public class MotivoRetiradaConverter {
     static MotivoRetiradaListagem createMotivoRetiradaListagem(@NotNull final ResultSet rSet) throws Throwable {
         return new MotivoRetiradaListagem(rSet.getLong("CODIGO_MOTIVO"),
                 rSet.getString("DESCRICAO_MOTIVO"));
+    }
+
+    @NotNull
+    static MotivoRetiradaHistoricoListagem createMotivoRetiradaHistoricoListagem(@NotNull final ResultSet rSet) throws Throwable {
+        return new MotivoRetiradaHistoricoListagem(rSet.getLong("CODIGO_MOTIVO"),
+                rSet.getString("DESCRICAO_MOTIVO"),
+                rSet.getBoolean("ATIVO_MOTIVO"),
+                rSet.getString("CODIGO_AUXILIAR"),
+                rSet.getObject("DATA_HORA_ALTERACAO", LocalDateTime.class),
+                rSet.getString("NOME_COLABORADOR_ALTERACAO"));
     }
 
 }
