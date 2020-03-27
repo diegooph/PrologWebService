@@ -2,10 +2,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos;
 
 import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestinoEnum;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaListagem;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaOrigemDestinoListagem;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaOrigemDestinoListagemMotivos;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaOrigemDestinoVisualizacao;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.*;
 import br.com.zalf.prolog.webservice.geral.unidade.UnidadeConverter;
 import org.jetbrains.annotations.NotNull;
 
@@ -65,6 +62,13 @@ public class MotivoRetiradaOrigemDestinoConverter {
                 rSet.getLong("codigo_unidade"),
                 rSet.getString("nome_unidade"),
                 origensDestinos);
+    }
+
+    @NotNull
+    static OrigemDestinoListagem createOrigemDestinoListagem(@NotNull final ResultSet rSet) throws Throwable {
+        return new OrigemDestinoListagem(rSet.getLong("CODIGO_UNIDADE"),
+                OrigemDestinoEnum.getFromStatusPneu(StatusPneu.fromString(rSet.getString("ORIGEM"))),
+                OrigemDestinoEnum.getFromStatusPneu(StatusPneu.fromString(rSet.getString("destino"))));
     }
 
 }
