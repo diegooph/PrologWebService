@@ -4,10 +4,7 @@ import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestinoEnum;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaOrigemDestinoInsercao;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaOrigemDestinoListagem;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaOrigemDestinoListagemMotivos;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaOrigemDestinoVisualizacao;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.*;
 import org.jetbrains.annotations.NotNull;
 
 import javax.validation.Valid;
@@ -56,6 +53,12 @@ public class MotivoRetiradaOrigemDestinoResource {
                                                                                              @QueryParam("destinoMovimento") @NotNull final OrigemDestinoEnum destinoMovimento,
                                                                                              @QueryParam("codUnidade") @NotNull final Long codUnidade) {
         return motivoRetiradaOrigemDestinoService.getMotivosByOrigemAndDestinoAndUnidade(origemMovimento, destinoMovimento, codUnidade);
+    }
+
+    @GET
+    @UsedBy(platforms = {Platform.ANDROID})
+    public List<OrigemDestinoListagem> getRotasExistentesByUnidade(@QueryParam("codUnidade") @NotNull final Long codUnidade) {
+        return motivoRetiradaOrigemDestinoService.getRotasExistentesByUnidade(codUnidade);
     }
 
 }
