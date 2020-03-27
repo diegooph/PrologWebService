@@ -54,7 +54,7 @@ public final class MotivoRetiradaResource {
     @GET
     @Path("/historico")
     @UsedBy(platforms = {Platform.ANDROID})
-    public List<MotivoRetiradaHistoricoListagem> getHistoricoByMotivoRetirada(@QueryParam("codMotivo") @NotNull final Long codMotivoRetirada,
+    public List<MotivoRetiradaHistoricoListagem> getHistoricoByMotivoRetirada(@QueryParam("codMotivoRetirada") @NotNull final Long codMotivoRetirada,
                                                                               @HeaderParam("Authorization") @NotNull final String tokenAutenticacao) {
         return motivoRetiradaService.getHistoricoByMotivo(codMotivoRetirada, tokenAutenticacao);
     }
