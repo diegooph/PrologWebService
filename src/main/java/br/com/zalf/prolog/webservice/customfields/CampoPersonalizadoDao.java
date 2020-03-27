@@ -26,8 +26,8 @@ public interface CampoPersonalizadoDao {
      * @throws Throwable Caso qualquer erro ocorrer.
      */
     @NotNull
-    List<CampoPersonalizadoParaRealizacao> getCamposParaRealizacaoMovimentacao(@NotNull final Long codUnidade)
-            throws Throwable;
+    List<CampoPersonalizadoParaRealizacao> getCamposParaRealizacaoMovimentacao(
+            @NotNull final Long codUnidade) throws Throwable;
 
     /**
      * Salva no banco de dados as respostas fornecidas para cada campo personalizado presente na lista de
@@ -54,9 +54,9 @@ public interface CampoPersonalizadoDao {
      *                           Ou {@code null} caso não tenha nenhuma coluna específica.
      * @throws Throwable Caso qualquer erro ocorrer.
      */
-    void salvaRespostasCamposPersonalizados(@NotNull final Connection conn,
-                                            @NotNull final CampoPersonalizadoFuncaoProlog funcaoProlog,
-                                            @NotNull final List<CampoPersonalizadoResposta> respostas,
-                                            @Nullable final List<ColunaTabelaResposta> colunasEspecificas)
-            throws Throwable;
+    void salvaRespostasCamposPersonalizados(
+            @NotNull final Connection conn,
+            @NotNull final CampoPersonalizadoFuncaoProlog funcaoProlog,
+            @NotNull final List<CampoPersonalizadoResposta> respostas,
+            @Nullable final List<ColunaTabelaResposta> colunasEspecificas) throws Throwable;
 }

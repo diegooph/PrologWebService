@@ -32,8 +32,8 @@ public final class CampoPersonalizadoDaoImpl extends DatabaseConnection implemen
 
     @NotNull
     @Override
-    public List<CampoPersonalizadoParaRealizacao> getCamposParaRealizacaoMovimentacao(@NotNull final Long codUnidade)
-            throws Throwable {
+    public List<CampoPersonalizadoParaRealizacao> getCamposParaRealizacaoMovimentacao(
+            @NotNull final Long codUnidade) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -57,13 +57,12 @@ public final class CampoPersonalizadoDaoImpl extends DatabaseConnection implemen
         }
     }
 
-    @SuppressWarnings("SqlResolve")
     @Override
-    public void salvaRespostasCamposPersonalizados(@NotNull final Connection conn,
-                                                   @NotNull final CampoPersonalizadoFuncaoProlog funcaoProlog,
-                                                   @NotNull final List<CampoPersonalizadoResposta> respostas,
-                                                   @Nullable final List<ColunaTabelaResposta> colunasEspecificas)
-            throws Throwable {
+    public void salvaRespostasCamposPersonalizados(
+            @NotNull final Connection conn,
+            @NotNull final CampoPersonalizadoFuncaoProlog funcaoProlog,
+            @NotNull final List<CampoPersonalizadoResposta> respostas,
+            @Nullable final List<ColunaTabelaResposta> colunasEspecificas) throws Throwable {
 
         final List<CampoPersonalizadoResposta> respostasFiltradas = respostas
                 .stream()

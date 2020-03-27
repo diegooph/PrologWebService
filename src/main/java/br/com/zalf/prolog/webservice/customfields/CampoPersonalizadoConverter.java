@@ -19,8 +19,8 @@ public final class CampoPersonalizadoConverter {
     }
 
     @NotNull
-    public static CampoPersonalizadoParaRealizacao createCampoPersonalizadoParaRealizacao(@NotNull final ResultSet rSet)
-            throws Throwable {
+    public static CampoPersonalizadoParaRealizacao createCampoPersonalizadoParaRealizacao(
+            @NotNull final ResultSet rSet) throws Throwable {
         final Array opcoesSelecao = rSet.getArray("OPCOES_SELECAO_CAMPO");
         return new CampoPersonalizadoParaRealizacao(
                 rSet.getLong("COD_CAMPO"),
