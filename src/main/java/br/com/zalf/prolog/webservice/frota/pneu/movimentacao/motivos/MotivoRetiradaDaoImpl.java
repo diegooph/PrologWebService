@@ -36,16 +36,18 @@ public class MotivoRetiradaDaoImpl extends DatabaseConnection implements MotivoR
             stmt = conn.prepareStatement("SELECT * FROM FUNC_MOTIVO_RETIRADA_INSERE(" +
                     "F_COD_EMPRESA_MOTIVO := ?," +
                     "F_DESCRICAO_MOTIVO := ?," +
-                    "F_COD_AUXILIAR := ?," +
+                    "F_ATIVO_MOTIVO := ?," +
+                    "F_COD_AUXILIAR_MOTIVO := ?," +
                     "F_DATA_HORA_INSERCAO_MOTIVO := ?," +
                     "F_TOKEN_AUTENTICACAO := ?)" +
                     "AS V_COD_MOTIVO");
 
             stmt.setLong(1, motivoRetiradaInsercao.getCodEmpresaMotivoRetirada());
             stmt.setString(2, motivoRetiradaInsercao.getDescricaoMotivoRetirada());
-            stmt.setString(3, motivoRetiradaInsercao.getCodAuxiliarMotivoRetirada());
-            stmt.setObject(4, Now.offsetDateTimeUtc());
-            stmt.setString(5, TokenCleaner.getOnlyToken(tokenAutenticacao));
+            stmt.setBoolean(3, motivoRetiradaInsercao.isAtivoMotivoRetirada());
+            stmt.setString(4, motivoRetiradaInsercao.getCodAuxiliarMotivoRetirada());
+            stmt.setObject(5, Now.offsetDateTimeUtc());
+            stmt.setString(6, TokenCleaner.getOnlyToken(tokenAutenticacao));
 
             rSet = stmt.executeQuery();
 
@@ -124,16 +126,18 @@ public class MotivoRetiradaDaoImpl extends DatabaseConnection implements MotivoR
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT FUNC_MOTIVO_RETIRADA_ATUALIZA(" +
                     "F_COD_MOTIVO := ?," +
-                    "F_DESCRICAO_MOTIVO := ?," +
-                    "F_COD_AUXILIAR := ?," +
+                    "F_DESCRICAO_MOTIVO := ?::CITEXT," +
+                    "F_ATIVO_MOTIVO := ?," +
+                    "F_COD_AUXILIAR_MOTIVO := ?," +
                     "F_DATA_ULTIMA_ALTERACAO := ?," +
                     "F_TOKEN_AUTENTICACAO := ?);");
 
             stmt.setLong(1, motivoRetiradaEdicao.getCodMotivoRetirada());
             stmt.setString(2, motivoRetiradaEdicao.getDescricaoMotivoRetirada());
-            stmt.setString(3, motivoRetiradaEdicao.getCodAuxiliar());
-            stmt.setObject(4, Now.offsetDateTimeUtc());
-            stmt.setString(5, TokenCleaner.getOnlyToken(tokenAutenticacao));
+            stmt.setBoolean(3, motivoRetiradaEdicao.isAtivoMotivoRetirada());
+            stmt.setString(4, motivoRetiradaEdicao.getCodAuxiliarMotivoRetirada());
+            stmt.setObject(5, Now.offsetDateTimeUtc());
+            stmt.setString(6, TokenCleaner.getOnlyToken(tokenAutenticacao));
 
             stmt.executeQuery();
         } finally {
