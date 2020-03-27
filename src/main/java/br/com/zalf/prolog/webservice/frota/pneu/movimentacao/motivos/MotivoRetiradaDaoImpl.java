@@ -43,7 +43,7 @@ public class MotivoRetiradaDaoImpl extends DatabaseConnection implements MotivoR
 
             stmt.setLong(1, motivoRetiradaInsercao.getCodEmpresaMotivoRetirada());
             stmt.setString(2, motivoRetiradaInsercao.getDescricaoMotivoRetirada());
-            stmt.setString(3, motivoRetiradaInsercao.getCodAuxiliar());
+            stmt.setString(3, motivoRetiradaInsercao.getCodAuxiliarMotivoRetirada());
             stmt.setObject(4, Now.offsetDateTimeUtc());
             stmt.setString(5, TokenCleaner.getOnlyToken(tokenAutenticacao));
 
