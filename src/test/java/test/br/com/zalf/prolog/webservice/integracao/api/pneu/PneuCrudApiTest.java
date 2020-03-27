@@ -438,6 +438,177 @@ public final class PneuCrudApiTest extends BaseTest {
     }
 
     @Test
+    @DisplayName("Teste Carga Inicial adicionando pneus e transferindo eles a outra unidade")
+    void adicionaCargaInicialPneuETransfereElesParaOutraUnidade() throws Throwable {
+        //Cria pneus
+        final List<ApiPneuCargaInicial> cargaInicial = new ArrayList<>();
+        cargaInicial.add(criaPneuSemErroComCodigoClienteValido());
+        cargaInicial.add(criaPneuSemErroComUnidadeValida());
+        cargaInicial.add(criaPneuSemErroComModeloPneuValido());
+        cargaInicial.add(criaPneuSemErroComDimensaoValida());
+        cargaInicial.add(criaPneuSemErroComPressaoValida());
+        cargaInicial.add(criaPneuSemErroComVidaAtualValida());
+        cargaInicial.add(criaPneuSemErroComDotValido());
+        cargaInicial.add(criaPneuSemErroComModeloDeBandaValido());
+
+        //Adiciona pneus
+        final List<ApiPneuCargaInicialResponse> apiPneuCargaInicialResponses =
+                apiCadastroPneuService.inserirCargaInicialPneu(TOKEN_INTEGRACAO, cargaInicial);
+
+        //Verificações
+        assertThat(apiPneuCargaInicialResponses).isNotEmpty();
+        assertThat(apiPneuCargaInicialResponses.size()).isEqualTo(cargaInicial.size());
+        for (ApiPneuCargaInicialResponse apiPneuCargaInicialRespons : apiPneuCargaInicialResponses) {
+            assertThat(apiPneuCargaInicialRespons.getSucesso()).isTrue();
+        }
+
+        List<String> pneusTransferencia = new ArrayList<>();
+        //Verifica se os pneus foram inseridos corretamente
+        for (ApiPneuCargaInicial apiPneuCargaInicial : cargaInicial) {
+            final Long codSistemaIntegradoPneu =
+                    buscaCodSistemaIntegradoPneuInserido(
+                            apiPneuCargaInicial.getCodigoSistemaIntegrado(),
+                            apiPneuCargaInicial.getCodigoCliente());
+
+            final ApiPneuCargaInicial apiPneuCargaInicialInfoPneu = buscaInformacoesPneuCargaInicialEstoque(
+                    apiPneuCargaInicial.getCodigoSistemaIntegrado(),
+                    apiPneuCargaInicial.getCodigoCliente());
+            //Valida todas as informações do pneu
+            assertThat(codSistemaIntegradoPneu).isNotNull();
+            assertThat(codSistemaIntegradoPneu).isEqualTo(apiPneuCargaInicial.getCodigoSistemaIntegrado());
+            assertThat(apiPneuCargaInicialInfoPneu.getCodigoSistemaIntegrado()).isEqualTo(apiPneuCargaInicial.
+                    getCodigoSistemaIntegrado());
+            assertThat(apiPneuCargaInicialInfoPneu.getCodigoCliente()).isEqualTo(apiPneuCargaInicial.
+                    getCodigoCliente());
+            assertThat(apiPneuCargaInicialInfoPneu.getCodUnidadePneu()).isEqualTo(apiPneuCargaInicial.
+                    getCodUnidadePneu());
+            assertThat(apiPneuCargaInicialInfoPneu.getCodModeloPneu()).isEqualTo(apiPneuCargaInicial.
+                    getCodModeloPneu());
+            assertThat(apiPneuCargaInicialInfoPneu.getCodDimensaoPneu()).isEqualTo(apiPneuCargaInicial.
+                    getCodDimensaoPneu());
+            assertThat(apiPneuCargaInicialInfoPneu.getPressaoCorretaPneu()).isEqualTo(apiPneuCargaInicial.
+                    getPressaoCorretaPneu());
+            assertThat(apiPneuCargaInicialInfoPneu.getVidaAtualPneu()).isEqualTo(apiPneuCargaInicial.
+                    getVidaAtualPneu());
+            assertThat(apiPneuCargaInicialInfoPneu.getVidaTotalPneu()).isEqualTo(apiPneuCargaInicial.
+                    getVidaTotalPneu());
+            assertThat(apiPneuCargaInicialInfoPneu.getPneuNovoNuncaRodado()).isEqualTo(apiPneuCargaInicial.
+                    getPneuNovoNuncaRodado());
+            pneusTransferencia.add(apiPneuCargaInicial.getCodigoCliente());
+        }
+
+        //Realiza transferência de unidade
+        final Long novaUnidade = buscaUmaUnidadeDaEmpresa();
+        final Long cpfColaboradorUnidadeOrigem = buscaUmCpfDaUnidade();
+        final String observacao = "Teste de Pneus";
+
+        //Realiza chamada para o método de transferencia de pneu
+
+
+        //Busca informações do pneu para validar transferência
+        for (ApiPneuCargaInicial apiPneuCargaInicial : cargaInicial) {
+            final Long codSistemaIntegradoPneu =
+                    buscaCodSistemaIntegradoPneuInserido(
+                            apiPneuCargaInicial.getCodigoSistemaIntegrado(),
+                            apiPneuCargaInicial.getCodigoCliente());
+
+            final ApiPneuCargaInicial apiPneuCargaInicialInfoPneuTransferido = buscaInformacoesPneuCargaInicialEstoque(
+                    apiPneuCargaInicial.getCodigoSistemaIntegrado(),
+                    apiPneuCargaInicial.getCodigoCliente());
+            //Valida todas as informações do pneu
+            assertThat(codSistemaIntegradoPneu).isNotNull();
+            assertThat(codSistemaIntegradoPneu).isEqualTo(apiPneuCargaInicial.getCodigoSistemaIntegrado());
+            assertThat(apiPneuCargaInicialInfoPneuTransferido.getCodigoSistemaIntegrado()).isEqualTo(apiPneuCargaInicial.
+                    getCodigoSistemaIntegrado());
+            assertThat(apiPneuCargaInicialInfoPneuTransferido.getCodigoCliente()).isEqualTo(apiPneuCargaInicial.
+                    getCodigoCliente());
+            assertThat(apiPneuCargaInicialInfoPneuTransferido.getCodUnidadePneu()).isEqualTo(novaUnidade);
+            assertThat(apiPneuCargaInicialInfoPneuTransferido.getCodModeloPneu()).isEqualTo(apiPneuCargaInicial.
+                    getCodModeloPneu());
+            assertThat(apiPneuCargaInicialInfoPneuTransferido.getCodDimensaoPneu()).isEqualTo(apiPneuCargaInicial.
+                    getCodDimensaoPneu());
+            assertThat(apiPneuCargaInicialInfoPneuTransferido.getPressaoCorretaPneu()).isEqualTo(apiPneuCargaInicial.
+                    getPressaoCorretaPneu());
+            assertThat(apiPneuCargaInicialInfoPneuTransferido.getVidaAtualPneu()).isEqualTo(apiPneuCargaInicial.
+                    getVidaAtualPneu());
+            assertThat(apiPneuCargaInicialInfoPneuTransferido.getVidaTotalPneu()).isEqualTo(apiPneuCargaInicial.
+                    getVidaTotalPneu());
+            assertThat(apiPneuCargaInicialInfoPneuTransferido.getPneuNovoNuncaRodado()).isEqualTo(apiPneuCargaInicial.
+                    getPneuNovoNuncaRodado());
+        }
+    }
+
+    @Test
+    @DisplayName("Teste Carga Inicial adicionando pneus e transferindo eles a outra unidade")
+    void adicionaCargaInicialPneuEmUmVeiculoDepoisTransfereVeiculo() throws Throwable {
+        //Cria veículo.
+        VeiculoCadastroPraxio veiculoCadastroPraxio = criaVeiculoParaCadastro();
+
+        //Adiciona veículo.
+        final SuccessResponseIntegracao successResponseIntegracao = integracaoPraxioResource.
+                inserirVeiculoPraxio(TOKEN_INTEGRACAO, veiculoCadastroPraxio);
+
+        //Verifica se veículo foi salvo.
+        assertThat(successResponseIntegracao.getMsg()).isEqualTo("Veículo inserido no ProLog com sucesso");
+
+        //Busca posições do veículo criado.
+        final List<Integer> posicoesPlaca = buscaPosicaoesPlaca(veiculoCadastroPraxio.getPlacaVeiculo());
+        final List<ApiPneuCargaInicial> cargaInicial = new ArrayList<>();
+        for (Integer integer : posicoesPlaca) {
+            //Cria pneu com as posições
+            cargaInicial.add(criaPneuComPosicoesEspecificas(integer,
+                    veiculoCadastroPraxio.getPlacaVeiculo()));
+        }
+
+        //Adiciona pneus
+        final List<ApiPneuCargaInicialResponse> apiPneuCargaInicialResponses =
+                apiCadastroPneuService.inserirCargaInicialPneu(TOKEN_INTEGRACAO, cargaInicial);
+
+        //Valida se todos pneus foram salvos com sucesso.
+        for (ApiPneuCargaInicialResponse apiPneuCargaInicialResponse : apiPneuCargaInicialResponses) {
+            assertThat(apiPneuCargaInicialResponse.getMensagem()).isEqualTo("Pneu cadastrado com sucesso no " +
+                    "Sistema ProLog");
+        }
+
+        //Valida informações dos pneus salvos.
+        //Verifica se os pneus foram inseridos com as informações corretas.
+        for (ApiPneuCargaInicial apiPneuCargaInicial : cargaInicial) {
+            final Long codSistemaIntegradoPneu =
+                    buscaCodSistemaIntegradoPneuInserido(
+                            apiPneuCargaInicial.getCodigoSistemaIntegrado(),
+                            apiPneuCargaInicial.getCodigoCliente());
+            final ApiPneuCargaInicial apiPneuCargaInicialInfoPneu = buscaInformacoesPneuCargaInicialEmUso(
+                    apiPneuCargaInicial.getCodigoSistemaIntegrado(),
+                    apiPneuCargaInicial.getCodigoCliente());
+            //Valida todas as informações do pneu salvo.
+            assertThat(codSistemaIntegradoPneu).isNotNull();
+            assertThat(codSistemaIntegradoPneu).isEqualTo(apiPneuCargaInicial.getCodigoSistemaIntegrado());
+            assertThat(apiPneuCargaInicialInfoPneu.getCodigoSistemaIntegrado()).isEqualTo(apiPneuCargaInicial.
+                    getCodigoSistemaIntegrado());
+            assertThat(apiPneuCargaInicialInfoPneu.getCodigoCliente()).isEqualTo(apiPneuCargaInicial.
+                    getCodigoCliente());
+            assertThat(apiPneuCargaInicialInfoPneu.getCodUnidadePneu()).isEqualTo(apiPneuCargaInicial.
+                    getCodUnidadePneu());
+            assertThat(apiPneuCargaInicialInfoPneu.getCodModeloPneu()).isEqualTo(apiPneuCargaInicial.
+                    getCodModeloPneu());
+            assertThat(apiPneuCargaInicialInfoPneu.getCodDimensaoPneu()).isEqualTo(apiPneuCargaInicial.
+                    getCodDimensaoPneu());
+            assertThat(apiPneuCargaInicialInfoPneu.getPressaoCorretaPneu()).isEqualTo(apiPneuCargaInicial.
+                    getPressaoCorretaPneu());
+            assertThat(apiPneuCargaInicialInfoPneu.getVidaAtualPneu()).isEqualTo(apiPneuCargaInicial.
+                    getVidaAtualPneu());
+            assertThat(apiPneuCargaInicialInfoPneu.getVidaTotalPneu()).isEqualTo(apiPneuCargaInicial.
+                    getVidaTotalPneu());
+            assertThat(apiPneuCargaInicialInfoPneu.getPneuNovoNuncaRodado()).isEqualTo(apiPneuCargaInicial.
+                    getPneuNovoNuncaRodado());
+        }
+
+        //Chama o método para transferir placa
+
+
+    }
+
+    @Test
     @DisplayName("Teste Carga Inicial adicionando dois pneus no veículo e logo após inverter as posições dos pneus")
     void adicionaCargaInicialPneuEmVeiculoDepoisInvertePosicaoDosPneus() throws Throwable {
         //Cria veículo.
@@ -1489,6 +1660,56 @@ public final class PneuCrudApiTest extends BaseTest {
             throw new SQLException("Erro ao ativar configuração de sobrescrita do pneu");
         } finally {
             connectionProvider.closeResources(conn, stmt);
+        }
+    }
+
+    private Long buscaUmaUnidadeDaEmpresa() throws Throwable{
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        List<Long> codUnidadeEmpresa = new ArrayList<>();
+        try {
+            conn = connectionProvider.provideDatabaseConnection();
+            stmt = conn.prepareStatement("SELECT U.CODIGO FROM UNIDADE U WHERE U.COD_EMPRESA = ?");
+            stmt.setLong(1, COD_EMPRESA);
+            rSet = stmt.executeQuery();
+            while (rSet.next()) {
+                codUnidadeEmpresa.add(rSet.getLong("CODIGO"));
+            }
+            if (!codUnidadeEmpresa.isEmpty()) {
+                return codUnidadeEmpresa.get(0);
+            } else {
+                throw new SQLException("Erro ao buscar código unidade");
+            }
+        } catch (final Throwable throwable) {
+            throw new SQLException("Erro ao buscar código unidade");
+        } finally {
+            connectionProvider.closeResources(conn, stmt, rSet);
+        }
+    }
+
+    private Long buscaUmCpfDaUnidade() throws Throwable{
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        List<Long> listaComCpfs = new ArrayList<>();
+        try {
+            conn = connectionProvider.provideDatabaseConnection();
+            stmt = conn.prepareStatement("SELECT C.CPF FROM COLABORADOR_DATA C WHERE C.COD_UNIDADE = ?");
+            stmt.setLong(1, COD_UNIDADE);
+            rSet = stmt.executeQuery();
+            while (rSet.next()) {
+                listaComCpfs.add(rSet.getLong("CODIGO"));
+            }
+            if (!listaComCpfs.isEmpty()) {
+                return listaComCpfs.get(0);
+            } else {
+                throw new SQLException("Erro ao buscar CPF");
+            }
+        } catch (final Throwable throwable) {
+            throw new SQLException("Erro ao buscar CPF");
+        } finally {
+            connectionProvider.closeResources(conn, stmt, rSet);
         }
     }
 
