@@ -67,6 +67,6 @@ public interface MotivoRetiradaOrigemDestinoDao {
      * @throws Throwable Caso qualquer erro ocorra.
      */
     @NotNull
-    OrigemDestinoListagem getRotasExistentesByUnidade(@NotNull Long codUnidade);
+    List<OrigemDestinoListagem> getRotasExistentesByUnidade(@NotNull Long codUnidade);
 
 }
