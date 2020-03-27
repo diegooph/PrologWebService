@@ -123,14 +123,22 @@ final class IntegracaoPraxioDaoImpl extends DatabaseConnection implements Integr
         PreparedStatement stmt = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_VEICULO_TRANSFERE_VEICULO(?,?,?,?,?,?)");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_VEICULO_TRANSFERE_VEICULO(" +
+                    "F_COD_UNIDADE_ORIGEM := ?," +
+                    "F_COD_UNIDADE_DESTINO := ?," +
+                    "F_CPF_COLABORADOR_TRANSFERENCIA := ?," +
+                    "F_PLACA := ?," +
+                    "F_OBSERVACAO := ?," +
+                    "F_TOKEN_INTEGRACAO := ?, " +
+                    "F_DATA_HORA := ?)");
             stmt.setLong(1, veiculoTransferenciaPraxio.getCodUnidadeOrigem());
             stmt.setLong(2, veiculoTransferenciaPraxio.getCodUnidadeDestino());
             stmt.setLong(3, Colaborador.formatCpf(veiculoTransferenciaPraxio.
                     getCpfColaboradorRealizacaoTransferencia()));
             stmt.setString(4, veiculoTransferenciaPraxio.getPlacaTransferida());
             stmt.setString(5, veiculoTransferenciaPraxio.getObservacao());
-            stmt.setObject(6, Now.offsetDateTimeUtc());
+            stmt.setString(6, tokenIntegracao);
+            stmt.setObject(7, Now.offsetDateTimeUtc());
             stmt.executeQuery();
         } finally {
             close(conn, stmt);
