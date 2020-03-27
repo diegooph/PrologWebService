@@ -1,10 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos;
 
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestinoEnum;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaOrigemDestinoInsercao;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaOrigemDestinoListagem;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaOrigemDestinoListagemMotivos;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaOrigemDestinoVisualizacao;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -61,5 +58,15 @@ public interface MotivoRetiradaOrigemDestinoDao {
     MotivoRetiradaOrigemDestinoListagemMotivos getMotivosByOrigemAndDestinoAndUnidade(@NotNull final OrigemDestinoEnum origemMovimento,
                                                                                       @NotNull final OrigemDestinoEnum destinoMovimento,
                                                                                       @NotNull final Long codUnidade) throws Throwable;
+
+    /**
+     * Busca uma lista de {@link OrigemDestinoListagem origemDestino} no banco de dados
+     * com base em uma origem, destino e unidade.
+     *
+     * @param codUnidade o código da unidade das relações de origem e destino que serão buscadas.
+     * @throws Throwable Caso qualquer erro ocorra.
+     */
+    @NotNull
+    OrigemDestinoListagem getRotasExistentesByUnidade(@NotNull Long codUnidade);
 
 }
