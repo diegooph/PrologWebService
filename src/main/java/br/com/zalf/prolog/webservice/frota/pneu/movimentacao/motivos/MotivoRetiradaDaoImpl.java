@@ -3,10 +3,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos;
 import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaEdicao;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaInsercao;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaListagem;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaVisualizacao;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -142,6 +139,33 @@ public class MotivoRetiradaDaoImpl extends DatabaseConnection implements MotivoR
             stmt.executeQuery();
         } finally {
             close(conn, stmt);
+        }
+    }
+
+    @Override
+    public @NotNull List<MotivoRetiradaHistoricoListagem> getHistoricoByMotivo(@NotNull final Long codMotivoRetirada,
+                                                                               @NotNull final String tokenAutenticacao) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_MOTIVO_RETIRADA_HISTORICO_LISTAGEM(" +
+                    "F_COD_MOTIVO := ?," +
+                    "F_TOKEN := ?)");
+            stmt.setLong(1, codMotivoRetirada);
+            stmt.setString(2, TokenCleaner.getOnlyToken(tokenAutenticacao));
+
+            rSet = stmt.executeQuery();
+
+            final List<MotivoRetiradaHistoricoListagem> historicoMotivo = new ArrayList();
+            while (rSet.next()) {
+                historicoMotivo.add(MotivoRetiradaConverter.createMotivoRetiradaHistoricoListagem(rSet));
+            }
+
+            return historicoMotivo;
+        } finally {
+            close(conn, stmt, rSet);
         }
     }
 
