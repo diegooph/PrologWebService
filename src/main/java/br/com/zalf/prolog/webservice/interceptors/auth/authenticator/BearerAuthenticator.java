@@ -10,6 +10,7 @@ import javax.ws.rs.NotAuthorizedException;
 import java.util.Optional;
 
 public final class BearerAuthenticator extends ProLogAuthenticator {
+    @NotNull
     private static final String TAG = BearerAuthenticator.class.getSimpleName();
 
     BearerAuthenticator(@NotNull final AutenticacaoService service) {

@@ -15,6 +15,7 @@ public final class BasicAuthenticator extends ProLogAuthenticator {
         super(service);
     }
 
+    @NotNull
     @Override
     public ColaboradorAutenticado validate(@NotNull final String value,
                                            @NotNull final int[] permissions,
