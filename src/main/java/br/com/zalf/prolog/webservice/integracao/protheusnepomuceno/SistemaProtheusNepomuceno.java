@@ -330,7 +330,7 @@ public final class SistemaProtheusNepomuceno extends Sistema {
     private void validateCodAuxiliar(@Nullable final Long codEmpresaTipoVeiculo,
                                      @Nullable final Long codTipoVeiculo,
                                      @Nullable final String codAuxiliarTipoVeiculo) throws Throwable {
-        if (codAuxiliarTipoVeiculo == null) {
+        if (codAuxiliarTipoVeiculo == null || codAuxiliarTipoVeiculo.isEmpty()) {
             // Não precisamos validar nada, se o código auxiliar for nulo.
             return;
         }
