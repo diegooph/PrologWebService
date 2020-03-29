@@ -169,13 +169,14 @@ public interface SistemaProtheusNepomucenoDao {
      * Método utilizado para buscar os códigos auxiliares mapeados. Esse método não retorna, caso exisitir, o código
      * auxiliar do próprio código de tipo de veículo sendo filtrado.
      *
-     * @param codEmpresaTipoVeiculo Código da empresa onde o tipo de veículo pertence.
+     * @param codEmpresaTipoVeiculo Código da empresa onde o tipo de veículo pertence. Null caso o tipo de veículo
+     *                              estiver sendo atualizado. Para esse cenário, o {@code codTipoVeiculo} não será null.
      * @param codTipoVeiculo        Código do tipo de veículo. Null caso o tipo de veículo ainda não estiver
      *                              cadastrado.
      * @return Lista contendo os códigos auxiliares mapeados, exceto o codigo auxiliar do tipo de veículo filtrado.
      * @throws Throwable Se algum erro acontecer.
      */
     @NotNull
-    List<String> verificaCodAuxiliarTipoVeiculoValido(@NotNull final Long codEmpresaTipoVeiculo,
+    List<String> verificaCodAuxiliarTipoVeiculoValido(@Nullable final Long codEmpresaTipoVeiculo,
                                                       @Nullable final Long codTipoVeiculo) throws Throwable;
 }

@@ -51,6 +51,7 @@ public final class SistemaProtheusNepomuceno extends Sistema {
     public void updateTipoVeiculo(@NotNull final TipoVeiculo tipoVeiculo) throws Throwable {
         // Validamos se o codAuxiliar está dentro dos padrões. Uma exception personalizada é lançada caso não estiver
         // de acordo.
+
         validateCodAuxiliar(tipoVeiculo.getCodEmpresa(), tipoVeiculo.getCodigo(), tipoVeiculo.getCodAuxiliar());
         // Usamos o fluxo padrão do Prolog, apenas validamos antes
         getIntegradorProLog().updateTipoVeiculo(tipoVeiculo);
@@ -326,7 +327,7 @@ public final class SistemaProtheusNepomuceno extends Sistema {
         }
     }
 
-    private void validateCodAuxiliar(@NotNull final Long codEmpresaTipoVeiculo,
+    private void validateCodAuxiliar(@Nullable final Long codEmpresaTipoVeiculo,
                                      @Nullable final Long codTipoVeiculo,
                                      @Nullable final String codAuxiliarTipoVeiculo) throws Throwable {
         if (codAuxiliarTipoVeiculo == null) {
@@ -354,7 +355,7 @@ public final class SistemaProtheusNepomuceno extends Sistema {
                 .findAny()
                 .ifPresent(codAuxiliar -> {
                     throw new ProtheusNepomucenoException(
-                            "O código auxiliar " + codAuxiliar +
+                            "O código auxiliar " + codAuxiliarTipoVeiculo +
                                     " já está cadastrado em outro Tipo de Veículo e não pode ser repetido");
                 });
     }

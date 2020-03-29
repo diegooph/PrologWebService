@@ -11,6 +11,7 @@ import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosA
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosAfericaoRealizadaPlaca;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosTipoVeiculoConfiguracaoAfericao;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosUnidadeRestricao;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import org.jetbrains.annotations.NotNull;
@@ -265,7 +266,7 @@ public final class SistemaProtheusNepomucenoDaoImpl extends DatabaseConnection i
         ResultSet rSet = null;
         try {
             stmt = conn.prepareStatement("select * " +
-                            "from integracao.func_pneu_afericao_get_config_nova_afericao_avulsa(f_cod_unidade => ?);");
+                    "from integracao.func_pneu_afericao_get_config_nova_afericao_avulsa(f_cod_unidade => ?);");
             stmt.setLong(1, codUnidade);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
@@ -376,8 +377,11 @@ public final class SistemaProtheusNepomucenoDaoImpl extends DatabaseConnection i
 
     @NotNull
     @Override
-    public List<String> verificaCodAuxiliarTipoVeiculoValido(@NotNull final Long codEmpresaTipoVeiculo,
+    public List<String> verificaCodAuxiliarTipoVeiculoValido(@Nullable final Long codEmpresaTipoVeiculo,
                                                              @Nullable final Long codTipoVeiculo) throws Throwable {
+        Preconditions.checkArgument(
+                codEmpresaTipoVeiculo != null || codTipoVeiculo != null,
+                "codEmpresaTipoVeiculo e codTipoVeiculo não pode ser nulos ao mesmo tempo!");
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -385,12 +389,13 @@ public final class SistemaProtheusNepomucenoDaoImpl extends DatabaseConnection i
             conn = getConnection();
             stmt = conn.prepareStatement("select vt.cod_auxiliar as cod_auxiliar " +
                     "from veiculo_tipo vt " +
-                    "where vt.cod_empresa = ? " +
-                    "and vt.cod_auxiliar is not null " +
+                    "where vt.cod_auxiliar is not null " +
+                    "and f_if(? is null, true, vt.cod_empresa = ?) " +
                     "and f_if(? is null, true, vt.codigo != ?);");
-            stmt.setLong(1, codEmpresaTipoVeiculo);
-            StatementUtils.bindValueOrNull(stmt, 2, codTipoVeiculo, SqlType.BIGINT);
+            StatementUtils.bindValueOrNull(stmt, 1, codEmpresaTipoVeiculo, SqlType.BIGINT);
+            StatementUtils.bindValueOrNull(stmt, 2, codEmpresaTipoVeiculo, SqlType.BIGINT);
             StatementUtils.bindValueOrNull(stmt, 3, codTipoVeiculo, SqlType.BIGINT);
+            StatementUtils.bindValueOrNull(stmt, 4, codTipoVeiculo, SqlType.BIGINT);
             rSet = stmt.executeQuery();
             final List<String> codigosAuxiliares = new ArrayList<>();
             while (rSet.next()) {
