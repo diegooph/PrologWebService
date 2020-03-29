@@ -1,8 +1,11 @@
 package br.com.zalf.prolog.webservice.integracao.praxio.data;
 
+import br.com.zalf.prolog.webservice.integracao.praxio.movimentacao.GlobusPiccoloturLocaisMovimento;
 import br.com.zalf.prolog.webservice.integracao.praxio.movimentacao.ProcessoMovimentacaoGlobus;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap.OrdemDeServicoCorretivaPrologVO;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 /**
  * Created on 01/06/19.
@@ -65,4 +68,10 @@ public interface GlobusPiccoloturRequester {
             @NotNull final String url,
             @NotNull final String tokenIntegracao,
             @NotNull final ProcessoMovimentacaoGlobus processoMovimentacaoGlobus) throws Throwable;
+
+    @NotNull
+    List<GlobusPiccoloturLocaisMovimento> getLocaisMovimentoGlobus(
+            @NotNull final String url,
+            @NotNull final String tokenIntegracao,
+            @NotNull final String cpfUsuario) throws Throwable;
 }

@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public enum MetodoIntegrado {
     INSERT_MOVIMENTACAO("INSERT_MOVIMENTACAO"),
+    GET_LOCAIS_DE_MOVIMENTO("GET_LOCAIS_DE_MOVIMENTO"),
     GET_AUTENTICACAO("GET_AUTENTICACAO");
 
     @NotNull

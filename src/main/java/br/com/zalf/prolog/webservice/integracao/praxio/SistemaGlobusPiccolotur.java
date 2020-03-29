@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.integracao.praxio;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.customfields.CampoPersonalizadoDao;
+import br.com.zalf.prolog.webservice.customfields._model.CampoPersonalizadoParaRealizacao;
 import br.com.zalf.prolog.webservice.database.DatabaseConnectionProvider;
 import br.com.zalf.prolog.webservice.errorhandling.exception.BloqueadoIntegracaoException;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
@@ -25,6 +26,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.concurrent.Executors;
 
 /**
@@ -153,6 +155,16 @@ public final class SistemaGlobusPiccolotur extends Sistema {
                        @NotNull final ProcessoMovimentacao processoMovimentacao,
                        @NotNull final OffsetDateTime dataHoraMovimentacao,
                        final boolean fecharServicosAutomaticamente) throws Throwable {
+        if (!unidadeEstaComIntegracaoAtiva(processoMovimentacao.getUnidade().getCodigo())) {
+            // Não tem integração, vamos para o fluxo normal do Prolog.
+            return getIntegradorProLog()
+                    .insert(servicoDao,
+                            campoPersonalizadoDao,
+                            processoMovimentacao,
+                            dataHoraMovimentacao,
+                            fecharServicosAutomaticamente);
+        }
+        // Temos a integração ativa, executamos o fluxo integrado.
         // Garantimos que apenas movimentações válidas foram feitas para essa integração.
         for (final Movimentacao movimentacao : processoMovimentacao.getMovimentacoes()) {
             if (!movimentacao.isFromOrigemToDestino(OrigemDestinoEnum.ESTOQUE, OrigemDestinoEnum.DESCARTE)
@@ -231,6 +243,57 @@ public final class SistemaGlobusPiccolotur extends Sistema {
         } finally {
             connectionProvider.closeResources(conn);
         }
+    }
+
+    @NotNull
+    @Override
+    public List<CampoPersonalizadoParaRealizacao> getCamposParaRealizacaoMovimentacao(
+            @NotNull final Long codUnidade,
+            @NotNull final CampoPersonalizadoDao campoPersonalizadoDao) throws Throwable {
+        if (!unidadeEstaComIntegracaoAtiva(codUnidade)) {
+            // Se a unidade não está integrada, então direcionamos para o fluxo do Prolog.
+            return campoPersonalizadoDao.getCamposParaRealizacaoMovimentacao(codUnidade);
+        }
+        // fluxo integrado, direcionamos a requisição para a Praxio.
+        Connection conn = null;
+        final DatabaseConnectionProvider connectionProvider = new DatabaseConnectionProvider();
+        try {
+            conn = connectionProvider.provideDatabaseConnection();
+            conn.setAutoCommit(false);
+            final long codEmpresa = getIntegradorProLog().getCodEmpresaByCodUnidadeProLog(conn, codUnidade);
+
+            final ApiAutenticacaoHolder autenticacaoHolder =
+                    getIntegradorProLog()
+                            .getApiAutenticacaoHolder(
+                                    conn,
+                                    codEmpresa,
+                                    getSistemaKey(),
+                                    MetodoIntegrado.GET_AUTENTICACAO);
+            final GlobusPiccoloturAutenticacaoResponse autenticacaoResponse =
+                    requester.getTokenAutenticacaoIntegracao(
+                            autenticacaoHolder.getUrl(),
+                            autenticacaoHolder.getApiTokenClient(),
+                            autenticacaoHolder.getApiShortCode());
+
+            final String url = getIntegradorProLog()
+                    .getUrl(conn, codEmpresa, getSistemaKey(), MetodoIntegrado.GET_LOCAIS_DE_MOVIMENTO);
+            final String cpfColaborador = getIntegradorProLog().getColaboradorByToken(getUserToken()).getCpfAsString();
+            return GlobusPiccoloturConverter
+                    .convert(
+                            requester.getLocaisMovimentoGlobus(
+                                    url,
+                                    autenticacaoResponse.getFormattedBearerToken(),
+                                    cpfColaborador));
+        } finally {
+            connectionProvider.closeResources(conn);
+        }
+
+    }
+
+    private boolean unidadeEstaComIntegracaoAtiva(@NotNull final Long codUnidade) throws Throwable {
+        // Caso o código da unidade está contido na lista de unidades bloqueadas, significa que a unidade
+        // NÃO ESTÁ integrada.
+        return !getIntegradorProLog().getCodUnidadesIntegracaoBloqueada(getUserToken()).contains(codUnidade);
     }
 
     @NotNull

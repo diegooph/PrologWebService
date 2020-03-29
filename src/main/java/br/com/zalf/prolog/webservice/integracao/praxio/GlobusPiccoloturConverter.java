@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.praxio;
 
+import br.com.zalf.prolog.webservice.customfields._model.CampoPersonalizadoParaRealizacao;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
@@ -10,6 +11,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestin
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.ProcessoMovimentacao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.destino.DestinoVeiculo;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.origem.OrigemVeiculo;
+import br.com.zalf.prolog.webservice.integracao.praxio.movimentacao.GlobusPiccoloturLocaisMovimento;
 import br.com.zalf.prolog.webservice.integracao.praxio.movimentacao.MovimentacaoGlobus;
 import br.com.zalf.prolog.webservice.integracao.praxio.movimentacao.ProcessoMovimentacaoGlobus;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.*;
@@ -172,6 +174,12 @@ public final class GlobusPiccoloturConverter {
         }
 
         return new ProcessoMovimentacaoGlobus(movimentacoesGlobus);
+    }
+
+    @NotNull
+    public static List<CampoPersonalizadoParaRealizacao> convert(
+            @NotNull final List<GlobusPiccoloturLocaisMovimento> locaisMovimentoGlobus) throws Throwable {
+        return new ArrayList<>();
     }
 
     @NotNull
