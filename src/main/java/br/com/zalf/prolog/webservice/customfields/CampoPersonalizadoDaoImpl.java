@@ -80,17 +80,18 @@ public final class CampoPersonalizadoDaoImpl extends DatabaseConnection implemen
         }
 
         // SQL base, com nome da tabela, colunas e valores pendentes para serem setados dinamicamente.
-        String sql = "insert into %s (cod_tipo_campo, cod_campo, resposta, resposta_lista_selecao, %s) " +
+        String sql = "insert into %s (cod_tipo_campo, cod_campo, resposta, resposta_lista_selecao %s) " +
                 "values (?, ?, ?, ? %s)";
         if (colunasEspecificas != null && !colunasEspecificas.isEmpty()) {
             // Como a tabela de respostas possui colunas específicas, precisamos formatar o SQL base para que contenha
             // o nome e o ponto de interrogação (?) para cada uma dessas colunas.
             final String nomesColunas = colunasEspecificas
                     .stream()
-                    .map(ColunaTabelaResposta::getNomeColuna)
-                    .collect(Collectors.joining(","));
-            final String questionMarks = IntStream.of(colunasEspecificas.size())
-                    .mapToObj(i -> ",?")
+                    .map(coluna -> ", " + coluna.getNomeColuna())
+                    .collect(Collectors.joining());
+            final String questionMarks = colunasEspecificas.
+                    stream()
+                    .map(coluna -> ", ?")
                     .collect(Collectors.joining());
             sql = String.format(sql, funcaoProlog.getTableNameRespostas(), nomesColunas, questionMarks);
         } else {
