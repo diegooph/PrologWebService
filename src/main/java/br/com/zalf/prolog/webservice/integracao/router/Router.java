@@ -152,7 +152,8 @@ public abstract class Router implements OperacoesIntegradas {
 
     @NotNull
     @Override
-    public Afericao getAfericaoByCodigo(@NotNull final Long codUnidade, @NotNull final Long codAfericao) throws Throwable {
+    public Afericao getAfericaoByCodigo(@NotNull final Long codUnidade,
+                                        @NotNull final Long codAfericao) throws Throwable {
         if (getSistema() != null) {
             return getSistema().getAfericaoByCodigo(codUnidade, codAfericao);
         } else {
@@ -203,9 +204,11 @@ public abstract class Router implements OperacoesIntegradas {
             final boolean statusAtivo,
             @NotNull final String userToken) throws Throwable {
         if (getSistema() != null) {
-            return getSistema().insertModeloChecklist(modeloChecklist, checklistOfflineListener, statusAtivo, userToken);
+            return getSistema()
+                    .insertModeloChecklist(modeloChecklist, checklistOfflineListener, statusAtivo, userToken);
         } else {
-            return integradorProLog.insertModeloChecklist(modeloChecklist, checklistOfflineListener, statusAtivo, userToken);
+            return integradorProLog
+                    .insertModeloChecklist(modeloChecklist, checklistOfflineListener, statusAtivo, userToken);
         }
     }
 
@@ -255,9 +258,11 @@ public abstract class Router implements OperacoesIntegradas {
             final @NotNull String placaVeiculo,
             final @NotNull TipoChecklist tipoChecklist) throws Throwable {
         if (getSistema() != null) {
-            return getSistema().getModeloChecklistRealizacao(codModeloChecklist, codVeiculo, placaVeiculo, tipoChecklist);
+            return getSistema()
+                    .getModeloChecklistRealizacao(codModeloChecklist, codVeiculo, placaVeiculo, tipoChecklist);
         } else {
-            return integradorProLog.getModeloChecklistRealizacao(codModeloChecklist, codVeiculo, placaVeiculo, tipoChecklist);
+            return integradorProLog
+                    .getModeloChecklistRealizacao(codModeloChecklist, codVeiculo, placaVeiculo, tipoChecklist);
         }
     }
 

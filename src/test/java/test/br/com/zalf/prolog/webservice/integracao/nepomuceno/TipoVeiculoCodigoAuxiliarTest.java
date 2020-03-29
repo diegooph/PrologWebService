@@ -1,4 +1,4 @@
-package test.br.com.zalf.prolog.webservice.integracao.nopomuceno;
+package test.br.com.zalf.prolog.webservice.integracao.nepomuceno;
 
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.database.DatabaseConnectionProvider;

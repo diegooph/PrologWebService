@@ -1,9 +1,3 @@
-Stage
-==========
-
-### Refactors
-* Adiciona código auxiliar no cadastro de tipo de veículo (PL-2560)
-
 Change Log
 ==========
 
@@ -13,6 +7,10 @@ Change Log
 ### Features
 * Cria estrutura de campos personalizados (PL-2616)
 * Aplica fluxo de campos personalizados no processo de movimentação (PL-2616)
+* Cria integração de pneus para o cliente Expresso Nepomuceno (PLI-93)
+
+### Refactors
+* Adiciona código auxiliar no cadastro de tipo de veículo (PL-2560)
 
 <a name="v1.0.23"></a>
 ## Version [v1.0.23](https://github.com/luizfp/PrologWebService/compare/v1.0.22...v1.0.23) (2020-03-18)

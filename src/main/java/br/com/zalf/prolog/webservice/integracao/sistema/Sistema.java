@@ -106,7 +106,8 @@ public abstract class Sistema implements OperacoesIntegradas {
 
     @NotNull
     @Override
-    public Afericao getAfericaoByCodigo(@NotNull final Long codUnidade, @NotNull final Long codAfericao) throws Throwable {
+    public Afericao getAfericaoByCodigo(@NotNull final Long codUnidade,
+                                        @NotNull final Long codAfericao) throws Throwable {
         return getIntegradorProLog().getAfericaoByCodigo(codUnidade, codAfericao);
     }
 
@@ -135,7 +136,8 @@ public abstract class Sistema implements OperacoesIntegradas {
             @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener,
             final boolean statusAtivo,
             @NotNull final String userToken) throws Throwable {
-        return getIntegradorProLog().insertModeloChecklist(modeloChecklist, checklistOfflineListener, statusAtivo, userToken);
+        return getIntegradorProLog()
+                .insertModeloChecklist(modeloChecklist, checklistOfflineListener, statusAtivo, userToken);
     }
 
     @Override
@@ -168,7 +170,8 @@ public abstract class Sistema implements OperacoesIntegradas {
             final @NotNull Long codVeiculo,
             final @NotNull String placaVeiculo,
             final @NotNull TipoChecklist tipoChecklist) throws Throwable {
-        return getIntegradorProLog().getModeloChecklistRealizacao(codModeloChecklist, codVeiculo, placaVeiculo, tipoChecklist);
+        return getIntegradorProLog()
+                .getModeloChecklistRealizacao(codModeloChecklist, codVeiculo, placaVeiculo, tipoChecklist);
     }
 
     @NotNull
@@ -366,11 +369,16 @@ public abstract class Sistema implements OperacoesIntegradas {
     @NotNull
     @Override
     public Long insert(@NotNull final ServicoDao servicoDao,
+                       @NotNull final CampoPersonalizadoDao campoPersonalizadoDao,
                        @NotNull final ProcessoMovimentacao processoMovimentacao,
                        @NotNull final OffsetDateTime dataHoraMovimentacao,
                        final boolean fecharServicosAutomaticamente) throws Throwable {
         return getIntegradorProLog()
-                .insert(servicoDao, processoMovimentacao, dataHoraMovimentacao, fecharServicosAutomaticamente);
+                .insert(servicoDao,
+                        campoPersonalizadoDao,
+                        processoMovimentacao,
+                        dataHoraMovimentacao,
+                        fecharServicosAutomaticamente);
     }
 
     // #################################################################################################################
@@ -396,20 +404,9 @@ public abstract class Sistema implements OperacoesIntegradas {
     // #################################################################################################################
     // ###################################### OPERAÇÕES INTEGRADAS - TIPO VEICULO ######################################
     // #################################################################################################################
-    // #################################################################################################################S
+    // #################################################################################################################
     @NotNull
     @Override
-    public Long insert(@NotNull final ServicoDao servicoDao,
-                       @NotNull final CampoPersonalizadoDao campoPersonalizadoDao,
-                       @NotNull final ProcessoMovimentacao processoMovimentacao,
-                       @NotNull final OffsetDateTime dataHoraMovimentacao,
-                       final boolean fecharServicosAutomaticamente) throws Throwable {
-        return getIntegradorProLog()
-                .insert(servicoDao,
-                        campoPersonalizadoDao,
-                        processoMovimentacao,
-                        dataHoraMovimentacao,
-                        fecharServicosAutomaticamente);
     public Long insertTipoVeiculo(@NotNull final TipoVeiculo tipoVeiculo) throws Throwable {
         return getIntegradorProLog().insertTipoVeiculo(tipoVeiculo);
     }
