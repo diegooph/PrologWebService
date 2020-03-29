@@ -16,5 +16,6 @@ public interface OperacoesIntegradas extends
         OperacoesIntegradasPneu,
         OperacoesIntegradasPneuTransferencia,
         OperacoesIntegradasMovimentacao,
-        OperacoesIntegradasAfericaoServico {
+        OperacoesIntegradasAfericaoServico,
+        OperacoesIntegradasTipoVeiculo {
 }

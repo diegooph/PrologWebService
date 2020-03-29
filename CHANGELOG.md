@@ -1,3 +1,9 @@
+Stage
+==========
+
+### Refactors
+* Adiciona código auxiliar no cadastro de tipo de veículo (PL-2560)
+
 Change Log
 ==========
 
