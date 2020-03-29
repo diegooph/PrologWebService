@@ -88,6 +88,7 @@ public class MotivoRetiradaDaoImpl extends DatabaseConnection implements MotivoR
     @Override
     @NotNull
     public List<MotivoRetiradaListagem> getMotivosListagem(@NotNull final Long codEmpresa,
+                                                           @Nullable final Boolean apenasAtivos,
                                                            @NotNull final String tokenAutenticacao) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -96,9 +97,11 @@ public class MotivoRetiradaDaoImpl extends DatabaseConnection implements MotivoR
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM FUNC_MOTIVO_RETIRADA_LISTAGEM(" +
                     "F_COD_EMPRESA := ?," +
+                    "F_APENAS_ATIVOS := ?," +
                     "F_TOKEN := ?)");
             stmt.setLong(1, codEmpresa);
-            stmt.setString(2, TokenCleaner.getOnlyToken(tokenAutenticacao));
+            stmt.setBoolean(2, apenasAtivos);
+            stmt.setString(3, TokenCleaner.getOnlyToken(tokenAutenticacao));
 
             rSet = stmt.executeQuery();
 

@@ -5,6 +5,7 @@ import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.*;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.validation.Valid;
 import javax.ws.rs.*;
@@ -39,8 +40,9 @@ public final class MotivoRetiradaResource {
 
     @GET
     public List<MotivoRetiradaListagem> getMotivosListagem(@NotNull @QueryParam("codEmpresa") final Long codEmpresa,
+                                                           @Nullable @QueryParam("apenasAtivos") final Boolean apenasAtivos,
                                                            @NotNull @HeaderParam("Authorization") final String tokenAutenticacao) {
-        return motivoRetiradaService.getMotivosListagem(codEmpresa, tokenAutenticacao);
+        return motivoRetiradaService.getMotivosListagem(codEmpresa, apenasAtivos, tokenAutenticacao);
     }
 
     @PUT
