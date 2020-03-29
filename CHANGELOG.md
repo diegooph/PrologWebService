@@ -1,14 +1,12 @@
 Change Log
 ==========
 
-## Stage
-### Features
-* Cria estrutura de campos personalizados (PL-2616)
-* Aplica fluxo de campos personalizados no processo de movimentação (PL-2616)
-
 <a name="v1.0.24"></a>
 ## Version [v1.0.24](https://github.com/luizfp/PrologWebService/compare/v1.0.23...v1.0.24) (release-date) [unreleased]
 
+### Features
+* Cria estrutura de campos personalizados (PL-2616)
+* Aplica fluxo de campos personalizados no processo de movimentação (PL-2616)
 
 <a name="v1.0.23"></a>
 ## Version [v1.0.23](https://github.com/luizfp/PrologWebService/compare/v1.0.22...v1.0.23) (2020-03-18)
