@@ -47,7 +47,7 @@ public final class MotivoRetiradaService {
 
     @NotNull
     public List<MotivoRetiradaListagem> getMotivosListagem(@NotNull final Long codEmpresa,
-                                                           @Nullable final Boolean apenasAtivos,
+                                                           @NotNull final boolean apenasAtivos,
                                                            @NotNull final String tokenAutenticacao) {
         try {
             return dao.getMotivosListagem(codEmpresa, apenasAtivos, tokenAutenticacao);

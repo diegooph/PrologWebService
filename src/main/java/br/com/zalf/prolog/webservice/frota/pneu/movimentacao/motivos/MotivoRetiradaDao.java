@@ -49,7 +49,7 @@ public interface MotivoRetiradaDao {
      */
     @NotNull
     List<MotivoRetiradaListagem> getMotivosListagem(@NotNull final Long codEmpresa,
-                                                    @Nullable final Boolean apenasAtivos,
+                                                    @NotNull final boolean apenasAtivos,
                                                     @NotNull final String tokenAutenticacao) throws Throwable;
 
     /**
