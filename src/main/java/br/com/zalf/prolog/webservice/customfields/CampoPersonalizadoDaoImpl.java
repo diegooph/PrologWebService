@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.customfields;
 
+import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.customfields._model.CampoPersonalizadoFuncaoProlog;
 import br.com.zalf.prolog.webservice.customfields._model.CampoPersonalizadoParaRealizacao;
@@ -27,11 +28,12 @@ import static br.com.zalf.prolog.webservice.commons.util.PostgresUtils.listToArr
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public final class CampoPersonalizadoDaoImpl extends DatabaseConnection implements CampoPersonalizadoDao {
+    private static final String TAG = CampoPersonalizadoDaoImpl.class.getSimpleName();
 
     @NotNull
     @Override
-    public List<CampoPersonalizadoParaRealizacao> getCamposParaRealizacaoMovimentacao(@NotNull final Long codUnidade)
-            throws Throwable {
+    public List<CampoPersonalizadoParaRealizacao> getCamposParaRealizacaoMovimentacao(
+            @NotNull final Long codUnidade) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -55,26 +57,41 @@ public final class CampoPersonalizadoDaoImpl extends DatabaseConnection implemen
         }
     }
 
-    @SuppressWarnings("SqlResolve")
     @Override
-    public void salvaRespostasCamposPersonalizados(@NotNull final Connection conn,
-                                                   @NotNull final CampoPersonalizadoFuncaoProlog funcaoProlog,
-                                                   @NotNull final List<CampoPersonalizadoResposta> respostas,
-                                                   @Nullable final List<ColunaTabelaResposta> colunasEspecificas)
-            throws Throwable {
+    public void salvaRespostasCamposPersonalizados(
+            @NotNull final Connection conn,
+            @NotNull final CampoPersonalizadoFuncaoProlog funcaoProlog,
+            @NotNull final List<CampoPersonalizadoResposta> respostas,
+            @Nullable final List<ColunaTabelaResposta> colunasEspecificas) throws Throwable {
+
+        final List<CampoPersonalizadoResposta> respostasFiltradas = respostas
+                .stream()
+                .filter(CampoPersonalizadoResposta::temResposta)
+                .collect(Collectors.toList());
+        // Logamos um warning nesses cenários pois não deveriam acontecer. Porém, optamos por não quebrar.
+        if (respostasFiltradas.size() <= 0) {
+            Log.w(TAG, "Nenhum dos campos possui uma resposta para podermos salvar");
+            return;
+        } else if (respostas.size() != respostasFiltradas.size()) {
+            // Nesse caso, não precisamos interromper o fluxo, pois ainda temos algo para salvar.
+            Log.w(TAG, String.format(
+                    "Recebemos '%d' campo(s) sem resposta definida",
+                    respostas.size() - respostasFiltradas.size()));
+        }
 
         // SQL base, com nome da tabela, colunas e valores pendentes para serem setados dinamicamente.
-        String sql = "insert into %s (cod_tipo_campo, cod_campo, resposta, resposta_lista_selecao, %s) " +
+        String sql = "insert into %s (cod_tipo_campo, cod_campo, resposta, resposta_lista_selecao %s) " +
                 "values (?, ?, ?, ? %s)";
         if (colunasEspecificas != null && !colunasEspecificas.isEmpty()) {
             // Como a tabela de respostas possui colunas específicas, precisamos formatar o SQL base para que contenha
             // o nome e o ponto de interrogação (?) para cada uma dessas colunas.
             final String nomesColunas = colunasEspecificas
                     .stream()
-                    .map(ColunaTabelaResposta::getNomeColuna)
-                    .collect(Collectors.joining(","));
-            final String questionMarks = IntStream.of(colunasEspecificas.size())
-                    .mapToObj(i -> ",?")
+                    .map(coluna -> ", " + coluna.getNomeColuna())
+                    .collect(Collectors.joining());
+            final String questionMarks = colunasEspecificas.
+                    stream()
+                    .map(coluna -> ", ?")
                     .collect(Collectors.joining());
             sql = String.format(sql, funcaoProlog.getTableNameRespostas(), nomesColunas, questionMarks);
         } else {
@@ -84,7 +101,7 @@ public final class CampoPersonalizadoDaoImpl extends DatabaseConnection implemen
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement(sql);
-            for (final CampoPersonalizadoResposta resposta : respostas) {
+            for (final CampoPersonalizadoResposta resposta : respostasFiltradas) {
                 stmt.setLong(1, resposta.getTipoCampo().getCodigoTipoCampo());
                 stmt.setLong(2, resposta.getCodCampo());
                 stmt.setString(3, resposta.getResposta());
@@ -106,10 +123,10 @@ public final class CampoPersonalizadoDaoImpl extends DatabaseConnection implemen
             }
 
             final int[] batchResult = stmt.executeBatch();
-            if (batchResult.length != respostas.size()) {
+            if (batchResult.length != respostasFiltradas.size()) {
                 throw new IllegalStateException(
                         String.format("Insert affected incorrect number of rows. Expected: %d - Actual: %d",
-                                respostas.size(),
+                                respostasFiltradas.size(),
                                 batchResult.length));
             }
 

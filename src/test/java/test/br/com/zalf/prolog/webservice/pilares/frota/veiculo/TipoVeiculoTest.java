@@ -9,6 +9,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import test.br.com.zalf.prolog.webservice.BaseTest;
 
+import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 
@@ -21,11 +22,13 @@ public class TipoVeiculoTest extends BaseTest {
     private static final Long COD_EMPRESA_ZALF = 3L;
     private static final Long CPF_COLABORADOR = 3383283194L;
     private TipoVeiculoService service;
+    private String userToken;
 
     @Override
-    public void initialize() {
+    public void initialize() throws SQLException {
         DatabaseManager.init();
         service = new TipoVeiculoService();
+        userToken = getValidToken(String.valueOf(CPF_COLABORADOR));
     }
 
     @Override
@@ -38,7 +41,7 @@ public class TipoVeiculoTest extends BaseTest {
         final TipoVeiculo tipoVeiculoCriado = new TipoVeiculo();
         tipoVeiculoCriado.setCodEmpresa(COD_EMPRESA_ZALF);
         tipoVeiculoCriado.setNome("Tipo Teste");
-        final ResponseWithCod response = service.insertTipoVeiculoPorEmpresa(tipoVeiculoCriado);
+        final ResponseWithCod response = service.insertTipoVeiculoPorEmpresa(userToken, tipoVeiculoCriado);
 
         Assert.assertNotNull(response);
         Assert.assertTrue(response.isOk());
@@ -74,7 +77,7 @@ public class TipoVeiculoTest extends BaseTest {
         final TipoVeiculo tipoVeiculoSorteado = tiposVeiculos.get(0);
         Assert.assertNotNull(tipoVeiculoSorteado);
         tipoVeiculoSorteado.setNome("Teste tipoSorteado");
-        final Response response = service.updateTipoVeiculo(tipoVeiculoSorteado);
+        final Response response = service.updateTipoVeiculo(userToken, tipoVeiculoSorteado);
 
         Assert.assertNotNull(response);
         Assert.assertTrue(response.isOk());
@@ -93,7 +96,7 @@ public class TipoVeiculoTest extends BaseTest {
         tipoVeiculoCriado.setCodEmpresa(COD_EMPRESA_ZALF);
         tipoVeiculoCriado.setNome("Tipo Teste");
 
-        final ResponseWithCod responseInsert = service.insertTipoVeiculoPorEmpresa(tipoVeiculoCriado);
+        final ResponseWithCod responseInsert = service.insertTipoVeiculoPorEmpresa(userToken, tipoVeiculoCriado);
         Assert.assertNotNull(responseInsert);
         Assert.assertTrue(responseInsert.isOk());
         Assert.assertNotNull(responseInsert.getCodigo());

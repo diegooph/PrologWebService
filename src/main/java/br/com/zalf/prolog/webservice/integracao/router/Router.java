@@ -75,112 +75,11 @@ public abstract class Router implements OperacoesIntegradas {
         this.recursoIntegrado = checkNotNull(recursoIntegrado, "recursoIntegrado não pode ser null!");
     }
 
-    @Override
-    public boolean insert(
-            @NotNull final VeiculoCadastro veiculo,
-            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
-        if (getSistema() != null) {
-            return getSistema().insert(veiculo, checklistOfflineListener);
-        } else {
-            return integradorProLog.insert(veiculo, checklistOfflineListener);
-        }
-    }
-
-    @Override
-    public boolean update(
-            @NotNull final String placaOriginal,
-            @NotNull final Veiculo veiculo,
-            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
-        if (getSistema() != null) {
-            return getSistema().update(placaOriginal, veiculo, checklistOfflineListener);
-        } else {
-            return integradorProLog.update(placaOriginal, veiculo, checklistOfflineListener);
-        }
-    }
-
-    @Override
-    public void updateStatus(
-            @NotNull final Long codUnidade,
-            @NotNull final String placa,
-            @NotNull final Veiculo veiculo,
-            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
-        if (getSistema() != null) {
-            getSistema().updateStatus(codUnidade, placa, veiculo, checklistOfflineListener);
-        } else {
-            integradorProLog.updateStatus(codUnidade, placa, veiculo, checklistOfflineListener);
-        }
-    }
-
-    @Override
-    public boolean delete(
-            @NotNull final String placa,
-            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
-        if (getSistema() != null) {
-            return getSistema().delete(placa, checklistOfflineListener);
-        } else {
-            return integradorProLog.delete(placa, checklistOfflineListener);
-        }
-    }
-
-    @NotNull
-    @Override
-    public Long insertProcessoTransferenciaVeiculo(
-            @NotNull final ProcessoTransferenciaVeiculoRealizacao processoTransferenciaVeiculo,
-            @NotNull final DadosChecklistOfflineChangedListener dadosChecklistOfflineChangedListener) throws Throwable {
-        if (getSistema() != null) {
-            return getSistema()
-                    .insertProcessoTransferenciaVeiculo(
-                            processoTransferenciaVeiculo,
-                            dadosChecklistOfflineChangedListener);
-        } else {
-            return integradorProLog
-                    .insertProcessoTransferenciaVeiculo(
-                            processoTransferenciaVeiculo,
-                            dadosChecklistOfflineChangedListener);
-        }
-    }
-
-    @NotNull
-    @Override
-    public List<Veiculo> getVeiculosAtivosByUnidade(@NotNull final Long codUnidade, @Nullable final Boolean ativos) throws
-            Exception {
-        if (getSistema() != null) {
-            return getSistema().getVeiculosAtivosByUnidade(codUnidade, ativos);
-        } else {
-            return integradorProLog.getVeiculosAtivosByUnidade(codUnidade, ativos);
-        }
-    }
-
-    @NotNull
-    @Override
-    public List<TipoVeiculo> getTiposVeiculosFiltroChecklist(@NotNull final Long codEmpresa) throws Throwable {
-        if (getSistema() != null) {
-            return getSistema().getTiposVeiculosFiltroChecklist(codEmpresa);
-        } else {
-            return integradorProLog.getTiposVeiculosFiltroChecklist(codEmpresa);
-        }
-    }
-
-    @NotNull
-    @Override
-    public List<String> getPlacasVeiculosByTipo(@NotNull final Long codUnidade, @NotNull final String codTipo) throws Exception {
-        if (getSistema() != null) {
-            return getSistema().getPlacasVeiculosByTipo(codUnidade, codTipo);
-        } else {
-            return integradorProLog.getPlacasVeiculosByTipo(codUnidade, codTipo);
-        }
-    }
-
-    @NotNull
-    @Override
-    public Veiculo getVeiculoByPlaca(@NotNull final String placa, final boolean withPneus) throws Exception {
-        if (getSistema() != null) {
-            return getSistema().getVeiculoByPlaca(placa, withPneus);
-        } else {
-            return integradorProLog.getVeiculoByPlaca(placa, withPneus);
-        }
-    }
-
+    // #################################################################################################################
+    // #################################################################################################################
+    // ####################################### OPERAÇÕES INTEGRADAS - AFERIÇÃO #########################################
+    // #################################################################################################################
+    // #################################################################################################################
     @NotNull
     @Override
     public CronogramaAfericao getCronogramaAfericao(@NotNull final List<Long> codUnidades) throws Throwable {
@@ -215,6 +114,19 @@ public abstract class Router implements OperacoesIntegradas {
 
     @NotNull
     @Override
+    public NovaAfericaoAvulsa getNovaAfericaoAvulsa(
+            @NotNull final Long codUnidade,
+            @NotNull final Long codPneu,
+            @NotNull final TipoMedicaoColetadaAfericao tipoMedicaoColetadaAfericao) throws Throwable {
+        if (getSistema() != null) {
+            return getSistema().getNovaAfericaoAvulsa(codUnidade, codPneu, tipoMedicaoColetadaAfericao);
+        } else {
+            return integradorProLog.getNovaAfericaoAvulsa(codUnidade, codPneu, tipoMedicaoColetadaAfericao);
+        }
+    }
+
+    @NotNull
+    @Override
     public Report getAfericoesAvulsas(@NotNull final Long codUnidade,
                                       @Nullable final Long codColaborador,
                                       @NotNull final LocalDate dataInicial,
@@ -240,7 +152,8 @@ public abstract class Router implements OperacoesIntegradas {
 
     @NotNull
     @Override
-    public Afericao getAfericaoByCodigo(@NotNull final Long codUnidade, @NotNull final Long codAfericao) throws Throwable {
+    public Afericao getAfericaoByCodigo(@NotNull final Long codUnidade,
+                                        @NotNull final Long codAfericao) throws Throwable {
         if (getSistema() != null) {
             return getSistema().getAfericaoByCodigo(codUnidade, codAfericao);
         } else {
@@ -278,6 +191,11 @@ public abstract class Router implements OperacoesIntegradas {
         }
     }
 
+    // #################################################################################################################
+    // #################################################################################################################
+    // ####################################### OPERAÇÕES INTEGRADAS - CHECKLIST ########################################
+    // #################################################################################################################
+    // #################################################################################################################
     @NotNull
     @Override
     public ResultInsertModeloChecklist insertModeloChecklist(
@@ -286,9 +204,11 @@ public abstract class Router implements OperacoesIntegradas {
             final boolean statusAtivo,
             @NotNull final String userToken) throws Throwable {
         if (getSistema() != null) {
-            return getSistema().insertModeloChecklist(modeloChecklist, checklistOfflineListener, statusAtivo, userToken);
+            return getSistema()
+                    .insertModeloChecklist(modeloChecklist, checklistOfflineListener, statusAtivo, userToken);
         } else {
-            return integradorProLog.insertModeloChecklist(modeloChecklist, checklistOfflineListener, statusAtivo, userToken);
+            return integradorProLog
+                    .insertModeloChecklist(modeloChecklist, checklistOfflineListener, statusAtivo, userToken);
         }
     }
 
@@ -338,9 +258,11 @@ public abstract class Router implements OperacoesIntegradas {
             final @NotNull String placaVeiculo,
             final @NotNull TipoChecklist tipoChecklist) throws Throwable {
         if (getSistema() != null) {
-            return getSistema().getModeloChecklistRealizacao(codModeloChecklist, codVeiculo, placaVeiculo, tipoChecklist);
+            return getSistema()
+                    .getModeloChecklistRealizacao(codModeloChecklist, codVeiculo, placaVeiculo, tipoChecklist);
         } else {
-            return integradorProLog.getModeloChecklistRealizacao(codModeloChecklist, codVeiculo, placaVeiculo, tipoChecklist);
+            return integradorProLog
+                    .getModeloChecklistRealizacao(codModeloChecklist, codVeiculo, placaVeiculo, tipoChecklist);
         }
     }
 
@@ -353,6 +275,16 @@ public abstract class Router implements OperacoesIntegradas {
             return getSistema().insertChecklist(checklist, foiOffline, deveAbrirOs);
         } else {
             return integradorProLog.insertChecklist(checklist, foiOffline, deveAbrirOs);
+        }
+    }
+
+    @NotNull
+    @Override
+    public List<TipoVeiculo> getTiposVeiculosFiltroChecklist(@NotNull final Long codEmpresa) throws Throwable {
+        if (getSistema() != null) {
+            return getSistema().getTiposVeiculosFiltroChecklist(codEmpresa);
+        } else {
+            return integradorProLog.getTiposVeiculosFiltroChecklist(codEmpresa);
         }
     }
 
@@ -416,6 +348,11 @@ public abstract class Router implements OperacoesIntegradas {
         }
     }
 
+    // #################################################################################################################
+    // #################################################################################################################
+    // ############################## OPERAÇÕES INTEGRADAS - CHECKLIST ORDEM DE SERVIÇO ################################
+    // #################################################################################################################
+    // #################################################################################################################
     @Override
     public void resolverItem(@NotNull final ResolverItemOrdemServico item) throws Throwable {
         if (getSistema() != null) {
@@ -434,6 +371,117 @@ public abstract class Router implements OperacoesIntegradas {
         }
     }
 
+    // #################################################################################################################
+    // #################################################################################################################
+    // ######################################## OPERAÇÕES INTEGRADAS - VEÍCULO #########################################
+    // #################################################################################################################
+    // #################################################################################################################
+    @Override
+    public boolean insert(
+            @NotNull final VeiculoCadastro veiculo,
+            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
+        if (getSistema() != null) {
+            return getSistema().insert(veiculo, checklistOfflineListener);
+        } else {
+            return integradorProLog.insert(veiculo, checklistOfflineListener);
+        }
+    }
+
+    @Override
+    public boolean update(
+            @NotNull final String placaOriginal,
+            @NotNull final Veiculo veiculo,
+            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
+        if (getSistema() != null) {
+            return getSistema().update(placaOriginal, veiculo, checklistOfflineListener);
+        } else {
+            return integradorProLog.update(placaOriginal, veiculo, checklistOfflineListener);
+        }
+    }
+
+    @Override
+    public void updateStatus(
+            @NotNull final Long codUnidade,
+            @NotNull final String placa,
+            @NotNull final Veiculo veiculo,
+            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
+        if (getSistema() != null) {
+            getSistema().updateStatus(codUnidade, placa, veiculo, checklistOfflineListener);
+        } else {
+            integradorProLog.updateStatus(codUnidade, placa, veiculo, checklistOfflineListener);
+        }
+    }
+
+    @Override
+    public boolean delete(
+            @NotNull final String placa,
+            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
+        if (getSistema() != null) {
+            return getSistema().delete(placa, checklistOfflineListener);
+        } else {
+            return integradorProLog.delete(placa, checklistOfflineListener);
+        }
+    }
+
+    @NotNull
+    @Override
+    public List<Veiculo> getVeiculosAtivosByUnidade(@NotNull Long codUnidade, @Nullable Boolean ativos) throws
+            Exception {
+        if (getSistema() != null) {
+            return getSistema().getVeiculosAtivosByUnidade(codUnidade, ativos);
+        } else {
+            return integradorProLog.getVeiculosAtivosByUnidade(codUnidade, ativos);
+        }
+    }
+
+    @NotNull
+    @Override
+    public List<String> getPlacasVeiculosByTipo(@NotNull Long codUnidade, @NotNull String codTipo) throws Exception {
+        if (getSistema() != null) {
+            return getSistema().getPlacasVeiculosByTipo(codUnidade, codTipo);
+        } else {
+            return integradorProLog.getPlacasVeiculosByTipo(codUnidade, codTipo);
+        }
+    }
+
+    @NotNull
+    @Override
+    public Veiculo getVeiculoByPlaca(@NotNull String placa, boolean withPneus) throws Exception {
+        if (getSistema() != null) {
+            return getSistema().getVeiculoByPlaca(placa, withPneus);
+        } else {
+            return integradorProLog.getVeiculoByPlaca(placa, withPneus);
+        }
+    }
+
+    // #################################################################################################################
+    // #################################################################################################################
+    // ################################# OPERAÇÕES INTEGRADAS - VEÍCULO TRANSFERÊNCIA ##################################
+    // #################################################################################################################
+    // #################################################################################################################
+    @NotNull
+    @Override
+    public Long insertProcessoTransferenciaVeiculo(
+            @NotNull final ProcessoTransferenciaVeiculoRealizacao processoTransferenciaVeiculo,
+            @NotNull final DadosChecklistOfflineChangedListener dadosChecklistOfflineChangedListener) throws Throwable {
+        if (getSistema() != null) {
+            return getSistema()
+                    .insertProcessoTransferenciaVeiculo(
+                            processoTransferenciaVeiculo,
+                            dadosChecklistOfflineChangedListener);
+        } else {
+            return integradorProLog
+                    .insertProcessoTransferenciaVeiculo(
+                            processoTransferenciaVeiculo,
+                            dadosChecklistOfflineChangedListener);
+        }
+    }
+
+    // #################################################################################################################
+    // #################################################################################################################
+    // ########################################## OPERAÇÕES INTEGRADAS - PNEU ##########################################
+    // #################################################################################################################
+    // #################################################################################################################
     @NotNull
     @Override
     public Long insert(@NotNull final Pneu pneu, @NotNull final Long codUnidade) throws Throwable {
@@ -454,17 +502,6 @@ public abstract class Router implements OperacoesIntegradas {
         }
     }
 
-    @NotNull
-    @Override
-    public VeiculoServico getVeiculoAberturaServico(@NotNull final Long codServico,
-                                                    @NotNull final String placaVeiculo) throws Throwable {
-        if (getSistema() != null) {
-            return getSistema().getVeiculoAberturaServico(codServico, placaVeiculo);
-        } else {
-            return integradorProLog.getVeiculoAberturaServico(codServico, placaVeiculo);
-        }
-    }
-
     @Override
     public void update(@NotNull final Pneu pneu,
                        @NotNull final Long codUnidade,
@@ -476,6 +513,11 @@ public abstract class Router implements OperacoesIntegradas {
         }
     }
 
+    // #################################################################################################################
+    // #################################################################################################################
+    // ################################### OPERAÇÕES INTEGRADAS - PNEU TRANSFERÊNCIA ###################################
+    // #################################################################################################################
+    // #################################################################################################################
     @NotNull
     @Override
     public Long insertTransferencia(@NotNull final PneuTransferenciaRealizacao pneuTransferenciaRealizacao,
@@ -496,17 +538,11 @@ public abstract class Router implements OperacoesIntegradas {
         }
     }
 
-    @Override
-    public void fechaServico(@NotNull final Long codUnidade,
-                             @NotNull final OffsetDateTime dataHorafechamentoServico,
-                             @NotNull final Servico servico) throws Throwable {
-        if (getSistema() != null) {
-            getSistema().fechaServico(codUnidade, dataHorafechamentoServico, servico);
-        } else {
-            integradorProLog.fechaServico(codUnidade, dataHorafechamentoServico, servico);
-        }
-    }
-
+    // #################################################################################################################
+    // #################################################################################################################
+    // ###################################### OPERAÇÕES INTEGRADAS - MOVIMENTAÇÃO ######################################
+    // #################################################################################################################
+    // #################################################################################################################
     @NotNull
     @Override
     public Long insert(@NotNull final ServicoDao servicoDao,
@@ -528,6 +564,56 @@ public abstract class Router implements OperacoesIntegradas {
                             processoMovimentacao,
                             dataHoraMovimentacao,
                             fecharServicosAutomaticamente);
+        }
+    }
+
+    // #################################################################################################################
+    // #################################################################################################################
+    // #################################### OPERAÇÕES INTEGRADAS - AFERIÇÃO SERVIÇO ####################################
+    // #################################################################################################################
+    // #################################################################################################################
+    @NotNull
+    @Override
+    public VeiculoServico getVeiculoAberturaServico(@NotNull final Long codServico,
+                                                    @NotNull final String placaVeiculo) throws Throwable {
+        if (getSistema() != null) {
+            return getSistema().getVeiculoAberturaServico(codServico, placaVeiculo);
+        } else {
+            return integradorProLog.getVeiculoAberturaServico(codServico, placaVeiculo);
+        }
+    }
+
+    @Override
+    public void fechaServico(@NotNull final Long codUnidade,
+                             @NotNull final OffsetDateTime dataHorafechamentoServico,
+                             @NotNull final Servico servico) throws Throwable {
+        if (getSistema() != null) {
+            getSistema().fechaServico(codUnidade, dataHorafechamentoServico, servico);
+        } else {
+            integradorProLog.fechaServico(codUnidade, dataHorafechamentoServico, servico);
+        }
+    }
+
+    // #################################################################################################################
+    // #################################################################################################################
+    // ###################################### OPERAÇÕES INTEGRADAS - TIPO VEICULO ######################################
+    // #################################################################################################################
+    // #################################################################################################################
+    @Override
+    public @NotNull Long insertTipoVeiculo(final @NotNull TipoVeiculo tipoVeiculo) throws Throwable {
+        if (getSistema() != null) {
+            return getSistema().insertTipoVeiculo(tipoVeiculo);
+        } else {
+            return integradorProLog.insertTipoVeiculo(tipoVeiculo);
+        }
+    }
+
+    @Override
+    public void updateTipoVeiculo(final @NotNull TipoVeiculo tipoVeiculo) throws Throwable {
+        if (getSistema() != null) {
+            getSistema().updateTipoVeiculo(tipoVeiculo);
+        } else {
+            integradorProLog.updateTipoVeiculo(tipoVeiculo);
         }
     }
 

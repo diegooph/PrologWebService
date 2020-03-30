@@ -38,8 +38,8 @@ public final class ApiCadastroPneuService extends BaseIntegracaoService {
     }
 
     @NotNull
-    SuccessResponseIntegracao inserirPneuCadastro(final String tokenIntegracao,
-                                                  final ApiPneuCadastro pneuCadastro) throws ProLogException {
+    public SuccessResponseIntegracao inserirPneuCadastro(final String tokenIntegracao,
+                                                         final ApiPneuCadastro pneuCadastro) throws ProLogException {
         try {
             ensureValidToken(tokenIntegracao, TAG);
             return new SuccessResponseIntegracao(

@@ -45,7 +45,6 @@ import br.com.zalf.prolog.webservice.integracao.operacoes.OperacoesIntegradas;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.ApiAutenticacaoHolder;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
-import br.com.zalf.prolog.webservice.integracao.transport.MetodoIntegrado;
 import com.google.common.annotations.VisibleForTesting;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -207,6 +206,17 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
 
     @NotNull
     @Override
+    public String getCodAuxiliarByCodUnidadeProlog(@NotNull final Connection conn,
+                                                   @NotNull final Long codUnidadeProlog) throws Throwable {
+        if (integracaoDao == null) {
+            integracaoDao = Injection.provideIntegracaoDao();
+        }
+
+        return integracaoDao.getCodAuxiliarByCodUnidadeProlog(conn, codUnidadeProlog);
+    }
+
+    @NotNull
+    @Override
     public ApiAutenticacaoHolder getApiAutenticacaoHolder(
             @NotNull final Connection conn,
             @NotNull final Long codEmpresa,
@@ -328,6 +338,15 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
     @Override
     public List<PneuAfericaoAvulsa> getPneusAfericaoAvulsa(@NotNull final Long codUnidade) throws Throwable {
         return afericaoDao.getPneusAfericaoAvulsa(codUnidade);
+    }
+
+    @NotNull
+    @Override
+    public NovaAfericaoAvulsa getNovaAfericaoAvulsa(
+            @NotNull final Long codUnidade,
+            @NotNull final Long codPneu,
+            @NotNull final TipoMedicaoColetadaAfericao tipoMedicaoColetadaAfericao) throws Throwable {
+        return afericaoDao.getNovaAfericaoAvulsa(codUnidade, codPneu, tipoMedicaoColetadaAfericao);
     }
 
     @NotNull
@@ -524,6 +543,17 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
                         processoMovimentacao,
                         dataHoraMovimentacao,
                         fecharServicosAutomaticamente);
+    }
+
+    @NotNull
+    @Override
+    public Long insertTipoVeiculo(@NotNull final TipoVeiculo tipoVeiculo) throws Throwable {
+        return tipoVeiculoDao.insertTipoVeiculo(tipoVeiculo);
+    }
+
+    @Override
+    public void updateTipoVeiculo(@NotNull final TipoVeiculo tipoVeiculo) throws Throwable {
+        tipoVeiculoDao.updateTipoVeiculo(tipoVeiculo);
     }
 
     public static final class Builder {

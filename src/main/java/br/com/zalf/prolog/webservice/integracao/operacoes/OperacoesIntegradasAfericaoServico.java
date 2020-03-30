@@ -15,6 +15,7 @@ public interface OperacoesIntegradasAfericaoServico {
     @NotNull
     VeiculoServico getVeiculoAberturaServico(@NotNull final Long codServico,
                                              @NotNull final String placaVeiculo) throws Throwable;
+
     void fechaServico(@NotNull final Long codUnidade,
                       @NotNull final OffsetDateTime dataHorafechamentoServico,
                       @NotNull final Servico servico) throws Throwable;

@@ -34,4 +34,5 @@ public final class CampoPersonalizadoParaRealizacao {
     private final Boolean permiteSelecaoMultipla;
     @Nullable
     private final String[] opcoesSelecao;
+    private final short ordemExibicao;
 }

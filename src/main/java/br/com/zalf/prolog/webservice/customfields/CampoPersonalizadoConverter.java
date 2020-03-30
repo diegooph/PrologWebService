@@ -19,8 +19,8 @@ public final class CampoPersonalizadoConverter {
     }
 
     @NotNull
-    public static CampoPersonalizadoParaRealizacao createCampoPersonalizadoParaRealizacao(@NotNull final ResultSet rSet)
-            throws Throwable {
+    public static CampoPersonalizadoParaRealizacao createCampoPersonalizadoParaRealizacao(
+            @NotNull final ResultSet rSet) throws Throwable {
         final Array opcoesSelecao = rSet.getArray("OPCOES_SELECAO_CAMPO");
         return new CampoPersonalizadoParaRealizacao(
                 rSet.getLong("COD_CAMPO"),
@@ -33,6 +33,7 @@ public final class CampoPersonalizadoConverter {
                 rSet.getBoolean("PREENCHIMENTO_OBRIGATORIO_CAMPO"),
                 rSet.getString("MENSAGEM_CASO_CAMPO_NAO_PREENCHIDO_CAMPO"),
                 rSet.getBoolean("PERMITE_SELECAO_MULTIPLA_CAMPO"),
-                opcoesSelecao != null ? ((String[]) opcoesSelecao.getArray()) : null);
+                opcoesSelecao != null ? ((String[]) opcoesSelecao.getArray()) : null,
+                rSet.getShort("ORDEM_EXIBICAO"));
     }
 }
