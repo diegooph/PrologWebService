@@ -57,12 +57,12 @@ public interface MotivoRetiradaDao {
      * Realiza a atualização de um {@link MotivoRetiradaEdicao motivo}.
      *
      * @param motivoRetiradaEdicao um objeto de edição do motivo, com as informações necessárias para atualização.
-     * @param tokenAutenticacao    o token de sessão do usuário;
+     * @param codColaboradorUpdate o código do colaborador que está realizando a atualização no motivo.
      * @throws Throwable caso qualquer erro ocorrer.
      */
     @Nullable
     void update(@NotNull MotivoRetiradaEdicao motivoRetiradaEdicao,
-                @NotNull final String tokenAutenticacao) throws Throwable;
+                @NotNull final Long codColaboradorUpdate) throws Throwable;
 
     /**
      * Realiza a busca de uma lista do histórico de um {@link MotivoRetiradaHistoricoListagem motivo}.

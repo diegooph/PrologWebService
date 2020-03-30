@@ -51,9 +51,8 @@ public final class MotivoRetiradaResource {
 
     @PUT
     @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    public Response update(@NotNull final MotivoRetiradaEdicao motivoRetiradaEdicao,
-                           @HeaderParam("Authorization") @NotNull final String tokenAutenticacao) {
-        motivoRetiradaService.update(motivoRetiradaEdicao, tokenAutenticacao);
+    public Response update(@NotNull final MotivoRetiradaEdicao motivoRetiradaEdicao) {
+        motivoRetiradaService.update(motivoRetiradaEdicao, colaboradorAutenticadoProvider.get().getCodigo());
         return Response.ok("Motivo atualizado com sucesso.");
     }
 

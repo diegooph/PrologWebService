@@ -120,7 +120,7 @@ public class MotivoRetiradaDaoImpl extends DatabaseConnection implements MotivoR
     @Override
     @Nullable
     public void update(@NotNull final MotivoRetiradaEdicao motivoRetiradaEdicao,
-                       @NotNull final String tokenAutenticacao) throws Throwable {
+                       @NotNull final Long codColaboradorUpdate) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
@@ -131,14 +131,14 @@ public class MotivoRetiradaDaoImpl extends DatabaseConnection implements MotivoR
                     "F_ATIVO_MOTIVO := ?," +
                     "F_COD_AUXILIAR_MOTIVO := ?," +
                     "F_DATA_ULTIMA_ALTERACAO := ?," +
-                    "F_TOKEN_AUTENTICACAO := ?);");
+                    "F_COD_COLABORADOR_ALTERACAO := ?);");
 
             stmt.setLong(1, motivoRetiradaEdicao.getCodMotivoRetirada());
             stmt.setString(2, motivoRetiradaEdicao.getDescricaoMotivoRetirada());
             stmt.setBoolean(3, motivoRetiradaEdicao.isAtivoMotivoRetirada());
             stmt.setString(4, motivoRetiradaEdicao.getCodAuxiliarMotivoRetirada());
             stmt.setObject(5, Now.offsetDateTimeUtc());
-            stmt.setString(6, TokenCleaner.getOnlyToken(tokenAutenticacao));
+            stmt.setLong(6, codColaboradorUpdate);
 
             stmt.executeQuery();
         } finally {

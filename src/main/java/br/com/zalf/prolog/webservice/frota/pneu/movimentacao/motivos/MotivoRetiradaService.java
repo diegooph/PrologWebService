@@ -62,9 +62,9 @@ public final class MotivoRetiradaService {
 
     @Nullable
     public void update(@NotNull final MotivoRetiradaEdicao motivoRetiradaEdicao,
-                       @NotNull final String tokenAutenticacao) {
+                       @NotNull final Long codColaboradorUpdate) {
         try {
-            dao.update(motivoRetiradaEdicao, tokenAutenticacao);
+            dao.update(motivoRetiradaEdicao, codColaboradorUpdate);
         } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao atualizar motivo, código do motivo: %d", motivoRetiradaEdicao.getCodMotivoRetirada()), t);
             throw Injection
