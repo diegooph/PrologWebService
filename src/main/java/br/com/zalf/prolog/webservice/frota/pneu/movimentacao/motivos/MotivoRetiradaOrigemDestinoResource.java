@@ -7,6 +7,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestin
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.*;
 import br.com.zalf.prolog.webservice.interceptors.auth.ColaboradorAutenticado;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
+import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
@@ -35,6 +36,8 @@ public class MotivoRetiradaOrigemDestinoResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
     @UsedBy(platforms = {Platform.WEBSITE})
+    @Secured(permissions = {Pilares.Frota.Pneu.Movimentacao.CADASTRAR_MOTIVOS_MOVIMENTACAO,
+            Pilares.Frota.Pneu.Movimentacao.EDITAR_MOTIVOS_MOVIMENTACAO})
     public List<Long> insert(@NotNull @Valid @Required final List<MotivoRetiradaOrigemDestinoInsercao> unidades) {
         return motivoRetiradaOrigemDestinoService.insert(unidades, colaboradorAutenticadoProvider.get().getCodigo());
     }
@@ -42,12 +45,22 @@ public class MotivoRetiradaOrigemDestinoResource {
     @GET
     @Path("/{codMotivoOrigemDestino}")
     @UsedBy(platforms = {Platform.WEBSITE})
+    @Secured(permissions = {Pilares.Frota.Pneu.Movimentacao.CADASTRAR_MOTIVOS_MOVIMENTACAO,
+            Pilares.Frota.Pneu.Movimentacao.EDITAR_MOTIVOS_MOVIMENTACAO,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_DESCARTE,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_VEICULO_ESTOQUE})
     public MotivoRetiradaOrigemDestinoVisualizacao getMotivoOrigemDestino(@NotNull @PathParam("codMotivoOrigemDestino") final Long codMotivoOrigemDestino) {
         return motivoRetiradaOrigemDestinoService.getMotivoOrigemDestino(codMotivoOrigemDestino, colaboradorAutenticadoProvider.get().getZoneIdUnidadeColaborador());
     }
 
     @GET
     @UsedBy(platforms = {Platform.WEBSITE})
+    @Secured(permissions = {Pilares.Frota.Pneu.Movimentacao.CADASTRAR_MOTIVOS_MOVIMENTACAO,
+            Pilares.Frota.Pneu.Movimentacao.EDITAR_MOTIVOS_MOVIMENTACAO,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_DESCARTE,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_VEICULO_ESTOQUE})
     public List<MotivoRetiradaOrigemDestinoListagem> getMotivosOrigemDestino() {
         return motivoRetiradaOrigemDestinoService.getMotivosOrigemDestino(colaboradorAutenticadoProvider.get().getCodigo());
     }
@@ -55,6 +68,11 @@ public class MotivoRetiradaOrigemDestinoResource {
     @GET
     @UsedBy(platforms = {Platform.ANDROID})
     @Path("/listagemResumida")
+    @Secured(permissions = {Pilares.Frota.Pneu.Movimentacao.CADASTRAR_MOTIVOS_MOVIMENTACAO,
+            Pilares.Frota.Pneu.Movimentacao.EDITAR_MOTIVOS_MOVIMENTACAO,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_DESCARTE,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_VEICULO_ESTOQUE})
     public MotivoRetiradaOrigemDestinoListagemMotivos getMotivosByOrigemAndDestinoAndUnidade(@QueryParam("origemMovimento") @NotNull final OrigemDestinoEnum origemMovimento,
                                                                                              @QueryParam("destinoMovimento") @NotNull final OrigemDestinoEnum destinoMovimento,
                                                                                              @QueryParam("codUnidade") @NotNull final Long codUnidade) {
@@ -64,6 +82,11 @@ public class MotivoRetiradaOrigemDestinoResource {
     @GET
     @Path("/unidade/{codUnidade}")
     @UsedBy(platforms = {Platform.ANDROID})
+    @Secured(permissions = {Pilares.Frota.Pneu.Movimentacao.CADASTRAR_MOTIVOS_MOVIMENTACAO,
+            Pilares.Frota.Pneu.Movimentacao.EDITAR_MOTIVOS_MOVIMENTACAO,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_DESCARTE,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_VEICULO_ESTOQUE})
     public List<OrigemDestinoListagem> getRotasExistentesByUnidade(@PathParam("codUnidade") @NotNull final Long codUnidade) {
         return motivoRetiradaOrigemDestinoService.getRotasExistentesByUnidade(codUnidade);
     }
