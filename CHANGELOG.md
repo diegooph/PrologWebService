@@ -1,8 +1,3 @@
-#Stage
-
-### Refactors
-* Altera fluxo de transferência de pneus e veículos dentro da integração (PLI-80)
-
 Change Log
 ==========
 
@@ -16,6 +11,7 @@ Change Log
 
 ### Refactors
 * Adiciona código auxiliar no cadastro de tipo de veículo (PL-2560)
+* Altera fluxo de transferência de pneus dentro da integração (PLI-80)
 
 <a name="v1.0.23"></a>
 ## Version [v1.0.23](https://github.com/luizfp/PrologWebService/compare/v1.0.22...v1.0.23) (2020-03-18)
