@@ -48,8 +48,8 @@ public class MotivoRetiradaOrigemDestinoResource {
 
     @GET
     @UsedBy(platforms = {Platform.WEBSITE})
-    public List<MotivoRetiradaOrigemDestinoListagem> getMotivosOrigemDestino(@HeaderParam("Authorization") final String tokenAutenticacao) {
-        return motivoRetiradaOrigemDestinoService.getMotivosOrigemDestino(tokenAutenticacao);
+    public List<MotivoRetiradaOrigemDestinoListagem> getMotivosOrigemDestino() {
+        return motivoRetiradaOrigemDestinoService.getMotivosOrigemDestino(colaboradorAutenticadoProvider.get().getCodigo());
     }
 
     @GET

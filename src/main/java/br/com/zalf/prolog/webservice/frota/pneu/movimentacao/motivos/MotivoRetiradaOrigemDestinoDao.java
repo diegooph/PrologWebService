@@ -40,11 +40,12 @@ public interface MotivoRetiradaOrigemDestinoDao {
      * Busca uma lista de {@link MotivoRetiradaOrigemDestinoVisualizacao motivoOrigemDestino} no banco de dados
      * com base nas unidades que o usuário tem permissão de editar, buscado através do token do usuário.
      *
-     * @param tokenAutenticacao o token de sessão do usuário;
+     * @param codColaborador código do colaborador que está realizando a requisição, para identificar as unidades
+     *                       liberadas para ele.
      * @throws Throwable Caso qualquer erro ocorra.
      */
     @NotNull
-    List<MotivoRetiradaOrigemDestinoListagem> getMotivosOrigemDestino(@NotNull final String tokenAutenticacao) throws Throwable;
+    List<MotivoRetiradaOrigemDestinoListagem> getMotivosOrigemDestino(@NotNull final Long codColaborador) throws Throwable;
 
     /**
      * Busca uma lista de {@link MotivoRetiradaOrigemDestinoListagemMotivos motivoOrigemDestino} no banco de dados

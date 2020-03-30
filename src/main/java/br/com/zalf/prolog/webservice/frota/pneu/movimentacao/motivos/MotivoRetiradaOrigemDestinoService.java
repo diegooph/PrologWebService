@@ -49,9 +49,9 @@ public class MotivoRetiradaOrigemDestinoService {
     }
 
     @NotNull
-    public List<MotivoRetiradaOrigemDestinoListagem> getMotivosOrigemDestino(@NotNull final String tokenAutenticacao) {
+    public List<MotivoRetiradaOrigemDestinoListagem> getMotivosOrigemDestino(@NotNull final Long codColaborador) {
         try {
-            return dao.getMotivosOrigemDestino(tokenAutenticacao);
+            return dao.getMotivosOrigemDestino(codColaborador);
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao buscar relações motivo, origem e destino.", t);
             throw Injection

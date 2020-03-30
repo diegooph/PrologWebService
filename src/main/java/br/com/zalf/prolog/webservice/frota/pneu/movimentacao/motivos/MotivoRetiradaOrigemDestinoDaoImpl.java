@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos;
 
-import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
@@ -104,7 +103,7 @@ public class MotivoRetiradaOrigemDestinoDaoImpl extends DatabaseConnection imple
     }
 
     @Override
-    public @NotNull List<MotivoRetiradaOrigemDestinoListagem> getMotivosOrigemDestino(@NotNull final String tokenAutenticacao) throws Throwable {
+    public @NotNull List<MotivoRetiradaOrigemDestinoListagem> getMotivosOrigemDestino(@NotNull final Long codColaborador) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -112,8 +111,8 @@ public class MotivoRetiradaOrigemDestinoDaoImpl extends DatabaseConnection imple
             conn = getConnection();
 
             stmt = conn.prepareStatement("SELECT * FROM FUNC_MOTIVO_RETIRADA_ORIGEM_DESTINO_LISTAGEM(" +
-                    "F_TOKEN := ?)");
-            stmt.setString(1, TokenCleaner.getOnlyToken(tokenAutenticacao));
+                    "F_COD_COLABORADOR := ?)");
+            stmt.setLong(1, codColaborador);
 
             rSet = stmt.executeQuery();
 
