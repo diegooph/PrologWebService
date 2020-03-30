@@ -48,7 +48,7 @@ public final class MovimentacaoResource {
     }
 
     @POST
-    @Secured(permissions = Pilares.Frota.Pneu.Movimentacao.CADASTRAR_MOTIVOS_DESCARTE)
+    @Secured(permissions = Pilares.Frota.Pneu.Movimentacao.CADASTRAR_MOTIVOS_MOVIMENTACAO)
     @UsedBy(platforms = Platform.WEBSITE)
     @Path("/motivos-descarte/{codEmpresa}")
     public AbstractResponse insert(@Required final Motivo motivo,
@@ -57,7 +57,7 @@ public final class MovimentacaoResource {
     }
 
     @PUT
-    @Secured(permissions = Pilares.Frota.Pneu.Movimentacao.EDITAR_MOTIVOS_DESCARTE)
+    @Secured(permissions = Pilares.Frota.Pneu.Movimentacao.EDITAR_MOTIVOS_MOVIMENTACAO)
     @UsedBy(platforms = Platform.WEBSITE)
     @Path("/motivos-descarte/{codEmpresa}/{codMotivo}/status")
     public Response updateMotivoStatus(@PathParam("codEmpresa") @Required final Long codEmpresa,
@@ -69,8 +69,8 @@ public final class MovimentacaoResource {
 
     @GET
     @Secured(permissions = {
-            Pilares.Frota.Pneu.Movimentacao.CADASTRAR_MOTIVOS_DESCARTE,
-            Pilares.Frota.Pneu.Movimentacao.EDITAR_MOTIVOS_DESCARTE,
+            Pilares.Frota.Pneu.Movimentacao.CADASTRAR_MOTIVOS_MOVIMENTACAO,
+            Pilares.Frota.Pneu.Movimentacao.EDITAR_MOTIVOS_MOVIMENTACAO,
             Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_VEICULO_ESTOQUE,
             Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE,
             Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_DESCARTE})
