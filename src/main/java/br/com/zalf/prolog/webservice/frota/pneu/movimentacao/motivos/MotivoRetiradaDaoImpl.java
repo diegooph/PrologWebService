@@ -23,7 +23,7 @@ public class MotivoRetiradaDaoImpl extends DatabaseConnection implements MotivoR
     @Override
     @NotNull
     public Long insert(@NotNull final MotivoRetiradaInsercao motivoRetiradaInsercao,
-                       @NotNull final String tokenAutenticacao) throws Throwable {
+                       @NotNull final Long codigoColaborador) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -36,7 +36,7 @@ public class MotivoRetiradaDaoImpl extends DatabaseConnection implements MotivoR
                     "F_ATIVO_MOTIVO := ?," +
                     "F_COD_AUXILIAR_MOTIVO := ?," +
                     "F_DATA_HORA_INSERCAO_MOTIVO := ?," +
-                    "F_TOKEN_AUTENTICACAO := ?)" +
+                    "F_COD_COLABORADOR_AUTENTICADO := ?)" +
                     "AS V_COD_MOTIVO");
 
             stmt.setLong(1, motivoRetiradaInsercao.getCodEmpresaMotivoRetirada());
@@ -44,7 +44,7 @@ public class MotivoRetiradaDaoImpl extends DatabaseConnection implements MotivoR
             stmt.setBoolean(3, motivoRetiradaInsercao.isAtivoMotivoRetirada());
             stmt.setString(4, motivoRetiradaInsercao.getCodAuxiliarMotivoRetirada());
             stmt.setObject(5, Now.offsetDateTimeUtc());
-            stmt.setString(6, TokenCleaner.getOnlyToken(tokenAutenticacao));
+            stmt.setLong(6, codigoColaborador);
 
             rSet = stmt.executeQuery();
 
