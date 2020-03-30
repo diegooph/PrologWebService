@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.praxio.data;
 
-import br.com.zalf.prolog.webservice.BuildConfig;
+import br.com.zalf.prolog.webservice.config.BuildConfig;
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
 import br.com.zalf.prolog.webservice.integracao.api.SistemaApiProLogRestClient;
 import okhttp3.OkHttpClient;

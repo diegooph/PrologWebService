@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice;
+package br.com.zalf.prolog.webservice.config;
 
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ServerProperties;
@@ -13,7 +13,7 @@ public class ProLogApplication extends Application {
 	
 	@Override
 	public Set<Object> getSingletons() {
-		Set<Object> singletons = new HashSet<>();
+		final Set<Object> singletons = new HashSet<>();
 		// Suporte ao File Upload.
 		singletons.add(new MultiPartFeature());
 		return singletons;
@@ -21,7 +21,7 @@ public class ProLogApplication extends Application {
 	
 	@Override
 	public Map<String, Object> getProperties() {
-		Map<String, Object> properties = new HashMap<>();
+		final Map<String, Object> properties = new HashMap<>();
 		// Configura o pacote para fazer scan das classes com anotações REST.
 		// FIXME: Se mudar o nome do pacote do projeto além de alterar aqui, alterar
 		// no arquivo web.xml também

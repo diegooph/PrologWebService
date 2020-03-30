@@ -1,8 +1,8 @@
 package br.com.zalf.prolog.webservice.database;
 
-import br.com.zalf.prolog.webservice.BuildConfig;
 import br.com.zalf.prolog.webservice.commons.util.EnvironmentHelper;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.config.BuildConfig;
 import com.google.common.annotations.VisibleForTesting;
 import org.apache.tomcat.jdbc.pool.PoolProperties;
 import org.jetbrains.annotations.NotNull;
@@ -95,11 +95,6 @@ public final class DatabaseManager {
     }
 
     @NotNull
-    public Connection getConnection() throws SQLException {
-        return dataSource.getConnection();
-    }
-
-    @NotNull
     private static PoolProperties getPoolProperties() {
         final PoolProperties poolProperties = new PoolProperties();
         poolProperties.setDriverClassName(DRIVER);
@@ -134,5 +129,10 @@ public final class DatabaseManager {
                         "org.apache.tomcat.jdbc.pool.interceptor.StatementFinalizer;" +
                         "org.apache.tomcat.jdbc.pool.interceptor.ResetAbandonedTimer");
         return poolProperties;
+    }
+
+    @NotNull
+    public Connection getConnection() throws SQLException {
+        return dataSource.getConnection();
     }
 }

@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.commons.util;
 
-import br.com.zalf.prolog.webservice.BuildConfig;
+import br.com.zalf.prolog.webservice.config.BuildConfig;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

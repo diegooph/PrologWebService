@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan;
 
-import br.com.zalf.prolog.webservice.BuildConfig;
+import br.com.zalf.prolog.webservice.config.BuildConfig;
 
 /**
  * Created on 9/28/17
