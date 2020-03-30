@@ -1,9 +1,12 @@
 Change Log
 ==========
+
+* Cria estrutura para cadastro e configuração de motivos para o processo de movimentação (PL-2607)
+
 <a name="v1.0.25"></a>
 ## Version [v1.0.25](https://github.com/luizfp/PrologWebService/compare/v1.0.24...v1.0.25) (release-date) [unreleased]
 ### Features
-* Cria estrutura para cadastro e configuração de motivos para o processo de movimentação (PL-2607)
+
 
 <a name="v1.0.24"></a>
 ## Version [v1.0.24](https://github.com/luizfp/PrologWebService/compare/v1.0.23...v1.0.24) (2020-03-29)
