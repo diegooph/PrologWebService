@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.time.ZoneId;
 import java.util.List;
 
 /**
@@ -34,9 +35,9 @@ public final class MotivoRetiradaService {
 
     @NotNull
     public MotivoRetiradaVisualizacao getMotivoByCodigo(@NotNull final Long codMotivo,
-                                                        @NotNull final String tokenAutenticacao) {
+                                                        @NotNull final ZoneId timeZone) {
         try {
-            return dao.getMotivoByCodigo(codMotivo, tokenAutenticacao);
+            return dao.getMotivoByCodigo(codMotivo, timeZone);
         } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao buscar motivo %d", codMotivo), t);
             throw Injection

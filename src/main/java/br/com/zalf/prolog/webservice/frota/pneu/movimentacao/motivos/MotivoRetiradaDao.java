@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.time.ZoneId;
 import java.util.List;
 
 /**
@@ -29,14 +30,14 @@ public interface MotivoRetiradaDao {
     /**
      * Busca um {@link MotivoRetiradaVisualizacao motivo} baseado no seu código.
      *
-     * @param codMotivo         um código de um motivo.
-     * @param tokenAutenticacao token de autorização do header da requisição.
+     * @param codMotivo um código de um motivo.
+     * @param timeZone  Time Zone do usuário que fez a requisição, para retornar a data e hora da sua região.
      * @return uma {@link MotivoRetiradaVisualizacao motivo}.
      * @throws Throwable caso qualquer erro ocorrer.
      */
     @NotNull
     MotivoRetiradaVisualizacao getMotivoByCodigo(@NotNull Long codMotivo,
-                                                 @NotNull final String tokenAutenticacao) throws Throwable;
+                                                 @NotNull final ZoneId timeZone) throws Throwable;
 
     /**
      * Busca todos os {@link MotivoRetiradaListagem motivos} baseado no código da empresa.

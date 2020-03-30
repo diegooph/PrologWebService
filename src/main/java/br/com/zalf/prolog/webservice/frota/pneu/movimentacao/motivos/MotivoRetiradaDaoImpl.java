@@ -10,6 +10,7 @@ import org.jetbrains.annotations.Nullable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,7 +64,7 @@ public class MotivoRetiradaDaoImpl extends DatabaseConnection implements MotivoR
     @Override
     @NotNull
     public MotivoRetiradaVisualizacao getMotivoByCodigo(@NotNull final Long codMotivo,
-                                                        @NotNull final String tokenAutenticacao) throws Throwable {
+                                                        @NotNull final ZoneId timeZone) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -71,9 +72,9 @@ public class MotivoRetiradaDaoImpl extends DatabaseConnection implements MotivoR
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM FUNC_MOTIVO_RETIRADA_VISUALIZACAO(" +
                     "F_COD_MOTIVO := ?," +
-                    "F_TOKEN := ?)");
+                    "F_TIME_ZONE := ?)");
             stmt.setLong(1, codMotivo);
-            stmt.setString(2, TokenCleaner.getOnlyToken(tokenAutenticacao));
+            stmt.setString(2, timeZone.toString());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return MotivoRetiradaConverter.createMotivoRetiradaVisualizacao(rSet);

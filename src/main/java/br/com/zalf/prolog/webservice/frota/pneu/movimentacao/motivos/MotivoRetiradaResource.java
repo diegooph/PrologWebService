@@ -39,9 +39,8 @@ public final class MotivoRetiradaResource {
 
     @GET
     @Path("/{codMotivo}")
-    public MotivoRetiradaVisualizacao getMotivoByCodigo(@NotNull @PathParam("codMotivo") final Long codMotivo,
-                                                        @HeaderParam("Authorization") final String tokenAutenticacao) {
-        return motivoRetiradaService.getMotivoByCodigo(codMotivo, tokenAutenticacao);
+    public MotivoRetiradaVisualizacao getMotivoByCodigo(@NotNull @PathParam("codMotivo") final Long codMotivo) {
+        return motivoRetiradaService.getMotivoByCodigo(codMotivo, colaboradorAutenticadoProvider.get().getZoneIdUnidadeColaborador());
     }
 
     @GET
