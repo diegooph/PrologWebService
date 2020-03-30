@@ -49,9 +49,9 @@ public final class MotivoRetiradaService {
     @NotNull
     public List<MotivoRetiradaListagem> getMotivosListagem(@NotNull final Long codEmpresa,
                                                            @NotNull final boolean apenasAtivos,
-                                                           @NotNull final String tokenAutenticacao) {
+                                                           @NotNull final ZoneId timeZone) {
         try {
-            return dao.getMotivosListagem(codEmpresa, apenasAtivos, tokenAutenticacao);
+            return dao.getMotivosListagem(codEmpresa, apenasAtivos, timeZone);
         } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao buscar motivos, código da empresa: %d", codEmpresa), t);
             throw Injection

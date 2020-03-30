@@ -45,9 +45,8 @@ public final class MotivoRetiradaResource {
 
     @GET
     public List<MotivoRetiradaListagem> getMotivosListagem(@NotNull @QueryParam("codEmpresa") final Long codEmpresa,
-                                                           @NotNull @QueryParam("apenasAtivos") final boolean apenasAtivos,
-                                                           @NotNull @HeaderParam("Authorization") final String tokenAutenticacao) {
-        return motivoRetiradaService.getMotivosListagem(codEmpresa, apenasAtivos, tokenAutenticacao);
+                                                           @NotNull @QueryParam("apenasAtivos") final boolean apenasAtivos) {
+        return motivoRetiradaService.getMotivosListagem(codEmpresa, apenasAtivos, colaboradorAutenticadoProvider.get().getZoneIdUnidadeColaborador());
     }
 
     @PUT

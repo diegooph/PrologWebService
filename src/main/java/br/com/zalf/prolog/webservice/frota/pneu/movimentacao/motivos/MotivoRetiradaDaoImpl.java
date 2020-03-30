@@ -90,7 +90,7 @@ public class MotivoRetiradaDaoImpl extends DatabaseConnection implements MotivoR
     @NotNull
     public List<MotivoRetiradaListagem> getMotivosListagem(@NotNull final Long codEmpresa,
                                                            @NotNull final boolean apenasAtivos,
-                                                           @NotNull final String tokenAutenticacao) throws Throwable {
+                                                           @NotNull final ZoneId timeZone) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -99,10 +99,10 @@ public class MotivoRetiradaDaoImpl extends DatabaseConnection implements MotivoR
             stmt = conn.prepareStatement("SELECT * FROM FUNC_MOTIVO_RETIRADA_LISTAGEM(" +
                     "F_COD_EMPRESA := ?," +
                     "F_APENAS_ATIVOS := ?," +
-                    "F_TOKEN := ?)");
+                    "F_TIME_ZONE := ?)");
             stmt.setLong(1, codEmpresa);
             stmt.setBoolean(2, apenasAtivos);
-            stmt.setString(3, TokenCleaner.getOnlyToken(tokenAutenticacao));
+            stmt.setString(3, timeZone.toString());
 
             rSet = stmt.executeQuery();
 
