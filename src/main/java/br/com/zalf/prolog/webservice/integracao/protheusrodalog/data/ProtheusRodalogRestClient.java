@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.protheusrodalog.data;
 
-import br.com.zalf.prolog.webservice.BuildConfig;
+import br.com.zalf.prolog.webservice.config.BuildConfig;
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;

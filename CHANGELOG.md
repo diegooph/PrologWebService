@@ -1,15 +1,22 @@
 Change Log
 ==========
-
-## Stage
+<a name="v1.0.25"></a>
+## Version [v1.0.25](https://github.com/luizfp/PrologWebService/compare/v1.0.24...v1.0.25) (release-date) [unreleased]
 ### Features
-* Cria estrutura de campos personalizados (PL-2616)
-* Aplica fluxo de campos personalizados no processo de movimentação (PL-2616)
 * Cria estrutura para cadastro e configuração de motivos para o processo de movimentação (PL-2607)
 
 <a name="v1.0.24"></a>
-## Version [v1.0.24](https://github.com/luizfp/PrologWebService/compare/v1.0.23...v1.0.24) (release-date) [unreleased]
+## Version [v1.0.24](https://github.com/luizfp/PrologWebService/compare/v1.0.23...v1.0.24) (2020-03-29)
 
+### Features
+* Cria estrutura de campos personalizados (PL-2616)
+* Aplica fluxo de campos personalizados no processo de movimentação (PL-2616)
+* Cria integração de pneus para o cliente Expresso Nepomuceno (PLI-93)
+
+### Refactors
+* Adiciona código auxiliar no cadastro de tipo de veículo (PL-2560)
+* Altera fluxo de transferência de pneus dentro da integração (PLI-80)
+* Altera fluxo de transferência de veículos dentro da integração (PLI-80)
 
 <a name="v1.0.23"></a>
 ## Version [v1.0.23](https://github.com/luizfp/PrologWebService/compare/v1.0.22...v1.0.23) (2020-03-18)
