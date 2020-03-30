@@ -6,10 +6,7 @@ import br.com.zalf.prolog.webservice.database.DatabaseManager;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.integracao.api.pneu.ApiPneuService;
 import br.com.zalf.prolog.webservice.integracao.api.pneu.cadastro.ApiCadastroPneuService;
-import br.com.zalf.prolog.webservice.integracao.api.pneu.cadastro.model.ApiPneuCadastro;
-import br.com.zalf.prolog.webservice.integracao.api.pneu.cadastro.model.ApiPneuCargaInicial;
-import br.com.zalf.prolog.webservice.integracao.api.pneu.cadastro.model.ApiPneuCargaInicialResponse;
-import br.com.zalf.prolog.webservice.integracao.api.pneu.cadastro.model.ApiStatusPneu;
+import br.com.zalf.prolog.webservice.integracao.api.pneu.cadastro.model.*;
 import br.com.zalf.prolog.webservice.integracao.api.pneu.model.*;
 import br.com.zalf.prolog.webservice.integracao.praxio.IntegracaoPraxioResource;
 import br.com.zalf.prolog.webservice.integracao.praxio.cadastro.VeiculoCadastroPraxio;
@@ -502,40 +499,20 @@ public final class PneuCrudApiTest extends BaseTest {
         final Long cpfColaboradorUnidadeOrigem = buscaUmCpfDaUnidade();
         final String observacao = "Teste de Pneus";
 
+        //Cria objeto ApiPneuTransferencia
+        final ApiPneuTransferencia apiPneuTransferencia = new ApiPneuTransferencia(
+                COD_UNIDADE,
+                novaUnidade,
+                cpfColaboradorUnidadeOrigem.toString(),
+                pneusTransferencia,
+                observacao);
+
         //Realiza chamada para o método de transferencia de pneu
+        final SuccessResponseIntegracao pneusTransferidos =
+                apiCadastroPneuService.transferirPneu(TOKEN_INTEGRACAO, apiPneuTransferencia);
 
-
-        //Busca informações do pneu para validar transferência
-        for (ApiPneuCargaInicial apiPneuCargaInicial : cargaInicial) {
-            final Long codSistemaIntegradoPneu =
-                    buscaCodSistemaIntegradoPneuInserido(
-                            apiPneuCargaInicial.getCodigoSistemaIntegrado(),
-                            apiPneuCargaInicial.getCodigoCliente());
-
-            final ApiPneuCargaInicial apiPneuCargaInicialInfoPneuTransferido = buscaInformacoesPneuCargaInicialEstoque(
-                    apiPneuCargaInicial.getCodigoSistemaIntegrado(),
-                    apiPneuCargaInicial.getCodigoCliente());
-            //Valida todas as informações do pneu
-            assertThat(codSistemaIntegradoPneu).isNotNull();
-            assertThat(codSistemaIntegradoPneu).isEqualTo(apiPneuCargaInicial.getCodigoSistemaIntegrado());
-            assertThat(apiPneuCargaInicialInfoPneuTransferido.getCodigoSistemaIntegrado()).isEqualTo(apiPneuCargaInicial.
-                    getCodigoSistemaIntegrado());
-            assertThat(apiPneuCargaInicialInfoPneuTransferido.getCodigoCliente()).isEqualTo(apiPneuCargaInicial.
-                    getCodigoCliente());
-            assertThat(apiPneuCargaInicialInfoPneuTransferido.getCodUnidadePneu()).isEqualTo(novaUnidade);
-            assertThat(apiPneuCargaInicialInfoPneuTransferido.getCodModeloPneu()).isEqualTo(apiPneuCargaInicial.
-                    getCodModeloPneu());
-            assertThat(apiPneuCargaInicialInfoPneuTransferido.getCodDimensaoPneu()).isEqualTo(apiPneuCargaInicial.
-                    getCodDimensaoPneu());
-            assertThat(apiPneuCargaInicialInfoPneuTransferido.getPressaoCorretaPneu()).isEqualTo(apiPneuCargaInicial.
-                    getPressaoCorretaPneu());
-            assertThat(apiPneuCargaInicialInfoPneuTransferido.getVidaAtualPneu()).isEqualTo(apiPneuCargaInicial.
-                    getVidaAtualPneu());
-            assertThat(apiPneuCargaInicialInfoPneuTransferido.getVidaTotalPneu()).isEqualTo(apiPneuCargaInicial.
-                    getVidaTotalPneu());
-            assertThat(apiPneuCargaInicialInfoPneuTransferido.getPneuNovoNuncaRodado()).isEqualTo(apiPneuCargaInicial.
-                    getPneuNovoNuncaRodado());
-        }
+        assertThat(pneusTransferidos.getMsg()).isEqualTo("Transferência de pneus realizada com sucesso no " +
+                "Sistema ProLog");
     }
 
     @Test
@@ -1670,8 +1647,9 @@ public final class PneuCrudApiTest extends BaseTest {
         List<Long> codUnidadeEmpresa = new ArrayList<>();
         try {
             conn = connectionProvider.provideDatabaseConnection();
-            stmt = conn.prepareStatement("SELECT U.CODIGO FROM UNIDADE U WHERE U.COD_EMPRESA = ?");
+            stmt = conn.prepareStatement("SELECT U.CODIGO FROM UNIDADE U WHERE U.COD_EMPRESA = ? AND CODIGO <> ?");
             stmt.setLong(1, COD_EMPRESA);
+            stmt.setLong(2, COD_UNIDADE);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
                 codUnidadeEmpresa.add(rSet.getLong("CODIGO"));
@@ -1699,7 +1677,7 @@ public final class PneuCrudApiTest extends BaseTest {
             stmt.setLong(1, COD_UNIDADE);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
-                listaComCpfs.add(rSet.getLong("CODIGO"));
+                listaComCpfs.add(rSet.getLong("CPF"));
             }
             if (!listaComCpfs.isEmpty()) {
                 return listaComCpfs.get(0);
