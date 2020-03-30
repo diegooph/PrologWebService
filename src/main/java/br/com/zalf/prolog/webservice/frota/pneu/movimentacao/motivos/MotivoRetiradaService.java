@@ -21,9 +21,9 @@ public final class MotivoRetiradaService {
     private final MotivoRetiradaDao dao = Injection.provideMotivoDao();
 
     @NotNull
-    public Long insert(@NotNull final MotivoRetiradaInsercao motivo, @NotNull final String tokenAutenticacao) {
+    public Long insert(@NotNull final MotivoRetiradaInsercao motivo, @NotNull final Long codigoColaborador) {
         try {
-            return dao.insert(motivo, tokenAutenticacao);
+            return dao.insert(motivo, codigoColaborador);
         } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao inserir motivo %s", motivo.getDescricaoMotivoRetirada()), t);
             throw Injection

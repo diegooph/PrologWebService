@@ -19,12 +19,12 @@ public interface MotivoRetiradaDao {
      * Todos os dados são obrigatórios.
      *
      * @param motivoRetiradaInsercao Dados do motivo de troca a ser inserido.
-     * @param tokenAutenticacao      o token de sessão do usuário;
+     * @param codigoColaborador      O código do colaborador que fez a requisição.
      * @throws Throwable Caso qualquer erro ocorra.
      */
     @NotNull
     Long insert(@NotNull final MotivoRetiradaInsercao motivoRetiradaInsercao,
-                String tokenAutenticacao) throws Throwable;
+                @NotNull final Long codigoColaborador) throws Throwable;
 
     /**
      * Busca um {@link MotivoRetiradaVisualizacao motivo} baseado no seu código.

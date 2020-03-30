@@ -31,9 +31,8 @@ public final class MotivoRetiradaResource {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    public Long insert(@Valid final MotivoRetiradaInsercao motivo,
-                       @HeaderParam("Authorization") final String tokenAutorizacao) {
-        return motivoRetiradaService.insert(motivo, tokenAutorizacao);
+    public Long insert(@Valid final MotivoRetiradaInsercao motivo) {
+        return motivoRetiradaService.insert(motivo, colaboradorAutenticadoProvider.get().getCodigo());
     }
 
     @GET
