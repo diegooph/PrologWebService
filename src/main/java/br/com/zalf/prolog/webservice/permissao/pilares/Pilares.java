@@ -80,8 +80,8 @@ public final class Pilares {
                 public static final int MOVIMENTAR_ANALISE = 143;
                 //-- ‘Movimentação - Descarte (Estoque ou Veículo ou Análise -> Descarte)’
                 public static final int MOVIMENTAR_DESCARTE = 144;
-                public static final int CADASTRAR_MOTIVOS_DESCARTE = 123;
-                public static final int EDITAR_MOTIVOS_DESCARTE = 124;
+                public static final int CADASTRAR_MOTIVOS_MOVIMENTACAO = 123;
+                public static final int EDITAR_MOTIVOS_MOVIMENTACAO = 124;
 
                 private Movimentacao() {
                 }
