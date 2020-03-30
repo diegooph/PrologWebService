@@ -442,7 +442,7 @@ public final class PneuCrudApiTest extends BaseTest {
 
     @Test
     @DisplayName("Teste Carga Inicial adicionando pneus e transferindo eles a outra unidade")
-    void adicionaCargaInicialPneuETransfereElesParaOutraUnidade() throws Throwable {
+    void adicionaCargaInicialPneuETransfereElesParaOutraUnidadeSemErro() throws Throwable {
         //Cria pneus
         final List<ApiPneuCargaInicial> cargaInicial = new ArrayList<>();
         cargaInicial.add(criaPneuSemErroComCodigoClienteValido());
@@ -524,7 +524,7 @@ public final class PneuCrudApiTest extends BaseTest {
 
     @Test
     @DisplayName("Teste Carga Inicial transfere veículo e seus pneus para outra unidade")
-    void adicionaCargaInicialPneuEmUmVeiculoDepoisTransfereVeiculo() throws Throwable {
+    void adicionaCargaInicialPneuEmUmVeiculoDepoisTransfereVeiculoSemErro() throws Throwable {
         //Cria veículo.
         VeiculoCadastroPraxio veiculoCadastroPraxio = criaVeiculoParaCadastro();
 
