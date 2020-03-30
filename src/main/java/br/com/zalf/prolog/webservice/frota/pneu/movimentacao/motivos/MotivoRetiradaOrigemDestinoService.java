@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestin
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.*;
 import org.jetbrains.annotations.NotNull;
 
+import java.time.ZoneId;
 import java.util.List;
 
 /**
@@ -36,9 +37,9 @@ public class MotivoRetiradaOrigemDestinoService {
 
     @NotNull
     public MotivoRetiradaOrigemDestinoVisualizacao getMotivoOrigemDestino(@NotNull final Long codMotivoOrigemDestino,
-                                                                          @NotNull final String tokenAutenticacao) {
+                                                                          @NotNull final ZoneId timeZone) {
         try {
-            return dao.getMotivoOrigemDestino(codMotivoOrigemDestino, tokenAutenticacao);
+            return dao.getMotivoOrigemDestino(codMotivoOrigemDestino, timeZone);
         } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao buscar relação motivo, origem e destino %d", codMotivoOrigemDestino), t);
             throw Injection

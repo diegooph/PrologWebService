@@ -42,9 +42,8 @@ public class MotivoRetiradaOrigemDestinoResource {
     @GET
     @Path("/{codMotivoOrigemDestino}")
     @UsedBy(platforms = {Platform.WEBSITE})
-    public MotivoRetiradaOrigemDestinoVisualizacao getMotivoOrigemDestino(@NotNull @PathParam("codMotivoOrigemDestino") final Long codMotivoOrigemDestino,
-                                                                          @HeaderParam("Authorization") final String tokenAutenticacao) {
-        return motivoRetiradaOrigemDestinoService.getMotivoOrigemDestino(codMotivoOrigemDestino, tokenAutenticacao);
+    public MotivoRetiradaOrigemDestinoVisualizacao getMotivoOrigemDestino(@NotNull @PathParam("codMotivoOrigemDestino") final Long codMotivoOrigemDestino) {
+        return motivoRetiradaOrigemDestinoService.getMotivoOrigemDestino(codMotivoOrigemDestino, colaboradorAutenticadoProvider.get().getZoneIdUnidadeColaborador());
     }
 
     @GET

@@ -11,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -80,7 +81,7 @@ public class MotivoRetiradaOrigemDestinoDaoImpl extends DatabaseConnection imple
 
     @Override
     public @NotNull MotivoRetiradaOrigemDestinoVisualizacao getMotivoOrigemDestino(@NotNull final Long codMotivoOrigemDestino,
-                                                                                   @NotNull final String tokenAutenticacao) throws Throwable {
+                                                                                   @NotNull final ZoneId timeZone) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -88,9 +89,9 @@ public class MotivoRetiradaOrigemDestinoDaoImpl extends DatabaseConnection imple
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM FUNC_MOTIVO_RETIRADA_ORIGEM_DESTINO_VISUALIZACAO(" +
                     "F_COD_MOTIVO_ORIGEM_DESTINO := ?," +
-                    "F_TOKEN := ?);");
+                    "F_TIME_ZONE := ?);");
             stmt.setLong(1, codMotivoOrigemDestino);
-            stmt.setString(2, TokenCleaner.getOnlyToken(tokenAutenticacao));
+            stmt.setString(2, timeZone.toString());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return MotivoRetiradaOrigemDestinoConverter.createMotivoRetiradaOrigemDestinoVisualizacao(rSet);

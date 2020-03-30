@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestin
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.*;
 import org.jetbrains.annotations.NotNull;
 
+import java.time.ZoneId;
 import java.util.List;
 
 /**
@@ -28,12 +29,12 @@ public interface MotivoRetiradaOrigemDestinoDao {
      * Busca um {@link MotivoRetiradaOrigemDestinoVisualizacao motivoOrigemDestino} no banco de dados.
      *
      * @param codMotivoOrigemDestino um código de motivoOrigemDestino a ser buscado no banco.
-     * @param tokenAutenticacao      o token de sessão do usuário.
+     * @param timeZone               o timezone do usuário que está fazendo a requisição.
      * @throws Throwable Caso qualquer erro ocorra.
      */
     @NotNull
     MotivoRetiradaOrigemDestinoVisualizacao getMotivoOrigemDestino(@NotNull final Long codMotivoOrigemDestino,
-                                                                   @NotNull final String tokenAutenticacao) throws Throwable;
+                                                                   @NotNull final ZoneId timeZone) throws Throwable;
 
     /**
      * Busca uma lista de {@link MotivoRetiradaOrigemDestinoVisualizacao motivoOrigemDestino} no banco de dados
