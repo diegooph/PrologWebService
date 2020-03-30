@@ -12,6 +12,7 @@ Change Log
 ## Version [v1.0.24](https://github.com/luizfp/PrologWebService/compare/v1.0.23...v1.0.24) (release-date) [unreleased]
 ### Features
 * Cria relatório de permissões detalhadas (PL-2627)
+
 ## Version [v1.0.24](https://github.com/luizfp/PrologWebService/compare/v1.0.23...v1.0.24) (2020-03-29)
 
 ### Features
