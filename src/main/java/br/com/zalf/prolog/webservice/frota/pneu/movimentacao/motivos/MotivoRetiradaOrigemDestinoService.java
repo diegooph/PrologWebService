@@ -23,9 +23,9 @@ public class MotivoRetiradaOrigemDestinoService {
 
     @NotNull
     public List<Long> insert(@NotNull final List<MotivoRetiradaOrigemDestinoInsercao> unidades,
-                             @NotNull final String tokenAutenticacao) {
+                             @NotNull final Long codigoColaboradorInsercao) {
         try {
-            return dao.insert(unidades, tokenAutenticacao);
+            return dao.insert(unidades, codigoColaboradorInsercao);
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao inserir uma lista de relação motivo, origem e destino.", t);
             throw Injection

@@ -24,7 +24,7 @@ public class MotivoRetiradaOrigemDestinoDaoImpl extends DatabaseConnection imple
     @NotNull
     @Override
     public List<Long> insert(@NotNull final List<MotivoRetiradaOrigemDestinoInsercao> unidades,
-                             @NotNull final String tokenAutenticacao) throws Throwable {
+                             @NotNull final Long codigoColaboradorInsercao) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -39,13 +39,13 @@ public class MotivoRetiradaOrigemDestinoDaoImpl extends DatabaseConnection imple
                     "F_DESTINO := ?::origem_destino_type," +
                     "F_OBRIGATORIO := ?," +
                     "F_DATA_HORA_INSERCAO := ?," +
-                    "F_TOKEN_AUTENTICACAO := ?)" +
+                    "F_COD_COLABORADOR_INSERCAO := ?)" +
                     "AS V_COD_MOTIVO_ORIGEM_DESTINO;");
 
             final List<Long> codigosGerados = new ArrayList();
 
             stmt.setObject(7, Now.offsetDateTimeUtc());
-            stmt.setString(8, TokenCleaner.getOnlyToken(tokenAutenticacao));
+            stmt.setLong(8, codigoColaboradorInsercao);
 
             for (final MotivoRetiradaOrigemDestinoInsercao unidade : unidades) {
 

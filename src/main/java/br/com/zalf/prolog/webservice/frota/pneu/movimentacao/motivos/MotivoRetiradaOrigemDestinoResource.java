@@ -5,8 +5,12 @@ import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestinoEnum;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.*;
+import br.com.zalf.prolog.webservice.interceptors.auth.ColaboradorAutenticado;
+import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import org.jetbrains.annotations.NotNull;
 
+import javax.inject.Inject;
+import javax.inject.Provider;
 import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -17,6 +21,7 @@ import java.util.List;
  *
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
+@Secured
 @Path("/motivos/motivoOrigemDestino")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class MotivoRetiradaOrigemDestinoResource {
@@ -24,12 +29,14 @@ public class MotivoRetiradaOrigemDestinoResource {
     @NotNull
     private final MotivoRetiradaOrigemDestinoService motivoRetiradaOrigemDestinoService = new MotivoRetiradaOrigemDestinoService();
 
+    @Inject
+    private Provider<ColaboradorAutenticado> colaboradorAutenticadoProvider;
+
     @POST
     @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
     @UsedBy(platforms = {Platform.WEBSITE})
-    public List<Long> insert(@NotNull @Valid @Required final List<MotivoRetiradaOrigemDestinoInsercao> unidades,
-                             @NotNull @HeaderParam("Authorization") final String tokenAutenticacao) {
-        return motivoRetiradaOrigemDestinoService.insert(unidades, tokenAutenticacao);
+    public List<Long> insert(@NotNull @Valid @Required final List<MotivoRetiradaOrigemDestinoInsercao> unidades) {
+        return motivoRetiradaOrigemDestinoService.insert(unidades, colaboradorAutenticadoProvider.get().getCodigo());
     }
 
     @GET

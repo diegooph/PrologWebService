@@ -16,13 +16,13 @@ public interface MotivoRetiradaOrigemDestinoDao {
     /**
      * Insere uma lista de {@link MotivoRetiradaOrigemDestinoInsercao origemDestinoMotivo} no banco de dados.
      *
-     * @param unidades          uma lista de unidades com suas rotas e seus motivos por rotas.
-     * @param tokenAutenticacao o token de sessão do usuário.
+     * @param unidades                  uma lista de unidades com suas rotas e seus motivos por rotas.
+     * @param codigoColaboradorInsercao codigo do colaborador que está realizando a inserção do registro da relação.
      * @throws Throwable Caso qualquer erro ocorra.
      */
     @NotNull
     List<Long> insert(@NotNull final List<MotivoRetiradaOrigemDestinoInsercao> unidades,
-                      @NotNull final String tokenAutenticacao) throws Throwable;
+                      @NotNull final Long codigoColaboradorInsercao) throws Throwable;
 
     /**
      * Busca um {@link MotivoRetiradaOrigemDestinoVisualizacao motivoOrigemDestino} no banco de dados.
