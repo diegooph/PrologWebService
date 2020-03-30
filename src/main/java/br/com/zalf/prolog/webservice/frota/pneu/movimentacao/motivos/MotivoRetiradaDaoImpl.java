@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos;
 
-import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.*;
@@ -148,7 +147,7 @@ public class MotivoRetiradaDaoImpl extends DatabaseConnection implements MotivoR
 
     @Override
     public @NotNull List<MotivoRetiradaHistoricoListagem> getHistoricoByMotivo(@NotNull final Long codMotivoRetirada,
-                                                                               @NotNull final String tokenAutenticacao) throws Throwable {
+                                                                               @NotNull final ZoneId timeZone) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -156,9 +155,9 @@ public class MotivoRetiradaDaoImpl extends DatabaseConnection implements MotivoR
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM FUNC_MOTIVO_RETIRADA_HISTORICO_LISTAGEM(" +
                     "F_COD_MOTIVO := ?," +
-                    "F_TOKEN := ?)");
+                    "F_TIME_ZONE := ?)");
             stmt.setLong(1, codMotivoRetirada);
-            stmt.setString(2, TokenCleaner.getOnlyToken(tokenAutenticacao));
+            stmt.setString(2, timeZone.toString());
 
             rSet = stmt.executeQuery();
 

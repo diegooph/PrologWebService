@@ -59,9 +59,8 @@ public final class MotivoRetiradaResource {
     @GET
     @Path("/historico")
     @UsedBy(platforms = {Platform.ANDROID})
-    public List<MotivoRetiradaHistoricoListagem> getHistoricoByMotivoRetirada(@QueryParam("codMotivoRetirada") @NotNull final Long codMotivoRetirada,
-                                                                              @HeaderParam("Authorization") @NotNull final String tokenAutenticacao) {
-        return motivoRetiradaService.getHistoricoByMotivo(codMotivoRetirada, tokenAutenticacao);
+    public List<MotivoRetiradaHistoricoListagem> getHistoricoByMotivoRetirada(@QueryParam("codMotivoRetirada") @NotNull final Long codMotivoRetirada) {
+        return motivoRetiradaService.getHistoricoByMotivo(codMotivoRetirada, colaboradorAutenticadoProvider.get().getZoneIdUnidadeColaborador());
     }
 
 }

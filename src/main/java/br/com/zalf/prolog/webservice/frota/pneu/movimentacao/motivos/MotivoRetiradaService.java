@@ -75,9 +75,9 @@ public final class MotivoRetiradaService {
 
     @NotNull
     public List<MotivoRetiradaHistoricoListagem> getHistoricoByMotivo(@NotNull final Long codMotivoRetirada,
-                                                                      @NotNull final String tokenAutenticacao) {
+                                                                      @NotNull final ZoneId timeZone) {
         try {
-            return dao.getHistoricoByMotivo(codMotivoRetirada, tokenAutenticacao);
+            return dao.getHistoricoByMotivo(codMotivoRetirada, timeZone);
         } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao buscar a lista de histórico do motivo, código do motivo: %d", codMotivoRetirada), t);
             throw Injection

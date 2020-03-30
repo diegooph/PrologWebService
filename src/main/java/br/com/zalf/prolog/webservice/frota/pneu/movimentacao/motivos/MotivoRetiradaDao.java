@@ -68,11 +68,11 @@ public interface MotivoRetiradaDao {
      * Realiza a busca de uma lista do histórico de um {@link MotivoRetiradaHistoricoListagem motivo}.
      *
      * @param codMotivoRetirada um código que será utilizado para buscar o histórico.
-     * @param tokenAutenticacao o token de sessão do usuário;
+     * @param timeZone          time zone do usuário que fez a requisição.
      * @throws Throwable caso qualquer erro ocorrer.
      */
     @NotNull
     List<MotivoRetiradaHistoricoListagem> getHistoricoByMotivo(@NotNull Long codMotivoRetirada,
-                                                               @NotNull String tokenAutenticacao) throws Throwable;
+                                                               @NotNull ZoneId timeZone) throws Throwable;
 
 }
