@@ -4,8 +4,11 @@ import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.*;
+import br.com.zalf.prolog.webservice.interceptors.auth.ColaboradorAutenticado;
 import org.jetbrains.annotations.NotNull;
 
+import javax.inject.Inject;
+import javax.inject.Provider;
 import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -22,6 +25,9 @@ public final class MotivoRetiradaResource {
 
     @NotNull
     private final MotivoRetiradaService motivoRetiradaService = new MotivoRetiradaService();
+
+    @Inject
+    private Provider<ColaboradorAutenticado> colaboradorAutenticadoProvider;
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
