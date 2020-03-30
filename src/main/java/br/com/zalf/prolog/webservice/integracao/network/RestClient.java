@@ -5,14 +5,14 @@ import org.jetbrains.annotations.NotNull;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 public final class RestClient {
     @NotNull
     private static final String DEFAULT_BASE_URL = "http://localhost:8080/";
     @NotNull
-    private static final Map<String, Object> SERVICE_CACHE = new HashMap<>();
+    private static final ConcurrentMap<String, Object> SERVICE_CACHE = new ConcurrentHashMap<>();
     @NotNull
     private static final Retrofit RETROFIT;
 
@@ -30,15 +30,6 @@ public final class RestClient {
     @NotNull
     public static <T> T getService(@NotNull final Class<T> serviceClass) {
         final String canonicalName = serviceClass.getCanonicalName();
-        if (!SERVICE_CACHE.containsKey(canonicalName)) {
-            synchronized (RestClient.class) {
-                if (!SERVICE_CACHE.containsKey(canonicalName)) {
-                    final T service = RETROFIT.create(serviceClass);
-                    SERVICE_CACHE.put(serviceClass.getCanonicalName(), service);
-                }
-            }
-        }
-        //noinspection unchecked
-        return (T) SERVICE_CACHE.get(canonicalName);
+        return (T) SERVICE_CACHE.computeIfAbsent(canonicalName, key -> RETROFIT.create(serviceClass));
     }
 }
