@@ -30,6 +30,7 @@ public final class RestClient {
     @NotNull
     public static <T> T getService(@NotNull final Class<T> serviceClass) {
         final String canonicalName = serviceClass.getCanonicalName();
+        //noinspection unchecked
         return (T) SERVICE_CACHE.computeIfAbsent(canonicalName, key -> RETROFIT.create(serviceClass));
     }
 }
