@@ -11,7 +11,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestin
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.ProcessoMovimentacao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.destino.DestinoVeiculo;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.origem.OrigemVeiculo;
-import br.com.zalf.prolog.webservice.integracao.praxio.movimentacao.GlobusPiccoloturLocaisMovimento;
+import br.com.zalf.prolog.webservice.integracao.praxio.movimentacao.GlobusPiccoloturLocalMovimento;
 import br.com.zalf.prolog.webservice.integracao.praxio.movimentacao.MovimentacaoGlobus;
 import br.com.zalf.prolog.webservice.integracao.praxio.movimentacao.ProcessoMovimentacaoGlobus;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.*;
@@ -31,6 +31,8 @@ import java.util.Map;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public final class GlobusPiccoloturConverter {
+    private static final Short COD_FUNCAO_AGRUPAMENTO_MOVIMENTACAO = 14;
+
     @NotNull
     public static ChecklistItensNokGlobus createChecklistItensNokGlobus(
             @NotNull final Long codUnidadeProLog,
@@ -177,9 +179,25 @@ public final class GlobusPiccoloturConverter {
     }
 
     @NotNull
-    public static List<CampoPersonalizadoParaRealizacao> convert(
-            @NotNull final List<GlobusPiccoloturLocaisMovimento> locaisMovimentoGlobus) throws Throwable {
-        return new ArrayList<>();
+    public static CampoPersonalizadoParaRealizacao convert(
+            @NotNull final CampoPersonalizadoParaRealizacao campoSelecaoLocalMovimento,
+            @NotNull final List<GlobusPiccoloturLocalMovimento> locaisMovimentoGlobus) {
+        return new CampoPersonalizadoParaRealizacao(
+                campoSelecaoLocalMovimento.getCodigo(),
+                campoSelecaoLocalMovimento.getCodEmpresa(),
+                campoSelecaoLocalMovimento.getCodFuncaoProlog(),
+                campoSelecaoLocalMovimento.getTipoCampo(),
+                campoSelecaoLocalMovimento.getNomeCampo(),
+                campoSelecaoLocalMovimento.getDescricaoCampo(),
+                campoSelecaoLocalMovimento.getTextoAuxilioPreenchimento(),
+                campoSelecaoLocalMovimento.isPreenchimentoObrigatorio(),
+                campoSelecaoLocalMovimento.getMensagemCasoCampoNaoPreenchido(),
+                campoSelecaoLocalMovimento.getPermiteSelecaoMultipla(),
+                locaisMovimentoGlobus
+                        .stream()
+                        .map(GlobusPiccoloturLocalMovimento::getLocalAsOpcaoSelecao)
+                        .toArray(String[]::new),
+                campoSelecaoLocalMovimento.getOrdemExibicao());
     }
 
     @NotNull

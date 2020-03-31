@@ -1,8 +1,10 @@
 package br.com.zalf.prolog.webservice.integracao.praxio;
 
+import br.com.zalf.prolog.webservice.BuildConfig;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.customfields.CampoPersonalizadoDao;
 import br.com.zalf.prolog.webservice.customfields._model.CampoPersonalizadoParaRealizacao;
+import br.com.zalf.prolog.webservice.customfields._model.TipoCampoPersonalizado;
 import br.com.zalf.prolog.webservice.database.DatabaseConnectionProvider;
 import br.com.zalf.prolog.webservice.errorhandling.exception.BloqueadoIntegracaoException;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
@@ -18,6 +20,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.ProcessoMovi
 import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoDao;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.*;
+import br.com.zalf.prolog.webservice.integracao.praxio.movimentacao.GlobusPiccoloturLocalMovimento;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.error.GlobusPiccoloturException;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
@@ -250,17 +253,32 @@ public final class SistemaGlobusPiccolotur extends Sistema {
     public List<CampoPersonalizadoParaRealizacao> getCamposParaRealizacaoMovimentacao(
             @NotNull final Long codUnidade,
             @NotNull final CampoPersonalizadoDao campoPersonalizadoDao) throws Throwable {
+        final List<CampoPersonalizadoParaRealizacao> camposParaRealizacaoMovimentacao =
+                campoPersonalizadoDao.getCamposParaRealizacaoMovimentacao(codUnidade);
         if (!unidadeEstaComIntegracaoAtiva(codUnidade)) {
-            // Se a unidade não está integrada, então direcionamos para o fluxo do Prolog.
-            return campoPersonalizadoDao.getCamposParaRealizacaoMovimentacao(codUnidade);
+            // Se a unidade não está integrada, então retornamos o campo padrão, buscado pelo Prolog.
+            return camposParaRealizacaoMovimentacao;
         }
+
+        if (camposParaRealizacaoMovimentacao.isEmpty()) {
+            throw new GlobusPiccoloturException("Nenhum campo personalizado disponível");
+        }
+        // Buscamos o campo LISTA_SELEÇÃO, se não encontramos nada, lançamos uma exception, pois é obrigatório existir.
+        final CampoPersonalizadoParaRealizacao oldCampoSelecaoLocalMovimento =
+                camposParaRealizacaoMovimentacao
+                        .stream()
+                        .filter(campo -> campo.getTipoCampo().equals(TipoCampoPersonalizado.LISTA_SELECAO))
+                        .findFirst()
+                        .orElseThrow(() -> {
+                            throw new GlobusPiccoloturException("Nenhum campo de Lista de Seleção disponível");
+                        });
+
         // fluxo integrado, direcionamos a requisição para a Praxio.
         Connection conn = null;
         final DatabaseConnectionProvider connectionProvider = new DatabaseConnectionProvider();
         try {
             conn = connectionProvider.provideDatabaseConnection();
-            conn.setAutoCommit(false);
-            final long codEmpresa = getIntegradorProLog().getCodEmpresaByCodUnidadeProLog(conn, codUnidade);
+            final long codEmpresa = oldCampoSelecaoLocalMovimento.getCodEmpresa();
 
             final ApiAutenticacaoHolder autenticacaoHolder =
                     getIntegradorProLog()
@@ -275,19 +293,29 @@ public final class SistemaGlobusPiccolotur extends Sistema {
                             autenticacaoHolder.getApiTokenClient(),
                             autenticacaoHolder.getApiShortCode());
 
-            final String url = getIntegradorProLog()
-                    .getUrl(conn, codEmpresa, getSistemaKey(), MetodoIntegrado.GET_LOCAIS_DE_MOVIMENTO);
-            final String cpfColaborador = getIntegradorProLog().getColaboradorByToken(getUserToken()).getCpfAsString();
-            return GlobusPiccoloturConverter
-                    .convert(
-                            requester.getLocaisMovimentoGlobus(
-                                    url,
-                                    autenticacaoResponse.getFormattedBearerToken(),
-                                    cpfColaborador));
+            final String cpfColaborador =
+                    BuildConfig.DEBUG
+                            ? GlobusPiccoloturConstants.CPF_COLABORADOR_LOCAIS_MOVIMENTO
+                            : getIntegradorProLog().getColaboradorByToken(getUserToken()).getCpfAsString();
+            final String url =
+                    getIntegradorProLog()
+                            .getUrl(conn, codEmpresa, getSistemaKey(), MetodoIntegrado.GET_LOCAIS_DE_MOVIMENTO);
+            final List<GlobusPiccoloturLocalMovimento> locaisMovimentoGlobus =
+                    requester.getLocaisMovimentoGlobus(
+                            url,
+                            autenticacaoResponse.getFormattedBearerToken(),
+                            cpfColaborador);
+            final CampoPersonalizadoParaRealizacao novoCampoSelecaoLocalMovimento =
+                    GlobusPiccoloturConverter.convert(oldCampoSelecaoLocalMovimento, locaisMovimentoGlobus);
+            // removemos o campo de selção antigo.
+            camposParaRealizacaoMovimentacao.remove(oldCampoSelecaoLocalMovimento);
+            // adicionamos o novo campo de seleção, esse contém as opções que foram buscadas do Globus.
+            // adicionamos ele no início, para que seja a primeira informação que o usuário preecha.
+            camposParaRealizacaoMovimentacao.add(0, novoCampoSelecaoLocalMovimento);
+            return camposParaRealizacaoMovimentacao;
         } finally {
             connectionProvider.closeResources(conn);
         }
-
     }
 
     private boolean unidadeEstaComIntegracaoAtiva(@NotNull final Long codUnidade) throws Throwable {
