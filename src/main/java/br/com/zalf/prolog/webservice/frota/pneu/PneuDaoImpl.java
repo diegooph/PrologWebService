@@ -161,7 +161,7 @@ public final class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                     "F_VALOR := ?," +
                     "F_VIDA_TOTAL := ?," +
                     "F_PRESSAO_RECOMENDADA := ?," +
-                    "F_COD_PNEU := ?," +
+                    "F_COD_ORIGINAL_PNEU := ?," +
                     "F_COD_UNIDADE := ?);");
             stmt.setString(1, pneu.getCodigoCliente());
             stmt.setLong(2, pneu.getModelo().getCodigo());
