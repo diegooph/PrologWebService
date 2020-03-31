@@ -187,6 +187,11 @@ public final class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             stmt.executeQuery();
 
             conn.commit();
+        } catch (final Throwable e) {
+            if (conn != null) {
+                conn.rollback();
+            }
+            throw e;
         } finally {
             close(conn, stmt);
         }
