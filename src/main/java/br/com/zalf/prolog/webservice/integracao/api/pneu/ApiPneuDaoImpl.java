@@ -3,16 +3,24 @@ package br.com.zalf.prolog.webservice.integracao.api.pneu;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
+import br.com.zalf.prolog.webservice.frota.pneu.servico._model.TipoServico;
 import br.com.zalf.prolog.webservice.integracao.api.pneu.cadastro.model.ApiStatusPneu;
 import br.com.zalf.prolog.webservice.integracao.api.pneu.model.ApiPneuAlteracaoStatus;
 import br.com.zalf.prolog.webservice.integracao.api.pneu.model.ApiPneuAlteracaoStatusVeiculo;
+import br.com.zalf.prolog.webservice.integracao.api.pneu.model.DiagramaPosicaoMapeado;
+import br.com.zalf.prolog.webservice.integracao.api.pneu.model.PosicaoPneuMepado;
+import br.com.zalf.prolog.webservice.integracao.response.PosicaoPneuMepadoResponse;
 import org.jetbrains.annotations.NotNull;
+import org.postgresql.util.PSQLException;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static br.com.zalf.prolog.webservice.commons.util.StatementUtils.bindValueOrNull;
 
@@ -86,6 +94,44 @@ public final class ApiPneuDaoImpl extends DatabaseConnection implements ApiPneuD
             throw t;
         } finally {
             close(conn, stmt);
+        }
+    }
+
+    @Override
+    public List<PosicaoPneuMepadoResponse> validaPosicoesVeiculo(
+            @NotNull final String tokenIntegracao,
+            @NotNull final List<DiagramaPosicaoMapeado> diagramasPosicoes) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        List<PosicaoPneuMepadoResponse> posicaoPneuMepadoResponse = new ArrayList<>();
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM INTEGRACAO.FUNC_VEICULO_VALIDA_POSICOES_VEICULO(" +
+                    "F_COD_DIAGRAMA := ?, F_LISTA_POSICOES := ?)");
+            for (final DiagramaPosicaoMapeado diagramaPosicaoMapeado : diagramasPosicoes) {
+                try {
+                    final List<Integer> posicaoProLog = diagramaPosicaoMapeado.getPosicoesMapeadas().stream().
+                            map(PosicaoPneuMepado::getPosicaoProLog).collect(Collectors.toList());
+                    stmt.setInt(1, diagramaPosicaoMapeado.getCodDiagrama());
+                    stmt.setArray(2, PostgresUtils.listToArray(conn, SqlType.BIGINT, posicaoProLog));
+                    rSet = stmt.executeQuery();
+                    if (rSet.next()) {
+                        posicaoPneuMepadoResponse.add(PosicaoPneuMepadoResponse.ok(
+                                true,
+                                diagramaPosicaoMapeado.getCodDiagrama(),
+                                null));
+                    }
+                } catch (final PSQLException sql) {
+                    posicaoPneuMepadoResponse.add(PosicaoPneuMepadoResponse.error(
+                            false,
+                            diagramaPosicaoMapeado.getCodDiagrama(),
+                            PostgresUtils.getPSQLErrorMessage(sql, sql.getMessage())));
+                }
+            }
+            return posicaoPneuMepadoResponse;
+        } finally {
+            close(conn, stmt, rSet);
         }
     }
 
