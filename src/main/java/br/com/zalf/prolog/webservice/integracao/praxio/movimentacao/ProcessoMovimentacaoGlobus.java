@@ -11,10 +11,19 @@ import java.util.List;
  */
 public final class ProcessoMovimentacaoGlobus {
     @NotNull
+    private final Long codUnidadeMovimentacaoRealizada;
+    @NotNull
     private final List<MovimentacaoGlobus> trocas;
 
-    public ProcessoMovimentacaoGlobus(@NotNull final List<MovimentacaoGlobus> trocas) {
+    public ProcessoMovimentacaoGlobus(@NotNull final Long codUnidadeMovimentacaoRealizada,
+                                      @NotNull final List<MovimentacaoGlobus> trocas) {
+        this.codUnidadeMovimentacaoRealizada = codUnidadeMovimentacaoRealizada;
         this.trocas = trocas;
+    }
+
+    @NotNull
+    public Long getCodUnidadeMovimentacaoRealizada() {
+        return codUnidadeMovimentacaoRealizada;
     }
 
     @NotNull

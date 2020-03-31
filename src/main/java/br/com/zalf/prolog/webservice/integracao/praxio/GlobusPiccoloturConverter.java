@@ -114,8 +114,9 @@ public final class GlobusPiccoloturConverter {
     }
 
     @NotNull
-    public static ProcessoMovimentacaoGlobus convert(@NotNull final ProcessoMovimentacao processoMovimentacao,
-                                                     @NotNull final LocalDateTime dataHoraMovimentacao) {
+    public static ProcessoMovimentacaoGlobus convert(
+            @NotNull final ProcessoMovimentacao processoMovimentacao,
+            @NotNull final LocalDateTime dataHoraMovimentacao) throws Throwable {
         final List<MovimentacaoGlobus> movimentacoesGlobus = new ArrayList<>();
         for (int i = 0; i < processoMovimentacao.getMovimentacoes().size(); i++) {
             final Movimentacao movimentacao = processoMovimentacao.getMovimentacoes().get(i);
@@ -174,8 +175,11 @@ public final class GlobusPiccoloturConverter {
         for (int i = 0; i < movimentacoesGlobus.size(); i++) {
             movimentacoesGlobus.get(i).setSequencia((long) i);
         }
-
-        return new ProcessoMovimentacaoGlobus(movimentacoesGlobus);
+        final Long codUnidadeMovimento =
+                GlobusPiccoloturUtils
+                        .getCodUnidadeMovimentoFromCampoPersonalizado(
+                                processoMovimentacao.getRespostasCamposPersonalizados());
+        return new ProcessoMovimentacaoGlobus(codUnidadeMovimento, movimentacoesGlobus);
     }
 
     @NotNull

@@ -4,6 +4,8 @@ import com.google.gson.annotations.SerializedName;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 
+import static br.com.zalf.prolog.webservice.integracao.praxio.GlobusPiccoloturConstants.COD_UNIDADE_NOME_LOCAL_SEPARATOR;
+
 /**
  * Created on 2020-03-28
  *
@@ -23,6 +25,6 @@ public final class GlobusPiccoloturLocalMovimento {
 
     @NotNull
     public String getLocalAsOpcaoSelecao() {
-        return this.codUnidadeProlog.toString().concat(" - ").concat(this.nomeLocalGlobus);
+        return this.codUnidadeProlog.toString().concat(COD_UNIDADE_NOME_LOCAL_SEPARATOR).concat(this.nomeLocalGlobus);
     }
 }

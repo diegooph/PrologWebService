@@ -179,7 +179,7 @@ public final class SistemaGlobusPiccolotur extends Sistema {
                     throw new BloqueadoIntegracaoException(
                             String.format(
                                     "ERRO!\nVocê está tentando mover um pneu da %s para o %s.\n" +
-                                            "Essa opção de movimentação ainda está sendo integrada",
+                                            "Essa opção de movimentação ainda não está integrada",
                                     OrigemDestinoEnum.ANALISE.asString(),
                                     movimentacao.getDestino().getTipo().asString()));
                 } else if (movimentacao.isTo(OrigemDestinoEnum.ANALISE)) {
