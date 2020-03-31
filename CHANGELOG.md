@@ -7,6 +7,7 @@ Change Log
 ## Stage
 ### Features
 * Injeta colaborador autenticado no SecurityContext do request (PL-2638)
+* Permite alteração da pressão recomendada dos pneus (PL-2570)
 
 <a name="v1.0.24"></a>
 ## Version [v1.0.24](https://github.com/luizfp/PrologWebService/compare/v1.0.23...v1.0.24) (release-date) [unreleased]
