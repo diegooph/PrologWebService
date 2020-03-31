@@ -153,6 +153,7 @@ public final class PneuDaoImpl extends DatabaseConnection implements PneuDao {
         Connection conn = null;
         try {
             conn = getConnection();
+            conn.setAutoCommit(false);
             stmt = conn.prepareStatement("SELECT FUNC_PNEU_ATUALIZA(F_COD_CLIENTE := ?," +
                     "F_COD_MODELO := ?," +
                     "F_COD_DIMENSAO := ?," +
@@ -184,6 +185,8 @@ public final class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             stmt.setLong(10, codUnidade);
 
             stmt.executeQuery();
+
+            conn.commit();
         } finally {
             close(conn, stmt);
         }
