@@ -1,6 +1,8 @@
 package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos;
 
 import br.com.zalf.prolog.webservice.Injection;
+import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
+import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.*;
 import org.jetbrains.annotations.NotNull;
@@ -22,9 +24,12 @@ public final class MotivoRetiradaService {
     private final MotivoRetiradaDao dao = Injection.provideMotivoDao();
 
     @NotNull
-    public Long insert(@NotNull final MotivoRetiradaInsercao motivo, @NotNull final Long codigoColaborador) {
+    public AbstractResponse insert(@NotNull final MotivoRetiradaInsercao motivo,
+                                   @NotNull final Long codigoColaborador) {
         try {
-            return dao.insert(motivo, codigoColaborador);
+            return ResponseWithCod.ok(
+                    "Motivo de troca inserido com sucesso.",
+                    dao.insert(motivo, codigoColaborador));
         } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao inserir motivo %s", motivo.getDescricaoMotivoRetirada()), t);
             throw Injection

@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos;
 
+import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
@@ -35,7 +36,7 @@ public final class MotivoRetiradaResource {
     @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
     @Secured(permissions = {Pilares.Frota.Pneu.Movimentacao.CADASTRAR_MOTIVOS_MOVIMENTACAO,
             Pilares.Frota.Pneu.Movimentacao.EDITAR_MOTIVOS_MOVIMENTACAO})
-    public Long insert(@Valid final MotivoRetiradaInsercao motivo) {
+    public AbstractResponse insert(@Valid final MotivoRetiradaInsercao motivo) {
         return motivoRetiradaService.insert(motivo, colaboradorAutenticadoProvider.get().getCodigo());
     }
 
