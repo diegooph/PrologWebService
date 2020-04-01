@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
 public @Data
-class MotivoRetiradaListagem {
+class MotivoRetiradaListagemResumida {
 
     @NotNull
     private final Long codMotivoRetirada;
