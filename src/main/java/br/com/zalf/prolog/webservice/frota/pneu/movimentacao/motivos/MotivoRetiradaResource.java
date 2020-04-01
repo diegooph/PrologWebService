@@ -54,8 +54,8 @@ public final class MotivoRetiradaResource {
             Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE,
             Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_DESCARTE,
             Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_VEICULO_ESTOQUE})
-    public List<MotivoRetiradaListagem> getMotivosListagem(@NotNull @QueryParam("codEmpresa") final Long codEmpresa,
-                                                           @NotNull @QueryParam("apenasAtivos") final boolean apenasAtivos) {
+    public List<MotivoRetiradaListagemResumida> getMotivosListagem(@NotNull @QueryParam("codEmpresa") final Long codEmpresa,
+                                                                   @NotNull @QueryParam("apenasAtivos") final boolean apenasAtivos) {
         return motivoRetiradaService.getMotivosListagem(codEmpresa, apenasAtivos, colaboradorAutenticadoProvider.get().getZoneIdUnidadeColaborador());
     }
 

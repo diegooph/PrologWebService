@@ -87,9 +87,9 @@ public class MotivoRetiradaDaoImpl extends DatabaseConnection implements MotivoR
 
     @Override
     @NotNull
-    public List<MotivoRetiradaListagem> getMotivosListagem(@NotNull final Long codEmpresa,
-                                                           @NotNull final boolean apenasAtivos,
-                                                           @NotNull final ZoneId timeZone) throws Throwable {
+    public List<MotivoRetiradaListagemResumida> getMotivosListagem(@NotNull final Long codEmpresa,
+                                                                   @NotNull final boolean apenasAtivos,
+                                                                   @NotNull final ZoneId timeZone) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -105,7 +105,7 @@ public class MotivoRetiradaDaoImpl extends DatabaseConnection implements MotivoR
 
             rSet = stmt.executeQuery();
 
-            final List<MotivoRetiradaListagem> motivos = new ArrayList();
+            final List<MotivoRetiradaListagemResumida> motivos = new ArrayList();
             while (rSet.next()) {
                 motivos.add(MotivoRetiradaConverter.createMotivoRetiradaListagem(rSet));
             }

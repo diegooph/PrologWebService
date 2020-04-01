@@ -36,14 +36,14 @@ public class MotivoRetiradaOrigemDestinoConverter {
     }
 
     @NotNull
-    static MotivoRetiradaListagem createMotivoRetiradaListagem(@NotNull final ResultSet rSet) throws Throwable {
-        return new MotivoRetiradaListagem(rSet.getLong("codigo_motivo"),
+    static MotivoRetiradaListagemResumida createMotivoRetiradaListagem(@NotNull final ResultSet rSet) throws Throwable {
+        return new MotivoRetiradaListagemResumida(rSet.getLong("codigo_motivo"),
                 rSet.getString("descricao_motivo"));
     }
 
     @NotNull
     static MotivoRetiradaOrigemDestinoListagemMotivos createMotivoRetiradaOrigemDestinoListagemMotivos(@NotNull final ResultSet rSet) throws Throwable {
-        final List<MotivoRetiradaListagem> motivosRetirada = new ArrayList();
+        final List<MotivoRetiradaListagemResumida> motivosRetirada = new ArrayList();
         motivosRetirada.add(MotivoRetiradaOrigemDestinoConverter.createMotivoRetiradaListagem(rSet));
 
         return new MotivoRetiradaOrigemDestinoListagemMotivos(

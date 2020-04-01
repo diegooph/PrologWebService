@@ -126,7 +126,7 @@ public class MotivoRetiradaOrigemDestinoDaoImpl extends DatabaseConnection imple
                     final MotivoRetiradaOrigemDestinoListagem ultimaUnidade = unidades.get(unidades.size() - 1);
                     final List<MotivoRetiradaOrigemDestinoListagemMotivos> rotasUltimaUnidade = ultimaUnidade
                             .getOrigensDestinos();
-                    final List<MotivoRetiradaListagem> ultimaListaMotivosRetirada = rotasUltimaUnidade.get(rotasUltimaUnidade.size() - 1).getMotivosRetirada();
+                    final List<MotivoRetiradaListagemResumida> ultimaListaMotivosRetirada = rotasUltimaUnidade.get(rotasUltimaUnidade.size() - 1).getMotivosRetirada();
 
                     if (rotasUltimaUnidade.get(rotasUltimaUnidade.size() - 1).getOrigemMovimento()
                             !=
@@ -171,7 +171,7 @@ public class MotivoRetiradaOrigemDestinoDaoImpl extends DatabaseConnection imple
 
             rSet = stmt.executeQuery();
 
-            final List<MotivoRetiradaListagem> motivos = new ArrayList();
+            final List<MotivoRetiradaListagemResumida> motivos = new ArrayList();
             Boolean obrigatorioMotivoRetirada = null;
 
             while (rSet.next()) {

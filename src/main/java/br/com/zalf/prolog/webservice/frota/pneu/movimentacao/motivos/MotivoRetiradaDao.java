@@ -40,18 +40,18 @@ public interface MotivoRetiradaDao {
                                                  @NotNull final ZoneId timeZone) throws Throwable;
 
     /**
-     * Busca todos os {@link MotivoRetiradaListagem motivos} baseado no código da empresa.
+     * Busca todos os {@link MotivoRetiradaListagemResumida motivos} baseado no código da empresa.
      *
      * @param codEmpresa   um código de uma empresa.
      * @param apenasAtivos um booleano que indica se traz apenas ativos no resultado.
      * @param timeZone     o time zone do usuário o qual fez a requisição.
-     * @return uma {@link List< MotivoRetiradaListagem > lista de motivos}.
+     * @return uma {@link List<  MotivoRetiradaListagemResumida  > lista de motivos}.
      * @throws Throwable caso qualquer erro ocorrer.
      */
     @NotNull
-    List<MotivoRetiradaListagem> getMotivosListagem(@NotNull final Long codEmpresa,
-                                                    @NotNull final boolean apenasAtivos,
-                                                    @NotNull final ZoneId timeZone) throws Throwable;
+    List<MotivoRetiradaListagemResumida> getMotivosListagem(@NotNull final Long codEmpresa,
+                                                            @NotNull final boolean apenasAtivos,
+                                                            @NotNull final ZoneId timeZone) throws Throwable;
 
     /**
      * Realiza a atualização de um {@link MotivoRetiradaEdicao motivo}.
