@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.api.pneu.model;
 
 import lombok.Data;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Created on 31/03/20.
@@ -10,5 +11,6 @@ import lombok.Data;
 @Data
 public class PosicaoPneuMepado {
     private final int posicaoProLog;
+    @NotNull
     private final String posicaoParceiro;
 }

@@ -3,7 +3,6 @@ package br.com.zalf.prolog.webservice.integracao.api.pneu;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
-import br.com.zalf.prolog.webservice.frota.pneu.servico._model.TipoServico;
 import br.com.zalf.prolog.webservice.integracao.api.pneu.cadastro.model.ApiStatusPneu;
 import br.com.zalf.prolog.webservice.integracao.api.pneu.model.ApiPneuAlteracaoStatus;
 import br.com.zalf.prolog.webservice.integracao.api.pneu.model.ApiPneuAlteracaoStatusVeiculo;
@@ -23,6 +22,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static br.com.zalf.prolog.webservice.commons.util.StatementUtils.bindValueOrNull;
+import static br.com.zalf.prolog.webservice.integracao.response.PosicaoPneuMepadoResponse.GENERIC_ERROR_MESSAGE;
 
 /**
  * Created on 16/08/19.
@@ -97,8 +97,9 @@ public final class ApiPneuDaoImpl extends DatabaseConnection implements ApiPneuD
         }
     }
 
+    @NotNull
     @Override
-    public List<PosicaoPneuMepadoResponse> validaPosicoesVeiculo(
+    public List<PosicaoPneuMepadoResponse> validaPosicoesMapeadasSistemaParceiro(
             @NotNull final String tokenIntegracao,
             @NotNull final List<DiagramaPosicaoMapeado> diagramasPosicoes) throws Throwable {
         Connection conn = null;
@@ -107,26 +108,31 @@ public final class ApiPneuDaoImpl extends DatabaseConnection implements ApiPneuD
         List<PosicaoPneuMepadoResponse> posicaoPneuMepadoResponse = new ArrayList<>();
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM INTEGRACAO.FUNC_VEICULO_VALIDA_POSICOES_VEICULO(" +
-                    "F_COD_DIAGRAMA := ?, F_LISTA_POSICOES := ?)");
+            stmt = conn.prepareStatement("SELECT * FROM INTEGRACAO.FUNC_PNEU_VALIDA_POSICOES_SISTEMA_PARCEIRO(" +
+                    "F_COD_DIAGRAMA => ?, F_LISTA_POSICOES => ?)");
             for (final DiagramaPosicaoMapeado diagramaPosicaoMapeado : diagramasPosicoes) {
+                final int codDiagrama = diagramaPosicaoMapeado.getCodDiagrama();
                 try {
-                    final List<Integer> posicaoProLog = diagramaPosicaoMapeado.getPosicoesMapeadas().stream().
-                            map(PosicaoPneuMepado::getPosicaoProLog).collect(Collectors.toList());
-                    stmt.setInt(1, diagramaPosicaoMapeado.getCodDiagrama());
+                    final List<Integer> posicaoProLog =
+                            diagramaPosicaoMapeado.getPosicoesMapeadas()
+                                    .stream()
+                                    .map(PosicaoPneuMepado::getPosicaoProLog)
+                                    .collect(Collectors.toList());
+                    stmt.setInt(1, codDiagrama);
                     stmt.setArray(2, PostgresUtils.listToArray(conn, SqlType.BIGINT, posicaoProLog));
                     rSet = stmt.executeQuery();
                     if (rSet.next()) {
-                        posicaoPneuMepadoResponse.add(PosicaoPneuMepadoResponse.ok(
-                                true,
-                                diagramaPosicaoMapeado.getCodDiagrama(),
-                                null));
+                        posicaoPneuMepadoResponse.add(
+                                PosicaoPneuMepadoResponse.ok(codDiagrama));
                     }
-                } catch (final PSQLException sql) {
-                    posicaoPneuMepadoResponse.add(PosicaoPneuMepadoResponse.error(
-                            false,
-                            diagramaPosicaoMapeado.getCodDiagrama(),
-                            PostgresUtils.getPSQLErrorMessage(sql, sql.getMessage())));
+                } catch (final PSQLException sqlError) {
+                    posicaoPneuMepadoResponse.add(
+                            PosicaoPneuMepadoResponse.error(
+                                    codDiagrama,
+                                    PostgresUtils.getPSQLErrorMessage(sqlError, GENERIC_ERROR_MESSAGE)));
+                } catch (final Throwable throwable) {
+                    posicaoPneuMepadoResponse.add(
+                            PosicaoPneuMepadoResponse.error(codDiagrama, GENERIC_ERROR_MESSAGE, throwable));
                 }
             }
             return posicaoPneuMepadoResponse;

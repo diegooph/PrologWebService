@@ -1,9 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.response;
 
-import com.sun.org.apache.xpath.internal.objects.XBoolean;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -13,35 +10,31 @@ import org.jetbrains.annotations.Nullable;
  * @author Natan Rotta (https://github.com/natanrotta)
  */
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class PosicaoPneuMepadoResponse {
     @NotNull
-    private boolean success;
-    @NotNull
-    private int codDiagrama;
+    public static final String GENERIC_ERROR_MESSAGE = "Não foi possível cadastrar o pneu no Sistema ProLog";
+    private final boolean success;
+    private final int codDiagrama;
     @Nullable
-    private String errors;
+    private final String errors;
+    @Nullable
+    private final Throwable throwable;
 
     @NotNull
-    public static PosicaoPneuMepadoResponse ok(@NotNull final boolean success,
-                                               @NotNull final int codDiagrama,
-                                               final String errors){
-        return new PosicaoPneuMepadoResponse(
-                success,
-                codDiagrama,
-                errors
-        );
+    public static PosicaoPneuMepadoResponse ok(final int codDiagrama) {
+        return new PosicaoPneuMepadoResponse(true, codDiagrama, null, null);
     }
 
     @NotNull
-    public static PosicaoPneuMepadoResponse error(@NotNull final boolean success,
-                                                  @NotNull final int codDiagrama,
-                                                  @NotNull final String errors){
-        return new PosicaoPneuMepadoResponse(
-                success,
-                codDiagrama,
-                errors
-        );
+    public static PosicaoPneuMepadoResponse error(final int codDiagrama,
+                                                  @NotNull final String errors) {
+        return new PosicaoPneuMepadoResponse(false, codDiagrama, errors, null);
+    }
+
+    @NotNull
+    public static PosicaoPneuMepadoResponse error(final int codDiagrama,
+                                                  @NotNull final String errors,
+                                                  @NotNull final Throwable throwable) {
+        return new PosicaoPneuMepadoResponse(false, codDiagrama, errors, throwable);
     }
 }

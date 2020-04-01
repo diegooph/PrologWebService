@@ -41,12 +41,12 @@ public final class ApiPneuService extends BaseIntegracaoService {
     }
 
     @NotNull
-    public List<PosicaoPneuMepadoResponse> validaPosicoesVeiculo(
+    public List<PosicaoPneuMepadoResponse> validaPosicoesMapeadasSistemaParceiro(
             final String tokenIntegracao,
             final List<DiagramaPosicaoMapeado> diagramasPosicoes) throws ProLogException {
         try {
             ensureValidToken(tokenIntegracao, TAG);
-            return dao.validaPosicoesVeiculo(tokenIntegracao, diagramasPosicoes);
+            return dao.validaPosicoesMapeadasSistemaParceiro(tokenIntegracao, diagramasPosicoes);
         } catch (final Throwable t) {
             Log.e(TAG, "Não foi possível validar as posições do veículo:\n" +
                     "tokenIntegracao: " + tokenIntegracao, t);

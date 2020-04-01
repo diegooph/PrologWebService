@@ -44,9 +44,9 @@ public final class ApiPneuResource {
     @LogIntegracaoRequest
     @Path("/valida-posicoes-mapeadas")
     @UsedBy(platforms = Platform.INTEGRACOES)
-    public List<PosicaoPneuMepadoResponse> validaPosicoesVeiculo(
+    public List<PosicaoPneuMepadoResponse> validaPosicoesMapeadasSistemaParceiro(
             @HeaderParam(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
             @Required final List<DiagramaPosicaoMapeado> diagramasPosicoes) throws ProLogException {
-        return service.validaPosicoesVeiculo(tokenIntegracao, diagramasPosicoes);
+        return service.validaPosicoesMapeadasSistemaParceiro(tokenIntegracao, diagramasPosicoes);
     }
 }

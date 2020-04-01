@@ -17,7 +17,8 @@ public interface ApiPneuDao {
     void atualizaStatusPneus(@NotNull final String tokenIntegracao,
                              @NotNull final List<ApiPneuAlteracaoStatus> pneusAtualizacaoStatus) throws Throwable;
 
-    List<PosicaoPneuMepadoResponse> validaPosicoesVeiculo(
+    @NotNull
+    List<PosicaoPneuMepadoResponse> validaPosicoesMapeadasSistemaParceiro(
             @NotNull final String tokenIntegracao,
             @NotNull final List<DiagramaPosicaoMapeado> diagramasPosicoes) throws Throwable;
 }
