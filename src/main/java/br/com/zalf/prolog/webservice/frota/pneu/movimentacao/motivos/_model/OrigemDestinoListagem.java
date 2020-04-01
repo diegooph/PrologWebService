@@ -21,4 +21,7 @@ public class OrigemDestinoListagem {
     @NotNull
     private final OrigemDestinoEnum destino;
 
+    @NotNull
+    private final boolean obrigatorio;
+
 }

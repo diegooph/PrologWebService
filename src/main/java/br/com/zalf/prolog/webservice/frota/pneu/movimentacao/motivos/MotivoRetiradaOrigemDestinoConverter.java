@@ -68,7 +68,8 @@ public class MotivoRetiradaOrigemDestinoConverter {
     static OrigemDestinoListagem createOrigemDestinoListagem(@NotNull final ResultSet rSet) throws Throwable {
         return new OrigemDestinoListagem(rSet.getLong("CODIGO_UNIDADE"),
                 OrigemDestinoEnum.getFromStatusPneu(StatusPneu.fromString(rSet.getString("ORIGEM"))),
-                OrigemDestinoEnum.getFromStatusPneu(StatusPneu.fromString(rSet.getString("destino"))));
+                OrigemDestinoEnum.getFromStatusPneu(StatusPneu.fromString(rSet.getString("destino"))),
+                rSet.getBoolean("OBRIGATORIO"));
     }
 
 }
