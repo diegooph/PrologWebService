@@ -49,9 +49,9 @@ public interface MotivoRetiradaDao {
      * @throws Throwable caso qualquer erro ocorrer.
      */
     @NotNull
-    List<MotivoRetiradaListagemResumida> getMotivosListagem(@NotNull final Long codEmpresa,
-                                                            @NotNull final boolean apenasAtivos,
-                                                            @NotNull final ZoneId timeZone) throws Throwable;
+    List<MotivoRetiradaListagem> getMotivosListagem(@NotNull final Long codEmpresa,
+                                                    @NotNull final boolean apenasAtivos,
+                                                    @NotNull final ZoneId timeZone) throws Throwable;
 
     /**
      * Realiza a atualização de um {@link MotivoRetiradaEdicao motivo}.

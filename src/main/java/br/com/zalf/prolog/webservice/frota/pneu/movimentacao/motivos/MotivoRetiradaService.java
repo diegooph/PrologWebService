@@ -52,9 +52,9 @@ public final class MotivoRetiradaService {
     }
 
     @NotNull
-    public List<MotivoRetiradaListagemResumida> getMotivosListagem(@NotNull final Long codEmpresa,
-                                                                   @NotNull final boolean apenasAtivos,
-                                                                   @NotNull final ZoneId timeZone) {
+    public List<MotivoRetiradaListagem> getMotivosListagem(@NotNull final Long codEmpresa,
+                                                           @NotNull final boolean apenasAtivos,
+                                                           @NotNull final ZoneId timeZone) {
         try {
             return dao.getMotivosListagem(codEmpresa, apenasAtivos, timeZone);
         } catch (final Throwable t) {
