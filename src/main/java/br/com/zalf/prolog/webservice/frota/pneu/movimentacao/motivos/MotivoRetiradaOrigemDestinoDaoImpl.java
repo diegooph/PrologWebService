@@ -175,7 +175,7 @@ public class MotivoRetiradaOrigemDestinoDaoImpl extends DatabaseConnection imple
             Boolean obrigatorioMotivoRetirada = null;
 
             while (rSet.next()) {
-                motivos.add(MotivoRetiradaConverter.createMotivoRetiradaListagem(rSet));
+                motivos.add(MotivoRetiradaConverter.createMotivoRetiradaListagemResumida(rSet));
                 obrigatorioMotivoRetirada = (rSet.getBoolean("OBRIGATORIO"));
             }
 
