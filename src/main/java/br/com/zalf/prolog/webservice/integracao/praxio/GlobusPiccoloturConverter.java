@@ -116,6 +116,8 @@ public final class GlobusPiccoloturConverter {
     @NotNull
     public static ProcessoMovimentacaoGlobus convert(
             @NotNull final Long codUnidadeMovimento,
+            @NotNull final String usuarioGlobus,
+            @NotNull final GlobusPiccoloturLocalMovimento localMovimentoGlobus,
             @NotNull final ProcessoMovimentacao processoMovimentacao,
             @NotNull final LocalDateTime dataHoraMovimentacao) throws Throwable {
         final List<MovimentacaoGlobus> movimentacoesGlobus = new ArrayList<>();
@@ -129,6 +131,9 @@ public final class GlobusPiccoloturConverter {
                         dataHoraMovimentacao,
                         GlobusPiccoloturUtils.formatNumeroFogo(movimentacao.getPneu().getCodigoCliente()),
                         MovimentacaoGlobus.PNEU_INSERIDO,
+                        codUnidadeMovimento,
+                        localMovimentoGlobus.getCodLocalGlobus(),
+                        usuarioGlobus,
                         movimentacao.getObservacao(),
                         destinoVeiculo.getPosicaoDestinoPneu()));
             } else if (movimentacao.isFromOrigemToDestino(OrigemDestinoEnum.VEICULO, OrigemDestinoEnum.ESTOQUE)) {
@@ -139,6 +144,9 @@ public final class GlobusPiccoloturConverter {
                         dataHoraMovimentacao,
                         GlobusPiccoloturUtils.formatNumeroFogo(movimentacao.getPneu().getCodigoCliente()),
                         MovimentacaoGlobus.PNEU_RETIRADO,
+                        codUnidadeMovimento,
+                        localMovimentoGlobus.getCodLocalGlobus(),
+                        usuarioGlobus,
                         movimentacao.getObservacao(),
                         origemVeiculo.getPosicaoOrigemPneu()));
             } else if (movimentacao.isFromOrigemToDestino(OrigemDestinoEnum.VEICULO, OrigemDestinoEnum.VEICULO)) {
@@ -152,6 +160,9 @@ public final class GlobusPiccoloturConverter {
                         dataHoraMovimentacao,
                         GlobusPiccoloturUtils.formatNumeroFogo(codigoCliente),
                         MovimentacaoGlobus.PNEU_RETIRADO,
+                        codUnidadeMovimento,
+                        localMovimentoGlobus.getCodLocalGlobus(),
+                        usuarioGlobus,
                         movimentacao.getObservacao(),
                         origemVeiculo.getPosicaoOrigemPneu()));
 
@@ -162,6 +173,9 @@ public final class GlobusPiccoloturConverter {
                         dataHoraMovimentacao,
                         GlobusPiccoloturUtils.formatNumeroFogo(codigoCliente),
                         MovimentacaoGlobus.PNEU_INSERIDO,
+                        codUnidadeMovimento,
+                        localMovimentoGlobus.getCodLocalGlobus(),
+                        usuarioGlobus,
                         movimentacao.getObservacao(),
                         destinoVeiculo.getPosicaoDestinoPneu()));
             } else {
@@ -176,7 +190,7 @@ public final class GlobusPiccoloturConverter {
         for (int i = 0; i < movimentacoesGlobus.size(); i++) {
             movimentacoesGlobus.get(i).setSequencia((long) i);
         }
-        return new ProcessoMovimentacaoGlobus(codUnidadeMovimento, movimentacoesGlobus);
+        return new ProcessoMovimentacaoGlobus(movimentacoesGlobus);
     }
 
     @NotNull

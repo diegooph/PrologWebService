@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.praxio;
 
-import br.com.zalf.prolog.webservice.BuildConfig;
 import br.com.zalf.prolog.webservice.Injection;
+import br.com.zalf.prolog.webservice.config.BuildConfig;
 import br.com.zalf.prolog.webservice.customfields.CampoPersonalizadoDao;
 import br.com.zalf.prolog.webservice.customfields._model.CampoPersonalizadoParaRealizacao;
 import br.com.zalf.prolog.webservice.customfields._model.TipoCampoPersonalizado;
@@ -20,12 +20,13 @@ import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.ProcessoMovi
 import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.transferencia._model.realizacao.PneuTransferenciaRealizacao;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
+import br.com.zalf.prolog.webservice.integracao.MetodoIntegrado;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.*;
 import br.com.zalf.prolog.webservice.integracao.praxio.movimentacao.GlobusPiccoloturLocalMovimento;
+import br.com.zalf.prolog.webservice.integracao.praxio.movimentacao.GlobusPiccoloturLocalMovimentoResponse;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.error.GlobusPiccoloturException;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
-import br.com.zalf.prolog.webservice.integracao.MetodoIntegrado;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
@@ -234,6 +235,28 @@ public final class SistemaGlobusPiccolotur extends Sistema {
                     GlobusPiccoloturUtils
                             .getCodUnidadeMovimentoFromCampoPersonalizado(
                                     processoMovimentacao.getRespostasCamposPersonalizados());
+
+            // Buscamos no Globus as informações dos locais de movimentos para inserir nas movimentações.
+            final String url =
+                    getIntegradorProLog()
+                            .getUrl(conn, codEmpresa, getSistemaKey(), MetodoIntegrado.GET_LOCAIS_DE_MOVIMENTO);
+            final GlobusPiccoloturLocalMovimentoResponse globusResponse = requester.getLocaisMovimentoGlobusResponse(
+                    url,
+                    autenticacaoResponse.getFormattedBearerToken(),
+                    processoMovimentacao.getColaborador().getCpfAsString());
+
+            //noinspection ConstantConditions
+            final GlobusPiccoloturLocalMovimento localMovimentoGlobus =
+                    globusResponse.getLocais()
+                            .stream()
+                            .filter(local -> local.getCodUnidadeProlog().equals(codUnidadeMovimento))
+                            .findAny()
+                            .orElseThrow(() -> {
+                                throw new GlobusPiccoloturException("Nenhum local de movimento encontrado!");
+                            });
+
+            // É necessário transferir os pneus apenas se a unidade onde a movimentação foi feita é diferente do que
+            // a unidade onde o usuário está.
             if (!codUnidadeOrigem.equals(codUnidadeMovimento)) {
                 // Nesse caso devemos transferir os pneus em estoque para a unidade de movimento.
                 final List<Movimentacao> movimentacoesEstoque = processoMovimentacao.getMovimentacoes()
@@ -259,6 +282,7 @@ public final class SistemaGlobusPiccolotur extends Sistema {
                 }
             }
 
+            //noinspection ConstantConditions
             final GlobusPiccoloturMovimentacaoResponse response = requester.insertProcessoMovimentacao(
                     getIntegradorProLog()
                             .getUrl(conn, codEmpresa, getSistemaKey(), MetodoIntegrado.INSERT_MOVIMENTACAO),
@@ -266,6 +290,8 @@ public final class SistemaGlobusPiccolotur extends Sistema {
                     // Convertemos a dataHoraMovimentacao para LocalDateTime pois usamos assim na integração.
                     GlobusPiccoloturConverter.convert(
                             codUnidadeMovimento,
+                            globusResponse.getUsuarioGlobus(),
+                            localMovimentoGlobus,
                             processoMovimentacao,
                             dataHoraMovimentacao.toLocalDateTime()));
             if (!response.isSucesso()) {

@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.praxio.data;
 
-import br.com.zalf.prolog.webservice.config.BuildConfig;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.config.BuildConfig;
 import br.com.zalf.prolog.webservice.integracao.praxio.movimentacao.GlobusPiccoloturLocalMovimento;
 import br.com.zalf.prolog.webservice.integracao.praxio.movimentacao.GlobusPiccoloturLocalMovimentoResponse;
 import br.com.zalf.prolog.webservice.integracao.praxio.movimentacao.ProcessoMovimentacaoGlobus;
@@ -83,6 +83,22 @@ public final class GlobusPiccoloturRequesterImpl implements GlobusPiccoloturRequ
         final Call<GlobusPiccoloturMovimentacaoResponse> call =
                 service.insertProcessoMovimentacao(url, tokenIntegracao, processoMovimentacaoGlobus);
         return handleJsonResponse(call.execute());
+    }
+
+    @NotNull
+    @Override
+    public GlobusPiccoloturLocalMovimentoResponse getLocaisMovimentoGlobusResponse(
+            @NotNull final String url,
+            @NotNull final String tokenIntegracao,
+            @NotNull final String cpfColaborador) throws Throwable {
+        final GlobusPiccoloturRest service = GlobusPiccoloturRestClient.getService(GlobusPiccoloturRest.class);
+        final Call<GlobusPiccoloturLocalMovimentoResponse> call =
+                service.getLocaisMovimentoGlobus(url, tokenIntegracao, cpfColaborador);
+        final GlobusPiccoloturLocalMovimentoResponse response = handleJsonResponse(call.execute());
+        if (!response.isSucesso() || response.getLocais() == null || response.getUsuarioGlobus() == null) {
+            throw new GlobusPiccoloturException("[INTEGRAÇÂO] Erro ao buscar Locais de Movimento para a movimentação");
+        }
+        return response;
     }
 
     @NotNull

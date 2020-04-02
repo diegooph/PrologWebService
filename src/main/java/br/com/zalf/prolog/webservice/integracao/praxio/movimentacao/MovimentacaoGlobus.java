@@ -29,11 +29,17 @@ public final class MovimentacaoGlobus {
     private final String observacao;
     @Nullable
     private final Integer posicao;
+    @NotNull
+    private final Long codigoUnidade;
+    @NotNull
+    private final Long codigoLocal;
+    @NotNull
+    private final String usuarioGlobus;
     /**
      * A ordem de execução da operação sendo feita. Retiradas precisam ser feitas sempre antes de inserções. Isso é uma
      * regra adotada na integração para facilitar as coisas no Globus. Esse atributo nos ajuda a ordenar a lista antes
      * do envio.
-     *
+     * <p>
      * Este atributo é <code>transient</code> para não ser enviado no JSON.
      */
     private transient final int tipoOperacaoOrdem;
@@ -43,6 +49,9 @@ public final class MovimentacaoGlobus {
                               @NotNull final LocalDateTime dataHora,
                               @NotNull final String numeroFogoPneu,
                               @NotNull final String tipoOperacao,
+                              @NotNull final Long codigoUnidade,
+                              @NotNull final Long codigoLocal,
+                              @NotNull final String usuarioGlobus,
                               @Nullable final String observacao,
                               @Nullable final Integer posicao) {
         this.sequencia = sequencia;
@@ -50,6 +59,9 @@ public final class MovimentacaoGlobus {
         this.dataHora = dataHora;
         this.numeroFogoPneu = numeroFogoPneu;
         this.tipoOperacao = tipoOperacao;
+        this.codigoUnidade = codigoUnidade;
+        this.codigoLocal = codigoLocal;
+        this.usuarioGlobus = usuarioGlobus;
         this.observacao = observacao;
         this.posicao = posicao;
         this.tipoOperacaoOrdem = tipoOperacao.equals(PNEU_RETIRADO) ? 0 : 1;
@@ -82,6 +94,21 @@ public final class MovimentacaoGlobus {
     @NotNull
     public String getTipoOperacao() {
         return tipoOperacao;
+    }
+
+    @NotNull
+    public Long getCodigoUnidade() {
+        return codigoUnidade;
+    }
+
+    @NotNull
+    public Long getCodigoLocal() {
+        return codigoLocal;
+    }
+
+    @NotNull
+    public String getUsuarioGlobus() {
+        return usuarioGlobus;
     }
 
     @Nullable
