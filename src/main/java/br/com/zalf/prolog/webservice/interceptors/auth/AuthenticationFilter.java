@@ -27,8 +27,8 @@ public final class AuthenticationFilter implements ContainerRequestFilter {
     ResourceInfo resourceInfo;
 
     @Override
-    public void filter(ContainerRequestContext requestContext) throws IOException {
-        // Get the HTTP Authorization header from the request
+    public void filter(final ContainerRequestContext requestContext) throws IOException {
+        // Get the HTTP Authorization header from the request.
         final String authorizationHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
 
         Log.d(TAG, "AuthorizationHeader: " + authorizationHeader);
@@ -37,7 +37,7 @@ public final class AuthenticationFilter implements ContainerRequestFilter {
             throw new NotAuthorizedException("Authorization header must be provided!");
         }
 
-        AuthType authType;
+        final AuthType authType;
         if (authorizationHeader.startsWith("Basic ")) {
             authType = AuthType.BASIC;
         } else if (authorizationHeader.startsWith("Bearer ")) {
@@ -55,26 +55,31 @@ public final class AuthenticationFilter implements ContainerRequestFilter {
         final Secured methodAnnot = resourceMethod.getAnnotation(Secured.class);
         if (methodAnnot != null) {
             ensureCorrectAuthType(methodAnnot, authType);
-            authenticator.validate(
+            final ColaboradorAutenticado colaboradorAutenticado = authenticator.validate(
                     value,
                     methodAnnot.permissions(),
                     methodAnnot.needsToHaveAllPermissions(),
                     methodAnnot.considerOnlyActiveUsers());
+            requestContext.setSecurityContext(new PrologSecurityContext(colaboradorAutenticado));
+            // Retornamos agora para impedir a verificação por classe. A por método tem prioridade, e, se existir,
+            // apenas ela deve ser considerada.
+            return;
         }
 
         final Class<?> resourceClass = resourceInfo.getResourceClass();
         final Secured classAnnot = resourceClass.getAnnotation(Secured.class);
         if (classAnnot != null) {
             ensureCorrectAuthType(classAnnot, authType);
-            authenticator.validate(
+            final ColaboradorAutenticado colaboradorAutenticado = authenticator.validate(
                     value,
                     classAnnot.permissions(),
                     classAnnot.needsToHaveAllPermissions(),
                     classAnnot.considerOnlyActiveUsers());
+            requestContext.setSecurityContext(new PrologSecurityContext(colaboradorAutenticado));
         }
     }
 
-    private void ensureCorrectAuthType(Secured methodAnnot, AuthType headerAuthType) {
+    private void ensureCorrectAuthType(final Secured methodAnnot, final AuthType headerAuthType) {
         final AuthType[] permitedAuthTypes = methodAnnot.authTypes();
         //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < permitedAuthTypes.length; i++) {

@@ -2,8 +2,7 @@ package br.com.zalf.prolog.webservice.integracao;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.BiMap;
-
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Created on 16/10/17
@@ -11,14 +10,14 @@ import javax.annotation.Nonnull;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public final class PosicaoPneuMapper {
-    @Nonnull
+    @NotNull
     private final BiMap<String, Integer> posicoesPneuMapper;
 
-    public PosicaoPneuMapper(@Nonnull BiMap<String, Integer> posicoesPneuMapper) {
+    public PosicaoPneuMapper(@NotNull final BiMap<String, Integer> posicoesPneuMapper) {
         this.posicoesPneuMapper = posicoesPneuMapper;
     }
 
-    public int mapToProLog(@Nonnull final String posicao) {
+    public int mapToProLog(@NotNull final String posicao) {
         Preconditions.checkNotNull(posicao, "posicao não pode ser null!");
         Preconditions.checkArgument(posicoesPneuMapper.containsKey(posicao),
                 "posicao " + posicao + " não mapeada para as posições utilizadas no ProLog");
@@ -26,7 +25,7 @@ public final class PosicaoPneuMapper {
         return posicoesPneuMapper.get(posicao);
     }
 
-    @Nonnull
+    @NotNull
     public String mapToClient(final int posicao) {
         final BiMap<Integer, String> inverseMap = posicoesPneuMapper.inverse();
         Preconditions.checkArgument(inverseMap.containsKey(posicao),

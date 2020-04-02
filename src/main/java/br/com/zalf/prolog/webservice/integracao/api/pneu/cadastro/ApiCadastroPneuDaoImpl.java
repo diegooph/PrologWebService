@@ -1,20 +1,15 @@
 package br.com.zalf.prolog.webservice.integracao.api.pneu.cadastro;
 
-import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
-import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.integracao.api.pneu.cadastro.model.*;
 import org.jetbrains.annotations.NotNull;
 import org.postgresql.util.PSQLException;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.time.OffsetDateTime;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,7 +53,6 @@ public final class ApiCadastroPneuDaoImpl extends DatabaseConnection implements 
                     "F_DATA_HORA_PNEU_CADASTRO := ?, " +
                     "F_TOKEN_INTEGRACAO := ?) AS COD_PNEU_PROLOG;");
             final List<ApiPneuCargaInicialResponse> pneuCargaInicialResponses = new ArrayList<>();
-            final OffsetDateTime dataHoraAtual = Now.offsetDateTimeUtc();
             for (final ApiPneuCargaInicial pneuCargaInicial : pneusCargaInicial) {
                 try {
                     stmt.setLong(1, pneuCargaInicial.getCodigoSistemaIntegrado());
@@ -79,7 +73,7 @@ public final class ApiCadastroPneuDaoImpl extends DatabaseConnection implements 
                             pneuCargaInicial.getPlacaVeiculoPneuAplicado(), SqlType.VARCHAR);
                     bindValueOrNull(stmt, 16,
                             pneuCargaInicial.getPosicaoPneuAplicado(), SqlType.INTEGER);
-                    stmt.setObject(17, dataHoraAtual);
+                    stmt.setObject(17, Now.localDateTimeUtc());
                     stmt.setString(18, tokenIntegracao);
                     rSet = stmt.executeQuery();
                     final long codPneuProlog;
@@ -219,53 +213,35 @@ public final class ApiCadastroPneuDaoImpl extends DatabaseConnection implements 
     public Long transferirPneu(@NotNull final String tokenIntegracao,
                                @NotNull final ApiPneuTransferencia pneuTransferencia) throws Throwable {
         Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
         try {
             conn = getConnection();
-            conn.setAutoCommit(false);
-            final Long codEmpresa =
-                    Injection
-                            .provideIntegracaoDao()
-                            .getCodEmpresaByTokenIntegracao(conn, tokenIntegracao);
-            final List<Long> codPneusTransferidos =
-                    Injection
-                            .providePneuDao()
-                            .getCodPneuByCodCliente(
-                                    conn,
-                                    codEmpresa,
-                                    pneuTransferencia.getCodPneusTransferidos());
-            final Long codColaborador;
-            try {
-                codColaborador =
-                        Injection
-                                .provideColaboradorDao()
-                                .getCodColaboradorByCpf(
-                                        conn,
-                                        codEmpresa,
-                                        pneuTransferencia.getCpfColaboradorRealizacaoTransferencia());
-            } catch (final Throwable t) {
-                throw new GenericException(
-                        String.format(
-                                "Cpf %s não está cadastrado na base de dados do ProLog",
-                                pneuTransferencia.getCpfColaboradorRealizacaoTransferencia()));
+            stmt = conn.prepareStatement("SELECT * FROM INTEGRACAO.FUNC_PNEU_TRANFERE_PNEU_ENTRE_UNIDADES(" +
+                    "F_COD_UNIDADE_ORIGEM := ?, " +
+                    "F_COD_UNIDADE_DESTINO := ?, " +
+                    "F_CPF_COLABORADOR_TRANSFERENCIA := ?, " +
+                    "F_LISTA_PNEUS := ?, " +
+                    "F_OBSERVACAO := ?, " +
+                    "F_TOKEN_INTEGRACAO := ?," +
+                    "F_DATA_HORA := ?) AS COD_PROCESSO");
+            stmt.setLong(1, pneuTransferencia.getCodUnidadeOrigem());
+            stmt.setLong(2, pneuTransferencia.getCodUnidadeDestino());
+            stmt.setLong(3,
+                    Colaborador.formatCpf(pneuTransferencia.getCpfColaboradorRealizacaoTransferencia()));
+            stmt.setArray(4,
+                    PostgresUtils.listToArray(conn, SqlType.TEXT, pneuTransferencia.getCodPneusTransferidos()));
+            stmt.setString(5, pneuTransferencia.getObservacao());
+            stmt.setString(6, tokenIntegracao);
+            stmt.setObject(7, Now.offsetDateTimeUtc());
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return rSet.getLong("COD_PROCESSO");
+            } else {
+                throw new SQLException("Erro ao transferir o pneu no Sistema ProLog");
             }
-            final Long codProcessoTransferencia =
-                    Injection
-                            .providePneuTransferenciaDao()
-                            .insertTransferencia(
-                                    conn,
-                                    ApiCadastroPneuConverter
-                                            .convert(codColaborador, codPneusTransferidos, pneuTransferencia),
-                                    Now.offsetDateTimeUtc(),
-                                    false);
-            conn.commit();
-            return codProcessoTransferencia;
-        } catch (final Throwable t) {
-            if (conn != null) {
-                conn.rollback();
-            }
-            throw t;
         } finally {
-            close(conn);
+            close(conn, stmt, rSet);
         }
     }
 }

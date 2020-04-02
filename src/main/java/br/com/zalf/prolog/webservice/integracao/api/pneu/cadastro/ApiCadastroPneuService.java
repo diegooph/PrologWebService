@@ -38,8 +38,8 @@ public final class ApiCadastroPneuService extends BaseIntegracaoService {
     }
 
     @NotNull
-    SuccessResponseIntegracao inserirPneuCadastro(final String tokenIntegracao,
-                                                  final ApiPneuCadastro pneuCadastro) throws ProLogException {
+    public SuccessResponseIntegracao inserirPneuCadastro(final String tokenIntegracao,
+                                                         final ApiPneuCadastro pneuCadastro) throws ProLogException {
         try {
             ensureValidToken(tokenIntegracao, TAG);
             return new SuccessResponseIntegracao(
@@ -72,7 +72,7 @@ public final class ApiCadastroPneuService extends BaseIntegracaoService {
     }
 
     @NotNull
-    SuccessResponseIntegracao transferirPneu(final String tokenIntegracao,
+    public SuccessResponseIntegracao transferirPneu(final String tokenIntegracao,
                                              final ApiPneuTransferencia pneuTransferencia) throws ProLogException {
         try {
             ensureValidToken(tokenIntegracao, TAG);

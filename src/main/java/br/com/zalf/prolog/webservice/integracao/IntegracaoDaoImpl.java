@@ -4,7 +4,6 @@ import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.ApiAutenticacaoHolder;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
-import br.com.zalf.prolog.webservice.integracao.transport.MetodoIntegrado;
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -150,6 +149,26 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
                         "sistemaKey: " + sistemaKey.getKey() + "\n" +
                         "metodoIntegrado: " + metodoIntegrado.getKey());
             }
+        } finally {
+            close(stmt, rSet);
+        }
+    }
+
+    @NotNull
+    @Override
+    public String getCodAuxiliarByCodUnidadeProlog(@NotNull final Connection conn,
+                                                   @NotNull final Long codUnidadeProlog) throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = conn.prepareStatement("SELECT U.COD_AUXILIAR FROM PUBLIC.UNIDADE U WHERE U.CODIGO = ?;");
+            stmt.setLong(1, codUnidadeProlog);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return rSet.getString("COD_AUXILIAR");
+            }
+            throw new SQLException("Não foi possível buscar o código auxiliar para a unidade:\n" +
+                    "codUnidadeProlog: " + codUnidadeProlog);
         } finally {
             close(stmt, rSet);
         }

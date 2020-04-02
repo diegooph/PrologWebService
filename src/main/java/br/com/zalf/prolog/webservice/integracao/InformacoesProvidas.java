@@ -7,7 +7,6 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeicul
 import br.com.zalf.prolog.webservice.integracao.praxio.data.ApiAutenticacaoHolder;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
-import br.com.zalf.prolog.webservice.integracao.transport.MetodoIntegrado;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
@@ -43,6 +42,10 @@ public interface InformacoesProvidas {
                   @NotNull final Long codEmpresa,
                   @NotNull final SistemaKey sistemaKey,
                   @NotNull final MetodoIntegrado metodoIntegrado) throws Throwable;
+
+    @NotNull
+    String getCodAuxiliarByCodUnidadeProlog(@NotNull final Connection conn,
+                                            @NotNull final Long codUnidadeProlog) throws Throwable;
 
     @NotNull
     ApiAutenticacaoHolder getApiAutenticacaoHolder(@NotNull final Connection conn,
