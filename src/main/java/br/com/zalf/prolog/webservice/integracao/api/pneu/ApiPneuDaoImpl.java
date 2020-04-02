@@ -109,17 +109,23 @@ public final class ApiPneuDaoImpl extends DatabaseConnection implements ApiPneuD
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM INTEGRACAO.FUNC_PNEU_VALIDA_POSICOES_SISTEMA_PARCEIRO(" +
-                    "F_COD_DIAGRAMA => ?, F_LISTA_POSICOES => ?)");
+                    "F_COD_DIAGRAMA => ?, F_POSICOES_PARCEIRO => ?, F_POSICOES_PROLOG => ?)");
             for (final DiagramaPosicaoMapeado diagramaPosicaoMapeado : diagramasPosicoes) {
                 final int codDiagrama = diagramaPosicaoMapeado.getCodDiagrama();
                 try {
-                    final List<Integer> posicaoProLog =
+                    final List<String> posicoesParceiro =
+                            diagramaPosicaoMapeado.getPosicoesMapeadas()
+                                    .stream()
+                                    .map(PosicaoPneuMepado::getPosicaoParceiro)
+                                    .collect(Collectors.toList());
+                    final List<Integer> posicoesProLog =
                             diagramaPosicaoMapeado.getPosicoesMapeadas()
                                     .stream()
                                     .map(PosicaoPneuMepado::getPosicaoProLog)
                                     .collect(Collectors.toList());
                     stmt.setInt(1, codDiagrama);
-                    stmt.setArray(2, PostgresUtils.listToArray(conn, SqlType.BIGINT, posicaoProLog));
+                    stmt.setArray(2, PostgresUtils.listToArray(conn, SqlType.VARCHAR, posicoesParceiro));
+                    stmt.setArray(3, PostgresUtils.listToArray(conn, SqlType.BIGINT, posicoesProLog));
                     rSet = stmt.executeQuery();
                     if (rSet.next()) {
                         posicaoPneuMepadoResponse.add(
