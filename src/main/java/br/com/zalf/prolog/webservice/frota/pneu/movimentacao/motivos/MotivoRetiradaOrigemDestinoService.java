@@ -15,18 +15,15 @@ import java.util.List;
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
 public final class MotivoRetiradaOrigemDestinoService {
-
     @NotNull
     private static final String TAG = MotivoRetiradaOrigemDestinoService.class.getSimpleName();
-
     @NotNull
     private final MotivoRetiradaOrigemDestinoDao dao = Injection.provideMotivoOrigemDestinoDao();
 
-    @NotNull
-    public List<Long> insert(@NotNull final List<MotivoRetiradaOrigemDestinoInsercao> unidades,
-                             @NotNull final Long codigoColaboradorInsercao) {
+    public void insert(@NotNull final List<MotivoRetiradaOrigemDestinoInsercao> unidades,
+                       @NotNull final Long codigoColaboradorInsercao) {
         try {
-            return dao.insert(unidades, codigoColaboradorInsercao);
+            dao.insert(unidades, codigoColaboradorInsercao);
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao inserir uma lista de relação motivo, origem e destino.", t);
             throw Injection
@@ -61,13 +58,17 @@ public final class MotivoRetiradaOrigemDestinoService {
     }
 
     @NotNull
-    public MotivoRetiradaOrigemDestinoListagemMotivos getMotivosByOrigemAndDestinoAndUnidade(@NotNull final OrigemDestinoEnum origemMovimento,
-                                                                                             @NotNull final OrigemDestinoEnum destinoMovimento,
-                                                                                             @NotNull final Long codUnidade) {
+    public MotivoRetiradaOrigemDestinoListagemMotivos getMotivosByOrigemAndDestinoAndUnidade(
+            @NotNull final OrigemDestinoEnum origemMovimento,
+            @NotNull final OrigemDestinoEnum destinoMovimento,
+            @NotNull final Long codUnidade) {
         try {
             return dao.getMotivosByOrigemAndDestinoAndUnidade(origemMovimento, destinoMovimento, codUnidade);
         } catch (final Throwable t) {
-            Log.e(TAG, String.format("Erro ao buscar relação motivo, origem e destino, para a origem %s e destino %s", origemMovimento.toString(), destinoMovimento.toString()), t);
+            Log.e(TAG, String.format(
+                    "Erro ao buscar relação motivo, origem e destino, para a origem %s e destino %s",
+                    origemMovimento.toString(),
+                    destinoMovimento.toString()), t);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao buscar motivos, tente novamente.");

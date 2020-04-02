@@ -2,7 +2,6 @@ package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos;
 
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.*;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.time.ZoneId;
 import java.util.List;
@@ -36,7 +35,7 @@ public interface MotivoRetiradaDao {
      * @throws Throwable caso qualquer erro ocorrer.
      */
     @NotNull
-    MotivoRetiradaVisualizacao getMotivoByCodigo(@NotNull Long codMotivo,
+    MotivoRetiradaVisualizacao getMotivoByCodigo(@NotNull final Long codMotivo,
                                                  @NotNull final ZoneId timeZone) throws Throwable;
 
     /**
@@ -45,12 +44,12 @@ public interface MotivoRetiradaDao {
      * @param codEmpresa   um código de uma empresa.
      * @param apenasAtivos um booleano que indica se traz apenas ativos no resultado.
      * @param timeZone     o time zone do usuário o qual fez a requisição.
-     * @return uma {@link List<  MotivoRetiradaListagemResumida  > lista de motivos}.
+     * @return uma {@link List<MotivoRetiradaListagemResumida> lista de motivos}.
      * @throws Throwable caso qualquer erro ocorrer.
      */
     @NotNull
     List<MotivoRetiradaListagem> getMotivosListagem(@NotNull final Long codEmpresa,
-                                                    @NotNull final boolean apenasAtivos,
+                                                    final boolean apenasAtivos,
                                                     @NotNull final ZoneId timeZone) throws Throwable;
 
     /**
@@ -60,8 +59,7 @@ public interface MotivoRetiradaDao {
      * @param codColaboradorUpdate o código do colaborador que está realizando a atualização no motivo.
      * @throws Throwable caso qualquer erro ocorrer.
      */
-    @Nullable
-    void update(@NotNull MotivoRetiradaEdicao motivoRetiradaEdicao,
+    void update(@NotNull final MotivoRetiradaEdicao motivoRetiradaEdicao,
                 @NotNull final Long codColaboradorUpdate) throws Throwable;
 
     /**
@@ -72,7 +70,7 @@ public interface MotivoRetiradaDao {
      * @throws Throwable caso qualquer erro ocorrer.
      */
     @NotNull
-    List<MotivoRetiradaHistoricoListagem> getHistoricoByMotivo(@NotNull Long codMotivoRetirada,
-                                                               @NotNull ZoneId timeZone) throws Throwable;
+    List<MotivoRetiradaHistoricoListagem> getHistoricoByMotivo(@NotNull final Long codMotivoRetirada,
+                                                               @NotNull final ZoneId timeZone) throws Throwable;
 
 }

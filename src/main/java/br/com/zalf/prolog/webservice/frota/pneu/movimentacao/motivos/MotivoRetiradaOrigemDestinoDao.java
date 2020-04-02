@@ -21,9 +21,8 @@ public interface MotivoRetiradaOrigemDestinoDao {
      * @param codigoColaboradorInsercao codigo do colaborador que está realizando a inserção do registro da relação.
      * @throws Throwable Caso qualquer erro ocorra.
      */
-    @NotNull
-    List<Long> insert(@NotNull final List<MotivoRetiradaOrigemDestinoInsercao> unidades,
-                      @NotNull final Long codigoColaboradorInsercao) throws Throwable;
+    void insert(@NotNull final List<MotivoRetiradaOrigemDestinoInsercao> unidades,
+                @NotNull final Long codigoColaboradorInsercao) throws Throwable;
 
     /**
      * Busca um {@link MotivoRetiradaOrigemDestinoVisualizacao motivoOrigemDestino} no banco de dados.
@@ -45,7 +44,8 @@ public interface MotivoRetiradaOrigemDestinoDao {
      * @throws Throwable Caso qualquer erro ocorra.
      */
     @NotNull
-    List<MotivoRetiradaOrigemDestinoListagem> getMotivosOrigemDestino(@NotNull final Long codColaborador) throws Throwable;
+    List<MotivoRetiradaOrigemDestinoListagem> getMotivosOrigemDestino(@NotNull final Long codColaborador)
+            throws Throwable;
 
     /**
      * Busca uma lista de {@link MotivoRetiradaOrigemDestinoListagemMotivos motivoOrigemDestino} no banco de dados
@@ -57,9 +57,10 @@ public interface MotivoRetiradaOrigemDestinoDao {
      * @throws Throwable Caso qualquer erro ocorra.
      */
     @NotNull
-    MotivoRetiradaOrigemDestinoListagemMotivos getMotivosByOrigemAndDestinoAndUnidade(@NotNull final OrigemDestinoEnum origemMovimento,
-                                                                                      @NotNull final OrigemDestinoEnum destinoMovimento,
-                                                                                      @NotNull final Long codUnidade) throws Throwable;
+    MotivoRetiradaOrigemDestinoListagemMotivos getMotivosByOrigemAndDestinoAndUnidade(
+            @NotNull final OrigemDestinoEnum origemMovimento,
+            @NotNull final OrigemDestinoEnum destinoMovimento,
+            @NotNull final Long codUnidade) throws Throwable;
 
     /**
      * Busca uma lista de {@link OrigemDestinoListagem origemDestino} no banco de dados
@@ -69,6 +70,6 @@ public interface MotivoRetiradaOrigemDestinoDao {
      * @throws Throwable Caso qualquer erro ocorra.
      */
     @NotNull
-    List<OrigemDestinoListagem> getRotasExistentesByUnidade(@NotNull Long codUnidade) throws Throwable;
+    List<OrigemDestinoListagem> getRotasExistentesByUnidade(@NotNull final Long codUnidade) throws Throwable;
 
 }

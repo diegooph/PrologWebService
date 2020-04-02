@@ -25,7 +25,8 @@ public final class MotivoRetiradaOrigemDestinoConverter {
     @NotNull
     static MotivoRetiradaOrigemDestinoVisualizacao createMotivoRetiradaOrigemDestinoVisualizacao(
             @NotNull final ResultSet rSet) throws Throwable {
-        return new MotivoRetiradaOrigemDestinoVisualizacao(rSet.getLong("CODIGO_MOTIVO_ORIGEM_DESTINO"),
+        return new MotivoRetiradaOrigemDestinoVisualizacao(
+                rSet.getLong("CODIGO_MOTIVO_ORIGEM_DESTINO"),
                 rSet.getString("NOME_EMPRESA"),
                 rSet.getString("DESCRICAO_MOTIVO"),
                 OrigemDestinoEnum.getFromStatusPneu(StatusPneu.fromString(rSet.getString("ORIGEM"))),
@@ -37,13 +38,15 @@ public final class MotivoRetiradaOrigemDestinoConverter {
 
     @NotNull
     static MotivoRetiradaListagemResumida createMotivoRetiradaListagem(@NotNull final ResultSet rSet) throws Throwable {
-        return new MotivoRetiradaListagemResumida(rSet.getLong("codigo_motivo"),
+        return new MotivoRetiradaListagemResumida(
+                rSet.getLong("codigo_motivo"),
                 rSet.getString("descricao_motivo"));
     }
 
     @NotNull
-    static MotivoRetiradaOrigemDestinoListagemMotivos createMotivoRetiradaOrigemDestinoListagemMotivos(@NotNull final ResultSet rSet) throws Throwable {
-        final List<MotivoRetiradaListagemResumida> motivosRetirada = new ArrayList();
+    static MotivoRetiradaOrigemDestinoListagemMotivos createMotivoRetiradaOrigemDestinoListagemMotivos(
+            @NotNull final ResultSet rSet) throws Throwable {
+        final List<MotivoRetiradaListagemResumida> motivosRetirada = new ArrayList<>();
         motivosRetirada.add(MotivoRetiradaOrigemDestinoConverter.createMotivoRetiradaListagem(rSet));
 
         return new MotivoRetiradaOrigemDestinoListagemMotivos(
@@ -54,8 +57,9 @@ public final class MotivoRetiradaOrigemDestinoConverter {
     }
 
     @NotNull
-    static MotivoRetiradaOrigemDestinoListagem createMotivoRetiradaOrigemDestinoListagem(@NotNull final ResultSet rSet) throws Throwable {
-        final List<MotivoRetiradaOrigemDestinoListagemMotivos> origensDestinos = new ArrayList();
+    static MotivoRetiradaOrigemDestinoListagem createMotivoRetiradaOrigemDestinoListagem(@NotNull final ResultSet rSet)
+            throws Throwable {
+        final List<MotivoRetiradaOrigemDestinoListagemMotivos> origensDestinos = new ArrayList<>();
         origensDestinos.add(MotivoRetiradaOrigemDestinoConverter.createMotivoRetiradaOrigemDestinoListagemMotivos(rSet));
 
         return new MotivoRetiradaOrigemDestinoListagem(
@@ -66,7 +70,8 @@ public final class MotivoRetiradaOrigemDestinoConverter {
 
     @NotNull
     static OrigemDestinoListagem createOrigemDestinoListagem(@NotNull final ResultSet rSet) throws Throwable {
-        return new OrigemDestinoListagem(rSet.getLong("CODIGO_UNIDADE"),
+        return new OrigemDestinoListagem(
+                rSet.getLong("CODIGO_UNIDADE"),
                 OrigemDestinoEnum.getFromStatusPneu(StatusPneu.fromString(rSet.getString("ORIGEM"))),
                 OrigemDestinoEnum.getFromStatusPneu(StatusPneu.fromString(rSet.getString("destino"))),
                 rSet.getBoolean("OBRIGATORIO"));

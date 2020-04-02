@@ -24,7 +24,8 @@ public final class MotivoRetiradaConverter {
     @NotNull
     static MotivoRetiradaVisualizacao createMotivoRetiradaVisualizacao(
             @NotNull final ResultSet rSet) throws Throwable {
-        return new MotivoRetiradaVisualizacao(rSet.getLong("CODIGO_MOTIVO"),
+        return new MotivoRetiradaVisualizacao(
+                rSet.getLong("CODIGO_MOTIVO"),
                 rSet.getString("DESCRICAO_MOTIVO"),
                 rSet.getBoolean("ATIVO_MOTIVO"),
                 rSet.getString("CODIGO_AUXILIAR"),
@@ -34,20 +35,25 @@ public final class MotivoRetiradaConverter {
 
     @NotNull
     static MotivoRetiradaListagem createMotivoRetiradaListagem(@NotNull final ResultSet rSet) throws Throwable {
-        return new MotivoRetiradaListagem(rSet.getLong("CODIGO_MOTIVO"),
+        return new MotivoRetiradaListagem(
+                rSet.getLong("CODIGO_MOTIVO"),
                 rSet.getString("DESCRICAO_MOTIVO"),
                 rSet.getBoolean("ATIVO_MOTIVO"));
     }
 
     @NotNull
-    static MotivoRetiradaListagemResumida createMotivoRetiradaListagemResumida(@NotNull final ResultSet rSet) throws Throwable {
-        return new MotivoRetiradaListagemResumida(rSet.getLong("CODIGO_MOTIVO"),
+    static MotivoRetiradaListagemResumida createMotivoRetiradaListagemResumida(@NotNull final ResultSet rSet)
+            throws Throwable {
+        return new MotivoRetiradaListagemResumida(
+                rSet.getLong("CODIGO_MOTIVO"),
                 rSet.getString("DESCRICAO_MOTIVO"));
     }
 
     @NotNull
-    static MotivoRetiradaHistoricoListagem createMotivoRetiradaHistoricoListagem(@NotNull final ResultSet rSet) throws Throwable {
-        return new MotivoRetiradaHistoricoListagem(rSet.getLong("CODIGO_MOTIVO"),
+    static MotivoRetiradaHistoricoListagem createMotivoRetiradaHistoricoListagem(@NotNull final ResultSet rSet)
+            throws Throwable {
+        return new MotivoRetiradaHistoricoListagem(
+                rSet.getLong("CODIGO_MOTIVO"),
                 rSet.getString("DESCRICAO_MOTIVO"),
                 rSet.getBoolean("ATIVO_MOTIVO"),
                 rSet.getString("CODIGO_AUXILIAR"),
