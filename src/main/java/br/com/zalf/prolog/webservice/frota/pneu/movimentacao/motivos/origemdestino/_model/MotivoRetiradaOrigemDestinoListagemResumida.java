@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model;
+package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.origemdestino._model;
 
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
 @Data
-public final class MotivoRetiradaListagemResumida {
+public final class MotivoRetiradaOrigemDestinoListagemResumida {
     @NotNull
     private final Long codMotivoRetirada;
     @NotNull

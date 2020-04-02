@@ -1,10 +1,11 @@
-package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos;
+package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.origemdestino;
 
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestinoEnum;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.*;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.OrigemDestinoListagem;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.origemdestino._model.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
@@ -120,7 +121,7 @@ public final class MotivoRetiradaOrigemDestinoDaoImpl extends DatabaseConnection
                     final MotivoRetiradaOrigemDestinoListagem ultimaUnidade = unidades.get(unidades.size() - 1);
                     final List<MotivoRetiradaOrigemDestinoListagemMotivos> rotasUltimaUnidade = ultimaUnidade
                             .getOrigensDestinos();
-                    final List<MotivoRetiradaListagemResumida> ultimaListaMotivosRetirada =
+                    final List<MotivoRetiradaOrigemDestinoListagemResumida> ultimaListaMotivosRetirada =
                             rotasUltimaUnidade.get(rotasUltimaUnidade.size() - 1).getMotivosRetirada();
 
                     if (rotasUltimaUnidade.get(rotasUltimaUnidade.size() - 1).getOrigemMovimento()
@@ -166,10 +167,10 @@ public final class MotivoRetiradaOrigemDestinoDaoImpl extends DatabaseConnection
 
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                final List<MotivoRetiradaListagemResumida> motivos = new ArrayList<>();
+                final List<MotivoRetiradaOrigemDestinoListagemResumida> motivos = new ArrayList<>();
                 boolean obrigatorioMotivoRetirada;
                 do {
-                    motivos.add(MotivoRetiradaConverter.createMotivoRetiradaListagemResumida(rSet));
+                    motivos.add(MotivoRetiradaOrigemDestinoConverter.createMotivoRetiradaListagemResumida(rSet));
                     obrigatorioMotivoRetirada = rSet.getBoolean("OBRIGATORIO");
                 } while (rSet.next());
                 return new MotivoRetiradaOrigemDestinoListagemMotivos(

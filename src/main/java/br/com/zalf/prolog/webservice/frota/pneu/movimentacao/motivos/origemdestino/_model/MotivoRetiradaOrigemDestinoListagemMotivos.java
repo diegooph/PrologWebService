@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model;
+package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.origemdestino._model;
 
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestinoEnum;
 import lombok.Data;
@@ -19,7 +19,7 @@ public final class MotivoRetiradaOrigemDestinoListagemMotivos {
     @NotNull
     private final OrigemDestinoEnum destinoMovimento;
     @NotNull
-    private final List<MotivoRetiradaListagemResumida> motivosRetirada;
+    private final List<MotivoRetiradaOrigemDestinoListagemResumida> motivosRetirada;
     @Nullable
     private final Boolean obrigatorioMotivoRetirada;
 }

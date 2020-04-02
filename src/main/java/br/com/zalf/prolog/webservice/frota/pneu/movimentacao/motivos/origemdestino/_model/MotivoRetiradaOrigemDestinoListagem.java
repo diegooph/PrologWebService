@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model;
+package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.origemdestino._model;
 
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;

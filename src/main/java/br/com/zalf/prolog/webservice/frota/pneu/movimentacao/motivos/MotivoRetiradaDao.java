@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos;
 
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.*;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.origemdestino._model.MotivoRetiradaOrigemDestinoListagemResumida;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.ZoneId;
@@ -39,12 +40,12 @@ public interface MotivoRetiradaDao {
                                                  @NotNull final ZoneId timeZone) throws Throwable;
 
     /**
-     * Busca todos os {@link MotivoRetiradaListagemResumida motivos} baseado no código da empresa.
+     * Busca todos os {@link MotivoRetiradaOrigemDestinoListagemResumida motivos} baseado no código da empresa.
      *
      * @param codEmpresa   um código de uma empresa.
      * @param apenasAtivos um booleano que indica se traz apenas ativos no resultado.
      * @param timeZone     o time zone do usuário o qual fez a requisição.
-     * @return uma {@link List<MotivoRetiradaListagemResumida> lista de motivos}.
+     * @return uma {@link List< MotivoRetiradaOrigemDestinoListagemResumida > lista de motivos}.
      * @throws Throwable caso qualquer erro ocorrer.
      */
     @NotNull

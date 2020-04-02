@@ -1,8 +1,12 @@
-package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos;
+package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.origemdestino;
 
 import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestinoEnum;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.*;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.OrigemDestinoListagem;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.origemdestino._model.MotivoRetiradaOrigemDestinoListagem;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.origemdestino._model.MotivoRetiradaOrigemDestinoListagemMotivos;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.origemdestino._model.MotivoRetiradaOrigemDestinoListagemResumida;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.origemdestino._model.MotivoRetiradaOrigemDestinoVisualizacao;
 import br.com.zalf.prolog.webservice.geral.unidade.UnidadeConverter;
 import org.jetbrains.annotations.NotNull;
 
@@ -37,8 +41,16 @@ public final class MotivoRetiradaOrigemDestinoConverter {
     }
 
     @NotNull
-    static MotivoRetiradaListagemResumida createMotivoRetiradaListagem(@NotNull final ResultSet rSet) throws Throwable {
-        return new MotivoRetiradaListagemResumida(
+    static MotivoRetiradaOrigemDestinoListagemResumida createMotivoRetiradaListagemResumida(@NotNull final ResultSet rSet)
+            throws Throwable {
+        return new MotivoRetiradaOrigemDestinoListagemResumida(
+                rSet.getLong("CODIGO_MOTIVO"),
+                rSet.getString("DESCRICAO_MOTIVO"));
+    }
+
+    @NotNull
+    static MotivoRetiradaOrigemDestinoListagemResumida createMotivoRetiradaListagem(@NotNull final ResultSet rSet) throws Throwable {
+        return new MotivoRetiradaOrigemDestinoListagemResumida(
                 rSet.getLong("codigo_motivo"),
                 rSet.getString("descricao_motivo"));
     }
@@ -46,7 +58,7 @@ public final class MotivoRetiradaOrigemDestinoConverter {
     @NotNull
     static MotivoRetiradaOrigemDestinoListagemMotivos createMotivoRetiradaOrigemDestinoListagemMotivos(
             @NotNull final ResultSet rSet) throws Throwable {
-        final List<MotivoRetiradaListagemResumida> motivosRetirada = new ArrayList<>();
+        final List<MotivoRetiradaOrigemDestinoListagemResumida> motivosRetirada = new ArrayList<>();
         motivosRetirada.add(MotivoRetiradaOrigemDestinoConverter.createMotivoRetiradaListagem(rSet));
 
         return new MotivoRetiradaOrigemDestinoListagemMotivos(
