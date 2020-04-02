@@ -22,11 +22,11 @@ import java.util.List;
  *
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
-public final class MotivoRetiradaOrigemDestinoDaoImpl extends DatabaseConnection implements
-        MotivoRetiradaOrigemDestinoDao {
+public final class MotivoMovimentoOrigemDestinoDaoImpl extends DatabaseConnection implements
+        MotivoMovimentoOrigemDestinoDao {
 
     @Override
-    public void insert(@NotNull final List<MotivoRetiradaOrigemDestinoInsercao> unidades,
+    public void insert(@NotNull final List<MotivoMovimentoOrigemDestinoInsercao> unidades,
                        @NotNull final Long codigoColaboradorInsercao) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -47,11 +47,11 @@ public final class MotivoRetiradaOrigemDestinoDaoImpl extends DatabaseConnection
             stmt.setLong(8, codigoColaboradorInsercao);
 
             int totalInserts = 0;
-            for (final MotivoRetiradaOrigemDestinoInsercao unidade : unidades) {
+            for (final MotivoMovimentoOrigemDestinoInsercao unidade : unidades) {
                 stmt.setLong(2, unidade.getCodEmpresa());
                 stmt.setLong(3, unidade.getCodUnidade());
 
-                for (final MotivoRetiradaOrigemDestinoMotivosResumido origemDestino : unidade.getOrigensDestinos()) {
+                for (final MotivoMovimentoOrigemDestinoMotivosResumido origemDestino : unidade.getOrigensDestinos()) {
                     stmt.setString(4, origemDestino.getOrigem().asString());
                     stmt.setString(5, origemDestino.getDestino().asString());
                     stmt.setBoolean(6, origemDestino.isObrigatorio());
@@ -74,8 +74,8 @@ public final class MotivoRetiradaOrigemDestinoDaoImpl extends DatabaseConnection
 
     @NotNull
     @Override
-    public MotivoRetiradaOrigemDestinoVisualizacao getMotivoOrigemDestino(@NotNull final Long codMotivoOrigemDestino,
-                                                                          @NotNull final ZoneId timeZone)
+    public MotivoMovimentoOrigemDestinoVisualizacao getMotivoOrigemDestino(@NotNull final Long codMotivoOrigemDestino,
+                                                                           @NotNull final ZoneId timeZone)
             throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -89,7 +89,7 @@ public final class MotivoRetiradaOrigemDestinoDaoImpl extends DatabaseConnection
             stmt.setString(2, timeZone.toString());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                return MotivoRetiradaOrigemDestinoConverter.createMotivoRetiradaOrigemDestinoVisualizacao(rSet);
+                return MotivoMovimentoOrigemDestinoConverter.createMotivoRetiradaOrigemDestinoVisualizacao(rSet);
             } else {
                 throw new IllegalStateException("Nenhuma relação motivo, origem e destino foi encontrada com o código: "
                         + codMotivoOrigemDestino);
@@ -101,7 +101,7 @@ public final class MotivoRetiradaOrigemDestinoDaoImpl extends DatabaseConnection
 
     @NotNull
     @Override
-    public List<MotivoRetiradaOrigemDestinoListagem> getMotivosOrigemDestino(
+    public List<MotivoMovimentoOrigemDestinoListagem> getMotivosOrigemDestino(
             @NotNull final Long codColaborador) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -113,15 +113,15 @@ public final class MotivoRetiradaOrigemDestinoDaoImpl extends DatabaseConnection
             stmt.setLong(1, codColaborador);
             rSet = stmt.executeQuery();
 
-            final List<MotivoRetiradaOrigemDestinoListagem> unidades = new ArrayList<>();
+            final List<MotivoMovimentoOrigemDestinoListagem> unidades = new ArrayList<>();
             while (rSet.next()) {
                 if (unidades.isEmpty() || unidades.get(unidades.size() - 1).getCodUnidade() != rSet.getLong("codigo_unidade")) {
-                    unidades.add(MotivoRetiradaOrigemDestinoConverter.createMotivoRetiradaOrigemDestinoListagem(rSet));
+                    unidades.add(MotivoMovimentoOrigemDestinoConverter.createMotivoRetiradaOrigemDestinoListagem(rSet));
                 } else {
-                    final MotivoRetiradaOrigemDestinoListagem ultimaUnidade = unidades.get(unidades.size() - 1);
-                    final List<MotivoRetiradaOrigemDestinoListagemMotivos> rotasUltimaUnidade = ultimaUnidade
+                    final MotivoMovimentoOrigemDestinoListagem ultimaUnidade = unidades.get(unidades.size() - 1);
+                    final List<MotivoMovimentoOrigemDestinoListagemMotivos> rotasUltimaUnidade = ultimaUnidade
                             .getOrigensDestinos();
-                    final List<MotivoRetiradaOrigemDestinoListagemResumida> ultimaListaMotivosRetirada =
+                    final List<MotivoMovimentoOrigemDestinoListagemResumida> ultimaListaMotivosRetirada =
                             rotasUltimaUnidade.get(rotasUltimaUnidade.size() - 1).getMotivosRetirada();
 
                     if (rotasUltimaUnidade.get(rotasUltimaUnidade.size() - 1).getOrigemMovimento()
@@ -134,9 +134,9 @@ public final class MotivoRetiradaOrigemDestinoDaoImpl extends DatabaseConnection
                                     OrigemDestinoEnum.getFromStatusPneu(
                                             StatusPneu.fromString(rSet.getString("destino_movimento")))) {
 
-                        rotasUltimaUnidade.add(MotivoRetiradaOrigemDestinoConverter.createMotivoRetiradaOrigemDestinoListagemMotivos(rSet));
+                        rotasUltimaUnidade.add(MotivoMovimentoOrigemDestinoConverter.createMotivoRetiradaOrigemDestinoListagemMotivos(rSet));
                     } else {
-                        ultimaListaMotivosRetirada.add(MotivoRetiradaOrigemDestinoConverter.createMotivoRetiradaListagem(rSet));
+                        ultimaListaMotivosRetirada.add(MotivoMovimentoOrigemDestinoConverter.createMotivoRetiradaListagem(rSet));
                     }
                 }
             }
@@ -148,7 +148,7 @@ public final class MotivoRetiradaOrigemDestinoDaoImpl extends DatabaseConnection
 
     @NotNull
     @Override
-    public MotivoRetiradaOrigemDestinoListagemMotivos getMotivosByOrigemAndDestinoAndUnidade(
+    public MotivoMovimentoOrigemDestinoListagemMotivos getMotivosByOrigemAndDestinoAndUnidade(
             @NotNull final OrigemDestinoEnum origemMovimento,
             @NotNull final OrigemDestinoEnum destinoMovimento,
             @NotNull final Long codUnidade) throws Throwable {
@@ -167,13 +167,13 @@ public final class MotivoRetiradaOrigemDestinoDaoImpl extends DatabaseConnection
 
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                final List<MotivoRetiradaOrigemDestinoListagemResumida> motivos = new ArrayList<>();
+                final List<MotivoMovimentoOrigemDestinoListagemResumida> motivos = new ArrayList<>();
                 boolean obrigatorioMotivoRetirada;
                 do {
-                    motivos.add(MotivoRetiradaOrigemDestinoConverter.createMotivoRetiradaListagemResumida(rSet));
+                    motivos.add(MotivoMovimentoOrigemDestinoConverter.createMotivoRetiradaListagemResumida(rSet));
                     obrigatorioMotivoRetirada = rSet.getBoolean("OBRIGATORIO");
                 } while (rSet.next());
-                return new MotivoRetiradaOrigemDestinoListagemMotivos(
+                return new MotivoMovimentoOrigemDestinoListagemMotivos(
                         origemMovimento,
                         destinoMovimento,
                         motivos,
@@ -182,7 +182,7 @@ public final class MotivoRetiradaOrigemDestinoDaoImpl extends DatabaseConnection
 
             // Se a unidade não possuir relação para a origem e destino informados, retornará lista vazia com
             // obrigatório null.
-            return new MotivoRetiradaOrigemDestinoListagemMotivos(
+            return new MotivoMovimentoOrigemDestinoListagemMotivos(
                     origemMovimento,
                     destinoMovimento,
                     Collections.emptyList(),
@@ -208,7 +208,7 @@ public final class MotivoRetiradaOrigemDestinoDaoImpl extends DatabaseConnection
             if (rSet.next()) {
                 final List<OrigemDestinoListagem> origensDestinos = new ArrayList<>();
                 do {
-                    origensDestinos.add(MotivoRetiradaOrigemDestinoConverter.createOrigemDestinoListagem(rSet));
+                    origensDestinos.add(MotivoMovimentoOrigemDestinoConverter.createOrigemDestinoListagem(rSet));
                 } while (rSet.next());
                 return origensDestinos;
             }

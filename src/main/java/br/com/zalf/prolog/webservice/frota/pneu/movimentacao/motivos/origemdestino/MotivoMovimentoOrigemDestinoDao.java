@@ -2,10 +2,10 @@ package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.origemdest
 
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestinoEnum;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.OrigemDestinoListagem;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.origemdestino._model.MotivoRetiradaOrigemDestinoInsercao;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.origemdestino._model.MotivoRetiradaOrigemDestinoListagem;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.origemdestino._model.MotivoRetiradaOrigemDestinoListagemMotivos;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.origemdestino._model.MotivoRetiradaOrigemDestinoVisualizacao;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.origemdestino._model.MotivoMovimentoOrigemDestinoInsercao;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.origemdestino._model.MotivoMovimentoOrigemDestinoListagem;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.origemdestino._model.MotivoMovimentoOrigemDestinoListagemMotivos;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.origemdestino._model.MotivoMovimentoOrigemDestinoVisualizacao;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.ZoneId;
@@ -16,31 +16,31 @@ import java.util.List;
  *
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
-public interface MotivoRetiradaOrigemDestinoDao {
+public interface MotivoMovimentoOrigemDestinoDao {
 
     /**
-     * Insere uma lista de {@link MotivoRetiradaOrigemDestinoInsercao origemDestinoMotivo} no banco de dados.
+     * Insere uma lista de {@link MotivoMovimentoOrigemDestinoInsercao origemDestinoMotivo} no banco de dados.
      *
      * @param unidades                  uma lista de unidades com suas rotas e seus motivos por rotas.
      * @param codigoColaboradorInsercao codigo do colaborador que está realizando a inserção do registro da relação.
      * @throws Throwable Caso qualquer erro ocorra.
      */
-    void insert(@NotNull final List<MotivoRetiradaOrigemDestinoInsercao> unidades,
+    void insert(@NotNull final List<MotivoMovimentoOrigemDestinoInsercao> unidades,
                 @NotNull final Long codigoColaboradorInsercao) throws Throwable;
 
     /**
-     * Busca um {@link MotivoRetiradaOrigemDestinoVisualizacao motivoOrigemDestino} no banco de dados.
+     * Busca um {@link MotivoMovimentoOrigemDestinoVisualizacao motivoOrigemDestino} no banco de dados.
      *
      * @param codMotivoOrigemDestino um código de motivoOrigemDestino a ser buscado no banco.
      * @param timeZone               o timezone do usuário que está fazendo a requisição.
      * @throws Throwable Caso qualquer erro ocorra.
      */
     @NotNull
-    MotivoRetiradaOrigemDestinoVisualizacao getMotivoOrigemDestino(@NotNull final Long codMotivoOrigemDestino,
-                                                                   @NotNull final ZoneId timeZone) throws Throwable;
+    MotivoMovimentoOrigemDestinoVisualizacao getMotivoOrigemDestino(@NotNull final Long codMotivoOrigemDestino,
+                                                                    @NotNull final ZoneId timeZone) throws Throwable;
 
     /**
-     * Busca uma lista de {@link MotivoRetiradaOrigemDestinoVisualizacao motivoOrigemDestino} no banco de dados
+     * Busca uma lista de {@link MotivoMovimentoOrigemDestinoVisualizacao motivoOrigemDestino} no banco de dados
      * com base nas unidades que o usuário tem permissão de editar, buscado através do token do usuário.
      *
      * @param codColaborador código do colaborador que está realizando a requisição, para identificar as unidades
@@ -48,11 +48,11 @@ public interface MotivoRetiradaOrigemDestinoDao {
      * @throws Throwable Caso qualquer erro ocorra.
      */
     @NotNull
-    List<MotivoRetiradaOrigemDestinoListagem> getMotivosOrigemDestino(@NotNull final Long codColaborador)
+    List<MotivoMovimentoOrigemDestinoListagem> getMotivosOrigemDestino(@NotNull final Long codColaborador)
             throws Throwable;
 
     /**
-     * Busca uma lista de {@link MotivoRetiradaOrigemDestinoListagemMotivos motivoOrigemDestino} no banco de dados
+     * Busca uma lista de {@link MotivoMovimentoOrigemDestinoListagemMotivos motivoOrigemDestino} no banco de dados
      * com base em uma origem, destino e unidade.
      *
      * @param origemMovimento  a origem a ser utilizada de filtro.
@@ -61,7 +61,7 @@ public interface MotivoRetiradaOrigemDestinoDao {
      * @throws Throwable Caso qualquer erro ocorra.
      */
     @NotNull
-    MotivoRetiradaOrigemDestinoListagemMotivos getMotivosByOrigemAndDestinoAndUnidade(
+    MotivoMovimentoOrigemDestinoListagemMotivos getMotivosByOrigemAndDestinoAndUnidade(
             @NotNull final OrigemDestinoEnum origemMovimento,
             @NotNull final OrigemDestinoEnum destinoMovimento,
             @NotNull final Long codUnidade) throws Throwable;

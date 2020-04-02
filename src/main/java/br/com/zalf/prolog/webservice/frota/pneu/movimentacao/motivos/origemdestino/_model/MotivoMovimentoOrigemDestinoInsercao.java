@@ -11,11 +11,11 @@ import java.util.List;
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
 @Data
-public final class MotivoRetiradaOrigemDestinoInsercao {
+public final class MotivoMovimentoOrigemDestinoInsercao {
     @NotNull
     private final Long codEmpresa;
     @NotNull
     private final Long codUnidade;
     @NotNull
-    private final List<MotivoRetiradaOrigemDestinoMotivosResumido> origensDestinos;
+    private final List<MotivoMovimentoOrigemDestinoMotivosResumido> origensDestinos;
 }

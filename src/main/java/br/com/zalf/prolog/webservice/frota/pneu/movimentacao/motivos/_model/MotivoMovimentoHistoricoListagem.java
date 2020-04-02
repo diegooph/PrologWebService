@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
 @Data
-public final class MotivoRetiradaHistoricoListagem {
+public final class MotivoMovimentoHistoricoListagem {
     @NotNull
     private final Long codMotivoRetirada;
     @NotNull

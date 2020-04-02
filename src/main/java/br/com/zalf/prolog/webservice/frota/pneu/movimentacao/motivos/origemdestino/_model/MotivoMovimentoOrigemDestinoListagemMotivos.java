@@ -13,13 +13,13 @@ import java.util.List;
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
 @Data
-public final class MotivoRetiradaOrigemDestinoListagemMotivos {
+public final class MotivoMovimentoOrigemDestinoListagemMotivos {
     @NotNull
     private final OrigemDestinoEnum origemMovimento;
     @NotNull
     private final OrigemDestinoEnum destinoMovimento;
     @NotNull
-    private final List<MotivoRetiradaOrigemDestinoListagemResumida> motivosRetirada;
+    private final List<MotivoMovimentoOrigemDestinoListagemResumida> motivosRetirada;
     @Nullable
     private final Boolean obrigatorioMotivoRetirada;
 }

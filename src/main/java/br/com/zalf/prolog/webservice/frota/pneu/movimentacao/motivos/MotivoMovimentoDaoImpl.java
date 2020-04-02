@@ -18,11 +18,11 @@ import java.util.List;
  *
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
-public final class MotivoRetiradaDaoImpl extends DatabaseConnection implements MotivoRetiradaDao {
+public final class MotivoMovimentoDaoImpl extends DatabaseConnection implements MotivoMovimentoDao {
 
     @Override
     @NotNull
-    public Long insert(@NotNull final MotivoRetiradaInsercao motivoRetiradaInsercao,
+    public Long insert(@NotNull final MotivoMovimentoInsercao motivoMovimentoInsercao,
                        @NotNull final Long codigoColaborador) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -37,10 +37,10 @@ public final class MotivoRetiradaDaoImpl extends DatabaseConnection implements M
                     "F_DATA_HORA_INSERCAO_MOTIVO => ?," +
                     "F_COD_COLABORADOR_AUTENTICADO => ?)" +
                     "AS COD_MOTIVO");
-            stmt.setLong(1, motivoRetiradaInsercao.getCodEmpresaMotivoRetirada());
-            stmt.setString(2, motivoRetiradaInsercao.getDescricaoMotivoRetirada());
-            stmt.setBoolean(3, motivoRetiradaInsercao.isAtivoMotivoRetirada());
-            stmt.setString(4, motivoRetiradaInsercao.getCodAuxiliarMotivoRetirada());
+            stmt.setLong(1, motivoMovimentoInsercao.getCodEmpresaMotivoRetirada());
+            stmt.setString(2, motivoMovimentoInsercao.getDescricaoMotivoRetirada());
+            stmt.setBoolean(3, motivoMovimentoInsercao.isAtivoMotivoRetirada());
+            stmt.setString(4, motivoMovimentoInsercao.getCodAuxiliarMotivoRetirada());
             stmt.setObject(5, Now.offsetDateTimeUtc());
             stmt.setLong(6, codigoColaborador);
 
@@ -58,8 +58,8 @@ public final class MotivoRetiradaDaoImpl extends DatabaseConnection implements M
 
     @Override
     @NotNull
-    public MotivoRetiradaVisualizacao getMotivoByCodigo(@NotNull final Long codMotivo,
-                                                        @NotNull final ZoneId timeZone) throws Throwable {
+    public MotivoMovimentoVisualizacao getMotivoByCodigo(@NotNull final Long codMotivo,
+                                                         @NotNull final ZoneId timeZone) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -72,7 +72,7 @@ public final class MotivoRetiradaDaoImpl extends DatabaseConnection implements M
             stmt.setString(2, timeZone.toString());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                return MotivoRetiradaConverter.createMotivoRetiradaVisualizacao(rSet);
+                return MotivoMovimentoConverter.createMotivoRetiradaVisualizacao(rSet);
             } else {
                 throw new IllegalStateException("Nenhum motivo encontrado com o código: " + codMotivo);
             }
@@ -83,9 +83,9 @@ public final class MotivoRetiradaDaoImpl extends DatabaseConnection implements M
 
     @Override
     @NotNull
-    public List<MotivoRetiradaListagem> getMotivosListagem(@NotNull final Long codEmpresa,
-                                                           final boolean apenasAtivos,
-                                                           @NotNull final ZoneId timeZone) throws Throwable {
+    public List<MotivoMovimentoListagem> getMotivosListagem(@NotNull final Long codEmpresa,
+                                                            final boolean apenasAtivos,
+                                                            @NotNull final ZoneId timeZone) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -100,9 +100,9 @@ public final class MotivoRetiradaDaoImpl extends DatabaseConnection implements M
             stmt.setString(3, timeZone.toString());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                final List<MotivoRetiradaListagem> motivos = new ArrayList<>();
+                final List<MotivoMovimentoListagem> motivos = new ArrayList<>();
                 do {
-                    motivos.add(MotivoRetiradaConverter.createMotivoRetiradaListagem(rSet));
+                    motivos.add(MotivoMovimentoConverter.createMotivoRetiradaListagem(rSet));
                 } while (rSet.next());
                 return motivos;
             } else {
@@ -114,7 +114,7 @@ public final class MotivoRetiradaDaoImpl extends DatabaseConnection implements M
     }
 
     @Override
-    public void update(@NotNull final MotivoRetiradaEdicao motivoRetiradaEdicao,
+    public void update(@NotNull final MotivoMovimentoEdicao motivoMovimentoEdicao,
                        @NotNull final Long codColaboradorUpdate) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -127,10 +127,10 @@ public final class MotivoRetiradaDaoImpl extends DatabaseConnection implements M
                     "F_COD_AUXILIAR_MOTIVO => ?," +
                     "F_DATA_ULTIMA_ALTERACAO => ?," +
                     "F_COD_COLABORADOR_ALTERACAO => ?);");
-            stmt.setLong(1, motivoRetiradaEdicao.getCodMotivoRetirada());
-            stmt.setString(2, motivoRetiradaEdicao.getDescricaoMotivoRetirada());
-            stmt.setBoolean(3, motivoRetiradaEdicao.isAtivoMotivoRetirada());
-            stmt.setString(4, motivoRetiradaEdicao.getCodAuxiliarMotivoRetirada());
+            stmt.setLong(1, motivoMovimentoEdicao.getCodMotivoRetirada());
+            stmt.setString(2, motivoMovimentoEdicao.getDescricaoMotivoRetirada());
+            stmt.setBoolean(3, motivoMovimentoEdicao.isAtivoMotivoRetirada());
+            stmt.setString(4, motivoMovimentoEdicao.getCodAuxiliarMotivoRetirada());
             stmt.setObject(5, Now.offsetDateTimeUtc());
             stmt.setLong(6, codColaboradorUpdate);
             stmt.executeQuery();
@@ -141,8 +141,8 @@ public final class MotivoRetiradaDaoImpl extends DatabaseConnection implements M
 
     @NotNull
     @Override
-    public List<MotivoRetiradaHistoricoListagem> getHistoricoByMotivo(@NotNull final Long codMotivoRetirada,
-                                                                      @NotNull final ZoneId timeZone)
+    public List<MotivoMovimentoHistoricoListagem> getHistoricoByMotivo(@NotNull final Long codMotivoRetirada,
+                                                                       @NotNull final ZoneId timeZone)
             throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -156,9 +156,9 @@ public final class MotivoRetiradaDaoImpl extends DatabaseConnection implements M
             stmt.setString(2, timeZone.toString());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                final List<MotivoRetiradaHistoricoListagem> historicoMotivo = new ArrayList<>();
+                final List<MotivoMovimentoHistoricoListagem> historicoMotivo = new ArrayList<>();
                 do {
-                    historicoMotivo.add(MotivoRetiradaConverter.createMotivoRetiradaHistoricoListagem(rSet));
+                    historicoMotivo.add(MotivoMovimentoConverter.createMotivoRetiradaHistoricoListagem(rSet));
                 } while (rSet.next());
                 return historicoMotivo;
             } else {

@@ -12,7 +12,7 @@ import java.util.List;
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
 @Data
-public final class MotivoRetiradaOrigemDestinoMotivosResumido {
+public final class MotivoMovimentoOrigemDestinoMotivosResumido {
     @NotNull
     private final OrigemDestinoEnum origem;
     @NotNull

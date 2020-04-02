@@ -25,9 +25,9 @@ import java.util.List;
 @Path("/motivos")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-public final class MotivoRetiradaResource {
+public final class MotivoMovimentoResource {
     @NotNull
-    private final MotivoRetiradaService motivoRetiradaService = new MotivoRetiradaService();
+    private final MotivoMovimentoService motivoMovimentoService = new MotivoMovimentoService();
     @Inject
     private Provider<ColaboradorAutenticado> colaboradorAutenticadoProvider;
 
@@ -35,8 +35,8 @@ public final class MotivoRetiradaResource {
     @Secured(permissions = {
             Pilares.Frota.Pneu.Movimentacao.CADASTRAR_MOTIVOS_MOVIMENTACAO,
             Pilares.Frota.Pneu.Movimentacao.EDITAR_MOTIVOS_MOVIMENTACAO})
-    public AbstractResponse insert(@Valid final MotivoRetiradaInsercao motivo) {
-        return motivoRetiradaService.insert(motivo, colaboradorAutenticadoProvider.get().getCodigo());
+    public AbstractResponse insert(@Valid final MotivoMovimentoInsercao motivo) {
+        return motivoMovimentoService.insert(motivo, colaboradorAutenticadoProvider.get().getCodigo());
     }
 
     @GET
@@ -44,8 +44,8 @@ public final class MotivoRetiradaResource {
     @Secured(permissions = {
             Pilares.Frota.Pneu.Movimentacao.CADASTRAR_MOTIVOS_MOVIMENTACAO,
             Pilares.Frota.Pneu.Movimentacao.EDITAR_MOTIVOS_MOVIMENTACAO})
-    public MotivoRetiradaVisualizacao getMotivoByCodigo(@NotNull @PathParam("codMotivo") final Long codMotivo) {
-        return motivoRetiradaService.getMotivoByCodigo(
+    public MotivoMovimentoVisualizacao getMotivoByCodigo(@NotNull @PathParam("codMotivo") final Long codMotivo) {
+        return motivoMovimentoService.getMotivoByCodigo(
                 codMotivo,
                 colaboradorAutenticadoProvider.get().getZoneIdUnidadeColaborador());
     }
@@ -57,9 +57,9 @@ public final class MotivoRetiradaResource {
             Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE,
             Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_DESCARTE,
             Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_VEICULO_ESTOQUE})
-    public List<MotivoRetiradaListagem> getMotivosListagem(@NotNull @QueryParam("codEmpresa") final Long codEmpresa,
-                                                           @QueryParam("apenasAtivos") final boolean apenasAtivos) {
-        return motivoRetiradaService.getMotivosListagem(
+    public List<MotivoMovimentoListagem> getMotivosListagem(@NotNull @QueryParam("codEmpresa") final Long codEmpresa,
+                                                            @QueryParam("apenasAtivos") final boolean apenasAtivos) {
+        return motivoMovimentoService.getMotivosListagem(
                 codEmpresa,
                 apenasAtivos,
                 colaboradorAutenticadoProvider.get().getZoneIdUnidadeColaborador());
@@ -73,8 +73,8 @@ public final class MotivoRetiradaResource {
             Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE,
             Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_DESCARTE,
             Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_VEICULO_ESTOQUE})
-    public Response update(@NotNull final MotivoRetiradaEdicao motivoRetiradaEdicao) {
-        motivoRetiradaService.update(motivoRetiradaEdicao, colaboradorAutenticadoProvider.get().getCodigo());
+    public Response update(@NotNull final MotivoMovimentoEdicao motivoMovimentoEdicao) {
+        motivoMovimentoService.update(motivoMovimentoEdicao, colaboradorAutenticadoProvider.get().getCodigo());
         return Response.ok("Motivo atualizado com sucesso.");
     }
 
@@ -87,9 +87,9 @@ public final class MotivoRetiradaResource {
             Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE,
             Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_DESCARTE,
             Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_VEICULO_ESTOQUE})
-    public List<MotivoRetiradaHistoricoListagem> getHistoricoByMotivoRetirada(
+    public List<MotivoMovimentoHistoricoListagem> getHistoricoByMotivoRetirada(
             @QueryParam("codMotivoRetirada") @NotNull final Long codMotivoRetirada) {
-        return motivoRetiradaService.getHistoricoByMotivo(
+        return motivoMovimentoService.getHistoricoByMotivo(
                 codMotivoRetirada,
                 colaboradorAutenticadoProvider.get().getZoneIdUnidadeColaborador());
     }

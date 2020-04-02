@@ -62,10 +62,10 @@ import br.com.zalf.prolog.webservice.frota.pneu.modelo.PneuMarcaModeloDao;
 import br.com.zalf.prolog.webservice.frota.pneu.modelo.PneuMarcaModeloDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.MovimentacaoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.MovimentacaoDaoImpl;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.MotivoRetiradaDao;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.MotivoRetiradaDaoImpl;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.origemdestino.MotivoRetiradaOrigemDestinoDao;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.origemdestino.MotivoRetiradaOrigemDestinoDaoImpl;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.MotivoMovimentoDao;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.MotivoMovimentoDaoImpl;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.origemdestino.MotivoMovimentoOrigemDestinoDao;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.origemdestino.MotivoMovimentoOrigemDestinoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.relatorios.MovimentacaoRelatorioDao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.relatorios.MovimentacaoRelatorioDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.nomenclatura.PneuNomenclaturaDao;
@@ -634,13 +634,13 @@ public final class Injection {
     }
 
     @NotNull
-    public static MotivoRetiradaDao provideMotivoDao() {
-        return new MotivoRetiradaDaoImpl();
+    public static MotivoMovimentoDao provideMotivoDao() {
+        return new MotivoMovimentoDaoImpl();
     }
 
     @NotNull
-    public static MotivoRetiradaOrigemDestinoDao provideMotivoOrigemDestinoDao() {
-        return new MotivoRetiradaOrigemDestinoDaoImpl();
+    public static MotivoMovimentoOrigemDestinoDao provideMotivoOrigemDestinoDao() {
+        return new MotivoMovimentoOrigemDestinoDaoImpl();
     }
 
 }

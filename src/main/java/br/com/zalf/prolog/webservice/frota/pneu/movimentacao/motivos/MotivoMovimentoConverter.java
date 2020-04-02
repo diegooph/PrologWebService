@@ -1,8 +1,8 @@
 package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos;
 
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaHistoricoListagem;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaListagem;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoRetiradaVisualizacao;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoMovimentoHistoricoListagem;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoMovimentoListagem;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoMovimentoVisualizacao;
 import br.com.zalf.prolog.webservice.geral.unidade.UnidadeConverter;
 import org.jetbrains.annotations.NotNull;
 
@@ -14,16 +14,16 @@ import java.time.LocalDateTime;
  *
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
-public final class MotivoRetiradaConverter {
+public final class MotivoMovimentoConverter {
 
-    private MotivoRetiradaConverter() {
+    private MotivoMovimentoConverter() {
         throw new IllegalStateException(UnidadeConverter.class.getSimpleName() + " cannot be instantiated!");
     }
 
     @NotNull
-    static MotivoRetiradaVisualizacao createMotivoRetiradaVisualizacao(
+    static MotivoMovimentoVisualizacao createMotivoRetiradaVisualizacao(
             @NotNull final ResultSet rSet) throws Throwable {
-        return new MotivoRetiradaVisualizacao(
+        return new MotivoMovimentoVisualizacao(
                 rSet.getLong("CODIGO_MOTIVO"),
                 rSet.getString("DESCRICAO_MOTIVO"),
                 rSet.getBoolean("ATIVO_MOTIVO"),
@@ -33,17 +33,17 @@ public final class MotivoRetiradaConverter {
     }
 
     @NotNull
-    static MotivoRetiradaListagem createMotivoRetiradaListagem(@NotNull final ResultSet rSet) throws Throwable {
-        return new MotivoRetiradaListagem(
+    static MotivoMovimentoListagem createMotivoRetiradaListagem(@NotNull final ResultSet rSet) throws Throwable {
+        return new MotivoMovimentoListagem(
                 rSet.getLong("CODIGO_MOTIVO"),
                 rSet.getString("DESCRICAO_MOTIVO"),
                 rSet.getBoolean("ATIVO_MOTIVO"));
     }
 
     @NotNull
-    static MotivoRetiradaHistoricoListagem createMotivoRetiradaHistoricoListagem(@NotNull final ResultSet rSet)
+    static MotivoMovimentoHistoricoListagem createMotivoRetiradaHistoricoListagem(@NotNull final ResultSet rSet)
             throws Throwable {
-        return new MotivoRetiradaHistoricoListagem(
+        return new MotivoMovimentoHistoricoListagem(
                 rSet.getLong("CODIGO_MOTIVO"),
                 rSet.getString("DESCRICAO_MOTIVO"),
                 rSet.getBoolean("ATIVO_MOTIVO"),

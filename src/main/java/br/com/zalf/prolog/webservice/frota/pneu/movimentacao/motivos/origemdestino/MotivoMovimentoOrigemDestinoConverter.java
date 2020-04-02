@@ -3,10 +3,10 @@ package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.origemdest
 import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestinoEnum;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.OrigemDestinoListagem;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.origemdestino._model.MotivoRetiradaOrigemDestinoListagem;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.origemdestino._model.MotivoRetiradaOrigemDestinoListagemMotivos;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.origemdestino._model.MotivoRetiradaOrigemDestinoListagemResumida;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.origemdestino._model.MotivoRetiradaOrigemDestinoVisualizacao;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.origemdestino._model.MotivoMovimentoOrigemDestinoListagem;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.origemdestino._model.MotivoMovimentoOrigemDestinoListagemMotivos;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.origemdestino._model.MotivoMovimentoOrigemDestinoListagemResumida;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.origemdestino._model.MotivoMovimentoOrigemDestinoVisualizacao;
 import br.com.zalf.prolog.webservice.geral.unidade.UnidadeConverter;
 import org.jetbrains.annotations.NotNull;
 
@@ -20,16 +20,16 @@ import java.util.List;
  *
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
-public final class MotivoRetiradaOrigemDestinoConverter {
+public final class MotivoMovimentoOrigemDestinoConverter {
 
-    private MotivoRetiradaOrigemDestinoConverter() {
+    private MotivoMovimentoOrigemDestinoConverter() {
         throw new IllegalStateException(UnidadeConverter.class.getSimpleName() + " cannot be instantiated!");
     }
 
     @NotNull
-    static MotivoRetiradaOrigemDestinoVisualizacao createMotivoRetiradaOrigemDestinoVisualizacao(
+    static MotivoMovimentoOrigemDestinoVisualizacao createMotivoRetiradaOrigemDestinoVisualizacao(
             @NotNull final ResultSet rSet) throws Throwable {
-        return new MotivoRetiradaOrigemDestinoVisualizacao(
+        return new MotivoMovimentoOrigemDestinoVisualizacao(
                 rSet.getLong("CODIGO_MOTIVO_ORIGEM_DESTINO"),
                 rSet.getString("NOME_EMPRESA"),
                 rSet.getString("DESCRICAO_MOTIVO"),
@@ -41,27 +41,27 @@ public final class MotivoRetiradaOrigemDestinoConverter {
     }
 
     @NotNull
-    static MotivoRetiradaOrigemDestinoListagemResumida createMotivoRetiradaListagemResumida(@NotNull final ResultSet rSet)
+    static MotivoMovimentoOrigemDestinoListagemResumida createMotivoRetiradaListagemResumida(@NotNull final ResultSet rSet)
             throws Throwable {
-        return new MotivoRetiradaOrigemDestinoListagemResumida(
+        return new MotivoMovimentoOrigemDestinoListagemResumida(
                 rSet.getLong("CODIGO_MOTIVO"),
                 rSet.getString("DESCRICAO_MOTIVO"));
     }
 
     @NotNull
-    static MotivoRetiradaOrigemDestinoListagemResumida createMotivoRetiradaListagem(@NotNull final ResultSet rSet) throws Throwable {
-        return new MotivoRetiradaOrigemDestinoListagemResumida(
+    static MotivoMovimentoOrigemDestinoListagemResumida createMotivoRetiradaListagem(@NotNull final ResultSet rSet) throws Throwable {
+        return new MotivoMovimentoOrigemDestinoListagemResumida(
                 rSet.getLong("codigo_motivo"),
                 rSet.getString("descricao_motivo"));
     }
 
     @NotNull
-    static MotivoRetiradaOrigemDestinoListagemMotivos createMotivoRetiradaOrigemDestinoListagemMotivos(
+    static MotivoMovimentoOrigemDestinoListagemMotivos createMotivoRetiradaOrigemDestinoListagemMotivos(
             @NotNull final ResultSet rSet) throws Throwable {
-        final List<MotivoRetiradaOrigemDestinoListagemResumida> motivosRetirada = new ArrayList<>();
-        motivosRetirada.add(MotivoRetiradaOrigemDestinoConverter.createMotivoRetiradaListagem(rSet));
+        final List<MotivoMovimentoOrigemDestinoListagemResumida> motivosRetirada = new ArrayList<>();
+        motivosRetirada.add(MotivoMovimentoOrigemDestinoConverter.createMotivoRetiradaListagem(rSet));
 
-        return new MotivoRetiradaOrigemDestinoListagemMotivos(
+        return new MotivoMovimentoOrigemDestinoListagemMotivos(
                 OrigemDestinoEnum.getFromStatusPneu(StatusPneu.fromString(rSet.getString("origem_movimento"))),
                 OrigemDestinoEnum.getFromStatusPneu(StatusPneu.fromString(rSet.getString("destino_movimento"))),
                 motivosRetirada,
@@ -69,12 +69,12 @@ public final class MotivoRetiradaOrigemDestinoConverter {
     }
 
     @NotNull
-    static MotivoRetiradaOrigemDestinoListagem createMotivoRetiradaOrigemDestinoListagem(@NotNull final ResultSet rSet)
+    static MotivoMovimentoOrigemDestinoListagem createMotivoRetiradaOrigemDestinoListagem(@NotNull final ResultSet rSet)
             throws Throwable {
-        final List<MotivoRetiradaOrigemDestinoListagemMotivos> origensDestinos = new ArrayList<>();
-        origensDestinos.add(MotivoRetiradaOrigemDestinoConverter.createMotivoRetiradaOrigemDestinoListagemMotivos(rSet));
+        final List<MotivoMovimentoOrigemDestinoListagemMotivos> origensDestinos = new ArrayList<>();
+        origensDestinos.add(MotivoMovimentoOrigemDestinoConverter.createMotivoRetiradaOrigemDestinoListagemMotivos(rSet));
 
-        return new MotivoRetiradaOrigemDestinoListagem(
+        return new MotivoMovimentoOrigemDestinoListagem(
                 rSet.getLong("codigo_unidade"),
                 rSet.getString("nome_unidade"),
                 origensDestinos);

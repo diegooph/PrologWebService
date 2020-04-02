@@ -4,10 +4,10 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestinoEnum;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.OrigemDestinoListagem;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.origemdestino._model.MotivoRetiradaOrigemDestinoInsercao;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.origemdestino._model.MotivoRetiradaOrigemDestinoListagem;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.origemdestino._model.MotivoRetiradaOrigemDestinoListagemMotivos;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.origemdestino._model.MotivoRetiradaOrigemDestinoVisualizacao;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.origemdestino._model.MotivoMovimentoOrigemDestinoInsercao;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.origemdestino._model.MotivoMovimentoOrigemDestinoListagem;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.origemdestino._model.MotivoMovimentoOrigemDestinoListagemMotivos;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.origemdestino._model.MotivoMovimentoOrigemDestinoVisualizacao;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.ZoneId;
@@ -18,13 +18,13 @@ import java.util.List;
  *
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
-public final class MotivoRetiradaOrigemDestinoService {
+public final class MotivoMovimentoOrigemDestinoService {
     @NotNull
-    private static final String TAG = MotivoRetiradaOrigemDestinoService.class.getSimpleName();
+    private static final String TAG = MotivoMovimentoOrigemDestinoService.class.getSimpleName();
     @NotNull
-    private final MotivoRetiradaOrigemDestinoDao dao = Injection.provideMotivoOrigemDestinoDao();
+    private final MotivoMovimentoOrigemDestinoDao dao = Injection.provideMotivoOrigemDestinoDao();
 
-    public void insert(@NotNull final List<MotivoRetiradaOrigemDestinoInsercao> unidades,
+    public void insert(@NotNull final List<MotivoMovimentoOrigemDestinoInsercao> unidades,
                        @NotNull final Long codigoColaboradorInsercao) {
         try {
             dao.insert(unidades, codigoColaboradorInsercao);
@@ -37,8 +37,8 @@ public final class MotivoRetiradaOrigemDestinoService {
     }
 
     @NotNull
-    public MotivoRetiradaOrigemDestinoVisualizacao getMotivoOrigemDestino(@NotNull final Long codMotivoOrigemDestino,
-                                                                          @NotNull final ZoneId timeZone) {
+    public MotivoMovimentoOrigemDestinoVisualizacao getMotivoOrigemDestino(@NotNull final Long codMotivoOrigemDestino,
+                                                                           @NotNull final ZoneId timeZone) {
         try {
             return dao.getMotivoOrigemDestino(codMotivoOrigemDestino, timeZone);
         } catch (final Throwable t) {
@@ -50,7 +50,7 @@ public final class MotivoRetiradaOrigemDestinoService {
     }
 
     @NotNull
-    public List<MotivoRetiradaOrigemDestinoListagem> getMotivosOrigemDestino(@NotNull final Long codColaborador) {
+    public List<MotivoMovimentoOrigemDestinoListagem> getMotivosOrigemDestino(@NotNull final Long codColaborador) {
         try {
             return dao.getMotivosOrigemDestino(codColaborador);
         } catch (final Throwable t) {
@@ -62,7 +62,7 @@ public final class MotivoRetiradaOrigemDestinoService {
     }
 
     @NotNull
-    public MotivoRetiradaOrigemDestinoListagemMotivos getMotivosByOrigemAndDestinoAndUnidade(
+    public MotivoMovimentoOrigemDestinoListagemMotivos getMotivosByOrigemAndDestinoAndUnidade(
             @NotNull final OrigemDestinoEnum origemMovimento,
             @NotNull final OrigemDestinoEnum destinoMovimento,
             @NotNull final Long codUnidade) {
