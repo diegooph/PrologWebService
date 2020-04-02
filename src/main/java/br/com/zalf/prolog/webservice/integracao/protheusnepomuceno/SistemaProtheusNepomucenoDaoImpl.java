@@ -197,9 +197,9 @@ public final class SistemaProtheusNepomucenoDaoImpl extends DatabaseConnection i
             if (rSet.next()) {
                 do {
                     afericaoRealizadaPlaca.put(
-                            rSet.getString("PLACA"),
+                            rSet.getString("PLACA_AFERICAO"),
                             new InfosAfericaoRealizadaPlaca(
-                                    rSet.getString("PLACA"),
+                                    rSet.getString("PLACA_AFERICAO"),
                                     rSet.getInt("INTERVALO_SULCO"),
                                     rSet.getInt("INTERVALO_PRESSAO")
                             ));
@@ -311,7 +311,7 @@ public final class SistemaProtheusNepomucenoDaoImpl extends DatabaseConnection i
                 final BiMap<String, Integer> posicoesPneusProlog = HashBiMap.create();
                 do {
                     posicoesPneusProlog.put(
-                            rSet.getString("NOMENCLATURA"),
+                            rSet.getString("NOMENCLATURA_CLIENTE"),
                             rSet.getInt("POSICAO_PROLOG"));
                 } while (rSet.next());
                 return posicoesPneusProlog;
