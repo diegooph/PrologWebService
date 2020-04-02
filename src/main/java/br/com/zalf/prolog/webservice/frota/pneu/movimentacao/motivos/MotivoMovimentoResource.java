@@ -22,7 +22,7 @@ import java.util.List;
  *
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
-@Path("/motivos")
+@Path("/movimentacoes/motivos")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public final class MotivoMovimentoResource {
@@ -37,6 +37,19 @@ public final class MotivoMovimentoResource {
             Pilares.Frota.Pneu.Movimentacao.EDITAR_MOTIVOS_MOVIMENTACAO})
     public AbstractResponse insert(@Valid final MotivoMovimentoInsercao motivo) {
         return motivoMovimentoService.insert(motivo, colaboradorAutenticadoProvider.get().getCodigo());
+    }
+
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
+    @Secured(permissions = {
+            Pilares.Frota.Pneu.Movimentacao.CADASTRAR_MOTIVOS_MOVIMENTACAO,
+            Pilares.Frota.Pneu.Movimentacao.EDITAR_MOTIVOS_MOVIMENTACAO,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_DESCARTE,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_VEICULO_ESTOQUE})
+    public Response update(@NotNull final MotivoMovimentoEdicao motivoMovimentoEdicao) {
+        motivoMovimentoService.update(motivoMovimentoEdicao, colaboradorAutenticadoProvider.get().getCodigo());
+        return Response.ok("Motivo atualizado com sucesso.");
     }
 
     @GET
@@ -65,21 +78,8 @@ public final class MotivoMovimentoResource {
                 colaboradorAutenticadoProvider.get().getZoneIdUnidadeColaborador());
     }
 
-    @PUT
-    @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    @Secured(permissions = {
-            Pilares.Frota.Pneu.Movimentacao.CADASTRAR_MOTIVOS_MOVIMENTACAO,
-            Pilares.Frota.Pneu.Movimentacao.EDITAR_MOTIVOS_MOVIMENTACAO,
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE,
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_DESCARTE,
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_VEICULO_ESTOQUE})
-    public Response update(@NotNull final MotivoMovimentoEdicao motivoMovimentoEdicao) {
-        motivoMovimentoService.update(motivoMovimentoEdicao, colaboradorAutenticadoProvider.get().getCodigo());
-        return Response.ok("Motivo atualizado com sucesso.");
-    }
-
     @GET
-    @Path("/historico")
+    @Path("/historicos")
     @UsedBy(platforms = {Platform.ANDROID})
     @Secured(permissions = {
             Pilares.Frota.Pneu.Movimentacao.CADASTRAR_MOTIVOS_MOVIMENTACAO,

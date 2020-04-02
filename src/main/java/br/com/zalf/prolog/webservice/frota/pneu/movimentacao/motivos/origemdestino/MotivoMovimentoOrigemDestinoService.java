@@ -80,9 +80,9 @@ public final class MotivoMovimentoOrigemDestinoService {
     }
 
     @NotNull
-    public List<OrigemDestinoListagem> getRotasExistentesByUnidade(@NotNull final Long codUnidade) {
+    public List<OrigemDestinoListagem> getTransicoesExistentesByUnidade(@NotNull final Long codUnidade) {
         try {
-            return dao.getRotasExistentesByUnidade(codUnidade);
+            return dao.getTransicoesExistentesByUnidade(codUnidade);
         } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao buscar relações origem e destino, para a a unidade %d", codUnidade), t);
             throw Injection

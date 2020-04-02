@@ -194,7 +194,7 @@ public final class MotivoMovimentoOrigemDestinoDaoImpl extends DatabaseConnectio
 
     @NotNull
     @Override
-    public List<OrigemDestinoListagem> getRotasExistentesByUnidade(@NotNull final Long codUnidade) throws Throwable {
+    public List<OrigemDestinoListagem> getTransicoesExistentesByUnidade(@NotNull final Long codUnidade) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;

@@ -28,7 +28,7 @@ import java.util.List;
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
 @Secured
-@Path("/motivos/motivoOrigemDestino")
+@Path("/movimentacoes/motivos/origens-destinos")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public final class MotivoMovimentoOrigemDestinoResource {
@@ -80,7 +80,7 @@ public final class MotivoMovimentoOrigemDestinoResource {
 
     @GET
     @UsedBy(platforms = {Platform.ANDROID})
-    @Path("/listagemResumida")
+    @Path("/listagem-resumida")
     @Secured(permissions = {
             Pilares.Frota.Pneu.Movimentacao.CADASTRAR_MOTIVOS_MOVIMENTACAO,
             Pilares.Frota.Pneu.Movimentacao.EDITAR_MOTIVOS_MOVIMENTACAO,
@@ -98,7 +98,7 @@ public final class MotivoMovimentoOrigemDestinoResource {
     }
 
     @GET
-    @Path("/unidade/{codUnidade}")
+    @Path("/transicoes-existentes")
     @UsedBy(platforms = {Platform.ANDROID})
     @Secured(permissions = {
             Pilares.Frota.Pneu.Movimentacao.CADASTRAR_MOTIVOS_MOVIMENTACAO,
@@ -106,8 +106,9 @@ public final class MotivoMovimentoOrigemDestinoResource {
             Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE,
             Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_DESCARTE,
             Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_VEICULO_ESTOQUE})
-    public List<OrigemDestinoListagem> getRotasExistentesByUnidade(@PathParam("codUnidade") @NotNull final Long codUnidade) {
-        return motivoMovimentoOrigemDestinoService.getRotasExistentesByUnidade(codUnidade);
+    public List<OrigemDestinoListagem> getTransicoesExistentesByUnidade(
+            @QueryParam("codUnidade") @NotNull final Long codUnidade) {
+        return motivoMovimentoOrigemDestinoService.getTransicoesExistentesByUnidade(codUnidade);
     }
 
 }

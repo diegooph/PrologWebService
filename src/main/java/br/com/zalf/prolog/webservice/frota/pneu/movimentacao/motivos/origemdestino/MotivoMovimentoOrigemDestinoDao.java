@@ -74,6 +74,6 @@ public interface MotivoMovimentoOrigemDestinoDao {
      * @throws Throwable Caso qualquer erro ocorra.
      */
     @NotNull
-    List<OrigemDestinoListagem> getRotasExistentesByUnidade(@NotNull final Long codUnidade) throws Throwable;
+    List<OrigemDestinoListagem> getTransicoesExistentesByUnidade(@NotNull final Long codUnidade) throws Throwable;
 
 }
