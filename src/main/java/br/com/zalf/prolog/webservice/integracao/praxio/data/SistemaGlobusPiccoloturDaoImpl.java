@@ -226,9 +226,11 @@ public final class SistemaGlobusPiccoloturDaoImpl extends DatabaseConnection imp
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT PMCI.CODIGO FROM PICCOLOTUR.MODELO_CHECKLIST_INTEGRADO PMCI WHERE " +
-                    "PMCI.COD_UNIDADE = ? AND " +
-                    "PMCI.COD_MODELO_CHECKLIST = ?;");
+            stmt = conn.prepareStatement(
+                    "SELECT PMCI.CODIGO " +
+                            "FROM PICCOLOTUR.MODELO_CHECKLIST_INTEGRADO PMCI " +
+                            "WHERE PMCI.COD_UNIDADE = ? " +
+                            "AND PMCI.COD_MODELO_CHECKLIST = ?;");
             stmt.setLong(1, codUnidade);
             stmt.setLong(2, codModeloChecklist);
             rSet = stmt.executeQuery();

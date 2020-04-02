@@ -93,7 +93,7 @@ public interface SistemaGlobusPiccoloturDao {
     /**
      * Método utulizado para validar se o modelo de checklist é integrado na empresa.
      *
-     * @param codUnidade Código da unidade para identificar modelo de checklist.
+     * @param codUnidade         Código da unidade para identificar modelo de checklist.
      * @param codModeloChecklist Código do modelo de checklist.
      * @return É retornado um boolean para informar. TRUE caso modelo for integrado, senão FALSE.
      */
