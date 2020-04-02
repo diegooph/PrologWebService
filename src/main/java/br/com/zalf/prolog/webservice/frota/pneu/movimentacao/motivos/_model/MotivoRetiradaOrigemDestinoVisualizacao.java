@@ -11,31 +11,21 @@ import java.time.LocalDateTime;
  *
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
-public @Data
-class MotivoRetiradaOrigemDestinoVisualizacao {
-
+@Data
+public final class MotivoRetiradaOrigemDestinoVisualizacao {
     @NotNull
     private final Long codMotivoRetiradaOrigemDestino;
-
     @NotNull
     private final String nomeEmpresaMotivoRetirada;
-
     @NotNull
     private final String descricaoMotivoRetirada;
-
     @NotNull
     private final OrigemDestinoEnum origemMovimento;
-
     @NotNull
     private final OrigemDestinoEnum destinoMovimento;
-
-    @NotNull
     private final boolean obrigatorioMotivoRetirada;
-
     @NotNull
     private final LocalDateTime dataHoraUltimaAlteracao;
-
     @NotNull
     private final String nomeColaboradorUltimaAlteracao;
-
 }

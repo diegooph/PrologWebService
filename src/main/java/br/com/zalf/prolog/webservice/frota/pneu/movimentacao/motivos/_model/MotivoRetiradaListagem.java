@@ -9,15 +9,10 @@ import org.jetbrains.annotations.NotNull;
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
 @Data
-public class MotivoRetiradaListagem {
-
+public final class MotivoRetiradaListagem {
     @NotNull
     private final Long codMotivoRetirada;
-
     @NotNull
     private final String descricaoMotivoRetirada;
-
-    @NotNull
     private final boolean ativo;
-
 }

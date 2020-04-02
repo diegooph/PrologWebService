@@ -10,18 +10,12 @@ import org.jetbrains.annotations.NotNull;
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
 @Data
-public class OrigemDestinoListagem {
-
+public final class OrigemDestinoListagem {
     @NotNull
     private final Long codUnidade;
-
     @NotNull
     private final OrigemDestinoEnum origem;
-
     @NotNull
     private final OrigemDestinoEnum destino;
-
-    @NotNull
     private final boolean obrigatorio;
-
 }

@@ -18,7 +18,7 @@ import java.util.List;
  *
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
-public class MotivoRetiradaDaoImpl extends DatabaseConnection implements MotivoRetiradaDao {
+public final class MotivoRetiradaDaoImpl extends DatabaseConnection implements MotivoRetiradaDao {
 
     @Override
     @NotNull

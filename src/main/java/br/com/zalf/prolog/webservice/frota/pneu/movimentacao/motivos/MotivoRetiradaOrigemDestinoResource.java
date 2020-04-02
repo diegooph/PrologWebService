@@ -25,7 +25,7 @@ import java.util.List;
 @Secured
 @Path("/motivos/motivoOrigemDestino")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-public class MotivoRetiradaOrigemDestinoResource {
+public final class MotivoRetiradaOrigemDestinoResource {
 
     @NotNull
     private final MotivoRetiradaOrigemDestinoService motivoRetiradaOrigemDestinoService = new MotivoRetiradaOrigemDestinoService();

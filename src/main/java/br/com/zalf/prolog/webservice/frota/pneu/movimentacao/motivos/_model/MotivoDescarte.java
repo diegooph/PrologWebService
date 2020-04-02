@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class MotivoDescarte extends Motivo {
+public final class MotivoDescarte extends Motivo {
     public static final String TIPO_MOTIVO_DESCARTE = "MOTIVO_DESCARTE";
 
     private Long codEmpresa;

@@ -16,7 +16,7 @@ import java.util.List;
  *
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
-public class MotivoRetiradaOrigemDestinoConverter {
+public final class MotivoRetiradaOrigemDestinoConverter {
 
     private MotivoRetiradaOrigemDestinoConverter() {
         throw new IllegalStateException(UnidadeConverter.class.getSimpleName() + " cannot be instantiated!");

@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
  *
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
-public class MotivoRetiradaConverter {
+public final class MotivoRetiradaConverter {
 
     private MotivoRetiradaConverter() {
         throw new IllegalStateException(UnidadeConverter.class.getSimpleName() + " cannot be instantiated!");

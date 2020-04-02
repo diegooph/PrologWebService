@@ -11,24 +11,16 @@ import java.time.LocalDateTime;
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
 @Data
-public class MotivoRetiradaHistoricoListagem {
-
+public final class MotivoRetiradaHistoricoListagem {
     @NotNull
     private final Long codMotivoRetirada;
-
     @NotNull
     private final String descricaoMotivoRetirada;
-
-    @NotNull
     private final boolean ativoMotivoRetirada;
-
     @NotNull
     private final String codAuxiliarMotivoRetirada;
-
     @NotNull
     private final LocalDateTime dataHoraAlteracaoMotivoRetirada;
-
     @NotNull
     private final String nomeColaboradorAlteracaoMotivoRetirada;
-
 }

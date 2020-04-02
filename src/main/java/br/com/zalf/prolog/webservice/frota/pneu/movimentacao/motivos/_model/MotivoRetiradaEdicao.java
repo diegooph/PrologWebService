@@ -9,8 +9,8 @@ import org.jetbrains.annotations.Nullable;
  *
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
-public @Data
-class MotivoRetiradaEdicao {
+@Data
+public final class MotivoRetiradaEdicao {
 
     @NotNull
     private final Long codMotivoRetirada;
