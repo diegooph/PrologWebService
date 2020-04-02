@@ -218,4 +218,25 @@ public final class SistemaGlobusPiccoloturDaoImpl extends DatabaseConnection imp
                 rSet.getString("DESCRICAO_PERGUNTA_NOK"),
                 new ArrayList<>());
     }
+
+    public boolean verificaModeloChecklistIntegrado(@NotNull final Long codUnidade,
+                                                    @NotNull final Long codModeloChecklist) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement(
+                    "SELECT PMCI.CODIGO " +
+                            "FROM PICCOLOTUR.MODELO_CHECKLIST_INTEGRADO PMCI " +
+                            "WHERE PMCI.COD_UNIDADE = ? " +
+                            "AND PMCI.COD_MODELO_CHECKLIST = ?;");
+            stmt.setLong(1, codUnidade);
+            stmt.setLong(2, codModeloChecklist);
+            rSet = stmt.executeQuery();
+            return rSet.next();
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
 }

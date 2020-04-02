@@ -34,10 +34,6 @@ import java.util.concurrent.Executors;
  */
 public final class SistemaGlobusPiccolotur extends Sistema {
     @NotNull
-    private static final Long COD_MODELO_LIBERADO = 501L;
-    @NotNull
-    private static final Long COD_UNIDADE_LIBERADA = 107L;
-    @NotNull
     private final GlobusPiccoloturRequester requester;
 
     public SistemaGlobusPiccolotur(@NotNull final GlobusPiccoloturRequester requester,
@@ -56,11 +52,11 @@ public final class SistemaGlobusPiccolotur extends Sistema {
         final DatabaseConnectionProvider connectionProvider = new DatabaseConnectionProvider();
         Connection conn = null;
         try {
-            // Devemos enviar para o Globus apenas se for o modelo 501 e a unidade 107, pois foram apenas estas
-            // liberadas nesse primeiro momento, onde faremos um teste.
-            final boolean deveEnviarParaGlobus =
-                    checklistNew.getCodModelo().equals(COD_MODELO_LIBERADO)
-                            && checklistNew.getCodUnidade().equals(COD_UNIDADE_LIBERADA);
+            // Devemos enviar para o Globus apenas o modelo de checklist existe na tabela de integração.
+            // Verifica se modelo informado existe na tabela.
+            final boolean deveEnviarParaGlobus = getSistemaGlobusPiccoloturDaoImpl()
+                    .verificaModeloChecklistIntegrado(checklistNew.getCodUnidade(), checklistNew.getCodModelo());
+
             conn = connectionProvider.provideDatabaseConnection();
             conn.setAutoCommit(false);
             // Insere checklist na base de dados do ProLog
