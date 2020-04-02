@@ -2,16 +2,13 @@ Change Log
 ==========
 <a name="v1.0.25"></a>
 ## Version [v1.0.25](https://github.com/luizfp/PrologWebService/compare/v1.0.24...v1.0.25) (release-date) [unreleased]
-
-
 ## Stage
 ### Features
 * Injeta colaborador autenticado no SecurityContext do request (PL-2638)
-
-<a name="v1.0.24"></a>
-## Version [v1.0.24](https://github.com/luizfp/PrologWebService/compare/v1.0.23...v1.0.24) (release-date) [unreleased]
-### Features
 * Cria relatório de permissões detalhadas (PL-2627)
+
+### Refactors
+* Modifica function que insere checklist (PL-2569)
 
 ## Version [v1.0.24](https://github.com/luizfp/PrologWebService/compare/v1.0.23...v1.0.24) (2020-03-29)
 
