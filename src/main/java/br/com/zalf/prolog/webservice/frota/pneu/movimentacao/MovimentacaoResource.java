@@ -90,7 +90,8 @@ public final class MovimentacaoResource {
     @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
     @Path("/campos-personalizados")
     public List<CampoPersonalizadoParaRealizacao> getCamposPersonalizadosRealizacao(
+            @HeaderParam("Authorization") @Required final String userToken,
             @QueryParam("codUnidade") @Required final Long codUnidade) throws ProLogException {
-        return service.getCamposPersonalizadosRealizacao(codUnidade);
+        return service.getCamposPersonalizadosRealizacao(userToken, codUnidade);
     }
 }

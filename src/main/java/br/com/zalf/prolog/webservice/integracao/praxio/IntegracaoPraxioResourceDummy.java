@@ -11,6 +11,11 @@ import br.com.zalf.prolog.webservice.integracao.praxio.afericao.MedicaoIntegraca
 import br.com.zalf.prolog.webservice.integracao.praxio.cadastro.VeiculoCadastroPraxio;
 import br.com.zalf.prolog.webservice.integracao.praxio.cadastro.VeiculoEdicaoPraxio;
 import br.com.zalf.prolog.webservice.integracao.praxio.cadastro.VeiculoTransferenciaPraxio;
+import br.com.zalf.prolog.webservice.integracao.praxio.data.GlobusPiccoloturAutenticacaoResponse;
+import br.com.zalf.prolog.webservice.integracao.praxio.data.GlobusPiccoloturMovimentacaoResponse;
+import br.com.zalf.prolog.webservice.integracao.praxio.movimentacao.GlobusPiccoloturLocalMovimento;
+import br.com.zalf.prolog.webservice.integracao.praxio.movimentacao.GlobusPiccoloturLocalMovimentoResponse;
+import br.com.zalf.prolog.webservice.integracao.praxio.movimentacao.ProcessoMovimentacaoGlobus;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.ItemResolvidoGlobus;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.OrdemServicoAbertaGlobus;
 import br.com.zalf.prolog.webservice.integracao.response.SuccessResponseIntegracao;
@@ -19,6 +24,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -132,5 +138,42 @@ public final class IntegracaoPraxioResourceDummy {
             @HeaderParam(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
             @Required final List<ItemResolvidoGlobus> itensResolvidos) throws ProLogException {
         return service.resolverMultiplosItensDummy(tokenIntegracao, itensResolvidos);
+    }
+
+    @GET
+    @LogIntegracaoRequest
+    @Path("/autenticacao-globus-sucesso")
+    @UsedBy(platforms = Platform.INTEGRACOES)
+    public GlobusPiccoloturAutenticacaoResponse autenticaUsuarioGlobusDummy(
+            @QueryParam("token") final String token,
+            @QueryParam("shortCode") final Long shortCode) throws ProLogException {
+        return new GlobusPiccoloturAutenticacaoResponse(
+                true,
+                "kffdm2ba5ai3lsk79kqur9rb3mq7hv59qa8pr0sho4mcr56clck");
+    }
+
+    @POST
+    @LogIntegracaoRequest
+    @Path("/insert-movimentacao-sucesso")
+    @UsedBy(platforms = Platform.INTEGRACOES)
+    public GlobusPiccoloturMovimentacaoResponse insertProcessoMovimentacao(
+            @HeaderParam("authorization") @NotNull final String tokenIntegracao,
+            final ProcessoMovimentacaoGlobus processoMovimentacaoGlobus) throws ProLogException {
+        return new GlobusPiccoloturMovimentacaoResponse(true, new ArrayList<>(), null);
+    }
+
+    @GET
+    @LogIntegracaoRequest
+    @Path("/busca-locais-movimento-sucesso")
+    @UsedBy(platforms = Platform.INTEGRACOES)
+    public GlobusPiccoloturLocalMovimentoResponse getLocaisMovimentoGlobus(
+            @HeaderParam("authorization") @NotNull final String tokenIntegracao,
+            @QueryParam("cpf") final String cpf) throws ProLogException {
+        final List<GlobusPiccoloturLocalMovimento> locais = new ArrayList<>();
+        locais.add(new GlobusPiccoloturLocalMovimento(5L, 1L, "LOCAL 5"));
+        locais.add(new GlobusPiccoloturLocalMovimento(215L, 2L, "LOCAL 215"));
+        locais.add(new GlobusPiccoloturLocalMovimento(103L, 3L, "LOCAL 103"));
+        locais.add(new GlobusPiccoloturLocalMovimento(179L, 4L, "LOCAL 179"));
+        return new GlobusPiccoloturLocalMovimentoResponse(true, "JOHN DOE", locais);
     }
 }

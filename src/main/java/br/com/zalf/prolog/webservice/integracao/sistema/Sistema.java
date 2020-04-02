@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.integracao.sistema;
 
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.customfields.CampoPersonalizadoDao;
+import br.com.zalf.prolog.webservice.customfields._model.CampoPersonalizadoParaRealizacao;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.TipoChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
@@ -414,6 +415,14 @@ public abstract class Sistema implements OperacoesIntegradas {
     @Override
     public void updateTipoVeiculo(@NotNull final TipoVeiculo tipoVeiculo) throws Throwable {
         getIntegradorProLog().updateTipoVeiculo(tipoVeiculo);
+    }
+
+    @NotNull
+    @Override
+    public List<CampoPersonalizadoParaRealizacao> getCamposParaRealizacaoMovimentacao(
+            @NotNull final Long codUnidade,
+            @NotNull final CampoPersonalizadoDao campoPersonalizadoDao) throws Throwable {
+        return getIntegradorProLog().getCamposParaRealizacaoMovimentacao(codUnidade, campoPersonalizadoDao);
     }
 
     @NotNull
