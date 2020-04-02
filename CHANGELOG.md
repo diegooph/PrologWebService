@@ -1,7 +1,7 @@
 Change Log
 ==========
 <a name="v1.0.25"></a>
-## Version [v1.0.25](https://github.com/luizfp/PrologWebService/compare/v1.0.24...v1.0.25) (release-date) [unreleased]
+## Version [v1.0.25](https://github.com/luizfp/PrologWebService/compare/v1.0.24...v1.0.25) (2020-04-02)
 
 ### Features
 * Injeta colaborador autenticado no SecurityContext do request (PL-2638)
