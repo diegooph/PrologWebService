@@ -63,7 +63,7 @@ public final class GlobusPiccoloturUtils {
             throw new GlobusPiccoloturException("Resposta da unidade de movimento não foi fornecida");
         }
         // Fazemos um get(0) pois temos a certeza que nunca terá mais que uma resposta.
-        // A resposta sempre estará no padrão 'cod_unidade - nome_unidade', pegaremos apenas o código.
+        // A resposta sempre estará no padrão 'cod_unidade - nome_unidade', pegaremos apenas o código da unidade.
         final String resposta = campoSelecao.getRespostaListaSelecao().get(0);
         return Long.valueOf(resposta.split(COD_UNIDADE_NOME_LOCAL_SEPARATOR)[0].trim());
     }

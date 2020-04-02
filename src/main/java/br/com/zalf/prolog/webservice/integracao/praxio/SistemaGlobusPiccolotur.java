@@ -18,6 +18,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.Movimentacao
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestinoEnum;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.ProcessoMovimentacao;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoDao;
+import br.com.zalf.prolog.webservice.frota.pneu.transferencia._model.realizacao.PneuTransferenciaRealizacao;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.*;
 import br.com.zalf.prolog.webservice.integracao.praxio.movimentacao.GlobusPiccoloturLocalMovimento;
@@ -31,6 +32,7 @@ import java.sql.Connection;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 /**
  * Created on 01/06/19.
@@ -158,7 +160,8 @@ public final class SistemaGlobusPiccolotur extends Sistema {
                        @NotNull final ProcessoMovimentacao processoMovimentacao,
                        @NotNull final OffsetDateTime dataHoraMovimentacao,
                        final boolean fecharServicosAutomaticamente) throws Throwable {
-        if (!unidadeEstaComIntegracaoAtiva(processoMovimentacao.getUnidade().getCodigo())) {
+        final Long codUnidadeOrigem = processoMovimentacao.getUnidade().getCodigo();
+        if (!unidadeEstaComIntegracaoAtiva(codUnidadeOrigem)) {
             // Não tem integração, vamos para o fluxo normal do Prolog.
             return getIntegradorProLog()
                     .insert(servicoDao,
@@ -204,7 +207,7 @@ public final class SistemaGlobusPiccolotur extends Sistema {
             conn.setAutoCommit(false);
             final long codEmpresa =
                     getIntegradorProLog()
-                            .getCodEmpresaByCodUnidadeProLog(conn, processoMovimentacao.getUnidade().getCodigo());
+                            .getCodEmpresaByCodUnidadeProLog(conn, codUnidadeOrigem);
             final ApiAutenticacaoHolder autenticacaoHolder =
                     getIntegradorProLog()
                             .getApiAutenticacaoHolder(
@@ -226,12 +229,45 @@ public final class SistemaGlobusPiccolotur extends Sistema {
                                     processoMovimentacao,
                                     dataHoraMovimentacao,
                                     fecharServicosAutomaticamente);
+
+            final Long codUnidadeMovimento =
+                    GlobusPiccoloturUtils
+                            .getCodUnidadeMovimentoFromCampoPersonalizado(
+                                    processoMovimentacao.getRespostasCamposPersonalizados());
+            if (!codUnidadeOrigem.equals(codUnidadeMovimento)) {
+                // Nesse caso devemos transferir os pneus em estoque para a unidade de movimento.
+                final List<Movimentacao> movimentacoesEstoque = processoMovimentacao.getMovimentacoes()
+                        .stream()
+                        .filter(movimentacao -> movimentacao.getDestino().getTipo().equals(OrigemDestinoEnum.ESTOQUE))
+                        .collect(Collectors.toList());
+
+                if (!movimentacoesEstoque.isEmpty()) {
+                    final Long codColaborador = getIntegradorProLog().getColaboradorByToken(getUserToken()).getCodigo();
+                    final PneuTransferenciaRealizacao pneuTransferencia =
+                            createPneuTransferencia(
+                                    codUnidadeOrigem,
+                                    codUnidadeMovimento,
+                                    codColaborador,
+                                    movimentacoesEstoque);
+                    Injection
+                            .providePneuTransferenciaDao()
+                            .insertTransferencia(
+                                    conn,
+                                    pneuTransferencia,
+                                    dataHoraMovimentacao,
+                                    false);
+                }
+            }
+
             final GlobusPiccoloturMovimentacaoResponse response = requester.insertProcessoMovimentacao(
                     getIntegradorProLog()
                             .getUrl(conn, codEmpresa, getSistemaKey(), MetodoIntegrado.INSERT_MOVIMENTACAO),
                     autenticacaoResponse.getFormattedBearerToken(),
                     // Convertemos a dataHoraMovimentacao para LocalDateTime pois usamos assim na integração.
-                    GlobusPiccoloturConverter.convert(processoMovimentacao, dataHoraMovimentacao.toLocalDateTime()));
+                    GlobusPiccoloturConverter.convert(
+                            codUnidadeMovimento,
+                            processoMovimentacao,
+                            dataHoraMovimentacao.toLocalDateTime()));
             if (!response.isSucesso()) {
                 throw new GlobusPiccoloturException(
                         "[INTEGRAÇÃO] Erro ao movimentar pneus no sistema integrado\n" + response.getPrettyErrors());
@@ -316,6 +352,22 @@ public final class SistemaGlobusPiccolotur extends Sistema {
         } finally {
             connectionProvider.closeResources(conn);
         }
+    }
+
+    @NotNull
+    private PneuTransferenciaRealizacao createPneuTransferencia(@NotNull final Long codUnidadeOrigem,
+                                                                @NotNull final Long codUnidadeMovimento,
+                                                                @NotNull final Long codColaboradorMovimentacao,
+                                                                @NotNull final List<Movimentacao> movimentacoesEstoque) {
+        final List<Long> codPneusParaTransferir = movimentacoesEstoque.stream()
+                .map(movimentacao -> movimentacao.getPneu().getCodigo())
+                .collect(Collectors.toList());
+        return new PneuTransferenciaRealizacao(
+                codUnidadeOrigem,
+                codUnidadeMovimento,
+                codColaboradorMovimentacao,
+                codPneusParaTransferir,
+                "Transferência gerada a partir da movimentação de pneus integrada");
     }
 
     private boolean unidadeEstaComIntegracaoAtiva(@NotNull final Long codUnidade) throws Throwable {
