@@ -83,7 +83,7 @@ public final class UnidadeDaoImpl extends DatabaseConnection implements UnidadeD
                     "F_COD_EMPRESA := ?," +
                     "F_COD_REGIONAIS := ?);");
             stmt.setLong(1, codEmpresa);
-            if (codigosRegionais == null) {
+            if (codigosRegionais.size() < 1) {
                 stmt.setNull(2, Types.NULL);
             } else {
                 stmt.setArray(2, PostgresUtils.listToArray(conn, SqlType.BIGINT, codigosRegionais));

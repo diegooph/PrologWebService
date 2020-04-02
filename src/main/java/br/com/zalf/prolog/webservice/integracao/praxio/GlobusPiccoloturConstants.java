@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.praxio;
 
-import br.com.zalf.prolog.webservice.BuildConfig;
+import br.com.zalf.prolog.webservice.config.BuildConfig;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 public final class GlobusPiccoloturConstants {
     // #################################################################################################################
     // #################################################################################################################
-    // #######           CONSTANTES UTILIZADAS PARA A FUNCIONDALIDADE DE CHECKLIST/ORDENS DE SERVIÇOS            #######
+    // #######                       CONSTANTES UTILIZADAS PARA A INTEGRAÇÃO COM O GLOBUS                        #######
     // #################################################################################################################
     // #################################################################################################################
     @NotNull
@@ -25,6 +25,8 @@ public final class GlobusPiccoloturConstants {
     public static final int SHORT_CODE_AUTENTICACAO_OS = 1032;
     public static final String METODO_PARA_LIBERAR = "GerarOrdemDeServicoCorretivaProlog";
     public static final String USUARIO_PROLOG_INTEGRACAO = "MANAGER";
+    public static final String CPF_COLABORADOR_LOCAIS_MOVIMENTO = "35118345898";
+    public static final String COD_UNIDADE_NOME_LOCAL_SEPARATOR = " - ";
 
     private GlobusPiccoloturConstants() {
         throw new IllegalStateException(GlobusPiccoloturConstants.class.getSimpleName() + " can not be instantiated");

@@ -1,7 +1,18 @@
 Change Log
 ==========
+<a name="v1.0.25"></a>
+## Version [v1.0.25](https://github.com/luizfp/PrologWebService/compare/v1.0.24...v1.0.25) (2020-04-02)
 
-<a name="v1.0.24"></a>
+### Features
+* Injeta colaborador autenticado no SecurityContext do request (PL-2638)
+* Cria relatório de permissões detalhadas (PL-2627)
+* Criar método de validação de posições de pneus (PLI-52)
+* Criar estrutura para liberação de modelos de checklist para a integração de O.S (PLI-113)
+* Criar método roteado para buscar os locais de movimento do Globus (PLI-107)
+
+### Refactors
+* Modifica function que insere checklist (PL-2569)
+
 ## Version [v1.0.24](https://github.com/luizfp/PrologWebService/compare/v1.0.23...v1.0.24) (2020-03-29)
 
 ### Features

@@ -93,7 +93,6 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
                     "F_DATA_HORA_REALIZACAO               := ?," +
                     "F_COD_COLABORADOR                    := ?," +
                     "F_COD_VEICULO                        := ?," +
-                    "F_PLACA_VEICULO                      := ?," +
                     "F_TIPO_CHECKLIST                     := ?," +
                     "F_KM_COLETADO                        := ?," +
                     "F_TEMPO_REALIZACAO                   := ?," +
@@ -124,23 +123,22 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
             stmt.setObject(4, dataHoraRealizacao);
             stmt.setLong(5, checklist.getCodColaborador());
             stmt.setLong(6, checklist.getCodVeiculo());
-            stmt.setString(7, checklist.getPlacaVeiculo());
-            stmt.setString(8, String.valueOf(checklist.getTipo().asChar()));
-            stmt.setLong(9, checklist.getKmColetadoVeiculo());
-            stmt.setLong(10, checklist.getTempoRealizacaoCheckInMillis());
-            stmt.setObject(11, Now.offsetDateTimeUtc());
-            stmt.setString(12, checklist.getFonteDataHoraRealizacao().asString());
-            stmt.setInt(13, checklist.getVersaoAppMomentoRealizacao());
-            stmt.setInt(14, checklist.getVersaoAppMomentoSincronizacao());
-            stmt.setString(15, checklist.getDeviceId());
-            stmt.setString(16, checklist.getDeviceImei());
-            stmt.setLong(17, checklist.getDeviceUptimeRealizacaoMillis());
-            stmt.setLong(18, checklist.getDeviceUptimeSincronizacaoMillis());
-            stmt.setBoolean(19, foiOffline);
-            stmt.setInt(20, checklist.getQtdPerguntasOk());
-            stmt.setInt(21, checklist.getQtdPerguntasNok());
-            stmt.setInt(22, checklist.getQtdAlternativasOk());
-            stmt.setInt(23, checklist.getQtdAlternativasNok());
+            stmt.setString(7, String.valueOf(checklist.getTipo().asChar()));
+            stmt.setLong(8, checklist.getKmColetadoVeiculo());
+            stmt.setLong(9, checklist.getTempoRealizacaoCheckInMillis());
+            stmt.setObject(10, Now.offsetDateTimeUtc());
+            stmt.setString(11, checklist.getFonteDataHoraRealizacao().asString());
+            stmt.setInt(12, checklist.getVersaoAppMomentoRealizacao());
+            stmt.setInt(13, checklist.getVersaoAppMomentoSincronizacao());
+            stmt.setString(14, checklist.getDeviceId());
+            stmt.setString(15, checklist.getDeviceImei());
+            stmt.setLong(16, checklist.getDeviceUptimeRealizacaoMillis());
+            stmt.setLong(17, checklist.getDeviceUptimeSincronizacaoMillis());
+            stmt.setBoolean(18, foiOffline);
+            stmt.setInt(19, checklist.getQtdPerguntasOk());
+            stmt.setInt(20, checklist.getQtdPerguntasNok());
+            stmt.setInt(21, checklist.getQtdAlternativasOk());
+            stmt.setInt(22, checklist.getQtdAlternativasNok());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 final Long codChecklistInserido = rSet.getLong("CODIGO");

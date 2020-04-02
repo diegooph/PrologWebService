@@ -31,7 +31,7 @@ public interface SocorroRotaRelatorioDao {
                                         @NotNull final List<String> statusSocorrosRotas) throws Throwable;
 
     /**
-     * Método para gerar um relatório contendo todos os dados de aferições realizadas em formato {@link Report report}.
+     * Método para gerar um relatório contendo todos os dados de socorros em rota em formato {@link Report report}.
      *
      * @param codUnidades         Códigos das unidades pela quais as informações serão filtradas.
      * @param dataInicial         Data inicial do período de filtro.

@@ -85,7 +85,7 @@ import br.com.zalf.prolog.webservice.frota.socorrorota.SocorroRotaDaoImpl;
 import br.com.zalf.prolog.webservice.frota.socorrorota.opcaoproblema.OpcaoProblemaDao;
 import br.com.zalf.prolog.webservice.frota.socorrorota.opcaoproblema.OpcaoProblemaDaoImpl;
 import br.com.zalf.prolog.webservice.frota.socorrorota.relatorio.SocorroRotaRelatorioDao;
-import br.com.zalf.prolog.webservice.frota.socorrorota.relatorio.SocorroRotaRelatorioDaoImp;
+import br.com.zalf.prolog.webservice.frota.socorrorota.relatorio.SocorroRotaRelatorioDaoImpl;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.veiculo.error.VeiculoExceptionHandler;
@@ -126,6 +126,8 @@ import br.com.zalf.prolog.webservice.gente.faleConosco.FaleConoscoDao;
 import br.com.zalf.prolog.webservice.gente.faleConosco.FaleConoscoDaoImpl;
 import br.com.zalf.prolog.webservice.gente.faleConosco.relatorios.FaleConoscoRelatorioDao;
 import br.com.zalf.prolog.webservice.gente.faleConosco.relatorios.FaleConoscoRelatorioDaoImpl;
+import br.com.zalf.prolog.webservice.gente.permissao.relatorios.PermissaoRelatorioDao;
+import br.com.zalf.prolog.webservice.gente.permissao.relatorios.PermissaoRelatorioDaoImpl;
 import br.com.zalf.prolog.webservice.gente.prontuarioCondutor.ProntuarioCondutorDao;
 import br.com.zalf.prolog.webservice.gente.prontuarioCondutor.ProntuarioCondutorDaoImpl;
 import br.com.zalf.prolog.webservice.gente.quiz.modelo.QuizModeloDao;
@@ -198,7 +200,8 @@ public final class Injection {
     }
 
     @NotNull
-    public static SocorroRotaRelatorioDao provideSocorroRotaRelatorioDao() { return new SocorroRotaRelatorioDaoImp();
+    public static SocorroRotaRelatorioDao provideSocorroRotaRelatorioDao() {
+        return new SocorroRotaRelatorioDaoImpl();
     }
 
     @NotNull
@@ -237,6 +240,11 @@ public final class Injection {
     @NotNull
     public static ColaboradorDao provideColaboradorDao() {
         return new ColaboradorDaoImpl();
+    }
+
+    @NotNull
+    public static PermissaoRelatorioDao providePermissaoRelatorioDao() {
+        return new PermissaoRelatorioDaoImpl();
     }
 
     @NotNull

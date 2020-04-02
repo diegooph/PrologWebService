@@ -5,6 +5,8 @@ import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.integracao.BaseIntegracaoService;
 import br.com.zalf.prolog.webservice.integracao.api.pneu.model.ApiPneuAlteracaoStatus;
+import br.com.zalf.prolog.webservice.integracao.api.pneu.model.DiagramaPosicaoMapeado;
+import br.com.zalf.prolog.webservice.integracao.response.PosicaoPneuMepadoResponse;
 import br.com.zalf.prolog.webservice.integracao.response.SuccessResponseIntegracao;
 import org.jetbrains.annotations.NotNull;
 
@@ -35,6 +37,22 @@ public final class ApiPneuService extends BaseIntegracaoService {
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Não foi possível atualizar o status dos pneus");
+        }
+    }
+
+    @NotNull
+    public List<PosicaoPneuMepadoResponse> validaPosicoesMapeadasSistemaParceiro(
+            final String tokenIntegracao,
+            final List<DiagramaPosicaoMapeado> diagramasPosicoes) throws ProLogException {
+        try {
+            ensureValidToken(tokenIntegracao, TAG);
+            return dao.validaPosicoesMapeadasSistemaParceiro(tokenIntegracao, diagramasPosicoes);
+        } catch (final Throwable t) {
+            Log.e(TAG, "Não foi possível validar as posições do veículo:\n" +
+                    "tokenIntegracao: " + tokenIntegracao, t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Não foi possível validar as posições do veículo");
         }
     }
 }

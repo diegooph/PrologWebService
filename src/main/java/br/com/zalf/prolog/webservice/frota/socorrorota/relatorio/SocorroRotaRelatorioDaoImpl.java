@@ -22,7 +22,7 @@ import static br.com.zalf.prolog.webservice.database.DatabaseConnection.getConne
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-public class SocorroRotaRelatorioDaoImp implements SocorroRotaRelatorioDao {
+public class SocorroRotaRelatorioDaoImpl implements SocorroRotaRelatorioDao {
 
     @Override
     public void getDadosGeraisSocorrosRotasCsv(@NotNull final OutputStream out,

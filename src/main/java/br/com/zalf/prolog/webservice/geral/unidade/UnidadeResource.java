@@ -44,7 +44,7 @@ public final class UnidadeResource {
     @Secured(permissions = {Pilares.Geral.Empresa.VISUALIZAR_ESTRUTURA, Pilares.Geral.Empresa.EDITAR_ESTRUTURA})
     @Consumes()
     public List<UnidadeVisualizacaoListagem> getUnidadesListagem(@QueryParam("codEmpresa") final Long codEmpresa,
-                                                                 @Valid final List<Long> codigosRegionais) {
+                                                                 @QueryParam("codigosRegionais") final List<Long> codigosRegionais) {
         return service.getUnidadesListagem(codEmpresa, codigosRegionais);
     }
 }

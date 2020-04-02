@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.commons.util;
 
-import br.com.zalf.prolog.webservice.BuildConfig;
+import br.com.zalf.prolog.webservice.config.BuildConfig;
 
 /**
  * Created on 2019-08-09
