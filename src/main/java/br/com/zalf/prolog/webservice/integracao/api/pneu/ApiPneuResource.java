@@ -40,7 +40,7 @@ public final class ApiPneuResource {
         return service.atualizaStatusPneus(tokenIntegracao, pneusAtualizacaoStatus);
     }
 
-    @POST
+    @GET
     @LogIntegracaoRequest
     @Path("/valida-posicoes-mapeadas")
     @UsedBy(platforms = Platform.INTEGRACOES)

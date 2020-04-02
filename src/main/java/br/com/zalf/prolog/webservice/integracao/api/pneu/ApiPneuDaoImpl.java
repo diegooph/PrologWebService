@@ -124,7 +124,7 @@ public final class ApiPneuDaoImpl extends DatabaseConnection implements ApiPneuD
                                     .map(PosicaoPneuMepado::getPosicaoProLog)
                                     .collect(Collectors.toList());
                     stmt.setInt(1, codDiagrama);
-                    stmt.setArray(2, PostgresUtils.listToArray(conn, SqlType.VARCHAR, posicoesParceiro));
+                    stmt.setArray(2, PostgresUtils.listToArray(conn, SqlType.TEXT, posicoesParceiro));
                     stmt.setArray(3, PostgresUtils.listToArray(conn, SqlType.BIGINT, posicoesProLog));
                     rSet = stmt.executeQuery();
                     if (rSet.next()) {
