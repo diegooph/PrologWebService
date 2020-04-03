@@ -141,13 +141,21 @@ public final class SistemaGlobusPiccolotur extends Sistema {
     }
 
     @Override
-    public void resolverItem(@NotNull final ResolverItemOrdemServico item) {
-        throw new BloqueadoIntegracaoException("O fechamento de itens de O.S. deverá ser feito pelo Sistema Globus");
+    public void resolverItem(@NotNull final ResolverItemOrdemServico item) throws Throwable {
+        final boolean itemIntegrado = getSistemaGlobusPiccoloturDaoImpl().verificaItemIntegrado(item);
+        if (itemIntegrado) {
+            throw new BloqueadoIntegracaoException("O fechamento de itens de O.S. deverá ser feito pelo Sistema Globus");
+        }
+        getIntegradorProLog().resolverItem(item);
     }
 
     @Override
-    public void resolverItens(@NotNull final ResolverMultiplosItensOs itensResolucao) {
-        throw new BloqueadoIntegracaoException("O fechamento de itens de O.S. deverá ser feito pelo Sistema Globus");
+    public void resolverItens(@NotNull final ResolverMultiplosItensOs itensResolucao) throws Throwable {
+        final boolean itensIntegrados = getSistemaGlobusPiccoloturDaoImpl().verificaItensIntegrados(itensResolucao);
+        if (itensIntegrados) {
+            throw new BloqueadoIntegracaoException("O fechamento de itens de O.S. deverá ser feito pelo Sistema Globus");
+        }
+        getIntegradorProLog().resolverItens(itensResolucao);
     }
 
     @NotNull

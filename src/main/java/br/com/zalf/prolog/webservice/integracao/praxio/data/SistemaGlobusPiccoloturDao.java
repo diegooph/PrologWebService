@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.praxio.data;
 
+import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverItemOrdemServico;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverMultiplosItensOs;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.ChecklistItensNokGlobus;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.ChecklistToSyncGlobus;
 import org.jetbrains.annotations.NotNull;
@@ -99,4 +101,22 @@ public interface SistemaGlobusPiccoloturDao {
      */
     boolean verificaModeloChecklistIntegrado(@NotNull final Long codUnidade,
                                              @NotNull final Long codModeloChecklist) throws Throwable;
+
+    /**
+     * Método responsável por verifica se item é integrado.
+     *
+     * @param item Objeto item com as informações.
+     * @return É retornado um boolean para informar. TRUE caso item for integrado, senão FALSE.
+     * @throws Throwable Se algum erro ocorrer ao salvar a identificação.
+     */
+    boolean verificaItemIntegrado(ResolverItemOrdemServico item) throws Throwable;
+
+    /**
+     * Método responsável por verificar se algum item é integrado.
+     *
+     * @param itensResolucao Objeto com os itens para serem verificados.
+     * @return É retornado um boolean para informar. TRUE caso algum item for integrado, senão FALSE.
+     * @throws Throwable Se algum erro ocorrer ao salvar a identificação.
+     */
+    boolean verificaItensIntegrados(ResolverMultiplosItensOs itensResolucao) throws Throwable;
 }
