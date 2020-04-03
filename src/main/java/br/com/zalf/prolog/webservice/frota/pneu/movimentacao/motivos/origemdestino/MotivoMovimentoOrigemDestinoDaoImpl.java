@@ -36,8 +36,8 @@ public final class MotivoMovimentoOrigemDestinoDaoImpl extends DatabaseConnectio
                     "F_COD_MOTIVO := ?," +
                     "F_COD_EMPRESA := ?," +
                     "F_COD_UNIDADE :=?," +
-                    "F_ORIGEM := ?::origem_destino_type," +
-                    "F_DESTINO := ?::origem_destino_type," +
+                    "F_ORIGEM := ?::MOVIMENTACAO_ORIGEM_DESTINO_TYPE," +
+                    "F_DESTINO := ?::MOVIMENTACAO_ORIGEM_DESTINO_TYPE," +
                     "F_OBRIGATORIO := ?," +
                     "F_DATA_HORA_INSERCAO := ?," +
                     "F_COD_COLABORADOR_INSERCAO := ?)" +
@@ -158,8 +158,8 @@ public final class MotivoMovimentoOrigemDestinoDaoImpl extends DatabaseConnectio
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM FUNC_MOTIVO_RETIRADA_GET_BY_ORIGEM_DESTINO(" +
-                    "F_ORIGEM := ?::ORIGEM_DESTINO_TYPE," +
-                    "F_DESTINO := ?::ORIGEM_DESTINO_TYPE," +
+                    "F_ORIGEM := ?::MOVIMENTACAO_ORIGEM_DESTINO_TYPE," +
+                    "F_DESTINO := ?::MOVIMENTACAO_ORIGEM_DESTINO_TYPE," +
                     "F_COD_UNIDADE := ?);");
             stmt.setString(1, origemMovimento.asString());
             stmt.setString(2, destinoMovimento.asString());
