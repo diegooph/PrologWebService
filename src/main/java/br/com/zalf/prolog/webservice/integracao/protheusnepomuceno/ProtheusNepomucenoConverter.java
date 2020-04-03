@@ -29,10 +29,10 @@ public final class ProtheusNepomucenoConverter {
     public static AfericaoPlacaProtheusNepomuceno convert(@NotNull final String codAuxiliarUnidade,
                                                           @NotNull final AfericaoPlaca afericaoPlaca) {
         // Separa o código de empresa e unidade do campo auxiliar.
-        final String[] empresaUnidade = codAuxiliarUnidade.split(DEFAULT_CODIGOS_SEPARERTOR);
+        final String[] empresaUnidade = codAuxiliarUnidade.split(DEFAULT_CODIGOS_SEPARATOR);
 
         final List<MedicaoAfericaoProtheusNepomuceno> medicoes = new ArrayList<>();
-        for (Pneu pneu : afericaoPlaca.getPneusAferidos()) {
+        for (final Pneu pneu : afericaoPlaca.getPneusAferidos()) {
             //noinspection ConstantConditions
             medicoes.add(new MedicaoAfericaoProtheusNepomuceno(
                     pneu.getCodigoCliente(),
@@ -60,7 +60,7 @@ public final class ProtheusNepomucenoConverter {
     public static AfericaoAvulsaProtheusNepomuceno convert(@NotNull final String codAuxiliarUnidade,
                                                            @NotNull final AfericaoAvulsa afericaoAvulsa) {
         // Separa o código de empresa e unidade do campo auxiliar.
-        final String[] empresaUnidade = codAuxiliarUnidade.split(DEFAULT_CODIGOS_SEPARERTOR);
+        final String[] empresaUnidade = codAuxiliarUnidade.split(DEFAULT_CODIGOS_SEPARATOR);
 
         final Pneu pneu = afericaoAvulsa.getPneuAferido();
         //noinspection ConstantConditions

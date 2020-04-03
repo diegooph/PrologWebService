@@ -8,8 +8,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.ProtheusNepomucenoConstants.DEFAULT_CODIGOS_SEPARERTOR;
-import static br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.ProtheusNepomucenoConstants.DEFAULT_COD_AUXILIAR_TIPO_VEICULO_SEPARERTOR;
+import static br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.ProtheusNepomucenoConstants.DEFAULT_CODIGOS_SEPARATOR;
+import static br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.ProtheusNepomucenoConstants.DEFAULT_COD_AUXILIAR_TIPO_VEICULO_SEPARATOR;
 
 /**
  * Created on 2020-03-23
@@ -22,15 +22,15 @@ final class ProtheusNepomucenoUtils {
     }
 
     static void validateCodAuxiliarTipoVeiculo(@NotNull final String codAuxiliar) {
-        final String[] codigos = codAuxiliar.trim().split(DEFAULT_COD_AUXILIAR_TIPO_VEICULO_SEPARERTOR);
+        final String[] codigos = codAuxiliar.trim().split(DEFAULT_COD_AUXILIAR_TIPO_VEICULO_SEPARATOR);
         for (final String s : codigos) {
-            final String[] codigo = s.trim().split(DEFAULT_CODIGOS_SEPARERTOR);
+            final String[] codigo = s.trim().split(DEFAULT_CODIGOS_SEPARATOR);
             // Ao fazer o split deveremos ter duas String, que são o código da Familia e o código do Modelo.
             if (codigo.length != 2) {
                 throw new ProtheusNepomucenoException("O código auxiliar cadastrado não está dento dos padrões.\n" +
                         "Os padrões aceitos são: AA001:BB002 ou AA001:BB002,CC001:DD002.\n" +
                         "Para apenas um código, utilizar dois pontos (:).\n" +
-                        "Para váris códigos, utilizar dois pontos (:) e vírgula (,)");
+                        "Para vários códigos, utilizar dois pontos (:) e vírgula (,).");
             }
         }
     }
@@ -47,13 +47,13 @@ final class ProtheusNepomucenoUtils {
         if (!posicaoNaoMapeadas.isEmpty()) {
             throw new ProtheusNepomucenoException("As posições " + posicaoNaoMapeadas + " não estão mapeadas para a " +
                     "estrutura " + codEstruturaVeiculo + ".\n" +
-                    "Realize as configurações necessárias na tela Pneus -> Nomenclaturas");
+                    "Realize as configurações necessárias na tela Pneus -> Nomenclaturas.");
         }
     }
 
     @NotNull
     static List<String> getCodAuxiliarTipoVeiculoAsArray(@NotNull final String codAuxiliar) {
-        final String[] codigos = codAuxiliar.trim().split(DEFAULT_COD_AUXILIAR_TIPO_VEICULO_SEPARERTOR);
+        final String[] codigos = codAuxiliar.trim().split(DEFAULT_COD_AUXILIAR_TIPO_VEICULO_SEPARATOR);
         return Arrays.asList(codigos);
     }
 }
