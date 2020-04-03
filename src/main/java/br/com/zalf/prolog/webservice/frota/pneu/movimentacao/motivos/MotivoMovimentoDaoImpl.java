@@ -29,7 +29,7 @@ public final class MotivoMovimentoDaoImpl extends DatabaseConnection implements 
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_MOTIVO_RETIRADA_INSERE(" +
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_MOTIVO_MOVIMENTO_INSERE(" +
                     "F_COD_EMPRESA_MOTIVO => ?," +
                     "F_DESCRICAO_MOTIVO => ?," +
                     "F_ATIVO_MOTIVO => ?," +
@@ -65,7 +65,7 @@ public final class MotivoMovimentoDaoImpl extends DatabaseConnection implements 
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_MOTIVO_RETIRADA_VISUALIZACAO(" +
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_MOTIVO_MOVIMENTO_VISUALIZACAO(" +
                     "F_COD_MOTIVO => ?," +
                     "F_TIME_ZONE => ?)");
             stmt.setLong(1, codMotivo);
@@ -91,7 +91,7 @@ public final class MotivoMovimentoDaoImpl extends DatabaseConnection implements 
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_MOTIVO_RETIRADA_LISTAGEM(" +
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_MOTIVO_MOVIMENTO_LISTAGEM(" +
                     "F_COD_EMPRESA => ?," +
                     "F_APENAS_ATIVOS => ?," +
                     "F_TIME_ZONE => ?)");
@@ -120,7 +120,7 @@ public final class MotivoMovimentoDaoImpl extends DatabaseConnection implements 
         PreparedStatement stmt = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT FUNC_MOTIVO_RETIRADA_ATUALIZA(" +
+            stmt = conn.prepareStatement("SELECT FUNC_MOTIVO_MOVIMENTO_ATUALIZA(" +
                     "F_COD_MOTIVO => ?," +
                     "F_DESCRICAO_MOTIVO => ?::CITEXT," +
                     "F_ATIVO_MOTIVO => ?," +
@@ -149,7 +149,7 @@ public final class MotivoMovimentoDaoImpl extends DatabaseConnection implements 
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_MOTIVO_RETIRADA_HISTORICO_LISTAGEM(" +
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_MOTIVO_MOVIMENTO_HISTORICO_LISTAGEM(" +
                     "F_COD_MOTIVO => ?," +
                     "F_TIME_ZONE => ?)");
             stmt.setLong(1, codMotivoRetirada);

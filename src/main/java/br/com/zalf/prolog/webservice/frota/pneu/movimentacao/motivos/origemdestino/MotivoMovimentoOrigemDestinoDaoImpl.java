@@ -32,7 +32,7 @@ public final class MotivoMovimentoOrigemDestinoDaoImpl extends DatabaseConnectio
         PreparedStatement stmt = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_MOTIVO_RETIRADA_ORIGEM_DESTINO_INSERE(" +
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_MOTIVO_MOVIMENTO_ORIGEM_DESTINO_INSERE(" +
                     "F_COD_MOTIVO := ?," +
                     "F_COD_EMPRESA := ?," +
                     "F_COD_UNIDADE :=?," +
@@ -82,7 +82,7 @@ public final class MotivoMovimentoOrigemDestinoDaoImpl extends DatabaseConnectio
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_MOTIVO_RETIRADA_ORIGEM_DESTINO_VISUALIZACAO(" +
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_MOTIVO_MOVIMENTO_ORIGEM_DESTINO_VISUALIZACAO(" +
                     "F_COD_MOTIVO_ORIGEM_DESTINO := ?," +
                     "F_TIME_ZONE := ?);");
             stmt.setLong(1, codMotivoOrigemDestino);
@@ -108,7 +108,7 @@ public final class MotivoMovimentoOrigemDestinoDaoImpl extends DatabaseConnectio
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_MOTIVO_RETIRADA_ORIGEM_DESTINO_LISTAGEM(" +
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_MOTIVO_MOVIMENTO_ORIGEM_DESTINO_LISTAGEM(" +
                     "F_COD_COLABORADOR := ?)");
             stmt.setLong(1, codColaborador);
             rSet = stmt.executeQuery();
@@ -157,7 +157,7 @@ public final class MotivoMovimentoOrigemDestinoDaoImpl extends DatabaseConnectio
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_MOTIVO_RETIRADA_GET_BY_ORIGEM_DESTINO(" +
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_MOTIVO_MOVIMENTO_GET_BY_ORIGEM_DESTINO(" +
                     "F_ORIGEM := ?::MOVIMENTACAO_ORIGEM_DESTINO_TYPE," +
                     "F_DESTINO := ?::MOVIMENTACAO_ORIGEM_DESTINO_TYPE," +
                     "F_COD_UNIDADE := ?);");
@@ -200,7 +200,7 @@ public final class MotivoMovimentoOrigemDestinoDaoImpl extends DatabaseConnectio
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_MOTIVO_RETIRADA_GET_ORIGEM_DESTINO_BY_UNIDADE(" +
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_MOTIVO_MOVIMENTO_GET_ORIGEM_DESTINO_BY_UNIDADE(" +
                     "F_COD_UNIDADE := ?);");
             stmt.setLong(1, codUnidade);
 
