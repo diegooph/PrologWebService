@@ -33,7 +33,9 @@ public class MapaDaoImpl extends DatabaseConnection implements MapaDao {
     // TODO: Se um mapa tem sua equipe modificada, o verifyExists do mapa colaborador não é suficiente pra
     // mapear, teremos que implementar outra verificação mais eficiente, caso constrário ao realizar o update,
     // a equipe antiga continuará na tabela, recebendo por um mapa que não realizou.
-    public boolean insertOrUpdateMapa(String path, Long codUnidade) throws SQLException, IOException, ParseException {
+    @Override
+    public boolean insertOrUpdateMapa(final String path,
+                                      final Long codUnidade) throws SQLException, IOException, ParseException {
 
         Connection conn = null;
         try {
@@ -63,7 +65,10 @@ public class MapaDaoImpl extends DatabaseConnection implements MapaDao {
         }
     }
 
-    private boolean insertOrUpdateMapaColaborador(int mapa, long codUnidade, int matricula, Connection conn) throws SQLException {
+    private boolean insertOrUpdateMapaColaborador(final int mapa,
+                                                  final long codUnidade,
+                                                  final int matricula,
+                                                  final Connection conn) throws SQLException {
         if (matricula > 0) {
             if (verifyExistsMapaColaborador(mapa, codUnidade, matricula, conn)) {
                 Log.d(TAG, "update mapa_colaborador: " + mapa);
@@ -75,7 +80,9 @@ public class MapaDaoImpl extends DatabaseConnection implements MapaDao {
         return true;
     }
 
-    private boolean insertMapa(MapaImport mapa, Long codUnidade, Connection conn) throws SQLException {
+    private boolean insertMapa(final MapaImport mapa,
+                               final Long codUnidade,
+                               final Connection conn) throws SQLException {
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("INSERT INTO MAPA VALUES(?, ?,	?,	?,"
@@ -215,7 +222,7 @@ public class MapaDaoImpl extends DatabaseConnection implements MapaDao {
             }
             stmt.setString(115, mapa.motoristaJt12x36);
             stmt.setString(116, mapa.retira);
-            int count = stmt.executeUpdate();
+            final int count = stmt.executeUpdate();
             if (count == 0) {
                 throw new SQLException("Erro ao inserir o mapa " + mapa + " na tabela");
             }
@@ -225,14 +232,17 @@ public class MapaDaoImpl extends DatabaseConnection implements MapaDao {
         return true;
     }
 
-    private boolean insertMapaColaborador(int mapa, long codUnidade, int matricula, Connection conn) throws SQLException {
+    private boolean insertMapaColaborador(final int mapa,
+                                          final long codUnidade,
+                                          final int matricula,
+                                          final Connection conn) throws SQLException {
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("INSERT INTO MAPA_COLABORADOR VALUES(?, ?,	?);");
             stmt.setInt(1, mapa);
             stmt.setLong(2, codUnidade);
             stmt.setInt(3, matricula);
-            int count = stmt.executeUpdate();
+            final int count = stmt.executeUpdate();
             if (count == 0) {
                 throw new SQLException("Erro ao inserir o mapa_colaborador: " + mapa + " matricula: " + matricula);
             }
@@ -242,7 +252,10 @@ public class MapaDaoImpl extends DatabaseConnection implements MapaDao {
         return true;
     }
 
-    private boolean verifyExistsMapaColaborador(int mapa, long codUnidade, int matricula, Connection conn) throws SQLException {
+    private boolean verifyExistsMapaColaborador(final int mapa,
+                                                final long codUnidade,
+                                                final int matricula,
+                                                final Connection conn) throws SQLException {
         ResultSet rSet = null;
         PreparedStatement stmt = null;
         try {
@@ -261,7 +274,9 @@ public class MapaDaoImpl extends DatabaseConnection implements MapaDao {
         return true;
     }
 
-    private boolean updateMapa(MapaImport mapa, Long codUnidade, Connection conn) throws SQLException {
+    private boolean updateMapa(final MapaImport mapa,
+                               final Long codUnidade,
+                               final Connection conn) throws SQLException {
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("UPDATE MAPA "
@@ -513,7 +528,7 @@ public class MapaDaoImpl extends DatabaseConnection implements MapaDao {
             // condição do where:
             stmt.setInt(116, mapa.mapa);
             stmt.setLong(117, codUnidade);
-            int count = stmt.executeUpdate();
+            final int count = stmt.executeUpdate();
             if (count == 0) {
                 return false;
             }
@@ -523,7 +538,7 @@ public class MapaDaoImpl extends DatabaseConnection implements MapaDao {
         return true;
     }
 
-    private MapaImport createMapa(CSVRecord linha) throws ParseException {
+    private MapaImport createMapa(final CSVRecord linha) throws ParseException {
         final MapaImport mapa = new MapaImport();
 //        caso a data esteja vazia, retorna null para essa linha inteira, evitando erros nos inserts/update
         if (linha.get(0).isEmpty()) {
@@ -664,7 +679,7 @@ public class MapaDaoImpl extends DatabaseConnection implements MapaDao {
         mapa.equipCarregados = Integer.parseInt(linha.get(94));
         mapa.equipDevolvidos = Integer.parseInt(linha.get(95));
         mapa.equipRecolhidos = Integer.parseInt(linha.get(96));
-        mapa.cxEntregTracking = Double.parseDouble(linha.get(97));
+        mapa.cxEntregTracking = Double.parseDouble(linha.get(97).replace(",", "."));
         mapa.hrCarreg = toTimestamp(linha.get(98));
         mapa.hrPCFisica = toTimestamp(linha.get(99));
         mapa.hrPCFinanceira = toTimestamp(linha.get(100));
@@ -722,10 +737,10 @@ public class MapaDaoImpl extends DatabaseConnection implements MapaDao {
      * @param data uma String contendo uma data
      * @return um Date
      */
-    private Date toDate(String data) {
-        int ano;
-        int mes;
-        int dia;
+    private Date toDate(final String data) {
+        final int ano;
+        final int mes;
+        final int dia;
         final Calendar calendar = Calendar.getInstance();
 
         if (data.length() == 7) {

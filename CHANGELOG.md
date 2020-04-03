@@ -2,12 +2,17 @@ Change Log
 ==========
 <a name="v1.0.26"></a>
 ## Version [v1.0.26](https://github.com/luizfp/PrologWebService/compare/v1.0.25...v1.0.26) (release-date) [unreleased]
-
+###features
+* Corrige parse sem replace de virgula no import de csv (PL-2573)
 <a name="v1.0.25"></a>
 ## Version [v1.0.25](https://github.com/luizfp/PrologWebService/compare/v1.0.24...v1.0.25) (2020-04-02)
 
 ### Features
 * Injeta colaborador autenticado no SecurityContext do request (PL-2638)
+
+<a name="v1.0.24"></a>
+## Version [v1.0.24](https://github.com/luizfp/PrologWebService/compare/v1.0.23...v1.0.24) (release-date) [unreleased]
+### Features
 * Cria relatório de permissões detalhadas (PL-2627)
 * Criar método de validação de posições de pneus (PLI-52)
 * Criar estrutura para liberação de modelos de checklist para a integração de O.S (PLI-113)
