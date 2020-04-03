@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.integracao.router;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
 import br.com.zalf.prolog.webservice.customfields.CampoPersonalizadoDao;
+import br.com.zalf.prolog.webservice.customfields._model.CampoPersonalizadoParaRealizacao;
 import br.com.zalf.prolog.webservice.frota.checklist.ChecklistResource;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.TipoChecklist;
@@ -614,6 +615,18 @@ public abstract class Router implements OperacoesIntegradas {
             getSistema().updateTipoVeiculo(tipoVeiculo);
         } else {
             integradorProLog.updateTipoVeiculo(tipoVeiculo);
+        }
+    }
+
+    @NotNull
+    @Override
+    public List<CampoPersonalizadoParaRealizacao> getCamposParaRealizacaoMovimentacao(
+            @NotNull final Long codUnidade,
+            @NotNull final CampoPersonalizadoDao campoPersonalizadoDao) throws Throwable {
+        if (getSistema() != null) {
+            return getSistema().getCamposParaRealizacaoMovimentacao(codUnidade, campoPersonalizadoDao);
+        } else {
+            return integradorProLog.getCamposParaRealizacaoMovimentacao(codUnidade, campoPersonalizadoDao);
         }
     }
 
