@@ -2,8 +2,9 @@ Change Log
 ==========
 <a name="v1.0.26"></a>
 ## Version [v1.0.26](https://github.com/luizfp/PrologWebService/compare/v1.0.25...v1.0.26) (release-date) [unreleased]
-###features
+###Bug Fixes
 * Corrige parse sem replace de virgula no import de csv (PL-2573)
+
 <a name="v1.0.25"></a>
 ## Version [v1.0.25](https://github.com/luizfp/PrologWebService/compare/v1.0.24...v1.0.25) (2020-04-02)
 
