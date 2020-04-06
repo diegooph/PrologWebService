@@ -12,10 +12,10 @@ import org.jetbrains.annotations.Nullable;
 @Data
 public final class MotivoMovimentoEdicao {
     @NotNull
-    private final Long codMotivoRetirada;
+    private final Long codMotivoMovimento;
     @NotNull
-    private final String descricaoMotivoRetirada;
-    private final boolean ativoMotivoRetirada;
+    private final String descricaoMotivoMovimento;
     @Nullable
-    private final String codAuxiliarMotivoRetirada;
+    private final String codAuxiliarMotivoMovimento;
+    private final boolean ativo;
 }

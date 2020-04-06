@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.origemdestino._model;
+package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.transicao._model.insercao;
 
 import lombok.Data;
 
@@ -11,11 +11,11 @@ import java.util.List;
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
 @Data
-public final class MotivoMovimentoOrigemDestinoInsercao {
+public final class MotivoMovimentoTransicaoInsercao {
     @NotNull
     private final Long codEmpresa;
     @NotNull
     private final Long codUnidade;
     @NotNull
-    private final List<MotivoMovimentoOrigemDestinoMotivosResumido> origensDestinos;
+    private final List<TransicaoInsercao> origensDestinos;
 }

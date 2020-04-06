@@ -14,11 +14,9 @@ import javax.validation.constraints.NotNull;
 @Data
 public final class MotivoMovimentoInsercao {
     @NotNull(message = "O código da empresa é obrigatório.")
-    private final long codEmpresaMotivoRetirada;
-    @NotBlank(message = "A descrição do motivo não pode ser branca.")
-    private final String descricaoMotivoRetirada;
-    @NotNull(message = "O campo ativo é obrigatório.")
-    private final boolean ativoMotivoRetirada;
+    private final Long codEmpresaMotivoMovimento;
+    @NotBlank(message = "A descrição do motivo não pode estar vazia.")
+    private final String descricaoMotivoMovimento;
     @Nullable
-    private final String codAuxiliarMotivoRetirada;
+    private final String codAuxiliarMotivoMovimento;
 }

@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos;
 
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.*;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.origemdestino._model.MotivoMovimentoOrigemDestinoListagemResumida;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.transicao._model.listagem.MotivoMovimentoUnidade;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.ZoneId;
@@ -40,12 +40,12 @@ public interface MotivoMovimentoDao {
                                                   @NotNull final ZoneId timeZone) throws Throwable;
 
     /**
-     * Busca todos os {@link MotivoMovimentoOrigemDestinoListagemResumida motivos} baseado no código da empresa.
+     * Busca todos os {@link MotivoMovimentoUnidade motivos} baseado no código da empresa.
      *
      * @param codEmpresa   um código de uma empresa.
      * @param apenasAtivos um booleano que indica se traz apenas ativos no resultado.
      * @param timeZone     o time zone do usuário o qual fez a requisição.
-     * @return uma {@link List< MotivoMovimentoOrigemDestinoListagemResumida > lista de motivos}.
+     * @return uma {@link List<  MotivoMovimentoUnidade  > lista de motivos}.
      * @throws Throwable caso qualquer erro ocorrer.
      */
     @NotNull

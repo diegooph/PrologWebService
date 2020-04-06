@@ -1,11 +1,16 @@
-package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.origemdestino;
+package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.transicao;
 
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestinoEnum;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.OrigemDestinoListagem;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.origemdestino._model.*;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.transicao._model.TransicaoExistenteUnidade;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.transicao._model.TransicaoVisualizacao;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.transicao._model.insercao.MotivoMovimentoTransicaoInsercao;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.transicao._model.insercao.TransicaoInsercao;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.transicao._model.listagem.MotivoMovimentoUnidade;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.transicao._model.listagem.TransicaoUnidadeMotivos;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.transicao._model.listagem.UnidadeTransicoesMotivoMovimento;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
@@ -22,17 +27,17 @@ import java.util.List;
  *
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
-public final class MotivoMovimentoOrigemDestinoDaoImpl extends DatabaseConnection implements
-        MotivoMovimentoOrigemDestinoDao {
+public final class MotivoMovimentoTransicaoDaoImpl extends DatabaseConnection implements
+        MotivoMovimentoTransicaoDao {
 
     @Override
-    public void insert(@NotNull final List<MotivoMovimentoOrigemDestinoInsercao> unidades,
+    public void insert(@NotNull final List<MotivoMovimentoTransicaoInsercao> unidades,
                        @NotNull final Long codigoColaboradorInsercao) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_MOTIVO_MOVIMENTO_ORIGEM_DESTINO_INSERE(" +
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_MOTIVO_MOVIMENTO_TRANSICAO_INSERE(" +
                     "F_COD_MOTIVO := ?," +
                     "F_COD_EMPRESA := ?," +
                     "F_COD_UNIDADE :=?," +
@@ -47,11 +52,11 @@ public final class MotivoMovimentoOrigemDestinoDaoImpl extends DatabaseConnectio
             stmt.setLong(8, codigoColaboradorInsercao);
 
             int totalInserts = 0;
-            for (final MotivoMovimentoOrigemDestinoInsercao unidade : unidades) {
+            for (final MotivoMovimentoTransicaoInsercao unidade : unidades) {
                 stmt.setLong(2, unidade.getCodEmpresa());
                 stmt.setLong(3, unidade.getCodUnidade());
 
-                for (final MotivoMovimentoOrigemDestinoMotivosResumido origemDestino : unidade.getOrigensDestinos()) {
+                for (final TransicaoInsercao origemDestino : unidade.getOrigensDestinos()) {
                     stmt.setString(4, origemDestino.getOrigem().asString());
                     stmt.setString(5, origemDestino.getDestino().asString());
                     stmt.setBoolean(6, origemDestino.isObrigatorio());
@@ -74,25 +79,25 @@ public final class MotivoMovimentoOrigemDestinoDaoImpl extends DatabaseConnectio
 
     @NotNull
     @Override
-    public MotivoMovimentoOrigemDestinoVisualizacao getMotivoOrigemDestino(@NotNull final Long codMotivoOrigemDestino,
-                                                                           @NotNull final ZoneId timeZone)
+    public TransicaoVisualizacao getTransicaoVisualizacao(@NotNull final Long codTransicao,
+                                                          @NotNull final ZoneId timeZone)
             throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_MOTIVO_MOVIMENTO_ORIGEM_DESTINO_VISUALIZACAO(" +
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_MOTIVO_MOVIMENTO_TRANSICAO_VISUALIZACAO(" +
                     "F_COD_MOTIVO_ORIGEM_DESTINO := ?," +
                     "F_TIME_ZONE := ?);");
-            stmt.setLong(1, codMotivoOrigemDestino);
+            stmt.setLong(1, codTransicao);
             stmt.setString(2, timeZone.toString());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                return MotivoMovimentoOrigemDestinoConverter.createMotivoRetiradaOrigemDestinoVisualizacao(rSet);
+                return MotivoMovimentoTransicaoConverter.createMotivoRetiradaOrigemDestinoVisualizacao(rSet);
             } else {
                 throw new IllegalStateException("Nenhuma relação motivo, origem e destino foi encontrada com o código: "
-                        + codMotivoOrigemDestino);
+                        + codTransicao);
             }
         } finally {
             close(conn, stmt, rSet);
@@ -101,28 +106,28 @@ public final class MotivoMovimentoOrigemDestinoDaoImpl extends DatabaseConnectio
 
     @NotNull
     @Override
-    public List<MotivoMovimentoOrigemDestinoListagem> getMotivosOrigemDestino(
+    public List<UnidadeTransicoesMotivoMovimento> getUnidadesTransicoesMotivoMovimento(
             @NotNull final Long codColaborador) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_MOTIVO_MOVIMENTO_ORIGEM_DESTINO_LISTAGEM(" +
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_MOTIVO_MOVIMENTO_TRANSICAO_LISTAGEM(" +
                     "F_COD_COLABORADOR := ?)");
             stmt.setLong(1, codColaborador);
             rSet = stmt.executeQuery();
 
-            final List<MotivoMovimentoOrigemDestinoListagem> unidades = new ArrayList<>();
+            final List<UnidadeTransicoesMotivoMovimento> unidades = new ArrayList<>();
             while (rSet.next()) {
                 if (unidades.isEmpty() || unidades.get(unidades.size() - 1).getCodUnidade() != rSet.getLong("codigo_unidade")) {
-                    unidades.add(MotivoMovimentoOrigemDestinoConverter.createMotivoRetiradaOrigemDestinoListagem(rSet));
+                    unidades.add(MotivoMovimentoTransicaoConverter.createMotivoRetiradaOrigemDestinoListagem(rSet));
                 } else {
-                    final MotivoMovimentoOrigemDestinoListagem ultimaUnidade = unidades.get(unidades.size() - 1);
-                    final List<MotivoMovimentoOrigemDestinoListagemMotivos> rotasUltimaUnidade = ultimaUnidade
+                    final UnidadeTransicoesMotivoMovimento ultimaUnidade = unidades.get(unidades.size() - 1);
+                    final List<TransicaoUnidadeMotivos> rotasUltimaUnidade = ultimaUnidade
                             .getOrigensDestinos();
-                    final List<MotivoMovimentoOrigemDestinoListagemResumida> ultimaListaMotivosRetirada =
-                            rotasUltimaUnidade.get(rotasUltimaUnidade.size() - 1).getMotivosRetirada();
+                    final List<MotivoMovimentoUnidade> ultimaListaMotivosRetirada =
+                            rotasUltimaUnidade.get(rotasUltimaUnidade.size() - 1).getMotivosMovimento();
 
                     if (rotasUltimaUnidade.get(rotasUltimaUnidade.size() - 1).getOrigemMovimento()
                             !=
@@ -134,9 +139,9 @@ public final class MotivoMovimentoOrigemDestinoDaoImpl extends DatabaseConnectio
                                     OrigemDestinoEnum.getFromStatusPneu(
                                             StatusPneu.fromString(rSet.getString("destino_movimento")))) {
 
-                        rotasUltimaUnidade.add(MotivoMovimentoOrigemDestinoConverter.createMotivoRetiradaOrigemDestinoListagemMotivos(rSet));
+                        rotasUltimaUnidade.add(MotivoMovimentoTransicaoConverter.createMotivoRetiradaOrigemDestinoListagemMotivos(rSet));
                     } else {
-                        ultimaListaMotivosRetirada.add(MotivoMovimentoOrigemDestinoConverter.createMotivoRetiradaListagem(rSet));
+                        ultimaListaMotivosRetirada.add(MotivoMovimentoTransicaoConverter.createMotivoRetiradaListagem(rSet));
                     }
                 }
             }
@@ -148,7 +153,7 @@ public final class MotivoMovimentoOrigemDestinoDaoImpl extends DatabaseConnectio
 
     @NotNull
     @Override
-    public MotivoMovimentoOrigemDestinoListagemMotivos getMotivosByOrigemAndDestinoAndUnidade(
+    public TransicaoUnidadeMotivos getMotivosTransicaoUnidade(
             @NotNull final OrigemDestinoEnum origemMovimento,
             @NotNull final OrigemDestinoEnum destinoMovimento,
             @NotNull final Long codUnidade) throws Throwable {
@@ -157,7 +162,7 @@ public final class MotivoMovimentoOrigemDestinoDaoImpl extends DatabaseConnectio
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_MOTIVO_MOVIMENTO_GET_BY_ORIGEM_DESTINO(" +
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_MOTIVO_MOVIMENTO_GET_BY_TRANSICAO(" +
                     "F_ORIGEM := ?::MOVIMENTACAO_ORIGEM_DESTINO_TYPE," +
                     "F_DESTINO := ?::MOVIMENTACAO_ORIGEM_DESTINO_TYPE," +
                     "F_COD_UNIDADE := ?);");
@@ -167,13 +172,13 @@ public final class MotivoMovimentoOrigemDestinoDaoImpl extends DatabaseConnectio
 
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                final List<MotivoMovimentoOrigemDestinoListagemResumida> motivos = new ArrayList<>();
+                final List<MotivoMovimentoUnidade> motivos = new ArrayList<>();
                 boolean obrigatorioMotivoRetirada;
                 do {
-                    motivos.add(MotivoMovimentoOrigemDestinoConverter.createMotivoRetiradaListagemResumida(rSet));
+                    motivos.add(MotivoMovimentoTransicaoConverter.createMotivoRetiradaListagemResumida(rSet));
                     obrigatorioMotivoRetirada = rSet.getBoolean("OBRIGATORIO");
                 } while (rSet.next());
-                return new MotivoMovimentoOrigemDestinoListagemMotivos(
+                return new TransicaoUnidadeMotivos(
                         origemMovimento,
                         destinoMovimento,
                         motivos,
@@ -182,7 +187,7 @@ public final class MotivoMovimentoOrigemDestinoDaoImpl extends DatabaseConnectio
 
             // Se a unidade não possuir relação para a origem e destino informados, retornará lista vazia com
             // obrigatório null.
-            return new MotivoMovimentoOrigemDestinoListagemMotivos(
+            return new TransicaoUnidadeMotivos(
                     origemMovimento,
                     destinoMovimento,
                     Collections.emptyList(),
@@ -194,21 +199,21 @@ public final class MotivoMovimentoOrigemDestinoDaoImpl extends DatabaseConnectio
 
     @NotNull
     @Override
-    public List<OrigemDestinoListagem> getTransicoesExistentesByUnidade(@NotNull final Long codUnidade) throws Throwable {
+    public List<TransicaoExistenteUnidade> getTransicoesExistentesByUnidade(@NotNull final Long codUnidade) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_MOTIVO_MOVIMENTO_GET_ORIGEM_DESTINO_BY_UNIDADE(" +
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_MOTIVO_MOVIMENTO_GET_TRANSICAO_BY_UNIDADE(" +
                     "F_COD_UNIDADE := ?);");
             stmt.setLong(1, codUnidade);
 
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                final List<OrigemDestinoListagem> origensDestinos = new ArrayList<>();
+                final List<TransicaoExistenteUnidade> origensDestinos = new ArrayList<>();
                 do {
-                    origensDestinos.add(MotivoMovimentoOrigemDestinoConverter.createOrigemDestinoListagem(rSet));
+                    origensDestinos.add(MotivoMovimentoTransicaoConverter.createOrigemDestinoListagem(rSet));
                 } while (rSet.next());
                 return origensDestinos;
             }

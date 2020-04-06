@@ -13,14 +13,14 @@ import java.time.LocalDateTime;
 @Data
 public final class MotivoMovimentoHistoricoListagem {
     @NotNull
-    private final Long codMotivoRetirada;
+    private final Long codMotivoMovimento;
     @NotNull
-    private final String descricaoMotivoRetirada;
-    private final boolean ativoMotivoRetirada;
+    private final String descricaoMotivoMovimento;
+    private final boolean ativoMotivoMovimento;
     @NotNull
-    private final String codAuxiliarMotivoRetirada;
+    private final String codAuxiliarMotivoMovimento;
     @NotNull
-    private final LocalDateTime dataHoraAlteracaoMotivoRetirada;
+    private final LocalDateTime dataHoraAlteracaoMotivoMovimento;
     @NotNull
-    private final String nomeColaboradorAlteracaoMotivoRetirada;
+    private final String nomeColaboradorAlteracaoMotivoMovimento;
 }

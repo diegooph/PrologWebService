@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.origemdestino._model;
+package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.transicao._model;
 
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestinoEnum;
 import lombok.Data;
@@ -12,18 +12,18 @@ import java.time.LocalDateTime;
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
 @Data
-public final class MotivoMovimentoOrigemDestinoVisualizacao {
+public final class TransicaoVisualizacao {
     @NotNull
     private final Long codMotivoRetiradaOrigemDestino;
     @NotNull
-    private final String nomeEmpresaMotivoRetirada;
+    private final String nomeEmpresaMotivoMovimento;
     @NotNull
-    private final String descricaoMotivoRetirada;
+    private final String descricaoMotivoMovimento;
     @NotNull
     private final OrigemDestinoEnum origemMovimento;
     @NotNull
     private final OrigemDestinoEnum destinoMovimento;
-    private final boolean obrigatorioMotivoRetirada;
+    private final boolean obrigatorioMotivoMovimento;
     @NotNull
     private final LocalDateTime dataHoraUltimaAlteracao;
     @NotNull

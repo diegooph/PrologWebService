@@ -37,10 +37,10 @@ public final class MotivoMovimentoDaoImpl extends DatabaseConnection implements 
                     "F_DATA_HORA_INSERCAO_MOTIVO => ?," +
                     "F_COD_COLABORADOR_AUTENTICADO => ?)" +
                     "AS COD_MOTIVO");
-            stmt.setLong(1, motivoMovimentoInsercao.getCodEmpresaMotivoRetirada());
-            stmt.setString(2, motivoMovimentoInsercao.getDescricaoMotivoRetirada());
-            stmt.setBoolean(3, motivoMovimentoInsercao.isAtivoMotivoRetirada());
-            stmt.setString(4, motivoMovimentoInsercao.getCodAuxiliarMotivoRetirada());
+            stmt.setLong(1, motivoMovimentoInsercao.getCodEmpresaMotivoMovimento());
+            stmt.setString(2, motivoMovimentoInsercao.getDescricaoMotivoMovimento());
+            stmt.setBoolean(3, true);
+            stmt.setString(4, motivoMovimentoInsercao.getCodAuxiliarMotivoMovimento());
             stmt.setObject(5, Now.offsetDateTimeUtc());
             stmt.setLong(6, codigoColaborador);
 
@@ -127,10 +127,10 @@ public final class MotivoMovimentoDaoImpl extends DatabaseConnection implements 
                     "F_COD_AUXILIAR_MOTIVO => ?," +
                     "F_DATA_ULTIMA_ALTERACAO => ?," +
                     "F_COD_COLABORADOR_ALTERACAO => ?);");
-            stmt.setLong(1, motivoMovimentoEdicao.getCodMotivoRetirada());
-            stmt.setString(2, motivoMovimentoEdicao.getDescricaoMotivoRetirada());
-            stmt.setBoolean(3, motivoMovimentoEdicao.isAtivoMotivoRetirada());
-            stmt.setString(4, motivoMovimentoEdicao.getCodAuxiliarMotivoRetirada());
+            stmt.setLong(1, motivoMovimentoEdicao.getCodMotivoMovimento());
+            stmt.setString(2, motivoMovimentoEdicao.getDescricaoMotivoMovimento());
+            stmt.setBoolean(3, motivoMovimentoEdicao.isAtivo());
+            stmt.setString(4, motivoMovimentoEdicao.getCodAuxiliarMotivoMovimento());
             stmt.setObject(5, Now.offsetDateTimeUtc());
             stmt.setLong(6, codColaboradorUpdate);
             stmt.executeQuery();

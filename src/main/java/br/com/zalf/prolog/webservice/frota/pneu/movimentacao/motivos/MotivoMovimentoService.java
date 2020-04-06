@@ -28,7 +28,7 @@ public final class MotivoMovimentoService {
                     "Motivo de troca inserido com sucesso.",
                     dao.insert(motivo, codigoColaborador));
         } catch (final Throwable t) {
-            Log.e(TAG, String.format("Erro ao inserir motivo %s", motivo.getDescricaoMotivoRetirada()), t);
+            Log.e(TAG, String.format("Erro ao inserir motivo %s", motivo.getDescricaoMotivoMovimento()), t);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao inserir motivo, tente novamente.");
@@ -69,7 +69,7 @@ public final class MotivoMovimentoService {
         } catch (final Throwable t) {
             Log.e(TAG, String.format(
                     "Erro ao atualizar motivo, código do motivo: %d",
-                    motivoMovimentoEdicao.getCodMotivoRetirada()), t);
+                    motivoMovimentoEdicao.getCodMotivoMovimento()), t);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao atualizar motivo, tente novamente.");

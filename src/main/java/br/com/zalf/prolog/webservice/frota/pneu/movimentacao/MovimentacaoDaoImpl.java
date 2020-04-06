@@ -323,7 +323,7 @@ public final class MovimentacaoDaoImpl extends DatabaseConnection implements Mov
                                        @NotNull final Long codMotivo) throws Throwable {
         PreparedStatement stmt = null;
         try {
-            stmt = conn.prepareStatement("SELECT FUNC_MOVIMENTACAO_INSERE_MOTIVO_MOVIMENTO_MOVIMENTO(" +
+            stmt = conn.prepareStatement("SELECT FUNC_MOVIMENTACAO_INSERE_MOTIVO_MOVIMENTO_RESPOSTA(" +
                     "F_COD_MOVIMENTO := ?," +
                     "F_COD_MOTIVO := ?);");
             stmt.setLong(1, codMovimento);

@@ -1,13 +1,13 @@
-package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.origemdestino;
+package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.transicao;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestinoEnum;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.OrigemDestinoListagem;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.origemdestino._model.MotivoMovimentoOrigemDestinoInsercao;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.origemdestino._model.MotivoMovimentoOrigemDestinoListagem;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.origemdestino._model.MotivoMovimentoOrigemDestinoListagemMotivos;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.origemdestino._model.MotivoMovimentoOrigemDestinoVisualizacao;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.transicao._model.TransicaoExistenteUnidade;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.transicao._model.TransicaoVisualizacao;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.transicao._model.insercao.MotivoMovimentoTransicaoInsercao;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.transicao._model.listagem.TransicaoUnidadeMotivos;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.transicao._model.listagem.UnidadeTransicoesMotivoMovimento;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.ZoneId;
@@ -18,13 +18,13 @@ import java.util.List;
  *
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
-public final class MotivoMovimentoOrigemDestinoService {
+public final class MotivoMovimentoTransicaoService {
     @NotNull
-    private static final String TAG = MotivoMovimentoOrigemDestinoService.class.getSimpleName();
+    private static final String TAG = MotivoMovimentoTransicaoService.class.getSimpleName();
     @NotNull
-    private final MotivoMovimentoOrigemDestinoDao dao = Injection.provideMotivoOrigemDestinoDao();
+    private final MotivoMovimentoTransicaoDao dao = Injection.provideMotivoOrigemDestinoDao();
 
-    public void insert(@NotNull final List<MotivoMovimentoOrigemDestinoInsercao> unidades,
+    public void insert(@NotNull final List<MotivoMovimentoTransicaoInsercao> unidades,
                        @NotNull final Long codigoColaboradorInsercao) {
         try {
             dao.insert(unidades, codigoColaboradorInsercao);
@@ -37,12 +37,12 @@ public final class MotivoMovimentoOrigemDestinoService {
     }
 
     @NotNull
-    public MotivoMovimentoOrigemDestinoVisualizacao getMotivoOrigemDestino(@NotNull final Long codMotivoOrigemDestino,
-                                                                           @NotNull final ZoneId timeZone) {
+    public TransicaoVisualizacao getTransicaoVisualizacao(@NotNull final Long codTransicao,
+                                                          @NotNull final ZoneId timeZone) {
         try {
-            return dao.getMotivoOrigemDestino(codMotivoOrigemDestino, timeZone);
+            return dao.getTransicaoVisualizacao(codTransicao, timeZone);
         } catch (final Throwable t) {
-            Log.e(TAG, String.format("Erro ao buscar relação motivo, origem e destino %d", codMotivoOrigemDestino), t);
+            Log.e(TAG, String.format("Erro ao buscar relação motivo, origem e destino %d", codTransicao), t);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao buscar relação motivo, origem e destino, tente novamente.");
@@ -50,9 +50,10 @@ public final class MotivoMovimentoOrigemDestinoService {
     }
 
     @NotNull
-    public List<MotivoMovimentoOrigemDestinoListagem> getMotivosOrigemDestino(@NotNull final Long codColaborador) {
+    public List<UnidadeTransicoesMotivoMovimento> getUnidadesTransicoesMotivoMovimento(
+            @NotNull final Long codColaborador) {
         try {
-            return dao.getMotivosOrigemDestino(codColaborador);
+            return dao.getUnidadesTransicoesMotivoMovimento(codColaborador);
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao buscar relações motivo, origem e destino.", t);
             throw Injection
@@ -62,12 +63,12 @@ public final class MotivoMovimentoOrigemDestinoService {
     }
 
     @NotNull
-    public MotivoMovimentoOrigemDestinoListagemMotivos getMotivosByOrigemAndDestinoAndUnidade(
+    public TransicaoUnidadeMotivos getMotivosTransicaoUnidade(
             @NotNull final OrigemDestinoEnum origemMovimento,
             @NotNull final OrigemDestinoEnum destinoMovimento,
             @NotNull final Long codUnidade) {
         try {
-            return dao.getMotivosByOrigemAndDestinoAndUnidade(origemMovimento, destinoMovimento, codUnidade);
+            return dao.getMotivosTransicaoUnidade(origemMovimento, destinoMovimento, codUnidade);
         } catch (final Throwable t) {
             Log.e(TAG, String.format(
                     "Erro ao buscar relação motivo, origem e destino, para a origem %s e destino %s",
@@ -80,7 +81,7 @@ public final class MotivoMovimentoOrigemDestinoService {
     }
 
     @NotNull
-    public List<OrigemDestinoListagem> getTransicoesExistentesByUnidade(@NotNull final Long codUnidade) {
+    public List<TransicaoExistenteUnidade> getTransicoesExistentesByUnidade(@NotNull final Long codUnidade) {
         try {
             return dao.getTransicoesExistentesByUnidade(codUnidade);
         } catch (final Throwable t) {

@@ -64,8 +64,8 @@ import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.MovimentacaoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.MovimentacaoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.MotivoMovimentoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.MotivoMovimentoDaoImpl;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.origemdestino.MotivoMovimentoOrigemDestinoDao;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.origemdestino.MotivoMovimentoOrigemDestinoDaoImpl;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.transicao.MotivoMovimentoTransicaoDao;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.transicao.MotivoMovimentoTransicaoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.relatorios.MovimentacaoRelatorioDao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.relatorios.MovimentacaoRelatorioDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.nomenclatura.PneuNomenclaturaDao;
@@ -639,8 +639,8 @@ public final class Injection {
     }
 
     @NotNull
-    public static MotivoMovimentoOrigemDestinoDao provideMotivoOrigemDestinoDao() {
-        return new MotivoMovimentoOrigemDestinoDaoImpl();
+    public static MotivoMovimentoTransicaoDao provideMotivoOrigemDestinoDao() {
+        return new MotivoMovimentoTransicaoDaoImpl();
     }
 
 }
