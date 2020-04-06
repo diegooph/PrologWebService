@@ -31,6 +31,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
 import java.time.OffsetDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
@@ -113,10 +114,11 @@ public final class SistemaGlobusPiccolotur extends Sistema {
 
     @NotNull
     @Override
-    public ResultInsertModeloChecklist insertModeloChecklist(@NotNull final ModeloChecklistInsercao modeloChecklist,
-                                                             @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener,
-                                                             final boolean statusAtivo,
-                                                             @NotNull final String token) throws Throwable {
+    public ResultInsertModeloChecklist insertModeloChecklist(
+            @NotNull final ModeloChecklistInsercao modeloChecklist,
+            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener,
+            final boolean statusAtivo,
+            @NotNull final String token) throws Throwable {
         // Ignoramos o statusAtivo repassado pois queremos forçar que o modelo de checklist tenha o statusAtivo = false.
         return getIntegradorProLog().insertModeloChecklist(modeloChecklist, checklistOfflineListener, false, token);
     }
@@ -141,13 +143,26 @@ public final class SistemaGlobusPiccolotur extends Sistema {
     }
 
     @Override
-    public void resolverItem(@NotNull final ResolverItemOrdemServico item) {
-        throw new BloqueadoIntegracaoException("O fechamento de itens de O.S. deverá ser feito pelo Sistema Globus");
+    public void resolverItem(@NotNull final ResolverItemOrdemServico item) throws Throwable {
+        final boolean itemIntegrado =
+                getSistemaGlobusPiccoloturDaoImpl().
+                        verificaItensIntegrados(Collections.singletonList(item.getCodItemResolvido()));
+        if (itemIntegrado) {
+            throw new BloqueadoIntegracaoException(
+                    "O fechamento de itens de O.S. integrados deverá ser feito apenas pelo Sistema Globus");
+        }
+        getIntegradorProLog().resolverItem(item);
     }
 
     @Override
-    public void resolverItens(@NotNull final ResolverMultiplosItensOs itensResolucao) {
-        throw new BloqueadoIntegracaoException("O fechamento de itens de O.S. deverá ser feito pelo Sistema Globus");
+    public void resolverItens(@NotNull final ResolverMultiplosItensOs itensResolucao) throws Throwable {
+        final boolean itensIntegrados =
+                getSistemaGlobusPiccoloturDaoImpl().verificaItensIntegrados(itensResolucao.getCodigosItens());
+        if (itensIntegrados) {
+            throw new BloqueadoIntegracaoException(
+                    "O fechamento de itens de O.S. integrados deverá ser feito apenas pelo Sistema Globus");
+        }
+        getIntegradorProLog().resolverItens(itensResolucao);
     }
 
     @NotNull
