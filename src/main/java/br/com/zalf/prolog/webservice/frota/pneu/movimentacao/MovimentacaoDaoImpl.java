@@ -250,8 +250,8 @@ public final class MovimentacaoDaoImpl extends DatabaseConnection implements Mov
                     mov.setCodigo(rSet.getLong("CODIGO"));
                     insertOrigem(conn, pneuDao, veiculoDao, pneuServicoRealizadoDao, codUnidade, mov);
                     insertDestino(conn, veiculoDao, codUnidade, mov);
-                    if (mov.getCodMotivo() != null) {
-                        insertMotivoMovimento(conn, mov.getCodigo(), mov.getCodMotivo());
+                    if (mov.getCodMotivoMovimento() != null) {
+                        insertMotivoMovimento(conn, mov.getCodigo(), mov.getCodMotivoMovimento());
                     }
                     if (fecharServicosAutomaticamente) {
                         fecharServicosPneu(

@@ -14,17 +14,21 @@ public class Movimentacao {
     private final Origem origem;
     private final Destino destino;
     private final String observacao;
-    private final Long codMotivo;
+    private final Long codMotivoMovimento;
     private Long codigo;
 
-    public Movimentacao(@Nullable final Long codigo, @NotNull final Pneu pneu, @NotNull final Origem origem, @NotNull final Destino destino,
-                        @Nullable final String observacao, @Nullable final Long codMotivo) {
+    public Movimentacao(@Nullable final Long codigo,
+                        @NotNull final Pneu pneu,
+                        @NotNull final Origem origem,
+                        @NotNull final Destino destino,
+                        @Nullable final String observacao,
+                        @Nullable final Long codMotivoMovimento) {
         this.codigo = codigo;
         this.pneu = pneu;
         this.origem = origem;
         this.destino = destino;
         this.observacao = observacao;
-        this.codMotivo = codMotivo;
+        this.codMotivoMovimento = codMotivoMovimento;
     }
 
     public Long getCodigo() {
@@ -51,8 +55,8 @@ public class Movimentacao {
         return observacao;
     }
 
-    public Long getCodMotivo() {
-        return this.codMotivo;
+    public Long getCodMotivoMovimento() {
+        return this.codMotivoMovimento;
     }
 
     /**
