@@ -26,10 +26,10 @@ public final class MotivoMovimentoConverter {
         return new MotivoMovimentoVisualizacao(
                 rSet.getLong("CODIGO_MOTIVO"),
                 rSet.getString("DESCRICAO_MOTIVO"),
-                rSet.getBoolean("ATIVO_MOTIVO"),
                 rSet.getString("CODIGO_AUXILIAR"),
                 rSet.getObject("DATA_HORA_ULTIMA_ALTERACAO_MOTIVO", LocalDateTime.class),
-                rSet.getString("NOME_COLABORADOR_ULTIMA_ALTERACAO"));
+                rSet.getString("NOME_COLABORADOR_ULTIMA_ALTERACAO"),
+                rSet.getBoolean("ATIVO_MOTIVO"));
     }
 
     @NotNull
