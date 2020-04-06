@@ -30,7 +30,7 @@ public final class MotivoMovimentoTransicaoConverter {
     static TransicaoVisualizacao createMotivoRetiradaOrigemDestinoVisualizacao(
             @NotNull final ResultSet rSet) throws Throwable {
         return new TransicaoVisualizacao(
-                rSet.getLong("CODIGO_MOTIVO_ORIGEM_DESTINO"),
+                rSet.getLong("CODIGO_MOTIVO_TRANSICAO"),
                 rSet.getString("NOME_EMPRESA"),
                 rSet.getString("DESCRICAO_MOTIVO"),
                 OrigemDestinoEnum.getFromStatusPneu(StatusPneu.fromString(rSet.getString("ORIGEM"))),
