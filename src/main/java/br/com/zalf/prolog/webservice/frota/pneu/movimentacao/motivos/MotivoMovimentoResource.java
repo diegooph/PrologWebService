@@ -42,11 +42,7 @@ public final class MotivoMovimentoResource {
     @PUT
     @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
     @Secured(permissions = {
-            Pilares.Frota.Pneu.Movimentacao.CADASTRAR_MOTIVOS_MOVIMENTACAO,
-            Pilares.Frota.Pneu.Movimentacao.EDITAR_MOTIVOS_MOVIMENTACAO,
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE,
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_DESCARTE,
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_VEICULO_ESTOQUE})
+            Pilares.Frota.Pneu.Movimentacao.EDITAR_MOTIVOS_MOVIMENTACAO})
     public Response update(@NotNull final MotivoMovimentoEdicao motivoMovimentoEdicao) {
         motivoMovimentoService.update(motivoMovimentoEdicao, colaboradorAutenticadoProvider.get().getCodigo());
         return Response.ok("Motivo atualizado com sucesso.");
@@ -83,10 +79,7 @@ public final class MotivoMovimentoResource {
     @UsedBy(platforms = {Platform.ANDROID})
     @Secured(permissions = {
             Pilares.Frota.Pneu.Movimentacao.CADASTRAR_MOTIVOS_MOVIMENTACAO,
-            Pilares.Frota.Pneu.Movimentacao.EDITAR_MOTIVOS_MOVIMENTACAO,
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE,
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_DESCARTE,
-            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_VEICULO_ESTOQUE})
+            Pilares.Frota.Pneu.Movimentacao.EDITAR_MOTIVOS_MOVIMENTACAO})
     public List<MotivoMovimentoHistoricoListagem> getHistoricoByMotivoRetirada(
             @QueryParam("codMotivoRetirada") @NotNull final Long codMotivoRetirada) {
         return motivoMovimentoService.getHistoricoByMotivo(
