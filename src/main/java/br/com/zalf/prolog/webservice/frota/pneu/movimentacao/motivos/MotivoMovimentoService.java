@@ -77,14 +77,14 @@ public final class MotivoMovimentoService {
     }
 
     @NotNull
-    public List<MotivoMovimentoHistoricoListagem> getHistoricoByMotivo(@NotNull final Long codMotivoRetirada,
+    public List<MotivoMovimentoHistoricoListagem> getHistoricoByMotivo(@NotNull final Long codMotivoMovimento,
                                                                        @NotNull final ZoneId timeZone) {
         try {
-            return dao.getHistoricoByMotivo(codMotivoRetirada, timeZone);
+            return dao.getHistoricoByMotivo(codMotivoMovimento, timeZone);
         } catch (final Throwable t) {
             Log.e(TAG, String.format(
                     "Erro ao buscar a lista de histórico do motivo, código do motivo: %d",
-                    codMotivoRetirada), t);
+                    codMotivoMovimento), t);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao buscar lista de histórico de motivo, tente novamente.");

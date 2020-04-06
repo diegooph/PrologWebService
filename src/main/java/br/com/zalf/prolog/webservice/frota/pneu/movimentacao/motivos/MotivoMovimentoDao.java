@@ -45,7 +45,7 @@ public interface MotivoMovimentoDao {
      * @param codEmpresa   um código de uma empresa.
      * @param apenasAtivos um booleano que indica se traz apenas ativos no resultado.
      * @param timeZone     o time zone do usuário o qual fez a requisição.
-     * @return uma {@link List<  MotivoMovimentoUnidade  > lista de motivos}.
+     * @return uma {@link List<MotivoMovimentoUnidade> lista de motivos}.
      * @throws Throwable caso qualquer erro ocorrer.
      */
     @NotNull
@@ -66,12 +66,12 @@ public interface MotivoMovimentoDao {
     /**
      * Realiza a busca de uma lista do histórico de um {@link MotivoMovimentoHistoricoListagem motivo}.
      *
-     * @param codMotivoRetirada um código que será utilizado para buscar o histórico.
-     * @param timeZone          time zone do usuário que fez a requisição.
+     * @param codMotivoMovimento um código que será utilizado para buscar o histórico.
+     * @param timeZone           time zone do usuário que fez a requisição.
      * @throws Throwable caso qualquer erro ocorrer.
      */
     @NotNull
-    List<MotivoMovimentoHistoricoListagem> getHistoricoByMotivo(@NotNull final Long codMotivoRetirada,
+    List<MotivoMovimentoHistoricoListagem> getHistoricoByMotivo(@NotNull final Long codMotivoMovimento,
                                                                 @NotNull final ZoneId timeZone) throws Throwable;
 
 }

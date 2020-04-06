@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model;
 
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDateTime;
 
@@ -17,7 +18,7 @@ public final class MotivoMovimentoHistoricoListagem {
     @NotNull
     private final String descricaoMotivoMovimento;
     private final boolean ativoMotivoMovimento;
-    @NotNull
+    @Nullable
     private final String codAuxiliarMotivoMovimento;
     @NotNull
     private final LocalDateTime dataHoraAlteracaoMotivoMovimento;

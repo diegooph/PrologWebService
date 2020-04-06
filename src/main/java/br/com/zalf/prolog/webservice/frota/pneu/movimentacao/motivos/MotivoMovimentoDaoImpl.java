@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static br.com.zalf.prolog.webservice.commons.util.StringUtils.trimToNull;
+
 /**
  * Created on 2020-03-17
  *
@@ -38,9 +40,9 @@ public final class MotivoMovimentoDaoImpl extends DatabaseConnection implements 
                     "F_COD_COLABORADOR_AUTENTICADO => ?)" +
                     "AS COD_MOTIVO");
             stmt.setLong(1, motivoMovimentoInsercao.getCodEmpresaMotivoMovimento());
-            stmt.setString(2, motivoMovimentoInsercao.getDescricaoMotivoMovimento());
+            stmt.setString(2, trimToNull(motivoMovimentoInsercao.getDescricaoMotivoMovimento()));
             stmt.setBoolean(3, true);
-            stmt.setString(4, motivoMovimentoInsercao.getCodAuxiliarMotivoMovimento());
+            stmt.setString(4, trimToNull(motivoMovimentoInsercao.getCodAuxiliarMotivoMovimento()));
             stmt.setObject(5, Now.offsetDateTimeUtc());
             stmt.setLong(6, codigoColaborador);
 
@@ -69,7 +71,7 @@ public final class MotivoMovimentoDaoImpl extends DatabaseConnection implements 
                     "F_COD_MOTIVO => ?," +
                     "F_TIME_ZONE => ?)");
             stmt.setLong(1, codMotivo);
-            stmt.setString(2, timeZone.toString());
+            stmt.setString(2, timeZone.getId());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return MotivoMovimentoConverter.createMotivoRetiradaVisualizacao(rSet);
@@ -97,7 +99,7 @@ public final class MotivoMovimentoDaoImpl extends DatabaseConnection implements 
                     "F_TIME_ZONE => ?)");
             stmt.setLong(1, codEmpresa);
             stmt.setBoolean(2, apenasAtivos);
-            stmt.setString(3, timeZone.toString());
+            stmt.setString(3, timeZone.getId());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 final List<MotivoMovimentoListagem> motivos = new ArrayList<>();
@@ -128,9 +130,9 @@ public final class MotivoMovimentoDaoImpl extends DatabaseConnection implements 
                     "F_DATA_ULTIMA_ALTERACAO => ?," +
                     "F_COD_COLABORADOR_ALTERACAO => ?);");
             stmt.setLong(1, motivoMovimentoEdicao.getCodMotivoMovimento());
-            stmt.setString(2, motivoMovimentoEdicao.getDescricaoMotivoMovimento());
+            stmt.setString(2, trimToNull(motivoMovimentoEdicao.getDescricaoMotivoMovimento()));
             stmt.setBoolean(3, motivoMovimentoEdicao.isAtivo());
-            stmt.setString(4, motivoMovimentoEdicao.getCodAuxiliarMotivoMovimento());
+            stmt.setString(4, trimToNull(motivoMovimentoEdicao.getCodAuxiliarMotivoMovimento()));
             stmt.setObject(5, Now.offsetDateTimeUtc());
             stmt.setLong(6, codColaboradorUpdate);
             stmt.executeQuery();
@@ -141,7 +143,7 @@ public final class MotivoMovimentoDaoImpl extends DatabaseConnection implements 
 
     @NotNull
     @Override
-    public List<MotivoMovimentoHistoricoListagem> getHistoricoByMotivo(@NotNull final Long codMotivoRetirada,
+    public List<MotivoMovimentoHistoricoListagem> getHistoricoByMotivo(@NotNull final Long codMotivoMovimento,
                                                                        @NotNull final ZoneId timeZone)
             throws Throwable {
         Connection conn = null;
@@ -152,8 +154,8 @@ public final class MotivoMovimentoDaoImpl extends DatabaseConnection implements 
             stmt = conn.prepareStatement("SELECT * FROM FUNC_MOTIVO_MOVIMENTO_HISTORICO_LISTAGEM(" +
                     "F_COD_MOTIVO => ?," +
                     "F_TIME_ZONE => ?)");
-            stmt.setLong(1, codMotivoRetirada);
-            stmt.setString(2, timeZone.toString());
+            stmt.setLong(1, codMotivoMovimento);
+            stmt.setString(2, timeZone.getId());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 final List<MotivoMovimentoHistoricoListagem> historicoMotivo = new ArrayList<>();
