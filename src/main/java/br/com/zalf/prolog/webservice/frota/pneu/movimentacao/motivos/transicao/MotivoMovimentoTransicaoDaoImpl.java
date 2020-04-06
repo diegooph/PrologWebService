@@ -88,7 +88,7 @@ public final class MotivoMovimentoTransicaoDaoImpl extends DatabaseConnection im
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM FUNC_MOTIVO_MOVIMENTO_TRANSICAO_VISUALIZACAO(" +
-                    "F_COD_MOTIVO_ORIGEM_DESTINO := ?," +
+                    "F_COD_MOTIVO_TRANSICAO := ?," +
                     "F_TIME_ZONE := ?);");
             stmt.setLong(1, codTransicao);
             stmt.setString(2, timeZone.toString());

@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Data
 public final class TransicaoVisualizacao {
     @NotNull
-    private final Long codMotivoRetiradaOrigemDestino;
+    private final Long codMotivoMovimentoTransicao;
     @NotNull
     private final String nomeEmpresaMotivoMovimento;
     @NotNull
