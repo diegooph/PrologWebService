@@ -19,7 +19,7 @@ public interface MotivoMovimentoDao {
      * <p>
      * Todos os dados são obrigatórios.
      *
-     * @param motivoMovimentoInsercao Dados do motivo de troca a ser inserido.
+     * @param motivoMovimentoInsercao Dados do motivo de movimento a ser inserido.
      * @param codigoColaborador       O código do colaborador que fez a requisição.
      * @throws Throwable Caso qualquer erro ocorra.
      */

@@ -19,7 +19,7 @@ import java.util.List;
 public interface MotivoMovimentoTransicaoDao {
 
     /**
-     * Insere uma lista de {@link MotivoMovimentoTransicaoInsercao origemDestinoMotivo} no banco de dados.
+     * Insere uma lista de {@link MotivoMovimentoTransicaoInsercao transições} no banco de dados.
      *
      * @param unidades                  uma lista de unidades com suas rotas e seus motivos por rotas.
      * @param codigoColaboradorInsercao codigo do colaborador que está realizando a inserção do registro da relação.
@@ -29,10 +29,10 @@ public interface MotivoMovimentoTransicaoDao {
                 @NotNull final Long codigoColaboradorInsercao) throws Throwable;
 
     /**
-     * Busca um {@link TransicaoVisualizacao motivoOrigemDestino} no banco de dados.
+     * Busca uma {@link TransicaoVisualizacao transição} no banco de dados.
      *
-     * @param codTransicao um código de motivoOrigemDestino a ser buscado no banco.
-     * @param timeZone     o timezone do usuário que está fazendo a requisição.
+     * @param codTransicao um código da transição a ser buscada no banco.
+     * @param timeZone     o time zone do usuário que está fazendo a requisição.
      * @throws Throwable Caso qualquer erro ocorra.
      */
     @NotNull
@@ -52,8 +52,8 @@ public interface MotivoMovimentoTransicaoDao {
             throws Throwable;
 
     /**
-     * Busca uma lista de {@link TransicaoUnidadeMotivos motivoOrigemDestino} no banco de dados
-     * com base em uma origem, destino e unidade.
+     * Busca uma lista de {@link TransicaoUnidadeMotivos transições} no banco de dados com base em uma origem,
+     * destino e unidade.
      *
      * @param origemMovimento  a origem a ser utilizada de filtro.
      * @param destinoMovimento o destino a ser usado de filtro.
@@ -67,8 +67,8 @@ public interface MotivoMovimentoTransicaoDao {
             @NotNull final Long codUnidade) throws Throwable;
 
     /**
-     * Busca uma lista de {@link TransicaoExistenteUnidade origemDestino} no banco de dados
-     * com base em uma origem, destino e unidade.
+     * Busca uma lista de {@link TransicaoExistenteUnidade transições} no banco de dados com base em uma origem,
+     * destino e unidade.
      *
      * @param codUnidade o código da unidade das relações de origem e destino que serão buscadas.
      * @throws Throwable Caso qualquer erro ocorra.
