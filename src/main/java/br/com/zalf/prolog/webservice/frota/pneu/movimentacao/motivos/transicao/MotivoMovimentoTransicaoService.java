@@ -32,7 +32,7 @@ public final class MotivoMovimentoTransicaoService {
             Log.e(TAG, "Erro ao inserir uma lista de relação motivo, origem e destino.", t);
             throw Injection
                     .provideProLogExceptionHandler()
-                    .map(t, "Erro ao buscar relação motivo, origem e destino, tente novamente.");
+                    .map(t, "Erro ao salvar informações, tente novamente.");
         }
     }
 
@@ -45,7 +45,7 @@ public final class MotivoMovimentoTransicaoService {
             Log.e(TAG, String.format("Erro ao buscar relação motivo, origem e destino %d", codTransicao), t);
             throw Injection
                     .provideProLogExceptionHandler()
-                    .map(t, "Erro ao buscar relação motivo, origem e destino, tente novamente.");
+                    .map(t, "Erro ao buscar informações, tente novamente.");
         }
     }
 
@@ -58,7 +58,7 @@ public final class MotivoMovimentoTransicaoService {
             Log.e(TAG, "Erro ao buscar relações motivo, origem e destino.", t);
             throw Injection
                     .provideProLogExceptionHandler()
-                    .map(t, "Erro ao buscar relação motivo, origem e destino, tente novamente.");
+                    .map(t, "Erro ao buscar informações, tente novamente.");
         }
     }
 
@@ -76,7 +76,7 @@ public final class MotivoMovimentoTransicaoService {
                     destinoMovimento.toString()), t);
             throw Injection
                     .provideProLogExceptionHandler()
-                    .map(t, "Erro ao buscar motivos, tente novamente.");
+                    .map(t, "Erro ao buscar informações, tente novamente.");
         }
     }
 
@@ -88,7 +88,7 @@ public final class MotivoMovimentoTransicaoService {
             Log.e(TAG, String.format("Erro ao buscar relações origem e destino, para a a unidade %d", codUnidade), t);
             throw Injection
                     .provideProLogExceptionHandler()
-                    .map(t, "Erro ao buscar origens e destinos, tente novamente.");
+                    .map(t, "Erro ao buscar informações, tente novamente.");
         }
     }
 
