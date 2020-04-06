@@ -3,7 +3,6 @@ Change Log
 <a name="v1.0.26"></a>
 ## Version [v1.0.26](https://github.com/luizfp/PrologWebService/compare/v1.0.25...v1.0.26) (release-date) [unreleased]
 ### Features
-* Injeta colaborador autenticado no SecurityContext do request (PL-2638)
 * Cria dashboard de socorros por status nos ultimos 30 dias (PL-2618)
 
 ### Refactors
