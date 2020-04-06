@@ -74,7 +74,7 @@ public final class MotivoMovimentoDaoImpl extends DatabaseConnection implements 
             stmt.setString(2, timeZone.getId());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                return MotivoMovimentoConverter.createMotivoRetiradaVisualizacao(rSet);
+                return MotivoMovimentoConverter.createMotivoMovimentoVisualizacao(rSet);
             } else {
                 throw new IllegalStateException("Nenhum motivo encontrado com o código: " + codMotivo);
             }
@@ -104,7 +104,7 @@ public final class MotivoMovimentoDaoImpl extends DatabaseConnection implements 
             if (rSet.next()) {
                 final List<MotivoMovimentoListagem> motivos = new ArrayList<>();
                 do {
-                    motivos.add(MotivoMovimentoConverter.createMotivoRetiradaListagem(rSet));
+                    motivos.add(MotivoMovimentoConverter.createMotivoMovimentoListagem(rSet));
                 } while (rSet.next());
                 return motivos;
             } else {
@@ -160,7 +160,7 @@ public final class MotivoMovimentoDaoImpl extends DatabaseConnection implements 
             if (rSet.next()) {
                 final List<MotivoMovimentoHistoricoListagem> historicoMotivo = new ArrayList<>();
                 do {
-                    historicoMotivo.add(MotivoMovimentoConverter.createMotivoRetiradaHistoricoListagem(rSet));
+                    historicoMotivo.add(MotivoMovimentoConverter.createMotivoMovimentoHistoricoListagem(rSet));
                 } while (rSet.next());
                 return historicoMotivo;
             } else {

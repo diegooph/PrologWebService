@@ -21,7 +21,7 @@ public final class MotivoMovimentoConverter {
     }
 
     @NotNull
-    static MotivoMovimentoVisualizacao createMotivoRetiradaVisualizacao(
+    static MotivoMovimentoVisualizacao createMotivoMovimentoVisualizacao(
             @NotNull final ResultSet rSet) throws Throwable {
         return new MotivoMovimentoVisualizacao(
                 rSet.getLong("CODIGO_MOTIVO"),
@@ -33,7 +33,7 @@ public final class MotivoMovimentoConverter {
     }
 
     @NotNull
-    static MotivoMovimentoListagem createMotivoRetiradaListagem(@NotNull final ResultSet rSet) throws Throwable {
+    static MotivoMovimentoListagem createMotivoMovimentoListagem(@NotNull final ResultSet rSet) throws Throwable {
         return new MotivoMovimentoListagem(
                 rSet.getLong("CODIGO_MOTIVO"),
                 rSet.getString("DESCRICAO_MOTIVO"),
@@ -41,7 +41,7 @@ public final class MotivoMovimentoConverter {
     }
 
     @NotNull
-    static MotivoMovimentoHistoricoListagem createMotivoRetiradaHistoricoListagem(@NotNull final ResultSet rSet)
+    static MotivoMovimentoHistoricoListagem createMotivoMovimentoHistoricoListagem(@NotNull final ResultSet rSet)
             throws Throwable {
         return new MotivoMovimentoHistoricoListagem(
                 rSet.getLong("CODIGO_MOTIVO"),

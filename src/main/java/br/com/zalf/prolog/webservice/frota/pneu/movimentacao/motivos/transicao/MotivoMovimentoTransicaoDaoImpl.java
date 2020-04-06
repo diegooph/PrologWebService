@@ -2,7 +2,6 @@ package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.transicao;
 
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
-import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestinoEnum;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.transicao._model.TransicaoExistenteUnidade;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.transicao._model.TransicaoVisualizacao;
@@ -21,6 +20,9 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import static br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.transicao.MotivoMovimentoTransicaoConverter.createMotivoMovimentoUnidade;
+import static br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.transicao.MotivoMovimentoTransicaoConverter.createTransicaoUnidadeMotivos;
 
 /**
  * Created on 2020-03-20
@@ -94,7 +96,7 @@ public final class MotivoMovimentoTransicaoDaoImpl extends DatabaseConnection im
             stmt.setString(2, timeZone.toString());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                return MotivoMovimentoTransicaoConverter.createMotivoRetiradaOrigemDestinoVisualizacao(rSet);
+                return MotivoMovimentoTransicaoConverter.createTransicaoVisualizacao(rSet);
             } else {
                 throw new IllegalStateException("Nenhuma relação motivo, origem e destino foi encontrada com o código: "
                         + codTransicao);
@@ -119,31 +121,39 @@ public final class MotivoMovimentoTransicaoDaoImpl extends DatabaseConnection im
             rSet = stmt.executeQuery();
 
             final List<UnidadeTransicoesMotivoMovimento> unidades = new ArrayList<>();
+            long codUltimaUnidade = -1;
             while (rSet.next()) {
-                if (unidades.isEmpty() || unidades.get(unidades.size() - 1).getCodUnidade() != rSet.getLong("codigo_unidade")) {
-                    unidades.add(MotivoMovimentoTransicaoConverter.createMotivoRetiradaOrigemDestinoListagem(rSet));
+                if (codUltimaUnidade != rSet.getLong("codigo_unidade")) {
+                    // Trocamos de unidade.
+                    unidades.add(MotivoMovimentoTransicaoConverter.createUnidadeTransicoesMotivoMovimento(rSet));
                 } else {
                     final UnidadeTransicoesMotivoMovimento ultimaUnidade = unidades.get(unidades.size() - 1);
-                    final List<TransicaoUnidadeMotivos> rotasUltimaUnidade = ultimaUnidade
-                            .getOrigensDestinos();
-                    final List<MotivoMovimentoUnidade> ultimaListaMotivosRetirada =
-                            rotasUltimaUnidade.get(rotasUltimaUnidade.size() - 1).getMotivosMovimento();
+                    final List<TransicaoUnidadeMotivos> transicoesUltimaUnidade = ultimaUnidade.getTransicoesUnidade();
 
-                    if (rotasUltimaUnidade.get(rotasUltimaUnidade.size() - 1).getOrigemMovimento()
-                            !=
-                            OrigemDestinoEnum.getFromStatusPneu(
-                                    StatusPneu.fromString(rSet.getString("origem_movimento")))
+                    // Verificamos se mudamos a transição comparando a atual com a última.
+                    // Isso vai acontecer se origem ou destino tiverem mudado.
+                    if (!transicoesUltimaUnidade
+                            .get(transicoesUltimaUnidade.size() - 1)
+                            .getOrigemMovimento()
+                            .asString()
+                            .equals(rSet.getString("origem_movimento"))
                             ||
-                            rotasUltimaUnidade.get(rotasUltimaUnidade.size() - 1).getDestinoMovimento()
-                                    !=
-                                    OrigemDestinoEnum.getFromStatusPneu(
-                                            StatusPneu.fromString(rSet.getString("destino_movimento")))) {
-
-                        rotasUltimaUnidade.add(MotivoMovimentoTransicaoConverter.createMotivoRetiradaOrigemDestinoListagemMotivos(rSet));
+                            !transicoesUltimaUnidade
+                                    .get(transicoesUltimaUnidade.size() - 1)
+                                    .getDestinoMovimento()
+                                    .asString()
+                                    .equals(rSet.getString("destino_movimento"))) {
+                        // Trocamos de transição.
+                        transicoesUltimaUnidade.add(createTransicaoUnidadeMotivos(rSet));
                     } else {
-                        ultimaListaMotivosRetirada.add(MotivoMovimentoTransicaoConverter.createMotivoRetiradaListagem(rSet));
+                        // Estamos na mesma transição, criamos apenas um novo motivo para ela.
+                        final List<MotivoMovimentoUnidade> ultimaListaMotivosMovimento = transicoesUltimaUnidade
+                                .get(transicoesUltimaUnidade.size() - 1)
+                                .getMotivosMovimento();
+                        ultimaListaMotivosMovimento.add(createMotivoMovimentoUnidade(rSet));
                     }
                 }
+                codUltimaUnidade = rSet.getLong("codigo_unidade");
             }
             return unidades;
         } finally {
@@ -175,7 +185,7 @@ public final class MotivoMovimentoTransicaoDaoImpl extends DatabaseConnection im
                 final List<MotivoMovimentoUnidade> motivos = new ArrayList<>();
                 boolean obrigatorioMotivoRetirada;
                 do {
-                    motivos.add(MotivoMovimentoTransicaoConverter.createMotivoRetiradaListagemResumida(rSet));
+                    motivos.add(createMotivoMovimentoUnidade(rSet));
                     obrigatorioMotivoRetirada = rSet.getBoolean("OBRIGATORIO");
                 } while (rSet.next());
                 return new TransicaoUnidadeMotivos(
@@ -213,7 +223,7 @@ public final class MotivoMovimentoTransicaoDaoImpl extends DatabaseConnection im
             if (rSet.next()) {
                 final List<TransicaoExistenteUnidade> origensDestinos = new ArrayList<>();
                 do {
-                    origensDestinos.add(MotivoMovimentoTransicaoConverter.createOrigemDestinoListagem(rSet));
+                    origensDestinos.add(MotivoMovimentoTransicaoConverter.createTransicaoExistenteUnidade(rSet));
                 } while (rSet.next());
                 return origensDestinos;
             }

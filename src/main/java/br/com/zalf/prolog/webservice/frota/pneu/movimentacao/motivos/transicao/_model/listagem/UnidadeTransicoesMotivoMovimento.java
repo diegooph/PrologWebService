@@ -17,5 +17,5 @@ public final class UnidadeTransicoesMotivoMovimento {
     @NotNull
     private final String nomeUnidade;
     @NotNull
-    private final List<TransicaoUnidadeMotivos> origensDestinos;
+    private final List<TransicaoUnidadeMotivos> transicoesUnidade;
 }

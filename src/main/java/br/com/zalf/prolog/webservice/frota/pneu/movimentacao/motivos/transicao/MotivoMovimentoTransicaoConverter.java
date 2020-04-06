@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.transicao;
 
-import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestinoEnum;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.transicao._model.TransicaoExistenteUnidade;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.transicao._model.TransicaoVisualizacao;
@@ -27,52 +26,44 @@ public final class MotivoMovimentoTransicaoConverter {
     }
 
     @NotNull
-    static TransicaoVisualizacao createMotivoRetiradaOrigemDestinoVisualizacao(
+    static TransicaoVisualizacao createTransicaoVisualizacao(
             @NotNull final ResultSet rSet) throws Throwable {
         return new TransicaoVisualizacao(
                 rSet.getLong("CODIGO_MOTIVO_TRANSICAO"),
                 rSet.getString("NOME_EMPRESA"),
                 rSet.getString("DESCRICAO_MOTIVO"),
-                OrigemDestinoEnum.getFromStatusPneu(StatusPneu.fromString(rSet.getString("ORIGEM"))),
-                OrigemDestinoEnum.getFromStatusPneu(StatusPneu.fromString(rSet.getString("DESTINO"))),
+                OrigemDestinoEnum.fromString(rSet.getString("ORIGEM")),
+                OrigemDestinoEnum.fromString(rSet.getString("DESTINO")),
                 rSet.getBoolean("OBRIGATORIO"),
                 rSet.getObject("DATA_HORA_ULTIMA_ALTERACAO", LocalDateTime.class),
                 rSet.getString("NOME_COLABORADOR_ULTIMA_ALTERACAO"));
     }
 
     @NotNull
-    static MotivoMovimentoUnidade createMotivoRetiradaListagemResumida(@NotNull final ResultSet rSet)
-            throws Throwable {
-        return new MotivoMovimentoUnidade(
-                rSet.getLong("CODIGO_MOTIVO"),
-                rSet.getString("DESCRICAO_MOTIVO"));
-    }
-
-    @NotNull
-    static MotivoMovimentoUnidade createMotivoRetiradaListagem(@NotNull final ResultSet rSet) throws Throwable {
+    static MotivoMovimentoUnidade createMotivoMovimentoUnidade(@NotNull final ResultSet rSet) throws Throwable {
         return new MotivoMovimentoUnidade(
                 rSet.getLong("codigo_motivo"),
                 rSet.getString("descricao_motivo"));
     }
 
     @NotNull
-    static TransicaoUnidadeMotivos createMotivoRetiradaOrigemDestinoListagemMotivos(
+    static TransicaoUnidadeMotivos createTransicaoUnidadeMotivos(
             @NotNull final ResultSet rSet) throws Throwable {
-        final List<MotivoMovimentoUnidade> motivosRetirada = new ArrayList<>();
-        motivosRetirada.add(MotivoMovimentoTransicaoConverter.createMotivoRetiradaListagem(rSet));
+        final List<MotivoMovimentoUnidade> motivosMovimento = new ArrayList<>();
+        motivosMovimento.add(MotivoMovimentoTransicaoConverter.createMotivoMovimentoUnidade(rSet));
 
         return new TransicaoUnidadeMotivos(
-                OrigemDestinoEnum.getFromStatusPneu(StatusPneu.fromString(rSet.getString("origem_movimento"))),
-                OrigemDestinoEnum.getFromStatusPneu(StatusPneu.fromString(rSet.getString("destino_movimento"))),
-                motivosRetirada,
+                OrigemDestinoEnum.fromString(rSet.getString("origem_movimento")),
+                OrigemDestinoEnum.fromString(rSet.getString("destino_movimento")),
+                motivosMovimento,
                 rSet.getBoolean("obrigatorio"));
     }
 
     @NotNull
-    static UnidadeTransicoesMotivoMovimento createMotivoRetiradaOrigemDestinoListagem(@NotNull final ResultSet rSet)
+    static UnidadeTransicoesMotivoMovimento createUnidadeTransicoesMotivoMovimento(@NotNull final ResultSet rSet)
             throws Throwable {
         final List<TransicaoUnidadeMotivos> origensDestinos = new ArrayList<>();
-        origensDestinos.add(MotivoMovimentoTransicaoConverter.createMotivoRetiradaOrigemDestinoListagemMotivos(rSet));
+        origensDestinos.add(MotivoMovimentoTransicaoConverter.createTransicaoUnidadeMotivos(rSet));
 
         return new UnidadeTransicoesMotivoMovimento(
                 rSet.getLong("codigo_unidade"),
@@ -81,11 +72,11 @@ public final class MotivoMovimentoTransicaoConverter {
     }
 
     @NotNull
-    static TransicaoExistenteUnidade createOrigemDestinoListagem(@NotNull final ResultSet rSet) throws Throwable {
+    static TransicaoExistenteUnidade createTransicaoExistenteUnidade(@NotNull final ResultSet rSet) throws Throwable {
         return new TransicaoExistenteUnidade(
                 rSet.getLong("CODIGO_UNIDADE"),
-                OrigemDestinoEnum.getFromStatusPneu(StatusPneu.fromString(rSet.getString("ORIGEM"))),
-                OrigemDestinoEnum.getFromStatusPneu(StatusPneu.fromString(rSet.getString("destino"))),
+                OrigemDestinoEnum.fromString(rSet.getString("ORIGEM")),
+                OrigemDestinoEnum.fromString(rSet.getString("destino")),
                 rSet.getBoolean("OBRIGATORIO"));
     }
 
