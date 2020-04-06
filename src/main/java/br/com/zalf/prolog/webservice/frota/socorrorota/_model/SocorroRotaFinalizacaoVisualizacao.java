@@ -34,6 +34,8 @@ public final class SocorroRotaFinalizacaoVisualizacao {
     private final String urlFoto2Finalizacao;
     @Nullable
     private final String urlFoto3Finalizacao;
+    @Nullable
+    private final String tempoAtendimentoFinalizacao;
 
 
     public SocorroRotaFinalizacaoVisualizacao(@NotNull final Long codColaboradorResponsavelFinalizacao,
@@ -47,7 +49,8 @@ public final class SocorroRotaFinalizacaoVisualizacao {
                                               @Nullable final String imeiAparelhoFinalizacaoSocorro,
                                               @Nullable final String urlFoto1Finalizacao,
                                               @Nullable final String urlFoto2Finalizacao,
-                                              @Nullable final String urlFoto3Finalizacao) {
+                                              @Nullable final String urlFoto3Finalizacao,
+                                              @Nullable final String tempoAtendimentoFinalizacao) {
         this.codColaboradorResponsavelFinalizacao = codColaboradorResponsavelFinalizacao;
         this.nomeResponsavelFinalizacaoSocorro = nomeResponsavelFinalizacaoSocorro;
         this.observacaoFinalizacao = observacaoFinalizacao;
@@ -60,6 +63,7 @@ public final class SocorroRotaFinalizacaoVisualizacao {
         this.urlFoto1Finalizacao = urlFoto1Finalizacao;
         this.urlFoto2Finalizacao = urlFoto2Finalizacao;
         this.urlFoto3Finalizacao = urlFoto3Finalizacao;
+        this.tempoAtendimentoFinalizacao = tempoAtendimentoFinalizacao;
     }
 
     @NotNull
@@ -101,4 +105,9 @@ public final class SocorroRotaFinalizacaoVisualizacao {
 
     @Nullable
     public String getUrlFoto3Finalizacao() { return urlFoto3Finalizacao; }
+
+    @Nullable
+    public String getTempoAtendimentoFinalizacao() {
+        return tempoAtendimentoFinalizacao;
+    }
 }

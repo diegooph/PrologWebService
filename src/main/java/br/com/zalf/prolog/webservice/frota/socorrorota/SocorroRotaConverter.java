@@ -110,7 +110,8 @@ public class SocorroRotaConverter {
                 new LocalizacaoDeslocamento(
                         rSet.getString("LATITUDE_FIM"),
                         rSet.getString("LONGITUDE_FIM"),
-                        0F)
+                        0F),
+                rSet.getString("TEMPO_ABERTURA_ATENDIMENTO")
         );
     }
 
@@ -133,7 +134,9 @@ public class SocorroRotaConverter {
                 rSet.getString("IMEI_APARELHO_INVALIDACAO"),
                 rSet.getString("URL_FOTO_1_INVALIDACAO"),
                 rSet.getString("URL_FOTO_2_INVALIDACAO"),
-                rSet.getString("URL_FOTO_3_INVALIDACAO")
+                rSet.getString("URL_FOTO_3_INVALIDACAO"),
+                rSet.getString("TEMPO_ABERTURA_INVALIDACAO"),
+                rSet.getString("TEMPO_ATENDIMENTO_INVALIDACAO")
         );
     }
 
@@ -156,7 +159,8 @@ public class SocorroRotaConverter {
                 rSet.getString("IMEI_APARELHO_FINALIZACAO"),
                 rSet.getString("URL_FOTO_1_FINALIZACAO"),
                 rSet.getString("URL_FOTO_2_FINALIZACAO"),
-                rSet.getString("URL_FOTO_3_FINALIZACAO")
+                rSet.getString("URL_FOTO_3_FINALIZACAO"),
+                rSet.getString("TEMPO_ATENDIMENTO_FINALIZACAO")
         );
     }
 }

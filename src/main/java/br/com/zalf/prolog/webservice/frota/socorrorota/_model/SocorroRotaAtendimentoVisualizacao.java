@@ -36,6 +36,8 @@ public final class SocorroRotaAtendimentoVisualizacao {
     private final LocalDateTime dataHoraDeslocamentoFim;
     @Nullable
     private final LocalizacaoDeslocamento localizacaoDescolamentoFim;
+    @Nullable
+    private final String tempoAberturaAtendimento;
 
     public SocorroRotaAtendimentoVisualizacao(@NotNull final Long codColaboradorResponsavelAtendimento,
                                               @NotNull final String nomeResponsavelAtendimentoSocorro,
@@ -49,7 +51,8 @@ public final class SocorroRotaAtendimentoVisualizacao {
                                               @Nullable final LocalDateTime dataHoraDeslocamentoInicio,
                                               @Nullable final LocalizacaoDeslocamento localizacaoDescolamentoInicio,
                                               @Nullable final LocalDateTime dataHoraDeslocamentoFim,
-                                              @Nullable final LocalizacaoDeslocamento localizacaoDescolamentoFim) {
+                                              @Nullable final LocalizacaoDeslocamento localizacaoDescolamentoFim,
+                                              @Nullable final String tempoAberturaAtendimento) {
         this.codColaboradorResponsavelAtendimento = codColaboradorResponsavelAtendimento;
         this.nomeResponsavelAtendimentoSocorro = nomeResponsavelAtendimentoSocorro;
         this.observacaoAtendimento = observacaoAtendimento;
@@ -63,6 +66,7 @@ public final class SocorroRotaAtendimentoVisualizacao {
         this.localizacaoDescolamentoInicio = localizacaoDescolamentoInicio;
         this.dataHoraDeslocamentoFim = dataHoraDeslocamentoFim;
         this.localizacaoDescolamentoFim = localizacaoDescolamentoFim;
+        this.tempoAberturaAtendimento = tempoAberturaAtendimento;
     }
 
     @NotNull
@@ -107,4 +111,7 @@ public final class SocorroRotaAtendimentoVisualizacao {
 
     @Nullable
     public LocalizacaoDeslocamento getLocalizacaoDescolamentoFim() { return localizacaoDescolamentoFim; }
+
+    @Nullable
+    public String getTempoAberturaAtendimento() { return tempoAberturaAtendimento; }
 }

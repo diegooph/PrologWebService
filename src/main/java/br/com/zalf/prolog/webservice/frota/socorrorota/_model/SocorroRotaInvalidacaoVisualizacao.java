@@ -34,6 +34,10 @@ public final class SocorroRotaInvalidacaoVisualizacao {
     private final String urlFoto2Invalidacao;
     @Nullable
     private final String urlFoto3Invalidacao;
+    @Nullable
+    private final String tempoAberturaInvalidacao;
+    @Nullable
+    private final String tempoAtendimentoInvalidacao;
 
 
     public SocorroRotaInvalidacaoVisualizacao(@NotNull final Long codColaboradorResponsavelInvalidacao,
@@ -47,7 +51,9 @@ public final class SocorroRotaInvalidacaoVisualizacao {
                                               @Nullable final String imeiAparelhoInvalidacaoSocorro,
                                               @Nullable final String urlFoto1Invalidacao,
                                               @Nullable final String urlFoto2Invalidacao,
-                                              @Nullable final String urlFoto3Invalidacao) {
+                                              @Nullable final String urlFoto3Invalidacao,
+                                              @Nullable final String tempoAberturaInvalidacao,
+                                              @Nullable final String tempoAtendimentoInvalidacao) {
         this.codColaboradorResponsavelInvalidacao = codColaboradorResponsavelInvalidacao;
         this.nomeResponsavelInvalidacaoSocorro = nomeResponsavelInvalidacaoSocorro;
         this.motivoInvalidacao = motivoInvalidacao;
@@ -60,6 +66,8 @@ public final class SocorroRotaInvalidacaoVisualizacao {
         this.urlFoto1Invalidacao = urlFoto1Invalidacao;
         this.urlFoto2Invalidacao = urlFoto2Invalidacao;
         this.urlFoto3Invalidacao = urlFoto3Invalidacao;
+        this.tempoAberturaInvalidacao = tempoAberturaInvalidacao;
+        this.tempoAtendimentoInvalidacao = tempoAtendimentoInvalidacao;
     }
 
     @NotNull
@@ -101,4 +109,10 @@ public final class SocorroRotaInvalidacaoVisualizacao {
 
     @Nullable
     public String getUrlFoto3Invalidacao() { return urlFoto3Invalidacao; }
+
+    @Nullable
+    public String getTempoAberturaInvalidacao() { return tempoAberturaInvalidacao; }
+
+    @Nullable
+    public String getTempoAtendimentoInvalidacao() { return tempoAtendimentoInvalidacao; }
 }
