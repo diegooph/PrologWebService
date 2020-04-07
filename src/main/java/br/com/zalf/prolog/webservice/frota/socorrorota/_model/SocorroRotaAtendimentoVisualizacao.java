@@ -1,7 +1,10 @@
 package br.com.zalf.prolog.webservice.frota.socorrorota._model;
 
+import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 /**
@@ -37,7 +40,8 @@ public final class SocorroRotaAtendimentoVisualizacao {
     @Nullable
     private final LocalizacaoDeslocamento localizacaoDescolamentoFim;
     @Nullable
-    private final String tempoAberturaAtendimento;
+    @SerializedName("tempoAberturaAtendimentoEmSegundos")
+    private final Duration tempoAberturaAtendimento;
 
     public SocorroRotaAtendimentoVisualizacao(@NotNull final Long codColaboradorResponsavelAtendimento,
                                               @NotNull final String nomeResponsavelAtendimentoSocorro,
@@ -52,7 +56,7 @@ public final class SocorroRotaAtendimentoVisualizacao {
                                               @Nullable final LocalizacaoDeslocamento localizacaoDescolamentoInicio,
                                               @Nullable final LocalDateTime dataHoraDeslocamentoFim,
                                               @Nullable final LocalizacaoDeslocamento localizacaoDescolamentoFim,
-                                              @Nullable final String tempoAberturaAtendimento) {
+                                              @Nullable final Duration tempoAberturaAtendimento) {
         this.codColaboradorResponsavelAtendimento = codColaboradorResponsavelAtendimento;
         this.nomeResponsavelAtendimentoSocorro = nomeResponsavelAtendimentoSocorro;
         this.observacaoAtendimento = observacaoAtendimento;
@@ -113,5 +117,7 @@ public final class SocorroRotaAtendimentoVisualizacao {
     public LocalizacaoDeslocamento getLocalizacaoDescolamentoFim() { return localizacaoDescolamentoFim; }
 
     @Nullable
-    public String getTempoAberturaAtendimento() { return tempoAberturaAtendimento; }
+    public Duration getTempoAberturaAtendimento() {
+        return tempoAberturaAtendimento;
+    }
 }

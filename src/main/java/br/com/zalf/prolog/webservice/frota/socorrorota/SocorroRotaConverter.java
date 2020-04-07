@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 /**
@@ -111,7 +112,7 @@ public class SocorroRotaConverter {
                         rSet.getString("LATITUDE_FIM"),
                         rSet.getString("LONGITUDE_FIM"),
                         0F),
-                rSet.getString("TEMPO_ABERTURA_ATENDIMENTO")
+                Duration.ofSeconds(rSet.getLong("TEMPO_ABERTURA_ATENDIMENTO_SEGUNDOS"))
         );
     }
 
@@ -135,8 +136,8 @@ public class SocorroRotaConverter {
                 rSet.getString("URL_FOTO_1_INVALIDACAO"),
                 rSet.getString("URL_FOTO_2_INVALIDACAO"),
                 rSet.getString("URL_FOTO_3_INVALIDACAO"),
-                rSet.getString("TEMPO_ABERTURA_INVALIDACAO"),
-                rSet.getString("TEMPO_ATENDIMENTO_INVALIDACAO")
+                Duration.ofSeconds(rSet.getLong("TEMPO_ABERTURA_INVALIDACAO_SEGUNDOS")),
+                Duration.ofSeconds(rSet.getLong("TEMPO_ATENDIMENTO_INVALIDACAO_SEGUNDOS"))
         );
     }
 
@@ -160,7 +161,7 @@ public class SocorroRotaConverter {
                 rSet.getString("URL_FOTO_1_FINALIZACAO"),
                 rSet.getString("URL_FOTO_2_FINALIZACAO"),
                 rSet.getString("URL_FOTO_3_FINALIZACAO"),
-                rSet.getString("TEMPO_ATENDIMENTO_FINALIZACAO")
+                Duration.ofSeconds(rSet.getLong("TEMPO_ATENDIMENTO_FINALIZACAO_SEGUNDOS"))
         );
     }
 }

@@ -1,7 +1,10 @@
 package br.com.zalf.prolog.webservice.frota.socorrorota._model;
 
+import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 /**
@@ -35,7 +38,8 @@ public final class SocorroRotaFinalizacaoVisualizacao {
     @Nullable
     private final String urlFoto3Finalizacao;
     @Nullable
-    private final String tempoAtendimentoFinalizacao;
+    @SerializedName("tempoAtendimentoFinalizacaoEmSegundos")
+    private final Duration tempoAtendimentoFinalizacao;
 
 
     public SocorroRotaFinalizacaoVisualizacao(@NotNull final Long codColaboradorResponsavelFinalizacao,
@@ -50,7 +54,7 @@ public final class SocorroRotaFinalizacaoVisualizacao {
                                               @Nullable final String urlFoto1Finalizacao,
                                               @Nullable final String urlFoto2Finalizacao,
                                               @Nullable final String urlFoto3Finalizacao,
-                                              @Nullable final String tempoAtendimentoFinalizacao) {
+                                              @Nullable final Duration tempoAtendimentoFinalizacao) {
         this.codColaboradorResponsavelFinalizacao = codColaboradorResponsavelFinalizacao;
         this.nomeResponsavelFinalizacaoSocorro = nomeResponsavelFinalizacaoSocorro;
         this.observacaoFinalizacao = observacaoFinalizacao;
@@ -107,7 +111,7 @@ public final class SocorroRotaFinalizacaoVisualizacao {
     public String getUrlFoto3Finalizacao() { return urlFoto3Finalizacao; }
 
     @Nullable
-    public String getTempoAtendimentoFinalizacao() {
+    public Duration getTempoAtendimentoFinalizacao() {
         return tempoAtendimentoFinalizacao;
     }
 }

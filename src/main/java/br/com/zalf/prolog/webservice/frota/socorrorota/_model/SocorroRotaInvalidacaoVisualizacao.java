@@ -1,7 +1,10 @@
 package br.com.zalf.prolog.webservice.frota.socorrorota._model;
 
+import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 /**
@@ -35,9 +38,11 @@ public final class SocorroRotaInvalidacaoVisualizacao {
     @Nullable
     private final String urlFoto3Invalidacao;
     @Nullable
-    private final String tempoAberturaInvalidacao;
+    @SerializedName("tempoAberturaInvalidacaoEmSegundos")
+    private final Duration tempoAberturaInvalidacao;
     @Nullable
-    private final String tempoAtendimentoInvalidacao;
+    @SerializedName("tempoAtendimentoInvalidacaoEmSegundos")
+    private final Duration tempoAtendimentoInvalidacao;
 
 
     public SocorroRotaInvalidacaoVisualizacao(@NotNull final Long codColaboradorResponsavelInvalidacao,
@@ -52,8 +57,8 @@ public final class SocorroRotaInvalidacaoVisualizacao {
                                               @Nullable final String urlFoto1Invalidacao,
                                               @Nullable final String urlFoto2Invalidacao,
                                               @Nullable final String urlFoto3Invalidacao,
-                                              @Nullable final String tempoAberturaInvalidacao,
-                                              @Nullable final String tempoAtendimentoInvalidacao) {
+                                              @Nullable final Duration tempoAberturaInvalidacao,
+                                              @Nullable final Duration tempoAtendimentoInvalidacao) {
         this.codColaboradorResponsavelInvalidacao = codColaboradorResponsavelInvalidacao;
         this.nomeResponsavelInvalidacaoSocorro = nomeResponsavelInvalidacaoSocorro;
         this.motivoInvalidacao = motivoInvalidacao;
@@ -111,8 +116,12 @@ public final class SocorroRotaInvalidacaoVisualizacao {
     public String getUrlFoto3Invalidacao() { return urlFoto3Invalidacao; }
 
     @Nullable
-    public String getTempoAberturaInvalidacao() { return tempoAberturaInvalidacao; }
+    public Duration getTempoAberturaInvalidacao() {
+        return tempoAberturaInvalidacao;
+    }
 
     @Nullable
-    public String getTempoAtendimentoInvalidacao() { return tempoAtendimentoInvalidacao; }
+    public Duration getTempoAtendimentoInvalidacao() {
+        return tempoAtendimentoInvalidacao;
+    }
 }
