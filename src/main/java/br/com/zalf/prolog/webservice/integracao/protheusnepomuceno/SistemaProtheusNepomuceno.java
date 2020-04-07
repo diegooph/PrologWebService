@@ -106,6 +106,12 @@ public final class SistemaProtheusNepomuceno extends Sistema {
         Connection conn = null;
         final DatabaseConnectionProvider connectionProvider = new DatabaseConnectionProvider();
         try {
+            if (ProLogUtils.isDebug()) {
+                // Deixamos apenas cenários mapeados para o teste.
+                codUnidades.remove(5L);
+                codUnidades.remove(103L);
+            }
+
             conn = connectionProvider.provideDatabaseConnection();
             // Podemos, com toda certeza, utilizar codUnidades.get(0) pois no mínimo teremos uma unidade nesta lista.
             final Long codEmpresa = getIntegradorProLog().getCodEmpresaByCodUnidadeProLog(conn, codUnidades.get(0));
@@ -123,6 +129,7 @@ public final class SistemaProtheusNepomuceno extends Sistema {
                     requester.getListagemVeiculosUnidadesSelecionadas(url, codFiliais);
 
             if (ProLogUtils.isDebug()) {
+                // Deixamos apenas cenários mapeados para o teste.
                 final List<VeiculoListagemProtheusNepomuceno> remove = listagemVeiculos.stream()
                         .filter(veiculo ->
                                 !veiculo.getCodEstruturaVeiculo().equals("FA002:M0162")
@@ -169,8 +176,7 @@ public final class SistemaProtheusNepomuceno extends Sistema {
                                     placasEstruturaVeiculo.get(veiculo.getCodModeloVeiculo())));
                 }
             }
-            return ProtheusNepomucenoConverter
-                    .createCronogramaAfericaoProlog(modelosEstruturaVeiculo, listagemVeiculos.size());
+            return ProtheusNepomucenoConverter.createCronogramaAfericaoProlog(modelosEstruturaVeiculo);
         } finally {
             connectionProvider.closeResources(conn);
         }

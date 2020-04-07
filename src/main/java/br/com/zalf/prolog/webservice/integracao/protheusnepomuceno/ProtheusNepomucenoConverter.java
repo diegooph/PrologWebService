@@ -137,28 +137,20 @@ public final class ProtheusNepomucenoConverter {
         final InfosUnidadeRestricao infosUnidadeRestricao = unidadeRestricao.get(veiculo.getCodEmpresaFilialVeiculo());
         placaAfericao.setMetaAfericaoSulco(infosUnidadeRestricao.getPeriodoDiasAfericaoSulco());
         placaAfericao.setMetaAfericaoPressao(infosUnidadeRestricao.getPeriodoDiasAfericaoPressao());
+        placaAfericao.setCodUnidadePlaca(infosUnidadeRestricao.getCodUnidade());
         return placaAfericao;
     }
 
     @NotNull
     public static CronogramaAfericao createCronogramaAfericaoProlog(
-            @NotNull final Map<String, ModeloPlacasAfericao> modelosEstruturaVeiculo,
-            final int totalVeiculosListagem) {
+            @NotNull final Map<String, ModeloPlacasAfericao> modelosEstruturaVeiculo) {
         final CronogramaAfericao cronogramaAfericao = new CronogramaAfericao();
         final ArrayList<ModeloPlacasAfericao> modelosPlacasAfericao = new ArrayList<>(modelosEstruturaVeiculo.values());
         cronogramaAfericao.setModelosPlacasAfericao(modelosPlacasAfericao);
-        int totalModelosSulcoOk = 0;
-        int totalModelosPressaoOk = 0;
-        int totalModelosSulcoPressaoOk = 0;
-        for (final ModeloPlacasAfericao modeloPlacasAfericao : modelosPlacasAfericao) {
-            totalModelosSulcoOk = totalModelosSulcoOk + modeloPlacasAfericao.getQtdModeloSulcoOk();
-            totalModelosPressaoOk = totalModelosPressaoOk + modeloPlacasAfericao.getQtdModeloPressaoOk();
-            totalModelosSulcoPressaoOk = totalModelosSulcoPressaoOk + modeloPlacasAfericao.getQtdModeloSulcoPressaoOk();
-        }
-        cronogramaAfericao.setTotalSulcosOk(totalModelosSulcoOk);
-        cronogramaAfericao.setTotalPressaoOk(totalModelosPressaoOk);
-        cronogramaAfericao.setTotalSulcoPressaoOk(totalModelosSulcoPressaoOk);
-        cronogramaAfericao.setTotalVeiculos(totalVeiculosListagem);
+        cronogramaAfericao.calcularQuatidadeSulcosPressaoOk(true);
+        cronogramaAfericao.calcularTotalVeiculos();
+        cronogramaAfericao.removerModelosSemPlacas();
+        cronogramaAfericao.removerPlacasNaoAferiveis();
         return cronogramaAfericao;
     }
 
