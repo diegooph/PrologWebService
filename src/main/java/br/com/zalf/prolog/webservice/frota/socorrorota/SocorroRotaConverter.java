@@ -103,12 +103,12 @@ public class SocorroRotaConverter {
                 rSet.getString("MODELO_APARELHO_ATENDIMENTO"),
                 rSet.getString("IMEI_APARELHO_ATENDIMENTO"),
                 rSet.getObject("DATA_HORA_DESLOCAMENTO_INICIO", LocalDateTime.class),
-                new LocalizacaoDeslocamento(
+                new LocalizacaoSocorroRota(
                         rSet.getString("LATITUDE_INICIO"),
                         rSet.getString("LONGITUDE_INICIO"),
                         0F),
                 rSet.getObject("DATA_HORA_DESLOCAMENTO_FIM", LocalDateTime.class),
-                new LocalizacaoDeslocamento(
+                new LocalizacaoSocorroRota(
                         rSet.getString("LATITUDE_FIM"),
                         rSet.getString("LONGITUDE_FIM"),
                         0F),
