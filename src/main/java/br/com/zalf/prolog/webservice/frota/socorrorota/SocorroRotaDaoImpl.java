@@ -298,7 +298,7 @@ public final class SocorroRotaDaoImpl extends DatabaseConnection implements Soco
                     throw new Throwable("Erro ao iniciar um deslocamento.");
                 }
             } else {
-                throw new Throwable("Erro ao registrar os dados do início do  deslocamento");
+                throw new Throwable("Erro ao registrar os dados do início do deslocamento");
             }
         } finally {
             close(conn, stmt, rSet);
@@ -331,13 +331,9 @@ public final class SocorroRotaDaoImpl extends DatabaseConnection implements Soco
     private PreparedStatement preparaDeslocamento(@NotNull final Connection conn,
                                                   @NotNull final SocorroRotaAtendimentoDeslocamento deslocamento,
                                                   final boolean fluxoFim) throws Throwable {
-        PreparedStatement stmt = null;
-        String funcDeslocamento = "FUNC_SOCORRO_ROTA_ATENDIMENTO_DESLOCAMENTO_INICIO";
-
-        if(fluxoFim){
-            funcDeslocamento = "FUNC_SOCORRO_ROTA_ATENDIMENTO_DESLOCAMENTO_FIM";
-        }
-
+        final String funcDeslocamento = fluxoFim
+                ? "FUNC_SOCORRO_ROTA_ATENDIMENTO_DESLOCAMENTO_FIM"
+                : "FUNC_SOCORRO_ROTA_ATENDIMENTO_DESLOCAMENTO_INICIO";
         String sql = "SELECT * FROM %s (" +
                 "F_COD_SOCORRO_ROTA := ?," +
                 "F_COD_COLABORADOR := ?," +
@@ -356,14 +352,16 @@ public final class SocorroRotaDaoImpl extends DatabaseConnection implements Soco
                 "F_VERSAO_PLATAFORMA_ORIGEM := ?::TEXT)";
         sql = String.format(sql, funcDeslocamento);
 
-        stmt = conn.prepareStatement(sql);
+        final PreparedStatement stmt = conn.prepareStatement(sql);
         stmt.setLong(1, deslocamento.getCodSocorroRota());
         stmt.setLong(2, deslocamento.getCodColaborador());
         // Ignoramos a data hora do objeto e usamos a do WS.
         stmt.setObject(3, Now.offsetDateTimeUtc());
         stmt.setString(4, deslocamento.getLocalizacao().getLatitude());
         stmt.setString(5, deslocamento.getLocalizacao().getLongitude());
-        stmt.setObject(6, deslocamento.getLocalizacao().getPrecisaoLocalizacaoMetros(), SqlType.NUMERIC.asIntTypeJava());
+        stmt.setObject(6,
+                deslocamento.getLocalizacao().getPrecisaoLocalizacaoMetros(),
+                SqlType.NUMERIC.asIntTypeJava());
         stmt.setString(7, deslocamento.getEnderecoAutomatico());
         stmt.setString(8, deslocamento.getDeviceId());
         stmt.setString(9, deslocamento.getDeviceImei());
