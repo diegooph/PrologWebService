@@ -2,6 +2,7 @@ Stage
 ==========
 ### Refactors
 * Adiciona os registros de deslocamento para socorros em rota (PL-2631). 
+* Adiciona informações de tempo entre cada status do socorro em rota (PL-2585). 
 
 Change Log
 ==========
