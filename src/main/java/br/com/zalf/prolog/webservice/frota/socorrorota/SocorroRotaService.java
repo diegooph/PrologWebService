@@ -161,7 +161,7 @@ public final class SocorroRotaService {
             final String errorMessage = "Erro ao registrar o início de deslocamento.";
             Log.e(TAG, errorMessage, t);
             throw Injection
-                    .providePneuExceptionHandler()
+                    .provideProLogExceptionHandler()
                     .map(t, errorMessage);
         }
     }
@@ -175,7 +175,7 @@ public final class SocorroRotaService {
             final String errorMessage = "Erro ao registrar a finalização de deslocamento.";
             Log.e(TAG, errorMessage, t);
             throw Injection
-                    .providePneuExceptionHandler()
+                    .provideProLogExceptionHandler()
                     .map(t, errorMessage);
         }
     }
