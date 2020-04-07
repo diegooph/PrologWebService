@@ -89,6 +89,20 @@ public class SocorroRotaConverter {
     @NotNull
     public static SocorroRotaAtendimentoVisualizacao createSocorroRotaAtendimentoVisualizacao(
             @NotNull final ResultSet rSet) throws SQLException {
+        LocalizacaoSocorroRota localizacaoDescolamentoInicio = null;
+        if (rSet.getString("LATITUDE_INICIO") != null) {
+            localizacaoDescolamentoInicio = new LocalizacaoSocorroRota(
+                    rSet.getString("LATITUDE_INICIO"),
+                    rSet.getString("LONGITUDE_INICIO"),
+                    0F);
+        }
+        LocalizacaoSocorroRota localizacaoDescolamentoFim = null;
+        if (rSet.getString("LATITUDE_FIM") != null) {
+            localizacaoDescolamentoFim = new LocalizacaoSocorroRota(
+                    rSet.getString("LATITUDE_FIM"),
+                    rSet.getString("LONGITUDE_FIM"),
+                    0F);
+        }
         return new SocorroRotaAtendimentoVisualizacao(
                 rSet.getLong("COD_COLABORADOR_ATENDIMENTO"),
                 rSet.getString("NOME_RESPONSAVEL_ATENDIMENTO"),
@@ -103,19 +117,12 @@ public class SocorroRotaConverter {
                 rSet.getString("MODELO_APARELHO_ATENDIMENTO"),
                 rSet.getString("IMEI_APARELHO_ATENDIMENTO"),
                 rSet.getObject("DATA_HORA_DESLOCAMENTO_INICIO", LocalDateTime.class),
-                new LocalizacaoSocorroRota(
-                        rSet.getString("LATITUDE_INICIO"),
-                        rSet.getString("LONGITUDE_INICIO"),
-                        0F),
+                localizacaoDescolamentoInicio,
                 rSet.getObject("DATA_HORA_DESLOCAMENTO_FIM", LocalDateTime.class),
-                new LocalizacaoSocorroRota(
-                        rSet.getString("LATITUDE_FIM"),
-                        rSet.getString("LONGITUDE_FIM"),
-                        0F),
+                localizacaoDescolamentoFim,
                 Duration.ofSeconds(rSet.getLong("TEMPO_ABERTURA_ATENDIMENTO_SEGUNDOS"))
         );
     }
-
 
     @NotNull
     public static SocorroRotaInvalidacaoVisualizacao createSocorroRotaInvalidacaoVisualizacao(
@@ -140,7 +147,6 @@ public class SocorroRotaConverter {
                 Duration.ofSeconds(rSet.getLong("TEMPO_ATENDIMENTO_INVALIDACAO_SEGUNDOS"))
         );
     }
-
 
     @NotNull
     public static SocorroRotaFinalizacaoVisualizacao createSocorroRotaFinalizacaoVisualizacao(
