@@ -111,7 +111,6 @@ public interface SocorroRotaDao {
      * @param deslocamentoInicio Objeto contendo as informações do início de deslocamento.
      * @throws Throwable Se algum erro ocorrer.
      */
-    @NotNull
     void iniciaDeslocamento(@NotNull final SocorroRotaAtendimentoDeslocamento deslocamentoInicio) throws Throwable;
 
     /**
@@ -120,7 +119,6 @@ public interface SocorroRotaDao {
      * @param deslocamentoFim Objeto contendo as informações do fim de deslocamento.
      * @throws Throwable Se algum erro ocorrer.
      */
-    @NotNull
     void finalizaDeslocamento(@NotNull final SocorroRotaAtendimentoDeslocamento deslocamentoFim) throws Throwable;
 
     /**

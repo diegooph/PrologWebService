@@ -283,7 +283,6 @@ public final class SocorroRotaDaoImpl extends DatabaseConnection implements Soco
         }
     }
 
-    @NotNull
     @Override
     public void iniciaDeslocamento(@NotNull final SocorroRotaAtendimentoDeslocamento deslocamentoInicio) throws Throwable {
         Connection conn = null;
@@ -305,7 +304,6 @@ public final class SocorroRotaDaoImpl extends DatabaseConnection implements Soco
         }
     }
 
-    @NotNull
     @Override
     public void finalizaDeslocamento(@NotNull final SocorroRotaAtendimentoDeslocamento deslocamentoFim) throws Throwable {
         Connection conn = null;
