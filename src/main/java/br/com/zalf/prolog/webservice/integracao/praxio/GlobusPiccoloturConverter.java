@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.praxio;
 
+import br.com.zalf.prolog.webservice.customfields._model.CampoPersonalizadoParaRealizacao;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
@@ -10,6 +11,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestin
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.ProcessoMovimentacao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.destino.DestinoVeiculo;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.origem.OrigemVeiculo;
+import br.com.zalf.prolog.webservice.integracao.praxio.movimentacao.GlobusPiccoloturLocalMovimento;
 import br.com.zalf.prolog.webservice.integracao.praxio.movimentacao.MovimentacaoGlobus;
 import br.com.zalf.prolog.webservice.integracao.praxio.movimentacao.ProcessoMovimentacaoGlobus;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.*;
@@ -29,6 +31,8 @@ import java.util.Map;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public final class GlobusPiccoloturConverter {
+    private static final Short COD_FUNCAO_AGRUPAMENTO_MOVIMENTACAO = 14;
+
     @NotNull
     public static ChecklistItensNokGlobus createChecklistItensNokGlobus(
             @NotNull final Long codUnidadeProLog,
@@ -110,8 +114,12 @@ public final class GlobusPiccoloturConverter {
     }
 
     @NotNull
-    public static ProcessoMovimentacaoGlobus convert(@NotNull final ProcessoMovimentacao processoMovimentacao,
-                                                     @NotNull final LocalDateTime dataHoraMovimentacao) {
+    public static ProcessoMovimentacaoGlobus convert(
+            @NotNull final Long codUnidadeMovimento,
+            @NotNull final String usuarioGlobus,
+            @NotNull final GlobusPiccoloturLocalMovimento localMovimentoGlobus,
+            @NotNull final ProcessoMovimentacao processoMovimentacao,
+            @NotNull final LocalDateTime dataHoraMovimentacao) throws Throwable {
         final List<MovimentacaoGlobus> movimentacoesGlobus = new ArrayList<>();
         for (int i = 0; i < processoMovimentacao.getMovimentacoes().size(); i++) {
             final Movimentacao movimentacao = processoMovimentacao.getMovimentacoes().get(i);
@@ -123,6 +131,9 @@ public final class GlobusPiccoloturConverter {
                         dataHoraMovimentacao,
                         GlobusPiccoloturUtils.formatNumeroFogo(movimentacao.getPneu().getCodigoCliente()),
                         MovimentacaoGlobus.PNEU_INSERIDO,
+                        codUnidadeMovimento,
+                        localMovimentoGlobus.getCodLocalGlobus(),
+                        usuarioGlobus,
                         movimentacao.getObservacao(),
                         destinoVeiculo.getPosicaoDestinoPneu()));
             } else if (movimentacao.isFromOrigemToDestino(OrigemDestinoEnum.VEICULO, OrigemDestinoEnum.ESTOQUE)) {
@@ -133,6 +144,9 @@ public final class GlobusPiccoloturConverter {
                         dataHoraMovimentacao,
                         GlobusPiccoloturUtils.formatNumeroFogo(movimentacao.getPneu().getCodigoCliente()),
                         MovimentacaoGlobus.PNEU_RETIRADO,
+                        codUnidadeMovimento,
+                        localMovimentoGlobus.getCodLocalGlobus(),
+                        usuarioGlobus,
                         movimentacao.getObservacao(),
                         origemVeiculo.getPosicaoOrigemPneu()));
             } else if (movimentacao.isFromOrigemToDestino(OrigemDestinoEnum.VEICULO, OrigemDestinoEnum.VEICULO)) {
@@ -146,6 +160,9 @@ public final class GlobusPiccoloturConverter {
                         dataHoraMovimentacao,
                         GlobusPiccoloturUtils.formatNumeroFogo(codigoCliente),
                         MovimentacaoGlobus.PNEU_RETIRADO,
+                        codUnidadeMovimento,
+                        localMovimentoGlobus.getCodLocalGlobus(),
+                        usuarioGlobus,
                         movimentacao.getObservacao(),
                         origemVeiculo.getPosicaoOrigemPneu()));
 
@@ -156,6 +173,9 @@ public final class GlobusPiccoloturConverter {
                         dataHoraMovimentacao,
                         GlobusPiccoloturUtils.formatNumeroFogo(codigoCliente),
                         MovimentacaoGlobus.PNEU_INSERIDO,
+                        codUnidadeMovimento,
+                        localMovimentoGlobus.getCodLocalGlobus(),
+                        usuarioGlobus,
                         movimentacao.getObservacao(),
                         destinoVeiculo.getPosicaoDestinoPneu()));
             } else {
@@ -170,8 +190,29 @@ public final class GlobusPiccoloturConverter {
         for (int i = 0; i < movimentacoesGlobus.size(); i++) {
             movimentacoesGlobus.get(i).setSequencia((long) i);
         }
-
         return new ProcessoMovimentacaoGlobus(movimentacoesGlobus);
+    }
+
+    @NotNull
+    public static CampoPersonalizadoParaRealizacao convert(
+            @NotNull final CampoPersonalizadoParaRealizacao campoSelecaoLocalMovimento,
+            @NotNull final List<GlobusPiccoloturLocalMovimento> locaisMovimentoGlobus) {
+        return new CampoPersonalizadoParaRealizacao(
+                campoSelecaoLocalMovimento.getCodigo(),
+                campoSelecaoLocalMovimento.getCodEmpresa(),
+                campoSelecaoLocalMovimento.getCodFuncaoProlog(),
+                campoSelecaoLocalMovimento.getTipoCampo(),
+                campoSelecaoLocalMovimento.getNomeCampo(),
+                campoSelecaoLocalMovimento.getDescricaoCampo(),
+                campoSelecaoLocalMovimento.getTextoAuxilioPreenchimento(),
+                campoSelecaoLocalMovimento.isPreenchimentoObrigatorio(),
+                campoSelecaoLocalMovimento.getMensagemCasoCampoNaoPreenchido(),
+                campoSelecaoLocalMovimento.getPermiteSelecaoMultipla(),
+                locaisMovimentoGlobus
+                        .stream()
+                        .map(GlobusPiccoloturLocalMovimento::getLocalAsOpcaoSelecao)
+                        .toArray(String[]::new),
+                campoSelecaoLocalMovimento.getOrdemExibicao());
     }
 
     @NotNull

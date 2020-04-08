@@ -5,6 +5,7 @@ import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.Chec
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
+import java.util.List;
 
 /**
  * Created on 17/06/19.
@@ -89,4 +90,24 @@ public interface SistemaGlobusPiccoloturDao {
                                    @NotNull final Long codChecklistProLog,
                                    @NotNull final String errorMessage,
                                    @NotNull final Throwable throwable) throws Throwable;
+
+    /**
+     * Método utulizado para validar se o modelo de checklist é integrado na empresa.
+     *
+     * @param codUnidade         Código da unidade para identificar modelo de checklist.
+     * @param codModeloChecklist Código do modelo de checklist.
+     * @return É retornado um boolean para informar. TRUE caso modelo for integrado, senão FALSE.
+     */
+    boolean verificaModeloChecklistIntegrado(@NotNull final Long codUnidade,
+                                             @NotNull final Long codModeloChecklist) throws Throwable;
+
+    /**
+     * Método responsável por verificar se algum dos itens prestes a serem resolvidos é integrado. Não permitimos o
+     * fechamento de itens integrados. O fechamento deve ocorrer apenas via integração.
+     *
+     * @param codItensResolver Lista com os códigos de itens a serem validados.
+     * @return <code>TRUE</code> caso algum dos itens é integrado, <code>FALSE</code> caso contrátio.
+     * @throws Throwable Se algum erro acontecer
+     */
+    boolean verificaItensIntegrados(@NotNull final List<Long> codItensResolver) throws Throwable;
 }

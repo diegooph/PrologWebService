@@ -217,7 +217,7 @@ public final class ApiCadastroPneuDaoImpl extends DatabaseConnection implements 
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM INTEGRACAO.FUNC_PNEU_TRANFERE_PNEU_ENTRE_UNIDADES(" +
+            stmt = conn.prepareStatement("SELECT * FROM INTEGRACAO.FUNC_PNEU_TRANSFERE_PNEU_ENTRE_UNIDADES(" +
                     "F_COD_UNIDADE_ORIGEM := ?, " +
                     "F_COD_UNIDADE_DESTINO := ?, " +
                     "F_CPF_COLABORADOR_TRANSFERENCIA := ?, " +

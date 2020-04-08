@@ -1,14 +1,32 @@
 Change Log
 ==========
-
+<a name="v1.0.26"></a>
+## Version [v1.0.26](https://github.com/luizfp/PrologWebService/compare/v1.0.25...v1.0.26) (release-date) [unreleased]
+### Features
+* Cria dashboard de socorros por status nos ultimos 30 dias (PL-2618)
 * Cria estrutura para cadastro e configuração de motivos para o processo de movimentação (PL-2607)
 
+### Refactors
+* Permitir fechamento de O.Ss originadas no Prolog (PLI-99)
+* Adiciona os registros de deslocamento para socorros em rota (PL-2631)
+* Adiciona informações de tempo entre cada status do socorro em rota (PL-2585)
+
+### Bug Fixes
+* Corrige parse sem replace de virgula no import de csv (PL-2573)
+
 <a name="v1.0.25"></a>
-## Version [v1.0.25](https://github.com/luizfp/PrologWebService/compare/v1.0.24...v1.0.25) (release-date) [unreleased]
+## Version [v1.0.25](https://github.com/luizfp/PrologWebService/compare/v1.0.24...v1.0.25) (2020-04-02)
+
 ### Features
+* Injeta colaborador autenticado no SecurityContext do request (PL-2638)
+* Cria relatório de permissões detalhadas (PL-2627)
+* Criar método de validação de posições de pneus (PLI-52)
+* Criar estrutura para liberação de modelos de checklist para a integração de O.S (PLI-113)
+* Criar método roteado para buscar os locais de movimento do Globus (PLI-107)
 
+### Refactors
+* Modifica function que insere checklist (PL-2569)
 
-<a name="v1.0.24"></a>
 ## Version [v1.0.24](https://github.com/luizfp/PrologWebService/compare/v1.0.23...v1.0.24) (2020-03-29)
 
 ### Features

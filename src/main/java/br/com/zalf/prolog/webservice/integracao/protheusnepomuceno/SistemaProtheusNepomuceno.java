@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno;
 
-import br.com.zalf.prolog.webservice.config.BuildConfig;
+import br.com.zalf.prolog.webservice.commons.util.ProLogUtils;
 import br.com.zalf.prolog.webservice.database.DatabaseConnectionProvider;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
@@ -122,7 +122,7 @@ public final class SistemaProtheusNepomuceno extends Sistema {
             final List<VeiculoListagemProtheusNepomuceno> listagemVeiculos =
                     requester.getListagemVeiculosUnidadesSelecionadas(url, codFiliais);
 
-            if (BuildConfig.DEBUG) {
+            if (ProLogUtils.isDebug()) {
                 final List<VeiculoListagemProtheusNepomuceno> remove = listagemVeiculos.stream()
                         .filter(veiculo ->
                                 !veiculo.getCodEstruturaVeiculo().equals("FA002:M0162")

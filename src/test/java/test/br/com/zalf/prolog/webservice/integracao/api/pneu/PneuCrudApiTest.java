@@ -6,13 +6,11 @@ import br.com.zalf.prolog.webservice.database.DatabaseManager;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.integracao.api.pneu.ApiPneuService;
 import br.com.zalf.prolog.webservice.integracao.api.pneu.cadastro.ApiCadastroPneuService;
-import br.com.zalf.prolog.webservice.integracao.api.pneu.cadastro.model.ApiPneuCadastro;
-import br.com.zalf.prolog.webservice.integracao.api.pneu.cadastro.model.ApiPneuCargaInicial;
-import br.com.zalf.prolog.webservice.integracao.api.pneu.cadastro.model.ApiPneuCargaInicialResponse;
-import br.com.zalf.prolog.webservice.integracao.api.pneu.cadastro.model.ApiStatusPneu;
+import br.com.zalf.prolog.webservice.integracao.api.pneu.cadastro.model.*;
 import br.com.zalf.prolog.webservice.integracao.api.pneu.model.*;
 import br.com.zalf.prolog.webservice.integracao.praxio.IntegracaoPraxioResource;
 import br.com.zalf.prolog.webservice.integracao.praxio.cadastro.VeiculoCadastroPraxio;
+import br.com.zalf.prolog.webservice.integracao.praxio.cadastro.VeiculoTransferenciaPraxio;
 import br.com.zalf.prolog.webservice.integracao.response.SuccessResponseIntegracao;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.*;
@@ -42,6 +40,8 @@ public final class PneuCrudApiTest extends BaseTest {
     private static final Random RANDOM = new Random();
     @NotNull
     private static final String TOKEN_INTEGRACAO = "TOKEN" + RANDOM.nextInt(999999999);
+    @NotNull
+    private static final String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVXYZW";
     @NotNull
     private static final Long COD_EMPRESA = 3L;
     @NotNull
@@ -117,7 +117,8 @@ public final class PneuCrudApiTest extends BaseTest {
 
             final ApiPneuCargaInicial apiPneuCargaInicialInfoPneu = buscaInformacoesPneuCargaInicialEstoque(
                     apiPneuCargaInicial.getCodigoSistemaIntegrado(),
-                    apiPneuCargaInicial.getCodigoCliente());
+                    apiPneuCargaInicial.getCodigoCliente(),
+                    COD_UNIDADE);
             //Valida todas as informações do pneu
             assertThat(codSistemaIntegradoPneu).isNotNull();
             assertThat(codSistemaIntegradoPneu).isEqualTo(apiPneuCargaInicial.getCodigoSistemaIntegrado());
@@ -180,7 +181,8 @@ public final class PneuCrudApiTest extends BaseTest {
                             apiPneuCargaInicial.getCodigoCliente());
             final ApiPneuCargaInicial apiPneuCargaInicialInfoPneu = buscaInformacoesPneuCargaInicialEmUso(
                     apiPneuCargaInicial.getCodigoSistemaIntegrado(),
-                    apiPneuCargaInicial.getCodigoCliente());
+                    apiPneuCargaInicial.getCodigoCliente(),
+                    COD_UNIDADE);
             //Valida todas as informações do pneu.
             assertThat(codSistemaIntegradoPneu).isNotNull();
             assertThat(codSistemaIntegradoPneu).isEqualTo(apiPneuCargaInicial.getCodigoSistemaIntegrado());
@@ -244,7 +246,8 @@ public final class PneuCrudApiTest extends BaseTest {
                             apiPneuCargaInicial.getCodigoCliente());
             final ApiPneuCargaInicial apiPneuCargaInicialInfoPneu = buscaInformacoesPneuCargaInicialEmUso(
                     apiPneuCargaInicial.getCodigoSistemaIntegrado(),
-                    apiPneuCargaInicial.getCodigoCliente());
+                    apiPneuCargaInicial.getCodigoCliente(),
+                    COD_UNIDADE);
             //Valida todas as informações do pneu salvo.
             assertThat(codSistemaIntegradoPneu).isNotNull();
             assertThat(codSistemaIntegradoPneu).isEqualTo(apiPneuCargaInicial.getCodigoSistemaIntegrado());
@@ -322,7 +325,8 @@ public final class PneuCrudApiTest extends BaseTest {
                             apiPneuCargaInicial.getCodigoCliente());
             final ApiPneuCargaInicial apiPneuCargaInicialInfoPneu = buscaInformacoesPneuCargaInicialEmUso(
                     apiPneuCargaInicial.getCodigoSistemaIntegrado(),
-                    apiPneuCargaInicial.getCodigoCliente());
+                    apiPneuCargaInicial.getCodigoCliente(),
+                    COD_UNIDADE);
             //Valida todas as informações do pneu salvo.
             assertThat(codSistemaIntegradoPneu).isNotNull();
             assertThat(codSistemaIntegradoPneu).isEqualTo(apiPneuCargaInicial.getCodigoSistemaIntegrado());
@@ -399,7 +403,8 @@ public final class PneuCrudApiTest extends BaseTest {
                             apiPneuCargaInicial.getCodigoCliente());
             final ApiPneuCargaInicial apiPneuCargaInicialInfoPneu = buscaInformacoesPneuCargaInicialEmUso(
                     apiPneuCargaInicial.getCodigoSistemaIntegrado(),
-                    apiPneuCargaInicial.getCodigoCliente());
+                    apiPneuCargaInicial.getCodigoCliente(),
+                    COD_UNIDADE);
             //Valida todas as informações do pneu salvo.
             assertThat(codSistemaIntegradoPneu).isNotNull();
             assertThat(codSistemaIntegradoPneu).isEqualTo(apiPneuCargaInicial.getCodigoSistemaIntegrado());
@@ -439,7 +444,7 @@ public final class PneuCrudApiTest extends BaseTest {
 
     @Test
     @DisplayName("Teste Carga Inicial adicionando pneus e transferindo eles a outra unidade")
-    void adicionaCargaInicialPneuETransfereElesParaOutraUnidade() throws Throwable {
+    void adicionaCargaInicialPneuETransfereElesParaOutraUnidadeSemErro() throws Throwable {
         //Cria pneus
         final List<ApiPneuCargaInicial> cargaInicial = new ArrayList<>();
         cargaInicial.add(criaPneuSemErroComCodigoClienteValido());
@@ -472,7 +477,8 @@ public final class PneuCrudApiTest extends BaseTest {
 
             final ApiPneuCargaInicial apiPneuCargaInicialInfoPneu = buscaInformacoesPneuCargaInicialEstoque(
                     apiPneuCargaInicial.getCodigoSistemaIntegrado(),
-                    apiPneuCargaInicial.getCodigoCliente());
+                    apiPneuCargaInicial.getCodigoCliente(),
+                    COD_UNIDADE);
             //Valida todas as informações do pneu
             assertThat(codSistemaIntegradoPneu).isNotNull();
             assertThat(codSistemaIntegradoPneu).isEqualTo(apiPneuCargaInicial.getCodigoSistemaIntegrado());
@@ -502,45 +508,25 @@ public final class PneuCrudApiTest extends BaseTest {
         final Long cpfColaboradorUnidadeOrigem = buscaUmCpfDaUnidade();
         final String observacao = "Teste de Pneus";
 
+        //Cria objeto ApiPneuTransferencia
+        final ApiPneuTransferencia apiPneuTransferencia = new ApiPneuTransferencia(
+                COD_UNIDADE,
+                novaUnidade,
+                cpfColaboradorUnidadeOrigem.toString(),
+                pneusTransferencia,
+                observacao);
+
         //Realiza chamada para o método de transferencia de pneu
+        final SuccessResponseIntegracao pneusTransferidos =
+                apiCadastroPneuService.transferirPneu(TOKEN_INTEGRACAO, apiPneuTransferencia);
 
-
-        //Busca informações do pneu para validar transferência
-        for (ApiPneuCargaInicial apiPneuCargaInicial : cargaInicial) {
-            final Long codSistemaIntegradoPneu =
-                    buscaCodSistemaIntegradoPneuInserido(
-                            apiPneuCargaInicial.getCodigoSistemaIntegrado(),
-                            apiPneuCargaInicial.getCodigoCliente());
-
-            final ApiPneuCargaInicial apiPneuCargaInicialInfoPneuTransferido = buscaInformacoesPneuCargaInicialEstoque(
-                    apiPneuCargaInicial.getCodigoSistemaIntegrado(),
-                    apiPneuCargaInicial.getCodigoCliente());
-            //Valida todas as informações do pneu
-            assertThat(codSistemaIntegradoPneu).isNotNull();
-            assertThat(codSistemaIntegradoPneu).isEqualTo(apiPneuCargaInicial.getCodigoSistemaIntegrado());
-            assertThat(apiPneuCargaInicialInfoPneuTransferido.getCodigoSistemaIntegrado()).isEqualTo(apiPneuCargaInicial.
-                    getCodigoSistemaIntegrado());
-            assertThat(apiPneuCargaInicialInfoPneuTransferido.getCodigoCliente()).isEqualTo(apiPneuCargaInicial.
-                    getCodigoCliente());
-            assertThat(apiPneuCargaInicialInfoPneuTransferido.getCodUnidadePneu()).isEqualTo(novaUnidade);
-            assertThat(apiPneuCargaInicialInfoPneuTransferido.getCodModeloPneu()).isEqualTo(apiPneuCargaInicial.
-                    getCodModeloPneu());
-            assertThat(apiPneuCargaInicialInfoPneuTransferido.getCodDimensaoPneu()).isEqualTo(apiPneuCargaInicial.
-                    getCodDimensaoPneu());
-            assertThat(apiPneuCargaInicialInfoPneuTransferido.getPressaoCorretaPneu()).isEqualTo(apiPneuCargaInicial.
-                    getPressaoCorretaPneu());
-            assertThat(apiPneuCargaInicialInfoPneuTransferido.getVidaAtualPneu()).isEqualTo(apiPneuCargaInicial.
-                    getVidaAtualPneu());
-            assertThat(apiPneuCargaInicialInfoPneuTransferido.getVidaTotalPneu()).isEqualTo(apiPneuCargaInicial.
-                    getVidaTotalPneu());
-            assertThat(apiPneuCargaInicialInfoPneuTransferido.getPneuNovoNuncaRodado()).isEqualTo(apiPneuCargaInicial.
-                    getPneuNovoNuncaRodado());
-        }
+        assertThat(pneusTransferidos.getMsg()).isEqualTo("Transferência de pneus realizada com sucesso no " +
+                "Sistema ProLog");
     }
 
     @Test
-    @DisplayName("Teste Carga Inicial adicionando pneus e transferindo eles a outra unidade")
-    void adicionaCargaInicialPneuEmUmVeiculoDepoisTransfereVeiculo() throws Throwable {
+    @DisplayName("Teste Carga Inicial transfere veículo e seus pneus para outra unidade")
+    void adicionaCargaInicialPneuEmUmVeiculoDepoisTransfereVeiculoSemErro() throws Throwable {
         //Cria veículo.
         VeiculoCadastroPraxio veiculoCadastroPraxio = criaVeiculoParaCadastro();
 
@@ -579,7 +565,9 @@ public final class PneuCrudApiTest extends BaseTest {
                             apiPneuCargaInicial.getCodigoCliente());
             final ApiPneuCargaInicial apiPneuCargaInicialInfoPneu = buscaInformacoesPneuCargaInicialEmUso(
                     apiPneuCargaInicial.getCodigoSistemaIntegrado(),
-                    apiPneuCargaInicial.getCodigoCliente());
+                    apiPneuCargaInicial.getCodigoCliente(),
+                    COD_UNIDADE);
+
             //Valida todas as informações do pneu salvo.
             assertThat(codSistemaIntegradoPneu).isNotNull();
             assertThat(codSistemaIntegradoPneu).isEqualTo(apiPneuCargaInicial.getCodigoSistemaIntegrado());
@@ -603,9 +591,24 @@ public final class PneuCrudApiTest extends BaseTest {
                     getPneuNovoNuncaRodado());
         }
 
+        final Long novaUnidade = buscaUmaUnidadeDaEmpresa();
+        final Long cpf = buscaUmCpfDaUnidade();
+        final String observacao = "Teste pneus aplicados";
+
+        //Cria Objeto VeiculoTransferenciaPraxio
+        final VeiculoTransferenciaPraxio veiculoTransferencia = new VeiculoTransferenciaPraxio(
+                COD_UNIDADE,
+                novaUnidade,
+                cpf.toString(),
+                veiculoCadastroPraxio.getPlacaVeiculo(),
+                observacao
+        );
+
         //Chama o método para transferir placa
+        final SuccessResponseIntegracao transfereVeiculo =
+                integracaoPraxioResource.transferirVeiculoPraxio(TOKEN_INTEGRACAO, veiculoTransferencia);
 
-
+        assertThat(transfereVeiculo.getMsg()).isEqualTo("Veículo do Globus transferido com sucesso");
     }
 
     @Test
@@ -643,7 +646,8 @@ public final class PneuCrudApiTest extends BaseTest {
             //Busca informações do pneu.
             final ApiPneuCargaInicial apiPneuCargaInicialInfoPneu = buscaInformacoesPneuCargaInicialEmUso(
                     apiPneuCargaInicial.getCodigoSistemaIntegrado(),
-                    apiPneuCargaInicial.getCodigoCliente());
+                    apiPneuCargaInicial.getCodigoCliente(),
+                    COD_UNIDADE);
             //Valida todas as informações do pneu salvo.
             assertThat(apiPneuCargaInicialInfoPneu.getCodigoSistemaIntegrado()).isEqualTo(apiPneuCargaInicial.
                     getCodigoSistemaIntegrado());
@@ -1065,7 +1069,8 @@ public final class PneuCrudApiTest extends BaseTest {
         //Valida se pneu foi inserido;
         final ApiPneuCargaInicial apiPneuCargaInicialInfoPneuInserido = buscaInformacoesPneuCargaInicialEstoque(
                 apiPneuCadastro.getCodigoSistemaIntegrado(),
-                apiPneuCadastro.getCodigoCliente());
+                apiPneuCadastro.getCodigoCliente(),
+                COD_UNIDADE);
 
         //Valida todas as informações do pneu inserido;
         assertThat(apiPneuCargaInicialInfoPneuInserido).isNotNull();
@@ -1117,7 +1122,8 @@ public final class PneuCrudApiTest extends BaseTest {
         //Valida se pneu foi inserido;
         final ApiPneuCargaInicial apiPneuCargaInicialInfoPneuAtualizado = buscaInformacoesPneuCargaInicialEstoque(
                 apiPneuCadastro.getCodigoSistemaIntegrado(),
-                apiPneuCadastro.getCodigoCliente());
+                apiPneuCadastro.getCodigoCliente(),
+                COD_UNIDADE);
 
         //Valida todas as informações do pneu inserido;
         assertThat(apiPneuCargaInicialInfoPneuAtualizado).isNotNull();
@@ -1614,8 +1620,7 @@ public final class PneuCrudApiTest extends BaseTest {
             stmt.setLong(1, COD_EMPRESA);
             stmt.setString(2, TOKEN_INTEGRACAO);
             stmt.setString(3, TOKEN_INTEGRACAO);
-            rSet = stmt.executeQuery();
-            if (!rSet.next()) {
+            if (stmt.executeUpdate() <= 0) {
                 throw new SQLException("Erro ao criar TOKEN");
             }
         } finally {
@@ -1663,15 +1668,16 @@ public final class PneuCrudApiTest extends BaseTest {
         }
     }
 
-    private Long buscaUmaUnidadeDaEmpresa() throws Throwable{
+    private Long buscaUmaUnidadeDaEmpresa() throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         List<Long> codUnidadeEmpresa = new ArrayList<>();
         try {
             conn = connectionProvider.provideDatabaseConnection();
-            stmt = conn.prepareStatement("SELECT U.CODIGO FROM UNIDADE U WHERE U.COD_EMPRESA = ?");
+            stmt = conn.prepareStatement("SELECT U.CODIGO FROM UNIDADE U WHERE U.COD_EMPRESA = ? AND CODIGO <> ?");
             stmt.setLong(1, COD_EMPRESA);
+            stmt.setLong(2, COD_UNIDADE);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
                 codUnidadeEmpresa.add(rSet.getLong("CODIGO"));
@@ -1688,7 +1694,7 @@ public final class PneuCrudApiTest extends BaseTest {
         }
     }
 
-    private Long buscaUmCpfDaUnidade() throws Throwable{
+    private Long buscaUmCpfDaUnidade() throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -1699,7 +1705,7 @@ public final class PneuCrudApiTest extends BaseTest {
             stmt.setLong(1, COD_UNIDADE);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
-                listaComCpfs.add(rSet.getLong("CODIGO"));
+                listaComCpfs.add(rSet.getLong("CPF"));
             }
             if (!listaComCpfs.isEmpty()) {
                 return listaComCpfs.get(0);
@@ -1915,8 +1921,8 @@ public final class PneuCrudApiTest extends BaseTest {
     }
 
     //Método responsável por buscar código sistema integrado de um pneu específico para o teste de inserção,
-    private Long buscaCodSistemaIntegradoPneuInserido(@NotNull final Long codSistemaIntegrado,
-                                                      @NotNull final String codCliente) throws Throwable {
+    private Long buscaCodSistemaIntegradoPneuInserido(final Long codSistemaIntegrado,
+                                                      final String codCliente) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -2051,7 +2057,8 @@ public final class PneuCrudApiTest extends BaseTest {
 
     //Método responsável por pegar todas as informações do pneu na carga inicial.
     private ApiPneuCargaInicial buscaInformacoesPneuCargaInicialEstoque(final Long codSistemaIntegrado,
-                                                                        final String codCliente)
+                                                                        final String codCliente,
+                                                                        final Long codUnidade)
             throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -2076,7 +2083,7 @@ public final class PneuCrudApiTest extends BaseTest {
                     "  AND COD_UNIDADE = ?\n" +
                     "  AND CODIGO_CLIENTE = ?;");
             stmt.setLong(1, COD_EMPRESA);
-            stmt.setLong(2, COD_UNIDADE);
+            stmt.setLong(2, codUnidade);
             stmt.setString(3, codCliente);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
@@ -2109,7 +2116,8 @@ public final class PneuCrudApiTest extends BaseTest {
 
     //Método responsável por pegar todas as informações do pneu na carga inicial.
     private ApiPneuCargaInicial buscaInformacoesPneuCargaInicialEmUso(final Long codSistemaIntegrado,
-                                                                      final String codCliente)
+                                                                      final String codCliente,
+                                                                      final Long codUnidade)
             throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -2136,7 +2144,7 @@ public final class PneuCrudApiTest extends BaseTest {
                     "  AND P.COD_UNIDADE = ?\n" +
                     "  AND P.CODIGO_CLIENTE = ?;");
             stmt.setLong(1, COD_EMPRESA);
-            stmt.setLong(2, COD_UNIDADE);
+            stmt.setLong(2, codUnidade);
             stmt.setString(3, codCliente);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
@@ -2456,7 +2464,7 @@ public final class PneuCrudApiTest extends BaseTest {
 
     //Objetos Pneu para testes na atualização do Status de um pneu sem erro
     @NotNull
-    private ApiPneuAlteracaoStatus criaPneuParaAtualizarStatusAnaliseSemErro(ApiPneuCadastro apiPneuCadastro) {
+    private ApiPneuAlteracaoStatus criaPneuParaAtualizarStatusAnaliseSemErro(final ApiPneuCadastro apiPneuCadastro) {
         return new ApiPneuAlteracaoStatusAnalise(
                 apiPneuCadastro.getCodigoSistemaIntegrado(),
                 apiPneuCadastro.getCodigoCliente(),
@@ -2469,7 +2477,7 @@ public final class PneuCrudApiTest extends BaseTest {
     }
 
     @NotNull
-    private ApiPneuAlteracaoStatus criaPneuParaAtualizarStatusDescarteSemErro(ApiPneuCadastro apiPneuCadastro)
+    private ApiPneuAlteracaoStatus criaPneuParaAtualizarStatusDescarteSemErro(final ApiPneuCadastro apiPneuCadastro)
             throws Throwable {
         return new ApiPneuAlteracaoStatusDescarte(
                 apiPneuCadastro.getCodigoSistemaIntegrado(),
@@ -2483,7 +2491,7 @@ public final class PneuCrudApiTest extends BaseTest {
     }
 
     @NotNull
-    private ApiPneuAlteracaoStatus criaPneuParaAtualizarStatusEstoqueSemErro(ApiPneuCadastro apiPneuCadastro)
+    private ApiPneuAlteracaoStatus criaPneuParaAtualizarStatusEstoqueSemErro(final ApiPneuCadastro apiPneuCadastro)
             throws Throwable {
         return new ApiPneuAlteracaoStatusEstoque(
                 apiPneuCadastro.getCodigoSistemaIntegrado(),
@@ -2497,7 +2505,7 @@ public final class PneuCrudApiTest extends BaseTest {
     }
 
     @NotNull
-    private ApiPneuAlteracaoStatus criaPneuParaAtualizarStatusEmUsoSemErro(ApiPneuCadastro apiPneuCadastro)
+    private ApiPneuAlteracaoStatus criaPneuParaAtualizarStatusEmUsoSemErro(final ApiPneuCadastro apiPneuCadastro)
             throws Throwable {
         //Cria veículo.
         VeiculoCadastroPraxio veiculoCadastroPraxio = criaVeiculoParaCadastro();
@@ -2528,7 +2536,7 @@ public final class PneuCrudApiTest extends BaseTest {
     //Objeto Pneu para atualizar STATUS em carga inicial
     @NotNull
     private ApiPneuAlteracaoStatus criaPneuParaAtualizarStatusEstoqueSemErroCargaInicial(
-            ApiPneuCargaInicial apiPneuCargaInicial) {
+            final ApiPneuCargaInicial apiPneuCargaInicial) {
         return new ApiPneuAlteracaoStatusEstoque(
                 apiPneuCargaInicial.getCodigoSistemaIntegrado(),
                 apiPneuCargaInicial.getCodigoCliente(),
@@ -2542,7 +2550,7 @@ public final class PneuCrudApiTest extends BaseTest {
 
     @NotNull
     private ApiPneuAlteracaoStatus criaPneuParaAtualizarStatusDescarteSemErroCargaInicial(
-            ApiPneuCargaInicial apiPneuCargaInicial) throws Throwable {
+            final ApiPneuCargaInicial apiPneuCargaInicial) throws Throwable {
         return new ApiPneuAlteracaoStatusDescarte(
                 apiPneuCargaInicial.getCodigoSistemaIntegrado(),
                 apiPneuCargaInicial.getCodigoCliente(),
@@ -2556,7 +2564,7 @@ public final class PneuCrudApiTest extends BaseTest {
 
     @NotNull
     private ApiPneuAlteracaoStatus criaPneuParaAtualizarStatusAnaliseSemErroCargaInicial(
-            ApiPneuCargaInicial apiPneuCargaInicial) throws Throwable {
+            final ApiPneuCargaInicial apiPneuCargaInicial) throws Throwable {
         return new ApiPneuAlteracaoStatusAnalise(
                 apiPneuCargaInicial.getCodigoSistemaIntegrado(),
                 apiPneuCargaInicial.getCodigoCliente(),
@@ -2569,8 +2577,8 @@ public final class PneuCrudApiTest extends BaseTest {
     }
 
     @NotNull
-    private ApiPneuAlteracaoStatus criaPneuParaTrocarPosicaoPneuEmUso(ApiPneuCargaInicial apiPneuCargaInicial,
-                                                                      int posicao) throws Throwable {
+    private ApiPneuAlteracaoStatus criaPneuParaTrocarPosicaoPneuEmUso(final ApiPneuCargaInicial apiPneuCargaInicial,
+                                                                      final int posicao) throws Throwable {
         assert apiPneuCargaInicial.getPlacaVeiculoPneuAplicado() != null;
         return new ApiPneuAlteracaoStatusVeiculo(
                 apiPneuCargaInicial.getCodigoSistemaIntegrado(),
@@ -2589,10 +2597,19 @@ public final class PneuCrudApiTest extends BaseTest {
     private VeiculoCadastroPraxio criaVeiculoParaCadastro() throws Throwable {
         return new VeiculoCadastroPraxio(
                 COD_UNIDADE,
-                "PLA" + RANDOM.nextInt(9999),
+                getRandomPlaca(),
                 1000L,
                 buscaCodModeloVeiculo(),
                 buscaCodTipoVeiculo()
         );
+    }
+
+    @NotNull
+    private String getRandomPlaca() {
+        final StringBuilder placa = new StringBuilder(3);
+        for (int i = 0; i < 3; i++) {
+            placa.append(ALPHABET.charAt(RANDOM.nextInt(ALPHABET.length())));
+        }
+        return placa.toString();
     }
 }

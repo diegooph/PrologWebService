@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model;
 
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.TipoMedicaoColetadaAfericao;
 import org.jetbrains.annotations.NotNull;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,13 +18,13 @@ import java.util.List;
  */
 public final class AfericaoAvulsaProtheusNepomuceno {
     /**
-     * Atributo alfanumérico que representa o código da empresa do cliente
+     * Atributo alfanumérico que representa o código da empresa do cliente.
      */
     @NotNull
     private final String codEmpresa;
 
     /**
-     * Atributo alfanumérico que representa o código da unidade do cliente
+     * Atributo alfanumérico que representa o código da unidade do cliente.
      */
     @NotNull
     private final String codUnidade;
@@ -36,7 +37,7 @@ public final class AfericaoAvulsaProtheusNepomuceno {
 
     /**
      * Valor numérico que representa o montante de tempo que o colaborador demorou para aferir todos os pneus do
-     * veículo. Este montante de tempo é representado por este valor em milisegundos.
+     * veículo. Este montante de tempo é representado por este valor em milissegundos.
      */
     @NotNull
     private final Long tempoRealizacaoAfericaoInMillis;
