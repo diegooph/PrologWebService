@@ -62,6 +62,10 @@ import br.com.zalf.prolog.webservice.frota.pneu.modelo.PneuMarcaModeloDao;
 import br.com.zalf.prolog.webservice.frota.pneu.modelo.PneuMarcaModeloDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.MovimentacaoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.MovimentacaoDaoImpl;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.MotivoMovimentoDao;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.MotivoMovimentoDaoImpl;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.transicao.MotivoMovimentoTransicaoDao;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.transicao.MotivoMovimentoTransicaoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.relatorios.MovimentacaoRelatorioDao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.relatorios.MovimentacaoRelatorioDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.nomenclatura.PneuNomenclaturaDao;
@@ -566,21 +570,6 @@ public final class Injection {
         return new PesquisaNpsDaoImpl();
     }
 
-    @NotNull
-    public static UnidadeDao provideUnidadeDao() {
-        return new UnidadeDaoImpl();
-    }
-
-    @NotNull
-    public static CampoPersonalizadoDao provideCampoPersonalizadoDao() {
-        return new CampoPersonalizadoDaoImpl();
-    }
-
-    @NotNull
-    public static AutenticacaoIntegracaoDao provideAutenticacaoIntegracaoDao() {
-        return new AutenticacaoIntegracaoDaoImpl();
-    }
-
     // ================================================
     // OUTROS
     // ================================================
@@ -592,6 +581,11 @@ public final class Injection {
     @NotNull
     public static DadosChecklistOfflineChangedListener provideDadosChecklistOfflineChangedListener() {
         return new VersaoDadosChecklistOfflineAtualizador();
+    }
+
+    @NotNull
+    public static AutenticacaoIntegracaoDao provideAutenticacaoIntegracaoDao() {
+        return new AutenticacaoIntegracaoDaoImpl();
     }
 
     // ================================================
@@ -636,4 +630,25 @@ public final class Injection {
     private static PneuSqlExceptionTranslator providePneuSqlExceptionTranslator() {
         return new PneuSqlExceptionTranslator();
     }
+
+    @NotNull
+    public static UnidadeDao provideUnidadeDao() {
+        return new UnidadeDaoImpl();
+    }
+
+    @NotNull
+    public static CampoPersonalizadoDao provideCampoPersonalizadoDao() {
+        return new CampoPersonalizadoDaoImpl();
+    }
+
+    @NotNull
+    public static MotivoMovimentoDao provideMotivoDao() {
+        return new MotivoMovimentoDaoImpl();
+    }
+
+    @NotNull
+    public static MotivoMovimentoTransicaoDao provideMotivoOrigemDestinoDao() {
+        return new MotivoMovimentoTransicaoDaoImpl();
+    }
+
 }

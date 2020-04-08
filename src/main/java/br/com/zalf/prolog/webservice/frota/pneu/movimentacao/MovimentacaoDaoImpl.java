@@ -16,10 +16,10 @@ import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.destino.DestinoAnalise;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.destino.DestinoDescarte;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.destino.DestinoVeiculo;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.motivo.Motivo;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.motivo.MotivoDescarte;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.origem.OrigemAnalise;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.origem.OrigemVeiculo;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.Motivo;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoDescarte;
 import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico.PneuServicoRealizadoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico._model.PneuServicoRealizado;
 import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico._model.PneuServicoRealizadoIncrementaVida;
@@ -227,7 +227,6 @@ public final class MovimentacaoDaoImpl extends DatabaseConnection implements Mov
                     "cod_pneu, sulco_interno, sulco_central_interno, sulco_central_externo, sulco_externo, vida, " +
                     "observacao) VALUES (?,?,?,?,?,?,?,?,?) RETURNING codigo;");
             // Podemos realizar o suppress pois neste ponto já temos que possuir um código não nulo.
-            //noinspection ConstantConditions
             stmt.setLong(1, processoMov.getCodigo());
             stmt.setLong(2, codUnidade);
             for (final Movimentacao mov : processoMov.getMovimentacoes()) {
@@ -251,6 +250,9 @@ public final class MovimentacaoDaoImpl extends DatabaseConnection implements Mov
                     mov.setCodigo(rSet.getLong("CODIGO"));
                     insertOrigem(conn, pneuDao, veiculoDao, pneuServicoRealizadoDao, codUnidade, mov);
                     insertDestino(conn, veiculoDao, codUnidade, mov);
+                    if (mov.getCodMotivoMovimento() != null) {
+                        insertMotivoMovimento(conn, mov.getCodigo(), mov.getCodMotivoMovimento());
+                    }
                     if (fecharServicosAutomaticamente) {
                         fecharServicosPneu(
                                 conn,
@@ -313,6 +315,22 @@ public final class MovimentacaoDaoImpl extends DatabaseConnection implements Mov
         final OrigemDestinoValidator origemDestinoValidator = new OrigemDestinoValidator();
         for (final Movimentacao movimentacao : movimentacoes) {
             origemDestinoValidator.validate(movimentacao.getOrigem(), movimentacao.getDestino());
+        }
+    }
+
+    private void insertMotivoMovimento(@NotNull final Connection conn,
+                                       @NotNull final Long codMovimento,
+                                       @NotNull final Long codMotivo) throws Throwable {
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement("SELECT FUNC_MOVIMENTACAO_INSERE_MOTIVO_MOVIMENTO_RESPOSTA(" +
+                    "F_COD_MOVIMENTO := ?," +
+                    "F_COD_MOTIVO := ?);");
+            stmt.setLong(1, codMovimento);
+            stmt.setLong(2, codMotivo);
+            stmt.executeQuery();
+        } finally {
+            close(stmt);
         }
     }
 
@@ -400,7 +418,6 @@ public final class MovimentacaoDaoImpl extends DatabaseConnection implements Mov
         }
 
         boolean temIncrementaVida = false;
-        //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < servicosRealizados.size(); i++) {
             final PneuServicoRealizado servico = servicosRealizados.get(i);
             if (servico instanceof PneuServicoRealizadoIncrementaVida) {
