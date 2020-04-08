@@ -1,7 +1,10 @@
 package br.com.zalf.prolog.webservice.frota.socorrorota._model;
 
+import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 /**
@@ -34,6 +37,12 @@ public final class SocorroRotaInvalidacaoVisualizacao {
     private final String urlFoto2Invalidacao;
     @Nullable
     private final String urlFoto3Invalidacao;
+    @Nullable
+    @SerializedName("tempoAberturaInvalidacaoEmSegundos")
+    private final Duration tempoAberturaInvalidacao;
+    @Nullable
+    @SerializedName("tempoAtendimentoInvalidacaoEmSegundos")
+    private final Duration tempoAtendimentoInvalidacao;
 
 
     public SocorroRotaInvalidacaoVisualizacao(@NotNull final Long codColaboradorResponsavelInvalidacao,
@@ -47,7 +56,9 @@ public final class SocorroRotaInvalidacaoVisualizacao {
                                               @Nullable final String imeiAparelhoInvalidacaoSocorro,
                                               @Nullable final String urlFoto1Invalidacao,
                                               @Nullable final String urlFoto2Invalidacao,
-                                              @Nullable final String urlFoto3Invalidacao) {
+                                              @Nullable final String urlFoto3Invalidacao,
+                                              @Nullable final Duration tempoAberturaInvalidacao,
+                                              @Nullable final Duration tempoAtendimentoInvalidacao) {
         this.codColaboradorResponsavelInvalidacao = codColaboradorResponsavelInvalidacao;
         this.nomeResponsavelInvalidacaoSocorro = nomeResponsavelInvalidacaoSocorro;
         this.motivoInvalidacao = motivoInvalidacao;
@@ -60,6 +71,8 @@ public final class SocorroRotaInvalidacaoVisualizacao {
         this.urlFoto1Invalidacao = urlFoto1Invalidacao;
         this.urlFoto2Invalidacao = urlFoto2Invalidacao;
         this.urlFoto3Invalidacao = urlFoto3Invalidacao;
+        this.tempoAberturaInvalidacao = tempoAberturaInvalidacao;
+        this.tempoAtendimentoInvalidacao = tempoAtendimentoInvalidacao;
     }
 
     @NotNull
@@ -101,4 +114,14 @@ public final class SocorroRotaInvalidacaoVisualizacao {
 
     @Nullable
     public String getUrlFoto3Invalidacao() { return urlFoto3Invalidacao; }
+
+    @Nullable
+    public Duration getTempoAberturaInvalidacao() {
+        return tempoAberturaInvalidacao;
+    }
+
+    @Nullable
+    public Duration getTempoAtendimentoInvalidacao() {
+        return tempoAtendimentoInvalidacao;
+    }
 }

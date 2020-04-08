@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.socorrorota;
 
+import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.Required;
@@ -122,6 +123,29 @@ public final class SocorroRotaResource {
     public ResponseWithCod atendimentoSocorro(@Required final SocorroRotaAtendimento socorroRotaAtendimento) {
         return service.atendimentoSocorro(socorroRotaAtendimento);
     }
+
+    /**
+     * Resource para iniciar um deslocamento no atendimento de socorro.
+     */
+    @POST
+    @Secured(permissions = {Pilares.Frota.SocorroRota.TRATAR_SOCORRO})
+    @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
+    @Path("/atendimento/deslocamento/inicio")
+    public Response iniciaDeslocamento(@Required final SocorroRotaAtendimentoDeslocamento deslocamentoInicio){
+        return service.iniciaDeslocamento(deslocamentoInicio);
+    }
+
+    /**
+     * Resource para finalizar um deslocamento no atendimento de socorro.
+     */
+    @POST
+    @Secured(permissions = {Pilares.Frota.SocorroRota.TRATAR_SOCORRO})
+    @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
+    @Path("/atendimento/deslocamento/fim")
+    public Response finalizaDeslocamento(@Required final SocorroRotaAtendimentoDeslocamento deslocamentoFim){
+        return service.finalizaDeslocamento(deslocamentoFim);
+    }
+
 
     /**
      * Resource para finalizar uma solicitação de socorro.

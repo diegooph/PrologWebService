@@ -15,6 +15,7 @@ public final class SocorroRotaAtendimento extends SocorroRotaAcao {
     private final Long codSocorroRota;
     @Nullable
     private final String observacaoAtendimento;
+    private final boolean deslocamentoIniciado;
 
     public SocorroRotaAtendimento(@NotNull final Long codUnidadeAbertura,
                                   @NotNull final Long codSocorroRota,
@@ -30,7 +31,8 @@ public final class SocorroRotaAtendimento extends SocorroRotaAcao {
                                   @Nullable final String marcaDevice,
                                   @Nullable final String modeloDevice,
                                   @NotNull final PrologPlatformSocorroRota plataformaOrigem,
-                                  @NotNull final String versaoPlataformaOrigem) {
+                                  @NotNull final String versaoPlataformaOrigem,
+                                  final boolean deslocamentoIniciado) {
         super(  codUnidadeAbertura,
                 StatusSocorroRota.EM_ATENDIMENTO,
                 codColaborador,
@@ -47,6 +49,7 @@ public final class SocorroRotaAtendimento extends SocorroRotaAcao {
                 versaoPlataformaOrigem);
         this.codSocorroRota = codSocorroRota;
         this.observacaoAtendimento = observacaoAtendimento;
+        this.deslocamentoIniciado = deslocamentoIniciado;
     }
 
     @NotNull
@@ -58,4 +61,6 @@ public final class SocorroRotaAtendimento extends SocorroRotaAcao {
     public String getObservacaoAtendimento() {
         return observacaoAtendimento;
     }
+
+    public boolean isDeslocamentoIniciado() { return deslocamentoIniciado; }
 }
