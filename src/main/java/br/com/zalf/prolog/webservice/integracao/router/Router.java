@@ -281,6 +281,16 @@ public abstract class Router implements OperacoesIntegradas {
 
     @NotNull
     @Override
+    public Long insertChecklistOffline(@NotNull final ChecklistInsercao checklist) throws Throwable {
+        if (getSistema() != null) {
+            return getSistema().insertChecklistOffline(checklist);
+        } else {
+            return integradorProLog.insertChecklistOffline(checklist);
+        }
+    }
+
+    @NotNull
+    @Override
     public List<TipoVeiculo> getTiposVeiculosFiltroChecklist(@NotNull final Long codEmpresa) throws Throwable {
         if (getSistema() != null) {
             return getSistema().getTiposVeiculosFiltroChecklist(codEmpresa);

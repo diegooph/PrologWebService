@@ -55,6 +55,12 @@ public final class SistemaGlobusPiccolotur extends Sistema {
 
     @NotNull
     @Override
+    public Long insertChecklistOffline(@NotNull final ChecklistInsercao checklist) throws Throwable {
+        return insertChecklist(checklist, true, false);
+    }
+
+    @NotNull
+    @Override
     public Long insertChecklist(@NotNull final ChecklistInsercao checklistNew,
                                 final boolean foiOffline,
                                 final boolean deveAbrirOs) throws Throwable {

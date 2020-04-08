@@ -32,6 +32,35 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
         return insert(cpf, token);
     }
 
+    @NotNull
+    @Override
+    public Autenticacao insertOrUpdateByCodColaborador(@NotNull final Long codColaborador) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("select * from func_geral_get_or_insert_token_autenticacao(" +
+                    "f_cod_colaborador => ?, " +
+                    "f_token_autenticacao => ?);");
+            stmt.setLong(1, codColaborador);
+            stmt.setString(2, new SessionIdentifierGenerator().nextSessionId());
+            rSet = stmt.executeQuery();
+            final Autenticacao autenticacao = new Autenticacao();
+            if (rSet.next()) {
+                autenticacao.setCpf(rSet.getLong("CPF_COLABORADOR"));
+                autenticacao.setToken(rSet.getString("TOKEN_AUTENTICACAO"));
+                autenticacao.setStatus(Autenticacao.OK);
+                return autenticacao;
+            } else {
+                autenticacao.setStatus(Autenticacao.ERROR);
+                return autenticacao;
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
     @Override
     public boolean delete(@NotNull final String token) throws Throwable {
         Connection conn = null;
