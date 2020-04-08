@@ -1,9 +1,3 @@
-Stage
-==========
-### Refactors
-* Adiciona os registros de deslocamento para socorros em rota (PL-2631). 
-* Adiciona informações de tempo entre cada status do socorro em rota (PL-2585). 
-
 Change Log
 ==========
 <a name="v1.0.26"></a>
@@ -13,6 +7,8 @@ Change Log
 
 ### Refactors
 * Permitir fechamento de O.Ss originadas no Prolog (PLI-99)
+* Adiciona os registros de deslocamento para socorros em rota (PL-2631)
+* Adiciona informações de tempo entre cada status do socorro em rota (PL-2585)
 
 ### Bug Fixes
 * Corrige parse sem replace de virgula no import de csv (PL-2573)
