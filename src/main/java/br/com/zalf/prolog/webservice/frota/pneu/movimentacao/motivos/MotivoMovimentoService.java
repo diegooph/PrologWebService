@@ -25,7 +25,7 @@ public final class MotivoMovimentoService {
                                    @NotNull final Long codigoColaborador) {
         try {
             return ResponseWithCod.ok(
-                    "Motivo de troca inserido com sucesso.",
+                    "Motivo de movimento inserido com sucesso.",
                     dao.insert(motivo, codigoColaborador));
         } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao inserir motivo %s", motivo.getDescricaoMotivoMovimento()), t);
