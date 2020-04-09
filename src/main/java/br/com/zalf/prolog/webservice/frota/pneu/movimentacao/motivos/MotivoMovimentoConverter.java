@@ -37,6 +37,7 @@ public final class MotivoMovimentoConverter {
         return new MotivoMovimentoListagem(
                 rSet.getLong("CODIGO_MOTIVO"),
                 rSet.getString("DESCRICAO_MOTIVO"),
+                rSet.getString("CODIGO_AUXILIAR"),
                 rSet.getBoolean("ATIVO_MOTIVO"));
     }
 
