@@ -2,9 +2,11 @@ Change Log
 ==========
 <a name="v1.0.26"></a>
 ## Version [v1.0.26](https://github.com/luizfp/PrologWebService/compare/v1.0.25...v1.0.26) (release-date) [unreleased]
+
 ### Features
 * Cria dashboard de socorros por status nos ultimos 30 dias (PL-2618)
 * Cria estrutura para cadastro e configuração de motivos para o processo de movimentação (PL-2607)
+* Permite alteração da pressão recomendada dos pneus (PL-2570)
 
 ### Refactors
 * Permitir fechamento de O.Ss originadas no Prolog (PLI-99)
