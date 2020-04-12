@@ -22,6 +22,17 @@ public interface AutenticacaoDao {
     Autenticacao insertOrUpdate(@NotNull final Long cpf) throws Throwable;
 
     /**
+     * Cria um novo token para o usuário. Esse Token será utilizado para fazer a validação
+     * do usuário que está requisitando informações do servidor.
+     *
+     * @param codColaborador Código do colaborador que será autenticado
+     * @return Objeto {@link Autenticacao autenticação} com o token gerado e o status do login.
+     * @throws Throwable Caso ocorra algum erro.
+     */
+    @NotNull
+    Autenticacao insertOrUpdateByCodColaborador(@NotNull final Long codColaborador) throws Throwable;
+
+    /**
      * Deleta um token da tabela. Este método é usado quando o usuário realiza logout do sistema.
      *
      * @param token Token a ser deletado da tabela.

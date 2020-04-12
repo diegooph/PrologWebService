@@ -12,6 +12,7 @@ Change Log
 * Permitir fechamento de O.Ss originadas no Prolog (PLI-99)
 * Adiciona os registros de deslocamento para socorros em rota (PL-2631)
 * Adiciona informações de tempo entre cada status do socorro em rota (PL-2585)
+* Roteia método de sincronia de checklist offline (PLI-118)
 
 ### Bug Fixes
 * Corrige parse sem replace de virgula no import de csv (PL-2573)
