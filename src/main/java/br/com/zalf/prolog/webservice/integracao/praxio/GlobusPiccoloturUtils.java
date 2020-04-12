@@ -46,7 +46,7 @@ public final class GlobusPiccoloturUtils {
 
     @NotNull
     public static Long getCodUnidadeMovimentoFromCampoPersonalizado(
-            @Nullable final List<CampoPersonalizadoResposta> respostasCamposPersonalizados) {
+            @Nullable final List<CampoPersonalizadoResposta> respostasCamposPersonalizados) throws Throwable {
         if (respostasCamposPersonalizados == null || respostasCamposPersonalizados.isEmpty()) {
             throw new GlobusPiccoloturException("Nenhuma resposta fornecida para os campos personalizados");
         }
