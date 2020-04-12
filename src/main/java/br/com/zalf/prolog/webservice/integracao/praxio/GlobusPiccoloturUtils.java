@@ -9,7 +9,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-import static br.com.zalf.prolog.webservice.integracao.praxio.GlobusPiccoloturConstants.COD_UNIDADE_NOME_LOCAL_SEPARATOR;
+import static br.com.zalf.prolog.webservice.integracao.praxio.GlobusPiccoloturConstants.COD_UNIDADE_NOME_LOCAL_MOVIMENTO_SEPARATOR;
 
 /**
  * Created on 11/12/19
@@ -46,7 +46,7 @@ public final class GlobusPiccoloturUtils {
 
     @NotNull
     public static Long getCodUnidadeMovimentoFromCampoPersonalizado(
-            @Nullable final List<CampoPersonalizadoResposta> respostasCamposPersonalizados) throws Throwable {
+            @Nullable final List<CampoPersonalizadoResposta> respostasCamposPersonalizados) {
         if (respostasCamposPersonalizados == null || respostasCamposPersonalizados.isEmpty()) {
             throw new GlobusPiccoloturException("Nenhuma resposta fornecida para os campos personalizados");
         }
@@ -65,6 +65,6 @@ public final class GlobusPiccoloturUtils {
         // Fazemos um get(0) pois temos a certeza que nunca terá mais que uma resposta.
         // A resposta sempre estará no padrão 'cod_unidade - nome_unidade', pegaremos apenas o código da unidade.
         final String resposta = campoSelecao.getRespostaListaSelecao().get(0);
-        return Long.valueOf(resposta.split(COD_UNIDADE_NOME_LOCAL_SEPARATOR)[0].trim());
+        return Long.valueOf(resposta.split(COD_UNIDADE_NOME_LOCAL_MOVIMENTO_SEPARATOR)[0].trim());
     }
 }

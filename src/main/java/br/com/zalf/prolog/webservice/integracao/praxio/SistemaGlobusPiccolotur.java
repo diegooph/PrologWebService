@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.praxio;
 
 import br.com.zalf.prolog.webservice.Injection;
-import br.com.zalf.prolog.webservice.config.BuildConfig;
+import br.com.zalf.prolog.webservice.commons.util.ProLogUtils;
 import br.com.zalf.prolog.webservice.customfields.CampoPersonalizadoDao;
 import br.com.zalf.prolog.webservice.customfields._model.CampoPersonalizadoParaRealizacao;
 import br.com.zalf.prolog.webservice.customfields._model.TipoCampoPersonalizado;
@@ -268,11 +268,12 @@ public final class SistemaGlobusPiccolotur extends Sistema {
 
             // É necessário transferir os pneus apenas se a unidade onde a movimentação foi feita é diferente do que
             // a unidade onde o usuário está.
+            // Ambos os códigos de unidade são códigos do Prolog.
             if (!codUnidadeOrigem.equals(codUnidadeMovimento)) {
                 // Nesse caso devemos transferir os pneus em estoque para a unidade de movimento.
                 final List<Movimentacao> movimentacoesEstoque = processoMovimentacao.getMovimentacoes()
                         .stream()
-                        .filter(movimentacao -> movimentacao.getDestino().getTipo().equals(OrigemDestinoEnum.ESTOQUE))
+                        .filter(movimentacao -> movimentacao.isTo(OrigemDestinoEnum.ESTOQUE))
                         .collect(Collectors.toList());
 
                 if (!movimentacoesEstoque.isEmpty()) {
@@ -346,12 +347,12 @@ public final class SistemaGlobusPiccolotur extends Sistema {
                             throw new GlobusPiccoloturException("Nenhum campo de Lista de Seleção disponível");
                         });
 
-        // fluxo integrado, direcionamos a requisição para a Praxio.
+        // Fluxo integrado, direcionamos a requisição para a Praxio.
         Connection conn = null;
         final DatabaseConnectionProvider connectionProvider = new DatabaseConnectionProvider();
         try {
             conn = connectionProvider.provideDatabaseConnection();
-            final long codEmpresa = oldCampoSelecaoLocalMovimento.getCodEmpresa();
+            final Long codEmpresa = oldCampoSelecaoLocalMovimento.getCodEmpresa();
 
             final ApiAutenticacaoHolder autenticacaoHolder =
                     getIntegradorProLog()
@@ -367,23 +368,26 @@ public final class SistemaGlobusPiccolotur extends Sistema {
                             autenticacaoHolder.getApiShortCode());
 
             final String cpfColaborador =
-                    BuildConfig.DEBUG
+                    ProLogUtils.isDebug()
                             ? GlobusPiccoloturConstants.CPF_COLABORADOR_LOCAIS_MOVIMENTO
                             : getIntegradorProLog().getColaboradorByToken(getUserToken()).getCpfAsString();
             final String url =
                     getIntegradorProLog()
                             .getUrl(conn, codEmpresa, getSistemaKey(), MetodoIntegrado.GET_LOCAIS_DE_MOVIMENTO);
             final List<GlobusPiccoloturLocalMovimento> locaisMovimentoGlobus =
-                    requester.getLocaisMovimentoGlobus(
+                    requester.getLocaisMovimentoGlobusResponse(
                             url,
                             autenticacaoResponse.getFormattedBearerToken(),
-                            cpfColaborador);
-            final CampoPersonalizadoParaRealizacao novoCampoSelecaoLocalMovimento =
+                            cpfColaborador)
+                            .getLocais();
+
+            // Os locais de movimento já são validados no request, não chegaram null aqui.
+            @SuppressWarnings("ConstantConditions") final CampoPersonalizadoParaRealizacao novoCampoSelecaoLocalMovimento =
                     GlobusPiccoloturConverter.convert(oldCampoSelecaoLocalMovimento, locaisMovimentoGlobus);
-            // removemos o campo de selção antigo.
+            // Removemos o campo de selção antigo.
             camposParaRealizacaoMovimentacao.remove(oldCampoSelecaoLocalMovimento);
-            // adicionamos o novo campo de seleção, esse contém as opções que foram buscadas do Globus.
-            // adicionamos ele no início, para que seja a primeira informação que o usuário preecha.
+            // Adicionamos o novo campo de seleção, esse contém as opções que foram buscadas do Globus.
+            // Adicionamos ele no início, para que seja a primeira informação que o usuário preencha.
             camposParaRealizacaoMovimentacao.add(0, novoCampoSelecaoLocalMovimento);
             return camposParaRealizacaoMovimentacao;
         } finally {

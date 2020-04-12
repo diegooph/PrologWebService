@@ -119,7 +119,7 @@ public final class GlobusPiccoloturConverter {
             @NotNull final String usuarioGlobus,
             @NotNull final GlobusPiccoloturLocalMovimento localMovimentoGlobus,
             @NotNull final ProcessoMovimentacao processoMovimentacao,
-            @NotNull final LocalDateTime dataHoraMovimentacao) throws Throwable {
+            @NotNull final LocalDateTime dataHoraMovimentacao) {
         final List<MovimentacaoGlobus> movimentacoesGlobus = new ArrayList<>();
         for (int i = 0; i < processoMovimentacao.getMovimentacoes().size(); i++) {
             final Movimentacao movimentacao = processoMovimentacao.getMovimentacoes().get(i);
