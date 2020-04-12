@@ -185,6 +185,12 @@ public abstract class Sistema implements OperacoesIntegradas {
 
     @NotNull
     @Override
+    public Long insertChecklistOffline(@NotNull final ChecklistInsercao checklist) throws Throwable {
+        return getIntegradorProLog().insertChecklistOffline(checklist);
+    }
+
+    @NotNull
+    @Override
     public List<TipoVeiculo> getTiposVeiculosFiltroChecklist(@NotNull Long codEmpresa) throws Throwable {
         return getIntegradorProLog().getTiposVeiculosFiltroChecklist(codEmpresa);
     }

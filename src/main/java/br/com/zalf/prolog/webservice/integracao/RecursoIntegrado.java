@@ -11,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public enum RecursoIntegrado {
     CHECKLIST("CHECKLIST"),
+    CHECKLIST_OFFLINE("CHECKLIST_OFFLINE"),
     CHECKLIST_MODELO("CHECKLIST_MODELO"),
     CHECKLIST_ORDEM_SERVICO("CHECKLIST_ORDEM_SERVICO"),
     VEICULOS("VEICULOS"),
