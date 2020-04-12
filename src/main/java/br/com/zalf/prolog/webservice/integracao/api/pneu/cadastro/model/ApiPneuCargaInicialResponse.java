@@ -23,6 +23,8 @@ public final class ApiPneuCargaInicialResponse {
     private final String mensagem;
     @Nullable
     private final Long codPneuProLog;
+    @Nullable
+    private final Throwable throwable;
 
     @NotNull
     public static ApiPneuCargaInicialResponse ok(@NotNull final Long codigoSistemaIntegrado,
@@ -33,18 +35,21 @@ public final class ApiPneuCargaInicialResponse {
                 codigoCliente,
                 true,
                 SUCCESS_MESSAGE,
-                codPneuProLog);
+                codPneuProLog,
+                null);
     }
 
     @NotNull
     public static ApiPneuCargaInicialResponse error(@NotNull final Long codigoSistemaIntegrado,
-                                                    @NotNull final String codigoCliente) {
+                                                    @NotNull final String codigoCliente,
+                                                    @NotNull final Throwable throwable) {
         return new ApiPneuCargaInicialResponse(
                 codigoSistemaIntegrado,
                 codigoCliente,
                 false,
                 ERROR_MESSAGE,
-                null);
+                null,
+                throwable);
     }
 
     @NotNull
@@ -56,6 +61,7 @@ public final class ApiPneuCargaInicialResponse {
                 codigoCliente,
                 false,
                 errorMessage,
+                null,
                 null);
     }
 
@@ -63,12 +69,14 @@ public final class ApiPneuCargaInicialResponse {
                                         @NotNull final String codigoCliente,
                                         @NotNull final Boolean sucesso,
                                         @NotNull final String mensagem,
-                                        @Nullable final Long codPneuProLog) {
+                                        @Nullable final Long codPneuProLog,
+                                        @Nullable final Throwable throwable) {
         this.codigoSistemaIntegrado = codigoSistemaIntegrado;
         this.codigoCliente = codigoCliente;
         this.sucesso = sucesso;
         this.mensagem = mensagem;
         this.codPneuProLog = codPneuProLog;
+        this.throwable = throwable;
     }
 
     @NotNull
@@ -94,5 +102,10 @@ public final class ApiPneuCargaInicialResponse {
     @Nullable
     public Long getCodPneuProLog() {
         return codPneuProLog;
+    }
+
+    @Nullable
+    public Throwable getThrowable() {
+        return throwable;
     }
 }
