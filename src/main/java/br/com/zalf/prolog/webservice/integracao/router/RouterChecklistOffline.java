@@ -14,22 +14,21 @@ import org.jetbrains.annotations.NotNull;
  */
 public final class RouterChecklistOffline extends Router {
 
+    private RouterChecklistOffline(@NotNull final IntegracaoDao integracaoDao,
+                                   @NotNull final IntegradorProLog integradorProLog,
+                                   @NotNull final String userToken,
+                                   @NotNull final RecursoIntegrado recursoIntegrado) {
+        super(integracaoDao, integradorProLog, userToken, recursoIntegrado);
+    }
+
     public static RouterChecklistOffline create(@NotNull final ChecklistOfflineDao checklistOfflineDao,
                                                 @NotNull final String userToken) {
         return new RouterChecklistOffline(
                 Injection.provideIntegracaoDao(),
                 new IntegradorProLog.Builder(userToken)
                         .withChecklistOfflineDao(checklistOfflineDao)
-                        .withTipoVeiculoDao(Injection.provideTipoVeiculoDao())
                         .build(),
                 userToken,
                 RecursoIntegrado.CHECKLIST_OFFLINE);
-    }
-
-    private RouterChecklistOffline(@NotNull final IntegracaoDao integracaoDao,
-                                   @NotNull final IntegradorProLog integradorProLog,
-                                   @NotNull final String userToken,
-                                   @NotNull final RecursoIntegrado recursoIntegrado) {
-        super(integracaoDao, integradorProLog, userToken, recursoIntegrado);
     }
 }
