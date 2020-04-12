@@ -1,8 +1,8 @@
 package br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model;
 
+import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.destino.Destino;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.origem.Origem;
-import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -10,26 +10,32 @@ import org.jetbrains.annotations.Nullable;
  * Created by Zart on 23/02/17.
  */
 public class Movimentacao {
-    private Long codigo;
     private final Pneu pneu;
     private final Origem origem;
     private final Destino destino;
     private final String observacao;
+    private final Long codMotivoMovimento;
+    private Long codigo;
 
-    public Movimentacao(@Nullable Long codigo, @NotNull Pneu pneu, @NotNull Origem origem, @NotNull Destino destino,
-                        @Nullable String observacao) {
+    public Movimentacao(@Nullable final Long codigo,
+                        @NotNull final Pneu pneu,
+                        @NotNull final Origem origem,
+                        @NotNull final Destino destino,
+                        @Nullable final String observacao,
+                        @Nullable final Long codMotivoMovimento) {
         this.codigo = codigo;
         this.pneu = pneu;
         this.origem = origem;
         this.destino = destino;
         this.observacao = observacao;
+        this.codMotivoMovimento = codMotivoMovimento;
     }
 
     public Long getCodigo() {
         return codigo;
     }
 
-    public void setCodigo(Long codigo) {
+    public void setCodigo(final Long codigo) {
         this.codigo = codigo;
     }
 
@@ -47,6 +53,10 @@ public class Movimentacao {
 
     public String getObservacao() {
         return observacao;
+    }
+
+    public Long getCodMotivoMovimento() {
+        return this.codMotivoMovimento;
     }
 
     /**

@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.movimentacao;
 
 import br.com.zalf.prolog.webservice.customfields.CampoPersonalizadoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.ProcessoMovimentacao;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.motivo.Motivo;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.Motivo;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoDao;
 import org.jetbrains.annotations.NotNull;
 

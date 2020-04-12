@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.praxio;
 
 import br.com.zalf.prolog.webservice.Injection;
-import br.com.zalf.prolog.webservice.config.BuildConfig;
+import br.com.zalf.prolog.webservice.commons.util.ProLogUtils;
 import br.com.zalf.prolog.webservice.customfields.CampoPersonalizadoDao;
 import br.com.zalf.prolog.webservice.customfields._model.CampoPersonalizadoParaRealizacao;
 import br.com.zalf.prolog.webservice.customfields._model.TipoCampoPersonalizado;
@@ -31,6 +31,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
 import java.time.OffsetDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
@@ -50,6 +51,12 @@ public final class SistemaGlobusPiccolotur extends Sistema {
                                    @NotNull final String userToken) {
         super(integradorProLog, sistemaKey, userToken);
         this.requester = requester;
+    }
+
+    @NotNull
+    @Override
+    public Long insertChecklistOffline(@NotNull final ChecklistInsercao checklist) throws Throwable {
+        return insertChecklist(checklist, true, false);
     }
 
     @NotNull
@@ -113,10 +120,11 @@ public final class SistemaGlobusPiccolotur extends Sistema {
 
     @NotNull
     @Override
-    public ResultInsertModeloChecklist insertModeloChecklist(@NotNull final ModeloChecklistInsercao modeloChecklist,
-                                                             @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener,
-                                                             final boolean statusAtivo,
-                                                             @NotNull final String token) throws Throwable {
+    public ResultInsertModeloChecklist insertModeloChecklist(
+            @NotNull final ModeloChecklistInsercao modeloChecklist,
+            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener,
+            final boolean statusAtivo,
+            @NotNull final String token) throws Throwable {
         // Ignoramos o statusAtivo repassado pois queremos forçar que o modelo de checklist tenha o statusAtivo = false.
         return getIntegradorProLog().insertModeloChecklist(modeloChecklist, checklistOfflineListener, false, token);
     }
@@ -141,13 +149,26 @@ public final class SistemaGlobusPiccolotur extends Sistema {
     }
 
     @Override
-    public void resolverItem(@NotNull final ResolverItemOrdemServico item) {
-        throw new BloqueadoIntegracaoException("O fechamento de itens de O.S. deverá ser feito pelo Sistema Globus");
+    public void resolverItem(@NotNull final ResolverItemOrdemServico item) throws Throwable {
+        final boolean itemIntegrado =
+                getSistemaGlobusPiccoloturDaoImpl().
+                        verificaItensIntegrados(Collections.singletonList(item.getCodItemResolvido()));
+        if (itemIntegrado) {
+            throw new BloqueadoIntegracaoException(
+                    "O fechamento de itens de O.S. integrados deverá ser feito apenas pelo Sistema Globus");
+        }
+        getIntegradorProLog().resolverItem(item);
     }
 
     @Override
-    public void resolverItens(@NotNull final ResolverMultiplosItensOs itensResolucao) {
-        throw new BloqueadoIntegracaoException("O fechamento de itens de O.S. deverá ser feito pelo Sistema Globus");
+    public void resolverItens(@NotNull final ResolverMultiplosItensOs itensResolucao) throws Throwable {
+        final boolean itensIntegrados =
+                getSistemaGlobusPiccoloturDaoImpl().verificaItensIntegrados(itensResolucao.getCodigosItens());
+        if (itensIntegrados) {
+            throw new BloqueadoIntegracaoException(
+                    "O fechamento de itens de O.S. integrados deverá ser feito apenas pelo Sistema Globus");
+        }
+        getIntegradorProLog().resolverItens(itensResolucao);
     }
 
     @NotNull
@@ -253,11 +274,12 @@ public final class SistemaGlobusPiccolotur extends Sistema {
 
             // É necessário transferir os pneus apenas se a unidade onde a movimentação foi feita é diferente do que
             // a unidade onde o usuário está.
+            // Ambos os códigos de unidade são códigos do Prolog.
             if (!codUnidadeOrigem.equals(codUnidadeMovimento)) {
                 // Nesse caso devemos transferir os pneus em estoque para a unidade de movimento.
                 final List<Movimentacao> movimentacoesEstoque = processoMovimentacao.getMovimentacoes()
                         .stream()
-                        .filter(movimentacao -> movimentacao.getDestino().getTipo().equals(OrigemDestinoEnum.ESTOQUE))
+                        .filter(movimentacao -> movimentacao.isTo(OrigemDestinoEnum.ESTOQUE))
                         .collect(Collectors.toList());
 
                 if (!movimentacoesEstoque.isEmpty()) {
@@ -331,12 +353,12 @@ public final class SistemaGlobusPiccolotur extends Sistema {
                             throw new GlobusPiccoloturException("Nenhum campo de Lista de Seleção disponível");
                         });
 
-        // fluxo integrado, direcionamos a requisição para a Praxio.
+        // Fluxo integrado, direcionamos a requisição para a Praxio.
         Connection conn = null;
         final DatabaseConnectionProvider connectionProvider = new DatabaseConnectionProvider();
         try {
             conn = connectionProvider.provideDatabaseConnection();
-            final long codEmpresa = oldCampoSelecaoLocalMovimento.getCodEmpresa();
+            final Long codEmpresa = oldCampoSelecaoLocalMovimento.getCodEmpresa();
 
             final ApiAutenticacaoHolder autenticacaoHolder =
                     getIntegradorProLog()
@@ -352,23 +374,26 @@ public final class SistemaGlobusPiccolotur extends Sistema {
                             autenticacaoHolder.getApiShortCode());
 
             final String cpfColaborador =
-                    BuildConfig.DEBUG
+                    ProLogUtils.isDebug()
                             ? GlobusPiccoloturConstants.CPF_COLABORADOR_LOCAIS_MOVIMENTO
                             : getIntegradorProLog().getColaboradorByToken(getUserToken()).getCpfAsString();
             final String url =
                     getIntegradorProLog()
                             .getUrl(conn, codEmpresa, getSistemaKey(), MetodoIntegrado.GET_LOCAIS_DE_MOVIMENTO);
             final List<GlobusPiccoloturLocalMovimento> locaisMovimentoGlobus =
-                    requester.getLocaisMovimentoGlobus(
+                    requester.getLocaisMovimentoGlobusResponse(
                             url,
                             autenticacaoResponse.getFormattedBearerToken(),
-                            cpfColaborador);
-            final CampoPersonalizadoParaRealizacao novoCampoSelecaoLocalMovimento =
+                            cpfColaborador)
+                            .getLocais();
+
+            // Os locais de movimento já são validados no request, não chegaram null aqui.
+            @SuppressWarnings("ConstantConditions") final CampoPersonalizadoParaRealizacao novoCampoSelecaoLocalMovimento =
                     GlobusPiccoloturConverter.convert(oldCampoSelecaoLocalMovimento, locaisMovimentoGlobus);
-            // removemos o campo de selção antigo.
+            // Removemos o campo de selção antigo.
             camposParaRealizacaoMovimentacao.remove(oldCampoSelecaoLocalMovimento);
-            // adicionamos o novo campo de seleção, esse contém as opções que foram buscadas do Globus.
-            // adicionamos ele no início, para que seja a primeira informação que o usuário preecha.
+            // Adicionamos o novo campo de seleção, esse contém as opções que foram buscadas do Globus.
+            // Adicionamos ele no início, para que seja a primeira informação que o usuário preencha.
             camposParaRealizacaoMovimentacao.add(0, novoCampoSelecaoLocalMovimento);
             return camposParaRealizacaoMovimentacao;
         } finally {

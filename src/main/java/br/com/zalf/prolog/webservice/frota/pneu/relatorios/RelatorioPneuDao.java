@@ -5,7 +5,7 @@ import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.QtdDiasAfericoesVencidas;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.TipoMedicaoColetadaAfericao;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.motivo.MotivoDescarte;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoDescarte;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios._model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.TipoServico;
 import br.com.zalf.prolog.webservice.geral.unidade._model.Unidade;
@@ -30,6 +30,7 @@ public interface RelatorioPneuDao {
      * foram aferidos em um range de data.
      * Para fins de exportação em CSV.
      * <p>
+     *
      * @param outputStream - Arquivo onde os dados serão armazenados para retornar.
      * @param codUnidades  - {@link List<Long>} de códigos das {@link Unidade}s.
      * @param dataInicial  - Data inicial do período de filtro.
@@ -493,4 +494,5 @@ public interface RelatorioPneuDao {
     void getVencimentoDotCsv(@NotNull final OutputStream out,
                              @NotNull final List<Long> codUnidades,
                              @NotNull final String userToken) throws Throwable;
+
 }

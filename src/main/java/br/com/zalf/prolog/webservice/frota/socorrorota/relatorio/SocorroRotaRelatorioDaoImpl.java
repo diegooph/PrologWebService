@@ -5,6 +5,8 @@ import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.report.ReportTransformer;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
+import br.com.zalf.prolog.webservice.commons.util.date.Now;
+import br.com.zalf.prolog.webservice.frota.socorrorota._model.StatusSocorroRota;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.OutputStream;
@@ -12,7 +14,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.time.LocalDate;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import static br.com.zalf.prolog.webservice.database.DatabaseConnection.close;
 import static br.com.zalf.prolog.webservice.database.DatabaseConnection.getConnection;
@@ -82,4 +86,32 @@ public class SocorroRotaRelatorioDaoImpl implements SocorroRotaRelatorioDao {
         stmt.setArray(4, PostgresUtils.listToArray(conn, SqlType.VARCHAR, statusSocorrosRotas));
         return stmt;
     }
+
+    @Override
+    public @NotNull Map<StatusSocorroRota, Integer> getSocorrosPorStatus(@NotNull final List<Long> codUnidades) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        final Map<StatusSocorroRota, Integer> statusSocorroRota = new LinkedHashMap<>();
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_SOCORRO_ROTA_RELATORIO_SOCORROS_POR_STATUS(" +
+                    "F_COD_UNIDADES := ?," +
+                    "F_DATA_HORA_BUSCA_RELATORIO := ?);");
+
+            stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
+            stmt.setObject(2, Now.localDateUtc());
+
+            rSet = stmt.executeQuery();
+            while (rSet.next()) {
+                statusSocorroRota.put(
+                        StatusSocorroRota.fromString(rSet.getString("STATUS")),
+                        rSet.getInt("QUANTIDADE_SOCORROS"));
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
+        return statusSocorroRota;
+    }
+
 }

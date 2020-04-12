@@ -41,6 +41,8 @@ public final class PneuCrudApiTest extends BaseTest {
     @NotNull
     private static final String TOKEN_INTEGRACAO = "TOKEN" + RANDOM.nextInt(999999999);
     @NotNull
+    private static final String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVXYZW";
+    @NotNull
     private static final Long COD_EMPRESA = 3L;
     @NotNull
     private static final Long COD_UNIDADE = 5L;
@@ -1618,8 +1620,7 @@ public final class PneuCrudApiTest extends BaseTest {
             stmt.setLong(1, COD_EMPRESA);
             stmt.setString(2, TOKEN_INTEGRACAO);
             stmt.setString(3, TOKEN_INTEGRACAO);
-            rSet = stmt.executeQuery();
-            if (!rSet.next()) {
+            if (stmt.executeUpdate() <= 0) {
                 throw new SQLException("Erro ao criar TOKEN");
             }
         } finally {
@@ -1667,7 +1668,7 @@ public final class PneuCrudApiTest extends BaseTest {
         }
     }
 
-    private Long buscaUmaUnidadeDaEmpresa() throws Throwable{
+    private Long buscaUmaUnidadeDaEmpresa() throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -1693,7 +1694,7 @@ public final class PneuCrudApiTest extends BaseTest {
         }
     }
 
-    private Long buscaUmCpfDaUnidade() throws Throwable{
+    private Long buscaUmCpfDaUnidade() throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -2596,10 +2597,19 @@ public final class PneuCrudApiTest extends BaseTest {
     private VeiculoCadastroPraxio criaVeiculoParaCadastro() throws Throwable {
         return new VeiculoCadastroPraxio(
                 COD_UNIDADE,
-                "PLA" + RANDOM.nextInt(9999),
+                getRandomPlaca(),
                 1000L,
                 buscaCodModeloVeiculo(),
                 buscaCodTipoVeiculo()
         );
+    }
+
+    @NotNull
+    private String getRandomPlaca() {
+        final StringBuilder placa = new StringBuilder(3);
+        for (int i = 0; i < 3; i++) {
+            placa.append(ALPHABET.charAt(RANDOM.nextInt(ALPHABET.length())));
+        }
+        return placa.toString();
     }
 }

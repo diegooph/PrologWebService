@@ -2,8 +2,9 @@
 
 import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-/**
+ /**
  * Created by Zart on 02/03/17.
  */
 public enum OrigemDestinoEnum implements PermissoesValidatorString {
@@ -42,6 +43,18 @@ public enum OrigemDestinoEnum implements PermissoesValidatorString {
     OrigemDestinoEnum(@NotNull final StatusPneu statusPneu) {
         this.statusPneu = statusPneu;
     }
+
+     @NotNull
+     public static OrigemDestinoEnum fromString(@Nullable final String text) throws IllegalArgumentException {
+         if (text != null) {
+             for (final OrigemDestinoEnum origemDestinoEnum : OrigemDestinoEnum.values()) {
+                 if (text.equalsIgnoreCase(origemDestinoEnum.statusPneu.asString())) {
+                     return origemDestinoEnum;
+                 }
+             }
+         }
+         throw new IllegalArgumentException("Nenhuma origem/destino encontrada para a String: " + text);
+     }
 
     @NotNull
     public String asString() {

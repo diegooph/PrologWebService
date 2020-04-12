@@ -41,7 +41,7 @@ public final class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             }
             conn.commit();
             return codigosPneus;
-        } catch (Throwable e) {
+        } catch (final Throwable e) {
             if (conn != null) {
                 conn.rollback();
             }
@@ -53,7 +53,7 @@ public final class PneuDaoImpl extends DatabaseConnection implements PneuDao {
 
     @Override
     @NotNull
-    public Long insert(Pneu pneu, Long codUnidade) throws Throwable {
+    public Long insert(final Pneu pneu, final Long codUnidade) throws Throwable {
         Connection conn = null;
         try {
             conn = getConnection();
@@ -61,7 +61,7 @@ public final class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             final Long codPneuInserido = internalInsert(conn, pneu, codUnidade);
             conn.commit();
             return codPneuInserido;
-        } catch (Throwable e) {
+        } catch (final Throwable e) {
             if (conn != null) {
                 conn.rollback();
             }
@@ -121,7 +121,7 @@ public final class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             stmt.setLong(19, codUnidade);
 
             rSet = stmt.executeQuery();
-            Long codPneu;
+            final Long codPneu;
             if (rSet.next()) {
                 codPneu = rSet.getLong("CODIGO");
                 pneu.setCodigo(codPneu);
@@ -154,9 +154,16 @@ public final class PneuDaoImpl extends DatabaseConnection implements PneuDao {
         try {
             conn = getConnection();
             conn.setAutoCommit(false);
-            stmt = conn.prepareStatement("UPDATE PNEU SET CODIGO_CLIENTE = ?, COD_MODELO = ?, COD_DIMENSAO = ?, "
-                    + "COD_MODELO_BANDA = ?, DOT = ?, VALOR = ?, VIDA_TOTAL = ?"
-                    + "WHERE CODIGO = ? AND COD_UNIDADE = ?;");
+            stmt = conn.prepareStatement("SELECT FUNC_PNEU_ATUALIZA(F_COD_CLIENTE := ?," +
+                    "F_COD_MODELO := ?," +
+                    "F_COD_DIMENSAO := ?," +
+                    "F_COD_MODELO_BANDA := ?," +
+                    "F_DOT := ?," +
+                    "F_VALOR := ?," +
+                    "F_VIDA_TOTAL := ?," +
+                    "F_PRESSAO_RECOMENDADA := ?," +
+                    "F_COD_ORIGINAL_PNEU := ?," +
+                    "F_COD_UNIDADE := ?);");
             stmt.setString(1, pneu.getCodigoCliente());
             stmt.setLong(2, pneu.getModelo().getCodigo());
             stmt.setLong(3, pneu.getDimensao().codigo);
@@ -173,13 +180,12 @@ public final class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             stmt.setString(5, pneu.getDot());
             stmt.setBigDecimal(6, pneu.getValor());
             stmt.setInt(7, pneu.getVidasTotal());
-            stmt.setLong(8, codOriginalPneu);
-            stmt.setLong(9, codUnidade);
+            stmt.setDouble(8, pneu.getPressaoCorreta());
+            stmt.setLong(9, codOriginalPneu);
+            stmt.setLong(10, codUnidade);
 
-            final int count = stmt.executeUpdate();
-            if (count == 0) {
-                throw new SQLException("Erro ao atualizar as informações do pneu: " + pneu.getCodigo());
-            }
+            stmt.executeQuery();
+
             conn.commit();
         } catch (final Throwable e) {
             if (conn != null) {
@@ -192,11 +198,11 @@ public final class PneuDaoImpl extends DatabaseConnection implements PneuDao {
     }
 
     @Override
-    public List<Pneu> getPneusByPlaca(String placa) throws SQLException {
+    public List<Pneu> getPneusByPlaca(final String placa) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        List<Pneu> listPneu = new ArrayList<>();
+        final List<Pneu> listPneu = new ArrayList<>();
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_GET_PNEU_BY_PLACA(F_PLACA := ?);");
@@ -319,7 +325,8 @@ public final class PneuDaoImpl extends DatabaseConnection implements PneuDao {
 
     @NotNull
     @Override
-    public List<Pneu> getPneusByCodUnidadeByStatus(@NotNull Long codUnidade, @NotNull StatusPneu status) throws Throwable {
+    public List<Pneu> getPneusByCodUnidadeByStatus(@NotNull final Long codUnidade,
+                                                   @NotNull final StatusPneu status) throws Throwable {
         return internalGetPneus(codUnidade, status.asString());
     }
 
@@ -351,7 +358,7 @@ public final class PneuDaoImpl extends DatabaseConnection implements PneuDao {
     }
 
     @Override
-    public List<Marca> getMarcaModeloPneuByCodEmpresa(Long codEmpresa) throws SQLException {
+    public List<Marca> getMarcaModeloPneuByCodEmpresa(final Long codEmpresa) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;

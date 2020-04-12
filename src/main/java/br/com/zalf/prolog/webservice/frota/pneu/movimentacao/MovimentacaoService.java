@@ -12,7 +12,7 @@ import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.Movimentacao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.PermissoesMovimentacaoValidator;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.ProcessoMovimentacao;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.motivo.Motivo;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.Motivo;
 import br.com.zalf.prolog.webservice.gente.colaborador.ColaboradorService;
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.integracao.router.RouterMovimentacao;
@@ -24,7 +24,7 @@ import java.util.List;
 /**
  * Created by Zart on 03/03/17.
  */
-public final class MovimentacaoService {
+public class MovimentacaoService {
     @NotNull
     private static final String TAG = MovimentacaoService.class.getSimpleName();
     @NotNull
@@ -122,4 +122,5 @@ public final class MovimentacaoService {
                     .map(t, "Erro ao buscar os campos personalizados, tente novamente");
         }
     }
+
 }

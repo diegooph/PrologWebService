@@ -16,6 +16,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.Model
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ResultInsertModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.realizacao.ModeloChecklistRealizacao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.realizacao.ModeloChecklistSelecao;
+import br.com.zalf.prolog.webservice.frota.checklist.offline.ChecklistOfflineDao;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.OrdemServicoDao;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverItemOrdemServico;
@@ -71,6 +72,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
     private final PneuTransferenciaDao pneuTransferenciaDao;
     private final TipoVeiculoDao tipoVeiculoDao;
     private final ChecklistDao checklistDao;
+    private final ChecklistOfflineDao checklistOfflineDao;
     private final ChecklistModeloDao checklistModeloDao;
     private final OrdemServicoDao ordemServicoDao;
     private AfericaoDao afericaoDao;
@@ -86,6 +88,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
                              final PneuTransferenciaDao pneuTransferenciaDao,
                              final TipoVeiculoDao tipoVeiculoDao,
                              final ChecklistDao checklistDao,
+                             final ChecklistOfflineDao checklistOfflineDao,
                              final ChecklistModeloDao checklistModeloDao,
                              final OrdemServicoDao ordemServicoDao,
                              final AfericaoDao afericaoDao,
@@ -100,6 +103,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         this.pneuTransferenciaDao = pneuTransferenciaDao;
         this.tipoVeiculoDao = tipoVeiculoDao;
         this.checklistDao = checklistDao;
+        this.checklistOfflineDao = checklistOfflineDao;
         this.checklistModeloDao = checklistModeloDao;
         this.ordemServicoDao = ordemServicoDao;
         this.afericaoDao = afericaoDao;
@@ -119,6 +123,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
                 Injection.providePneuTransferenciaDao(),
                 Injection.provideTipoVeiculoDao(),
                 Injection.provideChecklistDao(),
+                Injection.provideChecklistOfflineDao(),
                 Injection.provideChecklistModeloDao(),
                 Injection.provideOrdemServicoDao(),
                 Injection.provideAfericaoDao(),
@@ -440,6 +445,12 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
 
     @NotNull
     @Override
+    public Long insertChecklistOffline(@NotNull final ChecklistInsercao checklist) throws Throwable {
+        return checklistOfflineDao.insertChecklistOffline(checklist);
+    }
+
+    @NotNull
+    @Override
     public Checklist getChecklistByCodigo(@NotNull final Long codChecklist) throws Exception {
         return checklistDao.getByCod(codChecklist);
     }
@@ -573,6 +584,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         private PneuTransferenciaDao pneuTransferenciaDao;
         private TipoVeiculoDao tipoVeiculoDao;
         private ChecklistDao checklistDao;
+        private ChecklistOfflineDao checklistOfflineDao;
         private ChecklistModeloDao checklistModeloDao;
         private OrdemServicoDao ordemServicoDao;
         private AfericaoDao afericaoDao;
@@ -612,6 +624,11 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
 
         public Builder withChecklistDao(final ChecklistDao checklistDao) {
             this.checklistDao = checklistDao;
+            return this;
+        }
+
+        public Builder withChecklistOfflineDao(final ChecklistOfflineDao checklistOfflineDao) {
+            this.checklistOfflineDao = checklistOfflineDao;
             return this;
         }
 
@@ -659,6 +676,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
                     pneuTransferenciaDao,
                     tipoVeiculoDao,
                     checklistDao,
+                    checklistOfflineDao,
                     checklistModeloDao,
                     ordemServicoDao,
                     afericaoDao,

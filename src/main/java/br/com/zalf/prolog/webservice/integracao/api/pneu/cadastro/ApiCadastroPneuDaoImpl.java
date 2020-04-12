@@ -9,7 +9,10 @@ import br.com.zalf.prolog.webservice.integracao.api.pneu.cadastro.model.*;
 import org.jetbrains.annotations.NotNull;
 import org.postgresql.util.PSQLException;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -84,9 +87,7 @@ public final class ApiCadastroPneuDaoImpl extends DatabaseConnection implements 
                                 pneuCargaInicial.getCodigoCliente(),
                                 codPneuProlog));
                     } else {
-                        pneuCargaInicialResponses.add(ApiPneuCargaInicialResponse.error(
-                                pneuCargaInicial.getCodigoSistemaIntegrado(),
-                                pneuCargaInicial.getCodigoCliente()));
+                        throw new IllegalStateException("Erro ao processar carga inicial para o pneu, retorno inválido");
                     }
                 } catch (final PSQLException sqlException) {
                     // Se ocorreu uma SQLException deveremos mapear a mensagem que está nela.
@@ -97,7 +98,8 @@ public final class ApiCadastroPneuDaoImpl extends DatabaseConnection implements 
                 } catch (final Throwable t) {
                     pneuCargaInicialResponses.add(ApiPneuCargaInicialResponse.error(
                             pneuCargaInicial.getCodigoSistemaIntegrado(),
-                            pneuCargaInicial.getCodigoCliente()));
+                            pneuCargaInicial.getCodigoCliente(),
+                            t));
                 }
             }
 
@@ -217,7 +219,7 @@ public final class ApiCadastroPneuDaoImpl extends DatabaseConnection implements 
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM INTEGRACAO.FUNC_PNEU_TRANFERE_PNEU_ENTRE_UNIDADES(" +
+            stmt = conn.prepareStatement("SELECT * FROM INTEGRACAO.FUNC_PNEU_TRANSFERE_PNEU_ENTRE_UNIDADES(" +
                     "F_COD_UNIDADE_ORIGEM := ?, " +
                     "F_COD_UNIDADE_DESTINO := ?, " +
                     "F_CPF_COLABORADOR_TRANSFERENCIA := ?, " +
