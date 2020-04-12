@@ -64,6 +64,7 @@ public final class AberturaOrdemServicoTest extends BaseTest {
     private ChecklistOfflineService checklistOfflineService;
     private String tokenIntegrado;
 
+    @Override
     @BeforeAll
     public void initialize() throws Throwable {
         DatabaseManager.init();
@@ -73,6 +74,7 @@ public final class AberturaOrdemServicoTest extends BaseTest {
         tokenIntegrado = getValidToken("3383283194");
     }
 
+    @Override
     @AfterAll
     public void destroy() {
         modeloChecklistService = null;
@@ -457,12 +459,12 @@ public final class AberturaOrdemServicoTest extends BaseTest {
      * 3 - Inserir esse checklist na base do ProLog e nas tabelas de mapeamento utilizando o fluxo offline.
      * 4 - Utilizando os itens NOK apontados no checklist, montar uma Ordem de Serviço.
      * 5 - Inserir a Ordem de Serviço utilizando os métodos disponíveis na integração.
-     * 6 - A partir O.S Aberta, criar uma O.S Fechada.
+     * 6 - A partir da O.S Aberta, criar uma O.S Fechada.
      * 7 - Utilizar os métodos da integração para inserir os Itens da O.S fechada.
      * <p>
      * Para esse teste ser considerado um sucesso, devemos validar:
      * 1 - Se existe no ProLog aquela O.S e se está com status fechada.
-     * 2 - Se existe nas tabelas de mapeamento, os vinculos indicando que a O.S está reamente fechada.
+     * 2 - Se existe nas tabelas de mapeamento, os vinculos indicando que a O.S está realmente fechada.
      *
      * @throws Throwable Teste executado apresentou erro
      */
@@ -475,7 +477,7 @@ public final class AberturaOrdemServicoTest extends BaseTest {
         // ################################### ETAPA 2 - Cria um checklist do modelo ###################################
         final ChecklistInsercao checklistInsercao = insertChecklistModeloCriado(COD_UNIDADE, resultModeloChecklist);
 
-        // Configura modelo para ser integrado
+        // Configura modelo para ser integrado.
         permiteSincronizarModeloChecklist(resultModeloChecklist);
 
         final Long codChecklistInserido =
@@ -490,7 +492,7 @@ public final class AberturaOrdemServicoTest extends BaseTest {
         final long nextCodOs = getNextCodOsUnidade(COD_UNIDADE);
         final List<Long> codsAlaternativasOS = new ArrayList<>();
 
-        { // region Insere a Ordem de Serviço Globus a partir do checklist
+        { // region Insere a Ordem de Serviço Globus a partir do checklist.
             final ChecklistItensNokGlobus checklistItensNokGlobus =
                     getChecklistToSyncGlobus(codChecklistInserido, sistemaGlobusPiccoloturDao)
                             .getChecklistItensNokGlobus();
@@ -505,7 +507,7 @@ public final class AberturaOrdemServicoTest extends BaseTest {
             codsAlaternativasOS.add(pergunta1.getAlternativasNok().get(0).getCodContextoAlternativaNok());
 
             final PerguntaNokGlobus pergunta2 = checklistItensNokGlobus.getPerguntasNok().get(1);
-            // Adiciona item 1
+            // Adiciona item 1.
             itensOSAbertaGlobus.add(
                     new ItemOSAbertaGlobus(
                             getRandomCodItenGlobus(),
@@ -513,7 +515,7 @@ public final class AberturaOrdemServicoTest extends BaseTest {
                             pergunta2.getAlternativasNok().get(0).getCodContextoAlternativaNok()));
             codsAlaternativasOS.add(pergunta2.getAlternativasNok().get(0).getCodContextoAlternativaNok());
 
-            // Adiciona item 1
+            // Adiciona item 1.
             itensOSAbertaGlobus.add(
                     new ItemOSAbertaGlobus(
                             getRandomCodItenGlobus(),
@@ -537,7 +539,7 @@ public final class AberturaOrdemServicoTest extends BaseTest {
         // ################################## ETAPA 5 - Fecha a O.S Globus no ProLog ###################################
         final List<ItemResolvidoGlobus> itensResolvidos = new ArrayList<>();
 
-        { // region Informações para fechamento de O.S Globus no Prolog
+        { // region Informações para fechamento de O.S Globus no Prolog.
             for (final ItemOSAbertaGlobus itemGlobus : itensOSAbertaGlobus) {
                 itensResolvidos.add(new ItemResolvidoGlobus(
                         COD_UNIDADE,
@@ -558,7 +560,7 @@ public final class AberturaOrdemServicoTest extends BaseTest {
                 integracaoPraxioService.resolverMultiplosItens(TOKEN_INTEGRACAO, itensResolvidos);
 
         // ################################ ETAPA 6 - Valida informações do fechamento #################################
-        { // region Validação das informações
+        { // region Validação das informações.
             assertThat(responseIntegracao).isNotNull();
 
             final HolderResolucaoOrdemServico ordemServico =
@@ -588,7 +590,7 @@ public final class AberturaOrdemServicoTest extends BaseTest {
                 assertThat(itemFechado.getKmVeiculoColetadoResolucao()).isNotNull();
             });
 
-            // Valida informações de mapeamento das O.S.s fechadas
+            // Valida informações de mapeamento das O.S.s fechadas.
             final DatabaseConnectionProvider provider = new DatabaseConnectionProvider();
             Connection conn = null;
             PreparedStatement stmt = null;
@@ -633,12 +635,12 @@ public final class AberturaOrdemServicoTest extends BaseTest {
      * 3 - Inserir esse checklist na base do ProLog e nas tabelas de mapeamento utilizando o fluxo offline.
      * 4 - Utilizando os itens NOK apontados no checklist, montar uma Ordem de Serviço.
      * 5 - Inserir a Ordem de Serviço utilizando os métodos disponíveis na integração.
-     * 6 - A partir O.S Aberta, criar uma O.S Fechada.
+     * 6 - A partir da O.S Aberta, criar uma O.S Fechada.
      * 7 - Utilizar os métodos da integração para inserir os Itens da O.S fechada.
      * <p>
      * Para esse teste ser considerado um sucesso, devemos validar:
      * 1 - Se existe no ProLog aquela O.S e se está com status fechada.
-     * 2 - Se existe nas tabelas de mapeamento, os vinculos indicando que a O.S está reamente fechada.
+     * 2 - Se existe nas tabelas de mapeamento, os vinculos indicando que a O.S está realmente fechada.
      *
      * @throws Throwable Teste executado apresentou erro
      */
@@ -651,7 +653,7 @@ public final class AberturaOrdemServicoTest extends BaseTest {
         // ################################### ETAPA 2 - Cria um checklist do modelo ###################################
         final ChecklistInsercao checklistInsercao = insertChecklistModeloCriado(COD_UNIDADE, resultModeloChecklist);
 
-        // Configura modelo para ser integrado
+        // Configura modelo para ser integrado.
         permiteSincronizarModeloChecklist(resultModeloChecklist);
         removeTokenColaborador(checklistInsercao.getCodColaborador());
 
@@ -667,13 +669,13 @@ public final class AberturaOrdemServicoTest extends BaseTest {
         final long nextCodOs = getNextCodOsUnidade(COD_UNIDADE);
         final List<Long> codsAlaternativasOS = new ArrayList<>();
 
-        { // region Insere a Ordem de Serviço Globus a partir do checklist
+        { // region Insere a Ordem de Serviço Globus a partir do checklist.
             final ChecklistItensNokGlobus checklistItensNokGlobus =
                     getChecklistToSyncGlobus(codChecklistInserido, sistemaGlobusPiccoloturDao)
                             .getChecklistItensNokGlobus();
 
             final PerguntaNokGlobus pergunta1 = checklistItensNokGlobus.getPerguntasNok().get(0);
-            // Adiciona item 1
+            // Adiciona item 1.
             itensOSAbertaGlobus.add(
                     new ItemOSAbertaGlobus(
                             getRandomCodItenGlobus(),
@@ -682,7 +684,7 @@ public final class AberturaOrdemServicoTest extends BaseTest {
             codsAlaternativasOS.add(pergunta1.getAlternativasNok().get(0).getCodContextoAlternativaNok());
 
             final PerguntaNokGlobus pergunta2 = checklistItensNokGlobus.getPerguntasNok().get(1);
-            // Adiciona item 1
+            // Adiciona item 1.
             itensOSAbertaGlobus.add(
                     new ItemOSAbertaGlobus(
                             getRandomCodItenGlobus(),
