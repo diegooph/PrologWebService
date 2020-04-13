@@ -18,7 +18,7 @@ public class ProLogApplicationEventListener implements ApplicationEventListener 
     public void onEvent(final ApplicationEvent applicationEvent) {
         switch (applicationEvent.getType()) {
             case INITIALIZATION_APP_FINISHED:
-                Sentry.init(EnvironmentHelper.SENTRY_DSN);
+                Sentry.init(EnvironmentHelper.SENTRY_DSN + "?release=" + BuildConfig.VERSION_CODE);
                 break;
         }
     }
