@@ -7,6 +7,9 @@ Change Log
 ### Features
 * Inicaliza Sentry com informações da versão do WS
 
+### Refactors
+* Cria serializer/deserializer específico para o `OrigemDestinoEnum` (PL-2681) 
+
 <a name="v1.0.26"></a>
 ## Version [v1.0.26](https://github.com/luizfp/PrologWebService/compare/v1.0.25...v1.0.26) (2020-04-12)
 
