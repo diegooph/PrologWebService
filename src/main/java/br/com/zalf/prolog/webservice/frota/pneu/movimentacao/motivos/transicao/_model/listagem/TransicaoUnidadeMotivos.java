@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -15,7 +16,8 @@ import java.util.List;
  */
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public final class TransicaoUnidadeMotivos {
+public final class TransicaoUnidadeMotivos implements Comparable<TransicaoUnidadeMotivos> {
+
     @NotNull
     @EqualsAndHashCode.Include
     private final OrigemDestinoEnum origemMovimento;
@@ -26,4 +28,38 @@ public final class TransicaoUnidadeMotivos {
     private final List<MotivoMovimentoUnidade> motivosMovimento;
     @Nullable
     private final Boolean obrigatorioMotivoMovimento;
+
+    @Override
+    public int compareTo(@NotNull final TransicaoUnidadeMotivos outraTransicao) {
+
+        final List<String> ordem = Arrays.asList("ESTOQUE", "ANALISE", "EM_USO");
+
+        if (ordem.indexOf(this.getOrigemMovimento().toString())
+                < ordem.indexOf(outraTransicao.getOrigemMovimento().asString())) {
+            return -1;
+        }
+
+        if (ordem.indexOf(this.getOrigemMovimento().toString())
+                > ordem.indexOf(outraTransicao.getOrigemMovimento().asString())) {
+            return 1;
+        }
+
+        if (ordem.indexOf(this.getOrigemMovimento().toString())
+                == ordem.indexOf(outraTransicao.getOrigemMovimento().asString())) {
+
+            if (ordem.indexOf(this.getDestinoMovimento().toString())
+                    < ordem.indexOf(outraTransicao.getDestinoMovimento().asString())) {
+                return -1;
+            }
+
+            if (ordem.indexOf(this.getDestinoMovimento().toString())
+                    > ordem.indexOf(outraTransicao.getDestinoMovimento().asString())) {
+                return 1;
+            }
+
+        }
+
+        return 0;
+    }
+
 }
