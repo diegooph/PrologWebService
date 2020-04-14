@@ -172,12 +172,12 @@ public final class MotivoMovimentoTransicaoDaoImpl extends DatabaseConnection im
         final List<TransicaoUnidadeMotivos> transicoesPossiveisUnidade = TransicaoUtil.criaListDeTransicoesPossiveis();
 
         for (final UnidadeTransicoesMotivoMovimento unidade : unidades) {
-            if (unidade.getTransicoesUnidade().size() == 0) {
+            if (unidade.getTransicoesUnidade().isEmpty()) {
                 unidade.getTransicoesUnidade().addAll(transicoesPossiveisUnidade);
             }
 
             for (final TransicaoUnidadeMotivos transicaoPossivel : transicoesPossiveisUnidade) {
-                if (!verificarSeTransicaoExiste(unidade.getTransicoesUnidade(), transicaoPossivel)) {
+                if (!TransicaoUtil.verificarSeTransicaoExisteEmUmaLista(unidade.getTransicoesUnidade(), transicaoPossivel)) {
                     unidade.getTransicoesUnidade().add(transicaoPossivel);
                 }
             }
@@ -185,17 +185,7 @@ public final class MotivoMovimentoTransicaoDaoImpl extends DatabaseConnection im
         }
     }
 
-    private boolean verificarSeTransicaoExiste(final List<TransicaoUnidadeMotivos> transicoesUnidade,
-                                               final TransicaoUnidadeMotivos transicaoPossivel) {
-        for (final TransicaoUnidadeMotivos transicaoUnidade : transicoesUnidade) {
-            if (transicaoUnidade.getOrigemMovimento() == transicaoPossivel.getOrigemMovimento()
-                    && transicaoUnidade.getDestinoMovimento() == transicaoPossivel.getDestinoMovimento()) {
-                return true;
-            }
-        }
 
-        return false;
-    }
 
     @NotNull
     @Override
