@@ -171,21 +171,17 @@ public final class MotivoMovimentoTransicaoDaoImpl extends DatabaseConnection im
     private void preencherTransicoesUnidades(final List<UnidadeTransicoesMotivoMovimento> unidades) {
         final List<TransicaoUnidadeMotivos> transicoesPossiveisUnidade = TransicaoUtil.criaListDeTransicoesPossiveis();
 
-        for (final UnidadeTransicoesMotivoMovimento unidade : unidades) {
-            if (unidade.getTransicoesUnidade().isEmpty()) {
-                unidade.getTransicoesUnidade().addAll(transicoesPossiveisUnidade);
-            }
-
-            for (final TransicaoUnidadeMotivos transicaoPossivel : transicoesPossiveisUnidade) {
-                if (!TransicaoUtil.verificarSeTransicaoExisteEmUmaLista(unidade.getTransicoesUnidade(), transicaoPossivel)) {
-                    unidade.getTransicoesUnidade().add(transicaoPossivel);
-                }
-            }
-
-        }
+        transicoesPossiveisUnidade.forEach(t ->
+                unidades.forEach(unidade ->
+                        unidade.getTransicoesUnidade()
+                                .stream()
+                                .filter(transicao -> transicao.equals(t))
+                                .findFirst()
+                                .orElseGet(() -> {
+                                    unidade.getTransicoesUnidade().add(t);
+                                    return t;
+                                })));
     }
-
-
 
     @NotNull
     @Override
