@@ -6,7 +6,6 @@ import org.jetbrains.annotations.NotNull;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 
 import static br.com.zalf.prolog.webservice.database.DatabaseConnection.close;
 import static br.com.zalf.prolog.webservice.database.DatabaseConnection.getConnection;
@@ -19,7 +18,9 @@ import static br.com.zalf.prolog.webservice.database.DatabaseConnection.getConne
 public class ApresentacaoDaoImpl implements ApresentacaoDao {
 
     @Override
-    public void getResetaClonaEmpresaApresentacao(@NotNull final String username, @NotNull final Long codEmpresaBase, @NotNull final Long codEmpresaUsuario) throws Throwable {
+    public void getResetaClonaEmpresaApresentacao(@NotNull final String username,
+                                                  @NotNull final Long codEmpresaBase,
+                                                  @NotNull final Long codEmpresaUsuario) throws Throwable {
 
         //Verificar se empresa pertence a usuário
         Connection conn = null;
@@ -42,7 +43,9 @@ public class ApresentacaoDaoImpl implements ApresentacaoDao {
         }
     }
 
-    private boolean verifyUsuarioEmpresa(@NotNull final Connection conn, @NotNull final String username, @NotNull final Long codEmpresaUsuario) throws Throwable {
+    private boolean verifyUsuarioEmpresa(@NotNull final Connection conn,
+                                         @NotNull final String username,
+                                         @NotNull final Long codEmpresaUsuario) throws Throwable {
 
         PreparedStatement stmt = null;
         ResultSet rSet = null;

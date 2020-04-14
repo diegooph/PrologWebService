@@ -6,7 +6,6 @@ import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import org.jetbrains.annotations.NotNull;
 
 import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
 
 /**
  * Created on 13/04/20.

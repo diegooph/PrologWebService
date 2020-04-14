@@ -36,6 +36,5 @@ public class ApresentacaoService {
                     .provideProLogExceptionHandler()
                     .map(throwable, "Erro com a conexão");
         }
-
     }
 }
