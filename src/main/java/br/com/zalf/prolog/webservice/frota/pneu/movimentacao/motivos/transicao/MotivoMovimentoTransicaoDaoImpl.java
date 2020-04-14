@@ -164,6 +164,10 @@ public final class MotivoMovimentoTransicaoDaoImpl extends DatabaseConnection im
             // Preenche a lista de transições da unidade com as possíveis transições que ela não tenha parametrizado.
             preencherTransicoesUnidades(unidades);
 
+            unidades.forEach(unidade ->
+                    Collections.sort(unidade.getTransicoesUnidade())
+            );
+
             return unidades;
         } finally {
             close(conn, stmt, rSet);
