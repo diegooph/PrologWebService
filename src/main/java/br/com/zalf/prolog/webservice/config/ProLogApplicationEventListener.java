@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.config;
 
 import br.com.zalf.prolog.webservice.commons.util.EnvironmentHelper;
+import br.com.zalf.prolog.webservice.commons.util.ProLogUtils;
 import io.sentry.Sentry;
 import org.glassfish.jersey.server.monitoring.ApplicationEvent;
 import org.glassfish.jersey.server.monitoring.ApplicationEventListener;
@@ -18,7 +19,9 @@ public class ProLogApplicationEventListener implements ApplicationEventListener 
     public void onEvent(final ApplicationEvent applicationEvent) {
         switch (applicationEvent.getType()) {
             case INITIALIZATION_APP_FINISHED:
-                Sentry.init(EnvironmentHelper.SENTRY_DSN + "?release=" + BuildConfig.VERSION_CODE);
+                if (!ProLogUtils.isDebug()) {
+                    Sentry.init(EnvironmentHelper.SENTRY_DSN + "?release=" + BuildConfig.VERSION_CODE);
+                }
                 break;
         }
     }
