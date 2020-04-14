@@ -6,13 +6,30 @@ Change Log
 ### Refactors
 * Adiciona código da unidade da placa no cronograma de aferição (PLI-119)
 
+
+<a name="v1.0.27"></a>
+## Version [v1.0.27](https://github.com/luizfp/PrologWebService/compare/v1.0.26...v1.0.27) (release-date) [unreleased]
+
+### Features
+* Inicaliza Sentry com informações da versão do WS
+
+### Refactors
+* Cria serializer/deserializer específico para o `OrigemDestinoEnum` (PL-2681) 
+* Modifica listagem de transições por unidade para completar lista com transições não cadastradas (PL-2681)
+
 <a name="v1.0.26"></a>
-## Version [v1.0.26](https://github.com/luizfp/PrologWebService/compare/v1.0.25...v1.0.26) (release-date) [unreleased]
+## Version [v1.0.26](https://github.com/luizfp/PrologWebService/compare/v1.0.25...v1.0.26) (2020-04-12)
+
 ### Features
 * Cria dashboard de socorros por status nos ultimos 30 dias (PL-2618)
+* Cria estrutura para cadastro e configuração de motivos para o processo de movimentação (PL-2607)
+* Permite alteração da pressão recomendada dos pneus (PL-2570)
 
 ### Refactors
 * Permitir fechamento de O.Ss originadas no Prolog (PLI-99)
+* Adiciona os registros de deslocamento para socorros em rota (PL-2631)
+* Adiciona informações de tempo entre cada status do socorro em rota (PL-2585)
+* Roteia método de sincronia de checklist offline (PLI-118)
 
 ### Bug Fixes
 * Corrige parse sem replace de virgula no import de csv (PL-2573)

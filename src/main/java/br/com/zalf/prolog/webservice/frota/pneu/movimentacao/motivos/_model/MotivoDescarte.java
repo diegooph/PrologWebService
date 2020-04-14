@@ -1,13 +1,16 @@
-package br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.motivo;
+package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model;
 
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Created on 24/01/18.
- *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
+ * @deprecated at 2020-04-02. É necessário refatorar esse objeto para um objeto específico do motivo de descarte,
+ * sem herança.
+ * <p>
+ * Created on 24/01/18.
  */
-public class MotivoDescarte extends Motivo {
+@Deprecated
+public final class MotivoDescarte extends Motivo {
     public static final String TIPO_MOTIVO_DESCARTE = "MOTIVO_DESCARTE";
 
     private Long codEmpresa;
@@ -16,10 +19,10 @@ public class MotivoDescarte extends Motivo {
         setTipo(TIPO_MOTIVO_DESCARTE);
     }
 
-    public MotivoDescarte(@NotNull Long codigo,
-                          @NotNull String motivo,
-                          boolean ativo,
-                          @NotNull Long codEmpresa) {
+    public MotivoDescarte(@NotNull final Long codigo,
+                          @NotNull final String motivo,
+                          final boolean ativo,
+                          @NotNull final Long codEmpresa) {
         super(TIPO_MOTIVO_DESCARTE, codigo, motivo, ativo);
         this.codEmpresa = codEmpresa;
     }
@@ -29,7 +32,7 @@ public class MotivoDescarte extends Motivo {
         return codEmpresa;
     }
 
-    public void setCodEmpresa(@NotNull Long codEmpresa) {
+    public void setCodEmpresa(@NotNull final Long codEmpresa) {
         this.codEmpresa = codEmpresa;
     }
 

@@ -469,6 +469,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
                 servico.getPneuComProblema(),
                 origemVeiculo,
                 destinoEstoque,
+                null,
                 null);
 
         // O pneu inserido foi selecionado do estoque e deve ser movido para o veículo na mesma posição onde o pneu com
@@ -480,6 +481,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
                 servico.getPneuNovo(),
                 origemEstoque,
                 destinoVeiculo,
+                null,
                 null);
 
         // Cria o processo da movimentação.

@@ -26,7 +26,7 @@ public final class GlobusPiccoloturConstants {
     public static final String METODO_PARA_LIBERAR = "GerarOrdemDeServicoCorretivaProlog";
     public static final String USUARIO_PROLOG_INTEGRACAO = "MANAGER";
     public static final String CPF_COLABORADOR_LOCAIS_MOVIMENTO = "35118345898";
-    public static final String COD_UNIDADE_NOME_LOCAL_SEPARATOR = " - ";
+    public static final String COD_UNIDADE_NOME_LOCAL_MOVIMENTO_SEPARATOR = " - ";
 
     private GlobusPiccoloturConstants() {
         throw new IllegalStateException(GlobusPiccoloturConstants.class.getSimpleName() + " can not be instantiated");
