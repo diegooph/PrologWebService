@@ -160,27 +160,14 @@ public final class MotivoMovimentoTransicaoDaoImpl extends DatabaseConnection im
 
                 codUltimaUnidade = rSet.getLong("codigo_unidade");
             }
+
+            // Preenche a lista de transições da unidade com as possíveis transições que ela não tenha parametrizado.
             preencherTransicoesUnidades(unidades);
 
             return unidades;
         } finally {
             close(conn, stmt, rSet);
         }
-    }
-
-    private void preencherTransicoesUnidades(final List<UnidadeTransicoesMotivoMovimento> unidades) {
-        final List<TransicaoUnidadeMotivos> transicoesPossiveisUnidade = TransicaoUtil.criaListDeTransicoesPossiveis();
-
-        transicoesPossiveisUnidade.forEach(t ->
-                unidades.forEach(unidade ->
-                        unidade.getTransicoesUnidade()
-                                .stream()
-                                .filter(transicao -> transicao.equals(t))
-                                .findFirst()
-                                .orElseGet(() -> {
-                                    unidade.getTransicoesUnidade().add(t);
-                                    return t;
-                                })));
     }
 
     @NotNull
@@ -255,4 +242,18 @@ public final class MotivoMovimentoTransicaoDaoImpl extends DatabaseConnection im
         }
     }
 
+    private void preencherTransicoesUnidades(@NotNull final List<UnidadeTransicoesMotivoMovimento> unidades) {
+        final List<TransicaoUnidadeMotivos> transicoesPossiveisUnidade = TransicaoUtils.getListDeTransicoesPossiveis();
+
+        transicoesPossiveisUnidade.forEach(t ->
+                unidades.forEach(unidade ->
+                        unidade.getTransicoesUnidade()
+                                .stream()
+                                .filter(transicao -> transicao.equals(t))
+                                .findFirst()
+                                .orElseGet(() -> {
+                                    unidade.getTransicoesUnidade().add(t);
+                                    return t;
+                                })));
+    }
 }

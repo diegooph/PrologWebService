@@ -16,7 +16,6 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public final class TransicaoUnidadeMotivos {
-
     @NotNull
     @EqualsAndHashCode.Include
     private final OrigemDestinoEnum origemMovimento;
