@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+# Stage
+
+### Refactors
+* Adiciona código da unidade da placa no cronograma de aferição (PLI-119)
+
+
 <a name="v1.0.27"></a>
 ## Version [v1.0.27](https://github.com/luizfp/PrologWebService/compare/v1.0.26...v1.0.27) (release-date) [unreleased]
 

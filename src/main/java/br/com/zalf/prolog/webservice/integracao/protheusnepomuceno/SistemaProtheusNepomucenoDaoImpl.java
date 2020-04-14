@@ -360,7 +360,7 @@ public final class SistemaProtheusNepomucenoDaoImpl extends DatabaseConnection i
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            stmt = conn.prepareStatement("SELECT STRING_AGG(COD_AUXILIAR, '_') AS COD_AUXILIAR " +
+            stmt = conn.prepareStatement("SELECT STRING_AGG(COD_AUXILIAR, ',') AS COD_AUXILIAR " +
                     "FROM PUBLIC.UNIDADE WHERE CODIGO = ANY(?);");
             stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
             rSet = stmt.executeQuery();

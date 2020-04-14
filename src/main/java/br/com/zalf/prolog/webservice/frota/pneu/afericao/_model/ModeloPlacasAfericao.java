@@ -86,7 +86,15 @@ public class ModeloPlacasAfericao {
          */
         public static final int INTERVALO_INVALIDO = -1;
 
+        /**
+         * Indentificar do veículo.
+         */
         private String placa;
+
+        /**
+         * Código da unidade a qual a placa está vinculada.
+         */
+        private Long codUnidadePlaca;
 
         /**
          * Número inteiro que representa a quantidade de dias desde a última aferição de Sulco.
@@ -140,6 +148,14 @@ public class ModeloPlacasAfericao {
 
         public void setPlaca(String placa) {
             this.placa = placa;
+        }
+
+        public Long getCodUnidadePlaca() {
+            return codUnidadePlaca;
+        }
+
+        public void setCodUnidadePlaca(final Long codUnidadePlaca) {
+            this.codUnidadePlaca = codUnidadePlaca;
         }
 
         public int getIntervaloUltimaAfericaoSulco() {

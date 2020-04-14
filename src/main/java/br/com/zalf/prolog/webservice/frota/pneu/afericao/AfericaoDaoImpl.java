@@ -594,6 +594,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
     private ModeloPlacasAfericao.PlacaAfericao createPlacaAfericao(@NotNull final ResultSet rSet) throws Throwable {
         final ModeloPlacasAfericao.PlacaAfericao placa = new ModeloPlacasAfericao.PlacaAfericao();
         placa.setPlaca(rSet.getString("PLACA"));
+        placa.setCodUnidadePlaca(rSet.getLong("COD_UNIDADE_PLACA"));
         placa.setIntervaloUltimaAfericaoSulco(rSet.getInt("INTERVALO_SULCO"));
         placa.setIntervaloUltimaAfericaoPressao(rSet.getInt("INTERVALO_PRESSAO"));
         placa.setQuantidadePneus(rSet.getInt("PNEUS_APLICADOS"));
