@@ -83,7 +83,7 @@ public final class MotivoMovimentoTransicaoConverter {
                 rSet.getLong("CODIGO_UNIDADE"),
                 OrigemDestinoEnum.fromString(rSet.getString("ORIGEM")),
                 OrigemDestinoEnum.fromString(rSet.getString("destino")),
-                rSet.getBoolean("OBRIGATORIO"));
+                false);
     }
 
 }
