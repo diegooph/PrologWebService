@@ -156,8 +156,8 @@ public class CronogramaAfericao {
                                 // Se não pode aferir nem SULCO nem PRESSAO e nem SULCO_PRESSAO, removemos essa placa
                                 // da listagem.
                                 !p.isPodeAferirPressao()
-                                && !p.isPodeAferirSulco()
-                                && !p.isPodeAferirSulcoPressao()));
+                                        && !p.isPodeAferirSulco()
+                                        && !p.isPodeAferirSulcoPressao()));
     }
 
     public void removerModelosSemPlacas() {
