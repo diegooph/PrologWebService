@@ -19,6 +19,7 @@ import java.sql.SQLException;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import static br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.transicao.MotivoMovimentoTransicaoConverter.createMotivoMovimentoUnidade;
@@ -164,9 +165,10 @@ public final class MotivoMovimentoTransicaoDaoImpl extends DatabaseConnection im
             // Preenche a lista de transições da unidade com as possíveis transições que ela não tenha parametrizado.
             preencherTransicoesUnidades(unidades);
 
-            unidades.forEach(unidade ->
-                    Collections.sort(unidade.getTransicoesUnidade())
-            );
+            // Ordena a lista de transições das unidades para que fiquem todas com a mesma ordenação.
+            unidades.forEach(unidade -> unidade
+                    .getTransicoesUnidade()
+                    .sort(TransicaoUnidadeMotivos::compareTo));
 
             return unidades;
         } finally {
