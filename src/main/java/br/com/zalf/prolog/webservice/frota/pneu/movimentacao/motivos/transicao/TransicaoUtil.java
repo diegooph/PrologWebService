@@ -1,11 +1,10 @@
 package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.transicao;
 
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestinoEnum;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.transicao._model.listagem.MotivoMovimentoUnidade;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.transicao._model.listagem.TransicaoUnidadeMotivos;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.transicao._model.Transicao;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created on 2020-04-14
@@ -14,15 +13,14 @@ import java.util.List;
  */
 public final class TransicaoUtil {
 
-    public static List<TransicaoUnidadeMotivos> criaListDeTransicoesPossiveis() {
-        final List<TransicaoUnidadeMotivos> transicoesUnidade = new ArrayList<>();
-        final List<MotivoMovimentoUnidade> motivosMovimentoVazio = new ArrayList<>();
+    public static Map<Transicao, Boolean> criaListDeTransicoesPossiveis() {
+        final Map<Transicao, Boolean> transicoesUnidade = new HashMap<>();
 
-        transicoesUnidade.add(new TransicaoUnidadeMotivos(OrigemDestinoEnum.ESTOQUE, OrigemDestinoEnum.VEICULO, motivosMovimentoVazio, false));
-        transicoesUnidade.add(new TransicaoUnidadeMotivos(OrigemDestinoEnum.ESTOQUE, OrigemDestinoEnum.ANALISE, motivosMovimentoVazio, false));
-        transicoesUnidade.add(new TransicaoUnidadeMotivos(OrigemDestinoEnum.VEICULO, OrigemDestinoEnum.ESTOQUE, motivosMovimentoVazio, false));
-        transicoesUnidade.add(new TransicaoUnidadeMotivos(OrigemDestinoEnum.VEICULO, OrigemDestinoEnum.ANALISE, motivosMovimentoVazio, false));
-        transicoesUnidade.add(new TransicaoUnidadeMotivos(OrigemDestinoEnum.VEICULO, OrigemDestinoEnum.VEICULO, motivosMovimentoVazio, false));
+        transicoesUnidade.put(new Transicao(OrigemDestinoEnum.ESTOQUE, OrigemDestinoEnum.VEICULO), false);
+        transicoesUnidade.put(new Transicao(OrigemDestinoEnum.ESTOQUE, OrigemDestinoEnum.ANALISE), false);
+        transicoesUnidade.put(new Transicao(OrigemDestinoEnum.VEICULO, OrigemDestinoEnum.ESTOQUE), false);
+        transicoesUnidade.put(new Transicao(OrigemDestinoEnum.VEICULO, OrigemDestinoEnum.ANALISE), false);
+        transicoesUnidade.put(new Transicao(OrigemDestinoEnum.VEICULO, OrigemDestinoEnum.VEICULO), false);
 
         return transicoesUnidade;
     }
