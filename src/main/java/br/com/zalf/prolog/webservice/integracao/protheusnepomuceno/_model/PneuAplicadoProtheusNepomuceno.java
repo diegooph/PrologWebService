@@ -104,6 +104,18 @@ public final class PneuAplicadoProtheusNepomuceno {
     private final String dotPneu;
 
     /**
+     * Atributo alfanumérico que representa o nome da marca do pneu.
+     */
+    @NotNull
+    private final String nomeMarcaPneu;
+
+    /**
+     * Atributo alfanumérico que representa o código da marca do pneu.
+     */
+    @NotNull
+    private final String codMarcaPneu;
+
+    /**
      * Atributo alfanumérico que representa o nome do modelo.
      */
     @NotNull
@@ -120,6 +132,20 @@ public final class PneuAplicadoProtheusNepomuceno {
      */
     @NotNull
     private final Integer qtdSulcosModeloPneu;
+
+    /**
+     * Atributo alfanumérico que representa o nome da marca da banda. Esse valor será nulo caso o pneu nunca tenha
+     * sido recapado.
+     */
+    @Nullable
+    private final String nomeMarcaBanda;
+
+    /**
+     * Atributo alfanumérico que representa o código da marca da banda. Esse valor será nulo caso o pneu nunca tenha
+     * sido recapado.
+     */
+    @Nullable
+    private final String codMarcaBanda;
 
     /**
      * Atributo alfanumérico que representa o nome do modelo de banda. Esse valor será nulo caso o pneu nunca tenha
@@ -162,9 +188,13 @@ public final class PneuAplicadoProtheusNepomuceno {
                                           @NotNull final Double sulcoCentralExternoPneu,
                                           @NotNull final Double sulcoExternoPneu,
                                           @NotNull final String dotPneu,
+                                          @NotNull final String nomeMarcaPneu,
+                                          @NotNull final String codMarcaPneu,
                                           @NotNull final String nomeModeloPneu,
                                           @NotNull final String codModeloPneu,
                                           @NotNull final Integer qtdSulcosModeloPneu,
+                                          @Nullable final String nomeMarcaBanda,
+                                          @Nullable final String codMarcaBanda,
                                           @Nullable final String nomeModeloBanda,
                                           @Nullable final String codModeloBanda,
                                           @Nullable final Integer qtdSulcosModeloBanda,
@@ -183,9 +213,13 @@ public final class PneuAplicadoProtheusNepomuceno {
         this.sulcoCentralExternoPneu = sulcoCentralExternoPneu;
         this.sulcoExternoPneu = sulcoExternoPneu;
         this.dotPneu = dotPneu;
+        this.nomeMarcaPneu = nomeMarcaPneu;
+        this.codMarcaPneu = codMarcaPneu;
         this.nomeModeloPneu = nomeModeloPneu;
         this.codModeloPneu = codModeloPneu;
         this.qtdSulcosModeloPneu = qtdSulcosModeloPneu;
+        this.nomeMarcaBanda = nomeMarcaBanda;
+        this.codMarcaBanda = codMarcaBanda;
         this.nomeModeloBanda = nomeModeloBanda;
         this.codModeloBanda = codModeloBanda;
         this.qtdSulcosModeloBanda = qtdSulcosModeloBanda;
@@ -209,9 +243,13 @@ public final class PneuAplicadoProtheusNepomuceno {
                 11.0,
                 11.1,
                 "0405",
+                "MICHELIN",
+                "221",
                 "LSU",
                 "28",
                 3,
+                "VIPAL",
+                "829",
                 "DV-RM 226",
                 "89",
                 3,
@@ -290,6 +328,16 @@ public final class PneuAplicadoProtheusNepomuceno {
     }
 
     @NotNull
+    public String getNomeMarcaPneu() {
+        return nomeMarcaPneu;
+    }
+
+    @NotNull
+    public String getCodMarcaPneu() {
+        return codMarcaPneu;
+    }
+
+    @NotNull
     public String getNomeModeloPneu() {
         return nomeModeloPneu;
     }
@@ -302,6 +350,16 @@ public final class PneuAplicadoProtheusNepomuceno {
     @NotNull
     public Integer getQtdSulcosModeloPneu() {
         return qtdSulcosModeloPneu;
+    }
+
+    @Nullable
+    public String getNomeMarcaBanda() {
+        return nomeMarcaBanda;
+    }
+
+    @Nullable
+    public String getCodMarcaBanda() {
+        return codMarcaBanda;
     }
 
     @Nullable

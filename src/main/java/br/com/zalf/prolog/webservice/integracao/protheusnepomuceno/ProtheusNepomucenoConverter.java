@@ -235,7 +235,7 @@ public final class ProtheusNepomucenoConverter {
         pneu.setPressaoCorreta(pneuEstoqueNepomuceno.getPressaoRecomendadaPneu());
         pneu.setPressaoAtual(pneuEstoqueNepomuceno.getPressaoAtualPneu());
         pneu.setVidaAtual(pneuEstoqueNepomuceno.getVidaAtualPneu());
-        pneu.setVidasTotal(10);
+        pneu.setVidasTotal(pneuEstoqueNepomuceno.getVidaTotalPneu());
         pneu.setCodUnidadeAlocado(codUnidadePneuAlocado);
         pneu.setDimensao(new Pneu.Dimensao());
 
@@ -318,11 +318,13 @@ public final class ProtheusNepomucenoConverter {
         pneu.setSulcosAtuais(sulcosAtuais);
         final ModeloPneu modeloPneu = new ModeloPneu();
         modeloPneu.setCodigo(DEFAULT_COD_MODELO_PNEU);
+        modeloPneu.setNome(pneuAplicado.getNomeModeloPneu());
         modeloPneu.setQuantidadeSulcos(pneuAplicado.getQtdSulcosModeloPneu());
         pneu.setModelo(modeloPneu);
         if (pneuAplicado.isRecapado()) {
             final ModeloBanda modeloBanda = new ModeloBanda();
             modeloBanda.setCodigo(DEFAULT_COD_MODELO_BANDA);
+            modeloBanda.setNome(pneuAplicado.getNomeModeloBanda());
             modeloBanda.setQuantidadeSulcos(pneuAplicado.getQtdSulcosModeloPneu());
             final Banda banda = new Banda();
             banda.setModelo(modeloBanda);
