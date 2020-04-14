@@ -6,6 +6,7 @@ Change Log
 
 ### Features
 * Inicaliza Sentry com informações da versão do WS
+* Cria estrutura para empresa reset/clonagem de empresa de apresentação (PL-2034)
 
 <a name="v1.0.26"></a>
 ## Version [v1.0.26](https://github.com/luizfp/PrologWebService/compare/v1.0.25...v1.0.26) (2020-04-12)
