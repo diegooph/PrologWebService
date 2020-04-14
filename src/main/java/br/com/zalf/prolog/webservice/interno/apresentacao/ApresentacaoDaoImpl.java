@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.interno.apresentacao;
 
+import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
@@ -34,7 +35,7 @@ public class ApresentacaoDaoImpl implements ApresentacaoDao {
                 stmt.setLong(2, codEmpresaUsuario);
                 stmt.executeQuery();
             } else {
-                throw new SQLException("Usuário e empresa não correspondem");
+                throw new GenericException("Usuário e empresa não correspondem");
             }
         } finally {
             close(conn, stmt);
