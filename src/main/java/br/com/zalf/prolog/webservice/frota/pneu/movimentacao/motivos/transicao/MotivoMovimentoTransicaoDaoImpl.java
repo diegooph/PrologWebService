@@ -160,10 +160,41 @@ public final class MotivoMovimentoTransicaoDaoImpl extends DatabaseConnection im
 
                 codUltimaUnidade = rSet.getLong("codigo_unidade");
             }
+            preencherTransicoesUnidades(unidades);
+
             return unidades;
         } finally {
             close(conn, stmt, rSet);
         }
+    }
+
+    private void preencherTransicoesUnidades(final List<UnidadeTransicoesMotivoMovimento> unidades) {
+        final List<TransicaoUnidadeMotivos> transicoesPossiveisUnidade = TransicaoUtil.criaListDeTransicoesPossiveis();
+
+        for (final UnidadeTransicoesMotivoMovimento unidade : unidades) {
+            if (unidade.getTransicoesUnidade().size() == 0) {
+                unidade.getTransicoesUnidade().addAll(transicoesPossiveisUnidade);
+            }
+
+            for (final TransicaoUnidadeMotivos transicaoPossivel : transicoesPossiveisUnidade) {
+                if (!verificarSeTransicaoExiste(unidade.getTransicoesUnidade(), transicaoPossivel)) {
+                    unidade.getTransicoesUnidade().add(transicaoPossivel);
+                }
+            }
+
+        }
+    }
+
+    private boolean verificarSeTransicaoExiste(final List<TransicaoUnidadeMotivos> transicoesUnidade,
+                                               final TransicaoUnidadeMotivos transicaoPossivel) {
+        for (final TransicaoUnidadeMotivos transicaoUnidade : transicoesUnidade) {
+            if (transicaoUnidade.getOrigemMovimento() == transicaoPossivel.getOrigemMovimento()
+                    && transicaoUnidade.getDestinoMovimento() == transicaoPossivel.getDestinoMovimento()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     @NotNull
