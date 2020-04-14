@@ -156,6 +156,8 @@ import br.com.zalf.prolog.webservice.integracao.IntegracaoDao;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoDaoImpl;
 import br.com.zalf.prolog.webservice.integracao.autenticacao.AutenticacaoIntegracaoDao;
 import br.com.zalf.prolog.webservice.integracao.autenticacao.AutenticacaoIntegracaoDaoImpl;
+import br.com.zalf.prolog.webservice.interno.apresentacao.ApresentacaoDao;
+import br.com.zalf.prolog.webservice.interno.apresentacao.ApresentacaoDaoImpl;
 import br.com.zalf.prolog.webservice.interno.autenticacao.AutenticacaoLoginSenhaDao;
 import br.com.zalf.prolog.webservice.interno.autenticacao.AutenticacaoLoginSenhaDaoImpl;
 import br.com.zalf.prolog.webservice.interno.implantacao.conferencia.frota.pneu.PneuConferenciaDao;
@@ -218,13 +220,18 @@ public final class Injection {
         return new PushDaoImpl();
     }
 
+    @NotNull
     public static VeiculoConferenciaDao provideVeiculoConferenciaDao() {
         return new VeiculoConferenciaDaoImpl();
     }
 
+    @NotNull
     public static PneuConferenciaDao providePneuConferenciaDao() {
         return new PneuConferenciaDaoImpl();
     }
+
+    @NotNull
+    public static ApresentacaoDao provideApresentacaoDao() { return new ApresentacaoDaoImpl();}
 
     @NotNull
     public static IntegracaoDao provideIntegracaoDao() {
@@ -650,5 +657,4 @@ public final class Injection {
     public static MotivoMovimentoTransicaoDao provideMotivoOrigemDestinoDao() {
         return new MotivoMovimentoTransicaoDaoImpl();
     }
-
 }
