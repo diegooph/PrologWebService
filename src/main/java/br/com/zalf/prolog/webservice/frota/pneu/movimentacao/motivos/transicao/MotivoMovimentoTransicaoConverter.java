@@ -50,7 +50,10 @@ public final class MotivoMovimentoTransicaoConverter {
     static TransicaoUnidadeMotivos createTransicaoUnidadeMotivos(
             @NotNull final ResultSet rSet) throws Throwable {
         final List<MotivoMovimentoUnidade> motivosMovimento = new ArrayList<>();
-        motivosMovimento.add(MotivoMovimentoTransicaoConverter.createMotivoMovimentoUnidade(rSet));
+
+        if (rSet.getLong("CODIGO_MOTIVO") != 0) {
+            motivosMovimento.add(MotivoMovimentoTransicaoConverter.createMotivoMovimentoUnidade(rSet));
+        }
 
         return new TransicaoUnidadeMotivos(
                 OrigemDestinoEnum.fromString(rSet.getString("origem_movimento")),
@@ -63,7 +66,10 @@ public final class MotivoMovimentoTransicaoConverter {
     static UnidadeTransicoesMotivoMovimento createUnidadeTransicoesMotivoMovimento(@NotNull final ResultSet rSet)
             throws Throwable {
         final List<TransicaoUnidadeMotivos> origensDestinos = new ArrayList<>();
-        origensDestinos.add(MotivoMovimentoTransicaoConverter.createTransicaoUnidadeMotivos(rSet));
+
+        if (rSet.getString("ORIGEM_MOVIMENTO") != null) {
+            origensDestinos.add(MotivoMovimentoTransicaoConverter.createTransicaoUnidadeMotivos(rSet));
+        }
 
         return new UnidadeTransicoesMotivoMovimento(
                 rSet.getLong("codigo_unidade"),

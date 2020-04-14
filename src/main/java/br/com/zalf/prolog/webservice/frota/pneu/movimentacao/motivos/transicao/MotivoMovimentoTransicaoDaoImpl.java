@@ -142,17 +142,22 @@ public final class MotivoMovimentoTransicaoDaoImpl extends DatabaseConnection im
                                     .get(transicoesUltimaUnidade.size() - 1)
                                     .getDestinoMovimento()
                                     .asString()
-                                    .equals(rSet.getString("destino_movimento"))) {
-                        // Trocamos de transição.
+                                    .equals(rSet.getString("destino_movimento"))
+                                    && rSet.getString("ORIGEM_MOVIMENTO") != null) {
+                        // Trocamos de transição, se ela for diferente de null.
                         transicoesUltimaUnidade.add(createTransicaoUnidadeMotivos(rSet));
                     } else {
                         // Estamos na mesma transição, criamos apenas um novo motivo para ela.
                         final List<MotivoMovimentoUnidade> ultimaListaMotivosMovimento = transicoesUltimaUnidade
                                 .get(transicoesUltimaUnidade.size() - 1)
                                 .getMotivosMovimento();
-                        ultimaListaMotivosMovimento.add(createMotivoMovimentoUnidade(rSet));
+
+                        if (rSet.getLong("CODIGO_MOTIVO") != 0) {
+                            ultimaListaMotivosMovimento.add(createMotivoMovimentoUnidade(rSet));
+                        }
                     }
                 }
+
                 codUltimaUnidade = rSet.getLong("codigo_unidade");
             }
             return unidades;
