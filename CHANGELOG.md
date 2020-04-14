@@ -9,6 +9,7 @@ Change Log
 
 ### Refactors
 * Cria serializer/deserializer específico para o `OrigemDestinoEnum` (PL-2681) 
+* Modifica listagem de transições por unidade para completar lista com transições não cadastradas (PL-2681)
 
 <a name="v1.0.26"></a>
 ## Version [v1.0.26](https://github.com/luizfp/PrologWebService/compare/v1.0.25...v1.0.26) (2020-04-12)
