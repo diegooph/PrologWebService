@@ -27,16 +27,4 @@ public final class TransicaoUtil {
         return transicoesUnidade;
     }
 
-    public static boolean verificarSeTransicaoExisteEmUmaLista(final List<TransicaoUnidadeMotivos> transicoesUnidade,
-                                                               final TransicaoUnidadeMotivos transicaoPossivel) {
-        for (final TransicaoUnidadeMotivos transicaoUnidade : transicoesUnidade) {
-            if (transicaoUnidade.getOrigemMovimento() == transicaoPossivel.getOrigemMovimento()
-                    && transicaoUnidade.getDestinoMovimento() == transicaoPossivel.getDestinoMovimento()) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
 }
