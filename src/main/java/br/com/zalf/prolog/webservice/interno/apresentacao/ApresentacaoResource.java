@@ -14,8 +14,6 @@ import javax.ws.rs.core.MediaType;
  * @author Thais Francisco (https://github.com/thaisksf)
  */
 @Path("/interno/apresentacao")
-@Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
-@Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class ApresentacaoResource {
     @NotNull
     private final ApresentacaoService service = new ApresentacaoService();
