@@ -2,7 +2,7 @@ Change Log
 ==========
 
 <a name="v1.0.27"></a>
-## Version [v1.0.27](https://github.com/luizfp/PrologWebService/compare/v1.0.26...v1.0.27) (release-date) [unreleased]
+## Version [v1.0.27](https://github.com/luizfp/PrologWebService/compare/v1.0.26...v1.0.27) (2020-04-14)
 
 ### Features
 * Inicaliza Sentry com informações da versão do WS
