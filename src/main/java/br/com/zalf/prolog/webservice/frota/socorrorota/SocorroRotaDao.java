@@ -36,7 +36,7 @@ public interface SocorroRotaDao {
 
     /**
      * Busca o colaborador responsável pela abertura do socorro que será notificado sobre seu atendimento.
-     *
+     * <p>
      * O retorno é uma lista pois o colaborador pode ter mais de um token de push cadastrado.
      *
      * @param codSocorroRota Código do socorro em rota.
@@ -47,6 +47,21 @@ public interface SocorroRotaDao {
     List<ColaboradorNotificacaoSocorroRota> getColaboradoresNotificacaoAtendimento(
             @NotNull final Long codSocorroRota) throws Throwable;
 
+    /**
+     * Busca o colaborador responsável pela abertura do socorro que será notificado sobre sua invalidação.
+     * <p>
+     * O retorno é uma lista pois o colaborador pode ter mais de um token de push cadastrado.
+     * <p>
+     * Se o colaborador que invalidou for o mesmo que abriu o socorro, nenhum token será retornado para notificação.
+     *
+     * @param codSocorroRota Código do socorro em rota.
+     * @return Lista dos destinatários que irão receber a notificação de atendimento.
+     * @throws Throwable Se algum erro ocorrer.
+     */
+    @NotNull
+    List<ColaboradorNotificacaoSocorroRota> getColaboradoresNotificacaoInvalidacao(
+            @NotNull final Long codColaboradorInvalidacao,
+            @NotNull final Long codSocorroRota) throws Throwable;
 
     /**
      * Busca as unidades disponíveis para a abertura de socorro em rota por colaborador
