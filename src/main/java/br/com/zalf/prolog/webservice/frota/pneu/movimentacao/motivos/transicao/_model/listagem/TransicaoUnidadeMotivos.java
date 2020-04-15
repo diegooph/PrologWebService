@@ -17,6 +17,10 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public final class TransicaoUnidadeMotivos implements Comparable<TransicaoUnidadeMotivos> {
+
+    private static Comparator<TransicaoUnidadeMotivos> COMPARATOR = Comparator
+            .comparing(TransicaoUnidadeMotivos::getOrigemMovimento)
+            .thenComparing(TransicaoUnidadeMotivos::getDestinoMovimento);
     @NotNull
     @EqualsAndHashCode.Include
     private final OrigemDestinoEnum origemMovimento;
@@ -30,9 +34,6 @@ public final class TransicaoUnidadeMotivos implements Comparable<TransicaoUnidad
 
     @Override
     public int compareTo(@NotNull final TransicaoUnidadeMotivos outraTransicao) {
-        return Comparator
-                .comparing(TransicaoUnidadeMotivos::getOrigemMovimento)
-                .thenComparing(TransicaoUnidadeMotivos::getDestinoMovimento)
-                .compare(this, outraTransicao);
+        return COMPARATOR.compare(this, outraTransicao);
     }
 }
