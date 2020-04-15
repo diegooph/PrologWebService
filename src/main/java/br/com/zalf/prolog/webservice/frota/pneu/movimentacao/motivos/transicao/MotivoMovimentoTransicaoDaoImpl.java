@@ -19,6 +19,7 @@ import java.sql.SQLException;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import static br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.transicao.MotivoMovimentoTransicaoConverter.createMotivoMovimentoUnidade;
@@ -142,19 +143,33 @@ public final class MotivoMovimentoTransicaoDaoImpl extends DatabaseConnection im
                                     .get(transicoesUltimaUnidade.size() - 1)
                                     .getDestinoMovimento()
                                     .asString()
-                                    .equals(rSet.getString("destino_movimento"))) {
-                        // Trocamos de transição.
+                                    .equals(rSet.getString("destino_movimento"))
+                                    && rSet.getString("ORIGEM_MOVIMENTO") != null) {
+                        // Trocamos de transição, se ela for diferente de null.
                         transicoesUltimaUnidade.add(createTransicaoUnidadeMotivos(rSet));
                     } else {
                         // Estamos na mesma transição, criamos apenas um novo motivo para ela.
                         final List<MotivoMovimentoUnidade> ultimaListaMotivosMovimento = transicoesUltimaUnidade
                                 .get(transicoesUltimaUnidade.size() - 1)
                                 .getMotivosMovimento();
-                        ultimaListaMotivosMovimento.add(createMotivoMovimentoUnidade(rSet));
+
+                        if (rSet.getLong("CODIGO_MOTIVO") != 0) {
+                            ultimaListaMotivosMovimento.add(createMotivoMovimentoUnidade(rSet));
+                        }
                     }
                 }
+
                 codUltimaUnidade = rSet.getLong("codigo_unidade");
             }
+
+            // Preenche a lista de transições da unidade com as possíveis transições que ela não tenha parametrizado.
+            preencherTransicoesUnidades(unidades);
+
+            // Ordena a lista de transições das unidades para que fiquem todas com a mesma ordenação.
+            unidades.forEach(unidade -> unidade
+                    .getTransicoesUnidade()
+                    .sort(TransicaoUnidadeMotivos::compareTo));
+
             return unidades;
         } finally {
             close(conn, stmt, rSet);
@@ -233,4 +248,18 @@ public final class MotivoMovimentoTransicaoDaoImpl extends DatabaseConnection im
         }
     }
 
+    private void preencherTransicoesUnidades(@NotNull final List<UnidadeTransicoesMotivoMovimento> unidades) {
+        final List<TransicaoUnidadeMotivos> transicoesPossiveisUnidade = TransicaoUtils.getListDeTransicoesPossiveis();
+
+        transicoesPossiveisUnidade.forEach(t ->
+                unidades.forEach(unidade ->
+                        unidade.getTransicoesUnidade()
+                                .stream()
+                                .filter(transicao -> transicao.equals(t))
+                                .findFirst()
+                                .orElseGet(() -> {
+                                    unidade.getTransicoesUnidade().add(t);
+                                    return t;
+                                })));
+    }
 }

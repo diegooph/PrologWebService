@@ -2,9 +2,11 @@ package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.transicao.
 
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestinoEnum;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -13,13 +15,24 @@ import java.util.List;
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
 @Data
-public final class TransicaoUnidadeMotivos {
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+public final class TransicaoUnidadeMotivos implements Comparable<TransicaoUnidadeMotivos> {
     @NotNull
+    @EqualsAndHashCode.Include
     private final OrigemDestinoEnum origemMovimento;
     @NotNull
+    @EqualsAndHashCode.Include
     private final OrigemDestinoEnum destinoMovimento;
     @NotNull
     private final List<MotivoMovimentoUnidade> motivosMovimento;
     @Nullable
     private final Boolean obrigatorioMotivoMovimento;
+
+    @Override
+    public int compareTo(@NotNull final TransicaoUnidadeMotivos outraTransicao) {
+        return Comparator
+                .comparing(TransicaoUnidadeMotivos::getOrigemMovimento)
+                .thenComparing(TransicaoUnidadeMotivos::getDestinoMovimento)
+                .compare(this, outraTransicao);
+    }
 }

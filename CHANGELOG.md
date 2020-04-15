@@ -1,5 +1,17 @@
 Change Log
 ==========
+
+<a name="v1.0.27"></a>
+## Version [v1.0.27](https://github.com/luizfp/PrologWebService/compare/v1.0.26...v1.0.27) (2020-04-14)
+
+### Features
+* Inicaliza Sentry com informações da versão do WS
+
+### Refactors
+* Cria serializer/deserializer específico para o `OrigemDestinoEnum` (PL-2681) 
+* Modifica listagem de transições por unidade para completar lista com transições não cadastradas (PL-2681)
+* Adiciona código da unidade da placa no cronograma de aferição (PLI-119)
+
 <a name="v1.0.26"></a>
 ## Version [v1.0.26](https://github.com/luizfp/PrologWebService/compare/v1.0.25...v1.0.26) (2020-04-12)
 

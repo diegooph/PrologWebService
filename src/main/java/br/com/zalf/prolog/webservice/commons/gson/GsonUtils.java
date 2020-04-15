@@ -1,10 +1,10 @@
 package br.com.zalf.prolog.webservice.commons.gson;
 
-import br.com.zalf.prolog.webservice.config.BuildConfig;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
+import br.com.zalf.prolog.webservice.commons.util.ProLogUtils;
 import br.com.zalf.prolog.webservice.dashboard.Color;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.ResponseImagemChecklist;
@@ -66,12 +66,13 @@ public final class GsonUtils {
                 .registerTypeAdapter(LocalDate.class, new LocalDateDeserializer())
                 .registerTypeAdapter(PerguntaModeloChecklistEdicao.class, new PergundaEdicaoSerializerDeserializer())
                 .registerTypeAdapter(AlternativaModeloChecklistEdicao.class, new AlternativaEdicaoSerializerDeserializer())
+                .registerTypeAdapter(OrigemDestinoEnum.class, new OrigemDestinoEnumSerializerDeserializer())
                 .registerTypeAdapter(Color.class, new ColorSerializer())
                 .setExclusionStrategies(new AnnotationExclusionStrategy())
                 .setLenient()
                 .enableComplexMapKeySerialization();
 
-        if (BuildConfig.DEBUG) {
+        if (ProLogUtils.isDebug()) {
             builder.setPrettyPrinting();
         }
 

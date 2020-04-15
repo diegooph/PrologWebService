@@ -137,28 +137,20 @@ public final class ProtheusNepomucenoConverter {
         final InfosUnidadeRestricao infosUnidadeRestricao = unidadeRestricao.get(veiculo.getCodEmpresaFilialVeiculo());
         placaAfericao.setMetaAfericaoSulco(infosUnidadeRestricao.getPeriodoDiasAfericaoSulco());
         placaAfericao.setMetaAfericaoPressao(infosUnidadeRestricao.getPeriodoDiasAfericaoPressao());
+        placaAfericao.setCodUnidadePlaca(infosUnidadeRestricao.getCodUnidade());
         return placaAfericao;
     }
 
     @NotNull
     public static CronogramaAfericao createCronogramaAfericaoProlog(
-            @NotNull final Map<String, ModeloPlacasAfericao> modelosEstruturaVeiculo,
-            final int totalVeiculosListagem) {
+            @NotNull final Map<String, ModeloPlacasAfericao> modelosEstruturaVeiculo) {
         final CronogramaAfericao cronogramaAfericao = new CronogramaAfericao();
         final ArrayList<ModeloPlacasAfericao> modelosPlacasAfericao = new ArrayList<>(modelosEstruturaVeiculo.values());
         cronogramaAfericao.setModelosPlacasAfericao(modelosPlacasAfericao);
-        int totalModelosSulcoOk = 0;
-        int totalModelosPressaoOk = 0;
-        int totalModelosSulcoPressaoOk = 0;
-        for (final ModeloPlacasAfericao modeloPlacasAfericao : modelosPlacasAfericao) {
-            totalModelosSulcoOk = totalModelosSulcoOk + modeloPlacasAfericao.getQtdModeloSulcoOk();
-            totalModelosPressaoOk = totalModelosPressaoOk + modeloPlacasAfericao.getQtdModeloPressaoOk();
-            totalModelosSulcoPressaoOk = totalModelosSulcoPressaoOk + modeloPlacasAfericao.getQtdModeloSulcoPressaoOk();
-        }
-        cronogramaAfericao.setTotalSulcosOk(totalModelosSulcoOk);
-        cronogramaAfericao.setTotalPressaoOk(totalModelosPressaoOk);
-        cronogramaAfericao.setTotalSulcoPressaoOk(totalModelosSulcoPressaoOk);
-        cronogramaAfericao.setTotalVeiculos(totalVeiculosListagem);
+        cronogramaAfericao.calcularQuatidadeSulcosPressaoOk(true);
+        cronogramaAfericao.calcularTotalVeiculos();
+        cronogramaAfericao.removerModelosSemPlacas();
+        cronogramaAfericao.removerPlacasNaoAferiveis();
         return cronogramaAfericao;
     }
 
@@ -243,7 +235,7 @@ public final class ProtheusNepomucenoConverter {
         pneu.setPressaoCorreta(pneuEstoqueNepomuceno.getPressaoRecomendadaPneu());
         pneu.setPressaoAtual(pneuEstoqueNepomuceno.getPressaoAtualPneu());
         pneu.setVidaAtual(pneuEstoqueNepomuceno.getVidaAtualPneu());
-        pneu.setVidasTotal(10);
+        pneu.setVidasTotal(pneuEstoqueNepomuceno.getVidaTotalPneu());
         pneu.setCodUnidadeAlocado(codUnidadePneuAlocado);
         pneu.setDimensao(new Pneu.Dimensao());
 
@@ -326,11 +318,13 @@ public final class ProtheusNepomucenoConverter {
         pneu.setSulcosAtuais(sulcosAtuais);
         final ModeloPneu modeloPneu = new ModeloPneu();
         modeloPneu.setCodigo(DEFAULT_COD_MODELO_PNEU);
+        modeloPneu.setNome(pneuAplicado.getNomeModeloPneu());
         modeloPneu.setQuantidadeSulcos(pneuAplicado.getQtdSulcosModeloPneu());
         pneu.setModelo(modeloPneu);
         if (pneuAplicado.isRecapado()) {
             final ModeloBanda modeloBanda = new ModeloBanda();
             modeloBanda.setCodigo(DEFAULT_COD_MODELO_BANDA);
+            modeloBanda.setNome(pneuAplicado.getNomeModeloBanda());
             modeloBanda.setQuantidadeSulcos(pneuAplicado.getQtdSulcosModeloPneu());
             final Banda banda = new Banda();
             banda.setModelo(modeloBanda);
