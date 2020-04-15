@@ -55,7 +55,7 @@ public interface SocorroRotaDao {
      * Se o colaborador que invalidou for o mesmo que abriu o socorro, nenhum token será retornado para notificação.
      *
      * @param codSocorroRota Código do socorro em rota.
-     * @return Lista dos destinatários que irão receber a notificação de atendimento.
+     * @return Lista dos destinatários que irão receber a notificação de invalidação.
      * @throws Throwable Se algum erro ocorrer.
      */
     @NotNull
