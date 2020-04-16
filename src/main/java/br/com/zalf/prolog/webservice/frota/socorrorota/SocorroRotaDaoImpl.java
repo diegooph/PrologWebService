@@ -89,6 +89,38 @@ public final class SocorroRotaDaoImpl extends DatabaseConnection implements Soco
 
     @NotNull
     @Override
+    public List<ColaboradorNotificacaoSocorroRota> getColaboradoresNotificacaoInvalidacao(
+            @NotNull final Long codColaboradorInvalidacao,
+            @NotNull final Long codSocorroRota) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_SOCORRO_ROTA_INVALIDACAO_GET_COLABORADORES_NOTIFICACAO(" +
+                    "F_COD_COLABORADOR_INVALIDACAO_SOCORRO => ?, " +
+                    "F_COD_SOCORRO_ROTA => ?);");
+            stmt.setLong(1, codColaboradorInvalidacao);
+            stmt.setLong(2, codSocorroRota);
+            rSet = stmt.executeQuery();
+            if (!rSet.next()) {
+                return Collections.emptyList();
+            } else {
+                final List<ColaboradorNotificacaoSocorroRota> colaboradores = new ArrayList<>();
+                do {
+                    colaboradores.add(new ColaboradorNotificacaoSocorroRota(
+                            rSet.getLong("COD_COLABORADOR"),
+                            rSet.getString("TOKEN_PUSH_FIREBASE")));
+                } while (rSet.next());
+                return colaboradores;
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+    @NotNull
+    @Override
     public List<UnidadeAberturaSocorro> getUnidadesDisponiveisAberturaSocorroByCodColaborador(
             @NotNull final Long codColaborador) throws Throwable {
         Connection conn = null;
