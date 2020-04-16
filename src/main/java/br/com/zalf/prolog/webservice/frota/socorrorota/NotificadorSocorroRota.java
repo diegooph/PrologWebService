@@ -257,7 +257,7 @@ final class NotificadorSocorroRota {
                                                     // Adicionamos o código do socorro em rota no path para propiciar
                                                     // a navegação.
                                                     String.format(
-                                                            "https://navigation.prologapp.com/socorro-em-rota/%d",
+                                                            "https://adm.prologapp.com/socorro-em-rota/%d",
                                                             codSocorro))
                                             .build()));
         } else {
