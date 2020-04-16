@@ -528,14 +528,18 @@ public final class SocorroRotaDaoImpl extends DatabaseConnection implements Soco
 
     @NotNull
     @Override
-    public SocorroRotaVisualizacao getVisualizacaoSocorroRota(@NotNull final Long codSocorroRota) throws Throwable {
+    public SocorroRotaVisualizacao getVisualizacaoSocorroRota(@NotNull final Long codColaboradorRequest,
+                                                              @NotNull final Long codSocorroRota) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_SOCORRO_ROTA_VISUALIZACAO(F_COD_SOCORRO_ROTA := ?);");
-            stmt.setLong(1, codSocorroRota);
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_SOCORRO_ROTA_VISUALIZACAO(" +
+                    "F_COD_COLABORADOR_REQUEST := ?," +
+                    "F_COD_SOCORRO_ROTA := ?);");
+            stmt.setLong(1, codColaboradorRequest);
+            stmt.setLong(2, codSocorroRota);
             rSet = stmt.executeQuery();
 
             if (rSet.next()) {
