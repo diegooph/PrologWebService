@@ -34,7 +34,8 @@ import static br.com.zalf.prolog.webservice.commons.util.StringUtils.stripSpecia
 final class NotificadorSocorroRota {
     private static final String TAG = NotificadorSocorroRota.class.getSimpleName();
     private static final int MAX_LENGTH_NOME_COLABORADOR = 20;
-
+    @NotNull
+    private final ListeningExecutorService service;
     @NotNull
     private final FutureCallback<Void> shutdownServiceCallback = new FutureCallback<Void>() {
         @Override
@@ -49,9 +50,6 @@ final class NotificadorSocorroRota {
             shutdowService();
         }
     };
-
-    @NotNull
-    private final ListeningExecutorService service;
 
     NotificadorSocorroRota() {
         service = MoreExecutors.listeningDecorator(Executors.newSingleThreadExecutor());
@@ -122,7 +120,7 @@ final class NotificadorSocorroRota {
             // Envia e-mail.
             // Utilizamos um try/catch para evitar que estoure algum erro e impeça o envio das notificações push.
             try {
-                notificaAberturaSocorroEmail(colaboradores, placaVeiculoProblema, nomeColaboradorAbertura);
+                notificaAberturaSocorroEmail(colaboradores, nomeColaboradorAbertura, placaVeiculoProblema, codSocorro);
             } catch (final Throwable t) {
                 // Logamos erro para ter controle no Sentry se estamos deixando de avisar os responsáveis sobre os
                 // socorros solicitados.
@@ -214,8 +212,9 @@ final class NotificadorSocorroRota {
 
     private void notificaAberturaSocorroEmail(
             @NotNull final List<ColaboradorNotificacaoAberturaSocorroRota> colaboradores,
+            @NotNull final String nomeColaboradorAbertura,
             @NotNull final String placaVeiculoProblema,
-            @NotNull final String nomeColaboradorAbertura) {
+            @NotNull final Long codSocorro) {
         final List<String> emails = colaboradores
                 .stream()
                 .map(ColaboradorNotificacaoAberturaSocorroRota::getEmailColaborador)
@@ -234,7 +233,12 @@ final class NotificadorSocorroRota {
                                     new ImmutableMap.Builder<String, String>()
                                             .put("nome_colaborador", nomeColaboradorAbertura)
                                             .put("placa_veiculo", placaVeiculoProblema)
-                                            .put("link_socorro_rota", "https://adm.prologapp.com/socorro-em-rota")
+                                            .put("link_socorro_rota",
+                                                    // Adicionamos o código do socorro em rota no path para propiciar
+                                                    // a navegação.
+                                                    String.format(
+                                                            "https://navigation.prologapp.com/socorro-em-rota/%d",
+                                                            codSocorro))
                                             .build()));
         } else {
             Log.d(TAG, "Nenhum colaborador para notificar VIA E-MAIL sobre abertura do socorro");
