@@ -41,7 +41,7 @@ public final class PrologEmailWorker {
             holder = new PrologSendEmailTask().deliverTemplate(emailsToSend, templateMessage);
         } catch (final Throwable throwable) {
             sendException = throwable;
-            Log.e(TAG, "Erro fatal ao enviar e-mails via API! Nada foi enviado", throwable);
+            Log.e(TAG, "Erro fatal ao enviar e-mails via API! Nada foi enviado.", throwable);
         }
 
         Connection connection = null;
