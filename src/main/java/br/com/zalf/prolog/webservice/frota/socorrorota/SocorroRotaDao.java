@@ -59,7 +59,7 @@ public interface SocorroRotaDao {
      * @throws Throwable Se algum erro ocorrer.
      */
     @NotNull
-    List<ColaboradorNotificacaoSocorroRota> getColaboradoresNotificacaoInvalidacao(
+    List<ColaboradorNotificacaoInvalidacaoSocorroRota> getColaboradoresNotificacaoInvalidacao(
             @NotNull final Long codColaboradorInvalidacao,
             @NotNull final Long codSocorroRota) throws Throwable;
 

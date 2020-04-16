@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.Exceptions;
 import br.com.zalf.prolog.webservice.frota.socorrorota._model.ColaboradorNotificacaoAberturaSocorroRota;
 import br.com.zalf.prolog.webservice.frota.socorrorota._model.ColaboradorNotificacaoAtendimentoSocorroRota;
+import br.com.zalf.prolog.webservice.frota.socorrorota._model.ColaboradorNotificacaoInvalidacaoSocorroRota;
 import br.com.zalf.prolog.webservice.messaging.MessageScope;
 import br.com.zalf.prolog.webservice.messaging.email.PrologEmailApi;
 import br.com.zalf.prolog.webservice.messaging.email._model.EmailSender;
@@ -268,7 +269,7 @@ final class NotificadorSocorroRota {
                                                   @NotNull final Long codColaboradorInvalidacaoSocorro,
                                                   @NotNull final Long codSocorro) {
         Log.d(TAG, "internalNotificaSobreInvalidacao(...) on thread: " + Thread.currentThread().getName());
-        final List<ColaboradorNotificacaoAtendimentoSocorroRota> colaboradores;
+        final List<ColaboradorNotificacaoInvalidacaoSocorroRota> colaboradores;
         try {
             colaboradores = socorroDao.getColaboradoresNotificacaoInvalidacao(
                     codColaboradorInvalidacaoSocorro,

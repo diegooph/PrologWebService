@@ -89,7 +89,7 @@ public final class SocorroRotaDaoImpl extends DatabaseConnection implements Soco
 
     @NotNull
     @Override
-    public List<ColaboradorNotificacaoSocorroRota> getColaboradoresNotificacaoInvalidacao(
+    public List<ColaboradorNotificacaoInvalidacaoSocorroRota> getColaboradoresNotificacaoInvalidacao(
             @NotNull final Long codColaboradorInvalidacao,
             @NotNull final Long codSocorroRota) throws Throwable {
         Connection conn = null;
@@ -106,9 +106,9 @@ public final class SocorroRotaDaoImpl extends DatabaseConnection implements Soco
             if (!rSet.next()) {
                 return Collections.emptyList();
             } else {
-                final List<ColaboradorNotificacaoSocorroRota> colaboradores = new ArrayList<>();
+                final List<ColaboradorNotificacaoInvalidacaoSocorroRota> colaboradores = new ArrayList<>();
                 do {
-                    colaboradores.add(new ColaboradorNotificacaoSocorroRota(
+                    colaboradores.add(new ColaboradorNotificacaoInvalidacaoSocorroRota(
                             rSet.getLong("COD_COLABORADOR"),
                             rSet.getString("TOKEN_PUSH_FIREBASE")));
                 } while (rSet.next());

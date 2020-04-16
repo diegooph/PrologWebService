@@ -9,7 +9,8 @@ import org.jetbrains.annotations.NotNull;
  */
 public enum MessageScope {
     ABERTURA_SOCORRO_ROTA("ABERTURA_SOCORRO_ROTA"),
-    ATENDIMENTO_SOCORRO_ROTA("ATENDIMENTO_SOCORRO_ROTA");
+    ATENDIMENTO_SOCORRO_ROTA("ATENDIMENTO_SOCORRO_ROTA"),
+    INVALIDACAO_SOCORRO_ROTA("INVALIDACAO_SOCORRO_ROTA");
 
     @NotNull
     private final String stringRepresentation;
