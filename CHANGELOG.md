@@ -1,14 +1,14 @@
 Change Log
 ==========
 
-### Features
-* Notifica quem solicitou o socorro se ele for invalidado (PL-2580)
-
 <a name="v1.0.28"></a>
 ## Version [v1.0.28](https://github.com/luizfp/PrologWebService/compare/v1.0.27...v1.0.28) (release-date) [unreleased]
 
-## Bugfix
-* Modifica inserção para realizar deleção antes das inserções. (PL-2681)
+### Features
+* Notifica quem solicitou o socorro se ele for invalidado (PL-2580)
+
+### Bugfix
+* Modifica inserção para realizar deleção antes das inserções (PL-2681)
 
 <a name="v1.0.27"></a>
 ## Version [v1.0.27](https://github.com/luizfp/PrologWebService/compare/v1.0.26...v1.0.27) (2020-04-14)
