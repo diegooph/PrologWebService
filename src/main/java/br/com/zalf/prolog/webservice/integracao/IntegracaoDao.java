@@ -1,11 +1,10 @@
 package br.com.zalf.prolog.webservice.integracao;
 
-import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
-import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
+import br.com.zalf.prolog.webservice.geral.unidade._model.Unidade;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.ApiAutenticacaoHolder;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
-import br.com.zalf.prolog.webservice.integracao.transport.MetodoIntegrado;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -94,6 +93,18 @@ public interface IntegracaoDao {
                   @NotNull final MetodoIntegrado metodoIntegrado) throws Throwable;
 
     /**
+     * Método responsável por retornar o Código Auxiliar mapeado para o código de Unidade Prolog.
+     *
+     * @param conn             Conexão com o banco de dados que será utilizada para buscar os dados.
+     * @param codUnidadeProlog Código da Unidade Prolog para buscar o código Auxiliar.
+     * @return String contendo o Código Auxiliar da Unidade Prolog.
+     * @throws Throwable Se algum erro acontecer.
+     */
+    @NotNull
+    String getCodAuxiliarByCodUnidadeProlog(@NotNull final Connection conn,
+                                            @NotNull final Long codUnidadeProlog) throws Throwable;
+
+    /**
      * Holder contendo as informações necessárias para autenticação de requisições.
      *
      * @param conn            Conexão que será utilizada para buscar os dados.
@@ -119,4 +130,14 @@ public interface IntegracaoDao {
      */
     @NotNull
     List<Long> getCodUnidadesIntegracaoBloqueada(@NotNull final String userToken) throws Throwable;
+
+    /**
+     * Método utilizado para verificar se uma unidade possui configuração para abrir serviço para pneus.
+     *
+     * @param codUnidade código da unidade.
+     * @return Uma flag para identificar se deve abrir serviço para os pneus.
+     * @throws Throwable Se algum erro acontecer.
+     */
+    @NotNull
+    boolean getConfigAberturaServicoPneuIntegracao(@NotNull final Long codUnidade) throws Throwable;
 }

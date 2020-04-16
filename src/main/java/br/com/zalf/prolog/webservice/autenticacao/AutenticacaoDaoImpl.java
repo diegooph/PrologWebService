@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.autenticacao;
 import br.com.zalf.prolog.webservice.commons.util.SessionIdentifierGenerator;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ResourceAlreadyDeletedException;
+import br.com.zalf.prolog.webservice.interceptors.auth.ColaboradorAutenticado;
 import br.com.zalf.prolog.webservice.interceptors.auth.authenticator.StatusSecured;
 import org.jetbrains.annotations.NotNull;
 
@@ -13,6 +14,7 @@ import java.sql.SQLException;
 import java.time.Clock;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.util.Optional;
 
 /**
  * Classe responsável pela comunicação com o banco de dados da aplicação.
@@ -25,13 +27,42 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
 
     @NotNull
     @Override
-    public Autenticacao insertOrUpdate(@NotNull final Long cpf) throws SQLException {
+    public Autenticacao insertOrUpdate(@NotNull final Long cpf) throws Throwable {
         final String token = new SessionIdentifierGenerator().nextSessionId();
         return insert(cpf, token);
     }
 
+    @NotNull
     @Override
-    public boolean delete(@NotNull final String token) throws SQLException {
+    public Autenticacao insertOrUpdateByCodColaborador(@NotNull final Long codColaborador) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("select * from func_geral_get_or_insert_token_autenticacao(" +
+                    "f_cod_colaborador => ?, " +
+                    "f_token_autenticacao => ?);");
+            stmt.setLong(1, codColaborador);
+            stmt.setString(2, new SessionIdentifierGenerator().nextSessionId());
+            rSet = stmt.executeQuery();
+            final Autenticacao autenticacao = new Autenticacao();
+            if (rSet.next()) {
+                autenticacao.setCpf(rSet.getLong("CPF_COLABORADOR"));
+                autenticacao.setToken(rSet.getString("TOKEN_AUTENTICACAO"));
+                autenticacao.setStatus(Autenticacao.OK);
+                return autenticacao;
+            } else {
+                autenticacao.setStatus(Autenticacao.ERROR);
+                return autenticacao;
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+    @Override
+    public boolean delete(@NotNull final String token) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
@@ -47,58 +78,74 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
         }
     }
 
+    @NotNull
     @Override
-    public boolean verifyIfTokenExists(@NotNull final String token,
-                                       final boolean apenasUsuariosAtivos) throws SQLException {
+    public Optional<ColaboradorAutenticado> verifyIfTokenExists(@NotNull final String token,
+                                                                final boolean apenasUsuariosAtivos) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
+        ResultSet rSet = null;
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("UPDATE TOKEN_AUTENTICACAO SET " +
                     "DATA_HORA = ? WHERE TOKEN = ? " +
                     "AND (SELECT C.STATUS_ATIVO " +
                     "FROM COLABORADOR C " +
-                    "JOIN TOKEN_AUTENTICACAO TA ON C.CPF = TA.CPF_COLABORADOR AND TA.TOKEN = ?)::TEXT = ?");
+                    "JOIN TOKEN_AUTENTICACAO TA ON C.CPF = TA.CPF_COLABORADOR AND TA.TOKEN = ?)::TEXT = ?" +
+                    "RETURNING COD_COLABORADOR, CPF_COLABORADOR");
             stmt.setObject(1, OffsetDateTime.now(Clock.systemUTC()));
             stmt.setString(2, token);
             stmt.setString(3, token);
             stmt.setString(4, apenasUsuariosAtivos ? Boolean.toString(true) : "%");
-            return stmt.executeUpdate() > 0;
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return Optional.of(new ColaboradorAutenticado(
+                        rSet.getLong("COD_COLABORADOR"),
+                        rSet.getLong("CPF_COLABORADOR"),
+                        StatusSecured.TOKEN_E_PERMISSAO_OK));
+            } else {
+                return Optional.empty();
+            }
         } finally {
-            close(conn, stmt);
+            close(conn, stmt, rSet);
         }
     }
 
+    @NotNull
     @Override
-    public boolean verifyIfUserExists(@NotNull final Long cpf,
-                                      @NotNull final LocalDate dataNascimento,
-                                      final boolean apenasUsuariosAtivos) throws SQLException {
+    public Optional<ColaboradorAutenticado> verifyIfUserExists(@NotNull final Long cpf,
+                                                               @NotNull final LocalDate dataNascimento,
+                                                               final boolean apenasUsuariosAtivos) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT EXISTS(SELECT C.NOME FROM COLABORADOR C WHERE C.CPF = ? " +
-                    "AND C.DATA_NASCIMENTO = ? AND C.STATUS_ATIVO::TEXT LIKE ?);");
+            stmt = conn.prepareStatement("SELECT C.CODIGO AS COD_COLABORADOR FROM COLABORADOR C WHERE C.CPF = ? " +
+                    "AND C.DATA_NASCIMENTO = ? AND C.STATUS_ATIVO::TEXT LIKE ?;");
             stmt.setLong(1, cpf);
             stmt.setObject(2, dataNascimento);
             stmt.setString(3, apenasUsuariosAtivos ? Boolean.toString(true) : "%");
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                return rSet.getBoolean("EXISTS");
+                return Optional.of(new ColaboradorAutenticado(
+                        rSet.getLong("COD_COLABORADOR"),
+                        cpf,
+                        StatusSecured.TOKEN_E_PERMISSAO_OK));
+            } else {
+                return Optional.empty();
             }
         } finally {
             close(conn, stmt, rSet);
         }
-        return false;
     }
 
     @NotNull
     @Override
-    public StatusSecured userHasPermission(@NotNull final String token,
-                                           @NotNull final int[] permissions,
-                                           final boolean needsToHaveAllPermissions,
-                                           final boolean apenasUsuariosAtivos) throws Throwable {
+    public Optional<ColaboradorAutenticado> userHasPermission(@NotNull final String token,
+                                                              @NotNull final int[] permissions,
+                                                              final boolean needsToHaveAllPermissions,
+                                                              final boolean apenasUsuariosAtivos) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -126,11 +173,11 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
 
     @NotNull
     @Override
-    public StatusSecured userHasPermission(final long cpf,
-                                           @NotNull final LocalDate dataNascimento,
-                                           @NotNull int[] permissions,
-                                           final boolean needsToHaveAllPermissions,
-                                           final boolean apenasUsuariosAtivos) throws Throwable {
+    public Optional<ColaboradorAutenticado> userHasPermission(final long cpf,
+                                                              @NotNull final LocalDate dataNascimento,
+                                                              @NotNull final int[] permissions,
+                                                              final boolean needsToHaveAllPermissions,
+                                                              final boolean apenasUsuariosAtivos) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -172,7 +219,7 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
             stmt.setLong(1, cpf);
             stmt.setLong(2, cpf);
             stmt.setString(3, token);
-            int count = stmt.executeUpdate();
+            final int count = stmt.executeUpdate();
             if (count == 0) {
                 autenticacao.setStatus(Autenticacao.ERROR);
                 return autenticacao;
@@ -185,15 +232,23 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
     }
 
     @NotNull
-    private StatusSecured generateStatusSecured(@NotNull final ResultSet rSet) throws Throwable {
-        final boolean tokenValido = rSet.getBoolean("TOKEN_VALIDO");
-        final boolean possuiPermisssao = rSet.getBoolean("POSSUI_PERMISSSAO");
-        if (tokenValido && possuiPermisssao) {
-            return StatusSecured.TOKEN_E_PERMISSAO_OK;
-        } else if (tokenValido) {
-            return StatusSecured.TOKEN_OK_SEM_PERMISSAO;
+    private Optional<ColaboradorAutenticado> generateStatusSecured(@NotNull final ResultSet rSet) throws Throwable {
+        final Long cpf = rSet.getObject("CPF_COLABORADOR", Long.class);
+        final Long codigo = rSet.getObject("COD_COLABORADOR", Long.class);
+        if (cpf != null && codigo != null) {
+            final boolean tokenValido = rSet.getBoolean("TOKEN_VALIDO");
+            final boolean possuiPermisssao = rSet.getBoolean("POSSUI_PERMISSSAO");
+            final StatusSecured statusSecured;
+            if (tokenValido && possuiPermisssao) {
+                statusSecured = StatusSecured.TOKEN_E_PERMISSAO_OK;
+            } else if (tokenValido) {
+                statusSecured = StatusSecured.TOKEN_OK_SEM_PERMISSAO;
+            } else {
+                statusSecured = StatusSecured.TOKEN_INVALIDO;
+            }
+            return Optional.of(new ColaboradorAutenticado(codigo, cpf, statusSecured));
         } else {
-            return StatusSecured.TOKEN_INVALIDO;
+            return Optional.empty();
         }
     }
 }

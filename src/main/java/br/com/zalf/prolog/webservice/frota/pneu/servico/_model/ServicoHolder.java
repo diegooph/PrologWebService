@@ -27,11 +27,6 @@ public class ServicoHolder {
      */
     private List<Alternativa> alternativasInspecao;
 
-    /**
-     * Utilizado para os serviços de movimentação.
-     */
-    private List<Pneu> pneusDisponiveis;
-
     public ServicoHolder() {
 
     }
@@ -60,14 +55,6 @@ public class ServicoHolder {
         this.restricao = restricao;
     }
 
-    public List<Pneu> getPneusDisponiveis() {
-        return pneusDisponiveis;
-    }
-
-    public void setPneusDisponiveis(List<Pneu> pneusDisponiveis) {
-        this.pneusDisponiveis = pneusDisponiveis;
-    }
-
     public List<Servico> getServicos() {
         return servicos;
     }
@@ -83,7 +70,6 @@ public class ServicoHolder {
                 ", restricao=" + restricao +
                 ", placaVeiculo='" + placaVeiculo + '\'' +
                 ", alternativasInspecao=" + alternativasInspecao +
-                ", pneusDisponiveis=" + pneusDisponiveis +
                 '}';
     }
 }

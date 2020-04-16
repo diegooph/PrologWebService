@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.seguranca.relato.model;
 
 
-import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.seguranca.pdv.Pdv;
 import org.jetbrains.annotations.Nullable;

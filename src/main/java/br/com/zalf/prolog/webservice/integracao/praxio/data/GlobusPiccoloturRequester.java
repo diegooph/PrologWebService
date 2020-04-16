@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.praxio.data;
 
+import br.com.zalf.prolog.webservice.integracao.praxio.movimentacao.GlobusPiccoloturLocalMovimentoResponse;
 import br.com.zalf.prolog.webservice.integracao.praxio.movimentacao.ProcessoMovimentacaoGlobus;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap.OrdemDeServicoCorretivaPrologVO;
 import org.jetbrains.annotations.NotNull;
@@ -56,13 +57,39 @@ public interface GlobusPiccoloturRequester {
      * Para cada rotação no ProLog, teremos 4 movimentações no Globus.
      *
      * @param url                        {@link retrofit2.http.Url Url} para onde a movimentação será enviada.
+     * @param tokenIntegracao            Token obtido pelo método {@code getTokenAutenticacaoIntegracao}.
      * @param processoMovimentacaoGlobus Informações das movimentações que serão enviadas para o Globus.
-     * @return {@link GlobusPiccoloturMovimentacaoResponse Resposta} do globus indicando se a operação foi sucesso ou erro.
+     * @return {@link GlobusPiccoloturMovimentacaoResponse Resposta} do globus indicando se a operação foi sucesso ou
+     * erro.
      * @throws Throwable Caso algum erro aconteça.
+     * @see GlobusPiccoloturRequester#getTokenAutenticacaoIntegracao(String, String, Long).
      */
     @NotNull
     GlobusPiccoloturMovimentacaoResponse insertProcessoMovimentacao(
             @NotNull final String url,
             @NotNull final String tokenIntegracao,
             @NotNull final ProcessoMovimentacaoGlobus processoMovimentacaoGlobus) throws Throwable;
+
+    /**
+     * Método utilizado para buscar do Globus os Locais de movimento que o colaborador tem acesso. Utilizamos o
+     * {@code cpfColaborador} para filtrar apenas os locais liberados para o colaborador em questão.
+     * <p>
+     * O Globus possui o conceito de Local de Movimento. Trata-se da unidade onde a movimentação está sendo realizada,
+     * uma vez que pode-se fazer movimentação de pneus em veículo em diferentes unidades, não necessáriamente na
+     * unidede onde o veículo foi cadastrado.
+     * <p>
+     * A Unidade de Movimento define em qual unidade o pneu retirado do veículo será colocado no estoque.
+     *
+     * @param url             {@link retrofit2.http.Url Url} de onde os recursos serão buscados.
+     * @param tokenIntegracao Token obtido pelo método {@code getTokenAutenticacaoIntegracao}.
+     * @param cpfColaborador  Cpf do colaborador. Será utilizado para buscar os locais do Globus a qual ele tem acesso.
+     * @return A {@link GlobusPiccoloturLocalMovimentoResponse resposta} obtida do Globus.
+     * @throws Throwable Caso algum erro aconteça.
+     * @see GlobusPiccoloturRequester#getTokenAutenticacaoIntegracao(String, String, Long).
+     */
+    @NotNull
+    GlobusPiccoloturLocalMovimentoResponse getLocaisMovimentoGlobusResponse(
+            @NotNull final String url,
+            @NotNull final String tokenIntegracao,
+            @NotNull final String cpfColaborador) throws Throwable;
 }

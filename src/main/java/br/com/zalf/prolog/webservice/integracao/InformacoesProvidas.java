@@ -1,13 +1,12 @@
 package br.com.zalf.prolog.webservice.integracao;
 
-import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Restricao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.ConfiguracaoNovaAfericao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.ApiAutenticacaoHolder;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
-import br.com.zalf.prolog.webservice.integracao.transport.MetodoIntegrado;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
@@ -45,6 +44,10 @@ public interface InformacoesProvidas {
                   @NotNull final MetodoIntegrado metodoIntegrado) throws Throwable;
 
     @NotNull
+    String getCodAuxiliarByCodUnidadeProlog(@NotNull final Connection conn,
+                                            @NotNull final Long codUnidadeProlog) throws Throwable;
+
+    @NotNull
     ApiAutenticacaoHolder getApiAutenticacaoHolder(@NotNull final Connection conn,
                                                    @NotNull final Long codEmpresa,
                                                    @NotNull final SistemaKey sistemaKey,
@@ -52,4 +55,6 @@ public interface InformacoesProvidas {
 
     @NotNull
     List<Long> getCodUnidadesIntegracaoBloqueada(@NotNull final String userToken) throws Throwable;
+
+    boolean getConfigAberturaServicoPneuIntegracao(@NotNull final Long codUnidade) throws Throwable;
 }

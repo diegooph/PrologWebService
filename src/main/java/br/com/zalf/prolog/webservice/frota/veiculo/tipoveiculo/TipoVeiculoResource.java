@@ -30,15 +30,18 @@ public final class TipoVeiculoResource {
     @POST
     @Secured(permissions = {Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
     @Path("/tipos-veiculos")
-    public ResponseWithCod insertTipoVeiculoPorEmpresa(@Required final TipoVeiculo tipoVeiculo) throws ProLogException {
-        return service.insertTipoVeiculoPorEmpresa(tipoVeiculo);
+    public ResponseWithCod insertTipoVeiculoPorEmpresa(
+            @HeaderParam("Authorization") @Required final String userToken,
+            @Required final TipoVeiculo tipoVeiculo) throws ProLogException {
+        return service.insertTipoVeiculoPorEmpresa(userToken, tipoVeiculo);
     }
 
     @PUT
     @Secured(permissions = {Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
     @Path("/tipos-veiculos")
-    public Response updateTipoVeiculo(@Required final TipoVeiculo tipoVeiculo) throws ProLogException {
-        return service.updateTipoVeiculo(tipoVeiculo);
+    public Response updateTipoVeiculo(@HeaderParam("Authorization") @Required final String userToken,
+                                      @Required final TipoVeiculo tipoVeiculo) throws ProLogException {
+        return service.updateTipoVeiculo(userToken, tipoVeiculo);
     }
 
     @GET

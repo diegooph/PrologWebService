@@ -3,6 +3,8 @@ package br.com.zalf.prolog.webservice.frota.socorrorota._model;
 import org.jetbrains.annotations.NotNull;
 
 /**
+ * Objeto utilizado em todos os locais do socorro em rota onde precisamos representar a localização.
+ * <p>
  * Created on 2019-12-06
  *
  * @author Luiz Felipe (https://github.com/luizfp)

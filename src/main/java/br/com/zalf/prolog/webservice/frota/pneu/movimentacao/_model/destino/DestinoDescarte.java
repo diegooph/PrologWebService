@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.destino;
 
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestinoEnum;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.motivo.MotivoDescarte;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoDescarte;
 import org.jetbrains.annotations.Nullable;
 
 import javax.validation.constraints.NotNull;
@@ -38,7 +38,7 @@ public final class DestinoDescarte extends Destino {
         return urlImagemDescarte1;
     }
 
-    public void setUrlImagemDescarte1(@Nullable String urlImagemDescarte1) {
+    public void setUrlImagemDescarte1(@Nullable final String urlImagemDescarte1) {
         this.urlImagemDescarte1 = urlImagemDescarte1;
     }
 
@@ -47,7 +47,7 @@ public final class DestinoDescarte extends Destino {
         return urlImagemDescarte2;
     }
 
-    public void setUrlImagemDescarte2(@Nullable String urlImagemDescarte2) {
+    public void setUrlImagemDescarte2(@Nullable final String urlImagemDescarte2) {
         this.urlImagemDescarte2 = urlImagemDescarte2;
     }
 
@@ -56,7 +56,7 @@ public final class DestinoDescarte extends Destino {
         return urlImagemDescarte3;
     }
 
-    public void setUrlImagemDescarte3(@Nullable String urlImagemDescarte3) {
+    public void setUrlImagemDescarte3(@Nullable final String urlImagemDescarte3) {
         this.urlImagemDescarte3 = urlImagemDescarte3;
     }
 

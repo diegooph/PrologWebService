@@ -24,6 +24,12 @@ interface OperacoesIntegradasAfericao {
     List<PneuAfericaoAvulsa> getPneusAfericaoAvulsa(@NotNull final Long codUnidade) throws Throwable;
 
     @NotNull
+    NovaAfericaoAvulsa getNovaAfericaoAvulsa(
+            @NotNull final Long codUnidade,
+            @NotNull final Long codPneu,
+            @NotNull final TipoMedicaoColetadaAfericao tipoMedicaoColetadaAfericao) throws Throwable;
+
+    @NotNull
     Report getAfericoesAvulsas(@NotNull final Long codUnidade,
                                @Nullable final Long codColaborador,
                                @NotNull final LocalDate dataInicial,

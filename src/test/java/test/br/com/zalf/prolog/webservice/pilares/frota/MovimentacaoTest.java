@@ -1,9 +1,12 @@
 package test.br.com.zalf.prolog.webservice.pilares.frota;
 
-import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
-import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
+import br.com.zalf.prolog.webservice.database.DatabaseManager;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
+import br.com.zalf.prolog.webservice.frota.pneu.PneuService;
+import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu;
+import br.com.zalf.prolog.webservice.frota.pneu._model.PneuAnalise;
+import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.MovimentacaoService;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.Movimentacao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.ProcessoMovimentacao;
@@ -11,16 +14,17 @@ import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.destino.Dest
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.destino.DestinoEstoque;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.origem.OrigemAnalise;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.origem.OrigemEstoque;
-import br.com.zalf.prolog.webservice.frota.pneu.PneuService;
-import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu;
-import br.com.zalf.prolog.webservice.frota.pneu._model.PneuAnalise;
-import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico._model.PneuServicoRealizado;
 import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico._model.PneuServicoRealizadoIncrementaVida;
 import br.com.zalf.prolog.webservice.frota.pneu.recapadoras.Recapadora;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
+import br.com.zalf.prolog.webservice.geral.unidade._model.Unidade;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import test.br.com.zalf.prolog.webservice.BaseTest;
 
 import java.math.BigDecimal;
@@ -33,8 +37,10 @@ import java.util.List;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class MovimentacaoTest extends BaseTest {
-    private static final String TOKEN_COLABORADOR = "TOKEN";
+
+    private static final String TOKEN_COLABORADOR = "token_teste";
     private static final long COD_PNEU_TESTE = 2399L;
 
     private MovimentacaoService movimentacaoService;
@@ -42,10 +48,18 @@ public class MovimentacaoTest extends BaseTest {
     private Pneu pneuComum;
 
     @Override
+    @BeforeAll
     public void initialize() throws Throwable {
+        DatabaseManager.init();
         movimentacaoService = new MovimentacaoService();
         pneuService = new PneuService();
         pneuComum = pneuService.getPneuByCod(COD_PNEU_TESTE, 5L);
+    }
+
+    @Override
+    @AfterAll
+    public void destroy() {
+        DatabaseManager.finish();
     }
 
     @Test
@@ -137,7 +151,8 @@ public class MovimentacaoTest extends BaseTest {
                 pneuComum,
                 analise,
                 estoque,
-                "movimentação realizada com teste automatizado");
+                "movimentação realizada com teste automatizado",
+                null);
 
         movimentacoes.add(movimentacao);
         return movimentacoes;
@@ -157,7 +172,7 @@ public class MovimentacaoTest extends BaseTest {
     }
 
     private PneuServicoRealizado createServicoVulcanizacao() {
-        PneuServicoRealizado vulcanizacao = new PneuServicoRealizado();
+        final PneuServicoRealizado vulcanizacao = new PneuServicoRealizado();
         vulcanizacao.setCodPneuTipoServico(2L);
         vulcanizacao.setCodUnidade(5L);
         vulcanizacao.setCodPneu(pneuComum.getCodigo());
@@ -203,7 +218,8 @@ public class MovimentacaoTest extends BaseTest {
                 pneuComum,
                 estoque,
                 analise,
-                "movimentação realizada com teste automatizado");
+                "movimentação realizada com teste automatizado",
+                null);
 
         movimentacoes.add(movimentacao);
         return movimentacoes;

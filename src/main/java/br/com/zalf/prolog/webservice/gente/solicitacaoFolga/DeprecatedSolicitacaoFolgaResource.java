@@ -3,7 +3,7 @@ package br.com.zalf.prolog.webservice.gente.solicitacaoFolga;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
-import br.com.zalf.prolog.webservice.empresa.EmpresaService;
+import br.com.zalf.prolog.webservice.gente.empresa.EmpresaService;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 

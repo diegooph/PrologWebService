@@ -5,6 +5,7 @@ import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.StatementUtils;
+import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
@@ -236,83 +237,42 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
 
     @Override
     public void resolverItem(@NotNull final ResolverItemOrdemServico item) throws Throwable {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        try {
-            conn = getConnection();
-            conn.setAutoCommit(false);
-            stmt = conn.prepareStatement("UPDATE CHECKLIST_ORDEM_SERVICO_ITENS SET " +
-                    "  CPF_MECANICO = ?, " +
-                    "  TEMPO_REALIZACAO = ?, " +
-                    "  KM = ?, " +
-                    "  STATUS_RESOLUCAO = ?, " +
-                    "  DATA_HORA_CONSERTO = ?, " +
-                    "  DATA_HORA_INICIO_RESOLUCAO = ?, " +
-                    "  DATA_HORA_FIM_RESOLUCAO = ?, " +
-                    "  FEEDBACK_CONSERTO = ? " +
-                    "WHERE COD_UNIDADE = ? " +
-                    "      AND CODIGO = ? " +
-                    "      AND DATA_HORA_CONSERTO IS NULL;");
-            final Long cpf = item.getCpfColaboradoResolucao();
-            final ZoneId zoneId = TimeZoneManager.getZoneIdForCodUnidade(item.getCodUnidadeOrdemServico(), conn);
-            stmt.setLong(1, cpf);
-            stmt.setLong(2, item.getDuracaoResolucaoMillis());
-            stmt.setLong(3, item.getKmColetadoVeiculo());
-            stmt.setString(4, StatusItemOrdemServico.RESOLVIDO.asString());
-            stmt.setObject(5, Now.offsetDateTimeUtc());
-            stmt.setObject(6, item.getDataHoraInicioResolucao().atZone(zoneId).toOffsetDateTime());
-            stmt.setObject(7, item.getDataHoraFimResolucao().atZone(zoneId).toOffsetDateTime());
-            stmt.setString(8, item.getFeedbackResolucao().trim());
-            stmt.setLong(9, item.getCodUnidadeOrdemServico());
-            stmt.setLong(10, item.getCodItemResolvido());
-            if (stmt.executeUpdate() > 0) {
-                updateStatusOs(conn, item.getCodOrdemServico(), item.getCodUnidadeOrdemServico());
-                final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
-                veiculoDao.updateKmByPlaca(item.getPlacaVeiculo(), item.getKmColetadoVeiculo(), conn);
-                conn.commit();
-            } else {
-                throw new SQLException("Erro ao resolver o item");
-            }
-        } catch (final Throwable t) {
-            if (conn != null) {
-                conn.rollback();
-            }
-            throw t;
-        } finally {
-            close(conn, stmt, null);
-        }
+        resolverItens(ResolverMultiplosItensOs.createFrom(item));
     }
 
     @Override
     public void resolverItens(@NotNull final ResolverMultiplosItensOs itensResolucao) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
+        ResultSet rSet = null;
         try {
             conn = getConnection();
             conn.setAutoCommit(false);
-            stmt = conn.prepareStatement("UPDATE CHECKLIST_ORDEM_SERVICO_ITENS SET " +
-                    "  CPF_MECANICO = ?, " +
-                    "  TEMPO_REALIZACAO = ?, " +
-                    "  KM = ?, " +
-                    "  STATUS_RESOLUCAO = ?, " +
-                    "  DATA_HORA_CONSERTO = ?, " +
-                    "  DATA_HORA_INICIO_RESOLUCAO = ?, " +
-                    "  DATA_HORA_FIM_RESOLUCAO = ?, " +
-                    "  FEEDBACK_CONSERTO = ? " +
-                    "WHERE COD_UNIDADE = ? AND CODIGO = ANY (?) AND DATA_HORA_CONSERTO IS NULL;");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_OS_RESOLVER_ITENS(" +
+                    "F_COD_UNIDADE := ?," +
+                    "F_COD_ITENS := ?," +
+                    "F_CPF := ?," +
+                    "F_TEMPO_REALIZACAO := ?," +
+                    "F_KM := ?," +
+                    "F_STATUS_RESOLUCAO := ?," +
+                    "F_DATA_HORA_CONSERTO := ?," +
+                    "F_DATA_HORA_INICIO_RESOLUCAO := ?," +
+                    "F_DATA_HORA_FIM_RESOLUCAO := ?," +
+                    "F_FEEDBACK_CONSERTO := ?);");
             final OffsetDateTime now = Now.offsetDateTimeUtc();
             final ZoneId zoneId = TimeZoneManager.getZoneIdForCodUnidade(itensResolucao.getCodUnidadeOrdemServico(), conn);
-            stmt.setLong(1, itensResolucao.getCpfColaboradorResolucao());
-            stmt.setLong(2, itensResolucao.getDuracaoResolucaoMillis());
-            stmt.setLong(3, itensResolucao.getKmColetadoVeiculo());
-            stmt.setString(4, StatusItemOrdemServico.RESOLVIDO.asString());
-            stmt.setObject(5, now);
-            stmt.setObject(6, itensResolucao.getDataHoraInicioResolucao().atZone(zoneId).toOffsetDateTime());
-            stmt.setObject(7, itensResolucao.getDataHoraFimResolucao().atZone(zoneId).toOffsetDateTime());
-            stmt.setString(8, itensResolucao.getFeedbackResolucao().trim());
-            stmt.setLong(9, itensResolucao.getCodUnidadeOrdemServico());
-            stmt.setArray(10, PostgresUtils.listToArray(conn, SqlType.BIGINT, itensResolucao.getCodigosItens()));
-            if (stmt.executeUpdate() == itensResolucao.getCodigosItens().size()) {
+            stmt.setLong(1, itensResolucao.getCodUnidadeOrdemServico());
+            stmt.setArray(2, PostgresUtils.listToArray(conn, SqlType.BIGINT, itensResolucao.getCodigosItens()));
+            stmt.setLong(3, itensResolucao.getCpfColaboradorResolucao());
+            stmt.setLong(4, itensResolucao.getDuracaoResolucaoMillis());
+            stmt.setLong(5, itensResolucao.getKmColetadoVeiculo());
+            stmt.setString(6, StatusItemOrdemServico.RESOLVIDO.asString());
+            stmt.setObject(7, now);
+            stmt.setObject(8, itensResolucao.getDataHoraInicioResolucao().atZone(zoneId).toOffsetDateTime());
+            stmt.setObject(9, itensResolucao.getDataHoraFimResolucao().atZone(zoneId).toOffsetDateTime());
+            stmt.setString(10, StringUtils.trimToNull(itensResolucao.getFeedbackResolucao()));
+            rSet = stmt.executeQuery();
+            if (rSet.next() && rSet.getInt(1) == itensResolucao.getCodigosItens().size()) {
                 fechaOrdensServicosComBaseItens(
                         conn,
                         itensResolucao.getCodUnidadeOrdemServico(),
@@ -325,7 +285,7 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
                         conn);
                 conn.commit();
             } else {
-                throw new IllegalStateException("Erro ao marcar os itens como resolvidos: "
+                throw new Throwable("Erro ao marcar os itens como resolvidos: "
                         + itensResolucao.getCodigosItens());
             }
         } catch (final Throwable t) {
@@ -334,7 +294,7 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
             }
             throw t;
         } finally {
-            close(conn, stmt);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -452,33 +412,6 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
             stmt.executeBatch();
         } finally {
             close(stmt, rSet);
-        }
-    }
-
-    private void updateStatusOs(@NotNull final Connection conn,
-                                @NotNull final Long codOs,
-                                @NotNull final Long codUnidadeOs) throws SQLException {
-        PreparedStatement stmt = null;
-        try {
-            stmt = conn.prepareStatement("UPDATE CHECKLIST_ORDEM_SERVICO SET " +
-                    "  STATUS = ?, " +
-                    "  DATA_HORA_FECHAMENTO = ? " +
-                    "WHERE COD_UNIDADE = ? " +
-                    "      AND CODIGO = ? " +
-                    "      AND (SELECT COUNT(*) FROM CHECKLIST_ORDEM_SERVICO_ITENS " +
-                    "WHERE COD_UNIDADE = ? " +
-                    "      AND COD_OS = ? " +
-                    "      AND STATUS_RESOLUCAO = ?) = 0;");
-            stmt.setString(1, StatusOrdemServico.FECHADA.asString());
-            stmt.setObject(2, OffsetDateTime.now(Clock.systemUTC()));
-            stmt.setLong(3, codUnidadeOs);
-            stmt.setLong(4, codOs);
-            stmt.setLong(5, codUnidadeOs);
-            stmt.setLong(6, codOs);
-            stmt.setString(7, StatusItemOrdemServico.PENDENTE.asString());
-            stmt.execute();
-        } finally {
-            close(stmt);
         }
     }
 }

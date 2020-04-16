@@ -86,7 +86,15 @@ public class ModeloPlacasAfericao {
          */
         public static final int INTERVALO_INVALIDO = -1;
 
+        /**
+         * Indentificar do veículo.
+         */
         private String placa;
+
+        /**
+         * Código da unidade a qual a placa está vinculada.
+         */
+        private Long codUnidadePlaca;
 
         /**
          * Número inteiro que representa a quantidade de dias desde a última aferição de Sulco.
@@ -140,6 +148,14 @@ public class ModeloPlacasAfericao {
 
         public void setPlaca(String placa) {
             this.placa = placa;
+        }
+
+        public Long getCodUnidadePlaca() {
+            return codUnidadePlaca;
+        }
+
+        public void setCodUnidadePlaca(final Long codUnidadePlaca) {
+            this.codUnidadePlaca = codUnidadePlaca;
         }
 
         public int getIntervaloUltimaAfericaoSulco() {
@@ -215,6 +231,24 @@ public class ModeloPlacasAfericao {
         }
 
         public PlacaAfericao() {
+        }
+
+        public boolean isAfericaoSulcoNoPrazo(final int metaSulco) {
+            return !isAfericaoSulcoVencidaOuNuncaAferida(metaSulco);
+        }
+
+        public boolean isAfericaoPressaoNoPrazo(final int metaPressao) {
+            return !isAfericaoPressaoVencidaOuNuncaAferida(metaPressao);
+        }
+
+        private boolean isAfericaoPressaoVencidaOuNuncaAferida(final int metaPressao) {
+            return intervaloUltimaAfericaoPressao > metaPressao
+                    || intervaloUltimaAfericaoPressao == PlacaAfericao.INTERVALO_INVALIDO;
+        }
+
+        private boolean isAfericaoSulcoVencidaOuNuncaAferida(final int metaSulco) {
+            return intervaloUltimaAfericaoSulco > metaSulco
+                    || intervaloUltimaAfericaoSulco == PlacaAfericao.INTERVALO_INVALIDO;
         }
 
         @Override

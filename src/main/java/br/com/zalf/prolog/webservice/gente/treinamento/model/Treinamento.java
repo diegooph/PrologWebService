@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.treinamento.model;
 
-import br.com.zalf.prolog.webservice.colaborador.model.Cargo;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Cargo;
 
 import java.time.LocalDateTime;
 import java.util.Date;

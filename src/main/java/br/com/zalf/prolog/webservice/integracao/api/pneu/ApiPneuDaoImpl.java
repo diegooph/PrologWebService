@@ -6,15 +6,23 @@ import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.integracao.api.pneu.cadastro.model.ApiStatusPneu;
 import br.com.zalf.prolog.webservice.integracao.api.pneu.model.ApiPneuAlteracaoStatus;
 import br.com.zalf.prolog.webservice.integracao.api.pneu.model.ApiPneuAlteracaoStatusVeiculo;
+import br.com.zalf.prolog.webservice.integracao.api.pneu.model.DiagramaPosicaoMapeado;
+import br.com.zalf.prolog.webservice.integracao.api.pneu.model.PosicaoPneuMepado;
+import br.com.zalf.prolog.webservice.integracao.response.PosicaoPneuMepadoResponse;
 import org.jetbrains.annotations.NotNull;
+import org.postgresql.util.PSQLException;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static br.com.zalf.prolog.webservice.commons.util.StatementUtils.bindValueOrNull;
+import static br.com.zalf.prolog.webservice.integracao.response.PosicaoPneuMepadoResponse.GENERIC_ERROR_MESSAGE;
 
 /**
  * Created on 16/08/19.
@@ -41,8 +49,8 @@ public final class ApiPneuDaoImpl extends DatabaseConnection implements ApiPneuD
                     "F_DATA_HORA_ALTERACAO_STATUS := ?, " +
                     "F_STATUS_PNEU := ?, " +
                     "F_TROCOU_DE_BANDA := ?, " +
-                    "F_COD_NOVO_MODELO_BANDA_PNEU := ?, " +
-                    "F_VALOR_NOVA_BANDA_PNEU := ?, " +
+                    "F_COD_NOVO_MODELO_BANDA_PNEU := ?::BIGINT, " +
+                    "F_VALOR_NOVA_BANDA_PNEU := ?::NUMERIC, " +
                     "F_PLACA_VEICULO_PNEU_APLICADO := ?, " +
                     "F_POSICAO_VEICULO_PNEU_APLICADO := ?, " +
                     "F_TOKEN_INTEGRACAO := ?) AS COD_PNEU_PROLOG;");
@@ -86,6 +94,56 @@ public final class ApiPneuDaoImpl extends DatabaseConnection implements ApiPneuD
             throw t;
         } finally {
             close(conn, stmt);
+        }
+    }
+
+    @NotNull
+    @Override
+    public List<PosicaoPneuMepadoResponse> validaPosicoesMapeadasSistemaParceiro(
+            @NotNull final String tokenIntegracao,
+            @NotNull final List<DiagramaPosicaoMapeado> diagramasPosicoes) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        List<PosicaoPneuMepadoResponse> posicaoPneuMepadoResponse = new ArrayList<>();
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM INTEGRACAO.FUNC_PNEU_VALIDA_POSICOES_SISTEMA_PARCEIRO(" +
+                    "F_COD_DIAGRAMA => ?, F_POSICOES_PARCEIRO => ?, F_POSICOES_PROLOG => ?)");
+            for (final DiagramaPosicaoMapeado diagramaPosicaoMapeado : diagramasPosicoes) {
+                final int codDiagrama = diagramaPosicaoMapeado.getCodDiagrama();
+                try {
+                    final List<String> posicoesParceiro =
+                            diagramaPosicaoMapeado.getPosicoesMapeadas()
+                                    .stream()
+                                    .map(PosicaoPneuMepado::getPosicaoParceiro)
+                                    .collect(Collectors.toList());
+                    final List<Integer> posicoesProLog =
+                            diagramaPosicaoMapeado.getPosicoesMapeadas()
+                                    .stream()
+                                    .map(PosicaoPneuMepado::getPosicaoProLog)
+                                    .collect(Collectors.toList());
+                    stmt.setInt(1, codDiagrama);
+                    stmt.setArray(2, PostgresUtils.listToArray(conn, SqlType.TEXT, posicoesParceiro));
+                    stmt.setArray(3, PostgresUtils.listToArray(conn, SqlType.BIGINT, posicoesProLog));
+                    rSet = stmt.executeQuery();
+                    if (rSet.next()) {
+                        posicaoPneuMepadoResponse.add(
+                                PosicaoPneuMepadoResponse.ok(codDiagrama));
+                    }
+                } catch (final PSQLException sqlError) {
+                    posicaoPneuMepadoResponse.add(
+                            PosicaoPneuMepadoResponse.error(
+                                    codDiagrama,
+                                    PostgresUtils.getPSQLErrorMessage(sqlError, GENERIC_ERROR_MESSAGE)));
+                } catch (final Throwable throwable) {
+                    posicaoPneuMepadoResponse.add(
+                            PosicaoPneuMepadoResponse.error(codDiagrama, GENERIC_ERROR_MESSAGE, throwable));
+                }
+            }
+            return posicaoPneuMepadoResponse;
+        } finally {
+            close(conn, stmt, rSet);
         }
     }
 

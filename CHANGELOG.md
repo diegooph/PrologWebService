@@ -1,21 +1,108 @@
-Stage
+Change Log
 ==========
 
 ### Refactors
 * Diferencia a plataforma de execução das ações de socorro em rota (PL-2527)
 * Notifica via e-mail quando um socorro em rota é aberto (PL-2522)
 
-Change Log
-==========
+<a name="v1.0.28"></a>
+## Version [v1.0.28](https://github.com/luizfp/PrologWebService/compare/v1.0.27...v1.0.28) (release-date) [unreleased]
 
-<a name="v1.0.20"></a>
-## Version [v1.0.20](https://github.com/luizfp/PrologWebService/compare/v1.0.19...v1.0.20) (release-date) [unreleased]
+## Bugfix
+* Modifica inserção para realizar deleção antes das inserções. (PL-2681)
+
+<a name="v1.0.27"></a>
+## Version [v1.0.27](https://github.com/luizfp/PrologWebService/compare/v1.0.26...v1.0.27) (2020-04-14)
+
+### Features
+* Inicaliza Sentry com informações da versão do WS
+
+### Refactors
+* Cria serializer/deserializer específico para o `OrigemDestinoEnum` (PL-2681) 
+* Modifica listagem de transições por unidade para completar lista com transições não cadastradas (PL-2681)
+* Adiciona código da unidade da placa no cronograma de aferição (PLI-119)
+
+<a name="v1.0.26"></a>
+## Version [v1.0.26](https://github.com/luizfp/PrologWebService/compare/v1.0.25...v1.0.26) (2020-04-12)
+
+### Features
+* Cria dashboard de socorros por status nos ultimos 30 dias (PL-2618)
+* Cria estrutura para cadastro e configuração de motivos para o processo de movimentação (PL-2607)
+* Permite alteração da pressão recomendada dos pneus (PL-2570)
+
+### Refactors
+* Permitir fechamento de O.Ss originadas no Prolog (PLI-99)
+* Adiciona os registros de deslocamento para socorros em rota (PL-2631)
+* Adiciona informações de tempo entre cada status do socorro em rota (PL-2585)
+* Roteia método de sincronia de checklist offline (PLI-118)
+
+### Bug Fixes
+* Corrige parse sem replace de virgula no import de csv (PL-2573)
+
+<a name="v1.0.25"></a>
+## Version [v1.0.25](https://github.com/luizfp/PrologWebService/compare/v1.0.24...v1.0.25) (2020-04-02)
+
+### Features
+* Injeta colaborador autenticado no SecurityContext do request (PL-2638)
+* Cria relatório de permissões detalhadas (PL-2627)
+* Criar método de validação de posições de pneus (PLI-52)
+* Criar estrutura para liberação de modelos de checklist para a integração de O.S (PLI-113)
+* Criar método roteado para buscar os locais de movimento do Globus (PLI-107)
+
+### Refactors
+* Modifica function que insere checklist (PL-2569)
+
+## Version [v1.0.24](https://github.com/luizfp/PrologWebService/compare/v1.0.23...v1.0.24) (2020-03-29)
+
+### Features
+* Cria estrutura de campos personalizados (PL-2616)
+* Aplica fluxo de campos personalizados no processo de movimentação (PL-2616)
+* Cria integração de pneus para o cliente Expresso Nepomuceno (PLI-93)
+
+### Refactors
+* Adiciona código auxiliar no cadastro de tipo de veículo (PL-2560)
+* Altera fluxo de transferência de pneus dentro da integração (PLI-80)
+* Altera fluxo de transferência de veículos dentro da integração (PLI-80)
+
+<a name="v1.0.23"></a>
+## Version [v1.0.23](https://github.com/luizfp/PrologWebService/compare/v1.0.22...v1.0.23) (2020-03-18)
 
 ### Features
 * Adiciona a quantidade de permissões na busca de cargos (PL-2532)
+* Criar configuração para saber se uma integração abre serviços de pneu (PLI-78)
+* Cria edição, visualização e listagem de unidade (PL-2588)
+* Altera forma de autenticação para usuários internos (PL-2550)
 
 ### Refactors
 * Modifica update do pneu, permitindo atualizar vida total (PL-2145)
+* Diferencia a plataforma de execução das ações de socorro em rota (PL-2527)
+* Altera as interações com o banco de dados para implementar a amarração entre pneus e veículos (PL-1965)
+* Impedir que itens sejam resolvidos com data anterior à realização do check (PL-2500)
+* Remove arquivos de config antigos do eclipse
+* Remove lista de pneus disponíveis do `ServicoHolder` (PL-2510)
+* Bloqueia busca do `ServicoHolder` para apps <= 101 (PL-2510)
+* Refatora métodos do socorro-rota que ainda estavam em hardcode (PL-2577)
+
+<a name="v1.0.22"></a>
+## Version [v1.0.22](https://github.com/luizfp/PrologWebService/compare/v1.0.21...v1.0.22) (2020-03-03)
+
+### Bug Fixes
+* Corrige problema do último release onde faltavam as implementações da versão: v1.0.19
+
+<a name="v1.0.21"></a>
+## Version [v1.0.21](https://github.com/luizfp/PrologWebService/compare/v1.0.20...v1.0.21) (2020-02-25)
+
+### Refactors
+* Adiciona codModeloChecklist no envio dos dados para o Globus (PLI-89)
+
+<a name="v1.0.20"></a>
+## Version [v1.0.20](https://github.com/luizfp/PrologWebService/compare/v1.0.19...v1.0.20) (2020-02-25)
+
+### Refactors
+* Reestrutura mensagens de erro na sincronização dos checklists integrados (PLI-70)
+
+### Bug Fixes
+* Hotfix - Corrige erro de cast da function de atualização de status do pneu (PLI-87)
 
 <a name="v1.0.19"></a>
 ## Version [v1.0.19](https://github.com/luizfp/PrologWebService/compare/v1.0.18...v1.0.19) (2020-02-15)
@@ -28,10 +115,9 @@ Change Log
 <a name="v1.0.18"></a>
 ## Version [v1.0.18](https://github.com/luizfp/PrologWebService/compare/v1.0.17...v1.0.18) (2020-02-13)
 
-### Recators
+### Refactors
 * Remove roteamento de tipos de veículos e cria busca específica para checklists (PL-2536)
 * Cria bloqueio de integração por unidades (PLI-71)
-
 
 <a name="v1.0.17"></a>
 ## Version [v1.0.17](https://github.com/luizfp/PrologWebService/compare/v1.0.16...v1.0.17) (2020-02-11)

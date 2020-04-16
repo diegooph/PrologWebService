@@ -6,6 +6,8 @@ import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilan;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.requester.AvaCorpAvilanRequesterImpl;
 import br.com.zalf.prolog.webservice.integracao.praxio.SistemaGlobusPiccolotur;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.GlobusPiccoloturRequesterImpl;
+import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.data.ProtheusNepomucenoRequesterImpl;
+import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.SistemaProtheusNepomuceno;
 import br.com.zalf.prolog.webservice.integracao.protheusrodalog.ProtheusRodalogRequesterImpl;
 import br.com.zalf.prolog.webservice.integracao.protheusrodalog.SistemaProtheusRodalog;
 import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.SistemaRodoparHorizonte;
@@ -42,6 +44,12 @@ public final class SistemasFactory {
             case PROTHEUS_RODALOG:
                 return new SistemaProtheusRodalog(
                         new ProtheusRodalogRequesterImpl(),
+                        sistemaKey,
+                        integradorProLog,
+                        userToken);
+            case PROTHEUS_NEPOMUCENO:
+                return new SistemaProtheusNepomuceno(
+                        new ProtheusNepomucenoRequesterImpl(),
                         sistemaKey,
                         integradorProLog,
                         userToken);

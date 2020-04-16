@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.protheusrodalog.model;
 
-import br.com.zalf.prolog.webservice.colaborador.model.Unidade;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
+import br.com.zalf.prolog.webservice.geral.unidade._model.Unidade;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;

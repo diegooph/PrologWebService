@@ -1,11 +1,13 @@
 package br.com.zalf.prolog.webservice.frota.checklist.offline;
 
 import br.com.zalf.prolog.webservice.Injection;
+import br.com.zalf.prolog.webservice.autenticacao.Autenticacao;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.model.*;
+import br.com.zalf.prolog.webservice.integracao.router.RouterChecklistOffline;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -29,14 +31,16 @@ public class ChecklistOfflineService {
         try {
             // Precisamos verificar o token para ter certeza se o usuário é apto a utilizar os métodos.
             ensureValidToken(tokenSincronizacao);
-
+            // Buscamos um token para o usuário que realizou o checklist sendo sincronizado
+            final Autenticacao autenticacao =
+                    Injection.provideAutenticacaoDao().insertOrUpdateByCodColaborador(checklist.getCodColaborador());
             return ResponseWithCod.ok(
                     "Checklist inserido com sucesso",
-                    dao.insertChecklistOffline(checklist));
-        } catch (Throwable t) {
+                    RouterChecklistOffline.create(dao, autenticacao.getToken()).insertChecklistOffline(checklist));
+        } catch (final Throwable t) {
             Log.e(TAG, String.format(
                     "Não foi possível inserir o checklist offline:\n" +
-                            "tokenSincronizacao = %s\n",
+                            "tokenSincronizacao = %s",
                     tokenSincronizacao), t);
             throw Injection
                     .provideProLogExceptionHandler()

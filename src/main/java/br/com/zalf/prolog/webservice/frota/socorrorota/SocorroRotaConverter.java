@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 /**
@@ -31,9 +32,9 @@ public class SocorroRotaConverter {
     public static VeiculoAberturaSocorro createVeiculoAberturaSocorro(
             @NotNull final ResultSet rSet) throws SQLException {
         return new VeiculoAberturaSocorro(
-                rSet.getLong("CODIGO"),
-                rSet.getString("PLACA"),
-                rSet.getLong("KM"));
+                rSet.getLong("CODIGO_VEICULO"),
+                rSet.getString("PLACA_VEICULO"),
+                rSet.getLong("KM_ATUAL_VEICULO"));
     }
 
     @NotNull
@@ -53,7 +54,9 @@ public class SocorroRotaConverter {
                 rSet.getString("URL_FOTO_1_ABERTURA"),
                 rSet.getString("URL_FOTO_2_ABERTURA"),
                 rSet.getString("URL_FOTO_3_ABERTURA"),
-                StatusSocorroRota.fromString(rSet.getString("STATUS_ATUAL_SOCORRO_ROTA"))
+                StatusSocorroRota.fromString(rSet.getString("STATUS_ATUAL_SOCORRO_ROTA")),
+                rSet.getObject("DATA_HORA_DESLOCAMENTO_INICIO", LocalDateTime.class),
+                rSet.getObject("DATA_HORA_DESLOCAMENTO_FIM", LocalDateTime.class)
         );
     }
 
@@ -86,6 +89,20 @@ public class SocorroRotaConverter {
     @NotNull
     public static SocorroRotaAtendimentoVisualizacao createSocorroRotaAtendimentoVisualizacao(
             @NotNull final ResultSet rSet) throws SQLException {
+        LocalizacaoSocorroRota localizacaoDescolamentoInicio = null;
+        if (rSet.getString("LATITUDE_INICIO") != null) {
+            localizacaoDescolamentoInicio = new LocalizacaoSocorroRota(
+                    rSet.getString("LATITUDE_INICIO"),
+                    rSet.getString("LONGITUDE_INICIO"),
+                    0F);
+        }
+        LocalizacaoSocorroRota localizacaoDescolamentoFim = null;
+        if (rSet.getString("LATITUDE_FIM") != null) {
+            localizacaoDescolamentoFim = new LocalizacaoSocorroRota(
+                    rSet.getString("LATITUDE_FIM"),
+                    rSet.getString("LONGITUDE_FIM"),
+                    0F);
+        }
         return new SocorroRotaAtendimentoVisualizacao(
                 rSet.getLong("COD_COLABORADOR_ATENDIMENTO"),
                 rSet.getString("NOME_RESPONSAVEL_ATENDIMENTO"),
@@ -98,10 +115,14 @@ public class SocorroRotaConverter {
                 rSet.getString("ENDERECO_AUTOMATICO_ATENDIMENTO"),
                 rSet.getString("MARCA_APARELHO_ATENDIMENTO"),
                 rSet.getString("MODELO_APARELHO_ATENDIMENTO"),
-                rSet.getString("IMEI_APARELHO_ATENDIMENTO")
+                rSet.getString("IMEI_APARELHO_ATENDIMENTO"),
+                rSet.getObject("DATA_HORA_DESLOCAMENTO_INICIO", LocalDateTime.class),
+                localizacaoDescolamentoInicio,
+                rSet.getObject("DATA_HORA_DESLOCAMENTO_FIM", LocalDateTime.class),
+                localizacaoDescolamentoFim,
+                Duration.ofSeconds(rSet.getLong("TEMPO_ABERTURA_ATENDIMENTO_SEGUNDOS"))
         );
     }
-
 
     @NotNull
     public static SocorroRotaInvalidacaoVisualizacao createSocorroRotaInvalidacaoVisualizacao(
@@ -121,10 +142,11 @@ public class SocorroRotaConverter {
                 rSet.getString("IMEI_APARELHO_INVALIDACAO"),
                 rSet.getString("URL_FOTO_1_INVALIDACAO"),
                 rSet.getString("URL_FOTO_2_INVALIDACAO"),
-                rSet.getString("URL_FOTO_3_INVALIDACAO")
+                rSet.getString("URL_FOTO_3_INVALIDACAO"),
+                Duration.ofSeconds(rSet.getLong("TEMPO_ABERTURA_INVALIDACAO_SEGUNDOS")),
+                Duration.ofSeconds(rSet.getLong("TEMPO_ATENDIMENTO_INVALIDACAO_SEGUNDOS"))
         );
     }
-
 
     @NotNull
     public static SocorroRotaFinalizacaoVisualizacao createSocorroRotaFinalizacaoVisualizacao(
@@ -144,7 +166,8 @@ public class SocorroRotaConverter {
                 rSet.getString("IMEI_APARELHO_FINALIZACAO"),
                 rSet.getString("URL_FOTO_1_FINALIZACAO"),
                 rSet.getString("URL_FOTO_2_FINALIZACAO"),
-                rSet.getString("URL_FOTO_3_FINALIZACAO")
+                rSet.getString("URL_FOTO_3_FINALIZACAO"),
+                Duration.ofSeconds(rSet.getLong("TEMPO_ATENDIMENTO_FINALIZACAO_SEGUNDOS"))
         );
     }
 }

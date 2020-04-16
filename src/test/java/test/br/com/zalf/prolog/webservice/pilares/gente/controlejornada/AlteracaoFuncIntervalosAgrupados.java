@@ -1,6 +1,6 @@
 package test.br.com.zalf.prolog.webservice.pilares.gente.controlejornada;
 
-import br.com.zalf.prolog.webservice.colaborador.model.Colaborador;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.commons.FonteDataHora;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.Intervalo;

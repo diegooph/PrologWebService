@@ -37,6 +37,10 @@ public final class SocorroRotaListagem {
     private final String urlFoto3Abertura;
     @NotNull
     private final StatusSocorroRota statusAtualSocorroRota;
+    @Nullable
+    private final LocalDateTime dataHoraDeslocamentoInicio;
+    @Nullable
+    private final LocalDateTime dataHoraDeslocamentoFim;
 
     public SocorroRotaListagem(@NotNull final Long codSocorroRota,
                                @NotNull final String nomeUnidade,
@@ -51,7 +55,9 @@ public final class SocorroRotaListagem {
                                @Nullable final String urlFoto1Abertura,
                                @Nullable final String urlFoto2Abertura,
                                @Nullable final String urlFoto3Abertura,
-                               @NotNull final StatusSocorroRota statusAtualSocorroRota) {
+                               @NotNull final StatusSocorroRota statusAtualSocorroRota,
+                               @Nullable final LocalDateTime dataHoraDeslocamentoInicio,
+                               @Nullable final LocalDateTime dataHoraDeslocamentoFim) {
         this.codSocorroRota = codSocorroRota;
         this.nomeUnidade = nomeUnidade;
         this.placaVeiculo = placaVeiculo;
@@ -66,6 +72,8 @@ public final class SocorroRotaListagem {
         this.urlFoto2Abertura = urlFoto2Abertura;
         this.urlFoto3Abertura = urlFoto3Abertura;
         this.statusAtualSocorroRota = statusAtualSocorroRota;
+        this.dataHoraDeslocamentoInicio = dataHoraDeslocamentoInicio;
+        this.dataHoraDeslocamentoFim = dataHoraDeslocamentoFim;
     }
 
     @NotNull
@@ -124,5 +132,15 @@ public final class SocorroRotaListagem {
     @NotNull
     public StatusSocorroRota getStatusAtualSocorroRota() {
         return statusAtualSocorroRota;
+    }
+
+    @Nullable
+    public LocalDateTime getDataHoraDeslocamentoInicio() {
+        return dataHoraDeslocamentoInicio;
+    }
+
+    @Nullable
+    public LocalDateTime getDataHoraDeslocamentoFim() {
+        return dataHoraDeslocamentoFim;
     }
 }

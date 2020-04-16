@@ -1,12 +1,11 @@
 package br.com.zalf.prolog.webservice.integracao.praxio;
 
-import br.com.zalf.prolog.webservice.Injection;
+import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
-import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.integracao.praxio.afericao.AfericaoIntegracaoPraxioConverter;
 import br.com.zalf.prolog.webservice.integracao.praxio.afericao.MedicaoIntegracaoPraxio;
-import br.com.zalf.prolog.webservice.integracao.praxio.cadastro.CadastroVeiculoIntegracaoPraxioConverter;
 import br.com.zalf.prolog.webservice.integracao.praxio.cadastro.VeiculoCadastroPraxio;
 import br.com.zalf.prolog.webservice.integracao.praxio.cadastro.VeiculoEdicaoPraxio;
 import br.com.zalf.prolog.webservice.integracao.praxio.cadastro.VeiculoTransferenciaPraxio;
@@ -25,6 +24,8 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
+
+import static br.com.zalf.prolog.webservice.commons.util.StatementUtils.bindValueOrNull;
 
 /**
  * Created on 12/12/18.
@@ -119,47 +120,28 @@ final class IntegracaoPraxioDaoImpl extends DatabaseConnection implements Integr
             @NotNull final String tokenIntegracao,
             @NotNull final VeiculoTransferenciaPraxio veiculoTransferenciaPraxio) throws Throwable {
         Connection conn = null;
+        PreparedStatement stmt = null;
         try {
             conn = getConnection();
-            conn.setAutoCommit(false);
-            final Long codVeiculo =
-                    Injection
-                            .provideVeiculoDao()
-                            .getCodVeiculoByPlaca(conn, veiculoTransferenciaPraxio.getPlacaTransferida());
-            final Long codEmpresa =
-                    Injection
-                            .provideIntegracaoDao()
-                            .getCodEmpresaByTokenIntegracao(conn, tokenIntegracao);
-            final Long codColaborador;
-            try {
-                codColaborador =
-                        Injection
-                                .provideColaboradorDao()
-                                .getCodColaboradorByCpf(
-                                        conn,
-                                        codEmpresa,
-                                        veiculoTransferenciaPraxio.getCpfColaboradorRealizacaoTransferencia());
-            } catch (final Throwable t) {
-                throw new GenericException(
-                        String.format(
-                                "Cpf %s não está cadastrado na base de dados do ProLog",
-                                veiculoTransferenciaPraxio.getCpfColaboradorRealizacaoTransferencia()));
-            }
-            Injection
-                    .provideVeiculoTransferenciaDao()
-                    .insertProcessoTransferenciaVeiculo(
-                            conn,
-                            CadastroVeiculoIntegracaoPraxioConverter
-                                    .convert(codEmpresa, codColaborador, codVeiculo, veiculoTransferenciaPraxio),
-                            Injection.provideDadosChecklistOfflineChangedListener());
-            conn.commit();
-        } catch (final Throwable t) {
-            if (conn != null) {
-                conn.rollback();
-            }
-            throw t;
+            stmt = conn.prepareStatement("SELECT * FROM INTEGRACAO.FUNC_VEICULO_TRANSFERE_VEICULO(" +
+                    "F_COD_UNIDADE_ORIGEM := ?," +
+                    "F_COD_UNIDADE_DESTINO := ?," +
+                    "F_CPF_COLABORADOR_TRANSFERENCIA := ?," +
+                    "F_PLACA := ?," +
+                    "F_OBSERVACAO := ?," +
+                    "F_TOKEN_INTEGRACAO := ?, " +
+                    "F_DATA_HORA := ?)");
+            stmt.setLong(1, veiculoTransferenciaPraxio.getCodUnidadeOrigem());
+            stmt.setLong(2, veiculoTransferenciaPraxio.getCodUnidadeDestino());
+            stmt.setLong(3,
+                    Colaborador.formatCpf(veiculoTransferenciaPraxio.getCpfColaboradorRealizacaoTransferencia()));
+            stmt.setString(4, veiculoTransferenciaPraxio.getPlacaTransferida());
+            bindValueOrNull(stmt, 5, veiculoTransferenciaPraxio.getObservacao(), SqlType.TEXT);
+            stmt.setString(6, tokenIntegracao);
+            stmt.setObject(7, Now.offsetDateTimeUtc());
+            stmt.executeQuery();
         } finally {
-            close(conn);
+            close(conn, stmt);
         }
     }
 
@@ -353,7 +335,7 @@ final class IntegracaoPraxioDaoImpl extends DatabaseConnection implements Integr
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * " +
-                    "FROM PICCOLOTUR.FUNC_CHECK_GET_NEXT_COD_CHECKLIST_PARA_SINCRONIZAR();");
+                    "FROM PICCOLOTUR.FUNC_CHECK_OS_GET_NEXT_COD_CHECKLIST_PARA_SINCRONIZAR();");
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return new ChecklistParaSincronizar(

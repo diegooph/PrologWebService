@@ -10,11 +10,13 @@ package br.com.zalf.prolog.webservice.integracao.operacoes;
 public interface OperacoesIntegradas extends
         OperacoesIntegradasAfericao,
         OperacoesIntegradasChecklist,
+        OperacoesIntegradasChecklistOffline,
         OperacoesIntegradasChecklistOrdemServico,
         OperacoesIntegradasVeiculo,
         OperacoesIntegradasVeiculoTransferencia,
         OperacoesIntegradasPneu,
         OperacoesIntegradasPneuTransferencia,
         OperacoesIntegradasMovimentacao,
-        OperacoesIntegradasAfericaoServico {
+        OperacoesIntegradasAfericaoServico,
+        OperacoesIntegradasTipoVeiculo {
 }

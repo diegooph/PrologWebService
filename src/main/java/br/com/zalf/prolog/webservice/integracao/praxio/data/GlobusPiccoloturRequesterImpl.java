@@ -1,7 +1,8 @@
 package br.com.zalf.prolog.webservice.integracao.praxio.data;
 
-import br.com.zalf.prolog.webservice.BuildConfig;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.config.BuildConfig;
+import br.com.zalf.prolog.webservice.integracao.praxio.movimentacao.GlobusPiccoloturLocalMovimentoResponse;
 import br.com.zalf.prolog.webservice.integracao.praxio.movimentacao.ProcessoMovimentacaoGlobus;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.error.GlobusPiccoloturException;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap.OrdemDeServicoCorretivaPrologVO;
@@ -84,6 +85,22 @@ public final class GlobusPiccoloturRequesterImpl implements GlobusPiccoloturRequ
     }
 
     @NotNull
+    @Override
+    public GlobusPiccoloturLocalMovimentoResponse getLocaisMovimentoGlobusResponse(
+            @NotNull final String url,
+            @NotNull final String tokenIntegracao,
+            @NotNull final String cpfColaborador) throws Throwable {
+        final GlobusPiccoloturRest service = GlobusPiccoloturRestClient.getService(GlobusPiccoloturRest.class);
+        final Call<GlobusPiccoloturLocalMovimentoResponse> call =
+                service.getLocaisMovimentoGlobus(url, tokenIntegracao, cpfColaborador);
+        final GlobusPiccoloturLocalMovimentoResponse response = handleJsonResponse(call.execute());
+        if (!response.isSucesso() || response.getLocais() == null || response.getUsuarioGlobus() == null) {
+            throw new GlobusPiccoloturException("[INTEGRAÇÂO] Erro ao buscar Locais de Movimento para a movimentação");
+        }
+        return response;
+    }
+
+    @NotNull
     private <T> T handleJsonResponse(@Nullable final Response<T> response) throws Throwable {
         return handleJsonResponse(response, false);
     }
@@ -118,7 +135,7 @@ public final class GlobusPiccoloturRequesterImpl implements GlobusPiccoloturRequ
                 return response.body();
             } else {
                 if (response.errorBody() == null) {
-                    throw new GlobusPiccoloturException("[INTEGRAÇÃO] Erro ao movimentar pneus no sistema integrado");
+                    throw new GlobusPiccoloturException("[INTEGRAÇÃO] Nenhuma resposta obtida do Globus");
                 }
                 // Tratamos de forma específica o retorno de erro da requisição de autenticação.
                 if (tokenResponse) {
@@ -127,7 +144,7 @@ public final class GlobusPiccoloturRequesterImpl implements GlobusPiccoloturRequ
                 throw GlobusPiccoloturException.from(toGlobusPiccoloturResponse(response.errorBody()));
             }
         } else {
-            throw new GlobusPiccoloturException("[INTEGRAÇÃO] Erro ao movimentar pneus no sistema integrado");
+            throw new GlobusPiccoloturException("[INTEGRAÇÃO] Nenhuma resposta obtida do Globus");
         }
     }
 

@@ -52,6 +52,17 @@ public final class TimeZoneManager extends DatabaseConnection {
     }
 
     @NotNull
+    public static ZoneId getZoneIdForCpf(@NotNull final Long cpf) throws SQLException {
+        Connection connection = null;
+        try {
+            connection = getConnection();
+            return getZoneIdForCpf(cpf, connection);
+        } finally {
+            close(connection);
+        }
+    }
+
+    @NotNull
     public static ZoneId getZoneIdForCpf(@NotNull final Long cpf,
                                          @NotNull final Connection connection) throws SQLException {
         PreparedStatement statement = null;

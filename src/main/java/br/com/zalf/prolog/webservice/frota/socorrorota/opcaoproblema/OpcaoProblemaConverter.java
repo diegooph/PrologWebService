@@ -24,9 +24,9 @@ public class OpcaoProblemaConverter {
     public static OpcaoProblemaAberturaSocorro createOpcaoProblemaAberturaSocorro(
             @NotNull final ResultSet rSet) throws SQLException {
         return new OpcaoProblemaAberturaSocorro(
-                rSet.getLong("CODIGO"),
-                rSet.getString("DESCRICAO"),
-                rSet.getBoolean("OBRIGA_DESCRICAO"));
+                rSet.getLong("CODIGO_OPCAO_PROBLEMA"),
+                rSet.getString("DESCRICAO_OPCAO_PROBLEMA"),
+                rSet.getBoolean("OBRIGA_DESCRICAO_OPCAO_PROBLEMA"));
     }
 
     @NotNull
