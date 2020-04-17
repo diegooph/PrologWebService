@@ -201,7 +201,7 @@ public final class TipoMarcacaoDaoImpl extends DatabaseConnection implements Tip
 
     @NotNull
     @Override
-    public FormulaCalculoJornada getForumaCalculoJornada(@NotNull final Long codUnidade) throws Throwable {
+    public FormulaCalculoJornada getFormulaCalculoJornada(@NotNull final Long codUnidade) throws Throwable {
         Connection conn = null;
         try {
             conn = getConnection();

@@ -109,7 +109,7 @@ public interface TipoMarcacaoDao {
      * @throws Throwable Se qualquer erro ocorrer.
      */
     @NotNull
-    FormulaCalculoJornada getForumaCalculoJornada(@NotNull final Long codUnidade) throws Throwable;
+    FormulaCalculoJornada getFormulaCalculoJornada(@NotNull final Long codUnidade) throws Throwable;
 
     /**
      * Método para verificar se uma unidade possui algum tipo definido como jornada. Alguns locais do sistema assumem

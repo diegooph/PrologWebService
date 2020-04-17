@@ -34,7 +34,7 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
     private static final String TAG = ControleJornadaRelatorioDaoImpl.class.getSimpleName();
 
     @Override
-    public void getMarcacoesDiariasCsv(OutputStream out, Long codUnidade, Date dataInicial, Date dataFinal, String cpf)
+    public void getMarcacoesDiariasCsv(final OutputStream out, final Long codUnidade, final Date dataInicial, final Date dataFinal, final String cpf)
             throws SQLException, IOException {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -51,7 +51,7 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
 
     @NotNull
     @Override
-    public Report getMarcacoesDiariasReport(Long codUnidade, Date dataInicial, Date dataFinal, String cpf)
+    public Report getMarcacoesDiariasReport(final Long codUnidade, final Date dataInicial, final Date dataFinal, final String cpf)
             throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -67,7 +67,7 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
     }
 
     @Override
-    public void getIntervalosMapasCsv(OutputStream out, Long codUnidade, Date dataInicial, Date dataFinal)
+    public void getIntervalosMapasCsv(final OutputStream out, final Long codUnidade, final Date dataInicial, final Date dataFinal)
             throws SQLException, IOException {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -84,7 +84,7 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
 
     @NotNull
     @Override
-    public Report getIntervalosMapasReport(Long codUnidade, Date dataInicial, Date dataFinal)
+    public Report getIntervalosMapasReport(final Long codUnidade, final Date dataInicial, final Date dataFinal)
             throws SQLException, IOException {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -100,7 +100,7 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
     }
 
     @Override
-    public void getAderenciaIntervalosDiariaCsv(OutputStream out, Long codUnidade, Date dataInicial, Date dataFinal)
+    public void getAderenciaIntervalosDiariaCsv(final OutputStream out, final Long codUnidade, final Date dataInicial, final Date dataFinal)
             throws SQLException, IOException {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -117,7 +117,7 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
 
     @NotNull
     @Override
-    public Report getAderenciaIntervalosDiariaReport(Long codUnidade, Date dataInicial, Date dataFinal)
+    public Report getAderenciaIntervalosDiariaReport(final Long codUnidade, final Date dataInicial, final Date dataFinal)
             throws SQLException, IOException {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -133,8 +133,8 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
     }
 
     @Override
-    public void getAderenciaIntervalosColaboradorCsv(OutputStream out, Long codUnidade, Date dataInicial, Date
-            dataFinal, String cpf)
+    public void getAderenciaIntervalosColaboradorCsv(final OutputStream out, final Long codUnidade, final Date dataInicial, final Date
+            dataFinal, final String cpf)
             throws SQLException, IOException {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -151,7 +151,7 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
 
     @NotNull
     @Override
-    public Report getAderenciaIntervalosColaboradorReport(Long codUnidade, Date dataInicial, Date dataFinal, String cpf)
+    public Report getAderenciaIntervalosColaboradorReport(final Long codUnidade, final Date dataInicial, final Date dataFinal, final String cpf)
             throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -274,7 +274,7 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
             return ControleJornadaRelatorioConverter.createFolhaPontoJornadaRelatorio(
                     rSet,
                     tipoMarcacaoDao.getTiposMarcacoes(codUnidade, false, false),
-                    tipoMarcacaoDao.getForumaCalculoJornada(codUnidade),
+                    tipoMarcacaoDao.getFormulaCalculoJornada(codUnidade),
                     zoneId);
         } finally {
             close(conn, stmt, rSet);
@@ -423,9 +423,9 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
     }
 
     @NotNull
-    private PreparedStatement getAderenciaIntervalosColaboradorStmt(Long codUnidade, Date dataInicial, Date
-            dataFinal, Connection conn, String cpf) throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement(
+    private PreparedStatement getAderenciaIntervalosColaboradorStmt(final Long codUnidade, final Date dataInicial, final Date
+            dataFinal, final Connection conn, final String cpf) throws SQLException {
+        final PreparedStatement stmt = conn.prepareStatement(
                 "SELECT * FROM func_relatorio_aderencia_intervalo_colaborador(?,?,?,?)");
         stmt.setLong(1, codUnidade);
         stmt.setDate(2, DateUtils.toSqlDate(dataInicial));
@@ -458,8 +458,8 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
     }
 
     @NotNull
-    private PreparedStatement getAderenciaIntervalosDiariaStmt(Long codUnidade, Date dataInicial, Date dataFinal,
-                                                               Connection conn) throws SQLException {
+    private PreparedStatement getAderenciaIntervalosDiariaStmt(final Long codUnidade, final Date dataInicial, final Date dataFinal,
+                                                               final Connection conn) throws SQLException {
         final PreparedStatement stmt = conn.prepareStatement(
                 "SELECT * FROM func_relatorio_aderencia_intervalo_dias(?,?,?)");
         stmt.setLong(1, codUnidade);
@@ -469,8 +469,8 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
     }
 
     @NotNull
-    private PreparedStatement getMarcacoesDiariasStmt(Long codUnidade, Date dataInicial, Date dataFinal, String cpf,
-                                                Connection conn) throws SQLException {
+    private PreparedStatement getMarcacoesDiariasStmt(final Long codUnidade, final Date dataInicial, final Date dataFinal, final String cpf,
+                                                      final Connection conn) throws SQLException {
         final PreparedStatement stmt = conn.prepareStatement(
                 "SELECT * FROM FUNC_MARCACAO_RELATORIO_MARCACOES_DIARIAS(?, ?, ?, ?);");
         stmt.setLong(1, codUnidade);
@@ -481,7 +481,7 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
     }
 
     @NotNull
-    private PreparedStatement getIntervalosMapasStmt(Long codUnidade, Date dataInicial, Date dataFinal, Connection conn) throws SQLException {
+    private PreparedStatement getIntervalosMapasStmt(final Long codUnidade, final Date dataInicial, final Date dataFinal, final Connection conn) throws SQLException {
         final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM func_relatorio_intervalos_mapas(?,?,?)");
         stmt.setLong(1, codUnidade);
         stmt.setDate(2, DateUtils.toSqlDate(dataInicial));

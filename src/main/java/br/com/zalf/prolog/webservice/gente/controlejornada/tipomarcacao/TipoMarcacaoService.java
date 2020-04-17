@@ -111,7 +111,7 @@ public final class TipoMarcacaoService {
     @NotNull
     public FormulaCalculoJornada getForumaCalculoJornada(final Long codUnidade) throws ProLogException {
         try {
-            return dao.getForumaCalculoJornada(codUnidade);
+            return dao.getFormulaCalculoJornada(codUnidade);
         } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao buscar fórmula de cálculo da jornada\n" +
                     "codUnidade: %d", codUnidade), t);
