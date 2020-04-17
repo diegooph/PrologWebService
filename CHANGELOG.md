@@ -1,6 +1,8 @@
 Change Log
 ==========
 
+* Adiciona validação para placas em branco (PL-2654)
+
 <a name="v1.0.28"></a>
 ## Version [v1.0.28](https://github.com/luizfp/PrologWebService/compare/v1.0.27...v1.0.28) (release-date) [unreleased]
 
@@ -51,6 +53,7 @@ Change Log
 ### Refactors
 * Modifica function que insere checklist (PL-2569)
 
+<a name="v1.0.24"></a>
 ## Version [v1.0.24](https://github.com/luizfp/PrologWebService/compare/v1.0.23...v1.0.24) (2020-03-29)
 
 ### Features
