@@ -32,7 +32,7 @@ public class ApresentacaoDaoImpl implements ApresentacaoDao {
             final boolean verificaUsuarioEmpresa = verifyUsuarioEmpresa(conn, username, codEmpresaUsuario);
             if (verificaUsuarioEmpresa) {
                 stmt = conn.prepareStatement("SELECT * FROM INTERNO.FUNC_RESETA_EMPRESA_APRESENTACAO(" +
-                        "F_COD_EMPRESA_ORIGEM := ?," +
+                        "F_COD_EMPRESA_BASE := ?," +
                         "F_COD_EMPRESA_USUARIO := ? );");
                 stmt.setLong(1, codEmpresaBase);
                 stmt.setLong(2, codEmpresaUsuario);
