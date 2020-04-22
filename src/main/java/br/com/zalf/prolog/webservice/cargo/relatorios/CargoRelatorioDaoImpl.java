@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.gente.permissao.relatorios;
+package br.com.zalf.prolog.webservice.cargo.relatorios;
 
 import br.com.zalf.prolog.webservice.commons.report.CsvWriter;
 import br.com.zalf.prolog.webservice.commons.report.Report;
@@ -21,7 +21,7 @@ import static br.com.zalf.prolog.webservice.database.DatabaseConnection.getConne
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-public class PermissaoRelatorioDaoImpl implements PermissaoRelatorioDao {
+public class CargoRelatorioDaoImpl implements CargoRelatorioDao {
     @Override
     public void getPermissoesDetalhadasCsv(@NotNull final OutputStream out,
                                            @NotNull final List<Long> codUnidades) throws Throwable {
@@ -61,7 +61,7 @@ public class PermissaoRelatorioDaoImpl implements PermissaoRelatorioDao {
     private PreparedStatement getPermissoesDetalhadasStmt(@NotNull final Connection conn,
                                                           @NotNull final List<Long> codUnidades) throws Throwable {
         final PreparedStatement stmt =
-                conn.prepareStatement("SELECT * FROM FUNC_COLABORADOR_RELATORIO_PERMISSOES_DETALHADAS(?);");
+                conn.prepareStatement("SELECT * FROM FUNC_CARGOS_RELATORIO_PERMISSOES_DETALHADAS(?);");
         stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
         return stmt;
     }

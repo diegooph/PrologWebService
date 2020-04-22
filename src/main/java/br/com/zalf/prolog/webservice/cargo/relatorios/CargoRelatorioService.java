@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.gente.permissao.relatorios;
+package br.com.zalf.prolog.webservice.cargo.relatorios;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.report.Report;
@@ -14,10 +14,10 @@ import java.util.List;
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-public class PermissaoRelatorioService {
-    private static final String TAG = PermissaoRelatorioService.class.getSimpleName();
+public class CargoRelatorioService {
+    private static final String TAG = CargoRelatorioService.class.getSimpleName();
     @NotNull
-    private PermissaoRelatorioDao dao = Injection.providePermissaoRelatorioDao();
+    private final CargoRelatorioDao dao = Injection.providePermissaoRelatorioDao();
 
     public void getPermissoesDetalhadasCsv(@NotNull final OutputStream out,
                                            @NotNull final List<Long> codUnidades) throws ProLogException {

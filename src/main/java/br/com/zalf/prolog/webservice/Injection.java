@@ -6,6 +6,8 @@ import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoDao;
 import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoDaoImpl;
 import br.com.zalf.prolog.webservice.cargo.CargoDao;
 import br.com.zalf.prolog.webservice.cargo.CargoDaoImpl;
+import br.com.zalf.prolog.webservice.cargo.relatorios.CargoRelatorioDao;
+import br.com.zalf.prolog.webservice.cargo.relatorios.CargoRelatorioDaoImpl;
 import br.com.zalf.prolog.webservice.contato.EntreEmContatoDao;
 import br.com.zalf.prolog.webservice.contato.EntreEmContatoDaoImpl;
 import br.com.zalf.prolog.webservice.cs.nps.PesquisaNpsDao;
@@ -130,8 +132,6 @@ import br.com.zalf.prolog.webservice.gente.faleConosco.FaleConoscoDao;
 import br.com.zalf.prolog.webservice.gente.faleConosco.FaleConoscoDaoImpl;
 import br.com.zalf.prolog.webservice.gente.faleConosco.relatorios.FaleConoscoRelatorioDao;
 import br.com.zalf.prolog.webservice.gente.faleConosco.relatorios.FaleConoscoRelatorioDaoImpl;
-import br.com.zalf.prolog.webservice.gente.permissao.relatorios.PermissaoRelatorioDao;
-import br.com.zalf.prolog.webservice.gente.permissao.relatorios.PermissaoRelatorioDaoImpl;
 import br.com.zalf.prolog.webservice.gente.prontuarioCondutor.ProntuarioCondutorDao;
 import br.com.zalf.prolog.webservice.gente.prontuarioCondutor.ProntuarioCondutorDaoImpl;
 import br.com.zalf.prolog.webservice.gente.quiz.modelo.QuizModeloDao;
@@ -247,8 +247,8 @@ public final class Injection {
     }
 
     @NotNull
-    public static PermissaoRelatorioDao providePermissaoRelatorioDao() {
-        return new PermissaoRelatorioDaoImpl();
+    public static CargoRelatorioDao providePermissaoRelatorioDao() {
+        return new CargoRelatorioDaoImpl();
     }
 
     @NotNull

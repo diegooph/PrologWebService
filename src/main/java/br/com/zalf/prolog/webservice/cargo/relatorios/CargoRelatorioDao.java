@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.gente.permissao.relatorios;
+package br.com.zalf.prolog.webservice.cargo.relatorios;
 
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import org.jetbrains.annotations.NotNull;
@@ -11,7 +11,7 @@ import java.util.List;
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-public interface PermissaoRelatorioDao {
+public interface CargoRelatorioDao {
 
     /**
      * Método para gerar um relatório contendo as permissões detalhadas em arquivo CSV.

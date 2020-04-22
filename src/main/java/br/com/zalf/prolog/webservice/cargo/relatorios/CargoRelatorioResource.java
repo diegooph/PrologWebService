@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.gente.permissao.relatorios;
+package br.com.zalf.prolog.webservice.cargo.relatorios;
 
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.util.Required;
@@ -16,18 +16,20 @@ import java.util.List;
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-@Path("permissao/relatorios")
-@Secured(permissions = {Pilares.Gente.Permissao.VINCULAR_CARGO})
+@Path("cargos/relatorios")
+@Secured(permissions = {
+        Pilares.Gente.Permissao.VINCULAR_CARGO,
+        Pilares.Gente.Permissao.VISUALIZAR})
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-public class PermissaoRelatorioResource {
+public class CargoRelatorioResource {
 
     @GET
     @Path("/permissoes-detalhadas/csv")
     @Produces("application/csv")
     public StreamingOutput getPermissoesDetalhadasCsv(
             @QueryParam("codUnidades") @Required final List<Long> codUnidades) throws ProLogException {
-        return outputStream -> new PermissaoRelatorioService().getPermissoesDetalhadasCsv(
+        return outputStream -> new CargoRelatorioService().getPermissoesDetalhadasCsv(
                 outputStream,
                 codUnidades);
     }
@@ -36,7 +38,7 @@ public class PermissaoRelatorioResource {
     @Path("/permissoes-detalhadas/report")
     public Report getPermissoesDetalhadasReport(
             @QueryParam("codUnidades") @Required final List<Long> codUnidades) throws ProLogException {
-        return new PermissaoRelatorioService().getPermissoesDetalhadasReport(
+        return new CargoRelatorioService().getPermissoesDetalhadasReport(
                 codUnidades);
     }
 }
