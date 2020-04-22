@@ -18,6 +18,7 @@ Change Log
 
 ### Features
 * Inicaliza Sentry com informações da versão do WS
+* Cria estrutura para empresa reset/clonagem de empresa de apresentação (PL-2034)
 
 ### Refactors
 * Cria serializer/deserializer específico para o `OrigemDestinoEnum` (PL-2681) 
