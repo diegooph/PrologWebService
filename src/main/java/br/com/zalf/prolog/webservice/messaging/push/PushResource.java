@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.messaging;
+package br.com.zalf.prolog.webservice.messaging.push;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
@@ -6,7 +6,7 @@ import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
-import br.com.zalf.prolog.webservice.messaging._model.PushColaboradorCadastro;
+import br.com.zalf.prolog.webservice.messaging.push._model.PushColaboradorCadastro;
 
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;

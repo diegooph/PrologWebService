@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.messaging;
+package br.com.zalf.prolog.webservice.messaging.push;
 
 import br.com.zalf.prolog.webservice.commons.util.EnvironmentHelper;
 import br.com.zalf.prolog.webservice.commons.util.Log;
@@ -11,7 +11,6 @@ import com.google.firebase.FirebaseOptions;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 /**

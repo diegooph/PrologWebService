@@ -1,7 +1,7 @@
-package br.com.zalf.prolog.webservice.messaging.send.task;
+package br.com.zalf.prolog.webservice.messaging.push.send.task;
 
-import br.com.zalf.prolog.webservice.messaging.send.PushDestination;
-import br.com.zalf.prolog.webservice.messaging.send.PushMessage;
+import br.com.zalf.prolog.webservice.messaging.push._model.PushDestination;
+import br.com.zalf.prolog.webservice.messaging.push._model.PushMessage;
 import com.google.firebase.messaging.BatchResponse;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;

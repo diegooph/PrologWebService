@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-public enum PushMessageScope {
+public enum MessageScope {
     ABERTURA_SOCORRO_ROTA("ABERTURA_SOCORRO_ROTA"),
     ATENDIMENTO_SOCORRO_ROTA("ATENDIMENTO_SOCORRO_ROTA"),
     INVALIDACAO_SOCORRO_ROTA("INVALIDACAO_SOCORRO_ROTA");
@@ -15,7 +15,7 @@ public enum PushMessageScope {
     @NotNull
     private final String stringRepresentation;
 
-    PushMessageScope(@NotNull final String stringRepresentation) {
+    MessageScope(@NotNull final String stringRepresentation) {
         this.stringRepresentation = stringRepresentation;
     }
 

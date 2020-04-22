@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.messaging.send.task;
+package br.com.zalf.prolog.webservice.messaging.push._model;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -9,13 +9,13 @@ import java.util.List;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-final class FirebaseLogRequestResponseHolder {
+public final class FirebaseLogRequestResponseHolder {
     private final int successCount;
     private final int failureCount;
     @NotNull
     private final List<FirebaseLogRequestResponse> requestResponses;
 
-    FirebaseLogRequestResponseHolder(final int successCount,
+    public FirebaseLogRequestResponseHolder(final int successCount,
                                      final int failureCount,
                                      @NotNull final List<FirebaseLogRequestResponse> requestResponses) {
         this.successCount = successCount;

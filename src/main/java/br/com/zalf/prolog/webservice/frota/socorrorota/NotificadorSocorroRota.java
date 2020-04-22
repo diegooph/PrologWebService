@@ -2,20 +2,27 @@ package br.com.zalf.prolog.webservice.frota.socorrorota;
 
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.Exceptions;
-import br.com.zalf.prolog.webservice.frota.socorrorota._model.ColaboradorNotificacaoSocorroRota;
-import br.com.zalf.prolog.webservice.messaging.AndroidAppScreens;
-import br.com.zalf.prolog.webservice.messaging.AndroidLargeIcon;
-import br.com.zalf.prolog.webservice.messaging.AndroidSmallIcon;
-import br.com.zalf.prolog.webservice.messaging.PushMessageScope;
-import br.com.zalf.prolog.webservice.messaging.send.FirebasePushMessageApi;
-import br.com.zalf.prolog.webservice.messaging.send.PushMessage;
+import br.com.zalf.prolog.webservice.frota.socorrorota._model.ColaboradorNotificacaoAberturaSocorroRota;
+import br.com.zalf.prolog.webservice.frota.socorrorota._model.ColaboradorNotificacaoAtendimentoSocorroRota;
+import br.com.zalf.prolog.webservice.frota.socorrorota._model.ColaboradorNotificacaoInvalidacaoSocorroRota;
+import br.com.zalf.prolog.webservice.messaging.MessageScope;
+import br.com.zalf.prolog.webservice.messaging.email.PrologEmailApi;
+import br.com.zalf.prolog.webservice.messaging.email._model.EmailSender;
+import br.com.zalf.prolog.webservice.messaging.email._model.EmailTemplate;
+import br.com.zalf.prolog.webservice.messaging.email._model.EmailTemplateMessage;
+import br.com.zalf.prolog.webservice.messaging.push._model.*;
+import br.com.zalf.prolog.webservice.messaging.push.send.FirebasePushMessageApi;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.util.concurrent.*;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 import static br.com.zalf.prolog.webservice.commons.util.StringUtils.removeExtraSpaces;
 import static br.com.zalf.prolog.webservice.commons.util.StringUtils.stripSpecialCharacters;
@@ -120,7 +127,7 @@ final class NotificadorSocorroRota {
                                                @NotNull final String placaVeiculoProblema,
                                                @NotNull final Long codSocorro) {
         Log.d(TAG, "internalNotificaSobreAbertura(...) on thread: " + Thread.currentThread().getName());
-        final List<ColaboradorNotificacaoSocorroRota> colaboradores;
+        final List<ColaboradorNotificacaoAberturaSocorroRota> colaboradores;
         try {
             colaboradores = socorroDao.getColaboradoresNotificacaoAbertura(codUnidadeSocorro);
         } catch (final Throwable t) {
@@ -130,31 +137,32 @@ final class NotificadorSocorroRota {
         }
 
         if (!colaboradores.isEmpty()) {
-            // Envia notificação via firebase.
-            final String messageBody = String.format(
-                    "%s solicitou um socorro para o veículo %s. Clique para ver mais.",
-                    formataNomeColaborador(nomeColaboradorAbertura),
-                    placaVeiculoProblema.trim());
-            new FirebasePushMessageApi().deliver(
-                    new ArrayList<>(colaboradores),
-                    PushMessageScope.ABERTURA_SOCORRO_ROTA,
-                    PushMessage.builder()
-                            .withTitle("ATENÇÃO! Pedido de Socorro!")
-                            .withBody(messageBody)
-                            .withAndroidSmallIcon(AndroidSmallIcon.SOS_NOTIFICATION)
-                            .withAndroidLargeIcon(AndroidLargeIcon.SOS_NOTIFICATION)
-                            .withScreenToNavigate(AndroidAppScreens.VISUALIZAR_SOCORRO_ROTA)
-                            .withMetadataScreen(String.valueOf(codSocorro))
-                            .build());
+            // Envia e-mail.
+            // Utilizamos um try/catch para evitar que estoure algum erro e impeça o envio das notificações push.
+            try {
+                notificaAberturaSocorroEmail(colaboradores, nomeColaboradorAbertura, placaVeiculoProblema, codSocorro);
+            } catch (final Throwable t) {
+                // Logamos erro para ter controle no Sentry se estamos deixando de avisar os responsáveis sobre os
+                // socorros solicitados.
+                Log.e(TAG, "Erro ao enviar e-mail de abertura de socorro", t);
+            }
+
+            try {
+                notificaAberturaSocorroPush(codSocorro, colaboradores, placaVeiculoProblema, nomeColaboradorAbertura);
+            } catch (final Throwable t) {
+                // Logamos erro para ter controle no Sentry se estamos deixando de avisar os responsáveis sobre os
+                // socorros solicitados.
+                Log.e(TAG, "Erro ao enviar push notification de abertura de socorro", t);
+            }
         } else {
-            Log.d(TAG, "Nenhum token para notificar sobre abertura do socorro");
+            Log.d(TAG, "Nenhum colaborador para notificar sobre abertura do socorro");
         }
     }
 
     private void internalNotificaSobreAtendimento(@NotNull final SocorroRotaDao socorroDao,
                                                   @NotNull final Long codSocorro) {
         Log.d(TAG, "internalNotificaSobreAtendimento(...) on thread: " + Thread.currentThread().getName());
-        final List<ColaboradorNotificacaoSocorroRota> colaboradores;
+        final List<ColaboradorNotificacaoAtendimentoSocorroRota> colaboradores;
         try {
             colaboradores = socorroDao.getColaboradoresNotificacaoAtendimento(codSocorro);
         } catch (final Throwable t) {
@@ -169,7 +177,7 @@ final class NotificadorSocorroRota {
                     "Seu pedido de socorro foi atendido. A ajuda está a caminho. Clique para ver mais.";
             new FirebasePushMessageApi().deliver(
                     new ArrayList<>(colaboradores),
-                    PushMessageScope.ATENDIMENTO_SOCORRO_ROTA,
+                    MessageScope.ATENDIMENTO_SOCORRO_ROTA,
                     PushMessage.builder()
                             .withTitle("Socorro a caminho")
                             .withBody(messageBody)
@@ -183,11 +191,85 @@ final class NotificadorSocorroRota {
         }
     }
 
+    private void notificaAberturaSocorroPush(
+            @NotNull final Long codSocorro,
+            @NotNull final List<ColaboradorNotificacaoAberturaSocorroRota> colaboradores,
+            @NotNull final String placaVeiculoProblema,
+            @NotNull final String nomeColaboradorAbertura) {
+        final List<SimplePushDestination> pushDestinations = colaboradores
+                .stream()
+                .filter(c -> c.getTokensPushFirebase() != null)
+                .map(c ->
+                        Arrays.stream(c.getTokensPushFirebase())
+                                .map(token -> new SimplePushDestination(String.valueOf(c.getCodColaborador()), token))
+                                .collect(Collectors.toList()))
+                .flatMap(List::stream)
+                .collect(Collectors.toList());
+
+        if (!pushDestinations.isEmpty()) {
+            // Envia notificação via firebase.
+            final String messageBody = String.format(
+                    "%s solicitou um socorro para o veículo %s. Clique para ver mais.",
+                    formataNomeColaborador(nomeColaboradorAbertura),
+                    placaVeiculoProblema.trim());
+
+            //noinspection unchecked
+            new FirebasePushMessageApi().deliver(
+                    (List<PushDestination>) (List<?>) pushDestinations,
+                    MessageScope.ABERTURA_SOCORRO_ROTA,
+                    PushMessage.builder()
+                            .withTitle("ATENÇÃO! Pedido de Socorro!")
+                            .withBody(messageBody)
+                            .withAndroidSmallIcon(AndroidSmallIcon.SOS_NOTIFICATION)
+                            .withAndroidLargeIcon(AndroidLargeIcon.SOS_NOTIFICATION)
+                            .withScreenToNavigate(AndroidAppScreens.VISUALIZAR_SOCORRO_ROTA)
+                            .withMetadataScreen(String.valueOf(codSocorro))
+                            .build());
+        } else {
+            Log.d(TAG, "Nenhum colaborador para notificar VIA PUSH sobre abertura do socorro");
+        }
+    }
+
+    private void notificaAberturaSocorroEmail(
+            @NotNull final List<ColaboradorNotificacaoAberturaSocorroRota> colaboradores,
+            @NotNull final String nomeColaboradorAbertura,
+            @NotNull final String placaVeiculoProblema,
+            @NotNull final Long codSocorro) {
+        final List<String> emails = colaboradores
+                .stream()
+                .map(ColaboradorNotificacaoAberturaSocorroRota::getEmailColaborador)
+                .filter(Objects::nonNull)
+                .distinct()
+                .collect(Collectors.toList());
+        if (!emails.isEmpty()) {
+            new PrologEmailApi()
+                    .deliverTemplate(
+                            emails,
+                            MessageScope.ABERTURA_SOCORRO_ROTA,
+                            new EmailTemplateMessage(
+                                    EmailTemplate.ABERTURA_SOCORRO_ROTA,
+                                    EmailSender.of("socorroemrota@prologapp.com", "Socorro em Rota"),
+                                    String.format("Pedido de Socorro • %s", placaVeiculoProblema),
+                                    new ImmutableMap.Builder<String, String>()
+                                            .put("nome_colaborador", nomeColaboradorAbertura)
+                                            .put("placa_veiculo", placaVeiculoProblema)
+                                            .put("link_socorro_rota",
+                                                    // Adicionamos o código do socorro em rota no path para propiciar
+                                                    // a navegação.
+                                                    String.format(
+                                                            "https://adm.prologapp.com/socorro-em-rota/%d",
+                                                            codSocorro))
+                                            .build()));
+        } else {
+            Log.d(TAG, "Nenhum colaborador para notificar VIA E-MAIL sobre abertura do socorro");
+        }
+    }
+
     private void internalNotificaSobreInvalidacao(@NotNull final SocorroRotaDao socorroDao,
                                                   @NotNull final Long codColaboradorInvalidacaoSocorro,
                                                   @NotNull final Long codSocorro) {
         Log.d(TAG, "internalNotificaSobreInvalidacao(...) on thread: " + Thread.currentThread().getName());
-        final List<ColaboradorNotificacaoSocorroRota> colaboradores;
+        final List<ColaboradorNotificacaoInvalidacaoSocorroRota> colaboradores;
         try {
             colaboradores = socorroDao.getColaboradoresNotificacaoInvalidacao(
                     codColaboradorInvalidacaoSocorro,
@@ -204,7 +286,7 @@ final class NotificadorSocorroRota {
                     "Seu pedido de socorro foi invalidado. Algo está errado. Clique para ver mais.";
             new FirebasePushMessageApi().deliver(
                     new ArrayList<>(colaboradores),
-                    PushMessageScope.INVALIDACAO_SOCORRO_ROTA,
+                    MessageScope.INVALIDACAO_SOCORRO_ROTA,
                     PushMessage.builder()
                             .withTitle("Socorro invalidado")
                             .withBody(messageBody)

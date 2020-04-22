@@ -164,8 +164,8 @@ import br.com.zalf.prolog.webservice.interno.implantacao.conferencia.frota.veicu
 import br.com.zalf.prolog.webservice.interno.implantacao.conferencia.frota.veiculo.VeiculoConferenciaDaoImpl;
 import br.com.zalf.prolog.webservice.log.LogDao;
 import br.com.zalf.prolog.webservice.log.LogDaoImpl;
-import br.com.zalf.prolog.webservice.messaging.PushDao;
-import br.com.zalf.prolog.webservice.messaging.PushDaoImpl;
+import br.com.zalf.prolog.webservice.messaging.push.PushDao;
+import br.com.zalf.prolog.webservice.messaging.push.PushDaoImpl;
 import br.com.zalf.prolog.webservice.raizen.produtividade.RaizenProdutividadeDao;
 import br.com.zalf.prolog.webservice.raizen.produtividade.RaizenProdutividadeDaoImpl;
 import br.com.zalf.prolog.webservice.raizen.produtividade.relatorios.RaizenProdutividadeRelatorioDao;

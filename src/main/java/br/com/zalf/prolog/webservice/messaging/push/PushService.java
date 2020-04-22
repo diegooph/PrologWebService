@@ -1,9 +1,9 @@
-package br.com.zalf.prolog.webservice.messaging;
+package br.com.zalf.prolog.webservice.messaging.push;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
-import br.com.zalf.prolog.webservice.messaging._model.PushColaboradorCadastro;
+import br.com.zalf.prolog.webservice.messaging.push._model.PushColaboradorCadastro;
 import org.jetbrains.annotations.NotNull;
 
 /**

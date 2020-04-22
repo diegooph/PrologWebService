@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.messaging.send;
+package br.com.zalf.prolog.webservice.messaging.push._model;
 
 import org.jetbrains.annotations.NotNull;
 

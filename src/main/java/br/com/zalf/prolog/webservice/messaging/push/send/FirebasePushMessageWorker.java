@@ -1,10 +1,12 @@
-package br.com.zalf.prolog.webservice.messaging.send;
+package br.com.zalf.prolog.webservice.messaging.push.send;
 
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
-import br.com.zalf.prolog.webservice.messaging.PushMessageScope;
-import br.com.zalf.prolog.webservice.messaging.send.task.FirebaseSaveLogTask;
-import br.com.zalf.prolog.webservice.messaging.send.task.FirebaseSendMulticastTask;
+import br.com.zalf.prolog.webservice.messaging.push._model.PushDestination;
+import br.com.zalf.prolog.webservice.messaging.push._model.PushMessage;
+import br.com.zalf.prolog.webservice.messaging.MessageScope;
+import br.com.zalf.prolog.webservice.messaging.push.send.task.FirebaseSaveLogTask;
+import br.com.zalf.prolog.webservice.messaging.push.send.task.FirebaseSendMulticastTask;
 import com.google.firebase.messaging.BatchResponse;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,12 +23,12 @@ final class FirebasePushMessageWorker {
     @NotNull
     private final List<PushDestination> destinations;
     @NotNull
-    private final PushMessageScope messageScope;
+    private final MessageScope messageScope;
     @NotNull
     private final PushMessage pushMessage;
 
     FirebasePushMessageWorker(@NotNull final List<PushDestination> destinations,
-                              @NotNull final PushMessageScope messageScope,
+                              @NotNull final MessageScope messageScope,
                               @NotNull final PushMessage pushMessage) {
         this.destinations = destinations;
         this.messageScope = messageScope;

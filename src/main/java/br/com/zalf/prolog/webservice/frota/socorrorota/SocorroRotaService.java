@@ -204,9 +204,10 @@ public final class SocorroRotaService {
     }
 
     @NotNull
-    public SocorroRotaVisualizacao getVisualizacaoSocorroRota(@NotNull final Long codSocorroRota) {
+    public SocorroRotaVisualizacao getVisualizacaoSocorroRota(@NotNull final Long codColaboradorRequest,
+                                                              @NotNull final Long codSocorroRota) {
         try {
-            return dao.getVisualizacaoSocorroRota(codSocorroRota);
+            return dao.getVisualizacaoSocorroRota(codColaboradorRequest, codSocorroRota);
         } catch (final Throwable e) {
             Log.e(TAG, "Erro ao buscar as informações deste socorro em rota.", e);
             throw Injection

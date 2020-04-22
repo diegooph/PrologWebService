@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.frota.socorrorota._model.*;
+import br.com.zalf.prolog.webservice.interceptors.auth.ColaboradorAutenticado;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.AppVersionCodeHandler;
@@ -16,6 +17,8 @@ import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
+import javax.inject.Inject;
+import javax.inject.Provider;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -39,6 +42,8 @@ import java.util.List;
 public final class SocorroRotaResource {
     @NotNull
     private final SocorroRotaService service = new SocorroRotaService();
+    @Inject
+    private Provider<ColaboradorAutenticado> colaboradorAutenticadoProvider;
 
     @POST
     @UsedBy(platforms = Platform.ANDROID)
@@ -170,6 +175,8 @@ public final class SocorroRotaResource {
     @Path("/visualizacao")
     public SocorroRotaVisualizacao getVisualizacaoSocorroRota(
             @QueryParam("codSocorroRota") @Required final Long codSocorroRota) {
-        return service.getVisualizacaoSocorroRota(codSocorroRota);
+        return service.getVisualizacaoSocorroRota(
+                colaboradorAutenticadoProvider.get().getCodigo(),
+                codSocorroRota);
     }
 }

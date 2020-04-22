@@ -4,6 +4,10 @@ Change Log
 * Corrige totais considerando marcações fora de jornada. (PL-2565)
 * Adiciona validação para placas em branco (PL-2654)
 
+### Refactors
+* Diferencia a plataforma de execução das ações de socorro em rota (PL-2527)
+* Notifica via e-mail quando um socorro em rota é aberto (PL-2522)
+
 <a name="v1.0.28"></a>
 ## Version [v1.0.28](https://github.com/luizfp/PrologWebService/compare/v1.0.27...v1.0.28) (release-date) [unreleased]
 
