@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import static br.com.zalf.prolog.webservice.database.DatabaseConnection.close;
 import static br.com.zalf.prolog.webservice.database.DatabaseConnection.getConnection;
@@ -18,13 +19,14 @@ import static br.com.zalf.prolog.webservice.database.DatabaseConnection.getConne
 public class ApresentacaoDaoImpl implements ApresentacaoDao {
 
     @Override
-    public void getResetaClonaEmpresaApresentacao(@NotNull final String username,
-                                                  @NotNull final Long codEmpresaBase,
-                                                  @NotNull final Long codEmpresaUsuario) throws Throwable {
+    public String getResetaClonaEmpresaApresentacao(@NotNull final String username,
+                                                    @NotNull final Long codEmpresaBase,
+                                                    @NotNull final Long codEmpresaUsuario) throws Throwable {
 
         //Verificar se empresa pertence a usuário
         Connection conn = null;
         PreparedStatement stmt = null;
+        ResultSet rSet = null;
         try {
             conn = getConnection();
             final boolean verificaUsuarioEmpresa = verifyUsuarioEmpresa(conn, username, codEmpresaUsuario);
@@ -34,12 +36,17 @@ public class ApresentacaoDaoImpl implements ApresentacaoDao {
                         "F_COD_EMPRESA_USUARIO := ? );");
                 stmt.setLong(1, codEmpresaBase);
                 stmt.setLong(2, codEmpresaUsuario);
-                stmt.executeQuery();
+                rSet = stmt.executeQuery();
+                if (rSet.next()) {
+                    return rSet.getString("MENSAGEM_SUCESSO");
+                } else {
+                    throw new SQLException("Erro ao resetar empresa de apresentação.");
+                }
             } else {
-                throw new GenericException("Usuário e empresa não correspondem");
+                throw new GenericException("Usuário e empresa não correspondem.");
             }
         } finally {
-            close(conn, stmt);
+            close(conn, stmt, rSet);
         }
     }
 

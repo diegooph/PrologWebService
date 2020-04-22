@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.interno.apresentacao;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.interno.autenticacao.AutenticacaoLoginSenhaValidator;
 import br.com.zalf.prolog.webservice.interno.autenticacao._model.PrologInternalUser;
 import br.com.zalf.prolog.webservice.interno.autenticacao._model.PrologInternalUserFactory;
@@ -21,15 +22,15 @@ public class ApresentacaoService {
 
     public Response getResetaClonaEmpresaApresentacao(@NotNull final String authorization,
                                                       @NotNull final Long codEmpresaBase,
-                                                      @NotNull final Long codEmpresaUsuario) {
+                                                      @NotNull final Long codEmpresaUsuario) throws ProLogException {
         // Deve ficar fora do try/catch porque não queremos mascarar erros de autentação com erros do processo de
         // import.
         final PrologInternalUser internalUser = PrologInternalUserFactory.fromHeaderAuthorization(authorization);
         new AutenticacaoLoginSenhaValidator().verifyUsernamePassword(internalUser);
 
         try {
-            dao.getResetaClonaEmpresaApresentacao(internalUser.getUsername(), codEmpresaBase, codEmpresaUsuario);
-            return Response.ok("Empresa resetada e unidades clonadas com sucesso!");
+            return Response.ok(dao.getResetaClonaEmpresaApresentacao(internalUser.getUsername(), codEmpresaBase,
+                    codEmpresaUsuario));
         } catch (final Throwable throwable) {
             Log.e(TAG, "Erro ao resetar e clonar empresa de apresentação", throwable);
             throw Injection

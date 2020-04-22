@@ -17,7 +17,7 @@ public interface ApresentacaoDao {
      * @param codEmpresaUsuario código da empresa do usuário que será resetada.
      * @throws Throwable Se algum erro ocorrer.
      */
-    void getResetaClonaEmpresaApresentacao(@NotNull final String username,
-                                           @NotNull final Long codEmpresaBase,
-                                           @NotNull final Long codEmpresaUsuario) throws Throwable;
+    String getResetaClonaEmpresaApresentacao(@NotNull final String username,
+                                             @NotNull final Long codEmpresaBase,
+                                             @NotNull final Long codEmpresaUsuario) throws Throwable;
 }
