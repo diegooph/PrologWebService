@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.database.DatabaseConnectionProvider;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.TipoOutrosSimilarityFinder;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.InfosAlternativaAberturaOrdemServico;
 import br.com.zalf.prolog.webservice.integracao.agendador.SincroniaChecklistListener;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.GlobusPiccoloturRequester;
@@ -15,6 +16,7 @@ import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.Perg
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.error.GlobusPiccoloturException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.simmetrics.metrics.StringMetrics;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -196,20 +198,40 @@ public final class ChecklistItensNokGlobusTask implements Runnable {
     private List<InfosAlternativaAberturaOrdemServico> getItensIncrementaApontamentos(
             @NotNull final Map<Long, List<InfosAlternativaAberturaOrdemServico>> alternativasStatus,
             @NotNull final List<PerguntaNokGlobus> perguntasNokGlobus) {
+        final TipoOutrosSimilarityFinder similarityFinder = new TipoOutrosSimilarityFinder(StringMetrics.jaro());
         final List<InfosAlternativaAberturaOrdemServico> itensOsIncrementaQtdApontamentos = new ArrayList<>();
         for (final PerguntaNokGlobus pergunta : perguntasNokGlobus) {
             for (final AlternativaNokGlobus alternativa : pergunta.getAlternativasNok()) {
                 final List<InfosAlternativaAberturaOrdemServico> infosAlternativaAberturaOrdemServicos =
                         alternativasStatus.get(alternativa.getCodAlternativaNok());
+                // Esse IF é responsável por identificar se um item apontado como NOK deve incrementar a quantidade de
+                // apontamentos. Fazemos isso verificando os seguintes pontos:
+                // 1 - Caso a alternativa está configurada para abrir OS (isDeveAbrirOrdemServico).
+                // 2 - Caso essa alternativa já está aberta em uma OS (getQtdApontamentosItem).
+                // 3 - Caso a alternativa NÃO é tipo outros (~isAlternativaTipoOutros) OU caso for tipo outros tenha
+                // similaridade de texto (hasSimilarity).
                 if (infosAlternativaAberturaOrdemServicos != null
                         && infosAlternativaAberturaOrdemServicos.size() > 0
                         && infosAlternativaAberturaOrdemServicos.get(0).isDeveAbrirOrdemServico()
-                        && infosAlternativaAberturaOrdemServicos.get(0).getQtdApontamentosItem() > 0) {
+                        && infosAlternativaAberturaOrdemServicos.get(0).getQtdApontamentosItem() > 0
+                        && (!infosAlternativaAberturaOrdemServicos.get(0).isAlternativaTipoOutros()
+                        || hasSimilarity(similarityFinder, infosAlternativaAberturaOrdemServicos))) {
                     itensOsIncrementaQtdApontamentos.add(infosAlternativaAberturaOrdemServicos.get(0));
                 }
             }
         }
         return itensOsIncrementaQtdApontamentos;
+    }
+
+    private boolean hasSimilarity(@NotNull final TipoOutrosSimilarityFinder similarityFinder,
+                                  @NotNull final List<InfosAlternativaAberturaOrdemServico> alternativaTipoOutros) {
+        final InfosAlternativaAberturaOrdemServico infosAlternativa = alternativaTipoOutros.get(0);
+        if (infosAlternativa.isAlternativaTipoOutros()) {
+            return similarityFinder.findBestMatch(
+                    infosAlternativa.getRespostaTipoOutrosAberturaItem(),
+                    alternativaTipoOutros).isPresent();
+        }
+        return false;
     }
 
     @NotNull
