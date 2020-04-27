@@ -1,6 +1,10 @@
 Change Log
 ==========
 
+## Stage
+
+### Bugfix
+* Corrigir abertura de Item de OS tipo Outros (PLI-138)
 
 <a name="v1.0.28"></a>
 ## Version [v1.0.28](https://github.com/luizfp/PrologWebService/compare/v1.0.27...v1.0.28) (release-date) [unreleased]

@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.frota.checklist.ordemservico;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistAlternativaResposta;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.InfosAlternativaAberturaOrdemServico;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.simmetrics.StringMetric;
 
 import java.util.List;
@@ -31,16 +32,29 @@ public final class TipoOutrosSimilarityFinder {
     public Optional<InfosAlternativaAberturaOrdemServico> findBestMatch(
             @NotNull final ChecklistAlternativaResposta alternativaResposta,
             @NotNull final List<InfosAlternativaAberturaOrdemServico> alternativasAbertura) {
+        return internalFindBestMatch(alternativaResposta.getRespostaTipoOutros(), alternativasAbertura);
+    }
+
+    @NotNull
+    public Optional<InfosAlternativaAberturaOrdemServico> findBestMatch(
+            @Nullable final String respostaTipoOutros,
+            @NotNull final List<InfosAlternativaAberturaOrdemServico> alternativasAbertura) {
+        return internalFindBestMatch(respostaTipoOutros, alternativasAbertura);
+    }
+
+    @NotNull
+    private Optional<InfosAlternativaAberturaOrdemServico> internalFindBestMatch(
+            @Nullable final String respostaTipoOutros,
+            @NotNull final List<InfosAlternativaAberturaOrdemServico> alternativasAbertura) {
         double maxSimilarityDetected = 0.0;
         InfosAlternativaAberturaOrdemServico infoMaxSimilarity = null;
         for (final InfosAlternativaAberturaOrdemServico a : alternativasAbertura) {
-            if (a.getRespostaTipoOutrosAberturaItem() == null
-                    || alternativaResposta.getRespostaTipoOutros() == null) {
+            if (a.getRespostaTipoOutrosAberturaItem() == null || respostaTipoOutros == null) {
                 continue;
             }
 
             final String source = normalizeString(a.getRespostaTipoOutrosAberturaItem());
-            final String target = normalizeString(alternativaResposta.getRespostaTipoOutros());
+            final String target = normalizeString(respostaTipoOutros);
 
             final double generatedSimilarity = algorithm.compare(source, target);
             if (generatedSimilarity > maxSimilarityDetected) {
