@@ -133,15 +133,17 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
     }
 
     @Override
-    public void getAderenciaIntervalosColaboradorCsv(final OutputStream out, final Long codUnidade, final Date dataInicial, final Date
-            dataFinal, final String cpf)
-            throws SQLException, IOException {
+    public void getAderenciaMarcacoesColaboradoresCsv(@NotNull final OutputStream out,
+                                                      @NotNull final Long codUnidade,
+                                                      @Nullable final Long cpf,
+                                                      @NotNull final LocalDate dataInicial,
+                                                      @NotNull final LocalDate dataFinal) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = getAderenciaIntervalosColaboradorStmt(codUnidade, dataInicial, dataFinal, conn, cpf);
+            stmt = getAderenciaMarcacoesColaboradoresStmt(conn, codUnidade, cpf, dataInicial, dataFinal);
             rSet = stmt.executeQuery();
             new CsvWriter().write(rSet, out);
         } finally {
@@ -151,14 +153,16 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
 
     @NotNull
     @Override
-    public Report getAderenciaIntervalosColaboradorReport(final Long codUnidade, final Date dataInicial, final Date dataFinal, final String cpf)
-            throws SQLException {
+    public Report getAderenciaMarcacoesColaboradoresReport(@NotNull final Long codUnidade,
+                                                           @Nullable final Long cpf,
+                                                           @NotNull final LocalDate dataInicial,
+                                                           @NotNull final LocalDate dataFinal) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = getAderenciaIntervalosColaboradorStmt(codUnidade, dataInicial, dataFinal, conn, cpf);
+            stmt = getAderenciaMarcacoesColaboradoresStmt(conn, codUnidade, cpf, dataInicial, dataFinal);
             rSet = stmt.executeQuery();
             return ReportTransformer.createReport(rSet);
         } finally {
@@ -423,14 +427,25 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
     }
 
     @NotNull
-    private PreparedStatement getAderenciaIntervalosColaboradorStmt(final Long codUnidade, final Date dataInicial, final Date
-            dataFinal, final Connection conn, final String cpf) throws SQLException {
+    private PreparedStatement getAderenciaMarcacoesColaboradoresStmt(@NotNull final Connection conn,
+                                                                     @NotNull final Long codUnidade,
+                                                                     @Nullable final Long cpf,
+                                                                     @NotNull final LocalDate dataInicial,
+                                                                     @NotNull final LocalDate dataFinal) throws SQLException {
         final PreparedStatement stmt = conn.prepareStatement(
-                "SELECT * FROM func_relatorio_aderencia_intervalo_colaborador(?,?,?,?)");
+                "SELECT * FROM FUNC_MARCACAO_RELATORIO_ADERENCIA_MARCACOES_COLABORADORES_MAPA(" +
+                        "F_COD_UNIDADE := ?," +
+                        "F_CPF := ?," +
+                        "F_DATA_INICIAL := ?," +
+                        "F_DATA_FINAL := ?)");
         stmt.setLong(1, codUnidade);
-        stmt.setDate(2, DateUtils.toSqlDate(dataInicial));
-        stmt.setDate(3, DateUtils.toSqlDate(dataFinal));
-        stmt.setString(4, cpf);
+        if (cpf != null) {
+            stmt.setLong(2, cpf);
+        } else {
+            stmt.setNull(2, SqlType.BIGINT.asIntTypeJava());
+        }
+        stmt.setObject(3, dataInicial);
+        stmt.setObject(4, dataFinal);
         return stmt;
     }
 

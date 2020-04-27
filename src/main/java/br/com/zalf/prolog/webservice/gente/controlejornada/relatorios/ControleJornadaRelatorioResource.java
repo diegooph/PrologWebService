@@ -87,23 +87,27 @@ public class ControleJornadaRelatorioResource {
     @GET
     @Secured
     @Produces("application/csv")
-    @Path("/aderencias/colaboradores/{codUnidade}/{cpf}/csv")
-    public StreamingOutput getAderenciaIntervalosColaboradorCsv(@PathParam("codUnidade") final Long codUnidade,
-                                                                @QueryParam("dataInicial") final Long dataInicial,
-                                                                @QueryParam("dataFinal") final Long dataFinal,
-                                                                @PathParam("cpf") final String cpf) {
-        return outputStream -> service.getAderenciaIntervalosColaboradorCsv(outputStream, codUnidade, dataInicial,
-                dataFinal, cpf);
+    @Path("/aderencia-marcacoes-colaboradores-mapa/csv")
+    public StreamingOutput getAderenciaMarcacoesColaboradoresCsv(@QueryParam("codUnidade") @Required final Long codUnidade,
+                                                                 @QueryParam("cpf") @Optional final Long cpf,
+                                                                 @QueryParam("dataInicial") @Required final String dataInicial,
+                                                                 @QueryParam("dataFinal") @Required final String dataFinal) {
+        return outputStream -> service.getAderenciaMarcacoesColaboradoresCsv(
+                outputStream,
+                codUnidade,
+                cpf,
+                dataInicial,
+                dataFinal);
     }
 
     @GET
     @Secured
-    @Path("/aderencias/colaboradores/{codUnidade}/{cpf}/report")
-    public Report getAderenciaIntervalosColaboradorReport(@PathParam("codUnidade") final Long codUnidade,
-                                                          @QueryParam("dataInicial") final Long dataInicial,
-                                                          @QueryParam("dataFinal") final Long dataFinal,
-                                                          @PathParam("cpf") final String cpf) {
-        return service.getAderenciaIntervalosColaboradorReport(codUnidade, dataInicial, dataFinal, cpf);
+    @Path("/aderencia-marcacoes-colaboradores-mapa/report")
+    public Report getAderenciaMarcacoesColaboradoresReport(@QueryParam("codUnidade") @Required final Long codUnidade,
+                                                           @QueryParam("cpf") @Optional final Long cpf,
+                                                           @QueryParam("dataInicial") @Required final String dataInicial,
+                                                           @QueryParam("dataFinal") @Required final String dataFinal) {
+        return service.getAderenciaMarcacoesColaboradoresReport(codUnidade, cpf, dataInicial, dataFinal);
     }
 
     @GET

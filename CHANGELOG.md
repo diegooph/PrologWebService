@@ -9,6 +9,9 @@ Change Log
 * Notifica quem solicitou o socorro se ele for invalidado (PL-2580)
 * Notifica via e-mail quando um socorro em rota é aberto (PL-2522)
 
+### Refactors
+* Altera relatório de aderência de intervalos para melhorar otimização (PL-2720)
+
 ### Bugfix
 * Modifica inserção para realizar deleção antes das inserções (PL-2681)
 * Corrige totais considerando marcações fora de jornada. (PL-2565)

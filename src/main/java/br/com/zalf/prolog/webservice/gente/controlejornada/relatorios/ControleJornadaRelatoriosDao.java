@@ -10,6 +10,7 @@ import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.jorn
 import br.com.zalf.prolog.webservice.gente.controlejornada.tipomarcacao.TipoMarcacao;
 import br.com.zalf.prolog.webservice.geral.unidade._model.Unidade;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -107,31 +108,36 @@ public interface ControleJornadaRelatoriosDao {
             throws SQLException, IOException;
 
     /**
-     * Relatório que estratifica a aderência por colaborador
+     * Relatório que estratifica a aderência por colaborador com base no mapa da ambev.
      *
-     * @param out         OutputStream
-     * @param codUnidade  código da unidade
-     * @param dataInicial data inicial
-     * @param dataFinal   data final
-     * @throws SQLException
-     * @throws IOException
+     * @param out         OutputStream.
+     * @param codUnidade  código da unidade.
+     * @param cpf         CPF do colaborador ou {@code null} para todos.
+     * @param dataInicial Data inicial.
+     * @param dataFinal   Data final.
+     * @throws Throwable Se algum erro na geração do relatório ocorrer.
      */
-    void getAderenciaIntervalosColaboradorCsv(OutputStream out, Long codUnidade, Date dataInicial, Date dataFinal,
-                                              String cpf)
-            throws SQLException, IOException;
+    void getAderenciaMarcacoesColaboradoresCsv(@NotNull final OutputStream out,
+                                               @NotNull final Long codUnidade,
+                                               @Nullable final Long cpf,
+                                               @NotNull final LocalDate dataInicial,
+                                               @NotNull final LocalDate dataFinal) throws Throwable;
 
     /**
-     * Relatório que estratifica a aderência por colaborador
+     * Relatório que estratifica a aderência por colaborador com base no mapa da ambev.
      *
-     * @param codUnidade  código da unidade
-     * @param dataInicial data inicial
-     * @param dataFinal   data final
+     * @param codUnidade  Código da unidade.
+     * @param cpf         CPF do colaborador ou {@code null} para todos.
+     * @param dataInicial Data inicial.
+     * @param dataFinal   Data final.
      * @return um Report
-     * @throws SQLException
+     * @throws Throwable Se algum erro na geração do relatório ocorrer.
      */
     @NotNull
-    Report getAderenciaIntervalosColaboradorReport(Long codUnidade, Date dataInicial, Date dataFinal, String cpf)
-            throws SQLException;
+    Report getAderenciaMarcacoesColaboradoresReport(@NotNull final Long codUnidade,
+                                                    @Nullable final Long cpf,
+                                                    @NotNull final LocalDate dataInicial,
+                                                    @NotNull final LocalDate dataFinal) throws Throwable;
 
 
     void getRelatorioPadraoPortaria1510Csv(@NotNull final OutputStream out,
