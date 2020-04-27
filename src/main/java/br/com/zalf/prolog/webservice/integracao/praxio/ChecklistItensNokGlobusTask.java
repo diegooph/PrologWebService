@@ -23,6 +23,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.TimeoutException;
 
 /**
@@ -213,25 +214,22 @@ public final class ChecklistItensNokGlobusTask implements Runnable {
                 if (infosAlternativaAberturaOrdemServicos != null
                         && infosAlternativaAberturaOrdemServicos.size() > 0
                         && infosAlternativaAberturaOrdemServicos.get(0).isDeveAbrirOrdemServico()
-                        && infosAlternativaAberturaOrdemServicos.get(0).getQtdApontamentosItem() > 0
-                        && (!infosAlternativaAberturaOrdemServicos.get(0).isAlternativaTipoOutros()
-                        || hasSimilarity(similarityFinder, infosAlternativaAberturaOrdemServicos))) {
-                    itensOsIncrementaQtdApontamentos.add(infosAlternativaAberturaOrdemServicos.get(0));
+                        && infosAlternativaAberturaOrdemServicos.get(0).getQtdApontamentosItem() > 0) {
+                    final InfosAlternativaAberturaOrdemServico infosAlternativa =
+                            infosAlternativaAberturaOrdemServicos.get(0);
+                    if (infosAlternativa.isAlternativaTipoOutros()) {
+                        final Optional<InfosAlternativaAberturaOrdemServico> bestMatch =
+                                similarityFinder.findBestMatch(
+                                        infosAlternativa.getRespostaTipoOutrosAberturaItem(),
+                                        infosAlternativaAberturaOrdemServicos);
+                        bestMatch.ifPresent(itensOsIncrementaQtdApontamentos::add);
+                    } else {
+                        itensOsIncrementaQtdApontamentos.add(infosAlternativa);
+                    }
                 }
             }
         }
         return itensOsIncrementaQtdApontamentos;
-    }
-
-    private boolean hasSimilarity(@NotNull final TipoOutrosSimilarityFinder similarityFinder,
-                                  @NotNull final List<InfosAlternativaAberturaOrdemServico> alternativaTipoOutros) {
-        final InfosAlternativaAberturaOrdemServico infosAlternativa = alternativaTipoOutros.get(0);
-        if (infosAlternativa.isAlternativaTipoOutros()) {
-            return similarityFinder.findBestMatch(
-                    infosAlternativa.getRespostaTipoOutrosAberturaItem(),
-                    alternativaTipoOutros).isPresent();
-        }
-        return false;
     }
 
     @NotNull
