@@ -19,7 +19,6 @@ import java.sql.SQLException;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import static br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.transicao.MotivoMovimentoTransicaoConverter.createMotivoMovimentoUnidade;
@@ -51,6 +50,9 @@ public final class MotivoMovimentoTransicaoDaoImpl extends DatabaseConnection im
                     "F_COD_COLABORADOR_INSERCAO := ?)" +
                     "AS COD_MOTIVO_ORIGEM_DESTINO;");
 
+            if (unidades.size() > 0) {
+                delete(unidades.get(0).getCodEmpresa(), conn);
+            }
             stmt.setObject(7, Now.offsetDateTimeUtc());
             stmt.setLong(8, codigoColaboradorInsercao);
 
@@ -77,6 +79,21 @@ public final class MotivoMovimentoTransicaoDaoImpl extends DatabaseConnection im
             }
         } finally {
             close(conn, stmt);
+        }
+    }
+
+    @NotNull
+    @Override
+    public void delete(@NotNull final Long codEmpresa, @NotNull final Connection conn) throws Throwable {
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement("SELECT FUNC_MOTIVO_MOVIMENTO_TRANSICAO_DELETA(" +
+                    "F_COD_EMPRESA => ?);");
+            stmt.setLong(1, codEmpresa);
+
+            stmt.executeQuery();
+        } finally {
+            close(stmt);
         }
     }
 

@@ -1,11 +1,29 @@
 Change Log
 ==========
 
+<a name="v1.0.28"></a>
+## Version [v1.0.28](https://github.com/luizfp/PrologWebService/compare/v1.0.27...v1.0.28) (2020-04-27)
+
+### Features
+* Notifica quem solicitou o socorro se ele for invalidado (PL-2580)
+* Notifica via e-mail quando um socorro em rota é aberto (PL-2522)
+
+### Refactors
+* Altera relatório de aderência de intervalos para melhorar otimização (PL-2720)
+
+### Bugfix
+* Modifica inserção para realizar deleção antes das inserções (PL-2681)
+* Corrige totais considerando marcações fora de jornada. (PL-2565)
+* Adiciona validação para placas em branco (PL-2654)
+* Corrige relatório de aderição por placa pra fazer o cálculo do período da primeira aferição(PL-1900)
+* Corrigir abertura de Item de OS tipo Outros (PLI-138)
+
 <a name="v1.0.27"></a>
 ## Version [v1.0.27](https://github.com/luizfp/PrologWebService/compare/v1.0.26...v1.0.27) (2020-04-14)
 
 ### Features
 * Inicaliza Sentry com informações da versão do WS
+* Cria estrutura para empresa reset/clonagem de empresa de apresentação (PL-2034)
 
 ### Refactors
 * Cria serializer/deserializer específico para o `OrigemDestinoEnum` (PL-2681) 

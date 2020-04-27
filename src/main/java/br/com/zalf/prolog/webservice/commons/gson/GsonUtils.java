@@ -66,7 +66,7 @@ public final class GsonUtils {
                 .registerTypeAdapter(LocalDate.class, new LocalDateDeserializer())
                 .registerTypeAdapter(PerguntaModeloChecklistEdicao.class, new PergundaEdicaoSerializerDeserializer())
                 .registerTypeAdapter(AlternativaModeloChecklistEdicao.class, new AlternativaEdicaoSerializerDeserializer())
-                .registerTypeAdapter(OrigemDestinoEnum.class, new OrigemDestinoEnumSerializerDeserializer())
+                .registerTypeHierarchyAdapter(OrigemDestinoEnum.class, new OrigemDestinoEnumSerializerDeserializer())
                 .registerTypeAdapter(Color.class, new ColorSerializer())
                 .setExclusionStrategies(new AnnotationExclusionStrategy())
                 .setLenient()

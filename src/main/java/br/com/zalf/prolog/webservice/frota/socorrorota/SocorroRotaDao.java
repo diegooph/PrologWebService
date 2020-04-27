@@ -31,12 +31,12 @@ public interface SocorroRotaDao {
      * @throws Throwable Se algum erro ocorrer.
      */
     @NotNull
-    List<ColaboradorNotificacaoSocorroRota> getColaboradoresNotificacaoAbertura(
+    List<ColaboradorNotificacaoAberturaSocorroRota> getColaboradoresNotificacaoAbertura(
             @NotNull final Long codUnidade) throws Throwable;
 
     /**
      * Busca o colaborador responsável pela abertura do socorro que será notificado sobre seu atendimento.
-     *
+     * <p>
      * O retorno é uma lista pois o colaborador pode ter mais de um token de push cadastrado.
      *
      * @param codSocorroRota Código do socorro em rota.
@@ -44,9 +44,24 @@ public interface SocorroRotaDao {
      * @throws Throwable Se algum erro ocorrer.
      */
     @NotNull
-    List<ColaboradorNotificacaoSocorroRota> getColaboradoresNotificacaoAtendimento(
+    List<ColaboradorNotificacaoAtendimentoSocorroRota> getColaboradoresNotificacaoAtendimento(
             @NotNull final Long codSocorroRota) throws Throwable;
 
+    /**
+     * Busca o colaborador responsável pela abertura do socorro que será notificado sobre sua invalidação.
+     * <p>
+     * O retorno é uma lista pois o colaborador pode ter mais de um token de push cadastrado.
+     * <p>
+     * Se o colaborador que invalidou for o mesmo que abriu o socorro, nenhum token será retornado para notificação.
+     *
+     * @param codSocorroRota Código do socorro em rota.
+     * @return Lista dos destinatários que irão receber a notificação de invalidação.
+     * @throws Throwable Se algum erro ocorrer.
+     */
+    @NotNull
+    List<ColaboradorNotificacaoInvalidacaoSocorroRota> getColaboradoresNotificacaoInvalidacao(
+            @NotNull final Long codColaboradorInvalidacao,
+            @NotNull final Long codSocorroRota) throws Throwable;
 
     /**
      * Busca as unidades disponíveis para a abertura de socorro em rota por colaborador
@@ -132,12 +147,14 @@ public interface SocorroRotaDao {
     Long finalizacaoSocorro(@NotNull final SocorroRotaFinalizacao socorroRotaFinalizacao) throws Throwable;
 
     /**
-     * Busca as informações do socorro em rota através do código
+     * Busca as informações do socorro em rota através do código.
      *
-     * @param codSocorroRota código do socorro em rota a ser buscado
+     * @param codColaboradorRequest código do colaborador que está realizado o request
+     * @param codSocorroRota        código do socorro em rota a ser buscado
      * @return Uma visualização geral de {@link SocorroRotaVisualizacao socorro em rota}
      * @throws Throwable Se algo der errado na busca.
      */
     @NotNull
-    SocorroRotaVisualizacao getVisualizacaoSocorroRota(@NotNull final Long codSocorroRota) throws Throwable;
+    SocorroRotaVisualizacao getVisualizacaoSocorroRota(@NotNull final Long codColaboradorRequest,
+                                                       @NotNull final Long codSocorroRota) throws Throwable;
 }

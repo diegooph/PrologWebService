@@ -11,6 +11,8 @@ public class EnvironmentHelper {
     public static final String PROLOG_RDS_PORT;
     public static final String SENTRY_DSN;
     public static final String GOOGLE_APPLICATION_CREDENTIALS;
+    public static final String MAILJET_APIKEY_PUBLIC;
+    public static final String MAILJET_APIKEY_PRIVATE;
 
     static {
         PROLOG_RDS_HOSTNAME = System.getenv("PROLOG_RDS_HOSTNAME");
@@ -20,5 +22,7 @@ public class EnvironmentHelper {
         PROLOG_RDS_PORT = System.getenv("PROLOG_RDS_PORT");
         SENTRY_DSN = System.getenv("SENTRY_DSN");
         GOOGLE_APPLICATION_CREDENTIALS = System.getenv("GOOGLE_APPLICATION_CREDENTIALS");
+        MAILJET_APIKEY_PUBLIC = System.getenv("MAILJET_APIKEY_PUBLIC");
+        MAILJET_APIKEY_PRIVATE = System.getenv("MAILJET_APIKEY_PRIVATE");
     }
 }

@@ -8,6 +8,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.transicao._
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.transicao._model.listagem.UnidadeTransicoesMotivoMovimento;
 import org.jetbrains.annotations.NotNull;
 
+import java.sql.Connection;
 import java.time.ZoneId;
 import java.util.List;
 
@@ -27,6 +28,14 @@ public interface MotivoMovimentoTransicaoDao {
      */
     void insert(@NotNull final List<MotivoMovimentoTransicaoInsercao> unidades,
                 @NotNull final Long codigoColaboradorInsercao) throws Throwable;
+
+    /**
+     * Delete todos os registros de transições do banco de dados para uma determinada empresa.
+     *
+     * @param codEmpresa Um código de empresa.
+     * @throws Throwable Caso qualquer erro ocorra.
+     */
+    void delete(@NotNull final Long codEmpresa, @NotNull final Connection conn) throws Throwable;
 
     /**
      * Busca uma {@link TransicaoVisualizacao transição} no banco de dados.

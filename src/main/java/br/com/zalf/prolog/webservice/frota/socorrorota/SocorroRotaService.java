@@ -118,21 +118,6 @@ public final class SocorroRotaService {
     }
 
     @NotNull
-    ResponseWithCod invalidacaoSocorro(@NotNull final SocorroRotaInvalidacao socorroRotaInvalidacao) {
-        try {
-            return ResponseWithCod.ok(
-                    "Solicitação de socorro invalidada com sucesso.",
-                    dao.invalidacaoSocorro(socorroRotaInvalidacao));
-        } catch (final Throwable t) {
-            Log.e(TAG, "Erro ao invalidar uma solitação de socorro.", t);
-            throw Injection
-                    .provideProLogExceptionHandler()
-                    .map(t, "Não foi possível realizar a invalidação desta solicitação de socorro, " +
-                            "tente novamente.");
-        }
-    }
-
-    @NotNull
     ResponseWithCod atendimentoSocorro(@NotNull final SocorroRotaAtendimento socorroRotaAtendimento) {
         try {
             dao.atendimentoSocorro(socorroRotaAtendimento);
@@ -196,9 +181,33 @@ public final class SocorroRotaService {
     }
 
     @NotNull
-    public SocorroRotaVisualizacao getVisualizacaoSocorroRota(@NotNull final Long codSocorroRota) {
+    ResponseWithCod invalidacaoSocorro(@NotNull final SocorroRotaInvalidacao socorroRotaInvalidacao) {
         try {
-            return dao.getVisualizacaoSocorroRota(codSocorroRota);
+            dao.invalidacaoSocorro(socorroRotaInvalidacao);
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao invalidar uma solitação de socorro.", t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Não foi possível realizar a invalidação desta solicitação de socorro, " +
+                            "tente novamente.");
+        }
+
+        // Notifica os usuários responsáveis sobre a invalidação do socorro.
+        final Long codSocorro = socorroRotaInvalidacao.getCodSocorroRota();
+        new NotificadorSocorroRota().notificaSobreInvalidacao(
+                dao,
+                socorroRotaInvalidacao.getCodColaborador(),
+                codSocorro);
+        return ResponseWithCod.ok(
+                "Solicitação de socorro invalidada com sucesso.",
+                codSocorro);
+    }
+
+    @NotNull
+    public SocorroRotaVisualizacao getVisualizacaoSocorroRota(@NotNull final Long codColaboradorRequest,
+                                                              @NotNull final Long codSocorroRota) {
+        try {
+            return dao.getVisualizacaoSocorroRota(codColaboradorRequest, codSocorroRota);
         } catch (final Throwable e) {
             Log.e(TAG, "Erro ao buscar as informações deste socorro em rota.", e);
             throw Injection

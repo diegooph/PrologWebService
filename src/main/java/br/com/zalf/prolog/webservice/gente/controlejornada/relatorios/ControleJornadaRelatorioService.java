@@ -24,10 +24,10 @@ public class ControleJornadaRelatorioService {
     @NotNull
     private final ControleJornadaRelatoriosDao dao = Injection.provideControleJornadaRelatoriosDao();
 
-    public void getMarcacoesDiariasCsv(OutputStream out, Long codUnidade, Long dataInicial, Long dataFinal, String cpf) {
+    public void getMarcacoesDiariasCsv(final OutputStream out, final Long codUnidade, final Long dataInicial, final Long dataFinal, final String cpf) {
         try {
             dao.getMarcacoesDiariasCsv(out, codUnidade, new Date(dataInicial), new Date(dataFinal), cpf);
-        } catch (SQLException | IOException e) {
+        } catch (final SQLException | IOException e) {
             Log.e(TAG, String.format("Erro ao buscar o relatório com os intervalos realizados (CSV). \n" +
                     "codUnidade: %d \n" +
                     "cpf: %s \n" +
@@ -36,10 +36,10 @@ public class ControleJornadaRelatorioService {
         }
     }
 
-    public Report getMarcacoesDiariasReport(Long codUnidade, Long dataInicial, Long dataFinal, String cpf) {
+    public Report getMarcacoesDiariasReport(final Long codUnidade, final Long dataInicial, final Long dataFinal, final String cpf) {
         try {
             return dao.getMarcacoesDiariasReport(codUnidade, new Date(dataInicial), new Date(dataFinal), cpf);
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar o relatório com os intervalos realizados (REPORT). \n" +
                     "codUnidade: %d \n" +
                     "cpf: %s \n" +
@@ -49,10 +49,10 @@ public class ControleJornadaRelatorioService {
         }
     }
 
-    public void getIntervalosMapasCsv(OutputStream out, Long codUnidade, Long dataInicial, Long dataFinal) {
+    public void getIntervalosMapasCsv(final OutputStream out, final Long codUnidade, final Long dataInicial, final Long dataFinal) {
         try {
             dao.getIntervalosMapasCsv(out, codUnidade, new Date(dataInicial), new Date(dataFinal));
-        } catch (SQLException | IOException e) {
+        } catch (final SQLException | IOException e) {
             Log.e(TAG, String.format("Erro ao buscar o relatório com os intervalos por mapas realizados (CSV). \n" +
                     "codUnidade: %d \n" +
                     "dataInicial: %s \n" +
@@ -60,10 +60,10 @@ public class ControleJornadaRelatorioService {
         }
     }
 
-    public Report getIntervalosMapasReport(Long codUnidade, Long dataInicial, Long dataFinal) {
+    public Report getIntervalosMapasReport(final Long codUnidade, final Long dataInicial, final Long dataFinal) {
         try {
             return dao.getIntervalosMapasReport(codUnidade, new Date(dataInicial), new Date(dataFinal));
-        } catch (SQLException | IOException e) {
+        } catch (final SQLException | IOException e) {
             Log.e(TAG, String.format("Erro ao buscar o relatório com os intervalos por mapas realizados (REPORT). \n" +
                     "codUnidade: %d \n" +
                     "dataInicial: %s \n" +
@@ -72,10 +72,10 @@ public class ControleJornadaRelatorioService {
         }
     }
 
-    public void getAderenciaIntervalosDiariaCsv(OutputStream out, Long codUnidade, Long dataInicial, Long dataFinal) {
+    public void getAderenciaIntervalosDiariaCsv(final OutputStream out, final Long codUnidade, final Long dataInicial, final Long dataFinal) {
         try {
             dao.getAderenciaIntervalosDiariaCsv(out, codUnidade, new Date(dataInicial), new Date(dataFinal));
-        } catch (SQLException | IOException e) {
+        } catch (final SQLException | IOException e) {
             Log.e(TAG, String.format("Erro ao buscar o relatório com a aderência diária(CSV). \n" +
                     "codUnidade: %d \n" +
                     "dataInicial: %s \n" +
@@ -83,10 +83,10 @@ public class ControleJornadaRelatorioService {
         }
     }
 
-    public Report getAderenciaIntervalosDiariaReport(Long codUnidade, Long dataInicial, Long dataFinal) {
+    public Report getAderenciaIntervalosDiariaReport(final Long codUnidade, final Long dataInicial, final Long dataFinal) {
         try {
             return dao.getAderenciaIntervalosDiariaReport(codUnidade, new Date(dataInicial), new Date(dataFinal));
-        } catch (SQLException | IOException e) {
+        } catch (final SQLException | IOException e) {
             Log.e(TAG, String.format("Erro ao buscar o relatório com a aderência diária(REPORT). \n" +
                     "codUnidade: %d \n" +
                     "dataInicial: %s \n" +
@@ -95,29 +95,49 @@ public class ControleJornadaRelatorioService {
         }
     }
 
-    public void getAderenciaIntervalosColaboradorCsv(OutputStream out, Long codUnidade, Long dataInicial, Long
-            dataFinal, String cpf) {
+    public void getAderenciaMarcacoesColaboradoresCsv(final OutputStream out,
+                                                      final Long codUnidade,
+                                                      final Long cpf,
+                                                      final String dataInicial,
+                                                      final String dataFinal) {
         try {
-            dao.getAderenciaIntervalosColaboradorCsv(out, codUnidade, new Date(dataInicial), new Date(dataFinal), cpf);
-        } catch (SQLException | IOException e) {
+            dao.getAderenciaMarcacoesColaboradoresCsv(
+                    out,
+                    codUnidade,
+                    cpf,
+                    ProLogDateParser.toLocalDate(dataInicial),
+                    ProLogDateParser.toLocalDate(dataFinal));
+        } catch (final Throwable e) {
             Log.e(TAG, String.format("Erro ao buscar o relatório com a aderência por colaborador(CSV). \n" +
-                    "codUnidade: %d \n" +
-                    "dataInicial: %s \n" +
-                    "dataFinal: %s", codUnidade, new Date(dataInicial).toString(), new Date(dataFinal).toString()), e);
+                    "codUnidade: %d\n" +
+                    "cpf: %d\n" +
+                    "dataInicial: %s\n" +
+                    "dataFinal: %s", codUnidade, cpf, dataInicial, dataFinal), e);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(e, "Erro ao gerar relatório, tente novamente");
         }
     }
 
-    public Report getAderenciaIntervalosColaboradorReport(Long codUnidade, Long dataInicial, Long dataFinal, String
-            cpf) {
+    public Report getAderenciaMarcacoesColaboradoresReport(final Long codUnidade,
+                                                           final Long cpf,
+                                                           final String dataInicial,
+                                                           final String dataFinal) {
         try {
-            return dao.getAderenciaIntervalosColaboradorReport(codUnidade, new Date(dataInicial), new Date(dataFinal)
-                    , cpf);
-        } catch (SQLException e) {
-            Log.e(TAG, String.format("Erro ao buscar o relatório com a aderência por colaborador(REPORT). \n" +
-                    "codUnidade: %d \n" +
-                    "dataInicial: %s \n" +
-                    "dataFinal: %s", codUnidade, new Date(dataInicial).toString(), new Date(dataFinal).toString()), e);
-            return null;
+            return dao.getAderenciaMarcacoesColaboradoresReport(
+                    codUnidade,
+                    cpf,
+                    ProLogDateParser.toLocalDate(dataInicial),
+                    ProLogDateParser.toLocalDate(dataFinal));
+        } catch (final Throwable e) {
+            Log.e(TAG, String.format("Erro ao buscar o relatório com a aderência por colaborador(REPORT).\n" +
+                    "codUnidade: %d\n" +
+                    "cpf: %d\n" +
+                    "dataInicial: %s\n" +
+                    "dataFinal: %s", codUnidade, cpf, dataInicial, dataFinal), e);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(e, "Erro ao gerar relatório, tente novamente");
         }
     }
 
@@ -135,7 +155,7 @@ public class ControleJornadaRelatorioService {
                     cpf,
                     ProLogDateParser.toLocalDate(dataInicial),
                     ProLogDateParser.toLocalDate(dataFinal));
-        } catch (SQLException | IOException e) {
+        } catch (final SQLException | IOException e) {
             Log.e(TAG, String.format("Erro ao buscar o relatório csv no padrão da portaria 1510. \n" +
                     "codUnidade: %d \n" +
                     "codTipoIntervalo: %d \n" +
@@ -215,7 +235,7 @@ public class ControleJornadaRelatorioService {
                     codTipoIntervalo,
                     ProLogDateParser.toLocalDate(dataInicial),
                     ProLogDateParser.toLocalDate(dataFinal));
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar report do relatório de marcações comparando com escala diária. \n" +
                     "codUnidade: %d \n" +
                     "codTipoIntervalo: %d \n" +
@@ -237,7 +257,7 @@ public class ControleJornadaRelatorioService {
                     codTipoIntervalo,
                     ProLogDateParser.toLocalDate(dataInicial),
                     ProLogDateParser.toLocalDate(dataFinal));
-        } catch (IOException | SQLException e) {
+        } catch (final IOException | SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar csv do relatório de marcações comparando com escala diária. \n" +
                     "codUnidade: %d \n" +
                     "codTipoIntervalo: %d \n" +
@@ -280,7 +300,7 @@ public class ControleJornadaRelatorioService {
                     codTipoIntervalo,
                     ProLogDateParser.toLocalDate(dataInicial),
                     ProLogDateParser.toLocalDate(dataFinal));
-        } catch (Throwable e) {
+        } catch (final Throwable e) {
             final String errorMessage = String.format(
                     "Erro ao buscar report do relatório de total de tempo para cada tipo de intervalo. \n" +
                             "codUnidade: %d \n" +

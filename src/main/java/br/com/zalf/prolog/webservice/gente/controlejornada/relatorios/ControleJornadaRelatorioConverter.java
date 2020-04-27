@@ -1,10 +1,10 @@
 package br.com.zalf.prolog.webservice.gente.controlejornada.relatorios;
 
-import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.util.FormatUtils;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.FolhaPontoDia;
 import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.FolhaPontoIntervalo;
 import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.FolhaPontoRelatorio;
@@ -16,6 +16,7 @@ import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.jorn
 import br.com.zalf.prolog.webservice.gente.controlejornada.tipomarcacao.FormulaCalculoJornada;
 import br.com.zalf.prolog.webservice.gente.controlejornada.tipomarcacao.TipoMarcacao;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -72,7 +73,6 @@ final class ControleJornadaRelatorioConverter {
             if (!cpfAnterior.equals(cpfAtual)) {
                 // Trocou de colaborador.
                 Log.d(TAG, "Colaborador alterado. Anterior: " + cpfAnterior + " - Atual: " + cpfAtual);
-                //noinspection ConstantConditions
                 final FolhaPontoRelatorio folhaPontoRelatorio = createFolhaPontoRelatorio(cpfAnterior,
                         nomeAnterior, diaAnterior, dias, intervalosDia, dataHoraGeracaoRelatorioUtc, dataHoraGeracaoRelatorioZoned);
                 folhaPontoRelatorio.calculaTempoEmCadaTipoIntervalo(tiposIntervalosUnidade, zoneIdUnidade);
@@ -167,7 +167,6 @@ final class ControleJornadaRelatorioConverter {
                 // Trocou de colaborador.
                 jornadasDia.add(jornada);
                 marcacoesDia.add(new FolhaPontoJornadaDia(diaAnterior, jornadasDia, marcacoesForaJornada));
-                //noinspection ConstantConditions
                 final FolhaPontoJornadaRelatorio folhaPontoJornadaRelatorio = new FolhaPontoJornadaRelatorio(
                         cpfAnterior,
                         nomeAnterior,
@@ -223,7 +222,7 @@ final class ControleJornadaRelatorioConverter {
             }
 
             // Para cada Marcação processada, atualizamos os cálculos de tempo.
-            calculaTempoPorTipoMarcacao(rSet, tiposMarcacoesMarcados, tiposMarcacoesUnidade);
+            calculaTempoPorTipoMarcacao(rSet, tiposMarcacoesMarcados, tiposMarcacoesUnidade, codMarcacaoJornada);
 
             diaAnterior = diaAtual;
             cpfAnterior = cpfAtual;
@@ -251,27 +250,33 @@ final class ControleJornadaRelatorioConverter {
     private static void calculaTempoPorTipoMarcacao(
             @NotNull final ResultSet rSet,
             @NotNull final Map<Long, FolhaPontoTipoIntervalo> tiposMarcacoesMarcadas,
-            @NotNull final Map<Long, TipoMarcacao> tiposMarcacoesUnidade) throws SQLException {
-        // Precisamos atualizar a lista de tipos de marcações marcadas.
-        final Long codTipoMarcacao = rSet.getLong("COD_TIPO_INTERVALO");
-        if (tiposMarcacoesMarcadas.get(codTipoMarcacao) == null) {
-            // Se ainda não estiver mapeado, precisamos criar o tipo de marcação e somar os tempos
-            final TipoMarcacao tipoMarcacao = tiposMarcacoesUnidade.get(codTipoMarcacao);
-            tiposMarcacoesMarcadas.put(
-                    tipoMarcacao.getCodigo(),
-                    FolhaPontoTipoIntervalo.createFromTipoIntervalo(
-                            tipoMarcacao,
-                            0L,
-                            0L));
-        }
+            @NotNull final Map<Long, TipoMarcacao> tiposMarcacoesUnidade,
+            @Nullable final Long codMarcacaoJornada) throws SQLException {
 
-        // Se o tipo já estiver mapeado, apenas somamos os tempos do intervalo.
-        tiposMarcacoesMarcadas
-                .get(codTipoMarcacao)
-                .sumTempoTotalTipoIntervalo(rSet.getLong("DIFERENCA_MARCACOES_SEGUNDOS"));
-        tiposMarcacoesMarcadas
-                .get(codTipoMarcacao)
-                .sumTempoTotalHorasNoturnas(rSet.getLong("TEMPO_NOTURNO_EM_SEGUNDOS"));
+        // Antes de realizar a soma nos totais, é verificado se a marcação é fora de jornada e consequentemente
+        // não deve compor os totais.
+        if (codMarcacaoJornada != null && codMarcacaoJornada > 0) {
+            // Precisamos atualizar a lista de tipos de marcações marcadas.
+            final Long codTipoMarcacao = rSet.getLong("COD_TIPO_INTERVALO");
+            if (tiposMarcacoesMarcadas.get(codTipoMarcacao) == null) {
+                // Se ainda não estiver mapeado, precisamos criar o tipo de marcação e somar os tempos
+                final TipoMarcacao tipoMarcacao = tiposMarcacoesUnidade.get(codTipoMarcacao);
+                tiposMarcacoesMarcadas.put(
+                        tipoMarcacao.getCodigo(),
+                        FolhaPontoTipoIntervalo.createFromTipoIntervalo(
+                                tipoMarcacao,
+                                0L,
+                                0L));
+            }
+
+            // Se o tipo já estiver mapeado, apenas somamos os tempos do intervalo.
+            tiposMarcacoesMarcadas
+                    .get(codTipoMarcacao)
+                    .sumTempoTotalTipoIntervalo(rSet.getLong("DIFERENCA_MARCACOES_SEGUNDOS"));
+            tiposMarcacoesMarcadas
+                    .get(codTipoMarcacao)
+                    .sumTempoTotalHorasNoturnas(rSet.getLong("TEMPO_NOTURNO_EM_SEGUNDOS"));
+        }
     }
 
     @NotNull
