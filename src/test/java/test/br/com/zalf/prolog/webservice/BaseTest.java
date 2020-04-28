@@ -32,7 +32,7 @@ public abstract class BaseTest {
     }
 
     @AfterAll
-    public void destroy() {
+    public void destroy() throws Throwable {
         // Do nothing.
     }
 

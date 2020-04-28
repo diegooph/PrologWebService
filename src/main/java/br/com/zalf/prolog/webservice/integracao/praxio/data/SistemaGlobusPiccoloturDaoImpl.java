@@ -210,6 +210,7 @@ public final class SistemaGlobusPiccoloturDaoImpl extends DatabaseConnection imp
                 rSet.getLong("COD_ALTERNATIVA_NOK"),
                 rSet.getLong("COD_CONTEXTO_ALTERNATIVA_NOK"),
                 rSet.getString("DESCRICAO_ALTERNATIVA_NOK"),
+                rSet.getBoolean("ALTERNATIVA_TIPO_OUTROS"),
                 PrioridadeAlternativaGlobus.fromString(rSet.getString("PRIORIDADE_ALTERNATIVA_NOK")));
     }
 
