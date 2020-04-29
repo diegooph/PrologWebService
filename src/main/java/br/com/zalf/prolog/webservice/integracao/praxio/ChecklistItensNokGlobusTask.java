@@ -215,16 +215,14 @@ public final class ChecklistItensNokGlobusTask implements Runnable {
                         && infosAlternativaAberturaOrdemServicos.size() > 0
                         && infosAlternativaAberturaOrdemServicos.get(0).isDeveAbrirOrdemServico()
                         && infosAlternativaAberturaOrdemServicos.get(0).getQtdApontamentosItem() > 0) {
-                    final InfosAlternativaAberturaOrdemServico infosAlternativa =
-                            infosAlternativaAberturaOrdemServicos.get(0);
-                    if (infosAlternativa.isAlternativaTipoOutros()) {
+                    if (alternativa.isAlternativaTipoOutros()) {
                         final Optional<InfosAlternativaAberturaOrdemServico> bestMatch =
                                 similarityFinder.findBestMatch(
-                                        infosAlternativa.getRespostaTipoOutrosAberturaItem(),
+                                        alternativa.getDescricaoAlternativaNok(),
                                         infosAlternativaAberturaOrdemServicos);
                         bestMatch.ifPresent(itensOsIncrementaQtdApontamentos::add);
                     } else {
-                        itensOsIncrementaQtdApontamentos.add(infosAlternativa);
+                        itensOsIncrementaQtdApontamentos.add(infosAlternativaAberturaOrdemServicos.get(0));
                     }
                 }
             }

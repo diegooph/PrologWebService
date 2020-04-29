@@ -29,7 +29,7 @@ public class ListagemMarcasModelosBandaTest extends BaseTest {
     }
 
     @Override
-    public void destroy() {
+    public void destroy() throws Throwable {
         DatabaseManager.finish();
         super.destroy();
     }

@@ -58,6 +58,7 @@ public final class AberturaOrdemServicoTest extends BaseTest {
     private static final Random RANDOM = new Random();
     private static final String TOKEN_INTEGRACAO = "teste";
     private static final String TOKEN_CHECK_OFF = "oLHOj4Fm6oZCloaSFCHeSicqudkaVo5KBMjuR0hYpHkb7M5MYM215es1JeboUhAf";
+    private static final Long COD_EMPRESA = 3L;
     private static final Long COD_UNIDADE = 215L;
     private ChecklistModeloService modeloChecklistService;
     private ChecklistService checklistService;
@@ -72,11 +73,13 @@ public final class AberturaOrdemServicoTest extends BaseTest {
         checklistService = new ChecklistService();
         checklistOfflineService = new ChecklistOfflineService();
         tokenIntegrado = getValidToken("3383283194");
+        ligaIntegracao();
     }
 
     @Override
     @AfterAll
-    public void destroy() {
+    public void destroy() throws Throwable {
+        desligaIntegracao();
         modeloChecklistService = null;
         checklistService = null;
         checklistOfflineService = null;
@@ -270,6 +273,104 @@ public final class AberturaOrdemServicoTest extends BaseTest {
 
             } finally {
                 provider.closeResources(conn, stmt, rSet);
+            }
+        }
+    }
+
+    @Test
+    void testIncrementoQtdApontamentoItemOsIntegracao() throws Throwable {
+        final ResultInsertModeloChecklist resultModeloChecklist =
+                criaModeloChecklist(COD_UNIDADE, "Modelo Abertura OS Integração ");
+
+        // ################################### ETAPA 2 - Cria um checklist do modelo ###################################
+        final ChecklistInsercao checklistInsercao =
+                insertChecklistModeloCriadoComTipoOutros(COD_UNIDADE, resultModeloChecklist);
+
+        // Configura modelo para ser integrado
+        permiteSincronizarModeloChecklist(resultModeloChecklist);
+
+        final Long codChecklistInserido = checklistService.insert(tokenIntegrado, checklistInsercao);
+        Thread.sleep(100);
+        // ############################### ETAPA 3 - Marcar checklist como sincronizado ################################
+        final SistemaGlobusPiccoloturDaoImpl sistemaGlobusPiccoloturDao = new SistemaGlobusPiccoloturDaoImpl();
+        marcarChecklistComoSincronizado(codChecklistInserido, sistemaGlobusPiccoloturDao);
+
+        // ################################# ETAPA 4 - Insere uma O.S Globus no ProLog #################################
+        final long nextCodOs = getNextCodOsUnidade(COD_UNIDADE);
+        { // region Insere a Ordem de Serviço Globus a partir do checklist
+            final List<ItemOSAbertaGlobus> itensOSAbertaGlobus = new ArrayList<>();
+
+            final ChecklistItensNokGlobus checklistItensNokGlobus =
+                    getChecklistToSyncGlobus(codChecklistInserido, sistemaGlobusPiccoloturDao)
+                            .getChecklistItensNokGlobus();
+
+            final PerguntaNokGlobus pergunta1 = checklistItensNokGlobus.getPerguntasNok().get(0);
+            // Adiciona item 1
+            itensOSAbertaGlobus.add(
+                    new ItemOSAbertaGlobus(
+                            getRandomCodItenGlobus(),
+                            pergunta1.getCodContextoPerguntaNok(),
+                            pergunta1.getAlternativasNok().get(0).getCodContextoAlternativaNok()));
+
+            itensOSAbertaGlobus.add(
+                    new ItemOSAbertaGlobus(
+                            getRandomCodItenGlobus(),
+                            pergunta1.getCodContextoPerguntaNok(),
+                            pergunta1.getAlternativasNok().get(1).getCodContextoAlternativaNok()));
+
+            final PerguntaNokGlobus pergunta2 = checklistItensNokGlobus.getPerguntasNok().get(1);
+            // Adiciona item 1
+            itensOSAbertaGlobus.add(
+                    new ItemOSAbertaGlobus(
+                            getRandomCodItenGlobus(),
+                            pergunta2.getCodContextoPerguntaNok(),
+                            pergunta2.getAlternativasNok().get(0).getCodContextoAlternativaNok()));
+
+            // Adiciona item 1
+            itensOSAbertaGlobus.add(
+                    new ItemOSAbertaGlobus(
+                            getRandomCodItenGlobus(),
+                            pergunta2.getCodContextoPerguntaNok(),
+                            pergunta2.getAlternativasNok().get(1).getCodContextoAlternativaNok()));
+
+            final OrdemServicoAbertaGlobus ordemServicoAbertaGlobus =
+                    new OrdemServicoAbertaGlobus(
+                            nextCodOs,
+                            COD_UNIDADE,
+                            codChecklistInserido,
+                            itensOSAbertaGlobus);
+
+            final IntegracaoPraxioService integracaoPraxioService = new IntegracaoPraxioService();
+            integracaoPraxioService
+                    .inserirOrdensServicoGlobus(
+                            TOKEN_INTEGRACAO,
+                            Collections.singletonList(ordemServicoAbertaGlobus));
+        }
+
+        // ################################## ETAPA 4 - INSERE UM NOVO CHECKLIST ##################################
+        final ChecklistInsercao checklistInsercao1 =
+                insertChecklistModeloCriadoComTipoOutros(COD_UNIDADE, resultModeloChecklist);
+
+        final Long codChecklistInserido1 = checklistService.insert(tokenIntegrado, checklistInsercao1);
+        Thread.sleep(100);
+        // ############################### ETAPA 3 - Marcar checklist como sincronizado ################################
+        Executors.newSingleThreadExecutor().execute(
+                new ChecklistItensNokGlobusTask(
+                        codChecklistInserido1,
+                        true,
+                        sistemaGlobusPiccoloturDao,
+                        new GlobusPiccoloturRequesterImpl(),
+                        null));
+        Thread.sleep(500);
+        // ################################# ETAPA 4 - Valida informações #################################
+        { // region Insere a Ordem de Serviço Globus a partir do checklist
+            final HolderResolucaoOrdemServico ordemServico =
+                    Injection
+                            .provideOrdemServicoDao()
+                            .getHolderResolucaoOrdemServico(COD_UNIDADE, nextCodOs);
+
+            for (final ItemOrdemServicoVisualizacao iten : ordemServico.getOrdemServico().getItens()) {
+                assertThat(iten.getQtdApontamentos()).isGreaterThan(1);
             }
         }
     }
@@ -1032,6 +1133,83 @@ public final class AberturaOrdemServicoTest extends BaseTest {
                 11000);
     }
 
+    @NotNull
+    private ChecklistInsercao insertChecklistModeloCriadoComTipoOutros(
+            final Long codUnidade,
+            final ResultInsertModeloChecklist resultModeloChecklist) {
+        final ModeloChecklistVisualizacao modeloBuscado = modeloChecklistService.getModeloChecklist(
+                codUnidade,
+                resultModeloChecklist.getCodModeloChecklistInserido());
+
+        final List<ChecklistResposta> respostas = new ArrayList<>();
+        { // region Responde a P1 - ela É single_choice.
+
+            final PerguntaModeloChecklistVisualizacao p1 = modeloBuscado.getPerguntas().get(0);
+            final List<ChecklistAlternativaResposta> alternativas = new ArrayList<>();
+
+            // A1.
+            final AlternativaModeloChecklist a1 = p1.getAlternativas().get(0);
+            alternativas.add(new ChecklistAlternativaResposta(
+                    a1.getCodigo(),
+                    true,
+                    false,
+                    null));
+
+            // A2.
+            final AlternativaModeloChecklist a2 = p1.getAlternativas().get(1);
+            alternativas.add(new ChecklistAlternativaResposta(
+                    a2.getCodigo(),
+                    true,
+                    true,
+                    "erro"));
+
+            respostas.add(new ChecklistResposta(p1.getCodigo(), alternativas));
+        }
+
+        { // region Responde a P2 - ela é multi_choice.
+            final PerguntaModeloChecklistVisualizacao p2 = modeloBuscado.getPerguntas().get(1);
+            final List<ChecklistAlternativaResposta> alternativas = new ArrayList<>();
+
+            // B1.
+            final AlternativaModeloChecklist b1 = p2.getAlternativas().get(0);
+            alternativas.add(new ChecklistAlternativaResposta(
+                    b1.getCodigo(),
+                    true,
+                    false,
+                    null));
+
+            // B2.
+            final AlternativaModeloChecklist b2 = p2.getAlternativas().get(1);
+            alternativas.add(new ChecklistAlternativaResposta(
+                    b2.getCodigo(),
+                    true,
+                    true,
+                    "Está com problema..."));
+
+            respostas.add(new ChecklistResposta(p2.getCodigo(), alternativas));
+        }
+
+        return new ChecklistInsercao(
+                codUnidade,
+                resultModeloChecklist.getCodModeloChecklistInserido(),
+                resultModeloChecklist.getCodVersaoModeloChecklistInserido(),
+                2272L,
+                705L,
+                "PRO0006",
+                TipoChecklist.SAIDA,
+                11222,
+                10000,
+                respostas,
+                ProLogDateParser.toLocalDateTime("2019-12-11T09:35:10"),
+                FonteDataHora.LOCAL_CELULAR,
+                80,
+                83,
+                "device didID",
+                "deviceImei",
+                10000,
+                11000);
+    }
+
     private void permiteSincronizarModeloChecklist(
             @NotNull final ResultInsertModeloChecklist resultModeloChecklist) throws Throwable {
         final DatabaseConnectionProvider provider = new DatabaseConnectionProvider();
@@ -1083,7 +1261,7 @@ public final class AberturaOrdemServicoTest extends BaseTest {
             if (rSet.next()) {
                 return rSet.getLong("CODIGO") + 1;
             } else {
-                throw new SQLException("Não foi possível buscar o próximo codigo de O.S");
+                return 1;
             }
         } finally {
             provider.closeResources(conn, stmt, rSet);
@@ -1093,5 +1271,77 @@ public final class AberturaOrdemServicoTest extends BaseTest {
     @NotNull
     private Long getRandomCodItenGlobus() {
         return RANDOM.nextLong();
+    }
+
+    private void ligaIntegracao() throws Throwable {
+        final DatabaseConnectionProvider provider = new DatabaseConnectionProvider();
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = provider.provideDatabaseConnection();
+
+            // Insere o token
+            stmt = conn.prepareStatement("insert into integracao.token_integracao(cod_empresa, token_integracao) " +
+                    "values (?, ?) " +
+                    "on conflict " +
+                    "    on constraint unique_empresa_token_integracao " +
+                    "    do update set token_integracao = ?;");
+            stmt.setLong(1, COD_EMPRESA);
+            stmt.setString(2, TOKEN_INTEGRACAO);
+            stmt.setString(3, TOKEN_INTEGRACAO);
+            if (stmt.executeUpdate() == 0) {
+                throw new SQLException("Não foi possível ligar a integração");
+            }
+
+            // Liga o roteamento para o sistema
+            stmt = conn.prepareStatement("insert into integracao.empresa_integracao_sistema (cod_empresa, " +
+                    "                                                   chave_sistema, " +
+                    "                                                   recurso_integrado) " +
+                    "values (?, ?, ?) " +
+                    "on conflict on constraint unique_empresa_integracao do nothing;");
+            stmt.setLong(1, COD_EMPRESA);
+            stmt.setString(2, "GLOBUS_PICCOLOTUR");
+            stmt.setString(3, "CHECKLIST");
+            stmt.execute();
+
+            stmt.setLong(1, COD_EMPRESA);
+            stmt.setString(2, "GLOBUS_PICCOLOTUR");
+            stmt.setString(3, "CHECKLIST_MODELO");
+            stmt.execute();
+
+            stmt.setLong(1, COD_EMPRESA);
+            stmt.setString(2, "GLOBUS_PICCOLOTUR");
+            stmt.setString(3, "CHECKLIST_ORDEM_SERVICO");
+            stmt.execute();
+
+        } finally {
+            provider.closeResources(conn, stmt);
+        }
+    }
+
+    private void desligaIntegracao() throws Throwable {
+        final DatabaseConnectionProvider provider = new DatabaseConnectionProvider();
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = provider.provideDatabaseConnection();
+            stmt = conn.prepareStatement("delete from integracao.token_integracao where cod_empresa = ?;");
+            stmt.setLong(1, COD_EMPRESA);
+            if (stmt.executeUpdate() == 0) {
+                throw new SQLException("Não foi possível ligar a integração");
+            }
+
+            stmt = conn.prepareStatement("delete " +
+                    "from integracao.empresa_integracao_sistema " +
+                    "where cod_empresa = ? " +
+                    "  and chave_sistema = ?;");
+            stmt.setLong(1, COD_EMPRESA);
+            stmt.setString(2, "GLOBUS_PICCOLOTUR");
+            if (stmt.executeUpdate() == 0) {
+                throw new SQLException("Não foi possível ligar a integração");
+            }
+        } finally {
+            provider.closeResources(conn, stmt);
+        }
     }
 }

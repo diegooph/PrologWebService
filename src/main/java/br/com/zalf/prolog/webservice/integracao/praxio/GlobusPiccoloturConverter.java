@@ -63,6 +63,7 @@ public final class GlobusPiccoloturConverter {
                                     infosAlternativaAberturaOrdemServico.getCodAlternativa(),
                                     infosAlternativaAberturaOrdemServico.getCodContextoAlternativa(),
                                     descricao,
+                                    infosAlternativaAberturaOrdemServico.isAlternativaTipoOutros(),
                                     getPrioridadeAlternativaGlobus(
                                             infosAlternativaAberturaOrdemServico.getPrioridadeAlternativa())));
                             codContextoPergunta = infosAlternativaAberturaOrdemServico.getCodContextoPergunta();
