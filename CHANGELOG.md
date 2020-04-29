@@ -6,6 +6,7 @@ Change Log
 
 ### Bugfix
 * Fixa versão do jackson para evitar problemas entre bibliotecas
+* Nova correção na abertura de Item de OS tipo Outros (PLI-138)
 
 <a name="v1.0.28"></a>
 ## Version [v1.0.28](https://github.com/luizfp/PrologWebService/compare/v1.0.27...v1.0.28) (2020-04-27)
