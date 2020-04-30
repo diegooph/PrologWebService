@@ -37,15 +37,17 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
             conn.setAutoCommit(false);
             stmt = conn.prepareStatement("SELECT * FROM FUNC_VEICULO_INSERE_VEICULO(" +
                     "F_COD_UNIDADE := ?," +
-                    "F_PLACA := ?, " +
+                    "F_PLACA := ?," +
+                    "F_NUMERO_FROTA := ?," +
                     "F_KM_ATUAL := ?, " +
                     "F_COD_MODELO := ?, " +
                     "F_COD_TIPO := ?) AS CODIGO;");
             stmt.setLong(1, veiculo.getCodUnidadeAlocado());
             stmt.setString(2, veiculo.getPlacaVeiculo().toUpperCase());
-            stmt.setLong(3, veiculo.getKmAtualVeiculo());
-            stmt.setLong(4, veiculo.getCodModeloVeiculo());
-            stmt.setLong(5, veiculo.getCodTipoVeiculo());
+            stmt.setString(3, veiculo.getNumeroFrotaVeiculo());
+            stmt.setLong(4, veiculo.getKmAtualVeiculo());
+            stmt.setLong(5, veiculo.getCodModeloVeiculo());
+            stmt.setLong(6, veiculo.getCodTipoVeiculo());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 final long codVeiculoInserido = rSet.getLong("CODIGO");
@@ -92,14 +94,16 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
             final long kmAntigoVeiculo = veiculoBd.getKmAtual();
             final long kmNovoVeiculo = veiculo.getKmAtual();
             stmt = conn.prepareStatement("SELECT * FROM FUNC_VEICULO_ATUALIZA_VEICULO(" +
-                    "F_PLACA := ?, " +
+                    "F_PLACA := ?," +
+                    "F_NOVO_NUMERO_FROTA := ?, " +
                     "F_NOVO_KM := ?, " +
                     "F_NOVO_COD_MODELO := ?, " +
                     "F_NOVO_COD_TIPO := ?) AS CODIGO;");
             stmt.setString(1, placaOriginal);
-            stmt.setLong(2, kmNovoVeiculo);
-            stmt.setLong(3, veiculo.getCodModelo());
-            stmt.setLong(4, veiculo.getCodTipo());
+            stmt.setString(2, veiculo.getNumeroFrota());
+            stmt.setLong(3, kmNovoVeiculo);
+            stmt.setLong(4, veiculo.getCodModelo());
+            stmt.setLong(5, veiculo.getCodTipo());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 final long codVeiculoAtualizado = rSet.getLong("CODIGO");
@@ -891,7 +895,6 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         veiculo.setPlaca(rSet.getString("PLACA"));
         veiculo.setAtivo(rSet.getBoolean("STATUS_ATIVO"));
         veiculo.setKmAtual(rSet.getLong("KM"));
-
         veiculo.setCodRegionalAlocado(rSet.getLong("COD_REGIONAL_ALOCADO"));
         veiculo.setCodUnidadeAlocado(rSet.getLong("COD_UNIDADE"));
 
