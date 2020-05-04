@@ -29,13 +29,13 @@ public final class ConfiguracaoAfericaoResource {
     @Path("/tipos-veiculo/{codUnidade}")
     public Response updateConfiguracaoTiposVeiculosAferiveis(
             @PathParam("codUnidade") @NotNull final Long codUnidade,
-            @NotNull final List<ConfiguracaoTipoVeiculoAferivel> configuracoes) {
+            @NotNull final List<ConfiguracaoTipoVeiculoAferivelInsercao> configuracoes) {
         return service.updateConfiguracaoTiposVeiculosAferiveis(codUnidade, configuracoes);
     }
 
     @GET
     @Path("/tipos-veiculo/{codUnidade}")
-    public List<ConfiguracaoTipoVeiculoAferivel> getConfiguracoesTipoAfericaoVeiculo(
+    public List<ConfiguracaoTipoVeiculoAferivelListagem> getConfiguracoesTipoAfericaoVeiculo(
             @PathParam("codUnidade") @NotNull final Long codUnidade) {
         return service.getConfiguracoesTipoAfericaoVeiculo(codUnidade);
     }
@@ -57,7 +57,7 @@ public final class ConfiguracaoAfericaoResource {
     @PUT
     @Path("/cronograma-servicos")
     public Response upsertConfiguracoesCronogramaServicos(
-            @HeaderParam("Authorization") String userToken,
+            @HeaderParam("Authorization") final String userToken,
             @NotNull final List<ConfiguracaoCronogramaServicoUpsert> configuracoes) {
         return service.upsertConfiguracoesCronogramaServicos(userToken, configuracoes);
     }
