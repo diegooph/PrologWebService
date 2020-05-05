@@ -3,7 +3,6 @@ package br.com.zalf.prolog.webservice.frota.pneu.afericao;
 import br.com.zalf.prolog.webservice.Filtros;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
-import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.report.ReportTransformer;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
@@ -14,10 +13,12 @@ import br.com.zalf.prolog.webservice.frota.pneu.PneuConverter;
 import br.com.zalf.prolog.webservice.frota.pneu.PneuDao;
 import br.com.zalf.prolog.webservice.frota.pneu._model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.*;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.FormaColetaDadosAfericaoEnum;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.TipoServico;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -415,7 +416,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             stmt.setLong(2, codAfericao);
             stmt.setString(3, TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId());
             rSet = stmt.executeQuery();
-            Afericao afericao;
+            final Afericao afericao;
             if (rSet.next()) {
                 afericao = createAfericaoPlacaResumida(rSet);
                 // TODO: Quando essa busca suportar também a busca de aferições avulsas, isso deverá ser refatorado.
@@ -625,7 +626,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                 + "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
         final List<Pneu> pneusAferidos = afericao.getPneusAferidos();
-        for (Pneu pneu : pneusAferidos) {
+        for (final Pneu pneu : pneusAferidos) {
             stmt.setLong(1, afericao.getCodigo());
             stmt.setLong(2, pneu.getCodigo());
             stmt.setLong(3, codUnidade);
@@ -761,12 +762,13 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                                         @NotNull final Long codAfericao,
                                         @NotNull final List<TipoServico> servicosPendentes) throws Throwable {
         // Se não houver nenhum serviço para inserir/atualizar podemos retornar e poupar uma consulta ao banco.
-        if (servicosPendentes.isEmpty())
+        if (servicosPendentes.isEmpty()) {
             return;
+        }
 
         final List<TipoServico> servicosCadastrados = servicoDao.getServicosCadastradosByPneu(codUnidade, codPneu);
 
-        for (TipoServico servicoPendente : servicosPendentes) {
+        for (final TipoServico servicoPendente : servicosPendentes) {
             // Se o pneu ja tem uma calibragem cadastrada e é gerada uma inspeção posteriormente,
             // convertemos a antiga calibragem para uma inspeção.
             if (servicoPendente.equals(TipoServico.INSPECAO)
@@ -817,11 +819,13 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         afericao.setTipoMedicaoColetadaAfericao(TipoMedicaoColetadaAfericao.fromString(rSet.getString
                 ("TIPO_MEDICAO_COLETADA")));
         afericao.setTempoRealizacaoAfericaoInMillis(rSet.getLong("TEMPO_REALIZACAO"));
-
+        afericao.setFormaColetaDadosAfericao(FormaColetaDadosAfericaoEnum
+                .fromString(rSet.getString("FORMA_COLETA_DADOS")));
         // Colaborador que realizou a aferição.
         final Colaborador colaborador = new Colaborador();
         colaborador.setCpf(rSet.getLong("CPF"));
         colaborador.setNome(rSet.getString("NOME"));
         afericao.setColaborador(colaborador);
     }
+
 }
