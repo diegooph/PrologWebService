@@ -1,8 +1,8 @@
 Change Log
 ==========
-
 ### Features
 * Permite parametrização de aferições e fechamento de serviço manuais, com equipamentos ou ambos (PL-2689)
+* Permite salvar forma de coleta de dados da aferição (PL-2686)
 
 <a name="v1.0.29"></a>
 ## Version [v1.0.29](https://github.com/luizfp/PrologWebService/compare/v1.0.28...v1.0.29) (2020-04-28)
