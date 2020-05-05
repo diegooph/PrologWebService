@@ -6,6 +6,8 @@ import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
 import br.com.zalf.prolog.webservice.frota.pneu.PneuDao;
+import br.com.zalf.prolog.webservice.frota.socorrorota.SocorroRotaConverter;
+import br.com.zalf.prolog.webservice.frota.socorrorota._model.SocorroRotaListagem;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.EixoVeiculo;
@@ -13,10 +15,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.TipoEixoVeicul
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.*;
 
 public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
@@ -205,6 +204,35 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
                 conn.rollback();
             }
             throw t;
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+    @Override
+    public List<VeiculoListagem> buscaVeiculosAtivosByUnidade(@NotNull Long codUnidade, @Nullable Boolean ativos) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_VEICULO_GET_ALL_BY_UNIDADE (F_COD_UNIDADE := ?," +
+                    "F_STATUS_ATIVO := ?); ");
+            stmt.setLong(1, codUnidade);
+
+            // Se for nulo não filtramos por ativos/inativos.
+            if (ativos == null) {
+                stmt.setNull(2, Types.BOOLEAN);
+            } else {
+                stmt.setBoolean(2, ativos);
+            }
+
+            rSet = stmt.executeQuery();
+            final List<VeiculoListagem> veiculos = new ArrayList<>();
+            while (rSet.next()) {
+                veiculos.add(VeiculoConverter.createVeiculoListagem(rSet));
+            }
+            return veiculos;
         } finally {
             close(conn, stmt, rSet);
         }

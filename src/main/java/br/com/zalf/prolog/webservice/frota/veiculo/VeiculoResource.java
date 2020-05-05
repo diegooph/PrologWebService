@@ -82,6 +82,20 @@ public final class VeiculoResource {
             Pilares.Frota.Veiculo.ALTERAR,
             Pilares.Frota.Veiculo.CADASTRAR,
             Pilares.Frota.Checklist.VISUALIZAR_TODOS})
+    @Path("/listagem/by-unidade")
+    public List<VeiculoListagem> buscaVeiculosAtivosByUnidade(@HeaderParam("Authorization") @Required String userToken,
+                                                      @QueryParam("codUnidade") @Required Long codUnidade,
+                                                      @QueryParam("ativos") @Optional Boolean ativos) {
+        return service.buscaVeiculosAtivosByUnidade(userToken, codUnidade, ativos);
+    }
+
+    @Deprecated
+    @GET
+    @Secured(permissions = {
+            Pilares.Frota.Veiculo.VISUALIZAR,
+            Pilares.Frota.Veiculo.ALTERAR,
+            Pilares.Frota.Veiculo.CADASTRAR,
+            Pilares.Frota.Checklist.VISUALIZAR_TODOS})
     @Path("/{codUnidade}")
     public List<Veiculo> getVeiculosAtivosByUnidade(@HeaderParam("Authorization") @Required String userToken,
                                                     @PathParam("codUnidade") @Required Long codUnidade,

@@ -76,6 +76,18 @@ public interface VeiculoDao {
      * @param codUnidade um código
      * @param ativos     indica se queremos buscar os veículos ativos ou não.
      * @return lista de Veiculo
+     * @throws Throwable caso não seja possível realizar a busca
+     */
+    List<VeiculoListagem> buscaVeiculosAtivosByUnidade(@NotNull Long codUnidade, @Nullable Boolean ativos)
+            throws Throwable;
+
+    @Deprecated
+    /**
+     * Busca os veículos ativos de uma determinada unidade
+     *
+     * @param codUnidade um código
+     * @param ativos     indica se queremos buscar os veículos ativos ou não.
+     * @return lista de Veiculo
      * @throws SQLException caso não seja possível realizar a busca
      */
     List<Veiculo> getVeiculosAtivosByUnidade(Long codUnidade, @Nullable Boolean ativos) throws SQLException;
