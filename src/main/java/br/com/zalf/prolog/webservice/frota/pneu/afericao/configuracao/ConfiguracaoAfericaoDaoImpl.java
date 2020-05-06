@@ -42,27 +42,21 @@ public final class ConfiguracaoAfericaoDaoImpl extends DatabaseConnection implem
                     "F_COD_CONFIGURACAO => ?," +
                     "F_COD_UNIDADE => ?," +
                     "F_COD_TIPO_VEICULO => ?," +
-                    "F_PODE_AFERIR_SULCO => ?," +
-                    "F_PODE_AFERIR_PRESSAO => ?," +
-                    "F_PODE_AFERIR_SULCO_PRESSAO => ?," +
                     "F_PODE_AFERIR_ESTEPE => ?," +
-                    "F_FORMA_COLETA_DADOS_PRESSAO => ?::AFERICAO_FORMA_COLETA_DADOS_TYPE," +
-                    "F_FORMA_COLETA_DADOS_SULCO => ?::AFERICAO_FORMA_COLETA_DADOS_TYPE," +
-                    "F_FORMA_COLETA_DADOS_SULCO_PRESSAO => ?::AFERICAO_FORMA_COLETA_DADOS_TYPE," +
-                    "F_FORMA_COLETA_DADOS_FECHAMENTO_SERVICO => ?::AFERICAO_FORMA_COLETA_DADOS_TYPE);");
+                    "F_FORMA_COLETA_DADOS_PRESSAO => ?," +
+                    "F_FORMA_COLETA_DADOS_SULCO => ?," +
+                    "F_FORMA_COLETA_DADOS_SULCO_PRESSAO => ?," +
+                    "F_FORMA_COLETA_DADOS_FECHAMENTO_SERVICO => ?);");
             int totalUpserts = 0;
             for (final ConfiguracaoTipoVeiculoAferivelInsercao configuracao : configuracoes) {
                 bindValueOrNull(stmt, 1, configuracao.getCodConfiguracao(), SqlType.BIGINT);
                 stmt.setLong(2, codUnidade);
                 stmt.setLong(3, configuracao.getCodTipoVeiculo());
-                stmt.setBoolean(4, configuracao.isPodeAferirSulco());
-                stmt.setBoolean(5, configuracao.isPodeAferirPressao());
-                stmt.setBoolean(6, configuracao.isPodeAferirSulcoPressao());
-                stmt.setBoolean(7, configuracao.isPodeAferirEstepe());
-                stmt.setString(8, configuracao.getFormaColetaDadosPressao().toString());
-                stmt.setString(9, configuracao.getFormaColetaDadosSulco().toString());
-                stmt.setString(10, configuracao.getFormaColetaDadosSulcoPressao().toString());
-                stmt.setString(11, configuracao.getFormaColetaDadosFechamentoServico().toString());
+                stmt.setBoolean(4, configuracao.isPodeAferirEstepe());
+                stmt.setString(5, configuracao.getFormaColetaDadosPressao().toString());
+                stmt.setString(6, configuracao.getFormaColetaDadosSulco().toString());
+                stmt.setString(7, configuracao.getFormaColetaDadosSulcoPressao().toString());
+                stmt.setString(8, configuracao.getFormaColetaDadosFechamentoServico().toString());
                 stmt.addBatch();
                 totalUpserts++;
             }
