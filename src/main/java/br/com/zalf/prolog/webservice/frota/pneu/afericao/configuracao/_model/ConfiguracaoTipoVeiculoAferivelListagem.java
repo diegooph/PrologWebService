@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model;
 
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Created on 03/05/18.
@@ -11,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 @Data
 public final class ConfiguracaoTipoVeiculoAferivelListagem {
 
-    @NotNull
+    @Nullable
     private final Long codConfiguracao;
     @NotNull
     private final Long codUnidade;
