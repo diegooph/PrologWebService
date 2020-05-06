@@ -19,16 +19,16 @@ public class AfericaoRealizada {
     private String placaVeiculoAferido;
     private Long codPneuAferido;
     private String numeroFogoPneu;
-    private Double alturaSulcoInterno;
-    private Double alturaSulcoCentralInterno;
-    private Double alturaSulcoCentralExterno;
-    private Double alturaSulcoExterno;
-    private Double pressao;
+    private Double alturaSulcoInternoEmMilimetros;
+    private Double alturaSulcoCentralInternoEmMilimetros;
+    private Double alturaSulcoCentralExternoEmMilimetros;
+    private Double alturaSulcoExternoEmMilimetros;
+    private Double pressaoEmPsi;
     private Long kmVeiculoMomentoAfericao;
     private Long tempoRealizacaoEmSegundos;
     private Integer vidaPneuMomentoAfericao;
     private Integer posicaoPneuMomentoAfericao;
-    private LocalDateTime dataHoraAfericao;
+    private LocalDateTime dataHoraAfericaoEmUTC;
     private TipoMedicaoColetadaAfericao tipoMedicaoColetadaAfericao;
     private TipoProcessoColetaAfericao tipoProcessoColetaAfericao;
 }
