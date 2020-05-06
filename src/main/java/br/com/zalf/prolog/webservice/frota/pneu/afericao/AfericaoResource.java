@@ -85,8 +85,8 @@ public class AfericaoResource {
     @Secured(permissions = Pilares.Frota.Afericao.REALIZAR_AFERICAO_PNEU_AVULSO)
     @Path("/pneus-disponiveis-afericao-avulsa/unidades/{codUnidade}")
     @UsedBy(platforms = Platform.ANDROID)
-    public List<PneuAfericaoAvulsa> getPneusAfericaoAvulsa(@HeaderParam("Authorization") @Required String userToken,
-                                                           @PathParam("codUnidade") Long codUnidade)
+    public List<PneuAfericaoAvulsa> getPneusAfericaoAvulsa(@HeaderParam("Authorization") @Required final String userToken,
+                                                           @PathParam("codUnidade") final Long codUnidade)
             throws ProLogException {
         return service.getPneusAfericaoAvulsa(userToken, codUnidade);
     }
@@ -109,9 +109,9 @@ public class AfericaoResource {
     @UsedBy(platforms = Platform.ANDROID)
     public NovaAfericaoAvulsa getNovaAfericaoAvulsa(
             @HeaderParam("Authorization") @Required final String userToken,
-            @PathParam("codUnidade") @Required Long codUnidade,
-            @PathParam("codPneu") @Required Long codPneu,
-            @QueryParam("tipoAfericao") @Required String tipoAfericao) throws ProLogException {
+            @PathParam("codUnidade") @Required final Long codUnidade,
+            @PathParam("codPneu") @Required final Long codPneu,
+            @QueryParam("tipoAfericao") @Required final String tipoAfericao) throws ProLogException {
         return service.getNovaAfericaoAvulsa(userToken, codUnidade, codPneu, tipoAfericao);
     }
 
@@ -124,14 +124,14 @@ public class AfericaoResource {
             Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
     @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
     public List<AfericaoPlaca> getAfericoesPlacas(
-            @PathParam("codUnidade") Long codUnidade,
-            @PathParam("codTipoVeiculo") String codTipoVeiculo,
-            @PathParam("placaVeiculo") String placaVeiculo,
-            @QueryParam("dataInicial") String dataInicial,
-            @QueryParam("dataFinal") String dataFinal,
-            @QueryParam("limit") int limit,
-            @QueryParam("offset") long offset,
-            @HeaderParam("Authorization") String userToken) throws ProLogException {
+            @PathParam("codUnidade") final Long codUnidade,
+            @PathParam("codTipoVeiculo") final String codTipoVeiculo,
+            @PathParam("placaVeiculo") final String placaVeiculo,
+            @QueryParam("dataInicial") final String dataInicial,
+            @QueryParam("dataFinal") final String dataFinal,
+            @QueryParam("limit") final int limit,
+            @QueryParam("offset") final long offset,
+            @HeaderParam("Authorization") final String userToken) throws ProLogException {
         return service.getAfericoesPlacas(
                 codUnidade,
                 codTipoVeiculo,
@@ -152,11 +152,11 @@ public class AfericaoResource {
             Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
     @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
     public List<AfericaoAvulsa> getAfericoesAvulsas(
-            @PathParam("codUnidade") Long codUnidade,
-            @QueryParam("dataInicial") String dataInicial,
-            @QueryParam("dataFinal") String dataFinal,
-            @QueryParam("limit") int limit,
-            @QueryParam("offset") long offset) throws ProLogException {
+            @PathParam("codUnidade") final Long codUnidade,
+            @QueryParam("dataInicial") final String dataInicial,
+            @QueryParam("dataFinal") final String dataFinal,
+            @QueryParam("limit") final int limit,
+            @QueryParam("offset") final long offset) throws ProLogException {
         return service.getAfericoesAvulsas(codUnidade, dataInicial, dataFinal, limit, offset);
     }
 
@@ -171,7 +171,7 @@ public class AfericaoResource {
             @QueryParam("codColaborador") @Optional final Long codColaborador,
             @QueryParam("dataInicial") @Required final String dataInicial,
             @QueryParam("dataFinal") @Required final String dataFinal,
-            @HeaderParam("Authorization") String userToken) throws ProLogException {
+            @HeaderParam("Authorization") final String userToken) throws ProLogException {
         return service.getAfericoesAvulsas(userToken, codUnidade, codColaborador, dataInicial, dataFinal);
     }
 
@@ -184,9 +184,9 @@ public class AfericaoResource {
             Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
     @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
     @Path("/{codAfericao}/unidades/{codUnidade}")
-    public Afericao getByCod(@PathParam("codAfericao") Long codAfericao,
-                             @PathParam("codUnidade") Long codUnidade,
-                             @HeaderParam("Authorization") String userToken) throws ProLogException {
+    public Afericao getByCod(@PathParam("codAfericao") final Long codAfericao,
+                             @PathParam("codUnidade") final Long codUnidade,
+                             @HeaderParam("Authorization") final String userToken) throws ProLogException {
         return service.getByCod(codUnidade, codAfericao, userToken);
     }
 
@@ -199,7 +199,7 @@ public class AfericaoResource {
             Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
     @Path("/restricoes/{codUnidade}")
     @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
-    public Restricao getRestricaoByCodUnidade(@PathParam("codUnidade") Long codUnidade) throws ProLogException {
+    public Restricao getRestricaoByCodUnidade(@PathParam("codUnidade") final Long codUnidade) throws ProLogException {
         return service.getRestricaoByCodUnidade(codUnidade);
     }
 
@@ -216,14 +216,14 @@ public class AfericaoResource {
             Pilares.Frota.OrdemServico.Pneu.VISUALIZAR,
             Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
     public List<Afericao> DEPRECATED_GET_AFERICOES(
-            @PathParam("codUnidade") Long codUnidade,
-            @PathParam("codTipoVeiculo") String codTipoVeiculo,
-            @PathParam("placaVeiculo") String placaVeiculo,
-            @QueryParam("dataInicial") long dataInicial,
-            @QueryParam("dataFinal") long dataFinal,
-            @QueryParam("limit") int limit,
-            @QueryParam("offset") long offset,
-            @HeaderParam("Authorization") String userToken) throws ProLogException {
+            @PathParam("codUnidade") final Long codUnidade,
+            @PathParam("codTipoVeiculo") final String codTipoVeiculo,
+            @PathParam("placaVeiculo") final String placaVeiculo,
+            @QueryParam("dataInicial") final long dataInicial,
+            @QueryParam("dataFinal") final long dataFinal,
+            @QueryParam("limit") final int limit,
+            @QueryParam("offset") final long offset,
+            @HeaderParam("Authorization") final String userToken) throws ProLogException {
         throw new VersaoAppBloqueadaException("Atualize o aplicativo para poder buscar as aferições realizadas");
     }
 }
