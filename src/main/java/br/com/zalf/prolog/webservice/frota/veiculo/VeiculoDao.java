@@ -78,8 +78,8 @@ public interface VeiculoDao {
      * @return lista de Veiculo
      * @throws Throwable caso não seja possível realizar a busca
      */
-    List<VeiculoListagem> buscaVeiculosAtivosByUnidade(@NotNull Long codUnidade, @Nullable Boolean ativos)
-            throws Throwable;
+    List<VeiculoListagem> buscaVeiculosAtivosByUnidade(@NotNull final Long codUnidade,
+                                                       @Nullable final Boolean ativos) throws Throwable;
 
     @Deprecated
     /**
@@ -201,6 +201,17 @@ public interface VeiculoDao {
      */
     int getTotalVeiculosByUnidade(Long codUnidade, Connection conn) throws SQLException;
 
+    /**
+     * busca placas por tipo
+     *
+     * @param codUnidade código da unidade
+     * @param codTipo    codígo do tipo
+     * @return lista de placas de veículos
+     * @throws Throwable se acontecer erro no banco
+     */
+    List<String> getPlacasByTipo(@NotNull final Long codUnidade,@NotNull final  Long codTipo) throws Throwable;
+
+    @Deprecated
     /**
      * busca os veículo por tipo
      *

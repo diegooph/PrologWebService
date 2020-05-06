@@ -210,7 +210,8 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
     }
 
     @Override
-    public List<VeiculoListagem> buscaVeiculosAtivosByUnidade(@NotNull Long codUnidade, @Nullable Boolean ativos) throws Throwable {
+    public List<VeiculoListagem> buscaVeiculosAtivosByUnidade(@NotNull final Long codUnidade,
+                                                              @Nullable final Boolean ativos) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -658,6 +659,30 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
     }
 
     @Override
+    public List<String> getPlacasByTipo(@NotNull final Long codUnidade,
+                                        @NotNull final Long codTipo) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        List<String> placas = new ArrayList<>();
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM FUNCTION FUNC_VEICULO_GET_PLACAS_BY_TIPO(" +
+                    "F_COD_UNIDADE := ?," +
+                    "F_COD_TIPO := ?);");
+            stmt.setLong(1, codUnidade);
+            stmt.setLong(2, codTipo);
+            rSet = stmt.executeQuery();
+            while (rSet.next()) {
+                placas.add(rSet.getString("PLACA"));
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
+        return placas;
+    }
+
+    @Deprecated
     public List<String> getPlacasVeiculosByTipo(Long codUnidade, String codTipo) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -665,6 +690,8 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         List<String> placas = new ArrayList<>();
         try {
             conn = getConnection();
+            // Não entendi essa parte, se já vem o código do tipo, porque receber ele em String e depois fazer join com
+            // veiculo_tipo sendo que já tem o código do tipo na tabela veículo?
             stmt = conn.prepareStatement("SELECT V.PLACA FROM VEICULO V JOIN VEICULO_TIPO VT ON V.COD_TIPO = VT.CODIGO " +
                     "WHERE V.COD_UNIDADE = ? AND VT.CODIGO::TEXT LIKE ? ORDER BY V.PLACA;");
             stmt.setLong(1, codUnidade);

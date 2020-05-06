@@ -9,6 +9,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.integracao.router.RouterVeiculo;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -23,8 +24,9 @@ public final class VeiculoService {
     @NotNull
     private final VeiculoDao dao = Injection.provideVeiculoDao();
 
-    public List<VeiculoListagem> buscaVeiculosAtivosByUnidade(String userToken, Long codUnidade, Boolean ativos)
-            throws ProLogException {
+    public List<VeiculoListagem> buscaVeiculosAtivosByUnidade(@NotNull final String userToken,
+                                                              @NotNull final Long codUnidade,
+                                                              @Nullable final Boolean ativos) throws ProLogException {
         try {
             return dao.buscaVeiculosAtivosByUnidade(codUnidade, ativos);
         } catch (Throwable e) {
@@ -219,6 +221,21 @@ public final class VeiculoService {
         }
     }
 
+    public List<String> getPlacasByTipo(@NotNull final Long codUnidade,
+                                        @NotNull final Long codTipo,
+                                        @NotNull final String userToken) throws ProLogException {
+        try {
+            return dao.getPlacasByTipo(codUnidade, codTipo);
+        } catch (Throwable t) {
+            Log.e(TAG, String.format("Erro ao buscar os veículos de um tipo específico. \n" +
+                    "codUnidade: %d \n" +
+                    "codTipo: %s \n" +
+                    "userToken: %s", codUnidade, codTipo, userToken), t);
+            throw new RuntimeException("Erro ao buscar placas dos veículos para o tipo: " + codTipo + " e unidade: " + codUnidade);
+        }
+    }
+
+    @Deprecated
     public List<String> getVeiculosByTipo(Long codUnidade, String codTipo, String userToken) {
         try {
             return RouterVeiculo
