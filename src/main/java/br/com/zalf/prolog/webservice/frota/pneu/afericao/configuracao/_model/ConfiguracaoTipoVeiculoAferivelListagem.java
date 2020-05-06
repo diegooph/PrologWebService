@@ -18,9 +18,6 @@ public final class ConfiguracaoTipoVeiculoAferivelListagem {
     private final Long codUnidade;
     @NotNull
     private final ConfiguracaoTipoVeiculoAferivelVeiculoVisualizacao tipoVeiculo;
-    private final boolean podeAferirPressao;
-    private final boolean podeAferirSulco;
-    private final boolean podeAferirSulcoPressao;
     private final boolean podeAferirEstepe;
     @NotNull
     private final FormaColetaDadosAfericaoEnum formaColetaDadosPressao;
