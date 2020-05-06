@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model;
 
+import br.com.zalf.prolog.webservice.commons.util.NullIf;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
@@ -70,7 +71,7 @@ public final class ConfiguracaoConverter {
     public static ConfiguracaoTipoVeiculoAferivelListagem createConfiguracaoTipoVeiculoAfericaoListagem(
             @NotNull final ResultSet rSet) throws Throwable {
         return new ConfiguracaoTipoVeiculoAferivelListagem(
-                rSet.getLong("COD_CONFIGURACAO"),
+                NullIf.equalOrLess(rSet.getLong("COD_CONFIGURACAO"), 0L),
                 rSet.getLong("COD_UNIDADE_CONFIGURACAO"),
                 createConfiguracaoTipoVeiculoAfericaoVeiculoVisualizacao(rSet),
                 rSet.getBoolean("PODE_AFERIR_PRESSAO"),
