@@ -7,8 +7,6 @@ import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.integracao.BaseIntegracaoService;
 import br.com.zalf.prolog.webservice.integracao.api.afericao._model.AfericaoRealizada;
 import br.com.zalf.prolog.webservice.integracao.praxio.IntegracaoPraxioService;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -18,15 +16,13 @@ import java.util.List;
  *
  * @author Natan Rotta (https://github.com/natanrotta)
  */
-@EqualsAndHashCode(callSuper = true)
-@Data
 public final class ApiAfericaoService extends BaseIntegracaoService {
 
     @NotNull
     private static final String TAG = IntegracaoPraxioService.class.getSimpleName();
 
     @NotNull
-    private final ApiAfericaoDao dao;
+    private final ApiAfericaoDao dao = new ApiAfericaoDaoImpl();
 
     @NotNull
     public List<AfericaoRealizada> getAfericoesRealizadas(final String tokenIntegracao,

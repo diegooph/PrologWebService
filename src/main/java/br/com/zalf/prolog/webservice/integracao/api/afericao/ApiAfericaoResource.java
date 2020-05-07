@@ -8,7 +8,6 @@ import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.integracao.api.afericao._model.AfericaoRealizada;
 import br.com.zalf.prolog.webservice.integracao.logger.LogIntegracaoRequest;
 import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
-import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 
 import javax.ws.rs.*;
@@ -20,7 +19,6 @@ import java.util.List;
  *
  * @author Natan Rotta (https://github.com/natanrotta)
  */
-@Data
 @DebugLog
 @Path("/api/afericoes")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
@@ -28,7 +26,7 @@ import java.util.List;
 public class ApiAfericaoResource {
 
     @NotNull
-    private final ApiAfericaoService service;
+    private final ApiAfericaoService service = new ApiAfericaoService();
 
     @GET
     @LogIntegracaoRequest

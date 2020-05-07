@@ -9,7 +9,7 @@ import java.util.List;
  *
  * @author Natan Rotta (https://github.com/natanrotta)
  */
-interface ApiAfericaoDao {
+public interface ApiAfericaoDao {
 
     /**
      * Método responsável por buscar todas as aferições realizadas a partir do {@code codUltimaAfericao} recebido.
