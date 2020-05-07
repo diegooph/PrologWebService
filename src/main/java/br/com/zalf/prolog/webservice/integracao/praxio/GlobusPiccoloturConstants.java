@@ -14,9 +14,18 @@ public final class GlobusPiccoloturConstants {
     // #######                       CONSTANTES UTILIZADAS PARA A INTEGRAÇÃO COM O GLOBUS                        #######
     // #################################################################################################################
     // #################################################################################################################
+    /**
+     * Utilizamos a <code>URL_TESTES</code> em ambiente de testes para evitar com o ambiente de testes da Praxio em
+     * qualquer situação. Para eventos específicos onde queremos testar no ambiente da Praxio, modificaremos essa
+     * validação.
+     */
+    @NotNull
+    private static final String URL_TESTES = BuildConfig.DEBUG
+            ? "http://localhost:8184/bruno.maia/ManutencaoWsTerceiros.asmx"
+            : "http://sp.bgmrodotec.com.br:8184/bruno.maia/ManutencaoWsTerceiros.asmx";
     @NotNull
     public static final String WSDL_LOCATION = BuildConfig.DEBUG
-            ? "http://sp.bgmrodotec.com.br:8184/bruno.maia/ManutencaoWsTerceiros.asmx"
+            ? URL_TESTES
             : "http://erp.piccolotur.com.br:55582/GlobusMais/ManutencaoWsTerceiros.asmx";
     public static final String NAMESPACE = "http://bgmrodotec.com.br/globus5/ManutencaoWsTerceiros";
 

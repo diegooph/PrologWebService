@@ -108,7 +108,7 @@ public final class GlobusPiccoloturConverter {
         osGlobus.setTipoChecklist(checklistItensNokGlobus.getTipoChecklist().asString());
         osGlobus.setDataHoraRealizacaoUtc(
                 DatatypeFactory.newInstance().newXMLGregorianCalendar(
-                        checklistItensNokGlobus.getDataHoraRealizacaoUtc().toString()));
+                        checklistItensNokGlobus.getDataHoraRealizacaoUtc()));
         osGlobus.setUsuario(GlobusPiccoloturConstants.USUARIO_PROLOG_INTEGRACAO);
         osGlobus.setListaPerguntasNokVO(convertPerguntas(factory, checklistItensNokGlobus.getPerguntasNok()));
         return osGlobus;

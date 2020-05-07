@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -141,8 +142,10 @@ public final class ChecklistItensNokGlobus {
     }
 
     @NotNull
-    public LocalDateTime getDataHoraRealizacaoUtc() {
-        return dataHoraRealizacaoUtc;
+    public String getDataHoraRealizacaoUtc() {
+        // Forçamos o retorno no padrão 'ISO_DATE_TIME' para evitar o problema evidenciado na
+        // https://prologapp.atlassian.net/browse/PLI-146
+        return dataHoraRealizacaoUtc.format(DateTimeFormatter.ISO_DATE_TIME);
     }
 
     @NotNull
