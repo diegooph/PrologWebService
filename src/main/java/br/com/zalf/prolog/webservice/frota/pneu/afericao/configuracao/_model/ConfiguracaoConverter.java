@@ -76,9 +76,13 @@ public final class ConfiguracaoConverter {
                 createConfiguracaoTipoVeiculoAfericaoVeiculoVisualizacao(rSet),
                 rSet.getBoolean("PODE_AFERIR_ESTEPE"),
                 FormaColetaDadosAfericaoEnum.fromString(rSet.getString("FORMA_COLETA_DADOS_PRESSAO")),
+                rSet.getString("FORMA_COLETA_DADOS_PRESSAO_LEGIVEL"),
                 FormaColetaDadosAfericaoEnum.fromString(rSet.getString("FORMA_COLETA_DADOS_SULCO")),
+                rSet.getString("FORMA_COLETA_DADOS_SULCO_LEGIVEL"),
                 FormaColetaDadosAfericaoEnum.fromString(rSet.getString("FORMA_COLETA_DADOS_SULCO_PRESSAO")),
-                FormaColetaDadosAfericaoEnum.fromString(rSet.getString("FORMA_COLETA_DADOS_FECHAMENTO_SERVICO")));
+                rSet.getString("FORMA_COLETA_DADOS_SULCO_PRESSAO_LEGIVEL"),
+                FormaColetaDadosAfericaoEnum.fromString(rSet.getString("FORMA_COLETA_DADOS_FECHAMENTO_SERVICO")),
+                rSet.getString("FORMA_COLETA_DADOS_FECHAMENTO_SERVICO_LEGIVEL"));
     }
 
     @NotNull
