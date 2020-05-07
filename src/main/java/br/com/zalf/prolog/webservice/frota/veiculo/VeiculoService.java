@@ -221,21 +221,6 @@ public final class VeiculoService {
         }
     }
 
-    public List<String> getPlacasByTipo(@NotNull final Long codUnidade,
-                                        @NotNull final Long codTipo,
-                                        @NotNull final String userToken) throws ProLogException {
-        try {
-            return dao.getPlacasByTipo(codUnidade, codTipo);
-        } catch (Throwable t) {
-            Log.e(TAG, String.format("Erro ao buscar os veículos de um tipo específico. \n" +
-                    "codUnidade: %d \n" +
-                    "codTipo: %s \n" +
-                    "userToken: %s", codUnidade, codTipo, userToken), t);
-            throw new RuntimeException("Erro ao buscar placas dos veículos para o tipo: " + codTipo + " e unidade: " + codUnidade);
-        }
-    }
-
-    @Deprecated
     public List<String> getVeiculosByTipo(Long codUnidade, String codTipo, String userToken) {
         try {
             return RouterVeiculo

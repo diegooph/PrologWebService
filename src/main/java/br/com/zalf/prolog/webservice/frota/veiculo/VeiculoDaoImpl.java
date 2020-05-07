@@ -658,31 +658,6 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         return total;
     }
 
-    @Override
-    public List<String> getPlacasByTipo(@NotNull final Long codUnidade,
-                                        @NotNull final Long codTipo) throws Throwable {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        List<String> placas = new ArrayList<>();
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNCTION FUNC_VEICULO_GET_PLACAS_BY_TIPO(" +
-                    "F_COD_UNIDADE := ?," +
-                    "F_COD_TIPO := ?);");
-            stmt.setLong(1, codUnidade);
-            stmt.setLong(2, codTipo);
-            rSet = stmt.executeQuery();
-            while (rSet.next()) {
-                placas.add(rSet.getString("PLACA"));
-            }
-        } finally {
-            close(conn, stmt, rSet);
-        }
-        return placas;
-    }
-
-    @Deprecated
     public List<String> getPlacasVeiculosByTipo(Long codUnidade, String codTipo) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
