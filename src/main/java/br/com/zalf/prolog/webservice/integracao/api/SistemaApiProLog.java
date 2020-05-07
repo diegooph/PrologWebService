@@ -49,10 +49,6 @@ public final class SistemaApiProLog extends Sistema {
             @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
         final Long codUnidadePlaca =
                 getIntegradorProLog().getVeiculoByPlaca(placaOriginal, false).getCodUnidadeAlocado();
-        if (codUnidadePlaca == null) {
-            throw new BloqueadoIntegracaoException(
-                    "Não foi possivel encontrar o código da unidade para o veículo informado");
-        }
         if (unidadeEstaComIntegracaoAtiva(codUnidadePlaca)) {
             throw new BloqueadoIntegracaoException(
                     "Para atualizar os dados do veículo utilize o seu sistema de gestão");
