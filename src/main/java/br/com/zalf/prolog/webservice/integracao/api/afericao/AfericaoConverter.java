@@ -29,7 +29,7 @@ public final class AfericaoConverter {
         medicao.setTempoRealizacaoEmSegundos(TimeUnit.MILLISECONDS.toSeconds(
                 rSet.getLong("TEMPO_REALIZACAO_AFERICAO_EM_MILIS")));
         medicao.setVidaPneuMomentoAfericao(rSet.getInt("VIDA_MOMENTO_AFERICAO"));
-        medicao.setDataHoraAfericao(rSet.getObject("DATA_HORA_AFERICAO", LocalDateTime.class));
+        medicao.setDataHoraAfericaoEmUTC(rSet.getObject("DATA_HORA_AFERICAO", LocalDateTime.class));
 
         final TipoMedicaoColetadaAfericao tipoMedicao =
                 TipoMedicaoColetadaAfericao.fromString(rSet.getString("TIPO_MEDICAO_COLETADA"));
@@ -67,11 +67,11 @@ public final class AfericaoConverter {
             @NotNull final ResultSet rSet,
             @NotNull final AfericaoRealizada medicao) throws SQLException {
         medicao.setPlacaVeiculoAferido(rSet.getString("PLACA_VEICULO_AFERIDO"));
-        medicao.setAlturaSulcoInterno(rSet.getDouble("ALTURA_SULCO_INTERNO"));
-        medicao.setAlturaSulcoCentralInterno(rSet.getDouble("ALTURA_SULCO_CENTRAL_INTERNO"));
-        medicao.setAlturaSulcoCentralExterno(rSet.getDouble("ALTURA_SULCO_CENTRAL_EXTERNO"));
-        medicao.setAlturaSulcoExterno(rSet.getDouble("ALTURA_SULCO_EXTERNO"));
-        medicao.setPressao(rSet.getDouble("PRESSAO"));
+        medicao.setAlturaSulcoInternoEmMilimetros(rSet.getDouble("ALTURA_SULCO_INTERNO"));
+        medicao.setAlturaSulcoCentralInternoEmMilimetros(rSet.getDouble("ALTURA_SULCO_CENTRAL_INTERNO"));
+        medicao.setAlturaSulcoCentralExternoEmMilimetros(rSet.getDouble("ALTURA_SULCO_CENTRAL_EXTERNO"));
+        medicao.setAlturaSulcoExternoEmMilimetros(rSet.getDouble("ALTURA_SULCO_EXTERNO"));
+        medicao.setPressaoEmPsi(rSet.getDouble("PRESSAO"));
         medicao.setKmVeiculoMomentoAfericao(rSet.getLong("KM_VEICULO_MOMENTO_AFERICAO"));
         medicao.setPosicaoPneuMomentoAfericao(rSet.getInt("POSICAO_PNEU_MOMENTO_AFERICAO"));
         return medicao;
@@ -82,10 +82,10 @@ public final class AfericaoConverter {
             @NotNull final ResultSet rSet,
             @NotNull final AfericaoRealizada medicao) throws SQLException {
         medicao.setPlacaVeiculoAferido(rSet.getString("PLACA_VEICULO_AFERIDO"));
-        medicao.setAlturaSulcoInterno(rSet.getDouble("ALTURA_SULCO_INTERNO"));
-        medicao.setAlturaSulcoCentralInterno(rSet.getDouble("ALTURA_SULCO_CENTRAL_INTERNO"));
-        medicao.setAlturaSulcoCentralExterno(rSet.getDouble("ALTURA_SULCO_CENTRAL_EXTERNO"));
-        medicao.setAlturaSulcoExterno(rSet.getDouble("ALTURA_SULCO_EXTERNO"));
+        medicao.setAlturaSulcoInternoEmMilimetros(rSet.getDouble("ALTURA_SULCO_INTERNO"));
+        medicao.setAlturaSulcoCentralInternoEmMilimetros(rSet.getDouble("ALTURA_SULCO_CENTRAL_INTERNO"));
+        medicao.setAlturaSulcoCentralExternoEmMilimetros(rSet.getDouble("ALTURA_SULCO_CENTRAL_EXTERNO"));
+        medicao.setAlturaSulcoExternoEmMilimetros(rSet.getDouble("ALTURA_SULCO_EXTERNO"));
         medicao.setKmVeiculoMomentoAfericao(rSet.getLong("KM_VEICULO_MOMENTO_AFERICAO"));
         medicao.setPosicaoPneuMomentoAfericao(rSet.getInt("POSICAO_PNEU_MOMENTO_AFERICAO"));
         return medicao;
@@ -96,7 +96,7 @@ public final class AfericaoConverter {
             @NotNull final ResultSet rSet,
             @NotNull final AfericaoRealizada medicao) throws SQLException {
         medicao.setPlacaVeiculoAferido(rSet.getString("PLACA_VEICULO_AFERIDO"));
-        medicao.setPressao(rSet.getDouble("PRESSAO"));
+        medicao.setPressaoEmPsi(rSet.getDouble("PRESSAO"));
         medicao.setKmVeiculoMomentoAfericao(rSet.getLong("KM_VEICULO_MOMENTO_AFERICAO"));
         medicao.setPosicaoPneuMomentoAfericao(rSet.getInt("POSICAO_PNEU_MOMENTO_AFERICAO"));
         return medicao;
@@ -106,10 +106,10 @@ public final class AfericaoConverter {
     private static AfericaoRealizada createMedicaoPneuAvulsoSulco(
             @NotNull final ResultSet rSet,
             @NotNull final AfericaoRealizada medicao) throws SQLException {
-        medicao.setAlturaSulcoInterno(rSet.getDouble("ALTURA_SULCO_INTERNO"));
-        medicao.setAlturaSulcoCentralInterno(rSet.getDouble("ALTURA_SULCO_CENTRAL_INTERNO"));
-        medicao.setAlturaSulcoCentralExterno(rSet.getDouble("ALTURA_SULCO_CENTRAL_EXTERNO"));
-        medicao.setAlturaSulcoExterno(rSet.getDouble("ALTURA_SULCO_EXTERNO"));
+        medicao.setAlturaSulcoInternoEmMilimetros(rSet.getDouble("ALTURA_SULCO_INTERNO"));
+        medicao.setAlturaSulcoCentralInternoEmMilimetros(rSet.getDouble("ALTURA_SULCO_CENTRAL_INTERNO"));
+        medicao.setAlturaSulcoCentralExternoEmMilimetros(rSet.getDouble("ALTURA_SULCO_CENTRAL_EXTERNO"));
+        medicao.setAlturaSulcoExternoEmMilimetros(rSet.getDouble("ALTURA_SULCO_EXTERNO"));
         return medicao;
     }
 }
