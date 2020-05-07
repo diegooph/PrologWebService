@@ -22,10 +22,18 @@ public final class ConfiguracaoTipoVeiculoAferivelListagem {
     @NotNull
     private final FormaColetaDadosAfericaoEnum formaColetaDadosPressao;
     @NotNull
+    private final String formaColetaDadosPressaoLegivel;
+    @NotNull
     private final FormaColetaDadosAfericaoEnum formaColetaDadosSulco;
+    @NotNull
+    private final String formaColetaDadosSulcoLegivel;
     @NotNull
     private final FormaColetaDadosAfericaoEnum formaColetaDadosSulcoPressao;
     @NotNull
+    private final String formaColetaDadosSulcoPressaoLegivel;
+    @NotNull
     private final FormaColetaDadosAfericaoEnum formaColetaDadosFechamentoServico;
+    @NotNull
+    private final String formaColetaDadosFechamentoServicoLegivel;
 
 }
