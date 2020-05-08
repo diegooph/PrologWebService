@@ -25,11 +25,13 @@ import static com.google.common.truth.Truth.assertThat;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class ConfiguracaoAfericaoTest extends BaseTest {
 
+    @Override
     @BeforeAll
     public void initialize() throws Throwable {
         DatabaseManager.init();
     }
 
+    @Override
     @AfterAll
     public void destroy() {
         DatabaseManager.finish();
@@ -42,9 +44,6 @@ public class ConfiguracaoAfericaoTest extends BaseTest {
         final ConfiguracaoTipoVeiculoAferivelInsercao config = new ConfiguracaoTipoVeiculoAferivelInsercao(
                 266L,
                 13L,
-                true,
-                true,
-                true,
                 true,
                 FormaColetaDadosAfericaoEnum.EQUIPAMENTO_MANUAL,
                 FormaColetaDadosAfericaoEnum.EQUIPAMENTO_MANUAL,
@@ -77,10 +76,7 @@ public class ConfiguracaoAfericaoTest extends BaseTest {
         final ConfiguracaoTipoVeiculoAferivelInsercao config = new ConfiguracaoTipoVeiculoAferivelInsercao(null,
                 63L,
                 false,
-                false,
-                false,
-                false,
-                FormaColetaDadosAfericaoEnum.EQUIPAMENTO,
+                FormaColetaDadosAfericaoEnum.BLOQUEADO,
                 FormaColetaDadosAfericaoEnum.EQUIPAMENTO,
                 FormaColetaDadosAfericaoEnum.EQUIPAMENTO,
                 FormaColetaDadosAfericaoEnum.EQUIPAMENTO);
@@ -99,9 +95,6 @@ public class ConfiguracaoAfericaoTest extends BaseTest {
         final List<ConfiguracaoTipoVeiculoAferivelInsercao> configs = new ArrayList<>();
         final ConfiguracaoTipoVeiculoAferivelInsercao config = new ConfiguracaoTipoVeiculoAferivelInsercao(null,
                 63L,
-                false,
-                false,
-                false,
                 false,
                 FormaColetaDadosAfericaoEnum.EQUIPAMENTO,
                 FormaColetaDadosAfericaoEnum.EQUIPAMENTO,
