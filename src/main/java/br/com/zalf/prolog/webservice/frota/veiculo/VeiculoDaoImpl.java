@@ -43,7 +43,7 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
                     "F_COD_TIPO := ?) AS CODIGO;");
             stmt.setLong(1, veiculo.getCodUnidadeAlocado());
             stmt.setString(2, veiculo.getPlacaVeiculo().toUpperCase());
-            stmt.setString(3, veiculo.getNumeroFrotaVeiculo());
+            stmt.setString(3, veiculo.getIdentificadorFrotaVeiculo());
             stmt.setLong(4, veiculo.getKmAtualVeiculo());
             stmt.setLong(5, veiculo.getCodModeloVeiculo());
             stmt.setLong(6, veiculo.getCodTipoVeiculo());
@@ -240,56 +240,6 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
     }
 
     @Override
-    public List<Veiculo> getVeiculosAtivosByUnidade(Long codUnidade, @Nullable Boolean ativos)
-            throws SQLException {
-        final List<Veiculo> veiculos = new ArrayList<>();
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT " +
-                    "V.*, " +
-                    "R.CODIGO AS COD_REGIONAL_ALOCADO, " +
-                    "MV.NOME AS MODELO, " +
-                    "EV.NOME AS EIXOS, " +
-                    "EV.DIANTEIRO, " +
-                    "EV.TRASEIRO,EV.CODIGO AS COD_EIXOS, " +
-                    "TV.NOME AS TIPO, " +
-                    "MAV.NOME AS MARCA, " +
-                    "MAV.CODIGO AS COD_MARCA  " +
-                    "FROM VEICULO V " +
-                    "JOIN MODELO_VEICULO MV ON MV.CODIGO = V.COD_MODELO " +
-                    "JOIN EIXOS_VEICULO EV ON EV.CODIGO = V.COD_EIXOS " +
-                    "JOIN VEICULO_TIPO TV ON TV.CODIGO = V.COD_TIPO " +
-                    "JOIN MARCA_VEICULO MAV ON MAV.CODIGO = MV.COD_MARCA " +
-                    "JOIN UNIDADE U ON U.CODIGO = V.COD_UNIDADE " +
-                    "JOIN REGIONAL R ON U.COD_REGIONAL = R.CODIGO " +
-                    "WHERE V.COD_UNIDADE = ? " +
-                    "AND (? = 1 OR V.STATUS_ATIVO = ?) " +
-                    "ORDER BY V.PLACA");
-            stmt.setLong(1, codUnidade);
-
-            // Se for nulo não filtramos por ativos/inativos.
-            if (ativos == null) {
-                stmt.setInt(2, 1);
-                stmt.setBoolean(3, false);
-            } else {
-                stmt.setInt(2, 0);
-                stmt.setBoolean(3, ativos);
-            }
-
-            rSet = stmt.executeQuery();
-            while (rSet.next()) {
-                veiculos.add(createVeiculo(rSet));
-            }
-        } finally {
-            close(conn, stmt, rSet);
-        }
-        return veiculos;
-    }
-
-    @Override
     public List<Veiculo> getVeiculosAtivosByUnidadeByColaborador(Long cpf) throws SQLException {
         List<Veiculo> veiculos = new ArrayList<>();
         Connection conn = null;
@@ -328,6 +278,13 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         return veiculos;
     }
 
+    @Override
+    public VeiculoVisualizacao buscaVeiculoByCodigoComPneus(@NotNull final Long codVeiculo, final boolean withPneus) throws Throwable {
+//TODO FAZER AQUI
+        return null;
+    }
+
+    @Deprecated
     @NotNull
     @Override
     public Veiculo getVeiculoByPlaca(@NotNull final Connection conn,
@@ -983,5 +940,56 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         } finally {
             close(conn, stmt, rSet);
         }
+    }
+
+    @Deprecated
+    @Override
+    public List<Veiculo> getVeiculosAtivosByUnidade(Long codUnidade, @Nullable Boolean ativos)
+            throws SQLException {
+        final List<Veiculo> veiculos = new ArrayList<>();
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT " +
+                    "V.*, " +
+                    "R.CODIGO AS COD_REGIONAL_ALOCADO, " +
+                    "MV.NOME AS MODELO, " +
+                    "EV.NOME AS EIXOS, " +
+                    "EV.DIANTEIRO, " +
+                    "EV.TRASEIRO,EV.CODIGO AS COD_EIXOS, " +
+                    "TV.NOME AS TIPO, " +
+                    "MAV.NOME AS MARCA, " +
+                    "MAV.CODIGO AS COD_MARCA  " +
+                    "FROM VEICULO V " +
+                    "JOIN MODELO_VEICULO MV ON MV.CODIGO = V.COD_MODELO " +
+                    "JOIN EIXOS_VEICULO EV ON EV.CODIGO = V.COD_EIXOS " +
+                    "JOIN VEICULO_TIPO TV ON TV.CODIGO = V.COD_TIPO " +
+                    "JOIN MARCA_VEICULO MAV ON MAV.CODIGO = MV.COD_MARCA " +
+                    "JOIN UNIDADE U ON U.CODIGO = V.COD_UNIDADE " +
+                    "JOIN REGIONAL R ON U.COD_REGIONAL = R.CODIGO " +
+                    "WHERE V.COD_UNIDADE = ? " +
+                    "AND (? = 1 OR V.STATUS_ATIVO = ?) " +
+                    "ORDER BY V.PLACA");
+            stmt.setLong(1, codUnidade);
+
+            // Se for nulo não filtramos por ativos/inativos.
+            if (ativos == null) {
+                stmt.setInt(2, 1);
+                stmt.setBoolean(3, false);
+            } else {
+                stmt.setInt(2, 0);
+                stmt.setBoolean(3, ativos);
+            }
+
+            rSet = stmt.executeQuery();
+            while (rSet.next()) {
+                veiculos.add(createVeiculo(rSet));
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
+        return veiculos;
     }
 }

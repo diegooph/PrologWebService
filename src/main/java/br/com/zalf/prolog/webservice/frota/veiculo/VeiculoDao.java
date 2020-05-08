@@ -81,17 +81,6 @@ public interface VeiculoDao {
     List<VeiculoListagem> buscaVeiculosAtivosByUnidade(@NotNull final Long codUnidade,
                                                        @Nullable final Boolean ativos) throws Throwable;
 
-    @Deprecated
-    /**
-     * Busca os veículos ativos de uma determinada unidade
-     *
-     * @param codUnidade um código
-     * @param ativos     indica se queremos buscar os veículos ativos ou não.
-     * @return lista de Veiculo
-     * @throws SQLException caso não seja possível realizar a busca
-     */
-    List<Veiculo> getVeiculosAtivosByUnidade(Long codUnidade, @Nullable Boolean ativos) throws SQLException;
-
     /**
      * Busca os veículos ativos de uma determinada unidade
      *
@@ -102,6 +91,9 @@ public interface VeiculoDao {
     List<Veiculo> getVeiculosAtivosByUnidadeByColaborador(Long cpf)
             throws SQLException;
 
+    VeiculoVisualizacao buscaVeiculoByCodigoComPneus(@NotNull final Long codVeiculo, @NotNull boolean withPneus) throws Throwable;
+
+    @Deprecated
     /**
      * Método para buscar um {@link Veiculo} através da {@code placa}.
      *
@@ -322,4 +314,15 @@ public interface VeiculoDao {
     @NotNull
     Long getCodVeiculoByPlaca(@NotNull final Connection conn,
                               @NotNull final String placaVeiculo) throws Throwable;
+
+    @Deprecated
+    /**
+     * Busca os veículos ativos de uma determinada unidade
+     *
+     * @param codUnidade um código
+     * @param ativos     indica se queremos buscar os veículos ativos ou não.
+     * @return lista de Veiculo
+     * @throws SQLException caso não seja possível realizar a busca
+     */
+    List<Veiculo> getVeiculosAtivosByUnidade(Long codUnidade, @Nullable Boolean ativos) throws SQLException;
 }

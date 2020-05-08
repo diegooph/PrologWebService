@@ -17,7 +17,7 @@ public final class VeiculoVisualizacao {
     @NotNull
     private final String placaVeiculo;
     @Nullable
-    private final String numeroFrotaVeiculo;
+    private final String identificadorFrotaVeiculo;
     @NotNull
     private final Long codMarcaVeiculo;
     @NotNull
@@ -29,7 +29,7 @@ public final class VeiculoVisualizacao {
     public VeiculoVisualizacao(@NotNull final Long codEmpresaAlocado,
                                @NotNull final Long codUnidadeAlocado,
                                @NotNull final String placaVeiculo,
-                               @Nullable final String numeroFrotaVeiculo,
+                               @Nullable final String identificadorFrotaVeiculo,
                                @NotNull final Long codMarcaVeiculo,
                                @NotNull final Long codModeloVeiculo,
                                @NotNull final Long codTipoVeiculo,
@@ -41,7 +41,7 @@ public final class VeiculoVisualizacao {
         this.codModeloVeiculo = codModeloVeiculo;
         this.codTipoVeiculo = codTipoVeiculo;
         this.kmAtualVeiculo = kmAtualVeiculo;
-        this.numeroFrotaVeiculo = numeroFrotaVeiculo;
+        this.identificadorFrotaVeiculo = identificadorFrotaVeiculo;
     }
 
     @NotNull
@@ -59,8 +59,8 @@ public final class VeiculoVisualizacao {
         return placaVeiculo;
     }
 
-    public String getNumeroFrotaVeiculo() {
-        return numeroFrotaVeiculo;
+    public String getIdentificadorFrotaVeiculo() {
+        return identificadorFrotaVeiculo;
     }
 
     @NotNull

@@ -89,20 +89,6 @@ public final class VeiculoResource {
         return service.buscaVeiculosAtivosByUnidade(userToken, codUnidade, ativos);
     }
 
-    @Deprecated
-    @GET
-    @Secured(permissions = {
-            Pilares.Frota.Veiculo.VISUALIZAR,
-            Pilares.Frota.Veiculo.ALTERAR,
-            Pilares.Frota.Veiculo.CADASTRAR,
-            Pilares.Frota.Checklist.VISUALIZAR_TODOS})
-    @Path("/{codUnidade}")
-    public List<Veiculo> getVeiculosAtivosByUnidade(@HeaderParam("Authorization") @Required String userToken,
-                                                    @PathParam("codUnidade") @Required Long codUnidade,
-                                                    @QueryParam("ativos") @Optional Boolean ativos) {
-        return service.getVeiculosAtivosByUnidade(userToken, codUnidade, ativos);
-    }
-
     @GET
     @Secured(permissions = {Pilares.Frota.Veiculo.VISUALIZAR,
             Pilares.Frota.Veiculo.ALTERAR,
@@ -207,6 +193,25 @@ public final class VeiculoResource {
             targetVersionCode = 68,
             versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
             actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
+    public VeiculoVisualizacao buscaVeiculoByCodigoComPneus(@HeaderParam("Authorization") String userToken,
+                                             @QueryParam("codVeiculo") Long codVeiculo) {
+        return service.buscaVeiculoByCodigoComPneus(userToken, codVeiculo, true);
+    }
+    @Deprecated
+    @GET
+    @Secured(permissions = {Pilares.Frota.Veiculo.VISUALIZAR,
+            Pilares.Frota.Veiculo.CADASTRAR,
+            Pilares.Frota.Veiculo.ALTERAR,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_VEICULO_ESTOQUE,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_VEICULO_ESTOQUE,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_DESCARTE})
+    @Path("/com-pneus/{placa}")
+    @AppVersionCodeHandler(
+            implementation = DefaultAppVersionCodeHandler.class,
+            targetVersionCode = 68,
+            versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
+            actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
     public Veiculo getVeiculoByPlacaComPneus(@HeaderParam("Authorization") String userToken,
                                              @PathParam("placa") String placa) {
         return service.getVeiculoByPlaca(userToken, placa, true);
@@ -242,5 +247,24 @@ public final class VeiculoResource {
     @Path("/marcaModelos/{codEmpresa}")
     public List<Marca> getMarcaModeloVeiculoByCodEmpresa(@PathParam("codEmpresa") Long codEmpresa) {
         return service.getMarcaModeloVeiculoByCodEmpresa(codEmpresa);
+    }
+
+    /**
+     * @deprecated at 2020-05-07.
+     * <p>
+     * Este método foi depreciado pois um novo foi criado: {@link #buscaVeiculosAtivosByUnidade(String, Long, Boolean)}
+     */
+    @Deprecated
+    @GET
+    @Secured(permissions = {
+            Pilares.Frota.Veiculo.VISUALIZAR,
+            Pilares.Frota.Veiculo.ALTERAR,
+            Pilares.Frota.Veiculo.CADASTRAR,
+            Pilares.Frota.Checklist.VISUALIZAR_TODOS})
+    @Path("/{codUnidade}")
+    public List<Veiculo> getVeiculosAtivosByUnidade(@HeaderParam("Authorization") @Required String userToken,
+                                                    @PathParam("codUnidade") @Required Long codUnidade,
+                                                    @QueryParam("ativos") @Optional Boolean ativos) {
+        return service.getVeiculosAtivosByUnidade(userToken, codUnidade, ativos);
     }
 }
