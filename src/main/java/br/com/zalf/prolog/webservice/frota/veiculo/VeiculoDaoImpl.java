@@ -3,11 +3,8 @@ package br.com.zalf.prolog.webservice.frota.veiculo;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
-import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
 import br.com.zalf.prolog.webservice.frota.pneu.PneuDao;
-import br.com.zalf.prolog.webservice.frota.socorrorota.SocorroRotaConverter;
-import br.com.zalf.prolog.webservice.frota.socorrorota._model.SocorroRotaListagem;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.EixoVeiculo;
@@ -210,7 +207,7 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
     }
 
     @Override
-    public List<VeiculoListagem> buscaVeiculosAtivosByUnidade(@NotNull final Long codUnidade,
+    public List<VeiculoCompleto> buscaVeiculosAtivosByUnidade(@NotNull final Long codUnidade,
                                                               @Nullable final Boolean ativos) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -229,7 +226,7 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
             }
 
             rSet = stmt.executeQuery();
-            final List<VeiculoListagem> veiculos = new ArrayList<>();
+            final List<VeiculoCompleto> veiculos = new ArrayList<>();
             while (rSet.next()) {
                 veiculos.add(VeiculoConverter.createVeiculoListagem(rSet));
             }
@@ -279,9 +276,29 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
     }
 
     @Override
-    public VeiculoVisualizacao buscaVeiculoByCodigoComPneus(@NotNull final Long codVeiculo, final boolean withPneus) throws Throwable {
-//TODO FAZER AQUI
-        return null;
+    public VeiculoCompleto buscaVeiculoByCodigoComPneus(@NotNull final Long codVeiculo, final boolean withPneus) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM FUNCTION FUNC_VEICULO_GET_VEICULO_COMPLETO(" +
+                    "F_COD_VEICULO := ?);");
+            stmt.setLong(1, codVeiculo);
+            if (rSet.next()) {
+                VeiculoCompleto veiculoCompleto = VeiculoConverter.createVeiculoListagem(rSet);
+                //TODO: Fazer essa parte.
+              /*  if (withPneus) {
+                    final PneuDao pneuDao = Injection.providePneuDao();
+                    veiculo.setListPneus(pneuDao.getPneusByPlaca(placa));
+                }*/
+                return veiculoCompleto;
+            } else {
+                throw new Throwable("Erro ao finalizar esta solitação de socorro");
+            }
+        }finally {
+            close(conn, stmt, rSet);
+        }
     }
 
     @Deprecated

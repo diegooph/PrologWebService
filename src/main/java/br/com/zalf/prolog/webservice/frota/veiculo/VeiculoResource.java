@@ -83,7 +83,7 @@ public final class VeiculoResource {
             Pilares.Frota.Veiculo.CADASTRAR,
             Pilares.Frota.Checklist.VISUALIZAR_TODOS})
     @Path("/busca/byUnidade")
-    public List<VeiculoListagem> buscaVeiculosAtivosByUnidade(@HeaderParam("Authorization") @Required String userToken,
+    public List<VeiculoCompleto> buscaVeiculosAtivosByUnidade(@HeaderParam("Authorization") @Required String userToken,
                                                               @QueryParam("codUnidade") @Required Long codUnidade,
                                                               @QueryParam("ativos") @Optional Boolean ativos) {
         return service.buscaVeiculosAtivosByUnidade(userToken, codUnidade, ativos);
@@ -193,10 +193,26 @@ public final class VeiculoResource {
             targetVersionCode = 68,
             versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
             actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
-    public VeiculoVisualizacao buscaVeiculoByCodigoComPneus(@HeaderParam("Authorization") String userToken,
+    public VeiculoCompleto buscaVeiculoByCodigoComPneus(@HeaderParam("Authorization") String userToken,
                                              @QueryParam("codVeiculo") Long codVeiculo) {
         return service.buscaVeiculoByCodigoComPneus(userToken, codVeiculo, true);
     }
+
+    @GET
+    @Secured(permissions = {Pilares.Frota.Veiculo.VISUALIZAR,
+            Pilares.Frota.Veiculo.CADASTRAR,
+            Pilares.Frota.Veiculo.ALTERAR})
+    @Path("/sem-pneus/{placa}")
+    public Veiculo getVeiculoByPlacaSemPneus(@HeaderParam("Authorization") String userToken,
+                                             @PathParam("placa") String placa) {
+        return service.getVeiculoByPlaca(userToken, placa, false);
+    }
+
+    /**
+     * @deprecated at 2020-05-07.
+     * <p>
+     * Este método foi depreciado pois um novo foi criado: {@link #buscaVeiculoByCodigoComPneus(String, Long)}
+     */
     @Deprecated
     @GET
     @Secured(permissions = {Pilares.Frota.Veiculo.VISUALIZAR,
@@ -215,16 +231,6 @@ public final class VeiculoResource {
     public Veiculo getVeiculoByPlacaComPneus(@HeaderParam("Authorization") String userToken,
                                              @PathParam("placa") String placa) {
         return service.getVeiculoByPlaca(userToken, placa, true);
-    }
-
-    @GET
-    @Secured(permissions = {Pilares.Frota.Veiculo.VISUALIZAR,
-            Pilares.Frota.Veiculo.CADASTRAR,
-            Pilares.Frota.Veiculo.ALTERAR})
-    @Path("/sem-pneus/{placa}")
-    public Veiculo getVeiculoByPlacaSemPneus(@HeaderParam("Authorization") String userToken,
-                                             @PathParam("placa") String placa) {
-        return service.getVeiculoByPlaca(userToken, placa, false);
     }
 
     /**

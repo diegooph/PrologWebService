@@ -24,7 +24,7 @@ public final class VeiculoService {
     @NotNull
     private final VeiculoDao dao = Injection.provideVeiculoDao();
 
-    public List<VeiculoListagem> buscaVeiculosAtivosByUnidade(@NotNull final String userToken,
+    public List<VeiculoCompleto> buscaVeiculosAtivosByUnidade(@NotNull final String userToken,
                                                               @NotNull final Long codUnidade,
                                                               @Nullable final Boolean ativos) throws ProLogException {
         try {
@@ -37,7 +37,7 @@ public final class VeiculoService {
         }
     }
 
-    public VeiculoVisualizacao buscaVeiculoByCodigoComPneus(@NotNull final String userToken,
+    public VeiculoCompleto buscaVeiculoByCodigoComPneus(@NotNull final String userToken,
                                                    @NotNull final Long codVeiculo,
                                                    final boolean withPneus) throws ProLogException {
         try {

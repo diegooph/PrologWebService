@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.veiculo;
 
-import br.com.zalf.prolog.webservice.frota.veiculo.model.VeiculoListagem;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.VeiculoCompleto;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
@@ -13,8 +13,8 @@ import java.time.LocalDateTime;
  * @author Thais Francisco (https://github.com/thaisksf)
  */
 public class VeiculoConverter {
-    public static VeiculoListagem createVeiculoListagem(@NotNull final ResultSet rSet) throws SQLException {
-        return new VeiculoListagem(
+    public static VeiculoCompleto createVeiculoListagem(@NotNull final ResultSet rSet) throws SQLException {
+        return new VeiculoCompleto(
                 rSet.getString("PLACA"),
                 rSet.getLong("COD_UNIDADE"),
                 rSet.getString("KM"),
@@ -33,7 +33,6 @@ public class VeiculoConverter {
                 rSet.getString("EIXOS"),
                 rSet.getString("DIANTEIRO"),
                 rSet.getString("TRASEIRO"),
-                rSet.getLong("COD_EIXOS"),
                 rSet.getString("TIPO"),
                 rSet.getString("MARCA"),
                 rSet.getLong("COD_MARCA"));
