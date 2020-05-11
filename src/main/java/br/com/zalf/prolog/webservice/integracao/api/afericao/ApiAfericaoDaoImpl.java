@@ -3,7 +3,7 @@ package br.com.zalf.prolog.webservice.integracao.api.afericao;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.TipoMedicaoColetadaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.TipoProcessoColetaAfericao;
-import br.com.zalf.prolog.webservice.integracao.api.afericao._model.AfericaoRealizada;
+import br.com.zalf.prolog.webservice.integracao.api.afericao._model.ApiPneuMedicaoRealizada;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
@@ -22,23 +22,33 @@ final class ApiAfericaoDaoImpl extends DatabaseConnection implements ApiAfericao
 
     @NotNull
     @Override
-    public List<AfericaoRealizada> getAfericoesRealizadas(@NotNull final String tokenIntegracao,
-                                                          @NotNull final Long codUltimaAfericao) throws Throwable {
-        final List<AfericaoRealizada> afericoes = new ArrayList<>();
+    public List<ApiPneuMedicaoRealizada> getAfericoesRealizadas(final @NotNull String tokenIntegracao,
+                                                                final Long codigoProcessoAfericao,
+                                                                final LocalDateTime dataHoraUltimaAtualizacaoUtc) throws Throwable {
+        final List<ApiPneuMedicaoRealizada> afericoes = new ArrayList<>();
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM " +
-                    "INTEGRACAO.FUNC_INTEGRACAO_BUSCA_AFERICOES_REALIZADAS_EMPRESA(?, ?);");
-            stmt.setString(1, tokenIntegracao);
-            stmt.setLong(2, codUltimaAfericao);
+            // Busca pelo código da aferição
+            if (codigoProcessoAfericao != null) {
+                stmt = conn.prepareStatement("SELECT * FROM " +
+                        "INTEGRACAO.FUNC_INTEGRACAO_BUSCA_AFERICOES_REALIZADAS_POR_COD_AFERICAO(?, ?);");
+                stmt.setString(1, tokenIntegracao);
+                stmt.setLong(2, codigoProcessoAfericao);
+                // Busca pelo horário da última aferição
+            } else {
+                stmt = conn.prepareStatement("SELECT * FROM " +
+                        "INTEGRACAO.FUNC_INTEGRACAO_BUSCA_AFERICOES_REALIZADAS_POR_DATA_HORA(?, ?);");
+                stmt.setString(1, tokenIntegracao);
+                stmt.setObject(2, dataHoraUltimaAtualizacaoUtc);
+            }
             rSet = stmt.executeQuery();
             while (rSet.next()) {
-                AfericaoRealizada afericaoRealizada = new AfericaoRealizada();
+                ApiPneuMedicaoRealizada afericaoRealizada = new ApiPneuMedicaoRealizada();
                 afericaoRealizada.
-                        setCodigo(rSet.getLong("COD_AFERICAO"));
+                        setCodigoProcessoAfericao(rSet.getLong("COD_AFERICAO"));
                 afericaoRealizada.
                         setCodUnidadeAfericao(rSet.getLong("COD_UNIDADE_AFERICAO"));
                 afericaoRealizada.

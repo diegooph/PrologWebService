@@ -12,8 +12,8 @@ import java.time.LocalDateTime;
  * @author Natan Rotta (https://github.com/natanrotta)
  */
 @Data
-public class AfericaoRealizada {
-    private Long codigo;
+public class ApiPneuMedicaoRealizada {
+    private Long codigoProcessoAfericao;
     private Long codUnidadeAfericao;
     private String cpfColaborador;
     private String placaVeiculoAferido;
