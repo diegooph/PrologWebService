@@ -27,7 +27,7 @@ public final class ApiAfericaoService extends BaseIntegracaoService {
     private final ApiAfericaoDao dao = new ApiAfericaoDaoImpl();
 
     @NotNull
-    public List<ApiPneuMedicaoRealizada> getAfericoesRealizadas(final String tokenIntegracao,
+    public List<ApiPneuMedicaoRealizada> getAfericoesRealizadas(@NotNull final String tokenIntegracao,
                                                                 final Long codigoProcessoAfericao,
                                                                 final String dataHoraUltimaAtualizacaoUtc) {
         try {
