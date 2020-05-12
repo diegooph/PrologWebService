@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-public class VeiculoCompleto {
+public class VeiculoListagem {
 
     @NotNull
     private final String placa;
@@ -55,7 +55,7 @@ public class VeiculoCompleto {
     @NotNull
     private final Long codMarca;
 
-    public VeiculoCompleto(@NotNull final String placa,
+    public VeiculoListagem(@NotNull final String placa,
                            @NotNull final Long codUnidade,
                            @NotNull final String km,
                            @NotNull final String statusAtivo,
