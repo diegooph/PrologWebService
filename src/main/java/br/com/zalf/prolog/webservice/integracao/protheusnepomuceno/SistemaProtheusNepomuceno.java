@@ -51,7 +51,6 @@ public final class SistemaProtheusNepomuceno extends Sistema {
     public void updateTipoVeiculo(@NotNull final TipoVeiculo tipoVeiculo) throws Throwable {
         // Validamos se o codAuxiliar está dentro dos padrões. Uma exception personalizada é lançada caso não estiver
         // de acordo.
-
         validateCodAuxiliar(tipoVeiculo.getCodEmpresa(), tipoVeiculo.getCodigo(), tipoVeiculo.getCodAuxiliar());
         // Usamos o fluxo padrão do Prolog, apenas validamos antes
         getIntegradorProLog().updateTipoVeiculo(tipoVeiculo);
