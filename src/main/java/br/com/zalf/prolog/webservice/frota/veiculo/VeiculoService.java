@@ -24,7 +24,7 @@ public final class VeiculoService {
     @NotNull
     private final VeiculoDao dao = Injection.provideVeiculoDao();
 
-    public List<VeiculoCompleto> buscaVeiculosAtivosByUnidade(@NotNull final String userToken,
+    public List<VeiculoListagem> buscaVeiculosAtivosByUnidade(@NotNull final String userToken,
                                                               @NotNull final Long codUnidade,
                                                               @Nullable final Boolean ativos) throws ProLogException {
         try {
@@ -37,16 +37,14 @@ public final class VeiculoService {
         }
     }
 
-    public VeiculoCompleto buscaVeiculoByCodigoComPneus(@NotNull final String userToken,
-                                                   @NotNull final Long codVeiculo,
-                                                   final boolean withPneus) throws ProLogException {
+    public VeiculoVisualizacao buscaVeiculoByCodigo(@NotNull final String userToken,
+                                                        @NotNull final Long codVeiculo) throws ProLogException {
         try {
-            return dao.buscaVeiculoByCodigoComPneus(codVeiculo, withPneus);
+            return dao.buscaVeiculoByCodigo(codVeiculo);
         } catch (Throwable t) {
             Log.e(TAG, String.format("Erro ao buscar o veículo. \n" +
                     "código: %s \n" +
-                    "withPneus: %b \n" +
-                    "userToken: %s", codVeiculo, withPneus, userToken), t);
+                    "userToken: %s", codVeiculo, userToken), t);
             return null;
         }
     }

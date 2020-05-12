@@ -78,7 +78,7 @@ public interface VeiculoDao {
      * @return lista de Veiculo
      * @throws Throwable caso não seja possível realizar a busca
      */
-    List<VeiculoCompleto> buscaVeiculosAtivosByUnidade(@NotNull final Long codUnidade,
+    List<VeiculoListagem> buscaVeiculosAtivosByUnidade(@NotNull final Long codUnidade,
                                                        @Nullable final Boolean ativos) throws Throwable;
 
     /**
@@ -92,15 +92,13 @@ public interface VeiculoDao {
             throws SQLException;
 
     /**
-     * Método para buscar um {@link VeiculoCompleto} através do {@code codVeiculo}.
+     * Método para buscar um {@link VeiculoListagem} através do {@code codVeiculo}.
      *
-     * @param codVeiculo código do {@link VeiculoCompleto}.
-     * @param withPneus  Retornar o {@link VeiculoCompleto} com seus pneus.
-     * @return O {@link VeiculoCompleto} contendo as informações.
+     * @param codVeiculo código do {@link VeiculoListagem}.
+     * @return O {@link VeiculoListagem} contendo as informações.
      * @throws Throwable Caso aconteça algum erro no banco.
      */
-    VeiculoCompleto buscaVeiculoByCodigoComPneus(@NotNull final Long codVeiculo,
-                                                 boolean withPneus) throws Throwable;
+    VeiculoVisualizacao buscaVeiculoByCodigo(@NotNull final Long codVeiculo) throws Throwable;
 
     @Deprecated
     /**

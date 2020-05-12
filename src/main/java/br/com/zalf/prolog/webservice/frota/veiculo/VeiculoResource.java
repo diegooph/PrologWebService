@@ -83,7 +83,7 @@ public final class VeiculoResource {
             Pilares.Frota.Veiculo.CADASTRAR,
             Pilares.Frota.Checklist.VISUALIZAR_TODOS})
     @Path("/busca/byUnidade")
-    public List<VeiculoCompleto> buscaVeiculosAtivosByUnidade(@HeaderParam("Authorization") @Required String userToken,
+    public List<VeiculoListagem> buscaVeiculosAtivosByUnidade(@HeaderParam("Authorization") @Required String userToken,
                                                               @QueryParam("codUnidade") @Required Long codUnidade,
                                                               @QueryParam("ativos") @Optional Boolean ativos) {
         return service.buscaVeiculosAtivosByUnidade(userToken, codUnidade, ativos);
@@ -193,9 +193,9 @@ public final class VeiculoResource {
             targetVersionCode = 68,
             versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
             actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
-    public VeiculoCompleto buscaVeiculoByCodigoComPneus(@HeaderParam("Authorization") String userToken,
-                                             @QueryParam("codVeiculo") Long codVeiculo) {
-        return service.buscaVeiculoByCodigoComPneus(userToken, codVeiculo, true);
+    public VeiculoVisualizacao buscaVeiculoByCodigo(@HeaderParam("Authorization") String userToken,
+                                                        @QueryParam("codVeiculo") Long codVeiculo) {
+        return service.buscaVeiculoByCodigo(userToken, codVeiculo);
     }
 
     @GET

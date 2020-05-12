@@ -207,7 +207,7 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
     }
 
     @Override
-    public List<VeiculoCompleto> buscaVeiculosAtivosByUnidade(@NotNull final Long codUnidade,
+    public List<VeiculoListagem> buscaVeiculosAtivosByUnidade(@NotNull final Long codUnidade,
                                                               @Nullable final Boolean ativos) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -226,7 +226,7 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
             }
 
             rSet = stmt.executeQuery();
-            final List<VeiculoCompleto> veiculos = new ArrayList<>();
+            final List<VeiculoListagem> veiculos = new ArrayList<>();
             while (rSet.next()) {
                 veiculos.add(VeiculoConverter.createVeiculoListagem(rSet));
             }
@@ -276,7 +276,7 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
     }
 
     @Override
-    public VeiculoCompleto buscaVeiculoByCodigoComPneus(@NotNull final Long codVeiculo, final boolean withPneus) throws Throwable {
+    public VeiculoVisualizacao buscaVeiculoByCodigo(@NotNull final Long codVeiculo) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -286,13 +286,13 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
                     "F_COD_VEICULO := ?);");
             stmt.setLong(1, codVeiculo);
             if (rSet.next()) {
-                VeiculoCompleto veiculoCompleto = VeiculoConverter.createVeiculoListagem(rSet);
+                VeiculoVisualizacao veiculoVisualizacao = VeiculoConverter.createVeiculoVisualizacao(rSet);
                 //TODO: Fazer essa parte.
               /*  if (withPneus) {
                     final PneuDao pneuDao = Injection.providePneuDao();
                     veiculo.setListPneus(pneuDao.getPneusByPlaca(placa));
                 }*/
-                return veiculoCompleto;
+                return veiculoVisualizacao;
             } else {
                 throw new Throwable("Erro ao finalizar esta solitação de socorro");
             }
