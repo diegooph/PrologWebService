@@ -99,6 +99,9 @@ public final class IntegracaoPraxioService extends BaseIntegracaoService {
             final String tokenIntegracao,
             final VeiculoTransferenciaPraxio veiculoTransferenciaPraxio) throws ProLogException {
         try {
+            if (veiculoTransferenciaPraxio.getCpfColaboradorRealizacaoTransferencia().isEmpty()) {
+                throw new GenericException("O CPF do colaborador deve ser informado na transferência de veículo");
+            }
             ensureValidToken(tokenIntegracao, TAG);
             dao.transferirVeiculoPraxio(tokenIntegracao, veiculoTransferenciaPraxio);
             return new SuccessResponseIntegracao("Veículo do Globus transferido com sucesso");

@@ -77,10 +77,10 @@ public final class ApiCadastroPneuService extends BaseIntegracaoService {
             final String tokenIntegracao,
             final ApiPneuTransferencia pneuTransferencia) throws ProLogException {
         try {
-            ensureValidToken(tokenIntegracao, TAG);
             if (pneuTransferencia.getCpfColaboradorRealizacaoTransferencia().isEmpty()) {
-                throw new GenericException("O CPF do colaborador deve ser informado");
+                throw new GenericException("O CPF do colaborador deve ser informado na transferência de pneu");
             }
+            ensureValidToken(tokenIntegracao, TAG);
             return new SuccessResponseIntegracao(
                     "Transferência de pneus realizada com sucesso no Sistema ProLog",
                     dao.transferirPneu(tokenIntegracao, pneuTransferencia));
