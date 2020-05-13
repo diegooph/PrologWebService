@@ -7,7 +7,6 @@ import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosA
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosAfericaoRealizadaPlaca;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosTipoVeiculoConfiguracaoAfericao;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosUnidadeRestricao;
-import com.google.common.collect.BiMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -148,7 +147,7 @@ public interface SistemaProtheusNepomucenoDao {
      * @throws Throwable Se algum erro ocorrer.
      */
     @NotNull
-    BiMap<String, Integer> getMapeamentoPosicoesProlog(
+    Map<String, Integer> getMapeamentoPosicoesProlog(
             @NotNull final Connection conn,
             @NotNull final Long codEmpresa,
             @NotNull final String codEstruturaVeiculo) throws Throwable;

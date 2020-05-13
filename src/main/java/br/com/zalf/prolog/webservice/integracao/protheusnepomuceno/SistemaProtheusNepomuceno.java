@@ -7,7 +7,6 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.MetodoIntegrado;
-import br.com.zalf.prolog.webservice.integracao.PosicaoPneuMapper;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.*;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.error.ProtheusNepomucenoException;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.data.ProtheusNepomucenoRequesterImpl;
@@ -214,7 +213,7 @@ public final class SistemaProtheusNepomuceno extends Sistema {
                                 "Por favor, solicite que esta esta estrutura seja cadastrada no Prolog para " +
                                 "realizar a aferição.");
             }
-            final PosicaoPneuMapper posicaoPneuMapper = new PosicaoPneuMapper(
+            final ProtheusNepomucenoPosicaoPneuMapper posicaoPneuMapper = new ProtheusNepomucenoPosicaoPneuMapper(
                     sistema.getMapeamentoPosicoesProlog(conn, codEmpresa, veiculoAfericao.getCodEstruturaVeiculo()));
 
             // Garantimos, antes de criar a nova aferição, que todas as posições estão mapeadas. Caso não estiverem,

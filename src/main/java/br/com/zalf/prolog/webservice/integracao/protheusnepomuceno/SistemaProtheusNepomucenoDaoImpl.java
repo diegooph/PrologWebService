@@ -12,8 +12,6 @@ import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosA
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosTipoVeiculoConfiguracaoAfericao;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosUnidadeRestricao;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -317,7 +315,7 @@ public final class SistemaProtheusNepomucenoDaoImpl extends DatabaseConnection i
 
     @NotNull
     @Override
-    public BiMap<String, Integer> getMapeamentoPosicoesProlog(
+    public Map<String, Integer> getMapeamentoPosicoesProlog(
             @NotNull final Connection conn,
             @NotNull final Long codEmpresa,
             @NotNull final String codEstruturaVeiculo) throws Throwable {
@@ -331,19 +329,15 @@ public final class SistemaProtheusNepomucenoDaoImpl extends DatabaseConnection i
             stmt.setLong(1, codEmpresa);
             stmt.setString(2, codEstruturaVeiculo);
             rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                final BiMap<String, Integer> posicoesPneusProlog = HashBiMap.create();
-                do {
-                    posicoesPneusProlog.put(
-                            // Utilizamos o 'COD_AUXILIAR_NOMENCLATURA_CLIENTE' pois as posições dos pneus estão
-                            // mapeadas no cod_auxiliar para a empresa Nepomuceno.
-                            rSet.getString("COD_AUXILIAR_NOMENCLATURA_CLIENTE"),
-                            rSet.getInt("POSICAO_PROLOG"));
-                } while (rSet.next());
-                return posicoesPneusProlog;
-            } else {
-                return HashBiMap.create();
+            final Map<String, Integer> posicoesPneusProlog = new HashMap<>();
+            while (rSet.next()) {
+                posicoesPneusProlog.put(
+                        // Utilizamos o 'COD_AUXILIAR_NOMENCLATURA_CLIENTE' pois as posições dos pneus estão
+                        // mapeadas no cod_auxiliar para a empresa Nepomuceno.
+                        rSet.getString("COD_AUXILIAR_NOMENCLATURA_CLIENTE"),
+                        rSet.getInt("POSICAO_PROLOG"));
             }
+            return posicoesPneusProlog;
         } finally {
             close(stmt, rSet);
         }
