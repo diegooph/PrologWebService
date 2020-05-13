@@ -66,6 +66,12 @@ public final class SistemaGlobusPiccolotur extends Sistema {
                                 final boolean deveAbrirOs) throws Throwable {
         final DatabaseConnectionProvider connectionProvider = new DatabaseConnectionProvider();
         Connection conn = null;
+
+        if (unidadeEstaComIntegracaoAtiva(checklistNew.getCodUnidade())) {
+            throw new BloqueadoIntegracaoException("A unidade de código " + checklistNew.getCodUnidade() +
+                    " não está integrada");
+        }
+
         try {
             // Devemos enviar para o Globus apenas o modelo de checklist existe na tabela de integração.
             // Verifica se modelo informado existe na tabela.
@@ -125,6 +131,11 @@ public final class SistemaGlobusPiccolotur extends Sistema {
             @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener,
             final boolean statusAtivo,
             @NotNull final String token) throws Throwable {
+        if (unidadeEstaComIntegracaoAtiva(modeloChecklist.getCodUnidade())) {
+            throw new BloqueadoIntegracaoException("A unidade de código " + modeloChecklist.getCodUnidade() +
+                    " não está integrada");
+        }
+
         // Ignoramos o statusAtivo repassado pois queremos forçar que o modelo de checklist tenha o statusAtivo = false.
         return getIntegradorProLog().insertModeloChecklist(modeloChecklist, checklistOfflineListener, false, token);
     }
@@ -136,6 +147,11 @@ public final class SistemaGlobusPiccolotur extends Sistema {
                                       @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener,
                                       final boolean podeMudarCodigoContextoPerguntasEAlternativas,
                                       @NotNull final String token) throws Throwable {
+        if (unidadeEstaComIntegracaoAtiva(modeloChecklist.getCodUnidade())) {
+            throw new BloqueadoIntegracaoException("A unidade de código " + modeloChecklist.getCodUnidade() +
+                    " não está integrada");
+        }
+
         // Ignoramos a propriedade sobrescreverPerguntasAlternativas pois queremos que para essa integração todas as
         // edições de perguntas e alternativas sobrescrevam os valores antigos sem alterar os códigos existentes.
         getIntegradorProLog()
