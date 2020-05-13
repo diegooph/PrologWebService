@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.integracao.praxio;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
@@ -185,6 +186,10 @@ public final class IntegracaoPraxioService extends BaseIntegracaoService {
     public SuccessResponseIntegracao resolverMultiplosItens(
             final String tokenIntegracao,
             final List<ItemResolvidoGlobus> itensResolvidos) throws ProLogException {
+        //Realiza validação para CPF
+        for (ItemResolvidoGlobus item : itensResolvidos) {
+            validaCpfColaborador(item.getCpfColaboradorResolucao());
+        }
         try {
             if (tokenIntegracao == null) {
                 throw new GenericException("Um Token deve ser fornecido");
@@ -503,6 +508,12 @@ public final class IntegracaoPraxioService extends BaseIntegracaoService {
                         itemResolvido.getCodItemResolvidoGlobus());
                 throw new GenericException(msg);
             }
+        }
+    }
+
+    private void validaCpfColaborador(final String cpdColaborador) throws GenericException {
+        if (StringUtils.isNullOrEmpty(StringUtils.trimToNull(cpdColaborador))) {
+            throw new GenericException("O CPF do colaborador deve ser informado no fechamento de O.S");
         }
     }
 }
