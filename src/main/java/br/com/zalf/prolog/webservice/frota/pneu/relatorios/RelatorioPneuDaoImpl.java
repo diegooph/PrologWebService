@@ -965,6 +965,26 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         }
     }
 
+    @Override
+    public void getCustoPorKmCsv(@NotNull final OutputStream outputStream,
+                                 @NotNull final List<Long> codUnidades) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = getCustoPorKmStmt(conn, codUnidades);
+            rSet = stmt.executeQuery();
+            new CsvWriter
+                    .Builder(outputStream)
+                    .withCsvReport(new RelatorioCustoPorKm(rSet))
+                    .build()
+                    .write();
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
     @NotNull
     private PreparedStatement getPneusComDesgasteIrregularStmt(@NotNull final Connection conn,
                                                                @NotNull final List<Long> codUnidades,
@@ -1110,6 +1130,16 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
         stmt.setObject(2, dataInicial);
         stmt.setObject(3, dataFinal);
+        return stmt;
+    }
+
+    @NotNull
+    private PreparedStatement getCustoPorKmStmt(@NotNull final Connection conn,
+                                                               @NotNull final List<Long> codUnidades) throws Throwable {
+        final PreparedStatement stmt = conn.prepareStatement(
+                "SELECT * FROM FUNC_PNEU_RELATORIO_CUSTO_POR_KM(F_COD_UNIDADES := ?);");
+        stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
+
         return stmt;
     }
 

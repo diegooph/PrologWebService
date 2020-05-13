@@ -495,4 +495,13 @@ public interface RelatorioPneuDao {
                              @NotNull final List<Long> codUnidades,
                              @NotNull final String userToken) throws Throwable;
 
+    /**
+     * Método para gerar um relatório contendo o custo por km por marcas e modelos de pneus e bandas.
+     *
+     * @param outputStream - Arquivo onde os dados serão armazenados para retornar.
+     * @param codUnidades Códigos das unidades pela quais as informações serão filtradas.
+     * @throws Throwable - Se algum erro ocorrer na busca dos dados.
+     */
+    void getCustoPorKmCsv(@NotNull final OutputStream outputStream,
+                          @NotNull final List<Long> codUnidades) throws Throwable;
 }

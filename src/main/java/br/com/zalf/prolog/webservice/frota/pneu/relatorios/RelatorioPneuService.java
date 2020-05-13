@@ -400,4 +400,14 @@ public class RelatorioPneuService {
             throw new RuntimeException(throwable);
         }
     }
+
+    public void getCustoPorKmCsv(@NotNull final OutputStream outputStream,
+                                 @NotNull final List<Long> codUnidades) {
+        try {
+            dao.getCustoPorKmCsv(outputStream, codUnidades);
+        } catch (final Throwable throwable) {
+            Log.e(TAG, "Erro ao buscar o relatório de custo por KM (CSV)", throwable);
+            throw new RuntimeException(throwable);
+        }
+    }
 }
