@@ -154,6 +154,15 @@ public final class ProtheusNepomucenoConverter {
         return cronogramaAfericao;
     }
 
+    public static CronogramaAfericao createEmptyCronogramaAfericaoProlog() {
+        final CronogramaAfericao cronogramaAfericao = new CronogramaAfericao();
+        cronogramaAfericao.setModelosPlacasAfericao(new ArrayList<>());
+        // É necessário realizar as chamadas de cálculos para setar algumas variáveis.
+        cronogramaAfericao.calcularQuatidadeSulcosPressaoOk(true);
+        cronogramaAfericao.calcularTotalVeiculos();
+        return cronogramaAfericao;
+    }
+
     @NotNull
     public static Veiculo createVeiculoProlog(@NotNull final Long codUnidadeProlog,
                                               @NotNull final Short codDiagramaProlog,

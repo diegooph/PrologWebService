@@ -22,6 +22,20 @@ import java.util.Map;
  */
 public interface SistemaProtheusNepomucenoDao {
     /**
+     * Dado uma lista códigos de unidades, este método retorna os valores da lista que possuem cod_auxiliar mapeados
+     * no banco de dados. Caso nenhum código de unidade possuir cod_auxiliar uma lista vazia será retornada.
+     *
+     * @param conn        Conexão para buscar os dados no banco de dados.
+     * @param codUnidades Lista de códigos de unidades para verificar.
+     * @return Uma lista contendo os códigos de unidades que possuem cod_auxiliar. A lista estará vazia caso nenhum dos
+     * códigos de unidades possuir cod_auxiliar.
+     * @throws Throwable Se algum erro acontecer.
+     */
+    @NotNull
+    List<Long> getApenasUnidadesMapeadas(@NotNull final Connection conn,
+                                         @NotNull final List<Long> codUnidades) throws Throwable;
+
+    /**
      * Método utilizado para inserir uma aferição e os valores no banco de dados.
      *
      * @param conn       Conexão que será utilizada para inserir a aferição.

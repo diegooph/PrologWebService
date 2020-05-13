@@ -18,11 +18,16 @@ public final class PosicaoPneuMapper {
     }
 
     public int mapToProLog(@NotNull final String posicao) {
-        Preconditions.checkNotNull(posicao, "posicao não pode ser null!");
-        Preconditions.checkArgument(posicoesPneuMapper.containsKey(posicao),
-                "posicao " + posicao + " não mapeada para as posições utilizadas no ProLog");
+        return mapToProLog(posicao, true);
+    }
 
-        return posicoesPneuMapper.get(posicao);
+    public int mapToProLog(@NotNull final String posicao, final boolean deveEstourar) {
+        if (deveEstourar) {
+            Preconditions.checkArgument(posicoesPneuMapper.containsKey(posicao),
+                    "posicao " + posicao + " não mapeada para as posições utilizadas no ProLog");
+        }
+        final Integer posicaoProlog = posicoesPneuMapper.get(posicao);
+        return posicaoProlog == null ? 0 : posicaoProlog;
     }
 
     @NotNull

@@ -20,10 +20,7 @@ import org.jetbrains.annotations.Nullable;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static br.com.zalf.prolog.webservice.commons.util.StatementUtils.executeBatchAndValidate;
 
@@ -34,6 +31,31 @@ import static br.com.zalf.prolog.webservice.commons.util.StatementUtils.executeB
  */
 public final class SistemaProtheusNepomucenoDaoImpl extends DatabaseConnection implements SistemaProtheusNepomucenoDao {
     private static final int EXECUTE_BATCH_SUCCESS = 0;
+
+    @NotNull
+    @Override
+    public List<Long> getApenasUnidadesMapeadas(@NotNull final Connection conn,
+                                                @NotNull final List<Long> codUnidades) throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = conn.prepareStatement("SELECT U.CODIGO AS COD_UNIDADE " +
+                    "FROM UNIDADE U " +
+                    "WHERE U.COD_AUXILIAR IS NOT NULL " +
+                    "AND U.CODIGO = ANY (?);");
+            stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
+            rSet = stmt.executeQuery();
+            final List<Long> codUnidadesMapeadas = new ArrayList<>();
+            if (rSet.next()) {
+                do {
+                    codUnidadesMapeadas.add(rSet.getLong("COD_UNIDADE"));
+                } while (rSet.next());
+            }
+            return codUnidadesMapeadas;
+        } finally {
+            close(stmt, rSet);
+        }
+    }
 
     @NotNull
     @Override
@@ -170,8 +192,7 @@ public final class SistemaProtheusNepomucenoDaoImpl extends DatabaseConnection i
                 } while (rSet.next());
                 return tipoVeiculoConfiguracao;
             } else {
-                throw new SQLException("Nenhuma configuração de tipo de veículo encontrarada para as unidades:\n" +
-                        "codUnidades: " + codUnidades.toString());
+                return Collections.emptyMap();
             }
         } finally {
             close(stmt, rSet);
@@ -187,10 +208,11 @@ public final class SistemaProtheusNepomucenoDaoImpl extends DatabaseConnection i
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            stmt = conn.prepareStatement("select *" +
-                    "from integracao.func_pneu_afericao_get_infos_placas_aferidas(f_cod_empresa => ?, " +
-                    "                                                             f_placas_afericao => ?, " +
-                    "                                                             f_data_hora_atual => ?);");
+            stmt = conn.prepareStatement("select * " +
+                    "from integracao.func_pneu_afericao_get_infos_placas_aferidas(" +
+                    "f_cod_empresa => ?, " +
+                    "f_placas_afericao => ?, " +
+                    "f_data_hora_atual => ?);");
             stmt.setLong(1, codEmpresa);
             stmt.setArray(2, PostgresUtils.listToArray(conn, SqlType.TEXT, placasNepomuceno));
             stmt.setObject(3, Now.localDateTimeUtc());
@@ -320,9 +342,7 @@ public final class SistemaProtheusNepomucenoDaoImpl extends DatabaseConnection i
                 } while (rSet.next());
                 return posicoesPneusProlog;
             } else {
-                throw new SQLException("Nenhuma posição mapeada para a estrutura do veículo:\n" +
-                        "codEmpresa:" + codEmpresa + "\n" +
-                        "codEstruturaVeiculo: " + codEstruturaVeiculo);
+                return HashBiMap.create();
             }
         } finally {
             close(stmt, rSet);

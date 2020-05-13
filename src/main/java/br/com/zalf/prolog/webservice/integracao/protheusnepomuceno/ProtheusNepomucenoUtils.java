@@ -41,7 +41,7 @@ final class ProtheusNepomucenoUtils {
         final List<String> posicaoNaoMapeadas =
                 posicoesPneusAplicados
                         .stream()
-                        .filter(posicao -> posicaoPneuMapper.mapToProLog(posicao) <= 0)
+                        .filter(posicao -> posicaoPneuMapper.mapToProLog(posicao, false) <= 0)
                         .collect(Collectors.toList());
 
         if (!posicaoNaoMapeadas.isEmpty()) {
