@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Created on 12/05/2020.
@@ -53,6 +54,7 @@ public class VeiculoVisualizacao {
     private final String marca;
     @NotNull
     private final Long codMarca;
+    List<VeiculoVisualizacaoPneu> pneusVeiculo;
 
     public VeiculoVisualizacao(@NotNull final String placa,
                                @NotNull final Long codUnidade,
@@ -96,6 +98,10 @@ public class VeiculoVisualizacao {
         this.tipo = tipo;
         this.marca = marca;
         this.codMarca = codMarca;
+    }
+
+    public void setPneusVeiculo(List<VeiculoVisualizacaoPneu> pneusVeiculo) {
+        this.pneusVeiculo = pneusVeiculo;
     }
 
     public String getPlaca() {
@@ -180,5 +186,9 @@ public class VeiculoVisualizacao {
 
     public Long getCodMarca() {
         return codMarca;
+    }
+
+    public List<VeiculoVisualizacaoPneu> getPneusVeiculo() {
+        return pneusVeiculo;
     }
 }
