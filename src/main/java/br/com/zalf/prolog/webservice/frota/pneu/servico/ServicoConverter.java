@@ -1,12 +1,12 @@
 package br.com.zalf.prolog.webservice.frota.pneu.servico;
 
-import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu._model.PneuComum;
 import br.com.zalf.prolog.webservice.frota.pneu._model.PneuEstoque;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Sulcos;
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.*;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
@@ -39,7 +39,7 @@ final class ServicoConverter {
     static Servico createServico(@NotNull final ResultSet resultSet,
                                  final boolean incluirAtributosEspecificos) throws SQLException {
         final TipoServico tipo = TipoServico.fromString(resultSet.getString("TIPO_SERVICO"));
-        Servico servico;
+        final Servico servico;
         switch (tipo) {
             case CALIBRAGEM:
                 // O serviço de calibragem não possui nenhum atributo específico.

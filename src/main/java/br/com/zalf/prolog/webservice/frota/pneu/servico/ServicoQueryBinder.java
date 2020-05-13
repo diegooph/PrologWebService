@@ -335,7 +335,8 @@ final class ServicoQueryBinder {
                 + "CPF_MECANICO = ?, "
                 + "PSI_APOS_CONSERTO = ?, "
                 + "KM_MOMENTO_CONSERTO = ?, "
-                + "TEMPO_REALIZACAO_MILLIS = ? "
+                + "TEMPO_REALIZACAO_MILLIS = ?, "
+                + "FORMA_COLETA_DADOS_FECHAMENTO = ? "
                 + "WHERE CODIGO = ? "
                 + "AND TIPO_SERVICO = ? "
                 + "AND DATA_HORA_RESOLUCAO IS NULL;");
@@ -344,8 +345,9 @@ final class ServicoQueryBinder {
         stmt.setDouble(3, servico.getPressaoColetadaFechamento());
         stmt.setLong(4, servico.getKmVeiculoMomentoFechamento());
         stmt.setLong(5, servico.getTempoRealizacaoServicoInMillis());
-        stmt.setLong(6, servico.getCodigo());
-        stmt.setString(7, servico.getTipoServico().asString());
+        stmt.setString(6, servico.getFormaColetaDadosFechamentoAsStringOrNull());
+        stmt.setLong(7, servico.getCodigo());
+        stmt.setString(8, servico.getTipoServico().asString());
         return stmt;
     }
 
@@ -359,7 +361,8 @@ final class ServicoQueryBinder {
                 + "PSI_APOS_CONSERTO = ?, "
                 + "KM_MOMENTO_CONSERTO = ?, "
                 + "COD_ALTERNATIVA = ?, "
-                + "TEMPO_REALIZACAO_MILLIS = ? "
+                + "TEMPO_REALIZACAO_MILLIS = ?, "
+                + "FORMA_COLETA_DADOS_FECHAMENTO = ? "
                 + "WHERE CODIGO = ? "
                 + "AND TIPO_SERVICO = ? "
                 + "AND DATA_HORA_RESOLUCAO IS NULL;");
@@ -369,8 +372,9 @@ final class ServicoQueryBinder {
         stmt.setLong(4, servico.getKmVeiculoMomentoFechamento());
         stmt.setLong(5, servico.getAlternativaSelecionada().codigo);
         stmt.setLong(6, servico.getTempoRealizacaoServicoInMillis());
-        stmt.setLong(7, servico.getCodigo());
-        stmt.setString(8, servico.getTipoServico().asString());
+        stmt.setString(7, servico.getFormaColetaDadosFechamentoAsStringOrNull());
+        stmt.setLong(8, servico.getCodigo());
+        stmt.setString(9, servico.getTipoServico().asString());
         return stmt;
     }
 
@@ -385,7 +389,8 @@ final class ServicoQueryBinder {
                 + "COD_PROCESSO_MOVIMENTACAO = ?, "
                 + "PSI_APOS_CONSERTO = ?, "
                 + "TEMPO_REALIZACAO_MILLIS = ?, "
-                + "COD_PNEU_INSERIDO = ? "
+                + "COD_PNEU_INSERIDO = ?, "
+                + "FORMA_COLETA_DADOS_FECHAMENTO = ? "
                 + "WHERE CODIGO = ? "
                 + "AND TIPO_SERVICO = ? "
                 + "AND DATA_HORA_RESOLUCAO IS NULL;");
@@ -397,8 +402,9 @@ final class ServicoQueryBinder {
         stmt.setDouble(5, servico.getPressaoColetadaFechamento());
         stmt.setLong(6, servico.getTempoRealizacaoServicoInMillis());
         stmt.setLong(7, servico.getPneuNovo().getCodigo());
-        stmt.setLong(8, servico.getCodigo());
-        stmt.setString(9, servico.getTipoServico().asString());
+        stmt.setString(8, servico.getFormaColetaDadosFechamentoAsStringOrNull());
+        stmt.setLong(9, servico.getCodigo());
+        stmt.setString(10, servico.getTipoServico().asString());
         return stmt;
     }
 
