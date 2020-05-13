@@ -287,11 +287,7 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
             stmt.setLong(1, codVeiculo);
             if (rSet.next()) {
                 VeiculoVisualizacao veiculoVisualizacao = VeiculoConverter.createVeiculoVisualizacao(rSet);
-                //TODO: Fazer essa parte.
-              /*  if (withPneus) {
-                    final PneuDao pneuDao = Injection.providePneuDao();
-                    veiculo.setListPneus(pneuDao.getPneusByPlaca(placa));
-                }*/
+                veiculoVisualizacao.setPneusVeiculo(buscaPneusByCodigoVeiculo(conn, codVeiculo));
                 return veiculoVisualizacao;
             } else {
                 throw new Throwable("Erro ao finalizar esta solitação de socorro");
@@ -299,6 +295,24 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         }finally {
             close(conn, stmt, rSet);
         }
+    }
+
+    private List<VeiculoVisualizacaoPneu> buscaPneusByCodigoVeiculo(@NotNull final Connection conn,
+                                                                    @NotNull final Long codVeiculo) throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        final List<VeiculoVisualizacaoPneu> listVeiculoVisualizacaoPneu = new ArrayList<>();
+        try {
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_GET_PNEU_BY_COD_VEICULO(F_COD_VEICULO := ?);");
+            stmt.setLong(1, codVeiculo);
+            rSet = stmt.executeQuery();
+            while (rSet.next()) {
+                listVeiculoVisualizacaoPneu.add(VeiculoConverter.createVeiculoVisualizacaoPneu(rSet));
+            }
+        } finally {
+            close(stmt, rSet);
+        }
+        return listVeiculoVisualizacaoPneu;
     }
 
     @Deprecated
