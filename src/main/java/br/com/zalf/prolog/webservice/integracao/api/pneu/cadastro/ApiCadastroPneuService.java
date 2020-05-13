@@ -77,6 +77,7 @@ public final class ApiCadastroPneuService extends BaseIntegracaoService {
             final ApiPneuTransferencia pneuTransferencia) throws ProLogException {
         try {
             ensureValidToken(tokenIntegracao, TAG);
+            validaCpfColaborador(pneuTransferencia.getCpfColaboradorRealizacaoTransferencia());
             return new SuccessResponseIntegracao(
                     "Transferência de pneus realizada com sucesso no Sistema ProLog",
                     dao.transferirPneu(tokenIntegracao, pneuTransferencia));
@@ -86,6 +87,18 @@ public final class ApiCadastroPneuService extends BaseIntegracaoService {
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Não foi possível realizar a transferência de pneus no Sistema ProLog");
+        }
+    }
+
+    private void validaCpfColaborador(final String cpfColaborador) throws ProLogException {
+        try {
+            if (cpfColaborador.isEmpty()) {
+                throw new Throwable("O CPF do colaborador deve ser informado");
+            }
+        } catch (final Throwable t) {
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, t.getMessage());
         }
     }
 }
