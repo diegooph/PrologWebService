@@ -141,7 +141,7 @@ public final class SistemaProtheusNepomuceno extends Sistema {
             // Aqui começamos a montar o cronograma
             final Map<String, ModeloPlacasAfericao> modelosEstruturaVeiculo = new HashMap<>();
             final Map<String, List<ModeloPlacasAfericao.PlacaAfericao>> placasEstruturaVeiculo = new HashMap<>();
-            final List<String> estruturasNaoMapeadas = new ArrayList<>();
+            final Set<String> estruturasNaoMapeadas = new HashSet<>();
             for (final VeiculoListagemProtheusNepomuceno veiculo : listagemVeiculos) {
                 if (!tipoVeiculoConfiguracao.containsKey(veiculo.getCodEstruturaVeiculo())) {
                     // Adicionamos a estrutura não mapeada em uma estrutura para logar no sentry.
