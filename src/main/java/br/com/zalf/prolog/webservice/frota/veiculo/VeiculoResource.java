@@ -187,7 +187,7 @@ public final class VeiculoResource {
             Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_VEICULO_ESTOQUE,
             Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE,
             Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_DESCARTE})
-    @Path("/com-pneus/{placa}")
+    @Path("/visualizacao")
     @AppVersionCodeHandler(
             implementation = DefaultAppVersionCodeHandler.class,
             targetVersionCode = 68,
