@@ -60,7 +60,7 @@ public class VeiculoConverter {
     public static VeiculoVisualizacaoPneu createVeiculoVisualizacaoPneu(ResultSet rSet) throws SQLException {
         return new VeiculoVisualizacaoPneu(
         rSet.getLong("CODIGO"),
-        rSet.getLong("CODIGO_CLIENTE"),
+        rSet.getString("CODIGO_CLIENTE"),
         rSet.getString("NOME_MARCA_PNEU"),
         rSet.getLong("COD_MARCA_PNEU"),
         rSet.getLong("COD_UNIDADE_ALOCADO"),
@@ -82,7 +82,7 @@ public class VeiculoConverter {
         rSet.getDouble("ALTURA_SULCO_CENTRAL_EXTERNO"),
         rSet.getDouble("ALTURA_SULCO_INTERNO"),
         rSet.getDouble("ALTURA_SULCO_EXTERNO"),
-        rSet.getBoolean("STATUS"),
+        rSet.getString("STATUS"),
         rSet.getString("DOT"),
         rSet.getDouble("VALOR"),
         rSet.getLong("COD_MODELO_BANDA"),
@@ -93,7 +93,7 @@ public class VeiculoConverter {
         rSet.getString("NOME_MARCA_BANDA"),
         rSet.getDouble("VALOR_BANDA"),
         rSet.getInt("POSICAO_PNEU"),
-        rSet.getInt("POSICAO_APLICADO_CLIENTE"),
+        rSet.getString("NOMENCLATURA"),
         rSet.getLong("COD_VEICULO_APLICADO"),
         rSet.getString("PLACA_APLICADO"));
     }

@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.veiculo.model;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Created on 12/05/2020.
@@ -12,7 +13,7 @@ public class VeiculoVisualizacaoPneu {
     @NotNull
     private final Long codigoPneu;
     @NotNull
-    private final Long codigoCliente;
+    private final String codigoCliente;
     @NotNull
     private final String nomeMarcaPneu;
     @NotNull
@@ -34,9 +35,9 @@ public class VeiculoVisualizacaoPneu {
     private final int qtdSulcosModeloPneu;
     @NotNull
     private final Double alturaSulcosModeloPneu;
-    @NotNull
+
     private final int altura;
-    @NotNull
+
     private final int largura;
     @NotNull
     private final Double aro;
@@ -53,36 +54,35 @@ public class VeiculoVisualizacaoPneu {
     @NotNull
     private final Double alturaSulcoExterno;
     @NotNull
-    private final Boolean status;
+    private final String status;
     @NotNull
     private final String dot;
     @NotNull
     private final Double valor;
-    @NotNull
+    @Nullable
     private final Long codModeloBanda;
-    @NotNull
+    @Nullable
     private final String nomeModeloBanda;
-    @NotNull
+    @Nullable
     private final int qtdSulcosModeloBanda;
-    @NotNull
+    @Nullable
     private final Double alturaSulcosModeloBanda;
-    @NotNull
+    @Nullable
     private final Long codMarcaBanda;
-    @NotNull
+    @Nullable
     private final String nomeMarcaBanda;
-    @NotNull
+    @Nullable
     private final Double valorBanda;
-    @NotNull
     private final int posicaoPneu;
     @NotNull
-    private final int posicaoAplicadoCliente;
+    private final String nomenclatura;
     @NotNull
     private final Long codVeiculoAplicado;
     @NotNull
     private final String placaAplicado;
 
     public VeiculoVisualizacaoPneu(@NotNull final Long codigoPneu,
-                                   @NotNull final Long codigoCliente,
+                                   @NotNull final String codigoCliente,
                                    @NotNull final String nomeMarcaPneu,
                                    @NotNull final Long codMarcaPneu,
                                    @NotNull final Long codUnidadeAlocado,
@@ -104,18 +104,18 @@ public class VeiculoVisualizacaoPneu {
                                    @NotNull final Double alturaSulcoCentralExterno,
                                    @NotNull final Double alturaSulcoInterno,
                                    @NotNull final Double alturaSulcoExterno,
-                                   @NotNull final Boolean status,
+                                   @NotNull final String status,
                                    @NotNull final String dot,
                                    @NotNull final Double valor,
-                                   @NotNull final Long codModeloBanda,
-                                   @NotNull final String nomeModeloBanda,
+                                   @Nullable final Long codModeloBanda,
+                                   @Nullable final String nomeModeloBanda,
                                    final int qtdSulcosModeloBanda,
-                                   @NotNull final Double alturaSulcosModeloBanda,
-                                   @NotNull final Long codMarcaBanda,
-                                   @NotNull final String nomeMarcaBanda,
-                                   @NotNull final Double valorBanda,
+                                   @Nullable final Double alturaSulcosModeloBanda,
+                                   @Nullable final Long codMarcaBanda,
+                                   @Nullable final String nomeMarcaBanda,
+                                   @Nullable final Double valorBanda,
                                    final int posicaoPneu,
-                                   final int posicaoAplicadoCliente,
+                                   @NotNull final String nomenclatura,
                                    @NotNull final Long codVeiculoAplicado,
                                    @NotNull final String placaAplicado) {
         this.codigoPneu = codigoPneu;
@@ -152,7 +152,7 @@ public class VeiculoVisualizacaoPneu {
         this.nomeMarcaBanda = nomeMarcaBanda;
         this.valorBanda = valorBanda;
         this.posicaoPneu = posicaoPneu;
-        this.posicaoAplicadoCliente = posicaoAplicadoCliente;
+        this.nomenclatura = nomenclatura;
         this.codVeiculoAplicado = codVeiculoAplicado;
         this.placaAplicado = placaAplicado;
     }
@@ -161,7 +161,7 @@ public class VeiculoVisualizacaoPneu {
         return codigoPneu;
     }
 
-    public Long getCodigoCliente() {
+    public String getCodigoCliente() {
         return codigoCliente;
     }
 
@@ -249,7 +249,7 @@ public class VeiculoVisualizacaoPneu {
         return alturaSulcoExterno;
     }
 
-    public Boolean getStatus() {
+    public String getStatus() {
         return status;
     }
 
@@ -293,8 +293,8 @@ public class VeiculoVisualizacaoPneu {
         return posicaoPneu;
     }
 
-    public int getPosicaoAplicadoCliente() {
-        return posicaoAplicadoCliente;
+    public String getNomenclatura() {
+        return nomenclatura;
     }
 
     public Long getCodVeiculoAplicado() {
