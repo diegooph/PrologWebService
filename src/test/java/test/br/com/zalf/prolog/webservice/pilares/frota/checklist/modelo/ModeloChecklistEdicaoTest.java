@@ -1075,7 +1075,6 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
         // P1.
         final PerguntaModeloChecklistVisualizacao p1 = modeloBuscado.getPerguntas().get(0);
 
-
         perguntas.set(
                 0,
                 // P1 é substituída agora sendo single_choice.
@@ -1530,7 +1529,6 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
         // P1.
         final PerguntaModeloChecklistVisualizacao p1 = modeloBuscado.getPerguntas().get(0);
 
-
         perguntas.set(
                 0,
                 // P1 é substituída agora com outra imagem..
@@ -1574,6 +1572,146 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
         }
     }
 
+    @Test
+    @DisplayName("Altera captura fotos da pergunta P1, muda versão, mantém contexto")
+    void caso25_alteraCapturaFotosP1_deveMudarVersaoModeloEManterCodigoContexto() {
+        // 1, 2 - Insere o modelo base.
+        final ResultInsertModeloChecklist result = insertModeloBase();
+
+        // 3 - Então buscamos o modelo inserido.
+        // Nós não garantimos que a busca é igual ao inserido pois isso é feito nos testes de insert.
+        final ModeloChecklistVisualizacao original = service.getModeloChecklist(
+                COD_UNIDADE,
+                result.getCodModeloChecklistInserido());
+        assertThat(original).isNotNull();
+
+        // 4, 5 - Alteramos P1 para captura de fotos liberada e aí atualizamos.
+        final List<PerguntaModeloChecklistEdicao> perguntas = toPerguntasEdicao(original);
+        final PerguntaModeloChecklistEdicao p1 = perguntas.get(0);
+        perguntas.set(0,
+                new PerguntaModeloChecklistEdicaoAtualiza(
+                        p1.getCodigo(),
+                        p1.getCodigoContexto(),
+                        p1.getDescricao(),
+                        p1.getCodImagem(),
+                        p1.getOrdemExibicao(),
+                        p1.isSingleChoice(),
+                        CapturaFotoChecklistEnum.LIBERADO,
+                        p1.getAlternativas()
+                                .stream()
+                                .map(a -> new AlternativaModeloChecklistEdicaoAtualiza(
+                                        a.getCodigo(),
+                                        a.getCodigoContexto(),
+                                        a.getDescricao(),
+                                        a.getPrioridade(),
+                                        a.isTipoOutros(),
+                                        a.getOrdemExibicao(),
+                                        a.isDeveAbrirOrdemServico(),
+                                        a.getCapturaFotos()))
+                                .collect(Collectors.toList())));
+        final List<Long> cargos = getCodigosCargos(original);
+        final List<Long> tiposVeiculo = getCodigosTiposVeiculos(original);
+        final ModeloChecklistEdicao editado = createModeloEdicao(original, perguntas, cargos, tiposVeiculo);
+        service.updateModeloChecklist(
+                original.getCodUnidade(),
+                original.getCodModelo(),
+                editado,
+                token);
+
+        // 6 - Por último, buscamos novamente o modelo e comparamos.
+        final ModeloChecklistVisualizacao buscado = service.getModeloChecklist(
+                COD_UNIDADE,
+                result.getCodModeloChecklistInserido());
+        // 7 - Versão tem que ter aumentado.
+        assertThat(editado.getCodVersaoModelo()).isLessThan(buscado.getCodVersaoModelo());
+        assertThat(buscado.getPerguntas()).hasSize(2);
+        {
+            // P1.
+            final PerguntaModeloChecklistVisualizacao p1Antes = original.getPerguntas().get(0);
+            final PerguntaModeloChecklistVisualizacao p1Depois = buscado.getPerguntas().get(0);
+
+            // Código contexto da pergunta se manteve.
+            assertThat(p1Depois.getCodigoContexto()).isEqualTo(p1Antes.getCodigoContexto());
+
+            // 'Farol' está com captura de fotos diferente.
+            assertThat(p1Depois.getDescricao()).isEqualTo("Farol");
+            assertThat(p1Antes.getCapturaFotosRespostaOk()).isEqualTo(CapturaFotoChecklistEnum.BLOQUEADO);
+            assertThat(p1Depois.getCapturaFotosRespostaOk()).isEqualTo(CapturaFotoChecklistEnum.LIBERADO);
+        }
+        {
+            // P2.
+            final PerguntaModeloChecklistVisualizacao p2Antes = original.getPerguntas().get(1);
+            final PerguntaModeloChecklistVisualizacao p2Depois = buscado.getPerguntas().get(1);
+
+            // Código contexto da pergunta se manteve.
+            assertThat(p2Depois.getCodigoContexto()).isEqualTo(p2Antes.getCodigoContexto());
+
+            // 'Cinto de segurança' está com captura de fotos igual.
+            assertThat(p2Depois.getDescricao()).isEqualTo("Cinto de segurança");
+            assertThat(p2Depois.getCapturaFotosRespostaOk()).isEqualTo(p2Antes.getCapturaFotosRespostaOk());
+        }
+    }
+
+    @Test
+    @DisplayName("Altera captura fotos da alternativa A1, muda versão, mantém contexto")
+    void caso26_alteraCapturaFotosA1_deveMudarVersaoModeloEManterCodigoContexto() {
+        // 1, 2 - Insere o modelo base.
+        final ResultInsertModeloChecklist result = insertModeloBase();
+
+        // 3 - Então buscamos o modelo inserido.
+        // Nós não garantimos que a busca é igual ao inserido pois isso é feito nos testes de insert.
+        final ModeloChecklistVisualizacao original = service.getModeloChecklist(
+                COD_UNIDADE,
+                result.getCodModeloChecklistInserido());
+        assertThat(original).isNotNull();
+
+        // 4, 5 - Alteramos A1 para captura de fotos liberada e aí atualizamos.
+        final List<PerguntaModeloChecklistEdicao> perguntas = toPerguntasEdicao(original);
+        final PerguntaModeloChecklistEdicao p1 = perguntas.get(0);
+        final AlternativaModeloChecklistEdicao a1 = (AlternativaModeloChecklistEdicao) p1.getAlternativas().get(0);
+        p1.getAlternativas().set(0, new AlternativaModeloChecklistEdicaoAtualiza(
+                a1.getCodigo(),
+                a1.getCodigoContexto(),
+                a1.getDescricao(),
+                a1.getPrioridade(),
+                a1.isTipoOutros(),
+                a1.getOrdemExibicao(),
+                a1.isDeveAbrirOrdemServico(),
+                CapturaFotoChecklistEnum.LIBERADO));
+        final List<Long> cargos = getCodigosCargos(original);
+        final List<Long> tiposVeiculo = getCodigosTiposVeiculos(original);
+        final ModeloChecklistEdicao editado = createModeloEdicao(original, perguntas, cargos, tiposVeiculo);
+        service.updateModeloChecklist(
+                original.getCodUnidade(),
+                original.getCodModelo(),
+                editado,
+                token);
+
+        // 6 - Por último, buscamos novamente o modelo e comparamos.
+        final ModeloChecklistVisualizacao buscado = service.getModeloChecklist(
+                COD_UNIDADE,
+                result.getCodModeloChecklistInserido());
+        // 7 - Versão tem que ter aumentado.
+        assertThat(editado.getCodVersaoModelo()).isLessThan(buscado.getCodVersaoModelo());
+        assertThat(buscado.getPerguntas()).hasSize(2);
+        {
+            // P1.
+            final PerguntaModeloChecklistVisualizacao p1Antes = original.getPerguntas().get(0);
+            final PerguntaModeloChecklistVisualizacao p1Depois = buscado.getPerguntas().get(0);
+
+            // Código contexto da pergunta se manteve.
+            assertThat(p1Depois.getCodigoContexto()).isEqualTo(p1Antes.getCodigoContexto());
+
+            // 'Fora de foco' está com captura de fotos diferente.
+            final AlternativaModeloChecklist a1Antes = p1Antes.getAlternativas().get(0);
+            final AlternativaModeloChecklist a1Depois = p1Depois.getAlternativas().get(0);
+            assertThat(a1Antes.getDescricao()).isEqualTo("Fora de foco");
+            assertThat(a1Antes.getDescricao()).isEqualTo(a1Depois.getDescricao());
+            assertThat(a1Antes.getCapturaFotos()).isEqualTo(CapturaFotoChecklistEnum.BLOQUEADO);
+            assertThat(a1Depois.getCapturaFotos()).isEqualTo(CapturaFotoChecklistEnum.LIBERADO);
+        }
+    }
+
     @NotNull
     private List<AlternativaModeloChecklistEdicao> toAlternativaAtualiza(
             @NotNull final List<AlternativaModeloChecklist> alternativas) {
@@ -1596,7 +1734,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
     }
 
     // TODO: Talvez faça mais sentido (KISS) remover esse método. Usado apenas em 3 lugares mascara que usamos sempre
-    // uma AlternativaModeloChecklistEdicaoAtualiza.
+    //       uma AlternativaModeloChecklistEdicaoAtualiza.
     @NotNull
     private PerguntaModeloChecklistEdicao copyFrom(@NotNull final PerguntaModeloChecklistVisualizacao p,
                                                    @NotNull final String descricaoAtual,
