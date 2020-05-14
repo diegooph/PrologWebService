@@ -22,6 +22,7 @@ public final class PneuNomenclaturaConverter {
             throws SQLException {
         return new PneuNomenclaturaItemVisualizacao(
                 rSet.getString("NOMENCLATURA"),
+                rSet.getString("COD_AUXILIAR"),
                 rSet.getInt("POSICAO_PROLOG"));
     }
 }

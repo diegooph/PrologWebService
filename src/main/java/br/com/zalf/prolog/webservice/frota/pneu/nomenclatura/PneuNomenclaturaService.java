@@ -45,12 +45,9 @@ public final class PneuNomenclaturaService {
                                                                                       @NotNull final Long codDiagrama)
             throws ProLogException {
         try {
-            return dao.getPneuNomenclaturaItemVisualizacao(
-                    codEmpresa,
-                    codDiagrama);
+            return dao.getPneuNomenclaturaItemVisualizacao(codEmpresa, codDiagrama);
         } catch (final Throwable t) {
-            final String errorMessage = "Erro ao buscar nomenclaturas";
-            Log.e(TAG, errorMessage, t);
+            Log.e(TAG, "Erro ao buscar nomenclaturas", t);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao buscar nomenclaturas, tente novamente");
