@@ -111,7 +111,7 @@ public final class SistemaProtheusNepomuceno extends Sistema {
             // Podemos ter unidades cadastradas no Prolog que não tem cod_auxiliar, removemos esses casos.
             final List<Long> codUnidadesMapeadas = sistema.getApenasUnidadesMapeadas(conn, codUnidades);
             if (codUnidadesMapeadas.isEmpty()) {
-                // Se, das unidades filtradas, nenhum tiver cod_auxiliar mapeado, retornamos um Cronograma Vazio.
+                // Se, das unidades filtradas, nenhuma tiver cod_auxiliar mapeado, retornamos um Cronograma Vazio.
                 // Fazemos isso para não mostrar ao usuário uma tela de erro sempre que ele entrar no Cronograma.
                 return ProtheusNepomucenoConverter.createEmptyCronogramaAfericaoProlog();
             }

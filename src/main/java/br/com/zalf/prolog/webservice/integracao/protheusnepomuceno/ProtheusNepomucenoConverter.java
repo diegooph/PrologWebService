@@ -153,6 +153,7 @@ public final class ProtheusNepomucenoConverter {
         return cronogramaAfericao;
     }
 
+    @NotNull
     public static CronogramaAfericao createEmptyCronogramaAfericaoProlog() {
         final CronogramaAfericao cronogramaAfericao = new CronogramaAfericao();
         cronogramaAfericao.setModelosPlacasAfericao(new ArrayList<>());
