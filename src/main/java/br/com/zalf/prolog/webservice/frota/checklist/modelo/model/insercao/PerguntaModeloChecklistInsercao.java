@@ -1,7 +1,10 @@
 package br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao;
 
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.AlternativaModeloChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.CapturaFotoChecklistEnum;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.PerguntaModeloChecklist;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -12,6 +15,8 @@ import java.util.List;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
+@Data
+@EqualsAndHashCode(callSuper = true)
 public final class PerguntaModeloChecklistInsercao extends PerguntaModeloChecklist {
     @NotNull
     private final String descricao;
@@ -20,59 +25,26 @@ public final class PerguntaModeloChecklistInsercao extends PerguntaModeloCheckli
     private final int ordemExibicao;
     private final boolean singleChoice;
     @NotNull
+    private final CapturaFotoChecklistEnum capturaFotosRespostaOk;
+    @NotNull
     private final List<AlternativaModeloChecklistInsercao> alternativas;
-
-
-    public PerguntaModeloChecklistInsercao(@NotNull final String descricao,
-                                           @Nullable final Long codImagem,
-                                           final int ordemExibicao,
-                                           final boolean singleChoice,
-                                           @NotNull final List<AlternativaModeloChecklistInsercao> alternativas) {
-        this.descricao = descricao;
-        this.codImagem = codImagem;
-        this.ordemExibicao = ordemExibicao;
-        this.singleChoice = singleChoice;
-        this.alternativas = alternativas;
-    }
 
     @NotNull
     @Override
     public Long getCodigo() {
-        return null;
+        throw new UnsupportedOperationException("Pergunta de inserção não possui código!");
     }
 
     @NotNull
     @Override
     public Long getCodigoContexto() {
-        return null;
-    }
-
-    @NotNull
-    @Override
-    public String getDescricao() {
-        return descricao;
-    }
-
-    @Nullable
-    @Override
-    public Long getCodImagem() {
-        return codImagem;
+        throw new UnsupportedOperationException("Pergunta de inserção não possui código de contexto!");
     }
 
     @Nullable
     @Override
     public String getUrlImagem() {
         return null;
-    }
-
-    @Override
-    public int getOrdemExibicao() {
-        return ordemExibicao;
-    }
-
-    @Override
-    public boolean isSingleChoice() {
-        return singleChoice;
     }
 
     @NotNull

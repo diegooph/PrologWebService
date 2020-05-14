@@ -9,34 +9,39 @@
       "codImagem": 1,
       "ordemExibicao": 1,
       "singleChoice": false,
+      "capturaFotosRespostaOk": "BLOQUEADO",
       "alternativas": [
         {
           "descricao": "Fora de foco",
           "prioridade": "CRITICA",
           "tipoOutros": false,
           "ordemExibicao": 1,
-          "deveAbrirOrdemServico": true
+          "deveAbrirOrdemServico": true,
+          "capturaFotos": "BLOQUEADO"
         },
         {
           "descricao": "Lâmpada queimada",
           "prioridade": "CRITICA",
           "tipoOutros": false,
           "ordemExibicao": 2,
-          "deveAbrirOrdemServico": true
+          "deveAbrirOrdemServico": true,
+          "capturaFotos": "BLOQUEADO"
         },
         {
           "descricao": "Lanterna quebrada",
           "prioridade": "CRITICA",
           "tipoOutros": false,
           "ordemExibicao": 3,
-          "deveAbrirOrdemServico": true
+          "deveAbrirOrdemServico": true,
+          "capturaFotos": "BLOQUEADO"
         },
         {
           "descricao": "Outros",
           "prioridade": "BAIXA",
           "tipoOutros": true,
           "ordemExibicao": 4,
-          "deveAbrirOrdemServico": false
+          "deveAbrirOrdemServico": false,
+          "capturaFotos": "BLOQUEADO"
         }
       ]
     },
@@ -44,27 +49,31 @@
       "descricao": "Cinto de segurança",
       "ordemExibicao": 2,
       "singleChoice": false,
+      "capturaFotosRespostaOk": "BLOQUEADO",
       "alternativas": [
         {
           "descricao": "Não trava",
           "prioridade": "CRITICA",
           "tipoOutros": false,
           "ordemExibicao": 1,
-          "deveAbrirOrdemServico": true
+          "deveAbrirOrdemServico": true,
+          "capturaFotos": "BLOQUEADO"
         },
         {
           "descricao": "Sensor não funciona",
           "prioridade": "ALTA",
           "tipoOutros": false,
           "ordemExibicao": 2,
-          "deveAbrirOrdemServico": true
+          "deveAbrirOrdemServico": true,
+          "capturaFotos": "BLOQUEADO"
         },
         {
           "descricao": "Outros",
           "prioridade": "BAIXA",
           "tipoOutros": true,
           "ordemExibicao": 3,
-          "deveAbrirOrdemServico": false
+          "deveAbrirOrdemServico": false,
+          "capturaFotos": "BLOQUEADO"
         }
       ]
     }

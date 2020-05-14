@@ -11,13 +11,22 @@ import org.jetbrains.annotations.NotNull;
 public abstract class AlternativaModeloChecklist {
     @NotNull
     public abstract Long getCodigo();
+
     @NotNull
     public abstract Long getCodigoContexto();
+
     @NotNull
     public abstract String getDescricao();
+
     @NotNull
     public abstract PrioridadeAlternativa getPrioridade();
+
     public abstract boolean isTipoOutros();
+
     public abstract int getOrdemExibicao();
+
     public abstract boolean isDeveAbrirOrdemServico();
+
+    @NotNull
+    public abstract CapturaFotoChecklistEnum getCapturaFotos();
 }

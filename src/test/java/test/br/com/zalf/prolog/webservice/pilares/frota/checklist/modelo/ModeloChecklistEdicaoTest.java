@@ -2,13 +2,13 @@ package test.br.com.zalf.prolog.webservice.pilares.frota.checklist.modelo;
 
 import br.com.zalf.prolog.webservice.cargo.CargoService;
 import br.com.zalf.prolog.webservice.cargo.model.CargoListagemEmpresa;
-import br.com.zalf.prolog.webservice.gente.colaborador.model.Cargo;
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
 import br.com.zalf.prolog.webservice.database.DatabaseManager;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloService;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.AlternativaModeloChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.CapturaFotoChecklistEnum;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.PerguntaModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.*;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ModeloChecklistInsercao;
@@ -18,6 +18,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.visualizacao.M
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.visualizacao.PerguntaModeloChecklistVisualizacao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.tipoveiculo.TipoVeiculoService;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Cargo;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.assertj.core.api.Assertions;
@@ -53,6 +54,15 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
     // Mesmo não sendo uma constante, usamos maiúsculo para facilitar a diferenciação nos testes.
     private ModeloChecklistInsercao BASE;
 
+    @NotNull
+    private static List<PerguntaModeloChecklistEdicao> jsonToCollection(@NotNull final Gson gson,
+                                                                        @NotNull final String json) {
+        final Type type = new TypeToken<List<PerguntaModeloChecklistEdicao>>() {
+        }.getType();
+        return gson.fromJson(json, type);
+    }
+
+    @Override
     @BeforeAll
     public void initialize() throws Throwable {
         DatabaseManager.init();
@@ -64,6 +74,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                 ModeloChecklistInsercao.class);
     }
 
+    @Override
     @AfterAll
     public void destroy() {
         DatabaseManager.finish();
@@ -330,6 +341,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                     p1.getCodImagem(),
                     p1.getOrdemExibicao(),
                     p1.isSingleChoice(),
+                    CapturaFotoChecklistEnum.BLOQUEADO,
                     alternativas));
         }
 
@@ -360,6 +372,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                     p2.getCodImagem(),
                     p2.getOrdemExibicao(),
                     p2.isSingleChoice(),
+                    CapturaFotoChecklistEnum.BLOQUEADO,
                     alternativas));
         }
 
@@ -485,7 +498,8 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                         false,
                         // Mesma ordem da alternativa removida para evitar qualquer outro problema.
                         1,
-                        true));
+                        true,
+                        CapturaFotoChecklistEnum.BLOQUEADO));
 
         final ModeloChecklistEdicao editado = createModeloEdicao(modeloBuscado, perguntas, cargos, tiposVeiculo);
         service.updateModeloChecklist(
@@ -554,14 +568,16 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                         PrioridadeAlternativa.BAIXA,
                         false,
                         3,
-                        true));
+                        true,
+                        CapturaFotoChecklistEnum.BLOQUEADO));
         perguntas.get(1).getAlternativas().add(
                 new AlternativaModeloChecklistEdicaoInsere(
                         "Outros",
                         outros.getPrioridade(),
                         true,
                         4,
-                        outros.isDeveAbrirOrdemServico()));
+                        outros.isDeveAbrirOrdemServico(),
+                        CapturaFotoChecklistEnum.BLOQUEADO));
 
         final ModeloChecklistEdicao editado = createModeloEdicao(modeloBuscado, perguntas, cargos, tiposVeiculo);
         service.updateModeloChecklist(
@@ -985,14 +1001,16 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                         PrioridadeAlternativa.BAIXA,
                         false,
                         4,
-                        true));
+                        true,
+                        CapturaFotoChecklistEnum.BLOQUEADO));
         perguntas.get(0).getAlternativas().add(
                 new AlternativaModeloChecklistEdicaoInsere(
                         "Outros",
                         outros.getPrioridade(),
                         true,
                         5,
-                        outros.isDeveAbrirOrdemServico()));
+                        outros.isDeveAbrirOrdemServico(),
+                        CapturaFotoChecklistEnum.BLOQUEADO));
 
         final List<Long> cargos = getCodigosCargos(modeloBuscado);
         final List<Long> tiposVeiculo = getCodigosTiposVeiculos(modeloBuscado);
@@ -1068,6 +1086,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                         p1.getCodImagem(),
                         p1.getOrdemExibicao(),
                         true,
+                        CapturaFotoChecklistEnum.BLOQUEADO,
                         toAlternativaAtualiza(p1.getAlternativas())));
 
         final List<Long> cargos = getCodigosCargos(modeloBuscado);
@@ -1126,7 +1145,8 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                         a1.getPrioridade(),
                         a1.isTipoOutros(),
                         a1.getOrdemExibicao(),
-                        false));
+                        false,
+                        CapturaFotoChecklistEnum.BLOQUEADO));
 
         final List<Long> cargos = getCodigosCargos(modeloBuscado);
         final List<Long> tiposVeiculo = getCodigosTiposVeiculos(modeloBuscado);
@@ -1186,7 +1206,8 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                         PrioridadeAlternativa.BAIXA,
                         a1.isTipoOutros(),
                         a1.getOrdemExibicao(),
-                        a1.isDeveAbrirOrdemServico()));
+                        a1.isDeveAbrirOrdemServico(),
+                        CapturaFotoChecklistEnum.BLOQUEADO));
 
         final List<Long> cargos = getCodigosCargos(modeloBuscado);
         final List<Long> tiposVeiculo = getCodigosTiposVeiculos(modeloBuscado);
@@ -1248,7 +1269,8 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                         a1.getPrioridade(),
                         a1.isTipoOutros(),
                         3,
-                        a1.isDeveAbrirOrdemServico()));
+                        a1.isDeveAbrirOrdemServico(),
+                        CapturaFotoChecklistEnum.BLOQUEADO));
         // A3 (Lanterna quebrada).
         p1.getAlternativas().set(
                 0,
@@ -1259,7 +1281,8 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                         a3.getPrioridade(),
                         a3.isTipoOutros(),
                         1,
-                        a3.isDeveAbrirOrdemServico()));
+                        a3.isDeveAbrirOrdemServico(),
+                        CapturaFotoChecklistEnum.BLOQUEADO));
 
         final List<Long> cargos = getCodigosCargos(modeloBuscado);
         final List<Long> tiposVeiculo = getCodigosTiposVeiculos(modeloBuscado);
@@ -1360,6 +1383,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                         p2.getCodImagem(),
                         1,
                         p2.isSingleChoice(),
+                        CapturaFotoChecklistEnum.BLOQUEADO,
                         p2.getAlternativas()
                                 .stream()
                                 .map(a -> new AlternativaModeloChecklistEdicaoAtualiza(
@@ -1369,7 +1393,8 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                                         a.getPrioridade(),
                                         a.isTipoOutros(),
                                         a.getOrdemExibicao(),
-                                        a.isDeveAbrirOrdemServico()))
+                                        a.isDeveAbrirOrdemServico(),
+                                        CapturaFotoChecklistEnum.BLOQUEADO))
                                 .collect(Collectors.toList())));
         perguntas.set(1,
                 new PerguntaModeloChecklistEdicaoAtualiza(
@@ -1379,6 +1404,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                         p1.getCodImagem(),
                         2,
                         p1.isSingleChoice(),
+                        CapturaFotoChecklistEnum.BLOQUEADO,
                         p1.getAlternativas()
                                 .stream()
                                 .map(a -> new AlternativaModeloChecklistEdicaoAtualiza(
@@ -1388,7 +1414,8 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                                         a.getPrioridade(),
                                         a.isTipoOutros(),
                                         a.getOrdemExibicao(),
-                                        a.isDeveAbrirOrdemServico()))
+                                        a.isDeveAbrirOrdemServico(),
+                                        CapturaFotoChecklistEnum.BLOQUEADO))
                                 .collect(Collectors.toList())));
 
         final List<Long> cargos = getCodigosCargos(modeloBuscado);
@@ -1514,6 +1541,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                         2L,
                         p1.getOrdemExibicao(),
                         p1.isSingleChoice(),
+                        CapturaFotoChecklistEnum.BLOQUEADO,
                         toAlternativaAtualiza(p1.getAlternativas())));
 
         final List<Long> cargos = getCodigosCargos(modeloBuscado);
@@ -1562,7 +1590,8 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                         a.getPrioridade(),
                         a.isTipoOutros(),
                         a.getOrdemExibicao(),
-                        a.isDeveAbrirOrdemServico())));
+                        a.isDeveAbrirOrdemServico(),
+                        CapturaFotoChecklistEnum.BLOQUEADO)));
         return novas;
     }
 
@@ -1582,7 +1611,8 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                     a.getPrioridade(),
                     a.isTipoOutros(),
                     a.getOrdemExibicao(),
-                    a.isDeveAbrirOrdemServico()));
+                    a.isDeveAbrirOrdemServico(),
+                    CapturaFotoChecklistEnum.BLOQUEADO));
         }
         return new PerguntaModeloChecklistEdicaoAtualiza(
                 p.getCodigo(),
@@ -1591,6 +1621,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                 p.getCodImagem(),
                 p.getOrdemExibicao(),
                 p.isSingleChoice(),
+                CapturaFotoChecklistEnum.BLOQUEADO,
                 alternativas);
     }
 
@@ -1606,7 +1637,8 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                 a.getPrioridade(),
                 a.isTipoOutros(),
                 a.getOrdemExibicao(),
-                a.isDeveAbrirOrdemServico());
+                a.isDeveAbrirOrdemServico(),
+                CapturaFotoChecklistEnum.BLOQUEADO);
     }
 
     private void ensureAllAttributesEqual(@NotNull final PerguntaModeloChecklist antes,
@@ -1679,14 +1711,6 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
         assertThat(antes.isTipoOutros()).isEqualTo(depois.isTipoOutros());
         assertThat(antes.getOrdemExibicao()).isEqualTo(depois.getOrdemExibicao());
         assertThat(antes.isDeveAbrirOrdemServico()).isEqualTo(depois.isDeveAbrirOrdemServico());
-    }
-
-    @NotNull
-    private static List<PerguntaModeloChecklistEdicao> jsonToCollection(@NotNull final Gson gson,
-                                                                        @NotNull final String json) {
-        final Type type = new TypeToken<List<PerguntaModeloChecklistEdicao>>() {
-        }.getType();
-        return gson.fromJson(json, type);
     }
 
     @NotNull
