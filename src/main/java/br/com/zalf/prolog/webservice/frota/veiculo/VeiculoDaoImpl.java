@@ -282,9 +282,9 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNCTION FUNC_VEICULO_GET_VEICULO_COMPLETO(" +
-                    "F_COD_VEICULO := ?);");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_VEICULO_GET_VEICULO(F_COD_VEICULO := ?);");
             stmt.setLong(1, codVeiculo);
+            rSet = stmt.executeQuery();
             if (rSet.next()) {
                 VeiculoVisualizacao veiculoVisualizacao = VeiculoConverter.createVeiculoVisualizacao(rSet);
                 veiculoVisualizacao.setPneusVeiculo(buscaPneusByCodigoVeiculo(conn, codVeiculo));
