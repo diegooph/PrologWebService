@@ -1,6 +1,9 @@
 Change Log
 ==========
 
+### Features
+* Adiciona possibilidade de parametrização de fotos no check no cadastro e edição de modelos (PL-1504)
+
 <a name="v1.0.30"></a>
 ## Version [v1.0.30](https://github.com/luizfp/PrologWebService/compare/v1.0.29...v1.0.30) (release-date) [unreleased]
 
