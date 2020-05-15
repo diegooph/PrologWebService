@@ -93,7 +93,15 @@ public final class ChecklistInsercao {
      */
     private final long deviceUptimeSincronizacaoMillis;
 
+    /**
+     * Quantidade total de fotos capturadas referentes a perguntas respondidas com OK.
+     */
     private final int qtdFotosCapturadasPerguntasOk;
+
+    /**
+     * Quantidade total de fotos capturadas referentes a alternativas respondidas com NOK, ou seja,
+     * alternativas selecionadas.
+     */
     private final int qtdFotosCapturadasAlternativasNok;
 
     /**
