@@ -1,20 +1,23 @@
 package br.com.zalf.prolog.webservice.frota.pneu.afericao._model;
 
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.FormaColetaDadosAfericaoEnum;
+
 /**
  * Created on 06/11/18
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public final class ConfiguracaoNovaAfericaoPlaca extends ConfiguracaoNovaAfericao {
-    private final boolean podeAferirSulco;
-    private final boolean podeAferirPressao;
-    private final boolean podeAferirSulcoPressao;
+
+    private final FormaColetaDadosAfericaoEnum formaColetaDadosSulco;
+    private final FormaColetaDadosAfericaoEnum formaColetaDadosPressao;
+    private final FormaColetaDadosAfericaoEnum formaColetaDadosSulcoPressao;
     private final boolean podeAferirEstepe;
 
     public ConfiguracaoNovaAfericaoPlaca(
-            final boolean podeAferirSulco,
-            final boolean podeAferirPressao,
-            final boolean podeAferirSulcoPressao,
+            final FormaColetaDadosAfericaoEnum formaColetaDadosSulco,
+            final FormaColetaDadosAfericaoEnum formaColetaDadosPressao,
+            final FormaColetaDadosAfericaoEnum formaColetaDadosSulcoPressao,
             final boolean podeAferirEstepe,
             final double sulcoMinimoDescarte,
             final double sulcoMinimoRecape,
@@ -38,25 +41,26 @@ public final class ConfiguracaoNovaAfericaoPlaca extends ConfiguracaoNovaAferica
                 usaDefaultProLog,
                 bloqueiaValoresMenores,
                 bloqueiaValoresMaiores);
-        this.podeAferirSulco = podeAferirSulco;
-        this.podeAferirPressao = podeAferirPressao;
-        this.podeAferirSulcoPressao = podeAferirSulcoPressao;
+        this.formaColetaDadosSulco = formaColetaDadosSulco;
+        this.formaColetaDadosPressao = formaColetaDadosPressao;
+        this.formaColetaDadosSulcoPressao = formaColetaDadosSulcoPressao;
         this.podeAferirEstepe = podeAferirEstepe;
     }
 
-    public boolean isPodeAferirSulco() {
-        return podeAferirSulco;
+    public FormaColetaDadosAfericaoEnum getFormaColetaDadosSulco() {
+        return formaColetaDadosSulco;
     }
 
-    public boolean isPodeAferirPressao() {
-        return podeAferirPressao;
+    public FormaColetaDadosAfericaoEnum getFormaColetaDadosPressao() {
+        return formaColetaDadosPressao;
     }
 
-    public boolean isPodeAferirSulcoPressao() {
-        return podeAferirSulcoPressao;
+    public FormaColetaDadosAfericaoEnum getFormaColetaDadosSulcoPressao() {
+        return formaColetaDadosSulcoPressao;
     }
 
     public boolean isPodeAferirEstepe() {
         return podeAferirEstepe;
     }
+
 }

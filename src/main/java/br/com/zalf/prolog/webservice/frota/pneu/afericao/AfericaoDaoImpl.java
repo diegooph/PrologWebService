@@ -3,7 +3,6 @@ package br.com.zalf.prolog.webservice.frota.pneu.afericao;
 import br.com.zalf.prolog.webservice.Filtros;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
-import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.report.ReportTransformer;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
@@ -14,10 +13,12 @@ import br.com.zalf.prolog.webservice.frota.pneu.PneuConverter;
 import br.com.zalf.prolog.webservice.frota.pneu.PneuDao;
 import br.com.zalf.prolog.webservice.frota.pneu._model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.*;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.FormaColetaDadosAfericaoEnum;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.TipoServico;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -415,7 +416,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             stmt.setLong(2, codAfericao);
             stmt.setString(3, TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId());
             rSet = stmt.executeQuery();
-            Afericao afericao;
+            final Afericao afericao;
             if (rSet.next()) {
                 afericao = createAfericaoPlacaResumida(rSet);
                 // TODO: Quando essa busca suportar também a busca de aferições avulsas, isso deverá ser refatorado.
@@ -516,9 +517,9 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
     private ConfiguracaoNovaAfericaoPlaca createConfiguracaoNovaAfericaoPlaca(
             @NotNull final ResultSet rSet) throws SQLException {
         return new ConfiguracaoNovaAfericaoPlaca(
-                rSet.getBoolean("PODE_AFERIR_SULCO"),
-                rSet.getBoolean("PODE_AFERIR_PRESSAO"),
-                rSet.getBoolean("PODE_AFERIR_SULCO_PRESSAO"),
+                FormaColetaDadosAfericaoEnum.fromString(rSet.getString("FORMA_COLETA_DADOS_SULCO")),
+                FormaColetaDadosAfericaoEnum.fromString(rSet.getString("FORMA_COLETA_DADOS_PRESSAO")),
+                FormaColetaDadosAfericaoEnum.fromString(rSet.getString("FORMA_COLETA_DADOS_SULCO_PRESSAO")),
                 rSet.getBoolean("PODE_AFERIR_ESTEPE"),
                 rSet.getDouble("SULCO_MINIMO_DESCARTE"),
                 rSet.getDouble("SULCO_MINIMO_RECAPAGEM"),
@@ -600,9 +601,9 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         placa.setIntervaloUltimaAfericaoSulco(rSet.getInt("INTERVALO_SULCO"));
         placa.setIntervaloUltimaAfericaoPressao(rSet.getInt("INTERVALO_PRESSAO"));
         placa.setQuantidadePneus(rSet.getInt("PNEUS_APLICADOS"));
-        placa.setPodeAferirSulco(rSet.getBoolean("PODE_AFERIR_SULCO"));
-        placa.setPodeAferirPressao(rSet.getBoolean("PODE_AFERIR_PRESSAO"));
-        placa.setPodeAferirSulcoPressao(rSet.getBoolean("PODE_AFERIR_SULCO_PRESSAO"));
+        placa.setFormaColetaDadosSulco(FormaColetaDadosAfericaoEnum.fromString(rSet.getString("FORMA_COLETA_DADOS_SULCO")));
+        placa.setFormaColetaDadosPressao(FormaColetaDadosAfericaoEnum.fromString(rSet.getString("FORMA_COLETA_DADOS_PRESSAO")));
+        placa.setFormaColetaDadosSulcoPressao(FormaColetaDadosAfericaoEnum.fromString(rSet.getString("FORMA_COLETA_DADOS_SULCO_PRESSAO")));
         placa.setPodeAferirEstepe(rSet.getBoolean("PODE_AFERIR_ESTEPE"));
         placa.setMetaAfericaoPressao(rSet.getInt("PERIODO_AFERICAO_PRESSAO"));
         placa.setMetaAfericaoSulco(rSet.getInt("PERIODO_AFERICAO_SULCO"));
@@ -625,7 +626,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                 + "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
         final List<Pneu> pneusAferidos = afericao.getPneusAferidos();
-        for (Pneu pneu : pneusAferidos) {
+        for (final Pneu pneu : pneusAferidos) {
             stmt.setLong(1, afericao.getCodigo());
             stmt.setLong(2, pneu.getCodigo());
             stmt.setLong(3, codUnidade);
@@ -761,12 +762,13 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                                         @NotNull final Long codAfericao,
                                         @NotNull final List<TipoServico> servicosPendentes) throws Throwable {
         // Se não houver nenhum serviço para inserir/atualizar podemos retornar e poupar uma consulta ao banco.
-        if (servicosPendentes.isEmpty())
+        if (servicosPendentes.isEmpty()) {
             return;
+        }
 
         final List<TipoServico> servicosCadastrados = servicoDao.getServicosCadastradosByPneu(codUnidade, codPneu);
 
-        for (TipoServico servicoPendente : servicosPendentes) {
+        for (final TipoServico servicoPendente : servicosPendentes) {
             // Se o pneu ja tem uma calibragem cadastrada e é gerada uma inspeção posteriormente,
             // convertemos a antiga calibragem para uma inspeção.
             if (servicoPendente.equals(TipoServico.INSPECAO)
@@ -824,4 +826,5 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         colaborador.setNome(rSet.getString("NOME"));
         afericao.setColaborador(colaborador);
     }
+
 }
