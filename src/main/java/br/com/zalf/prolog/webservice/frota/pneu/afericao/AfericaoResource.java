@@ -114,7 +114,6 @@ public class AfericaoResource {
             @QueryParam("tipoAfericao") @Required final String tipoAfericao) throws ProLogException {
         return service.getNovaAfericaoAvulsa(userToken, codUnidade, codPneu, tipoAfericao);
     }
-
     @GET
     @Path("/unidades/{codUnidade}/tipos-veiculos/{codTipoVeiculo}/placas/{placaVeiculo}")
     @Secured(permissions = {
