@@ -290,7 +290,7 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
                 veiculoVisualizacao.setPneusVeiculo(buscaPneusByCodigoVeiculo(conn, codVeiculo));
                 return veiculoVisualizacao;
             } else {
-                throw new Throwable("Erro ao finalizar esta solitação de socorro");
+                throw new Throwable("Erro ao buscar veiculo");
             }
         }finally {
             close(conn, stmt, rSet);
