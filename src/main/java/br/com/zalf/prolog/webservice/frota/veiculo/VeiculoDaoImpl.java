@@ -226,11 +226,15 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
             }
 
             rSet = stmt.executeQuery();
-            final List<VeiculoListagem> veiculos = new ArrayList<>();
+            final List<VeiculoListagem> veiculosListagem = new ArrayList<>();
             while (rSet.next()) {
-                veiculos.add(VeiculoConverter.createVeiculoListagem(rSet));
+                veiculosListagem.add(VeiculoConverter.createVeiculoListagem(rSet));
             }
-            return veiculos;
+            if (!veiculosListagem.isEmpty()) {
+                return veiculosListagem;
+            } else {
+                throw new Throwable("Erro ao buscar veiculos da unidade " + codUnidade);
+            }
         } finally {
             close(conn, stmt, rSet);
         }
@@ -290,9 +294,9 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
                 veiculoVisualizacao.setPneusVeiculo(buscaPneusByCodigoVeiculo(conn, codVeiculo));
                 return veiculoVisualizacao;
             } else {
-                throw new Throwable("Erro ao buscar veiculo");
+                throw new Throwable("Erro ao buscar veiculo de codigo " + codVeiculo);
             }
-        }finally {
+        } finally {
             close(conn, stmt, rSet);
         }
     }
