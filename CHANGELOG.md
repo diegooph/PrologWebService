@@ -1,6 +1,9 @@
 Change Log
 ==========
 
+### Features
+* Salva total de fotos que foram capturadas no processo de realização do checklist (PL-2708)
+
 <a name="v1.0.30"></a>
 ## Version [v1.0.30](https://github.com/luizfp/PrologWebService/compare/v1.0.29...v1.0.30) (release-date) [unreleased]
 

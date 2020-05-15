@@ -87,28 +87,30 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
 
             stmt = conn.prepareStatement("SELECT * " +
                     "FROM FUNC_CHECKLIST_INSERT_CHECKLIST_INFOS(" +
-                    "F_COD_UNIDADE_CHECKLIST              := ?," +
-                    "F_COD_MODELO_CHECKLIST               := ?," +
-                    "F_COD_VERSAO_MODELO_CHECKLIST        := ?," +
-                    "F_DATA_HORA_REALIZACAO               := ?," +
-                    "F_COD_COLABORADOR                    := ?," +
-                    "F_COD_VEICULO                        := ?," +
-                    "F_TIPO_CHECKLIST                     := ?," +
-                    "F_KM_COLETADO                        := ?," +
-                    "F_TEMPO_REALIZACAO                   := ?," +
-                    "F_DATA_HORA_SINCRONIZACAO            := ?," +
-                    "F_FONTE_DATA_HORA_REALIZACAO         := ?," +
-                    "F_VERSAO_APP_MOMENTO_REALIZACAO      := ?," +
-                    "F_VERSAO_APP_MOMENTO_SINCRONIZACAO   := ?," +
-                    "F_DEVICE_ID                          := ?," +
-                    "F_DEVICE_IMEI                        := ?," +
-                    "F_DEVICE_UPTIME_REALIZACAO_MILLIS    := ?," +
-                    "F_DEVICE_UPTIME_SINCRONIZACAO_MILLIS := ?," +
-                    "F_FOI_OFFLINE                        := ?," +
-                    "F_TOTAL_PERGUNTAS_OK                 := ?," +
-                    "F_TOTAL_PERGUNTAS_NOK                := ?," +
-                    "F_TOTAL_ALTERNATIVAS_OK              := ?," +
-                    "F_TOTAL_ALTERNATIVAS_NOK             := ?) " +
+                    "F_COD_UNIDADE_CHECKLIST                   := ?," +
+                    "F_COD_MODELO_CHECKLIST                    := ?," +
+                    "F_COD_VERSAO_MODELO_CHECKLIST             := ?," +
+                    "F_DATA_HORA_REALIZACAO                    := ?," +
+                    "F_COD_COLABORADOR                         := ?," +
+                    "F_COD_VEICULO                             := ?," +
+                    "F_TIPO_CHECKLIST                          := ?," +
+                    "F_KM_COLETADO                             := ?," +
+                    "F_TEMPO_REALIZACAO                        := ?," +
+                    "F_DATA_HORA_SINCRONIZACAO                 := ?," +
+                    "F_FONTE_DATA_HORA_REALIZACAO              := ?," +
+                    "F_VERSAO_APP_MOMENTO_REALIZACAO           := ?," +
+                    "F_VERSAO_APP_MOMENTO_SINCRONIZACAO        := ?," +
+                    "F_DEVICE_ID                               := ?," +
+                    "F_DEVICE_IMEI                             := ?," +
+                    "F_DEVICE_UPTIME_REALIZACAO_MILLIS         := ?," +
+                    "F_DEVICE_UPTIME_SINCRONIZACAO_MILLIS      := ?," +
+                    "F_FOI_OFFLINE                             := ?," +
+                    "F_TOTAL_PERGUNTAS_OK                      := ?," +
+                    "F_TOTAL_PERGUNTAS_NOK                     := ?," +
+                    "F_TOTAL_ALTERNATIVAS_OK                   := ?," +
+                    "F_TOTAL_ALTERNATIVAS_NOK                  := ?," +
+                    "F_TOTAL_FOTOS_CAPTURADAS_PERGUNTAS_OK     := ?," +
+                    "F_TOTAL_FOTOS_CAPTURADAS_ALTERNATIVAS_NOK := ?) " +
                     "AS CODIGO;");
             final ZoneId zoneId = TimeZoneManager.getZoneIdForCodUnidade(checklist.getCodUnidade(), conn);
             stmt.setLong(1, checklist.getCodUnidade());
@@ -139,6 +141,8 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
             stmt.setInt(20, checklist.getQtdPerguntasNok());
             stmt.setInt(21, checklist.getQtdAlternativasOk());
             stmt.setInt(22, checklist.getQtdAlternativasNok());
+            stmt.setInt(23, checklist.getQtdFotosCapturadasPerguntasOk());
+            stmt.setInt(24, checklist.getQtdFotosCapturadasAlternativasNok());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 final Long codChecklistInserido = rSet.getLong("CODIGO");

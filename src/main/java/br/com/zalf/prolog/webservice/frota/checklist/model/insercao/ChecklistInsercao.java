@@ -93,9 +93,16 @@ public final class ChecklistInsercao {
      */
     private final long deviceUptimeSincronizacaoMillis;
 
+    private final int qtdFotosCapturadasPerguntasOk;
+    private final int qtdFotosCapturadasAlternativasNok;
+
     /**
      * Metadados criados no momento de criação desse objeto contendo informações extras sobre o checklist sendo
      * inserido.
+     * <p>
+     * Ele é não-final pois o Gson inicializa o ChecklistInsercao através de um construtor vazio, então o método de
+     * inicialização no construtor (que inicializa esse objeto) nem sempre é chamado. Assim, sempre que ele for usado,
+     * nós garantimos que ele existe chamando novamente a inicialização caso ele seja {@code null}.
      */
     @NotNull
     @Exclude
@@ -109,24 +116,26 @@ public final class ChecklistInsercao {
     @Nullable
     private Checklist checklistAntigo;
 
-    public ChecklistInsercao(@NotNull  final Long codUnidade,
-                             @NotNull  final Long codModelo,
+    public ChecklistInsercao(@NotNull final Long codUnidade,
+                             @NotNull final Long codModelo,
                              @Nullable final Long codVersaoModeloChecklist,
-                             @NotNull  final Long codColaborador,
-                             @NotNull  final Long codVeiculo,
-                             @NotNull  final String placaVeiculo,
-                             @NotNull  final TipoChecklist tipo,
+                             @NotNull final Long codColaborador,
+                             @NotNull final Long codVeiculo,
+                             @NotNull final String placaVeiculo,
+                             @NotNull final TipoChecklist tipo,
                              final long kmColetadoVeiculo,
                              final long tempoRealizacaoCheckInMillis,
-                             @NotNull  final List<ChecklistResposta> respostas,
-                             @NotNull  final LocalDateTime dataHoraRealizacao,
-                             @NotNull  final FonteDataHora fonteDataHoraRealizacao,
-                             @NotNull  final Integer versaoAppMomentoRealizacao,
-                             @NotNull  final Integer versaoAppMomentoSincronizacao,
+                             @NotNull final List<ChecklistResposta> respostas,
+                             @NotNull final LocalDateTime dataHoraRealizacao,
+                             @NotNull final FonteDataHora fonteDataHoraRealizacao,
+                             @NotNull final Integer versaoAppMomentoRealizacao,
+                             @NotNull final Integer versaoAppMomentoSincronizacao,
                              @Nullable final String deviceId,
                              @Nullable final String deviceImei,
-                             final     long deviceUptimeRealizacaoMillis,
-                             final     long deviceUptimeSincronizacaoMillis) {
+                             final long deviceUptimeRealizacaoMillis,
+                             final long deviceUptimeSincronizacaoMillis,
+                             final int qtdFotosCapturadasPerguntasOk,
+                             final int qtdFotosCapturadasAlternativasNok) {
         this.codUnidade = codUnidade;
         this.codModelo = codModelo;
         this.codVersaoModeloChecklist = codVersaoModeloChecklist;
@@ -145,6 +154,8 @@ public final class ChecklistInsercao {
         this.deviceImei = deviceImei;
         this.deviceUptimeRealizacaoMillis = deviceUptimeRealizacaoMillis;
         this.deviceUptimeSincronizacaoMillis = deviceUptimeSincronizacaoMillis;
+        this.qtdFotosCapturadasPerguntasOk = qtdFotosCapturadasPerguntasOk;
+        this.qtdFotosCapturadasAlternativasNok = qtdFotosCapturadasAlternativasNok;
         this.cachedMetadata = createMetadata();
     }
 
@@ -258,19 +269,25 @@ public final class ChecklistInsercao {
         return cachedMetadata.getQtdAlternativasNok();
     }
 
+    public int getQtdFotosCapturadasPerguntasOk() {
+        return qtdFotosCapturadasPerguntasOk;
+    }
+
+    public int getQtdFotosCapturadasAlternativasNok() {
+        return qtdFotosCapturadasAlternativasNok;
+    }
+
     public void setChecklistAntigo(@Nullable final Checklist checklistAntigo) {
         this.checklistAntigo = checklistAntigo;
     }
 
     @NotNull
     public Checklist getChecklistAntigo() {
-        if (checklistAntigo != null) {
-            // Já foi convertido e setado no Service.
-            return checklistAntigo;
-        } else {
+        if (checklistAntigo == null) {
             checklistAntigo = ChecklistMigracaoEstruturaSuporte.toChecklistAntigo(this);
-            return checklistAntigo;
         }
+
+        return checklistAntigo;
     }
 
     private void ensureMetadataCreated() {

@@ -1,6 +1,5 @@
 package test.br.com.zalf.prolog.webservice.pilares.frota.checklist.os;
 
-import br.com.zalf.prolog.webservice.gente.colaborador.model.Cargo;
 import br.com.zalf.prolog.webservice.commons.FonteDataHora;
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
 import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
@@ -26,6 +25,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.Resul
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.visualizacao.ModeloChecklistVisualizacao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.visualizacao.PerguntaModeloChecklistVisualizacao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Cargo;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.jetbrains.annotations.NotNull;
@@ -62,6 +62,7 @@ public class ChecklistFluxoOsTest extends BaseTest {
     private ChecklistModeloService service;
     private String token;
 
+    @Override
     @BeforeAll
     public void initialize() throws Throwable {
         DatabaseManager.init();
@@ -69,6 +70,7 @@ public class ChecklistFluxoOsTest extends BaseTest {
         service = new ChecklistModeloService();
     }
 
+    @Override
     @AfterAll
     public void destroy() {
         DatabaseManager.finish();
@@ -227,7 +229,9 @@ public class ChecklistFluxoOsTest extends BaseTest {
                 "device didID",
                 "deviceImei",
                 10000,
-                11000);
+                11000,
+                0,
+                0);
 
         final ChecklistService checklistService = new ChecklistService();
         final Long codChecklistInserido = checklistService.insert(token, insercao);
@@ -474,7 +478,9 @@ public class ChecklistFluxoOsTest extends BaseTest {
                 deviceId,
                 deviceImei,
                 deviceUptimeRealizacaoMillis,
-                deviceUptimeSincronizacaoMillis);
+                deviceUptimeSincronizacaoMillis,
+                0,
+                0);
 
         final ChecklistService checklistService = new ChecklistService();
         checklistService.insert(token, insercao);
@@ -563,7 +569,9 @@ public class ChecklistFluxoOsTest extends BaseTest {
                 deviceId,
                 deviceImei,
                 deviceUptimeRealizacaoMillis,
-                deviceUptimeSincronizacaoMillis);
+                deviceUptimeSincronizacaoMillis,
+                0,
+                0);
 
         final ChecklistService checklistServiceC2 = new ChecklistService();
         final Long codChecklistInseridoC2 = checklistServiceC2.insert(token, insercaoC2);
@@ -680,7 +688,7 @@ public class ChecklistFluxoOsTest extends BaseTest {
         /* Armazena os códigos de contexto das alternativas que abrem O.S. */
         final long codigoContextoP1A2 = modeloBuscado.getPerguntas().get(0).getAlternativas().get(1).getCodigoContexto();
         final long codigoContextoP2B2 = modeloBuscado.getPerguntas().get(1).getAlternativas().get(1).getCodigoContexto();
-        Long codVersaoModeloChecklistInseridoM1 = comVersaoModeloSetada ? modeloBuscado.getCodVersaoModelo() : null;
+        final Long codVersaoModeloChecklistInseridoM1 = comVersaoModeloSetada ? modeloBuscado.getCodVersaoModelo() : null;
         //endregion
 
         //region Insere checklist C1 com alternativas que devem abrir O.S.
@@ -757,7 +765,9 @@ public class ChecklistFluxoOsTest extends BaseTest {
                 deviceId,
                 deviceImei,
                 deviceUptimeRealizacaoMillis,
-                deviceUptimeSincronizacaoMillis);
+                deviceUptimeSincronizacaoMillis,
+                0,
+                0);
 
         final ChecklistService checklistService = new ChecklistService();
         final Long codChecklistInserido = checklistService.insert(token, insercao);
@@ -847,7 +857,9 @@ public class ChecklistFluxoOsTest extends BaseTest {
                 deviceId,
                 deviceImei,
                 deviceUptimeRealizacaoMillis,
-                deviceUptimeSincronizacaoMillis);
+                deviceUptimeSincronizacaoMillis,
+                0,
+                0);
 
         final ChecklistService checklistServiceC2 = new ChecklistService();
         final Long codChecklistInseridoC2 = checklistServiceC2.insert(token, insercaoC2);

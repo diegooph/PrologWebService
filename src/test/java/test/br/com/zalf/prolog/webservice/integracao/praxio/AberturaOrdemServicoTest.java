@@ -1160,7 +1160,9 @@ public final class AberturaOrdemServicoTest extends BaseTest {
                 "device didID",
                 "deviceImei",
                 10000,
-                11000);
+                11000,
+                0,
+                0);
     }
 
     @NotNull
@@ -1237,7 +1239,9 @@ public final class AberturaOrdemServicoTest extends BaseTest {
                 "device didID",
                 "deviceImei",
                 10000,
-                11000);
+                11000,
+                0,
+                0);
     }
 
     private void permiteSincronizarModeloChecklist(
