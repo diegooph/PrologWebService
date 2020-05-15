@@ -8,6 +8,7 @@ Change Log
 
 ## Refactors
 * Refatora objetos que utilizam booleans podeAferirSulco, Pressao e SulcoPressao para não utilizar ou serem adaptados (PL-2689)
+* Refatora relatórios e objetos de aferição para retornar também a forma de coleta dos dados (PL-2684)
 
 <a name="v1.0.30"></a>
 ## Version [v1.0.30](https://github.com/luizfp/PrologWebService/compare/v1.0.29...v1.0.30) (release-date) [unreleased]
