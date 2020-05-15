@@ -92,10 +92,10 @@ public interface VeiculoDao {
             throws SQLException;
 
     /**
-     * Método para buscar um {@link VeiculoListagem} através do {@code codVeiculo}.
+     * Método para buscar um {@link VeiculoVisualizacao} através do {@code codVeiculo}.
      *
-     * @param codVeiculo código do {@link VeiculoListagem}.
-     * @return O {@link VeiculoListagem} contendo as informações.
+     * @param codVeiculo código do {@link VeiculoVisualizacao}.
+     * @return O {@link VeiculoVisualizacao} contendo as informações.
      * @throws Throwable Caso aconteça algum erro no banco.
      */
     VeiculoVisualizacao buscaVeiculoByCodigo(@NotNull final Long codVeiculo) throws Throwable;
