@@ -143,6 +143,9 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             novaAfericao.setVariacaoAceitaSulcoMaiorMilimetros(configuracao.getVariacaoAceitaSulcoMaiorMilimetros());
             novaAfericao.setBloqueiaValoresMenores(configuracao.isBloqueiaValoresMenores());
             novaAfericao.setBloqueiaValoresMaiores(configuracao.isBloqueiaValoresMaiores());
+            novaAfericao.setFormaColetaDadosSulco(configuracao.getFormaColetaDadosSulco());
+            novaAfericao.setFormaColetaDadosPressao(configuracao.getFormaColetaDadosPressao());
+            novaAfericao.setFormaColetaDadosSulcoPressao(configuracao.getFormaColetaDadosSulcoPressao());
             return novaAfericao;
         } finally {
             close(conn);
