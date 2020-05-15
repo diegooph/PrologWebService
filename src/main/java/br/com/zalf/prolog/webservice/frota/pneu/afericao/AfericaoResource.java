@@ -114,6 +114,7 @@ public class AfericaoResource {
             @QueryParam("tipoAfericao") @Required final String tipoAfericao) throws ProLogException {
         return service.getNovaAfericaoAvulsa(userToken, codUnidade, codPneu, tipoAfericao);
     }
+
     @GET
     @Path("/unidades/{codUnidade}/tipos-veiculos/{codTipoVeiculo}/placas/{placaVeiculo}")
     @Secured(permissions = {
@@ -202,7 +203,6 @@ public class AfericaoResource {
         return service.getRestricaoByCodUnidade(codUnidade);
     }
 
-
     /**
      * @deprecated at 2018-08-21. Ainda mantemos aqui para poder lançar uma exception personalizada avisando para
      * atualizar o App.
@@ -225,4 +225,5 @@ public class AfericaoResource {
             @HeaderParam("Authorization") final String userToken) throws ProLogException {
         throw new VersaoAppBloqueadaException("Atualize o aplicativo para poder buscar as aferições realizadas");
     }
+
 }
