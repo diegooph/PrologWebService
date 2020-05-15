@@ -517,9 +517,9 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
     private ConfiguracaoNovaAfericaoPlaca createConfiguracaoNovaAfericaoPlaca(
             @NotNull final ResultSet rSet) throws SQLException {
         return new ConfiguracaoNovaAfericaoPlaca(
-                rSet.getBoolean("PODE_AFERIR_SULCO"),
-                rSet.getBoolean("PODE_AFERIR_PRESSAO"),
-                rSet.getBoolean("PODE_AFERIR_SULCO_PRESSAO"),
+                FormaColetaDadosAfericaoEnum.fromString(rSet.getString("FORMA_COLETA_DADOS_SULCO")),
+                FormaColetaDadosAfericaoEnum.fromString(rSet.getString("FORMA_COLETA_DADOS_PRESSAO")),
+                FormaColetaDadosAfericaoEnum.fromString(rSet.getString("FORMA_COLETA_DADOS_SULCO_PRESSAO")),
                 rSet.getBoolean("PODE_AFERIR_ESTEPE"),
                 rSet.getDouble("SULCO_MINIMO_DESCARTE"),
                 rSet.getDouble("SULCO_MINIMO_RECAPAGEM"),
@@ -601,9 +601,9 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         placa.setIntervaloUltimaAfericaoSulco(rSet.getInt("INTERVALO_SULCO"));
         placa.setIntervaloUltimaAfericaoPressao(rSet.getInt("INTERVALO_PRESSAO"));
         placa.setQuantidadePneus(rSet.getInt("PNEUS_APLICADOS"));
-        placa.setPodeAferirSulco(rSet.getBoolean("PODE_AFERIR_SULCO"));
-        placa.setPodeAferirPressao(rSet.getBoolean("PODE_AFERIR_PRESSAO"));
-        placa.setPodeAferirSulcoPressao(rSet.getBoolean("PODE_AFERIR_SULCO_PRESSAO"));
+        placa.setFormaColetaDadosSulco(FormaColetaDadosAfericaoEnum.fromString(rSet.getString("FORMA_COLETA_DADOS_SULCO")));
+        placa.setFormaColetaDadosPressao(FormaColetaDadosAfericaoEnum.fromString(rSet.getString("FORMA_COLETA_DADOS_PRESSAO")));
+        placa.setFormaColetaDadosSulcoPressao(FormaColetaDadosAfericaoEnum.fromString(rSet.getString("FORMA_COLETA_DADOS_SULCO_PRESSAO")));
         placa.setPodeAferirEstepe(rSet.getBoolean("PODE_AFERIR_ESTEPE"));
         placa.setMetaAfericaoPressao(rSet.getInt("PERIODO_AFERICAO_PRESSAO"));
         placa.setMetaAfericaoSulco(rSet.getInt("PERIODO_AFERICAO_SULCO"));

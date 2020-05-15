@@ -16,6 +16,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.AfericaoPlaca;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.CronogramaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.ModeloPlacasAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.TipoMedicaoColetadaAfericao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.FormaColetaDadosAfericaoEnum;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
@@ -102,16 +103,16 @@ public final class AvaCorpAvilanConverter {
         cronogramaAfericao.setMetaAfericaoPressao(restricao.getPeriodoDiasAfericaoPressao());
         final List<ModeloPlacasAfericao> modelos = new ArrayList<>();
 
-        Map<String, List<br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.Veiculo>> modelosVeiculos =
+        final Map<String, List<br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.Veiculo>> modelosVeiculos =
                 arrayOfVeiculo
                         .getVeiculo()
                         .stream()
                         .collect(Collectors.groupingBy(v -> v.getModelo()));
 
-        LocalDateTime dataHoraUnidade;
+        final LocalDateTime dataHoraUnidade;
         try {
             dataHoraUnidade = LocalDateTime.now(TimeZoneManager.getZoneIdForCodUnidade(codUnidade));
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             throw new RuntimeException(e);
         }
 
@@ -126,10 +127,10 @@ public final class AvaCorpAvilanConverter {
                 placaAfericao.setPlaca(v.getPlaca());
                 placaAfericao.setCodUnidadePlaca(codUnidade);
                 placaAfericao.setQuantidadePneus(v.getQuantidadePneu());
-                placaAfericao.setPodeAferirPressao(false);
-                placaAfericao.setPodeAferirSulco(false);
+                placaAfericao.setFormaColetaDadosSulco(FormaColetaDadosAfericaoEnum.BLOQUEADO);
+                placaAfericao.setFormaColetaDadosPressao(FormaColetaDadosAfericaoEnum.BLOQUEADO);
+                placaAfericao.setFormaColetaDadosSulcoPressao(FormaColetaDadosAfericaoEnum.EQUIPAMENTO);
                 placaAfericao.setPodeAferirEstepe(true);
-                placaAfericao.setPodeAferirSulcoPressao(true);
                 if (Strings.isNullOrEmpty(v.getDtUltimaAfericao())) {
                     // Veículo nunca foi aferido.
                     placaAfericao.setIntervaloUltimaAfericaoPressao(ModeloPlacasAfericao.PlacaAfericao
@@ -191,12 +192,12 @@ public final class AvaCorpAvilanConverter {
     }
 
     @VisibleForTesting
-    public static Map<ModeloChecklist, List<String>> convert(Long codUnidade, ArrayOfQuestionarioVeiculos arrayOfQuestionarioVeiculos) {
+    public static Map<ModeloChecklist, List<String>> convert(final Long codUnidade, final ArrayOfQuestionarioVeiculos arrayOfQuestionarioVeiculos) {
         checkNotNull(arrayOfQuestionarioVeiculos, "arrayOfQuestionarioVeiculos não pode ser null!");
 
         final Map<ModeloChecklist, List<String>> map = new HashMap<>();
 
-        for (QuestionarioVeiculos questionarioVeiculos : arrayOfQuestionarioVeiculos.getQuestionarioVeiculos()) {
+        for (final QuestionarioVeiculos questionarioVeiculos : arrayOfQuestionarioVeiculos.getQuestionarioVeiculos()) {
             // Cria modelo de checklist
             final ModeloChecklist modeloChecklist = new ModeloChecklist();
             final Questionario questionario = questionarioVeiculos.getQuestionario();
@@ -215,10 +216,10 @@ public final class AvaCorpAvilanConverter {
     }
 
     @VisibleForTesting
-    public static NovoChecklistHolder convert(ArrayOfVeiculoQuestao veiculosQuestoes,
-                                              Long codUnidade,
-                                              Map<Long, String> mapCodPerguntUrlImagem,
-                                              String placaVeiculo) {
+    public static NovoChecklistHolder convert(final ArrayOfVeiculoQuestao veiculosQuestoes,
+                                              final Long codUnidade,
+                                              final Map<Long, String> mapCodPerguntUrlImagem,
+                                              final String placaVeiculo) {
         checkNotNull(veiculosQuestoes, "veiculosQuestoes não pode ser null!");
         checkNotNull(mapCodPerguntUrlImagem, "mapCodPerguntUrlImagem não pode ser null!");
         checkNotNull(placaVeiculo, "placaVeiculo não pode ser null!");
@@ -292,7 +293,7 @@ public final class AvaCorpAvilanConverter {
     }
 
     @VisibleForTesting
-    public static RespostasAvaliacao convert(Checklist checklist, String cpf, String dataNascimento) {
+    public static RespostasAvaliacao convert(final Checklist checklist, final String cpf, final String dataNascimento) {
         checkNotNull(checklist, "checklist não pode ser null!");
 
         final RespostasAvaliacao respostasAvaliacao = new RespostasAvaliacao();
@@ -301,7 +302,7 @@ public final class AvaCorpAvilanConverter {
         respostasAvaliacao.setOdometro(Math.toIntExact(checklist.getKmAtualVeiculo()));
         respostasAvaliacao.setCodigoAvaliacao(Math.toIntExact(checklist.getCodModelo()));
         final ArrayOfRespostaAval arrayOfRespostaAval = new ArrayOfRespostaAval();
-        for (PerguntaRespostaChecklist resposta : checklist.getListRespostas()) {
+        for (final PerguntaRespostaChecklist resposta : checklist.getListRespostas()) {
             final RespostaAval respostaAval = new RespostaAval();
             respostaAval.setSequenciaQuestao(Math.toIntExact(resposta.getCodigo()));
             // Sempre terá apenas uma alternativa.
@@ -363,7 +364,7 @@ public final class AvaCorpAvilanConverter {
     }
 
     @VisibleForTesting
-    public static DeprecatedFarolChecklist convert(ArrayOfFarolDia farolDia) throws ParseException {
+    public static DeprecatedFarolChecklist convert(final ArrayOfFarolDia farolDia) throws ParseException {
         checkNotNull(farolDia, "farolDia não pode ser null!");
         checkArgument(farolDia.getFarolDia().size() == 1, "farolDia não pode vir com mais de um elemento " +
                 "pois estamos filtrando apenas por um único dia!");
@@ -395,7 +396,7 @@ public final class AvaCorpAvilanConverter {
             if (veiculoChecklist.getItensCriticos() != null) {
                 itensCriticos = new ArrayList<>();
                 final List<ItemCritico> itensAvilan = veiculoChecklist.getItensCriticos().getItemCritico();
-                for (ItemCritico itemCritico : itensAvilan) {
+                for (final ItemCritico itemCritico : itensAvilan) {
                     final ItemOrdemServico itemOrdemServico = new ItemOrdemServico();
                     itemOrdemServico.setStatus(ItemOrdemServico.Status.PENDENTE);
                     // TODO: Está com um bug onde retorna também os millis, por isso nós removemos caso venha.
@@ -442,7 +443,7 @@ public final class AvaCorpAvilanConverter {
         checkNotNull(tiposVeiculosAvilanProLog, "tiposVeiculosAvilanProLog não pode ser null!");
 
         final List<TipoVeiculo> tiposVeiculosProLog = new ArrayList<>();
-        for (TipoVeiculoAvilanProLog tipoVeiculoAvilanProLog : tiposVeiculosAvilanProLog) {
+        for (final TipoVeiculoAvilanProLog tipoVeiculoAvilanProLog : tiposVeiculosAvilanProLog) {
             final TipoVeiculo tipoVeiculoProLog = new TipoVeiculo();
             tipoVeiculoProLog.setCodigo(tipoVeiculoAvilanProLog.getCodProLog());
             tipoVeiculoProLog.setNome(tipoVeiculoAvilanProLog.getDescricao());
@@ -531,7 +532,7 @@ public final class AvaCorpAvilanConverter {
         checkNotNull(afericoesFiltro, "afericoesFiltro não pode ser null!");
 
         final List<AfericaoPlaca> afericoes = new ArrayList<>();
-        for (AfericaoFiltro afericaoFiltro : afericoesFiltro) {
+        for (final AfericaoFiltro afericaoFiltro : afericoesFiltro) {
             afericoes.add(convertAfericaoSemPneus(afericaoFiltro, codUnidadeAfericao));
         }
         return afericoes;

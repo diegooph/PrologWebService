@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.protheusrodalog.model;
 
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.FormaColetaDadosAfericaoEnum;
+import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -16,6 +18,7 @@ import org.jetbrains.annotations.NotNull;
  * <p>
  * {@see protheusrodalog}
  */
+@Data
 public final class PlacaAfericaoProtheusRodalog {
     /**
      * Representação da placa do veículo.
@@ -38,28 +41,24 @@ public final class PlacaAfericaoProtheusRodalog {
     private Integer quantidadePneusAplicados;
 
     /**
-     * Indica se a {@link #placa} permite aferição do tipo {@link TipoMedicaoAfericaoProtheusRodalog#SULCO}.
+     * Indica se a forma de coleta do sulco da {@link #placa}.
      */
-    private Boolean podeAferirSulco;
+    private FormaColetaDadosAfericaoEnum formaColetaDadosSulco;
 
     /**
-     * Indica se a {@link #placa} permite aferição do tipo {@link TipoMedicaoAfericaoProtheusRodalog#PRESSAO}.
+     * Indica se a forma de coleta da pressão da {@link #placa}.
      */
-    private Boolean podeAferirPressao;
+    private FormaColetaDadosAfericaoEnum formaColetaDadosPressao;
 
     /**
-     * Indica se a {@link #placa} permite aferição do tipo {@link TipoMedicaoAfericaoProtheusRodalog#SULCO} e
-     * do tipo {@link TipoMedicaoAfericaoProtheusRodalog#PRESSAO}.
+     * Indica se a forma de coleta do sulco e da pressão da {@link #placa}.
      */
-    private Boolean podeAferirSulcoPressao;
+    private FormaColetaDadosAfericaoEnum formaColetaDadosSulcoPressao;
 
     /**
      * Indica se a {@link #placa} permite aferição de estepes.
      */
     private Boolean podeAferirEstepe;
-
-    public PlacaAfericaoProtheusRodalog() {
-    }
 
     @NotNull
     public static PlacaAfericaoProtheusRodalog getPlacaAfericaoDummy() {
@@ -69,73 +68,10 @@ public final class PlacaAfericaoProtheusRodalog {
         placa.setIntervaloDiasUltimaAfericaoPressao(5);
         placa.setQuantidadePneusAplicados(4);
         placa.setPodeAferirEstepe(true);
-        placa.setPodeAferirPressao(true);
-        placa.setPodeAferirSulco(true);
-        placa.setPodeAferirSulcoPressao(true);
+        placa.setFormaColetaDadosPressao(FormaColetaDadosAfericaoEnum.EQUIPAMENTO);
+        placa.setFormaColetaDadosSulco(FormaColetaDadosAfericaoEnum.EQUIPAMENTO);
+        placa.setFormaColetaDadosSulcoPressao(FormaColetaDadosAfericaoEnum.EQUIPAMENTO);
         return placa;
     }
 
-    public String getPlaca() {
-        return placa;
-    }
-
-    public void setPlaca(final String placa) {
-        this.placa = placa;
-    }
-
-    public Integer getIntervaloDiasUltimaAfericaoSulco() {
-        return intervaloDiasUltimaAfericaoSulco;
-    }
-
-    public void setIntervaloDiasUltimaAfericaoSulco(final Integer intervaloDiasUltimaAfericaoSulco) {
-        this.intervaloDiasUltimaAfericaoSulco = intervaloDiasUltimaAfericaoSulco;
-    }
-
-    public Integer getIntervaloDiasUltimaAfericaoPressao() {
-        return intervaloDiasUltimaAfericaoPressao;
-    }
-
-    public void setIntervaloDiasUltimaAfericaoPressao(final Integer intervaloDiasUltimaAfericaoPressao) {
-        this.intervaloDiasUltimaAfericaoPressao = intervaloDiasUltimaAfericaoPressao;
-    }
-
-    public Integer getQuantidadePneusAplicados() {
-        return quantidadePneusAplicados;
-    }
-
-    public void setQuantidadePneusAplicados(final Integer quantidadePneusAplicados) {
-        this.quantidadePneusAplicados = quantidadePneusAplicados;
-    }
-
-    public Boolean getPodeAferirSulco() {
-        return podeAferirSulco;
-    }
-
-    public void setPodeAferirSulco(final Boolean podeAferirSulco) {
-        this.podeAferirSulco = podeAferirSulco;
-    }
-
-    public Boolean getPodeAferirPressao() {
-        return podeAferirPressao;
-    }
-
-    public void setPodeAferirPressao(final Boolean podeAferirPressao) {
-        this.podeAferirPressao = podeAferirPressao;
-    }
-
-    public Boolean getPodeAferirSulcoPressao() {
-        return podeAferirSulcoPressao;
-    }
-
-    public void setPodeAferirSulcoPressao(final Boolean podeAferirSulcoPressao) {
-        this.podeAferirSulcoPressao = podeAferirSulcoPressao;
-    }
-
-    public Boolean getPodeAferirEstepe() {
-        return podeAferirEstepe;
-    }
-
-    public void setPodeAferirEstepe(final Boolean podeAferirEstepe) {
-        this.podeAferirEstepe = podeAferirEstepe;
-    }
 }

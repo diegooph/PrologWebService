@@ -9,6 +9,7 @@ import org.jetbrains.annotations.Nullable;
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
 public enum FormaColetaDadosAfericaoEnum {
+    BLOQUEADO("BLOQUEADO"),
     EQUIPAMENTO("EQUIPAMENTO"),
     MANUAL("MANUAL"),
     EQUIPAMENTO_MANUAL("EQUIPAMENTO_MANUAL");

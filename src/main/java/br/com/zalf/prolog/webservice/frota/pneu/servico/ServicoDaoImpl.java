@@ -59,7 +59,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
                 throw new SQLException("Erro ao criar serviço");
             }
         } finally {
-            closeConnection(null, stmt, rSet);
+            close(stmt, rSet);
         }
     }
 
@@ -83,7 +83,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
             stmt.setString(6, tipoServico.asString());
             stmt.executeUpdate();
         } finally {
-            closeStatement(stmt);
+            close(stmt);
         }
     }
 
@@ -106,7 +106,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
             stmt.setString(7, TipoServico.CALIBRAGEM.asString());
             stmt.executeUpdate();
         } finally {
-            closeStatement(stmt);
+            close(stmt);
         }
     }
 
@@ -131,7 +131,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
                 servicos.add(TipoServico.fromString(rSet.getString("TIPO_SERVICO")));
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
         return servicos;
     }
@@ -147,7 +147,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
             rSet = stmt.executeQuery();
             return ServicoConverter.createServicosAbertosHolder(rSet);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -185,7 +185,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
             rSet = stmt.executeQuery();
             return ServicoConverter.createServicos(rSet);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -279,7 +279,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
                 throw new SQLException("Erro ao buscar serviço com código: " + codServico);
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -303,7 +303,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
             servicosFechadosHolder.setServicosFechados(quantidadeServicosFechados);
             return servicosFechadosHolder;
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -327,7 +327,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
             servicosFechadosHolder.setServicosFechados(quantidadeServicosFechados);
             return servicosFechadosHolder;
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -344,7 +344,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
             rSet = stmt.executeQuery();
             return ServicoConverter.createServicos(rSet);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -382,7 +382,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
             rSet = stmt.executeQuery();
             return ServicoConverter.createServicos(rSet);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -401,7 +401,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
                 throw new SQLException("Erro ao buscar quantidade de serviços em aberto para o pneu: " + codPneu);
             }
         } finally {
-            closeConnection(null, stmt, rSet);
+            close(stmt, rSet);
         }
     }
 
@@ -450,7 +450,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
                 throw new SQLException("Erro ao buscar veículo do serviço");
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -501,7 +501,8 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
                 "Fechamento de serviço");
     }
 
-    private boolean contains(@NotNull final List<Servico> servicos, @NotNull final TipoServico tipoServico) {
+    private boolean contains(@NotNull final List<Servico> servicos,
+                             @NotNull final TipoServico tipoServico) {
         for (final Servico servico : servicos) {
             if (servico.getTipoServico().equals(tipoServico)) {
                 return true;
@@ -527,7 +528,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
                 alternativas.add(alternativa);
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
         return alternativas;
     }

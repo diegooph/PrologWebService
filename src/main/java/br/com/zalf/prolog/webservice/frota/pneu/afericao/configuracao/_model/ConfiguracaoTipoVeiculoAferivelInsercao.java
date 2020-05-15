@@ -16,9 +16,6 @@ public final class ConfiguracaoTipoVeiculoAferivelInsercao {
     private final Long codConfiguracao;
     @NotNull
     private final Long codTipoVeiculo;
-    private final boolean podeAferirPressao;
-    private final boolean podeAferirSulco;
-    private final boolean podeAferirSulcoPressao;
     private final boolean podeAferirEstepe;
     @NotNull
     private final FormaColetaDadosAfericaoEnum formaColetaDadosPressao;
