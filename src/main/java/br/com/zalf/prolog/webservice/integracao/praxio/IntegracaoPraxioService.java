@@ -198,7 +198,7 @@ public final class IntegracaoPraxioService extends BaseIntegracaoService {
             if (tokenIntegracao == null) {
                 throw new GenericException("Um Token deve ser fornecido");
             }
-            if (itensResolvidos == null || itensResolvidos.isEmpty()) {
+            if (itensResolvidos.isEmpty()) {
                 throw new GenericException("Nenhum item resolvido foi recebido");
             }
             ensureValidToken(tokenIntegracao, TAG);
@@ -515,8 +515,8 @@ public final class IntegracaoPraxioService extends BaseIntegracaoService {
         }
     }
 
-    private void validaCpfColaborador(final String cpdColaborador) throws GenericException {
-        if (StringUtils.isNullOrEmpty(StringUtils.trimToNull(cpdColaborador))) {
+    private void validaCpfColaborador(@NotNull final String cpfColaborador) throws GenericException {
+        if (StringUtils.isNullOrEmpty(StringUtils.trimToNull(cpfColaborador))) {
             throw new GenericException("O CPF do colaborador deve ser informado no fechamento de O.S");
         }
     }
