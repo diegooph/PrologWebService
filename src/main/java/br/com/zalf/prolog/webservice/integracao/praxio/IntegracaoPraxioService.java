@@ -99,8 +99,8 @@ public final class IntegracaoPraxioService extends BaseIntegracaoService {
     public SuccessResponseIntegracao transferirVeiculoPraxio(
             final String tokenIntegracao,
             final VeiculoTransferenciaPraxio veiculoTransferenciaPraxio) throws ProLogException {
-        if (StringUtils.isNullOrEmpty(StringUtils.trimToNull(veiculoTransferenciaPraxio.
-                getCpfColaboradorRealizacaoTransferencia()))) {
+        if (StringUtils.isNullOrEmpty(StringUtils.trimToNull(
+                veiculoTransferenciaPraxio.getCpfColaboradorRealizacaoTransferencia()))) {
             throw new GenericException("O CPF do colaborador deve ser informado na transferência de veículo");
         }
         try {

@@ -9,6 +9,7 @@ Change Log
 
 ### Refactors
 * Melhora mensanges de retorno ao ativar/inativar um veículo
+* Valida CPF nos processos de transferência integrados (PLI-147)
 
 ### Bugfix
 * Corrige problema de parse de data na sincronia de checklist (PLI-146)

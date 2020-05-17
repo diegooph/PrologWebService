@@ -77,8 +77,8 @@ public final class ApiCadastroPneuService extends BaseIntegracaoService {
     public SuccessResponseIntegracao transferirPneu(
             final String tokenIntegracao,
             final ApiPneuTransferencia pneuTransferencia) throws ProLogException {
-        if (StringUtils.isNullOrEmpty(StringUtils.trimToNull(pneuTransferencia.
-                getCpfColaboradorRealizacaoTransferencia()))) {
+        if (StringUtils.isNullOrEmpty(StringUtils.trimToNull(
+                pneuTransferencia.getCpfColaboradorRealizacaoTransferencia()))) {
             throw new GenericException("O CPF do colaborador deve ser informado na transferência de pneu");
         }
         try {
