@@ -1,16 +1,16 @@
 package br.com.zalf.prolog.webservice.integracao.api.afericao;
 
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.TipoMedicaoColetadaAfericao;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.TipoProcessoColetaAfericao;
 import br.com.zalf.prolog.webservice.integracao.api.afericao._model.ApiPneuMedicaoRealizada;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -19,90 +19,38 @@ import java.util.List;
  * @author Natan Rotta (https://github.com/natanrotta)
  */
 final class ApiAfericaoDaoImpl extends DatabaseConnection implements ApiAfericaoDao {
-
     @NotNull
     @Override
-    public List<ApiPneuMedicaoRealizada> getAfericoesRealizadas(final @NotNull String tokenIntegracao,
-                                                                final Long codigoProcessoAfericao,
-                                                                final LocalDateTime dataHoraUltimaAtualizacaoUtc) throws Throwable {
-        final List<ApiPneuMedicaoRealizada> afericoes = new ArrayList<>();
+    public List<ApiPneuMedicaoRealizada> getAfericoesRealizadas(
+            @NotNull final String tokenIntegracao,
+            @Nullable final Long codigoProcessoAfericao,
+            @Nullable final LocalDateTime dataHoraUltimaAtualizacaoUtc) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            // Busca pelo código da aferição
             if (codigoProcessoAfericao != null) {
-                stmt = conn.prepareStatement("SELECT * FROM " +
-                        "INTEGRACAO.FUNC_INTEGRACAO_BUSCA_AFERICOES_REALIZADAS_POR_COD_AFERICAO(?, ?);");
+                stmt = conn.prepareStatement("select * from " +
+                        "integracao.func_pneu_afericao_busca_afericoes_realizadas_by_codigo(?, ?);");
                 stmt.setString(1, tokenIntegracao);
                 stmt.setLong(2, codigoProcessoAfericao);
-                // Busca pelo horário da última aferição
             } else {
-                stmt = conn.prepareStatement("SELECT * FROM " +
-                        "INTEGRACAO.FUNC_INTEGRACAO_BUSCA_AFERICOES_REALIZADAS_POR_DATA_HORA(?, ?);");
+                stmt = conn.prepareStatement("select * from " +
+                        "integracao.func_pneu_afericao_busca_afericoes_realizadas_by_data_hora(?, ?);");
                 stmt.setString(1, tokenIntegracao);
                 stmt.setObject(2, dataHoraUltimaAtualizacaoUtc);
             }
             rSet = stmt.executeQuery();
-            while (rSet.next()) {
-                ApiPneuMedicaoRealizada afericaoRealizada = new ApiPneuMedicaoRealizada();
-                afericaoRealizada.
-                        setCodigoProcessoAfericao(rSet.getLong("COD_AFERICAO"));
-                afericaoRealizada.
-                        setCodUnidadeAfericao(rSet.getLong("COD_UNIDADE_AFERICAO"));
-                afericaoRealizada.
-                        setCpfColaborador(rSet.getString("CPF_COLABORADOR"));
-                afericaoRealizada.
-                        setPlacaVeiculoAferido(rSet.getString("PLACA_VEICULO_AFERIDO"));
-                afericaoRealizada.
-                        setCodPneuAferido(rSet.getLong("COD_PNEU_AFERIDO"));
-                afericaoRealizada.
-                        setNumeroFogoPneu(rSet.getString("NUMERO_FOGO"));
-                afericaoRealizada.
-                        setAlturaSulcoInternoEmMilimetros(rSet.getDouble("ALTURA_SULCO_INTERNO"));
-                afericaoRealizada.
-                        setAlturaSulcoCentralInternoEmMilimetros(rSet.
-                                getDouble("ALTURA_SULCO_CENTRAL_INTERNO"));
-                afericaoRealizada.
-                        setAlturaSulcoCentralExternoEmMilimetros(rSet.
-                                getDouble("ALTURA_SULCO_CENTRAL_EXTERNO"));
-                afericaoRealizada.
-                        setAlturaSulcoExternoEmMilimetros(rSet.getDouble("ALTURA_SULCO_EXTERNO"));
-                afericaoRealizada.
-                        setPressaoEmPsi(rSet.getDouble("PRESSAO"));
-                afericaoRealizada.
-                        setKmVeiculoMomentoAfericao(rSet.getLong("KM_VEICULO_MOMENTO_AFERICAO"));
-                afericaoRealizada.
-                        setTempoRealizacaoEmSegundos(rSet.getLong("TEMPO_REALIZACAO_AFERICAO_EM_MILIS"));
-                afericaoRealizada.
-                        setVidaPneuMomentoAfericao(rSet.getInt("VIDA_MOMENTO_AFERICAO"));
-                afericaoRealizada.
-                        setPosicaoPneuMomentoAfericao(rSet.getInt("POSICAO_PNEU_MOMENTO_AFERICAO"));
-                afericaoRealizada.
-                        setDataHoraAfericaoEmUTC(rSet.getObject("DATA_HORA_AFERICAO", LocalDateTime.class));
-                switch (rSet.getString("TIPO_MEDICAO_COLETADA")) {
-                    case "SULCO":
-                        afericaoRealizada.setTipoMedicaoColetadaAfericao(TipoMedicaoColetadaAfericao.SULCO);
-                        break;
-                    case "PRESSAO":
-                        afericaoRealizada.setTipoMedicaoColetadaAfericao(TipoMedicaoColetadaAfericao.PRESSAO);
-                        break;
-                    case "SULCO_PRESSAO":
-                        afericaoRealizada.setTipoMedicaoColetadaAfericao(TipoMedicaoColetadaAfericao.SULCO_PRESSAO);
-                        break;
-                }
-                switch (rSet.getString("TIPO_PROCESSO_COLETA")) {
-                    case "PLACA":
-                        afericaoRealizada.setTipoProcessoColetaAfericao(TipoProcessoColetaAfericao.PLACA);
-                        break;
-                    case "PNEU_AVULSO":
-                        afericaoRealizada.setTipoProcessoColetaAfericao(TipoProcessoColetaAfericao.PNEU_AVULSO);
-                        break;
-                }
-                afericoes.add(afericaoRealizada);
+            if (rSet.next()) {
+                final List<ApiPneuMedicaoRealizada> afericoesRealizadas = new ArrayList<>();
+                do {
+                    afericoesRealizadas.add(ApiAfericaoConverter.createAfericaoRealizada(rSet));
+                } while (rSet.next());
+                return afericoesRealizadas;
+            } else {
+                return Collections.emptyList();
             }
-            return afericoes;
         } finally {
             close(conn, stmt, rSet);
         }

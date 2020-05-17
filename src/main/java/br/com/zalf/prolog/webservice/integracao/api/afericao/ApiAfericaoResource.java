@@ -24,7 +24,6 @@ import java.util.List;
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class ApiAfericaoResource {
-
     @NotNull
     private final ApiAfericaoService service = new ApiAfericaoService();
 
@@ -38,5 +37,4 @@ public class ApiAfericaoResource {
             @QueryParam("dataHoraUltimaAtualizacaoUtc") final String dataHoraUltimaAtualizacaoUtc) throws ProLogException {
         return service.getAfericoesRealizadas(tokenIntegracao, codUltimoProcessoAfericao, dataHoraUltimaAtualizacaoUtc);
     }
-
 }

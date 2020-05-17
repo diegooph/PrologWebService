@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.integracao.api.afericao;
 
 import br.com.zalf.prolog.webservice.integracao.api.afericao._model.ApiPneuMedicaoRealizada;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -26,7 +27,8 @@ public interface ApiAfericaoDao {
      * @return Uma lista de {@link List<ApiPneuMedicaoRealizada> aferições}.
      * @throws Throwable Se algum erro ocorrer durante a busca das novas aferições.
      */
-    List<ApiPneuMedicaoRealizada> getAfericoesRealizadas(@NotNull final String tokenIntegracao,
-                                                         final Long codigoProcessoAfericao,
-                                                         final LocalDateTime dataHoraUltimaAtualizacaoUtc) throws Throwable;
+    List<ApiPneuMedicaoRealizada> getAfericoesRealizadas(
+            @NotNull final String tokenIntegracao,
+            @Nullable final Long codigoProcessoAfericao,
+            @Nullable final LocalDateTime dataHoraUltimaAtualizacaoUtc) throws Throwable;
 }
