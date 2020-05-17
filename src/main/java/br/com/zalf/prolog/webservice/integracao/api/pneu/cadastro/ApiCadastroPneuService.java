@@ -2,6 +2,8 @@ package br.com.zalf.prolog.webservice.integracao.api.pneu.cadastro;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.commons.util.StringUtils;
+import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.integracao.BaseIntegracaoService;
 import br.com.zalf.prolog.webservice.integracao.api.pneu.cadastro.model.*;
@@ -75,6 +77,10 @@ public final class ApiCadastroPneuService extends BaseIntegracaoService {
     public SuccessResponseIntegracao transferirPneu(
             final String tokenIntegracao,
             final ApiPneuTransferencia pneuTransferencia) throws ProLogException {
+        if (StringUtils.isNullOrEmpty(StringUtils.trimToNull(pneuTransferencia.
+                getCpfColaboradorRealizacaoTransferencia()))) {
+            throw new GenericException("O CPF do colaborador deve ser informado na transferência de pneu");
+        }
         try {
             ensureValidToken(tokenIntegracao, TAG);
             return new SuccessResponseIntegracao(

@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.integracao.praxio;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
@@ -98,6 +99,10 @@ public final class IntegracaoPraxioService extends BaseIntegracaoService {
     public SuccessResponseIntegracao transferirVeiculoPraxio(
             final String tokenIntegracao,
             final VeiculoTransferenciaPraxio veiculoTransferenciaPraxio) throws ProLogException {
+        if (StringUtils.isNullOrEmpty(StringUtils.trimToNull(veiculoTransferenciaPraxio.
+                getCpfColaboradorRealizacaoTransferencia()))) {
+            throw new GenericException("O CPF do colaborador deve ser informado na transferência de veículo");
+        }
         try {
             ensureValidToken(tokenIntegracao, TAG);
             dao.transferirVeiculoPraxio(tokenIntegracao, veiculoTransferenciaPraxio);
