@@ -190,6 +190,10 @@ public final class IntegracaoPraxioService extends BaseIntegracaoService {
     public SuccessResponseIntegracao resolverMultiplosItens(
             final String tokenIntegracao,
             final List<ItemResolvidoGlobus> itensResolvidos) throws ProLogException {
+        //Realiza validação para CPF
+        for (ItemResolvidoGlobus item : itensResolvidos) {
+            validaCpfColaborador(item.getCpfColaboradorResolucao());
+        }
         try {
             if (tokenIntegracao == null) {
                 throw new GenericException("Um Token deve ser fornecido");
@@ -508,6 +512,12 @@ public final class IntegracaoPraxioService extends BaseIntegracaoService {
                         itemResolvido.getCodItemResolvidoGlobus());
                 throw new GenericException(msg);
             }
+        }
+    }
+
+    private void validaCpfColaborador(final String cpdColaborador) throws GenericException {
+        if (StringUtils.isNullOrEmpty(StringUtils.trimToNull(cpdColaborador))) {
+            throw new GenericException("O CPF do colaborador deve ser informado no fechamento de O.S");
         }
     }
 }
