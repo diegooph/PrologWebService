@@ -19,4 +19,13 @@ public interface AutenticacaoIntegracaoDao {
      * @throws Throwable Se algum erro ocorrer durante a verificação do Token.
      */
     boolean verifyIfTokenIntegracaoExists(@NotNull final String tokenIntegracao) throws Throwable;
+
+    /**
+     * Método utilizado para verificar se o token recebido está ativo.
+     *
+     * @param tokenIntegracao Token recebido na requisição, que será validado.
+     * @return <code>TRUE</code> se o token for válido, <code>FALSE</code> caso contrário.
+     * @throws Throwable Se algum erro ocorrer durante a verificação do Token.
+     */
+    boolean verifyIfTokenIsActive(@NotNull final String tokenIntegracao) throws Throwable;
 }
