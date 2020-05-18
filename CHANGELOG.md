@@ -5,8 +5,9 @@ Change Log
 ## Version [v1.0.30](https://github.com/luizfp/PrologWebService/compare/v1.0.29...v1.0.30) (release-date) [unreleased]
 
 ### Features
-* Criar estrutura de mapeamento de posições no Prolog (PLI-142)
-* Criar flag nas integrações para ligar/desligar integrações (PLI-72)
+* Cria estrutura de mapeamento de posições no Prolog (PLI-142)
+* Cria flag nas integrações para ligar/desligar integrações (PLI-72)
+* Adiciona validação de unidades integradas no Sistema Globus Piccolotur (PLI-151)
 
 ### Refactors
 * Melhora mensanges de retorno ao ativar/inativar um veículo
