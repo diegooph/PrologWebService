@@ -163,7 +163,8 @@ public interface AfericaoDao {
      *
      * @param codUnidade     Código da {@link Unidade} que os dados serão buscados.
      * @param codColaborador O código do colaborador que realizou a aferição, pelo qual as buscas serão filtradas.
-     *                       É opcional.
+     *                       É opcional. Este código de colaborador é buscado dentro do ws, com base nas permissões
+     *                       do requisitante.
      * @param dataInicial    Data inicial do período de filtro.
      * @param dataFinal      Data final do período de filtro.
      * @return Um objeto {@link Report} com os dados filtrados.

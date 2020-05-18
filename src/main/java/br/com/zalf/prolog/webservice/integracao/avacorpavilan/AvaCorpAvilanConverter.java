@@ -600,7 +600,7 @@ public final class AvaCorpAvilanConverter {
         afericaoPlaca.setCodigo((long) afericaoFiltro.getCodigoAfericao());
         afericaoPlaca.setCodUnidade(codUnidadeAfericao);
         afericaoPlaca.setKmMomentoAfericao(afericaoFiltro.getOdometro());
-
+        afericaoPlaca.setFormaColetaDadosAfericao(FormaColetaDadosAfericaoEnum.EQUIPAMENTO);
         // Na integração todas as aferições devem ser de sulco e pressão, já que o Latromi não tem essa diferenciação.
         afericaoPlaca.setTipoMedicaoColetadaAfericao(TipoMedicaoColetadaAfericao.SULCO_PRESSAO);
 

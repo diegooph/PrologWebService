@@ -143,6 +143,9 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             novaAfericao.setVariacaoAceitaSulcoMaiorMilimetros(configuracao.getVariacaoAceitaSulcoMaiorMilimetros());
             novaAfericao.setBloqueiaValoresMenores(configuracao.isBloqueiaValoresMenores());
             novaAfericao.setBloqueiaValoresMaiores(configuracao.isBloqueiaValoresMaiores());
+            novaAfericao.setFormaColetaDadosSulco(configuracao.getFormaColetaDadosSulco());
+            novaAfericao.setFormaColetaDadosPressao(configuracao.getFormaColetaDadosPressao());
+            novaAfericao.setFormaColetaDadosSulcoPressao(configuracao.getFormaColetaDadosSulcoPressao());
             return novaAfericao;
         } finally {
             close(conn);
@@ -819,7 +822,8 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         afericao.setTipoMedicaoColetadaAfericao(TipoMedicaoColetadaAfericao.fromString(rSet.getString
                 ("TIPO_MEDICAO_COLETADA")));
         afericao.setTempoRealizacaoAfericaoInMillis(rSet.getLong("TEMPO_REALIZACAO"));
-
+        afericao.setFormaColetaDadosAfericao(FormaColetaDadosAfericaoEnum
+                .fromString(rSet.getString("FORMA_COLETA_DADOS")));
         // Colaborador que realizou a aferição.
         final Colaborador colaborador = new Colaborador();
         colaborador.setCpf(rSet.getLong("CPF"));
