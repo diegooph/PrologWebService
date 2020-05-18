@@ -39,7 +39,7 @@ public class AutenticacaoIntegracaoDaoImpl extends DatabaseConnection implements
     }
 
     @Override
-    public boolean verifyIfTokenIsActive(final @NotNull String tokenIntegracao) throws Throwable {
+    public boolean verifyIfTokenIsActive(@NotNull final String tokenIntegracao) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
