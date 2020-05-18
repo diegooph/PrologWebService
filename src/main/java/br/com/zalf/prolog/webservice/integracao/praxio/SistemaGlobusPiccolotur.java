@@ -31,7 +31,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
 import java.time.OffsetDateTime;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
@@ -66,12 +65,6 @@ public final class SistemaGlobusPiccolotur extends Sistema {
                                 final boolean deveAbrirOs) throws Throwable {
         final DatabaseConnectionProvider connectionProvider = new DatabaseConnectionProvider();
         Connection conn = null;
-
-        if (unidadeEstaComIntegracaoAtiva(checklistNew.getCodUnidade())) {
-            throw new BloqueadoIntegracaoException("A unidade de código " + checklistNew.getCodUnidade() +
-                    " não está integrada");
-        }
-
         try {
             // Devemos enviar para o Globus apenas o modelo de checklist existe na tabela de integração.
             // Verifica se modelo informado existe na tabela.
@@ -86,8 +79,8 @@ public final class SistemaGlobusPiccolotur extends Sistema {
                     .provideChecklistDao()
                     .insert(conn, checklistNew, foiOffline, !deveEnviarParaGlobus);
 
-            // Se não devemos enviar para o Globus, então retornamos. Já fizemos tudo o que deveríamos!
-            if (!deveEnviarParaGlobus) {
+            // Se a unidade está com a integração desativada ou não devemos enviar para o Globus, então retornamos.
+            if (!unidadeEstaComIntegracaoAtiva(checklistNew.getCodUnidade()) || !deveEnviarParaGlobus) {
                 return codChecklistProLog;
             }
 
@@ -132,12 +125,13 @@ public final class SistemaGlobusPiccolotur extends Sistema {
             final boolean statusAtivo,
             @NotNull final String token) throws Throwable {
         if (unidadeEstaComIntegracaoAtiva(modeloChecklist.getCodUnidade())) {
-            throw new BloqueadoIntegracaoException("A unidade de código " + modeloChecklist.getCodUnidade() +
-                    " não está integrada");
+            // Ignoramos o statusAtivo, pois queremos forçar que o modelo de checklist tenha o statusAtivo = false.
+            return getIntegradorProLog()
+                    .insertModeloChecklist(modeloChecklist, checklistOfflineListener, false, token);
         }
-
-        // Ignoramos o statusAtivo repassado pois queremos forçar que o modelo de checklist tenha o statusAtivo = false.
-        return getIntegradorProLog().insertModeloChecklist(modeloChecklist, checklistOfflineListener, false, token);
+        // Direcionamos a requisição normalmente para o Prolog.
+        return getIntegradorProLog()
+                .insertModeloChecklist(modeloChecklist, checklistOfflineListener, statusAtivo, token);
     }
 
     @Override
@@ -148,42 +142,46 @@ public final class SistemaGlobusPiccolotur extends Sistema {
                                       final boolean podeMudarCodigoContextoPerguntasEAlternativas,
                                       @NotNull final String token) throws Throwable {
         if (unidadeEstaComIntegracaoAtiva(modeloChecklist.getCodUnidade())) {
-            throw new BloqueadoIntegracaoException("A unidade de código " + modeloChecklist.getCodUnidade() +
-                    " não está integrada");
+            // Ignoramos a propriedade sobrescreverPerguntasAlternativas pois queremos que para essa integração todas as
+            // edições de perguntas e alternativas sobrescrevam os valores antigos sem alterar os códigos existentes.
+            getIntegradorProLog()
+                    .updateModeloChecklist(
+                            codUnidade,
+                            codModelo,
+                            modeloChecklist,
+                            checklistOfflineListener,
+                            false,
+                            token);
+            return;
         }
-
-        // Ignoramos a propriedade sobrescreverPerguntasAlternativas pois queremos que para essa integração todas as
-        // edições de perguntas e alternativas sobrescrevam os valores antigos sem alterar os códigos existentes.
+        // Direcionamos a requisição normalmente para o Prolog.
         getIntegradorProLog()
                 .updateModeloChecklist(
                         codUnidade,
                         codModelo,
                         modeloChecklist,
                         checklistOfflineListener,
-                        false,
+                        podeMudarCodigoContextoPerguntasEAlternativas,
                         token);
     }
 
     @Override
     public void resolverItem(@NotNull final ResolverItemOrdemServico item) throws Throwable {
-        final boolean itemIntegrado =
-                getSistemaGlobusPiccoloturDaoImpl().
-                        verificaItensIntegrados(Collections.singletonList(item.getCodItemResolvido()));
-        if (itemIntegrado) {
+        if (unidadeEstaComIntegracaoAtiva(item.getCodUnidadeOrdemServico())) {
             throw new BloqueadoIntegracaoException(
                     "O fechamento de itens de O.S. integrados deverá ser feito apenas pelo Sistema Globus");
         }
+        // Se a unidade não possui integração direcionamos para o Prolog.
         getIntegradorProLog().resolverItem(item);
     }
 
     @Override
     public void resolverItens(@NotNull final ResolverMultiplosItensOs itensResolucao) throws Throwable {
-        final boolean itensIntegrados =
-                getSistemaGlobusPiccoloturDaoImpl().verificaItensIntegrados(itensResolucao.getCodigosItens());
-        if (itensIntegrados) {
+        if (unidadeEstaComIntegracaoAtiva(itensResolucao.getCodUnidadeOrdemServico())) {
             throw new BloqueadoIntegracaoException(
                     "O fechamento de itens de O.S. integrados deverá ser feito apenas pelo Sistema Globus");
         }
+        // Se a unidade não possui integração direcionamos para o Prolog.
         getIntegradorProLog().resolverItens(itensResolucao);
     }
 
