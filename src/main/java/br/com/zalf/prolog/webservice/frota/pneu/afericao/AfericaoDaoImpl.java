@@ -81,7 +81,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                     "F_TEMPO_REALIZACAO := ?, " +
                     "F_TIPO_MEDICAO_COLETADA := ?, " +
                     "F_TIPO_PROCESSO_COLETA := ?, " +
-                    "F_FORMA_COLETA_DADOS => ?::afericao_forma_coleta_dados_type," +
+                    "F_FORMA_COLETA_DADOS => ?," +
                     "F_PLACA_VEICULO := ?, " +
                     "F_KM_VEICULO := ?) AS COD_AFERICAO;");
             stmt.setLong(1, codUnidade);
