@@ -7,6 +7,7 @@ Change Log
 ### Features
 * Cria estrutura de mapeamento de posições no Prolog (PLI-142)
 * Cria flag nas integrações para ligar/desligar integrações (PLI-72)
+* Cria método genérico de busca de Aferições Realizadas (AVACON) (PLI-144)
 * Adiciona validação de unidades integradas no Sistema Globus Piccolotur (PLI-151)
 
 ### Refactors
