@@ -12,7 +12,7 @@ import java.util.List;
  */
 @Data
 public class DiagramaPosicaoMapeado {
-    private final int codDiagrama;
+    private final int codTipoVeiculo;
     @NotNull
     private final List<PosicaoPneuMepado> posicoesMapeadas;
 }

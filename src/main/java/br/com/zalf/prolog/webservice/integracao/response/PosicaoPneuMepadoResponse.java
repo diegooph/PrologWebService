@@ -14,27 +14,27 @@ public class PosicaoPneuMepadoResponse {
     @NotNull
     public static final String GENERIC_ERROR_MESSAGE = "Não foi possível cadastrar o pneu no Sistema ProLog";
     private final boolean success;
-    private final int codDiagrama;
+    private final int codTipoVeiculo;
     @Nullable
     private final String errors;
     @Nullable
     private final Throwable throwable;
 
     @NotNull
-    public static PosicaoPneuMepadoResponse ok(final int codDiagrama) {
-        return new PosicaoPneuMepadoResponse(true, codDiagrama, null, null);
+    public static PosicaoPneuMepadoResponse ok(final int codTipoVeiculo) {
+        return new PosicaoPneuMepadoResponse(true, codTipoVeiculo, null, null);
     }
 
     @NotNull
-    public static PosicaoPneuMepadoResponse error(final int codDiagrama,
+    public static PosicaoPneuMepadoResponse error(final int codTipoVeiculo,
                                                   @NotNull final String errors) {
-        return new PosicaoPneuMepadoResponse(false, codDiagrama, errors, null);
+        return new PosicaoPneuMepadoResponse(false, codTipoVeiculo, errors, null);
     }
 
     @NotNull
-    public static PosicaoPneuMepadoResponse error(final int codDiagrama,
+    public static PosicaoPneuMepadoResponse error(final int codTipoVeiculo,
                                                   @NotNull final String errors,
                                                   @NotNull final Throwable throwable) {
-        return new PosicaoPneuMepadoResponse(false, codDiagrama, errors, throwable);
+        return new PosicaoPneuMepadoResponse(false, codTipoVeiculo, errors, throwable);
     }
 }

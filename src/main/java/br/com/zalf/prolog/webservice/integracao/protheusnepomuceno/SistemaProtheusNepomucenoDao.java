@@ -7,7 +7,6 @@ import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosA
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosAfericaoRealizadaPlaca;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosTipoVeiculoConfiguracaoAfericao;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosUnidadeRestricao;
-import com.google.common.collect.BiMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -21,6 +20,20 @@ import java.util.Map;
  * @author Wellington Moraes (https://github.com/wvinim)
  */
 public interface SistemaProtheusNepomucenoDao {
+    /**
+     * Dado uma lista de códigos de unidades, este método retorna os valores da lista que possuem cod_auxiliar mapeados
+     * banco de dados. Caso nenhum código de unidade possuir cod_auxiliar, uma lista vazia será retornada.
+     *
+     * @param conn        Conexão para buscar os dados no banco de dados.
+     * @param codUnidades Lista de códigos de unidades para verificar.
+     * @return Uma lista contendo os códigos de unidades que possuem cod_auxiliar. A lista estará vazia caso nenhum dos
+     * códigos de unidades possuir cod_auxiliar.
+     * @throws Throwable Se algum erro acontecer.
+     */
+    @NotNull
+    List<Long> getApenasUnidadesMapeadas(@NotNull final Connection conn,
+                                         @NotNull final List<Long> codUnidades) throws Throwable;
+
     /**
      * Método utilizado para inserir uma aferição e os valores no banco de dados.
      *
@@ -134,7 +147,7 @@ public interface SistemaProtheusNepomucenoDao {
      * @throws Throwable Se algum erro ocorrer.
      */
     @NotNull
-    BiMap<String, Integer> getMapeamentoPosicoesProlog(
+    Map<String, Integer> getMapeamentoPosicoesProlog(
             @NotNull final Connection conn,
             @NotNull final Long codEmpresa,
             @NotNull final String codEstruturaVeiculo) throws Throwable;

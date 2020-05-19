@@ -6,7 +6,6 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
-import br.com.zalf.prolog.webservice.integracao.PosicaoPneuMapper;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -155,10 +154,20 @@ public final class ProtheusNepomucenoConverter {
     }
 
     @NotNull
+    public static CronogramaAfericao createEmptyCronogramaAfericaoProlog() {
+        final CronogramaAfericao cronogramaAfericao = new CronogramaAfericao();
+        cronogramaAfericao.setModelosPlacasAfericao(new ArrayList<>());
+        // É necessário realizar as chamadas de cálculos para setar algumas variáveis.
+        cronogramaAfericao.calcularQuatidadeSulcosPressaoOk(true);
+        cronogramaAfericao.calcularTotalVeiculos();
+        return cronogramaAfericao;
+    }
+
+    @NotNull
     public static Veiculo createVeiculoProlog(@NotNull final Long codUnidadeProlog,
                                               @NotNull final Short codDiagramaProlog,
                                               @NotNull final VeiculoAfericaoProtheusNepomuceno veiculoAfericao,
-                                              @NotNull final PosicaoPneuMapper posicaoPneuMapper) {
+                                              @NotNull final ProtheusNepomucenoPosicaoPneuMapper posicaoPneuMapper) {
         final Veiculo veiculo = new Veiculo();
         veiculo.setPlaca(veiculoAfericao.getPlacaVeiculo());
         veiculo.setKmAtual(veiculoAfericao.getKmAtualVeiculo());
@@ -288,7 +297,7 @@ public final class ProtheusNepomucenoConverter {
     @NotNull
     private static List<Pneu> createPneusProlog(@NotNull final Long codUnidadeProlog,
                                                 @NotNull final List<PneuAplicadoProtheusNepomuceno> pneusAplicados,
-                                                @NotNull final PosicaoPneuMapper posicaoPneuMapper) {
+                                                @NotNull final ProtheusNepomucenoPosicaoPneuMapper posicaoPneuMapper) {
         final List<Pneu> pneus = new ArrayList<>();
         for (final PneuAplicadoProtheusNepomuceno pneuAplicado : pneusAplicados) {
             pneus.add(createPneuProlog(codUnidadeProlog, pneuAplicado, posicaoPneuMapper));
@@ -300,14 +309,22 @@ public final class ProtheusNepomucenoConverter {
     @NotNull
     private static Pneu createPneuProlog(@NotNull final Long codUnidadeProlog,
                                          @NotNull final PneuAplicadoProtheusNepomuceno pneuAplicado,
-                                         @NotNull final PosicaoPneuMapper posicaoPneuMapper) {
+                                         @NotNull final ProtheusNepomucenoPosicaoPneuMapper posicaoPneuMapper) {
         final Pneu pneu = new PneuComum();
         pneu.setCodigoCliente(pneuAplicado.getCodigoCliente());
         pneu.setCodigo(ProtheusNepomucenoEncoderDecoder.encode(pneuAplicado.getCodigoCliente()));
         pneu.setCodUnidadeAlocado(codUnidadeProlog);
         pneu.setVidaAtual(pneuAplicado.getVidaAtualPneu());
         pneu.setVidasTotal(pneuAplicado.getVidaTotalPneu());
-        pneu.setPosicao(posicaoPneuMapper.mapToProLog(pneuAplicado.getPosicaoAplicado()));
+        final Integer posicaoProlog = posicaoPneuMapper.mapPosicaoToProlog(pneuAplicado.getPosicaoAplicado());
+        if (posicaoProlog == null || posicaoProlog <= 0) {
+            // Antes de criar o pneu fazemos uma validação em todas as posições e identificamos se existe algo não
+            // mapeado. É 'quase' impossível essa exception estourar, porém, preferimos pecar pelo excesso.
+            throw new IllegalStateException("Posição de pneu não mapeada:\n" +
+                    "posicaoNaoMapeada: " + pneuAplicado.getPosicaoAplicado() + "\n" +
+                    "posicaoProlog: " + posicaoProlog);
+        }
+        pneu.setPosicao(posicaoProlog);
         pneu.setPressaoAtual(pneuAplicado.getPressaoAtualPneu());
         pneu.setPressaoCorreta(pneuAplicado.getPressaoRecomendadaPneu());
         final Sulcos sulcosAtuais = new Sulcos();

@@ -26,10 +26,12 @@ import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resoluca
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.visualizacao.item.ItemOrdemServicoResolvido;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.visualizacao.item.ItemOrdemServicoVisualizacao;
 import br.com.zalf.prolog.webservice.integracao.praxio.ChecklistItensNokGlobusTask;
+import br.com.zalf.prolog.webservice.integracao.praxio.GlobusPiccoloturConverter;
 import br.com.zalf.prolog.webservice.integracao.praxio.IntegracaoPraxioService;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.GlobusPiccoloturRequesterImpl;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.SistemaGlobusPiccoloturDaoImpl;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.*;
+import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap.OrdemDeServicoCorretivaPrologVO;
 import br.com.zalf.prolog.webservice.integracao.response.SuccessResponseIntegracao;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterAll;
@@ -74,6 +76,7 @@ public final class AberturaOrdemServicoTest extends BaseTest {
         checklistOfflineService = new ChecklistOfflineService();
         tokenIntegrado = getValidToken("3383283194");
         ligaIntegracao();
+        insereTokenCheckOff();
     }
 
     @Override
@@ -960,6 +963,33 @@ public final class AberturaOrdemServicoTest extends BaseTest {
         Thread.sleep(1000);
     }
 
+    @Test
+    void testConverterChecklistRealizacaoIntoOrdemDeServicoCorretivaPrologVO() throws Throwable {
+        // ################################### ETAPA 1 - Cria um modelo de checklist ###################################
+        final ResultInsertModeloChecklist resultModeloChecklist =
+                criaModeloChecklist(COD_UNIDADE, "Modelo Abertura Ordem Serviço Integração ");
+
+        // ################################### ETAPA 2 - Cria um checklist do modelo ###################################
+        final ChecklistInsercao checklistInsercao = insertChecklistModeloCriado(COD_UNIDADE, resultModeloChecklist);
+        final Long codChecklistInserido =
+                checklistOfflineService.insertChecklistOffline(TOKEN_CHECK_OFF, checklistInsercao).getCodigo();
+
+        final SistemaGlobusPiccoloturDaoImpl sistema = new SistemaGlobusPiccoloturDaoImpl();
+        final DatabaseConnectionProvider provider = new DatabaseConnectionProvider();
+        Connection conn = null;
+        try {
+            conn = provider.provideDatabaseConnection();
+            final ChecklistToSyncGlobus checklistToSyncGlobus =
+                    sistema.getChecklistToSyncGlobus(conn, codChecklistInserido);
+            final ChecklistItensNokGlobus checklistItensNokGlobus = checklistToSyncGlobus.getChecklistItensNokGlobus();
+            final OrdemDeServicoCorretivaPrologVO ordemDeServicoCorretivaPrologVO =
+                    GlobusPiccoloturConverter.convert(checklistItensNokGlobus);
+            assertThat(ordemDeServicoCorretivaPrologVO).isNotNull();
+        } finally {
+            provider.closeResources(conn);
+        }
+    }
+
     private void marcarChecklistComoSincronizado(final Long codChecklistInserido,
                                                  final SistemaGlobusPiccoloturDaoImpl sistemaGlobusPiccoloturDao) throws Throwable {
         // region Atualiza informações do checklist integrado
@@ -1200,7 +1230,7 @@ public final class AberturaOrdemServicoTest extends BaseTest {
                 11222,
                 10000,
                 respostas,
-                ProLogDateParser.toLocalDateTime("2019-12-11T09:35:10"),
+                ProLogDateParser.toLocalDateTime("2019-12-11T09:35:00"),
                 FonteDataHora.LOCAL_CELULAR,
                 80,
                 83,
@@ -1337,6 +1367,29 @@ public final class AberturaOrdemServicoTest extends BaseTest {
                     "  and chave_sistema = ?;");
             stmt.setLong(1, COD_EMPRESA);
             stmt.setString(2, "GLOBUS_PICCOLOTUR");
+            if (stmt.executeUpdate() == 0) {
+                throw new SQLException("Não foi possível ligar a integração");
+            }
+        } finally {
+            provider.closeResources(conn, stmt);
+        }
+    }
+
+    private void insereTokenCheckOff() throws SQLException {
+        final DatabaseConnectionProvider provider = new DatabaseConnectionProvider();
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = provider.provideDatabaseConnection();
+            stmt = conn.prepareStatement("insert into " +
+                    "checklist_offline_dados_unidade (cod_unidade, token_sincronizacao_checklist) " +
+                    "values (?, ?) " +
+                    "on conflict " +
+                    "    on constraint pk_checklist_offline_dados_unidade " +
+                    "    do update set token_sincronizacao_checklist = ?;");
+            stmt.setLong(1, COD_UNIDADE);
+            stmt.setString(2, TOKEN_CHECK_OFF);
+            stmt.setString(3, TOKEN_CHECK_OFF);
             if (stmt.executeUpdate() == 0) {
                 throw new SQLException("Não foi possível ligar a integração");
             }

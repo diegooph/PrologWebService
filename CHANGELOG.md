@@ -1,6 +1,24 @@
 Change Log
 ==========
 
+<a name="v1.0.30"></a>
+## Version [v1.0.30](https://github.com/luizfp/PrologWebService/compare/v1.0.29...v1.0.30) (2020-05-19)
+
+### Features
+* Cria estrutura de mapeamento de posições no Prolog (PLI-142)
+* Cria flag nas integrações para ligar/desligar integrações (PLI-72)
+* Cria método genérico de busca de Aferições Realizadas (AVACON) (PLI-144)
+* Adiciona validação de unidades integradas no Sistema Globus Piccolotur (PLI-151)
+
+### Refactors
+* Melhora mensanges de retorno ao ativar/inativar um veículo
+* Valida CPF nos processos de transferência integrados (PLI-147)
+* Valida CPF nos processos de fechamento de OS integrados (PLI-153)
+
+### Bugfix
+* Corrige problema de parse de data na sincronia de checklist (PLI-146)
+* Corrige uso do codUnidade no método de atualização de veiculo (PLI-129)
+
 <a name="v1.0.29"></a>
 ## Version [v1.0.29](https://github.com/luizfp/PrologWebService/compare/v1.0.28...v1.0.29) (2020-04-28)
 

@@ -1548,8 +1548,7 @@ public final class PneuCrudApiTest extends BaseTest {
 
         //Verificações
         assertThat(throwable.getMessage())
-                .isEqualTo("O pneu de código interno " + codSistemaIntegrado + " não está mapeado no " +
-                        "Sistema ProLog");
+                .isEqualTo("Não foi possível atualizar o status dos pneus");
     }
 
     @Test
@@ -1615,11 +1614,12 @@ public final class PneuCrudApiTest extends BaseTest {
         ResultSet rSet = null;
         try {
             conn = connectionProvider.provideDatabaseConnection();
-            stmt = conn.prepareStatement("INSERT INTO INTEGRACAO.TOKEN_INTEGRACAO(COD_EMPRESA, TOKEN_INTEGRACAO) " +
-                    "VALUES (?, ?) ON CONFLICT (COD_EMPRESA) DO UPDATE SET TOKEN_INTEGRACAO = ?;");
+            stmt = conn.prepareStatement("INSERT INTO INTEGRACAO.TOKEN_INTEGRACAO(COD_EMPRESA, TOKEN_INTEGRACAO, ATIVO) " +
+                    "VALUES (?, ?, ?) ON CONFLICT (COD_EMPRESA) DO UPDATE SET TOKEN_INTEGRACAO = ?;");
             stmt.setLong(1, COD_EMPRESA);
             stmt.setString(2, TOKEN_INTEGRACAO);
-            stmt.setString(3, TOKEN_INTEGRACAO);
+            stmt.setBoolean(3, true);
+            stmt.setString(4, TOKEN_INTEGRACAO);
             if (stmt.executeUpdate() <= 0) {
                 throw new SQLException("Erro ao criar TOKEN");
             }
