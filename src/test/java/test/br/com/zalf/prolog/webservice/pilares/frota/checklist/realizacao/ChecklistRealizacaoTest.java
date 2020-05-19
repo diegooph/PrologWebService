@@ -56,6 +56,7 @@ public final class ChecklistRealizacaoTest extends BaseTest {
     private ChecklistModeloService service;
     private String token;
 
+    @Override
     @BeforeAll
     public void initialize() throws Throwable {
         DatabaseManager.init();
@@ -63,6 +64,7 @@ public final class ChecklistRealizacaoTest extends BaseTest {
         service = new ChecklistModeloService();
     }
 
+    @Override
     @AfterAll
     public void destroy() {
         DatabaseManager.finish();
@@ -223,7 +225,9 @@ public final class ChecklistRealizacaoTest extends BaseTest {
                 "device didID",
                 "deviceImei",
                 10000,
-                11000);
+                11000,
+                0,
+                0);
 
         final ChecklistService checklistService = new ChecklistService();
         final Long codChecklistInserido = checklistService.insert(token, insercao);
@@ -445,7 +449,9 @@ public final class ChecklistRealizacaoTest extends BaseTest {
                 "device didID",
                 "deviceImei",
                 10000,
-                11000);
+                11000,
+                0,
+                0);
 
         final ChecklistOfflineService checklistOfflineService = new ChecklistOfflineService();
         final Long codChecklistInserido = checklistOfflineService.insertChecklistOffline(
