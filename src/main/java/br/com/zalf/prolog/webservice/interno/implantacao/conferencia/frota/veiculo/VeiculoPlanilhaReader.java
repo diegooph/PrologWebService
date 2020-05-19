@@ -83,6 +83,8 @@ public final class VeiculoPlanilhaReader {
         if (!StringUtils.isNullOrEmpty(linha[6])) {
             item.setQtdEixos(linha[6]);
         }
+        // IDENTIFICADOR FROTA.
+        item.setQtdEixos(linha[7]);
         return item;
     }
 }
