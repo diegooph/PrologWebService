@@ -2,7 +2,7 @@ Change Log
 ==========
 
 <a name="v1.0.30"></a>
-## Version [v1.0.30](https://github.com/luizfp/PrologWebService/compare/v1.0.29...v1.0.30) (release-date) [unreleased]
+## Version [v1.0.30](https://github.com/luizfp/PrologWebService/compare/v1.0.29...v1.0.30) (2020-05-19)
 
 ### Features
 * Cria estrutura de mapeamento de posições no Prolog (PLI-142)
