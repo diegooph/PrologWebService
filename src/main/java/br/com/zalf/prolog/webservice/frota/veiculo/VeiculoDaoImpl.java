@@ -224,7 +224,6 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
             } else {
                 stmt.setBoolean(2, ativos);
             }
-
             rSet = stmt.executeQuery();
             final List<VeiculoListagem> veiculosListagem = new ArrayList<>();
             while (rSet.next()) {

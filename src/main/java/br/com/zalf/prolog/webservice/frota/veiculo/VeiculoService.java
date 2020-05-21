@@ -38,7 +38,7 @@ public final class VeiculoService {
     }
 
     public VeiculoVisualizacao buscaVeiculoByCodigo(@NotNull final String userToken,
-                                                        @NotNull final Long codVeiculo) throws ProLogException {
+                                                    @NotNull final Long codVeiculo) throws ProLogException {
         try {
             return dao.buscaVeiculoByCodigo(codVeiculo);
         } catch (Throwable t) {
