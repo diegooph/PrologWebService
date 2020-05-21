@@ -176,6 +176,46 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
     }
 
     @Override
+    public void getKmRodadoPorPneuPorVidaEmColunasCsv(@NotNull final OutputStream outputStream,
+                                                      @NotNull final List<Long> codUnidades) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("select * from func_pneu_relatorio_km_rodado_por_vida_base(?);");
+            stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
+            rSet = stmt.executeQuery();
+            // Não retornar nada não é erro, as unidades filtradas podem não ter pneus.
+            if (rSet.next()) {
+                final List<PneuKmRodadoPorVida> vidasPneu = new ArrayList<>();
+                do {
+                    vidasPneu.add(new PneuKmRodadoPorVida(
+                            rSet.getString("unidade_alocado"),
+                            rSet.getLong("cod_pneu"),
+                            rSet.getString("cod_cliente_pneu"),
+                            rSet.getString("marca"),
+                            rSet.getString("modelo"),
+                            rSet.getString("dimensao"),
+                            rSet.getString("vida_pneu"),
+                            rSet.getString("valor_vida"),
+                            rSet.getString("km_rodado_vida"),
+                            rSet.getString("valor_por_km_vida"),
+                            rSet.getString("km_rodado_todas_vidas")));
+                } while (rSet.next());
+
+                new CsvWriter
+                        .Builder(outputStream)
+                        .withCsvReport(new RelatorioKmRodadoPorVidaEmColuna(vidasPneu))
+                        .build()
+                        .write();
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+    @Override
     public void getAfericoesAvulsasCsv(@NotNull final OutputStream outputStream,
                                        @NotNull final List<Long> codUnidades,
                                        @NotNull final LocalDate dataInicial,

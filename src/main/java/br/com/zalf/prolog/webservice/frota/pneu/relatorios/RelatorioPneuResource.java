@@ -98,6 +98,15 @@ public class RelatorioPneuResource {
     }
 
     @GET
+    @Path("/km-rodado-por-pneu-por-vida-colunas/csv")
+    @Produces("application/csv")
+    public StreamingOutput getKmRodadoPorPneuPorVidaEmColunasCsv(
+            @QueryParam("codUnidades") @Required final List<Long> codUnidades) {
+        return outputStream ->
+                new RelatorioPneuService().getKmRodadoPorPneuPorVidaEmColunasCsv(outputStream, codUnidades);
+    }
+
+    @GET
     @Path("/afericoes-avulsas/csv")
     @Produces("application/csv")
     public StreamingOutput getAfericoesAvulsasCsv(

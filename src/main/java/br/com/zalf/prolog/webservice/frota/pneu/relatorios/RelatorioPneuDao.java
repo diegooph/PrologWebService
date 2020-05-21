@@ -119,6 +119,18 @@ public interface RelatorioPneuDao {
     Report getKmRodadoPorPneuPorVidaEmLinhasReport(@NotNull final List<Long> codUnidades) throws Throwable;
 
     /**
+     * Método para gerar um relatório contendo a quantidade de KM percorrido por pneu e por vida.
+     * Cada vida do pneu irá corresponder a uma coluna nesse relatório. O relatório representa até 10 vidas.
+     * Pneus que não têm informações nessas vidas, terão o caractere "-" (hífen) setado em cada célula.
+     *
+     * @param outputStream stream onde os dados serão escritos.
+     * @param codUnidades  {@link List<Long> Lista} de códigos das unidades para filtrar.
+     * @throws Throwable se algum erro ocorrer.
+     */
+    void getKmRodadoPorPneuPorVidaEmColunasCsv(@NotNull final OutputStream outputStream,
+                                               @NotNull final List<Long> codUnidades) throws Throwable;
+
+    /**
      * Método para gerar um relatório contendo todas as aferições avulsas realizadas durante o período filtrado.
      * Para fins de exportação em CSV.
      *
