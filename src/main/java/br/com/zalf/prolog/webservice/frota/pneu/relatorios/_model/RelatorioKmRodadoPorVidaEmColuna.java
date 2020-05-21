@@ -100,15 +100,8 @@ public final class RelatorioKmRodadoPorVidaEmColuna implements CsvReport {
             row.add(infoVida1.getCodPneuCliente());
             row.add(infoVida1.getDimensao());
 
-            // Já adicionamos as infos da vida 1.
-            row.add(infoVida1.getMarca());
-            row.add(infoVida1.getModelo());
-            row.add(infoVida1.getValorVida());
-            row.add(infoVida1.getKmRodadoVida());
-            row.add(infoVida1.getValorPorKmVida());
-
-            // for começa em 1 pois a primeira vida já foi processada.
-            for (int i = 1; i < TOTAL_VIDAS_BUSCADAS; i++) {
+            // Processamos a vida 1 novamente, assim todas as infos de vida ficam concentradas nesse 'for'.
+            for (int i = 0; i < TOTAL_VIDAS_BUSCADAS; i++) {
                 if (i < vidasPneu.size()) {
                     // Vida existe.
                     row.add(vidasPneu.get(i).getMarca());
