@@ -1,7 +1,8 @@
 package br.com.zalf.prolog.webservice.frota.pneu.relatorios._model;
 
 import br.com.zalf.prolog.webservice.commons.report.CsvReport;
-import lombok.Data;
+import com.google.common.annotations.VisibleForTesting;
+import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -32,10 +33,12 @@ import java.util.stream.Collectors;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-@Data
+@RequiredArgsConstructor
 public final class RelatorioKmRodadoPorVidaEmColuna implements CsvReport {
-    private static final String CARACTERE_SEM_DADOS = "-";
-    private static final int TOTAL_VIDAS_BUSCADAS = 10;
+    @VisibleForTesting
+    public static final String CARACTERE_SEM_DADOS = "-";
+    @VisibleForTesting
+    public static final int TOTAL_VIDAS_BUSCADAS = 10;
     @NotNull
     private static final List<String> HEADER;
 
@@ -83,6 +86,11 @@ public final class RelatorioKmRodadoPorVidaEmColuna implements CsvReport {
             table = generateTable();
         }
         return table;
+    }
+
+    @VisibleForTesting
+    public int getTotalColunasRelatorio() {
+        return HEADER.size();
     }
 
     @NotNull

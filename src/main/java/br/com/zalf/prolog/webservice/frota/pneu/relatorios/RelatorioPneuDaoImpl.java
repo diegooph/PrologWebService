@@ -194,9 +194,9 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
                             rSet.getString("unidade_alocado"),
                             rSet.getLong("cod_pneu"),
                             rSet.getString("cod_cliente_pneu"),
+                            rSet.getString("dimensao"),
                             rSet.getString("marca"),
                             rSet.getString("modelo"),
-                            rSet.getString("dimensao"),
                             rSet.getString("vida_pneu"),
                             rSet.getString("valor_vida"),
                             rSet.getString("km_rodado_vida"),
@@ -207,6 +207,12 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
                 new CsvWriter
                         .Builder(outputStream)
                         .withCsvReport(new RelatorioKmRodadoPorVidaEmColuna(vidasPneu))
+                        .build()
+                        .write();
+            } else {
+                new CsvWriter
+                        .Builder(outputStream)
+                        .withCsvReport(new RelatorioKmRodadoPorVidaEmColuna(Collections.emptyList()))
                         .build()
                         .write();
             }

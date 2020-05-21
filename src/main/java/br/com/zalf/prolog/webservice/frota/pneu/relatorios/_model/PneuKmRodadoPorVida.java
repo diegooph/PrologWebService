@@ -17,11 +17,11 @@ public final class PneuKmRodadoPorVida {
     @NotNull
     private final String codPneuCliente;
     @NotNull
+    private final String dimensao;
+    @NotNull
     private final String marca;
     @NotNull
     private final String modelo;
-    @NotNull
-    private final String dimensao;
     private final String vida;
     private final String valorVida;
     private final String kmRodadoVida;
