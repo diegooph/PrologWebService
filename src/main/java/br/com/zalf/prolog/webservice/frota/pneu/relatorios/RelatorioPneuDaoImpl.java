@@ -147,7 +147,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = getKmRodadoPorPneuPorVida(conn, codUnidades);
+            stmt = getKmRodadoPorPneuPorVidaEmLinhas(conn, codUnidades);
             rSet = stmt.executeQuery();
             new CsvWriter
                     .Builder(outputStream)
@@ -167,7 +167,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = getKmRodadoPorPneuPorVida(conn, codUnidades);
+            stmt = getKmRodadoPorPneuPorVidaEmLinhas(conn, codUnidades);
             rSet = stmt.executeQuery();
             return ReportTransformer.createReport(rSet);
         } finally {
@@ -1099,7 +1099,6 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         return stmt;
     }
 
-
     @NotNull
     private PreparedStatement getFarolAfericaoStatement(@NotNull final Connection conn,
                                                         @NotNull final List<Long> codUnidades,
@@ -1117,9 +1116,11 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
     }
 
     @NotNull
-    private PreparedStatement getKmRodadoPorPneuPorVida(@NotNull final Connection conn,
-                                                        @NotNull final List<Long> codUnidades) throws SQLException {
-        final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_RELATORIO_KM_RODADO_POR_VIDA(?);");
+    private PreparedStatement getKmRodadoPorPneuPorVidaEmLinhas(
+            @NotNull final Connection conn,
+            @NotNull final List<Long> codUnidades) throws SQLException {
+        final PreparedStatement stmt =
+                conn.prepareStatement("select * from func_pneu_relatorio_km_rodado_por_vida_linhas(?);");
         stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
         return stmt;
     }
