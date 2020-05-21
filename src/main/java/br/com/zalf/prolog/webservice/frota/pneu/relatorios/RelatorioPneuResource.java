@@ -82,18 +82,19 @@ public class RelatorioPneuResource {
     }
 
     @GET
-    @Path("/km-rodado-por-pneu-por-vida/csv")
+    @Path("/km-rodado-por-pneu-por-vida-linhas/csv")
     @Produces("application/csv")
-    public StreamingOutput getKmRodadoPorPneuPorVidaCsv(
+    public StreamingOutput getKmRodadoPorPneuPorVidaCsvEmLinhas(
             @QueryParam("codUnidades") @Required final List<Long> codUnidades) {
-        return outputStream -> new RelatorioPneuService().getKmRodadoPorPneuPorVidaCsv(outputStream, codUnidades);
+        return outputStream ->
+                new RelatorioPneuService().getKmRodadoPorPneuPorVidaCsvEmLinhas(outputStream, codUnidades);
     }
 
     @GET
-    @Path("/km-rodado-por-pneu-por-vida/report")
-    public Report getKmRodadoPorPneuPorVidaReport(@QueryParam("codUnidades") @Required final List<Long> codUnidades)
-            throws ProLogException {
-        return new RelatorioPneuService().getKmRodadoPorPneuPorVidaReport(codUnidades);
+    @Path("/km-rodado-por-pneu-por-vida-linhas/report")
+    public Report getKmRodadoPorPneuPorVidaReportEmLinhas(
+            @QueryParam("codUnidades") @Required final List<Long> codUnidades) {
+        return new RelatorioPneuService().getKmRodadoPorPneuPorVidaReportEmLinhas(codUnidades);
     }
 
     @GET
@@ -314,8 +315,8 @@ public class RelatorioPneuResource {
     @Path("/resumoSulcos")
     @Secured(permissions = Pilares.Frota.Relatorios.PNEU)
     public List<Faixa> DEPRECATED_GET_QTD_PNEUS_BY_FAIXA_SULCO(
-            @QueryParam("codUnidades") List<String> codUnidades,
-            @QueryParam("status") List<String> status) throws ProLogException {
+            @QueryParam("codUnidades") final List<String> codUnidades,
+            @QueryParam("status") final List<String> status) throws ProLogException {
         throw new GenericException("Este relatório está disponível em uma nova versão do ProLog." +
                 "\nPor favor, atualize sua aplicação");
     }
@@ -327,9 +328,9 @@ public class RelatorioPneuResource {
     @Path("/previsao-trocas/{codUnidade}/csv")
     @Produces("application/csv")
     public StreamingOutput DEPRECATED_GET_PREVISAO_TROCA_CSV(
-            @PathParam("codUnidade") Long codUnidade,
-            @QueryParam("dataInicial") long dataInicial,
-            @QueryParam("dataFinal") long dataFinal) throws ProLogException {
+            @PathParam("codUnidade") final Long codUnidade,
+            @QueryParam("dataInicial") final long dataInicial,
+            @QueryParam("dataFinal") final long dataFinal) throws ProLogException {
         throw new GenericException("Este relatório está disponível em uma nova versão do ProLog." +
                 "\nPor favor, atualize sua aplicação");
     }
@@ -340,9 +341,9 @@ public class RelatorioPneuResource {
     @GET
     @Path("/previsao-trocas/{codUnidade}/report")
     @Secured(permissions = Pilares.Frota.Relatorios.PNEU)
-    public Report DEPRECATED_GET_PREVISAO_TROCA_REPORT(@PathParam("codUnidade") Long codUnidade,
-                                                       @QueryParam("dataInicial") long dataInicial,
-                                                       @QueryParam("dataFinal") long dataFinal) throws ProLogException {
+    public Report DEPRECATED_GET_PREVISAO_TROCA_REPORT(@PathParam("codUnidade") final Long codUnidade,
+                                                       @QueryParam("dataInicial") final long dataInicial,
+                                                       @QueryParam("dataFinal") final long dataFinal) throws ProLogException {
         throw new GenericException("Este relatório está disponível em uma nova versão do ProLog." +
                 "\nPor favor, atualize sua aplicação");
     }
@@ -355,9 +356,9 @@ public class RelatorioPneuResource {
     @Path("/previsao-trocas/consolidados/{codUnidade}/csv")
     @Produces("application/csv")
     public StreamingOutput DEPRECATED_GET_PREVISAO_TROCA_CONSOLIDADO_CSV(
-            @PathParam("codUnidade") Long codUnidade,
-            @QueryParam("dataInicial") long dataInicial,
-            @QueryParam("dataFinal") long dataFinal) throws ProLogException {
+            @PathParam("codUnidade") final Long codUnidade,
+            @QueryParam("dataInicial") final long dataInicial,
+            @QueryParam("dataFinal") final long dataFinal) throws ProLogException {
         throw new GenericException("Este relatório está disponível em uma nova versão do ProLog." +
                 "\nPor favor, atualize sua aplicação");
     }
@@ -370,9 +371,9 @@ public class RelatorioPneuResource {
     @Path("/previsao-trocas/consolidados/{codUnidade}/report")
     @Secured(permissions = Pilares.Frota.Relatorios.PNEU)
     public Report DEPRECATED_GET_PREVISAO_TROCA_CONSOLIDADO_REPORT(
-            @PathParam("codUnidade") Long codUnidade,
-            @QueryParam("dataInicial") long dataInicial,
-            @QueryParam("dataFinal") long dataFinal) throws ProLogException {
+            @PathParam("codUnidade") final Long codUnidade,
+            @QueryParam("dataInicial") final long dataInicial,
+            @QueryParam("dataFinal") final long dataFinal) throws ProLogException {
         throw new GenericException("Este relatório está disponível em uma nova versão do ProLog." +
                 "\nPor favor, atualize sua aplicação");
     }
@@ -381,8 +382,8 @@ public class RelatorioPneuResource {
     @Path("/resumoPressao")
     @Secured(permissions = Pilares.Frota.Relatorios.PNEU)
     @Deprecated
-    public List<Faixa> DEPRECATED_GET_QTD_PNEUS_BY_FAIXA_PRESSAO(@QueryParam("codUnidades") List<String> codUnidades,
-                                                                 @QueryParam("status") List<String> status) {
+    public List<Faixa> DEPRECATED_GET_QTD_PNEUS_BY_FAIXA_PRESSAO(@QueryParam("codUnidades") final List<String> codUnidades,
+                                                                 @QueryParam("status") final List<String> status) {
         return new RelatorioPneuService().getQtPneusByFaixaPressao(codUnidades, status);
     }
 
@@ -390,9 +391,9 @@ public class RelatorioPneuResource {
     @Path("/aderencia/{codUnidade}/{ano}/{mes}")
     @Secured(permissions = Pilares.Frota.Relatorios.PNEU)
     @Deprecated
-    public List<Aderencia> DEPRECATED_GET_ADERENCIA_BY_UNIDADE(@PathParam("ano") int ano,
-                                                               @PathParam("mes") int mes,
-                                                               @PathParam("codUnidade") Long codUnidade) {
+    public List<Aderencia> DEPRECATED_GET_ADERENCIA_BY_UNIDADE(@PathParam("ano") final int ano,
+                                                               @PathParam("mes") final int mes,
+                                                               @PathParam("codUnidade") final Long codUnidade) {
         return new RelatorioPneuService().getAderenciaByUnidade(ano, mes, codUnidade);
     }
 
@@ -404,9 +405,9 @@ public class RelatorioPneuResource {
     @Path("/aderencias/placas/{codUnidade}/csv")
     @Produces("application/csv")
     public StreamingOutput DEPRECATED_GET_ADERENCIA_PLACAS_CSV(
-            @PathParam("codUnidade") Long codUnidade,
-            @QueryParam("dataInicial") long dataInicial,
-            @QueryParam("dataFinal") long dataFinal) throws ProLogException {
+            @PathParam("codUnidade") final Long codUnidade,
+            @QueryParam("dataInicial") final long dataInicial,
+            @QueryParam("dataFinal") final long dataFinal) throws ProLogException {
         throw new GenericException("Este relatório está disponível em uma nova versão do ProLog." +
                 "\nPor favor, atualize sua aplicação");
     }
@@ -418,9 +419,9 @@ public class RelatorioPneuResource {
     @GET
     @Path("/aderencias/placas/{codUnidade}/report")
     public Report DEPRECATED_GET_ADERENCIA_PLACAS_REPORT(
-            @PathParam("codUnidade") Long codUnidade,
-            @QueryParam("dataInicial") long dataInicial,
-            @QueryParam("dataFinal") long dataFinal) throws ProLogException {
+            @PathParam("codUnidade") final Long codUnidade,
+            @QueryParam("dataInicial") final long dataInicial,
+            @QueryParam("dataFinal") final long dataFinal) throws ProLogException {
         throw new GenericException("Este relatório está disponível em uma nova versão do ProLog." +
                 "\nPor favor, atualize sua aplicação");
     }
@@ -432,9 +433,9 @@ public class RelatorioPneuResource {
     @GET
     @Path("/pneus-descartados/{codUnidade}/report")
     public Report DEPRECATED_GET_PNEUS_DESCARTADOS_REPORT(
-            @PathParam("codUnidade") @Required Long codUnidade,
-            @QueryParam("dataInicial") @Required Long dataInicial,
-            @QueryParam("dataFinal") @Required Long dataFinal) throws ProLogException {
+            @PathParam("codUnidade") @Required final Long codUnidade,
+            @QueryParam("dataInicial") @Required final Long dataInicial,
+            @QueryParam("dataFinal") @Required final Long dataFinal) throws ProLogException {
         throw new GenericException("Este relatório está disponível em uma nova versão do ProLog." +
                 "\nPor favor, atualize sua aplicação");
     }
@@ -446,9 +447,9 @@ public class RelatorioPneuResource {
     @GET
     @Path("/pneus-descartados/{codUnidade}/csv")
     public StreamingOutput DEPRECATED_GET_PNEUS_DESCARTADOS_CSV(
-            @PathParam("codUnidade") @Required Long codUnidade,
-            @QueryParam("dataInicial") @Required Long dataInicial,
-            @QueryParam("dataFinal") @Required Long dataFinal) throws ProLogException {
+            @PathParam("codUnidade") @Required final Long codUnidade,
+            @QueryParam("dataInicial") @Required final Long dataInicial,
+            @QueryParam("dataFinal") @Required final Long dataFinal) throws ProLogException {
         throw new GenericException("Este relatório está disponível em uma nova versão do ProLog." +
                 "\nPor favor, atualize sua aplicação");
     }
@@ -459,7 +460,7 @@ public class RelatorioPneuResource {
      */
     @GET
     @Path("/dados-ultima-afericao/{codUnidade}/csv")
-    public StreamingOutput DEPRECATED_GET_DADOS_ULTIMA_AFERICAO_CSV(@PathParam("codUnidade") Long codUnidade)
+    public StreamingOutput DEPRECATED_GET_DADOS_ULTIMA_AFERICAO_CSV(@PathParam("codUnidade") final Long codUnidade)
             throws ProLogException {
         throw new GenericException("Este relatório está disponível em uma nova versão do ProLog." +
                 "\nPor favor, atualize sua aplicação");
@@ -472,7 +473,7 @@ public class RelatorioPneuResource {
     @GET
     @Path("/dados-ultima-afericao/{codUnidade}/report")
     @Secured(permissions = Pilares.Frota.Relatorios.PNEU)
-    public Report DEPRECATED_GET_DADOS_ULTIMA_AFERICAO_REPORT(@PathParam("codUnidade") Long codUnidade)
+    public Report DEPRECATED_GET_DADOS_ULTIMA_AFERICAO_REPORT(@PathParam("codUnidade") final Long codUnidade)
             throws ProLogException {
         throw new GenericException("Este relatório está disponível em uma nova versão do ProLog." +
                 "\nPor favor, atualize sua aplicação");
@@ -511,7 +512,7 @@ public class RelatorioPneuResource {
     @GET
     @Path("/afericoes/resumo/pneus/{codUnidade}/csv")
     @Deprecated
-    public StreamingOutput DEPRECATED_DADOS_ULTIMA_AFERICAO_CSV(@PathParam("codUnidade") Long codUnidade)
+    public StreamingOutput DEPRECATED_DADOS_ULTIMA_AFERICAO_CSV(@PathParam("codUnidade") final Long codUnidade)
             throws ProLogException {
         throw new GenericException("Este relatório está disponível em uma nova versão do ProLog." +
                 "\nPor favor, atualize sua aplicação");
@@ -524,7 +525,7 @@ public class RelatorioPneuResource {
     @Path("/afericoes/resumo/pneus/{codUnidade}/report")
     @Secured(permissions = Pilares.Frota.Relatorios.PNEU)
     @Deprecated
-    public Report DEPRECATED_DADOS_ULTIMA_AFERICAO_REPORT(@PathParam("codUnidade") Long codUnidade)
+    public Report DEPRECATED_DADOS_ULTIMA_AFERICAO_REPORT(@PathParam("codUnidade") final Long codUnidade)
             throws ProLogException {
         throw new GenericException("Este relatório está disponível em uma nova versão do ProLog." +
                 "\nPor favor, atualize sua aplicação");
@@ -537,9 +538,9 @@ public class RelatorioPneuResource {
     @Path("/aderencia/placas/{codUnidade}/csv")
     @Produces("application/csv")
     @Deprecated
-    public StreamingOutput DEPRECATED_ADERENCIA_CSV(@PathParam("codUnidade") Long codUnidade,
-                                                    @QueryParam("dataInicial") long dataInicial,
-                                                    @QueryParam("dataFinal") long dataFinal) throws ProLogException {
+    public StreamingOutput DEPRECATED_ADERENCIA_CSV(@PathParam("codUnidade") final Long codUnidade,
+                                                    @QueryParam("dataInicial") final long dataInicial,
+                                                    @QueryParam("dataFinal") final long dataFinal) throws ProLogException {
         throw new GenericException("Este relatório está disponível em uma nova versão do ProLog." +
                 "\nPor favor, atualize sua aplicação");
     }
@@ -550,9 +551,9 @@ public class RelatorioPneuResource {
     @GET
     @Path("/aderencia/placas/{codUnidade}/report")
     @Deprecated
-    public Report DEPRECATED_ADERENCIA_REPORT(@PathParam("codUnidade") Long codUnidade,
-                                              @QueryParam("dataInicial") long dataInicial,
-                                              @QueryParam("dataFinal") long dataFinal) throws ProLogException {
+    public Report DEPRECATED_ADERENCIA_REPORT(@PathParam("codUnidade") final Long codUnidade,
+                                              @QueryParam("dataInicial") final long dataInicial,
+                                              @QueryParam("dataFinal") final long dataFinal) throws ProLogException {
         throw new GenericException("Este relatório está disponível em uma nova versão do ProLog." +
                 "\nPor favor, atualize sua aplicação");
     }
