@@ -105,10 +105,10 @@ public class RelatorioPneuService {
         }
     }
 
-    public void getKmRodadoPorPneuPorVidaCsvEmLinhas(@NotNull final OutputStream outputStream,
+    public void getKmRodadoPorPneuPorVidaEmLinhasCsv(@NotNull final OutputStream outputStream,
                                                      @NotNull final List<Long> codUnidades) {
         try {
-            dao.getKmRodadoPorPneuPorVidaCsvEmLinhas(outputStream, codUnidades);
+            dao.getKmRodadoPorPneuPorVidaEmLinhasCsv(outputStream, codUnidades);
         } catch (final Throwable throwable) {
             Log.e(TAG, "Erro ao buscar o relatório de km percorrido por pneu por vida (CSV)", throwable);
             throw Injection
@@ -118,9 +118,9 @@ public class RelatorioPneuService {
     }
 
     @NotNull
-    public Report getKmRodadoPorPneuPorVidaReportEmLinhas(@NotNull final List<Long> codUnidades) {
+    public Report getKmRodadoPorPneuPorVidaEmLinhasReport(@NotNull final List<Long> codUnidades) {
         try {
-            return dao.getKmRodadoPorPneuPorVidaReportEmLinhas(codUnidades);
+            return dao.getKmRodadoPorPneuPorVidaEmLinhasReport(codUnidades);
         } catch (final Throwable throwable) {
             Log.e(TAG, "Erro ao buscar o relatório de km percorrido por pneu por vida (REPORT)", throwable);
             throw Injection

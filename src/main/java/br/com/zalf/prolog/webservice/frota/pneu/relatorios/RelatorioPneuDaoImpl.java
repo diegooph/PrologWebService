@@ -140,7 +140,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
     }
 
     @Override
-    public void getKmRodadoPorPneuPorVidaCsvEmLinhas(@NotNull final OutputStream outputStream,
+    public void getKmRodadoPorPneuPorVidaEmLinhasCsv(@NotNull final OutputStream outputStream,
                                                      @NotNull final List<Long> codUnidades) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -161,7 +161,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
 
     @NotNull
     @Override
-    public Report getKmRodadoPorPneuPorVidaReportEmLinhas(@NotNull final List<Long> codUnidades) throws Throwable {
+    public Report getKmRodadoPorPneuPorVidaEmLinhasReport(@NotNull final List<Long> codUnidades) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;

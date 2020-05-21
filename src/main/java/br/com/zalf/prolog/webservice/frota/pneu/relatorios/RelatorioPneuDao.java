@@ -103,7 +103,7 @@ public interface RelatorioPneuDao {
      * @param codUnidades  {@link List<Long> Lista} de códigos das unidades para filtrar.
      * @throws Throwable se algum erro ocorrer.
      */
-    void getKmRodadoPorPneuPorVidaCsvEmLinhas(@NotNull final OutputStream outputStream,
+    void getKmRodadoPorPneuPorVidaEmLinhasCsv(@NotNull final OutputStream outputStream,
                                               @NotNull final List<Long> codUnidades) throws Throwable;
 
     /**
@@ -116,7 +116,7 @@ public interface RelatorioPneuDao {
      * @throws Throwable se algum erro ocorrer.
      */
     @NotNull
-    Report getKmRodadoPorPneuPorVidaReportEmLinhas(@NotNull final List<Long> codUnidades) throws Throwable;
+    Report getKmRodadoPorPneuPorVidaEmLinhasReport(@NotNull final List<Long> codUnidades) throws Throwable;
 
     /**
      * Método para gerar um relatório contendo todas as aferições avulsas realizadas durante o período filtrado.
