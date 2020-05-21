@@ -11,6 +11,23 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
+ * Esta classe é responsável por gerar o relatório de km por vida dos pneus de forma colunada, onde as informações
+ * de cada vida são representadas em colunas, ao invés de linhas.
+ * <p>
+ * Cada pneu terá apenas uma linha no relatório.
+ * <p>
+ * O relatório é criado processando os dados do atributo {@link RelatorioKmRodadoPorVidaEmColuna#data}.
+ * <p>
+ * Para controlar a informação de quantas vidas o relatório irá gerar, altere a constante
+ * {@link RelatorioKmRodadoPorVidaEmColuna#TOTAL_VIDAS_BUSCADAS}.
+ * Quando não houver dados para determinada informação, será adicionado o caractere definido na constante
+ * {@link RelatorioKmRodadoPorVidaEmColuna#CARACTERE_SEM_DADOS}.
+ * <p>
+ * O header do relatório é criado de forma estática, pois ele é fixo, e está armazenado na constante
+ * {@link RelatorioKmRodadoPorVidaEmColuna#HEADER}.
+ * Importante lembrar que o relatório possui dependência da ordem das colunas entre os dados do
+ * {@link RelatorioKmRodadoPorVidaEmColuna#HEADER} com os adicionados na {@link RelatorioKmRodadoPorVidaEmColuna#table}.
+ * <p>
  * Created on 2020-05-21
  *
  * @author Luiz Felipe (https://github.com/luizfp)
