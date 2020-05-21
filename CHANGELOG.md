@@ -3,6 +3,7 @@ Change Log
 
 ### Features
 * Salva total de fotos que foram capturadas no processo de realização do checklist (PL-2708)
+* Cria método de upload de fotos capturadas no checklist para o S3 (PL-2710)
 
 <a name="v1.0.30"></a>
 ## Version [v1.0.30](https://github.com/luizfp/PrologWebService/compare/v1.0.29...v1.0.30) (release-date) [unreleased]

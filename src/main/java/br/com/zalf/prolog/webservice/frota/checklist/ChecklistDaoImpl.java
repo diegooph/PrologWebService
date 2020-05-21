@@ -70,152 +70,60 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
     }
 
     @NotNull
-    private Long internalInsertChecklist(@NotNull final Connection conn,
-                                         @NotNull final ChecklistInsercao checklist,
-                                         final boolean foiOffline,
-                                         final boolean deveAbrirOs) throws Throwable {
+    @Override
+    public Long insertImagemPerguntaChecklistRealizado(@NotNull final Long codChecklist,
+                                                       @NotNull final Long codPergunta,
+                                                       @NotNull final String urlImagem) throws Throwable {
+        Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-
-            // Isso é necessário pois apps antigos não tem a versão do modelo de checklist e portanto nós não recebemos
-            // ela. Nessa etapa buscamos o código da versão do modelo com base no código de uma alternativa
-            if (!ChecklistMigracaoEstruturaSuporte.isAppNovaEstruturaChecklist(checklist)) {
-                checklist.setCodVersaoModeloChecklist(ChecklistMigracaoEstruturaSuporte
-                        .encontraCodVersaoModeloChecklist(conn, checklist));
-            }
-
-            stmt = conn.prepareStatement("SELECT * " +
-                    "FROM FUNC_CHECKLIST_INSERT_CHECKLIST_INFOS(" +
-                    "F_COD_UNIDADE_CHECKLIST                   := ?," +
-                    "F_COD_MODELO_CHECKLIST                    := ?," +
-                    "F_COD_VERSAO_MODELO_CHECKLIST             := ?," +
-                    "F_DATA_HORA_REALIZACAO                    := ?," +
-                    "F_COD_COLABORADOR                         := ?," +
-                    "F_COD_VEICULO                             := ?," +
-                    "F_TIPO_CHECKLIST                          := ?," +
-                    "F_KM_COLETADO                             := ?," +
-                    "F_TEMPO_REALIZACAO                        := ?," +
-                    "F_DATA_HORA_SINCRONIZACAO                 := ?," +
-                    "F_FONTE_DATA_HORA_REALIZACAO              := ?," +
-                    "F_VERSAO_APP_MOMENTO_REALIZACAO           := ?," +
-                    "F_VERSAO_APP_MOMENTO_SINCRONIZACAO        := ?," +
-                    "F_DEVICE_ID                               := ?," +
-                    "F_DEVICE_IMEI                             := ?," +
-                    "F_DEVICE_UPTIME_REALIZACAO_MILLIS         := ?," +
-                    "F_DEVICE_UPTIME_SINCRONIZACAO_MILLIS      := ?," +
-                    "F_FOI_OFFLINE                             := ?," +
-                    "F_TOTAL_PERGUNTAS_OK                      := ?," +
-                    "F_TOTAL_PERGUNTAS_NOK                     := ?," +
-                    "F_TOTAL_ALTERNATIVAS_OK                   := ?," +
-                    "F_TOTAL_ALTERNATIVAS_NOK                  := ?," +
-                    "F_TOTAL_FOTOS_CAPTURADAS_PERGUNTAS_OK     := ?," +
-                    "F_TOTAL_FOTOS_CAPTURADAS_ALTERNATIVAS_NOK := ?) " +
-                    "AS CODIGO;");
-            final ZoneId zoneId = TimeZoneManager.getZoneIdForCodUnidade(checklist.getCodUnidade(), conn);
-            stmt.setLong(1, checklist.getCodUnidade());
-            stmt.setLong(2, checklist.getCodModelo());
-            stmt.setLong(3, checklist.getCodVersaoModeloChecklist());
-            // Se foi um checklist offline salvamos a data/hora realização que recebemos do App. Senão, salvamos a
-            // data/hora atual do servidor.
-            // TODO: Se a data/hora do WS estiver incorreta, iremos salvar informação errada no check off.
-            final OffsetDateTime dataHoraRealizacao = foiOffline
-                    ? checklist.getDataHoraRealizacao().atZone(zoneId).toOffsetDateTime()
-                    : Now.offsetDateTimeUtc();
-            stmt.setObject(4, dataHoraRealizacao);
-            stmt.setLong(5, checklist.getCodColaborador());
-            stmt.setLong(6, checklist.getCodVeiculo());
-            stmt.setString(7, String.valueOf(checklist.getTipo().asChar()));
-            stmt.setLong(8, checklist.getKmColetadoVeiculo());
-            stmt.setLong(9, checklist.getTempoRealizacaoCheckInMillis());
-            stmt.setObject(10, Now.offsetDateTimeUtc());
-            stmt.setString(11, checklist.getFonteDataHoraRealizacao().asString());
-            stmt.setInt(12, checklist.getVersaoAppMomentoRealizacao());
-            stmt.setInt(13, checklist.getVersaoAppMomentoSincronizacao());
-            stmt.setString(14, checklist.getDeviceId());
-            stmt.setString(15, checklist.getDeviceImei());
-            stmt.setLong(16, checklist.getDeviceUptimeRealizacaoMillis());
-            stmt.setLong(17, checklist.getDeviceUptimeSincronizacaoMillis());
-            stmt.setBoolean(18, foiOffline);
-            stmt.setInt(19, checklist.getQtdPerguntasOk());
-            stmt.setInt(20, checklist.getQtdPerguntasNok());
-            stmt.setInt(21, checklist.getQtdAlternativasOk());
-            stmt.setInt(22, checklist.getQtdAlternativasNok());
-            stmt.setInt(23, checklist.getQtdFotosCapturadasPerguntasOk());
-            stmt.setInt(24, checklist.getQtdFotosCapturadasAlternativasNok());
+            conn = getConnection();
+            stmt = conn.prepareStatement("select * " +
+                    "from func_checklist_insert_imagem_pergunta(?, ?, ?);");
+            stmt.setLong(1, codChecklist);
+            stmt.setLong(2, codPergunta);
+            stmt.setString(3, urlImagem);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                final Long codChecklistInserido = rSet.getLong("CODIGO");
-
-                // Só precisamos inserir as respostas se houver alguma NOK.
-                if (checklist.getQtdAlternativasNok() > 0) {
-                    insertChecklistRespostasNok(
-                            conn,
-                            checklist.getCodUnidade(),
-                            checklist.getCodModelo(),
-                            checklist.getCodVersaoModeloChecklist(),
-                            codChecklistInserido,
-                            checklist.getRespostas());
-                }
-
-                // Após inserir o checklist devemos abrir as Ordens de Serviços, caso necessário.
-                if (deveAbrirOs) {
-                    Injection
-                            .provideOrdemServicoDao()
-                            .processaChecklistRealizado(conn, codChecklistInserido, checklist);
-                }
-
-                return codChecklistInserido;
+                return rSet.getLong(1);
             } else {
-                throw new SQLException("Erro ao salvar checklist");
+                throw new IllegalStateException("Erro ao vincular imagem ao checklist."
+                        + "\ncodChecklist: " + codChecklist
+                        + "\ncodPergunta: " + codPergunta
+                        + "\nurlImagem: " + urlImagem);
             }
         } finally {
-            close(stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
-    private void insertChecklistRespostasNok(@NotNull final Connection conn,
-                                             @NotNull final Long codUnidadeChecklist,
-                                             @NotNull final Long codModeloChecklist,
-                                             @NotNull final Long codVersaoModeloChecklist,
-                                             @NotNull final Long codChecklistInserido,
-                                             @NotNull final List<ChecklistResposta> respostas) throws Throwable {
+    @NotNull
+    @Override
+    public Long insertImagemAlternativaChecklistRealizado(@NotNull final Long codChecklist,
+                                                          @NotNull final Long codAlternativa,
+                                                          @NotNull final String urlImagem) throws Throwable {
+        Connection conn = null;
         PreparedStatement stmt = null;
+        ResultSet rSet = null;
         try {
-            stmt = conn.prepareStatement(
-                    "SELECT * FROM FUNC_CHECKLIST_INSERT_RESPOSTAS_CHECKLIST(" +
-                            "F_COD_UNIDADE_CHECKLIST       := ?," +
-                            "F_COD_MODELO_CHECKLIST        := ?," +
-                            "F_COD_VERSAO_MODELO_CHECKLIST := ?," +
-                            "F_COD_CHECKLIST               := ?," +
-                            "F_COD_PERGUNTA                := ?," +
-                            "F_COD_ALTERNATIVA             := ?," +
-                            "F_RESPOSTA_OUTROS             := ?);");
-            stmt.setLong(1, codUnidadeChecklist);
-            stmt.setLong(2, codModeloChecklist);
-            stmt.setLong(3, codVersaoModeloChecklist);
-            stmt.setLong(4, codChecklistInserido);
-            int linhasParaExecutar = 0;
-            for (final ChecklistResposta resposta : respostas) {
-                for (final ChecklistAlternativaResposta alternativa : resposta.getAlternativasRespostas()) {
-                    if (alternativa.isAlternativaSelecionada()) {
-                        stmt.setLong(5, resposta.getCodPergunta());
-                        stmt.setLong(6, alternativa.getCodAlternativa());
-                        if (alternativa.isTipoOutros()) {
-                            stmt.setString(7, StringUtils.trimToNull(alternativa.getRespostaTipoOutros()));
-                        } else {
-                            stmt.setNull(7, SqlType.TEXT.asIntTypeJava());
-                        }
-                        stmt.addBatch();
-                        linhasParaExecutar++;
-                    }
-                }
-            }
-            if (stmt.executeBatch().length != linhasParaExecutar) {
-                throw new SQLException("Não foi possível salvar todas as respostas do checklist");
+            conn = getConnection();
+            stmt = conn.prepareStatement("select * " +
+                    "from func_checklist_insert_imagem_alternativa(?, ?, ?);");
+            stmt.setLong(1, codChecklist);
+            stmt.setLong(2, codAlternativa);
+            stmt.setString(3, urlImagem);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return rSet.getLong(1);
+            } else {
+                throw new IllegalStateException("Erro ao vincular imagem ao checklist."
+                        + "\ncodChecklist: " + codChecklist
+                        + "\ncodAlternativa: " + codAlternativa
+                        + "\nurlImagem: " + urlImagem);
             }
         } finally {
-            close(stmt);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -464,6 +372,156 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
             }
         } finally {
             close(conn, stmt, rSet);
+        }
+    }
+
+    @NotNull
+    private Long internalInsertChecklist(@NotNull final Connection conn,
+                                         @NotNull final ChecklistInsercao checklist,
+                                         final boolean foiOffline,
+                                         final boolean deveAbrirOs) throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+
+            // Isso é necessário pois apps antigos não tem a versão do modelo de checklist e portanto nós não recebemos
+            // ela. Nessa etapa buscamos o código da versão do modelo com base no código de uma alternativa
+            if (!ChecklistMigracaoEstruturaSuporte.isAppNovaEstruturaChecklist(checklist)) {
+                checklist.setCodVersaoModeloChecklist(ChecklistMigracaoEstruturaSuporte
+                        .encontraCodVersaoModeloChecklist(conn, checklist));
+            }
+
+            stmt = conn.prepareStatement("SELECT * " +
+                    "FROM FUNC_CHECKLIST_INSERT_CHECKLIST_INFOS(" +
+                    "F_COD_UNIDADE_CHECKLIST                   := ?," +
+                    "F_COD_MODELO_CHECKLIST                    := ?," +
+                    "F_COD_VERSAO_MODELO_CHECKLIST             := ?," +
+                    "F_DATA_HORA_REALIZACAO                    := ?," +
+                    "F_COD_COLABORADOR                         := ?," +
+                    "F_COD_VEICULO                             := ?," +
+                    "F_TIPO_CHECKLIST                          := ?," +
+                    "F_KM_COLETADO                             := ?," +
+                    "F_TEMPO_REALIZACAO                        := ?," +
+                    "F_DATA_HORA_SINCRONIZACAO                 := ?," +
+                    "F_FONTE_DATA_HORA_REALIZACAO              := ?," +
+                    "F_VERSAO_APP_MOMENTO_REALIZACAO           := ?," +
+                    "F_VERSAO_APP_MOMENTO_SINCRONIZACAO        := ?," +
+                    "F_DEVICE_ID                               := ?," +
+                    "F_DEVICE_IMEI                             := ?," +
+                    "F_DEVICE_UPTIME_REALIZACAO_MILLIS         := ?," +
+                    "F_DEVICE_UPTIME_SINCRONIZACAO_MILLIS      := ?," +
+                    "F_FOI_OFFLINE                             := ?," +
+                    "F_TOTAL_PERGUNTAS_OK                      := ?," +
+                    "F_TOTAL_PERGUNTAS_NOK                     := ?," +
+                    "F_TOTAL_ALTERNATIVAS_OK                   := ?," +
+                    "F_TOTAL_ALTERNATIVAS_NOK                  := ?," +
+                    "F_TOTAL_IMAGENS_PERGUNTAS_OK              := ?," +
+                    "F_TOTAL_IMAGENS_ALTERNATIVAS_NOK          := ?) " +
+                    "AS CODIGO;");
+            final ZoneId zoneId = TimeZoneManager.getZoneIdForCodUnidade(checklist.getCodUnidade(), conn);
+            stmt.setLong(1, checklist.getCodUnidade());
+            stmt.setLong(2, checklist.getCodModelo());
+            stmt.setLong(3, checklist.getCodVersaoModeloChecklist());
+            // Se foi um checklist offline salvamos a data/hora realização que recebemos do App. Senão, salvamos a
+            // data/hora atual do servidor.
+            // TODO: Se a data/hora do WS estiver incorreta, iremos salvar informação errada no check off.
+            final OffsetDateTime dataHoraRealizacao = foiOffline
+                    ? checklist.getDataHoraRealizacao().atZone(zoneId).toOffsetDateTime()
+                    : Now.offsetDateTimeUtc();
+            stmt.setObject(4, dataHoraRealizacao);
+            stmt.setLong(5, checklist.getCodColaborador());
+            stmt.setLong(6, checklist.getCodVeiculo());
+            stmt.setString(7, String.valueOf(checklist.getTipo().asChar()));
+            stmt.setLong(8, checklist.getKmColetadoVeiculo());
+            stmt.setLong(9, checklist.getTempoRealizacaoCheckInMillis());
+            stmt.setObject(10, Now.offsetDateTimeUtc());
+            stmt.setString(11, checklist.getFonteDataHoraRealizacao().asString());
+            stmt.setInt(12, checklist.getVersaoAppMomentoRealizacao());
+            stmt.setInt(13, checklist.getVersaoAppMomentoSincronizacao());
+            stmt.setString(14, checklist.getDeviceId());
+            stmt.setString(15, checklist.getDeviceImei());
+            stmt.setLong(16, checklist.getDeviceUptimeRealizacaoMillis());
+            stmt.setLong(17, checklist.getDeviceUptimeSincronizacaoMillis());
+            stmt.setBoolean(18, foiOffline);
+            stmt.setInt(19, checklist.getQtdPerguntasOk());
+            stmt.setInt(20, checklist.getQtdPerguntasNok());
+            stmt.setInt(21, checklist.getQtdAlternativasOk());
+            stmt.setInt(22, checklist.getQtdAlternativasNok());
+            stmt.setInt(23, checklist.getQtdImagensPerguntasOk());
+            stmt.setInt(24, checklist.getQtdImagensAlternativasNok());
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                final Long codChecklistInserido = rSet.getLong("CODIGO");
+
+                // Só precisamos inserir as respostas se houver alguma NOK.
+                if (checklist.getQtdAlternativasNok() > 0) {
+                    insertChecklistRespostasNok(
+                            conn,
+                            checklist.getCodUnidade(),
+                            checklist.getCodModelo(),
+                            checklist.getCodVersaoModeloChecklist(),
+                            codChecklistInserido,
+                            checklist.getRespostas());
+                }
+
+                // Após inserir o checklist devemos abrir as Ordens de Serviços, caso necessário.
+                if (deveAbrirOs) {
+                    Injection
+                            .provideOrdemServicoDao()
+                            .processaChecklistRealizado(conn, codChecklistInserido, checklist);
+                }
+
+                return codChecklistInserido;
+            } else {
+                throw new SQLException("Erro ao salvar checklist");
+            }
+        } finally {
+            close(stmt, rSet);
+        }
+    }
+
+    private void insertChecklistRespostasNok(@NotNull final Connection conn,
+                                             @NotNull final Long codUnidadeChecklist,
+                                             @NotNull final Long codModeloChecklist,
+                                             @NotNull final Long codVersaoModeloChecklist,
+                                             @NotNull final Long codChecklistInserido,
+                                             @NotNull final List<ChecklistResposta> respostas) throws Throwable {
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement(
+                    "SELECT * FROM FUNC_CHECKLIST_INSERT_RESPOSTAS_CHECKLIST(" +
+                            "F_COD_UNIDADE_CHECKLIST       := ?," +
+                            "F_COD_MODELO_CHECKLIST        := ?," +
+                            "F_COD_VERSAO_MODELO_CHECKLIST := ?," +
+                            "F_COD_CHECKLIST               := ?," +
+                            "F_COD_PERGUNTA                := ?," +
+                            "F_COD_ALTERNATIVA             := ?," +
+                            "F_RESPOSTA_OUTROS             := ?);");
+            stmt.setLong(1, codUnidadeChecklist);
+            stmt.setLong(2, codModeloChecklist);
+            stmt.setLong(3, codVersaoModeloChecklist);
+            stmt.setLong(4, codChecklistInserido);
+            int linhasParaExecutar = 0;
+            for (final ChecklistResposta resposta : respostas) {
+                for (final ChecklistAlternativaResposta alternativa : resposta.getAlternativasRespostas()) {
+                    if (alternativa.isAlternativaSelecionada()) {
+                        stmt.setLong(5, resposta.getCodPergunta());
+                        stmt.setLong(6, alternativa.getCodAlternativa());
+                        if (alternativa.isTipoOutros()) {
+                            stmt.setString(7, StringUtils.trimToNull(alternativa.getRespostaTipoOutros()));
+                        } else {
+                            stmt.setNull(7, SqlType.TEXT.asIntTypeJava());
+                        }
+                        stmt.addBatch();
+                        linhasParaExecutar++;
+                    }
+                }
+            }
+            if (stmt.executeBatch().length != linhasParaExecutar) {
+                throw new SQLException("Não foi possível salvar todas as respostas do checklist");
+            }
+        } finally {
+            close(stmt);
         }
     }
 

@@ -22,88 +22,69 @@ public final class ChecklistInsercao {
 
     @NotNull
     private final Long codModelo;
-
-    /**
-     * Versão do modelo que o checklist realizado referencia.
-     * TODO: Será provisoriamente não-final para funcionar no processo de migração dos apps antigos para a nova estrutura.
-     */
-    @Nullable
-    private Long codVersaoModeloChecklist;
-
     @NotNull
     private final Long codColaborador;
-
     @NotNull
     private final Long codVeiculo;
-
     @NotNull
     private final String placaVeiculo;
-
     @NotNull
     private final TipoChecklist tipo;
-
     private final long kmColetadoVeiculo;
-
     private final long tempoRealizacaoCheckInMillis;
-
     @NotNull
     private final List<ChecklistResposta> respostas;
-
     @NotNull
     private final LocalDateTime dataHoraRealizacao;
-
     @NotNull
     private final FonteDataHora fonteDataHoraRealizacao;
-
     /**
      * Versão do aplicativo no momento que o checklist foi realizado.
      */
     @NotNull
     private final Integer versaoAppMomentoRealizacao;
-
     /**
      * Versão do aplicativo no momento que o checklist foi sincronizado.
      */
     @NotNull
     private final Integer versaoAppMomentoSincronizacao;
-
     /**
      * Identificador único do celular: IMEI ou MEID ou ESN e etc.
      */
     @Nullable
     private final String deviceId;
-
     /**
      * IMEI do aparelho.
      */
     @Nullable
     private final String deviceImei;
-
     /**
      * O tempo, em milissegundos, desde que o aparelho foi ligado até a realização do check.
      *
      * @see <a href="Android Docs">https://developer.android.com/reference/android/os/SystemClock.html#elapsedRealtime()</a>
      */
     private final long deviceUptimeRealizacaoMillis;
-
     /**
      * O tempo, em milissegundos, desde que o aparelho foi ligado até a sincronização do check.
      *
      * @see <a href="Android Docs">https://developer.android.com/reference/android/os/SystemClock.html#elapsedRealtime()</a>
      */
     private final long deviceUptimeSincronizacaoMillis;
-
     /**
      * Quantidade total de fotos capturadas referentes a perguntas respondidas com OK.
      */
-    private final int qtdFotosCapturadasPerguntasOk;
-
+    private final int qtdImagensPerguntasOk;
     /**
      * Quantidade total de fotos capturadas referentes a alternativas respondidas com NOK, ou seja,
      * alternativas selecionadas.
      */
-    private final int qtdFotosCapturadasAlternativasNok;
-
+    private final int qtdImagensAlternativasNok;
+    /**
+     * Versão do modelo que o checklist realizado referencia.
+     * TODO: Será provisoriamente não-final para funcionar no processo de migração dos apps antigos para a nova estrutura.
+     */
+    @Nullable
+    private Long codVersaoModeloChecklist;
     /**
      * Metadados criados no momento de criação desse objeto contendo informações extras sobre o checklist sendo
      * inserido.
@@ -142,8 +123,8 @@ public final class ChecklistInsercao {
                              @Nullable final String deviceImei,
                              final long deviceUptimeRealizacaoMillis,
                              final long deviceUptimeSincronizacaoMillis,
-                             final int qtdFotosCapturadasPerguntasOk,
-                             final int qtdFotosCapturadasAlternativasNok) {
+                             final int qtdImagensPerguntasOk,
+                             final int qtdImagensAlternativasNok) {
         this.codUnidade = codUnidade;
         this.codModelo = codModelo;
         this.codVersaoModeloChecklist = codVersaoModeloChecklist;
@@ -162,8 +143,8 @@ public final class ChecklistInsercao {
         this.deviceImei = deviceImei;
         this.deviceUptimeRealizacaoMillis = deviceUptimeRealizacaoMillis;
         this.deviceUptimeSincronizacaoMillis = deviceUptimeSincronizacaoMillis;
-        this.qtdFotosCapturadasPerguntasOk = qtdFotosCapturadasPerguntasOk;
-        this.qtdFotosCapturadasAlternativasNok = qtdFotosCapturadasAlternativasNok;
+        this.qtdImagensPerguntasOk = qtdImagensPerguntasOk;
+        this.qtdImagensAlternativasNok = qtdImagensAlternativasNok;
         this.cachedMetadata = createMetadata();
     }
 
@@ -277,16 +258,12 @@ public final class ChecklistInsercao {
         return cachedMetadata.getQtdAlternativasNok();
     }
 
-    public int getQtdFotosCapturadasPerguntasOk() {
-        return qtdFotosCapturadasPerguntasOk;
+    public int getQtdImagensPerguntasOk() {
+        return qtdImagensPerguntasOk;
     }
 
-    public int getQtdFotosCapturadasAlternativasNok() {
-        return qtdFotosCapturadasAlternativasNok;
-    }
-
-    public void setChecklistAntigo(@Nullable final Checklist checklistAntigo) {
-        this.checklistAntigo = checklistAntigo;
+    public int getQtdImagensAlternativasNok() {
+        return qtdImagensAlternativasNok;
     }
 
     @NotNull
@@ -296,6 +273,10 @@ public final class ChecklistInsercao {
         }
 
         return checklistAntigo;
+    }
+
+    public void setChecklistAntigo(@Nullable final Checklist checklistAntigo) {
+        this.checklistAntigo = checklistAntigo;
     }
 
     private void ensureMetadataCreated() {
