@@ -7,6 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -97,7 +98,11 @@ public final class RelatorioKmRodadoPorVidaEmColuna implements CsvReport {
     private List<List<String>> generateTable() {
         final Map<Long, List<PneuKmRodadoPorVida>> grouped = data
                 .stream()
-                .collect(Collectors.groupingBy(PneuKmRodadoPorVida::getCodPneu));
+                .collect(Collectors.groupingBy(
+                        PneuKmRodadoPorVida::getCodPneu,
+                        // Um LinkedHashMap para garantir a manutenção da ordem.
+                        LinkedHashMap::new,
+                        Collectors.toList()));
 
         final List<List<String>> innerTable = new ArrayList<>();
         grouped.forEach((codPneu, vidasPneu) -> {
