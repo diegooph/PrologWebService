@@ -1,0 +1,822 @@
+campos:
+  - 0:
+    nome_campo_planilha: 'Data'
+    nome_campo_legivel: 'Data'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]{8}$'
+    exemplo_preenchimento: '17022020'
+  - 1:
+    nome_campo_planilha: 'Transp'
+    nome_campo_legivel: 'Transp'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+    exemplo_preenchimento: '1'
+  - 2:
+    nome_campo_planilha: 'Entrega'
+    nome_campo_legivel: 'Entrega'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'LETRAS'
+    padrao_preenchimento_campo_legivel: 'Letras'
+    regex_validacao_padrao_preenchimento: '\b(AS|Rota)\b'
+    exemplo_preenchimento: 'AS ou Rota'
+  - 3:
+    nome_campo_planilha: 'CargaAtual'
+    nome_campo_legivel: 'Carga Atual'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'LETRAS'
+    padrao_preenchimento_campo_legivel: 'Letras'
+    regex_validacao_padrao_preenchimento: '\b(Roteriz|Recarga|Noturna|Extra|MKT|Recolha|Spot')\b'
+    # Aceitamos 'Spot' como um tipo mas não colocamos ele nos exemplos, devido ao pouco volume.
+    exemplo_preenchimento: 'Roteriz, Recarga, Noturna, Extra, MKT ou Recolha'
+  - 4:
+    nome_campo_planilha: 'Frota'
+    nome_campo_legivel: 'Frota'
+    # Existem dados vazios na base.
+    campo_obrigatorio: false
+    padrao_preenchimento_campo: 'LETRAS'
+    padrao_preenchimento_campo_legivel: 'Letras'
+    regex_validacao_padrao_preenchimento: '^[a-zA-Z]+$'
+    exemplo_preenchimento: 'Padrao, Spot'
+  - 5:
+    nome_campo_planilha: 'CustoSpot'
+    nome_campo_legivel: 'Custo Spot'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_DECIMAL'
+    padrao_preenchimento_campo_legivel: 'Número decimal'
+    regex_validacao_padrao_preenchimento: '^[0-9\,]*$'
+    exemplo_preenchimento: '593,00 ou 1145,65 ou 0'
+  - 6:
+    nome_campo_planilha: 'RegiaoSpot'
+    nome_campo_legivel: 'Região Spot'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+    exemplo_preenchimento: '1, 100 ou 200'
+  - 7:
+    nome_campo_planilha: 'Veiculo'
+    nome_campo_legivel: 'Veículo'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+    exemplo_preenchimento: '1, 100 ou 200'
+  - 8:
+    nome_campo_planilha: 'Placa'
+    nome_campo_legivel: 'Placa'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'TEXTO'
+    padrao_preenchimento_campo_legivel: 'Texto'
+    regex_validacao_padrao_preenchimento: '^[a-zA-Z]+$'
+    exemplo_preenchimento: 'AAA1234 ou BBB1111'
+  - 9:
+    nome_campo_planilha: 'VeiculoIndisp'
+    nome_campo_legivel: 'Veículo Indisponível'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+    exemplo_preenchimento: '0 (insira 0 caso venha em branco)'
+  - 10:
+    nome_campo_planilha: 'PlacaIndisp'
+    nome_campo_legivel: 'Placa Indisponível'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+    exemplo_preenchimento: '0 (insira 0 caso venha em branco)'
+  - 11:
+    nome_campo_planilha: 'FrotaIndisp'
+    nome_campo_legivel: 'Frota Indisponível'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+    exemplo_preenchimento: '0 (insira 0 caso venha em branco)'
+  - 12:
+    nome_campo_planilha: 'TipoIndisp'
+    nome_campo_legivel: 'TipoIndisp'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+    exemplo_preenchimento: '0 (insira 0 caso venha em branco)'
+  - 13:
+    nome_campo_planilha: 'Mapa'
+    nome_campo_legivel: 'Mapa'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+    exemplo_preenchimento: '57000, 10500 ou 9000'
+  - 14:
+    nome_campo_planilha: 'Entregas'
+    nome_campo_legivel: 'Entregas'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 15:
+    nome_campo_planilha: 'CxCarreg'
+    nome_campo_legivel: 'CxCarreg'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 16:
+    nome_campo_planilha: 'CxEntreg'
+    nome_campo_legivel: 'CxEntreg'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 17:
+    nome_campo_planilha: 'Ocupacao'
+    nome_campo_legivel: 'Ocupacao'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 18:
+    nome_campo_planilha: 'CxRota'
+    nome_campo_legivel: 'CxRota'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 19:
+    nome_campo_planilha: 'CxAS'
+    nome_campo_legivel: 'CxAS'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 20:
+    nome_campo_planilha: 'VeicBM'
+    nome_campo_legivel: 'VeicBM'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 21:
+    nome_campo_planilha: 'RShow'
+    nome_campo_legivel: 'RShow'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 22:
+    nome_campo_planilha: 'EntrVol'
+    nome_campo_legivel: 'EntrVol'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 23:
+    nome_campo_planilha: 'HrSai'
+    nome_campo_legivel: 'HrSai'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 24:
+    nome_campo_planilha: 'HrEntr'
+    nome_campo_legivel: 'HrEntr'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 25:
+    nome_campo_planilha: 'KmSai'
+    nome_campo_legivel: 'KmSai'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 26:
+    nome_campo_planilha: 'KmEntr'
+    nome_campo_legivel: 'KmEntr'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 27:
+    nome_campo_planilha: 'CustoVariavel'
+    nome_campo_legivel: 'CustoVariavel'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 28:
+    nome_campo_planilha: 'Lucro'
+    nome_campo_legivel: 'Lucro'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 29:
+    nome_campo_planilha: 'LucroUnit'
+    nome_campo_legivel: 'LucroUnit'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 30:
+    nome_campo_planilha: 'ValorFrete'
+    nome_campo_legivel: 'ValorFrete'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 31:
+    nome_campo_planilha: 'TipoImposto'
+    nome_campo_legivel: 'TipoImposto'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 32:
+    nome_campo_planilha: 'PercImposto'
+    nome_campo_legivel: 'PercImposto'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 33:
+    nome_campo_planilha: 'ValorImposto'
+    nome_campo_legivel: 'ValorImposto'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 34:
+    nome_campo_planilha: 'ValorFaturado'
+    nome_campo_legivel: 'ValorFaturado'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 35:
+    nome_campo_planilha: 'ValorUnitCxEntregue'
+    nome_campo_legivel: 'ValorUnitCxEntregue'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 36:
+    nome_campo_planilha: 'ValorPgCxEntregSemImp'
+    nome_campo_legivel: 'ValorPgCxEntregSemImp'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 37:
+    nome_campo_planilha: 'ValorPgCxEntregComImp'
+    nome_campo_legivel: 'ValorPgCxEntregComImp'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 38:
+    nome_campo_planilha: 'TempoPrevistoRoad'
+    nome_campo_legivel: 'TempoPrevistoRoad'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 39:
+    nome_campo_planilha: 'KmPrevistoRoad'
+    nome_campo_legivel: 'KmPrevistoRoad'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 40:
+    nome_campo_planilha: 'ValorUnitPontoMot'
+    nome_campo_legivel: 'ValorUnitPontoMot'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 41:
+    nome_campo_planilha: 'ValorUnitPontoAjd'
+    nome_campo_legivel: 'ValorUnitPontoAjd'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 42:
+    nome_campo_planilha: 'ValorEquipeEntrMot'
+    nome_campo_legivel: 'ValorEquipeEntrMot'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 43:
+    nome_campo_planilha: 'ValorEquipeEntrAjd'
+    nome_campo_legivel: 'ValorEquipeEntrAjd'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 44:
+    nome_campo_planilha: 'CustoVLC'
+    nome_campo_legivel: 'CustoVLC'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 45:
+    nome_campo_planilha: 'LucroUnitCEDBZ'
+    nome_campo_legivel: 'LucroUnitCEDBZ'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 46:
+    nome_campo_planilha: 'CustoVlcCxEntr'
+    nome_campo_legivel: 'CustoVlcCxEntr'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 47:
+    nome_campo_planilha: 'TempoInterno'
+    nome_campo_legivel: 'TempoInterno'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 48:
+    nome_campo_planilha: 'ValorDropDown'
+    nome_campo_legivel: 'ValorDropDown'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 49:
+    nome_campo_planilha: 'VeicCadDD'
+    nome_campo_legivel: 'VeicCadDD'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 50:
+    nome_campo_planilha: 'KmLaco'
+    nome_campo_legivel: 'KmLaco'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 51:
+    nome_campo_planilha: 'KmDeslocamento'
+    nome_campo_legivel: 'KmDeslocamento'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 52:
+    nome_campo_planilha: 'TempoLaco'
+    nome_campo_legivel: 'TempoLaco'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 53:
+    nome_campo_planilha: 'TempoDeslocamento'
+    nome_campo_legivel: 'TempoDeslocamento'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 54:
+    nome_campo_planilha: 'SitMultiCDD'
+    nome_campo_legivel: 'SitMultiCDD'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 55:
+    nome_campo_planilha: 'UnbOrigem'
+    nome_campo_legivel: 'UnbOrigem'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 56:
+    nome_campo_planilha: 'MatricMotorista'
+    nome_campo_legivel: 'MatricMotorista'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 57:
+    nome_campo_planilha: 'MatricAjud1'
+    nome_campo_legivel: 'MatricAjud1'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 58:
+    nome_campo_planilha: 'MatricAjud2'
+    nome_campo_legivel: 'MatricAjud2'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 59:
+    nome_campo_planilha: 'ValorCTEDifere'
+    nome_campo_legivel: 'ValorCTEDifere'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 60:
+    nome_campo_planilha: 'QtNfCarregadas'
+    nome_campo_legivel: 'QtNfCarregadas'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 61:
+    nome_campo_planilha: 'QtNfEntregues'
+    nome_campo_legivel: 'QtNfEntregues'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 62:
+    nome_campo_planilha: 'IndDevCx'
+    nome_campo_legivel: 'IndDevCx'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 63:
+    nome_campo_planilha: 'IndDevNf'
+    nome_campo_legivel: 'IndDevNf'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 64:
+    nome_campo_planilha: 'Fator'
+    nome_campo_legivel: 'Fator'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 65:
+    nome_campo_planilha: 'Recarga'
+    nome_campo_legivel: 'Recarga'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 66:
+    nome_campo_planilha: 'HrMatinal'
+    nome_campo_legivel: 'HrMatinal'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 67:
+    nome_campo_planilha: 'HrJornadaLiq'
+    nome_campo_legivel: 'HrJornadaLiq'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 68:
+    nome_campo_planilha: 'HrMetaJornada'
+    nome_campo_legivel: 'HrMetaJornada'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 69:
+    nome_campo_planilha: 'VlBateuJornMot'
+    nome_campo_legivel: 'VlBateuJornMot'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 70:
+    nome_campo_planilha: 'VlNaoBateuJornMot'
+    nome_campo_legivel: 'VlNaoBateuJornMot'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 71:
+    nome_campo_planilha: 'VlRecargaMot'
+    nome_campo_legivel: 'VlRecargaMot'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 72:
+    nome_campo_planilha: 'VlBateuJornAju'
+    nome_campo_legivel: 'VlBateuJornAju'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 73:
+    nome_campo_planilha: 'VlNaoBateuJornAju'
+    nome_campo_legivel: 'VlNaoBateuJornAju'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 74:
+    nome_campo_planilha: 'VlRecargaAju'
+    nome_campo_legivel: 'VlRecargaAju'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 75:
+    nome_campo_planilha: 'VlTotalMapa'
+    nome_campo_legivel: 'VlTotalMapa'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 76:
+    nome_campo_planilha: 'QtHlCarregados'
+    nome_campo_legivel: 'QtHlCarregados'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 77:
+    nome_campo_planilha: 'QtHlEntregues'
+    nome_campo_legivel: 'QtHlEntregues'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 78:
+    nome_campo_planilha: 'IndiceDevHl'
+    nome_campo_legivel: 'IndiceDevHl'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 79:
+    nome_campo_planilha: 'Regiao'
+    nome_campo_legivel: 'Regiao'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 80:
+    nome_campo_planilha: 'QtNfCarregGeral'
+    nome_campo_legivel: 'QtNfCarregGeral'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 81:
+    nome_campo_planilha: 'QtNfEntregGeral'
+    nome_campo_legivel: 'QtNfEntregGeral'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 82:
+    nome_campo_planilha: 'CapacidadeVeiculoKG'
+    nome_campo_legivel: 'CapacidadeVeiculoKG'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 83:
+    nome_campo_planilha: 'PesoCargaKG'
+    nome_campo_legivel: 'PesoCargaKG'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 84:
+    nome_campo_planilha: 'CapacVeiculoCx'
+    nome_campo_legivel: 'CapacVeiculoCx'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 85:
+    nome_campo_planilha: 'EntregasCompletas'
+    nome_campo_legivel: 'EntregasCompletas'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 86:
+    nome_campo_planilha: 'EntregasParciais'
+    nome_campo_legivel: 'EntregasParciais'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 87:
+    nome_campo_planilha: 'EntregasNaoRealizadas'
+    nome_campo_legivel: 'EntregasNaoRealizadas'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 88:
+    nome_campo_planilha: 'CodFilial'
+    nome_campo_legivel: 'CodFilial'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 89:
+    nome_campo_planilha: 'NomeFilial'
+    nome_campo_legivel: 'NomeFilial'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 90:
+    nome_campo_planilha: 'CodSupervTrs'
+    nome_campo_legivel: 'CodSupervTrs'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 91:
+    nome_campo_planilha: 'NomeSupervTrs'
+    nome_campo_legivel: 'NomeSupervTrs'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 92:
+    nome_campo_planilha: 'CodSpot'
+    nome_campo_legivel: 'CodSpot'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 93:
+    nome_campo_planilha: 'NomeSpot'
+    nome_campo_legivel: 'NomeSpot'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 94:
+    nome_campo_planilha: 'EquipCarregados'
+    nome_campo_legivel: 'EquipCarregados'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 95:
+    nome_campo_planilha: 'EquipDevolvidos'
+    nome_campo_legivel: 'EquipDevolvidos'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 96:
+    nome_campo_planilha: 'EquipRecolhidos'
+    nome_campo_legivel: 'EquipRecolhidos'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 97:
+    nome_campo_planilha: 'CxEntregTracking'
+    nome_campo_legivel: 'CxEntregTracking'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 98:
+    nome_campo_planilha: 'HrCarreg'
+    nome_campo_legivel: 'HrCarreg'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 99:
+    nome_campo_planilha: 'HrPCFisica'
+    nome_campo_legivel: 'HrPCFisica'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 100:
+    nome_campo_planilha: 'HrPCFinanceira'
+    nome_campo_legivel: 'HrPCFinanceira'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 101:
+    nome_campo_planilha: 'StMapa'
+    nome_campo_legivel: 'StMapa'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 102:
+    nome_campo_planilha: 'DataEntrega'
+    nome_campo_legivel: 'DataEntrega'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 103:
+    nome_campo_planilha: 'QtEntregasCarreg(RV)'
+    nome_campo_legivel: 'QtEntregasCarreg(RV)'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 104:
+    nome_campo_planilha: 'QtEntregasEntreg(RV)'
+    nome_campo_legivel: 'QtEntregasEntreg(RV)'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 105:
+    nome_campo_planilha: 'IndiceDevEntregas(RV)'
+    nome_campo_legivel: 'IndiceDevEntregas(RV)'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 106:
+    nome_campo_planilha: 'CPFMotorista'
+    nome_campo_legivel: 'CPFMotorista'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 107:
+    nome_campo_planilha: 'CPFAjudante1'
+    nome_campo_legivel: 'CPFAjudante1'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 108:
+    nome_campo_planilha: 'CPFAjudante2'
+    nome_campo_legivel: 'CPFAjudante2'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 109:
+    nome_campo_planilha: 'Início de Rota'
+    nome_campo_legivel: 'Início de Rota'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 110:
+    nome_campo_planilha: 'Término de Rota'
+    nome_campo_legivel: 'Término de Rota'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 111:
+    nome_campo_planilha: 'MotoristaJT12x36'
+    nome_campo_legivel: 'MotoristaJT12x36'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 112:
+    nome_campo_planilha: 'Retira'
+    nome_campo_legivel: 'Retira'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 113:
+    nome_campo_planilha: 'Classificacao Roadshow'
+    nome_campo_legivel: 'Classificacao Roadshow'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+  - 11:
+    nome_campo_planilha: 'Descr.J.Trabalho'
+    nome_campo_legivel: 'Descr.J.Trabalho'
+    campo_obrigatorio: true
+    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
+    padrao_preenchimento_campo_legivel: 'Número inteiro'
+    regex_validacao_padrao_preenchimento: '^[0-9]*$'
