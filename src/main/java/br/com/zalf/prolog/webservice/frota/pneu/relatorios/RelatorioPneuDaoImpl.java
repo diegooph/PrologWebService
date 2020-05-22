@@ -966,7 +966,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
     }
 
     @Override
-    public void getCustoPorKmCsv(@NotNull final OutputStream outputStream,
+    public void getCustoPorKmCsv(@NotNull final OutputStream out,
                                  @NotNull final List<Long> codUnidades) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -976,8 +976,8 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
             stmt = getCustoPorKmStmt(conn, codUnidades);
             rSet = stmt.executeQuery();
             new CsvWriter
-                    .Builder(outputStream)
-                    .withCsvReport(new RelatorioCustoPorKm(rSet))
+                    .Builder(out)
+                    .withResultSet(rSet)
                     .build()
                     .write();
         } finally {
