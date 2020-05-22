@@ -192,6 +192,7 @@ campos:
     campo_obrigatorio: true
     padrao_preenchimento_campo: 'DATA_HORA'
     padrao_preenchimento_campo_legivel: 'Data e hora'
+    # O espaço nessa regex, entre a data e a hora, é proposital.
     regex_validacao_padrao_preenchimento: '^\d{2}/\d{2}/\d{4} \d{2}:\d{2}$'
     exemplo_preenchimento: '14/10/2017 13:23'
   - 24:
@@ -200,6 +201,7 @@ campos:
     campo_obrigatorio: true
     padrao_preenchimento_campo: 'DATA_HORA'
     padrao_preenchimento_campo_legivel: 'Data e hora'
+    # O espaço nessa regex, entre a data e a hora, é proposital.
     regex_validacao_padrao_preenchimento: '^\d{2}/\d{2}/\d{4} \d{2}:\d{2}$'
     exemplo_preenchimento: '14/10/2017 13:23'
   - 25:
@@ -800,6 +802,7 @@ campos:
     campo_obrigatorio: true
     padrao_preenchimento_campo: 'DATA_HORA'
     padrao_preenchimento_campo_legivel: 'Data e hora'
+    # O espaço nessa regex, entre a data e a hora, é proposital.
     regex_validacao_padrao_preenchimento: '^\d{2}/\d{2}/\d{4} \d{2}:\d{2}$'
     exemplo_preenchimento: '14/10/2017 13:23'
   - 99:
@@ -808,6 +811,7 @@ campos:
     campo_obrigatorio: true
     padrao_preenchimento_campo: 'DATA_HORA'
     padrao_preenchimento_campo_legivel: 'Data e hora'
+    # O espaço nessa regex, entre a data e a hora, é proposital.
     regex_validacao_padrao_preenchimento: '^\d{2}/\d{2}/\d{4} \d{2}:\d{2}$'
     exemplo_preenchimento: '14/10/2017 13:23'
   - 100:
@@ -816,103 +820,111 @@ campos:
     campo_obrigatorio: true
     padrao_preenchimento_campo: 'DATA_HORA'
     padrao_preenchimento_campo_legivel: 'Data e hora'
+    # O espaço nessa regex, entre a data e a hora, é proposital.
     regex_validacao_padrao_preenchimento: '^\d{2}/\d{2}/\d{4} \d{2}:\d{2}$'
     exemplo_preenchimento: '14/10/2017 13:23'
   - 101:
     nome_campo_planilha: 'StMapa'
     nome_campo_legivel: 'StMapa'
-    campo_obrigatorio: true
-    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
-    padrao_preenchimento_campo_legivel: 'Número inteiro'
-    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+    campo_obrigatorio: false
+    padrao_preenchimento_campo: 'TEXTO'
+    padrao_preenchimento_campo_legivel: 'Texto'
+    regex_validacao_padrao_preenchimento: '^[a-zA-Z]+$'
+    exemplo_preenchimento: 'Pago ou Fechado'
   - 102:
     nome_campo_planilha: 'DataEntrega'
-    nome_campo_legivel: 'DataEntrega'
-    campo_obrigatorio: true
+    nome_campo_legivel: 'Data Entrega'
+    campo_obrigatorio: false
     padrao_preenchimento_campo: 'NUMERO_INTEIRO'
     padrao_preenchimento_campo_legivel: 'Número inteiro'
-    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+    regex_validacao_padrao_preenchimento: '^[0-9]{8}$'
+    exemplo_preenchimento: '17022020'
   - 103:
     nome_campo_planilha: 'QtEntregasCarreg(RV)'
     nome_campo_legivel: 'QtEntregasCarreg(RV)'
-    campo_obrigatorio: true
+    campo_obrigatorio: false
     padrao_preenchimento_campo: 'NUMERO_INTEIRO'
     padrao_preenchimento_campo_legivel: 'Número inteiro'
     regex_validacao_padrao_preenchimento: '^[0-9]*$'
   - 104:
     nome_campo_planilha: 'QtEntregasEntreg(RV)'
     nome_campo_legivel: 'QtEntregasEntreg(RV)'
-    campo_obrigatorio: true
+    campo_obrigatorio: false
     padrao_preenchimento_campo: 'NUMERO_INTEIRO'
     padrao_preenchimento_campo_legivel: 'Número inteiro'
     regex_validacao_padrao_preenchimento: '^[0-9]*$'
   - 105:
     nome_campo_planilha: 'IndiceDevEntregas(RV)'
     nome_campo_legivel: 'IndiceDevEntregas(RV)'
-    campo_obrigatorio: true
-    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
-    padrao_preenchimento_campo_legivel: 'Número inteiro'
-    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+    campo_obrigatorio: false
+    padrao_preenchimento_campo: 'NUMERO_DECIMAL'
+    padrao_preenchimento_campo_legivel: 'Número decimal'
+    regex_validacao_padrao_preenchimento: '^[0-9\,]*$'
+    exemplo_preenchimento: '0 ou 1,95 ou 10,83'
   - 106:
     nome_campo_planilha: 'CPFMotorista'
-    nome_campo_legivel: 'CPFMotorista'
+    nome_campo_legivel: 'CPF Motorista'
     campo_obrigatorio: true
     padrao_preenchimento_campo: 'NUMERO_INTEIRO'
     padrao_preenchimento_campo_legivel: 'Número inteiro'
-    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+    # Deixamos de {1,11} (de 1 até 11 caracteres) para não deixar a regex tão restrita e abranger qualquer
+    # quantidade de zeros à esquerda.
+    regex_validacao_padrao_preenchimento: '^\d{1,11}$'
+    exemplo_preenchimento: 'CPF (apenas números)'
   - 107:
     nome_campo_planilha: 'CPFAjudante1'
-    nome_campo_legivel: 'CPFAjudante1'
-    campo_obrigatorio: true
+    nome_campo_legivel: 'CPF Ajudante 1'
+    campo_obrigatorio: false
     padrao_preenchimento_campo: 'NUMERO_INTEIRO'
     padrao_preenchimento_campo_legivel: 'Número inteiro'
-    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+    regex_validacao_padrao_preenchimento: '^\d{1,11}$'
+    exemplo_preenchimento: 'CPF (apenas números)'
   - 108:
     nome_campo_planilha: 'CPFAjudante2'
-    nome_campo_legivel: 'CPFAjudante2'
-    campo_obrigatorio: true
+    nome_campo_legivel: 'CPF Ajudante 2'
+    campo_obrigatorio: false
     padrao_preenchimento_campo: 'NUMERO_INTEIRO'
     padrao_preenchimento_campo_legivel: 'Número inteiro'
-    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+    regex_validacao_padrao_preenchimento: '^\d{1,11}$'
+    exemplo_preenchimento: 'CPF (apenas números)'
   - 109:
     nome_campo_planilha: 'Início de Rota'
     nome_campo_legivel: 'Início de Rota'
-    campo_obrigatorio: true
-    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
-    padrao_preenchimento_campo_legivel: 'Número inteiro'
-    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+    campo_obrigatorio: false
+    padrao_preenchimento_campo: 'DATA_HORA'
+    padrao_preenchimento_campo_legivel: 'Data e hora'
+    # O espaço nessa regex, entre a data e a hora, é proposital.
+    regex_validacao_padrao_preenchimento: '^\d{2}/\d{2}/\d{4} \d{2}:\d{2}$'
+    exemplo_preenchimento: '14/10/2017 13:23'
   - 110:
     nome_campo_planilha: 'Término de Rota'
     nome_campo_legivel: 'Término de Rota'
-    campo_obrigatorio: true
-    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
-    padrao_preenchimento_campo_legivel: 'Número inteiro'
-    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+    campo_obrigatorio: false
+    padrao_preenchimento_campo: 'DATA_HORA'
+    padrao_preenchimento_campo_legivel: 'Data e hora'
+    # O espaço nessa regex, entre a data e a hora, é proposital.
+    regex_validacao_padrao_preenchimento: '^\d{2}/\d{2}/\d{4} \d{2}:\d{2}$'
+    exemplo_preenchimento: '14/10/2017 13:23'
   - 111:
     nome_campo_planilha: 'MotoristaJT12x36'
     nome_campo_legivel: 'MotoristaJT12x36'
-    campo_obrigatorio: true
-    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
-    padrao_preenchimento_campo_legivel: 'Número inteiro'
-    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+    campo_obrigatorio: false
+    padrao_preenchimento_campo: 'TEXTO'
+    padrao_preenchimento_campo_legivel: 'Texto'
+    regex_validacao_padrao_preenchimento: '^[a-zA-Z]+$'
+    exemplo_preenchimento: 'Sim'
   - 112:
     nome_campo_planilha: 'Retira'
     nome_campo_legivel: 'Retira'
-    campo_obrigatorio: true
+    campo_obrigatorio: false
     padrao_preenchimento_campo: 'NUMERO_INTEIRO'
     padrao_preenchimento_campo_legivel: 'Número inteiro'
     regex_validacao_padrao_preenchimento: '^[0-9]*$'
   - 113:
     nome_campo_planilha: 'Classificacao Roadshow'
-    nome_campo_legivel: 'Classificacao Roadshow'
-    campo_obrigatorio: true
-    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
-    padrao_preenchimento_campo_legivel: 'Número inteiro'
-    regex_validacao_padrao_preenchimento: '^[0-9]*$'
-  - 11:
-    nome_campo_planilha: 'Descr.J.Trabalho'
-    nome_campo_legivel: 'Descr.J.Trabalho'
-    campo_obrigatorio: true
-    padrao_preenchimento_campo: 'NUMERO_INTEIRO'
-    padrao_preenchimento_campo_legivel: 'Número inteiro'
-    regex_validacao_padrao_preenchimento: '^[0-9]*$'
+    nome_campo_legivel: 'Classificação Roadshow'
+    campo_obrigatorio: false
+    padrao_preenchimento_campo: 'TEXTO'
+    padrao_preenchimento_campo_legivel: 'Texto'
+    regex_validacao_padrao_preenchimento: '^[a-zA-Z]+$'
+    exemplo_preenchimento: 'Padrao ou Integracao'
