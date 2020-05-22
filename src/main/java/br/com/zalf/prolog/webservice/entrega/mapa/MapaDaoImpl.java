@@ -684,42 +684,42 @@ public class MapaDaoImpl extends DatabaseConnection implements MapaDao {
         mapa.hrPCFisica = toTimestamp(linha.get(99));
         mapa.hrPCFinanceira = toTimestamp(linha.get(100));
         mapa.stMapa = linha.get(101);
-        if (!linha.get(102).isEmpty()) {
-            mapa.dataEntrega = toDate(linha.get(102));
+        mapa.classificacaoRoadShow = linha.get(102);
+        if (!linha.get(103).isEmpty()) {
+            mapa.dataEntrega = toDate(linha.get(103));
         } else {
             mapa.dataEntrega = null;
         }
-        mapa.qtdEntregasCarregRv = Integer.parseInt(linha.get(103));
-        mapa.qtdEntregasEntregRv = Integer.parseInt(linha.get(104));
-        mapa.indiceDevEntregas = Double.parseDouble(linha.get(105).replace(",", "."));
-        if (!linha.get(106).trim().isEmpty()) {
-            mapa.cpfMotorista = Long.valueOf(linha.get(106).trim());
+        mapa.qtdEntregasCarregRv = Integer.parseInt(linha.get(104));
+        mapa.qtdEntregasEntregRv = Integer.parseInt(linha.get(105));
+        mapa.indiceDevEntregas = Double.parseDouble(linha.get(106).replace(",", "."));
+        if (!linha.get(107).trim().isEmpty()) {
+            mapa.cpfMotorista = Long.valueOf(linha.get(107).trim());
         } else {
             mapa.cpfMotorista = null;
         }
-        if (!linha.get(107).trim().isEmpty()) {
-            mapa.cpfAjudante1 = Long.valueOf(linha.get(107).trim());
+        if (!linha.get(108).trim().isEmpty()) {
+            mapa.cpfAjudante1 = Long.valueOf(linha.get(108).trim());
         } else {
             mapa.cpfAjudante1 = null;
         }
-        if (!linha.get(108).trim().isEmpty()) {
-            mapa.cpfAjudante2 = Long.valueOf(linha.get(108));
+        if (!linha.get(109).trim().isEmpty()) {
+            mapa.cpfAjudante2 = Long.valueOf(linha.get(109));
         } else {
             mapa.cpfAjudante2 = null;
         }
-        if (!linha.get(109).isEmpty()) {
-            mapa.inicioRota = toTimestamp(linha.get(109));
+        if (!linha.get(110).isEmpty()) {
+            mapa.inicioRota = toTimestamp(linha.get(110));
         } else {
             mapa.inicioRota = null;
         }
-        if (!linha.get(110).isEmpty()) {
-            mapa.terminoRota = toTimestamp(linha.get(110));
+        if (!linha.get(111).isEmpty()) {
+            mapa.terminoRota = toTimestamp(linha.get(111));
         } else {
             mapa.terminoRota = null;
         }
-        mapa.motoristaJt12x36 = linha.get(111);
-        mapa.retira = linha.get(112);
-        mapa.classificacaoRoadShow = linha.get(113);
+        mapa.motoristaJt12x36 = linha.get(112);
+        mapa.retira = linha.get(113);
         return mapa;
     }
 

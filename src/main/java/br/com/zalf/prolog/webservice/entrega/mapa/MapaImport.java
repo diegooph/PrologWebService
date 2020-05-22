@@ -5,7 +5,7 @@ import java.util.Date;
  * Created by jean on 18/01/16.
  * Contém os dados de uma linha da tabela 2art (mapa)
  */
-public class MapaImport {
+public final class MapaImport {
     public Date data;
     public int transp;
     public String entrega;

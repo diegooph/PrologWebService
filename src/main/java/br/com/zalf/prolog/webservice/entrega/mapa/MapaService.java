@@ -3,21 +3,28 @@ package br.com.zalf.prolog.webservice.entrega.mapa;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.SQLException;
 import java.text.ParseException;
+import java.util.List;
 
 /**
  * Classe MapaService responsavel por comunicar-se com a interface DAO
  */
-public class MapaService {
+public final class MapaService {
     private static final String TAG = MapaService.class.getSimpleName();
     private final MapaDao dao = Injection.provideMapaDao();
 
-    public Response insertOrUpdateMapa(String path, Long codUnidade) {
+    @NotNull
+    public Response insertOrUpdateMapa(@NotNull final InputStream inputStream,
+                                       @NotNull final Long codUnidade) {
         try {
-            if (dao.insertOrUpdateMapa(path, codUnidade)) {
+            final List<String[]> planilhaMapa = PlanilhaMapaReader.readFromCsv(inputStream);
+
+            if (dao.insertOrUpdateMapa("", codUnidade)) {
                 return Response.ok("Arquivo do mapa inserido com sucesso");
             } else {
                 return Response.error("Problema ao inserir o arquivo");
