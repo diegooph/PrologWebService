@@ -847,6 +847,7 @@ campos:
     padraoPreenchimentoCampo: 'NUMERO_INTEIRO'
     padraoPreenchimentoCampoLegivel: 'Número inteiro'
     regexValidacaoPadraoPreenchimento: '^[0-9]*$'
+    exemploPreenchimento: '0 ou 1 ou 2'
   104:
     nomeCampoPlanilha: 'QtEntregasEntreg(RV)'
     nomeCampoLegivel: 'QtEntregasEntreg(RV)'
@@ -854,6 +855,7 @@ campos:
     padraoPreenchimentoCampo: 'NUMERO_INTEIRO'
     padraoPreenchimentoCampoLegivel: 'Número inteiro'
     regexValidacaoPadraoPreenchimento: '^[0-9]*$'
+    exemploPreenchimento: '0 ou 1 ou 2'
   105:
     nomeCampoPlanilha: 'IndiceDevEntregas(RV)'
     nomeCampoLegivel: 'IndiceDevEntregas(RV)'
@@ -918,9 +920,11 @@ campos:
     nomeCampoPlanilha: 'Retira'
     nomeCampoLegivel: 'Retira'
     campoObrigatorio: false
-    padraoPreenchimentoCampo: 'NUMERO_INTEIRO'
-    padraoPreenchimentoCampoLegivel: 'Número inteiro'
-    regexValidacaoPadraoPreenchimento: '^[0-9]*$'
+    padraoPreenchimentoCampo: 'TEXTO'
+    padraoPreenchimentoCampoLegivel: 'Texto'
+    regexValidacaoPadraoPreenchimento: '.*'
+    # Essa coluna não tem nenhum valor preenchido na base para que possamos usar como exemplo.
+    exemploPreenchimento: ''
   113:
     nomeCampoPlanilha: 'Classificacao Roadshow'
     nomeCampoLegivel: 'Classificação Roadshow'
