@@ -40,7 +40,7 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
                     "F_COD_TIPO := ?) AS CODIGO;");
             stmt.setLong(1, veiculo.getCodUnidadeAlocado());
             stmt.setString(2, veiculo.getPlacaVeiculo().toUpperCase());
-            stmt.setString(3, veiculo.getIdentificadorFrotaVeiculo());
+            stmt.setString(3, veiculo.getIdentificadorFrota());
             stmt.setLong(4, veiculo.getKmAtualVeiculo());
             stmt.setLong(5, veiculo.getCodModeloVeiculo());
             stmt.setLong(6, veiculo.getCodTipoVeiculo());
@@ -96,7 +96,7 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
                     "F_NOVO_COD_MODELO := ?, " +
                     "F_NOVO_COD_TIPO := ?) AS CODIGO;");
             stmt.setString(1, placaOriginal);
-            stmt.setString(2, veiculo.getIdentificadorFrotaVeiculo());
+            stmt.setString(2, veiculo.getIdentificadorFrota());
             stmt.setLong(3, kmNovoVeiculo);
             stmt.setLong(4, veiculo.getCodModelo());
             stmt.setLong(5, veiculo.getCodTipo());
@@ -207,33 +207,29 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
     }
 
     @Override
-    public List<VeiculoListagem> buscaVeiculosAtivosByUnidade(@NotNull final Long codUnidade,
-                                                              @Nullable final Boolean ativos) throws Throwable {
+    public List<VeiculoListagem> buscaVeiculosByUnidade(@NotNull final Long codUnidade,
+                                                        @Nullable final Boolean somenteAtivos) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM FUNC_VEICULO_GET_ALL_BY_UNIDADE (F_COD_UNIDADE := ?," +
-                    "F_STATUS_ATIVO := ?); ");
+                    "F_SOMENTE_ATIVOS := ?); ");
             stmt.setLong(1, codUnidade);
 
             // Se for nulo não filtramos por ativos/inativos.
-            if (ativos == null) {
+            if (somenteAtivos == null) {
                 stmt.setNull(2, Types.BOOLEAN);
             } else {
-                stmt.setBoolean(2, ativos);
+                stmt.setBoolean(2, somenteAtivos);
             }
             rSet = stmt.executeQuery();
             final List<VeiculoListagem> veiculosListagem = new ArrayList<>();
             while (rSet.next()) {
                 veiculosListagem.add(VeiculoConverter.createVeiculoListagem(rSet));
             }
-            if (!veiculosListagem.isEmpty()) {
-                return veiculosListagem;
-            } else {
-                throw new Throwable("Erro ao buscar veiculos da unidade " + codUnidade);
-            }
+            return veiculosListagem;
         } finally {
             close(conn, stmt, rSet);
         }

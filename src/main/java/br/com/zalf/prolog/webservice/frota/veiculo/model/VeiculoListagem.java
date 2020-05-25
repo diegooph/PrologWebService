@@ -17,9 +17,8 @@ public class VeiculoListagem {
     @NotNull
     private final Long codUnidade;
     @NotNull
-    private final String km;
-    @NotNull
-    private final String statusAtivo;
+    private final Long km;
+    private final boolean statusAtivo;
     @NotNull
     private final Long codTipo;
     @NotNull
@@ -35,9 +34,9 @@ public class VeiculoListagem {
     @NotNull
     private final String nomeDiagrama;
     @NotNull
-    private final String dianteiro;
+    private final Long dianteiro;
     @NotNull
-    private final String traseiro;
+    private final Long traseiro;
     @NotNull
     private final String tipo;
     @NotNull
@@ -48,8 +47,8 @@ public class VeiculoListagem {
     public VeiculoListagem(@NotNull final Long codigo,
                            @NotNull final String placa,
                            @NotNull final Long codUnidade,
-                           @NotNull final String km,
-                           @NotNull final String statusAtivo,
+                           @NotNull final Long km,
+                           final boolean statusAtivo,
                            @NotNull final Long codTipo,
                            @NotNull final Long codModelo,
                            @NotNull final Long codDiagrama,
@@ -57,8 +56,8 @@ public class VeiculoListagem {
                            @NotNull final Long codRegionalAlocado,
                            @NotNull final String modelo,
                            @NotNull final String nomeDiagrama,
-                           @NotNull final String dianteiro,
-                           @NotNull final String traseiro,
+                           @NotNull final Long dianteiro,
+                           @NotNull final Long traseiro,
                            @NotNull final String tipo,
                            @NotNull final String marca,
                            @NotNull final Long codMarca) {
@@ -93,13 +92,11 @@ public class VeiculoListagem {
         return codUnidade;
     }
 
-    public String getKm() {
+    public Long getKm() {
         return km;
     }
 
-    public String getStatusAtivo() {
-        return statusAtivo;
-    }
+    public boolean isStatusAtivo() { return statusAtivo; }
 
     public Long getCodTipo() {
         return codTipo;
@@ -129,11 +126,11 @@ public class VeiculoListagem {
         return nomeDiagrama;
     }
 
-    public String getDianteiro() {
+    public Long getDianteiro() {
         return dianteiro;
     }
 
-    public String getTraseiro() {
+    public Long getTraseiro() {
         return traseiro;
     }
 

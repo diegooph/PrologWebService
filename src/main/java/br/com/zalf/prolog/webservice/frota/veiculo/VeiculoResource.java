@@ -83,10 +83,10 @@ public final class VeiculoResource {
             Pilares.Frota.Veiculo.CADASTRAR,
             Pilares.Frota.Checklist.VISUALIZAR_TODOS})
     @Path("/busca/byUnidade")
-    public List<VeiculoListagem> buscaVeiculosAtivosByUnidade(@HeaderParam("Authorization") @Required String userToken,
-                                                              @QueryParam("codUnidade") @Required Long codUnidade,
-                                                              @QueryParam("ativos") @Optional Boolean ativos) {
-        return service.buscaVeiculosAtivosByUnidade(userToken, codUnidade, ativos);
+    public List<VeiculoListagem> buscaVeiculosByUnidade(@HeaderParam("Authorization") @Required String userToken,
+                                                        @QueryParam("codUnidade") @Required Long codUnidade,
+                                                        @QueryParam("somenteAtivos") @Optional Boolean somenteAtivos) {
+        return service.buscaVeiculosByUnidade(userToken, codUnidade, somenteAtivos);
     }
 
     @GET

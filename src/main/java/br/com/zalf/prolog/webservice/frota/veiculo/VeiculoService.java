@@ -24,16 +24,16 @@ public final class VeiculoService {
     @NotNull
     private final VeiculoDao dao = Injection.provideVeiculoDao();
 
-    public List<VeiculoListagem> buscaVeiculosAtivosByUnidade(@NotNull final String userToken,
-                                                              @NotNull final Long codUnidade,
-                                                              @Nullable final Boolean ativos) throws ProLogException {
+    public List<VeiculoListagem> buscaVeiculosByUnidade(@NotNull final String userToken,
+                                                        @NotNull final Long codUnidade,
+                                                        @Nullable final Boolean somenteAtivos) throws ProLogException {
         try {
-            return dao.buscaVeiculosAtivosByUnidade(codUnidade, ativos);
+            return dao.buscaVeiculosByUnidade(codUnidade, somenteAtivos);
         } catch (Throwable e) {
-            Log.e(TAG, String.format("Erro ao buscar os veículos ativos da unidade. \n" +
+            Log.e(TAG, String.format("Erro ao buscar os veículos da unidade. \n" +
                     "Unidade: %d \n" +
                     "userToken: %s", codUnidade, userToken), e);
-            throw new RuntimeException("Erro ao buscar os veículos ativos da unidade: " + codUnidade);
+            throw new RuntimeException("Erro ao buscar os veículos da unidade: " + codUnidade);
         }
     }
 
