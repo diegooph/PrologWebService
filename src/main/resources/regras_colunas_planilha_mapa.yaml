@@ -1,935 +1,935 @@
-campos:
+colunas:
   0:
-    nomeCampoPlanilha: 'Data'
-    nomeCampoLegivel: 'Data'
-    campoObrigatorio: true
-    padraoPreenchimentoCampo: 'NUMERO_INTEIRO'
-    padraoPreenchimentoCampoLegivel: 'Número inteiro'
+    nomeColunaPlanilha: 'Data'
+    nomeColunaLegivel: 'Data'
+    colunaObrigatoria: true
+    padraoPreenchimentoColuna: 'NUMERO_INTEIRO'
+    padraoPreenchimentoColunaLegivel: 'Número inteiro'
     regexValidacaoPadraoPreenchimento: '^[0-9]{8}$'
     exemploPreenchimento: '17022020'
   1:
-    nomeCampoPlanilha: 'Transp'
-    nomeCampoLegivel: 'Transp'
-    campoObrigatorio: true
-    padraoPreenchimentoCampo: 'NUMERO_INTEIRO'
-    padraoPreenchimentoCampoLegivel: 'Número inteiro'
+    nomeColunaPlanilha: 'Transp'
+    nomeColunaLegivel: 'Transp'
+    colunaObrigatoria: true
+    padraoPreenchimentoColuna: 'NUMERO_INTEIRO'
+    padraoPreenchimentoColunaLegivel: 'Número inteiro'
     regexValidacaoPadraoPreenchimento: '^[0-9]*$'
     exemploPreenchimento: '1'
   2:
-    nomeCampoPlanilha: 'Entrega'
-    nomeCampoLegivel: 'Entrega'
-    campoObrigatorio: true
-    padraoPreenchimentoCampo: 'LETRAS'
-    padraoPreenchimentoCampoLegivel: 'Letras'
+    nomeColunaPlanilha: 'Entrega'
+    nomeColunaLegivel: 'Entrega'
+    colunaObrigatoria: true
+    padraoPreenchimentoColuna: 'LETRAS'
+    padraoPreenchimentoColunaLegivel: 'Letras'
     regexValidacaoPadraoPreenchimento: '\b(AS|Rota)\b'
     exemploPreenchimento: 'AS ou Rota'
   3:
-    nomeCampoPlanilha: 'CargaAtual'
-    nomeCampoLegivel: 'Carga Atual'
-    campoObrigatorio: true
-    padraoPreenchimentoCampo: 'LETRAS'
-    padraoPreenchimentoCampoLegivel: 'Letras'
+    nomeColunaPlanilha: 'CargaAtual'
+    nomeColunaLegivel: 'Carga Atual'
+    colunaObrigatoria: true
+    padraoPreenchimentoColuna: 'LETRAS'
+    padraoPreenchimentoColunaLegivel: 'Letras'
     regexValidacaoPadraoPreenchimento: '\b(Roteriz|Recarga|Noturna|Extra|MKT|Recolha|Spot)\b'
     # Aceitamos 'Spot' como um tipo mas não colocamos ele nos exemplos, devido ao pouco volume.
     exemploPreenchimento: 'Roteriz, Recarga, Noturna, Extra, MKT ou Recolha'
   4:
-    nomeCampoPlanilha: 'Frota'
-    nomeCampoLegivel: 'Frota'
+    nomeColunaPlanilha: 'Frota'
+    nomeColunaLegivel: 'Frota'
     # Existem dados vazios na base.
-    campoObrigatorio: false
-    padraoPreenchimentoCampo: 'LETRAS'
-    padraoPreenchimentoCampoLegivel: 'Letras'
+    colunaObrigatoria: false
+    padraoPreenchimentoColuna: 'LETRAS'
+    padraoPreenchimentoColunaLegivel: 'Letras'
     regexValidacaoPadraoPreenchimento: '^[a-zA-Z]+$'
     exemploPreenchimento: 'Padrao, Spot'
   5:
-    nomeCampoPlanilha: 'CustoSpot'
-    nomeCampoLegivel: 'Custo Spot'
-    campoObrigatorio: true
-    padraoPreenchimentoCampo: 'NUMERO_DECIMAL'
-    padraoPreenchimentoCampoLegivel: 'Número decimal'
+    nomeColunaPlanilha: 'CustoSpot'
+    nomeColunaLegivel: 'Custo Spot'
+    colunaObrigatoria: true
+    padraoPreenchimentoColuna: 'NUMERO_DECIMAL'
+    padraoPreenchimentoColunaLegivel: 'Número decimal'
     regexValidacaoPadraoPreenchimento: '^[0-9\,]*$'
     exemploPreenchimento: '593,00 ou 1145,65 ou 0'
   6:
     # No BD, essa coluna tem o nome de 'regiao'.
-    nomeCampoPlanilha: 'RegiaoSpot'
-    nomeCampoLegivel: 'Região Spot'
-    campoObrigatorio: true
-    padraoPreenchimentoCampo: 'NUMERO_INTEIRO'
-    padraoPreenchimentoCampoLegivel: 'Número inteiro'
+    nomeColunaPlanilha: 'RegiaoSpot'
+    nomeColunaLegivel: 'Região Spot'
+    colunaObrigatoria: true
+    padraoPreenchimentoColuna: 'NUMERO_INTEIRO'
+    padraoPreenchimentoColunaLegivel: 'Número inteiro'
     regexValidacaoPadraoPreenchimento: '^[0-9]*$'
     exemploPreenchimento: '1, 100 ou 200'
   7:
-    nomeCampoPlanilha: 'Veiculo'
-    nomeCampoLegivel: 'Veículo'
-    campoObrigatorio: true
-    padraoPreenchimentoCampo: 'NUMERO_INTEIRO'
-    padraoPreenchimentoCampoLegivel: 'Número inteiro'
+    nomeColunaPlanilha: 'Veiculo'
+    nomeColunaLegivel: 'Veículo'
+    colunaObrigatoria: true
+    padraoPreenchimentoColuna: 'NUMERO_INTEIRO'
+    padraoPreenchimentoColunaLegivel: 'Número inteiro'
     regexValidacaoPadraoPreenchimento: '^[0-9]*$'
     exemploPreenchimento: '1, 100 ou 200'
   8:
-    nomeCampoPlanilha: 'Placa'
-    nomeCampoLegivel: 'Placa'
-    campoObrigatorio: true
-    padraoPreenchimentoCampo: 'TEXTO'
-    padraoPreenchimentoCampoLegivel: 'Texto'
+    nomeColunaPlanilha: 'Placa'
+    nomeColunaLegivel: 'Placa'
+    colunaObrigatoria: true
+    padraoPreenchimentoColuna: 'TEXTO'
+    padraoPreenchimentoColunaLegivel: 'Texto'
     regexValidacaoPadraoPreenchimento: '.*'
     exemploPreenchimento: 'AAA1234 ou BBB1111'
   9:
-    nomeCampoPlanilha: 'VeiculoIndisp'
-    nomeCampoLegivel: 'Veículo Indisponível'
-    campoObrigatorio: true
-    padraoPreenchimentoCampo: 'NUMERO_INTEIRO'
-    padraoPreenchimentoCampoLegivel: 'Número inteiro'
+    nomeColunaPlanilha: 'VeiculoIndisp'
+    nomeColunaLegivel: 'Veículo Indisponível'
+    colunaObrigatoria: true
+    padraoPreenchimentoColuna: 'NUMERO_INTEIRO'
+    padraoPreenchimentoColunaLegivel: 'Número inteiro'
     regexValidacaoPadraoPreenchimento: '^[0-9]*$'
     exemploPreenchimento: '0 (insira 0 caso venha em branco)'
   10:
-    nomeCampoPlanilha: 'PlacaIndisp'
-    nomeCampoLegivel: 'Placa Indisponível'
-    campoObrigatorio: false
-    padraoPreenchimentoCampo: 'NUMERO_INTEIRO'
-    padraoPreenchimentoCampoLegivel: 'Número inteiro'
+    nomeColunaPlanilha: 'PlacaIndisp'
+    nomeColunaLegivel: 'Placa Indisponível'
+    colunaObrigatoria: false
+    padraoPreenchimentoColuna: 'NUMERO_INTEIRO'
+    padraoPreenchimentoColunaLegivel: 'Número inteiro'
     regexValidacaoPadraoPreenchimento: '^[0-9]*$'
     exemploPreenchimento: '0 (insira 0 caso venha em branco)'
   11:
-    nomeCampoPlanilha: 'FrotaIndisp'
-    nomeCampoLegivel: 'Frota Indisponível'
-    campoObrigatorio: false
-    padraoPreenchimentoCampo: 'NUMERO_INTEIRO'
-    padraoPreenchimentoCampoLegivel: 'Número inteiro'
+    nomeColunaPlanilha: 'FrotaIndisp'
+    nomeColunaLegivel: 'Frota Indisponível'
+    colunaObrigatoria: false
+    padraoPreenchimentoColuna: 'NUMERO_INTEIRO'
+    padraoPreenchimentoColunaLegivel: 'Número inteiro'
     regexValidacaoPadraoPreenchimento: '^[0-9]*$'
     exemploPreenchimento: '0 (insira 0 caso venha em branco)'
   12:
-    nomeCampoPlanilha: 'TipoIndisp'
-    nomeCampoLegivel: 'TipoIndisp'
-    campoObrigatorio: true
-    padraoPreenchimentoCampo: 'NUMERO_INTEIRO'
-    padraoPreenchimentoCampoLegivel: 'Número inteiro'
+    nomeColunaPlanilha: 'TipoIndisp'
+    nomeColunaLegivel: 'TipoIndisp'
+    colunaObrigatoria: true
+    padraoPreenchimentoColuna: 'NUMERO_INTEIRO'
+    padraoPreenchimentoColunaLegivel: 'Número inteiro'
     regexValidacaoPadraoPreenchimento: '^[0-9]*$'
     exemploPreenchimento: '0 (insira 0 caso venha em branco)'
   13:
-    nomeCampoPlanilha: 'Mapa'
-    nomeCampoLegivel: 'Mapa'
-    campoObrigatorio: true
-    padraoPreenchimentoCampo: 'NUMERO_INTEIRO'
-    padraoPreenchimentoCampoLegivel: 'Número inteiro'
+    nomeColunaPlanilha: 'Mapa'
+    nomeColunaLegivel: 'Mapa'
+    colunaObrigatoria: true
+    padraoPreenchimentoColuna: 'NUMERO_INTEIRO'
+    padraoPreenchimentoColunaLegivel: 'Número inteiro'
     regexValidacaoPadraoPreenchimento: '^[0-9]*$'
     exemploPreenchimento: '57000, 10500 ou 9000'
   14:
-    nomeCampoPlanilha: 'Entregas'
-    nomeCampoLegivel: 'Entregas'
-    campoObrigatorio: true
-    padraoPreenchimentoCampo: 'NUMERO_INTEIRO'
-    padraoPreenchimentoCampoLegivel: 'Número inteiro'
+    nomeColunaPlanilha: 'Entregas'
+    nomeColunaLegivel: 'Entregas'
+    colunaObrigatoria: true
+    padraoPreenchimentoColuna: 'NUMERO_INTEIRO'
+    padraoPreenchimentoColunaLegivel: 'Número inteiro'
     regexValidacaoPadraoPreenchimento: '^[0-9]*$'
     exemploPreenchimento: '33, 42 ou 50'
   15:
-    nomeCampoPlanilha: 'CxCarreg'
-    nomeCampoLegivel: 'Caixas Carregadas'
-    campoObrigatorio: true
-    padraoPreenchimentoCampo: 'NUMERO_DECIMAL'
-    padraoPreenchimentoCampoLegivel: 'Número decimal'
+    nomeColunaPlanilha: 'CxCarreg'
+    nomeColunaLegivel: 'Caixas Carregadas'
+    colunaObrigatoria: true
+    padraoPreenchimentoColuna: 'NUMERO_DECIMAL'
+    padraoPreenchimentoColunaLegivel: 'Número decimal'
     regexValidacaoPadraoPreenchimento: '^[0-9\,]*$'
     exemploPreenchimento: '225,23 ou 380 ou 148,7 ou 0'
   16:
-    nomeCampoPlanilha: 'CxEntreg'
-    nomeCampoLegivel: 'Caixas Entregues'
-    campoObrigatorio: true
-    padraoPreenchimentoCampo: 'NUMERO_DECIMAL'
-    padraoPreenchimentoCampoLegivel: 'Número decimal'
+    nomeColunaPlanilha: 'CxEntreg'
+    nomeColunaLegivel: 'Caixas Entregues'
+    colunaObrigatoria: true
+    padraoPreenchimentoColuna: 'NUMERO_DECIMAL'
+    padraoPreenchimentoColunaLegivel: 'Número decimal'
     regexValidacaoPadraoPreenchimento: '^[0-9\,]*$'
     exemploPreenchimento: '225,23 ou 380 ou 148,7 ou 0'
   17:
-    nomeCampoPlanilha: 'Ocupacao'
-    nomeCampoLegivel: 'Ocupação'
-    campoObrigatorio: true
-    padraoPreenchimentoCampo: 'NUMERO_DECIMAL'
-    padraoPreenchimentoCampoLegivel: 'Número decimal'
+    nomeColunaPlanilha: 'Ocupacao'
+    nomeColunaLegivel: 'Ocupação'
+    colunaObrigatoria: true
+    padraoPreenchimentoColuna: 'NUMERO_DECIMAL'
+    padraoPreenchimentoColunaLegivel: 'Número decimal'
     regexValidacaoPadraoPreenchimento: '^[0-9\,]*$'
     exemploPreenchimento: '15,23 ou 70 ou 87,7 ou 0'
   18:
-    nomeCampoPlanilha: 'CxRota'
-    nomeCampoLegivel: 'Caixas Rota'
-    campoObrigatorio: true
-    padraoPreenchimentoCampo: 'NUMERO_DECIMAL'
-    padraoPreenchimentoCampoLegivel: 'Número decimal'
+    nomeColunaPlanilha: 'CxRota'
+    nomeColunaLegivel: 'Caixas Rota'
+    colunaObrigatoria: true
+    padraoPreenchimentoColuna: 'NUMERO_DECIMAL'
+    padraoPreenchimentoColunaLegivel: 'Número decimal'
     regexValidacaoPadraoPreenchimento: '^[0-9\,]*$'
     exemploPreenchimento: '15,23 ou 70 ou 87,7 ou 0'
   19:
-    nomeCampoPlanilha: 'CxAS'
-    nomeCampoLegivel: 'Caixas AS'
-    campoObrigatorio: true
-    padraoPreenchimentoCampo: 'NUMERO_DECIMAL'
-    padraoPreenchimentoCampoLegivel: 'Número decimal'
+    nomeColunaPlanilha: 'CxAS'
+    nomeColunaLegivel: 'Caixas AS'
+    colunaObrigatoria: true
+    padraoPreenchimentoColuna: 'NUMERO_DECIMAL'
+    padraoPreenchimentoColunaLegivel: 'Número decimal'
     regexValidacaoPadraoPreenchimento: '^[0-9\,]*$'
     exemploPreenchimento: '15,23 ou 70 ou 87,7 ou 0'
   20:
-    nomeCampoPlanilha: 'VeicBM'
-    nomeCampoLegivel: 'VeicBM'
-    campoObrigatorio: true
-    padraoPreenchimentoCampo: 'NUMERO_DECIMAL'
-    padraoPreenchimentoCampoLegivel: 'Número decimal'
+    nomeColunaPlanilha: 'VeicBM'
+    nomeColunaLegivel: 'VeicBM'
+    colunaObrigatoria: true
+    padraoPreenchimentoColuna: 'NUMERO_DECIMAL'
+    padraoPreenchimentoColunaLegivel: 'Número decimal'
     regexValidacaoPadraoPreenchimento: '^[0-9\,]*$'
     exemploPreenchimento: '0,07 ou 0,43 ou 1 ou 0'
   21:
-    nomeCampoPlanilha: 'RShow'
-    nomeCampoLegivel: 'RShow'
-    campoObrigatorio: false
-    padraoPreenchimentoCampo: 'NUMERO_INTEIRO'
-    padraoPreenchimentoCampoLegivel: 'Número inteiro'
+    nomeColunaPlanilha: 'RShow'
+    nomeColunaLegivel: 'RShow'
+    colunaObrigatoria: false
+    padraoPreenchimentoColuna: 'NUMERO_INTEIRO'
+    padraoPreenchimentoColunaLegivel: 'Número inteiro'
     regexValidacaoPadraoPreenchimento: '^[0-9]*$'
     exemploPreenchimento: '1 ou 2 ou 3'
   22:
-    nomeCampoPlanilha: 'EntrVol'
-    nomeCampoLegivel: 'EntrVol'
-    campoObrigatorio: false
-    padraoPreenchimentoCampo: 'TEXTO'
-    padraoPreenchimentoCampoLegivel: 'Texto'
+    nomeColunaPlanilha: 'EntrVol'
+    nomeColunaLegivel: 'EntrVol'
+    colunaObrigatoria: false
+    padraoPreenchimentoColuna: 'TEXTO'
+    padraoPreenchimentoColunaLegivel: 'Texto'
     regexValidacaoPadraoPreenchimento: '.*'
     exemploPreenchimento: 'Entrega ou Volume'
   23:
-    nomeCampoPlanilha: 'HrSai'
-    nomeCampoLegivel: 'HrSai'
-    campoObrigatorio: true
-    padraoPreenchimentoCampo: 'DATA_HORA'
-    padraoPreenchimentoCampoLegivel: 'Data e hora'
+    nomeColunaPlanilha: 'HrSai'
+    nomeColunaLegivel: 'HrSai'
+    colunaObrigatoria: true
+    padraoPreenchimentoColuna: 'DATA_HORA'
+    padraoPreenchimentoColunaLegivel: 'Data e hora'
     # O espaço nessa regex, entre a data e a hora, é proposital.
     regexValidacaoPadraoPreenchimento: '^\d{2}/\d{2}/\d{4} \d{2}:\d{2}$'
     exemploPreenchimento: '14/10/2017 13:23'
   24:
-    nomeCampoPlanilha: 'HrEntr'
-    nomeCampoLegivel: 'HrEntr'
-    campoObrigatorio: true
-    padraoPreenchimentoCampo: 'DATA_HORA'
-    padraoPreenchimentoCampoLegivel: 'Data e hora'
+    nomeColunaPlanilha: 'HrEntr'
+    nomeColunaLegivel: 'HrEntr'
+    colunaObrigatoria: true
+    padraoPreenchimentoColuna: 'DATA_HORA'
+    padraoPreenchimentoColunaLegivel: 'Data e hora'
     # O espaço nessa regex, entre a data e a hora, é proposital.
     regexValidacaoPadraoPreenchimento: '^\d{2}/\d{2}/\d{4} \d{2}:\d{2}$'
     exemploPreenchimento: '14/10/2017 13:23'
   25:
-    nomeCampoPlanilha: 'KmSai'
-    nomeCampoLegivel: 'KmSai'
-    campoObrigatorio: true
-    padraoPreenchimentoCampo: 'NUMERO_INTEIRO'
-    padraoPreenchimentoCampoLegivel: 'Número inteiro'
+    nomeColunaPlanilha: 'KmSai'
+    nomeColunaLegivel: 'KmSai'
+    colunaObrigatoria: true
+    padraoPreenchimentoColuna: 'NUMERO_INTEIRO'
+    padraoPreenchimentoColunaLegivel: 'Número inteiro'
     regexValidacaoPadraoPreenchimento: '^[0-9]*$'
     exemploPreenchimento: '50 ou 100 ou 1500'
   26:
-    nomeCampoPlanilha: 'KmEntr'
-    nomeCampoLegivel: 'KmEntr'
-    campoObrigatorio: true
-    padraoPreenchimentoCampo: 'NUMERO_INTEIRO'
-    padraoPreenchimentoCampoLegivel: 'Número inteiro'
+    nomeColunaPlanilha: 'KmEntr'
+    nomeColunaLegivel: 'KmEntr'
+    colunaObrigatoria: true
+    padraoPreenchimentoColuna: 'NUMERO_INTEIRO'
+    padraoPreenchimentoColunaLegivel: 'Número inteiro'
     regexValidacaoPadraoPreenchimento: '^[0-9]*$'
     exemploPreenchimento: '50 ou 100 ou 1500'
   27:
-    nomeCampoPlanilha: 'CustoVariavel'
-    nomeCampoLegivel: 'Custo Variável'
-    campoObrigatorio: true
-    padraoPreenchimentoCampo: 'NUMERO_DECIMAL'
-    padraoPreenchimentoCampoLegivel: 'Número decimal'
+    nomeColunaPlanilha: 'CustoVariavel'
+    nomeColunaLegivel: 'Custo Variável'
+    colunaObrigatoria: true
+    padraoPreenchimentoColuna: 'NUMERO_DECIMAL'
+    padraoPreenchimentoColunaLegivel: 'Número decimal'
     regexValidacaoPadraoPreenchimento: '^[0-9\,]*$'
     exemploPreenchimento: '225,23 ou 380 ou 148,7 ou 0'
   28:
-    nomeCampoPlanilha: 'Lucro'
-    nomeCampoLegivel: 'Lucro'
-    campoObrigatorio: false
-    padraoPreenchimentoCampo: 'NUMERO_DECIMAL'
-    padraoPreenchimentoCampoLegivel: 'Número decimal'
+    nomeColunaPlanilha: 'Lucro'
+    nomeColunaLegivel: 'Lucro'
+    colunaObrigatoria: false
+    padraoPreenchimentoColuna: 'NUMERO_DECIMAL'
+    padraoPreenchimentoColunaLegivel: 'Número decimal'
     regexValidacaoPadraoPreenchimento: '^[0-9\,]*$'
     exemploPreenchimento: '225,23 ou 380 ou 148,7 ou 0'
   29:
-    nomeCampoPlanilha: 'LucroUnit'
-    nomeCampoLegivel: 'LucroUnit'
-    campoObrigatorio: false
-    padraoPreenchimentoCampo: 'NUMERO_DECIMAL'
-    padraoPreenchimentoCampoLegivel: 'Número decimal'
+    nomeColunaPlanilha: 'LucroUnit'
+    nomeColunaLegivel: 'LucroUnit'
+    colunaObrigatoria: false
+    padraoPreenchimentoColuna: 'NUMERO_DECIMAL'
+    padraoPreenchimentoColunaLegivel: 'Número decimal'
     regexValidacaoPadraoPreenchimento: '^[0-9\,]*$'
     exemploPreenchimento: '225,23 ou 380 ou 148,7 ou 0'
   30:
-    nomeCampoPlanilha: 'ValorFrete'
-    nomeCampoLegivel: 'Valor Frete'
-    campoObrigatorio: true
-    padraoPreenchimentoCampo: 'NUMERO_DECIMAL'
-    padraoPreenchimentoCampoLegivel: 'Número decimal'
+    nomeColunaPlanilha: 'ValorFrete'
+    nomeColunaLegivel: 'Valor Frete'
+    colunaObrigatoria: true
+    padraoPreenchimentoColuna: 'NUMERO_DECIMAL'
+    padraoPreenchimentoColunaLegivel: 'Número decimal'
     regexValidacaoPadraoPreenchimento: '^[0-9\,]*$'
     exemploPreenchimento: '225,23 ou 380 ou 148,7 ou 0'
   31:
-    nomeCampoPlanilha: 'TipoImposto'
-    nomeCampoLegivel: 'TipoImposto'
-    campoObrigatorio: false
-    padraoPreenchimentoCampo: 'TEXTO'
-    padraoPreenchimentoCampoLegivel: 'Texto'
+    nomeColunaPlanilha: 'TipoImposto'
+    nomeColunaLegivel: 'TipoImposto'
+    colunaObrigatoria: false
+    padraoPreenchimentoColuna: 'TEXTO'
+    padraoPreenchimentoColunaLegivel: 'Texto'
     regexValidacaoPadraoPreenchimento: '.*'
     exemploPreenchimento: 'NF-ISS ou CTRC-ICMS'
   32:
-    nomeCampoPlanilha: 'PercImposto'
-    nomeCampoLegivel: 'PercImposto'
-    campoObrigatorio: false
-    padraoPreenchimentoCampo: 'NUMERO_DECIMAL'
-    padraoPreenchimentoCampoLegivel: 'Número decimal'
+    nomeColunaPlanilha: 'PercImposto'
+    nomeColunaLegivel: 'PercImposto'
+    colunaObrigatoria: false
+    padraoPreenchimentoColuna: 'NUMERO_DECIMAL'
+    padraoPreenchimentoColunaLegivel: 'Número decimal'
     regexValidacaoPadraoPreenchimento: '^[0-9\,]*$'
     exemploPreenchimento: '15,75 ou 12,00 ou 0'
   33:
-    nomeCampoPlanilha: 'ValorImposto'
-    nomeCampoLegivel: 'Valor Imposto'
-    campoObrigatorio: false
-    padraoPreenchimentoCampo: 'NUMERO_DECIMAL'
-    padraoPreenchimentoCampoLegivel: 'Número decimal'
+    nomeColunaPlanilha: 'ValorImposto'
+    nomeColunaLegivel: 'Valor Imposto'
+    colunaObrigatoria: false
+    padraoPreenchimentoColuna: 'NUMERO_DECIMAL'
+    padraoPreenchimentoColunaLegivel: 'Número decimal'
     regexValidacaoPadraoPreenchimento: '^[0-9\,]*$'
     exemploPreenchimento: '47,16 ou 12,00 ou 0'
   34:
-    nomeCampoPlanilha: 'ValorFaturado'
-    nomeCampoLegivel: 'Valor Faturado'
-    campoObrigatorio: false
-    padraoPreenchimentoCampo: 'NUMERO_DECIMAL'
-    padraoPreenchimentoCampoLegivel: 'Número decimal'
+    nomeColunaPlanilha: 'ValorFaturado'
+    nomeColunaLegivel: 'Valor Faturado'
+    colunaObrigatoria: false
+    padraoPreenchimentoColuna: 'NUMERO_DECIMAL'
+    padraoPreenchimentoColunaLegivel: 'Número decimal'
     regexValidacaoPadraoPreenchimento: '^[0-9\,]*$'
     exemploPreenchimento: '245,6 ou 1150,47 ou 500 ou 0'
   35:
-    nomeCampoPlanilha: 'ValorUnitCxEntregue'
-    nomeCampoLegivel: 'ValorUnitCxEntregue'
-    campoObrigatorio: false
-    padraoPreenchimentoCampo: 'NUMERO_DECIMAL'
-    padraoPreenchimentoCampoLegivel: 'Número decimal'
+    nomeColunaPlanilha: 'ValorUnitCxEntregue'
+    nomeColunaLegivel: 'ValorUnitCxEntregue'
+    colunaObrigatoria: false
+    padraoPreenchimentoColuna: 'NUMERO_DECIMAL'
+    padraoPreenchimentoColunaLegivel: 'Número decimal'
     regexValidacaoPadraoPreenchimento: '^[0-9\,]*$'
     exemploPreenchimento: '0.01 ou 0'
   36:
-    nomeCampoPlanilha: 'ValorPgCxEntregSemImp'
-    nomeCampoLegivel: 'ValorPgCxEntregSemImp'
-    campoObrigatorio: false
-    padraoPreenchimentoCampo: 'NUMERO_DECIMAL'
-    padraoPreenchimentoCampoLegivel: 'Número decimal'
+    nomeColunaPlanilha: 'ValorPgCxEntregSemImp'
+    nomeColunaLegivel: 'ValorPgCxEntregSemImp'
+    colunaObrigatoria: false
+    padraoPreenchimentoColuna: 'NUMERO_DECIMAL'
+    padraoPreenchimentoColunaLegivel: 'Número decimal'
     regexValidacaoPadraoPreenchimento: '^[0-9\,]*$'
     exemploPreenchimento: '1,7535 ou 1,4 ou 0'
   37:
-    nomeCampoPlanilha: 'ValorPgCxEntregComImp'
-    nomeCampoLegivel: 'ValorPgCxEntregComImp'
-    campoObrigatorio: false
-    padraoPreenchimentoCampo: 'NUMERO_DECIMAL'
-    padraoPreenchimentoCampoLegivel: 'Número decimal'
+    nomeColunaPlanilha: 'ValorPgCxEntregComImp'
+    nomeColunaLegivel: 'ValorPgCxEntregComImp'
+    colunaObrigatoria: false
+    padraoPreenchimentoColuna: 'NUMERO_DECIMAL'
+    padraoPreenchimentoColunaLegivel: 'Número decimal'
     regexValidacaoPadraoPreenchimento: '^[0-9\,]*$'
     exemploPreenchimento: '1,7535 ou 1,4 ou 0'
   38:
-    nomeCampoPlanilha: 'TempoPrevistoRoad'
-    nomeCampoLegivel: 'Tempo Previsto Road'
-    campoObrigatorio: true
-    padraoPreenchimentoCampo: 'HORA'
-    padraoPreenchimentoCampoLegivel: 'Hora'
+    nomeColunaPlanilha: 'TempoPrevistoRoad'
+    nomeColunaLegivel: 'Tempo Previsto Road'
+    colunaObrigatoria: true
+    padraoPreenchimentoColuna: 'HORA'
+    padraoPreenchimentoColunaLegivel: 'Hora'
     regexValidacaoPadraoPreenchimento: '^\d{1,2}:\d{2}$'
     exemploPreenchimento: '0:00 ou 2:10 ou 15:59'
   39:
-    nomeCampoPlanilha: 'KmPrevistoRoad'
-    nomeCampoLegivel: 'Km Previsto Road'
-    campoObrigatorio: true
-    padraoPreenchimentoCampo: 'NUMERO_DECIMAL'
-    padraoPreenchimentoCampoLegivel: 'Número decimal'
+    nomeColunaPlanilha: 'KmPrevistoRoad'
+    nomeColunaLegivel: 'Km Previsto Road'
+    colunaObrigatoria: true
+    padraoPreenchimentoColuna: 'NUMERO_DECIMAL'
+    padraoPreenchimentoColunaLegivel: 'Número decimal'
     regexValidacaoPadraoPreenchimento: '^[0-9\,]*$'
     exemploPreenchimento: '0 ou 176,32 ou 42,20'
   40:
-    nomeCampoPlanilha: 'ValorUnitPontoMot'
-    nomeCampoLegivel: 'ValorUnitPontoMot'
-    campoObrigatorio: false
-    padraoPreenchimentoCampo: 'NUMERO_DECIMAL'
-    padraoPreenchimentoCampoLegivel: 'Número decimal'
+    nomeColunaPlanilha: 'ValorUnitPontoMot'
+    nomeColunaLegivel: 'ValorUnitPontoMot'
+    colunaObrigatoria: false
+    padraoPreenchimentoColuna: 'NUMERO_DECIMAL'
+    padraoPreenchimentoColunaLegivel: 'Número decimal'
     regexValidacaoPadraoPreenchimento: '^[0-9\,]*$'
     exemploPreenchimento: '0 ou 0,07 ou 0,07898'
   41:
-    nomeCampoPlanilha: 'ValorUnitPontoAjd'
-    nomeCampoLegivel: 'ValorUnitPontoAjd'
-    campoObrigatorio: false
-    padraoPreenchimentoCampo: 'NUMERO_DECIMAL'
-    padraoPreenchimentoCampoLegivel: 'Número decimal'
+    nomeColunaPlanilha: 'ValorUnitPontoAjd'
+    nomeColunaLegivel: 'ValorUnitPontoAjd'
+    colunaObrigatoria: false
+    padraoPreenchimentoColuna: 'NUMERO_DECIMAL'
+    padraoPreenchimentoColunaLegivel: 'Número decimal'
     regexValidacaoPadraoPreenchimento: '^[0-9\,]*$'
     exemploPreenchimento: '0 ou 0,07 ou 0,07898'
   42:
-    nomeCampoPlanilha: 'ValorEquipeEntrMot'
-    nomeCampoLegivel: 'ValorEquipeEntrMot'
-    campoObrigatorio: false
-    padraoPreenchimentoCampo: 'NUMERO_DECIMAL'
-    padraoPreenchimentoCampoLegivel: 'Número decimal'
+    nomeColunaPlanilha: 'ValorEquipeEntrMot'
+    nomeColunaLegivel: 'ValorEquipeEntrMot'
+    colunaObrigatoria: false
+    padraoPreenchimentoColuna: 'NUMERO_DECIMAL'
+    padraoPreenchimentoColunaLegivel: 'Número decimal'
     regexValidacaoPadraoPreenchimento: '^[0-9\,]*$'
     exemploPreenchimento: '0 ou 0,07 ou 0,07898'
   43:
-    nomeCampoPlanilha: 'ValorEquipeEntrAjd'
-    nomeCampoLegivel: 'ValorEquipeEntrAjd'
-    campoObrigatorio: false
-    padraoPreenchimentoCampo: 'NUMERO_DECIMAL'
-    padraoPreenchimentoCampoLegivel: 'Número decimal'
+    nomeColunaPlanilha: 'ValorEquipeEntrAjd'
+    nomeColunaLegivel: 'ValorEquipeEntrAjd'
+    colunaObrigatoria: false
+    padraoPreenchimentoColuna: 'NUMERO_DECIMAL'
+    padraoPreenchimentoColunaLegivel: 'Número decimal'
     regexValidacaoPadraoPreenchimento: '^[0-9\,]*$'
     exemploPreenchimento: '0 ou 0,07 ou 0,07898'
   44:
     # No BD essa coluna se chama 'custovariavelcedbz'.
-    nomeCampoPlanilha: 'CustoVLC'
-    nomeCampoLegivel: 'CustoVLC'
-    campoObrigatorio: false
-    padraoPreenchimentoCampo: 'NUMERO_DECIMAL'
-    padraoPreenchimentoCampoLegivel: 'Número decimal'
+    nomeColunaPlanilha: 'CustoVLC'
+    nomeColunaLegivel: 'CustoVLC'
+    colunaObrigatoria: false
+    padraoPreenchimentoColuna: 'NUMERO_DECIMAL'
+    padraoPreenchimentoColunaLegivel: 'Número decimal'
     regexValidacaoPadraoPreenchimento: '^[0-9\,]*$'
     exemploPreenchimento: '0 ou 277,15 ou 160,43'
   45:
-    nomeCampoPlanilha: 'LucroUnitCEDBZ'
-    nomeCampoLegivel: 'LucroUnitCEDBZ'
-    campoObrigatorio: false
-    padraoPreenchimentoCampo: 'NUMERO_DECIMAL'
-    padraoPreenchimentoCampoLegivel: 'Número decimal'
+    nomeColunaPlanilha: 'LucroUnitCEDBZ'
+    nomeColunaLegivel: 'LucroUnitCEDBZ'
+    colunaObrigatoria: false
+    padraoPreenchimentoColuna: 'NUMERO_DECIMAL'
+    padraoPreenchimentoColunaLegivel: 'Número decimal'
     regexValidacaoPadraoPreenchimento: '^[0-9\,]*$'
     exemploPreenchimento: '0 ou 277,15 ou 160,43'
   46:
     # No BD essa coluna se chama 'lucrovariavelcxentregueffcedbz'.
-    nomeCampoPlanilha: 'CustoVlcCxEntr'
-    nomeCampoLegivel: 'CustoVlcCxEntr'
-    campoObrigatorio: false
-    padraoPreenchimentoCampo: 'NUMERO_DECIMAL'
-    padraoPreenchimentoCampoLegivel: 'Número decimal'
+    nomeColunaPlanilha: 'CustoVlcCxEntr'
+    nomeColunaLegivel: 'CustoVlcCxEntr'
+    colunaObrigatoria: false
+    padraoPreenchimentoColuna: 'NUMERO_DECIMAL'
+    padraoPreenchimentoColunaLegivel: 'Número decimal'
     regexValidacaoPadraoPreenchimento: '^[0-9\,]*$'
     exemploPreenchimento: '0 ou 2,15 ou 1,43'
   47:
-    nomeCampoPlanilha: 'TempoInterno'
-    nomeCampoLegivel: 'Tempo Interno'
-    campoObrigatorio: true
-    padraoPreenchimentoCampo: 'DURACAO'
-    padraoPreenchimentoCampoLegivel: 'Duração'
+    nomeColunaPlanilha: 'TempoInterno'
+    nomeColunaLegivel: 'Tempo Interno'
+    colunaObrigatoria: true
+    padraoPreenchimentoColuna: 'DURACAO'
+    padraoPreenchimentoColunaLegivel: 'Duração'
     regexValidacaoPadraoPreenchimento: '^\d{0,2}:?\d{1,2}:\d{2}$'
     exemploPreenchimento: '0:00 ou 15:10 ou 42:40:25'
   48:
-    nomeCampoPlanilha: 'ValorDropDown'
-    nomeCampoLegivel: 'ValorDropDown'
-    campoObrigatorio: false
-    padraoPreenchimentoCampo: 'NUMERO_DECIMAL'
-    padraoPreenchimentoCampoLegivel: 'Número decimal'
+    nomeColunaPlanilha: 'ValorDropDown'
+    nomeColunaLegivel: 'ValorDropDown'
+    colunaObrigatoria: false
+    padraoPreenchimentoColuna: 'NUMERO_DECIMAL'
+    padraoPreenchimentoColunaLegivel: 'Número decimal'
     regexValidacaoPadraoPreenchimento: '^[0-9\,]*$'
     exemploPreenchimento: '0 ou 2,15 ou 1,43'
   49:
-    nomeCampoPlanilha: 'VeicCadDD'
-    nomeCampoLegivel: 'VeicCadDD'
-    campoObrigatorio: false
-    padraoPreenchimentoCampo: 'TEXTO'
-    padraoPreenchimentoCampoLegivel: 'Texto'
+    nomeColunaPlanilha: 'VeicCadDD'
+    nomeColunaLegivel: 'VeicCadDD'
+    colunaObrigatoria: false
+    padraoPreenchimentoColuna: 'TEXTO'
+    padraoPreenchimentoColunaLegivel: 'Texto'
     regexValidacaoPadraoPreenchimento: '.*'
     exemploPreenchimento: 'N'
   50:
-    nomeCampoPlanilha: 'KmLaco'
-    nomeCampoLegivel: 'KmLaco'
-    campoObrigatorio: false
-    padraoPreenchimentoCampo: 'NUMERO_DECIMAL'
-    padraoPreenchimentoCampoLegivel: 'Número decimal'
+    nomeColunaPlanilha: 'KmLaco'
+    nomeColunaLegivel: 'KmLaco'
+    colunaObrigatoria: false
+    padraoPreenchimentoColuna: 'NUMERO_DECIMAL'
+    padraoPreenchimentoColunaLegivel: 'Número decimal'
     regexValidacaoPadraoPreenchimento: '^[0-9\,]*$'
     exemploPreenchimento: '0 ou 11,31 ou 128,55'
   51:
-    nomeCampoPlanilha: 'KmDeslocamento'
-    nomeCampoLegivel: 'KmDeslocamento'
-    campoObrigatorio: false
-    padraoPreenchimentoCampo: 'NUMERO_DECIMAL'
-    padraoPreenchimentoCampoLegivel: 'Número decimal'
+    nomeColunaPlanilha: 'KmDeslocamento'
+    nomeColunaLegivel: 'KmDeslocamento'
+    colunaObrigatoria: false
+    padraoPreenchimentoColuna: 'NUMERO_DECIMAL'
+    padraoPreenchimentoColunaLegivel: 'Número decimal'
     regexValidacaoPadraoPreenchimento: '^[0-9\,]*$'
     exemploPreenchimento: '0 ou 11,31 ou 128,55'
   52:
-    nomeCampoPlanilha: 'TempoLaco'
-    nomeCampoLegivel: 'TempoLaco'
-    campoObrigatorio: true
-    padraoPreenchimentoCampo: 'DURACAO'
-    padraoPreenchimentoCampoLegivel: 'Duração'
+    nomeColunaPlanilha: 'TempoLaco'
+    nomeColunaLegivel: 'TempoLaco'
+    colunaObrigatoria: true
+    padraoPreenchimentoColuna: 'DURACAO'
+    padraoPreenchimentoColunaLegivel: 'Duração'
     regexValidacaoPadraoPreenchimento: '^\d{0,2}:?\d{1,2}:\d{2}$'
     exemploPreenchimento: '0:00 ou 15:10 ou 42:40:25'
   53:
-    nomeCampoPlanilha: 'TempoDeslocamento'
-    nomeCampoLegivel: 'Tempo Deslocamento'
-    campoObrigatorio: true
-    padraoPreenchimentoCampo: 'DURACAO'
-    padraoPreenchimentoCampoLegivel: 'Duração'
+    nomeColunaPlanilha: 'TempoDeslocamento'
+    nomeColunaLegivel: 'Tempo Deslocamento'
+    colunaObrigatoria: true
+    padraoPreenchimentoColuna: 'DURACAO'
+    padraoPreenchimentoColunaLegivel: 'Duração'
     regexValidacaoPadraoPreenchimento: '^\d{0,2}:?\d{1,2}:\d{2}$'
     exemploPreenchimento: '0:00 ou 15:10 ou 42:40:25'
   54:
-    nomeCampoPlanilha: 'SitMultiCDD'
-    nomeCampoLegivel: 'SitMultiCDD'
-    campoObrigatorio: false
-    padraoPreenchimentoCampo: 'NUMERO_DECIMAL'
-    padraoPreenchimentoCampoLegivel: 'Número decimal'
+    nomeColunaPlanilha: 'SitMultiCDD'
+    nomeColunaLegivel: 'SitMultiCDD'
+    colunaObrigatoria: false
+    padraoPreenchimentoColuna: 'NUMERO_DECIMAL'
+    padraoPreenchimentoColunaLegivel: 'Número decimal'
     regexValidacaoPadraoPreenchimento: '^[0-9\,]*$'
     exemploPreenchimento: '0 ou 11,31 ou 128,55'
   55:
-    nomeCampoPlanilha: 'UnbOrigem'
-    nomeCampoLegivel: 'UnbOrigem'
-    campoObrigatorio: false
-    padraoPreenchimentoCampo: 'NUMERO_INTEIRO'
-    padraoPreenchimentoCampoLegivel: 'Número inteiro'
+    nomeColunaPlanilha: 'UnbOrigem'
+    nomeColunaLegivel: 'UnbOrigem'
+    colunaObrigatoria: false
+    padraoPreenchimentoColuna: 'NUMERO_INTEIRO'
+    padraoPreenchimentoColunaLegivel: 'Número inteiro'
     regexValidacaoPadraoPreenchimento: '^[0-9]*$'
     exemploPreenchimento: '0 ou 10 ou 85000'
   56:
-    nomeCampoPlanilha: 'MatricMotorista'
-    nomeCampoLegivel: 'Matrículo Motorista'
-    campoObrigatorio: true
-    padraoPreenchimentoCampo: 'NUMERO_INTEIRO'
-    padraoPreenchimentoCampoLegivel: 'Número inteiro'
+    nomeColunaPlanilha: 'MatricMotorista'
+    nomeColunaLegivel: 'Matrículo Motorista'
+    colunaObrigatoria: true
+    padraoPreenchimentoColuna: 'NUMERO_INTEIRO'
+    padraoPreenchimentoColunaLegivel: 'Número inteiro'
     regexValidacaoPadraoPreenchimento: '^[0-9]*$'
     exemploPreenchimento: '0 ou 10 ou 50'
   57:
-    nomeCampoPlanilha: 'MatricAjud1'
-    nomeCampoLegivel: 'Matrícula Ajudante 1'
-    campoObrigatorio: false
-    padraoPreenchimentoCampo: 'NUMERO_INTEIRO'
-    padraoPreenchimentoCampoLegivel: 'Número inteiro'
+    nomeColunaPlanilha: 'MatricAjud1'
+    nomeColunaLegivel: 'Matrícula Ajudante 1'
+    colunaObrigatoria: false
+    padraoPreenchimentoColuna: 'NUMERO_INTEIRO'
+    padraoPreenchimentoColunaLegivel: 'Número inteiro'
     regexValidacaoPadraoPreenchimento: '^[0-9]*$'
     exemploPreenchimento: '0 ou 10 ou 50'
   58:
-    nomeCampoPlanilha: 'MatricAjud2'
-    nomeCampoLegivel: 'Matrícula Ajudante 2'
-    campoObrigatorio: false
-    padraoPreenchimentoCampo: 'NUMERO_INTEIRO'
-    padraoPreenchimentoCampoLegivel: 'Número inteiro'
+    nomeColunaPlanilha: 'MatricAjud2'
+    nomeColunaLegivel: 'Matrícula Ajudante 2'
+    colunaObrigatoria: false
+    padraoPreenchimentoColuna: 'NUMERO_INTEIRO'
+    padraoPreenchimentoColunaLegivel: 'Número inteiro'
     regexValidacaoPadraoPreenchimento: '^[0-9]*$'
     exemploPreenchimento: '0 ou 10 ou 50'
   59:
-    nomeCampoPlanilha: 'ValorCTEDifere'
-    nomeCampoLegivel: 'ValorCTEDifere'
-    campoObrigatorio: false
-    padraoPreenchimentoCampo: 'TEXTO'
-    padraoPreenchimentoCampoLegivel: 'Texto'
+    nomeColunaPlanilha: 'ValorCTEDifere'
+    nomeColunaLegivel: 'ValorCTEDifere'
+    colunaObrigatoria: false
+    padraoPreenchimentoColuna: 'TEXTO'
+    padraoPreenchimentoColunaLegivel: 'Texto'
     regexValidacaoPadraoPreenchimento: '.*'
     exemploPreenchimento: '*'
   60:
-    nomeCampoPlanilha: 'QtNfCarregadas'
-    nomeCampoLegivel: 'Qt Nf Carregadas'
-    campoObrigatorio: true
-    padraoPreenchimentoCampo: 'NUMERO_INTEIRO'
-    padraoPreenchimentoCampoLegivel: 'Número inteiro'
+    nomeColunaPlanilha: 'QtNfCarregadas'
+    nomeColunaLegivel: 'Qt Nf Carregadas'
+    colunaObrigatoria: true
+    padraoPreenchimentoColuna: 'NUMERO_INTEIRO'
+    padraoPreenchimentoColunaLegivel: 'Número inteiro'
     regexValidacaoPadraoPreenchimento: '^[0-9]*$'
     exemploPreenchimento: '0 ou 1 ou 2'
   61:
-    nomeCampoPlanilha: 'QtNfEntregues'
-    nomeCampoLegivel: 'Qt Nf Entregues'
-    campoObrigatorio: true
-    padraoPreenchimentoCampo: 'NUMERO_INTEIRO'
-    padraoPreenchimentoCampoLegivel: 'Número inteiro'
+    nomeColunaPlanilha: 'QtNfEntregues'
+    nomeColunaLegivel: 'Qt Nf Entregues'
+    colunaObrigatoria: true
+    padraoPreenchimentoColuna: 'NUMERO_INTEIRO'
+    padraoPreenchimentoColunaLegivel: 'Número inteiro'
     regexValidacaoPadraoPreenchimento: '^[0-9]*$'
     exemploPreenchimento: '0 ou 1 ou 2'
   62:
-    nomeCampoPlanilha: 'IndDevCx'
-    nomeCampoLegivel: 'Ind Dev Cx'
-    campoObrigatorio: true
-    padraoPreenchimentoCampo: 'NUMERO_DECIMAL'
-    padraoPreenchimentoCampoLegivel: 'Número decimal'
+    nomeColunaPlanilha: 'IndDevCx'
+    nomeColunaLegivel: 'Ind Dev Cx'
+    colunaObrigatoria: true
+    padraoPreenchimentoColuna: 'NUMERO_DECIMAL'
+    padraoPreenchimentoColunaLegivel: 'Número decimal'
     regexValidacaoPadraoPreenchimento: '^[0-9\,]*$'
     exemploPreenchimento: '0 ou 11,31 ou 128,55'
   63:
-    nomeCampoPlanilha: 'IndDevNf'
-    nomeCampoLegivel: 'Ind Dev Nf'
-    campoObrigatorio: true
-    padraoPreenchimentoCampo: 'NUMERO_DECIMAL'
-    padraoPreenchimentoCampoLegivel: 'Número decimal'
+    nomeColunaPlanilha: 'IndDevNf'
+    nomeColunaLegivel: 'Ind Dev Nf'
+    colunaObrigatoria: true
+    padraoPreenchimentoColuna: 'NUMERO_DECIMAL'
+    padraoPreenchimentoColunaLegivel: 'Número decimal'
     regexValidacaoPadraoPreenchimento: '^[0-9\,]*$'
     exemploPreenchimento: '0 ou 11,31 ou 128,55'
   64:
-    nomeCampoPlanilha: 'Fator'
-    nomeCampoLegivel: 'Fator'
-    campoObrigatorio: true
-    padraoPreenchimentoCampo: 'NUMERO_INTEIRO'
-    padraoPreenchimentoCampoLegivel: 'Número inteiro'
+    nomeColunaPlanilha: 'Fator'
+    nomeColunaLegivel: 'Fator'
+    colunaObrigatoria: true
+    padraoPreenchimentoColuna: 'NUMERO_INTEIRO'
+    padraoPreenchimentoColunaLegivel: 'Número inteiro'
     regexValidacaoPadraoPreenchimento: '^[0-9]*$'
     exemploPreenchimento: '0 ou 1 ou 2'
   65:
-    nomeCampoPlanilha: 'Recarga'
-    nomeCampoLegivel: 'Recarga'
-    campoObrigatorio: false
-    padraoPreenchimentoCampo: 'TEXTO'
-    padraoPreenchimentoCampoLegivel: 'Texto'
+    nomeColunaPlanilha: 'Recarga'
+    nomeColunaLegivel: 'Recarga'
+    colunaObrigatoria: false
+    padraoPreenchimentoColuna: 'TEXTO'
+    padraoPreenchimentoColunaLegivel: 'Texto'
     regexValidacaoPadraoPreenchimento: '.*'
     exemploPreenchimento: 'SIM ou NÃO'
   66:
-    nomeCampoPlanilha: 'HrMatinal'
-    nomeCampoLegivel: 'Hora Matinal'
-    campoObrigatorio: true
-    padraoPreenchimentoCampo: 'HORA'
-    padraoPreenchimentoCampoLegivel: 'Hora'
+    nomeColunaPlanilha: 'HrMatinal'
+    nomeColunaLegivel: 'Hora Matinal'
+    colunaObrigatoria: true
+    padraoPreenchimentoColuna: 'HORA'
+    padraoPreenchimentoColunaLegivel: 'Hora'
     # Permite até 3 casas no campo hora da regex pois alguns dados podem vir com 3 caracteres na planilha.
     regexValidacaoPadraoPreenchimento: '^\d{1,3}:\d{2}$'
     exemploPreenchimento: '0:00 ou 2:10 ou 15:59'
   67:
-    nomeCampoPlanilha: 'HrJornadaLiq'
-    nomeCampoLegivel: 'Hora Jornada Líquida'
-    campoObrigatorio: true
-    padraoPreenchimentoCampo: 'HORA'
-    padraoPreenchimentoCampoLegivel: 'Hora'
+    nomeColunaPlanilha: 'HrJornadaLiq'
+    nomeColunaLegivel: 'Hora Jornada Líquida'
+    colunaObrigatoria: true
+    padraoPreenchimentoColuna: 'HORA'
+    padraoPreenchimentoColunaLegivel: 'Hora'
     # Permite até 3 casas no campo hora da regex pois alguns dados podem vir com 3 caracteres na planilha.
     regexValidacaoPadraoPreenchimento: '^\d{1,3}:\d{2}$'
     exemploPreenchimento: '0:00 ou 2:10 ou 15:59'
   68:
-    nomeCampoPlanilha: 'HrMetaJornada'
-    nomeCampoLegivel: 'Hora Meta Jornada'
-    campoObrigatorio: true
-    padraoPreenchimentoCampo: 'HORA'
-    padraoPreenchimentoCampoLegivel: 'Hora'
+    nomeColunaPlanilha: 'HrMetaJornada'
+    nomeColunaLegivel: 'Hora Meta Jornada'
+    colunaObrigatoria: true
+    padraoPreenchimentoColuna: 'HORA'
+    padraoPreenchimentoColunaLegivel: 'Hora'
     # Permite até 3 casas no campo hora da regex pois alguns dados podem vir com 3 caracteres na planilha.
     # Também permite o valor "0", pois pode acontecer.
     regexValidacaoPadraoPreenchimento: '^(\d{1,3}:\d{2})$|^([0])$'
     exemploPreenchimento: '0:00 ou 2:10 ou 15:59'
   69:
-    nomeCampoPlanilha: 'VlBateuJornMot'
-    nomeCampoLegivel: 'VlBateuJornMot'
-    campoObrigatorio: true
-    padraoPreenchimentoCampo: 'NUMERO_DECIMAL'
-    padraoPreenchimentoCampoLegivel: 'Número decimal'
+    nomeColunaPlanilha: 'VlBateuJornMot'
+    nomeColunaLegivel: 'VlBateuJornMot'
+    colunaObrigatoria: true
+    padraoPreenchimentoColuna: 'NUMERO_DECIMAL'
+    padraoPreenchimentoColunaLegivel: 'Número decimal'
     regexValidacaoPadraoPreenchimento: '^[0-9\,]*$'
     exemploPreenchimento: '0 ou 11,31 ou 28,55'
   70:
-    nomeCampoPlanilha: 'VlNaoBateuJornMot'
-    nomeCampoLegivel: 'VlNaoBateuJornMot'
-    campoObrigatorio: true
-    padraoPreenchimentoCampo: 'NUMERO_DECIMAL'
-    padraoPreenchimentoCampoLegivel: 'Número decimal'
+    nomeColunaPlanilha: 'VlNaoBateuJornMot'
+    nomeColunaLegivel: 'VlNaoBateuJornMot'
+    colunaObrigatoria: true
+    padraoPreenchimentoColuna: 'NUMERO_DECIMAL'
+    padraoPreenchimentoColunaLegivel: 'Número decimal'
     regexValidacaoPadraoPreenchimento: '^[0-9\,]*$'
     exemploPreenchimento: '0 ou 11,31 ou 28,55'
   71:
-    nomeCampoPlanilha: 'VlRecargaMot'
-    nomeCampoLegivel: 'VlRecargaMot'
-    campoObrigatorio: true
-    padraoPreenchimentoCampo: 'NUMERO_DECIMAL'
-    padraoPreenchimentoCampoLegivel: 'Número decimal'
+    nomeColunaPlanilha: 'VlRecargaMot'
+    nomeColunaLegivel: 'VlRecargaMot'
+    colunaObrigatoria: true
+    padraoPreenchimentoColuna: 'NUMERO_DECIMAL'
+    padraoPreenchimentoColunaLegivel: 'Número decimal'
     regexValidacaoPadraoPreenchimento: '^[0-9\,]*$'
     exemploPreenchimento: '0 ou 11,31 ou 28,55'
   72:
-    nomeCampoPlanilha: 'VlBateuJornAju'
-    nomeCampoLegivel: 'VlBateuJornAju'
-    campoObrigatorio: true
-    padraoPreenchimentoCampo: 'NUMERO_DECIMAL'
-    padraoPreenchimentoCampoLegivel: 'Número decimal'
+    nomeColunaPlanilha: 'VlBateuJornAju'
+    nomeColunaLegivel: 'VlBateuJornAju'
+    colunaObrigatoria: true
+    padraoPreenchimentoColuna: 'NUMERO_DECIMAL'
+    padraoPreenchimentoColunaLegivel: 'Número decimal'
     regexValidacaoPadraoPreenchimento: '^[0-9\,]*$'
     exemploPreenchimento: '0 ou 11,31 ou 28,55'
   73:
-    nomeCampoPlanilha: 'VlNaoBateuJornAju'
-    nomeCampoLegivel: 'VlNaoBateuJornAju'
-    campoObrigatorio: true
-    padraoPreenchimentoCampo: 'NUMERO_DECIMAL'
-    padraoPreenchimentoCampoLegivel: 'Número decimal'
+    nomeColunaPlanilha: 'VlNaoBateuJornAju'
+    nomeColunaLegivel: 'VlNaoBateuJornAju'
+    colunaObrigatoria: true
+    padraoPreenchimentoColuna: 'NUMERO_DECIMAL'
+    padraoPreenchimentoColunaLegivel: 'Número decimal'
     regexValidacaoPadraoPreenchimento: '^[0-9\,]*$'
     exemploPreenchimento: '0 ou 11,31 ou 28,55'
   74:
-    nomeCampoPlanilha: 'VlRecargaAju'
-    nomeCampoLegivel: 'VlRecargaAju'
-    campoObrigatorio: true
-    padraoPreenchimentoCampo: 'NUMERO_DECIMAL'
-    padraoPreenchimentoCampoLegivel: 'Número decimal'
+    nomeColunaPlanilha: 'VlRecargaAju'
+    nomeColunaLegivel: 'VlRecargaAju'
+    colunaObrigatoria: true
+    padraoPreenchimentoColuna: 'NUMERO_DECIMAL'
+    padraoPreenchimentoColunaLegivel: 'Número decimal'
     regexValidacaoPadraoPreenchimento: '^[0-9\,]*$'
     exemploPreenchimento: '0 ou 11,31 ou 28,55'
   75:
-    nomeCampoPlanilha: 'VlTotalMapa'
-    nomeCampoLegivel: 'VlTotalMapa'
-    campoObrigatorio: true
-    padraoPreenchimentoCampo: 'NUMERO_DECIMAL'
-    padraoPreenchimentoCampoLegivel: 'Número decimal'
+    nomeColunaPlanilha: 'VlTotalMapa'
+    nomeColunaLegivel: 'VlTotalMapa'
+    colunaObrigatoria: true
+    padraoPreenchimentoColuna: 'NUMERO_DECIMAL'
+    padraoPreenchimentoColunaLegivel: 'Número decimal'
     regexValidacaoPadraoPreenchimento: '^[0-9\,]*$'
     exemploPreenchimento: '0 ou 11,31 ou 28,55'
   76:
-    nomeCampoPlanilha: 'QtHlCarregados'
-    nomeCampoLegivel: 'Qt Hl Carregados'
+    nomeColunaPlanilha: 'QtHlCarregados'
+    nomeColunaLegivel: 'Qt Hl Carregados'
     # No BD, só era nulo na unidade de testes (código 5), por isso foi colocado como obrigatório.
-    campoObrigatorio: true
-    padraoPreenchimentoCampo: 'NUMERO_DECIMAL'
-    padraoPreenchimentoCampoLegivel: 'Número decimal'
+    colunaObrigatoria: true
+    padraoPreenchimentoColuna: 'NUMERO_DECIMAL'
+    padraoPreenchimentoColunaLegivel: 'Número decimal'
     regexValidacaoPadraoPreenchimento: '^[0-9\,]*$'
     exemploPreenchimento: '0 ou 11,31 ou 28,55'
   77:
-    nomeCampoPlanilha: 'QtHlEntregues'
-    nomeCampoLegivel: 'Qt Hl Entregues'
+    nomeColunaPlanilha: 'QtHlEntregues'
+    nomeColunaLegivel: 'Qt Hl Entregues'
     # No BD, só era nulo na unidade de testes (código 5), por isso foi colocado como obrigatório.
-    campoObrigatorio: true
-    padraoPreenchimentoCampo: 'NUMERO_DECIMAL'
-    padraoPreenchimentoCampoLegivel: 'Número decimal'
+    colunaObrigatoria: true
+    padraoPreenchimentoColuna: 'NUMERO_DECIMAL'
+    padraoPreenchimentoColunaLegivel: 'Número decimal'
     regexValidacaoPadraoPreenchimento: '^[0-9\,]*$'
     exemploPreenchimento: '0 ou 11,31 ou 83,211'
   78:
-    nomeCampoPlanilha: 'IndiceDevHl'
-    nomeCampoLegivel: 'Índice Dev Hl'
-    campoObrigatorio: true
-    padraoPreenchimentoCampo: 'NUMERO_DECIMAL'
-    padraoPreenchimentoCampoLegivel: 'Número decimal'
+    nomeColunaPlanilha: 'IndiceDevHl'
+    nomeColunaLegivel: 'Índice Dev Hl'
+    colunaObrigatoria: true
+    padraoPreenchimentoColuna: 'NUMERO_DECIMAL'
+    padraoPreenchimentoColunaLegivel: 'Número decimal'
     regexValidacaoPadraoPreenchimento: '^[0-9\,]*$'
     exemploPreenchimento: '0 ou 11,31 ou 83,211'
   79:
-    nomeCampoPlanilha: 'Regiao'
-    nomeCampoLegivel: 'Região'
-    campoObrigatorio: true
-    padraoPreenchimentoCampo: 'TEXTO'
-    padraoPreenchimentoCampoLegivel: 'Texto'
+    nomeColunaPlanilha: 'Regiao'
+    nomeColunaLegivel: 'Região'
+    colunaObrigatoria: true
+    padraoPreenchimentoColuna: 'TEXTO'
+    padraoPreenchimentoColunaLegivel: 'Texto'
     regexValidacaoPadraoPreenchimento: '.*'
     exemploPreenchimento: 'Capital ou Interior'
   80:
-    nomeCampoPlanilha: 'QtNfCarregGeral'
-    nomeCampoLegivel: 'QtNfCarregGeral'
-    campoObrigatorio: true
-    padraoPreenchimentoCampo: 'NUMERO_INTEIRO'
-    padraoPreenchimentoCampoLegivel: 'Número inteiro'
+    nomeColunaPlanilha: 'QtNfCarregGeral'
+    nomeColunaLegivel: 'QtNfCarregGeral'
+    colunaObrigatoria: true
+    padraoPreenchimentoColuna: 'NUMERO_INTEIRO'
+    padraoPreenchimentoColunaLegivel: 'Número inteiro'
     regexValidacaoPadraoPreenchimento: '^[0-9]*$'
     exemploPreenchimento: '0 ou 5 ou 30'
   81:
-    nomeCampoPlanilha: 'QtNfEntregGeral'
-    nomeCampoLegivel: 'QtNfEntregGeral'
-    campoObrigatorio: true
-    padraoPreenchimentoCampo: 'NUMERO_INTEIRO'
-    padraoPreenchimentoCampoLegivel: 'Número inteiro'
+    nomeColunaPlanilha: 'QtNfEntregGeral'
+    nomeColunaLegivel: 'QtNfEntregGeral'
+    colunaObrigatoria: true
+    padraoPreenchimentoColuna: 'NUMERO_INTEIRO'
+    padraoPreenchimentoColunaLegivel: 'Número inteiro'
     regexValidacaoPadraoPreenchimento: '^[0-9]*$'
     exemploPreenchimento: '0 ou 5 ou 30'
   82:
-    nomeCampoPlanilha: 'CapacidadeVeiculoKG'
-    nomeCampoLegivel: 'Capacidade Veículo KG'
-    campoObrigatorio: false
+    nomeColunaPlanilha: 'CapacidadeVeiculoKG'
+    nomeColunaLegivel: 'Capacidade Veículo KG'
+    colunaObrigatoria: false
     # Apesar de ser um 'real' no BD, existem apenas números inteiros até hoje. Mantemos como inteiro.
-    padraoPreenchimentoCampo: 'NUMERO_INTEIRO'
-    padraoPreenchimentoCampoLegivel: 'Número inteiro'
+    padraoPreenchimentoColuna: 'NUMERO_INTEIRO'
+    padraoPreenchimentoColunaLegivel: 'Número inteiro'
     regexValidacaoPadraoPreenchimento: '^[0-9]*$'
     exemploPreenchimento: '0 ou 8000 ou 17080'
   83:
-    nomeCampoPlanilha: 'PesoCargaKG'
-    nomeCampoLegivel: 'Peso Carga KG'
-    campoObrigatorio: false
-    padraoPreenchimentoCampo: 'NUMERO_DECIMAL'
-    padraoPreenchimentoCampoLegivel: 'Número decimal'
+    nomeColunaPlanilha: 'PesoCargaKG'
+    nomeColunaLegivel: 'Peso Carga KG'
+    colunaObrigatoria: false
+    padraoPreenchimentoColuna: 'NUMERO_DECIMAL'
+    padraoPreenchimentoColunaLegivel: 'Número decimal'
     regexValidacaoPadraoPreenchimento: '^[0-9\,]*$'
     exemploPreenchimento: '0 ou 5088,95 ou 10598,83'
   84:
-    nomeCampoPlanilha: 'CapacVeiculoCx'
-    nomeCampoLegivel: 'Capacidade Veículo Caixas'
-    campoObrigatorio: false
-    padraoPreenchimentoCampo: 'NUMERO_INTEIRO'
-    padraoPreenchimentoCampoLegivel: 'Número inteiro'
+    nomeColunaPlanilha: 'CapacVeiculoCx'
+    nomeColunaLegivel: 'Capacidade Veículo Caixas'
+    colunaObrigatoria: false
+    padraoPreenchimentoColuna: 'NUMERO_INTEIRO'
+    padraoPreenchimentoColunaLegivel: 'Número inteiro'
     regexValidacaoPadraoPreenchimento: '^[0-9]*$'
     exemploPreenchimento: '0 ou 420 ou 600'
   85:
-    nomeCampoPlanilha: 'EntregasCompletas'
-    nomeCampoLegivel: 'Entregas Completas'
-    campoObrigatorio: true
-    padraoPreenchimentoCampo: 'NUMERO_INTEIRO'
-    padraoPreenchimentoCampoLegivel: 'Número inteiro'
+    nomeColunaPlanilha: 'EntregasCompletas'
+    nomeColunaLegivel: 'Entregas Completas'
+    colunaObrigatoria: true
+    padraoPreenchimentoColuna: 'NUMERO_INTEIRO'
+    padraoPreenchimentoColunaLegivel: 'Número inteiro'
     regexValidacaoPadraoPreenchimento: '^[0-9]*$'
     exemploPreenchimento: '0 ou 1 ou 2'
   86:
-    nomeCampoPlanilha: 'EntregasParciais'
-    nomeCampoLegivel: 'Entregas Parciais'
-    campoObrigatorio: true
-    padraoPreenchimentoCampo: 'NUMERO_INTEIRO'
-    padraoPreenchimentoCampoLegivel: 'Número inteiro'
+    nomeColunaPlanilha: 'EntregasParciais'
+    nomeColunaLegivel: 'Entregas Parciais'
+    colunaObrigatoria: true
+    padraoPreenchimentoColuna: 'NUMERO_INTEIRO'
+    padraoPreenchimentoColunaLegivel: 'Número inteiro'
     regexValidacaoPadraoPreenchimento: '^[0-9]*$'
     exemploPreenchimento: '0 ou 1 ou 2'
   87:
-    nomeCampoPlanilha: 'EntregasNaoRealizadas'
-    nomeCampoLegivel: 'Entregas Não Realizadas'
-    campoObrigatorio: true
-    padraoPreenchimentoCampo: 'NUMERO_INTEIRO'
-    padraoPreenchimentoCampoLegivel: 'Número inteiro'
+    nomeColunaPlanilha: 'EntregasNaoRealizadas'
+    nomeColunaLegivel: 'Entregas Não Realizadas'
+    colunaObrigatoria: true
+    padraoPreenchimentoColuna: 'NUMERO_INTEIRO'
+    padraoPreenchimentoColunaLegivel: 'Número inteiro'
     regexValidacaoPadraoPreenchimento: '^[0-9]*$'
     exemploPreenchimento: '0 ou 1 ou 2'
   88:
-    nomeCampoPlanilha: 'CodFilial'
-    nomeCampoLegivel: 'Código da Filial'
-    campoObrigatorio: false
-    padraoPreenchimentoCampo: 'NUMERO_INTEIRO'
-    padraoPreenchimentoCampoLegivel: 'Número inteiro'
+    nomeColunaPlanilha: 'CodFilial'
+    nomeColunaLegivel: 'Código da Filial'
+    colunaObrigatoria: false
+    padraoPreenchimentoColuna: 'NUMERO_INTEIRO'
+    padraoPreenchimentoColunaLegivel: 'Número inteiro'
     regexValidacaoPadraoPreenchimento: '^[0-9]*$'
     exemploPreenchimento: '1 ou 2 ou 3'
   89:
-    nomeCampoPlanilha: 'NomeFilial'
-    nomeCampoLegivel: 'Nome Filial'
-    campoObrigatorio: true
-    padraoPreenchimentoCampo: 'TEXTO'
-    padraoPreenchimentoCampoLegivel: 'Texto'
+    nomeColunaPlanilha: 'NomeFilial'
+    nomeColunaLegivel: 'Nome Filial'
+    colunaObrigatoria: true
+    padraoPreenchimentoColuna: 'TEXTO'
+    padraoPreenchimentoColunaLegivel: 'Texto'
     regexValidacaoPadraoPreenchimento: '.*'
     exemploPreenchimento: 'Filia 1 ou Filial 2'
   90:
-    nomeCampoPlanilha: 'CodSupervTrs'
-    nomeCampoLegivel: 'CodSupervTrs'
-    campoObrigatorio: false
-    padraoPreenchimentoCampo: 'NUMERO_INTEIRO'
-    padraoPreenchimentoCampoLegivel: 'Número inteiro'
+    nomeColunaPlanilha: 'CodSupervTrs'
+    nomeColunaLegivel: 'CodSupervTrs'
+    colunaObrigatoria: false
+    padraoPreenchimentoColuna: 'NUMERO_INTEIRO'
+    padraoPreenchimentoColunaLegivel: 'Número inteiro'
     regexValidacaoPadraoPreenchimento: '^[0-9]*$'
     exemploPreenchimento: '0 ou 1 ou 2'
   91:
-    nomeCampoPlanilha: 'NomeSupervTrs'
-    nomeCampoLegivel: 'NomeSupervTrs'
-    campoObrigatorio: false
-    padraoPreenchimentoCampo: 'TEXTO'
-    padraoPreenchimentoCampoLegivel: 'Texto'
+    nomeColunaPlanilha: 'NomeSupervTrs'
+    nomeColunaLegivel: 'NomeSupervTrs'
+    colunaObrigatoria: false
+    padraoPreenchimentoColuna: 'TEXTO'
+    padraoPreenchimentoColunaLegivel: 'Texto'
     regexValidacaoPadraoPreenchimento: '.*'
     exemploPreenchimento: 'João ou Pedro'
   92:
-    nomeCampoPlanilha: 'CodSpot'
-    nomeCampoLegivel: 'Código Spot'
-    campoObrigatorio: false
-    padraoPreenchimentoCampo: 'NUMERO_INTEIRO'
-    padraoPreenchimentoCampoLegivel: 'Número inteiro'
+    nomeColunaPlanilha: 'CodSpot'
+    nomeColunaLegivel: 'Código Spot'
+    colunaObrigatoria: false
+    padraoPreenchimentoColuna: 'NUMERO_INTEIRO'
+    padraoPreenchimentoColunaLegivel: 'Número inteiro'
     regexValidacaoPadraoPreenchimento: '^[0-9]*$'
     exemploPreenchimento: '0 ou 1 ou 2'
   93:
-    nomeCampoPlanilha: 'NomeSpot'
-    nomeCampoLegivel: 'Nome Spot'
-    campoObrigatorio: false
-    padraoPreenchimentoCampo: 'TEXTO'
-    padraoPreenchimentoCampoLegivel: 'Texto'
+    nomeColunaPlanilha: 'NomeSpot'
+    nomeColunaLegivel: 'Nome Spot'
+    colunaObrigatoria: false
+    padraoPreenchimentoColuna: 'TEXTO'
+    padraoPreenchimentoColunaLegivel: 'Texto'
     regexValidacaoPadraoPreenchimento: '.*'
     exemploPreenchimento: 'Truck ou Carreta'
   94:
-    nomeCampoPlanilha: 'EquipCarregados'
-    nomeCampoLegivel: 'EquipCarregados'
-    campoObrigatorio: false
-    padraoPreenchimentoCampo: 'NUMERO_INTEIRO'
-    padraoPreenchimentoCampoLegivel: 'Número inteiro'
+    nomeColunaPlanilha: 'EquipCarregados'
+    nomeColunaLegivel: 'EquipCarregados'
+    colunaObrigatoria: false
+    padraoPreenchimentoColuna: 'NUMERO_INTEIRO'
+    padraoPreenchimentoColunaLegivel: 'Número inteiro'
     regexValidacaoPadraoPreenchimento: '^[0-9]*$'
     exemploPreenchimento: '0 ou 1 ou 2'
   95:
-    nomeCampoPlanilha: 'EquipDevolvidos'
-    nomeCampoLegivel: 'EquipDevolvidos'
-    campoObrigatorio: false
-    padraoPreenchimentoCampo: 'NUMERO_INTEIRO'
-    padraoPreenchimentoCampoLegivel: 'Número inteiro'
+    nomeColunaPlanilha: 'EquipDevolvidos'
+    nomeColunaLegivel: 'EquipDevolvidos'
+    colunaObrigatoria: false
+    padraoPreenchimentoColuna: 'NUMERO_INTEIRO'
+    padraoPreenchimentoColunaLegivel: 'Número inteiro'
     regexValidacaoPadraoPreenchimento: '^[0-9]*$'
     exemploPreenchimento: '0 ou 1 ou 2'
   96:
-    nomeCampoPlanilha: 'EquipRecolhidos'
-    nomeCampoLegivel: 'EquipRecolhidos'
-    campoObrigatorio: false
-    padraoPreenchimentoCampo: 'NUMERO_INTEIRO'
-    padraoPreenchimentoCampoLegivel: 'Número inteiro'
+    nomeColunaPlanilha: 'EquipRecolhidos'
+    nomeColunaLegivel: 'EquipRecolhidos'
+    colunaObrigatoria: false
+    padraoPreenchimentoColuna: 'NUMERO_INTEIRO'
+    padraoPreenchimentoColunaLegivel: 'Número inteiro'
     regexValidacaoPadraoPreenchimento: '^[0-9]*$'
     exemploPreenchimento: '0 ou 1 ou 2'
   97:
-    nomeCampoPlanilha: 'CxEntregTracking'
-    nomeCampoLegivel: 'CxEntregTracking'
-    campoObrigatorio: false
-    padraoPreenchimentoCampo: 'NUMERO_DECIMAL'
-    padraoPreenchimentoCampoLegivel: 'Número decimal'
+    nomeColunaPlanilha: 'CxEntregTracking'
+    nomeColunaLegivel: 'CxEntregTracking'
+    colunaObrigatoria: false
+    padraoPreenchimentoColuna: 'NUMERO_DECIMAL'
+    padraoPreenchimentoColunaLegivel: 'Número decimal'
     regexValidacaoPadraoPreenchimento: '^[0-9\,]*$'
     exemploPreenchimento: '0 ou 1,95 ou 10,83'
   98:
-    nomeCampoPlanilha: 'HrCarreg'
-    nomeCampoLegivel: 'HrCarreg'
-    campoObrigatorio: true
-    padraoPreenchimentoCampo: 'DATA_HORA'
-    padraoPreenchimentoCampoLegivel: 'Data e hora'
+    nomeColunaPlanilha: 'HrCarreg'
+    nomeColunaLegivel: 'HrCarreg'
+    colunaObrigatoria: true
+    padraoPreenchimentoColuna: 'DATA_HORA'
+    padraoPreenchimentoColunaLegivel: 'Data e hora'
     # O espaço nessa regex, entre a data e a hora, é proposital.
     regexValidacaoPadraoPreenchimento: '^\d{2}/\d{2}/\d{4} \d{2}:\d{2}$'
     exemploPreenchimento: '14/10/2017 13:23'
   99:
-    nomeCampoPlanilha: 'HrPCFisica'
-    nomeCampoLegivel: 'HrPCFisica'
-    campoObrigatorio: true
-    padraoPreenchimentoCampo: 'DATA_HORA'
-    padraoPreenchimentoCampoLegivel: 'Data e hora'
+    nomeColunaPlanilha: 'HrPCFisica'
+    nomeColunaLegivel: 'HrPCFisica'
+    colunaObrigatoria: true
+    padraoPreenchimentoColuna: 'DATA_HORA'
+    padraoPreenchimentoColunaLegivel: 'Data e hora'
     # O espaço nessa regex, entre a data e a hora, é proposital.
     regexValidacaoPadraoPreenchimento: '^\d{2}/\d{2}/\d{4} \d{2}:\d{2}$'
     exemploPreenchimento: '14/10/2017 13:23'
   100:
-    nomeCampoPlanilha: 'HrPCFinanceira'
-    nomeCampoLegivel: 'HrPCFinanceira'
-    campoObrigatorio: true
-    padraoPreenchimentoCampo: 'DATA_HORA'
-    padraoPreenchimentoCampoLegivel: 'Data e hora'
+    nomeColunaPlanilha: 'HrPCFinanceira'
+    nomeColunaLegivel: 'HrPCFinanceira'
+    colunaObrigatoria: true
+    padraoPreenchimentoColuna: 'DATA_HORA'
+    padraoPreenchimentoColunaLegivel: 'Data e hora'
     # O espaço nessa regex, entre a data e a hora, é proposital.
     regexValidacaoPadraoPreenchimento: '^\d{2}/\d{2}/\d{4} \d{2}:\d{2}$'
     exemploPreenchimento: '14/10/2017 13:23'
   101:
-    nomeCampoPlanilha: 'StMapa'
-    nomeCampoLegivel: 'StMapa'
-    campoObrigatorio: false
-    padraoPreenchimentoCampo: 'TEXTO'
-    padraoPreenchimentoCampoLegivel: 'Texto'
+    nomeColunaPlanilha: 'StMapa'
+    nomeColunaLegivel: 'StMapa'
+    colunaObrigatoria: false
+    padraoPreenchimentoColuna: 'TEXTO'
+    padraoPreenchimentoColunaLegivel: 'Texto'
     regexValidacaoPadraoPreenchimento: '.*'
     exemploPreenchimento: 'Pago ou Fechado'
   102:
-    nomeCampoPlanilha: 'DataEntrega'
-    nomeCampoLegivel: 'Data Entrega'
-    campoObrigatorio: false
-    padraoPreenchimentoCampo: 'NUMERO_INTEIRO'
-    padraoPreenchimentoCampoLegivel: 'Número inteiro'
+    nomeColunaPlanilha: 'DataEntrega'
+    nomeColunaLegivel: 'Data Entrega'
+    colunaObrigatoria: false
+    padraoPreenchimentoColuna: 'NUMERO_INTEIRO'
+    padraoPreenchimentoColunaLegivel: 'Número inteiro'
     regexValidacaoPadraoPreenchimento: '^[0-9]{8}$'
     exemploPreenchimento: '17022020'
   103:
-    nomeCampoPlanilha: 'QtEntregasCarreg(RV)'
-    nomeCampoLegivel: 'QtEntregasCarreg(RV)'
-    campoObrigatorio: false
-    padraoPreenchimentoCampo: 'NUMERO_INTEIRO'
-    padraoPreenchimentoCampoLegivel: 'Número inteiro'
+    nomeColunaPlanilha: 'QtEntregasCarreg(RV)'
+    nomeColunaLegivel: 'QtEntregasCarreg(RV)'
+    colunaObrigatoria: false
+    padraoPreenchimentoColuna: 'NUMERO_INTEIRO'
+    padraoPreenchimentoColunaLegivel: 'Número inteiro'
     regexValidacaoPadraoPreenchimento: '^[0-9]*$'
     exemploPreenchimento: '0 ou 1 ou 2'
   104:
-    nomeCampoPlanilha: 'QtEntregasEntreg(RV)'
-    nomeCampoLegivel: 'QtEntregasEntreg(RV)'
-    campoObrigatorio: false
-    padraoPreenchimentoCampo: 'NUMERO_INTEIRO'
-    padraoPreenchimentoCampoLegivel: 'Número inteiro'
+    nomeColunaPlanilha: 'QtEntregasEntreg(RV)'
+    nomeColunaLegivel: 'QtEntregasEntreg(RV)'
+    colunaObrigatoria: false
+    padraoPreenchimentoColuna: 'NUMERO_INTEIRO'
+    padraoPreenchimentoColunaLegivel: 'Número inteiro'
     regexValidacaoPadraoPreenchimento: '^[0-9]*$'
     exemploPreenchimento: '0 ou 1 ou 2'
   105:
-    nomeCampoPlanilha: 'IndiceDevEntregas(RV)'
-    nomeCampoLegivel: 'IndiceDevEntregas(RV)'
-    campoObrigatorio: false
-    padraoPreenchimentoCampo: 'NUMERO_DECIMAL'
-    padraoPreenchimentoCampoLegivel: 'Número decimal'
+    nomeColunaPlanilha: 'IndiceDevEntregas(RV)'
+    nomeColunaLegivel: 'IndiceDevEntregas(RV)'
+    colunaObrigatoria: false
+    padraoPreenchimentoColuna: 'NUMERO_DECIMAL'
+    padraoPreenchimentoColunaLegivel: 'Número decimal'
     regexValidacaoPadraoPreenchimento: '^[0-9\,]*$'
     exemploPreenchimento: '0 ou 1,95 ou 10,83'
   106:
-    nomeCampoPlanilha: 'CPFMotorista'
-    nomeCampoLegivel: 'CPF Motorista'
-    campoObrigatorio: true
-    padraoPreenchimentoCampo: 'NUMERO_INTEIRO'
-    padraoPreenchimentoCampoLegivel: 'Número inteiro'
+    nomeColunaPlanilha: 'CPFMotorista'
+    nomeColunaLegivel: 'CPF Motorista'
+    colunaObrigatoria: true
+    padraoPreenchimentoColuna: 'NUMERO_INTEIRO'
+    padraoPreenchimentoColunaLegivel: 'Número inteiro'
     # Deixamos de {1,11} (de 1 até 11 caracteres) para não deixar a regex tão restrita e abranger qualquer
     # quantidade de zeros à esquerda.
     regexValidacaoPadraoPreenchimento: '^\d{1,11}$'
     exemploPreenchimento: 'CPF (apenas números)'
   107:
-    nomeCampoPlanilha: 'CPFAjudante1'
-    nomeCampoLegivel: 'CPF Ajudante 1'
-    campoObrigatorio: false
-    padraoPreenchimentoCampo: 'NUMERO_INTEIRO'
-    padraoPreenchimentoCampoLegivel: 'Número inteiro'
+    nomeColunaPlanilha: 'CPFAjudante1'
+    nomeColunaLegivel: 'CPF Ajudante 1'
+    colunaObrigatoria: false
+    padraoPreenchimentoColuna: 'NUMERO_INTEIRO'
+    padraoPreenchimentoColunaLegivel: 'Número inteiro'
     regexValidacaoPadraoPreenchimento: '^\d{1,11}$'
     exemploPreenchimento: 'CPF (apenas números)'
   108:
-    nomeCampoPlanilha: 'CPFAjudante2'
-    nomeCampoLegivel: 'CPF Ajudante 2'
-    campoObrigatorio: false
-    padraoPreenchimentoCampo: 'NUMERO_INTEIRO'
-    padraoPreenchimentoCampoLegivel: 'Número inteiro'
+    nomeColunaPlanilha: 'CPFAjudante2'
+    nomeColunaLegivel: 'CPF Ajudante 2'
+    colunaObrigatoria: false
+    padraoPreenchimentoColuna: 'NUMERO_INTEIRO'
+    padraoPreenchimentoColunaLegivel: 'Número inteiro'
     regexValidacaoPadraoPreenchimento: '^\d{1,11}$'
     exemploPreenchimento: 'CPF (apenas números)'
   109:
-    nomeCampoPlanilha: 'Início de Rota'
-    nomeCampoLegivel: 'Início de Rota'
-    campoObrigatorio: false
-    padraoPreenchimentoCampo: 'DATA_HORA'
-    padraoPreenchimentoCampoLegivel: 'Data e hora'
+    nomeColunaPlanilha: 'Início de Rota'
+    nomeColunaLegivel: 'Início de Rota'
+    colunaObrigatoria: false
+    padraoPreenchimentoColuna: 'DATA_HORA'
+    padraoPreenchimentoColunaLegivel: 'Data e hora'
     # O espaço nessa regex, entre a data e a hora, é proposital.
     regexValidacaoPadraoPreenchimento: '^\d{2}/\d{2}/\d{4} \d{2}:\d{2}$'
     exemploPreenchimento: '14/10/2017 13:23'
   110:
-    nomeCampoPlanilha: 'Término de Rota'
-    nomeCampoLegivel: 'Término de Rota'
-    campoObrigatorio: false
-    padraoPreenchimentoCampo: 'DATA_HORA'
-    padraoPreenchimentoCampoLegivel: 'Data e hora'
+    nomeColunaPlanilha: 'Término de Rota'
+    nomeColunaLegivel: 'Término de Rota'
+    colunaObrigatoria: false
+    padraoPreenchimentoColuna: 'DATA_HORA'
+    padraoPreenchimentoColunaLegivel: 'Data e hora'
     # O espaço nessa regex, entre a data e a hora, é proposital.
     regexValidacaoPadraoPreenchimento: '^\d{2}/\d{2}/\d{4} \d{2}:\d{2}$'
     exemploPreenchimento: '14/10/2017 13:23'
   111:
-    nomeCampoPlanilha: 'MotoristaJT12x36'
-    nomeCampoLegivel: 'MotoristaJT12x36'
-    campoObrigatorio: false
-    padraoPreenchimentoCampo: 'TEXTO'
-    padraoPreenchimentoCampoLegivel: 'Texto'
+    nomeColunaPlanilha: 'MotoristaJT12x36'
+    nomeColunaLegivel: 'MotoristaJT12x36'
+    colunaObrigatoria: false
+    padraoPreenchimentoColuna: 'TEXTO'
+    padraoPreenchimentoColunaLegivel: 'Texto'
     regexValidacaoPadraoPreenchimento: '.*'
     exemploPreenchimento: 'Sim'
   112:
-    nomeCampoPlanilha: 'Retira'
-    nomeCampoLegivel: 'Retira'
-    campoObrigatorio: false
-    padraoPreenchimentoCampo: 'TEXTO'
-    padraoPreenchimentoCampoLegivel: 'Texto'
+    nomeColunaPlanilha: 'Retira'
+    nomeColunaLegivel: 'Retira'
+    colunaObrigatoria: false
+    padraoPreenchimentoColuna: 'TEXTO'
+    padraoPreenchimentoColunaLegivel: 'Texto'
     regexValidacaoPadraoPreenchimento: '.*'
     # Essa coluna não tem nenhum valor preenchido na base para que possamos usar como exemplo.
     exemploPreenchimento: ''
   113:
-    nomeCampoPlanilha: 'Classificacao Roadshow'
-    nomeCampoLegivel: 'Classificação Roadshow'
-    campoObrigatorio: false
-    padraoPreenchimentoCampo: 'TEXTO'
-    padraoPreenchimentoCampoLegivel: 'Texto'
+    nomeColunaPlanilha: 'Classificacao Roadshow'
+    nomeColunaLegivel: 'Classificação Roadshow'
+    colunaObrigatoria: false
+    padraoPreenchimentoColuna: 'TEXTO'
+    padraoPreenchimentoColunaLegivel: 'Texto'
     regexValidacaoPadraoPreenchimento: '.*'
     exemploPreenchimento: 'Padrao ou Integracao'

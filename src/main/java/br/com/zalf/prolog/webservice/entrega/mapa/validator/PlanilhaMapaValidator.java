@@ -22,7 +22,7 @@ public final class PlanilhaMapaValidator {
 
     public Optional<List<CelulaPlanilhaMapaErro>> findErrors(@NotNull final List<String[]> planilhaMapa,
                                                              @NotNull final RegrasValidacaoPlanilhaMapa mapa) {
-        final Map<Integer, CampoPlanilhaMapa> campos = mapa.getCampos();
+        final Map<Integer, ColunaPlanilhaMapa> campos = mapa.getColunas();
         for (int i = 0; i < planilhaMapa.size(); i++) {
             final String[] row = planilhaMapa.get(i);
 
@@ -34,7 +34,7 @@ public final class PlanilhaMapaValidator {
             final int rowIndex = i;
             campos.forEach((column, campo) -> {
                 final String value = StringUtils.trimToNull(row[column]);
-                if (StringUtils.isNullOrEmpty(value) && campo.isCampoObrigatorio()) {
+                if (StringUtils.isNullOrEmpty(value) && campo.isColunaObrigatoria()) {
                     // Está vazio ou nulo e é obrigatório.
                     addError(campo, value, rowIndex);
                 } else if (!StringUtils.isNullOrEmpty(value)) {
@@ -49,7 +49,7 @@ public final class PlanilhaMapaValidator {
         return Optional.ofNullable(errors);
     }
 
-    private void addError(@NotNull final CampoPlanilhaMapa campo,
+    private void addError(@NotNull final ColunaPlanilhaMapa campo,
                           @Nullable final String valorRecebido,
                           final int rowIndex) {
         if (errors == null) {
@@ -58,7 +58,7 @@ public final class PlanilhaMapaValidator {
         errors.add(new CelulaPlanilhaMapaErro(
                 String.format(
                         "A coluna \"%s\" na linha %d está com o valor incorreto!",
-                        campo.getNomeCampoPlanilha(),
+                        campo.getNomeColunaPlanilha(),
                         // + 1 para bater com a linha ao visualizar o arquivo no excel.
                         rowIndex + 1),
                 StringUtils.isNullOrEmpty(valorRecebido) ? "valor não fornecido" : valorRecebido,

@@ -17,12 +17,12 @@ import lombok.ToString;
 @Setter
 @ToString
 @NoArgsConstructor
-public final class CampoPlanilhaMapa {
-    private String nomeCampoPlanilha;
-    private String nomeCampoLegivel;
-    private boolean campoObrigatorio;
-    private PadraoPrenchimentoCampo padraoPreenchimentoCampo;
-    private String padraoPreenchimentoCampoLegivel;
+public final class ColunaPlanilhaMapa {
+    private String nomeColunaPlanilha;
+    private String nomeColunaLegivel;
+    private boolean colunaObrigatoria;
+    private PadraoPrenchimentoCampo padraoPreenchimentoColuna;
+    private String padraoPreenchimentoColunaLegivel;
     private String regexValidacaoPadraoPreenchimento;
     private String exemploPreenchimento;
 }
