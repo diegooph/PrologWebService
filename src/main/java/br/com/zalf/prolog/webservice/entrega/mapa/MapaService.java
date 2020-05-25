@@ -6,8 +6,8 @@ import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.entrega.mapa._model.CelulaPlanilhaMapaErro;
 import br.com.zalf.prolog.webservice.entrega.mapa._model.ResponseErrorUploadMapa;
-import br.com.zalf.prolog.webservice.entrega.mapa.validator.MapaLoader;
 import br.com.zalf.prolog.webservice.entrega.mapa.validator.PlanilhaMapaValidator;
+import br.com.zalf.prolog.webservice.entrega.mapa.validator.RegrasPlanilhaMapaLoader;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.InputStream;
@@ -30,7 +30,7 @@ public final class MapaService {
             // Verifica se a planilha está com algum erro.
             final Optional<List<CelulaPlanilhaMapaErro>> errors = new PlanilhaMapaValidator().findErrors(
                     planilhaMapa,
-                    MapaLoader.getRegrasPlanilhaMapa());
+                    RegrasPlanilhaMapaLoader.getRegras());
             if (errors.isPresent()) {
                 return new ResponseErrorUploadMapa(errors.get());
             }
