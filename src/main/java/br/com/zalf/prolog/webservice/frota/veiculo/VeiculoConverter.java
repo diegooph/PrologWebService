@@ -81,7 +81,6 @@ public class VeiculoConverter {
         rSet.getDouble("ALTURA_SULCO_CENTRAL_EXTERNO"),
         rSet.getDouble("ALTURA_SULCO_INTERNO"),
         rSet.getDouble("ALTURA_SULCO_EXTERNO"),
-        rSet.getString("STATUS"),
         rSet.getString("DOT"),
         rSet.getDouble("VALOR"),
         rSet.getLong("COD_MODELO_BANDA"),

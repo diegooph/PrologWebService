@@ -26,8 +26,7 @@ public class VeiculoVisualizacaoPneu {
     private final Double pressaoAtual;
     private final int vidaAtual;
     private final int vidaTotal;
-    @NotNull
-    private final Boolean pneuNovoNuncaRodado;
+    private final boolean pneuNovoNuncaRodado;
     @NotNull
     private final String nomeModeloPneu;
     @NotNull
@@ -53,8 +52,6 @@ public class VeiculoVisualizacaoPneu {
     private final Double alturaSulcoInterno;
     @NotNull
     private final Double alturaSulcoExterno;
-    @NotNull
-    private final String status;
     @NotNull
     private final String dot;
     @NotNull
@@ -104,7 +101,6 @@ public class VeiculoVisualizacaoPneu {
                                    @NotNull final Double alturaSulcoCentralExterno,
                                    @NotNull final Double alturaSulcoInterno,
                                    @NotNull final Double alturaSulcoExterno,
-                                   @NotNull final String status,
                                    @NotNull final String dot,
                                    @NotNull final Double valor,
                                    @Nullable final Long codModeloBanda,
@@ -141,7 +137,6 @@ public class VeiculoVisualizacaoPneu {
         this.alturaSulcoCentralExterno = alturaSulcoCentralExterno;
         this.alturaSulcoInterno = alturaSulcoInterno;
         this.alturaSulcoExterno = alturaSulcoExterno;
-        this.status = status;
         this.dot = dot;
         this.valor = valor;
         this.codModeloBanda = codModeloBanda;
@@ -247,10 +242,6 @@ public class VeiculoVisualizacaoPneu {
 
     public Double getAlturaSulcoExterno() {
         return alturaSulcoExterno;
-    }
-
-    public String getStatus() {
-        return status;
     }
 
     public String getDot() {
