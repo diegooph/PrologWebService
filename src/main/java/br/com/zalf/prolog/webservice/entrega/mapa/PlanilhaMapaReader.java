@@ -17,10 +17,10 @@ public final class PlanilhaMapaReader {
     @NotNull
     public static List<String[]> readFromCsv(@NotNull final InputStream inputStream) {
         final CsvParserSettings settings = new CsvParserSettings();
-        settings.setDelimiterDetectionEnabled(true, ',', ';');
+        settings.setDelimiterDetectionEnabled(true, ';', ',');
         settings.setHeaderExtractionEnabled(true);
+        settings.setSkipEmptyLines(true);
         final CsvParser parser = new CsvParser(settings);
-        parser.parse(inputStream);
         return parser.parseAll(inputStream);
     }
 }

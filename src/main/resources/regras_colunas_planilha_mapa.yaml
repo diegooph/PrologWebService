@@ -72,7 +72,7 @@ campos:
     campoObrigatorio: true
     padraoPreenchimentoCampo: 'TEXTO'
     padraoPreenchimentoCampoLegivel: 'Texto'
-    regexValidacaoPadraoPreenchimento: '^[a-zA-Z]+$'
+    regexValidacaoPadraoPreenchimento: '.*'
     exemploPreenchimento: 'AAA1234 ou BBB1111'
   9:
     nomeCampoPlanilha: 'VeiculoIndisp'
@@ -85,7 +85,7 @@ campos:
   10:
     nomeCampoPlanilha: 'PlacaIndisp'
     nomeCampoLegivel: 'Placa Indisponível'
-    campoObrigatorio: true
+    campoObrigatorio: false
     padraoPreenchimentoCampo: 'NUMERO_INTEIRO'
     padraoPreenchimentoCampoLegivel: 'Número inteiro'
     regexValidacaoPadraoPreenchimento: '^[0-9]*$'
@@ -93,7 +93,7 @@ campos:
   11:
     nomeCampoPlanilha: 'FrotaIndisp'
     nomeCampoLegivel: 'Frota Indisponível'
-    campoObrigatorio: true
+    campoObrigatorio: false
     padraoPreenchimentoCampo: 'NUMERO_INTEIRO'
     padraoPreenchimentoCampoLegivel: 'Número inteiro'
     regexValidacaoPadraoPreenchimento: '^[0-9]*$'
@@ -184,7 +184,7 @@ campos:
     campoObrigatorio: false
     padraoPreenchimentoCampo: 'TEXTO'
     padraoPreenchimentoCampoLegivel: 'Texto'
-    regexValidacaoPadraoPreenchimento: '^[a-zA-Z]+$'
+    regexValidacaoPadraoPreenchimento: '.*'
     exemploPreenchimento: 'Entrega ou Volume'
   23:
     nomeCampoPlanilha: 'HrSai'
@@ -258,7 +258,7 @@ campos:
     campoObrigatorio: false
     padraoPreenchimentoCampo: 'TEXTO'
     padraoPreenchimentoCampoLegivel: 'Texto'
-    regexValidacaoPadraoPreenchimento: '^[a-zA-Z]+$'
+    regexValidacaoPadraoPreenchimento: '.*'
     exemploPreenchimento: 'NF-ISS ou CTRC-ICMS'
   32:
     nomeCampoPlanilha: 'PercImposto'
@@ -404,7 +404,7 @@ campos:
     campoObrigatorio: false
     padraoPreenchimentoCampo: 'TEXTO'
     padraoPreenchimentoCampoLegivel: 'Texto'
-    regexValidacaoPadraoPreenchimento: '^[a-zA-Z]+$'
+    regexValidacaoPadraoPreenchimento: '.*'
     exemploPreenchimento: 'N'
   50:
     nomeCampoPlanilha: 'KmLaco'
@@ -484,7 +484,7 @@ campos:
     campoObrigatorio: false
     padraoPreenchimentoCampo: 'TEXTO'
     padraoPreenchimentoCampoLegivel: 'Texto'
-    regexValidacaoPadraoPreenchimento: '^[a-zA-Z]+$'
+    regexValidacaoPadraoPreenchimento: '.*'
     exemploPreenchimento: '*'
   60:
     nomeCampoPlanilha: 'QtNfCarregadas'
@@ -532,7 +532,7 @@ campos:
     campoObrigatorio: false
     padraoPreenchimentoCampo: 'TEXTO'
     padraoPreenchimentoCampoLegivel: 'Texto'
-    regexValidacaoPadraoPreenchimento: '^[a-zA-Z]+$'
+    regexValidacaoPadraoPreenchimento: '.*'
     exemploPreenchimento: 'SIM ou NÃO'
   66:
     nomeCampoPlanilha: 'HrMatinal'
@@ -559,7 +559,8 @@ campos:
     padraoPreenchimentoCampo: 'HORA'
     padraoPreenchimentoCampoLegivel: 'Hora'
     # Permite até 3 casas no campo hora da regex pois alguns dados podem vir com 3 caracteres na planilha.
-    regexValidacaoPadraoPreenchimento: '^\d{1,3}:\d{2}$'
+    # Também permite o valor "0", pois pode acontecer.
+    regexValidacaoPadraoPreenchimento: '^(\d{1,3}:\d{2})$|^([0])$'
     exemploPreenchimento: '0:00 ou 2:10 ou 15:59'
   69:
     nomeCampoPlanilha: 'VlBateuJornMot'
@@ -649,7 +650,7 @@ campos:
     campoObrigatorio: true
     padraoPreenchimentoCampo: 'TEXTO'
     padraoPreenchimentoCampoLegivel: 'Texto'
-    regexValidacaoPadraoPreenchimento: '^[a-zA-Z]+$'
+    regexValidacaoPadraoPreenchimento: '.*'
     exemploPreenchimento: 'Capital ou Interior'
   80:
     nomeCampoPlanilha: 'QtNfCarregGeral'
@@ -730,7 +731,7 @@ campos:
     campoObrigatorio: true
     padraoPreenchimentoCampo: 'TEXTO'
     padraoPreenchimentoCampoLegivel: 'Texto'
-    regexValidacaoPadraoPreenchimento: '^[a-zA-Z]+$'
+    regexValidacaoPadraoPreenchimento: '.*'
     exemploPreenchimento: 'Filia 1 ou Filial 2'
   90:
     nomeCampoPlanilha: 'CodSupervTrs'
@@ -746,7 +747,7 @@ campos:
     campoObrigatorio: false
     padraoPreenchimentoCampo: 'TEXTO'
     padraoPreenchimentoCampoLegivel: 'Texto'
-    regexValidacaoPadraoPreenchimento: '^[a-zA-Z]+$'
+    regexValidacaoPadraoPreenchimento: '.*'
     exemploPreenchimento: 'João ou Pedro'
   92:
     nomeCampoPlanilha: 'CodSpot'
@@ -762,7 +763,7 @@ campos:
     campoObrigatorio: false
     padraoPreenchimentoCampo: 'TEXTO'
     padraoPreenchimentoCampoLegivel: 'Texto'
-    regexValidacaoPadraoPreenchimento: '^[a-zA-Z]+$'
+    regexValidacaoPadraoPreenchimento: '.*'
     exemploPreenchimento: 'Truck ou Carreta'
   94:
     nomeCampoPlanilha: 'EquipCarregados'
@@ -829,7 +830,7 @@ campos:
     campoObrigatorio: false
     padraoPreenchimentoCampo: 'TEXTO'
     padraoPreenchimentoCampoLegivel: 'Texto'
-    regexValidacaoPadraoPreenchimento: '^[a-zA-Z]+$'
+    regexValidacaoPadraoPreenchimento: '.*'
     exemploPreenchimento: 'Pago ou Fechado'
   102:
     nomeCampoPlanilha: 'DataEntrega'
@@ -911,7 +912,7 @@ campos:
     campoObrigatorio: false
     padraoPreenchimentoCampo: 'TEXTO'
     padraoPreenchimentoCampoLegivel: 'Texto'
-    regexValidacaoPadraoPreenchimento: '^[a-zA-Z]+$'
+    regexValidacaoPadraoPreenchimento: '.*'
     exemploPreenchimento: 'Sim'
   112:
     nomeCampoPlanilha: 'Retira'
@@ -926,5 +927,5 @@ campos:
     campoObrigatorio: false
     padraoPreenchimentoCampo: 'TEXTO'
     padraoPreenchimentoCampoLegivel: 'Texto'
-    regexValidacaoPadraoPreenchimento: '^[a-zA-Z]+$'
+    regexValidacaoPadraoPreenchimento: '.*'
     exemploPreenchimento: 'Padrao ou Integracao'

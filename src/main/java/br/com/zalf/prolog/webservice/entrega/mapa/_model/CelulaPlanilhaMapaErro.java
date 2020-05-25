@@ -1,8 +1,7 @@
-package br.com.zalf.prolog.webservice.entrega.mapa;
+package br.com.zalf.prolog.webservice.entrega.mapa._model;
 
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Created on 2020-05-22
@@ -13,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 public final class CelulaPlanilhaMapaErro {
     @NotNull
     private final String mensagemErro;
-    @Nullable
+    @NotNull
     private final String valorRecebidoComErro;
     @NotNull
     private final String exemplosValorEsperado;

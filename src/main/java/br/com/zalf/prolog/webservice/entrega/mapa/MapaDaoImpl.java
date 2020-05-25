@@ -5,13 +5,11 @@ import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVRecord;
+import br.com.zalf.prolog.webservice.entrega.mapa._model.PlanilhaMapaColunaHolder;
+import br.com.zalf.prolog.webservice.entrega.mapa._model.PlanilhaMapaImport;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
 import java.sql.*;
 import java.text.ParseException;
 import java.util.Calendar;
@@ -21,7 +19,7 @@ import java.util.List;
 import static br.com.zalf.prolog.webservice.entrega.ImportUtils.toTime;
 import static br.com.zalf.prolog.webservice.entrega.ImportUtils.toTimestamp;
 
-public class MapaDaoImpl extends DatabaseConnection implements MapaDao {
+public final class MapaDaoImpl extends DatabaseConnection implements MapaDao {
     private static final String TAG = MapaDaoImpl.class.getSimpleName();
     private static final Time EMPTY_TIME = new Time(0L);
     private static final int MATRICULA_DEFAULT = 0;
@@ -34,24 +32,21 @@ public class MapaDaoImpl extends DatabaseConnection implements MapaDao {
     // mapear, teremos que implementar outra verificação mais eficiente, caso constrário ao realizar o update,
     // a equipe antiga continuará na tabela, recebendo por um mapa que não realizou.
     @Override
-    public boolean insertOrUpdateMapa(final String path,
-                                      final Long codUnidade) throws SQLException, IOException, ParseException {
+    public void insertOrUpdateMapa(@NotNull final Long codUnidade,
+                                   @NotNull final List<String[]> planilhaMapa) throws Throwable {
 
         Connection conn = null;
         try {
             conn = getConnection();
-            final Reader in = new FileReader(path);
-            final List<CSVRecord> tabela = CSVFormat.DEFAULT.withDelimiter(';').parse(in).getRecords();
-            //List<CSVRecord> tabela = CSVFormat.DEFAULT.parse(in).getRecords();
-            for (int i = 1; i < tabela.size(); i++) {
-                final MapaImport mapa = createMapa(tabela.get(i));
+            for (final String[] colunas : planilhaMapa) {
+                final PlanilhaMapaImport mapa = createMapa(new PlanilhaMapaColunaHolder(colunas));
                 if (mapa != null) {
                     if (updateMapa(mapa, codUnidade, conn)) {
-                        // Mapa ja existia e foi atualizado
+                        // Mapa ja existia e foi atualizado.
                         Log.d(TAG, "update mapa: " + mapa.mapa);
                     } else {
                         Log.d(TAG, "insert mapa: " + mapa.mapa);
-                        // Mapa não existia e foi inserido na base
+                        // Mapa não existia e foi inserido na base.
                         insertMapa(mapa, codUnidade, conn);
                     }
                     insertOrUpdateMapaColaborador(mapa.mapa, codUnidade, mapa.matricMotorista, conn);
@@ -59,7 +54,6 @@ public class MapaDaoImpl extends DatabaseConnection implements MapaDao {
                     insertOrUpdateMapaColaborador(mapa.mapa, codUnidade, mapa.matricAjud2, conn);
                 }
             }
-            return true;
         } finally {
             close(conn);
         }
@@ -80,7 +74,7 @@ public class MapaDaoImpl extends DatabaseConnection implements MapaDao {
         return true;
     }
 
-    private boolean insertMapa(final MapaImport mapa,
+    private boolean insertMapa(final PlanilhaMapaImport mapa,
                                final Long codUnidade,
                                final Connection conn) throws SQLException {
         PreparedStatement stmt = null;
@@ -274,7 +268,7 @@ public class MapaDaoImpl extends DatabaseConnection implements MapaDao {
         return true;
     }
 
-    private boolean updateMapa(final MapaImport mapa,
+    private boolean updateMapa(final PlanilhaMapaImport mapa,
                                final Long codUnidade,
                                final Connection conn) throws SQLException {
         PreparedStatement stmt = null;
@@ -538,47 +532,48 @@ public class MapaDaoImpl extends DatabaseConnection implements MapaDao {
         return true;
     }
 
-    private MapaImport createMapa(final CSVRecord linha) throws ParseException {
-        final MapaImport mapa = new MapaImport();
-//        caso a data esteja vazia, retorna null para essa linha inteira, evitando erros nos inserts/update
-        if (linha.get(0).isEmpty()) {
+    @Nullable
+    private PlanilhaMapaImport createMapa(@NotNull final PlanilhaMapaColunaHolder colunas) throws ParseException {
+        // Caso a data esteja vazia, retorna null, evitando erros nos inserts/updates.
+        if (StringUtils.isNullOrEmpty(colunas.get(0))) {
             return null;
         }
-        mapa.data = toDate(linha.get(0));
-        mapa.transp = Integer.parseInt(linha.get(1));
-        mapa.entrega = linha.get(2).replace(" ", "");
-        mapa.cargaAtual = linha.get(3).replace(" ", "");
-        mapa.frota = linha.get(4).replace(" ", "");
-        mapa.custoSpot = Double.parseDouble(linha.get(5).replace(",", "."));
-        mapa.regiao = Integer.parseInt(linha.get(6));
-        mapa.veiculo = Integer.parseInt(linha.get(7));
-        mapa.placa = linha.get(8).replace(" ", "");
-        mapa.veiculoIndisp = Double.parseDouble(linha.get(9).replace(",", "."));
+        final PlanilhaMapaImport mapa = new PlanilhaMapaImport();
+        mapa.data = toDate(colunas.get(0));
+        mapa.transp = Integer.parseInt(colunas.get(1));
+        mapa.entrega = colunas.get(2).replace(" ", "");
+        mapa.cargaAtual = colunas.get(3).replace(" ", "");
+        mapa.frota = colunas.get(4).replace(" ", "");
+        mapa.custoSpot = Double.parseDouble(colunas.get(5).replace(",", "."));
+        mapa.regiao = Integer.parseInt(colunas.get(6));
+        mapa.veiculo = Integer.parseInt(colunas.get(7));
+        mapa.placa = colunas.get(8).replace(" ", "");
+        mapa.veiculoIndisp = Double.parseDouble(colunas.get(9).replace(",", "."));
         // inserir 0 caso venha em branco
-        if (linha.get(10).trim().isEmpty()) {
+        if (colunas.get(10).trim().isEmpty()) {
             mapa.placaIndisp = 0;
         } else {
-            mapa.placaIndisp = Double.parseDouble(linha.get(10).replace(",", "."));
+            mapa.placaIndisp = Double.parseDouble(colunas.get(10).replace(",", "."));
         }
         // inserir 0 caso venha em branco
-        if (linha.get(11).trim().isEmpty()) {
+        if (colunas.get(11).trim().isEmpty()) {
             mapa.frotaIndisp = 0;
         } else {
-            mapa.frotaIndisp = Double.parseDouble(linha.get(11).replace(",", "."));
+            mapa.frotaIndisp = Double.parseDouble(colunas.get(11).replace(",", "."));
         }
-        mapa.tipoIndisp = Integer.parseInt(linha.get(12));
-        mapa.mapa = Integer.parseInt(linha.get(13));
-        mapa.entregas = Integer.parseInt(linha.get(14));
-        mapa.cxCarreg = Double.parseDouble(linha.get(15).replace(",", "."));
-        mapa.cxEntreg = Double.parseDouble(linha.get(16).replace(",", "."));
-        mapa.ocupacao = Double.parseDouble(linha.get(17).replace(",", "."));
-        mapa.cxRota = Double.parseDouble(linha.get(18).replace(",", "."));
-        mapa.cxAs = Double.parseDouble(linha.get(19).replace(",", "."));
-        mapa.veicBM = Double.parseDouble(linha.get(20).replace(",", "."));
-        mapa.rShow = Integer.parseInt(linha.get(21));
-        mapa.entrVol = linha.get(22).replace(" ", "");
-        final Date hrSaida = toTimestamp(linha.get(23));
-        final Date hrEntrada = toTimestamp(linha.get(24));
+        mapa.tipoIndisp = Integer.parseInt(colunas.get(12));
+        mapa.mapa = Integer.parseInt(colunas.get(13));
+        mapa.entregas = Integer.parseInt(colunas.get(14));
+        mapa.cxCarreg = Double.parseDouble(colunas.get(15).replace(",", "."));
+        mapa.cxEntreg = Double.parseDouble(colunas.get(16).replace(",", "."));
+        mapa.ocupacao = Double.parseDouble(colunas.get(17).replace(",", "."));
+        mapa.cxRota = Double.parseDouble(colunas.get(18).replace(",", "."));
+        mapa.cxAs = Double.parseDouble(colunas.get(19).replace(",", "."));
+        mapa.veicBM = Double.parseDouble(colunas.get(20).replace(",", "."));
+        mapa.rShow = Integer.parseInt(colunas.get(21));
+        mapa.entrVol = colunas.get(22).replace(" ", "");
+        final Date hrSaida = toTimestamp(colunas.get(23));
+        final Date hrEntrada = toTimestamp(colunas.get(24));
         if (hrSaida == null && hrEntrada == null) {
             throw new IllegalStateException("Não é possível inserir um mapa que não tenha hrSaida e nem hrEntrada");
         } else if (hrSaida == null) {
@@ -591,135 +586,135 @@ public class MapaDaoImpl extends DatabaseConnection implements MapaDao {
             mapa.hrSai = hrSaida;
             mapa.hrEntr = hrEntrada;
         }
-        mapa.kmSai = Integer.parseInt(linha.get(25));
-        mapa.kmEntr = Integer.parseInt(linha.get(26));
-        mapa.custoVariavel = Double.parseDouble(linha.get(27).replace(",", "."));
-        mapa.lucro = Double.parseDouble(linha.get(28).replace(",", "."));
-        mapa.lucroUnit = Double.parseDouble(linha.get(29).replace(",", "."));
-        mapa.valorFrete = Double.parseDouble(linha.get(30).replace(",", "."));
-        mapa.tipoImposto = linha.get(31).replace(" ", "");
-        mapa.percImposto = Double.parseDouble(linha.get(32).replace(",", "."));
-        mapa.valorImposto = Double.parseDouble(linha.get(33).replace(",", "."));
-        mapa.valorFaturado = Double.parseDouble(linha.get(34).replace(",", "."));
-        mapa.valorUnitCxEntregue = Double.parseDouble(linha.get(35).replace(",", "."));
-        mapa.valorPgCxEntregSemImp = Double.parseDouble(linha.get(36).replace(",", "."));
-        mapa.valorPgCxEntregComImp = Double.parseDouble(linha.get(37).replace(",", "."));
+        mapa.kmSai = Integer.parseInt(colunas.get(25));
+        mapa.kmEntr = Integer.parseInt(colunas.get(26));
+        mapa.custoVariavel = Double.parseDouble(colunas.get(27).replace(",", "."));
+        mapa.lucro = Double.parseDouble(colunas.get(28).replace(",", "."));
+        mapa.lucroUnit = Double.parseDouble(colunas.get(29).replace(",", "."));
+        mapa.valorFrete = Double.parseDouble(colunas.get(30).replace(",", "."));
+        mapa.tipoImposto = colunas.get(31).replace(" ", "");
+        mapa.percImposto = Double.parseDouble(colunas.get(32).replace(",", "."));
+        mapa.valorImposto = Double.parseDouble(colunas.get(33).replace(",", "."));
+        mapa.valorFaturado = Double.parseDouble(colunas.get(34).replace(",", "."));
+        mapa.valorUnitCxEntregue = Double.parseDouble(colunas.get(35).replace(",", "."));
+        mapa.valorPgCxEntregSemImp = Double.parseDouble(colunas.get(36).replace(",", "."));
+        mapa.valorPgCxEntregComImp = Double.parseDouble(colunas.get(37).replace(",", "."));
         // realizar replace de " " e " ' " por vazio
-        mapa.tempoPrevistoRoad = toTime(linha.get(38));
-        mapa.kmPrevistoRoad = Double.parseDouble(linha.get(39).replace(",", "."));
-        mapa.valorUnitPontoMot = Double.parseDouble(linha.get(40).replace(",", "."));
-        mapa.valorUnitPontoAjd = Double.parseDouble(linha.get(41).replace(",", "."));
-        mapa.valorEquipeEntrMot = Double.parseDouble(linha.get(42).replace(",", "."));
-        mapa.valorEquipeEntrAjd = Double.parseDouble(linha.get(43).replace(",", "."));
-        mapa.custoVLC = Double.parseDouble(linha.get(44).replace(",", "."));
-        mapa.lucroUnitCEDBZ = Double.parseDouble(linha.get(45).replace(",", "."));
-        mapa.CustoVlcCxEntr = Double.parseDouble(linha.get(46).replace(",", "."));
-        if (linha.get(47).trim().isEmpty()) {
+        mapa.tempoPrevistoRoad = toTime(colunas.get(38));
+        mapa.kmPrevistoRoad = Double.parseDouble(colunas.get(39).replace(",", "."));
+        mapa.valorUnitPontoMot = Double.parseDouble(colunas.get(40).replace(",", "."));
+        mapa.valorUnitPontoAjd = Double.parseDouble(colunas.get(41).replace(",", "."));
+        mapa.valorEquipeEntrMot = Double.parseDouble(colunas.get(42).replace(",", "."));
+        mapa.valorEquipeEntrAjd = Double.parseDouble(colunas.get(43).replace(",", "."));
+        mapa.custoVLC = Double.parseDouble(colunas.get(44).replace(",", "."));
+        mapa.lucroUnitCEDBZ = Double.parseDouble(colunas.get(45).replace(",", "."));
+        mapa.CustoVlcCxEntr = Double.parseDouble(colunas.get(46).replace(",", "."));
+        if (colunas.get(47).trim().isEmpty()) {
             mapa.tempoInterno = EMPTY_TIME;
         } else {
-            mapa.tempoInterno = toTime(linha.get(47));
+            mapa.tempoInterno = toTime(colunas.get(47));
         }
-        mapa.valorDropDown = Double.parseDouble(linha.get(48).replace(",", "."));
-        mapa.veicCadDD = linha.get(49).replace(" ", "");
-        mapa.kmLaco = Double.parseDouble(linha.get(50).replace(",", "."));
-        mapa.kmDeslocamento = Double.parseDouble(linha.get(51).replace(",", "."));
+        mapa.valorDropDown = Double.parseDouble(colunas.get(48).replace(",", "."));
+        mapa.veicCadDD = colunas.get(49).replace(" ", "");
+        mapa.kmLaco = Double.parseDouble(colunas.get(50).replace(",", "."));
+        mapa.kmDeslocamento = Double.parseDouble(colunas.get(51).replace(",", "."));
         // Fazer replace.
-        mapa.tempoLaco = toTime(linha.get(52));
+        mapa.tempoLaco = toTime(colunas.get(52));
         // Fazer replace.
-        mapa.tempoDeslocamento = toTime(linha.get(53));
-        mapa.sitMultiCDD = Double.parseDouble(linha.get(54).replace(",", "."));
-        mapa.unbOrigem = Integer.parseInt(linha.get(55));
-        mapa.matricMotorista = StringUtils.isNullOrEmpty(linha.get(56)) ? MATRICULA_DEFAULT : Integer.parseInt(linha.get(56));
-        mapa.matricAjud1 = StringUtils.isNullOrEmpty(linha.get(57)) ? MATRICULA_DEFAULT : Integer.parseInt(linha.get(57));
-        mapa.matricAjud2 = StringUtils.isNullOrEmpty(linha.get(58)) ? MATRICULA_DEFAULT : Integer.parseInt(linha.get(58));
-        mapa.valorCTEDifere = linha.get(59).replace(" ", "");
-        mapa.qtNfCarregadas = Integer.parseInt(linha.get(60));
-        mapa.qtNfEntregues = Integer.parseInt(linha.get(61));
-        mapa.indDevCx = Double.parseDouble(linha.get(62).replace(",", "."));
-        mapa.indDevNf = Double.parseDouble(linha.get(63).replace(",", "."));
-        mapa.fator = parseOrDefaultIfEmpty(linha.get(64), 1);
+        mapa.tempoDeslocamento = toTime(colunas.get(53));
+        mapa.sitMultiCDD = Double.parseDouble(colunas.get(54).replace(",", "."));
+        mapa.unbOrigem = Integer.parseInt(colunas.get(55));
+        mapa.matricMotorista = StringUtils.isNullOrEmpty(colunas.get(56)) ? MATRICULA_DEFAULT : Integer.parseInt(colunas.get(56));
+        mapa.matricAjud1 = StringUtils.isNullOrEmpty(colunas.get(57)) ? MATRICULA_DEFAULT : Integer.parseInt(colunas.get(57));
+        mapa.matricAjud2 = StringUtils.isNullOrEmpty(colunas.get(58)) ? MATRICULA_DEFAULT : Integer.parseInt(colunas.get(58));
+        mapa.valorCTEDifere = colunas.get(59).replace(" ", "");
+        mapa.qtNfCarregadas = Integer.parseInt(colunas.get(60));
+        mapa.qtNfEntregues = Integer.parseInt(colunas.get(61));
+        mapa.indDevCx = Double.parseDouble(colunas.get(62).replace(",", "."));
+        mapa.indDevNf = Double.parseDouble(colunas.get(63).replace(",", "."));
+        mapa.fator = parseOrDefaultIfEmpty(colunas.get(64), 1);
         // Se o fator existir e for 0, setamos para 1 para evitar que alguns cálculos que dividem por fator acabem
         // quebrando.
         if (mapa.fator == 0) {
             mapa.fator = 1;
         }
-        mapa.recarga = linha.get(65).replace(" ", "");
-        mapa.hrMatinal = toTime(linha.get(66));
-        mapa.hrJornadaLiq = toTime(linha.get(67));
-        if (linha.get(68).equals("0")) {
+        mapa.recarga = colunas.get(65).replace(" ", "");
+        mapa.hrMatinal = toTime(colunas.get(66));
+        mapa.hrJornadaLiq = toTime(colunas.get(67));
+        if (colunas.get(68).equals("0")) {
             mapa.hrMetaJornada = new Time(0);
         } else {
-            mapa.hrMetaJornada = toTime(linha.get(68));
+            mapa.hrMetaJornada = toTime(colunas.get(68));
         }
-        mapa.vlBateuJornMot = parseOrDefaultIfEmpty(linha.get(69), 0);
-        mapa.vlNaoBateuJornMot = parseOrDefaultIfEmpty(linha.get(70), 0);
-        mapa.vlRecargaMot = parseOrDefaultIfEmpty(linha.get(71), 0);
-        mapa.vlBateuJornAju = parseOrDefaultIfEmpty(linha.get(72), 0);
-        mapa.vlNaoBateuJornAju = parseOrDefaultIfEmpty(linha.get(73), 0);
-        mapa.vlRecargaAju = parseOrDefaultIfEmpty(linha.get(74), 0);
-        mapa.vlTotalMapa = parseOrDefaultIfEmpty(linha.get(75), 0);
-        mapa.qtHlCarregados = Double.parseDouble(linha.get(76).replace(",", "."));
-        mapa.qtHlEntregues = Double.parseDouble(linha.get(77).replace(",", "."));
-        mapa.indiceDevHl = Double.parseDouble(linha.get(78).replace(",", "."));
-        mapa.regiao2 = linha.get(79).replace(" ", "");
-        mapa.qtNfCarregGeral = Integer.parseInt(linha.get(80));
-        mapa.qtNfEntregGeral = Integer.parseInt(linha.get(81));
-        mapa.capacidadeVeiculoKg = Double.parseDouble(linha.get(82).replace(",", "."));
-        mapa.pesoCargaKg = Double.parseDouble(linha.get(83).replace(",", "."));
-        mapa.capacVeiculoCx = Integer.parseInt(linha.get(84));
-        mapa.entregasCompletas = Integer.parseInt(linha.get(85));
-        mapa.entregasParciais = Integer.parseInt(linha.get(86));
-        mapa.entregasNaoRealizadas = Integer.parseInt(linha.get(87));
-        mapa.codFilial = Integer.parseInt(linha.get(88));
-        mapa.nomeFilial = linha.get(89);
-        mapa.codSupervTrs = Integer.parseInt(linha.get(90));
-        mapa.nomeSupervTrs = linha.get(91);
-        mapa.codSpot = Integer.parseInt(linha.get(92));
-        mapa.nomeSpot = linha.get(93);
-        mapa.equipCarregados = Integer.parseInt(linha.get(94));
-        mapa.equipDevolvidos = Integer.parseInt(linha.get(95));
-        mapa.equipRecolhidos = Integer.parseInt(linha.get(96));
-        mapa.cxEntregTracking = Double.parseDouble(linha.get(97).replace(",", "."));
-        mapa.hrCarreg = toTimestamp(linha.get(98));
-        mapa.hrPCFisica = toTimestamp(linha.get(99));
-        mapa.hrPCFinanceira = toTimestamp(linha.get(100));
-        mapa.stMapa = linha.get(101);
-        mapa.classificacaoRoadShow = linha.get(102);
-        if (!linha.get(103).isEmpty()) {
-            mapa.dataEntrega = toDate(linha.get(103));
+        mapa.vlBateuJornMot = parseOrDefaultIfEmpty(colunas.get(69), 0);
+        mapa.vlNaoBateuJornMot = parseOrDefaultIfEmpty(colunas.get(70), 0);
+        mapa.vlRecargaMot = parseOrDefaultIfEmpty(colunas.get(71), 0);
+        mapa.vlBateuJornAju = parseOrDefaultIfEmpty(colunas.get(72), 0);
+        mapa.vlNaoBateuJornAju = parseOrDefaultIfEmpty(colunas.get(73), 0);
+        mapa.vlRecargaAju = parseOrDefaultIfEmpty(colunas.get(74), 0);
+        mapa.vlTotalMapa = parseOrDefaultIfEmpty(colunas.get(75), 0);
+        mapa.qtHlCarregados = Double.parseDouble(colunas.get(76).replace(",", "."));
+        mapa.qtHlEntregues = Double.parseDouble(colunas.get(77).replace(",", "."));
+        mapa.indiceDevHl = Double.parseDouble(colunas.get(78).replace(",", "."));
+        mapa.regiao2 = colunas.get(79).replace(" ", "");
+        mapa.qtNfCarregGeral = Integer.parseInt(colunas.get(80));
+        mapa.qtNfEntregGeral = Integer.parseInt(colunas.get(81));
+        mapa.capacidadeVeiculoKg = Double.parseDouble(colunas.get(82).replace(",", "."));
+        mapa.pesoCargaKg = Double.parseDouble(colunas.get(83).replace(",", "."));
+        mapa.capacVeiculoCx = Integer.parseInt(colunas.get(84));
+        mapa.entregasCompletas = Integer.parseInt(colunas.get(85));
+        mapa.entregasParciais = Integer.parseInt(colunas.get(86));
+        mapa.entregasNaoRealizadas = Integer.parseInt(colunas.get(87));
+        mapa.codFilial = Integer.parseInt(colunas.get(88));
+        mapa.nomeFilial = colunas.get(89);
+        mapa.codSupervTrs = Integer.parseInt(colunas.get(90));
+        mapa.nomeSupervTrs = colunas.get(91);
+        mapa.codSpot = Integer.parseInt(colunas.get(92));
+        mapa.nomeSpot = colunas.get(93);
+        mapa.equipCarregados = Integer.parseInt(colunas.get(94));
+        mapa.equipDevolvidos = Integer.parseInt(colunas.get(95));
+        mapa.equipRecolhidos = Integer.parseInt(colunas.get(96));
+        mapa.cxEntregTracking = Double.parseDouble(colunas.get(97).replace(",", "."));
+        mapa.hrCarreg = toTimestamp(colunas.get(98));
+        mapa.hrPCFisica = toTimestamp(colunas.get(99));
+        mapa.hrPCFinanceira = toTimestamp(colunas.get(100));
+        mapa.stMapa = colunas.get(101);
+        if (!colunas.get(102).isEmpty()) {
+            mapa.dataEntrega = toDate(colunas.get(102));
         } else {
             mapa.dataEntrega = null;
         }
-        mapa.qtdEntregasCarregRv = Integer.parseInt(linha.get(104));
-        mapa.qtdEntregasEntregRv = Integer.parseInt(linha.get(105));
-        mapa.indiceDevEntregas = Double.parseDouble(linha.get(106).replace(",", "."));
-        if (!linha.get(107).trim().isEmpty()) {
-            mapa.cpfMotorista = Long.valueOf(linha.get(107).trim());
+        mapa.qtdEntregasCarregRv = Integer.parseInt(colunas.get(103));
+        mapa.qtdEntregasEntregRv = Integer.parseInt(colunas.get(104));
+        mapa.indiceDevEntregas = Double.parseDouble(colunas.get(105).replace(",", "."));
+        if (!colunas.get(106).trim().isEmpty()) {
+            mapa.cpfMotorista = Long.valueOf(colunas.get(106).trim());
         } else {
             mapa.cpfMotorista = null;
         }
-        if (!linha.get(108).trim().isEmpty()) {
-            mapa.cpfAjudante1 = Long.valueOf(linha.get(108).trim());
+        if (!colunas.get(107).trim().isEmpty()) {
+            mapa.cpfAjudante1 = Long.valueOf(colunas.get(107).trim());
         } else {
             mapa.cpfAjudante1 = null;
         }
-        if (!linha.get(109).trim().isEmpty()) {
-            mapa.cpfAjudante2 = Long.valueOf(linha.get(109));
+        if (!colunas.get(108).trim().isEmpty()) {
+            mapa.cpfAjudante2 = Long.valueOf(colunas.get(108));
         } else {
             mapa.cpfAjudante2 = null;
         }
-        if (!linha.get(110).isEmpty()) {
-            mapa.inicioRota = toTimestamp(linha.get(110));
+        if (!colunas.get(109).isEmpty()) {
+            mapa.inicioRota = toTimestamp(colunas.get(109));
         } else {
             mapa.inicioRota = null;
         }
-        if (!linha.get(111).isEmpty()) {
-            mapa.terminoRota = toTimestamp(linha.get(111));
+        if (!colunas.get(110).isEmpty()) {
+            mapa.terminoRota = toTimestamp(colunas.get(110));
         } else {
             mapa.terminoRota = null;
         }
-        mapa.motoristaJt12x36 = linha.get(112);
-        mapa.retira = linha.get(113);
+        mapa.motoristaJt12x36 = colunas.get(111);
+        mapa.retira = colunas.get(112);
+        mapa.classificacaoRoadShow = colunas.get(113);
         return mapa;
     }
 
