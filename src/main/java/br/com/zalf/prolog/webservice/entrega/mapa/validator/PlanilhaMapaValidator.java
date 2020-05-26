@@ -17,12 +17,20 @@ import java.util.Optional;
  */
 public final class PlanilhaMapaValidator {
     private static final int INDEX_COLUNA_DATA = 0;
+    @NotNull
+    private final RegrasValidacaoPlanilhaMapa regrasValidacao;
     @Nullable
     private List<CelulaPlanilhaMapaErro> errors;
 
-    public Optional<List<CelulaPlanilhaMapaErro>> findErrors(@NotNull final List<String[]> planilhaMapa,
-                                                             @NotNull final RegrasValidacaoPlanilhaMapa mapa) {
-        final Map<Integer, ColunaPlanilhaMapa> campos = mapa.getColunas();
+    public PlanilhaMapaValidator(@NotNull final RegrasValidacaoPlanilhaMapa regrasValidacao) {
+        this.regrasValidacao = regrasValidacao;
+    }
+
+    @NotNull
+    public Optional<List<CelulaPlanilhaMapaErro>> findErrors(@NotNull final List<String[]> planilhaMapa) {
+        clearErrors();
+
+        final Map<Integer, ColunaPlanilhaMapa> campos = regrasValidacao.getColunas();
         for (int i = 0; i < planilhaMapa.size(); i++) {
             final String[] row = planilhaMapa.get(i);
 
@@ -49,6 +57,32 @@ public final class PlanilhaMapaValidator {
         return Optional.ofNullable(errors);
     }
 
+    public int getTotalColunasObrigatorias() {
+        return (int) regrasValidacao
+                .getColunas()
+                .entrySet()
+                .stream()
+                .filter(entry -> entry.getValue().isColunaObrigatoria())
+                .count();
+    }
+
+    public int getTotalColunasQueNaoSaoTexto() {
+        return (int) regrasValidacao
+                .getColunas()
+                .entrySet()
+                .stream()
+                .filter(entry -> !entry.getValue().getPadraoPreenchimentoColuna().equals(PadraoPrenchimentoCampo.TEXTO))
+                .count();
+    }
+
+    public boolean isColunaTipoTexto(final int indexColuna) {
+        return regrasValidacao
+                .getColunas()
+                .get(indexColuna)
+                .getPadraoPreenchimentoColuna()
+                .equals(PadraoPrenchimentoCampo.TEXTO);
+    }
+
     private void addError(@NotNull final ColunaPlanilhaMapa campo,
                           @Nullable final String valorRecebido,
                           final int rowIndex) {
@@ -63,5 +97,11 @@ public final class PlanilhaMapaValidator {
                         rowIndex + 1),
                 StringUtils.isNullOrEmpty(valorRecebido) ? "valor não fornecido" : valorRecebido,
                 campo.getExemploPreenchimento()));
+    }
+
+    private void clearErrors() {
+        if (errors != null) {
+            errors.clear();
+        }
     }
 }

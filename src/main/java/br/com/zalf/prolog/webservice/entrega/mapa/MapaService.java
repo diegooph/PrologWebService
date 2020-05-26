@@ -28,9 +28,9 @@ public final class MapaService {
             final List<String[]> planilhaMapa = PlanilhaMapaReader.readFromCsv(inputStream);
 
             // Verifica se a planilha está com algum erro.
-            final Optional<List<CelulaPlanilhaMapaErro>> errors = new PlanilhaMapaValidator().findErrors(
-                    planilhaMapa,
-                    RegrasPlanilhaMapaLoader.getRegras());
+            final Optional<List<CelulaPlanilhaMapaErro>> errors =
+                    new PlanilhaMapaValidator(RegrasPlanilhaMapaLoader.getRegras())
+                            .findErrors(planilhaMapa);
             if (errors.isPresent()) {
                 return new ResponseErrorUploadMapa(errors.get());
             }

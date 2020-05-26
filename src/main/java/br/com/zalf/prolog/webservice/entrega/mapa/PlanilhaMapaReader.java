@@ -20,6 +20,7 @@ public final class PlanilhaMapaReader {
         settings.setDelimiterDetectionEnabled(true, ';', ',');
         settings.setHeaderExtractionEnabled(true);
         settings.setSkipEmptyLines(true);
+        settings.setLineSeparatorDetectionEnabled(true);
         final CsvParser parser = new CsvParser(settings);
         return parser.parseAll(inputStream);
     }
