@@ -20,6 +20,9 @@ public abstract class BaseIntegracaoService {
             if (!Injection.provideAutenticacaoIntegracaoDao().verifyIfTokenIntegracaoExists(tokenIntegracao)) {
                 throw new NotAuthorizedException("Token Integração não existe no banco de dados: " + tokenIntegracao);
             }
+            if (!Injection.provideAutenticacaoIntegracaoDao().verifyIfTokenIsActive(tokenIntegracao)) {
+                throw new NotAuthorizedException("O Token de Integração está desativado");
+            }
         } catch (final Throwable t) {
             Log.e(tag, String.format("Erro ao verificar se o tokenIntegracao existe: %s", tokenIntegracao), t);
             throw Injection

@@ -95,7 +95,9 @@ public final class VeiculoService {
             RouterVeiculo
                     .create(dao, userToken)
                     .updateStatus(codUnidade, placa, veiculo, Injection.provideDadosChecklistOfflineChangedListener());
-            return Response.ok("Status do veículo atualizado com sucesso");
+            return Response.ok(veiculo.isAtivo()
+                    ? "Veículo ativado com sucesso"
+                    : "Veículo inativado com sucesso");
         } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao atualizar o status do veículo:\n" +
                     "userToken: %s\n" +
@@ -114,7 +116,7 @@ public final class VeiculoService {
             RouterVeiculo
                     .create(dao, userToken)
                     .delete(placa, Injection.provideDadosChecklistOfflineChangedListener());
-            return Response.ok("Veículo deletado com sucesso");
+            return Response.ok("Veículo inativado com sucesso");
         } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao deletar o veículo\n" +
                     "userToken: %s" +

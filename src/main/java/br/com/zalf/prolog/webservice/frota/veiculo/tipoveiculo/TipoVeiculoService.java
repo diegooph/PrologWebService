@@ -30,7 +30,7 @@ public final class TipoVeiculoService {
             return ResponseWithCod.ok(
                     "Tipo de veículo inserido com sucesso",
                     codTipoVeiculoInserido);
-        } catch (@NotNull Throwable t) {
+        } catch (final Throwable t) {
             Log.e(TAG, "Erro ao inserir o tipo de veículo", t);
             throw Injection
                     .provideProLogExceptionHandler()
@@ -44,7 +44,7 @@ public final class TipoVeiculoService {
         try {
             RouterTipoVeiculo.create(dao, userToken).updateTipoVeiculo(tipoVeiculo);
             return Response.ok("Tipo de veículo atualizado com sucesso");
-        } catch (@NotNull final Throwable t) {
+        } catch (final Throwable t) {
             Log.e(TAG, "Erro ao atualizar o tipo de veículo", t);
             throw Injection
                     .provideProLogExceptionHandler()

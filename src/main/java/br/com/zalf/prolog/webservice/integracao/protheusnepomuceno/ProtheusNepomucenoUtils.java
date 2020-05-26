@@ -37,11 +37,11 @@ final class ProtheusNepomucenoUtils {
 
     static void validatePosicoesMapeadasVeiculo(@NotNull final String codEstruturaVeiculo,
                                                 @NotNull final List<String> posicoesPneusAplicados,
-                                                @NotNull final PosicaoPneuMapper posicaoPneuMapper) {
+                                                @NotNull final ProtheusNepomucenoPosicaoPneuMapper posicaoPneuMapper) {
         final List<String> posicaoNaoMapeadas =
                 posicoesPneusAplicados
                         .stream()
-                        .filter(posicao -> posicaoPneuMapper.mapToProLog(posicao) <= 0)
+                        .filter(posicao -> posicaoPneuMapper.mapPosicaoToProlog(posicao) == null)
                         .collect(Collectors.toList());
 
         if (!posicaoNaoMapeadas.isEmpty()) {

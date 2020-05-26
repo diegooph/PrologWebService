@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.nomenclatura;
 
+import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.frota.pneu.nomenclatura._model.PneuNomenclaturaCadastro;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
+import static br.com.zalf.prolog.webservice.commons.util.StatementUtils.bindValueOrNull;
 import static br.com.zalf.prolog.webservice.database.DatabaseConnection.close;
 import static br.com.zalf.prolog.webservice.database.DatabaseConnection.getConnection;
 
@@ -41,14 +43,15 @@ public final class PneuNomenclaturaDaoImpl implements PneuNomenclaturaDao {
             // Antes de inserir, deleta a nomenclatura cadastrada dos estepes.
             // Fazemos isso pois a nomenclatura para estepes pode ser removida no Sistema Web.
             deletaNomenclaturaEstepes(conn,
-                                      pneuNomenclaturaCadastro.getCodEmpresa(),
-                                      pneuNomenclaturaCadastro.getCodDiagrama());
+                    pneuNomenclaturaCadastro.getCodEmpresa(),
+                    pneuNomenclaturaCadastro.getCodDiagrama());
 
             stmt = conn.prepareCall("{CALL FUNC_PNEU_NOMENCLATURA_INSERE_EDITA_NOMENCLATURA(" +
                     "F_COD_EMPRESA                := ?, " +
                     "F_COD_DIAGRAMA               := ?, " +
                     "F_POSICAO_PROLOG             := ?, " +
                     "F_NOMENCLATURA               := ?," +
+                    "F_COD_AUXILIAR               := ?," +
                     "F_TOKEN_RESPONSAVEL_INSERCAO := ?," +
                     "F_DATA_HORA_CADASTRO         := ?)}");
             final List<PneuNomenclaturaItemCadastro> nomenclaturas = pneuNomenclaturaCadastro.getNomenclaturas();
@@ -57,8 +60,9 @@ public final class PneuNomenclaturaDaoImpl implements PneuNomenclaturaDao {
                 stmt.setLong(2, pneuNomenclaturaCadastro.getCodDiagrama());
                 stmt.setLong(3, nomenclaturaItem.getPosicaoProLog());
                 stmt.setString(4, StringUtils.trimToNull(nomenclaturaItem.getNomenclatura()));
-                stmt.setString(5, userToken);
-                stmt.setObject(6, Now.offsetDateTimeUtc());
+                bindValueOrNull(stmt, 5, StringUtils.trimToNull(nomenclaturaItem.getCodAuxiliar()), SqlType.TEXT);
+                stmt.setString(6, userToken);
+                stmt.setObject(7, Now.offsetDateTimeUtc());
                 stmt.addBatch();
             }
             final int[] batchResult = stmt.executeBatch();

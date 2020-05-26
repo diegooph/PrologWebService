@@ -36,10 +36,19 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
             stmt.setString(2, recursoIntegrado.getKey());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
+                // Se a chave do sistema é null, significa que o usuário não tem integração, não precisamos validar mais
+                // nada, apenas retornamos.
+                if (rSet.getString("CHAVE_SISTEMA") == null) {
+                    return null;
+                }
                 if (!rSet.getBoolean("EXISTE_TOKEN")) {
                     throw new Exception("Token não existe ou não é válido para a execução da funcionalidade");
-                } else if (rSet.getString("CHAVE_SISTEMA") == null) {
-                    return null;
+                }
+                if (!rSet.getBoolean("TOKEN_ATIVO")) {
+                    throw new Exception("O Token está desativado");
+                }
+                if (!rSet.getBoolean("RECURSO_INTEGRADO_ATIVO")) {
+                    throw new Exception("O recurso integrado " + recursoIntegrado + " está desativado");
                 }
                 return SistemaKey.fromString(rSet.getString("CHAVE_SISTEMA"));
             } else {
@@ -58,7 +67,6 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
     @Override
     public String getTokenIntegracaoByCodUnidadeProLog(@NotNull final Long codUnidadeProLog) throws Throwable {
         Preconditions.checkNotNull(codUnidadeProLog, "codUnidadeProLog não pode ser null!");
-
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
