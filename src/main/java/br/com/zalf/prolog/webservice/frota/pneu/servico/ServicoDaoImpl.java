@@ -7,7 +7,9 @@ import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.pneu.PneuDao;
+import br.com.zalf.prolog.webservice.frota.pneu._model.Restricao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.FormaColetaDadosAfericaoEnum;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.MovimentacaoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.Movimentacao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.ProcessoMovimentacao;
@@ -30,6 +32,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -154,38 +157,46 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
     @NotNull
     @Override
     public ServicoHolder getServicoHolder(@NotNull final String placa, @NotNull final Long codUnidade) throws Throwable {
-        final ServicoHolder holder = new ServicoHolder();
-        holder.setPlacaVeiculo(placa);
+        Connection conn = null;
+        try {
+            conn = getConnection();
 
-        final List<Servico> servicos = getServicosAbertosByPlaca(placa, null);
-        holder.setServicos(servicos);
-        //  Se não existirem serviços para a placa buscada, nada mais será setado no Holder.
-        if (!servicos.isEmpty()) {
-            Log.d(TAG, "Existem serviços para a placa: " + placa);
-            final AfericaoDao afericaoDao = Injection.provideAfericaoDao();
-            holder.setRestricao(afericaoDao.getRestricoesByPlaca(placa));
-            if (contains(servicos, TipoServico.INSPECAO)) {
-                Log.d(TAG, "Contém inspeção");
-                holder.setAlternativasInspecao(getAlternativasInspecao());
+            final List<Servico> servicos = internalGetServicosAbertosByPlaca(conn, placa, null);
+            //  Se não existirem serviços para a placa buscada, nada mais será setado no Holder.
+            Restricao restricao = null;
+            FormaColetaDadosAfericaoEnum formaColetaDadosAfericaoEnum = null;
+            List<Alternativa> alternativasInspecao = null;
+            if (!servicos.isEmpty()) {
+                Log.d(TAG, "Existem serviços para a placa: " + placa);
+                final AfericaoDao afericaoDao = Injection.provideAfericaoDao();
+                restricao = afericaoDao.getRestricaoByCodUnidade(conn, codUnidade);
+                formaColetaDadosAfericaoEnum = getFormaColetaDadosFechamentoServico(conn, placa);
+                if (contains(servicos, TipoServico.INSPECAO)) {
+                    Log.d(TAG, "Contém inspeção");
+                    alternativasInspecao = getAlternativasInspecao(conn);
+                }
             }
-        }
 
-        return holder;
+            return new ServicoHolder(
+                    placa,
+                    servicos,
+                    restricao,
+                    formaColetaDadosAfericaoEnum,
+                    alternativasInspecao);
+        } finally {
+            close(conn);
+        }
     }
 
     @Override
     public List<Servico> getServicosAbertosByPlaca(@NotNull final String placa,
                                                    @Nullable final TipoServico tipoServico) throws SQLException {
         Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = ServicoQueryBinder.getServicosAbertosByPlaca(conn, placa, tipoServico);
-            rSet = stmt.executeQuery();
-            return ServicoConverter.createServicos(rSet);
+            return internalGetServicosAbertosByPlaca(conn, placa, tipoServico);
         } finally {
-            close(conn, stmt, rSet);
+            close(conn);
         }
     }
 
@@ -455,6 +466,46 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
     }
 
     @NotNull
+    private FormaColetaDadosAfericaoEnum getFormaColetaDadosFechamentoServico(@NotNull final Connection conn,
+                                                                              @NotNull final String placa)
+            throws SQLException {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = conn.prepareStatement("select " +
+                    "actav.forma_coleta_dados_fechamento_servico " +
+                    "from afericao_configuracao_tipo_afericao_veiculo actav " +
+                    "join veiculo v on actav.cod_tipo_veiculo = v.cod_tipo " +
+                    "where v.placa = ?;");
+            stmt.setString(1, placa);
+            rSet = stmt.executeQuery();
+            if (rSet.next() && rSet.isLast()) {
+                return FormaColetaDadosAfericaoEnum.fromString(rSet.getString(1));
+            } else {
+                throw new IllegalStateException("Erro ao buscar forma de coleta dos dados de fechamento de serviço " +
+                        "para a placa: " + placa);
+            }
+        } finally {
+            close(stmt, rSet);
+        }
+    }
+
+    @NotNull
+    private List<Servico> internalGetServicosAbertosByPlaca(@NotNull final Connection conn,
+                                                            @NotNull final String placa,
+                                                            @Nullable final TipoServico tipoServico) throws SQLException {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = ServicoQueryBinder.getServicosAbertosByPlaca(conn, placa, tipoServico);
+            rSet = stmt.executeQuery();
+            return ServicoConverter.createServicos(rSet);
+        } finally {
+            close(stmt, rSet);
+        }
+    }
+
+    @NotNull
     private ProcessoMovimentacao convertServicoToProcessoMovimentacao(@NotNull final Long codUnidade,
                                                                       @NotNull final ServicoMovimentacao servico) {
         final Veiculo veiculo = new Veiculo();
@@ -512,25 +563,26 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
     }
 
     @NotNull
-    private List<Alternativa> getAlternativasInspecao() throws SQLException {
-        Connection conn = null;
+    private List<Alternativa> getAlternativasInspecao(@NotNull final Connection conn) throws SQLException {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        final List<Alternativa> alternativas = new ArrayList<>();
         try {
-            conn = getConnection();
             stmt = ServicoQueryBinder.getAlternativasInspecao(conn);
             rSet = stmt.executeQuery();
-            while (rSet.next()) {
-                final AlternativaChecklist alternativa = new AlternativaChecklist();
-                alternativa.codigo = rSet.getLong("CODIGO");
-                alternativa.alternativa = rSet.getString("ALTERNATIVA");
-                alternativas.add(alternativa);
+            if (rSet.next()) {
+                final List<Alternativa> alternativas = new ArrayList<>();
+                do {
+                    final AlternativaChecklist alternativa = new AlternativaChecklist();
+                    alternativa.codigo = rSet.getLong("CODIGO");
+                    alternativa.alternativa = rSet.getString("ALTERNATIVA");
+                    alternativas.add(alternativa);
+                } while (rSet.next());
+                return alternativas;
             }
         } finally {
-            close(conn, stmt, rSet);
+            close(stmt, rSet);
         }
-        return alternativas;
+        return Collections.emptyList();
     }
 
     private void fechaCalibragem(@NotNull final Connection conn,

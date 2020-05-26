@@ -195,6 +195,26 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         }
     }
 
+    @Override
+    @NotNull
+    public Restricao getRestricaoByCodUnidade(@NotNull final Connection conn,
+                                              @NotNull final Long codUnidade) throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_AFERICAO_GET_RESTRICAO_BY_UNIDADE(?);");
+            stmt.setLong(1, codUnidade);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return createRestricao(rSet);
+            } else {
+                throw new Throwable("Dados de restrição não encontrados para a unidade: " + codUnidade);
+            }
+        } finally {
+            close(stmt, rSet);
+        }
+    }
+
     @NotNull
     @Override
     public Restricao getRestricoesByPlaca(@NotNull final String placa) throws Throwable {
@@ -452,25 +472,6 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             return getConfiguracaoNovaAfericaoPlaca(conn, placa);
         } finally {
             close(conn);
-        }
-    }
-
-    @NotNull
-    private Restricao getRestricaoByCodUnidade(@NotNull final Connection conn,
-                                               @NotNull final Long codUnidade) throws Throwable {
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_AFERICAO_GET_RESTRICAO_BY_UNIDADE(?);");
-            stmt.setLong(1, codUnidade);
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                return createRestricao(rSet);
-            } else {
-                throw new Throwable("Dados de restrição não encontrados para a unidade: " + codUnidade);
-            }
-        } finally {
-            close(stmt, rSet);
         }
     }
 
