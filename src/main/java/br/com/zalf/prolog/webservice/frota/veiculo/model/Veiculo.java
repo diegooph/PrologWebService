@@ -20,6 +20,7 @@ public class Veiculo {
     private Marca marca;
     private ModeloVeiculo modelo;
     private TipoVeiculo tipo;
+    private String identificadorFrota;
 
     /**
      * Depreciado em 22/05/2017. O aplicativo utilizava esse campo nessa época para desenhar o veículo na tela.
@@ -133,6 +134,14 @@ public class Veiculo {
         this.tipo = tipo;
     }
 
+    public String getIdentificadorFrota() {
+        return identificadorFrota;
+    }
+
+    public void setIdentificadorFrota(final String identificadorFrota) {
+        this.identificadorFrota = identificadorFrota;
+    }
+
     public Eixos getEixos() {
         return eixos;
     }
@@ -186,6 +195,7 @@ public class Veiculo {
         return "Veiculo{" +
                 "codigo=" + codigo +
                 ", placa='" + placa + '\'' +
+                ", identificadorFrota=" + identificadorFrota +
                 ", marca=" + marca +
                 ", modelo=" + modelo +
                 ", tipo=" + tipo +

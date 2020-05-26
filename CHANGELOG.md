@@ -25,6 +25,10 @@ Change Log
 ### Bugfix
 * Corrige problema de parse de data na sincronia de checklist (PLI-146)
 * Corrige uso do codUnidade no método de atualização de veiculo (PLI-129)
+## Version [v1.0.30](https://github.com/luizfp/PrologWebService/compare/v1.0.29...v1.0.30) (release-date) [unreleased]
+### Features
+* Adiciona número de frota ao veículo (PL-827)
+* Adiciona número de frota ao import de veículo (PL-827) 
 
 <a name="v1.0.29"></a>
 ## Version [v1.0.29](https://github.com/luizfp/PrologWebService/compare/v1.0.28...v1.0.29) (2020-04-28)
