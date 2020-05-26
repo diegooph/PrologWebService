@@ -933,3 +933,13 @@ colunas:
     padraoPreenchimentoColunaLegivel: 'Texto'
     regexValidacaoPadraoPreenchimento: '.*'
     exemploPreenchimento: 'Padrao ou Integracao'
+  114:
+    # Essa coluna nós nem salvamos no BD ainda, mas ela já vem no arquivo e colocamos aqui para cobrir os testes
+    # e deixar esse mapeamento completo.
+    nomeColunaPlanilha: 'Descr.J.Trabalho'
+    nomeColunaLegivel: 'Descr.J.Trabalho'
+    colunaObrigatoria: false
+    padraoPreenchimentoColuna: 'TEXTO'
+    padraoPreenchimentoColunaLegivel: 'Texto'
+    regexValidacaoPadraoPreenchimento: '.*'
+    exemploPreenchimento: 'Padrao'
