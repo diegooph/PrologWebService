@@ -4,6 +4,8 @@ Change Log
 <a name="v1.0.31"></a>
 ## Version [v1.0.31](https://github.com/luizfp/PrologWebService/compare/v1.0.30...v1.0.31) (release-date) [unreleased]
 
+### Bug Fixes
+* Corrige busca de modelos de quizzes para realização
 
 
 <a name="v1.0.30"></a>
