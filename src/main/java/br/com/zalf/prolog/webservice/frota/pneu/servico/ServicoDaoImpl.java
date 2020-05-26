@@ -475,7 +475,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
             stmt = conn.prepareStatement("select " +
                     "actav.forma_coleta_dados_fechamento_servico " +
                     "from afericao_configuracao_tipo_afericao_veiculo actav " +
-                    "join veiculo v on actav.cod_tipo_veiculo = v.cod_tipo " +
+                    "join veiculo v on actav.cod_tipo_veiculo = v.cod_tipo and actav.cod_unidade = v.cod_unidade " +
                     "where v.placa = ?;");
             stmt.setString(1, placa);
             rSet = stmt.executeQuery();
