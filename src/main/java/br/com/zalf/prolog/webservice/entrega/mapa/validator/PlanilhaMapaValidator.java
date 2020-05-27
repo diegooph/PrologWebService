@@ -35,7 +35,7 @@ public final class PlanilhaMapaValidator {
             final String[] row = planilhaMapa.get(i);
 
             // Se a coluna "Data" estiver nula ou vazia, a linha toda é invalida, podemos pular.
-            if (StringUtils.isNullOrEmpty(row[INDEX_COLUNA_DATA])) {
+            if (StringUtils.isNullOrEmpty(StringUtils.trimToNull(row[INDEX_COLUNA_DATA]))) {
                 continue;
             }
 
