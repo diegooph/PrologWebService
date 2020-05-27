@@ -15,8 +15,8 @@ public final class ResponseErrorUploadMapa extends AbstractResponse {
     private final List<CelulaPlanilhaMapaErro> errosUploadMapa;
 
     public ResponseErrorUploadMapa(@NotNull final List<CelulaPlanilhaMapaErro> errosUploadMapa) {
-        setMsg("A planilha de mapa contém erros.");
         setStatus(ERROR);
+        setMsg("A planilha de mapa contém erros.");
         this.errosUploadMapa = errosUploadMapa;
     }
 

@@ -48,13 +48,13 @@ public final class PlanilhaMapaImportTest extends BaseTest {
         final List<String[]> data = PlanilhaMapaReader.readFromCsv(stream);
 
         final PlanilhaMapaValidator validator = new PlanilhaMapaValidator(RegrasPlanilhaMapaLoader.getRegras());
+        // Não existe um motivo para o teste operar na linha 2 = data.get(1). Nem tudo na vida precisa de um por quê!
         final String[] columnsLinha2 = data.get(1);
         for (int i = 0; i < columnsLinha2.length; i++) {
             final String valorOriginal = columnsLinha2[i];
             columnsLinha2[i] = "-1";
             final Optional<List<CelulaPlanilhaMapaErro>> optional = validator.findErrors(data);
             assertThat(optional.isPresent()).isTrue();
-            //noinspection OptionalGetWithoutIsPresent
             final List<CelulaPlanilhaMapaErro> errors = optional.get();
             assertThat(errors).hasSize(validator.isColunaTipoTexto(i) ? 0 : 1);
             // Retorna o valor original
@@ -73,7 +73,6 @@ public final class PlanilhaMapaImportTest extends BaseTest {
         final PlanilhaMapaValidator validator = new PlanilhaMapaValidator(RegrasPlanilhaMapaLoader.getRegras());
         final Optional<List<CelulaPlanilhaMapaErro>> optional = validator.findErrors(data);
         assertThat(optional.isPresent()).isTrue();
-        //noinspection OptionalGetWithoutIsPresent
         final List<CelulaPlanilhaMapaErro> errors = optional.get();
         // Pegamos o total de colunas que não são TEXTO, pois essas colunas são as que irão falhar com "-1", as tipo
         // TEXTO aceitam qualquer coisa.

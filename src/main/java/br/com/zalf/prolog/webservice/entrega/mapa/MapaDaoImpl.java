@@ -29,8 +29,8 @@ public final class MapaDaoImpl extends DatabaseConnection implements MapaDao {
     }
 
     // TODO: Se um mapa tem sua equipe modificada, o verifyExists do mapa colaborador não é suficiente pra
-    // mapear, teremos que implementar outra verificação mais eficiente, caso constrário ao realizar o update,
-    // a equipe antiga continuará na tabela, recebendo por um mapa que não realizou.
+    //  mapear, teremos que implementar outra verificação mais eficiente, caso constrário ao realizar o update,
+    //  a equipe antiga continuará na tabela, recebendo por um mapa que não realizou.
     @Override
     public void insertOrUpdateMapa(@NotNull final Long codUnidade,
                                    @NotNull final List<String[]> planilhaMapa) throws Throwable {

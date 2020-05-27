@@ -18,7 +18,9 @@ import java.util.Optional;
  * Classe MapaService responsavel por comunicar-se com a interface DAO
  */
 public final class MapaService {
+    @NotNull
     private static final String TAG = MapaService.class.getSimpleName();
+    @NotNull
     private final MapaDao dao = Injection.provideMapaDao();
 
     @NotNull
@@ -29,8 +31,7 @@ public final class MapaService {
 
             // Verifica se a planilha está com algum erro.
             final Optional<List<CelulaPlanilhaMapaErro>> errors =
-                    new PlanilhaMapaValidator(RegrasPlanilhaMapaLoader.getRegras())
-                            .findErrors(planilhaMapa);
+                    new PlanilhaMapaValidator(RegrasPlanilhaMapaLoader.getRegras()).findErrors(planilhaMapa);
             if (errors.isPresent()) {
                 return new ResponseErrorUploadMapa(errors.get());
             }

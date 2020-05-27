@@ -35,8 +35,6 @@ public final class RegrasPlanilhaMapaLoader {
 
     @NotNull
     private static RegrasValidacaoPlanilhaMapa loadFromResource() {
-        return YamlUtils.parseFromResource(
-                NOME_ARQUIVO_MAPEAMENTO_PLANILHA_MAPA,
-                RegrasValidacaoPlanilhaMapa.class);
+        return YamlUtils.parseFromResource(NOME_ARQUIVO_MAPEAMENTO_PLANILHA_MAPA, RegrasValidacaoPlanilhaMapa.class);
     }
 }

@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.entrega.mapa.validator;
 
 import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.entrega.mapa._model.CelulaPlanilhaMapaErro;
+import com.google.common.annotations.VisibleForTesting;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -57,6 +58,7 @@ public final class PlanilhaMapaValidator {
         return Optional.ofNullable(errors);
     }
 
+    @VisibleForTesting
     public int getTotalColunasObrigatorias() {
         return (int) regrasValidacao
                 .getColunas()
@@ -66,6 +68,7 @@ public final class PlanilhaMapaValidator {
                 .count();
     }
 
+    @VisibleForTesting
     public int getTotalColunasQueNaoSaoTexto() {
         return (int) regrasValidacao
                 .getColunas()
@@ -75,6 +78,7 @@ public final class PlanilhaMapaValidator {
                 .count();
     }
 
+    @VisibleForTesting
     public boolean isColunaTipoTexto(final int indexColuna) {
         return regrasValidacao
                 .getColunas()
