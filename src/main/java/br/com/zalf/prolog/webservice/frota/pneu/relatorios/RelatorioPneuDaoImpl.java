@@ -140,14 +140,14 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
     }
 
     @Override
-    public void getKmRodadoPorPneuPorVidaCsv(@NotNull final OutputStream outputStream,
-                                             @NotNull final List<Long> codUnidades) throws Throwable {
+    public void getKmRodadoPorPneuPorVidaEmLinhasCsv(@NotNull final OutputStream outputStream,
+                                                     @NotNull final List<Long> codUnidades) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = getKmRodadoPorPneuPorVida(conn, codUnidades);
+            stmt = getKmRodadoPorPneuPorVidaEmLinhas(conn, codUnidades);
             rSet = stmt.executeQuery();
             new CsvWriter
                     .Builder(outputStream)
@@ -161,15 +161,61 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
 
     @NotNull
     @Override
-    public Report getKmRodadoPorPneuPorVidaReport(@NotNull final List<Long> codUnidades) throws Throwable {
+    public Report getKmRodadoPorPneuPorVidaEmLinhasReport(@NotNull final List<Long> codUnidades) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = getKmRodadoPorPneuPorVida(conn, codUnidades);
+            stmt = getKmRodadoPorPneuPorVidaEmLinhas(conn, codUnidades);
             rSet = stmt.executeQuery();
             return ReportTransformer.createReport(rSet);
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+    @Override
+    public void getKmRodadoPorPneuPorVidaEmColunasCsv(@NotNull final OutputStream outputStream,
+                                                      @NotNull final List<Long> codUnidades) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("select * from func_pneu_relatorio_km_rodado_por_vida_base(?);");
+            stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
+            rSet = stmt.executeQuery();
+            // Não retornar nada não é erro, as unidades filtradas podem não ter pneus.
+            if (rSet.next()) {
+                final List<PneuKmRodadoPorVida> vidasPneu = new ArrayList<>();
+                do {
+                    vidasPneu.add(new PneuKmRodadoPorVida(
+                            rSet.getString("unidade_alocado"),
+                            rSet.getLong("cod_pneu"),
+                            rSet.getString("cod_cliente_pneu"),
+                            rSet.getString("dimensao"),
+                            rSet.getString("marca"),
+                            rSet.getString("modelo"),
+                            rSet.getString("vida_pneu"),
+                            rSet.getString("valor_vida"),
+                            rSet.getString("km_rodado_vida"),
+                            rSet.getString("valor_por_km_vida"),
+                            rSet.getString("km_rodado_todas_vidas")));
+                } while (rSet.next());
+
+                new CsvWriter
+                        .Builder(outputStream)
+                        .withCsvReport(new RelatorioKmRodadoPorVidaEmColuna(vidasPneu))
+                        .build()
+                        .write();
+            } else {
+                new CsvWriter
+                        .Builder(outputStream)
+                        .withCsvReport(new RelatorioKmRodadoPorVidaEmColuna(Collections.emptyList()))
+                        .build()
+                        .write();
+            }
         } finally {
             close(conn, stmt, rSet);
         }
@@ -1119,7 +1165,6 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         return stmt;
     }
 
-
     @NotNull
     private PreparedStatement getFarolAfericaoStatement(@NotNull final Connection conn,
                                                         @NotNull final List<Long> codUnidades,
@@ -1146,9 +1191,11 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
     }
 
     @NotNull
-    private PreparedStatement getKmRodadoPorPneuPorVida(@NotNull final Connection conn,
-                                                        @NotNull final List<Long> codUnidades) throws SQLException {
-        final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_RELATORIO_KM_RODADO_POR_VIDA(?);");
+    private PreparedStatement getKmRodadoPorPneuPorVidaEmLinhas(
+            @NotNull final Connection conn,
+            @NotNull final List<Long> codUnidades) throws SQLException {
+        final PreparedStatement stmt =
+                conn.prepareStatement("select * from func_pneu_relatorio_km_rodado_por_vida_linhas(?);");
         stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
         return stmt;
     }

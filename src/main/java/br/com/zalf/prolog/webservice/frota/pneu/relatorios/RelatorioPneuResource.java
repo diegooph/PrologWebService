@@ -82,18 +82,28 @@ public class RelatorioPneuResource {
     }
 
     @GET
-    @Path("/km-rodado-por-pneu-por-vida/csv")
+    @Path("/km-rodado-por-pneu-por-vida-linhas/csv")
     @Produces("application/csv")
-    public StreamingOutput getKmRodadoPorPneuPorVidaCsv(
+    public StreamingOutput getKmRodadoPorPneuPorVidaEmLinhasCsv(
             @QueryParam("codUnidades") @Required final List<Long> codUnidades) {
-        return outputStream -> new RelatorioPneuService().getKmRodadoPorPneuPorVidaCsv(outputStream, codUnidades);
+        return outputStream ->
+                new RelatorioPneuService().getKmRodadoPorPneuPorVidaEmLinhasCsv(outputStream, codUnidades);
     }
 
     @GET
-    @Path("/km-rodado-por-pneu-por-vida/report")
-    public Report getKmRodadoPorPneuPorVidaReport(@QueryParam("codUnidades") @Required final List<Long> codUnidades)
-            throws ProLogException {
-        return new RelatorioPneuService().getKmRodadoPorPneuPorVidaReport(codUnidades);
+    @Path("/km-rodado-por-pneu-por-vida-linhas/report")
+    public Report getKmRodadoPorPneuPorVidaEmLinhasReport(
+            @QueryParam("codUnidades") @Required final List<Long> codUnidades) {
+        return new RelatorioPneuService().getKmRodadoPorPneuPorVidaEmLinhasReport(codUnidades);
+    }
+
+    @GET
+    @Path("/km-rodado-por-pneu-por-vida-colunas/csv")
+    @Produces("application/csv")
+    public StreamingOutput getKmRodadoPorPneuPorVidaEmColunasCsv(
+            @QueryParam("codUnidades") @Required final List<Long> codUnidades) {
+        return outputStream ->
+                new RelatorioPneuService().getKmRodadoPorPneuPorVidaEmColunasCsv(outputStream, codUnidades);
     }
 
     @GET

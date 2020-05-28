@@ -1,8 +1,11 @@
 Change Log
 ==========
 
+## Stage
 ### Features
 * Cria relatório de CPK por marca, modelo e dimensão de pneu (PL-2699)
+* Cria relatório de km rodado por vida de forma colunada (PL-2598)
+* Altera path de relatório de km rodado por vida em linhas (PL-2598)
 
 <a name="v1.0.31"></a>
 ## Version [v1.0.31](https://github.com/luizfp/PrologWebService/compare/v1.0.30...v1.0.31) (release-date) [unreleased]

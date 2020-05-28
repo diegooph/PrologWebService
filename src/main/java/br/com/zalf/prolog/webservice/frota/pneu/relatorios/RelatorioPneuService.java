@@ -105,26 +105,39 @@ public class RelatorioPneuService {
         }
     }
 
-    public void getKmRodadoPorPneuPorVidaCsv(@NotNull final OutputStream outputStream,
-                                             @NotNull final List<Long> codUnidades) {
+    public void getKmRodadoPorPneuPorVidaEmLinhasCsv(@NotNull final OutputStream outputStream,
+                                                     @NotNull final List<Long> codUnidades) {
         try {
-            dao.getKmRodadoPorPneuPorVidaCsv(outputStream, codUnidades);
+            dao.getKmRodadoPorPneuPorVidaEmLinhasCsv(outputStream, codUnidades);
         } catch (final Throwable throwable) {
-            Log.e(TAG, "Erro ao buscar o relatório de km percorrido por pneu por vida (CSV)", throwable);
-            throw new RuntimeException(throwable);
+            Log.e(TAG, "Erro ao buscar o relatório de km percorrido por vida em linhas (CSV)", throwable);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(throwable, "Erro ao gerar relatório, tente novamente");
         }
     }
 
     @NotNull
-    public Report getKmRodadoPorPneuPorVidaReport(@NotNull final List<Long> codUnidades) throws ProLogException {
+    public Report getKmRodadoPorPneuPorVidaEmLinhasReport(@NotNull final List<Long> codUnidades) {
         try {
-            return dao.getKmRodadoPorPneuPorVidaReport(codUnidades);
+            return dao.getKmRodadoPorPneuPorVidaEmLinhasReport(codUnidades);
         } catch (final Throwable throwable) {
-            Log.e(TAG, "Erro ao buscar o relatório de km percorrido por pneu por vida (REPORT)", throwable);
+            Log.e(TAG, "Erro ao buscar o relatório de km percorrido por vida em linhas (REPORT)", throwable);
             throw Injection
                     .provideProLogExceptionHandler()
-                    .map(throwable,
-                            "Erro ao gerar relatório, tente novamente");
+                    .map(throwable, "Erro ao gerar relatório, tente novamente");
+        }
+    }
+
+    public void getKmRodadoPorPneuPorVidaEmColunasCsv(@NotNull final OutputStream outputStream,
+                                                      @NotNull final List<Long> codUnidades) {
+        try {
+            dao.getKmRodadoPorPneuPorVidaEmColunasCsv(outputStream, codUnidades);
+        } catch (final Throwable throwable) {
+            Log.e(TAG, "Erro ao buscar o relatório de km percorrido por vida em colunas (CSV)", throwable);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(throwable, "Erro ao gerar relatório, tente novamente");
         }
     }
 
