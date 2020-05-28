@@ -77,7 +77,7 @@ public class ChecklistOfflineTest extends BaseTest {
 
         // TESTE DE CHECKLIST SEM DADOS UNIDADE.
         checklistOfflineSupport =
-                service.getChecklistOfflineSupport(10L,6L,false);
+                service.getChecklistOfflineSupport(10L, 6L, false);
 
         assertNotNull(checklistOfflineSupport);
         assertTrue(checklistOfflineSupport instanceof ChecklistOfflineSupportSemDados);
@@ -92,7 +92,7 @@ public class ChecklistOfflineTest extends BaseTest {
 
         // TESTE DE CHECKLIST ATUALIZACAO FORCADA - DESATUALIZADO.
         checklistOfflineSupport =
-                service.getChecklistOfflineSupport(9L,5L,true);
+                service.getChecklistOfflineSupport(9L, 5L, true);
 
         assertNotNull(checklistOfflineSupport);
         assertTrue(checklistOfflineSupport instanceof ChecklistOfflineSupportComDados);
@@ -122,7 +122,7 @@ public class ChecklistOfflineTest extends BaseTest {
 
         // TESTE DE CHECKLIST ATUALIZACAO FORCADA - ATUALIZADO.
         checklistOfflineSupport =
-                service.getChecklistOfflineSupport(10L,5L,true);
+                service.getChecklistOfflineSupport(10L, 5L, true);
 
         assertNotNull(checklistOfflineSupport);
         assertTrue(checklistOfflineSupport instanceof ChecklistOfflineSupportComDados);
@@ -154,23 +154,25 @@ public class ChecklistOfflineTest extends BaseTest {
     private ChecklistInsercao createChecklist() {
         return new ChecklistInsercao(
                 5L,
-        1L,
-        1L,
-        2272L,
-        3195L,
-        "PRO0001",
-        TipoChecklist.SAIDA,
-        0,
-        10000,
-        createRespostas(),
-        ProLogDateParser.toLocalDateTime("2019-03-30T00:26:10"),
-        FonteDataHora.LOCAL_CELULAR,
-        50,
-        53,
-        "device didID",
-        "deviceImei",
-        10000,
-        11000);
+                1L,
+                1L,
+                2272L,
+                3195L,
+                "PRO0001",
+                TipoChecklist.SAIDA,
+                0,
+                10000,
+                createRespostas(),
+                ProLogDateParser.toLocalDateTime("2019-03-30T00:26:10"),
+                FonteDataHora.LOCAL_CELULAR,
+                50,
+                53,
+                "device didID",
+                "deviceImei",
+                10000,
+                11000,
+                0,
+                0);
     }
 
     @NotNull

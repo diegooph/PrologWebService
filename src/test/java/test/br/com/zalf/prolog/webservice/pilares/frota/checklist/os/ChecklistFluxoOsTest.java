@@ -244,7 +244,9 @@ public class ChecklistFluxoOsTest extends BaseTest {
                 "device didID",
                 "deviceImei",
                 10000,
-                11000);
+                11000,
+                0,
+                0);
 
         final ChecklistService checklistService = new ChecklistService();
         final Long codChecklistInserido = checklistService.insert(token, insercao);
@@ -497,7 +499,9 @@ public class ChecklistFluxoOsTest extends BaseTest {
                 deviceId,
                 deviceImei,
                 deviceUptimeRealizacaoMillis,
-                deviceUptimeSincronizacaoMillis);
+                deviceUptimeSincronizacaoMillis,
+                0,
+                0);
 
         final ChecklistService checklistService = new ChecklistService();
         checklistService.insert(token, insercao);
@@ -586,7 +590,9 @@ public class ChecklistFluxoOsTest extends BaseTest {
                 deviceId,
                 deviceImei,
                 deviceUptimeRealizacaoMillis,
-                deviceUptimeSincronizacaoMillis);
+                deviceUptimeSincronizacaoMillis,
+                0,
+                0);
 
         final ChecklistService checklistServiceC2 = new ChecklistService();
         final Long codChecklistInseridoC2 = checklistServiceC2.insert(token, insercaoC2);
@@ -786,7 +792,9 @@ public class ChecklistFluxoOsTest extends BaseTest {
                 deviceId,
                 deviceImei,
                 deviceUptimeRealizacaoMillis,
-                deviceUptimeSincronizacaoMillis);
+                deviceUptimeSincronizacaoMillis,
+                0,
+                0);
 
         final ChecklistService checklistService = new ChecklistService();
         final Long codChecklistInserido = checklistService.insert(token, insercao);
@@ -876,7 +884,9 @@ public class ChecklistFluxoOsTest extends BaseTest {
                 deviceId,
                 deviceImei,
                 deviceUptimeRealizacaoMillis,
-                deviceUptimeSincronizacaoMillis);
+                deviceUptimeSincronizacaoMillis,
+                0,
+                0);
 
         final ChecklistService checklistServiceC2 = new ChecklistService();
         final Long codChecklistInseridoC2 = checklistServiceC2.insert(token, insercaoC2);

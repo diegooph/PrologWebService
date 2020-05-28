@@ -5,6 +5,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.FiltroRegionalUnidade
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
 import br.com.zalf.prolog.webservice.geral.unidade._model.Unidade;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,7 +28,7 @@ public interface ChecklistDao {
      * @param foiOffline  Indica se esse checklist foi realizado de forma offline.
      * @param deveAbrirOs Valor que indica se o checklist deve abrir Ordem de Serviço ou não.
      * @return código do checklist recém inserido.
-     * @throws SQLException caso não seja possível inserir o checklist no banco de dados
+     * @throws Throwable Caso qualquer erro ocorrer.
      */
     @NotNull
     Long insert(@NotNull final Connection conn,
@@ -39,16 +40,48 @@ public interface ChecklistDao {
      * Insere um checklist no BD salvando na tabela CHECKLIST e chamando métodos
      * especificos que salvam as respostas do map na tabela CHECKLIST_RESPOSTAS.
      *
-     * @param checklist um checklist
+     * @param checklist   um checklist
      * @param foiOffline  Indica se esse checklist foi realizado de forma offline.
      * @param deveAbrirOs Valor que indica se o checklist deve abrir Ordem de Serviço ou não.
      * @return código do checklist recém inserido
-     * @throws SQLException caso não seja possível inserir o checklist no banco de dados
+     * @throws Throwable Caso não seja possível inserir o checklist no banco de dados
      */
     @NotNull
     Long insert(@NotNull final ChecklistInsercao checklist,
                 final boolean foiOffline,
                 final boolean deveAbrirOs) throws Throwable;
+
+    /**
+     * Insere a imagem de um checklist realizado. Vinculando a {@code urlImagem} da imagem fornecida ao
+     * {@code codChecklist} e {@code codPergunta}.
+     *
+     * @param codChecklist código do checklist no qual a imagem foi capturada.
+     * @param codPergunta  código da pergunta na qual a imagem foi capturada.
+     * @param urlImagem    url da imagem que está sendo salva.
+     * @return código da imagem inserida.
+     * @throws Throwable caso algum erro aconteça.
+     */
+    @CanIgnoreReturnValue
+    @NotNull
+    Long insertImagemPerguntaChecklistRealizado(@NotNull final Long codChecklist,
+                                                @NotNull final Long codPergunta,
+                                                @NotNull final String urlImagem) throws Throwable;
+
+    /**
+     * Insere a imagem de um checklist realizado. Vinculando a {@code urlImagem} da imagem fornecida ao
+     * {@code codChecklist} e {@code codAlternativa}.
+     *
+     * @param codChecklist   código do checklist no qual a imagem foi capturada.
+     * @param codAlternativa código da alternativa na qual a imagem foi capturada.
+     * @param urlImagem      url da imagem que está sendo salva.
+     * @return código da imagem inserida.
+     * @throws Throwable caso algum erro aconteça.
+     */
+    @CanIgnoreReturnValue
+    @NotNull
+    Long insertImagemAlternativaChecklistRealizado(@NotNull final Long codChecklist,
+                                                   @NotNull final Long codAlternativa,
+                                                   @NotNull final String urlImagem) throws Throwable;
 
     /**
      * Busca um checklist pelo seu código único.

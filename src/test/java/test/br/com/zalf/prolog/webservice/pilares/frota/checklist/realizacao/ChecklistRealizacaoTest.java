@@ -2,6 +2,7 @@ package test.br.com.zalf.prolog.webservice.pilares.frota.checklist.realizacao;
 
 import br.com.zalf.prolog.webservice.commons.FonteDataHora;
 import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
+import br.com.zalf.prolog.webservice.commons.util.RandomUtils;
 import br.com.zalf.prolog.webservice.database.DatabaseManager;
 import br.com.zalf.prolog.webservice.frota.checklist.ChecklistService;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
@@ -53,7 +54,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public final class ChecklistRealizacaoTest extends BaseTest {
     private static final String CPF_TOKEN = "03383283194";
     // Token da unidade 5.
-    private static final String TOKEN_CHECK_OFF = "6jylp6yo2Cx5V1tgolZo0dMX5nHWyYP6IOs9UrxX4wdaxXHnJrcKVyrbmA9mjYs2";
+    private static final String TOKEN_CHECK_OFF = "token_check_off_teste_unidade_5";
     private ChecklistModeloService service;
     private String token;
 
@@ -232,7 +233,9 @@ public final class ChecklistRealizacaoTest extends BaseTest {
                 "device didID",
                 "deviceImei",
                 10000,
-                11000);
+                11000,
+                0,
+                0);
 
         final ChecklistService checklistService = new ChecklistService();
         final Long codChecklistInserido = checklistService.insert(token, insercao);
@@ -369,7 +372,7 @@ public final class ChecklistRealizacaoTest extends BaseTest {
         }
 
         final Long codUnidade = 5L;
-        final String nomeModelo = "$Teste Método$";
+        final String nomeModelo = "ModeloChecklist - " + RandomUtils.randomAlphanumeric(10);
         // 4 - Então inserimos o modelo.
         final ResultInsertModeloChecklist result =
                 service.insertModeloChecklist(
@@ -460,7 +463,9 @@ public final class ChecklistRealizacaoTest extends BaseTest {
                 "device didID",
                 "deviceImei",
                 10000,
-                11000);
+                11000,
+                0,
+                0);
 
         final ChecklistOfflineService checklistOfflineService = new ChecklistOfflineService();
         final Long codChecklistInserido = checklistOfflineService.insertChecklistOffline(

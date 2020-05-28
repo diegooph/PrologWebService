@@ -1,7 +1,11 @@
 package br.com.zalf.prolog.webservice.frota.checklist;
 
+import br.com.zalf.prolog.webservice.AmazonConstants;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
+import br.com.zalf.prolog.webservice.commons.imagens.FileFormatNotSupportException;
+import br.com.zalf.prolog.webservice.commons.imagens.ImagemProLog;
+import br.com.zalf.prolog.webservice.commons.imagens.UploadImageHelper;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
@@ -10,10 +14,15 @@ import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.FiltroRegionalUnidadeChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
+import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistUploadImagemRealizacao;
+import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.SuccessResponseChecklistUploadImagem;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.integracao.router.RouterChecklists;
+import org.apache.commons.io.FilenameUtils;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -37,6 +46,50 @@ public final class ChecklistService {
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao inserir checklist, tente novamente");
+        }
+    }
+
+    @NotNull
+    public SuccessResponseChecklistUploadImagem uploadImagemRealizacaoChecklist(
+            @NotNull final InputStream fileInputStream,
+            @NotNull final FormDataContentDisposition fileDetail,
+            @NotNull final ChecklistUploadImagemRealizacao imagem) {
+        try {
+            if ((imagem.getCodigoPergunta() == null) == (imagem.getCodigoAlternativa() == null)) {
+                throw new IllegalStateException("Apenas o código da pergunta OU da alternativa deve estar setado!\n" +
+                        "codPergunta: " + imagem.getCodigoPergunta() +
+                        "\ncodAlternativa: " + imagem.getCodigoAlternativa());
+            }
+
+            final String imageType = FilenameUtils.getExtension(fileDetail.getFileName());
+            final ImagemProLog imagemProlog = UploadImageHelper.uploadCompressedImagem(
+                    fileInputStream,
+                    AmazonConstants.BUCKET_CHECKLIST_REALIZACAO_IMAGENS,
+                    imageType);
+
+            if (imagem.getCodigoPergunta() != null) {
+                dao.insertImagemPerguntaChecklistRealizado(
+                        imagem.getCodigoChecklist(),
+                        imagem.getCodigoPergunta(),
+                        imagemProlog.getUrlImagem());
+            } else {
+                dao.insertImagemAlternativaChecklistRealizado(
+                        imagem.getCodigoChecklist(),
+                        imagem.getCodigoAlternativa(),
+                        imagemProlog.getUrlImagem());
+            }
+
+            return new SuccessResponseChecklistUploadImagem(imagemProlog.getUrlImagem());
+        } catch (final FileFormatNotSupportException e) {
+            Log.e(TAG, "Arquivo recebido não é uma imagem", e);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(e, "Erro ao processar imagem, tente novamente");
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao inserir a imagem", t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao salvar a imagem, tente novamente");
         }
     }
 
@@ -83,16 +136,16 @@ public final class ChecklistService {
         }
     }
 
-    public List<Checklist> getAll(Long codUnidade,
-                                  Long codEquipe,
-                                  Long codTipoVeiculo,
-                                  String placaVeiculo,
-                                  long dataInicial,
-                                  long dataFinal,
-                                  int limit,
-                                  long offset,
-                                  boolean resumido,
-                                  String userToken) {
+    public List<Checklist> getAll(final Long codUnidade,
+                                  final Long codEquipe,
+                                  final Long codTipoVeiculo,
+                                  final String placaVeiculo,
+                                  final long dataInicial,
+                                  final long dataFinal,
+                                  final int limit,
+                                  final long offset,
+                                  final boolean resumido,
+                                  final String userToken) {
         try {
             return RouterChecklists
                     .create(dao, userToken)
@@ -106,24 +159,24 @@ public final class ChecklistService {
         }
     }
 
-    public List<Checklist> getByColaborador(Long cpf, Long dataInicial, Long dataFinal, int limit, long offset,
-                                            boolean resumido, String userToken) {
+    public List<Checklist> getByColaborador(final Long cpf, final Long dataInicial, final Long dataFinal, final int limit, final long offset,
+                                            final boolean resumido, final String userToken) {
         try {
             return RouterChecklists
                     .create(dao, userToken)
                     .getChecklistsByColaborador(cpf, dataInicial, dataFinal, limit, offset, resumido);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             Log.e(TAG, "Erro ao buscar os checklists de um colaborador específico", e);
             throw new RuntimeException("Erro ao buscar checklists para o colaborador: " + cpf);
         }
     }
 
     @NotNull
-    public DeprecatedFarolChecklist getFarolChecklist(Long codUnidade,
-                                                      String dataInicial,
-                                                      String dataFinal,
-                                                      boolean itensCriticosRetroativos,
-                                                      String userToken) throws ProLogException {
+    public DeprecatedFarolChecklist getFarolChecklist(final Long codUnidade,
+                                                      final String dataInicial,
+                                                      final String dataFinal,
+                                                      final boolean itensCriticosRetroativos,
+                                                      final String userToken) throws ProLogException {
         return internalGetFarolChecklist(
                 codUnidade,
                 ProLogDateParser.toLocalDate(dataInicial),

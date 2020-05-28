@@ -2,6 +2,8 @@ Change Log
 ==========
 
 ### Features
+* Salva total de fotos que foram capturadas no processo de realização do checklist (PL-2708)
+* Cria método de upload de fotos capturadas no checklist para o S3 (PL-2710)
 * Adiciona possibilidade de parametrização de fotos no check no cadastro e edição de modelos (PL-1504)
 
 <a name="v1.0.30"></a>
