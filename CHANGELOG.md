@@ -3,16 +3,21 @@ Change Log
 
 ## Stage
 ### Features
+* Cria relatório de CPK por marca, modelo e dimensão de pneu (PL-2699)
 * Cria relatório de km rodado por vida de forma colunada (PL-2598)
 * Altera path de relatório de km rodado por vida em linhas (PL-2598)
-
 
 <a name="v1.0.31"></a>
 ## Version [v1.0.31](https://github.com/luizfp/PrologWebService/compare/v1.0.30...v1.0.31) (release-date) [unreleased]
 
-
+### Bug Fixes
+* Corrige busca de modelos de quizzes para realização
 
 <a name="v1.0.30"></a>
+## Version [v1.0.30](https://github.com/luizfp/PrologWebService/compare/v1.0.29...v1.0.30) (release-date) [unreleased]
+### Features
+* Adiciona número de frota ao veículo (PL-827)
+* Adiciona número de frota ao import de veículo (PL-827) 
 ## Version [v1.0.30](https://github.com/luizfp/PrologWebService/compare/v1.0.29...v1.0.30) (2020-05-19)
 
 ### Features

@@ -1014,6 +1014,26 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         }
     }
 
+    @Override
+    public void getCpkPorMarcaModeloDimensaomCsv(@NotNull final OutputStream out,
+                                                 @NotNull final List<Long> codUnidades) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = getCpkPorMarcaModeloDimensaomStmt(conn, codUnidades);
+            rSet = stmt.executeQuery();
+            new CsvWriter
+                    .Builder(out)
+                    .withResultSet(rSet)
+                    .build()
+                    .write();
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
     @NotNull
     private PreparedStatement getPneusComDesgasteIrregularStmt(@NotNull final Connection conn,
                                                                @NotNull final List<Long> codUnidades,
@@ -1158,6 +1178,15 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
         stmt.setObject(2, dataInicial);
         stmt.setObject(3, dataFinal);
+        return stmt;
+    }
+
+    @NotNull
+    private PreparedStatement getCpkPorMarcaModeloDimensaomStmt(@NotNull final Connection conn,
+                                                                @NotNull final List<Long> codUnidades) throws Throwable {
+        final PreparedStatement stmt = conn.prepareStatement(
+                "SELECT * FROM FUNC_PNEU_RELATORIO_CPK_MARCA_MODELO_DIMENSAO(F_COD_UNIDADES => ?);");
+        stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
         return stmt;
     }
 

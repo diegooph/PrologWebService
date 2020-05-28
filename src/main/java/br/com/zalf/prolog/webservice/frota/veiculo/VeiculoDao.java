@@ -71,14 +71,15 @@ public interface VeiculoDao {
                    @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable;
 
     /**
-     * Busca os veículos ativos de uma determinada unidade
+     * Busca os veículos de uma determinada unidade.
      *
-     * @param codUnidade um código
-     * @param ativos     indica se queremos buscar os veículos ativos ou não.
-     * @return lista de Veiculo
-     * @throws SQLException caso não seja possível realizar a busca
+     * @param codUnidade um código.
+     * @param somenteAtivos indica se queremos buscar somente por veículos ativos.
+     * @return lista de {@link VeiculoListagem}
+     * @throws Throwable caso não seja possível realizar a busca
      */
-    List<Veiculo> getVeiculosAtivosByUnidade(Long codUnidade, @Nullable Boolean ativos) throws SQLException;
+    List<VeiculoListagem> buscaVeiculosByUnidade(@NotNull final Long codUnidade,
+                                                 @Nullable final Boolean somenteAtivos) throws Throwable;
 
     /**
      * Busca os veículos ativos de uma determinada unidade
@@ -90,6 +91,16 @@ public interface VeiculoDao {
     List<Veiculo> getVeiculosAtivosByUnidadeByColaborador(Long cpf)
             throws SQLException;
 
+    /**
+     * Método para buscar um {@link VeiculoVisualizacao} através do {@code codVeiculo}.
+     *
+     * @param codVeiculo código do {@link VeiculoVisualizacao}.
+     * @return O {@link VeiculoVisualizacao} contendo as informações.
+     * @throws Throwable Caso aconteça algum erro no banco.
+     */
+    VeiculoVisualizacao buscaVeiculoByCodigo(@NotNull final Long codVeiculo) throws Throwable;
+
+    @Deprecated
     /**
      * Método para buscar um {@link Veiculo} através da {@code placa}.
      *
@@ -310,4 +321,15 @@ public interface VeiculoDao {
     @NotNull
     Long getCodVeiculoByPlaca(@NotNull final Connection conn,
                               @NotNull final String placaVeiculo) throws Throwable;
+
+    @Deprecated
+    /**
+     * Busca os veículos ativos de uma determinada unidade
+     *
+     * @param codUnidade um código
+     * @param ativos     indica se queremos buscar os veículos ativos ou não.
+     * @return lista de Veiculo
+     * @throws SQLException caso não seja possível realizar a busca
+     */
+    List<Veiculo> getVeiculosAtivosByUnidade(Long codUnidade, @Nullable Boolean ativos) throws SQLException;
 }

@@ -413,4 +413,16 @@ public class RelatorioPneuService {
             throw new RuntimeException(throwable);
         }
     }
+
+    public void getCpkPorMarcaModeloDimensaomCsv(@NotNull final OutputStream outputStream,
+                                                 @NotNull final List<Long> codUnidades) {
+        try {
+            dao.getCpkPorMarcaModeloDimensaomCsv(outputStream, codUnidades);
+        } catch (final Throwable throwable) {
+            Log.e(TAG, "Erro ao buscar o relatório de CPK por marca, modelo e dimensão (CSV)", throwable);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(throwable, "Erro ao gerar relatório, tente novamente");
+        }
+    }
 }

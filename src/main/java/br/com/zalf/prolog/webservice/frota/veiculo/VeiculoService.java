@@ -9,6 +9,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.integracao.router.RouterVeiculo;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -23,19 +24,32 @@ public final class VeiculoService {
     @NotNull
     private final VeiculoDao dao = Injection.provideVeiculoDao();
 
-    public List<Veiculo> getVeiculosAtivosByUnidade(String userToken, Long codUnidade, Boolean ativos) {
+    public List<VeiculoListagem> buscaVeiculosByUnidade(@NotNull final String userToken,
+                                                        @NotNull final Long codUnidade,
+                                                        @Nullable final Boolean somenteAtivos) throws ProLogException {
         try {
-            return RouterVeiculo
-                    .create(dao, userToken)
-                    .getVeiculosAtivosByUnidade(codUnidade, ativos);
-        } catch (Exception e) {
-            Log.e(TAG, String.format("Erro ao buscar os veículos ativos da unidade. \n" +
+            return dao.buscaVeiculosByUnidade(codUnidade, somenteAtivos);
+        } catch (Throwable e) {
+            Log.e(TAG, String.format("Erro ao buscar os veículos da unidade. \n" +
                     "Unidade: %d \n" +
                     "userToken: %s", codUnidade, userToken), e);
-            throw new RuntimeException("Erro ao buscar os veículos ativos da unidade: " + codUnidade);
+            throw new RuntimeException("Erro ao buscar os veículos da unidade: " + codUnidade);
         }
     }
 
+    public VeiculoVisualizacao buscaVeiculoByCodigo(@NotNull final String userToken,
+                                                    @NotNull final Long codVeiculo) throws ProLogException {
+        try {
+            return dao.buscaVeiculoByCodigo(codVeiculo);
+        } catch (Throwable t) {
+            Log.e(TAG, String.format("Erro ao buscar o veículo. \n" +
+                    "código: %s \n" +
+                    "userToken: %s", codVeiculo, userToken), t);
+            return null;
+        }
+    }
+
+    @Deprecated
     public Veiculo getVeiculoByPlaca(String userToken, String placa, boolean withPneus) {
         try {
             return RouterVeiculo
@@ -252,6 +266,20 @@ public final class VeiculoService {
                     "codUnidade: %d \n" +
                     "codModelo: %d", codUnidade, codModelo), e);
             return false;
+        }
+    }
+
+    @Deprecated
+    public List<Veiculo> getVeiculosAtivosByUnidade(String userToken, Long codUnidade, Boolean ativos) {
+        try {
+            return RouterVeiculo
+                    .create(dao, userToken)
+                    .getVeiculosAtivosByUnidade(codUnidade, ativos);
+        } catch (Exception e) {
+            Log.e(TAG, String.format("Erro ao buscar os veículos ativos da unidade. \n" +
+                    "Unidade: %d \n" +
+                    "userToken: %s", codUnidade, userToken), e);
+            throw new RuntimeException("Erro ao buscar os veículos ativos da unidade: " + codUnidade);
         }
     }
 }

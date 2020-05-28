@@ -317,6 +317,14 @@ public class RelatorioPneuResource {
         return new RelatorioPneuService().getVencimentoDotReport(codUnidades, userToken);
     }
 
+    @GET
+    @Path("/custo-por-km/csv")
+    @Produces("application/csv")
+    public StreamingOutput getCpkPorMarcaModeloDimensaomCsv(
+            @QueryParam("codUnidades") @Required final List<Long> codUnidades) {
+        return outputStream -> new RelatorioPneuService().getCpkPorMarcaModeloDimensaomCsv(outputStream, codUnidades);
+    }
+
     /**
      * @deprecated at 2018-06-18. Use {@link RelatorioPneuResource#getQtdPneusByFaixaSulco(List, List)} instead.
      */

@@ -7,7 +7,6 @@ import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.integracao.BaseIntegracaoService;
 import br.com.zalf.prolog.webservice.integracao.api.afericao._model.ApiPneuMedicaoRealizada;
-import br.com.zalf.prolog.webservice.integracao.praxio.IntegracaoPraxioService;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -46,7 +45,9 @@ public final class ApiAfericaoService extends BaseIntegracaoService {
             return dao.getAfericoesRealizadas(
                     tokenIntegracao,
                     codigoProcessoAfericao,
-                    ProLogDateParser.toLocalDateTime(dataHoraUltimaAtualizacaoUtc));
+                    isNullOrEmpty(trimToNull(dataHoraUltimaAtualizacaoUtc))
+                            ? null
+                            : ProLogDateParser.toLocalDateTime(dataHoraUltimaAtualizacaoUtc));
         } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao buscar as novas aferições da Integração\n" +
                             "tokenIntegracao: %s\n" +
