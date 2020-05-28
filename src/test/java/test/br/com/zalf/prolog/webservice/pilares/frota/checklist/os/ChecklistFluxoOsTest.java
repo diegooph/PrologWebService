@@ -16,6 +16,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistIns
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistResposta;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloService;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.AlternativaModeloChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.CapturaFotoChecklistEnum;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.ModeloChecklistEdicao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.PerguntaModeloChecklistEdicao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.AlternativaModeloChecklistInsercao;
@@ -62,6 +63,14 @@ public class ChecklistFluxoOsTest extends BaseTest {
     private ChecklistModeloService service;
     private String token;
 
+    @NotNull
+    private static List<PerguntaModeloChecklistEdicao> jsonToCollection(@NotNull final Gson gson,
+                                                                        @NotNull final String json) {
+        final Type type = new TypeToken<List<PerguntaModeloChecklistEdicao>>() {
+        }.getType();
+        return gson.fromJson(json, type);
+    }
+
     @Override
     @BeforeAll
     public void initialize() throws Throwable {
@@ -93,20 +102,23 @@ public class ChecklistFluxoOsTest extends BaseTest {
                     PrioridadeAlternativa.ALTA,
                     false,
                     1,
-                    false));
+                    false,
+                    CapturaFotoChecklistEnum.BLOQUEADO));
             // A2.
             alternativas.add(new AlternativaModeloChecklistInsercao(
                     "Outros",
                     PrioridadeAlternativa.CRITICA,
                     true,
                     2,
-                    true));
+                    true,
+                    CapturaFotoChecklistEnum.BLOQUEADO));
 
             perguntas.add(new PerguntaModeloChecklistInsercao(
                     "P1",
                     1L,
                     1,
                     true,
+                    CapturaFotoChecklistEnum.BLOQUEADO,
                     alternativas));
         }
 
@@ -120,20 +132,23 @@ public class ChecklistFluxoOsTest extends BaseTest {
                     PrioridadeAlternativa.ALTA,
                     false,
                     1,
-                    false));
+                    false,
+                    CapturaFotoChecklistEnum.BLOQUEADO));
             // B2.
             alternativas.add(new AlternativaModeloChecklistInsercao(
                     "Outros",
                     PrioridadeAlternativa.BAIXA,
                     true,
                     2,
-                    true));
+                    true,
+                    CapturaFotoChecklistEnum.BLOQUEADO));
 
             perguntas.add(new PerguntaModeloChecklistInsercao(
                     "P2",
                     null,
                     2,
                     false,
+                    CapturaFotoChecklistEnum.BLOQUEADO,
                     alternativas));
         }
 
@@ -336,20 +351,23 @@ public class ChecklistFluxoOsTest extends BaseTest {
                     PrioridadeAlternativa.ALTA,
                     false,
                     1,
-                    false));
+                    false,
+                    CapturaFotoChecklistEnum.BLOQUEADO));
             // A2.
             alternativas.add(new AlternativaModeloChecklistInsercao(
                     "Outros",
                     PrioridadeAlternativa.CRITICA,
                     true,
                     2,
-                    true));
+                    true,
+                    CapturaFotoChecklistEnum.BLOQUEADO));
 
             perguntas.add(new PerguntaModeloChecklistInsercao(
                     "P1",
                     1L,
                     1,
                     true,
+                    CapturaFotoChecklistEnum.BLOQUEADO,
                     alternativas));
         }
 
@@ -363,20 +381,23 @@ public class ChecklistFluxoOsTest extends BaseTest {
                     PrioridadeAlternativa.ALTA,
                     false,
                     1,
-                    false));
+                    false,
+                    CapturaFotoChecklistEnum.BLOQUEADO));
             // B2.
             alternativas.add(new AlternativaModeloChecklistInsercao(
                     "Outros",
                     PrioridadeAlternativa.BAIXA,
                     true,
                     2,
-                    true));
+                    true,
+                    CapturaFotoChecklistEnum.BLOQUEADO));
 
             perguntas.add(new PerguntaModeloChecklistInsercao(
                     "P2",
                     null,
                     2,
                     false,
+                    CapturaFotoChecklistEnum.BLOQUEADO,
                     alternativas));
         }
 
@@ -623,20 +644,23 @@ public class ChecklistFluxoOsTest extends BaseTest {
                     PrioridadeAlternativa.ALTA,
                     false,
                     1,
-                    false));
+                    false,
+                    CapturaFotoChecklistEnum.BLOQUEADO));
             // A2.
             alternativas.add(new AlternativaModeloChecklistInsercao(
                     "Outros",
                     PrioridadeAlternativa.CRITICA,
                     true,
                     2,
-                    true));
+                    true,
+                    CapturaFotoChecklistEnum.BLOQUEADO));
 
             perguntas.add(new PerguntaModeloChecklistInsercao(
                     "P1",
                     1L,
                     1,
                     true,
+                    CapturaFotoChecklistEnum.BLOQUEADO,
                     alternativas));
         }
 
@@ -650,20 +674,23 @@ public class ChecklistFluxoOsTest extends BaseTest {
                     PrioridadeAlternativa.ALTA,
                     false,
                     1,
-                    false));
+                    false,
+                    CapturaFotoChecklistEnum.BLOQUEADO));
             // B2.
             alternativas.add(new AlternativaModeloChecklistInsercao(
                     "Outros",
                     PrioridadeAlternativa.BAIXA,
                     true,
                     2,
-                    true));
+                    true,
+                    CapturaFotoChecklistEnum.BLOQUEADO));
 
             perguntas.add(new PerguntaModeloChecklistInsercao(
                     "P2",
                     null,
                     2,
                     false,
+                    CapturaFotoChecklistEnum.BLOQUEADO,
                     alternativas));
         }
 
@@ -924,14 +951,6 @@ public class ChecklistFluxoOsTest extends BaseTest {
         return jsonToCollection(
                 GsonUtils.getGson(),
                 GsonUtils.getGson().toJson(modeloBuscado.getPerguntas()));
-    }
-
-    @NotNull
-    private static List<PerguntaModeloChecklistEdicao> jsonToCollection(@NotNull final Gson gson,
-                                                                        @NotNull final String json) {
-        final Type type = new TypeToken<List<PerguntaModeloChecklistEdicao>>() {
-        }.getType();
-        return gson.fromJson(json, type);
     }
 
     @NotNull

@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.database.DatabaseManager;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
 import br.com.zalf.prolog.webservice.frota.checklist.model.TipoChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloService;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.CapturaFotoChecklistEnum;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.AlternativaModeloChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ModeloChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.PerguntaModeloChecklistInsercao;
@@ -39,6 +40,7 @@ public class ModeloChecklistRealizacaoTest extends BaseTest {
     private ChecklistModeloService service;
     private String token;
 
+    @Override
     @BeforeAll
     public void initialize() throws Throwable {
         DatabaseManager.init();
@@ -46,6 +48,7 @@ public class ModeloChecklistRealizacaoTest extends BaseTest {
         service = new ChecklistModeloService();
     }
 
+    @Override
     @AfterAll
     public void destroy() {
         DatabaseManager.finish();
@@ -65,12 +68,14 @@ public class ModeloChecklistRealizacaoTest extends BaseTest {
                     PrioridadeAlternativa.CRITICA,
                     true,
                     1,
-                    true));
+                    true,
+                    CapturaFotoChecklistEnum.BLOQUEADO));
             perguntas.add(new PerguntaModeloChecklistInsercao(
                     "P1",
                     1L,
                     1,
                     true,
+                    CapturaFotoChecklistEnum.BLOQUEADO,
                     alternativas));
         }
 
@@ -84,7 +89,8 @@ public class ModeloChecklistRealizacaoTest extends BaseTest {
                     PrioridadeAlternativa.ALTA,
                     false,
                     1,
-                    true));
+                    true,
+                    CapturaFotoChecklistEnum.BLOQUEADO));
 
             // B2
             alternativas.add(new AlternativaModeloChecklistInsercao(
@@ -92,12 +98,14 @@ public class ModeloChecklistRealizacaoTest extends BaseTest {
                     PrioridadeAlternativa.BAIXA,
                     true,
                     2,
-                    false));
+                    false,
+                    CapturaFotoChecklistEnum.BLOQUEADO));
             perguntas.add(new PerguntaModeloChecklistInsercao(
                     "P2",
                     null,
                     2,
                     false,
+                    CapturaFotoChecklistEnum.BLOQUEADO,
                     alternativas));
         }
 

@@ -5,6 +5,7 @@ import br.com.zalf.prolog.webservice.commons.util.NullIf;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.CapturaFotoChecklistEnum;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.ModeloChecklistListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.realizacao.*;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.visualizacao.AlternativaModeloChecklistVisualizacao;
@@ -147,6 +148,7 @@ public final class ChecklistModeloConverter {
                 rSet.getString("URL_IMAGEM"),
                 rSet.getInt("ORDEM_PERGUNTA"),
                 rSet.getBoolean("SINGLE_CHOICE"),
+                CapturaFotoChecklistEnum.fromString(rSet.getString("CAPTURA_FOTOS_RESPOSTA_OK_PERGUNTA")),
                 alternativas);
     }
 
@@ -160,7 +162,8 @@ public final class ChecklistModeloConverter {
                 PrioridadeAlternativa.fromString(rSet.getString("PRIORIDADE")),
                 rSet.getBoolean("ALTERNATIVA_TIPO_OUTROS"),
                 rSet.getInt("ORDEM_ALTERNATIVA"),
-                rSet.getBoolean("DEVE_ABRIR_ORDEM_SERVICO"));
+                rSet.getBoolean("DEVE_ABRIR_ORDEM_SERVICO"),
+                CapturaFotoChecklistEnum.fromString(rSet.getString("CAPTURA_FOTOS_ALTERNATIVA")));
     }
 
     @NotNull
