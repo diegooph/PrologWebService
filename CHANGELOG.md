@@ -20,6 +20,7 @@ Change Log
 
 ### Bug Fixes
 * Corrige busca de modelos de quizzes para realização
+* Corrige mensagem de erro ao tentar iniciar uma nova aferição de placa ou avulsa
 
 <a name="v1.0.30"></a>
 ## Version [v1.0.30](https://github.com/luizfp/PrologWebService/compare/v1.0.29...v1.0.30) (2020-05-19)
