@@ -1,14 +1,5 @@
 Change Log
 ==========
-### Features
-* Permite parametrização de aferições e fechamento de serviço manuais, com equipamentos ou ambos (PL-2689)
-* Permite salvar forma de coleta de dados da aferição (PL-2686)
-* Permite salvar forma de coleta de dados no fechamento de serviços (PL-2714)
-* Busca a forma de coleta dos dados para os serviços fechados (PL-2715)
-
-## Refactors
-* Refatora objetos que utilizam booleans podeAferirSulco, Pressao e SulcoPressao para não utilizar ou serem adaptados (PL-2689)
-* Refatora relatórios e objetos de aferição para retornar também a forma de coleta dos dados (PL-2684)
 
 <a name="v1.0.31"></a>
 ## Version [v1.0.31](https://github.com/luizfp/PrologWebService/compare/v1.0.30...v1.0.31) (release-date) [unreleased]
@@ -18,6 +9,15 @@ Change Log
 * Cria relatório de km rodado por vida de forma colunada (PL-2598)
 * Altera path de relatório de km rodado por vida em linhas (PL-2598)
 * Remove FKs de import de veículo e pneu (PL-2711)
+* Permite parametrização de aferições e fechamento de serviço manuais, com equipamentos ou ambos (PL-2689)
+* Permite salvar forma de coleta de dados da aferição (PL-2686)
+* Permite salvar forma de coleta de dados no fechamento de serviços (PL-2714)
+* Busca a forma de coleta dos dados para os serviços fechados (PL-2715)
+
+## Refactors
+* Refatora objetos que utilizam booleans podeAferirSulco, Pressao e SulcoPressao para não utilizar ou serem adaptados (PL-2689)
+* Refatora relatórios e objetos de aferição para retornar também a forma de coleta dos dados (PL-2684)
+
 ### Bug Fixes
 * Corrige busca de modelos de quizzes para realização
 
