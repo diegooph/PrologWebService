@@ -39,15 +39,17 @@ public final class PneuConferenciaDaoImpl implements PneuConferenciaDao {
             stmt = conn.prepareStatement("SELECT * FROM IMPLANTACAO.FUNC_PNEU_INSERE_PLANILHA_IMPORTACAO(" +
                     "F_COD_DADOS_AUTOR_IMPORT := ?," +
                     "F_NOME_TABELA_IMPORT := ?," +
+                    "F_COD_EMPRESA   := ?," +
                     "F_COD_UNIDADE   := ?," +
                     "F_JSON_PNEUS := ?);");
             stmt.setLong(1, conferenciaDadosTabelaImport.getCodDadosAutorImport());
             stmt.setString(2, conferenciaDadosTabelaImport.getNomeTabelaImport());
-            stmt.setLong(3, codUnidade);
+            stmt.setLong(3, codEmpresa);
+            stmt.setLong(4, codUnidade);
             final PGobject json = new PGobject();
             json.setType("jsonb");
             json.setValue(jsonPlanilha);
-            stmt.setObject(4, json);
+            stmt.setObject(5, json);
             rSet = stmt.executeQuery();
         } finally {
             close(conn, stmt, rSet);
