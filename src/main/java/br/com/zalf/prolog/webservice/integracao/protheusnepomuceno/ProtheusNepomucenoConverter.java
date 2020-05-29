@@ -128,9 +128,9 @@ public final class ProtheusNepomucenoConverter {
 
         final InfosTipoVeiculoConfiguracaoAfericao infosTipoVeiculoConfiguracaoAfericao =
                 tipoVeiculoConfiguracao.get(veiculo.getCodEstruturaVeiculo());
-        placaAfericao.setPodeAferirSulco(infosTipoVeiculoConfiguracaoAfericao.isPodeAferirSulco());
-        placaAfericao.setPodeAferirPressao(infosTipoVeiculoConfiguracaoAfericao.isPodeAferirPressao());
-        placaAfericao.setPodeAferirSulcoPressao(infosTipoVeiculoConfiguracaoAfericao.isPodeAferirSulcoPressao());
+        placaAfericao.setFormaColetaDadosSulco(infosTipoVeiculoConfiguracaoAfericao.getFormaColetaDadosSulco());
+        placaAfericao.setFormaColetaDadosPressao(infosTipoVeiculoConfiguracaoAfericao.getFormaColetaDadosPressao());
+        placaAfericao.setFormaColetaDadosSulcoPressao(infosTipoVeiculoConfiguracaoAfericao.getFormaColetaDadosSulcoPressao());
         placaAfericao.setPodeAferirEstepe(infosTipoVeiculoConfiguracaoAfericao.isPodeAferirEstepes());
 
         final InfosUnidadeRestricao infosUnidadeRestricao = unidadeRestricao.get(veiculo.getCodEmpresaFilialVeiculo());

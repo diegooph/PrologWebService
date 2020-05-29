@@ -1,7 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model;
 
 import br.com.zalf.prolog.webservice.commons.util.NullIf;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
@@ -69,24 +68,27 @@ public final class ConfiguracaoConverter {
     }
 
     @NotNull
-    public static ConfiguracaoTipoVeiculoAferivel createConfiguracaoTipoVeiculoAfericao(
+    public static ConfiguracaoTipoVeiculoAferivelListagem createConfiguracaoTipoVeiculoAfericaoListagem(
             @NotNull final ResultSet rSet) throws Throwable {
-        final ConfiguracaoTipoVeiculoAferivel config = new ConfiguracaoTipoVeiculoAferivel();
-        config.setCodigo(NullIf.equalOrLess(rSet.getLong("COD_CONFIGURACAO"), 0));
-        config.setCodUnidade(NullIf.equalOrLess(rSet.getLong("COD_UNIDADE_CONFIGURACAO"), 0));
-        config.setTipoVeiculo(createTipoVeiculo(rSet));
-        config.setPodeAferirSulco(rSet.getBoolean("PODE_AFERIR_SULCO"));
-        config.setPodeAferirPressao(rSet.getBoolean("PODE_AFERIR_PRESSAO"));
-        config.setPodeAferirSulcoPressao(rSet.getBoolean("PODE_AFERIR_SULCO_PRESSAO"));
-        config.setPodeAferirEstepe(rSet.getBoolean("PODE_AFERIR_ESTEPE"));
-        return config;
+        return new ConfiguracaoTipoVeiculoAferivelListagem(
+                NullIf.equalOrLess(rSet.getLong("COD_CONFIGURACAO"), 0L),
+                rSet.getLong("COD_UNIDADE_CONFIGURACAO"),
+                createConfiguracaoTipoVeiculoAfericaoVeiculoVisualizacao(rSet),
+                rSet.getBoolean("PODE_AFERIR_ESTEPE"),
+                FormaColetaDadosAfericaoEnum.fromString(rSet.getString("FORMA_COLETA_DADOS_PRESSAO")),
+                rSet.getString("FORMA_COLETA_DADOS_PRESSAO_LEGIVEL"),
+                FormaColetaDadosAfericaoEnum.fromString(rSet.getString("FORMA_COLETA_DADOS_SULCO")),
+                rSet.getString("FORMA_COLETA_DADOS_SULCO_LEGIVEL"),
+                FormaColetaDadosAfericaoEnum.fromString(rSet.getString("FORMA_COLETA_DADOS_SULCO_PRESSAO")),
+                rSet.getString("FORMA_COLETA_DADOS_SULCO_PRESSAO_LEGIVEL"),
+                FormaColetaDadosAfericaoEnum.fromString(rSet.getString("FORMA_COLETA_DADOS_FECHAMENTO_SERVICO")),
+                rSet.getString("FORMA_COLETA_DADOS_FECHAMENTO_SERVICO_LEGIVEL"));
     }
 
     @NotNull
-    private static TipoVeiculo createTipoVeiculo(@NotNull final ResultSet rSet) throws Throwable {
-        final TipoVeiculo tipoVeiculo = new TipoVeiculo();
-        tipoVeiculo.setCodigo(rSet.getLong("COD_TIPO_VEICULO"));
-        tipoVeiculo.setNome(rSet.getString("NOME_TIPO_VEICULO"));
-        return tipoVeiculo;
+    private static ConfiguracaoTipoVeiculoAferivelVeiculoVisualizacao createConfiguracaoTipoVeiculoAfericaoVeiculoVisualizacao(
+            @NotNull final ResultSet rSet) throws Throwable {
+        return new ConfiguracaoTipoVeiculoAferivelVeiculoVisualizacao(rSet.getLong("COD_TIPO_VEICULO"),
+                rSet.getString("NOME_TIPO_VEICULO"));
     }
 }
