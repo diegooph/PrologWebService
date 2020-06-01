@@ -1593,7 +1593,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                         p1.getCodImagem(),
                         p1.getOrdemExibicao(),
                         p1.isSingleChoice(),
-                        CapturaFotoChecklistEnum.LIBERADO,
+                        CapturaFotoChecklistEnum.OBRIGATORIO,
                         p1.getAlternativas()
                                 .stream()
                                 .map(a -> new AlternativaModeloChecklistEdicaoAtualiza(
@@ -1633,7 +1633,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             // 'Farol' está com captura de fotos diferente.
             assertThat(p1Depois.getDescricao()).isEqualTo("Farol");
             assertThat(p1Antes.getCapturaFotosRespostaOk()).isEqualTo(CapturaFotoChecklistEnum.BLOQUEADO);
-            assertThat(p1Depois.getCapturaFotosRespostaOk()).isEqualTo(CapturaFotoChecklistEnum.LIBERADO);
+            assertThat(p1Depois.getCapturaFotosRespostaOk()).isEqualTo(CapturaFotoChecklistEnum.OBRIGATORIO);
         }
         {
             // P2.
@@ -1674,7 +1674,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                 a1.isTipoOutros(),
                 a1.getOrdemExibicao(),
                 a1.isDeveAbrirOrdemServico(),
-                CapturaFotoChecklistEnum.LIBERADO));
+                CapturaFotoChecklistEnum.OBRIGATORIO));
         final List<Long> cargos = getCodigosCargos(original);
         final List<Long> tiposVeiculo = getCodigosTiposVeiculos(original);
         final ModeloChecklistEdicao editado = createModeloEdicao(original, perguntas, cargos, tiposVeiculo);
@@ -1705,7 +1705,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             assertThat(a1Antes.getDescricao()).isEqualTo("Fora de foco");
             assertThat(a1Antes.getDescricao()).isEqualTo(a1Depois.getDescricao());
             assertThat(a1Antes.getCapturaFotos()).isEqualTo(CapturaFotoChecklistEnum.BLOQUEADO);
-            assertThat(a1Depois.getCapturaFotos()).isEqualTo(CapturaFotoChecklistEnum.LIBERADO);
+            assertThat(a1Depois.getCapturaFotos()).isEqualTo(CapturaFotoChecklistEnum.OBRIGATORIO);
         }
     }
 

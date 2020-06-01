@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
  */
 public enum CapturaFotoChecklistEnum {
     BLOQUEADO("BLOQUEADO"),
-    LIBERADO("LIBERADO"),
+    OBRIGATORIO("OBRIGATORIO"),
     OPCIONAL("OPCIONAL");
 
     @NotNull
