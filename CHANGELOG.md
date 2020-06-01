@@ -19,6 +19,7 @@ Change Log
 ## Refactors
 * Refatora objetos que utilizam booleans podeAferirSulco, Pressao e SulcoPressao para não utilizar ou serem adaptados (PL-2689)
 * Refatora relatórios e objetos de aferição para retornar também a forma de coleta dos dados (PL-2684)
+* Altera vída máxima no cadastro/edição de pneu para 11
 
 ### Bug Fixes
 * Corrige busca de modelos de quizzes para realização
