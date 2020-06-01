@@ -16,6 +16,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.TipoChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistAlternativaResposta;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistResposta;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.CapturaFotoChecklistEnum;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.realizacao.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
@@ -120,7 +121,8 @@ public final class ChecklistMigracaoEstruturaSuporte {
                             a.getAlternativa(),
                             a.isTipoOutros(),
                             a.getOrdemExibicao(),
-                            a.getPrioridade()))
+                            a.getPrioridade(),
+                            CapturaFotoChecklistEnum.BLOQUEADO))
                     .collect(Collectors.toList());
             perguntas.add(new PerguntaRealizacaoChecklist(
                     pAntiga.getCodigo(),
@@ -129,6 +131,7 @@ public final class ChecklistMigracaoEstruturaSuporte {
                     pAntiga.getUrl(),
                     pAntiga.getOrdemExibicao(),
                     pAntiga.isSingleChoice(),
+                    CapturaFotoChecklistEnum.BLOQUEADO,
                     alternativas));
         }
 

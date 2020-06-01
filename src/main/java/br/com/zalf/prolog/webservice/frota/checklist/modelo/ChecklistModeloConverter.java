@@ -72,7 +72,8 @@ public final class ChecklistModeloConverter {
                 rSet.getString("DESCRICAO_ALTERNATIVA"),
                 rSet.getBoolean("TIPO_OUTROS"),
                 rSet.getInt("ALTERNATIVA_ORDEM_EXIBICAO"),
-                PrioridadeAlternativa.fromString(rSet.getString("PRIORIDADE_ALTERNATIVA")));
+                PrioridadeAlternativa.fromString(rSet.getString("PRIORIDADE_ALTERNATIVA")),
+                CapturaFotoChecklistEnum.fromString(rSet.getString("CAPTURA_FOTOS_ALTERNATIVA")));
     }
 
     @NotNull
@@ -86,6 +87,7 @@ public final class ChecklistModeloConverter {
                 rSet.getString("URL_IMAGEM"),
                 rSet.getInt("PERGUNTA_ORDEM_EXIBICAO"),
                 rSet.getBoolean("SINGLE_CHOICE"),
+                CapturaFotoChecklistEnum.fromString(rSet.getString("CAPTURA_FOTOS_RESPOSTA_OK_PERGUNTA")),
                 alternativas);
     }
 
