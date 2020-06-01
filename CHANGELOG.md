@@ -13,6 +13,8 @@ Change Log
 * Permite salvar forma de coleta de dados da aferição (PL-2686)
 * Permite salvar forma de coleta de dados no fechamento de serviços (PL-2714)
 * Busca a forma de coleta dos dados para os serviços fechados (PL-2715)
+* Adiciona número de frota ao veículo (PL-827)
+* Adiciona número de frota ao import de veículo (PL-827)
 
 ## Refactors
 * Refatora objetos que utilizam booleans podeAferirSulco, Pressao e SulcoPressao para não utilizar ou serem adaptados (PL-2689)
@@ -30,8 +32,6 @@ Change Log
 * Cria flag nas integrações para ligar/desligar integrações (PLI-72)
 * Cria método genérico de busca de Aferições Realizadas (AVACON) (PLI-144)
 * Adiciona validação de unidades integradas no Sistema Globus Piccolotur (PLI-151)
-* Adiciona número de frota ao veículo (PL-827)
-* Adiciona número de frota ao import de veículo (PL-827) 
 
 ### Refactors
 * Melhora mensanges de retorno ao ativar/inativar um veículo
