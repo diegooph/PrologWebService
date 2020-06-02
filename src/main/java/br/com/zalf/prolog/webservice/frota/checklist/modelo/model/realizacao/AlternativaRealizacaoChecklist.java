@@ -43,24 +43,23 @@ public final class AlternativaRealizacaoChecklist {
     private final PrioridadeAlternativa prioridade;
 
     /**
-     * Atributo {@link CapturaFotoChecklistEnum} que representa a parametrização da coleta de fotos para a pergunta
-     * caso a resposta seja OK.
+     * Atributo {@link CapturaFotoChecklistEnum} que representa a parametrização da coleta de fotos para a alternativa.
      */
     @NotNull
-    private final CapturaFotoChecklistEnum capturaFotosRespostaOk;
+    private final CapturaFotoChecklistEnum capturaFotos;
 
     public AlternativaRealizacaoChecklist(@NotNull final Long codigo,
                                           @NotNull final String descricao,
                                           final boolean tipoOutros,
                                           final int ordemExibicao,
                                           @NotNull final PrioridadeAlternativa prioridade,
-                                          @NotNull final CapturaFotoChecklistEnum capturaFotosRespostaOk) {
+                                          @NotNull final CapturaFotoChecklistEnum capturaFotos) {
         this.codigo = codigo;
         this.descricao = descricao;
         this.tipoOutros = tipoOutros;
         this.ordemExibicao = ordemExibicao;
         this.prioridade = prioridade;
-        this.capturaFotosRespostaOk = capturaFotosRespostaOk;
+        this.capturaFotos = capturaFotos;
     }
 
     @NotNull
@@ -87,5 +86,5 @@ public final class AlternativaRealizacaoChecklist {
     }
 
     @NotNull
-    public CapturaFotoChecklistEnum getCapturaFotosRespostaOk() { return capturaFotosRespostaOk; }
+    public CapturaFotoChecklistEnum getCapturaFotos() { return capturaFotos; }
 }
