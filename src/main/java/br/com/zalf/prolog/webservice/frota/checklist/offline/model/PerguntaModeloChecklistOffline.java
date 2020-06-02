@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.checklist.offline.model;
 
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.CapturaFotoChecklistEnum;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -55,6 +56,13 @@ public final class PerguntaModeloChecklistOffline {
     private final boolean singleChoice;
 
     /**
+     * Atributo {@link CapturaFotoChecklistEnum} que representa a parametrização da coleta de fotos para a pergunta
+     * caso a resposta seja OK.
+     */
+    @NotNull
+    private final CapturaFotoChecklistEnum capturaFotosRespostaOk;
+
+    /**
      * {@link AlternativaModeloChecklistOffline Alternativas} disponíveis para está pergunta.
      */
     @NotNull
@@ -67,6 +75,7 @@ public final class PerguntaModeloChecklistOffline {
                                    @Nullable final String urlImagem,
                                    final int ordemExibicao,
                                    final boolean singleChoice,
+                                   @NotNull final CapturaFotoChecklistEnum capturaFotosRespostaOk,
                                    @NotNull final List<AlternativaModeloChecklistOffline> alternativas) {
         this.codigo = codigo;
         this.codigoContexto = codigoContexto;
@@ -76,6 +85,7 @@ public final class PerguntaModeloChecklistOffline {
         this.ordemExibicao = ordemExibicao;
         this.singleChoice = singleChoice;
         this.alternativas = alternativas;
+        this.capturaFotosRespostaOk = capturaFotosRespostaOk;
     }
 
     @NotNull
@@ -110,6 +120,9 @@ public final class PerguntaModeloChecklistOffline {
     public boolean isSingleChoice() {
         return singleChoice;
     }
+
+    @NotNull
+    public CapturaFotoChecklistEnum getCapturaFotosRespostaOk() { return capturaFotosRespostaOk; }
 
     @NotNull
     public List<AlternativaModeloChecklistOffline> getAlternativas() {
