@@ -14,6 +14,7 @@ public final class VeiculoPlanilha {
     private Long km;
     private String tipo;
     private String qtdEixos;
+    private String identificadorFrota;
 
     public VeiculoPlanilha() {
     }
@@ -64,5 +65,13 @@ public final class VeiculoPlanilha {
 
     public void setQtdEixos(@NotNull final String qtdEixos) {
         this.qtdEixos = qtdEixos;
+    }
+
+    public String getIdentificadorFrota() {
+        return identificadorFrota;
+    }
+
+    public void setIdentificadorFrota(String identificadorFrota) {
+        this.identificadorFrota = identificadorFrota;
     }
 }

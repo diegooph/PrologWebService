@@ -7,6 +7,7 @@ import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.*;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.FormaColetaDadosAfericaoEnum;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosAfericaoAvulsa;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosAfericaoRealizadaPlaca;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosTipoVeiculoConfiguracaoAfericao;
@@ -21,6 +22,7 @@ import java.time.ZoneOffset;
 import java.util.*;
 
 import static br.com.zalf.prolog.webservice.commons.util.StatementUtils.executeBatchAndValidate;
+import static br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.FormaColetaDadosAfericaoEnum.*;
 
 /**
  * Created on 12/03/20
@@ -28,6 +30,7 @@ import static br.com.zalf.prolog.webservice.commons.util.StatementUtils.executeB
  * @author Wellington Moraes (https://github.com/wvinim)
  */
 public final class SistemaProtheusNepomucenoDaoImpl extends DatabaseConnection implements SistemaProtheusNepomucenoDao {
+
     private static final int EXECUTE_BATCH_SUCCESS = 0;
 
     @NotNull
@@ -183,9 +186,9 @@ public final class SistemaProtheusNepomucenoDaoImpl extends DatabaseConnection i
                             new InfosTipoVeiculoConfiguracaoAfericao(
                                     rSet.getLong("COD_UNIDADE"),
                                     rSet.getLong("COD_TIPO_VEICULO"),
-                                    rSet.getBoolean("PODE_AFERIR_SULCO"),
-                                    rSet.getBoolean("PODE_AFERIR_PRESSAO"),
-                                    rSet.getBoolean("PODE_AFERIR_SULCO_PRESSAO"),
+                                    fromString(rSet.getString("FORMA_COLETA_DADOS_SULCO")),
+                                    fromString(rSet.getString("FORMA_COLETA_DADOS_PRESSAO")),
+                                    fromString(rSet.getString("FORMA_COLETA_DADOS_SULCO_PRESSAO")),
                                     rSet.getBoolean("PODE_AFERIR_ESTEPE")));
                 } while (rSet.next());
                 return tipoVeiculoConfiguracao;
@@ -255,9 +258,9 @@ public final class SistemaProtheusNepomucenoDaoImpl extends DatabaseConnection i
             if (rSet.next()) {
                 //noinspection DuplicatedCode
                 return new ConfiguracaoNovaAfericaoPlaca(
-                        rSet.getBoolean("PODE_AFERIR_SULCO"),
-                        rSet.getBoolean("PODE_AFERIR_PRESSAO"),
-                        rSet.getBoolean("PODE_AFERIR_SULCO_PRESSAO"),
+                        fromString(rSet.getString("FORMA_COLETA_DADOS_SULCO")),
+                        fromString(rSet.getString("FORMA_COLETA_DADOS_PRESSAO")),
+                        fromString(rSet.getString("FORMA_COLETA_DADOS_SULCO_PRESSAO")),
                         rSet.getBoolean("PODE_AFERIR_ESTEPE"),
                         rSet.getDouble("SULCO_MINIMO_DESCARTE"),
                         rSet.getDouble("SULCO_MINIMO_RECAPAGEM"),
@@ -443,7 +446,7 @@ public final class SistemaProtheusNepomucenoDaoImpl extends DatabaseConnection i
                             "F_ALTURA_SULCO_CENTRAL_EXTERNO => ?::REAL, " +
                             "F_ALTURA_SULCO_EXTERNO => ?::REAL, " +
                             "F_POSICAO_PROLOG => ?::INTEGER) AS COD_AFERICAO_INTEGRADA;");
-            for (Pneu pneu : afericao.getPneusAferidos()) {
+            for (final Pneu pneu : afericao.getPneusAferidos()) {
                 stmt.setLong(1, codAfericaoInserida);
                 stmt.setString(2, String.valueOf(pneu.getCodigo()));
                 stmt.setString(3, String.valueOf(pneu.getCodigoCliente()));
@@ -501,4 +504,5 @@ public final class SistemaProtheusNepomucenoDaoImpl extends DatabaseConnection i
                 rSet.getString("PLACA_APLICADO_QUANDO_AFERIDO")
         );
     }
+
 }

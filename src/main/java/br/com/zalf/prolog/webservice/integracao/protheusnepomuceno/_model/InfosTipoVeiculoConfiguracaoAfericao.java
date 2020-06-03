@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model;
 
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.FormaColetaDadosAfericaoEnum;
+import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -7,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
+@Data
 public final class InfosTipoVeiculoConfiguracaoAfericao {
     /**
      * Código da Unidade a qual os dados de configuração de aferição se referem.
@@ -19,59 +22,20 @@ public final class InfosTipoVeiculoConfiguracaoAfericao {
     @NotNull
     private final Long codTipoVeiculo;
     /**
-     * Indica se o {@link #codTipoVeiculo} permite aferição do tipo Sulco.
+     * Indica a forma de coleta de dados do Sulco do {@link #codTipoVeiculo}.
      */
-    private final boolean podeAferirSulco;
+    private final FormaColetaDadosAfericaoEnum formaColetaDadosSulco;
     /**
-     * Indica se o {@link #codTipoVeiculo} permite aferição do tipo Pressao.
+     * Indica a forma de coleta de dados da Pressão do {@link #codTipoVeiculo}.
      */
-    private final boolean podeAferirPressao;
+    private final FormaColetaDadosAfericaoEnum formaColetaDadosPressao;
     /**
-     * Indica se o {@link #codTipoVeiculo} permite aferição do tipo Sulco e Pressão.
+     * Indica a forma de coleta de dados do Sulco e da Pressão do {@link #codTipoVeiculo}.
      */
-    private final boolean podeAferirSulcoPressao;
+    private final FormaColetaDadosAfericaoEnum formaColetaDadosSulcoPressao;
     /**
      * Indica se o {@link #codTipoVeiculo} permite aferir estepes, caso o veículo possuir.
      */
     private final boolean podeAferirEstepes;
 
-    public InfosTipoVeiculoConfiguracaoAfericao(@NotNull final Long codUnidade,
-                                                @NotNull final Long codTipoVeiculo,
-                                                final boolean podeAferirSulco,
-                                                final boolean podeAferirPressao,
-                                                final boolean podeAferirSulcoPressao,
-                                                final boolean podeAferirEstepes) {
-        this.codUnidade = codUnidade;
-        this.codTipoVeiculo = codTipoVeiculo;
-        this.podeAferirSulco = podeAferirSulco;
-        this.podeAferirPressao = podeAferirPressao;
-        this.podeAferirSulcoPressao = podeAferirSulcoPressao;
-        this.podeAferirEstepes = podeAferirEstepes;
-    }
-
-    @NotNull
-    public Long getCodUnidade() {
-        return codUnidade;
-    }
-
-    @NotNull
-    public Long getCodTipoVeiculo() {
-        return codTipoVeiculo;
-    }
-
-    public boolean isPodeAferirSulco() {
-        return podeAferirSulco;
-    }
-
-    public boolean isPodeAferirPressao() {
-        return podeAferirPressao;
-    }
-
-    public boolean isPodeAferirSulcoPressao() {
-        return podeAferirSulcoPressao;
-    }
-
-    public boolean isPodeAferirEstepes() {
-        return podeAferirEstepes;
-    }
 }

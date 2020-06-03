@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.protheusrodalog;
 
-import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.*;
 import br.com.zalf.prolog.webservice.frota.pneu._model.*;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.integracao.protheusrodalog.model.*;
@@ -210,9 +210,9 @@ final class ProtheusRodalogConverter {
         placa.setIntervaloUltimaAfericaoSulco(placaRodalog.getIntervaloDiasUltimaAfericaoSulco());
         placa.setIntervaloUltimaAfericaoPressao(placaRodalog.getIntervaloDiasUltimaAfericaoPressao());
         placa.setQuantidadePneus(placaRodalog.getQuantidadePneusAplicados());
-        placa.setPodeAferirSulco(placaRodalog.getPodeAferirSulco());
-        placa.setPodeAferirPressao(placaRodalog.getPodeAferirPressao());
-        placa.setPodeAferirSulcoPressao(placaRodalog.getPodeAferirSulcoPressao());
+        placa.setFormaColetaDadosSulco(placaRodalog.getFormaColetaDadosSulco());
+        placa.setFormaColetaDadosPressao(placaRodalog.getFormaColetaDadosPressao());
+        placa.setFormaColetaDadosSulcoPressao(placaRodalog.getFormaColetaDadosSulcoPressao());
         placa.setPodeAferirEstepe(placaRodalog.getPodeAferirEstepe());
         return placa;
     }

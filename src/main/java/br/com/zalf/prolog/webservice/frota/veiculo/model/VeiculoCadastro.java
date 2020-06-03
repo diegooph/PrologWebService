@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.veiculo.model;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Created on 2019-10-04
@@ -14,6 +15,8 @@ public final class VeiculoCadastro {
     private final Long codUnidadeAlocado;
     @NotNull
     private final String placaVeiculo;
+    @Nullable
+    private final String identificadorFrota;
     @NotNull
     private final Long codMarcaVeiculo;
     @NotNull
@@ -25,6 +28,7 @@ public final class VeiculoCadastro {
     public VeiculoCadastro(@NotNull final Long codEmpresaAlocado,
                            @NotNull final Long codUnidadeAlocado,
                            @NotNull final String placaVeiculo,
+                           @Nullable final String identificadorFrota,
                            @NotNull final Long codMarcaVeiculo,
                            @NotNull final Long codModeloVeiculo,
                            @NotNull final Long codTipoVeiculo,
@@ -36,6 +40,7 @@ public final class VeiculoCadastro {
         this.codModeloVeiculo = codModeloVeiculo;
         this.codTipoVeiculo = codTipoVeiculo;
         this.kmAtualVeiculo = kmAtualVeiculo;
+        this.identificadorFrota = identificadorFrota;
     }
 
     @NotNull
@@ -51,6 +56,10 @@ public final class VeiculoCadastro {
     @NotNull
     public String getPlacaVeiculo() {
         return placaVeiculo;
+    }
+
+    public String getIdentificadorFrota() {
+        return identificadorFrota;
     }
 
     @NotNull

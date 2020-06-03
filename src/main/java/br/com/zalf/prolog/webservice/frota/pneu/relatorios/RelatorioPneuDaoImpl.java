@@ -11,10 +11,10 @@ import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDao;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.QtdDiasAfericoesVencidas;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Restricao;
 import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.QtdDiasAfericoesVencidas;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios._model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.TipoServico;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
@@ -23,9 +23,12 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.sql.*;
 import java.sql.Date;
-import java.time.*;
+import java.sql.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.*;
 
 /**
@@ -137,14 +140,14 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
     }
 
     @Override
-    public void getKmRodadoPorPneuPorVidaCsv(@NotNull final OutputStream outputStream,
-                                             @NotNull final List<Long> codUnidades) throws Throwable {
+    public void getKmRodadoPorPneuPorVidaEmLinhasCsv(@NotNull final OutputStream outputStream,
+                                                     @NotNull final List<Long> codUnidades) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = getKmRodadoPorPneuPorVida(conn, codUnidades);
+            stmt = getKmRodadoPorPneuPorVidaEmLinhas(conn, codUnidades);
             rSet = stmt.executeQuery();
             new CsvWriter
                     .Builder(outputStream)
@@ -158,15 +161,61 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
 
     @NotNull
     @Override
-    public Report getKmRodadoPorPneuPorVidaReport(@NotNull final List<Long> codUnidades) throws Throwable {
+    public Report getKmRodadoPorPneuPorVidaEmLinhasReport(@NotNull final List<Long> codUnidades) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = getKmRodadoPorPneuPorVida(conn, codUnidades);
+            stmt = getKmRodadoPorPneuPorVidaEmLinhas(conn, codUnidades);
             rSet = stmt.executeQuery();
             return ReportTransformer.createReport(rSet);
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+    @Override
+    public void getKmRodadoPorPneuPorVidaEmColunasCsv(@NotNull final OutputStream outputStream,
+                                                      @NotNull final List<Long> codUnidades) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("select * from func_pneu_relatorio_km_rodado_por_vida_base(?);");
+            stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
+            rSet = stmt.executeQuery();
+            // Não retornar nada não é erro, as unidades filtradas podem não ter pneus.
+            if (rSet.next()) {
+                final List<PneuKmRodadoPorVida> vidasPneu = new ArrayList<>();
+                do {
+                    vidasPneu.add(new PneuKmRodadoPorVida(
+                            rSet.getString("unidade_alocado"),
+                            rSet.getLong("cod_pneu"),
+                            rSet.getString("cod_cliente_pneu"),
+                            rSet.getString("dimensao"),
+                            rSet.getString("marca"),
+                            rSet.getString("modelo"),
+                            rSet.getString("vida_pneu"),
+                            rSet.getString("valor_vida"),
+                            rSet.getString("km_rodado_vida"),
+                            rSet.getString("valor_por_km_vida"),
+                            rSet.getString("km_rodado_todas_vidas")));
+                } while (rSet.next());
+
+                new CsvWriter
+                        .Builder(outputStream)
+                        .withCsvReport(new RelatorioKmRodadoPorVidaEmColuna(vidasPneu))
+                        .build()
+                        .write();
+            } else {
+                new CsvWriter
+                        .Builder(outputStream)
+                        .withCsvReport(new RelatorioKmRodadoPorVidaEmColuna(Collections.emptyList()))
+                        .build()
+                        .write();
+            }
         } finally {
             close(conn, stmt, rSet);
         }
@@ -444,7 +493,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
 
     @Override
     @Deprecated
-    public List<Aderencia> getAderenciaByUnidade(int ano, int mes, Long codUnidade) throws Throwable {
+    public List<Aderencia> getAderenciaByUnidade(final int ano, final int mes, final Long codUnidade) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -524,20 +573,20 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
 
     @Override
     @Deprecated
-    public List<Faixa> getQtPneusByFaixaPressao(List<String> codUnidades, List<String> status) throws Throwable {
+    public List<Faixa> getQtPneusByFaixaPressao(final List<String> codUnidades, final List<String> status) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         List<Faixa> faixas = null;
-        AfericaoDao afericaoDao = Injection.provideAfericaoDao();
+        final AfericaoDao afericaoDao = Injection.provideAfericaoDao();
         if (!codUnidades.get(0).equals("%")) {
-            Restricao restricao = afericaoDao.getRestricaoByCodUnidade(Long.parseLong(codUnidades.get(0)));
-            Integer base = (int) Math.round(restricao.getToleranciaCalibragem() * 100);
+            final Restricao restricao = afericaoDao.getRestricaoByCodUnidade(Long.parseLong(codUnidades.get(0)));
+            final Integer base = (int) Math.round(restricao.getToleranciaCalibragem() * 100);
             faixas = criaFaixas(base, 30);
         } else {
             faixas = criaFaixas(0, 30);
         }
-        List<Integer> valores = new ArrayList<>();
+        final List<Integer> valores = new ArrayList<>();
         int naoAferidos = 0;
 
         try {
@@ -561,10 +610,10 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
             close(conn, stmt, rSet);
         }
 
-        int totalValores = valores.size() + naoAferidos;
+        final int totalValores = valores.size() + naoAferidos;
         populaFaixas(faixas, valores);
         setPorcentagemFaixas(faixas, totalValores);
-        Faixa faixa = new Faixa();
+        final Faixa faixa = new Faixa();
         faixa.setNaoAferidos(true);
         faixa.setTotalPneus(naoAferidos);
         faixa.setPorcentagem((double) naoAferidos / (double) totalValores);
@@ -802,7 +851,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        int total = 0;
+        final int total = 0;
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT COUNT(AM.COD_PNEU) AS TOTAL " +
@@ -965,6 +1014,26 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         }
     }
 
+    @Override
+    public void getCpkPorMarcaModeloDimensaomCsv(@NotNull final OutputStream out,
+                                                 @NotNull final List<Long> codUnidades) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = getCpkPorMarcaModeloDimensaomStmt(conn, codUnidades);
+            rSet = stmt.executeQuery();
+            new CsvWriter
+                    .Builder(out)
+                    .withResultSet(rSet)
+                    .build()
+                    .write();
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
     @NotNull
     private PreparedStatement getPneusComDesgasteIrregularStmt(@NotNull final Connection conn,
                                                                @NotNull final List<Long> codUnidades,
@@ -1096,7 +1165,6 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         return stmt;
     }
 
-
     @NotNull
     private PreparedStatement getFarolAfericaoStatement(@NotNull final Connection conn,
                                                         @NotNull final List<Long> codUnidades,
@@ -1114,18 +1182,29 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
     }
 
     @NotNull
-    private PreparedStatement getKmRodadoPorPneuPorVida(@NotNull final Connection conn,
-                                                        @NotNull final List<Long> codUnidades) throws SQLException {
-        final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_RELATORIO_KM_RODADO_POR_VIDA(?);");
+    private PreparedStatement getCpkPorMarcaModeloDimensaomStmt(@NotNull final Connection conn,
+                                                                @NotNull final List<Long> codUnidades) throws Throwable {
+        final PreparedStatement stmt = conn.prepareStatement(
+                "SELECT * FROM FUNC_PNEU_RELATORIO_CPK_MARCA_MODELO_DIMENSAO(F_COD_UNIDADES => ?);");
         stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
         return stmt;
     }
 
-    private List<Faixa> populaFaixas(List<Faixa> faixas, List<Integer> valores) {
+    @NotNull
+    private PreparedStatement getKmRodadoPorPneuPorVidaEmLinhas(
+            @NotNull final Connection conn,
+            @NotNull final List<Long> codUnidades) throws SQLException {
+        final PreparedStatement stmt =
+                conn.prepareStatement("select * from func_pneu_relatorio_km_rodado_por_vida_linhas(?);");
+        stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
+        return stmt;
+    }
+
+    private List<Faixa> populaFaixas(final List<Faixa> faixas, final List<Integer> valores) {
         Collections.sort(valores);
         int integer = 0;
         // percorre todas as faixas
-        for (Faixa faixa : faixas) {
+        for (final Faixa faixa : faixas) {
             // percorre todos os valores
             for (int i = 0; i < valores.size(); i++) {
                 integer = valores.get(i);
@@ -1157,8 +1236,8 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         return faixas;
     }
 
-    private List<Faixa> criaFaixas(int base, int escala) {
-        List<Faixa> faixas = new ArrayList<>();
+    private List<Faixa> criaFaixas(final int base, final int escala) {
+        final List<Faixa> faixas = new ArrayList<>();
         // cria a primeira faixa de 0 até a restrição imposta pela empresa (3% por exemplo)
         Faixa faixa = new Faixa();
         faixa.setInicio(0);
@@ -1209,9 +1288,9 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
     @NotNull
     private List<Faixa> getFaixas(@NotNull final List<Double> valores) {
         Double minimo = (double) 0;
-        Double cota = (valores.get(0) / 5) + 1;
+        final Double cota = (valores.get(0) / 5) + 1;
         Double maximo = cota;
-        int totalPneus = valores.size();
+        final int totalPneus = valores.size();
         final List<Faixa> faixas = new ArrayList<>();
         //cria as faixas
         while (minimo < valores.get(0)) {
@@ -1223,7 +1302,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
             faixas.add(faixa);
         }
         //soma cada sulco para a sua devida faixa
-        for (Faixa faixa : faixas) {
+        for (final Faixa faixa : faixas) {
             for (int i = 0; i < valores.size(); i++) {
                 if (valores.get(i) >= faixa.getInicio() && valores.get(i) < faixa.getFim()) {
                     faixa.setTotalPneus(faixa.getTotalPneus() + 1);
@@ -1243,19 +1322,19 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         return faixas;
     }
 
-    private Aderencia createAderencia(double meta, int dia) {
-        Aderencia aderencia = new Aderencia();
+    private Aderencia createAderencia(final double meta, final int dia) {
+        final Aderencia aderencia = new Aderencia();
         aderencia.setDia(dia);
         aderencia.setMeta(meta);
         return aderencia;
     }
 
-    private void setPorcentagemFaixas(List<Faixa> faixas, int total) {
-        for (Faixa faixa : faixas) {
+    private void setPorcentagemFaixas(final List<Faixa> faixas, final int total) {
+        for (final Faixa faixa : faixas) {
             if (faixa.getTotalPneus() == 0) {
                 faixa.setPorcentagem(0);
             } else {
-                double porcentagem = (double) faixa.getTotalPneus() / total;
+                final double porcentagem = (double) faixa.getTotalPneus() / total;
                 faixa.setPorcentagem(porcentagem);
             }
         }
@@ -1267,7 +1346,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
          * Compara primeiro pela pontuação e depois pela devolução em NF, evitando empates
          */
         @Override
-        public int compare(Faixa o1, Faixa o2) {
+        public int compare(final Faixa o1, final Faixa o2) {
             return Double.compare(o1.getInicio(), o2.getInicio());
         }
     }
