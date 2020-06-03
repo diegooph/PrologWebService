@@ -169,6 +169,22 @@ public final class ChecklistResource {
                 userToken);
     }
 
+    /**
+    * Novos endpoints de listagem de checklist
+    */
+    @GET
+    @Path("/listagem/colaborador/resumidos")
+    @Secured(permissions = {Pilares.Frota.Checklist.VISUALIZAR_TODOS, Pilares.Frota.Checklist.REALIZAR})
+    public List<Checklist> getListagemByColaboradorResumidos(
+            @QueryParam("cpf") final Long cpf,
+            @QueryParam("dataInicial") final Long dataInicial,
+            @QueryParam("dataFinal") final Long dataFinal,
+            @QueryParam("limit") final int limit,
+            @QueryParam("offset") final long offset,
+            @HeaderParam("Authorization") final String userToken) {
+        return service.getByColaborador(cpf, dataInicial, dataFinal, limit, offset, true, userToken);
+    }
+
     @GET
     @Path("/farois/{codUnidade}")
     @Secured(permissions = Pilares.Frota.FarolStatusPlacas.VISUALIZAR)
