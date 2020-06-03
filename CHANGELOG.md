@@ -2,7 +2,7 @@ Change Log
 ==========
 
 <a name="v1.0.31"></a>
-## Version [v1.0.31](https://github.com/luizfp/PrologWebService/compare/v1.0.30...v1.0.31) (release-date) [unreleased]
+## Version [v1.0.31](https://github.com/luizfp/PrologWebService/compare/v1.0.30...v1.0.31) (2020-06-03)
 
 ### Features
 * Cria relatório de CPK por marca, modelo e dimensão de pneu (PL-2699)
