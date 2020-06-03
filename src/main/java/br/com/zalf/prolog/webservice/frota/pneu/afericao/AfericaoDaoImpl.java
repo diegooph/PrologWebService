@@ -90,7 +90,10 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             stmt.setLong(4, afericao.getTempoRealizacaoAfericaoInMillis());
             stmt.setString(5, afericao.getTipoMedicaoColetadaAfericao().asString());
             stmt.setString(6, afericao.getTipoProcessoColetaAfericao().asString());
-            stmt.setString(7, afericao.getFormaColetaDadosAfericao().toString());
+            // Os apps antigos não enviam essa informação, então pode vir nulo.
+            stmt.setString(7, afericao.getFormaColetaDadosAfericao() != null
+                    ? afericao.getFormaColetaDadosAfericao().toString()
+                    : FormaColetaDadosAfericaoEnum.EQUIPAMENTO.toString());
 
             if (afericao instanceof AfericaoPlaca) {
                 final AfericaoPlaca afericaoPlaca = (AfericaoPlaca) afericao;
