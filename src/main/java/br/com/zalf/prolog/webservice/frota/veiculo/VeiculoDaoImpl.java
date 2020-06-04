@@ -236,8 +236,8 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
     }
 
     @Override
-    public List<Veiculo> getVeiculosAtivosByUnidadeByColaborador(Long cpf) throws SQLException {
-        List<Veiculo> veiculos = new ArrayList<>();
+    public List<Veiculo> getVeiculosAtivosByUnidadeByColaborador(final Long cpf) throws SQLException {
+        final List<Veiculo> veiculos = new ArrayList<>();
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -253,7 +253,8 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
                     "EV.CODIGO AS COD_EIXOS, " +
                     "TV.NOME AS TIPO, " +
                     "MAV.NOME AS MARCA, " +
-                    "MAV.CODIGO AS COD_MARCA  "
+                    "MAV.CODIGO AS COD_MARCA," +
+                    "V.IDENTIFICADOR_FROTA AS ID_FROTA  "
                     + "FROM VEICULO V JOIN MODELO_VEICULO MV ON MV.CODIGO = V.COD_MODELO "
                     + "JOIN EIXOS_VEICULO EV ON EV.CODIGO = V.COD_EIXOS "
                     + "JOIN VEICULO_TIPO TV ON TV.CODIGO = V.COD_TIPO "
@@ -285,7 +286,7 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
             stmt.setLong(1, codVeiculo);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                VeiculoVisualizacao veiculoVisualizacao = VeiculoConverter.createVeiculoVisualizacao(rSet);
+                final VeiculoVisualizacao veiculoVisualizacao = VeiculoConverter.createVeiculoVisualizacao(rSet);
                 veiculoVisualizacao.setPneusVeiculo(buscaPneusByCodigoVeiculo(conn, codVeiculo));
                 return veiculoVisualizacao;
             } else {
@@ -352,7 +353,8 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
                     "EV.CODIGO AS COD_EIXOS, " +
                     "tv.nome AS TIPO, " +
                     "MAV.NOME AS MARCA, " +
-                    "MAV.CODIGO AS COD_MARCA  " +
+                    "MAV.CODIGO AS COD_MARCA," +
+                    "V.IDENTIFICADOR_FROTA AS ID_FROTA  " +
                     "FROM VEICULO V JOIN MODELO_VEICULO MV ON MV.CODIGO = V.COD_MODELO " +
                     "JOIN EIXOS_VEICULO EV ON EV.CODIGO = V.COD_EIXOS " +
                     "JOIN VEICULO_TIPO TV ON TV.CODIGO = V.COD_TIPO " +
@@ -382,13 +384,13 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        List<Eixos> eixos = new ArrayList<>();
+        final List<Eixos> eixos = new ArrayList<>();
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM EIXOS_VEICULO");
             rSet = stmt.executeQuery();
             while (rSet.next()) {
-                Eixos eixo = new Eixos();
+                final Eixos eixo = new Eixos();
                 eixo.codigo = rSet.getLong("CODIGO");
                 eixo.nome = rSet.getString("NOME");
                 eixo.dianteiro = rSet.getInt("DIANTEIRO");
@@ -402,7 +404,7 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
     }
 
     @Override
-    public void updateKmByPlaca(String placa, long km, Connection conn) throws SQLException {
+    public void updateKmByPlaca(final String placa, final long km, final Connection conn) throws SQLException {
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("UPDATE VEICULO SET "
@@ -410,7 +412,7 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
                     + "WHERE PLACA = ?");
             stmt.setLong(1, km);
             stmt.setString(2, placa);
-            int count = stmt.executeUpdate();
+            final int count = stmt.executeUpdate();
             if (count == 0) {
                 throw new SQLException("Erro ao atualizar o km do veículo");
             }
@@ -421,12 +423,12 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
 
     @Deprecated
     @Override
-    public List<Marca> getMarcaModeloVeiculoByCodEmpresa(Long codEmpresa) throws SQLException {
+    public List<Marca> getMarcaModeloVeiculoByCodEmpresa(final Long codEmpresa) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
 
-        List<Marca> marcas = new ArrayList<>();
+        final List<Marca> marcas = new ArrayList<>();
         List<Modelo> modelos = new ArrayList<>();
         Marca marca = new Marca();
 
@@ -536,8 +538,8 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         }
     }
 
-    private ModeloVeiculo createModelo(ResultSet rSet) throws SQLException {
-        ModeloVeiculo modelo = new ModeloVeiculo();
+    private ModeloVeiculo createModelo(final ResultSet rSet) throws SQLException {
+        final ModeloVeiculo modelo = new ModeloVeiculo();
         modelo.setCodigo(rSet.getLong("COD_MODELO"));
         modelo.setNome(rSet.getString("NOME_MODELO"));
         return modelo;
@@ -570,7 +572,7 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
     }
 
     @Override
-    public Modelo getModeloVeiculo(Long codUnidade, Long codModelo) throws SQLException {
+    public Modelo getModeloVeiculo(final Long codUnidade, final Long codModelo) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -582,7 +584,7 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
             stmt.setLong(2, codUnidade);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                ModeloVeiculo modelo = new ModeloVeiculo();
+                final ModeloVeiculo modelo = new ModeloVeiculo();
                 modelo.setCodigo(rSet.getLong("CODIGO"));
                 modelo.setNome(rSet.getString("NOME"));
                 return modelo;
@@ -594,7 +596,7 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
     }
 
     @Override
-    public boolean updateModelo(Modelo modelo, Long codUnidade, Long codMarca) throws SQLException {
+    public boolean updateModelo(final Modelo modelo, final Long codUnidade, final Long codMarca) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
@@ -612,7 +614,7 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
     }
 
     @Override
-    public boolean deleteModelo(Long codModelo, Long codUnidade) throws SQLException {
+    public boolean deleteModelo(final Long codModelo, final Long codUnidade) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
@@ -628,7 +630,7 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
     }
 
     @Override
-    public int getTotalVeiculosByUnidade(Long codUnidade, Connection conn) throws SQLException {
+    public int getTotalVeiculosByUnidade(final Long codUnidade, final Connection conn) throws SQLException {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         int total = 0;
@@ -645,11 +647,12 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         return total;
     }
 
-    public List<String> getPlacasVeiculosByTipo(Long codUnidade, String codTipo) throws SQLException {
+    @Override
+    public List<String> getPlacasVeiculosByTipo(final Long codUnidade, final String codTipo) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        List<String> placas = new ArrayList<>();
+        final List<String> placas = new ArrayList<>();
         try {
             conn = getConnection();
             // Não entendi essa parte, se já vem o código do tipo, porque receber ele em String e depois fazer join com
@@ -686,7 +689,7 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
     }
 
     @Override
-    public Optional<DiagramaVeiculo> getDiagramaVeiculoByCod(@NotNull Short codDiagrama) throws SQLException {
+    public Optional<DiagramaVeiculo> getDiagramaVeiculoByCod(@NotNull final Short codDiagrama) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -713,7 +716,7 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        Set<DiagramaVeiculo> diagramas = new HashSet<>();
+        final Set<DiagramaVeiculo> diagramas = new HashSet<>();
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM veiculo_diagrama ");
@@ -871,7 +874,8 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
     }
 
     @NotNull
-    private Optional<DiagramaVeiculo> createDiagramaVeiculo(ResultSet rSet, Connection conn) throws SQLException {
+    private Optional<DiagramaVeiculo> createDiagramaVeiculo(final ResultSet rSet,
+                                                            final Connection conn) throws SQLException {
         return Optional.of(new DiagramaVeiculo(
                 rSet.getShort("CODIGO"),
                 rSet.getString("NOME"),
@@ -880,7 +884,7 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
     }
 
     @NotNull
-    private Set<EixoVeiculo> getEixosDiagrama(int codDiagrama, Connection conn) throws SQLException {
+    private Set<EixoVeiculo> getEixosDiagrama(final int codDiagrama, final Connection conn) throws SQLException {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         final Set<EixoVeiculo> eixos = new HashSet<>();
@@ -906,10 +910,12 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
     }
 
     @NotNull
-    private Veiculo createVeiculo(ResultSet rSet) throws SQLException {
+    private Veiculo
+    createVeiculo(final ResultSet rSet) throws SQLException {
         final Veiculo veiculo = new Veiculo();
         veiculo.setCodigo(rSet.getLong("CODIGO"));
         veiculo.setPlaca(rSet.getString("PLACA"));
+        veiculo.setIdentificadorFrota(rSet.getString("ID_FROTA"));
         veiculo.setAtivo(rSet.getBoolean("STATUS_ATIVO"));
         veiculo.setKmAtual(rSet.getLong("KM"));
         veiculo.setCodRegionalAlocado(rSet.getLong("COD_REGIONAL_ALOCADO"));
@@ -946,7 +952,9 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
     }
 
     @NotNull
-    public List<Veiculo> getVeiculoKm(Long codUnidade, String placa, String codTipo) throws SQLException {
+    public List<Veiculo> getVeiculoKm(final Long codUnidade,
+                                      final String placa,
+                                      final String codTipo) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -974,7 +982,7 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
 
     @Deprecated
     @Override
-    public List<Veiculo> getVeiculosAtivosByUnidade(Long codUnidade, @Nullable Boolean ativos)
+    public List<Veiculo> getVeiculosAtivosByUnidade(final Long codUnidade, @Nullable final Boolean ativos)
             throws SQLException {
         final List<Veiculo> veiculos = new ArrayList<>();
         Connection conn = null;
@@ -991,7 +999,8 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
                     "EV.TRASEIRO,EV.CODIGO AS COD_EIXOS, " +
                     "TV.NOME AS TIPO, " +
                     "MAV.NOME AS MARCA, " +
-                    "MAV.CODIGO AS COD_MARCA  " +
+                    "MAV.CODIGO AS COD_MARCA," +
+                    "V.IDENTIFICADOR_FROTA AS ID_FROTA  " +
                     "FROM VEICULO V " +
                     "JOIN MODELO_VEICULO MV ON MV.CODIGO = V.COD_MODELO " +
                     "JOIN EIXOS_VEICULO EV ON EV.CODIGO = V.COD_EIXOS " +
