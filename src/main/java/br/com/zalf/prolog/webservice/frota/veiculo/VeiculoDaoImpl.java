@@ -910,8 +910,7 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
     }
 
     @NotNull
-    private Veiculo
-    createVeiculo(final ResultSet rSet) throws SQLException {
+    private Veiculo createVeiculo(@NotNull final ResultSet rSet) throws SQLException {
         final Veiculo veiculo = new Veiculo();
         veiculo.setCodigo(rSet.getLong("CODIGO"));
         veiculo.setPlaca(rSet.getString("PLACA"));
