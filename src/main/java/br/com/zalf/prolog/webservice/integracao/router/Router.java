@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.customfields.CampoPersonalizadoDao;
 import br.com.zalf.prolog.webservice.customfields._model.CampoPersonalizadoParaRealizacao;
 import br.com.zalf.prolog.webservice.frota.checklist.ChecklistResource;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.ChecklistListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.model.TipoChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
@@ -345,6 +346,47 @@ public abstract class Router implements OperacoesIntegradas {
                             limit, offset, resumido);
         }
     }
+
+    /**
+    * Início novos routers
+    * */
+    @NotNull
+    @Override
+    public List<ChecklistListagem> getListagemByColaborador(@NotNull final Long cpf,
+                                                            @NotNull final Long dataInicial,
+                                                            @NotNull final Long dataFinal,
+                                                            final int limit,
+                                                            final long offset) throws Exception {
+        if (getSistema() != null) {
+            return getSistema().getListagemByColaborador(cpf, dataInicial, dataFinal, limit, offset);
+        } else {
+            return integradorProLog.getListagemByColaborador(cpf, dataInicial, dataFinal, limit, offset);
+        }
+    }
+
+    @NotNull
+    @Override
+    public List<ChecklistListagem> getListagem(@NotNull final Long codUnidade,
+                                               @Nullable final Long codEquipe,
+                                               @Nullable final Long codTipoVeiculo,
+                                               @Nullable final String placaVeiculo,
+                                               final long dataInicial,
+                                               final long dataFinal,
+                                               final int limit,
+                                               final long offset) throws Exception {
+        if (getSistema() != null) {
+            return getSistema()
+                    .getListagem(codUnidade, codEquipe, codTipoVeiculo, placaVeiculo, dataInicial, dataFinal,
+                            limit, offset);
+        } else {
+            return integradorProLog
+                    .getListagem(codUnidade, codEquipe, codTipoVeiculo, placaVeiculo, dataInicial, dataFinal,
+                            limit, offset);
+        }
+    }
+    /**
+     * Fim novos routers
+     * */
 
     @NotNull
     @Override

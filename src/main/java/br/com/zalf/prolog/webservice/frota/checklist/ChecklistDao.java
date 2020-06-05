@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.checklist;
 
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.ChecklistListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.model.FiltroRegionalUnidadeChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
@@ -122,6 +123,41 @@ public interface ChecklistDao {
                                      final int limit,
                                      final long offset,
                                      final boolean resumido) throws SQLException;
+
+    /**
+     * Início novas listagens de checklist
+     * */
+
+    /**
+     * Busca os checklists realizados por um colaborador.
+     *
+     * @return uma {@link List<ChecklistListagem> lista de checklists}.
+     * @throws SQLException caso não seja possível realizar a busca.
+     */
+    List<ChecklistListagem> getListagemByColaborador(@NotNull final Long cpf,
+                                                     @NotNull final Long dataInicial,
+                                                     @NotNull final Long dataFinal,
+                                                     final int limit,
+                                                     final long offset) throws SQLException;
+
+    /**
+     * Busca todos os checklists, respeitando os filtros aplicados (recebidos por parâmetro).
+     *
+     * @return uma {@link List<ChecklistListagem> lista de checklists}.
+     * @throws SQLException caso não seja possível realizar a busca.
+     */
+    @NotNull
+    List<ChecklistListagem> getListagem(@NotNull final Long codUnidade,
+                                        @Nullable final Long codEquipe,
+                                        @Nullable final Long codTipoVeiculo,
+                                        @Nullable final String placaVeiculo,
+                                        final long dataInicial,
+                                        final long dataFinal,
+                                        final int limit,
+                                        final long offset) throws SQLException;
+    /**
+     * Fim novas listagens de checklist
+     * */
 
     /**
      * Busca as regionais e unidades que o colaborador de código fornecido tem acesso. Isso é verificado com base na

@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.customfields.CampoPersonalizadoDao;
 import br.com.zalf.prolog.webservice.customfields._model.CampoPersonalizadoParaRealizacao;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.ChecklistListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.model.TipoChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
@@ -235,6 +236,43 @@ public abstract class Sistema implements OperacoesIntegradas {
                         resumido);
     }
 
+    /**
+    * Início novas listagens de checklist
+    * */
+    @NotNull
+    @Override
+    public List<ChecklistListagem> getListagemByColaborador(@NotNull final Long cpf,
+                                                            @NotNull final Long dataInicial,
+                                                            @NotNull final Long dataFinal,
+                                                            final int limit,
+                                                            final long offset) throws Exception {
+        return getIntegradorProLog().getListagemByColaborador(cpf, dataInicial, dataFinal, limit, offset);
+    }
+
+    @NotNull
+    @Override
+    public List<ChecklistListagem> getListagem(@NotNull final Long codUnidade,
+                                               @Nullable final Long codEquipe,
+                                               @Nullable final Long codTipoVeiculo,
+                                               @Nullable final String placaVeiculo,
+                                               final long dataInicial,
+                                               final long dataFinal,
+                                               final int limit,
+                                               final long offset) throws Exception {
+        return getIntegradorProLog()
+                .getListagem(
+                        codUnidade,
+                        codEquipe,
+                        codTipoVeiculo,
+                        placaVeiculo,
+                        dataInicial,
+                        dataFinal,
+                        limit,
+                        offset);
+    }
+    /**
+     * Fim novas listagens de checklist
+     * */
     @NotNull
     @Override
     public DeprecatedFarolChecklist getFarolChecklist(@NotNull final Long codUnidade,

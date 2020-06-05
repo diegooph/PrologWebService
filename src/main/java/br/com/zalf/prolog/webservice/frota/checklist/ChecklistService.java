@@ -11,6 +11,7 @@ import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.ChecklistListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.model.FiltroRegionalUnidadeChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
@@ -170,6 +171,50 @@ public final class ChecklistService {
             throw new RuntimeException("Erro ao buscar checklists para o colaborador: " + cpf);
         }
     }
+
+    /**
+     * Novos services de listagem
+     */
+    public List<ChecklistListagem> getListagemByColaborador(final Long cpf,
+                                                            final Long dataInicial,
+                                                            final Long dataFinal,
+                                                            final int limit,
+                                                            final long offset,
+                                                            final String userToken) {
+        try {
+            return RouterChecklists
+                    .create(dao, userToken)
+                    .getListagemByColaborador(cpf, dataInicial, dataFinal, limit, offset);
+        } catch (final Exception e) {
+            Log.e(TAG, "Erro ao buscar os checklists de um colaborador específico", e);
+            throw new RuntimeException("Erro ao buscar checklists para o colaborador: " + cpf);
+        }
+    }
+
+    public List<ChecklistListagem> getListagem(final Long codUnidade,
+                                               final Long codEquipe,
+                                               final Long codTipoVeiculo,
+                                               final String placaVeiculo,
+                                               final long dataInicial,
+                                               final long dataFinal,
+                                               final int limit,
+                                               final long offset,
+                                               final String userToken) {
+        try {
+            return RouterChecklists
+                    .create(dao, userToken)
+                    .getListagem(codUnidade, codEquipe, codTipoVeiculo, placaVeiculo, dataInicial, dataFinal,
+                            limit, offset);
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao buscar checklists", t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao buscar checklists, tente novamente");
+        }
+    }
+    /**
+     * Fim novos services de listagem
+     */
 
     @NotNull
     public DeprecatedFarolChecklist getFarolChecklist(final Long codUnidade,

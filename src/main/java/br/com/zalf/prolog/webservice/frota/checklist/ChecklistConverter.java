@@ -74,6 +74,29 @@ public final class ChecklistConverter {
 
     @VisibleForTesting
     @NotNull
+    public static ChecklistListagem createChecklistListagem(@NotNull final ResultSet rSet,
+                                            final boolean setTotalItensOkNok) throws SQLException {
+        final ChecklistListagem checklistListagem = new ChecklistListagem();
+        //TODO: Construir o objeto com base no result set.
+//        checklist.setCodigo(rSet.getLong("COD_CHECKLIST"));
+//        checklist.setCodModelo(rSet.getLong("COD_CHECKLIST_MODELO"));
+//        checklist.setCodVersaoModeloChecklist(rSet.getLong("COD_VERSAO_CHECKLIST_MODELO"));
+//        checklist.setColaborador(createColaborador(rSet));
+//        checklist.setData(rSet.getObject("DATA_HORA_REALIZACAO", LocalDateTime.class));
+//        checklist.setDataHoraImportadoProLog(rSet.getObject("DATA_HORA_IMPORTADO_PROLOG", LocalDateTime.class));
+//        checklist.setPlacaVeiculo(rSet.getString("PLACA_VEICULO"));
+//        checklist.setTipo(rSet.getString("TIPO_CHECKLIST").charAt(0));
+//        checklist.setKmAtualVeiculo(rSet.getLong("KM_VEICULO_MOMENTO_REALIZACAO"));
+//        checklist.setTempoRealizacaoCheckInMillis(rSet.getLong("DURACAO_REALIZACAO_MILLIS"));
+//        if (setTotalItensOkNok) {
+//            checklist.setQtdItensOk(rSet.getInt("TOTAL_ITENS_OK"));
+//            checklist.setQtdItensNok(rSet.getInt("TOTAL_ITENS_NOK"));
+//        }
+        return checklistListagem;
+    }
+
+    @VisibleForTesting
+    @NotNull
     public static List<PerguntaRespostaChecklist> createPerguntasRespostasChecklist(
             @NotNull final ResultSet rSet) throws SQLException {
         final List<PerguntaRespostaChecklist> perguntas = new ArrayList<>();

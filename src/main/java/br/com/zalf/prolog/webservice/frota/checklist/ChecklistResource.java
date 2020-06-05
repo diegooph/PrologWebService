@@ -12,6 +12,7 @@ import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.ModeloChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.ChecklistListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.model.FiltroRegionalUnidadeChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.model.TipoChecklist;
@@ -173,17 +174,45 @@ public final class ChecklistResource {
     * Novos endpoints de listagem de checklist
     */
     @GET
-    @Path("/listagem/colaborador/resumidos")
+    @Path("/listagem/colaborador")
     @Secured(permissions = {Pilares.Frota.Checklist.VISUALIZAR_TODOS, Pilares.Frota.Checklist.REALIZAR})
-    public List<Checklist> getListagemByColaboradorResumidos(
+    public List<ChecklistListagem> getListagemByColaborador(
             @QueryParam("cpf") final Long cpf,
             @QueryParam("dataInicial") final Long dataInicial,
             @QueryParam("dataFinal") final Long dataFinal,
             @QueryParam("limit") final int limit,
             @QueryParam("offset") final long offset,
             @HeaderParam("Authorization") final String userToken) {
-        return service.getByColaborador(cpf, dataInicial, dataFinal, limit, offset, true, userToken);
+        return service.getListagemByColaborador(cpf, dataInicial, dataFinal, limit, offset, userToken);
     }
+
+    @GET
+    @Path("/listagem")
+    @Secured(permissions = Pilares.Frota.Checklist.VISUALIZAR_TODOS)
+    public List<ChecklistListagem> getListagem(
+            @QueryParam("codUnidade") final Long codUnidade,
+            @QueryParam("codEquipe") final Long codEquipe,
+            @QueryParam("codTipoVeiculo") final Long codTipoVeiculo,
+            @QueryParam("placaVeiculo") final String placaVeiculo,
+            @QueryParam("dataInicial") final long dataInicial,
+            @QueryParam("dataFinal") final long dataFinal,
+            @QueryParam("limit") final int limit,
+            @QueryParam("offset") final long offset,
+            @HeaderParam("Authorization") final String userToken) {
+        return service.getListagem(
+                codUnidade,
+                codEquipe,
+                codTipoVeiculo,
+                placaVeiculo,
+                dataInicial,
+                dataFinal,
+                limit,
+                offset,
+                userToken);
+    }
+    /**
+     * Fim novos endpoints de listagem
+     */
 
     @GET
     @Path("/farois/{codUnidade}")

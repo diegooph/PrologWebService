@@ -49,4 +49,6 @@ public class ChecklistListagem {
     private Integer totalAlternativasNok;
     private int totalImagensPerguntasOk;
     private int totalImagensAlternativasNOk;
+
+    //TODO: Adicionar totais por criticidade NOK
 }

@@ -8,6 +8,7 @@ import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.ChecklistListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.model.FiltroRegionalUnidadeChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.RegionalSelecaoChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
@@ -275,6 +276,79 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
             close(conn, stmt, rSet);
         }
     }
+
+    /**
+     * Início novas listagens de checklist
+     * */
+    @Override
+    public List<ChecklistListagem> getListagemByColaborador(@NotNull final Long cpf,
+                                                            @NotNull final Long dataInicial,
+                                                            @NotNull final Long dataFinal,
+                                                            final int limit,
+                                                            final long offset) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * " +
+                    "FROM FUNC_CHECKLIST_GET_REALIZADOS_BY_COLABORADOR(?, ?, ?, ?, ?, ?);");
+            stmt.setLong(1, cpf);
+            stmt.setDate(2, new java.sql.Date(dataInicial));
+            stmt.setDate(3, new java.sql.Date(dataFinal));
+            stmt.setString(4, TimeZoneManager.getZoneIdForCpf(cpf, conn).getId());
+            stmt.setInt(5, limit);
+            stmt.setLong(6, offset);
+            rSet = stmt.executeQuery();
+            final List<ChecklistListagem> checklists = new ArrayList<>();
+            while (rSet.next()) {
+                checklists.add(createChecklistListagem(rSet));
+            }
+            return checklists;
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+    @NotNull
+    @Override
+    public List<ChecklistListagem> getListagem(@NotNull final Long codUnidade,
+                                               @Nullable final Long codEquipe,
+                                               @Nullable final Long codTipoVeiculo,
+                                               @Nullable final String placaVeiculo,
+                                               final long dataInicial,
+                                               final long dataFinal,
+                                               final int limit,
+                                               final long offset) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * " +
+                    "FROM FUNC_CHECKLIST_GET_ALL_CHECKLISTS_REALIZADOS(?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            stmt.setLong(1, codUnidade);
+            bindValueOrNull(stmt, 2, codEquipe, SqlType.BIGINT);
+            bindValueOrNull(stmt, 3, codTipoVeiculo, SqlType.BIGINT);
+            bindValueOrNull(stmt, 4, placaVeiculo, SqlType.VARCHAR);
+            stmt.setDate(5, new java.sql.Date(dataInicial));
+            stmt.setDate(6, new java.sql.Date(dataFinal));
+            stmt.setString(7, TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId());
+            stmt.setInt(8, limit);
+            stmt.setLong(9, offset);
+            rSet = stmt.executeQuery();
+            final List<ChecklistListagem> checklists = new ArrayList<>();
+            while (rSet.next()) {
+                checklists.add(createChecklistListagem(rSet));
+            }
+            return checklists;
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+    /**
+     * Fim novas listagens de checklist
+     * */
 
     @NotNull
     @Override
@@ -578,5 +652,12 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
             checklist.setListRespostas(getPerguntasRespostas(checklist));
         }
         return checklist;
+    }
+
+    @NotNull
+    private ChecklistListagem createChecklistListagem(final ResultSet rSet) throws SQLException {
+        final ChecklistListagem checklistListagem = ChecklistConverter.createChecklistListagem(rSet, true);
+
+        return checklistListagem;
     }
 }
