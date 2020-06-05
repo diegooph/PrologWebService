@@ -129,6 +129,7 @@ public final class SistemaProtheusNepomuceno extends Sistema {
             final String codFiliais = sistema.getCodFiliais(conn, codUnidadesMapeadas);
             final List<VeiculoListagemProtheusNepomuceno> listagemVeiculos =
                     requester.getListagemVeiculosUnidadesSelecionadas(url, codFiliais);
+            listagemVeiculos.removeIf(VeiculoListagemProtheusNepomuceno::deveRemover);
 
             final List<String> placasNepomuceno = listagemVeiculos.stream()
                     .map(VeiculoListagemProtheusNepomuceno::getPlacaVeiculo)
@@ -214,6 +215,7 @@ public final class SistemaProtheusNepomuceno extends Sistema {
                                 "realizar a aferição.");
             }
             final ProtheusNepomucenoPosicaoPneuMapper posicaoPneuMapper = new ProtheusNepomucenoPosicaoPneuMapper(
+                    veiculoAfericao.getCodEstruturaVeiculo(),
                     sistema.getMapeamentoPosicoesProlog(conn, codEmpresa, veiculoAfericao.getCodEstruturaVeiculo()));
 
             // Garantimos, antes de criar a nova aferição, que todas as posições estão mapeadas. Caso não estiverem,
