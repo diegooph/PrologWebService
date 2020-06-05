@@ -74,24 +74,30 @@ public final class ChecklistConverter {
 
     @VisibleForTesting
     @NotNull
-    public static ChecklistListagem createChecklistListagem(@NotNull final ResultSet rSet,
-                                            final boolean setTotalItensOkNok) throws SQLException {
-        final ChecklistListagem checklistListagem = new ChecklistListagem();
-        //TODO: Construir o objeto com base no result set.
-//        checklist.setCodigo(rSet.getLong("COD_CHECKLIST"));
-//        checklist.setCodModelo(rSet.getLong("COD_CHECKLIST_MODELO"));
-//        checklist.setCodVersaoModeloChecklist(rSet.getLong("COD_VERSAO_CHECKLIST_MODELO"));
-//        checklist.setColaborador(createColaborador(rSet));
-//        checklist.setData(rSet.getObject("DATA_HORA_REALIZACAO", LocalDateTime.class));
-//        checklist.setDataHoraImportadoProLog(rSet.getObject("DATA_HORA_IMPORTADO_PROLOG", LocalDateTime.class));
-//        checklist.setPlacaVeiculo(rSet.getString("PLACA_VEICULO"));
-//        checklist.setTipo(rSet.getString("TIPO_CHECKLIST").charAt(0));
-//        checklist.setKmAtualVeiculo(rSet.getLong("KM_VEICULO_MOMENTO_REALIZACAO"));
-//        checklist.setTempoRealizacaoCheckInMillis(rSet.getLong("DURACAO_REALIZACAO_MILLIS"));
-//        if (setTotalItensOkNok) {
-//            checklist.setQtdItensOk(rSet.getInt("TOTAL_ITENS_OK"));
-//            checklist.setQtdItensNok(rSet.getInt("TOTAL_ITENS_NOK"));
-//        }
+    public static ChecklistListagem createChecklistListagem(@NotNull final ResultSet rSet) throws SQLException {
+        final ChecklistListagem checklistListagem = new ChecklistListagem(
+                rSet.getLong("COD_CHECKLIST"),
+                rSet.getLong("COD_CHECKLIST_MODELO"),
+                rSet.getLong("COD_VERSAO_CHECKLIST_MODELO"),
+                rSet.getObject("DATA_HORA_REALIZACAO", LocalDateTime.class),
+                rSet.getObject("DATA_HORA_IMPORTADO_PROLOG", LocalDateTime.class),
+                rSet.getLong("KM_VEICULO_MOMENTO_REALIZACAO"),
+                rSet.getLong("DURACAO_REALIZACAO_MILLIS"),
+                rSet.getLong("COD_COLABORADOR"),
+                rSet.getLong("CPF_COLABORADOR"),
+                rSet.getString("NOME_COLABORADOR"),
+                rSet.getLong("COD_VEICULO"),
+                rSet.getString("PLACA_VEICULO"),
+                TipoChecklist.fromString(rSet.getString("oi")),
+                rSet.getInt("TOTAL_PERGUNTAS_OK"),
+                rSet.getInt("TOTAL_PERGUNTAS_NOK"),
+                rSet.getInt("TOTAL_ALTERNATIVAS_OK"),
+                rSet.getInt("TOTAL_ALTERNATIVAS_NOK"),
+                rSet.getInt("TOTAL_IMAGENS_PERGUNTAS_OK"),
+                rSet.getInt("TOTAL_IMAGENS_ALTERNATIVAS_NOK")
+        );
+
+        //TODO: Adicionar totais por criticidade e corrigir construct
         return checklistListagem;
     }
 

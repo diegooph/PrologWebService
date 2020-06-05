@@ -30,7 +30,7 @@ public class ChecklistListagem {
     @NotNull
     private Long codColaborador;
     @NotNull
-    private String cpfColaborador;
+    private Long cpfColaborador;
     @NotNull
     private String nomeColaborador;
     @NotNull
