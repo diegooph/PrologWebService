@@ -225,7 +225,7 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * " +
-                    "FROM FUNC_CHECKLIST_GET_ALL_CHECKLISTS_REALIZADOS(?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                    "FROM FUNC_CHECKLIST_GET_ALL_CHECKLISTS_REALIZADOS_DEPRECATED(?, ?, ?, ?, ?, ?, ?, ?, ?)");
             stmt.setLong(1, codUnidade);
             bindValueOrNull(stmt, 2, codEquipe, SqlType.BIGINT);
             bindValueOrNull(stmt, 3, codTipoVeiculo, SqlType.BIGINT);
@@ -259,7 +259,7 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * " +
-                    "FROM FUNC_CHECKLIST_GET_REALIZADOS_BY_COLABORADOR(?, ?, ?, ?, ?, ?);");
+                    "FROM FUNC_CHECKLIST_GET_REALIZADOS_BY_COLABORADOR_DEPRECATED(?, ?, ?, ?, ?, ?);");
             stmt.setLong(1, cpf);
             stmt.setDate(2, new java.sql.Date(dataInicial));
             stmt.setDate(3, new java.sql.Date(dataFinal));
