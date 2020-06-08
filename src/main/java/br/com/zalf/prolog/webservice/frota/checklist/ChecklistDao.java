@@ -138,7 +138,7 @@ public interface ChecklistDao {
                                                      @NotNull final Long dataInicial,
                                                      @NotNull final Long dataFinal,
                                                      final int limit,
-                                                     final long offset) throws SQLException;
+                                                     final long offset) throws Throwable;
 
     /**
      * Busca todos os checklists, respeitando os filtros aplicados (recebidos por parâmetro).
@@ -154,7 +154,7 @@ public interface ChecklistDao {
                                         final long dataInicial,
                                         final long dataFinal,
                                         final int limit,
-                                        final long offset) throws SQLException;
+                                        final long offset) throws Throwable;
     /**
      * Fim novas listagens de checklist
      * */

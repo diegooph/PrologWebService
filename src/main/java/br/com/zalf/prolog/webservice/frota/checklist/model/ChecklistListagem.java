@@ -12,43 +12,44 @@ import java.time.LocalDateTime;
  * @author Wellington Moraes (https://github.com/wvinim)
  */
 @Data
-public class ChecklistListagem {
+public final class ChecklistListagem {
     @NotNull
-    private Long codigo;
+    private final Long codigo;
     @NotNull
-    private Long codModelo;
+    private final Long codModelo;
     @NotNull
-    private Long codVersaoModelo;
+    private final Long codVersaoModelo;
     @NotNull
-    private LocalDateTime dataHora;
+    private final LocalDateTime dataHora;
     @Nullable
-    private LocalDateTime dataHoraImportadoProLog;
+    private final LocalDateTime dataHoraImportadoProLog;
     @NotNull
-    private Long kmVeiculoMomentoRealizacao;
+    private final Long kmVeiculoMomentoRealizacao;
     @NotNull
-    private Long duracaoRealizacaoInMillis;
+    private final Long duracaoRealizacaoInMillis;
     @NotNull
-    private Long codColaborador;
+    private final Long codColaborador;
     @NotNull
-    private Long cpfColaborador;
+    private final Long cpfColaborador;
     @NotNull
-    private String nomeColaborador;
+    private final String nomeColaborador;
     @NotNull
-    private Long codVeiculo;
+    private final Long codVeiculo;
     @NotNull
-    private String placaVeiculo;
+    private final String placaVeiculo;
     @NotNull
     private final TipoChecklist tipo;
     @NotNull
-    private Integer totalPerguntasOk;
+    private final Integer totalPerguntasOk;
     @NotNull
-    private Integer totalPerguntasNok;
+    private final Integer totalPerguntasNok;
     @NotNull
-    private Integer totalAlternativasOk;
+    private final Integer totalAlternativasOk;
     @NotNull
-    private Integer totalAlternativasNok;
-    private int totalImagensPerguntasOk;
-    private int totalImagensAlternativasNOk;
-
-    //TODO: Adicionar totais por criticidade NOK
+    private final Integer totalAlternativasNok;
+    private final int totalImagensPerguntasOk;
+    private final int totalImagensAlternativasNOk;
+    private final int totalNOkBaixa;
+    private final int totalNOkAlta;
+    private final int totalNOkCritica;
 }

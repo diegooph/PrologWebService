@@ -285,7 +285,7 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
                                                             @NotNull final Long dataInicial,
                                                             @NotNull final Long dataFinal,
                                                             final int limit,
-                                                            final long offset) throws SQLException {
+                                                            final long offset) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -319,7 +319,7 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
                                                final long dataInicial,
                                                final long dataFinal,
                                                final int limit,
-                                               final long offset) throws SQLException {
+                                               final long offset) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -655,8 +655,8 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
     }
 
     @NotNull
-    private ChecklistListagem createChecklistListagem(final ResultSet rSet) throws SQLException {
-        final ChecklistListagem checklistListagem = ChecklistConverter.createChecklistListagem(rSet, true);
+    private ChecklistListagem createChecklistListagem(final ResultSet rSet) throws Throwable {
+        final ChecklistListagem checklistListagem = ChecklistConverter.createChecklistListagem(rSet);
 
         return checklistListagem;
     }

@@ -74,8 +74,8 @@ public final class ChecklistConverter {
 
     @VisibleForTesting
     @NotNull
-    public static ChecklistListagem createChecklistListagem(@NotNull final ResultSet rSet) throws SQLException {
-        final ChecklistListagem checklistListagem = new ChecklistListagem(
+    public static ChecklistListagem createChecklistListagem(@NotNull final ResultSet rSet) throws Throwable {
+        return new ChecklistListagem(
                 rSet.getLong("COD_CHECKLIST"),
                 rSet.getLong("COD_CHECKLIST_MODELO"),
                 rSet.getLong("COD_VERSAO_CHECKLIST_MODELO"),
@@ -88,17 +88,17 @@ public final class ChecklistConverter {
                 rSet.getString("NOME_COLABORADOR"),
                 rSet.getLong("COD_VEICULO"),
                 rSet.getString("PLACA_VEICULO"),
-                TipoChecklist.fromString(rSet.getString("oi")),
+                TipoChecklist.fromChar(rSet.getString("TIPO_CHECKLIST").charAt(0)),
                 rSet.getInt("TOTAL_PERGUNTAS_OK"),
                 rSet.getInt("TOTAL_PERGUNTAS_NOK"),
                 rSet.getInt("TOTAL_ALTERNATIVAS_OK"),
                 rSet.getInt("TOTAL_ALTERNATIVAS_NOK"),
                 rSet.getInt("TOTAL_IMAGENS_PERGUNTAS_OK"),
-                rSet.getInt("TOTAL_IMAGENS_ALTERNATIVAS_NOK")
+                rSet.getInt("TOTAL_IMAGENS_ALTERNATIVAS_NOK"),
+                rSet.getInt("TOTAL_NOK_BAIXA"),
+                rSet.getInt("TOTAL_NOK_ALTA"),
+                rSet.getInt("TOTAL_NOK_CRITICA")
         );
-
-        //TODO: Adicionar totais por criticidade e corrigir construct
-        return checklistListagem;
     }
 
     @VisibleForTesting
