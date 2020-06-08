@@ -105,6 +105,10 @@ public final class ChecklistResource {
         return service.getByCod(codigo, userToken);
     }
 
+    /**
+     * @deprecated at 2020-06-08. Use {@link ChecklistResource#getListagemByColaborador(Long, Long, Long, int, long, String)}
+     * instead.
+     */
     @GET
     @Path("/colaboradores/{cpf}/resumidos")
     @Secured(permissions = {Pilares.Frota.Checklist.VISUALIZAR_TODOS, Pilares.Frota.Checklist.REALIZAR})
@@ -118,6 +122,10 @@ public final class ChecklistResource {
         return service.getByColaborador(cpf, dataInicial, dataFinal, limit, offset, true, userToken);
     }
 
+    /**
+     * @deprecated at 2020-06-08. Use {@link ChecklistResource#getListagem(Long, Long, Long, String, long, long, int, long, String)}
+     * instead.
+     */
     @GET
     @Path("{codUnidade}/resumidos")
     @Secured(permissions = Pilares.Frota.Checklist.VISUALIZAR_TODOS)
@@ -144,6 +152,9 @@ public final class ChecklistResource {
                 userToken);
     }
 
+    /**
+     * @deprecated at 2020-06-08. Nesta data não existe resource que retorne os checklists completos.
+     */
     @GET
     @Path("{codUnidade}/completos")
     @Secured(permissions = Pilares.Frota.Checklist.VISUALIZAR_TODOS)
@@ -171,7 +182,7 @@ public final class ChecklistResource {
     }
 
     /**
-    * Novos endpoints de listagem de checklist
+    * Início Novos endpoints de listagem de checklist
     */
     @GET
     @Path("/listagem/colaborador")
