@@ -1,3 +1,9 @@
+Stage
+==========
+
+### Refactors
+* Cria uma nova listagem otimizada de checklists realizados, mantendo a compatibilidade (PL-2773)
+
 Change Log
 ==========
 
