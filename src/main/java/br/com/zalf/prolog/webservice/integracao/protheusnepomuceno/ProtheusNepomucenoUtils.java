@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.error.
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,7 +16,7 @@ import static br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.Prothe
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-final class ProtheusNepomucenoUtils {
+public final class ProtheusNepomucenoUtils {
     private ProtheusNepomucenoUtils() {
         throw new IllegalStateException(ProtheusNepomucenoUtils.class.getSimpleName() + " cannot be instantiated!");
     }
@@ -34,9 +35,9 @@ final class ProtheusNepomucenoUtils {
         }
     }
 
-    static void validatePosicoesMapeadasVeiculo(@NotNull final String codEstruturaVeiculo,
-                                                @NotNull final List<String> posicoesPneusAplicados,
-                                                @NotNull final ProtheusNepomucenoPosicaoPneuMapper posicaoPneuMapper) {
+    public static void validatePosicoesMapeadasVeiculo(@NotNull final String codEstruturaVeiculo,
+                                                       @NotNull final List<String> posicoesPneusAplicados,
+                                                       @NotNull final ProtheusNepomucenoPosicaoPneuMapper posicaoPneuMapper) {
         final List<String> posicaoNaoMapeadas =
                 posicoesPneusAplicados
                         .stream()
@@ -47,6 +48,21 @@ final class ProtheusNepomucenoUtils {
             throw new ProtheusNepomucenoException("As posições " + posicaoNaoMapeadas + " não estão mapeadas para a " +
                     "estrutura " + codEstruturaVeiculo + ".\n" +
                     "Realize as configurações necessárias na tela Pneus -> Nomenclaturas.");
+        }
+
+        final List<Integer> posicoesMapeadas =
+                posicoesPneusAplicados
+                        .stream()
+                        .filter(posicaoAplica -> posicaoPneuMapper.mapPosicaoToProlog(posicaoAplica) != null)
+                        .map(posicaoPneuMapper::mapPosicaoToProlog)
+                        .collect(Collectors.toList());
+
+        final List<Integer> posicoesDuplicadas = posicoesMapeadas
+                .stream()
+                .filter(posicao -> Collections.frequency(posicoesMapeadas, posicao) > 1)
+                .collect(Collectors.toList());
+        if (!posicoesDuplicadas.isEmpty()) {
+            throw new ProtheusNepomucenoException("A estrutura " + codEstruturaVeiculo + " possui posições duplicadas");
         }
     }
 
