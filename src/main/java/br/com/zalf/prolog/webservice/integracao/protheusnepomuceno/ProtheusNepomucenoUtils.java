@@ -35,9 +35,10 @@ public final class ProtheusNepomucenoUtils {
         }
     }
 
-    public static void validatePosicoesMapeadasVeiculo(@NotNull final String codEstruturaVeiculo,
-                                                       @NotNull final List<String> posicoesPneusAplicados,
-                                                       @NotNull final ProtheusNepomucenoPosicaoPneuMapper posicaoPneuMapper) {
+    public static void validatePosicoesMapeadasVeiculo(
+            @NotNull final String codEstruturaVeiculo,
+            @NotNull final List<String> posicoesPneusAplicados,
+            @NotNull final ProtheusNepomucenoPosicaoPneuMapper posicaoPneuMapper) {
         final List<String> posicaoNaoMapeadas =
                 posicoesPneusAplicados
                         .stream()
@@ -62,7 +63,9 @@ public final class ProtheusNepomucenoUtils {
                 .filter(posicao -> Collections.frequency(posicoesMapeadas, posicao) > 1)
                 .collect(Collectors.toList());
         if (!posicoesDuplicadas.isEmpty()) {
-            throw new ProtheusNepomucenoException("A estrutura " + codEstruturaVeiculo + " possui posições duplicadas");
+            throw new ProtheusNepomucenoException("As posições " + posicoesDuplicadas + " estão duplicadas para a " +
+                    "estrutura " + codEstruturaVeiculo + ".\n" +
+                    "Realize as configurações necessárias na tela Pneus -> Nomenclaturas.");
         }
     }
 

@@ -11,8 +11,6 @@ public final class ProtheusNepomucenoConstants {
     @NotNull
     public static final String[] CODIGOS_FAMILIA_NEPOMUCENO_IGNORAR = {"FA008", "FA011"};
     @NotNull
-    public static final String[] CODIGOS_MODELOS_NEPOMUCENO_MAPEAR_POSICOES = {"FA002:M0584", "FA003:M0564"};
-    @NotNull
     public static final String DEFAULT_CODIGOS_SEPARATOR = ":";
     @NotNull
     public static final String DEFAULT_COD_AUXILIAR_TIPO_VEICULO_SEPARATOR = ",";
