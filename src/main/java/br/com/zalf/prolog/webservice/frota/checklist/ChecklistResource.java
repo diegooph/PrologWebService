@@ -113,6 +113,7 @@ public final class ChecklistResource {
     @GET
     @Path("/colaboradores/{cpf}/resumidos")
     @Secured(permissions = {Pilares.Frota.Checklist.VISUALIZAR_TODOS, Pilares.Frota.Checklist.REALIZAR})
+    @Deprecated
     public List<Checklist> getByColaboradorResumidos(
             @PathParam("cpf") final Long cpf,
             @QueryParam("dataInicial") final Long dataInicial,
@@ -130,6 +131,7 @@ public final class ChecklistResource {
     @GET
     @Path("{codUnidade}/resumidos")
     @Secured(permissions = Pilares.Frota.Checklist.VISUALIZAR_TODOS)
+    @Deprecated
     public List<Checklist> getAllResumido(
             @PathParam("codUnidade") final Long codUnidade,
             @QueryParam("codEquipe") final Long codEquipe,
@@ -159,6 +161,7 @@ public final class ChecklistResource {
     @GET
     @Path("{codUnidade}/completos")
     @Secured(permissions = Pilares.Frota.Checklist.VISUALIZAR_TODOS)
+    @Deprecated
     public List<Checklist> getAllCompletos(
             @PathParam("codUnidade") final Long codUnidade,
             @QueryParam("codEquipe") final Long codEquipe,

@@ -97,10 +97,14 @@ public interface ChecklistDao {
     /**
      * Busca todos os checklists, respeitando os filtros aplicados (recebidos por parâmetro).
      *
+     * @deprecated at 2020-06-08. Use {@link ChecklistDao#getListagem(Long, Long, Long, String, LocalDate, LocalDate, int, long)}
+     * instead.
+     *
      * @return uma {@link List<Checklist> lista de checklists}.
      * @throws SQLException caso não seja possível realizar a busca.
      */
     @NotNull
+    @Deprecated
     List<Checklist> getAll(@NotNull final Long codUnidade,
                            @Nullable final Long codEquipe,
                            @Nullable final Long codTipoVeiculo,
@@ -114,9 +118,13 @@ public interface ChecklistDao {
     /**
      * Busca os checklists realizados por um colaborador.
      *
+     * @deprecated at 2020-06-08. Use {@link ChecklistDao#getListagemByColaborador(Long, LocalDate, LocalDate, int, long)}
+     * instead.
+     *
      * @return uma {@link List<Checklist> lista de checklists}.
      * @throws SQLException caso não seja possível realizar a busca.
      */
+    @Deprecated
     List<Checklist> getByColaborador(@NotNull final Long cpf,
                                      @NotNull final Long dataInicial,
                                      @NotNull final Long dataFinal,
@@ -134,6 +142,7 @@ public interface ChecklistDao {
      * @return uma {@link List<ChecklistListagem> lista de checklists}.
      * @throws SQLException caso não seja possível realizar a busca.
      */
+    @NotNull
     List<ChecklistListagem> getListagemByColaborador(@NotNull final Long cpf,
                                                      @NotNull final LocalDate dataInicial,
                                                      @NotNull final LocalDate dataFinal,

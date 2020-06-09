@@ -210,6 +210,7 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
 
     @NotNull
     @Override
+    @Deprecated
     public List<Checklist> getAll(@NotNull final Long codUnidade,
                                   @Nullable final Long codEquipe,
                                   @Nullable final Long codTipoVeiculo,
@@ -247,6 +248,7 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
     }
 
     @Override
+    @Deprecated
     public List<Checklist> getByColaborador(@NotNull final Long cpf,
                                             @NotNull final Long dataInicial,
                                             @NotNull final Long dataFinal,
@@ -280,6 +282,7 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
     /**
      * Início novas listagens de checklist
      * */
+    @NotNull
     @Override
     public List<ChecklistListagem> getListagemByColaborador(@NotNull final Long cpf,
                                                             @NotNull final LocalDate dataInicial,
