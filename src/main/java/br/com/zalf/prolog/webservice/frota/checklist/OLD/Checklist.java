@@ -1,11 +1,14 @@
 package br.com.zalf.prolog.webservice.frota.checklist.OLD;
 
 
+import br.com.zalf.prolog.webservice.frota.checklist.model.ChecklistListagem;
+import br.com.zalf.prolog.webservice.frota.checklist.model.TipoChecklist;
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -36,7 +39,12 @@ public class Checklist {
 	private int qtdItensNok;
 	private int qtdAlternativasOk;
 	private int qtdAlternativasNok;
-	
+
+	// Temp - Adiciona a quantidade de alternativas NOK por criticidade
+	private int qtdNOkBaixa;
+	private int qtdNOkAlta;
+	private int qtdNOkCritica;
+
 	public Checklist() {
 		
 	}
@@ -165,19 +173,37 @@ public class Checklist {
 		this.qtdItensNok = qtdItensNok;
 	}
 
+	public void setQtdAlternativasOk(int qtdAlternativasOk) { this.qtdAlternativasOk = qtdAlternativasOk; }
+
 	public int getQtdAlternativasOk() {
 		return qtdAlternativasOk;
 	}
 
-	public int getQtdAlternativasNok() {
-		return qtdAlternativasNok;
-	}
+	public void setQtdAlternativasNok(int qtdAlternativasNok) { this.qtdAlternativasNok = qtdAlternativasNok; }
+
+	public int getQtdAlternativasNok() { return qtdAlternativasNok; }
+
+	public int getQtdNOkBaixa() { return qtdNOkBaixa; }
+
+	public void setQtdNOkBaixa(int qtdNOkBaixa) { this.qtdNOkBaixa = qtdNOkBaixa; }
+
+	public int getQtdNOkAlta() { return qtdNOkAlta; }
+
+	public void setQtdNOkAlta(int qtdNOkAlta) {	this.qtdNOkAlta = qtdNOkAlta; }
+
+	public int getQtdNOkCritica() {	return qtdNOkCritica; }
+
+	public void setQtdNOkCritica(int qtdNOkCritica) { this.qtdNOkCritica = qtdNOkCritica; }
 
 	public void calculaQtdOkOrNok() {
 		int qtdPerguntasOk = 0;
 		int qtdPerguntasNok = 0;
 		int qtdAlternativasOk = 0;
 		int qtdAlternativasNok = 0;
+		// Temp - Adiciona a quantidade de alternativas NOK por criticidade
+		int qtdNOkBaixa = 0;
+		int qtdNOkAlta = 0;
+		int qtdNOkCritica = 0;
 		boolean perguntaTeveAlternativasNok = false;
 		for (int i = 0; i < listRespostas.size(); i++) {
 			final PerguntaRespostaChecklist checklistResposta = listRespostas.get(i);
@@ -187,6 +213,19 @@ public class Checklist {
 				if (alternativaResposta.isSelected()) {
 					qtdAlternativasNok++;
 					perguntaTeveAlternativasNok = true;
+
+					// Temp - Adiciona o cálculo da quantidade de alternativas NOK por criticidade
+					switch (alternativaResposta.getPrioridade()){
+						case BAIXA:
+							qtdNOkBaixa++;
+							break;
+						case ALTA:
+							qtdNOkAlta++;
+							break;
+						case CRITICA:
+							qtdNOkCritica++;
+							break;
+					}
 				} else {
 					qtdAlternativasOk++;
 				}
@@ -198,10 +237,14 @@ public class Checklist {
 				qtdPerguntasOk++;
 			}
 		}
-        this.qtdItensOk = qtdPerguntasOk;
-		this.qtdItensNok = qtdPerguntasNok;
-        this.qtdAlternativasOk = qtdAlternativasOk;
-        this.qtdAlternativasNok = qtdAlternativasNok;
+
+		this.setQtdItensOk(qtdPerguntasOk);
+		this.setQtdItensNok(qtdPerguntasNok);
+		this.setQtdAlternativasOk(qtdAlternativasOk);
+		this.setQtdAlternativasNok(qtdAlternativasNok);
+		this.setQtdNOkBaixa(getQtdNOkBaixa());
+		this.setQtdNOkAlta(qtdNOkAlta);
+		this.setQtdNOkCritica(getQtdNOkCritica());
 	}
 
 	@Override
@@ -219,5 +262,40 @@ public class Checklist {
 				", qtdItensOk=" + qtdItensOk +
 				", qtdItensNok=" + qtdItensNok +
 				'}';
+	}
+
+	@NotNull
+	public static ChecklistListagem toChecklistListagem(@NotNull final Checklist checklistAntigo) {
+		return new ChecklistListagem(
+				checklistAntigo.getCodigo(),
+				checklistAntigo.getCodModelo(),
+				checklistAntigo.getCodVersaoModeloChecklist(),
+				checklistAntigo.getData(),
+				checklistAntigo.getDataHoraImportadoProLog(),
+				checklistAntigo.getKmAtualVeiculo(),
+				checklistAntigo.getTempoRealizacaoCheckInMillis(),
+				-1L,
+				checklistAntigo.getColaborador().getCpf(),
+				checklistAntigo.getColaborador().getNome(),
+				-1L,
+				checklistAntigo.getPlacaVeiculo(),
+				TipoChecklist.fromChar(checklistAntigo.getTipo()),
+				checklistAntigo.getQtdItensOk(),
+				checklistAntigo.getQtdItensNok(),
+				checklistAntigo.getQtdAlternativasOk(),
+				checklistAntigo.getQtdAlternativasNok(),
+				0,
+				0,
+				checklistAntigo.getQtdNOkBaixa(),
+				checklistAntigo.getQtdNOkAlta(),
+				checklistAntigo.getQtdNOkCritica());
+	}
+
+	public static List<ChecklistListagem> listaToChecklistListagem(@NotNull final List<Checklist> checklistsAntigos){
+		final List<ChecklistListagem> checklistListagem = new ArrayList<>();
+		for (Checklist checklistAntigo: checklistsAntigos) {
+				checklistListagem.add(Checklist.toChecklistListagem(checklistAntigo));
+		}
+		return checklistListagem;
 	}
 }

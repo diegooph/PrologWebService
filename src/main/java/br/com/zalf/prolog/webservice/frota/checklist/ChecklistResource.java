@@ -35,6 +35,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.io.InputStream;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -106,7 +107,7 @@ public final class ChecklistResource {
     }
 
     /**
-     * @deprecated at 2020-06-08. Use {@link ChecklistResource#getListagemByColaborador(Long, Long, Long, int, long, String)}
+     * @deprecated at 2020-06-08. Use {@link ChecklistResource#getListagemByColaborador(Long, String, String, int, long, String)}
      * instead.
      */
     @GET
@@ -123,7 +124,7 @@ public final class ChecklistResource {
     }
 
     /**
-     * @deprecated at 2020-06-08. Use {@link ChecklistResource#getListagem(Long, Long, Long, String, long, long, int, long, String)}
+     * @deprecated at 2020-06-08. Use {@link ChecklistResource#getListagem(Long, Long, Long, String, String, String, int, long, String)}
      * instead.
      */
     @GET
@@ -189,8 +190,8 @@ public final class ChecklistResource {
     @Secured(permissions = {Pilares.Frota.Checklist.VISUALIZAR_TODOS, Pilares.Frota.Checklist.REALIZAR})
     public List<ChecklistListagem> getListagemByColaborador(
             @QueryParam("cpf") final Long cpf,
-            @QueryParam("dataInicial") final Long dataInicial,
-            @QueryParam("dataFinal") final Long dataFinal,
+            @QueryParam("dataInicial") final String dataInicial,
+            @QueryParam("dataFinal") final String dataFinal,
             @QueryParam("limit") final int limit,
             @QueryParam("offset") final long offset,
             @HeaderParam("Authorization") final String userToken) {
@@ -205,8 +206,8 @@ public final class ChecklistResource {
             @QueryParam("codEquipe") final Long codEquipe,
             @QueryParam("codTipoVeiculo") final Long codTipoVeiculo,
             @QueryParam("placaVeiculo") final String placaVeiculo,
-            @QueryParam("dataInicial") final long dataInicial,
-            @QueryParam("dataFinal") final long dataFinal,
+            @QueryParam("dataInicial") final String dataInicial,
+            @QueryParam("dataFinal") final String dataFinal,
             @QueryParam("limit") final int limit,
             @QueryParam("offset") final long offset,
             @HeaderParam("Authorization") final String userToken) {

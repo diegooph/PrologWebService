@@ -282,8 +282,8 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
      * */
     @Override
     public List<ChecklistListagem> getListagemByColaborador(@NotNull final Long cpf,
-                                                            @NotNull final Long dataInicial,
-                                                            @NotNull final Long dataFinal,
+                                                            @NotNull final LocalDate dataInicial,
+                                                            @NotNull final LocalDate dataFinal,
                                                             final int limit,
                                                             final long offset) throws Throwable {
         Connection conn = null;
@@ -294,8 +294,8 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
             stmt = conn.prepareStatement("SELECT * " +
                     "FROM FUNC_CHECKLIST_GET_REALIZADOS_BY_COLABORADOR(?, ?, ?, ?, ?, ?);");
             stmt.setLong(1, cpf);
-            stmt.setDate(2, new java.sql.Date(dataInicial));
-            stmt.setDate(3, new java.sql.Date(dataFinal));
+            stmt.setObject(2, dataInicial);
+            stmt.setObject(3, dataFinal);
             stmt.setString(4, TimeZoneManager.getZoneIdForCpf(cpf, conn).getId());
             stmt.setInt(5, limit);
             stmt.setLong(6, offset);
@@ -316,8 +316,8 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
                                                @Nullable final Long codEquipe,
                                                @Nullable final Long codTipoVeiculo,
                                                @Nullable final String placaVeiculo,
-                                               final long dataInicial,
-                                               final long dataFinal,
+                                               @NotNull final LocalDate dataInicial,
+                                               @NotNull final LocalDate dataFinal,
                                                final int limit,
                                                final long offset) throws Throwable {
         Connection conn = null;
@@ -331,8 +331,8 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
             bindValueOrNull(stmt, 2, codEquipe, SqlType.BIGINT);
             bindValueOrNull(stmt, 3, codTipoVeiculo, SqlType.BIGINT);
             bindValueOrNull(stmt, 4, placaVeiculo, SqlType.VARCHAR);
-            stmt.setDate(5, new java.sql.Date(dataInicial));
-            stmt.setDate(6, new java.sql.Date(dataFinal));
+            stmt.setObject(5, dataInicial);
+            stmt.setObject(6, dataFinal);
             stmt.setString(7, TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId());
             stmt.setInt(8, limit);
             stmt.setLong(9, offset);

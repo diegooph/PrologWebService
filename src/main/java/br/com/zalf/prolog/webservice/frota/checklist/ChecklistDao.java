@@ -135,8 +135,8 @@ public interface ChecklistDao {
      * @throws SQLException caso não seja possível realizar a busca.
      */
     List<ChecklistListagem> getListagemByColaborador(@NotNull final Long cpf,
-                                                     @NotNull final Long dataInicial,
-                                                     @NotNull final Long dataFinal,
+                                                     @NotNull final LocalDate dataInicial,
+                                                     @NotNull final LocalDate dataFinal,
                                                      final int limit,
                                                      final long offset) throws Throwable;
 
@@ -151,8 +151,8 @@ public interface ChecklistDao {
                                         @Nullable final Long codEquipe,
                                         @Nullable final Long codTipoVeiculo,
                                         @Nullable final String placaVeiculo,
-                                        final long dataInicial,
-                                        final long dataFinal,
+                                        @NotNull final LocalDate dataInicial,
+                                        @NotNull final LocalDate dataFinal,
                                         final int limit,
                                         final long offset) throws Throwable;
     /**

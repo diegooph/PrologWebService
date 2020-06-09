@@ -353,10 +353,10 @@ public abstract class Router implements OperacoesIntegradas {
     @NotNull
     @Override
     public List<ChecklistListagem> getListagemByColaborador(@NotNull final Long cpf,
-                                                            @NotNull final Long dataInicial,
-                                                            @NotNull final Long dataFinal,
+                                                            @NotNull final LocalDate dataInicial,
+                                                            @NotNull final LocalDate dataFinal,
                                                             final int limit,
-                                                            final long offset) throws Exception {
+                                                            final long offset) throws Throwable {
         if (getSistema() != null) {
             return getSistema().getListagemByColaborador(cpf, dataInicial, dataFinal, limit, offset);
         } else {
@@ -370,10 +370,10 @@ public abstract class Router implements OperacoesIntegradas {
                                                @Nullable final Long codEquipe,
                                                @Nullable final Long codTipoVeiculo,
                                                @Nullable final String placaVeiculo,
-                                               final long dataInicial,
-                                               final long dataFinal,
+                                               @NotNull final LocalDate dataInicial,
+                                               @NotNull final LocalDate dataFinal,
                                                final int limit,
-                                               final long offset) throws Exception {
+                                               final long offset) throws Throwable {
         if (getSistema() != null) {
             return getSistema()
                     .getListagem(codUnidade, codEquipe, codTipoVeiculo, placaVeiculo, dataInicial, dataFinal,

@@ -176,17 +176,22 @@ public final class ChecklistService {
      * Novos services de listagem
      */
     public List<ChecklistListagem> getListagemByColaborador(final Long cpf,
-                                                            final Long dataInicial,
-                                                            final Long dataFinal,
+                                                            final String dataInicial,
+                                                            final String dataFinal,
                                                             final int limit,
                                                             final long offset,
                                                             final String userToken) {
         try {
             return RouterChecklists
                     .create(dao, userToken)
-                    .getListagemByColaborador(cpf, dataInicial, dataFinal, limit, offset);
-        } catch (final Exception e) {
-            Log.e(TAG, "Erro ao buscar os checklists de um colaborador específico", e);
+                    .getListagemByColaborador(
+                            cpf,
+                            ProLogDateParser.toLocalDate(dataInicial),
+                            ProLogDateParser.toLocalDate(dataFinal),
+                            limit,
+                            offset);
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao buscar os checklists de um colaborador específico", t);
             throw new RuntimeException("Erro ao buscar checklists para o colaborador: " + cpf);
         }
     }
@@ -195,16 +200,23 @@ public final class ChecklistService {
                                                final Long codEquipe,
                                                final Long codTipoVeiculo,
                                                final String placaVeiculo,
-                                               final long dataInicial,
-                                               final long dataFinal,
+                                               final String dataInicial,
+                                               final String dataFinal,
                                                final int limit,
                                                final long offset,
                                                final String userToken) {
         try {
             return RouterChecklists
                     .create(dao, userToken)
-                    .getListagem(codUnidade, codEquipe, codTipoVeiculo, placaVeiculo, dataInicial, dataFinal,
-                            limit, offset);
+                    .getListagem(
+                            codUnidade,
+                            codEquipe,
+                            codTipoVeiculo,
+                            placaVeiculo,
+                            ProLogDateParser.toLocalDate(dataInicial),
+                            ProLogDateParser.toLocalDate(dataFinal),
+                            limit,
+                            offset);
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao buscar checklists", t);
             throw Injection

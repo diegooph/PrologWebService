@@ -83,20 +83,20 @@ interface OperacoesIntegradasChecklist {
      * */
     @NotNull
     List<ChecklistListagem> getListagemByColaborador(@NotNull final Long cpf,
-                                                     @NotNull final Long dataInicial,
-                                                     @NotNull final Long dataFinal,
+                                                     @NotNull final LocalDate dataInicial,
+                                                     @NotNull final LocalDate dataFinal,
                                                      final int limit,
-                                                     final long offset) throws Exception;
+                                                     final long offset) throws Throwable;
 
     @NotNull
     List<ChecklistListagem> getListagem(@NotNull final Long codUnidade,
                                         @Nullable final Long codEquipe,
                                         @Nullable final Long codTipoVeiculo,
                                         @Nullable final String placaVeiculo,
-                                        final long dataInicial,
-                                        final long dataFinal,
+                                        @NotNull LocalDate dataInicial,
+                                        @NotNull LocalDate dataFinal,
                                         final int limit,
-                                        final long offset) throws Exception;
+                                        final long offset) throws Throwable;
     /**
      * Fim novos routers
      * */

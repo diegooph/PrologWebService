@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan;
 
+import br.com.zalf.prolog.webservice.frota.checklist.model.ChecklistListagem;
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.errorhandling.exception.BloqueadoIntegracaoException;
@@ -244,6 +245,70 @@ public final class AvaCorpAvilan extends Sistema {
 
         final List<Checklist> checklists = paginateAndConvertChecklists(checklistsFiltro, limit, offset, resumido);
         return Checklist.sortByDate(checklists, false);
+    }
+
+    @NotNull
+    @Override
+    public List<ChecklistListagem> getListagemByColaborador(@NotNull final Long cpf,
+                                                            @NotNull LocalDate dataInicial,
+                                                            @NotNull LocalDate dataFinal,
+                                                            final int limit,
+                                                            final long offset) throws Exception {
+        final FilialUnidadeAvilanProLog filialUnidade = getAvaCorpAvilanDao()
+                .getFilialUnidadeAvilanByCodUnidadeProLog(getCodUnidade());
+        final List<ChecklistFiltro> checklistsFiltro = requester.getChecklistsByColaborador(
+                filialUnidade.getCodFilialAvilan(),
+                filialUnidade.getCodUnidadeAvilan(),
+                "",
+                "",
+                AvaCorpAvilanUtils.createDatePattern(dataInicial),
+                AvaCorpAvilanUtils.createDatePattern(dataInicial),
+                getCpf(),
+                getDataNascimento()).getChecklistFiltro();
+
+        final List<ChecklistFiltro> checksColaborador = new ArrayList<>();
+        for (ChecklistFiltro checklist : checklistsFiltro) {
+            if (checklist.getColaborador().getCpf().equals(getCpf())) {
+                checksColaborador.add(checklist);
+            }
+        }
+
+        // TODO: Validar essa parte da conversão da integração.
+        List<Checklist> checklists = paginateAndConvertChecklists(checksColaborador, limit, offset, false);
+        checklists = Checklist.sortByDate(checklists, false);
+        return Checklist.listaToChecklistListagem(checklists);
+    }
+
+    @NotNull
+    @Override
+    public List<ChecklistListagem> getListagem(@NotNull final Long codUnidade,
+                                               @Nullable final Long codEquipe,
+                                               @Nullable final Long codTipoVeiculo,
+                                               @Nullable final String placaVeiculo,
+                                               @NotNull final LocalDate dataInicial,
+                                               @NotNull final LocalDate dataFinal,
+                                               final int limit,
+                                               final long offset) throws Exception {
+        final AvaCorpAvilanDaoImpl dao = getAvaCorpAvilanDao();
+        final FilialUnidadeAvilanProLog filialUnidade = dao.getFilialUnidadeAvilanByCodUnidadeProLog(codUnidade);
+
+        final String cpf = getCpf();
+        final String dataNascimento = getDataNascimento();
+        final List<ChecklistFiltro> checklistsFiltro = requester.getChecklists(
+                filialUnidade.getCodFilialAvilan(),
+                filialUnidade.getCodUnidadeAvilan(),
+                codTipoVeiculo != null ? dao.getCodTipoVeiculoAvilanByCodTipoVeiculoProLog(codTipoVeiculo) : "",
+                placaVeiculo != null ? placaVeiculo : "",
+                AvaCorpAvilanUtils.createDatePattern(dataInicial),
+                AvaCorpAvilanUtils.createDatePattern(dataFinal),
+                cpf,
+                dataNascimento).getChecklistFiltro();
+
+        // TODO: Validar essa parte da conversão da integração.
+        List<Checklist> checklists = paginateAndConvertChecklists(checklistsFiltro, limit, offset, false);
+        checklists = Checklist.sortByDate(checklists, false);
+        return Checklist.listaToChecklistListagem(checklists);
+
     }
 
     @NotNull
