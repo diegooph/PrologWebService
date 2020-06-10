@@ -37,9 +37,9 @@ colunas:
     nomeColunaLegivel: 'Frota'
     # Existem dados vazios na base.
     colunaObrigatoria: false
-    padraoPreenchimentoColuna: 'LETRAS'
-    padraoPreenchimentoColunaLegivel: 'Letras'
-    regexValidacaoPadraoPreenchimento: '^[a-zA-Z]+$'
+    padraoPreenchimentoColuna: 'TEXTO'
+    padraoPreenchimentoColunaLegivel: 'Texto'
+    regexValidacaoPadraoPreenchimento: '.*'
     exemploPreenchimento: 'Padrao, Spot'
   5:
     nomeColunaPlanilha: 'CustoSpot'
