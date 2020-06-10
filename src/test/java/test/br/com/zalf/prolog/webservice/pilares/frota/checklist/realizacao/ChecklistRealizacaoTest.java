@@ -54,7 +54,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public final class ChecklistRealizacaoTest extends BaseTest {
     private static final String CPF_TOKEN = "03383283194";
     // Token da unidade 5.
-    private static final String TOKEN_CHECK_OFF = "token_check_off_teste_unidade_5";
+    private static final String TOKEN_CHECK_OFF = "token_teste_unidade_5";
     private ChecklistModeloService service;
     private String token;
 
