@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.checklist.offline.model;
 
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
-import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.CapturaFotoChecklistEnum;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.AnexoMidiaChecklistEnum;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -49,10 +49,10 @@ public final class AlternativaModeloChecklistOffline {
     private final PrioridadeAlternativa prioridadeAlternativa;
 
     /**
-     * Atributo {@link CapturaFotoChecklistEnum} que representa a parametrização da coleta de fotos para a alternativa.
+     * Atributo {@link AnexoMidiaChecklistEnum} que representa a parametrização da coleta de mídias para a alternativa.
      */
     @NotNull
-    private final CapturaFotoChecklistEnum capturaFotos;
+    private final AnexoMidiaChecklistEnum anexoMidia;
 
     AlternativaModeloChecklistOffline(@NotNull final Long codigo,
                                       @NotNull final Long codigoContexto,
@@ -60,14 +60,14 @@ public final class AlternativaModeloChecklistOffline {
                                       final boolean tipoOutros,
                                       final int ordemExibicao,
                                       @NotNull final PrioridadeAlternativa prioridadeAlternativa,
-                                      @NotNull final CapturaFotoChecklistEnum capturaFotos) {
+                                      @NotNull final AnexoMidiaChecklistEnum anexoMidia) {
         this.codigo = codigo;
         this.codigoContexto = codigoContexto;
         this.descricao = descricao;
         this.tipoOutros = tipoOutros;
         this.ordemExibicao = ordemExibicao;
         this.prioridadeAlternativa = prioridadeAlternativa;
-        this.capturaFotos = capturaFotos;
+        this.anexoMidia = anexoMidia;
     }
 
     @NotNull
@@ -99,5 +99,5 @@ public final class AlternativaModeloChecklistOffline {
     }
 
     @NotNull
-    public CapturaFotoChecklistEnum getCapturaFotos() { return capturaFotos; }
+    public AnexoMidiaChecklistEnum getAnexoMidia() { return anexoMidia; }
 }

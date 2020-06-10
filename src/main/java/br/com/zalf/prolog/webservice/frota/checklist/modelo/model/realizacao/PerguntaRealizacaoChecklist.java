@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.checklist.modelo.model.realizacao;
 
-import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.CapturaFotoChecklistEnum;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.AnexoMidiaChecklistEnum;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.model.AlternativaModeloChecklistOffline;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -51,11 +51,11 @@ public final class PerguntaRealizacaoChecklist {
     private final boolean singleChoice;
 
     /**
-     * Atributo {@link CapturaFotoChecklistEnum} que representa a parametrização da coleta de fotos para a pergunta
+     * Atributo {@link AnexoMidiaChecklistEnum} que representa a parametrização da coleta de mídias para a pergunta
      * caso a resposta seja OK.
      */
     @NotNull
-    private final CapturaFotoChecklistEnum capturaFotosRespostaOk;
+    private final AnexoMidiaChecklistEnum anexoMidiaRespostaOk;
 
     /**
      * {@link AlternativaModeloChecklistOffline Alternativas} disponíveis para está pergunta.
@@ -69,7 +69,7 @@ public final class PerguntaRealizacaoChecklist {
                                        @Nullable final String urlImagem,
                                        final int ordemExibicao,
                                        final boolean singleChoice,
-                                       @NotNull final CapturaFotoChecklistEnum capturaFotosRespostaOk,
+                                       @NotNull final AnexoMidiaChecklistEnum anexoMidiaRespostaOk,
                                        @NotNull final List<AlternativaRealizacaoChecklist> alternativas) {
         this.codigo = codigo;
         this.descricao = descricao;
@@ -77,7 +77,7 @@ public final class PerguntaRealizacaoChecklist {
         this.urlImagem = urlImagem;
         this.ordemExibicao = ordemExibicao;
         this.singleChoice = singleChoice;
-        this.capturaFotosRespostaOk = capturaFotosRespostaOk;
+        this.anexoMidiaRespostaOk = anexoMidiaRespostaOk;
         this.alternativas = alternativas;
     }
 
@@ -110,8 +110,8 @@ public final class PerguntaRealizacaoChecklist {
     }
 
     @NotNull
-    public CapturaFotoChecklistEnum getCapturaFotosRespostaOk() {
-        return capturaFotosRespostaOk;
+    public AnexoMidiaChecklistEnum getAnexoMidiaRespostaOk() {
+        return anexoMidiaRespostaOk;
     }
 
     @NotNull
