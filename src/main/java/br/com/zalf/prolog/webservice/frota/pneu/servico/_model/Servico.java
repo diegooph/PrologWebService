@@ -213,8 +213,13 @@ public abstract class Servico {
         this.formaColetaDadosFechamento = formaColetaDadosFechamento;
     }
 
+    /**
+     * Dessa forma conseguimos deixar apps antigos funcionando.
+     */
     @Nullable
-    public String getFormaColetaDadosFechamentoAsStringOrNull() {
-        return formaColetaDadosFechamento != null ? formaColetaDadosFechamento.toString() : null;
+    public String getFormaColetaDadosFechamentoAsStringOrEquipamentoIfNull() {
+        return formaColetaDadosFechamento != null
+                ? formaColetaDadosFechamento.toString()
+                : FormaColetaDadosAfericaoEnum.EQUIPAMENTO.toString();
     }
 }

@@ -332,7 +332,7 @@ final class ServicoQueryBinder {
         stmt.setDouble(3, servico.getPressaoColetadaFechamento());
         stmt.setLong(4, servico.getKmVeiculoMomentoFechamento());
         stmt.setLong(5, servico.getTempoRealizacaoServicoInMillis());
-        stmt.setString(6, servico.getFormaColetaDadosFechamentoAsStringOrNull());
+        stmt.setString(6, servico.getFormaColetaDadosFechamentoAsStringOrEquipamentoIfNull());
         stmt.setLong(7, servico.getCodigo());
         stmt.setString(8, servico.getTipoServico().asString());
         return stmt;
@@ -359,7 +359,7 @@ final class ServicoQueryBinder {
         stmt.setLong(4, servico.getKmVeiculoMomentoFechamento());
         stmt.setLong(5, servico.getAlternativaSelecionada().codigo);
         stmt.setLong(6, servico.getTempoRealizacaoServicoInMillis());
-        stmt.setString(7, servico.getFormaColetaDadosFechamentoAsStringOrNull());
+        stmt.setString(7, servico.getFormaColetaDadosFechamentoAsStringOrEquipamentoIfNull());
         stmt.setLong(8, servico.getCodigo());
         stmt.setString(9, servico.getTipoServico().asString());
         return stmt;
@@ -389,7 +389,7 @@ final class ServicoQueryBinder {
         stmt.setDouble(5, servico.getPressaoColetadaFechamento());
         stmt.setLong(6, servico.getTempoRealizacaoServicoInMillis());
         stmt.setLong(7, servico.getPneuNovo().getCodigo());
-        stmt.setString(8, servico.getFormaColetaDadosFechamentoAsStringOrNull());
+        stmt.setString(8, servico.getFormaColetaDadosFechamentoAsStringOrEquipamentoIfNull());
         stmt.setLong(9, servico.getCodigo());
         stmt.setString(10, servico.getTipoServico().asString());
         return stmt;

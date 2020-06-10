@@ -479,11 +479,11 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
                     "where v.placa = ?;");
             stmt.setString(1, placa);
             rSet = stmt.executeQuery();
-            if (rSet.next() && rSet.isLast()) {
+            if (rSet.next()) {
                 return FormaColetaDadosAfericaoEnum.fromString(rSet.getString(1));
             } else {
-                throw new IllegalStateException("Erro ao buscar forma de coleta dos dados de fechamento de serviço " +
-                        "para a placa: " + placa);
+                // Se não houver parametrização definida, retornamos a default que é EQUIPAMENTO.
+                return FormaColetaDadosAfericaoEnum.EQUIPAMENTO;
             }
         } finally {
             close(stmt, rSet);
