@@ -97,8 +97,10 @@ public final class PlanilhaMapaValidator {
                 String.format(
                         "A coluna \"%s\" na linha %d está com o valor incorreto!",
                         campo.getNomeColunaPlanilha(),
-                        // + 1 para bater com a linha ao visualizar o arquivo no excel.
-                        rowIndex + 1),
+                        // + 2 para bater com a linha ao visualizar o arquivo no excel.
+                        // Somamos 1 por conta do arquivo ter um header de uma linha.
+                        // Somamos mais 1 por conta do java começar o index no 0.
+                        rowIndex + 2),
                 StringUtils.isNullOrEmpty(valorRecebido) ? "valor não fornecido" : valorRecebido,
                 campo.getExemploPreenchimento()));
     }
