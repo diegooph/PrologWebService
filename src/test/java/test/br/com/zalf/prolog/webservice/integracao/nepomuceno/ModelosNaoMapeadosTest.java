@@ -37,7 +37,7 @@ public final class ModelosNaoMapeadosTest {
     @NotNull
     private static final String URL_NOVA_AFERICAO = "http://mercurio.expressonepomuceno.com.br:9052/rest/NOVA_AFERICAO";
     @NotNull
-    private static final String COD_FILIAIS = "09:02,09:04,01:21";
+    private static final String COD_FILIAIS = "01:21,09:04,09:02";
     @NotNull
     private static final String COD_TODAS_FILIAIS =
             "09:02,01:21,09:04,01:06,01:16,01:56,01:23,01:52,01:11,01:29,01:01,01:63,01:59,01:32,01:03,01:27";
@@ -115,6 +115,9 @@ public final class ModelosNaoMapeadosTest {
         try {
             conn = provider.provideDatabaseConnection();
             for (final VeiculoListagemProtheusNepomuceno placa : placasFiltradas) {
+                if (!placa.temPneusAplicados()) {
+                    continue;
+                }
                 try {
                     final VeiculoAfericaoProtheusNepomuceno veiculoAfericao =
                             requester.getPlacaPneusAfericaoPlaca(

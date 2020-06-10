@@ -169,4 +169,8 @@ public final class VeiculoListagemProtheusNepomuceno {
         }
         return false;
     }
+
+    public boolean temPneusAplicados() {
+        return qtdPneusAplicadosVeiculo > 0;
+    }
 }
