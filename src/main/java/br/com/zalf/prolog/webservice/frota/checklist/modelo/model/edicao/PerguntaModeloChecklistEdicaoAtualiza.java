@@ -28,7 +28,7 @@ public final class PerguntaModeloChecklistEdicaoAtualiza extends PerguntaModeloC
     private final int ordemExibicao;
     private final boolean singleChoice;
     @NotNull
-    private final AnexoMidiaChecklistEnum capturaFotosRespostaOk;
+    private final AnexoMidiaChecklistEnum anexoMidiaRespostaOk;
     @NotNull
     private final List<AlternativaModeloChecklistEdicao> alternativas;
 

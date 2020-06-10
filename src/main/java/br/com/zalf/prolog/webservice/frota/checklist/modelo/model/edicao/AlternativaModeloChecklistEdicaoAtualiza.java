@@ -26,5 +26,5 @@ public final class AlternativaModeloChecklistEdicaoAtualiza extends AlternativaM
     private final int ordemExibicao;
     private final boolean deveAbrirOrdemServico;
     @NotNull
-    private final AnexoMidiaChecklistEnum capturaFotos;
+    private final AnexoMidiaChecklistEnum anexoMidia;
 }

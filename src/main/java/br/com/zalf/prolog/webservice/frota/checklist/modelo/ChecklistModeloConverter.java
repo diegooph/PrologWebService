@@ -148,7 +148,7 @@ public final class ChecklistModeloConverter {
                 rSet.getString("URL_IMAGEM"),
                 rSet.getInt("ORDEM_PERGUNTA"),
                 rSet.getBoolean("SINGLE_CHOICE"),
-                AnexoMidiaChecklistEnum.fromString(rSet.getString("CAPTURA_FOTOS_RESPOSTA_OK_PERGUNTA")),
+                AnexoMidiaChecklistEnum.fromString(rSet.getString("ANEXO_MIDIA_RESPOSTA_OK_PERGUNTA")),
                 alternativas);
     }
 
@@ -163,7 +163,7 @@ public final class ChecklistModeloConverter {
                 rSet.getBoolean("ALTERNATIVA_TIPO_OUTROS"),
                 rSet.getInt("ORDEM_ALTERNATIVA"),
                 rSet.getBoolean("DEVE_ABRIR_ORDEM_SERVICO"),
-                AnexoMidiaChecklistEnum.fromString(rSet.getString("CAPTURA_FOTOS_ALTERNATIVA")));
+                AnexoMidiaChecklistEnum.fromString(rSet.getString("ANEXO_MIDIA_ALTERNATIVA")));
     }
 
     @NotNull

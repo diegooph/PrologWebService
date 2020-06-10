@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 @Data
-public final class SuccessResponseChecklistUploadImagem {
+public final class SuccessResponseChecklistUploadMidia {
     @NotNull
-    private final String urlImagem;
+    private final String urlMidia;
 }

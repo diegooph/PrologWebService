@@ -23,7 +23,7 @@ public final class AlternativaModeloChecklistInsercao extends AlternativaModeloC
     private final int ordemExibicao;
     private final boolean deveAbrirOrdemServico;
     @NotNull
-    private final AnexoMidiaChecklistEnum capturaFotos;
+    private final AnexoMidiaChecklistEnum anexoMidia;
 
     @NotNull
     @Override

@@ -9,7 +9,7 @@
       "codImagem": 1,
       "ordemExibicao": 1,
       "singleChoice": false,
-      "capturaFotosRespostaOk": "BLOQUEADO",
+      "anexoMidiaRespostaOk": "BLOQUEADO",
       "alternativas": [
         {
           "descricao": "Fora de foco",
@@ -17,7 +17,7 @@
           "tipoOutros": false,
           "ordemExibicao": 1,
           "deveAbrirOrdemServico": true,
-          "capturaFotos": "BLOQUEADO"
+          "anexoMidia": "BLOQUEADO"
         },
         {
           "descricao": "Lâmpada queimada",
@@ -25,7 +25,7 @@
           "tipoOutros": false,
           "ordemExibicao": 2,
           "deveAbrirOrdemServico": true,
-          "capturaFotos": "BLOQUEADO"
+          "anexoMidia": "BLOQUEADO"
         },
         {
           "descricao": "Lanterna quebrada",
@@ -33,7 +33,7 @@
           "tipoOutros": false,
           "ordemExibicao": 3,
           "deveAbrirOrdemServico": true,
-          "capturaFotos": "BLOQUEADO"
+          "anexoMidia": "BLOQUEADO"
         },
         {
           "descricao": "Outros",
@@ -41,7 +41,7 @@
           "tipoOutros": true,
           "ordemExibicao": 4,
           "deveAbrirOrdemServico": false,
-          "capturaFotos": "BLOQUEADO"
+          "anexoMidia": "BLOQUEADO"
         }
       ]
     },
@@ -49,7 +49,7 @@
       "descricao": "Cinto de segurança",
       "ordemExibicao": 2,
       "singleChoice": false,
-      "capturaFotosRespostaOk": "BLOQUEADO",
+      "anexoMidiaRespostaOk": "BLOQUEADO",
       "alternativas": [
         {
           "descricao": "Não trava",
@@ -57,7 +57,7 @@
           "tipoOutros": false,
           "ordemExibicao": 1,
           "deveAbrirOrdemServico": true,
-          "capturaFotos": "BLOQUEADO"
+          "anexoMidia": "BLOQUEADO"
         },
         {
           "descricao": "Sensor não funciona",
@@ -65,7 +65,7 @@
           "tipoOutros": false,
           "ordemExibicao": 2,
           "deveAbrirOrdemServico": true,
-          "capturaFotos": "BLOQUEADO"
+          "anexoMidia": "BLOQUEADO"
         },
         {
           "descricao": "Outros",
@@ -73,7 +73,7 @@
           "tipoOutros": true,
           "ordemExibicao": 3,
           "deveAbrirOrdemServico": false,
-          "capturaFotos": "BLOQUEADO"
+          "anexoMidia": "BLOQUEADO"
         }
       ]
     }
