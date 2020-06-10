@@ -172,8 +172,6 @@ public final class SistemaProtheusNepomucenoDaoImpl extends DatabaseConnection i
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            // TODO - Alterar essa funcition para retornar o 'padrão prolog' caso não tiver uma configuração já
-            //  pré-definida. Ainda não fizemos isso pois o Gustavo está alterando essa func em outra tarefa.
             stmt = conn.prepareStatement("select * " +
                     "from integracao.func_pneu_afericao_get_infos_configuracao_afericao(f_cod_unidades => ?);");
             stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
