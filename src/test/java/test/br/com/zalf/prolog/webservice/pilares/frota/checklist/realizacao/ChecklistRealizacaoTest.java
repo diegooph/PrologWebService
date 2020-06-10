@@ -15,7 +15,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistIns
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistResposta;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloService;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.AlternativaModeloChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.CapturaFotoChecklistEnum;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.AnexoMidiaChecklistEnum;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.AlternativaModeloChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ModeloChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.PerguntaModeloChecklistInsercao;
@@ -92,7 +92,7 @@ public final class ChecklistRealizacaoTest extends BaseTest {
                     false,
                     1,
                     false,
-                    CapturaFotoChecklistEnum.BLOQUEADO));
+                    AnexoMidiaChecklistEnum.BLOQUEADO));
             // A2.
             alternativas.add(new AlternativaModeloChecklistInsercao(
                     "Outros",
@@ -100,14 +100,14 @@ public final class ChecklistRealizacaoTest extends BaseTest {
                     true,
                     2,
                     true,
-                    CapturaFotoChecklistEnum.BLOQUEADO));
+                    AnexoMidiaChecklistEnum.BLOQUEADO));
 
             perguntas.add(new PerguntaModeloChecklistInsercao(
                     "P1",
                     1L,
                     1,
                     true,
-                    CapturaFotoChecklistEnum.BLOQUEADO,
+                    AnexoMidiaChecklistEnum.BLOQUEADO,
                     alternativas));
         }
 
@@ -122,7 +122,7 @@ public final class ChecklistRealizacaoTest extends BaseTest {
                     false,
                     1,
                     true,
-                    CapturaFotoChecklistEnum.BLOQUEADO));
+                    AnexoMidiaChecklistEnum.BLOQUEADO));
             // B2.
             alternativas.add(new AlternativaModeloChecklistInsercao(
                     "Outros",
@@ -130,14 +130,14 @@ public final class ChecklistRealizacaoTest extends BaseTest {
                     true,
                     2,
                     false,
-                    CapturaFotoChecklistEnum.BLOQUEADO));
+                    AnexoMidiaChecklistEnum.BLOQUEADO));
 
             perguntas.add(new PerguntaModeloChecklistInsercao(
                     "P2",
                     null,
                     2,
                     false,
-                    CapturaFotoChecklistEnum.BLOQUEADO,
+                    AnexoMidiaChecklistEnum.BLOQUEADO,
                     alternativas));
         }
 
@@ -322,7 +322,7 @@ public final class ChecklistRealizacaoTest extends BaseTest {
                     false,
                     1,
                     false,
-                    CapturaFotoChecklistEnum.BLOQUEADO));
+                    AnexoMidiaChecklistEnum.BLOQUEADO));
             // A2.
             alternativas.add(new AlternativaModeloChecklistInsercao(
                     "Outros",
@@ -330,14 +330,14 @@ public final class ChecklistRealizacaoTest extends BaseTest {
                     true,
                     2,
                     true,
-                    CapturaFotoChecklistEnum.BLOQUEADO));
+                    AnexoMidiaChecklistEnum.BLOQUEADO));
 
             perguntas.add(new PerguntaModeloChecklistInsercao(
                     "P1",
                     1L,
                     1,
                     true,
-                    CapturaFotoChecklistEnum.BLOQUEADO,
+                    AnexoMidiaChecklistEnum.BLOQUEADO,
                     alternativas));
         }
 
@@ -352,7 +352,7 @@ public final class ChecklistRealizacaoTest extends BaseTest {
                     false,
                     1,
                     true,
-                    CapturaFotoChecklistEnum.BLOQUEADO));
+                    AnexoMidiaChecklistEnum.BLOQUEADO));
             // B2.
             alternativas.add(new AlternativaModeloChecklistInsercao(
                     "Outros",
@@ -360,14 +360,14 @@ public final class ChecklistRealizacaoTest extends BaseTest {
                     true,
                     2,
                     false,
-                    CapturaFotoChecklistEnum.BLOQUEADO));
+                    AnexoMidiaChecklistEnum.BLOQUEADO));
 
             perguntas.add(new PerguntaModeloChecklistInsercao(
                     "P2",
                     null,
                     2,
                     false,
-                    CapturaFotoChecklistEnum.BLOQUEADO,
+                    AnexoMidiaChecklistEnum.BLOQUEADO,
                     alternativas));
         }
 

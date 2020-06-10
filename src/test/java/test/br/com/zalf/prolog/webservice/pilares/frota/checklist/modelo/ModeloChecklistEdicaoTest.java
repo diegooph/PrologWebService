@@ -8,7 +8,7 @@ import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloService;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.AlternativaModeloChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.CapturaFotoChecklistEnum;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.AnexoMidiaChecklistEnum;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.PerguntaModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.*;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ModeloChecklistInsercao;
@@ -499,7 +499,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                         // Mesma ordem da alternativa removida para evitar qualquer outro problema.
                         1,
                         true,
-                        CapturaFotoChecklistEnum.BLOQUEADO));
+                        AnexoMidiaChecklistEnum.BLOQUEADO));
 
         final ModeloChecklistEdicao editado = createModeloEdicao(modeloBuscado, perguntas, cargos, tiposVeiculo);
         service.updateModeloChecklist(
@@ -569,7 +569,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                         false,
                         3,
                         true,
-                        CapturaFotoChecklistEnum.BLOQUEADO));
+                        AnexoMidiaChecklistEnum.BLOQUEADO));
         perguntas.get(1).getAlternativas().add(
                 new AlternativaModeloChecklistEdicaoInsere(
                         "Outros",
@@ -1002,7 +1002,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                         false,
                         4,
                         true,
-                        CapturaFotoChecklistEnum.BLOQUEADO));
+                        AnexoMidiaChecklistEnum.BLOQUEADO));
         perguntas.get(0).getAlternativas().add(
                 new AlternativaModeloChecklistEdicaoInsere(
                         "Outros",
@@ -1593,7 +1593,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                         p1.getCodImagem(),
                         p1.getOrdemExibicao(),
                         p1.isSingleChoice(),
-                        CapturaFotoChecklistEnum.OBRIGATORIO,
+                        AnexoMidiaChecklistEnum.OBRIGATORIO,
                         p1.getAlternativas()
                                 .stream()
                                 .map(a -> new AlternativaModeloChecklistEdicaoAtualiza(
@@ -1632,8 +1632,8 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
 
             // 'Farol' está com captura de fotos diferente.
             assertThat(p1Depois.getDescricao()).isEqualTo("Farol");
-            assertThat(p1Antes.getCapturaFotosRespostaOk()).isEqualTo(CapturaFotoChecklistEnum.BLOQUEADO);
-            assertThat(p1Depois.getCapturaFotosRespostaOk()).isEqualTo(CapturaFotoChecklistEnum.OBRIGATORIO);
+            assertThat(p1Antes.getCapturaFotosRespostaOk()).isEqualTo(AnexoMidiaChecklistEnum.BLOQUEADO);
+            assertThat(p1Depois.getCapturaFotosRespostaOk()).isEqualTo(AnexoMidiaChecklistEnum.OBRIGATORIO);
         }
         {
             // P2.
@@ -1674,7 +1674,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                 a1.isTipoOutros(),
                 a1.getOrdemExibicao(),
                 a1.isDeveAbrirOrdemServico(),
-                CapturaFotoChecklistEnum.OBRIGATORIO));
+                AnexoMidiaChecklistEnum.OBRIGATORIO));
         final List<Long> cargos = getCodigosCargos(original);
         final List<Long> tiposVeiculo = getCodigosTiposVeiculos(original);
         final ModeloChecklistEdicao editado = createModeloEdicao(original, perguntas, cargos, tiposVeiculo);
@@ -1704,8 +1704,8 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             final AlternativaModeloChecklist a1Depois = p1Depois.getAlternativas().get(0);
             assertThat(a1Antes.getDescricao()).isEqualTo("Fora de foco");
             assertThat(a1Antes.getDescricao()).isEqualTo(a1Depois.getDescricao());
-            assertThat(a1Antes.getCapturaFotos()).isEqualTo(CapturaFotoChecklistEnum.BLOQUEADO);
-            assertThat(a1Depois.getCapturaFotos()).isEqualTo(CapturaFotoChecklistEnum.OBRIGATORIO);
+            assertThat(a1Antes.getCapturaFotos()).isEqualTo(AnexoMidiaChecklistEnum.BLOQUEADO);
+            assertThat(a1Depois.getCapturaFotos()).isEqualTo(AnexoMidiaChecklistEnum.OBRIGATORIO);
         }
     }
 

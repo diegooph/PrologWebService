@@ -28,5 +28,5 @@ public abstract class AlternativaModeloChecklist {
     public abstract boolean isDeveAbrirOrdemServico();
 
     @NotNull
-    public abstract CapturaFotoChecklistEnum getCapturaFotos();
+    public abstract AnexoMidiaChecklistEnum getCapturaFotos();
 }

@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao;
 
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.AlternativaModeloChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.CapturaFotoChecklistEnum;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.AnexoMidiaChecklistEnum;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.PerguntaModeloChecklist;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -25,7 +25,7 @@ public final class PerguntaModeloChecklistInsercao extends PerguntaModeloCheckli
     private final int ordemExibicao;
     private final boolean singleChoice;
     @NotNull
-    private final CapturaFotoChecklistEnum capturaFotosRespostaOk;
+    private final AnexoMidiaChecklistEnum capturaFotosRespostaOk;
     @NotNull
     private final List<AlternativaModeloChecklistInsercao> alternativas;
 

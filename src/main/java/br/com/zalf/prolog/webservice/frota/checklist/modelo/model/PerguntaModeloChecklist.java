@@ -31,7 +31,7 @@ public abstract class PerguntaModeloChecklist {
     public abstract boolean isSingleChoice();
 
     @NotNull
-    public abstract CapturaFotoChecklistEnum getCapturaFotosRespostaOk();
+    public abstract AnexoMidiaChecklistEnum getCapturaFotosRespostaOk();
 
     @NotNull
     public abstract List<AlternativaModeloChecklist> getAlternativas();
