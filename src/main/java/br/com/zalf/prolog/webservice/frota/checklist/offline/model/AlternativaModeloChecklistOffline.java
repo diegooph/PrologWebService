@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.checklist.offline.model;
 
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.CapturaFotoChecklistEnum;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -47,18 +48,26 @@ public final class AlternativaModeloChecklistOffline {
     @NotNull
     private final PrioridadeAlternativa prioridadeAlternativa;
 
+    /**
+     * Atributo {@link CapturaFotoChecklistEnum} que representa a parametrização da coleta de fotos para a alternativa.
+     */
+    @NotNull
+    private final CapturaFotoChecklistEnum capturaFotos;
+
     AlternativaModeloChecklistOffline(@NotNull final Long codigo,
                                       @NotNull final Long codigoContexto,
                                       @NotNull final String descricao,
                                       final boolean tipoOutros,
                                       final int ordemExibicao,
-                                      @NotNull final PrioridadeAlternativa prioridadeAlternativa) {
+                                      @NotNull final PrioridadeAlternativa prioridadeAlternativa,
+                                      @NotNull final CapturaFotoChecklistEnum capturaFotos) {
         this.codigo = codigo;
         this.codigoContexto = codigoContexto;
         this.descricao = descricao;
         this.tipoOutros = tipoOutros;
         this.ordemExibicao = ordemExibicao;
         this.prioridadeAlternativa = prioridadeAlternativa;
+        this.capturaFotos = capturaFotos;
     }
 
     @NotNull
@@ -88,4 +97,7 @@ public final class AlternativaModeloChecklistOffline {
     public PrioridadeAlternativa getPrioridadeAlternativa() {
         return prioridadeAlternativa;
     }
+
+    @NotNull
+    public CapturaFotoChecklistEnum getCapturaFotos() { return capturaFotos; }
 }
