@@ -8,7 +8,7 @@ import org.jetbrains.annotations.Nullable;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-public enum CapturaFotoChecklistEnum {
+public enum AnexoMidiaChecklistEnum {
     BLOQUEADO("BLOQUEADO"),
     OBRIGATORIO("OBRIGATORIO"),
     OPCIONAL("OPCIONAL");
@@ -16,15 +16,15 @@ public enum CapturaFotoChecklistEnum {
     @NotNull
     private final String stringRepresentation;
 
-    CapturaFotoChecklistEnum(@NotNull final String stringRepresentation) {
+    AnexoMidiaChecklistEnum(@NotNull final String stringRepresentation) {
         this.stringRepresentation = stringRepresentation;
     }
 
     @NotNull
-    public static CapturaFotoChecklistEnum fromString(@Nullable final String s) throws IllegalArgumentException {
+    public static AnexoMidiaChecklistEnum fromString(@Nullable final String s) throws IllegalArgumentException {
         if (s != null) {
-            final CapturaFotoChecklistEnum[] values = CapturaFotoChecklistEnum.values();
-            for (final CapturaFotoChecklistEnum value : values) {
+            final AnexoMidiaChecklistEnum[] values = AnexoMidiaChecklistEnum.values();
+            for (final AnexoMidiaChecklistEnum value : values) {
                 if (s.equalsIgnoreCase(value.stringRepresentation)) {
                     return value;
                 }

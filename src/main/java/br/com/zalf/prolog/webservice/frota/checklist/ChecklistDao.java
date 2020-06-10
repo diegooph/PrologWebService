@@ -52,36 +52,36 @@ public interface ChecklistDao {
                 final boolean deveAbrirOs) throws Throwable;
 
     /**
-     * Insere a imagem de um checklist realizado. Vinculando a {@code urlImagem} da imagem fornecida ao
+     * Insere a imagem de um checklist realizado. Vinculando a {@code urlMidia} da mídia fornecida ao
      * {@code codChecklist} e {@code codPergunta}.
      *
-     * @param codChecklist código do checklist no qual a imagem foi capturada.
-     * @param codPergunta  código da pergunta na qual a imagem foi capturada.
-     * @param urlImagem    url da imagem que está sendo salva.
-     * @return código da imagem inserida.
+     * @param codChecklist código do checklist no qual a mídia foi anexada.
+     * @param codPergunta  código da pergunta na qual a mídia foi anexada.
+     * @param urlMidia     url da imagem que está sendo salva.
+     * @return código da mídia inserida.
      * @throws Throwable caso algum erro aconteça.
      */
     @CanIgnoreReturnValue
     @NotNull
-    Long insertImagemPerguntaChecklistRealizado(@NotNull final Long codChecklist,
-                                                @NotNull final Long codPergunta,
-                                                @NotNull final String urlImagem) throws Throwable;
+    Long insertMidiaPerguntaChecklistRealizado(@NotNull final Long codChecklist,
+                                               @NotNull final Long codPergunta,
+                                               @NotNull final String urlMidia) throws Throwable;
 
     /**
-     * Insere a imagem de um checklist realizado. Vinculando a {@code urlImagem} da imagem fornecida ao
+     * Insere a imagem de um checklist realizado. Vinculando a {@code urlMidia} da mídia fornecida ao
      * {@code codChecklist} e {@code codAlternativa}.
      *
-     * @param codChecklist   código do checklist no qual a imagem foi capturada.
-     * @param codAlternativa código da alternativa na qual a imagem foi capturada.
-     * @param urlImagem      url da imagem que está sendo salva.
-     * @return código da imagem inserida.
+     * @param codChecklist   código do checklist no qual a mídia foi anexada.
+     * @param codAlternativa código da alternativa na qual a mídia foi anexada.
+     * @param urlMidia       url da imagem que está sendo salva.
+     * @return código da mídia inserida.
      * @throws Throwable caso algum erro aconteça.
      */
     @CanIgnoreReturnValue
     @NotNull
-    Long insertImagemAlternativaChecklistRealizado(@NotNull final Long codChecklist,
-                                                   @NotNull final Long codAlternativa,
-                                                   @NotNull final String urlImagem) throws Throwable;
+    Long insertMidiaAlternativaChecklistRealizado(@NotNull final Long codChecklist,
+                                                  @NotNull final Long codAlternativa,
+                                                  @NotNull final String urlMidia) throws Throwable;
 
     /**
      * Busca um checklist pelo seu código único.

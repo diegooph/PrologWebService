@@ -13,7 +13,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.TipoChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.*;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloService;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.AlternativaModeloChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.CapturaFotoChecklistEnum;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.AnexoMidiaChecklistEnum;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.AlternativaModeloChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ModeloChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.PerguntaModeloChecklistInsercao;
@@ -59,7 +59,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public final class ChecklistUploadImagensRealizacaoTest extends BaseTest {
     private static final String CPF_TOKEN = "03383283194";
     // Token da unidade 5.
-    private static final String TOKEN_CHECK_OFF = "token_check_off_teste_unidade_5";
+    private static final String TOKEN_CHECK_OFF = "token_teste_unidade_5";
     private ChecklistModeloService service;
     private String tokenUsuario;
 
@@ -101,28 +101,28 @@ public final class ChecklistUploadImagensRealizacaoTest extends BaseTest {
 
         //region Salva imagens para uma pergunta do modelo.
         {
-            final ChecklistUploadImagemRealizacao imagem = new ChecklistUploadImagemRealizacao(
+            final ChecklistUploadMidiaRealizacao imagem = new ChecklistUploadMidiaRealizacao(
                     codChecklistInserido,
                     codPergunta,
                     null);
 
-            final SuccessResponseChecklistUploadImagem upload1 = checklistService.uploadImagemRealizacaoChecklist(
+            final SuccessResponseChecklistUploadMidia upload1 = checklistService.uploadMidiaRealizacaoChecklist(
                     getImagemFromResources("imagem_pergunta_checklist.png"),
                     FormDataContentDisposition
                             .name("file")
                             .fileName("imagem_pergunta_checklist.png")
                             .build(),
                     imagem);
-            urls.add(upload1.getUrlImagem());
+            urls.add(upload1.getUrlMidia());
 
-            final SuccessResponseChecklistUploadImagem upload2 = checklistService.uploadImagemRealizacaoChecklist(
+            final SuccessResponseChecklistUploadMidia upload2 = checklistService.uploadMidiaRealizacaoChecklist(
                     getImagemFromResources("imagem_pergunta_checklist.png"),
                     FormDataContentDisposition
                             .name("file")
                             .fileName("imagem_pergunta_checklist.png")
                             .build(),
                     imagem);
-            urls.add(upload2.getUrlImagem());
+            urls.add(upload2.getUrlMidia());
         }
         //endregion
 
@@ -135,8 +135,8 @@ public final class ChecklistUploadImagensRealizacaoTest extends BaseTest {
             try {
                 conn = connectionProvider.provideDatabaseConnection();
                 stmt = conn.prepareStatement("select count(*) " +
-                        "from checklist_respostas_imagens_perguntas_ok cripo " +
-                        "where url_imagem = any(?)");
+                        "from checklist_respostas_midias_perguntas_ok cripo " +
+                        "where url_midia = any(?)");
                 stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.TEXT, urls));
                 rSet = stmt.executeQuery();
                 if (rSet.next()) {
@@ -173,28 +173,28 @@ public final class ChecklistUploadImagensRealizacaoTest extends BaseTest {
 
         //region Salva imagens para uma pergunta do modelo.
         {
-            final ChecklistUploadImagemRealizacao imagem = new ChecklistUploadImagemRealizacao(
+            final ChecklistUploadMidiaRealizacao imagem = new ChecklistUploadMidiaRealizacao(
                     codChecklistInserido,
                     null,
                     codAlternativa);
 
-            final SuccessResponseChecklistUploadImagem upload1 = checklistService.uploadImagemRealizacaoChecklist(
+            final SuccessResponseChecklistUploadMidia upload1 = checklistService.uploadMidiaRealizacaoChecklist(
                     getImagemFromResources("imagem_alternativa_checklist.png"),
                     FormDataContentDisposition
                             .name("file")
                             .fileName("imagem_alternativa_checklist.png")
                             .build(),
                     imagem);
-            urls.add(upload1.getUrlImagem());
+            urls.add(upload1.getUrlMidia());
 
-            final SuccessResponseChecklistUploadImagem upload2 = checklistService.uploadImagemRealizacaoChecklist(
+            final SuccessResponseChecklistUploadMidia upload2 = checklistService.uploadMidiaRealizacaoChecklist(
                     getImagemFromResources("imagem_alternativa_checklist.png"),
                     FormDataContentDisposition
                             .name("file")
                             .fileName("imagem_alternativa_checklist.png")
                             .build(),
                     imagem);
-            urls.add(upload2.getUrlImagem());
+            urls.add(upload2.getUrlMidia());
         }
         //endregion
 
@@ -207,8 +207,8 @@ public final class ChecklistUploadImagensRealizacaoTest extends BaseTest {
             try {
                 conn = connectionProvider.provideDatabaseConnection();
                 stmt = conn.prepareStatement("select count(*) " +
-                        "from checklist_respostas_imagens_alternativas_nok cripo " +
-                        "where url_imagem = any(?)");
+                        "from checklist_respostas_midias_alternativas_nok cripo " +
+                        "where url_midia = any(?)");
                 stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.TEXT, urls));
                 rSet = stmt.executeQuery();
                 if (rSet.next()) {
@@ -238,7 +238,7 @@ public final class ChecklistUploadImagensRealizacaoTest extends BaseTest {
                     false,
                     1,
                     false,
-                    CapturaFotoChecklistEnum.BLOQUEADO));
+                    AnexoMidiaChecklistEnum.BLOQUEADO));
             // A2.
             alternativas.add(new AlternativaModeloChecklistInsercao(
                     "Outros",
@@ -246,14 +246,14 @@ public final class ChecklistUploadImagensRealizacaoTest extends BaseTest {
                     true,
                     2,
                     true,
-                    CapturaFotoChecklistEnum.BLOQUEADO));
+                    AnexoMidiaChecklistEnum.BLOQUEADO));
 
             perguntas.add(new PerguntaModeloChecklistInsercao(
                     "P1",
                     1L,
                     1,
                     true,
-                    CapturaFotoChecklistEnum.BLOQUEADO,
+                    AnexoMidiaChecklistEnum.BLOQUEADO,
                     alternativas));
         }
 
@@ -268,7 +268,7 @@ public final class ChecklistUploadImagensRealizacaoTest extends BaseTest {
                     false,
                     1,
                     true,
-                    CapturaFotoChecklistEnum.BLOQUEADO));
+                    AnexoMidiaChecklistEnum.BLOQUEADO));
             // B2.
             alternativas.add(new AlternativaModeloChecklistInsercao(
                     "Outros",
@@ -276,14 +276,14 @@ public final class ChecklistUploadImagensRealizacaoTest extends BaseTest {
                     true,
                     2,
                     false,
-                    CapturaFotoChecklistEnum.BLOQUEADO));
+                    AnexoMidiaChecklistEnum.BLOQUEADO));
 
             perguntas.add(new PerguntaModeloChecklistInsercao(
                     "P2",
                     null,
                     2,
                     false,
-                    CapturaFotoChecklistEnum.BLOQUEADO,
+                    AnexoMidiaChecklistEnum.BLOQUEADO,
                     alternativas));
         }
 

@@ -3,7 +3,7 @@ package test.br.com.zalf.prolog.webservice.pilares.frota.checklist.modelo;
 import br.com.zalf.prolog.webservice.database.DatabaseManager;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloService;
-import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.CapturaFotoChecklistEnum;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.AnexoMidiaChecklistEnum;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.AlternativaModeloChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ModeloChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.PerguntaModeloChecklistInsercao;
@@ -65,13 +65,13 @@ public final class ModeloChecklistSelecaoTest extends BaseTest {
                     true,
                     1,
                     true,
-                    CapturaFotoChecklistEnum.BLOQUEADO));
+                    AnexoMidiaChecklistEnum.BLOQUEADO));
             perguntas.add(new PerguntaModeloChecklistInsercao(
                     "P1",
                     1L,
                     1,
                     true,
-                    CapturaFotoChecklistEnum.BLOQUEADO,
+                    AnexoMidiaChecklistEnum.BLOQUEADO,
                     alternativas));
         }
 
@@ -115,13 +115,13 @@ public final class ModeloChecklistSelecaoTest extends BaseTest {
                     true,
                     1,
                     true,
-                    CapturaFotoChecklistEnum.BLOQUEADO));
+                    AnexoMidiaChecklistEnum.BLOQUEADO));
             perguntas.add(new PerguntaModeloChecklistInsercao(
                     "P1",
                     1L,
                     1,
                     true,
-                    CapturaFotoChecklistEnum.BLOQUEADO,
+                    AnexoMidiaChecklistEnum.BLOQUEADO,
                     alternativas));
         }
 
@@ -159,13 +159,13 @@ public final class ModeloChecklistSelecaoTest extends BaseTest {
                     true,
                     1,
                     true,
-                    CapturaFotoChecklistEnum.BLOQUEADO));
+                    AnexoMidiaChecklistEnum.BLOQUEADO));
             perguntas.add(new PerguntaModeloChecklistInsercao(
                     "P1",
                     1L,
                     1,
                     true,
-                    CapturaFotoChecklistEnum.BLOQUEADO,
+                    AnexoMidiaChecklistEnum.BLOQUEADO,
                     alternativas));
         }
 
