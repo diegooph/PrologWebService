@@ -5,8 +5,8 @@ Change Log
 ## Version [v1.0.32](https://github.com/luizfp/PrologWebService/compare/v1.0.31...v1.0.32) (2020-06-10)
 
 ## Refactors
-* Atualizar uso da tabela 'afericao_configuracao_tipo_afericao_veiculo' na integração Nepomuceno (PLI-149)
-* Configurar modelos de veículos não utilizados da Nepomuceno (PLI-164)
+* Atualiza uso da tabela 'afericao_configuracao_tipo_afericao_veiculo' na integração Nepomuceno (PLI-149)
+* Configura modelos de veículos não utilizados da Nepomuceno (PLI-164)
 
 <a name="v1.0.31"></a>
 ## Version [v1.0.31](https://github.com/luizfp/PrologWebService/compare/v1.0.30...v1.0.31) (2020-06-03)
