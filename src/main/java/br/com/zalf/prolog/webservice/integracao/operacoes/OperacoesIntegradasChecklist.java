@@ -78,9 +78,6 @@ interface OperacoesIntegradasChecklist {
                                        final long offset,
                                        final boolean resumido) throws Exception;
 
-    /**
-     * Início novos routers
-     * */
     @NotNull
     List<ChecklistListagem> getListagemByColaborador(@NotNull final Long cpf,
                                                      @NotNull final LocalDate dataInicial,
@@ -97,9 +94,6 @@ interface OperacoesIntegradasChecklist {
                                         @NotNull LocalDate dataFinal,
                                         final int limit,
                                         final long offset) throws Throwable;
-    /**
-     * Fim novos routers
-     * */
 
     @NotNull
     DeprecatedFarolChecklist getFarolChecklist(@NotNull final Long codUnidade,

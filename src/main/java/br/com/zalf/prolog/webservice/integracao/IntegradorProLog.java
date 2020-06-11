@@ -482,9 +482,6 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
                 limit, offset, resumido);
     }
 
-    /**
-     * Início novas listagens de checklist
-     * */
     @NotNull
     @Override
     public List<ChecklistListagem> getListagemByColaborador(@NotNull final Long cpf,
@@ -505,12 +502,16 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
                                                @NotNull final LocalDate dataFinal,
                                                final int limit,
                                                final long offset) throws Throwable {
-        return checklistDao.getListagem(codUnidade, codEquipe, codTipoVeiculo, placaVeiculo, dataInicial, dataFinal,
-                limit, offset);
+        return checklistDao.getListagem(
+                codUnidade,
+                codEquipe,
+                codTipoVeiculo,
+                placaVeiculo,
+                dataInicial,
+                dataFinal,
+                limit,
+                offset);
     }
-    /**
-     * Fim novas listagens de checklist
-     * */
 
     @NotNull
     @Override

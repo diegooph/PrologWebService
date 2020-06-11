@@ -72,7 +72,6 @@ public final class ChecklistConverter {
         return checklist;
     }
 
-    @VisibleForTesting
     @NotNull
     public static ChecklistListagem createChecklistListagem(@NotNull final ResultSet rSet) throws Throwable {
         return new ChecklistListagem(
@@ -97,8 +96,7 @@ public final class ChecklistConverter {
                 rSet.getInt("TOTAL_IMAGENS_ALTERNATIVAS_NOK"),
                 rSet.getInt("TOTAL_NOK_BAIXA"),
                 rSet.getInt("TOTAL_NOK_ALTA"),
-                rSet.getInt("TOTAL_NOK_CRITICA")
-        );
+                rSet.getInt("TOTAL_NOK_CRITICA"));
     }
 
     @VisibleForTesting

@@ -347,9 +347,6 @@ public abstract class Router implements OperacoesIntegradas {
         }
     }
 
-    /**
-    * Início novos routers
-    * */
     @NotNull
     @Override
     public List<ChecklistListagem> getListagemByColaborador(@NotNull final Long cpf,
@@ -376,17 +373,27 @@ public abstract class Router implements OperacoesIntegradas {
                                                final long offset) throws Throwable {
         if (getSistema() != null) {
             return getSistema()
-                    .getListagem(codUnidade, codEquipe, codTipoVeiculo, placaVeiculo, dataInicial, dataFinal,
-                            limit, offset);
+                    .getListagem(
+                            codUnidade,
+                            codEquipe,
+                            codTipoVeiculo,
+                            placaVeiculo,
+                            dataInicial,
+                            dataFinal,
+                            limit,
+                            offset);
         } else {
             return integradorProLog
-                    .getListagem(codUnidade, codEquipe, codTipoVeiculo, placaVeiculo, dataInicial, dataFinal,
-                            limit, offset);
+                    .getListagem(codUnidade,
+                            codEquipe,
+                            codTipoVeiculo,
+                            placaVeiculo,
+                            dataInicial,
+                            dataFinal,
+                            limit,
+                            offset);
         }
     }
-    /**
-     * Fim novos routers
-     * */
 
     @NotNull
     @Override

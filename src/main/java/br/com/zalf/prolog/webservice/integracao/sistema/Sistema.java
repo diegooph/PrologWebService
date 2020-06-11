@@ -236,9 +236,6 @@ public abstract class Sistema implements OperacoesIntegradas {
                         resumido);
     }
 
-    /**
-    * Início novas listagens de checklist
-    * */
     @NotNull
     @Override
     public List<ChecklistListagem> getListagemByColaborador(@NotNull final Long cpf,
@@ -270,9 +267,7 @@ public abstract class Sistema implements OperacoesIntegradas {
                         limit,
                         offset);
     }
-    /**
-     * Fim novas listagens de checklist
-     * */
+
     @NotNull
     @Override
     public DeprecatedFarolChecklist getFarolChecklist(@NotNull final Long codUnidade,

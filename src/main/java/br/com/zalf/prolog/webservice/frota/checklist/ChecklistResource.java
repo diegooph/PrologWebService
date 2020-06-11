@@ -5,7 +5,6 @@ import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
-import br.com.zalf.prolog.webservice.commons.util.ProLogCustomHeaders;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
@@ -35,10 +34,11 @@ import org.jetbrains.annotations.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.io.InputStream;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+
+import static br.com.zalf.prolog.webservice.commons.util.ProLogCustomHeaders.AppVersionAndroid.PROLOG_APP_VERSION;
 
 @Path("/checklists")
 @DebugLog
@@ -52,7 +52,7 @@ public final class ChecklistResource {
     @UsedBy(platforms = Platform.ANDROID)
     @Secured(permissions = Pilares.Frota.Checklist.REALIZAR)
     public AbstractResponse insert(@HeaderParam("Authorization") @Required final String userToken,
-                                   @HeaderParam(ProLogCustomHeaders.AppVersionAndroid.PROLOG_APP_VERSION) final Integer versaoApp,
+                                   @HeaderParam(PROLOG_APP_VERSION) final Integer versaoApp,
                                    @Required final String checklistJson) throws ProLogException {
         final ChecklistInsercao checklistNew;
         // Convertemos o JSON dependendo da versão do App.
@@ -102,13 +102,78 @@ public final class ChecklistResource {
     @GET
     @Path("{codigo}")
     @Secured(permissions = {Pilares.Frota.Checklist.VISUALIZAR_TODOS, Pilares.Frota.Checklist.REALIZAR})
-    public Checklist getByCod(@PathParam("codigo") final Long codigo, @HeaderParam("Authorization") final String userToken) {
+    public Checklist getByCod(@PathParam("codigo") final Long codigo,
+                              @HeaderParam("Authorization") final String userToken) {
         return service.getByCod(codigo, userToken);
     }
 
+    @GET
+    @Path("/listagem/colaborador")
+    @Secured(permissions = {Pilares.Frota.Checklist.VISUALIZAR_TODOS, Pilares.Frota.Checklist.REALIZAR})
+    public List<ChecklistListagem> getListagemByColaborador(@HeaderParam("Authorization") final String userToken,
+                                                            @QueryParam("cpf") final Long cpf,
+                                                            @QueryParam("dataInicial") final String dataInicial,
+                                                            @QueryParam("dataFinal") final String dataFinal,
+                                                            @QueryParam("limit") final int limit,
+                                                            @QueryParam("offset") final long offset) {
+        return service.getListagemByColaborador(userToken, cpf, dataInicial, dataFinal, limit, offset);
+    }
+
+    @GET
+    @Path("/listagem")
+    @Secured(permissions = Pilares.Frota.Checklist.VISUALIZAR_TODOS)
+    public List<ChecklistListagem> getListagem(
+            @HeaderParam("Authorization") final String userToken,
+            @QueryParam("codUnidade") final Long codUnidade,
+            @QueryParam("codEquipe") final Long codEquipe,
+            @QueryParam("codTipoVeiculo") final Long codTipoVeiculo,
+            @QueryParam("placaVeiculo") final String placaVeiculo,
+            @QueryParam("dataInicial") final String dataInicial,
+            @QueryParam("dataFinal") final String dataFinal,
+            @QueryParam("limit") final int limit,
+            @QueryParam("offset") final long offset) {
+        return service.getListagem(
+                userToken,
+                codUnidade,
+                codEquipe,
+                codTipoVeiculo,
+                placaVeiculo,
+                dataInicial,
+                dataFinal,
+                limit,
+                offset);
+    }
+
+    @GET
+    @Path("/farois/{codUnidade}")
+    @Secured(permissions = Pilares.Frota.FarolStatusPlacas.VISUALIZAR)
+    public DeprecatedFarolChecklist getFarolChecklist(@PathParam("codUnidade") final Long codUnidade,
+                                                      @QueryParam("dataInicial") final String dataInicial,
+                                                      @QueryParam("dataFinal") final String dataFinal,
+                                                      @QueryParam("itensCriticosRetroativos") final boolean itensCriticosRetroativos,
+                                                      @HeaderParam("Authorization") final String userToken) throws ProLogException {
+        return service.getFarolChecklist(codUnidade, dataInicial, dataFinal, itensCriticosRetroativos, userToken);
+    }
+
+    @GET
+    @Path("/farois/{codUnidade}/hoje")
+    @Secured(permissions = Pilares.Frota.FarolStatusPlacas.VISUALIZAR)
+    public DeprecatedFarolChecklist getFarolChecklist(@PathParam("codUnidade") final Long codUnidade,
+                                                      @QueryParam("itensCriticosRetroativos") final boolean itensCriticosRetroativos,
+                                                      @HeaderParam("Authorization") final String userToken) throws ProLogException {
+        return service.getFarolChecklist(codUnidade, itensCriticosRetroativos, userToken);
+    }
+
+    @GET
+    @Path("/novo/filtros-regionais-unidades")
+    public FiltroRegionalUnidadeChecklist getRegionaisUnidadesSelecao(
+            @QueryParam("codColaborador") @Required final Long codColaborador) {
+        return service.getRegionaisUnidadesSelecao(codColaborador);
+    }
+
     /**
-     * @deprecated at 2020-06-08. Use {@link ChecklistResource#getListagemByColaborador(Long, String, String, int, long, String)}
-     * instead.
+     * @deprecated at 2020-06-08.
+     * Use {@link ChecklistResource#getListagemByColaborador(String, Long, String, String, int, long)} instead.
      */
     @GET
     @Path("/colaboradores/{cpf}/resumidos")
@@ -125,8 +190,8 @@ public final class ChecklistResource {
     }
 
     /**
-     * @deprecated at 2020-06-08. Use {@link ChecklistResource#getListagem(Long, Long, Long, String, String, String, int, long, String)}
-     * instead.
+     * @deprecated at 2020-06-08.
+     * Use {@link ChecklistResource#getListagem(String, Long, Long, Long, String, String, String, int, long)} instead.
      */
     @GET
     @Path("{codUnidade}/resumidos")
@@ -183,77 +248,6 @@ public final class ChecklistResource {
                 offset,
                 false,
                 userToken);
-    }
-
-    /**
-    * Início Novos endpoints de listagem de checklist
-    */
-    @GET
-    @Path("/listagem/colaborador")
-    @Secured(permissions = {Pilares.Frota.Checklist.VISUALIZAR_TODOS, Pilares.Frota.Checklist.REALIZAR})
-    public List<ChecklistListagem> getListagemByColaborador(
-            @QueryParam("cpf") final Long cpf,
-            @QueryParam("dataInicial") final String dataInicial,
-            @QueryParam("dataFinal") final String dataFinal,
-            @QueryParam("limit") final int limit,
-            @QueryParam("offset") final long offset,
-            @HeaderParam("Authorization") final String userToken) {
-        return service.getListagemByColaborador(cpf, dataInicial, dataFinal, limit, offset, userToken);
-    }
-
-    @GET
-    @Path("/listagem")
-    @Secured(permissions = Pilares.Frota.Checklist.VISUALIZAR_TODOS)
-    public List<ChecklistListagem> getListagem(
-            @QueryParam("codUnidade") final Long codUnidade,
-            @QueryParam("codEquipe") final Long codEquipe,
-            @QueryParam("codTipoVeiculo") final Long codTipoVeiculo,
-            @QueryParam("placaVeiculo") final String placaVeiculo,
-            @QueryParam("dataInicial") final String dataInicial,
-            @QueryParam("dataFinal") final String dataFinal,
-            @QueryParam("limit") final int limit,
-            @QueryParam("offset") final long offset,
-            @HeaderParam("Authorization") final String userToken) {
-        return service.getListagem(
-                codUnidade,
-                codEquipe,
-                codTipoVeiculo,
-                placaVeiculo,
-                dataInicial,
-                dataFinal,
-                limit,
-                offset,
-                userToken);
-    }
-    /**
-     * Fim novos endpoints de listagem
-     */
-
-    @GET
-    @Path("/farois/{codUnidade}")
-    @Secured(permissions = Pilares.Frota.FarolStatusPlacas.VISUALIZAR)
-    public DeprecatedFarolChecklist getFarolChecklist(@PathParam("codUnidade") final Long codUnidade,
-                                                      @QueryParam("dataInicial") final String dataInicial,
-                                                      @QueryParam("dataFinal") final String dataFinal,
-                                                      @QueryParam("itensCriticosRetroativos") final boolean itensCriticosRetroativos,
-                                                      @HeaderParam("Authorization") final String userToken) throws ProLogException {
-        return service.getFarolChecklist(codUnidade, dataInicial, dataFinal, itensCriticosRetroativos, userToken);
-    }
-
-    @GET
-    @Path("/farois/{codUnidade}/hoje")
-    @Secured(permissions = Pilares.Frota.FarolStatusPlacas.VISUALIZAR)
-    public DeprecatedFarolChecklist getFarolChecklist(@PathParam("codUnidade") final Long codUnidade,
-                                                      @QueryParam("itensCriticosRetroativos") final boolean itensCriticosRetroativos,
-                                                      @HeaderParam("Authorization") final String userToken) throws ProLogException {
-        return service.getFarolChecklist(codUnidade, itensCriticosRetroativos, userToken);
-    }
-
-    @GET
-    @Path("/novo/filtros-regionais-unidades")
-    public FiltroRegionalUnidadeChecklist getRegionaisUnidadesSelecao(
-            @QueryParam("codColaborador") @Required final Long codColaborador) {
-        return service.getRegionaisUnidadesSelecao(codColaborador);
     }
 
     /**

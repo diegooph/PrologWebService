@@ -22,6 +22,7 @@ import br.com.zalf.prolog.webservice.integracao.router.RouterChecklists;
 import org.apache.commons.io.FilenameUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.InputStream;
 import java.time.LocalDate;
@@ -160,8 +161,13 @@ public final class ChecklistService {
         }
     }
 
-    public List<Checklist> getByColaborador(final Long cpf, final Long dataInicial, final Long dataFinal, final int limit, final long offset,
-                                            final boolean resumido, final String userToken) {
+    public List<Checklist> getByColaborador(final Long cpf,
+                                            final Long dataInicial,
+                                            final Long dataFinal,
+                                            final int limit,
+                                            final long offset,
+                                            final boolean resumido,
+                                            final String userToken) {
         try {
             return RouterChecklists
                     .create(dao, userToken)
@@ -172,15 +178,13 @@ public final class ChecklistService {
         }
     }
 
-    /**
-     * Novos services de listagem
-     */
-    public List<ChecklistListagem> getListagemByColaborador(final Long cpf,
-                                                            final String dataInicial,
-                                                            final String dataFinal,
+    @NotNull
+    public List<ChecklistListagem> getListagemByColaborador(@NotNull final String userToken,
+                                                            @NotNull final Long cpf,
+                                                            @NotNull final String dataInicial,
+                                                            @NotNull final String dataFinal,
                                                             final int limit,
-                                                            final long offset,
-                                                            final String userToken) {
+                                                            final long offset) throws ProLogException {
         try {
             return RouterChecklists
                     .create(dao, userToken)
@@ -192,19 +196,22 @@ public final class ChecklistService {
                             offset);
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao buscar os checklists de um colaborador específico", t);
-            throw new RuntimeException("Erro ao buscar checklists para o colaborador: " + cpf);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao buscar checklists do colaborador, tente novamente");
         }
     }
 
-    public List<ChecklistListagem> getListagem(final Long codUnidade,
-                                               final Long codEquipe,
-                                               final Long codTipoVeiculo,
-                                               final String placaVeiculo,
-                                               final String dataInicial,
-                                               final String dataFinal,
+    @NotNull
+    public List<ChecklistListagem> getListagem(@NotNull final String userToken,
+                                               @NotNull final Long codUnidade,
+                                               @Nullable final Long codEquipe,
+                                               @Nullable final Long codTipoVeiculo,
+                                               @Nullable final String placaVeiculo,
+                                               @NotNull final String dataInicial,
+                                               @NotNull final String dataFinal,
                                                final int limit,
-                                               final long offset,
-                                               final String userToken) {
+                                               final long offset) throws ProLogException {
         try {
             return RouterChecklists
                     .create(dao, userToken)
@@ -224,9 +231,6 @@ public final class ChecklistService {
                     .map(t, "Erro ao buscar checklists, tente novamente");
         }
     }
-    /**
-     * Fim novos services de listagem
-     */
 
     @NotNull
     public DeprecatedFarolChecklist getFarolChecklist(final Long codUnidade,
@@ -244,8 +248,8 @@ public final class ChecklistService {
 
     @NotNull
     public DeprecatedFarolChecklist getFarolChecklist(@NotNull final Long codUnidade,
-                                            final boolean itensCriticosRetroativos,
-                                            @NotNull final String userToken) throws ProLogException {
+                                                      final boolean itensCriticosRetroativos,
+                                                      @NotNull final String userToken) throws ProLogException {
         LocalDate hojeComTz = null;
         try {
             hojeComTz = Now

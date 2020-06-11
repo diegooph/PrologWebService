@@ -95,48 +95,6 @@ public interface ChecklistDao {
     Checklist getByCod(@NotNull final Long codChecklist) throws SQLException;
 
     /**
-     * Busca todos os checklists, respeitando os filtros aplicados (recebidos por parâmetro).
-     *
-     * @deprecated at 2020-06-08. Use {@link ChecklistDao#getListagem(Long, Long, Long, String, LocalDate, LocalDate, int, long)}
-     * instead.
-     *
-     * @return uma {@link List<Checklist> lista de checklists}.
-     * @throws SQLException caso não seja possível realizar a busca.
-     */
-    @NotNull
-    @Deprecated
-    List<Checklist> getAll(@NotNull final Long codUnidade,
-                           @Nullable final Long codEquipe,
-                           @Nullable final Long codTipoVeiculo,
-                           @Nullable final String placaVeiculo,
-                           final long dataInicial,
-                           final long dataFinal,
-                           final int limit,
-                           final long offset,
-                           final boolean resumido) throws SQLException;
-
-    /**
-     * Busca os checklists realizados por um colaborador.
-     *
-     * @deprecated at 2020-06-08. Use {@link ChecklistDao#getListagemByColaborador(Long, LocalDate, LocalDate, int, long)}
-     * instead.
-     *
-     * @return uma {@link List<Checklist> lista de checklists}.
-     * @throws SQLException caso não seja possível realizar a busca.
-     */
-    @Deprecated
-    List<Checklist> getByColaborador(@NotNull final Long cpf,
-                                     @NotNull final Long dataInicial,
-                                     @NotNull final Long dataFinal,
-                                     final int limit,
-                                     final long offset,
-                                     final boolean resumido) throws SQLException;
-
-    /**
-     * Início novas listagens de checklist
-     * */
-
-    /**
      * Busca os checklists realizados por um colaborador.
      *
      * @return uma {@link List<ChecklistListagem> lista de checklists}.
@@ -164,9 +122,6 @@ public interface ChecklistDao {
                                         @NotNull final LocalDate dataFinal,
                                         final int limit,
                                         final long offset) throws Throwable;
-    /**
-     * Fim novas listagens de checklist
-     * */
 
     /**
      * Busca as regionais e unidades que o colaborador de código fornecido tem acesso. Isso é verificado com base na
@@ -209,4 +164,40 @@ public interface ChecklistDao {
      * @throws Throwable Caso ocorrer algum erro na busca dos dados.
      */
     boolean getChecklistDiferentesUnidadesAtivoEmpresa(@NotNull final Long codEmpresa) throws Throwable;
+
+    /**
+     * Busca todos os checklists, respeitando os filtros aplicados (recebidos por parâmetro).
+     *
+     * @return uma {@link List<Checklist> lista de checklists}.
+     * @throws SQLException caso não seja possível realizar a busca.
+     * @deprecated at 2020-06-08.
+     * Use {@link ChecklistDao#getListagem(Long, Long, Long, String, LocalDate, LocalDate, int, long)} instead.
+     */
+    @NotNull
+    @Deprecated
+    List<Checklist> getAll(@NotNull final Long codUnidade,
+                           @Nullable final Long codEquipe,
+                           @Nullable final Long codTipoVeiculo,
+                           @Nullable final String placaVeiculo,
+                           final long dataInicial,
+                           final long dataFinal,
+                           final int limit,
+                           final long offset,
+                           final boolean resumido) throws SQLException;
+
+    /**
+     * Busca os checklists realizados por um colaborador.
+     *
+     * @return uma {@link List<Checklist> lista de checklists}.
+     * @throws SQLException caso não seja possível realizar a busca.
+     * @deprecated at 2020-06-08.
+     * Use {@link ChecklistDao#getListagemByColaborador(Long, LocalDate, LocalDate, int, long)} instead.
+     */
+    @Deprecated
+    List<Checklist> getByColaborador(@NotNull final Long cpf,
+                                     @NotNull final Long dataInicial,
+                                     @NotNull final Long dataFinal,
+                                     final int limit,
+                                     final long offset,
+                                     final boolean resumido) throws SQLException;
 }
