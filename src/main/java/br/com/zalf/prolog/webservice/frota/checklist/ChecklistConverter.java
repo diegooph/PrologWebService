@@ -93,8 +93,8 @@ public final class ChecklistConverter {
                 rSet.getInt("TOTAL_PERGUNTAS_NOK"),
                 rSet.getInt("TOTAL_ALTERNATIVAS_OK"),
                 rSet.getInt("TOTAL_ALTERNATIVAS_NOK"),
-                rSet.getInt("TOTAL_IMAGENS_PERGUNTAS_OK"),
-                rSet.getInt("TOTAL_IMAGENS_ALTERNATIVAS_NOK"),
+                rSet.getInt("TOTAL_MIDIAS_PERGUNTAS_OK"),
+                rSet.getInt("TOTAL_MIDIAS_ALTERNATIVAS_NOK"),
                 rSet.getInt("TOTAL_NOK_BAIXA"),
                 rSet.getInt("TOTAL_NOK_ALTA"),
                 rSet.getInt("TOTAL_NOK_CRITICA")
