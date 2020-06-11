@@ -35,6 +35,8 @@ public abstract class Servico {
     private int qtdApontamentos;
     private long kmVeiculoMomentoFechamento;
     private String placaVeiculo;
+    //TODO
+    private String identificadorFrota;
     private Double pressaoColetadaFechamento;
 
     /**
@@ -221,5 +223,13 @@ public abstract class Servico {
         return formaColetaDadosFechamento != null
                 ? formaColetaDadosFechamento.toString()
                 : FormaColetaDadosAfericaoEnum.EQUIPAMENTO.toString();
+    }
+
+    public String getIdentificadorFrota() {
+        return identificadorFrota;
+    }
+
+    public void setIdentificadorFrota(String identificadorFrota) {
+        this.identificadorFrota = identificadorFrota;
     }
 }

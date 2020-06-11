@@ -7,6 +7,8 @@ package br.com.zalf.prolog.webservice.frota.pneu.servico._model;
  */
 public final class QuantidadeServicosVeiculo extends QuantidadeServicos {
     private String placaVeiculo;
+    //TODO
+    private String identificadorFrota;
 
     public QuantidadeServicosVeiculo() {
         setAgrupamento(AgrupamentoQuantidadeServicos.POR_VEICULO);

@@ -135,21 +135,24 @@ final class ServicoQueryBinder {
     }
 
     @NotNull
+    //TODO - TESTAR
     static PreparedStatement getQuantidadeServicosFechadosVeiculo(@NotNull final Connection connection,
                                                                   @NotNull final Long codUnidade,
                                                                   final long dataInicial,
                                                                   final long dataFinal) throws SQLException {
-        final PreparedStatement stmt = connection.prepareStatement("SELECT " +
-                "  A.PLACA_VEICULO, " +
-                "  SUM(CASE WHEN AM.TIPO_SERVICO = ? THEN 1 ELSE 0 END) AS TOTAL_CALIBRAGENS, " +
-                "  SUM(CASE WHEN AM.TIPO_SERVICO = ? THEN 1 ELSE 0 END) AS TOTAL_INSPECOES, " +
-                "  SUM(CASE WHEN AM.TIPO_SERVICO = ? THEN 1 ELSE 0 END) AS TOTAL_MOVIMENTACOES " +
-                "FROM AFERICAO_MANUTENCAO AM " +
-                "  JOIN AFERICAO A ON A.CODIGO = AM.COD_AFERICAO " +
+        final PreparedStatement stmt = connection.prepareStatement("SELECT" +
+                "  A.PLACA_VEICULO," +
+                "  V.IDENTIFICADOR_FROTA," +
+                "  SUM(CASE WHEN AM.TIPO_SERVICO = ? THEN 1 ELSE 0 END) AS TOTAL_CALIBRAGENS," +
+                "  SUM(CASE WHEN AM.TIPO_SERVICO = ? THEN 1 ELSE 0 END) AS TOTAL_INSPECOES," +
+                "  SUM(CASE WHEN AM.TIPO_SERVICO = ? THEN 1 ELSE 0 END) AS TOTAL_MOVIMENTACOES" +
+                "FROM AFERICAO_MANUTENCAO AM  " +
+                "  JOIN AFERICAO A ON A.CODIGO = AM.COD_AFERICAO" +
+                "  JOIN VEICULO V ON A.PLACA_VEICULO = V.PLACA" +
                 "WHERE AM.COD_UNIDADE = ?" +
-                "      AND AM.DATA_HORA_RESOLUCAO IS NOT NULL " +
-                "      AND (AM.DATA_HORA_RESOLUCAO AT TIME ZONE TZ_UNIDADE(AM.COD_UNIDADE))::DATE BETWEEN ? AND ? " +
-                "GROUP BY A.PLACA_VEICULO " +
+                "      AND AM.DATA_HORA_RESOLUCAO IS NOT NULL  " +
+                "      AND (AM.DATA_HORA_RESOLUCAO AT TIME ZONE TZ_UNIDADE(AM.COD_UNIDADE))::DATE BETWEEN ? AND ?" +
+                "GROUP BY A.PLACA_VEICULO, V.IDENTIFICADOR_FROTA" +
                 "ORDER BY TOTAL_CALIBRAGENS DESC, TOTAL_INSPECOES DESC, TOTAL_MOVIMENTACOES DESC;");
         stmt.setString(1, TipoServico.CALIBRAGEM.asString());
         stmt.setString(2, TipoServico.INSPECAO.asString());
