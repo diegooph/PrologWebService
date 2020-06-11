@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.frota.checklist;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
+import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
@@ -147,6 +148,7 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
             PerguntaRespostaChecklist pergunta = null;
             Long codChecklistAntigo = null, codChecklistAtual;
             Long codPerguntaAntigo = null, codPerguntaAtual;
+            Long codAlternativaAntigo = null, codAlternativaAtual;
             Checklist checklist = null;
             boolean isFirstLine = true;
             while (rSet.next()) {
@@ -160,6 +162,11 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
                     codPerguntaAntigo = codPerguntaAtual;
                 }
 
+                codAlternativaAtual = rSet.getLong("COD_ALTERNATIVA");
+                if (codAlternativaAntigo == null) {
+                    codAlternativaAntigo = codAlternativaAtual;
+                }
+
                 if (isFirstLine) {
                     checklist = ChecklistConverter.createChecklist(rSet, false);
                     pergunta = ChecklistConverter.createPergunta(rSet);
@@ -171,8 +178,13 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
 
                 if (codChecklistAntigo.equals(codChecklistAtual)) {
                     if (codPerguntaAntigo.equals(codPerguntaAtual)) {
-                        // Cria mais uma alternativa na pergunta atual.
-                        pergunta.getAlternativasResposta().add(ChecklistConverter.createAlternativaComResposta(rSet));
+                        if(codAlternativaAntigo.equals(codAlternativaAtual)){
+                            // TODO: Verificar se o registro de alternativa está se repetindo e incrementar as urls.
+                            Alternativa alternativa  = pergunta.getAlternativasResposta().stream().filter(a -> a.getCodigo().equals(codAlternativaAtual)).collect(bindValueOrNull());
+                        }else{
+                            // Cria mais uma alternativa na pergunta atual.
+                            pergunta.getAlternativasResposta().add(ChecklistConverter.createAlternativaComResposta(rSet));
+                        }
                     } else {
                         // Cria nova pergunta.
                         pergunta = ChecklistConverter.createPergunta(rSet);
