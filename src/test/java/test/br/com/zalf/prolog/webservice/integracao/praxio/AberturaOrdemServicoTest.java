@@ -34,10 +34,7 @@ import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.*;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap.OrdemDeServicoCorretivaPrologVO;
 import br.com.zalf.prolog.webservice.integracao.response.SuccessResponseIntegracao;
 import org.jetbrains.annotations.NotNull;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.*;
 import test.br.com.zalf.prolog.webservice.BaseTest;
 
 import java.sql.Connection;
@@ -104,6 +101,7 @@ public final class AberturaOrdemServicoTest extends BaseTest {
      *
      * @throws Throwable Teste executado apresentou erro
      */
+    @Order(1)
     @Test
     void testInsercaoChecklistRoteamentoIntegracao() throws Throwable {
         // ################################### ETAPA 1 - Cria um modelo de checklist ###################################
@@ -165,6 +163,7 @@ public final class AberturaOrdemServicoTest extends BaseTest {
      *
      * @throws Throwable Teste executado apresentou erro
      */
+    @Order(2)
     @Test
     void testAberturaOrdemServicoIntegracao() throws Throwable {
         final ResultInsertModeloChecklist resultModeloChecklist =
@@ -280,6 +279,7 @@ public final class AberturaOrdemServicoTest extends BaseTest {
         }
     }
 
+    @Order(3)
     @Test
     void testIncrementoQtdApontamentoItemOsIntegracao() throws Throwable {
         final ResultInsertModeloChecklist resultModeloChecklist =
@@ -398,6 +398,7 @@ public final class AberturaOrdemServicoTest extends BaseTest {
      *
      * @throws Throwable Teste executado apresentou erro
      */
+    @Order(4)
     @Test
     public void testFechamentoOrdemServicoIntegracao() throws Throwable {
         // ################################### ETAPA 1 - Cria um modelo de checklist ###################################
@@ -572,6 +573,7 @@ public final class AberturaOrdemServicoTest extends BaseTest {
      *
      * @throws Throwable Teste executado apresentou erro
      */
+    @Order(5)
     @Test
     public void testFechamentoOrdemServicoIntegracaoChecklistOfflineComToken() throws Throwable {
         // ################################### ETAPA 1 - Cria um modelo de checklist ###################################
@@ -748,6 +750,7 @@ public final class AberturaOrdemServicoTest extends BaseTest {
      *
      * @throws Throwable Teste executado apresentou erro
      */
+    @Order(6)
     @Test
     public void testFechamentoOrdemServicoIntegracaoChecklistOfflineSemToken() throws Throwable {
         // ################################### ETAPA 1 - Cria um modelo de checklist ###################################
@@ -917,6 +920,7 @@ public final class AberturaOrdemServicoTest extends BaseTest {
      *
      * @throws Throwable Teste executado apresentou erro
      */
+    @Order(7)
     @Test
     void testIncrementaQtdTentativasSincronia() throws Throwable {
         // ################################### ETAPA 1 - Cria um modelo de checklist ###################################
@@ -963,6 +967,7 @@ public final class AberturaOrdemServicoTest extends BaseTest {
         Thread.sleep(1000);
     }
 
+    @Order(8)
     @Test
     void testConverterChecklistRealizacaoIntoOrdemDeServicoCorretivaPrologVO() throws Throwable {
         // ################################### ETAPA 1 - Cria um modelo de checklist ###################################
@@ -1150,7 +1155,7 @@ public final class AberturaOrdemServicoTest extends BaseTest {
                 705L,
                 "PRO0006",
                 TipoChecklist.SAIDA,
-                11222,
+                112222,
                 10000,
                 respostas,
                 ProLogDateParser.toLocalDateTime("2019-12-11T09:35:10"),
