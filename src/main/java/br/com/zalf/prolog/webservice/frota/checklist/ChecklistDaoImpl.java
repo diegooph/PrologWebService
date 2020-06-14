@@ -7,9 +7,11 @@ import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
+import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.FiltroRegionalUnidadeChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.MidiaResposta;
 import br.com.zalf.prolog.webservice.frota.checklist.model.RegionalSelecaoChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistAlternativaResposta;
@@ -148,10 +150,10 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
             PerguntaRespostaChecklist pergunta = null;
             Long codChecklistAntigo = null, codChecklistAtual;
             Long codPerguntaAntigo = null, codPerguntaAtual;
-            Long codAlternativaAntigo = null, codAlternativaAtual;
             Checklist checklist = null;
             boolean isFirstLine = true;
             while (rSet.next()) {
+                Long codAlternativaAntigo = null, codAlternativaAtual;
                 codChecklistAtual = rSet.getLong("COD_CHECKLIST");
                 if (codChecklistAntigo == null) {
                     codChecklistAntigo = codChecklistAtual;
@@ -171,6 +173,7 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
                     checklist = ChecklistConverter.createChecklist(rSet, false);
                     pergunta = ChecklistConverter.createPergunta(rSet);
                     pergunta.setAlternativasResposta(new ArrayList<>());
+                    pergunta.setMidias(new ArrayList<>());
                     checklist.setListRespostas(new ArrayList<>());
                     checklist.getListRespostas().add(pergunta);
                     isFirstLine = false;
@@ -178,17 +181,38 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
 
                 if (codChecklistAntigo.equals(codChecklistAtual)) {
                     if (codPerguntaAntigo.equals(codPerguntaAtual)) {
-                        if(codAlternativaAntigo.equals(codAlternativaAtual)){
-                            // TODO: Verificar se o registro de alternativa está se repetindo e incrementar as urls.
-                            Alternativa alternativa  = pergunta.getAlternativasResposta().stream().filter(a -> a.getCodigo().equals(codAlternativaAtual)).collect(bindValueOrNull());
-                        }else{
+                        if (rSet.getBoolean("TEM_MIDIA_PERGUNTA_OK")) {
+                            Long codMidiaPerguntaOk = rSet.getLong("COD_MIDIA_PERGUNTA_OK");
+                            MidiaResposta midiaResposta = pergunta.getMidias().stream().filter(m -> m.getCodigo().equals(codMidiaPerguntaOk)).findFirst().orElse(null);
+                            if(midiaResposta == null){
+                                pergunta.getMidias().add(ChecklistConverter.createMidiaPergunta(rSet));
+                            }
+                        }
+
+                        if (codAlternativaAntigo.equals(codAlternativaAtual)) {
+                            AlternativaChecklist alternativa = pergunta.getAlternativasResposta().stream().filter(a -> a.getCodigo().equals(codAlternativaAtual)).findFirst().orElse(null);
+                            if (alternativa == null) {
+                                pergunta.getAlternativasResposta().add(ChecklistConverter.createAlternativaComResposta(rSet));
+                            } else {
+                                if (rSet.getBoolean("TEM_MIDIA_ALTERNATIVA")) {
+                                    alternativa.getMidias().add(ChecklistConverter.createMidiaAlternativa(rSet));
+                                }
+                            }
+                        } else {
                             // Cria mais uma alternativa na pergunta atual.
                             pergunta.getAlternativasResposta().add(ChecklistConverter.createAlternativaComResposta(rSet));
                         }
+
                     } else {
                         // Cria nova pergunta.
                         pergunta = ChecklistConverter.createPergunta(rSet);
                         pergunta.setAlternativasResposta(new ArrayList<>());
+                        pergunta.setMidias(new ArrayList<>());
+
+                        if (rSet.getBoolean("TEM_MIDIA_PERGUNTA_OK")) {
+                            pergunta.getMidias().add(ChecklistConverter.createMidiaPergunta(rSet));
+                        }
+
                         checklist.getListRespostas().add(pergunta);
 
                         // Cria primeira alternativa da nova pergunta.

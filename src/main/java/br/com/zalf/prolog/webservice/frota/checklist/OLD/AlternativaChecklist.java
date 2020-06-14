@@ -1,8 +1,12 @@
 package br.com.zalf.prolog.webservice.frota.checklist.OLD;
 
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
+import br.com.zalf.prolog.webservice.frota.checklist.model.MidiaResposta;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 /**
  * Created by Zalf on 07/01/17.
@@ -16,6 +20,9 @@ public class AlternativaChecklist extends Alternativa {
      * Indica se a alternativa atual está marcada (selecionada) ou não.
      */
     public boolean selected;
+
+    @Nullable
+    private List<MidiaResposta> midias;
 
     public AlternativaChecklist() {
 
@@ -53,6 +60,10 @@ public class AlternativaChecklist extends Alternativa {
     public void setSelected(final boolean selected) {
         this.selected = selected;
     }
+
+    public List<MidiaResposta> getMidias() { return midias; }
+
+    public void setMidias(List<MidiaResposta> midias) { this.midias = midias; }
 
     @Override
     public String toString() {

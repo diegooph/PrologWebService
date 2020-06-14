@@ -333,5 +333,26 @@ public final class ChecklistConverter {
         } else {
             alternativa.selected = false;
         }
+
+        if(rSet.getBoolean("TEM_MIDIA_ALTERNATIVA")){
+            alternativa.setMidias(new ArrayList<>());
+            alternativa.getMidias().add(createMidiaAlternativa(rSet));
+        }
+    }
+
+    public static MidiaResposta createMidiaPergunta(@NotNull final ResultSet rSet) throws SQLException {
+        return new MidiaResposta(
+                rSet.getLong("COD_MIDIA_PERGUNTA_OK"),
+                rSet.getString("URL_MIDIA_PERGUNTA_OK"),
+                rSet.getString("TIPO_MIDIA_PERGUNTA_OK")
+        );
+    }
+
+    public static MidiaResposta createMidiaAlternativa(@NotNull final ResultSet rSet) throws SQLException {
+        return new MidiaResposta(
+                rSet.getLong("COD_MIDIA_ALTERNATIVA"),
+                rSet.getString("URL_MIDIA_ALTERNATIVA"),
+                rSet.getString("TIPO_MIDIA_ALTERNATIVA")
+        );
     }
 }

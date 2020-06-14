@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.checklist.OLD;
 
 import br.com.zalf.prolog.webservice.commons.questoes.Pergunta;
+import br.com.zalf.prolog.webservice.frota.checklist.model.MidiaResposta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -24,6 +25,8 @@ public class PerguntaRespostaChecklist extends Pergunta {
     private String url;
     private List<AlternativaChecklist> alternativasResposta;
     private boolean singleChoice;
+    @Nullable
+    private List<MidiaResposta> midias;
 
     public PerguntaRespostaChecklist() {
 
@@ -104,6 +107,10 @@ public class PerguntaRespostaChecklist extends Pergunta {
     public void setSingleChoice(boolean singleChoice) {
         this.singleChoice = singleChoice;
     }
+
+    public List<MidiaResposta> getMidias() { return midias; }
+
+    public void setMidias(List<MidiaResposta> midias) { this.midias = midias; }
 
     @Override
     public String toString() {
