@@ -1,6 +1,9 @@
 Change Log
 ==========
 
+## Refactors
+* Utiliza configuração de cada unidade no Cronograma de Aferição (PLI-165)
+
 <a name="v1.0.33"></a>
 ## Version [v1.0.33](https://github.com/luizfp/PrologWebService/compare/v1.0.32...v1.0.33) (release-date) [unreleased]
 
