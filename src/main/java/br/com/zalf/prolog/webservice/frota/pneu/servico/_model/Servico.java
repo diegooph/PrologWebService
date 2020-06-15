@@ -35,7 +35,6 @@ public abstract class Servico {
     private int qtdApontamentos;
     private long kmVeiculoMomentoFechamento;
     private String placaVeiculo;
-    //TODO
     private String identificadorFrota;
     private Double pressaoColetadaFechamento;
 

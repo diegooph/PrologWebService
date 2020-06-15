@@ -88,6 +88,7 @@ final class ServicoConverter {
     static QuantidadeServicosVeiculo createQtdServicosVeiculo(@NotNull final ResultSet resultSet) throws SQLException {
         final QuantidadeServicosVeiculo qtdServicosFechados = new QuantidadeServicosVeiculo();
         qtdServicosFechados.setPlacaVeiculo(resultSet.getString("PLACA_VEICULO"));
+        qtdServicosFechados.setIdentificadorFrota(resultSet.getString("IDENTIFICADOR_FROTA"));
         qtdServicosFechados.setQtdServicosCalibragem(resultSet.getInt("TOTAL_CALIBRAGENS"));
         qtdServicosFechados.setQtdServicosInspecao(resultSet.getInt("TOTAL_INSPECOES"));
         qtdServicosFechados.setQtdServicosMovimentacao(resultSet.getInt("TOTAL_MOVIMENTACOES"));
@@ -173,6 +174,7 @@ final class ServicoConverter {
         servico.setDataHoraAbertura(resultSet.getObject("DATA_HORA_ABERTURA", LocalDateTime.class));
         servico.setDataHoraFechamento(resultSet.getObject("DATA_HORA_FECHAMENTO", LocalDateTime.class));
         servico.setPlacaVeiculo(resultSet.getString("PLACA_VEICULO"));
+        servico.setIdentificadorFrota(resultSet.getString("IDENTIFICADOR_FROTA"));
         servico.setFechadoAutomaticamenteMovimentacao(resultSet.getBoolean("FECHADO_AUTOMATICAMENTE_MOVIMENTACAO"));
         servico.setFechadoAutomaticamenteIntegracao(resultSet.getBoolean("FECHADO_AUTOMATICAMENTE_INTEGRACAO"));
         final String formaColetaDadosFechamento = resultSet.getString("FORMA_COLETA_DADOS_FECHAMENTO");
