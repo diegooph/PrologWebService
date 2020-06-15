@@ -73,7 +73,7 @@ public final class ChecklistModeloConverter {
                 rSet.getBoolean("TIPO_OUTROS"),
                 rSet.getInt("ALTERNATIVA_ORDEM_EXIBICAO"),
                 PrioridadeAlternativa.fromString(rSet.getString("PRIORIDADE_ALTERNATIVA")),
-                AnexoMidiaChecklistEnum.fromString(rSet.getString("ANEXO_MIDIA_ALTERNATIVA")));
+                AnexoMidiaChecklistEnum.fromString(rSet.getString("ANEXO_MIDIA")));
     }
 
     @NotNull
@@ -165,7 +165,7 @@ public final class ChecklistModeloConverter {
                 rSet.getBoolean("ALTERNATIVA_TIPO_OUTROS"),
                 rSet.getInt("ORDEM_ALTERNATIVA"),
                 rSet.getBoolean("DEVE_ABRIR_ORDEM_SERVICO"),
-                AnexoMidiaChecklistEnum.fromString(rSet.getString("ANEXO_MIDIA_ALTERNATIVA")));
+                AnexoMidiaChecklistEnum.fromString(rSet.getString("ANEXO_MIDIA")));
     }
 
     @NotNull

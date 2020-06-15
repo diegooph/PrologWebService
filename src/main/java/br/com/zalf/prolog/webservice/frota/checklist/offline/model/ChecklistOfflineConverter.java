@@ -35,7 +35,7 @@ public final class ChecklistOfflineConverter {
                 rSet.getBoolean("TIPO_OUTROS"),
                 rSet.getInt("ALTERNATIVA_ORDEM_EXIBICAO"),
                 PrioridadeAlternativa.fromString(rSet.getString("PRIORIDADE_ALTERNATIVA")),
-                AnexoMidiaChecklistEnum.fromString(rSet.getString("ANEXO_MIDIA_ALTERNATIVA")));
+                AnexoMidiaChecklistEnum.fromString(rSet.getString("ANEXO_MIDIA")));
     }
 
     @NotNull
