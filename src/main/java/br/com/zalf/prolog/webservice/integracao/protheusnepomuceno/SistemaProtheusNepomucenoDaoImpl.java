@@ -7,22 +7,26 @@ import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.*;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.FormaColetaDadosAfericaoEnum;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosAfericaoAvulsa;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosAfericaoRealizadaPlaca;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosTipoVeiculoConfiguracaoAfericao;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosUnidadeRestricao;
 import com.google.common.base.Preconditions;
+import org.glassfish.jersey.internal.guava.HashBasedTable;
+import org.glassfish.jersey.internal.guava.Table;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static br.com.zalf.prolog.webservice.commons.util.StatementUtils.executeBatchAndValidate;
-import static br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.FormaColetaDadosAfericaoEnum.*;
+import static br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.FormaColetaDadosAfericaoEnum.fromString;
 
 /**
  * Created on 12/03/20
@@ -166,7 +170,7 @@ public final class SistemaProtheusNepomucenoDaoImpl extends DatabaseConnection i
 
     @NotNull
     @Override
-    public Map<String, InfosTipoVeiculoConfiguracaoAfericao> getInfosTipoVeiculoConfiguracaoAfericao(
+    public Table<String, String, InfosTipoVeiculoConfiguracaoAfericao> getInfosTipoVeiculoConfiguracaoAfericao(
             @NotNull final Connection conn,
             @NotNull final List<Long> codUnidades) throws Throwable {
         PreparedStatement stmt = null;
@@ -177,10 +181,12 @@ public final class SistemaProtheusNepomucenoDaoImpl extends DatabaseConnection i
             stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                final Map<String, InfosTipoVeiculoConfiguracaoAfericao> tipoVeiculoConfiguracao = new HashMap<>();
+                final Table<String, String, InfosTipoVeiculoConfiguracaoAfericao> tipoVeiculoConfiguracao =
+                        HashBasedTable.create();
                 do {
                     tipoVeiculoConfiguracao.put(
-                            rSet.getString("COD_AUXILIAR"),
+                            rSet.getString("COD_AUXILIAR_UNIDADE"),
+                            rSet.getString("COD_AUXILIAR_TIPO_VEICULO"),
                             new InfosTipoVeiculoConfiguracaoAfericao(
                                     rSet.getLong("COD_UNIDADE"),
                                     rSet.getLong("COD_TIPO_VEICULO"),
@@ -191,7 +197,7 @@ public final class SistemaProtheusNepomucenoDaoImpl extends DatabaseConnection i
                 } while (rSet.next());
                 return tipoVeiculoConfiguracao;
             } else {
-                return Collections.emptyMap();
+                return HashBasedTable.create();
             }
         } finally {
             close(stmt, rSet);
@@ -374,17 +380,23 @@ public final class SistemaProtheusNepomucenoDaoImpl extends DatabaseConnection i
 
     @NotNull
     @Override
-    public String getCodFiliais(@NotNull final Connection conn,
-                                @NotNull final List<Long> codUnidades) throws Throwable {
+    public Map<Long, String> getCodFiliais(@NotNull final Connection conn,
+                                           @NotNull final List<Long> codUnidades) throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            stmt = conn.prepareStatement("SELECT STRING_AGG(DISTINCT COD_AUXILIAR, ',') AS COD_AUXILIAR " +
-                    "FROM PUBLIC.UNIDADE WHERE CODIGO = ANY(?);");
+            stmt = conn.prepareStatement("select * " +
+                    "from integracao.func_get_cod_auxiliar_unidade_prolog(f_cod_unidades => ?);");
             stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                return rSet.getString("COD_AUXILIAR");
+                final Map<Long, String> codUnidadePrologCodAuxiliar = new HashMap<>();
+                do {
+                    codUnidadePrologCodAuxiliar.put(
+                            rSet.getLong("COD_UNIDADE_PROLOG"),
+                            rSet.getString("COD_AUXILIAR"));
+                } while (rSet.next());
+                return codUnidadePrologCodAuxiliar;
             } else {
                 throw new SQLException("Nenhum código de filial mapeado para as unidades:\n" +
                         "codUnidades: " + codUnidades.toString());

@@ -7,6 +7,7 @@ import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosA
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosAfericaoRealizadaPlaca;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosTipoVeiculoConfiguracaoAfericao;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosUnidadeRestricao;
+import org.glassfish.jersey.internal.guava.Table;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -82,12 +83,13 @@ public interface SistemaProtheusNepomucenoDao {
      *
      * @param conn        Conexão que será utilizada para buscara as informações.
      * @param codUnidades Códigos das Unidades Prolog que serão utilizadas como base para as buscas.
-     * @return Uma estrutura de chave e valor onde a chave é o código auxiliar do tipo de veículo (presente no DE-PARA)
+     * @return Uma estrutura de chave e valor contendo duas chaves, onde a primeira chave é o código auxiliar da unidade
+     * e a segunda chave é o código auxiliar do tipo de veículo (presente no DE-PARA).
      * e os valores são as configurações de aferição para cada tipo de veículo.
      * @throws Throwable Se algum erro ocorrer.
      */
     @NotNull
-    Map<String, InfosTipoVeiculoConfiguracaoAfericao> getInfosTipoVeiculoConfiguracaoAfericao(
+    Table<String, String, InfosTipoVeiculoConfiguracaoAfericao> getInfosTipoVeiculoConfiguracaoAfericao(
             @NotNull final Connection conn,
             @NotNull final List<Long> codUnidades) throws Throwable;
 
@@ -167,16 +169,17 @@ public interface SistemaProtheusNepomucenoDao {
                                        @NotNull final String codEstruturaVeiculo) throws Throwable;
 
     /**
-     * Método utilizado para os códigos das Filiais mapeadas no Prolog. Para realizar a busca utilizamos como base os
-     * códigos de unidades Prolog.
+     * Método utilizado para buscar os códigos das Filiais mapeadas no Prolog. Para realizar a busca utilizamos como
+     * base os códigos de unidades Prolog.
      *
      * @param conn        Conexão utilizada para buscar as informações.
      * @param codUnidades Lista de códigos de Unidades do Prolog para utilizar como base na busca.
-     * @return Uma String contendo os códigos das Filiais mapeadas separadas por underline. Ex: "A1_B1_C1_D1".
+     * @return Um map contendo o código da unidade Prolog e código da filial associada.
      * @throws Throwable Se algum erro ocorrer.
      */
     @NotNull
-    String getCodFiliais(@NotNull final Connection conn, @NotNull final List<Long> codUnidades) throws Throwable;
+    Map<Long, String> getCodFiliais(@NotNull final Connection conn,
+                                    @NotNull final List<Long> codUnidades) throws Throwable;
 
     /**
      * Método utilizado para buscar os códigos auxiliares mapeados. Esse método não retorna, caso exisitir, o código

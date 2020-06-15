@@ -6,10 +6,10 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
-import static br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.ProtheusNepomucenoConstants.DEFAULT_CODIGOS_SEPARATOR;
-import static br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.ProtheusNepomucenoConstants.DEFAULT_COD_AUXILIAR_TIPO_VEICULO_SEPARATOR;
+import static br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.ProtheusNepomucenoConstants.*;
 
 /**
  * Created on 2020-03-23
@@ -73,5 +73,14 @@ public final class ProtheusNepomucenoUtils {
     static List<String> getCodAuxiliarTipoVeiculoAsArray(@NotNull final String codAuxiliar) {
         final String[] codigos = codAuxiliar.trim().split(DEFAULT_COD_AUXILIAR_TIPO_VEICULO_SEPARATOR);
         return Arrays.asList(codigos);
+    }
+
+    @NotNull
+    public static String getOnlyFiliais(@NotNull final Map<Long, String> codFiliais) {
+        return codFiliais
+                .values()
+                .stream()
+                .distinct()
+                .collect(Collectors.joining(DEFAULT_COD_AUXILIAR_UNIDADE_SEPARATOR));
     }
 }

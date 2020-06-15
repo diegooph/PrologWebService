@@ -12,6 +12,7 @@ import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.error.
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.data.ProtheusNepomucenoRequesterImpl;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
+import org.glassfish.jersey.internal.guava.Table;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -107,7 +108,7 @@ public final class SistemaProtheusNepomuceno extends Sistema {
         final DatabaseConnectionProvider connectionProvider = new DatabaseConnectionProvider();
         try {
             conn = connectionProvider.provideDatabaseConnection();
-            final SistemaProtheusNepomucenoDaoImpl sistema = new SistemaProtheusNepomucenoDaoImpl();
+            final SistemaProtheusNepomucenoDao sistema = new SistemaProtheusNepomucenoDaoImpl();
             // Podemos ter unidades cadastradas no Prolog que não tem cod_auxiliar, removemos esses casos.
             final List<Long> codUnidadesMapeadas = sistema.getApenasUnidadesMapeadas(conn, codUnidades);
             if (codUnidadesMapeadas.isEmpty()) {
@@ -120,15 +121,17 @@ public final class SistemaProtheusNepomuceno extends Sistema {
 
             final Map<String, InfosUnidadeRestricao> unidadeRestricao =
                     sistema.getInfosUnidadeRestricao(conn, codUnidadesMapeadas);
-            // Apenas tipos de veículos que possuem cod_auxiliar estarão nesse Map.
-            final Map<String, InfosTipoVeiculoConfiguracaoAfericao> tipoVeiculoConfiguracao =
+            // Apenas tipos de veículos que possuem cod_auxiliar estarão nessa estrutura.
+            final Table<String, String, InfosTipoVeiculoConfiguracaoAfericao> tipoVeiculoConfiguracao =
                     sistema.getInfosTipoVeiculoConfiguracaoAfericao(conn, codUnidadesMapeadas);
 
             final String url = getIntegradorProLog()
                     .getUrl(conn, codEmpresa, getSistemaKey(), MetodoIntegrado.GET_VEICULOS_CRONOGRAMA_AFERICAO);
-            final String codFiliais = sistema.getCodFiliais(conn, codUnidadesMapeadas);
+            final Map<Long, String> codFiliais = sistema.getCodFiliais(conn, codUnidadesMapeadas);
             final List<VeiculoListagemProtheusNepomuceno> listagemVeiculos =
-                    requester.getListagemVeiculosUnidadesSelecionadas(url, codFiliais);
+                    requester.getListagemVeiculosUnidadesSelecionadas(
+                            url,
+                            ProtheusNepomucenoUtils.getOnlyFiliais(codFiliais));
             listagemVeiculos.removeIf(VeiculoListagemProtheusNepomuceno::deveRemover);
 
             final List<String> placasNepomuceno = listagemVeiculos.stream()
@@ -144,7 +147,9 @@ public final class SistemaProtheusNepomuceno extends Sistema {
             final Map<String, List<ModeloPlacasAfericao.PlacaAfericao>> placasEstruturaVeiculo = new HashMap<>();
             final Set<String> estruturasNaoMapeadas = new HashSet<>();
             for (final VeiculoListagemProtheusNepomuceno veiculo : listagemVeiculos) {
-                if (!tipoVeiculoConfiguracao.containsKey(veiculo.getCodEstruturaVeiculo())) {
+                if (!tipoVeiculoConfiguracao.contains(
+                        veiculo.getCodEmpresaFilialVeiculo(),
+                        veiculo.getCodEstruturaVeiculo())) {
                     // Adicionamos a estrutura não mapeada em uma estrutura para logar no sentry.
                     estruturasNaoMapeadas.add(veiculo.getCodEstruturaVeiculo());
                     continue;
@@ -156,9 +161,11 @@ public final class SistemaProtheusNepomuceno extends Sistema {
                 placasEstruturaVeiculo.get(veiculo.getCodModeloVeiculo()).add(
                         ProtheusNepomucenoConverter.createPlacaAfericaoProlog(
                                 veiculo,
-                                unidadeRestricao,
-                                tipoVeiculoConfiguracao,
-                                afericaoRealizadaPlaca));
+                                unidadeRestricao.get(veiculo.getCodEmpresaFilialVeiculo()),
+                                tipoVeiculoConfiguracao.get(
+                                        veiculo.getCodEmpresaFilialVeiculo(),
+                                        veiculo.getCodEstruturaVeiculo()),
+                                afericaoRealizadaPlaca.get(veiculo.getPlacaVeiculo())));
 
                 if (!modelosEstruturaVeiculo.containsKey(veiculo.getCodModeloVeiculo())) {
                     modelosEstruturaVeiculo.put(

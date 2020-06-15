@@ -41,8 +41,8 @@ public class AfericaoService {
     }
 
     @NotNull
-    CronogramaAfericao getCronogramaAfericao(@NotNull final String userToken,
-                                             @NotNull final List<Long> codUnidades) throws ProLogException {
+    public CronogramaAfericao getCronogramaAfericao(@NotNull final String userToken,
+                                                    @NotNull final List<Long> codUnidades) throws ProLogException {
         try {
             return RouterAfericao
                     .create(dao, userToken)

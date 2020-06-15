@@ -15,6 +15,8 @@ public final class ProtheusNepomucenoConstants {
     @NotNull
     public static final String DEFAULT_COD_AUXILIAR_TIPO_VEICULO_SEPARATOR = ",";
     @NotNull
+    public static final String DEFAULT_COD_AUXILIAR_UNIDADE_SEPARATOR = ",";
+    @NotNull
     static final Long DEFAULT_COD_MARCA_PNEU = 1L;
     @NotNull
     static final Long DEFAULT_COD_MODELO_PNEU = 1L;
