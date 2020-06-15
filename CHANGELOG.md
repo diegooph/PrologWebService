@@ -3,6 +3,7 @@ Stage
 
 ### Refactors
 * Implementa a estrutura de parametrização de fotos na busca de modelos de checklist (PL-2272)
+* Adiciona a lista de mídias na visualização de checklists realizados (PL-2774)
 
 Change Log
 ==========
