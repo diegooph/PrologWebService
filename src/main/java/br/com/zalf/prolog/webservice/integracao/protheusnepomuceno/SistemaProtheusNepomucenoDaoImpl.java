@@ -386,7 +386,7 @@ public final class SistemaProtheusNepomucenoDaoImpl extends DatabaseConnection i
         ResultSet rSet = null;
         try {
             stmt = conn.prepareStatement("select * " +
-                    "from integracao.func_get_cod_auxiliar_unidade_prolog(f_cod_unidades => ?);");
+                    "from integracao.func_afericao_get_cod_auxiliar_unidade_prolog(f_cod_unidades => ?);");
             stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
             rSet = stmt.executeQuery();
             if (rSet.next()) {
