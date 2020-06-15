@@ -50,7 +50,7 @@ public final class ChecklistOfflineConverter {
                 rSet.getString("URL_IMAGEM"),
                 rSet.getInt("PERGUNTA_ORDEM_EXIBICAO"),
                 rSet.getBoolean("SINGLE_CHOICE"),
-                AnexoMidiaChecklistEnum.fromString(rSet.getString("ANEXO_MIDIA_RESPOSTA_OK_PERGUNTA")),
+                AnexoMidiaChecklistEnum.fromString(rSet.getString("ANEXO_MIDIA_RESPOSTA_OK")),
                 alternativas);
     }
 
