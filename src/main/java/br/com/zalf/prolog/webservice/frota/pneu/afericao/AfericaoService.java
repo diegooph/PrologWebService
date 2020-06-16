@@ -26,9 +26,9 @@ public class AfericaoService {
     private final ProLogExceptionHandler exceptionHandler = Injection.provideProLogExceptionHandler();
 
     @Nullable
-    Long insert(@NotNull final String userToken,
-                @NotNull final Long codUnidade,
-                @NotNull final Afericao afericao) throws ProLogException {
+    public Long insert(@NotNull final String userToken,
+                       @NotNull final Long codUnidade,
+                       @NotNull final Afericao afericao) throws ProLogException {
         try {
             afericao.setDataHora(Now.localDateTimeUtc());
             return RouterAfericao
@@ -70,10 +70,10 @@ public class AfericaoService {
     }
 
     @NotNull
-    NovaAfericaoPlaca getNovaAfericaoPlaca(@NotNull final String userToken,
-                                           @NotNull final Long codUnidade,
-                                           @NotNull final String placa,
-                                           @NotNull final String tipoAfericao) throws ProLogException {
+    public NovaAfericaoPlaca getNovaAfericaoPlaca(@NotNull final String userToken,
+                                                  @NotNull final Long codUnidade,
+                                                  @NotNull final String placa,
+                                                  @NotNull final String tipoAfericao) throws ProLogException {
         try {
             return RouterAfericao
                     .create(dao, userToken)
