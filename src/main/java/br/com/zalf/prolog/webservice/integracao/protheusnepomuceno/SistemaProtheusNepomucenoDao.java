@@ -38,15 +38,17 @@ public interface SistemaProtheusNepomucenoDao {
     /**
      * Método utilizado para inserir uma aferição e os valores no banco de dados.
      *
-     * @param conn       Conexão que será utilizada para inserir a aferição.
-     * @param codUnidade Código da unidade onde a Aferição foi realizada.
-     * @param afericao   Objeto contendo as medidas capturadas no processo de aferição.
+     * @param conn               Conexão que será utilizada para inserir a aferição.
+     * @param codUnidade         Código da unidade onde a Aferição foi realizada.
+     * @param codAuxiliarUnidade Código Auxiliar da unidade onde a Aferição foi realizada.
+     * @param afericao           Objeto contendo as medidas capturadas no processo de aferição.
      * @return Código da aferição inserida.
      * @throws Throwable Se ocorrer erro na inserção.
      */
     @NotNull
     Long insert(@NotNull final Connection conn,
                 @NotNull final Long codUnidade,
+                @NotNull final String codAuxiliarUnidade,
                 @NotNull final Afericao afericao) throws Throwable;
 
     /**

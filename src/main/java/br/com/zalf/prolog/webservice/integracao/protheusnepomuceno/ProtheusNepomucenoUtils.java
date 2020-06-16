@@ -83,4 +83,8 @@ public final class ProtheusNepomucenoUtils {
                 .distinct()
                 .collect(Collectors.joining(DEFAULT_COD_AUXILIAR_UNIDADE_SEPARATOR));
     }
+
+    public static boolean containsMoreThanOneCodAuxiliar(@NotNull final String codEmpresaFilial) {
+        return codEmpresaFilial.split(DEFAULT_COD_AUXILIAR_UNIDADE_SEPARATOR).length > 1;
+    }
 }

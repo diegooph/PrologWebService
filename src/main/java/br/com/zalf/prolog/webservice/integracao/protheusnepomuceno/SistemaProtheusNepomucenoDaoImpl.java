@@ -66,12 +66,14 @@ public final class SistemaProtheusNepomucenoDaoImpl extends DatabaseConnection i
     @Override
     public Long insert(@NotNull final Connection conn,
                        @NotNull final Long codUnidade,
+                       @NotNull final String codAuxiliarUnidade,
                        @NotNull final Afericao afericao) throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             stmt = conn.prepareStatement("SELECT * FROM INTEGRACAO.FUNC_PNEU_AFERICAO_INSERT_AFERICAO_INTEGRADA(" +
                     "F_COD_UNIDADE_PROLOG => ?," +
+                    "F_COD_AUXILIAR_UNIDADE => ?," +
                     "F_CPF_AFERIDOR => ?, " +
                     "F_PLACA_VEICULO => ?::TEXT, " +
                     "F_COD_AUXILIAR_TIPO_VEICULO_PROLOG => ?, " +
@@ -81,22 +83,23 @@ public final class SistemaProtheusNepomucenoDaoImpl extends DatabaseConnection i
                     "F_TIPO_MEDICAO_COLETADA => ?, " +
                     "F_TIPO_PROCESSO_COLETA => ?) AS COD_AFERICAO_INTEGRADA;");
             stmt.setLong(1, codUnidade);
-            stmt.setString(2, String.valueOf(afericao.getColaborador().getCpf()));
+            stmt.setString(2, codAuxiliarUnidade);
+            stmt.setString(3, String.valueOf(afericao.getColaborador().getCpf()));
             if (afericao instanceof AfericaoPlaca) {
                 final AfericaoPlaca afericaoPlaca = (AfericaoPlaca) afericao;
-                stmt.setString(3, afericaoPlaca.getVeiculo().getPlaca());
+                stmt.setString(4, afericaoPlaca.getVeiculo().getPlaca());
                 // Setamos o código auxiliar do tipo no nome do diagrama.
-                stmt.setString(4, afericaoPlaca.getVeiculo().getDiagrama().getNome());
-                stmt.setString(5, String.valueOf(afericaoPlaca.getKmMomentoAfericao()));
+                stmt.setString(5, afericaoPlaca.getVeiculo().getDiagrama().getNome());
+                stmt.setString(6, String.valueOf(afericaoPlaca.getKmMomentoAfericao()));
             } else {
-                stmt.setNull(3, Types.VARCHAR);
                 stmt.setNull(4, Types.VARCHAR);
                 stmt.setNull(5, Types.VARCHAR);
+                stmt.setNull(6, Types.VARCHAR);
             }
-            stmt.setLong(6, afericao.getTempoRealizacaoAfericaoInMillis());
-            stmt.setObject(7, afericao.getDataHora().atOffset(ZoneOffset.UTC));
-            stmt.setString(8, afericao.getTipoMedicaoColetadaAfericao().asString());
-            stmt.setString(9, afericao.getTipoProcessoColetaAfericao().asString());
+            stmt.setLong(7, afericao.getTempoRealizacaoAfericaoInMillis());
+            stmt.setObject(8, afericao.getDataHora().atOffset(ZoneOffset.UTC));
+            stmt.setString(9, afericao.getTipoMedicaoColetadaAfericao().asString());
+            stmt.setString(10, afericao.getTipoProcessoColetaAfericao().asString());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 final long codAfericaoIntegrada = rSet.getLong("COD_AFERICAO_INTEGRADA");

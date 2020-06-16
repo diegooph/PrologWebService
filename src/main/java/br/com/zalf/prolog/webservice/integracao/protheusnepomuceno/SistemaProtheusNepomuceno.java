@@ -69,13 +69,25 @@ public final class SistemaProtheusNepomuceno extends Sistema {
             conn = connectionProvider.provideDatabaseConnection();
             conn.setAutoCommit(false);
             // buscamos as informações logo no começo do processo, assim, se der erro nada mais é executado.
-            final SistemaProtheusNepomucenoDaoImpl sistema = new SistemaProtheusNepomucenoDaoImpl();
+            final SistemaProtheusNepomucenoDao sistema = new SistemaProtheusNepomucenoDaoImpl();
             final Long codEmpresaProlog = getIntegradorProLog().getCodEmpresaByCodUnidadeProLog(conn, codUnidade);
-            final String codAuxiliarUnidade = getIntegradorProLog().getCodAuxiliarByCodUnidadeProlog(conn, codUnidade);
+            String codAuxiliarUnidade = getIntegradorProLog().getCodAuxiliarByCodUnidadeProlog(conn, codUnidade);
+
+            // Não precisamos fazer essa tratativa na Aferição Avulsa.
+            if (afericao instanceof AfericaoPlaca
+                    && ProtheusNepomucenoUtils.containsMoreThanOneCodAuxiliar(codAuxiliarUnidade)) {
+                codAuxiliarUnidade =
+                        getCoFilialByPlacaCronograma(
+                                conn,
+                                codEmpresaProlog,
+                                codUnidade,
+                                ((AfericaoPlaca) afericao).getVeiculo().getPlaca(),
+                                sistema);
+            }
 
             // Deixamos para inserir a aferição no Prolog logo antes de enviar para o Protheus. Assim garantimos que
             // só teremos um rollback caso tenhamos erro no Protheus.
-            final Long codAfericaoInserida = sistema.insert(conn, codUnidade, afericao);
+            final Long codAfericaoInserida = sistema.insert(conn, codUnidade, codAuxiliarUnidade, afericao);
 
             if (afericao instanceof AfericaoPlaca) {
                 requester.insertAfericaoPlaca(
@@ -125,13 +137,8 @@ public final class SistemaProtheusNepomuceno extends Sistema {
             final Table<String, String, InfosTipoVeiculoConfiguracaoAfericao> tipoVeiculoConfiguracao =
                     sistema.getInfosTipoVeiculoConfiguracaoAfericao(conn, codUnidadesMapeadas);
 
-            final String url = getIntegradorProLog()
-                    .getUrl(conn, codEmpresa, getSistemaKey(), MetodoIntegrado.GET_VEICULOS_CRONOGRAMA_AFERICAO);
-            final Map<Long, String> codFiliais = sistema.getCodFiliais(conn, codUnidadesMapeadas);
             final List<VeiculoListagemProtheusNepomuceno> listagemVeiculos =
-                    requester.getListagemVeiculosUnidadesSelecionadas(
-                            url,
-                            ProtheusNepomucenoUtils.getOnlyFiliais(codFiliais));
+                    internalGetVeiculos(conn, codEmpresa, codUnidadesMapeadas, sistema);
             listagemVeiculos.removeIf(VeiculoListagemProtheusNepomuceno::deveRemover);
 
             final List<String> placasNepomuceno = listagemVeiculos.stream()
@@ -198,14 +205,18 @@ public final class SistemaProtheusNepomuceno extends Sistema {
         final DatabaseConnectionProvider connectionProvider = new DatabaseConnectionProvider();
         try {
             conn = connectionProvider.provideDatabaseConnection();
-            final SistemaProtheusNepomucenoDaoImpl sistema = new SistemaProtheusNepomucenoDaoImpl();
+            final SistemaProtheusNepomucenoDao sistema = new SistemaProtheusNepomucenoDaoImpl();
             final Long codEmpresa = getIntegradorProLog().getCodEmpresaByCodUnidadeProLog(conn, codUnidade);
 
-            final String url = getIntegradorProLog()
+            String codEmpresaFilial = getIntegradorProLog().getCodAuxiliarByCodUnidadeProlog(conn, codUnidade);
+            if (ProtheusNepomucenoUtils.containsMoreThanOneCodAuxiliar(codEmpresaFilial)) {
+                codEmpresaFilial = getCoFilialByPlacaCronograma(conn, codEmpresa, codUnidade, placaVeiculo, sistema);
+            }
+
+            final String urlNovaAfericao = getIntegradorProLog()
                     .getUrl(conn, codEmpresa, getSistemaKey(), MetodoIntegrado.GET_VEICULO_NOVA_AFERICAO_PLACA);
-            final String codEmpresaFilial = getIntegradorProLog().getCodAuxiliarByCodUnidadeProlog(conn, codUnidade);
             final VeiculoAfericaoProtheusNepomuceno veiculoAfericao =
-                    requester.getPlacaPneusAfericaoPlaca(url, codEmpresaFilial, placaVeiculo);
+                    requester.getPlacaPneusAfericaoPlaca(urlNovaAfericao, codEmpresaFilial, placaVeiculo);
 
             final ConfiguracaoNovaAfericaoPlaca configuracaoAfericao =
                     sistema.getConfigNovaAfericaoPlaca(
@@ -339,6 +350,56 @@ public final class SistemaProtheusNepomuceno extends Sistema {
         } finally {
             connectionProvider.closeResources(conn);
         }
+    }
+
+    /**
+     * Método privado utilizado para buscar a Filial Protheus de uma Placa específica.
+     * <p>
+     * O mapeamento de unidades permite que mais de um código auxiliar seja mapeado para um único código
+     * Prolog. Com isso, chegando nesse método o 'codUnidade' pode ter mais de um código auxiliar e
+     * não conseguiríamos executar a busca no Protheus, pois não saberíamos qual dos códigos usar.
+     * Assim, fazemos a busca do cronograma novamente (somente para unidade selecionada) e pegamos o
+     * código direto da Placa selecionada.
+     *
+     * @param conn         Conexão com o banco utilizada no processo.
+     * @param codEmpresa   Código da empresa Prolog que estamos utilizando.
+     * @param codUnidade   Código da unidade Prolog que estamos utilizando.
+     * @param placaVeiculo Placa do Veículo no qual queremos buscar a Filial.
+     * @param sistema      Sistema utilizado para conexões e busca de dados internos.
+     * @return Uma String contendo o código da Filial Protheus da placa.
+     * @throws Throwable Se algum erro acorrer inesperadamente ou se não for encontrado uma filial para a Placa.
+     */
+    @NotNull
+    private String getCoFilialByPlacaCronograma(@NotNull final Connection conn,
+                                                @NotNull final Long codEmpresa,
+                                                @NotNull final Long codUnidade,
+                                                @NotNull final String placaVeiculo,
+                                                @NotNull final SistemaProtheusNepomucenoDao sistema) throws Throwable {
+        final List<VeiculoListagemProtheusNepomuceno> listagemVeiculos =
+                internalGetVeiculos(conn, codEmpresa, Collections.singletonList(codUnidade), sistema);
+        return listagemVeiculos
+                .stream()
+                .filter(VeiculoListagemProtheusNepomuceno::deveRemover)
+                .filter(veiculo -> veiculo.getPlacaVeiculo().equals(placaVeiculo))
+                .map(VeiculoListagemProtheusNepomuceno::getCodEmpresaFilialVeiculo)
+                .findFirst()
+                .orElseThrow(() -> {
+                    throw new ProtheusNepomucenoException("Placa não encontrada para Aferir");
+                });
+    }
+
+    @NotNull
+    private List<VeiculoListagemProtheusNepomuceno> internalGetVeiculos(
+            @NotNull final Connection conn,
+            @NotNull final Long codEmpresa,
+            @NotNull final List<Long> codUnidades,
+            @NotNull final SistemaProtheusNepomucenoDao sistema) throws Throwable {
+        final String urlCronograma = getIntegradorProLog()
+                .getUrl(conn, codEmpresa, getSistemaKey(), MetodoIntegrado.GET_VEICULOS_CRONOGRAMA_AFERICAO);
+        final Map<Long, String> codFiliais = sistema.getCodFiliais(conn, codUnidades);
+        return requester.getListagemVeiculosUnidadesSelecionadas(
+                urlCronograma,
+                ProtheusNepomucenoUtils.getOnlyFiliais(codFiliais));
     }
 
     private void validateCodAuxiliar(@Nullable final Long codEmpresaTipoVeiculo,
