@@ -349,15 +349,15 @@ public abstract class Router implements OperacoesIntegradas {
 
     @NotNull
     @Override
-    public List<ChecklistListagem> getListagemByColaborador(@NotNull final Long cpf,
+    public List<ChecklistListagem> getListagemByColaborador(@NotNull final Long codColaborador,
                                                             @NotNull final LocalDate dataInicial,
                                                             @NotNull final LocalDate dataFinal,
                                                             final int limit,
                                                             final long offset) throws Throwable {
         if (getSistema() != null) {
-            return getSistema().getListagemByColaborador(cpf, dataInicial, dataFinal, limit, offset);
+            return getSistema().getListagemByColaborador(codColaborador, dataInicial, dataFinal, limit, offset);
         } else {
-            return integradorProLog.getListagemByColaborador(cpf, dataInicial, dataFinal, limit, offset);
+            return integradorProLog.getListagemByColaborador(codColaborador, dataInicial, dataFinal, limit, offset);
         }
     }
 
@@ -366,7 +366,7 @@ public abstract class Router implements OperacoesIntegradas {
     public List<ChecklistListagem> getListagem(@NotNull final Long codUnidade,
                                                @Nullable final Long codEquipe,
                                                @Nullable final Long codTipoVeiculo,
-                                               @Nullable final String placaVeiculo,
+                                               @Nullable final Long codVeiculo,
                                                @NotNull final LocalDate dataInicial,
                                                @NotNull final LocalDate dataFinal,
                                                final int limit,
@@ -377,7 +377,7 @@ public abstract class Router implements OperacoesIntegradas {
                             codUnidade,
                             codEquipe,
                             codTipoVeiculo,
-                            placaVeiculo,
+                            codVeiculo,
                             dataInicial,
                             dataFinal,
                             limit,
@@ -387,7 +387,7 @@ public abstract class Router implements OperacoesIntegradas {
                     .getListagem(codUnidade,
                             codEquipe,
                             codTipoVeiculo,
-                            placaVeiculo,
+                            codVeiculo,
                             dataInicial,
                             dataFinal,
                             limit,

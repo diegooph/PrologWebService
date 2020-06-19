@@ -226,7 +226,7 @@ public final class AvaCorpAvilan extends Sistema {
 
     @NotNull
     @Override
-    public List<ChecklistListagem> getListagemByColaborador(@NotNull final Long cpf,
+    public List<ChecklistListagem> getListagemByColaborador(@NotNull final Long codColaborador,
                                                             @NotNull LocalDate dataInicial,
                                                             @NotNull LocalDate dataFinal,
                                                             final int limit,
@@ -245,16 +245,20 @@ public final class AvaCorpAvilan extends Sistema {
     public List<ChecklistListagem> getListagem(@NotNull final Long codUnidade,
                                                @Nullable final Long codEquipe,
                                                @Nullable final Long codTipoVeiculo,
-                                               @Nullable final String placaVeiculo,
+                                               @Nullable final Long codVeiculo,
                                                @NotNull final LocalDate dataInicial,
                                                @NotNull final LocalDate dataFinal,
                                                final int limit,
                                                final long offset) throws Exception {
+        String placa = null;
+        if(codVeiculo != null){
+            placa = getAvaCorpAvilanDao().getPlacaByCodVeiculo(codVeiculo);
+        }
         final List<ChecklistFiltro> checklistsFiltro =
                 internalGetChecklist(
                         codUnidade,
                         codTipoVeiculo,
-                        placaVeiculo,
+                        placa,
                         AvaCorpAvilanUtils.createDatePattern(dataInicial),
                         AvaCorpAvilanUtils.createDatePattern(dataFinal));
         final List<Checklist> checklists =

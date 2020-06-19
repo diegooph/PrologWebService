@@ -79,7 +79,7 @@ interface OperacoesIntegradasChecklist {
                                        final boolean resumido) throws Exception;
 
     @NotNull
-    List<ChecklistListagem> getListagemByColaborador(@NotNull final Long cpf,
+    List<ChecklistListagem> getListagemByColaborador(@NotNull final Long codColaborador,
                                                      @NotNull final LocalDate dataInicial,
                                                      @NotNull final LocalDate dataFinal,
                                                      final int limit,
@@ -89,7 +89,7 @@ interface OperacoesIntegradasChecklist {
     List<ChecklistListagem> getListagem(@NotNull final Long codUnidade,
                                         @Nullable final Long codEquipe,
                                         @Nullable final Long codTipoVeiculo,
-                                        @Nullable final String placaVeiculo,
+                                        @Nullable final Long codVeiculo,
                                         @NotNull LocalDate dataInicial,
                                         @NotNull LocalDate dataFinal,
                                         final int limit,

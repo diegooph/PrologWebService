@@ -22,11 +22,9 @@ public final class ChecklistListagem {
     @NotNull
     private final LocalDateTime dataHora;
     @Nullable
-    private final LocalDateTime dataHoraImportadoProLog;
-    @NotNull
-    private final Long kmVeiculoMomentoRealizacao;
-    @NotNull
-    private final Long duracaoRealizacaoInMillis;
+    private final LocalDateTime dataHoraImportadoProlog;
+    private final long kmVeiculoMomentoRealizacao;
+    private final long duracaoRealizacaoInMillis;
     @NotNull
     private final Long codColaborador;
     @NotNull
@@ -37,19 +35,17 @@ public final class ChecklistListagem {
     private final Long codVeiculo;
     @NotNull
     private final String placaVeiculo;
+    @Nullable
+    private final String identificadorFrota;
     @NotNull
     private final TipoChecklist tipo;
-    @NotNull
-    private final Integer totalPerguntasOk;
-    @NotNull
-    private final Integer totalPerguntasNok;
-    @NotNull
-    private final Integer totalAlternativasOk;
-    @NotNull
-    private final Integer totalAlternativasNok;
+    private final int totalPerguntasOk;
+    private final int totalPerguntasNok;
+    private final int totalAlternativasOk;
+    private final int totalAlternativasNok;
     private final int totalImagensPerguntasOk;
-    private final int totalImagensAlternativasNOk;
-    private final int totalNOkBaixa;
-    private final int totalNOkAlta;
-    private final int totalNOkCritica;
+    private final int totalImagensAlternativasNok;
+    private final int totalNokBaixa;
+    private final int totalNokAlta;
+    private final int totalNokCritica;
 }

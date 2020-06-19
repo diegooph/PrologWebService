@@ -484,12 +484,12 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
 
     @NotNull
     @Override
-    public List<ChecklistListagem> getListagemByColaborador(@NotNull final Long cpf,
+    public List<ChecklistListagem> getListagemByColaborador(@NotNull final Long codColaborador,
                                                             @NotNull final LocalDate dataInicial,
                                                             @NotNull final LocalDate dataFinal,
                                                             final int limit,
                                                             final long offset) throws Throwable {
-        return checklistDao.getListagemByColaborador(cpf, dataInicial, dataFinal, limit, offset);
+        return checklistDao.getListagemByColaborador(codColaborador, dataInicial, dataFinal, limit, offset);
     }
 
     @NotNull
@@ -497,7 +497,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
     public List<ChecklistListagem> getListagem(@NotNull final Long codUnidade,
                                                @Nullable final Long codEquipe,
                                                @Nullable final Long codTipoVeiculo,
-                                               @Nullable final String placaVeiculo,
+                                               @Nullable final Long codVeiculo,
                                                @NotNull final LocalDate dataInicial,
                                                @NotNull final LocalDate dataFinal,
                                                final int limit,
@@ -506,7 +506,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
                 codUnidade,
                 codEquipe,
                 codTipoVeiculo,
-                placaVeiculo,
+                codVeiculo,
                 dataInicial,
                 dataFinal,
                 limit,

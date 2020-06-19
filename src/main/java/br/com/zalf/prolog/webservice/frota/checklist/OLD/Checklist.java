@@ -299,6 +299,7 @@ public class Checklist {
                 checklistAntigo.getColaborador().getNome(),
                 -1L,
                 checklistAntigo.getPlacaVeiculo(),
+                null,
                 TipoChecklist.fromChar(checklistAntigo.getTipo()),
                 checklistAntigo.getQtdItensOk(),
                 checklistAntigo.getQtdItensNok(),

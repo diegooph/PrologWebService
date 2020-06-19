@@ -87,6 +87,7 @@ public final class ChecklistConverter {
                 rSet.getString("NOME_COLABORADOR"),
                 rSet.getLong("COD_VEICULO"),
                 rSet.getString("PLACA_VEICULO"),
+                rSet.getString("IDENTIFICADOR_FROTA"),
                 TipoChecklist.fromChar(rSet.getString("TIPO_CHECKLIST").charAt(0)),
                 rSet.getInt("TOTAL_PERGUNTAS_OK"),
                 rSet.getInt("TOTAL_PERGUNTAS_NOK"),

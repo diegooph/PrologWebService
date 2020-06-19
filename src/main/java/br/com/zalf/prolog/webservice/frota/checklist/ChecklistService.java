@@ -180,7 +180,7 @@ public final class ChecklistService {
 
     @NotNull
     public List<ChecklistListagem> getListagemByColaborador(@NotNull final String userToken,
-                                                            @NotNull final Long cpf,
+                                                            @NotNull final Long codColaborador,
                                                             @NotNull final String dataInicial,
                                                             @NotNull final String dataFinal,
                                                             final int limit,
@@ -189,7 +189,7 @@ public final class ChecklistService {
             return RouterChecklists
                     .create(dao, userToken)
                     .getListagemByColaborador(
-                            cpf,
+                            codColaborador,
                             ProLogDateParser.toLocalDate(dataInicial),
                             ProLogDateParser.toLocalDate(dataFinal),
                             limit,
@@ -207,7 +207,7 @@ public final class ChecklistService {
                                                @NotNull final Long codUnidade,
                                                @Nullable final Long codEquipe,
                                                @Nullable final Long codTipoVeiculo,
-                                               @Nullable final String placaVeiculo,
+                                               @Nullable final Long codVeiculo,
                                                @NotNull final String dataInicial,
                                                @NotNull final String dataFinal,
                                                final int limit,
@@ -219,7 +219,7 @@ public final class ChecklistService {
                             codUnidade,
                             codEquipe,
                             codTipoVeiculo,
-                            placaVeiculo,
+                            codVeiculo,
                             ProLogDateParser.toLocalDate(dataInicial),
                             ProLogDateParser.toLocalDate(dataFinal),
                             limit,

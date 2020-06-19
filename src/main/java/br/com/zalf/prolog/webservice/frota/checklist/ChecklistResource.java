@@ -111,12 +111,12 @@ public final class ChecklistResource {
     @Path("/listagem/colaborador")
     @Secured(permissions = {Pilares.Frota.Checklist.VISUALIZAR_TODOS, Pilares.Frota.Checklist.REALIZAR})
     public List<ChecklistListagem> getListagemByColaborador(@HeaderParam("Authorization") final String userToken,
-                                                            @QueryParam("cpf") final Long cpf,
+                                                            @QueryParam("codColaborador") final Long codColaborador,
                                                             @QueryParam("dataInicial") final String dataInicial,
                                                             @QueryParam("dataFinal") final String dataFinal,
                                                             @QueryParam("limit") final int limit,
                                                             @QueryParam("offset") final long offset) {
-        return service.getListagemByColaborador(userToken, cpf, dataInicial, dataFinal, limit, offset);
+        return service.getListagemByColaborador(userToken, codColaborador, dataInicial, dataFinal, limit, offset);
     }
 
     @GET
@@ -127,7 +127,7 @@ public final class ChecklistResource {
             @QueryParam("codUnidade") final Long codUnidade,
             @QueryParam("codEquipe") final Long codEquipe,
             @QueryParam("codTipoVeiculo") final Long codTipoVeiculo,
-            @QueryParam("placaVeiculo") final String placaVeiculo,
+            @QueryParam("codVeiculo") final Long codVeiculo,
             @QueryParam("dataInicial") final String dataInicial,
             @QueryParam("dataFinal") final String dataFinal,
             @QueryParam("limit") final int limit,
@@ -137,7 +137,7 @@ public final class ChecklistResource {
                 codUnidade,
                 codEquipe,
                 codTipoVeiculo,
-                placaVeiculo,
+                codVeiculo,
                 dataInicial,
                 dataFinal,
                 limit,
