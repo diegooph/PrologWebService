@@ -8,7 +8,7 @@ import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloService;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.AlternativaModeloChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.CapturaFotoChecklistEnum;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.AnexoMidiaChecklistEnum;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.PerguntaModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.*;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ModeloChecklistInsercao;
@@ -341,7 +341,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                     p1.getCodImagem(),
                     p1.getOrdemExibicao(),
                     p1.isSingleChoice(),
-                    p1.getCapturaFotosRespostaOk(),
+                    p1.getAnexoMidiaRespostaOk(),
                     alternativas));
         }
 
@@ -372,7 +372,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                     p2.getCodImagem(),
                     p2.getOrdemExibicao(),
                     p2.isSingleChoice(),
-                    p2.getCapturaFotosRespostaOk(),
+                    p2.getAnexoMidiaRespostaOk(),
                     alternativas));
         }
 
@@ -499,7 +499,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                         // Mesma ordem da alternativa removida para evitar qualquer outro problema.
                         1,
                         true,
-                        CapturaFotoChecklistEnum.BLOQUEADO));
+                        AnexoMidiaChecklistEnum.BLOQUEADO));
 
         final ModeloChecklistEdicao editado = createModeloEdicao(modeloBuscado, perguntas, cargos, tiposVeiculo);
         service.updateModeloChecklist(
@@ -569,7 +569,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                         false,
                         3,
                         true,
-                        CapturaFotoChecklistEnum.BLOQUEADO));
+                        AnexoMidiaChecklistEnum.BLOQUEADO));
         perguntas.get(1).getAlternativas().add(
                 new AlternativaModeloChecklistEdicaoInsere(
                         "Outros",
@@ -577,7 +577,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                         true,
                         4,
                         outros.isDeveAbrirOrdemServico(),
-                        outros.getCapturaFotos()));
+                        outros.getAnexoMidia()));
 
         final ModeloChecklistEdicao editado = createModeloEdicao(modeloBuscado, perguntas, cargos, tiposVeiculo);
         service.updateModeloChecklist(
@@ -969,7 +969,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
 
     @Test
     @DisplayName("Muda contexto da A1 e adiciona alternativa na P1, aumenta versão")
-    void caso16_alteraContextoA1_adicionaAlternativaP1_deveMudarVersaoModeloCodigoContextoP1DiferenteCodigoContextoA1Diferente() {
+    void caso16_alteraContextoA1_adicionaAlternativaP1_deveMudarVersaoModeloCodigoContextoP1IgualCodigoContextoA1Diferente() {
         // 1, 2 - Insere o modelo base.
         final ResultInsertModeloChecklist result = insertModeloBase();
 
@@ -1002,7 +1002,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                         false,
                         4,
                         true,
-                        CapturaFotoChecklistEnum.BLOQUEADO));
+                        AnexoMidiaChecklistEnum.BLOQUEADO));
         perguntas.get(0).getAlternativas().add(
                 new AlternativaModeloChecklistEdicaoInsere(
                         "Outros",
@@ -1010,7 +1010,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                         true,
                         5,
                         outros.isDeveAbrirOrdemServico(),
-                        outros.getCapturaFotos()));
+                        outros.getAnexoMidia()));
 
         final List<Long> cargos = getCodigosCargos(modeloBuscado);
         final List<Long> tiposVeiculo = getCodigosTiposVeiculos(modeloBuscado);
@@ -1085,7 +1085,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                         p1.getCodImagem(),
                         p1.getOrdemExibicao(),
                         true,
-                        p1.getCapturaFotosRespostaOk(),
+                        p1.getAnexoMidiaRespostaOk(),
                         toAlternativaAtualiza(p1.getAlternativas())));
 
         final List<Long> cargos = getCodigosCargos(modeloBuscado);
@@ -1145,7 +1145,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                         a1.isTipoOutros(),
                         a1.getOrdemExibicao(),
                         false,
-                        a1.getCapturaFotos()));
+                        a1.getAnexoMidia()));
 
         final List<Long> cargos = getCodigosCargos(modeloBuscado);
         final List<Long> tiposVeiculo = getCodigosTiposVeiculos(modeloBuscado);
@@ -1206,7 +1206,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                         a1.isTipoOutros(),
                         a1.getOrdemExibicao(),
                         a1.isDeveAbrirOrdemServico(),
-                        a1.getCapturaFotos()));
+                        a1.getAnexoMidia()));
 
         final List<Long> cargos = getCodigosCargos(modeloBuscado);
         final List<Long> tiposVeiculo = getCodigosTiposVeiculos(modeloBuscado);
@@ -1269,7 +1269,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                         a1.isTipoOutros(),
                         3,
                         a1.isDeveAbrirOrdemServico(),
-                        a1.getCapturaFotos()));
+                        a1.getAnexoMidia()));
         // A3 (Lanterna quebrada).
         p1.getAlternativas().set(
                 0,
@@ -1281,7 +1281,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                         a3.isTipoOutros(),
                         1,
                         a3.isDeveAbrirOrdemServico(),
-                        a3.getCapturaFotos()));
+                        a3.getAnexoMidia()));
 
         final List<Long> cargos = getCodigosCargos(modeloBuscado);
         final List<Long> tiposVeiculo = getCodigosTiposVeiculos(modeloBuscado);
@@ -1382,7 +1382,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                         p2.getCodImagem(),
                         1,
                         p2.isSingleChoice(),
-                        p2.getCapturaFotosRespostaOk(),
+                        p2.getAnexoMidiaRespostaOk(),
                         p2.getAlternativas()
                                 .stream()
                                 .map(a -> new AlternativaModeloChecklistEdicaoAtualiza(
@@ -1393,7 +1393,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                                         a.isTipoOutros(),
                                         a.getOrdemExibicao(),
                                         a.isDeveAbrirOrdemServico(),
-                                        a.getCapturaFotos()))
+                                        a.getAnexoMidia()))
                                 .collect(Collectors.toList())));
         perguntas.set(1,
                 new PerguntaModeloChecklistEdicaoAtualiza(
@@ -1403,7 +1403,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                         p1.getCodImagem(),
                         2,
                         p1.isSingleChoice(),
-                        p1.getCapturaFotosRespostaOk(),
+                        p1.getAnexoMidiaRespostaOk(),
                         p1.getAlternativas()
                                 .stream()
                                 .map(a -> new AlternativaModeloChecklistEdicaoAtualiza(
@@ -1414,7 +1414,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                                         a.isTipoOutros(),
                                         a.getOrdemExibicao(),
                                         a.isDeveAbrirOrdemServico(),
-                                        a.getCapturaFotos()))
+                                        a.getAnexoMidia()))
                                 .collect(Collectors.toList())));
 
         final List<Long> cargos = getCodigosCargos(modeloBuscado);
@@ -1536,7 +1536,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                         2L,
                         p1.getOrdemExibicao(),
                         p1.isSingleChoice(),
-                        p1.getCapturaFotosRespostaOk(),
+                        p1.getAnexoMidiaRespostaOk(),
                         toAlternativaAtualiza(p1.getAlternativas())));
 
         final List<Long> cargos = getCodigosCargos(modeloBuscado);
@@ -1570,8 +1570,8 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
     }
 
     @Test
-    @DisplayName("Altera captura fotos da pergunta P1, muda versão, mantém contexto")
-    void caso25_alteraCapturaFotosP1_deveMudarVersaoModeloEManterCodigoContexto() {
+    @DisplayName("Altera anexo mídia da pergunta P1, muda versão, mantém contexto")
+    void caso25_alteraAnexoMidiaP1_deveMudarVersaoModeloEManterCodigoContexto() {
         // 1, 2 - Insere o modelo base.
         final ResultInsertModeloChecklist result = insertModeloBase();
 
@@ -1582,7 +1582,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                 result.getCodModeloChecklistInserido());
         assertThat(original).isNotNull();
 
-        // 4, 5 - Alteramos P1 para captura de fotos liberada e aí atualizamos.
+        // 4, 5 - Alteramos P1 para anexo de mídias liberado e aí atualizamos.
         final List<PerguntaModeloChecklistEdicao> perguntas = toPerguntasEdicao(original);
         final PerguntaModeloChecklistEdicao p1 = perguntas.get(0);
         perguntas.set(0,
@@ -1593,7 +1593,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                         p1.getCodImagem(),
                         p1.getOrdemExibicao(),
                         p1.isSingleChoice(),
-                        CapturaFotoChecklistEnum.OBRIGATORIO,
+                        AnexoMidiaChecklistEnum.OBRIGATORIO,
                         p1.getAlternativas()
                                 .stream()
                                 .map(a -> new AlternativaModeloChecklistEdicaoAtualiza(
@@ -1604,7 +1604,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                                         a.isTipoOutros(),
                                         a.getOrdemExibicao(),
                                         a.isDeveAbrirOrdemServico(),
-                                        a.getCapturaFotos()))
+                                        a.getAnexoMidia()))
                                 .collect(Collectors.toList())));
         final List<Long> cargos = getCodigosCargos(original);
         final List<Long> tiposVeiculo = getCodigosTiposVeiculos(original);
@@ -1632,8 +1632,8 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
 
             // 'Farol' está com captura de fotos diferente.
             assertThat(p1Depois.getDescricao()).isEqualTo("Farol");
-            assertThat(p1Antes.getCapturaFotosRespostaOk()).isEqualTo(CapturaFotoChecklistEnum.BLOQUEADO);
-            assertThat(p1Depois.getCapturaFotosRespostaOk()).isEqualTo(CapturaFotoChecklistEnum.OBRIGATORIO);
+            assertThat(p1Antes.getAnexoMidiaRespostaOk()).isEqualTo(AnexoMidiaChecklistEnum.BLOQUEADO);
+            assertThat(p1Depois.getAnexoMidiaRespostaOk()).isEqualTo(AnexoMidiaChecklistEnum.OBRIGATORIO);
         }
         {
             // P2.
@@ -1643,15 +1643,15 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             // Código contexto da pergunta se manteve.
             assertThat(p2Depois.getCodigoContexto()).isEqualTo(p2Antes.getCodigoContexto());
 
-            // 'Cinto de segurança' está com captura de fotos igual.
+            // 'Cinto de segurança' está com anexo de mídia igual.
             assertThat(p2Depois.getDescricao()).isEqualTo("Cinto de segurança");
-            assertThat(p2Depois.getCapturaFotosRespostaOk()).isEqualTo(p2Antes.getCapturaFotosRespostaOk());
+            assertThat(p2Depois.getAnexoMidiaRespostaOk()).isEqualTo(p2Antes.getAnexoMidiaRespostaOk());
         }
     }
 
     @Test
-    @DisplayName("Altera captura fotos da alternativa A1, muda versão, mantém contexto")
-    void caso26_alteraCapturaFotosA1_deveMudarVersaoModeloEManterCodigoContexto() {
+    @DisplayName("Altera anexo de mídia da alternativa A1, muda versão, mantém contexto")
+    void caso26_alteraAnexoMidiaA1_deveMudarVersaoModeloEManterCodigoContexto() {
         // 1, 2 - Insere o modelo base.
         final ResultInsertModeloChecklist result = insertModeloBase();
 
@@ -1662,7 +1662,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                 result.getCodModeloChecklistInserido());
         assertThat(original).isNotNull();
 
-        // 4, 5 - Alteramos A1 para captura de fotos liberada e aí atualizamos.
+        // 4, 5 - Alteramos A1 para anexo de mídia liberado e aí atualizamos.
         final List<PerguntaModeloChecklistEdicao> perguntas = toPerguntasEdicao(original);
         final PerguntaModeloChecklistEdicao p1 = perguntas.get(0);
         final AlternativaModeloChecklistEdicao a1 = (AlternativaModeloChecklistEdicao) p1.getAlternativas().get(0);
@@ -1674,7 +1674,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                 a1.isTipoOutros(),
                 a1.getOrdemExibicao(),
                 a1.isDeveAbrirOrdemServico(),
-                CapturaFotoChecklistEnum.OBRIGATORIO));
+                AnexoMidiaChecklistEnum.OBRIGATORIO));
         final List<Long> cargos = getCodigosCargos(original);
         final List<Long> tiposVeiculo = getCodigosTiposVeiculos(original);
         final ModeloChecklistEdicao editado = createModeloEdicao(original, perguntas, cargos, tiposVeiculo);
@@ -1699,13 +1699,146 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
             // Código contexto da pergunta se manteve.
             assertThat(p1Depois.getCodigoContexto()).isEqualTo(p1Antes.getCodigoContexto());
 
-            // 'Fora de foco' está com captura de fotos diferente.
+            // 'Fora de foco' está com anexo de mídia diferente.
             final AlternativaModeloChecklist a1Antes = p1Antes.getAlternativas().get(0);
             final AlternativaModeloChecklist a1Depois = p1Depois.getAlternativas().get(0);
             assertThat(a1Antes.getDescricao()).isEqualTo("Fora de foco");
             assertThat(a1Antes.getDescricao()).isEqualTo(a1Depois.getDescricao());
-            assertThat(a1Antes.getCapturaFotos()).isEqualTo(CapturaFotoChecklistEnum.BLOQUEADO);
-            assertThat(a1Depois.getCapturaFotos()).isEqualTo(CapturaFotoChecklistEnum.OBRIGATORIO);
+            assertThat(a1Antes.getAnexoMidia()).isEqualTo(AnexoMidiaChecklistEnum.BLOQUEADO);
+            assertThat(a1Depois.getAnexoMidia()).isEqualTo(AnexoMidiaChecklistEnum.OBRIGATORIO);
+        }
+    }
+
+    @Test
+    @DisplayName("Adiciona alternativa na P1, aumenta versão e muda contexto")
+    void caso27_adicionaAlternativaP1_deveMudarVersaoModeloCodigoContextoP1Igual() {
+        // 1, 2 - Insere o modelo base.
+        final ResultInsertModeloChecklist result = insertModeloBase();
+
+        // 3 - Então buscamos o modelo inserido.
+        // Nós não garantimos que a busca é igual ao inserido pois isso é feito nos testes de insert.
+        final ModeloChecklistVisualizacao modeloBuscado = service.getModeloChecklist(
+                COD_UNIDADE,
+                result.getCodModeloChecklistInserido());
+        assertThat(modeloBuscado).isNotNull();
+
+        // 4 - Adiciona nova alternativa na P1, que já tem 4.
+        final List<PerguntaModeloChecklistEdicao> perguntas = toPerguntasEdicao(modeloBuscado);
+
+        // A tipo_outros tem que ser realocada para a última posição.
+        final AlternativaModeloChecklist outros = perguntas.get(0).getAlternativas().remove(3);
+        perguntas.get(0).getAlternativas().add(
+                new AlternativaModeloChecklistEdicaoInsere(
+                        "Piscando sozinho",
+                        PrioridadeAlternativa.BAIXA,
+                        false,
+                        4,
+                        true,
+                        AnexoMidiaChecklistEnum.BLOQUEADO));
+        perguntas.get(0).getAlternativas().add(
+                new AlternativaModeloChecklistEdicaoAtualiza(
+                        outros.getCodigo(),
+                        outros.getCodigoContexto(),
+                        "Outros",
+                        outros.getPrioridade(),
+                        true,
+                        5,
+                        outros.isDeveAbrirOrdemServico(),
+                        outros.getAnexoMidia()));
+
+        final List<Long> cargos = getCodigosCargos(modeloBuscado);
+        final List<Long> tiposVeiculo = getCodigosTiposVeiculos(modeloBuscado);
+        final ModeloChecklistEdicao editado = createModeloEdicao(modeloBuscado, perguntas, cargos, tiposVeiculo);
+        service.updateModeloChecklist(
+                modeloBuscado.getCodUnidade(),
+                modeloBuscado.getCodModelo(),
+                editado,
+                token);
+
+        // 5 - Por último, buscamos novamente o modelo e comparamos.
+        final ModeloChecklistVisualizacao buscado = service.getModeloChecklist(
+                COD_UNIDADE,
+                result.getCodModeloChecklistInserido());
+        // 6 - Garante uma versão maior.
+        assertThat(editado.getCodVersaoModelo()).isLessThan(buscado.getCodVersaoModelo());
+        assertThat(buscado.getPerguntas()).hasSize(2);
+        {
+            // P1.
+            final PerguntaModeloChecklistEdicao p1Antes = editado.getPerguntas().get(0);
+            final PerguntaModeloChecklistVisualizacao p1Depois = buscado.getPerguntas().get(0);
+
+            // 7 - Garante código contexto igual e variável diferente.
+            ensureAllAttributesEqual(p1Antes, p1Depois, 5, true, false);
+
+            // 8 - Garante que a alternativa está presente.
+            final AlternativaModeloChecklist novaAlt = p1Depois.getAlternativas().get(3);
+            assertThat(novaAlt.getDescricao()).isEqualTo("Piscando sozinho");
+            assertThat(novaAlt.getPrioridade()).isEqualTo(PrioridadeAlternativa.BAIXA);
+            assertThat(novaAlt.isTipoOutros()).isFalse();
+            assertThat(novaAlt.getOrdemExibicao()).isEqualTo(4);
+            assertThat(novaAlt.isDeveAbrirOrdemServico()).isTrue();
+
+            assertThat(p1Depois.getDescricao()).isEqualTo("Farol");
+        }
+    }
+
+    @Test
+    @DisplayName("Adiciona pergunta P3, aumenta versão e muda contexto")
+    void caso28_adicionaPerguntaP3_deveMudarVersaoModelo() {
+        // 1, 2 - Insere o modelo base.
+        final ResultInsertModeloChecklist result = insertModeloBase();
+
+        // 3 - Então buscamos o modelo inserido.
+        // Nós não garantimos que a busca é igual ao inserido pois isso é feito nos testes de insert.
+        final ModeloChecklistVisualizacao modeloBuscado = service.getModeloChecklist(
+                COD_UNIDADE,
+                result.getCodModeloChecklistInserido());
+        assertThat(modeloBuscado).isNotNull();
+
+        // 4 - Adiciona nova pergunta.
+        final List<PerguntaModeloChecklistEdicao> perguntas = toPerguntasEdicao(modeloBuscado);
+
+        // A tipo_outros tem que ser realocada para a última posição.
+        final List<AlternativaModeloChecklistEdicao> alternativas = new ArrayList<>();
+        alternativas.add(new AlternativaModeloChecklistEdicaoInsere(
+                "Outros",
+                PrioridadeAlternativa.BAIXA,
+                true,
+                1,
+                false,
+                AnexoMidiaChecklistEnum.BLOQUEADO));
+        perguntas.add(new PerguntaModeloChecklistEdicaoInsere(
+                "P3",
+                null,
+                3,
+                true,
+                AnexoMidiaChecklistEnum.OPCIONAL,
+                alternativas));
+
+        final List<Long> cargos = getCodigosCargos(modeloBuscado);
+        final List<Long> tiposVeiculo = getCodigosTiposVeiculos(modeloBuscado);
+        final ModeloChecklistEdicao editado = createModeloEdicao(modeloBuscado, perguntas, cargos, tiposVeiculo);
+        service.updateModeloChecklist(
+                modeloBuscado.getCodUnidade(),
+                modeloBuscado.getCodModelo(),
+                editado,
+                token);
+
+        // 5 - Por último, buscamos novamente o modelo e comparamos.
+        final ModeloChecklistVisualizacao buscado = service.getModeloChecklist(
+                COD_UNIDADE,
+                result.getCodModeloChecklistInserido());
+        // 6 - Garante uma versão maior.
+        assertThat(editado.getCodVersaoModelo()).isLessThan(buscado.getCodVersaoModelo());
+        assertThat(buscado.getPerguntas()).hasSize(3);
+        {
+            // P3.
+            final PerguntaModeloChecklistVisualizacao p3Depois = buscado.getPerguntas().get(2);
+
+            assertThat(p3Depois.getDescricao()).isEqualTo("P3");
+            assertThat(p3Depois.getAnexoMidiaRespostaOk()).isEqualTo(AnexoMidiaChecklistEnum.OPCIONAL);
+            assertThat(p3Depois.getCodImagem()).isNull();
+            assertThat(p3Depois.getOrdemExibicao()).isEqualTo(3);
         }
     }
 
@@ -1726,7 +1859,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                         a.isTipoOutros(),
                         a.getOrdemExibicao(),
                         a.isDeveAbrirOrdemServico(),
-                        a.getCapturaFotos())));
+                        a.getAnexoMidia())));
         return novas;
     }
 
@@ -1747,7 +1880,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                     a.isTipoOutros(),
                     a.getOrdemExibicao(),
                     a.isDeveAbrirOrdemServico(),
-                    a.getCapturaFotos()));
+                    a.getAnexoMidia()));
         }
         return new PerguntaModeloChecklistEdicaoAtualiza(
                 p.getCodigo(),
@@ -1756,7 +1889,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                 p.getCodImagem(),
                 p.getOrdemExibicao(),
                 p.isSingleChoice(),
-                p.getCapturaFotosRespostaOk(),
+                p.getAnexoMidiaRespostaOk(),
                 alternativas);
     }
 
@@ -1773,7 +1906,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                 a.isTipoOutros(),
                 a.getOrdemExibicao(),
                 a.isDeveAbrirOrdemServico(),
-                a.getCapturaFotos());
+                a.getAnexoMidia());
     }
 
     @SuppressWarnings("SameParameterValue")
@@ -1797,7 +1930,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
         assertThat(antes.getCodImagem()).isEqualTo(depois.getCodImagem());
         assertThat(antes.getOrdemExibicao()).isEqualTo(depois.getOrdemExibicao());
         assertThat(antes.isSingleChoice()).isEqualTo(depois.isSingleChoice());
-        assertThat(antes.getCapturaFotosRespostaOk()).isEqualTo(depois.getCapturaFotosRespostaOk());
+        assertThat(antes.getAnexoMidiaRespostaOk()).isEqualTo(depois.getAnexoMidiaRespostaOk());
         assertThat(antes.getAlternativas()).hasSize(qtdAlternativas);
         assertThat(depois.getAlternativas()).hasSize(qtdAlternativas);
     }
@@ -1812,7 +1945,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
         assertThat(antes.getCodImagem()).isEqualTo(depois.getCodImagem());
         assertThat(antes.getOrdemExibicao()).isEqualTo(depois.getOrdemExibicao());
         assertThat(antes.isSingleChoice()).isEqualTo(depois.isSingleChoice());
-        assertThat(antes.getCapturaFotosRespostaOk()).isEqualTo(depois.getCapturaFotosRespostaOk());
+        assertThat(antes.getAnexoMidiaRespostaOk()).isEqualTo(depois.getAnexoMidiaRespostaOk());
         assertThat(antes.getAlternativas()).hasSize(qtdAlternativas);
         assertThat(depois.getAlternativas()).hasSize(qtdAlternativas);
     }
@@ -1827,7 +1960,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
         assertThat(antes.isTipoOutros()).isEqualTo(depois.isTipoOutros());
         assertThat(antes.getOrdemExibicao()).isEqualTo(depois.getOrdemExibicao());
         assertThat(antes.isDeveAbrirOrdemServico()).isEqualTo(depois.isDeveAbrirOrdemServico());
-        assertThat(antes.getCapturaFotos()).isEqualTo(depois.getCapturaFotos());
+        assertThat(antes.getAnexoMidia()).isEqualTo(depois.getAnexoMidia());
     }
 
     // Este método torna opcional a validação dos códigos de alternativas.
@@ -1851,7 +1984,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
         assertThat(antes.isTipoOutros()).isEqualTo(depois.isTipoOutros());
         assertThat(antes.getOrdemExibicao()).isEqualTo(depois.getOrdemExibicao());
         assertThat(antes.isDeveAbrirOrdemServico()).isEqualTo(depois.isDeveAbrirOrdemServico());
-        assertThat(antes.getCapturaFotos()).isEqualTo(depois.getCapturaFotos());
+        assertThat(antes.getAnexoMidia()).isEqualTo(depois.getAnexoMidia());
     }
 
     @NotNull

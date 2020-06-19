@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.checklist.modelo.model.realizacao;
 
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.AnexoMidiaChecklistEnum;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -41,16 +42,24 @@ public final class AlternativaRealizacaoChecklist {
     @NotNull
     private final PrioridadeAlternativa prioridade;
 
+    /**
+     * Atributo {@link AnexoMidiaChecklistEnum} que representa a parametrização da coleta de mídias para a alternativa.
+     */
+    @NotNull
+    private final AnexoMidiaChecklistEnum anexoMidia;
+
     public AlternativaRealizacaoChecklist(@NotNull final Long codigo,
                                           @NotNull final String descricao,
                                           final boolean tipoOutros,
                                           final int ordemExibicao,
-                                          @NotNull final PrioridadeAlternativa prioridade) {
+                                          @NotNull final PrioridadeAlternativa prioridade,
+                                          @NotNull final AnexoMidiaChecklistEnum anexoMidia) {
         this.codigo = codigo;
         this.descricao = descricao;
         this.tipoOutros = tipoOutros;
         this.ordemExibicao = ordemExibicao;
         this.prioridade = prioridade;
+        this.anexoMidia = anexoMidia;
     }
 
     @NotNull
@@ -75,4 +84,7 @@ public final class AlternativaRealizacaoChecklist {
     public PrioridadeAlternativa getPrioridade() {
         return prioridade;
     }
+
+    @NotNull
+    public AnexoMidiaChecklistEnum getAnexoMidia() { return anexoMidia; }
 }

@@ -17,8 +17,8 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.model.TipoChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
-import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistUploadImagemRealizacao;
-import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.SuccessResponseChecklistUploadImagem;
+import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistUploadMidiaRealizacao;
+import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.SuccessResponseChecklistUploadMidia;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloResource;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloService;
 import br.com.zalf.prolog.webservice.frota.checklist.mudancaestrutura.ChecklistMigracaoEstruturaSuporte;
@@ -76,14 +76,14 @@ public final class ChecklistResource {
     @POST
     @UsedBy(platforms = Platform.ANDROID)
     @Consumes(MediaType.MULTIPART_FORM_DATA)
-    @Path("/realizacao/image-upload")
-    public SuccessResponseChecklistUploadImagem uploadImagemRealizacaoChecklist(
+    @Path("/realizacao/midia-upload")
+    public SuccessResponseChecklistUploadMidia uploadImagemRealizacaoChecklist(
             @FormDataParam("upload") @Required final InputStream fileInputStream,
             @FormDataParam("upload") @Required final FormDataContentDisposition fileDetail,
-            @FormDataParam("treinamento") @Required final FormDataBodyPart jsonPart) {
+            @FormDataParam("midia") @Required final FormDataBodyPart jsonPart) {
         jsonPart.setMediaType(MediaType.APPLICATION_JSON_TYPE);
-        final ChecklistUploadImagemRealizacao image = jsonPart.getValueAs(ChecklistUploadImagemRealizacao.class);
-        return service.uploadImagemRealizacaoChecklist(fileInputStream, fileDetail, image);
+        final ChecklistUploadMidiaRealizacao midia = jsonPart.getValueAs(ChecklistUploadMidiaRealizacao.class);
+        return service.uploadMidiaRealizacaoChecklist(fileInputStream, fileDetail, midia);
     }
 
     @GET

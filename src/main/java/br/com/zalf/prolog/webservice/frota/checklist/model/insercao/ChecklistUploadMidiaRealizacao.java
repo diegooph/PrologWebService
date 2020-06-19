@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 @Data
-public final class ChecklistUploadImagemRealizacao {
+public final class ChecklistUploadMidiaRealizacao {
     @NotNull
     private final Long codigoChecklist;
     @Nullable

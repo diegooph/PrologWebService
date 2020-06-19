@@ -15,8 +15,8 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.ChecklistListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.model.FiltroRegionalUnidadeChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
-import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistUploadImagemRealizacao;
-import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.SuccessResponseChecklistUploadImagem;
+import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistUploadMidiaRealizacao;
+import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.SuccessResponseChecklistUploadMidia;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.integracao.router.RouterChecklists;
 import org.apache.commons.io.FilenameUtils;
@@ -52,15 +52,15 @@ public final class ChecklistService {
     }
 
     @NotNull
-    public SuccessResponseChecklistUploadImagem uploadImagemRealizacaoChecklist(
+    public SuccessResponseChecklistUploadMidia uploadMidiaRealizacaoChecklist(
             @NotNull final InputStream fileInputStream,
             @NotNull final FormDataContentDisposition fileDetail,
-            @NotNull final ChecklistUploadImagemRealizacao imagem) {
+            @NotNull final ChecklistUploadMidiaRealizacao midia) {
         try {
-            if ((imagem.getCodigoPergunta() == null) == (imagem.getCodigoAlternativa() == null)) {
+            if ((midia.getCodigoPergunta() == null) == (midia.getCodigoAlternativa() == null)) {
                 throw new IllegalStateException("Apenas o código da pergunta OU da alternativa deve estar setado!\n" +
-                        "codPergunta: " + imagem.getCodigoPergunta() +
-                        "\ncodAlternativa: " + imagem.getCodigoAlternativa());
+                        "codPergunta: " + midia.getCodigoPergunta() +
+                        "\ncodAlternativa: " + midia.getCodigoAlternativa());
             }
 
             final String imageType = FilenameUtils.getExtension(fileDetail.getFileName());
@@ -69,29 +69,29 @@ public final class ChecklistService {
                     AmazonConstants.BUCKET_CHECKLIST_REALIZACAO_IMAGENS,
                     imageType);
 
-            if (imagem.getCodigoPergunta() != null) {
-                dao.insertImagemPerguntaChecklistRealizado(
-                        imagem.getCodigoChecklist(),
-                        imagem.getCodigoPergunta(),
+            if (midia.getCodigoPergunta() != null) {
+                dao.insertMidiaPerguntaChecklistRealizado(
+                        midia.getCodigoChecklist(),
+                        midia.getCodigoPergunta(),
                         imagemProlog.getUrlImagem());
             } else {
-                dao.insertImagemAlternativaChecklistRealizado(
-                        imagem.getCodigoChecklist(),
-                        imagem.getCodigoAlternativa(),
+                dao.insertMidiaAlternativaChecklistRealizado(
+                        midia.getCodigoChecklist(),
+                        midia.getCodigoAlternativa(),
                         imagemProlog.getUrlImagem());
             }
 
-            return new SuccessResponseChecklistUploadImagem(imagemProlog.getUrlImagem());
+            return new SuccessResponseChecklistUploadMidia(imagemProlog.getUrlImagem());
         } catch (final FileFormatNotSupportException e) {
-            Log.e(TAG, "Arquivo recebido não é uma imagem", e);
+            Log.e(TAG, "Arquivo recebido não é uma mídia", e);
             throw Injection
                     .provideProLogExceptionHandler()
-                    .map(e, "Erro ao processar imagem, tente novamente");
+                    .map(e, "Erro ao processar mídia, tente novamente");
         } catch (final Throwable t) {
-            Log.e(TAG, "Erro ao inserir a imagem", t);
+            Log.e(TAG, "Erro ao inserir a mídia", t);
             throw Injection
                     .provideProLogExceptionHandler()
-                    .map(t, "Erro ao salvar a imagem, tente novamente");
+                    .map(t, "Erro ao salvar a mídia, tente novamente");
         }
     }
 

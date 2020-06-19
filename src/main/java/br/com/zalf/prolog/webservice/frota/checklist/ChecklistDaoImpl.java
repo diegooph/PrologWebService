@@ -73,27 +73,30 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
 
     @NotNull
     @Override
-    public Long insertImagemPerguntaChecklistRealizado(@NotNull final Long codChecklist,
-                                                       @NotNull final Long codPergunta,
-                                                       @NotNull final String urlImagem) throws Throwable {
+    public Long insertMidiaPerguntaChecklistRealizado(@NotNull final Long codChecklist,
+                                                      @NotNull final Long codPergunta,
+                                                      @NotNull final String urlMidia) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("select * " +
-                    "from func_checklist_insert_imagem_pergunta(?, ?, ?);");
+                    "from func_checklist_insert_midia_pergunta(" +
+                    "f_cod_checklist => ?, " +
+                    "f_cod_pergunta => ?, " +
+                    "f_url_midia => ?);");
             stmt.setLong(1, codChecklist);
             stmt.setLong(2, codPergunta);
-            stmt.setString(3, urlImagem);
+            stmt.setString(3, urlMidia);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return rSet.getLong(1);
             } else {
-                throw new IllegalStateException("Erro ao vincular imagem ao checklist."
+                throw new IllegalStateException("Erro ao vincular mídia ao checklist."
                         + "\ncodChecklist: " + codChecklist
                         + "\ncodPergunta: " + codPergunta
-                        + "\nurlImagem: " + urlImagem);
+                        + "\nurlMidia: " + urlMidia);
             }
         } finally {
             close(conn, stmt, rSet);
@@ -102,27 +105,30 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
 
     @NotNull
     @Override
-    public Long insertImagemAlternativaChecklistRealizado(@NotNull final Long codChecklist,
-                                                          @NotNull final Long codAlternativa,
-                                                          @NotNull final String urlImagem) throws Throwable {
+    public Long insertMidiaAlternativaChecklistRealizado(@NotNull final Long codChecklist,
+                                                         @NotNull final Long codAlternativa,
+                                                         @NotNull final String urlMidia) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("select * " +
-                    "from func_checklist_insert_imagem_alternativa(?, ?, ?);");
+                    "from func_checklist_insert_midia_alternativa(" +
+                    "f_cod_checklist => ?, " +
+                    "f_cod_alternativa => ?, " +
+                    "f_url_midia => ?);");
             stmt.setLong(1, codChecklist);
             stmt.setLong(2, codAlternativa);
-            stmt.setString(3, urlImagem);
+            stmt.setString(3, urlMidia);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return rSet.getLong(1);
             } else {
-                throw new IllegalStateException("Erro ao vincular imagem ao checklist."
+                throw new IllegalStateException("Erro ao vincular mídia ao checklist."
                         + "\ncodChecklist: " + codChecklist
                         + "\ncodAlternativa: " + codAlternativa
-                        + "\nurlImagem: " + urlImagem);
+                        + "\nurlMidia: " + urlMidia);
             }
         } finally {
             close(conn, stmt, rSet);
@@ -496,8 +502,8 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
                     "F_TOTAL_PERGUNTAS_NOK                     := ?," +
                     "F_TOTAL_ALTERNATIVAS_OK                   := ?," +
                     "F_TOTAL_ALTERNATIVAS_NOK                  := ?," +
-                    "F_TOTAL_IMAGENS_PERGUNTAS_OK              := ?," +
-                    "F_TOTAL_IMAGENS_ALTERNATIVAS_NOK          := ?) " +
+                    "F_TOTAL_MIDIAS_PERGUNTAS_OK               := ?," +
+                    "F_TOTAL_MIDIAS_ALTERNATIVAS_NOK           := ?) " +
                     "AS CODIGO;");
             final ZoneId zoneId = TimeZoneManager.getZoneIdForCodUnidade(checklist.getCodUnidade(), conn);
             stmt.setLong(1, checklist.getCodUnidade());
