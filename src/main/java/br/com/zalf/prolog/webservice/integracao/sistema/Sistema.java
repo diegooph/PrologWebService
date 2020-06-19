@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.customfields.CampoPersonalizadoDao;
 import br.com.zalf.prolog.webservice.customfields._model.CampoPersonalizadoParaRealizacao;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.ChecklistListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.model.TipoChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
@@ -233,6 +234,38 @@ public abstract class Sistema implements OperacoesIntegradas {
                         limit,
                         offset,
                         resumido);
+    }
+
+    @NotNull
+    @Override
+    public List<ChecklistListagem> getListagemByColaborador(@NotNull final Long codColaborador,
+                                                            @NotNull final LocalDate dataInicial,
+                                                            @NotNull final LocalDate dataFinal,
+                                                            final int limit,
+                                                            final long offset) throws Throwable {
+        return getIntegradorProLog().getListagemByColaborador(codColaborador, dataInicial, dataFinal, limit, offset);
+    }
+
+    @NotNull
+    @Override
+    public List<ChecklistListagem> getListagem(@NotNull final Long codUnidade,
+                                               @Nullable final Long codEquipe,
+                                               @Nullable final Long codTipoVeiculo,
+                                               @Nullable final Long codVeiculo,
+                                               @NotNull final LocalDate dataInicial,
+                                               @NotNull final LocalDate dataFinal,
+                                               final int limit,
+                                               final long offset) throws Throwable {
+        return getIntegradorProLog()
+                .getListagem(
+                        codUnidade,
+                        codEquipe,
+                        codTipoVeiculo,
+                        codVeiculo,
+                        dataInicial,
+                        dataFinal,
+                        limit,
+                        offset);
     }
 
     @NotNull

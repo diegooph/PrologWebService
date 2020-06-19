@@ -72,6 +72,34 @@ public final class ChecklistConverter {
         return checklist;
     }
 
+    @NotNull
+    public static ChecklistListagem createChecklistListagem(@NotNull final ResultSet rSet) throws Throwable {
+        return new ChecklistListagem(
+                rSet.getLong("COD_CHECKLIST"),
+                rSet.getLong("COD_CHECKLIST_MODELO"),
+                rSet.getLong("COD_VERSAO_CHECKLIST_MODELO"),
+                rSet.getObject("DATA_HORA_REALIZACAO", LocalDateTime.class),
+                rSet.getObject("DATA_HORA_IMPORTADO_PROLOG", LocalDateTime.class),
+                rSet.getLong("KM_VEICULO_MOMENTO_REALIZACAO"),
+                rSet.getLong("DURACAO_REALIZACAO_MILLIS"),
+                rSet.getLong("COD_COLABORADOR"),
+                rSet.getLong("CPF_COLABORADOR"),
+                rSet.getString("NOME_COLABORADOR"),
+                rSet.getLong("COD_VEICULO"),
+                rSet.getString("PLACA_VEICULO"),
+                rSet.getString("IDENTIFICADOR_FROTA"),
+                TipoChecklist.fromChar(rSet.getString("TIPO_CHECKLIST").charAt(0)),
+                rSet.getInt("TOTAL_PERGUNTAS_OK"),
+                rSet.getInt("TOTAL_PERGUNTAS_NOK"),
+                rSet.getInt("TOTAL_ALTERNATIVAS_OK"),
+                rSet.getInt("TOTAL_ALTERNATIVAS_NOK"),
+                rSet.getInt("TOTAL_MIDIAS_PERGUNTAS_OK"),
+                rSet.getInt("TOTAL_MIDIAS_ALTERNATIVAS_NOK"),
+                rSet.getInt("TOTAL_NOK_BAIXA"),
+                rSet.getInt("TOTAL_NOK_ALTA"),
+                rSet.getInt("TOTAL_NOK_CRITICA"));
+    }
+
     @VisibleForTesting
     @NotNull
     public static List<PerguntaRespostaChecklist> createPerguntasRespostasChecklist(
