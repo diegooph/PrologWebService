@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
+import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.ChecklistListagem;
@@ -135,6 +136,7 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
         }
     }
 
+    @SuppressWarnings("WrapperTypeMayBePrimitive")
     @NotNull
     @Override
     public Checklist getByCod(@NotNull final Long codChecklist) throws SQLException {
@@ -143,12 +145,14 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_GET_BY_CODIGO(F_COD_CHECKLIST := ?);");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_GET_BY_CODIGO(F_COD_CHECKLIST => ?);");
             stmt.setLong(1, codChecklist);
             rSet = stmt.executeQuery();
             PerguntaRespostaChecklist pergunta = null;
+            // Utilizamos objetos ao invés de tipos primitivos por ser o padrão Prolog.
             Long codChecklistAntigo = null, codChecklistAtual;
             Long codPerguntaAntigo = null, codPerguntaAtual;
+            Long codAlternativaAntigo = null, codAlternativaAtual;
             Checklist checklist = null;
             boolean isFirstLine = true;
             while (rSet.next()) {
@@ -162,10 +166,16 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
                     codPerguntaAntigo = codPerguntaAtual;
                 }
 
+                codAlternativaAtual = rSet.getLong("COD_ALTERNATIVA");
+                if (codAlternativaAntigo == null) {
+                    codAlternativaAntigo = codAlternativaAtual;
+                }
+
                 if (isFirstLine) {
                     checklist = ChecklistConverter.createChecklist(rSet, false);
                     pergunta = ChecklistConverter.createPergunta(rSet);
                     pergunta.setAlternativasResposta(new ArrayList<>());
+                    pergunta.setMidias(new ArrayList<>());
                     checklist.setListRespostas(new ArrayList<>());
                     checklist.getListRespostas().add(pergunta);
                     isFirstLine = false;
@@ -173,12 +183,37 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
 
                 if (codChecklistAntigo.equals(codChecklistAtual)) {
                     if (codPerguntaAntigo.equals(codPerguntaAtual)) {
-                        // Cria mais uma alternativa na pergunta atual.
-                        pergunta.getAlternativasResposta().add(ChecklistConverter.createAlternativaComResposta(rSet));
+                        if (rSet.getBoolean("TEM_MIDIA_PERGUNTA_OK")) {
+                            final Long codMidiaPerguntaOk = rSet.getLong("COD_MIDIA_PERGUNTA_OK");
+                            if (!pergunta.temMidia(codMidiaPerguntaOk)) {
+                                pergunta.addMidia(ChecklistConverter.createMidiaPergunta(rSet));
+                            }
+                        }
+
+                        if (codAlternativaAntigo.equals(codAlternativaAtual)) {
+                            final AlternativaChecklist alternativa = pergunta.getUltimaAlternativa();
+                            if (alternativa == null) {
+                                pergunta.getAlternativasResposta().add(ChecklistConverter.createAlternativaComResposta(rSet));
+                            } else if (alternativa.getCodigo().equals(codAlternativaAtual)) {
+                                if (rSet.getBoolean("TEM_MIDIA_ALTERNATIVA")) {
+                                    alternativa.addMidia(ChecklistConverter.createMidiaAlternativa(rSet));
+                                }
+                            }
+                        } else {
+                            // Cria mais uma alternativa na pergunta atual.
+                            pergunta.getAlternativasResposta().add(ChecklistConverter.createAlternativaComResposta(rSet));
+                        }
+
                     } else {
                         // Cria nova pergunta.
                         pergunta = ChecklistConverter.createPergunta(rSet);
                         pergunta.setAlternativasResposta(new ArrayList<>());
+                        pergunta.setMidias(new ArrayList<>());
+
+                        if (rSet.getBoolean("TEM_MIDIA_PERGUNTA_OK")) {
+                            pergunta.addMidia(ChecklistConverter.createMidiaPergunta(rSet));
+                        }
+
                         checklist.getListRespostas().add(pergunta);
 
                         // Cria primeira alternativa da nova pergunta.
@@ -190,6 +225,7 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
                 }
                 codChecklistAntigo = codChecklistAtual;
                 codPerguntaAntigo = codPerguntaAtual;
+                codAlternativaAntigo = codAlternativaAtual;
             }
 
             if (checklist == null) {

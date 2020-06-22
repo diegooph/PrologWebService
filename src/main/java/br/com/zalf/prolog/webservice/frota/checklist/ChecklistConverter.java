@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.frota.checklist;
 
-import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
@@ -9,6 +8,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.*;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.*;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.OLD.ItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import com.google.common.annotations.VisibleForTesting;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -159,7 +159,7 @@ public final class ChecklistConverter {
     }
 
     @NotNull
-    static PerguntaRespostaChecklist createPergunta(ResultSet rSet) throws SQLException {
+    static PerguntaRespostaChecklist createPergunta(final ResultSet rSet) throws SQLException {
         final PerguntaRespostaChecklist pergunta = new PerguntaRespostaChecklist();
         pergunta.setCodigo(rSet.getLong("COD_PERGUNTA"));
         pergunta.setOrdemExibicao(rSet.getInt("ORDEM_PERGUNTA"));
@@ -361,5 +361,25 @@ public final class ChecklistConverter {
         } else {
             alternativa.selected = false;
         }
+
+        if (rSet.getBoolean("TEM_MIDIA_ALTERNATIVA")) {
+            alternativa.addMidia(createMidiaAlternativa(rSet));
+        }
+    }
+
+    public static MidiaResposta createMidiaPergunta(@NotNull final ResultSet rSet) throws SQLException {
+        return new MidiaResposta(
+                rSet.getLong("COD_MIDIA_PERGUNTA_OK"),
+                rSet.getString("URL_MIDIA_PERGUNTA_OK"),
+                rSet.getString("TIPO_MIDIA_PERGUNTA_OK")
+        );
+    }
+
+    public static MidiaResposta createMidiaAlternativa(@NotNull final ResultSet rSet) throws SQLException {
+        return new MidiaResposta(
+                rSet.getLong("COD_MIDIA_ALTERNATIVA"),
+                rSet.getString("URL_MIDIA_ALTERNATIVA"),
+                rSet.getString("TIPO_MIDIA_ALTERNATIVA")
+        );
     }
 }

@@ -8,7 +8,7 @@ package br.com.zalf.prolog.webservice.commons.questoes;
  */
 public class Alternativa {
     public static final int TIPO_OUTROS = 0x1;
-    public long codigo;
+    public Long codigo;
     public String alternativa;
     public int tipo;
     public String respostaOutros;
@@ -17,7 +17,7 @@ public class Alternativa {
     public Alternativa() {
     }
 
-    public long getCodigo() {
+    public Long getCodigo() {
         return codigo;
     }
 

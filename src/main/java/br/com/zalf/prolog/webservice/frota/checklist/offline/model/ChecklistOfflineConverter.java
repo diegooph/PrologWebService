@@ -35,7 +35,7 @@ public final class ChecklistOfflineConverter {
                 rSet.getBoolean("TIPO_OUTROS"),
                 rSet.getInt("ALTERNATIVA_ORDEM_EXIBICAO"),
                 PrioridadeAlternativa.fromString(rSet.getString("PRIORIDADE_ALTERNATIVA")),
-                AnexoMidiaChecklistEnum.fromString(rSet.getString("ANEXO_MIDIA_ALTERNATIVA")));
+                AnexoMidiaChecklistEnum.fromString(rSet.getString("ANEXO_MIDIA")));
     }
 
     @NotNull
@@ -50,7 +50,7 @@ public final class ChecklistOfflineConverter {
                 rSet.getString("URL_IMAGEM"),
                 rSet.getInt("PERGUNTA_ORDEM_EXIBICAO"),
                 rSet.getBoolean("SINGLE_CHOICE"),
-                AnexoMidiaChecklistEnum.fromString(rSet.getString("ANEXO_MIDIA_RESPOSTA_OK_PERGUNTA")),
+                AnexoMidiaChecklistEnum.fromString(rSet.getString("ANEXO_MIDIA_RESPOSTA_OK")),
                 alternativas);
     }
 
