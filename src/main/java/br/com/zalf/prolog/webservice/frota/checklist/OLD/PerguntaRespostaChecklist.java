@@ -56,6 +56,12 @@ public class PerguntaRespostaChecklist extends Pergunta {
         return p;
     }
 
+    @NotNull
+    public AlternativaChecklist addAlternativa(@NotNull final AlternativaChecklist alternativa) {
+        alternativasResposta.add(alternativa);
+        return alternativa;
+    }
+
     public boolean temMidia(@NotNull final Long codMidia) {
         return midias != null && midias
                 .stream()

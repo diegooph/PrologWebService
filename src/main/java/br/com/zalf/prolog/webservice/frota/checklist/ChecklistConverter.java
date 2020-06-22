@@ -361,10 +361,6 @@ public final class ChecklistConverter {
         } else {
             alternativa.selected = false;
         }
-
-        if (rSet.getBoolean("TEM_MIDIA_ALTERNATIVA")) {
-            alternativa.addMidia(createMidiaAlternativa(rSet));
-        }
     }
 
     public static MidiaResposta createMidiaPergunta(@NotNull final ResultSet rSet) throws SQLException {

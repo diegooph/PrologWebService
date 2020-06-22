@@ -193,15 +193,17 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
                         if (codAlternativaAntigo.equals(codAlternativaAtual)) {
                             final AlternativaChecklist alternativa = pergunta.getUltimaAlternativa();
                             if (alternativa == null) {
-                                pergunta.getAlternativasResposta().add(ChecklistConverter.createAlternativaComResposta(rSet));
+                                final AlternativaChecklist criada = pergunta
+                                        .addAlternativa(ChecklistConverter.createAlternativaComResposta(rSet));
+                                addMidiaAlternativaSeExistir(rSet, criada);
                             } else if (alternativa.getCodigo().equals(codAlternativaAtual)) {
-                                if (rSet.getBoolean("TEM_MIDIA_ALTERNATIVA")) {
-                                    alternativa.addMidia(ChecklistConverter.createMidiaAlternativa(rSet));
-                                }
+                                addMidiaAlternativaSeExistir(rSet, alternativa);
                             }
                         } else {
                             // Cria mais uma alternativa na pergunta atual.
-                            pergunta.getAlternativasResposta().add(ChecklistConverter.createAlternativaComResposta(rSet));
+                            final AlternativaChecklist criada = pergunta
+                                    .addAlternativa(ChecklistConverter.createAlternativaComResposta(rSet));
+                            addMidiaAlternativaSeExistir(rSet, criada);
                         }
 
                     } else {
@@ -217,7 +219,9 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
                         checklist.getListRespostas().add(pergunta);
 
                         // Cria primeira alternativa da nova pergunta.
-                        pergunta.getAlternativasResposta().add(ChecklistConverter.createAlternativaComResposta(rSet));
+                        final AlternativaChecklist criada = pergunta
+                                .addAlternativa(ChecklistConverter.createAlternativaComResposta(rSet));
+                        addMidiaAlternativaSeExistir(rSet, criada);
                     }
                 } else {
                     throw new IllegalStateException(
@@ -600,6 +604,13 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
             }
         } finally {
             close(stmt, rSet);
+        }
+    }
+
+    private void addMidiaAlternativaSeExistir(@NotNull final ResultSet rSet,
+                                              @NotNull final AlternativaChecklist alternativa) throws SQLException {
+        if (rSet.getBoolean("TEM_MIDIA_ALTERNATIVA")) {
+            alternativa.addMidia(ChecklistConverter.createMidiaAlternativa(rSet));
         }
     }
 
