@@ -225,6 +225,7 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
                 }
                 codChecklistAntigo = codChecklistAtual;
                 codPerguntaAntigo = codPerguntaAtual;
+                codAlternativaAntigo = codAlternativaAtual;
             }
 
             if (checklist == null) {
