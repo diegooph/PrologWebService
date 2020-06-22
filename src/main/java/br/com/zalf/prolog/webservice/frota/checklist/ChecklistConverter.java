@@ -1,14 +1,17 @@
 package br.com.zalf.prolog.webservice.frota.checklist;
 
-import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.model.*;
+import br.com.zalf.prolog.webservice.frota.checklist.model.MidiaResposta;
+import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
+import br.com.zalf.prolog.webservice.frota.checklist.model.RegionalSelecaoChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.UnidadeSelecaoChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.*;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.OLD.ItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import com.google.common.annotations.VisibleForTesting;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -131,7 +134,7 @@ public final class ChecklistConverter {
     }
 
     @NotNull
-    static PerguntaRespostaChecklist createPergunta(ResultSet rSet) throws SQLException {
+    static PerguntaRespostaChecklist createPergunta(final ResultSet rSet) throws SQLException {
         final PerguntaRespostaChecklist pergunta = new PerguntaRespostaChecklist();
         pergunta.setCodigo(rSet.getLong("COD_PERGUNTA"));
         pergunta.setOrdemExibicao(rSet.getInt("ORDEM_PERGUNTA"));
@@ -334,9 +337,8 @@ public final class ChecklistConverter {
             alternativa.selected = false;
         }
 
-        if(rSet.getBoolean("TEM_MIDIA_ALTERNATIVA")){
-            alternativa.setMidias(new ArrayList<>());
-            alternativa.getMidias().add(createMidiaAlternativa(rSet));
+        if (rSet.getBoolean("TEM_MIDIA_ALTERNATIVA")) {
+            alternativa.addMidia(createMidiaAlternativa(rSet));
         }
     }
 

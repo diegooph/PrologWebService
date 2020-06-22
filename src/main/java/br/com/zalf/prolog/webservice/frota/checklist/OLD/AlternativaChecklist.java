@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -45,6 +46,14 @@ public class AlternativaChecklist extends Alternativa {
         return a;
     }
 
+    public void addMidia(@NotNull final MidiaResposta midia) {
+        if (midias == null) {
+            midias = new ArrayList<>();
+        }
+
+        midias.add(midia);
+    }
+
     public PrioridadeAlternativa getPrioridade() {
         return prioridade;
     }
@@ -63,7 +72,7 @@ public class AlternativaChecklist extends Alternativa {
 
     public List<MidiaResposta> getMidias() { return midias; }
 
-    public void setMidias(List<MidiaResposta> midias) { this.midias = midias; }
+    public void setMidias(final List<MidiaResposta> midias) { this.midias = midias; }
 
     @Override
     public String toString() {

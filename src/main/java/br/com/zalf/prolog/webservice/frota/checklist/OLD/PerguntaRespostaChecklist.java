@@ -5,6 +5,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.MidiaResposta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -32,6 +33,10 @@ public class PerguntaRespostaChecklist extends Pergunta {
 
     }
 
+    public PerguntaRespostaChecklist(final Long codigo, final String pergunta, final String tipo) {
+        super(codigo, pergunta, tipo);
+    }
+
     @NotNull
     public static PerguntaRespostaChecklist create(@NotNull final Long codigo,
                                                    @NotNull final String descricao,
@@ -51,14 +56,37 @@ public class PerguntaRespostaChecklist extends Pergunta {
         return p;
     }
 
+    public boolean temMidia(@NotNull final Long codMidia) {
+        return midias != null && midias
+                .stream()
+                .anyMatch(midiaResposta -> midiaResposta.getCodigo().equals(codMidia));
+    }
+
+    public void addMidia(@NotNull final MidiaResposta midia) {
+        if (midias == null) {
+            midias = new ArrayList<>();
+        }
+
+        midias.add(midia);
+    }
+
+    @Nullable
+    public AlternativaChecklist getUltimaAlternativa() {
+        if (alternativasResposta != null && alternativasResposta.size() > 0) {
+            return alternativasResposta.get(alternativasResposta.size() - 1);
+        }
+
+        return null;
+    }
+
     /**
-     *
      * @return {@code true} caso o usuário tenha respondido como OK essa pergunta; {@code false} caso contrário.
      */
     public boolean respondeuOk() {
-        for (AlternativaChecklist alternativaChecklist : alternativasResposta) {
-            if (alternativaChecklist.selected)
+        for (final AlternativaChecklist alternativaChecklist : alternativasResposta) {
+            if (alternativaChecklist.selected) {
                 return false;
+            }
         }
 
         return true;
@@ -76,19 +104,15 @@ public class PerguntaRespostaChecklist extends Pergunta {
         return url;
     }
 
-    public void setUrl(String url) {
+    public void setUrl(final String url) {
         this.url = url;
-    }
-
-    public PerguntaRespostaChecklist(Long codigo, String pergunta, String tipo) {
-        super(codigo, pergunta, tipo);
     }
 
     public int getOrdemExibicao() {
         return ordemExibicao;
     }
 
-    public void setOrdemExibicao(int ordemExibicao) {
+    public void setOrdemExibicao(final int ordemExibicao) {
         this.ordemExibicao = ordemExibicao;
     }
 
@@ -96,7 +120,7 @@ public class PerguntaRespostaChecklist extends Pergunta {
         return alternativasResposta;
     }
 
-    public void setAlternativasResposta(List<AlternativaChecklist> alternativasResposta) {
+    public void setAlternativasResposta(final List<AlternativaChecklist> alternativasResposta) {
         this.alternativasResposta = alternativasResposta;
     }
 
@@ -104,13 +128,15 @@ public class PerguntaRespostaChecklist extends Pergunta {
         return singleChoice;
     }
 
-    public void setSingleChoice(boolean singleChoice) {
+    public void setSingleChoice(final boolean singleChoice) {
         this.singleChoice = singleChoice;
     }
 
     public List<MidiaResposta> getMidias() { return midias; }
 
-    public void setMidias(List<MidiaResposta> midias) { this.midias = midias; }
+    public void setMidias(final List<MidiaResposta> midias) {
+        this.midias = midias;
+    }
 
     @Override
     public String toString() {
