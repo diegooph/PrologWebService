@@ -898,8 +898,9 @@ colunas:
     colunaObrigatoria: false
     padraoPreenchimentoColuna: 'DATA_HORA'
     padraoPreenchimentoColunaLegivel: 'Data e hora'
-    # O espaço nessa regex, entre a data e a hora, é proposital.
-    regexValidacaoPadraoPreenchimento: '^\d{2}/\d{2}/\d{4} \d{2}:\d{2}$'
+    # O padrão de preenchimento é DATA_HORA, mas aceitamos qualquer texto, pois não queremos barrar o import por conta
+    # dessa coluna incorreta – ela não é importante para nós.
+    regexValidacaoPadraoPreenchimento: '.*'
     exemploPreenchimento: '14/10/2017 13:23'
   110:
     nomeColunaPlanilha: 'Término de Rota'
