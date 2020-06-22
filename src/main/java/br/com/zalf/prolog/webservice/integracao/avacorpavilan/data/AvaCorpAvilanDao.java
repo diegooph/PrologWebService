@@ -52,4 +52,14 @@ public interface AvaCorpAvilanDao {
         throws SQLException;
 
     Map<Long, String> getMapeamentoCodPerguntaUrlImagem(final Long codQuestionario) throws SQLException;
+
+    /**
+     * Busca a PLACA através do código do veículo.
+     *
+     * @param codVeiculo Código do veículo no Prolog.
+     * @return a placa do veículo no Prolog.
+     * @throws SQLException caso aconteça algo de errado na busca.
+     */
+    @Nonnull
+    String getPlacaByCodVeiculo(@Nonnull final Long codVeiculo) throws SQLException;
 }

@@ -11,6 +11,7 @@ import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.ChecklistListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.model.FiltroRegionalUnidadeChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
@@ -21,6 +22,7 @@ import br.com.zalf.prolog.webservice.integracao.router.RouterChecklists;
 import org.apache.commons.io.FilenameUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.InputStream;
 import java.time.LocalDate;
@@ -159,8 +161,13 @@ public final class ChecklistService {
         }
     }
 
-    public List<Checklist> getByColaborador(final Long cpf, final Long dataInicial, final Long dataFinal, final int limit, final long offset,
-                                            final boolean resumido, final String userToken) {
+    public List<Checklist> getByColaborador(final Long cpf,
+                                            final Long dataInicial,
+                                            final Long dataFinal,
+                                            final int limit,
+                                            final long offset,
+                                            final boolean resumido,
+                                            final String userToken) {
         try {
             return RouterChecklists
                     .create(dao, userToken)
@@ -168,6 +175,60 @@ public final class ChecklistService {
         } catch (final Exception e) {
             Log.e(TAG, "Erro ao buscar os checklists de um colaborador específico", e);
             throw new RuntimeException("Erro ao buscar checklists para o colaborador: " + cpf);
+        }
+    }
+
+    @NotNull
+    public List<ChecklistListagem> getListagemByColaborador(@NotNull final String userToken,
+                                                            @NotNull final Long codColaborador,
+                                                            @NotNull final String dataInicial,
+                                                            @NotNull final String dataFinal,
+                                                            final int limit,
+                                                            final long offset) throws ProLogException {
+        try {
+            return RouterChecklists
+                    .create(dao, userToken)
+                    .getListagemByColaborador(
+                            codColaborador,
+                            ProLogDateParser.toLocalDate(dataInicial),
+                            ProLogDateParser.toLocalDate(dataFinal),
+                            limit,
+                            offset);
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao buscar os checklists de um colaborador específico", t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao buscar checklists do colaborador, tente novamente");
+        }
+    }
+
+    @NotNull
+    public List<ChecklistListagem> getListagem(@NotNull final String userToken,
+                                               @NotNull final Long codUnidade,
+                                               @Nullable final Long codEquipe,
+                                               @Nullable final Long codTipoVeiculo,
+                                               @Nullable final Long codVeiculo,
+                                               @NotNull final String dataInicial,
+                                               @NotNull final String dataFinal,
+                                               final int limit,
+                                               final long offset) throws ProLogException {
+        try {
+            return RouterChecklists
+                    .create(dao, userToken)
+                    .getListagem(
+                            codUnidade,
+                            codEquipe,
+                            codTipoVeiculo,
+                            codVeiculo,
+                            ProLogDateParser.toLocalDate(dataInicial),
+                            ProLogDateParser.toLocalDate(dataFinal),
+                            limit,
+                            offset);
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao buscar checklists", t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao buscar checklists, tente novamente");
         }
     }
 
@@ -187,8 +248,8 @@ public final class ChecklistService {
 
     @NotNull
     public DeprecatedFarolChecklist getFarolChecklist(@NotNull final Long codUnidade,
-                                            final boolean itensCriticosRetroativos,
-                                            @NotNull final String userToken) throws ProLogException {
+                                                      final boolean itensCriticosRetroativos,
+                                                      @NotNull final String userToken) throws ProLogException {
         LocalDate hojeComTz = null;
         try {
             hojeComTz = Now
