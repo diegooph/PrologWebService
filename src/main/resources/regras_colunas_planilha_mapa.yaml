@@ -5,8 +5,9 @@ colunas:
     colunaObrigatoria: true
     padraoPreenchimentoColuna: 'NUMERO_INTEIRO'
     padraoPreenchimentoColunaLegivel: 'Número inteiro'
-    regexValidacaoPadraoPreenchimento: '^[0-9]{8}$'
-    exemploPreenchimento: '17022020'
+    regexValidacaoPadraoPreenchimento: '^[0-9]{7,8}$'
+    # O dia pode vir sem o 0 à esquerda, o WS vai assumir o 0 ali.
+    exemploPreenchimento: '17022020 ou 2102020'
   1:
     nomeColunaPlanilha: 'Transp'
     nomeColunaLegivel: 'Transp'
@@ -838,8 +839,9 @@ colunas:
     colunaObrigatoria: false
     padraoPreenchimentoColuna: 'NUMERO_INTEIRO'
     padraoPreenchimentoColunaLegivel: 'Número inteiro'
-    regexValidacaoPadraoPreenchimento: '^[0-9]{8}$'
-    exemploPreenchimento: '17022020'
+    regexValidacaoPadraoPreenchimento: '^[0-9]{7,8}$'
+    # O dia pode vir sem o 0 à esquerda, o WS vai assumir o 0 ali.
+    exemploPreenchimento: '17022020 ou 2102020'
   103:
     nomeColunaPlanilha: 'QtEntregasCarreg(RV)'
     nomeColunaLegivel: 'QtEntregasCarreg(RV)'
