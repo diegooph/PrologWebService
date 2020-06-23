@@ -195,6 +195,7 @@ final class ServicoQueryBinder {
                 "   M.VIDA AS VIDA_PNEU_NOVO, " +
                 "   A.DATA_HORA AT TIME ZONE ? AS DATA_HORA_ABERTURA, " +
                 "   A.PLACA_VEICULO AS PLACA_VEICULO, " +
+                "   V.IDENTIFICADOR_FROTA AS IDENTIFICADOR_FROTA, " +
                 "   A.CODIGO AS COD_AFERICAO, " +
                 "   C.NOME AS NOME_RESPONSAVEL_FECHAMENTO, " +
                 "   AV.COD_PNEU AS COD_PNEU_PROBLEMA, " +
@@ -209,6 +210,7 @@ final class ServicoQueryBinder {
                 "   PNEU_PROBLEMA.PRESSAO_RECOMENDADA " +
                 "   FROM AFERICAO_MANUTENCAO AM " +
                 "   JOIN AFERICAO A ON A.CODIGO = AM.COD_AFERICAO " +
+                "   JOIN VEICULO V ON V.PLACA = A.PLACA_VEICULO " +
                 "   JOIN AFERICAO_VALORES AV ON AV.COD_AFERICAO = AM.COD_AFERICAO AND AV.COD_PNEU = AM.COD_PNEU " +
                 "   JOIN UNIDADE U ON U.CODIGO = AM.COD_UNIDADE " +
                 "   JOIN PNEU PNEU_PROBLEMA ON AM.COD_PNEU = PNEU_PROBLEMA.CODIGO " +
@@ -286,6 +288,7 @@ final class ServicoQueryBinder {
                                                        @NotNull final String placaVeiculo) throws SQLException {
         final PreparedStatement stmt = connection.prepareStatement("SELECT " +
                 "  A.PLACA_VEICULO, " +
+                "  V.IDENTIFICADOR_FROTA, " +
                 "  A.KM_VEICULO AS KM_ABERTURA_SERVICO, " +
                 "  AV.COD_PNEU AS COD_PNEU, " +
                 "  P.CODIGO_CLIENTE AS COD_PNEU_CLIENTE, " +

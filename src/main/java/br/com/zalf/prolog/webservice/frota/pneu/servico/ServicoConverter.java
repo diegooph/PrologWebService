@@ -110,6 +110,7 @@ final class ServicoConverter {
     static VeiculoServico createVeiculoAberturaServico(@NotNull final ResultSet resultSet) throws SQLException {
         final VeiculoServico veiculo = new VeiculoServico();
         veiculo.setPlaca(resultSet.getString("PLACA_VEICULO"));
+        veiculo.setIdentificadorFrota(resultSet.getString("IDENTIFICADOR_FROTA"));
         veiculo.setKmAtual(resultSet.getLong("KM_ATUAL_VEICULO"));
         veiculo.setKmAberturaServico(resultSet.getInt("KM_ABERTURA_SERVICO"));
 
