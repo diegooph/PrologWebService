@@ -74,7 +74,7 @@ public class AfericaoResource {
     @GET
     @Secured(permissions = Pilares.Frota.Afericao.REALIZAR_AFERICAO_PLACA)
     @Path("/cronogramas")
-    @UsedBy(platforms = Platform.ANDROID)
+    @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
     public CronogramaAfericao getCronogramaAfericao(
             @HeaderParam("Authorization") @Required final String userToken,
             @QueryParam("codUnidades") @Required final List<Long> codUnidades) throws ProLogException {

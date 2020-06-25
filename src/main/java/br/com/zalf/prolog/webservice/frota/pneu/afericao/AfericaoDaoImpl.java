@@ -804,6 +804,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         // Veículo no qual aferição foi realizada.
         final Veiculo veiculo = new Veiculo();
         veiculo.setPlaca(rSet.getString("PLACA_VEICULO"));
+        veiculo.setIdentificadorFrota(rSet.getString("IDENTIFICADOR_FROTA"));
         afericaoPlaca.setKmMomentoAfericao(rSet.getLong("KM_VEICULO"));
         afericaoPlaca.setVeiculo(veiculo);
         setDadosComunsAfericaoResumida(rSet, afericaoPlaca);
