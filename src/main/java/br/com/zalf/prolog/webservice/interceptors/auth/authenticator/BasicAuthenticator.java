@@ -42,6 +42,7 @@ public final class BasicAuthenticator extends ProLogAuthenticator {
                     permissions,
                     needsToHaveAllPermissions,
                     considerOnlyActiveUsers);
+            //noinspection DuplicatedCode
             if (!optional.isPresent()) {
                 throw new NotAuthorizedException("Autenticação inválida, usuário não encontrado");
             }

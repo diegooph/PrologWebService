@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.cargo;
 
-import br.com.zalf.prolog.webservice.cargo.model.*;
+import br.com.zalf.prolog.webservice.cargo._model.*;
 import br.com.zalf.prolog.webservice.permissao.pilares.ImpactoPermissaoProLog;
 import org.jetbrains.annotations.NotNull;
 
@@ -63,11 +63,11 @@ public final class CargoConverter {
 
     @NotNull
     static CargoVisualizacao createCargoVisualizacao(@NotNull final ResultSet rSet) throws SQLException {
-        final List<CargoPilarProLog> pilares = new ArrayList<>();
-        List<CargoFuncionalidadeProLog> funcionalidades = new ArrayList<>();
-        List<CargoPermissaoProLog> permissoes = new ArrayList<>();
-        CargoPilarProLog pilar = null;
-        CargoFuncionalidadeProLog funcionalidade = null;
+        final List<CargoPilarProlog> pilares = new ArrayList<>();
+        List<CargoFuncionalidadeProlog> funcionalidades = new ArrayList<>();
+        List<CargoPermissaoProlog> permissoes = new ArrayList<>();
+        CargoPilarProlog pilar = null;
+        CargoFuncionalidadeProlog funcionalidade = null;
         CargoVisualizacao cargoVisualizacao;
         if (rSet.next()) {
             cargoVisualizacao = CargoConverter.createCargoVisualizacao(rSet, pilares);
@@ -109,7 +109,7 @@ public final class CargoConverter {
 
     @NotNull
     private static CargoVisualizacao createCargoVisualizacao(@NotNull final ResultSet rSet,
-                                                             @NotNull final List<CargoPilarProLog> pilaresCargo)
+                                                             @NotNull final List<CargoPilarProlog> pilaresCargo)
             throws SQLException {
         return new CargoVisualizacao(
                 rSet.getLong("COD_CARGO"),
@@ -119,19 +119,19 @@ public final class CargoConverter {
     }
 
     @NotNull
-    private static CargoFuncionalidadeProLog createFuncionalidadeProLog(
+    private static CargoFuncionalidadeProlog createFuncionalidadeProLog(
             @NotNull final ResultSet rSet,
-            @NotNull final List<CargoPermissaoProLog> permissoes) throws SQLException {
-        return new CargoFuncionalidadeProLog(
+            @NotNull final List<CargoPermissaoProlog> permissoes) throws SQLException {
+        return new CargoFuncionalidadeProlog(
                 rSet.getInt("COD_FUNCIONALIDADE"),
                 rSet.getString("NOME_FUNCIONALIDADE"),
                 permissoes);
     }
 
     @NotNull
-    private static CargoPermissaoProLog createPermissaoDetalhadaProLog(
+    private static CargoPermissaoProlog createPermissaoDetalhadaProLog(
             @NotNull final ResultSet rSet) throws SQLException {
-        return new CargoPermissaoProLog(
+        return new CargoPermissaoProlog(
                 rSet.getInt("COD_PERMISSAO"),
                 rSet.getString("NOME_PERMISSAO"),
                 ImpactoPermissaoProLog.fromString(rSet.getString("IMPACTO_PERMISSAO")),

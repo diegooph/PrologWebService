@@ -1,7 +1,7 @@
 package test.br.com.zalf.prolog.webservice.pilares.frota.checklist.modelo;
 
 import br.com.zalf.prolog.webservice.cargo.CargoService;
-import br.com.zalf.prolog.webservice.cargo.model.CargoListagemEmpresa;
+import br.com.zalf.prolog.webservice.cargo._model.CargoListagemEmpresa;
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Cargo;
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
 import br.com.zalf.prolog.webservice.database.DatabaseManager;

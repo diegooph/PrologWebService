@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.cargo;
 
-import br.com.zalf.prolog.webservice.cargo.model.*;
+import br.com.zalf.prolog.webservice.cargo._model.*;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Required;
@@ -68,7 +68,7 @@ public final class CargoResource {
             Pilares.Gente.Colaborador.CADASTRAR,
             Pilares.Gente.Colaborador.EDITAR})
     @Path("/todos/por-empresa")
-    public List<CargoListagemEmpresa> getTodosCargosEmrpesa(
+    public List<CargoListagemEmpresa> getTodosCargosEmpresa(
             @QueryParam("codEmpresa") @Required final Long codEmpresa) throws ProLogException {
         return service.getTodosCargosEmpresa(codEmpresa);
     }
