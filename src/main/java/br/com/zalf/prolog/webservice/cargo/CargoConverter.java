@@ -136,14 +136,25 @@ public final class CargoConverter {
                 rSet.getString("NOME_PERMISSAO"),
                 ImpactoPermissaoProLog.fromString(rSet.getString("IMPACTO_PERMISSAO")),
                 rSet.getString("DESCRICAO_PERMISSAO"),
-                rSet.getBoolean("PERMISSAO_LIBERADA"));
+                rSet.getBoolean("PERMISSAO_LIBERADA"),
+                rSet.getBoolean("PERMISSAO_BLOQUEADA"),
+                createCargoPermissaoInfosBloqueio(rSet));
     }
 
     @NotNull
-    private static CargoPilarProLog createPilarDetalhado(@NotNull final ResultSet rSet,
-                                                         @NotNull final List<CargoFuncionalidadeProLog> funcionalidades)
-            throws SQLException {
-        return new CargoPilarProLog(
+    private static CargoPermissaoInfosBloqueio createCargoPermissaoInfosBloqueio(
+            @NotNull final ResultSet rSet) throws SQLException {
+        return new CargoPermissaoInfosBloqueio(
+                rSet.getLong("COD_MOTIVO_PERMISSAO_BLOQUEADA"),
+                rSet.getString("NOME_MOTIVO_PERMISSAO_BLOQUEADA"),
+                rSet.getString("OBSERVACAO_PERMISSAO_BLOQUEADA"));
+    }
+
+    @NotNull
+    private static CargoPilarProlog createPilarDetalhado(
+            @NotNull final ResultSet rSet,
+            @NotNull final List<CargoFuncionalidadeProlog> funcionalidades) throws SQLException {
+        return new CargoPilarProlog(
                 rSet.getInt("COD_PILAR"),
                 rSet.getString("NOME_PILAR"),
                 funcionalidades);
