@@ -138,7 +138,10 @@ public final class CargoConverter {
                 rSet.getString("DESCRICAO_PERMISSAO"),
                 rSet.getBoolean("PERMISSAO_ASSOCIADA"),
                 rSet.getBoolean("PERMISSAO_BLOQUEADA"),
-                createCargoPermissaoInfosBloqueio(rSet));
+                // Só existirá informações de bloqueio caso a permissão estiver bloqueada.
+                rSet.getBoolean("PERMISSAO_BLOQUEADA")
+                        ? createCargoPermissaoInfosBloqueio(rSet)
+                        : null);
     }
 
     @NotNull
