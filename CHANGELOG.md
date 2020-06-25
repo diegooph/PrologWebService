@@ -1,6 +1,9 @@
 Change Log
 ==========
 
+## Refactors
+* Bloqueia funcionalidades que unidade não contratou ou possui integração (PL-2671)
+
 <a name="v1.0.33"></a>
 ## Version [v1.0.33](https://github.com/luizfp/PrologWebService/compare/v1.0.32...v1.0.33) (release-date) [unreleased]
 
