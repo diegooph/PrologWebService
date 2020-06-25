@@ -20,7 +20,7 @@ public final class CargoPermissaoProlog {
     /**
      * Atributo que indica se a permissão está associada ao cargo.
      */
-    private final boolean permissaoLiberada;
+    private final boolean permissaoAssociada;
     /**
      * Atributo que indica se a permissão está bloqueada no banco de dados.
      * Isso não impede que a permissão esteja associada ao cargo.

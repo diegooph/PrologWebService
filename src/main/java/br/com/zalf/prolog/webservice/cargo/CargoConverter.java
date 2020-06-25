@@ -136,7 +136,7 @@ public final class CargoConverter {
                 rSet.getString("NOME_PERMISSAO"),
                 ImpactoPermissaoProLog.fromString(rSet.getString("IMPACTO_PERMISSAO")),
                 rSet.getString("DESCRICAO_PERMISSAO"),
-                rSet.getBoolean("PERMISSAO_LIBERADA"),
+                rSet.getBoolean("PERMISSAO_ASSOCIADA"),
                 rSet.getBoolean("PERMISSAO_BLOQUEADA"),
                 createCargoPermissaoInfosBloqueio(rSet));
     }
