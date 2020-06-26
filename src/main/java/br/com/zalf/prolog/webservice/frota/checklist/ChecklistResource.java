@@ -77,7 +77,7 @@ public final class ChecklistResource {
     @UsedBy(platforms = Platform.ANDROID)
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Path("/realizacao/midia-upload")
-    public SuccessResponseChecklistUploadMidia uploadImagemRealizacaoChecklist(
+    public SuccessResponseChecklistUploadMidia uploadMidiaRealizacaoChecklist(
             @FormDataParam("upload") @Required final InputStream fileInputStream,
             @FormDataParam("upload") @Required final FormDataContentDisposition fileDetail,
             @FormDataParam("midia") @Required final FormDataBodyPart jsonPart) {
