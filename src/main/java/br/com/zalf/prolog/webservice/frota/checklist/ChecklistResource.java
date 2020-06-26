@@ -80,7 +80,7 @@ public final class ChecklistResource {
     public SuccessResponseChecklistUploadMidia uploadMidiaRealizacaoChecklist(
             @FormDataParam("upload") @Required final InputStream fileInputStream,
             @FormDataParam("upload") @Required final FormDataContentDisposition fileDetail,
-            @FormDataParam("midia") @Required final FormDataBodyPart jsonPart) {
+            @FormDataParam("midiaJson") @Required final FormDataBodyPart jsonPart) {
         jsonPart.setMediaType(MediaType.APPLICATION_JSON_TYPE);
         final ChecklistUploadMidiaRealizacao midia = jsonPart.getValueAs(ChecklistUploadMidiaRealizacao.class);
         return service.uploadMidiaRealizacaoChecklist(fileInputStream, fileDetail, midia);
