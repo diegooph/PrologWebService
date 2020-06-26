@@ -42,7 +42,7 @@ public class UploadImageHelper {
 
     @NotNull
     private static String createRandomImageNameWithExtension(@NotNull final String extension) {
-        final String randomString = RandomUtils.randomAlphanumeric(16);
+        final String randomString = RandomUtils.randomAlphanumeric(40);
         return System.currentTimeMillis() + "_" + randomString + "." + extension;
     }
 }
