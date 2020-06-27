@@ -65,7 +65,7 @@ public class PerguntaRespostaChecklist extends Pergunta {
     public boolean temMidia(@NotNull final String uuidMidia) {
         return midias != null && midias
                 .stream()
-                .anyMatch(midiaResposta -> midiaResposta.getTipoMidia().equals(uuidMidia));
+                .anyMatch(midiaResposta -> midiaResposta.getUuid().equals(uuidMidia));
     }
 
     public void addMidia(@NotNull final MidiaResposta midia) {
