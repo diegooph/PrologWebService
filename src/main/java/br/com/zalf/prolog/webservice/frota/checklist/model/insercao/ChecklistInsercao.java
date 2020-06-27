@@ -71,14 +71,14 @@ public final class ChecklistInsercao {
      */
     private final long deviceUptimeSincronizacaoMillis;
     /**
-     * Quantidade total de fotos capturadas referentes a perguntas respondidas com OK.
+     * Quantidade total de mídias anexadas referentes a perguntas respondidas com OK.
      */
-    private final int qtdImagensPerguntasOk;
+    private final int qtdMidiasPerguntasOk;
     /**
-     * Quantidade total de fotos capturadas referentes a alternativas respondidas com NOK, ou seja,
+     * Quantidade total de mídias anexadas referentes a alternativas respondidas com NOK, ou seja,
      * alternativas selecionadas.
      */
-    private final int qtdImagensAlternativasNok;
+    private final int qtdMidiasAlternativasNok;
     /**
      * Versão do modelo que o checklist realizado referencia.
      * TODO: Será provisoriamente não-final para funcionar no processo de migração dos apps antigos para a nova estrutura.
@@ -123,8 +123,8 @@ public final class ChecklistInsercao {
                              @Nullable final String deviceImei,
                              final long deviceUptimeRealizacaoMillis,
                              final long deviceUptimeSincronizacaoMillis,
-                             final int qtdImagensPerguntasOk,
-                             final int qtdImagensAlternativasNok) {
+                             final int qtdMidiasPerguntasOk,
+                             final int qtdMidiasAlternativasNok) {
         this.codUnidade = codUnidade;
         this.codModelo = codModelo;
         this.codVersaoModeloChecklist = codVersaoModeloChecklist;
@@ -143,8 +143,8 @@ public final class ChecklistInsercao {
         this.deviceImei = deviceImei;
         this.deviceUptimeRealizacaoMillis = deviceUptimeRealizacaoMillis;
         this.deviceUptimeSincronizacaoMillis = deviceUptimeSincronizacaoMillis;
-        this.qtdImagensPerguntasOk = qtdImagensPerguntasOk;
-        this.qtdImagensAlternativasNok = qtdImagensAlternativasNok;
+        this.qtdMidiasPerguntasOk = qtdMidiasPerguntasOk;
+        this.qtdMidiasAlternativasNok = qtdMidiasAlternativasNok;
         this.cachedMetadata = createMetadata();
     }
 
@@ -258,12 +258,12 @@ public final class ChecklistInsercao {
         return cachedMetadata.getQtdAlternativasNok();
     }
 
-    public int getQtdImagensPerguntasOk() {
-        return qtdImagensPerguntasOk;
+    public int getQtdMidiasPerguntasOk() {
+        return qtdMidiasPerguntasOk;
     }
 
-    public int getQtdImagensAlternativasNok() {
-        return qtdImagensAlternativasNok;
+    public int getQtdMidiasAlternativasNok() {
+        return qtdMidiasAlternativasNok;
     }
 
     @NotNull

@@ -558,8 +558,8 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
             stmt.setInt(20, checklist.getQtdPerguntasNok());
             stmt.setInt(21, checklist.getQtdAlternativasOk());
             stmt.setInt(22, checklist.getQtdAlternativasNok());
-            stmt.setInt(23, checklist.getQtdImagensPerguntasOk());
-            stmt.setInt(24, checklist.getQtdImagensAlternativasNok());
+            stmt.setInt(23, checklist.getQtdMidiasPerguntasOk());
+            stmt.setInt(24, checklist.getQtdMidiasAlternativasNok());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 final Long codChecklistInserido = rSet.getLong("CODIGO");
