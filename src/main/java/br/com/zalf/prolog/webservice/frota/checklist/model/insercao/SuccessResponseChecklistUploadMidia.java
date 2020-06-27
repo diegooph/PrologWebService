@@ -11,5 +11,7 @@ import org.jetbrains.annotations.NotNull;
 @Data
 public final class SuccessResponseChecklistUploadMidia {
     @NotNull
+    private final String uuidMidia;
+    @NotNull
     private final String urlMidia;
 }

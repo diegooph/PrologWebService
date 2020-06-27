@@ -39,9 +39,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -55,6 +53,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
+@SuppressWarnings("SqlResolve")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public final class ChecklistUploadImagensRealizacaoTest extends BaseTest {
     private static final String CPF_TOKEN = "03383283194";
@@ -97,23 +96,22 @@ public final class ChecklistUploadImagensRealizacaoTest extends BaseTest {
         }
 
         final Long codPergunta = insercao.getRespostas().get(0).getCodPergunta();
-        final List<String> urls = new ArrayList<>();
 
+        final String uuidMidia1 = UUID.randomUUID().toString();
+        final String uuidMidia2 = UUID.randomUUID().toString();
         //region Salva imagens para uma pergunta do modelo.
         {
-            final ChecklistUploadMidiaRealizacao imagem = new ChecklistUploadMidiaRealizacao(
-                    codChecklistInserido,
-                    codPergunta,
-                    null);
-
             final SuccessResponseChecklistUploadMidia upload1 = checklistService.uploadMidiaRealizacaoChecklist(
                     getImagemFromResources("imagem_pergunta_checklist.png"),
                     FormDataContentDisposition
                             .name("file")
                             .fileName("imagem_pergunta_checklist.png")
                             .build(),
-                    imagem);
-            urls.add(upload1.getUrlMidia());
+                    new ChecklistUploadMidiaRealizacao(
+                            uuidMidia1,
+                            codChecklistInserido,
+                            codPergunta,
+                            null));
 
             final SuccessResponseChecklistUploadMidia upload2 = checklistService.uploadMidiaRealizacaoChecklist(
                     getImagemFromResources("imagem_pergunta_checklist.png"),
@@ -121,8 +119,11 @@ public final class ChecklistUploadImagensRealizacaoTest extends BaseTest {
                             .name("file")
                             .fileName("imagem_pergunta_checklist.png")
                             .build(),
-                    imagem);
-            urls.add(upload2.getUrlMidia());
+                    new ChecklistUploadMidiaRealizacao(
+                            uuidMidia2,
+                            codChecklistInserido,
+                            codPergunta,
+                            null));
         }
         //endregion
 
@@ -136,13 +137,15 @@ public final class ChecklistUploadImagensRealizacaoTest extends BaseTest {
                 conn = connectionProvider.provideDatabaseConnection();
                 stmt = conn.prepareStatement("select count(*) " +
                         "from checklist_respostas_midias_perguntas_ok cripo " +
-                        "where url_midia = any(?)");
-                stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.TEXT, urls));
+                        "where uuid::text = any(?)");
+                stmt.setArray(
+                        1,
+                        PostgresUtils.listToArray(conn, SqlType.TEXT, Arrays.asList(uuidMidia1, uuidMidia2)));
                 rSet = stmt.executeQuery();
                 if (rSet.next()) {
                     assertThat(rSet.getLong(1)).isEqualTo(2);
                 } else {
-                    throw new IllegalStateException("Erro! Imagens não encontradas!");
+                    throw new IllegalStateException("Erro! Mídias não encontradas!");
                 }
             } finally {
                 connectionProvider.closeResources(conn, stmt, rSet);
@@ -169,23 +172,22 @@ public final class ChecklistUploadImagensRealizacaoTest extends BaseTest {
         }
 
         final Long codAlternativa = insercao.getRespostas().get(0).getAlternativasRespostas().get(0).getCodAlternativa();
-        final List<String> urls = new ArrayList<>();
 
+        final String uuidMidia1 = UUID.randomUUID().toString();
+        final String uuidMidia2 = UUID.randomUUID().toString();
         //region Salva imagens para uma pergunta do modelo.
         {
-            final ChecklistUploadMidiaRealizacao imagem = new ChecklistUploadMidiaRealizacao(
-                    codChecklistInserido,
-                    null,
-                    codAlternativa);
-
             final SuccessResponseChecklistUploadMidia upload1 = checklistService.uploadMidiaRealizacaoChecklist(
                     getImagemFromResources("imagem_alternativa_checklist.png"),
                     FormDataContentDisposition
                             .name("file")
                             .fileName("imagem_alternativa_checklist.png")
                             .build(),
-                    imagem);
-            urls.add(upload1.getUrlMidia());
+                    new ChecklistUploadMidiaRealizacao(
+                            uuidMidia1,
+                            codChecklistInserido,
+                            null,
+                            codAlternativa));
 
             final SuccessResponseChecklistUploadMidia upload2 = checklistService.uploadMidiaRealizacaoChecklist(
                     getImagemFromResources("imagem_alternativa_checklist.png"),
@@ -193,8 +195,11 @@ public final class ChecklistUploadImagensRealizacaoTest extends BaseTest {
                             .name("file")
                             .fileName("imagem_alternativa_checklist.png")
                             .build(),
-                    imagem);
-            urls.add(upload2.getUrlMidia());
+                    new ChecklistUploadMidiaRealizacao(
+                            uuidMidia2,
+                            codChecklistInserido,
+                            null,
+                            codAlternativa));
         }
         //endregion
 
@@ -208,13 +213,15 @@ public final class ChecklistUploadImagensRealizacaoTest extends BaseTest {
                 conn = connectionProvider.provideDatabaseConnection();
                 stmt = conn.prepareStatement("select count(*) " +
                         "from checklist_respostas_midias_alternativas_nok cripo " +
-                        "where url_midia = any(?)");
-                stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.TEXT, urls));
+                        "where uuid::text = any(?)");
+                stmt.setArray(
+                        1,
+                        PostgresUtils.listToArray(conn, SqlType.TEXT, Arrays.asList(uuidMidia1, uuidMidia2)));
                 rSet = stmt.executeQuery();
                 if (rSet.next()) {
                     assertThat(rSet.getLong(1)).isEqualTo(2);
                 } else {
-                    throw new IllegalStateException("Erro! Imagens não encontradas!");
+                    throw new IllegalStateException("Erro! Mídias não encontradas!");
                 }
             } finally {
                 connectionProvider.closeResources(conn, stmt, rSet);

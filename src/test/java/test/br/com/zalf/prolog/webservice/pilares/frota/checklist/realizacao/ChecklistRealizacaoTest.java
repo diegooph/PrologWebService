@@ -2,7 +2,6 @@ package test.br.com.zalf.prolog.webservice.pilares.frota.checklist.realizacao;
 
 import br.com.zalf.prolog.webservice.commons.FonteDataHora;
 import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
-import br.com.zalf.prolog.webservice.commons.util.RandomUtils;
 import br.com.zalf.prolog.webservice.database.DatabaseManager;
 import br.com.zalf.prolog.webservice.frota.checklist.ChecklistService;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
@@ -33,6 +32,7 @@ import test.br.com.zalf.prolog.webservice.BaseTest;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -41,10 +41,6 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * Essa classe não testa o processemento das alternativas para abertura (ou não) de OSs. O foco é verificar se os dados
  * respondidos são salvos como deveriam.
- *
- * Para esse teste funcionar corretamente em repetidas execuções, é necessário dropar um index da tabela
- * CHECKLIST_MODELO:
- * > drop index checklist_modelo_data_nome_index;
  *
  * Created on 2019-10-14
  *
@@ -142,7 +138,7 @@ public final class ChecklistRealizacaoTest extends BaseTest {
         }
 
         final Long codUnidade = 5L;
-        final String nomeModelo = "$Teste Método$";
+        final String nomeModelo = UUID.randomUUID().toString();
         // 4 - Então inserimos o modelo.
         final ResultInsertModeloChecklist result =
                 service.insertModeloChecklist(
@@ -372,7 +368,7 @@ public final class ChecklistRealizacaoTest extends BaseTest {
         }
 
         final Long codUnidade = 5L;
-        final String nomeModelo = "ModeloChecklist - " + RandomUtils.randomAlphanumeric(10);
+        final String nomeModelo = UUID.randomUUID().toString();
         // 4 - Então inserimos o modelo.
         final ResultInsertModeloChecklist result =
                 service.insertModeloChecklist(

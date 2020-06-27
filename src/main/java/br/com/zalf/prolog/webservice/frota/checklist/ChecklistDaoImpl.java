@@ -72,67 +72,51 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
         }
     }
 
-    @NotNull
     @Override
-    public Long insertMidiaPerguntaChecklistRealizado(@NotNull final Long codChecklist,
+    public void insertMidiaPerguntaChecklistRealizado(@NotNull final String uuidMidia,
+                                                      @NotNull final Long codChecklist,
                                                       @NotNull final Long codPergunta,
                                                       @NotNull final String urlMidia) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
-        ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("select * " +
-                    "from func_checklist_insert_midia_pergunta(" +
+            stmt = conn.prepareCall("{call func_checklist_insert_midia_pergunta(" +
+                    "f_uuid_midia => ?::uuid, " +
                     "f_cod_checklist => ?, " +
                     "f_cod_pergunta => ?, " +
-                    "f_url_midia => ?);");
-            stmt.setLong(1, codChecklist);
-            stmt.setLong(2, codPergunta);
-            stmt.setString(3, urlMidia);
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                return rSet.getLong(1);
-            } else {
-                throw new IllegalStateException("Erro ao vincular mídia ao checklist."
-                        + "\ncodChecklist: " + codChecklist
-                        + "\ncodPergunta: " + codPergunta
-                        + "\nurlMidia: " + urlMidia);
-            }
+                    "f_url_midia => ?)}");
+            stmt.setString(1, uuidMidia);
+            stmt.setLong(2, codChecklist);
+            stmt.setLong(3, codPergunta);
+            stmt.setString(4, urlMidia);
+            stmt.execute();
         } finally {
-            close(conn, stmt, rSet);
+            close(conn, stmt);
         }
     }
 
-    @NotNull
     @Override
-    public Long insertMidiaAlternativaChecklistRealizado(@NotNull final Long codChecklist,
+    public void insertMidiaAlternativaChecklistRealizado(@NotNull final String uuidMidia,
+                                                         @NotNull final Long codChecklist,
                                                          @NotNull final Long codAlternativa,
                                                          @NotNull final String urlMidia) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
-        ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("select * " +
-                    "from func_checklist_insert_midia_alternativa(" +
+            stmt = conn.prepareCall("{call func_checklist_insert_midia_alternativa(" +
+                    "f_uuid_midia => ?::uuid, " +
                     "f_cod_checklist => ?, " +
                     "f_cod_alternativa => ?, " +
-                    "f_url_midia => ?);");
-            stmt.setLong(1, codChecklist);
-            stmt.setLong(2, codAlternativa);
-            stmt.setString(3, urlMidia);
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                return rSet.getLong(1);
-            } else {
-                throw new IllegalStateException("Erro ao vincular mídia ao checklist."
-                        + "\ncodChecklist: " + codChecklist
-                        + "\ncodAlternativa: " + codAlternativa
-                        + "\nurlMidia: " + urlMidia);
-            }
+                    "f_url_midia => ?)}");
+            stmt.setString(1, uuidMidia);
+            stmt.setLong(2, codChecklist);
+            stmt.setLong(3, codAlternativa);
+            stmt.setString(4, urlMidia);
+            stmt.execute();
         } finally {
-            close(conn, stmt, rSet);
+            close(conn, stmt);
         }
     }
 
@@ -184,8 +168,8 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
                 if (codChecklistAntigo.equals(codChecklistAtual)) {
                     if (codPerguntaAntigo.equals(codPerguntaAtual)) {
                         if (rSet.getBoolean("TEM_MIDIA_PERGUNTA_OK")) {
-                            final Long codMidiaPerguntaOk = rSet.getLong("COD_MIDIA_PERGUNTA_OK");
-                            if (!pergunta.temMidia(codMidiaPerguntaOk)) {
+                            final String uuidMidiaPerguntaOk = rSet.getString("UUID_MIDIA_PERGUNTA_OK");
+                            if (!pergunta.temMidia(uuidMidiaPerguntaOk)) {
                                 pergunta.addMidia(ChecklistConverter.createMidiaPergunta(rSet));
                             }
                         }

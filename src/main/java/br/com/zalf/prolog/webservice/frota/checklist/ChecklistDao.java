@@ -6,7 +6,6 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.FiltroRegionalUnidade
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
 import br.com.zalf.prolog.webservice.geral.unidade._model.Unidade;
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -56,15 +55,14 @@ public interface ChecklistDao {
      * Insere a imagem de um checklist realizado. Vinculando a {@code urlMidia} da mídia fornecida ao
      * {@code codChecklist} e {@code codPergunta}.
      *
+     * @param uuidMidia    UUID único dessa mídia.
      * @param codChecklist código do checklist no qual a mídia foi anexada.
      * @param codPergunta  código da pergunta na qual a mídia foi anexada.
      * @param urlMidia     url da imagem que está sendo salva.
-     * @return código da mídia inserida.
      * @throws Throwable caso algum erro aconteça.
      */
-    @CanIgnoreReturnValue
-    @NotNull
-    Long insertMidiaPerguntaChecklistRealizado(@NotNull final Long codChecklist,
+    void insertMidiaPerguntaChecklistRealizado(@NotNull final String uuidMidia,
+                                               @NotNull final Long codChecklist,
                                                @NotNull final Long codPergunta,
                                                @NotNull final String urlMidia) throws Throwable;
 
@@ -72,15 +70,14 @@ public interface ChecklistDao {
      * Insere a imagem de um checklist realizado. Vinculando a {@code urlMidia} da mídia fornecida ao
      * {@code codChecklist} e {@code codAlternativa}.
      *
+     * @param uuidMidia      UUID único dessa mídia.
      * @param codChecklist   código do checklist no qual a mídia foi anexada.
      * @param codAlternativa código da alternativa na qual a mídia foi anexada.
      * @param urlMidia       url da imagem que está sendo salva.
-     * @return código da mídia inserida.
      * @throws Throwable caso algum erro aconteça.
      */
-    @CanIgnoreReturnValue
-    @NotNull
-    Long insertMidiaAlternativaChecklistRealizado(@NotNull final Long codChecklist,
+    void insertMidiaAlternativaChecklistRealizado(@NotNull final String uuidMidia,
+                                                  @NotNull final Long codChecklist,
                                                   @NotNull final Long codAlternativa,
                                                   @NotNull final String urlMidia) throws Throwable;
 

@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 @Data
 public class MidiaResposta {
     @NotNull
-    private final Long codigo;
+    private final String uuid;
     @NotNull
     private final String url;
     @NotNull

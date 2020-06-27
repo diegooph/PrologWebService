@@ -363,19 +363,19 @@ public final class ChecklistConverter {
         }
     }
 
+    @NotNull
     public static MidiaResposta createMidiaPergunta(@NotNull final ResultSet rSet) throws SQLException {
         return new MidiaResposta(
-                rSet.getLong("COD_MIDIA_PERGUNTA_OK"),
+                rSet.getString("UUID_MIDIA_PERGUNTA_OK"),
                 rSet.getString("URL_MIDIA_PERGUNTA_OK"),
-                rSet.getString("TIPO_MIDIA_PERGUNTA_OK")
-        );
+                rSet.getString("TIPO_MIDIA_PERGUNTA_OK"));
     }
 
+    @NotNull
     public static MidiaResposta createMidiaAlternativa(@NotNull final ResultSet rSet) throws SQLException {
         return new MidiaResposta(
-                rSet.getLong("COD_MIDIA_ALTERNATIVA"),
+                rSet.getString("UUID_MIDIA_ALTERNATIVA"),
                 rSet.getString("URL_MIDIA_ALTERNATIVA"),
-                rSet.getString("TIPO_MIDIA_ALTERNATIVA")
-        );
+                rSet.getString("TIPO_MIDIA_ALTERNATIVA"));
     }
 }

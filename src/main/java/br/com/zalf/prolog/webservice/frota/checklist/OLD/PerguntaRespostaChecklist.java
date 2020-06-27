@@ -62,10 +62,10 @@ public class PerguntaRespostaChecklist extends Pergunta {
         return alternativa;
     }
 
-    public boolean temMidia(@NotNull final Long codMidia) {
+    public boolean temMidia(@NotNull final String uuidMidia) {
         return midias != null && midias
                 .stream()
-                .anyMatch(midiaResposta -> midiaResposta.getCodigo().equals(codMidia));
+                .anyMatch(midiaResposta -> midiaResposta.getTipoMidia().equals(uuidMidia));
     }
 
     public void addMidia(@NotNull final MidiaResposta midia) {

@@ -71,17 +71,21 @@ public final class ChecklistService {
 
             if (midia.getCodigoPergunta() != null) {
                 dao.insertMidiaPerguntaChecklistRealizado(
+                        midia.getUuidMidia(),
                         midia.getCodigoChecklist(),
                         midia.getCodigoPergunta(),
                         imagemProlog.getUrlImagem());
             } else {
                 dao.insertMidiaAlternativaChecklistRealizado(
+                        midia.getUuidMidia(),
                         midia.getCodigoChecklist(),
                         midia.getCodigoAlternativa(),
                         imagemProlog.getUrlImagem());
             }
 
-            return new SuccessResponseChecklistUploadMidia(imagemProlog.getUrlImagem());
+            return new SuccessResponseChecklistUploadMidia(
+                    midia.getUuidMidia(),
+                    imagemProlog.getUrlImagem());
         } catch (final FileFormatNotSupportException e) {
             Log.e(TAG, "Arquivo recebido não é uma mídia", e);
             throw Injection

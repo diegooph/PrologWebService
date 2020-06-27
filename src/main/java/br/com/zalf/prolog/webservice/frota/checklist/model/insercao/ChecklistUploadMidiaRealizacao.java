@@ -12,6 +12,8 @@ import org.jetbrains.annotations.Nullable;
 @Data
 public final class ChecklistUploadMidiaRealizacao {
     @NotNull
+    private final String uuidMidia;
+    @NotNull
     private final Long codigoChecklist;
     @Nullable
     private final Long codigoPergunta;
