@@ -225,5 +225,4 @@ public class AfericaoResource {
             @HeaderParam("Authorization") final String userToken) throws ProLogException {
         throw new VersaoAppBloqueadaException("Atualize o aplicativo para poder buscar as aferições realizadas");
     }
-
 }

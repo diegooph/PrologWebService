@@ -576,6 +576,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                     .fromString(rSet.getString("TIPO_PROCESSO_COLETA_ULTIMA_AFERICAO"));
             pneuAvulso.setTipoProcessoAfericao(tipoProcesso);
             pneuAvulso.setPlacaAplicadoQuandoAferido(rSet.getString("PLACA_VEICULO_ULTIMA_AFERICAO"));
+            pneuAvulso.setIdentificadorFrotaAplicadoQuandoAferido(rSet.getString("IDENTIFICADOR_FROTA_ULTIMA_AFERICAO"));
         }
         return pneuAvulso;
     }

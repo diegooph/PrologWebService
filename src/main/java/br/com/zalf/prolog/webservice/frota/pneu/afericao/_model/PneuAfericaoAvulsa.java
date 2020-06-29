@@ -19,6 +19,7 @@ public final class PneuAfericaoAvulsa {
     private Long codigoUltimaAfericao;
     private TipoProcessoColetaAfericao tipoProcessoAfericao;
     private String placaAplicadoQuandoAferido;
+    private String identificadorFrotaAplicadoQuandoAferido;
 
     public PneuAfericaoAvulsa() {
 
@@ -81,6 +82,14 @@ public final class PneuAfericaoAvulsa {
 
     public void setPlacaAplicadoQuandoAferido(final String placaAplicadoQuandoAferido) {
         this.placaAplicadoQuandoAferido = placaAplicadoQuandoAferido;
+    }
+
+    public String getIdentificadorFrotaAplicadoQuandoAferido() {
+        return identificadorFrotaAplicadoQuandoAferido;
+    }
+
+    public void setIdentificadorFrotaAplicadoQuandoAferido(String identificadorFrotaAplicadoQuandoAferido) {
+        this.identificadorFrotaAplicadoQuandoAferido = identificadorFrotaAplicadoQuandoAferido;
     }
 
     public boolean isJaFoiAferido() {
