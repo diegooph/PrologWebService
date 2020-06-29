@@ -7,7 +7,7 @@ import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosA
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosAfericaoRealizadaPlaca;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosTipoVeiculoConfiguracaoAfericao;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosUnidadeRestricao;
-import org.glassfish.jersey.internal.guava.Table;
+import com.google.common.collect.Table;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

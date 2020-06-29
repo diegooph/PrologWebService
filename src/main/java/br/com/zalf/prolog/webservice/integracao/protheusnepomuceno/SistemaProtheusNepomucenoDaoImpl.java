@@ -12,8 +12,8 @@ import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosA
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosTipoVeiculoConfiguracaoAfericao;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosUnidadeRestricao;
 import com.google.common.base.Preconditions;
-import org.glassfish.jersey.internal.guava.HashBasedTable;
-import org.glassfish.jersey.internal.guava.Table;
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

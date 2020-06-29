@@ -95,7 +95,7 @@ public final class OperacoesIntegradasProtheusNepomucenoTest extends BaseTest {
                 getValidToken(CPF_COLABORADOR),
                 placa.getCodUnidadePlaca(),
                 placa.getPlaca(),
-                "PLACA");
+                TipoProcessoColetaAfericao.PLACA.asString());
 
         assertThat(novaAfericaoPlaca).isNotNull();
         assertThat(novaAfericaoPlaca.getVeiculo()).isNotNull();
