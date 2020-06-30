@@ -23,6 +23,7 @@ public final class ServicoHolder {
      */
     @NotNull
     private final String placaVeiculo;
+    private String identificadorFrota;
 
     @NotNull
     private final List<Servico> servicos;

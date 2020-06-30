@@ -258,7 +258,7 @@ public final class VeiculoResource {
     /**
      * @deprecated at 2020-05-07.
      * <p>
-     * Este método foi depreciado pois um novo foi criado: {@link #buscaVeiculosAtivosByUnidade(String, Long, Boolean)}
+     * Este método foi depreciado pois um novo foi criado: {@link #buscaVeiculosByUnidade(String, Long, Boolean)}
      */
     @Deprecated
     @GET
