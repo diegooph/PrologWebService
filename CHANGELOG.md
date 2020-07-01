@@ -12,6 +12,8 @@ Change Log
 
 ## Refactors
 * Adiciona identificador frota nos objetos de serviços de pneus (PL-2761)
+* Adiciona identificador frota nos objetos de aferição de pneus (PL-2760)
+* Adiciona identificador frota no objeto PneuEmUso (PL-2760)
 
 <a name="v1.0.32"></a>
 ## Version [v1.0.32](https://github.com/luizfp/PrologWebService/compare/v1.0.31...v1.0.32) (2020-06-10)
