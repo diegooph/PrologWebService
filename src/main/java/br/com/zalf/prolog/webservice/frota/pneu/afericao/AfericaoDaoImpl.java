@@ -576,6 +576,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                     .fromString(rSet.getString("TIPO_PROCESSO_COLETA_ULTIMA_AFERICAO"));
             pneuAvulso.setTipoProcessoAfericao(tipoProcesso);
             pneuAvulso.setPlacaAplicadoQuandoAferido(rSet.getString("PLACA_VEICULO_ULTIMA_AFERICAO"));
+            pneuAvulso.setIdentificadorFrotaAplicadoQuandoAferido(rSet.getString("IDENTIFICADOR_FROTA_ULTIMA_AFERICAO"));
         }
         return pneuAvulso;
     }
@@ -604,6 +605,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
     private ModeloPlacasAfericao.PlacaAfericao createPlacaAfericao(@NotNull final ResultSet rSet) throws Throwable {
         final ModeloPlacasAfericao.PlacaAfericao placa = new ModeloPlacasAfericao.PlacaAfericao();
         placa.setPlaca(rSet.getString("PLACA"));
+        placa.setIdentificadorFrota(rSet.getString("IDENTIFICADOR_FROTA"));
         placa.setCodUnidadePlaca(rSet.getLong("COD_UNIDADE_PLACA"));
         placa.setIntervaloUltimaAfericaoSulco(rSet.getInt("INTERVALO_SULCO"));
         placa.setIntervaloUltimaAfericaoPressao(rSet.getInt("INTERVALO_PRESSAO"));
@@ -803,6 +805,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         // Veículo no qual aferição foi realizada.
         final Veiculo veiculo = new Veiculo();
         veiculo.setPlaca(rSet.getString("PLACA_VEICULO"));
+        veiculo.setIdentificadorFrota(rSet.getString("IDENTIFICADOR_FROTA"));
         afericaoPlaca.setKmMomentoAfericao(rSet.getLong("KM_VEICULO"));
         afericaoPlaca.setVeiculo(veiculo);
         setDadosComunsAfericaoResumida(rSet, afericaoPlaca);

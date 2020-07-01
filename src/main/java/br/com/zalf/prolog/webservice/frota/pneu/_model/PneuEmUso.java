@@ -9,6 +9,7 @@ import com.google.common.base.Preconditions;
  */
 public final class PneuEmUso extends Pneu {
     private String placa;
+    private String identificadorFrota;
     private Long codVeiculo;
     private String posicaoAplicado;
 
@@ -29,6 +30,14 @@ public final class PneuEmUso extends Pneu {
 
     public void setPlaca(String placa) {
         this.placa = placa;
+    }
+
+    public String getIdentificadorFrota() {
+        return identificadorFrota;
+    }
+
+    public void setIdentificadorFrota(String identificadorFrota) {
+        this.identificadorFrota = identificadorFrota;
     }
 
     public Long getCodVeiculo() {

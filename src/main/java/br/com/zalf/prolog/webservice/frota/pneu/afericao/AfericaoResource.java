@@ -74,7 +74,7 @@ public class AfericaoResource {
     @GET
     @Secured(permissions = Pilares.Frota.Afericao.REALIZAR_AFERICAO_PLACA)
     @Path("/cronogramas")
-    @UsedBy(platforms = Platform.ANDROID)
+    @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
     public CronogramaAfericao getCronogramaAfericao(
             @HeaderParam("Authorization") @Required final String userToken,
             @QueryParam("codUnidades") @Required final List<Long> codUnidades) throws ProLogException {
@@ -225,5 +225,4 @@ public class AfericaoResource {
             @HeaderParam("Authorization") final String userToken) throws ProLogException {
         throw new VersaoAppBloqueadaException("Atualize o aplicativo para poder buscar as aferições realizadas");
     }
-
 }

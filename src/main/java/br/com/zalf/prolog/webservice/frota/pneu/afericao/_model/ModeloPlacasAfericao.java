@@ -92,6 +92,7 @@ public class ModeloPlacasAfericao {
          * Indentificar do veículo.
          */
         private String placa;
+        private String identificadorFrota;
 
         /**
          * Código da unidade a qual a placa está vinculada.
@@ -204,6 +205,14 @@ public class ModeloPlacasAfericao {
 
         public void setPlaca(final String placa) {
             this.placa = placa;
+        }
+
+        public String getIdentificadorFrota() {
+            return identificadorFrota;
+        }
+
+        public void setIdentificadorFrota(String identificadorFrota) {
+            this.identificadorFrota = identificadorFrota;
         }
 
         public Long getCodUnidadePlaca() {

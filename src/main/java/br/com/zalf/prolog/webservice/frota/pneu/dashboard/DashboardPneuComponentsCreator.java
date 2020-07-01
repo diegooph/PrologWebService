@@ -348,6 +348,7 @@ final class DashboardPneuComponentsCreator {
         final List<TableItemHeader> itemHeaders = new ArrayList<>(4);
         itemHeaders.add(new TableItemHeader("Unidade", null));
         itemHeaders.add(new TableItemHeader("Placa", null));
+        itemHeaders.add(new TableItemHeader("Identificador Frota", null));
         itemHeaders.add(new TableItemHeader("Dias aferição vencida - sulco", null));
         itemHeaders.add(new TableItemHeader("Dias aferição vencida - pressão", null));
         final TableHeader tableHeader = new TableHeader(itemHeaders);
@@ -358,6 +359,7 @@ final class DashboardPneuComponentsCreator {
             final List<TableColumn> columns = new ArrayList<>(4);
             columns.add(new TableColumn(afericoesVencidas.getNomeUnidade()));
             columns.add(new TableColumn(afericoesVencidas.getPlacaVeiculo()));
+            columns.add(new TableColumn(afericoesVencidas.getIdentificadorFrota()));
 
             // Aferição sulco.
             if (afericoesVencidas.isPodeAferirSulco()) {
