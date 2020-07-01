@@ -1,3 +1,9 @@
+Stage
+==========
+
+### Refactors
+* Adiciona possibilidade de listar colaboradores, veículos e pneus por múltiplas unidades (PL-2695)
+
 Change Log
 ==========
 

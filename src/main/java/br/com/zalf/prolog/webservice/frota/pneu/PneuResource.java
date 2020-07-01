@@ -17,6 +17,7 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.List;
 
 @Path("/pneus")
@@ -76,7 +77,26 @@ public final class PneuResource {
             actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
     public List<Pneu> getPneuByCodUnidadeByStatus(@PathParam("codUnidade") Long codUnidade,
                                                   @PathParam("status") String status) throws ProLogException {
-        return service.getPneusByCodUnidadeByStatus(codUnidade, status);
+        return service.getPneusByCodUnidadesByStatus(Collections.singletonList(codUnidade), status);
+    }
+
+    @GET
+    @Secured(permissions = {
+            Pilares.Frota.Pneu.VISUALIZAR,
+            Pilares.Frota.Pneu.CADASTRAR,
+            Pilares.Frota.Pneu.ALTERAR,
+            Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_VEICULO_ESTOQUE,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_DESCARTE})
+    @Path("/listagem")
+    @AppVersionCodeHandler(
+            targetVersionCode = 68,
+            versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
+            actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
+    public List<Pneu> getPneuByCodUnidadesByStatus(@QueryParam("codUnidades") @Required final List<Long> codUnidades,
+                                                   @QueryParam("status") @Required String status) {
+        return service.getPneusByCodUnidadesByStatus(codUnidades, status);
     }
 
     @GET

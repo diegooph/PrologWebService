@@ -561,7 +561,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
     @NotNull
     private PneuAfericaoAvulsa createPneuAfericaoAvulsa(@NotNull final ResultSet rSet) throws Throwable {
         final PneuAfericaoAvulsa pneuAvulso = new PneuAfericaoAvulsa();
-        pneuAvulso.setPneu(PneuConverter.createPneuCompleto(rSet, PneuTipo.PNEU_ESTOQUE));
+        pneuAvulso.setPneu(PneuConverter.createPneuCompleto(rSet, PneuTipo.PNEU_ESTOQUE, false));
 
         // Se já foi aferido seta todas as informações da última aferição.
         final LocalDateTime dataHoraUltimaAfericao = rSet.getObject("DATA_HORA_ULTIMA_AFERICAO", LocalDateTime.class);

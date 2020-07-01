@@ -2,6 +2,9 @@ package br.com.zalf.prolog.webservice.frota.veiculo;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
+import br.com.zalf.prolog.webservice.commons.util.SqlType;
+import br.com.zalf.prolog.webservice.commons.util.StatementUtils;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
 import br.com.zalf.prolog.webservice.frota.pneu.PneuDao;
@@ -12,7 +15,10 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.TipoEixoVeicul
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.*;
 
 public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
@@ -206,24 +212,22 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         }
     }
 
+    @NotNull
     @Override
-    public List<VeiculoListagem> buscaVeiculosByUnidade(@NotNull final Long codUnidade,
-                                                        @Nullable final Boolean somenteAtivos) throws Throwable {
+    public List<VeiculoListagem> buscaVeiculosByUnidades(@NotNull final List<Long> codUnidades,
+                                                         final boolean apenasAtivos,
+                                                         @Nullable final Long codTipoVeiculo) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_VEICULO_GET_ALL_BY_UNIDADE (F_COD_UNIDADE := ?," +
-                    "F_SOMENTE_ATIVOS := ?); ");
-            stmt.setLong(1, codUnidade);
-
-            // Se for nulo não filtramos por ativos/inativos.
-            if (somenteAtivos == null) {
-                stmt.setNull(2, Types.BOOLEAN);
-            } else {
-                stmt.setBoolean(2, somenteAtivos);
-            }
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_VEICULO_GET_ALL_BY_UNIDADES (F_COD_UNIDADES => ?," +
+                    "F_APENAS_ATIVOS => ?," +
+                    "F_COD_TIPO_VEICULO => ?); ");
+            stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
+            stmt.setBoolean(2, apenasAtivos);
+            StatementUtils.bindValueOrNull(stmt, 3, codTipoVeiculo, SqlType.BIGINT);
             rSet = stmt.executeQuery();
             final List<VeiculoListagem> veiculosListagem = new ArrayList<>();
             while (rSet.next()) {

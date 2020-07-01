@@ -71,15 +71,17 @@ public interface VeiculoDao {
                    @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable;
 
     /**
-     * Busca os veículos de uma determinada unidade.
+     * Busca os veículos que pertencem as unidades informadas.
      *
-     * @param codUnidade um código.
-     * @param somenteAtivos indica se queremos buscar somente por veículos ativos.
+     * @param codUnidades    Array com os códigos de unidade
+     * @param apenasAtivos   indica se queremos buscar somente por veículos ativos.
+     * @param codTipoVeiculo codigo de tipo de veiculo para filtragem - opcional
      * @return lista de {@link VeiculoListagem}
      * @throws Throwable caso não seja possível realizar a busca
      */
-    List<VeiculoListagem> buscaVeiculosByUnidade(@NotNull final Long codUnidade,
-                                                 @Nullable final Boolean somenteAtivos) throws Throwable;
+    List<VeiculoListagem> buscaVeiculosByUnidades(@NotNull final List<Long> codUnidades,
+                                                  final boolean apenasAtivos,
+                                                  @Nullable final Long codTipoVeiculo) throws Throwable;
 
     /**
      * Busca os veículos ativos de uma determinada unidade

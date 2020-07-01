@@ -88,10 +88,21 @@ public abstract class Pneu {
     private Long codRegionalAlocado;
 
     /**
+     * Nome da regional onde o pneu está alocado, usado somente em listagens.
+     */
+    @Nullable
+    private String nomeRegionalAlocado;
+
+    /**
      * {@link Unidade} onde o pneu se encontra.
      */
     private Long codUnidadeAlocado;
 
+    /**
+     * Nome da unidade onde o pneu está alocado, usado somente em listagens.
+     */
+    @Nullable
+    private String nomeUnidadeAlocado;
     /**
      * O código DOT gravado na lateral do pneu indica sua conformidade com os padrões de segurança e fornece dados
      * sobre a fabricação do pneu.
@@ -308,6 +319,11 @@ public abstract class Pneu {
         this.codRegionalAlocado = codRegionalAlocado;
     }
 
+    @Nullable
+    public String getNomeRegionalAlocado() { return nomeRegionalAlocado; }
+
+    public void setNomeRegionalAlocado(String nomeRegionalAlocado) { this.nomeRegionalAlocado = nomeRegionalAlocado; }
+
     public Long getCodUnidadeAlocado() {
         return codUnidadeAlocado;
     }
@@ -315,6 +331,11 @@ public abstract class Pneu {
     public void setCodUnidadeAlocado(final Long codUnidadeAlocado) {
         this.codUnidadeAlocado = codUnidadeAlocado;
     }
+
+    @Nullable
+    public String getNomeUnidadeAlocado() { return nomeUnidadeAlocado; }
+
+    public void setNomeUnidadeAlocado(String nomeUnidadeAlocado) { this.nomeUnidadeAlocado = nomeUnidadeAlocado; }
 
     public int getPosicao() {
         return posicao;
@@ -373,7 +394,7 @@ public abstract class Pneu {
 
     /**
      * Se o pneu estiver na primeira vida, então a sua quantidade de sulcos é o atributo
-     * {@link ModeloPneu#quantidadeSulcos}, senão, é o {@link ModeloBanda#quantidadeSulcos}.
+     * quantidadeSulcos do modelo de pneu, senão, é o quantidadeSulcos do modelo de banda.
      *
      * @return a quantidade de sulcos desse pneu.
      */
