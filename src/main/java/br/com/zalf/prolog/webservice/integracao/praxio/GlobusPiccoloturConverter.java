@@ -74,6 +74,7 @@ public final class GlobusPiccoloturConverter {
             }
             if (!alternativasNok.isEmpty()) {
                 perguntasNok.add(new PerguntaNokGlobus(
+                        resposta.getCodigo(),
                         // Podemos inserir o código de contexto da pergunta com segurança, pois, se existir uma
                         // alternativa criada, com certeza o código de contexto da pergunta existirá. E se não existir
                         // nenhuma alternativa, o fluxo não chega nesse ponto.

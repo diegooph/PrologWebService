@@ -88,6 +88,7 @@ final class ServicoConverter {
     static QuantidadeServicosVeiculo createQtdServicosVeiculo(@NotNull final ResultSet resultSet) throws SQLException {
         final QuantidadeServicosVeiculo qtdServicosFechados = new QuantidadeServicosVeiculo();
         qtdServicosFechados.setPlacaVeiculo(resultSet.getString("PLACA_VEICULO"));
+        qtdServicosFechados.setIdentificadorFrota(resultSet.getString("IDENTIFICADOR_FROTA"));
         qtdServicosFechados.setQtdServicosCalibragem(resultSet.getInt("TOTAL_CALIBRAGENS"));
         qtdServicosFechados.setQtdServicosInspecao(resultSet.getInt("TOTAL_INSPECOES"));
         qtdServicosFechados.setQtdServicosMovimentacao(resultSet.getInt("TOTAL_MOVIMENTACOES"));
@@ -109,6 +110,7 @@ final class ServicoConverter {
     static VeiculoServico createVeiculoAberturaServico(@NotNull final ResultSet resultSet) throws SQLException {
         final VeiculoServico veiculo = new VeiculoServico();
         veiculo.setPlaca(resultSet.getString("PLACA_VEICULO"));
+        veiculo.setIdentificadorFrota(resultSet.getString("IDENTIFICADOR_FROTA"));
         veiculo.setKmAtual(resultSet.getLong("KM_ATUAL_VEICULO"));
         veiculo.setKmAberturaServico(resultSet.getInt("KM_ABERTURA_SERVICO"));
 
@@ -173,6 +175,7 @@ final class ServicoConverter {
         servico.setDataHoraAbertura(resultSet.getObject("DATA_HORA_ABERTURA", LocalDateTime.class));
         servico.setDataHoraFechamento(resultSet.getObject("DATA_HORA_FECHAMENTO", LocalDateTime.class));
         servico.setPlacaVeiculo(resultSet.getString("PLACA_VEICULO"));
+        servico.setIdentificadorFrota(resultSet.getString("IDENTIFICADOR_FROTA"));
         servico.setFechadoAutomaticamenteMovimentacao(resultSet.getBoolean("FECHADO_AUTOMATICAMENTE_MOVIMENTACAO"));
         servico.setFechadoAutomaticamenteIntegracao(resultSet.getBoolean("FECHADO_AUTOMATICAMENTE_INTEGRACAO"));
         final String formaColetaDadosFechamento = resultSet.getString("FORMA_COLETA_DADOS_FECHAMENTO");

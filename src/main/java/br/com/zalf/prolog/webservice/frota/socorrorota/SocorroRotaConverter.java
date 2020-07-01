@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
  */
 public class SocorroRotaConverter {
     private SocorroRotaConverter() {
-        throw new IllegalStateException(VeiculoTransferenciaConverter.class.getSimpleName()
+        throw new IllegalStateException(SocorroRotaConverter.class.getSimpleName()
                 + "cannot be instantiated!");
     }
 

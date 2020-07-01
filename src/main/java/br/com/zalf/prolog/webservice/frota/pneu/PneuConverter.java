@@ -24,7 +24,8 @@ public final class PneuConverter {
 
     @NotNull
     public static Pneu createPneuCompleto(@NotNull final ResultSet rSet,
-                                          @NotNull final PneuTipo pneuTipo) throws SQLException {
+                                          @NotNull final PneuTipo pneuTipo,
+                                          final boolean listagem) throws SQLException {
         final Pneu pneu = pneuTipo.createNew();
         pneu.setCodigo(rSet.getLong("CODIGO"));
         pneu.setCodigoCliente(rSet.getString("CODIGO_CLIENTE"));
@@ -33,6 +34,10 @@ public final class PneuConverter {
         pneu.setValor(rSet.getBigDecimal("VALOR"));
         pneu.setCodUnidadeAlocado(rSet.getLong("COD_UNIDADE_ALOCADO"));
         pneu.setCodRegionalAlocado(rSet.getLong("COD_REGIONAL_ALOCADO"));
+        if(listagem) {
+            pneu.setNomeUnidadeAlocado(rSet.getString("NOME_UNIDADE_ALOCADO"));
+            pneu.setNomeRegionalAlocado(rSet.getString("NOME_REGIONAL_ALOCADO"));
+        }
         pneu.setPneuNovoNuncaRodado(rSet.getBoolean("PNEU_NOVO_NUNCA_RODADO"));
 
         final Marca marcaPneu = new Marca();
@@ -79,6 +84,7 @@ public final class PneuConverter {
         if (pneu instanceof PneuEmUso) {
             final PneuEmUso pneuEmUso = (PneuEmUso) pneu;
             pneuEmUso.setPlaca(rSet.getString("PLACA_APLICADO"));
+            pneuEmUso.setIdentificadorFrota(rSet.getString("IDENTIFICADOR_FROTA"));
             pneuEmUso.setCodVeiculo(rSet.getLong("COD_VEICULO_APLICADO"));
             pneuEmUso.setPosicaoAplicado(rSet.getString("POSICAO_APLICADO_CLIENTE"));
         }
@@ -89,7 +95,7 @@ public final class PneuConverter {
     @NotNull
     public static PneuAnalise createPneuAnaliseCompleto(@NotNull final ResultSet rSet)
             throws SQLException {
-        final PneuAnalise pneuAnalise = (PneuAnalise) createPneuCompleto(rSet, PneuTipo.PNEU_ANALISE);
+        final PneuAnalise pneuAnalise = (PneuAnalise) createPneuCompleto(rSet, PneuTipo.PNEU_ANALISE, false);
         // Seta informações extras do pneu que está em Análise.
         pneuAnalise.setRecapadora(createRecapadoraPneu(rSet));
         pneuAnalise.setCodigoColeta(rSet.getString("COD_COLETA"));

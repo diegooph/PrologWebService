@@ -209,7 +209,7 @@ public final class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             stmt.setString(1, placa);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
-                listPneu.add(PneuConverter.createPneuCompleto(rSet, PneuTipo.PNEU_COMUM));
+                listPneu.add(PneuConverter.createPneuCompleto(rSet, PneuTipo.PNEU_COMUM, false));
             }
         } finally {
             close(conn, stmt, rSet);
@@ -325,15 +325,15 @@ public final class PneuDaoImpl extends DatabaseConnection implements PneuDao {
 
     @NotNull
     @Override
-    public List<Pneu> getPneusByCodUnidadeByStatus(@NotNull final Long codUnidade,
+    public List<Pneu> getPneusByCodUnidadesByStatus(@NotNull final List<Long> codUnidades,
                                                    @NotNull final StatusPneu status) throws Throwable {
-        return internalGetPneus(codUnidade, status.asString());
+        return internalGetPneus(codUnidades, status.asString());
     }
 
     @NotNull
     @Override
-    public List<Pneu> getTodosPneus(@NotNull final Long codUnidade) throws Throwable {
-        return internalGetPneus(codUnidade, "%");
+    public List<Pneu> getTodosPneus(@NotNull final List<Long> codUnidades) throws Throwable {
+        return internalGetPneus(codUnidades, "%");
     }
 
     @NotNull
@@ -433,7 +433,7 @@ public final class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             if (rSet.next()) {
                 final Pneu pneu = PneuConverter.createPneuCompleto(
                         rSet,
-                        StatusPneu.fromString(rSet.getString("STATUS")).toPneuTipo());
+                        StatusPneu.fromString(rSet.getString("STATUS")).toPneuTipo(), false);
                 pneu.setFotosCadastro(getFotosCadastroPneu(codPneu, conn));
                 return pneu;
             } else {
@@ -488,22 +488,23 @@ public final class PneuDaoImpl extends DatabaseConnection implements PneuDao {
     }
 
     @NotNull
-    private List<Pneu> internalGetPneus(@NotNull final Long codUnidade,
+    private List<Pneu> internalGetPneus(@NotNull final List<Long> codUnidades,
                                         @NotNull final String statusString) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_GET_LISTAGEM_PNEUS_BY_STATUS(?, ?);");
-            stmt.setLong(1, codUnidade);
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_GET_LISTAGEM_PNEUS_BY_STATUS(F_COD_UNIDADES := ?," +
+                    " F_STATUS_PNEU := ?);");
+            stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
             stmt.setString(2, statusString);
             rSet = stmt.executeQuery();
             final List<Pneu> pneus = new ArrayList<>();
             while (rSet.next()) {
                 pneus.add(PneuConverter.createPneuCompleto(
                         rSet,
-                        StatusPneu.fromString(rSet.getString("STATUS")).toPneuTipo()));
+                        StatusPneu.fromString(rSet.getString("STATUS")).toPneuTipo(), true));
             }
             return pneus;
         } finally {
