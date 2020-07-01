@@ -15,6 +15,7 @@ public class QtdDiasAfericoesVencidas {
     private final String nomeUnidade;
     @NotNull
     private final String placaVeiculo;
+    private final String identificadorFrota;
     private final boolean podeAferirSulco;
     private final boolean podeAferirPressao;
     @NotNull
@@ -24,12 +25,14 @@ public class QtdDiasAfericoesVencidas {
 
     public QtdDiasAfericoesVencidas(@NotNull final String nomeUnidade,
                                     @NotNull final String placaVeiculo,
+                                    @NotNull final String identificadorFrota,
                                     final boolean podeAferirSulco,
                                     final boolean podeAferirPressao,
                                     @NotNull final Optional<Integer> qtdDiasAfericaoSulcoVencido,
                                     @NotNull final Optional<Integer> qtdDiasAfericaoPressaoVencida) {
         this.nomeUnidade = nomeUnidade;
         this.placaVeiculo = placaVeiculo;
+        this.identificadorFrota = identificadorFrota;
         this.podeAferirSulco = podeAferirSulco;
         this.podeAferirPressao = podeAferirPressao;
         this.qtdDiasAfericaoSulcoVencido = qtdDiasAfericaoSulcoVencido;
@@ -44,6 +47,10 @@ public class QtdDiasAfericoesVencidas {
     @NotNull
     public String getPlacaVeiculo() {
         return placaVeiculo;
+    }
+
+    public String getIdentificadorFrota() {
+        return identificadorFrota;
     }
 
     public boolean isPodeAferirSulco() {

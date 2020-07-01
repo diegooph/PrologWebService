@@ -1,13 +1,12 @@
 package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno;
 
-import br.com.zalf.prolog.webservice.commons.util.ProLogUtils;
+import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.database.DatabaseConnectionProvider;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.MetodoIntegrado;
-import br.com.zalf.prolog.webservice.integracao.PosicaoPneuMapper;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.*;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.error.ProtheusNepomucenoException;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.data.ProtheusNepomucenoRequesterImpl;
@@ -26,6 +25,8 @@ import java.util.stream.Collectors;
  * @author Wellington Moraes (https://github.com/wvinim)
  */
 public final class SistemaProtheusNepomuceno extends Sistema {
+    @NotNull
+    private static final String TAG = SistemaProtheusNepomuceno.class.getSimpleName();
     @NotNull
     private final ProtheusNepomucenoRequesterImpl requester;
 
@@ -51,7 +52,6 @@ public final class SistemaProtheusNepomuceno extends Sistema {
     public void updateTipoVeiculo(@NotNull final TipoVeiculo tipoVeiculo) throws Throwable {
         // Validamos se o codAuxiliar está dentro dos padrões. Uma exception personalizada é lançada caso não estiver
         // de acordo.
-
         validateCodAuxiliar(tipoVeiculo.getCodEmpresa(), tipoVeiculo.getCodigo(), tipoVeiculo.getCodAuxiliar());
         // Usamos o fluxo padrão do Prolog, apenas validamos antes
         getIntegradorProLog().updateTipoVeiculo(tipoVeiculo);
@@ -106,37 +106,30 @@ public final class SistemaProtheusNepomuceno extends Sistema {
         Connection conn = null;
         final DatabaseConnectionProvider connectionProvider = new DatabaseConnectionProvider();
         try {
-            if (ProLogUtils.isDebug()) {
-                // Deixamos apenas cenários mapeados para o teste.
-                codUnidades.remove(5L);
-                codUnidades.remove(103L);
-            }
-
             conn = connectionProvider.provideDatabaseConnection();
+            final SistemaProtheusNepomucenoDaoImpl sistema = new SistemaProtheusNepomucenoDaoImpl();
+            // Podemos ter unidades cadastradas no Prolog que não tem cod_auxiliar, removemos esses casos.
+            final List<Long> codUnidadesMapeadas = sistema.getApenasUnidadesMapeadas(conn, codUnidades);
+            if (codUnidadesMapeadas.isEmpty()) {
+                // Se, das unidades filtradas, nenhuma tiver cod_auxiliar mapeado, retornamos um Cronograma Vazio.
+                // Fazemos isso para não mostrar ao usuário uma tela de erro sempre que ele entrar no Cronograma.
+                return ProtheusNepomucenoConverter.createEmptyCronogramaAfericaoProlog();
+            }
             // Podemos, com toda certeza, utilizar codUnidades.get(0) pois no mínimo teremos uma unidade nesta lista.
             final Long codEmpresa = getIntegradorProLog().getCodEmpresaByCodUnidadeProLog(conn, codUnidades.get(0));
 
-            final SistemaProtheusNepomucenoDaoImpl sistema = new SistemaProtheusNepomucenoDaoImpl();
             final Map<String, InfosUnidadeRestricao> unidadeRestricao =
-                    sistema.getInfosUnidadeRestricao(conn, codUnidades);
+                    sistema.getInfosUnidadeRestricao(conn, codUnidadesMapeadas);
+            // Apenas tipos de veículos que possuem cod_auxiliar estarão nesse Map.
             final Map<String, InfosTipoVeiculoConfiguracaoAfericao> tipoVeiculoConfiguracao =
-                    sistema.getInfosTipoVeiculoConfiguracaoAfericao(conn, codUnidades);
+                    sistema.getInfosTipoVeiculoConfiguracaoAfericao(conn, codUnidadesMapeadas);
 
             final String url = getIntegradorProLog()
                     .getUrl(conn, codEmpresa, getSistemaKey(), MetodoIntegrado.GET_VEICULOS_CRONOGRAMA_AFERICAO);
-            final String codFiliais = sistema.getCodFiliais(conn, codUnidades);
+            final String codFiliais = sistema.getCodFiliais(conn, codUnidadesMapeadas);
             final List<VeiculoListagemProtheusNepomuceno> listagemVeiculos =
                     requester.getListagemVeiculosUnidadesSelecionadas(url, codFiliais);
-
-            if (ProLogUtils.isDebug()) {
-                // Deixamos apenas cenários mapeados para o teste.
-                final List<VeiculoListagemProtheusNepomuceno> remove = listagemVeiculos.stream()
-                        .filter(veiculo ->
-                                !veiculo.getCodEstruturaVeiculo().equals("FA002:M0162")
-                                        && !veiculo.getCodEstruturaVeiculo().equals("FA004:M0685"))
-                        .collect(Collectors.toList());
-                listagemVeiculos.removeAll(remove);
-            }
+            listagemVeiculos.removeIf(VeiculoListagemProtheusNepomuceno::deveRemover);
 
             final List<String> placasNepomuceno = listagemVeiculos.stream()
                     .map(VeiculoListagemProtheusNepomuceno::getPlacaVeiculo)
@@ -149,13 +142,12 @@ public final class SistemaProtheusNepomuceno extends Sistema {
             // Aqui começamos a montar o cronograma
             final Map<String, ModeloPlacasAfericao> modelosEstruturaVeiculo = new HashMap<>();
             final Map<String, List<ModeloPlacasAfericao.PlacaAfericao>> placasEstruturaVeiculo = new HashMap<>();
+            final Set<String> estruturasNaoMapeadas = new HashSet<>();
             for (final VeiculoListagemProtheusNepomuceno veiculo : listagemVeiculos) {
                 if (!tipoVeiculoConfiguracao.containsKey(veiculo.getCodEstruturaVeiculo())) {
-                    throw new ProtheusNepomucenoException(
-                            "Identificamos que a estrutura de veículo (" + veiculo.getCodEstruturaVeiculo() + ") " +
-                                    "não está configurada no Prolog.\n" +
-                                    "Por favor, solicite que esta esta estrutura seja cadastrada no Prolog para " +
-                                    "realizar as aferições.");
+                    // Adicionamos a estrutura não mapeada em uma estrutura para logar no sentry.
+                    estruturasNaoMapeadas.add(veiculo.getCodEstruturaVeiculo());
+                    continue;
                 }
 
                 if (!placasEstruturaVeiculo.containsKey(veiculo.getCodModeloVeiculo())) {
@@ -176,6 +168,14 @@ public final class SistemaProtheusNepomuceno extends Sistema {
                                     placasEstruturaVeiculo.get(veiculo.getCodModeloVeiculo())));
                 }
             }
+
+            // Caso identificarmos alguma estrutura que não está mapeada no Prolog, vamos logar no sentry, sem
+            // quebrar a aplicação. Assim deixamos o usuário aferir o que é mostrado, enquanto os erros de mapeamento
+            // são corrigidos via sistema.
+            if (!estruturasNaoMapeadas.isEmpty()) {
+                Log.m(TAG, "Estruturas não mapeadas: " + estruturasNaoMapeadas);
+            }
+
             return ProtheusNepomucenoConverter.createCronogramaAfericaoProlog(modelosEstruturaVeiculo);
         } finally {
             connectionProvider.closeResources(conn);
@@ -214,7 +214,8 @@ public final class SistemaProtheusNepomuceno extends Sistema {
                                 "Por favor, solicite que esta esta estrutura seja cadastrada no Prolog para " +
                                 "realizar a aferição.");
             }
-            final PosicaoPneuMapper posicaoPneuMapper = new PosicaoPneuMapper(
+            final ProtheusNepomucenoPosicaoPneuMapper posicaoPneuMapper = new ProtheusNepomucenoPosicaoPneuMapper(
+                    veiculoAfericao.getCodEstruturaVeiculo(),
                     sistema.getMapeamentoPosicoesProlog(conn, codEmpresa, veiculoAfericao.getCodEstruturaVeiculo()));
 
             // Garantimos, antes de criar a nova aferição, que todas as posições estão mapeadas. Caso não estiverem,

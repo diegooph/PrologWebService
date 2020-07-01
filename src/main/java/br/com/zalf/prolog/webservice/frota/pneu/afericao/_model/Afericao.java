@@ -3,9 +3,11 @@ package br.com.zalf.prolog.webservice.frota.pneu.afericao._model;
 import br.com.zalf.prolog.webservice.commons.gson.Exclude;
 import br.com.zalf.prolog.webservice.commons.gson.RuntimeTypeAdapterFactory;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.FormaColetaDadosAfericaoEnum;
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.geral.unidade._model.Unidade;
 import org.jetbrains.annotations.NotNull;
+import lombok.Data;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -15,6 +17,7 @@ import java.util.List;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
+@Data
 public abstract class Afericao {
 
     @Exclude
@@ -32,10 +35,7 @@ public abstract class Afericao {
      */
     private long tempoRealizacaoAfericaoInMillis;
     private TipoMedicaoColetadaAfericao tipoMedicaoColetadaAfericao;
-
-    public Afericao(@NotNull final TipoProcessoColetaAfericao tipoProcessoColetaAfericao) {
-        this.tipoProcessoColetaAfericao = tipoProcessoColetaAfericao;
-    }
+    private FormaColetaDadosAfericaoEnum formaColetaDadosAfericao;
 
     @NotNull
     public static RuntimeTypeAdapterFactory<Afericao> provideTypeAdapterFactory() {
@@ -43,59 +43,6 @@ public abstract class Afericao {
                 .of(Afericao.class, "tipoProcessoColetaAfericao")
                 .registerSubtype(AfericaoPlaca.class, TipoProcessoColetaAfericao.PLACA.asString())
                 .registerSubtype(AfericaoAvulsa.class, TipoProcessoColetaAfericao.PNEU_AVULSO.asString());
-    }
-
-    public Colaborador getColaborador() {
-        return colaborador;
-    }
-
-    public void setColaborador(final Colaborador colaborador) {
-        this.colaborador = colaborador;
-    }
-
-    public Long getCodigo() {
-        return codigo;
-    }
-
-    public void setCodigo(final Long codigo) {
-        this.codigo = codigo;
-    }
-
-    public Long getCodUnidade() {
-        return codUnidade;
-    }
-
-    public void setCodUnidade(final Long codUnidade) {
-        this.codUnidade = codUnidade;
-    }
-
-    public LocalDateTime getDataHora() {
-        return dataHora;
-    }
-
-    public void setDataHora(final LocalDateTime dataHora) {
-        this.dataHora = dataHora;
-    }
-
-    public long getTempoRealizacaoAfericaoInMillis() {
-        return tempoRealizacaoAfericaoInMillis;
-    }
-
-    public void setTempoRealizacaoAfericaoInMillis(final long tempoRealizacaoAfericaoInMillis) {
-        this.tempoRealizacaoAfericaoInMillis = tempoRealizacaoAfericaoInMillis;
-    }
-
-    public TipoMedicaoColetadaAfericao getTipoMedicaoColetadaAfericao() {
-        return tipoMedicaoColetadaAfericao;
-    }
-
-    public void setTipoMedicaoColetadaAfericao(final TipoMedicaoColetadaAfericao tipoMedicaoColetadaAfericao) {
-        this.tipoMedicaoColetadaAfericao = tipoMedicaoColetadaAfericao;
-    }
-
-    @NotNull
-    public TipoProcessoColetaAfericao getTipoProcessoColetaAfericao() {
-        return tipoProcessoColetaAfericao;
     }
 
     @NotNull

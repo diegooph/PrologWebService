@@ -2,11 +2,9 @@ Stage
 ==========
 
 ### Refactors
-* Implementa a estrutura de parametrização de fotos na busca de modelos de checklist (PL-2272)
-* Cria uma nova listagem otimizada de checklists realizados, mantendo a compatibilidade (PL-2773)
-* Adiciona a lista de mídias na visualização de checklists realizados (PL-2774)
+* Adiciona possibilidade de listar colaboradores, veículos e pneus por múltiplas unidades (PL-2695)
 
-Change Log
+Stage
 ==========
 
 ### Features
@@ -14,11 +12,67 @@ Change Log
 * Cria método de upload de fotos capturadas no checklist para o S3 (PL-2710)
 * Adiciona possibilidade de parametrização de fotos no check no cadastro e edição de modelos (PL-1504)
 
+
+### Refactors
+* Implementa a estrutura de parametrização de fotos na busca de modelos de checklist (PL-2272)
+* Cria uma nova listagem otimizada de checklists realizados, mantendo a compatibilidade (PL-2773)
+* Adiciona a lista de mídias na visualização de checklists realizados (PL-2774)
+
+Change Log
+==========
+
+<a name="v1.0.33"></a>
+## Version [v1.0.33](https://github.com/luizfp/PrologWebService/compare/v1.0.32...v1.0.33) (release-date) [unreleased]
+
+## Refactors
+* Adiciona identificador frota nos objetos de serviços de pneus (PL-2761)
+* Adiciona identificador frota nos objetos de aferição de pneus (PL-2760)
+* Adiciona identificador frota no objeto PneuEmUso (PL-2760)
+
+<a name="v1.0.32"></a>
+## Version [v1.0.32](https://github.com/luizfp/PrologWebService/compare/v1.0.31...v1.0.32) (2020-06-10)
+
+## Refactors
+* Atualiza uso da tabela 'afericao_configuracao_tipo_afericao_veiculo' na integração Nepomuceno (PLI-149)
+* Configura modelos de veículos não utilizados da Nepomuceno (PLI-164)
+
+<a name="v1.0.31"></a>
+## Version [v1.0.31](https://github.com/luizfp/PrologWebService/compare/v1.0.30...v1.0.31) (2020-06-03)
+
+### Features
+* Cria relatório de CPK por marca, modelo e dimensão de pneu (PL-2699)
+* Cria relatório de km rodado por vida de forma colunada (PL-2598)
+* Altera path de relatório de km rodado por vida em linhas (PL-2598)
+* Remove FKs de import de veículo e pneu (PL-2711)
+* Permite parametrização de aferições e fechamento de serviço manuais, com equipamentos ou ambos (PL-2689)
+* Permite salvar forma de coleta de dados da aferição (PL-2686)
+* Permite salvar forma de coleta de dados no fechamento de serviços (PL-2714)
+* Busca a forma de coleta dos dados para os serviços fechados (PL-2715)
+* Adiciona número de frota ao veículo (PL-827)
+* Adiciona número de frota ao import de veículo (PL-827)
+
+## Refactors
+* Refatora objetos que utilizam booleans podeAferirSulco, Pressao e SulcoPressao para não utilizar ou serem adaptados (PL-2689)
+* Refatora relatórios e objetos de aferição para retornar também a forma de coleta dos dados (PL-2684)
+* Altera vida máxima no cadastro/edição de pneu para 11
+
+### Bug Fixes
+* Corrige busca de modelos de quizzes para realização
+* Corrige mensagem de erro ao tentar iniciar uma nova aferição de placa ou avulsa
+
 <a name="v1.0.30"></a>
-## Version [v1.0.30](https://github.com/luizfp/PrologWebService/compare/v1.0.29...v1.0.30) (release-date) [unreleased]
+## Version [v1.0.30](https://github.com/luizfp/PrologWebService/compare/v1.0.29...v1.0.30) (2020-05-19)
+
+### Features
+* Cria estrutura de mapeamento de posições no Prolog (PLI-142)
+* Cria flag nas integrações para ligar/desligar integrações (PLI-72)
+* Cria método genérico de busca de Aferições Realizadas (AVACON) (PLI-144)
+* Adiciona validação de unidades integradas no Sistema Globus Piccolotur (PLI-151)
 
 ### Refactors
 * Melhora mensanges de retorno ao ativar/inativar um veículo
+* Valida CPF nos processos de transferência integrados (PLI-147)
+* Valida CPF nos processos de fechamento de OS integrados (PLI-153)
 
 ### Bugfix
 * Corrige problema de parse de data na sincronia de checklist (PLI-146)

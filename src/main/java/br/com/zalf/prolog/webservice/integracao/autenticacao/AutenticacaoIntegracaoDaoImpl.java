@@ -37,4 +37,26 @@ public class AutenticacaoIntegracaoDaoImpl extends DatabaseConnection implements
             close(conn, stmt, rSet);
         }
     }
+
+    @Override
+    public boolean verifyIfTokenIsActive(@NotNull final String tokenIntegracao) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT ATIVO FROM INTEGRACAO.TOKEN_INTEGRACAO TI " +
+                    "WHERE TI.TOKEN_INTEGRACAO = ?");
+            stmt.setString(1, tokenIntegracao);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return rSet.getBoolean("ATIVO");
+            } else {
+                throw new SQLException(
+                        "Não foi possível verificar se o token de integração está ativo");
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
 }

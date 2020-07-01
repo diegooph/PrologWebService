@@ -109,9 +109,9 @@ public final class ApiPneuDaoImpl extends DatabaseConnection implements ApiPneuD
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM INTEGRACAO.FUNC_PNEU_VALIDA_POSICOES_SISTEMA_PARCEIRO(" +
-                    "F_COD_DIAGRAMA => ?, F_POSICOES_PARCEIRO => ?, F_POSICOES_PROLOG => ?)");
+                    "F_COD_TIPO_VEICULO => ?, F_POSICOES_PARCEIRO => ?, F_POSICOES_PROLOG => ?)");
             for (final DiagramaPosicaoMapeado diagramaPosicaoMapeado : diagramasPosicoes) {
-                final int codDiagrama = diagramaPosicaoMapeado.getCodDiagrama();
+                final int codTipoVeiculo = diagramaPosicaoMapeado.getCodTipoVeiculo();
                 try {
                     final List<String> posicoesParceiro =
                             diagramaPosicaoMapeado.getPosicoesMapeadas()
@@ -123,22 +123,22 @@ public final class ApiPneuDaoImpl extends DatabaseConnection implements ApiPneuD
                                     .stream()
                                     .map(PosicaoPneuMepado::getPosicaoProLog)
                                     .collect(Collectors.toList());
-                    stmt.setInt(1, codDiagrama);
+                    stmt.setInt(1, codTipoVeiculo);
                     stmt.setArray(2, PostgresUtils.listToArray(conn, SqlType.TEXT, posicoesParceiro));
                     stmt.setArray(3, PostgresUtils.listToArray(conn, SqlType.BIGINT, posicoesProLog));
                     rSet = stmt.executeQuery();
                     if (rSet.next()) {
                         posicaoPneuMepadoResponse.add(
-                                PosicaoPneuMepadoResponse.ok(codDiagrama));
+                                PosicaoPneuMepadoResponse.ok(codTipoVeiculo));
                     }
                 } catch (final PSQLException sqlError) {
                     posicaoPneuMepadoResponse.add(
                             PosicaoPneuMepadoResponse.error(
-                                    codDiagrama,
+                                    codTipoVeiculo,
                                     PostgresUtils.getPSQLErrorMessage(sqlError, GENERIC_ERROR_MESSAGE)));
                 } catch (final Throwable throwable) {
                     posicaoPneuMepadoResponse.add(
-                            PosicaoPneuMepadoResponse.error(codDiagrama, GENERIC_ERROR_MESSAGE, throwable));
+                            PosicaoPneuMepadoResponse.error(codTipoVeiculo, GENERIC_ERROR_MESSAGE, throwable));
                 }
             }
             return posicaoPneuMepadoResponse;

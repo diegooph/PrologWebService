@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.pneu.afericao._model;
 
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.FormaColetaDadosAfericaoEnum;
+
 import java.util.List;
 
 /**
@@ -21,7 +23,7 @@ public class CronogramaAfericao {
         return modelosPlacasAfericao;
     }
 
-    public void setModelosPlacasAfericao(List<ModeloPlacasAfericao> modelosPlacasAfericao) {
+    public void setModelosPlacasAfericao(final List<ModeloPlacasAfericao> modelosPlacasAfericao) {
         this.modelosPlacasAfericao = modelosPlacasAfericao;
     }
 
@@ -29,7 +31,7 @@ public class CronogramaAfericao {
         return metaAfericaoSulco;
     }
 
-    public void setMetaAfericaoSulco(int metaAfericaoSulco) {
+    public void setMetaAfericaoSulco(final int metaAfericaoSulco) {
         this.metaAfericaoSulco = metaAfericaoSulco;
     }
 
@@ -37,7 +39,7 @@ public class CronogramaAfericao {
         return metaAfericaoPressao;
     }
 
-    public void setMetaAfericaoPressao(int metaAfericaoPressao) {
+    public void setMetaAfericaoPressao(final int metaAfericaoPressao) {
         this.metaAfericaoPressao = metaAfericaoPressao;
     }
 
@@ -45,7 +47,7 @@ public class CronogramaAfericao {
         return totalSulcosOk;
     }
 
-    public void setTotalSulcosOk(int totalSulcosOk) {
+    public void setTotalSulcosOk(final int totalSulcosOk) {
         this.totalSulcosOk = totalSulcosOk;
     }
 
@@ -53,7 +55,7 @@ public class CronogramaAfericao {
         return totalPressaoOk;
     }
 
-    public void setTotalPressaoOk(int totalPressaoOk) {
+    public void setTotalPressaoOk(final int totalPressaoOk) {
         this.totalPressaoOk = totalPressaoOk;
     }
 
@@ -61,7 +63,7 @@ public class CronogramaAfericao {
         return totalSulcoPressaoOk;
     }
 
-    public void setTotalSulcoPressaoOk(int totalSulcoPressaoOk) {
+    public void setTotalSulcoPressaoOk(final int totalSulcoPressaoOk) {
         this.totalSulcoPressaoOk = totalSulcoPressaoOk;
     }
 
@@ -69,7 +71,7 @@ public class CronogramaAfericao {
         return totalVeiculos;
     }
 
-    public void setTotalVeiculos(int totalVeiculos) {
+    public void setTotalVeiculos(final int totalVeiculos) {
         this.totalVeiculos = totalVeiculos;
     }
 
@@ -134,14 +136,14 @@ public class CronogramaAfericao {
         setTotalVeiculos(totalVeiculos);
     }
 
-    private boolean isAfericaoPressaoOk(ModeloPlacasAfericao.PlacaAfericao placaAfericao,
+    private boolean isAfericaoPressaoOk(final ModeloPlacasAfericao.PlacaAfericao placaAfericao,
                                         final boolean useMetaAfericaoFromPlaca) {
         final int metaAfericao = useMetaAfericaoFromPlaca ? placaAfericao.getMetaAfericaoPressao() : metaAfericaoPressao;
         return placaAfericao.getIntervaloUltimaAfericaoPressao() <= metaAfericao
                 && placaAfericao.getIntervaloUltimaAfericaoPressao() != ModeloPlacasAfericao.PlacaAfericao.INTERVALO_INVALIDO;
     }
 
-    private boolean isAfericaoSulcoOk(ModeloPlacasAfericao.PlacaAfericao placaAfericao,
+    private boolean isAfericaoSulcoOk(final ModeloPlacasAfericao.PlacaAfericao placaAfericao,
                                       final boolean useMetaAfericaoFromPlaca) {
         final int metaAfericao = useMetaAfericaoFromPlaca ? placaAfericao.getMetaAfericaoSulco() : metaAfericaoSulco;
         return placaAfericao.getIntervaloUltimaAfericaoSulco() <= metaAfericao
@@ -155,9 +157,9 @@ public class CronogramaAfericao {
                         .removeIf(p ->
                                 // Se não pode aferir nem SULCO nem PRESSAO e nem SULCO_PRESSAO, removemos essa placa
                                 // da listagem.
-                                !p.isPodeAferirPressao()
-                                        && !p.isPodeAferirSulco()
-                                        && !p.isPodeAferirSulcoPressao()));
+                                p.getFormaColetaDadosPressao() == FormaColetaDadosAfericaoEnum.BLOQUEADO
+                                        && p.getFormaColetaDadosSulco() == FormaColetaDadosAfericaoEnum.BLOQUEADO
+                                        && p.getFormaColetaDadosSulcoPressao() == FormaColetaDadosAfericaoEnum.BLOQUEADO));
     }
 
     public void removerModelosSemPlacas() {

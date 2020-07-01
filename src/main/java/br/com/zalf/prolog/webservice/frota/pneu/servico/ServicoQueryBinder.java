@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.pneu.servico;
 
 import br.com.zalf.prolog.webservice.TimeZoneManager;
+import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.ServicoCalibragem;
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.ServicoInspecao;
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.ServicoMovimentacao;
@@ -9,7 +10,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.time.OffsetDateTime;
@@ -41,8 +41,10 @@ final class ServicoQueryBinder {
             + "AM.PSI_APOS_CONSERTO AS PRESSAO_COLETADA_FECHAMENTO, "
             + "AM.FECHADO_AUTOMATICAMENTE_MOVIMENTACAO, "
             + "AM.FECHADO_AUTOMATICAMENTE_INTEGRACAO, "
+            + "AM.FORMA_COLETA_DADOS_FECHAMENTO, "
             + "A.DATA_HORA AT TIME ZONE (SELECT FUNC_GET_TIME_ZONE_UNIDADE(AM.COD_UNIDADE)) AS DATA_HORA_ABERTURA, "
             + "A.PLACA_VEICULO AS PLACA_VEICULO, "
+            + "V.IDENTIFICADOR_FROTA AS IDENTIFICADOR_FROTA, "
             + "A.CODIGO AS COD_AFERICAO, "
             + "A.CODIGO AS COD_AFERICAO, "
             + "AV.COD_PNEU AS COD_PNEU_PROBLEMA, "
@@ -60,6 +62,7 @@ final class ServicoQueryBinder {
             + "LEFT JOIN COLABORADOR C ON AM.CPF_MECANICO = C.CPF "
             + "JOIN PNEU P ON AM.COD_PNEU = P.CODIGO "
             + "JOIN AFERICAO A ON A.CODIGO = AM.COD_AFERICAO "
+            + "JOIN VEICULO V ON V.PLACA = A.PLACA_VEICULO "
             + "JOIN AFERICAO_VALORES AV ON AV.COD_AFERICAO = AM.COD_AFERICAO AND AV.COD_PNEU = AM.COD_PNEU "
             + "JOIN UNIDADE U ON U.CODIGO = AM.COD_UNIDADE ";
 
@@ -71,18 +74,21 @@ final class ServicoQueryBinder {
     static PreparedStatement getQuantidadeServicosAbertosVeiculo(@NotNull final Connection connection,
                                                                  @NotNull final Long codUnidade) throws SQLException {
         final PreparedStatement stmt = connection.prepareStatement("SELECT " +
-                "  A.PLACA_VEICULO, " +
+                "  A.PLACA_VEICULO," +
+                "  V.IDENTIFICADOR_FROTA, " +
                 "  SUM(CASE WHEN AM.TIPO_SERVICO = ? THEN 1 ELSE 0 END) AS TOTAL_CALIBRAGENS, " +
                 "  SUM(CASE WHEN AM.TIPO_SERVICO = ? THEN 1 ELSE 0 END) AS TOTAL_INSPECOES, " +
                 "  SUM(CASE WHEN AM.TIPO_SERVICO = ? THEN 1 ELSE 0 END) AS TOTAL_MOVIMENTACOES " +
                 "FROM AFERICAO_MANUTENCAO AS AM " +
                 "  JOIN AFERICAO AS A " +
                 "    ON A.CODIGO = AM.COD_AFERICAO " +
+                "  JOIN VEICULO V" +
+                "    ON V.PLACA = A.PLACA_VEICULO"+
                 "  JOIN VEICULO_PNEU AS VP " +
                 "    ON AM.COD_PNEU = VP.COD_PNEU AND AM.COD_UNIDADE = VP.COD_UNIDADE " +
                 "WHERE AM.COD_UNIDADE = ? " +
                 "      AND AM.DATA_HORA_RESOLUCAO IS NULL " +
-                "GROUP BY A.PLACA_VEICULO " +
+                "GROUP BY A.PLACA_VEICULO, V.IDENTIFICADOR_FROTA " +
                 "ORDER BY TOTAL_CALIBRAGENS DESC, TOTAL_INSPECOES DESC, TOTAL_MOVIMENTACOES DESC;");
         stmt.setString(1, TipoServico.CALIBRAGEM.asString());
         stmt.setString(2, TipoServico.INSPECAO.asString());
@@ -121,18 +127,15 @@ final class ServicoQueryBinder {
                 "  JOIN PNEU P ON AM.COD_PNEU = P.CODIGO " +
                 "WHERE AM.COD_UNIDADE = ? " +
                 "      AND AM.DATA_HORA_RESOLUCAO IS NOT NULL " +
-                "      AND AM.DATA_HORA_RESOLUCAO::DATE BETWEEN (? AT TIME ZONE ?) AND (? AT TIME ZONE ?) " +
+                "      AND (AM.DATA_HORA_RESOLUCAO AT TIME ZONE TZ_UNIDADE(AM.COD_UNIDADE))::DATE BETWEEN ? AND ? " +
                 "GROUP BY P.CODIGO_CLIENTE, AM.COD_PNEU " +
                 "ORDER BY TOTAL_CALIBRAGENS DESC, TOTAL_INSPECOES DESC, TOTAL_MOVIMENTACOES DESC;");
-        final String zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, connection).getId();
         stmt.setString(1, TipoServico.CALIBRAGEM.asString());
         stmt.setString(2, TipoServico.INSPECAO.asString());
         stmt.setString(3, TipoServico.MOVIMENTACAO.asString());
         stmt.setLong(4, codUnidade);
-        stmt.setDate(5, new java.sql.Date(dataInicial));
-        stmt.setString(6, zoneId);
-        stmt.setDate(7, new java.sql.Date(dataFinal));
-        stmt.setString(8, zoneId);
+        stmt.setObject(5, DateUtils.toLocalDate(new java.sql.Date(dataInicial)));
+        stmt.setObject(6, DateUtils.toLocalDate(new java.sql.Date(dataFinal)));
         return stmt;
     }
 
@@ -141,27 +144,26 @@ final class ServicoQueryBinder {
                                                                   @NotNull final Long codUnidade,
                                                                   final long dataInicial,
                                                                   final long dataFinal) throws SQLException {
-        final PreparedStatement stmt = connection.prepareStatement("SELECT " +
-                "  A.PLACA_VEICULO, " +
-                "  SUM(CASE WHEN AM.TIPO_SERVICO = ? THEN 1 ELSE 0 END) AS TOTAL_CALIBRAGENS, " +
-                "  SUM(CASE WHEN AM.TIPO_SERVICO = ? THEN 1 ELSE 0 END) AS TOTAL_INSPECOES, " +
-                "  SUM(CASE WHEN AM.TIPO_SERVICO = ? THEN 1 ELSE 0 END) AS TOTAL_MOVIMENTACOES " +
-                "FROM AFERICAO_MANUTENCAO AM " +
-                "  JOIN AFERICAO A ON A.CODIGO = AM.COD_AFERICAO " +
-                "WHERE AM.COD_UNIDADE = ?" +
-                "      AND AM.DATA_HORA_RESOLUCAO IS NOT NULL " +
-                "      AND AM.DATA_HORA_RESOLUCAO::DATE BETWEEN (? AT TIME ZONE ?) AND (? AT TIME ZONE ?) " +
-                "GROUP BY A.PLACA_VEICULO " +
-                "ORDER BY TOTAL_CALIBRAGENS DESC, TOTAL_INSPECOES DESC, TOTAL_MOVIMENTACOES DESC;");
-        final String zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, connection).getId();
+        final PreparedStatement stmt = connection.prepareStatement("SELECT" +
+                "  A.PLACA_VEICULO," +
+                "  V.IDENTIFICADOR_FROTA," +
+                "  SUM(CASE WHEN AM.TIPO_SERVICO = ? THEN 1 ELSE 0 END) AS TOTAL_CALIBRAGENS," +
+                "  SUM(CASE WHEN AM.TIPO_SERVICO = ? THEN 1 ELSE 0 END) AS TOTAL_INSPECOES," +
+                "  SUM(CASE WHEN AM.TIPO_SERVICO = ? THEN 1 ELSE 0 END) AS TOTAL_MOVIMENTACOES" +
+                " FROM AFERICAO_MANUTENCAO AM  " +
+                "  JOIN AFERICAO A ON A.CODIGO = AM.COD_AFERICAO" +
+                "  JOIN VEICULO V ON A.PLACA_VEICULO = V.PLACA" +
+                " WHERE AM.COD_UNIDADE = ?" +
+                "      AND AM.DATA_HORA_RESOLUCAO IS NOT NULL  " +
+                "      AND (AM.DATA_HORA_RESOLUCAO AT TIME ZONE TZ_UNIDADE(AM.COD_UNIDADE))::DATE BETWEEN ? AND ?" +
+                " GROUP BY A.PLACA_VEICULO, V.IDENTIFICADOR_FROTA" +
+                " ORDER BY TOTAL_CALIBRAGENS DESC, TOTAL_INSPECOES DESC, TOTAL_MOVIMENTACOES DESC;");
         stmt.setString(1, TipoServico.CALIBRAGEM.asString());
         stmt.setString(2, TipoServico.INSPECAO.asString());
         stmt.setString(3, TipoServico.MOVIMENTACAO.asString());
         stmt.setLong(4, codUnidade);
-        stmt.setDate(5, new java.sql.Date(dataInicial));
-        stmt.setString(6, zoneId);
-        stmt.setDate(7, new java.sql.Date(dataFinal));
-        stmt.setString(8, zoneId);
+        stmt.setObject(5, DateUtils.toLocalDate(new java.sql.Date(dataInicial)));
+        stmt.setObject(6, DateUtils.toLocalDate(new java.sql.Date(dataFinal)));
         return stmt;
     }
 
@@ -182,6 +184,7 @@ final class ServicoQueryBinder {
                 "   AM.COD_ALTERNATIVA AS COD_ALTERNATIVA_SELECIONADA, " +
                 "   AM.FECHADO_AUTOMATICAMENTE_MOVIMENTACAO, " +
                 "   AM.FECHADO_AUTOMATICAMENTE_INTEGRACAO, " +
+                "   AM.FORMA_COLETA_DADOS_FECHAMENTO, " +
                 "   AAMI.ALTERNATIVA AS DESCRICAO_ALTERNATIVA_SELECIONADA, " +
                 "   M.COD_PNEU AS COD_PNEU_NOVO, " +
                 "   PNEU_NOVO.CODIGO_CLIENTE AS COD_PNEU_NOVO_CLIENTE, " +
@@ -192,6 +195,7 @@ final class ServicoQueryBinder {
                 "   M.VIDA AS VIDA_PNEU_NOVO, " +
                 "   A.DATA_HORA AT TIME ZONE ? AS DATA_HORA_ABERTURA, " +
                 "   A.PLACA_VEICULO AS PLACA_VEICULO, " +
+                "   V.IDENTIFICADOR_FROTA AS IDENTIFICADOR_FROTA, " +
                 "   A.CODIGO AS COD_AFERICAO, " +
                 "   C.NOME AS NOME_RESPONSAVEL_FECHAMENTO, " +
                 "   AV.COD_PNEU AS COD_PNEU_PROBLEMA, " +
@@ -206,6 +210,7 @@ final class ServicoQueryBinder {
                 "   PNEU_PROBLEMA.PRESSAO_RECOMENDADA " +
                 "   FROM AFERICAO_MANUTENCAO AM " +
                 "   JOIN AFERICAO A ON A.CODIGO = AM.COD_AFERICAO " +
+                "   JOIN VEICULO V ON V.PLACA = A.PLACA_VEICULO " +
                 "   JOIN AFERICAO_VALORES AV ON AV.COD_AFERICAO = AM.COD_AFERICAO AND AV.COD_PNEU = AM.COD_PNEU " +
                 "   JOIN UNIDADE U ON U.CODIGO = AM.COD_UNIDADE " +
                 "   JOIN PNEU PNEU_PROBLEMA ON AM.COD_PNEU = PNEU_PROBLEMA.CODIGO " +
@@ -231,14 +236,11 @@ final class ServicoQueryBinder {
         final PreparedStatement stmt = connection.prepareStatement(BASE_QUERY_BUSCA_SERVICOS
                 + "WHERE AM.COD_UNIDADE = ? "
                 + "AND AM.DATA_HORA_RESOLUCAO IS NOT NULL "
-                + "AND AM.DATA_HORA_RESOLUCAO::DATE BETWEEN (? AT TIME ZONE ?) AND (? AT TIME ZONE ?) "
+                + "AND (AM.DATA_HORA_RESOLUCAO AT TIME ZONE TZ_UNIDADE(AM.COD_UNIDADE))::DATE BETWEEN ? AND ? "
                 + "ORDER BY DATA_HORA_RESOLUCAO DESC;");
-        final String zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, connection).getId();
         stmt.setLong(1, codUnidade);
-        stmt.setDate(2, new Date(dataInicial));
-        stmt.setString(3, zoneId);
-        stmt.setDate(4, new Date(dataFinal));
-        stmt.setString(5, zoneId);
+        stmt.setObject(2, DateUtils.toLocalDate(new java.sql.Date(dataInicial)));
+        stmt.setObject(3, DateUtils.toLocalDate(new java.sql.Date(dataFinal)));
         return stmt;
     }
 
@@ -252,15 +254,12 @@ final class ServicoQueryBinder {
                 + "WHERE AM.COD_UNIDADE = ? "
                 + "AND AM.COD_PNEU = ? "
                 + "AND AM.DATA_HORA_RESOLUCAO IS NOT NULL "
-                + "AND AM.DATA_HORA_RESOLUCAO::DATE BETWEEN (? AT TIME ZONE ?) AND (? AT TIME ZONE ?) "
+                + "AND (AM.DATA_HORA_RESOLUCAO AT TIME ZONE TZ_UNIDADE(AM.COD_UNIDADE))::DATE BETWEEN ? AND ? "
                 + "ORDER BY DATA_HORA_RESOLUCAO DESC;");
-        final String zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, connection).getId();
         stmt.setLong(1, codUnidade);
         stmt.setLong(2, codPneu);
-        stmt.setDate(3, new Date(dataInicial));
-        stmt.setString(4, zoneId);
-        stmt.setDate(5, new Date(dataFinal));
-        stmt.setString(6, zoneId);
+        stmt.setObject(3, DateUtils.toLocalDate(new java.sql.Date(dataInicial)));
+        stmt.setObject(4, DateUtils.toLocalDate(new java.sql.Date(dataFinal)));
         return stmt;
     }
 
@@ -274,15 +273,12 @@ final class ServicoQueryBinder {
                 + "WHERE AM.COD_UNIDADE = ? "
                 + "AND A.PLACA_VEICULO = ? "
                 + "AND AM.DATA_HORA_RESOLUCAO IS NOT NULL "
-                + "AND AM.DATA_HORA_RESOLUCAO::DATE BETWEEN (? AT TIME ZONE ?) AND (? AT TIME ZONE ?) "
+                + "AND (AM.DATA_HORA_RESOLUCAO AT TIME ZONE TZ_UNIDADE(AM.COD_UNIDADE))::DATE BETWEEN ? AND ? "
                 + "ORDER BY DATA_HORA_RESOLUCAO DESC;");
-        final String zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, connection).getId();
         stmt.setLong(1, codUnidade);
         stmt.setString(2, placaVeiculo);
-        stmt.setDate(3, new Date(dataInicial));
-        stmt.setString(4, zoneId);
-        stmt.setDate(5, new Date(dataFinal));
-        stmt.setString(6, zoneId);
+        stmt.setObject(3, DateUtils.toLocalDate(new java.sql.Date(dataInicial)));
+        stmt.setObject(4, DateUtils.toLocalDate(new java.sql.Date(dataFinal)));
         return stmt;
     }
 
@@ -292,6 +288,7 @@ final class ServicoQueryBinder {
                                                        @NotNull final String placaVeiculo) throws SQLException {
         final PreparedStatement stmt = connection.prepareStatement("SELECT " +
                 "  A.PLACA_VEICULO, " +
+                "  V.IDENTIFICADOR_FROTA, " +
                 "  A.KM_VEICULO AS KM_ABERTURA_SERVICO, " +
                 "  AV.COD_PNEU AS COD_PNEU, " +
                 "  P.CODIGO_CLIENTE AS COD_PNEU_CLIENTE, " +
@@ -335,7 +332,8 @@ final class ServicoQueryBinder {
                 + "CPF_MECANICO = ?, "
                 + "PSI_APOS_CONSERTO = ?, "
                 + "KM_MOMENTO_CONSERTO = ?, "
-                + "TEMPO_REALIZACAO_MILLIS = ? "
+                + "TEMPO_REALIZACAO_MILLIS = ?, "
+                + "FORMA_COLETA_DADOS_FECHAMENTO = ? "
                 + "WHERE CODIGO = ? "
                 + "AND TIPO_SERVICO = ? "
                 + "AND DATA_HORA_RESOLUCAO IS NULL;");
@@ -344,8 +342,9 @@ final class ServicoQueryBinder {
         stmt.setDouble(3, servico.getPressaoColetadaFechamento());
         stmt.setLong(4, servico.getKmVeiculoMomentoFechamento());
         stmt.setLong(5, servico.getTempoRealizacaoServicoInMillis());
-        stmt.setLong(6, servico.getCodigo());
-        stmt.setString(7, servico.getTipoServico().asString());
+        stmt.setString(6, servico.getFormaColetaDadosFechamentoAsStringOrEquipamentoIfNull());
+        stmt.setLong(7, servico.getCodigo());
+        stmt.setString(8, servico.getTipoServico().asString());
         return stmt;
     }
 
@@ -359,7 +358,8 @@ final class ServicoQueryBinder {
                 + "PSI_APOS_CONSERTO = ?, "
                 + "KM_MOMENTO_CONSERTO = ?, "
                 + "COD_ALTERNATIVA = ?, "
-                + "TEMPO_REALIZACAO_MILLIS = ? "
+                + "TEMPO_REALIZACAO_MILLIS = ?, "
+                + "FORMA_COLETA_DADOS_FECHAMENTO = ? "
                 + "WHERE CODIGO = ? "
                 + "AND TIPO_SERVICO = ? "
                 + "AND DATA_HORA_RESOLUCAO IS NULL;");
@@ -369,8 +369,9 @@ final class ServicoQueryBinder {
         stmt.setLong(4, servico.getKmVeiculoMomentoFechamento());
         stmt.setLong(5, servico.getAlternativaSelecionada().codigo);
         stmt.setLong(6, servico.getTempoRealizacaoServicoInMillis());
-        stmt.setLong(7, servico.getCodigo());
-        stmt.setString(8, servico.getTipoServico().asString());
+        stmt.setString(7, servico.getFormaColetaDadosFechamentoAsStringOrEquipamentoIfNull());
+        stmt.setLong(8, servico.getCodigo());
+        stmt.setString(9, servico.getTipoServico().asString());
         return stmt;
     }
 
@@ -385,7 +386,8 @@ final class ServicoQueryBinder {
                 + "COD_PROCESSO_MOVIMENTACAO = ?, "
                 + "PSI_APOS_CONSERTO = ?, "
                 + "TEMPO_REALIZACAO_MILLIS = ?, "
-                + "COD_PNEU_INSERIDO = ? "
+                + "COD_PNEU_INSERIDO = ?, "
+                + "FORMA_COLETA_DADOS_FECHAMENTO = ? "
                 + "WHERE CODIGO = ? "
                 + "AND TIPO_SERVICO = ? "
                 + "AND DATA_HORA_RESOLUCAO IS NULL;");
@@ -397,8 +399,9 @@ final class ServicoQueryBinder {
         stmt.setDouble(5, servico.getPressaoColetadaFechamento());
         stmt.setLong(6, servico.getTempoRealizacaoServicoInMillis());
         stmt.setLong(7, servico.getPneuNovo().getCodigo());
-        stmt.setLong(8, servico.getCodigo());
-        stmt.setString(9, servico.getTipoServico().asString());
+        stmt.setString(8, servico.getFormaColetaDadosFechamentoAsStringOrEquipamentoIfNull());
+        stmt.setLong(9, servico.getCodigo());
+        stmt.setString(10, servico.getTipoServico().asString());
         return stmt;
     }
 

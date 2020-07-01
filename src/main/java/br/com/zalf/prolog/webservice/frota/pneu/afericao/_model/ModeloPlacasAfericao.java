@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.pneu.afericao._model;
 
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.FormaColetaDadosAfericaoEnum;
+
 import java.util.List;
 
 /**
@@ -22,7 +24,7 @@ public class ModeloPlacasAfericao {
         return nomeModelo;
     }
 
-    public void setNomeModelo(String nomeModelo) {
+    public void setNomeModelo(final String nomeModelo) {
         this.nomeModelo = nomeModelo;
     }
 
@@ -30,7 +32,7 @@ public class ModeloPlacasAfericao {
         return placasAfericao;
     }
 
-    public void setPlacasAfericao(List<PlacaAfericao> placaAfericaos) {
+    public void setPlacasAfericao(final List<PlacaAfericao> placaAfericaos) {
         this.placasAfericao = placaAfericaos;
     }
 
@@ -38,7 +40,7 @@ public class ModeloPlacasAfericao {
         return qtdModeloSulcoOk;
     }
 
-    public void setQtdModeloSulcoOk(int qtdModeloSulcoOk) {
+    public void setQtdModeloSulcoOk(final int qtdModeloSulcoOk) {
         this.qtdModeloSulcoOk = qtdModeloSulcoOk;
     }
 
@@ -46,7 +48,7 @@ public class ModeloPlacasAfericao {
         return qtdModeloPressaoOk;
     }
 
-    public void setQtdModeloPressaoOk(int qtdModeloPressaoOk) {
+    public void setQtdModeloPressaoOk(final int qtdModeloPressaoOk) {
         this.qtdModeloPressaoOk = qtdModeloPressaoOk;
     }
 
@@ -54,7 +56,7 @@ public class ModeloPlacasAfericao {
         return qtdModeloSulcoPressaoOk;
     }
 
-    public void setQtdModeloSulcoPressaoOk(int qtdModeloSulcoPressaoOk) {
+    public void setQtdModeloSulcoPressaoOk(final int qtdModeloSulcoPressaoOk) {
         this.qtdModeloSulcoPressaoOk = qtdModeloSulcoPressaoOk;
     }
 
@@ -62,7 +64,7 @@ public class ModeloPlacasAfericao {
         return totalVeiculosModelo;
     }
 
-    public void setTotalVeiculosModelo(int totalVieculosModelo) {
+    public void setTotalVeiculosModelo(final int totalVieculosModelo) {
         this.totalVeiculosModelo = totalVieculosModelo;
     }
 
@@ -90,6 +92,7 @@ public class ModeloPlacasAfericao {
          * Indentificar do veículo.
          */
         private String placa;
+        private String identificadorFrota;
 
         /**
          * Código da unidade a qual a placa está vinculada.
@@ -112,19 +115,43 @@ public class ModeloPlacasAfericao {
         private int quantidadePneus;
 
         /**
+         * Forma de coleta do sulco
+         */
+        private FormaColetaDadosAfericaoEnum formaColetaDadosSulco;
+
+        /**
+         * @deprecated Agora deve ser utilizado o Enum formaColetaDadosSulco.
+         * Este atributo foi mantido para permitir o funcionamento de apps antigos.
          * Indica se a {@link #placa} permite aferição do tipo {@link TipoMedicaoColetadaAfericao#SULCO}.
          */
+        @Deprecated
         private boolean podeAferirSulco;
 
         /**
+         * Forma de coleta do pressão
+         */
+        private FormaColetaDadosAfericaoEnum formaColetaDadosPressao;
+
+        /**
+         * @deprecated Agora deve ser utilizado o Enum formaColetaDadosPressao.
+         * Este atributo foi mantido para permitir o funcionamento de apps antigos.
          * Indica se a {@link #placa} permite aferição do tipo {@link TipoMedicaoColetadaAfericao#PRESSAO}.
          */
+        @Deprecated
         private boolean podeAferirPressao;
 
         /**
+         * Forma de coleta do sulco e pressão
+         */
+        private FormaColetaDadosAfericaoEnum formaColetaDadosSulcoPressao;
+
+        /**
+         * @deprecated Agora deve ser utilizado o Enum formaColetaDadosSulcoPressao.
+         * Este atributo foi mantido para permitir o funcionamento de apps antigos.
          * Indica se a {@link #placa} permite aferição do tipo {@link TipoMedicaoColetadaAfericao#SULCO} e
          * do tipo {@link TipoMedicaoColetadaAfericao#PRESSAO}.
          */
+        @Deprecated
         private boolean podeAferirSulcoPressao;
 
         /**
@@ -142,12 +169,50 @@ public class ModeloPlacasAfericao {
          */
         private int metaAfericaoPressao;
 
+        public PlacaAfericao() {
+        }
+
+        public FormaColetaDadosAfericaoEnum getFormaColetaDadosSulco() {
+            return formaColetaDadosSulco;
+        }
+
+        public void setFormaColetaDadosSulco(final FormaColetaDadosAfericaoEnum formaColetaDadosSulco) {
+            this.formaColetaDadosSulco = formaColetaDadosSulco;
+            this.podeAferirSulco = formaColetaDadosSulco != FormaColetaDadosAfericaoEnum.BLOQUEADO;
+        }
+
+        public FormaColetaDadosAfericaoEnum getFormaColetaDadosPressao() {
+            return formaColetaDadosPressao;
+        }
+
+        public void setFormaColetaDadosPressao(final FormaColetaDadosAfericaoEnum formaColetaDadosPressao) {
+            this.formaColetaDadosPressao = formaColetaDadosPressao;
+            this.podeAferirPressao = formaColetaDadosPressao != FormaColetaDadosAfericaoEnum.BLOQUEADO;
+        }
+
+        public FormaColetaDadosAfericaoEnum getFormaColetaDadosSulcoPressao() {
+            return formaColetaDadosSulcoPressao;
+        }
+
+        public void setFormaColetaDadosSulcoPressao(final FormaColetaDadosAfericaoEnum formaColetaDadosSulcoPressao) {
+            this.formaColetaDadosSulcoPressao = formaColetaDadosSulcoPressao;
+            this.podeAferirSulcoPressao = formaColetaDadosSulcoPressao != FormaColetaDadosAfericaoEnum.BLOQUEADO;
+        }
+
         public String getPlaca() {
             return placa;
         }
 
-        public void setPlaca(String placa) {
+        public void setPlaca(final String placa) {
             this.placa = placa;
+        }
+
+        public String getIdentificadorFrota() {
+            return identificadorFrota;
+        }
+
+        public void setIdentificadorFrota(String identificadorFrota) {
+            this.identificadorFrota = identificadorFrota;
         }
 
         public Long getCodUnidadePlaca() {
@@ -162,7 +227,7 @@ public class ModeloPlacasAfericao {
             return intervaloUltimaAfericaoSulco;
         }
 
-        public void setIntervaloUltimaAfericaoSulco(int intervaloUltimaAfericaoSulco) {
+        public void setIntervaloUltimaAfericaoSulco(final int intervaloUltimaAfericaoSulco) {
             this.intervaloUltimaAfericaoSulco = intervaloUltimaAfericaoSulco;
         }
 
@@ -170,7 +235,7 @@ public class ModeloPlacasAfericao {
             return intervaloUltimaAfericaoPressao;
         }
 
-        public void setIntervaloUltimaAfericaoPressao(int intervaloUltimaAfericaoPressao) {
+        public void setIntervaloUltimaAfericaoPressao(final int intervaloUltimaAfericaoPressao) {
             this.intervaloUltimaAfericaoPressao = intervaloUltimaAfericaoPressao;
         }
 
@@ -178,7 +243,7 @@ public class ModeloPlacasAfericao {
             return quantidadePneus;
         }
 
-        public void setQuantidadePneus(int quantidadePneus) {
+        public void setQuantidadePneus(final int quantidadePneus) {
             this.quantidadePneus = quantidadePneus;
         }
 
@@ -186,24 +251,12 @@ public class ModeloPlacasAfericao {
             return podeAferirSulco;
         }
 
-        public void setPodeAferirSulco(final boolean podeAferirSulco) {
-            this.podeAferirSulco = podeAferirSulco;
-        }
-
         public boolean isPodeAferirPressao() {
             return podeAferirPressao;
         }
 
-        public void setPodeAferirPressao(final boolean podeAferirPressao) {
-            this.podeAferirPressao = podeAferirPressao;
-        }
-
         public boolean isPodeAferirSulcoPressao() {
             return podeAferirSulcoPressao;
-        }
-
-        public void setPodeAferirSulcoPressao(final boolean podeAferirSulcoPressao) {
-            this.podeAferirSulcoPressao = podeAferirSulcoPressao;
         }
 
         public boolean isPodeAferirEstepe() {
@@ -228,9 +281,6 @@ public class ModeloPlacasAfericao {
 
         public void setMetaAfericaoPressao(final int metaAfericaoPressao) {
             this.metaAfericaoPressao = metaAfericaoPressao;
-        }
-
-        public PlacaAfericao() {
         }
 
         public boolean isAfericaoSulcoNoPrazo(final int metaSulco) {

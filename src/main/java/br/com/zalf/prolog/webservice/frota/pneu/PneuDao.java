@@ -123,21 +123,29 @@ public interface PneuDao {
                             @NotNull final Long codModeloBanda) throws Throwable;
 
     /**
-     * Busca uma lista de pneus com base no código e status.
+     * Busca uma lista de pneus com base nos códigos passados por parâmetro e status.
      *
-     * @param codUnidade código unidade
-     * @param status     status do pneu
+     * @param codUnidades Array com os códigos de unidade
+     * @param status      status do pneu
      * @return uma lista de pneus
      * @throws Throwable caso aconteça um erro
      */
     @NotNull
-    List<Pneu> getPneusByCodUnidadeByStatus(@NotNull final Long codUnidade, @NotNull final StatusPneu status) throws Throwable;
+    List<Pneu> getPneusByCodUnidadesByStatus(@NotNull final List<Long> codUnidades,
+                                             @NotNull final StatusPneu status) throws Throwable;
+
+    /**
+     * Realiza a busca de todos os pneus de cada código de unidade passado por parâmetro.
+     *
+     * @param codUnidades
+     * @return
+     * @throws Throwable
+     */
+    @NotNull
+    List<Pneu> getTodosPneus(@NotNull final List<Long> codUnidades) throws Throwable;
 
     @NotNull
-    List<Pneu> getTodosPneus(@NotNull final Long codUnidade) throws Throwable;
-
-    @NotNull
-    List<Pneu> getPneusAnalise(@NotNull Long codUnidade) throws Throwable;
+    List<Pneu> getPneusAnalise(@NotNull final Long codUnidade) throws Throwable;
 
     /**
      * retorna uma lista de marcas de pneus da empresa

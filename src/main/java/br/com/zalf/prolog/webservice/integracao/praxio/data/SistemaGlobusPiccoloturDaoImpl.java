@@ -115,15 +115,17 @@ public final class SistemaGlobusPiccoloturDaoImpl extends DatabaseConnection imp
             @NotNull final ChecklistItensNokGlobus checklistItensNokGlobus) throws Throwable {
         PreparedStatement stmt = null;
         try {
-            stmt = conn.prepareStatement("INSERT INTO PICCOLOTUR.CHECKLIST_ITEM_NOK_ENVIADO_GLOBUS(" +
-                    "  COD_UNIDADE, " +
-                    "  PLACA_VEICULO_OS, " +
-                    "  CPF_COLABORADOR, " +
-                    "  COD_CHECKLIST, " +
-                    "  COD_CONTEXTO_PERGUNTA, " +
-                    "  COD_CONTEXTO_ALTERNATIVA, " +
-                    "  DATA_HORA_ENVIO) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?);");
+            stmt = conn.prepareStatement("select * " +
+                    "from piccolotur.func_check_os_insere_itens_nok_enviados_globus(" +
+                    "f_cod_unidade => ?, " +
+                    "f_placa_veiculo => ?, " +
+                    "f_cpf_colaborador => ?, " +
+                    "f_cod_checklist_realizado => ?, " +
+                    "f_cod_pergunta => ?, " +
+                    "f_cod_contexto_pergunta => ?, " +
+                    "f_cod_alternativa => ?, " +
+                    "f_cod_contexto_alternativa => ?, " +
+                    "f_data_hora_envio => ?);");
             final LocalDateTime dataHoraAtual = Now.localDateTimeUtc();
             stmt.setLong(1, checklistItensNokGlobus.getCodUnidadeChecklist());
             stmt.setString(2, checklistItensNokGlobus.getPlacaVeiculoChecklist());
@@ -131,15 +133,17 @@ public final class SistemaGlobusPiccoloturDaoImpl extends DatabaseConnection imp
             stmt.setLong(4, checklistItensNokGlobus.getCodChecklistRealizado());
             for (final PerguntaNokGlobus perguntaNokGlobus : checklistItensNokGlobus.getPerguntasNok()) {
                 for (final AlternativaNokGlobus alternativaNokGlobus : perguntaNokGlobus.getAlternativasNok()) {
-                    stmt.setLong(5, perguntaNokGlobus.getCodContextoPerguntaNok());
-                    stmt.setLong(6, alternativaNokGlobus.getCodContextoAlternativaNok());
-                    stmt.setObject(7, dataHoraAtual);
+                    stmt.setLong(5, perguntaNokGlobus.getCodPerguntaNok());
+                    stmt.setLong(6, perguntaNokGlobus.getCodContextoPerguntaNok());
+                    stmt.setLong(7, alternativaNokGlobus.getCodAlternativaNok());
+                    stmt.setLong(8, alternativaNokGlobus.getCodContextoAlternativaNok());
+                    stmt.setObject(9, dataHoraAtual);
                     stmt.addBatch();
                 }
             }
             final boolean todasInsercoesOk = IntStream
                     .of(stmt.executeBatch())
-                    .allMatch(rowsAffectedCount -> rowsAffectedCount == 1);
+                    .allMatch(rowsAffectedCount -> rowsAffectedCount == 0);
             if (!todasInsercoesOk) {
                 throw new IllegalStateException(
                         "[ERRO INTEGRAÇÃO]: Erro ao inserir algum item NOK que seria enviado ao Globus");
@@ -217,6 +221,7 @@ public final class SistemaGlobusPiccoloturDaoImpl extends DatabaseConnection imp
     @NotNull
     private PerguntaNokGlobus createPerguntaNokGlobus(@NotNull final ResultSet rSet) throws SQLException {
         return new PerguntaNokGlobus(
+                rSet.getLong("COD_PERGUNTA"),
                 rSet.getLong("COD_CONTEXTO_PERGUNTA_NOK"),
                 rSet.getString("DESCRICAO_PERGUNTA_NOK"),
                 new ArrayList<>());

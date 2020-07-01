@@ -1,13 +1,13 @@
 package br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao;
 
 import br.com.zalf.prolog.webservice.Injection;
-import br.com.zalf.prolog.webservice.gente.colaborador.ColaboradorService;
-import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.*;
+import br.com.zalf.prolog.webservice.gente.colaborador.ColaboradorService;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -25,9 +25,8 @@ final class ConfiguracaoAfericaoService {
     @NotNull
     Response updateConfiguracaoTiposVeiculosAferiveis(
             @NotNull final Long codUnidade,
-            @NotNull final List<ConfiguracaoTipoVeiculoAferivel> configuracoes) throws ProLogException {
+            @NotNull final List<ConfiguracaoTipoVeiculoAferivelInsercao> configuracoes) throws ProLogException {
         try {
-            ConfiguracaoAfericaoValidator.validateUpdateTiposVeiculosAferiveis(configuracoes);
             dao.insertOrUpdateConfiguracoesTiposVeiculosAferiveis(codUnidade, configuracoes);
             return Response.ok("Configurações atualizadas com sucesso!");
         } catch (final Throwable t) {
@@ -39,7 +38,7 @@ final class ConfiguracaoAfericaoService {
     }
 
     @NotNull
-    List<ConfiguracaoTipoVeiculoAferivel> getConfiguracoesTipoAfericaoVeiculo(
+    List<ConfiguracaoTipoVeiculoAferivelListagem> getConfiguracoesTipoAfericaoVeiculo(
             @NotNull final Long codUnidade) throws ProLogException {
         try {
             return dao.getConfiguracoesTipoAfericaoVeiculo(codUnidade);

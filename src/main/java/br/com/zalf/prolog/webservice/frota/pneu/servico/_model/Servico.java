@@ -4,10 +4,13 @@ import br.com.zalf.prolog.webservice.commons.gson.Exclude;
 import br.com.zalf.prolog.webservice.commons.gson.RuntimeTypeAdapterFactory;
 import br.com.zalf.prolog.webservice.frota.pneu._model.PneuComum;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.AfericaoPlaca;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.FormaColetaDadosAfericaoEnum;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.ProcessoMovimentacao;
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.geral.unidade._model.Unidade;
 import com.google.gson.Gson;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDateTime;
 
@@ -32,6 +35,7 @@ public abstract class Servico {
     private int qtdApontamentos;
     private long kmVeiculoMomentoFechamento;
     private String placaVeiculo;
+    private String identificadorFrota;
     private Double pressaoColetadaFechamento;
 
     /**
@@ -55,6 +59,15 @@ public abstract class Servico {
      */
     @Exclude
     private TipoServico tipoServico;
+
+    /**
+     * Irá existir quando o fechamento for feito por um colaborador, não de forma automática pelo
+     * Prolog.
+     * <p>
+     * Será setado apenas na busca de um serviço específico para visualização.
+     */
+    @Nullable
+    private FormaColetaDadosAfericaoEnum formaColetaDadosFechamento;
 
     public Servico() {
 
@@ -190,5 +203,32 @@ public abstract class Servico {
 
     public void setFechadoAutomaticamenteIntegracao(final boolean fechadoAutomaticamenteIntegracao) {
         this.fechadoAutomaticamenteIntegracao = fechadoAutomaticamenteIntegracao;
+    }
+
+    @Nullable
+    public FormaColetaDadosAfericaoEnum getFormaColetaDadosFechamento() {
+        return formaColetaDadosFechamento;
+    }
+
+    public void setFormaColetaDadosFechamento(@NotNull final FormaColetaDadosAfericaoEnum formaColetaDadosFechamento) {
+        this.formaColetaDadosFechamento = formaColetaDadosFechamento;
+    }
+
+    /**
+     * Dessa forma conseguimos deixar apps antigos funcionando.
+     */
+    @Nullable
+    public String getFormaColetaDadosFechamentoAsStringOrEquipamentoIfNull() {
+        return formaColetaDadosFechamento != null
+                ? formaColetaDadosFechamento.toString()
+                : FormaColetaDadosAfericaoEnum.EQUIPAMENTO.toString();
+    }
+
+    public String getIdentificadorFrota() {
+        return identificadorFrota;
+    }
+
+    public void setIdentificadorFrota(String identificadorFrota) {
+        this.identificadorFrota = identificadorFrota;
     }
 }

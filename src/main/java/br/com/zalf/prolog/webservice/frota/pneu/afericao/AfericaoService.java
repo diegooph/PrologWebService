@@ -80,7 +80,7 @@ public class AfericaoService {
                     .getNovaAfericaoPlaca(codUnidade, placa, tipoAfericao);
         } catch (final Throwable e) {
             Log.e(TAG, "Erro ao buscar NovaAfericao para a placa: " + placa, e);
-            throw exceptionHandler.map(e, "Erro ao inicar uma nova aferição, tente novamente");
+            throw exceptionHandler.map(e, "Erro ao iniciar uma nova aferição, tente novamente");
         }
     }
 
@@ -95,7 +95,7 @@ public class AfericaoService {
                     .getNovaAfericaoAvulsa(codUnidade, codPneu, TipoMedicaoColetadaAfericao.fromString(tipoAfericao));
         } catch (final Throwable e) {
             Log.e(TAG, "Erro ao buscar NovaAfericao para o pneu: " + codPneu, e);
-            throw exceptionHandler.map(e, "Erro ao inicar uma nova aferição, tente novamente");
+            throw exceptionHandler.map(e, "Erro ao iniciar uma nova aferição, tente novamente");
         }
     }
 
@@ -184,7 +184,7 @@ public class AfericaoService {
     }
 
     @NotNull
-    Restricao getRestricaoByCodUnidade(Long codUnidade) throws ProLogException {
+    Restricao getRestricaoByCodUnidade(final Long codUnidade) throws ProLogException {
         try {
             return dao.getRestricaoByCodUnidade(codUnidade);
         } catch (final Throwable e) {

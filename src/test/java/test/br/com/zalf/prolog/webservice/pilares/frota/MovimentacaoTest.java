@@ -29,6 +29,7 @@ import test.br.com.zalf.prolog.webservice.BaseTest;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -74,7 +75,7 @@ public class MovimentacaoTest extends BaseTest {
 
         // Valida informações do pneu
         final List<Pneu> pneusAnalise =
-                pneuService.getPneusByCodUnidadeByStatus(5L, StatusPneu.ANALISE.asString());
+                pneuService.getPneusByCodUnidadesByStatus(Collections.singletonList(5L), StatusPneu.ANALISE.asString());
 
         PneuAnalise pneuAnalise = null;
         for (final Pneu pneu : pneusAnalise) {

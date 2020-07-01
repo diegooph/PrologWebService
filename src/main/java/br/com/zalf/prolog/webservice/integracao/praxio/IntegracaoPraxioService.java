@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.integracao.praxio;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
@@ -98,6 +99,10 @@ public final class IntegracaoPraxioService extends BaseIntegracaoService {
     public SuccessResponseIntegracao transferirVeiculoPraxio(
             final String tokenIntegracao,
             final VeiculoTransferenciaPraxio veiculoTransferenciaPraxio) throws ProLogException {
+        if (StringUtils.isNullOrEmpty(StringUtils.trimToNull(
+                veiculoTransferenciaPraxio.getCpfColaboradorRealizacaoTransferencia()))) {
+            throw new GenericException("O CPF do colaborador deve ser informado na transferência de veículo");
+        }
         try {
             ensureValidToken(tokenIntegracao, TAG);
             dao.transferirVeiculoPraxio(tokenIntegracao, veiculoTransferenciaPraxio);
@@ -185,11 +190,15 @@ public final class IntegracaoPraxioService extends BaseIntegracaoService {
     public SuccessResponseIntegracao resolverMultiplosItens(
             final String tokenIntegracao,
             final List<ItemResolvidoGlobus> itensResolvidos) throws ProLogException {
+        //Realiza validação para CPF
+        for (ItemResolvidoGlobus item : itensResolvidos) {
+            validaCpfColaborador(item.getCpfColaboradorResolucao());
+        }
         try {
             if (tokenIntegracao == null) {
                 throw new GenericException("Um Token deve ser fornecido");
             }
-            if (itensResolvidos == null || itensResolvidos.isEmpty()) {
+            if (itensResolvidos.isEmpty()) {
                 throw new GenericException("Nenhum item resolvido foi recebido");
             }
             ensureValidToken(tokenIntegracao, TAG);
@@ -503,6 +512,12 @@ public final class IntegracaoPraxioService extends BaseIntegracaoService {
                         itemResolvido.getCodItemResolvidoGlobus());
                 throw new GenericException(msg);
             }
+        }
+    }
+
+    private void validaCpfColaborador(@NotNull final String cpfColaborador) throws GenericException {
+        if (StringUtils.isNullOrEmpty(StringUtils.trimToNull(cpfColaborador))) {
+            throw new GenericException("O CPF do colaborador deve ser informado no fechamento de O.S");
         }
     }
 }

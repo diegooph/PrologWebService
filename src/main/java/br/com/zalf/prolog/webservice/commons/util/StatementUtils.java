@@ -30,6 +30,21 @@ public final class StatementUtils {
     }
 
     public static void executeBatchAndValidate(@NotNull final PreparedStatement stmt,
+                                               final int batchExpectedResultLength,
+                                               final int allMatchWith,
+                                               @NotNull final String messageIfFailed) throws SQLException {
+        // Executa o batch de operações.
+        // Se o batch estiver vazio, um array vazio será retornado e não teremos problema com esse caso.
+        final int[] batchResult = stmt.executeBatch();
+        final boolean allOk = IntStream
+                .of(batchResult)
+                .allMatch(rowsAffectedCount -> rowsAffectedCount == allMatchWith);
+        if (!allOk || batchResult.length != batchExpectedResultLength) {
+            throw new IllegalStateException(messageIfFailed);
+        }
+    }
+
+    public static void executeBatchAndValidate(@NotNull final PreparedStatement stmt,
                                                final int allMatchWith,
                                                @NotNull final String messageIfFailed) throws SQLException {
         // Executa o batch de operações.

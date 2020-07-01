@@ -128,6 +128,20 @@ public class ColaboradorService {
         }
     }
 
+    @NotNull
+    public List<ColaboradorListagem> getAllByUnidades(@NotNull final List<Long> codUnidades,
+                                                      final boolean apenasAtivos) {
+        try {
+            return dao.getAllByUnidades(codUnidades, apenasAtivos);
+        } catch (final Throwable e) {
+            final String errorMessage = "Erro ao buscar os colaboradores.";
+            Log.e(TAG, String.format(errorMessage), e);
+            throw Injection
+                    .provideColaboradorExceptionHandler()
+                    .map(e, errorMessage);
+        }
+    }
+
     public List<Colaborador> getAllByEmpresa(final Long codEmrpesa, final boolean apenasAtivos) throws ProLogException {
         try {
             return dao.getAllByEmpresa(codEmrpesa, apenasAtivos);

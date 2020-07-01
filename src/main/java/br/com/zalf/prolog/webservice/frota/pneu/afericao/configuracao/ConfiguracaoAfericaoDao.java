@@ -18,24 +18,24 @@ public interface ConfiguracaoAfericaoDao {
      * Cria ou atualiza, caso já exista, as configurações de aferição para os tipos de veículo da unidade informada.
      *
      * @param codUnidade    Codigo da {@link Unidade unidade} que os atributos serão alterados.
-     * @param configuracoes Novas {@link ConfiguracaoTipoVeiculoAferivel configurações}.
+     * @param configuracoes Novas {@link ConfiguracaoTipoVeiculoAferivelInsercao configurações}.
      * @throws Throwable Caso algum erro acorrer.
      */
     void insertOrUpdateConfiguracoesTiposVeiculosAferiveis(
             @NotNull final Long codUnidade,
-            @NotNull final List<ConfiguracaoTipoVeiculoAferivel> configuracoes) throws Throwable;
+            @NotNull final List<ConfiguracaoTipoVeiculoAferivelInsercao> configuracoes) throws Throwable;
 
     /**
-     * Busca todas as {@link ConfiguracaoTipoVeiculoAferivel configurações} existentes para os tipos de veículos da
+     * Busca todas as {@link ConfiguracaoTipoVeiculoAferivelListagem configurações} existentes para os tipos de veículos da
      * {@link Unidade unidade} informada.
      *
      * @param codUnidade Codigo da {@link Unidade unidade} do qual os dados serão buscados.
-     * @return Uma {@link List<ConfiguracaoTipoVeiculoAferivel> lista} contendo todos os dados para os tipos de
+     * @return Uma {@link List< ConfiguracaoTipoVeiculoAferivelListagem > lista} contendo todos os dados para os tipos de
      * veículos.
      * @throws Throwable Caso algum erro acorrer.
      */
     @NotNull
-    List<ConfiguracaoTipoVeiculoAferivel> getConfiguracoesTipoAfericaoVeiculo(
+    List<ConfiguracaoTipoVeiculoAferivelListagem> getConfiguracoesTipoAfericaoVeiculo(
             @NotNull final Long codUnidade) throws Throwable;
 
     /**
