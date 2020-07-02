@@ -3,6 +3,7 @@ Stage
 
 ### Refactors
 * Adiciona possibilidade de listar colaboradores, veículos e pneus por múltiplas unidades (PL-2695)
+* Adiciona custo de seviços no relatório de dados gerais de movimentação (PL-2733)
 
 Change Log
 ==========
