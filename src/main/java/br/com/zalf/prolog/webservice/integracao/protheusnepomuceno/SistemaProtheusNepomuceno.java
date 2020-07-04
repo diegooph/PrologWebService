@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno;
 
+import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.database.DatabaseConnectionProvider;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.*;
@@ -17,6 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.sql.Connection;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -71,6 +73,7 @@ public final class SistemaProtheusNepomuceno extends Sistema {
             // buscamos as informações logo no começo do processo, assim, se der erro nada mais é executado.
             final SistemaProtheusNepomucenoDao sistema = new SistemaProtheusNepomucenoDaoImpl();
             final Long codEmpresaProlog = getIntegradorProLog().getCodEmpresaByCodUnidadeProLog(conn, codUnidade);
+            final ZoneId zoneIdForCodUnidade = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn);
             String codAuxiliarUnidade = getIntegradorProLog().getCodAuxiliarByCodUnidadeProlog(conn, codUnidade);
 
             // Não precisamos fazer essa tratativa na Aferição Avulsa.
@@ -93,13 +96,15 @@ public final class SistemaProtheusNepomuceno extends Sistema {
                 requester.insertAfericaoPlaca(
                         getIntegradorProLog()
                                 .getUrl(conn, codEmpresaProlog, getSistemaKey(), MetodoIntegrado.INSERT_AFERICAO_PLACA),
-                        ProtheusNepomucenoConverter.convert(codAuxiliarUnidade, (AfericaoPlaca) afericao));
+                        ProtheusNepomucenoConverter
+                                .convert(codAuxiliarUnidade, (AfericaoPlaca) afericao, zoneIdForCodUnidade));
             } else {
                 final String url = getIntegradorProLog()
                         .getUrl(conn, codEmpresaProlog, getSistemaKey(), MetodoIntegrado.INSERT_AFERICAO_AVULSA);
                 requester.insertAfericaoAvulsa(
                         url,
-                        ProtheusNepomucenoConverter.convert(codAuxiliarUnidade, (AfericaoAvulsa) afericao));
+                        ProtheusNepomucenoConverter
+                                .convert(codAuxiliarUnidade, (AfericaoAvulsa) afericao));
             }
             conn.commit();
             return codAfericaoInserida;

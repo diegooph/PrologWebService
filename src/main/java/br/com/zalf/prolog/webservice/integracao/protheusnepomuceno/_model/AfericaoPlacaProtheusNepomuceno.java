@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model;
 
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.TipoMedicaoColetadaAfericao;
 import org.jetbrains.annotations.NotNull;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -70,6 +71,15 @@ public final class AfericaoPlacaProtheusNepomuceno {
     private final LocalDateTime dataHoraAfericaoUtc;
 
     /**
+     * Data e hora que a aferição foi realizada pelo colaborador. Consiste na data e hora em que a requisição chegou ao
+     * servidor do ProLog.
+     * <p>
+     * A data e hora considera o timezone configurado para a unidade."
+     */
+    @NotNull
+    private final LocalDateTime dataHoraAfericaoTimeZoneAplicado;
+
+    /**
      * Constante alfanumérica que representa o {@link TipoMedicaoColetadaAfericao tipo de medição} que foi
      * utilizado para a captura de informações, podem ter sido utilizados 3 tipos:
      * *{@link TipoMedicaoColetadaAfericao#SULCO}
@@ -93,6 +103,7 @@ public final class AfericaoPlacaProtheusNepomuceno {
                                            @NotNull final Long kmMomentoAfericao,
                                            @NotNull final Long tempoRealizacaoAfericaoInMillis,
                                            @NotNull final LocalDateTime dataHoraAfericaoUtc,
+                                           @NotNull final LocalDateTime dataHoraAfericaoTimeZoneAplicado,
                                            @NotNull final TipoMedicaoColetadaAfericao tipoMedicaoColetadaAfericao,
                                            @NotNull final List<MedicaoAfericaoProtheusNepomuceno> medicoes) {
         this.codEmpresa = codEmpresa;
@@ -102,6 +113,7 @@ public final class AfericaoPlacaProtheusNepomuceno {
         this.kmMomentoAfericao = kmMomentoAfericao;
         this.tempoRealizacaoAfericaoInMillis = tempoRealizacaoAfericaoInMillis;
         this.dataHoraAfericaoUtc = dataHoraAfericaoUtc;
+        this.dataHoraAfericaoTimeZoneAplicado = dataHoraAfericaoTimeZoneAplicado;
         this.tipoMedicaoColetadaAfericao = tipoMedicaoColetadaAfericao;
         this.medicoes = medicoes;
     }
@@ -120,31 +132,51 @@ public final class AfericaoPlacaProtheusNepomuceno {
                 101010L,
                 90000L,
                 LocalDateTime.now(),
+                LocalDateTime.now(),
                 TipoMedicaoColetadaAfericao.SULCO_PRESSAO,
                 medicoes
         );
     }
 
     @NotNull
-    public String getCodEmpresa() { return codEmpresa; }
+    public String getCodEmpresa() {
+        return codEmpresa;
+    }
 
     @NotNull
-    public String getCodUnidade() { return codUnidade; }
+    public String getCodUnidade() {
+        return codUnidade;
+    }
 
     @NotNull
-    public String getPlacaAfericao() { return placaAfericao; }
+    public String getPlacaAfericao() {
+        return placaAfericao;
+    }
 
     @NotNull
-    public String getCpfColaboradorAfericao() { return cpfColaboradorAfericao; }
+    public String getCpfColaboradorAfericao() {
+        return cpfColaboradorAfericao;
+    }
 
     @NotNull
-    public Long getKmMomentoAfericao() { return kmMomentoAfericao; }
+    public Long getKmMomentoAfericao() {
+        return kmMomentoAfericao;
+    }
 
     @NotNull
-    public Long getTempoRealizacaoAfericaoInMillis() { return tempoRealizacaoAfericaoInMillis; }
+    public Long getTempoRealizacaoAfericaoInMillis() {
+        return tempoRealizacaoAfericaoInMillis;
+    }
 
     @NotNull
-    public LocalDateTime getDataHoraAfericaoUtc() { return dataHoraAfericaoUtc; }
+    public LocalDateTime getDataHoraAfericaoUtc() {
+        return dataHoraAfericaoUtc;
+    }
+
+    @NotNull
+    public LocalDateTime getDataHoraAfericaoTimeZoneAplicado() {
+        return dataHoraAfericaoTimeZoneAplicado;
+    }
 
     @NotNull
     public TipoMedicaoColetadaAfericao getTipoMedicaoColetadaAfericao() {
@@ -152,5 +184,7 @@ public final class AfericaoPlacaProtheusNepomuceno {
     }
 
     @NotNull
-    public List<MedicaoAfericaoProtheusNepomuceno> getMedicoes() { return medicoes; }
+    public List<MedicaoAfericaoProtheusNepomuceno> getMedicoes() {
+        return medicoes;
+    }
 }

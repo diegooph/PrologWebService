@@ -10,6 +10,8 @@ import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.*;
 
 import static br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.ProtheusNepomucenoConstants.*;
@@ -26,7 +28,8 @@ public final class ProtheusNepomucenoConverter {
 
     @NotNull
     public static AfericaoPlacaProtheusNepomuceno convert(@NotNull final String codAuxiliarUnidade,
-                                                          @NotNull final AfericaoPlaca afericaoPlaca) {
+                                                          @NotNull final AfericaoPlaca afericaoPlaca,
+                                                          @NotNull final ZoneId zoneId) {
         // Separa o código de empresa e unidade do campo auxiliar.
         final String[] empresaUnidade = codAuxiliarUnidade.split(DEFAULT_CODIGOS_SEPARATOR);
 
@@ -51,6 +54,7 @@ public final class ProtheusNepomucenoConverter {
                 afericaoPlaca.getKmMomentoAfericao(),
                 afericaoPlaca.getTempoRealizacaoAfericaoInMillis(),
                 afericaoPlaca.getDataHora(),
+                afericaoPlaca.getDataHora().atOffset(ZoneOffset.UTC).atZoneSameInstant(zoneId).toLocalDateTime(),
                 afericaoPlaca.getTipoMedicaoColetadaAfericao(),
                 medicoes);
     }
