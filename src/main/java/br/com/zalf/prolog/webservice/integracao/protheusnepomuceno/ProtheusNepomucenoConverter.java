@@ -114,26 +114,21 @@ public final class ProtheusNepomucenoConverter {
     @NotNull
     public static ModeloPlacasAfericao.PlacaAfericao createPlacaAfericaoProlog(
             @NotNull final VeiculoListagemProtheusNepomuceno veiculo,
-            @NotNull final Map<String, InfosUnidadeRestricao> unidadeRestricao,
-            @NotNull final Map<String, InfosTipoVeiculoConfiguracaoAfericao> tipoVeiculoConfiguracao,
-            @NotNull final Map<String, InfosAfericaoRealizadaPlaca> afericaoRealizadaPlaca) {
+            @NotNull final InfosUnidadeRestricao infosUnidadeRestricao,
+            @NotNull final InfosTipoVeiculoConfiguracaoAfericao infosTipoVeiculoConfiguracaoAfericao,
+            @NotNull final InfosAfericaoRealizadaPlaca infosAfericaoRealizadaPlaca) {
         final ModeloPlacasAfericao.PlacaAfericao placaAfericao = new ModeloPlacasAfericao.PlacaAfericao();
         placaAfericao.setPlaca(veiculo.getPlacaVeiculo());
 
-        final InfosAfericaoRealizadaPlaca infosAfericaoRealizadaPlaca =
-                afericaoRealizadaPlaca.get(veiculo.getPlacaVeiculo());
         placaAfericao.setIntervaloUltimaAfericaoPressao(infosAfericaoRealizadaPlaca.getDiasUltimaAfericaoPressao());
         placaAfericao.setIntervaloUltimaAfericaoSulco(infosAfericaoRealizadaPlaca.getDiasUltimaAfericaoSulco());
         placaAfericao.setQuantidadePneus(veiculo.getQtdPneusAplicadosVeiculo());
 
-        final InfosTipoVeiculoConfiguracaoAfericao infosTipoVeiculoConfiguracaoAfericao =
-                tipoVeiculoConfiguracao.get(veiculo.getCodEstruturaVeiculo());
         placaAfericao.setFormaColetaDadosSulco(infosTipoVeiculoConfiguracaoAfericao.getFormaColetaDadosSulco());
         placaAfericao.setFormaColetaDadosPressao(infosTipoVeiculoConfiguracaoAfericao.getFormaColetaDadosPressao());
         placaAfericao.setFormaColetaDadosSulcoPressao(infosTipoVeiculoConfiguracaoAfericao.getFormaColetaDadosSulcoPressao());
         placaAfericao.setPodeAferirEstepe(infosTipoVeiculoConfiguracaoAfericao.isPodeAferirEstepes());
 
-        final InfosUnidadeRestricao infosUnidadeRestricao = unidadeRestricao.get(veiculo.getCodEmpresaFilialVeiculo());
         placaAfericao.setMetaAfericaoSulco(infosUnidadeRestricao.getPeriodoDiasAfericaoSulco());
         placaAfericao.setMetaAfericaoPressao(infosUnidadeRestricao.getPeriodoDiasAfericaoPressao());
         placaAfericao.setCodUnidadePlaca(infosUnidadeRestricao.getCodUnidade());

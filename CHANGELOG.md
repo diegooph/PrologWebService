@@ -8,6 +8,11 @@ Stage
 Change Log
 ==========
 
+## Refactors
+* Permite a configuração de mais de um código auxiliar para a mesma unidade (PLI-166)
+* Utiliza configuração de cada unidade no Cronograma de Aferição (PLI-165)
+* Criar estrutura de teste automatizados para a estrutura de aferição com o Protheus (PLI-150)
+
 <a name="v1.0.33"></a>
 ## Version [v1.0.33](https://github.com/luizfp/PrologWebService/compare/v1.0.32...v1.0.33) (release-date) [unreleased]
 
