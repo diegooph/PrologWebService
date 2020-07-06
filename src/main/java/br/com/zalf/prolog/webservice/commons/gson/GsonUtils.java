@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.commons.util.ProLogUtils;
 import br.com.zalf.prolog.webservice.dashboard.Color;
+import br.com.zalf.prolog.webservice.entrega.mapa._model.ResponseErrorUploadMapa;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.ResponseImagemChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.AlternativaEdicaoSerializerDeserializer;
@@ -110,6 +111,7 @@ public final class GsonUtils {
                 .registerSubtype(ResponseWithCod.class)
                 .registerSubtype(ResponseIntervalo.class)
                 .registerSubtype(ResponseImagemChecklist.class)
+                .registerSubtype(ResponseErrorUploadMapa.class)
                 .registerSubtype(ResponseInsertModeloChecklist.class);
 
         final RuntimeTypeAdapterFactory<Motivo> adapterMotivo = RuntimeTypeAdapterFactory
