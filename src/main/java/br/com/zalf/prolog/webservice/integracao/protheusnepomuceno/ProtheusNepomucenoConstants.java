@@ -9,9 +9,13 @@ import org.jetbrains.annotations.NotNull;
  */
 public final class ProtheusNepomucenoConstants {
     @NotNull
+    public static final String[] CODIGOS_FAMILIA_NEPOMUCENO_IGNORAR = {"FA008", "FA011"};
+    @NotNull
     public static final String DEFAULT_CODIGOS_SEPARATOR = ":";
     @NotNull
     public static final String DEFAULT_COD_AUXILIAR_TIPO_VEICULO_SEPARATOR = ",";
+    @NotNull
+    public static final String DEFAULT_COD_AUXILIAR_UNIDADE_SEPARATOR = ",";
     @NotNull
     static final Long DEFAULT_COD_MARCA_PNEU = 1L;
     @NotNull

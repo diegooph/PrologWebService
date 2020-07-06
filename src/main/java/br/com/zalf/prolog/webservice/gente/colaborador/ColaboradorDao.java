@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOffli
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.gente.colaborador.model.ColaboradorEdicao;
 import br.com.zalf.prolog.webservice.gente.colaborador.model.ColaboradorInsercao;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.ColaboradorListagem;
 import br.com.zalf.prolog.webservice.gente.controlejornada.DadosIntervaloChangedListener;
 import br.com.zalf.prolog.webservice.geral.unidade._model.Unidade;
 import br.com.zalf.prolog.webservice.permissao.pilares.FuncaoProLog;
@@ -94,6 +95,18 @@ public interface ColaboradorDao {
      */
     @NotNull
     List<Colaborador> getAllByUnidade(@NotNull final Long codUnidade, final boolean apenasAtivos) throws Throwable;
+
+    /**
+     * Busca todos os colaboradores que pertencem as unidades informadas.
+     *
+     * @param codUnidades lista com os código das unidades.
+     * @param apenasAtivos indica se queremos buscar apenas os colaboradores que estão ativos.
+     * @return uma lista de {@link ColaboradorListagem colaboradores}
+     * @throws Throwable Se algo der errado na busca.
+     */
+    @NotNull
+    List<ColaboradorListagem> getAllByUnidades(@NotNull List<Long> codUnidades,
+                                               final boolean apenasAtivos) throws Throwable;
 
     /**
      * Busca todos os colaboradores de uma empresa.

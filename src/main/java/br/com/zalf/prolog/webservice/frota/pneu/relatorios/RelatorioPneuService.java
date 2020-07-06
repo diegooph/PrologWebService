@@ -105,26 +105,39 @@ public class RelatorioPneuService {
         }
     }
 
-    public void getKmRodadoPorPneuPorVidaCsv(@NotNull final OutputStream outputStream,
-                                             @NotNull final List<Long> codUnidades) {
+    public void getKmRodadoPorPneuPorVidaEmLinhasCsv(@NotNull final OutputStream outputStream,
+                                                     @NotNull final List<Long> codUnidades) {
         try {
-            dao.getKmRodadoPorPneuPorVidaCsv(outputStream, codUnidades);
+            dao.getKmRodadoPorPneuPorVidaEmLinhasCsv(outputStream, codUnidades);
         } catch (final Throwable throwable) {
-            Log.e(TAG, "Erro ao buscar o relatório de km percorrido por pneu por vida (CSV)", throwable);
-            throw new RuntimeException(throwable);
+            Log.e(TAG, "Erro ao buscar o relatório de km percorrido por vida em linhas (CSV)", throwable);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(throwable, "Erro ao gerar relatório, tente novamente");
         }
     }
 
     @NotNull
-    public Report getKmRodadoPorPneuPorVidaReport(@NotNull final List<Long> codUnidades) throws ProLogException {
+    public Report getKmRodadoPorPneuPorVidaEmLinhasReport(@NotNull final List<Long> codUnidades) {
         try {
-            return dao.getKmRodadoPorPneuPorVidaReport(codUnidades);
+            return dao.getKmRodadoPorPneuPorVidaEmLinhasReport(codUnidades);
         } catch (final Throwable throwable) {
-            Log.e(TAG, "Erro ao buscar o relatório de km percorrido por pneu por vida (REPORT)", throwable);
+            Log.e(TAG, "Erro ao buscar o relatório de km percorrido por vida em linhas (REPORT)", throwable);
             throw Injection
                     .provideProLogExceptionHandler()
-                    .map(throwable,
-                            "Erro ao gerar relatório, tente novamente");
+                    .map(throwable, "Erro ao gerar relatório, tente novamente");
+        }
+    }
+
+    public void getKmRodadoPorPneuPorVidaEmColunasCsv(@NotNull final OutputStream outputStream,
+                                                      @NotNull final List<Long> codUnidades) {
+        try {
+            dao.getKmRodadoPorPneuPorVidaEmColunasCsv(outputStream, codUnidades);
+        } catch (final Throwable throwable) {
+            Log.e(TAG, "Erro ao buscar o relatório de km percorrido por vida em colunas (CSV)", throwable);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(throwable, "Erro ao gerar relatório, tente novamente");
         }
     }
 
@@ -166,27 +179,27 @@ public class RelatorioPneuService {
                                                @NotNull final List<String> status) {
         try {
             return dao.getQtdPneusByFaixaSulco(codUnidades, status);
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             Log.e(TAG, "Erro ao buscar o relatório de faixas de sulco", e);
             throw new RuntimeException(e);
         }
     }
 
     @Deprecated
-    public List<Faixa> getQtPneusByFaixaPressao(List<String> codUnidades, List<String> status) {
+    public List<Faixa> getQtPneusByFaixaPressao(final List<String> codUnidades, final List<String> status) {
         try {
             return dao.getQtPneusByFaixaPressao(codUnidades, status);
-        } catch (Throwable e) {
+        } catch (final Throwable e) {
             Log.e(TAG, "Erro ao buscar o relatório de faixas de pressão", e);
             throw new RuntimeException(e);
         }
     }
 
     @Deprecated
-    public List<Aderencia> getAderenciaByUnidade(int ano, int mes, Long codUnidade) {
+    public List<Aderencia> getAderenciaByUnidade(final int ano, final int mes, final Long codUnidade) {
         try {
             return dao.getAderenciaByUnidade(ano, mes, codUnidade);
-        } catch (Throwable e) {
+        } catch (final Throwable e) {
             Log.e(TAG, String.format("Erro ao buscar o relatório de aderência por unidade. \n" +
                     "Unidade: %d \n" +
                     "Ano: %d \n" +
@@ -205,7 +218,7 @@ public class RelatorioPneuService {
                     codUnidades,
                     ProLogDateParser.toLocalDate(dataInicial),
                     ProLogDateParser.toLocalDate(dataFinal));
-        } catch (SQLException | IOException e) {
+        } catch (final SQLException | IOException e) {
             Log.e(TAG, String.format("Erro ao buscar o relatório de previsão de troca (CSV). \n" +
                     "Unidades: %s \n" +
                     "Período: %s a %s", codUnidades.toString(), dataInicial, dataFinal), e);
@@ -221,7 +234,7 @@ public class RelatorioPneuService {
                     codUnidades,
                     ProLogDateParser.toLocalDate(dataInicial),
                     ProLogDateParser.toLocalDate(dataFinal));
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar o relatório de previsão de troca (REPORT). \n" +
                     "Unidades: %s \n" +
                     "Período: %s a %s", codUnidades, dataInicial, dataFinal), e);
@@ -239,7 +252,7 @@ public class RelatorioPneuService {
                     codUnidades,
                     ProLogDateParser.toLocalDate(dataInicial),
                     ProLogDateParser.toLocalDate(dataFinal));
-        } catch (SQLException | IOException e) {
+        } catch (final SQLException | IOException e) {
             Log.e(TAG, String.format("Erro ao buscar o relatório de previsão de troca consolidado (CSV). \n" +
                     "Unidades: %s \n" +
                     "Período: %s a %s", codUnidades.toString(), dataInicial, dataFinal), e);
@@ -255,7 +268,7 @@ public class RelatorioPneuService {
                     codUnidades,
                     ProLogDateParser.toLocalDate(dataInicial),
                     ProLogDateParser.toLocalDate(dataFinal));
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar o relatório de previsão de troca consolidado (REPORT). \n" +
                     "Unidades: %s \n" +
                     "Período: %s a %s", codUnidades, dataInicial, dataFinal), e);
@@ -273,7 +286,7 @@ public class RelatorioPneuService {
                     codUnidades,
                     ProLogDateParser.toLocalDate(dataInicial),
                     ProLogDateParser.toLocalDate(dataFinal));
-        } catch (SQLException | IOException e) {
+        } catch (final SQLException | IOException e) {
             Log.e(TAG, String.format("Erro ao buscar o relatório de aderência das placas (CSV). \n" +
                     "Unidades: %s \n" +
                     "Período: %s a %s", codUnidades, dataInicial, dataFinal), e);
@@ -289,7 +302,7 @@ public class RelatorioPneuService {
                     codUnidades,
                     ProLogDateParser.toLocalDate(dataInicial),
                     ProLogDateParser.toLocalDate(dataFinal));
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar o relatório de aderência das placas (REPORT). \n" +
                     "Unidades: %s \n" +
                     "Período: %s a %s", codUnidades, dataInicial, dataFinal), e);
@@ -305,7 +318,7 @@ public class RelatorioPneuService {
                     codUnidades,
                     ProLogDateParser.toLocalDate(dataInicial),
                     ProLogDateParser.toLocalDate(dataFinal));
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar o relatório de pneus descartados (REPORT). \n" +
                     "Unidades: %s \n" +
                     "Data Inicial: %s \n" +
@@ -324,7 +337,7 @@ public class RelatorioPneuService {
                     codUnidades,
                     ProLogDateParser.toLocalDate(dataInicial),
                     ProLogDateParser.toLocalDate(dataFinal));
-        } catch (SQLException | IOException e) {
+        } catch (final SQLException | IOException e) {
             Log.e(TAG, String.format("Erro ao buscar o relatório de pneus descartados (CSV). \n" +
                     "Unidades: %s \n" +
                     "Data Inicial: %s \n" +
@@ -337,7 +350,7 @@ public class RelatorioPneuService {
                                           @NotNull final List<Long> codUnidades) throws RuntimeException {
         try {
             dao.getDadosUltimaAfericaoCsv(outputStream, codUnidades);
-        } catch (SQLException | IOException e) {
+        } catch (final SQLException | IOException e) {
             Log.e(TAG, String.format("Erro ao buscar o relatório com os dados da última aferição (CSV). \n" +
                     "Unidades: %s", codUnidades), e);
             throw new RuntimeException(e);
@@ -347,7 +360,7 @@ public class RelatorioPneuService {
     public Report getDadosUltimaAfericaoReport(@NotNull final List<Long> codUnidades) {
         try {
             return dao.getDadosUltimaAfericaoReport(codUnidades);
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar o relatório com os dados da última aferição (REPORT). \n" +
                     "Unidades: %s", codUnidades), e);
             throw new RuntimeException(e);
@@ -359,7 +372,7 @@ public class RelatorioPneuService {
                                        @Nullable final String status) throws RuntimeException {
         try {
             dao.getResumoGeralPneusCsv(outputStream, codUnidades, status);
-        } catch (SQLException | IOException e) {
+        } catch (final SQLException | IOException e) {
             Log.e(TAG, String.format("Erro ao buscar o relatório de resumo geral dos pneus (CSV). \n" +
                     "Unidades: %s\n" +
                     "Status: %s", codUnidades, status), e);
@@ -370,7 +383,7 @@ public class RelatorioPneuService {
     public Report getResumoGeralPneusReport(@NotNull final List<Long> codUnidades, @Nullable final String status) {
         try {
             return dao.getResumoGeralPneusReport(codUnidades, status);
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar o relatório de resumo geral dos pneus (REPORT). \n" +
                     "Unidades: %s\n" +
                     "Status: %s", codUnidades, status), e);
@@ -398,6 +411,18 @@ public class RelatorioPneuService {
         } catch (final Throwable throwable) {
             Log.e(TAG, "Erro ao gerar relatório de vencimento de DOT (CSV)", throwable);
             throw new RuntimeException(throwable);
+        }
+    }
+
+    public void getCpkPorMarcaModeloDimensaomCsv(@NotNull final OutputStream outputStream,
+                                                 @NotNull final List<Long> codUnidades) {
+        try {
+            dao.getCpkPorMarcaModeloDimensaomCsv(outputStream, codUnidades);
+        } catch (final Throwable throwable) {
+            Log.e(TAG, "Erro ao buscar o relatório de CPK por marca, modelo e dimensão (CSV)", throwable);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(throwable, "Erro ao gerar relatório, tente novamente");
         }
     }
 }

@@ -3,9 +3,9 @@ package br.com.zalf.prolog.webservice.frota.pneu.servico.relatorio;
 import br.com.zalf.prolog.webservice.commons.report.CsvWriter;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.report.ReportTransformer;
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
+import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import org.jetbrains.annotations.NotNull;
 
@@ -34,7 +34,7 @@ public class ServicoRelatorioDaoImpl extends DatabaseConnection implements Servi
             rSet = stmt.executeQuery();
             return ReportTransformer.createReport(rSet);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -53,7 +53,7 @@ public class ServicoRelatorioDaoImpl extends DatabaseConnection implements Servi
             rSet = stmt.executeQuery();
             new CsvWriter().write(rSet, outputStream);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -71,7 +71,7 @@ public class ServicoRelatorioDaoImpl extends DatabaseConnection implements Servi
             rSet = stmt.executeQuery();
             return ReportTransformer.createReport(rSet);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -90,7 +90,7 @@ public class ServicoRelatorioDaoImpl extends DatabaseConnection implements Servi
             rSet = stmt.executeQuery();
             new CsvWriter().write(rSet, outputStream);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -101,8 +101,8 @@ public class ServicoRelatorioDaoImpl extends DatabaseConnection implements Servi
             @NotNull final LocalDate dataInicial,
             @NotNull final LocalDate dataFinal) throws SQLException {
         final PreparedStatement stmt =
-                conn.prepareStatement("SELECT * FROM FUNC_RELATORIO_PNEU_EXTRATO_SERVICOS_FECHADOS(?, ?, ?);");
-        stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.TEXT, codUnidades));
+                conn.prepareStatement("SELECT * FROM FUNC_PNEU_RELATORIO_EXTRATO_SERVICOS_FECHADOS(?, ?, ?);");
+        stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
         stmt.setObject(2, dataInicial);
         stmt.setObject(3, dataFinal);
         return stmt;
@@ -115,8 +115,8 @@ public class ServicoRelatorioDaoImpl extends DatabaseConnection implements Servi
             @NotNull final LocalDate dataInicial,
             @NotNull final LocalDate dataFinal) throws SQLException {
         final PreparedStatement stmt =
-                conn.prepareStatement("SELECT * FROM FUNC_RELATORIO_PNEU_EXTRATO_SERVICOS_ABERTOS(?, ?, ?, ?);");
-        stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.TEXT, codUnidades));
+                conn.prepareStatement("SELECT * FROM FUNC_PNEU_RELATORIO_EXTRATO_SERVICOS_ABERTOS(?, ?, ?, ?);");
+        stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
         stmt.setObject(2, dataInicial);
         stmt.setObject(3, dataFinal);
         stmt.setObject(4, Now.localDateUtc());

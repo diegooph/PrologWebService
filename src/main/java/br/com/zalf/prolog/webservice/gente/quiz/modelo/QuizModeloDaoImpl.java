@@ -2,11 +2,11 @@ package br.com.zalf.prolog.webservice.gente.quiz.modelo;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
-import br.com.zalf.prolog.webservice.gente.colaborador.model.Cargo;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Cargo;
 import br.com.zalf.prolog.webservice.gente.quiz.quiz.model.AlternativaEscolhaQuiz;
 import br.com.zalf.prolog.webservice.gente.quiz.quiz.model.AlternativaOrdenamentoQuiz;
 import br.com.zalf.prolog.webservice.gente.quiz.quiz.model.PerguntaQuiz;
@@ -161,8 +161,8 @@ public final class QuizModeloDaoImpl extends DatabaseConnection implements QuizM
                     "  AND QM.CODIGO = QMF.COD_MODELO " +
                     "  LEFT JOIN QUIZ_MODELO_TREINAMENTO QMT ON QMT.COD_MODELO_QUIZ = QM.CODIGO AND " +
                     "    QMT.COD_UNIDADE = QM.COD_UNIDADE " +
-                    "WHERE QM.DATA_HORA_ABERTURA <= (? AT TIME ZONE ?) " +
-                    "  AND QM.DATA_HORA_FECHAMENTO >= (? AT TIME ZONE ?) " +
+                    "WHERE QM.DATA_HORA_ABERTURA <= ? " +
+                    "  AND QM.DATA_HORA_FECHAMENTO >= ? " +
                     "  AND QMF.COD_UNIDADE = ? " +
                     "  AND QMF.COD_FUNCAO_COLABORADOR = ?;");
             final OffsetDateTime now = OffsetDateTime.now(Clock.systemUTC());
@@ -170,11 +170,9 @@ public final class QuizModeloDaoImpl extends DatabaseConnection implements QuizM
             stmt.setString(1, zoneId.getId());
             stmt.setString(2, zoneId.getId());
             stmt.setObject(3, now);
-            stmt.setString(4, zoneId.getId());
-            stmt.setObject(5, now);
-            stmt.setString(6, zoneId.getId());
-            stmt.setLong(7, codUnidade);
-            stmt.setLong(8, codFuncaoColaborador);
+            stmt.setObject(4, now);
+            stmt.setLong(5, codUnidade);
+            stmt.setLong(6, codFuncaoColaborador);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
                 final ModeloQuiz modelo = QuizModeloConverter.createModeloQuiz(rSet);

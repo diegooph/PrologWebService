@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.data;
 
-import br.com.zalf.prolog.webservice.errorhandling.error.ProLogError;
 import br.com.zalf.prolog.webservice.integracao.network.RestClient;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.*;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.error.ProtheusNepomucenoException;
@@ -94,10 +93,11 @@ public final class ProtheusNepomucenoRequesterImpl implements ProtheusNepomuceno
                     throw new ProtheusNepomucenoException(
                             "[INTEGRAÇÃO] Nenhuma resposta obtida do sistema Protheus-Nepomuceno");
                 }
-                final ProLogError proLogError = toProLogError(response.errorBody());
+                final ErrorResponseProtheusNepomuceno protheusNepomucenoError =
+                        toProtheusNepomucenoError(response.errorBody());
                 throw new ProtheusNepomucenoException(
-                        proLogError.getHttpStatusCode(),
-                        ProtheusNepomucenoException.getPrettyMessage(proLogError.getMessage()));
+                        protheusNepomucenoError.getErrorCode(),
+                        ProtheusNepomucenoException.getPrettyMessage(protheusNepomucenoError.getErrorMessage()));
             }
         } else {
             throw new ProtheusNepomucenoException(
@@ -106,10 +106,16 @@ public final class ProtheusNepomucenoRequesterImpl implements ProtheusNepomuceno
     }
 
     @NotNull
-    private ProLogError toProLogError(@NotNull final ResponseBody errorBody) {
+    private ErrorResponseProtheusNepomuceno toProtheusNepomucenoError(@NotNull final ResponseBody errorBody) {
         try {
             final String jsonErrorBody = errorBody.string();
-            return ProLogError.generateFromString(jsonErrorBody);
+            try {
+                return ErrorResponseProtheusNepomuceno.generateFromString(jsonErrorBody);
+            } catch (final Exception e) {
+                // Lançamos essa Exception para conseguirmos encapsular o JSON de erro que não foi convertido.
+                // Só assim conseguiremos tratar de forma mais eficaz.
+                throw new Exception("Erro ao realizar parse da mensagem de erro: " + jsonErrorBody, e);
+            }
         } catch (final Throwable t) {
             throw new ProtheusNepomucenoException(
                     "[INTEGRAÇÃO] Mensagem do sistema Protheus-Nepomuceno fora do padrão esperado",

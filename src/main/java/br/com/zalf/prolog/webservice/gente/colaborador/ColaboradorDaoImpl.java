@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.gente.colaborador;
 
 import br.com.zalf.prolog.webservice.Injection;
+import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
@@ -316,7 +317,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
 
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                final Colaborador c = createColaborador(rSet);
+                final Colaborador c = ColaboradorConverter.createColaborador(rSet);
                 c.setVisao(getVisaoByCpf(c.getCpf()));
                 return c;
             }
@@ -356,7 +357,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
             stmt.setString(1, token);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                final Colaborador c = createColaborador(rSet);
+                final Colaborador c = ColaboradorConverter.createColaborador(rSet);
                 c.setVisao(getVisaoByCpf(c.getCpf()));
                 return c;
             } else {
@@ -371,6 +372,30 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
     @Override
     public List<Colaborador> getAllByUnidade(@NotNull final Long codUnidade, final boolean apenasAtivos) throws Throwable {
         return internalGetAll(codUnidade, apenasAtivos, true);
+    }
+
+    @NotNull
+    @Override
+    public List<ColaboradorListagem> getAllByUnidades(@NotNull final List<Long> codUnidades,
+                                                      final boolean apenasAtivos) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_COLABORADOR_GET_ALL_BY_UNIDADES(F_COD_UNIDADES := ?," +
+                    " F_APENAS_ATIVOS := ?) AS COLABORADOR");
+            stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
+            stmt.setBoolean(2, apenasAtivos);
+            rSet = stmt.executeQuery();
+            final List<ColaboradorListagem> colaboradores = new ArrayList<>();
+            while (rSet.next()) {
+                colaboradores.add(ColaboradorConverter.createColaboradorListagem(rSet));
+            }
+            return colaboradores;
+        } finally {
+            close(conn, stmt, rSet);
+        }
     }
 
     @NotNull
@@ -434,7 +459,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
             stmt.setLong(1, codUnidade);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
-                final Colaborador c = createColaborador(rSet);
+                final Colaborador c = ColaboradorConverter.createColaborador(rSet);
                 list.add(c);
             }
         } finally {
@@ -495,7 +520,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
                     colaborador.setCpf(rSet.getLong("CPF"));
                     colaborador.setNome(rSet.getString("NOME_COLABORADOR"));
                     colaborador.setDataNascimento(rSet.getDate("DATA_NASCIMENTO"));
-                    colaborador.setFuncao(createFuncao(rSet));
+                    colaborador.setFuncao(ColaboradorConverter.createFuncao(rSet));
                     colaboradores.add(colaborador);
                 } while (rSet.next());
 
@@ -621,7 +646,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
             rSet = stmt.executeQuery();
             final List<Colaborador> colaboradores = new ArrayList<>();
             while (rSet.next()) {
-                colaboradores.add(createColaborador(rSet));
+                colaboradores.add(ColaboradorConverter.createColaborador(rSet));
             }
             return colaboradores;
         } finally {
@@ -655,77 +680,5 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
         }
         visao.setPilares(pilares);
         return visao;
-    }
-
-    private Cargo createFuncao(final ResultSet rSet) throws SQLException {
-        final Cargo f = new Cargo();
-        f.setCodigo(rSet.getLong("CODIGO_CARGO"));
-        f.setNome(rSet.getString("NOME_CARGO"));
-        return f;
-    }
-
-    private Colaborador createColaborador(final ResultSet rSet) throws SQLException {
-        final Colaborador c = new Colaborador();
-        c.setCodigo(rSet.getLong("CODIGO"));
-        c.setAtivo(rSet.getBoolean("STATUS_ATIVO"));
-
-        final Cargo cargo = new Cargo();
-        cargo.setCodigo(rSet.getLong("COD_FUNCAO"));
-        cargo.setNome(rSet.getString("NOME_FUNCAO"));
-        c.setFuncao(cargo);
-
-        final Empresa empresa = new Empresa();
-        empresa.setCodigo(rSet.getLong("COD_EMPRESA"));
-        empresa.setNome(rSet.getString("NOME_EMPRESA"));
-        empresa.setLogoThumbnailUrl(rSet.getString("LOGO_THUMBNAIL_URL"));
-        c.setEmpresa(empresa);
-
-        final Regional regional = new Regional();
-        regional.setCodigo(rSet.getLong("COD_REGIONAL"));
-        regional.setNome(rSet.getString("NOME_REGIONAL"));
-        c.setRegional(regional);
-
-        final Unidade unidade = new Unidade();
-        unidade.setCodigo(rSet.getLong("COD_UNIDADE"));
-        unidade.setNome(rSet.getString("NOME_UNIDADE"));
-        c.setUnidade(unidade);
-
-        final Equipe equipe = new Equipe();
-        equipe.setCodigo(rSet.getLong("COD_EQUIPE"));
-        equipe.setNome(rSet.getString("NOME_EQUIPE"));
-        c.setEquipe(equipe);
-
-        final Setor setor = new Setor();
-        setor.setCodigo(rSet.getLong("COD_SETOR"));
-        setor.setNome(rSet.getString("NOME_SETOR"));
-        c.setSetor(setor);
-
-        c.setCpf(rSet.getLong("CPF"));
-        c.setPis(rSet.getString("PIS"));
-        c.setDataNascimento(rSet.getDate("DATA_NASCIMENTO"));
-        c.setNome(rSet.getString("NOME_COLABORADOR"));
-        final int matriculaAmbev = rSet.getInt("MATRICULA_AMBEV");
-        if (!rSet.wasNull()) {
-            c.setMatriculaAmbev(matriculaAmbev);
-        }
-        final int matriculaTrans = rSet.getInt("MATRICULA_TRANS");
-        if (!rSet.wasNull()) {
-            c.setMatriculaTrans(matriculaTrans);
-        }
-        c.setDataAdmissao(rSet.getDate("DATA_ADMISSAO"));
-        c.setDataDemissao(rSet.getDate("DATA_DEMISSAO"));
-        c.setCodPermissao(rSet.getInt("PERMISSAO"));
-        c.setTzUnidade(rSet.getString("TZ_UNIDADE"));
-
-        if (rSet.getString("NUMERO_TELEFONE") != null) {
-            c.setTelefone(new ColaboradorTelefone(
-                    rSet.getString("SIGLA_ISO2"),
-                    rSet.getInt("PREFIXO_PAIS"),
-                    rSet.getString("NUMERO_TELEFONE")));
-        }
-
-        c.setEmail(rSet.getString("EMAIL"));
-
-        return c;
     }
 }

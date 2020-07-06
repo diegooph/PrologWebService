@@ -11,6 +11,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import test.br.com.zalf.prolog.webservice.BaseTest;
 
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -56,7 +57,7 @@ public class PneuTest extends BaseTest {
 
     @Test
     public void getPneusMovimentacao() throws Exception {
-        final List<Pneu> pneusAnalise = service.getPneusByCodUnidadeByStatus(5L, StatusPneu.ANALISE.asString());
+        final List<Pneu> pneusAnalise = service.getPneusByCodUnidadesByStatus(Collections.singletonList(5L), StatusPneu.ANALISE.asString());
         System.out.println(pneusAnalise);
         Assert.assertNotNull(pneusAnalise);
         Assert.assertFalse(pneusAnalise.isEmpty());

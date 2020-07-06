@@ -9,6 +9,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.integracao.router.RouterVeiculo;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -23,25 +24,40 @@ public final class VeiculoService {
     @NotNull
     private final VeiculoDao dao = Injection.provideVeiculoDao();
 
-    public List<Veiculo> getVeiculosAtivosByUnidade(String userToken, Long codUnidade, Boolean ativos) {
+    @NotNull
+    public List<VeiculoListagem> buscaVeiculosByUnidades(@NotNull final List<Long> codUnidades,
+                                                         final boolean apenasAtivos,
+                                                         @Nullable final Long codTipoVeiculo) {
         try {
-            return RouterVeiculo
-                    .create(dao, userToken)
-                    .getVeiculosAtivosByUnidade(codUnidade, ativos);
-        } catch (Exception e) {
-            Log.e(TAG, String.format("Erro ao buscar os veículos ativos da unidade. \n" +
-                    "Unidade: %d \n" +
-                    "userToken: %s", codUnidade, userToken), e);
-            throw new RuntimeException("Erro ao buscar os veículos ativos da unidade: " + codUnidade);
+            return dao.buscaVeiculosByUnidades(codUnidades, apenasAtivos, codTipoVeiculo);
+        } catch (final Throwable e) {
+            final String errorMessage = "Erro ao buscar os veículos da unidade.";
+            Log.e(TAG, String.format(errorMessage), e);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(e, errorMessage);
         }
     }
 
-    public Veiculo getVeiculoByPlaca(String userToken, String placa, boolean withPneus) {
+    public VeiculoVisualizacao buscaVeiculoByCodigo(@NotNull final String userToken,
+                                                    @NotNull final Long codVeiculo) throws ProLogException {
+        try {
+            return dao.buscaVeiculoByCodigo(codVeiculo);
+        } catch (final Throwable t) {
+            Log.e(TAG, String.format("Erro ao buscar o veículo. \n" +
+                    "código: %s \n" +
+                    "userToken: %s", codVeiculo, userToken), t);
+            return null;
+        }
+    }
+
+    @Deprecated
+    public Veiculo getVeiculoByPlaca(final String userToken, final String placa, final boolean withPneus) {
         try {
             return RouterVeiculo
                     .create(dao, userToken)
                     .getVeiculoByPlaca(placa, withPneus);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             Log.e(TAG, String.format("Erro ao buscar o veículo. \n" +
                     "Placa: %s \n" +
                     "withPneus: %b \n" +
@@ -53,16 +69,16 @@ public final class VeiculoService {
     public List<Eixos> getEixos() {
         try {
             return dao.getEixos();
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             Log.e(TAG, "Erro ao buscar os eixos", e);
             return null;
         }
     }
 
-    public List<Veiculo> getVeiculosAtivosByUnidadeByColaborador(Long cpf) {
+    public List<Veiculo> getVeiculosAtivosByUnidadeByColaborador(final Long cpf) {
         try {
             return dao.getVeiculosAtivosByUnidadeByColaborador(cpf);
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar os veículos ativos da unidade do colaborador. \n" +
                     "cpf: %s", cpf), e);
             return null;
@@ -147,10 +163,10 @@ public final class VeiculoService {
     }
 
     @Deprecated
-    public List<Marca> getMarcaModeloVeiculoByCodEmpresa(Long codEmpresa) {
+    public List<Marca> getMarcaModeloVeiculoByCodEmpresa(final Long codEmpresa) {
         try {
             return dao.getMarcaModeloVeiculoByCodEmpresa(codEmpresa);
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar as marcas e modelos dos veículos. \n" +
                     "Empresa: %d", codEmpresa), e);
             return new ArrayList<>();
@@ -183,7 +199,9 @@ public final class VeiculoService {
     }
 
     @NotNull
-    public Long insertModeloVeiculo(Modelo modelo, Long codEmpresa, Long codMarca) throws ProLogException {
+    public Long insertModeloVeiculo(final Modelo modelo,
+                                    final Long codEmpresa,
+                                    final Long codMarca) throws ProLogException {
         try {
             if (modelo.getNome().trim().isEmpty()) {
                 throw new NullPointerException("Erro!\nModelo sem nome.");
@@ -202,18 +220,18 @@ public final class VeiculoService {
     public Set<DiagramaVeiculo> getDiagramasVeiculo() {
         try {
             return dao.getDiagramasVeiculos();
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             Log.e(TAG, "Erro ao buscar os diagramas dos veículos.", e);
             return null;
         }
     }
 
-    public List<String> getVeiculosByTipo(Long codUnidade, String codTipo, String userToken) {
+    public List<String> getVeiculosByTipo(final Long codUnidade, final String codTipo, final String userToken) {
         try {
             return RouterVeiculo
                     .create(dao, userToken)
                     .getPlacasVeiculosByTipo(codUnidade, codTipo);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             Log.e(TAG, String.format("Erro ao buscar os veículos de um tipo específico. \n" +
                     "codUnidade: %d \n" +
                     "codTipo: %s \n" +
@@ -222,10 +240,10 @@ public final class VeiculoService {
         }
     }
 
-    public Modelo getModeloVeiculo(Long codUnidade, Long codModelo) {
+    public Modelo getModeloVeiculo(final Long codUnidade, final Long codModelo) {
         try {
             return dao.getModeloVeiculo(codUnidade, codModelo);
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar um modelo de veículo. \n" +
                     "codUnidade: %d \n" +
                     "codModelo: %s \n", codUnidade, codModelo), e);
@@ -233,10 +251,10 @@ public final class VeiculoService {
         }
     }
 
-    public boolean updateModelo(Modelo modelo, Long codUnidade, Long codMarca) {
+    public boolean updateModelo(final Modelo modelo, final Long codUnidade, final Long codMarca) {
         try {
             return dao.updateModelo(modelo, codUnidade, codMarca);
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             Log.e(TAG, String.format("Erro ao atualizar o modelo de veículo. \n" +
                     "codUnidade: %d \n" +
                     "codMarca: %d", codUnidade, codMarca), e);
@@ -244,14 +262,30 @@ public final class VeiculoService {
         }
     }
 
-    public boolean deleteModelo(Long codModelo, Long codUnidade) {
+    public boolean deleteModelo(final Long codModelo, final Long codUnidade) {
         try {
             return dao.deleteModelo(codModelo, codUnidade);
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             Log.e(TAG, String.format("Erro ao deletar o modelo de veículo. \n" +
                     "codUnidade: %d \n" +
                     "codModelo: %d", codUnidade, codModelo), e);
             return false;
+        }
+    }
+
+    @Deprecated
+    public List<Veiculo> getVeiculosAtivosByUnidade(final String userToken,
+                                                    final Long codUnidade,
+                                                    final Boolean ativos) {
+        try {
+            return RouterVeiculo
+                    .create(dao, userToken)
+                    .getVeiculosAtivosByUnidade(codUnidade, ativos);
+        } catch (final Exception e) {
+            Log.e(TAG, String.format("Erro ao buscar os veículos ativos da unidade. \n" +
+                    "Unidade: %d \n" +
+                    "userToken: %s", codUnidade, userToken), e);
+            throw new RuntimeException("Erro ao buscar os veículos ativos da unidade: " + codUnidade);
         }
     }
 }

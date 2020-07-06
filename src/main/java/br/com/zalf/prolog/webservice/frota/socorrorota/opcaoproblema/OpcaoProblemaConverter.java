@@ -16,7 +16,7 @@ import java.sql.SQLException;
  */
 public class OpcaoProblemaConverter {
     private OpcaoProblemaConverter() {
-        throw new IllegalStateException(VeiculoTransferenciaConverter.class.getSimpleName()
+        throw new IllegalStateException(OpcaoProblemaConverter.class.getSimpleName()
                 + "cannot be instantiated!");
     }
 

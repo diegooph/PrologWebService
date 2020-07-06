@@ -84,14 +84,16 @@ public interface AfericaoDao {
     Restricao getRestricaoByCodUnidade(@NotNull final Long codUnidade) throws Throwable;
 
     /**
-     * Retorna as restrições de medidas da placa.
+     * Retorna as restrições de medidas da unidade.
      *
-     * @param placa Placa do {@link Veiculo}.
-     * @return A {@link Restricao} da placa.
-     * @throws Throwable Se ocorrer erro no banco.
+     * @param conn       Conexão que será utilizada para buscar a restrição.
+     * @param codUnidade Código da unidade.
+     * @return A {@link Restricao} da unidade
+     * @throws Throwable Se ocorrer algum erro.
      */
     @NotNull
-    Restricao getRestricoesByPlaca(@NotNull final String placa) throws Throwable;
+    Restricao getRestricaoByCodUnidade(@NotNull final Connection conn,
+                                       @NotNull final Long codUnidade) throws Throwable;
 
     /**
      * Retorna a lista de placas das unidades selecionadas e também a meta de dias em que cada placa deve ser aferida.
@@ -163,7 +165,8 @@ public interface AfericaoDao {
      *
      * @param codUnidade     Código da {@link Unidade} que os dados serão buscados.
      * @param codColaborador O código do colaborador que realizou a aferição, pelo qual as buscas serão filtradas.
-     *                       É opcional.
+     *                       É opcional. Este código de colaborador é buscado dentro do ws, com base nas permissões
+     *                       do requisitante.
      * @param dataInicial    Data inicial do período de filtro.
      * @param dataFinal      Data final do período de filtro.
      * @return Um objeto {@link Report} com os dados filtrados.
@@ -195,4 +198,16 @@ public interface AfericaoDao {
      */
     @NotNull
     ConfiguracaoNovaAfericao getConfiguracaoNovaAfericao(@NotNull final String placa) throws Throwable;
+
+    /**
+     * @param placa Placa do {@link Veiculo}.
+     * @return A {@link Restricao} da placa.
+     * @throws Throwable Se ocorrer erro no banco.
+     * @deprecated em 2020-05-26. Use {@link #getRestricaoByCodUnidade(Long)}.
+     * <p>
+     * Retorna as restrições de medidas da placa.
+     */
+    @NotNull
+    @Deprecated
+    Restricao getRestricoesByPlaca(@NotNull final String placa) throws Throwable;
 }

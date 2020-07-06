@@ -1,12 +1,13 @@
 package br.com.zalf.prolog.webservice.frota.pneu.servico;
 
-import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu._model.PneuComum;
 import br.com.zalf.prolog.webservice.frota.pneu._model.PneuEstoque;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Sulcos;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.FormaColetaDadosAfericaoEnum;
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.*;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
@@ -39,7 +40,7 @@ final class ServicoConverter {
     static Servico createServico(@NotNull final ResultSet resultSet,
                                  final boolean incluirAtributosEspecificos) throws SQLException {
         final TipoServico tipo = TipoServico.fromString(resultSet.getString("TIPO_SERVICO"));
-        Servico servico;
+        final Servico servico;
         switch (tipo) {
             case CALIBRAGEM:
                 // O serviço de calibragem não possui nenhum atributo específico.
@@ -87,6 +88,7 @@ final class ServicoConverter {
     static QuantidadeServicosVeiculo createQtdServicosVeiculo(@NotNull final ResultSet resultSet) throws SQLException {
         final QuantidadeServicosVeiculo qtdServicosFechados = new QuantidadeServicosVeiculo();
         qtdServicosFechados.setPlacaVeiculo(resultSet.getString("PLACA_VEICULO"));
+        qtdServicosFechados.setIdentificadorFrota(resultSet.getString("IDENTIFICADOR_FROTA"));
         qtdServicosFechados.setQtdServicosCalibragem(resultSet.getInt("TOTAL_CALIBRAGENS"));
         qtdServicosFechados.setQtdServicosInspecao(resultSet.getInt("TOTAL_INSPECOES"));
         qtdServicosFechados.setQtdServicosMovimentacao(resultSet.getInt("TOTAL_MOVIMENTACOES"));
@@ -108,6 +110,7 @@ final class ServicoConverter {
     static VeiculoServico createVeiculoAberturaServico(@NotNull final ResultSet resultSet) throws SQLException {
         final VeiculoServico veiculo = new VeiculoServico();
         veiculo.setPlaca(resultSet.getString("PLACA_VEICULO"));
+        veiculo.setIdentificadorFrota(resultSet.getString("IDENTIFICADOR_FROTA"));
         veiculo.setKmAtual(resultSet.getLong("KM_ATUAL_VEICULO"));
         veiculo.setKmAberturaServico(resultSet.getInt("KM_ABERTURA_SERVICO"));
 
@@ -169,15 +172,22 @@ final class ServicoConverter {
                                                   @NotNull final Servico servico) throws SQLException {
         servico.setCodigo(resultSet.getLong("CODIGO_SERVICO"));
         servico.setCodUnidade(resultSet.getLong("COD_UNIDADE"));
-        final Colaborador colaborador = new Colaborador();
-        colaborador.setCpf(resultSet.getLong("CPF_RESPONSAVEL_FECHAMENTO"));
-        colaborador.setNome(resultSet.getString("NOME_RESPONSAVEL_FECHAMENTO"));
-        servico.setColaboradorResponsavelFechamento(colaborador);
         servico.setDataHoraAbertura(resultSet.getObject("DATA_HORA_ABERTURA", LocalDateTime.class));
         servico.setDataHoraFechamento(resultSet.getObject("DATA_HORA_FECHAMENTO", LocalDateTime.class));
         servico.setPlacaVeiculo(resultSet.getString("PLACA_VEICULO"));
+        servico.setIdentificadorFrota(resultSet.getString("IDENTIFICADOR_FROTA"));
         servico.setFechadoAutomaticamenteMovimentacao(resultSet.getBoolean("FECHADO_AUTOMATICAMENTE_MOVIMENTACAO"));
         servico.setFechadoAutomaticamenteIntegracao(resultSet.getBoolean("FECHADO_AUTOMATICAMENTE_INTEGRACAO"));
+        final String formaColetaDadosFechamento = resultSet.getString("FORMA_COLETA_DADOS_FECHAMENTO");
+        if (formaColetaDadosFechamento != null) {
+            servico.setFormaColetaDadosFechamento(FormaColetaDadosAfericaoEnum.fromString(formaColetaDadosFechamento));
+        }
+        if (!servico.isFechadoAutomaticamenteIntegracao() && !servico.isFechadoAutomaticamenteMovimentacao()) {
+            final Colaborador colaborador = new Colaborador();
+            colaborador.setCpf(resultSet.getLong("CPF_RESPONSAVEL_FECHAMENTO"));
+            colaborador.setNome(resultSet.getString("NOME_RESPONSAVEL_FECHAMENTO"));
+            servico.setColaboradorResponsavelFechamento(colaborador);
+        }
 
         // Cria pneu com problema, responsável por originar o serviço.
         final PneuComum pneuProblema = new PneuComum();

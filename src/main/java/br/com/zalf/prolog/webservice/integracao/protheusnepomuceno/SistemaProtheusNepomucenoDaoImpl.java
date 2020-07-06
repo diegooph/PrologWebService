@@ -12,15 +12,21 @@ import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosA
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosTipoVeiculoConfiguracaoAfericao;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosUnidadeRestricao;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static br.com.zalf.prolog.webservice.commons.util.StatementUtils.executeBatchAndValidate;
+import static br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.FormaColetaDadosAfericaoEnum.fromString;
 
 /**
  * Created on 12/03/20
@@ -28,6 +34,7 @@ import static br.com.zalf.prolog.webservice.commons.util.StatementUtils.executeB
  * @author Wellington Moraes (https://github.com/wvinim)
  */
 public final class SistemaProtheusNepomucenoDaoImpl extends DatabaseConnection implements SistemaProtheusNepomucenoDao {
+
     private static final int EXECUTE_BATCH_SUCCESS = 0;
 
     @NotNull
@@ -59,12 +66,14 @@ public final class SistemaProtheusNepomucenoDaoImpl extends DatabaseConnection i
     @Override
     public Long insert(@NotNull final Connection conn,
                        @NotNull final Long codUnidade,
+                       @NotNull final String codAuxiliarUnidade,
                        @NotNull final Afericao afericao) throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             stmt = conn.prepareStatement("SELECT * FROM INTEGRACAO.FUNC_PNEU_AFERICAO_INSERT_AFERICAO_INTEGRADA(" +
                     "F_COD_UNIDADE_PROLOG => ?," +
+                    "F_COD_AUXILIAR_UNIDADE => ?," +
                     "F_CPF_AFERIDOR => ?, " +
                     "F_PLACA_VEICULO => ?::TEXT, " +
                     "F_COD_AUXILIAR_TIPO_VEICULO_PROLOG => ?, " +
@@ -74,22 +83,23 @@ public final class SistemaProtheusNepomucenoDaoImpl extends DatabaseConnection i
                     "F_TIPO_MEDICAO_COLETADA => ?, " +
                     "F_TIPO_PROCESSO_COLETA => ?) AS COD_AFERICAO_INTEGRADA;");
             stmt.setLong(1, codUnidade);
-            stmt.setString(2, String.valueOf(afericao.getColaborador().getCpf()));
+            stmt.setString(2, codAuxiliarUnidade);
+            stmt.setString(3, String.valueOf(afericao.getColaborador().getCpf()));
             if (afericao instanceof AfericaoPlaca) {
                 final AfericaoPlaca afericaoPlaca = (AfericaoPlaca) afericao;
-                stmt.setString(3, afericaoPlaca.getVeiculo().getPlaca());
+                stmt.setString(4, afericaoPlaca.getVeiculo().getPlaca());
                 // Setamos o código auxiliar do tipo no nome do diagrama.
-                stmt.setString(4, afericaoPlaca.getVeiculo().getDiagrama().getNome());
-                stmt.setString(5, String.valueOf(afericaoPlaca.getKmMomentoAfericao()));
+                stmt.setString(5, afericaoPlaca.getVeiculo().getDiagrama().getNome());
+                stmt.setString(6, String.valueOf(afericaoPlaca.getKmMomentoAfericao()));
             } else {
-                stmt.setNull(3, Types.VARCHAR);
                 stmt.setNull(4, Types.VARCHAR);
                 stmt.setNull(5, Types.VARCHAR);
+                stmt.setNull(6, Types.VARCHAR);
             }
-            stmt.setLong(6, afericao.getTempoRealizacaoAfericaoInMillis());
-            stmt.setObject(7, afericao.getDataHora().atOffset(ZoneOffset.UTC));
-            stmt.setString(8, afericao.getTipoMedicaoColetadaAfericao().asString());
-            stmt.setString(9, afericao.getTipoProcessoColetaAfericao().asString());
+            stmt.setLong(7, afericao.getTempoRealizacaoAfericaoInMillis());
+            stmt.setObject(8, afericao.getDataHora().atOffset(ZoneOffset.UTC));
+            stmt.setString(9, afericao.getTipoMedicaoColetadaAfericao().asString());
+            stmt.setString(10, afericao.getTipoProcessoColetaAfericao().asString());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 final long codAfericaoIntegrada = rSet.getLong("COD_AFERICAO_INTEGRADA");
@@ -163,34 +173,34 @@ public final class SistemaProtheusNepomucenoDaoImpl extends DatabaseConnection i
 
     @NotNull
     @Override
-    public Map<String, InfosTipoVeiculoConfiguracaoAfericao> getInfosTipoVeiculoConfiguracaoAfericao(
+    public Table<String, String, InfosTipoVeiculoConfiguracaoAfericao> getInfosTipoVeiculoConfiguracaoAfericao(
             @NotNull final Connection conn,
             @NotNull final List<Long> codUnidades) throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            // TODO - Alterar essa funcition para retornar o 'padrão prolog' caso não tiver uma configuração já
-            //  pré-definida. Ainda não fizemos isso pois o Gustavo está alterando essa func em outra tarefa.
             stmt = conn.prepareStatement("select * " +
                     "from integracao.func_pneu_afericao_get_infos_configuracao_afericao(f_cod_unidades => ?);");
             stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                final Map<String, InfosTipoVeiculoConfiguracaoAfericao> tipoVeiculoConfiguracao = new HashMap<>();
+                final Table<String, String, InfosTipoVeiculoConfiguracaoAfericao> tipoVeiculoConfiguracao =
+                        HashBasedTable.create();
                 do {
                     tipoVeiculoConfiguracao.put(
-                            rSet.getString("COD_AUXILIAR"),
+                            rSet.getString("COD_AUXILIAR_UNIDADE"),
+                            rSet.getString("COD_AUXILIAR_TIPO_VEICULO"),
                             new InfosTipoVeiculoConfiguracaoAfericao(
                                     rSet.getLong("COD_UNIDADE"),
                                     rSet.getLong("COD_TIPO_VEICULO"),
-                                    rSet.getBoolean("PODE_AFERIR_SULCO"),
-                                    rSet.getBoolean("PODE_AFERIR_PRESSAO"),
-                                    rSet.getBoolean("PODE_AFERIR_SULCO_PRESSAO"),
+                                    fromString(rSet.getString("FORMA_COLETA_DADOS_SULCO")),
+                                    fromString(rSet.getString("FORMA_COLETA_DADOS_PRESSAO")),
+                                    fromString(rSet.getString("FORMA_COLETA_DADOS_SULCO_PRESSAO")),
                                     rSet.getBoolean("PODE_AFERIR_ESTEPE")));
                 } while (rSet.next());
                 return tipoVeiculoConfiguracao;
             } else {
-                return Collections.emptyMap();
+                return HashBasedTable.create();
             }
         } finally {
             close(stmt, rSet);
@@ -255,9 +265,9 @@ public final class SistemaProtheusNepomucenoDaoImpl extends DatabaseConnection i
             if (rSet.next()) {
                 //noinspection DuplicatedCode
                 return new ConfiguracaoNovaAfericaoPlaca(
-                        rSet.getBoolean("PODE_AFERIR_SULCO"),
-                        rSet.getBoolean("PODE_AFERIR_PRESSAO"),
-                        rSet.getBoolean("PODE_AFERIR_SULCO_PRESSAO"),
+                        fromString(rSet.getString("FORMA_COLETA_DADOS_SULCO")),
+                        fromString(rSet.getString("FORMA_COLETA_DADOS_PRESSAO")),
+                        fromString(rSet.getString("FORMA_COLETA_DADOS_SULCO_PRESSAO")),
                         rSet.getBoolean("PODE_AFERIR_ESTEPE"),
                         rSet.getDouble("SULCO_MINIMO_DESCARTE"),
                         rSet.getDouble("SULCO_MINIMO_RECAPAGEM"),
@@ -373,17 +383,23 @@ public final class SistemaProtheusNepomucenoDaoImpl extends DatabaseConnection i
 
     @NotNull
     @Override
-    public String getCodFiliais(@NotNull final Connection conn,
-                                @NotNull final List<Long> codUnidades) throws Throwable {
+    public Map<Long, String> getCodFiliais(@NotNull final Connection conn,
+                                           @NotNull final List<Long> codUnidades) throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            stmt = conn.prepareStatement("SELECT STRING_AGG(DISTINCT COD_AUXILIAR, ',') AS COD_AUXILIAR " +
-                    "FROM PUBLIC.UNIDADE WHERE CODIGO = ANY(?);");
+            stmt = conn.prepareStatement("select * " +
+                    "from integracao.func_pneu_afericao_get_cod_auxiliar_unidade_prolog(f_cod_unidades => ?);");
             stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                return rSet.getString("COD_AUXILIAR");
+                final Map<Long, String> codUnidadePrologCodAuxiliar = new HashMap<>();
+                do {
+                    codUnidadePrologCodAuxiliar.put(
+                            rSet.getLong("COD_UNIDADE_PROLOG"),
+                            rSet.getString("COD_AUXILIAR"));
+                } while (rSet.next());
+                return codUnidadePrologCodAuxiliar;
             } else {
                 throw new SQLException("Nenhum código de filial mapeado para as unidades:\n" +
                         "codUnidades: " + codUnidades.toString());
@@ -443,7 +459,7 @@ public final class SistemaProtheusNepomucenoDaoImpl extends DatabaseConnection i
                             "F_ALTURA_SULCO_CENTRAL_EXTERNO => ?::REAL, " +
                             "F_ALTURA_SULCO_EXTERNO => ?::REAL, " +
                             "F_POSICAO_PROLOG => ?::INTEGER) AS COD_AFERICAO_INTEGRADA;");
-            for (Pneu pneu : afericao.getPneusAferidos()) {
+            for (final Pneu pneu : afericao.getPneusAferidos()) {
                 stmt.setLong(1, codAfericaoInserida);
                 stmt.setString(2, String.valueOf(pneu.getCodigo()));
                 stmt.setString(3, String.valueOf(pneu.getCodigoCliente()));
@@ -501,4 +517,5 @@ public final class SistemaProtheusNepomucenoDaoImpl extends DatabaseConnection i
                 rSet.getString("PLACA_APLICADO_QUANDO_AFERIDO")
         );
     }
+
 }

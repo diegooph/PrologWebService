@@ -10,9 +10,9 @@ import org.jetbrains.annotations.NotNull;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -26,48 +26,77 @@ import static br.com.zalf.prolog.webservice.commons.util.StatementUtils.bindValu
 public final class ConfiguracaoAfericaoDaoImpl extends DatabaseConnection implements ConfiguracaoAfericaoDao {
     private static final int EXECUTE_BATCH_SUCCESS = 0;
 
-    public ConfiguracaoAfericaoDaoImpl() {
-
-    }
-
     @Override
     public void insertOrUpdateConfiguracoesTiposVeiculosAferiveis(
             @NotNull final Long codUnidade,
-            @NotNull final List<ConfiguracaoTipoVeiculoAferivel> configuracoes) throws Throwable {
+            @NotNull final List<ConfiguracaoTipoVeiculoAferivelInsercao> configuracoes) throws Throwable {
         Connection conn = null;
+        PreparedStatement stmt = null;
         try {
-            conn = getConnection();
-            for (final ConfiguracaoTipoVeiculoAferivel configuracao : configuracoes) {
-                // Garantimos que se um código for == NULL se trata de uma configuração NOVA
-                // Então fazemos um insert, caso contrário um update.
-                if (configuracao.getCodigo() == null) {
-                    insertConfiguracaoTipoVeiculo(conn, codUnidade, configuracao);
-                } else {
-                    updateCondiguracaoTipoVeiculo(conn, codUnidade, configuracao);
-                }
+            if (configuracoes.isEmpty()) {
+                return;
             }
+            conn = getConnection();
+            conn.setAutoCommit(false);
+            stmt = conn.prepareStatement("SELECT FUNC_AFERICAO_CONFIGURACOES_VEICULO_AFERIVEL_INSERE(" +
+                    "F_COD_CONFIGURACAO => ?," +
+                    "F_COD_UNIDADE => ?," +
+                    "F_COD_TIPO_VEICULO => ?," +
+                    "F_PODE_AFERIR_ESTEPE => ?," +
+                    "F_FORMA_COLETA_DADOS_PRESSAO => ?," +
+                    "F_FORMA_COLETA_DADOS_SULCO => ?," +
+                    "F_FORMA_COLETA_DADOS_SULCO_PRESSAO => ?," +
+                    "F_FORMA_COLETA_DADOS_FECHAMENTO_SERVICO => ?);");
+            int totalUpserts = 0;
+            for (final ConfiguracaoTipoVeiculoAferivelInsercao configuracao : configuracoes) {
+                bindValueOrNull(stmt, 1, configuracao.getCodConfiguracao(), SqlType.BIGINT);
+                stmt.setLong(2, codUnidade);
+                stmt.setLong(3, configuracao.getCodTipoVeiculo());
+                stmt.setBoolean(4, configuracao.isPodeAferirEstepe());
+                stmt.setString(5, configuracao.getFormaColetaDadosPressao().toString());
+                stmt.setString(6, configuracao.getFormaColetaDadosSulco().toString());
+                stmt.setString(7, configuracao.getFormaColetaDadosSulcoPressao().toString());
+                stmt.setString(8, configuracao.getFormaColetaDadosFechamentoServico().toString());
+                stmt.addBatch();
+                totalUpserts++;
+            }
+            StatementUtils.executeBatchAndValidate(
+                    stmt,
+                    totalUpserts,
+                    EXECUTE_BATCH_SUCCESS,
+                    "Erro ao inserir configurações de tipo de veículo aferível");
+            conn.commit();
+        } catch (final Throwable t) {
+            if (conn != null) {
+                conn.rollback();
+            }
+            throw t;
         } finally {
-            close(conn);
+            close(conn, stmt);
         }
     }
 
     @NotNull
     @Override
-    public List<ConfiguracaoTipoVeiculoAferivel> getConfiguracoesTipoAfericaoVeiculo(
+    public List<ConfiguracaoTipoVeiculoAferivelListagem> getConfiguracoesTipoAfericaoVeiculo(
             @NotNull final Long codUnidade) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_AFERICAO_GET_CONFIG_TIPO_AFERICAO_VEICULO(?);");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_AFERICAO_GET_CONFIG_TIPO_AFERICAO_VEICULO(" +
+                    "F_COD_UNIDADE => ?);");
             stmt.setLong(1, codUnidade);
             rSet = stmt.executeQuery();
-            final List<ConfiguracaoTipoVeiculoAferivel> configTipoAfericao = new ArrayList<>();
-            while (rSet.next()) {
-                configTipoAfericao.add(ConfiguracaoConverter.createConfiguracaoTipoVeiculoAfericao(rSet));
+            if (rSet.next()) {
+                final List<ConfiguracaoTipoVeiculoAferivelListagem> configsTipoAfericao = new ArrayList<>();
+                do {
+                    configsTipoAfericao.add(ConfiguracaoConverter.createConfiguracaoTipoVeiculoAfericaoListagem(rSet));
+                } while (rSet.next());
+                return configsTipoAfericao;
             }
-            return configTipoAfericao;
+            return Collections.emptyList();
         } finally {
             close(conn, stmt, rSet);
         }
@@ -232,54 +261,4 @@ public final class ConfiguracaoAfericaoDaoImpl extends DatabaseConnection implem
         }
     }
 
-    private void insertConfiguracaoTipoVeiculo(
-            @NotNull final Connection conn,
-            @NotNull final Long codUnidade,
-            @NotNull final ConfiguracaoTipoVeiculoAferivel configuracao) throws Throwable {
-        PreparedStatement stmt = null;
-        try {
-            stmt = conn.prepareStatement("INSERT INTO AFERICAO_CONFIGURACAO_TIPO_AFERICAO_VEICULO " +
-                    "(COD_UNIDADE, COD_TIPO_VEICULO, PODE_AFERIR_SULCO, " +
-                    "PODE_AFERIR_PRESSAO, PODE_AFERIR_SULCO_PRESSAO, PODE_AFERIR_ESTEPE) " +
-                    "VALUES (?, ?, ?, ?, ?, ?);");
-            stmt.setLong(1, codUnidade);
-            stmt.setLong(2, configuracao.getTipoVeiculo().getCodigo());
-            stmt.setBoolean(3, configuracao.isPodeAferirSulco());
-            stmt.setBoolean(4, configuracao.isPodeAferirPressao());
-            stmt.setBoolean(5, configuracao.isPodeAferirSulcoPressao());
-            stmt.setBoolean(6, configuracao.isPodeAferirEstepe());
-            if (stmt.executeUpdate() == 0) {
-                throw new SQLException("Erro ao inserir item na tabela escala");
-            }
-        } finally {
-            close(stmt);
-        }
-    }
-
-    private boolean updateCondiguracaoTipoVeiculo(
-            @NotNull final Connection conn,
-            @NotNull final Long codUnidade,
-            @NotNull final ConfiguracaoTipoVeiculoAferivel configuracao) throws Throwable {
-        PreparedStatement stmt = null;
-        try {
-            stmt = conn.prepareStatement("UPDATE AFERICAO_CONFIGURACAO_TIPO_AFERICAO_VEICULO " +
-                    "SET PODE_AFERIR_SULCO = ?, " +
-                    "  PODE_AFERIR_PRESSAO = ?, " +
-                    "  PODE_AFERIR_SULCO_PRESSAO = ?, " +
-                    "  PODE_AFERIR_ESTEPE = ? " +
-                    "WHERE COD_UNIDADE = ? AND COD_TIPO_VEICULO = ?;");
-            stmt.setBoolean(1, configuracao.isPodeAferirSulco());
-            stmt.setBoolean(2, configuracao.isPodeAferirPressao());
-            stmt.setBoolean(3, configuracao.isPodeAferirSulcoPressao());
-            stmt.setBoolean(4, configuracao.isPodeAferirEstepe());
-            stmt.setLong(5, codUnidade);
-            stmt.setLong(6, configuracao.getTipoVeiculo().getCodigo());
-            if (stmt.executeUpdate() == 0) {
-                return false;
-            }
-        } finally {
-            close(stmt);
-        }
-        return true;
-    }
 }
