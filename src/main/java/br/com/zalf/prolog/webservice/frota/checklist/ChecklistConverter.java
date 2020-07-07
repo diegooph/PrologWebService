@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.frota.checklist;
 
-import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
@@ -9,6 +8,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.*;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.*;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.OLD.ItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import com.google.common.annotations.VisibleForTesting;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -72,6 +72,34 @@ public final class ChecklistConverter {
         return checklist;
     }
 
+    @NotNull
+    public static ChecklistListagem createChecklistListagem(@NotNull final ResultSet rSet) throws Throwable {
+        return new ChecklistListagem(
+                rSet.getLong("COD_CHECKLIST"),
+                rSet.getLong("COD_CHECKLIST_MODELO"),
+                rSet.getLong("COD_VERSAO_CHECKLIST_MODELO"),
+                rSet.getObject("DATA_HORA_REALIZACAO", LocalDateTime.class),
+                rSet.getObject("DATA_HORA_IMPORTADO_PROLOG", LocalDateTime.class),
+                rSet.getLong("KM_VEICULO_MOMENTO_REALIZACAO"),
+                rSet.getLong("DURACAO_REALIZACAO_MILLIS"),
+                rSet.getLong("COD_COLABORADOR"),
+                rSet.getLong("CPF_COLABORADOR"),
+                rSet.getString("NOME_COLABORADOR"),
+                rSet.getLong("COD_VEICULO"),
+                rSet.getString("PLACA_VEICULO"),
+                rSet.getString("IDENTIFICADOR_FROTA"),
+                TipoChecklist.fromChar(rSet.getString("TIPO_CHECKLIST").charAt(0)),
+                rSet.getInt("TOTAL_PERGUNTAS_OK"),
+                rSet.getInt("TOTAL_PERGUNTAS_NOK"),
+                rSet.getInt("TOTAL_ALTERNATIVAS_OK"),
+                rSet.getInt("TOTAL_ALTERNATIVAS_NOK"),
+                rSet.getInt("TOTAL_MIDIAS_PERGUNTAS_OK"),
+                rSet.getInt("TOTAL_MIDIAS_ALTERNATIVAS_NOK"),
+                rSet.getInt("TOTAL_NOK_BAIXA"),
+                rSet.getInt("TOTAL_NOK_ALTA"),
+                rSet.getInt("TOTAL_NOK_CRITICA"));
+    }
+
     @VisibleForTesting
     @NotNull
     public static List<PerguntaRespostaChecklist> createPerguntasRespostasChecklist(
@@ -131,7 +159,7 @@ public final class ChecklistConverter {
     }
 
     @NotNull
-    static PerguntaRespostaChecklist createPergunta(ResultSet rSet) throws SQLException {
+    static PerguntaRespostaChecklist createPergunta(final ResultSet rSet) throws SQLException {
         final PerguntaRespostaChecklist pergunta = new PerguntaRespostaChecklist();
         pergunta.setCodigo(rSet.getLong("COD_PERGUNTA"));
         pergunta.setOrdemExibicao(rSet.getInt("ORDEM_PERGUNTA"));
@@ -333,5 +361,21 @@ public final class ChecklistConverter {
         } else {
             alternativa.selected = false;
         }
+    }
+
+    @NotNull
+    public static MidiaResposta createMidiaPergunta(@NotNull final ResultSet rSet) throws SQLException {
+        return new MidiaResposta(
+                rSet.getString("UUID_MIDIA_PERGUNTA_OK"),
+                rSet.getString("URL_MIDIA_PERGUNTA_OK"),
+                rSet.getString("TIPO_MIDIA_PERGUNTA_OK"));
+    }
+
+    @NotNull
+    public static MidiaResposta createMidiaAlternativa(@NotNull final ResultSet rSet) throws SQLException {
+        return new MidiaResposta(
+                rSet.getString("UUID_MIDIA_ALTERNATIVA"),
+                rSet.getString("URL_MIDIA_ALTERNATIVA"),
+                rSet.getString("TIPO_MIDIA_ALTERNATIVA"));
     }
 }

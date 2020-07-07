@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.checklist;
 
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.ChecklistListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.model.FiltroRegionalUnidadeChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
@@ -27,7 +28,7 @@ public interface ChecklistDao {
      * @param foiOffline  Indica se esse checklist foi realizado de forma offline.
      * @param deveAbrirOs Valor que indica se o checklist deve abrir Ordem de Serviço ou não.
      * @return código do checklist recém inserido.
-     * @throws SQLException caso não seja possível inserir o checklist no banco de dados
+     * @throws Throwable Caso qualquer erro ocorrer.
      */
     @NotNull
     Long insert(@NotNull final Connection conn,
@@ -39,16 +40,46 @@ public interface ChecklistDao {
      * Insere um checklist no BD salvando na tabela CHECKLIST e chamando métodos
      * especificos que salvam as respostas do map na tabela CHECKLIST_RESPOSTAS.
      *
-     * @param checklist um checklist
+     * @param checklist   um checklist
      * @param foiOffline  Indica se esse checklist foi realizado de forma offline.
      * @param deveAbrirOs Valor que indica se o checklist deve abrir Ordem de Serviço ou não.
      * @return código do checklist recém inserido
-     * @throws SQLException caso não seja possível inserir o checklist no banco de dados
+     * @throws Throwable Caso não seja possível inserir o checklist no banco de dados
      */
     @NotNull
     Long insert(@NotNull final ChecklistInsercao checklist,
                 final boolean foiOffline,
                 final boolean deveAbrirOs) throws Throwable;
+
+    /**
+     * Insere a imagem de um checklist realizado. Vinculando a {@code urlMidia} da mídia fornecida ao
+     * {@code codChecklist} e {@code codPergunta}.
+     *
+     * @param uuidMidia    UUID único dessa mídia.
+     * @param codChecklist código do checklist no qual a mídia foi anexada.
+     * @param codPergunta  código da pergunta na qual a mídia foi anexada.
+     * @param urlMidia     url da imagem que está sendo salva.
+     * @throws Throwable caso algum erro aconteça.
+     */
+    void insertMidiaPerguntaChecklistRealizado(@NotNull final String uuidMidia,
+                                               @NotNull final Long codChecklist,
+                                               @NotNull final Long codPergunta,
+                                               @NotNull final String urlMidia) throws Throwable;
+
+    /**
+     * Insere a imagem de um checklist realizado. Vinculando a {@code urlMidia} da mídia fornecida ao
+     * {@code codChecklist} e {@code codAlternativa}.
+     *
+     * @param uuidMidia      UUID único dessa mídia.
+     * @param codChecklist   código do checklist no qual a mídia foi anexada.
+     * @param codAlternativa código da alternativa na qual a mídia foi anexada.
+     * @param urlMidia       url da imagem que está sendo salva.
+     * @throws Throwable caso algum erro aconteça.
+     */
+    void insertMidiaAlternativaChecklistRealizado(@NotNull final String uuidMidia,
+                                                  @NotNull final Long codChecklist,
+                                                  @NotNull final Long codAlternativa,
+                                                  @NotNull final String urlMidia) throws Throwable;
 
     /**
      * Busca um checklist pelo seu código único.
@@ -61,34 +92,33 @@ public interface ChecklistDao {
     Checklist getByCod(@NotNull final Long codChecklist) throws SQLException;
 
     /**
-     * Busca todos os checklists, respeitando os filtros aplicados (recebidos por parâmetro).
+     * Busca os checklists realizados por um colaborador.
      *
-     * @return uma {@link List<Checklist> lista de checklists}.
+     * @return uma {@link List<ChecklistListagem> lista de checklists}.
      * @throws SQLException caso não seja possível realizar a busca.
      */
     @NotNull
-    List<Checklist> getAll(@NotNull final Long codUnidade,
-                           @Nullable final Long codEquipe,
-                           @Nullable final Long codTipoVeiculo,
-                           @Nullable final String placaVeiculo,
-                           final long dataInicial,
-                           final long dataFinal,
-                           final int limit,
-                           final long offset,
-                           final boolean resumido) throws SQLException;
+    List<ChecklistListagem> getListagemByColaborador(@NotNull final Long codColaborador,
+                                                     @NotNull final LocalDate dataInicial,
+                                                     @NotNull final LocalDate dataFinal,
+                                                     final int limit,
+                                                     final long offset) throws Throwable;
 
     /**
-     * Busca os checklists realizados por um colaborador.
+     * Busca todos os checklists, respeitando os filtros aplicados (recebidos por parâmetro).
      *
-     * @return uma {@link List<Checklist> lista de checklists}.
+     * @return uma {@link List<ChecklistListagem> lista de checklists}.
      * @throws SQLException caso não seja possível realizar a busca.
      */
-    List<Checklist> getByColaborador(@NotNull final Long cpf,
-                                     @NotNull final Long dataInicial,
-                                     @NotNull final Long dataFinal,
-                                     final int limit,
-                                     final long offset,
-                                     final boolean resumido) throws SQLException;
+    @NotNull
+    List<ChecklistListagem> getListagem(@NotNull final Long codUnidade,
+                                        @Nullable final Long codEquipe,
+                                        @Nullable final Long codTipoVeiculo,
+                                        @Nullable final Long codVeiculo,
+                                        @NotNull final LocalDate dataInicial,
+                                        @NotNull final LocalDate dataFinal,
+                                        final int limit,
+                                        final long offset) throws Throwable;
 
     /**
      * Busca as regionais e unidades que o colaborador de código fornecido tem acesso. Isso é verificado com base na
@@ -131,4 +161,40 @@ public interface ChecklistDao {
      * @throws Throwable Caso ocorrer algum erro na busca dos dados.
      */
     boolean getChecklistDiferentesUnidadesAtivoEmpresa(@NotNull final Long codEmpresa) throws Throwable;
+
+    /**
+     * Busca todos os checklists, respeitando os filtros aplicados (recebidos por parâmetro).
+     *
+     * @return uma {@link List<Checklist> lista de checklists}.
+     * @throws SQLException caso não seja possível realizar a busca.
+     * @deprecated at 2020-06-08.
+     * Use {@link ChecklistDao#getListagem(Long, Long, Long, String, LocalDate, LocalDate, int, long)} instead.
+     */
+    @NotNull
+    @Deprecated
+    List<Checklist> getAll(@NotNull final Long codUnidade,
+                           @Nullable final Long codEquipe,
+                           @Nullable final Long codTipoVeiculo,
+                           @Nullable final String placaVeiculo,
+                           final long dataInicial,
+                           final long dataFinal,
+                           final int limit,
+                           final long offset,
+                           final boolean resumido) throws SQLException;
+
+    /**
+     * Busca os checklists realizados por um colaborador.
+     *
+     * @return uma {@link List<Checklist> lista de checklists}.
+     * @throws SQLException caso não seja possível realizar a busca.
+     * @deprecated at 2020-06-08.
+     * Use {@link ChecklistDao#getListagemByColaborador(Long, LocalDate, LocalDate, int, long)} instead.
+     */
+    @Deprecated
+    List<Checklist> getByColaborador(@NotNull final Long cpf,
+                                     @NotNull final Long dataInicial,
+                                     @NotNull final Long dataFinal,
+                                     final int limit,
+                                     final long offset,
+                                     final boolean resumido) throws SQLException;
 }

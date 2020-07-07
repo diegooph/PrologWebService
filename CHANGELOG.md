@@ -6,6 +6,9 @@ Change Log
 
 ### Features
 * Implementa tratamento de erros para o import dos mapas (PL-2410)
+* Salva total de fotos que foram capturadas no processo de realização do checklist (PL-2708)
+* Cria método de upload de fotos capturadas no checklist para o S3 (PL-2710)
+* Adiciona possibilidade de parametrização de fotos no check no cadastro e edição de modelos (PL-1504)
 
 ## Refactors
 * Adiciona possibilidade de listar colaboradores, veículos e pneus por múltiplas unidades (PL-2695)
@@ -17,6 +20,9 @@ Change Log
 * Adiciona identificador frota nos objetos de aferição de pneus (PL-2760)
 * Adiciona identificador frota no objeto PneuEmUso (PL-2760)
 * Adiciona custo de seviços no relatório de dados gerais de movimentação (PL-2733)
+* Implementa a estrutura de parametrização de fotos na busca de modelos de checklist (PL-2272)
+* Cria uma nova listagem otimizada de checklists realizados, mantendo a compatibilidade (PL-2773)
+* Adiciona a lista de mídias na visualização de checklists realizados (PL-2774)
 
 <a name="v1.0.32"></a>
 ## Version [v1.0.32](https://github.com/luizfp/PrologWebService/compare/v1.0.31...v1.0.32) (2020-06-10)

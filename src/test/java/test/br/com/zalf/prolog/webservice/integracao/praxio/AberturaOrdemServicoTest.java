@@ -15,6 +15,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistIns
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistResposta;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloService;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.AlternativaModeloChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.AnexoMidiaChecklistEnum;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.AlternativaModeloChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ModeloChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.PerguntaModeloChecklistInsercao;
@@ -1039,20 +1040,23 @@ public final class AberturaOrdemServicoTest extends BaseTest {
                     PrioridadeAlternativa.ALTA,
                     false,
                     1,
-                    true));
+                    true,
+                    AnexoMidiaChecklistEnum.BLOQUEADO));
             // A2.
             alternativas.add(new AlternativaModeloChecklistInsercao(
                     "Outros",
                     PrioridadeAlternativa.CRITICA,
                     true,
                     2,
-                    true));
+                    true,
+                    AnexoMidiaChecklistEnum.BLOQUEADO));
 
             perguntasModelo.add(new PerguntaModeloChecklistInsercao(
                     "P1",
                     1L,
                     1,
                     true,
+                    AnexoMidiaChecklistEnum.BLOQUEADO,
                     alternativas));
         }
 
@@ -1065,20 +1069,23 @@ public final class AberturaOrdemServicoTest extends BaseTest {
                     PrioridadeAlternativa.ALTA,
                     false,
                     1,
-                    true));
+                    true,
+                    AnexoMidiaChecklistEnum.BLOQUEADO));
             // B2.
             alternativas.add(new AlternativaModeloChecklistInsercao(
                     "Outros",
                     PrioridadeAlternativa.BAIXA,
                     true,
                     2,
-                    true));
+                    true,
+                    AnexoMidiaChecklistEnum.BLOQUEADO));
 
             perguntasModelo.add(new PerguntaModeloChecklistInsercao(
                     "P2",
                     null,
                     2,
                     false,
+                    AnexoMidiaChecklistEnum.BLOQUEADO,
                     alternativas));
         }
 
@@ -1165,7 +1172,9 @@ public final class AberturaOrdemServicoTest extends BaseTest {
                 "device didID",
                 "deviceImei",
                 10000,
-                11000);
+                11000,
+                0,
+                0);
     }
 
     @NotNull
@@ -1242,7 +1251,9 @@ public final class AberturaOrdemServicoTest extends BaseTest {
                 "device didID",
                 "deviceImei",
                 10000,
-                11000);
+                11000,
+                0,
+                0);
     }
 
     private void permiteSincronizarModeloChecklist(

@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.frota.checklist.mudancaestrutura;
 
-import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.FonteDataHora;
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
@@ -17,8 +16,10 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.TipoChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistAlternativaResposta;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistResposta;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.AnexoMidiaChecklistEnum;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.realizacao.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -120,7 +121,8 @@ public final class ChecklistMigracaoEstruturaSuporte {
                             a.getAlternativa(),
                             a.isTipoOutros(),
                             a.getOrdemExibicao(),
-                            a.getPrioridade()))
+                            a.getPrioridade(),
+                            AnexoMidiaChecklistEnum.BLOQUEADO))
                     .collect(Collectors.toList());
             perguntas.add(new PerguntaRealizacaoChecklist(
                     pAntiga.getCodigo(),
@@ -129,6 +131,7 @@ public final class ChecklistMigracaoEstruturaSuporte {
                     pAntiga.getUrl(),
                     pAntiga.getOrdemExibicao(),
                     pAntiga.isSingleChoice(),
+                    AnexoMidiaChecklistEnum.BLOQUEADO,
                     alternativas));
         }
 
@@ -244,6 +247,8 @@ public final class ChecklistMigracaoEstruturaSuporte {
                 versaoApp,
                 null,
                 null,
+                0,
+                0,
                 0,
                 0);
     }

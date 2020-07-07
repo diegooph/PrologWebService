@@ -13,16 +13,26 @@ import java.util.List;
 public abstract class PerguntaModeloChecklist {
     @NotNull
     public abstract Long getCodigo();
+
     @NotNull
     public abstract Long getCodigoContexto();
+
     @NotNull
     public abstract String getDescricao();
+
     @Nullable
     public abstract Long getCodImagem();
+
     @Nullable
     public abstract String getUrlImagem();
+
     public abstract int getOrdemExibicao();
+
     public abstract boolean isSingleChoice();
+
+    @NotNull
+    public abstract AnexoMidiaChecklistEnum getAnexoMidiaRespostaOk();
+
     @NotNull
     public abstract List<AlternativaModeloChecklist> getAlternativas();
 }

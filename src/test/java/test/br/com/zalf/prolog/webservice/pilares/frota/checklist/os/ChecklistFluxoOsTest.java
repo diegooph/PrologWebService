@@ -1,6 +1,5 @@
 package test.br.com.zalf.prolog.webservice.pilares.frota.checklist.os;
 
-import br.com.zalf.prolog.webservice.gente.colaborador.model.Cargo;
 import br.com.zalf.prolog.webservice.commons.FonteDataHora;
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
 import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
@@ -17,6 +16,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistIns
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistResposta;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloService;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.AlternativaModeloChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.AnexoMidiaChecklistEnum;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.ModeloChecklistEdicao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.PerguntaModeloChecklistEdicao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.AlternativaModeloChecklistInsercao;
@@ -26,6 +26,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.Resul
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.visualizacao.ModeloChecklistVisualizacao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.visualizacao.PerguntaModeloChecklistVisualizacao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Cargo;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.jetbrains.annotations.NotNull;
@@ -62,6 +63,15 @@ public class ChecklistFluxoOsTest extends BaseTest {
     private ChecklistModeloService service;
     private String token;
 
+    @NotNull
+    private static List<PerguntaModeloChecklistEdicao> jsonToCollection(@NotNull final Gson gson,
+                                                                        @NotNull final String json) {
+        final Type type = new TypeToken<List<PerguntaModeloChecklistEdicao>>() {
+        }.getType();
+        return gson.fromJson(json, type);
+    }
+
+    @Override
     @BeforeAll
     public void initialize() throws Throwable {
         DatabaseManager.init();
@@ -69,6 +79,7 @@ public class ChecklistFluxoOsTest extends BaseTest {
         service = new ChecklistModeloService();
     }
 
+    @Override
     @AfterAll
     public void destroy() {
         DatabaseManager.finish();
@@ -91,20 +102,23 @@ public class ChecklistFluxoOsTest extends BaseTest {
                     PrioridadeAlternativa.ALTA,
                     false,
                     1,
-                    false));
+                    false,
+                    AnexoMidiaChecklistEnum.BLOQUEADO));
             // A2.
             alternativas.add(new AlternativaModeloChecklistInsercao(
                     "Outros",
                     PrioridadeAlternativa.CRITICA,
                     true,
                     2,
-                    true));
+                    true,
+                    AnexoMidiaChecklistEnum.BLOQUEADO));
 
             perguntas.add(new PerguntaModeloChecklistInsercao(
                     "P1",
                     1L,
                     1,
                     true,
+                    AnexoMidiaChecklistEnum.BLOQUEADO,
                     alternativas));
         }
 
@@ -118,20 +132,23 @@ public class ChecklistFluxoOsTest extends BaseTest {
                     PrioridadeAlternativa.ALTA,
                     false,
                     1,
-                    false));
+                    false,
+                    AnexoMidiaChecklistEnum.BLOQUEADO));
             // B2.
             alternativas.add(new AlternativaModeloChecklistInsercao(
                     "Outros",
                     PrioridadeAlternativa.BAIXA,
                     true,
                     2,
-                    true));
+                    true,
+                    AnexoMidiaChecklistEnum.BLOQUEADO));
 
             perguntas.add(new PerguntaModeloChecklistInsercao(
                     "P2",
                     null,
                     2,
                     false,
+                    AnexoMidiaChecklistEnum.BLOQUEADO,
                     alternativas));
         }
 
@@ -227,7 +244,9 @@ public class ChecklistFluxoOsTest extends BaseTest {
                 "device didID",
                 "deviceImei",
                 10000,
-                11000);
+                11000,
+                0,
+                0);
 
         final ChecklistService checklistService = new ChecklistService();
         final Long codChecklistInserido = checklistService.insert(token, insercao);
@@ -332,20 +351,23 @@ public class ChecklistFluxoOsTest extends BaseTest {
                     PrioridadeAlternativa.ALTA,
                     false,
                     1,
-                    false));
+                    false,
+                    AnexoMidiaChecklistEnum.BLOQUEADO));
             // A2.
             alternativas.add(new AlternativaModeloChecklistInsercao(
                     "Outros",
                     PrioridadeAlternativa.CRITICA,
                     true,
                     2,
-                    true));
+                    true,
+                    AnexoMidiaChecklistEnum.BLOQUEADO));
 
             perguntas.add(new PerguntaModeloChecklistInsercao(
                     "P1",
                     1L,
                     1,
                     true,
+                    AnexoMidiaChecklistEnum.BLOQUEADO,
                     alternativas));
         }
 
@@ -359,20 +381,23 @@ public class ChecklistFluxoOsTest extends BaseTest {
                     PrioridadeAlternativa.ALTA,
                     false,
                     1,
-                    false));
+                    false,
+                    AnexoMidiaChecklistEnum.BLOQUEADO));
             // B2.
             alternativas.add(new AlternativaModeloChecklistInsercao(
                     "Outros",
                     PrioridadeAlternativa.BAIXA,
                     true,
                     2,
-                    true));
+                    true,
+                    AnexoMidiaChecklistEnum.BLOQUEADO));
 
             perguntas.add(new PerguntaModeloChecklistInsercao(
                     "P2",
                     null,
                     2,
                     false,
+                    AnexoMidiaChecklistEnum.BLOQUEADO,
                     alternativas));
         }
 
@@ -474,7 +499,9 @@ public class ChecklistFluxoOsTest extends BaseTest {
                 deviceId,
                 deviceImei,
                 deviceUptimeRealizacaoMillis,
-                deviceUptimeSincronizacaoMillis);
+                deviceUptimeSincronizacaoMillis,
+                0,
+                0);
 
         final ChecklistService checklistService = new ChecklistService();
         checklistService.insert(token, insercao);
@@ -563,7 +590,9 @@ public class ChecklistFluxoOsTest extends BaseTest {
                 deviceId,
                 deviceImei,
                 deviceUptimeRealizacaoMillis,
-                deviceUptimeSincronizacaoMillis);
+                deviceUptimeSincronizacaoMillis,
+                0,
+                0);
 
         final ChecklistService checklistServiceC2 = new ChecklistService();
         final Long codChecklistInseridoC2 = checklistServiceC2.insert(token, insercaoC2);
@@ -615,20 +644,23 @@ public class ChecklistFluxoOsTest extends BaseTest {
                     PrioridadeAlternativa.ALTA,
                     false,
                     1,
-                    false));
+                    false,
+                    AnexoMidiaChecklistEnum.BLOQUEADO));
             // A2.
             alternativas.add(new AlternativaModeloChecklistInsercao(
                     "Outros",
                     PrioridadeAlternativa.CRITICA,
                     true,
                     2,
-                    true));
+                    true,
+                    AnexoMidiaChecklistEnum.BLOQUEADO));
 
             perguntas.add(new PerguntaModeloChecklistInsercao(
                     "P1",
                     1L,
                     1,
                     true,
+                    AnexoMidiaChecklistEnum.BLOQUEADO,
                     alternativas));
         }
 
@@ -642,20 +674,23 @@ public class ChecklistFluxoOsTest extends BaseTest {
                     PrioridadeAlternativa.ALTA,
                     false,
                     1,
-                    false));
+                    false,
+                    AnexoMidiaChecklistEnum.BLOQUEADO));
             // B2.
             alternativas.add(new AlternativaModeloChecklistInsercao(
                     "Outros",
                     PrioridadeAlternativa.BAIXA,
                     true,
                     2,
-                    true));
+                    true,
+                    AnexoMidiaChecklistEnum.BLOQUEADO));
 
             perguntas.add(new PerguntaModeloChecklistInsercao(
                     "P2",
                     null,
                     2,
                     false,
+                    AnexoMidiaChecklistEnum.BLOQUEADO,
                     alternativas));
         }
 
@@ -680,7 +715,7 @@ public class ChecklistFluxoOsTest extends BaseTest {
         /* Armazena os códigos de contexto das alternativas que abrem O.S. */
         final long codigoContextoP1A2 = modeloBuscado.getPerguntas().get(0).getAlternativas().get(1).getCodigoContexto();
         final long codigoContextoP2B2 = modeloBuscado.getPerguntas().get(1).getAlternativas().get(1).getCodigoContexto();
-        Long codVersaoModeloChecklistInseridoM1 = comVersaoModeloSetada ? modeloBuscado.getCodVersaoModelo() : null;
+        final Long codVersaoModeloChecklistInseridoM1 = comVersaoModeloSetada ? modeloBuscado.getCodVersaoModelo() : null;
         //endregion
 
         //region Insere checklist C1 com alternativas que devem abrir O.S.
@@ -757,7 +792,9 @@ public class ChecklistFluxoOsTest extends BaseTest {
                 deviceId,
                 deviceImei,
                 deviceUptimeRealizacaoMillis,
-                deviceUptimeSincronizacaoMillis);
+                deviceUptimeSincronizacaoMillis,
+                0,
+                0);
 
         final ChecklistService checklistService = new ChecklistService();
         final Long codChecklistInserido = checklistService.insert(token, insercao);
@@ -847,7 +884,9 @@ public class ChecklistFluxoOsTest extends BaseTest {
                 deviceId,
                 deviceImei,
                 deviceUptimeRealizacaoMillis,
-                deviceUptimeSincronizacaoMillis);
+                deviceUptimeSincronizacaoMillis,
+                0,
+                0);
 
         final ChecklistService checklistServiceC2 = new ChecklistService();
         final Long codChecklistInseridoC2 = checklistServiceC2.insert(token, insercaoC2);
@@ -912,14 +951,6 @@ public class ChecklistFluxoOsTest extends BaseTest {
         return jsonToCollection(
                 GsonUtils.getGson(),
                 GsonUtils.getGson().toJson(modeloBuscado.getPerguntas()));
-    }
-
-    @NotNull
-    private static List<PerguntaModeloChecklistEdicao> jsonToCollection(@NotNull final Gson gson,
-                                                                        @NotNull final String json) {
-        final Type type = new TypeToken<List<PerguntaModeloChecklistEdicao>>() {
-        }.getType();
-        return gson.fromJson(json, type);
     }
 
     @NotNull
