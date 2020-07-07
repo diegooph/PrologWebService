@@ -1,8 +1,8 @@
 Change Log
 ==========
 
-<a name="v1.0.33"></a>
-## Version [v1.0.33](https://github.com/luizfp/PrologWebService/compare/v1.0.32...v1.0.33) (release-date) [unreleased]
+<a name="v1.1.0"></a>
+## Version [v1.1.0](https://github.com/luizfp/PrologWebService/compare/v1.0.32...v1.1.0) (release-date) [unreleased]
 
 ### Features
 * Implementa tratamento de erros para o import dos mapas (PL-2410)
