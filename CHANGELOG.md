@@ -1,26 +1,18 @@
-Stage
-==========
-
-### Refactors
-* Adiciona possibilidade de listar colaboradores, veículos e pneus por múltiplas unidades (PL-2695)
-
-### Features
-* Implementa tratamento de erros para o import dos mapas (PL-2410)
-
-
 Change Log
 ==========
-
-## Refactors
-* Permite a configuração de mais de um código auxiliar para a mesma unidade (Integração Nepomuceno) (PLI-166)
-* Utiliza configuração de cada unidade no Cronograma de Aferição (Integração Nepomuceno) (PLI-165)
-* Cria estrutura de teste automatizados para a estrutura de aferição com o Protheus (PLI-150)
-* Envia a data_hora aferição com timezone da unidade (Integração Nepomuceno) (PLI-173)
 
 <a name="v1.0.33"></a>
 ## Version [v1.0.33](https://github.com/luizfp/PrologWebService/compare/v1.0.32...v1.0.33) (release-date) [unreleased]
 
+### Features
+* Implementa tratamento de erros para o import dos mapas (PL-2410)
+
 ## Refactors
+* Adiciona possibilidade de listar colaboradores, veículos e pneus por múltiplas unidades (PL-2695)
+* Permite a configuração de mais de um código auxiliar para a mesma unidade (Integração Nepomuceno) (PLI-166)
+* Utiliza configuração de cada unidade no Cronograma de Aferição (Integração Nepomuceno) (PLI-165)
+* Cria estrutura de teste automatizados para a estrutura de aferição com o Protheus (PLI-150)
+* Envia a data_hora aferição com timezone da unidade (Integração Nepomuceno) (PLI-173)
 * Adiciona identificador frota nos objetos de serviços de pneus (PL-2761)
 * Adiciona identificador frota nos objetos de aferição de pneus (PL-2760)
 * Adiciona identificador frota no objeto PneuEmUso (PL-2760)
