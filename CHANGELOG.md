@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+Stage
+=====
+
+## Refactors
+* Altera insert de checklist para lidar com possibilidade de que check já existia (PL-2820)
+
 <a name="v1.1.0"></a>
 ## Version [v1.1.0](https://github.com/luizfp/PrologWebService/compare/v1.0.32...v1.1.0) (release-date) [unreleased]
 
