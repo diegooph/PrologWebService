@@ -571,7 +571,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("select * " +
-                    "from func_colaborador_veirifica_acesso_funcao_prolog(" +
+                    "from func_colaborador_tem_permissao_funcao_prolog(" +
                     "f_cpf_colaborador => ?, " +
                     "f_cod_pilar_prolog => ?, " +
                     "f_cod_funcao_prolog => ?) as exists;");
@@ -662,7 +662,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("select * " +
-                    "from func_colaborador_get_visao_by_cpf(f_cpf_colaborador => ?);");
+                    "from func_colaborador_get_funcoes_pilares_by_cpf(f_cpf_colaborador => ?);");
             stmt.setLong(1, cpf);
             rSet = stmt.executeQuery();
             pilares = empresaDao.createPilares(rSet);

@@ -276,7 +276,8 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
         PreparedStatement stmt = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("select * from func_empresa_get_visao_unidade(f_cod_unidade => ?);");
+            stmt = conn.prepareStatement("select * " +
+                    "from func_empresa_get_funcoes_pilares_by_unidade(f_cod_unidade => ?);");
             stmt.setLong(1, codUnidade);
             rSet = stmt.executeQuery();
             pilares = createPilares(rSet);
@@ -296,7 +297,9 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("select * " +
-                    "from func_empresa_get_visao_cargo(f_cod_unidade => ?, f_cod_cargo_colaborador => ?);");
+                    "from func_empresa_get_funcoes_pilares_by_cargo(" +
+                    "f_cod_unidade => ?, " +
+                    "f_cod_cargo_colaborador => ?);");
             stmt.setLong(1, codUnidade);
             stmt.setLong(2, codCargo);
             rSet = stmt.executeQuery();
@@ -804,7 +807,7 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
         ResultSet rSet = null;
         try {
             stmt = conn.prepareStatement("select * " +
-                    "from func_empresa_veirifica_acesso_funcao_prolog(" +
+                    "from func_empresa_tem_permissao_funcao_prolog(" +
                     "f_cod_unidade => ?, " +
                     "f_cod_funcao_colaborador => ?, " +
                     "f_cod_funcao_prolog => ?) as tem_permissao;");
