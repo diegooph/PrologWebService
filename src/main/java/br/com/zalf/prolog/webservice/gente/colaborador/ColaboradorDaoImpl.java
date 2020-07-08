@@ -6,7 +6,10 @@ import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
-import br.com.zalf.prolog.webservice.gente.colaborador.model.*;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.ColaboradorEdicao;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.ColaboradorInsercao;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.ColaboradorListagem;
 import br.com.zalf.prolog.webservice.gente.controlejornada.DadosIntervaloChangedListener;
 import br.com.zalf.prolog.webservice.gente.empresa.EmpresaDao;
 import br.com.zalf.prolog.webservice.geral.unidade._model.Unidade;
@@ -493,20 +496,15 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
     @Override
     public List<Colaborador> getColaboradoresComAcessoFuncaoByUnidade(@NotNull final Long codUnidade,
                                                                       final int codFuncaoProLog) throws SQLException {
-        Preconditions.checkNotNull(codUnidade, "codUnidade não pode ser null!");
-
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT C.CPF, C.NOME AS NOME_COLABORADOR, C.DATA_NASCIMENTO, " +
-                    "F.NOME AS NOME_CARGO, F.CODIGO AS CODIGO_CARGO " +
-                    "FROM COLABORADOR C JOIN " +
-                    "CARGO_FUNCAO_PROLOG_V11 CFP ON C.COD_UNIDADE = CFP.COD_UNIDADE " +
-                    "AND C.COD_FUNCAO = CFP.COD_FUNCAO_COLABORADOR JOIN FUNCAO F ON F.CODIGO = C.COD_FUNCAO AND " +
-                    "F.CODIGO = CFP.COD_FUNCAO_COLABORADOR AND C.COD_EMPRESA = F.COD_EMPRESA " +
-                    "WHERE C.COD_UNIDADE = ? AND CFP.COD_FUNCAO_PROLOG = ? AND C.STATUS_ATIVO = TRUE;");
+            stmt = conn.prepareStatement("select * " +
+                    "from func_colaborador_get_colaboradores_acesso_funcao_prolog(" +
+                    "f_cod_unidade => ?, " +
+                    "f_cod_funcao_prolog => ?);");
             stmt.setLong(1, codUnidade);
             stmt.setInt(2, codFuncaoProLog);
             rSet = stmt.executeQuery();
@@ -572,10 +570,11 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
         PreparedStatement stmt = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT EXISTS(SELECT C.CPF FROM COLABORADOR C " +
-                    "JOIN CARGO_FUNCAO_PROLOG_V11 CFP ON C.COD_FUNCAO = CFP.COD_FUNCAO_COLABORADOR " +
-                    "AND C.COD_UNIDADE = CFP.COD_UNIDADE WHERE C.CPF = ? AND CFP.COD_PILAR_PROLOG = ? " +
-                    "AND CFP.COD_FUNCAO_PROLOG = ?);");
+            stmt = conn.prepareStatement("select * " +
+                    "from func_colaborador_veirifica_acesso_funcao_prolog(" +
+                    "f_cpf_colaborador => ?, " +
+                    "f_cod_pilar_prolog => ?, " +
+                    "f_cod_funcao_prolog => ?) as exists;");
             stmt.setLong(1, cpf);
             stmt.setInt(2, codPilar);
             stmt.setInt(3, codFuncaoProLog);
@@ -583,11 +582,10 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
             if (rSet.next()) {
                 return rSet.getBoolean("EXISTS");
             }
+            return false;
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
-
-        return false;
     }
 
     @NotNull
@@ -663,15 +661,8 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
         final EmpresaDao empresaDao = Injection.provideEmpresaDao();
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT DISTINCT PP.codigo AS COD_PILAR, PP.pilar, FP.codigo AS COD_FUNCAO, " +
-                    "FP.funcao FROM cargo_funcao_prolog_v11 CF\n" +
-                    "JOIN PILAR_PROLOG PP ON PP.codigo = CF.cod_pilar_prolog\n" +
-                    "JOIN FUNCAO_PROLOG_v11 FP ON FP.cod_pilar = PP.codigo AND FP.codigo = CF.cod_funcao_prolog\n" +
-                    "JOIN colaborador C ON C.cod_unidade = CF.cod_unidade AND CF.cod_funcao_colaborador = C" +
-                    ".cod_funcao\n" +
-                    "JOIN UNIDADE_PILAR_PROLOG UPP ON UPP.COD_UNIDADE = C.COD_UNIDADE AND UPP.cod_pilar = CF.cod_pilar_prolog\n" +
-                    "WHERE C.CPF = ?\n" +
-                    "ORDER BY PP.pilar, FP.funcao");
+            stmt = conn.prepareStatement("select * " +
+                    "from func_colaborador_get_visao_by_cpf(f_cpf_colaborador => ?);");
             stmt.setLong(1, cpf);
             rSet = stmt.executeQuery();
             pilares = empresaDao.createPilares(rSet);

@@ -803,10 +803,11 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            stmt = conn.prepareStatement("SELECT EXISTS(SELECT * FROM CARGO_FUNCAO_PROLOG_V11 CARGO " +
-                    "WHERE CARGO.COD_UNIDADE = ? " +
-                    "      AND CARGO.COD_FUNCAO_COLABORADOR = ? " +
-                    "      AND CARGO.COD_FUNCAO_PROLOG = ?) AS TEM_PERMISSAO;");
+            stmt = conn.prepareStatement("select * " +
+                    "from func_empresa_veirifica_acesso_funcao_prolog(" +
+                    "f_cod_unidade => ?, " +
+                    "f_cod_funcao_colaborador => ?, " +
+                    "f_cod_funcao_prolog => ?) as tem_permissao;");
             stmt.setLong(1, codUnidade);
             stmt.setLong(2, codCargo);
             stmt.setInt(3, codFuncaoProLog);
