@@ -21,15 +21,12 @@ import test.br.com.zalf.prolog.webservice.BaseTest;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
- * Para esse teste funcionar corretamente em repetidas execuções, é necessário dropar um index da tabela
- * CHECKLIST_MODELO:
- * > drop index checklist_modelo_data_nome_index;
- *
  * Created on 2019-09-19
  *
  * @author Luiz Felipe (https://github.com/luizfp)
@@ -217,7 +214,7 @@ public class ModeloChecklistCadastroTest extends BaseTest {
         }
 
         final Long codUnidade = 5L;
-        final String nomeModelo = "$Teste Método$";
+        final String nomeModelo = UUID.randomUUID().toString();
         final ResultInsertModeloChecklist result;
         {
             final ModeloChecklistInsercao modelo = new ModeloChecklistInsercao(

@@ -45,6 +45,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static br.com.zalf.prolog.webservice.database.DatabaseConnection.close;
@@ -153,7 +154,7 @@ public class ChecklistFluxoOsTest extends BaseTest {
         }
 
         final Long codUnidade = 5L;
-        final String nomeModelo = "$Teste Método$";
+        final String nomeModelo = UUID.randomUUID().toString();
         // 4 - Então inserimos o modelo.
         final ResultInsertModeloChecklist result =
                 service.insertModeloChecklist(
@@ -403,7 +404,7 @@ public class ChecklistFluxoOsTest extends BaseTest {
 
         /* Então inserimos o modelo. */
         final Long codUnidade = 5L;
-        final String nomeModelo = "$Teste incremento O.S.$";
+        final String nomeModelo = UUID.randomUUID().toString();
         final ResultInsertModeloChecklist result =
                 service.insertModeloChecklist(
                         new ModeloChecklistInsercao(
@@ -696,7 +697,7 @@ public class ChecklistFluxoOsTest extends BaseTest {
 
         /* Então inserimos o modelo. */
         final Long codUnidade = 5L;
-        final String nomeModelo = "$Teste incremento O.S.$";
+        final String nomeModelo = UUID.randomUUID().toString();
         final ResultInsertModeloChecklist result =
                 service.insertModeloChecklist(
                         new ModeloChecklistInsercao(

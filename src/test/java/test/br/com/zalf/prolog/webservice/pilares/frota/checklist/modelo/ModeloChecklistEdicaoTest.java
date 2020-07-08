@@ -30,16 +30,13 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
- * Para esse teste funcionar corretamente em repetidas execuções, é necessário dropar um index da tabela
- * CHECKLIST_MODELO:
- * > drop index checklist_modelo_data_nome_index;
- * <p>
  * Created on 2019-09-19
  *
  * @author Luiz Felipe (https://github.com/luizfp)
@@ -1337,9 +1334,10 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
         final List<PerguntaModeloChecklistEdicao> perguntas = toPerguntasEdicao(modeloBuscado);
         final List<Long> cargos = getCodigosCargos(modeloBuscado);
         final List<Long> tiposVeiculo = getCodigosTiposVeiculos(modeloBuscado);
+        final String novoNomeModelo = UUID.randomUUID().toString();
         final ModeloChecklistEdicao editado = createModeloEdicao(
                 modeloBuscado,
-                "NOVO NOME",
+                novoNomeModelo,
                 perguntas,
                 cargos,
                 tiposVeiculo);
@@ -1353,7 +1351,7 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
         final ModeloChecklistVisualizacao buscado = service.getModeloChecklist(
                 COD_UNIDADE,
                 result.getCodModeloChecklistInserido());
-        assertThat(buscado.getNome()).isEqualTo("NOVO NOME");
+        assertThat(buscado.getNome()).isEqualTo(novoNomeModelo);
         assertThat(editado.getCodVersaoModelo()).isLessThan(buscado.getCodVersaoModelo());
     }
 
@@ -1989,7 +1987,13 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
 
     @NotNull
     private ResultInsertModeloChecklist insertModeloBase() {
-        return service.insertModeloChecklist(BASE, token);
+        return service.insertModeloChecklist(new ModeloChecklistInsercao(
+                        UUID.randomUUID().toString(),
+                        BASE.getCodUnidade(),
+                        BASE.getTiposVeiculoLiberados(),
+                        BASE.getCargosLiberados(),
+                        BASE.getPerguntas()),
+                token);
     }
 
     @NotNull

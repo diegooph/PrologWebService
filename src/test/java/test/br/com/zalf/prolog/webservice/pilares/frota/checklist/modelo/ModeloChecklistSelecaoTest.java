@@ -16,14 +16,11 @@ import test.br.com.zalf.prolog.webservice.BaseTest;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Para esse teste funcionar corretamente em repetidas execuções, é necessário dropar um index da tabela
- * CHECKLIST_MODELO:
- * > drop index checklist_modelo_data_nome_index;
- *
  * Created on 2019-10-09
  *
  * @author Luiz Felipe (https://github.com/luizfp)
@@ -75,8 +72,9 @@ public final class ModeloChecklistSelecaoTest extends BaseTest {
                     alternativas));
         }
 
+        final String nomeModelo = UUID.randomUUID().toString();
         final ModeloChecklistInsercao modelo = new ModeloChecklistInsercao(
-                "Modelo de Teste Seleção",
+                nomeModelo,
                 5L,
                 Collections.singletonList(COD_TIPO_VEICULO_COM_PLACAS),
                 Collections.singletonList(COD_CARGO),
@@ -93,7 +91,7 @@ public final class ModeloChecklistSelecaoTest extends BaseTest {
                         ModeloChecklistSelecao::getCodModelo,
                         ModeloChecklistSelecao::getCodUnidadeModelo)
                 .contains(Assertions.tuple(
-                        "Modelo de Teste Seleção",
+                        nomeModelo,
                         result.getCodModeloChecklistInserido(),
                         5L));
         assertThat(modelos)
@@ -126,7 +124,7 @@ public final class ModeloChecklistSelecaoTest extends BaseTest {
         }
 
         final ModeloChecklistInsercao modelo = new ModeloChecklistInsercao(
-                "Modelo de Teste Seleção",
+                UUID.randomUUID().toString(),
                 5L,
                 Collections.emptyList(),
                 Collections.singletonList(COD_CARGO),
@@ -170,7 +168,7 @@ public final class ModeloChecklistSelecaoTest extends BaseTest {
         }
 
         final ModeloChecklistInsercao modelo = new ModeloChecklistInsercao(
-                "Modelo de Teste Seleção",
+                UUID.randomUUID().toString(),
                 5L,
                 Collections.singletonList(COD_TIPO_VEICULO_COM_PLACAS),
                 Collections.emptyList(),
