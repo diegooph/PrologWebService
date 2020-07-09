@@ -4,9 +4,6 @@ Change Log
 Stage
 =====
 
-## Refactors
-* Altera insert de checklist para lidar com possibilidade de que check já existia (PL-2820)
-
 <a name="v1.1.0"></a>
 ## Version [v1.1.0](https://github.com/luizfp/PrologWebService/compare/v1.0.32...v1.1.0) (release-date) [unreleased]
 
@@ -17,6 +14,7 @@ Stage
 * Adiciona possibilidade de parametrização de fotos no check no cadastro e edição de modelos (PL-1504)
 
 ## Refactors
+* Altera insert de checklist para lidar com possibilidade de que check já existia (PL-2820)
 * Adiciona possibilidade de listar colaboradores, veículos e pneus por múltiplas unidades (PL-2695)
 * Permite a configuração de mais de um código auxiliar para a mesma unidade (Integração Nepomuceno) (PLI-166)
 * Utiliza configuração de cada unidade no Cronograma de Aferição (Integração Nepomuceno) (PLI-165)
