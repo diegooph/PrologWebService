@@ -276,22 +276,17 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
         PreparedStatement stmt = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT DISTINCT PP.codigo AS COD_PILAR, PP.pilar, FP.codigo AS COD_FUNCAO, FP.funcao\n" +
-                    "FROM PILAR_PROLOG PP\n" +
-                    "JOIN FUNCAO_PROLOG_v11 FP ON FP.cod_pilar = PP.codigo\n" +
-                    "JOIN unidade_pilar_prolog upp on upp.cod_pilar = pp.codigo\n" +
-                    "WHERE upp.cod_unidade = ?\n" +
-                    "ORDER BY PP.pilar, FP.funcao");
+            stmt = conn.prepareStatement("select * " +
+                    "from func_empresa_get_funcoes_pilares_by_unidade(f_cod_unidade => ?);");
             stmt.setLong(1, codUnidade);
             rSet = stmt.executeQuery();
             pilares = createPilares(rSet);
+            final Visao visao = new Visao();
+            visao.setPilares(pilares);
+            return visao;
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
-
-        final Visao visao = new Visao();
-        visao.setPilares(pilares);
-        return visao;
     }
 
     private List<Pilar> getPilaresCargo(final Long codUnidade, final Long codCargo) throws SQLException {
@@ -301,17 +296,16 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
         PreparedStatement stmt = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT DISTINCT PP.codigo AS COD_PILAR, PP.pilar, FP.codigo AS COD_FUNCAO, FP.funcao FROM cargo_funcao_prolog_V11 CF\n" +
-                    "JOIN PILAR_PROLOG PP ON PP.codigo = CF.cod_pilar_prolog\n" +
-                    "JOIN FUNCAO_PROLOG_V11 FP ON FP.cod_pilar = PP.codigo AND FP.codigo = CF.cod_funcao_prolog\n" +
-                    "WHERE CF.cod_unidade = ? AND cod_funcao_colaborador = ?\n" +
-                    "ORDER BY PP.pilar, FP.funcao");
+            stmt = conn.prepareStatement("select * " +
+                    "from func_empresa_get_funcoes_pilares_by_cargo(" +
+                    "f_cod_unidade => ?, " +
+                    "f_cod_cargo_colaborador => ?);");
             stmt.setLong(1, codUnidade);
             stmt.setLong(2, codCargo);
             rSet = stmt.executeQuery();
             pilares = createPilares(rSet);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
 
         return pilares;
@@ -812,10 +806,11 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            stmt = conn.prepareStatement("SELECT EXISTS(SELECT * FROM CARGO_FUNCAO_PROLOG_V11 CARGO " +
-                    "WHERE CARGO.COD_UNIDADE = ? " +
-                    "      AND CARGO.COD_FUNCAO_COLABORADOR = ? " +
-                    "      AND CARGO.COD_FUNCAO_PROLOG = ?) AS TEM_PERMISSAO;");
+            stmt = conn.prepareStatement("select * " +
+                    "from func_empresa_tem_permissao_funcao_prolog(" +
+                    "f_cod_unidade => ?, " +
+                    "f_cod_funcao_colaborador => ?, " +
+                    "f_cod_funcao_prolog => ?) as tem_permissao;");
             stmt.setLong(1, codUnidade);
             stmt.setLong(2, codCargo);
             stmt.setInt(3, codFuncaoProLog);

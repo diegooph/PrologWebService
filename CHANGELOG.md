@@ -14,6 +14,7 @@ Stage
 * Adiciona possibilidade de parametrização de fotos no check no cadastro e edição de modelos (PL-1504)
 
 ## Refactors
+* Bloqueia funcionalidades que unidade não contratou ou possui integração (PL-2671)
 * Altera insert de checklist para lidar com possibilidade de que check já existia (PL-2820)
 * Adiciona possibilidade de listar colaboradores, veículos e pneus por múltiplas unidades (PL-2695)
 * Permite a configuração de mais de um código auxiliar para a mesma unidade (Integração Nepomuceno) (PLI-166)
