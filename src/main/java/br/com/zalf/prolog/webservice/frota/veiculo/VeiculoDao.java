@@ -102,6 +102,18 @@ public interface VeiculoDao {
      */
     VeiculoVisualizacao buscaVeiculoByCodigo(@NotNull final Long codVeiculo) throws Throwable;
 
+    /**
+     * Método para buscar os {@code codVeiculos} através das {@code placas}.
+     *
+     * @param codColaborador código do colaborador que realizou a requisição.
+     * @param placas lista de uma ou mais placas, para cada placa retornará um código, do contrário dará erro.
+     * @return Uma lista de códigos de veículos.
+     * @throws Throwable Caso aconteça algum erro no banco.
+     */
+    @NotNull
+    List<Long> getCodVeiculosByPlacas(@NotNull final Long codColaborador,
+                                      @NotNull final List<String> placas) throws Throwable;
+
     @Deprecated
     /**
      * Método para buscar um {@link Veiculo} através da {@code placa}.

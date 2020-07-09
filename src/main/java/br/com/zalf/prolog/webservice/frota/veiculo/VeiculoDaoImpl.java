@@ -15,10 +15,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.TipoEixoVeicul
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.*;
 
 public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
@@ -317,6 +314,31 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
             close(stmt, rSet);
         }
         return listVeiculoVisualizacaoPneu;
+    }
+
+    @Override
+    @NotNull
+    public List<Long> getCodVeiculosByPlacas(@NotNull final Long codColaborador,
+                                              @NotNull final List<String> placas) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_VEICULO_GET_CODIGO_BY_PLACA(F_COD_COLABORADOR => ?" +
+                    ", F_PLACAS => ?);");
+            stmt.setLong(1, codColaborador);
+            stmt.setArray(2, PostgresUtils.listToArray(conn, SqlType.TEXT, placas));
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                final Long[] codigos = (Long[]) rSet.getArray(1).getArray();
+                return Arrays.asList(codigos);
+            } else {
+                throw new IllegalStateException("Erro ao buscar os códigos de veículos");
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
     }
 
     @Deprecated
