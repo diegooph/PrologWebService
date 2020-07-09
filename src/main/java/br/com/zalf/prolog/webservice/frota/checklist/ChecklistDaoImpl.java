@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.frota.checklist;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
+import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
@@ -35,6 +36,7 @@ import java.util.List;
 import static br.com.zalf.prolog.webservice.commons.util.StatementUtils.bindValueOrNull;
 
 public final class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao {
+    private static final String TAG = ChecklistDaoImpl.class.getSimpleName();
 
     public ChecklistDaoImpl() {
 
@@ -562,7 +564,14 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
             stmt.setInt(24, checklist.getQtdMidiasAlternativasNok());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                final Long codChecklistInserido = rSet.getLong("CODIGO");
+                final Long codChecklistInserido = rSet.getLong("COD_CHECKLIST_INSERIDO");
+                final boolean checklistJaExistia = rSet.getBoolean("CHECKLIST_JA_EXISTIA");
+
+                if (checklistJaExistia) {
+                    Log.d(TAG, "Checklist já existia, retornando apenas o código: " + codChecklistInserido);
+                    // Possivelmente o último insert falhou a resposta para o app, então foi tentado inserir novamente.
+                    return codChecklistInserido;
+                }
 
                 // Só precisamos inserir as respostas se houver alguma NOK.
                 if (checklist.getQtdAlternativasNok() > 0) {
