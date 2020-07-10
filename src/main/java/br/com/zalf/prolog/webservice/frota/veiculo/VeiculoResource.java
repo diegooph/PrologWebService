@@ -9,6 +9,7 @@ import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
+import br.com.zalf.prolog.webservice.interceptors.auth.ColaboradorAutenticado;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.AppVersionCodeHandler;
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.DefaultAppVersionCodeHandler;
@@ -16,8 +17,11 @@ import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.VersionCode
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.VersionNotPresentAction;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 
+import javax.inject.Inject;
+import javax.inject.Provider;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -28,6 +32,9 @@ import java.util.Set;
 public final class VeiculoResource {
 
     private final VeiculoService service = new VeiculoService();
+
+    @Inject
+    private Provider<ColaboradorAutenticado> colaboradorAutenticadoProvider;
 
     @POST
     @Secured(permissions = Pilares.Frota.Veiculo.CADASTRAR)
@@ -44,6 +51,14 @@ public final class VeiculoResource {
     public Response update(@HeaderParam("Authorization") @Required final String userToken,
                            @PathParam("placaOriginal") @Required final String placaOriginal,
                            @Required final Veiculo veiculo) throws ProLogException {
+        // TODO: REMOVER APÓS O REVIEW - DEIXEI PARA FALICITAR OS TESTES
+        // INÍCIO DO TRECHO A REMOVER APÓS O REVIEW - INCLUINDO DEPENDÊNCIAS DE COLABORADOR AUTENTICADO
+        List<String> placas = new ArrayList<>();
+        placas.add(placaOriginal);
+        placas.add("1ASSAASSA111");
+        Long codVeiculo = VeiculoBackwardHelper.getCodVeiculoByPlaca(colaboradorAutenticadoProvider.get().getCodigo(), placaOriginal);
+        List<Long> codVeiculos = VeiculoBackwardHelper.getCodVeiculosByPlacas(colaboradorAutenticadoProvider.get().getCodigo(), placas);
+        // FIM DO TRECHO A REMOVER APÓS O REVIEW
         return service.update(userToken, placaOriginal, veiculo);
     }
 

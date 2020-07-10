@@ -24,9 +24,9 @@ public class VeiculoBackwardHelper {
     }
 
     @NotNull
-    public static Long getCodVeiculosByPlacas(@NotNull final Long codColaborador,
+    public static List<Long> getCodVeiculosByPlacas(@NotNull final Long codColaborador,
                                                @NotNull final List<String> placas) {
-        return internalGetCodVeiculosByPlacas(codColaborador, placas, false).get(0);
+        return internalGetCodVeiculosByPlacas(codColaborador, placas, false);
     }
 
     @NotNull
