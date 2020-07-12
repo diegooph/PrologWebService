@@ -1,11 +1,8 @@
 Change Log
 ==========
 
-Stage
-=====
-
 <a name="v1.1.0"></a>
-## Version [v1.1.0](https://github.com/luizfp/PrologWebService/compare/v1.0.32...v1.1.0) (release-date) [unreleased]
+## Version [v1.1.0](https://github.com/luizfp/PrologWebService/compare/v1.0.32...v1.1.0) (2020-07-12)
 
 ### Features
 * Implementa tratamento de erros para o import dos mapas (PL-2410)
