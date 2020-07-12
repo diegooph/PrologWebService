@@ -15,6 +15,11 @@ import java.util.List;
  */
 public final class PerguntaNokGlobus {
     /**
+     * Código único de identificação da pergunta selecionada pelo colaborador.
+     */
+    @NotNull
+    private final Long codPerguntaNok;
+    /**
      * Código de contexto da pergunta. Este código é utilizado na integração como código único de indentificação da
      * pergunta marcada como NOK.
      */
@@ -31,9 +36,11 @@ public final class PerguntaNokGlobus {
     @NotNull
     private final List<AlternativaNokGlobus> alternativasNok;
 
-    public PerguntaNokGlobus(@NotNull final Long codContextoPerguntaNok,
+    public PerguntaNokGlobus(@NotNull final Long codPerguntaNok,
+                             @NotNull final Long codContextoPerguntaNok,
                              @NotNull final String descricaoPerguntaNok,
                              @NotNull final List<AlternativaNokGlobus> alternativasNok) {
+        this.codPerguntaNok = codPerguntaNok;
         this.codContextoPerguntaNok = codContextoPerguntaNok;
         this.descricaoPerguntaNok = descricaoPerguntaNok;
         this.alternativasNok = alternativasNok;
@@ -44,9 +51,15 @@ public final class PerguntaNokGlobus {
         final List<AlternativaNokGlobus> alternativas = new ArrayList<>();
         alternativas.add(AlternativaNokGlobus.getDummy());
         return new PerguntaNokGlobus(
+                10L,
                 101L,
                 "Farol",
                 alternativas);
+    }
+
+    @NotNull
+    public Long getCodPerguntaNok() {
+        return codPerguntaNok;
     }
 
     @NotNull

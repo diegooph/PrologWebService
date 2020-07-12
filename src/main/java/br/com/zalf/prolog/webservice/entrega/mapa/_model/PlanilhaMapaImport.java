@@ -1,11 +1,13 @@
-package br.com.zalf.prolog.webservice.entrega.mapa;
+package br.com.zalf.prolog.webservice.entrega.mapa._model;
 import java.sql.Time;
 import java.util.Date;
+
 /**
- * Created by jean on 18/01/16.
+ * Created by jean on 2016-01-18
+ * <p>
  * Contém os dados de uma linha da tabela 2art (mapa)
  */
-public class MapaImport {
+public final class PlanilhaMapaImport {
     public Date data;
     public int transp;
     public String entrega;

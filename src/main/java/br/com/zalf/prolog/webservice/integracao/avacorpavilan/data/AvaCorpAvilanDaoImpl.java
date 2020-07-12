@@ -194,6 +194,27 @@ public class AvaCorpAvilanDaoImpl extends DatabaseConnection implements AvaCorpA
     }
 
     @Nonnull
+    @Override
+    public String getPlacaByCodVeiculo(@Nonnull final Long codVeiculo) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT PLACA FROM VEICULO_DATA V WHERE V.CODIGO = ?;");
+            stmt.setLong(1, codVeiculo);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return rSet.getString("PLACA");
+            } else {
+                throw new SQLException("Erro ao buscar a placa do veículo: " + codVeiculo);
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+    @Nonnull
     private TipoVeiculoAvilanProLog createTipoAvilanProLog(ResultSet rSet) throws SQLException {
         final TipoVeiculoAvilanProLog tipoVeiculo = new TipoVeiculoAvilanProLog();
         tipoVeiculo.setCodigoAvilan(rSet.getString("CODIGO"));

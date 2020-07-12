@@ -83,6 +83,26 @@ public final class TimeZoneManager extends DatabaseConnection {
     }
 
     @NotNull
+    public static ZoneId getZoneIdForCodColaborador(@NotNull final Long codColaborador,
+                                                    @NotNull final Connection connection) throws SQLException {
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        try {
+            statement = connection.prepareStatement("SELECT TIMEZONE FROM UNIDADE U " +
+                    "JOIN COLABORADOR C ON U.CODIGO = C.COD_UNIDADE WHERE C.CODIGO = ?;");
+            statement.setLong(1, codColaborador);
+            resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return ZoneId.of(resultSet.getString("TIMEZONE"));
+            } else {
+                throw new SQLException("Erro ao buscar o timezone para o colaborador de código: " + codColaborador);
+            }
+        } finally {
+            close(statement, resultSet);
+        }
+    }
+
+    @NotNull
     public static ZoneId getZoneIdForToken(@NotNull final String token) throws SQLException {
         Connection connection = null;
         try {

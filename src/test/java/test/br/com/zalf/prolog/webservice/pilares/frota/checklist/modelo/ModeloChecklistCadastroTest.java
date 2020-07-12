@@ -5,6 +5,7 @@ import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloService;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.AlternativaModeloChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.AnexoMidiaChecklistEnum;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.AlternativaModeloChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ModeloChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.PerguntaModeloChecklistInsercao;
@@ -20,15 +21,12 @@ import test.br.com.zalf.prolog.webservice.BaseTest;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
- * Para esse teste funcionar corretamente em repetidas execuções, é necessário dropar um index da tabela
- * CHECKLIST_MODELO:
- * > drop index checklist_modelo_data_nome_index;
- *
  * Created on 2019-09-19
  *
  * @author Luiz Felipe (https://github.com/luizfp)
@@ -39,6 +37,7 @@ public class ModeloChecklistCadastroTest extends BaseTest {
     private ChecklistModeloService service;
     private String token;
 
+    @Override
     @BeforeAll
     public void initialize() throws Throwable {
         DatabaseManager.init();
@@ -46,6 +45,7 @@ public class ModeloChecklistCadastroTest extends BaseTest {
         service = new ChecklistModeloService();
     }
 
+    @Override
     @AfterAll
     public void destroy() {
         DatabaseManager.finish();
@@ -64,12 +64,14 @@ public class ModeloChecklistCadastroTest extends BaseTest {
                     PrioridadeAlternativa.BAIXA,
                     true,
                     1,
-                    true));
+                    true,
+                    AnexoMidiaChecklistEnum.BLOQUEADO));
             perguntas.add(new PerguntaModeloChecklistInsercao(
                     "P1",
                     1L,
                     1,
                     true,
+                    AnexoMidiaChecklistEnum.BLOQUEADO,
                     alternativas));
         }
 
@@ -80,6 +82,7 @@ public class ModeloChecklistCadastroTest extends BaseTest {
                     1L,
                     2,
                     true,
+                    AnexoMidiaChecklistEnum.BLOQUEADO,
                     Collections.emptyList()));
         }
 
@@ -121,12 +124,14 @@ public class ModeloChecklistCadastroTest extends BaseTest {
                     PrioridadeAlternativa.BAIXA,
                     true,
                     1,
-                    true));
+                    true,
+                    AnexoMidiaChecklistEnum.BLOQUEADO));
             perguntas.add(new PerguntaModeloChecklistInsercao(
                     "P1",
                     null,
                     1,
                     true,
+                    AnexoMidiaChecklistEnum.BLOQUEADO,
                     alternativas));
         }
 
@@ -156,7 +161,8 @@ public class ModeloChecklistCadastroTest extends BaseTest {
                     PrioridadeAlternativa.ALTA,
                     false,
                     1,
-                    false));
+                    false,
+                    AnexoMidiaChecklistEnum.BLOQUEADO));
 
             // A2.
             alternativas.add(new AlternativaModeloChecklistInsercao(
@@ -164,13 +170,15 @@ public class ModeloChecklistCadastroTest extends BaseTest {
                     PrioridadeAlternativa.CRITICA,
                     true,
                     2,
-                    true));
+                    true,
+                    AnexoMidiaChecklistEnum.BLOQUEADO));
 
             perguntas.add(new PerguntaModeloChecklistInsercao(
                     "P1",
                     1L,
                     1,
                     true,
+                    AnexoMidiaChecklistEnum.BLOQUEADO,
                     alternativas));
         }
 
@@ -184,7 +192,8 @@ public class ModeloChecklistCadastroTest extends BaseTest {
                     PrioridadeAlternativa.ALTA,
                     false,
                     1,
-                    true));
+                    true,
+                    AnexoMidiaChecklistEnum.BLOQUEADO));
 
             // B2.
             alternativas.add(new AlternativaModeloChecklistInsercao(
@@ -192,18 +201,20 @@ public class ModeloChecklistCadastroTest extends BaseTest {
                     PrioridadeAlternativa.BAIXA,
                     true,
                     2,
-                    false));
+                    false,
+                    AnexoMidiaChecklistEnum.BLOQUEADO));
 
             perguntas.add(new PerguntaModeloChecklistInsercao(
                     "P2",
                     null,
                     2,
                     false,
+                    AnexoMidiaChecklistEnum.BLOQUEADO,
                     alternativas));
         }
 
         final Long codUnidade = 5L;
-        final String nomeModelo = "$Teste Método$";
+        final String nomeModelo = UUID.randomUUID().toString();
         final ResultInsertModeloChecklist result;
         {
             final ModeloChecklistInsercao modelo = new ModeloChecklistInsercao(

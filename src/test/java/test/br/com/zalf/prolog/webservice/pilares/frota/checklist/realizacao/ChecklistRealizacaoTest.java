@@ -14,6 +14,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistIns
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistResposta;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloService;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.AlternativaModeloChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.AnexoMidiaChecklistEnum;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.AlternativaModeloChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ModeloChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.PerguntaModeloChecklistInsercao;
@@ -31,6 +32,7 @@ import test.br.com.zalf.prolog.webservice.BaseTest;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -40,10 +42,6 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Essa classe não testa o processemento das alternativas para abertura (ou não) de OSs. O foco é verificar se os dados
  * respondidos são salvos como deveriam.
  *
- * Para esse teste funcionar corretamente em repetidas execuções, é necessário dropar um index da tabela
- * CHECKLIST_MODELO:
- * > drop index checklist_modelo_data_nome_index;
- *
  * Created on 2019-10-14
  *
  * @author Luiz Felipe (https://github.com/luizfp)
@@ -52,10 +50,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 public final class ChecklistRealizacaoTest extends BaseTest {
     private static final String CPF_TOKEN = "03383283194";
     // Token da unidade 5.
-    private static final String TOKEN_CHECK_OFF = "6jylp6yo2Cx5V1tgolZo0dMX5nHWyYP6IOs9UrxX4wdaxXHnJrcKVyrbmA9mjYs2";
+    private static final String TOKEN_CHECK_OFF = "token_teste_unidade_5";
     private ChecklistModeloService service;
     private String token;
 
+    @Override
     @BeforeAll
     public void initialize() throws Throwable {
         DatabaseManager.init();
@@ -63,6 +62,7 @@ public final class ChecklistRealizacaoTest extends BaseTest {
         service = new ChecklistModeloService();
     }
 
+    @Override
     @AfterAll
     public void destroy() {
         DatabaseManager.finish();
@@ -87,20 +87,23 @@ public final class ChecklistRealizacaoTest extends BaseTest {
                     PrioridadeAlternativa.ALTA,
                     false,
                     1,
-                    false));
+                    false,
+                    AnexoMidiaChecklistEnum.BLOQUEADO));
             // A2.
             alternativas.add(new AlternativaModeloChecklistInsercao(
                     "Outros",
                     PrioridadeAlternativa.CRITICA,
                     true,
                     2,
-                    true));
+                    true,
+                    AnexoMidiaChecklistEnum.BLOQUEADO));
 
             perguntas.add(new PerguntaModeloChecklistInsercao(
                     "P1",
                     1L,
                     1,
                     true,
+                    AnexoMidiaChecklistEnum.BLOQUEADO,
                     alternativas));
         }
 
@@ -114,25 +117,28 @@ public final class ChecklistRealizacaoTest extends BaseTest {
                     PrioridadeAlternativa.ALTA,
                     false,
                     1,
-                    true));
+                    true,
+                    AnexoMidiaChecklistEnum.BLOQUEADO));
             // B2.
             alternativas.add(new AlternativaModeloChecklistInsercao(
                     "Outros",
                     PrioridadeAlternativa.BAIXA,
                     true,
                     2,
-                    false));
+                    false,
+                    AnexoMidiaChecklistEnum.BLOQUEADO));
 
             perguntas.add(new PerguntaModeloChecklistInsercao(
                     "P2",
                     null,
                     2,
                     false,
+                    AnexoMidiaChecklistEnum.BLOQUEADO,
                     alternativas));
         }
 
         final Long codUnidade = 5L;
-        final String nomeModelo = "$Teste Método$";
+        final String nomeModelo = UUID.randomUUID().toString();
         // 4 - Então inserimos o modelo.
         final ResultInsertModeloChecklist result =
                 service.insertModeloChecklist(
@@ -223,7 +229,9 @@ public final class ChecklistRealizacaoTest extends BaseTest {
                 "device didID",
                 "deviceImei",
                 10000,
-                11000);
+                11000,
+                0,
+                0);
 
         final ChecklistService checklistService = new ChecklistService();
         final Long codChecklistInserido = checklistService.insert(token, insercao);
@@ -309,20 +317,23 @@ public final class ChecklistRealizacaoTest extends BaseTest {
                     PrioridadeAlternativa.ALTA,
                     false,
                     1,
-                    false));
+                    false,
+                    AnexoMidiaChecklistEnum.BLOQUEADO));
             // A2.
             alternativas.add(new AlternativaModeloChecklistInsercao(
                     "Outros",
                     PrioridadeAlternativa.CRITICA,
                     true,
                     2,
-                    true));
+                    true,
+                    AnexoMidiaChecklistEnum.BLOQUEADO));
 
             perguntas.add(new PerguntaModeloChecklistInsercao(
                     "P1",
                     1L,
                     1,
                     true,
+                    AnexoMidiaChecklistEnum.BLOQUEADO,
                     alternativas));
         }
 
@@ -336,25 +347,28 @@ public final class ChecklistRealizacaoTest extends BaseTest {
                     PrioridadeAlternativa.ALTA,
                     false,
                     1,
-                    true));
+                    true,
+                    AnexoMidiaChecklistEnum.BLOQUEADO));
             // B2.
             alternativas.add(new AlternativaModeloChecklistInsercao(
                     "Outros",
                     PrioridadeAlternativa.BAIXA,
                     true,
                     2,
-                    false));
+                    false,
+                    AnexoMidiaChecklistEnum.BLOQUEADO));
 
             perguntas.add(new PerguntaModeloChecklistInsercao(
                     "P2",
                     null,
                     2,
                     false,
+                    AnexoMidiaChecklistEnum.BLOQUEADO,
                     alternativas));
         }
 
         final Long codUnidade = 5L;
-        final String nomeModelo = "$Teste Método$";
+        final String nomeModelo = UUID.randomUUID().toString();
         // 4 - Então inserimos o modelo.
         final ResultInsertModeloChecklist result =
                 service.insertModeloChecklist(
@@ -445,7 +459,9 @@ public final class ChecklistRealizacaoTest extends BaseTest {
                 "device didID",
                 "deviceImei",
                 10000,
-                11000);
+                11000,
+                0,
+                0);
 
         final ChecklistOfflineService checklistOfflineService = new ChecklistOfflineService();
         final Long codChecklistInserido = checklistOfflineService.insertChecklistOffline(

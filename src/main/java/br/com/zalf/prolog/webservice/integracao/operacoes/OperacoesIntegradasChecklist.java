@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.operacoes;
 
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.ChecklistListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.model.TipoChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
@@ -76,6 +77,23 @@ interface OperacoesIntegradasChecklist {
                                        final int limit,
                                        final long offset,
                                        final boolean resumido) throws Exception;
+
+    @NotNull
+    List<ChecklistListagem> getListagemByColaborador(@NotNull final Long codColaborador,
+                                                     @NotNull final LocalDate dataInicial,
+                                                     @NotNull final LocalDate dataFinal,
+                                                     final int limit,
+                                                     final long offset) throws Throwable;
+
+    @NotNull
+    List<ChecklistListagem> getListagem(@NotNull final Long codUnidade,
+                                        @Nullable final Long codEquipe,
+                                        @Nullable final Long codTipoVeiculo,
+                                        @Nullable final Long codVeiculo,
+                                        @NotNull LocalDate dataInicial,
+                                        @NotNull LocalDate dataFinal,
+                                        final int limit,
+                                        final long offset) throws Throwable;
 
     @NotNull
     DeprecatedFarolChecklist getFarolChecklist(@NotNull final Long codUnidade,

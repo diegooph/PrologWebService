@@ -6,10 +6,11 @@ import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
+import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu;
+import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu.Dimensao;
+import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.error.PneuValidator;
 import br.com.zalf.prolog.webservice.frota.pneu.importar.PneuImportReader;
-import br.com.zalf.prolog.webservice.frota.pneu._model.*;
-import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu.Dimensao;
 import br.com.zalf.prolog.webservice.integracao.router.RouterPneu;
 import org.jetbrains.annotations.NotNull;
 
@@ -82,26 +83,28 @@ public final class PneuService {
         }
     }
 
-    public List<Pneu> getPneusByCodUnidadeByStatus(@NotNull final Long codUnidade, @NotNull final String status)
-            throws ProLogException {
+    @NotNull
+    public List<Pneu> getPneusByCodUnidadesByStatus(@NotNull final List<Long> codUnidades,
+                                                    @NotNull final String status) {
         try {
             if (status.equals("%")) {
-                return dao.getTodosPneus(codUnidade);
+                return dao.getTodosPneus(codUnidades);
             } else {
                 final StatusPneu statusPneu = StatusPneu.fromString(status);
                 switch (statusPneu) {
                     case ANALISE:
-                        return dao.getPneusAnalise(codUnidade);
+                        return dao.getPneusAnalise(codUnidades.get(0));
                     case EM_USO:
                     case ESTOQUE:
                     case DESCARTE:
-                        return dao.getPneusByCodUnidadeByStatus(codUnidade, statusPneu);
+                        return dao.getPneusByCodUnidadesByStatus(codUnidades, statusPneu);
                     default:
                         throw new IllegalArgumentException("Status de Pneu não existente: " + status);
                 }
             }
-        } catch (Throwable t) {
-            Log.e(TAG, "Erro ao buscar os pneus da unidade: " + codUnidade + " com status: " + status, t);
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao buscar os pneus com status: " + status +
+                    " das unidades " + codUnidades.toString(), t);
             throw Injection
                     .providePneuExceptionHandler()
                     .map(t, "Erro ao buscar pneus, tente novamente");
@@ -123,7 +126,7 @@ public final class PneuService {
     public List<Dimensao> getDimensoes() {
         try {
             return dao.getDimensoes();
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             Log.e(TAG, "Erro ao buscar dimensões de pneus", e);
             return null;
         }
@@ -133,7 +136,7 @@ public final class PneuService {
                                            @NotNull final String urlFotoPneu) {
         try {
             dao.marcarFotoComoSincronizada(codPneu, urlFotoPneu);
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             Log.e(TAG, "Erro ao marcar a foto como sincronizada com URL: " + urlFotoPneu, e);
             throw new RuntimeException(e);
         }

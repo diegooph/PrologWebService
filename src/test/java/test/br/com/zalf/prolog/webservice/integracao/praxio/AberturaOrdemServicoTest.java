@@ -15,6 +15,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistIns
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistResposta;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloService;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.AlternativaModeloChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.AnexoMidiaChecklistEnum;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.AlternativaModeloChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ModeloChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.PerguntaModeloChecklistInsercao;
@@ -34,10 +35,7 @@ import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.*;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap.OrdemDeServicoCorretivaPrologVO;
 import br.com.zalf.prolog.webservice.integracao.response.SuccessResponseIntegracao;
 import org.jetbrains.annotations.NotNull;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.*;
 import test.br.com.zalf.prolog.webservice.BaseTest;
 
 import java.sql.Connection;
@@ -104,6 +102,7 @@ public final class AberturaOrdemServicoTest extends BaseTest {
      *
      * @throws Throwable Teste executado apresentou erro
      */
+    @Order(1)
     @Test
     void testInsercaoChecklistRoteamentoIntegracao() throws Throwable {
         // ################################### ETAPA 1 - Cria um modelo de checklist ###################################
@@ -165,6 +164,7 @@ public final class AberturaOrdemServicoTest extends BaseTest {
      *
      * @throws Throwable Teste executado apresentou erro
      */
+    @Order(2)
     @Test
     void testAberturaOrdemServicoIntegracao() throws Throwable {
         final ResultInsertModeloChecklist resultModeloChecklist =
@@ -280,6 +280,7 @@ public final class AberturaOrdemServicoTest extends BaseTest {
         }
     }
 
+    @Order(3)
     @Test
     void testIncrementoQtdApontamentoItemOsIntegracao() throws Throwable {
         final ResultInsertModeloChecklist resultModeloChecklist =
@@ -398,6 +399,7 @@ public final class AberturaOrdemServicoTest extends BaseTest {
      *
      * @throws Throwable Teste executado apresentou erro
      */
+    @Order(4)
     @Test
     public void testFechamentoOrdemServicoIntegracao() throws Throwable {
         // ################################### ETAPA 1 - Cria um modelo de checklist ###################################
@@ -572,6 +574,7 @@ public final class AberturaOrdemServicoTest extends BaseTest {
      *
      * @throws Throwable Teste executado apresentou erro
      */
+    @Order(5)
     @Test
     public void testFechamentoOrdemServicoIntegracaoChecklistOfflineComToken() throws Throwable {
         // ################################### ETAPA 1 - Cria um modelo de checklist ###################################
@@ -748,6 +751,7 @@ public final class AberturaOrdemServicoTest extends BaseTest {
      *
      * @throws Throwable Teste executado apresentou erro
      */
+    @Order(6)
     @Test
     public void testFechamentoOrdemServicoIntegracaoChecklistOfflineSemToken() throws Throwable {
         // ################################### ETAPA 1 - Cria um modelo de checklist ###################################
@@ -917,6 +921,7 @@ public final class AberturaOrdemServicoTest extends BaseTest {
      *
      * @throws Throwable Teste executado apresentou erro
      */
+    @Order(7)
     @Test
     void testIncrementaQtdTentativasSincronia() throws Throwable {
         // ################################### ETAPA 1 - Cria um modelo de checklist ###################################
@@ -963,6 +968,7 @@ public final class AberturaOrdemServicoTest extends BaseTest {
         Thread.sleep(1000);
     }
 
+    @Order(8)
     @Test
     void testConverterChecklistRealizacaoIntoOrdemDeServicoCorretivaPrologVO() throws Throwable {
         // ################################### ETAPA 1 - Cria um modelo de checklist ###################################
@@ -1034,20 +1040,23 @@ public final class AberturaOrdemServicoTest extends BaseTest {
                     PrioridadeAlternativa.ALTA,
                     false,
                     1,
-                    true));
+                    true,
+                    AnexoMidiaChecklistEnum.BLOQUEADO));
             // A2.
             alternativas.add(new AlternativaModeloChecklistInsercao(
                     "Outros",
                     PrioridadeAlternativa.CRITICA,
                     true,
                     2,
-                    true));
+                    true,
+                    AnexoMidiaChecklistEnum.BLOQUEADO));
 
             perguntasModelo.add(new PerguntaModeloChecklistInsercao(
                     "P1",
                     1L,
                     1,
                     true,
+                    AnexoMidiaChecklistEnum.BLOQUEADO,
                     alternativas));
         }
 
@@ -1060,20 +1069,23 @@ public final class AberturaOrdemServicoTest extends BaseTest {
                     PrioridadeAlternativa.ALTA,
                     false,
                     1,
-                    true));
+                    true,
+                    AnexoMidiaChecklistEnum.BLOQUEADO));
             // B2.
             alternativas.add(new AlternativaModeloChecklistInsercao(
                     "Outros",
                     PrioridadeAlternativa.BAIXA,
                     true,
                     2,
-                    true));
+                    true,
+                    AnexoMidiaChecklistEnum.BLOQUEADO));
 
             perguntasModelo.add(new PerguntaModeloChecklistInsercao(
                     "P2",
                     null,
                     2,
                     false,
+                    AnexoMidiaChecklistEnum.BLOQUEADO,
                     alternativas));
         }
 
@@ -1150,7 +1162,7 @@ public final class AberturaOrdemServicoTest extends BaseTest {
                 705L,
                 "PRO0006",
                 TipoChecklist.SAIDA,
-                11222,
+                112222,
                 10000,
                 respostas,
                 ProLogDateParser.toLocalDateTime("2019-12-11T09:35:10"),
@@ -1160,7 +1172,9 @@ public final class AberturaOrdemServicoTest extends BaseTest {
                 "device didID",
                 "deviceImei",
                 10000,
-                11000);
+                11000,
+                0,
+                0);
     }
 
     @NotNull
@@ -1237,7 +1251,9 @@ public final class AberturaOrdemServicoTest extends BaseTest {
                 "device didID",
                 "deviceImei",
                 10000,
-                11000);
+                11000,
+                0,
+                0);
     }
 
     private void permiteSincronizarModeloChecklist(

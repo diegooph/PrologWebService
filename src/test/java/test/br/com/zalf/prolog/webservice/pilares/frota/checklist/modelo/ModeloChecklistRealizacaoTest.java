@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.database.DatabaseManager;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
 import br.com.zalf.prolog.webservice.frota.checklist.model.TipoChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloService;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.AnexoMidiaChecklistEnum;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.AlternativaModeloChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ModeloChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.PerguntaModeloChecklistInsercao;
@@ -19,14 +20,11 @@ import test.br.com.zalf.prolog.webservice.BaseTest;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Para esse teste funcionar corretamente em repetidas execuções, é necessário dropar um index da tabela
- * CHECKLIST_MODELO:
- * > drop index checklist_modelo_data_nome_index;
- *
  * Created on 2019-10-09
  *
  * @author Luiz Felipe (https://github.com/luizfp)
@@ -39,6 +37,7 @@ public class ModeloChecklistRealizacaoTest extends BaseTest {
     private ChecklistModeloService service;
     private String token;
 
+    @Override
     @BeforeAll
     public void initialize() throws Throwable {
         DatabaseManager.init();
@@ -46,6 +45,7 @@ public class ModeloChecklistRealizacaoTest extends BaseTest {
         service = new ChecklistModeloService();
     }
 
+    @Override
     @AfterAll
     public void destroy() {
         DatabaseManager.finish();
@@ -65,12 +65,14 @@ public class ModeloChecklistRealizacaoTest extends BaseTest {
                     PrioridadeAlternativa.CRITICA,
                     true,
                     1,
-                    true));
+                    true,
+                    AnexoMidiaChecklistEnum.BLOQUEADO));
             perguntas.add(new PerguntaModeloChecklistInsercao(
                     "P1",
                     1L,
                     1,
                     true,
+                    AnexoMidiaChecklistEnum.BLOQUEADO,
                     alternativas));
         }
 
@@ -84,7 +86,8 @@ public class ModeloChecklistRealizacaoTest extends BaseTest {
                     PrioridadeAlternativa.ALTA,
                     false,
                     1,
-                    true));
+                    true,
+                    AnexoMidiaChecklistEnum.BLOQUEADO));
 
             // B2
             alternativas.add(new AlternativaModeloChecklistInsercao(
@@ -92,18 +95,21 @@ public class ModeloChecklistRealizacaoTest extends BaseTest {
                     PrioridadeAlternativa.BAIXA,
                     true,
                     2,
-                    false));
+                    false,
+                    AnexoMidiaChecklistEnum.BLOQUEADO));
             perguntas.add(new PerguntaModeloChecklistInsercao(
                     "P2",
                     null,
                     2,
                     false,
+                    AnexoMidiaChecklistEnum.BLOQUEADO,
                     alternativas));
         }
 
+        final String nomeModelo = UUID.randomUUID().toString();
         final ResultInsertModeloChecklist result = service.insertModeloChecklist(
                 new ModeloChecklistInsercao(
-                        "Modelo de Teste Realização",
+                        nomeModelo,
                         5L,
                         Collections.singletonList(COD_TIPO_VEICULO_COM_PLACAS),
                         Collections.singletonList(COD_CARGO),
@@ -126,7 +132,7 @@ public class ModeloChecklistRealizacaoTest extends BaseTest {
 
         assertThat(modelo).isNotNull();
         assertThat(modelo).hasNoNullFieldsOrProperties();
-        assertThat(modelo.getNomeModelo()).isEqualTo("Modelo de Teste Realização");
+        assertThat(modelo.getNomeModelo()).isEqualTo(nomeModelo);
         assertThat(modelo.getCodModelo()).isEqualTo(result.getCodModeloChecklistInserido());
         assertThat(modelo.getCodVersaoModelo()).isEqualTo(result.getCodVersaoModeloChecklistInserido());
         assertThat(modelo.getCodUnidadeModelo()).isEqualTo(5L);
