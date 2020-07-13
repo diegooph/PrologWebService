@@ -61,30 +61,6 @@ public class Checklist {
         return checklists;
     }
 
-    public Long getCodModelo() {
-        return codModelo;
-    }
-
-    public void setCodModelo(Long codModelo) {
-        this.codModelo = codModelo;
-    }
-
-    public Long getCodVersaoModeloChecklist() {
-        return codVersaoModeloChecklist;
-    }
-
-    public void setCodVersaoModeloChecklist(Long codVersaoModeloChecklist) {
-        this.codVersaoModeloChecklist = codVersaoModeloChecklist;
-    }
-
-    public long getTempoRealizacaoCheckInMillis() {
-        return tempoRealizacaoCheckInMillis;
-    }
-
-    public void setTempoRealizacaoCheckInMillis(long tempoRealizacaoCheckInMillis) {
-        this.tempoRealizacaoCheckInMillis = tempoRealizacaoCheckInMillis;
-    }
-
     public static char getTipoSaida() {
         return TIPO_SAIDA;
     }
@@ -93,11 +69,68 @@ public class Checklist {
         return TIPO_RETORNO;
     }
 
+    @NotNull
+    public static List<ChecklistListagem> toChecklistListagem(@NotNull final List<Checklist> checklistsAntigos) {
+        return checklistsAntigos.stream().map(Checklist::toChecklistListagem).collect(Collectors.toList());
+    }
+
+    @NotNull
+    public static ChecklistListagem toChecklistListagem(@NotNull final Checklist checklistAntigo) {
+        return new ChecklistListagem(
+                checklistAntigo.getCodigo(),
+                -1L,
+                checklistAntigo.getCodVersaoModeloChecklist(),
+                checklistAntigo.getData(),
+                checklistAntigo.getDataHoraImportadoProLog(),
+                checklistAntigo.getKmAtualVeiculo(),
+                checklistAntigo.getTempoRealizacaoCheckInMillis(),
+                -1L,
+                checklistAntigo.getColaborador().getCpf(),
+                checklistAntigo.getColaborador().getNome(),
+                -1L,
+                checklistAntigo.getPlacaVeiculo(),
+                null,
+                TipoChecklist.fromChar(checklistAntigo.getTipo()),
+                checklistAntigo.getQtdItensOk(),
+                checklistAntigo.getQtdItensNok(),
+                checklistAntigo.getQtdAlternativasOk(),
+                checklistAntigo.getQtdAlternativasNok(),
+                0,
+                0,
+                checklistAntigo.getQtdNokBaixa(),
+                checklistAntigo.getQtdNokAlta(),
+                checklistAntigo.getQtdNokCritica());
+    }
+
+    public Long getCodModelo() {
+        return codModelo;
+    }
+
+    public void setCodModelo(final Long codModelo) {
+        this.codModelo = codModelo;
+    }
+
+    public Long getCodVersaoModeloChecklist() {
+        return codVersaoModeloChecklist;
+    }
+
+    public void setCodVersaoModeloChecklist(final Long codVersaoModeloChecklist) {
+        this.codVersaoModeloChecklist = codVersaoModeloChecklist;
+    }
+
+    public long getTempoRealizacaoCheckInMillis() {
+        return tempoRealizacaoCheckInMillis;
+    }
+
+    public void setTempoRealizacaoCheckInMillis(final long tempoRealizacaoCheckInMillis) {
+        this.tempoRealizacaoCheckInMillis = tempoRealizacaoCheckInMillis;
+    }
+
     public Long getCodigo() {
         return codigo;
     }
 
-    public void setCodigo(Long codigo) {
+    public void setCodigo(final Long codigo) {
         this.codigo = codigo;
     }
 
@@ -105,7 +138,7 @@ public class Checklist {
         return colaborador;
     }
 
-    public void setColaborador(Colaborador colaborador) {
+    public void setColaborador(final Colaborador colaborador) {
         this.colaborador = colaborador;
     }
 
@@ -113,7 +146,7 @@ public class Checklist {
         return data;
     }
 
-    public void setData(LocalDateTime data) {
+    public void setData(final LocalDateTime data) {
         this.data = data;
     }
 
@@ -130,7 +163,7 @@ public class Checklist {
         return placaVeiculo;
     }
 
-    public void setPlacaVeiculo(String placaVeiculo) {
+    public void setPlacaVeiculo(final String placaVeiculo) {
         this.placaVeiculo = placaVeiculo;
     }
 
@@ -138,7 +171,7 @@ public class Checklist {
         return listRespostas;
     }
 
-    public void setListRespostas(List<PerguntaRespostaChecklist> listRespostas) {
+    public void setListRespostas(final List<PerguntaRespostaChecklist> listRespostas) {
         this.listRespostas = listRespostas;
         calculaQtdOkOrNok();
     }
@@ -147,7 +180,7 @@ public class Checklist {
         return tipo;
     }
 
-    public void setTipo(char tipo) {
+    public void setTipo(final char tipo) {
         this.tipo = tipo;
     }
 
@@ -155,7 +188,7 @@ public class Checklist {
         return kmAtualVeiculo;
     }
 
-    public void setKmAtualVeiculo(long kmAtualVeiculo) {
+    public void setKmAtualVeiculo(final long kmAtualVeiculo) {
         this.kmAtualVeiculo = kmAtualVeiculo;
     }
 
@@ -163,7 +196,7 @@ public class Checklist {
         return qtdItensOk;
     }
 
-    public void setQtdItensOk(int qtdItensOk) {
+    public void setQtdItensOk(final int qtdItensOk) {
         this.qtdItensOk = qtdItensOk;
     }
 
@@ -171,31 +204,31 @@ public class Checklist {
         return qtdItensNok;
     }
 
-    public void setQtdItensNok(int qtdItensNok) {
+    public void setQtdItensNok(final int qtdItensNok) {
         this.qtdItensNok = qtdItensNok;
-    }
-
-    public void setQtdAlternativasOk(int qtdAlternativasOk) {
-        this.qtdAlternativasOk = qtdAlternativasOk;
     }
 
     public int getQtdAlternativasOk() {
         return qtdAlternativasOk;
     }
 
-    public void setQtdAlternativasNok(int qtdAlternativasNok) {
-        this.qtdAlternativasNok = qtdAlternativasNok;
+    public void setQtdAlternativasOk(final int qtdAlternativasOk) {
+        this.qtdAlternativasOk = qtdAlternativasOk;
     }
 
     public int getQtdAlternativasNok() {
         return qtdAlternativasNok;
     }
 
+    public void setQtdAlternativasNok(final int qtdAlternativasNok) {
+        this.qtdAlternativasNok = qtdAlternativasNok;
+    }
+
     public int getQtdNokBaixa() {
         return qtdNokBaixa;
     }
 
-    public void setQtdNokBaixa(int qtdNokBaixa) {
+    public void setQtdNokBaixa(final int qtdNokBaixa) {
         this.qtdNokBaixa = qtdNokBaixa;
     }
 
@@ -203,7 +236,7 @@ public class Checklist {
         return qtdNokAlta;
     }
 
-    public void setQtdNokAlta(int qtdNokAlta) {
+    public void setQtdNokAlta(final int qtdNokAlta) {
         this.qtdNokAlta = qtdNokAlta;
     }
 
@@ -211,7 +244,7 @@ public class Checklist {
         return qtdNokCritica;
     }
 
-    public void setQtdNokCritica(int qtdNokCritica) {
+    public void setQtdNokCritica(final int qtdNokCritica) {
         this.qtdNokCritica = qtdNokCritica;
     }
 
@@ -277,38 +310,5 @@ public class Checklist {
                 ", qtdItensOk=" + qtdItensOk +
                 ", qtdItensNok=" + qtdItensNok +
                 '}';
-    }
-
-    @NotNull
-    public static List<ChecklistListagem> toChecklistListagem(@NotNull final List<Checklist> checklistsAntigos) {
-        return checklistsAntigos.stream().map(Checklist::toChecklistListagem).collect(Collectors.toList());
-    }
-
-    @NotNull
-    public static ChecklistListagem toChecklistListagem(@NotNull final Checklist checklistAntigo) {
-        return new ChecklistListagem(
-                checklistAntigo.getCodigo(),
-                checklistAntigo.getCodModelo(),
-                checklistAntigo.getCodVersaoModeloChecklist(),
-                checklistAntigo.getData(),
-                checklistAntigo.getDataHoraImportadoProLog(),
-                checklistAntigo.getKmAtualVeiculo(),
-                checklistAntigo.getTempoRealizacaoCheckInMillis(),
-                -1L,
-                checklistAntigo.getColaborador().getCpf(),
-                checklistAntigo.getColaborador().getNome(),
-                -1L,
-                checklistAntigo.getPlacaVeiculo(),
-                null,
-                TipoChecklist.fromChar(checklistAntigo.getTipo()),
-                checklistAntigo.getQtdItensOk(),
-                checklistAntigo.getQtdItensNok(),
-                checklistAntigo.getQtdAlternativasOk(),
-                checklistAntigo.getQtdAlternativasNok(),
-                0,
-                0,
-                checklistAntigo.getQtdNokBaixa(),
-                checklistAntigo.getQtdNokAlta(),
-                checklistAntigo.getQtdNokCritica());
     }
 }
