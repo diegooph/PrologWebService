@@ -79,7 +79,7 @@ public class Checklist {
         return new ChecklistListagem(
                 checklistAntigo.getCodigo(),
                 -1L,
-                checklistAntigo.getCodVersaoModeloChecklist(),
+                -1L,
                 checklistAntigo.getData(),
                 checklistAntigo.getDataHoraImportadoProLog(),
                 checklistAntigo.getKmAtualVeiculo(),
