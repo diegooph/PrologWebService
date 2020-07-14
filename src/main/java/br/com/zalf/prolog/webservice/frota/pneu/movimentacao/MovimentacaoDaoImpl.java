@@ -2,7 +2,6 @@ package br.com.zalf.prolog.webservice.frota.pneu.movimentacao;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.customfields.CampoPersonalizadoDao;
 import br.com.zalf.prolog.webservice.customfields._model.CampoPersonalizadoFuncaoProlog;
 import br.com.zalf.prolog.webservice.customfields._model.CampoPersonalizadoResposta;
@@ -223,31 +222,21 @@ public final class MovimentacaoDaoImpl extends DatabaseConnection implements Mov
         try {
             removePneusComOrigemVeiculo(conn, veiculoDao, processoMov);
             final Long codUnidade = processoMov.getUnidade().getCodigo();
-            stmt = conn.prepareStatement("INSERT INTO movimentacao(cod_movimentacao_processo, cod_unidade, " +
-                    "cod_pneu, sulco_interno, sulco_central_interno, sulco_central_externo, sulco_externo, vida, " +
-                    "observacao) VALUES (?,?,?,?,?,?,?,?,?) RETURNING codigo;");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_MOVIMENTACAO_INSERE_MOVIMENTACAO(" +
+                    "F_COD_UNIDADE => ?, " +
+                    "F_COD_MOVIMENTACAO_PROCESSO => ? ," +
+                    "F_COD_PNEU => ?," +
+                    "F_OBSERVACAO => ?) AS V_COD_MOVIMENTACAO_REALIZADA; ");
             // Podemos realizar o suppress pois neste ponto já temos que possuir um código não nulo.
-            stmt.setLong(1, processoMov.getCodigo());
-            stmt.setLong(2, codUnidade);
+            stmt.setLong(1, codUnidade);
+            stmt.setLong(2, processoMov.getCodigo());
             for (final Movimentacao mov : processoMov.getMovimentacoes()) {
                 final Pneu pneu = mov.getPneu();
                 stmt.setLong(3, pneu.getCodigo());
-                if (pneu.getSulcosAtuais() != null) {
-                    stmt.setDouble(4, pneu.getSulcosAtuais().getInterno());
-                    stmt.setDouble(5, pneu.getSulcosAtuais().getCentralInterno());
-                    stmt.setDouble(6, pneu.getSulcosAtuais().getCentralExterno());
-                    stmt.setDouble(7, pneu.getSulcosAtuais().getExterno());
-                } else {
-                    stmt.setNull(4, SqlType.REAL.asIntTypeJava());
-                    stmt.setNull(5, SqlType.REAL.asIntTypeJava());
-                    stmt.setNull(6, SqlType.REAL.asIntTypeJava());
-                    stmt.setNull(7, SqlType.REAL.asIntTypeJava());
-                }
-                stmt.setDouble(8, pneu.getVidaAtual());
-                stmt.setString(9, mov.getObservacao());
+                stmt.setString(4, mov.getObservacao());
                 rSet = stmt.executeQuery();
                 if (rSet.next()) {
-                    mov.setCodigo(rSet.getLong("CODIGO"));
+                    mov.setCodigo(rSet.getLong("V_COD_MOVIMENTACAO_REALIZADA"));
                     insertOrigem(conn, pneuDao, veiculoDao, pneuServicoRealizadoDao, codUnidade, mov);
                     insertDestino(conn, veiculoDao, codUnidade, mov);
                     if (mov.getCodMotivoMovimento() != null) {
@@ -262,7 +251,6 @@ public final class MovimentacaoDaoImpl extends DatabaseConnection implements Mov
                                 mov,
                                 dataHoraMovimentacao);
                     }
-
                     // Atualiza o status do pneu.
                     pneuDao.updateStatus(conn, pneu, mov.getDestino().getTipo().toStatusPneu());
                 }
