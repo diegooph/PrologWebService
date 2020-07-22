@@ -6,11 +6,13 @@ import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.integracao.BaseIntegracaoService;
 import br.com.zalf.prolog.webservice.integracao.api.pneu.model.ApiPneuAlteracaoStatus;
 import br.com.zalf.prolog.webservice.integracao.api.pneu.model.DiagramaPosicaoMapeado;
+import br.com.zalf.prolog.webservice.integracao.praxio.utils.UnidadePraxioValidator;
 import br.com.zalf.prolog.webservice.integracao.response.PosicaoPneuMepadoResponse;
 import br.com.zalf.prolog.webservice.integracao.response.SuccessResponseIntegracao;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created on 16/08/19.
@@ -28,6 +30,11 @@ public final class ApiPneuService extends BaseIntegracaoService {
             final String tokenIntegracao,
             final List<ApiPneuAlteracaoStatus> pneusAtualizacaoStatus) throws ProLogException {
         try {
+            // Removemos atualizações que tem código de unidade bloqueado. Estes não serão processados.
+            pneusAtualizacaoStatus.removeAll(
+                    pneusAtualizacaoStatus.stream()
+                            .filter(pneu -> UnidadePraxioValidator.isUnidadeBloqueada(pneu.getCodUnidadePneu()))
+                            .collect(Collectors.toList()));
             ensureValidToken(tokenIntegracao, TAG);
             dao.atualizaStatusPneus(tokenIntegracao, pneusAtualizacaoStatus);
             return new SuccessResponseIntegracao("Pneus atualizados com sucesso");

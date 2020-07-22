@@ -16,6 +16,7 @@ import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.Chec
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.ItemOSAbertaGlobus;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.ItemResolvidoGlobus;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.OrdemServicoAbertaGlobus;
+import br.com.zalf.prolog.webservice.integracao.praxio.utils.UnidadePraxioValidator;
 import br.com.zalf.prolog.webservice.integracao.response.SuccessResponseIntegracao;
 import org.jetbrains.annotations.NotNull;
 
@@ -56,6 +57,11 @@ public final class IntegracaoPraxioService extends BaseIntegracaoService {
             final String tokenIntegracao,
             final VeiculoCadastroPraxio veiculoCadastroPraxio) throws ProLogException {
         try {
+            if (UnidadePraxioValidator.isUnidadeBloqueada(veiculoCadastroPraxio.getCodUnidadeAlocado())) {
+                throw new GenericException(
+                        String.format("Unidade (%s) está com a integração bloqueada",
+                                veiculoCadastroPraxio.getCodUnidadeAlocado()));
+            }
             ensureValidToken(tokenIntegracao, TAG);
             dao.inserirVeiculoCadastroPraxio(tokenIntegracao, veiculoCadastroPraxio);
             return new SuccessResponseIntegracao("Veículo inserido no ProLog com sucesso");
@@ -77,8 +83,14 @@ public final class IntegracaoPraxioService extends BaseIntegracaoService {
             if (codUnidadeVeiculoAntesEdicao == null) {
                 throw new GenericException("O código da Unidade deve ser fornecido");
             }
-            if (placaVeiculoAntesEdicao == null || placaVeiculoAntesEdicao.isEmpty()) {
-                throw new GenericException("A placa antes da edição deve ser fornecida");
+            if (UnidadePraxioValidator.isUnidadeBloqueada(codUnidadeVeiculoAntesEdicao)) {
+                throw new GenericException(
+                        String.format("Unidade (%s) está com a integração bloqueada", codUnidadeVeiculoAntesEdicao));
+            }
+            if (UnidadePraxioValidator.isUnidadeBloqueada(veiculoEdicaoPraxio.getCodUnidadeAlocado())) {
+                throw new GenericException(
+                        String.format("Unidade (%s) está com a integração bloqueada",
+                                veiculoEdicaoPraxio.getCodUnidadeAlocado()));
             }
             ensureValidToken(tokenIntegracao, TAG);
             dao.atualizarVeiculoPraxio(
@@ -104,6 +116,11 @@ public final class IntegracaoPraxioService extends BaseIntegracaoService {
             throw new GenericException("O CPF do colaborador deve ser informado na transferência de veículo");
         }
         try {
+            if (UnidadePraxioValidator.isUnidadeBloqueada(veiculoTransferenciaPraxio.getCodUnidadeOrigem())) {
+                throw new GenericException(
+                        String.format("Unidade (%s) está com a integração bloqueada",
+                                veiculoTransferenciaPraxio.getCodUnidadeOrigem()));
+            }
             ensureValidToken(tokenIntegracao, TAG);
             dao.transferirVeiculoPraxio(tokenIntegracao, veiculoTransferenciaPraxio);
             return new SuccessResponseIntegracao("Veículo do Globus transferido com sucesso");
