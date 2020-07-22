@@ -219,15 +219,23 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
 
     @NotNull
     @Override
-    public List<Long> getCodUnidadesIntegracaoBloqueada(@NotNull final String userToken) throws Throwable {
+    public List<Long> getCodUnidadesIntegracaoBloqueada(
+            @NotNull final String userToken,
+            @NotNull final SistemaKey sistemaKey,
+            @NotNull final RecursoIntegrado recursoIntegrado) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * " +
-                    "FROM INTEGRACAO.FUNC_GERAL_BUSCA_UNIDADES_BLOQUEADAS_INTEGRACAO(F_USER_TOKEN => ?);");
+            stmt = conn.prepareStatement("select * " +
+                    "from integracao.func_geral_busca_unidades_bloqueadas_integracao(" +
+                    "f_user_token => ?, " +
+                    "f_sistema_key => ?, " +
+                    "f_recurso_integrado => ?);");
             stmt.setString(1, userToken);
+            stmt.setString(2, sistemaKey.getKey());
+            stmt.setString(3, recursoIntegrado.getKey());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 final List<Long> codUnidadesBloqueadas = new ArrayList<>();
@@ -243,7 +251,6 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
         }
     }
 
-    @NotNull
     @Override
     public boolean getConfigAberturaServicoPneuIntegracao(@NotNull final Long codUnidade) throws Throwable {
         Connection conn = null;

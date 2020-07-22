@@ -182,7 +182,9 @@ public final class SistemaApiProLog extends Sistema {
     private boolean unidadeEstaComIntegracaoAtiva(@NotNull final Long codUnidade) throws Throwable {
         // Caso o código da unidade está contido na lista de unidades bloqueadas, significa que a unidade
         // NÃO ESTÁ integrada.
-        return !getIntegradorProLog().getCodUnidadesIntegracaoBloqueada(getUserToken()).contains(codUnidade);
+        return !getIntegradorProLog()
+                .getCodUnidadesIntegracaoBloqueada(getUserToken(), getSistemaKey(), getRecursoIntegrado())
+                .contains(codUnidade);
     }
 
     private boolean configUnidadeDeveAbrirServicoPneu(@NotNull final Long codUnidade) throws Throwable {

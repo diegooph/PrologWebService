@@ -122,14 +122,20 @@ public interface IntegracaoDao {
                                                    @NotNull final MetodoIntegrado metodoIntegrado) throws Throwable;
 
     /**
-     * Método utilizado para buscar as unidades da empresa do colaborador que possuem a integração bloqueada.
+     * Método utilizado para buscar as unidades da empresa do colaborador que possuem a integração bloqueada. O método
+     * considera apenas unidades bloqueadas aquelas que estão associadas ao {@code sistemaKey} e ao
+     * {@code recursoIntegrado} especificados.
      *
-     * @param userToken Token do usuário, utilizado para saber a qual empresa ele pertence.
+     * @param userToken        Token do usuário, utilizado para saber a qual empresa ele pertence.
+     * @param sistemaKey       Chave do sistema para buscar as unidades bloqueadas.
+     * @param recursoIntegrado Recurso integrado para buscar as unidades bloqueadas.
      * @return Uma lista de unidades bloqueadas.
      * @throws Throwable Se algum erro acontecer.
      */
     @NotNull
-    List<Long> getCodUnidadesIntegracaoBloqueada(@NotNull final String userToken) throws Throwable;
+    List<Long> getCodUnidadesIntegracaoBloqueada(@NotNull final String userToken,
+                                                 @NotNull final SistemaKey sistemaKey,
+                                                 @NotNull final RecursoIntegrado recursoIntegrado) throws Throwable;
 
     /**
      * Método utilizado para verificar se uma unidade possui configuração para abrir serviço para pneus.
@@ -138,6 +144,5 @@ public interface IntegracaoDao {
      * @return Uma flag para identificar se deve abrir serviço para os pneus.
      * @throws Throwable Se algum erro acontecer.
      */
-    @NotNull
     boolean getConfigAberturaServicoPneuIntegracao(@NotNull final Long codUnidade) throws Throwable;
 }
