@@ -21,6 +21,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.transferencia._model.realizacao.PneuTransferenciaRealizacao;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.MetodoIntegrado;
+import br.com.zalf.prolog.webservice.integracao.RecursoIntegrado;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.*;
 import br.com.zalf.prolog.webservice.integracao.praxio.movimentacao.GlobusPiccoloturLocalMovimento;
 import br.com.zalf.prolog.webservice.integracao.praxio.movimentacao.GlobusPiccoloturLocalMovimentoResponse;
@@ -46,9 +47,10 @@ public final class SistemaGlobusPiccolotur extends Sistema {
 
     public SistemaGlobusPiccolotur(@NotNull final GlobusPiccoloturRequester requester,
                                    @NotNull final SistemaKey sistemaKey,
+                                   @NotNull final RecursoIntegrado recursoIntegrado,
                                    @NotNull final IntegradorProLog integradorProLog,
                                    @NotNull final String userToken) {
-        super(integradorProLog, sistemaKey, userToken);
+        super(integradorProLog, sistemaKey, recursoIntegrado, userToken);
         this.requester = requester;
     }
 

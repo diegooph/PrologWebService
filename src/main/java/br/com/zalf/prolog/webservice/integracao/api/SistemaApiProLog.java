@@ -12,6 +12,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.VeiculoCadastro;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.ProcessoTransferenciaVeiculoRealizacao;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
+import br.com.zalf.prolog.webservice.integracao.RecursoIntegrado;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
 import org.jetbrains.annotations.NotNull;
@@ -28,8 +29,9 @@ public final class SistemaApiProLog extends Sistema {
 
     public SistemaApiProLog(@NotNull final IntegradorProLog integradorProLog,
                             @NotNull final SistemaKey sistemaKey,
+                            @NotNull final RecursoIntegrado recursoIntegrado,
                             @NotNull final String userToken) {
-        super(integradorProLog, sistemaKey, userToken);
+        super(integradorProLog, sistemaKey, recursoIntegrado, userToken);
     }
 
     @Override

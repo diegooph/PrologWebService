@@ -20,6 +20,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeicul
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.PosicaoPneuMapper;
+import br.com.zalf.prolog.webservice.integracao.RecursoIntegrado;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.AfericaoFiltro;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.ArrayOfAfericaoFiltro;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfVeiculo;
@@ -43,7 +44,6 @@ import java.util.stream.Collectors;
  * Subclasse de {@link Sistema} responsável por cuidar da integração com o AvaCorp para a empresa Avilan.
  */
 public final class AvaCorpAvilan extends Sistema {
-
     /**
      * Caso venha %, significa que queremos todos os tipos,
      * para buscar de todos os tipos na integração, mandamos vazio.
@@ -56,9 +56,10 @@ public final class AvaCorpAvilan extends Sistema {
 
     public AvaCorpAvilan(@NotNull final AvaCorpAvilanRequester requester,
                          @NotNull final SistemaKey sistemaKey,
+                         @NotNull final RecursoIntegrado recursoIntegrado,
                          @NotNull final IntegradorProLog integradorProLog,
                          @NotNull final String userToken) {
-        super(integradorProLog, sistemaKey, userToken);
+        super(integradorProLog, sistemaKey, recursoIntegrado, userToken);
         this.requester = requester;
     }
 
@@ -251,7 +252,7 @@ public final class AvaCorpAvilan extends Sistema {
                                                final int limit,
                                                final long offset) throws Exception {
         String placa = null;
-        if(codVeiculo != null){
+        if (codVeiculo != null) {
             placa = getAvaCorpAvilanDao().getPlacaByCodVeiculo(codVeiculo);
         }
         final List<ChecklistFiltro> checklistsFiltro =

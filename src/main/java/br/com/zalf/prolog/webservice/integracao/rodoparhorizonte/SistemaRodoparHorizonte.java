@@ -1,12 +1,13 @@
 package br.com.zalf.prolog.webservice.integracao.rodoparhorizonte;
 
 import br.com.zalf.prolog.webservice.Injection;
-import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.database.DatabaseConnectionProvider;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.Afericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.AfericaoAvulsa;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.AfericaoPlaca;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
+import br.com.zalf.prolog.webservice.integracao.RecursoIntegrado;
 import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.data.RodoparHorizonteRequester;
 import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.model.token.ProtheusRodalogCredentialCreator;
 import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.model.token.RodoparHorizonteTokenIntegracao;
@@ -28,8 +29,9 @@ public class SistemaRodoparHorizonte extends Sistema {
     public SistemaRodoparHorizonte(@NotNull final RodoparHorizonteRequester requester,
                                    @NotNull final IntegradorProLog integradorProLog,
                                    @NotNull final SistemaKey sistemaKey,
+                                   @NotNull final RecursoIntegrado recursoIntegrado,
                                    @NotNull final String userToken) {
-        super(integradorProLog, sistemaKey, userToken);
+        super(integradorProLog, sistemaKey, recursoIntegrado, userToken);
         this.requester = requester;
     }
 
