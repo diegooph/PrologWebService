@@ -63,7 +63,7 @@ public final class IntegracaoPraxioService extends BaseIntegracaoService {
                     .provideIntegracaoDao()
                     .getCodUnidadesIntegracaoBloqueadaByTokenIntegracao(
                             tokenIntegracao,
-                            SistemaKey.GLOBUS_PICCOLOTUR,
+                            SistemaKey.API_PROLOG,
                             RecursoIntegrado.VEICULOS);
             if (codUnidadesBloquedas.contains(veiculoCadastroPraxio.getCodUnidadeAlocado())) {
                 throw new GenericException(
@@ -95,7 +95,7 @@ public final class IntegracaoPraxioService extends BaseIntegracaoService {
                     .provideIntegracaoDao()
                     .getCodUnidadesIntegracaoBloqueadaByTokenIntegracao(
                             tokenIntegracao,
-                            SistemaKey.GLOBUS_PICCOLOTUR,
+                            SistemaKey.API_PROLOG,
                             RecursoIntegrado.VEICULOS);
             if (codUnidadesBloquedas.contains(codUnidadeVeiculoAntesEdicao)) {
                 throw new GenericException(
@@ -129,7 +129,7 @@ public final class IntegracaoPraxioService extends BaseIntegracaoService {
                     .provideIntegracaoDao()
                     .getCodUnidadesIntegracaoBloqueadaByTokenIntegracao(
                             tokenIntegracao,
-                            SistemaKey.GLOBUS_PICCOLOTUR,
+                            SistemaKey.API_PROLOG,
                             RecursoIntegrado.VEICULO_TRANSFERENCIA);
             if (codUnidadesBloquedas.contains(veiculoTransferenciaPraxio.getCodUnidadeOrigem())) {
                 throw new GenericException(

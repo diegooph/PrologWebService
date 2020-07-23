@@ -8,6 +8,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.AfericaoPlaca;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.NovaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.TipoMedicaoColetadaAfericao;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
+import br.com.zalf.prolog.webservice.integracao.RecursoIntegrado;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemasFactory;
@@ -28,6 +29,7 @@ import static test.br.com.zalf.prolog.webservice.integracao.avilan.AvaCorpAvilan
 public class AvaCorpAvilanSistemaTest {
     private final Sistema sistema = SistemasFactory.createSistema(
             SistemaKey.AVACORP_AVILAN,
+            RecursoIntegrado.CHECKLIST,
             IntegradorProLog.full(PROLOG_TOKEN),
             PROLOG_TOKEN);
 
@@ -48,7 +50,7 @@ public class AvaCorpAvilanSistemaTest {
 
     @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
     public void testBuscarNovaAfericao() throws Throwable {
-        final NovaAfericao novaAfericao = sistema.getNovaAfericaoPlaca(1L,"LRN9162", TipoMedicaoColetadaAfericao.SULCO_PRESSAO.asString());
+        final NovaAfericao novaAfericao = sistema.getNovaAfericaoPlaca(1L, "LRN9162", TipoMedicaoColetadaAfericao.SULCO_PRESSAO.asString());
         assertNotNull(novaAfericao);
         System.out.println(GsonUtils.getGson().toJson(novaAfericao));
     }
@@ -80,9 +82,9 @@ public class AvaCorpAvilanSistemaTest {
         assertTrue(!map.isEmpty());
 
         // Já que não está vazio pegamos o primeiro elemento
-        final Map.Entry<ModeloChecklist ,List<String>> entry = map.entrySet().iterator().next();
+        final Map.Entry<ModeloChecklist, List<String>> entry = map.entrySet().iterator().next();
         final ModeloChecklist modeloChecklist = entry.getKey();
-        final List<String> placas= entry.getValue();
+        final List<String> placas = entry.getValue();
 
         assertNotNull(modeloChecklist);
         assertNotNull(placas);
