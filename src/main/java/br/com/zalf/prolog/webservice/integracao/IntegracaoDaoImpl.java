@@ -251,6 +251,40 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
         }
     }
 
+    @NotNull
+    @Override
+    public List<Long> getCodUnidadesIntegracaoBloqueadaByTokenIntegracao(
+            @NotNull final String tokenIntegracao,
+            @NotNull final SistemaKey sistemaKey,
+            @NotNull final RecursoIntegrado recursoIntegrado) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("select * " +
+                    "from integracao.func_geral_busca_unidades_bloqueadas_by_token_integracao(" +
+                    "f_token_integracao => ?, " +
+                    "f_sistema_key => ?, " +
+                    "f_recurso_integrado => ?);");
+            stmt.setString(1, tokenIntegracao);
+            stmt.setString(2, sistemaKey.getKey());
+            stmt.setString(3, recursoIntegrado.getKey());
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                final List<Long> codUnidadesBloqueadas = new ArrayList<>();
+                do {
+                    codUnidadesBloqueadas.add(rSet.getLong("COD_UNIDADE_BLOQUEADA"));
+                } while (rSet.next());
+                return codUnidadesBloqueadas;
+            } else {
+                return Collections.emptyList();
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
     @Override
     public boolean getConfigAberturaServicoPneuIntegracao(@NotNull final Long codUnidade) throws Throwable {
         Connection conn = null;

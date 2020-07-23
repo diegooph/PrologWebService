@@ -6,9 +6,10 @@ import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.integracao.BaseIntegracaoService;
+import br.com.zalf.prolog.webservice.integracao.RecursoIntegrado;
 import br.com.zalf.prolog.webservice.integracao.api.pneu.cadastro.model.*;
-import br.com.zalf.prolog.webservice.integracao.praxio.utils.UnidadePraxioValidator;
 import br.com.zalf.prolog.webservice.integracao.response.SuccessResponseIntegracao;
+import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -30,12 +31,18 @@ public final class ApiCadastroPneuService extends BaseIntegracaoService {
             final String tokenIntegracao,
             final List<ApiPneuCargaInicial> pneusCargaInicial) throws ProLogException {
         try {
+            ensureValidToken(tokenIntegracao, TAG);
             // Removemos da carga inicial os pneus que tem código de unidade bloqueado. Estes não serão processados.
+            final List<Long> codUnidadesBloquedas = Injection
+                    .provideIntegracaoDao()
+                    .getCodUnidadesIntegracaoBloqueadaByTokenIntegracao(
+                            tokenIntegracao,
+                            SistemaKey.API_PROLOG,
+                            RecursoIntegrado.PNEUS);
             pneusCargaInicial.removeAll(
                     pneusCargaInicial.stream()
-                            .filter(pneu -> UnidadePraxioValidator.isUnidadeBloqueada(pneu.getCodUnidadePneu()))
+                            .filter(pneu -> codUnidadesBloquedas.contains(pneu.getCodUnidadePneu()))
                             .collect(Collectors.toList()));
-            ensureValidToken(tokenIntegracao, TAG);
             return dao.inserirCargaInicialPneu(tokenIntegracao, pneusCargaInicial);
         } catch (final Throwable t) {
             Log.e(TAG, "Não foi possível processar a carga inicial de pneus:\n" +
@@ -50,12 +57,18 @@ public final class ApiCadastroPneuService extends BaseIntegracaoService {
     public SuccessResponseIntegracao inserirPneuCadastro(final String tokenIntegracao,
                                                          final ApiPneuCadastro pneuCadastro) throws ProLogException {
         try {
-            if (UnidadePraxioValidator.isUnidadeBloqueada(pneuCadastro.getCodUnidadePneu())) {
+            ensureValidToken(tokenIntegracao, TAG);
+            final List<Long> codUnidadesBloquedas = Injection
+                    .provideIntegracaoDao()
+                    .getCodUnidadesIntegracaoBloqueadaByTokenIntegracao(
+                            tokenIntegracao,
+                            SistemaKey.API_PROLOG,
+                            RecursoIntegrado.PNEUS);
+            if (codUnidadesBloquedas.contains(pneuCadastro.getCodUnidadePneu())) {
                 throw new GenericException(
                         String.format("Unidade (%s) está com a integração bloqueada",
                                 pneuCadastro.getCodUnidadePneu()));
             }
-            ensureValidToken(tokenIntegracao, TAG);
             return new SuccessResponseIntegracao(
                     "Pneu cadastrado com sucesso no Sistema ProLog",
                     dao.inserirPneuCadastro(tokenIntegracao, pneuCadastro));
@@ -94,12 +107,18 @@ public final class ApiCadastroPneuService extends BaseIntegracaoService {
             throw new GenericException("O CPF do colaborador deve ser informado na transferência de pneu");
         }
         try {
-            if (UnidadePraxioValidator.isUnidadeBloqueada(pneuTransferencia.getCodUnidadeOrigem())) {
+            ensureValidToken(tokenIntegracao, TAG);
+            final List<Long> codUnidadesBloquedas = Injection
+                    .provideIntegracaoDao()
+                    .getCodUnidadesIntegracaoBloqueadaByTokenIntegracao(
+                            tokenIntegracao,
+                            SistemaKey.API_PROLOG,
+                            RecursoIntegrado.PNEU_TRANSFERENCIA);
+            if (codUnidadesBloquedas.contains(pneuTransferencia.getCodUnidadeOrigem())) {
                 throw new GenericException(
                         String.format("Unidade (%s) está com a integração bloqueada",
                                 pneuTransferencia.getCodUnidadeOrigem()));
             }
-            ensureValidToken(tokenIntegracao, TAG);
             return new SuccessResponseIntegracao(
                     "Transferência de pneus realizada com sucesso no Sistema ProLog",
                     dao.transferirPneu(tokenIntegracao, pneuTransferencia));

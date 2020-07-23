@@ -138,6 +138,24 @@ public interface IntegracaoDao {
                                                  @NotNull final RecursoIntegrado recursoIntegrado) throws Throwable;
 
     /**
+     * Método utilizado para buscar as unidades da empresa que possuem a integração bloqueada. O método
+     * considera apenas unidades bloqueadas aquelas que estão associadas ao {@code sistemaKey} e ao
+     * {@code recursoIntegrado} especificados.
+     * O método utiliza o {@code tokenIntegracao} para retornar as unidades bloqueadas.
+     *
+     * @param tokenIntegracao  Token do usuário, utilizado para saber a qual empresa ele pertence.
+     * @param sistemaKey       Chave do sistema para buscar as unidades bloqueadas.
+     * @param recursoIntegrado Recurso integrado para buscar as unidades bloqueadas.
+     * @return Uma lista de unidades bloqueadas.
+     * @throws Throwable Se algum erro acontecer.
+     */
+    @NotNull
+    List<Long> getCodUnidadesIntegracaoBloqueadaByTokenIntegracao(
+            @NotNull final String tokenIntegracao,
+            @NotNull final SistemaKey sistemaKey,
+            @NotNull final RecursoIntegrado recursoIntegrado) throws Throwable;
+
+    /**
      * Método utilizado para verificar se uma unidade possui configuração para abrir serviço para pneus.
      *
      * @param codUnidade código da unidade.

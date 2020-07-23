@@ -4,11 +4,12 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.integracao.BaseIntegracaoService;
+import br.com.zalf.prolog.webservice.integracao.RecursoIntegrado;
 import br.com.zalf.prolog.webservice.integracao.api.pneu.model.ApiPneuAlteracaoStatus;
 import br.com.zalf.prolog.webservice.integracao.api.pneu.model.DiagramaPosicaoMapeado;
-import br.com.zalf.prolog.webservice.integracao.praxio.utils.UnidadePraxioValidator;
 import br.com.zalf.prolog.webservice.integracao.response.PosicaoPneuMepadoResponse;
 import br.com.zalf.prolog.webservice.integracao.response.SuccessResponseIntegracao;
+import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -30,12 +31,18 @@ public final class ApiPneuService extends BaseIntegracaoService {
             final String tokenIntegracao,
             final List<ApiPneuAlteracaoStatus> pneusAtualizacaoStatus) throws ProLogException {
         try {
+            ensureValidToken(tokenIntegracao, TAG);
             // Removemos atualizações que tem código de unidade bloqueado. Estes não serão processados.
+            final List<Long> codUnidadesBloquedas = Injection
+                    .provideIntegracaoDao()
+                    .getCodUnidadesIntegracaoBloqueadaByTokenIntegracao(
+                            tokenIntegracao,
+                            SistemaKey.API_PROLOG,
+                            RecursoIntegrado.PNEUS);
             pneusAtualizacaoStatus.removeAll(
                     pneusAtualizacaoStatus.stream()
-                            .filter(pneu -> UnidadePraxioValidator.isUnidadeBloqueada(pneu.getCodUnidadePneu()))
+                            .filter(pneu -> codUnidadesBloquedas.contains(pneu.getCodUnidadePneu()))
                             .collect(Collectors.toList()));
-            ensureValidToken(tokenIntegracao, TAG);
             dao.atualizaStatusPneus(tokenIntegracao, pneusAtualizacaoStatus);
             return new SuccessResponseIntegracao("Pneus atualizados com sucesso");
         } catch (final Throwable t) {
