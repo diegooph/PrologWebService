@@ -2,7 +2,6 @@ package test.br.com.zalf.prolog.webservice.pilares.frota.checklist.modelo;
 
 import br.com.zalf.prolog.webservice.cargo.CargoService;
 import br.com.zalf.prolog.webservice.cargo._model.CargoListagemEmpresa;
-import br.com.zalf.prolog.webservice.gente.colaborador.model.Cargo;
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
 import br.com.zalf.prolog.webservice.database.DatabaseManager;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
@@ -48,6 +47,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public final class ModeloChecklistEdicaoTest extends BaseTest {
+
     private static final String CPF_TOKEN = "03383283194";
     private static final Long COD_EMPRESA = 3L;
     private static final Long COD_UNIDADE = 5L;
@@ -501,7 +501,8 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                         // Mesma ordem da alternativa removida para evitar qualquer outro problema.
                         1,
                         true,
-                        AnexoMidiaChecklistEnum.BLOQUEADO));
+                        AnexoMidiaChecklistEnum.BLOQUEADO,
+                        "TESTE"));
 
         final ModeloChecklistEdicao editado = createModeloEdicao(modeloBuscado, perguntas, cargos, tiposVeiculo);
         service.updateModeloChecklist(
@@ -571,7 +572,8 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                         false,
                         3,
                         true,
-                        AnexoMidiaChecklistEnum.BLOQUEADO));
+                        AnexoMidiaChecklistEnum.BLOQUEADO,
+                        "TESTE"));
         perguntas.get(1).getAlternativas().add(
                 new AlternativaModeloChecklistEdicaoInsere(
                         "Outros",
@@ -579,7 +581,8 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                         true,
                         4,
                         outros.isDeveAbrirOrdemServico(),
-                        outros.getAnexoMidia()));
+                        outros.getAnexoMidia(),
+                        "TESTE"));
 
         final ModeloChecklistEdicao editado = createModeloEdicao(modeloBuscado, perguntas, cargos, tiposVeiculo);
         service.updateModeloChecklist(
@@ -1004,7 +1007,8 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                         false,
                         4,
                         true,
-                        AnexoMidiaChecklistEnum.BLOQUEADO));
+                        AnexoMidiaChecklistEnum.BLOQUEADO,
+                        "TESTE"));
         perguntas.get(0).getAlternativas().add(
                 new AlternativaModeloChecklistEdicaoInsere(
                         "Outros",
@@ -1012,7 +1016,8 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                         true,
                         5,
                         outros.isDeveAbrirOrdemServico(),
-                        outros.getAnexoMidia()));
+                        outros.getAnexoMidia(),
+                        "TESTE"));
 
         final List<Long> cargos = getCodigosCargos(modeloBuscado);
         final List<Long> tiposVeiculo = getCodigosTiposVeiculos(modeloBuscado);
@@ -1147,7 +1152,8 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                         a1.isTipoOutros(),
                         a1.getOrdemExibicao(),
                         false,
-                        a1.getAnexoMidia()));
+                        a1.getAnexoMidia(),
+                        "TESTE"));
 
         final List<Long> cargos = getCodigosCargos(modeloBuscado);
         final List<Long> tiposVeiculo = getCodigosTiposVeiculos(modeloBuscado);
@@ -1208,7 +1214,8 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                         a1.isTipoOutros(),
                         a1.getOrdemExibicao(),
                         a1.isDeveAbrirOrdemServico(),
-                        a1.getAnexoMidia()));
+                        a1.getAnexoMidia(),
+                        "teste"));
 
         final List<Long> cargos = getCodigosCargos(modeloBuscado);
         final List<Long> tiposVeiculo = getCodigosTiposVeiculos(modeloBuscado);
@@ -1271,7 +1278,8 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                         a1.isTipoOutros(),
                         3,
                         a1.isDeveAbrirOrdemServico(),
-                        a1.getAnexoMidia()));
+                        a1.getAnexoMidia(),
+                        "teste"));
         // A3 (Lanterna quebrada).
         p1.getAlternativas().set(
                 0,
@@ -1283,7 +1291,8 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                         a3.isTipoOutros(),
                         1,
                         a3.isDeveAbrirOrdemServico(),
-                        a3.getAnexoMidia()));
+                        a3.getAnexoMidia(),
+                        "teste"));
 
         final List<Long> cargos = getCodigosCargos(modeloBuscado);
         final List<Long> tiposVeiculo = getCodigosTiposVeiculos(modeloBuscado);
@@ -1396,7 +1405,8 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                                         a.isTipoOutros(),
                                         a.getOrdemExibicao(),
                                         a.isDeveAbrirOrdemServico(),
-                                        a.getAnexoMidia()))
+                                        a.getAnexoMidia(),
+                                        "teste"))
                                 .collect(Collectors.toList())));
         perguntas.set(1,
                 new PerguntaModeloChecklistEdicaoAtualiza(
@@ -1417,7 +1427,8 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                                         a.isTipoOutros(),
                                         a.getOrdemExibicao(),
                                         a.isDeveAbrirOrdemServico(),
-                                        a.getAnexoMidia()))
+                                        a.getAnexoMidia(),
+                                        "teste"))
                                 .collect(Collectors.toList())));
 
         final List<Long> cargos = getCodigosCargos(modeloBuscado);
@@ -1607,7 +1618,8 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                                         a.isTipoOutros(),
                                         a.getOrdemExibicao(),
                                         a.isDeveAbrirOrdemServico(),
-                                        a.getAnexoMidia()))
+                                        a.getAnexoMidia(),
+                                        "teste"))
                                 .collect(Collectors.toList())));
         final List<Long> cargos = getCodigosCargos(original);
         final List<Long> tiposVeiculo = getCodigosTiposVeiculos(original);
@@ -1677,7 +1689,8 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                 a1.isTipoOutros(),
                 a1.getOrdemExibicao(),
                 a1.isDeveAbrirOrdemServico(),
-                AnexoMidiaChecklistEnum.OBRIGATORIO));
+                AnexoMidiaChecklistEnum.OBRIGATORIO,
+                "teste"));
         final List<Long> cargos = getCodigosCargos(original);
         final List<Long> tiposVeiculo = getCodigosTiposVeiculos(original);
         final ModeloChecklistEdicao editado = createModeloEdicao(original, perguntas, cargos, tiposVeiculo);
@@ -1737,7 +1750,8 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                         false,
                         4,
                         true,
-                        AnexoMidiaChecklistEnum.BLOQUEADO));
+                        AnexoMidiaChecklistEnum.BLOQUEADO,
+                        "TESTE"));
         perguntas.get(0).getAlternativas().add(
                 new AlternativaModeloChecklistEdicaoAtualiza(
                         outros.getCodigo(),
@@ -1747,7 +1761,8 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                         true,
                         5,
                         outros.isDeveAbrirOrdemServico(),
-                        outros.getAnexoMidia()));
+                        outros.getAnexoMidia(),
+                        "teste"));
 
         final List<Long> cargos = getCodigosCargos(modeloBuscado);
         final List<Long> tiposVeiculo = getCodigosTiposVeiculos(modeloBuscado);
@@ -1809,7 +1824,8 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                 true,
                 1,
                 false,
-                AnexoMidiaChecklistEnum.BLOQUEADO));
+                AnexoMidiaChecklistEnum.BLOQUEADO,
+                "TESTE"));
         perguntas.add(new PerguntaModeloChecklistEdicaoInsere(
                 "P3",
                 null,
@@ -1862,7 +1878,8 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                         a.isTipoOutros(),
                         a.getOrdemExibicao(),
                         a.isDeveAbrirOrdemServico(),
-                        a.getAnexoMidia())));
+                        a.getAnexoMidia(),
+                        "teste")));
         return novas;
     }
 
@@ -1883,7 +1900,8 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                     a.isTipoOutros(),
                     a.getOrdemExibicao(),
                     a.isDeveAbrirOrdemServico(),
-                    a.getAnexoMidia()));
+                    a.getAnexoMidia(),
+                    "teste"));
         }
         return new PerguntaModeloChecklistEdicaoAtualiza(
                 p.getCodigo(),
@@ -1909,7 +1927,8 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                 a.isTipoOutros(),
                 a.getOrdemExibicao(),
                 a.isDeveAbrirOrdemServico(),
-                a.getAnexoMidia());
+                a.getAnexoMidia(),
+                "teste");
     }
 
     @SuppressWarnings("SameParameterValue")
@@ -2076,4 +2095,5 @@ public final class ModeloChecklistEdicaoTest extends BaseTest {
                 .getTiposVeiculoLiberados()
                 .forEach(t -> assertThat(editado.getTiposVeiculoLiberados()).contains(t.getCodigo()));
     }
+
 }
