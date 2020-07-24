@@ -65,7 +65,7 @@ public class ModeloChecklistCadastroTest extends BaseTest {
                     true,
                     1,
                     true,
-                    AnexoMidiaChecklistEnum.BLOQUEADO, "TESTE"));
+                    AnexoMidiaChecklistEnum.BLOQUEADO));
             perguntas.add(new PerguntaModeloChecklistInsercao(
                     "P1",
                     1L,
@@ -125,7 +125,7 @@ public class ModeloChecklistCadastroTest extends BaseTest {
                     true,
                     1,
                     true,
-                    AnexoMidiaChecklistEnum.BLOQUEADO, "TESTE"));
+                    AnexoMidiaChecklistEnum.BLOQUEADO));
             perguntas.add(new PerguntaModeloChecklistInsercao(
                     "P1",
                     null,
@@ -162,7 +162,7 @@ public class ModeloChecklistCadastroTest extends BaseTest {
                     false,
                     1,
                     false,
-                    AnexoMidiaChecklistEnum.BLOQUEADO, "TESTE"));
+                    AnexoMidiaChecklistEnum.BLOQUEADO));
 
             // A2.
             alternativas.add(new AlternativaModeloChecklistInsercao(
@@ -171,7 +171,7 @@ public class ModeloChecklistCadastroTest extends BaseTest {
                     true,
                     2,
                     true,
-                    AnexoMidiaChecklistEnum.BLOQUEADO, "TESTE"));
+                    AnexoMidiaChecklistEnum.BLOQUEADO));
 
             perguntas.add(new PerguntaModeloChecklistInsercao(
                     "P1",
@@ -193,7 +193,7 @@ public class ModeloChecklistCadastroTest extends BaseTest {
                     false,
                     1,
                     true,
-                    AnexoMidiaChecklistEnum.BLOQUEADO, "TESTE"));
+                    AnexoMidiaChecklistEnum.BLOQUEADO));
 
             // B2.
             alternativas.add(new AlternativaModeloChecklistInsercao(
@@ -202,7 +202,7 @@ public class ModeloChecklistCadastroTest extends BaseTest {
                     true,
                     2,
                     false,
-                    AnexoMidiaChecklistEnum.BLOQUEADO, "TESTE"));
+                    AnexoMidiaChecklistEnum.BLOQUEADO));
 
             perguntas.add(new PerguntaModeloChecklistInsercao(
                     "P2",

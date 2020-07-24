@@ -245,7 +245,7 @@ public final class ChecklistUploadImagensRealizacaoTest extends BaseTest {
                     false,
                     1,
                     false,
-                    AnexoMidiaChecklistEnum.BLOQUEADO, "TESTE"));
+                    AnexoMidiaChecklistEnum.BLOQUEADO));
             // A2.
             alternativas.add(new AlternativaModeloChecklistInsercao(
                     "Outros",
@@ -253,7 +253,7 @@ public final class ChecklistUploadImagensRealizacaoTest extends BaseTest {
                     true,
                     2,
                     true,
-                    AnexoMidiaChecklistEnum.BLOQUEADO, "TESTE"));
+                    AnexoMidiaChecklistEnum.BLOQUEADO));
 
             perguntas.add(new PerguntaModeloChecklistInsercao(
                     "P1",
@@ -275,7 +275,7 @@ public final class ChecklistUploadImagensRealizacaoTest extends BaseTest {
                     false,
                     1,
                     true,
-                    AnexoMidiaChecklistEnum.BLOQUEADO, "TESTE"));
+                    AnexoMidiaChecklistEnum.BLOQUEADO));
             // B2.
             alternativas.add(new AlternativaModeloChecklistInsercao(
                     "Outros",
@@ -283,7 +283,7 @@ public final class ChecklistUploadImagensRealizacaoTest extends BaseTest {
                     true,
                     2,
                     false,
-                    AnexoMidiaChecklistEnum.BLOQUEADO, "TESTE"));
+                    AnexoMidiaChecklistEnum.BLOQUEADO));
 
             perguntas.add(new PerguntaModeloChecklistInsercao(
                     "P2",
