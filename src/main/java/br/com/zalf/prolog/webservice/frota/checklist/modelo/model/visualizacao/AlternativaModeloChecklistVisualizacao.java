@@ -6,7 +6,6 @@ import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.AnexoMidiaChec
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Created on 06/12/18.
@@ -29,6 +28,4 @@ public final class AlternativaModeloChecklistVisualizacao extends AlternativaMod
     private final boolean deveAbrirOrdemServico;
     @NotNull
     private final AnexoMidiaChecklistEnum anexoMidia;
-    @Nullable
-    private final String codAuxiliar;
 }
