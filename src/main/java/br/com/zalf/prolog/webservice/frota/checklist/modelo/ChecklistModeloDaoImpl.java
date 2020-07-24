@@ -859,13 +859,13 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
             if (usarMesmoCodigoDeContexto) {
                 stmt = conn.prepareStatement("INSERT INTO CHECKLIST_ALTERNATIVA_PERGUNTA ( "
                         + "COD_UNIDADE, COD_CHECKLIST_MODELO, COD_VERSAO_CHECKLIST_MODELO, COD_PERGUNTA, ALTERNATIVA, PRIORIDADE, ORDEM, "
-                        + "ALTERNATIVA_TIPO_OUTROS, DEVE_ABRIR_ORDEM_SERVICO, ANEXO_MIDIA,  COD_AUXILIAR, CODIGO_CONTEXTO) "
-                        + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
+                        + "ALTERNATIVA_TIPO_OUTROS, DEVE_ABRIR_ORDEM_SERVICO, ANEXO_MIDIA, CODIGO_CONTEXTO) "
+                        + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
             } else {
                 stmt = conn.prepareStatement("INSERT INTO CHECKLIST_ALTERNATIVA_PERGUNTA ( "
                         + "COD_UNIDADE, COD_CHECKLIST_MODELO, COD_VERSAO_CHECKLIST_MODELO, COD_PERGUNTA, ALTERNATIVA, PRIORIDADE, ORDEM, "
-                        + "ALTERNATIVA_TIPO_OUTROS, DEVE_ABRIR_ORDEM_SERVICO, ANEXO_MIDIA, COD_AUXILIAR) "
-                        + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
+                        + "ALTERNATIVA_TIPO_OUTROS, DEVE_ABRIR_ORDEM_SERVICO, ANEXO_MIDIA) "
+                        + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
             }
             stmt.setLong(1, codUnidade);
             stmt.setLong(2, codModelo);
@@ -877,9 +877,8 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
             stmt.setBoolean(8, alternativa.isTipoOutros());
             stmt.setBoolean(9, alternativa.isDeveAbrirOrdemServico());
             stmt.setString(10, alternativa.getAnexoMidia().asString());
-            stmt.setString(11, alternativa.getCodAuxiliar());
             if (usarMesmoCodigoDeContexto) {
-                stmt.setLong(12, alternativa.getCodigoContexto());
+                stmt.setLong(11, alternativa.getCodigoContexto());
             }
             if (stmt.executeUpdate() == 0) {
                 throw new SQLException("Não foi possível inserir a alternativa da pergunta: " + codPergunta);
@@ -919,15 +918,14 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("UPDATE CHECKLIST_ALTERNATIVA_PERGUNTA " +
-                    "SET ALTERNATIVA = ?, ORDEM = ?, PRIORIDADE = ?, DEVE_ABRIR_ORDEM_SERVICO = ?, COD_AUXILIAR = ? " +
+                    "SET ALTERNATIVA = ?, ORDEM = ?, PRIORIDADE = ?, DEVE_ABRIR_ORDEM_SERVICO = ? " +
                     "WHERE COD_CHECKLIST_MODELO = ? AND CODIGO = ?;");
             stmt.setString(1, alternativa.getDescricao());
             stmt.setInt(2, alternativa.getOrdemExibicao());
             stmt.setString(3, alternativa.getPrioridade().asString());
             stmt.setBoolean(4, alternativa.isDeveAbrirOrdemServico());
-            stmt.setString(5, alternativa.getCodAuxiliar());
-            stmt.setLong(6, codModelo);
-            stmt.setLong(7, alternativa.getCodigo());
+            stmt.setLong(5, codModelo);
+            stmt.setLong(6, alternativa.getCodigo());
             if (stmt.executeUpdate() <= 0) {
                 throw new SQLException("Não foi possível atualizar a alternativa:\n" +
                         "codModelo: " + codModelo + "\n" +
