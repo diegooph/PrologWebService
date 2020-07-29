@@ -80,7 +80,7 @@ public final class SistemaProtheusNepomuceno extends Sistema {
             if (afericao instanceof AfericaoPlaca
                     && ProtheusNepomucenoUtils.containsMoreThanOneCodAuxiliar(codAuxiliarUnidade)) {
                 codAuxiliarUnidade =
-                        getCoFilialByPlacaCronograma(
+                        getCodFilialByPlacaCronograma(
                                 conn,
                                 codEmpresaProlog,
                                 codUnidade,
@@ -215,7 +215,7 @@ public final class SistemaProtheusNepomuceno extends Sistema {
 
             String codEmpresaFilial = getIntegradorProLog().getCodAuxiliarByCodUnidadeProlog(conn, codUnidade);
             if (ProtheusNepomucenoUtils.containsMoreThanOneCodAuxiliar(codEmpresaFilial)) {
-                codEmpresaFilial = getCoFilialByPlacaCronograma(conn, codEmpresa, codUnidade, placaVeiculo, sistema);
+                codEmpresaFilial = getCodFilialByPlacaCronograma(conn, codEmpresa, codUnidade, placaVeiculo, sistema);
             }
 
             final String urlNovaAfericao = getIntegradorProLog()
@@ -375,16 +375,16 @@ public final class SistemaProtheusNepomuceno extends Sistema {
      * @throws Throwable Se algum erro acorrer inesperadamente ou se não for encontrado uma filial para a Placa.
      */
     @NotNull
-    private String getCoFilialByPlacaCronograma(@NotNull final Connection conn,
-                                                @NotNull final Long codEmpresa,
-                                                @NotNull final Long codUnidade,
-                                                @NotNull final String placaVeiculo,
-                                                @NotNull final SistemaProtheusNepomucenoDao sistema) throws Throwable {
+    private String getCodFilialByPlacaCronograma(@NotNull final Connection conn,
+                                                 @NotNull final Long codEmpresa,
+                                                 @NotNull final Long codUnidade,
+                                                 @NotNull final String placaVeiculo,
+                                                 @NotNull final SistemaProtheusNepomucenoDao sistema) throws Throwable {
         final List<VeiculoListagemProtheusNepomuceno> listagemVeiculos =
                 internalGetVeiculos(conn, codEmpresa, Collections.singletonList(codUnidade), sistema);
         return listagemVeiculos
                 .stream()
-                .filter(VeiculoListagemProtheusNepomuceno::deveRemover)
+                .filter(veiculo -> !veiculo.deveRemover())
                 .filter(veiculo -> veiculo.getPlacaVeiculo().equals(placaVeiculo))
                 .map(VeiculoListagemProtheusNepomuceno::getCodEmpresaFilialVeiculo)
                 .findFirst()
