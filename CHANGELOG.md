@@ -10,6 +10,7 @@ Change Log
 ### Bug Fixes
 * Corrige conversão de objetos antigos do checklist
 * Corrige atualização de modelo de pneu (PL-2844)
+* Corrigir stream de busca de código da filial da placa - Nepomuceno (PLI-191)
 
 <a name="v1.1.0"></a>
 ## Version [v1.1.0](https://github.com/luizfp/PrologWebService/compare/v1.0.32...v1.1.0) (2020-07-12)
