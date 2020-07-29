@@ -143,7 +143,7 @@ public interface IntegracaoDao {
      * {@code recursoIntegrado} especificados.
      * O método utiliza o {@code tokenIntegracao} para retornar as unidades bloqueadas.
      *
-     * @param tokenIntegracao  Token do usuário, utilizado para saber a qual empresa ele pertence.
+     * @param tokenIntegracao  Token da integração, utilizado para saber a qual empresa ele pertence.
      * @param sistemaKey       Chave do sistema para buscar as unidades bloqueadas.
      * @param recursoIntegrado Recurso integrado para buscar as unidades bloqueadas.
      * @return Uma lista de unidades bloqueadas.

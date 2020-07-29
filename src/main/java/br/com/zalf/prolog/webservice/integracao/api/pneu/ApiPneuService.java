@@ -39,10 +39,7 @@ public final class ApiPneuService extends BaseIntegracaoService {
                             tokenIntegracao,
                             SistemaKey.API_PROLOG,
                             RecursoIntegrado.PNEUS);
-            pneusAtualizacaoStatus.removeAll(
-                    pneusAtualizacaoStatus.stream()
-                            .filter(pneu -> codUnidadesBloquedas.contains(pneu.getCodUnidadePneu()))
-                            .collect(Collectors.toList()));
+            pneusAtualizacaoStatus.removeIf(pneu -> codUnidadesBloquedas.contains(pneu.getCodUnidadePneu()));
             dao.atualizaStatusPneus(tokenIntegracao, pneusAtualizacaoStatus);
             return new SuccessResponseIntegracao("Pneus atualizados com sucesso");
         } catch (final Throwable t) {

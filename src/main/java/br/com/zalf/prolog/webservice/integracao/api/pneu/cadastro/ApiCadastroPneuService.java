@@ -39,10 +39,7 @@ public final class ApiCadastroPneuService extends BaseIntegracaoService {
                             tokenIntegracao,
                             SistemaKey.API_PROLOG,
                             RecursoIntegrado.PNEUS);
-            pneusCargaInicial.removeAll(
-                    pneusCargaInicial.stream()
-                            .filter(pneu -> codUnidadesBloquedas.contains(pneu.getCodUnidadePneu()))
-                            .collect(Collectors.toList()));
+            pneusCargaInicial.removeIf(pneu -> codUnidadesBloquedas.contains(pneu.getCodUnidadePneu()));
             return dao.inserirCargaInicialPneu(tokenIntegracao, pneusCargaInicial);
         } catch (final Throwable t) {
             Log.e(TAG, "Não foi possível processar a carga inicial de pneus:\n" +
