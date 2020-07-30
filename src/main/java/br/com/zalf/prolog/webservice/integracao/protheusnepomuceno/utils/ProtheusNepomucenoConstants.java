@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno;
+package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.utils;
 
 import org.jetbrains.annotations.NotNull;
 

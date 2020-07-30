@@ -2,8 +2,8 @@ package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model;
 
 import org.jetbrains.annotations.NotNull;
 
-import static br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.ProtheusNepomucenoConstants.CODIGOS_FAMILIA_NEPOMUCENO_IGNORAR;
-import static br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.ProtheusNepomucenoConstants.DEFAULT_CODIGOS_SEPARATOR;
+import static br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.utils.ProtheusNepomucenoConstants.CODIGOS_FAMILIA_NEPOMUCENO_IGNORAR;
+import static br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.utils.ProtheusNepomucenoConstants.DEFAULT_CODIGOS_SEPARATOR;
 
 /**
  * Created on 11/03/20
