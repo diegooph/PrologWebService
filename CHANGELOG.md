@@ -6,6 +6,7 @@ Change Log
 
 ### Refactors
 * Modifica inserção de movimentação para salvar a pressão atual do pneu (PL-2819)
+* Criar arquivo YAML para conter familias e modelos bloqueados - Nepomuceno (PLI-192)
 
 ### Bug Fixes
 * Corrige conversão de objetos antigos do checklist
