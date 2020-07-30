@@ -24,7 +24,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.simmetrics.metrics.StringMetrics;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Types;
 import java.time.Clock;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
@@ -41,6 +44,7 @@ import static br.com.zalf.prolog.webservice.commons.util.StatementUtils.bindValu
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public final class OrdemServicoDaoImpl extends DatabaseConnection implements OrdemServicoDao {
+
     private static final int EXECUTE_BATCH_SUCCESS = 0;
 
     @SuppressWarnings("ConstantConditions")
@@ -414,4 +418,5 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
             close(stmt, rSet);
         }
     }
+
 }
