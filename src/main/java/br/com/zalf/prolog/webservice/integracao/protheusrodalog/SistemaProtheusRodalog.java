@@ -5,6 +5,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.CronogramaAferic
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.NovaAfericaoPlaca;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
+import br.com.zalf.prolog.webservice.integracao.RecursoIntegrado;
 import br.com.zalf.prolog.webservice.integracao.protheusrodalog.model.NovaAfericaoPlacaProtheusRodalog;
 import br.com.zalf.prolog.webservice.integracao.protheusrodalog.model.ProtheusRodalogResponseAfericao;
 import br.com.zalf.prolog.webservice.integracao.protheusrodalog.model.TipoMedicaoAfericaoProtheusRodalog;
@@ -27,9 +28,10 @@ public class SistemaProtheusRodalog extends Sistema {
 
     public SistemaProtheusRodalog(@NotNull final ProtheusRodalogRequesterImpl requester,
                                   @NotNull final SistemaKey sistemaKey,
+                                  @NotNull final RecursoIntegrado recursoIntegrado,
                                   @NotNull final IntegradorProLog integradorProLog,
                                   @NotNull final String userToken) {
-        super(integradorProLog, sistemaKey, userToken);
+        super(integradorProLog, sistemaKey, recursoIntegrado, userToken);
         this.requester = requester;
     }
 
