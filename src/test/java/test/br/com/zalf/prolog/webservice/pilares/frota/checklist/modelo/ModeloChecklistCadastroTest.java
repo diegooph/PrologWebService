@@ -10,12 +10,10 @@ import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.Alter
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ModeloChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.PerguntaModeloChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ResultInsertModeloChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.visualizacao.AlternativaModeloChecklistVisualizacao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.visualizacao.ModeloChecklistVisualizacao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.visualizacao.PerguntaModeloChecklistVisualizacao;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.*;
 import test.br.com.zalf.prolog.webservice.BaseTest;
 
 import java.util.ArrayList;
@@ -33,6 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class ModeloChecklistCadastroTest extends BaseTest {
+
     private static final String CPF_TOKEN = "03383283194";
     private ChecklistModeloService service;
     private String token;
@@ -65,7 +64,8 @@ public class ModeloChecklistCadastroTest extends BaseTest {
                     true,
                     1,
                     true,
-                    AnexoMidiaChecklistEnum.BLOQUEADO));
+                    AnexoMidiaChecklistEnum.BLOQUEADO,
+                    "TESTE"));
             perguntas.add(new PerguntaModeloChecklistInsercao(
                     "P1",
                     1L,
@@ -125,7 +125,8 @@ public class ModeloChecklistCadastroTest extends BaseTest {
                     true,
                     1,
                     true,
-                    AnexoMidiaChecklistEnum.BLOQUEADO));
+                    AnexoMidiaChecklistEnum.BLOQUEADO,
+                    "TESTE"));
             perguntas.add(new PerguntaModeloChecklistInsercao(
                     "P1",
                     null,
@@ -162,7 +163,8 @@ public class ModeloChecklistCadastroTest extends BaseTest {
                     false,
                     1,
                     false,
-                    AnexoMidiaChecklistEnum.BLOQUEADO));
+                    AnexoMidiaChecklistEnum.BLOQUEADO,
+                    "TESTE"));
 
             // A2.
             alternativas.add(new AlternativaModeloChecklistInsercao(
@@ -171,7 +173,8 @@ public class ModeloChecklistCadastroTest extends BaseTest {
                     true,
                     2,
                     true,
-                    AnexoMidiaChecklistEnum.BLOQUEADO));
+                    AnexoMidiaChecklistEnum.BLOQUEADO,
+                    "TESTE"));
 
             perguntas.add(new PerguntaModeloChecklistInsercao(
                     "P1",
@@ -193,7 +196,8 @@ public class ModeloChecklistCadastroTest extends BaseTest {
                     false,
                     1,
                     true,
-                    AnexoMidiaChecklistEnum.BLOQUEADO));
+                    AnexoMidiaChecklistEnum.BLOQUEADO,
+                    "TESTE"));
 
             // B2.
             alternativas.add(new AlternativaModeloChecklistInsercao(
@@ -202,7 +206,8 @@ public class ModeloChecklistCadastroTest extends BaseTest {
                     true,
                     2,
                     false,
-                    AnexoMidiaChecklistEnum.BLOQUEADO));
+                    AnexoMidiaChecklistEnum.BLOQUEADO,
+                    "TESTE"));
 
             perguntas.add(new PerguntaModeloChecklistInsercao(
                     "P2",
@@ -296,4 +301,76 @@ public class ModeloChecklistCadastroTest extends BaseTest {
             }
         }
     }
+
+    @Test
+    @DisplayName("Insere modelo com codigo auxiliar nulo e outro preenchido.")
+    void caso5_insereModeloComCodAuxiliar() {
+        // Cria uma pergunta com duas alternativas. Uma com codigo auxiliar preenchido, outra nulo.
+        final List<PerguntaModeloChecklistInsercao> perguntas = new ArrayList<>();
+        {
+            final List<AlternativaModeloChecklistInsercao> alternativas = new ArrayList<>();
+
+            alternativas.add(new AlternativaModeloChecklistInsercao(
+                    "A1",
+                    PrioridadeAlternativa.ALTA,
+                    false,
+                    1,
+                    false,
+                    AnexoMidiaChecklistEnum.BLOQUEADO,
+                    "TESTE"));
+
+            alternativas.add(new AlternativaModeloChecklistInsercao(
+                    "Outros",
+                    PrioridadeAlternativa.CRITICA,
+                    true,
+                    2,
+                    true,
+                    AnexoMidiaChecklistEnum.BLOQUEADO,
+                    null));
+
+            perguntas.add(new PerguntaModeloChecklistInsercao(
+                    "P1",
+                    1L,
+                    1,
+                    true,
+                    AnexoMidiaChecklistEnum.BLOQUEADO,
+                    alternativas));
+        }
+
+        // Montamos o modelo para inserção
+        final Long codUnidade = 5L;
+        final String nomeModelo = UUID.randomUUID().toString();
+        final ResultInsertModeloChecklist result;
+        {
+            final ModeloChecklistInsercao modelo = new ModeloChecklistInsercao(
+                    nomeModelo,
+                    codUnidade,
+                    Collections.emptyList(),
+                    Collections.emptyList(),
+                    perguntas);
+
+            // Inserimos o modelo.
+            result = service.insertModeloChecklist(modelo, token);
+        }
+
+        final ModeloChecklistVisualizacao modeloInserido = service.getModeloChecklist(
+                codUnidade,
+                result.getCodModeloChecklistInserido());
+        final AlternativaModeloChecklistVisualizacao alternativaComCodAuxiliar = (AlternativaModeloChecklistVisualizacao) modeloInserido
+                .getPerguntas()
+                .get(0)
+                .getAlternativas()
+                .get(0);
+        final AlternativaModeloChecklistVisualizacao alternativaSemCodAuxiliar = (AlternativaModeloChecklistVisualizacao) modeloInserido
+                .getPerguntas()
+                .get(0)
+                .getAlternativas()
+                .get(1);
+
+        assertThat(alternativaComCodAuxiliar.getCodAuxiliar()).isNotNull();
+        assertThat(alternativaComCodAuxiliar.getCodAuxiliar()).ignoringCase().isEqualTo("TESTE");
+
+        assertThat(alternativaSemCodAuxiliar.getCodAuxiliar()).isNull();
+    }
+
 }

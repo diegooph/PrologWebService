@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public final class AlternativaRealizacaoChecklist {
+
     /**
      * Código único de identificação da alternativa.
      */
@@ -86,5 +87,8 @@ public final class AlternativaRealizacaoChecklist {
     }
 
     @NotNull
-    public AnexoMidiaChecklistEnum getAnexoMidia() { return anexoMidia; }
+    public AnexoMidiaChecklistEnum getAnexoMidia() {
+        return anexoMidia;
+    }
+
 }

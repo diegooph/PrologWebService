@@ -21,7 +21,7 @@ public class Alternativa {
         return codigo;
     }
 
-    public void setCodigo(long codigo) {
+    public void setCodigo(final long codigo) {
         this.codigo = codigo;
     }
 
@@ -29,7 +29,7 @@ public class Alternativa {
         return alternativa;
     }
 
-    public void setAlternativa(String alternativa) {
+    public void setAlternativa(final String alternativa) {
         this.alternativa = alternativa;
     }
 
@@ -37,7 +37,7 @@ public class Alternativa {
         return tipo;
     }
 
-    public void setTipo(int tipo) {
+    public void setTipo(final int tipo) {
         this.tipo = tipo;
     }
 
@@ -45,7 +45,7 @@ public class Alternativa {
         return respostaOutros;
     }
 
-    public void setRespostaOutros(String respostaOutros) {
+    public void setRespostaOutros(final String respostaOutros) {
         this.respostaOutros = respostaOutros;
     }
 
@@ -53,7 +53,7 @@ public class Alternativa {
         return ordemExibicao;
     }
 
-    public void setOrdemExibicao(int ordemExibicao) {
+    public void setOrdemExibicao(final int ordemExibicao) {
         this.ordemExibicao = ordemExibicao;
     }
 

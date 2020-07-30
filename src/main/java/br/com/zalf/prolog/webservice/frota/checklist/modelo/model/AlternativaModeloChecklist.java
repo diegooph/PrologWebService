@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.frota.checklist.modelo.model;
 
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Created on 06/12/18.
@@ -29,4 +30,7 @@ public abstract class AlternativaModeloChecklist {
 
     @NotNull
     public abstract AnexoMidiaChecklistEnum getAnexoMidia();
+
+    @Nullable
+    public abstract String getCodAuxiliar();
 }
