@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model;
 
 import org.jetbrains.annotations.NotNull;
 
-import static br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.utils.ProtheusNepomucenoConstants.CODIGOS_FAMILIA_NEPOMUCENO_IGNORAR;
+import static br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.utils.FamiliaModeloBloqueadoLoader.getFamiliasModelosBloqueio;
 import static br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.utils.ProtheusNepomucenoConstants.DEFAULT_CODIGOS_SEPARATOR;
 
 /**
@@ -162,8 +162,13 @@ public final class VeiculoListagemProtheusNepomuceno {
     }
 
     public boolean deveRemover() {
-        for (final String codFamilia : CODIGOS_FAMILIA_NEPOMUCENO_IGNORAR) {
-            if (codEstruturaVeiculo.contains(codFamilia)) {
+        for (final String familiaBloqueada : getFamiliasModelosBloqueio().getFamiliasBloqueadas()) {
+            if (codEstruturaVeiculo.contains(familiaBloqueada)) {
+                return true;
+            }
+        }
+        for (final String familiaModeloBloqueado : getFamiliasModelosBloqueio().getModelosBloqueados()) {
+            if (codEstruturaVeiculo.equals(familiaModeloBloqueado)) {
                 return true;
             }
         }
