@@ -7,6 +7,7 @@ import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.integracao.BaseIntegracaoService;
+import br.com.zalf.prolog.webservice.integracao.RecursoIntegrado;
 import br.com.zalf.prolog.webservice.integracao.agendador.AgendadorService;
 import br.com.zalf.prolog.webservice.integracao.praxio.afericao.MedicaoIntegracaoPraxio;
 import br.com.zalf.prolog.webservice.integracao.praxio.cadastro.VeiculoCadastroPraxio;
@@ -17,6 +18,7 @@ import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.Item
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.ItemResolvidoGlobus;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.OrdemServicoAbertaGlobus;
 import br.com.zalf.prolog.webservice.integracao.response.SuccessResponseIntegracao;
+import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
@@ -57,6 +59,17 @@ public final class IntegracaoPraxioService extends BaseIntegracaoService {
             final VeiculoCadastroPraxio veiculoCadastroPraxio) throws ProLogException {
         try {
             ensureValidToken(tokenIntegracao, TAG);
+            final List<Long> codUnidadesBloquedas = Injection
+                    .provideIntegracaoDao()
+                    .getCodUnidadesIntegracaoBloqueadaByTokenIntegracao(
+                            tokenIntegracao,
+                            SistemaKey.API_PROLOG,
+                            RecursoIntegrado.VEICULOS);
+            if (codUnidadesBloquedas.contains(veiculoCadastroPraxio.getCodUnidadeAlocado())) {
+                throw new GenericException(
+                        String.format("Unidade (%s) está com a integração bloqueada",
+                                veiculoCadastroPraxio.getCodUnidadeAlocado()));
+            }
             dao.inserirVeiculoCadastroPraxio(tokenIntegracao, veiculoCadastroPraxio);
             return new SuccessResponseIntegracao("Veículo inserido no ProLog com sucesso");
         } catch (final Throwable t) {
@@ -74,13 +87,20 @@ public final class IntegracaoPraxioService extends BaseIntegracaoService {
             final String placaVeiculoAntesEdicao,
             final VeiculoEdicaoPraxio veiculoEdicaoPraxio) throws ProLogException {
         try {
+            ensureValidToken(tokenIntegracao, TAG);
             if (codUnidadeVeiculoAntesEdicao == null) {
                 throw new GenericException("O código da Unidade deve ser fornecido");
             }
-            if (placaVeiculoAntesEdicao == null || placaVeiculoAntesEdicao.isEmpty()) {
-                throw new GenericException("A placa antes da edição deve ser fornecida");
+            final List<Long> codUnidadesBloquedas = Injection
+                    .provideIntegracaoDao()
+                    .getCodUnidadesIntegracaoBloqueadaByTokenIntegracao(
+                            tokenIntegracao,
+                            SistemaKey.API_PROLOG,
+                            RecursoIntegrado.VEICULOS);
+            if (codUnidadesBloquedas.contains(codUnidadeVeiculoAntesEdicao)) {
+                throw new GenericException(
+                        String.format("Unidade (%s) está com a integração bloqueada", codUnidadeVeiculoAntesEdicao));
             }
-            ensureValidToken(tokenIntegracao, TAG);
             dao.atualizarVeiculoPraxio(
                     tokenIntegracao,
                     codUnidadeVeiculoAntesEdicao,
@@ -105,6 +125,17 @@ public final class IntegracaoPraxioService extends BaseIntegracaoService {
         }
         try {
             ensureValidToken(tokenIntegracao, TAG);
+            final List<Long> codUnidadesBloquedas = Injection
+                    .provideIntegracaoDao()
+                    .getCodUnidadesIntegracaoBloqueadaByTokenIntegracao(
+                            tokenIntegracao,
+                            SistemaKey.API_PROLOG,
+                            RecursoIntegrado.VEICULO_TRANSFERENCIA);
+            if (codUnidadesBloquedas.contains(veiculoTransferenciaPraxio.getCodUnidadeOrigem())) {
+                throw new GenericException(
+                        String.format("Unidade (%s) está com a integração bloqueada",
+                                veiculoTransferenciaPraxio.getCodUnidadeOrigem()));
+            }
             dao.transferirVeiculoPraxio(tokenIntegracao, veiculoTransferenciaPraxio);
             return new SuccessResponseIntegracao("Veículo do Globus transferido com sucesso");
         } catch (final Throwable t) {
