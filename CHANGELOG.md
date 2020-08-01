@@ -7,6 +7,7 @@ Change Log
 ### Refactors
 * Modifica inserção de movimentação para salvar a pressão atual do pneu (PL-2819)
 * Modifica converter e functions de itens de OS para retornar url da midia da foto capturada no checklist e código do checklist (PL-2827)
+* Criar arquivo YAML para conter familias e modelos bloqueados - Nepomuceno (PLI-192)
 
 ### Bug Fixes
 * Corrige conversão de objetos antigos do checklist
