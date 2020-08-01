@@ -2,7 +2,7 @@ Change Log
 ==========
 
 <a name="v1.1.1"></a>
-## Version [v1.1.1](https://github.com/luizfp/PrologWebService/compare/v1.1.0...v1.1.1) (release-date) [unreleased]
+## Version [v1.1.1](https://github.com/luizfp/PrologWebService/compare/v1.1.0...v1.1.1) (2020-08-01)
 
 ### Refactors
 * Modifica inserção de movimentação para salvar a pressão atual do pneu (PL-2819)
