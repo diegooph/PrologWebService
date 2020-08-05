@@ -20,7 +20,8 @@ public final class OkHttp {
         final OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .connectTimeout(DEFAULT_TIMEOUT_SECONDS, TimeUnit.SECONDS)
                 .readTimeout(DEFAULT_TIMEOUT_SECONDS, TimeUnit.SECONDS)
-                .writeTimeout(DEFAULT_TIMEOUT_SECONDS, TimeUnit.SECONDS);
+                .writeTimeout(DEFAULT_TIMEOUT_SECONDS, TimeUnit.SECONDS)
+                .addInterceptor(new LogRequestResponseInterceptor());
 
         if (ProLogUtils.isDebug()) {
             // Add logging as last interceptor.
