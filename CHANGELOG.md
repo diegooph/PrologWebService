@@ -4,6 +4,9 @@ Change Log
 <a name="v1.1.2"></a>
 ## Version [v1.1.2](https://github.com/luizfp/PrologWebService/compare/v1.1.1...v1.1.2) (release-date) [unreleased]
 
+### Features
+* Cria classe VeiculoBackwardHelper para facilitar a migração dos usos de placa para código (PL-2621)
+
 ### Refactors
 * Atualiza link da base de conhecimento na mensagem de erro do relatório de folha de ponto
 
