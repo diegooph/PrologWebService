@@ -23,10 +23,25 @@ import java.text.SimpleDateFormat;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public final class XlsxConverter {
+    private static final int PROCESS_ALL_COLUMNS = Integer.MIN_VALUE;
+
+    public void convertFileToCsv(@NotNull final File file,
+                                 final int sheetIndex,
+                                 final int numberOfColumnsToProcess,
+                                 @Nullable final SimpleDateFormat dateFormat) throws IOException {
+        internalConvertFileToCsv(file, sheetIndex, numberOfColumnsToProcess, dateFormat);
+    }
 
     public void convertFileToCsv(@NotNull final File file,
                                  final int sheetIndex,
                                  @Nullable final SimpleDateFormat dateFormat) throws IOException {
+        internalConvertFileToCsv(file, sheetIndex, PROCESS_ALL_COLUMNS, dateFormat);
+    }
+
+    private void internalConvertFileToCsv(@NotNull final File file,
+                                          final int sheetIndex,
+                                          int numberOfColumnsToProcess,
+                                          @Nullable final SimpleDateFormat dateFormat) throws IOException {
         Preconditions.checkNotNull(file);
         Preconditions.checkArgument(sheetIndex >= 0);
 
@@ -42,7 +57,10 @@ public final class XlsxConverter {
                 final Row row = sheet.getRow(rowNum);
                 if (row != null) {
                     // Iterate through all the columns in the row and build "," separated string.
-                    for (int colNum = 0, lastCellNum = row.getLastCellNum(); colNum < lastCellNum; colNum++) {
+                    numberOfColumnsToProcess = numberOfColumnsToProcess == PROCESS_ALL_COLUMNS
+                            ? row.getLastCellNum()
+                            : numberOfColumnsToProcess;
+                    for (int colNum = 0, lastCellNum = numberOfColumnsToProcess; colNum < lastCellNum; colNum++) {
                         final Cell cell = row.getCell(colNum);
                         if (colNum != 0) {
                             sb.append(",");
