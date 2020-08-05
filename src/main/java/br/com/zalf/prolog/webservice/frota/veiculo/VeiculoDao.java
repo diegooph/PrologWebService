@@ -114,7 +114,6 @@ public interface VeiculoDao {
     List<Long> getCodVeiculosByPlacas(@NotNull final Long codColaborador,
                                       @NotNull final List<String> placas) throws Throwable;
 
-    @Deprecated
     /**
      * Método para buscar um {@link Veiculo} através da {@code placa}.
      *
@@ -123,6 +122,7 @@ public interface VeiculoDao {
      * @return O {@link Veiculo} contendo as informações.
      * @throws SQLException Caso aconteça algum erro no banco.
      */
+    @Deprecated
     @NotNull
     Veiculo getVeiculoByPlaca(@NotNull final String placa, final boolean withPneus) throws SQLException;
 

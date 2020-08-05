@@ -15,7 +15,10 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.TipoEixoVeicul
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.*;
 
 public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
@@ -319,14 +322,15 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
     @Override
     @NotNull
     public List<Long> getCodVeiculosByPlacas(@NotNull final Long codColaborador,
-                                              @NotNull final List<String> placas) throws Throwable {
+                                             @NotNull final List<String> placas) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_VEICULO_GET_CODIGO_BY_PLACA(F_COD_COLABORADOR => ?" +
-                    ", F_PLACAS => ?);");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_VEICULO_GET_CODIGO_BY_PLACA(" +
+                    "F_COD_COLABORADOR => ?, " +
+                    "F_PLACAS => ?);");
             stmt.setLong(1, codColaborador);
             stmt.setArray(2, PostgresUtils.listToArray(conn, SqlType.TEXT, placas));
             rSet = stmt.executeQuery();

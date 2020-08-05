@@ -4,7 +4,7 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -18,34 +18,28 @@ public class VeiculoBackwardHelper {
 
     @NotNull
     public static Long getCodVeiculoByPlaca(@NotNull final Long codColaborador,
-                                               @NotNull final String placa) {
-            return internalGetCodVeiculosByPlacas(codColaborador,
-                    new ArrayList<String>(){{ add(placa); }}, true).get(0);
+                                            @NotNull final String placa) {
+        return internalGetCodVeiculosByPlacas(codColaborador, Collections.singletonList(placa)).get(0);
     }
 
     @NotNull
     public static List<Long> getCodVeiculosByPlacas(@NotNull final Long codColaborador,
-                                               @NotNull final List<String> placas) {
-        return internalGetCodVeiculosByPlacas(codColaborador, placas, false);
+                                                    @NotNull final List<String> placas) {
+        return internalGetCodVeiculosByPlacas(codColaborador, placas);
     }
 
     @NotNull
     public static List<Long> internalGetCodVeiculosByPlacas(@NotNull final Long codColaborador,
-                                                            @NotNull final List<String> placas,
-                                                            boolean single) {
+                                                            @NotNull final List<String> placas) {
 
         try {
             final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
             return veiculoDao.getCodVeiculosByPlacas(codColaborador, placas);
         } catch (final Throwable t) {
-            String errorMsg = "Erro ao buscar os códigos do veículo.";
-            if(single){
-                errorMsg = "Erro ao buscar o código do veículo.";
-            }
-            Log.e(TAG, errorMsg, t);
+            Log.e(TAG, "Erro ao buscar os códigos dos veículos para as placas: " + placas, t);
             throw Injection
                     .provideProLogExceptionHandler()
-                    .map(t, errorMsg);
+                    .map(t, "Erro ao buscar os códigos dos veículos.");
         }
     }
 }
