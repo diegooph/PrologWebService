@@ -20,20 +20,22 @@ import java.util.List;
  * @author Thais Francisco (https://github.com/thaisksf)
  */
 public final class ColaboradorPlanilhaReader {
+    public static final int NUMERO_COLUNAS_COM_DADOS = 14;
 
     private ColaboradorPlanilhaReader() {
         throw new IllegalStateException(ColaboradorPlanilhaReader.class.getSimpleName() + " cannot be instantiated!");
     }
 
-    /**
-     * @noinspection Duplicates
-     */
     @NotNull
     public static List<ColaboradorPlanilha> readListFromCsvFilePath(@NotNull final File file) {
         final String extension = FilenameUtils.getExtension(file.getName());
         if (extension.equalsIgnoreCase("xlsx")) {
             try {
-                new XlsxConverter().convertFileToCsv(file, 0, new SimpleDateFormat("ddMMyyyy"));
+                new XlsxConverter().convertFileToCsv(
+                        file,
+                        0,
+                        NUMERO_COLUNAS_COM_DADOS,
+                        new SimpleDateFormat("ddMMyyyy"));
             } catch (final IOException ex) {
                 throw new RuntimeException("Erro ao converter de XLSX para CSV", ex);
             }
@@ -41,7 +43,7 @@ public final class ColaboradorPlanilhaReader {
         final CsvParserSettings settings = new CsvParserSettings();
         settings.setDelimiterDetectionEnabled(true, ',', ';');
         settings.setHeaderExtractionEnabled(true);
-        settings.setNumberOfRowsToSkip(24);
+        settings.setNumberOfRowsToSkip(12);
         final CsvParser parser = new CsvParser(settings);
         final List<String[]> rows = parser.parseAll(file);
         final List<ColaboradorPlanilha> colaboradorPlanilha = new ArrayList<>();
