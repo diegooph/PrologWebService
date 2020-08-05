@@ -21,7 +21,6 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -51,14 +50,6 @@ public final class VeiculoResource {
     public Response update(@HeaderParam("Authorization") @Required final String userToken,
                            @PathParam("placaOriginal") @Required final String placaOriginal,
                            @Required final Veiculo veiculo) throws ProLogException {
-        // TODO: REMOVER APÓS O REVIEW - DEIXEI PARA FALICITAR OS TESTES
-        // INÍCIO DO TRECHO A REMOVER APÓS O REVIEW - INCLUINDO DEPENDÊNCIAS DE COLABORADOR AUTENTICADO
-        List<String> placas = new ArrayList<>();
-        placas.add(placaOriginal);
-        placas.add("1ASSAASSA111");
-        Long codVeiculo = VeiculoBackwardHelper.getCodVeiculoByPlaca(colaboradorAutenticadoProvider.get().getCodigo(), placaOriginal);
-        List<Long> codVeiculos = VeiculoBackwardHelper.getCodVeiculosByPlacas(colaboradorAutenticadoProvider.get().getCodigo(), placas);
-        // FIM DO TRECHO A REMOVER APÓS O REVIEW
         return service.update(userToken, placaOriginal, veiculo);
     }
 
