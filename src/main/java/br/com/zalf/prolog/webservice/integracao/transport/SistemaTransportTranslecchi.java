@@ -8,6 +8,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOffli
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverMultiplosItensOs;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
+import br.com.zalf.prolog.webservice.integracao.RecursoIntegrado;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
 import org.jetbrains.annotations.NotNull;
@@ -20,9 +21,10 @@ import org.jetbrains.annotations.NotNull;
 public final class SistemaTransportTranslecchi extends Sistema {
 
     public SistemaTransportTranslecchi(@NotNull final SistemaKey sistemaKey,
+                                       @NotNull final RecursoIntegrado recursoIntegrado,
                                        @NotNull final IntegradorProLog integradorProLog,
                                        @NotNull final String userToken) {
-        super(integradorProLog, sistemaKey, userToken);
+        super(integradorProLog, sistemaKey, recursoIntegrado, userToken);
     }
 
     @NotNull

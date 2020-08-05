@@ -1,14 +1,27 @@
 Change Log
 ==========
 
-Stage
-=====
+<a name="v1.1.2"></a>
+## Version [v1.1.2](https://github.com/luizfp/PrologWebService/compare/v1.1.1...v1.1.2) (release-date) [unreleased]
 
-## Refactors
-* Altera insert de checklist para lidar com possibilidade de que check já existia (PL-2820)
+### Refactors
+* Atualiza link da base de conhecimento na mensagem de erro do relatório de folha de ponto
+
+<a name="v1.1.1"></a>
+## Version [v1.1.1](https://github.com/luizfp/PrologWebService/compare/v1.1.0...v1.1.1) (2020-08-01)
+
+### Refactors
+* Modifica inserção de movimentação para salvar a pressão atual do pneu (PL-2819)
+* Modifica converter e functions de itens de OS para retornar url da midia da foto capturada no checklist e código do checklist (PL-2827)
+* Criar arquivo YAML para conter familias e modelos bloqueados - Nepomuceno (PLI-192)
+
+### Bug Fixes
+* Corrige conversão de objetos antigos do checklist
+* Corrige atualização de modelo de pneu (PL-2844)
+* Corrigir stream de busca de código da filial da placa - Nepomuceno (PLI-191)
 
 <a name="v1.1.0"></a>
-## Version [v1.1.0](https://github.com/luizfp/PrologWebService/compare/v1.0.32...v1.1.0) (release-date) [unreleased]
+## Version [v1.1.0](https://github.com/luizfp/PrologWebService/compare/v1.0.32...v1.1.0) (2020-07-12)
 
 ### Features
 * Implementa tratamento de erros para o import dos mapas (PL-2410)
@@ -17,6 +30,8 @@ Stage
 * Adiciona possibilidade de parametrização de fotos no check no cadastro e edição de modelos (PL-1504)
 
 ## Refactors
+* Bloqueia funcionalidades que unidade não contratou ou possui integração (PL-2671)
+* Altera insert de checklist para lidar com possibilidade de que check já existia (PL-2820)
 * Adiciona possibilidade de listar colaboradores, veículos e pneus por múltiplas unidades (PL-2695)
 * Permite a configuração de mais de um código auxiliar para a mesma unidade (Integração Nepomuceno) (PLI-166)
 * Utiliza configuração de cada unidade no Cronograma de Aferição (Integração Nepomuceno) (PLI-165)

@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno;
+package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.utils;
 
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.error.ProtheusNepomucenoException;
 import org.jetbrains.annotations.NotNull;
@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.ProtheusNepomucenoConstants.*;
+import static br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.utils.ProtheusNepomucenoConstants.*;
 
 /**
  * Created on 2020-03-23
@@ -21,7 +21,7 @@ public final class ProtheusNepomucenoUtils {
         throw new IllegalStateException(ProtheusNepomucenoUtils.class.getSimpleName() + " cannot be instantiated!");
     }
 
-    static void validateCodAuxiliarTipoVeiculo(@NotNull final String codAuxiliar) {
+    public static void validateCodAuxiliarTipoVeiculo(@NotNull final String codAuxiliar) {
         final String[] codigos = codAuxiliar.trim().split(DEFAULT_COD_AUXILIAR_TIPO_VEICULO_SEPARATOR);
         for (final String s : codigos) {
             final String[] codigo = s.trim().split(DEFAULT_CODIGOS_SEPARATOR);
@@ -70,7 +70,7 @@ public final class ProtheusNepomucenoUtils {
     }
 
     @NotNull
-    static List<String> getCodAuxiliarTipoVeiculoAsArray(@NotNull final String codAuxiliar) {
+    public static List<String> getCodAuxiliarTipoVeiculoAsArray(@NotNull final String codAuxiliar) {
         final String[] codigos = codAuxiliar.trim().split(DEFAULT_COD_AUXILIAR_TIPO_VEICULO_SEPARATOR);
         return Arrays.asList(codigos);
     }

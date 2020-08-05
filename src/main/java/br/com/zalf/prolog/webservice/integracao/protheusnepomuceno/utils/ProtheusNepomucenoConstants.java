@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno;
+package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.utils;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -8,8 +8,6 @@ import org.jetbrains.annotations.NotNull;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public final class ProtheusNepomucenoConstants {
-    @NotNull
-    public static final String[] CODIGOS_FAMILIA_NEPOMUCENO_IGNORAR = {"FA008", "FA011"};
     @NotNull
     public static final String DEFAULT_CODIGOS_SEPARATOR = ":";
     @NotNull

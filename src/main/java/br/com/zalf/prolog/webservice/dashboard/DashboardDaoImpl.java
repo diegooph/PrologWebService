@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.dashboard;
 
-import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.dashboard.base.IdentificadorTipoComponente;
+import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
@@ -86,49 +86,30 @@ public class DashboardDaoImpl extends DatabaseConnection implements DashboardDao
 
     @NotNull
     @Override
-    public List<DashboardPilarComponents> getComponentesColaborador(@NotNull String userToken) throws SQLException {
+    public List<DashboardPilarComponents> getComponentesColaborador(
+            @NotNull final String userToken) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT " +
-                    "  DC.CODIGO AS CODIGO_COMPONENTE, " +
-                    "  DCT.IDENTIFICADOR_TIPO AS IDENTIFICADOR_TIPO, " +
-                    "  DC.COD_PILAR_PROLOG_COMPONENTE AS COD_PILAR_PROLOG_COMPONENTE, " +
-                    "  DC.TITULO AS TITULO_COMPONENTE, " +
-                    "  DC.SUBTITULO AS SUBTITULO_COMPONENTE, " +
-                    "  DC.DESCRICAO AS DESCRICAO_COMPONENTE, " +
-                    "  DC.QTD_BLOCOS_HORIZONTAIS AS QTD_BLOCOS_HORIZONTAIS, " +
-                    "  DC.QTD_BLOCOS_VERTICAIS AS QTD_BLOCOS_VERTICAIS, " +
-                    "  DC.URL_ENDPOINT_DADOS AS URL_ENDPOINT_DADOS " +
-                    "FROM PUBLIC.DASHBOARD_COMPONENTE DC " +
-                    "  JOIN PUBLIC.TOKEN_AUTENTICACAO TA ON TA.TOKEN = ? " +
-                    "  JOIN PUBLIC.COLABORADOR C ON TA.CPF_COLABORADOR = C.CPF " +
-                    "  JOIN PUBLIC.CARGO_FUNCAO_PROLOG_V11 CFP ON C.COD_FUNCAO = CFP.COD_FUNCAO_COLABORADOR AND C.COD_UNIDADE = CFP.COD_UNIDADE " +
-                    "  JOIN PUBLIC.DASHBOARD_COMPONENTE_FUNCAO_PROLOG DCFP ON CFP.COD_FUNCAO_PROLOG = DCFP.COD_FUNCAO_PROLOG AND DC.CODIGO = DCFP.COD_COMPONENTE " +
-                    "  JOIN PUBLIC.DASHBOARD_COMPONENTE_TIPO DCT ON DC.COD_TIPO_COMPONENTE = DCT.CODIGO " +
-                    "  WHERE DC.ATIVO = TRUE " +
-                    "  ORDER BY 3;");
+            stmt = conn.prepareStatement("select * " +
+                    "from func_dashboard_get_componentes_colaborador(f_user_token => ?);");
             stmt.setString(1, userToken);
             rSet = stmt.executeQuery();
             final List<DashboardPilarComponents> componentsPilar = new ArrayList<>();
             List<DashboardComponentResumido> components = new ArrayList<>();
             int codPilarUltimoComponente = -1;
             while (rSet.next()) {
-                if (components.isEmpty()) {
-                    components.add(createComponentResumido(rSet));
-                } else {
+                if (!components.isEmpty()) {
                     final int codPilarResultSet = rSet.getInt("COD_PILAR_PROLOG_COMPONENTE");
-                    if (codPilarUltimoComponente == codPilarResultSet) {
-                        components.add(createComponentResumido(rSet));
-                    } else {
+                    if (codPilarUltimoComponente != codPilarResultSet) {
                         // Trocou de pilar.
                         componentsPilar.add(new DashboardPilarComponents(codPilarUltimoComponente, components));
                         components = new ArrayList<>();
-                        components.add(createComponentResumido(rSet));
                     }
                 }
+                components.add(createComponentResumido(rSet));
                 codPilarUltimoComponente = components.get(components.size() - 1).getCodPilarProLog();
             }
             if (!components.isEmpty()) {
@@ -136,7 +117,7 @@ public class DashboardDaoImpl extends DatabaseConnection implements DashboardDao
             }
             return componentsPilar;
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 

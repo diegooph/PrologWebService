@@ -1,7 +1,8 @@
 package test.br.com.zalf.prolog.webservice.pilares.frota.checklist.modelo;
 
 import br.com.zalf.prolog.webservice.cargo.CargoService;
-import br.com.zalf.prolog.webservice.cargo.model.CargoListagemEmpresa;
+import br.com.zalf.prolog.webservice.cargo._model.CargoListagemEmpresa;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Cargo;
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
 import br.com.zalf.prolog.webservice.database.DatabaseManager;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
@@ -37,6 +38,10 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
+ * Para esse teste funcionar corretamente em repetidas execuções, é necessário dropar um index da tabela
+ * CHECKLIST_MODELO:
+ * > drop index checklist_modelo_data_nome_index;
+ * <p>
  * Created on 2019-09-19
  *
  * @author Luiz Felipe (https://github.com/luizfp)

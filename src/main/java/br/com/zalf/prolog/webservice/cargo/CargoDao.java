@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.cargo;
 
-import br.com.zalf.prolog.webservice.cargo.model.*;
+import br.com.zalf.prolog.webservice.cargo._model.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;

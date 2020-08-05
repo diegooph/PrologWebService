@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoService;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.interceptors.auth.authenticator.Authenticator;
 import br.com.zalf.prolog.webservice.interceptors.auth.authenticator.AuthenticatorFactory;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Priority;
 import javax.ws.rs.NotAuthorizedException;
@@ -14,20 +15,19 @@ import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.ext.Provider;
-import java.io.IOException;
 import java.lang.reflect.Method;
 
 @Secured
 @Provider
 @Priority(Priorities.AUTHENTICATION)
 public final class AuthenticationFilter implements ContainerRequestFilter {
+    @NotNull
     private static final String TAG = AuthenticationFilter.class.getSimpleName();
-
     @Context
     ResourceInfo resourceInfo;
 
     @Override
-    public void filter(final ContainerRequestContext requestContext) throws IOException {
+    public void filter(final ContainerRequestContext requestContext) {
         // Get the HTTP Authorization header from the request.
         final String authorizationHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
 
@@ -46,10 +46,9 @@ public final class AuthenticationFilter implements ContainerRequestFilter {
             throw new NotAuthorizedException("Authorization header must be provided!");
         }
 
-        final String value =  authorizationHeader.substring(authType.value().length()).trim();
-        final Authenticator authenticator = AuthenticatorFactory.createAuthenticator(
-                authType,
-                new AutenticacaoService());
+        final String value = authorizationHeader.substring(authType.value().length()).trim();
+        final Authenticator authenticator =
+                AuthenticatorFactory.createAuthenticator(authType, new AutenticacaoService());
 
         final Method resourceMethod = resourceInfo.getResourceMethod();
         final Secured methodAnnot = resourceMethod.getAnnotation(Secured.class);

@@ -77,8 +77,9 @@ final class OrdemServicoService {
     }
 
     @NotNull
-    HolderResolucaoOrdemServico getHolderResolucaoOrdemServico(@NotNull final Long codUnidade,
-                                                               @NotNull final Long codOrdemServico) throws ProLogException {
+    HolderResolucaoOrdemServico getHolderResolucaoOrdemServico(
+            @NotNull final Long codUnidade,
+            @NotNull final Long codOrdemServico) throws ProLogException {
         try {
             return dao.getHolderResolucaoOrdemServico(codUnidade, codOrdemServico);
         } catch (final Throwable t) {
