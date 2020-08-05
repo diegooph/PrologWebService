@@ -4,6 +4,9 @@ Change Log
 <a name="v1.1.2"></a>
 ## Version [v1.1.2](https://github.com/luizfp/PrologWebService/compare/v1.1.1...v1.1.2) (release-date) [unreleased]
 
+### Refactors
+* Atualiza link da base de conhecimento na mensagem de erro do relatório de folha de ponto
+
 <a name="v1.1.1"></a>
 ## Version [v1.1.1](https://github.com/luizfp/PrologWebService/compare/v1.1.0...v1.1.1) (2020-08-01)
 
