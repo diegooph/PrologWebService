@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.integracao;
 
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.geral.unidade._model.Unidade;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.ModelosChecklistBloqueados;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.ApiAutenticacaoHolder;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
@@ -138,6 +139,16 @@ public interface IntegracaoDao {
      * @return Uma flag para identificar se deve abrir serviço para os pneus.
      * @throws Throwable Se algum erro acontecer.
      */
-    @NotNull
     boolean getConfigAberturaServicoPneuIntegracao(@NotNull final Long codUnidade) throws Throwable;
+
+    /**
+     * Método utilizado para buscar os códigos de modelos de checklist que estão bloqueados para integração.
+     *
+     * @param codUnidade Código da unidade.
+     * @return Um objeto contendo a lista dos códigos de modelo bloqueados para uma unidade..
+     * @throws Throwable Se algum erro acontecer.
+     */
+    @NotNull
+    List<ModelosChecklistBloqueados> getModelosChecklistBloqueados(@NotNull Long codUnidade) throws Throwable;
+
 }
