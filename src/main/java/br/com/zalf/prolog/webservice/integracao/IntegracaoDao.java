@@ -149,6 +149,6 @@ public interface IntegracaoDao {
      * @throws Throwable Se algum erro acontecer.
      */
     @NotNull
-    List<ModelosChecklistBloqueados> getModelosChecklistBloqueados(@NotNull Long codUnidade) throws Throwable;
+    ModelosChecklistBloqueados getModelosChecklistBloqueados(@NotNull Long codUnidade) throws Throwable;
 
 }
