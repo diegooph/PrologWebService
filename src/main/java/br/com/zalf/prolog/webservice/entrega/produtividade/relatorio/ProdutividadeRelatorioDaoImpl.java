@@ -1,11 +1,11 @@
 package br.com.zalf.prolog.webservice.entrega.produtividade.relatorio;
 
 import br.com.zalf.prolog.webservice.TimeZoneManager;
-import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.report.CsvWriter;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.report.ReportTransformer;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -148,62 +148,63 @@ public class ProdutividadeRelatorioDaoImpl extends DatabaseConnection implements
         try {
             conn = getConnection();
             stmt = conn.prepareStatement(
-                    "SELECT * FROM func_relatorio_produtividade_remuneracao_acumulada_colaborador(?, ?, ?, ?);",
-                    ResultSet.TYPE_SCROLL_INSENSITIVE,
-                    ResultSet.CONCUR_READ_ONLY);
+                    "SELECT * FROM func_relatorio_produtividade_remuneracao_acumulada_colaborador(?, ?, ?, ?);");
             stmt.setLong(1, codUnidade);
             if (cpfColaborador.equals("%")) {
                 stmt.setNull(2, Types.BIGINT);
             } else {
-                stmt.setLong(2, Long.valueOf(cpfColaborador));
+                stmt.setLong(2, Long.parseLong(cpfColaborador));
             }
             stmt.setObject(3, dataInicial);
             stmt.setObject(4, dataFinal);
             rSet = stmt.executeQuery();
-            Long ultimoCpf = null;
+            String ultimoNomeColaborador = null, nomeColaboradorAtual;
+            Long ultimoCpf = null, cpfAtual;
             while (rSet.next()) {
-                final Long cpfAtual = rSet.getLong("CPF_COLABORADOR");
+                cpfAtual = rSet.getLong("CPF_COLABORADOR");
+                nomeColaboradorAtual = rSet.getString("NOME_COLABORADOR");
                 if (ultimoCpf == null) {
                     ultimoCpf = cpfAtual;
+                    ultimoNomeColaborador = nomeColaboradorAtual;
                 } else if (!cpfAtual.equals(ultimoCpf)) {
                     // trocou de usuário
-                    relatorioColaboradores.add(createProdutividadeColaboradorRelatorio(rSet, relatorioDias));
+                    relatorioColaboradores.add(
+                            createProdutividadeColaboradorRelatorio(ultimoCpf, ultimoNomeColaborador, relatorioDias));
                     relatorioDias = new ArrayList<>();
                     ultimoCpf = cpfAtual;
+                    ultimoNomeColaborador = nomeColaboradorAtual;
                 }
                 relatorioDias.add(createProdutividadeColaboradorDia(rSet));
             }
-            if (ultimoCpf != null && rSet.previous()) {
-                relatorioColaboradores.add(createProdutividadeColaboradorRelatorio(rSet, relatorioDias));
+            if (ultimoCpf != null) {
+                relatorioColaboradores.add(
+                        createProdutividadeColaboradorRelatorio(ultimoCpf, ultimoNomeColaborador, relatorioDias));
             }
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
         return relatorioColaboradores;
     }
 
     @NotNull
     private ProdutividadeColaboradorRelatorio createProdutividadeColaboradorRelatorio(
-            final @NotNull ResultSet rSet,
-            final @NotNull List<ProdutividadeColaboradorDia> relatorioDias) throws SQLException {
-        final ProdutividadeColaboradorRelatorio colaboradorRelatorio = new ProdutividadeColaboradorRelatorio();
+            @NotNull final Long cpfColaborador,
+            @NotNull final String nomeColaborador,
+            @NotNull final List<ProdutividadeColaboradorDia> relatorioDias) {
         final Colaborador colaborador = new Colaborador();
-        colaborador.setCpf(rSet.getLong("CPF_COLABORADOR"));
-        colaborador.setNome(rSet.getString("NOME_COLABORADOR"));
-        colaboradorRelatorio.setColaborador(colaborador);
-        colaboradorRelatorio.setProdutividadeDias(relatorioDias);
-        colaboradorRelatorio.calculaValorTotal();
-        return colaboradorRelatorio;
+        colaborador.setCpf(cpfColaborador);
+        colaborador.setNome(nomeColaborador);
+        return new ProdutividadeColaboradorRelatorio(colaborador, relatorioDias);
     }
 
     @NotNull
-    private ProdutividadeColaboradorDia createProdutividadeColaboradorDia(final @NotNull ResultSet rSet) throws SQLException {
-        final ProdutividadeColaboradorDia produtividadeDia = new ProdutividadeColaboradorDia();
-        produtividadeDia.setData(rSet.getObject("DATA", LocalDate.class));
-        produtividadeDia.setQtdCaixas(rSet.getDouble("CAIXAS_ENTREGUES"));
-        produtividadeDia.setFator(rSet.getInt("FATOR"));
-        produtividadeDia.setValor(rSet.getBigDecimal("VALOR"));
-        return produtividadeDia;
+    private ProdutividadeColaboradorDia createProdutividadeColaboradorDia(
+            @NotNull final ResultSet rSet) throws SQLException {
+        return new ProdutividadeColaboradorDia(
+                rSet.getObject("DATA", LocalDate.class),
+                rSet.getDouble("CAIXAS_ENTREGUES"),
+                rSet.getInt("FATOR"),
+                rSet.getBigDecimal("VALOR"));
     }
 
     @NotNull
@@ -211,7 +212,8 @@ public class ProdutividadeRelatorioDaoImpl extends DatabaseConnection implements
                                                           @NotNull final Long codUnidade,
                                                           @NotNull final Date dataInicial,
                                                           @NotNull final Date dataFinal) throws SQLException {
-        final PreparedStatement stmt = conn.prepareStatement("select * from func_relatorio_consolidado_produtividade(?, ?, ?)");
+        final PreparedStatement stmt = conn.prepareStatement(
+                "select * from func_relatorio_consolidado_produtividade(?, ?, ?)");
         stmt.setDate(1, dataInicial);
         stmt.setDate(2, dataFinal);
         stmt.setLong(3, codUnidade);
