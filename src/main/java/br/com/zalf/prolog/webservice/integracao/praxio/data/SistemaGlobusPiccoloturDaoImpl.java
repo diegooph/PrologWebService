@@ -1,10 +1,12 @@
 package br.com.zalf.prolog.webservice.integracao.praxio.data;
 
+import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.ModelosChecklistBloqueados;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.*;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.jetbrains.annotations.NotNull;
@@ -24,6 +26,7 @@ import java.util.stream.IntStream;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public final class SistemaGlobusPiccoloturDaoImpl extends DatabaseConnection implements SistemaGlobusPiccoloturDao {
+
     @Override
     @NotNull
     public ChecklistToSyncGlobus getChecklistToSyncGlobus(@NotNull final Connection conn,
@@ -229,24 +232,11 @@ public final class SistemaGlobusPiccoloturDaoImpl extends DatabaseConnection imp
 
     @Override
     public boolean verificaModeloChecklistIntegrado(@NotNull final Long codUnidade,
-                                                    @NotNull final Long codModeloChecklist) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement(
-                    "SELECT PMCI.CODIGO " +
-                            "FROM PICCOLOTUR.MODELO_CHECKLIST_INTEGRADO PMCI " +
-                            "WHERE PMCI.COD_UNIDADE = ? " +
-                            "AND PMCI.COD_MODELO_CHECKLIST = ?;");
-            stmt.setLong(1, codUnidade);
-            stmt.setLong(2, codModeloChecklist);
-            rSet = stmt.executeQuery();
-            return rSet.next();
-        } finally {
-            close(conn, stmt, rSet);
-        }
+                                                    @NotNull final Long codModeloChecklist) throws Throwable {
+        final ModelosChecklistBloqueados modelosChecklistBloqueados = Injection
+                .provideIntegracaoDao()
+                .getModelosChecklistBloqueados(codUnidade);
+        return !modelosChecklistBloqueados.getCodModelosBloqueados().contains(codModeloChecklist);
     }
 
     @Override
@@ -265,4 +255,5 @@ public final class SistemaGlobusPiccoloturDaoImpl extends DatabaseConnection imp
             close(conn, stmt, rSet);
         }
     }
+
 }
