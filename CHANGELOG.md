@@ -9,6 +9,7 @@ Change Log
 
 ### Refactors
 * Modifica inserção de movimentação para salvar a pressão atual do pneu (PL-2819)
+* Cria endpoint para solicitar sincronia de ordens de serviços - Avilan (PLI-186)
 
 ### Bug Fixes
 * Corrige conversão de objetos antigos do checklist

@@ -48,6 +48,10 @@ public final class AgendadorService implements SincroniaChecklistListener {
         }
     }
 
+    public void sincronizaOrdensServicos() {
+        // TODO - Implementar aqui a chamada da sincronia de ordens de serviços.
+    }
+
     @Override
     public void onSincroniaOk(@NotNull final Long codChecklist, @NotNull final Boolean isLastChecklist) {
         // Se a sincronia ocorreu com sucesso o sistema integrado irá devolver ao ProLog uma O.S Aberta. Neste momento
