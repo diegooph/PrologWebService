@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.entrega.produtividade.relatorio;
+package br.com.zalf.prolog.webservice.entrega.produtividade.relatorio._model;
 
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import lombok.Data;

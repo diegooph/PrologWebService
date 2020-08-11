@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.entrega.produtividade.relatorio;
+package br.com.zalf.prolog.webservice.entrega.produtividade.relatorio._model;
 
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;

@@ -1,11 +1,13 @@
 package br.com.zalf.prolog.webservice.entrega.produtividade.relatorio;
 
+import br.com.zalf.prolog.webservice.Filtros;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.commons.report.CsvWriter;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.report.ReportTransformer;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
-import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
+import br.com.zalf.prolog.webservice.entrega.produtividade.relatorio._model.ProdutividadeColaboradorDia;
+import br.com.zalf.prolog.webservice.entrega.produtividade.relatorio._model.ProdutividadeColaboradorRelatorio;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -14,6 +16,9 @@ import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
+import static br.com.zalf.prolog.webservice.entrega.produtividade.relatorio._model.ProdutividadeRelatorioConverter.createProdutividadeColaboradorDia;
+import static br.com.zalf.prolog.webservice.entrega.produtividade.relatorio._model.ProdutividadeRelatorioConverter.createProdutividadeColaboradorRelatorio;
 
 /**
  * Created by Zart on 18/05/2017.
@@ -38,7 +43,7 @@ public class ProdutividadeRelatorioDaoImpl extends DatabaseConnection implements
             rSet = stmt.executeQuery();
             new CsvWriter().write(rSet, outputStream);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -55,7 +60,7 @@ public class ProdutividadeRelatorioDaoImpl extends DatabaseConnection implements
             rSet = stmt.executeQuery();
             return ReportTransformer.createReport(rSet);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -74,7 +79,7 @@ public class ProdutividadeRelatorioDaoImpl extends DatabaseConnection implements
             rSet = stmt.executeQuery();
             new CsvWriter().write(rSet, outputStream);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -92,7 +97,7 @@ public class ProdutividadeRelatorioDaoImpl extends DatabaseConnection implements
             rSet = stmt.executeQuery();
             return ReportTransformer.createReport(rSet);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -111,7 +116,7 @@ public class ProdutividadeRelatorioDaoImpl extends DatabaseConnection implements
             rSet = stmt.executeQuery();
             new CsvWriter().write(rSet, outputStream);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -129,7 +134,7 @@ public class ProdutividadeRelatorioDaoImpl extends DatabaseConnection implements
             rSet = stmt.executeQuery();
             return ReportTransformer.createReport(rSet);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
@@ -148,9 +153,13 @@ public class ProdutividadeRelatorioDaoImpl extends DatabaseConnection implements
         try {
             conn = getConnection();
             stmt = conn.prepareStatement(
-                    "SELECT * FROM func_relatorio_produtividade_remuneracao_acumulada_colaborador(?, ?, ?, ?);");
+                    "select * from func_relatorio_produtividade_remuneracao_acumulada_colaborador(" +
+                            "f_cod_unidade => ?, " +
+                            "f_cpf_colaborador => ?, " +
+                            "f_data_inicial => ?, " +
+                            "f_data_final => ?);");
             stmt.setLong(1, codUnidade);
-            if (cpfColaborador.equals("%")) {
+            if (Filtros.isFiltroTodos(cpfColaborador)) {
                 stmt.setNull(2, Types.BIGINT);
             } else {
                 stmt.setLong(2, Long.parseLong(cpfColaborador));
@@ -184,27 +193,6 @@ public class ProdutividadeRelatorioDaoImpl extends DatabaseConnection implements
             close(conn, stmt, rSet);
         }
         return relatorioColaboradores;
-    }
-
-    @NotNull
-    private ProdutividadeColaboradorRelatorio createProdutividadeColaboradorRelatorio(
-            @NotNull final Long cpfColaborador,
-            @NotNull final String nomeColaborador,
-            @NotNull final List<ProdutividadeColaboradorDia> relatorioDias) {
-        final Colaborador colaborador = new Colaborador();
-        colaborador.setCpf(cpfColaborador);
-        colaborador.setNome(nomeColaborador);
-        return new ProdutividadeColaboradorRelatorio(colaborador, relatorioDias);
-    }
-
-    @NotNull
-    private ProdutividadeColaboradorDia createProdutividadeColaboradorDia(
-            @NotNull final ResultSet rSet) throws SQLException {
-        return new ProdutividadeColaboradorDia(
-                rSet.getObject("DATA", LocalDate.class),
-                rSet.getDouble("CAIXAS_ENTREGUES"),
-                rSet.getInt("FATOR"),
-                rSet.getBigDecimal("VALOR"));
     }
 
     @NotNull
