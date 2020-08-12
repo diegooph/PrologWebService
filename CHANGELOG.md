@@ -10,6 +10,9 @@ Change Log
 ### Refactors
 * Atualiza link da base de conhecimento na mensagem de erro do relatório de folha de ponto
 
+### Bugfix
+* Erro no relatório Remuneração Acumulada Colaborador (PL-2852)
+
 <a name="v1.1.1"></a>
 ## Version [v1.1.1](https://github.com/luizfp/PrologWebService/compare/v1.1.0...v1.1.1) (2020-08-01)
 
