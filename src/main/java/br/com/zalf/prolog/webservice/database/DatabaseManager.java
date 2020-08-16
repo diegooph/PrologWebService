@@ -108,10 +108,10 @@ public final class DatabaseManager {
         poolProperties.setTestWhileIdle(false);
         poolProperties.setTestOnBorrow(false);
         poolProperties.setTestOnReturn(false);
-        poolProperties.setMaxActive(60);
-        poolProperties.setInitialSize(6 /* 10% of maxActive*/);
-        poolProperties.setMinIdle(6 /* 10% of maxActive */);
-        poolProperties.setMaxIdle(30 /* maxActive / 2*/);
+        poolProperties.setMaxActive(250);
+        poolProperties.setInitialSize(25 /* 10% of maxActive */);
+        poolProperties.setMinIdle(25 /* 10% of maxActive */);
+        poolProperties.setMaxIdle(125 /* maxActive / 2 */);
         poolProperties.setValidationInterval(30000);
         poolProperties.setTimeBetweenEvictionRunsMillis(30000);
         poolProperties.setMaxWait(10000);
