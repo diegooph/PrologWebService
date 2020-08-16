@@ -9,6 +9,7 @@ Change Log
 
 ### Refactors
 * Atualiza link da base de conhecimento na mensagem de erro do relatório de folha de ponto
+* Remove obrigatoriedade de data de admissão no insert e update de colaborador
 
 ### Bugfix
 * Erro no relatório Remuneração Acumulada Colaborador (PL-2852)
