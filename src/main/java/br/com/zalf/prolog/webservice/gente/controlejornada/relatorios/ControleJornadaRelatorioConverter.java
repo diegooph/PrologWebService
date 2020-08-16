@@ -102,7 +102,7 @@ final class ControleJornadaRelatorioConverter {
                         + "</b> possui fim antes do início, impossibilitando a geração do relatório.\n"
                         + "<b>Início: " + FormatUtils.toUserFriendlyDateTime(dataHoraInicio) + "</b>\n"
                         + "<b>Fim: " + FormatUtils.toUserFriendlyDateTime(dataHoraFim) + "</b>\n\n"
-                        + "<a href=\"https://prologapp.zendesk.com/hc/pt-br/articles/360002008792-Relat%C3%B3rios-Controle-de-Jornada#%E2%80%9Cfolha\" target=\"_blank\">Clique aqui para mais informações</a>");
+                        + "<a href=\"https://prologapp.movidesk.com/kb/pt-br/article/74192/relatorios-controle-de-jornada#folha-ponto\" target=\"_blank\">Clique aqui para mais informações</a>");
             }
 
             final FolhaPontoIntervalo intervalo = new FolhaPontoIntervalo(

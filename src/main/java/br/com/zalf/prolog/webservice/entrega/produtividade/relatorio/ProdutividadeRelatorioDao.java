@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.entrega.produtividade.relatorio;
 
 import br.com.zalf.prolog.webservice.commons.report.Report;
+import br.com.zalf.prolog.webservice.entrega.produtividade.relatorio._model.ProdutividadeColaboradorRelatorio;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;

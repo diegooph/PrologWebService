@@ -1,6 +1,20 @@
 Change Log
 ==========
 
+<a name="v1.1.2"></a>
+## Version [v1.1.2](https://github.com/luizfp/PrologWebService/compare/v1.1.1...v1.1.2) (2020-08-16)
+
+### Features
+* Cria classe VeiculoBackwardHelper para facilitar a migração dos usos de placa para código (PL-2621)
+
+### Refactors
+* Atualiza link da base de conhecimento na mensagem de erro do relatório de folha de ponto
+* Remove obrigatoriedade de data de admissão no insert e update de colaborador
+* Altera máximo de connections ao BD de 60 para 250 (PL-2826)
+
+### Bugfix
+* Erro no relatório Remuneração Acumulada Colaborador (PL-2852)
+
 <a name="v1.1.1"></a>
 ## Version [v1.1.1](https://github.com/luizfp/PrologWebService/compare/v1.1.0...v1.1.1) (2020-08-01)
 
