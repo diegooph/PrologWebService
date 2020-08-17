@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan.data;
 
-import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.TipoVeiculoAvilan;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
@@ -22,6 +22,7 @@ import java.util.Map;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public class AvaCorpAvilanDaoImpl extends DatabaseConnection implements AvaCorpAvilanDao {
+
     private static final String TAG = AvaCorpAvilanDaoImpl.class.getSimpleName();
 
     @Nonnull
@@ -46,7 +47,7 @@ public class AvaCorpAvilanDaoImpl extends DatabaseConnection implements AvaCorpA
 
     @Nonnull
     @Override
-    public Long insertTipoVeiculoAvilan(TipoVeiculoAvilan tipoVeiculoAvilan) throws SQLException {
+    public Long insertTipoVeiculoAvilan(final TipoVeiculoAvilan tipoVeiculoAvilan) throws SQLException {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         Connection conn = null;
@@ -69,7 +70,7 @@ public class AvaCorpAvilanDaoImpl extends DatabaseConnection implements AvaCorpA
 
     @Nonnull
     @Override
-    public String getCodTipoVeiculoAvilanByCodTipoVeiculoProLog(Long codigo) throws SQLException {
+    public String getCodTipoVeiculoAvilanByCodTipoVeiculoProLog(final Long codigo) throws SQLException {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         Connection conn = null;
@@ -90,7 +91,7 @@ public class AvaCorpAvilanDaoImpl extends DatabaseConnection implements AvaCorpA
 
     @Nonnull
     @Override
-    public FilialUnidadeAvilanProLog getFilialUnidadeAvilanByCodUnidadeProLog(Long codUnidadeProLog) throws SQLException {
+    public FilialUnidadeAvilanProLog getFilialUnidadeAvilanByCodUnidadeProLog(final Long codUnidadeProLog) throws SQLException {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         Connection conn = null;
@@ -114,7 +115,7 @@ public class AvaCorpAvilanDaoImpl extends DatabaseConnection implements AvaCorpA
 
     @Nonnull
     @Override
-    public Short getCodDiagramaVeiculoProLogByCodTipoVeiculoAvilan(@Nonnull String codTipoVeiculoAvilan)
+    public Short getCodDiagramaVeiculoProLogByCodTipoVeiculoAvilan(@Nonnull final String codTipoVeiculoAvilan)
             throws SQLException {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -139,7 +140,7 @@ public class AvaCorpAvilanDaoImpl extends DatabaseConnection implements AvaCorpA
     @Nonnull
     @Override
     public BiMap<String, Integer> getPosicoesPneuAvilanProLogByCodTipoVeiculoAvilan(
-            @Nonnull String codTipoVeiculoAvilan) throws SQLException {
+            @Nonnull final String codTipoVeiculoAvilan) throws SQLException {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         Connection conn = null;
@@ -166,7 +167,7 @@ public class AvaCorpAvilanDaoImpl extends DatabaseConnection implements AvaCorpA
     }
 
     @Override
-    public Map<Long, String> getMapeamentoCodPerguntaUrlImagem(Long codQuestionario) throws SQLException {
+    public Map<Long, String> getMapeamentoCodPerguntaUrlImagem(final Long codQuestionario) throws SQLException {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         Connection conn = null;
@@ -215,7 +216,7 @@ public class AvaCorpAvilanDaoImpl extends DatabaseConnection implements AvaCorpA
     }
 
     @Nonnull
-    private TipoVeiculoAvilanProLog createTipoAvilanProLog(ResultSet rSet) throws SQLException {
+    private TipoVeiculoAvilanProLog createTipoAvilanProLog(final ResultSet rSet) throws SQLException {
         final TipoVeiculoAvilanProLog tipoVeiculo = new TipoVeiculoAvilanProLog();
         tipoVeiculo.setCodigoAvilan(rSet.getString("CODIGO"));
         tipoVeiculo.setDescricao(rSet.getString("DESCRICAO"));
@@ -224,7 +225,7 @@ public class AvaCorpAvilanDaoImpl extends DatabaseConnection implements AvaCorpA
     }
 
     @Nonnull
-    private FilialUnidadeAvilanProLog createFilialUnidadeAvilanProLog(ResultSet rSet) throws SQLException {
+    private FilialUnidadeAvilanProLog createFilialUnidadeAvilanProLog(final ResultSet rSet) throws SQLException {
         final FilialUnidadeAvilanProLog filialUnidade = new FilialUnidadeAvilanProLog();
         filialUnidade.setCodFilialAvilan(rSet.getInt("COD_FILIAL_AVILAN"));
         filialUnidade.setCodUnidadeAvilan(rSet.getInt("COD_UNIDADE_AVILAN"));

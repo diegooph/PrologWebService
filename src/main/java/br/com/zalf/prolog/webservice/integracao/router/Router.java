@@ -699,6 +699,6 @@ public abstract class Router implements OperacoesIntegradas {
             return null;
         }
 
-        return SistemasFactory.createSistema(sistemaKey, integradorProLog, userToken);
+        return SistemasFactory.createSistema(sistemaKey, recursoIntegrado, integradorProLog, userToken);
     }
 }

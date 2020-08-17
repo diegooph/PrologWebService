@@ -49,7 +49,7 @@ public interface AvaCorpAvilanDao {
      */
     @Nonnull
     BiMap<String, Integer> getPosicoesPneuAvilanProLogByCodTipoVeiculoAvilan(@Nonnull final String codTipoVeiculoAvilan)
-        throws SQLException;
+            throws SQLException;
 
     Map<Long, String> getMapeamentoCodPerguntaUrlImagem(final Long codQuestionario) throws SQLException;
 
@@ -62,4 +62,5 @@ public interface AvaCorpAvilanDao {
      */
     @Nonnull
     String getPlacaByCodVeiculo(@Nonnull final Long codVeiculo) throws SQLException;
+
 }

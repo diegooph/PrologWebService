@@ -657,4 +657,5 @@ public final class Injection {
     public static MotivoMovimentoTransicaoDao provideMotivoOrigemDestinoDao() {
         return new MotivoMovimentoTransicaoDaoImpl();
     }
+
 }

@@ -9,6 +9,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.InfosAlt
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.StatusItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.StatusOrdemServico;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -37,6 +38,7 @@ final class OrdemServicoProcessor {
     private final TipoOutrosSimilarityFinder similarityFinder;
     private PreparedStatement stmtUpdateQtdApontamentos;
     private PreparedStatement stmtCriacaoItens;
+    @Nullable
     private Long codOrdemServico;
 
     OrdemServicoProcessor(@NotNull final Long codChecklistInserido,
@@ -50,7 +52,7 @@ final class OrdemServicoProcessor {
         this.similarityFinder = similarityFinder;
     }
 
-    void process(@NotNull final Connection conn) throws Throwable {
+    Long process(@NotNull final Connection conn) throws Throwable {
         try {
             stmtUpdateQtdApontamentos = conn.prepareCall(
                     "{CALL FUNC_CHECKLIST_OS_INCREMENTA_QTD_APONTAMENTOS_ITEM(" +
@@ -110,6 +112,7 @@ final class OrdemServicoProcessor {
         } finally {
             DatabaseConnection.close(stmtUpdateQtdApontamentos, stmtCriacaoItens);
         }
+        return codOrdemServico;
     }
 
     private void atualizaQtdApontamentosEInsereNovoApontamento(

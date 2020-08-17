@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.frota.checklist.offline;
 
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.model.*;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.InfosChecklistInserido;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -23,6 +24,16 @@ public interface ChecklistOfflineDao {
      */
     @NotNull
     Long insertChecklistOffline(@NotNull final ChecklistInsercao checklist) throws Throwable;
+
+    /**
+     * Método utilizado para realizar a inserção das informações de um {@link ChecklistInsercao checklist} realizado.
+     *
+     * @param checklist Objeto {@link ChecklistInsercao checklist} contendo as informações que deverão ser salvas.
+     * @return Um objecto {@link InfosChecklistInserido checklist} contendo informações referente ao checklist.
+     * @throws Throwable Caso algum erro ocorra ao salvar o checklist.
+     */
+    @NotNull
+    InfosChecklistInserido insereChecklistOffline(@NotNull final ChecklistInsercao checklist) throws Throwable;
 
     /**
      * Método utilizado para identificar se a empresa está liberada para realizar o checklist offline.

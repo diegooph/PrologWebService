@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno;
+package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.utils;
 
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import org.jetbrains.annotations.NotNull;
@@ -10,14 +10,14 @@ import java.math.BigInteger;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-final class ProtheusNepomucenoEncoderDecoder {
+public final class ProtheusNepomucenoEncoderDecoder {
     private ProtheusNepomucenoEncoderDecoder() {
         throw new IllegalStateException(
                 ProtheusNepomucenoEncoderDecoder.class.getSimpleName() + "cannot be instantiated!");
     }
 
     @NotNull
-    static Long encode(@NotNull final String codigo) {
+    public static Long encode(@NotNull final String codigo) {
         if (codigo.length() <= 8) {
             return new BigInteger(codigo.getBytes()).longValueExact();
         } else {
@@ -28,7 +28,7 @@ final class ProtheusNepomucenoEncoderDecoder {
     }
 
     @NotNull
-    static String decode(@NotNull final Long codigo) {
+    public static String decode(@NotNull final Long codigo) {
         return new String(BigInteger.valueOf(codigo).toByteArray());
     }
 }

@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno;
+package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.utils;
 
 import br.com.zalf.prolog.webservice.frota.pneu._model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.*;
@@ -14,7 +14,7 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.*;
 
-import static br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.ProtheusNepomucenoConstants.*;
+import static br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.utils.ProtheusNepomucenoConstants.*;
 
 /**
  * Created on 3/10/20

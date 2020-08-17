@@ -67,7 +67,6 @@ import java.util.Optional;
 public final class IntegradorProLog implements InformacoesProvidas, OperacoesIntegradas {
     @NotNull
     private final String userToken;
-    private VeiculoDao veiculoDao;
     private final VeiculoTransferenciaDao veiculoTransferenciaDao;
     private final PneuDao pneuDao;
     private final PneuTransferenciaDao pneuTransferenciaDao;
@@ -76,9 +75,10 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
     private final ChecklistOfflineDao checklistOfflineDao;
     private final ChecklistModeloDao checklistModeloDao;
     private final OrdemServicoDao ordemServicoDao;
-    private AfericaoDao afericaoDao;
     private final ServicoDao afericaoServicoDao;
     private final MovimentacaoDao movimentacaoDao;
+    private VeiculoDao veiculoDao;
+    private AfericaoDao afericaoDao;
     private ColaboradorDao colaboradorDao;
     private IntegracaoDao integracaoDao;
 
@@ -238,15 +238,16 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
 
     @NotNull
     @Override
-    public List<Long> getCodUnidadesIntegracaoBloqueada(@NotNull final String userToken) throws Throwable {
+    public List<Long> getCodUnidadesIntegracaoBloqueada(@NotNull final String userToken,
+                                                        @NotNull final SistemaKey sistemaKey,
+                                                        @NotNull final RecursoIntegrado recursoIntegrado) throws Throwable {
         if (integracaoDao == null) {
             integracaoDao = Injection.provideIntegracaoDao();
         }
 
-        return integracaoDao.getCodUnidadesIntegracaoBloqueada(userToken);
+        return integracaoDao.getCodUnidadesIntegracaoBloqueada(userToken, sistemaKey, recursoIntegrado);
     }
 
-    @NotNull
     @Override
     public boolean getConfigAberturaServicoPneuIntegracao(@NotNull final Long codUnidade) throws Throwable {
         if (integracaoDao == null) {

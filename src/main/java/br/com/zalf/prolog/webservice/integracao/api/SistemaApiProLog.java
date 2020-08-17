@@ -12,6 +12,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.VeiculoCadastro;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.ProcessoTransferenciaVeiculoRealizacao;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
+import br.com.zalf.prolog.webservice.integracao.RecursoIntegrado;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
 import org.jetbrains.annotations.NotNull;
@@ -28,8 +29,9 @@ public final class SistemaApiProLog extends Sistema {
 
     public SistemaApiProLog(@NotNull final IntegradorProLog integradorProLog,
                             @NotNull final SistemaKey sistemaKey,
+                            @NotNull final RecursoIntegrado recursoIntegrado,
                             @NotNull final String userToken) {
-        super(integradorProLog, sistemaKey, userToken);
+        super(integradorProLog, sistemaKey, recursoIntegrado, userToken);
     }
 
     @Override
@@ -180,7 +182,9 @@ public final class SistemaApiProLog extends Sistema {
     private boolean unidadeEstaComIntegracaoAtiva(@NotNull final Long codUnidade) throws Throwable {
         // Caso o código da unidade está contido na lista de unidades bloqueadas, significa que a unidade
         // NÃO ESTÁ integrada.
-        return !getIntegradorProLog().getCodUnidadesIntegracaoBloqueada(getUserToken()).contains(codUnidade);
+        return !getIntegradorProLog()
+                .getCodUnidadesIntegracaoBloqueada(getUserToken(), getSistemaKey(), getRecursoIntegrado())
+                .contains(codUnidade);
     }
 
     private boolean configUnidadeDeveAbrirServicoPneu(@NotNull final Long codUnidade) throws Throwable {
