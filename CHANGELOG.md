@@ -4,6 +4,8 @@ Change Log
 <a name="v1.1.3"></a>
 ## Version [v1.1.3](https://github.com/luizfp/PrologWebService/compare/v1.1.2...v1.1.3) (release-date) [unreleased]
 
+### Bugfix
+* Atualizado versão da biblioteca do S3 para evitar erro no upload de arquivos: https://github.com/aws/aws-sdk-java/issues/2305
 
 <a name="v1.1.2"></a>
 ## Version [v1.1.2](https://github.com/luizfp/PrologWebService/compare/v1.1.1...v1.1.2) (2020-08-16)
