@@ -93,6 +93,24 @@ public interface IntegracaoDao {
                   @NotNull final MetodoIntegrado metodoIntegrado) throws Throwable;
 
     /**
+     * Método utilizado para buscar a URL para qual a integração deverá se comunicar. A URL é completa, contendo a
+     * <code>baseUrl</code> e também o <code>path</code> do endpoint que a integração irá se comunicar.
+     * <p>
+     * Para identificar a URL correta, utilizamos o {@code codEmpresa} e também o {@code sistemaKey}, contendo a
+     * chave do sistema integrado, e o {@code metodoIntegrado} identificando para qual método será utilizada a URL.
+     *
+     * @param codEmpresa      Código da empresa integrada que iremos buscar o método.
+     * @param sistemaKey      Chave do Sistema que a empresa utiliza.
+     * @param metodoIntegrado Metodo que irá utilizar a URL.
+     * @return Uma String contendo o URL completa do endpoint onde a integração irá comunicar.
+     * @throws Throwable Se algum erro acontecer na busca da URL.
+     */
+    @NotNull
+    String getUrl(@NotNull final Long codEmpresa,
+                  @NotNull final SistemaKey sistemaKey,
+                  @NotNull final MetodoIntegrado metodoIntegrado) throws Throwable;
+
+    /**
      * Método responsável por retornar o Código Auxiliar mapeado para o código de Unidade Prolog.
      *
      * @param conn             Conexão com o banco de dados que será utilizada para buscar os dados.
