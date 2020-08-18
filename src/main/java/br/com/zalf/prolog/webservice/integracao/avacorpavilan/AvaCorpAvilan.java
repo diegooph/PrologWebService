@@ -29,6 +29,7 @@ import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.TipoVeicu
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.ArrayOfFarolDia;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.ChecklistFiltro;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.InfosChecklistInserido;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.ModelosChecklistBloqueados;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.data.*;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.requester.AvaCorpAvilanRequester;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
@@ -174,7 +175,8 @@ public final class AvaCorpAvilan extends Sistema {
     public Long insertChecklistOffline(@NotNull final ChecklistInsercao checklist) throws Throwable {
         final InfosChecklistInserido infosChecklistInserido =
                 Injection.provideChecklistOfflineDao().insereChecklistOffline(checklist);
-        if (infosChecklistInserido.abriuOs()) {
+        if (infosChecklistInserido.abriuOs()
+                && verificaModeloChecklistIntegrado(checklist.getCodUnidade(), checklist.getCodModelo())) {
             //noinspection ConstantConditions
             Injection
                     .provideIntegracaoDao()
@@ -191,7 +193,8 @@ public final class AvaCorpAvilan extends Sistema {
                                 final boolean deveAbrirOs) throws Throwable {
         final InfosChecklistInserido infosChecklistInserido =
                 Injection.provideChecklistDao().insertChecklist(checklist, foiOffline, deveAbrirOs);
-        if (infosChecklistInserido.abriuOs()) {
+        if (infosChecklistInserido.abriuOs()
+                && verificaModeloChecklistIntegrado(checklist.getCodUnidade(), checklist.getCodModelo())) {
             //noinspection ConstantConditions
             Injection
                     .provideIntegracaoDao()
@@ -199,6 +202,13 @@ public final class AvaCorpAvilan extends Sistema {
         }
 
         return infosChecklistInserido.getCodChecklist();
+    }
+
+    public boolean verificaModeloChecklistIntegrado(@NotNull final Long codUnidade,
+                                                    @NotNull final Long codModelo) throws Throwable {
+        final ModelosChecklistBloqueados modelosChecklistBloqueados
+                = Injection.provideIntegracaoDao().getModelosChecklistBloqueados(codUnidade);
+        return !modelosChecklistBloqueados.getCodModelosBloqueados().contains(codModelo);
     }
 
     @NotNull
