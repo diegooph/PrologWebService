@@ -6,9 +6,9 @@ import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvacorpAvilanTipoC
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.*;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.service.AfericaoAvaCorpAvilanService;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.service.AfericaoAvaCorpAvilanSoap;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.*;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfVeiculo;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.Veiculo;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.*;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.service.CadastroAvaCorpAvilanService;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.service.CadastroAvaCorpAvilanSoap;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.*;
@@ -23,11 +23,11 @@ import org.jetbrains.annotations.Nullable;
 import javax.xml.ws.BindingProvider;
 import java.util.List;
 
-
 /**
  * Created by luiz on 24/07/17.
  */
 public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
+
     @NotNull
     private static final String TODOS_COLABORADORES = "";
 
@@ -436,4 +436,5 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
                 HeaderEntry.createAuthorizationBasic(cpf.concat(":").concat(dataNascimento)));
         return soap;
     }
+
 }

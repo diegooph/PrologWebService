@@ -28,6 +28,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.VeiculoCadastro;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.ProcessoTransferenciaVeiculoRealizacao;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
+import br.com.zalf.prolog.webservice.integracao.RecursoIntegrado;
 import br.com.zalf.prolog.webservice.integracao.operacoes.OperacoesIntegradas;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -47,11 +48,17 @@ public abstract class Sistema implements OperacoesIntegradas {
     @NotNull
     private final SistemaKey sistemaKey;
     @NotNull
+    private final RecursoIntegrado recursoIntegrado;
+    @NotNull
     private final String userToken;
 
-    protected Sistema(final IntegradorProLog integradorProLog, final SistemaKey sistemaKey, final String userToken) {
+    protected Sistema(final IntegradorProLog integradorProLog,
+                      final SistemaKey sistemaKey,
+                      final RecursoIntegrado recursoIntegrado,
+                      final String userToken) {
         this.integradorProLog = checkNotNull(integradorProLog, "integradorProLog não pode ser nulo!");
         this.sistemaKey = checkNotNull(sistemaKey, "sistemaKey não pode ser nulo!");
+        this.recursoIntegrado = checkNotNull(recursoIntegrado, "recursoIntegrado não pode ser nulo!");
         this.userToken = checkNotNull(userToken, "userToken não pode ser nulo!");
     }
 
@@ -192,7 +199,7 @@ public abstract class Sistema implements OperacoesIntegradas {
 
     @NotNull
     @Override
-    public List<TipoVeiculo> getTiposVeiculosFiltroChecklist(@NotNull Long codEmpresa) throws Throwable {
+    public List<TipoVeiculo> getTiposVeiculosFiltroChecklist(@NotNull final Long codEmpresa) throws Throwable {
         return getIntegradorProLog().getTiposVeiculosFiltroChecklist(codEmpresa);
     }
 
@@ -330,20 +337,22 @@ public abstract class Sistema implements OperacoesIntegradas {
 
     @NotNull
     @Override
-    public List<Veiculo> getVeiculosAtivosByUnidade(@NotNull Long codUnidade, @Nullable Boolean ativos) throws
+    public List<Veiculo> getVeiculosAtivosByUnidade(@NotNull final Long codUnidade,
+                                                    @Nullable final Boolean ativos) throws
             Exception {
         return getIntegradorProLog().getVeiculosAtivosByUnidade(codUnidade, ativos);
     }
 
     @NotNull
     @Override
-    public List<String> getPlacasVeiculosByTipo(@NotNull Long codUnidade, @NotNull String codTipo) throws Exception {
+    public List<String> getPlacasVeiculosByTipo(@NotNull final Long codUnidade,
+                                                @NotNull final String codTipo) throws Exception {
         return getIntegradorProLog().getPlacasVeiculosByTipo(codUnidade, codTipo);
     }
 
     @NotNull
     @Override
-    public Veiculo getVeiculoByPlaca(@NotNull String placa, boolean withPneus) throws Exception {
+    public Veiculo getVeiculoByPlaca(@NotNull final String placa, final boolean withPneus) throws Exception {
         return getIntegradorProLog().getVeiculoByPlaca(placa, withPneus);
     }
 
@@ -472,6 +481,11 @@ public abstract class Sistema implements OperacoesIntegradas {
     @NotNull
     protected SistemaKey getSistemaKey() {
         return sistemaKey;
+    }
+
+    @NotNull
+    protected RecursoIntegrado getRecursoIntegrado() {
+        return recursoIntegrado;
     }
 
     @NotNull

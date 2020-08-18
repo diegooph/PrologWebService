@@ -96,16 +96,14 @@ final class OrdemServicoConverter {
         final HolderResolucaoItensOrdemServico holder = new HolderResolucaoItensOrdemServico();
         holder.setPlacaVeiculo(rSet.getString("PLACA_VEICULO"));
         holder.setKmAtualVeiculo(rSet.getLong("KM_ATUAL_VEICULO"));
-        final List<ItemOrdemServicoVisualizacao> itens = new ArrayList<>();
 
         // Verifica se veio dados na query ou apenas a primeira linha para preenchimento do holder.
         if (rSet.getLong("COD_ITEM_OS") > 0) {
-            do {
-                itens.add(createItemOrdemServicoVisualizacao(rSet));
-            } while (rSet.next());
+            holder.setItens(createItens(rSet));
+        } else {
+            holder.setItens(new ArrayList<>());
         }
 
-        holder.setItens(itens);
         return holder;
     }
 
@@ -125,12 +123,39 @@ final class OrdemServicoConverter {
         ordem.setCodOrdemServico(rSet.getLong("COD_OS"));
         ordem.setPlacaVeiculo(rSet.getString("PLACA_VEICULO"));
         ordem.setDataHoraAbertura(rSet.getObject("DATA_HORA_ABERTURA_OS", LocalDateTime.class));
-        final List<ItemOrdemServicoVisualizacao> itens = new ArrayList<>();
-        do {
-            itens.add(createItemOrdemServicoVisualizacao(rSet));
-        } while (rSet.next());
-        ordem.setItens(itens);
+        ordem.setItens(createItens(rSet));
         return ordem;
+    }
+
+    @NotNull
+    private static List<ItemOrdemServicoVisualizacao> createItens(@NotNull final ResultSet rSet) throws Throwable {
+        final List<ItemOrdemServicoVisualizacao> itens = new ArrayList<>();
+        boolean isFirstLine = true;
+        Long codItemAntigo = null;
+        long codItemAtual;
+        ItemOrdemServicoVisualizacao item = null;
+        do {
+            codItemAtual = rSet.getLong("COD_ITEM_OS");
+            if (codItemAntigo == null) {
+                codItemAntigo = codItemAtual;
+            }
+
+            if (isFirstLine) {
+                item = createItemOrdemServicoVisualizacao(rSet);
+                isFirstLine = false;
+            }
+
+            if (!codItemAntigo.equals(codItemAtual)) {
+                itens.add(item);
+                item = createItemOrdemServicoVisualizacao(rSet);
+            }
+            if (rSet.getString("URL_MIDIA") != null) {
+                item.getImagensVinculadas().add(createImagemVinculadaChecklistVisualizacao(rSet));
+            }
+            codItemAntigo = codItemAtual;
+        } while (rSet.next());
+        itens.add(item);
+        return itens;
     }
 
     @NotNull
@@ -166,7 +191,16 @@ final class OrdemServicoConverter {
                 rSet.getLong("PRAZO_RESTANTE_RESOLUCAO_ITEM_MINUTOS"));
         item.setPrazoRestanteResolucaoItem(prazoRestanteResolucao);
         item.setQtdApontamentos(rSet.getInt("QTD_APONTAMENTOS"));
+        item.setImagensVinculadas(new ArrayList<>());
         return item;
+    }
+
+    @NotNull
+    private static ImagemVinculadaChecklistVisualizacao createImagemVinculadaChecklistVisualizacao(
+            @NotNull final ResultSet rSet) throws Throwable {
+        return new ImagemVinculadaChecklistVisualizacao(
+                rSet.getLong("COD_CHECKLIST"),
+                rSet.getString("URL_MIDIA"));
     }
 
     @NotNull
@@ -191,4 +225,5 @@ final class OrdemServicoConverter {
                 rSet.getString("PRIORIDADE_ALTERNATIVA")));
         return alternativa;
     }
+
 }

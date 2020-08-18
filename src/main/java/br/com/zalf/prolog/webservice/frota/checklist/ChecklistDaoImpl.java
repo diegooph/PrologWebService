@@ -18,6 +18,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistAlt
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistResposta;
 import br.com.zalf.prolog.webservice.frota.checklist.mudancaestrutura.ChecklistMigracaoEstruturaSuporte;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.InfosChecklistInserido;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -36,6 +37,7 @@ import java.util.List;
 import static br.com.zalf.prolog.webservice.commons.util.StatementUtils.bindValueOrNull;
 
 public final class ChecklistDaoImpl extends DatabaseConnection implements ChecklistDao {
+
     private static final String TAG = ChecklistDaoImpl.class.getSimpleName();
 
     public ChecklistDaoImpl() {
@@ -48,7 +50,7 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
                        @NotNull final ChecklistInsercao checklist,
                        final boolean foiOffline,
                        final boolean deveAbrirOs) throws Throwable {
-        return internalInsertChecklist(conn, checklist, foiOffline, deveAbrirOs);
+        return internalInsertChecklist(conn, checklist, foiOffline, deveAbrirOs).getCodChecklist();
     }
 
     @NotNull
@@ -56,13 +58,31 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
     public Long insert(@NotNull final ChecklistInsercao checklist,
                        final boolean foiOffline,
                        final boolean deveAbrirOs) throws Throwable {
+        return insertChecklist(checklist, foiOffline, deveAbrirOs).getCodChecklist();
+    }
+
+    @NotNull
+    @Override
+    public InfosChecklistInserido insertChecklist(@NotNull final Connection conn,
+                                                  @NotNull final ChecklistInsercao checklist,
+                                                  final boolean foiOffline,
+                                                  final boolean deveAbrirOs) throws Throwable {
+        return internalInsertChecklist(conn, checklist, foiOffline, deveAbrirOs);
+    }
+
+    @NotNull
+    @Override
+    public InfosChecklistInserido insertChecklist(@NotNull final ChecklistInsercao checklist,
+                                                  final boolean foiOffline,
+                                                  final boolean deveAbrirOs) throws Throwable {
         Connection conn = null;
         try {
             conn = getConnection();
             conn.setAutoCommit(false);
-            final Long codChecklist = internalInsertChecklist(conn, checklist, foiOffline, deveAbrirOs);
+            final InfosChecklistInserido infosChecklistInserido
+                    = internalInsertChecklist(conn, checklist, foiOffline, deveAbrirOs);
             conn.commit();
-            return codChecklist;
+            return infosChecklistInserido;
         } catch (final Throwable t) {
             if (conn != null) {
                 conn.rollback();
@@ -489,10 +509,10 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
     }
 
     @NotNull
-    private Long internalInsertChecklist(@NotNull final Connection conn,
-                                         @NotNull final ChecklistInsercao checklist,
-                                         final boolean foiOffline,
-                                         final boolean deveAbrirOs) throws Throwable {
+    private InfosChecklistInserido internalInsertChecklist(@NotNull final Connection conn,
+                                                           @NotNull final ChecklistInsercao checklist,
+                                                           final boolean foiOffline,
+                                                           final boolean deveAbrirOs) throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
@@ -570,7 +590,7 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
                 if (checklistJaExistia) {
                     Log.d(TAG, "Checklist já existia, retornando apenas o código: " + codChecklistInserido);
                     // Possivelmente o último insert falhou a resposta para o app, então foi tentado inserir novamente.
-                    return codChecklistInserido;
+                    return new InfosChecklistInserido(codChecklistInserido, checklistJaExistia, null);
                 }
 
                 // Só precisamos inserir as respostas se houver alguma NOK.
@@ -585,13 +605,14 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
                 }
 
                 // Após inserir o checklist devemos abrir as Ordens de Serviços, caso necessário.
+                Long codOs = null;
                 if (deveAbrirOs) {
-                    Injection
+                    codOs = Injection
                             .provideOrdemServicoDao()
                             .processaChecklistRealizado(conn, codChecklistInserido, checklist);
                 }
 
-                return codChecklistInserido;
+                return new InfosChecklistInserido(codChecklistInserido, checklistJaExistia, codOs);
             } else {
                 throw new SQLException("Erro ao salvar checklist");
             }
@@ -706,4 +727,5 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
         }
         return checklist;
     }
+
 }

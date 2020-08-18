@@ -31,4 +31,13 @@ public final class AgendadorResource {
         service.sincronizaChecklists();
         return true;
     }
+
+    @GET
+    @Path("/sincroniza-ordens-servicos")
+    @UsedBy(platforms = Platform.INTEGRACOES)
+    public Boolean sincronizaOrdensServicos(
+            @HeaderParam(ProLogCustomHeaders.HEADER_TOKEN_AGENDADOR) @Required final String tokenAgendador) {
+        service.sincronizaOrdensServicos();
+        return true;
+    }
 }

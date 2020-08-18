@@ -1,7 +1,7 @@
 package test.br.com.zalf.prolog.webservice;
 
 import br.com.zalf.prolog.webservice.Injection;
-import br.com.zalf.prolog.webservice.entrega.produtividade.relatorio.ProdutividadeColaboradorRelatorio;
+import br.com.zalf.prolog.webservice.entrega.produtividade.relatorio._model.ProdutividadeColaboradorRelatorio;
 import br.com.zalf.prolog.webservice.entrega.produtividade.relatorio.ProdutividadeRelatorioDao;
 import org.junit.Test;
 

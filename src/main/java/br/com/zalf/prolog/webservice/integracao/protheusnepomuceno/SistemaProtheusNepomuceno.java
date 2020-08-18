@@ -8,9 +8,14 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.MetodoIntegrado;
+import br.com.zalf.prolog.webservice.integracao.RecursoIntegrado;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.*;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.error.ProtheusNepomucenoException;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.data.ProtheusNepomucenoRequesterImpl;
+import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.utils.ProtheusNepomucenoConverter;
+import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.utils.ProtheusNepomucenoEncoderDecoder;
+import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.utils.ProtheusNepomucenoPosicaoPneuMapper;
+import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.utils.ProtheusNepomucenoUtils;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
 import com.google.common.collect.Table;
@@ -35,9 +40,10 @@ public final class SistemaProtheusNepomuceno extends Sistema {
 
     public SistemaProtheusNepomuceno(@NotNull final ProtheusNepomucenoRequesterImpl requester,
                                      @NotNull final SistemaKey sistemaKey,
+                                     @NotNull final RecursoIntegrado recursoIntegrado,
                                      @NotNull final IntegradorProLog integradorProLog,
                                      @NotNull final String userToken) {
-        super(integradorProLog, sistemaKey, userToken);
+        super(integradorProLog, sistemaKey, recursoIntegrado, userToken);
         this.requester = requester;
     }
 
@@ -80,7 +86,7 @@ public final class SistemaProtheusNepomuceno extends Sistema {
             if (afericao instanceof AfericaoPlaca
                     && ProtheusNepomucenoUtils.containsMoreThanOneCodAuxiliar(codAuxiliarUnidade)) {
                 codAuxiliarUnidade =
-                        getCoFilialByPlacaCronograma(
+                        getCodFilialByPlacaCronograma(
                                 conn,
                                 codEmpresaProlog,
                                 codUnidade,
@@ -215,7 +221,7 @@ public final class SistemaProtheusNepomuceno extends Sistema {
 
             String codEmpresaFilial = getIntegradorProLog().getCodAuxiliarByCodUnidadeProlog(conn, codUnidade);
             if (ProtheusNepomucenoUtils.containsMoreThanOneCodAuxiliar(codEmpresaFilial)) {
-                codEmpresaFilial = getCoFilialByPlacaCronograma(conn, codEmpresa, codUnidade, placaVeiculo, sistema);
+                codEmpresaFilial = getCodFilialByPlacaCronograma(conn, codEmpresa, codUnidade, placaVeiculo, sistema);
             }
 
             final String urlNovaAfericao = getIntegradorProLog()
@@ -375,16 +381,16 @@ public final class SistemaProtheusNepomuceno extends Sistema {
      * @throws Throwable Se algum erro acorrer inesperadamente ou se não for encontrado uma filial para a Placa.
      */
     @NotNull
-    private String getCoFilialByPlacaCronograma(@NotNull final Connection conn,
-                                                @NotNull final Long codEmpresa,
-                                                @NotNull final Long codUnidade,
-                                                @NotNull final String placaVeiculo,
-                                                @NotNull final SistemaProtheusNepomucenoDao sistema) throws Throwable {
+    private String getCodFilialByPlacaCronograma(@NotNull final Connection conn,
+                                                 @NotNull final Long codEmpresa,
+                                                 @NotNull final Long codUnidade,
+                                                 @NotNull final String placaVeiculo,
+                                                 @NotNull final SistemaProtheusNepomucenoDao sistema) throws Throwable {
         final List<VeiculoListagemProtheusNepomuceno> listagemVeiculos =
                 internalGetVeiculos(conn, codEmpresa, Collections.singletonList(codUnidade), sistema);
         return listagemVeiculos
                 .stream()
-                .filter(VeiculoListagemProtheusNepomuceno::deveRemover)
+                .filter(veiculo -> !veiculo.deveRemover())
                 .filter(veiculo -> veiculo.getPlacaVeiculo().equals(placaVeiculo))
                 .map(VeiculoListagemProtheusNepomuceno::getCodEmpresaFilialVeiculo)
                 .findFirst()

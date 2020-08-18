@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.gente.colaborador.model;
 
 import br.com.zalf.prolog.webservice.gente.colaborador.constraints.Pis;
 import br.com.zalf.prolog.webservice.gente.colaborador.constraints.Telefone;
+import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 import org.jetbrains.annotations.Nullable;
 
@@ -13,6 +14,7 @@ import java.time.LocalDate;
  *
  * @author Wellington Moraes (https://github.com/wvinim)
  */
+@Data
 public final class ColaboradorInsercao {
     /*
      * A validação do CPF só está considerando 11 caracteres devido às operações no Paraguai.
@@ -50,8 +52,7 @@ public final class ColaboradorInsercao {
     @Positive(message = "A Matrícula Transportadora fornecida é inválida.")
     private final Integer matriculaTrans;
 
-    @NotNull(message = "A data de admissão não pode estar vazia.")
-    @PastOrPresent(message = "A data de admissão fornecida é inválida.")
+    @Nullable
     private final LocalDate dataAdmissao;
 
     @NotNull
@@ -77,122 +78,4 @@ public final class ColaboradorInsercao {
     @Nullable
     @Email(message = "O e-mail fornecido é inválido.")
     private final String email;
-
-    public ColaboradorInsercao(@NotNull final String cpf,
-                               @Nullable final String pis,
-                               @NotNull final LocalDate dataNascimento,
-                               @NotNull final Long codFuncao,
-                               @NotNull final Long codSetor,
-                               @NotNull final String nome,
-                               @Nullable final Integer matriculaAmbev,
-                               @Nullable final Integer matriculaTrans,
-                               @NotNull final LocalDate dataAdmissao,
-                               @NotNull final Long codEmpresa,
-                               @NotNull final Long codUnidade,
-                               @NotNull final Long codEquipe,
-                               @NotNull final Long codPermissao,
-                               @Nullable final ColaboradorTelefone telefone,
-                               @Nullable String email) {
-        this.cpf = cpf;
-        this.pis = pis;
-        this.dataNascimento = dataNascimento;
-        this.codFuncao = codFuncao;
-        this.codSetor = codSetor;
-        this.nome = nome;
-        this.matriculaAmbev = matriculaAmbev;
-        this.matriculaTrans = matriculaTrans;
-        this.dataAdmissao = dataAdmissao;
-        this.codEmpresa = codEmpresa;
-        this.codUnidade = codUnidade;
-        this.codEquipe = codEquipe;
-        this.codPermissao = codPermissao;
-        this.telefone = telefone;
-        this.email = email;
-    }
-
-    public String getCpf() {
-        return cpf;
-    }
-
-    @Nullable
-    public String getPis() {
-        return pis;
-    }
-
-    public LocalDate getDataNascimento() {
-        return dataNascimento;
-    }
-
-    public Long getCodFuncao() {
-        return codFuncao;
-    }
-
-    public Long getCodSetor() {
-        return codSetor;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    @Nullable
-    public Integer getMatriculaAmbev() {
-        return matriculaAmbev;
-    }
-
-    @Nullable
-    public Integer getMatriculaTrans() {
-        return matriculaTrans;
-    }
-
-    public LocalDate getDataAdmissao() {
-        return dataAdmissao;
-    }
-
-    public Long getCodEmpresa() {
-        return codEmpresa;
-    }
-
-    public Long getCodUnidade() {
-        return codUnidade;
-    }
-
-    public Long getCodEquipe() {
-        return codEquipe;
-    }
-
-    public Long getCodPermissao() {
-        return codPermissao;
-    }
-
-    @Nullable
-    public ColaboradorTelefone getTelefone() {
-        return telefone;
-    }
-
-    @Nullable
-    public String getEmail() {
-        return email;
-    }
-
-    @Override
-    public String toString() {
-        return "Colaborador{" +
-                "cpf=" + cpf +
-                ", pis=" + pis +
-                ", dataNascimento=" + dataNascimento +
-                ", funcao=" + codFuncao +
-                ", setor=" + codSetor +
-                ", codUnidade=" + codUnidade +
-                ", nome='" + nome + '\'' +
-                ", matriculaAmbev=" + matriculaAmbev +
-                ", matriculaTrans=" + matriculaTrans +
-                ", dataAdmissao=" + dataAdmissao +
-                ", empresa=" + codEmpresa +
-                ", unidade=" + codUnidade +
-                ", equipe=" + codEquipe +
-                ", codPermissao=" + codPermissao +
-                ", codEmpresa=" + codEmpresa +
-                '}';
-    }
 }
