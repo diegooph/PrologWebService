@@ -11,5 +11,4 @@ public final class DiagramaVeiculoPosicaoNomenclatura {
     @Nullable
     private final String codAuxiliar;
     private final int posicaoProlog;
-
 }
