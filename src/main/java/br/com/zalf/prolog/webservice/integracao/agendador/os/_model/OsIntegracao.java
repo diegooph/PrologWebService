@@ -29,6 +29,6 @@ public class OsIntegracao {
     @NotNull
     private final String cpfCriadorChecklist;
     @NotNull
-    private final List<AlternativaNokIntegracao> alternativasNok;
+    private final List<ItemOsIntegracao> alternativasNok;
 
 }

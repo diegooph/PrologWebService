@@ -3,7 +3,7 @@ package br.com.zalf.prolog.webservice.integracao.agendador.os._model;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
+import java.time.LocalDateTime;
 
 /**
  * Created on 2020-08-19
@@ -11,8 +11,10 @@ import java.util.List;
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
 @Data
-public class AlternativaNokIntegracao {
+public class ItemOsIntegracao {
 
+    @NotNull
+    private final Long codItemOs;
     @NotNull
     private final Long codAlternativa;
     @NotNull
@@ -20,6 +22,8 @@ public class AlternativaNokIntegracao {
     @NotNull
     private final String descricaoAlternativa;
     @NotNull
-    private final List<ServicoAlternativaNokIntegracao> servicoAlternativaNok;
+    private final LocalDateTime dataHoraFechamento;
+    @NotNull
+    private final String descricaoFechamentoItem;
 
 }
