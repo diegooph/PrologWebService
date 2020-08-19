@@ -1,11 +1,12 @@
 package br.com.zalf.prolog.webservice.integracao.agendador.os;
 
 import br.com.zalf.prolog.webservice.Injection;
-import br.com.zalf.prolog.webservice.frota.checklist.ChecklistService;
 import br.com.zalf.prolog.webservice.integracao.agendador.os._model.OsIntegracao;
+import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,26 +25,22 @@ public class IntegracaoOsTask implements Runnable {
         this.codOsSincronizar = codOsSincronizar;
     }
 
+    @SneakyThrows
     @Override
     public void run() {
         if (!codOsSincronizar.isEmpty()) {
+            osSincronizar = new ArrayList<>();
             completarInformacoesChecklist();
+            osSincronizar.forEach(System.out::println);
         }
     }
 
-    private void completarInformacoesChecklist() {
-        final ChecklistService service = new ChecklistService();
-        codOsSincronizar.forEach(ccs -> {
-            final OsIntegracao os = Injection.provideOrdemServicoDao().getOsByCod(ccs);
-        });
+    private void completarInformacoesChecklist() throws Throwable {
+        for (final Long codOs : codOsSincronizar) {
+            final OsIntegracao os = Injection.provideIntegracaoDao().getOsIntegracaoByCod(codOs);
+            //noinspection ConstantConditions
+            osSincronizar.add(os);
+        }
     }
-
-    /*
-    private void buscaInformacoesBasicas() {
-        urlEnvio = Injection
-                .provideIntegracaoDao()
-                .getUrl(codEmpresaProlog, getSistemaKey(), MetodoIntegrado.INSERT_OS);
-    }
-     */
 
 }
