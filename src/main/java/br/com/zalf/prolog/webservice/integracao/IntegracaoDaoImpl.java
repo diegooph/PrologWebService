@@ -2,6 +2,8 @@ package br.com.zalf.prolog.webservice.integracao;
 
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
+import br.com.zalf.prolog.webservice.integracao.agendador.os._model.IntegracaoConverter;
+import br.com.zalf.prolog.webservice.integracao.agendador.os._model.OsIntegracao;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.ApiAutenticacaoHolder;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
 import com.google.common.base.Preconditions;
@@ -20,6 +22,7 @@ import java.util.List;
  * Created by luiz on 18/07/17.
  */
 public final class IntegracaoDaoImpl extends DatabaseConnection implements IntegracaoDao {
+
     private static final String TAG = IntegracaoDaoImpl.class.getSimpleName();
 
     @Nullable
@@ -336,6 +339,38 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
             }
         } finally {
             close(conn, stmt, rSet);
+        }
+    }
+
+    @Override
+    @NotNull
+    public OsIntegracao getOsIntegracaoByCod(@NotNull final Long codOs) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM INTEGRACAO.FUNC_BUSCA_INFORMACOES_OS(" +
+                    "F_COD_OS_PROLOG => ?);");
+            stmt.setLong(1, codOs);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                OsIntegracao osIntegracao = IntegracaoConverter.createOsIntegracao(rSet);
+                osIntegracao.getAlternativasNok().add(IntegracaoConverter.createItemOsIntegracao(rSet));
+                while (rSet.next()) {
+                    if (rSet.getLong("cod_os_prolog") == osIntegracao.getCodOsProlog()) {
+                        osIntegracao.getAlternativasNok().add(IntegracaoConverter.createItemOsIntegracao(rSet));
+                    } else {
+                        osIntegracao = IntegracaoConverter.createOsIntegracao(rSet);
+                        osIntegracao.getAlternativasNok().add(IntegracaoConverter.createItemOsIntegracao(rSet));
+                    }
+                }
+                return osIntegracao;
+            } else {
+                throw new SQLException("Nenhum dado encontrado para o código de os.");
+            }
+        } finally {
+            close(stmt, rSet);
         }
     }
 
