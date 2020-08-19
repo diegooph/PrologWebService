@@ -4,6 +4,7 @@ import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Created on 2020-08-18
@@ -13,6 +14,8 @@ import java.time.LocalDateTime;
 @Data
 public class OsIntegracao {
 
+    @NotNull
+    private final String urlParaEnvio;
     @NotNull
     private final Long codUnidade;
     @NotNull
@@ -26,5 +29,8 @@ public class OsIntegracao {
     @NotNull
     private final String cpfCriadorChecklist;
     @NotNull
-    private final
+    private final List<AlternativaNokIntegracao> alternativasNok;
+    @NotNull
+    private final List<ServicoAlternativaNokIntegracao> servicoAlternativaNok;
+
 }
