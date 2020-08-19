@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.integracao;
 
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.geral.unidade._model.Unidade;
+import br.com.zalf.prolog.webservice.integracao.agendador.os._model.OsIntegracao;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.ApiAutenticacaoHolder;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
@@ -191,5 +192,16 @@ public interface IntegracaoDao {
      * @throws Throwable Se qualquer erro ocorrer.
      */
     void insertOsPendente(@NotNull final Long codUnidade, @NotNull final Long codOs) throws Throwable;
+
+    /**
+     * Método com a responsabilidade de buscar todas as informações pertinentes à integração, de uma OS baseado
+     * em um código.
+     *
+     * @param codOs um código de ordem de serviço a ser buscada.
+     * @return Um objeto complexo contendo as informações da OS.
+     * @throws Throwable Se qualquer erro ocorrer.
+     */
+    @NotNull
+    OsIntegracao getOsIntegracaoByCod(@NotNull final Long codOs) throws Throwable;
 
 }
