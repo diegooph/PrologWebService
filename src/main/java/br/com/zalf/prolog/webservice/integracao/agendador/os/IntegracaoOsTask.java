@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.agendador.os;
 
 import br.com.zalf.prolog.webservice.Injection;
+import br.com.zalf.prolog.webservice.integracao.agendador.os._model.InfosEnvioOsIntegracao;
 import br.com.zalf.prolog.webservice.integracao.agendador.os._model.OsIntegracao;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
@@ -20,9 +21,13 @@ public class IntegracaoOsTask implements Runnable {
     private final List<Long> codOsSincronizar;
     @Nullable
     private List<OsIntegracao> osSincronizar;
+    @NotNull
+    private final InfosEnvioOsIntegracao infosEnvioOsIntegracao;
 
-    public IntegracaoOsTask(@NotNull final List<Long> codOsSincronizar) {
+    public IntegracaoOsTask(@NotNull final List<Long> codOsSincronizar,
+                            @NotNull final InfosEnvioOsIntegracao infosEnvioOsIntegracao) {
         this.codOsSincronizar = codOsSincronizar;
+        this.infosEnvioOsIntegracao = infosEnvioOsIntegracao;
     }
 
     @SneakyThrows
@@ -45,13 +50,7 @@ public class IntegracaoOsTask implements Runnable {
 
     private void enviarOrdensServico() {
         for (final OsIntegracao osIntegracao : osSincronizar) {
-            switch (osIntegracao.getChaveSistema()) {
-                case AVACORP_AVILAN:
-                    break;
-                default:
-                    throw new IllegalStateException("Não há integração de OS implementada para o sistema de key: "
-                            + osIntegracao.getChaveSistema().getKey());
-            }
+
         }
     }
 
