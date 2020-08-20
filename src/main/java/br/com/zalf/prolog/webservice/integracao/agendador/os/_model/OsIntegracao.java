@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.integracao.agendador.os._model;
 
-import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 
@@ -15,10 +14,6 @@ import java.util.List;
 @Data
 public class OsIntegracao {
 
-    @NotNull
-    private final String urlParaEnvio;
-    @NotNull
-    private final SistemaKey chaveSistema;
     @NotNull
     private final Long codUnidade;
     @NotNull

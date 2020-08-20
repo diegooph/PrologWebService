@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.integracao.agendador.os._model;
 
-import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
@@ -15,9 +14,7 @@ import java.util.ArrayList;
 public class IntegracaoConverter {
 
     public static OsIntegracao createOsIntegracao(final ResultSet rSet) throws Throwable {
-        return new OsIntegracao(rSet.getString("url_para_envio"),
-                SistemaKey.fromString(rSet.getString("chave_sistema")),
-                rSet.getLong("cod_unidade"),
+        return new OsIntegracao(rSet.getLong("cod_unidade"),
                 rSet.getLong("cod_os_prolog"),
                 rSet.getObject("data_hora_abertura_os", LocalDateTime.class),
                 rSet.getString("placa_veiculo"),
