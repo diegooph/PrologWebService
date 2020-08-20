@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan.requester;
 
+import br.com.zalf.prolog.webservice.integracao.agendador.os._model.InfosEnvioOsIntegracao;
 import br.com.zalf.prolog.webservice.integracao.agendador.os._model.OsIntegracao;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvacorpAvilanTipoChecklist;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.AfericaoFiltro;
@@ -97,7 +98,7 @@ public interface AvaCorpAvilanRequester extends Requester {
                                       @NotNull final String cpf,
                                       @NotNull final String dataNascimento) throws Exception;
 
-    String insertChecklistOs(@NotNull String url,
+    String insertChecklistOs(@NotNull InfosEnvioOsIntegracao infosEnvioOsIntegracao,
                              @NotNull OsIntegracao osIntegracao) throws Exception;
 
 }
