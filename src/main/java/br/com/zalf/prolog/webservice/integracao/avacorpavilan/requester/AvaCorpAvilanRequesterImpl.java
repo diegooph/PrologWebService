@@ -2,7 +2,6 @@ package br.com.zalf.prolog.webservice.integracao.avacorpavilan.requester;
 
 import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.integracao.agendador.os._model.InfosEnvioOsIntegracao;
-import br.com.zalf.prolog.webservice.integracao.agendador.os._model.OsIntegracao;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanException;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvacorpAvilanTipoChecklist;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.*;
@@ -14,6 +13,7 @@ import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.*;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.service.CadastroAvaCorpAvilanService;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.service.CadastroAvaCorpAvilanSoap;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.*;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.os._model.OsAvilan;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.service.ChecklistAvaCorpAvilanService;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.service.ChecklistAvaCorpAvilanSoap;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.data.AvaCorpAvilanRest;
@@ -396,10 +396,10 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
 
     @Override
     public String insertChecklistOs(@NotNull final InfosEnvioOsIntegracao infosEnvioOsIntegracao,
-                                    @NotNull final OsIntegracao osIntegracao) throws Exception {
+                                    @NotNull final OsAvilan osAvilan) throws Exception {
         final AvaCorpAvilanRest service = RestClient.getService(AvaCorpAvilanRest.class);
         final Call<String> call =
-                service.insertChecklistOs(infosEnvioOsIntegracao.getUrlEnvio(), osIntegracao);
+                service.insertChecklistOs(infosEnvioOsIntegracao.getUrlEnvio(), osAvilan);
         return handleResponse(call.execute());
     }
 
