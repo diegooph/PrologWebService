@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan.requester;
 
 import br.com.zalf.prolog.webservice.commons.util.StringUtils;
+import br.com.zalf.prolog.webservice.integracao.agendador.os._model.OsIntegracao;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanException;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvacorpAvilanTipoChecklist;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.*;
@@ -383,6 +384,11 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
         } catch (final Throwable t) {
             throw new AvaCorpAvilanException("[INTEGRAÇÃO - AVILAN] Erro ao buscar farol do checklist", t);
         }
+    }
+
+    @Override
+    public void insertChecklistOs(@NotNull final String url, @NotNull final OsIntegracao osIntegracao) {
+
     }
 
     private boolean success(@Nullable final AvacorpAvilanRequestStatus requestStatus) {
