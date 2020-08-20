@@ -97,7 +97,7 @@ public interface AvaCorpAvilanRequester extends Requester {
                                       @NotNull final String cpf,
                                       @NotNull final String dataNascimento) throws Exception;
 
-    void insertChecklistOs(@NotNull String url,
-                           @NotNull OsIntegracao osIntegracao);
+    String insertChecklistOs(@NotNull String url,
+                             @NotNull OsIntegracao osIntegracao) throws Exception;
 
 }
