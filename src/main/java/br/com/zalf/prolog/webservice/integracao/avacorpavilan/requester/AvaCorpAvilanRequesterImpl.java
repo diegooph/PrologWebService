@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan.requester;
 
 import br.com.zalf.prolog.webservice.commons.util.StringUtils;
+import br.com.zalf.prolog.webservice.integracao.agendador.os._model.InfosEnvioOsIntegracao;
 import br.com.zalf.prolog.webservice.integracao.agendador.os._model.OsIntegracao;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanException;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvacorpAvilanTipoChecklist;
@@ -394,11 +395,11 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
     }
 
     @Override
-    public String insertChecklistOs(@NotNull final String url,
+    public String insertChecklistOs(@NotNull final InfosEnvioOsIntegracao infosEnvioOsIntegracao,
                                     @NotNull final OsIntegracao osIntegracao) throws Exception {
         final AvaCorpAvilanRest service = RestClient.getService(AvaCorpAvilanRest.class);
         final Call<String> call =
-                service.insertChecklistOs(url, osIntegracao);
+                service.insertChecklistOs(infosEnvioOsIntegracao.getUrlEnvio(), osIntegracao);
         return handleResponse(call.execute());
     }
 
