@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.integracao.agendador.os;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.integracao.agendador.os._model.InfosEnvioOsIntegracao;
 import br.com.zalf.prolog.webservice.integracao.agendador.os._model.OsIntegracao;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.requester.AvaCorpAvilanRequesterImpl;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -19,10 +20,10 @@ public class IntegracaoOsTask implements Runnable {
 
     @NotNull
     private final List<Long> codOsSincronizar;
-    @Nullable
-    private List<OsIntegracao> osSincronizar;
     @NotNull
     private final InfosEnvioOsIntegracao infosEnvioOsIntegracao;
+    @Nullable
+    private List<OsIntegracao> osSincronizar;
 
     public IntegracaoOsTask(@NotNull final List<Long> codOsSincronizar,
                             @NotNull final InfosEnvioOsIntegracao infosEnvioOsIntegracao) {
@@ -50,7 +51,9 @@ public class IntegracaoOsTask implements Runnable {
 
     private void enviarOrdensServico() {
         for (final OsIntegracao osIntegracao : osSincronizar) {
-
+            final AvaCorpAvilanRequesterImpl requester = new AvaCorpAvilanRequesterImpl();
+            requester.insertChecklistOs(infosEnvioOsIntegracao.getUrlEnvio(),
+                    osIntegracao);
         }
     }
 
