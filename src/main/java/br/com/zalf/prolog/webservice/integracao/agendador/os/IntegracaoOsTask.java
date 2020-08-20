@@ -31,7 +31,7 @@ public class IntegracaoOsTask implements Runnable {
         if (!codOsSincronizar.isEmpty()) {
             osSincronizar = new ArrayList<>();
             completarInformacoesChecklist();
-            osSincronizar.forEach(System.out::println);
+            enviarOrdensServico();
         }
     }
 
@@ -40,6 +40,18 @@ public class IntegracaoOsTask implements Runnable {
             final OsIntegracao os = Injection.provideIntegracaoDao().getOsIntegracaoByCod(codOs);
             //noinspection ConstantConditions
             osSincronizar.add(os);
+        }
+    }
+
+    private void enviarOrdensServico() {
+        for (final OsIntegracao osIntegracao : osSincronizar) {
+            switch (osIntegracao.getChaveSistema()) {
+                case AVACORP_AVILAN:
+                    break;
+                default:
+                    throw new IllegalStateException("Não há integração de OS implementada para o sistema de key: "
+                            + osIntegracao.getChaveSistema().getKey());
+            }
         }
     }
 
