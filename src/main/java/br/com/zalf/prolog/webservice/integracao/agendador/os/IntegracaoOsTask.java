@@ -49,10 +49,11 @@ public class IntegracaoOsTask implements Runnable {
         }
     }
 
-    private void enviarOrdensServico() {
+    private void enviarOrdensServico() throws Exception {
+        //noinspection ConstantConditions
         for (final OsIntegracao osIntegracao : osSincronizar) {
             final AvaCorpAvilanRequesterImpl requester = new AvaCorpAvilanRequesterImpl();
-            requester.insertChecklistOs(infosEnvioOsIntegracao.getUrlEnvio(),
+            requester.insertChecklistOs(infosEnvioOsIntegracao,
                     osIntegracao);
         }
     }
