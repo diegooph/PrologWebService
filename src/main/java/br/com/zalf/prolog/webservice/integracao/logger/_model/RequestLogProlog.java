@@ -20,9 +20,9 @@ public final class RequestLogProlog {
     @NotNull
     private final String url;
     @Nullable
-    private final String protocol;
-    @Nullable
     private final Map<String, List<String>> headers;
+    @Nullable
+    private final String contentType;
     @Nullable
     private final String body;
 

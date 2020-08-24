@@ -19,7 +19,7 @@ public enum LogType {
     }
 
     @NotNull
-    public String getKey() {
+    public String asString() {
         return key;
     }
 

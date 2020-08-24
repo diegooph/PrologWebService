@@ -25,4 +25,9 @@ public final class ResponseLogProlog {
     public static String toJson(@NotNull final ResponseLogProlog responseLog) {
         return GsonUtils.getGson().toJson(responseLog);
     }
+
+    @NotNull
+    public static ResponseLogProlog errorLog(@NotNull final Throwable t) {
+        return new ResponseLogProlog(500, null, "HTTP FAILED - " + t);
+    }
 }
