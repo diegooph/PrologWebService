@@ -166,9 +166,10 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
     }
 
     @Override
-    public @NotNull String getUrl(@NotNull final Long codEmpresa,
-                                  @NotNull final SistemaKey sistemaKey,
-                                  @NotNull final MetodoIntegrado metodoIntegrado) throws Throwable {
+    @NotNull
+    public String getUrl(@NotNull final Long codEmpresa,
+                         @NotNull final SistemaKey sistemaKey,
+                         @NotNull final MetodoIntegrado metodoIntegrado) throws Throwable {
         final Connection conn = getConnection();
         final String url = getUrl(conn, codEmpresa, sistemaKey, metodoIntegrado);
         conn.close();
