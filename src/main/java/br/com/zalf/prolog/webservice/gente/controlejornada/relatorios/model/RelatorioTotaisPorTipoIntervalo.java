@@ -243,7 +243,7 @@ public class RelatorioTotaisPorTipoIntervalo implements CsvReport {
         }
         header.add("JORNADA BRUTA");
         COLUNA_JORNADA_BRUTA = header.size() - 1;
-        header.add("JORNADA LIQUIDA");
+        header.add("JORNADA LÍQUIDA");
         COLUNA_JORNADA_LIQUIDA = header.size() - 1;
         return header;
     }
