@@ -15,6 +15,7 @@ public class IntegracaoConverter {
 
     public static OsIntegracao createOsIntegracao(final ResultSet rSet) throws Throwable {
         return new OsIntegracao(rSet.getLong("cod_unidade"),
+                rSet.getString("cod_auxiliar_unidade"),
                 rSet.getLong("cod_os_prolog"),
                 rSet.getObject("data_hora_abertura_os", LocalDateTime.class),
                 rSet.getString("placa_veiculo"),

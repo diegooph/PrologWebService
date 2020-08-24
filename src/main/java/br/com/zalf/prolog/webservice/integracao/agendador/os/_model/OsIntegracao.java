@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.integracao.agendador.os._model;
 
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,6 +17,8 @@ public class OsIntegracao {
 
     @NotNull
     private final Long codUnidade;
+    @Nullable
+    private final String codAuxiliarUnidade;
     @NotNull
     private final Long codOsProlog;
     @NotNull

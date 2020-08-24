@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.os._mod
 
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -15,20 +16,20 @@ import java.util.List;
 public class ItemOsAvilan {
 
     @NotNull
-    private String grupo = "1";
+    private final String grupo = "1";
     @NotNull
-    private String empresa = "1";
+    private final String empresa = "1";
+    @Nullable
+    private final String filial;
+    @Nullable
+    private final String unidade;
     @NotNull
-    private String filial;
+    private final LocalDateTime dtinc;
+    @Nullable
+    private final String defeito;
     @NotNull
-    private String unidade;
+    private final String complemento;
     @NotNull
-    private LocalDateTime dtinc;
-    @NotNull
-    private String defeito;
-    @NotNull
-    private String complemento;
-    @NotNull
-    private List<FechamentoOsAvilan> ordemServicoDefeitoServicoIn;
+    private final List<FechamentoOsAvilan> ordemServicoDefeitoServicoIn;
 
 }
