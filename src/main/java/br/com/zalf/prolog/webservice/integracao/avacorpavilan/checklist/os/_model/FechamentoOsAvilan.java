@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.os._mod
 
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDateTime;
 
@@ -14,20 +15,20 @@ import java.time.LocalDateTime;
 public class FechamentoOsAvilan {
 
     @NotNull
-    private String grupo = "1";
+    private final String grupo = "1";
     @NotNull
-    private String empresa = "1";
+    private final String empresa = "1";
+    @Nullable
+    private final String filial;
+    @Nullable
+    private final String unidade;
+    @Nullable
+    private final LocalDateTime dtinc;
+    @Nullable
+    private final String servicoRealizado;
+    @Nullable
+    private final String complemento;
     @NotNull
-    private String filial;
-    @NotNull
-    private String unidade;
-    @NotNull
-    private LocalDateTime dtinc;
-    @NotNull
-    private String servicoRealizado;
-    @NotNull
-    private String complemento;
-    @NotNull
-    private String objetivoOrdemServico = "1";
+    private final String objetivoOrdemServico = "1";
 
 }
