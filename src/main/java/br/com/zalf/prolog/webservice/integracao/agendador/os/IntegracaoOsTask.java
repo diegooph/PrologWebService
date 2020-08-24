@@ -4,9 +4,7 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.integracao.agendador.os._model.InfosEnvioOsIntegracao;
 import br.com.zalf.prolog.webservice.integracao.agendador.os._model.OsIntegracao;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanConverter;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.os._model.OsAvilan;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.requester.AvaCorpAvilanRequesterImpl;
-import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -33,21 +31,23 @@ public class IntegracaoOsTask implements Runnable {
         this.infosEnvioOsIntegracao = infosEnvioOsIntegracao;
     }
 
-    @SneakyThrows
     @Override
     public void run() {
         if (!codOsSincronizar.isEmpty()) {
             osSincronizar = new ArrayList<>();
-            completarInformacoesChecklist();
-            enviarOrdensServico();
+            try {
+                completarInformacoesChecklist();
+                enviarOrdensServico();
+            } catch (final Throwable throwable) {
+                throwable.printStackTrace();
+            }
         }
     }
 
     private void completarInformacoesChecklist() throws Throwable {
         for (final Long codOs : codOsSincronizar) {
-            final OsIntegracao os = Injection.provideIntegracaoDao().getOsIntegracaoByCod(codOs);
             //noinspection ConstantConditions
-            osSincronizar.add(os);
+            osSincronizar.add(Injection.provideIntegracaoDao().getOsIntegracaoByCod(codOs));
         }
     }
 
@@ -55,7 +55,6 @@ public class IntegracaoOsTask implements Runnable {
         //noinspection ConstantConditions
         for (final OsIntegracao osIntegracao : osSincronizar) {
             final AvaCorpAvilanRequesterImpl requester = new AvaCorpAvilanRequesterImpl();
-            final OsAvilan osAvilan = AvaCorpAvilanConverter.convert(osIntegracao);
             requester.insertChecklistOs(infosEnvioOsIntegracao,
                     AvaCorpAvilanConverter.convert(osIntegracao));
         }
