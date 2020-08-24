@@ -370,7 +370,31 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
                 throw new SQLException("Nenhum dado encontrado para o código de os.");
             }
         } finally {
-            close(stmt, rSet);
+            close(conn, stmt, rSet);
+        }
+    }
+
+    @Override
+    public List<Long> buscaOrdensServicoPendenteSincronizacao() throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM integracao.busca_os_a_integrar();");
+            rSet = stmt.executeQuery();
+            final List<Long> ordensServicoParaSincronizar;
+            if (rSet.next()) {
+                ordensServicoParaSincronizar = new ArrayList<>();
+                do {
+                    ordensServicoParaSincronizar.add(rSet.getLong("codigo_os_prolog"));
+                } while (rSet.next());
+            } else {
+                ordensServicoParaSincronizar = Collections.emptyList();
+            }
+            return ordensServicoParaSincronizar;
+        } finally {
+            close(conn, stmt, rSet);
         }
     }
 
