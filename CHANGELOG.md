@@ -7,6 +7,9 @@ Change Log
 ### Features
 * Cria método para buscar todos os diagramas com as nomenclaturas no VeiculoResource
 
+### Refactors
+* Altera validator de pneu para permitir valor >= 0
+
 ### Bugfix
 * Atualizado versão da biblioteca do S3 para evitar erro no upload de arquivos: https://github.com/aws/aws-sdk-java/issues/2305
 
