@@ -3,6 +3,10 @@ package br.com.zalf.prolog.webservice.integracao.agendador;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
+import br.com.zalf.prolog.webservice.integracao.MetodoIntegrado;
+import br.com.zalf.prolog.webservice.integracao.agendador.os.IntegracaoOsTask;
+import br.com.zalf.prolog.webservice.integracao.agendador.os._model.InfosEnvioOsIntegracao;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanConstants;
 import br.com.zalf.prolog.webservice.integracao.praxio.ChecklistItensNokGlobusTask;
 import br.com.zalf.prolog.webservice.integracao.praxio.IntegracaoPraxioService;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.GlobusPiccoloturRequesterImpl;
@@ -11,6 +15,7 @@ import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.Chec
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.concurrent.Executors;
 
 /**
@@ -19,6 +24,7 @@ import java.util.concurrent.Executors;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public final class AgendadorService implements SincroniaChecklistListener {
+
     @NotNull
     private static final String TAG = AgendadorService.class.getSimpleName();
 
@@ -49,7 +55,33 @@ public final class AgendadorService implements SincroniaChecklistListener {
     }
 
     public void sincronizaOrdensServicos() {
-        // TODO - Implementar aqui a chamada da sincronia de ordens de serviços.
+        try {
+            final List<Long> ordensServicoParaSincronizar =
+                    Injection
+                            .provideIntegracaoDao()
+                            .buscaOrdensServicoPendenteSincronizacao();
+            if (ordensServicoParaSincronizar.isEmpty()) {
+                return;
+            }
+            // Executamos a sincronia utilizando a thread específica para esse serviço.
+            final InfosEnvioOsIntegracao infosEnvioOsIntegracao
+                    = new InfosEnvioOsIntegracao(Injection
+                    .provideIntegracaoDao()
+                    .getUrl(AvaCorpAvilanConstants.CODIGO_EMPRESA_AVILAN,
+                            AvaCorpAvilanConstants.SISTEMA_KEY_AVILAN,
+                            MetodoIntegrado.GET_OS),
+                    null,
+                    null);
+            Executors.newSingleThreadExecutor().execute(
+                    new IntegracaoOsTask(
+                            ordensServicoParaSincronizar,
+                            infosEnvioOsIntegracao));
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao tentar sincronizar as O.S's através do agendador", t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao tentar sincronizar as O.S's");
+        }
     }
 
     @Override
@@ -82,4 +114,5 @@ public final class AgendadorService implements SincroniaChecklistListener {
             sincronizaChecklists();
         }
     }
+
 }
