@@ -6,6 +6,7 @@ Change Log
 
 ### Features
 * Cria método para buscar todos os diagramas com as nomenclaturas no VeiculoResource
+* Insere coluna Jornada Bruta e Líquida no relatório de marcações por tipo jornada (PL-2850)
 
 ### Refactors
 * Altera validator de pneu para permitir valor >= 0
@@ -19,7 +20,6 @@ Change Log
 
 ### Features
 * Cria classe VeiculoBackwardHelper para facilitar a migração dos usos de placa para código (PL-2621)
-* Insere coluna Jornada Bruta e Liquida no relatório de marcações por tipo jornada (PL-2850)
 
 ### Refactors
 * Atualiza link da base de conhecimento na mensagem de erro do relatório de folha de ponto
