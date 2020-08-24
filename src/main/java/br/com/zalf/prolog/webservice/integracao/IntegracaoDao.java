@@ -204,4 +204,12 @@ public interface IntegracaoDao {
     @NotNull
     OsIntegracao getOsIntegracaoByCod(@NotNull final Long codOs) throws Throwable;
 
+    /**
+     * Busca todas as ordens de serviço que estão pendentes de sincronização e não estão marcadas como bloqueadas.
+     *
+     * @return Uma lista de códigos prolog de ordem de serviço.
+     * @throws Throwable Se qualquer erro ocorrer.
+     */
+    List<Long> buscaOrdensServicoPendenteSincronizacao() throws Throwable;
+
 }
