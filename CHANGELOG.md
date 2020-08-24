@@ -19,6 +19,7 @@ Change Log
 
 ### Features
 * Cria classe VeiculoBackwardHelper para facilitar a migração dos usos de placa para código (PL-2621)
+* Insere coluna Jornada Bruta e Liquida no relatório de marcações por tipo jornada (PL-2850)
 
 ### Refactors
 * Atualiza link da base de conhecimento na mensagem de erro do relatório de folha de ponto

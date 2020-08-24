@@ -334,7 +334,7 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = getTotalTempoByTipoIntervaloStmt(conn, codUnidade, codTipoIntervalo, dataInicial, dataFinal);
+            stmt = getTotalTempoByTipoIntervaloStmt(conn, codUnidade, dataInicial, dataFinal);
             rSet = stmt.executeQuery();
             final TipoMarcacaoDao dao = Injection.provideTipoMarcacaoDao();
             new CsvWriter
@@ -352,25 +352,6 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
                             Filtros.isFiltroTodos(codTipoIntervalo) ? null : Long.parseLong(codTipoIntervalo)))
                     .build()
                     .write();
-        } finally {
-            close(conn, stmt, rSet);
-        }
-    }
-
-    @NotNull
-    @Override
-    public Report getTotalTempoByTipoIntervaloReport(@NotNull final Long codUnidade,
-                                                     @NotNull final String codTipoIntervalo,
-                                                     @NotNull final LocalDate dataInicial,
-                                                     @NotNull final LocalDate dataFinal) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            stmt = getTotalTempoByTipoIntervaloStmt(conn, codUnidade, codTipoIntervalo, dataInicial, dataFinal);
-            rSet = stmt.executeQuery();
-            return ReportTransformer.createReport(rSet);
         } finally {
             close(conn, stmt, rSet);
         }
@@ -410,19 +391,13 @@ public class ControleJornadaRelatorioDaoImpl extends DatabaseConnection implemen
 
     private PreparedStatement getTotalTempoByTipoIntervaloStmt(@NotNull final Connection conn,
                                                                @NotNull final Long codUnidade,
-                                                               @NotNull final String codTipoIntervalo,
                                                                @NotNull final LocalDate dataInicial,
                                                                @NotNull final LocalDate dataFinal) throws SQLException {
         final PreparedStatement stmt = conn.prepareStatement(
-                "SELECT * FROM FUNC_MARCACAO_GET_TEMPO_TOTAL_POR_TIPO_MARCACAO(?, ?, ?, ?);");
+                "SELECT * FROM FUNC_MARCACAO_GET_TEMPO_TOTAL_POR_TIPO_MARCACAO(?, ?, ?);");
         stmt.setLong(1, codUnidade);
-        if (Filtros.isFiltroTodos(codTipoIntervalo)) {
-            stmt.setNull(2, Types.BIGINT);
-        } else {
-            stmt.setLong(2, Long.parseLong(codTipoIntervalo));
-        }
-        stmt.setObject(3, dataInicial);
-        stmt.setObject(4, dataFinal);
+        stmt.setObject(2, dataInicial);
+        stmt.setObject(3, dataFinal);
         return stmt;
     }
 
