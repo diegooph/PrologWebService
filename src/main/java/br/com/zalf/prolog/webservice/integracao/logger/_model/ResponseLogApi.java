@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.integracao.logger;
+package br.com.zalf.prolog.webservice.integracao.logger._model;
 
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
 import org.jetbrains.annotations.NotNull;
@@ -11,7 +11,7 @@ import java.util.Map;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public final class ResponseLog {
+public final class ResponseLogApi {
     @Nullable
     private final Map<String, String> headers;
     @Nullable
@@ -25,13 +25,13 @@ public final class ResponseLog {
     @Nullable
     private final String errorBody;
 
-    public ResponseLog(@Nullable final Map<String, String> headers,
-                       @Nullable final String annotations,
-                       @Nullable final String entityType,
-                       final boolean isError,
-                       final int statusCode,
-                       @Nullable final String body,
-                       @Nullable final String errorBody) {
+    public ResponseLogApi(@Nullable final Map<String, String> headers,
+                          @Nullable final String annotations,
+                          @Nullable final String entityType,
+                          final boolean isError,
+                          final int statusCode,
+                          @Nullable final String body,
+                          @Nullable final String errorBody) {
         this.headers = headers;
         this.annotations = annotations;
         this.entityType = entityType;
@@ -42,7 +42,7 @@ public final class ResponseLog {
     }
 
     @NotNull
-    public static String toJson(@NotNull final ResponseLog responseLog) {
+    public static String toJson(@NotNull final ResponseLogApi responseLog) {
         return GsonUtils.getGson().toJson(responseLog);
     }
 

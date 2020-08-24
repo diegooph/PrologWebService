@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.integracao.logger;
+package br.com.zalf.prolog.webservice.integracao.logger._model;
 
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
 import org.jetbrains.annotations.NotNull;
@@ -11,7 +11,7 @@ import java.util.Map;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public final class RequestLog {
+public final class RequestLogApi {
     @Nullable
     private final Map<String, String> headers;
     @Nullable
@@ -21,10 +21,10 @@ public final class RequestLog {
     @Nullable
     private final String body;
 
-    public RequestLog(@Nullable final Map<String, String> headers,
-                      @Nullable final String path,
-                      @Nullable final String httpMethod,
-                      @Nullable final String body) {
+    public RequestLogApi(@Nullable final Map<String, String> headers,
+                         @Nullable final String path,
+                         @Nullable final String httpMethod,
+                         @Nullable final String body) {
         this.headers = headers;
         this.path = path;
         this.httpMethod = httpMethod;
@@ -32,7 +32,7 @@ public final class RequestLog {
     }
 
     @NotNull
-    public static String toJson(@NotNull final RequestLog requestLog) {
+    public static String toJson(@NotNull final RequestLogApi requestLog) {
         return GsonUtils.getGson().toJson(requestLog);
     }
 
