@@ -329,14 +329,14 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
             stmt = conn.prepareStatement("SELECT * " +
                     "FROM INTEGRACAO.FUNC_CHECKLIST_INSERT_OS_PENDENTE(" +
                     "F_COD_UNIDADE => ?," +
-                    "F_COD_OS => ?)");
+                    "F_COD_OS => ?) as CODIGO_OS_PROLOG");
             stmt.setLong(1, codUnidade);
             stmt.setLong(2, codOs);
             rSet = stmt.executeQuery();
-            if (!rSet.next()) {
-                throw new SQLException("Erro ao inserir OS pendente.");
+            if (rSet.next()) {
+                return rSet.getLong("CODIGO_OS_PROLOG");
             } else {
-                return rSet.getLong("V_COD_OS_PROLOG");
+                throw new SQLException("Erro ao inserir OS pendente.");
             }
         } finally {
             close(conn, stmt, rSet);
