@@ -21,7 +21,6 @@ import br.com.zalf.prolog.webservice.integracao.avacorpavilan.data.ErrorResponse
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.header.HeaderEntry;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.header.HeaderUtils;
 import br.com.zalf.prolog.webservice.integracao.network.RestClient;
-import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.error.ProtheusNepomucenoException;
 import com.google.common.base.Strings;
 import okhttp3.ResponseBody;
 import org.jetbrains.annotations.NotNull;
@@ -395,8 +394,8 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
     }
 
     @Override
-    public String insertChecklistOs(@NotNull final InfosEnvioOsIntegracao infosEnvioOsIntegracao,
-                                    @NotNull final OsAvilan osAvilan) throws Exception {
+    public RestResponse insertChecklistOs(@NotNull final InfosEnvioOsIntegracao infosEnvioOsIntegracao,
+                                          @NotNull final OsAvilan osAvilan) throws Throwable {
         final AvaCorpAvilanRest service = RestClient.getService(AvaCorpAvilanRest.class);
         final Call<String> call =
                 service.insertChecklistOs(infosEnvioOsIntegracao.getUrlEnvio(), osAvilan);
@@ -404,22 +403,19 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
     }
 
     @NotNull
-    private <T> T handleResponse(@Nullable final Response<T> response) {
+    private RestResponse handleResponse(final Response<String> response) throws Throwable {
         if (response != null) {
             if (response.isSuccessful() && response.body() != null) {
-                return response.body();
+                return new RestResponse(true, null);
             } else {
                 // Aqui significa que a resposta recebida é um erro.
                 if (response.errorBody() == null) {
                     throw new AvaCorpAvilanException(
                             "[INTEGRAÇÃO] Nenhuma resposta obtida do sistema AvaCorpAvilan",
                             "Um erro ocorreu ao realizar o request.");
+                } else {
+                    return new RestResponse(false, toAvaCorpError(response.errorBody()));
                 }
-                final ErrorResponseAvaCorpAvilan avaCorpError =
-                        toAvaCorpError(response.errorBody());
-                throw new ProtheusNepomucenoException(
-                        avaCorpError.getErrorCode(),
-                        ProtheusNepomucenoException.getPrettyMessage(avaCorpError.getErrorMessage()));
             }
         } else {
             throw new AvaCorpAvilanException(
@@ -440,10 +436,9 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
                 throw new Exception("Erro ao realizar parse da mensagem de erro: " + jsonErrorBody, e);
             }
         } catch (final Throwable t) {
-            throw new ProtheusNepomucenoException(
-                    "[INTEGRAÇÃO] Mensagem do sistema Protheus-Nepomuceno fora do padrão esperado",
-                    "Não foi possível obter o JSON de resposta da requisição",
-                    t);
+            throw new AvaCorpAvilanException(
+                    "[INTEGRAÇÃO] Mensagem do sistema AvaCorpAvilan fora do padrão esperado",
+                    "Não foi possível obter o JSON de resposta da requisição");
         }
     }
 
