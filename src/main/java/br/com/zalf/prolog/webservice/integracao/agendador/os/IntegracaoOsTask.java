@@ -65,7 +65,9 @@ public class IntegracaoOsTask implements Runnable {
             try {
                 final RestResponse response = requester.insertChecklistOs(infosEnvioOsIntegracao,
                         AvaCorpAvilanConverter.convert(osIntegracao));
-                Injection.provideIntegracaoDao().atualizaStatusOsIntegrada(response);
+                Injection
+                        .provideIntegracaoDao()
+                        .atualizaStatusOsIntegrada(osIntegracao.getCodOsProlog(), response);
             } catch (final Throwable t) {
                 Log.e(TAG, String.format("Erro ao enviar a OS: %s", osIntegracao.getCodOsProlog()), t);
             }
