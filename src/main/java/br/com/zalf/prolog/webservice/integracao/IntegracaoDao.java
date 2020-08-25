@@ -219,6 +219,6 @@ public interface IntegracaoDao {
      * @param response Uma response de uma requisição de integração da OS.
      * @throws Throwable Se qualquer erro ocorrer.
      */
-    void atualizaStatusOsIntegrada(@NotNull RestResponse response) throws Throwable;
+    void atualizaStatusOsIntegrada(@NotNull final Long codOsProlog, @NotNull RestResponse response) throws Throwable;
 
 }
