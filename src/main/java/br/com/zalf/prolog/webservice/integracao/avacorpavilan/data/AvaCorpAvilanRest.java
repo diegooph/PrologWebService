@@ -14,7 +14,7 @@ import retrofit2.http.Url;
  */
 public interface AvaCorpAvilanRest {
 
-    @POST()
+    @POST
     Call<String> insertChecklistOs(
             @Url @NotNull final String url,
             @Body @NotNull final OsAvilan osAvilan);
