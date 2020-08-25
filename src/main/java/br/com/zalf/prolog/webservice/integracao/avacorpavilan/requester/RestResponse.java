@@ -2,7 +2,6 @@ package br.com.zalf.prolog.webservice.integracao.avacorpavilan.requester;
 
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.data.ErrorResponseAvaCorpAvilan;
 import lombok.Data;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -13,8 +12,7 @@ import org.jetbrains.annotations.Nullable;
 @Data
 public class RestResponse {
 
-    @NotNull
-    private final Boolean success;
+    private final boolean success;
     @Nullable
     private final ErrorResponseAvaCorpAvilan error;
 
