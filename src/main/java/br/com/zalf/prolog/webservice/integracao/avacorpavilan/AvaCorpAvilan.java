@@ -20,8 +20,11 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
+import br.com.zalf.prolog.webservice.integracao.MetodoIntegrado;
 import br.com.zalf.prolog.webservice.integracao.PosicaoPneuMapper;
 import br.com.zalf.prolog.webservice.integracao.RecursoIntegrado;
+import br.com.zalf.prolog.webservice.integracao.agendador.os.IntegracaoOsTask;
+import br.com.zalf.prolog.webservice.integracao.agendador.os._model.InfosEnvioOsIntegracao;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.AfericaoFiltro;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.ArrayOfAfericaoFiltro;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfVeiculo;
@@ -42,6 +45,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 /**
@@ -176,9 +180,10 @@ public final class AvaCorpAvilan extends Sistema {
                 Injection.provideChecklistOfflineDao().insereChecklistOffline(checklist);
         if (infosChecklistInserido.abriuOs()) {
             //noinspection ConstantConditions
-            Injection
+            final Long codOsProlog = Injection
                     .provideIntegracaoDao()
                     .insertOsPendente(checklist.getCodUnidade(), infosChecklistInserido.getCodOsAberta());
+            enviaOsIntegrada(codOsProlog);
         }
 
         return infosChecklistInserido.getCodChecklist();
@@ -193,9 +198,10 @@ public final class AvaCorpAvilan extends Sistema {
                 Injection.provideChecklistDao().insertChecklist(checklist, foiOffline, deveAbrirOs);
         if (infosChecklistInserido.abriuOs()) {
             //noinspection ConstantConditions
-            Injection
+            final Long codOsProlog = Injection
                     .provideIntegracaoDao()
                     .insertOsPendente(checklist.getCodUnidade(), infosChecklistInserido.getCodOsAberta());
+            enviaOsIntegrada(codOsProlog);
         }
 
         return infosChecklistInserido.getCodChecklist();
@@ -503,6 +509,21 @@ public final class AvaCorpAvilan extends Sistema {
                 getDataNascimento());
 
         return AvaCorpAvilanConverter.convertAfericoes(afericoes.getAfericaoFiltro(), codUnidade);
+    }
+
+    private void enviaOsIntegrada(@NotNull final Long codOsProlog) throws Throwable {
+        final InfosEnvioOsIntegracao infosEnvioOsIntegracao
+                = new InfosEnvioOsIntegracao(Injection
+                .provideIntegracaoDao()
+                .getUrl(AvaCorpAvilanConstants.CODIGO_EMPRESA_AVILAN,
+                        AvaCorpAvilanConstants.SISTEMA_KEY_AVILAN,
+                        MetodoIntegrado.GET_OS),
+                null,
+                null);
+        final List<Long> codOs = new ArrayList<>();
+        codOs.add(codOsProlog);
+        Executors.newSingleThreadExecutor().execute(
+                new IntegracaoOsTask(codOs, infosEnvioOsIntegracao));
     }
 
     @NotNull
