@@ -190,9 +190,10 @@ public interface IntegracaoDao {
      *
      * @param codOs      um código de ordem de serviço a sincronizar.
      * @param codUnidade código da unidade da ordem ser serviço a sicronizar.
+     * @return Um código os prolog.
      * @throws Throwable Se qualquer erro ocorrer.
      */
-    void insertOsPendente(@NotNull final Long codUnidade, @NotNull final Long codOs) throws Throwable;
+    Long insertOsPendente(@NotNull final Long codUnidade, @NotNull final Long codOs) throws Throwable;
 
     /**
      * Método com a responsabilidade de buscar todas as informações pertinentes à integração, de uma OS baseado

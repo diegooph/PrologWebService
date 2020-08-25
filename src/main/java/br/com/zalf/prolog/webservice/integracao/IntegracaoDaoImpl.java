@@ -320,7 +320,7 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
     }
 
     @Override
-    public void insertOsPendente(@NotNull final Long codUnidade, @NotNull final Long codOs) throws Throwable {
+    public Long insertOsPendente(@NotNull final Long codUnidade, @NotNull final Long codOs) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -335,6 +335,8 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
             rSet = stmt.executeQuery();
             if (!rSet.next()) {
                 throw new SQLException("Erro ao inserir OS pendente.");
+            } else {
+                return rSet.getLong("V_COD_OS_PROLOG");
             }
         } finally {
             close(conn, stmt, rSet);
