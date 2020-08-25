@@ -22,7 +22,6 @@ import br.com.zalf.prolog.webservice.integracao.avacorpavilan.header.HeaderEntry
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.header.HeaderUtils;
 import br.com.zalf.prolog.webservice.integracao.network.RestClient;
 import com.google.common.base.Strings;
-import okhttp3.ResponseBody;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit2.Call;
@@ -397,48 +396,32 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
     public RestResponse insertChecklistOs(@NotNull final InfosEnvioOsIntegracao infosEnvioOsIntegracao,
                                           @NotNull final OsAvilan osAvilan) throws Throwable {
         final AvaCorpAvilanRest service = RestClient.getService(AvaCorpAvilanRest.class);
-        final Call<String> call =
-                service.insertChecklistOs(infosEnvioOsIntegracao.getUrlEnvio(), osAvilan);
-        return handleResponse(call.execute());
+        final Call<br.com.zalf.prolog.webservice.commons.network.Response> call
+                = service.insertChecklistOs(infosEnvioOsIntegracao.getUrlEnvio(), osAvilan);
+        final br.com.zalf.prolog.webservice.commons.network.Response response = handleResponse(call.execute());
+        if (response.isOk()) {
+            return new RestResponse(response.isOk(), null);
+        } else {
+            return new RestResponse(response.isOk(),
+                    new ErrorResponseAvaCorpAvilan(response.getMsg()));
+        }
     }
 
     @NotNull
-    private RestResponse handleResponse(final Response<String> response) throws Throwable {
+    private <T> T handleResponse(final Response<T> response) {
         if (response != null) {
             if (response.isSuccessful() && response.body() != null) {
-                return new RestResponse(true, null);
+                return response.body();
             } else {
                 // Aqui significa que a resposta recebida é um erro.
-                if (response.errorBody() == null) {
-                    throw new AvaCorpAvilanException(
-                            "[INTEGRAÇÃO] Nenhuma resposta obtida do sistema AvaCorpAvilan",
-                            "Um erro ocorreu ao realizar o request.");
-                } else {
-                    return new RestResponse(false, toAvaCorpError(response.errorBody()));
-                }
+                throw new AvaCorpAvilanException(
+                        "[INTEGRAÇÃO] Nenhuma resposta obtida do sistema AvaCorpAvilan",
+                        "Um erro ocorreu ao realizar o request.");
             }
         } else {
             throw new AvaCorpAvilanException(
                     "[INTEGRAÇÃO] Nenhuma resposta obtida do sistema AvaCorpAvilan",
                     "Um erro ocorreu ao realizar o request.");
-        }
-    }
-
-    @NotNull
-    private ErrorResponseAvaCorpAvilan toAvaCorpError(@NotNull final ResponseBody errorBody) {
-        try {
-            final String jsonErrorBody = errorBody.string();
-            try {
-                return ErrorResponseAvaCorpAvilan.generateFromString(jsonErrorBody);
-            } catch (final Exception e) {
-                // Lançamos essa Exception para conseguirmos encapsular o JSON de erro que não foi convertido.
-                // Só assim conseguiremos tratar de forma mais eficaz.
-                throw new Exception("Erro ao realizar parse da mensagem de erro: " + jsonErrorBody, e);
-            }
-        } catch (final Throwable t) {
-            throw new AvaCorpAvilanException(
-                    "[INTEGRAÇÃO] Mensagem do sistema AvaCorpAvilan fora do padrão esperado",
-                    "Não foi possível obter o JSON de resposta da requisição");
         }
     }
 

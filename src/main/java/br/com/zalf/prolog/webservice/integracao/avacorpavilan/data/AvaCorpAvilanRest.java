@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan.data;
 
+import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.os._model.OsAvilan;
 import org.jetbrains.annotations.NotNull;
 import retrofit2.Call;
@@ -15,7 +16,7 @@ import retrofit2.http.Url;
 public interface AvaCorpAvilanRest {
 
     @POST
-    Call<String> insertChecklistOs(
+    Call<Response> insertChecklistOs(
             @Url @NotNull final String url,
             @Body @NotNull final OsAvilan osAvilan);
 

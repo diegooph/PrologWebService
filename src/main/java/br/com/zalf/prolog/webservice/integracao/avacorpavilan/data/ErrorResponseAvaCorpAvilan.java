@@ -12,7 +12,6 @@ import org.jetbrains.annotations.NotNull;
 @Data
 public final class ErrorResponseAvaCorpAvilan {
 
-    final int errorCode;
     @NotNull
     final String errorMessage;
 
