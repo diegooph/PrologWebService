@@ -382,7 +382,7 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM integracao.busca_os_a_integrar();");
+            stmt = conn.prepareStatement("SELECT * FROM integracao.func_busca_os_a_integrar();");
             rSet = stmt.executeQuery();
             final List<Long> ordensServicoParaSincronizar;
             if (rSet.next()) {
@@ -407,7 +407,7 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM integracao.atualiza_status_os_integrada(" +
+            stmt = conn.prepareStatement("SELECT * FROM integracao.func_atualiza_status_os_integrada(" +
                     "f_cod_os_prolog => ?," +
                     "f_sucesso => ?," +
                     "f_error_message => ?);");
