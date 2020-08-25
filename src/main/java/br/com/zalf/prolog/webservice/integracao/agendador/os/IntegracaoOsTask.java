@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.integracao.agendador.os._model.InfosEnvioOs
 import br.com.zalf.prolog.webservice.integracao.agendador.os._model.OsIntegracao;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanConverter;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.requester.AvaCorpAvilanRequesterImpl;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.requester.RestResponse;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -62,10 +63,11 @@ public class IntegracaoOsTask implements Runnable {
         for (final OsIntegracao osIntegracao : osSincronizar) {
             final AvaCorpAvilanRequesterImpl requester = new AvaCorpAvilanRequesterImpl();
             try {
-                requester.insertChecklistOs(infosEnvioOsIntegracao,
+                final RestResponse response = requester.insertChecklistOs(infosEnvioOsIntegracao,
                         AvaCorpAvilanConverter.convert(osIntegracao));
-            } catch (final Exception e) {
-                Log.e(TAG, String.format("Erro ao enviar a OS: %s", osIntegracao.getCodOsProlog()), e);
+                Injection.provideIntegracaoDao().atualizaStatusOsIntegrada(response);
+            } catch (final Throwable t) {
+                Log.e(TAG, String.format("Erro ao enviar a OS: %s", osIntegracao.getCodOsProlog()), t);
             }
         }
     }
