@@ -4,16 +4,14 @@ import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.integracao.agendador.os._model.IntegracaoConverter;
 import br.com.zalf.prolog.webservice.integracao.agendador.os._model.OsIntegracao;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.requester.RestResponse;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.ApiAutenticacaoHolder;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -394,6 +392,32 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
                 ordensServicoParaSincronizar = Collections.emptyList();
             }
             return ordensServicoParaSincronizar;
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+    @Override
+    public void atualizaStatusOsIntegrada(@NotNull final Long codOsProlog,
+                                          @NotNull final RestResponse response) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM integracao.atualiza_status_os_integrada(" +
+                    "f_cod_os_prolog => ?," +
+                    "f_sucesso => ?," +
+                    "f_error_message => ?);");
+            stmt.setLong(1, codOsProlog);
+            stmt.setBoolean(2, response.isSuccess());
+            if (response.getError() != null) {
+                stmt.setString(3, response.getError().getErrorMessage());
+            } else {
+                stmt.setNull(3, Types.VARCHAR);
+            }
+            rSet = stmt.executeQuery();
+
         } finally {
             close(conn, stmt, rSet);
         }
