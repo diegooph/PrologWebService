@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.integracao;
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.geral.unidade._model.Unidade;
 import br.com.zalf.prolog.webservice.integracao.agendador.os._model.OsIntegracao;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.requester.RestResponse;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.ApiAutenticacaoHolder;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
@@ -211,5 +212,13 @@ public interface IntegracaoDao {
      * @throws Throwable Se qualquer erro ocorrer.
      */
     List<Long> buscaOrdensServicoPendenteSincronizacao() throws Throwable;
+
+    /**
+     * Método com a responsabilidade de atualizar o status de uma O.S integrada.
+     *
+     * @param response Uma response de uma requisição de integração da OS.
+     * @throws Throwable Se qualquer erro ocorrer.
+     */
+    void atualizaStatusOsIntegrada(@NotNull RestResponse response) throws Throwable;
 
 }
