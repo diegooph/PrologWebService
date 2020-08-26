@@ -244,5 +244,4 @@ public final class SistemaGlobusPiccoloturDaoImpl extends DatabaseConnection imp
             close(conn, stmt, rSet);
         }
     }
-
 }
