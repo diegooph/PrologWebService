@@ -24,7 +24,6 @@ import java.util.stream.IntStream;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public final class SistemaGlobusPiccoloturDaoImpl extends DatabaseConnection implements SistemaGlobusPiccoloturDao {
-
     @Override
     @NotNull
     public ChecklistToSyncGlobus getChecklistToSyncGlobus(@NotNull final Connection conn,
