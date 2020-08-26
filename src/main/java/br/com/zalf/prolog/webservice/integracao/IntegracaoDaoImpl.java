@@ -235,6 +235,8 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
                     "f_sistema_key => ?, " +
                     "f_recurso_integrado => ?);");
             stmt.setString(1, userToken);
+            stmt.setString(2, sistemaKey.getKey());
+            stmt.setString(3, recursoIntegrado.getKey());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 final List<Long> codUnidadesBloqueadas = new ArrayList<>();
@@ -345,15 +347,14 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 final List<Long> codModelosBloqueados = new ArrayList<>();
-                codModelosBloqueados.add(rSet.getLong("cod_modelo_checklist"));
                 final ModelosChecklistBloqueados modelosChecklistBloqueados =
                         new ModelosChecklistBloqueados(rSet.getLong("cod_unidade"),
                                 codModelosBloqueados);
-                while (rSet.next()) {
+                do {
                     modelosChecklistBloqueados
                             .getCodModelosBloqueados()
                             .add(rSet.getLong("cod_modelo_checklist"));
-                }
+                } while (rSet.next());
                 return modelosChecklistBloqueados;
             } else {
                 return new ModelosChecklistBloqueados(codUnidade, Collections.emptyList());
