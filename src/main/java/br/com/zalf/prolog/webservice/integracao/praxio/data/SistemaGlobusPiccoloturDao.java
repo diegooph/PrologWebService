@@ -92,16 +92,6 @@ public interface SistemaGlobusPiccoloturDao {
                                    @NotNull final Throwable throwable) throws Throwable;
 
     /**
-     * Método utulizado para validar se o modelo de checklist é integrado na empresa.
-     *
-     * @param codUnidade         Código da unidade para identificar modelo de checklist.
-     * @param codModeloChecklist Código do modelo de checklist.
-     * @return É retornado um boolean para informar. TRUE caso modelo for integrado, senão FALSE.
-     */
-    boolean verificaModeloChecklistIntegrado(@NotNull final Long codUnidade,
-                                             @NotNull final Long codModeloChecklist) throws Throwable;
-
-    /**
      * Método responsável por verificar se algum dos itens prestes a serem resolvidos é integrado. Não permitimos o
      * fechamento de itens integrados. O fechamento deve ocorrer apenas via integração.
      *

@@ -1,12 +1,10 @@
 package br.com.zalf.prolog.webservice.integracao.praxio.data;
 
-import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.ModelosChecklistBloqueados;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.*;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.jetbrains.annotations.NotNull;
@@ -228,15 +226,6 @@ public final class SistemaGlobusPiccoloturDaoImpl extends DatabaseConnection imp
                 rSet.getLong("COD_CONTEXTO_PERGUNTA_NOK"),
                 rSet.getString("DESCRICAO_PERGUNTA_NOK"),
                 new ArrayList<>());
-    }
-
-    @Override
-    public boolean verificaModeloChecklistIntegrado(@NotNull final Long codUnidade,
-                                                    @NotNull final Long codModeloChecklist) throws Throwable {
-        final ModelosChecklistBloqueados modelosChecklistBloqueados = Injection
-                .provideIntegracaoDao()
-                .getModelosChecklistBloqueados(codUnidade);
-        return !modelosChecklistBloqueados.getCodModelosBloqueados().contains(codModeloChecklist);
     }
 
     @Override
