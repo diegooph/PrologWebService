@@ -204,13 +204,6 @@ public final class AvaCorpAvilan extends Sistema {
         return infosChecklistInserido.getCodChecklist();
     }
 
-    public boolean verificaModeloChecklistIntegrado(@NotNull final Long codUnidade,
-                                                    @NotNull final Long codModelo) throws Throwable {
-        final ModelosChecklistBloqueados modelosChecklistBloqueados
-                = Injection.provideIntegracaoDao().getModelosChecklistBloqueados(codUnidade);
-        return !modelosChecklistBloqueados.getCodModelosBloqueados().contains(codModelo);
-    }
-
     @NotNull
     @Override
     public Checklist getChecklistByCodigo(@NotNull final Long codChecklist) throws Exception {
@@ -513,6 +506,13 @@ public final class AvaCorpAvilan extends Sistema {
                 getDataNascimento());
 
         return AvaCorpAvilanConverter.convertAfericoes(afericoes.getAfericaoFiltro(), codUnidade);
+    }
+
+    private boolean verificaModeloChecklistIntegrado(@NotNull final Long codUnidade,
+                                                     @NotNull final Long codModelo) throws Throwable {
+        final ModelosChecklistBloqueados modelosChecklistBloqueados
+                = Injection.provideIntegracaoDao().getModelosChecklistBloqueados(codUnidade);
+        return !modelosChecklistBloqueados.getCodModelosBloqueados().contains(codModelo);
     }
 
     @NotNull
