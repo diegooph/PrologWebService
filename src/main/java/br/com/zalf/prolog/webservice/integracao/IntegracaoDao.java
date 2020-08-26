@@ -173,7 +173,7 @@ public interface IntegracaoDao {
      * @throws Throwable Se algum erro acontecer.
      */
     @NotNull
-    ModelosChecklistBloqueados getModelosChecklistBloqueados(@NotNull Long codUnidade) throws Throwable;
+    ModelosChecklistBloqueados getModelosChecklistBloqueados(@NotNull final Long codUnidade) throws Throwable;
 
     /**
      * Método para inserir uma O.S na tabela de pendencia sicronia, com a finalidade de realizar a sincronia
