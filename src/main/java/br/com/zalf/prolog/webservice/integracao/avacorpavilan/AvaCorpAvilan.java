@@ -32,6 +32,7 @@ import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.TipoVeicu
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.ArrayOfFarolDia;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.ChecklistFiltro;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.InfosChecklistInserido;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.ModelosChecklistBloqueados;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.data.*;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.requester.AvaCorpAvilanRequester;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
@@ -525,6 +526,13 @@ public final class AvaCorpAvilan extends Sistema {
                 getDataNascimento());
 
         return AvaCorpAvilanConverter.convertAfericoes(afericoes.getAfericaoFiltro(), codUnidade);
+    }
+
+    private boolean verificaModeloChecklistIntegrado(@NotNull final Long codUnidade,
+                                                     @NotNull final Long codModelo) throws Throwable {
+        final ModelosChecklistBloqueados modelosChecklistBloqueados
+                = Injection.provideIntegracaoDao().getModelosChecklistBloqueados(codUnidade);
+        return !modelosChecklistBloqueados.getCodModelosBloqueados().contains(codModelo);
     }
 
     @NotNull

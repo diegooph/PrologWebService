@@ -5,6 +5,7 @@ import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.integracao.agendador.os._model.IntegracaoConverter;
 import br.com.zalf.prolog.webservice.integracao.agendador.os._model.OsIntegracao;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.ModelosChecklistBloqueados;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.ApiAutenticacaoHolder;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
 import com.google.common.base.Preconditions;
@@ -20,7 +21,6 @@ import java.util.List;
  * Created by luiz on 18/07/17.
  */
 public final class IntegracaoDaoImpl extends DatabaseConnection implements IntegracaoDao {
-
     private static final String TAG = IntegracaoDaoImpl.class.getSimpleName();
 
     @Nullable
@@ -337,6 +337,40 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
                 return rSet.getLong("CODIGO_INTERNO_OS_PROLOG");
             } else {
                 throw new SQLException("Erro ao inserir OS pendente.");
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+
+    @NotNull
+    @Override
+    public ModelosChecklistBloqueados getModelosChecklistBloqueados(@NotNull final Long codUnidade)
+            throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * " +
+                    "FROM INTEGRACAO.FUNC_CHECKLIST_MODELO_GET_MODELOS_BLOQUEADOS(" +
+                    "F_COD_UNIDADE => ?);");
+            stmt.setLong(1, codUnidade);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                final List<Long> codModelosBloqueados = new ArrayList<>();
+                final ModelosChecklistBloqueados modelosChecklistBloqueados =
+                        new ModelosChecklistBloqueados(rSet.getLong("cod_unidade"),
+                                codModelosBloqueados);
+                do {
+                    modelosChecklistBloqueados
+                            .getCodModelosBloqueados()
+                            .add(rSet.getLong("cod_modelo_checklist"));
+                } while (rSet.next());
+                return modelosChecklistBloqueados;
+            } else {
+                return new ModelosChecklistBloqueados(codUnidade, Collections.emptyList());
             }
         } finally {
             close(conn, stmt, rSet);
