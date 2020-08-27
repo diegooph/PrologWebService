@@ -289,32 +289,6 @@ public class ControleJornadaRelatorioService {
         }
     }
 
-    @NotNull
-    public Report getTotalTempoByTipoIntervaloReport(@NotNull final Long codUnidade,
-                                                     @NotNull final String codTipoIntervalo,
-                                                     @NotNull final String dataInicial,
-                                                     @NotNull final String dataFinal) throws ProLogException {
-        try {
-            return dao.getTotalTempoByTipoIntervaloReport(
-                    codUnidade,
-                    codTipoIntervalo,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal));
-        } catch (final Throwable e) {
-            final String errorMessage = String.format(
-                    "Erro ao buscar report do relatório de total de tempo para cada tipo de intervalo. \n" +
-                            "codUnidade: %d \n" +
-                            "codTipoIntervalo: %s \n" +
-                            "dataInicial: %s \n" +
-                            "dataFinal: %s", codUnidade, codTipoIntervalo, dataInicial, dataFinal);
-            Log.e(TAG, errorMessage, e);
-            throw Injection
-                    .provideProLogExceptionHandler()
-                    .map(e, "Erro ao gerar relatório, tente novamente");
-        }
-    }
-
-
     public void getMarcacoesExportacaoGenericaCsv(@NotNull final OutputStream out,
                                                   @NotNull final Long codUnidade,
                                                   @Nullable final Long codTipoIntervalo,

@@ -70,9 +70,7 @@ public final class PneuValidator {
 
     private static void validacaoValor(final BigDecimal valor) {
         Preconditions.checkNotNull(valor, "Você precisa fornecer o valor");
-        // TODO: O app tinha um bug que ocasionava o envio do valor 0 no cadastro do pneu, foi corrigido em nov/18, por
-        // segurança é bom alterar essa verificação para >= apenas em 2019.
-        Preconditions.checkArgument(valor.doubleValue() > 0,
+        Preconditions.checkArgument(valor.doubleValue() >= 0,
                 "Valor inválido\nO valor não deve ser negativo");
     }
 
@@ -122,9 +120,7 @@ public final class PneuValidator {
     }
 
     private static void validacaoValorDaBanda(final BigDecimal valor) {
-        // TODO: O app tinha um bug que ocasionava o envio do valor 0 no cadastro do pneu, foi corrigido em nov/18, por
-        // segurança é bom alterar essa verificação para >= apenas em 2019.
-        Preconditions.checkArgument(valor.doubleValue() > 0, "Valor " +
+        Preconditions.checkArgument(valor.doubleValue() >= 0, "Valor " +
                 "inválido\nO valor não deve ser negativo");
     }
 

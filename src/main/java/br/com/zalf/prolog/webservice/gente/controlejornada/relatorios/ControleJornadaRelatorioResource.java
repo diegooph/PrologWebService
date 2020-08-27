@@ -215,21 +215,6 @@ public class ControleJornadaRelatorioResource {
 
     @GET
     @Secured
-    @Path("/total-tempo-por-tipo-intervalo/{codUnidade}/{codTipoIntervalo}/report")
-    public Report getTotalTempoByTipoIntervaloReport(
-            @PathParam("codUnidade") @Required final Long codUnidade,
-            @PathParam("codTipoIntervalo") @Required final String codTipoIntervalo,
-            @QueryParam("dataInicial") @Required final String dataInicial,
-            @QueryParam("dataFinal") @Required final String dataFinal) throws Throwable {
-        return service.getTotalTempoByTipoIntervaloReport(
-                codUnidade,
-                codTipoIntervalo,
-                dataInicial,
-                dataFinal);
-    }
-
-    @GET
-    @Secured
     @Path("/exportacao-marcacoes/csv")
     public StreamingOutput getMarcacoesExportacaoGenericaCsv(@QueryParam("codUnidade") @Required final Long codUnidade,
                                                              @QueryParam("codTipoIntervalo") @Optional final Long codTipoIntervalo,

@@ -238,25 +238,6 @@ public interface ControleJornadaRelatoriosDao {
                                          @NotNull final LocalDate dataFinal) throws Throwable;
 
     /**
-     * Método para gerar um relatório contendo a soma do período de todos os intervalos marcados pelos colaboradores
-     * da pertencentes ao {@code codUnidade}. Para buscar a soma de todos os {@link TipoMarcacao}s o atributo
-     * {@code codTipoIntervalo} deve ser "%". Este método gera um objeto {@link Report} para fins de visualização
-     * dos dados na aplicação.
-     *
-     * @param codUnidade       - Código da {@link Unidade} de onde os dados serão filtrados.
-     * @param codTipoIntervalo - Código do {@link TipoMarcacao} que os dados serão filtrados
-     * @param dataInicial      - Data inicial do período de filtro.
-     * @param dataFinal        - Data final do período de filtro.
-     * @return - Um objeto {@link Report} com os dados filtrados.
-     * @throws SQLException - Se algum erro na busca dos dados ocorrer.
-     */
-    @NotNull
-    Report getTotalTempoByTipoIntervaloReport(@NotNull final Long codUnidade,
-                                              @NotNull final String codTipoIntervalo,
-                                              @NotNull final LocalDate dataInicial,
-                                              @NotNull final LocalDate dataFinal) throws SQLException;
-
-    /**
      * Método para gerar um relatório contendo as marcações em um padrão de importação.
      * A function no banco está preparada para não receber os filtros opcionais de colaborador, tipo de intervalo e
      * apenas marcações ativas.

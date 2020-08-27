@@ -9,6 +9,7 @@ import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculoNomenclatura;
 import br.com.zalf.prolog.webservice.interceptors.auth.ColaboradorAutenticado;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.AppVersionCodeHandler;
@@ -16,6 +17,7 @@ import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.DefaultAppV
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.VersionCodeHandlerMode;
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.VersionNotPresentAction;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
+import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -201,6 +203,14 @@ public final class VeiculoResource {
     @Path("/diagramas")
     public Set<DiagramaVeiculo> getDiagramasVeiculos() {
         return service.getDiagramasVeiculo();
+    }
+
+    @GET
+    @Secured(permissions = {Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
+    @Path("/diagramas-nomenclaturas")
+    public List<DiagramaVeiculoNomenclatura> getDiagramasVeiculosNomenclaturas(
+            @QueryParam("codEmpresa") @NotNull final Long codEmpresa) {
+        return service.getDiagramasVeiculosNomenclaturas(codEmpresa);
     }
 
     @GET

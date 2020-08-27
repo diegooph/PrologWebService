@@ -104,4 +104,9 @@ public final class InfosAlternativaAberturaOrdemServico {
     public PrioridadeAlternativa getPrioridadeAlternativa() {
         return prioridadeAlternativa;
     }
+
+    public boolean contains(@NotNull final Long codContextoPergunta, @NotNull final Long codContextoAlternativa) {
+        return this.codContextoPergunta == codContextoPergunta
+                && this.codContextoAlternativa == codContextoAlternativa;
+    }
 }

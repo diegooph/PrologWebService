@@ -99,20 +99,17 @@ public final class ChecklistItensNokGlobusTask implements Runnable {
                         .provideOrdemServicoDao()
                         .incrementaQtdApontamentos(conn, codChecklistProLog, itensOsIncrementaQtdApontamentos);
 
-                // Após incrementar a quantidade de apontamento das perguntas necessárias, removemos elas da lista de
-                // perguntas que será enviada para o Globus. Assim, evitamos que um item incremente apontamente e gere
-                // uma nova O.S.
-                itensOsIncrementaQtdApontamentos.forEach(item -> {
-                    checklistItensNokGlobus.getPerguntasNok().removeIf(pergunta -> {
-                        for (final AlternativaNokGlobus alternativa : pergunta.getAlternativasNok()) {
-                            if (item.getCodContextoPergunta() == pergunta.getCodContextoPerguntaNok() &&
-                                    item.getCodContextoAlternativa() == alternativa.getCodContextoAlternativaNok()) {
-                                return true;
-                            }
-                        }
-                        return false;
-                    });
-                });
+                // Após incrementar a quantidade de apontamento das alternativas necessárias, removemos elas da lista de
+                // alternativas que serão enviadas para o Globus. Assim, evitamos que um item incremente apontamento e
+                // gere uma nova O.S.
+                itensOsIncrementaQtdApontamentos.forEach(
+                        item -> checklistItensNokGlobus.getPerguntasNok().forEach(
+                                pergunta -> pergunta.getAlternativasNok().removeIf(
+                                        alternativa -> item.contains(pergunta.getCodContextoPerguntaNok(),
+                                                alternativa.getCodContextoAlternativaNok()))));
+
+                // Pode acontecer de a pergunta ficar sem nenhuma alternativa agora. Removemos ela nesse caso.
+                checklistItensNokGlobus.getPerguntasNok().removeIf(pergunta -> pergunta.getAlternativasNok().isEmpty());
             }
 
             // Pode acontecer de o checklist ter itens NOK apontados, porém, ou estes itens não devem abrir O.S. ou
