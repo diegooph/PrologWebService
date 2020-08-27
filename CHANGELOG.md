@@ -2,7 +2,7 @@ Change Log
 ==========
 
 <a name="v1.1.3"></a>
-## Version [v1.1.3](https://github.com/luizfp/PrologWebService/compare/v1.1.2...v1.1.3) (release-date) [unreleased]
+## Version [v1.1.3](https://github.com/luizfp/PrologWebService/compare/v1.1.2...v1.1.3) (2020-08-27)
 
 ### Features
 * Cria método para buscar todos os diagramas com as nomenclaturas no VeiculoResource
