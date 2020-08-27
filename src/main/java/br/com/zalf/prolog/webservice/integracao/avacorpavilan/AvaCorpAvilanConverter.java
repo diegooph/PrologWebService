@@ -21,11 +21,16 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.integracao.PosicaoPneuMapper;
+import br.com.zalf.prolog.webservice.integracao.agendador.os._model.ItemOsIntegracao;
+import br.com.zalf.prolog.webservice.integracao.agendador.os._model.OsIntegracao;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.*;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfPneu;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfString;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfVeiculo;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.*;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.os._model.FechamentoOsAvilan;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.os._model.ItemOsAvilan;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.os._model.OsAvilan;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.data.TipoVeiculoAvilanProLog;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
@@ -38,10 +43,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -571,6 +573,54 @@ public final class AvaCorpAvilanConverter {
         afericaoPlaca.getVeiculo().setListPneus(pneus);
 
         return afericaoPlaca;
+    }
+
+    @NotNull
+    public static OsAvilan convert(@NotNull final OsIntegracao osIntegracao) {
+        return createOsAvilan(osIntegracao);
+    }
+
+    @NotNull
+    private static OsAvilan createOsAvilan(@NotNull final OsIntegracao osIntegracao) {
+        return new OsAvilan(
+                osIntegracao.getCodFilial(),
+                osIntegracao.getCodUnidade(),
+                osIntegracao.getCodOsProlog(),
+                osIntegracao.getDataHoraAbertura(),
+                osIntegracao.getDataHoraAbertura(),
+                osIntegracao.getPlacaVeiculo(),
+                osIntegracao.getKmVeiculoNaAbertura(),
+                osIntegracao.getCpfColaboradorChecklist(),
+                osIntegracao.getItensNok()
+                        .stream()
+                        .map(itemOsIntegracao -> createItemOsAvilan(osIntegracao, itemOsIntegracao))
+                        .collect(Collectors.toList()));
+    }
+
+    @NotNull
+    private static ItemOsAvilan createItemOsAvilan(@NotNull final OsIntegracao osIntegracao,
+                                                   @NotNull final ItemOsIntegracao itemOsIntegracao) {
+        return new ItemOsAvilan(
+                osIntegracao.getCodFilial(),
+                osIntegracao.getCodUnidade(),
+                osIntegracao.getDataHoraAbertura(),
+                itemOsIntegracao.getCodDefeito(),
+                itemOsIntegracao.getDescricaoAlternativa(),
+                // Se o item está fechado inserimos o serviço de fechamento.
+                itemOsIntegracao.getDataHoraFechamento() != null
+                        ? Collections.singletonList(createFechamentoOsAvilan(osIntegracao, itemOsIntegracao))
+                        : Collections.emptyList());
+    }
+
+    @NotNull
+    private static FechamentoOsAvilan createFechamentoOsAvilan(@NotNull final OsIntegracao osIntegracao,
+                                                               @NotNull final ItemOsIntegracao itemOsIntegracao) {
+        return new FechamentoOsAvilan(
+                osIntegracao.getCodFilial(),
+                osIntegracao.getCodUnidade(),
+                itemOsIntegracao.getDataHoraFechamento(),
+                itemOsIntegracao.getCodServico(),
+                itemOsIntegracao.getDescricaoFechamentoItem());
     }
 
     /**

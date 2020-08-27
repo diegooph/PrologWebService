@@ -11,7 +11,6 @@ import org.jetbrains.annotations.Nullable;
  */
 @Data
 public class InfosChecklistInserido {
-
     @NotNull
     private final Long codChecklist;
     private final boolean checklistJaExiste;
@@ -21,5 +20,4 @@ public class InfosChecklistInserido {
     public boolean abriuOs() {
         return codOsAberta != null;
     }
-
 }

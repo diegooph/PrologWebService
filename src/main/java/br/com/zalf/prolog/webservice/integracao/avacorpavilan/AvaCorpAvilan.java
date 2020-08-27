@@ -20,8 +20,11 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
+import br.com.zalf.prolog.webservice.integracao.MetodoIntegrado;
 import br.com.zalf.prolog.webservice.integracao.PosicaoPneuMapper;
 import br.com.zalf.prolog.webservice.integracao.RecursoIntegrado;
+import br.com.zalf.prolog.webservice.integracao.agendador.os.IntegracaoOsTask;
+import br.com.zalf.prolog.webservice.integracao.agendador.os._model.InfosEnvioOsIntegracao;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.AfericaoFiltro;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.ArrayOfAfericaoFiltro;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfVeiculo;
@@ -39,10 +42,8 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.ws.rs.core.Response;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 /**
@@ -68,6 +69,75 @@ public final class AvaCorpAvilan extends Sistema {
         super(integradorProLog, sistemaKey, recursoIntegrado, userToken);
         this.requester = requester;
     }
+
+    /*
+    @Override
+    @NotNull
+    public Long insertChecklist(@NotNull final ChecklistInsercao checklist,
+                                final boolean foiOffline,
+                                final boolean deveAbrirOs) throws Throwable {
+        if (checklist.getKmColetadoVeiculo() == 0) {
+            throw new AvaCorpAvilanException(
+                    "O KM enviado não pode ser 0!",
+                    "A integração com a Avilan não aceita mais KMs 0");
+        }
+
+        return Injection.provideChecklistDao().insert(checklist, foiOffline, deveAbrirOs);
+    }
+    */
+
+    @Override
+    @NotNull
+    public Long insertChecklistOffline(@NotNull final ChecklistInsercao checklist) throws Throwable {
+        final InfosChecklistInserido infosChecklistInserido =
+                Injection.provideChecklistOfflineDao().insereChecklistOffline(checklist);
+        if (infosChecklistInserido.abriuOs()) {
+            //noinspection ConstantConditions
+            final Long codInternoOsProlog = Injection
+                    .provideIntegracaoDao()
+                    .insertOsPendente(checklist.getCodUnidade(), infosChecklistInserido.getCodOsAberta());
+            enviaOsIntegrada(codInternoOsProlog);
+        }
+
+        return infosChecklistInserido.getCodChecklist();
+    }
+
+    @Override
+    @NotNull
+    public Long insertChecklist(@NotNull final ChecklistInsercao checklist,
+                                final boolean foiOffline,
+                                final boolean deveAbrirOs) throws Throwable {
+        final InfosChecklistInserido infosChecklistInserido =
+                Injection.provideChecklistDao().insertChecklist(checklist, foiOffline, deveAbrirOs);
+        if (infosChecklistInserido.abriuOs()) {
+            //noinspection ConstantConditions
+            final Long codInternoOsProlog = Injection
+                    .provideIntegracaoDao()
+                    .insertOsPendente(checklist.getCodUnidade(), infosChecklistInserido.getCodOsAberta());
+            enviaOsIntegrada(codInternoOsProlog);
+        }
+
+        return infosChecklistInserido.getCodChecklist();
+    }
+
+    private void enviaOsIntegrada(@NotNull final Long codInternoOsProlog) throws Throwable {
+        final InfosEnvioOsIntegracao infosEnvioOsIntegracao
+                = new InfosEnvioOsIntegracao(Injection
+                .provideIntegracaoDao()
+                .getUrl(AvaCorpAvilanConstants.CODIGO_EMPRESA_AVILAN,
+                        AvaCorpAvilanConstants.SISTEMA_KEY_AVILAN,
+                        MetodoIntegrado.INSERT_OS),
+                null,
+                null);
+        Executors.newSingleThreadExecutor().execute(
+                new IntegracaoOsTask(Collections.singletonList(codInternoOsProlog), infosEnvioOsIntegracao));
+    }
+
+    // #################################################################################################################
+    // #################################################################################################################
+    // ##################################### MÉTODOS DEPRECIADOS - PARA DELETAR ########################################
+    // #################################################################################################################
+    // #################################################################################################################
 
     @NotNull
     @Override
@@ -152,56 +222,6 @@ public final class AvaCorpAvilan extends Sistema {
             final @NotNull String placaVeiculo,
             final @NotNull TipoChecklist tipoChecklist) throws Throwable {
         return getIntegradorProLog().getModeloChecklistRealizacao(codModeloChecklist, codVeiculo, placaVeiculo, tipoChecklist);
-    }
-
-    /*
-    @Override
-    @NotNull
-    public Long insertChecklist(@NotNull final ChecklistInsercao checklist,
-                                final boolean foiOffline,
-                                final boolean deveAbrirOs) throws Throwable {
-        if (checklist.getKmColetadoVeiculo() == 0) {
-            throw new AvaCorpAvilanException(
-                    "O KM enviado não pode ser 0!",
-                    "A integração com a Avilan não aceita mais KMs 0");
-        }
-
-        return Injection.provideChecklistDao().insert(checklist, foiOffline, deveAbrirOs);
-    }
-    */
-
-    @Override
-    @NotNull
-    public Long insertChecklistOffline(@NotNull final ChecklistInsercao checklist) throws Throwable {
-        final InfosChecklistInserido infosChecklistInserido =
-                Injection.provideChecklistOfflineDao().insereChecklistOffline(checklist);
-        if (infosChecklistInserido.abriuOs()
-                && verificaModeloChecklistIntegrado(checklist.getCodUnidade(), checklist.getCodModelo())) {
-            //noinspection ConstantConditions
-            Injection
-                    .provideIntegracaoDao()
-                    .insertOsPendente(checklist.getCodUnidade(), infosChecklistInserido.getCodOsAberta());
-        }
-
-        return infosChecklistInserido.getCodChecklist();
-    }
-
-    @Override
-    @NotNull
-    public Long insertChecklist(@NotNull final ChecklistInsercao checklist,
-                                final boolean foiOffline,
-                                final boolean deveAbrirOs) throws Throwable {
-        final InfosChecklistInserido infosChecklistInserido =
-                Injection.provideChecklistDao().insertChecklist(checklist, foiOffline, deveAbrirOs);
-        if (infosChecklistInserido.abriuOs()
-                && verificaModeloChecklistIntegrado(checklist.getCodUnidade(), checklist.getCodModelo())) {
-            //noinspection ConstantConditions
-            Injection
-                    .provideIntegracaoDao()
-                    .insertOsPendente(checklist.getCodUnidade(), infosChecklistInserido.getCodOsAberta());
-        }
-
-        return infosChecklistInserido.getCodChecklist();
     }
 
     @NotNull

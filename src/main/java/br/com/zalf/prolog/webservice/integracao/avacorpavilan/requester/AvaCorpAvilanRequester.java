@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan.requester;
 
+import br.com.zalf.prolog.webservice.integracao.agendador.os._model.InfosEnvioOsIntegracao;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvacorpAvilanTipoChecklist;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.AfericaoFiltro;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.ArrayOfAfericaoFiltro;
@@ -8,6 +9,7 @@ import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfVe
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.Veiculo;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.*;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.*;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.os._model.OsAvilan;
 import br.com.zalf.prolog.webservice.integracao.sistema.Requester;
 import org.jetbrains.annotations.NotNull;
 
@@ -95,4 +97,8 @@ public interface AvaCorpAvilanRequester extends Requester {
                                       final boolean itensCriticosRetroativos,
                                       @NotNull final String cpf,
                                       @NotNull final String dataNascimento) throws Exception;
+
+    void insertChecklistOs(@NotNull final InfosEnvioOsIntegracao infosEnvioOsIntegracao,
+                           @NotNull final OsAvilan osAvilan) throws Throwable;
+
 }

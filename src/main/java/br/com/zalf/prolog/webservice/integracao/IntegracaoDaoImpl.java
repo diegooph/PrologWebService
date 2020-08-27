@@ -1,7 +1,10 @@
 package br.com.zalf.prolog.webservice.integracao;
 
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
+import br.com.zalf.prolog.webservice.integracao.agendador.os._model.IntegracaoConverter;
+import br.com.zalf.prolog.webservice.integracao.agendador.os._model.OsIntegracao;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.ModelosChecklistBloqueados;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.ApiAutenticacaoHolder;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
@@ -9,10 +12,7 @@ import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -163,6 +163,17 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
         }
     }
 
+    @Override
+    @NotNull
+    public String getUrl(@NotNull final Long codEmpresa,
+                         @NotNull final SistemaKey sistemaKey,
+                         @NotNull final MetodoIntegrado metodoIntegrado) throws Throwable {
+        final Connection conn = getConnection();
+        final String url = getUrl(conn, codEmpresa, sistemaKey, metodoIntegrado);
+        conn.close();
+        return url;
+    }
+
     @NotNull
     @Override
     public String getCodAuxiliarByCodUnidadeProlog(@NotNull final Connection conn,
@@ -308,21 +319,23 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
         }
     }
 
+    @NotNull
     @Override
-    public void insertOsPendente(@NotNull final Long codUnidade, @NotNull final Long codOs) throws Throwable {
+    public Long insertOsPendente(@NotNull final Long codUnidade, @NotNull final Long codOs) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * " +
-                    "FROM INTEGRACAO.FUNC_CHECKLIST_INSERT_OS_PENDENTE(" +
-                    "F_COD_UNIDADE => ?," +
-                    "F_COD_OS => ?)");
+            stmt = conn.prepareStatement("select * from integracao.func_checklist_insert_os_pendente(" +
+                    "f_cod_unidade => ?," +
+                    "f_cod_os => ?) as codigo_interno_os_prolog");
             stmt.setLong(1, codUnidade);
             stmt.setLong(2, codOs);
             rSet = stmt.executeQuery();
-            if (!rSet.next()) {
+            if (rSet.next()) {
+                return rSet.getLong("CODIGO_INTERNO_OS_PROLOG");
+            } else {
                 throw new SQLException("Erro ao inserir OS pendente.");
             }
         } finally {
@@ -364,4 +377,86 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
         }
     }
 
+    @Override
+    @NotNull
+    public OsIntegracao getOsIntegracaoByCod(@NotNull final Long codOs) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("select * from integracao.func_busca_informacoes_os(" +
+                    "f_cod_interno_os_prolog => ?);");
+            stmt.setLong(1, codOs);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                final OsIntegracao osIntegracao = IntegracaoConverter.createOsIntegracao(rSet);
+                osIntegracao.getItensNok().add(IntegracaoConverter.createItemOsIntegracao(rSet));
+                while (rSet.next()) {
+                    osIntegracao.getItensNok().add(IntegracaoConverter.createItemOsIntegracao(rSet));
+                }
+                return osIntegracao;
+            } else {
+                throw new SQLException("Nenhum dado encontrado para o código de os.");
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+    @NotNull
+    @Override
+    public List<Long> buscaCodOrdensServicoPendenteSincronizacao() throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("select * from integracao.func_busca_os_a_integrar();");
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                final List<Long> codOrdensServicoParaSincronizar = new ArrayList<>();
+                do {
+                    codOrdensServicoParaSincronizar.add(rSet.getLong("codigo_interno_os_prolog"));
+                } while (rSet.next());
+                return codOrdensServicoParaSincronizar;
+            } else {
+                return Collections.emptyList();
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+    @Override
+    public void atualizaStatusOsIntegrada(@NotNull final Long codInternoOsProlog,
+                                          final boolean sucesso) throws Throwable {
+        atualizaStatusOsIntegrada(codInternoOsProlog, sucesso, null);
+    }
+
+    @Override
+    public void atualizaStatusOsIntegrada(@NotNull final Long codInternoOsProlog,
+                                          final boolean sucesso,
+                                          @Nullable final String errorMessage) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("select * from integracao.func_atualiza_status_os_integrada(" +
+                    "f_cod_interno_os_prolog => ?, " +
+                    "f_sincronizado_sucesso => ?, " +
+                    "f_error_message => ?);");
+            stmt.setLong(1, codInternoOsProlog);
+            stmt.setBoolean(2, sucesso);
+            if (!sucesso) {
+                stmt.setString(3, StringUtils.trimToEmpty(errorMessage));
+            } else {
+                stmt.setNull(3, Types.VARCHAR);
+            }
+            rSet = stmt.executeQuery();
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
 }
