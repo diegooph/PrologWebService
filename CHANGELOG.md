@@ -7,6 +7,7 @@ Change Log
 ### Features
 * Cria método para buscar todos os diagramas com as nomenclaturas no VeiculoResource
 * Insere coluna Jornada Bruta e Líquida no relatório de marcações por tipo jornada (PL-2850)
+* Permite selecionar modelos de checklists bloqueados para integração (PL-2905)
 
 ### Refactors
 * Altera validator de pneu para permitir valor >= 0
