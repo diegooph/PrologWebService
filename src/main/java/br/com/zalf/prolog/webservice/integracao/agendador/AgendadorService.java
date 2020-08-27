@@ -59,7 +59,7 @@ public final class AgendadorService implements SincroniaChecklistListener {
             final List<Long> ordensServicoParaSincronizar =
                     Injection
                             .provideIntegracaoDao()
-                            .buscaOrdensServicoPendenteSincronizacao();
+                            .buscaCodOrdensServicoPendenteSincronizacao();
             if (ordensServicoParaSincronizar.isEmpty()) {
                 return;
             }
@@ -69,7 +69,7 @@ public final class AgendadorService implements SincroniaChecklistListener {
                     .provideIntegracaoDao()
                     .getUrl(AvaCorpAvilanConstants.CODIGO_EMPRESA_AVILAN,
                             AvaCorpAvilanConstants.SISTEMA_KEY_AVILAN,
-                            MetodoIntegrado.GET_OS),
+                            MetodoIntegrado.INSERT_OS),
                     null,
                     null);
             Executors.newSingleThreadExecutor().execute(

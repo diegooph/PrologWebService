@@ -11,16 +11,19 @@ import java.util.ArrayList;
  *
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
-public class IntegracaoConverter {
+public final class IntegracaoConverter {
 
-    public static OsIntegracao createOsIntegracao(final ResultSet rSet) throws Throwable {
-        return new OsIntegracao(rSet.getLong("cod_unidade"),
+    @NotNull
+    public static OsIntegracao createOsIntegracao(@NotNull final ResultSet rSet) throws Throwable {
+        return new OsIntegracao(
+                rSet.getLong("cod_unidade"),
                 rSet.getString("cod_auxiliar_unidade"),
+                rSet.getLong("cod_interno_os_prolog"),
                 rSet.getLong("cod_os_prolog"),
                 rSet.getObject("data_hora_abertura_os", LocalDateTime.class),
                 rSet.getString("placa_veiculo"),
                 rSet.getLong("km_veiculo_na_abertura"),
-                rSet.getString("cpf_criador_checklist"),
+                rSet.getString("cpf_colaborador_checklist"),
                 new ArrayList<>());
     }
 
@@ -32,8 +35,6 @@ public class IntegracaoConverter {
                 rSet.getString("cod_auxiliar_alternativa"),
                 rSet.getString("descricao_alternativa"),
                 rSet.getObject("data_hora_fechamento_item_os", LocalDateTime.class),
-                rSet.getString("descricao_fechamento_item_os")
-        );
+                rSet.getString("descricao_fechamento_item_os"));
     }
-
 }

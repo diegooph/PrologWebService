@@ -1,11 +1,14 @@
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.os._model;
 
+import com.google.gson.annotations.SerializedName;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDateTime;
 import java.util.List;
+
+import static br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanConstants.*;
 
 /**
  * Created on 2020-08-20
@@ -14,34 +17,46 @@ import java.util.List;
  */
 @Data
 public class OsAvilan {
-
     @NotNull
-    private final String grupo = "1";
+    @SerializedName("Grupo")
+    private final String grupo = COD_GRUPO_AVILAN;
     @NotNull
-    private final String empresa = "1";
+    @SerializedName("Empresa")
+    private final String empresa = COD_EMPRESA_AVILAN;
     @Nullable
+    @SerializedName("Filial")
     private final String filial;
     @Nullable
+    @SerializedName("Unidade")
     private final String unidade;
     @NotNull
-    private final String tipoManutencao = "2";
+    @SerializedName("TipoManutencao")
+    private final String tipoManutencao = COD_TIPO_MANUTENCAO_AVILAN;
     @NotNull
-    private final String objetivoOrdemServico = "1";
+    @SerializedName("ObjetivoOrdemServico")
+    private final String objetivoOrdemServico = COD_OBJETIVO_ORDEM_SERVICO_AVILAN;
     @NotNull
+    @SerializedName("NumeroExterno")
     private final Long numeroExterno;
     @NotNull
-    private final LocalDateTime dtEmissao;
+    @SerializedName("DtEmissao")
+    private final LocalDateTime dataHoraEmissao;
     @NotNull
-    private final LocalDateTime dtinc;
+    @SerializedName("Dtinc")
+    private final LocalDateTime dataHoraInclusao;
     @NotNull
-    private final String codigoUsuario = "100";
+    @SerializedName("CodigoUsuario")
+    private final String codigoUsuario = COD_USUARIO_AVILAN;
     @NotNull
-    private final String veiculo;
+    @SerializedName("Veiculo")
+    private final String placaVeiculo;
     @NotNull
-    private final Long marcadorVeiculo;
+    @SerializedName("MarcadorVeiculo")
+    private final Long kmVeiculo;
     @NotNull
-    private final String motorista;
+    @SerializedName("Motorista")
+    private final String cpfMotorista;
     @NotNull
-    private final List<ItemOsAvilan> ordemServicoDefeitoIn;
-
+    @SerializedName("OrdemServicoDefeitoIn")
+    private final List<ItemOsAvilan> itensOrdemServico;
 }

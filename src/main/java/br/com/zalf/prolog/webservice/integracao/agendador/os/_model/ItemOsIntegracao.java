@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.agendador.os._model;
 
+import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -13,7 +14,6 @@ import java.time.LocalDateTime;
  */
 @Data
 public class ItemOsIntegracao {
-
     @NotNull
     private final Long codItemOs;
     @NotNull
@@ -27,4 +27,23 @@ public class ItemOsIntegracao {
     @Nullable
     private final String descricaoFechamentoItem;
 
+    @Nullable
+    public String getCodDefeito() {
+        if (StringUtils.isNullOrEmpty(StringUtils.trimToNull(codAuxiliarAlternativa))) {
+            return null;
+        }
+        //noinspection ConstantConditions
+        final String[] split = codAuxiliarAlternativa.split(":");
+        return StringUtils.trimToNull(split[0]);
+    }
+
+    @Nullable
+    public String getCodServico() {
+        if (StringUtils.isNullOrEmpty(StringUtils.trimToNull(codAuxiliarAlternativa))) {
+            return null;
+        }
+        //noinspection ConstantConditions
+        final String[] split = codAuxiliarAlternativa.split(":");
+        return StringUtils.trimToNull(split.length >= 2 ? split[1] : null);
+    }
 }

@@ -13,13 +13,17 @@ import javax.ws.rs.core.Response;
  */
 public class AvaCorpAvilanException extends IntegracaoException {
 
+    public AvaCorpAvilanException(@NotNull final String message) {
+        super(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), message, null);
+    }
+
     public AvaCorpAvilanException(@NotNull final String message,
                                   @Nullable final String developerMessage) {
         super(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), message, developerMessage);
     }
 
-    public AvaCorpAvilanException(@NotNull String message,
-                                  @NotNull Throwable parentException) {
+    public AvaCorpAvilanException(@NotNull final String message,
+                                  @NotNull final Throwable parentException) {
         super(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), message, null, parentException);
     }
 }

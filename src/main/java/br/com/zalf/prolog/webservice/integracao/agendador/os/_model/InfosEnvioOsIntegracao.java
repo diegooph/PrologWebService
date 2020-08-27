@@ -11,12 +11,10 @@ import org.jetbrains.annotations.Nullable;
  */
 @Data
 public class InfosEnvioOsIntegracao {
-
     @NotNull
     private final String urlEnvio;
     @Nullable
     private final String apiTokenClient;
     @Nullable
     private final String apiShortCode;
-
 }

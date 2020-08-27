@@ -1,10 +1,13 @@
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.os._model;
 
+import com.google.gson.annotations.SerializedName;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDateTime;
+
+import static br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanConstants.*;
 
 /**
  * Created on 2020-08-20
@@ -13,22 +16,28 @@ import java.time.LocalDateTime;
  */
 @Data
 public class FechamentoOsAvilan {
-
     @NotNull
-    private final String grupo = "1";
+    @SerializedName("Grupo")
+    private final String grupo = COD_GRUPO_AVILAN;
     @NotNull
-    private final String empresa = "1";
+    @SerializedName("Empresa")
+    private final String empresa = COD_EMPRESA_AVILAN;
     @Nullable
+    @SerializedName("Filial")
     private final String filial;
     @Nullable
+    @SerializedName("Unidade")
     private final String unidade;
     @Nullable
-    private final LocalDateTime dtinc;
+    @SerializedName("Dtinc")
+    private final LocalDateTime dataHoraInclusaoServico;
     @Nullable
+    @SerializedName("ServicoRealizado")
     private final String servicoRealizado;
     @Nullable
+    @SerializedName("Complemento")
     private final String complemento;
     @NotNull
-    private final String objetivoOrdemServico = "1";
-
+    @SerializedName("ObjetivoOrdemServico")
+    private final String objetivoOrdemServico = COD_OBJETIVO_ORDEM_SERVICO_AVILAN;
 }

@@ -6,9 +6,7 @@ import br.com.zalf.prolog.webservice.integracao.agendador.os._model.InfosEnvioOs
 import br.com.zalf.prolog.webservice.integracao.agendador.os._model.OsIntegracao;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanConverter;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.requester.AvaCorpAvilanRequesterImpl;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.requester.RestResponse;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,26 +17,25 @@ import java.util.List;
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
 public class IntegracaoOsTask implements Runnable {
-
     @NotNull
     public static final String TAG = IntegracaoOsTask.class.getSimpleName();
     @NotNull
     private final List<Long> codOsSincronizar;
     @NotNull
     private final InfosEnvioOsIntegracao infosEnvioOsIntegracao;
-    @Nullable
-    private List<OsIntegracao> osSincronizar;
+    @NotNull
+    private final List<OsIntegracao> osSincronizar;
 
     public IntegracaoOsTask(@NotNull final List<Long> codOsSincronizar,
                             @NotNull final InfosEnvioOsIntegracao infosEnvioOsIntegracao) {
         this.codOsSincronizar = codOsSincronizar;
         this.infosEnvioOsIntegracao = infosEnvioOsIntegracao;
+        this.osSincronizar = new ArrayList<>();
     }
 
     @Override
     public void run() {
         if (!codOsSincronizar.isEmpty()) {
-            osSincronizar = new ArrayList<>();
             try {
                 completarInformacoesChecklist();
                 enviarOrdensServico();
@@ -53,25 +50,34 @@ public class IntegracaoOsTask implements Runnable {
 
     private void completarInformacoesChecklist() throws Throwable {
         for (final Long codOs : codOsSincronizar) {
-            //noinspection ConstantConditions
             osSincronizar.add(Injection.provideIntegracaoDao().getOsIntegracaoByCod(codOs));
         }
     }
 
     private void enviarOrdensServico() {
-        //noinspection ConstantConditions
+        final AvaCorpAvilanRequesterImpl requester = new AvaCorpAvilanRequesterImpl();
         for (final OsIntegracao osIntegracao : osSincronizar) {
-            final AvaCorpAvilanRequesterImpl requester = new AvaCorpAvilanRequesterImpl();
             try {
-                final RestResponse response = requester.insertChecklistOs(infosEnvioOsIntegracao,
+                requester.insertChecklistOs(
+                        infosEnvioOsIntegracao,
                         AvaCorpAvilanConverter.convert(osIntegracao));
                 Injection
                         .provideIntegracaoDao()
-                        .atualizaStatusOsIntegrada(osIntegracao.getCodOsProlog(), response);
+                        .atualizaStatusOsIntegrada(osIntegracao.getCodInternoOsProlog(), true);
             } catch (final Throwable t) {
+                // Não podemos fazer o throw nesse momento para não travar o fluxo de sincronia.
+                System.out.println("parar aqui");
+                try {
+                    Injection
+                            .provideIntegracaoDao()
+                            .atualizaStatusOsIntegrada(osIntegracao.getCodInternoOsProlog(), false, t.getMessage());
+                } catch (final Throwable throwable) {
+                    Log.e(TAG,
+                            String.format("Erro ao atualizar o status da OS: %s", osIntegracao.getCodOsProlog()),
+                            throwable);
+                }
                 Log.e(TAG, String.format("Erro ao enviar a OS: %s", osIntegracao.getCodOsProlog()), t);
             }
         }
     }
-
 }

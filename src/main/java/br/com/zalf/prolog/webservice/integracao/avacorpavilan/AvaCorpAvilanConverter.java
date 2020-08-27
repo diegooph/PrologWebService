@@ -21,6 +21,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.integracao.PosicaoPneuMapper;
+import br.com.zalf.prolog.webservice.integracao.agendador.os._model.ItemOsIntegracao;
 import br.com.zalf.prolog.webservice.integracao.agendador.os._model.OsIntegracao;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.*;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfPneu;
@@ -574,57 +575,52 @@ public final class AvaCorpAvilanConverter {
         return afericaoPlaca;
     }
 
-    public static OsAvilan convert(final OsIntegracao osIntegracao) {
+    @NotNull
+    public static OsAvilan convert(@NotNull final OsIntegracao osIntegracao) {
         return createOsAvilan(osIntegracao);
     }
 
-    private static FechamentoOsAvilan createFechamentoOsAvilan(final OsIntegracao osIntegracao,
-                                                               final int itemPosition) {
-        return new FechamentoOsAvilan(osIntegracao.getCodAuxiliarUnidade(),
-                osIntegracao.getCodAuxiliarUnidade(),
-                osIntegracao.getAlternativasNok().get(itemPosition).getDataHoraFechamento(),
-                osIntegracao.getAlternativasNok().get(itemPosition).getCodAuxiliarAlternativa(),
-                osIntegracao.getAlternativasNok().get(itemPosition).getDescricaoFechamentoItem());
-    }
-
-    private static ItemOsAvilan createItemOsAvilan(final OsIntegracao osIntegracao,
-                                                   final int itemPosition) {
-        final List<FechamentoOsAvilan> fechamentoOsAvilan;
-        if (osIntegracao.getAlternativasNok().get(itemPosition).getDataHoraFechamento() != null) {
-            fechamentoOsAvilan = new ArrayList<>();
-            fechamentoOsAvilan.add(createFechamentoOsAvilan(osIntegracao, itemPosition));
-        } else {
-            fechamentoOsAvilan = Collections.emptyList();
-        }
-
-        return new ItemOsAvilan(osIntegracao.getCodAuxiliarUnidade(),
-                osIntegracao.getCodAuxiliarUnidade(),
-                osIntegracao.getDataHoraAbertura(),
-                osIntegracao.getAlternativasNok().get(itemPosition).getCodAuxiliarAlternativa(),
-                osIntegracao.getAlternativasNok().get(itemPosition).getDescricaoAlternativa(),
-                fechamentoOsAvilan);
-    }
-
-    private static OsAvilan createOsAvilan(final OsIntegracao osIntegracao) {
-        final List<ItemOsAvilan> itensOsAvilan;
-        if (!osIntegracao.getAlternativasNok().isEmpty()) {
-            itensOsAvilan = new ArrayList<>();
-            for (int i = 0; i < osIntegracao.getAlternativasNok().size(); i++) {
-                itensOsAvilan.add(createItemOsAvilan(osIntegracao, i));
-            }
-        } else {
-            itensOsAvilan = Collections.emptyList();
-        }
-
-        return new OsAvilan(osIntegracao.getCodAuxiliarUnidade(),
-                osIntegracao.getCodAuxiliarUnidade(),
+    @NotNull
+    private static OsAvilan createOsAvilan(@NotNull final OsIntegracao osIntegracao) {
+        return new OsAvilan(
+                osIntegracao.getCodFilial(),
+                osIntegracao.getCodUnidade(),
                 osIntegracao.getCodOsProlog(),
                 osIntegracao.getDataHoraAbertura(),
                 osIntegracao.getDataHoraAbertura(),
                 osIntegracao.getPlacaVeiculo(),
                 osIntegracao.getKmVeiculoNaAbertura(),
-                osIntegracao.getCpfCriadorChecklist(),
-                itensOsAvilan);
+                osIntegracao.getCpfColaboradorChecklist(),
+                osIntegracao.getItensNok()
+                        .stream()
+                        .map(itemOsIntegracao -> createItemOsAvilan(osIntegracao, itemOsIntegracao))
+                        .collect(Collectors.toList()));
+    }
+
+    @NotNull
+    private static ItemOsAvilan createItemOsAvilan(@NotNull final OsIntegracao osIntegracao,
+                                                   @NotNull final ItemOsIntegracao itemOsIntegracao) {
+        return new ItemOsAvilan(
+                osIntegracao.getCodFilial(),
+                osIntegracao.getCodUnidade(),
+                osIntegracao.getDataHoraAbertura(),
+                itemOsIntegracao.getCodDefeito(),
+                itemOsIntegracao.getDescricaoAlternativa(),
+                // Se o item está fechado inserimos o serviço de fechamento.
+                itemOsIntegracao.getDataHoraFechamento() != null
+                        ? Collections.singletonList(createFechamentoOsAvilan(osIntegracao, itemOsIntegracao))
+                        : Collections.emptyList());
+    }
+
+    @NotNull
+    private static FechamentoOsAvilan createFechamentoOsAvilan(@NotNull final OsIntegracao osIntegracao,
+                                                               @NotNull final ItemOsIntegracao itemOsIntegracao) {
+        return new FechamentoOsAvilan(
+                osIntegracao.getCodFilial(),
+                osIntegracao.getCodUnidade(),
+                itemOsIntegracao.getDataHoraFechamento(),
+                itemOsIntegracao.getCodServico(),
+                itemOsIntegracao.getDescricaoFechamentoItem());
     }
 
     /**
