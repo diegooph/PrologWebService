@@ -12,6 +12,8 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistIns
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.realizacao.ModeloChecklistRealizacao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.realizacao.ModeloChecklistSelecao;
 import br.com.zalf.prolog.webservice.frota.checklist.mudancaestrutura.ChecklistMigracaoEstruturaSuporte;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverItemOrdemServico;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverMultiplosItensOs;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Restricao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.*;
@@ -118,6 +120,16 @@ public final class AvaCorpAvilan extends Sistema {
         }
 
         return infosChecklistInserido.getCodChecklist();
+    }
+
+    @Override
+    public void resolverItem(@NotNull final ResolverItemOrdemServico item) throws Throwable {
+        Injection.provideOrdemServicoDao().resolverItem(item);
+    }
+
+    @Override
+    public void resolverItens(@NotNull final ResolverMultiplosItensOs itensResolucao) throws Throwable {
+        Injection.provideOrdemServicoDao().resolverItens(itensResolucao);
     }
 
     private void enviaOsIntegrada(@NotNull final Long codInternoOsProlog) throws Throwable {
