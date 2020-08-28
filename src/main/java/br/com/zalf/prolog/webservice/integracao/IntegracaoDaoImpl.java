@@ -474,4 +474,26 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
         }
     }
 
+    @Override
+    @NotNull
+    public Long buscaOsByCodItem(@NotNull final Long codItem) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("select * from integracao.func_busca_codigo_os(" +
+                    "f_cod_item_os => ?) as codigo_os;");
+            stmt.setLong(1, codItem);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return rSet.getLong("codigo_os");
+            } else {
+                throw new Exception("Nenhum código de O.S encontrado para o item: " + codItem);
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
 }

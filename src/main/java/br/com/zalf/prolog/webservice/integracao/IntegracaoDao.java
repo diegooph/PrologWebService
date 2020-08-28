@@ -251,4 +251,14 @@ public interface IntegracaoDao {
     void logarStatusOsComErro(@NotNull final Long codInternoOsProlog,
                               @Nullable final String errorMessage) throws Throwable;
 
+    /**
+     * Método com a responsabilidade de buscar o código de uma O.S com base no código do seu item.
+     *
+     * @param codItem um código de item de O.S.
+     * @return Um código de O.S.
+     * @throws Throwable Se qualquer erro ocorrer.
+     */
+    @NotNull
+    Long buscaOsByCodItem(@NotNull final Long codItem) throws Throwable;
+
 }
