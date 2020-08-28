@@ -259,6 +259,6 @@ public interface IntegracaoDao {
      * @throws Throwable Se qualquer erro ocorrer.
      */
     @NotNull
-    Long buscaOsByCodItem(@NotNull final Long codItem) throws Throwable;
+    Long buscaCodOsByCodItem(@NotNull final Long codItem) throws Throwable;
 
 }

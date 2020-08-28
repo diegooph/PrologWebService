@@ -476,7 +476,7 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
 
     @Override
     @NotNull
-    public Long buscaOsByCodItem(@NotNull final Long codItem) throws Throwable {
+    public Long buscaCodOsByCodItem(@NotNull final Long codItem) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
