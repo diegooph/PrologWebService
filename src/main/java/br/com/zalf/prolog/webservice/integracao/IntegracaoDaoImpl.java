@@ -444,11 +444,11 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
                     "f_cod_interno_os_prolog => ?, " +
                     "f_pendente => ?, " +
                     "f_bloqueada => ?, " +
-                    "f_incrementar_tentivas => ?);");
+                    "f_incrementar_tentativas => ?);");
             stmt.setLong(1, codInternoOsProlog);
             stmt.setBoolean(2, pendente);
             stmt.setBoolean(3, bloqueada);
-            stmt.setBoolean(5, incrementarTentativas);
+            stmt.setBoolean(4, incrementarTentativas);
             rSet = stmt.executeQuery();
         } finally {
             close(conn, stmt, rSet);
