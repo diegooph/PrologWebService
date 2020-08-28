@@ -125,11 +125,23 @@ public final class AvaCorpAvilan extends Sistema {
     @Override
     public void resolverItem(@NotNull final ResolverItemOrdemServico item) throws Throwable {
         Injection.provideOrdemServicoDao().resolverItem(item);
+        Injection
+                .provideIntegracaoDao()
+                .atualizaStatusOsIntegrada(item.getCodOrdemServico(),
+                        true,
+                        false,
+                        true);
     }
 
     @Override
     public void resolverItens(@NotNull final ResolverMultiplosItensOs itensResolucao) throws Throwable {
         Injection.provideOrdemServicoDao().resolverItens(itensResolucao);
+        Injection
+                .provideIntegracaoDao()
+                .atualizaStatusOsIntegrada(itensResolucao.get,
+                        true,
+                        false,
+                        true);
     }
 
     private void enviaOsIntegrada(@NotNull final Long codInternoOsProlog) throws Throwable {
