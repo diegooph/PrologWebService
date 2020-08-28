@@ -138,7 +138,9 @@ public final class AvaCorpAvilan extends Sistema {
         Injection.provideOrdemServicoDao().resolverItens(itensResolucao);
         Injection
                 .provideIntegracaoDao()
-                .atualizaStatusOsIntegrada(itensResolucao.get,
+                .atualizaStatusOsIntegrada(Injection
+                                .provideIntegracaoDao()
+                                .buscaCodOsByCodItem(itensResolucao.getCodigosItens().get(0)),
                         true,
                         false,
                         true);
