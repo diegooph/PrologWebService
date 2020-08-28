@@ -17,6 +17,7 @@ import java.util.List;
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
 public class IntegracaoOsTask implements Runnable {
+
     @NotNull
     public static final String TAG = IntegracaoOsTask.class.getSimpleName();
     @NotNull
@@ -63,14 +64,16 @@ public class IntegracaoOsTask implements Runnable {
                         AvaCorpAvilanConverter.convert(osIntegracao));
                 Injection
                         .provideIntegracaoDao()
-                        .atualizaStatusOsIntegrada(osIntegracao.getCodInternoOsProlog(), true);
+                        .atualizaStatusOsIntegrada(osIntegracao.getCodInternoOsProlog(),
+                                false,
+                                false,
+                                true);
             } catch (final Throwable t) {
                 // Não podemos fazer o throw nesse momento para não travar o fluxo de sincronia.
-                System.out.println("parar aqui");
                 try {
                     Injection
                             .provideIntegracaoDao()
-                            .atualizaStatusOsIntegrada(osIntegracao.getCodInternoOsProlog(), false, t.getMessage());
+                            .logarStatusOsComErro(osIntegracao.getCodInternoOsProlog(), t.getMessage());
                 } catch (final Throwable throwable) {
                     Log.e(TAG,
                             String.format("Erro ao atualizar o status da OS: %s", osIntegracao.getCodOsProlog()),
@@ -80,4 +83,5 @@ public class IntegracaoOsTask implements Runnable {
             }
         }
     }
+
 }
