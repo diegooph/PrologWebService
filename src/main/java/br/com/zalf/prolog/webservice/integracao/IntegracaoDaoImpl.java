@@ -1,7 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao;
 
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.integracao.agendador.os._model.IntegracaoConverter;
 import br.com.zalf.prolog.webservice.integracao.agendador.os._model.OsIntegracao;
@@ -12,7 +11,10 @@ import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -430,14 +432,9 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
 
     @Override
     public void atualizaStatusOsIntegrada(@NotNull final Long codInternoOsProlog,
-                                          final boolean sucesso) throws Throwable {
-        atualizaStatusOsIntegrada(codInternoOsProlog, sucesso, null);
-    }
-
-    @Override
-    public void atualizaStatusOsIntegrada(@NotNull final Long codInternoOsProlog,
-                                          final boolean sucesso,
-                                          @Nullable final String errorMessage) throws Throwable {
+                                          final boolean pendente,
+                                          final boolean bloqueada,
+                                          final boolean incrementarTentativas) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -445,18 +442,23 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
             conn = getConnection();
             stmt = conn.prepareStatement("select * from integracao.func_atualiza_status_os_integrada(" +
                     "f_cod_interno_os_prolog => ?, " +
-                    "f_sincronizado_sucesso => ?, " +
-                    "f_error_message => ?);");
+                    "f_pendente => ?, " +
+                    "f_bloqueada => ?, " +
+                    "f_incrementar_tentivas => ?);");
             stmt.setLong(1, codInternoOsProlog);
-            stmt.setBoolean(2, sucesso);
-            if (!sucesso) {
-                stmt.setString(3, StringUtils.trimToEmpty(errorMessage));
-            } else {
-                stmt.setNull(3, Types.VARCHAR);
-            }
+            stmt.setBoolean(2, pendente);
+            stmt.setBoolean(3, bloqueada);
+            stmt.setBoolean(5, incrementarTentativas);
             rSet = stmt.executeQuery();
         } finally {
             close(conn, stmt, rSet);
         }
     }
+
+    @Override
+    public void logarStatusOsComErro(@NotNull final Long codInternoOsProlog,
+                                     @Nullable final String errorMessage) throws Throwable {
+
+    }
+
 }
