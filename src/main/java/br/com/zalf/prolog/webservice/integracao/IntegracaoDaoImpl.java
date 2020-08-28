@@ -483,11 +483,11 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("select * from integracao.func_busca_codigo_os(" +
-                    "f_cod_item_os => ?) as codigo_os;");
+                    "f_cod_item_os => ?) as codigo_interno_os;");
             stmt.setLong(1, codItem);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                return rSet.getLong("codigo_os");
+                return rSet.getLong("codigo_interno_os");
             } else {
                 throw new Exception("Nenhum código de O.S encontrado para o item: " + codItem);
             }
