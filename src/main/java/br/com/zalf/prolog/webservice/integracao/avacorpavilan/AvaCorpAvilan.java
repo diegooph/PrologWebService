@@ -140,14 +140,23 @@ public final class AvaCorpAvilan extends Sistema {
     @Override
     public void resolverItens(@NotNull final ResolverMultiplosItensOs itensResolucao) throws Throwable {
         getIntegradorProLog().resolverItens(itensResolucao);
-        Injection
-                .provideIntegracaoDao()
-                .atualizaStatusOsIntegrada(Injection
+        final List<Long> ordensServicoJaEnviadas = new ArrayList<>();
+        for (final Long codItem : itensResolucao.getCodigosItens()) {
+            final Long codOsInterna = Injection
+                    .provideIntegracaoDao()
+                    .buscaCodOsByCodItem(codItem);
+            if (!ordensServicoJaEnviadas.contains(codOsInterna)) {
+                Injection
+                        .provideIntegracaoDao()
+                        .atualizaStatusOsIntegrada(codOsInterna, true, false, true);
+                enviaOsIntegrada(
+                        Injection
                                 .provideIntegracaoDao()
-                                .buscaCodOsByCodItem(itensResolucao.getCodigosItens().get(0)),
-                        true,
-                        false,
-                        true);
+                                .buscaCodOsByCodItem(codOsInterna));
+                ordensServicoJaEnviadas.add(codOsInterna);
+            }
+        }
+
     }
 
     private void enviaOsIntegrada(@NotNull final Long codInternoOsProlog) throws Throwable {
