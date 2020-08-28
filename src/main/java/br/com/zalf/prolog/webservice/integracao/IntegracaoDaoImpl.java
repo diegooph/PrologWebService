@@ -458,7 +458,20 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
     @Override
     public void logarStatusOsComErro(@NotNull final Long codInternoOsProlog,
                                      @Nullable final String errorMessage) throws Throwable {
-
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("select * from integracao.func_atualiza_erro_os(" +
+                    "f_cod_interno_os_prolog => ?, " +
+                    "f_error_message => ?);");
+            stmt.setLong(1, codInternoOsProlog);
+            stmt.setString(2, errorMessage);
+            rSet = stmt.executeQuery();
+        } finally {
+            close(conn, stmt, rSet);
+        }
     }
 
 }
