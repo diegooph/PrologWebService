@@ -9,6 +9,7 @@ import br.com.zalf.prolog.webservice.integracao.avacorpavilan.requester.AvaCorpA
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -64,7 +65,8 @@ public class IntegracaoOsTask implements Runnable {
                         AvaCorpAvilanConverter.convert(osIntegracao));
                 Injection
                         .provideIntegracaoDao()
-                        .atualizaStatusOsIntegrada(osIntegracao.getCodInternoOsProlog(),
+                        .atualizaStatusOsIntegrada(
+                                Collections.singletonList(osIntegracao.getCodInternoOsProlog()),
                                 false,
                                 false,
                                 true);

@@ -98,7 +98,7 @@ public final class AvaCorpAvilan extends Sistema {
             final Long codInternoOsProlog = Injection
                     .provideIntegracaoDao()
                     .insertOsPendente(checklist.getCodUnidade(), infosChecklistInserido.getCodOsAberta());
-            enviaOsIntegrada(codInternoOsProlog);
+            enviaOsIntegrada(Collections.singletonList(codInternoOsProlog));
         }
 
         return infosChecklistInserido.getCodChecklist();
@@ -116,7 +116,7 @@ public final class AvaCorpAvilan extends Sistema {
             final Long codInternoOsProlog = Injection
                     .provideIntegracaoDao()
                     .insertOsPendente(checklist.getCodUnidade(), infosChecklistInserido.getCodOsAberta());
-            enviaOsIntegrada(codInternoOsProlog);
+            enviaOsIntegrada(Collections.singletonList(codInternoOsProlog));
         }
 
         return infosChecklistInserido.getCodChecklist();
@@ -124,42 +124,35 @@ public final class AvaCorpAvilan extends Sistema {
 
     @Override
     public void resolverItem(@NotNull final ResolverItemOrdemServico item) throws Throwable {
+        // Fecha o item no Prolog.
         getIntegradorProLog().resolverItem(item);
+        // Marca a OS como pendente para sincronizar.
+        final List<Long> codsInternoOsProlog = Injection
+                .provideIntegracaoDao()
+                .buscaCodOsByCodItem(Collections.singletonList(item.getCodItemResolvido()));
         Injection
                 .provideIntegracaoDao()
-                .atualizaStatusOsIntegrada(item.getCodOrdemServico(),
-                        true,
-                        false,
-                        true);
-        enviaOsIntegrada(
-                Injection
-                        .provideIntegracaoDao()
-                        .buscaCodOsByCodItem(item.getCodOrdemServico()));
+                .atualizaStatusOsIntegrada(codsInternoOsProlog, true, false, false);
+        // Inicia processo de envio da OS para o ERP.
+        enviaOsIntegrada(codsInternoOsProlog);
     }
 
     @Override
     public void resolverItens(@NotNull final ResolverMultiplosItensOs itensResolucao) throws Throwable {
+        // Fecha os itens no Prolog.
         getIntegradorProLog().resolverItens(itensResolucao);
-        final List<Long> ordensServicoJaEnviadas = new ArrayList<>();
-        for (final Long codItem : itensResolucao.getCodigosItens()) {
-            final Long codOsInterna = Injection
-                    .provideIntegracaoDao()
-                    .buscaCodOsByCodItem(codItem);
-            if (!ordensServicoJaEnviadas.contains(codOsInterna)) {
-                Injection
-                        .provideIntegracaoDao()
-                        .atualizaStatusOsIntegrada(codOsInterna, true, false, true);
-                enviaOsIntegrada(
-                        Injection
-                                .provideIntegracaoDao()
-                                .buscaCodOsByCodItem(codOsInterna));
-                ordensServicoJaEnviadas.add(codOsInterna);
-            }
-        }
-
+        // Marca OSs dos itens como pendentes para sincronizar.
+        final List<Long> codsInternoOsProlog = Injection
+                .provideIntegracaoDao()
+                .buscaCodOsByCodItem(itensResolucao.getCodigosItens());
+        Injection
+                .provideIntegracaoDao()
+                .atualizaStatusOsIntegrada(codsInternoOsProlog, true, false, false);
+        // Inicia processo de envio das OSs para o ERP.
+        enviaOsIntegrada(codsInternoOsProlog);
     }
 
-    private void enviaOsIntegrada(@NotNull final Long codInternoOsProlog) throws Throwable {
+    private void enviaOsIntegrada(@NotNull final List<Long> codsInternoOsProlog) throws Throwable {
         final InfosEnvioOsIntegracao infosEnvioOsIntegracao
                 = new InfosEnvioOsIntegracao(Injection
                 .provideIntegracaoDao()
@@ -168,8 +161,7 @@ public final class AvaCorpAvilan extends Sistema {
                         MetodoIntegrado.INSERT_OS),
                 null,
                 null);
-        Executors.newSingleThreadExecutor().execute(
-                new IntegracaoOsTask(Collections.singletonList(codInternoOsProlog), infosEnvioOsIntegracao));
+        Executors.newSingleThreadExecutor().execute(new IntegracaoOsTask(codsInternoOsProlog, infosEnvioOsIntegracao));
     }
 
     // #################################################################################################################

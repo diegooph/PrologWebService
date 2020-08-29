@@ -229,13 +229,13 @@ public interface IntegracaoDao {
     /**
      * Método com a responsabilidade de atualizar o status de uma O.S integrada.
      *
-     * @param codInternoOsProlog    um código interno de ordem de serviço a ser buscada.
-     * @param pendente              indica se a O.S deve ser atualizada como pendente.
-     * @param bloqueada             indica se a O.S deve ser setada como bloqueada.
+     * @param codsInternoOsProlog   Uma lista de códigos internos de ordens de serviços a serem atualizadas.
+     * @param pendente              indica se a O.Ss devem ser atualizadas como pendentes.
+     * @param bloqueada             indica se a O.Ss devem ser setadas como bloqueadas.
      * @param incrementarTentativas indica se deve incrementar a quantidade de tentativas na O.S.
      * @throws Throwable Se qualquer erro ocorrer.
      */
-    void atualizaStatusOsIntegrada(@NotNull final Long codInternoOsProlog,
+    void atualizaStatusOsIntegrada(@NotNull final List<Long> codsInternoOsProlog,
                                    final boolean pendente,
                                    final boolean bloqueada,
                                    final boolean incrementarTentativas) throws Throwable;
@@ -252,13 +252,12 @@ public interface IntegracaoDao {
                               @Nullable final String errorMessage) throws Throwable;
 
     /**
-     * Método com a responsabilidade de buscar o código de uma O.S com base no código do seu item.
+     * Método com a responsabilidade de buscar os códigos de Ordens de serviços com base nos códigos de itens de OS.
      *
-     * @param codItem um código de item de O.S.
-     * @return Um código de O.S.
-     * @throws Throwable Se qualquer erro ocorrer.
+     * @param codItensProlog Lista de códigos de itens de OS de Prolog.
+     * @return Uma lista de códigos internos de Ordens de serviços do Prolog.
+     * @throws Throwable Se algum erro acontecer.
      */
     @NotNull
-    Long buscaCodOsByCodItem(@NotNull final Long codItem) throws Throwable;
-
+    List<Long> buscaCodOsByCodItem(@NotNull final List<Long> codItensProlog) throws Throwable;
 }
