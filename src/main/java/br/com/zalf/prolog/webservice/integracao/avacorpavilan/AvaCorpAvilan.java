@@ -12,6 +12,8 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistIns
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.realizacao.ModeloChecklistRealizacao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.realizacao.ModeloChecklistSelecao;
 import br.com.zalf.prolog.webservice.frota.checklist.mudancaestrutura.ChecklistMigracaoEstruturaSuporte;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverItemOrdemServico;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverMultiplosItensOs;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Restricao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.*;
@@ -96,7 +98,7 @@ public final class AvaCorpAvilan extends Sistema {
             final Long codInternoOsProlog = Injection
                     .provideIntegracaoDao()
                     .insertOsPendente(checklist.getCodUnidade(), infosChecklistInserido.getCodOsAberta());
-            enviaOsIntegrada(codInternoOsProlog);
+            enviaOsIntegrada(Collections.singletonList(codInternoOsProlog));
         }
 
         return infosChecklistInserido.getCodChecklist();
@@ -114,13 +116,43 @@ public final class AvaCorpAvilan extends Sistema {
             final Long codInternoOsProlog = Injection
                     .provideIntegracaoDao()
                     .insertOsPendente(checklist.getCodUnidade(), infosChecklistInserido.getCodOsAberta());
-            enviaOsIntegrada(codInternoOsProlog);
+            enviaOsIntegrada(Collections.singletonList(codInternoOsProlog));
         }
 
         return infosChecklistInserido.getCodChecklist();
     }
 
-    private void enviaOsIntegrada(@NotNull final Long codInternoOsProlog) throws Throwable {
+    @Override
+    public void resolverItem(@NotNull final ResolverItemOrdemServico item) throws Throwable {
+        // Fecha o item no Prolog.
+        getIntegradorProLog().resolverItem(item);
+        // Marca a OS como pendente para sincronizar.
+        final List<Long> codsInternoOsProlog = Injection
+                .provideIntegracaoDao()
+                .buscaCodOsByCodItem(Collections.singletonList(item.getCodItemResolvido()));
+        Injection
+                .provideIntegracaoDao()
+                .atualizaStatusOsIntegrada(codsInternoOsProlog, true, false, false);
+        // Inicia processo de envio da OS para o ERP.
+        enviaOsIntegrada(codsInternoOsProlog);
+    }
+
+    @Override
+    public void resolverItens(@NotNull final ResolverMultiplosItensOs itensResolucao) throws Throwable {
+        // Fecha os itens no Prolog.
+        getIntegradorProLog().resolverItens(itensResolucao);
+        // Marca OSs dos itens como pendentes para sincronizar.
+        final List<Long> codsInternoOsProlog = Injection
+                .provideIntegracaoDao()
+                .buscaCodOsByCodItem(itensResolucao.getCodigosItens());
+        Injection
+                .provideIntegracaoDao()
+                .atualizaStatusOsIntegrada(codsInternoOsProlog, true, false, false);
+        // Inicia processo de envio das OSs para o ERP.
+        enviaOsIntegrada(codsInternoOsProlog);
+    }
+
+    private void enviaOsIntegrada(@NotNull final List<Long> codsInternoOsProlog) throws Throwable {
         final InfosEnvioOsIntegracao infosEnvioOsIntegracao
                 = new InfosEnvioOsIntegracao(Injection
                 .provideIntegracaoDao()
@@ -129,8 +161,7 @@ public final class AvaCorpAvilan extends Sistema {
                         MetodoIntegrado.INSERT_OS),
                 null,
                 null);
-        Executors.newSingleThreadExecutor().execute(
-                new IntegracaoOsTask(Collections.singletonList(codInternoOsProlog), infosEnvioOsIntegracao));
+        Executors.newSingleThreadExecutor().execute(new IntegracaoOsTask(codsInternoOsProlog, infosEnvioOsIntegracao));
     }
 
     // #################################################################################################################

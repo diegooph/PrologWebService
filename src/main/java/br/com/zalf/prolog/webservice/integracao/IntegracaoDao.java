@@ -229,22 +229,35 @@ public interface IntegracaoDao {
     /**
      * Método com a responsabilidade de atualizar o status de uma O.S integrada.
      *
-     * @param codInternoOsProlog um código interno de ordem de serviço a ser buscada.
-     * @param sucesso            indica se a operação de sincronia ocorreu com sucesso.
+     * @param codsInternoOsProlog   Uma lista de códigos internos de ordens de serviços a serem atualizadas.
+     * @param pendente              indica se a O.Ss devem ser atualizadas como pendentes.
+     * @param bloqueada             indica se a O.Ss devem ser setadas como bloqueadas.
+     * @param incrementarTentativas indica se deve incrementar a quantidade de tentativas na O.S.
      * @throws Throwable Se qualquer erro ocorrer.
      */
-    void atualizaStatusOsIntegrada(@NotNull final Long codInternoOsProlog, final boolean sucesso) throws Throwable;
+    void atualizaStatusOsIntegrada(@NotNull final List<Long> codsInternoOsProlog,
+                                   final boolean pendente,
+                                   final boolean bloqueada,
+                                   final boolean incrementarTentativas) throws Throwable;
 
     /**
-     * Método com a responsabilidade de atualizar o status de uma O.S integrada para o cenário onde ocorreu erro de
-     * sincronização.
+     * Método com a responsabilidade de atualizar a O.S como pendente, logar mensagem de erro e incrementar
+     * a exception.
      *
      * @param codInternoOsProlog um código interno de ordem de serviço a ser buscada.
-     * @param sucesso            indica se a operação de sincronia ocorreu com sucesso.
      * @param errorMessage       uma mensagem de erro que será gravada no banco de dados.
      * @throws Throwable Se qualquer erro ocorrer.
      */
-    void atualizaStatusOsIntegrada(@NotNull final Long codInternoOsProlog,
-                                   final boolean sucesso,
-                                   @Nullable final String errorMessage) throws Throwable;
+    void logarStatusOsComErro(@NotNull final Long codInternoOsProlog,
+                              @Nullable final String errorMessage) throws Throwable;
+
+    /**
+     * Método com a responsabilidade de buscar os códigos de Ordens de serviços com base nos códigos de itens de OS.
+     *
+     * @param codItensProlog Lista de códigos de itens de OS de Prolog.
+     * @return Uma lista de códigos internos de Ordens de serviços do Prolog.
+     * @throws Throwable Se algum erro acontecer.
+     */
+    @NotNull
+    List<Long> buscaCodOsByCodItem(@NotNull final List<Long> codItensProlog) throws Throwable;
 }

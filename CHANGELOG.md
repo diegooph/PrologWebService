@@ -4,6 +4,7 @@ Change Log
 ## Features
 * Cria estrutura para salvar O.S pendente de envio (PLI-180)
 * Cria envio de O.S para Avilan via agendador e abertura de O.S (PL-2903)
+* Cria envio e reabertura de pendencia da O.S ao fechar uma O.S, na Avilan (PL-3080)
 
 <a name="v1.1.3"></a>
 ## Version [v1.1.3](https://github.com/luizfp/PrologWebService/compare/v1.1.2...v1.1.3) (release-date) [unreleased]
