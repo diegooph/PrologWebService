@@ -3,7 +3,6 @@ package br.com.zalf.prolog.webservice.integracao.avacorpavilan;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoDao;
-import br.com.zalf.prolog.webservice.integracao.MetodoIntegrado;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.OsIntegracao;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.data.AvaCorpAvilanRequester;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.data.AvaCorpAvilanRequesterImpl;
@@ -14,8 +13,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanConstants.CODIGO_EMPRESA_AVILAN;
-import static br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanConstants.SISTEMA_KEY_AVILAN;
+import static br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanConstants.*;
 
 /**
  * Created on 2020-08-18
@@ -42,12 +40,9 @@ public class IntegracaoOsTask implements Runnable {
     public void run() {
         if (!codOsSincronizar.isEmpty()) {
             try {
-                final List<OsIntegracao> osSincronizar = getOrdensServicosIntegracao();
                 final ApiAutenticacaoHolder apiAutenticacaoHolder =
-                        integracaoDao.getApiAutenticacaoHolder(
-                                CODIGO_EMPRESA_AVILAN,
-                                SISTEMA_KEY_AVILAN,
-                                MetodoIntegrado.INSERT_OS);
+                        integracaoDao.getApiAutenticacaoHolder(CODIGO_EMPRESA_AVILAN, SISTEMA_KEY_AVILAN, INSERT_OS);
+                final List<OsIntegracao> osSincronizar = getOrdensServicosIntegracao();
                 enviarOrdensServico(apiAutenticacaoHolder, osSincronizar);
             } catch (final Throwable t) {
                 Log.e(TAG, "Erro ao buscar as informações das O.S's no banco de dados", t);
@@ -72,23 +67,17 @@ public class IntegracaoOsTask implements Runnable {
         for (final OsIntegracao osIntegracao : osSincronizar) {
             try {
                 // Envia Ordem de Serviço para o ERP.
-                requester.insertChecklistOs(
-                        apiAutenticacaoHolder,
-                        AvaCorpAvilanConverter.convert(osIntegracao));
-                // Marca Ordem de Serviço como enviada.
-                Injection
-                        .provideIntegracaoDao()
-                        .atualizaStatusOsIntegrada(
-                                Collections.singletonList(osIntegracao.getCodInternoOsProlog()),
-                                false,
-                                false,
-                                true);
+                requester.insertChecklistOs(apiAutenticacaoHolder, AvaCorpAvilanConverter.convert(osIntegracao));
+                // Marca Ordem de Serviço como enviada no BD.
+                integracaoDao.atualizaStatusOsIntegrada(
+                        Collections.singletonList(osIntegracao.getCodInternoOsProlog()),
+                        false,
+                        false,
+                        true);
             } catch (final Throwable t) {
                 // Não podemos fazer o throw nesse momento para não travar o fluxo de sincronia.
                 try {
-                    Injection
-                            .provideIntegracaoDao()
-                            .logarStatusOsComErro(osIntegracao.getCodInternoOsProlog(), t);
+                    integracaoDao.logarStatusOsComErro(osIntegracao.getCodInternoOsProlog(), t);
                 } catch (final Throwable throwable) {
                     Log.e(TAG,
                             String.format("Erro ao atualizar o status da OS: %s", osIntegracao.getCodOsProlog()),
