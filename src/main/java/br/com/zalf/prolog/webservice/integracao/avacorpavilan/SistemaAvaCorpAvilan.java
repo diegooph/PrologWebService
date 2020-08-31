@@ -72,15 +72,20 @@ public final class SistemaAvaCorpAvilan extends Sistema {
         // Fecha o item no Prolog.
         getIntegradorProLog().resolverItem(item);
         // Marca a OS como pendente para sincronizar.
-        // TODO - Marca como pendente apenas se OS está integrada. Alterar func.
         final List<Long> codsInternoOsProlog = Injection
                 .provideIntegracaoDao()
                 .buscaCodOsByCodItem(Collections.singletonList(item.getCodItemResolvido()));
-        Injection
-                .provideIntegracaoDao()
-                .atualizaStatusOsIntegrada(codsInternoOsProlog, true, false, false);
-        // Inicia processo de envio da OS para o ERP.
-        enviaOsIntegrada(codsInternoOsProlog);
+        if (!codsInternoOsProlog.isEmpty()) {
+            Injection
+                    .provideIntegracaoDao()
+                    .atualizaStatusOsIntegrada(
+                            codsInternoOsProlog,
+                            true,
+                            false,
+                            // Não incrementa, pois somente quando é feito o envio, deve ser incrementado.
+                            false);
+            enviaOsIntegrada(codsInternoOsProlog);
+        }
     }
 
     @Override
@@ -88,15 +93,20 @@ public final class SistemaAvaCorpAvilan extends Sistema {
         // Fecha os itens no Prolog.
         getIntegradorProLog().resolverItens(itensResolucao);
         // Marca OSs dos itens como pendentes para sincronizar.
-        // TODO - Marca como pendente apenas se OS está integrada. Alterar func.
         final List<Long> codsInternoOsProlog = Injection
                 .provideIntegracaoDao()
                 .buscaCodOsByCodItem(itensResolucao.getCodigosItens());
-        Injection
-                .provideIntegracaoDao()
-                .atualizaStatusOsIntegrada(codsInternoOsProlog, true, false, false);
-        // Inicia processo de envio das OSs para o ERP.
-        enviaOsIntegrada(codsInternoOsProlog);
+        if (!codsInternoOsProlog.isEmpty()) {
+            Injection
+                    .provideIntegracaoDao()
+                    .atualizaStatusOsIntegrada(
+                            codsInternoOsProlog,
+                            true,
+                            false,
+                            // Não incrementa, pois somente quando é feito o envio, deve ser incrementado.
+                            false);
+            enviaOsIntegrada(codsInternoOsProlog);
+        }
     }
 
     private boolean verificaModeloChecklistIntegrado(@NotNull final Long codUnidade,

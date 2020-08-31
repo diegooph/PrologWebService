@@ -496,7 +496,7 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
                 } while (rSet.next());
                 return codsInternosOSsProlog;
             } else {
-                throw new Exception("Nenhum código de O.S encontrado para os itens: " + codItensProlog);
+                return Collections.emptyList();
             }
         } finally {
             close(conn, stmt, rSet);

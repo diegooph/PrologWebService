@@ -253,6 +253,8 @@ public interface IntegracaoDao {
 
     /**
      * Método com a responsabilidade de buscar os códigos de Ordens de serviços com base nos códigos de itens de OS.
+     * A function retorna apenas as Ordens de serviços que de fato devem ser sincronizadas. Ordens de serviços que não
+     * estão na tabela de integração como pendentes, não irão retornar neste método.
      *
      * @param codItensProlog Lista de códigos de itens de OS de Prolog.
      * @return Uma lista de códigos internos de Ordens de serviços do Prolog.
