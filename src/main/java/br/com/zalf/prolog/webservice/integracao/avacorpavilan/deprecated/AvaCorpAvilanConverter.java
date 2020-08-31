@@ -575,54 +575,6 @@ public final class AvaCorpAvilanConverter {
         return afericaoPlaca;
     }
 
-    @NotNull
-    public static OsAvilan convert(@NotNull final OsIntegracao osIntegracao) {
-        return createOsAvilan(osIntegracao);
-    }
-
-    @NotNull
-    private static OsAvilan createOsAvilan(@NotNull final OsIntegracao osIntegracao) {
-        return new OsAvilan(
-                osIntegracao.getCodFilial(),
-                osIntegracao.getCodUnidade(),
-                osIntegracao.getCodOsProlog(),
-                osIntegracao.getDataHoraAbertura(),
-                osIntegracao.getDataHoraAbertura(),
-                osIntegracao.getPlacaVeiculo(),
-                osIntegracao.getKmVeiculoNaAbertura(),
-                osIntegracao.getCpfColaboradorChecklist(),
-                osIntegracao.getItensNok()
-                        .stream()
-                        .map(itemOsIntegracao -> createItemOsAvilan(osIntegracao, itemOsIntegracao))
-                        .collect(Collectors.toList()));
-    }
-
-    @NotNull
-    private static ItemOsAvilan createItemOsAvilan(@NotNull final OsIntegracao osIntegracao,
-                                                   @NotNull final ItemOsIntegracao itemOsIntegracao) {
-        return new ItemOsAvilan(
-                osIntegracao.getCodFilial(),
-                osIntegracao.getCodUnidade(),
-                osIntegracao.getDataHoraAbertura(),
-                itemOsIntegracao.getCodDefeito(),
-                itemOsIntegracao.getDescricaoAlternativa(),
-                // Se o item está fechado inserimos o serviço de fechamento.
-                itemOsIntegracao.getDataHoraFechamento() != null
-                        ? Collections.singletonList(createFechamentoOsAvilan(osIntegracao, itemOsIntegracao))
-                        : Collections.emptyList());
-    }
-
-    @NotNull
-    private static FechamentoOsAvilan createFechamentoOsAvilan(@NotNull final OsIntegracao osIntegracao,
-                                                               @NotNull final ItemOsIntegracao itemOsIntegracao) {
-        return new FechamentoOsAvilan(
-                osIntegracao.getCodFilial(),
-                osIntegracao.getCodUnidade(),
-                itemOsIntegracao.getDataHoraFechamento(),
-                itemOsIntegracao.getCodServico(),
-                itemOsIntegracao.getDescricaoFechamentoItem());
-    }
-
     /**
      * Não será mais considerado o tempo de realização do checklist na integração com a Avilan.
      */

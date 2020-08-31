@@ -6,7 +6,6 @@ import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.InfosEnvioO
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.OsIntegracao;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.data.AvaCorpAvilanRequester;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.data.AvaCorpAvilanRequesterImpl;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.AvaCorpAvilanConverter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
