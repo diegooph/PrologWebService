@@ -4,7 +4,6 @@ import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.IntegracaoConverter;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.ModelosChecklistBloqueados;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.OsIntegracao;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.ApiAutenticacaoHolder;

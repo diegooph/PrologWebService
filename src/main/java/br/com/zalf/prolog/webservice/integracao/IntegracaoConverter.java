@@ -1,5 +1,7 @@
-package br.com.zalf.prolog.webservice.integracao.avacorpavilan._model;
+package br.com.zalf.prolog.webservice.integracao;
 
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.ItemOsIntegracao;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.OsIntegracao;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
@@ -12,6 +14,9 @@ import java.util.ArrayList;
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
 public final class IntegracaoConverter {
+    private IntegracaoConverter() {
+        throw new IllegalStateException(IntegracaoConverter.class.getSimpleName() + " cannot be instantiated!");
+    }
 
     @NotNull
     public static OsIntegracao createOsIntegracao(@NotNull final ResultSet rSet) throws Throwable {
