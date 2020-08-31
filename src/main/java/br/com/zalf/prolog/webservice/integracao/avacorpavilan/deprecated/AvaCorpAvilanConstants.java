@@ -16,16 +16,6 @@ public final class AvaCorpAvilanConstants {
     private static final String NAMESPACE_PROD = "http://www.avacorp.com.br/integracaoprolog";
     public static final String NAMESPACE = BuildConfig.DEBUG ? NAMESPACE_TESTES : NAMESPACE_PROD;
 
-    // Informações estáticas para criação do serviço de sincronia de dados da Avilan.
-    public static final SistemaKey SISTEMA_KEY_AVILAN = SistemaKey.AVACORP_AVILAN;
-    public static final Long CODIGO_EMPRESA_AVILAN = BuildConfig.DEBUG ? 3L : 2L;
-    // Informações estáticas utilizadas para criar objetos da Avilan.
-    public static final String COD_GRUPO_AVILAN = "1";
-    public static final String COD_EMPRESA_AVILAN = "1";
-    public static final String COD_USUARIO_AVILAN = "100";
-    public static final String COD_TIPO_MANUTENCAO_AVILAN = "2";
-    public static final String COD_OBJETIVO_ORDEM_SERVICO_AVILAN = "1";
-
     private AvaCorpAvilanConstants() {
     }
 }

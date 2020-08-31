@@ -8,8 +8,9 @@ import org.jetbrains.annotations.Nullable;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.AvaCorpAvilanConstants.COD_EMPRESA_AVILAN;
-import static br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.AvaCorpAvilanConstants.COD_GRUPO_AVILAN;
+import static br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanConstants.COD_EMPRESA_AVILAN;
+import static br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanConstants.COD_GRUPO_AVILAN;
+
 
 /**
  * Created on 2020-08-20

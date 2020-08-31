@@ -7,7 +7,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDateTime;
 
-import static br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.AvaCorpAvilanConstants.*;
+import static br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanConstants.*;
 
 /**
  * Created on 2020-08-20
