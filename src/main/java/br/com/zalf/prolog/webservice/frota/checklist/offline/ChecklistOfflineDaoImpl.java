@@ -5,7 +5,7 @@ import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.model.*;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.InfosChecklistInserido;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.checklist.InfosChecklistInserido;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;

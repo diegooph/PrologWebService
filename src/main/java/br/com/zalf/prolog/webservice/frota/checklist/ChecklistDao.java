@@ -6,7 +6,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.FiltroRegionalUnidade
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
 import br.com.zalf.prolog.webservice.geral.unidade._model.Unidade;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.InfosChecklistInserido;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.checklist.InfosChecklistInserido;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

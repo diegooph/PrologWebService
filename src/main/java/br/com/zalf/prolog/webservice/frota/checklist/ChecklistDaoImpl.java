@@ -18,7 +18,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistAlt
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistResposta;
 import br.com.zalf.prolog.webservice.frota.checklist.mudancaestrutura.ChecklistMigracaoEstruturaSuporte;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.InfosChecklistInserido;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.checklist.InfosChecklistInserido;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
