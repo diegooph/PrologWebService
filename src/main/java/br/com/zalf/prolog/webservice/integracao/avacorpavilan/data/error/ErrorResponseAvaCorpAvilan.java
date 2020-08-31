@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.integracao.avacorpavilan.data;
+package br.com.zalf.prolog.webservice.integracao.avacorpavilan.data.error;
 
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
 import com.google.gson.annotations.SerializedName;
