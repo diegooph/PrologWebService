@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.integracao.agendador.os._model;
+package br.com.zalf.prolog.webservice.integracao.avacorpavilan._model;
 
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
