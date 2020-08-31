@@ -471,13 +471,6 @@ public final class AvaCorpAvilan extends Sistema {
         return AvaCorpAvilanConverter.convertAfericoes(afericoes.getAfericaoFiltro(), codUnidade);
     }
 
-    private boolean verificaModeloChecklistIntegrado(@NotNull final Long codUnidade,
-                                                     @NotNull final Long codModelo) throws Throwable {
-        final ModelosChecklistBloqueados modelosChecklistBloqueados
-                = Injection.provideIntegracaoDao().getModelosChecklistBloqueados(codUnidade);
-        return !modelosChecklistBloqueados.getCodModelosBloqueados().contains(codModelo);
-    }
-
     @NotNull
     private List<ChecklistFiltro> internalGetChecklist(@NotNull final Long codUnidade,
                                                        @Nullable final Long codTipoVeiculo,

@@ -2,13 +2,14 @@ package br.com.zalf.prolog.webservice.integracao.avacorpavilan;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
+import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.InfosChecklistInserido;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverMultiplosItensOs;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.MetodoIntegrado;
 import br.com.zalf.prolog.webservice.integracao.RecursoIntegrado;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.InfosEnvioOsIntegracao;
-import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.InfosChecklistInserido;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.ModelosChecklistBloqueados;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
 import org.jetbrains.annotations.NotNull;
@@ -35,7 +36,8 @@ public final class SistemaAvaCorpAvilan extends Sistema {
     public Long insertChecklistOffline(@NotNull final ChecklistInsercao checklist) throws Throwable {
         final InfosChecklistInserido infosChecklistInserido =
                 Injection.provideChecklistOfflineDao().insereChecklistOffline(checklist);
-        if (infosChecklistInserido.abriuOs()) {
+        if (infosChecklistInserido.abriuOs()
+                && verificaModeloChecklistIntegrado(checklist.getCodUnidade(), checklist.getCodModelo())) {
             //noinspection ConstantConditions
             final Long codInternoOsProlog = Injection
                     .provideIntegracaoDao()
@@ -53,7 +55,8 @@ public final class SistemaAvaCorpAvilan extends Sistema {
                                 final boolean deveAbrirOs) throws Throwable {
         final InfosChecklistInserido infosChecklistInserido =
                 Injection.provideChecklistDao().insertChecklist(checklist, foiOffline, deveAbrirOs);
-        if (infosChecklistInserido.abriuOs()) {
+        if (infosChecklistInserido.abriuOs()
+                && verificaModeloChecklistIntegrado(checklist.getCodUnidade(), checklist.getCodModelo())) {
             //noinspection ConstantConditions
             final Long codInternoOsProlog = Injection
                     .provideIntegracaoDao()
@@ -69,6 +72,7 @@ public final class SistemaAvaCorpAvilan extends Sistema {
         // Fecha o item no Prolog.
         getIntegradorProLog().resolverItem(item);
         // Marca a OS como pendente para sincronizar.
+        // TODO - Marca como pendente apenas se OS está integrada. Alterar func.
         final List<Long> codsInternoOsProlog = Injection
                 .provideIntegracaoDao()
                 .buscaCodOsByCodItem(Collections.singletonList(item.getCodItemResolvido()));
@@ -84,6 +88,7 @@ public final class SistemaAvaCorpAvilan extends Sistema {
         // Fecha os itens no Prolog.
         getIntegradorProLog().resolverItens(itensResolucao);
         // Marca OSs dos itens como pendentes para sincronizar.
+        // TODO - Marca como pendente apenas se OS está integrada. Alterar func.
         final List<Long> codsInternoOsProlog = Injection
                 .provideIntegracaoDao()
                 .buscaCodOsByCodItem(itensResolucao.getCodigosItens());
@@ -92,6 +97,13 @@ public final class SistemaAvaCorpAvilan extends Sistema {
                 .atualizaStatusOsIntegrada(codsInternoOsProlog, true, false, false);
         // Inicia processo de envio das OSs para o ERP.
         enviaOsIntegrada(codsInternoOsProlog);
+    }
+
+    private boolean verificaModeloChecklistIntegrado(@NotNull final Long codUnidade,
+                                                     @NotNull final Long codModelo) throws Throwable {
+        final ModelosChecklistBloqueados modelosChecklistBloqueados
+                = Injection.provideIntegracaoDao().getModelosChecklistBloqueados(codUnidade);
+        return !modelosChecklistBloqueados.getCodModelosBloqueados().contains(codModelo);
     }
 
     private void enviaOsIntegrada(@NotNull final List<Long> codsInternoOsProlog) throws Throwable {
