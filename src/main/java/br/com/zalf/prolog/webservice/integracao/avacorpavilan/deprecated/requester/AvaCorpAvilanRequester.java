@@ -97,8 +97,4 @@ public interface AvaCorpAvilanRequester extends Requester {
                                       final boolean itensCriticosRetroativos,
                                       @NotNull final String cpf,
                                       @NotNull final String dataNascimento) throws Exception;
-
-    void insertChecklistOs(@NotNull final InfosEnvioOsIntegracao infosEnvioOsIntegracao,
-                           @NotNull final OsAvilan osAvilan) throws Throwable;
-
 }

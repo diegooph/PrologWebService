@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.requester;
+package br.com.zalf.prolog.webservice.integracao.avacorpavilan.data;
 
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
 import com.google.gson.annotations.SerializedName;

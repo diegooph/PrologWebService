@@ -392,55 +392,6 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
         }
     }
 
-    @Override
-    public void insertChecklistOs(@NotNull final InfosEnvioOsIntegracao infosEnvioOsIntegracao,
-                                  @NotNull final OsAvilan osAvilan) throws Throwable {
-        final AvaCorpAvilanRest service = RestClient.getService(AvaCorpAvilanRest.class);
-        final Call<Void> call = service.insertChecklistOs(
-                "Basic VXN1YXJpb0ludGVncmFjYW9Nb2JpbGU6VSRFUiFOVDNHUjRDNDA=",
-                infosEnvioOsIntegracao.getUrlEnvio(),
-                osAvilan);
-        handleResponse(call.execute());
-    }
-
-    @NotNull
-    private <T> T handleResponse(final Response<T> response) {
-        if (response != null) {
-            if (response.isSuccessful() && response.body() != null) {
-                return response.body();
-            } else {
-                if (response.errorBody() == null) {
-                    throw new AvaCorpAvilanException(
-                            "[INTEGRAÇÃO] Nenhuma resposta obtida do sistema AvaCorpAvilan");
-                }
-                final ErrorResponseAvaCorpAvilan error = toAvaCorpAvilanError(response.errorBody());
-                throw new AvaCorpAvilanException(error.getMessage());
-            }
-        } else {
-            throw new AvaCorpAvilanException(
-                    "[INTEGRAÇÃO] Nenhuma resposta obtida do sistema AvaCorpAvilan",
-                    "Um erro ocorreu ao realizar o request.");
-        }
-    }
-
-    @NotNull
-    private ErrorResponseAvaCorpAvilan toAvaCorpAvilanError(@NotNull final ResponseBody errorBody) {
-        try {
-            final String jsonErrorBody = errorBody.string();
-            try {
-                return ErrorResponseAvaCorpAvilan.generateFromString(jsonErrorBody);
-            } catch (final Exception e) {
-                // Lançamos essa Exception para conseguirmos encapsular o JSON de erro que não foi convertido.
-                // Só assim conseguiremos tratar de forma mais eficaz.
-                throw new Exception("Erro ao realizar parse da mensagem de erro: " + jsonErrorBody, e);
-            }
-        } catch (final Throwable t) {
-            throw new AvaCorpAvilanException(
-                    "[INTEGRAÇÃO] Mensagem do sistema AvaCorpAvilan fora do padrão esperado",
-                    t);
-        }
-    }
-
     private boolean success(@Nullable final AvacorpAvilanRequestStatus requestStatus) {
         // Se a busca tiver sido feita COM sucesso, mas não tem dados, então sucesso false e mensagem igual a null ou
         // vazio.

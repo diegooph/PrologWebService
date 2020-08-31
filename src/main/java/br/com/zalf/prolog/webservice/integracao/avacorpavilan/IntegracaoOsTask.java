@@ -4,8 +4,9 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.InfosEnvioOsIntegracao;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.OsIntegracao;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.data.AvaCorpAvilanRequester;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.data.AvaCorpAvilanRequesterImpl;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.AvaCorpAvilanConverter;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.requester.AvaCorpAvilanRequesterImpl;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -57,7 +58,7 @@ public class IntegracaoOsTask implements Runnable {
     }
 
     private void enviarOrdensServico() {
-        final AvaCorpAvilanRequesterImpl requester = new AvaCorpAvilanRequesterImpl();
+        final AvaCorpAvilanRequester requester = new AvaCorpAvilanRequesterImpl();
         for (final OsIntegracao osIntegracao : osSincronizar) {
             try {
                 requester.insertChecklistOs(
@@ -85,5 +86,4 @@ public class IntegracaoOsTask implements Runnable {
             }
         }
     }
-
 }
