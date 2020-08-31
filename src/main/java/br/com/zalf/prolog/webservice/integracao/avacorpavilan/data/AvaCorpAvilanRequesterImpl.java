@@ -38,6 +38,9 @@ public final class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester 
                     throw new AvaCorpAvilanException(
                             "[INTEGRAÇÃO] Nenhuma resposta obtida do sistema AvaCorpAvilan");
                 }
+                if (response.code() == javax.ws.rs.core.Response.Status.UNAUTHORIZED.getStatusCode()) {
+                    throw new AvaCorpAvilanException("[INTEGRAÇÃO] Token não autorizado");
+                }
                 final ErrorResponseAvaCorpAvilan error = toAvaCorpAvilanError(response.errorBody());
                 throw new AvaCorpAvilanException(error.getMessage());
             }
