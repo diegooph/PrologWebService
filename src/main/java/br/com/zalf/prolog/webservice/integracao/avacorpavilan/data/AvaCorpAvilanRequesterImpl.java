@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan.data;
 
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.OsAvilan;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.OrdemServicoAvaCorpAvilan;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.data.error.AvaCorpAvilanException;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.data.error.ErrorResponseAvaCorpAvilan;
 import br.com.zalf.prolog.webservice.integracao.network.RestClient;
@@ -18,12 +18,12 @@ import retrofit2.Response;
 public final class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
     @Override
     public void insertChecklistOs(@NotNull final ApiAutenticacaoHolder apiAutenticacaoHolder,
-                                  @NotNull final OsAvilan osAvilan) throws Throwable {
+                                  @NotNull final OrdemServicoAvaCorpAvilan ordemServicoAvaCorpAvilan) throws Throwable {
         final AvaCorpAvilanRest service = RestClient.getService(AvaCorpAvilanRest.class);
         final Call<Void> call = service.insertChecklistOs(
                 apiAutenticacaoHolder.getApiTokenClient(),
                 apiAutenticacaoHolder.getUrl(),
-                osAvilan);
+                ordemServicoAvaCorpAvilan);
         handleResponse(call.execute());
     }
 

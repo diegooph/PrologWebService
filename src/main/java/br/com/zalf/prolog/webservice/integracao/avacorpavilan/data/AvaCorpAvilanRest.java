@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan.data;
 
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.OsAvilan;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.OrdemServicoAvaCorpAvilan;
 import org.jetbrains.annotations.NotNull;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -18,5 +18,5 @@ public interface AvaCorpAvilanRest {
     Call<Void> insertChecklistOs(
             @Header("Authorization") @NotNull final String token,
             @Url @NotNull final String url,
-            @Body @NotNull final OsAvilan osAvilan);
+            @Body @NotNull final OrdemServicoAvaCorpAvilan ordemServicoAvaCorpAvilan);
 }

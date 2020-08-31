@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan.data;
 
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.OsAvilan;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.OrdemServicoAvaCorpAvilan;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.ApiAutenticacaoHolder;
 import org.jetbrains.annotations.NotNull;
 
@@ -11,5 +11,5 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface AvaCorpAvilanRequester {
     void insertChecklistOs(@NotNull final ApiAutenticacaoHolder apiAutenticacaoHolder,
-                           @NotNull final OsAvilan osAvilan) throws Throwable;
+                           @NotNull final OrdemServicoAvaCorpAvilan ordemServicoAvaCorpAvilan) throws Throwable;
 }

@@ -17,8 +17,8 @@ public final class AvaCorpAvilanConverter {
     }
 
     @NotNull
-    public static OsAvilan convert(@NotNull final OsIntegracao osIntegracao) {
-        return new OsAvilan(
+    public static OrdemServicoAvaCorpAvilan convert(@NotNull final OsIntegracao osIntegracao) {
+        return new OrdemServicoAvaCorpAvilan(
                 osIntegracao.getCodFilial(),
                 osIntegracao.getCodUnidade(),
                 osIntegracao.getCodOsProlog(),
@@ -29,14 +29,14 @@ public final class AvaCorpAvilanConverter {
                 osIntegracao.getCpfColaboradorChecklist(),
                 osIntegracao.getItensNok()
                         .stream()
-                        .map(itemOsIntegracao -> createItemOsAvilan(osIntegracao, itemOsIntegracao))
+                        .map(itemOsIntegracao -> createDefeitoAvaCorpAvilan(osIntegracao, itemOsIntegracao))
                         .collect(Collectors.toList()));
     }
 
     @NotNull
-    private static ItemOsAvilan createItemOsAvilan(@NotNull final OsIntegracao osIntegracao,
-                                                   @NotNull final ItemOsIntegracao itemOsIntegracao) {
-        return new ItemOsAvilan(
+    private static DefeitoAvaCorpAvilan createDefeitoAvaCorpAvilan(@NotNull final OsIntegracao osIntegracao,
+                                                                   @NotNull final ItemOsIntegracao itemOsIntegracao) {
+        return new DefeitoAvaCorpAvilan(
                 osIntegracao.getCodFilial(),
                 osIntegracao.getCodUnidade(),
                 osIntegracao.getDataHoraAbertura(),
@@ -44,14 +44,14 @@ public final class AvaCorpAvilanConverter {
                 itemOsIntegracao.getDescricaoAlternativa(),
                 // Se o item está fechado inserimos o serviço de fechamento.
                 itemOsIntegracao.getDataHoraFechamento() != null
-                        ? Collections.singletonList(createFechamentoOsAvilan(osIntegracao, itemOsIntegracao))
+                        ? Collections.singletonList(createServicoAvaCorpAvilan(osIntegracao, itemOsIntegracao))
                         : Collections.emptyList());
     }
 
     @NotNull
-    private static FechamentoOsAvilan createFechamentoOsAvilan(@NotNull final OsIntegracao osIntegracao,
-                                                               @NotNull final ItemOsIntegracao itemOsIntegracao) {
-        return new FechamentoOsAvilan(
+    private static ServicoAvaCorpAvilan createServicoAvaCorpAvilan(@NotNull final OsIntegracao osIntegracao,
+                                                                   @NotNull final ItemOsIntegracao itemOsIntegracao) {
+        return new ServicoAvaCorpAvilan(
                 osIntegracao.getCodFilial(),
                 osIntegracao.getCodUnidade(),
                 itemOsIntegracao.getDataHoraFechamento(),

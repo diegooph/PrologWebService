@@ -18,7 +18,7 @@ import static br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvil
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
 @Data
-public final class ItemOsAvilan {
+public final class DefeitoAvaCorpAvilan {
     @NotNull
     @SerializedName("Grupo")
     private final String grupo = COD_GRUPO_AVILAN;
@@ -42,5 +42,5 @@ public final class ItemOsAvilan {
     private final String complemento;
     @NotNull
     @SerializedName("OrdemServicoDefeitoServicoIn")
-    private final List<FechamentoOsAvilan> infosFechamentoItem;
+    private final List<ServicoAvaCorpAvilan> servicosAvaCorpAvilan;
 }
