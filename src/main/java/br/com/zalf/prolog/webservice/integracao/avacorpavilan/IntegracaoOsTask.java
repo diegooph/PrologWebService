@@ -20,7 +20,7 @@ import static br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvil
  *
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
-public class IntegracaoOsTask implements Runnable {
+public final class IntegracaoOsTask implements Runnable {
     @NotNull
     public static final String TAG = IntegracaoOsTask.class.getSimpleName();
     @NotNull
@@ -70,7 +70,8 @@ public class IntegracaoOsTask implements Runnable {
                 requester.insertChecklistOs(apiAutenticacaoHolder, AvaCorpAvilanConverter.convert(osIntegracao));
                 // Marca Ordem de Serviço como enviada no BD.
                 integracaoDao.atualizaStatusOsIntegrada(
-                        Collections.singletonList(osIntegracao.getCodInternoOsProlog()),
+                        Collections.singletonList(
+                                osIntegracao.getCodInternoOsProlog()),
                         false,
                         false,
                         true);

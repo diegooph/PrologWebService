@@ -15,7 +15,7 @@ import static br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvil
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
 @Data
-public class FechamentoOsAvilan {
+public final class FechamentoOsAvilan {
     @NotNull
     @SerializedName("Grupo")
     private final String grupo = COD_GRUPO_AVILAN;

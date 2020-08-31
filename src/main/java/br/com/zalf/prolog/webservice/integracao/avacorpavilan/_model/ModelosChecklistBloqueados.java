@@ -11,7 +11,7 @@ import java.util.List;
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
 @Data
-public class ModelosChecklistBloqueados {
+public final class ModelosChecklistBloqueados {
     @NotNull
     private final Long codUnidade;
     @NotNull

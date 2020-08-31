@@ -14,7 +14,7 @@ import java.util.List;
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
 @Data
-public class OsIntegracao {
+public final class OsIntegracao {
     @NotNull
     private final Long codUnidade;
     @Nullable

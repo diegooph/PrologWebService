@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
 @Data
-public class ItemOsIntegracao {
+public final class ItemOsIntegracao {
     @NotNull
     private final Long codItemOs;
     @NotNull
