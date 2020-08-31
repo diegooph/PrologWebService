@@ -2,8 +2,8 @@ package br.com.zalf.prolog.webservice.integracao;
 
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.geral.unidade._model.Unidade;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.OsIntegracao;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.ModelosChecklistBloqueados;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.OsIntegracao;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.ApiAutenticacaoHolder;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
@@ -245,11 +245,11 @@ public interface IntegracaoDao {
      * a exception.
      *
      * @param codInternoOsProlog um código interno de ordem de serviço a ser buscada.
-     * @param errorMessage       uma mensagem de erro que será gravada no banco de dados.
+     * @param throwable          a exception que estourou o erro.
      * @throws Throwable Se qualquer erro ocorrer.
      */
     void logarStatusOsComErro(@NotNull final Long codInternoOsProlog,
-                              @Nullable final String errorMessage) throws Throwable;
+                              @NotNull final Throwable throwable) throws Throwable;
 
     /**
      * Método com a responsabilidade de buscar os códigos de Ordens de serviços com base nos códigos de itens de OS.

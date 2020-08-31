@@ -75,7 +75,7 @@ public class IntegracaoOsTask implements Runnable {
                 try {
                     Injection
                             .provideIntegracaoDao()
-                            .logarStatusOsComErro(osIntegracao.getCodInternoOsProlog(), t.getMessage());
+                            .logarStatusOsComErro(osIntegracao.getCodInternoOsProlog(), t);
                 } catch (final Throwable throwable) {
                     Log.e(TAG,
                             String.format("Erro ao atualizar o status da OS: %s", osIntegracao.getCodOsProlog()),

@@ -5,11 +5,12 @@ import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.IntegracaoConverter;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.OsIntegracao;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.ModelosChecklistBloqueados;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.OsIntegracao;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.ApiAutenticacaoHolder;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
 import com.google.common.base.Preconditions;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -458,7 +459,7 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
 
     @Override
     public void logarStatusOsComErro(@NotNull final Long codInternoOsProlog,
-                                     @Nullable final String errorMessage) throws Throwable {
+                                     @NotNull final Throwable throwable) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -466,9 +467,11 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
             conn = getConnection();
             stmt = conn.prepareStatement("select * from integracao.func_atualiza_erro_os(" +
                     "f_cod_interno_os_prolog => ?, " +
-                    "f_error_message => ?);");
+                    "f_error_message => ?, " +
+                    "f_exception_logada => ?);");
             stmt.setLong(1, codInternoOsProlog);
-            stmt.setString(2, errorMessage);
+            stmt.setString(2, throwable.getMessage());
+            stmt.setString(3, ExceptionUtils.getStackTrace(throwable));
             rSet = stmt.executeQuery();
         } finally {
             close(conn, stmt, rSet);
