@@ -1,7 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.requester;
 
 import br.com.zalf.prolog.webservice.commons.util.StringUtils;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.InfosEnvioOsIntegracao;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.AvaCorpAvilanException;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.AvacorpAvilanTipoChecklist;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.afericao.*;
@@ -13,19 +12,13 @@ import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.cadastr
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.cadastro.service.CadastroAvaCorpAvilanService;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.cadastro.service.CadastroAvaCorpAvilanSoap;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.checklist.*;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.checklist.os._model.OsAvilan;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.checklist.service.ChecklistAvaCorpAvilanService;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.checklist.service.ChecklistAvaCorpAvilanSoap;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.data.AvaCorpAvilanRest;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.header.HeaderEntry;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.header.HeaderUtils;
-import br.com.zalf.prolog.webservice.integracao.network.RestClient;
 import com.google.common.base.Strings;
-import okhttp3.ResponseBody;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import retrofit2.Call;
-import retrofit2.Response;
 
 import javax.xml.ws.BindingProvider;
 import java.util.List;

@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.requester;
 
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.InfosEnvioOsIntegracao;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.AvacorpAvilanTipoChecklist;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.afericao.AfericaoFiltro;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.afericao.ArrayOfAfericaoFiltro;
@@ -9,7 +8,6 @@ import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.cadastr
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.cadastro.Veiculo;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.cadastro.*;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.checklist.*;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.checklist.os._model.OsAvilan;
 import br.com.zalf.prolog.webservice.integracao.sistema.Requester;
 import org.jetbrains.annotations.NotNull;
 

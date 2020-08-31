@@ -28,9 +28,9 @@ import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.cadastr
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.cadastro.ArrayOfString;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.cadastro.ArrayOfVeiculo;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.checklist.*;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.checklist.os._model.FechamentoOsAvilan;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.checklist.os._model.ItemOsAvilan;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.checklist.os._model.OsAvilan;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.FechamentoOsAvilan;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.ItemOsAvilan;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.OsAvilan;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.data.TipoVeiculoAvilanProLog;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;

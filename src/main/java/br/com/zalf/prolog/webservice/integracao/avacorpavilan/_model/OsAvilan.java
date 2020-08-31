@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.checklist.os._model;
+package br.com.zalf.prolog.webservice.integracao.avacorpavilan._model;
 
 import com.google.gson.annotations.SerializedName;
 import lombok.Data;

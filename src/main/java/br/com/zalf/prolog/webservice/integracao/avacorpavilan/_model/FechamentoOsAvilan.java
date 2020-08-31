@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.checklist.os._model;
+package br.com.zalf.prolog.webservice.integracao.avacorpavilan._model;
 
 import com.google.gson.annotations.SerializedName;
 import lombok.Data;
@@ -6,11 +6,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
-import static br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanConstants.COD_EMPRESA_AVILAN;
-import static br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanConstants.COD_GRUPO_AVILAN;
-
+import static br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanConstants.*;
 
 /**
  * Created on 2020-08-20
@@ -18,7 +15,7 @@ import static br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvil
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
 @Data
-public class ItemOsAvilan {
+public class FechamentoOsAvilan {
     @NotNull
     @SerializedName("Grupo")
     private final String grupo = COD_GRUPO_AVILAN;
@@ -31,16 +28,16 @@ public class ItemOsAvilan {
     @Nullable
     @SerializedName("Unidade")
     private final String unidade;
-    @NotNull
-    @SerializedName("Dtinc")
-    private final LocalDateTime dataHoraInclusaoItem;
     @Nullable
-    @SerializedName("Defeito")
-    private final String defeito;
-    @NotNull
+    @SerializedName("Dtinc")
+    private final LocalDateTime dataHoraInclusaoServico;
+    @Nullable
+    @SerializedName("ServicoRealizado")
+    private final String servicoRealizado;
+    @Nullable
     @SerializedName("Complemento")
     private final String complemento;
     @NotNull
-    @SerializedName("OrdemServicoDefeitoServicoIn")
-    private final List<FechamentoOsAvilan> infosFechamentoItem;
+    @SerializedName("ObjetivoOrdemServico")
+    private final String objetivoOrdemServico = COD_OBJETIVO_ORDEM_SERVICO_AVILAN;
 }

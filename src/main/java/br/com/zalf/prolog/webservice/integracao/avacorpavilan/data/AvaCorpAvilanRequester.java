@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan.data;
 
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.InfosEnvioOsIntegracao;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.checklist.os._model.OsAvilan;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.OsAvilan;
 import org.jetbrains.annotations.NotNull;
 
 /**
