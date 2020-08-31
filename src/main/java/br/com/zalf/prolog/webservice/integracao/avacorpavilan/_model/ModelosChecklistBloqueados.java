@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.checklist;
+package br.com.zalf.prolog.webservice.integracao.avacorpavilan._model;
 
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
@@ -12,10 +12,8 @@ import java.util.List;
  */
 @Data
 public class ModelosChecklistBloqueados {
-
     @NotNull
     private final Long codUnidade;
     @NotNull
     private final List<Long> codModelosBloqueados;
-
 }
