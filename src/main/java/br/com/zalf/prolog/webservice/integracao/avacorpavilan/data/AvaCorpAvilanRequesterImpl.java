@@ -1,10 +1,10 @@
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan.data;
 
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.InfosEnvioOsIntegracao;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.OsAvilan;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.data.error.AvaCorpAvilanException;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.data.error.ErrorResponseAvaCorpAvilan;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.OsAvilan;
 import br.com.zalf.prolog.webservice.integracao.network.RestClient;
+import br.com.zalf.prolog.webservice.integracao.praxio.data.ApiAutenticacaoHolder;
 import okhttp3.ResponseBody;
 import org.jetbrains.annotations.NotNull;
 import retrofit2.Call;
@@ -17,12 +17,12 @@ import retrofit2.Response;
  */
 public final class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
     @Override
-    public void insertChecklistOs(@NotNull final InfosEnvioOsIntegracao infosEnvioOsIntegracao,
+    public void insertChecklistOs(@NotNull final ApiAutenticacaoHolder apiAutenticacaoHolder,
                                   @NotNull final OsAvilan osAvilan) throws Throwable {
         final AvaCorpAvilanRest service = RestClient.getService(AvaCorpAvilanRest.class);
         final Call<Void> call = service.insertChecklistOs(
-                "Basic VXN1YXJpb0ludGVncmFjYW9Nb2JpbGU6VSRFUiFOVDNHUjRDNDA=",
-                infosEnvioOsIntegracao.getUrlEnvio(),
+                apiAutenticacaoHolder.getApiTokenClient(),
+                apiAutenticacaoHolder.getUrl(),
                 osAvilan);
         handleResponse(call.execute());
     }

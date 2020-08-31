@@ -2,15 +2,20 @@ package br.com.zalf.prolog.webservice.integracao.avacorpavilan;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.InfosEnvioOsIntegracao;
+import br.com.zalf.prolog.webservice.integracao.IntegracaoDao;
+import br.com.zalf.prolog.webservice.integracao.MetodoIntegrado;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.OsIntegracao;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.data.AvaCorpAvilanRequester;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.data.AvaCorpAvilanRequesterImpl;
+import br.com.zalf.prolog.webservice.integracao.praxio.data.ApiAutenticacaoHolder;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import static br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanConstants.CODIGO_EMPRESA_AVILAN;
+import static br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanConstants.SISTEMA_KEY_AVILAN;
 
 /**
  * Created on 2020-08-18
@@ -18,29 +23,32 @@ import java.util.List;
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
 public class IntegracaoOsTask implements Runnable {
-
     @NotNull
     public static final String TAG = IntegracaoOsTask.class.getSimpleName();
     @NotNull
+    private final AvaCorpAvilanRequester requester;
+    @NotNull
+    private final IntegracaoDao integracaoDao;
+    @NotNull
     private final List<Long> codOsSincronizar;
-    @NotNull
-    private final InfosEnvioOsIntegracao infosEnvioOsIntegracao;
-    @NotNull
-    private final List<OsIntegracao> osSincronizar;
 
-    public IntegracaoOsTask(@NotNull final List<Long> codOsSincronizar,
-                            @NotNull final InfosEnvioOsIntegracao infosEnvioOsIntegracao) {
+    public IntegracaoOsTask(@NotNull final List<Long> codOsSincronizar) {
+        this.requester = new AvaCorpAvilanRequesterImpl();
+        this.integracaoDao = Injection.provideIntegracaoDao();
         this.codOsSincronizar = codOsSincronizar;
-        this.infosEnvioOsIntegracao = infosEnvioOsIntegracao;
-        this.osSincronizar = new ArrayList<>();
     }
 
     @Override
     public void run() {
         if (!codOsSincronizar.isEmpty()) {
             try {
-                completarInformacoesChecklist();
-                enviarOrdensServico();
+                final List<OsIntegracao> osSincronizar = getOrdensServicosIntegracao();
+                final ApiAutenticacaoHolder apiAutenticacaoHolder =
+                        integracaoDao.getApiAutenticacaoHolder(
+                                CODIGO_EMPRESA_AVILAN,
+                                SISTEMA_KEY_AVILAN,
+                                MetodoIntegrado.INSERT_OS);
+                enviarOrdensServico(apiAutenticacaoHolder, osSincronizar);
             } catch (final Throwable t) {
                 Log.e(TAG, "Erro ao buscar as informações das O.S's no banco de dados", t);
                 throw Injection
@@ -50,19 +58,24 @@ public class IntegracaoOsTask implements Runnable {
         }
     }
 
-    private void completarInformacoesChecklist() throws Throwable {
+    @NotNull
+    private List<OsIntegracao> getOrdensServicosIntegracao() throws Throwable {
+        final List<OsIntegracao> osSincronizar = new ArrayList<>();
         for (final Long codOs : codOsSincronizar) {
-            osSincronizar.add(Injection.provideIntegracaoDao().getOsIntegracaoByCod(codOs));
+            osSincronizar.add(integracaoDao.getOsIntegracaoByCod(codOs));
         }
+        return osSincronizar;
     }
 
-    private void enviarOrdensServico() {
-        final AvaCorpAvilanRequester requester = new AvaCorpAvilanRequesterImpl();
+    private void enviarOrdensServico(@NotNull final ApiAutenticacaoHolder apiAutenticacaoHolder,
+                                     @NotNull final List<OsIntegracao> osSincronizar) {
         for (final OsIntegracao osIntegracao : osSincronizar) {
             try {
+                // Envia Ordem de Serviço para o ERP.
                 requester.insertChecklistOs(
-                        infosEnvioOsIntegracao,
+                        apiAutenticacaoHolder,
                         AvaCorpAvilanConverter.convert(osIntegracao));
+                // Marca Ordem de Serviço como enviada.
                 Injection
                         .provideIntegracaoDao()
                         .atualizaStatusOsIntegrada(

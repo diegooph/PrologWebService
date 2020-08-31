@@ -6,9 +6,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.InfosCheckli
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverMultiplosItensOs;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
-import br.com.zalf.prolog.webservice.integracao.MetodoIntegrado;
 import br.com.zalf.prolog.webservice.integracao.RecursoIntegrado;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.InfosEnvioOsIntegracao;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.ModelosChecklistBloqueados;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
@@ -116,15 +114,7 @@ public final class SistemaAvaCorpAvilan extends Sistema {
         return !modelosChecklistBloqueados.getCodModelosBloqueados().contains(codModelo);
     }
 
-    private void enviaOsIntegrada(@NotNull final List<Long> codsInternoOsProlog) throws Throwable {
-        final InfosEnvioOsIntegracao infosEnvioOsIntegracao
-                = new InfosEnvioOsIntegracao(Injection
-                .provideIntegracaoDao()
-                .getUrl(AvaCorpAvilanConstants.CODIGO_EMPRESA_AVILAN,
-                        AvaCorpAvilanConstants.SISTEMA_KEY_AVILAN,
-                        MetodoIntegrado.INSERT_OS),
-                null,
-                null);
-        Executors.newSingleThreadExecutor().execute(new IntegracaoOsTask(codsInternoOsProlog, infosEnvioOsIntegracao));
+    private void enviaOsIntegrada(@NotNull final List<Long> codsInternoOsProlog) {
+        Executors.newSingleThreadExecutor().execute(new IntegracaoOsTask(codsInternoOsProlog));
     }
 }

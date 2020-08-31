@@ -140,6 +140,20 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
         }
     }
 
+    @Override
+    @NotNull
+    public String getUrl(@NotNull final Long codEmpresa,
+                         @NotNull final SistemaKey sistemaKey,
+                         @NotNull final MetodoIntegrado metodoIntegrado) throws Throwable {
+        Connection conn = null;
+        try {
+            conn = getConnection();
+            return getUrl(conn, codEmpresa, sistemaKey, metodoIntegrado);
+        } finally {
+            close(conn);
+        }
+    }
+
     @NotNull
     @Override
     public String getUrl(@NotNull final Connection conn,
@@ -168,17 +182,6 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
         }
     }
 
-    @Override
-    @NotNull
-    public String getUrl(@NotNull final Long codEmpresa,
-                         @NotNull final SistemaKey sistemaKey,
-                         @NotNull final MetodoIntegrado metodoIntegrado) throws Throwable {
-        final Connection conn = getConnection();
-        final String url = getUrl(conn, codEmpresa, sistemaKey, metodoIntegrado);
-        conn.close();
-        return url;
-    }
-
     @NotNull
     @Override
     public String getCodAuxiliarByCodUnidadeProlog(@NotNull final Connection conn,
@@ -196,6 +199,21 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
                     "codUnidadeProlog: " + codUnidadeProlog);
         } finally {
             close(stmt, rSet);
+        }
+    }
+
+    @NotNull
+    @Override
+    public ApiAutenticacaoHolder getApiAutenticacaoHolder(
+            @NotNull final Long codEmpresa,
+            @NotNull final SistemaKey sistemaKey,
+            @NotNull final MetodoIntegrado metodoIntegrado) throws Throwable {
+        Connection conn = null;
+        try {
+            conn = getConnection();
+            return getApiAutenticacaoHolder(conn, codEmpresa, sistemaKey, metodoIntegrado);
+        } finally {
+            close(conn);
         }
     }
 
