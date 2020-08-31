@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.checklist;
+package br.com.zalf.prolog.webservice.frota.checklist.model.insercao;
 
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
