@@ -160,10 +160,14 @@ import br.com.zalf.prolog.webservice.interno.apresentacao.ApresentacaoDao;
 import br.com.zalf.prolog.webservice.interno.apresentacao.ApresentacaoDaoImpl;
 import br.com.zalf.prolog.webservice.interno.autenticacao.AutenticacaoLoginSenhaDao;
 import br.com.zalf.prolog.webservice.interno.autenticacao.AutenticacaoLoginSenhaDaoImpl;
+import br.com.zalf.prolog.webservice.interno.implantacao.conferencia.ConferenciaDao;
+import br.com.zalf.prolog.webservice.interno.implantacao.conferencia.ConferenciaDaoImpl;
 import br.com.zalf.prolog.webservice.interno.implantacao.conferencia.frota.pneu.PneuConferenciaDao;
 import br.com.zalf.prolog.webservice.interno.implantacao.conferencia.frota.pneu.PneuConferenciaDaoImpl;
 import br.com.zalf.prolog.webservice.interno.implantacao.conferencia.frota.veiculo.VeiculoConferenciaDao;
 import br.com.zalf.prolog.webservice.interno.implantacao.conferencia.frota.veiculo.VeiculoConferenciaDaoImpl;
+import br.com.zalf.prolog.webservice.interno.implantacao.conferencia.frota.vinculoveiculopneu.VinculoVeiculoPneuDao;
+import br.com.zalf.prolog.webservice.interno.implantacao.conferencia.frota.vinculoveiculopneu.VinculoVeiculoPneuDaoImpl;
 import br.com.zalf.prolog.webservice.interno.implantacao.conferencia.gente.colaborador.ColaboradorConferenciaDao;
 import br.com.zalf.prolog.webservice.interno.implantacao.conferencia.gente.colaborador.ColaboradorConferenciaDaoImpl;
 import br.com.zalf.prolog.webservice.log.LogDao;
@@ -231,6 +235,15 @@ public final class Injection {
     public static PneuConferenciaDao providePneuConferenciaDao() {
         return new PneuConferenciaDaoImpl();
     }
+
+    public static VinculoVeiculoPneuDao provideVinculoVeiculoPneuDao() {
+        return new VinculoVeiculoPneuDaoImpl(Injection.provideConferenciaDao());
+    }
+
+    private static ConferenciaDao provideConferenciaDao() {
+        return new ConferenciaDaoImpl();
+    }
+
 
     @NotNull
     public static ApresentacaoDao provideApresentacaoDao() {
@@ -666,5 +679,4 @@ public final class Injection {
     public static MotivoMovimentoTransicaoDao provideMotivoOrigemDestinoDao() {
         return new MotivoMovimentoTransicaoDaoImpl();
     }
-
 }
