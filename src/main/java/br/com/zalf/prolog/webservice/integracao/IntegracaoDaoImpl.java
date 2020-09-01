@@ -349,7 +349,7 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("select * from integracao.func_checklist_insert_os_pendente(" +
+            stmt = conn.prepareStatement("select * from integracao.func_checklist_os_insert_os_pendente(" +
                     "f_cod_unidade => ?," +
                     "f_cod_os => ?) as codigo_interno_os_prolog");
             stmt.setLong(1, codUnidade);
@@ -406,7 +406,7 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("select * from integracao.func_busca_informacoes_os(" +
+            stmt = conn.prepareStatement("select * from integracao.func_checklist_os_busca_informacoes_os(" +
                     "f_cod_interno_os_prolog => ?);");
             stmt.setLong(1, codOs);
             rSet = stmt.executeQuery();
@@ -433,7 +433,7 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("select * from integracao.func_busca_os_a_integrar();");
+            stmt = conn.prepareStatement("select * from integracao.func_checklist_os_busca_os_sincronizar();");
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 final List<Long> codOrdensServicoParaSincronizar = new ArrayList<>();
@@ -459,7 +459,7 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("select * from integracao.func_atualiza_status_os_integrada(" +
+            stmt = conn.prepareStatement("select * from integracao.func_checklist_os_atualiza_status_os(" +
                     "f_cods_interno_os_prolog => ?, " +
                     "f_pendente => ?, " +
                     "f_bloqueada => ?, " +
@@ -482,7 +482,7 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("select * from integracao.func_atualiza_erro_os(" +
+            stmt = conn.prepareStatement("select * from integracao.func_checklist_os_atualiza_erro_os(" +
                     "f_cod_interno_os_prolog => ?, " +
                     "f_error_message => ?, " +
                     "f_exception_logada => ?);");
@@ -503,7 +503,8 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("select * from integracao.func_busca_codigo_os(f_cod_itens_os => ?);");
+            stmt = conn.prepareStatement("select * from integracao.func_checklist_os_busca_codigo_os(" +
+                    "f_cod_itens_os => ?);");
             stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codItensProlog));
             rSet = stmt.executeQuery();
             if (rSet.next()) {
