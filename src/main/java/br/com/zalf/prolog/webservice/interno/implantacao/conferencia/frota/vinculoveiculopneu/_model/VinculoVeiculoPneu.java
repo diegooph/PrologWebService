@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.interno.implantacao.conferencia.frota.vinculoveiculopneu._model;
 
-import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
@@ -9,10 +8,8 @@ import org.jetbrains.annotations.Nullable;
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-@Getter
 @Setter
 public class VinculoVeiculoPneu {
-
     @Nullable
     private String placa;
     @Nullable
