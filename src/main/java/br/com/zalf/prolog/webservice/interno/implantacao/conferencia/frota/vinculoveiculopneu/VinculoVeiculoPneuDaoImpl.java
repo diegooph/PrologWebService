@@ -19,9 +19,10 @@ import static br.com.zalf.prolog.webservice.database.DatabaseConnection.getConne
  * @author Thais Francisco (https://github.com/thaisksf)
  */
 public class VinculoVeiculoPneuDaoImpl implements VinculoVeiculoPneuDao {
-    private ConferenciaDao provideConferenciaDao;
+    @NotNull
+    final private ConferenciaDao provideConferenciaDao;
 
-    public VinculoVeiculoPneuDaoImpl(ConferenciaDao provideConferenciaDao) {
+    public VinculoVeiculoPneuDaoImpl(@NotNull final ConferenciaDao provideConferenciaDao) {
 
         this.provideConferenciaDao = provideConferenciaDao;
     }

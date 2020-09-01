@@ -81,7 +81,8 @@ public final class VinculoVeiculoPneuService {
                                       @NotNull final String usuario,
                                       @NotNull final File file) throws ProLogException {
         try {
-            final List<VinculoVeiculoPneu> vinculoVeiculoPneuPlanilha = VinculoVeiculoPneuPlanilhaReader.readListFromCsvFilePath(file);
+            final List<VinculoVeiculoPneu> vinculoVeiculoPneuPlanilha =
+                    VinculoVeiculoPneuPlanilhaReader.readListFromCsvFilePath(file);
             final String jsonPlanilha = GsonUtils.getGson().toJson(vinculoVeiculoPneuPlanilha);
             dao.importPlanilhaVinculoVeiculoPneu(codEmpresa, codUnidade, usuario, jsonPlanilha, TipoImport.VINCULO);
         } catch (final Throwable e) {

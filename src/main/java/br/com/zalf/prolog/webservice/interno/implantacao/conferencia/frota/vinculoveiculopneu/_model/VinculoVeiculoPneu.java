@@ -13,11 +13,11 @@ import org.jetbrains.annotations.Nullable;
 @Setter
 public class VinculoVeiculoPneu {
 
-        @Nullable
-        private String placa;
-        @Nullable
-        private String numeroFogo;
-        @Nullable
-        private String nomenclatura;
+    @Nullable
+    private String placa;
+    @Nullable
+    private String numeroFogo;
+    @Nullable
+    private String nomenclatura;
 }
 
