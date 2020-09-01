@@ -42,7 +42,4 @@ public final class ColaboradorConferenciaResource {
                 fileInputStream,
                 fileDetail);
     }
-
-
-
 }

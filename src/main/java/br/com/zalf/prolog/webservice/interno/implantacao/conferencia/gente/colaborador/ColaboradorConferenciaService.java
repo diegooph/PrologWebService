@@ -92,6 +92,4 @@ public final class ColaboradorConferenciaService {
                     .map(e, "Erro ao verificar dados, tente novamente");
         }
     }
-
-
 }

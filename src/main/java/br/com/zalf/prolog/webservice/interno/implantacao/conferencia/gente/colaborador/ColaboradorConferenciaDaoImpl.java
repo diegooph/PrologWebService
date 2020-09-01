@@ -20,9 +20,13 @@ import static br.com.zalf.prolog.webservice.database.DatabaseConnection.getConne
  * @author Thais Francisco (https://github.com/thaisksf)
  */
 public final class ColaboradorConferenciaDaoImpl implements ColaboradorConferenciaDao {
-
     @NotNull
-    private ConferenciaDao dao = new ConferenciaDaoImpl();
+    final private ConferenciaDao provideConferenciaDao;
+
+    public ColaboradorConferenciaDaoImpl(@NotNull final ConferenciaDao provideConferenciaDao) {
+
+        this.provideConferenciaDao = provideConferenciaDao;
+    }
 
     @Override
     public void importPlanilhaColaborador(@NotNull final Long codEmpresa,
@@ -34,10 +38,11 @@ public final class ColaboradorConferenciaDaoImpl implements ColaboradorConferenc
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            final ConferenciaDadosTabelaImport conferenciaDadosTabelaImport = dao.createDadosTabelaImport(codEmpresa,
-                    codUnidade,
-                    usuario,
-                    tipoImportColaborador);
+            final ConferenciaDadosTabelaImport conferenciaDadosTabelaImport =
+                    provideConferenciaDao.createDadosTabelaImport(codEmpresa,
+                            codUnidade,
+                            usuario,
+                            tipoImportColaborador);
 
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM IMPLANTACAO.FUNC_COLABORADOR_INSERE_PLANILHA_IMPORTACAO(" +

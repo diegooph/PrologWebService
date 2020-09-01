@@ -58,18 +58,18 @@ public final class ColaboradorPlanilhaReader {
 
     private static ColaboradorPlanilha read(@NotNull final String[] linha) {
         if (linha[1].isEmpty() &&
-            linha[2].isEmpty() &&
-            linha[3].isEmpty() &&
-            linha[4].isEmpty() &&
-            linha[5].isEmpty() &&
-            linha[6].isEmpty() &&
-            linha[7].isEmpty() &&
-            linha[8].isEmpty() &&
-            linha[9].isEmpty() &&
-            linha[10].isEmpty() &&
-            linha[11].isEmpty() &&
-            linha[12].isEmpty() &&
-            linha[13].isEmpty()) {
+                linha[2].isEmpty() &&
+                linha[3].isEmpty() &&
+                linha[4].isEmpty() &&
+                linha[5].isEmpty() &&
+                linha[6].isEmpty() &&
+                linha[7].isEmpty() &&
+                linha[8].isEmpty() &&
+                linha[9].isEmpty() &&
+                linha[10].isEmpty() &&
+                linha[11].isEmpty() &&
+                linha[12].isEmpty() &&
+                linha[13].isEmpty()) {
             return null;
         }
         final ColaboradorPlanilha item = new ColaboradorPlanilha();
@@ -97,37 +97,30 @@ public final class ColaboradorPlanilhaReader {
         if (!StringUtils.isNullOrEmpty(linha[6])) {
             item.setMatriculaPromax(linha[6]);
         }
-
         // MATRICULA PONTO.
         if (!StringUtils.isNullOrEmpty(linha[7])) {
             item.setMatriculaPonto(linha[7]);
         }
-
         // EQUIPE.
         if (!StringUtils.isNullOrEmpty(linha[8])) {
             item.setEquipe(linha[8]);
         }
-
         // SETOR.
         if (!StringUtils.isNullOrEmpty(linha[9])) {
             item.setSetor(linha[9]);
         }
-
         // FUNCAO.
         if (!StringUtils.isNullOrEmpty(linha[10])) {
             item.setFuncao(linha[10]);
         }
-
         // EMAIL.
         if (!StringUtils.isNullOrEmpty(linha[11])) {
             item.setEmail(linha[11]);
         }
-
         // TELEFONE.
         if (!StringUtils.isNullOrEmpty(linha[12])) {
             item.setTelefone(linha[12]);
         }
-
         // PAIS.
         if (!StringUtils.isNullOrEmpty(linha[13])) {
             item.setPais(linha[13]);

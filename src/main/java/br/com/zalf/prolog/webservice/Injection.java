@@ -160,6 +160,8 @@ import br.com.zalf.prolog.webservice.interno.apresentacao.ApresentacaoDao;
 import br.com.zalf.prolog.webservice.interno.apresentacao.ApresentacaoDaoImpl;
 import br.com.zalf.prolog.webservice.interno.autenticacao.AutenticacaoLoginSenhaDao;
 import br.com.zalf.prolog.webservice.interno.autenticacao.AutenticacaoLoginSenhaDaoImpl;
+import br.com.zalf.prolog.webservice.interno.implantacao.conferencia.ConferenciaDao;
+import br.com.zalf.prolog.webservice.interno.implantacao.conferencia.ConferenciaDaoImpl;
 import br.com.zalf.prolog.webservice.interno.implantacao.conferencia.frota.pneu.PneuConferenciaDao;
 import br.com.zalf.prolog.webservice.interno.implantacao.conferencia.frota.pneu.PneuConferenciaDaoImpl;
 import br.com.zalf.prolog.webservice.interno.implantacao.conferencia.frota.veiculo.VeiculoConferenciaDao;
@@ -538,7 +540,11 @@ public final class Injection {
 
 
     public static ColaboradorConferenciaDao provideColaboradorConferenciaDao() {
-        return new ColaboradorConferenciaDaoImpl();
+        return new ColaboradorConferenciaDaoImpl(Injection.provideConferenciaDao());
+    }
+
+    private static ConferenciaDao provideConferenciaDao() {
+        return new ConferenciaDaoImpl();
     }
 
     @NotNull

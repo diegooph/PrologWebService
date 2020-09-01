@@ -13,6 +13,7 @@ public interface ColaboradorConferenciaDao {
     /**
      * Método para retornar a conferência da planilha de import de colaborador.
      *
+     * @param codEmpresa            Código da empresa para a qual as informações serão conferidas.
      * @param codUnidade            Código da unidade para a qual as informações serão conferidas.
      * @param jsonPlanilha          Informações da planilha de import de colaboradores em formato Json.
      * @param tipoImportColaborador Informação do tipo de import.
