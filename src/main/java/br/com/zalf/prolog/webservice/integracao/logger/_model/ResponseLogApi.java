@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.logger._model;
 
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
+import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -11,7 +12,8 @@ import java.util.Map;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public final class ResponseLogApi {
+@Data
+public final class ResponseLogApi implements RequestResponseLog {
     @Nullable
     private final Map<String, String> headers;
     @Nullable
@@ -25,57 +27,14 @@ public final class ResponseLogApi {
     @Nullable
     private final String errorBody;
 
-    public ResponseLogApi(@Nullable final Map<String, String> headers,
-                          @Nullable final String annotations,
-                          @Nullable final String entityType,
-                          final boolean isError,
-                          final int statusCode,
-                          @Nullable final String body,
-                          @Nullable final String errorBody) {
-        this.headers = headers;
-        this.annotations = annotations;
-        this.entityType = entityType;
-        this.isError = isError;
-        this.statusCode = statusCode;
-        this.body = body;
-        this.errorBody = errorBody;
-    }
-
     @NotNull
-    public static String toJson(@NotNull final ResponseLogApi responseLog) {
-        return GsonUtils.getGson().toJson(responseLog);
+    @Override
+    public String toJson() {
+        return GsonUtils.getGson().toJson(this);
     }
 
-    @Nullable
-    public Map<String, String> getHeaders() {
-        return headers;
-    }
-
-    @Nullable
-    public String getAnnotations() {
-        return annotations;
-    }
-
-    @Nullable
-    public String getEntityType() {
-        return entityType;
-    }
-
-    public boolean isError() {
-        return isError;
-    }
-
+    @Override
     public int getStatusCode() {
-        return statusCode;
-    }
-
-    @Nullable
-    public String getBody() {
-        return body;
-    }
-
-    @Nullable
-    public String getErrorBody() {
-        return errorBody;
+        return this.statusCode;
     }
 }

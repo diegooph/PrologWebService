@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.integracao.logger._model;
 
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
 import lombok.Data;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -14,7 +15,7 @@ import java.util.Map;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 @Data
-public final class ResponseLogProlog {
+public final class ResponseLogProlog implements RequestResponseLog {
     private final int statusCode;
     @Nullable
     private final Map<String, List<String>> headers;
@@ -22,12 +23,21 @@ public final class ResponseLogProlog {
     private final String body;
 
     @NotNull
-    public static String toJson(@NotNull final ResponseLogProlog responseLog) {
-        return GsonUtils.getGson().toJson(responseLog);
+    @Override
+    public String toJson() {
+        return GsonUtils.getGson().toJson(this);
+    }
+
+    @Override
+    public int getStatusCode() {
+        return this.statusCode;
     }
 
     @NotNull
     public static ResponseLogProlog errorLog(@NotNull final Throwable t) {
-        return new ResponseLogProlog(500, null, "HTTP FAILED - " + t);
+        return new ResponseLogProlog(
+                500,
+                null,
+                "HTTP FAILED - " + ExceptionUtils.getStackTrace(t));
     }
 }

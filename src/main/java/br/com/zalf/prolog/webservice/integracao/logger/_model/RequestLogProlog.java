@@ -14,7 +14,7 @@ import java.util.Map;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 @Data
-public final class RequestLogProlog {
+public final class RequestLogProlog implements RequestResponseLog {
     @NotNull
     private final String method;
     @NotNull
@@ -27,7 +27,13 @@ public final class RequestLogProlog {
     private final String body;
 
     @NotNull
-    public static String toJson(@NotNull final RequestLogProlog requestLog) {
-        return GsonUtils.getGson().toJson(requestLog);
+    @Override
+    public String toJson() {
+        return GsonUtils.getGson().toJson(this);
+    }
+
+    @Override
+    public int getStatusCode() {
+        return 0;
     }
 }

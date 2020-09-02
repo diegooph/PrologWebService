@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.logger._model;
 
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
+import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -11,7 +12,8 @@ import java.util.Map;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public final class RequestLogApi {
+@Data
+public final class RequestLogApi implements RequestResponseLog {
     @Nullable
     private final Map<String, String> headers;
     @Nullable
@@ -21,38 +23,14 @@ public final class RequestLogApi {
     @Nullable
     private final String body;
 
-    public RequestLogApi(@Nullable final Map<String, String> headers,
-                         @Nullable final String path,
-                         @Nullable final String httpMethod,
-                         @Nullable final String body) {
-        this.headers = headers;
-        this.path = path;
-        this.httpMethod = httpMethod;
-        this.body = body;
-    }
-
     @NotNull
-    public static String toJson(@NotNull final RequestLogApi requestLog) {
-        return GsonUtils.getGson().toJson(requestLog);
+    @Override
+    public String toJson() {
+        return GsonUtils.getGson().toJson(this);
     }
 
-    @Nullable
-    public Map<String, String> getHeaders() {
-        return headers;
-    }
-
-    @Nullable
-    public String getPath() {
-        return path;
-    }
-
-    @Nullable
-    public String getHttpMethod() {
-        return httpMethod;
-    }
-
-    @Nullable
-    public String getBody() {
-        return body;
+    @Override
+    public int getStatusCode() {
+        return 0;
     }
 }

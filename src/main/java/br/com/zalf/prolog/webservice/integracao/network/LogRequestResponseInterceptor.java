@@ -30,10 +30,10 @@ public final class LogRequestResponseInterceptor implements Interceptor {
         Response response;
         try {
             response = chain.proceed(request);
-        } catch (final Exception e) {
+        } catch (final Throwable t) {
             // Em caso de erro na requisição http, logamos um erro genérico como ResponseLogProlog.
-            saveLog(requestLogProlog, ResponseLogProlog.errorLog(e));
-            throw e;
+            saveLog(requestLogProlog, ResponseLogProlog.errorLog(t));
+            throw t;
         }
         final ResponseLogProlog responseLogProlog = createResponseLog(response);
         saveLog(requestLogProlog, responseLogProlog);

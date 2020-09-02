@@ -1,9 +1,6 @@
 package br.com.zalf.prolog.webservice.log;
 
-import br.com.zalf.prolog.webservice.integracao.logger._model.RequestLogApi;
-import br.com.zalf.prolog.webservice.integracao.logger._model.RequestLogProlog;
-import br.com.zalf.prolog.webservice.integracao.logger._model.ResponseLogApi;
-import br.com.zalf.prolog.webservice.integracao.logger._model.ResponseLogProlog;
+import br.com.zalf.prolog.webservice.integracao.logger._model.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -37,8 +34,8 @@ public interface LogDao {
      * @throws Throwable Se algum erro ocorrer no processo de salvar os dados.
      */
     void insertRequestResponseLogApi(@NotNull final String tokenRequisicao,
-                                     @NotNull final RequestLogApi requestLog,
-                                     @Nullable final ResponseLogApi responseLog) throws Throwable;
+                                     @NotNull final RequestResponseLog requestLog,
+                                     @Nullable final RequestResponseLog responseLog) throws Throwable;
 
     /**
      * Método utilizado para salvar as informações referentes às comunicações entre os sistemas integrados.
@@ -50,6 +47,6 @@ public interface LogDao {
      * @param responseLog Objeto que contém as informações recebidas pelo Prolog como resposta da integração.
      * @throws Throwable Se algum erro ocorrer no processo de salvar os dados.
      */
-    void insertRequestResponseLogProlog(@NotNull final RequestLogProlog requestLog,
-                                        @Nullable final ResponseLogProlog responseLog) throws Throwable;
+    void insertRequestResponseLogProlog(@NotNull final RequestResponseLog requestLog,
+                                        @Nullable final RequestResponseLog responseLog) throws Throwable;
 }
