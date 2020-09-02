@@ -25,10 +25,10 @@ public enum LogType {
 
     @NotNull
     public static LogType fromString(@NotNull final String key) {
-        final LogType[] recursosIntegrados = LogType.values();
-        for (final LogType recursosIntegrado : recursosIntegrados) {
-            if (recursosIntegrado.key.equals(key)) {
-                return recursosIntegrado;
+        final LogType[] logTypes = LogType.values();
+        for (final LogType logType : logTypes) {
+            if (logType.key.equals(key)) {
+                return logType;
             }
         }
 
