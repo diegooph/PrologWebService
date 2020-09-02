@@ -39,6 +39,7 @@ public final class IntegracaoRequestInterceptor implements ContainerRequestFilte
     @NotNull
     private static final String REQUEST_OBJECT = RequestLogApi.class.getName() + ".request_object";
     private static final int STATUS_OK = 200;
+    private static final int STATUS_ERROR = 300;
 
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
@@ -82,7 +83,7 @@ public final class IntegracaoRequestInterceptor implements ContainerRequestFilte
         if (responseContext != null) {
             try {
                 if (isJson(responseContext)) {
-                    final boolean isError = responseContext.getStatus() != STATUS_OK;
+                    final boolean isError = verifyResponseStatus(responseContext.getStatus());
                     responseLog = new ResponseLogApi(
                             getHeaders(responseContext),
                             getAnnotations(responseContext),
@@ -184,5 +185,9 @@ public final class IntegracaoRequestInterceptor implements ContainerRequestFilte
             return true;
         }
         return requestContext.getMediaType().toString().contains("application/json");
+    }
+
+    private boolean verifyResponseStatus(final int responseStatus) {
+        return responseStatus >= STATUS_OK && responseStatus < STATUS_ERROR;
     }
 }
