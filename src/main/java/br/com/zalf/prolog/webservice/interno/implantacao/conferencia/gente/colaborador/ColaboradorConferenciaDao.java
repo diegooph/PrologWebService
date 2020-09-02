@@ -15,6 +15,7 @@ public interface ColaboradorConferenciaDao {
      *
      * @param codEmpresa            Código da empresa para a qual as informações serão conferidas.
      * @param codUnidade            Código da unidade para a qual as informações serão conferidas.
+     * @param usuario               Usuário responsável pelo import.
      * @param jsonPlanilha          Informações da planilha de import de colaboradores em formato Json.
      * @param tipoImportColaborador Informação do tipo de import.
      * @throws Throwable Se algum erro ocorrer.
