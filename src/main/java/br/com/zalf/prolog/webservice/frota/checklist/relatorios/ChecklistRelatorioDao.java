@@ -99,4 +99,27 @@ public interface ChecklistRelatorioDao {
                                          @Nullable final String placa,
                                          @NotNull final LocalDate dataInicial,
                                          @NotNull final LocalDate dataFinal) throws Throwable;
+
+    /**
+     * Método para buscar o relatório de último checklist realizado por placa em formato {@link Report report}.
+     *
+     * @param codUnidades      Códigos das unidades pela quais as informações serão filtradas.
+     * @param codTiposVeiculos Código dos tipos de veículos pelas quais as informações serão filtradas.
+     * @throws Throwable Se algum erro ocorrer.
+     */
+    @NotNull
+    Report getUltimoChecklistRealizadoPlacaReport(@NotNull final List<Long> codUnidades,
+                                                  @Nullable final List<Long> codTiposVeiculos) throws Throwable;
+
+    /**
+     * Método para buscar o relatório de último checklist realizado por placa em CSV.
+     *
+     * @param outputStream     Streaming onde os dados serão escritos.
+     * @param codUnidades      Códigos das unidades pela quais as informações serão filtradas.
+     * @param codTiposVeiculos Código dos tipos de veículos pelas quais as informações serão filtradas.
+     * @throws Throwable Se algum erro ocorrer.
+     */
+    void getUltimoChecklistRealizadoPlacaCsv(@NotNull final OutputStream outputStream,
+                                             @NotNull final List<Long> codUnidades,
+                                             @Nullable final List<Long> codTiposVeiculos) throws Throwable;
 }
