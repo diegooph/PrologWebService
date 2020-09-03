@@ -3,10 +3,7 @@ package br.com.zalf.prolog.webservice.integracao.agendador;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
-import br.com.zalf.prolog.webservice.integracao.MetodoIntegrado;
-import br.com.zalf.prolog.webservice.integracao.agendador.os.IntegracaoOsTask;
-import br.com.zalf.prolog.webservice.integracao.agendador.os._model.InfosEnvioOsIntegracao;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanConstants;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.IntegracaoOsTask;
 import br.com.zalf.prolog.webservice.integracao.praxio.ChecklistItensNokGlobusTask;
 import br.com.zalf.prolog.webservice.integracao.praxio.IntegracaoPraxioService;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.GlobusPiccoloturRequesterImpl;
@@ -64,18 +61,7 @@ public final class AgendadorService implements SincroniaChecklistListener {
                 return;
             }
             // Executamos a sincronia utilizando a thread específica para esse serviço.
-            final InfosEnvioOsIntegracao infosEnvioOsIntegracao
-                    = new InfosEnvioOsIntegracao(Injection
-                    .provideIntegracaoDao()
-                    .getUrl(AvaCorpAvilanConstants.CODIGO_EMPRESA_AVILAN,
-                            AvaCorpAvilanConstants.SISTEMA_KEY_AVILAN,
-                            MetodoIntegrado.INSERT_OS),
-                    null,
-                    null);
-            Executors.newSingleThreadExecutor().execute(
-                    new IntegracaoOsTask(
-                            ordensServicoParaSincronizar,
-                            infosEnvioOsIntegracao));
+            Executors.newSingleThreadExecutor().execute(new IntegracaoOsTask(ordensServicoParaSincronizar));
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao tentar sincronizar as O.S's através do agendador", t);
             throw Injection

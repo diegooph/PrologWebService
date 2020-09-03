@@ -4,12 +4,12 @@ import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
-import br.com.zalf.prolog.webservice.integracao.agendador.os._model.IntegracaoConverter;
-import br.com.zalf.prolog.webservice.integracao.agendador.os._model.OsIntegracao;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.ModelosChecklistBloqueados;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.ModelosChecklistBloqueados;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.OsIntegracao;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.ApiAutenticacaoHolder;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
 import com.google.common.base.Preconditions;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -139,6 +139,20 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
         }
     }
 
+    @Override
+    @NotNull
+    public String getUrl(@NotNull final Long codEmpresa,
+                         @NotNull final SistemaKey sistemaKey,
+                         @NotNull final MetodoIntegrado metodoIntegrado) throws Throwable {
+        Connection conn = null;
+        try {
+            conn = getConnection();
+            return getUrl(conn, codEmpresa, sistemaKey, metodoIntegrado);
+        } finally {
+            close(conn);
+        }
+    }
+
     @NotNull
     @Override
     public String getUrl(@NotNull final Connection conn,
@@ -167,17 +181,6 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
         }
     }
 
-    @Override
-    @NotNull
-    public String getUrl(@NotNull final Long codEmpresa,
-                         @NotNull final SistemaKey sistemaKey,
-                         @NotNull final MetodoIntegrado metodoIntegrado) throws Throwable {
-        final Connection conn = getConnection();
-        final String url = getUrl(conn, codEmpresa, sistemaKey, metodoIntegrado);
-        conn.close();
-        return url;
-    }
-
     @NotNull
     @Override
     public String getCodAuxiliarByCodUnidadeProlog(@NotNull final Connection conn,
@@ -195,6 +198,21 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
                     "codUnidadeProlog: " + codUnidadeProlog);
         } finally {
             close(stmt, rSet);
+        }
+    }
+
+    @NotNull
+    @Override
+    public ApiAutenticacaoHolder getApiAutenticacaoHolder(
+            @NotNull final Long codEmpresa,
+            @NotNull final SistemaKey sistemaKey,
+            @NotNull final MetodoIntegrado metodoIntegrado) throws Throwable {
+        Connection conn = null;
+        try {
+            conn = getConnection();
+            return getApiAutenticacaoHolder(conn, codEmpresa, sistemaKey, metodoIntegrado);
+        } finally {
+            close(conn);
         }
     }
 
@@ -331,7 +349,7 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("select * from integracao.func_checklist_insert_os_pendente(" +
+            stmt = conn.prepareStatement("select * from integracao.func_checklist_os_insert_os_pendente(" +
                     "f_cod_unidade => ?," +
                     "f_cod_os => ?) as codigo_interno_os_prolog");
             stmt.setLong(1, codUnidade);
@@ -346,7 +364,6 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
             close(conn, stmt, rSet);
         }
     }
-
 
     @NotNull
     @Override
@@ -389,7 +406,7 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("select * from integracao.func_busca_informacoes_os(" +
+            stmt = conn.prepareStatement("select * from integracao.func_checklist_os_busca_informacoes_os(" +
                     "f_cod_interno_os_prolog => ?);");
             stmt.setLong(1, codOs);
             rSet = stmt.executeQuery();
@@ -416,7 +433,7 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("select * from integracao.func_busca_os_a_integrar();");
+            stmt = conn.prepareStatement("select * from integracao.func_checklist_os_busca_os_sincronizar();");
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 final List<Long> codOrdensServicoParaSincronizar = new ArrayList<>();
@@ -442,7 +459,7 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("select * from integracao.func_atualiza_status_os_integrada(" +
+            stmt = conn.prepareStatement("select * from integracao.func_checklist_os_atualiza_status_os(" +
                     "f_cods_interno_os_prolog => ?, " +
                     "f_pendente => ?, " +
                     "f_bloqueada => ?, " +
@@ -459,17 +476,19 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
 
     @Override
     public void logarStatusOsComErro(@NotNull final Long codInternoOsProlog,
-                                     @Nullable final String errorMessage) throws Throwable {
+                                     @NotNull final Throwable throwable) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("select * from integracao.func_atualiza_erro_os(" +
+            stmt = conn.prepareStatement("select * from integracao.func_checklist_os_atualiza_erro_os(" +
                     "f_cod_interno_os_prolog => ?, " +
-                    "f_error_message => ?);");
+                    "f_error_message => ?, " +
+                    "f_exception_logada => ?);");
             stmt.setLong(1, codInternoOsProlog);
-            stmt.setString(2, errorMessage);
+            stmt.setString(2, throwable.getMessage());
+            stmt.setString(3, ExceptionUtils.getStackTrace(throwable));
             rSet = stmt.executeQuery();
         } finally {
             close(conn, stmt, rSet);
@@ -484,7 +503,8 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("select * from integracao.func_busca_codigo_os(f_cod_itens_os => ?);");
+            stmt = conn.prepareStatement("select * from integracao.func_checklist_os_busca_codigo_os(" +
+                    "f_cod_itens_os => ?);");
             stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codItensProlog));
             rSet = stmt.executeQuery();
             if (rSet.next()) {
@@ -494,7 +514,7 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
                 } while (rSet.next());
                 return codsInternosOSsProlog;
             } else {
-                throw new Exception("Nenhum código de O.S encontrado para os itens: " + codItensProlog);
+                return Collections.emptyList();
             }
         } finally {
             close(conn, stmt, rSet);

@@ -4,19 +4,19 @@ import br.com.zalf.prolog.webservice.gente.colaborador.ColaboradorService;
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
 import br.com.zalf.prolog.webservice.integracao.PosicaoPneuMapper;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanTipoMarcador;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanUtils;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvacorpAvilanTipoChecklist;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.*;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.*;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfVeiculo;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.*;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.Veiculo;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.data.AvaCorpAvilanDaoImpl;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.data.AvaCorpAvilanSincronizadorTiposVeiculos;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.data.TipoVeiculoAvilanProLog;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.requester.AvaCorpAvilanRequester;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.requester.AvaCorpAvilanRequesterImpl;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.AvaCorpAvilanTipoMarcador;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.AvaCorpAvilanUtils;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.AvacorpAvilanTipoChecklist;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.afericao.*;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.cadastro.*;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.cadastro.ArrayOfVeiculo;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.checklist.*;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.checklist.Veiculo;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.data.AvaCorpAvilanDaoImpl;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.data.AvaCorpAvilanSincronizadorTiposVeiculos;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.data.TipoVeiculoAvilanProLog;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.requester.AvaCorpAvilanRequester;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.requester.AvaCorpAvilanRequesterImpl;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.junit.Before;
@@ -89,7 +89,7 @@ public class AvaCorpAvilanRequesterTest {
 
     @Test(timeout = DEFAULT_TIMEOUT_MILLIS)
     public void testBuscarVeiculoAtivo() throws Exception {
-        final br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.Veiculo veiculo =
+        final br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.cadastro.Veiculo veiculo =
                 requester.getVeiculoAtivo("LRN9162", CPF, DATA_NASCIMENTO);
         assertNotNull(veiculo);
         System.out.println(GsonUtils.getGson().toJson(veiculo));
@@ -302,7 +302,7 @@ public class AvaCorpAvilanRequesterTest {
         assertNotNull(questionarios);
         assertTrue(!questionarios.getQuestionarioVeiculos().isEmpty());
         final Questionario questionario = questionarios.getQuestionarioVeiculos().get(0).getQuestionario();
-        final br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.ArrayOfVeiculo veiculos =
+        final br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.checklist.ArrayOfVeiculo veiculos =
                 questionarios.getQuestionarioVeiculos().get(0).getVeiculos();
         assertNotNull(questionario);
         assertNotNull(veiculos);
@@ -380,7 +380,7 @@ public class AvaCorpAvilanRequesterTest {
     @Test
     public void testeMapeamentoTodasAsPlacas() throws Exception {
         final ArrayOfVeiculo veiculosAtivos = requester.getVeiculosAtivos(CPF, DATA_NASCIMENTO);
-        for (br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.Veiculo veiculo : veiculosAtivos.getVeiculo()) {
+        for (br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.cadastro.Veiculo veiculo : veiculosAtivos.getVeiculo()) {
             if (veiculo.getQuantidadePneu() > 0) {
                 testePlaca(veiculo.getPlaca(), veiculo.getTipo());
             }
@@ -468,7 +468,7 @@ public class AvaCorpAvilanRequesterTest {
         int contagem = 0;
 
         for (String placa : placasVeiculoByTipo.getString()) {
-            for (br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.Veiculo veiculo : veiculosAtivos.getVeiculo()) {
+            for (br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.cadastro.Veiculo veiculo : veiculosAtivos.getVeiculo()) {
                 if (placa.equals(veiculo.getPlaca()))
                     contagem++;
             }
