@@ -32,6 +32,6 @@ public enum LogType {
             }
         }
 
-        throw new IllegalArgumentException("Nenhum recurso integrado encontrado com a chave: " + key);
+        throw new IllegalArgumentException("Nenhum LogType encontrado com a chave: " + key);
     }
 }
