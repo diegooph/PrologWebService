@@ -21,11 +21,9 @@ public final class AvaCorpAvilanService extends BaseIntegracaoService {
     private final AvaCorpAvilanDao dao = new AvaCorpAvilanDaoImpl();
 
     public void getOrdensServicosPendentesSincroniaCsv(@NotNull final OutputStream outputStream,
-                                                       @NotNull final String tokenIntegracao,
                                                        @Nullable final String dataInicial,
                                                        @Nullable final String dataFinal) {
         try {
-            ensureValidToken(tokenIntegracao, TAG);
             dao.getOrdensServicosPendentesSincroniaCsv(
                     outputStream,
                     dataInicial != null ? ProLogDateParser.toLocalDate(dataInicial) : null,

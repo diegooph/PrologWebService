@@ -25,10 +25,9 @@ public final class AvaCorpAvilanResource {
     @Path("/ordens-servicos-pendentes/servicos-pentendes-csv") /* O último path será o nome do arquivo baixado. */
     @Produces("application/csv")
     public StreamingOutput getOrdensServicosPendentesSincroniaCsv(
-            @QueryParam("ProLog-Token-Integracao") @Required final String tokenIntegracao,
             @QueryParam("dataInicial") @Optional final String dataInicial,
             @QueryParam("dataFinal") @Optional final String dataFinal) throws ProLogException {
         return outputStream ->
-                service.getOrdensServicosPendentesSincroniaCsv(outputStream, tokenIntegracao, dataInicial, dataFinal);
+                service.getOrdensServicosPendentesSincroniaCsv(outputStream, dataInicial, dataFinal);
     }
 }
