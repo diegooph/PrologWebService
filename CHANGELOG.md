@@ -29,6 +29,7 @@ Change Log
 
 ### Features
 * Insere código auxiliar na alternativa do modelo checklist (PLI-178)
+* Cria estrutura de Logs de requisições e respostas (PL-2904)
 
 ### Refactors
 * Modifica inserção de movimentação para salvar a pressão atual do pneu (PL-2819)
