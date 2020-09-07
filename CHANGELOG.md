@@ -1,14 +1,35 @@
 Change Log
 ==========
+
 ## Stage
 ## Features
 * Cria estrutura para salvar O.S pendente de envio (PLI-180)
 * Cria envio de O.S para Avilan via agendador e abertura de O.S (PL-2903)
 * Cria envio e reabertura de pendencia da O.S ao fechar uma O.S, na Avilan (PL-3080)
+* Cria endpoint para solicitar sincronia de ordens de serviços - Avilan (PLI-186)
+* Insere código auxiliar na alternativa do modelo checklist (PLI-178)
+* Cria estrutura de Logs de requisições e respostas (PL-2904)
+
+<a name="v1.1.4"></a>
+## Version [v1.1.4](https://github.com/luizfp/PrologWebService/compare/v1.1.3...v1.1.4) (release-date) [unreleased]
+
+### Features
+* Cria métodos para o import automatizado de colaboradores (PL-2460)
 
 <a name="v1.1.3"></a>
-## Version [v1.1.3](https://github.com/luizfp/PrologWebService/compare/v1.1.2...v1.1.3) (release-date) [unreleased]
+## Version [v1.1.3](https://github.com/luizfp/PrologWebService/compare/v1.1.2...v1.1.3) (2020-08-27)
 
+### Features
+* Cria método para buscar todos os diagramas com as nomenclaturas no VeiculoResource
+* Insere coluna Jornada Bruta e Líquida no relatório de marcações por tipo jornada (PL-2850)
+* Permite selecionar modelos de checklists bloqueados para integração (PL-2905)
+
+### Refactors
+* Altera validator de pneu para permitir valor >= 0
+
+### Bugfix
+* Atualizado versão da biblioteca do S3 para evitar erro no upload de arquivos: https://github.com/aws/aws-sdk-java/issues/2305
+* Corrige erro na abertura de OS da Piccolotur (PL-3076)
 
 <a name="v1.1.2"></a>
 ## Version [v1.1.2](https://github.com/luizfp/PrologWebService/compare/v1.1.1...v1.1.2) (2020-08-16)
@@ -25,20 +46,17 @@ Change Log
 * Erro no relatório Remuneração Acumulada Colaborador (PL-2852)
 
 <a name="v1.1.1"></a>
-## Version [v1.1.1](https://github.com/luizfp/PrologWebService/compare/v1.1.0...v1.1.1) (release-date) [unreleased]
-
-### Features
-* Insere código auxiliar na alternativa do modelo checklist (PLI-178)
-* Cria estrutura de Logs de requisições e respostas (PL-2904)
+## Version [v1.1.1](https://github.com/luizfp/PrologWebService/compare/v1.1.0...v1.1.1) (2020-08-01)
 
 ### Refactors
 * Modifica inserção de movimentação para salvar a pressão atual do pneu (PL-2819)
-* Cria endpoint para solicitar sincronia de ordens de serviços - Avilan (PLI-186)
 * Modifica converter e functions de itens de OS para retornar url da midia da foto capturada no checklist e código do checklist (PL-2827)
 * Criar arquivo YAML para conter familias e modelos bloqueados - Nepomuceno (PLI-192)
 
 ### Bug Fixes
 * Corrige conversão de objetos antigos do checklist
+* Corrige atualização de modelo de pneu (PL-2844)
+* Corrigir stream de busca de código da filial da placa - Nepomuceno (PLI-191)
 
 <a name="v1.1.0"></a>
 ## Version [v1.1.0](https://github.com/luizfp/PrologWebService/compare/v1.0.32...v1.1.0) (2020-07-12)

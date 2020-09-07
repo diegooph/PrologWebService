@@ -48,7 +48,6 @@ import java.util.stream.Collectors;
  * Subclasse de {@link Sistema} responsável por cuidar da integração com o AvaCorp para a empresa Avilan.
  */
 public final class AvaCorpAvilan extends Sistema {
-
     /**
      * Caso venha %, significa que queremos todos os tipos,
      * para buscar de todos os tipos na integração, mandamos vazio.
@@ -164,7 +163,38 @@ public final class AvaCorpAvilan extends Sistema {
             final @NotNull Long codVeiculo,
             final @NotNull String placaVeiculo,
             final @NotNull TipoChecklist tipoChecklist) throws Throwable {
-        return getIntegradorProLog().getModeloChecklistRealizacao(codModeloChecklist, codVeiculo, placaVeiculo, tipoChecklist);
+        final ArrayOfVeiculoQuestao questoesVeiculo = requester.getQuestoesVeiculo(
+                Math.toIntExact(codModeloChecklist),
+                placaVeiculo,
+                AvacorpAvilanTipoChecklist.fromTipoProLog(tipoChecklist.asChar()),
+                getCpf(),
+                getDataNascimento());
+        final Map<Long, String> mapCodPerguntUrlImagem =
+                getAvaCorpAvilanDao().getMapeamentoCodPerguntaUrlImagem(codModeloChecklist);
+
+        return ChecklistMigracaoEstruturaSuporte.toEstruturaNovaRealizacaoModelo(
+                AvaCorpAvilanConverter.convert(
+                        questoesVeiculo,
+                        getCodUnidade(),
+                        mapCodPerguntUrlImagem,
+                        placaVeiculo));
+    }
+
+    @NotNull
+    @Override
+    public Long insertChecklist(@NotNull final ChecklistInsercao checklist,
+                                final boolean foiOffline,
+                                final boolean deveAbrirOs) throws Throwable {
+        if (checklist.getKmColetadoVeiculo() == 0) {
+            throw new AvaCorpAvilanException(
+                    "O KM enviado não pode ser 0!",
+                    "A integração com a Avilan não aceita mais KMs 0");
+        }
+
+        return requester.insertChecklist(
+                AvaCorpAvilanConverter.convert(checklist.getChecklistAntigo(), getCpf(), getDataNascimento()),
+                getCpf(),
+                getDataNascimento());
     }
 
     @NotNull
@@ -584,5 +614,4 @@ public final class AvaCorpAvilan extends Sistema {
                 .limit(limit)
                 .collect(Collectors.toList());
     }
-
 }

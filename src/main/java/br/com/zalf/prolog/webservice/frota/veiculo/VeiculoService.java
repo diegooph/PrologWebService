@@ -4,9 +4,12 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
+import br.com.zalf.prolog.webservice.frota.pneu.nomenclatura.PneuNomenclaturaService;
 import br.com.zalf.prolog.webservice.frota.veiculo.error.VeiculoValidator;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculoNomenclatura;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculoPosicaoNomenclatura;
 import br.com.zalf.prolog.webservice.integracao.router.RouterVeiculo;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -217,13 +220,37 @@ public final class VeiculoService {
         }
     }
 
+    @NotNull
     public Set<DiagramaVeiculo> getDiagramasVeiculo() {
         try {
             return dao.getDiagramasVeiculos();
-        } catch (final SQLException e) {
-            Log.e(TAG, "Erro ao buscar os diagramas dos veículos.", e);
-            return null;
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao buscar os diagramas dos veículos.", t);
+            throw Injection
+                    .provideVeiculoExceptionHandler()
+                    .map(t, "Erro ao buscar diagramas, tente novamente");
         }
+    }
+
+    @NotNull
+    public List<DiagramaVeiculoNomenclatura> getDiagramasVeiculosNomenclaturas(@NotNull final Long codEmpresa) {
+        final PneuNomenclaturaService nomenclaturaService = new PneuNomenclaturaService();
+        final List<DiagramaVeiculoNomenclatura> diagramas = new ArrayList<>();
+        getDiagramasVeiculo()
+                .forEach(diagrama -> {
+                    final List<DiagramaVeiculoPosicaoNomenclatura> nomenclaturas = new ArrayList<>();
+                    nomenclaturaService
+                            .getPneuNomenclaturaItemVisualizacao(codEmpresa, Long.valueOf(diagrama.getCodigo()))
+                            .forEach(nomenclatura -> nomenclaturas.add(new DiagramaVeiculoPosicaoNomenclatura(
+                                    nomenclatura.getNomenclatura(),
+                                    nomenclatura.getCodAuxiliar(),
+                                    nomenclatura.getPosicaoProlog())));
+                    diagramas.add(new DiagramaVeiculoNomenclatura(
+                            diagrama.getCodigo(),
+                            diagrama.getNome(),
+                            nomenclaturas));
+                });
+        return diagramas;
     }
 
     public List<String> getVeiculosByTipo(final Long codUnidade, final String codTipo, final String userToken) {

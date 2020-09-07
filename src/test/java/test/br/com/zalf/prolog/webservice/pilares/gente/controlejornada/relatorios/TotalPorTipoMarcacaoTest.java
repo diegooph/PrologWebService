@@ -2,29 +2,37 @@ package test.br.com.zalf.prolog.webservice.pilares.gente.controlejornada.relator
 
 import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
+import br.com.zalf.prolog.webservice.database.DatabaseManager;
 import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.ControleJornadaRelatorioService;
 import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.FolhaPontoRelatorio;
 import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.FolhaPontoTipoIntervalo;
 import org.jetbrains.annotations.NotNull;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import test.br.com.zalf.prolog.webservice.BaseTest;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static com.google.common.truth.Truth.assertThat;
 
 /**
  * Created on 14/01/19
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public final class TotalPorTipoMarcacaoTest extends BaseTest {
+
     private static final Long COD_UNIDADE = 5L;
     private static final String TODOS_TIPOS_INTERVALOS = "%";
     private static final String DATA_INICIAL = "2018-01-01";
@@ -33,15 +41,17 @@ public final class TotalPorTipoMarcacaoTest extends BaseTest {
     private Connection connection;
 
     @Override
+    @BeforeAll
     public void initialize() {
+        DatabaseManager.init();
         service = new ControleJornadaRelatorioService();
         connection = DatabaseConnection.getConnection();
     }
 
     @Override
+    @AfterAll
     public void destroy() {
         DatabaseConnection.close(connection);
-
     }
 
     @Test
@@ -70,15 +80,11 @@ public final class TotalPorTipoMarcacaoTest extends BaseTest {
                         codTipoMarcacao);
                 final TotalPorTipoMarcacao totalPorTipoMarcacao = totaisTiposColab.remove(mapKey);
 
-                assertNotNull("totalPorTipoMarcacao não encontrado para a chave: " + mapKey, totalPorTipoMarcacao);
-                assertEquals(
-                        "TOTAL TIPO do colaborador " + cpfColaborador + " e tipo marcação " + codTipoMarcacao,
-                        totalPorTipoMarcacao.getTotalTipoMarcacao(),
-                        tipoMarcacao.getTempoTotalTipoIntervalo());
-                assertEquals(
-                        "HORAS NOTURNAS do colaborador " + cpfColaborador + " e tipo marcação " + codTipoMarcacao,
-                        totalPorTipoMarcacao.getTotalHorasNoturnasTipoMarcacao(),
-                        tipoMarcacao.getTempoTotalHorasNoturnas());
+                assertThat(totalPorTipoMarcacao).isNotNull();
+                assertThat(totalPorTipoMarcacao.getTotalTipoMarcacao())
+                        .isEqualTo(tipoMarcacao.getTempoTotalTipoIntervalo());
+                assertThat(totalPorTipoMarcacao.getTotalHorasNoturnasTipoMarcacao())
+                        .isEqualTo(tipoMarcacao.getTempoTotalHorasNoturnas());
             }
         }
     }
@@ -95,15 +101,10 @@ public final class TotalPorTipoMarcacaoTest extends BaseTest {
         ResultSet rSet = null;
         try {
             stmt = conn.prepareStatement(
-                    "SELECT * FROM FUNC_MARCACAO_GET_TEMPO_TOTAL_POR_TIPO_MARCACAO(?, ?, ?, ?);");
+                    "SELECT * FROM FUNC_MARCACAO_GET_TEMPO_TOTAL_POR_TIPO_MARCACAO(?, ?, ?);");
             stmt.setLong(1, codUnidade);
-            if (codTipoIntervalo.equals("%")) {
-                stmt.setNull(2, Types.BIGINT);
-            } else {
-                stmt.setLong(2, Long.parseLong(codTipoIntervalo));
-            }
-            stmt.setObject(3, dataInicial);
-            stmt.setObject(4, dataFinal);
+            stmt.setObject(2, dataInicial);
+            stmt.setObject(3, dataFinal);
             rSet = stmt.executeQuery();
             final Map<String, TotalPorTipoMarcacao> totaisTipoColab = new HashMap<>();
             int totalSize = 0;
@@ -133,11 +134,13 @@ public final class TotalPorTipoMarcacaoTest extends BaseTest {
 
     private void printResultSet(@NotNull final ResultSet resultSet) throws Throwable {
         final ResultSetMetaData rsmd = resultSet.getMetaData();
-        int columnsNumber = rsmd.getColumnCount();
+        final int columnsNumber = rsmd.getColumnCount();
         while (resultSet.next()) {
             for (int i = 1; i <= columnsNumber; i++) {
-                if (i > 1) System.out.print(",  ");
-                String columnValue = resultSet.getString(i);
+                if (i > 1) {
+                    System.out.print(",  ");
+                }
+                final String columnValue = resultSet.getString(i);
                 System.out.print(columnValue + " " + rsmd.getColumnName(i));
             }
             System.out.println("");
@@ -150,6 +153,7 @@ public final class TotalPorTipoMarcacaoTest extends BaseTest {
     }
 
     private final class TotalPorTipoMarcacao {
+
         @NotNull
         private final Duration totalTipoMarcacao;
         @NotNull
@@ -170,5 +174,7 @@ public final class TotalPorTipoMarcacaoTest extends BaseTest {
         Duration getTotalHorasNoturnasTipoMarcacao() {
             return totalHorasNoturnasTipoMarcacao;
         }
+
     }
+
 }

@@ -160,10 +160,14 @@ import br.com.zalf.prolog.webservice.interno.apresentacao.ApresentacaoDao;
 import br.com.zalf.prolog.webservice.interno.apresentacao.ApresentacaoDaoImpl;
 import br.com.zalf.prolog.webservice.interno.autenticacao.AutenticacaoLoginSenhaDao;
 import br.com.zalf.prolog.webservice.interno.autenticacao.AutenticacaoLoginSenhaDaoImpl;
+import br.com.zalf.prolog.webservice.interno.implantacao.conferencia.ConferenciaDao;
+import br.com.zalf.prolog.webservice.interno.implantacao.conferencia.ConferenciaDaoImpl;
 import br.com.zalf.prolog.webservice.interno.implantacao.conferencia.frota.pneu.PneuConferenciaDao;
 import br.com.zalf.prolog.webservice.interno.implantacao.conferencia.frota.pneu.PneuConferenciaDaoImpl;
 import br.com.zalf.prolog.webservice.interno.implantacao.conferencia.frota.veiculo.VeiculoConferenciaDao;
 import br.com.zalf.prolog.webservice.interno.implantacao.conferencia.frota.veiculo.VeiculoConferenciaDaoImpl;
+import br.com.zalf.prolog.webservice.interno.implantacao.conferencia.gente.colaborador.ColaboradorConferenciaDao;
+import br.com.zalf.prolog.webservice.interno.implantacao.conferencia.gente.colaborador.ColaboradorConferenciaDaoImpl;
 import br.com.zalf.prolog.webservice.log.LogDao;
 import br.com.zalf.prolog.webservice.log.LogDaoImpl;
 import br.com.zalf.prolog.webservice.messaging.push.PushDao;
@@ -231,7 +235,9 @@ public final class Injection {
     }
 
     @NotNull
-    public static ApresentacaoDao provideApresentacaoDao() { return new ApresentacaoDaoImpl();}
+    public static ApresentacaoDao provideApresentacaoDao() {
+        return new ApresentacaoDaoImpl();
+    }
 
     @NotNull
     public static IntegracaoDao provideIntegracaoDao() {
@@ -530,6 +536,15 @@ public final class Injection {
     @NotNull
     public static PneuTransferenciaDao providePneuTransferenciaDao() {
         return new PneuTransferenciaDaoImpl();
+    }
+
+
+    public static ColaboradorConferenciaDao provideColaboradorConferenciaDao() {
+        return new ColaboradorConferenciaDaoImpl(Injection.provideConferenciaDao());
+    }
+
+    private static ConferenciaDao provideConferenciaDao() {
+        return new ConferenciaDaoImpl();
     }
 
     @NotNull

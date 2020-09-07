@@ -44,14 +44,14 @@ public final class PneuPlanilhaReader {
         settings.setNumberOfRowsToSkip(36);
         final CsvParser parser = new CsvParser(settings);
         final List<String[]> rows = parser.parseAll(file);
-        final List<PneuPlanilha> veiculoPlanilha = new ArrayList<>();
+        final List<PneuPlanilha> pneuPlanilha = new ArrayList<>();
         for (final String[] row : rows) {
             final PneuPlanilha item = read(row);
             if (item != null) {
-                veiculoPlanilha.add(item);
+                pneuPlanilha.add(item);
             }
         }
-        return veiculoPlanilha;
+        return pneuPlanilha;
     }
 
     private static PneuPlanilha read(@NotNull final String[] linha) {

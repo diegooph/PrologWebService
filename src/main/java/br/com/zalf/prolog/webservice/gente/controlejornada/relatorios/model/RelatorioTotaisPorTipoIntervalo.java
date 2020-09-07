@@ -8,10 +8,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -24,32 +21,55 @@ public class RelatorioTotaisPorTipoIntervalo implements CsvReport {
     private static final int COLUNA_NOME_COLABORADOR = 1;
     private static final int COLUNA_CARGO_COLABORADOR = 2;
     private static final String ZERO_HORAS = "00:00:00";
-    private List<String> header;
-    private Map<String, List<String>> table;
+    private static int COLUNA_JORNADA_BRUTA;
+    private static int COLUNA_JORNADA_LIQUIDA;
     @NotNull
     private final ResultSet rSet;
     @NotNull
-    private final List<TipoMarcacao> tiposIntervalos;
+    private final List<TipoMarcacao> tiposIntervalosParaExibir;
+    @NotNull
+    private final List<TipoMarcacao> todosIntervalosAtivos;
     @NotNull
     private final Map<Long, Integer> tipoIntervaloTotalIndexColuna;
     @NotNull
     private final Map<Long, Integer> tipoIntervaloHorasNoturnasIndexColuna;
+    @NotNull
+    private final Map<String, Long> totaisJornadaBruta;
+    @NotNull
+    private final Map<String, Long> totaisJornadaLiquida;
+    @Nullable
+    private TipoMarcacao tipoJornada;
+    @Nullable
+    private Set<Long> tiposDescontadosJornadaBruta;
+    @Nullable
+    private Set<Long> tiposDescontadosJornadaLiquida;
+    @Nullable
+    private List<String> header;
+    @Nullable
+    private Map<String, List<Object>> table;
 
     public RelatorioTotaisPorTipoIntervalo(@NotNull final ResultSet rSet,
-                                           @NotNull final List<TipoMarcacao> tiposIntervalos,
+                                           @NotNull final List<TipoMarcacao> todosIntervalos,
                                            @Nullable final Long codTipoIntervaloFiltrado) {
         this.rSet = rSet;
         if (codTipoIntervaloFiltrado != null) {
             // Se tiver filtrado por algum tipo de intervalo, devemos remover os outros tipos.
-            this.tiposIntervalos = tiposIntervalos
+            this.tiposIntervalosParaExibir = todosIntervalos
                     .stream()
                     .filter(tipoIntervalo -> tipoIntervalo.getCodigo().equals(codTipoIntervaloFiltrado))
                     .collect(Collectors.toList());
         } else {
-            this.tiposIntervalos = tiposIntervalos;
+            this.tiposIntervalosParaExibir = todosIntervalos;
         }
-        this.tipoIntervaloTotalIndexColuna = new HashMap<>(tiposIntervalos.size());
-        this.tipoIntervaloHorasNoturnasIndexColuna = new HashMap<>(tiposIntervalos.size());
+        // Também é registrado todos os intervalos ativos, para poder usá-los no cálculo de total de jornada bruta
+        // e líquida.
+        this.todosIntervalosAtivos = todosIntervalos;
+        this.tipoIntervaloTotalIndexColuna = new HashMap<>(this.tiposIntervalosParaExibir.size());
+        this.tipoIntervaloHorasNoturnasIndexColuna = new HashMap<>(this.tiposIntervalosParaExibir.size());
+        // Os maps dos totais das jornadas são uma relação de <cpfColaborador, totalJornada>
+        this.totaisJornadaBruta = new HashMap<>();
+        this.totaisJornadaLiquida = new HashMap<>();
+        setupTiposDescontados();
     }
 
     @NotNull
@@ -79,53 +99,134 @@ public class RelatorioTotaisPorTipoIntervalo implements CsvReport {
         while (rSet.next()) {
             addInfosIntervaloToTable();
         }
+
+        // Neste ponto as jornadas já estão calculadas, em Long. Então, convertemos para duration e setamos na table.
+        for (final String cpf : table.keySet()) {
+            for (int i = COLUNA_CARGO_COLABORADOR + 1; i < table.get(cpf).size(); i++) {
+                final long valorMarcacao = ((Long) table.get(cpf).get(i));
+                table.get(cpf).set(i, valorMarcacao != 0
+                        ? Durations.formatDurationHandleNegative(valorMarcacao, Durations.Format.HH_MM_SS)
+                        : ZERO_HORAS);
+            }
+            if (tipoJornada != null) {
+                final Long totalJornadaBruta = totaisJornadaBruta.get(cpf);
+                table.get(cpf).set(COLUNA_JORNADA_BRUTA, totalJornadaBruta != 0
+                        ? Durations.formatDurationHandleNegative(totalJornadaBruta, Durations.Format.HH_MM_SS)
+                        : ZERO_HORAS);
+                final Long totalJornadaLiquida = totaisJornadaLiquida.get(cpf);
+                table.get(cpf).set(COLUNA_JORNADA_LIQUIDA, totalJornadaLiquida != 0
+                        ? Durations.formatDurationHandleNegative(totalJornadaLiquida, Durations.Format.HH_MM_SS)
+                        : ZERO_HORAS);
+            } else {
+                table.get(cpf).set(COLUNA_JORNADA_BRUTA, "-");
+                table.get(cpf).set(COLUNA_JORNADA_LIQUIDA, "-");
+            }
+        }
     }
 
     @SuppressWarnings("Duplicates")
     private void addInfosIntervaloToTable() throws SQLException {
         final String cpfColaborador = rSet.getString("CPF_COLABORADOR");
-        final List<String> linhaAtual = table.get(cpfColaborador);
+        //noinspection ConstantConditions
+        final List<Object> linhaAtual = table.get(cpfColaborador);
         if (linhaAtual != null) {
-            final long tempoTotalMillis = rSet.getLong("TEMPO_TOTAL_MILLIS");
-            final long tempoTotalHorasNoturnasMillis = rSet.getLong("TEMPO_TOTAL_HORAS_NOTURNAS_MILLIS");
+            final long tempoTotalMillis = rSet.getLong("TEMPO_MARCACAO_MILLIS");
+            final long tempoTotalHorasNoturnasMillis = rSet.getLong("TEMPO_MARCACAO_HORAS_NOTURNAS_MILLIS");
             final Long codTipoIntervalo = rSet.getLong("COD_TIPO_INTERVALO");
             // A query retorna o tempo total em todos os tipos de intervalo, não só os que o colaborador marcou. Caso
             // um filtro esteja aplicado, podemos não ter a coluna para um determinado tipo no relatório, por isso
             // precisamos verificar se é diferente de null.
             final Integer colunaTotal = tipoIntervaloTotalIndexColuna.get(codTipoIntervalo);
             if (colunaTotal != null) {
-                linhaAtual.set(colunaTotal, tempoTotalMillis != 0
-                        ? Durations.formatDurationHandleNegative(tempoTotalMillis, Durations.Format.HH_MM_SS)
-                        : ZERO_HORAS);
+                linhaAtual.set(colunaTotal,
+                        linhaAtual.get(colunaTotal) != null
+                                ? tempoTotalMillis + ((Long) linhaAtual.get(colunaTotal))
+                                : tempoTotalMillis);
             }
             final Integer colunaHorasNoturnas = tipoIntervaloHorasNoturnasIndexColuna.get(codTipoIntervalo);
             if (colunaHorasNoturnas != null) {
-                linhaAtual.set(colunaHorasNoturnas, tempoTotalHorasNoturnasMillis != 0
-                        ? Durations.formatDurationHandleNegative(tempoTotalHorasNoturnasMillis, Durations.Format.HH_MM_SS)
-                        : ZERO_HORAS);
+                linhaAtual.set(colunaHorasNoturnas, linhaAtual.get(colunaHorasNoturnas) != null
+                        ? tempoTotalHorasNoturnasMillis + ((Long) linhaAtual.get(colunaHorasNoturnas))
+                        : tempoTotalHorasNoturnasMillis);
+            }
+            if (rSet.getBoolean("MARCACAO_DENTRO_JORNADA") || rSet.getBoolean("TIPO_JORNADA")) {
+                recalculaTotaisJornada(cpfColaborador, codTipoIntervalo, tempoTotalMillis);
             }
         } else {
-            final List<String> linha = criaLinha();
+            final List<Object> linha = criaLinha();
             linha.set(COLUNA_CPF_COLABORADOR, cpfColaborador);
             linha.set(COLUNA_NOME_COLABORADOR, rSet.getString("NOME"));
             linha.set(COLUNA_CARGO_COLABORADOR, rSet.getString("CARGO"));
-            final long tempoTotalMillis = rSet.getLong("TEMPO_TOTAL_MILLIS");
-            final long tempoTotalHorasNoturnasMillis = rSet.getLong("TEMPO_TOTAL_HORAS_NOTURNAS_MILLIS");
+            final long tempoTotalMillis = rSet.getLong("TEMPO_MARCACAO_MILLIS");
+            final long tempoTotalHorasNoturnasMillis = rSet.getLong("TEMPO_MARCACAO_HORAS_NOTURNAS_MILLIS");
             final Long codTipoIntervalo = rSet.getLong("COD_TIPO_INTERVALO");
             final Integer coluna = tipoIntervaloTotalIndexColuna.get(codTipoIntervalo);
             if (coluna != null) {
-                linha.set(coluna, tempoTotalMillis != 0
-                        ? Durations.formatDurationHandleNegative(tempoTotalMillis, Durations.Format.HH_MM_SS)
-                        : ZERO_HORAS);
+                linha.set(coluna,
+                        linha.get(coluna) != null
+                                ? tempoTotalMillis + ((Long) linha.get(coluna))
+                                : tempoTotalMillis);
             }
             final Integer colunaHorasNoturnas = tipoIntervaloHorasNoturnasIndexColuna.get(codTipoIntervalo);
             if (colunaHorasNoturnas != null) {
-                linha.set(colunaHorasNoturnas, tempoTotalHorasNoturnasMillis != 0
-                        ? Durations.formatDurationHandleNegative(tempoTotalHorasNoturnasMillis, Durations.Format.HH_MM_SS)
-                        : ZERO_HORAS);
+                linha.set(colunaHorasNoturnas,
+                        linha.get(colunaHorasNoturnas) != null
+                                ? tempoTotalHorasNoturnasMillis + ((Long) linha.get(colunaHorasNoturnas))
+                                : tempoTotalHorasNoturnasMillis);
+            }
+            if (rSet.getBoolean("MARCACAO_DENTRO_JORNADA") || rSet.getBoolean("TIPO_JORNADA")) {
+                recalculaTotaisJornada(cpfColaborador, codTipoIntervalo, tempoTotalMillis);
             }
             table.put(cpfColaborador, linha);
         }
+    }
+
+    private void recalculaTotaisJornada(@NotNull final String cpfColaborador,
+                                        @NotNull final Long codTipoIntervalo,
+                                        final long tempoTotalMillis) {
+        // Aqui utilizamos o merge porque ele já realiza a soma do valor anterior com o novo valor que passamos
+        // por parâmetro. Além disso, no caso de haver um nulo para uma key, ele já cria uma entrada e associa o valor
+        // que passamos como parâmetro. Para substrações, não existe algo oposto a "sum". Sendo assim, passamos um
+        // valor negativo, para permitir, somando o valor anterior com um negativo.
+        if (this.tipoJornada != null && this.tipoJornada.getCodigo().equals(codTipoIntervalo)) {
+            totaisJornadaBruta.merge(cpfColaborador, tempoTotalMillis, Long::sum);
+            totaisJornadaLiquida.merge(cpfColaborador, tempoTotalMillis, Long::sum);
+        } else if (verifyIfDescontaJornadaBruta(codTipoIntervalo)) {
+            totaisJornadaBruta.merge(cpfColaborador, -tempoTotalMillis, Long::sum);
+            totaisJornadaLiquida.merge(cpfColaborador, -tempoTotalMillis, Long::sum);
+        } else if (verifyIfDescontaJornadaLiquida(codTipoIntervalo)) {
+            totaisJornadaLiquida.merge(cpfColaborador, -tempoTotalMillis, Long::sum);
+        }
+    }
+
+    private boolean verifyIfDescontaJornadaBruta(@NotNull final Long codigo) {
+        if (tiposDescontadosJornadaBruta != null) {
+            return tiposDescontadosJornadaBruta.contains(codigo);
+        }
+        return false;
+    }
+
+    private boolean verifyIfDescontaJornadaLiquida(@NotNull final Long codigo) {
+        if (tiposDescontadosJornadaLiquida != null) {
+            return tiposDescontadosJornadaLiquida.contains(codigo);
+        }
+        return false;
+    }
+
+    private void setupTiposDescontados() {
+        this.todosIntervalosAtivos.forEach(ti -> {
+            if (ti.isTipoJornada()) {
+                this.tipoJornada = ti;
+                if (ti.getFormulaCalculoJornada() != null) {
+                    this.tiposDescontadosJornadaBruta = new HashSet<>();
+                    ti.getFormulaCalculoJornada().getTiposDescontadosJornadaBruta().forEach(
+                            tdjb -> this.tiposDescontadosJornadaBruta.add(tdjb.getCodTipo()));
+                    this.tiposDescontadosJornadaLiquida = new HashSet<>();
+                    ti.getFormulaCalculoJornada().getTiposDescontadosJornadaLiquida().forEach(
+                            tdjl -> this.tiposDescontadosJornadaLiquida.add(tdjl.getCodTipo()));
+                }
+            }
+        });
     }
 
     @NotNull
@@ -134,22 +235,27 @@ public class RelatorioTotaisPorTipoIntervalo implements CsvReport {
         header.add("CPF");
         header.add("NOME");
         header.add("CARGO");
-        for (final TipoMarcacao tipoIntervalo : tiposIntervalos) {
+        for (final TipoMarcacao tipoIntervalo : tiposIntervalosParaExibir) {
             header.add(String.format("%d - %s - TOTAL", tipoIntervalo.getCodigoPorUnidade(), tipoIntervalo.getNome()));
             tipoIntervaloTotalIndexColuna.put(tipoIntervalo.getCodigo(), header.size() - 1);
             header.add(String.format("%d - %s  - HORAS NOTURNAS", tipoIntervalo.getCodigoPorUnidade(), tipoIntervalo.getNome()));
             tipoIntervaloHorasNoturnasIndexColuna.put(tipoIntervalo.getCodigo(), header.size() - 1);
         }
+        header.add("JORNADA BRUTA");
+        COLUNA_JORNADA_BRUTA = header.size() - 1;
+        header.add("JORNADA LÍQUIDA");
+        COLUNA_JORNADA_LIQUIDA = header.size() - 1;
         return header;
     }
 
     @NotNull
-    private List<String> criaLinha() {
-        final List<String> linha = new ArrayList<>(header.size());
+    private List<Object> criaLinha() {
+        //noinspection ConstantConditions
+        final List<Object> linha = new ArrayList<>(header.size());
         // Inicializa todas as linhas com null. Caso o colaborador não tenha marcado algum tipo de intervalo, esse valor
         // será enviado no relatório.
         for (int i = 0; i < header.size(); i++) {
-            linha.add(null);
+            linha.add(0L);
         }
         return linha;
     }
