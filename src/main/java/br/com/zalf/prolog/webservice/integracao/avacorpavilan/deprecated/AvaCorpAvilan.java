@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated;
 
-import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.errorhandling.exception.BloqueadoIntegracaoException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.TipoAfericaoNotSupported;
@@ -27,8 +26,8 @@ import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.aferica
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.cadastro.ArrayOfVeiculo;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.cadastro.TipoVeiculoAvilan;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.checklist.ArrayOfFarolDia;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.checklist.ArrayOfVeiculoQuestao;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.checklist.ChecklistFiltro;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.ModelosChecklistBloqueados;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.data.*;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.requester.AvaCorpAvilanRequester;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
@@ -38,10 +37,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.ws.rs.core.Response;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -65,20 +61,6 @@ public final class AvaCorpAvilan extends Sistema {
                          @NotNull final String userToken) {
         super(integradorProLog, sistemaKey, recursoIntegrado, userToken);
         this.requester = requester;
-    }
-
-    @Override
-    @NotNull
-    public Long insertChecklist(@NotNull final ChecklistInsercao checklist,
-                                final boolean foiOffline,
-                                final boolean deveAbrirOs) throws Throwable {
-        if (checklist.getKmColetadoVeiculo() == 0) {
-            throw new AvaCorpAvilanException(
-                    "O KM enviado não pode ser 0!",
-                    "A integração com a Avilan não aceita mais KMs 0");
-        }
-
-        return Injection.provideChecklistDao().insert(checklist, foiOffline, deveAbrirOs);
     }
 
     @NotNull
