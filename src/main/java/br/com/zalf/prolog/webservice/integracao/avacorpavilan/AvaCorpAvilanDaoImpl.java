@@ -28,7 +28,7 @@ public final class AvaCorpAvilanDaoImpl extends DatabaseConnection implements Av
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("select * " +
-                    "from integracao.func_check_os_busca_oss_pendentes_sincronia(" +
+                    "from integracao.func_checklist_os_busca_oss_pendentes_sincronia(" +
                     "f_data_inicio => ?," +
                     "f_data_fim => ?);");
             if (dataInicial == null) {
