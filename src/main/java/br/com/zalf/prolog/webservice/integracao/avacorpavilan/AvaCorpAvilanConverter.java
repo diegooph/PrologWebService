@@ -17,13 +17,15 @@ public final class AvaCorpAvilanConverter {
     }
 
     @NotNull
-    public static OrdemServicoAvaCorpAvilan convert(@NotNull final OsIntegracao osIntegracao) {
+    public static OrdemServicoAvaCorpAvilan convert(@NotNull final OsIntegracao osIntegracao,
+                                                    @NotNull final Long codigoUsuario) {
         return new OrdemServicoAvaCorpAvilan(
                 osIntegracao.getCodFilial(),
                 osIntegracao.getCodUnidade(),
                 osIntegracao.getCodOsProlog(),
                 osIntegracao.getDataHoraAbertura(),
                 osIntegracao.getDataHoraAbertura(),
+                String.valueOf(codigoUsuario.intValue()),
                 osIntegracao.getPlacaVeiculo(),
                 osIntegracao.getKmVeiculoNaAbertura(),
                 osIntegracao.getCpfColaboradorChecklist(),

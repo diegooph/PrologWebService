@@ -46,7 +46,7 @@ public final class OrdemServicoAvaCorpAvilan {
     private final LocalDateTime dataHoraInclusao;
     @NotNull
     @SerializedName("CodigoUsuario")
-    private final String codigoUsuario = COD_USUARIO_AVILAN;
+    private final String codigoUsuario;
     @NotNull
     @SerializedName("Veiculo")
     private final String placaVeiculo;

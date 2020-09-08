@@ -67,7 +67,9 @@ public final class IntegracaoOsTask implements Runnable {
         for (final OsIntegracao osIntegracao : osSincronizar) {
             try {
                 // Envia Ordem de Serviço para o ERP.
-                requester.insertChecklistOs(apiAutenticacaoHolder, AvaCorpAvilanConverter.convert(osIntegracao));
+                requester.insertChecklistOs(
+                        apiAutenticacaoHolder,
+                        AvaCorpAvilanConverter.convert(osIntegracao, apiAutenticacaoHolder.getApiShortCode()));
                 // Marca Ordem de Serviço como enviada no BD.
                 integracaoDao.atualizaStatusOsIntegrada(
                         Collections.singletonList(

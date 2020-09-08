@@ -21,7 +21,6 @@ public final class AvaCorpAvilanConstants {
     // Informações estáticas utilizadas para criar objetos da Avilan.
     public static final String COD_GRUPO_AVILAN = "1";
     public static final String COD_EMPRESA_AVILAN = "1";
-    public static final String COD_USUARIO_AVILAN = "100";
     public static final String COD_TIPO_MANUTENCAO_AVILAN = "2";
     public static final String COD_OBJETIVO_ORDEM_SERVICO_AVILAN = "1";
 }
