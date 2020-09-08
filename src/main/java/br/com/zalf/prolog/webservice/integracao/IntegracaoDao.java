@@ -2,6 +2,8 @@ package br.com.zalf.prolog.webservice.integracao;
 
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.geral.unidade._model.Unidade;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.ModelosChecklistBloqueados;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.OsIntegracao;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.ApiAutenticacaoHolder;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
@@ -79,6 +81,24 @@ public interface IntegracaoDao {
      * Para identificar a URL correta, utilizamos o {@code codEmpresa} e também o {@code sistemaKey}, contendo a
      * chave do sistema integrado, e o {@code metodoIntegrado} identificando para qual método será utilizada a URL.
      *
+     * @param codEmpresa      Código da empresa integrada que iremos buscar o método.
+     * @param sistemaKey      Chave do Sistema que a empresa utiliza.
+     * @param metodoIntegrado Metodo que irá utilizar a URL.
+     * @return Uma String contendo o URL completa do endpoint onde a integração irá comunicar.
+     * @throws Throwable Se algum erro acontecer na busca da URL.
+     */
+    @NotNull
+    String getUrl(@NotNull final Long codEmpresa,
+                  @NotNull final SistemaKey sistemaKey,
+                  @NotNull final MetodoIntegrado metodoIntegrado) throws Throwable;
+
+    /**
+     * Método utilizado para buscar a URL para qual a integração deverá se comunicar. A URL é completa, contendo a
+     * <code>baseUrl</code> e também o <code>path</code> do endpoint que a integração irá se comunicar.
+     * <p>
+     * Para identificar a URL correta, utilizamos o {@code codEmpresa} e também o {@code sistemaKey}, contendo a
+     * chave do sistema integrado, e o {@code metodoIntegrado} identificando para qual método será utilizada a URL.
+     *
      * @param conn            Conexão que será utilizada para buscar os dados.
      * @param codEmpresa      Código da empresa integrada que iremos buscar o método.
      * @param sistemaKey      Chave do Sistema que a empresa utiliza.
@@ -103,6 +123,21 @@ public interface IntegracaoDao {
     @NotNull
     String getCodAuxiliarByCodUnidadeProlog(@NotNull final Connection conn,
                                             @NotNull final Long codUnidadeProlog) throws Throwable;
+
+    /**
+     * Holder contendo as informações necessárias para autenticação de requisições.
+     *
+     * @param codEmpresa      Código da empresa integrada que iremos buscar as informações para autenticar.
+     * @param sistemaKey      Chave do Sistema que a empresa utiliza.
+     * @param metodoIntegrado Metodo que será utilizado.
+     * @return {@link ApiAutenticacaoHolder Objeto} contendo as informações a serem utilizadas para autenticar a
+     * requisição.
+     * @throws Throwable Se algum erro ocorrer.
+     */
+    @NotNull
+    ApiAutenticacaoHolder getApiAutenticacaoHolder(@NotNull final Long codEmpresa,
+                                                   @NotNull final SistemaKey sistemaKey,
+                                                   @NotNull final MetodoIntegrado metodoIntegrado) throws Throwable;
 
     /**
      * Holder contendo as informações necessárias para autenticação de requisições.
@@ -163,4 +198,83 @@ public interface IntegracaoDao {
      * @throws Throwable Se algum erro acontecer.
      */
     boolean getConfigAberturaServicoPneuIntegracao(@NotNull final Long codUnidade) throws Throwable;
+
+    /**
+     * Método utilizado para buscar os códigos de modelos de checklist que estão bloqueados para integração.
+     *
+     * @param codUnidade Código da unidade.
+     * @return Um objeto contendo a lista dos códigos de modelo bloqueados para uma unidade..
+     * @throws Throwable Se algum erro acontecer.
+     */
+    @NotNull
+    ModelosChecklistBloqueados getModelosChecklistBloqueados(@NotNull final Long codUnidade) throws Throwable;
+
+    /**
+     * Método para inserir uma O.S na tabela de pendencia sicronia, com a finalidade de realizar a sincronia
+     * com um sistema terceiro.
+     *
+     * @param codUnidade código da unidade da ordem ser serviço a sicronizar.
+     * @param codOs      um código de ordem de serviço a sincronizar.
+     * @return Um código interno de OS do prolog.
+     * @throws Throwable Se qualquer erro ocorrer.
+     */
+    @NotNull
+    Long insertOsPendente(@NotNull final Long codUnidade, @NotNull final Long codOs) throws Throwable;
+
+    /**
+     * Método com a responsabilidade de buscar todas as informações pertinentes à integração de uma OS baseado
+     * em um código.
+     *
+     * @param codOs um código de ordem de serviço a ser buscada.
+     * @return Um objeto complexo contendo as informações da OS.
+     * @throws Throwable Se qualquer erro ocorrer.
+     */
+    @NotNull
+    OsIntegracao getOsIntegracaoByCod(@NotNull final Long codOs) throws Throwable;
+
+    /**
+     * Busca todas as ordens de serviço que estão pendentes de sincronização e não estão marcadas como bloqueadas.
+     *
+     * @return Uma lista de códigos prolog de ordem de serviço.
+     * @throws Throwable Se qualquer erro ocorrer.
+     */
+    @NotNull
+    List<Long> buscaCodOrdensServicoPendenteSincronizacao() throws Throwable;
+
+    /**
+     * Método com a responsabilidade de atualizar o status de uma O.S integrada.
+     *
+     * @param codsInternoOsProlog   Uma lista de códigos internos de ordens de serviços a serem atualizadas.
+     * @param pendente              indica se a O.Ss devem ser atualizadas como pendentes.
+     * @param bloqueada             indica se a O.Ss devem ser setadas como bloqueadas.
+     * @param incrementarTentativas indica se deve incrementar a quantidade de tentativas na O.S.
+     * @throws Throwable Se qualquer erro ocorrer.
+     */
+    void atualizaStatusOsIntegrada(@NotNull final List<Long> codsInternoOsProlog,
+                                   final boolean pendente,
+                                   final boolean bloqueada,
+                                   final boolean incrementarTentativas) throws Throwable;
+
+    /**
+     * Método com a responsabilidade de atualizar a O.S como pendente, logar mensagem de erro e incrementar
+     * a exception.
+     *
+     * @param codInternoOsProlog um código interno de ordem de serviço a ser buscada.
+     * @param throwable          a exception que estourou o erro.
+     * @throws Throwable Se qualquer erro ocorrer.
+     */
+    void logarStatusOsComErro(@NotNull final Long codInternoOsProlog,
+                              @NotNull final Throwable throwable) throws Throwable;
+
+    /**
+     * Método com a responsabilidade de buscar os códigos de Ordens de serviços com base nos códigos de itens de OS.
+     * A function retorna apenas as Ordens de serviços que de fato devem ser sincronizadas. Ordens de serviços que não
+     * estão na tabela de integração como pendentes, não irão retornar neste método.
+     *
+     * @param codItensProlog Lista de códigos de itens de OS de Prolog.
+     * @return Uma lista de códigos internos de Ordens de serviços do Prolog.
+     * @throws Throwable Se algum erro acontecer.
+     */
+    @NotNull
+    List<Long> buscaCodOsByCodItem(@NotNull final List<Long> codItensProlog) throws Throwable;
 }

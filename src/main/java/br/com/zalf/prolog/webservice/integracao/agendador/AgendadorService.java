@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.integracao.agendador;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.IntegracaoOsTask;
 import br.com.zalf.prolog.webservice.integracao.praxio.ChecklistItensNokGlobusTask;
 import br.com.zalf.prolog.webservice.integracao.praxio.IntegracaoPraxioService;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.GlobusPiccoloturRequesterImpl;
@@ -11,6 +12,7 @@ import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.Chec
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.concurrent.Executors;
 
 /**
@@ -19,6 +21,7 @@ import java.util.concurrent.Executors;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public final class AgendadorService implements SincroniaChecklistListener {
+
     @NotNull
     private static final String TAG = AgendadorService.class.getSimpleName();
 
@@ -45,6 +48,25 @@ public final class AgendadorService implements SincroniaChecklistListener {
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao tentar sincronizar o checklist");
+        }
+    }
+
+    public void sincronizaOrdensServicos() {
+        try {
+            final List<Long> ordensServicoParaSincronizar =
+                    Injection
+                            .provideIntegracaoDao()
+                            .buscaCodOrdensServicoPendenteSincronizacao();
+            if (ordensServicoParaSincronizar.isEmpty()) {
+                return;
+            }
+            // Executamos a sincronia utilizando a thread específica para esse serviço.
+            Executors.newSingleThreadExecutor().execute(new IntegracaoOsTask(ordensServicoParaSincronizar));
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao tentar sincronizar as O.S's através do agendador", t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao tentar sincronizar as O.S's");
         }
     }
 
@@ -78,4 +100,5 @@ public final class AgendadorService implements SincroniaChecklistListener {
             sincronizaChecklists();
         }
     }
+
 }

@@ -49,7 +49,8 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
 
     @SuppressWarnings("ConstantConditions")
     @Override
-    public void processaChecklistRealizado(@NotNull final Connection conn,
+    @Nullable
+    public Long processaChecklistRealizado(@NotNull final Connection conn,
                                            @NotNull final Long codChecklistInserido,
                                            @NotNull final ChecklistInsercao checklist) throws Throwable {
         final Map<Long, List<InfosAlternativaAberturaOrdemServico>> infosAberturaMap =
@@ -60,7 +61,7 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
                         checklist.getPlacaVeiculo());
         final TipoOutrosSimilarityFinder similarityFinder = new TipoOutrosSimilarityFinder(StringMetrics.jaro());
 
-        new OrdemServicoProcessor(
+        return new OrdemServicoProcessor(
                 codChecklistInserido,
                 checklist,
                 infosAberturaMap,

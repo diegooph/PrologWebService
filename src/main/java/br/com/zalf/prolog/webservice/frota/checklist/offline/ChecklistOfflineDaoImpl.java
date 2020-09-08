@@ -5,6 +5,7 @@ import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.model.*;
+import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.InfosChecklistInserido;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
@@ -28,6 +29,13 @@ public class ChecklistOfflineDaoImpl extends DatabaseConnection implements Check
     @NotNull
     @Override
     public Long insertChecklistOffline(@NotNull final ChecklistInsercao checklist) throws Throwable {
+        return insereChecklistOffline(checklist).getCodChecklist();
+    }
+
+    @NotNull
+    @Override
+    public InfosChecklistInserido insereChecklistOffline(@NotNull final ChecklistInsercao checklist)
+            throws Throwable {
         Connection conn = null;
         try {
             conn = getConnection();
@@ -37,11 +45,11 @@ public class ChecklistOfflineDaoImpl extends DatabaseConnection implements Check
             final Optional<Long> optionalCodChecklist = getCodChecklistIfExists(conn, checklist);
             if (optionalCodChecklist.isPresent()) {
                 conn.commit();
-                return optionalCodChecklist.get();
+                return new InfosChecklistInserido(optionalCodChecklist.get(), true, null);
             } else {
-                final Long codChecklistInserido = internalInsertChecklist(conn, checklist);
+                final InfosChecklistInserido infosChecklistInserido = internalInsertChecklist(conn, checklist);
                 conn.commit();
-                return codChecklistInserido;
+                return infosChecklistInserido;
             }
         } catch (final Throwable t) {
             if (conn != null) {
@@ -334,8 +342,8 @@ public class ChecklistOfflineDaoImpl extends DatabaseConnection implements Check
     }
 
     @NotNull
-    private Long internalInsertChecklist(@NotNull final Connection conn,
-                                         @NotNull final ChecklistInsercao checklist) throws Throwable {
-       return Injection.provideChecklistDao().insert(conn, checklist, true, true);
+    private InfosChecklistInserido internalInsertChecklist(@NotNull final Connection conn,
+                                                           @NotNull final ChecklistInsercao checklist) throws Throwable {
+        return Injection.provideChecklistDao().insertChecklist(conn, checklist, true, true);
     }
 }

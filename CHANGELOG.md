@@ -1,6 +1,15 @@
 Change Log
 ==========
 
+## Stage
+## Features
+* Cria estrutura para salvar O.S pendente de envio (PLI-180)
+* Cria envio de O.S para Avilan via agendador e abertura de O.S (PL-2903)
+* Cria envio e reabertura de pendencia da O.S ao fechar uma O.S, na Avilan (PL-3080)
+* Cria endpoint para solicitar sincronia de ordens de serviços - Avilan (PLI-186)
+* Insere código auxiliar na alternativa do modelo checklist (PLI-178)
+* Cria estrutura de Logs de requisições e respostas (PL-2904)
+
 <a name="v1.1.4"></a>
 ## Version [v1.1.4](https://github.com/luizfp/PrologWebService/compare/v1.1.3...v1.1.4) (release-date) [unreleased]
 

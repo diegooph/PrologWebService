@@ -33,9 +33,11 @@ public interface OrdemServicoDao {
      *
      * @param conn      Conexão com o banco atualmente aberta.
      * @param checklist O checklist que foi realizado.
+     * @return Retorna o código da O.S, se criou. Caso contrário, retorna null.
      * @throws Throwable Se ocorrer algum erro no processamento das informações.
      */
-    void processaChecklistRealizado(@NotNull final Connection conn,
+    @Nullable
+    Long processaChecklistRealizado(@NotNull final Connection conn,
                                     @NotNull final Long codChecklistInserido,
                                     @NotNull final ChecklistInsercao checklist) throws Throwable;
 
