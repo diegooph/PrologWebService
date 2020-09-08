@@ -1,19 +1,16 @@
 Change Log
 ==========
 
-## Stage
-## Features
-* Cria nova estrutura de integração de Ordem de Serviço da Avilan (PL-2884)
-* Cria estrutura de Logs de requisições e respostas (PL-2904)
-
-## Refactor
-* Insere código auxiliar na alternativa do modelo checklist (PLI-178)
-
 <a name="v1.1.4"></a>
 ## Version [v1.1.4](https://github.com/luizfp/PrologWebService/compare/v1.1.3...v1.1.4) (release-date) [unreleased]
 
 ### Features
 * Cria métodos para o import automatizado de colaboradores (PL-2460)
+* Cria nova estrutura de integração de Ordem de Serviço da Avilan (PL-2884)
+* Cria estrutura de Logs de requisições e respostas (PL-2904)
+
+## Refactor
+* Insere código auxiliar na alternativa do modelo checklist (PLI-178)
 
 <a name="v1.1.3"></a>
 ## Version [v1.1.3](https://github.com/luizfp/PrologWebService/compare/v1.1.2...v1.1.3) (2020-08-27)
