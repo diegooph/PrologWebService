@@ -2,7 +2,7 @@ Change Log
 ==========
 
 <a name="v1.1.4"></a>
-## Version [v1.1.4](https://github.com/luizfp/PrologWebService/compare/v1.1.3...v1.1.4) (release-date) [unreleased]
+## Version [v1.1.4](https://github.com/luizfp/PrologWebService/compare/v1.1.3...v1.1.4) (2020-09-07)
 
 ### Features
 * Cria métodos para o import automatizado de colaboradores (PL-2460)
