@@ -91,7 +91,6 @@ public final class ChecklistModeloConverter {
                 alternativas);
     }
 
-
     @NotNull
     public static ModeloChecklistRealizacao createModeloChecklistRealizacao(
             @NotNull final Long codUnidadeModeloChecklist,
@@ -165,7 +164,8 @@ public final class ChecklistModeloConverter {
                 rSet.getBoolean("ALTERNATIVA_TIPO_OUTROS"),
                 rSet.getInt("ORDEM_ALTERNATIVA"),
                 rSet.getBoolean("DEVE_ABRIR_ORDEM_SERVICO"),
-                AnexoMidiaChecklistEnum.fromString(rSet.getString("ANEXO_MIDIA")));
+                AnexoMidiaChecklistEnum.fromString(rSet.getString("ANEXO_MIDIA")),
+                rSet.getString("COD_AUXILIAR_ALTERNATIVA"));
     }
 
     @NotNull
@@ -228,4 +228,5 @@ public final class ChecklistModeloConverter {
         modeloChecklist.setAtivo(rSet.getBoolean("STATUS_ATIVO"));
         return modeloChecklist;
     }
+
 }

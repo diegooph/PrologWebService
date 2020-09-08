@@ -5,6 +5,8 @@ import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.ProLogCustomHeaders;
 import br.com.zalf.prolog.webservice.commons.util.StringUtils;
+import br.com.zalf.prolog.webservice.integracao.logger._model.RequestLogApi;
+import br.com.zalf.prolog.webservice.integracao.logger._model.ResponseLogApi;
 import org.apache.commons.io.IOUtils;
 import org.glassfish.jersey.server.ContainerRequest;
 import org.jetbrains.annotations.NotNull;
@@ -35,8 +37,9 @@ public final class IntegracaoRequestInterceptor implements ContainerRequestFilte
     @NotNull
     private static final String TAG = IntegracaoRequestInterceptor.class.getSimpleName();
     @NotNull
-    private static final String REQUEST_OBJECT = RequestLog.class.getName() + ".request_object";
+    private static final String REQUEST_OBJECT = RequestLogApi.class.getName() + ".request_object";
     private static final int STATUS_OK = 200;
+    private static final int STATUS_ERROR = 300;
 
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
@@ -46,7 +49,7 @@ public final class IntegracaoRequestInterceptor implements ContainerRequestFilte
 
         try {
             if (isJson(requestContext)) {
-                final RequestLog requestLog = new RequestLog(
+                final RequestLogApi requestLog = new RequestLogApi(
                         getHeaders(requestContext),
                         getPath(requestContext),
                         requestContext.getMethod(),
@@ -67,21 +70,21 @@ public final class IntegracaoRequestInterceptor implements ContainerRequestFilte
         }
 
         final String tokenIntegracao = getTokenIntegracao(requestContext);
-        RequestLog requestLog = null;
-        if (requestContext.getProperty(REQUEST_OBJECT) instanceof RequestLog) {
-            requestLog = (RequestLog) requestContext.getProperty(REQUEST_OBJECT);
+        RequestLogApi requestLog = null;
+        if (requestContext.getProperty(REQUEST_OBJECT) instanceof RequestLogApi) {
+            requestLog = (RequestLogApi) requestContext.getProperty(REQUEST_OBJECT);
         }
         if (requestLog == null || tokenIntegracao == null) {
             // Se não há um Objeto de Request ou não temos um token, não tem necessidade de salvar uma resposta avulsa.
             return;
         }
 
-        ResponseLog responseLog = null;
+        ResponseLogApi responseLog = null;
         if (responseContext != null) {
             try {
                 if (isJson(responseContext)) {
-                    final boolean isError = responseContext.getStatus() != STATUS_OK;
-                    responseLog = new ResponseLog(
+                    final boolean isError = verifyResponseStatus(responseContext.getStatus());
+                    responseLog = new ResponseLogApi(
                             getHeaders(responseContext),
                             getAnnotations(responseContext),
                             getEntityType(responseContext),
@@ -96,7 +99,7 @@ public final class IntegracaoRequestInterceptor implements ContainerRequestFilte
         }
 
         try {
-            Injection.provideLogDao().insertRequestResponseLog(tokenIntegracao, requestLog, responseLog);
+            Injection.provideLogDao().insertRequestResponseLogApi(tokenIntegracao, requestLog, responseLog);
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao inserir log de requisição no banco de dados", t);
         }
@@ -182,5 +185,9 @@ public final class IntegracaoRequestInterceptor implements ContainerRequestFilte
             return true;
         }
         return requestContext.getMediaType().toString().contains("application/json");
+    }
+
+    private boolean verifyResponseStatus(final int responseStatus) {
+        return responseStatus >= STATUS_OK && responseStatus < STATUS_ERROR;
     }
 }

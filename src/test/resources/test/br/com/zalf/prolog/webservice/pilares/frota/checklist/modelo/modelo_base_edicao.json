@@ -17,7 +17,8 @@
           "tipoOutros": false,
           "ordemExibicao": 1,
           "deveAbrirOrdemServico": true,
-          "anexoMidia": "BLOQUEADO"
+          "anexoMidia": "BLOQUEADO",
+          "codAuxiliar": "apenas_um_teste"
         },
         {
           "descricao": "Lâmpada queimada",
@@ -25,7 +26,8 @@
           "tipoOutros": false,
           "ordemExibicao": 2,
           "deveAbrirOrdemServico": true,
-          "anexoMidia": "BLOQUEADO"
+          "anexoMidia": "BLOQUEADO",
+          "codAuxiliar": "apenas_um_teste"
         },
         {
           "descricao": "Lanterna quebrada",
@@ -33,7 +35,8 @@
           "tipoOutros": false,
           "ordemExibicao": 3,
           "deveAbrirOrdemServico": true,
-          "anexoMidia": "BLOQUEADO"
+          "anexoMidia": "BLOQUEADO",
+          "codAuxiliar": "apenas_um_teste"
         },
         {
           "descricao": "Outros",
@@ -41,7 +44,8 @@
           "tipoOutros": true,
           "ordemExibicao": 4,
           "deveAbrirOrdemServico": false,
-          "anexoMidia": "BLOQUEADO"
+          "anexoMidia": "BLOQUEADO",
+          "codAuxiliar": "apenas_um_teste"
         }
       ]
     },
@@ -57,7 +61,8 @@
           "tipoOutros": false,
           "ordemExibicao": 1,
           "deveAbrirOrdemServico": true,
-          "anexoMidia": "BLOQUEADO"
+          "anexoMidia": "BLOQUEADO",
+          "codAuxiliar": "apenas_um_teste"
         },
         {
           "descricao": "Sensor não funciona",
@@ -65,7 +70,8 @@
           "tipoOutros": false,
           "ordemExibicao": 2,
           "deveAbrirOrdemServico": true,
-          "anexoMidia": "BLOQUEADO"
+          "anexoMidia": "BLOQUEADO",
+          "codAuxiliar": "apenas_um_teste"
         },
         {
           "descricao": "Outros",
@@ -73,7 +79,8 @@
           "tipoOutros": true,
           "ordemExibicao": 3,
           "deveAbrirOrdemServico": false,
-          "anexoMidia": "BLOQUEADO"
+          "anexoMidia": "BLOQUEADO",
+          "codAuxiliar": "apenas_um_teste"
         }
       ]
     }

@@ -22,6 +22,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.transferencia._model.realizacao.
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.MetodoIntegrado;
 import br.com.zalf.prolog.webservice.integracao.RecursoIntegrado;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.ModelosChecklistBloqueados;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.*;
 import br.com.zalf.prolog.webservice.integracao.praxio.movimentacao.GlobusPiccoloturLocalMovimento;
 import br.com.zalf.prolog.webservice.integracao.praxio.movimentacao.GlobusPiccoloturLocalMovimentoResponse;
@@ -70,8 +71,8 @@ public final class SistemaGlobusPiccolotur extends Sistema {
         try {
             // Devemos enviar para o Globus apenas o modelo de checklist existe na tabela de integração.
             // Verifica se modelo informado existe na tabela.
-            final boolean deveEnviarParaGlobus = getSistemaGlobusPiccoloturDaoImpl()
-                    .verificaModeloChecklistIntegrado(checklistNew.getCodUnidade(), checklistNew.getCodModelo());
+            final boolean deveEnviarParaGlobus
+                    = verificaModeloChecklistIntegrado(checklistNew.getCodUnidade(), checklistNew.getCodModelo());
 
             conn = connectionProvider.provideDatabaseConnection();
             conn.setAutoCommit(false);
@@ -415,6 +416,14 @@ public final class SistemaGlobusPiccolotur extends Sistema {
         } finally {
             connectionProvider.closeResources(conn);
         }
+    }
+
+    public boolean verificaModeloChecklistIntegrado(@NotNull final Long codUnidade,
+                                                    @NotNull final Long codModeloChecklist) throws Throwable {
+        final ModelosChecklistBloqueados modelosChecklistBloqueados = Injection
+                .provideIntegracaoDao()
+                .getModelosChecklistBloqueados(codUnidade);
+        return !modelosChecklistBloqueados.getCodModelosBloqueados().contains(codModeloChecklist);
     }
 
     @NotNull

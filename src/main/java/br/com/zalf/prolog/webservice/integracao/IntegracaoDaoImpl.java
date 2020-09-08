@@ -1,10 +1,15 @@
 package br.com.zalf.prolog.webservice.integracao;
 
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
+import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.ModelosChecklistBloqueados;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.OsIntegracao;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.ApiAutenticacaoHolder;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
 import com.google.common.base.Preconditions;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -91,7 +96,7 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
     @NotNull
     @Override
     public Long getCodEmpresaByTokenIntegracao(@NotNull final Connection conn,
-                                               @NotNull String tokenIntegracao) throws Throwable {
+                                               @NotNull final String tokenIntegracao) throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
@@ -131,6 +136,20 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
             }
         } finally {
             close(stmt, rSet);
+        }
+    }
+
+    @Override
+    @NotNull
+    public String getUrl(@NotNull final Long codEmpresa,
+                         @NotNull final SistemaKey sistemaKey,
+                         @NotNull final MetodoIntegrado metodoIntegrado) throws Throwable {
+        Connection conn = null;
+        try {
+            conn = getConnection();
+            return getUrl(conn, codEmpresa, sistemaKey, metodoIntegrado);
+        } finally {
+            close(conn);
         }
     }
 
@@ -179,6 +198,21 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
                     "codUnidadeProlog: " + codUnidadeProlog);
         } finally {
             close(stmt, rSet);
+        }
+    }
+
+    @NotNull
+    @Override
+    public ApiAutenticacaoHolder getApiAutenticacaoHolder(
+            @NotNull final Long codEmpresa,
+            @NotNull final SistemaKey sistemaKey,
+            @NotNull final MetodoIntegrado metodoIntegrado) throws Throwable {
+        Connection conn = null;
+        try {
+            conn = getConnection();
+            return getApiAutenticacaoHolder(conn, codEmpresa, sistemaKey, metodoIntegrado);
+        } finally {
+            close(conn);
         }
     }
 
@@ -301,6 +335,186 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
                 return rSet.getBoolean("DEVE_ABRIR_SERVICO_PNEU");
             } else {
                 throw new SQLException("Erro ao buscar configuração para a unidade");
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+    @NotNull
+    @Override
+    public Long insertOsPendente(@NotNull final Long codUnidade, @NotNull final Long codOs) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("select * from integracao.func_checklist_os_insert_os_pendente(" +
+                    "f_cod_unidade => ?," +
+                    "f_cod_os => ?) as codigo_interno_os_prolog");
+            stmt.setLong(1, codUnidade);
+            stmt.setLong(2, codOs);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return rSet.getLong("CODIGO_INTERNO_OS_PROLOG");
+            } else {
+                throw new SQLException("Erro ao inserir OS pendente.");
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+    @NotNull
+    @Override
+    public ModelosChecklistBloqueados getModelosChecklistBloqueados(@NotNull final Long codUnidade)
+            throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * " +
+                    "FROM INTEGRACAO.FUNC_CHECKLIST_MODELO_GET_MODELOS_BLOQUEADOS(" +
+                    "F_COD_UNIDADE => ?);");
+            stmt.setLong(1, codUnidade);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                final List<Long> codModelosBloqueados = new ArrayList<>();
+                final ModelosChecklistBloqueados modelosChecklistBloqueados =
+                        new ModelosChecklistBloqueados(rSet.getLong("cod_unidade"),
+                                codModelosBloqueados);
+                do {
+                    modelosChecklistBloqueados
+                            .getCodModelosBloqueados()
+                            .add(rSet.getLong("cod_modelo_checklist"));
+                } while (rSet.next());
+                return modelosChecklistBloqueados;
+            } else {
+                return new ModelosChecklistBloqueados(codUnidade, Collections.emptyList());
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+    @Override
+    @NotNull
+    public OsIntegracao getOsIntegracaoByCod(@NotNull final Long codOs) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("select * from integracao.func_checklist_os_busca_informacoes_os(" +
+                    "f_cod_interno_os_prolog => ?);");
+            stmt.setLong(1, codOs);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                final OsIntegracao osIntegracao = IntegracaoConverter.createOsIntegracao(rSet);
+                osIntegracao.getItensNok().add(IntegracaoConverter.createItemOsIntegracao(rSet));
+                while (rSet.next()) {
+                    osIntegracao.getItensNok().add(IntegracaoConverter.createItemOsIntegracao(rSet));
+                }
+                return osIntegracao;
+            } else {
+                throw new SQLException("Nenhum dado encontrado para o código de os.");
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+    @NotNull
+    @Override
+    public List<Long> buscaCodOrdensServicoPendenteSincronizacao() throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("select * from integracao.func_checklist_os_busca_os_sincronizar();");
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                final List<Long> codOrdensServicoParaSincronizar = new ArrayList<>();
+                do {
+                    codOrdensServicoParaSincronizar.add(rSet.getLong("codigo_interno_os_prolog"));
+                } while (rSet.next());
+                return codOrdensServicoParaSincronizar;
+            } else {
+                return Collections.emptyList();
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+    @Override
+    public void atualizaStatusOsIntegrada(@NotNull final List<Long> codsInternoOsProlog,
+                                          final boolean pendente,
+                                          final boolean bloqueada,
+                                          final boolean incrementarTentativas) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("select * from integracao.func_checklist_os_atualiza_status_os(" +
+                    "f_cods_interno_os_prolog => ?, " +
+                    "f_pendente => ?, " +
+                    "f_bloqueada => ?, " +
+                    "f_incrementar_tentativas => ?);");
+            stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codsInternoOsProlog));
+            stmt.setBoolean(2, pendente);
+            stmt.setBoolean(3, bloqueada);
+            stmt.setBoolean(4, incrementarTentativas);
+            rSet = stmt.executeQuery();
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+    @Override
+    public void logarStatusOsComErro(@NotNull final Long codInternoOsProlog,
+                                     @NotNull final Throwable throwable) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("select * from integracao.func_checklist_os_atualiza_erro_os(" +
+                    "f_cod_interno_os_prolog => ?, " +
+                    "f_error_message => ?, " +
+                    "f_exception_logada => ?);");
+            stmt.setLong(1, codInternoOsProlog);
+            stmt.setString(2, throwable.getMessage());
+            stmt.setString(3, ExceptionUtils.getStackTrace(throwable));
+            rSet = stmt.executeQuery();
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+    @Override
+    @NotNull
+    public List<Long> buscaCodOsByCodItem(@NotNull final List<Long> codItensProlog) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("select * from integracao.func_checklist_os_busca_codigo_os(" +
+                    "f_cod_itens_os => ?);");
+            stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codItensProlog));
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                final List<Long> codsInternosOSsProlog = new ArrayList<>();
+                do {
+                    codsInternosOSsProlog.add(rSet.getLong("cod_interno_os_prolog"));
+                } while (rSet.next());
+                return codsInternosOSsProlog;
+            } else {
+                return Collections.emptyList();
             }
         } finally {
             close(conn, stmt, rSet);

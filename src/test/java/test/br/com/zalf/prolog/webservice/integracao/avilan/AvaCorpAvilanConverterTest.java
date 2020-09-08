@@ -10,17 +10,17 @@ import br.com.zalf.prolog.webservice.frota.checklist.OLD.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.AfericaoPlaca;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu;
 import br.com.zalf.prolog.webservice.integracao.PosicaoPneuMapper;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanConverter;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvilanTipoMarcador;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvacorpAvilanTipoChecklist;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.IncluirMedida2;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.afericao.MedidaPneu;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfPneu;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.checklist.*;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.data.AvaCorpAvilanDao;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.data.AvaCorpAvilanDaoImpl;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.requester.AvaCorpAvilanRequester;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.requester.AvaCorpAvilanRequesterImpl;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.AvaCorpAvilanConverter;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.AvaCorpAvilanTipoMarcador;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.AvacorpAvilanTipoChecklist;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.afericao.IncluirMedida2;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.afericao.MedidaPneu;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.cadastro.ArrayOfPneu;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.checklist.*;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.data.AvaCorpAvilanDao;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.data.AvaCorpAvilanDaoImpl;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.requester.AvaCorpAvilanRequester;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.requester.AvaCorpAvilanRequesterImpl;
 import com.google.common.collect.MoreCollectors;
 import org.junit.Before;
 import org.junit.Test;
@@ -54,7 +54,7 @@ public class AvaCorpAvilanConverterTest {
 
     @Test(timeout = AvaCorpAvilanConstants.DEFAULT_TIMEOUT_MILLIS)
     public void Should_Fail_If_Vehicle_Transformation_Diverges() throws Exception {
-        final br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.ArrayOfVeiculo veiculosAvilan =
+        final br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.cadastro.ArrayOfVeiculo veiculosAvilan =
                 requester.getVeiculosAtivos(AvaCorpAvilanConstants.CPF, AvaCorpAvilanConstants.DATA_NASCIMENTO);
         assertNotNull(veiculosAvilan);
         assertTrue(!veiculosAvilan.getVeiculo().isEmpty());
@@ -67,7 +67,7 @@ public class AvaCorpAvilanConverterTest {
         assertTrue(veiculosAvilan.getVeiculo().size() == veiculosProLog.size());
 
         for (int i = 0; i < veiculosProLog.size(); i++) {
-            final br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.Veiculo veiculoAvilan =
+            final br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.cadastro.Veiculo veiculoAvilan =
                     veiculosAvilan.getVeiculo().get(i);
             final br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo veiculoProLog =
                     veiculosProLog.get(i);
@@ -94,7 +94,7 @@ public class AvaCorpAvilanConverterTest {
         assertTrue(pneusAvilan.getPneu().size() == pneusProLog.size());
 
         for (int i = 0; i < pneusProLog.size(); i++) {
-            final br.com.zalf.prolog.webservice.integracao.avacorpavilan.cadastro.Pneu pneuAvilan =
+            final br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.cadastro.Pneu pneuAvilan =
                     pneusAvilan.getPneu().get(i);
             final Pneu pneuProLog = pneusProLog.get(i);
             assertNotNull(pneuAvilan);

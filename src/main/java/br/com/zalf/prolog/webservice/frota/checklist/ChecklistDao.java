@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.FiltroRegionalUnidade
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
 import br.com.zalf.prolog.webservice.geral.unidade._model.Unidade;
+import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.InfosChecklistInserido;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -50,6 +51,40 @@ public interface ChecklistDao {
     Long insert(@NotNull final ChecklistInsercao checklist,
                 final boolean foiOffline,
                 final boolean deveAbrirOs) throws Throwable;
+
+    /**
+     * Insere um checklist no BD salvando na tabela CHECKLIST e chamando métodos
+     * especificos que salvam as respostas do map na tabela CHECKLIST_RESPOSTAS,
+     * retornando um objeto complexo.
+     *
+     * @param conn        Uma conexão que será utilizada para inserir o checklist.
+     * @param checklist   Um checklist
+     * @param foiOffline  Indica se esse checklist foi realizado de forma offline.
+     * @param deveAbrirOs Valor que indica se o checklist deve abrir Ordem de Serviço ou não.
+     * @return resultado da inserção
+     * @throws Throwable Caso não seja possível inserir o checklist no banco de dados
+     */
+    @NotNull
+    InfosChecklistInserido insertChecklist(@NotNull final Connection conn,
+                                           @NotNull final ChecklistInsercao checklist,
+                                           final boolean foiOffline,
+                                           final boolean deveAbrirOs) throws Throwable;
+
+    /**
+     * Insere um checklist no BD salvando na tabela CHECKLIST e chamando métodos
+     * especificos que salvam as respostas do map na tabela CHECKLIST_RESPOSTAS,
+     * retornando um objeto complexo.
+     *
+     * @param checklist   Um checklist
+     * @param foiOffline  Indica se esse checklist foi realizado de forma offline.
+     * @param deveAbrirOs Valor que indica se o checklist deve abrir Ordem de Serviço ou não.
+     * @return resultado da inserção
+     * @throws Throwable Caso não seja possível inserir o checklist no banco de dados
+     */
+    @NotNull
+    InfosChecklistInserido insertChecklist(@NotNull final ChecklistInsercao checklist,
+                                           final boolean foiOffline,
+                                           final boolean deveAbrirOs) throws Throwable;
 
     /**
      * Insere a imagem de um checklist realizado. Vinculando a {@code urlMidia} da mídia fornecida ao

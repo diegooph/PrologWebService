@@ -4,8 +4,8 @@ import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
-import br.com.zalf.prolog.webservice.integracao.logger.RequestLog;
-import br.com.zalf.prolog.webservice.integracao.logger.ResponseLog;
+import br.com.zalf.prolog.webservice.integracao.logger._model.LogType;
+import br.com.zalf.prolog.webservice.integracao.logger._model.RequestResponseLog;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -34,32 +34,47 @@ public final class LogDaoImpl extends DatabaseConnection implements LogDao {
     }
 
     @Override
-    public void insertRequestResponseLog(@NotNull final String tokenRequisicao,
-                                         @NotNull final RequestLog requestLog,
-                                         @Nullable final ResponseLog responseLog) throws Throwable {
+    public void insertRequestResponseLogApi(@NotNull final String tokenRequisicao,
+                                            @NotNull final RequestResponseLog requestLog,
+                                            @Nullable final RequestResponseLog responseLog) throws Throwable {
+        internalInsertRequestResponseLog(tokenRequisicao, LogType.FROM_API, requestLog, responseLog);
+    }
+
+    @Override
+    public void insertRequestResponseLogProlog(@NotNull final RequestResponseLog requestLog,
+                                               @Nullable final RequestResponseLog responseLog) throws Throwable {
+        internalInsertRequestResponseLog(null, LogType.FROM_PROLOG, requestLog, responseLog);
+    }
+
+    private void internalInsertRequestResponseLog(@Nullable final String tokenRequisicao,
+                                                  @NotNull final LogType logType,
+                                                  @NotNull final RequestResponseLog requestLog,
+                                                  @Nullable final RequestResponseLog responseLog) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM INTEGRACAO.FUNC_GERAL_SALVA_LOG_INTEGRACAO(" +
-                    "F_TOKEN_INTEGRACAO := ?, " +
-                    "F_RESPONSE_STATUS := ?, " +
-                    "F_REQUEST_JSON := ?, " +
-                    "F_RESPONSE_JSON := ?," +
-                    "F_DATA_HORA_REQUEST := ?)");
-            stmt.setString(1, tokenRequisicao);
+            stmt = conn.prepareStatement("select * from integracao.func_geral_salva_log_integracao(" +
+                    "f_log_type => ?, " +
+                    "f_token_integracao => ?, " +
+                    "f_response_status => ?, " +
+                    "f_request_json => ?, " +
+                    "f_response_json => ?, " +
+                    "f_data_hora_request => ?);");
+            stmt.setString(1, logType.asString());
+            bindValueOrNull(stmt, 2, tokenRequisicao, SqlType.TEXT);
             bindValueOrNull(
                     stmt,
-                    2,
+                    3,
                     responseLog == null ? null : responseLog.getStatusCode(),
                     SqlType.INTEGER);
-            stmt.setObject(3, PostgresUtils.toJsonb(RequestLog.toJson(requestLog)));
+            stmt.setObject(4, PostgresUtils.toJsonb(requestLog.toJson()));
             if (responseLog == null) {
-                stmt.setNull(4, Types.NULL);
+                stmt.setNull(5, Types.NULL);
             } else {
-                stmt.setObject(4, PostgresUtils.toJsonb(ResponseLog.toJson(responseLog)));
+                stmt.setObject(5, PostgresUtils.toJsonb(responseLog.toJson()));
             }
-            stmt.setObject(5, Now.offsetDateTimeUtc());
+            stmt.setObject(6, Now.offsetDateTimeUtc());
             stmt.execute();
         } finally {
             close(conn, stmt);
