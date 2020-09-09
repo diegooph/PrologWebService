@@ -28,6 +28,7 @@ public class VinculoVeiculoPneuDaoImpl implements VinculoVeiculoPneuDao {
     }
 
     @Override
+    @NotNull
     public void importPlanilhaVinculoVeiculoPneu(@NotNull final Long codEmpresa,
                                                  @NotNull final Long codUnidade,
                                                  @NotNull final String usuario,
@@ -47,11 +48,11 @@ public class VinculoVeiculoPneuDaoImpl implements VinculoVeiculoPneuDao {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM " +
                     "IMPLANTACAO.FUNC_VINCULO_VEICULO_PNEU_INSERE_PLANILHA_VINCULO(" +
-                    "F_COD_DADOS_AUTOR_IMPORT := ?," +
-                    "F_NOME_TABELA_IMPORT := ?," +
-                    "F_COD_EMPRESA   := ?," +
-                    "F_COD_UNIDADE   := ?," +
-                    "F_JSON_VINCULO := ?);");
+                    "F_COD_DADOS_AUTOR_IMPORT => ?," +
+                    "F_NOME_TABELA_IMPORT => ?," +
+                    "F_COD_EMPRESA   => ?," +
+                    "F_COD_UNIDADE   => ?," +
+                    "F_JSON_VINCULO => ?);");
             stmt.setLong(1, conferenciaDadosTabelaImport.getCodDadosAutorImport());
             stmt.setString(2, conferenciaDadosTabelaImport.getNomeTabelaImport());
             stmt.setLong(3, codEmpresa);

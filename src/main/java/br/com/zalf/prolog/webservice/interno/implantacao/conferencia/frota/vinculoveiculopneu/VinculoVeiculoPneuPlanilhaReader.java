@@ -57,6 +57,7 @@ public final class VinculoVeiculoPneuPlanilhaReader {
         return vinculoVeiculoPneu;
     }
 
+    @NotNull
     private static VinculoVeiculoPneu read(@NotNull final String[] linha) {
         if (linha[1].isEmpty() && linha[2].isEmpty() && linha[3].isEmpty()) {
             return null;

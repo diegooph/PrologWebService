@@ -33,12 +33,13 @@ public final class VinculoVeiculoPneuService {
     @NotNull
     private final VinculoVeiculoPneuDao dao = Injection.provideVinculoVeiculoPneuDao();
 
+    @NotNull
     public Response getVerificacaoVinculoVeiculoPneu(@NotNull final String authorization,
                                                      @NotNull final Long codEmpresa,
                                                      @NotNull final Long codUnidade,
                                                      @NotNull final InputStream fileInputStream,
                                                      @NotNull final FormDataContentDisposition fileDetail) {
-        // Deve ficar fora do try/catch porque não queremos mascarar erros de autentação com erros do processo de
+        // Deve ficar fora do try/catch porque não queremos mascarar erros de autentificação com erros do processo de
         // import.
         final PrologInternalUser internalUser = PrologInternalUserFactory.fromHeaderAuthorization(authorization);
         new AutenticacaoLoginSenhaValidator().verifyUsernamePassword(internalUser);

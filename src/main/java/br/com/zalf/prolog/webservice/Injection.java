@@ -236,14 +236,15 @@ public final class Injection {
         return new PneuConferenciaDaoImpl();
     }
 
+    @NotNull
     public static VinculoVeiculoPneuDao provideVinculoVeiculoPneuDao() {
         return new VinculoVeiculoPneuDaoImpl(Injection.provideConferenciaDao());
     }
 
+    @NotNull
     private static ConferenciaDao provideConferenciaDao() {
         return new ConferenciaDaoImpl();
     }
-
 
     @NotNull
     public static ApresentacaoDao provideApresentacaoDao() {
