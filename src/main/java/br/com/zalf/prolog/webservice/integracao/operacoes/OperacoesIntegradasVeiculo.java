@@ -23,11 +23,6 @@ interface OperacoesIntegradasVeiculo {
             @NotNull final VeiculoEdicao veiculo,
             @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable;
 
-    void updateStatus(@NotNull final Long codUnidade,
-                      @NotNull final String placa,
-                      @NotNull final Veiculo veiculo,
-                      @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable;
-
     boolean delete(@NotNull final String placa,
                    @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable;
 

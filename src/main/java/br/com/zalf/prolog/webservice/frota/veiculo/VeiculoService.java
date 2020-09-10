@@ -11,6 +11,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeicul
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculoNomenclatura;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculoPosicaoNomenclatura;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicao;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicaoStatus;
 import br.com.zalf.prolog.webservice.integracao.router.RouterVeiculo;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -105,25 +106,24 @@ public final class VeiculoService {
     }
 
     @NotNull
-    public Response updateStatus(@NotNull final String userToken,
-                                 @NotNull final Long codUnidade,
-                                 @NotNull final String placa,
-                                 @NotNull final Veiculo veiculo) throws ProLogException {
+    public Response updateStatus(@NotNull final Long codColaboradorResponsavelEdicao,
+                                 @NotNull final String userToken,
+                                 @NotNull final VeiculoEdicaoStatus veiculo) {
         try {
-            RouterVeiculo
-                    .create(dao, userToken)
-                    .updateStatus(codUnidade, placa, veiculo, Injection.provideDadosChecklistOfflineChangedListener());
-            return Response.ok(veiculo.isAtivo()
+            final VeiculoEdicao edicao = dao
+                    .getVeiculoByCodigo(veiculo.getCodigo())
+                    .toVeiculoEdicao(veiculo.isStatusAtivo());
+            update(codColaboradorResponsavelEdicao, userToken, edicao);
+            return Response.ok(veiculo.isStatusAtivo()
                     ? "Veículo ativado com sucesso"
                     : "Veículo inativado com sucesso");
         } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao atualizar o status do veículo:\n" +
-                    "userToken: %s\n" +
-                    "codUnidade: %s\n" +
-                    "placa: %s", userToken, codUnidade, placa), t);
+                    "codColaboradorResponsavelEdicao: %d\n" +
+                    "codVeiculo: %d\n", codColaboradorResponsavelEdicao, veiculo.getCodigo()), t);
             throw Injection
                     .provideVeiculoExceptionHandler()
-                    .map(t, "Não foi possível atualizar o status do veículo");
+                    .map(t, "Erro ao atualizar o status do veículo, tente novamente.");
         }
     }
 

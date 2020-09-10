@@ -11,6 +11,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculoNomenclatura;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicao;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicaoStatus;
 import br.com.zalf.prolog.webservice.interceptors.auth.ColaboradorAutenticado;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.AppVersionCodeHandler;
@@ -60,10 +61,8 @@ public final class VeiculoResource {
     @Path("/{codUnidade}/{placa}/status")
     @Secured(permissions = {Pilares.Frota.Veiculo.ALTERAR, Pilares.Frota.Veiculo.CADASTRAR})
     public Response updateStatus(@HeaderParam("Authorization") @Required final String userToken,
-                                 @PathParam("codUnidade") @Required final Long codUnidade,
-                                 @PathParam("placa") @Required final String placa,
-                                 @Required final Veiculo veiculo) throws ProLogException {
-        return service.updateStatus(userToken, codUnidade, placa, veiculo);
+                                 @Required final VeiculoEdicaoStatus veiculo) throws ProLogException {
+        return service.updateStatus(colaboradorAutenticadoProvider.get().getCodigo(), userToken, veiculo);
     }
 
     @DELETE

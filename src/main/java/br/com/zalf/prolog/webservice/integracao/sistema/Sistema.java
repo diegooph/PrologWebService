@@ -323,15 +323,6 @@ public abstract class Sistema implements OperacoesIntegradas {
     }
 
     @Override
-    public void updateStatus(
-            @NotNull final Long codUnidade,
-            @NotNull final String placa,
-            @NotNull final Veiculo veiculo,
-            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
-        getIntegradorProLog().updateStatus(codUnidade, placa, veiculo, checklistOfflineListener);
-    }
-
-    @Override
     public boolean delete(
             @NotNull final String placa,
             @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {

@@ -46,21 +46,6 @@ public interface VeiculoDao {
             throws Throwable;
 
     /**
-     * Método utilizado para atualizar o status (ATIVO ou INATIVO) de um veículo.
-     *
-     * @param codUnidade               Código da Unidade a qual o veículo está alocado.
-     * @param placa                    Placa do veículo, utilizada como identificador para este método.
-     * @param veiculo                  Objeto contendo a informação de se o veículo deve ser ativado ou inativado.
-     * @param checklistOfflineListener Listener utilizado para notificar sobre atualizações de veículos
-     *                                 no contexto de realização de checklist offline.
-     * @throws Throwable Caso algum erro ocorra na atualização do veículo.
-     */
-    void updateStatus(@NotNull final Long codUnidade,
-                      @NotNull final String placa,
-                      @NotNull final Veiculo veiculo,
-                      @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable;
-
-    /**
      * Altera o status do veículo como <code>INATIVO</code> no banco de dados.
      *
      * @param placa                    Placa do veículo que será inativado, utilizado como identificador.

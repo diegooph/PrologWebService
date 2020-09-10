@@ -75,17 +75,9 @@ public final class VersaoDadosChecklistOfflineAtualizador implements DadosCheckl
         // Só iremos incrementar a versão dos dados se a placa que sofreu edição está vinculada a um
         // modelo de checklist e se o KM inserido na placa for menor que o anterior. Pois apenas o caso de um KM menor
         // impossibilitaria a realização de um checklist correto no App, já que o App não permiti retroceder KM.
+        // TODO: comparar status.
         if (hasVinculoWithModeloChecklist(connection, codVeiculo)
                 && kmNovoVeiculo < kmAntigoVeiculo) {
-            incrementaVersaoDadosUnidadeFromVeiculo(connection, codVeiculo);
-        }
-    }
-
-    @Override
-    public void onUpdateStatusVeiculo(@NotNull final Connection connection,
-                                      @NotNull final Long codVeiculo) throws Throwable {
-        // Se o veículo não está associado a nenhum modelo de checklist, nada precisamos fazer.
-        if (hasVinculoWithModeloChecklist(connection, codVeiculo)) {
             incrementaVersaoDadosUnidadeFromVeiculo(connection, codVeiculo);
         }
     }

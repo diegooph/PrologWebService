@@ -140,48 +140,6 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
     }
 
     @Override
-    public void updateStatus(
-            @NotNull final Long codUnidade,
-            @NotNull final String placa,
-            @NotNull final Veiculo veiculo,
-            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            conn.setAutoCommit(false);
-            stmt = conn.prepareStatement("UPDATE VEICULO SET STATUS_ATIVO = ? " +
-                    "WHERE COD_UNIDADE = ? AND PLACA = ? RETURNING CODIGO;");
-            stmt.setBoolean(1, veiculo.isAtivo());
-            stmt.setLong(2, codUnidade);
-            stmt.setString(3, placa);
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                final long codVeiculoAtualizado = rSet.getLong("CODIGO");
-                if (codVeiculoAtualizado <= 0) {
-                    throw new SQLException("Erro ao atualizar o status do veículo:\n" +
-                            "codUnidade: " + codUnidade + "\n" +
-                            "placa: " + placa + "\n" +
-                            "codVeiculoAtualizado: " + codVeiculoAtualizado);
-                }
-                // Devemos disparar o listener avisando que ocorreu uma atualização de Status.
-                checklistOfflineListener.onUpdateStatusVeiculo(conn, codVeiculoAtualizado);
-                conn.commit();
-            } else {
-                throw new SQLException("Erro ao atualizar o status do veículo com placa: " + placa);
-            }
-        } catch (final Throwable t) {
-            if (conn != null) {
-                conn.rollback();
-            }
-            throw t;
-        } finally {
-            close(conn, stmt, rSet);
-        }
-    }
-
-    @Override
     public boolean delete(
             @NotNull final String placa,
             @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
@@ -294,7 +252,7 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_VEICULO_GET_VEICULO(F_COD_VEICULO := ?);");
+            stmt = conn.prepareStatement("select * from func_veiculo_get_veiculo(f_cod_veiculo := ?);");
             stmt.setLong(1, codVeiculo);
             rSet = stmt.executeQuery();
             if (rSet.next()) {

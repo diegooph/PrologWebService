@@ -299,15 +299,6 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
     }
 
     @Override
-    public void updateStatus(
-            @NotNull final Long codUnidade,
-            @NotNull final String placa,
-            @NotNull final Veiculo veiculo,
-            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
-        veiculoDao.updateStatus(codUnidade, placa, veiculo, checklistOfflineListener);
-    }
-
-    @Override
     public boolean delete(
             @NotNull final String placa,
             @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {

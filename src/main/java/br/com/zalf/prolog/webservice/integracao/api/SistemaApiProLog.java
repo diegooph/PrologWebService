@@ -8,7 +8,6 @@ import br.com.zalf.prolog.webservice.frota.pneu.servico._model.Servico;
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.TipoServico;
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.VeiculoServico;
 import br.com.zalf.prolog.webservice.frota.pneu.transferencia._model.realizacao.PneuTransferenciaRealizacao;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.VeiculoCadastro;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.InfosVeiculoEditado;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicao;
@@ -57,19 +56,6 @@ public final class SistemaApiProLog extends Sistema {
                     "Para atualizar os dados do veículo utilize o seu sistema de gestão");
         }
         return getIntegradorProLog().update(codColaboradorResponsavelEdicao, veiculo, checklistOfflineListener);
-    }
-
-    @Override
-    public void updateStatus(
-            @NotNull final Long codUnidade,
-            @NotNull final String placa,
-            @NotNull final Veiculo veiculo,
-            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
-        if (unidadeEstaComIntegracaoAtiva(codUnidade)) {
-            throw new BloqueadoIntegracaoException(
-                    "Para atualizar os dados do veículo utilize o seu sistema de gestão");
-        }
-        getIntegradorProLog().updateStatus(codUnidade, placa, veiculo, checklistOfflineListener);
     }
 
     @Override

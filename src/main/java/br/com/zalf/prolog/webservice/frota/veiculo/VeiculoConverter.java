@@ -64,6 +64,7 @@ public final class VeiculoConverter {
                 rSet.getLong("CODIGO"),
                 rSet.getString("PLACA"),
                 rSet.getLong("COD_UNIDADE"),
+                rSet.getLong("COD_EMPRESA"),
                 rSet.getLong("KM"),
                 rSet.getBoolean("STATUS_ATIVO"),
                 rSet.getLong("COD_TIPO"),

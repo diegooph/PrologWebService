@@ -463,19 +463,6 @@ public abstract class Router implements OperacoesIntegradas {
     }
 
     @Override
-    public void updateStatus(
-            @NotNull final Long codUnidade,
-            @NotNull final String placa,
-            @NotNull final Veiculo veiculo,
-            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
-        if (getSistema() != null) {
-            getSistema().updateStatus(codUnidade, placa, veiculo, checklistOfflineListener);
-        } else {
-            integradorProLog.updateStatus(codUnidade, placa, veiculo, checklistOfflineListener);
-        }
-    }
-
-    @Override
     public boolean delete(
             @NotNull final String placa,
             @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
