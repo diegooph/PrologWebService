@@ -1,9 +1,9 @@
 package br.com.zalf.prolog.webservice.frota.veiculo;
 
 import br.com.zalf.prolog.webservice.frota.veiculo.model.VeiculoListagem;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.VeiculoVisualizacao;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.VeiculoVisualizacaoPneu;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoAntesEdicao;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoVisualizacao;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoVisualizacaoPneu;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
