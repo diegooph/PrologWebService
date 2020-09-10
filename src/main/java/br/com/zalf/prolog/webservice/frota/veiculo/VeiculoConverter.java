@@ -23,12 +23,12 @@ public final class VeiculoConverter {
     @NotNull
     public static VeiculoAntesEdicao createVeiculoAntesEdicao(@NotNull final ResultSet rSet) throws SQLException {
         return new VeiculoAntesEdicao(
-                rSet.getString("PLACA_ANTIGA"),
-                rSet.getString("IDENTIFICADOR_FROTA_ANTIGO"),
-                rSet.getLong("COD_MODELO_ANTIGO"),
-                rSet.getLong("COD_TIPO_ANTIGO"),
-                rSet.getLong("KM_ANTIGO"),
-                rSet.getBoolean("STATUS_ATIVO_ANTIGO"));
+                rSet.getString("ANTIGA_PLACA"),
+                rSet.getString("ANTIGO_IDENTIFICADOR_FROTA"),
+                rSet.getLong("ANTIGO_COD_TIPO"),
+                rSet.getLong("ANTIGO_COD_MODELO"),
+                rSet.getLong("ANTIGO_KM"),
+                rSet.getBoolean("ANTIGO_STATUS"));
     }
 
     @NotNull

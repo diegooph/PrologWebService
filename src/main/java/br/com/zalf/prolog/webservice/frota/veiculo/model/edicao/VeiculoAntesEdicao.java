@@ -16,9 +16,9 @@ public final class VeiculoAntesEdicao {
     @Nullable
     private final String identificadorFrotaAntigo;
     @NotNull
-    private final Long codModeloAntigo;
-    @NotNull
     private final Long codTipoAntigo;
+    @NotNull
+    private final Long codModeloAntigo;
     private final long kmAntigo;
     private final boolean statusAtivoAntigo;
 }

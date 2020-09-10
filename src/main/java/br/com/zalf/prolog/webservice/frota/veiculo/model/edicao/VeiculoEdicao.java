@@ -22,9 +22,9 @@ public final class VeiculoEdicao {
     @Nullable
     private final String identificadorFrota;
     @NotNull
-    private final Long codModeloVeiculo;
-    @NotNull
     private final Long codTipoVeiculo;
+    @NotNull
+    private final Long codModeloVeiculo;
     private final long kmAtualVeiculo;
     private final boolean statusAtivo;
 }

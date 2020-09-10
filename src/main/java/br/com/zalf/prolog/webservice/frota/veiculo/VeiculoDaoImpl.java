@@ -1,10 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.veiculo;
 
 import br.com.zalf.prolog.webservice.Injection;
-import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
-import br.com.zalf.prolog.webservice.commons.util.SqlType;
-import br.com.zalf.prolog.webservice.commons.util.StatementUtils;
+import br.com.zalf.prolog.webservice.commons.util.*;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
@@ -23,6 +20,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Optional;
 import java.util.*;
 
 public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
@@ -125,7 +123,8 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
 
                 return new InfosVeiculoEditado(
                         veiculo.getCodigo(),
-                        rSet.getBoolean("ALGO_MUDOU"),
+                        NullIf.equalOrLess(rSet.getLong("COD_EDICAO_HISTORICO"), 0),
+                        rSet.getInt("TOTAL_EDICOES"),
                         veiculoAntesEdicao);
             } else {
                 throw new SQLException("Erro ao atualizar o veículo de código: " + veiculo.getCodigo());
