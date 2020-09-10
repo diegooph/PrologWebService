@@ -102,7 +102,7 @@ public interface VeiculoDao {
      * @return O {@link VeiculoVisualizacao} contendo as informações.
      * @throws Throwable Caso aconteça algum erro no banco.
      */
-    VeiculoVisualizacao buscaVeiculoByCodigo(@NotNull final Long codVeiculo) throws Throwable;
+    VeiculoVisualizacao getVeiculoByCodigo(@NotNull final Long codVeiculo) throws Throwable;
 
     /**
      * Método para buscar os {@code codVeiculos} através das {@code placas}.

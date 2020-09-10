@@ -93,10 +93,10 @@ public final class VeiculoResource {
             Pilares.Frota.Veiculo.CADASTRAR,
             Pilares.Frota.Checklist.VISUALIZAR_TODOS})
     @Path("/busca/byUnidade")
-    public List<VeiculoListagem> buscaVeiculosByUnidade(@HeaderParam("Authorization") @Required final String userToken,
-                                                        @QueryParam("codUnidade") @Required final Long codUnidade,
-                                                        @QueryParam("somenteAtivos") @Optional final boolean somenteAtivos) {
-        return service.buscaVeiculosByUnidades(Collections.singletonList(codUnidade), somenteAtivos, null);
+    public List<VeiculoListagem> getVeiculosByUnidade(@HeaderParam("Authorization") @Required final String userToken,
+                                                      @QueryParam("codUnidade") @Required final Long codUnidade,
+                                                      @QueryParam("somenteAtivos") @Optional final boolean somenteAtivos) {
+        return service.getVeiculosByUnidades(Collections.singletonList(codUnidade), somenteAtivos, null);
     }
 
     @GET
@@ -106,10 +106,10 @@ public final class VeiculoResource {
             Pilares.Frota.Veiculo.CADASTRAR,
             Pilares.Frota.Checklist.VISUALIZAR_TODOS})
     @Path("/listagem")
-    public List<VeiculoListagem> buscaVeiculosByUnidades(@QueryParam("codUnidades") @Required final List<Long> codUnidades,
-                                                         @QueryParam("apenasAtivos") @Optional final boolean apenasAtivos,
-                                                         @QueryParam("codTipoVeiculo") @Optional final Long codTipoVeiculo) {
-        return service.buscaVeiculosByUnidades(codUnidades, apenasAtivos, codTipoVeiculo);
+    public List<VeiculoListagem> getVeiculosByUnidades(@QueryParam("codUnidades") @Required final List<Long> codUnidades,
+                                                       @QueryParam("apenasAtivos") @Optional final boolean apenasAtivos,
+                                                       @QueryParam("codTipoVeiculo") @Optional final Long codTipoVeiculo) {
+        return service.getVeiculosByUnidades(codUnidades, apenasAtivos, codTipoVeiculo);
     }
 
     @GET
@@ -221,9 +221,9 @@ public final class VeiculoResource {
             targetVersionCode = 68,
             versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
             actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
-    public VeiculoVisualizacao buscaVeiculoByCodigo(@HeaderParam("Authorization") final String userToken,
-                                                    @QueryParam("codVeiculo") final Long codVeiculo) {
-        return service.buscaVeiculoByCodigo(userToken, codVeiculo);
+    public VeiculoVisualizacao getVeiculoByCodigo(@HeaderParam("Authorization") final String userToken,
+                                                  @QueryParam("codVeiculo") final Long codVeiculo) {
+        return service.getVeiculoByCodigo(userToken, codVeiculo);
     }
 
     @GET
@@ -239,7 +239,7 @@ public final class VeiculoResource {
     /**
      * @deprecated at 2020-05-07.
      * <p>
-     * Este método foi depreciado pois um novo foi criado: {@link #buscaVeiculoByCodigo(String, Long)}
+     * Este método foi depreciado pois um novo foi criado: {@link #getVeiculoByCodigo(String, Long)}
      */
     @Deprecated
     @GET
@@ -286,7 +286,7 @@ public final class VeiculoResource {
     /**
      * @deprecated at 2020-05-07.
      * <p>
-     * Este método foi depreciado pois um novo foi criado: {@link #buscaVeiculosByUnidades}
+     * Este método foi depreciado pois um novo foi criado: {@link #getVeiculosByUnidades}
      */
     @Deprecated
     @GET

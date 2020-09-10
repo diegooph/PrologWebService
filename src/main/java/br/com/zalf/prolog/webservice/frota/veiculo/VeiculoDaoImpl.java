@@ -288,7 +288,7 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
     }
 
     @Override
-    public VeiculoVisualizacao buscaVeiculoByCodigo(@NotNull final Long codVeiculo) throws Throwable {
+    public VeiculoVisualizacao getVeiculoByCodigo(@NotNull final Long codVeiculo) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -298,9 +298,8 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
             stmt.setLong(1, codVeiculo);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                final VeiculoVisualizacao veiculoVisualizacao = VeiculoConverter.createVeiculoVisualizacao(rSet);
-                veiculoVisualizacao.setPneusVeiculo(buscaPneusByCodigoVeiculo(conn, codVeiculo));
-                return veiculoVisualizacao;
+                final List<VeiculoVisualizacaoPneu> pneus = getPneusByCodigoVeiculo(conn, codVeiculo);
+                return VeiculoConverter.createVeiculoVisualizacao(rSet, pneus);
             } else {
                 throw new Throwable("Erro ao buscar veiculo de codigo " + codVeiculo);
             }
@@ -854,22 +853,25 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
     }
 
     @NotNull
-    private List<VeiculoVisualizacaoPneu> buscaPneusByCodigoVeiculo(@NotNull final Connection conn,
-                                                                    @NotNull final Long codVeiculo) throws Throwable {
+    private List<VeiculoVisualizacaoPneu> getPneusByCodigoVeiculo(@NotNull final Connection conn,
+                                                                  @NotNull final Long codVeiculo) throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        final List<VeiculoVisualizacaoPneu> listVeiculoVisualizacaoPneu = new ArrayList<>();
         try {
             stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_GET_PNEU_BY_COD_VEICULO(F_COD_VEICULO := ?);");
             stmt.setLong(1, codVeiculo);
             rSet = stmt.executeQuery();
-            while (rSet.next()) {
-                listVeiculoVisualizacaoPneu.add(VeiculoConverter.createVeiculoVisualizacaoPneu(rSet));
+            if (rSet.next()) {
+                final List<VeiculoVisualizacaoPneu> pneus = new ArrayList<>();
+                do {
+                    pneus.add(VeiculoConverter.createVeiculoVisualizacaoPneu(rSet));
+                } while (rSet.next());
+                return pneus;
             }
+            return Collections.emptyList();
         } finally {
             close(stmt, rSet);
         }
-        return listVeiculoVisualizacaoPneu;
     }
 
     @Deprecated

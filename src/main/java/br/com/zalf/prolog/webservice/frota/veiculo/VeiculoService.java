@@ -29,29 +29,34 @@ public final class VeiculoService {
     private final VeiculoDao dao = Injection.provideVeiculoDao();
 
     @NotNull
-    public List<VeiculoListagem> buscaVeiculosByUnidades(@NotNull final List<Long> codUnidades,
-                                                         final boolean apenasAtivos,
-                                                         @Nullable final Long codTipoVeiculo) {
+    public List<VeiculoListagem> getVeiculosByUnidades(@NotNull final List<Long> codUnidades,
+                                                       final boolean apenasAtivos,
+                                                       @Nullable final Long codTipoVeiculo) {
         try {
             return dao.buscaVeiculosByUnidades(codUnidades, apenasAtivos, codTipoVeiculo);
-        } catch (final Throwable e) {
-            final String errorMessage = "Erro ao buscar os veículos da unidade.";
-            Log.e(TAG, String.format(errorMessage), e);
+        } catch (final Throwable t) {
+            Log.e(TAG, String.format("Erro ao buscar os veículos.\n" +
+                    "codUnidades: %s\n" +
+                    "apenasAtivos: %b\n" +
+                    "codTipoVeiculo: %d\n", codUnidades, apenasAtivos, codTipoVeiculo), t);
             throw Injection
                     .provideProLogExceptionHandler()
-                    .map(e, errorMessage);
+                    .map(t, "Erro ao buscar os veículos da unidade, tente novamente.");
         }
     }
 
-    public VeiculoVisualizacao buscaVeiculoByCodigo(@NotNull final String userToken,
-                                                    @NotNull final Long codVeiculo) throws ProLogException {
+    @NotNull
+    public VeiculoVisualizacao getVeiculoByCodigo(@NotNull final String userToken,
+                                                  @NotNull final Long codVeiculo) {
         try {
-            return dao.buscaVeiculoByCodigo(codVeiculo);
+            return dao.getVeiculoByCodigo(codVeiculo);
         } catch (final Throwable t) {
-            Log.e(TAG, String.format("Erro ao buscar o veículo. \n" +
-                    "código: %s \n" +
+            Log.e(TAG, String.format("Erro ao buscar o veículo.\n" +
+                    "código: %d\n" +
                     "userToken: %s", codVeiculo, userToken), t);
-            return null;
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao buscar o veículo, tente novamente.");
         }
     }
 

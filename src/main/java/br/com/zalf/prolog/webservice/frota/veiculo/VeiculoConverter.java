@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 /**
  * Created on 05/05/2020.
@@ -56,7 +57,9 @@ public final class VeiculoConverter {
     }
 
     @NotNull
-    public static VeiculoVisualizacao createVeiculoVisualizacao(@NotNull final ResultSet rSet) throws SQLException {
+    public static VeiculoVisualizacao createVeiculoVisualizacao(@NotNull final ResultSet rSet,
+                                                                @NotNull final List<VeiculoVisualizacaoPneu> pneus)
+            throws SQLException {
         return new VeiculoVisualizacao(
                 rSet.getLong("CODIGO"),
                 rSet.getString("PLACA"),
@@ -74,7 +77,8 @@ public final class VeiculoConverter {
                 rSet.getLong("TRASEIRO"),
                 rSet.getString("TIPO"),
                 rSet.getString("MARCA"),
-                rSet.getLong("COD_MARCA"));
+                rSet.getLong("COD_MARCA"),
+                pneus);
     }
 
     @NotNull
