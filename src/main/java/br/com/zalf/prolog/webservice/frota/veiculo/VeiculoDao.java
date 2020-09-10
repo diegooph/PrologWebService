@@ -3,6 +3,8 @@ package br.com.zalf.prolog.webservice.frota.veiculo;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.InfosVeiculoEditado;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicao;
 import br.com.zalf.prolog.webservice.geral.unidade._model.Unidade;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -24,24 +26,24 @@ public interface VeiculoDao {
      * @param veiculo                  Objeto contencod as informações do veículo a serem inseridas.
      * @param checklistOfflineListener Listener utilizado para notificar sobre atualizações de veículos
      *                                 no contexto de realização de checklist offline.
-     * @return <code>TRUE</code> se operação for bem sucedida, <code>FALSE</code> caso contrário.
      * @throws Throwable Se algum erro ocorrer ao salvar as informações.
      */
-    boolean insert(@NotNull final VeiculoCadastro veiculo,
-                   @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable;
+    void insert(@NotNull final VeiculoCadastro veiculo,
+                @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable;
 
     /**
      * Método utilizado para atualizar as informações de um veículo.
      *
-     * @param placaOriginal            Placa do veículo que será atualizado.
-     * @param veiculo                  Objeto contendo as informações que serão inseridas.
+     * @param veiculo                  Objeto contendo as informações que serão atualizadas.
      * @param checklistOfflineListener Listener utilizado para notificar a alteração em um veículo.
-     * @return <code>TRUE</code> se a operação se bem sucedida, <code>FALSE</code> caso contrário.
+     * @return Dados sobre a edição realizada.
      * @throws Throwable Se algum erro ocorrer durante a operação.
      */
-    boolean update(@NotNull final String placaOriginal,
-                   @NotNull final Veiculo veiculo,
-                   @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable;
+    @NotNull
+    InfosVeiculoEditado update(@NotNull final Long codColaboradorResponsavelEdicao,
+                               @NotNull final VeiculoEdicao veiculo,
+                               @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener)
+            throws Throwable;
 
     /**
      * Método utilizado para atualizar o status (ATIVO ou INATIVO) de um veículo.
@@ -106,7 +108,7 @@ public interface VeiculoDao {
      * Método para buscar os {@code codVeiculos} através das {@code placas}.
      *
      * @param codColaborador código do colaborador que realizou a requisição.
-     * @param placas lista de uma ou mais placas, para cada placa retornará um código, do contrário dará erro.
+     * @param placas         lista de uma ou mais placas, para cada placa retornará um código, do contrário dará erro.
      * @return Uma lista de códigos de veículos.
      * @throws Throwable Caso aconteça algum erro no banco.
      */
@@ -134,18 +136,11 @@ public interface VeiculoDao {
      * @return O {@link Veiculo} contendo as informações.
      * @throws SQLException Caso aconteça algum erro no banco.
      */
+    @Deprecated
     @NotNull
     Veiculo getVeiculoByPlaca(@NotNull final Connection conn,
                               @NotNull final String placa,
                               final boolean withPneus) throws Throwable;
-
-    /**
-     * busca os eixos
-     *
-     * @return uma lista de eixos
-     * @throws SQLException se algo der errado no banco
-     */
-    List<Eixos> getEixos() throws SQLException;
 
     /**
      * atualiza a quilometragem atraves da placa do veículo

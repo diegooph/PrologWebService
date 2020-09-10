@@ -28,6 +28,8 @@ import br.com.zalf.prolog.webservice.frota.pneu.transferencia._model.realizacao.
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.VeiculoCadastro;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.InfosVeiculoEditado;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicao;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.ProcessoTransferenciaVeiculoRealizacao;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoDao;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
@@ -437,25 +439,26 @@ public abstract class Router implements OperacoesIntegradas {
     // #################################################################################################################
     // #################################################################################################################
     @Override
-    public boolean insert(
+    public void insert(
             @NotNull final VeiculoCadastro veiculo,
             @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
         if (getSistema() != null) {
-            return getSistema().insert(veiculo, checklistOfflineListener);
+            getSistema().insert(veiculo, checklistOfflineListener);
         } else {
-            return integradorProLog.insert(veiculo, checklistOfflineListener);
+            integradorProLog.insert(veiculo, checklistOfflineListener);
         }
     }
 
+    @NotNull
     @Override
-    public boolean update(
-            @NotNull final String placaOriginal,
-            @NotNull final Veiculo veiculo,
+    public InfosVeiculoEditado update(
+            @NotNull final Long codColaboradorResponsavelEdicao,
+            @NotNull final VeiculoEdicao veiculo,
             @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
         if (getSistema() != null) {
-            return getSistema().update(placaOriginal, veiculo, checklistOfflineListener);
+            return getSistema().update(codColaboradorResponsavelEdicao, veiculo, checklistOfflineListener);
         } else {
-            return integradorProLog.update(placaOriginal, veiculo, checklistOfflineListener);
+            return integradorProLog.update(codColaboradorResponsavelEdicao, veiculo, checklistOfflineListener);
         }
     }
 
@@ -485,7 +488,7 @@ public abstract class Router implements OperacoesIntegradas {
 
     @NotNull
     @Override
-    public List<Veiculo> getVeiculosAtivosByUnidade(@NotNull Long codUnidade, @Nullable Boolean ativos) throws
+    public List<Veiculo> getVeiculosAtivosByUnidade(@NotNull final Long codUnidade, @Nullable final Boolean ativos) throws
             Exception {
         if (getSistema() != null) {
             return getSistema().getVeiculosAtivosByUnidade(codUnidade, ativos);
@@ -496,7 +499,7 @@ public abstract class Router implements OperacoesIntegradas {
 
     @NotNull
     @Override
-    public List<String> getPlacasVeiculosByTipo(@NotNull Long codUnidade, @NotNull String codTipo) throws Exception {
+    public List<String> getPlacasVeiculosByTipo(@NotNull final Long codUnidade, @NotNull final String codTipo) throws Exception {
         if (getSistema() != null) {
             return getSistema().getPlacasVeiculosByTipo(codUnidade, codTipo);
         } else {
@@ -506,7 +509,7 @@ public abstract class Router implements OperacoesIntegradas {
 
     @NotNull
     @Override
-    public Veiculo getVeiculoByPlaca(@NotNull String placa, boolean withPneus) throws Exception {
+    public Veiculo getVeiculoByPlaca(@NotNull final String placa, final boolean withPneus) throws Exception {
         if (getSistema() != null) {
             return getSistema().getVeiculoByPlaca(placa, withPneus);
         } else {

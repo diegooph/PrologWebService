@@ -10,6 +10,7 @@ import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculoNomenclatura;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicao;
 import br.com.zalf.prolog.webservice.interceptors.auth.ColaboradorAutenticado;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.AppVersionCodeHandler;
@@ -32,6 +33,7 @@ import java.util.Set;
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public final class VeiculoResource {
 
+    @NotNull
     private final VeiculoService service = new VeiculoService();
 
     @Inject
@@ -42,17 +44,16 @@ public final class VeiculoResource {
     @UsedBy(platforms = Platform.WEBSITE)
     @Path("/")
     public Response insert(@HeaderParam("Authorization") @Required final String userToken,
-                           @Required final VeiculoCadastro veiculo) throws ProLogException {
+                           @Required final VeiculoCadastro veiculo) {
         return service.insert(userToken, veiculo);
     }
 
     @PUT
     @Secured(permissions = {Pilares.Frota.Veiculo.ALTERAR, Pilares.Frota.Veiculo.CADASTRAR})
-    @Path("/{placaOriginal}")
+    @Path("/")
     public Response update(@HeaderParam("Authorization") @Required final String userToken,
-                           @PathParam("placaOriginal") @Required final String placaOriginal,
-                           @Required final Veiculo veiculo) throws ProLogException {
-        return service.update(userToken, placaOriginal, veiculo);
+                           @Required final VeiculoEdicao veiculo) {
+        return service.update(colaboradorAutenticadoProvider.get().getCodigo(), userToken, veiculo);
     }
 
     @PUT
@@ -189,13 +190,6 @@ public final class VeiculoResource {
         } else {
             return Response.error("Erro ao deletar o modelo");
         }
-    }
-
-    @GET
-    @Secured
-    @Path("/eixos")
-    public List<Eixos> getEixos() {
-        return service.getEixos();
     }
 
     @GET

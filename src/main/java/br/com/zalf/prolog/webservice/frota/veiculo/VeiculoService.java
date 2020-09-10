@@ -10,6 +10,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculoNomenclatura;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculoPosicaoNomenclatura;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicao;
 import br.com.zalf.prolog.webservice.integracao.router.RouterVeiculo;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -69,15 +70,6 @@ public final class VeiculoService {
         }
     }
 
-    public List<Eixos> getEixos() {
-        try {
-            return dao.getEixos();
-        } catch (final SQLException e) {
-            Log.e(TAG, "Erro ao buscar os eixos", e);
-            return null;
-        }
-    }
-
     public List<Veiculo> getVeiculosAtivosByUnidadeByColaborador(final Long cpf) {
         try {
             return dao.getVeiculosAtivosByUnidadeByColaborador(cpf);
@@ -89,16 +81,18 @@ public final class VeiculoService {
     }
 
     @NotNull
-    public Response update(@NotNull final String userToken,
-                           @NotNull final String placaOriginal,
-                           @NotNull final Veiculo veiculo) throws ProLogException {
+    public Response update(@NotNull final Long codColaboradorResponsavelEdicao,
+                           @NotNull final String userToken,
+                           @NotNull final VeiculoEdicao veiculo) {
         try {
             RouterVeiculo
                     .create(dao, userToken)
-                    .update(placaOriginal, veiculo, Injection.provideDadosChecklistOfflineChangedListener());
+                    .update(codColaboradorResponsavelEdicao,
+                            veiculo,
+                            Injection.provideDadosChecklistOfflineChangedListener());
             return Response.ok("Veículo atualizado com sucesso");
         } catch (final Throwable t) {
-            Log.e(TAG, String.format("Erro ao atualizar o veículo.\nplacaOriginal: %s", placaOriginal), t);
+            Log.e(TAG, String.format("Erro ao atualizar o veículo de código: %d", veiculo.getCodigo()), t);
             throw Injection
                     .provideVeiculoExceptionHandler()
                     .map(t, "Erro ao atualizar veículo, tente novamente");

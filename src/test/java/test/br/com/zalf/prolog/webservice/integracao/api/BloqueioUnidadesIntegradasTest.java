@@ -16,6 +16,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoService;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.VeiculoCadastro;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicao;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.VeiculoTransferenciaService;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.ProcessoTransferenciaVeiculoRealizacao;
 import org.junit.jupiter.api.AfterAll;
@@ -88,26 +89,37 @@ final class BloqueioUnidadesIntegradasTest {
 
     @Test
     void testUpdateVeiculoUnidadeLiberada() {
-        final Veiculo veiculo = new Veiculo();
-        veiculo.setPlaca("PRO-002");
-        veiculo.setCodUnidadeAlocado(COD_UNIDADE_LIBERADA);
-
-
+        final VeiculoEdicao edicao = new VeiculoEdicao(
+                -1L,
+                COD_EMPRESA_INTEGRADA,
+                COD_UNIDADE_LIBERADA,
+                "PRO-002",
+                null,
+                -1L,
+                -1L,
+                1,
+                true);
         final Throwable throwable = assertThrows(
                 ProLogException.class,
-                () -> new VeiculoService().update(USER_TOKEN_INTEGRADO, "PRO-001", veiculo));
+                () -> new VeiculoService().update(-1L, USER_TOKEN_INTEGRADO, edicao));
         assertThat(throwable).isInstanceOf(BloqueadoIntegracaoException.class);
     }
 
     @Test
     void testUpdateVeiculoUnidadeBloqueada() {
-        final Veiculo veiculo = new Veiculo();
-        veiculo.setPlaca("PRO-002");
-        veiculo.setCodUnidadeAlocado(COD_UNIDADE_BLOQUEADA);
-
+        final VeiculoEdicao edicao = new VeiculoEdicao(
+                -1L,
+                COD_EMPRESA_INTEGRADA,
+                COD_UNIDADE_BLOQUEADA,
+                "PRO-002",
+                null,
+                -1L,
+                -1L,
+                1,
+                true);
         final Throwable throwable = assertThrows(
                 ProLogException.class,
-                () -> new VeiculoService().update(USER_TOKEN_INTEGRADO, "PRO-001", veiculo));
+                () -> new VeiculoService().update(-1L, USER_TOKEN_INTEGRADO, edicao));
         assertThat(throwable).isNotInstanceOf(BloqueadoIntegracaoException.class);
     }
 
