@@ -4,6 +4,9 @@ Change Log
 <a name="v1.1.5"></a>
 ## Version [v1.1.5](https://github.com/luizfp/PrologWebService/compare/v1.1.4...v1.1.5) (release-date) [unreleased]
 
+### Bugfix
+* Corrige validação de DOT para deixar passar valores nulos ou vazios
+
 <a name="v1.1.4"></a>
 ## Version [v1.1.4](https://github.com/luizfp/PrologWebService/compare/v1.1.3...v1.1.4) (2020-09-07)
 
