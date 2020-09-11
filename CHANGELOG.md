@@ -1,6 +1,9 @@
 Change Log
 ==========
 
+### Bugfix
+* Corrige uso das Daos em integrações (PL-3136)
+
 <a name="v1.1.5"></a>
 ## Version [v1.1.5](https://github.com/luizfp/PrologWebService/compare/v1.1.4...v1.1.5) (release-date) [unreleased]
 
