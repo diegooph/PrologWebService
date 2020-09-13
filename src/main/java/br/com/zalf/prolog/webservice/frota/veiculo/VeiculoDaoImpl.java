@@ -247,6 +247,7 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         return veiculos;
     }
 
+    @NotNull
     @Override
     public VeiculoVisualizacao getVeiculoByCodigo(@NotNull final Long codVeiculo) throws Throwable {
         Connection conn = null;
