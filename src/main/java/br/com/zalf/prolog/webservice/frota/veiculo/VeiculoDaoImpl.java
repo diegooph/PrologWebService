@@ -120,7 +120,15 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
                 // Notificamos o Listener sobre a atualização do veículo.
                 final long kmAntigoVeiculo = veiculoAntesEdicao.getKmAntigo();
                 final long kmNovoVeiculo = veiculo.getKmAtualVeiculo();
-                checklistOfflineListener.onUpdateVeiculo(conn, veiculo.getCodigo(), kmAntigoVeiculo, kmNovoVeiculo);
+                final boolean statusAntigoVeiculo = veiculoAntesEdicao.isStatusAtivoAntigo();
+                final boolean statusNovoVeiculo = veiculo.isStatusAtivo();
+                checklistOfflineListener.onUpdateVeiculo(
+                        conn,
+                        veiculo.getCodigo(),
+                        kmAntigoVeiculo,
+                        kmNovoVeiculo,
+                        statusAntigoVeiculo,
+                        statusNovoVeiculo);
                 conn.commit();
 
                 return new InfosVeiculoEditado(
