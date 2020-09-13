@@ -1,6 +1,10 @@
 Change Log
 ==========
 
+# Stage
+### Refactor
+* Altera fluxo de update de um veículo (PL-3097)
+
 <a name="v1.1.5"></a>
 ## Version [v1.1.5](https://github.com/luizfp/PrologWebService/compare/v1.1.4...v1.1.5) (release-date) [unreleased]
 
@@ -12,7 +16,7 @@ Change Log
 * Cria nova estrutura de integração de Ordem de Serviço da Avilan (PL-2884)
 * Cria estrutura de Logs de requisições e respostas (PL-2904)
 
-## Refactor
+### Refactor
 * Insere código auxiliar na alternativa do modelo checklist (PLI-178)
 
 <a name="v1.1.3"></a>
