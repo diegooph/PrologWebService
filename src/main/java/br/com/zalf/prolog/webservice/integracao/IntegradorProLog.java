@@ -154,7 +154,6 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         if (afericaoDao == null) {
             afericaoDao = Injection.provideAfericaoDao();
         }
-
         return afericaoDao.getRestricaoByCodUnidade(codUnidade);
     }
 
@@ -164,7 +163,6 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         if (afericaoDao == null) {
             afericaoDao = Injection.provideAfericaoDao();
         }
-
         return afericaoDao.getConfiguracaoNovaAfericao(placa);
     }
 
@@ -183,7 +181,6 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         if (integracaoDao == null) {
             integracaoDao = Injection.provideIntegracaoDao();
         }
-
         return integracaoDao.getTokenIntegracaoByCodUnidadeProLog(codUnidadeProLog);
     }
 
@@ -194,7 +191,6 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         if (integracaoDao == null) {
             integracaoDao = Injection.provideIntegracaoDao();
         }
-
         return integracaoDao.getCodEmpresaByCodUnidadeProLog(conn, codUnidadeProLog);
     }
 
@@ -207,7 +203,6 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         if (integracaoDao == null) {
             integracaoDao = Injection.provideIntegracaoDao();
         }
-
         return integracaoDao.getUrl(conn, codEmpresa, sistemaKey, metodoIntegrado);
     }
 
@@ -218,7 +213,6 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         if (integracaoDao == null) {
             integracaoDao = Injection.provideIntegracaoDao();
         }
-
         return integracaoDao.getCodAuxiliarByCodUnidadeProlog(conn, codUnidadeProlog);
     }
 
@@ -232,7 +226,6 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         if (integracaoDao == null) {
             integracaoDao = Injection.provideIntegracaoDao();
         }
-
         return integracaoDao.getApiAutenticacaoHolder(conn, codEmpresa, sistemaKey, metodoIntegrado);
     }
 
@@ -244,7 +237,6 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         if (integracaoDao == null) {
             integracaoDao = Injection.provideIntegracaoDao();
         }
-
         return integracaoDao.getCodUnidadesIntegracaoBloqueada(userToken, sistemaKey, recursoIntegrado);
     }
 
