@@ -4,6 +4,9 @@ Change Log
 <a name="v1.1.5"></a>
 ## Version [v1.1.5](https://github.com/luizfp/PrologWebService/compare/v1.1.4...v1.1.5) (release-date) [unreleased]
 
+### Features
+* Cria métodos para o vínculo automatizado entre placas e pneus (PL-2771)
+
 ### Bugfix
 * Corrige validação de DOT para deixar passar valores nulos ou vazios
 
