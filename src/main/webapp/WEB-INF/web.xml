@@ -24,7 +24,9 @@
         </init-param>
         <init-param>
             <param-name>jersey.config.server.provider.classnames</param-name>
-            <param-value>br.com.zalf.prolog.webservice.config.ProLogApplicationEventListener</param-value>
+            <param-value>
+                br.com.zalf.prolog.webservice.config.ProLogApplicationEventListener;org.glassfish.jersey.media.multipart.MultiPartFeature
+            </param-value>
         </init-param>
     </servlet>
     <servlet-mapping>
