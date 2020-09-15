@@ -166,6 +166,8 @@ import br.com.zalf.prolog.webservice.interno.implantacao.conferencia.frota.pneu.
 import br.com.zalf.prolog.webservice.interno.implantacao.conferencia.frota.pneu.PneuConferenciaDaoImpl;
 import br.com.zalf.prolog.webservice.interno.implantacao.conferencia.frota.veiculo.VeiculoConferenciaDao;
 import br.com.zalf.prolog.webservice.interno.implantacao.conferencia.frota.veiculo.VeiculoConferenciaDaoImpl;
+import br.com.zalf.prolog.webservice.interno.implantacao.conferencia.frota.vinculoveiculopneu.VinculoVeiculoPneuDao;
+import br.com.zalf.prolog.webservice.interno.implantacao.conferencia.frota.vinculoveiculopneu.VinculoVeiculoPneuDaoImpl;
 import br.com.zalf.prolog.webservice.interno.implantacao.conferencia.gente.colaborador.ColaboradorConferenciaDao;
 import br.com.zalf.prolog.webservice.interno.implantacao.conferencia.gente.colaborador.ColaboradorConferenciaDaoImpl;
 import br.com.zalf.prolog.webservice.log.LogDao;
@@ -234,6 +236,10 @@ public final class Injection {
         return new PneuConferenciaDaoImpl();
     }
 
+    @NotNull
+    public static VinculoVeiculoPneuDao provideVinculoVeiculoPneuDao() {
+        return new VinculoVeiculoPneuDaoImpl(Injection.provideConferenciaDao());
+    }
     @NotNull
     public static ApresentacaoDao provideApresentacaoDao() {
         return new ApresentacaoDaoImpl();
@@ -672,5 +678,4 @@ public final class Injection {
     public static MotivoMovimentoTransicaoDao provideMotivoOrigemDestinoDao() {
         return new MotivoMovimentoTransicaoDaoImpl();
     }
-
 }

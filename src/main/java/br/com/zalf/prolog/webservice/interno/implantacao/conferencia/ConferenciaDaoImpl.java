@@ -30,10 +30,10 @@ public class ConferenciaDaoImpl implements ConferenciaDao {
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM IMPLANTACAO.FUNC_IMPORT_INSERE_DADOS_AUTOR(" +
-                    "F_COD_EMPRESA := ?, " +
-                    "F_COD_UNIDADE := ?," +
-                    "F_USUARIO := ?," +
-                    "F_TIPO_IMPORT := ?)");
+                    "F_COD_EMPRESA => ?, " +
+                    "F_COD_UNIDADE => ?," +
+                    "F_USUARIO => ?," +
+                    "F_TIPO_IMPORT => ?)");
 
             stmt.setLong(1, codEmpresa);
             stmt.setLong(2, codUnidade);
