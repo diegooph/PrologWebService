@@ -59,7 +59,7 @@ public final class VeiculoResource {
     }
 
     @PUT
-    @Path("/{codUnidade}/{placa}/status")
+    @Path("/status")
     @Secured(permissions = {Pilares.Frota.Veiculo.ALTERAR, Pilares.Frota.Veiculo.CADASTRAR})
     public Response updateStatus(@HeaderParam("Authorization") @Required final String userToken,
                                  @Required final VeiculoEdicaoStatus veiculo) throws ProLogException {
