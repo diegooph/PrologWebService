@@ -14,6 +14,7 @@ Change Log
 
 ### Features
 * Cria métodos para o vínculo automatizado entre placas e pneus (PL-2771)
+* Cria relatório de último check realizado por placa (PL-3092)
 
 ### Bugfix
 * Corrige validação de DOT para deixar passar valores nulos ou vazios
