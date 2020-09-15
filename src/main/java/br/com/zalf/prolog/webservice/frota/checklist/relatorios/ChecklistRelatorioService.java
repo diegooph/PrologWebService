@@ -259,4 +259,33 @@ class ChecklistRelatorioService {
             throw new RuntimeException(e);
         }
     }
+
+    @NotNull
+    Report getUltimoChecklistRealizadoPlacaReport(@NotNull final List<Long> codUnidades,
+                                                  @NotNull final List<Long> codTiposVeiculos) throws ProLogException {
+        try {
+            return dao.getUltimoChecklistRealizadoPlacaReport(
+                    codUnidades,
+                    codTiposVeiculos);
+        } catch (final Throwable e) {
+            Log.e(TAG, "Erro ao buscar o relatório de último checklist realizado por placa (REPORT)", e);
+            throw exceptionHandler.map(e,
+                    "Erro ao buscar o relatório de último checklist realizado por placa," +
+                            " tente novamente");
+        }
+    }
+
+    void getUltimoChecklistRealizadoPlacaCsv(@NotNull final OutputStream outputStream,
+                                             @NotNull final List<Long> codUnidades,
+                                             @NotNull final List<Long> codTiposVeiculos) {
+        try {
+            dao.getUltimoChecklistRealizadoPlacaCsv(
+                    outputStream,
+                    codUnidades,
+                    codTiposVeiculos);
+        } catch (final Throwable e) {
+            Log.e(TAG, "Erro ao buscar o relatório de último checklist realizado por placa (CSV)", e);
+            throw new RuntimeException(e);
+        }
+    }
 }

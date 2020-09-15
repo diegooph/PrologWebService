@@ -163,4 +163,25 @@ public class ChecklistRelatorioResource {
                         dataInicial,
                         dataFinal);
     }
+
+    @GET
+    @Path("/ultimo-checklists-realizado-placa/report")
+    public Report getUltimoChecklistRealizadoPlacaReport(@QueryParam("codUnidades") List<Long> codUnidades,
+                                                         @QueryParam("codTiposVeiculos") List<Long> codTiposVeiculos)
+            throws ProLogException {
+        return service.getUltimoChecklistRealizadoPlacaReport(codUnidades, codTiposVeiculos);
+    }
+
+    @GET
+    @Path("/ultimo-checklists-realizado-placa/csv")
+    @UsedBy(platforms = Platform.WEBSITE)
+    public StreamingOutput getUltimoChecklistRealizadoPlacaCsv(@QueryParam("codUnidades") List<Long> codUnidades,
+                                                               @QueryParam("codTiposVeiculos")
+                                                                       List<Long> codTiposVeiculos) {
+        return outputStream ->
+                service.getUltimoChecklistRealizadoPlacaCsv(
+                        outputStream,
+                        codUnidades,
+                        codTiposVeiculos);
+    }
 }
