@@ -39,6 +39,8 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.VeiculoCadastro;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.InfosVeiculoEditado;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicao;
 import br.com.zalf.prolog.webservice.frota.veiculo.tipoveiculo.TipoVeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.VeiculoTransferenciaDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.ProcessoTransferenciaVeiculoRealizacao;
@@ -282,36 +284,25 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
     }
 
     @Override
-    public boolean insert(
+    public void insert(
             @NotNull final VeiculoCadastro veiculo,
             @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
         if (veiculoDao == null) {
             veiculoDao = Injection.provideVeiculoDao();
         }
-        return veiculoDao.insert(veiculo, checklistOfflineListener);
+        veiculoDao.insert(veiculo, checklistOfflineListener);
     }
 
+    @NotNull
     @Override
-    public boolean update(
-            @NotNull final String placaOriginal,
-            @NotNull final Veiculo veiculo,
+    public InfosVeiculoEditado update(
+            @NotNull final Long codColaboradorResponsavelEdicao,
+            @NotNull final VeiculoEdicao veiculo,
             @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
         if (veiculoDao == null) {
             veiculoDao = Injection.provideVeiculoDao();
         }
-        return veiculoDao.update(placaOriginal, veiculo, checklistOfflineListener);
-    }
-
-    @Override
-    public void updateStatus(
-            @NotNull final Long codUnidade,
-            @NotNull final String placa,
-            @NotNull final Veiculo veiculo,
-            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
-        if (veiculoDao == null) {
-            veiculoDao = Injection.provideVeiculoDao();
-        }
-        veiculoDao.updateStatus(codUnidade, placa, veiculo, checklistOfflineListener);
+        return veiculoDao.update(codColaboradorResponsavelEdicao, veiculo, checklistOfflineListener);
     }
 
     @Override

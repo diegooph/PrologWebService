@@ -10,6 +10,9 @@ import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculoNomenclatura;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicao;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicaoStatus;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoVisualizacao;
 import br.com.zalf.prolog.webservice.interceptors.auth.ColaboradorAutenticado;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.AppVersionCodeHandler;
@@ -32,6 +35,7 @@ import java.util.Set;
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public final class VeiculoResource {
 
+    @NotNull
     private final VeiculoService service = new VeiculoService();
 
     @Inject
@@ -42,27 +46,24 @@ public final class VeiculoResource {
     @UsedBy(platforms = Platform.WEBSITE)
     @Path("/")
     public Response insert(@HeaderParam("Authorization") @Required final String userToken,
-                           @Required final VeiculoCadastro veiculo) throws ProLogException {
+                           @Required final VeiculoCadastro veiculo) {
         return service.insert(userToken, veiculo);
     }
 
     @PUT
     @Secured(permissions = {Pilares.Frota.Veiculo.ALTERAR, Pilares.Frota.Veiculo.CADASTRAR})
-    @Path("/{placaOriginal}")
+    @Path("/")
     public Response update(@HeaderParam("Authorization") @Required final String userToken,
-                           @PathParam("placaOriginal") @Required final String placaOriginal,
-                           @Required final Veiculo veiculo) throws ProLogException {
-        return service.update(userToken, placaOriginal, veiculo);
+                           @Required final VeiculoEdicao veiculo) {
+        return service.update(colaboradorAutenticadoProvider.get().getCodigo(), userToken, veiculo);
     }
 
     @PUT
     @Path("/{codUnidade}/{placa}/status")
     @Secured(permissions = {Pilares.Frota.Veiculo.ALTERAR, Pilares.Frota.Veiculo.CADASTRAR})
     public Response updateStatus(@HeaderParam("Authorization") @Required final String userToken,
-                                 @PathParam("codUnidade") @Required final Long codUnidade,
-                                 @PathParam("placa") @Required final String placa,
-                                 @Required final Veiculo veiculo) throws ProLogException {
-        return service.updateStatus(userToken, codUnidade, placa, veiculo);
+                                 @Required final VeiculoEdicaoStatus veiculo) throws ProLogException {
+        return service.updateStatus(colaboradorAutenticadoProvider.get().getCodigo(), userToken, veiculo);
     }
 
     @DELETE
@@ -92,10 +93,10 @@ public final class VeiculoResource {
             Pilares.Frota.Veiculo.CADASTRAR,
             Pilares.Frota.Checklist.VISUALIZAR_TODOS})
     @Path("/busca/byUnidade")
-    public List<VeiculoListagem> buscaVeiculosByUnidade(@HeaderParam("Authorization") @Required final String userToken,
-                                                        @QueryParam("codUnidade") @Required final Long codUnidade,
-                                                        @QueryParam("somenteAtivos") @Optional final boolean somenteAtivos) {
-        return service.buscaVeiculosByUnidades(Collections.singletonList(codUnidade), somenteAtivos, null);
+    public List<VeiculoListagem> getVeiculosByUnidade(@HeaderParam("Authorization") @Required final String userToken,
+                                                      @QueryParam("codUnidade") @Required final Long codUnidade,
+                                                      @QueryParam("somenteAtivos") @Optional final boolean somenteAtivos) {
+        return service.getVeiculosByUnidades(Collections.singletonList(codUnidade), somenteAtivos, null);
     }
 
     @GET
@@ -105,10 +106,10 @@ public final class VeiculoResource {
             Pilares.Frota.Veiculo.CADASTRAR,
             Pilares.Frota.Checklist.VISUALIZAR_TODOS})
     @Path("/listagem")
-    public List<VeiculoListagem> buscaVeiculosByUnidades(@QueryParam("codUnidades") @Required final List<Long> codUnidades,
-                                                         @QueryParam("apenasAtivos") @Optional final boolean apenasAtivos,
-                                                         @QueryParam("codTipoVeiculo") @Optional final Long codTipoVeiculo) {
-        return service.buscaVeiculosByUnidades(codUnidades, apenasAtivos, codTipoVeiculo);
+    public List<VeiculoListagem> getVeiculosByUnidades(@QueryParam("codUnidades") @Required final List<Long> codUnidades,
+                                                       @QueryParam("apenasAtivos") @Optional final boolean apenasAtivos,
+                                                       @QueryParam("codTipoVeiculo") @Optional final Long codTipoVeiculo) {
+        return service.getVeiculosByUnidades(codUnidades, apenasAtivos, codTipoVeiculo);
     }
 
     @GET
@@ -192,13 +193,6 @@ public final class VeiculoResource {
     }
 
     @GET
-    @Secured
-    @Path("/eixos")
-    public List<Eixos> getEixos() {
-        return service.getEixos();
-    }
-
-    @GET
     @Secured(permissions = {Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
     @Path("/diagramas")
     public Set<DiagramaVeiculo> getDiagramasVeiculos() {
@@ -227,9 +221,9 @@ public final class VeiculoResource {
             targetVersionCode = 68,
             versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
             actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
-    public VeiculoVisualizacao buscaVeiculoByCodigo(@HeaderParam("Authorization") final String userToken,
-                                                    @QueryParam("codVeiculo") final Long codVeiculo) {
-        return service.buscaVeiculoByCodigo(userToken, codVeiculo);
+    public VeiculoVisualizacao getVeiculoByCodigo(@HeaderParam("Authorization") final String userToken,
+                                                  @QueryParam("codVeiculo") final Long codVeiculo) {
+        return service.getVeiculoByCodigo(userToken, codVeiculo);
     }
 
     @GET
@@ -245,7 +239,7 @@ public final class VeiculoResource {
     /**
      * @deprecated at 2020-05-07.
      * <p>
-     * Este método foi depreciado pois um novo foi criado: {@link #buscaVeiculoByCodigo(String, Long)}
+     * Este método foi depreciado pois um novo foi criado: {@link #getVeiculoByCodigo(String, Long)}
      */
     @Deprecated
     @GET
@@ -292,7 +286,7 @@ public final class VeiculoResource {
     /**
      * @deprecated at 2020-05-07.
      * <p>
-     * Este método foi depreciado pois um novo foi criado: {@link #buscaVeiculosByUnidades}
+     * Este método foi depreciado pois um novo foi criado: {@link #getVeiculosByUnidades}
      */
     @Deprecated
     @GET

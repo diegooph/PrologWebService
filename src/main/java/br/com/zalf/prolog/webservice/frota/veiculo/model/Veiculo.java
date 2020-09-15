@@ -13,6 +13,7 @@ import java.util.List;
 /**
  * Created by jean on 04/04/16.
  */
+@Deprecated
 public class Veiculo {
 
     private Long codigo;

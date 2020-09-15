@@ -29,10 +29,9 @@ public interface DadosChecklistOfflineChangedListener {
     void onUpdateVeiculo(@NotNull final Connection connection,
                          @NotNull final Long codVeiculo,
                          final long kmAntigoVeiculo,
-                         final long kmNovoVeiculo) throws Throwable;
-
-    void onUpdateStatusVeiculo(@NotNull final Connection connection,
-                               @NotNull final Long codVeiculo) throws Throwable;
+                         final long kmNovoVeiculo,
+                         final boolean statusAntigoVeiculo,
+                         final boolean statusNovoVeiculo) throws Throwable;
 
     void onVeiculosTransferidos(@NotNull final Connection connection,
                                 @NotNull final Long codUnidadeOrigem,

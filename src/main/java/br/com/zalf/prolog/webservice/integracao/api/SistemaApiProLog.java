@@ -8,8 +8,9 @@ import br.com.zalf.prolog.webservice.frota.pneu.servico._model.Servico;
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.TipoServico;
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.VeiculoServico;
 import br.com.zalf.prolog.webservice.frota.pneu.transferencia._model.realizacao.PneuTransferenciaRealizacao;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.VeiculoCadastro;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.InfosVeiculoEditado;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicao;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.ProcessoTransferenciaVeiculoRealizacao;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.RecursoIntegrado;
@@ -35,40 +36,26 @@ public final class SistemaApiProLog extends Sistema {
     }
 
     @Override
-    public boolean insert(
+    public void insert(
             @NotNull final VeiculoCadastro veiculo,
             @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
         if (unidadeEstaComIntegracaoAtiva(veiculo.getCodUnidadeAlocado())) {
             throw new BloqueadoIntegracaoException("Para inserir veículos utilize o seu sistema de gestão");
         }
-        return getIntegradorProLog().insert(veiculo, checklistOfflineListener);
+        getIntegradorProLog().insert(veiculo, checklistOfflineListener);
     }
 
+    @NotNull
     @Override
-    public boolean update(
-            @NotNull final String placaOriginal,
-            @NotNull final Veiculo veiculo,
+    public InfosVeiculoEditado update(
+            @NotNull final Long codColaboradorResponsavelEdicao,
+            @NotNull final VeiculoEdicao veiculo,
             @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
-        final Long codUnidadePlaca =
-                getIntegradorProLog().getVeiculoByPlaca(placaOriginal, false).getCodUnidadeAlocado();
-        if (unidadeEstaComIntegracaoAtiva(codUnidadePlaca)) {
+        if (unidadeEstaComIntegracaoAtiva(veiculo.getCodUnidadeAlocado())) {
             throw new BloqueadoIntegracaoException(
                     "Para atualizar os dados do veículo utilize o seu sistema de gestão");
         }
-        return getIntegradorProLog().update(placaOriginal, veiculo, checklistOfflineListener);
-    }
-
-    @Override
-    public void updateStatus(
-            @NotNull final Long codUnidade,
-            @NotNull final String placa,
-            @NotNull final Veiculo veiculo,
-            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
-        if (unidadeEstaComIntegracaoAtiva(codUnidade)) {
-            throw new BloqueadoIntegracaoException(
-                    "Para atualizar os dados do veículo utilize o seu sistema de gestão");
-        }
-        getIntegradorProLog().updateStatus(codUnidade, placa, veiculo, checklistOfflineListener);
+        return getIntegradorProLog().update(codColaboradorResponsavelEdicao, veiculo, checklistOfflineListener);
     }
 
     @Override
@@ -154,7 +141,7 @@ public final class SistemaApiProLog extends Sistema {
     public Long insertAfericao(@NotNull final Long codUnidade,
                                @NotNull final Afericao afericao,
                                final boolean deveAbrirServico) throws Throwable {
-        boolean abrirServico;
+        final boolean abrirServico;
         if (unidadeEstaComIntegracaoAtiva(codUnidade)) {
             // Se a unidade possui a integração ativada, precisamos saber se existe algo configurado para abertura
             // de serviços de pneus nesta unidade.
