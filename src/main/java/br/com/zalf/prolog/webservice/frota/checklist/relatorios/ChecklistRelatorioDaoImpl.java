@@ -359,7 +359,7 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
 
     @Override
     public @NotNull Report getUltimoChecklistRealizadoPlacaReport(@NotNull final List<Long> codUnidades,
-                                                                  @Nullable final List<Long> codTiposVeiculos)
+                                                                  @NotNull final List<Long> codTiposVeiculos)
             throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -377,7 +377,7 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
     @Override
     public void getUltimoChecklistRealizadoPlacaCsv(@NotNull final OutputStream outputStream,
                                                     @NotNull final List<Long> codUnidades,
-                                                    @Nullable final List<Long> codTiposVeiculos) throws Throwable {
+                                                    @NotNull final List<Long> codTiposVeiculos) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;

@@ -262,7 +262,7 @@ class ChecklistRelatorioService {
 
     @NotNull
     Report getUltimoChecklistRealizadoPlacaReport(@NotNull final List<Long> codUnidades,
-                                                  @Nullable final List<Long> codTiposVeiculos) throws ProLogException {
+                                                  @NotNull final List<Long> codTiposVeiculos) throws ProLogException {
         try {
             return dao.getUltimoChecklistRealizadoPlacaReport(
                     codUnidades,
@@ -277,7 +277,7 @@ class ChecklistRelatorioService {
 
     void getUltimoChecklistRealizadoPlacaCsv(@NotNull final OutputStream outputStream,
                                              @NotNull final List<Long> codUnidades,
-                                             @Nullable final List<Long> codTiposVeiculos) {
+                                             @NotNull final List<Long> codTiposVeiculos) {
         try {
             dao.getUltimoChecklistRealizadoPlacaCsv(
                     outputStream,

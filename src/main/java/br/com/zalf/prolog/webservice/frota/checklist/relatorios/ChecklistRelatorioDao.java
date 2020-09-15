@@ -109,7 +109,7 @@ public interface ChecklistRelatorioDao {
      */
     @NotNull
     Report getUltimoChecklistRealizadoPlacaReport(@NotNull final List<Long> codUnidades,
-                                                  @Nullable final List<Long> codTiposVeiculos) throws Throwable;
+                                                  @NotNull final List<Long> codTiposVeiculos) throws Throwable;
 
     /**
      * Método para buscar o relatório de último checklist realizado por placa em CSV.
@@ -121,5 +121,5 @@ public interface ChecklistRelatorioDao {
      */
     void getUltimoChecklistRealizadoPlacaCsv(@NotNull final OutputStream outputStream,
                                              @NotNull final List<Long> codUnidades,
-                                             @Nullable final List<Long> codTiposVeiculos) throws Throwable;
+                                             @NotNull final List<Long> codTiposVeiculos) throws Throwable;
 }
