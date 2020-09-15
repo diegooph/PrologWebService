@@ -103,8 +103,8 @@ public interface ChecklistRelatorioDao {
     /**
      * Método para buscar o relatório de último checklist realizado por placa em formato {@link Report report}.
      *
-     * @param codUnidades      Códigos das unidades pela quais as informações serão filtradas.
-     * @param codTiposVeiculos Código dos tipos de veículos pelas quais as informações serão filtradas.
+     * @param codUnidades      Códigos das unidades pelas quais as informações serão filtradas.
+     * @param codTiposVeiculos Códigos dos tipos de veículos pelos quais as informações serão filtrados.
      * @throws Throwable Se algum erro ocorrer.
      */
     @NotNull
@@ -115,8 +115,8 @@ public interface ChecklistRelatorioDao {
      * Método para buscar o relatório de último checklist realizado por placa em CSV.
      *
      * @param outputStream     Streaming onde os dados serão escritos.
-     * @param codUnidades      Códigos das unidades pela quais as informações serão filtradas.
-     * @param codTiposVeiculos Código dos tipos de veículos pelas quais as informações serão filtradas.
+     * @param codUnidades      Códigos das unidades pelas quais as informações serão filtradas.
+     * @param codTiposVeiculos Códigos dos tipos de veículos pelos quais as informações serão filtrados.
      * @throws Throwable Se algum erro ocorrer.
      */
     void getUltimoChecklistRealizadoPlacaCsv(@NotNull final OutputStream outputStream,
