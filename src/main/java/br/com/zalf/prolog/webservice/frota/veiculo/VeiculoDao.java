@@ -35,8 +35,9 @@ public interface VeiculoDao {
     /**
      * Método utilizado para atualizar as informações de um veículo.
      *
-     * @param veiculo                  Objeto contendo as informações que serão atualizadas.
-     * @param checklistOfflineListener Listener utilizado para notificar a alteração em um veículo.
+     * @param codColaboradorResponsavelEdicao Código do colaborador responsável por realizar esta edição.
+     * @param veiculo                         Objeto contendo as informações que serão atualizadas.
+     * @param checklistOfflineListener        Listener utilizado para notificar a alteração em um veículo.
      * @return Dados sobre a edição realizada.
      * @throws Throwable Se algum erro ocorrer durante a operação.
      */
