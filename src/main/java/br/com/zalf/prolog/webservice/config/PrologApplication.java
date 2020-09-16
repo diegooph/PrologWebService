@@ -1,8 +1,9 @@
-package br.com.zalf.prolog.webservice;
+package br.com.zalf.prolog.webservice.config;
 
 import br.com.zalf.prolog.webservice.database.DataSourceLifecycleManager;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
+import org.glassfish.jersey.server.ServerProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
@@ -33,8 +34,9 @@ public class PrologApplication {
     @Configuration
     public static class PrologConfig extends ResourceConfig {
         public PrologConfig() {
-            packages("jersey.config.server.provider.packages",
-                    "br.com.zalf.prolog.webservice");
+            property("jersey.config.server.provider.packages", "br.com.zalf.prolog.webservice");
+            property(ServerProperties.BV_SEND_ERROR_IN_RESPONSE, true);
+            property(ServerProperties.BV_DISABLE_VALIDATE_ON_EXECUTABLE_OVERRIDE_CHECK, true);
             register(MultiPartFeature.class);
         }
     }

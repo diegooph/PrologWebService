@@ -19,13 +19,10 @@
         <servlet-name>Jersey REST Service</servlet-name>
         <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
         <init-param>
-            <param-name>javax.ws.rs.Application</param-name>
-            <param-value>br.com.zalf.prolog.webservice.config.ProLogApplication</param-value>
-        </init-param>
-        <init-param>
             <param-name>jersey.config.server.provider.classnames</param-name>
             <param-value>
-                br.com.zalf.prolog.webservice.config.ProLogApplicationEventListener;org.glassfish.jersey.media.multipart.MultiPartFeature
+                br.com.zalf.prolog.webservice.config.ProLogApplicationEventListener,
+                org.glassfish.jersey.media.multipart.MultiPartFeature
             </param-value>
         </init-param>
     </servlet>
