@@ -1,14 +1,6 @@
 Change Log
 ==========
 
-# Stage
-
-### Bugfix
-* Corrige uso das Daos em integrações (PL-3136)
-
-### Refactor
-* Altera fluxo de update de um veículo (PL-3097)
-
 <a name="v1.1.5"></a>
 ## Version [v1.1.5](https://github.com/luizfp/PrologWebService/compare/v1.1.4...v1.1.5) (release-date) [unreleased]
 
@@ -16,8 +8,13 @@ Change Log
 * Cria métodos para o vínculo automatizado entre placas e pneus (PL-2771)
 * Cria relatório de último check realizado por placa (PL-3092)
 
+### Refactor
+* Altera fluxo de update de um veículo (PL-3097)
+* Adiciona permissão de relatório de checklist na busca de tipos de veículo
+
 ### Bugfix
 * Corrige validação de DOT para deixar passar valores nulos ou vazios
+* Corrige uso das Daos em integrações (PL-3136)
 
 <a name="v1.1.4"></a>
 ## Version [v1.1.4](https://github.com/luizfp/PrologWebService/compare/v1.1.3...v1.1.4) (2020-09-07)
