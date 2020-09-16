@@ -10,6 +10,7 @@ Change Log
 ### Features
 * Cria métodos para o vínculo automatizado entre placas e pneus (PL-2771)
 * Cria relatório de último check realizado por placa (PL-3092)
+* Cria testes automatizados de ordem de serviço da Avilan (PL-2906)
 
 ### Refactor
 * Altera fluxo de update de um veículo (PL-3097)
