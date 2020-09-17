@@ -50,7 +50,7 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
                     "F_COD_TIPO := ?) AS CODIGO;");
             stmt.setLong(1, veiculo.getCodUnidadeAlocado());
             stmt.setString(2, veiculo.getPlacaVeiculo().toUpperCase());
-            stmt.setString(3, veiculo.getIdentificadorFrota());
+            stmt.setString(3, StringUtils.trimToNull(veiculo.getIdentificadorFrota()));
             stmt.setLong(4, veiculo.getKmAtualVeiculo());
             stmt.setLong(5, veiculo.getCodModeloVeiculo());
             stmt.setLong(6, veiculo.getCodTipoVeiculo());
@@ -105,7 +105,7 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
                     "f_informacoes_extras_edicao := null);");
             stmt.setLong(1, veiculo.getCodigo());
             stmt.setString(2, veiculo.getPlacaVeiculo());
-            stmt.setString(3, veiculo.getIdentificadorFrota());
+            stmt.setString(3, StringUtils.trimToNull(veiculo.getIdentificadorFrota()));
             stmt.setLong(4, veiculo.getKmAtualVeiculo());
             stmt.setLong(5, veiculo.getCodTipoVeiculo());
             stmt.setLong(6, veiculo.getCodModeloVeiculo());
