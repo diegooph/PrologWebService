@@ -13,11 +13,11 @@ public enum StatusDelecaoTransferenciaVeiculo {
 
     public static StatusDelecaoTransferenciaVeiculo create(final boolean delecaoOsCheckBloqueada,
                                                            final boolean delecaoServicosPneusBloqueada) {
-        if (delecaoOsCheckBloqueada && delecaoServicosPneusBloqueada) {
+        if ((delecaoOsCheckBloqueada) && (delecaoServicosPneusBloqueada)) {
             return DELECAO_OS_CHECK_E_SERVICOS_PNEUS_BLOQUEADA;
-        } else if (delecaoOsCheckBloqueada && !delecaoServicosPneusBloqueada) {
+        } else if (delecaoOsCheckBloqueada) {
             return DELECAO_OS_CHECK_BLOQUEADA;
-        } else if (!delecaoOsCheckBloqueada && delecaoServicosPneusBloqueada) {
+        } else if (delecaoServicosPneusBloqueada) {
             return DELECAO_SERVICOS_PNEUS_BLOQUEADA;
         } else {
             return NENHUMA_DELECAO_BLOQUEADA;
