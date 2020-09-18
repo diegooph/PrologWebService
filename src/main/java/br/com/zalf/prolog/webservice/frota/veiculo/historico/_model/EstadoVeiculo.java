@@ -30,5 +30,5 @@ public final class EstadoVeiculo {
     @Nullable
     private final String informacoesExtras;
     @NotNull
-    private final Map<String, Object> valoresModificaveis;
+    private final Map<TipoAlteracaoEnum, Object> valoresModificaveis;
 }

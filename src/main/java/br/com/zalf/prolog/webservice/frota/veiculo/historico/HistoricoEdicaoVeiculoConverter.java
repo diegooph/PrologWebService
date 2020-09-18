@@ -32,8 +32,8 @@ public final class HistoricoEdicaoVeiculoConverter {
     }
 
     @NotNull
-    private static List<EdicaoVeiculo> createEdicoesVeiculo(@NotNull final Map<String, Object> valoresAntigos,
-                                                            @NotNull final Map<String, Object> valoresNovos) {
+    private static List<EdicaoVeiculo> createEdicoesVeiculo(@NotNull final Map<TipoAlteracaoEnum, Object> valoresAntigos,
+                                                            @NotNull final Map<TipoAlteracaoEnum, Object> valoresNovos) {
         final List<EdicaoVeiculo> edicoesVeiculo = new ArrayList<>();
         valoresAntigos
                 .keySet()
@@ -50,14 +50,11 @@ public final class HistoricoEdicaoVeiculoConverter {
     @NotNull
     private static EdicaoVeiculo createEdicaoVeiculo(@Nullable final Object valorAntigo,
                                                      @Nullable final Object valorNovo,
-                                                     @NotNull final String tipoAlteracao) {
+                                                     @NotNull final TipoAlteracaoEnum tipoAlteracao) {
         if (valorAntigo == null && valorNovo == null) {
             throw new IllegalStateException("O valor antigo e o valor novo não podem ser nulos juntos!");
         }
-        return new EdicaoVeiculo(
-                TipoAlteracaoEnum.fromString(tipoAlteracao),
-                valorAntigo,
-                valorNovo);
+        return new EdicaoVeiculo(tipoAlteracao, valorAntigo, valorNovo);
     }
 
     @NotNull
@@ -70,19 +67,21 @@ public final class HistoricoEdicaoVeiculoConverter {
                 rSet.getString("origem_edicao_legivel"),
                 rSet.getObject("data_hora_edicao", LocalDateTime.class),
                 rSet.getInt("total_edicoes"),
-                rSet.getString("informacoes_extras"), createValoresModificaveis(rSet));
+                rSet.getString("informacoes_extras"),
+                createValoresModificaveis(rSet));
     }
 
     @NotNull
-    public static Map<String, Object> createValoresModificaveis(@NotNull final ResultSet rSet) throws Throwable {
-        final Map<String, Object> valoresModificaveis = new HashMap<>();
-        valoresModificaveis.put("identificador_frota", rSet.getString("identificador_frota"));
-        valoresModificaveis.put("km_veiculo", rSet.getLong("km_veiculo"));
-        valoresModificaveis.put("status", rSet.getBoolean("status"));
-        valoresModificaveis.put("diagrama_veiculo", rSet.getString("diagrama_veiculo"));
-        valoresModificaveis.put("tipo_veiculo", rSet.getString("tipo_veiculo"));
-        valoresModificaveis.put("modelo_veiculo", rSet.getString("modelo_veiculo"));
-        valoresModificaveis.put("placa", rSet.getString("placa"));
+    public static Map<TipoAlteracaoEnum, Object> createValoresModificaveis(@NotNull final ResultSet rSet) throws Throwable {
+        final Map<TipoAlteracaoEnum, Object> valoresModificaveis = new LinkedHashMap<>();
+        valoresModificaveis.put(TipoAlteracaoEnum.PLACA, rSet.getString("placa"));
+        valoresModificaveis.put(TipoAlteracaoEnum.IDENTIFICADOR_FROTA, rSet.getString("identificador_frota"));
+        valoresModificaveis.put(TipoAlteracaoEnum.KM_VEICULO, rSet.getLong("km_veiculo"));
+        valoresModificaveis.put(TipoAlteracaoEnum.STATUS_ATIVO, rSet.getBoolean("status"));
+        valoresModificaveis.put(TipoAlteracaoEnum.DIGRAMA_VEICULO, rSet.getString("diagrama_veiculo"));
+        valoresModificaveis.put(TipoAlteracaoEnum.TIPO_VEICULO, rSet.getString("tipo_veiculo"));
+        valoresModificaveis.put(TipoAlteracaoEnum.MARCA_VEICULO, rSet.getString("marca_veiculo"));
+        valoresModificaveis.put(TipoAlteracaoEnum.MODELO_VEICULO, rSet.getString("modelo_veiculo"));
         return valoresModificaveis;
     }
 

@@ -15,7 +15,8 @@ public enum TipoAlteracaoEnum {
     DIGRAMA_VEICULO("DIAGRAMA_VEICULO"),
     TIPO_VEICULO("TIPO_VEICULO"),
     MODELO_VEICULO("MODELO_VEICULO"),
-    PLACA("PLACA");
+    PLACA("PLACA"),
+    MARCA_VEICULO("MARCA_VEICULO");
 
     @NotNull
     private final String stringRepresentation;
