@@ -305,16 +305,6 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         return veiculoDao.update(codColaboradorResponsavelEdicao, veiculo, checklistOfflineListener);
     }
 
-    @Override
-    public boolean delete(
-            @NotNull final String placa,
-            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
-        if (veiculoDao == null) {
-            veiculoDao = Injection.provideVeiculoDao();
-        }
-        return veiculoDao.delete(placa, checklistOfflineListener);
-    }
-
     @NotNull
     @Override
     public Long insertProcessoTransferenciaVeiculo(
