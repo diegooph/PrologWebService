@@ -31,16 +31,16 @@ public final class AvisoDelecaoTransferenciaVeiculo {
     }
 
     public boolean deveDeletarItensOrdemServicoChecklist() {
-        return statusDelecaoTransferenciaVeiculo
-                .equals(StatusDelecaoTransferenciaVeiculo.DELECAO_OS_CHECK_BLOQUEADA) ||
-                statusDelecaoTransferenciaVeiculo
-                        .equals(StatusDelecaoTransferenciaVeiculo.DELECAO_OS_CHECK_E_SERVICOS_PNEUS_BLOQUEADA);
+        return ((!statusDelecaoTransferenciaVeiculo
+                .equals(StatusDelecaoTransferenciaVeiculo.DELECAO_OS_CHECK_BLOQUEADA)) &&
+                (!statusDelecaoTransferenciaVeiculo
+                        .equals(StatusDelecaoTransferenciaVeiculo.DELECAO_OS_CHECK_E_SERVICOS_PNEUS_BLOQUEADA)));
     }
 
     public boolean deveDeletarServicosPneus() {
-        return statusDelecaoTransferenciaVeiculo
-                .equals(StatusDelecaoTransferenciaVeiculo.DELECAO_SERVICOS_PNEUS_BLOQUEADA) ||
-                statusDelecaoTransferenciaVeiculo
-                        .equals(StatusDelecaoTransferenciaVeiculo.DELECAO_OS_CHECK_E_SERVICOS_PNEUS_BLOQUEADA);
+        return ((!statusDelecaoTransferenciaVeiculo
+                .equals(StatusDelecaoTransferenciaVeiculo.DELECAO_SERVICOS_PNEUS_BLOQUEADA)) &&
+                (!statusDelecaoTransferenciaVeiculo
+                        .equals(StatusDelecaoTransferenciaVeiculo.DELECAO_OS_CHECK_E_SERVICOS_PNEUS_BLOQUEADA)));
     }
 }
