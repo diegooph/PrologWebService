@@ -462,17 +462,6 @@ public abstract class Router implements OperacoesIntegradas {
         }
     }
 
-    @Override
-    public boolean delete(
-            @NotNull final String placa,
-            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
-        if (getSistema() != null) {
-            return getSistema().delete(placa, checklistOfflineListener);
-        } else {
-            return integradorProLog.delete(placa, checklistOfflineListener);
-        }
-    }
-
     @NotNull
     @Override
     public List<Veiculo> getVeiculosAtivosByUnidade(@NotNull final Long codUnidade, @Nullable final Boolean ativos) throws

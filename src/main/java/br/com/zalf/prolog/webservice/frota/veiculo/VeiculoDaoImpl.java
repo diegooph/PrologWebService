@@ -149,45 +149,6 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         }
     }
 
-    @Override
-    public boolean delete(
-            @NotNull final String placa,
-            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            conn.setAutoCommit(false);
-            stmt = conn.prepareStatement("UPDATE VEICULO SET STATUS_ATIVO = ? "
-                    + "WHERE PLACA = ? RETURNING CODIGO");
-            stmt.setBoolean(1, false);
-            stmt.setString(2, placa);
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                final long codVeiculoDeletado = rSet.getLong("CODIGO");
-                if (codVeiculoDeletado <= 0) {
-                    throw new SQLException("Erro ao inativar o veículo:\n" +
-                            "placa: " + placa + "\n" +
-                            "codVeiculoDeletado: " + codVeiculoDeletado);
-                }
-                // Devemos disparar o listener avisando que ocorreu uma inativação.
-                checklistOfflineListener.onDeleteVeiculo(conn, codVeiculoDeletado);
-                conn.commit();
-                return true;
-            } else {
-                throw new SQLException("Erro ao inativar o veículo, placa: " + placa);
-            }
-        } catch (final Throwable t) {
-            if (conn != null) {
-                conn.rollback();
-            }
-            throw t;
-        } finally {
-            close(conn, stmt, rSet);
-        }
-    }
-
     @NotNull
     @Override
     public List<VeiculoListagem> buscaVeiculosByUnidades(@NotNull final List<Long> codUnidades,

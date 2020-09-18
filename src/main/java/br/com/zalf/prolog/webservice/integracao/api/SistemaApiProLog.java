@@ -58,18 +58,6 @@ public final class SistemaApiProLog extends Sistema {
         return getIntegradorProLog().update(codColaboradorResponsavelEdicao, veiculo, checklistOfflineListener);
     }
 
-    @Override
-    public boolean delete(
-            @NotNull final String placa,
-            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
-        final Long codUnidadeVeiculo =
-                getIntegradorProLog().getVeiculoByPlaca(placa, false).getCodUnidadeAlocado();
-        if (unidadeEstaComIntegracaoAtiva(codUnidadeVeiculo)) {
-            throw new BloqueadoIntegracaoException("Para deletar o veículo utilize o seu sistema de gestão");
-        }
-        return getIntegradorProLog().delete(placa, checklistOfflineListener);
-    }
-
     @NotNull
     @Override
     public Long insert(@NotNull final Pneu pneu, @NotNull final Long codUnidade) throws Throwable {

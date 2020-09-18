@@ -88,6 +88,25 @@ public final class VeiculoService {
     }
 
     @NotNull
+    public Response insert(@NotNull final String userToken,
+                           @NotNull final VeiculoCadastro veiculo) throws ProLogException {
+        try {
+            VeiculoValidator.validacaoAtributosVeiculo(veiculo);
+            RouterVeiculo
+                    .create(dao, userToken)
+                    .insert(veiculo, Injection.provideDadosChecklistOfflineChangedListener());
+            return Response.ok("Veículo inserido com sucesso");
+        } catch (final Throwable t) {
+            Log.e(TAG, String.format("Erro ao inserir o veículo. \n" +
+                    "userToken: %s\n" +
+                    "codUnidade: %d", userToken, veiculo.getCodUnidadeAlocado()), t);
+            throw Injection
+                    .provideVeiculoExceptionHandler()
+                    .map(t, "Erro ao inserir o veículo, tente novamente");
+        }
+    }
+
+    @NotNull
     public Response update(@NotNull final Long codColaboradorResponsavelEdicao,
                            @NotNull final String userToken,
                            @NotNull final VeiculoEdicao veiculo) {
@@ -125,43 +144,6 @@ public final class VeiculoService {
             throw Injection
                     .provideVeiculoExceptionHandler()
                     .map(t, "Erro ao atualizar o status do veículo, tente novamente.");
-        }
-    }
-
-    @NotNull
-    public Response delete(@NotNull final String userToken,
-                           @NotNull final String placa) throws ProLogException {
-        try {
-            RouterVeiculo
-                    .create(dao, userToken)
-                    .delete(placa, Injection.provideDadosChecklistOfflineChangedListener());
-            return Response.ok("Veículo inativado com sucesso");
-        } catch (final Throwable t) {
-            Log.e(TAG, String.format("Erro ao deletar o veículo\n" +
-                    "userToken: %s" +
-                    "placa: %s", userToken, placa), t);
-            throw Injection
-                    .provideVeiculoExceptionHandler()
-                    .map(t, "Não foi possível inativar o veículo");
-        }
-    }
-
-    @NotNull
-    public Response insert(@NotNull final String userToken,
-                           @NotNull final VeiculoCadastro veiculo) throws ProLogException {
-        try {
-            VeiculoValidator.validacaoAtributosVeiculo(veiculo);
-            RouterVeiculo
-                    .create(dao, userToken)
-                    .insert(veiculo, Injection.provideDadosChecklistOfflineChangedListener());
-            return Response.ok("Veículo inserido com sucesso");
-        } catch (final Throwable t) {
-            Log.e(TAG, String.format("Erro ao inserir o veículo. \n" +
-                    "userToken: %s\n" +
-                    "codUnidade: %d", userToken, veiculo.getCodUnidadeAlocado()), t);
-            throw Injection
-                    .provideVeiculoExceptionHandler()
-                    .map(t, "Erro ao inserir o veículo, tente novamente");
         }
     }
 

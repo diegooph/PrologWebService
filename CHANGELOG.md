@@ -1,8 +1,5 @@
 Change Log
 ==========
-## Stage
-### Features
-* Permitir listagem de histórico de edições de um veículo (PL-3098)
 
 <a name="v1.1.5"></a>
 ## Version [v1.1.5](https://github.com/luizfp/PrologWebService/compare/v1.1.4...v1.1.5) (release-date) [unreleased]
@@ -11,10 +8,12 @@ Change Log
 * Cria métodos para o vínculo automatizado entre placas e pneus (PL-2771)
 * Cria relatório de último check realizado por placa (PL-3092)
 * Cria testes automatizados de ordem de serviço da Avilan (PL-2906)
+* Permitir listagem de histórico de edições de um veículo (PL-3098)
 
 ### Refactor
 * Altera fluxo de update de um veículo (PL-3097)
 * Adiciona permissão de relatório de checklist na busca de tipos de veículo
+* Remove método @DELETE do resource de veículo
 
 ### Bugfix
 * Corrige validação de DOT para deixar passar valores nulos ou vazios

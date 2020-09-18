@@ -48,18 +48,6 @@ public interface VeiculoDao {
             throws Throwable;
 
     /**
-     * Altera o status do veículo como <code>INATIVO</code> no banco de dados.
-     *
-     * @param placa                    Placa do veículo que será inativado, utilizado como identificador.
-     * @param checklistOfflineListener Listener utilizado para notificar sobre atualizações de veículos
-     *                                 no contexto de realização de checklist offline.
-     * @return <code>TRUE</code> se operação realizada com sucesso, <code>FALSE</code> caso contrário.
-     * @throws Throwable Se algum erro ocorrer no processo de inativação do veículo.
-     */
-    boolean delete(@NotNull final String placa,
-                   @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable;
-
-    /**
      * Busca os veículos que pertencem as unidades informadas.
      *
      * @param codUnidades    Array com os códigos de unidade

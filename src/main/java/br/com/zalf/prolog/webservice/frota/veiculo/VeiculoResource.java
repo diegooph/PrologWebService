@@ -66,14 +66,6 @@ public final class VeiculoResource {
         return service.updateStatus(colaboradorAutenticadoProvider.get().getCodigo(), userToken, veiculo);
     }
 
-    @DELETE
-    @Secured(permissions = {Pilares.Frota.Veiculo.ALTERAR, Pilares.Frota.Veiculo.CADASTRAR})
-    @Path("/{placa}")
-    public Response delete(@HeaderParam("Authorization") @Required final String userToken,
-                           @PathParam("placa") @Required final String placa) throws ProLogException {
-        return service.delete(userToken, placa);
-    }
-
     @POST
     @Path("/unidade/colaborador")
     @Secured(permissions = {

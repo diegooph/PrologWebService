@@ -322,13 +322,6 @@ public abstract class Sistema implements OperacoesIntegradas {
         return getIntegradorProLog().update(codColaboradorResponsavelEdicao, veiculo, checklistOfflineListener);
     }
 
-    @Override
-    public boolean delete(
-            @NotNull final String placa,
-            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
-        return getIntegradorProLog().delete(placa, checklistOfflineListener);
-    }
-
     @NotNull
     @Override
     public List<Veiculo> getVeiculosAtivosByUnidade(@NotNull final Long codUnidade,
