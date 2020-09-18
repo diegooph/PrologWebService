@@ -144,20 +144,6 @@ final class BloqueioUnidadesIntegradasTest {
     }
 
     @Test
-    void testDeleteVeiculoUnidadeLiberada() {
-        final Throwable throwable = assertThrows(
-                ProLogException.class, () -> new VeiculoService().delete(USER_TOKEN_INTEGRADO, "BUP8601"));
-        assertThat(throwable).isInstanceOf(BloqueadoIntegracaoException.class);
-    }
-
-    @Test
-    void testDeleteVeiculoUnidadeBloqueada() {
-        final Throwable throwable = assertThrows(
-                ProLogException.class, () -> new VeiculoService().delete(USER_TOKEN_INTEGRADO, "PRO-001"));
-        assertThat(throwable).isNotInstanceOf(BloqueadoIntegracaoException.class);
-    }
-
-    @Test
     void testInsertPneuUnidadeLiberada() {
         final Pneu pneu = new PneuComum();
         pneu.setCodigoCliente("1223");
