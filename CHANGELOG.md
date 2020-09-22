@@ -1,5 +1,8 @@
 Change Log
 ==========
+## Stage
+### Refactor
+* Altera inserção de checklist para aceitar observação (PL-3163)
 
 <a name="v1.1.5"></a>
 ## Version [v1.1.5](https://github.com/luizfp/PrologWebService/compare/v1.1.4...v1.1.5) (release-date) [unreleased]
