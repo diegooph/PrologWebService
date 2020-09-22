@@ -366,6 +366,7 @@ public class AvaCorpAvilanIntegracaoOrdemServicoTest extends BaseTest {
                 "PRO0001",
                 TipoChecklist.SAIDA,
                 112,
+                "uma observacao",
                 10000,
                 respostas,
                 ProLogDateParser.toLocalDateTime("2019-10-14T09:35:10"),
