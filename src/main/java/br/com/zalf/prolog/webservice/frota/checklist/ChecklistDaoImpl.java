@@ -17,8 +17,8 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarol
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistAlternativaResposta;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistResposta;
-import br.com.zalf.prolog.webservice.frota.checklist.mudancaestrutura.ChecklistMigracaoEstruturaSuporte;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.InfosChecklistInserido;
+import br.com.zalf.prolog.webservice.frota.checklist.mudancaestrutura.ChecklistMigracaoEstruturaSuporte;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -534,6 +534,7 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
                     "F_COD_VEICULO                             := ?," +
                     "F_TIPO_CHECKLIST                          := ?," +
                     "F_KM_COLETADO                             := ?," +
+                    "F_OBSERVACAO                              := ?," +
                     "F_TEMPO_REALIZACAO                        := ?," +
                     "F_DATA_HORA_SINCRONIZACAO                 := ?," +
                     "F_FONTE_DATA_HORA_REALIZACAO              := ?," +
