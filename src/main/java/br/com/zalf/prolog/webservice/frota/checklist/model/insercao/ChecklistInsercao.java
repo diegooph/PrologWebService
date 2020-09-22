@@ -5,6 +5,7 @@ import br.com.zalf.prolog.webservice.commons.gson.Exclude;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.TipoChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.mudancaestrutura.ChecklistMigracaoEstruturaSuporte;
+import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -16,6 +17,7 @@ import java.util.List;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
+@Data
 public final class ChecklistInsercao {
     @NotNull
     private final Long codUnidade;
@@ -30,6 +32,8 @@ public final class ChecklistInsercao {
     @NotNull
     private final TipoChecklist tipo;
     private final long kmColetadoVeiculo;
+    @Nullable
+    private final String observacao;
     private final long tempoRealizacaoCheckInMillis;
     @NotNull
     private final List<ChecklistResposta> respostas;
@@ -112,6 +116,7 @@ public final class ChecklistInsercao {
                              @NotNull final String placaVeiculo,
                              @NotNull final TipoChecklist tipo,
                              final long kmColetadoVeiculo,
+                             @Nullable final String observacao,
                              final long tempoRealizacaoCheckInMillis,
                              @NotNull final List<ChecklistResposta> respostas,
                              @NotNull final LocalDateTime dataHoraRealizacao,
@@ -132,6 +137,7 @@ public final class ChecklistInsercao {
         this.placaVeiculo = placaVeiculo;
         this.tipo = tipo;
         this.kmColetadoVeiculo = kmColetadoVeiculo;
+        this.observacao = observacao;
         this.tempoRealizacaoCheckInMillis = tempoRealizacaoCheckInMillis;
         this.respostas = respostas;
         this.dataHoraRealizacao = dataHoraRealizacao;
@@ -145,96 +151,6 @@ public final class ChecklistInsercao {
         this.qtdMidiasPerguntasOk = qtdMidiasPerguntasOk;
         this.qtdMidiasAlternativasNok = qtdMidiasAlternativasNok;
         this.cachedMetadata = createMetadata();
-    }
-
-    @NotNull
-    public Long getCodUnidade() {
-        return codUnidade;
-    }
-
-    @NotNull
-    public Long getCodModelo() {
-        return codModelo;
-    }
-
-    @Nullable
-    public Long getCodVersaoModeloChecklist() {
-        return codVersaoModeloChecklist;
-    }
-
-    public void setCodVersaoModeloChecklist(@NotNull final Long codVersaoModeloChecklist) {
-        this.codVersaoModeloChecklist = codVersaoModeloChecklist;
-    }
-
-    @NotNull
-    public Long getCodColaborador() {
-        return codColaborador;
-    }
-
-    @NotNull
-    public Long getCodVeiculo() {
-        return codVeiculo;
-    }
-
-    @NotNull
-    public String getPlacaVeiculo() {
-        return placaVeiculo;
-    }
-
-    @NotNull
-    public TipoChecklist getTipo() {
-        return tipo;
-    }
-
-    public long getKmColetadoVeiculo() {
-        return kmColetadoVeiculo;
-    }
-
-    public long getTempoRealizacaoCheckInMillis() {
-        return tempoRealizacaoCheckInMillis;
-    }
-
-    @NotNull
-    public List<ChecklistResposta> getRespostas() {
-        return respostas;
-    }
-
-    @NotNull
-    public LocalDateTime getDataHoraRealizacao() {
-        return dataHoraRealizacao;
-    }
-
-    @NotNull
-    public FonteDataHora getFonteDataHoraRealizacao() {
-        return fonteDataHoraRealizacao;
-    }
-
-    @NotNull
-    public Integer getVersaoAppMomentoRealizacao() {
-        return versaoAppMomentoRealizacao;
-    }
-
-    @NotNull
-    public Integer getVersaoAppMomentoSincronizacao() {
-        return versaoAppMomentoSincronizacao;
-    }
-
-    @Nullable
-    public String getDeviceId() {
-        return deviceId;
-    }
-
-    @Nullable
-    public String getDeviceImei() {
-        return deviceImei;
-    }
-
-    public long getDeviceUptimeRealizacaoMillis() {
-        return deviceUptimeRealizacaoMillis;
-    }
-
-    public long getDeviceUptimeSincronizacaoMillis() {
-        return deviceUptimeSincronizacaoMillis;
     }
 
     public int getQtdPerguntasOk() {
@@ -257,14 +173,6 @@ public final class ChecklistInsercao {
         return cachedMetadata.getQtdAlternativasNok();
     }
 
-    public int getQtdMidiasPerguntasOk() {
-        return qtdMidiasPerguntasOk;
-    }
-
-    public int getQtdMidiasAlternativasNok() {
-        return qtdMidiasAlternativasNok;
-    }
-
     @NotNull
     public Checklist getChecklistAntigo() {
         if (checklistAntigo == null) {
@@ -272,10 +180,6 @@ public final class ChecklistInsercao {
         }
 
         return checklistAntigo;
-    }
-
-    public void setChecklistAntigo(@Nullable final Checklist checklistAntigo) {
-        this.checklistAntigo = checklistAntigo;
     }
 
     private void ensureMetadataCreated() {
@@ -322,6 +226,7 @@ public final class ChecklistInsercao {
     }
 
     private static final class ChecklistInsercaoMetadata {
+
         private final int qtdPerguntasOk;
         private final int qtdPerguntasNok;
         private final int qtdAlternativasOk;
@@ -352,5 +257,7 @@ public final class ChecklistInsercao {
         int getQtdAlternativasNok() {
             return qtdAlternativasNok;
         }
+
     }
+
 }
