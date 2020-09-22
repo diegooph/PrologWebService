@@ -19,7 +19,6 @@ import java.util.List;
 public final class ChecklistInsercao {
     @NotNull
     private final Long codUnidade;
-
     @NotNull
     private final Long codModelo;
     @NotNull
