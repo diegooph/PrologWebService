@@ -567,7 +567,7 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
             stmt.setLong(6, checklist.getCodVeiculo());
             stmt.setString(7, String.valueOf(checklist.getTipo().asChar()));
             stmt.setLong(8, checklist.getKmColetadoVeiculo());
-            stmt.setString(9, checklist.getObservacao());
+            stmt.setString(9, StringUtils.trimToNull(checklist.getObservacao()));
             stmt.setLong(10, checklist.getTempoRealizacaoCheckInMillis());
             stmt.setObject(11, Now.offsetDateTimeUtc());
             stmt.setString(12, checklist.getFonteDataHoraRealizacao().asString());
