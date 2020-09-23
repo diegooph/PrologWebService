@@ -25,7 +25,8 @@ import java.util.List;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-final class OrdemServicoService {
+public final class OrdemServicoService {
+
     private static final String TAG = OrdemServicoService.class.getSimpleName();
     @NotNull
     private final OrdemServicoDao dao = Injection.provideOrdemServicoDao();
@@ -129,8 +130,8 @@ final class OrdemServicoService {
     }
 
     @NotNull
-    Response resolverItem(final String token,
-                          final ResolverItemOrdemServico item) throws ProLogException {
+    public Response resolverItem(final String token,
+                                 final ResolverItemOrdemServico item) throws ProLogException {
         try {
             OrdemServicoValidator.validaResolucaoItem(TimeZoneManager.getZoneIdForToken(token), item);
             RouterChecklistOrdemServico
@@ -147,8 +148,8 @@ final class OrdemServicoService {
 
 
     @NotNull
-    Response resolverItens(final String token,
-                           final ResolverMultiplosItensOs itensResolucao) throws ProLogException {
+    public Response resolverItens(final String token,
+                                  final ResolverMultiplosItensOs itensResolucao) throws ProLogException {
         try {
             OrdemServicoValidator.validaResolucaoMultiplosItens(TimeZoneManager.getZoneIdForToken(token), itensResolucao);
             RouterChecklistOrdemServico

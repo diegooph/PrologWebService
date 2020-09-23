@@ -16,6 +16,7 @@ import java.io.OutputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -356,6 +357,40 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
         }
     }
 
+    @Override
+    public @NotNull Report getUltimoChecklistRealizadoPlacaReport(@NotNull final List<Long> codUnidades,
+                                                                  @NotNull final List<Long> codTiposVeiculos)
+            throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = getUltimoChecklistRealizadoPlacaStatement(conn, codUnidades, codTiposVeiculos);
+            rSet = stmt.executeQuery();
+            return ReportTransformer.createReport(rSet);
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+    @Override
+    public void getUltimoChecklistRealizadoPlacaCsv(@NotNull final OutputStream outputStream,
+                                                    @NotNull final List<Long> codUnidades,
+                                                    @NotNull final List<Long> codTiposVeiculos) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = getUltimoChecklistRealizadoPlacaStatement(conn, codUnidades, codTiposVeiculos);
+            rSet = stmt.executeQuery();
+            new CsvWriter().write(rSet, outputStream);
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
     @NotNull
     private PreparedStatement getDadosGeraisChecklistStatement(@NotNull final Connection conn,
                                                                @NotNull final List<Long> codUnidades,
@@ -451,6 +486,20 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
         stmt.setString(2, placa);
         stmt.setObject(3, dataInicial);
         stmt.setObject(4, dataFinal);
+        return stmt;
+    }
+
+    @NotNull
+    private PreparedStatement getUltimoChecklistRealizadoPlacaStatement(@NotNull final Connection conn,
+                                                                        @NotNull final List<Long> codUnidades,
+                                                                        @NotNull final List<Long> codTiposVeiculos)
+            throws SQLException {
+        final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM " +
+                "FUNC_CHECKLIST_RELATORIO_ULTIMO_CHECKLIST_REALIZADO_PLACA(" +
+                "F_COD_UNIDADES => ?, " +
+                "F_COD_TIPOS_VEICULOS => ?);");
+        stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
+        stmt.setArray(2, PostgresUtils.listToArray(conn, SqlType.BIGINT, codTiposVeiculos));
         return stmt;
     }
 }

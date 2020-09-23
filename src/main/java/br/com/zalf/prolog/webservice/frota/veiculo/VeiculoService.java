@@ -10,6 +10,9 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculoNomenclatura;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculoPosicaoNomenclatura;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicao;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicaoStatus;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoVisualizacao;
 import br.com.zalf.prolog.webservice.integracao.router.RouterVeiculo;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -28,29 +31,34 @@ public final class VeiculoService {
     private final VeiculoDao dao = Injection.provideVeiculoDao();
 
     @NotNull
-    public List<VeiculoListagem> buscaVeiculosByUnidades(@NotNull final List<Long> codUnidades,
-                                                         final boolean apenasAtivos,
-                                                         @Nullable final Long codTipoVeiculo) {
+    public List<VeiculoListagem> getVeiculosByUnidades(@NotNull final List<Long> codUnidades,
+                                                       final boolean apenasAtivos,
+                                                       @Nullable final Long codTipoVeiculo) {
         try {
             return dao.buscaVeiculosByUnidades(codUnidades, apenasAtivos, codTipoVeiculo);
-        } catch (final Throwable e) {
-            final String errorMessage = "Erro ao buscar os veículos da unidade.";
-            Log.e(TAG, String.format(errorMessage), e);
+        } catch (final Throwable t) {
+            Log.e(TAG, String.format("Erro ao buscar os veículos.\n" +
+                    "codUnidades: %s\n" +
+                    "apenasAtivos: %b\n" +
+                    "codTipoVeiculo: %d\n", codUnidades, apenasAtivos, codTipoVeiculo), t);
             throw Injection
                     .provideProLogExceptionHandler()
-                    .map(e, errorMessage);
+                    .map(t, "Erro ao buscar os veículos da unidade, tente novamente.");
         }
     }
 
-    public VeiculoVisualizacao buscaVeiculoByCodigo(@NotNull final String userToken,
-                                                    @NotNull final Long codVeiculo) throws ProLogException {
+    @NotNull
+    public VeiculoVisualizacao getVeiculoByCodigo(@NotNull final String userToken,
+                                                  @NotNull final Long codVeiculo) {
         try {
-            return dao.buscaVeiculoByCodigo(codVeiculo);
+            return dao.getVeiculoByCodigo(codVeiculo);
         } catch (final Throwable t) {
-            Log.e(TAG, String.format("Erro ao buscar o veículo. \n" +
-                    "código: %s \n" +
+            Log.e(TAG, String.format("Erro ao buscar o veículo.\n" +
+                    "código: %d\n" +
                     "userToken: %s", codVeiculo, userToken), t);
-            return null;
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao buscar o veículo, tente novamente.");
         }
     }
 
@@ -69,15 +77,6 @@ public final class VeiculoService {
         }
     }
 
-    public List<Eixos> getEixos() {
-        try {
-            return dao.getEixos();
-        } catch (final SQLException e) {
-            Log.e(TAG, "Erro ao buscar os eixos", e);
-            return null;
-        }
-    }
-
     public List<Veiculo> getVeiculosAtivosByUnidadeByColaborador(final Long cpf) {
         try {
             return dao.getVeiculosAtivosByUnidadeByColaborador(cpf);
@@ -85,64 +84,6 @@ public final class VeiculoService {
             Log.e(TAG, String.format("Erro ao buscar os veículos ativos da unidade do colaborador. \n" +
                     "cpf: %s", cpf), e);
             return null;
-        }
-    }
-
-    @NotNull
-    public Response update(@NotNull final String userToken,
-                           @NotNull final String placaOriginal,
-                           @NotNull final Veiculo veiculo) throws ProLogException {
-        try {
-            RouterVeiculo
-                    .create(dao, userToken)
-                    .update(placaOriginal, veiculo, Injection.provideDadosChecklistOfflineChangedListener());
-            return Response.ok("Veículo atualizado com sucesso");
-        } catch (final Throwable t) {
-            Log.e(TAG, String.format("Erro ao atualizar o veículo.\nplacaOriginal: %s", placaOriginal), t);
-            throw Injection
-                    .provideVeiculoExceptionHandler()
-                    .map(t, "Erro ao atualizar veículo, tente novamente");
-        }
-    }
-
-    @NotNull
-    public Response updateStatus(@NotNull final String userToken,
-                                 @NotNull final Long codUnidade,
-                                 @NotNull final String placa,
-                                 @NotNull final Veiculo veiculo) throws ProLogException {
-        try {
-            RouterVeiculo
-                    .create(dao, userToken)
-                    .updateStatus(codUnidade, placa, veiculo, Injection.provideDadosChecklistOfflineChangedListener());
-            return Response.ok(veiculo.isAtivo()
-                    ? "Veículo ativado com sucesso"
-                    : "Veículo inativado com sucesso");
-        } catch (final Throwable t) {
-            Log.e(TAG, String.format("Erro ao atualizar o status do veículo:\n" +
-                    "userToken: %s\n" +
-                    "codUnidade: %s\n" +
-                    "placa: %s", userToken, codUnidade, placa), t);
-            throw Injection
-                    .provideVeiculoExceptionHandler()
-                    .map(t, "Não foi possível atualizar o status do veículo");
-        }
-    }
-
-    @NotNull
-    public Response delete(@NotNull final String userToken,
-                           @NotNull final String placa) throws ProLogException {
-        try {
-            RouterVeiculo
-                    .create(dao, userToken)
-                    .delete(placa, Injection.provideDadosChecklistOfflineChangedListener());
-            return Response.ok("Veículo inativado com sucesso");
-        } catch (final Throwable t) {
-            Log.e(TAG, String.format("Erro ao deletar o veículo\n" +
-                    "userToken: %s" +
-                    "placa: %s", userToken, placa), t);
-            throw Injection
-                    .provideVeiculoExceptionHandler()
-                    .map(t, "Não foi possível inativar o veículo");
         }
     }
 
@@ -162,6 +103,47 @@ public final class VeiculoService {
             throw Injection
                     .provideVeiculoExceptionHandler()
                     .map(t, "Erro ao inserir o veículo, tente novamente");
+        }
+    }
+
+    @NotNull
+    public Response update(@NotNull final Long codColaboradorResponsavelEdicao,
+                           @NotNull final String userToken,
+                           @NotNull final VeiculoEdicao veiculo) {
+        try {
+            RouterVeiculo
+                    .create(dao, userToken)
+                    .update(codColaboradorResponsavelEdicao,
+                            veiculo,
+                            Injection.provideDadosChecklistOfflineChangedListener());
+            return Response.ok("Veículo atualizado com sucesso");
+        } catch (final Throwable t) {
+            Log.e(TAG, String.format("Erro ao atualizar o veículo de código: %d", veiculo.getCodigo()), t);
+            throw Injection
+                    .provideVeiculoExceptionHandler()
+                    .map(t, "Erro ao atualizar veículo, tente novamente");
+        }
+    }
+
+    @NotNull
+    public Response updateStatus(@NotNull final Long codColaboradorResponsavelEdicao,
+                                 @NotNull final String userToken,
+                                 @NotNull final VeiculoEdicaoStatus veiculo) {
+        try {
+            final VeiculoEdicao edicao = dao
+                    .getVeiculoByCodigo(veiculo.getCodigo())
+                    .toVeiculoEdicao(veiculo.isStatusAtivo());
+            update(codColaboradorResponsavelEdicao, userToken, edicao);
+            return Response.ok(veiculo.isStatusAtivo()
+                    ? "Veículo ativado com sucesso"
+                    : "Veículo inativado com sucesso");
+        } catch (final Throwable t) {
+            Log.e(TAG, String.format("Erro ao atualizar o status do veículo:\n" +
+                    "codColaboradorResponsavelEdicao: %d\n" +
+                    "codVeiculo: %d\n", codColaboradorResponsavelEdicao, veiculo.getCodigo()), t);
+            throw Injection
+                    .provideVeiculoExceptionHandler()
+                    .map(t, "Erro ao atualizar o status do veículo, tente novamente.");
         }
     }
 

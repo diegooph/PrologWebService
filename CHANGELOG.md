@@ -1,6 +1,25 @@
 Change Log
 ==========
 
+<a name="v1.2.0"></a>
+## Version [v1.2.0](https://github.com/luizfp/PrologWebService/compare/v1.1.4...v1.1.5) (2020-09-23)
+
+### Features
+* Cria métodos para o vínculo automatizado entre placas e pneus (PL-2771)
+* Cria relatório de último check realizado por placa (PL-3092)
+* Cria testes automatizados de ordem de serviço da Avilan (PL-2906)
+* Permitir listagem de histórico de edições de um veículo (PL-3098)
+
+### Refactor
+* Altera fluxo de update de um veículo (PL-3097)
+* Adiciona permissão de relatório de checklist na busca de tipos de veículo
+* Remove método @DELETE do resource de veículo
+
+### Bugfix
+* Corrige validação de DOT para deixar passar valores nulos ou vazios
+* Corrige uso das Daos em integrações (PL-3136)
+* Corrige bug em deleção de serviços e OSs ao transferir pneus (PL-2661)
+
 <a name="v1.1.4"></a>
 ## Version [v1.1.4](https://github.com/luizfp/PrologWebService/compare/v1.1.3...v1.1.4) (2020-09-07)
 
@@ -9,7 +28,7 @@ Change Log
 * Cria nova estrutura de integração de Ordem de Serviço da Avilan (PL-2884)
 * Cria estrutura de Logs de requisições e respostas (PL-2904)
 
-## Refactor
+### Refactor
 * Insere código auxiliar na alternativa do modelo checklist (PLI-178)
 
 <a name="v1.1.3"></a>

@@ -3,6 +3,8 @@ package br.com.zalf.prolog.webservice.integracao.operacoes;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.VeiculoCadastro;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.InfosVeiculoEditado;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicao;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -12,20 +14,14 @@ import java.util.List;
  * Operações integrados dos veículos.
  */
 interface OperacoesIntegradasVeiculo {
-    boolean insert(@NotNull final VeiculoCadastro veiculo,
-                   @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable;
+    void insert(@NotNull final VeiculoCadastro veiculo,
+                @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable;
 
-    boolean update(@NotNull final String placaOriginal,
-                   @NotNull final Veiculo veiculo,
-                   @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable;
-
-    void updateStatus(@NotNull final Long codUnidade,
-                      @NotNull final String placa,
-                      @NotNull final Veiculo veiculo,
-                      @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable;
-
-    boolean delete(@NotNull final String placa,
-                   @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable;
+    @NotNull
+    InfosVeiculoEditado update(
+            @NotNull final Long codColaboradorResponsavelEdicao,
+            @NotNull final VeiculoEdicao veiculo,
+            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable;
 
     @NotNull
     List<Veiculo> getVeiculosAtivosByUnidade(@NotNull final Long codUnidade,

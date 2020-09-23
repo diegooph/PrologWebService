@@ -45,11 +45,13 @@ public final class TipoVeiculoResource {
     }
 
     @GET
-    @Secured(permissions = {Pilares.Frota.Veiculo.VISUALIZAR,
+    @Secured(permissions = {
+            Pilares.Frota.Veiculo.VISUALIZAR,
             Pilares.Frota.Veiculo.ALTERAR,
             Pilares.Frota.Veiculo.CADASTRAR,
             Pilares.Frota.Checklist.VISUALIZAR_TODOS,
             Pilares.Frota.Checklist.REALIZAR,
+            Pilares.Frota.Relatorios.CHECKLIST,
             Pilares.Frota.OrdemServico.Pneu.VISUALIZAR,
             Pilares.Frota.OrdemServico.Checklist.VISUALIZAR,
             Pilares.Frota.OrdemServico.Checklist.RESOLVER_ITEM,

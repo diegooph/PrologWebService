@@ -96,6 +96,8 @@ import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.veiculo.error.VeiculoExceptionHandler;
 import br.com.zalf.prolog.webservice.frota.veiculo.error.VeiculoSqlExceptionTranslator;
+import br.com.zalf.prolog.webservice.frota.veiculo.historico.HistoricoEdicaoVeiculoDao;
+import br.com.zalf.prolog.webservice.frota.veiculo.historico.HistoricoEdicaoVeiculoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.veiculo.relatorio.VeiculoRelatorioDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.relatorio.VeiculoRelatorioDaoImpl;
 import br.com.zalf.prolog.webservice.frota.veiculo.tipoveiculo.TipoVeiculoDao;
@@ -166,6 +168,8 @@ import br.com.zalf.prolog.webservice.interno.implantacao.conferencia.frota.pneu.
 import br.com.zalf.prolog.webservice.interno.implantacao.conferencia.frota.pneu.PneuConferenciaDaoImpl;
 import br.com.zalf.prolog.webservice.interno.implantacao.conferencia.frota.veiculo.VeiculoConferenciaDao;
 import br.com.zalf.prolog.webservice.interno.implantacao.conferencia.frota.veiculo.VeiculoConferenciaDaoImpl;
+import br.com.zalf.prolog.webservice.interno.implantacao.conferencia.frota.vinculoveiculopneu.VinculoVeiculoPneuDao;
+import br.com.zalf.prolog.webservice.interno.implantacao.conferencia.frota.vinculoveiculopneu.VinculoVeiculoPneuDaoImpl;
 import br.com.zalf.prolog.webservice.interno.implantacao.conferencia.gente.colaborador.ColaboradorConferenciaDao;
 import br.com.zalf.prolog.webservice.interno.implantacao.conferencia.gente.colaborador.ColaboradorConferenciaDaoImpl;
 import br.com.zalf.prolog.webservice.log.LogDao;
@@ -234,6 +238,10 @@ public final class Injection {
         return new PneuConferenciaDaoImpl();
     }
 
+    @NotNull
+    public static VinculoVeiculoPneuDao provideVinculoVeiculoPneuDao() {
+        return new VinculoVeiculoPneuDaoImpl(Injection.provideConferenciaDao());
+    }
     @NotNull
     public static ApresentacaoDao provideApresentacaoDao() {
         return new ApresentacaoDaoImpl();
@@ -671,6 +679,11 @@ public final class Injection {
     @NotNull
     public static MotivoMovimentoTransicaoDao provideMotivoOrigemDestinoDao() {
         return new MotivoMovimentoTransicaoDaoImpl();
+    }
+
+    @NotNull
+    public static HistoricoEdicaoVeiculoDao provideHistoricoEdicaoVeiculoDao() {
+        return new HistoricoEdicaoVeiculoDaoImpl();
     }
 
 }

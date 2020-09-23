@@ -132,8 +132,8 @@ public final class PneuValidator {
         Preconditions.checkNotNull(dimensao, "Você precisa fornecer a dimensão");
     }
 
-    private static void validacaoDot(@Nullable final String dot) throws Exception {
-        if (dot != null && !isDotValid(dot)) {
+    private static void validacaoDot(@Nullable final String dot) {
+        if (!StringUtils.isNullOrEmpty(dot) && !isDotValid(dot)) {
             throw new GenericException("DOT inválido", "DOT informado: " + dot);
         }
     }
