@@ -478,10 +478,10 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         try {
             stmt = conn.prepareStatement("SELECT * FROM FUNC_VEICULO_INSERE_VEICULO_PNEU(" +
                     "F_COD_UNIDADE => ?," +
-                    "F_PLACA TEXT => ?," +
-                    "F_COD_VEICULO BIGINT => ?," +
-                    "F_COD_PNEU BIGINT => ?," +
-                    "F_POSICAO BIGINT => ?) AS RESULT;");
+                    "F_PLACA => ?," +
+                    "F_COD_VEICULO => ?," +
+                    "F_COD_PNEU  => ?," +
+                    "F_POSICAO  => ?) AS RESULT;");
             stmt.setLong(1, codUnidade);
             stmt.setString(2, placa);
             stmt.setLong(3, getCodVeiculoByPlaca(conn, placa));
