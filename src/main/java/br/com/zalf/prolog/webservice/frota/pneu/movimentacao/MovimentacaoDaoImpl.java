@@ -549,7 +549,6 @@ public final class MovimentacaoDaoImpl extends DatabaseConnection implements Mov
                     "F_TIPO_ORIGEM => ?, " +
                     "F_COD_MOVIMENTACAO => ?, " +
                     "F_PLACA_VEICULO => ?," +
-                    "F_COD_VEICULO => " +
                     "F_KM_ATUAL => ?, " +
                     "F_POSICAO_PROLOG => ?)}");
             stmt.setLong(1, movimentacao.getPneu().getCodigo());
@@ -562,9 +561,8 @@ public final class MovimentacaoDaoImpl extends DatabaseConnection implements Mov
                     origemVeiculo.getVeiculo().getKmAtual(),
                     conn);
             stmt.setString(5, origemVeiculo.getVeiculo().getPlaca());
-            stmt.setLong(6, origemVeiculo.getVeiculo().getCodigo());
-            stmt.setLong(7, origemVeiculo.getVeiculo().getKmAtual());
-            stmt.setInt(8, origemVeiculo.getPosicaoOrigemPneu());
+            stmt.setLong(6, origemVeiculo.getVeiculo().getKmAtual());
+            stmt.setInt(7, origemVeiculo.getPosicaoOrigemPneu());
             stmt.execute();
         } finally {
             close(stmt);
@@ -593,15 +591,13 @@ public final class MovimentacaoDaoImpl extends DatabaseConnection implements Mov
                     "F_COD_MOVIMENTACAO => ?, " +
                     "F_TIPO_DESTINO => ?, " +
                     "F_PLACA_VEICULO => ?," +
-                    "F_COD_VEICULO => ? " +
                     "F_KM_ATUAL => ?, " +
                     "F_POSICAO_PROLOG => ?)}");
             stmt.setLong(1, movimentacao.getCodigo());
             stmt.setString(2, destinoVeiculo.getTipo().asString());
             stmt.setString(3, destinoVeiculo.getVeiculo().getPlaca());
-            stmt.setLong(4, destinoVeiculo.getVeiculo().getCodigo());
-            stmt.setLong(5, destinoVeiculo.getVeiculo().getKmAtual());
-            stmt.setInt(6, destinoVeiculo.getPosicaoDestinoPneu());
+            stmt.setLong(4, destinoVeiculo.getVeiculo().getKmAtual());
+            stmt.setInt(5, destinoVeiculo.getPosicaoDestinoPneu());
             stmt.execute();
         } finally {
             close(stmt);
