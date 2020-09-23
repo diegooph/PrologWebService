@@ -588,16 +588,18 @@ public final class MovimentacaoDaoImpl extends DatabaseConnection implements Mov
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareCall("{CALL FUNC_MOVIMENTACAO_INSERT_MOVIMENTACAO_VEICULO_DESTINO(" +
-                    "F_COD_MOVIMENTACAO := ?, " +
-                    "F_TIPO_DESTINO := ?, " +
-                    "F_PLACA_VEICULO := ?, " +
-                    "F_KM_ATUAL := ?, " +
-                    "F_POSICAO_PROLOG := ?)}");
+                    "F_COD_MOVIMENTACAO => ?, " +
+                    "F_TIPO_DESTINO => ?, " +
+                    "F_PLACA_VEICULO => ?," +
+                    "F_CODIGO_VEICULO => ? " +
+                    "F_KM_ATUAL => ?, " +
+                    "F_POSICAO_PROLOG => ?)}");
             stmt.setLong(1, movimentacao.getCodigo());
             stmt.setString(2, destinoVeiculo.getTipo().asString());
             stmt.setString(3, destinoVeiculo.getVeiculo().getPlaca());
-            stmt.setLong(4, destinoVeiculo.getVeiculo().getKmAtual());
-            stmt.setInt(5, destinoVeiculo.getPosicaoDestinoPneu());
+            stmt.setLong(4, destinoVeiculo.getVeiculo().getCodigo());
+            stmt.setLong(5, destinoVeiculo.getVeiculo().getKmAtual());
+            stmt.setInt(6, destinoVeiculo.getPosicaoDestinoPneu());
             stmt.execute();
         } finally {
             close(stmt);
