@@ -476,11 +476,17 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_VEICULO_INSERE_VEICULO_PNEU(?, ?, ?, ?) AS RESULT;");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_VEICULO_INSERE_VEICULO_PNEU(" +
+                    "F_COD_UNIDADE => ?," +
+                    "F_PLACA TEXT => ?," +
+                    "F_COD_VEICULO BIGINT => ?," +
+                    "F_COD_PNEU BIGINT => ?," +
+                    "F_POSICAO BIGINT => ?) AS RESULT;");
             stmt.setLong(1, codUnidade);
             stmt.setString(2, placa);
-            stmt.setLong(3, codPneu);
-            stmt.setInt(4, posicaoPneuVeiculo);
+            stmt.setLong(3, getCodVeiculoByPlaca(conn, placa));
+            stmt.setLong(4, codPneu);
+            stmt.setInt(5, posicaoPneuVeiculo);
             rSet = stmt.executeQuery();
             if (!rSet.next() || !rSet.getBoolean("RESULT")) {
                 throw new SQLException("Erro ao aplicar o pneu " + codPneu + " ao veículo " + placa);
