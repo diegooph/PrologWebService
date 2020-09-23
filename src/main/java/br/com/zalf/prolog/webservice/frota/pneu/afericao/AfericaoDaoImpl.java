@@ -83,7 +83,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                     "F_TIPO_PROCESSO_COLETA => ?, " +
                     "F_FORMA_COLETA_DADOS => ?," +
                     "F_PLACA_VEICULO => ?," +
-                    "F_CODIGO_VEICULO => ?, " +
+                    "F_COD_VEICULO => ?, " +
                     "F_KM_VEICULO => ?) AS COD_AFERICAO;");
             stmt.setLong(1, codUnidade);
             stmt.setObject(2, afericao.getDataHora().atOffset(ZoneOffset.UTC));
