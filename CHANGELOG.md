@@ -1,8 +1,8 @@
 Change Log
 ==========
 
-<a name="v1.1.5"></a>
-## Version [v1.1.5](https://github.com/luizfp/PrologWebService/compare/v1.1.4...v1.1.5) (release-date) [unreleased]
+<a name="v1.2.0"></a>
+## Version [v1.2.0](https://github.com/luizfp/PrologWebService/compare/v1.1.4...v1.1.5) (2020-09-23)
 
 ### Features
 * Cria métodos para o vínculo automatizado entre placas e pneus (PL-2771)
