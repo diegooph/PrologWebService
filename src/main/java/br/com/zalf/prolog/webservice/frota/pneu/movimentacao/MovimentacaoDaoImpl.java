@@ -562,8 +562,9 @@ public final class MovimentacaoDaoImpl extends DatabaseConnection implements Mov
                     origemVeiculo.getVeiculo().getKmAtual(),
                     conn);
             stmt.setString(5, origemVeiculo.getVeiculo().getPlaca());
-            stmt.setLong(6, origemVeiculo.getVeiculo().getKmAtual());
-            stmt.setInt(7, origemVeiculo.getPosicaoOrigemPneu());
+            stmt.setLong(6, origemVeiculo.getVeiculo().getCodigo());
+            stmt.setLong(7, origemVeiculo.getVeiculo().getKmAtual());
+            stmt.setInt(8, origemVeiculo.getPosicaoOrigemPneu());
             stmt.execute();
         } finally {
             close(stmt);
