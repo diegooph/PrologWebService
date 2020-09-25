@@ -32,6 +32,11 @@
             <version>2.3.3.RELEASE</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+            <scope>provided</scope>
+        </dependency>
 
 
         <!-- https://search.maven.org/artifact/org.yaml/snakeyaml -->
