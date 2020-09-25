@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.config;
 
 import br.com.zalf.prolog.webservice.database.DataSourceLifecycleManager;
+import br.com.zalf.prolog.webservice.messaging.push.FirebaseLifecycleManager;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.ServerProperties;
@@ -19,25 +20,28 @@ import javax.servlet.ServletContextListener;
  */
 @SpringBootApplication
 public class PrologApplication {
-    @Bean
-    public ServletListenerRegistrationBean<ServletContextListener> listenerRegistrationBean() {
-        final ServletListenerRegistrationBean<ServletContextListener> bean = new ServletListenerRegistrationBean<>();
-        bean.setListener(new DataSourceLifecycleManager());
-        return bean;
-
-    }
 
     public static void main(String[] args) {
         SpringApplication.run(PrologApplication.class, args);
     }
 
+    @Bean
+    public ServletListenerRegistrationBean<ServletContextListener> listenerRegistrationBean() {
+        final ServletListenerRegistrationBean<ServletContextListener> bean = new ServletListenerRegistrationBean<>();
+        bean.setListener(new DataSourceLifecycleManager());
+        bean.setListener(new FirebaseLifecycleManager());
+        bean.setListener(new ProLogConsoleTextMaker());
+        return bean;
+    }
+
     @Configuration
     public static class PrologConfig extends ResourceConfig {
         public PrologConfig() {
-            property("jersey.config.server.provider.packages", "br.com.zalf.prolog.webservice");
+            packages(true, "br.com.zalf.prolog.webservice");
             property(ServerProperties.BV_SEND_ERROR_IN_RESPONSE, true);
             property(ServerProperties.BV_DISABLE_VALIDATE_ON_EXECUTABLE_OVERRIDE_CHECK, true);
             register(MultiPartFeature.class);
+            register(ProLogApplicationEventListener.class);
         }
     }
 }
