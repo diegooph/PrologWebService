@@ -28,10 +28,15 @@ public class PrologApplication extends SpringBootServletInitializer {
         SpringApplication.run(PrologApplication.class, args);
     }
 
-    @Override
-    protected SpringApplicationBuilder configure(@NotNull final SpringApplicationBuilder builder) {
-        builder.sources(PrologApplication.class);
-        return builder;
+    @Configuration
+    public static class PrologConfig extends ResourceConfig {
+        public PrologConfig() {
+            packages(true, "br.com.zalf.prolog.webservice");
+            property(ServerProperties.BV_SEND_ERROR_IN_RESPONSE, true);
+            property(ServerProperties.BV_DISABLE_VALIDATE_ON_EXECUTABLE_OVERRIDE_CHECK, true);
+            register(MultiPartFeature.class);
+            register(ProLogApplicationEventListener.class);
+        }
     }
 
     @Bean
@@ -55,14 +60,9 @@ public class PrologApplication extends SpringBootServletInitializer {
         return bean;
     }
 
-    @Configuration
-    public static class PrologConfig extends ResourceConfig {
-        public PrologConfig() {
-            packages(true, "br.com.zalf.prolog.webservice");
-            property(ServerProperties.BV_SEND_ERROR_IN_RESPONSE, true);
-            property(ServerProperties.BV_DISABLE_VALIDATE_ON_EXECUTABLE_OVERRIDE_CHECK, true);
-            register(MultiPartFeature.class);
-            register(ProLogApplicationEventListener.class);
-        }
+    @Override
+    protected SpringApplicationBuilder configure(@NotNull final SpringApplicationBuilder builder) {
+        builder.sources(PrologApplication.class);
+        return builder;
     }
 }
