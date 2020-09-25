@@ -23,6 +23,7 @@ Change Log
 * Corrige validação de DOT para deixar passar valores nulos ou vazios
 * Corrige uso das Daos em integrações (PL-3136)
 * Corrige bug em deleção de serviços e OSs ao transferir pneus (PL-2661)
+* Corrige relatório de km rodado por pneu para preencher as vidas nas colunas certas e trazer a primeira vida (PL-3156)
 
 <a name="v1.1.4"></a>
 ## Version [v1.1.4](https://github.com/luizfp/PrologWebService/compare/v1.1.3...v1.1.4) (2020-09-07)
