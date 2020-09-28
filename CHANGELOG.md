@@ -4,6 +4,8 @@ Change Log
 <a name="v1.2.1"></a>
 ## Version [v1.2.1](https://github.com/luizfp/PrologWebService/compare/v1.2.0...v1.2.1) (release-date) [unreleased]
 
+### Refactor
+* Salva código de veículo em tabelas (PL-3170)
 
 <a name="v1.2.0"></a>
 ## Version [v1.2.0](https://github.com/luizfp/PrologWebService/compare/v1.1.4...v1.2.0) (2020-09-23)
