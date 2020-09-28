@@ -13,6 +13,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -62,7 +63,6 @@ public class VeiculoRelatorioDaoImpl extends DatabaseConnection implements Veicu
         } finally {
             close(conn, stmt, rSet);
         }
-
     }
 
     @NotNull
@@ -81,12 +81,72 @@ public class VeiculoRelatorioDaoImpl extends DatabaseConnection implements Veicu
         }
     }
 
+    @Override
+    public void getEvolucaoKmCsv(@NotNull final OutputStream out,
+                                 @NotNull final Long codEmpresa,
+                                 @NotNull final String placa,
+                                 @NotNull final LocalDate dataInicial,
+                                 @NotNull final LocalDate dataFinal) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = getEvolucaoKmStmt(conn, codEmpresa, placa, dataInicial, dataFinal);
+            rSet = stmt.executeQuery();
+            new CsvWriter
+                    .Builder(out)
+                    .withResultSet(rSet)
+                    .build()
+                    .write();
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+    @Override
+    public @NotNull Report getEvolucaoKmReport(@NotNull final Long codEmpresa,
+                                               @NotNull final String placa,
+                                               @NotNull final LocalDate dataInicial,
+                                               @NotNull final LocalDate dataFinal) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = getEvolucaoKmStmt(conn, codEmpresa, placa, dataInicial, dataFinal);
+            rSet = stmt.executeQuery();
+            return ReportTransformer.createReport(rSet);
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
     @NotNull
     private PreparedStatement getListagemVeiculosByUnidadeStmt(@NotNull final Connection conn,
                                                                @NotNull final List<Long> codUnidades) throws Throwable {
         final PreparedStatement stmt =
                 conn.prepareStatement("SELECT * FROM FUNC_VEICULO_RELATORIO_LISTAGEM_VEICULOS_BY_UNIDADE(?);");
         stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
+        return stmt;
+    }
+
+    @NotNull
+    private PreparedStatement getEvolucaoKmStmt(@NotNull final Connection conn,
+                                                @NotNull final Long codEmpresa,
+                                                @NotNull final String placa,
+                                                @NotNull final LocalDate dataInicial,
+                                                @NotNull final LocalDate dataFinal) throws Throwable {
+        final PreparedStatement stmt =
+                conn.prepareStatement("select * from func_veiculo_relatorio_evolucao_km_consolidado(" +
+                        "f_cod_empresa => ?, " +
+                        "f_placa => ?," +
+                        "f_data_inicial => ?," +
+                        "f_data_final => ?);");
+        stmt.setLong(1, codEmpresa);
+        stmt.setString(2, placa);
+        stmt.setObject(3, dataInicial);
+        stmt.setObject(4, dataFinal);
         return stmt;
     }
 }
