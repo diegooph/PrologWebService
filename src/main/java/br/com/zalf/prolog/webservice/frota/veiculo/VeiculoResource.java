@@ -238,7 +238,7 @@ public final class VeiculoResource {
             @QueryParam("placa") @Required final String placa,
             @QueryParam("dataInicial") @Required final String dataInicial,
             @QueryParam("dataFinal") @Required final String dataFinal
-    ) {
+    ) throws ProLogException {
         return service.getVeiculoEvolucaoKm(codEmpresa, placa, dataInicial, dataFinal);
     }
 

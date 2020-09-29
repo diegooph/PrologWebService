@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
+import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.pneu.nomenclatura.PneuNomenclaturaService;
 import br.com.zalf.prolog.webservice.frota.veiculo.error.VeiculoValidator;
@@ -20,6 +21,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -291,12 +294,18 @@ public final class VeiculoService {
     public List<VeiculoEvolucaoKm> getVeiculoEvolucaoKm(@NotNull final Long codEmpresa,
                                                         @NotNull final String placa,
                                                         @NotNull final String dataInicial,
-                                                        @NotNull final String dataFinal) {
+                                                        @NotNull final String dataFinal) throws ProLogException {
         try {
+            final LocalDate dataInicialLocal = ProLogDateParser.toLocalDate(dataInicial);
+            final LocalDate dataFinalLocal = ProLogDateParser.toLocalDate(dataFinal);
+            final Period periodo = Period.between(dataInicialLocal, dataFinalLocal);
+            if ((periodo.getYears() >= 1) && (periodo.getMonths() > 0)) {
+                throw new GenericException("O período para realização da pesquisa deve ser de no máximo 1 ano.");
+            }
             return dao.getVeiculoEvolucaoKm(codEmpresa,
                     placa,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal));
+                    dataInicialLocal,
+                    dataFinalLocal);
         } catch (final Throwable e) {
             Log.e(TAG,
                     String.format("Erro a evolução de km da placa %d, da empresa %d.", placa, codEmpresa),
