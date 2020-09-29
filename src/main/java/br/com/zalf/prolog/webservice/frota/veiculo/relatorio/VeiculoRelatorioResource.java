@@ -51,7 +51,7 @@ public class VeiculoRelatorioResource {
             @QueryParam("dataInicial") @Required final String dataInicial,
             @QueryParam("dataFinal") @Required final String dataFinal){
         return outputStream -> new VeiculoRelatorioService()
-                .getEvolucaoKmCsv(outputStream, codEmpresa, placa, dataInicial, dataFinal);
+                .getEvolucaoKmCsv(outputStream, codEmpresa, placa);
     }
 
     @GET
@@ -62,6 +62,6 @@ public class VeiculoRelatorioResource {
             @QueryParam("dataInicial") @Required final String dataInicial,
             @QueryParam("dataFinal") @Required final String dataFinal) throws ProLogException {
         return new VeiculoRelatorioService()
-                .getEvolucaoKmReport(codEmpresa, placa, dataInicial, dataFinal);
+                .getEvolucaoKmReport(codEmpresa, placa);
     }
 }

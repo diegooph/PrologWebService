@@ -49,30 +49,22 @@ public interface VeiculoRelatorioDao {
      * @param out         Streaming onde os dados serão escritos.
      * @param codEmpresa  Código da empresa para a qual as informações serão filtradas.
      * @param placa       Placa do veículo para o qual as informações serão filtradas.
-     * @param dataInicial Data inicial para a qual as informações serão filtradas.
-     * @param dataFinal   Data final para a qual as informações serão filtradas.
      * @throws Throwable  Se algum erro ocorrer.
      */
     void getEvolucaoKmCsv(@NotNull final OutputStream out,
                           @NotNull final Long codEmpresa,
-                          @NotNull final String placa,
-                          @NotNull final LocalDate dataInicial,
-                          @NotNull final LocalDate dataFinal) throws Throwable;
+                          @NotNull final String placa) throws Throwable;
 
     /**
      * Método para buscar o relatório de evolução de KM em formato {@link Report report}.
      *
      * @param codEmpresa  Código da empresa para a qual as informações serão filtradas.
      * @param placa       Placa do veículo para o qual as informações serão filtradas.
-     * @param dataInicial Data inicial para a qual as informações serão filtradas.
-     * @param dataFinal   Data final para a qual as informações serão filtradas.
      * @throws Throwable  Se algum erro ocorrer.
      */
     @NotNull
     Report getEvolucaoKmReport(@NotNull final Long codEmpresa,
-                               @NotNull final String placa,
-                               @NotNull final LocalDate dataInicial,
-                               @NotNull final LocalDate dataFinal) throws Throwable;
+                               @NotNull final String placa) throws Throwable;
 
 
 

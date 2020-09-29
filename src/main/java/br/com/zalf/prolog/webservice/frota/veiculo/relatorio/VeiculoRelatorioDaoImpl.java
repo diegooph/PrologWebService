@@ -84,15 +84,13 @@ public class VeiculoRelatorioDaoImpl extends DatabaseConnection implements Veicu
     @Override
     public void getEvolucaoKmCsv(@NotNull final OutputStream out,
                                  @NotNull final Long codEmpresa,
-                                 @NotNull final String placa,
-                                 @NotNull final LocalDate dataInicial,
-                                 @NotNull final LocalDate dataFinal) throws Throwable {
+                                 @NotNull final String placa) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = getEvolucaoKmStmt(conn, codEmpresa, placa, dataInicial, dataFinal);
+            stmt = getEvolucaoKmStmt(conn, codEmpresa, placa);
             rSet = stmt.executeQuery();
             new CsvWriter
                     .Builder(out)
@@ -106,15 +104,13 @@ public class VeiculoRelatorioDaoImpl extends DatabaseConnection implements Veicu
 
     @Override
     public @NotNull Report getEvolucaoKmReport(@NotNull final Long codEmpresa,
-                                               @NotNull final String placa,
-                                               @NotNull final LocalDate dataInicial,
-                                               @NotNull final LocalDate dataFinal) throws Throwable {
+                                               @NotNull final String placa) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = getEvolucaoKmStmt(conn, codEmpresa, placa, dataInicial, dataFinal);
+            stmt = getEvolucaoKmStmt(conn, codEmpresa, placa);
             rSet = stmt.executeQuery();
             return ReportTransformer.createReport(rSet);
         } finally {
@@ -134,19 +130,13 @@ public class VeiculoRelatorioDaoImpl extends DatabaseConnection implements Veicu
     @NotNull
     private PreparedStatement getEvolucaoKmStmt(@NotNull final Connection conn,
                                                 @NotNull final Long codEmpresa,
-                                                @NotNull final String placa,
-                                                @NotNull final LocalDate dataInicial,
-                                                @NotNull final LocalDate dataFinal) throws Throwable {
+                                                @NotNull final String placa) throws Throwable {
         final PreparedStatement stmt =
                 conn.prepareStatement("select * from func_veiculo_relatorio_evolucao_km_consolidado(" +
                         "f_cod_empresa => ?, " +
-                        "f_placa => ?," +
-                        "f_data_inicial => ?," +
-                        "f_data_final => ?);");
+                        "f_placa => ?);");
         stmt.setLong(1, codEmpresa);
         stmt.setString(2, placa);
-        stmt.setObject(3, dataInicial);
-        stmt.setObject(4, dataFinal);
         return stmt;
     }
 }

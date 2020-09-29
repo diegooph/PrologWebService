@@ -44,16 +44,12 @@ public class VeiculoRelatorioService {
 
     void getEvolucaoKmCsv(final OutputStream out,
                           final Long codEmpresa,
-                          final String placa,
-                          final String dataInicial,
-                          final String dataFinal) {
+                          final String placa) {
         try {
             dao.getEvolucaoKmCsv(
                     out,
                     codEmpresa,
-                    placa,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal));
+                    placa);
         } catch (final Throwable throwable) {
             Log.e(TAG, "Erro ao gerar relatório de evolução de KM (CSV)", throwable);
             throw new RuntimeException(throwable);
@@ -62,15 +58,11 @@ public class VeiculoRelatorioService {
 
     @NotNull
     Report getEvolucaoKmReport(final Long codEmpresa,
-                               final String placa,
-                               final String dataInicial,
-                               final String dataFinal) throws ProLogException {
+                               final String placa) throws ProLogException {
         try {
             return dao.getEvolucaoKmReport(
                     codEmpresa,
-                    placa,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal));
+                    placa);
         } catch (final Throwable throwable) {
             Log.e(TAG, "Erro ao gerar relatório de evolução de KM (REPORT)", throwable);
             throw Injection
