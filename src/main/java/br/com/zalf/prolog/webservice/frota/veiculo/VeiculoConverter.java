@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.veiculo;
 
+import br.com.zalf.prolog.webservice.frota.veiculo.model.VeiculoEvolucaoKm;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.VeiculoListagem;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoAntesEdicao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoVisualizacao;
@@ -8,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -122,5 +124,19 @@ public final class VeiculoConverter {
                 rSet.getString("NOMENCLATURA"),
                 rSet.getLong("COD_VEICULO_APLICADO"),
                 rSet.getString("PLACA_APLICADO"));
+    }
+
+    @NotNull
+    public static VeiculoEvolucaoKm createVeiculoEvolucaoKm(@NotNull final ResultSet rSet)
+            throws SQLException {
+        return new VeiculoEvolucaoKm(
+
+                rSet.getString("processo"),
+                rSet.getLong("cod_processo"),
+                rSet.getObject("data_hora", LocalDateTime.class),
+                rSet.getString("placa"),
+                rSet.getLong("km_coletado"),
+                rSet.getLong("km_atual"),
+                rSet.getLong("diferenca_km_atual_km_coletado"));
     }
 }

@@ -228,6 +228,20 @@ public final class VeiculoResource {
         return service.getVeiculoByPlaca(userToken, placa, false);
     }
 
+    @GET
+    @Path("/evolucao-km")
+    @UsedBy(platforms = Platform.WEBSITE)
+    @Secured(permissions
+            = {Pilares.Frota.Veiculo.VISUALIZAR, Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
+    public List<VeiculoEvolucaoKm> getVeiculoEvolucaoKm(
+            @QueryParam("codEmpresa") @Required final Long codEmpresa,
+            @QueryParam("placa") @Required final String placa,
+            @QueryParam("dataInicial") @Required final String dataInicial,
+            @QueryParam("dataFinal") @Required final String dataFinal
+    ) {
+        return service.getVeiculoEvolucaoKm(codEmpresa, placa, dataInicial, dataFinal);
+    }
+
     /**
      * @deprecated at 2020-05-07.
      * <p>
