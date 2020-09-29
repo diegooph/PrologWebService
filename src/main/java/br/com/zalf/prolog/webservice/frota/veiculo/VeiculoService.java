@@ -308,7 +308,7 @@ public final class VeiculoService {
                     dataFinalLocal);
         } catch (final Throwable e) {
             Log.e(TAG,
-                    String.format("Erro a evolução de km da placa %d, da empresa %d.", placa, codEmpresa),
+                    String.format("Erro a evolução de km da placa %s, da empresa %d.", placa, codEmpresa),
                     e);
             throw Injection
                     .provideProLogExceptionHandler()
