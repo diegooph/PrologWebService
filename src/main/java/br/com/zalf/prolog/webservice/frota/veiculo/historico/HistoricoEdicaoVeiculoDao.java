@@ -11,7 +11,6 @@ import java.util.List;
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
 public interface HistoricoEdicaoVeiculoDao {
-
     /**
      * Busca o histórico de edições de um veiculo baseado em um código de veiculo e um código de empresa.
      *
