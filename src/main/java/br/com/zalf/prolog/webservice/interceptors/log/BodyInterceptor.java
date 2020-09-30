@@ -10,28 +10,33 @@ import javax.ws.rs.ext.Provider;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @LogBody
 @Provider
 public class BodyInterceptor implements ContainerRequestFilter {
-
 	private static final String TAG = BodyInterceptor.class.getSimpleName();
 
 	@Override
-	public void filter(ContainerRequestContext requestContext) throws IOException {
-		if (isJson(requestContext)) {
-			String json = IOUtils.toString(requestContext.getEntityStream(), StandardCharsets.UTF_8);
-				
+	public void filter(final ContainerRequestContext request) throws IOException {
+		if (isJson(request)) {
+			final String json = IOUtils.toString(request.getEntityStream(), StandardCharsets.UTF_8);
+
 			Log.d(TAG, json);
-			LogDatabase.insertLog(json);
-			
-            InputStream in = IOUtils.toInputStream(json, StandardCharsets.UTF_8);
-            requestContext.setEntityStream(in);
+			final ExecutorService executor = Executors.newSingleThreadExecutor();
+			executor.execute(() -> LogDatabase.insertLog(
+					json,
+					request.getMethod() + " - " + request.getUriInfo().getPath()));
+			executor.shutdown();
+
+			final InputStream in = IOUtils.toInputStream(json, StandardCharsets.UTF_8);
+			request.setEntityStream(in);
 		}
 	}
 
-	private boolean isJson(ContainerRequestContext request) {
+	private boolean isJson(final ContainerRequestContext request) {
 		// define rules when to read body
-		return request.getMediaType().toString().contains("application/json"); 
+		return request.getMediaType().toString().contains("application/json");
 	}
 }
