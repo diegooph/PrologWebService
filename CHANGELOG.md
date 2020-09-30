@@ -10,6 +10,9 @@ Change Log
 ### Refactor
 * Salva código de veículo em tabelas (PL-3170)
 
+### Bug Fixes
+* Corrige problema para realizar o upload de PDF de treinamento (PS-1257)
+
 <a name="v1.2.0"></a>
 ## Version [v1.2.0](https://github.com/luizfp/PrologWebService/compare/v1.1.4...v1.2.0) (2020-09-23)
 
