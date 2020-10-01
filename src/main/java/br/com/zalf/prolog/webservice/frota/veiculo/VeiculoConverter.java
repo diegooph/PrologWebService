@@ -127,8 +127,7 @@ public final class VeiculoConverter {
     }
 
     @NotNull
-    public static VeiculoEvolucaoKm createVeiculoEvolucaoKm(@NotNull final ResultSet rSet)
-            throws SQLException {
+    public static VeiculoEvolucaoKm createVeiculoEvolucaoKm(@NotNull final ResultSet rSet) throws SQLException {
         return new VeiculoEvolucaoKm(
                 rSet.getString("processo"),
                 rSet.getLong("cod_processo"),
