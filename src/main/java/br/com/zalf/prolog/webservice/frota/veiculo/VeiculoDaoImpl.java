@@ -600,10 +600,11 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
     }
 
     @Override
-    public @NotNull List<VeiculoEvolucaoKm> getVeiculoEvolucaoKm(@NotNull final Long codEmpresa,
-                                                                 @NotNull final Long codVeiculo,
-                                                                 @NotNull final LocalDate dataInicial,
-                                                                 @NotNull final LocalDate dataFinal) throws Throwable {
+    @NotNull
+    public List<VeiculoEvolucaoKm> getVeiculoEvolucaoKm(@NotNull final Long codEmpresa,
+                                                        @NotNull final Long codVeiculo,
+                                                        @NotNull final LocalDate dataInicial,
+                                                        @NotNull final LocalDate dataFinal) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -621,9 +622,9 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 final List<VeiculoEvolucaoKm> veiculoEvolucaoKms = new ArrayList<>();
-                while (rSet.next()) {
+                do {
                     veiculoEvolucaoKms.add(createVeiculoEvolucaoKm(rSet));
-                }
+                } while (rSet.next());
                 return veiculoEvolucaoKms;
             } else {
                 return Collections.emptyList();
