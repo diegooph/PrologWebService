@@ -58,9 +58,7 @@ public class VeiculoRelatorioResource {
     @Path("/evolucao-km/report")
     public Report getEvolucaoKmReport(
             @QueryParam("codEmpresa") @Required final Long codEmpresa,
-            @QueryParam("placa") @Required final String placa,
-            @QueryParam("dataInicial") @Required final String dataInicial,
-            @QueryParam("dataFinal") @Required final String dataFinal) throws ProLogException {
+            @QueryParam("placa") @Required final String placa) throws ProLogException {
         return new VeiculoRelatorioService()
                 .getEvolucaoKmReport(codEmpresa, placa);
     }
