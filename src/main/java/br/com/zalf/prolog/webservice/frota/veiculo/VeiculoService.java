@@ -296,16 +296,10 @@ public final class VeiculoService {
                                                         @NotNull final String dataInicial,
                                                         @NotNull final String dataFinal) throws ProLogException {
         try {
-            final LocalDate dataInicialLocal = ProLogDateParser.toLocalDate(dataInicial);
-            final LocalDate dataFinalLocal = ProLogDateParser.toLocalDate(dataFinal);
-            final Period periodo = Period.between(dataInicialLocal, dataFinalLocal);
-            if ((periodo.getYears() >= 1) && (periodo.getMonths() > 0)) {
-                throw new GenericException("O período para realização da pesquisa deve ser de no máximo 1 ano.");
-            }
             return dao.getVeiculoEvolucaoKm(codEmpresa,
                     codVeiculo,
-                    dataInicialLocal,
-                    dataFinalLocal);
+                    ProLogDateParser.toLocalDate(dataInicial),
+                    ProLogDateParser.toLocalDate(dataFinal));
         } catch (final Throwable e) {
             Log.e(TAG,
                     String.format("Erro a evolução de km da placa %d, da empresa %d.", codVeiculo, codEmpresa),
