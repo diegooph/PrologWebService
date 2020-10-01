@@ -84,13 +84,13 @@ public class VeiculoRelatorioDaoImpl extends DatabaseConnection implements Veicu
     @Override
     public void getEvolucaoKmCsv(@NotNull final OutputStream out,
                                  @NotNull final Long codEmpresa,
-                                 @NotNull final String placa) throws Throwable {
+                                 @NotNull final Long codVeiculo) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = getEvolucaoKmStmt(conn, codEmpresa, placa);
+            stmt = getEvolucaoKmStmt(conn, codEmpresa, codVeiculo);
             rSet = stmt.executeQuery();
             new CsvWriter
                     .Builder(out)
@@ -104,13 +104,13 @@ public class VeiculoRelatorioDaoImpl extends DatabaseConnection implements Veicu
 
     @Override
     public @NotNull Report getEvolucaoKmReport(@NotNull final Long codEmpresa,
-                                               @NotNull final String placa) throws Throwable {
+                                               @NotNull final Long codVeiculo) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = getEvolucaoKmStmt(conn, codEmpresa, placa);
+            stmt = getEvolucaoKmStmt(conn, codEmpresa, codVeiculo);
             rSet = stmt.executeQuery();
             return ReportTransformer.createReport(rSet);
         } finally {
@@ -130,13 +130,13 @@ public class VeiculoRelatorioDaoImpl extends DatabaseConnection implements Veicu
     @NotNull
     private PreparedStatement getEvolucaoKmStmt(@NotNull final Connection conn,
                                                 @NotNull final Long codEmpresa,
-                                                @NotNull final String placa) throws Throwable {
+                                                @NotNull final Long codVeiculo) throws Throwable {
         final PreparedStatement stmt =
                 conn.prepareStatement("select * from func_veiculo_relatorio_evolucao_km_consolidado(" +
                         "f_cod_empresa => ?, " +
-                        "f_placa => ?);");
+                        "f_cod_veiculo => ?);");
         stmt.setLong(1, codEmpresa);
-        stmt.setString(2, placa);
+        stmt.setLong(2, codVeiculo);
         return stmt;
     }
 }

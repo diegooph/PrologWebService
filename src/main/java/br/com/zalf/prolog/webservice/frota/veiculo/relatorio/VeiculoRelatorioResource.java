@@ -47,19 +47,17 @@ public class VeiculoRelatorioResource {
     @Produces("application/csv")
     public StreamingOutput getEvolucaoKmCsv(
             @QueryParam("codEmpresa") @Required final Long codEmpresa,
-            @QueryParam("placa") @Required final String placa,
-            @QueryParam("dataInicial") @Required final String dataInicial,
-            @QueryParam("dataFinal") @Required final String dataFinal){
+            @QueryParam("codVeiculo") @Required final Long codVeiculo){
         return outputStream -> new VeiculoRelatorioService()
-                .getEvolucaoKmCsv(outputStream, codEmpresa, placa);
+                .getEvolucaoKmCsv(outputStream, codEmpresa, codVeiculo);
     }
 
     @GET
     @Path("/evolucao-km/report")
     public Report getEvolucaoKmReport(
             @QueryParam("codEmpresa") @Required final Long codEmpresa,
-            @QueryParam("placa") @Required final String placa) throws ProLogException {
+            @QueryParam("codVeiculo") @Required final Long codVeiculo) throws ProLogException {
         return new VeiculoRelatorioService()
-                .getEvolucaoKmReport(codEmpresa, placa);
+                .getEvolucaoKmReport(codEmpresa, codVeiculo);
     }
 }
