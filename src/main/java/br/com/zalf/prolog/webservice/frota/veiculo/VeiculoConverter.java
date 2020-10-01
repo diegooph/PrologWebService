@@ -131,11 +131,11 @@ public final class VeiculoConverter {
             throws SQLException {
         return new VeiculoEvolucaoKm(
                 rSet.getString("processo"),
-                rSet.getLong("código processo"),
-                rSet.getString("data/hora"),
+                rSet.getLong("cod_processo"),
+                rSet.getObject("data_hora", LocalDateTime.class),
                 rSet.getString("placa"),
-                rSet.getLong("km coletado"),
-                rSet.getLong("km atual"),
-                rSet.getLong("diferença entre km atual e km coletado"));
+                rSet.getLong("km_coletado"),
+                rSet.getLong("km_atual"),
+                rSet.getLong("diferenca_km_atual_km_coletado"));
     }
 }

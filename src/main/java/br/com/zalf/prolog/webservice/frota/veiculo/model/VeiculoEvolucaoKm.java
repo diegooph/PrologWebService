@@ -13,7 +13,7 @@ public class VeiculoEvolucaoKm {
     @NotNull
     private final Long codProcesso;
     @NotNull
-    private final String dataHora;
+    private final LocalDateTime dataHora;
     @NotNull
     private final String placa;
     @NotNull
