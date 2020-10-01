@@ -312,14 +312,14 @@ public interface VeiculoDao {
      * Busca a evolução de kms de um veículo pela placa, código da empresa e em um determinado intervalo de data.
      *
      * @param codEmpresa  Código da empresa para a qual as informações serão filtradas.
-     * @param placa       Placa do veículo para o qual as informações serão filtradas.
+     * @param codVeiculo  Código do veículo para o qual as informações serão filtradas.
      * @param dataInicial Data inicial para a qual as informações serão filtradas.
      * @param dataFinal   Data final para a qual as informações serão filtradas.
      * @throws Throwable  Se algum erro ocorrer.
      */
     @NotNull
     List<VeiculoEvolucaoKm> getVeiculoEvolucaoKm(@NotNull final Long codEmpresa,
-                                                 @NotNull final String placa,
+                                                 @NotNull final Long codVeiculo,
                                                  @NotNull final LocalDate dataInicial,
                                                  @NotNull final LocalDate dataFinal) throws Throwable;
 

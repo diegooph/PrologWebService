@@ -292,7 +292,7 @@ public final class VeiculoService {
 
     @NotNull
     public List<VeiculoEvolucaoKm> getVeiculoEvolucaoKm(@NotNull final Long codEmpresa,
-                                                        @NotNull final String placa,
+                                                        @NotNull final Long codVeiculo,
                                                         @NotNull final String dataInicial,
                                                         @NotNull final String dataFinal) throws ProLogException {
         try {
@@ -303,12 +303,12 @@ public final class VeiculoService {
                 throw new GenericException("O período para realização da pesquisa deve ser de no máximo 1 ano.");
             }
             return dao.getVeiculoEvolucaoKm(codEmpresa,
-                    placa,
+                    codVeiculo,
                     dataInicialLocal,
                     dataFinalLocal);
         } catch (final Throwable e) {
             Log.e(TAG,
-                    String.format("Erro a evolução de km da placa %s, da empresa %d.", placa, codEmpresa),
+                    String.format("Erro a evolução de km da placa %d, da empresa %d.", codVeiculo, codEmpresa),
                     e);
             throw Injection
                     .provideProLogExceptionHandler()

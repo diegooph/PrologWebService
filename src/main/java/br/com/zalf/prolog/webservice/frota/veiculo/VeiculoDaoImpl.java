@@ -601,7 +601,7 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
 
     @Override
     public @NotNull List<VeiculoEvolucaoKm> getVeiculoEvolucaoKm(@NotNull final Long codEmpresa,
-                                                                 @NotNull final String placa,
+                                                                 @NotNull final Long codVeiculo,
                                                                  @NotNull final LocalDate dataInicial,
                                                                  @NotNull final LocalDate dataFinal) throws Throwable {
         Connection conn = null;
@@ -611,11 +611,11 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
             conn = getConnection();
             stmt = conn.prepareStatement("select * from func_veiculo_busca_evolucao_km_consolidado(" +
                     "f_cod_empresa => ?," +
-                    "f_placa => ?," +
+                    "f_cod_veiculo => ?," +
                     "f_data_inicial => ?," +
                     "f_data_final => ? );");
             stmt.setLong(1, codEmpresa);
-            stmt.setString(2, placa);
+            stmt.setLong(2, codVeiculo);
             stmt.setObject(3, dataInicial);
             stmt.setObject(4, dataFinal);
             rSet = stmt.executeQuery();

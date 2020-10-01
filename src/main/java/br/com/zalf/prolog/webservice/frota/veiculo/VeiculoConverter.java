@@ -130,10 +130,9 @@ public final class VeiculoConverter {
     public static VeiculoEvolucaoKm createVeiculoEvolucaoKm(@NotNull final ResultSet rSet)
             throws SQLException {
         return new VeiculoEvolucaoKm(
-
                 rSet.getString("processo"),
                 rSet.getLong("código processo"),
-                rSet.getObject("data/hora", LocalDateTime.class),
+                rSet.getString("data/hora"),
                 rSet.getString("placa"),
                 rSet.getLong("km coletado"),
                 rSet.getLong("km atual"),

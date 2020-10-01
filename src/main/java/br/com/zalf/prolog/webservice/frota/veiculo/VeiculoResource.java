@@ -235,11 +235,11 @@ public final class VeiculoResource {
             = {Pilares.Frota.Veiculo.VISUALIZAR, Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
     public List<VeiculoEvolucaoKm> getVeiculoEvolucaoKm(
             @QueryParam("codEmpresa") @Required final Long codEmpresa,
-            @QueryParam("placa") @Required final String placa,
+            @QueryParam("codVeiculo") @Required final Long codVeiculo,
             @QueryParam("dataInicial") @Required final String dataInicial,
             @QueryParam("dataFinal") @Required final String dataFinal
     ) throws ProLogException {
-        return service.getVeiculoEvolucaoKm(codEmpresa, placa, dataInicial, dataFinal);
+        return service.getVeiculoEvolucaoKm(codEmpresa, codVeiculo, dataInicial, dataFinal);
     }
 
     /**
