@@ -103,8 +103,9 @@ public class VeiculoRelatorioDaoImpl extends DatabaseConnection implements Veicu
     }
 
     @Override
-    public @NotNull Report getEvolucaoKmReport(@NotNull final Long codEmpresa,
-                                               @NotNull final Long codVeiculo) throws Throwable {
+    @NotNull
+    public Report getEvolucaoKmReport(@NotNull final Long codEmpresa,
+                                      @NotNull final Long codVeiculo) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;

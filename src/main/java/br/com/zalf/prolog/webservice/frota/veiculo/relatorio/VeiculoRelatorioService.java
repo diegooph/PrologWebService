@@ -46,10 +46,7 @@ public class VeiculoRelatorioService {
                           final Long codEmpresa,
                           final Long codVeiculo) {
         try {
-            dao.getEvolucaoKmCsv(
-                    out,
-                    codEmpresa,
-                    codVeiculo);
+            dao.getEvolucaoKmCsv(out, codEmpresa, codVeiculo);
         } catch (final Throwable throwable) {
             Log.e(TAG, "Erro ao gerar relatório de evolução de KM (CSV)", throwable);
             throw new RuntimeException(throwable);
@@ -60,9 +57,7 @@ public class VeiculoRelatorioService {
     Report getEvolucaoKmReport(final Long codEmpresa,
                                final Long codVeiculo) throws ProLogException {
         try {
-            return dao.getEvolucaoKmReport(
-                    codEmpresa,
-                    codVeiculo);
+            return dao.getEvolucaoKmReport(codEmpresa, codVeiculo);
         } catch (final Throwable throwable) {
             Log.e(TAG, "Erro ao gerar relatório de evolução de KM (REPORT)", throwable);
             throw Injection
