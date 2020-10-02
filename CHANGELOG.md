@@ -10,6 +10,7 @@ Change Log
 ### Refactor
 * Salva código de veículo em tabelas (PL-3170)
 * Altera insert/update de modelo de checklist para salvar JSON recebido (PS-1261)
+* Adiciona identificador de frota em relatório integrado de aferição (PL-3130)
 
 ### Bug Fixes
 * Corrige problema para realizar o upload de PDF de treinamento (PS-1257)
