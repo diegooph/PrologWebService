@@ -22,6 +22,8 @@ public class ApiPneuMedicaoRealizada {
     @NotNull
     private final String cpfColaborador;
     @Nullable
+    private final String identificadorFrota;
+    @Nullable
     private final String placaVeiculoAferido;
     @NotNull
     private final Long codPneuAferido;
