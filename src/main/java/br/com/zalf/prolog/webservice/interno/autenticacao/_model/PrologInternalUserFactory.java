@@ -14,7 +14,7 @@ import java.util.Base64;
 public final class PrologInternalUserFactory {
 
     @NotNull
-    public static PrologInternalUser fromHeaderAuthorization(@NotNull final String headerAuthorization) {
+    public static PrologInternalUserAuthentication fromHeaderAuthorization(@NotNull final String headerAuthorization) {
         if (!headerAuthorization.startsWith(AuthType.BASIC.value())) {
             throw new NotAuthorizedException("headerAuthorization is not using BASIC Authentication!");
         }
@@ -23,10 +23,10 @@ public final class PrologInternalUserFactory {
         final byte[] bytes = Base64.getDecoder().decode(token.getBytes());
         final String[] splitUsernamePassword = new String(bytes).split(":");
         if (splitUsernamePassword.length != 2) {
-            throw new NotAuthorizedException("Autenticação não reconhecida");
+            throw new NotAuthorizedException("Autenticação não reconhecida!");
         }
 
-        return PrologInternalUser
+        return PrologInternalUserAuthentication
                 .builder()
                 .username(splitUsernamePassword[0])
                 .password(splitUsernamePassword[1])

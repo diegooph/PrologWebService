@@ -6,7 +6,8 @@ import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Representa um usuário do sistema interno do Prolog. São usuários cadastrados na tabela "interno.prolog_user".
+ * Representa um usuário do sistema interno do Prolog que está tentando se autenticar.
+ * São usuários cadastrados na tabela "interno.prolog_user".
  * <p>
  * Created on 2020-03-17
  *
@@ -14,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
  */
 @Data
 @Builder
-public final class PrologInternalUser {
+public final class PrologInternalUserAuthentication {
     @NotNull
     private final String username;
     @NotNull

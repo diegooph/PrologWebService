@@ -6,8 +6,8 @@ import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
-import br.com.zalf.prolog.webservice.interno.autenticacao.AutenticacaoLoginSenhaValidator;
-import br.com.zalf.prolog.webservice.interno.autenticacao._model.PrologInternalUser;
+import br.com.zalf.prolog.webservice.interno.autenticacao.AutenticacaoInternaService;
+import br.com.zalf.prolog.webservice.interno.autenticacao._model.PrologInternalUserAuthentication;
 import br.com.zalf.prolog.webservice.interno.autenticacao._model.PrologInternalUserFactory;
 import br.com.zalf.prolog.webservice.interno.implantacao.conferencia._model.TipoImport;
 import br.com.zalf.prolog.webservice.interno.implantacao.conferencia.frota.vinculoveiculopneu._model.VinculoVeiculoPneu;
@@ -41,8 +41,8 @@ public final class VinculoVeiculoPneuService {
                                                      @NotNull final FormDataContentDisposition fileDetail) {
         // Deve ficar fora do try/catch porque não queremos mascarar erros de autentificação com erros do processo de
         // import.
-        final PrologInternalUser internalUser = PrologInternalUserFactory.fromHeaderAuthorization(authorization);
-        new AutenticacaoLoginSenhaValidator().verifyUsernamePassword(internalUser);
+        final PrologInternalUserAuthentication internalUser = PrologInternalUserFactory.fromHeaderAuthorization(authorization);
+        new AutenticacaoInternaService().login(internalUser);
 
         try {
             final File file = createFileFromVinculo(codUnidade, fileInputStream, fileDetail);
