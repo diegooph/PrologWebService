@@ -6,10 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -132,13 +129,18 @@ public final class RelatorioKmRodadoPorVidaEmColuna implements CsvReport {
 
             // Processamos a vida 1 novamente, assim todas as infos de vida ficam concentradas nesse 'for'.
             for (int i = 0; i < TOTAL_VIDAS_BUSCADAS; i++) {
-                if (i < vidasPneu.size()) {
+                final int vidaSendoEscritaAgora = i + 1;
+                final Optional<PneuKmRodadoPorVida> vidaPneuEncontrada = vidasPneu
+                        .stream()
+                        .filter(vidaPneu -> Integer.parseInt(vidaPneu.getVida()) == vidaSendoEscritaAgora)
+                        .findFirst();
+                if (vidaPneuEncontrada.isPresent()) {
                     // Vida existe.
-                    row.add(vidasPneu.get(i).getMarca());
-                    row.add(vidasPneu.get(i).getModelo());
-                    row.add(vidasPneu.get(i).getValorVida());
-                    row.add(vidasPneu.get(i).getKmRodadoVida());
-                    row.add(vidasPneu.get(i).getValorPorKmVida());
+                    row.add(vidaPneuEncontrada.get().getMarca());
+                    row.add(vidaPneuEncontrada.get().getModelo());
+                    row.add(vidaPneuEncontrada.get().getValorVida());
+                    row.add(vidaPneuEncontrada.get().getKmRodadoVida());
+                    row.add(vidaPneuEncontrada.get().getValorPorKmVida());
                 } else {
                     // Precisamos setar valores padrões para a vida.
                     row.add(CARACTERE_SEM_DADOS);

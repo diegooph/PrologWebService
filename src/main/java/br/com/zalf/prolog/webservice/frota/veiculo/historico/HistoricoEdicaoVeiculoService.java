@@ -13,7 +13,6 @@ import java.util.List;
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
 public final class HistoricoEdicaoVeiculoService {
-
     @NotNull
     private static final String TAG = HistoricoEdicaoVeiculoService.class.getSimpleName();
     @NotNull
@@ -33,5 +32,4 @@ public final class HistoricoEdicaoVeiculoService {
                     .map(e, "Erro ao buscar histórico de edições, tente novamente.");
         }
     }
-
 }

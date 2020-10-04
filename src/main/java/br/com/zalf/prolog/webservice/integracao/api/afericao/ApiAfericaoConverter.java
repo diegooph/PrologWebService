@@ -21,6 +21,7 @@ public final class ApiAfericaoConverter {
                 rSet.getLong("COD_AFERICAO"),
                 rSet.getLong("COD_UNIDADE_AFERICAO"),
                 rSet.getString("CPF_COLABORADOR"),
+                rSet.getString("IDENTIFICADOR_FROTA"),
                 rSet.getString("PLACA_VEICULO_AFERIDO"),
                 rSet.getLong("COD_PNEU_AFERIDO"),
                 rSet.getString("NUMERO_FOGO"),

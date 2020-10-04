@@ -544,13 +544,13 @@ public final class MovimentacaoDaoImpl extends DatabaseConnection implements Mov
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareCall("{ CALL FUNC_MOVIMENTACAO_INSERT_MOVIMENTACAO_VEICULO_ORIGEM("+
-                    "F_COD_PNEU := ?, " +
-                    "F_COD_UNIDADE := ?, " +
-                    "F_TIPO_ORIGEM := ?, " +
-                    "F_COD_MOVIMENTACAO := ?, " +
-                    "F_PLACA_VEICULO := ?, " +
-                    "F_KM_ATUAL := ?, " +
-                    "F_POSICAO_PROLOG := ?)}");
+                    "F_COD_PNEU => ?, " +
+                    "F_COD_UNIDADE => ?, " +
+                    "F_TIPO_ORIGEM => ?, " +
+                    "F_COD_MOVIMENTACAO => ?, " +
+                    "F_PLACA_VEICULO => ?," +
+                    "F_KM_ATUAL => ?, " +
+                    "F_POSICAO_PROLOG => ?)}");
             stmt.setLong(1, movimentacao.getPneu().getCodigo());
             stmt.setLong(2, codUnidade);
             stmt.setString(3, movimentacao.getOrigem().getTipo().asString());
@@ -588,11 +588,11 @@ public final class MovimentacaoDaoImpl extends DatabaseConnection implements Mov
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareCall("{CALL FUNC_MOVIMENTACAO_INSERT_MOVIMENTACAO_VEICULO_DESTINO(" +
-                    "F_COD_MOVIMENTACAO := ?, " +
-                    "F_TIPO_DESTINO := ?, " +
-                    "F_PLACA_VEICULO := ?, " +
-                    "F_KM_ATUAL := ?, " +
-                    "F_POSICAO_PROLOG := ?)}");
+                    "F_COD_MOVIMENTACAO => ?, " +
+                    "F_TIPO_DESTINO => ?, " +
+                    "F_PLACA_VEICULO => ?," +
+                    "F_KM_ATUAL => ?, " +
+                    "F_POSICAO_PROLOG => ?)}");
             stmt.setLong(1, movimentacao.getCodigo());
             stmt.setString(2, destinoVeiculo.getTipo().asString());
             stmt.setString(3, destinoVeiculo.getVeiculo().getPlaca());
