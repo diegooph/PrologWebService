@@ -3,7 +3,7 @@ Change Log
 ## Stage
 
 <a name="v1.2.1"></a>
-## Version [v1.2.1](https://github.com/luizfp/PrologWebService/compare/v1.2.0...v1.2.1) (release-date) [unreleased]
+## Version [v1.2.1](https://github.com/luizfp/PrologWebService/compare/v1.2.0...v1.2.1) (2020-10-04)
 ### Features
 * Cria endpoint para buscar histórico de edições em csv (PL-3153)
 
