@@ -1,16 +1,17 @@
 Change Log
 ==========
 ## Stage
-### Features
-* Cria endpoint para buscar histórico de edições em csv (PL-3153)
 
 <a name="v1.2.1"></a>
 ## Version [v1.2.1](https://github.com/luizfp/PrologWebService/compare/v1.2.0...v1.2.1) (release-date) [unreleased]
+### Features
+* Cria endpoint para buscar histórico de edições em csv (PL-3153)
 
 ### Refactor
 * Salva código de veículo em tabelas (PL-3170)
 * Altera insert/update de modelo de checklist para salvar JSON recebido (PS-1261)
 * Adiciona identificador de frota em relatório integrado de aferição (PL-3130)
+* Adiciona Spring Boot na estrutura do Prolog (PL-3159)
 
 ### Bug Fixes
 * Corrige problema para realizar o upload de PDF de treinamento (PS-1257)
