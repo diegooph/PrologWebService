@@ -18,7 +18,5 @@ public class VeiculoEvolucaoKm {
     @NotNull
     private final Long kmColetado;
     @NotNull
-    private final Long kmAtual;
-    @NotNull
-    private final Long diferencaKmAtualKmColetado;
+    private final Long diferencaKmAtualkmColetado;
 }

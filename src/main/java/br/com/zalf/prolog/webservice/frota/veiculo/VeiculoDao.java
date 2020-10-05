@@ -318,7 +318,7 @@ public interface VeiculoDao {
      * @throws Throwable  Se algum erro ocorrer.
      */
     @NotNull
-    List<VeiculoEvolucaoKm> getVeiculoEvolucaoKm(@NotNull final Long codEmpresa,
+    VeiculoEvolucaoKmResponse getVeiculoEvolucaoKm(@NotNull final Long codEmpresa,
                                                  @NotNull final Long codVeiculo,
                                                  @NotNull final LocalDate dataInicial,
                                                  @NotNull final LocalDate dataFinal) throws Throwable;

@@ -291,7 +291,7 @@ public final class VeiculoService {
     }
 
     @NotNull
-    public List<VeiculoEvolucaoKm> getVeiculoEvolucaoKm(@NotNull final Long codEmpresa,
+    public VeiculoEvolucaoKmResponse getVeiculoEvolucaoKm(@NotNull final Long codEmpresa,
                                                         @NotNull final Long codVeiculo,
                                                         @NotNull final String dataInicial,
                                                         @NotNull final String dataFinal) throws ProLogException {

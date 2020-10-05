@@ -601,7 +601,7 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
 
     @Override
     @NotNull
-    public List<VeiculoEvolucaoKm> getVeiculoEvolucaoKm(@NotNull final Long codEmpresa,
+    public VeiculoEvolucaoKmResponse getVeiculoEvolucaoKm(@NotNull final Long codEmpresa,
                                                         @NotNull final Long codVeiculo,
                                                         @NotNull final LocalDate dataInicial,
                                                         @NotNull final LocalDate dataFinal) throws Throwable {
@@ -625,9 +625,15 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
                 do {
                     veiculoEvolucaoKms.add(createVeiculoEvolucaoKm(rSet));
                 } while (rSet.next());
-                return veiculoEvolucaoKms;
+
+                VeiculoEvolucaoKmResponse veiculoEvolucaoKmResponse = new VeiculoEvolucaoKmResponse(
+                        rSet.getLong("km_atual"),
+                        veiculoEvolucaoKms
+                );
+
+                return veiculoEvolucaoKmResponse;
             } else {
-                return Collections.emptyList();
+                throw new SQLException("Erro ao buscar evolução de KM.");
             }
         } finally {
             close(conn, stmt, rSet);

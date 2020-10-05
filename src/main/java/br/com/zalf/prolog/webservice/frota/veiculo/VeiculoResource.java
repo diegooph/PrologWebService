@@ -233,7 +233,7 @@ public final class VeiculoResource {
     @UsedBy(platforms = Platform.WEBSITE)
     @Secured(permissions
             = {Pilares.Frota.Veiculo.VISUALIZAR, Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
-    public List<VeiculoEvolucaoKm> getVeiculoEvolucaoKm(
+    public VeiculoEvolucaoKmResponse getVeiculoEvolucaoKm(
             @QueryParam("codEmpresa") @Required final Long codEmpresa,
             @QueryParam("codVeiculo") @Required final Long codVeiculo,
             @QueryParam("dataInicial") @Required final String dataInicial,
