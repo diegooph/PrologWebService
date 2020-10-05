@@ -7,7 +7,6 @@ import java.time.LocalDateTime;
 
 @Data
 public class VeiculoEvolucaoKm {
-
     @NotNull
     private final String processo;
     @NotNull
@@ -21,5 +20,5 @@ public class VeiculoEvolucaoKm {
     @NotNull
     private final Long kmAtual;
     @NotNull
-    private final Long diferencaKmAtualkmColetado;
+    private final Long diferencaKmAtualKmColetado;
 }

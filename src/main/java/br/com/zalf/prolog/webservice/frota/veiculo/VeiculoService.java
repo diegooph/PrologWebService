@@ -302,7 +302,7 @@ public final class VeiculoService {
                     ProLogDateParser.toLocalDate(dataFinal));
         } catch (final Throwable e) {
             Log.e(TAG,
-                    String.format("Erro a evolução de km da placa %d, da empresa %d.", codVeiculo, codEmpresa),
+                    String.format("Erro a evolução de km do veículo de código %d, da empresa %d.", codVeiculo, codEmpresa),
                     e);
             throw Injection
                     .provideProLogExceptionHandler()
