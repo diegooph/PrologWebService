@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.veiculo;
 
+import br.com.zalf.prolog.webservice.frota.veiculo.model.ProcessoEvolucaoKmEnum;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.VeiculoEvolucaoKm;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.VeiculoListagem;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoAntesEdicao;
@@ -129,7 +130,7 @@ public final class VeiculoConverter {
     @NotNull
     public static VeiculoEvolucaoKm createVeiculoEvolucaoKm(@NotNull final ResultSet rSet) throws SQLException {
         return new VeiculoEvolucaoKm(
-                rSet.getString("processo"),
+                ProcessoEvolucaoKmEnum.fromString(rSet.getString("processo")),
                 rSet.getLong("cod_processo"),
                 rSet.getObject("data_hora", LocalDateTime.class),
                 rSet.getString("placa"),

@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 @Data
 public class VeiculoEvolucaoKm {
     @NotNull
-    private final String processo;
+    private final ProcessoEvolucaoKmEnum processo;
     @NotNull
     private final Long codProcesso;
     @NotNull

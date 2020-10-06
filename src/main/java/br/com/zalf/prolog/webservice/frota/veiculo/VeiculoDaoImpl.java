@@ -621,16 +621,15 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
             stmt.setObject(4, dataFinal);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
+                final Long km_atual = rSet.getLong("km_atual");
                 final List<VeiculoEvolucaoKm> veiculoEvolucaoKms = new ArrayList<>();
                 do {
                     veiculoEvolucaoKms.add(createVeiculoEvolucaoKm(rSet));
                 } while (rSet.next());
-
                 VeiculoEvolucaoKmResponse veiculoEvolucaoKmResponse = new VeiculoEvolucaoKmResponse(
-                        rSet.getLong("km_atual"),
+                        km_atual,
                         veiculoEvolucaoKms
                 );
-
                 return veiculoEvolucaoKmResponse;
             } else {
                 throw new SQLException("Erro ao buscar evolução de KM.");
