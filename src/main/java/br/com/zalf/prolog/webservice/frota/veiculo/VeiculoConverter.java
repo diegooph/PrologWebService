@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.veiculo;
 
+import br.com.zalf.prolog.webservice.commons.util.NullIf;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.ProcessoEvolucaoKmEnum;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.VeiculoEvolucaoKm;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.VeiculoListagem;
@@ -135,7 +136,7 @@ public final class VeiculoConverter {
                 rSet.getObject("data_hora", LocalDateTime.class),
                 rSet.getString("placa"),
                 rSet.getLong("km_coletado"),
-                rSet.getLong("variacao_km_entre_coletas"),
+                NullIf.equalOrLess(rSet.getLong("variacao_km_entre_coletas"), 0),
                 rSet.getLong("diferenca_km_atual_km_coletado"));
     }
 }

@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.frota.veiculo.model;
 
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDateTime;
 
@@ -17,7 +18,7 @@ public class VeiculoEvolucaoKm {
     private final String placa;
     @NotNull
     private final Long kmColetado;
-    @NotNull
+    @Nullable
     private final Long variacaoKmEntreColetas;
     @NotNull
     private final Long diferencaKmAtualkmColetado;
