@@ -16,7 +16,6 @@
 - [ ] Connection, ResulSet e Statement fechados
 - [ ] Documentação atualizada para refletir novas funcionalidades (DAOs)
 - [ ] Integrações testadas
-- [ ] Migration criado e commitado
 - [ ] Foi aplicado um ordenamento que faz sentido para os usuários (caso seja uma listagem)?
 
 #### Testes
