@@ -135,6 +135,7 @@ public final class VeiculoConverter {
                 rSet.getObject("data_hora", LocalDateTime.class),
                 rSet.getString("placa"),
                 rSet.getLong("km_coletado"),
+                rSet.getLong("variacao_km_entre_coletas"),
                 rSet.getLong("diferenca_km_atual_km_coletado"));
     }
 }

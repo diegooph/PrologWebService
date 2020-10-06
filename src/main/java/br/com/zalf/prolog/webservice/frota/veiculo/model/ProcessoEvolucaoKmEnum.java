@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.frota.veiculo.model;
 
-import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.TipoAlteracaoEnum;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
