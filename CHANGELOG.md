@@ -1,11 +1,11 @@
 Change Log
 ==========
+## Stage
+### Features 
+* Cria relatorio evolução de km (PL-3172)
 
 <a name="v1.2.1"></a>
 ## Version [v1.2.1](https://github.com/luizfp/PrologWebService/compare/v1.2.0...v1.2.1) (release-date) [unreleased]
-
-### Features
-* Cria relatorio evolução de km (PL-3172)
 
 ### Refactor
 * Salva código de veículo em tabelas (PL-3170)
