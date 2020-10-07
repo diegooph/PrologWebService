@@ -6,6 +6,7 @@ Change Log
 ## Version [v1.2.2](https://github.com/luizfp/PrologWebService/compare/v1.2.1...v1.2.2) (reselase-date) [unreleased]
 ### Features
 * Adiciona colunas no relatório de pneus descartados (PL-3145)
+* Cria busca de evolução de km (PL-3171)
 
 <a name="v1.2.1"></a>
 ## Version [v1.2.1](https://github.com/luizfp/PrologWebService/compare/v1.2.0...v1.2.1) (2020-10-04)
