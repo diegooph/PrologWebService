@@ -17,6 +17,7 @@ import java.util.Optional;
  * @author Thais Francisco (https://github.com/thaisksf)
  */
 public final class VeiculoEvolucaoKmService {
+    @NotNull
     private static final String TAG = VeiculoEvolucaoKmService.class.getSimpleName();
     @NotNull
     private final VeiculoEvolucaoKmDao dao = Injection.provideVeiculoEvolucaoKmDao();
