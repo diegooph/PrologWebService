@@ -688,6 +688,7 @@ public final class Injection {
         return new HistoricoEdicaoVeiculoDaoImpl();
     }
 
+    @NotNull
     public static VeiculoEvolucaoKmDao provideVeiculoEvolucaoKmDao() {
         return new VeiculoEvolucaoKmDaoImpl();
     }
