@@ -100,6 +100,8 @@ import br.com.zalf.prolog.webservice.frota.veiculo.evolucaoKm.VeiculoEvolucaoKmD
 import br.com.zalf.prolog.webservice.frota.veiculo.evolucaoKm.VeiculoEvolucaoKmDaoImpl;
 import br.com.zalf.prolog.webservice.frota.veiculo.historico.HistoricoEdicaoVeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.historico.HistoricoEdicaoVeiculoDaoImpl;
+import br.com.zalf.prolog.webservice.frota.veiculo.historico.relatorio.HistoricoEdicaoVeiculoRelatorioDao;
+import br.com.zalf.prolog.webservice.frota.veiculo.historico.relatorio.HistoricoEdicaoVeiculoRelatorioDaoImpl;
 import br.com.zalf.prolog.webservice.frota.veiculo.relatorio.VeiculoRelatorioDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.relatorio.VeiculoRelatorioDaoImpl;
 import br.com.zalf.prolog.webservice.frota.veiculo.tipoveiculo.TipoVeiculoDao;
@@ -687,7 +689,12 @@ public final class Injection {
     public static HistoricoEdicaoVeiculoDao provideHistoricoEdicaoVeiculoDao() {
         return new HistoricoEdicaoVeiculoDaoImpl();
     }
-
+  
+    @NotNull
+      public static HistoricoEdicaoVeiculoRelatorioDao provideHistoricoEdicaoVeiculoRelatorioDao() {
+        return new HistoricoEdicaoVeiculoRelatorioDaoImpl();
+    }
+  
     @NotNull
     public static VeiculoEvolucaoKmDao provideVeiculoEvolucaoKmDao() {
         return new VeiculoEvolucaoKmDaoImpl();

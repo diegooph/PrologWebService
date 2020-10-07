@@ -17,12 +17,10 @@ public class ProLogApplicationEventListener implements ApplicationEventListener 
 
     @Override
     public void onEvent(final ApplicationEvent applicationEvent) {
-        switch (applicationEvent.getType()) {
-            case INITIALIZATION_APP_FINISHED:
-                if (!ProLogUtils.isDebug()) {
-                    Sentry.init(EnvironmentHelper.SENTRY_DSN + "?release=" + BuildConfig.VERSION_CODE);
-                }
-                break;
+        if (applicationEvent.getType() == ApplicationEvent.Type.INITIALIZATION_APP_FINISHED) {
+            if (!ProLogUtils.isDebug()) {
+                Sentry.init(EnvironmentHelper.SENTRY_DSN + "?release=" + BuildConfig.VERSION_CODE);
+            }
         }
     }
 

@@ -16,7 +16,7 @@ public final class UnidadeEdicao {
     @NotNull(message = "O código da unidade é obrigatório.")
     private final Long codUnidade;
     @NotNull(message = "O nome da unidade não pode estar vazio.")
-    @Size(max = 40, message = "O nome da precisa conter até 40 caracteres.")
+    @Size(max = 40, message = "O nome da unidade precisa conter até 40 caracteres.")
     private final String nomeUnidade;
     @Nullable
     private final String codAuxiliarUnidade;
