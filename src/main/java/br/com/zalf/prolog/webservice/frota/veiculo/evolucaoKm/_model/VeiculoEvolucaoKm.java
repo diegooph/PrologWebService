@@ -1,9 +1,14 @@
-package br.com.zalf.prolog.webservice.frota.veiculo.model;
+package br.com.zalf.prolog.webservice.frota.veiculo.evolucaoKm._model;
 
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * Created on 2020-10-07
+ *
+ * @author Thais Francisco (https://github.com/thaisksf)
+ */
 import java.time.LocalDateTime;
 
 @Data
@@ -21,5 +26,5 @@ public class VeiculoEvolucaoKm {
     @Nullable
     private final Long variacaoKmEntreColetas;
     @NotNull
-    private final Long diferencaKmAtualkmColetado;
+    private final Long diferencaKmAtualKmColetado;
 }

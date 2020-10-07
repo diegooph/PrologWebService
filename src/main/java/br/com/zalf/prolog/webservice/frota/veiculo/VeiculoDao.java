@@ -12,7 +12,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -307,21 +306,6 @@ public interface VeiculoDao {
     @NotNull
     Long getCodVeiculoByPlaca(@NotNull final Connection conn,
                               @NotNull final String placaVeiculo) throws Throwable;
-
-    /**
-     * Busca a evolução de kms de um veículo pela placa, código da empresa e em um determinado intervalo de data.
-     *
-     * @param codEmpresa  Código da empresa para a qual as informações serão filtradas.
-     * @param codVeiculo  Código do veículo para o qual as informações serão filtradas.
-     * @param dataInicial Data inicial para a qual as informações serão filtradas.
-     * @param dataFinal   Data final para a qual as informações serão filtradas.
-     * @throws Throwable  Se algum erro ocorrer.
-     */
-    @NotNull
-    VeiculoEvolucaoKmResponse getVeiculoEvolucaoKm(@NotNull final Long codEmpresa,
-                                                 @NotNull final Long codVeiculo,
-                                                 @NotNull final LocalDate dataInicial,
-                                                 @NotNull final LocalDate dataFinal) throws Throwable;
 
     @Deprecated
     /**

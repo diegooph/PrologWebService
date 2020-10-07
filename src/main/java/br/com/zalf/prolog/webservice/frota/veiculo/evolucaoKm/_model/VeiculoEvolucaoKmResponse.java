@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.frota.veiculo.model;
+package br.com.zalf.prolog.webservice.frota.veiculo.evolucaoKm._model;
 
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;

@@ -1,8 +1,13 @@
-package br.com.zalf.prolog.webservice.frota.veiculo.model;
+package br.com.zalf.prolog.webservice.frota.veiculo.evolucaoKm._model;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * Created on 2020-10-07
+ *
+ * @author Thais Francisco (https://github.com/thaisksf)
+ */
 public enum ProcessoEvolucaoKmEnum {
     MOVIMENTACAO("MOVIMENTACAO"),
     AFERICAO("AFERICAO"),

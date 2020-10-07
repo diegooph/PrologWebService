@@ -6,7 +6,6 @@ import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
 import br.com.zalf.prolog.webservice.frota.pneu.PneuDao;
-import br.com.zalf.prolog.webservice.frota.veiculo.historico.HistoricoEdicaoVeiculoConverter;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.EixoVeiculo;
@@ -23,11 +22,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.Optional;
 import java.util.*;
 
-import static br.com.zalf.prolog.webservice.frota.veiculo.VeiculoConverter.createVeiculoEvolucaoKm;
 
 public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 
@@ -596,45 +593,6 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
             }
         } finally {
             close(stmt, rSet);
-        }
-    }
-
-    @Override
-    @NotNull
-    public VeiculoEvolucaoKmResponse getVeiculoEvolucaoKm(@NotNull final Long codEmpresa,
-                                                          @NotNull final Long codVeiculo,
-                                                          @NotNull final LocalDate dataInicial,
-                                                          @NotNull final LocalDate dataFinal) throws Throwable {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("select * from func_veiculo_busca_evolucao_km_consolidado(" +
-                    "f_cod_empresa => ?," +
-                    "f_cod_veiculo => ?," +
-                    "f_data_inicial => ?," +
-                    "f_data_final => ? );");
-            stmt.setLong(1, codEmpresa);
-            stmt.setLong(2, codVeiculo);
-            stmt.setObject(3, dataInicial);
-            stmt.setObject(4, dataFinal);
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                final Long km_atual = rSet.getLong("km_atual");
-                final List<VeiculoEvolucaoKm> veiculoEvolucaoKms = new ArrayList<>();
-                do {
-                    veiculoEvolucaoKms.add(createVeiculoEvolucaoKm(rSet));
-                } while (rSet.next());
-                return new VeiculoEvolucaoKmResponse(
-                        km_atual,
-                        veiculoEvolucaoKms
-                );
-            } else {
-                throw new SQLException("Erro ao buscar evolução de KM.");
-            }
-        } finally {
-            close(conn, stmt, rSet);
         }
     }
 

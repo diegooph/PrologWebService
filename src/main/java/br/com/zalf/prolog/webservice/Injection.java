@@ -96,6 +96,8 @@ import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.veiculo.error.VeiculoExceptionHandler;
 import br.com.zalf.prolog.webservice.frota.veiculo.error.VeiculoSqlExceptionTranslator;
+import br.com.zalf.prolog.webservice.frota.veiculo.evolucaoKm.VeiculoEvolucaoKmDao;
+import br.com.zalf.prolog.webservice.frota.veiculo.evolucaoKm.VeiculoEvolucaoKmDaoImpl;
 import br.com.zalf.prolog.webservice.frota.veiculo.historico.HistoricoEdicaoVeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.historico.HistoricoEdicaoVeiculoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.veiculo.relatorio.VeiculoRelatorioDao;
@@ -686,4 +688,7 @@ public final class Injection {
         return new HistoricoEdicaoVeiculoDaoImpl();
     }
 
+    public static VeiculoEvolucaoKmDao provideVeiculoEvolucaoKmDao() {
+        return new VeiculoEvolucaoKmDaoImpl();
+    }
 }

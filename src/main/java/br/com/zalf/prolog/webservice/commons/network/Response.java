@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice.commons.network;
 
+import br.com.zalf.prolog.webservice.commons.report.CsvWriter;
+
 /**
  * Objeto utilizado pelo WS para dar feedback das requisições.
  */

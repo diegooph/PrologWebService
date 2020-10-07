@@ -3,8 +3,6 @@ package br.com.zalf.prolog.webservice.frota.veiculo;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
-import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.pneu.nomenclatura.PneuNomenclaturaService;
 import br.com.zalf.prolog.webservice.frota.veiculo.error.VeiculoValidator;
@@ -20,15 +18,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.time.LocalDate;
-import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-
-import static br.com.zalf.prolog.webservice.database.DatabaseConnection.getConnection;
-
 
 /**
  * Classe VeiculoService responsável por comunicar-se com a interface DAO
@@ -287,26 +279,6 @@ public final class VeiculoService {
                     "codUnidade: %d \n" +
                     "codModelo: %d", codUnidade, codModelo), e);
             return false;
-        }
-    }
-
-    @NotNull
-    public VeiculoEvolucaoKmResponse getVeiculoEvolucaoKm(@NotNull final Long codEmpresa,
-                                                        @NotNull final Long codVeiculo,
-                                                        @NotNull final String dataInicial,
-                                                        @NotNull final String dataFinal) throws ProLogException {
-        try {
-            return dao.getVeiculoEvolucaoKm(codEmpresa,
-                    codVeiculo,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal));
-        } catch (final Throwable e) {
-            Log.e(TAG,
-                    String.format("Erro a evolução de km do veículo de código %d, da empresa %d.", codVeiculo, codEmpresa),
-                    e);
-            throw Injection
-                    .provideProLogExceptionHandler()
-                    .map(e, "Erro ao buscar a evolução de km, tente novamente.");
         }
     }
 
