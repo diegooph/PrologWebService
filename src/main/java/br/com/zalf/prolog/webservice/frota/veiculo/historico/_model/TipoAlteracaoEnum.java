@@ -9,14 +9,62 @@ import org.jetbrains.annotations.Nullable;
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
 public enum TipoAlteracaoEnum {
-    IDENTIFICADOR_FROTA("IDENTIFICADOR_FROTA"),
-    KM_VEICULO("KM_VEICULO"),
-    STATUS_ATIVO("STATUS"),
-    DIGRAMA_VEICULO("DIAGRAMA_VEICULO"),
-    TIPO_VEICULO("TIPO_VEICULO"),
-    MODELO_VEICULO("MODELO_VEICULO"),
-    PLACA("PLACA"),
-    MARCA_VEICULO("MARCA_VEICULO");
+    IDENTIFICADOR_FROTA("IDENTIFICADOR_FROTA") {
+        @NotNull
+        @Override
+        public String getLegibleString() {
+            return "IDENTIFICADOR DE FROTA";
+        }
+    },
+    KM_VEICULO("KM_VEICULO") {
+        @NotNull
+        @Override
+        public String getLegibleString() {
+            return "KM DO VEICULO";
+        }
+    },
+    STATUS_ATIVO("STATUS") {
+        @NotNull
+        @Override
+        public String getLegibleString() {
+            return "STATUS DO VEICULO";
+        }
+    },
+    DIGRAMA_VEICULO("DIAGRAMA_VEICULO") {
+        @NotNull
+        @Override
+        public String getLegibleString() {
+            return "DIAGRAMA DO VEICULO";
+        }
+    },
+    TIPO_VEICULO("TIPO_VEICULO") {
+        @NotNull
+        @Override
+        public String getLegibleString() {
+            return "TIPO DO VEICULO";
+        }
+    },
+    MODELO_VEICULO("MODELO_VEICULO") {
+        @NotNull
+        @Override
+        public String getLegibleString() {
+            return "MODELO DO VEICULO";
+        }
+    },
+    PLACA("PLACA") {
+        @NotNull
+        @Override
+        public String getLegibleString() {
+            return "PLACA DO VEICULO";
+        }
+    },
+    MARCA_VEICULO("MARCA_VEICULO") {
+        @NotNull
+        @Override
+        public String getLegibleString() {
+            return "MARCA DO VEICULO";
+        }
+    };
 
     @NotNull
     private final String stringRepresentation;
@@ -36,6 +84,9 @@ public enum TipoAlteracaoEnum {
         }
         throw new IllegalArgumentException("Nenhum tipo de alteração encontrado para a String: " + text);
     }
+
+    @NotNull
+    public abstract String getLegibleString();
 
     @Override
     public String toString() {
