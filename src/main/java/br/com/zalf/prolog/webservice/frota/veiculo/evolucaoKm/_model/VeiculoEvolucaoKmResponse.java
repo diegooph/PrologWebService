@@ -10,7 +10,7 @@ import java.util.List;
  * @author Thais Francisco (https://github.com/thaisksf)
  */
 @Data
-public class VeiculoEvolucaoKmResponse {
+public final class VeiculoEvolucaoKmResponse {
     @NotNull
     private final Long kmAtual;
     @NotNull

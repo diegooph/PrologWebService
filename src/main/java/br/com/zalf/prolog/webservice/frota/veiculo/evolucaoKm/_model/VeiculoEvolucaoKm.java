@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 import java.time.LocalDateTime;
 
 @Data
-public class VeiculoEvolucaoKm {
+public final class VeiculoEvolucaoKm {
     @NotNull
     private final ProcessoEvolucaoKmEnum processo;
     @NotNull
