@@ -61,6 +61,7 @@ public interface VeiculoRelatorioDao {
      * @param codEmpresa Código da empresa para a qual as informações serão filtradas.
      * @param codVeiculo Código do veículo para o qual as informações serão filtradas.
      * @throws Throwable Se algum erro ocorrer.
+     * @return Um objeto {@link Report report} contendo as informações filtradas.
      */
     @NotNull
     Report getEvolucaoKmReport(@NotNull final Long codEmpresa,
