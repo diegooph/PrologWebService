@@ -38,4 +38,22 @@ public final class AfericaoExportacao {
     private final Double alturaSulcoCentralInterno;
     @Nullable
     private final Double alturaSulcoExterno;
+
+    @Override
+    public String toString() {
+        return "AfericaoExportacao{" +
+                "cabecalhoLinhaUm='" + cabecalhoLinhaUm + '\'' +
+                ", placaVeiculo='" + placaVeiculo + '\'' +
+                ", dataAfericao=" + dataAfericao +
+                ", horaAfericao=" + horaAfericao +
+                ", cabecalhoLinhaDois='" + cabecalhoLinhaDois + '\'' +
+                ", codClientePneu='" + codClientePneu + '\'' +
+                ", nomenclaturaPosicao='" + nomenclaturaPosicao + '\'' +
+                ", calibragemAferida=" + calibragemAferida +
+                ", calibragemRealizada=" + calibragemRealizada +
+                ", alturaSulcoInterno=" + alturaSulcoInterno +
+                ", alturaSulcoCentralInterno=" + alturaSulcoCentralInterno +
+                ", alturaSulcoExterno=" + alturaSulcoExterno +
+                '}';
+    }
 }
