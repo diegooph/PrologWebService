@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.frota.checklist.OLD;
 
-
 import br.com.zalf.prolog.webservice.frota.checklist.model.ChecklistListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
 import br.com.zalf.prolog.webservice.frota.checklist.model.TipoChecklist;
@@ -36,6 +35,8 @@ public class Checklist {
      */
     private char tipo;
     private long kmAtualVeiculo;
+    @Nullable
+    private String observacao;
     private long tempoRealizacaoCheckInMillis;
     private int qtdItensOk;
     private int qtdItensNok;
@@ -190,6 +191,15 @@ public class Checklist {
 
     public void setKmAtualVeiculo(final long kmAtualVeiculo) {
         this.kmAtualVeiculo = kmAtualVeiculo;
+    }
+
+    @Nullable
+    public String getObservacao() {
+        return observacao;
+    }
+
+    public void setObservacao(@Nullable final String observacao) {
+        this.observacao = observacao;
     }
 
     public int getQtdItensOk() {

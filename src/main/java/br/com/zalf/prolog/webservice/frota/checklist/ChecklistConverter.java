@@ -64,6 +64,7 @@ public final class ChecklistConverter {
         checklist.setPlacaVeiculo(rSet.getString("PLACA_VEICULO"));
         checklist.setTipo(rSet.getString("TIPO_CHECKLIST").charAt(0));
         checklist.setKmAtualVeiculo(rSet.getLong("KM_VEICULO_MOMENTO_REALIZACAO"));
+        checklist.setObservacao(rSet.getString("OBSERVACAO"));
         checklist.setTempoRealizacaoCheckInMillis(rSet.getLong("DURACAO_REALIZACAO_MILLIS"));
         if (setTotalItensOkNok) {
             checklist.setQtdItensOk(rSet.getInt("TOTAL_ITENS_OK"));

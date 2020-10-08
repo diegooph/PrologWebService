@@ -10,6 +10,9 @@ Change Log
 * Cria busca de evolução de km (PL-3171)
 * Cria relatorio evolução de km (PL-3172)
 
+### Refactor
+* Altera inserção de checklist para aceitar observação (PL-3163)
+* Insere observação na busca de um checklist (PL-3164)
 
 <a name="v1.2.1"></a>
 ## Version [v1.2.1](https://github.com/luizfp/PrologWebService/compare/v1.2.0...v1.2.1) (2020-10-04)

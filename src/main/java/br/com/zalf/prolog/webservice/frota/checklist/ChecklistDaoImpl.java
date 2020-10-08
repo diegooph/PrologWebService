@@ -17,8 +17,8 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarol
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistAlternativaResposta;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistResposta;
-import br.com.zalf.prolog.webservice.frota.checklist.mudancaestrutura.ChecklistMigracaoEstruturaSuporte;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.InfosChecklistInserido;
+import br.com.zalf.prolog.webservice.frota.checklist.mudancaestrutura.ChecklistMigracaoEstruturaSuporte;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -526,30 +526,31 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
 
             stmt = conn.prepareStatement("SELECT * " +
                     "FROM FUNC_CHECKLIST_INSERT_CHECKLIST_INFOS(" +
-                    "F_COD_UNIDADE_CHECKLIST                   := ?," +
-                    "F_COD_MODELO_CHECKLIST                    := ?," +
-                    "F_COD_VERSAO_MODELO_CHECKLIST             := ?," +
-                    "F_DATA_HORA_REALIZACAO                    := ?," +
-                    "F_COD_COLABORADOR                         := ?," +
-                    "F_COD_VEICULO                             := ?," +
-                    "F_TIPO_CHECKLIST                          := ?," +
-                    "F_KM_COLETADO                             := ?," +
-                    "F_TEMPO_REALIZACAO                        := ?," +
-                    "F_DATA_HORA_SINCRONIZACAO                 := ?," +
-                    "F_FONTE_DATA_HORA_REALIZACAO              := ?," +
-                    "F_VERSAO_APP_MOMENTO_REALIZACAO           := ?," +
-                    "F_VERSAO_APP_MOMENTO_SINCRONIZACAO        := ?," +
-                    "F_DEVICE_ID                               := ?," +
-                    "F_DEVICE_IMEI                             := ?," +
-                    "F_DEVICE_UPTIME_REALIZACAO_MILLIS         := ?," +
-                    "F_DEVICE_UPTIME_SINCRONIZACAO_MILLIS      := ?," +
-                    "F_FOI_OFFLINE                             := ?," +
-                    "F_TOTAL_PERGUNTAS_OK                      := ?," +
-                    "F_TOTAL_PERGUNTAS_NOK                     := ?," +
-                    "F_TOTAL_ALTERNATIVAS_OK                   := ?," +
-                    "F_TOTAL_ALTERNATIVAS_NOK                  := ?," +
-                    "F_TOTAL_MIDIAS_PERGUNTAS_OK               := ?," +
-                    "F_TOTAL_MIDIAS_ALTERNATIVAS_NOK           := ?) " +
+                    "F_COD_UNIDADE_CHECKLIST                   => ?," +
+                    "F_COD_MODELO_CHECKLIST                    => ?," +
+                    "F_COD_VERSAO_MODELO_CHECKLIST             => ?," +
+                    "F_DATA_HORA_REALIZACAO                    => ?," +
+                    "F_COD_COLABORADOR                         => ?," +
+                    "F_COD_VEICULO                             => ?," +
+                    "F_TIPO_CHECKLIST                          => ?," +
+                    "F_KM_COLETADO                             => ?," +
+                    "F_OBSERVACAO                              => ?," +
+                    "F_TEMPO_REALIZACAO                        => ?," +
+                    "F_DATA_HORA_SINCRONIZACAO                 => ?," +
+                    "F_FONTE_DATA_HORA_REALIZACAO              => ?," +
+                    "F_VERSAO_APP_MOMENTO_REALIZACAO           => ?," +
+                    "F_VERSAO_APP_MOMENTO_SINCRONIZACAO        => ?," +
+                    "F_DEVICE_ID                               => ?," +
+                    "F_DEVICE_IMEI                             => ?," +
+                    "F_DEVICE_UPTIME_REALIZACAO_MILLIS         => ?," +
+                    "F_DEVICE_UPTIME_SINCRONIZACAO_MILLIS      => ?," +
+                    "F_FOI_OFFLINE                             => ?," +
+                    "F_TOTAL_PERGUNTAS_OK                      => ?," +
+                    "F_TOTAL_PERGUNTAS_NOK                     => ?," +
+                    "F_TOTAL_ALTERNATIVAS_OK                   => ?," +
+                    "F_TOTAL_ALTERNATIVAS_NOK                  => ?," +
+                    "F_TOTAL_MIDIAS_PERGUNTAS_OK               => ?," +
+                    "F_TOTAL_MIDIAS_ALTERNATIVAS_NOK           => ?) " +
                     "AS CODIGO;");
             final ZoneId zoneId = TimeZoneManager.getZoneIdForCodUnidade(checklist.getCodUnidade(), conn);
             stmt.setLong(1, checklist.getCodUnidade());
@@ -566,22 +567,23 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
             stmt.setLong(6, checklist.getCodVeiculo());
             stmt.setString(7, String.valueOf(checklist.getTipo().asChar()));
             stmt.setLong(8, checklist.getKmColetadoVeiculo());
-            stmt.setLong(9, checklist.getTempoRealizacaoCheckInMillis());
-            stmt.setObject(10, Now.offsetDateTimeUtc());
-            stmt.setString(11, checklist.getFonteDataHoraRealizacao().asString());
-            stmt.setInt(12, checklist.getVersaoAppMomentoRealizacao());
-            stmt.setInt(13, checklist.getVersaoAppMomentoSincronizacao());
-            stmt.setString(14, checklist.getDeviceId());
-            stmt.setString(15, checklist.getDeviceImei());
-            stmt.setLong(16, checklist.getDeviceUptimeRealizacaoMillis());
-            stmt.setLong(17, checklist.getDeviceUptimeSincronizacaoMillis());
-            stmt.setBoolean(18, foiOffline);
-            stmt.setInt(19, checklist.getQtdPerguntasOk());
-            stmt.setInt(20, checklist.getQtdPerguntasNok());
-            stmt.setInt(21, checklist.getQtdAlternativasOk());
-            stmt.setInt(22, checklist.getQtdAlternativasNok());
-            stmt.setInt(23, checklist.getQtdMidiasPerguntasOk());
-            stmt.setInt(24, checklist.getQtdMidiasAlternativasNok());
+            stmt.setString(9, StringUtils.trimToNull(checklist.getObservacao()));
+            stmt.setLong(10, checklist.getTempoRealizacaoCheckInMillis());
+            stmt.setObject(11, Now.offsetDateTimeUtc());
+            stmt.setString(12, checklist.getFonteDataHoraRealizacao().asString());
+            stmt.setInt(13, checklist.getVersaoAppMomentoRealizacao());
+            stmt.setInt(14, checklist.getVersaoAppMomentoSincronizacao());
+            stmt.setString(15, checklist.getDeviceId());
+            stmt.setString(16, checklist.getDeviceImei());
+            stmt.setLong(17, checklist.getDeviceUptimeRealizacaoMillis());
+            stmt.setLong(18, checklist.getDeviceUptimeSincronizacaoMillis());
+            stmt.setBoolean(19, foiOffline);
+            stmt.setInt(20, checklist.getQtdPerguntasOk());
+            stmt.setInt(21, checklist.getQtdPerguntasNok());
+            stmt.setInt(22, checklist.getQtdAlternativasOk());
+            stmt.setInt(23, checklist.getQtdAlternativasNok());
+            stmt.setInt(24, checklist.getQtdMidiasPerguntasOk());
+            stmt.setInt(25, checklist.getQtdMidiasAlternativasNok());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 final Long codChecklistInserido = rSet.getLong("COD_CHECKLIST_INSERIDO");

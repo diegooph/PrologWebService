@@ -161,6 +161,7 @@ public class ChecklistOfflineTest extends BaseTest {
                 "PRO0001",
                 TipoChecklist.SAIDA,
                 0,
+                "uma observacao",
                 10000,
                 createRespostas(),
                 ProLogDateParser.toLocalDateTime("2019-03-30T00:26:10"),
