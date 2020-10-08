@@ -1,11 +1,8 @@
-package br.com.zalf.prolog.webservice.frota.pneu.afericao._model;
+package br.com.zalf.prolog.webservice.frota.pneu.afericao.relatorios._model;
 
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.time.LocalDate;
-import java.time.LocalTime;
 
 /**
  * Created on 2020-10-08
@@ -13,15 +10,7 @@ import java.time.LocalTime;
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
 @Data
-public final class AfericaoExportacaoProtheus {
-    @NotNull
-    private final String cabecalhoLinhaUm;
-    @NotNull
-    private final String placaVeiculo;
-    @NotNull
-    private final LocalDate dataAfericao;
-    @NotNull
-    private final LocalTime horaAfericao;
+public final class AfericaoExportacaoProtheusInfosPneu {
     @NotNull
     private final String cabecalhoLinhaDois;
     @NotNull
@@ -41,12 +30,8 @@ public final class AfericaoExportacaoProtheus {
 
     @Override
     public String toString() {
-        return "AfericaoExportacaoProtheus{" +
-                "cabecalhoLinhaUm='" + cabecalhoLinhaUm + '\'' +
-                ", placaVeiculo='" + placaVeiculo + '\'' +
-                ", dataAfericao=" + dataAfericao +
-                ", horaAfericao=" + horaAfericao +
-                ", cabecalhoLinhaDois='" + cabecalhoLinhaDois + '\'' +
+        return "AfericaoExportacaoProtheusInfosPneu{" +
+                "cabecalhoLinhaDois='" + cabecalhoLinhaDois + '\'' +
                 ", codClientePneu='" + codClientePneu + '\'' +
                 ", nomenclaturaPosicao='" + nomenclaturaPosicao + '\'' +
                 ", calibragemAferida=" + calibragemAferida +
