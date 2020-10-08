@@ -1,7 +1,8 @@
 Change Log
 ==========
 ## Stage
-
+### Features
+* Permite a exportação de aferições no padrão Protheus para importação no sistema terceiro (PL-3182)
 
 <a name="v1.2.2"></a>
 ## Version [v1.2.2](https://github.com/luizfp/PrologWebService/compare/v1.2.1...v1.2.2) (reselase-date) [unreleased]
