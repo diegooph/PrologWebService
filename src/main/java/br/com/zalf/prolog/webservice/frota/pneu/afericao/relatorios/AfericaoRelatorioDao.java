@@ -78,8 +78,8 @@ public interface AfericaoRelatorioDao {
      * @throws Throwable se qualquer erro ocorrer.
      */
     @NotNull
-    AfericaoExportacaoProtheus getExportacaoAfericoesProtheus(@NotNull final List<Long> codUnidades,
-                                                              @NotNull final List<Long> codVeiculos,
-                                                              @Nullable final LocalDate dataInicial,
-                                                              @Nullable final LocalDate dataFinal) throws Throwable;
+    List<AfericaoExportacaoProtheus> getExportacaoAfericoesProtheus(@NotNull final List<Long> codUnidades,
+                                                                    @NotNull final List<Long> codVeiculos,
+                                                                    @Nullable final LocalDate dataInicial,
+                                                                    @Nullable final LocalDate dataFinal) throws Throwable;
 }
