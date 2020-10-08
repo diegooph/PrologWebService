@@ -3,9 +3,6 @@ package br.com.zalf.prolog.webservice.frota.pneu.afericao.relatorios._model;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-
 /**
  * Created on 2020-10-08
  *
@@ -18,7 +15,7 @@ public final class AfericaoExportacaoProtheusInfosVeiculo {
     @NotNull
     private final String placaVeiculo;
     @NotNull
-    private final LocalDate dataAfericao;
+    private final String dataAfericao;
     @NotNull
-    private final LocalTime horaAfericao;
+    private final String horaAfericao;
 }
