@@ -5,32 +5,16 @@
         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
         id="WebApp_ID"
         version="3.0">
-    <listener>
-        <listener-class>br.com.zalf.prolog.webservice.database.DataSourceLifecycleManager</listener-class>
-    </listener>
-    <listener>
-        <listener-class>br.com.zalf.prolog.webservice.messaging.push.FirebaseLifecycleManager</listener-class>
-    </listener>
-    <listener>
-        <listener-class>br.com.zalf.prolog.webservice.config.ProLogConsoleTextMaker</listener-class>
-    </listener>
     <display-name>ProLog</display-name>
-    <servlet>
-        <servlet-name>Jersey REST Service</servlet-name>
-        <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
-        <init-param>
-            <param-name>javax.ws.rs.Application</param-name>
-            <param-value>br.com.zalf.prolog.webservice.config.ProLogApplication</param-value>
-        </init-param>
-        <init-param>
-            <param-name>jersey.config.server.provider.classnames</param-name>
-            <param-value>br.com.zalf.prolog.webservice.config.ProLogApplicationEventListener</param-value>
-        </init-param>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>Jersey REST Service</servlet-name>
-        <url-pattern>/*</url-pattern>
-    </servlet-mapping>
+    <!-- Configurações do servlet não são necessárias no Spring boot -->
+    <!--    <servlet>-->
+    <!--        <servlet-name>Jersey REST Service</servlet-name>-->
+    <!--        <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>-->
+    <!--    </servlet>-->
+    <!--    <servlet-mapping>-->
+    <!--        <servlet-name>Jersey REST Service</servlet-name>-->
+    <!--        <url-pattern>/*</url-pattern>-->
+    <!--    </servlet-mapping>-->
     <welcome-file-list>
         <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>

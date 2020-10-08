@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.frota.veiculo.relatorio;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import org.jetbrains.annotations.NotNull;
 
@@ -35,6 +36,30 @@ public class VeiculoRelatorioService {
             return dao.getListagemVeiculosByUnidadeReport(codUnidades);
         } catch (final Throwable throwable) {
             Log.e(TAG, "Erro ao gerar relatório de listagem de veiculos (REPORT)", throwable);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(throwable, "Erro ao gerar relatório, tente novamente");
+        }
+    }
+
+    void getEvolucaoKmCsv(final OutputStream out,
+                          final Long codEmpresa,
+                          final Long codVeiculo) {
+        try {
+            dao.getEvolucaoKmCsv(out, codEmpresa, codVeiculo);
+        } catch (final Throwable throwable) {
+            Log.e(TAG, "Erro ao gerar relatório de evolução de KM (CSV)", throwable);
+            throw new RuntimeException(throwable);
+        }
+    }
+
+    @NotNull
+    Report getEvolucaoKmReport(final Long codEmpresa,
+                               final Long codVeiculo) throws ProLogException {
+        try {
+            return dao.getEvolucaoKmReport(codEmpresa, codVeiculo);
+        } catch (final Throwable throwable) {
+            Log.e(TAG, "Erro ao gerar relatório de evolução de KM (REPORT)", throwable);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(throwable, "Erro ao gerar relatório, tente novamente");

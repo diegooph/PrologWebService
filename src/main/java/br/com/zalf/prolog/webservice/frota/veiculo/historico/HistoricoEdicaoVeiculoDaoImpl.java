@@ -20,7 +20,6 @@ import static br.com.zalf.prolog.webservice.frota.veiculo.historico.HistoricoEdi
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
 public final class HistoricoEdicaoVeiculoDaoImpl extends DatabaseConnection implements HistoricoEdicaoVeiculoDao {
-
     @Override
     @NotNull
     public List<HistoricoEdicaoVeiculo> getHistoricoEdicaoVeiculo(@NotNull final Long codEmpresa,
@@ -31,13 +30,13 @@ public final class HistoricoEdicaoVeiculoDaoImpl extends DatabaseConnection impl
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("select * from func_veiculo_listagem_historico_edicoes(" +
-                    "F_COD_EMPRESA => ?," +
-                    "F_COD_VEICULO => ?);");
+                    "f_cod_empresa => ?," +
+                    "f_cod_veiculo => ?);");
             stmt.setLong(1, codEmpresa);
             stmt.setLong(2, codVeiculo);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                final List<HistoricoEdicaoVeiculo> historicoEdicaoVeiculo = new ArrayList<>();
+                final List<HistoricoEdicaoVeiculo> historicoEdicoesVeiculo = new ArrayList<>();
                 // Ordenamos o select em ordem descrescente. Por conta disso, os resultados acima são sempre os mais
                 // novos e os resultados abaixo os mais antigos. Dessa forma, a primeira linha do resultSet vai ser
                 // sempre o veículo atualmente (ou o último estado dele antes de deixar de pertencer a empresa)
@@ -48,12 +47,11 @@ public final class HistoricoEdicaoVeiculoDaoImpl extends DatabaseConnection impl
                 EstadoVeiculo estadoNovo = createEstadoVeiculo(rSet);
                 while (rSet.next()) {
                     final EstadoVeiculo estadoAntigo = createEstadoVeiculo(rSet);
-                    historicoEdicaoVeiculo.add(
+                    historicoEdicoesVeiculo.add(
                             HistoricoEdicaoVeiculoConverter.createHistoricoEdicaoVeiculo(estadoAntigo, estadoNovo));
                     estadoNovo = estadoAntigo;
                 }
-
-                return historicoEdicaoVeiculo;
+                return historicoEdicoesVeiculo;
             } else {
                 return Collections.emptyList();
             }

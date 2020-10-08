@@ -41,4 +41,23 @@ public class VeiculoRelatorioResource {
         return new VeiculoRelatorioService()
                 .getListagemVeiculosByUnidadeReport(codUnidades);
     }
+
+    @GET
+    @Path("/evolucao-km/csv")
+    @Produces("application/csv")
+    public StreamingOutput getEvolucaoKmCsv(
+            @QueryParam("codEmpresa") @Required final Long codEmpresa,
+            @QueryParam("codVeiculo") @Required final Long codVeiculo){
+        return outputStream -> new VeiculoRelatorioService()
+                .getEvolucaoKmCsv(outputStream, codEmpresa, codVeiculo);
+    }
+
+    @GET
+    @Path("/evolucao-km/report")
+    public Report getEvolucaoKmReport(
+            @QueryParam("codEmpresa") @Required final Long codEmpresa,
+            @QueryParam("codVeiculo") @Required final Long codVeiculo) throws ProLogException {
+        return new VeiculoRelatorioService()
+                .getEvolucaoKmReport(codEmpresa, codVeiculo);
+    }
 }

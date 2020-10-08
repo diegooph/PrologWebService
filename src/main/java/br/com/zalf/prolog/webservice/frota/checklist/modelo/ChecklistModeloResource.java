@@ -17,6 +17,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.realizacao.Mod
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.visualizacao.ModeloChecklistVisualizacao;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
+import br.com.zalf.prolog.webservice.interceptors.log.LogBody;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import com.google.common.base.Preconditions;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
@@ -37,6 +38,7 @@ public final class ChecklistModeloResource {
     private final ChecklistModeloService service = new ChecklistModeloService();
 
     @POST
+    @LogBody
     @UsedBy(platforms = Platform.WEBSITE)
     @Secured(permissions = {Pilares.Frota.Checklist.Modelo.ALTERAR, Pilares.Frota.Checklist.Modelo.CADASTRAR})
     public ResponseInsertModeloChecklist insertModeloChecklist(
@@ -47,6 +49,7 @@ public final class ChecklistModeloResource {
     }
 
     @PUT
+    @LogBody
     @UsedBy(platforms = Platform.WEBSITE)
     @Secured(permissions = {
             Pilares.Frota.Checklist.Modelo.VISUALIZAR,
