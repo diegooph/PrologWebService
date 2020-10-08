@@ -56,7 +56,7 @@ public final class AfericaoRelatorioConverter {
                 rSet.getString("cabecalho_linha_um"),
                 rSet.getString("placa"),
                 DateTimeFormatter.ofPattern("dd/MM/yyyy").format(rSet.getObject("data", LocalDate.class)),
-                DateTimeFormatter.ofPattern("hh:mm").format(rSet.getObject("hora", LocalTime.class))
+                DateTimeFormatter.ofPattern("HH:mm").format(rSet.getObject("hora", LocalTime.class))
         );
     }
 
