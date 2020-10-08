@@ -21,14 +21,4 @@ public final class AfericaoExportacaoProtheusInfosVeiculo {
     private final LocalDate dataAfericao;
     @NotNull
     private final LocalTime horaAfericao;
-
-    @Override
-    public String toString() {
-        return "AfericaoExportacaoProtheusInfosVeiculo{" +
-                "cabecalhoLinhaUm='" + cabecalhoLinhaUm + '\'' +
-                ", placaVeiculo='" + placaVeiculo + '\'' +
-                ", dataAfericao=" + dataAfericao +
-                ", horaAfericao=" + horaAfericao +
-                '}';
-    }
 }

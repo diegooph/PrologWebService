@@ -27,18 +27,4 @@ public final class AfericaoExportacaoProtheusInfosPneu {
     private final Double alturaSulcoCentralInterno;
     @Nullable
     private final Double alturaSulcoExterno;
-
-    @Override
-    public String toString() {
-        return "AfericaoExportacaoProtheusInfosPneu{" +
-                "cabecalhoLinhaDois='" + cabecalhoLinhaDois + '\'' +
-                ", codClientePneu='" + codClientePneu + '\'' +
-                ", nomenclaturaPosicao='" + nomenclaturaPosicao + '\'' +
-                ", calibragemAferida=" + calibragemAferida +
-                ", calibragemRealizada=" + calibragemRealizada +
-                ", alturaSulcoInterno=" + alturaSulcoInterno +
-                ", alturaSulcoCentralInterno=" + alturaSulcoCentralInterno +
-                ", alturaSulcoExterno=" + alturaSulcoExterno +
-                '}';
-    }
 }
