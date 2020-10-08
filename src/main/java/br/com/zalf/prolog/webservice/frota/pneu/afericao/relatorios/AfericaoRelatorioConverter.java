@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import java.sql.ResultSet;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Created on 2020-10-08
@@ -28,8 +29,8 @@ public final class AfericaoRelatorioConverter {
         return new AfericaoExportacaoProtheusInfosVeiculo(
                 rSet.getString("cabecalho_linha_um"),
                 rSet.getString("placa"),
-                rSet.getObject("data", LocalDate.class),
-                rSet.getObject("hora", LocalTime.class)
+                DateTimeFormatter.ofPattern("dd/MM/yyyy").format(rSet.getObject("data", LocalDate.class)),
+                DateTimeFormatter.ofPattern("hh:mm:ss").format(rSet.getObject("hora", LocalTime.class))
         );
     }
 
@@ -37,7 +38,7 @@ public final class AfericaoRelatorioConverter {
             @NotNull final ResultSet rSet) throws Throwable {
         return new AfericaoExportacaoProtheusInfosPneu(
                 rSet.getString("cabecalho_linha_dois"),
-                rSet.getString("cod_cliente_pneu"),
+                rSet.getString("codigo_cliente_pneu"),
                 rSet.getString("nomenclatura_posicao"),
                 rSet.getDouble("calibragem_aferida"),
                 rSet.getDouble("calibragem_realizada"),
