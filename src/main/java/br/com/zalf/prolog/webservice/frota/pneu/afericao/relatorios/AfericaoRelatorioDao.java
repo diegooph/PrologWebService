@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.pneu.afericao.relatorios;
 
 import br.com.zalf.prolog.webservice.commons.report.Report;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.AfericaoExportacaoProtheus;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.relatorios._model.AfericaoExportacaoProtheus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
