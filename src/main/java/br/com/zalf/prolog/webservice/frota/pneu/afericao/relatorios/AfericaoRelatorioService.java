@@ -5,9 +5,12 @@ import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.relatorios._model.AfericaoExportacaoProtheus;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.OutputStream;
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -18,7 +21,7 @@ import java.util.List;
 public class AfericaoRelatorioService {
     private static final String TAG = AfericaoRelatorioService.class.getSimpleName();
     @NotNull
-    private AfericaoRelatorioDao dao = Injection.provideAfericaoRelatorioDao();
+    private final AfericaoRelatorioDao dao = Injection.provideAfericaoRelatorioDao();
 
     public void getCronogramaAfericoesPlacasCsv(@NotNull final OutputStream out,
                                                 @NotNull final List<Long> codUnidades,
@@ -75,6 +78,22 @@ public class AfericaoRelatorioService {
                     ProLogDateParser.toLocalDate(dataFinal));
         } catch (final Throwable throwable) {
             Log.e(TAG, "Erro ao gerar relatório de dados gerais das aferições (REPORT)", throwable);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(throwable, "Erro ao gerar relatório, tente novamente");
+        }
+    }
+
+    @NotNull
+    public List<AfericaoExportacaoProtheus> getExportacaoAfericoesProtheus(
+            @NotNull final List<Long> codUnidades,
+            @NotNull final List<Long> codVeiculos,
+            @Nullable final LocalDate dataInicial,
+            @Nullable final LocalDate dataFinal) throws ProLogException {
+        try {
+            return dao.getExportacaoAfericoesProtheus(codUnidades, codVeiculos, dataInicial, dataFinal);
+        } catch (final Throwable throwable) {
+            Log.e(TAG, "Erro ao gerar relatório de exportação de aferições no padrão Protheus", throwable);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(throwable, "Erro ao gerar relatório, tente novamente");
