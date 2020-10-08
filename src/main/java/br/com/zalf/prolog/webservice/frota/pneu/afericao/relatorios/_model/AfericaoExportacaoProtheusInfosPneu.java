@@ -15,7 +15,7 @@ public final class AfericaoExportacaoProtheusInfosPneu {
     private final String cabecalhoLinhaDois;
     @NotNull
     private final String codClientePneu;
-    @Nullable
+    @NotNull
     private final String nomenclaturaPosicao;
     @Nullable
     private final Double calibragemAferida;
