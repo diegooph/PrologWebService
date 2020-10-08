@@ -13,7 +13,7 @@ import java.time.LocalTime;
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
 @Data
-public final class AfericaoExportacao {
+public final class AfericaoExportacaoProtheus {
     @NotNull
     private final String cabecalhoLinhaUm;
     @NotNull
@@ -41,7 +41,7 @@ public final class AfericaoExportacao {
 
     @Override
     public String toString() {
-        return "AfericaoExportacao{" +
+        return "AfericaoExportacaoProtheus{" +
                 "cabecalhoLinhaUm='" + cabecalhoLinhaUm + '\'' +
                 ", placaVeiculo='" + placaVeiculo + '\'' +
                 ", dataAfericao=" + dataAfericao +
