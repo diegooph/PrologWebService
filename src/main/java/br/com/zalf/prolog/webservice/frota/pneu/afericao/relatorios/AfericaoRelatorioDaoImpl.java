@@ -19,7 +19,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Types;
 import java.time.*;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -138,11 +137,7 @@ public class AfericaoRelatorioDaoImpl extends DatabaseConnection implements Afer
             }
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                final List<AfericaoExportacaoProtheus> afericoesExportacaoProtheus = new ArrayList<>();
-                do {
-                    afericoesExportacaoProtheus.add(createAfericaoExportacaoProtheus(rSet));
-                } while (rSet.next());
-                return afericoesExportacaoProtheus;
+                return createAfericaoExportacaoProtheus(rSet);
             } else {
                 return Collections.emptyList();
             }
