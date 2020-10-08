@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.afericao.relatorios;
 
+import br.com.zalf.prolog.webservice.commons.util.NullIf;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.relatorios._model.AfericaoExportacaoProtheus;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.relatorios._model.AfericaoExportacaoProtheusInfosPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.relatorios._model.AfericaoExportacaoProtheusInfosVeiculo;
@@ -40,11 +41,11 @@ public final class AfericaoRelatorioConverter {
                 rSet.getString("cabecalho_linha_dois"),
                 rSet.getString("codigo_cliente_pneu"),
                 rSet.getString("nomenclatura_posicao"),
-                rSet.getDouble("calibragem_aferida"),
-                rSet.getDouble("calibragem_realizada"),
-                rSet.getDouble("sulco_interno"),
-                rSet.getDouble("sulco_central_interno"),
-                rSet.getDouble("sulco_externo")
+                NullIf.equalOrLess(rSet.getDouble("calibragem_aferida"), 0.00),
+                NullIf.equalOrLess(rSet.getDouble("calibragem_realizada"), 0.00),
+                NullIf.equalOrLess(rSet.getDouble("sulco_interno"), 0.00),
+                NullIf.equalOrLess(rSet.getDouble("sulco_central_interno"), 0.00),
+                NullIf.equalOrLess(rSet.getDouble("sulco_externo"), 0.00)
         );
     }
 }
