@@ -10,7 +10,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.OutputStream;
-import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -88,10 +87,18 @@ public class AfericaoRelatorioService {
     public List<AfericaoExportacaoProtheus> getExportacaoAfericoesProtheus(
             @NotNull final List<Long> codUnidades,
             @NotNull final List<Long> codVeiculos,
-            @Nullable final LocalDate dataInicial,
-            @Nullable final LocalDate dataFinal) throws ProLogException {
+            @Nullable final String dataInicial,
+            @Nullable final String dataFinal) throws ProLogException {
         try {
-            return dao.getExportacaoAfericoesProtheus(codUnidades, codVeiculos, dataInicial, dataFinal);
+            return dao.getExportacaoAfericoesProtheus(
+                    codUnidades,
+                    codVeiculos,
+                    dataInicial == null
+                            ? null
+                            : ProLogDateParser.toLocalDate(dataInicial),
+                    dataFinal == null
+                            ? null
+                            : ProLogDateParser.toLocalDate(dataFinal));
         } catch (final Throwable throwable) {
             Log.e(TAG, "Erro ao gerar relatório de exportação de aferições no padrão Protheus", throwable);
             throw Injection
