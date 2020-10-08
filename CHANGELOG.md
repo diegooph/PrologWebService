@@ -1,19 +1,24 @@
 Change Log
 ==========
 ## Stage
-### Features
-* Cria endpoint para buscar histórico de edições em csv (PL-3153)
+
+<a name="v1.2.2"></a>
+## Version [v1.2.2](https://github.com/luizfp/PrologWebService/compare/v1.2.1...v1.2.2) (reselase-date) [unreleased]
 
 <a name="v1.2.1"></a>
-## Version [v1.2.1](https://github.com/luizfp/PrologWebService/compare/v1.2.0...v1.2.1) (release-date) [unreleased]
+## Version [v1.2.1](https://github.com/luizfp/PrologWebService/compare/v1.2.0...v1.2.1) (2020-10-04)
+### Features
+* Cria endpoint para buscar histórico de edições em csv (PL-3153)
 
 ### Refactor
 * Salva código de veículo em tabelas (PL-3170)
 * Altera insert/update de modelo de checklist para salvar JSON recebido (PS-1261)
 * Adiciona identificador de frota em relatório integrado de aferição (PL-3130)
+* Adiciona Spring Boot na estrutura do Prolog (PL-3159)
 
 ### Bug Fixes
 * Corrige problema para realizar o upload de PDF de treinamento (PS-1257)
+* Corrige relatório de km rodado por pneu para preencher as vidas nas colunas certas e trazer a primeira vida (PL-3156)
 
 <a name="v1.2.0"></a>
 ## Version [v1.2.0](https://github.com/luizfp/PrologWebService/compare/v1.1.4...v1.2.0) (2020-09-23)
@@ -33,7 +38,6 @@ Change Log
 * Corrige validação de DOT para deixar passar valores nulos ou vazios
 * Corrige uso das Daos em integrações (PL-3136)
 * Corrige bug em deleção de serviços e OSs ao transferir pneus (PL-2661)
-* Corrige relatório de km rodado por pneu para preencher as vidas nas colunas certas e trazer a primeira vida (PL-3156)
 
 <a name="v1.1.4"></a>
 ## Version [v1.1.4](https://github.com/luizfp/PrologWebService/compare/v1.1.3...v1.1.4) (2020-09-07)

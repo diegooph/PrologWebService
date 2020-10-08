@@ -1,0 +1,16 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /prolog/v2
+
+spring:
+  main:
+    banner-mode: off
+  datasource:
+    platform: postgres
+    driver-class-name: org.postgresql.Driver
+
+logging:
+  level:
+    org:
+      springframework: error

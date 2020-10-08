@@ -1122,7 +1122,10 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
                                                            @NotNull final LocalDate dataInicial,
                                                            @NotNull final LocalDate dataFinal) throws SQLException {
         final PreparedStatement stmt = conn.prepareStatement(
-                "SELECT * FROM func_relatorio_pneus_descartados(?,?,?);");
+                "select * from func_pneu_relatorio_pneus_descartados(" +
+                        "f_cod_unidades => ?, " +
+                        "f_data_inicial => ?, " +
+                        "f_data_final => ?);");
         stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.TEXT, codUnidades));
         stmt.setObject(2, dataInicial);
         stmt.setObject(3, dataFinal);
