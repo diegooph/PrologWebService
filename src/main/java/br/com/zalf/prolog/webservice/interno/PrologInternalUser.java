@@ -22,6 +22,4 @@ public final class PrologInternalUser {
     private final String encryptedPassword;
     @NotNull
     private final String databaseUsername;
-    @NotNull
-    private final String token;
 }

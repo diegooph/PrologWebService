@@ -6,6 +6,8 @@ import br.com.zalf.prolog.webservice.errorhandling.exception.NotAuthorizedExcept
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.interno.PrologInternalUser;
 import br.com.zalf.prolog.webservice.interno.autenticacao._model.PrologInternalUserAuthentication;
+import br.com.zalf.prolog.webservice.interno.autenticacao._model.PrologInternalUserAuthorization;
+import br.com.zalf.prolog.webservice.interno.autenticacao._model.PrologInternalUserLogin;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import org.jetbrains.annotations.NotNull;
 
@@ -35,26 +37,43 @@ public final class AutenticacaoInternaService {
     }
 
     @NotNull
+    public PrologInternalUser authorize(@NotNull final PrologInternalUserAuthorization userAuthorization) {
+        try {
+            return userAuthorization.authorize(dao);
+        } catch (final Throwable e) {
+            Log.e(TAG, "Erro ao autorizar requisição para o usuário: " + userAuthorization, e);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(e, "Erro ao validar acesso, tente novamente");
+        }
+    }
+
+    @NotNull
     @CanIgnoreReturnValue
-    public PrologInternalUser login(@NotNull final PrologInternalUserAuthentication userAuthentication) {
+    public PrologInternalUserLogin login(@NotNull final PrologInternalUserAuthentication userAuthentication) {
         try {
             final PrologInternalUser prologInternalUser = dao
-                    .getPrologInternalUser(
-                            userAuthentication.getUsername(),
-                            // Assim nós mantemos a lógica de geração de token aqui!
-                            codUsuarioProlog -> {
-                                final String token = UUID.randomUUID().toString();
-                                dao.createPrologInternalUserSession(codUsuarioProlog, token);
-                                return token;
-                            })
+                    .getPrologInternalUserByUsername(userAuthentication.getUsername())
                     .orElseThrow(() -> {
                         throw new NotAuthorizedException("Prolog internal user not found with username: "
                                 + userAuthentication.getUsername());
                     });
-            if (!userAuthentication.doesPasswordMatch(prologInternalUser.getEncryptedPassword())) {
+            if (!BCryptValidator.doesPasswordMatch(
+                    userAuthentication.getPassword(),
+                    prologInternalUser.getEncryptedPassword())) {
                 throw new NotAuthorizedException("Wrong password!");
             }
-            return prologInternalUser;
+
+            final String token = UUID.randomUUID().toString();
+            dao.createPrologInternalUserSession(prologInternalUser.getCodigo(), token);
+
+            return PrologInternalUserLogin
+                    .builder()
+                    .codigo(prologInternalUser.getCodigo())
+                    .username(prologInternalUser.getUsername())
+                    .databaseUsername(prologInternalUser.getDatabaseUsername())
+                    .token(token)
+                    .build();
         } catch (final Throwable e) {
             Log.e(TAG, "Erro ao enviar dados para o BD", e);
             throw Injection

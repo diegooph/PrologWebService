@@ -2,8 +2,8 @@ package br.com.zalf.prolog.webservice.interno.autenticacao;
 
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
-import br.com.zalf.prolog.webservice.interno.PrologInternalUser;
 import br.com.zalf.prolog.webservice.interno.autenticacao._model.PrologInternalUserAuthentication;
+import br.com.zalf.prolog.webservice.interno.autenticacao._model.PrologInternalUserLogin;
 import org.jetbrains.annotations.NotNull;
 
 import javax.ws.rs.Consumes;
@@ -27,7 +27,7 @@ public final class AutenticacaoInternaResource {
     @POST
     @UsedBy(platforms = Platform.WEBSITE)
     @Path("/login")
-    public PrologInternalUser login(@NotNull final PrologInternalUserAuthentication internalUser) {
+    public PrologInternalUserLogin login(@NotNull final PrologInternalUserAuthentication internalUser) {
         return service.login(internalUser);
     }
 }

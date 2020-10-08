@@ -40,31 +40,37 @@ public final class AutenticacaoInternaDaoImpl implements AutenticacaoInternaDao 
 
     @Override
     @NotNull
-    public Optional<PrologInternalUser> getPrologInternalUser(@NotNull final String username,
-                                                              @NotNull final GetPrologUserToken generateUserToken)
+    public Optional<PrologInternalUser> getPrologInternalUserByUsername(@NotNull final String username)
             throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("select * from interno.func_usuario_busca_dados(" +
+            stmt = conn.prepareStatement("select * from interno.func_usuario_busca_dados_by_username(" +
                     "f_username => ?);");
             stmt.setString(1, username);
             rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                final Long codigo = rSet.getLong("CODIGO");
-                return Optional.of(PrologInternalUser
-                        .builder()
-                        .codigo(codigo)
-                        .username(rSet.getString("USERNAME"))
-                        .encryptedPassword(rSet.getString("ENCRYPTED_PASSWORD"))
-                        .databaseUsername(rSet.getString("DATABASE_USERNAME"))
-                        .token(generateUserToken.getPrologUserToken(codigo))
-                        .build());
-            } else {
-                return Optional.empty();
-            }
+            return AutenticacaoInternaConverter.createPrologInternalUser(rSet);
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+    @Override
+    @NotNull
+    public Optional<PrologInternalUser> getPrologInternalUserByToken(@NotNull final String token)
+            throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("select * from interno.func_usuario_busca_dados_by_token(" +
+                    "f_token => ?);");
+            stmt.setString(1, token);
+            rSet = stmt.executeQuery();
+            return AutenticacaoInternaConverter.createPrologInternalUser(rSet);
         } finally {
             close(conn, stmt, rSet);
         }

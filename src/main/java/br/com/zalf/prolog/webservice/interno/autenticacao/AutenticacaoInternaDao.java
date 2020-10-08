@@ -32,9 +32,19 @@ public interface AutenticacaoInternaDao {
      * @throws Throwable Se algum erro ocorrer.
      */
     @NotNull
-    Optional<PrologInternalUser> getPrologInternalUser(@NotNull final String username,
-                                                       @NotNull final GetPrologUserToken generateUserToken)
-            throws Throwable;
+    Optional<PrologInternalUser> getPrologInternalUserByUsername(@NotNull final String username) throws Throwable;
+
+    /**
+     * Método para buscar um usuário interno do Prolog com base no {@code token}.
+     * <p>
+     * O retorno é um optional pois pode ou não existir um usuário com o token informado.
+     *
+     * @param token token do usuário logado.
+     * @return Um optional que pode ou não conter um usuário logado.
+     * @throws Throwable Se algum erro ocorrer.
+     */
+    @NotNull
+    Optional<PrologInternalUser> getPrologInternalUserByToken(@NotNull final String token) throws Throwable;
 
     void createPrologInternalUserSession(@NotNull final Long codUsuarioProlog,
                                          @NotNull final String token);
