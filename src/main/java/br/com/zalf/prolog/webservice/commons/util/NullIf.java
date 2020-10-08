@@ -24,6 +24,11 @@ public final class NullIf {
     }
 
     @Nullable
+    public static Double equalOrLess(final double a, final double b) {
+        return a <= b ? null : a;
+    }
+
+    @Nullable
     public static Long equalOrLess(final long a, final long b) {
         return a <= b ? null : a;
     }
