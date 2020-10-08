@@ -17,7 +17,7 @@ public final class PrologInternalUserAuthorizationFactory {
     @NotNull
     public static PrologInternalUserAuthorization fromHeaderAuthorization(@NotNull final String headerAuthorization) {
         if (!headerAuthorization.startsWith(AuthType.BASIC.value())
-                || !headerAuthorization.startsWith(AuthType.BEARER.value())) {
+                && !headerAuthorization.startsWith(AuthType.BEARER.value())) {
             throw new NotAuthorizedException("We only support BASIC and BEARER authorization!");
         }
 

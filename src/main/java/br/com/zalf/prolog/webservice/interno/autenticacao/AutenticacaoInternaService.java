@@ -7,6 +7,7 @@ import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.interno.PrologInternalUser;
 import br.com.zalf.prolog.webservice.interno.autenticacao._model.PrologInternalUserAuthentication;
 import br.com.zalf.prolog.webservice.interno.autenticacao._model.PrologInternalUserAuthorization;
+import br.com.zalf.prolog.webservice.interno.autenticacao._model.PrologInternalUserAuthorizationFactory;
 import br.com.zalf.prolog.webservice.interno.autenticacao._model.PrologInternalUserLogin;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import org.jetbrains.annotations.NotNull;
@@ -37,11 +38,13 @@ public final class AutenticacaoInternaService {
     }
 
     @NotNull
-    public PrologInternalUser authorize(@NotNull final PrologInternalUserAuthorization userAuthorization) {
+    public PrologInternalUser authorize(@NotNull final String headerAuthorization) {
         try {
+            final PrologInternalUserAuthorization userAuthorization =
+                    PrologInternalUserAuthorizationFactory.fromHeaderAuthorization(headerAuthorization);
             return userAuthorization.authorize(dao);
         } catch (final Throwable e) {
-            Log.e(TAG, "Erro ao autorizar requisição para o usuário: " + userAuthorization, e);
+            Log.e(TAG, "Erro ao autorizar requisição para o header: " + headerAuthorization, e);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(e, "Erro ao validar acesso, tente novamente");
