@@ -1,8 +1,8 @@
 Change Log
 ==========
 
-<a name="v1.2.2"></a>
-## Version [v1.2.2](https://github.com/luizfp/PrologWebService/compare/v1.2.1...v1.2.2) (reselase-date) [unreleased]
+<a name="v1.3.0"></a>
+## Version [v1.3.0](https://github.com/luizfp/PrologWebService/compare/v1.2.1...v1.3.0) (2020-10-13)
 
 ### Features
 * Adiciona colunas no relatório de pneus descartados (PL-3145)
