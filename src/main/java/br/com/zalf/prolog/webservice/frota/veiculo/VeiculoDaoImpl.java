@@ -25,6 +25,7 @@ import java.sql.SQLException;
 import java.util.Optional;
 import java.util.*;
 
+
 public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 
     public VeiculoDaoImpl() {

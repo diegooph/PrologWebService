@@ -96,6 +96,8 @@ import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.veiculo.error.VeiculoExceptionHandler;
 import br.com.zalf.prolog.webservice.frota.veiculo.error.VeiculoSqlExceptionTranslator;
+import br.com.zalf.prolog.webservice.frota.veiculo.evolucaoKm.VeiculoEvolucaoKmDao;
+import br.com.zalf.prolog.webservice.frota.veiculo.evolucaoKm.VeiculoEvolucaoKmDaoImpl;
 import br.com.zalf.prolog.webservice.frota.veiculo.historico.HistoricoEdicaoVeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.historico.HistoricoEdicaoVeiculoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.veiculo.historico.relatorio.HistoricoEdicaoVeiculoRelatorioDao;
@@ -162,8 +164,8 @@ import br.com.zalf.prolog.webservice.integracao.autenticacao.AutenticacaoIntegra
 import br.com.zalf.prolog.webservice.integracao.autenticacao.AutenticacaoIntegracaoDaoImpl;
 import br.com.zalf.prolog.webservice.interno.apresentacao.ApresentacaoDao;
 import br.com.zalf.prolog.webservice.interno.apresentacao.ApresentacaoDaoImpl;
-import br.com.zalf.prolog.webservice.interno.autenticacao.AutenticacaoLoginSenhaDao;
-import br.com.zalf.prolog.webservice.interno.autenticacao.AutenticacaoLoginSenhaDaoImpl;
+import br.com.zalf.prolog.webservice.interno.autenticacao.AutenticacaoInternaDao;
+import br.com.zalf.prolog.webservice.interno.autenticacao.AutenticacaoInternaDaoImpl;
 import br.com.zalf.prolog.webservice.interno.implantacao.conferencia.ConferenciaDao;
 import br.com.zalf.prolog.webservice.interno.implantacao.conferencia.ConferenciaDaoImpl;
 import br.com.zalf.prolog.webservice.interno.implantacao.conferencia.frota.pneu.PneuConferenciaDao;
@@ -324,8 +326,8 @@ public final class Injection {
         return new MovimentacaoRelatorioDaoImpl();
     }
 
-    public static AutenticacaoLoginSenhaDao provideAutenticacaoLoginSenhaDao() {
-        return new AutenticacaoLoginSenhaDaoImpl();
+    public static AutenticacaoInternaDao provideAutenticacaoLoginSenhaDao() {
+        return new AutenticacaoInternaDaoImpl();
     }
 
     @NotNull
@@ -687,9 +689,14 @@ public final class Injection {
     public static HistoricoEdicaoVeiculoDao provideHistoricoEdicaoVeiculoDao() {
         return new HistoricoEdicaoVeiculoDaoImpl();
     }
-
+  
     @NotNull
-    public static HistoricoEdicaoVeiculoRelatorioDao provideHistoricoEdicaoVeiculoRelatorioDao() {
+      public static HistoricoEdicaoVeiculoRelatorioDao provideHistoricoEdicaoVeiculoRelatorioDao() {
         return new HistoricoEdicaoVeiculoRelatorioDaoImpl();
+    }
+  
+    @NotNull
+    public static VeiculoEvolucaoKmDao provideVeiculoEvolucaoKmDao() {
+        return new VeiculoEvolucaoKmDaoImpl();
     }
 }
