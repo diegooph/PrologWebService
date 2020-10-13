@@ -2,7 +2,11 @@ package br.com.zalf.prolog.webservice.interceptors.auth;
 
 import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoService;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.commons.util.ProLogCustomHeaders;
+import br.com.zalf.prolog.webservice.integracao.BaseIntegracaoService;
+import br.com.zalf.prolog.webservice.interceptors.ApiExposed;
 import br.com.zalf.prolog.webservice.interceptors.auth.authenticator.Authenticator;
+import br.com.zalf.prolog.webservice.interceptors.auth.authenticator.AuthenticatorApi;
 import br.com.zalf.prolog.webservice.interceptors.auth.authenticator.AuthenticatorFactory;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,6 +20,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.ext.Provider;
 import java.lang.reflect.Method;
+import java.util.Objects;
 
 @Secured
 @Provider
@@ -30,15 +35,34 @@ public final class AuthenticationFilter implements ContainerRequestFilter {
     public void filter(final ContainerRequestContext requestContext) {
         // Get the HTTP Authorization header from the request.
         final String authorizationHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
+        final String prologAuthorizationHeader =
+                requestContext.getHeaderString(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO);
 
         Log.d(TAG, "AuthorizationHeader: " + authorizationHeader);
+        Log.d(TAG, "PrologAuthorizationHeader: " + prologAuthorizationHeader);
         // Check if the HTTP Authorization header is present and formatted correctly.
-        if (authorizationHeader == null) {
+        if (((authorizationHeader == null) || (authorizationHeader.isEmpty())) &&
+                ((prologAuthorizationHeader == null) || (prologAuthorizationHeader.isEmpty()))) {
             throw new NotAuthorizedException("Authorization header must be provided!");
         }
 
         final AuthType authType;
-        if (authorizationHeader.startsWith("Basic ")) {
+        if (prologAuthorizationHeader != null && !prologAuthorizationHeader.isEmpty()) {
+            authType = AuthType.API;
+            final AuthenticatorApi authenticatorApi =
+                    AuthenticatorFactory.createAuthenticatorApi(authType, new BaseIntegracaoService());
+            final Method resourceMethodApi = resourceInfo.getResourceMethod();
+            final ApiExposed methodAnnotApi = resourceMethodApi.getAnnotation(ApiExposed.class);
+            if (methodAnnotApi != null) {
+                ensureCorrectAuthType(methodAnnotApi, authType);
+                authenticatorApi.validade(
+                        prologAuthorizationHeader,
+                        TAG);
+                // Retornamos agora para impedir as demais verificações. A por integração tem prioridade, e, se existir,
+                // apenas ela deve ser considerada.
+                return;
+            }
+        } else if (Objects.requireNonNull(authorizationHeader).startsWith("Basic ")) {
             authType = AuthType.BASIC;
         } else if (authorizationHeader.startsWith("Bearer ")) {
             authType = AuthType.BEARER;
@@ -46,10 +70,9 @@ public final class AuthenticationFilter implements ContainerRequestFilter {
             throw new NotAuthorizedException("Authorization header must be provided!");
         }
 
-        final String value = authorizationHeader.substring(authType.value().length()).trim();
+        final String value = Objects.requireNonNull(authorizationHeader).substring(authType.value().length()).trim();
         final Authenticator authenticator =
                 AuthenticatorFactory.createAuthenticator(authType, new AutenticacaoService());
-
         final Method resourceMethod = resourceInfo.getResourceMethod();
         final Secured methodAnnot = resourceMethod.getAnnotation(Secured.class);
         if (methodAnnot != null) {
@@ -88,5 +111,17 @@ public final class AuthenticationFilter implements ContainerRequestFilter {
             }
         }
         throw new NotAuthorizedException("Authorization method not allowed for this resource: " + headerAuthType);
+    }
+
+    private void ensureCorrectAuthType(final ApiExposed methodAnnot, final AuthType headerAuthTypeApi) {
+        final AuthType[] permitedAuthTypes = methodAnnot.authTypes();
+        //noinspection ForLoopReplaceableByForEach
+        for (int i = 0; i < permitedAuthTypes.length; i++) {
+            final AuthType authType = permitedAuthTypes[i];
+            if (authType == headerAuthTypeApi) {
+                return;
+            }
+        }
+        throw new NotAuthorizedException("Authorization method not allowed for this resource: " + headerAuthTypeApi);
     }
 }
