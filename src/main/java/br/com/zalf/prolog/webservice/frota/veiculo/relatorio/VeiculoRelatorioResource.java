@@ -45,15 +45,23 @@ public class VeiculoRelatorioResource {
     @GET
     @Path("/evolucao-km/csv")
     @Produces("application/csv")
+    @Secured(permissions = {
+            Pilares.Frota.Veiculo.VISUALIZAR,
+            Pilares.Frota.Veiculo.CADASTRAR,
+            Pilares.Frota.Veiculo.ALTERAR})
     public StreamingOutput getEvolucaoKmCsv(
             @QueryParam("codEmpresa") @Required final Long codEmpresa,
-            @QueryParam("codVeiculo") @Required final Long codVeiculo){
+            @QueryParam("codVeiculo") @Required final Long codVeiculo) {
         return outputStream -> new VeiculoRelatorioService()
                 .getEvolucaoKmCsv(outputStream, codEmpresa, codVeiculo);
     }
 
     @GET
     @Path("/evolucao-km/report")
+    @Secured(permissions = {
+            Pilares.Frota.Veiculo.VISUALIZAR,
+            Pilares.Frota.Veiculo.CADASTRAR,
+            Pilares.Frota.Veiculo.ALTERAR})
     public Report getEvolucaoKmReport(
             @QueryParam("codEmpresa") @Required final Long codEmpresa,
             @QueryParam("codVeiculo") @Required final Long codVeiculo) throws ProLogException {

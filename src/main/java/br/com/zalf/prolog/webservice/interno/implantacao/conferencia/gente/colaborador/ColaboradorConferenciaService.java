@@ -7,9 +7,8 @@ import br.com.zalf.prolog.webservice.commons.util.Files;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
-import br.com.zalf.prolog.webservice.interno.autenticacao.AutenticacaoLoginSenhaValidator;
-import br.com.zalf.prolog.webservice.interno.autenticacao._model.PrologInternalUser;
-import br.com.zalf.prolog.webservice.interno.autenticacao._model.PrologInternalUserFactory;
+import br.com.zalf.prolog.webservice.interno.PrologInternalUser;
+import br.com.zalf.prolog.webservice.interno.autenticacao.AutenticacaoInternaService;
 import br.com.zalf.prolog.webservice.interno.implantacao.conferencia._model.TipoImport;
 import br.com.zalf.prolog.webservice.interno.implantacao.conferencia.gente.colaborador._model.ColaboradorPlanilha;
 import org.apache.commons.io.IOUtils;
@@ -41,8 +40,7 @@ public final class ColaboradorConferenciaService {
                                                             @NotNull final FormDataContentDisposition fileDetail) {
         // Deve ficar fora do try/catch porque não queremos mascarar erros de autentação com erros do processo de
         // import.
-        final PrologInternalUser internalUser = PrologInternalUserFactory.fromHeaderAuthorization(authorization);
-        new AutenticacaoLoginSenhaValidator().verifyUsernamePassword(internalUser);
+        final PrologInternalUser internalUser = new AutenticacaoInternaService().authorize(authorization);
 
         try {
             final File file = createFileFromImport(codUnidade, fileInputStream, fileDetail);
@@ -61,7 +59,7 @@ public final class ColaboradorConferenciaService {
                                       @NotNull final InputStream fileInputStream,
                                       @NotNull final FormDataContentDisposition fileDetail) throws ProLogException {
         try {
-            final String fileName = String.valueOf(Now.utcMillis()) + "_" + codUnidade
+            final String fileName = Now.utcMillis() + "_" + codUnidade
                     + "_" + fileDetail.getFileName().replace(" ", "_");
             final File tmpDir = Files.createTempDir();
             final File file = new File(tmpDir, fileName);

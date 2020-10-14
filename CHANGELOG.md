@@ -4,16 +4,27 @@ Change Log
 ### Features
 * Permite a exportação de aferições no padrão Protheus para importação no sistema terceiro (PL-3182)
 
-<a name="v1.2.2"></a>
-## Version [v1.2.2](https://github.com/luizfp/PrologWebService/compare/v1.2.1...v1.2.2) (reselase-date) [unreleased]
+
+<a name="v1.3.1"></a>
+## Version [v1.3.1](https://github.com/luizfp/PrologWebService/compare/v1.3.0...v1.3.1) (release-date) [unreleased]
+
+
+<a name="v1.3.0"></a>
+## Version [v1.3.0](https://github.com/luizfp/PrologWebService/compare/v1.2.1...v1.3.0) (2020-10-13)
+
 ### Features
 * Adiciona colunas no relatório de pneus descartados (PL-3145)
 * Cria busca de evolução de km (PL-3171)
 * Cria relatorio evolução de km (PL-3172)
 
+### Refactor
+* Altera inserção de checklist para aceitar observação (PL-3163)
+* Insere observação na busca de um checklist (PL-3164)
+* Altera sistema de autenticação interna permitindo Bearer e Basic
 
 <a name="v1.2.1"></a>
 ## Version [v1.2.1](https://github.com/luizfp/PrologWebService/compare/v1.2.0...v1.2.1) (2020-10-04)
+
 ### Features
 * Cria endpoint para buscar histórico de edições em csv (PL-3153)
 

@@ -236,6 +236,7 @@ public class ChecklistFluxoOsTest extends BaseTest {
                 "PRO0001",
                 TipoChecklist.SAIDA,
                 112,
+                "uma observacao",
                 10000,
                 respostas,
                 ProLogDateParser.toLocalDateTime("2019-10-14T09:35:10"),
@@ -329,6 +330,7 @@ public class ChecklistFluxoOsTest extends BaseTest {
         final Long codVeiculo = 3195L;
         final String placa = "PRO0001";
         final int kmColetadoVeiculo = 112;
+        final String observacao = "uma observacao";
         final int tempoRealizacaoCheckInMillis = 10000;
         final Integer versaoAppMomentoRealizacao = 80;
         final Integer versaoAppMomentoSincronizacao = 83;
@@ -491,6 +493,7 @@ public class ChecklistFluxoOsTest extends BaseTest {
                 placa,
                 TipoChecklist.SAIDA,
                 kmColetadoVeiculo,
+                observacao,
                 tempoRealizacaoCheckInMillis,
                 respostasC1,
                 ProLogDateParser.toLocalDateTime("2019-10-22T01:35:10"),
@@ -582,6 +585,7 @@ public class ChecklistFluxoOsTest extends BaseTest {
                 placa,
                 TipoChecklist.SAIDA,
                 kmColetadoVeiculo,
+                observacao,
                 tempoRealizacaoCheckInMillis,
                 respostasC2,
                 ProLogDateParser.toLocalDateTime("2019-10-22T02:35:10"),
@@ -622,6 +626,7 @@ public class ChecklistFluxoOsTest extends BaseTest {
         final Long codVeiculo = 3195L;
         final String placa = "PRO0001";
         final int kmColetadoVeiculo = 112;
+        final String observacao = "uma observacao";
         final int tempoRealizacaoCheckInMillis = 10000;
         final Integer versaoAppMomentoRealizacao = 80;
         final Integer versaoAppMomentoSincronizacao = 83;
@@ -784,6 +789,7 @@ public class ChecklistFluxoOsTest extends BaseTest {
                 placa,
                 TipoChecklist.SAIDA,
                 kmColetadoVeiculo,
+                observacao,
                 tempoRealizacaoCheckInMillis,
                 respostasC1,
                 ProLogDateParser.toLocalDateTime("2019-10-22T01:35:10"),
@@ -876,6 +882,7 @@ public class ChecklistFluxoOsTest extends BaseTest {
                 placa,
                 TipoChecklist.SAIDA,
                 kmColetadoVeiculo,
+                observacao,
                 tempoRealizacaoCheckInMillis,
                 respostasC2,
                 ProLogDateParser.toLocalDateTime("2019-10-22T02:35:10"),
