@@ -67,7 +67,7 @@ public final class AfericaoRelatorioConverter {
                 NullIf.less(rSet.getDouble("calibragem_aferida"), 0.00),
                 NullIf.less(rSet.getDouble("calibragem_realizada"), 0.00),
                 NullIf.less(rSet.getDouble("sulco_interno"), 0.00),
-                NullIf.less(rSet.getDouble("sulco_central_interno"), 0.00),
+                NullIf.less(rSet.getDouble("sulco_central"), 0.00),
                 NullIf.less(rSet.getDouble("sulco_externo"), 0.00)
         );
     }
