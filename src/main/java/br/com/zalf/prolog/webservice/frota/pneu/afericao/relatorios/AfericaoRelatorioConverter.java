@@ -50,7 +50,7 @@ public final class AfericaoRelatorioConverter {
     private static AfericaoExportacaoProtheusInfosVeiculo createAfericaoExportacaoProtheusInfosVeiculo(
             @NotNull final ResultSet rSet) throws Throwable {
         return new AfericaoExportacaoProtheusInfosVeiculo(
-                rSet.getString("cabecalho_linha_um"),
+                rSet.getString("cabecalho_placa"),
                 rSet.getString("placa"),
                 rSet.getString("data"),
                 rSet.getString("hora")
@@ -61,7 +61,7 @@ public final class AfericaoRelatorioConverter {
     private static AfericaoExportacaoProtheusInfosPneu createAfericaoExportacaoProtheusInfosPneu(
             @NotNull final ResultSet rSet) throws Throwable {
         return new AfericaoExportacaoProtheusInfosPneu(
-                rSet.getString("cabecalho_linha_dois"),
+                rSet.getString("cabecalho_pneu"),
                 rSet.getString("codigo_cliente_pneu"),
                 rSet.getString("nomenclatura_posicao"),
                 NullIf.equalOrLess(rSet.getDouble("calibragem_aferida"), 0.00),
