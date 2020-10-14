@@ -8,9 +8,6 @@ import br.com.zalf.prolog.webservice.frota.pneu.afericao.relatorios._model.Aferi
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,8 +52,8 @@ public final class AfericaoRelatorioConverter {
         return new AfericaoExportacaoProtheusInfosVeiculo(
                 rSet.getString("cabecalho_linha_um"),
                 rSet.getString("placa"),
-                DateTimeFormatter.ofPattern("dd/MM/yyyy").format(rSet.getObject("data", LocalDate.class)),
-                DateTimeFormatter.ofPattern("HH:mm").format(rSet.getObject("hora", LocalTime.class))
+                rSet.getString("data"),
+                rSet.getString("hora")
         );
     }
 
