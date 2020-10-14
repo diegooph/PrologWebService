@@ -7,7 +7,6 @@ import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.relatorios._model.AfericaoExportacaoProtheus;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.OutputStream;
 import java.util.List;
@@ -87,18 +86,14 @@ public class AfericaoRelatorioService {
     public List<AfericaoExportacaoProtheus> getExportacaoAfericoesProtheus(
             @NotNull final List<Long> codUnidades,
             @NotNull final List<Long> codVeiculos,
-            @Nullable final String dataInicial,
-            @Nullable final String dataFinal) throws ProLogException {
+            @NotNull final String dataInicial,
+            @NotNull final String dataFinal) throws ProLogException {
         try {
             return dao.getExportacaoAfericoesProtheus(
                     codUnidades,
                     codVeiculos,
-                    dataInicial == null
-                            ? null
-                            : ProLogDateParser.toLocalDate(dataInicial),
-                    dataFinal == null
-                            ? null
-                            : ProLogDateParser.toLocalDate(dataFinal));
+                    ProLogDateParser.toLocalDate(dataInicial),
+                    ProLogDateParser.toLocalDate(dataFinal));
         } catch (final Throwable throwable) {
             Log.e(TAG, "Erro ao gerar relatório de exportação de aferições no padrão Protheus", throwable);
             throw Injection

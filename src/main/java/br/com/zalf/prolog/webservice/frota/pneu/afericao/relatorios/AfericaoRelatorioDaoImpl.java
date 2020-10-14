@@ -11,13 +11,11 @@ import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.relatorios._model.AfericaoExportacaoProtheus;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.OutputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Types;
 import java.time.*;
 import java.util.Collections;
 import java.util.List;
@@ -114,8 +112,8 @@ public class AfericaoRelatorioDaoImpl extends DatabaseConnection implements Afer
     public List<AfericaoExportacaoProtheus> getExportacaoAfericoesProtheus(
             @NotNull final List<Long> codUnidades,
             @NotNull final List<Long> codVeiculos,
-            @Nullable final LocalDate dataInicial,
-            @Nullable final LocalDate dataFinal) throws Throwable {
+            @NotNull final LocalDate dataInicial,
+            @NotNull final LocalDate dataFinal) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -128,13 +126,8 @@ public class AfericaoRelatorioDaoImpl extends DatabaseConnection implements Afer
                     "f_data_final => ?);");
             stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
             stmt.setArray(2, PostgresUtils.listToArray(conn, SqlType.BIGINT, codVeiculos));
-            if (dataInicial == null || dataFinal == null) {
-                stmt.setNull(3, Types.DATE);
-                stmt.setNull(4, Types.DATE);
-            } else {
-                stmt.setDate(3, DateUtils.toSqlDate(dataInicial));
-                stmt.setDate(4, DateUtils.toSqlDate(dataFinal));
-            }
+            stmt.setDate(3, DateUtils.toSqlDate(dataInicial));
+            stmt.setDate(4, DateUtils.toSqlDate(dataFinal));
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return createAfericaoExportacaoProtheus(rSet);

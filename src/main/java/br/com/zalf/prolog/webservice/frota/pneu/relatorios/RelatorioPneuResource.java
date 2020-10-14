@@ -334,8 +334,8 @@ public class RelatorioPneuResource {
     public List<AfericaoExportacaoProtheus> getExportacaoAfericoesProtheus(
             @QueryParam("codUnidades") @Required final List<Long> codUnidades,
             @QueryParam("codVeiculos") @Required final List<Long> codVeiculos,
-            @QueryParam("dataInicial") final String dataInicial,
-            @QueryParam("dataFinal") final String dataFinal) {
+            @QueryParam("dataInicial") @Required final String dataInicial,
+            @QueryParam("dataFinal") @Required final String dataFinal) {
         return afericaoRelatorioService.getExportacaoAfericoesProtheus(codUnidades, codVeiculos, dataInicial, dataFinal);
     }
 

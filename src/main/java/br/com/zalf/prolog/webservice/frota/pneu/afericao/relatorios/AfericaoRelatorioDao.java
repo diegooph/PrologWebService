@@ -3,7 +3,6 @@ package br.com.zalf.prolog.webservice.frota.pneu.afericao.relatorios;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.relatorios._model.AfericaoExportacaoProtheus;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.OutputStream;
 import java.time.LocalDate;
@@ -80,6 +79,6 @@ public interface AfericaoRelatorioDao {
     @NotNull
     List<AfericaoExportacaoProtheus> getExportacaoAfericoesProtheus(@NotNull final List<Long> codUnidades,
                                                                     @NotNull final List<Long> codVeiculos,
-                                                                    @Nullable final LocalDate dataInicial,
-                                                                    @Nullable final LocalDate dataFinal) throws Throwable;
+                                                                    @NotNull final LocalDate dataInicial,
+                                                                    @NotNull final LocalDate dataFinal) throws Throwable;
 }
