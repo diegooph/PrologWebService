@@ -330,7 +330,7 @@ public class RelatorioPneuResource {
     }
 
     @GET
-    @Path("/exportacao-afericoes/")
+    @Path("/exportacao-afericoes-protheus/")
     public List<AfericaoExportacaoProtheus> getExportacaoAfericoesProtheus(
             @QueryParam("codUnidades") @Required final List<Long> codUnidades,
             @QueryParam("codVeiculos") @Required final List<Long> codVeiculos,
