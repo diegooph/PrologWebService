@@ -1,8 +1,10 @@
 package br.com.zalf.prolog.webservice.interceptors.auth;
 
+import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoService;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.ProLogCustomHeaders;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.integracao.BaseIntegracaoService;
 import br.com.zalf.prolog.webservice.interceptors.ApiExposed;
 import br.com.zalf.prolog.webservice.interceptors.auth.authenticator.Authenticator;
@@ -44,10 +46,12 @@ public final class AuthenticationFilter implements ContainerRequestFilter {
         if (((authorizationHeader == null) || (authorizationHeader.isEmpty())) &&
                 ((prologAuthorizationHeader == null) || (prologAuthorizationHeader.isEmpty()))) {
             throw new NotAuthorizedException("Authorization header must be provided!");
+        } else if (authorizationHeader != null && prologAuthorizationHeader != null) {
+            throw new NotAuthorizedException("Multiple authorization headers!");
         }
 
         final AuthType authType;
-        if (prologAuthorizationHeader != null && !prologAuthorizationHeader.isEmpty()) {
+        if (prologAuthorizationHeader != null) {
             authType = AuthType.API;
             final AuthenticatorApi authenticatorApi =
                     AuthenticatorFactory.createAuthenticatorApi(authType, new BaseIntegracaoService());
@@ -62,7 +66,7 @@ public final class AuthenticationFilter implements ContainerRequestFilter {
                 // apenas ela deve ser considerada.
                 return;
             }
-        } else if (Objects.requireNonNull(authorizationHeader).startsWith("Basic ")) {
+        } else if (authorizationHeader.startsWith("Basic ")) {
             authType = AuthType.BASIC;
         } else if (authorizationHeader.startsWith("Bearer ")) {
             authType = AuthType.BEARER;
