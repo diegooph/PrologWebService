@@ -25,7 +25,7 @@ public final class VeiculoEvolucaoKmResource {
     private final VeiculoEvolucaoKmService service = new VeiculoEvolucaoKmService();
 
     @GET
-    @Path("/")
+    @Path("/busca")
     @UsedBy(platforms = Platform.WEBSITE)
     @Secured(permissions
             = {Pilares.Frota.Veiculo.VISUALIZAR, Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})

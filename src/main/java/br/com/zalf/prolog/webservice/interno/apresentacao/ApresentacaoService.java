@@ -4,9 +4,8 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
-import br.com.zalf.prolog.webservice.interno.autenticacao.AutenticacaoLoginSenhaValidator;
-import br.com.zalf.prolog.webservice.interno.autenticacao._model.PrologInternalUser;
-import br.com.zalf.prolog.webservice.interno.autenticacao._model.PrologInternalUserFactory;
+import br.com.zalf.prolog.webservice.interno.PrologInternalUser;
+import br.com.zalf.prolog.webservice.interno.autenticacao.AutenticacaoInternaService;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -25,8 +24,7 @@ public class ApresentacaoService {
                                                       @NotNull final Long codEmpresaUsuario) throws ProLogException {
         // Deve ficar fora do try/catch porque não queremos mascarar erros de autentação com erros do processo de
         // import.
-        final PrologInternalUser internalUser = PrologInternalUserFactory.fromHeaderAuthorization(authorization);
-        new AutenticacaoLoginSenhaValidator().verifyUsernamePassword(internalUser);
+        final PrologInternalUser internalUser = new AutenticacaoInternaService().authorize(authorization);
 
         try {
             return Response.ok(dao.getResetaClonaEmpresaApresentacao(internalUser.getUsername(), codEmpresaBase,

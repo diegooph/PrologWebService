@@ -41,6 +41,7 @@ import java.util.stream.Collectors;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public final class ChecklistMigracaoEstruturaSuporte {
+
     private static final String TAG = ChecklistMigracaoEstruturaSuporte.class.getSimpleName();
     private static final int VERSION_CODE_APP_NOVA_ESTRUTURA = 94;
 
@@ -239,6 +240,7 @@ public final class ChecklistMigracaoEstruturaSuporte {
                 antigo.getPlacaVeiculo(),
                 TipoChecklist.fromChar(antigo.getTipo()),
                 antigo.getKmAtualVeiculo(),
+                null,
                 antigo.getTempoRealizacaoCheckInMillis(),
                 convertRespostas(antigo.getListRespostas()),
                 dataHoraRealizacao,
@@ -480,4 +482,5 @@ public final class ChecklistMigracaoEstruturaSuporte {
                 });
         return respostas;
     }
+
 }
