@@ -64,11 +64,11 @@ public final class AfericaoRelatorioConverter {
                 rSet.getString("cabecalho_pneu"),
                 rSet.getString("codigo_cliente_pneu"),
                 rSet.getString("nomenclatura_posicao"),
-                NullIf.equalOrLess(rSet.getDouble("calibragem_aferida"), 0.00),
-                NullIf.equalOrLess(rSet.getDouble("calibragem_realizada"), 0.00),
-                NullIf.equalOrLess(rSet.getDouble("sulco_interno"), 0.00),
-                NullIf.equalOrLess(rSet.getDouble("sulco_central_interno"), 0.00),
-                NullIf.equalOrLess(rSet.getDouble("sulco_externo"), 0.00)
+                NullIf.less(rSet.getDouble("calibragem_aferida"), 0.00),
+                NullIf.less(rSet.getDouble("calibragem_realizada"), 0.00),
+                NullIf.less(rSet.getDouble("sulco_interno"), 0.00),
+                NullIf.less(rSet.getDouble("sulco_central_interno"), 0.00),
+                NullIf.less(rSet.getDouble("sulco_externo"), 0.00)
         );
     }
 }
