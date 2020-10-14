@@ -8,7 +8,6 @@ import org.jetbrains.annotations.Nullable;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public final class NullIf {
-
     private NullIf() {
 
     }
@@ -26,6 +25,11 @@ public final class NullIf {
     @Nullable
     public static Double equalOrLess(final double a, final double b) {
         return a <= b ? null : a;
+    }
+
+    @Nullable
+    public static Double less(final double a, final double b) {
+        return a < b ? null : a;
     }
 
     @Nullable
