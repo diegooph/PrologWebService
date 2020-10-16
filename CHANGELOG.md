@@ -2,6 +2,7 @@ Change Log
 ==========
 ## Stage
 ### Features
+* Implementa swagger (PL-3158)
 * Permite a exportação de aferições no padrão Protheus para importação no sistema terceiro (PL-3182)
 * Ajusta tipos dos atributos os objetos de retorno pra Avilan (PL-3205)
 

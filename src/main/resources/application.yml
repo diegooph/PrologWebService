@@ -1,7 +1,7 @@
 server:
   port: 8080
   servlet:
-    context-path: /prolog/v2
+    context-path: /
 
 spring:
   main:
@@ -14,3 +14,9 @@ logging:
   level:
     org:
       springframework: error
+
+springdoc:
+  api-docs:
+    path: /prolog/v2/openapi.json
+  swagger-ui:
+    path: /swagger-ui.html
