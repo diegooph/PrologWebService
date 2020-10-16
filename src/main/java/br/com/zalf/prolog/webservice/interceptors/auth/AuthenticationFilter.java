@@ -1,10 +1,10 @@
 package br.com.zalf.prolog.webservice.interceptors.auth;
 
-import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoService;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.ProLogCustomHeaders;
-import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
+import br.com.zalf.prolog.webservice.commons.util.StringUtils;
+import br.com.zalf.prolog.webservice.errorhandling.exception.MultiAuthorizationHeadersException;
 import br.com.zalf.prolog.webservice.integracao.BaseIntegracaoService;
 import br.com.zalf.prolog.webservice.interceptors.ApiExposed;
 import br.com.zalf.prolog.webservice.interceptors.auth.authenticator.Authenticator;
@@ -22,7 +22,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.ext.Provider;
 import java.lang.reflect.Method;
-import java.util.Objects;
 
 @Secured
 @Provider
@@ -43,8 +42,8 @@ public final class AuthenticationFilter implements ContainerRequestFilter {
         Log.d(TAG, "AuthorizationHeader: " + authorizationHeader);
         Log.d(TAG, "PrologAuthorizationHeader: " + prologAuthorizationHeader);
         // Check if the HTTP Authorization header is present and formatted correctly.
-        if (((authorizationHeader == null) || (authorizationHeader.isEmpty())) &&
-                ((prologAuthorizationHeader == null) || (prologAuthorizationHeader.isEmpty()))) {
+        if ((StringUtils.isNullOrEmpty(authorizationHeader)) &&
+                (StringUtils.isNullOrEmpty(prologAuthorizationHeader))) {
             throw new NotAuthorizedException("Authorization header must be provided!");
         } else if (authorizationHeader != null && prologAuthorizationHeader != null) {
             throw new NotAuthorizedException("Multiple authorization headers!");
@@ -74,7 +73,7 @@ public final class AuthenticationFilter implements ContainerRequestFilter {
             throw new NotAuthorizedException("Authorization header must be provided!");
         }
 
-        final String value = Objects.requireNonNull(authorizationHeader).substring(authType.value().length()).trim();
+        final String value = authorizationHeader.substring(authType.value().length()).trim();
         final Authenticator authenticator =
                 AuthenticatorFactory.createAuthenticator(authType, new AutenticacaoService());
         final Method resourceMethod = resourceInfo.getResourceMethod();
