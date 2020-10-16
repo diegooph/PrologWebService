@@ -1,9 +1,9 @@
 package br.com.zalf.prolog.webservice.gente.controlejornada.OLD;
 
 import br.com.zalf.prolog.webservice.TimeZoneManager;
+import br.com.zalf.prolog.webservice.commons.FonteDataHora;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
-import br.com.zalf.prolog.webservice.commons.FonteDataHora;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.IntervaloMarcacao;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.Localizacao;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.TipoInicioFim;
@@ -165,7 +165,6 @@ public final class DeprecatedControleIntervaloDaoImpl_2 extends DatabaseConnecti
     private IntervaloMarcacao createIntervaloMarcacao(@NotNull final ResultSet rSet) throws SQLException {
         final IntervaloMarcacao intervaloMarcacao = new IntervaloMarcacao();
         intervaloMarcacao.setCodigo(rSet.getLong("CODIGO"));
-        intervaloMarcacao.setCodMarcacaoPorUnidade(rSet.getLong("COD_MARCACAO_POR_UNIDADE"));
         intervaloMarcacao.setCodUnidade(rSet.getLong("COD_UNIDADE"));
         intervaloMarcacao.setCpfColaborador(rSet.getLong("CPF_COLABORADOR"));
         intervaloMarcacao.setDataNascimentoColaborador(rSet.getDate("DATA_NASCIMENTO_COLABORADOR"));

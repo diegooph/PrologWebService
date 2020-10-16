@@ -21,12 +21,6 @@ public final class IntervaloMarcacao {
     private Long codigo;
 
     /**
-     * Código sequencial desta marcação, para a unidade.
-     */
-    @NotNull
-    private Long codMarcacaoPorUnidade;
-
-    /**
      * Código do Tipo da marcação realizada.
      */
     @NotNull
@@ -167,7 +161,7 @@ public final class IntervaloMarcacao {
         return codigo;
     }
 
-    public void setCodigo(@NotNull Long codigo) {
+    public void setCodigo(@NotNull final Long codigo) {
         this.codigo = codigo;
     }
 
@@ -176,7 +170,7 @@ public final class IntervaloMarcacao {
         return codTipoIntervalo;
     }
 
-    public void setCodTipoIntervalo(@NotNull Long codTipoIntervalo) {
+    public void setCodTipoIntervalo(@NotNull final Long codTipoIntervalo) {
         this.codTipoIntervalo = codTipoIntervalo;
     }
 
@@ -185,17 +179,8 @@ public final class IntervaloMarcacao {
         return codUnidade;
     }
 
-    public void setCodUnidade(@NotNull Long codUnidade) {
+    public void setCodUnidade(@NotNull final Long codUnidade) {
         this.codUnidade = codUnidade;
-    }
-
-    @NotNull
-    public Long getCodMarcacaoPorUnidade() {
-        return codMarcacaoPorUnidade;
-    }
-
-    public void setCodMarcacaoPorUnidade(@NotNull Long codMarcacaoPorUnidade) {
-        this.codMarcacaoPorUnidade = codMarcacaoPorUnidade;
     }
 
     @NotNull
@@ -203,7 +188,7 @@ public final class IntervaloMarcacao {
         return cpfColaborador;
     }
 
-    public void setCpfColaborador(@NotNull Long cpfColaborador) {
+    public void setCpfColaborador(@NotNull final Long cpfColaborador) {
         this.cpfColaborador = cpfColaborador;
     }
 
@@ -221,7 +206,7 @@ public final class IntervaloMarcacao {
         return dataHoraMaracao;
     }
 
-    public void setDataHoraMaracao(@NotNull LocalDateTime dataHoraMaracao) {
+    public void setDataHoraMaracao(@NotNull final LocalDateTime dataHoraMaracao) {
         this.dataHoraMaracao = dataHoraMaracao;
     }
 
@@ -230,7 +215,7 @@ public final class IntervaloMarcacao {
         return fonteDataHora;
     }
 
-    public void setFonteDataHora(@NotNull FonteDataHora fonteDataHora) {
+    public void setFonteDataHora(@NotNull final FonteDataHora fonteDataHora) {
         this.fonteDataHora = fonteDataHora;
     }
 
@@ -239,7 +224,7 @@ public final class IntervaloMarcacao {
         return tipoMarcacaoIntervalo;
     }
 
-    public void setTipoMarcacaoIntervalo(@NotNull TipoInicioFim tipoMarcacaoIntervalo) {
+    public void setTipoMarcacaoIntervalo(@NotNull final TipoInicioFim tipoMarcacaoIntervalo) {
         this.tipoMarcacaoIntervalo = tipoMarcacaoIntervalo;
     }
 
@@ -248,7 +233,7 @@ public final class IntervaloMarcacao {
         return justificativaEstouro;
     }
 
-    public void setJustificativaEstouro(@Nullable String justificativaEstouro) {
+    public void setJustificativaEstouro(@Nullable final String justificativaEstouro) {
         this.justificativaEstouro = justificativaEstouro;
     }
 
@@ -257,7 +242,7 @@ public final class IntervaloMarcacao {
         return justificativaTempoRecomendado;
     }
 
-    public void setJustificativaTempoRecomendado(@Nullable String justificativaTempoRecomendado) {
+    public void setJustificativaTempoRecomendado(@Nullable final String justificativaTempoRecomendado) {
         this.justificativaTempoRecomendado = justificativaTempoRecomendado;
     }
 
@@ -302,7 +287,7 @@ public final class IntervaloMarcacao {
         return deviceId;
     }
 
-    public void setDeviceId(@Nullable String deviceId) {
+    public void setDeviceId(@Nullable final String deviceId) {
         this.deviceId = deviceId;
     }
 
@@ -311,7 +296,7 @@ public final class IntervaloMarcacao {
         return deviceImei;
     }
 
-    public void setDeviceImei(@Nullable String deviceImei) {
+    public void setDeviceImei(@Nullable final String deviceImei) {
         this.deviceImei = deviceImei;
     }
 
@@ -319,7 +304,7 @@ public final class IntervaloMarcacao {
         return androidApiVersion;
     }
 
-    public void setAndroidApiVersion(int androidApiVersion) {
+    public void setAndroidApiVersion(final int androidApiVersion) {
         this.androidApiVersion = androidApiVersion;
     }
 
@@ -327,7 +312,7 @@ public final class IntervaloMarcacao {
         return deviceUptimeRealizacaoMarcacaoMillis;
     }
 
-    public void setDeviceUptimeRealizacaoMarcacaoMillis(long deviceUptimeRealizacaoMarcacaoMillis) {
+    public void setDeviceUptimeRealizacaoMarcacaoMillis(final long deviceUptimeRealizacaoMarcacaoMillis) {
         this.deviceUptimeRealizacaoMarcacaoMillis = deviceUptimeRealizacaoMarcacaoMillis;
     }
 
@@ -335,7 +320,7 @@ public final class IntervaloMarcacao {
         return deviceUptimeSincronizacaoMarcacaoMillis;
     }
 
-    public void setDeviceUptimeSincronizacaoMarcacaoMillis(long deviceUptimeSincronizacaoMarcacaoMillis) {
+    public void setDeviceUptimeSincronizacaoMarcacaoMillis(final long deviceUptimeSincronizacaoMarcacaoMillis) {
         this.deviceUptimeSincronizacaoMarcacaoMillis = deviceUptimeSincronizacaoMarcacaoMillis;
     }
 
@@ -343,7 +328,7 @@ public final class IntervaloMarcacao {
         return marcaDevice;
     }
 
-    public void setMarcaDevice(String marcaDevice) {
+    public void setMarcaDevice(final String marcaDevice) {
         this.marcaDevice = marcaDevice;
     }
 
@@ -351,7 +336,7 @@ public final class IntervaloMarcacao {
         return modeloDevice;
     }
 
-    public void setModeloDevice(String modeloDevice) {
+    public void setModeloDevice(final String modeloDevice) {
         this.modeloDevice = modeloDevice;
     }
 }
