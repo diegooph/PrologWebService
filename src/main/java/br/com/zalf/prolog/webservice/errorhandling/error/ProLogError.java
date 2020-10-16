@@ -7,32 +7,50 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class ProLogError {
-	/** contains the same HTTP Status code returned by the server */
+	/**
+	 * Contains the same HTTP Status code returned by the server
+	 */
 	private final int httpStatusCode;
 
-	/** application specific error code */
+	/**
+	 * Application specific error code
+	 */
 	private final int proLogErrorCode;
 
-	/** message describing the error*/
+	/**
+	 * Message describing the error
+	 */
 	@NotNull
 	private final String message;
 
-	/** link point to page where the error message is documented */
+	/**
+	 * Message with extra information, without expose any delicate data
+	 */
+	@Nullable
+	private final String detailedMessage;
+
+	/**
+	 * Link point to page where the error message is documented
+	 */
 	@Nullable
 	private final String moreInfoLink;
 
-	/** extra information that might useful for developers */
+	/**
+	 * Extra information that might be useful for developers
+	 */
 	@Nullable
 	private final String developerMessage;
 
 	private ProLogError(final int httpStatusCode,
 						final int proLogErrorCode,
 						@NotNull final String message,
+						@Nullable final String detailedMessage,
 						@Nullable final String moreInfoLink,
 						@Nullable final String developerMessage) {
 		this.httpStatusCode = httpStatusCode;
 		this.proLogErrorCode = proLogErrorCode;
 		this.message = message;
+		this.detailedMessage = detailedMessage;
 		this.moreInfoLink = moreInfoLink;
 		this.developerMessage = developerMessage;
 	}
@@ -43,35 +61,42 @@ public final class ProLogError {
 				ex.getHttpStatusCode(),
 				ex.getProLogErrorCode(),
 				ex.getMessage(),
+				ex.getDetailedMessage(),
 				ex.getMoreInfoLink(),
 				/* Só setamos essa mensagem se estivermos em modo DEBUG. Assim evitamos de vazar alguma informação
-				* sensitiva. */
+				 * sensitiva. */
 				BuildConfig.DEBUG ? ex.getDeveloperMessage() : null);
 	}
 
-    @NotNull
-    public static ProLogError generateFromString(@NotNull final String jsonError) {
-        return GsonUtils.getGson().fromJson(jsonError, ProLogError.class);
-    }
+	@NotNull
+	public static ProLogError generateFromString(@NotNull final String jsonError) {
+		return GsonUtils.getGson().fromJson(jsonError, ProLogError.class);
+	}
 
-    public int getHttpStatusCode() {
-        return httpStatusCode;
-    }
+	public int getHttpStatusCode() {
+		return httpStatusCode;
+	}
 
 	public int getProLogErrorCode() {
 		return proLogErrorCode;
 	}
 
+	@NotNull
 	public String getMessage() {
 		return message;
 	}
 
+	@Nullable
 	public String getDeveloperMessage() {
 		return developerMessage;
 	}
 
 	public String getMoreInfoLink() {
 		return moreInfoLink;
+	}
+
+	public String getDetailedMessage() {
+		return detailedMessage;
 	}
 
 	@Override

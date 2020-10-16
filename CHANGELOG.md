@@ -6,6 +6,9 @@ Change Log
 * Permite a exportação de aferições no padrão Protheus para importação no sistema terceiro (PL-3182)
 * Ajusta tipos dos atributos os objetos de retorno pra Avilan (PL-3205)
 
+### Refactor
+* Melhora estrutura de tratamento de erros, preparando para exposição da api interna (PL-2938)
+
 
 <a name="v1.3.1"></a>
 ## Version [v1.3.1](https://github.com/luizfp/PrologWebService/compare/v1.3.0...v1.3.1) (release-date) [unreleased]

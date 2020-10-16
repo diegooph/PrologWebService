@@ -13,6 +13,23 @@ import javax.ws.rs.core.Response;
 public class DuplicateKeyException extends DataAccessException {
 
     public DuplicateKeyException(@NotNull final String message) {
-        super(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), ProLogErrorCodes.RECURSO_JA_EXISTE.errorCode(), message);
+        super(Response.Status.CONFLICT.getStatusCode(), ProLogErrorCodes.RECURSO_JA_EXISTE.errorCode(), message);
+    }
+
+    public DuplicateKeyException(@NotNull final String message, @NotNull final String detailedMessage) {
+        super(Response.Status.CONFLICT.getStatusCode(),
+                ProLogErrorCodes.RECURSO_JA_EXISTE.errorCode(),
+                message,
+                detailedMessage);
+    }
+
+    public DuplicateKeyException(@NotNull final String message,
+                                 @NotNull final String detailedMessage,
+                                 @NotNull final String developerMessage) {
+        super(Response.Status.CONFLICT.getStatusCode(),
+                ProLogErrorCodes.RECURSO_JA_EXISTE.errorCode(),
+                message,
+                detailedMessage,
+                developerMessage);
     }
 }

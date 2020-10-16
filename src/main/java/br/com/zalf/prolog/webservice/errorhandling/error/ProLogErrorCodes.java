@@ -13,11 +13,14 @@ public enum ProLogErrorCodes {
 	BLOQUEADO_INTEGRACAO(9),
 	VEICULO_SEM_DIAGRAMA(10),
 	NOT_AUTHORIZED(11),
-	MULTIPLES_AUTHORIZATIONS_HEADERS(12);
+	CHAVE_NAO_EXISTENTE(12),
+	CONSTRAINT_VIOLADA(13),
+	BAD_REQUEST(14),
+	MULTIPLES_AUTHORIZATIONS_HEADERS(15);
 
 	private final int errorCode;
 
-	ProLogErrorCodes(int errorCode) {
+	ProLogErrorCodes(final int errorCode) {
 		this.errorCode = errorCode;
 	}
 

@@ -20,4 +20,19 @@ class DataAccessException extends ProLogException {
     DataAccessException(final int httpStatusCode, final int proLogErrorCode, @NotNull final String message) {
         super(httpStatusCode, proLogErrorCode, message);
     }
+
+    DataAccessException(final int httpStatusCode,
+                        final int proLogErrorCode,
+                        @NotNull final String message,
+                        @NotNull final String detailedMessage) {
+        super(httpStatusCode, proLogErrorCode, message, detailedMessage);
+    }
+
+    DataAccessException(final int httpStatusCode,
+                        final int proLogErrorCode,
+                        @NotNull final String message,
+                        @NotNull final String detailedMessage,
+                        @NotNull final String developerMessage) {
+        super(httpStatusCode, proLogErrorCode, message, detailedMessage, developerMessage);
+    }
 }

@@ -9,6 +9,9 @@ import org.jetbrains.annotations.NotNull;
  */
 public enum SqlErrorCodes {
     UNIQUE_VIOLATION("23505"),
+    CHECK_VIOLATION("23514"),
+    FOREIGN_KEY_VIOLATION("23503"),
+    NOT_NULL_VIOLATION("23502"),
     BD_GENERIC_ERROR_CODE("SA1A1");
 
     @NotNull
