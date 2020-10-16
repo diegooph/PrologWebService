@@ -15,15 +15,9 @@ import java.security.Principal;
 public final class PrologSecurityContext implements SecurityContext {
     @NotNull
     private ColaboradorAutenticado colaboradorAutenticado;
-    @NotNull
-    private ApiAutenticado apiAutenticado;
 
     public PrologSecurityContext(@NotNull final ColaboradorAutenticado colaboradorAutenticado) {
         this.colaboradorAutenticado = colaboradorAutenticado;
-    }
-
-    public PrologSecurityContext(@NotNull final ApiAutenticado apiAutenticado) {
-        this.apiAutenticado = apiAutenticado;
     }
 
     @Override
