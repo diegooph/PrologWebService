@@ -11,6 +11,7 @@ Change Log
 
 ### Refactor
 * Remove codMarcacaoPorUnidade do IntervaloMarcacao (PL-3199)
+* Adapta sistema de autenticação para validar Api (PL-2937)
 
 <a name="v1.3.0"></a>
 ## Version [v1.3.0](https://github.com/luizfp/PrologWebService/compare/v1.2.1...v1.3.0) (2020-10-13)
