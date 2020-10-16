@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.interceptors.auth;
 
+import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 
 import javax.ws.rs.core.SecurityContext;
@@ -10,9 +11,10 @@ import java.security.Principal;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
+@Data
 public final class PrologSecurityContext implements SecurityContext {
     @NotNull
-    private final ColaboradorAutenticado colaboradorAutenticado;
+    private ColaboradorAutenticado colaboradorAutenticado;
 
     public PrologSecurityContext(@NotNull final ColaboradorAutenticado colaboradorAutenticado) {
         this.colaboradorAutenticado = colaboradorAutenticado;
