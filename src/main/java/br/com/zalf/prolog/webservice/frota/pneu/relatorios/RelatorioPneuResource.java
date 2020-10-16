@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.relatorios.AfericaoRelatorioService;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.relatorios._model.AfericaoExportacaoProtheus;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.relatorios.MovimentacaoRelatorioService;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios._model.Aderencia;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios._model.Faixa;
@@ -15,6 +16,7 @@ import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.DefaultAppV
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.VersionCodeHandlerMode;
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.VersionNotPresentAction;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
+import org.jetbrains.annotations.NotNull;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -31,6 +33,8 @@ import java.util.List;
         versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
         actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
 public class RelatorioPneuResource {
+    @NotNull
+    private final AfericaoRelatorioService afericaoRelatorioService = new AfericaoRelatorioService();
 
     @GET
     @Path("/farol-afericao/csv")
@@ -323,6 +327,16 @@ public class RelatorioPneuResource {
     public StreamingOutput getCpkPorMarcaModeloDimensaomCsv(
             @QueryParam("codUnidades") @Required final List<Long> codUnidades) {
         return outputStream -> new RelatorioPneuService().getCpkPorMarcaModeloDimensaomCsv(outputStream, codUnidades);
+    }
+
+    @GET
+    @Path("/exportacao-afericoes-protheus/")
+    public List<AfericaoExportacaoProtheus> getExportacaoAfericoesProtheus(
+            @QueryParam("codUnidades") @Required final List<Long> codUnidades,
+            @QueryParam("codVeiculos") @Required final List<Long> codVeiculos,
+            @QueryParam("dataInicial") @Required final String dataInicial,
+            @QueryParam("dataFinal") @Required final String dataFinal) {
+        return afericaoRelatorioService.getExportacaoAfericoesProtheus(codUnidades, codVeiculos, dataInicial, dataFinal);
     }
 
     /**

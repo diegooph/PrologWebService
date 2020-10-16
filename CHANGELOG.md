@@ -1,5 +1,9 @@
 Change Log
 ==========
+## Stage
+### Features
+* Permite a exportação de aferições no padrão Protheus para importação no sistema terceiro (PL-3182)
+
 
 <a name="v1.3.1"></a>
 ## Version [v1.3.1](https://github.com/luizfp/PrologWebService/compare/v1.3.0...v1.3.1) (release-date) [unreleased]
@@ -22,6 +26,7 @@ Change Log
 
 <a name="v1.2.1"></a>
 ## Version [v1.2.1](https://github.com/luizfp/PrologWebService/compare/v1.2.0...v1.2.1) (2020-10-04)
+
 ### Features
 * Cria endpoint para buscar histórico de edições em csv (PL-3153)
 
