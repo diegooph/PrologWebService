@@ -22,6 +22,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.ext.Provider;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 
 @Secured
 @Provider
@@ -50,9 +51,9 @@ public final class AuthenticationFilter implements ContainerRequestFilter {
         }
 
         final AuthType authType;
-        if (authorizationHeader.startsWith("Bearer ")) {
+        if (!StringUtils.isNullOrEmpty(authorizationHeader) && authorizationHeader.startsWith("Bearer ")) {
             authType = AuthType.BEARER;
-        } else if (authorizationHeader.startsWith("Basic ")) {
+        } else if (!StringUtils.isNullOrEmpty(authorizationHeader) && authorizationHeader.startsWith("Basic ")) {
             authType = AuthType.BASIC;
         } else if (!StringUtils.isNullOrEmpty(prologAuthorizationHeader)) {
             authType = AuthType.API;
@@ -61,10 +62,17 @@ public final class AuthenticationFilter implements ContainerRequestFilter {
             final Method resourceMethodApi = resourceInfo.getResourceMethod();
             final ApiExposed methodAnnotApi = resourceMethodApi.getAnnotation(ApiExposed.class);
             if (methodAnnotApi != null) {
-                ensureCorrectAuthType(methodAnnotApi, authType);
+                ensureCorrectAuthType(methodAnnotApi.authTypes(), authType);
                 authenticatorApi.validade(prologAuthorizationHeader, TAG);
                 // Retornamos agora para impedir as demais verificações. A por integração tem prioridade, e, se existir,
                 // apenas ela deve ser considerada.
+                return;
+            }
+            final Class<?> resourceClass = resourceInfo.getResourceClass();
+            final ApiExposed classAnnotApi = resourceClass.getAnnotation(ApiExposed.class);
+            if (classAnnotApi != null) {
+                ensureCorrectAuthType(classAnnotApi.authTypes(), authType);
+                authenticatorApi.validade(prologAuthorizationHeader, TAG);
                 return;
             }
         } else {
@@ -77,7 +85,7 @@ public final class AuthenticationFilter implements ContainerRequestFilter {
         final Method resourceMethod = resourceInfo.getResourceMethod();
         final Secured methodAnnot = resourceMethod.getAnnotation(Secured.class);
         if (methodAnnot != null) {
-            ensureCorrectAuthType(methodAnnot, authType);
+            ensureCorrectAuthType(methodAnnot.authTypes(), authType);
             final ColaboradorAutenticado colaboradorAutenticado = authenticator.validate(
                     value,
                     methodAnnot.permissions(),
@@ -88,11 +96,10 @@ public final class AuthenticationFilter implements ContainerRequestFilter {
             // apenas ela deve ser considerada.
             return;
         }
-
         final Class<?> resourceClass = resourceInfo.getResourceClass();
         final Secured classAnnot = resourceClass.getAnnotation(Secured.class);
         if (classAnnot != null) {
-            ensureCorrectAuthType(classAnnot, authType);
+            ensureCorrectAuthType(classAnnot.authTypes(), authType);
             final ColaboradorAutenticado colaboradorAutenticado = authenticator.validate(
                     value,
                     classAnnot.permissions(),
@@ -102,27 +109,11 @@ public final class AuthenticationFilter implements ContainerRequestFilter {
         }
     }
 
-    private void ensureCorrectAuthType(final Secured methodAnnot, final AuthType headerAuthType) {
-        final AuthType[] permitedAuthTypes = methodAnnot.authTypes();
-        //noinspection ForLoopReplaceableByForEach
-        for (int i = 0; i < permitedAuthTypes.length; i++) {
-            final AuthType authType = permitedAuthTypes[i];
-            if (authType == headerAuthType) {
-                return;
-            }
+    private void ensureCorrectAuthType(@NotNull final AuthType[] permitedAuthTypes,
+                                       @NotNull final AuthType headerAuthType) {
+        if (Arrays.stream(permitedAuthTypes).anyMatch(authType -> authType == headerAuthType)) {
+            return;
         }
         throw new NotAuthorizedException("Authorization method not allowed for this resource: " + headerAuthType);
-    }
-
-    private void ensureCorrectAuthType(final ApiExposed methodAnnot, final AuthType headerAuthTypeApi) {
-        final AuthType[] permitedAuthTypes = methodAnnot.authTypes();
-        //noinspection ForLoopReplaceableByForEach
-        for (int i = 0; i < permitedAuthTypes.length; i++) {
-            final AuthType authType = permitedAuthTypes[i];
-            if (authType == headerAuthTypeApi) {
-                return;
-            }
-        }
-        throw new NotAuthorizedException("Authorization method not allowed for this resource: " + headerAuthTypeApi);
     }
 }
