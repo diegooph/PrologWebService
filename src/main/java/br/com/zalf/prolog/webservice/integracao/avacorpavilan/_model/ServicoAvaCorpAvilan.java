@@ -2,7 +2,6 @@ package br.com.zalf.prolog.webservice.integracao.avacorpavilan._model;
 
 import com.google.gson.annotations.SerializedName;
 import lombok.Data;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDateTime;
@@ -16,28 +15,25 @@ import static br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvil
  */
 @Data
 public final class ServicoAvaCorpAvilan {
-    @NotNull
     @SerializedName("Grupo")
-    private final String grupo = COD_GRUPO_AVILAN;
-    @NotNull
+    private final short grupo = COD_GRUPO_AVILAN;
     @SerializedName("Empresa")
-    private final String empresa = COD_EMPRESA_AVILAN;
+    private final short empresa = COD_EMPRESA_AVILAN;
     @Nullable
     @SerializedName("Filial")
-    private final String filial;
+    private final Integer filial;
     @Nullable
     @SerializedName("Unidade")
-    private final String unidade;
+    private final Integer unidade;
     @Nullable
     @SerializedName("Dtinc")
     private final LocalDateTime dataHoraInclusaoServico;
     @Nullable
     @SerializedName("ServicoRealizado")
-    private final String servicoRealizado;
+    private final Integer servicoRealizado;
     @Nullable
     @SerializedName("Complemento")
     private final String complemento;
-    @NotNull
     @SerializedName("ObjetivoOrdemServico")
-    private final String objetivoOrdemServico = COD_OBJETIVO_ORDEM_SERVICO_AVILAN;
+    private final short objetivoOrdemServico = COD_OBJETIVO_ORDEM_SERVICO_AVILAN;
 }

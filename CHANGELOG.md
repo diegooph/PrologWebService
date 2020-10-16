@@ -3,6 +3,7 @@ Change Log
 ## Stage
 ### Features
 * Permite a exportação de aferições no padrão Protheus para importação no sistema terceiro (PL-3182)
+* Ajusta tipos dos atributos os objetos de retorno pra Avilan (PL-3205)
 
 
 <a name="v1.3.1"></a>

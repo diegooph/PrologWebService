@@ -17,24 +17,20 @@ import static br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvil
  */
 @Data
 public final class OrdemServicoAvaCorpAvilan {
-    @NotNull
     @SerializedName("Grupo")
-    private final String grupo = COD_GRUPO_AVILAN;
-    @NotNull
+    private final short grupo = COD_GRUPO_AVILAN;
     @SerializedName("Empresa")
-    private final String empresa = COD_EMPRESA_AVILAN;
+    private final short empresa = COD_EMPRESA_AVILAN;
     @Nullable
     @SerializedName("Filial")
-    private final String filial;
+    private final Integer filial;
     @Nullable
     @SerializedName("Unidade")
-    private final String unidade;
-    @NotNull
+    private final Integer unidade;
     @SerializedName("TipoManutencao")
-    private final String tipoManutencao = COD_TIPO_MANUTENCAO_AVILAN;
-    @NotNull
+    private final short tipoManutencao = COD_TIPO_MANUTENCAO_AVILAN;
     @SerializedName("ObjetivoOrdemServico")
-    private final String objetivoOrdemServico = COD_OBJETIVO_ORDEM_SERVICO_AVILAN;
+    private final short objetivoOrdemServico = COD_OBJETIVO_ORDEM_SERVICO_AVILAN;
     @NotNull
     @SerializedName("NumeroExterno")
     private final Long numeroExterno;
@@ -46,7 +42,7 @@ public final class OrdemServicoAvaCorpAvilan {
     private final LocalDateTime dataHoraInclusao;
     @NotNull
     @SerializedName("CodigoUsuario")
-    private final String codigoUsuario;
+    private final Long codigoUsuario;
     @NotNull
     @SerializedName("Veiculo")
     private final String placaVeiculo;
