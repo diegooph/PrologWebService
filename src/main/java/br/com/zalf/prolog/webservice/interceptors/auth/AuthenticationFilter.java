@@ -50,7 +50,11 @@ public final class AuthenticationFilter implements ContainerRequestFilter {
         }
 
         final AuthType authType;
-        if (prologAuthorizationHeader != null) {
+        if (authorizationHeader.startsWith("Bearer ")) {
+            authType = AuthType.BEARER;
+        } else if (authorizationHeader.startsWith("Basic ")) {
+            authType = AuthType.BASIC;
+        } else if (!StringUtils.isNullOrEmpty(prologAuthorizationHeader)) {
             authType = AuthType.API;
             final AuthenticatorApi authenticatorApi =
                     AuthenticatorFactory.createAuthenticatorApi(authType, new BaseIntegracaoService());
@@ -65,10 +69,6 @@ public final class AuthenticationFilter implements ContainerRequestFilter {
                 // apenas ela deve ser considerada.
                 return;
             }
-        } else if (authorizationHeader.startsWith("Basic ")) {
-            authType = AuthType.BASIC;
-        } else if (authorizationHeader.startsWith("Bearer ")) {
-            authType = AuthType.BEARER;
         } else {
             throw new NotAuthorizedException("Authorization header must be provided!");
         }
