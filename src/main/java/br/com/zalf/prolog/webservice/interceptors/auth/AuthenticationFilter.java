@@ -46,7 +46,7 @@ public final class AuthenticationFilter implements ContainerRequestFilter {
                 (StringUtils.isNullOrEmpty(prologAuthorizationHeader))) {
             throw new NotAuthorizedException("Authorization header must be provided!");
         } else if (authorizationHeader != null && prologAuthorizationHeader != null) {
-            throw new NotAuthorizedException("Multiple authorization headers!");
+            throw new MultiAuthorizationHeadersException("Multiples authorizations headers!");
         }
 
         final AuthType authType;
