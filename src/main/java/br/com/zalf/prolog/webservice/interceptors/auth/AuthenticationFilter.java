@@ -62,9 +62,7 @@ public final class AuthenticationFilter implements ContainerRequestFilter {
             final ApiExposed methodAnnotApi = resourceMethodApi.getAnnotation(ApiExposed.class);
             if (methodAnnotApi != null) {
                 ensureCorrectAuthType(methodAnnotApi, authType);
-                authenticatorApi.validade(
-                        prologAuthorizationHeader,
-                        TAG);
+                authenticatorApi.validade(prologAuthorizationHeader, TAG);
                 // Retornamos agora para impedir as demais verificações. A por integração tem prioridade, e, se existir,
                 // apenas ela deve ser considerada.
                 return;
