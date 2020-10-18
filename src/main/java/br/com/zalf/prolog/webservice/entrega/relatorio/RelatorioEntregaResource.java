@@ -22,18 +22,18 @@ import java.util.List;
 @Secured(permissions = Pilares.Entrega.Relatorios.INDICADORES)
 public class RelatorioEntregaResource {
 
-    private RelatorioEntregaService service = new RelatorioEntregaService();
+    private final RelatorioEntregaService service = new RelatorioEntregaService();
 
     @GET
     @Secured
     @UsedBy(platforms = Platform.ANDROID)
     @Path("/acumulados/{codEmpresa}/{codRegional}/{codUnidade}/{equipe}")
-    public List<IndicadorAcumulado> getAcumuladoIndicadores(@QueryParam("dataInicial") Long dataInicial,
-                                                            @QueryParam("dataFinal") Long dataFinal,
-                                                            @PathParam("codEmpresa") String codEmpresa,
-                                                            @PathParam("codRegional") String codRegional,
-                                                            @PathParam("codUnidade") String codUnidade,
-                                                            @PathParam("equipe") String equipe){
+    public List<IndicadorAcumulado> getAcumuladoIndicadores(@QueryParam("dataInicial") final Long dataInicial,
+                                                            @QueryParam("dataFinal") final Long dataFinal,
+                                                            @PathParam("codEmpresa") final String codEmpresa,
+                                                            @PathParam("codRegional") final String codRegional,
+                                                            @PathParam("codUnidade") final String codUnidade,
+                                                            @PathParam("equipe") final String equipe) {
         return service.getAcumuladoIndicadores(dataInicial, dataFinal, codEmpresa, codRegional, codUnidade, equipe);
     }
 
@@ -41,14 +41,14 @@ public class RelatorioEntregaResource {
     @Secured
     @UsedBy(platforms = Platform.ANDROID)
     @Path("/extratos/{indicador}/{codEmpresa}/{codRegional}/{codUnidade}/{equipe}/{cpf}")
-    public List<Indicador> getExtratoIndicador(@QueryParam("dataInicial") Long dataInicial,
-                                               @QueryParam("dataFinal") Long dataFinal,
-                                               @PathParam("codRegional") String codRegional,
-                                               @PathParam("codEmpresa") String codEmpresa,
-                                               @PathParam("codUnidade") String codUnidade,
-                                               @PathParam("equipe") String equipe,
-                                               @PathParam("cpf") String cpf,
-                                               @PathParam("indicador") String indicador){
+    public List<Indicador> getExtratoIndicador(@QueryParam("dataInicial") final Long dataInicial,
+                                               @QueryParam("dataFinal") final Long dataFinal,
+                                               @PathParam("codRegional") final String codRegional,
+                                               @PathParam("codEmpresa") final String codEmpresa,
+                                               @PathParam("codUnidade") final String codUnidade,
+                                               @PathParam("equipe") final String equipe,
+                                               @PathParam("cpf") final String cpf,
+                                               @PathParam("indicador") final String indicador) {
         return service.getExtratoIndicador(dataInicial, dataFinal, codRegional, codEmpresa,
                 codUnidade, equipe, cpf, indicador);
     }
@@ -57,14 +57,14 @@ public class RelatorioEntregaResource {
     @Secured
     @UsedBy(platforms = Platform.ANDROID)
     @Path("/acumulados/diarios/{codEmpresa}/{codRegional}/{codUnidade}/{equipe}")
-    public List<ConsolidadoDia> getConsolidadoDia(@QueryParam("dataInicial") Long dataInicial,
-                                                  @QueryParam("dataFinal") Long dataFinal,
-                                                  @PathParam("codRegional") String codRegional,
-                                                  @PathParam("codEmpresa") String codEmpresa,
-                                                  @PathParam("codUnidade") String codUnidade,
-                                                  @PathParam("equipe") String equipe,
-                                                  @QueryParam("limit") int limit,
-                                                  @QueryParam("offset") int offset){
+    public List<ConsolidadoDia> getConsolidadoDia(@QueryParam("dataInicial") final Long dataInicial,
+                                                  @QueryParam("dataFinal") final Long dataFinal,
+                                                  @PathParam("codRegional") final String codRegional,
+                                                  @PathParam("codEmpresa") final String codEmpresa,
+                                                  @PathParam("codUnidade") final String codUnidade,
+                                                  @PathParam("equipe") final String equipe,
+                                                  @QueryParam("limit") final int limit,
+                                                  @QueryParam("offset") final int offset) {
         return service.getConsolidadoDia(dataInicial, dataFinal, codEmpresa, codRegional, codUnidade, equipe, limit, offset);
     }
 
@@ -72,11 +72,11 @@ public class RelatorioEntregaResource {
     @Secured
     @UsedBy(platforms = Platform.ANDROID)
     @Path("/mapas/{codEmpresa}/{codRegional}/{codUnidade}/{equipe}")
-    public List<MapaEstratificado> getMapasEstratificados(@QueryParam("data") Long data,
-                                                          @PathParam("codEmpresa") String codEmpresa,
-                                                          @PathParam("codRegional") String codRegional,
-                                                          @PathParam("codUnidade") String codUnidade,
-                                                          @PathParam("equipe") String equipe){
+    public List<MapaEstratificado> getMapasEstratificados(@QueryParam("data") final Long data,
+                                                          @PathParam("codEmpresa") final String codEmpresa,
+                                                          @PathParam("codRegional") final String codRegional,
+                                                          @PathParam("codUnidade") final String codUnidade,
+                                                          @PathParam("equipe") final String equipe) {
         return service.getMapasEstratificados(data, codEmpresa, codRegional, codUnidade, equipe);
     }
 
@@ -84,13 +84,13 @@ public class RelatorioEntregaResource {
     @Secured
     @UsedBy(platforms = Platform.ANDROID)
     @Path("/acumulados/graficos/{indicador}/{codEmpresa}/{codRegional}/{codUnidade}/{equipe}")
-    public List<DadosGrafico> getDadosGrafico(@QueryParam("dataInicial") Long dataInicial,
-                                              @QueryParam("dataFinal") Long dataFinal,
-                                              @PathParam("codRegional") String codRegional,
-                                              @PathParam("codEmpresa") String codEmpresa,
-                                              @PathParam("codUnidade") String codUnidade,
-                                              @PathParam("equipe") String equipe,
-                                              @PathParam("indicador") String indicador){
+    public List<DadosGrafico> getDadosGrafico(@QueryParam("dataInicial") final Long dataInicial,
+                                              @QueryParam("dataFinal") final Long dataFinal,
+                                              @PathParam("codRegional") final String codRegional,
+                                              @PathParam("codEmpresa") final String codEmpresa,
+                                              @PathParam("codUnidade") final String codUnidade,
+                                              @PathParam("equipe") final String equipe,
+                                              @PathParam("indicador") final String indicador) {
         return service.getDadosGrafico(dataInicial, dataFinal, codEmpresa, codRegional, codUnidade, equipe, indicador);
     }
 
@@ -100,9 +100,9 @@ public class RelatorioEntregaResource {
             Pilares.Entrega.Relatorios.INDICADORES,
             Pilares.Entrega.Upload.VERIFICACAO_DADOS})
     @Path("/mapas/estratificados/{codUnidade}/csv")
-    public StreamingOutput getEstratificacaoMapasCsv(@PathParam("codUnidade") Long codUnidade,
-                                                     @QueryParam("dataInicial") Long dataInicial,
-                                                     @QueryParam("dataFinal") Long dataFinal) {
+    public StreamingOutput getEstratificacaoMapasCsv(@PathParam("codUnidade") final Long codUnidade,
+                                                     @QueryParam("dataInicial") final Long dataInicial,
+                                                     @QueryParam("dataFinal") final Long dataFinal) {
         return outputStream -> service.getEstratificacaoMapasCsv(codUnidade, dataInicial, dataFinal, outputStream);
     }
 
@@ -112,22 +112,22 @@ public class RelatorioEntregaResource {
             Pilares.Entrega.Relatorios.INDICADORES,
             Pilares.Entrega.Upload.VERIFICACAO_DADOS})
     @Path("/mapas/estratificados/{codUnidade}/report")
-    public Report getEstratificacaoMapasReport(@PathParam("codUnidade") Long codUnidade,
-                                               @QueryParam("dataInicial") Long dataInicial,
-                                               @QueryParam("dataFinal") Long dataFinal) {
+    public Report getEstratificacaoMapasReport(@PathParam("codUnidade") final Long codUnidade,
+                                               @QueryParam("dataInicial") final Long dataInicial,
+                                               @QueryParam("dataFinal") final Long dataFinal) {
         return service.getEstratificacaoMapasReport(codUnidade, dataInicial, dataFinal);
     }
 
     @GET
     @Secured(permissions = {Pilares.Entrega.Relatorios.PRODUTIVIDADE, Pilares.Entrega.Relatorios.INDICADORES})
     @Path("/indicadores/extratos/{codEmpresa}/{codRegional}/{codUnidade}/{equipe}/{cpf}/csv")
-    public StreamingOutput getExtratoMapasIndicadorCsv(@PathParam("codEmpresa") Long codEmpresa,
-                                                       @PathParam("codRegional") String codRegional,
-                                                       @PathParam("codUnidade") String codUnidade,
-                                                       @PathParam("cpf") String cpf,
-                                                       @QueryParam("dataInicial") Long dataInicial,
-                                                       @QueryParam("dataFinal") Long dataFinal,
-                                                       @PathParam("equipe") String equipe) {
+    public StreamingOutput getExtratoMapasIndicadorCsv(@PathParam("codEmpresa") final Long codEmpresa,
+                                                       @PathParam("codRegional") final String codRegional,
+                                                       @PathParam("codUnidade") final String codUnidade,
+                                                       @PathParam("cpf") final String cpf,
+                                                       @QueryParam("dataInicial") final Long dataInicial,
+                                                       @QueryParam("dataFinal") final Long dataFinal,
+                                                       @PathParam("equipe") final String equipe) {
         return outputstream -> service.getExtratoMapasIndicadorCsv(codEmpresa, codRegional, codUnidade, cpf,
                 dataInicial, dataFinal, equipe, outputstream);
     }
@@ -135,40 +135,54 @@ public class RelatorioEntregaResource {
     @GET
     @Secured(permissions = {Pilares.Entrega.Relatorios.PRODUTIVIDADE, Pilares.Entrega.Relatorios.INDICADORES})
     @Path("/indicadores/extratos/{codEmpresa}/{codRegional}/{codUnidade}/{equipe}/{cpf}/report")
-    public Report getExtratoMapasIndicadorReport(@PathParam("codEmpresa") Long codEmpresa,
-                                                 @PathParam("codRegional") String codRegional,
-                                                 @PathParam("codUnidade") String codUnidade,
-                                                 @PathParam("cpf") String cpf,
-                                                 @QueryParam("dataInicial") Long dataInicial,
-                                                 @QueryParam("dataFinal") Long dataFinal,
-                                                 @PathParam("equipe") String equipe) {
+    public Report getExtratoMapasIndicadorReport(@PathParam("codEmpresa") final Long codEmpresa,
+                                                 @PathParam("codRegional") final String codRegional,
+                                                 @PathParam("codUnidade") final String codUnidade,
+                                                 @PathParam("cpf") final String cpf,
+                                                 @QueryParam("dataInicial") final Long dataInicial,
+                                                 @QueryParam("dataFinal") final Long dataFinal,
+                                                 @PathParam("equipe") final String equipe) {
         return service.getExtratoMapasIndicadorReport(codEmpresa, codRegional, codUnidade, cpf, dataInicial, dataFinal, equipe);
     }
 
     @GET
     @Secured(permissions = {Pilares.Entrega.Relatorios.PRODUTIVIDADE, Pilares.Entrega.Relatorios.INDICADORES})
     @Path("/indicadores/consolidados/{codEmpresa}/{codRegional}/{codUnidade}/{equipe}/{cpf}/csv")
-    public StreamingOutput getConsolidadoMapasIndicadorCsv(@PathParam("codEmpresa") Long codEmpresa,
-                                                       @PathParam("codRegional") String codRegional,
-                                                       @PathParam("codUnidade") String codUnidade,
-                                                       @PathParam("cpf") String cpf,
-                                                       @QueryParam("dataInicial") Long dataInicial,
-                                                       @QueryParam("dataFinal") Long dataFinal,
-                                                       @PathParam("equipe") String equipe) {
-        return outputstream -> service.getConsolidadoMapasIndicadorCsv(codEmpresa, codRegional, codUnidade, cpf,
-                dataInicial, dataFinal, equipe, outputstream);
+    public StreamingOutput getConsolidadoMapasIndicadorCsv(@PathParam("codEmpresa") final Long codEmpresa,
+                                                           @PathParam("codRegional") final String codRegional,
+                                                           @PathParam("codUnidade") final String codUnidade,
+                                                           @PathParam("equipe") final String codEquipe,
+                                                           @PathParam("cpf") final String cpf,
+                                                           @QueryParam("dataInicial") final Long dataInicial,
+                                                           @QueryParam("dataFinal") final Long dataFinal) {
+        return outputstream -> service.getConsolidadoMapasIndicadorCsv(
+                outputstream,
+                codEmpresa,
+                codRegional,
+                codUnidade,
+                codEquipe,
+                cpf,
+                dataInicial,
+                dataFinal);
     }
 
     @GET
     @Secured(permissions = {Pilares.Entrega.Relatorios.PRODUTIVIDADE, Pilares.Entrega.Relatorios.INDICADORES})
     @Path("/indicadores/consolidados/{codEmpresa}/{codRegional}/{codUnidade}/{equipe}/{cpf}/report")
-    public Report getConsolidadoMapasIndicadorReport(@PathParam("codEmpresa") Long codEmpresa,
-                                                 @PathParam("codRegional") String codRegional,
-                                                 @PathParam("codUnidade") String codUnidade,
-                                                 @PathParam("cpf") String cpf,
-                                                 @QueryParam("dataInicial") Long dataInicial,
-                                                 @QueryParam("dataFinal") Long dataFinal,
-                                                 @PathParam("equipe") String equipe) {
-        return service.getConsolidadoMapasIndicadorReport(codEmpresa, codRegional, codUnidade, cpf, dataInicial, dataFinal, equipe);
+    public Report getConsolidadoMapasIndicadorReport(@PathParam("codEmpresa") final Long codEmpresa,
+                                                     @PathParam("codRegional") final String codRegional,
+                                                     @PathParam("codUnidade") final String codUnidade,
+                                                     @PathParam("equipe") final String codEquipe,
+                                                     @PathParam("cpf") final String cpf,
+                                                     @QueryParam("dataInicial") final Long dataInicial,
+                                                     @QueryParam("dataFinal") final Long dataFinal) {
+        return service.getConsolidadoMapasIndicadorReport(
+                codEmpresa,
+                codRegional,
+                codUnidade,
+                codEquipe,
+                cpf,
+                dataInicial,
+                dataFinal);
     }
 }
