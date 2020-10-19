@@ -43,7 +43,7 @@ public class PrologApplication extends SpringBootServletInitializer {
 
         @Autowired
         public JerseyConfig(ObjectMapper objectMapper) {
-            this.packages("br.com.zalf.prolog.webservice.geral.unidade");
+            this.packages("br.com.zalf.prolog.webservice");
             this.property(ServerProperties.BV_SEND_ERROR_IN_RESPONSE, true);
             this.property(ServerProperties.BV_DISABLE_VALIDATE_ON_EXECUTABLE_OVERRIDE_CHECK, true);
             this.register(MultiPartFeature.class);
