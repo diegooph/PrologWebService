@@ -16,7 +16,6 @@ logging:
       springframework: error
 
 springdoc:
-  api-docs:
-    path: /prolog/v2/openapi.json
   swagger-ui:
     path: /swagger-ui.html
+    url: /prolog/v2/swagger.json
