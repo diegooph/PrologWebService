@@ -21,7 +21,6 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.ServletContextListener;
-import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.Provider;
 
@@ -38,7 +37,7 @@ public class PrologApplication extends SpringBootServletInitializer {
     }
 
     @Component
-    @ApplicationPath("/prolog/v2")
+//    @ApplicationPath("/prolog/v2")
     public static class JerseyConfig extends ResourceConfig {
 
         @Autowired
