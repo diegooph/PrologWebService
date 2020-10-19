@@ -27,19 +27,14 @@ public class ProLogSqlExceptionTranslator implements SqlExceptionTranslator {
                 return proLogException;
             }
 
-            if (String.valueOf(sqlException.getSQLState()).equals(SqlErrorCodes.UNIQUE_VIOLATION.getErrorCode())) {
-                return new DuplicateKeyException("Este recurso já existe no banco de dados");
-            }
-
-            if (String.valueOf(sqlException.getSQLState()).equals(SqlErrorCodes.BD_GENERIC_ERROR_CODE.getErrorCode())) {
-                if (sqlException instanceof PSQLException) {
-                    return new GenericException(getPSQLErrorMessage(sqlException));
-                } else if (sqlException instanceof BatchUpdateException) {
-                    if (sqlException.getNextException() instanceof PSQLException) {
-                        return new GenericException(getPSQLErrorMessage(sqlException.getNextException()));
-                    }
+            if (sqlException instanceof PSQLException) {
+                return handlePSQLException((PSQLException) sqlException, fallBackErrorMessage);
+            } else if (sqlException instanceof BatchUpdateException) {
+                if (sqlException.getNextException() instanceof PSQLException) {
+                    return handlePSQLException((PSQLException) sqlException.getNextException(), fallBackErrorMessage);
                 }
             }
+
         } catch (final Throwable t) {
             // Se acontecer algum outro erro ao tentarmos mapear o erro principal, realizamos o fallBack para a
             // mensagem recebida lançando uma exception genérica.
@@ -50,8 +45,64 @@ public class ProLogSqlExceptionTranslator implements SqlExceptionTranslator {
     }
 
     @NotNull
+    private ProLogException handlePSQLException(@NotNull final PSQLException sqlException,
+                                                @NotNull final String fallBackErrorMessage) {
+        if (String.valueOf(sqlException.getSQLState()).equals(SqlErrorCodes.UNIQUE_VIOLATION.getErrorCode())) {
+            return new DuplicateKeyException(
+                    "Este recurso já existe no banco de dados.",
+                    getPSQLErrorDetail(sqlException),
+                    sqlException.getMessage());
+        }
+
+        if (String.valueOf(sqlException.getSQLState()).equals(SqlErrorCodes.FOREIGN_KEY_VIOLATION.getErrorCode())) {
+            return new ForeignKeyException(
+                    "Uma chave estrangeira não existe no banco de dados.",
+                    getPSQLErrorDetail(sqlException),
+                    sqlException.getMessage());
+        }
+
+        if (String.valueOf(sqlException.getSQLState()).equals(SqlErrorCodes.CHECK_VIOLATION.getErrorCode())) {
+            return new ConstraintCheckException(
+                    "Uma constraint foi violada.",
+                    ConstraintsCheckEnum.fromString(
+                            getPSQLErrorConstraint(sqlException)).getDetailedMessage().isEmpty()
+                            ? getPSQLErrorMessage(sqlException)
+                            : ConstraintsCheckEnum.fromString(
+                            getPSQLErrorConstraint(sqlException)).getDetailedMessage(),
+                    sqlException.getMessage());
+        }
+
+        if (String.valueOf(sqlException.getSQLState()).equals(SqlErrorCodes.NOT_NULL_VIOLATION.getErrorCode())) {
+            return new NotNullViolationException(
+                    "Uma constraint not null foi violada.",
+                    ConstraintsCheckEnum.fromString(
+                            getPSQLErrorConstraint(sqlException)).getDetailedMessage().isEmpty()
+                            ? getPSQLErrorMessage(sqlException)
+                            : ConstraintsCheckEnum.fromString(
+                            getPSQLErrorConstraint(sqlException)).getDetailedMessage(),
+                    sqlException.getMessage());
+        }
+
+        if (String.valueOf(sqlException.getSQLState()).equals(SqlErrorCodes.BD_GENERIC_ERROR_CODE.getErrorCode())) {
+            return new GenericException(getPSQLErrorMessage(sqlException));
+        }
+
+        return new DataAccessException(fallBackErrorMessage);
+    }
+
+    @NotNull
     private String getPSQLErrorMessage(@NotNull final SQLException sqlException) {
         return ((PSQLException) sqlException).getServerErrorMessage().getMessage();
+    }
+
+    @NotNull
+    private String getPSQLErrorDetail(@NotNull final SQLException sqlException) {
+        return ((PSQLException) sqlException).getServerErrorMessage().getDetail();
+    }
+
+    @NotNull
+    private String getPSQLErrorConstraint(@NotNull final SQLException sqlException) {
+        return ((PSQLException) sqlException).getServerErrorMessage().getConstraint();
     }
 
     @Nullable

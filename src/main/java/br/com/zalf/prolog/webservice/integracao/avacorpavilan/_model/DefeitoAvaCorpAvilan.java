@@ -19,24 +19,22 @@ import static br.com.zalf.prolog.webservice.integracao.avacorpavilan.AvaCorpAvil
  */
 @Data
 public final class DefeitoAvaCorpAvilan {
-    @NotNull
     @SerializedName("Grupo")
-    private final String grupo = COD_GRUPO_AVILAN;
-    @NotNull
+    private final short grupo = COD_GRUPO_AVILAN;
     @SerializedName("Empresa")
-    private final String empresa = COD_EMPRESA_AVILAN;
+    private final short empresa = COD_EMPRESA_AVILAN;
     @Nullable
     @SerializedName("Filial")
-    private final String filial;
+    private final Integer filial;
     @Nullable
     @SerializedName("Unidade")
-    private final String unidade;
+    private final Integer unidade;
     @NotNull
     @SerializedName("Dtinc")
     private final LocalDateTime dataHoraInclusaoItem;
     @Nullable
     @SerializedName("Defeito")
-    private final String defeito;
+    private final Integer defeito;
     @NotNull
     @SerializedName("Complemento")
     private final String complemento;

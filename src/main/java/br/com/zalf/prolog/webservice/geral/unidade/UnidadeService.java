@@ -7,6 +7,7 @@ import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeVisualizacaoLis
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -19,7 +20,7 @@ public final class UnidadeService {
     @NotNull
     private final UnidadeDao dao = Injection.provideUnidadeDao();
 
-    public void updateUnidade(@NotNull final UnidadeEdicao unidadeEdicao) {
+    public void updateUnidade(@Valid @NotNull final UnidadeEdicao unidadeEdicao) {
         try {
             dao.update(unidadeEdicao);
         } catch (final Throwable t) {

@@ -524,7 +524,6 @@ public class ControleJornadaDaoImpl extends DatabaseConnection implements Contro
     private IntervaloMarcacao createIntervaloMarcacao(@NotNull final ResultSet rSet) throws SQLException {
         final IntervaloMarcacao intervaloMarcacao = new IntervaloMarcacao();
         intervaloMarcacao.setCodigo(rSet.getLong("CODIGO"));
-        intervaloMarcacao.setCodMarcacaoPorUnidade(rSet.getLong("COD_MARCACAO_POR_UNIDADE"));
         intervaloMarcacao.setCodUnidade(rSet.getLong("COD_UNIDADE"));
         intervaloMarcacao.setCpfColaborador(rSet.getLong("CPF_COLABORADOR"));
         intervaloMarcacao.setDataNascimentoColaborador(rSet.getDate("DATA_NASCIMENTO_COLABORADOR"));

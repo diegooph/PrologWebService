@@ -12,10 +12,10 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public abstract class BaseIntegracaoService {
+public class BaseIntegracaoService {
 
-    protected void ensureValidToken(@NotNull final String tokenIntegracao,
-                                    @NotNull final String tag) throws ProLogException {
+    public void ensureValidToken(@NotNull final String tokenIntegracao,
+                                 @NotNull final String tag) throws ProLogException {
         try {
             if (!Injection.provideAutenticacaoIntegracaoDao().verifyIfTokenIntegracaoExists(tokenIntegracao)) {
                 throw new NotAuthorizedException("Token Integração não existe no banco de dados: " + tokenIntegracao);

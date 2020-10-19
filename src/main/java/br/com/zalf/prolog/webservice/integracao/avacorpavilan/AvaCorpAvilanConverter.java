@@ -6,6 +6,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collections;
 import java.util.stream.Collectors;
 
+import static br.com.zalf.prolog.webservice.commons.util.StringUtils.getIntegerValueFromString;
+
 /**
  * Created on 2020-08-31
  *
@@ -20,12 +22,12 @@ public final class AvaCorpAvilanConverter {
     public static OrdemServicoAvaCorpAvilan convert(@NotNull final OsIntegracao osIntegracao,
                                                     @NotNull final Long codigoUsuario) {
         return new OrdemServicoAvaCorpAvilan(
-                osIntegracao.getCodFilial(),
-                osIntegracao.getCodUnidade(),
+                getIntegerValueFromString(osIntegracao.getCodFilial()),
+                getIntegerValueFromString(osIntegracao.getCodUnidade()),
                 osIntegracao.getCodOsProlog(),
                 osIntegracao.getDataHoraAbertura(),
                 osIntegracao.getDataHoraAbertura(),
-                String.valueOf(codigoUsuario.intValue()),
+                codigoUsuario,
                 osIntegracao.getPlacaVeiculo(),
                 osIntegracao.getKmVeiculoNaAbertura(),
                 osIntegracao.getCpfColaboradorChecklist(),
@@ -39,10 +41,10 @@ public final class AvaCorpAvilanConverter {
     private static DefeitoAvaCorpAvilan createDefeitoAvaCorpAvilan(@NotNull final OsIntegracao osIntegracao,
                                                                    @NotNull final ItemOsIntegracao itemOsIntegracao) {
         return new DefeitoAvaCorpAvilan(
-                osIntegracao.getCodFilial(),
-                osIntegracao.getCodUnidade(),
+                getIntegerValueFromString(osIntegracao.getCodFilial()),
+                getIntegerValueFromString(osIntegracao.getCodUnidade()),
                 osIntegracao.getDataHoraAbertura(),
-                itemOsIntegracao.getCodDefeito(),
+                getIntegerValueFromString(itemOsIntegracao.getCodDefeito()),
                 itemOsIntegracao.getDescricaoAlternativa(),
                 // Se o item está fechado inserimos o serviço de fechamento.
                 itemOsIntegracao.getDataHoraFechamento() != null
@@ -54,10 +56,10 @@ public final class AvaCorpAvilanConverter {
     private static ServicoAvaCorpAvilan createServicoAvaCorpAvilan(@NotNull final OsIntegracao osIntegracao,
                                                                    @NotNull final ItemOsIntegracao itemOsIntegracao) {
         return new ServicoAvaCorpAvilan(
-                osIntegracao.getCodFilial(),
-                osIntegracao.getCodUnidade(),
+                getIntegerValueFromString(osIntegracao.getCodFilial()),
+                getIntegerValueFromString(osIntegracao.getCodUnidade()),
                 itemOsIntegracao.getDataHoraFechamento(),
-                itemOsIntegracao.getCodServico(),
+                getIntegerValueFromString(itemOsIntegracao.getCodServico()),
                 itemOsIntegracao.getDescricaoFechamentoItem());
     }
 }

@@ -1,6 +1,22 @@
 Change Log
 ==========
 
+<a name="v1.3.1"></a>
+## Version [v1.3.1](https://github.com/luizfp/PrologWebService/compare/v1.3.0...v1.3.1) (2020-10-18)
+
+### Features
+* Implementa swagger (PL-3158)
+* Permite a exportação de aferições no padrão Protheus para importação no sistema terceiro (PL-3182)
+
+### Refactor
+* Remove codMarcacaoPorUnidade do IntervaloMarcacao (PL-3199)
+* Adapta sistema de autenticação para validar endpoints expostos para integração (PL-2937)
+* Melhora estrutura de tratamento de erros, preparando para exposição da api interna (PL-2938)
+* Melhora relatório de indicadores acumulados (PL-3199)
+
+### Bug Fixes
+* Ajusta tipos dos atributos nos objetos de retorno pra Avilan (PL-3205)
+
 <a name="v1.3.0"></a>
 ## Version [v1.3.0](https://github.com/luizfp/PrologWebService/compare/v1.2.1...v1.3.0) (2020-10-13)
 
@@ -16,6 +32,7 @@ Change Log
 
 <a name="v1.2.1"></a>
 ## Version [v1.2.1](https://github.com/luizfp/PrologWebService/compare/v1.2.0...v1.2.1) (2020-10-04)
+
 ### Features
 * Cria endpoint para buscar histórico de edições em csv (PL-3153)
 
