@@ -35,16 +35,7 @@ public final class ProtheusNepomucenoConverter {
 
         final List<MedicaoAfericaoProtheusNepomuceno> medicoes = new ArrayList<>();
         for (final Pneu pneu : afericaoPlaca.getPneusAferidos()) {
-            //noinspection ConstantConditions
-            medicoes.add(new MedicaoAfericaoProtheusNepomuceno(
-                    pneu.getCodigoCliente(),
-                    pneu.getCodigo(),
-                    pneu.getVidaAtual(),
-                    pneu.getPressaoAtual(),
-                    pneu.getSulcosAtuais().getInterno(),
-                    pneu.getSulcosAtuais().getCentralInterno(),
-                    pneu.getSulcosAtuais().getCentralExterno(),
-                    pneu.getSulcosAtuais().getExterno()));
+            medicoes.add(createMedicaoAfericaoProtheusNepomuceno(pneu, afericaoPlaca.getTipoMedicaoColetadaAfericao()));
         }
         return new AfericaoPlacaProtheusNepomuceno(
                 empresaUnidade[COD_EMPRESA_INDEX],
@@ -64,18 +55,6 @@ public final class ProtheusNepomucenoConverter {
                                                            @NotNull final AfericaoAvulsa afericaoAvulsa) {
         // Separa o código de empresa e unidade do campo auxiliar.
         final String[] empresaUnidade = codAuxiliarUnidade.split(DEFAULT_CODIGOS_SEPARATOR);
-
-        final Pneu pneu = afericaoAvulsa.getPneuAferido();
-        //noinspection ConstantConditions
-        final MedicaoAfericaoProtheusNepomuceno medicao = new MedicaoAfericaoProtheusNepomuceno(
-                pneu.getCodigoCliente(),
-                pneu.getCodigo(),
-                pneu.getVidaAtual(),
-                pneu.getPressaoAtual(),
-                pneu.getSulcosAtuais().getInterno(),
-                pneu.getSulcosAtuais().getCentralInterno(),
-                pneu.getSulcosAtuais().getCentralExterno(),
-                pneu.getSulcosAtuais().getExterno());
         return new AfericaoAvulsaProtheusNepomuceno(
                 empresaUnidade[COD_EMPRESA_INDEX],
                 empresaUnidade[COD_UNIDADE_INDEX],
@@ -83,7 +62,10 @@ public final class ProtheusNepomucenoConverter {
                 afericaoAvulsa.getTempoRealizacaoAfericaoInMillis(),
                 afericaoAvulsa.getDataHora(),
                 afericaoAvulsa.getTipoMedicaoColetadaAfericao(),
-                Collections.singletonList(medicao));
+                Collections.singletonList(
+                        createMedicaoAfericaoProtheusNepomuceno(
+                                afericaoAvulsa.getPneuAferido(),
+                                afericaoAvulsa.getTipoMedicaoColetadaAfericao())));
     }
 
     @NotNull
@@ -231,6 +213,47 @@ public final class ProtheusNepomucenoConverter {
             pneuAfericaoAvulsa.setPlacaAplicadoQuandoAferido(pneuInfoAfericaoAvulsa.getPlacaAplicadoQuandoAferido());
         }
         return pneuAfericaoAvulsa;
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    @NotNull
+    private static MedicaoAfericaoProtheusNepomuceno createMedicaoAfericaoProtheusNepomuceno(
+            @NotNull final Pneu pneu,
+            @NotNull final TipoMedicaoColetadaAfericao tipoMedicaoColetadaAfericao) {
+        switch (tipoMedicaoColetadaAfericao) {
+            case SULCO:
+                return new MedicaoAfericaoProtheusNepomuceno(
+                        pneu.getCodigoCliente(),
+                        pneu.getCodigo(),
+                        pneu.getVidaAtual(),
+                        PRESSAO_NAO_COLETADA,
+                        pneu.getSulcosAtuais().getInterno(),
+                        pneu.getSulcosAtuais().getCentralInterno(),
+                        pneu.getSulcosAtuais().getCentralExterno(),
+                        pneu.getSulcosAtuais().getExterno());
+            case PRESSAO:
+                return new MedicaoAfericaoProtheusNepomuceno(
+                        pneu.getCodigoCliente(),
+                        pneu.getCodigo(),
+                        pneu.getVidaAtual(),
+                        pneu.getPressaoAtual(),
+                        SULCO_NAO_COLETADO,
+                        SULCO_NAO_COLETADO,
+                        SULCO_NAO_COLETADO,
+                        SULCO_NAO_COLETADO);
+            case SULCO_PRESSAO:
+                return new MedicaoAfericaoProtheusNepomuceno(
+                        pneu.getCodigoCliente(),
+                        pneu.getCodigo(),
+                        pneu.getVidaAtual(),
+                        pneu.getPressaoAtual(),
+                        pneu.getSulcosAtuais().getInterno(),
+                        pneu.getSulcosAtuais().getCentralInterno(),
+                        pneu.getSulcosAtuais().getCentralExterno(),
+                        pneu.getSulcosAtuais().getExterno());
+            default:
+                throw new IllegalStateException("Unexpected value: " + tipoMedicaoColetadaAfericao);
+        }
     }
 
     @NotNull
