@@ -70,7 +70,7 @@ public class PrologApplication extends SpringBootServletInitializer {
 
         @Autowired
         public JerseyConfig(final ObjectMapper objectMapper) {
-            this.packages("br.com.zalf.prolog.webservice.geral.unidade");
+            this.packages("br.com.zalf.prolog.webservice");
             this.property(ServerProperties.BV_SEND_ERROR_IN_RESPONSE, true);
             this.property(ServerProperties.BV_DISABLE_VALIDATE_ON_EXECUTABLE_OVERRIDE_CHECK, true);
             this.register(MultiPartFeature.class);
@@ -93,7 +93,7 @@ public class PrologApplication extends SpringBootServletInitializer {
             swaggerConfigBean.setSchemes(new String[]{"http", "https"});
             swaggerConfigBean.setHost("localhost:8080");
             swaggerConfigBean.setBasePath("/prolog/v2");
-            swaggerConfigBean.setResourcePackage("br.com.zalf.prolog.webservice.geral.unidade");
+            swaggerConfigBean.setResourcePackage("br.com.zalf.prolog.webservice");
             swaggerConfigBean.setPrettyPrint(true);
             swaggerConfigBean.setScan(true);
         }
