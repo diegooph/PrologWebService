@@ -21,6 +21,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.ServletContextListener;
+import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.Provider;
 
@@ -32,57 +33,8 @@ import javax.ws.rs.ext.Provider;
 @SpringBootApplication
 public class PrologApplication extends SpringBootServletInitializer {
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         SpringApplication.run(PrologApplication.class, args);
-    }
-
-    @Component
-//    @ApplicationPath("/prolog/v2")
-    public static class JerseyConfig extends ResourceConfig {
-
-        @Autowired
-        public JerseyConfig(ObjectMapper objectMapper) {
-            this.packages("br.com.zalf.prolog.webservice");
-            this.property(ServerProperties.BV_SEND_ERROR_IN_RESPONSE, true);
-            this.property(ServerProperties.BV_DISABLE_VALIDATE_ON_EXECUTABLE_OVERRIDE_CHECK, true);
-            this.register(MultiPartFeature.class);
-            this.register(ProLogApplicationEventListener.class);
-            this.register(new ObjectMapperContextResolver(objectMapper));
-        }
-
-        @Provider
-        public static class ObjectMapperContextResolver implements ContextResolver<ObjectMapper> {
-            private final ObjectMapper mapper;
-
-            public ObjectMapperContextResolver(ObjectMapper mapper) {
-                this.mapper = mapper;
-            }
-
-            @Override
-            public ObjectMapper getContext(Class<?> type) {
-                return mapper;
-            }
-        }
-
-        @PostConstruct
-        public void init() {
-            // Register components where DI is needed
-            this.register(ApiListingResource.class);
-            this.register(SwaggerSerializers.class);
-
-            final BeanConfig swaggerConfigBean = new BeanConfig();
-            swaggerConfigBean.setConfigId("Prolog Api");
-            swaggerConfigBean.setTitle("Prolog Api");
-            swaggerConfigBean.setDescription("Métodos disponíveis para acesso aos dados do Prolog");
-            swaggerConfigBean.setVersion("v1");
-            swaggerConfigBean.setContact("diogenes@prologapp.com");
-            swaggerConfigBean.setSchemes(new String[]{"http", "https"});
-            swaggerConfigBean.setHost("localhost:8080");
-            swaggerConfigBean.setBasePath("/prolog/v2");
-            swaggerConfigBean.setResourcePackage("br.com.zalf.prolog.webservice.geral.unidade");
-            swaggerConfigBean.setPrettyPrint(true);
-            swaggerConfigBean.setScan(true);
-        }
     }
 
     @Bean
@@ -110,5 +62,54 @@ public class PrologApplication extends SpringBootServletInitializer {
     protected SpringApplicationBuilder configure(@NotNull final SpringApplicationBuilder builder) {
         builder.sources(PrologApplication.class);
         return builder;
+    }
+
+    @Component
+    @ApplicationPath("/prolog/v2")
+    public static class JerseyConfig extends ResourceConfig {
+
+        @Autowired
+        public JerseyConfig(final ObjectMapper objectMapper) {
+            this.packages("br.com.zalf.prolog.webservice.geral.unidade");
+            this.property(ServerProperties.BV_SEND_ERROR_IN_RESPONSE, true);
+            this.property(ServerProperties.BV_DISABLE_VALIDATE_ON_EXECUTABLE_OVERRIDE_CHECK, true);
+            this.register(MultiPartFeature.class);
+            this.register(ProLogApplicationEventListener.class);
+            this.register(new ObjectMapperContextResolver(objectMapper));
+        }
+
+        @PostConstruct
+        public void init() {
+            // Register components where DI is needed
+            this.register(ApiListingResource.class);
+            this.register(SwaggerSerializers.class);
+
+            final BeanConfig swaggerConfigBean = new BeanConfig();
+            swaggerConfigBean.setConfigId("Prolog Api");
+            swaggerConfigBean.setTitle("Prolog Api");
+            swaggerConfigBean.setDescription("Métodos disponíveis para acesso aos dados do Prolog");
+            swaggerConfigBean.setVersion("v1");
+            swaggerConfigBean.setContact("diogenes@prologapp.com");
+            swaggerConfigBean.setSchemes(new String[]{"http", "https"});
+            swaggerConfigBean.setHost("localhost:8080");
+            swaggerConfigBean.setBasePath("/prolog/v2");
+            swaggerConfigBean.setResourcePackage("br.com.zalf.prolog.webservice.geral.unidade");
+            swaggerConfigBean.setPrettyPrint(true);
+            swaggerConfigBean.setScan(true);
+        }
+
+        @Provider
+        public static class ObjectMapperContextResolver implements ContextResolver<ObjectMapper> {
+            private final ObjectMapper mapper;
+
+            public ObjectMapperContextResolver(final ObjectMapper mapper) {
+                this.mapper = mapper;
+            }
+
+            @Override
+            public ObjectMapper getContext(final Class<?> type) {
+                return mapper;
+            }
+        }
     }
 }
