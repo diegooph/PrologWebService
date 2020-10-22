@@ -22,6 +22,8 @@ public final class ProtheusNepomucenoConstants {
     static final Long DEFAULT_COD_MODELO_BANDA = 1L;
     static final int COD_EMPRESA_INDEX = 0;
     static final int COD_UNIDADE_INDEX = 1;
+    static final double PRESSAO_NAO_COLETADA = 0.0;
+    static final double SULCO_NAO_COLETADO = 0.0;
 
     private ProtheusNepomucenoConstants() {
         throw new IllegalStateException(ProtheusNepomucenoConstants.class.getSimpleName() + " cannot be instantiated!");
