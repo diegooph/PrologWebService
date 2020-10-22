@@ -119,7 +119,7 @@ public class AfericaoRelatorioDaoImpl extends DatabaseConnection implements Afer
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("select * from func_afericao_exportacao_afericoes_protheus(" +
+            stmt = conn.prepareStatement("select * from func_afericao_relatorio_exportacao_protheus(" +
                     "f_cod_unidades => ?," +
                     "f_cod_veiculos => ?," +
                     "f_data_inicial => ?," +

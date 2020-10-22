@@ -75,11 +75,7 @@ public class ProLogSqlExceptionTranslator implements SqlExceptionTranslator {
         if (String.valueOf(sqlException.getSQLState()).equals(SqlErrorCodes.NOT_NULL_VIOLATION.getErrorCode())) {
             return new NotNullViolationException(
                     "Uma constraint not null foi violada.",
-                    ConstraintsCheckEnum.fromString(
-                            getPSQLErrorConstraint(sqlException)).getDetailedMessage().isEmpty()
-                            ? getPSQLErrorMessage(sqlException)
-                            : ConstraintsCheckEnum.fromString(
-                            getPSQLErrorConstraint(sqlException)).getDetailedMessage(),
+                    getPSQLErrorMessage(sqlException),
                     sqlException.getMessage());
         }
 
