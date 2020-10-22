@@ -7,6 +7,9 @@ Change Log
 ### Refactor
 * Altera o envio da aferição para o Protheus - Nepomuceno (PL-3233)
 
+### Bug Fixes
+* Corrige recebimento das respostas do Latromi na integração da Avilan (PL-3232)
+
 <a name="v1.3.1"></a>
 ## Version [v1.3.1](https://github.com/luizfp/PrologWebService/compare/v1.3.0...v1.3.1) (2020-10-18)
 

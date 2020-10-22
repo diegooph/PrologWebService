@@ -3,8 +3,6 @@
 
 ### DoDs
 #### Gerais
-- [ ] Criar 2WH
-- [ ] Atribuir Components
 - [ ] Atualizar apresentação do Sprint Review
 - [ ] Atualizar o CHANGELOG
 - [ ] Informar banco, servidor e branch utilizados para executar a tarefa
