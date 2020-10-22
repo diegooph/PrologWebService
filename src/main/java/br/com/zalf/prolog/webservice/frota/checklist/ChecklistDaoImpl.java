@@ -10,6 +10,7 @@ import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.delecao.CheckListsDelecao;
 import br.com.zalf.prolog.webservice.frota.checklist.model.ChecklistListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.model.FiltroRegionalUnidadeChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.RegionalSelecaoChecklist;
@@ -22,10 +23,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.mudancaestrutura.ChecklistM
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
@@ -506,6 +504,31 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
         } finally {
             close(conn, stmt, rSet);
         }
+    }
+
+    @Override
+    public void deleteCheckListsAndOs(CheckListsDelecao checkListsDelecao) throws Throwable{
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareCall(" {call func_checklist_deleta_checklist_e_os(" +
+                    "f_cod_checklists => ?," +
+                    "f_cod_colaborador => ?," +
+                    "f_acao_executada => ?," +
+                    "f_origem_delecao => ?," +
+                    "f_observacao => ?)}");
+            final Array arrChecklist = conn.createArrayOf("F_COD_CHECKLISTS", checkListsDelecao.getChecklists().toArray());
+            stmt.setArray(1, arrChecklist);
+            stmt.setLong(2, checkListsDelecao.getCodigoColaborador());
+            stmt.setString(3, checkListsDelecao.getAcaoExecutada().getValue());
+            stmt.setString(4, checkListsDelecao.getOrigemDelecao().toString());
+            stmt.setString(5, checkListsDelecao.getObservacao());
+            stmt.execute();
+        } finally {
+            close(conn, stmt);
+        }
+
     }
 
     @NotNull
