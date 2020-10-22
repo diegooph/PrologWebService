@@ -20,7 +20,7 @@ public final class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester 
     public void insertChecklistOs(@NotNull final ApiAutenticacaoHolder apiAutenticacaoHolder,
                                   @NotNull final OrdemServicoAvaCorpAvilan ordemServicoAvaCorpAvilan) throws Throwable {
         final AvaCorpAvilanRest service = RestClient.getService(AvaCorpAvilanRest.class);
-        final Call<Void> call = service.insertChecklistOs(
+        final Call<Object> call = service.insertChecklistOs(
                 apiAutenticacaoHolder.getApiTokenClient(),
                 apiAutenticacaoHolder.getUrl(),
                 ordemServicoAvaCorpAvilan);
