@@ -2,7 +2,7 @@ Change Log
 ==========
 
 <a name="v1.3.2"></a>
-## Version [v1.3.2](https://github.com/luizfp/PrologWebService/compare/v1.3.1...v1.3.2) (release-date) [unreleased]
+## Version [v1.3.2](https://github.com/luizfp/PrologWebService/compare/v1.3.1...v1.3.2) (2020-10-22)
 
 ### Refactor
 * Altera o envio da aferição para o Protheus - Nepomuceno (PL-3233)
