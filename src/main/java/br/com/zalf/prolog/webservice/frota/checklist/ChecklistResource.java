@@ -83,7 +83,6 @@ public final class ChecklistResource {
     }
 
     @DELETE
-    @Path("/deletar")
     @Secured(permissions = {Pilares.Frota.Checklist.DELETAR})
     public Response deleteChecklistsAndOs(@QueryParam("codigos") @Required final List<Long> codigos,
                                           @QueryParam("acaoExecutada") @Required final CheckListDelecaoAcao acaoExecutada,
@@ -94,9 +93,7 @@ public final class ChecklistResource {
                 acaoExecutada,
                 OrigemAcaoEnum.INTERNO,
                 observacao);
-        return service.deleteChecklistsAndOs(checklistsDelecao) ?
-        Response.ok("Deleções realizadas com sucesso") :
-        Response.error("Erro ao realizar as deleções de checklists");
+        return service.deleteChecklistsAndOs(checklistsDelecao);
     }
 
     @POST

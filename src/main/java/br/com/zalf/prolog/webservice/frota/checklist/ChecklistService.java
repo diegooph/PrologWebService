@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.commons.imagens.FileFormatNotSupportException;
 import br.com.zalf.prolog.webservice.commons.imagens.ImagemProLog;
 import br.com.zalf.prolog.webservice.commons.imagens.UploadImageHelper;
+import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
@@ -54,20 +55,23 @@ public final class ChecklistService {
         }
     }
 
-    public boolean deleteChecklistsAndOs(final CheckListsDelecao checkListsDelecao) {
+    public Response deleteChecklistsAndOs(final CheckListsDelecao checkListsDelecao) {
+        final String acao = checkListsDelecao.getAcaoExecutada()
+                .getValue()
+                .toLowerCase();
         try {
-            return dao.deleteCheckListsAndOs(checkListsDelecao);
+            if(dao.deleteCheckListsAndOs(checkListsDelecao)) {
+                return Response.ok(String.format("Ação realizada com sucesso! \n Tipo ação: %s", acao ));
+            }
         } catch (Throwable t) {
             final String checklistsConcatenadas = checkListsDelecao.getCodigos()
                     .stream()
                         .filter(Objects::nonNull)
                         .map(String::valueOf)
                         .collect(Collectors.joining(","));
-            final String message = String.format("Erro ao tentar deletar as checklists {0}",
-                                                 checklistsConcatenadas);
-            Log.e(TAG, message , t);
-            return false;
+            Log.e(TAG, String.format("Erro ao tentar realizar ação nas checklists: %s\n Tipo ação: %s", checklistsConcatenadas, acao) , t);
         }
+        return Response.error(String.format("Erro ao realizar ação nas checklists.\n Tipo ação: %s", acao));
     }
 
     @NotNull
