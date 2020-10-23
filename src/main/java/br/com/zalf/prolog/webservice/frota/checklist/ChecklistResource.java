@@ -15,6 +15,8 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.ChecklistListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.model.FiltroRegionalUnidadeChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.model.TipoChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.delecao.CheckListDelecaoAcao;
+import br.com.zalf.prolog.webservice.frota.checklist.model.delecao.CheckListsDelecao;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistUploadMidiaRealizacao;
@@ -22,7 +24,9 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.SuccessRespo
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloResource;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloService;
 import br.com.zalf.prolog.webservice.frota.checklist.mudancaestrutura.ChecklistMigracaoEstruturaSuporte;
+import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
+import br.com.zalf.prolog.webservice.interceptors.auth.ColaboradorAutenticado;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
@@ -31,6 +35,8 @@ import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.jetbrains.annotations.NotNull;
 
+import javax.inject.Inject;
+import javax.inject.Provider;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.io.InputStream;
@@ -47,6 +53,9 @@ import static br.com.zalf.prolog.webservice.commons.util.ProLogCustomHeaders.App
 public final class ChecklistResource {
     @NotNull
     private final ChecklistService service = new ChecklistService();
+
+    @Inject
+    private Provider<ColaboradorAutenticado> colaboradorAutenticadoProvider;
 
     @POST
     @UsedBy(platforms = Platform.ANDROID)
@@ -71,6 +80,23 @@ public final class ChecklistResource {
         } else {
             return Response.error("Erro ao inserir checklist");
         }
+    }
+
+    @DELETE
+    @Path("/deletar")
+    @Secured(permissions = {Pilares.Frota.Checklist.DELETAR})
+    public Response deleteChecklistsAndOs(@QueryParam("codigos") @Required final List<Long> codigos,
+                                          @QueryParam("acaoExecutada") @Required final CheckListDelecaoAcao acaoExecutada,
+                                          @QueryParam("observacao") final String observacao) {
+        final CheckListsDelecao checklistsDelecao = new CheckListsDelecao(
+                codigos,
+                colaboradorAutenticadoProvider.get().getCodigo(),
+                acaoExecutada,
+                OrigemAcaoEnum.INTERNO,
+                observacao);
+        return service.deleteChecklistsAndOs(checklistsDelecao) ?
+        Response.ok("Deleções realizadas com sucesso") :
+        Response.error("Erro ao realizar as deleções de checklists");
     }
 
     @POST
