@@ -234,5 +234,12 @@ public interface ChecklistDao {
                                      final long offset,
                                      final boolean resumido) throws SQLException;
 
-    void deleteCheckListsAndOs(CheckListsDelecao checkListsDelecao) throws Throwable;
+    /**
+     * Deleta logicamente uma lista de checklists
+     * Também é fornecido alguns dados para historico {@Link CheckListsDelecao}
+     * *
+     * @param checkListsDelecao
+     * @throws Throwable
+     */
+    boolean deleteCheckListsAndOs(CheckListsDelecao checkListsDelecao) throws Throwable;
 }
