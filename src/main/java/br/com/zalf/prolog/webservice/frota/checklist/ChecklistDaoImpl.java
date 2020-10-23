@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.frota.checklist;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
@@ -518,8 +519,7 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
                     "f_acao_executada => ?," +
                     "f_origem_delecao => ?," +
                     "f_observacao => ?)}");
-            final Array arrCodigos = conn.createArrayOf("F_COD_CHECKLISTS", checkListsDelecao.getCodigos().toArray());
-            stmt.setArray(1, arrCodigos);
+            stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, checkListsDelecao.getCodigos()));
             stmt.setLong(2, checkListsDelecao.getCodigoColaborador());
             stmt.setString(3, checkListsDelecao.getAcaoExecutada().getValue());
             stmt.setString(4, checkListsDelecao.getOrigemDelecao().toString());
