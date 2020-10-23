@@ -3,6 +3,7 @@ Change Log
 
 <a name="v1.3.3"></a>
 ## Version [v1.3.3](https://github.com/luizfp/PrologWebService/compare/v1.3.2...v1.3.3) (release-date) [unreleased]
+* Corrige estrutura do json para exportação de aferições do Protheus (PL-3237)
 
 <a name="v1.3.2"></a>
 ## Version [v1.3.2](https://github.com/luizfp/PrologWebService/compare/v1.3.1...v1.3.2) (2020-10-22)
