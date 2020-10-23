@@ -13,6 +13,7 @@ import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.ChecklistListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.model.FiltroRegionalUnidadeChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.delecao.CheckListsDelecao;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistUploadMidiaRealizacao;
@@ -27,6 +28,8 @@ import org.jetbrains.annotations.Nullable;
 import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Classe ChecklistService responsável por comunicar-se com a interface DAO
@@ -48,6 +51,22 @@ public final class ChecklistService {
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao inserir checklist, tente novamente");
+        }
+    }
+
+    public boolean deleteChecklistsAndOs(final CheckListsDelecao checkListsDelecao) {
+        try {
+            return dao.deleteCheckListsAndOs(checkListsDelecao);
+        } catch (Throwable t) {
+            final String checklistsConcatenadas = checkListsDelecao.getCodigos()
+                    .stream()
+                        .filter(Objects::nonNull)
+                        .map(String::valueOf)
+                        .collect(Collectors.joining(","));
+            final String message = String.format("Erro ao tentar deletar as checklists {0}",
+                                                 checklistsConcatenadas);
+            Log.e(TAG, message , t);
+            return false;
         }
     }
 
