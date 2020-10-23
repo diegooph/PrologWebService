@@ -1,9 +1,8 @@
 package br.com.zalf.prolog.webservice.frota.checklist.model.delecao;
-import br.com.zalf.prolog.webservice.frota.checklist.model.delecao.CheckListDelecaoAcao;
 import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
 import lombok.Data;
-import lombok.AllArgsConstructor;
-import lombok.NonNull;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -13,15 +12,15 @@ import java.util.List;
  * @author Guilherme Steinert (https://github.com/steinert999)
  */
 @Data
-@AllArgsConstructor
 public class CheckListsDelecao {
-    @NonNull
-    private final List<Long> checklists;
-    @NonNull
+    @NotNull
+    private final List<Long> codigos;
+    @NotNull
     private final Long codigoColaborador;
-    @NonNull
+    @NotNull
     private final CheckListDelecaoAcao acaoExecutada;
-    @NonNull
+    @NotNull
     private final OrigemAcaoEnum origemDelecao;
+    @Nullable
     private final String observacao;
 }
