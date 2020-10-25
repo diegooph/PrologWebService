@@ -15,5 +15,13 @@ public final class AfericaoExportacaoProtheus {
     @NotNull
     private final Long codAfericao;
     @NotNull
-    private final List<AfericaoExportacaoProtheusInfos> infosAfericao;
+    private final String cabecalhoAfericao;
+    @NotNull
+    private final String placaVeiculo;
+    @NotNull
+    private final String dataAfericao;
+    @NotNull
+    private final String horaAfericao;
+    @NotNull
+    private final List<AfericaoExportacaoProtheusInfosPneu> infosPneus;
 }
