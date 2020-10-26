@@ -4,6 +4,9 @@ Change Log
 <a name="v1.3.4"></a>
 ## Version [v1.3.4](https://github.com/luizfp/PrologWebService/compare/v1.3.3...v1.3.4) (release-date) [unreleased]
 
+### Bug Fixes
+* Corrige log da integração que logava corpo de erro em sucesso e vice-versa (PL-3193)
+
 <a name="v1.3.3"></a>
 ## Version [v1.3.3](https://github.com/luizfp/PrologWebService/compare/v1.3.2...v1.3.3) (2020-10-25)
 

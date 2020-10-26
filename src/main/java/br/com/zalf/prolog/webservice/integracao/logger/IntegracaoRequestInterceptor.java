@@ -42,7 +42,7 @@ public final class IntegracaoRequestInterceptor implements ContainerRequestFilte
     private static final int STATUS_ERROR = 300;
 
     @Override
-    public void filter(ContainerRequestContext requestContext) throws IOException {
+    public void filter(final ContainerRequestContext requestContext) {
         if (requestContext == null) {
             return;
         }
@@ -63,8 +63,8 @@ public final class IntegracaoRequestInterceptor implements ContainerRequestFilte
     }
 
     @Override
-    public void filter(ContainerRequestContext requestContext,
-                       ContainerResponseContext responseContext) throws IOException {
+    public void filter(final ContainerRequestContext requestContext,
+                       final ContainerResponseContext responseContext) {
         if (requestContext == null) {
             return;
         }
@@ -83,7 +83,7 @@ public final class IntegracaoRequestInterceptor implements ContainerRequestFilte
         if (responseContext != null) {
             try {
                 if (isJson(responseContext)) {
-                    final boolean isError = verifyResponseStatus(responseContext.getStatus());
+                    final boolean isError = verifyIfResponseStatusIsError(responseContext.getStatus());
                     responseLog = new ResponseLogApi(
                             getHeaders(responseContext),
                             getAnnotations(responseContext),
@@ -138,8 +138,9 @@ public final class IntegracaoRequestInterceptor implements ContainerRequestFilte
 
     @Nullable
     private Map<String, String> getHeaders(@NotNull final ContainerResponseContext responseContext) {
-        if (responseContext.getHeaders() == null)
+        if (responseContext.getHeaders() == null) {
             return null;
+        }
 
         final Map<String, String> headers = new HashMap<>();
         responseContext.getHeaders().forEach((s, objects) -> headers.put(s, objects.toString()));
@@ -148,8 +149,9 @@ public final class IntegracaoRequestInterceptor implements ContainerRequestFilte
 
     @Nullable
     private Map<String, String> getHeaders(@NotNull final ContainerRequestContext requestContext) {
-        if (requestContext.getHeaders() == null)
+        if (requestContext.getHeaders() == null) {
             return null;
+        }
 
         final Map<String, String> headers = new HashMap<>();
         requestContext.getHeaders().forEach((s, objects) -> headers.put(s, objects.toString()));
@@ -187,7 +189,7 @@ public final class IntegracaoRequestInterceptor implements ContainerRequestFilte
         return requestContext.getMediaType().toString().contains("application/json");
     }
 
-    private boolean verifyResponseStatus(final int responseStatus) {
-        return responseStatus >= STATUS_OK && responseStatus < STATUS_ERROR;
+    private boolean verifyIfResponseStatusIsError(final int responseStatus) {
+        return responseStatus < STATUS_OK || responseStatus >= STATUS_ERROR;
     }
 }
