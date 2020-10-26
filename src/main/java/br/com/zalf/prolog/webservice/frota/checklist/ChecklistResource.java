@@ -87,7 +87,7 @@ public final class ChecklistResource {
     public Response deleteChecklistsAndOs(@QueryParam("codigos") @Required final List<Long> codigos,
                                           @QueryParam("acaoExecutada") @Required final CheckListDelecaoAcao acaoExecutada,
                                           @QueryParam("observacao") final String observacao) {
-        final CheckListsDelecao checklistsDelecao = new CheckListsDelecao(
+        final CheckListsDelecao checklistsDelecao = CheckListsDelecao.of(
                 codigos,
                 colaboradorAutenticadoProvider.get().getCodigo(),
                 acaoExecutada,

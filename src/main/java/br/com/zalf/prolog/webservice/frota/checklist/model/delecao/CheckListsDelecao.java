@@ -11,7 +11,7 @@ import java.util.List;
  *
  * @author Guilherme Steinert (https://github.com/steinert999)
  */
-@Data
+@Data(staticConstructor = "of")
 public class CheckListsDelecao {
     @NotNull
     private final List<Long> codigos;
