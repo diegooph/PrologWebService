@@ -1,5 +1,8 @@
 Change Log
 ==========
+### Stage
+#### Features
+* adiciona deleção das checklists (PL-3217)
 
 <a name="v1.3.2"></a>
 ## Version [v1.3.2](https://github.com/luizfp/PrologWebService/compare/v1.3.1...v1.3.2) (release-date) [unreleased]
