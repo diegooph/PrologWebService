@@ -2,9 +2,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.afericao.relatorios;
 
 import br.com.zalf.prolog.webservice.commons.util.NullIf;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.relatorios._model.AfericaoExportacaoProtheus;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.relatorios._model.AfericaoExportacaoProtheusInfos;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.relatorios._model.AfericaoExportacaoProtheusInfosPneu;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.relatorios._model.AfericaoExportacaoProtheusInfosVeiculo;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
@@ -26,35 +24,20 @@ public final class AfericaoRelatorioConverter {
             final long codAfericaoAtual = rSet.getLong("codigo_afericao");
             if (codAfericaoAtual != codAfericaoAntiga) {
                 afericoesExportacaoProtheus.add(
-                        new AfericaoExportacaoProtheus(codAfericaoAtual, new ArrayList<>()));
+                        new AfericaoExportacaoProtheus(codAfericaoAtual,
+                                rSet.getString("cabecalho_placa"),
+                                rSet.getString("placa"),
+                                rSet.getString("data"),
+                                rSet.getString("hora"),
+                                new ArrayList<>()));
             }
             afericoesExportacaoProtheus
                     .get(afericoesExportacaoProtheus.size() - 1)
-                    .getInfosAfericao()
-                    .add(createAfericaoExportacaoProtheusInfos(rSet));
+                    .getInfosPneus()
+                    .add(createAfericaoExportacaoProtheusInfosPneu(rSet));
             codAfericaoAntiga = codAfericaoAtual;
         } while (rSet.next());
         return afericoesExportacaoProtheus;
-    }
-
-    @NotNull
-    private static AfericaoExportacaoProtheusInfos createAfericaoExportacaoProtheusInfos(
-            @NotNull final ResultSet rSet) throws Throwable {
-        return new AfericaoExportacaoProtheusInfos(
-                createAfericaoExportacaoProtheusInfosVeiculo(rSet),
-                createAfericaoExportacaoProtheusInfosPneu(rSet)
-        );
-    }
-
-    @NotNull
-    private static AfericaoExportacaoProtheusInfosVeiculo createAfericaoExportacaoProtheusInfosVeiculo(
-            @NotNull final ResultSet rSet) throws Throwable {
-        return new AfericaoExportacaoProtheusInfosVeiculo(
-                rSet.getString("cabecalho_placa"),
-                rSet.getString("placa"),
-                rSet.getString("data"),
-                rSet.getString("hora")
-        );
     }
 
     @NotNull

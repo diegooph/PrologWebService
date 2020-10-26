@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 @Data
 public final class AfericaoExportacaoProtheusInfosPneu {
     @NotNull
-    private final String cabecalhoLinhaDois;
+    private final String cabecalhoPneu;
     @NotNull
     private final String codClientePneu;
     @NotNull
