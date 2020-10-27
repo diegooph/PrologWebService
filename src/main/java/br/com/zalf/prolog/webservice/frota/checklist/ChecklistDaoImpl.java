@@ -508,7 +508,7 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
     }
 
     @Override
-    public boolean deleteCheckListsAndOs(ChecklistsAlteracaoLogica checkListsDelecao) throws Throwable{
+    public boolean deleteCheckListsAndOs(final ChecklistsAlteracaoLogica checkListsDelecao, final Long codigoColaborador) throws Throwable{
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
@@ -520,7 +520,7 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
                     "f_origem_delecao => ?," +
                     "f_observacao => ?)}");
             stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, checkListsDelecao.getCodigos()));
-            stmt.setLong(2, checkListsDelecao.getCodigoColaborador());
+            stmt.setLong(2, codigoColaborador);
             stmt.setString(3, checkListsDelecao.getAcaoExecutada().getValue());
             stmt.setString(4, checkListsDelecao.getOrigemDelecao().toString());
             stmt.setString(5, checkListsDelecao.getObservacao());
