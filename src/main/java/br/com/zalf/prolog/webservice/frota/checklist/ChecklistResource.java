@@ -83,7 +83,8 @@ public final class ChecklistResource {
     @PUT
     @Secured(permissions = {Pilares.Frota.Checklist.DELETAR})
     public Response deleteLogicoChecklistsAndOs(@NotNull final ChecklistsAlteracaoLogica checklistsParaAlteracao) {
-        return service.deleteChecklistsAndOs(checklistsParaAlteracao);
+        Long codigoColaborador = this.colaboradorAutenticadoProvider.get().getCodigo();
+        return service.deleteLogicoChecklistsAndOs(checklistsParaAlteracao, codigoColaborador);
     }
 
     @POST
