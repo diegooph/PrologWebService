@@ -1,4 +1,5 @@
 package br.com.zalf.prolog.webservice.frota.checklist.model.alteracao_logica;
+
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

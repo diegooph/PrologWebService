@@ -509,7 +509,7 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
     }
 
     @Override
-    public void deleteLogicoChecklistsAndOs(@NotNull final ChecklistsAlteracaoAcaoData checkListsDelecao, @NotNull final Long codigoColaborador) throws Throwable{
+    public void deleteLogicoChecklistsAndOs(@NotNull final ChecklistsAlteracaoAcaoData checkListsDelecao, @NotNull final Long codigoColaborador) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {

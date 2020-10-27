@@ -59,7 +59,7 @@ public final class ChecklistService {
             return Response.ok("Ação realizada com sucesso!");
         } catch (Throwable t) {
             Log.e(TAG, String.format("Erro ao tentar realizar ação nas checklists: \n %s ",
-                    checkListsDelecao.toString()) , t);
+                    checkListsDelecao.toString()), t);
             throw Injection.provideProLogExceptionHandler()
                     .map(t, "Erro ao realizar ação com os checklists, Tente novamente.");
         }
