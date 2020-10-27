@@ -240,5 +240,6 @@ public interface ChecklistDao {
      * @param checkListsDelecao
      * @throws Throwable
      */
-    void deleteCheckListsAndOs(ChecklistsAlteracaoLogica checkListsDelecao, Long codigoColaborador) throws Throwable;
+    void deleteCheckListsAndOs(@NotNull final ChecklistsAlteracaoLogica checkListsDelecao,
+                               @NotNull final Long codigoColaborador) throws Throwable;
 }
