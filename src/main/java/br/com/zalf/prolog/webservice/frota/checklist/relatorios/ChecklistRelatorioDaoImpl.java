@@ -401,7 +401,7 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("select * from  func_checklist_busca_placas_bloqueadas(" +
+            stmt = conn.prepareStatement("select * from  func_checklist_get_placas_bloqueadas(" +
                     "f_cod_unidades => ?);");
             stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
 
