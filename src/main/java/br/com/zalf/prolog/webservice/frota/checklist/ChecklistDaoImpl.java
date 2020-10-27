@@ -520,7 +520,7 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
                     "f_acao_executada => ?," +
                     "f_origem_delecao => ?," +
                     "f_observacao => ?," +
-                    "f_data_hora_atual => ?}");
+                    "f_data_hora_atual => ?)}");
             stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, checkListsDelecao.getCodigos()));
             stmt.setLong(2, codigoColaborador);
             stmt.setString(3, checkListsDelecao.getAcaoExecutada().getValue());
