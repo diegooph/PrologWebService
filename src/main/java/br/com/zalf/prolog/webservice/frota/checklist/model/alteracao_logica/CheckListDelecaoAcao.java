@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.frota.checklist.model.delecao;
+package br.com.zalf.prolog.webservice.frota.checklist.model.alteracao_logica;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

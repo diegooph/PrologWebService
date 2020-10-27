@@ -14,7 +14,7 @@ import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.ChecklistListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.model.FiltroRegionalUnidadeChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.model.delecao.CheckListsDelecao;
+import br.com.zalf.prolog.webservice.frota.checklist.model.alteracao_logica.CheckListsDelecao;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistUploadMidiaRealizacao;

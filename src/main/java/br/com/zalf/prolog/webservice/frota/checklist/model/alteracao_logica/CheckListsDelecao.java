@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.frota.checklist.model.delecao;
+package br.com.zalf.prolog.webservice.frota.checklist.model.alteracao_logica;
 import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
