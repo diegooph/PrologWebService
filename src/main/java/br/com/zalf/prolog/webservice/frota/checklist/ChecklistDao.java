@@ -235,9 +235,11 @@ public interface ChecklistDao {
                                      final boolean resumido) throws SQLException;
 
     /**
-     * Deleta logicamente uma lista de checklists, além de fornecer alguns dados para historico
-     * *
+     * Deleta logicamente ou desfaz deleção logica de uma lista de checklists,
+     * além de fornecer alguns dados para histórico
+     *
      * @param checkListsDelecao
+     * @param codigoColaborador
      * @throws Throwable
      */
     void deleteCheckListsAndOs(@NotNull final ChecklistsAlteracaoLogica checkListsDelecao,
