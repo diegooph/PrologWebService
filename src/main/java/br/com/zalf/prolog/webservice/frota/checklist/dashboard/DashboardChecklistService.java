@@ -60,4 +60,20 @@ public final class DashboardChecklistService {
             throw exceptionHandler.map(throwable, "Erro ao buscar checklists realizados em menos de 1:30");
         }
     }
+
+    @NotNull
+    TableComponent getPlacasBloqueadas(@NotNull final Integer codComponente, @NotNull final List<Long> codUnidades)
+            throws ProLogException {
+        try {
+            return DashboardChecklistComponentsCreator.createPlacasBloqueadas(
+                    dashDao.getComponenteByCodigo(codComponente),
+                    relatorioDao.getPlacasBloqueadas(
+                            codUnidades));
+        } catch (final Throwable throwable) {
+            Log.e(TAG, String.format("Erro ao buscar as placas bloqueadas nas últimas 24 horas" +
+                    "unidades %s", codUnidades.toString()), throwable);
+            throw exceptionHandler.map(throwable, "Erro ao buscar as placas bloqueadas nas últimas 24 " +
+                    "horas");
+        }
+    }
 }

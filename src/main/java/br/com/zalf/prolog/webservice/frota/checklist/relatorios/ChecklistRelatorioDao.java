@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.frota.checklist.relatorios;
 
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.frota.checklist.model.ChecksRealizadosAbaixoTempoEspecifico;
+import br.com.zalf.prolog.webservice.frota.checklist.model.PlacasBloqueadasResponse;
 import br.com.zalf.prolog.webservice.frota.checklist.model.QuantidadeChecklists;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -122,4 +123,14 @@ public interface ChecklistRelatorioDao {
     void getUltimoChecklistRealizadoPlacaCsv(@NotNull final OutputStream outputStream,
                                              @NotNull final List<Long> codUnidades,
                                              @NotNull final List<Long> codTiposVeiculos) throws Throwable;
+
+    /**
+     * Método para buscar placas bloqueadas - Componente Dash.
+     *
+     * @param codUnidades      Códigos das unidades pelas quais as informações serão filtradas.
+     * @throws Throwable Se algum erro ocorrer.
+     * @return PlacasBloqueadasResponse retorna objeto com as placas que estão bloqueadas.
+     */
+    @NotNull
+    PlacasBloqueadasResponse getPlacasBloqueadas(@NotNull final List<Long> codUnidades) throws Throwable;
 }

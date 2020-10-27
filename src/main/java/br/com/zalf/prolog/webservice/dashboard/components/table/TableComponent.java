@@ -22,10 +22,13 @@ public class TableComponent extends DashboardComponent {
     private TableHeader tableHeader;
     @NotNull
     private TableData tableData;
+    @Nullable
+    private TableFooter tableFooter;
 
     public static TableComponent createDefault(@NotNull final ComponentDataHolder component,
                                                @NotNull final TableHeader tableHeader,
-                                               @NotNull final TableData tableData) {
+                                               @NotNull final TableData tableData,
+                                               @Nullable final TableFooter tableFooter) {
         return new TableComponent.Builder()
                 .withCodigo(component.codigoComponente)
                 .withTitulo(component.tituloComponente)
@@ -38,6 +41,7 @@ public class TableComponent extends DashboardComponent {
                 .withOrdemExibicao(component.ordemExibicao)
                 .withTableHeader(tableHeader)
                 .withTableData(tableData)
+                .withTableFooter(tableFooter)
                 .build();
     }
 
@@ -51,11 +55,13 @@ public class TableComponent extends DashboardComponent {
                            int qtdBlocosVerticais,
                            int ordemExibicao,
                            @NotNull TableHeader tableHeader,
-                           @NotNull TableData tableData) {
+                           @NotNull TableData tableData,
+                           @Nullable TableFooter tableFooter) {
         super(codigo, IdentificadorTipoComponente.TABELA, titulo, subtitulo, descricao, urlEndpointDados,
                 codTipoComponente, qtdBlocosHorizontais, qtdBlocosVerticais, ordemExibicao);
         this.tableHeader = tableHeader;
         this.tableData = tableData;
+        this.tableFooter = tableFooter;
     }
 
     @NotNull
@@ -76,11 +82,21 @@ public class TableComponent extends DashboardComponent {
         this.tableData = tableData;
     }
 
+    @Nullable
+    public TableFooter getTableFooter() {
+        return tableFooter;
+    }
+
+    public void setTableFooter(final @Nullable TableFooter tableFooter) {
+        this.tableFooter = tableFooter;
+    }
+
     @Override
     public String toString() {
         return "TableComponent{" +
                 "tableHeader=" + tableHeader +
                 ", tableData=" + tableData +
+                ", tableFooter=" + tableFooter +
                 '}';
     }
 
@@ -99,9 +115,9 @@ public class TableComponent extends DashboardComponent {
     public static class Builder extends BaseComponentBuilder {
         private TableHeader tableHeader;
         private TableData tableData;
+        private TableFooter tableFooter;
 
         public Builder() {
-
         }
 
         @Override
@@ -168,6 +184,11 @@ public class TableComponent extends DashboardComponent {
             return this;
         }
 
+        public Builder withTableFooter(@Nullable TableFooter tableFooter) {
+            this.tableFooter = tableFooter;
+            return this;
+        }
+
         @Override
         public TableComponent build() {
             ensureNotNullValues();
@@ -184,7 +205,8 @@ public class TableComponent extends DashboardComponent {
                     qtdBlocosVerticais,
                     ordemExibicao,
                     tableHeader,
-                    tableData);
+                    tableData,
+                    tableFooter);
         }
     }
 }

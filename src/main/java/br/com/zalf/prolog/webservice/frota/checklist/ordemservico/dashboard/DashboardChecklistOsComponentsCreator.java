@@ -65,6 +65,6 @@ final class DashboardChecklistOsComponentsCreator {
         });
 
         final TableData tableData = new TableData(lines);
-        return TableComponent.createDefault(component, tableHeader, tableData);
+        return TableComponent.createDefault(component, tableHeader, tableData, null);
     }
 }
