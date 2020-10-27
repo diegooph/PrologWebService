@@ -61,7 +61,7 @@ public final class ChecklistService {
             Log.e(TAG, String.format("Erro ao tentar realizar ação nas checklists: \n %s ",
                     checkListsDelecao.toString()) , t);
             throw Injection.provideProLogExceptionHandler()
-                    .map(t, "Aconteceu um erro. Tente novamente.");
+                    .map(t, "Erro ao realizar ação com os checklists, Tente novamente.");
         }
     }
 
