@@ -54,13 +54,9 @@ public final class ChecklistService {
     }
 
     public Response deleteLogicoChecklistsAndOs(@NotNull final ChecklistsAlteracaoLogica checkListsDelecao, @NotNull final Long codigoColaborador) {
-        final String acao = checkListsDelecao.getAcaoExecutada()
-                .getValue()
-                .toLowerCase();
         try {
-            if(dao.deleteCheckListsAndOs(checkListsDelecao)) {
-                return Response.ok(String.format("Ação realizada com sucesso! \n Tipo ação: %s", acao ));
-            }
+            dao.deleteLogicoChecklistsAndOs(checkListsDelecao, codigoColaborador);
+            return Response.ok("Ação realizada com sucesso!");
         } catch (Throwable t) {
             Log.e(TAG, String.format("Erro ao tentar realizar ação nas checklists: \n %s ",
                     checkListsDelecao.toString()) , t);
