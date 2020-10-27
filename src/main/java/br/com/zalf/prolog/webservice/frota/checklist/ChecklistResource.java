@@ -15,7 +15,6 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.ChecklistListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.model.FiltroRegionalUnidadeChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.model.TipoChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.model.alteracao_logica.ChecklistAlteracaoAcao;
 import br.com.zalf.prolog.webservice.frota.checklist.model.alteracao_logica.ChecklistsAlteracaoLogica;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
@@ -24,7 +23,6 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.SuccessRespo
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloResource;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloService;
 import br.com.zalf.prolog.webservice.frota.checklist.mudancaestrutura.ChecklistMigracaoEstruturaSuporte;
-import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.interceptors.auth.ColaboradorAutenticado;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
@@ -84,16 +82,8 @@ public final class ChecklistResource {
 
     @DELETE
     @Secured(permissions = {Pilares.Frota.Checklist.DELETAR})
-    public Response deleteChecklistsAndOs(@QueryParam("codigos") @Required final List<Long> codigos,
-                                          @QueryParam("acaoExecutada") @Required final ChecklistAlteracaoAcao acaoExecutada,
-                                          @QueryParam("observacao") final String observacao) {
-        final ChecklistsAlteracaoLogica checklistsDelecao = ChecklistsAlteracaoLogica.of(
-                codigos,
-                colaboradorAutenticadoProvider.get().getCodigo(),
-                acaoExecutada,
-                OrigemAcaoEnum.INTERNO,
-                observacao);
-        return service.deleteChecklistsAndOs(checklistsDelecao);
+    public Response deleteChecklistsAndOs(@NotNull final ChecklistsAlteracaoLogica checklistsParaAlteracao) {
+        return service.deleteChecklistsAndOs(checklistsParaAlteracao);
     }
 
     @POST
