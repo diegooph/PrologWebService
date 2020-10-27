@@ -29,8 +29,6 @@ import org.jetbrains.annotations.Nullable;
 import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * Classe ChecklistService responsável por comunicar-se com a interface DAO
@@ -64,14 +62,11 @@ public final class ChecklistService {
                 return Response.ok(String.format("Ação realizada com sucesso! \n Tipo ação: %s", acao ));
             }
         } catch (Throwable t) {
-            final String checklistsConcatenadas = checkListsDelecao.getCodigos()
-                    .stream()
-                        .filter(Objects::nonNull)
-                        .map(String::valueOf)
-                        .collect(Collectors.joining(","));
-            Log.e(TAG, String.format("Erro ao tentar realizar ação nas checklists: %s\n Tipo ação: %s", checklistsConcatenadas, acao) , t);
+            Log.e(TAG, String.format("Erro ao tentar realizar ação nas checklists: \n %s ",
+                    checkListsDelecao.toString()) , t);
+            throw Injection.provideProLogExceptionHandler()
+                    .map(t, "Aconteceu um erro. Tente novamente.");
         }
-        return Response.error(String.format("Erro ao realizar ação nas checklists.\n Tipo ação: %s", acao));
     }
 
     @NotNull
