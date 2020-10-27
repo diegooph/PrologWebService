@@ -18,7 +18,7 @@ public class ChecklistsAlteracaoLogica {
     @NotNull
     private final Long codigoColaborador;
     @NotNull
-    private final CheckListDelecaoAcao acaoExecutada;
+    private final ChecklistAlteracaoAcao acaoExecutada;
     @NotNull
     private final OrigemAcaoEnum origemDelecao;
     @Nullable

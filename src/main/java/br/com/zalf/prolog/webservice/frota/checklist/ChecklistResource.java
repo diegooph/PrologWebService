@@ -15,7 +15,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.ChecklistListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.model.FiltroRegionalUnidadeChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.model.TipoChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.model.alteracao_logica.CheckListDelecaoAcao;
+import br.com.zalf.prolog.webservice.frota.checklist.model.alteracao_logica.ChecklistAlteracaoAcao;
 import br.com.zalf.prolog.webservice.frota.checklist.model.alteracao_logica.ChecklistsAlteracaoLogica;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
@@ -85,7 +85,7 @@ public final class ChecklistResource {
     @DELETE
     @Secured(permissions = {Pilares.Frota.Checklist.DELETAR})
     public Response deleteChecklistsAndOs(@QueryParam("codigos") @Required final List<Long> codigos,
-                                          @QueryParam("acaoExecutada") @Required final CheckListDelecaoAcao acaoExecutada,
+                                          @QueryParam("acaoExecutada") @Required final ChecklistAlteracaoAcao acaoExecutada,
                                           @QueryParam("observacao") final String observacao) {
         final ChecklistsAlteracaoLogica checklistsDelecao = ChecklistsAlteracaoLogica.of(
                 codigos,

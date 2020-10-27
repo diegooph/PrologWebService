@@ -11,7 +11,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public enum CheckListDelecaoAcao {
+public enum ChecklistAlteracaoAcao {
     DELETADO("DELETADO"), NAO_DELETADO("NAO_DELETADO");
 
     private final String value;
