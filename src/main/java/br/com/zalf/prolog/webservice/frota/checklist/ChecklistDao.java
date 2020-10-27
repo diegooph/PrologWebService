@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.checklist;
 
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
-import br.com.zalf.prolog.webservice.frota.checklist.model.alteracao_logica.CheckListsDelecao;
+import br.com.zalf.prolog.webservice.frota.checklist.model.alteracao_logica.ChecklistsAlteracaoLogica;
 import br.com.zalf.prolog.webservice.frota.checklist.model.ChecklistListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.model.FiltroRegionalUnidadeChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
@@ -240,5 +240,5 @@ public interface ChecklistDao {
      * @param checkListsDelecao
      * @throws Throwable
      */
-    boolean deleteCheckListsAndOs(CheckListsDelecao checkListsDelecao) throws Throwable;
+    boolean deleteCheckListsAndOs(ChecklistsAlteracaoLogica checkListsDelecao) throws Throwable;
 }

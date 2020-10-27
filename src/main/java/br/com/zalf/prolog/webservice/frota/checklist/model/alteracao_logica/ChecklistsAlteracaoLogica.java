@@ -12,7 +12,7 @@ import java.util.List;
  * @author Guilherme Steinert (https://github.com/steinert999)
  */
 @Data(staticConstructor = "of")
-public class CheckListsDelecao {
+public class ChecklistsAlteracaoLogica {
     @NotNull
     private final List<Long> codigos;
     @NotNull

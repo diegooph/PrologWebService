@@ -11,7 +11,7 @@ import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.model.alteracao_logica.CheckListsDelecao;
+import br.com.zalf.prolog.webservice.frota.checklist.model.alteracao_logica.ChecklistsAlteracaoLogica;
 import br.com.zalf.prolog.webservice.frota.checklist.model.ChecklistListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.model.FiltroRegionalUnidadeChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.RegionalSelecaoChecklist;
@@ -508,7 +508,7 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
     }
 
     @Override
-    public boolean deleteCheckListsAndOs(CheckListsDelecao checkListsDelecao) throws Throwable{
+    public boolean deleteCheckListsAndOs(ChecklistsAlteracaoLogica checkListsDelecao) throws Throwable{
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
