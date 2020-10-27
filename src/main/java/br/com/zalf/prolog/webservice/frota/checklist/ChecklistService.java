@@ -55,7 +55,7 @@ public final class ChecklistService {
         }
     }
 
-    public Response deleteChecklistsAndOs(final ChecklistsAlteracaoLogica checkListsDelecao) {
+    public Response deleteLogicoChecklistsAndOs(@NotNull final ChecklistsAlteracaoLogica checkListsDelecao, @NotNull final Long codigoColaborador) {
         final String acao = checkListsDelecao.getAcaoExecutada()
                 .getValue()
                 .toLowerCase();
