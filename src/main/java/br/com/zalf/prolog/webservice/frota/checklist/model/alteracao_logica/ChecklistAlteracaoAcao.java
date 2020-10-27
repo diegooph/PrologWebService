@@ -12,7 +12,7 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum ChecklistAlteracaoAcao {
-    DELETADO("DELETADO"), NAO_DELETADO("NAO_DELETADO");
+    DELETAR("DELETADO"), REVERTER_DELECAO("NAO_DELETADO");
 
     private final String value;
 }
