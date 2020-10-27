@@ -509,7 +509,7 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
     }
 
     @Override
-    public boolean deleteCheckListsAndOs(final ChecklistsAlteracaoLogica checkListsDelecao, final Long codigoColaborador) throws Throwable{
+    public void deleteCheckListsAndOs(final ChecklistsAlteracaoLogica checkListsDelecao, final Long codigoColaborador) throws Throwable{
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
@@ -527,8 +527,7 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
             stmt.setString(4, OrigemAcaoEnum.INTERNO.toString());
             stmt.setString(5, checkListsDelecao.getObservacao());
             stmt.setObject(6, Now.offsetDateTimeUtc());
-
-            return stmt.execute();
+            stmt.execute();
         } finally {
             close(conn, stmt);
         }
