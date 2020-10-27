@@ -14,7 +14,7 @@ import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.ChecklistListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.model.FiltroRegionalUnidadeChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.model.alteracao_logica.ChecklistsAlteracaoLogica;
+import br.com.zalf.prolog.webservice.frota.checklist.model.alteracao_logica.ChecklistsAlteracaoAcaoData;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistUploadMidiaRealizacao;
@@ -53,7 +53,7 @@ public final class ChecklistService {
         }
     }
 
-    public Response deleteLogicoChecklistsAndOs(@NotNull final ChecklistsAlteracaoLogica checkListsDelecao, @NotNull final Long codigoColaborador) {
+    public Response deleteLogicoChecklistsAndOs(@NotNull final ChecklistsAlteracaoAcaoData checkListsDelecao, @NotNull final Long codigoColaborador) {
         try {
             dao.deleteLogicoChecklistsAndOs(checkListsDelecao, codigoColaborador);
             return Response.ok("Ação realizada com sucesso!");
