@@ -21,6 +21,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistIns
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistResposta;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.InfosChecklistInserido;
 import br.com.zalf.prolog.webservice.frota.checklist.mudancaestrutura.ChecklistMigracaoEstruturaSuporte;
+import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -522,8 +523,9 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
             stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, checkListsDelecao.getCodigos()));
             stmt.setLong(2, codigoColaborador);
             stmt.setString(3, checkListsDelecao.getAcaoExecutada().getValue());
-            stmt.setString(4, checkListsDelecao.getOrigemDelecao().toString());
+            stmt.setString(4, OrigemAcaoEnum.INTERNO.toString());
             stmt.setString(5, checkListsDelecao.getObservacao());
+
             return stmt.execute();
         } finally {
             close(conn, stmt);
