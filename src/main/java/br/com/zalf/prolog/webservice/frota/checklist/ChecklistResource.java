@@ -35,6 +35,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
+import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.io.InputStream;
@@ -83,7 +84,7 @@ public final class ChecklistResource {
     @PUT
     @Path("/alteracao-logica")
     @Secured(permissions = {Pilares.Frota.Checklist.DELETAR})
-    public Response deleteLogicoChecklistsAndOs(@NotNull final ChecklistsAlteracaoAcaoData checklistsParaAlteracao) {
+    public Response deleteLogicoChecklistsAndOs(@NotNull @Valid final ChecklistsAlteracaoAcaoData checklistsParaAlteracao) {
         final Long codigoColaborador = this.colaboradorAutenticadoProvider.get().getCodigo();
         return service.deleteLogicoChecklistsAndOs(checklistsParaAlteracao, codigoColaborador);
     }
