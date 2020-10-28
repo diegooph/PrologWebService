@@ -58,7 +58,7 @@ public final class ChecklistService {
         try {
             dao.deleteLogicoChecklistsAndOs(checkListsDelecao, codigoColaborador);
             return Response.ok("Ação realizada com sucesso!");
-        } catch (Throwable t) {
+        } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao tentar realizar ação nas checklists: \n %s ",
                     checkListsDelecao.toString()), t);
             throw Injection.provideProLogExceptionHandler()
