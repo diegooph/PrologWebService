@@ -1,6 +1,10 @@
 Change Log
 ==========
 
+## Stage
+### Features
+* Cria componente na Dash - Farol Checklist (PL-2791)
+
 <a name="v1.3.4"></a>
 ## Version [v1.3.4](https://github.com/luizfp/PrologWebService/compare/v1.3.3...v1.3.4) (release-date) [unreleased]
 
