@@ -16,7 +16,7 @@ import java.util.List;
 public class ChecklistsAlteracaoAcaoData {
     @NotNull
     @NotEmpty(message = "A lista de checklists não pode ser vazia.")
-    private final List<@NotNull(message = "a lista de checklists não deve conter elementos nulos.") Long> codigos;
+    private final List<@NotNull(message = "A lista de checklists não deve conter elementos nulos.") Long> codigos;
     @NotNull
     private final ChecklistAlteracaoAcao acaoExecutada;
     @Nullable
