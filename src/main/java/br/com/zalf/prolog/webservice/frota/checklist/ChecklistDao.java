@@ -238,9 +238,9 @@ public interface ChecklistDao {
      * Deleta logicamente ou desfaz deleção logica de uma lista de checklists,
      * além de fornecer alguns dados para histórico
      *
-     * @param checkListsDelecao
-     * @param codigoColaborador
-     * @throws Throwable
+     * @param checkListsDelecao Dados de alteração de estado das checklists.
+     * @param codigoColaborador Código do colaborador que está solicitando a alteração nas checklists.
+     * @throws Throwable Caso tenha algum erro.
      */
     void deleteLogicoChecklistsAndOs(@NotNull final ChecklistsAlteracaoAcaoData checkListsDelecao,
                                      @NotNull final Long codigoColaborador) throws Throwable;
