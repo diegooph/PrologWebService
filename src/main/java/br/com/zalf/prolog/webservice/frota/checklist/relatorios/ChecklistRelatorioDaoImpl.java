@@ -8,8 +8,6 @@ import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.checklist.model.ChecksRealizadosAbaixoTempoEspecifico;
-import br.com.zalf.prolog.webservice.frota.checklist.model.PlacasBloqueadas;
-import br.com.zalf.prolog.webservice.frota.checklist.model.PlacasBloqueadasResponse;
 import br.com.zalf.prolog.webservice.frota.checklist.model.QuantidadeChecklists;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -388,39 +386,6 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
             stmt = getUltimoChecklistRealizadoPlacaStatement(conn, codUnidades, codTiposVeiculos);
             rSet = stmt.executeQuery();
             new CsvWriter().write(rSet, outputStream);
-        } finally {
-            close(conn, stmt, rSet);
-        }
-    }
-
-    @Override
-    @NotNull
-    public PlacasBloqueadasResponse getPlacasBloqueadas(@NotNull final List<Long> codUnidades) throws Throwable {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("select * from  func_checklist_get_placas_bloqueadas(" +
-                    "f_cod_unidades => ?);");
-            stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
-
-            rSet = stmt.executeQuery();
-            int qtdPlacasBloqueadas = 0;
-            final List<PlacasBloqueadas> placasBloqueadas = new ArrayList<>();
-            if (rSet.next()) {
-                qtdPlacasBloqueadas = rSet.getInt("qtd_placas_bloqueadas");
-                do {
-                    placasBloqueadas.add(new PlacasBloqueadas(
-                            rSet.getString("nome_unidade"),
-                            rSet.getString("placa_bloqueada"),
-                            rSet.getString("data_hora_abertura_os"),
-                            rSet.getInt("qtd_itens_criticos")));
-                } while (rSet.next());
-                return new PlacasBloqueadasResponse(qtdPlacasBloqueadas, placasBloqueadas);
-            } else {
-                return new PlacasBloqueadasResponse(qtdPlacasBloqueadas, placasBloqueadas);
-            }
         } finally {
             close(conn, stmt, rSet);
         }

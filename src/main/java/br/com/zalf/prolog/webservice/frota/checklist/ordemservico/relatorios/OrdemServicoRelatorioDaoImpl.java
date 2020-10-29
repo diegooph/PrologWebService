@@ -6,6 +6,8 @@ import br.com.zalf.prolog.webservice.commons.report.ReportTransformer;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.PlacasBloqueadas;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.PlacasBloqueadasResponse;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.OLD.ItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.PlacaItensOsAbertos;
@@ -244,6 +246,37 @@ public final class OrdemServicoRelatorioDaoImpl extends DatabaseConnection imple
                     dataFinalResolucao);
             rSet = stmt.executeQuery();
             return ReportTransformer.createReport(rSet);
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+    @Override
+    @NotNull
+    public PlacasBloqueadasResponse getPlacasBloqueadas(@NotNull final List<Long> codUnidades) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("select * from  func_checklist_os_relatorio_get_placas_bloqueadas(" +
+                    "f_cod_unidades => ?);");
+            stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
+
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                final List<PlacasBloqueadas> placasBloqueadas = new ArrayList<>();
+                do {
+                    placasBloqueadas.add(new PlacasBloqueadas(
+                            rSet.getString("nome_unidade"),
+                            rSet.getString("placa_bloqueada"),
+                            rSet.getString("data_hora_abertura_os"),
+                            rSet.getInt("qtd_itens_criticos")));
+                } while (rSet.next());
+                return new PlacasBloqueadasResponse(placasBloqueadas.size(), placasBloqueadas);
+            } else {
+                return new PlacasBloqueadasResponse();
+            }
         } finally {
             close(conn, stmt, rSet);
         }

@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.frota.checklist.model;
+package br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model;
 
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
@@ -15,6 +15,6 @@ public final class PlacasBloqueadas {
     @NotNull
     private final String placaBloqueada;
     @NotNull
-    private final String dataHoraAberturaOS;
+    private final String dataHoraAberturaOs;
     private final int qtdItensCriticos;
 }

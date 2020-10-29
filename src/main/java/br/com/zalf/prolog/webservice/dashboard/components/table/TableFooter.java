@@ -3,8 +3,6 @@ package br.com.zalf.prolog.webservice.dashboard.components.table;
 import lombok.Data;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
-
 /**
  * Created on 26/10/2020
  *
@@ -13,7 +11,7 @@ import java.util.List;
 @Data
 public final class TableFooter {
     @Nullable
-    private final List<TableItemFooter> itensFooter;
+    private final TableItemFooter itensFooter;
 
     @Override
     public String toString() {

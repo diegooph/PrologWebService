@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.checklist.ordemservico.relatorios;
 
 import br.com.zalf.prolog.webservice.commons.report.Report;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.PlacasBloqueadasResponse;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.OLD.ItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.PlacaItensOsAbertos;
@@ -72,4 +73,13 @@ public interface OrdemServicoRelatorioDao {
                                      @Nullable final LocalDate dataFinalAbertura,
                                      @Nullable final LocalDate dataInicialResolucao,
                                      @Nullable final LocalDate dataFinalResolucao) throws Throwable;
+    /**
+     * Método para buscar placas bloqueadas - Componente Dash.
+     *
+     * @param codUnidades      Códigos das unidades pelas quais as informações serão filtradas.
+     * @throws Throwable Se algum erro ocorrer.
+     * @return PlacasBloqueadasResponse retorna objeto com as placas que estão bloqueadas.
+     */
+    @NotNull
+    PlacasBloqueadasResponse getPlacasBloqueadas(@NotNull final List<Long> codUnidades) throws Throwable;
 }

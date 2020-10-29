@@ -8,6 +8,7 @@ import br.com.zalf.prolog.webservice.dashboard.components.charts.pie.SliceValueM
 import br.com.zalf.prolog.webservice.dashboard.components.table.*;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.PlacaItensOsAbertos;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.PlacasBloqueadasResponse;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -66,5 +67,38 @@ final class DashboardChecklistOsComponentsCreator {
 
         final TableData tableData = new TableData(lines);
         return TableComponent.createDefault(component, tableHeader, tableData, null);
+    }
+
+    @NotNull
+    static TableComponent createPlacasBloqueadas(@NotNull final ComponentDataHolder component,
+                                                 @NotNull final PlacasBloqueadasResponse placasBloqueadasResponse) {
+        // Header.
+        final List<TableItemHeader> itemHeaders = new ArrayList<>(4);
+        itemHeaders.add(new TableItemHeader("Unidade", null));
+        itemHeaders.add(new TableItemHeader("Placa", null));
+        itemHeaders.add(new TableItemHeader("Data/Hora abertura OS", null));
+        itemHeaders.add(new TableItemHeader("Quantidade itens críticos", null));
+        final TableHeader tableHeader = new TableHeader(itemHeaders);
+
+        // Linhas.
+        final List<TableLine> lines = new ArrayList<>();
+        placasBloqueadasResponse.getPlacasBloqueadas().forEach(placasBloqueadas -> {
+
+            // Colunas.
+            final List<TableColumn> columns = new ArrayList<>(4);
+            columns.add(new TableColumn(placasBloqueadas.getNomeUnidade()));
+            columns.add(new TableColumn(placasBloqueadas.getPlacaBloqueada()));
+            columns.add(new TableColumn(placasBloqueadas.getDataHoraAberturaOs()));
+            columns.add(new TableColumn(String.valueOf(placasBloqueadas.getQtdItensCriticos())));
+            lines.add(new TableLine(columns));
+        });
+
+        // Footer.
+        final TableItemFooter itemFooter = new TableItemFooter("Total de placas bloqueadas: ",
+                String.valueOf(placasBloqueadasResponse.getQtdPlacasBloqueadas()));
+
+        final TableFooter tableFooter = new TableFooter(itemFooter);
+        final TableData tableData = new TableData(lines);
+        return TableComponent.createDefault(component, tableHeader, tableData, tableFooter);
     }
 }
