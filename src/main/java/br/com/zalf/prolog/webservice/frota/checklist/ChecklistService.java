@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.commons.imagens.FileFormatNotSupportException;
 import br.com.zalf.prolog.webservice.commons.imagens.ImagemProLog;
 import br.com.zalf.prolog.webservice.commons.imagens.UploadImageHelper;
+import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
@@ -13,6 +14,7 @@ import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.ChecklistListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.model.FiltroRegionalUnidadeChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.alteracao_logica.ChecklistsAlteracaoAcaoData;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistUploadMidiaRealizacao;
@@ -48,6 +50,19 @@ public final class ChecklistService {
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao inserir checklist, tente novamente");
+        }
+    }
+
+    @NotNull
+    public Response deleteLogicoChecklistsAndOs(@NotNull final ChecklistsAlteracaoAcaoData checkListsDelecao, @NotNull final Long codigoColaborador) {
+        try {
+            dao.deleteLogicoChecklistsAndOs(checkListsDelecao, codigoColaborador);
+            return Response.ok("Ação realizada com sucesso!");
+        } catch (final Throwable t) {
+            Log.e(TAG, String.format("Erro ao tentar realizar ação nas checklists: \n %s ",
+                    checkListsDelecao.toString()), t);
+            throw Injection.provideProLogExceptionHandler()
+                    .map(t, "Erro ao realizar ação com os checklists, tente novamente.");
         }
     }
 
