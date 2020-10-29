@@ -10,7 +10,6 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeicul
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicaoStatus;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoVisualizacao;
-import br.com.zalf.prolog.webservice.interceptors.ApiExposed;
 import br.com.zalf.prolog.webservice.interceptors.auth.ColaboradorAutenticado;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.AppVersionCodeHandler;
@@ -77,7 +76,6 @@ public final class VeiculoResource {
     }
 
     @GET
-    @ApiExposed
     @Secured(permissions = {
             Pilares.Frota.Veiculo.VISUALIZAR,
             Pilares.Frota.Veiculo.ALTERAR,
@@ -85,8 +83,6 @@ public final class VeiculoResource {
             Pilares.Frota.Checklist.VISUALIZAR_TODOS})
     @Path("/busca/byUnidade")
     public List<VeiculoListagem> getVeiculosByUnidade(@HeaderParam("Authorization") @Required final String userToken,
-                                                      @HeaderParam(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO)
-                                                      @Required final String tokenIntegracao,
                                                       @QueryParam("codUnidade") @Required final Long codUnidade,
                                                       @QueryParam("somenteAtivos") @Optional final boolean somenteAtivos) {
         return service.getVeiculosByUnidades(Collections.singletonList(codUnidade), somenteAtivos, null);
