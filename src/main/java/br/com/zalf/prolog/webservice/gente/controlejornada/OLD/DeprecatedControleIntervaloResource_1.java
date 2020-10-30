@@ -13,6 +13,7 @@ import br.com.zalf.prolog.webservice.gente.controlejornada.tipomarcacao.TipoMarc
 import br.com.zalf.prolog.webservice.interceptors.auth.AuthType;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
+import br.com.zalf.prolog.webservice.log.LogRequest;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -46,6 +47,7 @@ public class DeprecatedControleIntervaloResource_1 {
      * Por esse motivo, não pedimos permissão alguma. Para permitir que mesmo colaboradores que estejam inativos
      * também sincronizem seus intervalos setamos o considerOnlyActiveUsers para {@code false}.
      */
+    @LogRequest
     @POST
     @UsedBy(platforms = Platform.ANDROID)
 //    @Secured(authTypes = AuthType.BASIC, considerOnlyActiveUsers = false)

@@ -11,6 +11,9 @@ Change Log
 * Melhora sistema de Logs (PL-2939)
 * Cria componente na Dash - Farol Checklist (PL-2791)
 
+### Refactors
+* Adiciona log nos métodos de insert de intervalo
+
 ### Bug Fixes
 * Corrige log da integração que logava corpo de erro em sucesso e vice-versa (PL-3193)
 
