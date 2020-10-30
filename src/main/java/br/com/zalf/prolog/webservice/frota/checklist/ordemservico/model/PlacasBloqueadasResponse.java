@@ -1,8 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -12,12 +10,10 @@ import java.util.List;
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-@AllArgsConstructor
-@NoArgsConstructor
-@Getter
+@Data
 public final class PlacasBloqueadasResponse {
     @NotNull
-    private Integer qtdPlacasBloqueadas;
+    private final Integer qtdPlacasBloqueadas;
     @NotNull
-    private List<PlacasBloqueadas> placasBloqueadas;
+    private final List<PlacasBloqueadas> placasBloqueadas;
 }

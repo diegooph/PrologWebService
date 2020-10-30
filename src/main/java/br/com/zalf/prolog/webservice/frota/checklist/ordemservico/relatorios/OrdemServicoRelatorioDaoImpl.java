@@ -19,10 +19,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by luiz on 26/04/17.
@@ -275,7 +272,7 @@ public final class OrdemServicoRelatorioDaoImpl extends DatabaseConnection imple
                 } while (rSet.next());
                 return new PlacasBloqueadasResponse(placasBloqueadas.size(), placasBloqueadas);
             } else {
-                return new PlacasBloqueadasResponse();
+                return new PlacasBloqueadasResponse(0, Collections.emptyList());
             }
         } finally {
             close(conn, stmt, rSet);
