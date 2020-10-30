@@ -3,10 +3,12 @@ Change Log
 ### Stage
 #### Features
 * adiciona deleção das checklists (PL-3217)
-* Melhora sistema de Logs (PL-2939)
 
 <a name="v1.3.4"></a>
 ## Version [v1.3.4](https://github.com/luizfp/PrologWebService/compare/v1.3.3...v1.3.4) (release-date) [unreleased]
+
+### Features
+* Melhora sistema de Logs (PL-2939)
 
 ### Bug Fixes
 * Corrige log da integração que logava corpo de erro em sucesso e vice-versa (PL-3193)
