@@ -76,7 +76,7 @@ final class DashboardChecklistOsComponentsCreator {
         final List<TableItemHeader> itemHeaders = new ArrayList<>(4);
         itemHeaders.add(new TableItemHeader("Unidade", null));
         itemHeaders.add(new TableItemHeader("Placa", null));
-        itemHeaders.add(new TableItemHeader("Data/Hora abertura OS", null));
+        itemHeaders.add(new TableItemHeader("Data/Hora abertura última OS", null));
         itemHeaders.add(new TableItemHeader("Quantidade itens críticos", null));
         final TableHeader tableHeader = new TableHeader(itemHeaders);
 
