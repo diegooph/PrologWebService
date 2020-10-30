@@ -4,13 +4,12 @@ import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.time.LocalDateTime;
 /**
  * Created on 2020-10-07
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-import java.time.LocalDateTime;
-
 @Data
 public final class VeiculoEvolucaoKm {
     @NotNull
