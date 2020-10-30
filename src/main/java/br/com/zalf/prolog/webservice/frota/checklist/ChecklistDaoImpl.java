@@ -11,10 +11,10 @@ import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.model.alteracao_logica.ChecklistsAlteracaoAcaoData;
 import br.com.zalf.prolog.webservice.frota.checklist.model.ChecklistListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.model.FiltroRegionalUnidadeChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.RegionalSelecaoChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.alteracao_logica.ChecklistsAlteracaoAcaoData;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistAlternativaResposta;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
@@ -25,7 +25,10 @@ import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEn
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
@@ -525,7 +528,7 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
             stmt.setLong(2, codigoColaborador);
             stmt.setString(3, checkListsDelecao.getAcaoExecutada().getValue());
             stmt.setString(4, OrigemAcaoEnum.INTERNO.toString());
-            stmt.setString(5, checkListsDelecao.getObservacao());
+            stmt.setString(5, StringUtils.trimToNull(checkListsDelecao.getObservacao()));
             stmt.setObject(6, Now.offsetDateTimeUtc());
             stmt.execute();
         } finally {
