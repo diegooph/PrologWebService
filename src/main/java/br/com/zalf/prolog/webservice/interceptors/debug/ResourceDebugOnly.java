@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.interceptors.debugenv;
+package br.com.zalf.prolog.webservice.interceptors.debug;
 
 /**
  * Created on 13/09/2018

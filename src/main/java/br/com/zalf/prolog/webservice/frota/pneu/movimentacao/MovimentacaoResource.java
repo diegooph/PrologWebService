@@ -10,7 +10,7 @@ import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.ProcessoMovimentacao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.Motivo;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
-import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
+import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.AppVersionCodeHandler;
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.DefaultAppVersionCodeHandler;
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.VersionCodeHandlerMode;
@@ -24,7 +24,7 @@ import java.util.List;
 /**
  * Created by Zart on 03/03/17.
  */
-@DebugLog
+@ConsoleDebugLog
 @Path("/movimentacoes")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")

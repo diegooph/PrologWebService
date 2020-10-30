@@ -12,7 +12,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizaca
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.visualizacao.DetalhesVeiculoTransferido;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.visualizacao.ProcessoTransferenciaVeiculoVisualizacao;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
-import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
+import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import org.jetbrains.annotations.NotNull;
 
@@ -25,7 +25,7 @@ import java.util.List;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-@DebugLog
+@ConsoleDebugLog
 @Path("veiculos/transferencias")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")

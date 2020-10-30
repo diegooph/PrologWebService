@@ -3,7 +3,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.*;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
-import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
+import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import org.jetbrains.annotations.NotNull;
 
@@ -17,7 +17,7 @@ import java.util.List;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 @Path("/afericoes/configuracoes")
-@DebugLog
+@ConsoleDebugLog
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Secured(permissions = Pilares.Frota.Afericao.ConfiguracaoAfericao.CONFIGURAR)

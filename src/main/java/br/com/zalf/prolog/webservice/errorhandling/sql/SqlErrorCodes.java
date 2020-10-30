@@ -12,7 +12,9 @@ public enum SqlErrorCodes {
     CHECK_VIOLATION("23514"),
     FOREIGN_KEY_VIOLATION("23503"),
     NOT_NULL_VIOLATION("23502"),
-    BD_GENERIC_ERROR_CODE("SA1A1");
+    BD_GENERIC_ERROR_CODE("SA1A1"),
+    SERVER_SIDE_ERROR("SA1A2"),
+    CLIENT_SIDE_ERROR("SA1A3");
 
     @NotNull
     private final String errorCode;

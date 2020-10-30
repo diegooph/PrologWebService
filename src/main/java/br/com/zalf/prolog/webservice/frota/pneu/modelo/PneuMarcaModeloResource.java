@@ -6,7 +6,7 @@ import br.com.zalf.prolog.webservice.commons.util.Optional;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.frota.pneu.modelo._model.*;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
-import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
+import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.AppVersionCodeHandler;
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.VersionCodeHandlerMode;
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.VersionNotPresentAction;
@@ -23,7 +23,7 @@ import java.util.List;
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-@DebugLog
+@ConsoleDebugLog
 @Path("pneus")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")

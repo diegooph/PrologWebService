@@ -5,7 +5,7 @@ import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.HistoricoEdicaoVeiculo;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
-import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
+import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import org.jetbrains.annotations.NotNull;
 
@@ -18,7 +18,7 @@ import java.util.List;
  *
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
-@DebugLog
+@ConsoleDebugLog
 @Path("/veiculos/historicos")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")

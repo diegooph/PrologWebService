@@ -26,7 +26,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.mudancaestrutura.ChecklistM
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.interceptors.auth.ColaboradorAutenticado;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
-import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
+import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
@@ -46,7 +46,7 @@ import java.util.Map;
 import static br.com.zalf.prolog.webservice.commons.util.ProLogCustomHeaders.AppVersionAndroid.PROLOG_APP_VERSION;
 
 @Path("/checklists")
-@DebugLog
+@ConsoleDebugLog
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public final class ChecklistResource {

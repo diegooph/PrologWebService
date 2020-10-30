@@ -1,12 +1,12 @@
 package br.com.zalf.prolog.webservice.gente.controlejornada;
 
-import br.com.zalf.prolog.webservice.gente.colaborador.ColaboradorService;
 import br.com.zalf.prolog.webservice.commons.util.*;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
+import br.com.zalf.prolog.webservice.gente.colaborador.ColaboradorService;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.*;
 import br.com.zalf.prolog.webservice.interceptors.auth.AuthType;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
-import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
+import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import org.jetbrains.annotations.NotNull;
 
@@ -19,7 +19,7 @@ import java.util.List;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-@DebugLog
+@ConsoleDebugLog
 @Path("/controle-jornada")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
@@ -36,10 +36,10 @@ public class ControleJornadaResource {
     @POST
     @UsedBy(platforms = Platform.ANDROID)
     public ResponseIntervalo insertIntervalo(
-            @HeaderParam(IntervaloOfflineSupport.HEADER_NAME_TOKEN_MARCACAO) String tokenMarcacao,
-            @HeaderParam(IntervaloOfflineSupport.HEADER_NAME_VERSAO_DADOS_INTERVALO) long versaoDadosIntervalo,
-            @HeaderParam(ProLogCustomHeaders.AppVersionAndroid.PROLOG_APP_VERSION) Integer versaoApp,
-            IntervaloMarcacao intervaloMarcacao) throws ProLogException {
+            @HeaderParam(IntervaloOfflineSupport.HEADER_NAME_TOKEN_MARCACAO) final String tokenMarcacao,
+            @HeaderParam(IntervaloOfflineSupport.HEADER_NAME_VERSAO_DADOS_INTERVALO) final long versaoDadosIntervalo,
+            @HeaderParam(ProLogCustomHeaders.AppVersionAndroid.PROLOG_APP_VERSION) final Integer versaoApp,
+            final IntervaloMarcacao intervaloMarcacao) throws ProLogException {
         return service.insertMarcacaoIntervalo(tokenMarcacao, versaoDadosIntervalo, intervaloMarcacao, versaoApp);
     }
 
@@ -47,10 +47,10 @@ public class ControleJornadaResource {
     @UsedBy(platforms = Platform.ANDROID)
     @Path("/marcacao-em-andamento")
     public IntervaloMarcacao getUltimaMarcacaoInicioNaoFechada(
-            @HeaderParam(IntervaloOfflineSupport.HEADER_NAME_TOKEN_MARCACAO) String tokenMarcacao,
-            @QueryParam("codUnidade") @Required Long codUnidade,
-            @QueryParam("cpf") @Required Long cpf,
-            @QueryParam("codTipoIntervalo") @Required Long codTipoInvervalo) throws ProLogException {
+            @HeaderParam(IntervaloOfflineSupport.HEADER_NAME_TOKEN_MARCACAO) final String tokenMarcacao,
+            @QueryParam("codUnidade") @Required final Long codUnidade,
+            @QueryParam("cpf") @Required final Long cpf,
+            @QueryParam("codTipoIntervalo") @Required final Long codTipoInvervalo) throws ProLogException {
         return service.getUltimaMarcacaoInicioNaoFechada(tokenMarcacao, codUnidade, cpf, codTipoInvervalo);
     }
 
@@ -58,12 +58,12 @@ public class ControleJornadaResource {
     @UsedBy(platforms = Platform.ANDROID)
     @Path("/marcacoes")
     public List<Intervalo> getMarcacoesColaborador(
-            @HeaderParam(IntervaloOfflineSupport.HEADER_NAME_TOKEN_MARCACAO) String tokenMarcacao,
-            @QueryParam("codUnidade") @Required Long codUnidade,
-            @QueryParam("cpf") @Required Long cpf,
-            @QueryParam("codTipoIntervalo") @Required String codTipo,
-            @QueryParam("limit") @Required long limit,
-            @QueryParam("offset") @Required long offset) throws ProLogException {
+            @HeaderParam(IntervaloOfflineSupport.HEADER_NAME_TOKEN_MARCACAO) final String tokenMarcacao,
+            @QueryParam("codUnidade") @Required final Long codUnidade,
+            @QueryParam("cpf") @Required final Long cpf,
+            @QueryParam("codTipoIntervalo") @Required final String codTipo,
+            @QueryParam("limit") @Required final long limit,
+            @QueryParam("offset") @Required final long offset) throws ProLogException {
         return service.getMarcacoesColaborador(tokenMarcacao, codUnidade, cpf, codTipo, limit, offset);
     }
 
@@ -91,16 +91,15 @@ public class ControleJornadaResource {
     @Secured(authTypes = AuthType.BEARER, permissions = Pilares.Gente.Intervalo.MARCAR_INTERVALO)
     @Path("/offline-support")
     public IntervaloOfflineSupport getIntervaloOfflineSupport(
-            @HeaderParam(IntervaloOfflineSupport.HEADER_NAME_VERSAO_DADOS_INTERVALO) long versaoDadosIntervalo,
-            @QueryParam("codUnidade") Long codUnidade) throws ProLogException {
+            @HeaderParam(IntervaloOfflineSupport.HEADER_NAME_VERSAO_DADOS_INTERVALO) final long versaoDadosIntervalo,
+            @QueryParam("codUnidade") final Long codUnidade) throws ProLogException {
         return service.getIntervaloOfflineSupport(versaoDadosIntervalo, codUnidade, new ColaboradorService());
     }
-
 
     @GET
     @UsedBy(platforms = Platform.ANDROID)
     @Path("/dados-marcacao")
-    public DadosMarcacaoUnidade getDadosMarcacaoUnidade(@QueryParam("codUnidade") @Required Long codUnidade)
+    public DadosMarcacaoUnidade getDadosMarcacaoUnidade(@QueryParam("codUnidade") @Required final Long codUnidade)
             throws ProLogException {
         return service.getDadosMarcacaoUnidade(codUnidade);
     }

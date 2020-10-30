@@ -1,4 +1,7 @@
-package br.com.zalf.prolog.webservice.integracao.logger;
+package br.com.zalf.prolog.webservice.log;
+
+import br.com.zalf.prolog.webservice.log._model.LogLevel;
+import org.jetbrains.annotations.NotNull;
 
 import javax.ws.rs.NameBinding;
 import java.lang.annotation.ElementType;
@@ -14,4 +17,7 @@ import java.lang.annotation.Target;
 @NameBinding
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.METHOD})
-public @interface LogIntegracaoRequest { }
+public @interface LogRequest {
+    @NotNull
+    LogLevel logLevel() default LogLevel.ALL;
+}

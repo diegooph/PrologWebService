@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice;
 
-import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
+import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -14,7 +14,7 @@ import javax.ws.rs.core.MediaType;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 @Path("/monitor")
-@DebugLog
+@ConsoleDebugLog
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public final class MonitoringResource {

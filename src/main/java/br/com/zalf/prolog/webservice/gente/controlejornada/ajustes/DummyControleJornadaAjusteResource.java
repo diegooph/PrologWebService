@@ -9,8 +9,8 @@ import br.com.zalf.prolog.webservice.gente.controlejornada.ajustes.model.exibica
 import br.com.zalf.prolog.webservice.gente.controlejornada.ajustes.model.historico.MarcacaoAjusteHistoricoExibicao;
 import br.com.zalf.prolog.webservice.gente.controlejornada.ajustes.model.inconsistencias.InconsistenciaFimAntesInicio;
 import br.com.zalf.prolog.webservice.gente.controlejornada.ajustes.model.inconsistencias.InconsistenciaSemVinculo;
-import br.com.zalf.prolog.webservice.interceptors.debugenv.ResourceDebugOnly;
-import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
+import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
+import br.com.zalf.prolog.webservice.interceptors.debug.ResourceDebugOnly;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -26,7 +26,7 @@ import java.util.List;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 @Path("/dummies")
-@DebugLog
+@ConsoleDebugLog
 @ResourceDebugOnly
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")

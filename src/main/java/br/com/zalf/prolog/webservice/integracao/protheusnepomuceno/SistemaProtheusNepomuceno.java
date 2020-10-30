@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.database.DatabaseConnectionProvider;
+import br.com.zalf.prolog.webservice.errorhandling.ErrorReportSystem;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
@@ -194,11 +195,11 @@ public final class SistemaProtheusNepomuceno extends Sistema {
                 }
             }
 
-            // Caso identificarmos alguma estrutura que não está mapeada no Prolog, vamos logar no sentry, sem
+            // Caso identificarmos alguma estrutura que não está mapeada no Prolog, vamos logar no sistema de erros, sem
             // quebrar a aplicação. Assim deixamos o usuário aferir o que é mostrado, enquanto os erros de mapeamento
             // são corrigidos via sistema.
             if (!estruturasNaoMapeadas.isEmpty()) {
-                Log.m(TAG, "Estruturas não mapeadas: " + estruturasNaoMapeadas);
+                logEstruturasNaoMapeadas(estruturasNaoMapeadas);
             }
 
             return ProtheusNepomucenoConverter.createCronogramaAfericaoProlog(modelosEstruturaVeiculo);
@@ -444,5 +445,11 @@ public final class SistemaProtheusNepomuceno extends Sistema {
                             "O código auxiliar " + codAuxiliarTipoVeiculo +
                                     " já está cadastrado em outro Tipo de Veículo e não pode ser repetido");
                 });
+    }
+
+    private void logEstruturasNaoMapeadas(@NotNull final Set<String> estruturasNaoMapeadas) {
+        final String message = "Estruturas não mapeadas: " + estruturasNaoMapeadas;
+        Log.i(TAG, message);
+        ErrorReportSystem.logMessage(message);
     }
 }

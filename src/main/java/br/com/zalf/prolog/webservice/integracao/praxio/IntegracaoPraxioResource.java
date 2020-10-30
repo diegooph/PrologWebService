@@ -5,7 +5,6 @@ import br.com.zalf.prolog.webservice.commons.util.ProLogCustomHeaders;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
-import br.com.zalf.prolog.webservice.integracao.logger.LogIntegracaoRequest;
 import br.com.zalf.prolog.webservice.integracao.praxio.afericao.MedicaoIntegracaoPraxio;
 import br.com.zalf.prolog.webservice.integracao.praxio.cadastro.VeiculoCadastroPraxio;
 import br.com.zalf.prolog.webservice.integracao.praxio.cadastro.VeiculoEdicaoPraxio;
@@ -13,7 +12,8 @@ import br.com.zalf.prolog.webservice.integracao.praxio.cadastro.VeiculoTransfere
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.ItemResolvidoGlobus;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.OrdemServicoAbertaGlobus;
 import br.com.zalf.prolog.webservice.integracao.response.SuccessResponseIntegracao;
-import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
+import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
+import br.com.zalf.prolog.webservice.log.LogRequest;
 import org.jetbrains.annotations.NotNull;
 
 import javax.ws.rs.*;
@@ -25,7 +25,7 @@ import java.util.List;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-@DebugLog
+@ConsoleDebugLog
 @Path("/integracoes/praxio")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
@@ -38,7 +38,7 @@ public final class IntegracaoPraxioResource {
 ////----------------------------------------------------------------------------------------------------------------////
 
     @GET
-    @LogIntegracaoRequest
+    @LogRequest
     @Path("/validate-token")
     @UsedBy(platforms = Platform.INTEGRACOES)
     public SuccessResponseIntegracao validateTokenIntegracao(
@@ -52,7 +52,7 @@ public final class IntegracaoPraxioResource {
 ////----------------------------------------------------------------------------------------------------------------////
 
     @POST
-    @LogIntegracaoRequest
+    @LogRequest
     @Path("/veiculo/cadastro")
     @UsedBy(platforms = Platform.INTEGRACOES)
     public SuccessResponseIntegracao inserirVeiculoPraxio(
@@ -62,7 +62,7 @@ public final class IntegracaoPraxioResource {
     }
 
     @PUT
-    @LogIntegracaoRequest
+    @LogRequest
     @Path("/veiculo/edicao")
     @UsedBy(platforms = Platform.INTEGRACOES)
     public SuccessResponseIntegracao atualizarVeiculoPraxio(
@@ -78,7 +78,7 @@ public final class IntegracaoPraxioResource {
     }
 
     @POST
-    @LogIntegracaoRequest
+    @LogRequest
     @Path("/veiculo/transferencia")
     @UsedBy(platforms = Platform.INTEGRACOES)
     public SuccessResponseIntegracao transferirVeiculoPraxio(
@@ -88,7 +88,7 @@ public final class IntegracaoPraxioResource {
     }
 
     @DELETE
-    @LogIntegracaoRequest
+    @LogRequest
     @Path("/veiculo/ativar-desativar")
     @UsedBy(platforms = Platform.INTEGRACOES)
     public SuccessResponseIntegracao ativarDesativarVeiculoPraxio(
@@ -103,7 +103,7 @@ public final class IntegracaoPraxioResource {
 ////----------------------------------------------------------------------------------------------------------------////
 
     @GET
-    @LogIntegracaoRequest
+    @LogRequest
     @Path("/afericoes")
     @UsedBy(platforms = Platform.INTEGRACOES)
     public List<MedicaoIntegracaoPraxio> getAfericoesRealizadas(
@@ -117,7 +117,7 @@ public final class IntegracaoPraxioResource {
 ////----------------------------------------------------------------------------------------------------------------////
 
     @POST
-    @LogIntegracaoRequest
+    @LogRequest
     @Path("/ordens-servico/itens-pendentes")
     @UsedBy(platforms = Platform.INTEGRACOES)
     public SuccessResponseIntegracao inserirOrdensServicoGlobus(
@@ -127,7 +127,7 @@ public final class IntegracaoPraxioResource {
     }
 
     @POST
-    @LogIntegracaoRequest
+    @LogRequest
     @Path("/ordens-servico/resolver-multiplos-itens")
     @UsedBy(platforms = Platform.INTEGRACOES)
     public SuccessResponseIntegracao resolverMultiplosItens(

@@ -6,8 +6,8 @@ import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.integracao.api.controlejornada._model.ApiMarcacao;
-import br.com.zalf.prolog.webservice.integracao.logger.LogIntegracaoRequest;
-import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
+import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
+import br.com.zalf.prolog.webservice.log.LogRequest;
 import org.jetbrains.annotations.NotNull;
 
 import javax.ws.rs.*;
@@ -19,16 +19,16 @@ import java.util.List;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-@DebugLog
+@ConsoleDebugLog
 @Path("/api/marcacoes/")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public final class ApiMarcacaoResource {
     @NotNull
-    private ApiMarcacaoService service = new ApiMarcacaoService();
+    private final ApiMarcacaoService service = new ApiMarcacaoService();
 
     @GET
-    @LogIntegracaoRequest
+    @LogRequest
     @Path("marcacoes-realizadas")
     @UsedBy(platforms = Platform.INTEGRACOES)
     public List<ApiMarcacao> getMarcacoesRealizadas(

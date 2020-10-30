@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.interceptors.log;
+package br.com.zalf.prolog.webservice.interceptors.debug;
 
 import javax.ws.rs.NameBinding;
 import java.lang.annotation.ElementType;
@@ -9,4 +9,5 @@ import java.lang.annotation.Target;
 @NameBinding
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.METHOD})
-public @interface DebugLog { }
+public @interface ConsoleDebugLog {
+}

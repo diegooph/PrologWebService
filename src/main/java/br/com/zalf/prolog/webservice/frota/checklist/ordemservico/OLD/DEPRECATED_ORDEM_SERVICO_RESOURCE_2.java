@@ -7,7 +7,7 @@ import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
-import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
+import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.AppVersionCodeHandler;
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.VersionCodeHandlerMode;
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.VersionNotPresentAction;
@@ -20,7 +20,7 @@ import java.util.List;
 /**
  * Created by jean on 11/08/16.
  */
-@DebugLog
+@ConsoleDebugLog
 @Path("/checklist/old-ordens-servicos")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
@@ -36,7 +36,7 @@ public class DEPRECATED_ORDEM_SERVICO_RESOURCE_2 {
     @UsedBy(platforms = Platform.ANDROID)
     @Path("/itens/conserto")
     @Secured(permissions = Pilares.Frota.OrdemServico.Checklist.RESOLVER_ITEM)
-    public Response consertaItem(ItemOrdemServico item) throws ProLogException {
+    public Response consertaItem(final ItemOrdemServico item) throws ProLogException {
         service.consertaItem(item);
         return Response.ok("Item consertado com sucesso");
     }
@@ -45,7 +45,7 @@ public class DEPRECATED_ORDEM_SERVICO_RESOURCE_2 {
     @UsedBy(platforms = Platform.ANDROID)
     @Path("/itens/conserto-multiplos")
     @Secured(permissions = Pilares.Frota.OrdemServico.Checklist.RESOLVER_ITEM)
-    public Response consertaItens(ConsertoMultiplosItensOs itensConserto) throws ProLogException {
+    public Response consertaItens(final ConsertoMultiplosItensOs itensConserto) throws ProLogException {
         service.consertaItens(itensConserto);
         return Response.ok("Itens consertados com sucesso");
     }
@@ -56,12 +56,12 @@ public class DEPRECATED_ORDEM_SERVICO_RESOURCE_2 {
     @Secured(permissions = {
             Pilares.Frota.OrdemServico.Checklist.VISUALIZAR,
             Pilares.Frota.OrdemServico.Checklist.RESOLVER_ITEM})
-    public List<OrdemServico> getOs(@PathParam("codUnidade") Long codUnidade,
-                                    @PathParam("tipoVeiculo") String tipoVeiculo,
-                                    @PathParam("placa") String placa,
-                                    @PathParam("status") String status,
-                                    @QueryParam("limit") Integer limit,
-                                    @QueryParam("offset") Long offset) throws Throwable {
+    public List<OrdemServico> getOs(@PathParam("codUnidade") final Long codUnidade,
+                                    @PathParam("tipoVeiculo") final String tipoVeiculo,
+                                    @PathParam("placa") final String placa,
+                                    @PathParam("status") final String status,
+                                    @QueryParam("limit") final Integer limit,
+                                    @QueryParam("offset") final Long offset) throws Throwable {
         return service.getOs(placa, status, codUnidade, tipoVeiculo, limit, offset);
     }
 
@@ -71,11 +71,11 @@ public class DEPRECATED_ORDEM_SERVICO_RESOURCE_2 {
     @Secured(permissions = {
             Pilares.Frota.OrdemServico.Checklist.VISUALIZAR,
             Pilares.Frota.OrdemServico.Checklist.RESOLVER_ITEM})
-    public List<ItemOrdemServico> getItensOrdemServico(@QueryParam("placa") @Required String placa,
-                                                       @QueryParam("status-itens") @Required String statusItens,
-                                                       @QueryParam("prioridade-itens") @Optional String prioridade,
-                                                       @QueryParam("limit") @Optional Integer limit,
-                                                       @QueryParam("offset") @Optional Long offset)
+    public List<ItemOrdemServico> getItensOrdemServico(@QueryParam("placa") @Required final String placa,
+                                                       @QueryParam("status-itens") @Required final String statusItens,
+                                                       @QueryParam("prioridade-itens") @Optional final String prioridade,
+                                                       @QueryParam("limit") @Optional final Integer limit,
+                                                       @QueryParam("offset") @Optional final Long offset)
             throws ProLogException {
         return service.getItensOsManutencaoHolder(placa, statusItens, prioridade, limit, offset);
     }
@@ -86,9 +86,9 @@ public class DEPRECATED_ORDEM_SERVICO_RESOURCE_2 {
     @Secured(permissions = {
             Pilares.Frota.OrdemServico.Checklist.VISUALIZAR,
             Pilares.Frota.OrdemServico.Checklist.RESOLVER_ITEM})
-    public List<ItemOrdemServico> getItensOrdemServico(@PathParam("codOs") @Required Long codOs,
-                                                       @PathParam("codUnidade") @Required Long codUnidade,
-                                                       @QueryParam("statusItemOs") @Optional String statusItemOs)
+    public List<ItemOrdemServico> getItensOrdemServico(@PathParam("codOs") @Required final Long codOs,
+                                                       @PathParam("codUnidade") @Required final Long codUnidade,
+                                                       @QueryParam("statusItemOs") @Optional final String statusItemOs)
             throws ProLogException {
         return service.getItensOs(codOs, codUnidade, statusItemOs);
     }
@@ -99,12 +99,12 @@ public class DEPRECATED_ORDEM_SERVICO_RESOURCE_2 {
     @Secured(permissions = {
             Pilares.Frota.OrdemServico.Checklist.VISUALIZAR,
             Pilares.Frota.OrdemServico.Checklist.RESOLVER_ITEM})
-    public List<ManutencaoHolder> getResumoManutencaoHolder(@PathParam("codUnidade") @Required Long codUnidade,
-                                                            @QueryParam("codTipoVeiculo") @Optional Long codTipoVeiculo,
-                                                            @QueryParam("placaVeiculo") @Optional String placaVeiculo,
-                                                            @QueryParam("itensEmAberto") @Required Boolean itensEmAberto,
-                                                            @QueryParam("limit") @Required int limit,
-                                                            @QueryParam("offset") @Required int offset)
+    public List<ManutencaoHolder> getResumoManutencaoHolder(@PathParam("codUnidade") @Required final Long codUnidade,
+                                                            @QueryParam("codTipoVeiculo") @Optional final Long codTipoVeiculo,
+                                                            @QueryParam("placaVeiculo") @Optional final String placaVeiculo,
+                                                            @QueryParam("itensEmAberto") @Required final Boolean itensEmAberto,
+                                                            @QueryParam("limit") @Required final int limit,
+                                                            @QueryParam("offset") @Required final int offset)
             throws ProLogException {
         return service.getResumoManutencaoHolder(codUnidade, codTipoVeiculo, placaVeiculo, itensEmAberto, limit, offset);
     }

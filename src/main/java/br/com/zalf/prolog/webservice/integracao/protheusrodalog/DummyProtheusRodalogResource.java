@@ -9,8 +9,8 @@ import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.integracao.protheusrodalog.model.AfericaoProtheusRodalog;
 import br.com.zalf.prolog.webservice.integracao.protheusrodalog.model.CronogramaAfericaoProtheusRodalog;
 import br.com.zalf.prolog.webservice.integracao.protheusrodalog.model.NovaAfericaoPlacaProtheusRodalog;
-import br.com.zalf.prolog.webservice.interceptors.debugenv.ResourceDebugOnly;
-import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
+import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
+import br.com.zalf.prolog.webservice.interceptors.debug.ResourceDebugOnly;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -21,7 +21,7 @@ import javax.ws.rs.core.MediaType;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 @Path("/dummies/rodalog-protheus")
-@DebugLog
+@ConsoleDebugLog
 @ResourceDebugOnly
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")

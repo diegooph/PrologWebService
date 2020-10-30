@@ -11,6 +11,10 @@ import org.jetbrains.annotations.Nullable;
 public abstract class ProLogException extends RuntimeException {
 	private static final long serialVersionUID = 1L;
 	/**
+	 * indicates if that exception should be logged on our error report system
+	 */
+	private boolean loggableOnErrorReportSystem = true;
+	/**
 	 * contains the same HTTP Status code returned by the server
 	 */
 	private int httpStatusCode;
@@ -33,13 +37,11 @@ public abstract class ProLogException extends RuntimeException {
 	 */
 	@Nullable
 	private String moreInfoLink;
-
 	/**
 	 * Extra information that might be useful for developers
 	 */
 	@Nullable
 	private String developerMessage;
-
 	/**
 	 * Parent exception that are catch and mapped to a {@link ProLogException}
 	 */
@@ -62,12 +64,36 @@ public abstract class ProLogException extends RuntimeException {
 	public ProLogException(final int httpStatusCode,
 						   final int proLogErrorCode,
 						   @NotNull final String message,
+						   final boolean loggableOnErrorReportSystem) {
+		super();
+		this.httpStatusCode = httpStatusCode;
+		this.proLogErrorCode = proLogErrorCode;
+		this.message = message;
+		this.loggableOnErrorReportSystem = loggableOnErrorReportSystem;
+	}
+
+	public ProLogException(final int httpStatusCode,
+						   final int proLogErrorCode,
+						   @NotNull final String message,
 						   @Nullable final String detailedMessage) {
 		super();
 		this.httpStatusCode = httpStatusCode;
 		this.proLogErrorCode = proLogErrorCode;
 		this.message = message;
 		this.detailedMessage = detailedMessage;
+	}
+
+	public ProLogException(final int httpStatusCode,
+						   final int proLogErrorCode,
+						   @NotNull final String message,
+						   @Nullable final String detailedMessage,
+						   final boolean loggableOnErrorReportSystem) {
+		super();
+		this.httpStatusCode = httpStatusCode;
+		this.proLogErrorCode = proLogErrorCode;
+		this.message = message;
+		this.detailedMessage = detailedMessage;
+		this.loggableOnErrorReportSystem = loggableOnErrorReportSystem;
 	}
 
 	public ProLogException(final int httpStatusCode,
@@ -88,6 +114,21 @@ public abstract class ProLogException extends RuntimeException {
 						   @NotNull final String message,
 						   @Nullable final String detailedMessage,
 						   @Nullable final String developerMessage,
+						   final boolean loggableOnErrorReportSystem) {
+		super();
+		this.httpStatusCode = httpStatusCode;
+		this.proLogErrorCode = proLogErrorCode;
+		this.message = message;
+		this.detailedMessage = detailedMessage;
+		this.developerMessage = developerMessage;
+		this.loggableOnErrorReportSystem = loggableOnErrorReportSystem;
+	}
+
+	public ProLogException(final int httpStatusCode,
+						   final int proLogErrorCode,
+						   @NotNull final String message,
+						   @Nullable final String detailedMessage,
+						   @Nullable final String developerMessage,
 						   @Nullable final Throwable parentException) {
 		super(parentException);
 		this.httpStatusCode = httpStatusCode;
@@ -101,6 +142,23 @@ public abstract class ProLogException extends RuntimeException {
 	public ProLogException(final int httpStatusCode,
 						   final int proLogErrorCode,
 						   @NotNull final String message,
+						   @Nullable final String detailedMessage,
+						   @Nullable final String developerMessage,
+						   @Nullable final Throwable parentException,
+						   final boolean loggableOnErrorReportSystem) {
+		super(parentException);
+		this.httpStatusCode = httpStatusCode;
+		this.proLogErrorCode = proLogErrorCode;
+		this.message = message;
+		this.detailedMessage = detailedMessage;
+		this.developerMessage = developerMessage;
+		this.parentException = parentException;
+		this.loggableOnErrorReportSystem = loggableOnErrorReportSystem;
+	}
+
+	public ProLogException(final int httpStatusCode,
+						   final int proLogErrorCode,
+						   @NotNull final String message,
 						   @Nullable final String developerMessage,
 						   @Nullable final Throwable parentException) {
 		super(parentException);
@@ -109,6 +167,21 @@ public abstract class ProLogException extends RuntimeException {
 		this.message = message;
 		this.developerMessage = developerMessage;
 		this.parentException = parentException;
+	}
+
+	public ProLogException(final int httpStatusCode,
+						   final int proLogErrorCode,
+						   @NotNull final String message,
+						   @Nullable final String developerMessage,
+						   @Nullable final Throwable parentException,
+						   final boolean loggableOnErrorReportSystem) {
+		super(parentException);
+		this.httpStatusCode = httpStatusCode;
+		this.proLogErrorCode = proLogErrorCode;
+		this.message = message;
+		this.developerMessage = developerMessage;
+		this.parentException = parentException;
+		this.loggableOnErrorReportSystem = loggableOnErrorReportSystem;
 	}
 
 	public ProLogException(final int httpStatusCode,
@@ -124,6 +197,23 @@ public abstract class ProLogException extends RuntimeException {
 		this.detailedMessage = detailedMessage;
 		this.developerMessage = developerMessage;
 		this.moreInfoLink = moreInfoLink;
+	}
+
+	public ProLogException(final int httpStatusCode,
+						   final int proLogErrorCode,
+						   @NotNull final String message,
+						   @Nullable final String detailedMessage,
+						   @Nullable final String developerMessage,
+						   @NotNull final String moreInfoLink,
+						   final boolean loggableOnErrorReportSystem) {
+		super();
+		this.httpStatusCode = httpStatusCode;
+		this.proLogErrorCode = proLogErrorCode;
+		this.message = message;
+		this.detailedMessage = detailedMessage;
+		this.developerMessage = developerMessage;
+		this.moreInfoLink = moreInfoLink;
+		this.loggableOnErrorReportSystem = loggableOnErrorReportSystem;
 	}
 
 	public int getHttpStatusCode() {
@@ -182,5 +272,9 @@ public abstract class ProLogException extends RuntimeException {
 	@Nullable
 	public String getDetailedMessage() {
 		return detailedMessage;
+	}
+
+	public boolean isloggableOnErrorReportSystem() {
+		return loggableOnErrorReportSystem;
 	}
 }

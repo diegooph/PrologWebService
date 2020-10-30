@@ -6,7 +6,7 @@ import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.model.ChecklistOfflineSupport;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.model.DadosChecklistOfflineUnidade;
-import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
+import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 import org.jetbrains.annotations.NotNull;
 
 import javax.ws.rs.*;
@@ -18,7 +18,7 @@ import javax.ws.rs.core.MediaType;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 @Path("/checklist-offline/")
-@DebugLog
+@ConsoleDebugLog
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class ChecklistOfflineResource {

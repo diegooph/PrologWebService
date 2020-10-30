@@ -6,6 +6,10 @@ import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.ws.rs.ForbiddenException;
+import javax.ws.rs.NotAuthorizedException;
+import javax.ws.rs.core.Response;
+
 public final class ProLogError {
 	/**
 	 * Contains the same HTTP Status code returned by the server
@@ -63,9 +67,35 @@ public final class ProLogError {
 				ex.getMessage(),
 				ex.getDetailedMessage(),
 				ex.getMoreInfoLink(),
-				/* Só setamos essa mensagem se estivermos em modo DEBUG. Assim evitamos de vazar alguma informação
-				 * sensitiva. */
+				// Só setamos essa mensagem se estivermos em modo DEBUG. Assim evitamos de vazar alguma informação
+				// sensitiva.
 				BuildConfig.DEBUG ? ex.getDeveloperMessage() : null);
+	}
+
+	@NotNull
+	public static ProLogError createFrom(@NotNull final NotAuthorizedException ex) {
+		return new ProLogError(
+				Response.Status.UNAUTHORIZED.getStatusCode(),
+				ProLogErrorCodes.NOT_AUTHORIZED.errorCode(),
+				ex.getMessage(),
+				"Sem autorização para acessar a API.",
+				null,
+				// Só setamos essa mensagem se estivermos em modo DEBUG. Assim evitamos de vazar alguma informação
+				// sensitiva.
+				null);
+	}
+
+	@NotNull
+	public static ProLogError createFrom(@NotNull final ForbiddenException ex) {
+		return new ProLogError(
+				Response.Status.FORBIDDEN.getStatusCode(),
+				ProLogErrorCodes.FORBIDDEN.errorCode(),
+				ex.getMessage(),
+				"Usuário sem permissão.",
+				null,
+				// Só setamos essa mensagem se estivermos em modo DEBUG. Assim evitamos de vazar alguma informação
+				// sensitiva.
+				null);
 	}
 
 	@NotNull

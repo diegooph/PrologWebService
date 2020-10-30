@@ -5,7 +5,8 @@ import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.integracao.logger._model.LogType;
-import br.com.zalf.prolog.webservice.integracao.logger._model.RequestResponseLog;
+import br.com.zalf.prolog.webservice.log._model.RequestLog;
+import br.com.zalf.prolog.webservice.log._model.ResponseLog;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -24,7 +25,7 @@ public final class LogDaoImpl extends DatabaseConnection implements LogDao {
         PreparedStatement stmt = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("INSERT INTO LOG_JSON(JSON, IDENTIFICADOR) VALUES (?, ?)");
+            stmt = conn.prepareStatement("insert into log.log_json(json, identificador) values (?, ?)");
             stmt.setString(1, log);
             stmt.setString(2, identificador);
             return stmt.executeUpdate() > 0;
@@ -34,41 +35,32 @@ public final class LogDaoImpl extends DatabaseConnection implements LogDao {
     }
 
     @Override
-    public void insertRequestResponseLogApi(@NotNull final String tokenRequisicao,
-                                            @NotNull final RequestResponseLog requestLog,
-                                            @Nullable final RequestResponseLog responseLog) throws Throwable {
-        internalInsertRequestResponseLog(tokenRequisicao, LogType.FROM_API, requestLog, responseLog);
+    public void insertRequestResponseLog(@NotNull final RequestLog requestLog,
+                                         @Nullable final ResponseLog responseLog) throws Throwable {
+        internalInsertRequestResponseLog(requestLog, responseLog);
     }
 
-    @Override
-    public void insertRequestResponseLogProlog(@NotNull final RequestResponseLog requestLog,
-                                               @Nullable final RequestResponseLog responseLog) throws Throwable {
-        internalInsertRequestResponseLog(null, LogType.FROM_PROLOG, requestLog, responseLog);
-    }
-
-    private void internalInsertRequestResponseLog(@Nullable final String tokenRequisicao,
-                                                  @NotNull final LogType logType,
-                                                  @NotNull final RequestResponseLog requestLog,
-                                                  @Nullable final RequestResponseLog responseLog) throws Throwable {
+    private void internalInsertRequestResponseLog(@NotNull final RequestLog requestLog,
+                                                  @Nullable final ResponseLog responseLog) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("select * from integracao.func_geral_salva_log_integracao(" +
+            stmt = conn.prepareStatement("select * from log.func_geral_salva_log(" +
                     "f_log_type => ?, " +
                     "f_token_integracao => ?, " +
-                    "f_response_status => ?, " +
                     "f_request_json => ?, " +
+                    "f_response_status => ?, " +
                     "f_response_json => ?, " +
                     "f_data_hora_request => ?);");
-            stmt.setString(1, logType.asString());
-            bindValueOrNull(stmt, 2, tokenRequisicao, SqlType.TEXT);
+            stmt.setString(1, LogType.fromApi(requestLog.isFromApi()).asString());
+            stmt.setString(2, requestLog.getTokenIntegracao());
+            stmt.setObject(3, PostgresUtils.toJsonb(requestLog.toJson()));
             bindValueOrNull(
                     stmt,
-                    3,
+                    4,
                     responseLog == null ? null : responseLog.getStatusCode(),
                     SqlType.INTEGER);
-            stmt.setObject(4, PostgresUtils.toJsonb(requestLog.toJson()));
             if (responseLog == null) {
                 stmt.setNull(5, Types.NULL);
             } else {

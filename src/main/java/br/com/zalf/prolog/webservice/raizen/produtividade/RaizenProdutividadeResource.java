@@ -5,7 +5,7 @@ import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
-import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
+import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.RaizenProdutividade;
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.RaizenProdutividadeIndividualHolder;
@@ -26,7 +26,7 @@ import java.util.List;
  * @author Thais Francisco (https://github.com/thaisksf)
  */
 @Path("/raizen/produtividades")
-@DebugLog
+@ConsoleDebugLog
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class RaizenProdutividadeResource {
