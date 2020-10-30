@@ -73,8 +73,7 @@ final class DashboardChecklistOsService {
         } catch (final Throwable throwable) {
             Log.e(TAG, String.format("Erro ao buscar as placas bloqueadas" +
                     "unidades %s", codUnidades.toString()), throwable);
-            throw exceptionHandler.map(throwable, "Erro ao buscar as placas bloqueadas" +
-                    "horas");
+            throw exceptionHandler.map(throwable, "Erro ao buscar as placas bloqueadas");
         }
     }
 }

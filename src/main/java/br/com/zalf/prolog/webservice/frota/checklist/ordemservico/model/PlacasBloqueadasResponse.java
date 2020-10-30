@@ -17,7 +17,7 @@ import java.util.List;
 @Getter
 public final class PlacasBloqueadasResponse {
     @NotNull
-    private  Integer qtdPlacasBloqueadas;
+    private Integer qtdPlacasBloqueadas;
     @NotNull
-    private  List<PlacasBloqueadas> placasBloqueadas;
+    private List<PlacasBloqueadas> placasBloqueadas;
 }
