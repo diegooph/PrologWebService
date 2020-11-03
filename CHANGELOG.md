@@ -1,8 +1,8 @@
 Change Log
 ==========
 
-<a name="v1.3.4"></a>
-## Version [v1.3.4](https://github.com/luizfp/PrologWebService/compare/v1.3.3...v1.3.4) (release-date) [unreleased]
+<a name="v1.4.0"></a>
+## Version [v1.4.0](https://github.com/luizfp/PrologWebService/compare/v1.3.3...v1.4.0) (2020-11-03)
 
 ### Features
 * Melhora sistema de Logs (PL-2939)
