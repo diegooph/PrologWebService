@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
  */
 public final class FamiliaModeloBloqueadoLoader {
     // O arquivo está localizado na pasta "resources" do projeto.
-    private static final String NOME_ARQUIVO_FAMILIA_MODELO_BLOQUEIO = "familia_modelo_bloqueado_nepomuceno.yaml";
+    private static final String NOME_ARQUIVO_FAMILIA_MODELO_BLOQUEIO = "configs/familia_modelo_bloqueado_nepomuceno.yaml";
     @Nullable
     private static volatile FamiliasModelosBloqueio sFamiliasModelosBloqueio;
 

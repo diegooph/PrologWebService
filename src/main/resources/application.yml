@@ -9,6 +9,9 @@ spring:
   datasource:
     platform: postgres
     driver-class-name: org.postgresql.Driver
+  devtools:
+    restart:
+      enabled: false
 
 logging:
   level:
