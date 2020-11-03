@@ -1,7 +1,7 @@
-package br.com.zalf.prolog.webservice.interceptors.log;
+package br.com.zalf.prolog.webservice.interceptors.debug;
 
-import br.com.zalf.prolog.webservice.config.BuildConfig;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.config.BuildConfig;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtMethod;
@@ -20,18 +20,19 @@ import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 
-@DebugLog
+@ConsoleDebugLog
 @Provider
-public final class DebugLogInterceptor implements ContainerRequestFilter {
-    private static final String TAG = DebugLogInterceptor.class.getSimpleName();
+public final class ConsoleDebugLogInterceptor implements ContainerRequestFilter {
+    private static final String TAG = ConsoleDebugLogInterceptor.class.getSimpleName();
 
     @Context
     ResourceInfo resourceInfo;
 
     @Override
-    public void filter(ContainerRequestContext request) throws IOException {
-        if (!BuildConfig.DEBUG)
+    public void filter(final ContainerRequestContext request) throws IOException {
+        if (!BuildConfig.DEBUG) {
             return;
+        }
 
         Log.d(TAG, "--> " + request.getMethod() + " " + request.getUriInfo().getPath());
         printClassAndMethodName(resourceInfo);
@@ -75,21 +76,22 @@ public final class DebugLogInterceptor implements ContainerRequestFilter {
         Log.d(TAG, "Method Name: " + resourceInfo.getResourceMethod());
     }
 
-    private void printQueryParameters(ContainerRequestContext request) {
+    private void printQueryParameters(final ContainerRequestContext request) {
         final MultivaluedMap<String, String> map = request.getUriInfo().getQueryParameters();
         if (map != null && !map.isEmpty()) {
             Log.d(TAG, "Query-Parameters: " + map.toString());
         }
     }
 
-    private void printHeaders(ContainerRequestContext request) {
-        if (request.getHeaders() == null)
+    private void printHeaders(final ContainerRequestContext request) {
+        if (request.getHeaders() == null) {
             return;
+        }
 
         request.getHeaders().forEach((s, strings) -> Log.d(TAG, s + ": " + strings));
     }
 
-    private boolean isJson(ContainerRequestContext request) {
+    private boolean isJson(final ContainerRequestContext request) {
         final MediaType mediaType = request.getMediaType();
         return mediaType != null && mediaType.toString().contains("application/json");
     }

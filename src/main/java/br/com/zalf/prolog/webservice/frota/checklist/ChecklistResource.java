@@ -15,6 +15,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.ChecklistListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.model.FiltroRegionalUnidadeChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.model.TipoChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.alteracao_logica.ChecklistsAlteracaoAcaoData;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistUploadMidiaRealizacao;
@@ -23,14 +24,18 @@ import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloResou
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloService;
 import br.com.zalf.prolog.webservice.frota.checklist.mudancaestrutura.ChecklistMigracaoEstruturaSuporte;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
+import br.com.zalf.prolog.webservice.interceptors.auth.ColaboradorAutenticado;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
-import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
+import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.jetbrains.annotations.NotNull;
 
+import javax.inject.Inject;
+import javax.inject.Provider;
+import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.io.InputStream;
@@ -41,12 +46,15 @@ import java.util.Map;
 import static br.com.zalf.prolog.webservice.commons.util.ProLogCustomHeaders.AppVersionAndroid.PROLOG_APP_VERSION;
 
 @Path("/checklists")
-@DebugLog
+@ConsoleDebugLog
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public final class ChecklistResource {
     @NotNull
     private final ChecklistService service = new ChecklistService();
+
+    @Inject
+    private Provider<ColaboradorAutenticado> colaboradorAutenticadoProvider;
 
     @POST
     @UsedBy(platforms = Platform.ANDROID)
@@ -71,6 +79,14 @@ public final class ChecklistResource {
         } else {
             return Response.error("Erro ao inserir checklist");
         }
+    }
+
+    @PUT
+    @Path("/alteracao-logica")
+    @Secured(permissions = {Pilares.Frota.Checklist.DELETAR})
+    public Response deleteLogicoChecklistsAndOs(@NotNull @Valid final ChecklistsAlteracaoAcaoData checklistsParaAlteracao) {
+        final Long codigoColaborador = this.colaboradorAutenticadoProvider.get().getCodigo();
+        return service.deleteLogicoChecklistsAndOs(checklistsParaAlteracao, codigoColaborador);
     }
 
     @POST

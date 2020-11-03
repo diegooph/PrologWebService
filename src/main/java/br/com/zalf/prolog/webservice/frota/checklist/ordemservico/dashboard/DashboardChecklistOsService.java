@@ -61,4 +61,19 @@ final class DashboardChecklistOsService {
                     "itens de O.S. em aberto");
         }
     }
+
+    @NotNull
+    TableComponent getPlacasBloqueadas(@NotNull final Integer codComponente, @NotNull final List<Long> codUnidades)
+            throws ProLogException {
+        try {
+            return DashboardChecklistOsComponentsCreator.createPlacasBloqueadas(
+                    dashDao.getComponenteByCodigo(codComponente),
+                    relatorioDao.getPlacasBloqueadas(
+                            codUnidades));
+        } catch (final Throwable throwable) {
+            Log.e(TAG, String.format("Erro ao buscar as placas bloqueadas" +
+                    "unidades %s", codUnidades.toString()), throwable);
+            throw exceptionHandler.map(throwable, "Erro ao buscar as placas bloqueadas");
+        }
+    }
 }

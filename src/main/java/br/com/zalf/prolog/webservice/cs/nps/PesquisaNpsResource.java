@@ -7,7 +7,7 @@ import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.cs.nps.model.PesquisaNpsBloqueio;
 import br.com.zalf.prolog.webservice.cs.nps.model.PesquisaNpsRealizada;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
-import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
+import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 import org.jetbrains.annotations.NotNull;
 
 import javax.ws.rs.*;
@@ -20,7 +20,7 @@ import javax.ws.rs.core.Response;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 @Path("/cs/nps")
-@DebugLog
+@ConsoleDebugLog
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public final class PesquisaNpsResource {

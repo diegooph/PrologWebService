@@ -6,7 +6,6 @@ import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
-import br.com.zalf.prolog.webservice.integracao.logger.LogIntegracaoRequest;
 import br.com.zalf.prolog.webservice.integracao.praxio.afericao.MedicaoIntegracaoPraxio;
 import br.com.zalf.prolog.webservice.integracao.praxio.cadastro.VeiculoCadastroPraxio;
 import br.com.zalf.prolog.webservice.integracao.praxio.cadastro.VeiculoEdicaoPraxio;
@@ -19,7 +18,8 @@ import br.com.zalf.prolog.webservice.integracao.praxio.movimentacao.ProcessoMovi
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.ItemResolvidoGlobus;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.OrdemServicoAbertaGlobus;
 import br.com.zalf.prolog.webservice.integracao.response.SuccessResponseIntegracao;
-import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
+import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
+import br.com.zalf.prolog.webservice.log.LogRequest;
 import org.jetbrains.annotations.NotNull;
 
 import javax.ws.rs.*;
@@ -32,7 +32,7 @@ import java.util.List;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-@DebugLog
+@ConsoleDebugLog
 @Path("/integracoes/praxio")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
@@ -41,7 +41,7 @@ public final class IntegracaoPraxioResourceDummy {
     private final IntegracaoPraxioService service = new IntegracaoPraxioService();
 
     @GET
-    @LogIntegracaoRequest
+    @LogRequest
     @Path("/validate-token/dummy")
     @UsedBy(platforms = Platform.INTEGRACOES)
     public SuccessResponseIntegracao validateTokenIntegracao(
@@ -55,7 +55,7 @@ public final class IntegracaoPraxioResourceDummy {
     }
 
     @POST
-    @LogIntegracaoRequest
+    @LogRequest
     @Path("/veiculo/cadastro/dummy")
     @UsedBy(platforms = Platform.INTEGRACOES)
     public SuccessResponseIntegracao inserirVeiculoPraxio(
@@ -65,7 +65,7 @@ public final class IntegracaoPraxioResourceDummy {
     }
 
     @PUT
-    @LogIntegracaoRequest
+    @LogRequest
     @Path("/veiculo/edicao/dummy")
     @UsedBy(platforms = Platform.INTEGRACOES)
     public SuccessResponseIntegracao atualizarVeiculoPraxio(
@@ -81,7 +81,7 @@ public final class IntegracaoPraxioResourceDummy {
     }
 
     @POST
-    @LogIntegracaoRequest
+    @LogRequest
     @Path("/veiculo/transferencia/dummy")
     @UsedBy(platforms = Platform.INTEGRACOES)
     public SuccessResponseIntegracao transferirVeiculoPraxio(
@@ -91,7 +91,7 @@ public final class IntegracaoPraxioResourceDummy {
     }
 
     @DELETE
-    @LogIntegracaoRequest
+    @LogRequest
     @Path("/veiculo/ativar-desativar/dummy")
     @UsedBy(platforms = Platform.INTEGRACOES)
     public SuccessResponseIntegracao ativarDesativarVeiculoPraxio(
@@ -111,7 +111,7 @@ public final class IntegracaoPraxioResourceDummy {
     }
 
     @GET
-    @LogIntegracaoRequest
+    @LogRequest
     @Path("/afericoes/dummies")
     @UsedBy(platforms = Platform.INTEGRACOES)
     public List<MedicaoIntegracaoPraxio> getAfericoesRealizadasDummies(
@@ -121,7 +121,7 @@ public final class IntegracaoPraxioResourceDummy {
     }
 
     @POST
-    @LogIntegracaoRequest
+    @LogRequest
     @Path("/ordens-servico/itens-pendentes/dummy")
     @UsedBy(platforms = Platform.INTEGRACOES)
     public SuccessResponseIntegracao inserirOrdensServicoGlobusDummy(
@@ -131,7 +131,7 @@ public final class IntegracaoPraxioResourceDummy {
     }
 
     @POST
-    @LogIntegracaoRequest
+    @LogRequest
     @Path("/ordens-servicos/resolver-multiplos-itens/dummy")
     @UsedBy(platforms = Platform.INTEGRACOES)
     public SuccessResponseIntegracao resolverMultiplosItensDummy(
@@ -141,7 +141,7 @@ public final class IntegracaoPraxioResourceDummy {
     }
 
     @GET
-    @LogIntegracaoRequest
+    @LogRequest
     @Path("/autenticacao-globus-sucesso")
     @UsedBy(platforms = Platform.INTEGRACOES)
     public GlobusPiccoloturAutenticacaoResponse autenticaUsuarioGlobusDummy(
@@ -153,7 +153,7 @@ public final class IntegracaoPraxioResourceDummy {
     }
 
     @POST
-    @LogIntegracaoRequest
+    @LogRequest
     @Path("/insert-movimentacao-sucesso")
     @UsedBy(platforms = Platform.INTEGRACOES)
     public GlobusPiccoloturMovimentacaoResponse insertProcessoMovimentacao(
@@ -163,7 +163,7 @@ public final class IntegracaoPraxioResourceDummy {
     }
 
     @GET
-    @LogIntegracaoRequest
+    @LogRequest
     @Path("/busca-locais-movimento-sucesso")
     @UsedBy(platforms = Platform.INTEGRACOES)
     public GlobusPiccoloturLocalMovimentoResponse getLocaisMovimentoGlobus(

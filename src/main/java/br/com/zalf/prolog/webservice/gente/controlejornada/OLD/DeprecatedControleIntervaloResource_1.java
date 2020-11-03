@@ -1,18 +1,19 @@
 package br.com.zalf.prolog.webservice.gente.controlejornada.OLD;
 
 import br.com.zalf.prolog.webservice.TimeZoneManager;
-import br.com.zalf.prolog.webservice.gente.colaborador.ColaboradorService;
-import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
+import br.com.zalf.prolog.webservice.gente.colaborador.ColaboradorService;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.*;
 import br.com.zalf.prolog.webservice.gente.controlejornada.tipomarcacao.TipoMarcacao;
 import br.com.zalf.prolog.webservice.interceptors.auth.AuthType;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
-import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
+import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
+import br.com.zalf.prolog.webservice.log.LogRequest;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -34,7 +35,7 @@ import java.util.List;
 @Path("/intervalos")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-@DebugLog
+@ConsoleDebugLog
 @Deprecated
 public class DeprecatedControleIntervaloResource_1 {
 
@@ -46,12 +47,13 @@ public class DeprecatedControleIntervaloResource_1 {
      * Por esse motivo, não pedimos permissão alguma. Para permitir que mesmo colaboradores que estejam inativos
      * também sincronizem seus intervalos setamos o considerOnlyActiveUsers para {@code false}.
      */
+    @LogRequest
     @POST
     @UsedBy(platforms = Platform.ANDROID)
 //    @Secured(authTypes = AuthType.BASIC, considerOnlyActiveUsers = false)
     public ResponseIntervalo insertIntervalo(
-            @HeaderParam(IntervaloOfflineSupport.HEADER_NAME_VERSAO_DADOS_INTERVALO) long versaoDadosIntervalo,
-            Intervalo intervalo) {
+            @HeaderParam(IntervaloOfflineSupport.HEADER_NAME_VERSAO_DADOS_INTERVALO) final long versaoDadosIntervalo,
+            final Intervalo intervalo) {
 
         return service.insertMarcacaoIntervalo(versaoDadosIntervalo, toIntervaloMarcacao(intervalo));
     }
@@ -65,8 +67,8 @@ public class DeprecatedControleIntervaloResource_1 {
     @Secured(authTypes = AuthType.BEARER, permissions = Pilares.Gente.Intervalo.MARCAR_INTERVALO)
     @Path("/{codUnidade}/offline-support")
     public IntervaloOfflineSupport getIntervaloOfflineSupport(
-            @HeaderParam(IntervaloOfflineSupport.HEADER_NAME_VERSAO_DADOS_INTERVALO) long versaoDadosIntervalo,
-            @PathParam("codUnidade") Long codUnidade) {
+            @HeaderParam(IntervaloOfflineSupport.HEADER_NAME_VERSAO_DADOS_INTERVALO) final long versaoDadosIntervalo,
+            @PathParam("codUnidade") final Long codUnidade) {
         return service.getIntervaloOfflineSupport(versaoDadosIntervalo, codUnidade, new ColaboradorService());
     }
 
@@ -74,8 +76,8 @@ public class DeprecatedControleIntervaloResource_1 {
     @UsedBy(platforms = Platform.ANDROID)
     @Secured(authTypes = {AuthType.BEARER, AuthType.BASIC}, permissions = Pilares.Gente.Intervalo.MARCAR_INTERVALO)
     @Path("/abertos/{cpf}/{codTipoIntervalo}")
-    public Intervalo getIntervaloAberto(@PathParam("cpf") Long cpf,
-                                        @PathParam("codTipoIntervalo") Long codTipoInvervalo) throws Throwable {
+    public Intervalo getIntervaloAberto(@PathParam("cpf") final Long cpf,
+                                        @PathParam("codTipoIntervalo") final Long codTipoInvervalo) throws Throwable {
         final Long codUnidade = new ColaboradorService().getCodUnidadeByCpf(cpf);
         return toIntervalo(service.getUltimaMarcacaoInicioNaoFechada(codUnidade, cpf, codTipoInvervalo));
     }
@@ -88,10 +90,10 @@ public class DeprecatedControleIntervaloResource_1 {
             Pilares.Gente.Intervalo.AJUSTE_MARCACOES,
             Pilares.Gente.Intervalo.VISUALIZAR_TODAS_MARCACOES})
     @Path("/{cpf}/{codTipoIntervalo}")
-    public List<Intervalo> getIntervalosColaborador(@PathParam("cpf") Long cpf,
-                                                    @PathParam("codTipoIntervalo") String codTipo,
-                                                    @QueryParam("limit") long limit,
-                                                    @QueryParam("offset") long offset) {
+    public List<Intervalo> getIntervalosColaborador(@PathParam("cpf") final Long cpf,
+                                                    @PathParam("codTipoIntervalo") final String codTipo,
+                                                    @QueryParam("limit") final long limit,
+                                                    @QueryParam("offset") final long offset) {
         final Long codUnidade = new ColaboradorService().getCodUnidadeByCpf(cpf);
         return service.getMarcacoesIntervaloColaborador(codUnidade, cpf, codTipo, limit, offset);
     }
@@ -102,10 +104,10 @@ public class DeprecatedControleIntervaloResource_1 {
     @POST
     @Secured(permissions = Pilares.Gente.Intervalo.MARCAR_INTERVALO)
     @Path("/{codUnidade}/{cpf}/{codTipoIntervalo}")
-    public AbstractResponse DEPRECATED_INICIA_INTERVALO(@PathParam("codUnidade") Long codUnidade,
-                                                        @PathParam("cpf") Long cpf,
-                                                        @PathParam("codTipoIntervalo") Long codTipo) {
-        Long codIntervalo = service.iniciaIntervalo(codUnidade, cpf, codTipo);
+    public AbstractResponse DEPRECATED_INICIA_INTERVALO(@PathParam("codUnidade") final Long codUnidade,
+                                                        @PathParam("cpf") final Long cpf,
+                                                        @PathParam("codTipoIntervalo") final Long codTipo) {
+        final Long codIntervalo = service.iniciaIntervalo(codUnidade, cpf, codTipo);
         if (codIntervalo != null) {
             return ResponseWithCod.ok("Intervalo iniciado com sucesso", codIntervalo);
         } else {
@@ -120,7 +122,7 @@ public class DeprecatedControleIntervaloResource_1 {
     @Secured(permissions = Pilares.Gente.Intervalo.MARCAR_INTERVALO)
     @Path("/{codUnidade}")
     @Deprecated
-    public Response DEPRECATED_INSERE_FINALIZACAO_INTERVALO(Intervalo intervalo, @PathParam("codUnidade") Long
+    public Response DEPRECATED_INSERE_FINALIZACAO_INTERVALO(final Intervalo intervalo, @PathParam("codUnidade") final Long
             codUnidade) {
         if (service.insereFinalizacaoIntervalo(intervalo, codUnidade)) {
             return Response.ok("Intervalo finalizado com sucesso");
@@ -162,8 +164,9 @@ public class DeprecatedControleIntervaloResource_1 {
      */
     @Nullable
     private Intervalo toIntervalo(@Nullable final IntervaloMarcacao marcacao) throws SQLException {
-        if (marcacao == null)
+        if (marcacao == null) {
             return null;
+        }
 
         final Intervalo intervalo = new Intervalo();
         intervalo.setCodigo(marcacao.getCodigo());

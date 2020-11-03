@@ -4,7 +4,7 @@ import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
-import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
+import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import org.jetbrains.annotations.NotNull;
 
@@ -18,7 +18,7 @@ import javax.ws.rs.core.StreamingOutput;
  * @author Thais Francisco (https://github.com/thaisksf)
  */
 @Path("/raizen/produtividades/relatorios")
-@DebugLog
+@ConsoleDebugLog
 @Secured(permissions = Pilares.Entrega.RaizenProdutividade.VISUALIZAR_RELATORIOS)
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")

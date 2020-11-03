@@ -5,7 +5,7 @@ import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
-import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
+import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 import br.com.zalf.prolog.webservice.messaging.push._model.PushColaboradorCadastro;
 
 import javax.validation.constraints.NotNull;
@@ -19,7 +19,7 @@ import javax.ws.rs.core.MediaType;
  */
 @Path("push")
 @Secured
-@DebugLog
+@ConsoleDebugLog
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public final class PushResource {

@@ -1,6 +1,20 @@
 Change Log
 ==========
 
+<a name="v1.4.0"></a>
+## Version [v1.4.0](https://github.com/luizfp/PrologWebService/compare/v1.3.3...v1.4.0) (2020-11-03)
+
+### Features
+* Melhora sistema de Logs (PL-2939)
+* Cria componente na Dash - Farol Checklist (PL-2791)
+* Cria deleção de checklists (PL-3217)
+
+### Refactors
+* Adiciona log nos métodos de insert de intervalo
+
+### Bug Fixes
+* Corrige log da integração que logava corpo de erro em sucesso e vice-versa (PL-3193)
+
 <a name="v1.3.3"></a>
 ## Version [v1.3.3](https://github.com/luizfp/PrologWebService/compare/v1.3.2...v1.3.3) (2020-10-25)
 

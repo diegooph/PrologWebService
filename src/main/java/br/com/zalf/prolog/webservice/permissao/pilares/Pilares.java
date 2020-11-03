@@ -33,6 +33,7 @@ public final class Pilares {
 
             public static final int REALIZAR = 11;
             public static final int VISUALIZAR_TODOS = 118;
+            public static final int DELETAR = 149;
 
             private Checklist() {
             }

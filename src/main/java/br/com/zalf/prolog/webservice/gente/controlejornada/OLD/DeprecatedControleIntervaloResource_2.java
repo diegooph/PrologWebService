@@ -1,14 +1,15 @@
 package br.com.zalf.prolog.webservice.gente.controlejornada.OLD;
 
-import br.com.zalf.prolog.webservice.gente.colaborador.ColaboradorService;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
+import br.com.zalf.prolog.webservice.gente.colaborador.ColaboradorService;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.Intervalo;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.IntervaloMarcacao;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.IntervaloOfflineSupport;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.ResponseIntervalo;
 import br.com.zalf.prolog.webservice.interceptors.auth.AuthType;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
+import br.com.zalf.prolog.webservice.log.LogRequest;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import org.jetbrains.annotations.NotNull;
 
@@ -35,12 +36,13 @@ public final class DeprecatedControleIntervaloResource_2 {
      * Por esse motivo, não pedimos permissão alguma. Para permitir que mesmo colaboradores que estejam inativos
      * também sincronizem seus intervalos setamos o considerOnlyActiveUsers para {@code false}.
      */
+    @LogRequest
     @POST
     @UsedBy(platforms = Platform.ANDROID)
 //    @Secured(authTypes = AuthType.BASIC, considerOnlyActiveUsers = false)
     public ResponseIntervalo insertIntervalo(
-            @HeaderParam(IntervaloOfflineSupport.HEADER_NAME_VERSAO_DADOS_INTERVALO) long versaoDadosIntervalo,
-            IntervaloMarcacao intervaloMarcacao) {
+            @HeaderParam(IntervaloOfflineSupport.HEADER_NAME_VERSAO_DADOS_INTERVALO) final long versaoDadosIntervalo,
+            final IntervaloMarcacao intervaloMarcacao) {
         return service.insertMarcacaoIntervalo(versaoDadosIntervalo, intervaloMarcacao);
     }
 
@@ -52,8 +54,8 @@ public final class DeprecatedControleIntervaloResource_2 {
     @Secured(authTypes = AuthType.BEARER, permissions = Pilares.Gente.Intervalo.MARCAR_INTERVALO)
     @Path("/{codUnidade}/offline-support")
     public IntervaloOfflineSupport getIntervaloOfflineSupport(
-            @HeaderParam(IntervaloOfflineSupport.HEADER_NAME_VERSAO_DADOS_INTERVALO) long versaoDadosIntervalo,
-            @PathParam("codUnidade") Long codUnidade) {
+            @HeaderParam(IntervaloOfflineSupport.HEADER_NAME_VERSAO_DADOS_INTERVALO) final long versaoDadosIntervalo,
+            @PathParam("codUnidade") final Long codUnidade) {
         return service.getIntervaloOfflineSupport(versaoDadosIntervalo, codUnidade, new ColaboradorService());
     }
 
@@ -61,9 +63,9 @@ public final class DeprecatedControleIntervaloResource_2 {
     @UsedBy(platforms = Platform.ANDROID)
     @Secured(authTypes = {AuthType.BEARER, AuthType.BASIC}, permissions = Pilares.Gente.Intervalo.MARCAR_INTERVALO)
     @Path("/abertos/{codUnidade}/{cpf}/{codTipoIntervalo}")
-    public IntervaloMarcacao getIntervaloAberto(@PathParam("codUnidade") Long codUnidade,
-                                                @PathParam("cpf") Long cpf,
-                                                @PathParam("codTipoIntervalo") Long codTipoInvervalo) throws Throwable {
+    public IntervaloMarcacao getIntervaloAberto(@PathParam("codUnidade") final Long codUnidade,
+                                                @PathParam("cpf") final Long cpf,
+                                                @PathParam("codTipoIntervalo") final Long codTipoInvervalo) throws Throwable {
         return service.getUltimaMarcacaoInicioNaoFechada(codUnidade, cpf, codTipoInvervalo);
     }
 
@@ -75,11 +77,11 @@ public final class DeprecatedControleIntervaloResource_2 {
             Pilares.Gente.Intervalo.AJUSTE_MARCACOES,
             Pilares.Gente.Intervalo.VISUALIZAR_TODAS_MARCACOES})
     @Path("/{codUnidade}/{cpf}/{codTipoIntervalo}")
-    public List<Intervalo> getIntervalosColaborador(@PathParam("codUnidade") Long codUnidade,
-                                                    @PathParam("cpf") Long cpf,
-                                                    @PathParam("codTipoIntervalo") String codTipo,
-                                                    @QueryParam("limit") long limit,
-                                                    @QueryParam("offset") long offset) {
+    public List<Intervalo> getIntervalosColaborador(@PathParam("codUnidade") final Long codUnidade,
+                                                    @PathParam("cpf") final Long cpf,
+                                                    @PathParam("codTipoIntervalo") final String codTipo,
+                                                    @QueryParam("limit") final long limit,
+                                                    @QueryParam("offset") final long offset) {
         return service.getMarcacoesIntervaloColaborador(codUnidade, cpf, codTipo, limit, offset);
     }
 }

@@ -6,7 +6,7 @@ import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.gente.treinamento.model.Treinamento;
 import br.com.zalf.prolog.webservice.gente.treinamento.model.TreinamentoColaborador;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
-import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
+import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
@@ -19,7 +19,7 @@ import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@DebugLog
+@ConsoleDebugLog
 @Path("/treinamentos")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
@@ -32,12 +32,13 @@ public class TreinamentoResource {
     @Secured(permissions = {Pilares.Gente.Treinamentos.CRIAR, Pilares.Gente.Treinamentos.ALTERAR})
     @Consumes({MediaType.MULTIPART_FORM_DATA})
     public AbstractResponse insertTreinamento(
-            @FormDataParam("file") InputStream fileInputStream,
-            @FormDataParam("file") FormDataContentDisposition fileDetail,
-            @FormDataParam("treinamento") FormDataBodyPart jsonPart) {
+            @FormDataParam("file") final InputStream fileInputStream,
+            @FormDataParam("file") final FormDataContentDisposition fileDetail,
+            @FormDataParam("treinamento") final FormDataBodyPart jsonPart) {
 
-        if (!fileDetail.getFileName().toLowerCase().endsWith(".pdf"))
+        if (!fileDetail.getFileName().toLowerCase().endsWith(".pdf")) {
             return Response.error("ERRO! Arquivo não está no formato PDF!");
+        }
 
         jsonPart.setMediaType(MediaType.APPLICATION_JSON_TYPE);
         final Treinamento treinamento = jsonPart.getValueAs(Treinamento.class);
@@ -58,15 +59,15 @@ public class TreinamentoResource {
             Pilares.Gente.Treinamentos.ALTERAR,
             Pilares.Gente.Treinamentos.CRIAR})
     @Path("/{codUnidade}/{codTreinamento}")
-    public Treinamento getTreinamentoByCod(@PathParam("codUnidade") Long codUnidade,
-                                           @PathParam("codTreinamento") Long codTreinamento) {
+    public Treinamento getTreinamentoByCod(@PathParam("codUnidade") final Long codUnidade,
+                                           @PathParam("codTreinamento") final Long codTreinamento) {
         return service.getByCod(codTreinamento, codUnidade);
     }
 
     @PUT
     @Secured(permissions = {Pilares.Gente.Treinamentos.CRIAR, Pilares.Gente.Treinamentos.ALTERAR})
     @Path("/{codigo}")
-    public Response updateTreinamento(Treinamento treinamento) {
+    public Response updateTreinamento(final Treinamento treinamento) {
         if (service.updateTreinamento(treinamento)) {
             return Response.ok("Treinamento atualizado com sucesso");
         } else {
@@ -77,8 +78,8 @@ public class TreinamentoResource {
     @POST
     @Secured(permissions = Pilares.Gente.Treinamentos.VISUALIZAR_PROPRIOS)
     @Path("/visualizados/{codTreinamento}/{cpf}")
-    public Response marcarTreinamentoComoVisto(@PathParam("codTreinamento") Long codTreinamento,
-                                               @PathParam("cpf") Long cpf) {
+    public Response marcarTreinamentoComoVisto(@PathParam("codTreinamento") final Long codTreinamento,
+                                               @PathParam("cpf") final Long cpf) {
         if (service.marcarTreinamentoComoVisto(codTreinamento, cpf)) {
             return Response.ok("Treinamento marcado com sucesso");
         } else {
@@ -89,14 +90,14 @@ public class TreinamentoResource {
     @GET
     @Secured(permissions = Pilares.Gente.Treinamentos.VISUALIZAR_PROPRIOS)
     @Path("/visualizados/{cpf}")
-    public List<Treinamento> getVistosByColaborador(@PathParam("cpf") Long cpf) {
+    public List<Treinamento> getVistosByColaborador(@PathParam("cpf") final Long cpf) {
         return service.getVistosByColaborador(cpf);
     }
 
     @GET
     @Secured(permissions = Pilares.Gente.Treinamentos.VISUALIZAR_PROPRIOS)
     @Path("/nao-visualizados/{cpf}")
-    public List<Treinamento> getNaoVistosByColaborador(@PathParam("cpf") Long cpf) {
+    public List<Treinamento> getNaoVistosByColaborador(@PathParam("cpf") final Long cpf) {
         return service.getNaoVistosByColaborador(cpf);
     }
 
@@ -104,8 +105,8 @@ public class TreinamentoResource {
     @Secured
     @Path("/visualizacoes/{codUnidade}/{codTreinamento}")
     public List<TreinamentoColaborador> getVisualizacoesByTreinamento(
-            @PathParam("codUnidade") Long codTreinamento,
-            @PathParam("codTreinamento") Long codUnidade) {
+            @PathParam("codUnidade") final Long codTreinamento,
+            @PathParam("codTreinamento") final Long codUnidade) {
         return service.getVisualizacoesByTreinamento(codTreinamento, codUnidade);
     }
 
@@ -115,14 +116,14 @@ public class TreinamentoResource {
             Pilares.Gente.Treinamentos.ALTERAR,
             Pilares.Gente.Treinamentos.CRIAR})
     @Path("/{codUnidade}")
-    public List<Treinamento> getAll(@PathParam("codUnidade") Long codUnidade,
-                                    @QueryParam("codCargo") String codCargo,
-                                    @QueryParam("dataInicial") Long dataInicial,
-                                    @QueryParam("dataFinal") Long dataFinal,
-                                    @QueryParam("comCargosLiberados") Boolean comCargosLiberados,
-                                    @QueryParam("apenasTreinamentosLiberados") boolean apenasTreinametosLiberados,
-                                    @QueryParam("limit") long limit,
-                                    @QueryParam("offset") long offset) {
+    public List<Treinamento> getAll(@PathParam("codUnidade") final Long codUnidade,
+                                    @QueryParam("codCargo") final String codCargo,
+                                    @QueryParam("dataInicial") final Long dataInicial,
+                                    @QueryParam("dataFinal") final Long dataFinal,
+                                    @QueryParam("comCargosLiberados") final Boolean comCargosLiberados,
+                                    @QueryParam("apenasTreinamentosLiberados") final boolean apenasTreinametosLiberados,
+                                    @QueryParam("limit") final long limit,
+                                    @QueryParam("offset") final long offset) {
         return service.getAll(dataInicial, dataFinal, codCargo, codUnidade, comCargosLiberados,
                 apenasTreinametosLiberados, limit, offset);
     }
@@ -130,7 +131,7 @@ public class TreinamentoResource {
     @PUT
     @Secured(permissions = {Pilares.Gente.Treinamentos.CRIAR, Pilares.Gente.Treinamentos.ALTERAR})
     @Deprecated
-    public Response DEPRECATED_UPDATE(Treinamento treinamento) {
+    public Response DEPRECATED_UPDATE(final Treinamento treinamento) {
         if (service.updateTreinamento(treinamento)) {
             return Response.ok("Treinamento atualizado com sucesso");
         } else {
@@ -142,7 +143,7 @@ public class TreinamentoResource {
     @Secured(permissions = Pilares.Gente.Treinamentos.VISUALIZAR_PROPRIOS)
     @Path("/vistosColaborador/{cpf}")
     @Deprecated
-    public List<Treinamento> DEPRECATED_GET_VISTOS_BY_COLABORADOR(@PathParam("cpf") Long cpf) {
+    public List<Treinamento> DEPRECATED_GET_VISTOS_BY_COLABORADOR(@PathParam("cpf") final Long cpf) {
         return service.getVistosByColaborador(cpf);
     }
 
@@ -150,14 +151,14 @@ public class TreinamentoResource {
     @Secured(permissions = Pilares.Gente.Treinamentos.VISUALIZAR_PROPRIOS)
     @Path("/naoVistosColaborador/{cpf}")
     @Deprecated
-    public List<Treinamento> DEPRECATED_GET_NAO_VISTOS_BY_COLABORADOR(@PathParam("cpf") Long cpf) {
+    public List<Treinamento> DEPRECATED_GET_NAO_VISTOS_BY_COLABORADOR(@PathParam("cpf") final Long cpf) {
         return service.getNaoVistosByColaborador(cpf);
     }
 
     @POST
     @Secured
     @Deprecated
-    public Response DEPRECATED_MARCAR_TREINAMENTO_COMO_VISTO(TreinamentoColaborador treinamentoColaborador) {
+    public Response DEPRECATED_MARCAR_TREINAMENTO_COMO_VISTO(final TreinamentoColaborador treinamentoColaborador) {
         treinamentoColaborador.setDataVisualizacao(LocalDateTime.now(Clock.systemUTC()));
         if (service.marcarTreinamentoComoVisto(treinamentoColaborador.getCodTreinamento(),
                 treinamentoColaborador.getColaborador().getCpf())) {
@@ -170,7 +171,7 @@ public class TreinamentoResource {
     @DELETE
     @Path("/{codTreinamento}")
     @Secured(permissions = {Pilares.Gente.Treinamentos.CRIAR, Pilares.Gente.Treinamentos.ALTERAR})
-    public Response deleteTreinamento(@PathParam("codTreinamento") Long codTreinamento) {
+    public Response deleteTreinamento(@PathParam("codTreinamento") final Long codTreinamento) {
         if (service.deleteTreinamento(codTreinamento)) {
             return Response.ok("Treinamento deletado com sucesso");
         } else {

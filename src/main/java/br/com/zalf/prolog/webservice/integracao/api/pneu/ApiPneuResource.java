@@ -7,10 +7,10 @@ import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.integracao.api.pneu.model.ApiPneuAlteracaoStatus;
 import br.com.zalf.prolog.webservice.integracao.api.pneu.model.DiagramaPosicaoMapeado;
-import br.com.zalf.prolog.webservice.integracao.logger.LogIntegracaoRequest;
 import br.com.zalf.prolog.webservice.integracao.response.PosicaoPneuMepadoResponse;
 import br.com.zalf.prolog.webservice.integracao.response.SuccessResponseIntegracao;
-import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
+import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
+import br.com.zalf.prolog.webservice.log.LogRequest;
 import org.jetbrains.annotations.NotNull;
 
 import javax.ws.rs.*;
@@ -22,7 +22,7 @@ import java.util.List;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-@DebugLog
+@ConsoleDebugLog
 @Path("/api/pneus/")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
@@ -31,7 +31,7 @@ public final class ApiPneuResource {
     private final ApiPneuService service = new ApiPneuService();
 
     @PUT
-    @LogIntegracaoRequest
+    @LogRequest
     @Path("/atualiza-status")
     @UsedBy(platforms = Platform.INTEGRACOES)
     public SuccessResponseIntegracao atualizaStatusPneus(
@@ -41,7 +41,7 @@ public final class ApiPneuResource {
     }
 
     @GET
-    @LogIntegracaoRequest
+    @LogRequest
     @Path("/valida-posicoes-mapeadas")
     @UsedBy(platforms = Platform.INTEGRACOES)
     public List<PosicaoPneuMepadoResponse> validaPosicoesMapeadasSistemaParceiro(

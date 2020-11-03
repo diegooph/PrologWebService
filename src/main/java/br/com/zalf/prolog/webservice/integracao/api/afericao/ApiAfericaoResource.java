@@ -6,8 +6,8 @@ import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.integracao.api.afericao._model.ApiPneuMedicaoRealizada;
-import br.com.zalf.prolog.webservice.integracao.logger.LogIntegracaoRequest;
-import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
+import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
+import br.com.zalf.prolog.webservice.log.LogRequest;
 import org.jetbrains.annotations.NotNull;
 
 import javax.ws.rs.*;
@@ -19,7 +19,7 @@ import java.util.List;
  *
  * @author Natan Rotta (https://github.com/natanrotta)
  */
-@DebugLog
+@ConsoleDebugLog
 @Path("/api/afericoes")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
@@ -28,7 +28,7 @@ public class ApiAfericaoResource {
     private final ApiAfericaoService service = new ApiAfericaoService();
 
     @GET
-    @LogIntegracaoRequest
+    @LogRequest
     @Path("/afericoes-realizadas")
     @UsedBy(platforms = Platform.INTEGRACOES)
     public List<ApiPneuMedicaoRealizada> getAfericoesRealizadas(

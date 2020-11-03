@@ -6,8 +6,8 @@ import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.gente.controlejornada.acompanhamento.andamento.ViagemEmAndamento;
 import br.com.zalf.prolog.webservice.gente.controlejornada.acompanhamento.descanso.ViagemEmDescanso;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.TipoInicioFim;
-import br.com.zalf.prolog.webservice.interceptors.debugenv.ResourceDebugOnly;
-import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
+import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
+import br.com.zalf.prolog.webservice.interceptors.debug.ResourceDebugOnly;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -21,7 +21,7 @@ import javax.ws.rs.core.MediaType;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 @Path("/dummies")
-@DebugLog
+@ConsoleDebugLog
 @ResourceDebugOnly
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")

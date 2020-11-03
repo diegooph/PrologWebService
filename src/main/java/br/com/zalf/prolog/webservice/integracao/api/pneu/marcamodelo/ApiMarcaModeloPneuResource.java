@@ -9,8 +9,8 @@ import br.com.zalf.prolog.webservice.integracao.api.pneu.marcamodelo.model.ApiMa
 import br.com.zalf.prolog.webservice.integracao.api.pneu.marcamodelo.model.ApiMarcaPneu;
 import br.com.zalf.prolog.webservice.integracao.api.pneu.marcamodelo.model.ApiModeloBanda;
 import br.com.zalf.prolog.webservice.integracao.api.pneu.marcamodelo.model.ApiModeloPneu;
-import br.com.zalf.prolog.webservice.integracao.logger.LogIntegracaoRequest;
-import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
+import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
+import br.com.zalf.prolog.webservice.log.LogRequest;
 import org.jetbrains.annotations.NotNull;
 
 import javax.ws.rs.*;
@@ -22,7 +22,7 @@ import java.util.List;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-@DebugLog
+@ConsoleDebugLog
 @Path("/api/pneus/")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
@@ -31,7 +31,7 @@ public final class ApiMarcaModeloPneuResource {
     private final ApiMarcaModeloPneuService service = new ApiMarcaModeloPneuService();
 
     @GET
-    @LogIntegracaoRequest
+    @LogRequest
     @Path("/marcas-pneu")
     @UsedBy(platforms = Platform.INTEGRACOES)
     public List<ApiMarcaPneu> getMarcasPneu(
@@ -41,7 +41,7 @@ public final class ApiMarcaModeloPneuResource {
     }
 
     @GET
-    @LogIntegracaoRequest
+    @LogRequest
     @Path("/modelos-pneu")
     @UsedBy(platforms = Platform.INTEGRACOES)
     public List<ApiModeloPneu> getModelosPneu(
@@ -52,7 +52,7 @@ public final class ApiMarcaModeloPneuResource {
     }
 
     @GET
-    @LogIntegracaoRequest
+    @LogRequest
     @Path("/marcas-banda")
     @UsedBy(platforms = Platform.INTEGRACOES)
     public List<ApiMarcaBanda> getMarcasBanda(
@@ -62,7 +62,7 @@ public final class ApiMarcaModeloPneuResource {
     }
 
     @GET
-    @LogIntegracaoRequest
+    @LogRequest
     @Path("/modelos-banda")
     @UsedBy(platforms = Platform.INTEGRACOES)
     public List<ApiModeloBanda> getModelosBanda(

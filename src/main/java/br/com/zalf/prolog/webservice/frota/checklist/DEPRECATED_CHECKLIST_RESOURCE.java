@@ -5,14 +5,14 @@ import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
-import br.com.zalf.prolog.webservice.frota.checklist.OLD.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
+import br.com.zalf.prolog.webservice.frota.checklist.OLD.ModeloChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.NovoChecklistHolder;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloResource;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloService;
 import br.com.zalf.prolog.webservice.frota.checklist.mudancaestrutura.ChecklistMigracaoEstruturaSuporte;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
-import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
+import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.AppVersionCodeHandler;
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.DefaultAppVersionCodeHandler;
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.VersionCodeHandlerMode;
@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 @Path("/checklist")
-@DebugLog
+@ConsoleDebugLog
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Deprecated
@@ -37,7 +37,7 @@ import java.util.Map;
 		actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
 public final class DEPRECATED_CHECKLIST_RESOURCE {
 
-	private ChecklistService service = new ChecklistService();
+	private final ChecklistService service = new ChecklistService();
 
 	@POST
 	@Secured(permissions = Pilares.Frota.Checklist.REALIZAR)
@@ -53,15 +53,15 @@ public final class DEPRECATED_CHECKLIST_RESOURCE {
 	@Path("/urlImagens/{codUnidade}/{codFuncao}")
 	@Secured(permissions = Pilares.Frota.Checklist.REALIZAR)
 	@Deprecated
-	public List<String> getUrlImagensPerguntas(@PathParam("codUnidade") Long codUnidade,
-											   @PathParam("codFuncao") Long codFuncao) throws ProLogException {
+	public List<String> getUrlImagensPerguntas(@PathParam("codUnidade") final Long codUnidade,
+											   @PathParam("codFuncao") final Long codFuncao) throws ProLogException {
 		return new ChecklistModeloService().getUrlImagensPerguntas(codUnidade, codFuncao);
 	}
 
 	@GET
 	@Path("{codigo}")
 	@Secured(permissions = Pilares.Frota.Checklist.VISUALIZAR_TODOS)
-	public Checklist getByCod(@PathParam("codigo") Long codigo, @HeaderParam("Authorization") String userToken) {
+	public Checklist getByCod(@PathParam("codigo") final Long codigo, @HeaderParam("Authorization") final String userToken) {
 		return service.getByCod(codigo, userToken);
 	}
 
@@ -69,14 +69,14 @@ public final class DEPRECATED_CHECKLIST_RESOURCE {
 	@Path("{codUnidade}/{equipe}/{placa}")
 	@Secured(permissions = Pilares.Frota.Checklist.VISUALIZAR_TODOS)
 	public List<Checklist> getAll(
-			@PathParam("codUnidade") Long codUnidade,
-			@PathParam("equipe") String equipe,
-			@PathParam("placa") String placa,
-			@QueryParam("dataInicial") long dataInicial,
-			@QueryParam("dataFinal") long dataFinal,
-			@QueryParam("limit") int limit,
-			@QueryParam("offset") long offset,
-			@HeaderParam("Authorization") String userToken) {
+			@PathParam("codUnidade") final Long codUnidade,
+			@PathParam("equipe") final String equipe,
+			@PathParam("placa") final String placa,
+			@QueryParam("dataInicial") final long dataInicial,
+			@QueryParam("dataFinal") final long dataFinal,
+			@QueryParam("limit") final int limit,
+			@QueryParam("offset") final long offset,
+			@HeaderParam("Authorization") final String userToken) {
 		return service.getAll(
 				codUnidade,
 				null,
@@ -94,10 +94,10 @@ public final class DEPRECATED_CHECKLIST_RESOURCE {
 	@Path("/novo/{codUnidade}/{codModelo}/{placa}")
 	@Secured(permissions = Pilares.Frota.Checklist.REALIZAR)
 	public NovoChecklistHolder getNovoChecklistHolder(
-			@PathParam("codUnidade") Long codUnidade,
-			@PathParam("codModelo") Long codModelo,
-			@PathParam("placa") String placa,
-			@HeaderParam("Authorization") String userToken) {
+			@PathParam("codUnidade") final Long codUnidade,
+			@PathParam("codModelo") final Long codModelo,
+			@PathParam("placa") final String placa,
+			@HeaderParam("Authorization") final String userToken) {
 
 		// Por conta da integração com o AvaCorp, vamos forçar que os usuários da Avilan não possam utilizar
 		// esse path e atualizem o app para utilizar os paths: checklists/novo/{codUnidade}/{codModelo}/{placa}/saida
@@ -117,9 +117,9 @@ public final class DEPRECATED_CHECKLIST_RESOURCE {
 	@Secured(permissions = Pilares.Frota.Checklist.REALIZAR)
 	@Path("/modeloPlacas/{codUnidade}/{codFuncaoColaborador}")
 	public Map<ModeloChecklist, List<String>> getSelecaoModeloChecklistPlacaVeiculo(
-			@PathParam("codUnidade") Long codUnidade,
-			@PathParam("codFuncaoColaborador") Long codFuncao,
-			@HeaderParam("Authorization") String userToken) {
+			@PathParam("codUnidade") final Long codUnidade,
+			@PathParam("codFuncaoColaborador") final Long codFuncao,
+			@HeaderParam("Authorization") final String userToken) {
 		// Esse método já está redirecionando para o novo Service.
 		return ChecklistMigracaoEstruturaSuporte.toEstruturaAntigaSelecaoModelo(
 				new ChecklistModeloService().getModelosSelecaoRealizacao(codUnidade, codFuncao, userToken));
@@ -133,11 +133,11 @@ public final class DEPRECATED_CHECKLIST_RESOURCE {
 	@Secured(permissions = Pilares.Frota.Checklist.VISUALIZAR_TODOS)
 	@Deprecated
 	public List<Checklist> DEPRECATED_GET_ALL_UNIDADE(
-			@PathParam("equipe") String equipe,
-			@PathParam("codUnidade") Long codUnidade,
-			@QueryParam("limit") int limit,
-			@QueryParam("offset") long offset,
-			@HeaderParam("Authorization") String userToken) {
+			@PathParam("equipe") final String equipe,
+			@PathParam("codUnidade") final Long codUnidade,
+			@QueryParam("limit") final int limit,
+			@QueryParam("offset") final long offset,
+			@HeaderParam("Authorization") final String userToken) {
 		final Calendar calendar = Calendar.getInstance();
 		calendar.set(Calendar.YEAR, 2016);
 		calendar.set(Calendar.MONTH, Calendar.JANUARY);

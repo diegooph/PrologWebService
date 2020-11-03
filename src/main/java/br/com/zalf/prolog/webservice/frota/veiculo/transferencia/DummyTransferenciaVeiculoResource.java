@@ -9,7 +9,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizaca
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.visualizacao.DetalhesVeiculoTransferido;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.visualizacao.ProcessoTransferenciaVeiculoVisualizacao;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
-import br.com.zalf.prolog.webservice.interceptors.debugenv.ResourceDebugOnly;
+import br.com.zalf.prolog.webservice.interceptors.debug.ResourceDebugOnly;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;

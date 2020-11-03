@@ -19,8 +19,8 @@ public enum LogType {
     }
 
     @NotNull
-    public String asString() {
-        return key;
+    public static LogType fromApi(final boolean fromApi) {
+        return fromApi ? LogType.FROM_API : LogType.FROM_PROLOG;
     }
 
     @NotNull
@@ -33,5 +33,10 @@ public enum LogType {
         }
 
         throw new IllegalArgumentException("Nenhum LogType encontrado com a chave: " + key);
+    }
+
+    @NotNull
+    public String asString() {
+        return key;
     }
 }

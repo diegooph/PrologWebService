@@ -24,11 +24,14 @@ public final class ConstraintCheckException extends DataAccessException {
 
     public ConstraintCheckException(@NotNull final String message,
                                     @NotNull final String detailedMessage,
-                                    @NotNull final String developerMessage) {
+                                    @NotNull final String developerMessage,
+                                    final boolean loggableOnErrorReportSystem) {
         super(StatusEnum.UNPROCESSABLE_ENTITY.getAsInteger(),
                 ProLogErrorCodes.CONSTRAINT_VIOLADA.errorCode(),
                 message,
                 detailedMessage,
-                developerMessage);
+                developerMessage,
+                loggableOnErrorReportSystem);
     }
+
 }

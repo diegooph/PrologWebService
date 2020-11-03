@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.interceptors.debugenv;
+package br.com.zalf.prolog.webservice.interceptors.debug;
 
 import br.com.zalf.prolog.webservice.config.BuildConfig;
 

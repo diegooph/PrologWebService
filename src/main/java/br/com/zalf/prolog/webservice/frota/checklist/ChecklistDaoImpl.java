@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.frota.checklist;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
@@ -13,12 +14,14 @@ import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaCheckli
 import br.com.zalf.prolog.webservice.frota.checklist.model.ChecklistListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.model.FiltroRegionalUnidadeChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.RegionalSelecaoChecklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.alteracao_logica.ChecklistsAlteracaoAcaoData;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistAlternativaResposta;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistResposta;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.InfosChecklistInserido;
 import br.com.zalf.prolog.webservice.frota.checklist.mudancaestrutura.ChecklistMigracaoEstruturaSuporte;
+import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -506,6 +509,32 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
         } finally {
             close(conn, stmt, rSet);
         }
+    }
+
+    @Override
+    public void deleteLogicoChecklistsAndOs(@NotNull final ChecklistsAlteracaoAcaoData checkListsDelecao, @NotNull final Long codigoColaborador) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareCall(" {call func_checklist_deleta_checklist_e_os(" +
+                    "f_cod_checklists => ?," +
+                    "f_cod_colaborador => ?," +
+                    "f_acao_executada => ?," +
+                    "f_origem_delecao => ?," +
+                    "f_observacao => ?," +
+                    "f_data_hora_atual => ?)}");
+            stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, checkListsDelecao.getCodigos()));
+            stmt.setLong(2, codigoColaborador);
+            stmt.setString(3, checkListsDelecao.getAcaoExecutada().getValue());
+            stmt.setString(4, OrigemAcaoEnum.INTERNO.toString());
+            stmt.setString(5, StringUtils.trimToNull(checkListsDelecao.getObservacao()));
+            stmt.setObject(6, Now.offsetDateTimeUtc());
+            stmt.execute();
+        } finally {
+            close(conn, stmt);
+        }
+
     }
 
     @NotNull

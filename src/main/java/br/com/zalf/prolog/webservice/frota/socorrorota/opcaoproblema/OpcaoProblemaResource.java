@@ -7,7 +7,7 @@ import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.frota.socorrorota.opcaoproblema._model.*;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
-import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
+import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 
 import javax.validation.Valid;
@@ -22,12 +22,12 @@ import java.util.List;
  * @author Wellington Moraes (https://github.com/wvinim)
  */
 @Path("socorro-rota/opcoes-problemas")
-@DebugLog
+@ConsoleDebugLog
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public final class OpcaoProblemaResource {
     @NotNull
-    private OpcaoProblemaService service = new OpcaoProblemaService();
+    private final OpcaoProblemaService service = new OpcaoProblemaService();
 
     /**
      * Resource para buscar as opções de problemas disponíveis para a abertura de socorro por empresa

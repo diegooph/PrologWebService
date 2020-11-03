@@ -210,7 +210,7 @@ final class DashboardPneuComponentsCreator {
         final List<TableLine> lines = TableComponent.createLinesFromMap(placasQtdPneus);
 
         final TableData tableData = new TableData(lines);
-        return TableComponent.createDefault(component, tableHeader, tableData);
+        return TableComponent.createDefault(component, tableHeader, tableData, null);
     }
 
     @NotNull
@@ -226,7 +226,7 @@ final class DashboardPneuComponentsCreator {
         final List<TableLine> lines = TableComponent.createLinesFromMap(placasQtdKm);
 
         final TableData tableData = new TableData(lines);
-        return TableComponent.createDefault(component, tableHeader, tableData);
+        return TableComponent.createDefault(component, tableHeader, tableData, null);
     }
 
     @NotNull
@@ -337,7 +337,7 @@ final class DashboardPneuComponentsCreator {
         final List<TableLine> lines = TableComponent.createLinesFromMap(qtdMotivosDescarte);
 
         final TableData tableData = new TableData(lines);
-        return TableComponent.createDefault(component, tableHeader, tableData);
+        return TableComponent.createDefault(component, tableHeader, tableData, null);
     }
 
     @NotNull
@@ -398,7 +398,7 @@ final class DashboardPneuComponentsCreator {
         });
 
         final TableData tableData = new TableData(lines);
-        return TableComponent.createDefault(component, tableHeader, tableData);
+        return TableComponent.createDefault(component, tableHeader, tableData, null);
     }
 
     @NotNull

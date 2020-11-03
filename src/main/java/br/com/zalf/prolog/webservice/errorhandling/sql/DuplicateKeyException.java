@@ -25,11 +25,13 @@ public class DuplicateKeyException extends DataAccessException {
 
     public DuplicateKeyException(@NotNull final String message,
                                  @NotNull final String detailedMessage,
-                                 @NotNull final String developerMessage) {
+                                 @NotNull final String developerMessage,
+                                 final boolean loggableOnErrorReportSystem) {
         super(Response.Status.CONFLICT.getStatusCode(),
                 ProLogErrorCodes.RECURSO_JA_EXISTE.errorCode(),
                 message,
                 detailedMessage,
-                developerMessage);
+                developerMessage,
+                loggableOnErrorReportSystem);
     }
 }

@@ -7,7 +7,7 @@ import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
-import br.com.zalf.prolog.webservice.interceptors.log.DebugLog;
+import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 import org.jetbrains.annotations.NotNull;
 
 import javax.ws.rs.*;
@@ -20,7 +20,7 @@ import java.util.List;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 @Path("/controle-jornada/justificativas-ajustes")
-@DebugLog
+@ConsoleDebugLog
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public final class JustificativaAjusteResource {
@@ -40,7 +40,7 @@ public final class JustificativaAjusteResource {
     @Secured
     @UsedBy(platforms = Platform.WEBSITE)
     public AbstractResponse insertJustificativaAjuste(
-            @HeaderParam("Authorization") String userToken,
+            @HeaderParam("Authorization") final String userToken,
             @NotNull final JustificativaAjuste justificativaAjuste) throws ProLogException {
         return service.insertJustificativaAjuste(userToken, justificativaAjuste);
     }

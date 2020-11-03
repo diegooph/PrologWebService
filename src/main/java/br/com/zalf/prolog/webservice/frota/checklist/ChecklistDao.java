@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.checklist;
 
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
+import br.com.zalf.prolog.webservice.frota.checklist.model.alteracao_logica.ChecklistsAlteracaoAcaoData;
 import br.com.zalf.prolog.webservice.frota.checklist.model.ChecklistListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.model.FiltroRegionalUnidadeChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
@@ -232,4 +233,15 @@ public interface ChecklistDao {
                                      final int limit,
                                      final long offset,
                                      final boolean resumido) throws SQLException;
+
+    /**
+     * Deleta logicamente ou desfaz deleção logica de uma lista de checklists,
+     * além de fornecer alguns dados para histórico
+     *
+     * @param checkListsDelecao Dados de alteração de estado das checklists.
+     * @param codigoColaborador Código do colaborador que está solicitando a alteração nas checklists.
+     * @throws Throwable Caso tenha algum erro.
+     */
+    void deleteLogicoChecklistsAndOs(@NotNull final ChecklistsAlteracaoAcaoData checkListsDelecao,
+                                     @NotNull final Long codigoColaborador) throws Throwable;
 }

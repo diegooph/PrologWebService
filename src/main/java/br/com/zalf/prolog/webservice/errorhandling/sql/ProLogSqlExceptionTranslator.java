@@ -49,34 +49,54 @@ public class ProLogSqlExceptionTranslator implements SqlExceptionTranslator {
                                                 @NotNull final String fallBackErrorMessage) {
         if (String.valueOf(sqlException.getSQLState()).equals(SqlErrorCodes.UNIQUE_VIOLATION.getErrorCode())) {
             return new DuplicateKeyException(
-                    "Este recurso já existe no banco de dados.",
+                    "Este registro já existe no banco de dados.",
                     getPSQLErrorDetail(sqlException),
-                    sqlException.getMessage());
+                    sqlException.getMessage(),
+                    false);
         }
 
         if (String.valueOf(sqlException.getSQLState()).equals(SqlErrorCodes.FOREIGN_KEY_VIOLATION.getErrorCode())) {
             return new ForeignKeyException(
-                    "Uma chave estrangeira não existe no banco de dados.",
+                    "Ocorreu um erro ao inserir/atualizar os dados.",
                     getPSQLErrorDetail(sqlException),
-                    sqlException.getMessage());
+                    sqlException.getMessage(),
+                    true);
         }
 
         if (String.valueOf(sqlException.getSQLState()).equals(SqlErrorCodes.CHECK_VIOLATION.getErrorCode())) {
             return new ConstraintCheckException(
-                    "Uma constraint foi violada.",
+                    "Ocorreu um erro ao inserir/atualizar os dados.",
                     ConstraintsCheckEnum.fromString(
                             getPSQLErrorConstraint(sqlException)).getDetailedMessage().isEmpty()
                             ? getPSQLErrorMessage(sqlException)
                             : ConstraintsCheckEnum.fromString(
                             getPSQLErrorConstraint(sqlException)).getDetailedMessage(),
-                    sqlException.getMessage());
+                    sqlException.getMessage(),
+                    false);
         }
 
         if (String.valueOf(sqlException.getSQLState()).equals(SqlErrorCodes.NOT_NULL_VIOLATION.getErrorCode())) {
             return new NotNullViolationException(
-                    "Uma constraint not null foi violada.",
+                    "Ocorreu um erro ao inserir/atualizar os dados.",
                     getPSQLErrorMessage(sqlException),
-                    sqlException.getMessage());
+                    sqlException.getMessage(),
+                    false);
+        }
+
+        if (String.valueOf(sqlException.getSQLState()).equals(SqlErrorCodes.SERVER_SIDE_ERROR.getErrorCode())) {
+            return new ServerSideErrorException(
+                    "Um erro ocorreu no servidor.",
+                    getPSQLErrorMessage(sqlException),
+                    sqlException.getMessage(),
+                    true);
+        }
+
+        if (String.valueOf(sqlException.getSQLState()).equals(SqlErrorCodes.CLIENT_SIDE_ERROR.getErrorCode())) {
+            return new ClientSideErrorException(
+                    "Um erro ocorreu nas validações dos dados enviados.",
+                    getPSQLErrorMessage(sqlException),
+                    sqlException.getMessage(),
+                    false);
         }
 
         if (String.valueOf(sqlException.getSQLState()).equals(SqlErrorCodes.BD_GENERIC_ERROR_CODE.getErrorCode())) {
