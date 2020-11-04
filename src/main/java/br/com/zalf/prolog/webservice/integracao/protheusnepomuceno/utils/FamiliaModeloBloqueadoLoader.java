@@ -1,8 +1,12 @@
 package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.utils;
 
+import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.YamlUtils;
+import br.com.zalf.prolog.webservice.config.PrologFileWatcher;
 import br.com.zalf.prolog.webservice.entrega.mapa.validator.RegrasPlanilhaMapaLoader;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.FamiliasModelosBloqueio;
+import lombok.Data;
+import org.apache.commons.io.FilenameUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -11,9 +15,14 @@ import org.jetbrains.annotations.Nullable;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public final class FamiliaModeloBloqueadoLoader {
+@Data(staticConstructor = "of")
+public final class FamiliaModeloBloqueadoLoader implements PrologFileWatcher.Watchable {
+    @NotNull
+    private static final String TAG = FamiliaModeloBloqueadoLoader.class.getSimpleName();
     // O arquivo está localizado na pasta "resources" do projeto.
-    private static final String NOME_ARQUIVO_FAMILIA_MODELO_BLOQUEIO = "configs/familia_modelo_bloqueado_nepomuceno.yaml";
+    @NotNull
+    private static final String NOME_ARQUIVO_FAMILIA_MODELO_BLOQUEIO =
+            "configs/integracoes/familia_modelo_bloqueado_nepomuceno.yaml";
     @Nullable
     private static volatile FamiliasModelosBloqueio sFamiliasModelosBloqueio;
 
@@ -38,5 +47,17 @@ public final class FamiliaModeloBloqueadoLoader {
     @NotNull
     private static FamiliasModelosBloqueio loadFromResource() {
         return YamlUtils.parseFromResource(NOME_ARQUIVO_FAMILIA_MODELO_BLOQUEIO, FamiliasModelosBloqueio.class);
+    }
+
+    @Override
+    @NotNull
+    public String getFileName() {
+        return FilenameUtils.getName(NOME_ARQUIVO_FAMILIA_MODELO_BLOQUEIO);
+    }
+
+    @Override
+    public void onFileChanged() {
+        Log.d(TAG, "File changed: " + NOME_ARQUIVO_FAMILIA_MODELO_BLOQUEIO);
+        sFamiliasModelosBloqueio = loadFromResource();
     }
 }
