@@ -50,6 +50,8 @@ public final class VeiculoVisualizacao {
     @NotNull
     private final Long codMarca;
     @NotNull
+    private final Boolean possuiHubodometro;
+    @NotNull
     private final List<VeiculoVisualizacaoPneu> pneusVeiculo;
 
     @NotNull

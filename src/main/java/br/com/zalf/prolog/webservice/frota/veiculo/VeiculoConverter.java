@@ -80,6 +80,7 @@ public final class VeiculoConverter {
                 rSet.getString("TIPO"),
                 rSet.getString("MARCA"),
                 rSet.getLong("COD_MARCA"),
+                rSet.getBoolean("POSSUI_HUBODOMETRO"),
                 pneus);
     }
 
