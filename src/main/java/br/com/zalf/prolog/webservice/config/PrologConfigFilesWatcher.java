@@ -6,7 +6,6 @@ import br.com.zalf.prolog.webservice.entrega.mapa.validator.RegrasPlanilhaMapaLo
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.utils.FamiliaModeloBloqueadoLoader;
 import com.google.common.collect.ImmutableMap;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.boot.devtools.filewatch.ChangedFile;
 import org.springframework.boot.devtools.filewatch.ChangedFiles;
 import org.springframework.boot.devtools.filewatch.FileChangeListener;
 import org.springframework.boot.devtools.filewatch.FileSystemWatcher;
@@ -33,6 +32,15 @@ public class PrologConfigFilesWatcher implements FileChangeListener {
             ProLogUtils.isDebug() ? Duration.ofMillis(3000L) : Duration.ofMinutes(1);
     @NotNull
     private static final ImmutableMap<String, FileWatchListener> LISTENERS = setupListeners();
+
+    @NotNull
+    private static ImmutableMap<String, FileWatchListener> setupListeners() {
+        return ImmutableMap
+                .<String, FileWatchListener>builder()
+                .put(FamiliaModeloBloqueadoLoader.of().getFileNameToWatchChanges(), FamiliaModeloBloqueadoLoader.of())
+                .put(RegrasPlanilhaMapaLoader.of().getFileNameToWatchChanges(), RegrasPlanilhaMapaLoader.of())
+                .build();
+    }
 
     public interface FileWatchListener {
         @NotNull
@@ -65,22 +73,10 @@ public class PrologConfigFilesWatcher implements FileChangeListener {
     @Override
     public void onChange(final Set<ChangedFiles> changeSet) {
         Log.d(TAG, "File changed");
-        for (final ChangedFiles changedFiles : changeSet) {
-            for (final ChangedFile file : changedFiles.getFiles()) {
-                final String fileName = file.getFile().getName();
-                if (LISTENERS.containsKey(fileName)) {
-                    LISTENERS.get(fileName).onWatchedFileChanged();
-                }
-            }
-        }
-    }
-
-    @NotNull
-    private static ImmutableMap<String, FileWatchListener> setupListeners() {
-        return ImmutableMap
-                .<String, FileWatchListener>builder()
-                .put(FamiliaModeloBloqueadoLoader.of().getFileNameToWatchChanges(), FamiliaModeloBloqueadoLoader.of())
-                .put(RegrasPlanilhaMapaLoader.of().getFileNameToWatchChanges(), RegrasPlanilhaMapaLoader.of())
-                .build();
+        changeSet.forEach(
+                changedFiles -> changedFiles.getFiles().stream()
+                        .map(file -> file.getFile().getName())
+                        .filter(LISTENERS::containsKey)
+                        .forEach(fileName -> LISTENERS.get(fileName).onWatchedFileChanged()));
     }
 }
