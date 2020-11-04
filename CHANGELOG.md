@@ -10,6 +10,7 @@ Change Log
 ### Features
 * Melhora sistema de Logs (PL-2939)
 * Cria componente na Dash - Farol Checklist (PL-2791)
+* Configura FileWatcher no Prolog (PL-3267)
 
 ### Refactors
 * Adiciona log nos métodos de insert de intervalo
