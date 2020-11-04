@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.entrega.mapa.validator;
 
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.YamlUtils;
-import br.com.zalf.prolog.webservice.config.PrologFileWatcher;
+import br.com.zalf.prolog.webservice.config.PrologConfigFilesWatcher;
 import lombok.Data;
 import org.apache.commons.io.FilenameUtils;
 import org.jetbrains.annotations.NotNull;
@@ -14,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 @Data(staticConstructor = "of")
-public final class RegrasPlanilhaMapaLoader implements PrologFileWatcher.Watchable {
+public final class RegrasPlanilhaMapaLoader implements PrologConfigFilesWatcher.FileWatchListener {
     @NotNull
     private static final String TAG = RegrasPlanilhaMapaLoader.class.getSimpleName();
     // O arquivo está localizado na pasta "resources" do projeto.
@@ -48,12 +48,12 @@ public final class RegrasPlanilhaMapaLoader implements PrologFileWatcher.Watchab
 
     @Override
     @NotNull
-    public String getFileName() {
+    public String getFileNameToWatchChanges() {
         return FilenameUtils.getName(NOME_ARQUIVO_MAPEAMENTO_PLANILHA_MAPA);
     }
 
     @Override
-    public void onFileChanged() {
+    public void onWatchedFileChanged() {
         Log.d(TAG, "File changed: " + NOME_ARQUIVO_MAPEAMENTO_PLANILHA_MAPA);
         sRegras = loadFromResource();
     }

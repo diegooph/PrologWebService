@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.utils;
 
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.YamlUtils;
-import br.com.zalf.prolog.webservice.config.PrologFileWatcher;
+import br.com.zalf.prolog.webservice.config.PrologConfigFilesWatcher;
 import br.com.zalf.prolog.webservice.entrega.mapa.validator.RegrasPlanilhaMapaLoader;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.FamiliasModelosBloqueio;
 import lombok.Data;
@@ -16,7 +16,7 @@ import org.jetbrains.annotations.Nullable;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 @Data(staticConstructor = "of")
-public final class FamiliaModeloBloqueadoLoader implements PrologFileWatcher.Watchable {
+public final class FamiliaModeloBloqueadoLoader implements PrologConfigFilesWatcher.FileWatchListener {
     @NotNull
     private static final String TAG = FamiliaModeloBloqueadoLoader.class.getSimpleName();
     // O arquivo está localizado na pasta "resources" do projeto.
@@ -51,12 +51,12 @@ public final class FamiliaModeloBloqueadoLoader implements PrologFileWatcher.Wat
 
     @Override
     @NotNull
-    public String getFileName() {
+    public String getFileNameToWatchChanges() {
         return FilenameUtils.getName(NOME_ARQUIVO_FAMILIA_MODELO_BLOQUEIO);
     }
 
     @Override
-    public void onFileChanged() {
+    public void onWatchedFileChanged() {
         Log.d(TAG, "File changed: " + NOME_ARQUIVO_FAMILIA_MODELO_BLOQUEIO);
         sFamiliasModelosBloqueio = loadFromResource();
     }
