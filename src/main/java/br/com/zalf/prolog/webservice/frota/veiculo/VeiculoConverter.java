@@ -53,7 +53,8 @@ public final class VeiculoConverter {
                 rSet.getLong("TRASEIRO"),
                 rSet.getString("TIPO"),
                 rSet.getString("MARCA"),
-                rSet.getLong("COD_MARCA"));
+                rSet.getLong("COD_MARCA"),
+                rSet.getBoolean("POSSUI_HUBODOMETRO"));
     }
 
     @NotNull
