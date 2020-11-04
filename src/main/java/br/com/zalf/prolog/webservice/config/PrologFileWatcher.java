@@ -37,6 +37,7 @@ public class PrologFileWatcher implements FileChangeListener {
     public interface Watchable {
         @NotNull
         String getFileName();
+
         void onFileChanged();
     }
 
@@ -66,7 +67,10 @@ public class PrologFileWatcher implements FileChangeListener {
         Log.d(TAG, "File changed");
         for (final ChangedFiles changedFiles : changeSet) {
             for (final ChangedFile file : changedFiles.getFiles()) {
-                listeners.get(file.getFile().getName()).onFileChanged();
+                final String fileName = file.getFile().getName();
+                if (listeners.containsKey(fileName)) {
+                    listeners.get(fileName).onFileChanged();
+                }
             }
         }
     }
