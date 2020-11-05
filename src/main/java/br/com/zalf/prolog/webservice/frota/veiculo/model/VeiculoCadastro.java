@@ -26,4 +26,6 @@ public final class VeiculoCadastro {
     @NotNull
     private final Long codTipoVeiculo;
     private final long kmAtualVeiculo;
+    @NotNull
+    private final Boolean possuiHubodometro;
 }
