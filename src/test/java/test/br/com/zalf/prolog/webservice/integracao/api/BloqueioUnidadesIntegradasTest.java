@@ -62,7 +62,8 @@ final class BloqueioUnidadesIntegradasTest {
                 10L,
                 13L,
                 1L,
-                1111L);
+                1111L,
+                false);
 
         final Throwable throwable = assertThrows(
                 ProLogException.class, () -> new VeiculoService().insert(USER_TOKEN_INTEGRADO, veiculoCadastro));
@@ -79,7 +80,8 @@ final class BloqueioUnidadesIntegradasTest {
                 10L,
                 13L,
                 1L,
-                1111L);
+                1111L,
+                false);
 
         final Throwable throwable = assertThrows(
                 ProLogException.class, () -> new VeiculoService().insert(USER_TOKEN_INTEGRADO, veiculoCadastro));
