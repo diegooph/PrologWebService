@@ -48,13 +48,15 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
                     "F_IDENTIFICADOR_FROTA := ?," +
                     "F_KM_ATUAL := ?, " +
                     "F_COD_MODELO := ?, " +
-                    "F_COD_TIPO := ?) AS CODIGO;");
+                    "F_COD_TIPO := ?," +
+                    "F_POSSUI_HUBODOMETRO := ?) AS CODIGO;");
             stmt.setLong(1, veiculo.getCodUnidadeAlocado());
             stmt.setString(2, veiculo.getPlacaVeiculo().toUpperCase());
             stmt.setString(3, StringUtils.trimToNull(veiculo.getIdentificadorFrota()));
             stmt.setLong(4, veiculo.getKmAtualVeiculo());
             stmt.setLong(5, veiculo.getCodModeloVeiculo());
             stmt.setLong(6, veiculo.getCodTipoVeiculo());
+            stmt.setBoolean(7, veiculo.getPossuiHubodometro());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 final long codVeiculoInserido = rSet.getLong("CODIGO");
