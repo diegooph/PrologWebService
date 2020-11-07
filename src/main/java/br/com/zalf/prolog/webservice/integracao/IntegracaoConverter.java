@@ -23,6 +23,7 @@ public final class IntegracaoConverter {
 
     @NotNull
     public static OsIntegracao createOsIntegracao(@NotNull final ResultSet rSet) throws Throwable {
+        final StatusOrdemServico statusOs = StatusOrdemServico.fromString(rSet.getString("status_os"));
         return new OsIntegracao(
                 rSet.getLong("cod_unidade"),
                 rSet.getString("cod_auxiliar_unidade"),
@@ -32,8 +33,9 @@ public final class IntegracaoConverter {
                 rSet.getString("placa_veiculo"),
                 rSet.getLong("km_veiculo_na_abertura"),
                 rSet.getString("cpf_colaborador_checklist"),
-                StatusOrdemServico.fromString(rSet.getString("status_os")),
-                rSet.getObject("data_hora_fechamento_os", LocalDateTime.class),
+                statusOs,
+                statusOs == StatusOrdemServico.ABERTA ?
+                        null : rSet.getObject("data_hora_fechamento_os", LocalDateTime.class),
                 new ArrayList<>());
     }
 
