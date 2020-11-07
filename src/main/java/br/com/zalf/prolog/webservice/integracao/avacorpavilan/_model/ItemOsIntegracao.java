@@ -61,4 +61,17 @@ public final class ItemOsIntegracao {
         final String[] split = codAuxiliarAlternativa.split(":");
         return StringUtils.trimToNull(split.length >= 2 ? split[1] : null);
     }
+
+    @NotNull
+    public String getDescricaoAlternativa() {
+        if (this.alternativaTipoOutros) {
+            return this.descricaoAlternativa.concat("\r\n-").concat(getDescricaoAlternativaTipoOutros());
+        }
+        return this.descricaoAlternativa;
+    }
+
+    @NotNull
+    public String getDescricaoAlternativaTipoOutros() {
+        return StringUtils.nullToEmpty(this.descricaoAlternativaTipoOutros);
+    }
 }
