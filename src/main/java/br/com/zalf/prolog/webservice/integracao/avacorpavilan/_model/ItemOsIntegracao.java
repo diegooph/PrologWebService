@@ -1,6 +1,8 @@
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan._model;
 
 import br.com.zalf.prolog.webservice.commons.util.StringUtils;
+import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.StatusItemOrdemServico;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -22,10 +24,23 @@ public final class ItemOsIntegracao {
     private final String codAuxiliarAlternativa;
     @NotNull
     private final String descricaoAlternativa;
+    @NotNull
+    private final PrioridadeAlternativa prioridadeAlternativa;
+    @NotNull
+    private final StatusItemOrdemServico statusItemOrdemServico;
+    private final boolean alternativaTipoOutros;
+    @Nullable
+    private final String descricaoAlternativaTipoOutros;
     @Nullable
     private final LocalDateTime dataHoraFechamento;
     @Nullable
     private final String descricaoFechamentoItem;
+    @Nullable
+    private final Long kmVeiculoFechamentoItem;
+    @Nullable
+    private final LocalDateTime dataHoraInicioResolucao;
+    @Nullable
+    private final LocalDateTime dataHoraFimResolucao;
 
     @Nullable
     public String getCodDefeito() {
