@@ -4,6 +4,9 @@ Change Log
 <a name="v1.4.1"></a>
 ## Version [v1.4.1](https://github.com/luizfp/PrologWebService/compare/v1.4.0...v1.4.1) (release-date) [unreleased]
 
+### Refactors
+* Adapta integração da Avilan enviando novas informações (PL-3283)
+
 ### Bug Fixes
 * Corrige parâmetro de data no relatório de indicadores (PS-1315)
 
