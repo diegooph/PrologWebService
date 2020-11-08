@@ -37,6 +37,12 @@ public final class OrdemServicoAvaCorpAvilan {
     @NotNull
     @SerializedName("DtEmissao")
     private final LocalDateTime dataHoraEmissao;
+    @Nullable
+    @SerializedName("DtFechamento")
+    private final LocalDateTime dataHoraFechamento;
+    @Nullable
+    @SerializedName("DtPrevisaoFechamento")
+    private final LocalDateTime dataHoraPrevisaoFechamento;
     @NotNull
     @SerializedName("Dtinc")
     private final LocalDateTime dataHoraInclusao;
@@ -52,6 +58,13 @@ public final class OrdemServicoAvaCorpAvilan {
     @NotNull
     @SerializedName("Motorista")
     private final String cpfMotorista;
+    @NotNull
+    @SerializedName("Solicitante")
+    private final String cpfSolicitante;
+    @SerializedName("Semaforo")
+    private final short semaforo = COD_SEMAFARO_OS_LATROMI;
+    @SerializedName("Situacao")
+    private final short situacaoOs = COD_SITUACAO_OS_LIBERADA_LATROMI;
     @NotNull
     @SerializedName("OrdemServicoDefeitoIn")
     private final List<DefeitoAvaCorpAvilan> defeitosAvaCorpAvilan;
