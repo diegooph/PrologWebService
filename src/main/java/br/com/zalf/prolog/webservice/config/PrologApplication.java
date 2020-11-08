@@ -53,7 +53,7 @@ public class PrologApplication extends SpringBootServletInitializer {
     @Bean
     public ServletListenerRegistrationBean<ServletContextListener> prologConsoleTextMakerRegistrationBean() {
         final ServletListenerRegistrationBean<ServletContextListener> bean = new ServletListenerRegistrationBean<>();
-        bean.setListener(new ProLogConsoleTextMaker());
+        bean.setListener(new PrologConsoleTextMaker());
         return bean;
     }
 

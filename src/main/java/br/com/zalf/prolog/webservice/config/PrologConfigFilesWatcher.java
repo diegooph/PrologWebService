@@ -33,15 +33,6 @@ public class PrologConfigFilesWatcher implements FileChangeListener {
     @NotNull
     private static final ImmutableMap<String, FileWatchListener> LISTENERS = setupListeners();
 
-    @NotNull
-    private static ImmutableMap<String, FileWatchListener> setupListeners() {
-        return ImmutableMap
-                .<String, FileWatchListener>builder()
-                .put(FamiliaModeloBloqueadoLoader.of().getFileNameToWatchChanges(), FamiliaModeloBloqueadoLoader.of())
-                .put(RegrasPlanilhaMapaLoader.of().getFileNameToWatchChanges(), RegrasPlanilhaMapaLoader.of())
-                .build();
-    }
-
     public interface FileWatchListener {
         @NotNull
         String getFileNameToWatchChanges();
@@ -78,5 +69,16 @@ public class PrologConfigFilesWatcher implements FileChangeListener {
                         .map(file -> file.getFile().getName())
                         .filter(LISTENERS::containsKey)
                         .forEach(fileName -> LISTENERS.get(fileName).onWatchedFileChanged()));
+    }
+
+    @NotNull
+    private static ImmutableMap<String, FileWatchListener> setupListeners() {
+        final FamiliaModeloBloqueadoLoader familiaModeloBloqueadoLoader = FamiliaModeloBloqueadoLoader.of();
+        final RegrasPlanilhaMapaLoader regrasPlanilhaMapaLoader = RegrasPlanilhaMapaLoader.of();
+        return ImmutableMap
+                .<String, FileWatchListener>builder()
+                .put(familiaModeloBloqueadoLoader.getFileNameToWatchChanges(), familiaModeloBloqueadoLoader)
+                .put(regrasPlanilhaMapaLoader.getFileNameToWatchChanges(), regrasPlanilhaMapaLoader)
+                .build();
     }
 }
