@@ -19,6 +19,8 @@ public final class AvaCorpAvilanConstants {
     public static final short COD_EMPRESA_AVILAN = 1;
     public static final short COD_TIPO_MANUTENCAO_AVILAN = 2;
     public static final short COD_OBJETIVO_ORDEM_SERVICO_AVILAN = 1;
+    public static final short COD_SITUACAO_OS_LIBERADA_LATROMI = 2;
+    public static final short COD_SEMAFARO_OS_LATROMI = 1;
 
     private AvaCorpAvilanConstants() {
         throw new IllegalStateException(AvaCorpAvilanConstants.class.getSimpleName() + " cannot be instantiated!");
