@@ -62,8 +62,8 @@ public final class VeiculoAcoplamentoDaoImpl extends DatabaseConnection implemen
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 final Long codProcesso = rSet.getLong("cod_processo");
-                final String unidade = rSet.getString("unidade");
-                final String colaborador = rSet.getString("colaborador");
+                final String unidade = rSet.getString("nome_unidade");
+                final String colaborador = rSet.getString("nome_colaborador");
                 final LocalDateTime dataHora = rSet.getObject("data_hora", LocalDateTime.class);
                 final String observacao = rSet.getString("observacao");
 

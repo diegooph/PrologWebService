@@ -18,7 +18,7 @@ public final class VeiculoAcoplamentoConverter {
                 rSet.getString("placa"),
                 rSet.getString("identificador_frota"),
                 rSet.getLong("km"),
-                rSet.getString("posicao"),
+                rSet.getString("nome_posicao"),
                 rSet.getString("acao"));
     }
 }
