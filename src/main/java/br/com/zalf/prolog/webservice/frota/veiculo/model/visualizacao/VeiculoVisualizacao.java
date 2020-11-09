@@ -65,6 +65,7 @@ public final class VeiculoVisualizacao {
                 codTipo,
                 codModelo,
                 km,
-                novoStatus);
+                novoStatus,
+                possuiHubodometro);
     }
 }
