@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
 import br.com.zalf.prolog.webservice.frota.pneu.PneuDao;
+import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.EixoVeiculo;
@@ -102,6 +103,7 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
                     "f_novo_cod_tipo := ?, " +
                     "f_novo_cod_modelo := ?, " +
                     "f_novo_status := ?, " +
+                    "f_novo_possui_hubodometro := ?," +
                     "f_cod_colaborador_edicao := ?, " +
                     "f_origem_edicao := ?, " +
                     "f_data_hora_edicao := ?, " +
@@ -113,9 +115,10 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
             stmt.setLong(5, veiculo.getCodTipoVeiculo());
             stmt.setLong(6, veiculo.getCodModeloVeiculo());
             stmt.setBoolean(7, veiculo.isStatusAtivo());
-            stmt.setLong(8, codColaboradorResponsavelEdicao);
-            stmt.setString(9, "PROLOG");
-            stmt.setObject(10, Now.offsetDateTimeUtc());
+            stmt.setBoolean(8, veiculo.isPossuiHubodometro());
+            stmt.setLong(9, codColaboradorResponsavelEdicao);
+            stmt.setString(10, OrigemAcaoEnum.PROLOG.toString());
+            stmt.setObject(11, Now.offsetDateTimeUtc());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 final VeiculoAntesEdicao veiculoAntesEdicao = VeiculoConverter.createVeiculoAntesEdicao(rSet);
