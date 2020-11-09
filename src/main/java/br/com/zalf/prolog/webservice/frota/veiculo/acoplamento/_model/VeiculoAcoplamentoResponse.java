@@ -17,9 +17,9 @@ public final class VeiculoAcoplamentoResponse {
     @NotNull
     private final Long codProcesso;
     @NotNull
-    private final String unidade;
+    private final String nomeUnidade;
     @NotNull
-    private final String colaborador;
+    private final String nomeColaborador;
     @Nullable
     private final LocalDateTime dataHora;
     @Nullable

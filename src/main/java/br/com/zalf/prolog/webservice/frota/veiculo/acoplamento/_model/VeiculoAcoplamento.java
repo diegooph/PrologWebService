@@ -18,7 +18,7 @@ public final class VeiculoAcoplamento {
     @NotNull
     private final Long km;
     @NotNull
-    private final String posicao;
+    private final String nomePosicao;
     @NotNull
     private final String acao;
 }
