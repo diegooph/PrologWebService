@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.veiculo.acoplamento;
 
+import br.com.zalf.prolog.webservice.commons.util.ListUtils;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
@@ -44,7 +45,7 @@ public final class VeiculoAcoplamentoDaoImpl extends DatabaseConnection implemen
                     "f_data_inicial => ?," +
                     "f_data_final => ? );");
             stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
-            if (codVeiculos.size() < 1) {
+            if (ListUtils.hasNoElements(codVeiculos)) {
                 stmt.setNull(2, Types.NULL);
             } else {
                 stmt.setArray(2, PostgresUtils.listToArray(conn, SqlType.BIGINT, codVeiculos));
