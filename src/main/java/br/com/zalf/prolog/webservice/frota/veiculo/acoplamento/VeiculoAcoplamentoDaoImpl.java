@@ -61,25 +61,30 @@ public final class VeiculoAcoplamentoDaoImpl extends DatabaseConnection implemen
                 stmt.setObject(4, dataFinal);
             }
             rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                final Long codProcesso = rSet.getLong("cod_processo");
-                final String unidade = rSet.getString("nome_unidade");
-                final String colaborador = rSet.getString("nome_colaborador");
-                final LocalDateTime dataHora = rSet.getObject("data_hora", LocalDateTime.class);
-                final String observacao = rSet.getString("observacao");
 
-                final List<VeiculoAcoplamento> veiculoAcoplamentos = new ArrayList<>();
-                do {
-                    veiculoAcoplamentos.add(createVeiculoAcoplamento(rSet));
-                } while (rSet.next());
-                return Optional.of(
-                        new VeiculoAcoplamentoResponse(codProcesso,
-                                unidade,
-                                colaborador,
-                                dataHora,
-                                observacao,
-                                veiculoAcoplamentos));
-            } else {
+            final Long codProcesso = rSet.getLong("cod_processo");
+            final String unidade = rSet.getString("nome_unidade");
+            final String colaborador = rSet.getString("nome_colaborador");
+            final LocalDateTime dataHora = rSet.getObject("data_hora", LocalDateTime.class);
+            final String observacao = rSet.getString("observacao");
+
+            VeiculoAcoplamentoResponse veiculoAcoplamentosResponse = null;
+            Long codProcessoAnterior = null;
+            VeiculoAcoplamento veiculoAcoplamento = null;
+
+            while (rSet.next()) {
+                if (codProcessoAnterior == null || !codProcessoAnterior.equals(rSet.getLong("cod_processo"))) {
+                    veiculoAcoplamentosResponse = VeiculoAcoplamentoConverter.createVeiculoAcoplamentoResponse(rSet);
+                    veiculoAcoplamento = VeiculoAcoplamentoConverter.createVeiculoAcoplamento(rSet);
+                    veiculoAcoplamentosResponse
+                }
+
+
+            }
+
+            return Optional.empty();
+
+        } else {
                 return Optional.empty();
             }
         } finally {
