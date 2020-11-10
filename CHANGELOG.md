@@ -1,15 +1,28 @@
 Change Log
 ==========
-### Stage
-#### Features
-* adiciona deleção das checklists (PL-3217)
+## Staged
+### Features
+* Realiza modificação mo CRUD de veiculos, incluindo os campos ```motorizado``` e ```possuiHubodometro``` (PL-3223)
 
-<a name="v1.3.4"></a>
-## Version [v1.3.4](https://github.com/luizfp/PrologWebService/compare/v1.3.3...v1.3.4) (release-date) [unreleased]
+<a name="v1.4.2"></a>
+## Version [v1.4.2](https://github.com/luizfp/PrologWebService/compare/v1.4.1...v1.4.2) (release-date) [unreleased]
+
+<a name="v1.4.1"></a>
+## Version [v1.4.1](https://github.com/luizfp/PrologWebService/compare/v1.4.0...v1.4.1) (2020-11-08)
+
+### Refactors
+* Adapta integração da Avilan enviando novas informações (PL-3283)
+
+### Bug Fixes
+* Corrige parâmetro de data no relatório de indicadores (PS-1315)
+
+<a name="v1.4.0"></a>
+## Version [v1.4.0](https://github.com/luizfp/PrologWebService/compare/v1.3.3...v1.4.0) (2020-11-03)
 
 ### Features
 * Melhora sistema de Logs (PL-2939)
 * Cria componente na Dash - Farol Checklist (PL-2791)
+* Cria deleção de checklists (PL-3217)
 
 ### Refactors
 * Adiciona log nos métodos de insert de intervalo
