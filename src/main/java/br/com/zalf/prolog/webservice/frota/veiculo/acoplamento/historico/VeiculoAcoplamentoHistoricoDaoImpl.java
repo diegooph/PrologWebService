@@ -69,14 +69,16 @@ public final class VeiculoAcoplamentoHistoricoDaoImpl extends DatabaseConnection
             while (rSet.next()) {
                 if (codProcessoAnterior == null || !codProcessoAnterior.equals(
                         rSet.getLong("cod_processo"))) {
-                    veiculoAcoplamentoHistorico = VeiculoAcoplamentoHistoricoConverter.createVeiculoAcoplamento(rSet);
-                    veiculoAcoplamentosHistoricoResponse.add(
-                            VeiculoAcoplamentoHistoricoConverter.createVeiculoAcoplamentoResponse(rSet));
+                    veiculoAcoplamentoHistorico = VeiculoAcoplamentoHistoricoConverter.
+                            createVeiculoAcoplamentoHistorico(rSet);
+                    veiculoAcoplamentosHistoricoResponse.add(VeiculoAcoplamentoHistoricoConverter.
+                            createVeiculoAcoplamentoHistoricoResponse(rSet));
                     veiculoAcoplamentosHistoricoResponse.get(lastIndex(veiculoAcoplamentosHistoricoResponse)).
                             getVeiculoAcoplamentoHistoricos().add(veiculoAcoplamentoHistorico);
                     codProcessoAnterior = rSet.getLong("cod_processo");
                 } else {
-                    veiculoAcoplamentoHistorico = VeiculoAcoplamentoHistoricoConverter.createVeiculoAcoplamento(rSet);
+                    veiculoAcoplamentoHistorico = VeiculoAcoplamentoHistoricoConverter.
+                            createVeiculoAcoplamentoHistorico(rSet);
                     veiculoAcoplamentosHistoricoResponse.get(lastIndex(veiculoAcoplamentosHistoricoResponse)).
                             getVeiculoAcoplamentoHistoricos().add(veiculoAcoplamentoHistorico);
                     codProcessoAnterior = rSet.getLong("cod_processo");

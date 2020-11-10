@@ -16,7 +16,8 @@ import java.util.ArrayList;
  */
 public final class VeiculoAcoplamentoHistoricoConverter {
     @NotNull
-    public static VeiculoAcoplamentoHistorico createVeiculoAcoplamento(@NotNull final ResultSet rSet) throws SQLException {
+    public static VeiculoAcoplamentoHistorico createVeiculoAcoplamentoHistorico(@NotNull final ResultSet rSet)
+            throws SQLException {
         return new VeiculoAcoplamentoHistorico(
                 rSet.getString("placa"),
                 rSet.getString("identificador_frota"),
@@ -26,8 +27,8 @@ public final class VeiculoAcoplamentoHistoricoConverter {
     }
 
     @NotNull
-    public static VeiculoAcoplamentoHistoricoResponse createVeiculoAcoplamentoResponse(@NotNull final ResultSet rSet)
-            throws SQLException {
+    public static VeiculoAcoplamentoHistoricoResponse createVeiculoAcoplamentoHistoricoResponse(
+            @NotNull final ResultSet rSet) throws SQLException {
         return new VeiculoAcoplamentoHistoricoResponse(
                 rSet.getLong("cod_processo"),
                 rSet.getString("nome_unidade"),
