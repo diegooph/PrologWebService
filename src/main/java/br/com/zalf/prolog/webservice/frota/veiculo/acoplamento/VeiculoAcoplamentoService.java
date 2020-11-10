@@ -20,7 +20,8 @@ import java.sql.Connection;
 public final class VeiculoAcoplamentoService {
     private static final String TAG = VeiculoAcoplamentoService.class.getSimpleName();
 
-    public void realizaProcessoAcoplamento(@NotNull final Long codColaborador,
+    @NotNull
+    public Long realizaProcessoAcoplamento(@NotNull final Long codColaborador,
                                            @NotNull final VeiculoAcoplamentoProcessoRealizacao processoRealizacao) {
         final VeiculoAcoplamentoDaoImpl dao = new VeiculoAcoplamentoDaoImpl();
         // 0 - Validações?
@@ -59,12 +60,14 @@ public final class VeiculoAcoplamentoService {
             // 5 - Inserir processo atual.
             dao.insertEstadoAtualAcoplamentos(
                     connection,
-                    processoRealizacao.getCodUnidade(),
                     codProcessoInserido,
+                    processoRealizacao.getCodUnidade(),
                     processoRealizacao.getAcoplamentos());
 
             // 6 - Commita e seja feliz.
             connection.commit();
+
+            return codProcessoInserido;
         } catch (final Throwable throwable) {
             Log.e(TAG, "Erro ao realizar processo de acoplamento", throwable);
             throw Injection

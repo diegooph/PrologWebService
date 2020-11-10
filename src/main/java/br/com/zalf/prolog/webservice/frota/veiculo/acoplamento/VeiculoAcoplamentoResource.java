@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.veiculo.acoplamento;
 
-import br.com.zalf.prolog.webservice.commons.network.Response;
+import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
+import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
 import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcoplamentoProcessoRealizacao;
@@ -36,8 +37,10 @@ public final class VeiculoAcoplamentoResource {
     @Secured(permissions = {Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
     @UsedBy(platforms = {Platform.WEBSITE, Platform.ANDROID})
     @Path("/")
-    public Response realizaProcessoAcoplamento(@Valid final VeiculoAcoplamentoProcessoRealizacao processoRealizacao) {
-        service.realizaProcessoAcoplamento(colaboradorAutenticadoProvider.get().getCodigo(), processoRealizacao);
-        return Response.ok("Processo de engate/desengate realizado com sucesso!");
+    public AbstractResponse realizaProcessoAcoplamento(@Valid final VeiculoAcoplamentoProcessoRealizacao processoRealizacao) {
+        final Long codProcessoInserido = service.realizaProcessoAcoplamento(
+                colaboradorAutenticadoProvider.get().getCodigo(),
+                processoRealizacao);
+        return ResponseWithCod.ok("Processo de engate/desengate realizado com sucesso!", codProcessoInserido);
     }
 }

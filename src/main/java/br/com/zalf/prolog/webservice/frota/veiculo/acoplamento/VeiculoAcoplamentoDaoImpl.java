@@ -23,7 +23,7 @@ import java.util.List;
  * @author Thais Francisco (https://github.com/thaisksf)
  */
 public final class VeiculoAcoplamentoDaoImpl {
-    private static final int EXECUTE_BATCH_SUCCESS = 0;
+    private static final int EXECUTE_BATCH_SUCCESS = 1;
 
     public void removeAcoplamentoAtual(@NotNull final Connection conn,
                                        @NotNull final Long codProcessoAcoplamento) {
@@ -76,7 +76,7 @@ public final class VeiculoAcoplamentoDaoImpl {
         try {
             stmt = conn.prepareStatement("insert into public.veiculo_acoplamento_historico " +
                     "(cod_processo, cod_posicao, cod_diagrama, motorizado, cod_veiculo, km, acao) " +
-                    "values (?, ?, ?, ?, ?, ?, ?);");
+                    "values (?, ?, ?, ?, ?, ?, ?::types.veiculo_acoplamento_acao_type);");
             for (final VeiculoAcoplamento acoplamento : acoplamentos) {
                 DatabaseUtils.bind(stmt, Lists.newArrayList(
                         codProcessoAcoplamento,
@@ -85,7 +85,7 @@ public final class VeiculoAcoplamentoDaoImpl {
                         acoplamento.getMotorizado(),
                         acoplamento.getCodVeiculo(),
                         acoplamento.getKmColetado(),
-                        acoplamento.getAcaoRealizada()));
+                        acoplamento.getAcaoRealizada().asString()));
                 stmt.addBatch();
             }
             StatementUtils.executeBatchAndValidate(
