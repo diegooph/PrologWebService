@@ -31,11 +31,11 @@ public final class VeiculoAcoplamentoHistoricoResource {
     @UsedBy(platforms = Platform.WEBSITE)
     @Secured(permissions
             = {Pilares.Frota.Veiculo.VISUALIZAR, Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
-    public Response getVeiculoAcoplamentos(
+    public Response getVeiculoAcoplamentosHistorico(
             @QueryParam("codUnidades") @Required final List<Long> codUnidades,
             @QueryParam("codVeiculos") @Optional final List<Long> codVeiculos,
             @QueryParam("dataInicial") @Optional final String dataInicial,
             @QueryParam("dataFinal") @Optional final String dataFinal) throws ProLogException {
-        return service.getVeiculoAcoplamentos(codUnidades, codVeiculos, dataInicial, dataFinal);
+        return service.getVeiculoAcoplamentosHistorico(codUnidades, codVeiculos, dataInicial, dataFinal);
     }
 }

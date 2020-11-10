@@ -29,11 +29,11 @@ import static br.com.zalf.prolog.webservice.commons.util.ListUtils.lastIndex;
 public final class VeiculoAcoplamentoHistoricoDaoImpl extends DatabaseConnection implements VeiculoAcoplamentoHistoricoDao {
     @Override
     @NotNull
-    public Optional<List<VeiculoAcoplamentoHistoricoResponse>> getVeiculoAcoplamentos(@NotNull final List<Long> codUnidades,
-                                                                                      @Nullable final List<Long> codVeiculos,
-                                                                                      @Nullable final LocalDate dataInicial,
-                                                                                      @Nullable final LocalDate dataFinal)
-            throws Throwable {
+    public Optional<List<VeiculoAcoplamentoHistoricoResponse>> getVeiculoAcoplamentosHistorico(
+            @NotNull final List<Long> codUnidades,
+            @Nullable final List<Long> codVeiculos,
+            @Nullable final LocalDate dataInicial,
+            @Nullable final LocalDate dataFinal) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -62,28 +62,28 @@ public final class VeiculoAcoplamentoHistoricoDaoImpl extends DatabaseConnection
             }
             rSet = stmt.executeQuery();
 
-            final List<VeiculoAcoplamentoHistoricoResponse> veiculoAcoplamentosResponse = new ArrayList<>();
+            final List<VeiculoAcoplamentoHistoricoResponse> veiculoAcoplamentosHistoricoResponse = new ArrayList<>();
             Long codProcessoAnterior = null;
-            VeiculoAcoplamentoHistorico veiculoAcoplamento = null;
+            VeiculoAcoplamentoHistorico veiculoAcoplamentoHistorico = null;
 
             while (rSet.next()) {
                 if (codProcessoAnterior == null || !codProcessoAnterior.equals(
                         rSet.getLong("cod_processo"))) {
-                    veiculoAcoplamento = VeiculoAcoplamentoHistoricoConverter.createVeiculoAcoplamento(rSet);
-                    veiculoAcoplamentosResponse.add(
+                    veiculoAcoplamentoHistorico = VeiculoAcoplamentoHistoricoConverter.createVeiculoAcoplamento(rSet);
+                    veiculoAcoplamentosHistoricoResponse.add(
                             VeiculoAcoplamentoHistoricoConverter.createVeiculoAcoplamentoResponse(rSet));
-                    veiculoAcoplamentosResponse.get(lastIndex(veiculoAcoplamentosResponse)).getVeiculoAcoplamentoHistoricos().
-                            add(veiculoAcoplamento);
+                    veiculoAcoplamentosHistoricoResponse.get(lastIndex(veiculoAcoplamentosHistoricoResponse)).
+                            getVeiculoAcoplamentoHistoricos().add(veiculoAcoplamentoHistorico);
                     codProcessoAnterior = rSet.getLong("cod_processo");
                 } else {
-                    veiculoAcoplamento = VeiculoAcoplamentoHistoricoConverter.createVeiculoAcoplamento(rSet);
-                    veiculoAcoplamentosResponse.get(lastIndex(veiculoAcoplamentosResponse)).getVeiculoAcoplamentoHistoricos().
-                            add(veiculoAcoplamento);
+                    veiculoAcoplamentoHistorico = VeiculoAcoplamentoHistoricoConverter.createVeiculoAcoplamento(rSet);
+                    veiculoAcoplamentosHistoricoResponse.get(lastIndex(veiculoAcoplamentosHistoricoResponse)).
+                            getVeiculoAcoplamentoHistoricos().add(veiculoAcoplamentoHistorico);
                     codProcessoAnterior = rSet.getLong("cod_processo");
                 }
             }
-            if (hasElements(veiculoAcoplamentosResponse)) {
-                return Optional.of(veiculoAcoplamentosResponse);
+            if (hasElements(veiculoAcoplamentosHistoricoResponse)) {
+                return Optional.of(veiculoAcoplamentosHistoricoResponse);
             } else {
                 return Optional.empty();
             }

@@ -24,8 +24,9 @@ public interface VeiculoAcoplamentoHistoricoDao {
      * @return os processos de acoplamentos realizados com base nos parâmetros fornecidos.
      * @throws Throwable Se algum erro ocorrer.
      */
-    Optional<List<VeiculoAcoplamentoHistoricoResponse>> getVeiculoAcoplamentos(@NotNull final List<Long> codUnidades,
-                                                                               @Nullable final List<Long> codVeiculos,
-                                                                               @Nullable final LocalDate dataInicial,
-                                                                               @Nullable final LocalDate dataFinal) throws Throwable;
+    Optional<List<VeiculoAcoplamentoHistoricoResponse>> getVeiculoAcoplamentosHistorico(
+            @NotNull final List<Long> codUnidades,
+            @Nullable final List<Long> codVeiculos,
+            @Nullable final LocalDate dataInicial,
+            @Nullable final LocalDate dataFinal) throws Throwable;
 }

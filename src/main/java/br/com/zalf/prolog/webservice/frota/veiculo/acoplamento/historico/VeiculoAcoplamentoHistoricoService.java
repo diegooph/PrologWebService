@@ -25,12 +25,13 @@ public final class VeiculoAcoplamentoHistoricoService {
     private final VeiculoAcoplamentoHistoricoDao dao = Injection.provideVeiculoAcoplamentoDao();
 
     @NotNull
-    public Response getVeiculoAcoplamentos(@NotNull final List<Long> codUnidades,
-                                           @Nullable final List<Long> codVeiculos,
-                                           @Nullable final String dataInicial,
-                                           @Nullable final String dataFinal) throws ProLogException {
+    public Response getVeiculoAcoplamentosHistorico(@NotNull final List<Long> codUnidades,
+                                                    @Nullable final List<Long> codVeiculos,
+                                                    @Nullable final String dataInicial,
+                                                    @Nullable final String dataFinal) throws ProLogException {
         try {
-            final Optional<List<VeiculoAcoplamentoHistoricoResponse>> optional = dao.getVeiculoAcoplamentos(codUnidades,
+            final Optional<List<VeiculoAcoplamentoHistoricoResponse>> optional = dao.getVeiculoAcoplamentosHistorico(
+                    codUnidades,
                     codVeiculos,
                     dataInicial != null ? ProLogDateParser.toLocalDate(dataInicial) : null,
                     dataFinal != null ? ProLogDateParser.toLocalDate(dataFinal) : null);
