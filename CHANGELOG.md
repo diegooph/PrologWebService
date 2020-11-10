@@ -1,5 +1,8 @@
 Change Log
 ==========
+## Staged
+### Features
+* Realiza modificação mo CRUD de veiculos, incluindo os campos ```motorizado``` e ```possuiHubodometro``` (PL-3223)
 
 <a name="v1.4.2"></a>
 ## Version [v1.4.2](https://github.com/luizfp/PrologWebService/compare/v1.4.1...v1.4.2) (release-date) [unreleased]
