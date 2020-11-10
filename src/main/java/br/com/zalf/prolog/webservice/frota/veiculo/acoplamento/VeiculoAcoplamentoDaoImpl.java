@@ -14,12 +14,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Types;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static br.com.zalf.prolog.webservice.frota.veiculo.acoplamento.VeiculoAcoplamentoConverter.createVeiculoAcoplamento;
+import static br.com.zalf.prolog.webservice.commons.util.ListUtils.hasElements;
+import static br.com.zalf.prolog.webservice.commons.util.ListUtils.lastIndex;
 
 /**
  * Created on 2020-11-03
@@ -28,11 +28,10 @@ import static br.com.zalf.prolog.webservice.frota.veiculo.acoplamento.VeiculoAco
  */
 public final class VeiculoAcoplamentoDaoImpl extends DatabaseConnection implements VeiculoAcoplamentoDao {
     @Override
-    @NotNull
-    public Optional<VeiculoAcoplamentoResponse> getVeiculoAcoplamentos(@NotNull final List<Long> codUnidades,
-                                                                       @Nullable final List<Long> codVeiculos,
-                                                                       @Nullable final LocalDate dataInicial,
-                                                                       @Nullable final LocalDate dataFinal)
+    public java.util.Optional<List<VeiculoAcoplamentoResponse>> getVeiculoAcoplamentos(@NotNull final List<Long> codUnidades,
+                                                                                       @Nullable final List<Long> codVeiculos,
+                                                                                       @Nullable final LocalDate dataInicial,
+                                                                                       @Nullable final LocalDate dataFinal)
             throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -62,29 +61,25 @@ public final class VeiculoAcoplamentoDaoImpl extends DatabaseConnection implemen
             }
             rSet = stmt.executeQuery();
 
-            final Long codProcesso = rSet.getLong("cod_processo");
-            final String unidade = rSet.getString("nome_unidade");
-            final String colaborador = rSet.getString("nome_colaborador");
-            final LocalDateTime dataHora = rSet.getObject("data_hora", LocalDateTime.class);
-            final String observacao = rSet.getString("observacao");
-
-            VeiculoAcoplamentoResponse veiculoAcoplamentosResponse = null;
+            final List<VeiculoAcoplamentoResponse> veiculoAcoplamentosResponse = new ArrayList<>();
             Long codProcessoAnterior = null;
             VeiculoAcoplamento veiculoAcoplamento = null;
 
             while (rSet.next()) {
                 if (codProcessoAnterior == null || !codProcessoAnterior.equals(rSet.getLong("cod_processo"))) {
-                    veiculoAcoplamentosResponse = VeiculoAcoplamentoConverter.createVeiculoAcoplamentoResponse(rSet);
                     veiculoAcoplamento = VeiculoAcoplamentoConverter.createVeiculoAcoplamento(rSet);
-                    veiculoAcoplamentosResponse
+                    veiculoAcoplamentosResponse.add(VeiculoAcoplamentoConverter.createVeiculoAcoplamentoResponse(rSet));
+                    veiculoAcoplamentosResponse.get(lastIndex(veiculoAcoplamentosResponse)).getVeiculoAcoplamentos().add(veiculoAcoplamento);
+                    codProcessoAnterior = rSet.getLong("cod_processo");
+                } else {
+                    veiculoAcoplamento = VeiculoAcoplamentoConverter.createVeiculoAcoplamento(rSet);
+                    veiculoAcoplamentosResponse.get(lastIndex(veiculoAcoplamentosResponse)).getVeiculoAcoplamentos().add(veiculoAcoplamento);
+                    codProcessoAnterior = rSet.getLong("cod_processo");
                 }
-
-
             }
-
-            return Optional.empty();
-
-        } else {
+            if (hasElements(veiculoAcoplamentosResponse)) {
+                return Optional.of(veiculoAcoplamentosResponse);
+            } else {
                 return Optional.empty();
             }
         } finally {

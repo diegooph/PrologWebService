@@ -30,7 +30,7 @@ public final class VeiculoAcoplamentoService {
                                            @Nullable final String dataInicial,
                                            @Nullable final String dataFinal) throws ProLogException {
         try {
-            final Optional<VeiculoAcoplamentoResponse> optional = dao.getVeiculoAcoplamentos(codUnidades,
+            final Optional<List<VeiculoAcoplamentoResponse>> optional = dao.getVeiculoAcoplamentos(codUnidades,
                     codVeiculos,
                     dataInicial != null ? ProLogDateParser.toLocalDate(dataInicial) : null,
                     dataFinal != null ? ProLogDateParser.toLocalDate(dataFinal) : null);
