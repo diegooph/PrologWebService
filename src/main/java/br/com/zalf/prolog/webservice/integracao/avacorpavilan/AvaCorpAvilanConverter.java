@@ -26,10 +26,13 @@ public final class AvaCorpAvilanConverter {
                 getIntegerValueFromString(osIntegracao.getCodUnidade()),
                 osIntegracao.getCodOsProlog(),
                 osIntegracao.getDataHoraAbertura(),
+                osIntegracao.getDataHoraFechamento(),
+                osIntegracao.getDataHoraFechamento(),
                 osIntegracao.getDataHoraAbertura(),
                 codigoUsuario,
                 osIntegracao.getPlacaVeiculo(),
                 osIntegracao.getKmVeiculoNaAbertura(),
+                osIntegracao.getCpfColaboradorChecklist(),
                 osIntegracao.getCpfColaboradorChecklist(),
                 osIntegracao.getItensNok()
                         .stream()

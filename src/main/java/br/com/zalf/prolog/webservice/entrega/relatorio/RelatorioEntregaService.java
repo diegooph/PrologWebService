@@ -173,7 +173,7 @@ public class RelatorioEntregaService {
                     codEquipe,
                     cpf,
                     new java.sql.Date(dataInicial).toLocalDate(),
-                    new java.sql.Date(dataInicial).toLocalDate());
+                    new java.sql.Date(dataFinal).toLocalDate());
         } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao gerar o relatório consolidado dos indicadores.\n" +
                     "codEmpresa: %d\n" +
