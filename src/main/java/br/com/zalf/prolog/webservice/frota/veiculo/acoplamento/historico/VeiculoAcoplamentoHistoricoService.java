@@ -1,10 +1,10 @@
-package br.com.zalf.prolog.webservice.frota.veiculo.acoplamento;
+package br.com.zalf.prolog.webservice.frota.veiculo.acoplamento.historico;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
-import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.VeiculoAcoplamentoResponse;
+import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento.historico._model.VeiculoAcoplamentoHistoricoResponse;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -18,11 +18,11 @@ import java.util.Optional;
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-public final class VeiculoAcoplamentoService {
+public final class VeiculoAcoplamentoHistoricoService {
     @NotNull
-    private static final String TAG = VeiculoAcoplamentoService.class.getSimpleName();
+    private static final String TAG = VeiculoAcoplamentoHistoricoService.class.getSimpleName();
     @NotNull
-    private final VeiculoAcoplamentoDao dao = Injection.provideVeiculoAcoplamentoDao();
+    private final VeiculoAcoplamentoHistoricoDao dao = Injection.provideVeiculoAcoplamentoDao();
 
     @NotNull
     public Response getVeiculoAcoplamentos(@NotNull final List<Long> codUnidades,
@@ -30,7 +30,7 @@ public final class VeiculoAcoplamentoService {
                                            @Nullable final String dataInicial,
                                            @Nullable final String dataFinal) throws ProLogException {
         try {
-            final Optional<List<VeiculoAcoplamentoResponse>> optional = dao.getVeiculoAcoplamentos(codUnidades,
+            final Optional<List<VeiculoAcoplamentoHistoricoResponse>> optional = dao.getVeiculoAcoplamentos(codUnidades,
                     codVeiculos,
                     dataInicial != null ? ProLogDateParser.toLocalDate(dataInicial) : null,
                     dataFinal != null ? ProLogDateParser.toLocalDate(dataFinal) : null);

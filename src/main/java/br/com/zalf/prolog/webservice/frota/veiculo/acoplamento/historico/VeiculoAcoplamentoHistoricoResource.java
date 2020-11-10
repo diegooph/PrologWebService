@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.frota.veiculo.acoplamento;
+package br.com.zalf.prolog.webservice.frota.veiculo.acoplamento.historico;
 
 import br.com.zalf.prolog.webservice.commons.util.Optional;
 import br.com.zalf.prolog.webservice.commons.util.Platform;
@@ -22,9 +22,9 @@ import java.util.List;
 @Path("/veiculos/acoplamentos")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-public final class VeiculoAcoplamentoResource {
+public final class VeiculoAcoplamentoHistoricoResource {
     @NotNull
-    private final VeiculoAcoplamentoService service = new VeiculoAcoplamentoService();
+    private final VeiculoAcoplamentoHistoricoService service = new VeiculoAcoplamentoHistoricoService();
 
     @GET
     @Path("/busca")

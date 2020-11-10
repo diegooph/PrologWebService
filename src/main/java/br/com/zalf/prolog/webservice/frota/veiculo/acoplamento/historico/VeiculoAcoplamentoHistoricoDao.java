@@ -1,6 +1,6 @@
-package br.com.zalf.prolog.webservice.frota.veiculo.acoplamento;
+package br.com.zalf.prolog.webservice.frota.veiculo.acoplamento.historico;
 
-import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.VeiculoAcoplamentoResponse;
+import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento.historico._model.VeiculoAcoplamentoHistoricoResponse;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -13,7 +13,7 @@ import java.util.Optional;
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-public interface VeiculoAcoplamentoDao {
+public interface VeiculoAcoplamentoHistoricoDao {
     /**
      * Busca os processos de acoplamentos com base nos parâmetros fornecidos.
      *
@@ -24,8 +24,8 @@ public interface VeiculoAcoplamentoDao {
      * @return os processos de acoplamentos realizados com base nos parâmetros fornecidos.
      * @throws Throwable Se algum erro ocorrer.
      */
-    Optional<List<VeiculoAcoplamentoResponse>> getVeiculoAcoplamentos(@NotNull final List<Long> codUnidades,
-                                                                      @Nullable final List<Long> codVeiculos,
-                                                                      @Nullable final LocalDate dataInicial,
-                                                                      @Nullable final LocalDate dataFinal) throws Throwable;
+    Optional<List<VeiculoAcoplamentoHistoricoResponse>> getVeiculoAcoplamentos(@NotNull final List<Long> codUnidades,
+                                                                               @Nullable final List<Long> codVeiculos,
+                                                                               @Nullable final LocalDate dataInicial,
+                                                                               @Nullable final LocalDate dataFinal) throws Throwable;
 }

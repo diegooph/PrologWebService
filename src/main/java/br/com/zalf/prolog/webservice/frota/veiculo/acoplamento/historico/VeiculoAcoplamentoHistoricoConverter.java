@@ -1,7 +1,7 @@
-package br.com.zalf.prolog.webservice.frota.veiculo.acoplamento;
+package br.com.zalf.prolog.webservice.frota.veiculo.acoplamento.historico;
 
-import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.VeiculoAcoplamento;
-import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.VeiculoAcoplamentoResponse;
+import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento.historico._model.VeiculoAcoplamentoHistorico;
+import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento.historico._model.VeiculoAcoplamentoHistoricoResponse;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
@@ -14,10 +14,10 @@ import java.util.ArrayList;
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-public final class VeiculoAcoplamentoConverter {
+public final class VeiculoAcoplamentoHistoricoConverter {
     @NotNull
-    public static VeiculoAcoplamento createVeiculoAcoplamento(@NotNull final ResultSet rSet) throws SQLException {
-        return new VeiculoAcoplamento(
+    public static VeiculoAcoplamentoHistorico createVeiculoAcoplamento(@NotNull final ResultSet rSet) throws SQLException {
+        return new VeiculoAcoplamentoHistorico(
                 rSet.getString("placa"),
                 rSet.getString("identificador_frota"),
                 rSet.getLong("km"),
@@ -26,9 +26,9 @@ public final class VeiculoAcoplamentoConverter {
     }
 
     @NotNull
-    public static VeiculoAcoplamentoResponse createVeiculoAcoplamentoResponse(@NotNull final ResultSet rSet)
+    public static VeiculoAcoplamentoHistoricoResponse createVeiculoAcoplamentoResponse(@NotNull final ResultSet rSet)
             throws SQLException {
-        return new VeiculoAcoplamentoResponse(
+        return new VeiculoAcoplamentoHistoricoResponse(
                 rSet.getLong("cod_processo"),
                 rSet.getString("nome_unidade"),
                 rSet.getString("nome_colaborador"),

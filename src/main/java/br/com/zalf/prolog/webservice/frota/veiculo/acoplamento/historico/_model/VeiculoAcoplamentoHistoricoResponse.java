@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model;
+package br.com.zalf.prolog.webservice.frota.veiculo.acoplamento.historico._model;
 
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
@@ -13,7 +13,7 @@ import java.util.List;
  * @author Thais Francisco (https://github.com/thaisksf)
  */
 @Data
-public final class VeiculoAcoplamentoResponse {
+public final class VeiculoAcoplamentoHistoricoResponse {
     @NotNull
     private final Long codProcesso;
     @NotNull
@@ -25,5 +25,5 @@ public final class VeiculoAcoplamentoResponse {
     @Nullable
     private final String observacao;
     @NotNull
-    private final List<VeiculoAcoplamento> veiculoAcoplamentos;
+    private final List<VeiculoAcoplamentoHistorico> veiculoAcoplamentoHistoricos;
 }
