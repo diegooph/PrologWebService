@@ -4,7 +4,6 @@ import br.com.zalf.prolog.webservice.commons.util.ListUtils;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
-import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento.historico._model.VeiculoAcoplamentoHistorico;
 import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento.historico._model.VeiculoAcoplamentoHistoricoResponse;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -19,7 +18,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static br.com.zalf.prolog.webservice.commons.util.ListUtils.hasElements;
-import static br.com.zalf.prolog.webservice.commons.util.ListUtils.lastIndex;
 
 /**
  * Created on 2020-11-03
@@ -61,28 +59,19 @@ public final class VeiculoAcoplamentoHistoricoDaoImpl extends DatabaseConnection
                 stmt.setObject(4, dataFinal);
             }
             rSet = stmt.executeQuery();
-
             final List<VeiculoAcoplamentoHistoricoResponse> veiculoAcoplamentosHistoricoResponse = new ArrayList<>();
             Long codProcessoAnterior = null;
-            VeiculoAcoplamentoHistorico veiculoAcoplamentoHistorico = null;
-
+            VeiculoAcoplamentoHistoricoResponse ultimoVeiculoAcoplamentoHistoricoResponse = null;
             while (rSet.next()) {
-                if (codProcessoAnterior == null || !codProcessoAnterior.equals(
-                        rSet.getLong("cod_processo"))) {
-                    veiculoAcoplamentoHistorico = VeiculoAcoplamentoHistoricoConverter.
-                            createVeiculoAcoplamentoHistorico(rSet);
-                    veiculoAcoplamentosHistoricoResponse.add(VeiculoAcoplamentoHistoricoConverter.
-                            createVeiculoAcoplamentoHistoricoResponse(rSet));
-                    veiculoAcoplamentosHistoricoResponse.get(lastIndex(veiculoAcoplamentosHistoricoResponse)).
-                            getVeiculoAcoplamentoHistoricos().add(veiculoAcoplamentoHistorico);
-                    codProcessoAnterior = rSet.getLong("cod_processo");
-                } else {
-                    veiculoAcoplamentoHistorico = VeiculoAcoplamentoHistoricoConverter.
-                            createVeiculoAcoplamentoHistorico(rSet);
-                    veiculoAcoplamentosHistoricoResponse.get(lastIndex(veiculoAcoplamentosHistoricoResponse)).
-                            getVeiculoAcoplamentoHistoricos().add(veiculoAcoplamentoHistorico);
+                if (codProcessoAnterior == null || codProcessoAnterior != rSet.getLong("cod_processo")) {
+                    ultimoVeiculoAcoplamentoHistoricoResponse =
+                            VeiculoAcoplamentoHistoricoConverter.createVeiculoAcoplamentoHistoricoResponse(rSet);
+                    veiculoAcoplamentosHistoricoResponse.add(ultimoVeiculoAcoplamentoHistoricoResponse);
                     codProcessoAnterior = rSet.getLong("cod_processo");
                 }
+                ultimoVeiculoAcoplamentoHistoricoResponse
+                        .getVeiculoAcoplamentoHistoricos()
+                        .add(VeiculoAcoplamentoHistoricoConverter.createVeiculoAcoplamentoHistorico(rSet));
             }
             if (hasElements(veiculoAcoplamentosHistoricoResponse)) {
                 return Optional.of(veiculoAcoplamentosHistoricoResponse);
