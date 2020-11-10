@@ -53,7 +53,9 @@ public final class VeiculoConverter {
                 rSet.getLong("TRASEIRO"),
                 rSet.getString("TIPO"),
                 rSet.getString("MARCA"),
-                rSet.getLong("COD_MARCA"));
+                rSet.getLong("COD_MARCA"),
+                rSet.getBoolean("MOTORIZADO"),
+                rSet.getBoolean("POSSUI_HUBODOMETRO"));
     }
 
     @NotNull
@@ -79,6 +81,8 @@ public final class VeiculoConverter {
                 rSet.getString("TIPO"),
                 rSet.getString("MARCA"),
                 rSet.getLong("COD_MARCA"),
+                rSet.getBoolean("MOTORIZADO"),
+                rSet.getBoolean("POSSUI_HUBODOMETRO"),
                 pneus);
     }
 
