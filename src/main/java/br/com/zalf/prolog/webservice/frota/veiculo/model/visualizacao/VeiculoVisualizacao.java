@@ -49,8 +49,7 @@ public final class VeiculoVisualizacao {
     private final String marca;
     @NotNull
     private final Long codMarca;
-    @NotNull
-    private final Boolean possuiHubodometro;
+    private final boolean possuiHubodometro;
     @NotNull
     private final List<VeiculoVisualizacaoPneu> pneusVeiculo;
 
@@ -64,8 +63,8 @@ public final class VeiculoVisualizacao {
                 identificadorFrota,
                 codTipo,
                 codModelo,
+                possuiHubodometro,
                 km,
-                novoStatus,
-                possuiHubodometro);
+                novoStatus);
     }
 }

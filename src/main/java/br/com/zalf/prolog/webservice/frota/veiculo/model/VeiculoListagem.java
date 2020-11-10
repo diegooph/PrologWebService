@@ -49,6 +49,5 @@ public class VeiculoListagem {
     private final String marca;
     @NotNull
     private final Long codMarca;
-    @NotNull
-    private final Boolean possuiHubodometro;
+    private final boolean possuiHubodometro;
 }
