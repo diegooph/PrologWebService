@@ -49,6 +49,7 @@ public final class VeiculoVisualizacao {
     private final String marca;
     @NotNull
     private final Long codMarca;
+    private final boolean motorizado;
     private final boolean possuiHubodometro;
     @NotNull
     private final List<VeiculoVisualizacaoPneu> pneusVeiculo;
