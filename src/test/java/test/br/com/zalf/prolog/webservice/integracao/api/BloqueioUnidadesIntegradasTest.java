@@ -98,8 +98,8 @@ final class BloqueioUnidadesIntegradasTest {
                 null,
                 -1L,
                 -1L,
-                1,
                 true,
+                1,
                 false);
         final Throwable throwable = assertThrows(
                 ProLogException.class,
@@ -117,8 +117,8 @@ final class BloqueioUnidadesIntegradasTest {
                 null,
                 -1L,
                 -1L,
-                1,
                 true,
+                1,
                 false);
         final Throwable throwable = assertThrows(
                 ProLogException.class,
