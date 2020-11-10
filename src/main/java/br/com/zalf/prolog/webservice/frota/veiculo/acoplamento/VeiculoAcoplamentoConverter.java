@@ -25,8 +25,10 @@ public final class VeiculoAcoplamentoConverter {
                 rSet.getString("acao"));
     }
 
-    public static VeiculoAcoplamentoResponse createVeiculoAcoplamentoResponse(final ResultSet rSet) throws SQLException {
-       return new VeiculoAcoplamentoResponse(
+    @NotNull
+    public static VeiculoAcoplamentoResponse createVeiculoAcoplamentoResponse(@NotNull final ResultSet rSet)
+            throws SQLException {
+        return new VeiculoAcoplamentoResponse(
                 rSet.getLong("cod_processo"),
                 rSet.getString("nome_unidade"),
                 rSet.getString("nome_colaborador"),

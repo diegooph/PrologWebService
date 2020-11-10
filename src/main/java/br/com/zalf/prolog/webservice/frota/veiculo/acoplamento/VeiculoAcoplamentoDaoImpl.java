@@ -28,10 +28,11 @@ import static br.com.zalf.prolog.webservice.commons.util.ListUtils.lastIndex;
  */
 public final class VeiculoAcoplamentoDaoImpl extends DatabaseConnection implements VeiculoAcoplamentoDao {
     @Override
-    public java.util.Optional<List<VeiculoAcoplamentoResponse>> getVeiculoAcoplamentos(@NotNull final List<Long> codUnidades,
-                                                                                       @Nullable final List<Long> codVeiculos,
-                                                                                       @Nullable final LocalDate dataInicial,
-                                                                                       @Nullable final LocalDate dataFinal)
+    @NotNull
+    public Optional<List<VeiculoAcoplamentoResponse>> getVeiculoAcoplamentos(@NotNull final List<Long> codUnidades,
+                                                                             @Nullable final List<Long> codVeiculos,
+                                                                             @Nullable final LocalDate dataInicial,
+                                                                             @Nullable final LocalDate dataFinal)
             throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -66,14 +67,18 @@ public final class VeiculoAcoplamentoDaoImpl extends DatabaseConnection implemen
             VeiculoAcoplamento veiculoAcoplamento = null;
 
             while (rSet.next()) {
-                if (codProcessoAnterior == null || !codProcessoAnterior.equals(rSet.getLong("cod_processo"))) {
+                if (codProcessoAnterior == null || !codProcessoAnterior.equals(
+                        rSet.getLong("cod_processo"))) {
                     veiculoAcoplamento = VeiculoAcoplamentoConverter.createVeiculoAcoplamento(rSet);
-                    veiculoAcoplamentosResponse.add(VeiculoAcoplamentoConverter.createVeiculoAcoplamentoResponse(rSet));
-                    veiculoAcoplamentosResponse.get(lastIndex(veiculoAcoplamentosResponse)).getVeiculoAcoplamentos().add(veiculoAcoplamento);
+                    veiculoAcoplamentosResponse.add(
+                            VeiculoAcoplamentoConverter.createVeiculoAcoplamentoResponse(rSet));
+                    veiculoAcoplamentosResponse.get(lastIndex(veiculoAcoplamentosResponse)).getVeiculoAcoplamentos().
+                            add(veiculoAcoplamento);
                     codProcessoAnterior = rSet.getLong("cod_processo");
                 } else {
                     veiculoAcoplamento = VeiculoAcoplamentoConverter.createVeiculoAcoplamento(rSet);
-                    veiculoAcoplamentosResponse.get(lastIndex(veiculoAcoplamentosResponse)).getVeiculoAcoplamentos().add(veiculoAcoplamento);
+                    veiculoAcoplamentosResponse.get(lastIndex(veiculoAcoplamentosResponse)).getVeiculoAcoplamentos().
+                            add(veiculoAcoplamento);
                     codProcessoAnterior = rSet.getLong("cod_processo");
                 }
             }
