@@ -25,7 +25,9 @@ public final class VeiculoEdicao {
     private final Long codTipoVeiculo;
     @NotNull
     private final Long codModeloVeiculo;
+    @NotNull
+    private final Boolean possuiHubodometro;
     private final long kmAtualVeiculo;
     private final boolean statusAtivo;
-    private final boolean possuiHubodometro;
+
 }
