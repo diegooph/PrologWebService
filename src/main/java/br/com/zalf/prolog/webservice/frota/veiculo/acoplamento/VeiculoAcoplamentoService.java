@@ -2,12 +2,7 @@ package br.com.zalf.prolog.webservice.frota.veiculo.acoplamento;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
-import br.com.zalf.prolog.webservice.database.DatabaseUtils;
-import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
-import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcoplamentoAcaoRealizada;
-import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcoplamentoProcessoInsert;
 import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcoplamentoProcessoRealizacao;
 import org.jetbrains.annotations.NotNull;
 
@@ -20,63 +15,22 @@ import java.sql.Connection;
  */
 public final class VeiculoAcoplamentoService {
     private static final String TAG = VeiculoAcoplamentoService.class.getSimpleName();
+    @NotNull
+    private final VeiculoAcoplamentoDao dao = new VeiculoAcoplamentoDaoImpl();
 
     @NotNull
     public Long insertProcessoAcoplamento(@NotNull final Long codColaboradorRealizacao,
                                           @NotNull final VeiculoAcoplamentoProcessoRealizacao processoRealizacao) {
-        final VeiculoAcoplamentoDao dao = new VeiculoAcoplamentoDaoImpl();
-        // 0 - Validações?
-
         final Connection connection = DatabaseConnection.getConnection();
         try {
-            connection.setAutoCommit(false);
-
-            // 1 - Atualiza KMs - Deve acontecer antes de remover o acoplamento atual, pois se baseará nele para a
-            // propagação dos KMs.
-            final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
-            processoRealizacao
-                    .getAcoesRealizadas()
-                    .stream()
-                    .filter(VeiculoAcoplamentoAcaoRealizada::coletouKm)
-                    .forEach(acaoRealizada -> {
-                        // TODO: Utilizar VeiculoService para atualizar os KMs.
-                    });
-
-            // 2 - Remove os veículos do processo editado atual.
-            processoRealizacao
-                    .estaEditandoProcessoAcoplamento()
-                    .ifPresent(codProcessoEditado -> dao.removeAcoplamentoAtual(connection, codProcessoEditado));
-
-            // 3 - Inserir processo acoplamento.
-            final Long codProcessoInserido = dao.insertProcessoAcoplamento(
-                    connection,
-                    VeiculoAcoplamentoProcessoInsert.of(
-                            processoRealizacao.getCodUnidade(),
-                            codColaboradorRealizacao,
-                            Now.offsetDateTimeUtc(),
-                            processoRealizacao.getObservacao()));
-
-            // 4 - Inserir histórico acoplamentos.
-            dao.insertHistoricoAcoesRealizadas(connection, codProcessoInserido, processoRealizacao.getAcoesRealizadas());
-
-            // 5 - Inserir processo atual.
-            processoRealizacao
-                    .getVeiculosAcopladosOuMantidos(codProcessoInserido)
-                    .ifPresent(veiculosAcopladosMantidos -> dao.insertEstadoAtualAcoplamentos(
-                            connection,
-                            veiculosAcopladosMantidos));
-
-            // 6 - Commita e seja feliz.
-            connection.commit();
-
-            return codProcessoInserido;
+            return new VeiculoAcoplamentoRealizacaoEngine(connection, dao, Injection.provideVeiculoDao())
+                    .realizaProcessoAcoplamento(codColaboradorRealizacao, processoRealizacao);
         } catch (final Throwable throwable) {
             Log.e(TAG, "Erro ao realizar processo de acoplamento", throwable);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(throwable, "Erro ao realizar engate/desengate, tente novamente.");
         } finally {
-            DatabaseUtils.safeRollback(connection);
             DatabaseConnection.close(connection);
         }
     }
