@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.frota.veiculo;
 
 import br.com.zalf.prolog.webservice.frota.veiculo.model.VeiculoListagem;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoAntesEdicao;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoAcopladoVisualizacao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoVisualizacao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoVisualizacaoPneu;
 import org.jetbrains.annotations.NotNull;
@@ -53,13 +54,16 @@ public final class VeiculoConverter {
                 rSet.getLong("TRASEIRO"),
                 rSet.getString("TIPO"),
                 rSet.getString("MARCA"),
-                rSet.getLong("COD_MARCA"));
+                rSet.getLong("COD_MARCA"),
+                rSet.getBoolean("MOTORIZADO"),
+                rSet.getBoolean("POSSUI_HUBODOMETRO"));
     }
 
     @NotNull
-    public static VeiculoVisualizacao createVeiculoVisualizacao(@NotNull final ResultSet rSet,
-                                                                @NotNull final List<VeiculoVisualizacaoPneu> pneus)
-            throws SQLException {
+    public static VeiculoVisualizacao createVeiculoVisualizacao(
+            @NotNull final ResultSet rSet,
+            @NotNull final List<VeiculoVisualizacaoPneu> pneus,
+            @NotNull final List<VeiculoAcopladoVisualizacao> veiculosAcoplados) throws SQLException {
         return new VeiculoVisualizacao(
                 rSet.getLong("CODIGO"),
                 rSet.getString("PLACA"),
@@ -79,7 +83,21 @@ public final class VeiculoConverter {
                 rSet.getString("TIPO"),
                 rSet.getString("MARCA"),
                 rSet.getLong("COD_MARCA"),
-                pneus);
+                rSet.getBoolean("MOTORIZADO"),
+                rSet.getBoolean("POSSUI_HUBODOMETRO"),
+                pneus,
+                veiculosAcoplados);
+    }
+
+    @NotNull
+    public static VeiculoAcopladoVisualizacao createVeiculoAcopladoVisualizacao(@NotNull final ResultSet rSet)
+            throws SQLException {
+        return new VeiculoAcopladoVisualizacao(
+                rSet.getLong("CODIGO"),
+                rSet.getString("PLACA"),
+                rSet.getString("IDENTIFICADOR_FROTA"),
+                rSet.getBoolean("MOTORIZADO"),
+                rSet.getInt("POSICAO_ACOPLADO"));
     }
 
     @NotNull
