@@ -299,6 +299,15 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         }
     }
 
+    @Override
+    public void updateKmByCodVeiculo(@NotNull final Connection conn,
+                                     @NotNull final Long codVeiculo,
+                                     final long kmVeiculo) {
+        // TODO: Pendente implementação com a nova func de atualizar KM.
+        //       Este método não pode declarar nenhum throws em sua assinatura. Para fazer dessa forma veja a
+        //       implementação em VeiculoAcoplamentoDaoImpl.
+    }
+
     @NotNull
     @Override
     public Long insertModeloVeiculo(@NotNull final Modelo modelo,

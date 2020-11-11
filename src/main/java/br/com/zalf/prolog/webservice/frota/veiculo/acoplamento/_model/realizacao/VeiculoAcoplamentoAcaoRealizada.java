@@ -27,10 +27,6 @@ public final class VeiculoAcoplamentoAcaoRealizada {
     @Nullable
     private final Long kmColetado;
 
-    public boolean coletouKm() {
-        return kmColetado != null;
-    }
-
     public boolean foiAcopladoOuMantidoNaComposicao() {
         return acaoRealizada != VeiculoAcoplamentoAcaoEnum.DESACOPLADO;
     }

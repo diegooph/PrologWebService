@@ -3,7 +3,6 @@ package br.com.zalf.prolog.webservice.frota.veiculo.acoplamento;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseUtils;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
-import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcoplamentoAcaoRealizada;
 import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcoplamentoProcessoInsert;
 import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcoplamentoProcessoRealizacao;
 import lombok.AllArgsConstructor;
@@ -64,10 +63,11 @@ public final class VeiculoAcoplamentoRealizacaoEngine {
         processoRealizacao
                 .getAcoesRealizadas()
                 .stream()
-                .filter(VeiculoAcoplamentoAcaoRealizada::coletouKm)
-                .forEach(acaoRealizada -> {
-                    // TODO: Utilizar VeiculoService para atualizar os KMs.
-                });
+                .filter(acaoRealizada -> acaoRealizada.getKmColetado() != null)
+                .forEach(acaoRealizada -> veiculoDao.updateKmByCodVeiculo(
+                        connection,
+                        acaoRealizada.getCodVeiculo(),
+                        acaoRealizada.getKmColetado()));
     }
 
     private void removeAcoplamentoAtual(@NotNull final VeiculoAcoplamentoProcessoRealizacao processoRealizacao) {
