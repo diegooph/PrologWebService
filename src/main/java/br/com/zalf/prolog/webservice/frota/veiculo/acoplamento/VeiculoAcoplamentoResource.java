@@ -37,8 +37,9 @@ public final class VeiculoAcoplamentoResource {
     @Secured(permissions = {Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
     @UsedBy(platforms = {Platform.WEBSITE, Platform.ANDROID})
     @Path("/")
-    public AbstractResponse realizaProcessoAcoplamento(@Valid final VeiculoAcoplamentoProcessoRealizacao processoRealizacao) {
-        final Long codProcessoInserido = service.realizaProcessoAcoplamento(
+    public AbstractResponse insertProcessoAcoplamento(
+            @Valid final VeiculoAcoplamentoProcessoRealizacao processoRealizacao) {
+        final Long codProcessoInserido = service.insertProcessoAcoplamento(
                 colaboradorAutenticadoProvider.get().getCodigo(),
                 processoRealizacao);
         return ResponseWithCod.ok("Processo de engate/desengate realizado com sucesso!", codProcessoInserido);

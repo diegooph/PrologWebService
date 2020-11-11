@@ -21,8 +21,8 @@ public final class VeiculoAcoplamentoService {
     private static final String TAG = VeiculoAcoplamentoService.class.getSimpleName();
 
     @NotNull
-    public Long realizaProcessoAcoplamento(@NotNull final Long codColaborador,
-                                           @NotNull final VeiculoAcoplamentoProcessoRealizacao processoRealizacao) {
+    public Long insertProcessoAcoplamento(@NotNull final Long codColaborador,
+                                          @NotNull final VeiculoAcoplamentoProcessoRealizacao processoRealizacao) {
         final VeiculoAcoplamentoDao dao = new VeiculoAcoplamentoDaoImpl();
         // 0 - Validações?
 
