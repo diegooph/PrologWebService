@@ -23,14 +23,15 @@ import java.util.List;
  * @author Thais Francisco (https://github.com/thaisksf)
  */
 public final class VeiculoAcoplamentoDaoImpl implements VeiculoAcoplamentoDao {
-    private static final int EXECUTE_BATCH_SUCCESS = 1;
+    private static final int EXECUTE_BATCH_SUCCESS = 0;
 
     @Override
     public void removeAcoplamentoAtual(@NotNull final Connection conn,
                                        @NotNull final Long codProcessoAcoplamento) {
         PreparedStatement stmt = null;
         try {
-            stmt = conn.prepareStatement("delete from veiculo_acoplamento_atual where cod_processo = ?;");
+            stmt = conn.prepareCall(" {call func_veiculo_remove_acoplamento_atual(" +
+                    "f_cod_processo_acoplamento => ?)}");
             DatabaseUtils.bind(stmt, Lists.newArrayList(codProcessoAcoplamento));
             stmt.execute();
         } catch (final SQLException e) {
@@ -50,17 +51,19 @@ public final class VeiculoAcoplamentoDaoImpl implements VeiculoAcoplamentoDao {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            stmt = conn.prepareStatement("insert into public.veiculo_acoplamento_processo " +
-                    "(cod_unidade, cod_colaborador, data_hora, observacao) " +
-                    "values (?, ?, ?, ?) returning codigo as codigo;");
+            stmt = conn.prepareStatement("select * from func_veiculo_insert_processo_acoplamento(" +
+                    "f_cod_unidade => ?," +
+                    "f_cod_colaborador_realizacao => ?," +
+                    "f_data_hora_atual => ?," +
+                    "f_observacao => ?);");
             DatabaseUtils.bind(stmt, Lists.newArrayList(
                     codUnidadeAcoplamento,
                     codColaboradorRealizacao,
                     dataHoraAtual,
                     StringUtils.trimToNull(observacao)));
             rSet = stmt.executeQuery();
-            if (rSet.next() && rSet.getLong("codigo") > 0) {
-                return rSet.getLong("codigo");
+            if (rSet.next() && rSet.getLong(1) > 0) {
+                return rSet.getLong(1);
             } else {
                 throw new IllegalStateException("Erro ao inserir processo de acoplamento");
             }
@@ -77,16 +80,21 @@ public final class VeiculoAcoplamentoDaoImpl implements VeiculoAcoplamentoDao {
                                             @NotNull final List<VeiculoAcoplamento> acoplamentos) {
         PreparedStatement stmt = null;
         try {
-            stmt = conn.prepareStatement("insert into public.veiculo_acoplamento_historico " +
-                    "(cod_processo, cod_posicao, cod_diagrama, motorizado, cod_veiculo, km, acao) " +
-                    "values (?, ?, ?, ?, ?, ?, ?::types.veiculo_acoplamento_acao_type);");
+            stmt = conn.prepareCall(" {call func_veiculo_insert_historico_acoplamento(" +
+                    "f_cod_processo_acoplamento => ?," +
+                    "f_cod_veiculo => ?," +
+                    "f_cod_diagrama_veiculo => ?," +
+                    "f_posicao_acao_realizada => ?," +
+                    "f_veiculo_motorizado => ?," +
+                    "f_km_coletado => ?," +
+                    "f_acao_realizada => ?)}");
             for (final VeiculoAcoplamento acoplamento : acoplamentos) {
                 DatabaseUtils.bind(stmt, Lists.newArrayList(
                         codProcessoAcoplamento,
-                        acoplamento.getPosicaoAcaoRealizada(),
-                        acoplamento.getCodDiagramaVeiculo(),
-                        acoplamento.getMotorizado(),
                         acoplamento.getCodVeiculo(),
+                        acoplamento.getCodDiagramaVeiculo(),
+                        acoplamento.getPosicaoAcaoRealizada(),
+                        acoplamento.getMotorizado(),
                         acoplamento.getKmColetado(),
                         acoplamento.getAcaoRealizada().asString()));
                 stmt.addBatch();
@@ -95,7 +103,7 @@ public final class VeiculoAcoplamentoDaoImpl implements VeiculoAcoplamentoDao {
                     stmt,
                     acoplamentos.size(),
                     EXECUTE_BATCH_SUCCESS,
-                    "Erro ao inserir histórico de acoplamentos");
+                    "Erro ao inserir histórico de acoplamentos.");
         } catch (final SQLException e) {
             throw Exceptions.rethrow(e);
         } finally {
@@ -110,24 +118,28 @@ public final class VeiculoAcoplamentoDaoImpl implements VeiculoAcoplamentoDao {
                                               @NotNull final List<VeiculoAcoplamento> acoplamentos) {
         PreparedStatement stmt = null;
         try {
-            stmt = conn.prepareStatement("insert into public.veiculo_acoplamento_atual " +
-                    "(cod_processo, cod_unidade, cod_posicao, cod_diagrama, motorizado, cod_veiculo) " +
-                    "values (?, ?, ?, ?, ?, ?);");
+            stmt = conn.prepareCall(" {call func_veiculo_insert_estado_atual_acoplamentos(" +
+                    "f_cod_processo_acoplamento => ?," +
+                    "f_cod_unidade => ?," +
+                    "f_cod_veiculo => ?," +
+                    "f_cod_diagrama_veiculo => ?," +
+                    "f_posicao_acoplamento => ?," +
+                    "f_veiculo_motorizado => ?)}");
             for (final VeiculoAcoplamento acoplamento : acoplamentos) {
                 DatabaseUtils.bind(stmt, Lists.newArrayList(
                         codProcessoAcoplamento,
                         codUnidadeAcoplamento,
-                        acoplamento.getPosicaoAcaoRealizada(),
+                        acoplamento.getCodVeiculo(),
                         acoplamento.getCodDiagramaVeiculo(),
-                        acoplamento.getMotorizado(),
-                        acoplamento.getCodVeiculo()));
+                        acoplamento.getPosicaoAcaoRealizada(),
+                        acoplamento.getMotorizado()));
                 stmt.addBatch();
             }
             StatementUtils.executeBatchAndValidate(
                     stmt,
                     acoplamentos.size(),
                     EXECUTE_BATCH_SUCCESS,
-                    "Erro ao inserir histórico de acoplamentos");
+                    "Erro ao inserir estado atual dos acoplamentos.");
         } catch (final SQLException e) {
             throw Exceptions.rethrow(e);
         } finally {

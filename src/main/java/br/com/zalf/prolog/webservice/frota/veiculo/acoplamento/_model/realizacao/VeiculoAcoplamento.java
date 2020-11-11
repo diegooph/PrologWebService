@@ -23,7 +23,7 @@ public final class VeiculoAcoplamento {
     @NotNull
     private final VeiculoAcoplamentoAcao acaoRealizada;
     @Range(min = 1, max = 6)
-    private final int posicaoAcaoRealizada;
+    private final short posicaoAcaoRealizada;
     @Nullable
     private final Long kmColetado;
 
