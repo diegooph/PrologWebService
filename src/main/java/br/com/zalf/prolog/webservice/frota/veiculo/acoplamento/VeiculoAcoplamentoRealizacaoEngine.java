@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.frota.veiculo.acoplamento;
 
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseUtils;
+import br.com.zalf.prolog.webservice.errorhandling.sql.ClientSideErrorException;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcoplamentoProcessoInsert;
 import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcoplamentoProcessoRealizacao;
@@ -102,8 +103,15 @@ public final class VeiculoAcoplamentoRealizacaoEngine {
                                                @NotNull final VeiculoAcoplamentoProcessoRealizacao processoRealizacao) {
         processoRealizacao
                 .getVeiculosAcopladosOuMantidos(codProcessoInserido)
-                .ifPresent(veiculosAcopladosMantidos -> veiculoAcoplamentoDao.insertEstadoAtualAcoplamentos(
-                        connection,
-                        veiculosAcopladosMantidos));
+                .ifPresent(veiculosAcopladosMantidos -> {
+                    if (veiculosAcopladosMantidos.size() == 1) {
+                        throw new ClientSideErrorException(
+                                "Não é possível salvar uma composição de apenas um veículo.");
+                    }
+
+                    veiculoAcoplamentoDao.insertEstadoAtualAcoplamentos(
+                            connection,
+                            veiculosAcopladosMantidos);
+                });
     }
 }
