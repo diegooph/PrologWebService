@@ -1,12 +1,20 @@
 Change Log
 ==========
+
 ## Staged
+#### Features
+* adiciona deleção das checklists (PL-3217)
+
 ### Refactors
 * Realiza modificação mo CRUD de veiculos, incluindo os campos ```motorizado``` e ```possuiHubodometro``` (PL-3223)
 * Adiciona os veículos acoplados no objeto de VeiculoVisualizacao (PL-3212)
 
+
 <a name="v1.4.2"></a>
 ## Version [v1.4.2](https://github.com/luizfp/PrologWebService/compare/v1.4.1...v1.4.2) (release-date) [unreleased]
+
+#### Features
+* Cria busca de acoplamentos (PL-3209)
 
 <a name="v1.4.1"></a>
 ## Version [v1.4.1](https://github.com/luizfp/PrologWebService/compare/v1.4.0...v1.4.1) (2020-11-08)
@@ -16,6 +24,7 @@ Change Log
 
 ### Bug Fixes
 * Corrige parâmetro de data no relatório de indicadores (PS-1315)
+
 
 <a name="v1.4.0"></a>
 ## Version [v1.4.0](https://github.com/luizfp/PrologWebService/compare/v1.3.3...v1.4.0) (2020-11-03)
