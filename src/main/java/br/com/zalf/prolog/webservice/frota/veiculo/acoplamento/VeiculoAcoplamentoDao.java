@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.veiculo.acoplamento;
 
+import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcopladoMantido;
 import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcoplamentoAcao;
 import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcoplamentoProcessoInsert;
 import org.jetbrains.annotations.NotNull;
@@ -60,19 +61,14 @@ public interface VeiculoAcoplamentoDao {
 
     /**
      * Insere o estado atual dos acoplamentos no banco de dados. Isso quer dizer que: os veículos presentes na lista
-     * {@code acoplamentos} serão de fato acoplados no banco de dados.
+     * {@code veiculosAcoplados} serão de fato acoplados no banco de dados.
      * <p>
      * Como a {@link Connection connection} é recebida por parâmetro, nenhuma mudança é de fato efetivada em banco.
      * É preciso que quem chamou este método faça um commit.
      *
-     * @param conn                   Uma conexão já estabelecida com o banco de dados.
-     * @param codProcessoAcoplamento O código do processo de acoplamento do qual o estado atual de acoplamentos foi
-     *                               gerado.
-     * @param codUnidadeAcoplamento  O código da unidade onde o processo de acoplamento foi realizado.
-     * @param acoplamentos           Os acoplamentos realizados.
+     * @param conn              Uma conexão já estabelecida com o banco de dados.
+     * @param veiculosAcoplados Os acoplamentos realizados ou mantidos nesse processo de acoplamento.
      */
     void insertEstadoAtualAcoplamentos(@NotNull final Connection conn,
-                                       @NotNull final Long codProcessoAcoplamento,
-                                       @NotNull final Long codUnidadeAcoplamento,
-                                       @NotNull final List<VeiculoAcoplamentoAcao> acoplamentos);
+                                       @NotNull final List<VeiculoAcopladoMantido> veiculosAcoplados);
 }

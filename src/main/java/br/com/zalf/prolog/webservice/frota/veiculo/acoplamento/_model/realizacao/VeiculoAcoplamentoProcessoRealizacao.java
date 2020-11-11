@@ -7,6 +7,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Created on 2020-11-10
@@ -28,5 +29,25 @@ public final class VeiculoAcoplamentoProcessoRealizacao {
     @NotNull
     public Optional<Long> estaEditandoProcessoAcoplamento() {
         return Optional.ofNullable(codProcessoAcoplamentoEditado);
+    }
+
+    @NotNull
+    public Optional<List<VeiculoAcopladoMantido>> getVeiculosAcopladosOuMantidos(
+            @NotNull final Long codProcessoAcoplamentoRealizado) {
+        final List<VeiculoAcopladoMantido> acopladosOuMantidos = acoplamentos
+                .stream()
+                .filter(VeiculoAcoplamentoAcao::foiAcopladoOuMantidoNaComposicao)
+                .map(acao -> new VeiculoAcopladoMantido(
+                        codProcessoAcoplamentoRealizado,
+                        codUnidade,
+                        acao.getCodVeiculo(),
+                        acao.getCodDiagramaVeiculo(),
+                        acao.getMotorizado(),
+                        acao.getPosicaoAcaoRealizada(),
+                        acao.getKmColetado()))
+                .collect(Collectors.toList());
+        return acopladosOuMantidos.isEmpty()
+                ? Optional.empty()
+                : Optional.of(acopladosOuMantidos);
     }
 }

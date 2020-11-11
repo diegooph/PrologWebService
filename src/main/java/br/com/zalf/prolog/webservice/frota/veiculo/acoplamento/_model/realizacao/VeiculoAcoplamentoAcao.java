@@ -30,4 +30,8 @@ public final class VeiculoAcoplamentoAcao {
     public boolean coletouKm() {
         return kmColetado != null;
     }
+
+    public boolean foiAcopladoOuMantidoNaComposicao() {
+        return acaoRealizada != VeiculoAcoplamentoAcaoEnum.DESACOPLADO;
+    }
 }

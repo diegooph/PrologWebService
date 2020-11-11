@@ -60,11 +60,11 @@ public final class VeiculoAcoplamentoService {
             dao.insertHistoricoAcoplamentos(connection, codProcessoInserido, processoRealizacao.getAcoplamentos());
 
             // 5 - Inserir processo atual.
-            dao.insertEstadoAtualAcoplamentos(
-                    connection,
-                    codProcessoInserido,
-                    processoRealizacao.getCodUnidade(),
-                    processoRealizacao.getAcoplamentos());
+            processoRealizacao
+                    .getVeiculosAcopladosOuMantidos(codProcessoInserido)
+                    .ifPresent(veiculosAcopladosMantidos -> dao.insertEstadoAtualAcoplamentos(
+                            connection,
+                            veiculosAcopladosMantidos));
 
             // 6 - Commita e seja feliz.
             connection.commit();

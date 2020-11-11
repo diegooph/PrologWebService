@@ -13,7 +13,7 @@ import java.time.OffsetDateTime;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 @Data(staticConstructor = "of")
-public class VeiculoAcoplamentoProcessoInsert {
+public final class VeiculoAcoplamentoProcessoInsert {
     @NotNull
     private final Long codUnidadeAcoplamento;
     @NotNull
