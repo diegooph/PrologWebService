@@ -39,9 +39,8 @@ public final class VeiculoAcoplamentoRealizacaoEngine {
             connection.commit();
             return codProcessoInserido;
         } catch (final SQLException exception) {
-            throw new IllegalStateException("Erro ao realizar processo de acoplamento.", exception);
-        } finally {
             DatabaseUtils.safeRollback(connection);
+            throw new IllegalStateException("Erro ao realizar processo de acoplamento.", exception);
         }
     }
 
