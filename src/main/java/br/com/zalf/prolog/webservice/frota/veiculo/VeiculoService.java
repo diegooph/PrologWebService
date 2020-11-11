@@ -12,6 +12,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeicul
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculoPosicaoNomenclatura;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicaoStatus;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoEstadoAcoplamento;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoVisualizacao;
 import br.com.zalf.prolog.webservice.integracao.router.RouterVeiculo;
 import org.jetbrains.annotations.NotNull;
@@ -293,6 +294,18 @@ public final class VeiculoService {
                     "Unidade: %d \n" +
                     "userToken: %s", codUnidade, userToken), e);
             throw new RuntimeException("Erro ao buscar os veículos ativos da unidade: " + codUnidade);
+        }
+    }
+
+    @NotNull
+    public VeiculoEstadoAcoplamento getEstadoAcoplamentoByCodigo(final Long codVeiculo) {
+        try {
+            return this.dao.getEstadoAcoplamentoByCodigo(codVeiculo);
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao buscar o estado do veículo.", t);
+            throw Injection
+                    .provideVeiculoExceptionHandler()
+                    .map(t, "Erro ao buscar estado do veiculo, tente novamente");
         }
     }
 }
