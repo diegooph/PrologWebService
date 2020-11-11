@@ -1,15 +1,15 @@
-package test.br.com.zalf.prolog.webservice.integracao.nepomuceno;
+package test.br.com.zalf.prolog.webservice.routines;
 
 import br.com.zalf.prolog.webservice.database.DatabaseConnectionProvider;
 import br.com.zalf.prolog.webservice.database.DatabaseManager;
-import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.utils.ProtheusNepomucenoPosicaoPneuMapper;
-import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.utils.ProtheusNepomucenoUtils;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.SistemaProtheusNepomucenoDaoImpl;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.VeiculoAfericaoProtheusNepomuceno;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.VeiculoListagemProtheusNepomuceno;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.error.ProtheusNepomucenoException;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.data.ProtheusNepomucenoRequester;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.data.ProtheusNepomucenoRequesterImpl;
+import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.utils.ProtheusNepomucenoPosicaoPneuMapper;
+import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.utils.ProtheusNepomucenoUtils;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
