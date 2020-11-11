@@ -1000,11 +1000,13 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
             stmt = conn.prepareStatement("select * from func_veiculo_verifica_estado_coleta_km(f_cod_veiculo => ?)");
             stmt.setLong(1, codVeiculo);
             rSet = stmt.executeQuery();
-            return VeiculoConverter.createVeiculoEstadoAcoplamento(rSet);
+            if (rSet.next()) {
+                return VeiculoConverter.createVeiculoEstadoAcoplamento(rSet);
+            } else {
+                throw new SQLException("Erro ao buscar o estado do veículo de código: " + codVeiculo);
+            }
         } finally {
             close(conn, stmt, rSet);
         }
     }
-
-
 }
