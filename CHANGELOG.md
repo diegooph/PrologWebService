@@ -3,7 +3,8 @@ Change Log
 ## Staged
 ### Refactors
 * Realiza modificação mo CRUD de veiculos, incluindo os campos ```motorizado``` e ```possuiHubodometro``` (PL-3223)
-* Adiciona os veículos acoplados no objeto de VeiculoVisualizacao (PL-3212)
+* Adiciona os veículos acoplados no objeto de `VeiculoVisualizacao` (PL-3212)
+* Adiciona os veículos acoplados no objeto de `VeiculoListagem` (PL-3211)
 
 <a name="v1.4.2"></a>
 ## Version [v1.4.2](https://github.com/luizfp/PrologWebService/compare/v1.4.1...v1.4.2) (release-date) [unreleased]
