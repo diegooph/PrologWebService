@@ -6,12 +6,16 @@ import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.pneu.nomenclatura.PneuNomenclaturaService;
 import br.com.zalf.prolog.webservice.frota.veiculo.error.VeiculoValidator;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.VeiculoCadastro;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculoNomenclatura;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculoPosicaoNomenclatura;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicaoStatus;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.listagem.VeiculoListagem;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoVisualizacao;
 import br.com.zalf.prolog.webservice.integracao.router.RouterVeiculo;
 import org.jetbrains.annotations.NotNull;
@@ -35,7 +39,7 @@ public final class VeiculoService {
                                                        final boolean apenasAtivos,
                                                        @Nullable final Long codTipoVeiculo) {
         try {
-            return dao.buscaVeiculosByUnidades(codUnidades, apenasAtivos, codTipoVeiculo);
+            return dao.getVeiculosByUnidades(codUnidades, apenasAtivos, codTipoVeiculo);
         } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao buscar os veículos.\n" +
                     "codUnidades: %s\n" +
