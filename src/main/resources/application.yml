@@ -19,3 +19,4 @@ springdoc:
   swagger-ui:
     path: /swagger-ui.html
     url: /prolog/v2/swagger.json
+    operations-sorter: method
