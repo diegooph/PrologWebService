@@ -157,9 +157,9 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
 
     @NotNull
     @Override
-    public List<VeiculoListagem> buscaVeiculosByUnidades(@NotNull final List<Long> codUnidades,
-                                                         final boolean apenasAtivos,
-                                                         @Nullable final Long codTipoVeiculo) throws Throwable {
+    public List<VeiculoListagem> getVeiculosByUnidades(@NotNull final List<Long> codUnidades,
+                                                       final boolean apenasAtivos,
+                                                       @Nullable final Long codTipoVeiculo) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;

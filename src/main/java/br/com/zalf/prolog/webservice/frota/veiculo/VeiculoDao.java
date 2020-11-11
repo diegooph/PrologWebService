@@ -56,9 +56,9 @@ public interface VeiculoDao {
      * @return lista de {@link VeiculoListagem}
      * @throws Throwable caso não seja possível realizar a busca
      */
-    List<VeiculoListagem> buscaVeiculosByUnidades(@NotNull final List<Long> codUnidades,
-                                                  final boolean apenasAtivos,
-                                                  @Nullable final Long codTipoVeiculo) throws Throwable;
+    List<VeiculoListagem> getVeiculosByUnidades(@NotNull final List<Long> codUnidades,
+                                                final boolean apenasAtivos,
+                                                @Nullable final Long codTipoVeiculo) throws Throwable;
 
     /**
      * Busca os veículos ativos de uma determinada unidade

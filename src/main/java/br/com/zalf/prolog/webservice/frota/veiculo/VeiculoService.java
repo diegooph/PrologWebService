@@ -35,7 +35,7 @@ public final class VeiculoService {
                                                        final boolean apenasAtivos,
                                                        @Nullable final Long codTipoVeiculo) {
         try {
-            return dao.buscaVeiculosByUnidades(codUnidades, apenasAtivos, codTipoVeiculo);
+            return dao.getVeiculosByUnidades(codUnidades, apenasAtivos, codTipoVeiculo);
         } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao buscar os veículos.\n" +
                     "codUnidades: %s\n" +
