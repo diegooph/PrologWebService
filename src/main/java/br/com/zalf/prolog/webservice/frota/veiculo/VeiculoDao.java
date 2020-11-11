@@ -319,6 +319,13 @@ public interface VeiculoDao {
      */
     List<Veiculo> getVeiculosAtivosByUnidade(Long codUnidade, @Nullable Boolean ativos) throws SQLException;
 
- 
+    /**
+     * Busca o estado do veiculo acoplado, com base no seu código
+     *
+     * @param codVeiculo código do veiculo
+     * @return Um VeiculoEstadoAcoplamento
+     * @throws Throwable Caso o veiculo não esteja acoplado ainda, será retornado erro vindo do banco
+     * @see VeiculoEstadoAcoplamento
+     */
     VeiculoEstadoAcoplamento getEstadoAcoplamentoByCodigo(Long codVeiculo) throws Throwable;
 }
