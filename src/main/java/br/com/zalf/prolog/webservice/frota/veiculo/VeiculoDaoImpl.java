@@ -15,6 +15,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.InfosVeiculoEdit
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoAntesEdicao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoAcopladoVisualizacao;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoEstadoAcoplamento;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoVisualizacao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoVisualizacaoPneu;
 import org.jetbrains.annotations.NotNull;
@@ -988,4 +989,22 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         getDiagramaVeiculoByPlaca(veiculo.getPlaca()).ifPresent(veiculo::setDiagrama);
         return veiculo;
     }
+
+    @Override
+    public VeiculoEstadoAcoplamento getEstadoAcoplamentoByCodigo(final Long codVeiculo) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("select * from func_veiculo_verifica_estado_coleta_km(f_cod_veiculo => ?)");
+            stmt.setLong(1, codVeiculo);
+            rSet = stmt.executeQuery();
+            return VeiculoConverter.createVeiculoEstadoAcoplamento(rSet);
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+
 }
