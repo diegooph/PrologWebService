@@ -14,6 +14,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.TipoEixoVeicul
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.InfosVeiculoEditado;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoAntesEdicao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicao;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoAcopladoVisualizacao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoVisualizacao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoVisualizacaoPneu;
 import org.jetbrains.annotations.NotNull;
@@ -25,7 +26,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Optional;
 import java.util.*;
-
 
 public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 
@@ -230,12 +230,13 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("select * from func_veiculo_get_veiculo(f_cod_veiculo := ?);");
+            stmt = conn.prepareStatement("select * from func_veiculo_get_veiculo(f_cod_veiculo => ?);");
             stmt.setLong(1, codVeiculo);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 final List<VeiculoVisualizacaoPneu> pneus = getPneusByCodigoVeiculo(conn, codVeiculo);
-                return VeiculoConverter.createVeiculoVisualizacao(rSet, pneus);
+                final List<VeiculoAcopladoVisualizacao> veiculosAcoplados = getVeiculosAcoplados(conn, codVeiculo);
+                return VeiculoConverter.createVeiculoVisualizacao(rSet, pneus, veiculosAcoplados);
             } else {
                 throw new Throwable("Erro ao buscar veiculo de codigo " + codVeiculo);
             }
@@ -795,12 +796,34 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
     }
 
     @NotNull
+    private List<VeiculoAcopladoVisualizacao> getVeiculosAcoplados(@NotNull final Connection conn,
+                                                                   @NotNull final Long codVeiculo) throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = conn.prepareStatement("select * from func_veiculo_get_veiculos_acoplados(f_cod_veiculo => ?);");
+            stmt.setLong(1, codVeiculo);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                final List<VeiculoAcopladoVisualizacao> veiculosAcoplados = new ArrayList<>();
+                do {
+                    veiculosAcoplados.add(VeiculoConverter.createVeiculoAcopladoVisualizacao(rSet));
+                } while (rSet.next());
+                return veiculosAcoplados;
+            }
+            return Collections.emptyList();
+        } finally {
+            close(stmt, rSet);
+        }
+    }
+
+    @NotNull
     private List<VeiculoVisualizacaoPneu> getPneusByCodigoVeiculo(@NotNull final Connection conn,
                                                                   @NotNull final Long codVeiculo) throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_GET_PNEU_BY_COD_VEICULO(F_COD_VEICULO := ?);");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_GET_PNEU_BY_COD_VEICULO(F_COD_VEICULO => ?);");
             stmt.setLong(1, codVeiculo);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
