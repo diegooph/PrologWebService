@@ -5,7 +5,7 @@ import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.database.DatabaseUtils;
-import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoService;
+import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcoplamento;
 import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcoplamentoProcessoRealizacao;
 import org.jetbrains.annotations.NotNull;
@@ -23,7 +23,7 @@ public final class VeiculoAcoplamentoService {
     @NotNull
     public Long realizaProcessoAcoplamento(@NotNull final Long codColaborador,
                                            @NotNull final VeiculoAcoplamentoProcessoRealizacao processoRealizacao) {
-        final VeiculoAcoplamentoDaoImpl dao = new VeiculoAcoplamentoDaoImpl();
+        final VeiculoAcoplamentoDao dao = new VeiculoAcoplamentoDaoImpl();
         // 0 - Validações?
 
         final Connection connection = DatabaseConnection.getConnection();
@@ -32,7 +32,7 @@ public final class VeiculoAcoplamentoService {
 
             // 1 - Atualiza KMs - Deve acontecer antes de remover o acoplamento atual, pois se baseará nele para a
             // propagação dos KMs.
-            final VeiculoService service = new VeiculoService();
+            final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
             processoRealizacao
                     .getAcoplamentos()
                     .stream()

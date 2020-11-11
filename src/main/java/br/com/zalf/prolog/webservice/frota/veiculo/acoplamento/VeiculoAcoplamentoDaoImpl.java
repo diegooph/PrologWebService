@@ -22,9 +22,10 @@ import java.util.List;
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-public final class VeiculoAcoplamentoDaoImpl {
+public final class VeiculoAcoplamentoDaoImpl implements VeiculoAcoplamentoDao {
     private static final int EXECUTE_BATCH_SUCCESS = 1;
 
+    @Override
     public void removeAcoplamentoAtual(@NotNull final Connection conn,
                                        @NotNull final Long codProcessoAcoplamento) {
         PreparedStatement stmt = null;
@@ -40,6 +41,7 @@ public final class VeiculoAcoplamentoDaoImpl {
     }
 
     @NotNull
+    @Override
     public Long insertProcessoAcoplamento(@NotNull final Connection conn,
                                           @NotNull final Long codUnidadeAcoplamento,
                                           @NotNull final Long codColaboradorRealizacao,
@@ -69,6 +71,7 @@ public final class VeiculoAcoplamentoDaoImpl {
         }
     }
 
+    @Override
     public void insertHistoricoAcoplamentos(@NotNull final Connection conn,
                                             @NotNull final Long codProcessoAcoplamento,
                                             @NotNull final List<VeiculoAcoplamento> acoplamentos) {
@@ -100,6 +103,7 @@ public final class VeiculoAcoplamentoDaoImpl {
         }
     }
 
+    @Override
     public void insertEstadoAtualAcoplamentos(@NotNull final Connection conn,
                                               @NotNull final Long codProcessoAcoplamento,
                                               @NotNull final Long codUnidadeAcoplamento,
