@@ -63,7 +63,7 @@ public final class VeiculoConverter {
     public static VeiculoVisualizacao createVeiculoVisualizacao(
             @NotNull final ResultSet rSet,
             @NotNull final List<VeiculoVisualizacaoPneu> pneus,
-            @NotNull final List<VeiculoAcopladoVisualizacao> veiculoAcoplados) throws SQLException {
+            @NotNull final List<VeiculoAcopladoVisualizacao> veiculosAcoplados) throws SQLException {
         return new VeiculoVisualizacao(
                 rSet.getLong("CODIGO"),
                 rSet.getString("PLACA"),
@@ -86,7 +86,7 @@ public final class VeiculoConverter {
                 rSet.getBoolean("MOTORIZADO"),
                 rSet.getBoolean("POSSUI_HUBODOMETRO"),
                 pneus,
-                veiculoAcoplados);
+                veiculosAcoplados);
     }
 
     @NotNull
