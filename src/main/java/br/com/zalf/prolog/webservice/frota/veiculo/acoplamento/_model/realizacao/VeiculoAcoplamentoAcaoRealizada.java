@@ -13,7 +13,7 @@ import javax.validation.constraints.NotNull;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 @Data
-public final class VeiculoAcoplamentoAcao {
+public final class VeiculoAcoplamentoAcaoRealizada {
     @NotNull
     private final Long codVeiculo;
     @NotNull

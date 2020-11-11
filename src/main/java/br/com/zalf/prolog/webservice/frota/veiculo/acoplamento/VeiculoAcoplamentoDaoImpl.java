@@ -4,7 +4,8 @@ import br.com.zalf.prolog.webservice.commons.util.StatementUtils;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.database.DatabaseUtils;
 import br.com.zalf.prolog.webservice.errorhandling.Exceptions;
-import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcoplamentoAcao;
+import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcopladoMantido;
+import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcoplamentoAcaoRealizada;
 import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcoplamentoProcessoInsert;
 import com.google.common.collect.Lists;
 import org.jetbrains.annotations.NotNull;
@@ -70,9 +71,9 @@ public final class VeiculoAcoplamentoDaoImpl implements VeiculoAcoplamentoDao {
     }
 
     @Override
-    public void insertHistoricoAcoplamentos(@NotNull final Connection conn,
-                                            @NotNull final Long codProcessoAcoplamento,
-                                            @NotNull final List<VeiculoAcoplamentoAcao> acoes) {
+    public void insertHistoricoAcoesRealizadas(@NotNull final Connection conn,
+                                               @NotNull final Long codProcessoAcoplamento,
+                                               @NotNull final List<VeiculoAcoplamentoAcaoRealizada> acoesRealizadas) {
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareCall(" {call func_veiculo_insert_historico_acoplamento(" +
@@ -83,7 +84,7 @@ public final class VeiculoAcoplamentoDaoImpl implements VeiculoAcoplamentoDao {
                     "f_veiculo_motorizado => ?," +
                     "f_km_coletado => ?," +
                     "f_acao_realizada => ?)}");
-            for (final VeiculoAcoplamentoAcao acoplamento : acoes) {
+            for (final VeiculoAcoplamentoAcaoRealizada acoplamento : acoesRealizadas) {
                 DatabaseUtils.bind(stmt, Lists.newArrayList(
                         codProcessoAcoplamento,
                         acoplamento.getCodVeiculo(),
@@ -96,7 +97,7 @@ public final class VeiculoAcoplamentoDaoImpl implements VeiculoAcoplamentoDao {
             }
             StatementUtils.executeBatchAndValidate(
                     stmt,
-                    acoes.size(),
+                    acoesRealizadas.size(),
                     EXECUTE_BATCH_SUCCESS,
                     "Erro ao inserir histórico de acoplamentos.");
         } catch (final SQLException e) {
@@ -108,9 +109,7 @@ public final class VeiculoAcoplamentoDaoImpl implements VeiculoAcoplamentoDao {
 
     @Override
     public void insertEstadoAtualAcoplamentos(@NotNull final Connection conn,
-                                              @NotNull final Long codProcessoAcoplamento,
-                                              @NotNull final Long codUnidadeAcoplamento,
-                                              @NotNull final List<VeiculoAcoplamentoAcao> acoplamentos) {
+                                              @NotNull final List<VeiculoAcopladoMantido> veiculosAcopladosMantidos) {
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareCall(" {call func_veiculo_insert_estado_atual_acoplamentos(" +
@@ -120,19 +119,19 @@ public final class VeiculoAcoplamentoDaoImpl implements VeiculoAcoplamentoDao {
                     "f_cod_diagrama_veiculo => ?," +
                     "f_posicao_acoplamento => ?," +
                     "f_veiculo_motorizado => ?)}");
-            for (final VeiculoAcoplamentoAcao acoplamento : acoplamentos) {
+            for (final VeiculoAcopladoMantido veiculo : veiculosAcopladosMantidos) {
                 DatabaseUtils.bind(stmt, Lists.newArrayList(
-                        codProcessoAcoplamento,
-                        codUnidadeAcoplamento,
-                        acoplamento.getCodVeiculo(),
-                        acoplamento.getCodDiagramaVeiculo(),
-                        acoplamento.getPosicaoAcaoRealizada(),
-                        acoplamento.getMotorizado()));
+                        veiculo.getCodProcessoAcoplamento(),
+                        veiculo.getCodUnidadeAcoplamento(),
+                        veiculo.getCodVeiculo(),
+                        veiculo.getCodDiagramaVeiculo(),
+                        veiculo.getPosicaoAcaoRealizada(),
+                        veiculo.getMotorizado()));
                 stmt.addBatch();
             }
             StatementUtils.executeBatchAndValidate(
                     stmt,
-                    acoplamentos.size(),
+                    veiculosAcopladosMantidos.size(),
                     EXECUTE_BATCH_SUCCESS,
                     "Erro ao inserir estado atual dos acoplamentos.");
         } catch (final SQLException e) {

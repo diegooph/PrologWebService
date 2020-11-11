@@ -22,7 +22,7 @@ public final class VeiculoAcoplamentoProcessoRealizacao {
     private final String observacao;
     @NotNull
     @Size(min = 2, max = 6)
-    private final List<VeiculoAcoplamentoAcao> acoplamentos;
+    private final List<VeiculoAcoplamentoAcaoRealizada> acoesRealizadas;
     @Nullable
     private final Long codProcessoAcoplamentoEditado;
 
@@ -34,9 +34,9 @@ public final class VeiculoAcoplamentoProcessoRealizacao {
     @NotNull
     public Optional<List<VeiculoAcopladoMantido>> getVeiculosAcopladosOuMantidos(
             @NotNull final Long codProcessoAcoplamentoRealizado) {
-        final List<VeiculoAcopladoMantido> acopladosOuMantidos = acoplamentos
+        final List<VeiculoAcopladoMantido> acopladosOuMantidos = acoesRealizadas
                 .stream()
-                .filter(VeiculoAcoplamentoAcao::foiAcopladoOuMantidoNaComposicao)
+                .filter(VeiculoAcoplamentoAcaoRealizada::foiAcopladoOuMantidoNaComposicao)
                 .map(acao -> new VeiculoAcopladoMantido(
                         codProcessoAcoplamentoRealizado,
                         codUnidade,

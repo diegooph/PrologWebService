@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.veiculo.acoplamento;
 
 import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcopladoMantido;
-import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcoplamentoAcao;
+import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcoplamentoAcaoRealizada;
 import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcoplamentoProcessoInsert;
 import org.jetbrains.annotations.NotNull;
 
@@ -24,7 +24,7 @@ public interface VeiculoAcoplamentoDao {
      * É preciso que quem chamou este método faça um commit.
      *
      * @param conn                   Uma conexão já estabelecida com o banco de dados.
-     * @param codProcessoAcoplamento Código do processo de acoplamento atual que será removido.
+     * @param codProcessoAcoplamento Código do processo de acoplamento que será desfeito.
      */
     void removeAcoplamentoAtual(@NotNull final Connection conn,
                                 @NotNull final Long codProcessoAcoplamento);
@@ -46,29 +46,29 @@ public interface VeiculoAcoplamentoDao {
 
     /**
      * Insere os históricos do processo de acoplamento de código {@code codProcessoAcoplamento}. Em um mesmo processo,
-     * veículos podem ser acoplados, desacoplados ou permanecerem no acoplamento.
+     * veículos podem ser acoplados, desacoplados ou permanecerem na composição.
      * <p>
      * Como a {@link Connection connection} é recebida por parâmetro, nenhuma mudança é de fato efetivada em banco.
      * É preciso que quem chamou este método faça um commit.
      *
      * @param conn                   Uma conexão já estabelecida com o banco de dados.
      * @param codProcessoAcoplamento O código do processo de acoplamento para o qual os históricos serão inseridos.
-     * @param acoes                  As ações que foram realizadas neste processo de acoplamento.
+     * @param acoesRealizadas        As ações que foram realizadas neste processo de acoplamento.
      */
-    void insertHistoricoAcoplamentos(@NotNull final Connection conn,
-                                     @NotNull final Long codProcessoAcoplamento,
-                                     @NotNull final List<VeiculoAcoplamentoAcao> acoes);
+    void insertHistoricoAcoesRealizadas(@NotNull final Connection conn,
+                                        @NotNull final Long codProcessoAcoplamento,
+                                        @NotNull final List<VeiculoAcoplamentoAcaoRealizada> acoesRealizadas);
 
     /**
      * Insere o estado atual dos acoplamentos no banco de dados. Isso quer dizer que: os veículos presentes na lista
-     * {@code veiculosAcoplados} serão de fato acoplados no banco de dados.
+     * {@code veiculosAcopladosMantidos} serão de fato acoplados no banco de dados.
      * <p>
      * Como a {@link Connection connection} é recebida por parâmetro, nenhuma mudança é de fato efetivada em banco.
      * É preciso que quem chamou este método faça um commit.
      *
-     * @param conn              Uma conexão já estabelecida com o banco de dados.
-     * @param veiculosAcoplados Os acoplamentos realizados ou mantidos nesse processo de acoplamento.
+     * @param conn                      Uma conexão já estabelecida com o banco de dados.
+     * @param veiculosAcopladosMantidos Os acoplamentos realizados ou mantidos nesse processo de acoplamento.
      */
     void insertEstadoAtualAcoplamentos(@NotNull final Connection conn,
-                                       @NotNull final List<VeiculoAcopladoMantido> veiculosAcoplados);
+                                       @NotNull final List<VeiculoAcopladoMantido> veiculosAcopladosMantidos);
 }

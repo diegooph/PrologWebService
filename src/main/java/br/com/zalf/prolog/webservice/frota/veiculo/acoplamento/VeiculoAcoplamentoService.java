@@ -6,7 +6,7 @@ import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.database.DatabaseUtils;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
-import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcoplamentoAcao;
+import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcoplamentoAcaoRealizada;
 import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcoplamentoProcessoInsert;
 import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcoplamentoProcessoRealizacao;
 import org.jetbrains.annotations.NotNull;
@@ -22,7 +22,7 @@ public final class VeiculoAcoplamentoService {
     private static final String TAG = VeiculoAcoplamentoService.class.getSimpleName();
 
     @NotNull
-    public Long insertProcessoAcoplamento(@NotNull final Long codColaborador,
+    public Long insertProcessoAcoplamento(@NotNull final Long codColaboradorRealizacao,
                                           @NotNull final VeiculoAcoplamentoProcessoRealizacao processoRealizacao) {
         final VeiculoAcoplamentoDao dao = new VeiculoAcoplamentoDaoImpl();
         // 0 - Validações?
@@ -35,10 +35,10 @@ public final class VeiculoAcoplamentoService {
             // propagação dos KMs.
             final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
             processoRealizacao
-                    .getAcoplamentos()
+                    .getAcoesRealizadas()
                     .stream()
-                    .filter(VeiculoAcoplamentoAcao::coletouKm)
-                    .forEach(veiculoAcoplamento -> {
+                    .filter(VeiculoAcoplamentoAcaoRealizada::coletouKm)
+                    .forEach(acaoRealizada -> {
                         // TODO: Utilizar VeiculoService para atualizar os KMs.
                     });
 
@@ -52,12 +52,12 @@ public final class VeiculoAcoplamentoService {
                     connection,
                     VeiculoAcoplamentoProcessoInsert.of(
                             processoRealizacao.getCodUnidade(),
-                            codColaborador,
+                            codColaboradorRealizacao,
                             Now.offsetDateTimeUtc(),
                             processoRealizacao.getObservacao()));
 
             // 4 - Inserir histórico acoplamentos.
-            dao.insertHistoricoAcoplamentos(connection, codProcessoInserido, processoRealizacao.getAcoplamentos());
+            dao.insertHistoricoAcoesRealizadas(connection, codProcessoInserido, processoRealizacao.getAcoesRealizadas());
 
             // 5 - Inserir processo atual.
             processoRealizacao
