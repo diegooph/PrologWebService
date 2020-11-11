@@ -1,20 +1,18 @@
 package br.com.zalf.prolog.webservice.frota.veiculo.acoplamento;
 
 import br.com.zalf.prolog.webservice.commons.util.StatementUtils;
-import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.database.DatabaseUtils;
 import br.com.zalf.prolog.webservice.errorhandling.Exceptions;
-import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcoplamento;
+import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcoplamentoAcao;
+import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcoplamentoProcessoInsert;
 import com.google.common.collect.Lists;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.OffsetDateTime;
 import java.util.List;
 
 /**
@@ -44,10 +42,7 @@ public final class VeiculoAcoplamentoDaoImpl implements VeiculoAcoplamentoDao {
     @NotNull
     @Override
     public Long insertProcessoAcoplamento(@NotNull final Connection conn,
-                                          @NotNull final Long codUnidadeAcoplamento,
-                                          @NotNull final Long codColaboradorRealizacao,
-                                          @NotNull final OffsetDateTime dataHoraAtual,
-                                          @Nullable final String observacao) {
+                                          @NotNull final VeiculoAcoplamentoProcessoInsert processoAcoplamento) {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
@@ -57,10 +52,10 @@ public final class VeiculoAcoplamentoDaoImpl implements VeiculoAcoplamentoDao {
                     "f_data_hora_atual => ?," +
                     "f_observacao => ?);");
             DatabaseUtils.bind(stmt, Lists.newArrayList(
-                    codUnidadeAcoplamento,
-                    codColaboradorRealizacao,
-                    dataHoraAtual,
-                    StringUtils.trimToNull(observacao)));
+                    processoAcoplamento.getCodUnidadeAcoplamento(),
+                    processoAcoplamento.getCodColaboradorRealizacao(),
+                    processoAcoplamento.getDataHoraAtual(),
+                    processoAcoplamento.getObservacao()));
             rSet = stmt.executeQuery();
             if (rSet.next() && rSet.getLong(1) > 0) {
                 return rSet.getLong(1);
@@ -77,7 +72,7 @@ public final class VeiculoAcoplamentoDaoImpl implements VeiculoAcoplamentoDao {
     @Override
     public void insertHistoricoAcoplamentos(@NotNull final Connection conn,
                                             @NotNull final Long codProcessoAcoplamento,
-                                            @NotNull final List<VeiculoAcoplamento> acoplamentos) {
+                                            @NotNull final List<VeiculoAcoplamentoAcao> acoes) {
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareCall(" {call func_veiculo_insert_historico_acoplamento(" +
@@ -88,7 +83,7 @@ public final class VeiculoAcoplamentoDaoImpl implements VeiculoAcoplamentoDao {
                     "f_veiculo_motorizado => ?," +
                     "f_km_coletado => ?," +
                     "f_acao_realizada => ?)}");
-            for (final VeiculoAcoplamento acoplamento : acoplamentos) {
+            for (final VeiculoAcoplamentoAcao acoplamento : acoes) {
                 DatabaseUtils.bind(stmt, Lists.newArrayList(
                         codProcessoAcoplamento,
                         acoplamento.getCodVeiculo(),
@@ -101,7 +96,7 @@ public final class VeiculoAcoplamentoDaoImpl implements VeiculoAcoplamentoDao {
             }
             StatementUtils.executeBatchAndValidate(
                     stmt,
-                    acoplamentos.size(),
+                    acoes.size(),
                     EXECUTE_BATCH_SUCCESS,
                     "Erro ao inserir histórico de acoplamentos.");
         } catch (final SQLException e) {
@@ -115,7 +110,7 @@ public final class VeiculoAcoplamentoDaoImpl implements VeiculoAcoplamentoDao {
     public void insertEstadoAtualAcoplamentos(@NotNull final Connection conn,
                                               @NotNull final Long codProcessoAcoplamento,
                                               @NotNull final Long codUnidadeAcoplamento,
-                                              @NotNull final List<VeiculoAcoplamento> acoplamentos) {
+                                              @NotNull final List<VeiculoAcoplamentoAcao> acoplamentos) {
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareCall(" {call func_veiculo_insert_estado_atual_acoplamentos(" +
@@ -125,7 +120,7 @@ public final class VeiculoAcoplamentoDaoImpl implements VeiculoAcoplamentoDao {
                     "f_cod_diagrama_veiculo => ?," +
                     "f_posicao_acoplamento => ?," +
                     "f_veiculo_motorizado => ?)}");
-            for (final VeiculoAcoplamento acoplamento : acoplamentos) {
+            for (final VeiculoAcoplamentoAcao acoplamento : acoplamentos) {
                 DatabaseUtils.bind(stmt, Lists.newArrayList(
                         codProcessoAcoplamento,
                         codUnidadeAcoplamento,

@@ -6,7 +6,8 @@ import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.database.DatabaseUtils;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
-import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcoplamento;
+import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcoplamentoAcao;
+import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcoplamentoProcessoInsert;
 import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcoplamentoProcessoRealizacao;
 import org.jetbrains.annotations.NotNull;
 
@@ -36,7 +37,7 @@ public final class VeiculoAcoplamentoService {
             processoRealizacao
                     .getAcoplamentos()
                     .stream()
-                    .filter(VeiculoAcoplamento::coletouKm)
+                    .filter(VeiculoAcoplamentoAcao::coletouKm)
                     .forEach(veiculoAcoplamento -> {
                         // TODO: Utilizar VeiculoService para atualizar os KMs.
                     });
@@ -49,10 +50,11 @@ public final class VeiculoAcoplamentoService {
             // 3 - Inserir processo acoplamento.
             final Long codProcessoInserido = dao.insertProcessoAcoplamento(
                     connection,
-                    processoRealizacao.getCodUnidade(),
-                    codColaborador,
-                    Now.offsetDateTimeUtc(),
-                    processoRealizacao.getObservacao());
+                    VeiculoAcoplamentoProcessoInsert.of(
+                            processoRealizacao.getCodUnidade(),
+                            codColaborador,
+                            Now.offsetDateTimeUtc(),
+                            processoRealizacao.getObservacao()));
 
             // 4 - Inserir histórico acoplamentos.
             dao.insertHistoricoAcoplamentos(connection, codProcessoInserido, processoRealizacao.getAcoplamentos());

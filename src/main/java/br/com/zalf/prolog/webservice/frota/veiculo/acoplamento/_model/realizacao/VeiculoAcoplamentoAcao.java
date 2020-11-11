@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao;
 
-import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.VeiculoAcoplamentoAcao;
+import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.VeiculoAcoplamentoAcaoEnum;
 import lombok.Data;
 import org.hibernate.validator.constraints.Range;
 
@@ -13,7 +13,7 @@ import javax.validation.constraints.NotNull;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 @Data
-public final class VeiculoAcoplamento {
+public final class VeiculoAcoplamentoAcao {
     @NotNull
     private final Long codVeiculo;
     @NotNull
@@ -21,7 +21,7 @@ public final class VeiculoAcoplamento {
     @NotNull
     private final Boolean motorizado;
     @NotNull
-    private final VeiculoAcoplamentoAcao acaoRealizada;
+    private final VeiculoAcoplamentoAcaoEnum acaoRealizada;
     @Range(min = 1, max = 6)
     private final short posicaoAcaoRealizada;
     @Nullable

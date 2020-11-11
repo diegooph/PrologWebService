@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-public enum VeiculoAcoplamentoAcao {
+public enum VeiculoAcoplamentoAcaoEnum {
     ACOPLADO("ACOPLADO"),
     DESACOPLADO("DESACOPLADO"),
     PERMANECEU("PERMANECEU");
@@ -15,20 +15,20 @@ public enum VeiculoAcoplamentoAcao {
     @NotNull
     private final String databaseConstant;
 
-    VeiculoAcoplamentoAcao(@NotNull final String databaseConstant) {
+    VeiculoAcoplamentoAcaoEnum(@NotNull final String databaseConstant) {
         this.databaseConstant = databaseConstant;
     }
 
     @NotNull
-    public static VeiculoAcoplamentoAcao fromString(@NotNull final String value) {
-        final VeiculoAcoplamentoAcao[] acoes = VeiculoAcoplamentoAcao.values();
-        for (final VeiculoAcoplamentoAcao acao : acoes) {
+    public static VeiculoAcoplamentoAcaoEnum fromString(@NotNull final String value) {
+        final VeiculoAcoplamentoAcaoEnum[] acoes = VeiculoAcoplamentoAcaoEnum.values();
+        for (final VeiculoAcoplamentoAcaoEnum acao : acoes) {
             if (acao.databaseConstant.equals(value)) {
                 return acao;
             }
         }
 
-        throw new IllegalArgumentException("Nenhum VeiculoAcoplamentoAcao encontrado com a string: " + value);
+        throw new IllegalArgumentException("Nenhum VeiculoAcoplamentoAcaoEnum encontrado com a string: " + value);
     }
 
     @NotNull
