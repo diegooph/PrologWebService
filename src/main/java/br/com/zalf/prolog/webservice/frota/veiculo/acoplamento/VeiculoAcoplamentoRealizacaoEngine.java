@@ -29,28 +29,13 @@ public final class VeiculoAcoplamentoRealizacaoEngine {
     @NotNull
     public Long realizaProcessoAcoplamento(@NotNull final Long codColaboradorRealizacao,
                                            @NotNull final VeiculoAcoplamentoProcessoRealizacao processoRealizacao) {
-        // 0 - Validações?
-
         try {
             connection.setAutoCommit(false);
-
-            // 1 - Atualiza KMs - Deve acontecer antes de remover o acoplamento atual, pois se baseará nele para a
-            // propagação dos KMs.
             atualizaKms(processoRealizacao);
-
-            // 2 - Remove os veículos do processo editado atual.
             removeAcoplamentoAtual(processoRealizacao);
-
-            // 3 - Inserir processo acoplamento.
             final Long codProcessoInserido = insertProcessoAcoplamento(codColaboradorRealizacao, processoRealizacao);
-
-            // 4 - Inserir histórico acoplamentos.
             insertHistoricoAcoplamentos(codProcessoInserido, processoRealizacao);
-
-            // 5 - Inserir processo atual.
             insertEstadoAtualAcoplamentos(codProcessoInserido, processoRealizacao);
-
-            // 6 - Commita e seja feliz.
             connection.commit();
             return codProcessoInserido;
         } catch (final SQLException exception) {
