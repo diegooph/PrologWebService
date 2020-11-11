@@ -1,10 +1,14 @@
 package br.com.zalf.prolog.webservice.frota.veiculo;
 
 import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.VeiculoCadastro;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.InfosVeiculoEditado;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicao;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.listagem.VeiculoListagem;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoVisualizacao;
 import br.com.zalf.prolog.webservice.geral.unidade._model.Unidade;
 import org.jetbrains.annotations.NotNull;
@@ -56,9 +60,9 @@ public interface VeiculoDao {
      * @return lista de {@link VeiculoListagem}
      * @throws Throwable caso não seja possível realizar a busca
      */
-    List<VeiculoListagem> buscaVeiculosByUnidades(@NotNull final List<Long> codUnidades,
-                                                  final boolean apenasAtivos,
-                                                  @Nullable final Long codTipoVeiculo) throws Throwable;
+    List<VeiculoListagem> getVeiculosByUnidades(@NotNull final List<Long> codUnidades,
+                                                final boolean apenasAtivos,
+                                                @Nullable final Long codTipoVeiculo) throws Throwable;
 
     /**
      * Busca os veículos ativos de uma determinada unidade

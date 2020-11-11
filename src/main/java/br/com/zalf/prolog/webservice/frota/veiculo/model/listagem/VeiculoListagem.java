@@ -1,8 +1,10 @@
-package br.com.zalf.prolog.webservice.frota.veiculo.model;
+package br.com.zalf.prolog.webservice.frota.veiculo.model.listagem;
 
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 /**
  * Created on 04/05/2020.
@@ -10,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
  * @author Thais Francisco (https://github.com/thaisksf)
  */
 @Data
-public class VeiculoListagem {
+public final class VeiculoListagem {
     @NotNull
     private final Long codigo;
     @NotNull
@@ -51,4 +53,6 @@ public class VeiculoListagem {
     private final Long codMarca;
     private final boolean motorizado;
     private final boolean possuiHubodometro;
+    @NotNull
+    private final List<VeiculoAcopladoListagem> veiculosAcoplados;
 }
