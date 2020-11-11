@@ -14,6 +14,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.TipoEixoVeicul
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.InfosVeiculoEditado;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoAntesEdicao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicao;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.listagem.VeiculoAcopladoListagemHolder;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.listagem.VeiculoListagem;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoAcopladoVisualizacao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoVisualizacao;
@@ -166,16 +167,24 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_VEICULO_GET_ALL_BY_UNIDADES (F_COD_UNIDADES => ?," +
-                    "F_APENAS_ATIVOS => ?," +
-                    "F_COD_TIPO_VEICULO => ?); ");
+            stmt = conn.prepareStatement("select * from func_veiculo_get_all_by_unidades(" +
+                    "f_cod_unidades => ?," +
+                    "f_apenas_ativos => ?," +
+                    "f_cod_tipo_veiculo => ?); ");
             stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
             stmt.setBoolean(2, apenasAtivos);
             StatementUtils.bindValueOrNull(stmt, 3, codTipoVeiculo, SqlType.BIGINT);
             rSet = stmt.executeQuery();
+            final VeiculoAcopladoListagemHolder veiculosAcoplados = getVeiculosAcopladosByCodUnidades(
+                    conn,
+                    codUnidades,
+                    apenasAtivos,
+                    codTipoVeiculo);
             final List<VeiculoListagem> veiculosListagem = new ArrayList<>();
             while (rSet.next()) {
-                veiculosListagem.add(VeiculoConverter.createVeiculoListagem(rSet));
+                veiculosListagem.add(VeiculoConverter.createVeiculoListagem(
+                        rSet,
+                        veiculosAcoplados.getVeiculosAcopladosByCodVeiculo(rSet.getLong("CODIGO"))));
             }
             return veiculosListagem;
         } finally {
@@ -236,7 +245,7 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 final List<VeiculoVisualizacaoPneu> pneus = getPneusByCodigoVeiculo(conn, codVeiculo);
-                final List<VeiculoAcopladoVisualizacao> veiculosAcoplados = getVeiculosAcoplados(conn, codVeiculo);
+                final List<VeiculoAcopladoVisualizacao> veiculosAcoplados = getVeiculosAcopladosByCodVeiculo(conn, codVeiculo);
                 return VeiculoConverter.createVeiculoVisualizacao(rSet, pneus, veiculosAcoplados);
             } else {
                 throw new Throwable("Erro ao buscar veiculo de codigo " + codVeiculo);
@@ -797,8 +806,9 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
     }
 
     @NotNull
-    private List<VeiculoAcopladoVisualizacao> getVeiculosAcoplados(@NotNull final Connection conn,
-                                                                   @NotNull final Long codVeiculo) throws Throwable {
+    private List<VeiculoAcopladoVisualizacao> getVeiculosAcopladosByCodVeiculo(@NotNull final Connection conn,
+                                                                               @NotNull final Long codVeiculo)
+            throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
@@ -813,6 +823,29 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
                 return veiculosAcoplados;
             }
             return Collections.emptyList();
+        } finally {
+            close(stmt, rSet);
+        }
+    }
+
+    @NotNull
+    private VeiculoAcopladoListagemHolder getVeiculosAcopladosByCodUnidades(@NotNull final Connection conn,
+                                                                            @NotNull final List<Long> codUnidades,
+                                                                            final boolean apenasVeiculosAtivos,
+                                                                            @Nullable final Long codTipoVeiculo)
+            throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = conn.prepareStatement("select * from func_veiculo_get_veiculos_acoplados_unidades(" +
+                    "f_cod_unidades => ?," +
+                    "f_apenas_veiculos_ativos => ?," +
+                    "f_cod_tipo_veiculo => ?);");
+            stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
+            stmt.setBoolean(2, apenasVeiculosAtivos);
+            StatementUtils.bindValueOrNull(stmt, 3, codTipoVeiculo, SqlType.BIGINT);
+            rSet = stmt.executeQuery();
+            return VeiculoConverter.createVeiculoAcopladoListagemHolder(rSet);
         } finally {
             close(stmt, rSet);
         }
