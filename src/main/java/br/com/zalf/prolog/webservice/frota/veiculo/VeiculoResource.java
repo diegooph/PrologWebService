@@ -2,7 +2,10 @@ package br.com.zalf.prolog.webservice.frota.veiculo;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
-import br.com.zalf.prolog.webservice.commons.util.*;
+import br.com.zalf.prolog.webservice.commons.util.Optional;
+import br.com.zalf.prolog.webservice.commons.util.Platform;
+import br.com.zalf.prolog.webservice.commons.util.Required;
+import br.com.zalf.prolog.webservice.commons.util.UsedBy;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
@@ -210,9 +213,8 @@ public final class VeiculoResource {
             targetVersionCode = 68,
             versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
             actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
-    public VeiculoVisualizacao getVeiculoByCodigo(@HeaderParam("Authorization") final String userToken,
-                                                  @QueryParam("codVeiculo") final Long codVeiculo) {
-        return service.getVeiculoByCodigo(userToken, codVeiculo);
+    public VeiculoVisualizacao getVeiculoByCodigo(@QueryParam("codVeiculo") final Long codVeiculo) {
+        return service.getVeiculoByCodigo(codVeiculo);
     }
 
     @GET
@@ -228,7 +230,7 @@ public final class VeiculoResource {
     /**
      * @deprecated at 2020-05-07.
      * <p>
-     * Este método foi depreciado pois um novo foi criado: {@link #getVeiculoByCodigo(String, Long)}
+     * Este método foi depreciado pois um novo foi criado: {@link #getVeiculoByCodigo(Long)}
      */
     @Deprecated
     @GET

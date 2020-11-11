@@ -53,6 +53,8 @@ public final class VeiculoVisualizacao {
     private final boolean possuiHubodometro;
     @NotNull
     private final List<VeiculoVisualizacaoPneu> pneusVeiculo;
+    @NotNull
+    private final List<VeiculoAcopladoVisualizacao> veiculosAcoplados;
 
     @NotNull
     public VeiculoEdicao toVeiculoEdicao(final boolean novoStatus) {
