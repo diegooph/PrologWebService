@@ -137,6 +137,7 @@ public interface VeiculoDao {
      * @param codVeiculo          O código do veículo que terá seu KM atualizado.
      * @param kmVeiculo           O KM que será setado no veículo.
      * @param veiculoTipoProcesso O tipo de processo que está sendo realizado.
+     * @return km para inserir no processo.
      */
     @NotNull
     Long updateKmByCodVeiculo(@NotNull final Connection conn,
