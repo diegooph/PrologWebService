@@ -143,8 +143,8 @@ public interface VeiculoDao {
     Long updateKmByCodVeiculo(@NotNull final Connection conn,
                               @NotNull final Long codUnidade,
                               @NotNull final Long codVeiculo,
-                              final long kmVeiculo,
-                              @NotNull final VeiculoTipoProcesso veiculoTipoProcesso) throws SQLException;
+                              @NotNull final VeiculoTipoProcesso veiculoTipoProcesso,
+                              final long kmVeiculo) throws SQLException;
 
     /**
      * busca a marca do veículo atraves do código da empresa
