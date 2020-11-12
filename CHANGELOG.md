@@ -3,7 +3,7 @@ Change Log
 
 ## Staged
 #### Features
-* adiciona deleção das checklists (PL-3217)
+* Cria update único de veiculo por codigo (PL-3213)
 
 ### Refactors
 * Realiza modificação mo CRUD de veiculos, incluindo os campos ```motorizado``` e ```possuiHubodometro``` (PL-3223)
