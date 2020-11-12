@@ -149,7 +149,7 @@ public final class VeiculoConverter {
         return VeiculoDadosColetaKm.of(
                 rSet.getLong("COD_VEICULO"),
                 rSet.getString("PLACA"),
-                rSet.getLong("KM"),
+                rSet.getLong("KM_ATUAL"),
                 rSet.getString("IDENTIFICADOR_FROTA"),
                 rSet.getBoolean("MOTORIZADO"),
                 rSet.getBoolean("POSSUI_HUBODOMETRO"),
