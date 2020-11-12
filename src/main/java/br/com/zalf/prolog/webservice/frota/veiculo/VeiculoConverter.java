@@ -144,7 +144,7 @@ public final class VeiculoConverter {
     }
 
     @NotNull
-    public static VeiculoDadosColetaKm createVeiculoEstadoAcoplamento(@NotNull final ResultSet rSet)
+    public static VeiculoDadosColetaKm createVeiculoDadosColetaKm(@NotNull final ResultSet rSet)
             throws SQLException {
         return VeiculoDadosColetaKm.of(
                 rSet.getLong("COD_VEICULO"),

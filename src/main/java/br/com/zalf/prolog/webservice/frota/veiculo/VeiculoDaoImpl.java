@@ -1002,7 +1002,7 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
             stmt.setLong(1, codVeiculo);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
-                return VeiculoConverter.createVeiculoEstadoAcoplamento(rSet);
+                return VeiculoConverter.createVeiculoDadosColetaKm(rSet);
             } else {
                 throw new SQLException("Erro ao buscar o estado do veículo de código: " + codVeiculo);
             }
