@@ -328,5 +328,5 @@ public interface VeiculoDao {
      * @see VeiculoDadosColetaKm
      */
     @NotNull
-    VeiculoDadosColetaKm getEstadoAcoplamentoByCodigo(@NotNull final Long codVeiculo) throws Throwable;
+    VeiculoDadosColetaKm getDadosColetaKmByCodigo(@NotNull final Long codVeiculo) throws Throwable;
 }

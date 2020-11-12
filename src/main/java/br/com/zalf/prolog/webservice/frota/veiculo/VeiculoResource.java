@@ -297,8 +297,8 @@ public final class VeiculoResource {
     @GET
     @Secured(permissions = {Pilares.Frota.Veiculo.VISUALIZAR})
     @Path("/dados-coleta-km")
-    public VeiculoDadosColetaKm getEstadoAcoplamentoByCodigo(@QueryParam("codVeiculo") final Long codVeiculo) {
-        return service.getEstadoAcoplamentoByCodigo(codVeiculo);
+    public VeiculoDadosColetaKm getDadosColetaKmByCodigo(@QueryParam("codVeiculo") final Long codVeiculo) {
+        return service.getDadosColetaKmByCodigo(codVeiculo);
     }
 
 }

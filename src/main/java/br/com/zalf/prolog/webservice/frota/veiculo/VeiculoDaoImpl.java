@@ -992,7 +992,7 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
 
     @Override
     @NotNull
-    public VeiculoDadosColetaKm getEstadoAcoplamentoByCodigo(@NotNull final Long codVeiculo) throws Throwable {
+    public VeiculoDadosColetaKm getDadosColetaKmByCodigo(@NotNull final Long codVeiculo) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
