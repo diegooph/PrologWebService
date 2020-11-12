@@ -998,7 +998,7 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("select * from func_veiculo_verifica_estado_coleta_km(f_cod_veiculo => ?)");
+            stmt = conn.prepareStatement("select * from func_veiculo_busca_dados_coleta_km_por_cod_veiculo(f_cod_veiculo => ?)");
             stmt.setLong(1, codVeiculo);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
