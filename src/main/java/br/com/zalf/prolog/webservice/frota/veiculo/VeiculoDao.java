@@ -327,5 +327,6 @@ public interface VeiculoDao {
      * @throws Throwable Caso o veiculo não esteja acoplado ainda, será retornado erro vindo do banco
      * @see VeiculoEstadoAcoplamento
      */
-    VeiculoEstadoAcoplamento getEstadoAcoplamentoByCodigo(Long codVeiculo) throws Throwable;
+    @NotNull
+    VeiculoEstadoAcoplamento getEstadoAcoplamentoByCodigo(@NotNull final Long codVeiculo) throws Throwable;
 }
