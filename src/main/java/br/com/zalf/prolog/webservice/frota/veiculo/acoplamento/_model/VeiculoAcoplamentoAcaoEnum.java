@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model;
 
+import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -7,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
+@AllArgsConstructor
 public enum VeiculoAcoplamentoAcaoEnum {
     ACOPLADO("ACOPLADO"),
     DESACOPLADO("DESACOPLADO"),
@@ -14,10 +16,6 @@ public enum VeiculoAcoplamentoAcaoEnum {
 
     @NotNull
     private final String databaseConstant;
-
-    VeiculoAcoplamentoAcaoEnum(@NotNull final String databaseConstant) {
-        this.databaseConstant = databaseConstant;
-    }
 
     @NotNull
     public static VeiculoAcoplamentoAcaoEnum fromString(@NotNull final String value) {
