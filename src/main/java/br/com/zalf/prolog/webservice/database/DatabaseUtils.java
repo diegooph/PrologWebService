@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.stream.IntStream;
 
 /**
  * Created on 2020-11-10
@@ -27,9 +28,19 @@ public class DatabaseUtils {
     }
 
     public static void bind(@NotNull final PreparedStatement stmt,
-                            @NotNull final List<Object> values) throws SQLException {
-        for (int i = 1; i <= values.size(); i++) {
-            stmt.setObject(i, values.get(i - 1));
+                            @NotNull final List<Object> values) {
+        IntStream
+                .range(1, values.size() + 1)
+                .forEach(i -> internalBind(stmt, values.get(i - 1), i));
+    }
+
+    private static void internalBind(@NotNull final PreparedStatement stmt,
+                                     @NotNull final Object value,
+                                     final int position) {
+        try {
+            stmt.setObject(position, value);
+        } catch (final Throwable throwable) {
+            throw Exceptions.rethrow(throwable);
         }
     }
 }
