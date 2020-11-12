@@ -1,7 +1,9 @@
 package br.com.zalf.prolog.webservice.frota.veiculo;
 
-import br.com.zalf.prolog.webservice.frota.veiculo.model.VeiculoListagem;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoAntesEdicao;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.listagem.VeiculoAcopladoListagem;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.listagem.VeiculoAcopladoListagemHolder;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.listagem.VeiculoListagem;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoAcopladoVisualizacao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoDadosColetaKm;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoVisualizacao;
@@ -10,7 +12,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Created on 05/05/2020.
@@ -35,7 +41,9 @@ public final class VeiculoConverter {
     }
 
     @NotNull
-    public static VeiculoListagem createVeiculoListagem(@NotNull final ResultSet rSet) throws SQLException {
+    public static VeiculoListagem createVeiculoListagem(
+            @NotNull final ResultSet rSet,
+            @NotNull final List<VeiculoAcopladoListagem> veiculosAcoplados) throws SQLException {
         return new VeiculoListagem(
                 rSet.getLong("CODIGO"),
                 rSet.getString("PLACA"),
@@ -57,7 +65,8 @@ public final class VeiculoConverter {
                 rSet.getString("MARCA"),
                 rSet.getLong("COD_MARCA"),
                 rSet.getBoolean("MOTORIZADO"),
-                rSet.getBoolean("POSSUI_HUBODOMETRO"));
+                rSet.getBoolean("POSSUI_HUBODOMETRO"),
+                veiculosAcoplados);
     }
 
     @NotNull
@@ -99,6 +108,62 @@ public final class VeiculoConverter {
                 rSet.getString("IDENTIFICADOR_FROTA"),
                 rSet.getBoolean("MOTORIZADO"),
                 rSet.getInt("POSICAO_ACOPLADO"));
+    }
+
+    @NotNull
+    public static VeiculoAcopladoListagemHolder createVeiculoAcopladoListagemHolder(@NotNull final ResultSet rSet)
+            throws SQLException {
+        if (rSet.next()) {
+            final List<VeiculoAcopladoListagem> veiculosAcoplados = createVeiculosAcopladosListagem(rSet);
+            final Map<Long, List<VeiculoAcopladoListagem>> acoplamentosProcesso =
+                    agrupaAcoplamentosPorProcesso(veiculosAcoplados);
+            final Map<Long, List<VeiculoAcopladoListagem>> acoplamentosVeiculo =
+                    agrupaAcoplamentosPorVeiculo(veiculosAcoplados, acoplamentosProcesso);
+            return new VeiculoAcopladoListagemHolder(acoplamentosVeiculo);
+        }
+
+        return VeiculoAcopladoListagemHolder.EMPTY;
+    }
+
+    @NotNull
+    public static List<VeiculoAcopladoListagem> createVeiculosAcopladosListagem(@NotNull final ResultSet rSet)
+            throws SQLException {
+        final List<VeiculoAcopladoListagem> veiculosAcoplados = new ArrayList<>();
+        do {
+            veiculosAcoplados.add(new VeiculoAcopladoListagem(
+                    rSet.getLong("COD_PROCESSO_ACOPLAMENTO"),
+                    rSet.getLong("COD_VEICULO"),
+                    rSet.getString("PLACA"),
+                    rSet.getString("IDENTIFICADOR_FROTA"),
+                    rSet.getBoolean("MOTORIZADO"),
+                    rSet.getInt("POSICAO_ACOPLADO")));
+        } while (rSet.next());
+        return veiculosAcoplados;
+    }
+
+    @NotNull
+    private static Map<Long, List<VeiculoAcopladoListagem>> agrupaAcoplamentosPorProcesso(
+            @NotNull final List<VeiculoAcopladoListagem> veiculosAcoplados) {
+        return veiculosAcoplados
+                .stream()
+                .collect(Collectors.groupingBy(
+                        VeiculoAcopladoListagem::getCodProcessoAcoplamento,
+                        HashMap::new,
+                        Collectors.toList()));
+    }
+
+    @NotNull
+    private static Map<Long, List<VeiculoAcopladoListagem>> agrupaAcoplamentosPorVeiculo(
+            @NotNull final List<VeiculoAcopladoListagem> veiculosAcoplados,
+            @NotNull final Map<Long, List<VeiculoAcopladoListagem>> acoplamentosProcesso) {
+        final Map<Long, List<VeiculoAcopladoListagem>> acoplamentosVeiculo = new HashMap<>();
+        veiculosAcoplados
+                .forEach(veiculoAcoplado -> {
+                    final List<VeiculoAcopladoListagem> acoplamentos = acoplamentosProcesso
+                            .get(veiculoAcoplado.getCodProcessoAcoplamento());
+                    acoplamentosVeiculo.put(veiculoAcoplado.getCodVeiculo(), acoplamentos);
+                });
+        return acoplamentosVeiculo;
     }
 
     @NotNull

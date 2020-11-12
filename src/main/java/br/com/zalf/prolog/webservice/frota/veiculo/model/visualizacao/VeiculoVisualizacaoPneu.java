@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
  * @author Thais Francisco (https://github.com/thaisksf)
  */
 @Data
-public class VeiculoVisualizacaoPneu {
+public final class VeiculoVisualizacaoPneu {
     @NotNull
     private final Long codigoPneu;
     @NotNull

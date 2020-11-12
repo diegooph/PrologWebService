@@ -94,6 +94,8 @@ import br.com.zalf.prolog.webservice.frota.socorrorota.relatorio.SocorroRotaRela
 import br.com.zalf.prolog.webservice.frota.socorrorota.relatorio.SocorroRotaRelatorioDaoImpl;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDaoImpl;
+import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento.historico.VeiculoAcoplamentoHistoricoDao;
+import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento.historico.VeiculoAcoplamentoHistoricoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.veiculo.error.VeiculoExceptionHandler;
 import br.com.zalf.prolog.webservice.frota.veiculo.error.VeiculoSqlExceptionTranslator;
 import br.com.zalf.prolog.webservice.frota.veiculo.evolucaoKm.VeiculoEvolucaoKmDao;
@@ -246,6 +248,7 @@ public final class Injection {
     public static VinculoVeiculoPneuDao provideVinculoVeiculoPneuDao() {
         return new VinculoVeiculoPneuDaoImpl(Injection.provideConferenciaDao());
     }
+
     @NotNull
     public static ApresentacaoDao provideApresentacaoDao() {
         return new ApresentacaoDaoImpl();
@@ -689,14 +692,19 @@ public final class Injection {
     public static HistoricoEdicaoVeiculoDao provideHistoricoEdicaoVeiculoDao() {
         return new HistoricoEdicaoVeiculoDaoImpl();
     }
-  
+
     @NotNull
-      public static HistoricoEdicaoVeiculoRelatorioDao provideHistoricoEdicaoVeiculoRelatorioDao() {
+    public static HistoricoEdicaoVeiculoRelatorioDao provideHistoricoEdicaoVeiculoRelatorioDao() {
         return new HistoricoEdicaoVeiculoRelatorioDaoImpl();
     }
-  
+
     @NotNull
     public static VeiculoEvolucaoKmDao provideVeiculoEvolucaoKmDao() {
         return new VeiculoEvolucaoKmDaoImpl();
+    }
+
+    @NotNull
+    public static VeiculoAcoplamentoHistoricoDao provideVeiculoAcoplamentoDao() {
+        return new VeiculoAcoplamentoHistoricoDaoImpl();
     }
 }

@@ -46,4 +46,9 @@ public final class ListUtils {
                 : new ArrayList<>(list2);
     }
 
+    @NotNull
+    public static int getLastIndex (@NotNull final List<?> list){
+        return list.size()-1;
+    }
+
 }
