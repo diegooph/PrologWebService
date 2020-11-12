@@ -321,7 +321,7 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
             stmt.setString(4, String.valueOf(veiculoTipoProcesso));
             rSet = stmt.executeQuery();
 
-            if (rSet.next() && rSet.getLong(1) > 0) {
+            if (rSet.next() && rSet.getLong("km_processo") > 0) {
                 return rSet.getLong(1);
             } else {
                 throw new SQLException("Erro ao atualizar o km do veículo: " + codVeiculo);
