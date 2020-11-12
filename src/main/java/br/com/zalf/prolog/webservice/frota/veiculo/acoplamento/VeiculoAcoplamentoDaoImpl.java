@@ -7,7 +7,6 @@ import br.com.zalf.prolog.webservice.errorhandling.Exceptions;
 import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcopladoMantido;
 import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcoplamentoAcaoRealizada;
 import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcoplamentoProcessoInsert;
-import com.google.common.collect.Lists;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
@@ -31,7 +30,7 @@ public final class VeiculoAcoplamentoDaoImpl implements VeiculoAcoplamentoDao {
         try {
             stmt = conn.prepareCall(" {call func_veiculo_remove_acoplamento_atual(" +
                     "f_cod_processo_acoplamento => ?)}");
-            DatabaseUtils.bind(stmt, Lists.newArrayList(codProcessoAcoplamento));
+            DatabaseUtils.bind(stmt, codProcessoAcoplamento);
             stmt.execute();
         } catch (final SQLException e) {
             throw Exceptions.rethrow(e);
@@ -52,11 +51,11 @@ public final class VeiculoAcoplamentoDaoImpl implements VeiculoAcoplamentoDao {
                     "f_cod_colaborador_realizacao => ?," +
                     "f_data_hora_atual => ?," +
                     "f_observacao => ?) as cod_processo_inserido;");
-            DatabaseUtils.bind(stmt, Lists.newArrayList(
+            DatabaseUtils.bind(stmt,
                     processoAcoplamento.getCodUnidadeAcoplamento(),
                     processoAcoplamento.getCodColaboradorRealizacao(),
                     processoAcoplamento.getDataHoraAtual(),
-                    processoAcoplamento.getObservacao()));
+                    processoAcoplamento.getObservacao());
             rSet = stmt.executeQuery();
             if (rSet.next() && rSet.getLong("cod_processo_inserido") > 0) {
                 return rSet.getLong("cod_processo_inserido");
@@ -85,14 +84,14 @@ public final class VeiculoAcoplamentoDaoImpl implements VeiculoAcoplamentoDao {
                     "f_km_coletado => ?," +
                     "f_acao_realizada => ?)}");
             for (final VeiculoAcoplamentoAcaoRealizada acoplamento : acoesRealizadas) {
-                DatabaseUtils.bind(stmt, Lists.newArrayList(
+                DatabaseUtils.bind(stmt,
                         codProcessoAcoplamento,
                         acoplamento.getCodVeiculo(),
                         acoplamento.getCodDiagramaVeiculo(),
                         acoplamento.getPosicaoAcaoRealizada(),
                         acoplamento.getMotorizado(),
                         acoplamento.getKmColetado(),
-                        acoplamento.getAcaoRealizada().asString()));
+                        acoplamento.getAcaoRealizada().asString());
                 stmt.addBatch();
             }
             StatementUtils.executeBatchAndValidate(
@@ -120,13 +119,13 @@ public final class VeiculoAcoplamentoDaoImpl implements VeiculoAcoplamentoDao {
                     "f_posicao_acoplamento => ?," +
                     "f_veiculo_motorizado => ?)}");
             for (final VeiculoAcopladoMantido veiculo : veiculosAcopladosMantidos) {
-                DatabaseUtils.bind(stmt, Lists.newArrayList(
+                DatabaseUtils.bind(stmt,
                         veiculo.getCodProcessoAcoplamento(),
                         veiculo.getCodUnidadeAcoplamento(),
                         veiculo.getCodVeiculo(),
                         veiculo.getCodDiagramaVeiculo(),
                         veiculo.getPosicaoAcaoRealizada(),
-                        veiculo.getMotorizado()));
+                        veiculo.getMotorizado());
                 stmt.addBatch();
             }
             StatementUtils.executeBatchAndValidate(
