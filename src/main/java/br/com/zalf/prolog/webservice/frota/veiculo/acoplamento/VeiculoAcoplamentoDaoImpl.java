@@ -51,15 +51,15 @@ public final class VeiculoAcoplamentoDaoImpl implements VeiculoAcoplamentoDao {
                     "f_cod_unidade => ?," +
                     "f_cod_colaborador_realizacao => ?," +
                     "f_data_hora_atual => ?," +
-                    "f_observacao => ?);");
+                    "f_observacao => ?) as cod_processo_inserido;");
             DatabaseUtils.bind(stmt, Lists.newArrayList(
                     processoAcoplamento.getCodUnidadeAcoplamento(),
                     processoAcoplamento.getCodColaboradorRealizacao(),
                     processoAcoplamento.getDataHoraAtual(),
                     processoAcoplamento.getObservacao()));
             rSet = stmt.executeQuery();
-            if (rSet.next() && rSet.getLong(1) > 0) {
-                return rSet.getLong(1);
+            if (rSet.next() && rSet.getLong("cod_processo_inserido") > 0) {
+                return rSet.getLong("cod_processo_inserido");
             } else {
                 throw new IllegalStateException("Erro ao inserir processo de acoplamento");
             }
