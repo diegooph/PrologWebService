@@ -324,7 +324,7 @@ public interface VeiculoDao {
      *
      * @param codVeiculo código do veiculo.
      * @return Um VeiculoEstadoAcoplamento.
-     * @throws Throwable Caso o veiculo não esteja acoplado ainda, será retornado erro vindo do banco.
+     * @throws Throwable Caso tenha algum erro no banco.
      * @see VeiculoDadosColetaKm
      */
     @NotNull
