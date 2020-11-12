@@ -304,8 +304,8 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
     public Long updateKmByCodVeiculo(@NotNull final Connection conn,
                                      @NotNull final Long codUnidade,
                                      @NotNull final Long codVeiculo,
-                                     final long kmVeiculo,
-                                     @NotNull final VeiculoTipoProcesso veiculoTipoProcesso) throws SQLException {
+                                     @NotNull final VeiculoTipoProcesso veiculoTipoProcesso,
+                                     final long kmVeiculo) throws SQLException {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
@@ -313,7 +313,7 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
                     "f_cod_unidade => ?," +
                     "f_cod_veiculo => ?," +
                     "f_km_coletado => ?," +
-                    "f_tipo_processo => ?::types.veiculo_processo_type) as km_processo");
+                    "f_tipo_processo => ?::types.veiculo_processo_type) as km_processo;");
 
             stmt.setLong(1, codUnidade);
             stmt.setLong(2, codVeiculo);
