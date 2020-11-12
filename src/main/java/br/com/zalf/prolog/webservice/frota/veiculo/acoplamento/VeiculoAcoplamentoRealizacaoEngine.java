@@ -1,7 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.veiculo.acoplamento;
 
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
-import br.com.zalf.prolog.webservice.database.DatabaseUtils;
 import br.com.zalf.prolog.webservice.errorhandling.sql.ClientSideErrorException;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcoplamentoProcessoInsert;
@@ -10,7 +9,6 @@ import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 
 /**
  * Created on 2020-11-11
@@ -29,19 +27,12 @@ public final class VeiculoAcoplamentoRealizacaoEngine {
     @NotNull
     public Long realizaProcessoAcoplamento(@NotNull final Long codColaboradorRealizacao,
                                            @NotNull final VeiculoAcoplamentoProcessoRealizacao processoRealizacao) {
-        try {
-            connection.setAutoCommit(false);
-            atualizaKms(processoRealizacao);
-            removeAcoplamentoAtual(processoRealizacao);
-            final Long codProcessoInserido = insertProcessoAcoplamento(codColaboradorRealizacao, processoRealizacao);
-            insertHistoricoAcoplamentos(codProcessoInserido, processoRealizacao);
-            insertEstadoAtualAcoplamentos(codProcessoInserido, processoRealizacao);
-            connection.commit();
-            return codProcessoInserido;
-        } catch (final SQLException exception) {
-            DatabaseUtils.safeRollback(connection);
-            throw new IllegalStateException("Erro ao realizar processo de acoplamento.", exception);
-        }
+        atualizaKms(processoRealizacao);
+        removeAcoplamentoAtual(processoRealizacao);
+        final Long codProcessoInserido = insertProcessoAcoplamento(codColaboradorRealizacao, processoRealizacao);
+        insertHistoricoAcoplamentos(codProcessoInserido, processoRealizacao);
+        insertEstadoAtualAcoplamentos(codProcessoInserido, processoRealizacao);
+        return codProcessoInserido;
     }
 
     private void atualizaKms(@NotNull final VeiculoAcoplamentoProcessoRealizacao processoRealizacao) {
@@ -58,16 +49,13 @@ public final class VeiculoAcoplamentoRealizacaoEngine {
     private void removeAcoplamentoAtual(@NotNull final VeiculoAcoplamentoProcessoRealizacao processoRealizacao) {
         processoRealizacao
                 .estaEditandoProcessoAcoplamento()
-                .ifPresent(codProcessoEditado -> veiculoAcoplamentoDao.removeAcoplamentoAtual(
-                        connection,
-                        codProcessoEditado));
+                .ifPresent(veiculoAcoplamentoDao::removeAcoplamentoAtual);
     }
 
     @NotNull
     private Long insertProcessoAcoplamento(@NotNull final Long codColaboradorRealizacao,
                                            @NotNull final VeiculoAcoplamentoProcessoRealizacao processoRealizacao) {
         return veiculoAcoplamentoDao.insertProcessoAcoplamento(
-                connection,
                 VeiculoAcoplamentoProcessoInsert.of(
                         processoRealizacao.getCodUnidade(),
                         codColaboradorRealizacao,
@@ -78,7 +66,6 @@ public final class VeiculoAcoplamentoRealizacaoEngine {
     private void insertHistoricoAcoplamentos(@NotNull final Long codProcessoInserido,
                                              @NotNull final VeiculoAcoplamentoProcessoRealizacao processoRealizacao) {
         veiculoAcoplamentoDao.insertHistoricoAcoesRealizadas(
-                connection,
                 codProcessoInserido,
                 processoRealizacao.getAcoesRealizadas());
     }
@@ -93,9 +80,7 @@ public final class VeiculoAcoplamentoRealizacaoEngine {
                                 "Não é possível salvar uma composição de apenas um veículo.");
                     }
 
-                    veiculoAcoplamentoDao.insertEstadoAtualAcoplamentos(
-                            connection,
-                            veiculosAcopladosMantidos);
+                    veiculoAcoplamentoDao.insertEstadoAtualAcoplamentos(veiculosAcopladosMantidos);
                 });
     }
 }

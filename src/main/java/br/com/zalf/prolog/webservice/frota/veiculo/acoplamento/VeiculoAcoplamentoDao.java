@@ -26,8 +26,7 @@ public interface VeiculoAcoplamentoDao {
      * @param conn                   Uma conexão já estabelecida com o banco de dados.
      * @param codProcessoAcoplamento Código do processo de acoplamento que será desfeito.
      */
-    void removeAcoplamentoAtual(@NotNull final Connection conn,
-                                @NotNull final Long codProcessoAcoplamento);
+    void removeAcoplamentoAtual(@NotNull final Long codProcessoAcoplamento);
 
     /**
      * Insere um processo de acoplamento retornando seu código em caso de sucesso. Este método não realiza nenhum
@@ -41,8 +40,7 @@ public interface VeiculoAcoplamentoDao {
      * @return O código do processo de acoplamento inserido.
      */
     @NotNull
-    Long insertProcessoAcoplamento(@NotNull final Connection conn,
-                                   @NotNull final VeiculoAcoplamentoProcessoInsert processoAcoplamento);
+    Long insertProcessoAcoplamento(@NotNull final VeiculoAcoplamentoProcessoInsert processoAcoplamento);
 
     /**
      * Insere os históricos do processo de acoplamento de código {@code codProcessoAcoplamento}. Em um mesmo processo,
@@ -55,8 +53,7 @@ public interface VeiculoAcoplamentoDao {
      * @param codProcessoAcoplamento O código do processo de acoplamento para o qual os históricos serão inseridos.
      * @param acoesRealizadas        As ações que foram realizadas neste processo de acoplamento.
      */
-    void insertHistoricoAcoesRealizadas(@NotNull final Connection conn,
-                                        @NotNull final Long codProcessoAcoplamento,
+    void insertHistoricoAcoesRealizadas(@NotNull final Long codProcessoAcoplamento,
                                         @NotNull final List<VeiculoAcoplamentoAcaoRealizada> acoesRealizadas);
 
     /**
@@ -69,6 +66,5 @@ public interface VeiculoAcoplamentoDao {
      * @param conn                      Uma conexão já estabelecida com o banco de dados.
      * @param veiculosAcopladosMantidos Os acoplamentos realizados ou mantidos nesse processo de acoplamento.
      */
-    void insertEstadoAtualAcoplamentos(@NotNull final Connection conn,
-                                       @NotNull final List<VeiculoAcopladoMantido> veiculosAcopladosMantidos);
+    void insertEstadoAtualAcoplamentos(@NotNull final List<VeiculoAcopladoMantido> veiculosAcopladosMantidos);
 }

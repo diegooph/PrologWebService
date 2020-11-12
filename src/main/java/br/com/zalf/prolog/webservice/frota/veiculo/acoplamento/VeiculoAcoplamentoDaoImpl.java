@@ -7,6 +7,7 @@ import br.com.zalf.prolog.webservice.errorhandling.Exceptions;
 import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcopladoMantido;
 import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcoplamentoAcaoRealizada;
 import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcoplamentoProcessoInsert;
+import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
@@ -20,15 +21,17 @@ import java.util.List;
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
+@AllArgsConstructor
 public final class VeiculoAcoplamentoDaoImpl implements VeiculoAcoplamentoDao {
     private static final int EXECUTE_BATCH_SUCCESS = 0;
+    @NotNull
+    private final Connection connection;
 
     @Override
-    public void removeAcoplamentoAtual(@NotNull final Connection conn,
-                                       @NotNull final Long codProcessoAcoplamento) {
+    public void removeAcoplamentoAtual(@NotNull final Long codProcessoAcoplamento) {
         PreparedStatement stmt = null;
         try {
-            stmt = conn.prepareCall(" {call func_veiculo_remove_acoplamento_atual(" +
+            stmt = connection.prepareCall(" {call func_veiculo_remove_acoplamento_atual(" +
                     "f_cod_processo_acoplamento => ?)}");
             DatabaseUtils.bind(stmt, codProcessoAcoplamento);
             stmt.execute();
@@ -41,12 +44,11 @@ public final class VeiculoAcoplamentoDaoImpl implements VeiculoAcoplamentoDao {
 
     @NotNull
     @Override
-    public Long insertProcessoAcoplamento(@NotNull final Connection conn,
-                                          @NotNull final VeiculoAcoplamentoProcessoInsert processoAcoplamento) {
+    public Long insertProcessoAcoplamento(@NotNull final VeiculoAcoplamentoProcessoInsert processoAcoplamento) {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            stmt = conn.prepareStatement("select * from func_veiculo_insert_processo_acoplamento(" +
+            stmt = connection.prepareStatement("select * from func_veiculo_insert_processo_acoplamento(" +
                     "f_cod_unidade => ?," +
                     "f_cod_colaborador_realizacao => ?," +
                     "f_data_hora_atual => ?," +
@@ -70,12 +72,11 @@ public final class VeiculoAcoplamentoDaoImpl implements VeiculoAcoplamentoDao {
     }
 
     @Override
-    public void insertHistoricoAcoesRealizadas(@NotNull final Connection conn,
-                                               @NotNull final Long codProcessoAcoplamento,
+    public void insertHistoricoAcoesRealizadas(@NotNull final Long codProcessoAcoplamento,
                                                @NotNull final List<VeiculoAcoplamentoAcaoRealizada> acoesRealizadas) {
         PreparedStatement stmt = null;
         try {
-            stmt = conn.prepareCall(" {call func_veiculo_insert_historico_acoplamento(" +
+            stmt = connection.prepareCall(" {call func_veiculo_insert_historico_acoplamento(" +
                     "f_cod_processo_acoplamento => ?," +
                     "f_cod_veiculo => ?," +
                     "f_cod_diagrama_veiculo => ?," +
@@ -107,11 +108,10 @@ public final class VeiculoAcoplamentoDaoImpl implements VeiculoAcoplamentoDao {
     }
 
     @Override
-    public void insertEstadoAtualAcoplamentos(@NotNull final Connection conn,
-                                              @NotNull final List<VeiculoAcopladoMantido> veiculosAcopladosMantidos) {
+    public void insertEstadoAtualAcoplamentos(@NotNull final List<VeiculoAcopladoMantido> veiculosAcopladosMantidos) {
         PreparedStatement stmt = null;
         try {
-            stmt = conn.prepareCall(" {call func_veiculo_insert_estado_atual_acoplamentos(" +
+            stmt = connection.prepareCall(" {call func_veiculo_insert_estado_atual_acoplamentos(" +
                     "f_cod_processo_acoplamento => ?," +
                     "f_cod_unidade => ?," +
                     "f_cod_veiculo => ?," +

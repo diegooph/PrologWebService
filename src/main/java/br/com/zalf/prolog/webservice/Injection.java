@@ -94,6 +94,8 @@ import br.com.zalf.prolog.webservice.frota.socorrorota.relatorio.SocorroRotaRela
 import br.com.zalf.prolog.webservice.frota.socorrorota.relatorio.SocorroRotaRelatorioDaoImpl;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDaoImpl;
+import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento.VeiculoAcoplamentoDao;
+import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento.VeiculoAcoplamentoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento.historico.VeiculoAcoplamentoHistoricoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento.historico.VeiculoAcoplamentoHistoricoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.veiculo.error.VeiculoExceptionHandler;
@@ -191,6 +193,8 @@ import br.com.zalf.prolog.webservice.seguranca.relato.RelatoDaoImpl;
 import br.com.zalf.prolog.webservice.seguranca.relato.relatorio.RelatoRelatorioDao;
 import br.com.zalf.prolog.webservice.seguranca.relato.relatorio.RelatoRelatorioDaoImpl;
 import org.jetbrains.annotations.NotNull;
+
+import java.sql.Connection;
 
 /**
  * Provide a simple way to use DI by hand.
@@ -701,6 +705,11 @@ public final class Injection {
     @NotNull
     public static VeiculoEvolucaoKmDao provideVeiculoEvolucaoKmDao() {
         return new VeiculoEvolucaoKmDaoImpl();
+    }
+
+    @NotNull
+    public static VeiculoAcoplamentoDao provideVeiculoAcoplamentoDao(@NotNull final Connection connection) {
+        return new VeiculoAcoplamentoDaoImpl(connection);
     }
 
     @NotNull
