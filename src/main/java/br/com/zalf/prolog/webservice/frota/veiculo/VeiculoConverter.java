@@ -3,7 +3,7 @@ package br.com.zalf.prolog.webservice.frota.veiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.VeiculoListagem;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoAntesEdicao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoAcopladoVisualizacao;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoEstadoAcoplamento;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoDadosColetaKm;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoVisualizacao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoVisualizacaoPneu;
 import org.jetbrains.annotations.NotNull;
@@ -144,9 +144,9 @@ public final class VeiculoConverter {
     }
 
     @NotNull
-    public static VeiculoEstadoAcoplamento createVeiculoEstadoAcoplamento(@NotNull final ResultSet rSet)
+    public static VeiculoDadosColetaKm createVeiculoEstadoAcoplamento(@NotNull final ResultSet rSet)
             throws SQLException {
-        return VeiculoEstadoAcoplamento.of(
+        return VeiculoDadosColetaKm.of(
                 rSet.getLong("COD_VEICULO"),
                 rSet.getString("PLACA"),
                 rSet.getLong("KM"),

@@ -10,14 +10,13 @@ import org.jetbrains.annotations.Nullable;
  * @author Guilherme Steinert (https://github.com/steinert999)
  */
 @Data(staticConstructor = "of")
-public class VeiculoEstadoAcoplamento {
+public class VeiculoDadosColetaKm {
 
     @NotNull
     private final Long codigo;
     @NotNull
     private final String placa;
-    @NotNull
-    private final Long km;
+    private final long kmAtual;
     @Nullable
     private final String identificadorFrota;
     private final boolean motorizado;

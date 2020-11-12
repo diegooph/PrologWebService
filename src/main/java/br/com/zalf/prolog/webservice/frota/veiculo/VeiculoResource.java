@@ -12,7 +12,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeicul
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculoNomenclatura;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicaoStatus;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoEstadoAcoplamento;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoDadosColetaKm;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoVisualizacao;
 import br.com.zalf.prolog.webservice.interceptors.auth.ColaboradorAutenticado;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
@@ -296,8 +296,8 @@ public final class VeiculoResource {
 
     @GET
     @Secured(permissions = {Pilares.Frota.Veiculo.VISUALIZAR})
-    @Path("/estado")
-    public VeiculoEstadoAcoplamento getEstadoAcoplamentoByCodigo(@QueryParam("codVeiculo") final Long codVeiculo) {
+    @Path("/dados-coleta-km")
+    public VeiculoDadosColetaKm getEstadoAcoplamentoByCodigo(@QueryParam("codVeiculo") final Long codVeiculo) {
         return service.getEstadoAcoplamentoByCodigo(codVeiculo);
     }
 

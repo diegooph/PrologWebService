@@ -5,7 +5,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.InfosVeiculoEditado;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicao;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoEstadoAcoplamento;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoDadosColetaKm;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoVisualizacao;
 import br.com.zalf.prolog.webservice.geral.unidade._model.Unidade;
 import org.jetbrains.annotations.NotNull;
@@ -320,13 +320,13 @@ public interface VeiculoDao {
     List<Veiculo> getVeiculosAtivosByUnidade(Long codUnidade, @Nullable Boolean ativos) throws SQLException;
 
     /**
-     * Busca o estado do veiculo acoplado, com base no seu código
+     * Busca o estado do veiculo acoplado, com base no seu código.
      *
-     * @param codVeiculo código do veiculo
-     * @return Um VeiculoEstadoAcoplamento
-     * @throws Throwable Caso o veiculo não esteja acoplado ainda, será retornado erro vindo do banco
-     * @see VeiculoEstadoAcoplamento
+     * @param codVeiculo código do veiculo.
+     * @return Um VeiculoEstadoAcoplamento.
+     * @throws Throwable Caso o veiculo não esteja acoplado ainda, será retornado erro vindo do banco.
+     * @see VeiculoDadosColetaKm
      */
     @NotNull
-    VeiculoEstadoAcoplamento getEstadoAcoplamentoByCodigo(@NotNull final Long codVeiculo) throws Throwable;
+    VeiculoDadosColetaKm getEstadoAcoplamentoByCodigo(@NotNull final Long codVeiculo) throws Throwable;
 }

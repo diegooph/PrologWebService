@@ -12,7 +12,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeicul
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculoPosicaoNomenclatura;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicaoStatus;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoEstadoAcoplamento;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoDadosColetaKm;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoVisualizacao;
 import br.com.zalf.prolog.webservice.integracao.router.RouterVeiculo;
 import org.jetbrains.annotations.NotNull;
@@ -298,7 +298,7 @@ public final class VeiculoService {
     }
 
     @NotNull
-    public VeiculoEstadoAcoplamento getEstadoAcoplamentoByCodigo(final Long codVeiculo) {
+    public VeiculoDadosColetaKm getEstadoAcoplamentoByCodigo(final Long codVeiculo) {
         try {
             return this.dao.getEstadoAcoplamentoByCodigo(codVeiculo);
         } catch (final Throwable t) {

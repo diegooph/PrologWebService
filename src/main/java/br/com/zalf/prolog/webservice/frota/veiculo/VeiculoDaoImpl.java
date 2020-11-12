@@ -15,7 +15,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.InfosVeiculoEdit
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoAntesEdicao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoAcopladoVisualizacao;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoEstadoAcoplamento;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoDadosColetaKm;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoVisualizacao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoVisualizacaoPneu;
 import org.jetbrains.annotations.NotNull;
@@ -992,7 +992,7 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
 
     @Override
     @NotNull
-    public VeiculoEstadoAcoplamento getEstadoAcoplamentoByCodigo(@NotNull final Long codVeiculo) throws Throwable {
+    public VeiculoDadosColetaKm getEstadoAcoplamentoByCodigo(@NotNull final Long codVeiculo) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
