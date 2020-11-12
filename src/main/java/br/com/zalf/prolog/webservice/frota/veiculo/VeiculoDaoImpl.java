@@ -299,6 +299,38 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         }
     }
 
+    @Override
+    @NotNull
+    public Long updateKmByCodVeiculo(@NotNull final Connection conn,
+                                     @NotNull final Long codUnidade,
+                                     @NotNull final Long codVeiculo,
+                                     final long kmVeiculo,
+                                     @NotNull final VeiculoTipoProcesso veiculoTipoProcesso) throws SQLException {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = conn.prepareStatement("select * from func_veiculo_update_km_atual(" +
+                    "f_cod_unidade => ?," +
+                    "f_cod_veiculo => ?," +
+                    "f_km_coletado => ?," +
+                    "f_tipo_processo => ?) as cod_processo_inserido;");
+
+            stmt.setLong(1, codUnidade);
+            stmt.setLong(2, codVeiculo);
+            stmt.setLong(3, kmVeiculo);
+            stmt.setString(4, String.valueOf(veiculoTipoProcesso));
+            rSet = stmt.executeQuery();
+
+            if (rSet.next() && rSet.getLong(1) > 0) {
+                return rSet.getLong(1);
+            } else {
+                throw new SQLException("Erro ao atualizar o km do veículo: " + codVeiculo);
+            }
+        } finally {
+            DatabaseConnection.close(stmt, rSet);
+        }
+    }
+
     @NotNull
     @Override
     public Long insertModeloVeiculo(@NotNull final Modelo modelo,

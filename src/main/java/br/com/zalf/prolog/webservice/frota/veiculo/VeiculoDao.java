@@ -1,10 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.veiculo;
 
 import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.VeiculoCadastro;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.InfosVeiculoEditado;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicao;
@@ -131,6 +128,22 @@ public interface VeiculoDao {
      * @throws SQLException erro no banco
      */
     void updateKmByPlaca(String placa, long km, Connection conn) throws SQLException;
+
+    /**
+     * Atualiza o KM de um veículo com base em seu código.
+     *
+     * @param conn                Uma conexão já estabelecida com o banco de dados.
+     * @param codUnidade          Unidade do veículo.
+     * @param codVeiculo          O código do veículo que terá seu KM atualizado.
+     * @param kmVeiculo           O KM que será setado no veículo.
+     * @param veiculoTipoProcesso O tipo de processo que está sendo realizado.
+     */
+    @NotNull
+    Long updateKmByCodVeiculo(@NotNull final Connection conn,
+                              @NotNull final Long codUnidade,
+                              @NotNull final Long codVeiculo,
+                              final long kmVeiculo,
+                              @NotNull final VeiculoTipoProcesso veiculoTipoProcesso) throws SQLException;
 
     /**
      * busca a marca do veículo atraves do código da empresa
