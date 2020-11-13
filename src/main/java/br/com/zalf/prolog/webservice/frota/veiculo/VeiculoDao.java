@@ -133,11 +133,13 @@ public interface VeiculoDao {
     /**
      * Atualiza o KM de um veículo com base em seu código.
      *
-     * @param conn                Uma conexão já estabelecida com o banco de dados.
-     * @param codUnidade          Unidade do veículo.
-     * @param codVeiculo          O código do veículo que terá seu KM atualizado.
-     * @param kmVeiculo           O KM que será setado no veículo.
-     * @param veiculoTipoProcesso O tipo de processo que está sendo realizado.
+     * @param conn                       Uma conexão já estabelecida com o banco de dados.
+     * @param codUnidade                 Unidade do veículo.
+     * @param codVeiculo                 O código do veículo que terá seu KM atualizado.
+     * @param kmVeiculo                  O KM que será setado no veículo.
+     * @param veiculoTipoProcesso        O tipo de processo que está sendo realizado.
+     * @param devePropagarKmParaReboques No caso de um trator, indica se o KM coletado deve ser propagado para os
+     *                                   reboques acoplados que não possuem hubodômetro.
      * @return km para inserir no processo.
      */
     @NotNull
@@ -145,7 +147,8 @@ public interface VeiculoDao {
                               @NotNull final Long codUnidade,
                               @NotNull final Long codVeiculo,
                               @NotNull final VeiculoTipoProcesso veiculoTipoProcesso,
-                              final long kmVeiculo);
+                              final long kmVeiculo,
+                              final boolean devePropagarKmParaReboques);
 
     /**
      * busca a marca do veículo atraves do código da empresa

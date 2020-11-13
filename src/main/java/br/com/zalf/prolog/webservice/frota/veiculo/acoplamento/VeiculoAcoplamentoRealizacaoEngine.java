@@ -46,7 +46,8 @@ public final class VeiculoAcoplamentoRealizacaoEngine {
                         processoRealizacao.getCodUnidade(),
                         acaoRealizada.getCodVeiculo(),
                         VeiculoTipoProcesso.ACOPLAMENTO,
-                        acaoRealizada.getKmColetado()));
+                        acaoRealizada.getKmColetado(),
+                        true));
     }
 
     private void removeAcoplamentoAtual(@NotNull final VeiculoAcoplamentoProcessoRealizacao processoRealizacao) {
