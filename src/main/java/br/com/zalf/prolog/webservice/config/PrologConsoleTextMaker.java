@@ -10,7 +10,7 @@ import javax.servlet.ServletContextListener;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-public final class ProLogConsoleTextMaker implements ServletContextListener {
+public final class PrologConsoleTextMaker implements ServletContextListener {
 
     @SuppressWarnings("StringBufferReplaceableByString")
     @Override

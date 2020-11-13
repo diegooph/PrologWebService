@@ -5,6 +5,7 @@ Change Log
 
 ### Features
 * Implementa documentação da classe de unidade (PL-2898)
+* Configura FileWatcher no Prolog (PL-3267)
 
 ### Bug Fixes
 * Corrige uso de data hora de queries que geram histórico de edição de veículo (PL-3264)
