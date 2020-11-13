@@ -324,11 +324,20 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
             stmt.setString(4, veiculoTipoProcesso.asString());
             stmt.setBoolean(5, devePropagarKmParaReboques);
             rSet = stmt.executeQuery();
-            if (rSet.next() && rSet.getLong("km_processo") > 0) {
-                return rSet.getLong("km_processo");
-            } else {
-                throw new SQLException("Erro ao atualizar o km do veículo: " + codVeiculo);
+            if (rSet.next()) {
+                final long kmProcesso = rSet.getLong("km_processo");
+                if (!rSet.wasNull()) {
+                    return kmProcesso;
+                }
             }
+
+            throw new SQLException(String.format("Erro ao atualizar o km!" +
+                            "\ncodUnidade: %d" +
+                            "\ncodVeiculo: %d" +
+                            "\ntipoProcesso: %s" +
+                            "\nkmVeiculo: %d" +
+                            "\ndevePropagarKm: %b",
+                    codUnidade, codVeiculo, veiculoTipoProcesso.asString(), kmVeiculo, devePropagarKmParaReboques));
         } catch (final SQLException e) {
             throw Exceptions.rethrow(e);
         } finally {
