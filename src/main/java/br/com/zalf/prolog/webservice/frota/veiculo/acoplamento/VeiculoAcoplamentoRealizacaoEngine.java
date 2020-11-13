@@ -5,6 +5,7 @@ import br.com.zalf.prolog.webservice.errorhandling.sql.ClientSideErrorException;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcoplamentoProcessoInsert;
 import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcoplamentoProcessoRealizacao;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.VeiculoTipoProcesso;
 import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
@@ -42,7 +43,9 @@ public final class VeiculoAcoplamentoRealizacaoEngine {
                 .filter(acaoRealizada -> acaoRealizada.getKmColetado() != null)
                 .forEach(acaoRealizada -> veiculoDao.updateKmByCodVeiculo(
                         connection,
+                        processoRealizacao.getCodUnidade(),
                         acaoRealizada.getCodVeiculo(),
+                        VeiculoTipoProcesso.ACOPLAMENTO,
                         acaoRealizada.getKmColetado()));
     }
 

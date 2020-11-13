@@ -3,7 +3,7 @@ Change Log
 
 ## Staged
 #### Features
-* adiciona deleção das checklists (PL-3217)
+* Cria update único de KM de veiculo por código (PL-3213)
 * Cria funcionalidade de insert de processo de acoplamento (PL-3210)
 * Cria funcionalidade de verificação de dados de coleta de km (PL-3291)
 

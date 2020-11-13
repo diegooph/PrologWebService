@@ -1,15 +1,12 @@
 package br.com.zalf.prolog.webservice.frota.veiculo;
 
 import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.VeiculoCadastro;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.InfosVeiculoEditado;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicao;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoDadosColetaKm;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.listagem.VeiculoListagem;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoDadosColetaKm;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoVisualizacao;
 import br.com.zalf.prolog.webservice.geral.unidade._model.Unidade;
 import org.jetbrains.annotations.NotNull;
@@ -136,12 +133,18 @@ public interface VeiculoDao {
     /**
      * Atualiza o KM de um veículo com base em seu código.
      *
-     * @param conn       Uma conexão já estabelecida com o banco de dados.
-     * @param codVeiculo O código do veículo que terá seu KM atualizado.
-     * @param kmVeiculo  O KM que será setado no veículo.
+     * @param conn                Uma conexão já estabelecida com o banco de dados.
+     * @param codUnidade          Unidade do veículo.
+     * @param codVeiculo          O código do veículo que terá seu KM atualizado.
+     * @param kmVeiculo           O KM que será setado no veículo.
+     * @param veiculoTipoProcesso O tipo de processo que está sendo realizado.
+     * @return km para inserir no processo.
      */
-    void updateKmByCodVeiculo(@NotNull final Connection conn,
+    @NotNull
+    Long updateKmByCodVeiculo(@NotNull final Connection conn,
+                              @NotNull final Long codUnidade,
                               @NotNull final Long codVeiculo,
+                              @NotNull final VeiculoTipoProcesso veiculoTipoProcesso,
                               final long kmVeiculo);
 
     /**
