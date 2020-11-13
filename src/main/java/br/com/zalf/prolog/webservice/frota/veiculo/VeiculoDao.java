@@ -134,6 +134,17 @@ public interface VeiculoDao {
     void updateKmByPlaca(String placa, long km, Connection conn) throws SQLException;
 
     /**
+     * Atualiza o KM de um veículo com base em seu código.
+     *
+     * @param conn       Uma conexão já estabelecida com o banco de dados.
+     * @param codVeiculo O código do veículo que terá seu KM atualizado.
+     * @param kmVeiculo  O KM que será setado no veículo.
+     */
+    void updateKmByCodVeiculo(@NotNull final Connection conn,
+                              @NotNull final Long codVeiculo,
+                              final long kmVeiculo);
+
+    /**
      * busca a marca do veículo atraves do código da empresa
      *
      * @param codEmpresa código da empresa
