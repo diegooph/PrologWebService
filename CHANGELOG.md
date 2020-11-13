@@ -1,16 +1,34 @@
 Change Log
 ==========
-### Stage
-#### Features
-* adiciona deleção das checklists (PL-3217)
+<a name="v1.4.2"></a>
+## Version [v1.4.2](https://github.com/luizfp/PrologWebService/compare/v1.4.1...v1.4.2) (release-date) [unreleased]
 
-<a name="v1.3.4"></a>
-## Version [v1.3.4](https://github.com/luizfp/PrologWebService/compare/v1.3.3...v1.3.4) (release-date) [unreleased]
+### Features
+* Implementa documentação da classe de unidade (PL-2898)
+* Configura FileWatcher no Prolog (PL-3267)
+
+### Bug Fixes
+* Corrige uso de data hora de queries que geram histórico de edição de veículo (PL-3264)
+
+### Refactors
+* Revisa e excluí testes unitários sem sentido (PL-3220)
+
+<a name="v1.4.1"></a>
+## Version [v1.4.1](https://github.com/luizfp/PrologWebService/compare/v1.4.0...v1.4.1) (2020-11-08)
+
+### Refactors
+* Adapta integração da Avilan enviando novas informações (PL-3283)
+
+### Bug Fixes
+* Corrige parâmetro de data no relatório de indicadores (PS-1315)
+
+<a name="v1.4.0"></a>
+## Version [v1.4.0](https://github.com/luizfp/PrologWebService/compare/v1.3.3...v1.4.0) (2020-11-03)
 
 ### Features
 * Melhora sistema de Logs (PL-2939)
 * Cria componente na Dash - Farol Checklist (PL-2791)
-* Configura FileWatcher no Prolog (PL-3267)
+* Cria deleção de checklists (PL-3217)
 
 ### Refactors
 * Adiciona log nos métodos de insert de intervalo

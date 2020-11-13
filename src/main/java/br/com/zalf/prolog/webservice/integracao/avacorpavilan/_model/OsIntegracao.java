@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan._model;
 
 import br.com.zalf.prolog.webservice.commons.util.StringUtils;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.StatusOrdemServico;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -31,6 +32,10 @@ public final class OsIntegracao {
     private final Long kmVeiculoNaAbertura;
     @NotNull
     private final String cpfColaboradorChecklist;
+    @NotNull
+    private final StatusOrdemServico statusOrdemServico;
+    @Nullable
+    private final LocalDateTime dataHoraFechamento;
     @NotNull
     private final List<ItemOsIntegracao> itensNok;
 

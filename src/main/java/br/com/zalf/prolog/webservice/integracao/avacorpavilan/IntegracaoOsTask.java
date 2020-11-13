@@ -3,13 +3,13 @@ package br.com.zalf.prolog.webservice.integracao.avacorpavilan;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoDao;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.IntegracaoOsFilter;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.OsIntegracao;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.data.AvaCorpAvilanRequester;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.data.AvaCorpAvilanRequesterImpl;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.ApiAutenticacaoHolder;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -28,21 +28,25 @@ public final class IntegracaoOsTask implements Runnable {
     @NotNull
     private final IntegracaoDao integracaoDao;
     @NotNull
-    private final List<Long> codOsSincronizar;
+    private final List<Long> codsOsSincronizar;
 
-    public IntegracaoOsTask(@NotNull final List<Long> codOsSincronizar) {
+    public IntegracaoOsTask(@NotNull final List<Long> codsOsSincronizar) {
         this.requester = new AvaCorpAvilanRequesterImpl();
         this.integracaoDao = Injection.provideIntegracaoDao();
-        this.codOsSincronizar = codOsSincronizar;
+        this.codsOsSincronizar = codsOsSincronizar;
     }
 
     @Override
     public void run() {
-        if (!codOsSincronizar.isEmpty()) {
+        if (!codsOsSincronizar.isEmpty()) {
             try {
+                final List<OsIntegracao> osSincronizar =
+                        integracaoDao.getOrdensServicosIntegracaoByCod(codsOsSincronizar, IntegracaoOsFilter.FECHADAS);
+                if (osSincronizar.isEmpty()) {
+                    return;
+                }
                 final ApiAutenticacaoHolder apiAutenticacaoHolder =
                         integracaoDao.getApiAutenticacaoHolder(CODIGO_EMPRESA_AVILAN, SISTEMA_KEY_AVILAN, INSERT_OS);
-                final List<OsIntegracao> osSincronizar = getOrdensServicosIntegracao();
                 enviarOrdensServico(apiAutenticacaoHolder, osSincronizar);
             } catch (final Throwable t) {
                 Log.e(TAG, "Erro ao buscar as informações das O.S's no banco de dados", t);
@@ -51,15 +55,6 @@ public final class IntegracaoOsTask implements Runnable {
                         .map(t, "Erro ao tentar sincronizar as O.S's");
             }
         }
-    }
-
-    @NotNull
-    private List<OsIntegracao> getOrdensServicosIntegracao() throws Throwable {
-        final List<OsIntegracao> osSincronizar = new ArrayList<>();
-        for (final Long codOs : codOsSincronizar) {
-            osSincronizar.add(integracaoDao.getOsIntegracaoByCod(codOs));
-        }
-        return osSincronizar;
     }
 
     private void enviarOrdensServico(@NotNull final ApiAutenticacaoHolder apiAutenticacaoHolder,
@@ -72,8 +67,7 @@ public final class IntegracaoOsTask implements Runnable {
                         AvaCorpAvilanConverter.convert(osIntegracao, apiAutenticacaoHolder.getApiShortCode()));
                 // Marca Ordem de Serviço como enviada no BD.
                 integracaoDao.atualizaStatusOsIntegrada(
-                        Collections.singletonList(
-                                osIntegracao.getCodInternoOsProlog()),
+                        Collections.singletonList(osIntegracao.getCodInternoOsProlog()),
                         false,
                         false,
                         true);

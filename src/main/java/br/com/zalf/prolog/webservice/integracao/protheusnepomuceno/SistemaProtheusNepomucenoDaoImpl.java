@@ -223,7 +223,7 @@ public final class SistemaProtheusNepomucenoDaoImpl extends DatabaseConnection i
                     "f_data_hora_atual => ?);");
             stmt.setLong(1, codEmpresa);
             stmt.setArray(2, PostgresUtils.listToArray(conn, SqlType.TEXT, placasNepomuceno));
-            stmt.setObject(3, Now.localDateTimeUtc());
+            stmt.setObject(3, Now.offsetDateTimeUtc());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 final Map<String, InfosAfericaoRealizadaPlaca> afericaoRealizadaPlaca = new HashMap<>();

@@ -1,8 +1,10 @@
 package br.com.zalf.prolog.webservice.geral.unidade;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
+import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
 import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeEdicao;
 import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeVisualizacaoListagem;
+import br.com.zalf.prolog.webservice.interceptors.ApiExposed;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
@@ -21,18 +23,35 @@ import java.util.List;
 @Path("/unidades")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-public final class UnidadeResource implements UnidadeResourceContract {
+public final class UnidadeResource implements UnidadeResourceApiDoc {
     @NotNull
     private final UnidadeService service = new UnidadeService();
 
+    @ApiExposed
+    @PUT
+    @Path("/atualiza")
+    @Secured(permissions = {Pilares.Geral.Empresa.EDITAR_ESTRUTURA})
+    @Override
+    public SuccessResponse updateUnidade(final UnidadeEdicao unidade) {
+        return service.updateUnidade(unidade);
+    }
+
+    /**
+     * @deprecated em 09/11/2020. Deve ser utilizado o método {@link #updateUnidade}. Este método foi depreciado
+     * para a criação de um método que contenha um retorno específico, com informações úteis acerca da atualização
+     * ocorrida.
+     */
+    @Deprecated
+    @ApiExposed
     @PUT
     @Secured(permissions = {Pilares.Geral.Empresa.EDITAR_ESTRUTURA})
     @Override
-    public Response updateUnidade(final UnidadeEdicao unidade) {
+    public Response updateUnidadeOld(final UnidadeEdicao unidade) {
         service.updateUnidade(unidade);
         return Response.ok("Unidade atualizada com sucesso.");
     }
 
+    @ApiExposed
     @GET
     @Secured(permissions = {Pilares.Geral.Empresa.VISUALIZAR_ESTRUTURA, Pilares.Geral.Empresa.EDITAR_ESTRUTURA})
     @Path("/{codUnidade}")
@@ -41,6 +60,7 @@ public final class UnidadeResource implements UnidadeResourceContract {
         return service.getUnidadeByCodigo(codUnidade);
     }
 
+    @ApiExposed
     @GET
     @Secured(permissions = {Pilares.Geral.Empresa.VISUALIZAR_ESTRUTURA, Pilares.Geral.Empresa.EDITAR_ESTRUTURA})
     @Override

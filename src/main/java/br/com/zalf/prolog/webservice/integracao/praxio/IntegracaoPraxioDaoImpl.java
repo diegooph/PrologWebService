@@ -56,7 +56,7 @@ final class IntegracaoPraxioDaoImpl extends DatabaseConnection implements Integr
             stmt.setLong(3, veiculoCadastroPraxio.getKmAtualVeiculo());
             stmt.setLong(4, veiculoCadastroPraxio.getCodModeloVeiculo());
             stmt.setLong(5, veiculoCadastroPraxio.getCodTipoVeiculo());
-            stmt.setObject(6, Now.localDateTimeUtc());
+            stmt.setObject(6, Now.offsetDateTimeUtc());
             stmt.setString(7, tokenIntegracao);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
@@ -99,7 +99,7 @@ final class IntegracaoPraxioDaoImpl extends DatabaseConnection implements Integr
             stmt.setLong(5, veiculoEdicaoPraxio.getNovoKmVeiculo());
             stmt.setLong(6, veiculoEdicaoPraxio.getNovoCodModeloVeiculo());
             stmt.setLong(7, veiculoEdicaoPraxio.getNovoCodTipoVeiculo());
-            stmt.setObject(8, Now.localDateTimeUtc());
+            stmt.setObject(8, Now.offsetDateTimeUtc());
             stmt.setString(9, tokenIntegracao);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
@@ -162,7 +162,7 @@ final class IntegracaoPraxioDaoImpl extends DatabaseConnection implements Integr
                             " F_TOKEN_INTEGRACAO          := ?) AS COD_VEICULO_PROLOG;");
             stmt.setString(1, placaVeiculo);
             stmt.setBoolean(2, veiculoAtivo);
-            stmt.setObject(3, Now.localDateTimeUtc());
+            stmt.setObject(3, Now.offsetDateTimeUtc());
             stmt.setString(4, tokenIntegracao);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
