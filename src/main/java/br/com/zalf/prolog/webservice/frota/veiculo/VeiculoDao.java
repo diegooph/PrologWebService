@@ -8,6 +8,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.VeiculoCadastro;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.InfosVeiculoEditado;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicao;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoDadosColetaKm;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.listagem.VeiculoListagem;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoVisualizacao;
 import br.com.zalf.prolog.webservice.geral.unidade._model.Unidade;
@@ -321,4 +322,15 @@ public interface VeiculoDao {
      * @throws SQLException caso não seja possível realizar a busca
      */
     List<Veiculo> getVeiculosAtivosByUnidade(Long codUnidade, @Nullable Boolean ativos) throws SQLException;
+
+    /**
+     * Busca o estado do veiculo acoplado, com base no seu código.
+     *
+     * @param codVeiculo código do veiculo.
+     * @return Um VeiculoEstadoAcoplamento.
+     * @throws Throwable Caso tenha algum erro no banco.
+     * @see VeiculoDadosColetaKm
+     */
+    @NotNull
+    VeiculoDadosColetaKm getDadosColetaKmByCodigo(@NotNull final Long codVeiculo) throws Throwable;
 }

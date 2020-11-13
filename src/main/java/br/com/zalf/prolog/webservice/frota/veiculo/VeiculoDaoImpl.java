@@ -17,6 +17,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.listagem.VeiculoAcopladoListagemHolder;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.listagem.VeiculoListagem;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoAcopladoVisualizacao;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoDadosColetaKm;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoVisualizacao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoVisualizacaoPneu;
 import org.jetbrains.annotations.NotNull;
@@ -1021,5 +1022,26 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         // Diagrama do veículo.
         getDiagramaVeiculoByPlaca(veiculo.getPlaca()).ifPresent(veiculo::setDiagrama);
         return veiculo;
+    }
+
+    @Override
+    @NotNull
+    public VeiculoDadosColetaKm getDadosColetaKmByCodigo(@NotNull final Long codVeiculo) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("select * from func_veiculo_busca_dados_coleta_km_por_cod_veiculo(f_cod_veiculo => ?)");
+            stmt.setLong(1, codVeiculo);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return VeiculoConverter.createVeiculoDadosColetaKm(rSet);
+            } else {
+                throw new SQLException("Erro ao buscar o estado do veículo de código: " + codVeiculo);
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
     }
 }

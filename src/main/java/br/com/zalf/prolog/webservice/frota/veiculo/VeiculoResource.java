@@ -15,6 +15,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeicul
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculoNomenclatura;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicaoStatus;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoDadosColetaKm;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.listagem.VeiculoListagem;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoVisualizacao;
 import br.com.zalf.prolog.webservice.interceptors.auth.ColaboradorAutenticado;
@@ -295,6 +296,13 @@ public final class VeiculoResource {
                                                     @PathParam("codUnidade") @Required final Long codUnidade,
                                                     @QueryParam("ativos") @Optional final Boolean ativos) {
         return service.getVeiculosAtivosByUnidade(userToken, codUnidade, ativos);
+    }
+
+    @GET
+    @Secured(permissions = {Pilares.Frota.Veiculo.VISUALIZAR})
+    @Path("/dados-coleta-km")
+    public VeiculoDadosColetaKm getDadosColetaKmByCodigo(@QueryParam("codVeiculo") final Long codVeiculo) {
+        return service.getDadosColetaKmByCodigo(codVeiculo);
     }
 
 }

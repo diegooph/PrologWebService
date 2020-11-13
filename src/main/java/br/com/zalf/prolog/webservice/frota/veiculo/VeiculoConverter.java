@@ -5,6 +5,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.listagem.VeiculoAcoplad
 import br.com.zalf.prolog.webservice.frota.veiculo.model.listagem.VeiculoAcopladoListagemHolder;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.listagem.VeiculoListagem;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoAcopladoVisualizacao;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoDadosColetaKm;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoVisualizacao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoVisualizacaoPneu;
 import org.jetbrains.annotations.NotNull;
@@ -205,5 +206,39 @@ public final class VeiculoConverter {
                 rSet.getString("NOMENCLATURA"),
                 rSet.getLong("COD_VEICULO_APLICADO"),
                 rSet.getString("PLACA_APLICADO"));
+    }
+
+    @NotNull
+    public static VeiculoDadosColetaKm createVeiculoDadosColetaKm(@NotNull final ResultSet rSet)
+            throws SQLException {
+        final VeiculoDadosColetaKm.
+                VeiculoDadosTratorColetaKm.
+                Builder builder = VeiculoDadosColetaKm
+                .VeiculoDadosTratorColetaKm
+                .builder()
+                .withPlacaTrator(rSet.getString("PLACA_TRATOR"))
+                .withIdentificadorFrotaTrator(rSet.getString("IDENTIFICADOR_FROTA_TRATOR"));
+
+        final Long codVeiculoTrator = rSet.getLong("COD_VEICULO_TRATOR");
+        final Long kmAtualTrator = rSet.getLong("KM_ATUAL_TRATOR");
+
+        if (codVeiculoTrator != 0) {
+            builder.withCodVeiculoTrator(codVeiculoTrator);
+        }
+        if (kmAtualTrator != 0) {
+            builder.withKmAtualTrator(kmAtualTrator);
+        }
+
+
+        return VeiculoDadosColetaKm.of(
+                rSet.getLong("COD_VEICULO"),
+                rSet.getString("PLACA"),
+                rSet.getLong("KM_ATUAL"),
+                rSet.getString("IDENTIFICADOR_FROTA"),
+                rSet.getBoolean("MOTORIZADO"),
+                rSet.getBoolean("POSSUI_HUBODOMETRO"),
+                rSet.getBoolean("ACOPLADO"),
+                rSet.getBoolean("DEVE_COLETAR_KM"),
+                builder.build());
     }
 }
