@@ -5,6 +5,7 @@ Change Log
 #### Features
 * adiciona deleção das checklists (PL-3217)
 * Cria funcionalidade de insert de processo de acoplamento (PL-3210)
+* Cria funcionalidade de verificação de dados de coleta de km (PL-3291)
 
 ### Refactors
 * Realiza modificação mo CRUD de veiculos, incluindo os campos ```motorizado``` e ```possuiHubodometro``` (PL-3223)
