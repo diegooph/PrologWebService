@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.*;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
+import br.com.zalf.prolog.webservice.errorhandling.Exceptions;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
 import br.com.zalf.prolog.webservice.frota.pneu.PneuDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
@@ -306,7 +307,7 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
                                      @NotNull final Long codUnidade,
                                      @NotNull final Long codVeiculo,
                                      @NotNull final VeiculoTipoProcesso veiculoTipoProcesso,
-                                     final long kmVeiculo) throws SQLException {
+                                     final long kmVeiculo) {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
@@ -315,18 +316,18 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
                     "f_cod_veiculo => ?," +
                     "f_km_coletado => ?," +
                     "f_tipo_processo => ?::types.veiculo_processo_type) as km_processo;");
-
             stmt.setLong(1, codUnidade);
             stmt.setLong(2, codVeiculo);
             stmt.setLong(3, kmVeiculo);
             stmt.setString(4, String.valueOf(veiculoTipoProcesso));
             rSet = stmt.executeQuery();
-
             if (rSet.next() && rSet.getLong("km_processo") > 0) {
                 return rSet.getLong("km_processo");
             } else {
                 throw new SQLException("Erro ao atualizar o km do veículo: " + codVeiculo);
             }
+        } catch (final SQLException e) {
+            throw Exceptions.rethrow(e);
         } finally {
             DatabaseConnection.close(stmt, rSet);
         }

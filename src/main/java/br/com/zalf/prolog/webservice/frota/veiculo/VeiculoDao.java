@@ -5,8 +5,8 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.InfosVeiculoEditado;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicao;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoDadosColetaKm;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.listagem.VeiculoListagem;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoDadosColetaKm;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoVisualizacao;
 import br.com.zalf.prolog.webservice.geral.unidade._model.Unidade;
 import org.jetbrains.annotations.NotNull;
@@ -145,7 +145,7 @@ public interface VeiculoDao {
                               @NotNull final Long codUnidade,
                               @NotNull final Long codVeiculo,
                               @NotNull final VeiculoTipoProcesso veiculoTipoProcesso,
-                              final long kmVeiculo) throws SQLException;
+                              final long kmVeiculo);
 
     /**
      * busca a marca do veículo atraves do código da empresa
