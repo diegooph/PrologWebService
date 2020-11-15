@@ -84,7 +84,8 @@ public final class ChecklistResource {
     @PUT
     @Path("/alteracao-logica")
     @Secured(permissions = {Pilares.Frota.Checklist.DELETAR})
-    public Response deleteLogicoChecklistsAndOs(@NotNull @Valid final ChecklistsAlteracaoAcaoData checklistsParaAlteracao) {
+    public Response deleteLogicoChecklistsAndOs(
+            @NotNull @Valid final ChecklistsAlteracaoAcaoData checklistsParaAlteracao) {
         final Long codigoColaborador = this.colaboradorAutenticadoProvider.get().getCodigo();
         return service.deleteLogicoChecklistsAndOs(checklistsParaAlteracao, codigoColaborador);
     }
