@@ -29,7 +29,7 @@ import javax.ws.rs.ext.Provider;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {"br.com.zalf.prolog.webservice"})
 public class PrologApplication extends SpringBootServletInitializer {
 
     public static void main(final String[] args) {
