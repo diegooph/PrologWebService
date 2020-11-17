@@ -4,8 +4,12 @@ server:
     context-path: /prolog/v2
 
 spring:
+  profiles:
+    active: dev
+
   main:
     banner-mode: off
+
   datasource:
     platform: postgres
     driver-class-name: org.postgresql.Driver
