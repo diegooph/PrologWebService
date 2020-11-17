@@ -35,7 +35,7 @@ public class DatabaseConnection {
      *
      * @apiNote O Método atualmente é só um intermédio para a classe DatabaseConnectionActions
      * @see DatabaseConnectionActions
-     * @since 5 de dez de 2015 11:42:22
+     * @since 17 de nov de 2020
      * @deprecated
      */
     @Deprecated
@@ -48,7 +48,7 @@ public class DatabaseConnection {
      *
      * @apiNote O Método atualmente é só um intermédio para a classe DatabaseConnectionActions
      * @see DatabaseConnectionActions
-     * @since 5 de dez de 2015 11:42:22
+     * @since 17 de nov de 2020
      */
     @Deprecated
     public void closeConnection(@Nullable final Connection conn,
@@ -63,7 +63,7 @@ public class DatabaseConnection {
      * @return Connection
      * @apiNote O Método atualmente é só um intermédio para a classe DatabaseConnectionActions
      * @see DatabaseConnectionActions
-     * @since 5 de dez de 2015 11:42:04
+     * @since 17 de nov de 2020
      */
     @NotNull
     public Connection getConnection() {
@@ -75,7 +75,7 @@ public class DatabaseConnection {
      *
      * @apiNote O Método atualmente é só um intermédio para a classe DatabaseConnectionActions
      * @see DatabaseConnectionActions
-     * @since 5 de dez de 2015 11:42:22
+     * @since 17 de nov de 2020
      * @deprecated
      */
     @Deprecated
@@ -88,7 +88,7 @@ public class DatabaseConnection {
      *
      * @apiNote O Método atualmente é só um intermédio para a classe DatabaseConnectionActions
      * @see DatabaseConnectionActions
-     * @since 5 de dez de 2015 11:42:22
+     * @since 17 de nov de 2020
      * @deprecated
      */
     @Deprecated
