@@ -19,10 +19,10 @@ import java.io.IOException;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public final class FirebaseLifecycleManager implements ServletContextListener {
-    private final String TAG = FirebaseLifecycleManager.class.getSimpleName();
     private static final String DATABASE_URL_DEBUG = "https://prolog-debug.firebaseio.com";
     private static final String DATABASE_URL_PROD = "https://prolog-prod.firebaseio.com";
     private static final String DATABASE_URL = ProLogUtils.isDebug() ? DATABASE_URL_DEBUG : DATABASE_URL_PROD;
+    private final String TAG = FirebaseLifecycleManager.class.getSimpleName();
 
     @Override
     public void contextInitialized(final ServletContextEvent sce) {
@@ -56,7 +56,7 @@ public final class FirebaseLifecycleManager implements ServletContextListener {
                         .build();
                 FirebaseApp.initializeApp(options);
                 Log.d(TAG, "FirebaseApp iniciado com sucesso");
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 Log.e(TAG, "Erro ao iniciar FirebaseApp", e);
             }
         }
@@ -66,7 +66,9 @@ public final class FirebaseLifecycleManager implements ServletContextListener {
     public void contextDestroyed(final ServletContextEvent sce) {
         // Nada acontece se ele já estiver deletado.
         // Veja docs: https://firebase.google.com/docs/reference/admin/java/reference/com/google/firebase/FirebaseApp.html#public-void-delete-
-        FirebaseApp.getInstance().delete();
+        if (!FirebaseApp.getApps().isEmpty()) {
+            FirebaseApp.getInstance().delete();
+        }
         Log.d(TAG, "FirebaseApp deletado com sucesso");
     }
 }
