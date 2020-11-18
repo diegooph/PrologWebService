@@ -1,8 +1,8 @@
 package br.com.zalf.prolog.webservice.database;
 
+import br.com.zalf.prolog.webservice.config.PrologApplication;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.sql.Connection;
@@ -22,12 +22,9 @@ import java.sql.ResultSet;
 @Component
 public class DatabaseConnection {
 
-    @Autowired
-    private DatabaseConnectionActions actions;
 
-
-    public void close(@Nullable final AutoCloseable... closeable) {
-        this.actions.close(closeable);
+    public static void close(@Nullable final AutoCloseable... closeable) {
+        PrologApplication.getActions().close(closeable);
     }
 
     /**
@@ -39,8 +36,8 @@ public class DatabaseConnection {
      * @deprecated
      */
     @Deprecated
-    public void closeConnection(@Nullable final Connection conn) {
-        this.actions.close(conn);
+    public static void closeConnection(@Nullable final Connection conn) {
+        PrologApplication.getActions().close(conn);
     }
 
     /**
@@ -51,10 +48,10 @@ public class DatabaseConnection {
      * @since 17 de nov de 2020
      */
     @Deprecated
-    public void closeConnection(@Nullable final Connection conn,
-                                @Nullable final PreparedStatement stmt,
-                                @Nullable final ResultSet rSet) {
-        this.actions.close(conn, rSet, stmt);
+    public static void closeConnection(@Nullable final Connection conn,
+                                       @Nullable final PreparedStatement stmt,
+                                       @Nullable final ResultSet rSet) {
+        PrologApplication.getActions().close(conn, rSet, stmt);
     }
 
     /**
@@ -66,8 +63,8 @@ public class DatabaseConnection {
      * @since 17 de nov de 2020
      */
     @NotNull
-    public Connection getConnection() {
-        return this.actions.getConnection();
+    public static Connection getConnection() {
+        return PrologApplication.getActions().getConnection();
     }
 
     /**
@@ -79,8 +76,8 @@ public class DatabaseConnection {
      * @deprecated
      */
     @Deprecated
-    public void closeStatement(@Nullable final PreparedStatement stmt) {
-        this.actions.close(stmt);
+    public static void closeStatement(@Nullable final PreparedStatement stmt) {
+        PrologApplication.getActions().close(stmt);
     }
 
     /**
@@ -92,7 +89,7 @@ public class DatabaseConnection {
      * @deprecated
      */
     @Deprecated
-    public void closeResultSet(@Nullable final ResultSet rSet) {
-        this.actions.close(rSet);
+    public static void closeResultSet(@Nullable final ResultSet rSet) {
+        PrologApplication.getActions().close(rSet);
     }
 }
