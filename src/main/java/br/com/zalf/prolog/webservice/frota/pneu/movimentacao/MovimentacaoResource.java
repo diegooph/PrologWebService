@@ -28,7 +28,7 @@ import java.util.List;
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @AppVersionCodeHandler(
-        targetVersionCode = 112,
+        targetVersionCode = 64,
         versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
         actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
 public final class MovimentacaoResource {
@@ -39,6 +39,10 @@ public final class MovimentacaoResource {
             Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_VEICULO_ESTOQUE,
             Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE,
             Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_DESCARTE})
+    @AppVersionCodeHandler(
+            targetVersionCode = 112,
+            versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
+            actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
     @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
     public AbstractResponse insert(@HeaderParam("Authorization") final String userToken,
                                    @Required final ProcessoMovimentacao movimentacao) throws ProLogException {
