@@ -18,9 +18,20 @@ spring:
     platform: postgres
     driver-class-name: org.postgresql.Driver
 
+    hikari:
+      connection-init-sql: "SET application_name = 'ProLog WS'"
+      connection-test-query: "SELECT 1"
+      minimum-idle: 25
+      maximum-pool-size: 125
+      idle-timeout: 60000
+      max-lifetime: 10000
+      auto-commit: true
+      connection-timeout: 2000
+
     tomcat:
       init-s-q-l: "SET application_name = 'ProLog WS'"
       validation-query: "SELECT 1"
+
       test-while-idle: false
       test-on-borrow: false
       test-on-return: false
