@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.commons.util.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -21,17 +22,17 @@ public class SpringDatabaseConnectionActions implements DatabaseConnectionAction
 
     private static final String TAG = SpringDatabaseConnectionActions.class.getSimpleName();
 
-    private final SpringDatabaseManager manager;
+    private final DataSource dataSource;
 
     @Autowired
-    SpringDatabaseConnectionActions(final SpringDatabaseManager manager) {
-        this.manager = manager;
+    SpringDatabaseConnectionActions(final DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
     @Override
     public Connection getConnection() {
         try {
-            return this.manager.getDataSource().getConnection();
+            return this.dataSource.getConnection();
         } catch (final SQLException exception) {
             Log.e(TAG, "Erro ao tentar abrir conexão com o banco de dados.", exception);
         }
