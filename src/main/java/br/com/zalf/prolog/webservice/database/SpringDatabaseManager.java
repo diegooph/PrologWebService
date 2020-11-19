@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.database;
 
+import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
@@ -28,7 +29,7 @@ public class SpringDatabaseManager {
     @Bean
     public DataSource getDataSource() {
         return DataSourceBuilder.create()
-                .type(org.apache.tomcat.jdbc.pool.DataSource.class)
+                .type(HikariDataSource.class)
                 .url(url)
                 .username(username)
                 .password(password)
