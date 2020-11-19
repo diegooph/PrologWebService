@@ -27,13 +27,12 @@ public class SpringDatabaseManager {
 
     @Bean
     public DataSource getDataSource() {
-        final DataSource ds = DataSourceBuilder.create()
+        return DataSourceBuilder.create()
+                .type(org.apache.tomcat.jdbc.pool.DataSource.class)
                 .url(url)
                 .username(username)
                 .password(password)
                 .driverClassName(driver)
                 .build();
-        return ds;
     }
-
 }
