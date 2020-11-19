@@ -28,30 +28,6 @@ spring:
       auto-commit: true
       connection-timeout: 2000
 
-    tomcat:
-      init-s-q-l: "SET application_name = 'ProLog WS'"
-      validation-query: "SELECT 1"
-
-      test-while-idle: false
-      test-on-borrow: false
-      test-on-return: false
-      max-active: 250
-      initial-size: 25
-      min-idle: 25
-      max-idle: 125
-      validation-interval: 30000
-      time-between-eviction-runs-millis: 30000
-      max-wait: 10000
-      remove-abandoned-timeout: 320
-      min-evictable-idle-time-millis: 60000
-      log-abandoned: true
-      remove-abandoned: true
-      default-auto-commit: true
-      jdbc-interceptors: >
-        org.apache.tomcat.jdbc.pool.interceptor.ConnectionState;
-        org.apache.tomcat.jdbc.pool.interceptor.StatementFinalizer;
-        org.apache.tomcat.jdbc.pool.interceptor.ResetAbandonedTimer
-
 logging:
   level:
     org:
