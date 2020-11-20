@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
+import java.time.LocalDateTime;
 
 /**
  * Created on 2020-11-11
@@ -36,7 +37,9 @@ public final class VeiculoAcoplamentoRealizacaoEngine {
         return codProcessoInserido;
     }
 
-    private void atualizaKms(@NotNull final VeiculoAcoplamentoProcessoRealizacao processoRealizacao) {
+    private void atualizaKms(@NotNull final Long codProcessoRealizacao,
+                             @NotNull final VeiculoAcoplamentoProcessoRealizacao processoRealizacao,
+                             @NotNull final LocalDateTime dataHoraProcesso) {
         processoRealizacao
                 .getAcoesRealizadas()
                 .stream()
@@ -45,7 +48,9 @@ public final class VeiculoAcoplamentoRealizacaoEngine {
                         connection,
                         processoRealizacao.getCodUnidade(),
                         acaoRealizada.getCodVeiculo(),
+                        codProcessoRealizacao,
                         VeiculoTipoProcesso.ACOPLAMENTO,
+                        dataHoraProcesso,
                         acaoRealizada.getKmColetado(),
                         true));
     }
