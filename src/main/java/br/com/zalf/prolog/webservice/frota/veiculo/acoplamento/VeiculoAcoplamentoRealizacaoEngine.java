@@ -10,7 +10,7 @@ import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 /**
  * Created on 2020-11-11
@@ -29,9 +29,9 @@ public final class VeiculoAcoplamentoRealizacaoEngine {
     @NotNull
     public Long realizaProcessoAcoplamento(@NotNull final Long codColaboradorRealizacao,
                                            @NotNull final VeiculoAcoplamentoProcessoRealizacao processoRealizacao) {
-        atualizaKms(processoRealizacao);
         removeAcoplamentoAtual(processoRealizacao);
         final Long codProcessoInserido = insertProcessoAcoplamento(codColaboradorRealizacao, processoRealizacao);
+        atualizaKms(codProcessoInserido, processoRealizacao, Now.offsetDateTimeUtc());
         insertHistoricoAcoplamentos(codProcessoInserido, processoRealizacao);
         insertEstadoAtualAcoplamentos(codProcessoInserido, processoRealizacao);
         return codProcessoInserido;
@@ -39,7 +39,7 @@ public final class VeiculoAcoplamentoRealizacaoEngine {
 
     private void atualizaKms(@NotNull final Long codProcessoRealizacao,
                              @NotNull final VeiculoAcoplamentoProcessoRealizacao processoRealizacao,
-                             @NotNull final LocalDateTime dataHoraProcesso) {
+                             @NotNull final OffsetDateTime dataHoraProcesso) {
         processoRealizacao
                 .getAcoesRealizadas()
                 .stream()
