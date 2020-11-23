@@ -1,7 +1,7 @@
 Change Log
 ==========
 <a name="v1.4.2"></a>
-## Version [v1.4.2](https://github.com/luizfp/PrologWebService/compare/v1.4.1...v1.4.2) (release-date) [unreleased]
+## Version [v1.4.2](https://github.com/luizfp/PrologWebService/compare/v1.4.1...v1.4.2) (2020-11-22)
 
 ### Features
 * Implementa documentação da classe de unidade (PL-2898)
