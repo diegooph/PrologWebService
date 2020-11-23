@@ -13,14 +13,14 @@ import java.util.List;
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
 public interface UnidadeDao {
-
     /**
      * Atualiza os dados de uma {@link UnidadeEdicao unidade}.
      *
      * @param unidade Dados da unidade a ser atualizada.
+     * @return o código da unidade atualizada.
      * @throws Throwable caso qualquer erro ocorrer.
      */
-    void update(@NotNull final UnidadeEdicao unidade) throws Throwable;
+    Long update(@NotNull final UnidadeEdicao unidade) throws Throwable;
 
     /**
      * Busca uma unidade baseado no seu código.
@@ -46,5 +46,4 @@ public interface UnidadeDao {
     @NotNull
     List<UnidadeVisualizacaoListagem> getUnidadesListagem(@NotNull final Long codEmpresa,
                                                           @Nullable final List<Long> codigosRegionais) throws Throwable;
-
 }

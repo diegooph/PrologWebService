@@ -54,7 +54,8 @@ public final class ChecklistService {
     }
 
     @NotNull
-    public Response deleteLogicoChecklistsAndOs(@NotNull final ChecklistsAlteracaoAcaoData checkListsDelecao, @NotNull final Long codigoColaborador) {
+    public Response deleteLogicoChecklistsAndOs(@NotNull final ChecklistsAlteracaoAcaoData checkListsDelecao,
+                                                @NotNull final Long codigoColaborador) {
         try {
             dao.deleteLogicoChecklistsAndOs(checkListsDelecao, codigoColaborador);
             return Response.ok("Ação realizada com sucesso!");
