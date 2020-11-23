@@ -20,4 +20,6 @@
 !misc.xml
 !sqldialects.xml
 !saveactions_settings.xml
+!git_toolbox_prj.xml
+!checkstyle-prolog.xml
 !checkstyle-idea.xml

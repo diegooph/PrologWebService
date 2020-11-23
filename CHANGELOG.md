@@ -1,23 +1,21 @@
 Change Log
 ==========
 
-## Staged
-#### Features
-* Cria update único de KM de veiculo por código (PL-3213)
-* Cria funcionalidade de insert de processo de acoplamento (PL-3210)
-* Cria funcionalidade de verificação de dados de coleta de km (PL-3291)
-
-### Refactors
-* Realiza modificação mo CRUD de veiculos, incluindo os campos ```motorizado``` e ```possuiHubodometro``` (PL-3223)
-* Adiciona os veículos acoplados no objeto de `VeiculoVisualizacao` (PL-3212)
-* Adiciona os veículos acoplados no objeto de `VeiculoListagem` (PL-3211)
-
+<a name="v1.4.3"></a>
+## Version [v1.4.3](https://github.com/luizfp/PrologWebService/compare/v1.4.2...v1.4.3) (release-date) [unreleased]
 
 <a name="v1.4.2"></a>
-## Version [v1.4.2](https://github.com/luizfp/PrologWebService/compare/v1.4.1...v1.4.2) (release-date) [unreleased]
+## Version [v1.4.2](https://github.com/luizfp/PrologWebService/compare/v1.4.1...v1.4.2) (2020-11-22)
 
-#### Features
-* Cria busca de acoplamentos (PL-3209)
+### Features
+* Implementa documentação da classe de unidade (PL-2898)
+* Configura FileWatcher no Prolog (PL-3267)
+
+### Bug Fixes
+* Corrige uso de data hora de queries que geram histórico de edição de veículo (PL-3264)
+
+### Refactors
+* Revisa e excluí testes unitários sem sentido (PL-3220)
 
 <a name="v1.4.1"></a>
 ## Version [v1.4.1](https://github.com/luizfp/PrologWebService/compare/v1.4.0...v1.4.1) (2020-11-08)
@@ -27,7 +25,6 @@ Change Log
 
 ### Bug Fixes
 * Corrige parâmetro de data no relatório de indicadores (PS-1315)
-
 
 <a name="v1.4.0"></a>
 ## Version [v1.4.0](https://github.com/luizfp/PrologWebService/compare/v1.3.3...v1.4.0) (2020-11-03)

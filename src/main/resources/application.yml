@@ -9,6 +9,10 @@ spring:
   datasource:
     platform: postgres
     driver-class-name: org.postgresql.Driver
+  # Evita que o processo do servidor seja restartado a cada vez que um arquivo observado mudar.
+  devtools:
+    restart:
+      enabled: false
 
 logging:
   level:
@@ -19,3 +23,4 @@ springdoc:
   swagger-ui:
     path: /swagger-ui.html
     url: /prolog/v2/swagger.json
+    operations-sorter: method

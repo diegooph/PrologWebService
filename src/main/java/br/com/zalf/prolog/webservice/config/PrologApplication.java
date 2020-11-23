@@ -53,7 +53,7 @@ public class PrologApplication extends SpringBootServletInitializer {
     @Bean
     public ServletListenerRegistrationBean<ServletContextListener> prologConsoleTextMakerRegistrationBean() {
         final ServletListenerRegistrationBean<ServletContextListener> bean = new ServletListenerRegistrationBean<>();
-        bean.setListener(new ProLogConsoleTextMaker());
+        bean.setListener(new PrologConsoleTextMaker());
         return bean;
     }
 
@@ -82,10 +82,9 @@ public class PrologApplication extends SpringBootServletInitializer {
             // Register components where DI is needed
             this.register(ApiListingResource.class);
             this.register(SwaggerSerializers.class);
-
             final BeanConfig swaggerConfigBean = new BeanConfig();
-            swaggerConfigBean.setConfigId("Prolog Api");
-            swaggerConfigBean.setTitle("Prolog Api");
+            swaggerConfigBean.setConfigId("Prolog Api Docs");
+            swaggerConfigBean.setTitle("Prolog Api Docs");
             swaggerConfigBean.setDescription("Métodos disponíveis para acesso aos dados do Prolog");
             swaggerConfigBean.setVersion("v1");
             swaggerConfigBean.setContact("diogenes@prologapp.com");

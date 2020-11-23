@@ -6,8 +6,7 @@
 - [ ] Atualizar apresentação do Sprint Review
 - [ ] Atualizar o CHANGELOG
 - [ ] Informar banco, servidor e branch utilizados para executar a tarefa
-- [ ] Realizar review da tarefa
-- [ ] REVISOR: DoDs e/ou critérios de aceitação verificados (1 por 1)
+- [ ] REVISOR: review da tarefa verificando DoDs e/ou critérios de aceitação (1 por 1)
 - [ ] Realizar o merge dos branchs e deletar o antigo
 
 #### [WS] Específicas

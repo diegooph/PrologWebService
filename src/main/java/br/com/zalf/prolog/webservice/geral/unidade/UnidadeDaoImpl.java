@@ -1,8 +1,11 @@
 package br.com.zalf.prolog.webservice.geral.unidade;
 
+import br.com.zalf.prolog.webservice.commons.util.NullIf;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
+import br.com.zalf.prolog.webservice.errorhandling.sql.NotFoundException;
+import br.com.zalf.prolog.webservice.errorhandling.sql.ServerSideErrorException;
 import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeEdicao;
 import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeVisualizacaoListagem;
 import org.jetbrains.annotations.NotNull;
@@ -24,25 +27,39 @@ import static br.com.zalf.prolog.webservice.commons.util.StatementUtils.bindValu
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
 public final class UnidadeDaoImpl extends DatabaseConnection implements UnidadeDao {
-
     @Override
-    public void update(@NotNull final UnidadeEdicao unidade) throws Throwable {
+    public Long update(@NotNull final UnidadeEdicao unidade) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
+        ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT FUNC_UNIDADE_ATUALIZA(" +
-                    "F_COD_UNIDADE := ?," +
-                    "F_NOME_UNIDADE := ?," +
-                    "F_COD_AUXILIAR_UNIDADE := ?," +
-                    "F_LATITUDE_UNIDADE := ?," +
-                    "F_LONGITUDE_UNIDADE := ?);");
+            stmt = conn.prepareStatement("select * from func_unidade_atualiza(" +
+                    "f_cod_unidade := ?," +
+                    "f_nome_unidade := ?," +
+                    "f_cod_auxiliar_unidade := ?," +
+                    "f_latitude_unidade := ?," +
+                    "f_longitude_unidade := ?);");
             stmt.setLong(1, unidade.getCodUnidade());
             stmt.setString(2, unidade.getNomeUnidade());
             bindValueOrNull(stmt, 3, unidade.getCodAuxiliarUnidade(), SqlType.TEXT);
             bindValueOrNull(stmt, 4, unidade.getLatitudeUnidade(), SqlType.TEXT);
             bindValueOrNull(stmt, 5, unidade.getLongitudeUnidade(), SqlType.TEXT);
-            stmt.executeQuery();
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                final Long codUnidadeAtualizada
+                        = NullIf.equalOrLess(rSet.getLong("func_unidade_atualiza"), 0);
+                if (codUnidadeAtualizada == null) {
+                    throw new NotFoundException("O registro não foi encontrado para ser atualizado.",
+                            "A chave enviada para atualização não existe na tabela de unidades para poder ser atualizada.\n"
+                                    + "Certifique-se da existẽncia da chave e tente novamente,",
+                            "A chave da unidade não existe na tabela unidade. Primeiro crie o registro e depois o atualize!");
+                }
+                return codUnidadeAtualizada;
+            }
+            throw new ServerSideErrorException("Ocorreu um erro ao atualizar a unidade!",
+                    "O servidor sofreu um erro no banco de dados ao atualizar a unidade." +
+                            "Houve um erro ao fazer o update de veículo.");
         } finally {
             close(conn, stmt);
         }

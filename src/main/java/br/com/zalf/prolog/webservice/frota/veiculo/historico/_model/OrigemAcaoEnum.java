@@ -9,9 +9,24 @@ import org.jetbrains.annotations.Nullable;
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
 public enum OrigemAcaoEnum {
+    /**
+     * Ação com origem na API externa do Prolog.
+     */
     API("API"),
+
+    /**
+     * Ação com origem no próprio sistema do Prolog, seja via web ou app.
+     */
     PROLOG("PROLOG"),
+
+    /**
+     * Ação com origem no sistema interno do Prolog. Usado para auxiliar em demandas de suporte e implantação.
+     */
     INTERNO("INTERNO"),
+
+    /**
+     * Ação com origem em um suporte aberto pelo cliente.
+     */
     SUPORTE("SUPORTE");
 
     @NotNull
