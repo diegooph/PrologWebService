@@ -2,7 +2,7 @@ Change Log
 ==========
 ## Stage
 ### Refactor
-* Refatora updates de km dos processos para usarem function centrazalidora (PL-3290)
+* Refatora updates de km dos processos para usarem function centralizadora (PL-3290)
 
 
 <a name="v1.4.3"></a>
