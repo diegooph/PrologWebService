@@ -1,0 +1,57 @@
+# Arquivo utilizado para manter as familias:modelos bloqueados da Expresso Nepomuceno. Este é um facilitador para não
+# precisar lançar um novo WS a cada modelo novo que deve ser bloqueado.
+# Os códigos aqui mapeados devem estar no formato - FA001:M0002
+
+# Código das famílias bloqueadas. Todas as placas que pertencerem a essa família não serão exibidos no Prolog.
+familiasBloqueadas:
+  - 'FA008'
+  - 'FA011'
+
+# Código dos modelos bloqueadas. Todas as placas que pertencerem a essas famílias:modelos específicos não serão
+# exibidos no Prolog.
+modelosBloqueados:
+  - 'FA001:M0464'
+  - 'FA002:M0710'
+  - 'FA002:M0720'
+  - 'FA002:M0721'
+  - 'FA003:M0511'
+  - 'FA003:M0598'
+  - 'FA003:M0709'
+  - 'FA004:M0717'
+  - 'FA005:M0458'
+  - 'FA006:M0322'
+  - 'FA006:M0323'
+  - 'FA006:M0324'
+  - 'FA006:M0385'
+  - 'FA006:M0389'
+  - 'FA006:M0397'
+  - 'FA006:M0412'
+  - 'FA006:M0414'
+  - 'FA006:M0415'
+  - 'FA006:M0416'
+  - 'FA006:M0444'
+  - 'FA006:M0445'
+  - 'FA006:M0463'
+  - 'FA006:M0469'
+  - 'FA006:M0516'
+  - 'FA006:M0553'
+  - 'FA006:M0578'
+  - 'FA006:M0580'
+  - 'FA006:M0581'
+  - 'FA006:M0601'
+  - 'FA006:M0612'
+  - 'FA006:M0620'
+  - 'FA006:M0622'
+  - 'FA006:M0634'
+  - 'FA006:M0697'
+  - 'FA006:M0703'
+  - 'FA006:M0707'
+  - 'FA006:M0712'
+  - 'FA006:M0713'
+  - 'FA006:M0714'
+  - 'FA006:M0715'
+  - 'FA006:M0716'
+  - 'FA010:M0391'
+  - 'FA012:M0398'
+  - 'FA013:M0462'
+  - 'FA013:M0476'
