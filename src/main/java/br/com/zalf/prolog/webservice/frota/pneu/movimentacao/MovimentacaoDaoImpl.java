@@ -237,7 +237,7 @@ public final class MovimentacaoDaoImpl extends DatabaseConnection implements Mov
                 rSet = stmt.executeQuery();
                 if (rSet.next()) {
                     mov.setCodigo(rSet.getLong("V_COD_MOVIMENTACAO_REALIZADA"));
-                    insertOrigem(conn, pneuDao, veiculoDao, pneuServicoRealizadoDao, codUnidade, mov);
+                    insertOrigem(conn, pneuDao, pneuServicoRealizadoDao, codUnidade, mov);
                     insertDestino(conn, veiculoDao, codUnidade, mov);
                     if (mov.getCodMotivoMovimento() != null) {
                         insertMotivoMovimento(conn, mov.getCodigo(), mov.getCodMotivoMovimento());
@@ -324,13 +324,12 @@ public final class MovimentacaoDaoImpl extends DatabaseConnection implements Mov
 
     private void insertOrigem(@NotNull final Connection conn,
                               @NotNull final PneuDao pneuDao,
-                              @NotNull final VeiculoDao veiculoDao,
                               @NotNull final PneuServicoRealizadoDao pneuServicoRealizadoDao,
                               @NotNull final Long codUnidade,
                               @NotNull final Movimentacao movimentacao) throws Throwable {
         switch (movimentacao.getOrigem().getTipo()) {
             case VEICULO:
-                insertMovimentacaoOrigemVeiculo(conn, veiculoDao, codUnidade, movimentacao);
+                insertMovimentacaoOrigemVeiculo(conn, codUnidade, movimentacao);
                 break;
             case ESTOQUE:
                 insertMovimentacaoOrigemEstoque(conn, codUnidade, movimentacao);
@@ -538,7 +537,6 @@ public final class MovimentacaoDaoImpl extends DatabaseConnection implements Mov
     }
 
     private void insertMovimentacaoOrigemVeiculo(@NotNull final Connection conn,
-                                                 @NotNull final VeiculoDao veiculoDao,
                                                  @NotNull final Long codUnidade,
                                                  @NotNull final Movimentacao movimentacao) throws Throwable {
         PreparedStatement stmt = null;
@@ -556,10 +554,6 @@ public final class MovimentacaoDaoImpl extends DatabaseConnection implements Mov
             stmt.setString(3, movimentacao.getOrigem().getTipo().asString());
             stmt.setLong(4, movimentacao.getCodigo());
             final OrigemVeiculo origemVeiculo = (OrigemVeiculo) movimentacao.getOrigem();
-            veiculoDao.updateKmByPlaca(
-                    origemVeiculo.getVeiculo().getPlaca(),
-                    origemVeiculo.getVeiculo().getKmAtual(),
-                    conn);
             stmt.setString(5, origemVeiculo.getVeiculo().getPlaca());
             stmt.setLong(6, origemVeiculo.getVeiculo().getKmAtual());
             stmt.setInt(7, origemVeiculo.getPosicaoOrigemPneu());
