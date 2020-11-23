@@ -11,6 +11,7 @@ Change Log
 * Realiza modificação mo CRUD de veiculos, incluindo os campos ```motorizado``` e ```possuiHubodometro``` (PL-3223)
 * Adiciona os veículos acoplados no objeto de `VeiculoVisualizacao` (PL-3212)
 * Adiciona os veículos acoplados no objeto de `VeiculoListagem` (PL-3211)
+* Refatora updates de km dos processos para usarem function centralizadora (PL-3290)
 
 <a name="v1.4.3"></a>
 ## Version [v1.4.3](https://github.com/luizfp/PrologWebService/compare/v1.4.2...v1.4.3) (release-date) [unreleased]
@@ -27,6 +28,9 @@ Change Log
 
 ### Refactors
 * Revisa e excluí testes unitários sem sentido (PL-3220)
+
+#### Features
+* Cria busca de acoplamentos (PL-3209)
 
 <a name="v1.4.1"></a>
 ## Version [v1.4.1](https://github.com/luizfp/PrologWebService/compare/v1.4.0...v1.4.1) (2020-11-08)
