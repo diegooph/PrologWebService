@@ -218,12 +218,15 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
             conn = getConnection();
             conn.setAutoCommit(false);
             final PneuDao pneuDao = Injection.providePneuDao();
+            Long codServicoFechado = null;
             switch (servico.getTipoServico()) {
                 case CALIBRAGEM:
-                    fechaCalibragem(conn, pneuDao, dataHorafechamentoServico, (ServicoCalibragem) servico);
+                    codServicoFechado =
+                            fechaCalibragem(conn, pneuDao, dataHorafechamentoServico, (ServicoCalibragem) servico);
                     break;
                 case INSPECAO:
-                    fechaInspecao(conn, pneuDao, dataHorafechamentoServico, (ServicoInspecao) servico);
+                    codServicoFechado =
+                            fechaInspecao(conn, pneuDao, dataHorafechamentoServico, (ServicoInspecao) servico);
                     break;
                 case MOVIMENTACAO:
                     final ServicoMovimentacao movimentacao = (ServicoMovimentacao) servico;
@@ -246,7 +249,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
                     // nós agora fechamos o de movimentação como sendo fechado pelo usuário e depois os demais que
                     // ficarem pendentes do mesmo pneu. Essa ordem de execução dos métodos é necessária e não deve
                     // ser alterada!
-                    fechaMovimentacao(conn, pneuDao, dataHorafechamentoServico, movimentacao);
+                    codServicoFechado = fechaMovimentacao(conn, pneuDao, dataHorafechamentoServico, movimentacao);
                     final Long codPneu = servico.getPneuComProblema().getCodigo();
                     final int qtdServicosEmAbertoPneu = getQuantidadeServicosEmAbertoPneu(
                             codUnidade,
@@ -272,12 +275,18 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
                     break;
             }
             final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
+            final Colaborador colaborador = Injection.provideColaboradorDao().getByCpf(
+                    servico.getColaboradorResponsavelFechamento().getCpf(),
+                    true);
             veiculoDao.updateKmByCodVeiculo(conn,
                                             codUnidade,
-                                            VeiculoBackwardHelper.getCodVeiculoByPlaca(servico.getColaboradorResponsavelFechamento()
-                                                                                               .getCodigo(),
-                                                                                       servico.getPlacaVeiculo()),
-                                            0L,
+                                            VeiculoBackwardHelper.getCodVeiculoByPlaca(
+                                                    Injection.provideColaboradorDao().getCodColaboradorByCpf(
+                                                            conn,
+                                                            colaborador.getCodEmpresa(),
+                                                            colaborador.getCpfAsString()),
+                                                    servico.getPlacaVeiculo()),
+                                            codServicoFechado,
                                             VeiculoTipoProcesso.FECHAMENTO_SERVICO_PNEU,
                                             dataHorafechamentoServico,
                                             servico.getKmVeiculoMomentoFechamento(),
