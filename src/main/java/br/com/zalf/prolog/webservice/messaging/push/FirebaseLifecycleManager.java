@@ -22,7 +22,7 @@ public final class FirebaseLifecycleManager implements ServletContextListener {
     private static final String DATABASE_URL_DEBUG = "https://prolog-debug.firebaseio.com";
     private static final String DATABASE_URL_PROD = "https://prolog-prod.firebaseio.com";
     private static final String DATABASE_URL = ProLogUtils.isDebug() ? DATABASE_URL_DEBUG : DATABASE_URL_PROD;
-    private final String TAG = FirebaseLifecycleManager.class.getSimpleName();
+    private static final String TAG = FirebaseLifecycleManager.class.getSimpleName();
 
     @Override
     public void contextInitialized(final ServletContextEvent sce) {

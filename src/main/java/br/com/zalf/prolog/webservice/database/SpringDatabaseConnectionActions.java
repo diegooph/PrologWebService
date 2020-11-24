@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.database;
 
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -22,14 +23,16 @@ public class SpringDatabaseConnectionActions implements DatabaseConnectionAction
 
     private static final String TAG = SpringDatabaseConnectionActions.class.getSimpleName();
 
+    @NotNull
     private final DataSource dataSource;
 
     @Autowired
-    SpringDatabaseConnectionActions(final DataSource dataSource) {
+    SpringDatabaseConnectionActions(@NotNull final DataSource dataSource) {
         this.dataSource = dataSource;
     }
 
     @Override
+    @NotNull
     public Connection getConnection() {
         try {
             return this.dataSource.getConnection();
@@ -40,13 +43,15 @@ public class SpringDatabaseConnectionActions implements DatabaseConnectionAction
     }
 
     @Override
+    @NotNull
     public void close(final AutoCloseable... closeables) {
         Arrays.stream(closeables)
-                .filter(Objects::isNull)
+                .filter(Objects::nonNull)
                 .forEach(this::close);
     }
 
     @Override
+    @NotNull
     public void close(final AutoCloseable closeable) {
         try {
             closeable.close();
@@ -56,8 +61,9 @@ public class SpringDatabaseConnectionActions implements DatabaseConnectionAction
     }
 
     @Override
+    @NotNull
     public void close(final Connection connection) {
-        if(Objects.nonNull(connection)) {
+        if (Objects.nonNull(connection)) {
             try {
                 connection.close();
             } catch (final SQLException exception) {
@@ -68,9 +74,10 @@ public class SpringDatabaseConnectionActions implements DatabaseConnectionAction
     }
 
     @Override
+    @NotNull
     public void close(final Connection connection, final ResultSet rs) {
         close(connection);
-        if(Objects.nonNull(rs)) {
+        if (Objects.nonNull(rs)) {
             try {
                 rs.close();
             } catch (final SQLException exception) {
@@ -80,9 +87,10 @@ public class SpringDatabaseConnectionActions implements DatabaseConnectionAction
     }
 
     @Override
+    @NotNull
     public void close(final Connection connection, final ResultSet rs, final PreparedStatement stmt) {
         close(connection, rs);
-        if(Objects.nonNull(stmt)) {
+        if (Objects.nonNull(stmt)) {
             try {
                 stmt.close();
             } catch (final SQLException exception) {
