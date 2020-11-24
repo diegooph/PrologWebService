@@ -15,12 +15,12 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.TipoEixoVeicul
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.InfosVeiculoEditado;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoAntesEdicao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicao;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.listagem.VeiculoAcopladoListagemHolder;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.listagem.VeiculoListagem;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoAcopladoVisualizacao;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.listagem.VeiculosAcopladosPorVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoDadosColetaKm;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoVisualizacao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoVisualizacaoPneu;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculosAcopladosVisualizacao;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -48,13 +48,13 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
             conn = getConnection();
             conn.setAutoCommit(false);
             stmt = conn.prepareStatement("SELECT * FROM FUNC_VEICULO_INSERE_VEICULO(" +
-                    "F_COD_UNIDADE := ?," +
-                    "F_PLACA := ?," +
-                    "F_IDENTIFICADOR_FROTA := ?," +
-                    "F_KM_ATUAL := ?, " +
-                    "F_COD_MODELO := ?, " +
-                    "F_COD_TIPO := ?," +
-                    "F_POSSUI_HUBODOMETRO := ?) AS CODIGO;");
+                                                 "F_COD_UNIDADE := ?," +
+                                                 "F_PLACA := ?," +
+                                                 "F_IDENTIFICADOR_FROTA := ?," +
+                                                 "F_KM_ATUAL := ?, " +
+                                                 "F_COD_MODELO := ?, " +
+                                                 "F_COD_TIPO := ?," +
+                                                 "F_POSSUI_HUBODOMETRO := ?) AS CODIGO;");
             stmt.setLong(1, veiculo.getCodUnidadeAlocado());
             stmt.setString(2, veiculo.getPlacaVeiculo().toUpperCase());
             stmt.setString(3, StringUtils.trimToNull(veiculo.getIdentificadorFrota()));
@@ -67,8 +67,8 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
                 final long codVeiculoInserido = rSet.getLong("CODIGO");
                 if (codVeiculoInserido <= 0) {
                     throw new SQLException("Erro ao inserir veículo:\n" +
-                            "codUnidade: " + veiculo.getCodUnidadeAlocado() + "\n" +
-                            "codVeiculoInserido: " + codVeiculoInserido);
+                                                   "codUnidade: " + veiculo.getCodUnidadeAlocado() + "\n" +
+                                                   "codVeiculoInserido: " + codVeiculoInserido);
                 }
                 // Avisamos ao Listener que um veículo foi inserido.
                 checklistOfflineListener.onInsertVeiculo(conn, codVeiculoInserido);
@@ -100,18 +100,18 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
             conn = getConnection();
             conn.setAutoCommit(false);
             stmt = conn.prepareStatement("select * from func_veiculo_atualiza_veiculo(" +
-                    "f_cod_veiculo := ?," +
-                    "f_nova_placa := ?, " +
-                    "f_novo_identificador_frota := ?, " +
-                    "f_novo_km := ?, " +
-                    "f_novo_cod_tipo := ?, " +
-                    "f_novo_cod_modelo := ?, " +
-                    "f_novo_status := ?, " +
-                    "f_novo_possui_hubodometro := ?," +
-                    "f_cod_colaborador_edicao := ?, " +
-                    "f_origem_edicao := ?, " +
-                    "f_data_hora_edicao := ?, " +
-                    "f_informacoes_extras_edicao := null);");
+                                                 "f_cod_veiculo := ?," +
+                                                 "f_nova_placa := ?, " +
+                                                 "f_novo_identificador_frota := ?, " +
+                                                 "f_novo_km := ?, " +
+                                                 "f_novo_cod_tipo := ?, " +
+                                                 "f_novo_cod_modelo := ?, " +
+                                                 "f_novo_status := ?, " +
+                                                 "f_novo_possui_hubodometro := ?," +
+                                                 "f_cod_colaborador_edicao := ?, " +
+                                                 "f_origem_edicao := ?, " +
+                                                 "f_data_hora_edicao := ?, " +
+                                                 "f_informacoes_extras_edicao := null);");
             stmt.setLong(1, veiculo.getCodigo());
             stmt.setString(2, veiculo.getPlacaVeiculo());
             stmt.setString(3, StringUtils.trimToNull(veiculo.getIdentificadorFrota()));
@@ -163,32 +163,27 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
     @Override
     public List<VeiculoListagem> getVeiculosByUnidades(@NotNull final List<Long> codUnidades,
                                                        final boolean apenasAtivos,
-                                                       @Nullable final Long codTipoVeiculo) throws Throwable {
+                                                       @Nullable final Long codTipoVeiculo)
+            throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("select * from func_veiculo_get_all_by_unidades(" +
-                    "f_cod_unidades => ?," +
-                    "f_apenas_ativos => ?," +
-                    "f_cod_tipo_veiculo => ?); ");
+                                                 "f_cod_unidades => ?," +
+                                                 "f_apenas_ativos => ?," +
+                                                 "f_cod_tipo_veiculo => ?); ");
             stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
             stmt.setBoolean(2, apenasAtivos);
             StatementUtils.bindValueOrNull(stmt, 3, codTipoVeiculo, SqlType.BIGINT);
             rSet = stmt.executeQuery();
-            final VeiculoAcopladoListagemHolder veiculosAcoplados = getVeiculosAcopladosByCodUnidades(
+            final VeiculosAcopladosPorVeiculo veiculosAcopladosPorVeiculo = getVeiculosAcopladosByCodUnidades(
                     conn,
                     codUnidades,
                     apenasAtivos,
                     codTipoVeiculo);
-            final List<VeiculoListagem> veiculosListagem = new ArrayList<>();
-            while (rSet.next()) {
-                veiculosListagem.add(VeiculoConverter.createVeiculoListagem(
-                        rSet,
-                        veiculosAcoplados.getVeiculosAcopladosByCodVeiculo(rSet.getLong("CODIGO"))));
-            }
-            return veiculosListagem;
+            return VeiculoConverter.createVeiculosListagem(rSet, veiculosAcopladosPorVeiculo);
         } finally {
             close(conn, stmt, rSet);
         }
@@ -203,25 +198,26 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT " +
-                    "V.*, " +
-                    "R.CODIGO AS COD_REGIONAL_ALOCADO, " +
-                    "MV.NOME AS MODELO, " +
-                    "EV.NOME AS EIXOS, " +
-                    "EV.DIANTEIRO, " +
-                    "EV.TRASEIRO, " +
-                    "EV.CODIGO AS COD_EIXOS, " +
-                    "TV.NOME AS TIPO, " +
-                    "MAV.NOME AS MARCA, " +
-                    "MAV.CODIGO AS COD_MARCA," +
-                    "V.IDENTIFICADOR_FROTA AS ID_FROTA  "
-                    + "FROM VEICULO V JOIN MODELO_VEICULO MV ON MV.CODIGO = V.COD_MODELO "
-                    + "JOIN EIXOS_VEICULO EV ON EV.CODIGO = V.COD_EIXOS "
-                    + "JOIN VEICULO_TIPO TV ON TV.CODIGO = V.COD_TIPO "
-                    + "JOIN MARCA_VEICULO MAV ON MAV.CODIGO = MV.COD_MARCA "
-                    + "JOIN UNIDADE U ON U.CODIGO = V.COD_UNIDADE "
-                    + "JOIN REGIONAL R ON U.COD_REGIONAL = R.CODIGO "
-                    + "WHERE V.COD_UNIDADE = (SELECT COD_UNIDADE FROM COLABORADOR C WHERE C.CPF = ?) "
-                    + "ORDER BY V.PLACA");
+                                                 "V.*, " +
+                                                 "R.CODIGO AS COD_REGIONAL_ALOCADO, " +
+                                                 "MV.NOME AS MODELO, " +
+                                                 "EV.NOME AS EIXOS, " +
+                                                 "EV.DIANTEIRO, " +
+                                                 "EV.TRASEIRO, " +
+                                                 "EV.CODIGO AS COD_EIXOS, " +
+                                                 "TV.NOME AS TIPO, " +
+                                                 "MAV.NOME AS MARCA, " +
+                                                 "MAV.CODIGO AS COD_MARCA," +
+                                                 "V.IDENTIFICADOR_FROTA AS ID_FROTA  "
+                                                 + "FROM VEICULO V JOIN MODELO_VEICULO MV ON MV.CODIGO = V.COD_MODELO "
+                                                 + "JOIN EIXOS_VEICULO EV ON EV.CODIGO = V.COD_EIXOS "
+                                                 + "JOIN VEICULO_TIPO TV ON TV.CODIGO = V.COD_TIPO "
+                                                 + "JOIN MARCA_VEICULO MAV ON MAV.CODIGO = MV.COD_MARCA "
+                                                 + "JOIN UNIDADE U ON U.CODIGO = V.COD_UNIDADE "
+                                                 + "JOIN REGIONAL R ON U.COD_REGIONAL = R.CODIGO "
+                                                 + "WHERE V.COD_UNIDADE = (SELECT COD_UNIDADE FROM COLABORADOR C " +
+                                                 "WHERE C.CPF = ?) "
+                                                 + "ORDER BY V.PLACA");
             stmt.setLong(1, cpf);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
@@ -247,7 +243,8 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 final List<VeiculoVisualizacaoPneu> pneus = getPneusByCodigoVeiculo(conn, codVeiculo);
-                final List<VeiculoAcopladoVisualizacao> veiculosAcoplados = getVeiculosAcopladosByCodVeiculo(conn, codVeiculo);
+                final Optional<VeiculosAcopladosVisualizacao> veiculosAcoplados =
+                        getVeiculosAcopladosByCodVeiculo(conn, codVeiculo);
                 return VeiculoConverter.createVeiculoVisualizacao(rSet, pneus, veiculosAcoplados);
             } else {
                 throw new Throwable("Erro ao buscar veiculo de codigo " + codVeiculo);
@@ -267,8 +264,8 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM FUNC_VEICULO_GET_CODIGO_BY_PLACA(" +
-                    "F_COD_COLABORADOR => ?, " +
-                    "F_PLACAS => ?);");
+                                                 "F_COD_COLABORADOR => ?, " +
+                                                 "F_PLACAS => ?);");
             stmt.setLong(1, codColaborador);
             stmt.setArray(2, PostgresUtils.listToArray(conn, SqlType.TEXT, placas));
             rSet = stmt.executeQuery();
@@ -283,13 +280,35 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         }
     }
 
+    @Deprecated
+    @NotNull
+    @Override
+    public Veiculo getVeiculoByPlaca(@NotNull final String placa, final boolean withPneus) throws SQLException {
+        Connection conn = null;
+        try {
+            conn = getConnection();
+            return internalGetVeiculoByPlaca(conn, placa, withPneus);
+        } finally {
+            close(conn);
+        }
+    }
+
+    @Deprecated
+    @NotNull
+    @Override
+    public Veiculo getVeiculoByPlaca(@NotNull final Connection conn,
+                                     @NotNull final String placa,
+                                     final boolean withPneus) throws Throwable {
+        return internalGetVeiculoByPlaca(conn, placa, withPneus);
+    }
+
     @Override
     public void updateKmByPlaca(final String placa, final long km, final Connection conn) throws SQLException {
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("UPDATE VEICULO SET "
-                    + "KM = ? "
-                    + "WHERE PLACA = ?");
+                                                 + "KM = ? "
+                                                 + "WHERE PLACA = ?");
             stmt.setLong(1, km);
             stmt.setString(2, placa);
             final int count = stmt.executeUpdate();
@@ -313,11 +332,11 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         ResultSet rSet = null;
         try {
             stmt = conn.prepareStatement("select * from func_veiculo_update_km_atual(" +
-                    "f_cod_unidade => ?," +
-                    "f_cod_veiculo => ?," +
-                    "f_km_coletado => ?," +
-                    "f_tipo_processo => ?::types.veiculo_processo_type," +
-                    "f_deve_propagar_km => ?) as km_processo;");
+                                                 "f_cod_unidade => ?," +
+                                                 "f_cod_veiculo => ?," +
+                                                 "f_km_coletado => ?," +
+                                                 "f_tipo_processo => ?::types.veiculo_processo_type," +
+                                                 "f_deve_propagar_km => ?) as km_processo;");
             stmt.setLong(1, codUnidade);
             stmt.setLong(2, codVeiculo);
             stmt.setLong(3, kmVeiculo);
@@ -332,351 +351,20 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
             }
 
             throw new SQLException(String.format("Erro ao atualizar o km!" +
-                            "\ncodUnidade: %d" +
-                            "\ncodVeiculo: %d" +
-                            "\ntipoProcesso: %s" +
-                            "\nkmVeiculo: %d" +
-                            "\ndevePropagarKm: %b",
-                    codUnidade, codVeiculo, veiculoTipoProcesso.asString(), kmVeiculo, devePropagarKmParaReboques));
+                                                         "\ncodUnidade: %d" +
+                                                         "\ncodVeiculo: %d" +
+                                                         "\ntipoProcesso: %s" +
+                                                         "\nkmVeiculo: %d" +
+                                                         "\ndevePropagarKm: %b",
+                                                 codUnidade,
+                                                 codVeiculo,
+                                                 veiculoTipoProcesso.asString(),
+                                                 kmVeiculo,
+                                                 devePropagarKmParaReboques));
         } catch (final SQLException e) {
             throw Exceptions.rethrow(e);
         } finally {
             DatabaseConnection.close(stmt, rSet);
-        }
-    }
-
-    @NotNull
-    @Override
-    public Long insertModeloVeiculo(@NotNull final Modelo modelo,
-                                    @NotNull final Long codEmpresa,
-                                    @NotNull final Long codMarca) throws Throwable {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("INSERT INTO MODELO_VEICULO(NOME, COD_MARCA, COD_EMPRESA) VALUES (?,?,?) " +
-                    "RETURNING CODIGO");
-            stmt.setString(1, modelo.getNome());
-            stmt.setLong(2, codMarca);
-            stmt.setLong(3, codEmpresa);
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                return rSet.getLong("CODIGO");
-            } else {
-                throw new SQLException("Erro ao cadastrar o modelo do veículo");
-            }
-        } finally {
-            close(conn, stmt, rSet);
-        }
-    }
-
-    @Override
-    public Modelo getModeloVeiculo(final Long codUnidade, final Long codModelo) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM modelo_veiculo WHERE codigo = ? AND cod_empresa  = " +
-                    "(SELECT cod_empresa FROM unidade WHERE codigo = ?)");
-            stmt.setLong(1, codModelo);
-            stmt.setLong(2, codUnidade);
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                final ModeloVeiculo modelo = new ModeloVeiculo();
-                modelo.setCodigo(rSet.getLong("CODIGO"));
-                modelo.setNome(rSet.getString("NOME"));
-                return modelo;
-            }
-        } finally {
-            close(conn, stmt, rSet);
-        }
-        return null;
-    }
-
-    @Override
-    public boolean updateModelo(final Modelo modelo, final Long codUnidade, final Long codMarca) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("UPDATE modelo_veiculo SET nome = ?, cod_marca = ? WHERE codigo = ? and cod_empresa = " +
-                    "(SELECT cod_empresa FROM unidade WHERE codigo = ?)");
-            stmt.setString(1, modelo.getNome());
-            stmt.setLong(2, codMarca);
-            stmt.setLong(3, modelo.getCodigo());
-            stmt.setLong(4, codUnidade);
-            return stmt.executeUpdate() > 0;
-        } finally {
-            close(conn, stmt);
-        }
-    }
-
-    @Override
-    public boolean deleteModelo(final Long codModelo, final Long codUnidade) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("DELETE FROM modelo_veiculo WHERE codigo = ? and cod_empresa = " +
-                    "(SELECT cod_empresa FROM unidade WHERE codigo = ?)");
-            stmt.setLong(1, codModelo);
-            stmt.setLong(2, codUnidade);
-            return stmt.executeUpdate() > 0;
-        } finally {
-            close(conn, stmt);
-        }
-    }
-
-    @Override
-    public int getTotalVeiculosByUnidade(final Long codUnidade, final Connection conn) throws SQLException {
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        int total = 0;
-        try {
-            stmt = conn.prepareStatement("SELECT COUNT(PLACA) FROM VEICULO WHERE STATUS_ATIVO = TRUE AND COD_UNIDADE = ?");
-            stmt.setLong(1, codUnidade);
-            rSet = stmt.executeQuery();
-            while (rSet.next()) {
-                total = rSet.getInt("COUNT");
-            }
-        } finally {
-            close(stmt, rSet);
-        }
-        return total;
-    }
-
-    @Override
-    public List<String> getPlacasVeiculosByTipo(final Long codUnidade, final String codTipo) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        final List<String> placas = new ArrayList<>();
-        try {
-            conn = getConnection();
-            // Não entendi essa parte, se já vem o código do tipo, porque receber ele em String e depois fazer join com
-            // veiculo_tipo sendo que já tem o código do tipo na tabela veículo?
-            stmt = conn.prepareStatement("SELECT V.PLACA FROM VEICULO V JOIN VEICULO_TIPO VT ON V.COD_TIPO = VT.CODIGO " +
-                    "WHERE V.COD_UNIDADE = ? AND VT.CODIGO::TEXT LIKE ? ORDER BY V.PLACA;");
-            stmt.setLong(1, codUnidade);
-            stmt.setString(2, codTipo);
-            rSet = stmt.executeQuery();
-            while (rSet.next()) {
-                placas.add(rSet.getString("placa"));
-            }
-        } finally {
-            close(conn, stmt, rSet);
-        }
-        return placas;
-    }
-
-    @Override
-    public Optional<DiagramaVeiculo> getDiagramaVeiculoByPlaca(@NotNull final String placa) throws SQLException {
-        Connection conn = null;
-        try {
-            conn = getConnection();
-            return internalGetDiagramaVeiculoByPlaca(conn, placa);
-        } finally {
-            close(conn);
-        }
-    }
-
-    @Override
-    public Optional<DiagramaVeiculo> getDiagramaVeiculoByPlaca(@NotNull final Connection conn,
-                                                               @NotNull final String placa) throws SQLException {
-        return internalGetDiagramaVeiculoByPlaca(conn, placa);
-    }
-
-    @Override
-    public Optional<DiagramaVeiculo> getDiagramaVeiculoByCod(@NotNull final Short codDiagrama) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * " +
-                    "FROM veiculo_diagrama AS vd " +
-                    "  JOIN veiculo_tipo AS vt " +
-                    "    ON vd.codigo = vt.cod_diagrama " +
-                    "WHERE vd.codigo = ?");
-            stmt.setShort(1, codDiagrama);
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                return createDiagramaVeiculo(rSet, conn);
-            }
-        } finally {
-            close(conn, stmt, rSet);
-        }
-        return Optional.empty();
-    }
-
-    @Override
-    public Set<DiagramaVeiculo> getDiagramasVeiculos() throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        final Set<DiagramaVeiculo> diagramas = new HashSet<>();
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM veiculo_diagrama ");
-            rSet = stmt.executeQuery();
-            while (rSet.next()) {
-                createDiagramaVeiculo(rSet, conn).ifPresent(diagramas::add);
-            }
-        } finally {
-            close(conn, stmt, rSet);
-        }
-        return diagramas;
-    }
-
-    @Override
-    public void adicionaPneuVeiculo(@NotNull final Connection conn,
-                                    @NotNull final Long codUnidade,
-                                    @NotNull final String placa,
-                                    @NotNull final Long codPneu,
-                                    final int posicaoPneuVeiculo) throws Throwable {
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_VEICULO_INSERE_VEICULO_PNEU(" +
-                    "F_COD_UNIDADE => ?," +
-                    "F_PLACA => ?," +
-                    "F_COD_VEICULO => ?," +
-                    "F_COD_PNEU  => ?," +
-                    "F_POSICAO  => ?) AS RESULT;");
-            stmt.setLong(1, codUnidade);
-            stmt.setString(2, placa);
-            stmt.setLong(3, getCodVeiculoByPlaca(conn, placa));
-            stmt.setLong(4, codPneu);
-            stmt.setInt(5, posicaoPneuVeiculo);
-            rSet = stmt.executeQuery();
-            if (!rSet.next() || !rSet.getBoolean("RESULT")) {
-                throw new SQLException("Erro ao aplicar o pneu " + codPneu + " ao veículo " + placa);
-            }
-        } finally {
-            close(stmt, rSet);
-        }
-    }
-
-    @Override
-    public void removePneuVeiculo(@NotNull final Connection conn,
-                                  @NotNull final Long codUnidade,
-                                  @NotNull final String placa,
-                                  @NotNull final Long codPneu) throws Throwable {
-        PreparedStatement stmt = null;
-        try {
-            stmt = conn.prepareStatement("DELETE FROM VEICULO_PNEU WHERE COD_UNIDADE = ? AND PLACA = ? AND " +
-                    "COD_PNEU = ?;");
-            stmt.setLong(1, codUnidade);
-            stmt.setString(2, placa);
-            stmt.setLong(3, codPneu);
-            final int count = stmt.executeUpdate();
-            if (count == 0) {
-                throw new SQLException("Erro ao remover o pneu " + codPneu + " da placa " + placa);
-            }
-        } finally {
-            close(stmt);
-        }
-    }
-
-    @Override
-    public Long getCodUnidadeByPlaca(@NotNull final Connection conn,
-                                     @NotNull final String placaVeiculo) throws Throwable {
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            stmt = conn.prepareStatement("SELECT V.COD_UNIDADE FROM VEICULO V WHERE V.PLACA = ?;");
-            stmt.setString(1, placaVeiculo);
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                final long codUnidade = rSet.getLong("COD_UNIDADE");
-                if (codUnidade <= 0) {
-                    throw new IllegalStateException(
-                            "Código da unidade inválido para a placa:" +
-                                    "\nplacaVeiculo: " + placaVeiculo);
-                }
-                return codUnidade;
-            } else {
-                throw new IllegalStateException(
-                        "Nenhum dado encontrado para a placa:" +
-                                "\nplacaVeiculo: " + placaVeiculo);
-            }
-        } finally {
-            close(stmt, rSet);
-        }
-    }
-
-    @NotNull
-    @Override
-    public Optional<List<Long>> getCodPneusAplicadosVeiculo(@NotNull final Connection conn,
-                                                            @NotNull final Long codVeiculo) throws Throwable {
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_VEICULO_GET_COD_PNEUS_APLICADOS(?);");
-            stmt.setLong(1, codVeiculo);
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                final List<Long> codPneusAplicados = new ArrayList<>();
-                do {
-                    codPneusAplicados.add(rSet.getLong("COD_PNEU"));
-                } while (rSet.next());
-                return Optional.of(codPneusAplicados);
-            } else {
-                return Optional.empty();
-            }
-        } finally {
-            close(stmt, rSet);
-        }
-    }
-
-    @NotNull
-    @Override
-    public Long getCodVeiculoByPlaca(@NotNull final Connection conn,
-                                     @NotNull final String placaVeiculo) throws Throwable {
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            stmt = conn.prepareStatement("SELECT V.CODIGO FROM VEICULO V WHERE V.PLACA = ?;");
-            stmt.setString(1, placaVeiculo);
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                final long codVeiculo = rSet.getLong("CODIGO");
-                if (codVeiculo <= 0) {
-                    throw new SQLException("Erro ao buscar código do veículo:" +
-                            "\nplacaVeiculo: " + placaVeiculo + "" +
-                            "\ncodVeiculo: " + codVeiculo);
-                }
-                return codVeiculo;
-            } else {
-                throw new SQLException("Erro ao buscar código do veículo:\n" +
-                        "placaVeiculo: " + placaVeiculo);
-            }
-        } finally {
-            close(stmt, rSet);
-        }
-    }
-
-    @Deprecated
-    @NotNull
-    @Override
-    public Veiculo getVeiculoByPlaca(@NotNull final Connection conn,
-                                     @NotNull final String placa,
-                                     final boolean withPneus) throws Throwable {
-        return internalGetVeiculoByPlaca(conn, placa, withPneus);
-    }
-
-    @Deprecated
-    @NotNull
-    @Override
-    public Veiculo getVeiculoByPlaca(@NotNull final String placa, final boolean withPneus) throws SQLException {
-        Connection conn = null;
-        try {
-            conn = getConnection();
-            return internalGetVeiculoByPlaca(conn, placa, withPneus);
-        } finally {
-            close(conn);
         }
     }
 
@@ -693,10 +381,12 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
 
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT MO.CODIGO AS COD_MODELO, MO.NOME AS MODELO, MA.CODIGO AS COD_MARCA, MA.NOME AS MARCA"
-                    + " FROM MARCA_VEICULO MA left JOIN MODELO_VEICULO MO ON MA.CODIGO = MO.COD_MARCA AND MO.cod_empresa = ? "
-                    + "WHERE MO.COD_EMPRESA = ? OR MO.COD_EMPRESA IS NULL "
-                    + "ORDER BY COD_MARCA, COD_MODELO");
+            stmt = conn.prepareStatement(
+                    "SELECT MO.CODIGO AS COD_MODELO, MO.NOME AS MODELO, MA.CODIGO AS COD_MARCA, MA.NOME AS MARCA"
+                            + " FROM MARCA_VEICULO MA left JOIN MODELO_VEICULO MO ON MA.CODIGO = MO.COD_MARCA AND MO" +
+                            ".cod_empresa = ? "
+                            + "WHERE MO.COD_EMPRESA = ? OR MO.COD_EMPRESA IS NULL "
+                            + "ORDER BY COD_MARCA, COD_MODELO");
             stmt.setLong(1, codEmpresa);
             stmt.setLong(2, codEmpresa);
             rSet = stmt.executeQuery();
@@ -710,7 +400,8 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
                     }
                 } else {
                     Log.d("metodo", "marcas.size > 0");
-                    if (marca.getCodigo() == rSet.getLong("COD_MARCA")) { // se o modelo atual pertence a mesma marca do modelo anterior
+                    if (marca.getCodigo() == rSet.getLong("COD_MARCA")) { // se o modelo atual pertence a mesma marca
+                        // do modelo anterior
                         if (rSet.getString("MODELO") != null) {
                             modelos.add(createModelo(rSet));
                         }
@@ -799,6 +490,323 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         }
     }
 
+    @NotNull
+    @Override
+    public Long insertModeloVeiculo(@NotNull final Modelo modelo,
+                                    @NotNull final Long codEmpresa,
+                                    @NotNull final Long codMarca) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("INSERT INTO MODELO_VEICULO(NOME, COD_MARCA, COD_EMPRESA) VALUES (?,?,?) " +
+                                                 "RETURNING CODIGO");
+            stmt.setString(1, modelo.getNome());
+            stmt.setLong(2, codMarca);
+            stmt.setLong(3, codEmpresa);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return rSet.getLong("CODIGO");
+            } else {
+                throw new SQLException("Erro ao cadastrar o modelo do veículo");
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+    @Override
+    public int getTotalVeiculosByUnidade(final Long codUnidade, final Connection conn) throws SQLException {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        int total = 0;
+        try {
+            stmt = conn.prepareStatement(
+                    "SELECT COUNT(PLACA) FROM VEICULO WHERE STATUS_ATIVO = TRUE AND COD_UNIDADE = ?");
+            stmt.setLong(1, codUnidade);
+            rSet = stmt.executeQuery();
+            while (rSet.next()) {
+                total = rSet.getInt("COUNT");
+            }
+        } finally {
+            close(stmt, rSet);
+        }
+        return total;
+    }
+
+    @Override
+    public List<String> getPlacasVeiculosByTipo(final Long codUnidade, final String codTipo) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        final List<String> placas = new ArrayList<>();
+        try {
+            conn = getConnection();
+            // Não entendi essa parte, se já vem o código do tipo, porque receber ele em String e depois fazer join com
+            // veiculo_tipo sendo que já tem o código do tipo na tabela veículo?
+            stmt =
+                    conn.prepareStatement(
+                            "SELECT V.PLACA FROM VEICULO V JOIN VEICULO_TIPO VT ON V.COD_TIPO = VT.CODIGO " +
+                                    "WHERE V.COD_UNIDADE = ? AND VT.CODIGO::TEXT LIKE ? ORDER BY V.PLACA;");
+            stmt.setLong(1, codUnidade);
+            stmt.setString(2, codTipo);
+            rSet = stmt.executeQuery();
+            while (rSet.next()) {
+                placas.add(rSet.getString("placa"));
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
+        return placas;
+    }
+
+    @Override
+    public Optional<DiagramaVeiculo> getDiagramaVeiculoByPlaca(@NotNull final String placa) throws SQLException {
+        Connection conn = null;
+        try {
+            conn = getConnection();
+            return internalGetDiagramaVeiculoByPlaca(conn, placa);
+        } finally {
+            close(conn);
+        }
+    }
+
+    @Override
+    public Optional<DiagramaVeiculo> getDiagramaVeiculoByPlaca(@NotNull final Connection conn,
+                                                               @NotNull final String placa) throws SQLException {
+        return internalGetDiagramaVeiculoByPlaca(conn, placa);
+    }
+
+    @Override
+    public Optional<DiagramaVeiculo> getDiagramaVeiculoByCod(@NotNull final Short codDiagrama) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * " +
+                                                 "FROM veiculo_diagrama AS vd " +
+                                                 "  JOIN veiculo_tipo AS vt " +
+                                                 "    ON vd.codigo = vt.cod_diagrama " +
+                                                 "WHERE vd.codigo = ?");
+            stmt.setShort(1, codDiagrama);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return createDiagramaVeiculo(rSet, conn);
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public Set<DiagramaVeiculo> getDiagramasVeiculos() throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        final Set<DiagramaVeiculo> diagramas = new HashSet<>();
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM veiculo_diagrama ");
+            rSet = stmt.executeQuery();
+            while (rSet.next()) {
+                createDiagramaVeiculo(rSet, conn).ifPresent(diagramas::add);
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
+        return diagramas;
+    }
+
+    @Override
+    public Modelo getModeloVeiculo(final Long codUnidade, final Long codModelo) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM modelo_veiculo WHERE codigo = ? AND cod_empresa  = " +
+                                                 "(SELECT cod_empresa FROM unidade WHERE codigo = ?)");
+            stmt.setLong(1, codModelo);
+            stmt.setLong(2, codUnidade);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                final ModeloVeiculo modelo = new ModeloVeiculo();
+                modelo.setCodigo(rSet.getLong("CODIGO"));
+                modelo.setNome(rSet.getString("NOME"));
+                return modelo;
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
+        return null;
+    }
+
+    @Override
+    public boolean updateModelo(final Modelo modelo, final Long codUnidade, final Long codMarca) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement(
+                    "UPDATE modelo_veiculo SET nome = ?, cod_marca = ? WHERE codigo = ? and cod_empresa = " +
+                            "(SELECT cod_empresa FROM unidade WHERE codigo = ?)");
+            stmt.setString(1, modelo.getNome());
+            stmt.setLong(2, codMarca);
+            stmt.setLong(3, modelo.getCodigo());
+            stmt.setLong(4, codUnidade);
+            return stmt.executeUpdate() > 0;
+        } finally {
+            close(conn, stmt);
+        }
+    }
+
+    @Override
+    public boolean deleteModelo(final Long codModelo, final Long codUnidade) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("DELETE FROM modelo_veiculo WHERE codigo = ? and cod_empresa = " +
+                                                 "(SELECT cod_empresa FROM unidade WHERE codigo = ?)");
+            stmt.setLong(1, codModelo);
+            stmt.setLong(2, codUnidade);
+            return stmt.executeUpdate() > 0;
+        } finally {
+            close(conn, stmt);
+        }
+    }
+
+    @Override
+    public void adicionaPneuVeiculo(@NotNull final Connection conn,
+                                    @NotNull final Long codUnidade,
+                                    @NotNull final String placa,
+                                    @NotNull final Long codPneu,
+                                    final int posicaoPneuVeiculo) throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_VEICULO_INSERE_VEICULO_PNEU(" +
+                                                 "F_COD_UNIDADE => ?," +
+                                                 "F_PLACA => ?," +
+                                                 "F_COD_VEICULO => ?," +
+                                                 "F_COD_PNEU  => ?," +
+                                                 "F_POSICAO  => ?) AS RESULT;");
+            stmt.setLong(1, codUnidade);
+            stmt.setString(2, placa);
+            stmt.setLong(3, getCodVeiculoByPlaca(conn, placa));
+            stmt.setLong(4, codPneu);
+            stmt.setInt(5, posicaoPneuVeiculo);
+            rSet = stmt.executeQuery();
+            if (!rSet.next() || !rSet.getBoolean("RESULT")) {
+                throw new SQLException("Erro ao aplicar o pneu " + codPneu + " ao veículo " + placa);
+            }
+        } finally {
+            close(stmt, rSet);
+        }
+    }
+
+    @Override
+    public void removePneuVeiculo(@NotNull final Connection conn,
+                                  @NotNull final Long codUnidade,
+                                  @NotNull final String placa,
+                                  @NotNull final Long codPneu) throws Throwable {
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement("DELETE FROM VEICULO_PNEU WHERE COD_UNIDADE = ? AND PLACA = ? AND " +
+                                                 "COD_PNEU = ?;");
+            stmt.setLong(1, codUnidade);
+            stmt.setString(2, placa);
+            stmt.setLong(3, codPneu);
+            final int count = stmt.executeUpdate();
+            if (count == 0) {
+                throw new SQLException("Erro ao remover o pneu " + codPneu + " da placa " + placa);
+            }
+        } finally {
+            close(stmt);
+        }
+    }
+
+    @NotNull
+    @Override
+    public Optional<List<Long>> getCodPneusAplicadosVeiculo(@NotNull final Connection conn,
+                                                            @NotNull final Long codVeiculo) throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_VEICULO_GET_COD_PNEUS_APLICADOS(?);");
+            stmt.setLong(1, codVeiculo);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                final List<Long> codPneusAplicados = new ArrayList<>();
+                do {
+                    codPneusAplicados.add(rSet.getLong("COD_PNEU"));
+                } while (rSet.next());
+                return Optional.of(codPneusAplicados);
+            } else {
+                return Optional.empty();
+            }
+        } finally {
+            close(stmt, rSet);
+        }
+    }
+
+    @Override
+    public Long getCodUnidadeByPlaca(@NotNull final Connection conn,
+                                     @NotNull final String placaVeiculo) throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = conn.prepareStatement("SELECT V.COD_UNIDADE FROM VEICULO V WHERE V.PLACA = ?;");
+            stmt.setString(1, placaVeiculo);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                final long codUnidade = rSet.getLong("COD_UNIDADE");
+                if (codUnidade <= 0) {
+                    throw new IllegalStateException(
+                            "Código da unidade inválido para a placa:" +
+                                    "\nplacaVeiculo: " + placaVeiculo);
+                }
+                return codUnidade;
+            } else {
+                throw new IllegalStateException(
+                        "Nenhum dado encontrado para a placa:" +
+                                "\nplacaVeiculo: " + placaVeiculo);
+            }
+        } finally {
+            close(stmt, rSet);
+        }
+    }
+
+    @NotNull
+    @Override
+    public Long getCodVeiculoByPlaca(@NotNull final Connection conn,
+                                     @NotNull final String placaVeiculo) throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = conn.prepareStatement("SELECT V.CODIGO FROM VEICULO V WHERE V.PLACA = ?;");
+            stmt.setString(1, placaVeiculo);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                final long codVeiculo = rSet.getLong("CODIGO");
+                if (codVeiculo <= 0) {
+                    throw new SQLException("Erro ao buscar código do veículo:" +
+                                                   "\nplacaVeiculo: " + placaVeiculo + "" +
+                                                   "\ncodVeiculo: " + codVeiculo);
+                }
+                return codVeiculo;
+            } else {
+                throw new SQLException("Erro ao buscar código do veículo:\n" +
+                                               "placaVeiculo: " + placaVeiculo);
+            }
+        } finally {
+            close(stmt, rSet);
+        }
+    }
+
     @Deprecated
     @Override
     public List<Veiculo> getVeiculosAtivosByUnidade(final Long codUnidade, @Nullable final Boolean ativos)
@@ -810,26 +818,26 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT " +
-                    "V.*, " +
-                    "R.CODIGO AS COD_REGIONAL_ALOCADO, " +
-                    "MV.NOME AS MODELO, " +
-                    "EV.NOME AS EIXOS, " +
-                    "EV.DIANTEIRO, " +
-                    "EV.TRASEIRO,EV.CODIGO AS COD_EIXOS, " +
-                    "TV.NOME AS TIPO, " +
-                    "MAV.NOME AS MARCA, " +
-                    "MAV.CODIGO AS COD_MARCA," +
-                    "V.IDENTIFICADOR_FROTA AS ID_FROTA  " +
-                    "FROM VEICULO V " +
-                    "JOIN MODELO_VEICULO MV ON MV.CODIGO = V.COD_MODELO " +
-                    "JOIN EIXOS_VEICULO EV ON EV.CODIGO = V.COD_EIXOS " +
-                    "JOIN VEICULO_TIPO TV ON TV.CODIGO = V.COD_TIPO " +
-                    "JOIN MARCA_VEICULO MAV ON MAV.CODIGO = MV.COD_MARCA " +
-                    "JOIN UNIDADE U ON U.CODIGO = V.COD_UNIDADE " +
-                    "JOIN REGIONAL R ON U.COD_REGIONAL = R.CODIGO " +
-                    "WHERE V.COD_UNIDADE = ? " +
-                    "AND (? = 1 OR V.STATUS_ATIVO = ?) " +
-                    "ORDER BY V.PLACA");
+                                                 "V.*, " +
+                                                 "R.CODIGO AS COD_REGIONAL_ALOCADO, " +
+                                                 "MV.NOME AS MODELO, " +
+                                                 "EV.NOME AS EIXOS, " +
+                                                 "EV.DIANTEIRO, " +
+                                                 "EV.TRASEIRO,EV.CODIGO AS COD_EIXOS, " +
+                                                 "TV.NOME AS TIPO, " +
+                                                 "MAV.NOME AS MARCA, " +
+                                                 "MAV.CODIGO AS COD_MARCA," +
+                                                 "V.IDENTIFICADOR_FROTA AS ID_FROTA  " +
+                                                 "FROM VEICULO V " +
+                                                 "JOIN MODELO_VEICULO MV ON MV.CODIGO = V.COD_MODELO " +
+                                                 "JOIN EIXOS_VEICULO EV ON EV.CODIGO = V.COD_EIXOS " +
+                                                 "JOIN VEICULO_TIPO TV ON TV.CODIGO = V.COD_TIPO " +
+                                                 "JOIN MARCA_VEICULO MAV ON MAV.CODIGO = MV.COD_MARCA " +
+                                                 "JOIN UNIDADE U ON U.CODIGO = V.COD_UNIDADE " +
+                                                 "JOIN REGIONAL R ON U.COD_REGIONAL = R.CODIGO " +
+                                                 "WHERE V.COD_UNIDADE = ? " +
+                                                 "AND (? = 1 OR V.STATUS_ATIVO = ?) " +
+                                                 "ORDER BY V.PLACA");
             stmt.setLong(1, codUnidade);
 
             // Se for nulo não filtramos por ativos/inativos.
@@ -851,9 +859,31 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         return veiculos;
     }
 
+    @Override
     @NotNull
-    private List<VeiculoAcopladoVisualizacao> getVeiculosAcopladosByCodVeiculo(@NotNull final Connection conn,
-                                                                               @NotNull final Long codVeiculo)
+    public VeiculoDadosColetaKm getDadosColetaKmByCodigo(@NotNull final Long codVeiculo) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement(
+                    "select * from func_veiculo_busca_dados_coleta_km_por_cod_veiculo(f_cod_veiculo => ?)");
+            stmt.setLong(1, codVeiculo);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return VeiculoConverter.createVeiculoDadosColetaKm(rSet);
+            } else {
+                throw new SQLException("Erro ao buscar o estado do veículo de código: " + codVeiculo);
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+    @NotNull
+    private Optional<VeiculosAcopladosVisualizacao> getVeiculosAcopladosByCodVeiculo(@NotNull final Connection conn,
+                                                                                     @NotNull final Long codVeiculo)
             throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -861,37 +891,30 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
             stmt = conn.prepareStatement("select * from func_veiculo_get_veiculos_acoplados(f_cod_veiculo => ?);");
             stmt.setLong(1, codVeiculo);
             rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                final List<VeiculoAcopladoVisualizacao> veiculosAcoplados = new ArrayList<>();
-                do {
-                    veiculosAcoplados.add(VeiculoConverter.createVeiculoAcopladoVisualizacao(rSet));
-                } while (rSet.next());
-                return veiculosAcoplados;
-            }
-            return Collections.emptyList();
+            return VeiculoConverter.createVeiculosAcopladosVisualizacao(rSet);
         } finally {
             close(stmt, rSet);
         }
     }
 
     @NotNull
-    private VeiculoAcopladoListagemHolder getVeiculosAcopladosByCodUnidades(@NotNull final Connection conn,
-                                                                            @NotNull final List<Long> codUnidades,
-                                                                            final boolean apenasVeiculosAtivos,
-                                                                            @Nullable final Long codTipoVeiculo)
+    private VeiculosAcopladosPorVeiculo getVeiculosAcopladosByCodUnidades(@NotNull final Connection conn,
+                                                                          @NotNull final List<Long> codUnidades,
+                                                                          final boolean apenasVeiculosAtivos,
+                                                                          @Nullable final Long codTipoVeiculo)
             throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             stmt = conn.prepareStatement("select * from func_veiculo_get_veiculos_acoplados_unidades(" +
-                    "f_cod_unidades => ?," +
-                    "f_apenas_veiculos_ativos => ?," +
-                    "f_cod_tipo_veiculo => ?);");
+                                                 "f_cod_unidades => ?," +
+                                                 "f_apenas_veiculos_ativos => ?," +
+                                                 "f_cod_tipo_veiculo => ?);");
             stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
             stmt.setBoolean(2, apenasVeiculosAtivos);
             StatementUtils.bindValueOrNull(stmt, 3, codTipoVeiculo, SqlType.BIGINT);
             rSet = stmt.executeQuery();
-            return VeiculoConverter.createVeiculoAcopladoListagemHolder(rSet);
+            return VeiculoConverter.createVeiculosAcopladosPorVeiculo(rSet);
         } finally {
             close(stmt, rSet);
         }
@@ -928,24 +951,24 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         ResultSet rSet = null;
         try {
             stmt = conn.prepareStatement("SELECT " +
-                    "V.*, " +
-                    "R.CODIGO AS COD_REGIONAL_ALOCADO, " +
-                    "MV.NOME AS MODELO, " +
-                    "EV.NOME AS EIXOS, " +
-                    "EV.DIANTEIRO, " +
-                    "EV.TRASEIRO, " +
-                    "EV.CODIGO AS COD_EIXOS, " +
-                    "tv.nome AS TIPO, " +
-                    "MAV.NOME AS MARCA, " +
-                    "MAV.CODIGO AS COD_MARCA," +
-                    "V.IDENTIFICADOR_FROTA AS ID_FROTA  " +
-                    "FROM VEICULO V JOIN MODELO_VEICULO MV ON MV.CODIGO = V.COD_MODELO " +
-                    "JOIN EIXOS_VEICULO EV ON EV.CODIGO = V.COD_EIXOS " +
-                    "JOIN VEICULO_TIPO TV ON TV.CODIGO = V.COD_TIPO " +
-                    "JOIN MARCA_VEICULO MAV ON MAV.CODIGO = MV.COD_MARCA " +
-                    "JOIN UNIDADE U ON U.CODIGO = V.COD_UNIDADE " +
-                    "JOIN REGIONAL R ON U.COD_REGIONAL = R.CODIGO " +
-                    "WHERE V.PLACA = ?;");
+                                                 "V.*, " +
+                                                 "R.CODIGO AS COD_REGIONAL_ALOCADO, " +
+                                                 "MV.NOME AS MODELO, " +
+                                                 "EV.NOME AS EIXOS, " +
+                                                 "EV.DIANTEIRO, " +
+                                                 "EV.TRASEIRO, " +
+                                                 "EV.CODIGO AS COD_EIXOS, " +
+                                                 "tv.nome AS TIPO, " +
+                                                 "MAV.NOME AS MARCA, " +
+                                                 "MAV.CODIGO AS COD_MARCA," +
+                                                 "V.IDENTIFICADOR_FROTA AS ID_FROTA  " +
+                                                 "FROM VEICULO V JOIN MODELO_VEICULO MV ON MV.CODIGO = V.COD_MODELO " +
+                                                 "JOIN EIXOS_VEICULO EV ON EV.CODIGO = V.COD_EIXOS " +
+                                                 "JOIN VEICULO_TIPO TV ON TV.CODIGO = V.COD_TIPO " +
+                                                 "JOIN MARCA_VEICULO MAV ON MAV.CODIGO = MV.COD_MARCA " +
+                                                 "JOIN UNIDADE U ON U.CODIGO = V.COD_UNIDADE " +
+                                                 "JOIN REGIONAL R ON U.COD_REGIONAL = R.CODIGO " +
+                                                 "WHERE V.PLACA = ?;");
             stmt.setString(1, placa);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
@@ -973,14 +996,15 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
 
     @NotNull
     private Optional<DiagramaVeiculo> internalGetDiagramaVeiculoByPlaca(@NotNull final Connection conn,
-                                                                        @NotNull final String placa) throws SQLException {
+                                                                        @NotNull final String placa)
+            throws SQLException {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             stmt = conn.prepareStatement("SELECT VD.* " +
-                    "FROM VEICULO V JOIN VEICULO_TIPO VT ON V.COD_TIPO = VT.CODIGO " +
-                    "JOIN VEICULO_DIAGRAMA VD ON VD.CODIGO = VT.COD_DIAGRAMA " +
-                    "WHERE V.PLACA = ?");
+                                                 "FROM VEICULO V JOIN VEICULO_TIPO VT ON V.COD_TIPO = VT.CODIGO " +
+                                                 "JOIN VEICULO_DIAGRAMA VD ON VD.CODIGO = VT.COD_DIAGRAMA " +
+                                                 "WHERE V.PLACA = ?");
             stmt.setString(1, placa);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
@@ -1009,9 +1033,9 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         final Set<EixoVeiculo> eixos = new HashSet<>();
         try {
             stmt = conn.prepareStatement("SELECT * " +
-                    "FROM veiculo_diagrama_eixos " +
-                    "WHERE cod_diagrama = ? " +
-                    "ORDER BY posicao;");
+                                                 "FROM veiculo_diagrama_eixos " +
+                                                 "WHERE cod_diagrama = ? " +
+                                                 "ORDER BY posicao;");
             stmt.setInt(1, codDiagrama);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
@@ -1067,26 +1091,5 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         // Diagrama do veículo.
         getDiagramaVeiculoByPlaca(veiculo.getPlaca()).ifPresent(veiculo::setDiagrama);
         return veiculo;
-    }
-
-    @Override
-    @NotNull
-    public VeiculoDadosColetaKm getDadosColetaKmByCodigo(@NotNull final Long codVeiculo) throws Throwable {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("select * from func_veiculo_busca_dados_coleta_km_por_cod_veiculo(f_cod_veiculo => ?)");
-            stmt.setLong(1, codVeiculo);
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                return VeiculoConverter.createVeiculoDadosColetaKm(rSet);
-            } else {
-                throw new SQLException("Erro ao buscar o estado do veículo de código: " + codVeiculo);
-            }
-        } finally {
-            close(conn, stmt, rSet);
-        }
     }
 }

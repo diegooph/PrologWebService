@@ -2,21 +2,15 @@ package br.com.zalf.prolog.webservice.frota.veiculo;
 
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoAntesEdicao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.listagem.VeiculoAcopladoListagem;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.listagem.VeiculoAcopladoListagemHolder;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.listagem.VeiculoListagem;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoAcopladoVisualizacao;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoDadosColetaKm;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoVisualizacao;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoVisualizacaoPneu;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.listagem.VeiculosAcopladosListagem;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.listagem.VeiculosAcopladosPorVeiculo;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.*;
 
 /**
  * Created on 05/05/2020.
@@ -41,9 +35,24 @@ public final class VeiculoConverter {
     }
 
     @NotNull
+    public static List<VeiculoListagem> createVeiculosListagem(
+            @NotNull final ResultSet rSet,
+            @NotNull final VeiculosAcopladosPorVeiculo veiculosAcopladosPorVeiculo) throws SQLException {
+        if (rSet.next()) {
+            final List<VeiculoListagem> veiculosListagem = new ArrayList<>();
+            do {
+                veiculosListagem.add(VeiculoConverter.createVeiculoListagem(rSet, veiculosAcopladosPorVeiculo));
+            } while (rSet.next());
+            return veiculosListagem;
+        }
+
+        return Collections.emptyList();
+    }
+
+    @NotNull
     public static VeiculoListagem createVeiculoListagem(
             @NotNull final ResultSet rSet,
-            @NotNull final List<VeiculoAcopladoListagem> veiculosAcoplados) throws SQLException {
+            @NotNull final VeiculosAcopladosPorVeiculo veiculosAcoplados) throws SQLException {
         return new VeiculoListagem(
                 rSet.getLong("CODIGO"),
                 rSet.getString("PLACA"),
@@ -66,14 +75,15 @@ public final class VeiculoConverter {
                 rSet.getLong("COD_MARCA"),
                 rSet.getBoolean("MOTORIZADO"),
                 rSet.getBoolean("POSSUI_HUBODOMETRO"),
-                veiculosAcoplados);
+                veiculosAcoplados.getVeiculosAcopladosByCodVeiculo(rSet.getLong("CODIGO")));
     }
 
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     @NotNull
     public static VeiculoVisualizacao createVeiculoVisualizacao(
             @NotNull final ResultSet rSet,
             @NotNull final List<VeiculoVisualizacaoPneu> pneus,
-            @NotNull final List<VeiculoAcopladoVisualizacao> veiculosAcoplados) throws SQLException {
+            @NotNull final Optional<VeiculosAcopladosVisualizacao> veiculosAcoplados) throws SQLException {
         return new VeiculoVisualizacao(
                 rSet.getLong("CODIGO"),
                 rSet.getString("PLACA"),
@@ -96,14 +106,29 @@ public final class VeiculoConverter {
                 rSet.getBoolean("MOTORIZADO"),
                 rSet.getBoolean("POSSUI_HUBODOMETRO"),
                 pneus,
-                veiculosAcoplados);
+                veiculosAcoplados.orElse(null));
     }
 
     @NotNull
-    public static VeiculoAcopladoVisualizacao createVeiculoAcopladoVisualizacao(@NotNull final ResultSet rSet)
+    public static Optional<VeiculosAcopladosVisualizacao> createVeiculosAcopladosVisualizacao(
+            @NotNull final ResultSet rSet) throws SQLException {
+        if (rSet.next()) {
+            final List<VeiculoAcopladoVisualizacao> veiculosAcoplados = new ArrayList<>();
+            final Long codProcessoAcoplamento = rSet.getLong("COD_PROCESSO_ACOPLAMENTO");
+            do {
+                veiculosAcoplados.add(VeiculoConverter.createVeiculoAcopladoVisualizacao(rSet));
+            } while (rSet.next());
+            return Optional.of(new VeiculosAcopladosVisualizacao(codProcessoAcoplamento, veiculosAcoplados));
+        }
+
+        return Optional.empty();
+    }
+
+    @NotNull
+    private static VeiculoAcopladoVisualizacao createVeiculoAcopladoVisualizacao(@NotNull final ResultSet rSet)
             throws SQLException {
         return new VeiculoAcopladoVisualizacao(
-                rSet.getLong("CODIGO"),
+                rSet.getLong("COD_VEICULO"),
                 rSet.getString("PLACA"),
                 rSet.getString("IDENTIFICADOR_FROTA"),
                 rSet.getBoolean("MOTORIZADO"),
@@ -111,59 +136,55 @@ public final class VeiculoConverter {
     }
 
     @NotNull
-    public static VeiculoAcopladoListagemHolder createVeiculoAcopladoListagemHolder(@NotNull final ResultSet rSet)
+    public static VeiculosAcopladosPorVeiculo createVeiculosAcopladosPorVeiculo(@NotNull final ResultSet rSet)
             throws SQLException {
+        final Optional<List<VeiculosAcopladosListagem>> optional = createVeiculosAcopladosListagem(rSet);
+        return optional
+                .map(VeiculoConverter::createAcoplamentosPorVeiculo)
+                .orElse(VeiculosAcopladosPorVeiculo.EMPTY);
+    }
+
+    @NotNull
+    private static Optional<List<VeiculosAcopladosListagem>> createVeiculosAcopladosListagem(
+            @NotNull final ResultSet rSet) throws SQLException {
+        Long codProcessoAntigo = null;
+        VeiculosAcopladosListagem veiculoListagem = null;
         if (rSet.next()) {
-            final List<VeiculoAcopladoListagem> veiculosAcoplados = createVeiculosAcopladosListagem(rSet);
-            final Map<Long, List<VeiculoAcopladoListagem>> acoplamentosProcesso =
-                    agrupaAcoplamentosPorProcesso(veiculosAcoplados);
-            final Map<Long, List<VeiculoAcopladoListagem>> acoplamentosVeiculo =
-                    agrupaAcoplamentosPorVeiculo(veiculosAcoplados, acoplamentosProcesso);
-            return new VeiculoAcopladoListagemHolder(acoplamentosVeiculo);
+            final List<VeiculosAcopladosListagem> veiculosAcopladosListagem = new ArrayList<>();
+
+            do {
+                final Long codProcessoAtual = rSet.getLong("COD_PROCESSO_ACOPLAMENTO");
+                if (codProcessoAntigo == null || !codProcessoAntigo.equals(codProcessoAtual)) {
+                    veiculoListagem = new VeiculosAcopladosListagem(codProcessoAtual, new ArrayList<>());
+                    veiculosAcopladosListagem.add(veiculoListagem);
+                }
+
+                veiculoListagem.add(new VeiculoAcopladoListagem(
+                        rSet.getLong("COD_VEICULO"),
+                        rSet.getString("PLACA"),
+                        rSet.getString("IDENTIFICADOR_FROTA"),
+                        rSet.getBoolean("MOTORIZADO"),
+                        rSet.getInt("POSICAO_ACOPLADO")));
+
+                codProcessoAntigo = codProcessoAtual;
+            } while (rSet.next());
+            return Optional.of(veiculosAcopladosListagem);
         }
-
-        return VeiculoAcopladoListagemHolder.EMPTY;
+        return Optional.empty();
     }
 
     @NotNull
-    public static List<VeiculoAcopladoListagem> createVeiculosAcopladosListagem(@NotNull final ResultSet rSet)
-            throws SQLException {
-        final List<VeiculoAcopladoListagem> veiculosAcoplados = new ArrayList<>();
-        do {
-            veiculosAcoplados.add(new VeiculoAcopladoListagem(
-                    rSet.getLong("COD_PROCESSO_ACOPLAMENTO"),
-                    rSet.getLong("COD_VEICULO"),
-                    rSet.getString("PLACA"),
-                    rSet.getString("IDENTIFICADOR_FROTA"),
-                    rSet.getBoolean("MOTORIZADO"),
-                    rSet.getInt("POSICAO_ACOPLADO")));
-        } while (rSet.next());
-        return veiculosAcoplados;
-    }
-
-    @NotNull
-    private static Map<Long, List<VeiculoAcopladoListagem>> agrupaAcoplamentosPorProcesso(
-            @NotNull final List<VeiculoAcopladoListagem> veiculosAcoplados) {
-        return veiculosAcoplados
-                .stream()
-                .collect(Collectors.groupingBy(
-                        VeiculoAcopladoListagem::getCodProcessoAcoplamento,
-                        HashMap::new,
-                        Collectors.toList()));
-    }
-
-    @NotNull
-    private static Map<Long, List<VeiculoAcopladoListagem>> agrupaAcoplamentosPorVeiculo(
-            @NotNull final List<VeiculoAcopladoListagem> veiculosAcoplados,
-            @NotNull final Map<Long, List<VeiculoAcopladoListagem>> acoplamentosProcesso) {
-        final Map<Long, List<VeiculoAcopladoListagem>> acoplamentosVeiculo = new HashMap<>();
-        veiculosAcoplados
-                .forEach(veiculoAcoplado -> {
-                    final List<VeiculoAcopladoListagem> acoplamentos = acoplamentosProcesso
-                            .get(veiculoAcoplado.getCodProcessoAcoplamento());
-                    acoplamentosVeiculo.put(veiculoAcoplado.getCodVeiculo(), acoplamentos);
-                });
-        return acoplamentosVeiculo;
+    private static VeiculosAcopladosPorVeiculo createAcoplamentosPorVeiculo(
+            @NotNull final List<VeiculosAcopladosListagem> veiculosAcoplados) {
+        final Map<Long, VeiculosAcopladosListagem> acoplamentosPorVeiculo = new HashMap<>();
+        for (final VeiculosAcopladosListagem acoplamentosProcesso : veiculosAcoplados) {
+            acoplamentosProcesso
+                    .getVeiculosAcoplados()
+                    .forEach(acoplamentosVeiculo -> acoplamentosPorVeiculo.put(
+                            acoplamentosVeiculo.getCodVeiculo(),
+                            acoplamentosProcesso));
+        }
+        return new VeiculosAcopladosPorVeiculo(acoplamentosPorVeiculo);
     }
 
     @NotNull
@@ -211,16 +232,14 @@ public final class VeiculoConverter {
     @NotNull
     public static VeiculoDadosColetaKm createVeiculoDadosColetaKm(@NotNull final ResultSet rSet)
             throws SQLException {
-        final VeiculoDadosColetaKm.
-                VeiculoDadosTratorColetaKm.
-                Builder builder = VeiculoDadosColetaKm
+        final VeiculoDadosColetaKm.VeiculoDadosTratorColetaKm.Builder builder = VeiculoDadosColetaKm
                 .VeiculoDadosTratorColetaKm
                 .builder()
                 .withPlacaTrator(rSet.getString("PLACA_TRATOR"))
                 .withIdentificadorFrotaTrator(rSet.getString("IDENTIFICADOR_FROTA_TRATOR"));
 
-        final Long codVeiculoTrator = rSet.getLong("COD_VEICULO_TRATOR");
-        final Long kmAtualTrator = rSet.getLong("KM_ATUAL_TRATOR");
+        final long codVeiculoTrator = rSet.getLong("COD_VEICULO_TRATOR");
+        final long kmAtualTrator = rSet.getLong("KM_ATUAL_TRATOR");
 
         if (codVeiculoTrator != 0) {
             builder.withCodVeiculoTrator(codVeiculoTrator);
@@ -228,7 +247,6 @@ public final class VeiculoConverter {
         if (kmAtualTrator != 0) {
             builder.withKmAtualTrator(kmAtualTrator);
         }
-
 
         return VeiculoDadosColetaKm.of(
                 rSet.getLong("COD_VEICULO"),

@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.frota.veiculo.model.listagem;
 
-import br.com.zalf.prolog.webservice.commons.gson.Exclude;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -12,9 +11,6 @@ import org.jetbrains.annotations.Nullable;
  */
 @Data
 public final class VeiculoAcopladoListagem {
-    @Exclude
-    @NotNull
-    private final Long codProcessoAcoplamento;
     @NotNull
     private final Long codVeiculo;
     @NotNull

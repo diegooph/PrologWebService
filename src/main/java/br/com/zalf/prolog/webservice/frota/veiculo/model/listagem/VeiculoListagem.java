@@ -4,8 +4,6 @@ import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
-
 /**
  * Created on 04/05/2020.
  *
@@ -53,6 +51,6 @@ public final class VeiculoListagem {
     private final Long codMarca;
     private final boolean motorizado;
     private final boolean possuiHubodometro;
-    @NotNull
-    private final List<VeiculoAcopladoListagem> veiculosAcoplados;
+    @Nullable
+    private final VeiculosAcopladosListagem veiculosAcoplados;
 }
