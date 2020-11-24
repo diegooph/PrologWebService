@@ -1,6 +1,8 @@
 package br.com.zalf.prolog.webservice.config;
 
 import br.com.zalf.prolog.webservice.database.DataSourceLifecycleManager;
+import br.com.zalf.prolog.webservice.database.DatabaseConnectionActions;
+import br.com.zalf.prolog.webservice.database.DatabaseConnectionActionsWrapper;
 import br.com.zalf.prolog.webservice.messaging.push.FirebaseLifecycleManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.jaxrs.config.BeanConfig;
@@ -29,11 +31,15 @@ import javax.ws.rs.ext.Provider;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {"br.com.zalf.prolog.webservice"})
 public class PrologApplication extends SpringBootServletInitializer {
 
     public static void main(final String[] args) {
         SpringApplication.run(PrologApplication.class, args);
+    }
+
+    public static DatabaseConnectionActions getActions() {
+        return DatabaseConnectionActionsWrapper.getActions();
     }
 
     @Bean
