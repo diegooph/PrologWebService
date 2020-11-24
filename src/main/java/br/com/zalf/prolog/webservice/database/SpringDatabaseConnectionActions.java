@@ -63,7 +63,7 @@ public class SpringDatabaseConnectionActions implements DatabaseConnectionAction
     @Override
     @NotNull
     public void close(final Connection connection) {
-        if(Objects.nonNull(connection)) {
+        if (Objects.nonNull(connection)) {
             try {
                 connection.close();
             } catch (final SQLException exception) {
@@ -77,7 +77,7 @@ public class SpringDatabaseConnectionActions implements DatabaseConnectionAction
     @NotNull
     public void close(final Connection connection, final ResultSet rs) {
         close(connection);
-        if(Objects.nonNull(rs)) {
+        if (Objects.nonNull(rs)) {
             try {
                 rs.close();
             } catch (final SQLException exception) {
@@ -90,7 +90,7 @@ public class SpringDatabaseConnectionActions implements DatabaseConnectionAction
     @NotNull
     public void close(final Connection connection, final ResultSet rs, final PreparedStatement stmt) {
         close(connection, rs);
-        if(Objects.nonNull(stmt)) {
+        if (Objects.nonNull(stmt)) {
             try {
                 stmt.close();
             } catch (final SQLException exception) {
