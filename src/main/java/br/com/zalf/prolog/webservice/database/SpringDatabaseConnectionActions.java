@@ -46,7 +46,7 @@ public class SpringDatabaseConnectionActions implements DatabaseConnectionAction
     @NotNull
     public void close(final AutoCloseable... closeables) {
         Arrays.stream(closeables)
-                .filter(Objects::isNull)
+                .filter(Objects::nonNull)
                 .forEach(this::close);
     }
 
