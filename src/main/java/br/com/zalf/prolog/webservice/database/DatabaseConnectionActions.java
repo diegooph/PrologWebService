@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice.database;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,6 +13,7 @@ import java.sql.ResultSet;
  */
 public interface DatabaseConnectionActions {
 
+    @NotNull
     Connection getConnection();
 
     /**
@@ -20,6 +23,7 @@ public interface DatabaseConnectionActions {
      * @see AutoCloseable
      * @since 17 de nov de 2020
      */
+    @NotNull
     void close(AutoCloseable... closeables);
 
     /**
@@ -29,6 +33,7 @@ public interface DatabaseConnectionActions {
      * @see AutoCloseable
      * @since 17 de nov de 2020
      */
+    @NotNull
     void close(AutoCloseable closeable);
 
     /**
@@ -38,6 +43,7 @@ public interface DatabaseConnectionActions {
      * @see Connection
      * @since 17 de nov de 2020
      */
+    @NotNull
     void close(Connection connection);
 
     /**
@@ -49,6 +55,7 @@ public interface DatabaseConnectionActions {
      * @see ResultSet
      * @since 17 de nov de 2020
      */
+    @NotNull
     void close(Connection connection, ResultSet rs);
 
     /**
@@ -62,5 +69,6 @@ public interface DatabaseConnectionActions {
      * @see PreparedStatement
      * @since 17 de nov de 2020
      */
+    @NotNull
     void close(Connection connection, ResultSet rs, PreparedStatement stmt);
 }

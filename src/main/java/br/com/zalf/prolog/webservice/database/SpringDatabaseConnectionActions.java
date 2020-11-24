@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.database;
 
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -22,14 +23,16 @@ public class SpringDatabaseConnectionActions implements DatabaseConnectionAction
 
     private static final String TAG = SpringDatabaseConnectionActions.class.getSimpleName();
 
+    @NotNull
     private final DataSource dataSource;
 
     @Autowired
-    SpringDatabaseConnectionActions(final DataSource dataSource) {
+    SpringDatabaseConnectionActions(@NotNull final DataSource dataSource) {
         this.dataSource = dataSource;
     }
 
     @Override
+    @NotNull
     public Connection getConnection() {
         try {
             return this.dataSource.getConnection();
@@ -40,6 +43,7 @@ public class SpringDatabaseConnectionActions implements DatabaseConnectionAction
     }
 
     @Override
+    @NotNull
     public void close(final AutoCloseable... closeables) {
         Arrays.stream(closeables)
                 .filter(Objects::isNull)
@@ -47,6 +51,7 @@ public class SpringDatabaseConnectionActions implements DatabaseConnectionAction
     }
 
     @Override
+    @NotNull
     public void close(final AutoCloseable closeable) {
         try {
             closeable.close();
@@ -56,6 +61,7 @@ public class SpringDatabaseConnectionActions implements DatabaseConnectionAction
     }
 
     @Override
+    @NotNull
     public void close(final Connection connection) {
         if(Objects.nonNull(connection)) {
             try {
@@ -68,6 +74,7 @@ public class SpringDatabaseConnectionActions implements DatabaseConnectionAction
     }
 
     @Override
+    @NotNull
     public void close(final Connection connection, final ResultSet rs) {
         close(connection);
         if(Objects.nonNull(rs)) {
@@ -80,6 +87,7 @@ public class SpringDatabaseConnectionActions implements DatabaseConnectionAction
     }
 
     @Override
+    @NotNull
     public void close(final Connection connection, final ResultSet rs, final PreparedStatement stmt) {
         close(connection, rs);
         if(Objects.nonNull(stmt)) {
