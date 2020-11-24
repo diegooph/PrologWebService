@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.frota.checklist.ordemservico;
 
-import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
@@ -19,7 +18,6 @@ import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resoluca
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.HolderResolucaoOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverMultiplosItensOs;
-import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.simmetrics.metrics.StringMetrics;
@@ -283,11 +281,6 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
                         itensResolucao.getCodUnidadeOrdemServico(),
                         itensResolucao.getCodigosItens(),
                         now);
-                final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
-                veiculoDao.updateKmByPlaca(
-                        itensResolucao.getPlacaVeiculo(),
-                        itensResolucao.getKmColetadoVeiculo(),
-                        conn);
                 conn.commit();
             } else {
                 throw new Throwable("Erro ao marcar os itens como resolvidos: "
