@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.integracao.praxio.data;
 
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Created on 11/27/19
@@ -14,8 +15,8 @@ public final class ApiAutenticacaoHolder {
     private final String prologTokenIntegracao;
     @NotNull
     private final String url;
-    @NotNull
+    @Nullable
     private final String apiTokenClient;
-    @NotNull
+    @Nullable
     private final Long apiShortCode;
 }
