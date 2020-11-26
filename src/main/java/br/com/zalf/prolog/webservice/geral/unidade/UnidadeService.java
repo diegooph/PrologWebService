@@ -31,7 +31,8 @@ public class UnidadeService {
     public UnidadeService(@NotNull final UnidadeDao unidadeDao) {
         this.dao = unidadeDao;
     }
-    
+
+    @Transactional
     public SuccessResponse updateUnidade(@Valid @NotNull final UnidadeEdicao unidadeEdicao) {
         try {
             final UnidadeEntity unidade = dao.findById(unidadeEdicao.getCodUnidade())
@@ -50,6 +51,7 @@ public class UnidadeService {
     }
 
     @NotNull
+    @Transactional
     public UnidadeVisualizacaoListagem getUnidadeByCodigo(@NotNull final Long codUnidade) {
         try {
             return dao.getUnidadeByCodigo(codUnidade);
@@ -63,6 +65,7 @@ public class UnidadeService {
     }
 
     @NotNull
+    @Transactional
     public List<UnidadeVisualizacaoListagem> getUnidadesListagem(
             @NotNull final Long codEmpresa,
             @Nullable final List<Long> codigosRegionais) {
