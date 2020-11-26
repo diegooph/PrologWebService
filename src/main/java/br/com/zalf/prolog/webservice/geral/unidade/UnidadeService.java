@@ -16,11 +16,17 @@ import java.util.List;
  *
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
-public final class UnidadeService {
+@Service
+public class UnidadeService {
     private static final String TAG = UnidadeService.class.getSimpleName();
     @NotNull
-    private final UnidadeDao dao = Injection.provideUnidadeDao();
+    private final UnidadeDao dao;
 
+    @Autowired
+    public UnidadeService(@NotNull final UnidadeDao unidadeDao) {
+        this.dao = unidadeDao;
+    }
+    
     public SuccessResponse updateUnidade(@Valid @NotNull final UnidadeEdicao unidadeEdicao) {
         try {
             return new SuccessResponse(dao.update(unidadeEdicao), "Unidade atualizada com sucesso.");
