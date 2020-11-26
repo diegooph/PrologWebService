@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.integracao;
 
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.geral.unidade._model.Unidade;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.IntegracaoOsFilter;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.ModelosChecklistBloqueados;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.OsIntegracao;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.ApiAutenticacaoHolder;
@@ -223,14 +224,17 @@ public interface IntegracaoDao {
 
     /**
      * Método com a responsabilidade de buscar todas as informações pertinentes à integração de uma OS baseado
-     * em um código.
+     * em uma lista de códigos.
      *
-     * @param codOs um código de ordem de serviço a ser buscada.
-     * @return Um objeto complexo contendo as informações da OS.
+     * @param codsOrdensServicos lista de códigos de ordens de serviço a serem buscadas.
+     * @param integracaoOsFilter status que será utilizado para filtrar as informações retornadas.
+     * @return Uma contendo as informações das OSs para sincronizar.
      * @throws Throwable Se qualquer erro ocorrer.
      */
     @NotNull
-    OsIntegracao getOsIntegracaoByCod(@NotNull final Long codOs) throws Throwable;
+    List<OsIntegracao> getOrdensServicosIntegracaoByCod(
+            @NotNull final List<Long> codsOrdensServicos,
+            @NotNull final IntegracaoOsFilter integracaoOsFilter) throws Throwable;
 
     /**
      * Busca todas as ordens de serviço que estão pendentes de sincronização e não estão marcadas como bloqueadas.

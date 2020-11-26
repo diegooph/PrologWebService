@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
+import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.IntegracaoOsFilter;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.ModelosChecklistBloqueados;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.OsIntegracao;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.ApiAutenticacaoHolder;
@@ -401,26 +402,41 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
 
     @Override
     @NotNull
-    public OsIntegracao getOsIntegracaoByCod(@NotNull final Long codOs) throws Throwable {
+    public List<OsIntegracao> getOrdensServicosIntegracaoByCod(
+            @NotNull final List<Long> codsOrdensServicos,
+            @NotNull final IntegracaoOsFilter integracaoOsFilter) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("select * from integracao.func_checklist_os_busca_informacoes_os(" +
-                    "f_cod_interno_os_prolog => ?);");
-            stmt.setLong(1, codOs);
+                    "f_cod_interno_os_prolog => ?, " +
+                    "f_status_os => ?);");
+            stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codsOrdensServicos));
+            stmt.setString(2, integracaoOsFilter.asString());
             rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                final OsIntegracao osIntegracao = IntegracaoConverter.createOsIntegracao(rSet);
-                osIntegracao.getItensNok().add(IntegracaoConverter.createItemOsIntegracao(rSet));
-                while (rSet.next()) {
-                    osIntegracao.getItensNok().add(IntegracaoConverter.createItemOsIntegracao(rSet));
+            final List<OsIntegracao> ordensServicosIntegracao = new ArrayList<>();
+            boolean isFirstLine = true;
+            Long codInternoOsAntiga = null;
+            long codInternoOsAtual;
+            OsIntegracao osIntegracao = null;
+            while (rSet.next()) {
+                codInternoOsAtual = rSet.getLong("cod_interno_os_prolog");
+                if (isFirstLine) {
+                    osIntegracao = IntegracaoConverter.createOsIntegracao(rSet);
+                    ordensServicosIntegracao.add(osIntegracao);
+                    isFirstLine = false;
+                    codInternoOsAntiga = codInternoOsAtual;
                 }
-                return osIntegracao;
-            } else {
-                throw new SQLException("Nenhum dado encontrado para o código de os.");
+                if (!codInternoOsAntiga.equals(codInternoOsAtual)) {
+                    osIntegracao = IntegracaoConverter.createOsIntegracao(rSet);
+                    ordensServicosIntegracao.add(osIntegracao);
+                }
+                osIntegracao.getItensNok().add(IntegracaoConverter.createItemOsIntegracao(rSet));
+                codInternoOsAntiga = codInternoOsAtual;
             }
+            return ordensServicosIntegracao;
         } finally {
             close(conn, stmt, rSet);
         }

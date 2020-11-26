@@ -126,7 +126,6 @@ public final class SistemaGlobusPiccoloturDaoImpl extends DatabaseConnection imp
                     "f_cod_alternativa => ?, " +
                     "f_cod_contexto_alternativa => ?, " +
                     "f_data_hora_envio => ?);");
-            final LocalDateTime dataHoraAtual = Now.localDateTimeUtc();
             stmt.setLong(1, checklistItensNokGlobus.getCodUnidadeChecklist());
             stmt.setString(2, checklistItensNokGlobus.getPlacaVeiculoChecklist());
             stmt.setLong(3, Colaborador.formatCpf(checklistItensNokGlobus.getCpfColaboradorRealizacao()));
@@ -137,7 +136,7 @@ public final class SistemaGlobusPiccoloturDaoImpl extends DatabaseConnection imp
                     stmt.setLong(6, perguntaNokGlobus.getCodContextoPerguntaNok());
                     stmt.setLong(7, alternativaNokGlobus.getCodAlternativaNok());
                     stmt.setLong(8, alternativaNokGlobus.getCodContextoAlternativaNok());
-                    stmt.setObject(9, dataHoraAtual);
+                    stmt.setObject(9, Now.offsetDateTimeUtc());
                     stmt.addBatch();
                 }
             }

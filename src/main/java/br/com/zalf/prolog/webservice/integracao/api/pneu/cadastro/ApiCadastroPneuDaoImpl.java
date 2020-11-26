@@ -76,7 +76,7 @@ public final class ApiCadastroPneuDaoImpl extends DatabaseConnection implements 
                             pneuCargaInicial.getPlacaVeiculoPneuAplicado(), SqlType.VARCHAR);
                     bindValueOrNull(stmt, 16,
                             pneuCargaInicial.getPosicaoPneuAplicado(), SqlType.INTEGER);
-                    stmt.setObject(17, Now.localDateTimeUtc());
+                    stmt.setObject(17, Now.offsetDateTimeUtc());
                     stmt.setString(18, tokenIntegracao);
                     rSet = stmt.executeQuery();
                     final long codPneuProlog;
@@ -196,7 +196,7 @@ public final class ApiCadastroPneuDaoImpl extends DatabaseConnection implements 
             stmt.setBigDecimal(6, pneuEdicao.getNovoValorPneu());
             bindValueOrNull(stmt, 7, pneuEdicao.getNovoCodModeloBanda(), SqlType.BIGINT);
             bindValueOrNull(stmt, 8, pneuEdicao.getNovoValorBandaPneu(), SqlType.REAL);
-            stmt.setObject(9, Now.localDateTimeUtc());
+            stmt.setObject(9, Now.offsetDateTimeUtc());
             stmt.setString(10, tokenIntegracao);
             rSet = stmt.executeQuery();
             final long codPneuProlog;

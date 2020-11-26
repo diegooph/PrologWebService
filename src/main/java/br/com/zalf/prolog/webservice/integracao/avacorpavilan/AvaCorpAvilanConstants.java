@@ -13,12 +13,14 @@ public final class AvaCorpAvilanConstants {
     // Informações estáticas para criação do serviço de sincronia de dados da Avilan.
     public static final SistemaKey SISTEMA_KEY_AVILAN = SistemaKey.AVACORP_AVILAN;
     public static final MetodoIntegrado INSERT_OS = MetodoIntegrado.INSERT_OS;
-    public static final Long CODIGO_EMPRESA_AVILAN = BuildConfig.DEBUG ? 3L : 54L;
+    public static final Long CODIGO_EMPRESA_AVILAN = BuildConfig.DEBUG ? 3L : 2L;
     // Informações estáticas utilizadas para criar objetos da Avilan.
     public static final short COD_GRUPO_AVILAN = 1;
     public static final short COD_EMPRESA_AVILAN = 1;
     public static final short COD_TIPO_MANUTENCAO_AVILAN = 2;
     public static final short COD_OBJETIVO_ORDEM_SERVICO_AVILAN = 1;
+    public static final short COD_SITUACAO_OS_LIBERADA_LATROMI = 2;
+    public static final short COD_SEMAFARO_OS_LATROMI = 1;
 
     private AvaCorpAvilanConstants() {
         throw new IllegalStateException(AvaCorpAvilanConstants.class.getSimpleName() + " cannot be instantiated!");
