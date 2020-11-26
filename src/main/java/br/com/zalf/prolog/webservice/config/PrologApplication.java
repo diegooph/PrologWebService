@@ -15,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
@@ -32,6 +33,7 @@ import javax.ws.rs.ext.Provider;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 @SpringBootApplication(scanBasePackages = {"br.com.zalf.prolog.webservice"})
+@EntityScan(basePackages = {"br.com.zalf.prolog.webservice"})
 public class PrologApplication extends SpringBootServletInitializer {
 
     public static void main(final String[] args) {
