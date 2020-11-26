@@ -24,7 +24,7 @@ spring:
       maximum-pool-size: 250
       idle-timeout: 60000
       auto-commit: true
-      connection-timeout: 2000
+      connection-timeout: 30000
 
 logging:
   level:
