@@ -1,15 +1,17 @@
 package br.com.zalf.prolog.webservice.geral.unidade;
 
-import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeEdicao;
+import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeEntity;
 import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeVisualizacaoListagem;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created on 2020-03-12
@@ -18,6 +20,12 @@ import java.util.List;
  */
 @Repository
 public interface UnidadeDao extends JpaRepository<UnidadeEntity, Long> {
+
+    @Override
+    @NotNull
+    @EntityGraph(value = "graph.RegionalEmpresa", type = EntityGraph.EntityGraphType.LOAD)
+    Optional<UnidadeEntity> findById(Long id);
+
     /**
      * Busca uma unidade baseado no seu código.
      *
