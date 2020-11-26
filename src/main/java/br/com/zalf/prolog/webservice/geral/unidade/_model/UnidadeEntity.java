@@ -31,6 +31,11 @@ import java.time.LocalDateTime;
                                                                         @StoredProcedureParameter(name = "F_COD_REGIONAIS",
                                                                                                   type = Long.class)})
                              })
+@NamedEntityGraph(name = "graph.RegionalEmpresa",
+                  attributeNodes = {
+                          @NamedAttributeNode("regional"),
+                          @NamedAttributeNode("empresa")
+                  })
 @Table(name = "unidade",
        indexes = {@Index(name = "idx_unidade_cod_empresa", columnList = "codigo")})
 @Data
