@@ -9,6 +9,8 @@ import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -23,9 +25,15 @@ import java.util.List;
 @Path("/unidades")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+@Controller
 public final class UnidadeResource implements UnidadeResourceApiDoc {
     @NotNull
-    private final UnidadeService service = new UnidadeService();
+    private final UnidadeService service;
+
+    @Autowired
+    public UnidadeResource(@NotNull final UnidadeService unidadeService) {
+        this.service = unidadeService;
+    }
 
     @ApiExposed
     @PUT
