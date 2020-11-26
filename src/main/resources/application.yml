@@ -22,7 +22,7 @@ spring:
       connection-init-sql: "SET application_name = 'ProLog WS'"
       connection-test-query: "SELECT 1"
       minimum-idle: 25
-      maximum-pool-size: 125
+      maximum-pool-size: 250
       idle-timeout: 60000
       max-lifetime: 10000
       auto-commit: true
