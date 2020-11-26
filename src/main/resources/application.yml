@@ -23,7 +23,6 @@ spring:
       connection-test-query: "SELECT 1"
       maximum-pool-size: 250
       idle-timeout: 60000
-      max-lifetime: 10000
       auto-commit: true
       connection-timeout: 2000
 
