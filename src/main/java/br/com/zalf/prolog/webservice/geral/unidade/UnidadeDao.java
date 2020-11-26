@@ -4,6 +4,10 @@ import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeEdicao;
 import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeVisualizacaoListagem;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.query.Procedure;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
@@ -12,16 +16,8 @@ import java.util.List;
  *
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
-public interface UnidadeDao {
-    /**
-     * Atualiza os dados de uma {@link UnidadeEdicao unidade}.
-     *
-     * @param unidade Dados da unidade a ser atualizada.
-     * @return o código da unidade atualizada.
-     * @throws Throwable caso qualquer erro ocorrer.
-     */
-    Long update(@NotNull final UnidadeEdicao unidade) throws Throwable;
-
+@Repository
+public interface UnidadeDao extends JpaRepository<UnidadeEntity, Long> {
     /**
      * Busca uma unidade baseado no seu código.
      *
