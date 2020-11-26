@@ -394,14 +394,6 @@
             <artifactId>tomcat-jdbc</artifactId>
             <version>8.0.45</version>
         </dependency>
-
-        <!-- https://mvnrepository.com/artifact/com.zaxxer/HikariCP -->
-        <dependency>
-            <groupId>com.zaxxer</groupId>
-            <artifactId>HikariCP</artifactId>
-        </dependency>
-
-
         <!-- Esse projeto adiciona classes extras utilitárias as novas classes do pacote java.time do Java 8.
              http://www.threeten.org/threeten-extra/ -->
         <dependency>
