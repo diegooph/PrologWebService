@@ -13,6 +13,24 @@ import java.time.LocalDateTime;
  * @author Guilherme Steinert (https://github.com/steinert999)
  */
 @Entity
+@NamedStoredProcedureQueries({
+                                     @NamedStoredProcedureQuery(name = "funcUnidadeVisualizacao",
+                                                                procedureName = "FUNC_UNIDADE_VISUALIZACAO",
+                                                                resultClasses = {UnidadeVisualizacaoListagem.class},
+                                                                parameters = {
+                                                                        @StoredProcedureParameter(name = "F_COD_UNIDADE",
+                                                                                                  type = Long.class,
+                                                                                                  mode = ParameterMode.IN)}),
+                                     @NamedStoredProcedureQuery(name = "funcUnidadeListagem",
+                                                                procedureName = "FUNC_UNIDADE_LISTAGEM",
+                                                                resultClasses = {UnidadeVisualizacaoListagem.class},
+                                                                parameters = {
+                                                                        @StoredProcedureParameter(name = "F_COD_EMPRESA",
+                                                                                                  type = Long.class,
+                                                                                                  mode = ParameterMode.IN),
+                                                                        @StoredProcedureParameter(name = "F_COD_REGIONAIS",
+                                                                                                  type = Long.class)})
+                             })
 @Table(name = "unidade",
        indexes = {@Index(name = "idx_unidade_cod_empresa", columnList = "codigo")})
 @Data
