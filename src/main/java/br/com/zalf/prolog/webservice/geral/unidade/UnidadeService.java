@@ -4,10 +4,15 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeEdicao;
+import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeEntity;
 import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeVisualizacaoListagem;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -29,7 +34,13 @@ public class UnidadeService {
     
     public SuccessResponse updateUnidade(@Valid @NotNull final UnidadeEdicao unidadeEdicao) {
         try {
-            return new SuccessResponse(dao.update(unidadeEdicao), "Unidade atualizada com sucesso.");
+            final UnidadeEntity unidade = dao.findById(unidadeEdicao.getCodUnidade())
+                    .orElseThrow(EntityNotFoundException::new);
+            unidade.setNome(unidadeEdicao.getNomeUnidade());
+            unidade.setCodAuxiliar(unidadeEdicao.getCodAuxiliarUnidade());
+            unidade.setLatitudeUnidade(unidadeEdicao.getLatitudeUnidade());
+            unidade.setLongitudeUnidade(unidadeEdicao.getLongitudeUnidade());
+            return new SuccessResponse(dao.save(unidade).getCodigo(), "Unidade atualizada com sucesso.");
         } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao atualizar a unidade %d", unidadeEdicao.getCodUnidade()), t);
             throw Injection
