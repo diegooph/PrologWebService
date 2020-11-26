@@ -23,10 +23,13 @@ public interface UnidadeDao extends JpaRepository<UnidadeEntity, Long> {
      *
      * @param codUnidade um código de uma unidade.
      * @return uma {@link UnidadeVisualizacaoListagem unidade}.
+     *
      * @throws Throwable caso qualquer erro ocorrer.
      */
     @NotNull
-    UnidadeVisualizacaoListagem getUnidadeByCodigo(@NotNull final Long codUnidade) throws Throwable;
+    @Procedure(name = "funcUnidadeVisualizacao")
+    UnidadeVisualizacaoListagem getUnidadeByCodigo(@NotNull
+                                                   @Param("fCodUnidade") final Long codUnidade) throws Throwable;
 
     /**
      * Busca todas as unidades baseado no código da empresa e da regional.
@@ -40,6 +43,10 @@ public interface UnidadeDao extends JpaRepository<UnidadeEntity, Long> {
      * @throws Throwable caso qualquer erro ocorrer.
      */
     @NotNull
-    List<UnidadeVisualizacaoListagem> getUnidadesListagem(@NotNull final Long codEmpresa,
-                                                          @Nullable final List<Long> codigosRegionais) throws Throwable;
+    @Procedure(name = "funcUnidadeListagem")
+    List<UnidadeVisualizacaoListagem> getUnidadesListagem(@NotNull
+                                                          @Param("fCodEmpresa") final Long codEmpresa,
+                                                          @Nullable
+                                                          @Param("fCodRegionais") final List<Long> codigosRegionais)
+            throws Throwable;
 }
