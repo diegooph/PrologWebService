@@ -44,6 +44,12 @@ public class PrologApplication extends SpringBootServletInitializer {
         return DatabaseConnectionActionsWrapper.getActions();
     }
 
+    @Override
+    protected SpringApplicationBuilder configure(@NotNull final SpringApplicationBuilder builder) {
+        builder.sources(PrologApplication.class);
+        return builder;
+    }
+
     @Bean
     public ServletListenerRegistrationBean<ServletContextListener> dataSourceLifecycleManagerRegistrationBean() {
         final ServletListenerRegistrationBean<ServletContextListener> bean = new ServletListenerRegistrationBean<>();
@@ -63,12 +69,6 @@ public class PrologApplication extends SpringBootServletInitializer {
         final ServletListenerRegistrationBean<ServletContextListener> bean = new ServletListenerRegistrationBean<>();
         bean.setListener(new PrologConsoleTextMaker());
         return bean;
-    }
-
-    @Override
-    protected SpringApplicationBuilder configure(@NotNull final SpringApplicationBuilder builder) {
-        builder.sources(PrologApplication.class);
-        return builder;
     }
 
     @Component
