@@ -19,7 +19,7 @@ import javax.validation.constraints.Size;
         "precisa-se enviar também codAuxiliar antigo, latitudadeUnidade antiga e longitudeUnidade antiga, pois elas" +
         "farão parte do update.")
 @Data
-public final class UnidadeEdicao {
+public final class UnidadeEdicaoDto {
     @ApiModelProperty(
             value = "Um código de unidade, que será utilizado como chave para saber qual unidade sofrerá as " +
                     "atualizações.",

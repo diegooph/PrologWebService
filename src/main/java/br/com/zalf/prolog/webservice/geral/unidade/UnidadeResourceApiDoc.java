@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.geral.unidade;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
-import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeEdicao;
+import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeEdicaoDto;
 import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeVisualizacaoDto;
 import io.swagger.annotations.*;
 
@@ -25,10 +25,10 @@ public interface UnidadeResourceApiDoc {
     SuccessResponse updateUnidade(
             @ApiParam(
                     value = "Um json contendo informações de uma unidade para atualizá-la.",
-                    required = true) final UnidadeEdicao unidade);
+                    required = true) final UnidadeEdicaoDto unidade);
 
     @ApiOperation(value = "Método depreciado para atualização de unidades.", hidden = true)
-    Response updateUnidadeOld(final UnidadeEdicao unidade);
+    Response updateUnidadeOld(final UnidadeEdicaoDto unidade);
 
     @ApiOperation(
             value = "Busca as informações de uma unidade através de um código específico.",

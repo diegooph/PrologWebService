@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.geral.unidade;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
-import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeEdicao;
+import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeEdicaoDto;
 import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeVisualizacaoDto;
 import br.com.zalf.prolog.webservice.interceptors.ApiExposed;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
@@ -40,7 +40,7 @@ public final class UnidadeResource implements UnidadeResourceApiDoc {
     @Path("/atualiza")
     @Secured(permissions = {Pilares.Geral.Empresa.EDITAR_ESTRUTURA})
     @Override
-    public SuccessResponse updateUnidade(final UnidadeEdicao unidade) {
+    public SuccessResponse updateUnidade(final UnidadeEdicaoDto unidade) {
         return service.updateUnidade(unidade);
     }
 
@@ -54,7 +54,7 @@ public final class UnidadeResource implements UnidadeResourceApiDoc {
     @PUT
     @Secured(permissions = {Pilares.Geral.Empresa.EDITAR_ESTRUTURA})
     @Override
-    public Response updateUnidadeOld(final UnidadeEdicao unidade) {
+    public Response updateUnidadeOld(final UnidadeEdicaoDto unidade) {
         service.updateUnidade(unidade);
         return Response.ok("Unidade atualizada com sucesso.");
     }
