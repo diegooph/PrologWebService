@@ -12,7 +12,8 @@ import org.jetbrains.annotations.NotNull;
 public enum VeiculoAcoplamentoAcaoEnum {
     ACOPLADO("ACOPLADO"),
     DESACOPLADO("DESACOPLADO"),
-    MUDOU_POSICAO("MUDOU_POSICAO"),
+    MUDOU_POSICAO_ORIGEM("MUDOU_POSICAO_ORIGEM"),
+    MUDOU_POSICAO_DESTINO("MUDOU_POSICAO_DESTINO"),
     PERMANECEU("PERMANECEU");
 
     @NotNull
