@@ -7,7 +7,7 @@ import br.com.zalf.prolog.webservice.errorhandling.sql.NotFoundException;
 import br.com.zalf.prolog.webservice.errorhandling.sql.ServerSideErrorException;
 import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeEdicao;
 import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeEntity;
-import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeVisualizacaoListagem;
+import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeVisualizacaoDto;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,12 +67,12 @@ public class UnidadeService {
 
     @NotNull
     @Transactional
-    public UnidadeVisualizacaoListagem getUnidadeByCodigo(@NotNull final Long codUnidade) {
+    public UnidadeVisualizacaoDto getUnidadeByCodigo(@NotNull final Long codUnidade) {
         try {
             return dao.getUnidadeByCodigo(codUnidade);
         } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao buscar unidade.\n" +
-                    "Código da Unidade: %d", codUnidade), t);
+                                             "Código da Unidade: %d", codUnidade), t);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao buscar unidade, tente novamente.");
@@ -81,7 +81,7 @@ public class UnidadeService {
 
     @NotNull
     @Transactional
-    public List<UnidadeVisualizacaoListagem> getUnidadesListagem(
+    public List<UnidadeVisualizacaoDto> getUnidadesListagem(
             @NotNull final Long codEmpresa,
             @Nullable final List<Long> codigosRegionais) {
         try {

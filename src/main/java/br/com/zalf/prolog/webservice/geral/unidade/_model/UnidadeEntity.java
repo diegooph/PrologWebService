@@ -16,14 +16,14 @@ import java.time.LocalDateTime;
 @NamedStoredProcedureQueries({
                                      @NamedStoredProcedureQuery(name = "funcUnidadeVisualizacao",
                                                                 procedureName = "FUNC_UNIDADE_VISUALIZACAO",
-                                                                resultClasses = {UnidadeVisualizacaoListagem.class},
+                                                                resultClasses = {UnidadeVisualizacaoDto.class},
                                                                 parameters = {
                                                                         @StoredProcedureParameter(name = "F_COD_UNIDADE",
                                                                                                   type = Long.class,
                                                                                                   mode = ParameterMode.IN)}),
                                      @NamedStoredProcedureQuery(name = "funcUnidadeListagem",
                                                                 procedureName = "FUNC_UNIDADE_LISTAGEM",
-                                                                resultClasses = {UnidadeVisualizacaoListagem.class},
+                                                                resultClasses = {UnidadeVisualizacaoDto.class},
                                                                 parameters = {
                                                                         @StoredProcedureParameter(name = "F_COD_EMPRESA",
                                                                                                   type = Long.class,
