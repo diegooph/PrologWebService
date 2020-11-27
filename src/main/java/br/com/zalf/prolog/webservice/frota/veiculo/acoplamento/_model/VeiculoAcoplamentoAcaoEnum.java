@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 public enum VeiculoAcoplamentoAcaoEnum {
     ACOPLADO("ACOPLADO"),
     DESACOPLADO("DESACOPLADO"),
+    MUDOU_POSICAO("MUDOU_POSICAO"),
     PERMANECEU("PERMANECEU");
 
     @NotNull
@@ -29,13 +30,13 @@ public enum VeiculoAcoplamentoAcaoEnum {
         throw new IllegalArgumentException("Nenhum VeiculoAcoplamentoAcaoEnum encontrado com a string: " + value);
     }
 
-    @NotNull
-    public String asString() {
-        return databaseConstant;
-    }
-
     @Override
     public String toString() {
         return asString();
+    }
+
+    @NotNull
+    public String asString() {
+        return databaseConstant;
     }
 }
