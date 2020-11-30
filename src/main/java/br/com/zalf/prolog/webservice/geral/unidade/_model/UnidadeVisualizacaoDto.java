@@ -31,16 +31,6 @@ public class UnidadeVisualizacaoDto {
             example = "7")
     int totalColaboradores;
     @ApiModelProperty(
-            value = "O código único da regional de uma unidade.",
-            example = "1")
-    @NotNull
-    Long codRegional;
-    @ApiModelProperty(
-            value = "O nome da regional de uma unidade.",
-            example = "Sudeste")
-    @NotNull
-    String nomeRegional;
-    @ApiModelProperty(
             value = "O timezone de uma unidade.",
             example = "America/Sao_Paulo")
     @NotNull
@@ -69,4 +59,14 @@ public class UnidadeVisualizacaoDto {
             example = "-48.679233")
     @Nullable
     String longitudeUnidade;
+    @ApiModelProperty(
+            value = "O código único da regional de uma unidade.",
+            example = "1")
+    @NotNull
+    Long codRegional;
+    @ApiModelProperty(
+            value = "O nome da regional de uma unidade.",
+            example = "Sudeste")
+    @NotNull
+    String nomeRegional;
 }
