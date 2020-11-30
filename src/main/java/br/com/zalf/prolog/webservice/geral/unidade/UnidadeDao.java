@@ -47,7 +47,7 @@ public interface UnidadeDao extends JpaRepository<UnidadeEntity, Long> {
      *
      * @param codEmpresa       um código de uma empresa;
      * @param codigosRegionais códigos das regionais para as quais se quer filtrar, ou {@code null}.
-     * @return uma {@link List< UnidadeVisualizacaoDto > lista de unidades}.
+     * @return uma {@link List<UnidadeVisualizacaoDto> lista de unidades}.
      *
      * @throws Throwable caso qualquer erro ocorrer.
      */
@@ -56,6 +56,6 @@ public interface UnidadeDao extends JpaRepository<UnidadeEntity, Long> {
     List<UnidadeVisualizacaoDto> getUnidadesListagem(@NotNull
                                                      @Param("fCodEmpresa") final Long codEmpresa,
                                                      @Nullable
-                                                     @Param("fCodRegionais") final List<Long> codigosRegionais)
+                                                     @Param("fCodRegionais") final String codigosRegionais)
             throws Throwable;
 }
