@@ -17,6 +17,7 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Created on 2020-03-12
@@ -85,7 +86,14 @@ public class UnidadeService {
             @NotNull final Long codEmpresa,
             @Nullable final List<Long> codigosRegionais) {
         try {
-            return dao.getUnidadesListagem(codEmpresa, codigosRegionais);
+            String codRegionais = null;
+            if (codigosRegionais.size() > 0) {
+                codRegionais = codigosRegionais
+                        .stream()
+                        .map(Object::toString)
+                        .collect(Collectors.joining(","));
+            }
+            return dao.getUnidadesListagem(codEmpresa, codRegionais);
         } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao buscar lista de unidades da empresa.\n" +
                                              "Código da Empresa: %d\n" +
