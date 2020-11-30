@@ -13,24 +13,22 @@ import java.time.LocalDateTime;
  * @author Guilherme Steinert (https://github.com/steinert999)
  */
 @Entity
-@NamedStoredProcedureQueries({
-                                     @NamedStoredProcedureQuery(name = "funcUnidadeVisualizacao",
-                                                                procedureName = "FUNC_UNIDADE_VISUALIZACAO",
-                                                                resultClasses = {UnidadeVisualizacaoDto.class},
-                                                                parameters = {
-                                                                        @StoredProcedureParameter(name = "F_COD_UNIDADE",
-                                                                                                  type = Long.class,
-                                                                                                  mode = ParameterMode.IN)}),
-                                     @NamedStoredProcedureQuery(name = "funcUnidadeListagem",
-                                                                procedureName = "FUNC_UNIDADE_LISTAGEM",
-                                                                resultClasses = {UnidadeVisualizacaoDto.class},
-                                                                parameters = {
-                                                                        @StoredProcedureParameter(name = "F_COD_EMPRESA",
-                                                                                                  type = Long.class,
-                                                                                                  mode = ParameterMode.IN),
-                                                                        @StoredProcedureParameter(name = "F_COD_REGIONAIS",
-                                                                                                  type = Long.class)})
-                             })
+@NamedNativeQueries(value = {
+        @NamedNativeQuery(name = "funcUnidadeVisualizacao",
+                          resultSetMapping = "UnidadeVisualizacaoDtoMapper",
+                          query = "select * " +
+                                  "from func_unidade_visualizacao(:fCodUnidade);",
+                          resultClass = UnidadeVisualizacaoDto.class),
+        @NamedNativeQuery(name = "funcUnidadeListagem",
+                          resultSetMapping = "UnidadeVisualizacaoDtoMapper",
+                          query = "select * " +
+                                  "from func_unidade_listagem(" +
+                                  "F_COD_EMPRESA => :fCodEmpresa," +
+                                  "F_COD_REGIONAIS => cast(" +
+                                  "(string_to_array(text(:fCodRegionais), text(',')))" +
+                                  "as bigint[]));",
+                          resultClass = UnidadeVisualizacaoDto.class)
+})
 @NamedEntityGraph(name = "graph.RegionalEmpresa",
                   attributeNodes = {
                           @NamedAttributeNode("regional"),

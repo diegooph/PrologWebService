@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.query.Procedure;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -35,7 +35,7 @@ public interface UnidadeDao extends JpaRepository<UnidadeEntity, Long> {
      * @throws Throwable caso qualquer erro ocorrer.
      */
     @NotNull
-    @Procedure(name = "funcUnidadeVisualizacao")
+    @Query(name = "funcUnidadeVisualizacao", nativeQuery = true)
     UnidadeVisualizacaoDto getUnidadeByCodigo(@NotNull
                                               @Param("fCodUnidade") final Long codUnidade) throws Throwable;
 
@@ -52,7 +52,7 @@ public interface UnidadeDao extends JpaRepository<UnidadeEntity, Long> {
      * @throws Throwable caso qualquer erro ocorrer.
      */
     @NotNull
-    @Procedure(name = "funcUnidadeListagem")
+    @Query(name = "funcUnidadeListagem", nativeQuery = true)
     List<UnidadeVisualizacaoDto> getUnidadesListagem(@NotNull
                                                      @Param("fCodEmpresa") final Long codEmpresa,
                                                      @Nullable
