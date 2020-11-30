@@ -13,6 +13,22 @@ import java.time.LocalDateTime;
  * @author Guilherme Steinert (https://github.com/steinert999)
  */
 @Entity
+@SqlResultSetMapping(name = "UnidadeVisualizacaoDtoMapper",
+                     classes = @ConstructorResult(
+                             targetClass = UnidadeVisualizacaoDto.class,
+                             columns = {
+                                     @ColumnResult(name = "codigo_unidade", type = Long.class),
+                                     @ColumnResult(name = "nome_unidade", type = String.class),
+                                     @ColumnResult(name = "total_colaboradores_unidade", type = int.class),
+                                     @ColumnResult(name = "timezone_unidade", type = String.class),
+                                     @ColumnResult(name = "data_hora_cadastro_unidade", type = LocalDateTime.class),
+                                     @ColumnResult(name = "status_ativo_unidade", type = Boolean.class),
+                                     @ColumnResult(name = "codigo_auxiliar_unidade", type = String.class),
+                                     @ColumnResult(name = "latitude_unidade", type = String.class),
+                                     @ColumnResult(name = "longitude_unidade", type = String.class),
+                                     @ColumnResult(name = "codigo_regional_unidade", type = Long.class),
+                                     @ColumnResult(name = "nome_regiao_regional_unidade", type = String.class)
+                             }))
 @NamedNativeQueries(value = {
         @NamedNativeQuery(name = "funcUnidadeVisualizacao",
                           resultSetMapping = "UnidadeVisualizacaoDtoMapper",
