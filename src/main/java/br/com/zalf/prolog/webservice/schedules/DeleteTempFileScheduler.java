@@ -30,8 +30,8 @@ public class DeleteTempFileScheduler implements Scheduler {
     @Override
     @Scheduled(cron = "0 22 */2 * * *")
     public void doWork() {
-        final File TmpDir = br.com.zalf.prolog.webservice.commons.util.Files.createTempDir();
-        deleteFiles(TmpDir);
+        final File tmpDir = br.com.zalf.prolog.webservice.commons.util.Files.createTempDir();
+        deleteFiles(tmpDir);
     }
 
     private void deleteFiles(final File dir) {
