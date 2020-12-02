@@ -24,11 +24,11 @@ public class DeleteTempFileScheduler implements Scheduler {
     private static final String TAG = DeleteTempFileScheduler.class.getSimpleName();
 
     /*
-     * Essa cron foi programada para ser executada á cada dois dias às 22:00,
+     * Essa cron foi programada para ser executada á cada dois dias às 02:00,
      * todos os meses em todos os dias da semana
      */
     @Override
-    @Scheduled(cron = "0 22 */2 * * *")
+    @Scheduled(cron = "0 2 */2 * * *")
     public void doWork() {
         final File tmpDir = br.com.zalf.prolog.webservice.commons.util.Files.createTempDir();
         deleteFiles(tmpDir);
