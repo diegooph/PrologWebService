@@ -31,6 +31,9 @@ public class DeleteTempFileScheduler implements Scheduler {
     @Scheduled(cron = "0 2 */2 * * *")
     public void doWork() {
         final File tmpDir = br.com.zalf.prolog.webservice.commons.util.Files.createTempDir();
+        final String message = String.format("Iniciando execução do schedule para limpeza da pasta %s",
+                                             tmpDir.getName());
+        Log.i(TAG, message);
         deleteFiles(tmpDir);
     }
 
