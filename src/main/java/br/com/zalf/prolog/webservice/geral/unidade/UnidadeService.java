@@ -37,7 +37,7 @@ public class UnidadeService {
     @Transactional
     public SuccessResponse updateUnidade(@Valid @NotNull final UnidadeEntity unidadeParaEdicao) {
         try {
-            final UnidadeEntity unidade = dao.findById(unidadeParaEdicao.getCodigo())
+            final UnidadeEntity oldUnidade = dao.findById(unidadeParaEdicao.getCodigo())
                     .orElseThrow(() -> new NotFoundException("O registro não foi encontrado para ser atualizado.",
                                                              "A chave enviada para atualização não existe na tabela " +
                                                                      "de unidades para poder ser atualizada.\n"
@@ -45,7 +45,7 @@ public class UnidadeService {
                                                                      "novamente,",
                                                              "A chave da unidade não existe na tabela unidade. " +
                                                                      "Primeiro crie o registro e depois o atualize!"));
-            final UnidadeEntity unidadeEditada = unidade.toBuilder()
+            final UnidadeEntity unidadeEditada = oldUnidade.toBuilder()
                     .nome(unidadeParaEdicao.getNome())
                     .codAuxiliar(unidadeParaEdicao.getCodAuxiliar())
                     .latitudeUnidade(unidadeParaEdicao.getLatitudeUnidade())
