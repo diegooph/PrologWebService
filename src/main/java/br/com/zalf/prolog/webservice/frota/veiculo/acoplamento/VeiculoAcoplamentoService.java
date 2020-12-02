@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.database.transaction.DatabaseTransaction;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcoplamentoProcessoRealizacao;
+import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento.validator.VeiculoAcoplamentoValidator;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -27,6 +28,7 @@ public final class VeiculoAcoplamentoService {
                     .runInTransaction(connection -> {
                         final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
                         final VeiculoAcoplamentoDao acoplamentoDao = Injection.provideVeiculoAcoplamentoDao(connection);
+                        new VeiculoAcoplamentoValidator(connection, acoplamentoDao, veiculoDao);
                         return new VeiculoAcoplamentoRealizacaoEngine(connection, acoplamentoDao, veiculoDao)
                                 .realizaProcessoAcoplamento(codColaboradorRealizacao, processoRealizacao);
                     });

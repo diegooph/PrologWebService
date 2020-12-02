@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao;
 
+import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento.validator.AcoplamentoRecebido;
 import lombok.Data;
 
 import javax.annotation.Nullable;
@@ -49,5 +50,19 @@ public final class VeiculoAcoplamentoProcessoRealizacao {
         return acopladosOuMantidos.isEmpty()
                 ? Optional.empty()
                 : Optional.of(acopladosOuMantidos);
+    }
+
+    @NotNull
+    public List<AcoplamentoRecebido> getAcoplamentosRecebidos() {
+        return acoesRealizadas
+                .stream()
+                .filter(VeiculoAcoplamentoAcaoRealizada::foiAcopladoOuMantidoNaComposicao)
+                .map(acao -> new AcoplamentoRecebido(
+                        codUnidade,
+                        acao.getCodVeiculo(),
+                        acao.getPosicaoAcaoRealizada(),
+                        acao.getCodDiagramaVeiculo(),
+                        acao.getMotorizado()))
+                .collect(Collectors.toList());
     }
 }

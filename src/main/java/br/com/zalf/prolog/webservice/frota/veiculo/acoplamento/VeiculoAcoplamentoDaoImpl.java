@@ -7,6 +7,7 @@ import br.com.zalf.prolog.webservice.errorhandling.Exceptions;
 import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcopladoMantido;
 import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcoplamentoAcaoRealizada;
 import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcoplamentoProcessoInsert;
+import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento.validator.AcoplamentoAtual;
 import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
@@ -14,6 +15,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -138,5 +140,41 @@ public final class VeiculoAcoplamentoDaoImpl implements VeiculoAcoplamentoDao {
         } finally {
             DatabaseConnection.close(stmt);
         }
+    }
+
+    @Override
+    public List<AcoplamentoAtual> buscaAcoplamentosAtuais(final long[] codVeiculosMantidos) {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = connection.prepareCall("select vaa.cod_processo," +
+                                                  "vaa.cod_unidade," +
+                                                  "vaa.cod_veiculo," +
+                                                  "vaa.cod_posicao," +
+                                                  "vaa.cod_diagrama," +
+                                                  "vaa.motorizado from veiculo_acoplamento_atual vaa" +
+                                                  "where cod_veiculo in (?) ");
+            stmt.setObject(1, codVeiculosMantidos);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                final List<AcoplamentoAtual> acoplamentosAtuais = new ArrayList<>();
+                do {
+                    acoplamentosAtuais.add(new AcoplamentoAtual(rSet.getLong("cod_processo"),
+                                                                rSet.getLong("cod_unidade"),
+                                                                rSet.getLong("cod_veiculo"),
+                                                                rSet.getShort("cod_posicao"),
+                                                                rSet.getLong("cod_diagrama"),
+                                                                rSet.getBoolean("motorizado")));
+                } while (rSet.next());
+            } else {
+                throw new IllegalStateException("Erro ao inserir processo de acoplamento");
+            }
+        } catch (final SQLException e) {
+            throw Exceptions.rethrow(e);
+        } finally {
+            DatabaseConnection.close(stmt);
+        }
+
+        return null;
     }
 }

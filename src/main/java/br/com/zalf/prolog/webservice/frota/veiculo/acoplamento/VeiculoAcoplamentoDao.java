@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.frota.veiculo.acoplamento;
 import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcopladoMantido;
 import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcoplamentoAcaoRealizada;
 import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcoplamentoProcessoInsert;
+import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento.validator.AcoplamentoAtual;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -50,4 +51,12 @@ public interface VeiculoAcoplamentoDao {
      * @param veiculosAcopladosMantidos Os acoplamentos realizados ou mantidos nesse processo de acoplamento.
      */
     void insertEstadoAtualAcoplamentos(@NotNull final List<VeiculoAcopladoMantido> veiculosAcopladosMantidos);
+
+    /**
+     * Retorna uma lista de acoplamentos atuais
+     *
+     * @param codVeiculosMantidos
+     * @return
+     */
+    List<AcoplamentoAtual> buscaAcoplamentosAtuais(final long[] codVeiculosMantidos);
 }
