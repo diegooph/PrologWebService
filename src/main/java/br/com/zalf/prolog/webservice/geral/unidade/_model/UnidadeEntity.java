@@ -2,7 +2,10 @@ package br.com.zalf.prolog.webservice.geral.unidade._model;
 
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.gente.empresa._model.EmpresaEntity;
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -52,7 +55,10 @@ import java.time.LocalDateTime;
                   })
 @Table(name = "unidade",
        indexes = {@Index(name = "idx_unidade_cod_empresa", columnList = "codigo")})
-@Data
+@Builder(toBuilder = true)
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
 public class UnidadeEntity {
 
     @Id
