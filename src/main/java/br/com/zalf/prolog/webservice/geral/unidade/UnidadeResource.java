@@ -40,7 +40,8 @@ public final class UnidadeResource implements UnidadeResourceApiDoc {
     @Path("/atualiza")
     @Secured(permissions = {Pilares.Geral.Empresa.EDITAR_ESTRUTURA})
     @Override
-    public SuccessResponse updateUnidade(final UnidadeEdicaoDto unidade) {
+    public SuccessResponse updateUnidade(final UnidadeEdicaoDto unidadeEdicaoDto) {
+        final UnidadeEntity unidade = mapper.toEntity(unidadeEdicaoDto);
         return service.updateUnidade(unidade);
     }
 
@@ -54,7 +55,8 @@ public final class UnidadeResource implements UnidadeResourceApiDoc {
     @PUT
     @Secured(permissions = {Pilares.Geral.Empresa.EDITAR_ESTRUTURA})
     @Override
-    public Response updateUnidadeOld(final UnidadeEdicaoDto unidade) {
+    public Response updateUnidadeOld(final UnidadeEdicaoDto unidadeEdicaoDto) {
+        final UnidadeEntity unidade = mapper.toEntity(unidadeEdicaoDto);
         service.updateUnidade(unidade);
         return Response.ok("Unidade atualizada com sucesso.");
     }

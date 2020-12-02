@@ -5,7 +5,6 @@ import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.sql.NotFoundException;
 import br.com.zalf.prolog.webservice.errorhandling.sql.ServerSideErrorException;
-import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeEdicaoDto;
 import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeEntity;
 import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeVisualizacaoDto;
 import org.jetbrains.annotations.NotNull;
@@ -36,7 +35,7 @@ public class UnidadeService {
     }
 
     @Transactional
-    public SuccessResponse updateUnidade(@Valid @NotNull final UnidadeEdicaoDto unidadeEdicao) {
+    public SuccessResponse updateUnidade(@Valid @NotNull final UnidadeEntity unidadeParaEdicao) {
         try {
             final UnidadeEntity unidade = dao.findById(unidadeEdicao.getCodUnidade())
                     .orElseThrow(() -> new NotFoundException("O registro não foi encontrado para ser atualizado.",
