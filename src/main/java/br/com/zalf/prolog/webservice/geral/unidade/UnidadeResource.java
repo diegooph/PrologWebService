@@ -14,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
@@ -47,7 +48,7 @@ public final class UnidadeResource implements UnidadeResourceApiDoc {
     @Path("/atualiza")
     @Secured(permissions = {Pilares.Geral.Empresa.EDITAR_ESTRUTURA})
     @Override
-    public SuccessResponse updateUnidade(final UnidadeEdicaoDto unidadeEdicaoDto) {
+    public SuccessResponse updateUnidade(@Valid final UnidadeEdicaoDto unidadeEdicaoDto) {
         final UnidadeEntity unidade = mapper.toEntity(unidadeEdicaoDto);
         return service.updateUnidade(unidade);
     }

@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -35,7 +34,7 @@ public class UnidadeService {
     }
 
     @Transactional
-    public SuccessResponse updateUnidade(@Valid @NotNull final UnidadeEntity unidadeParaEdicao) {
+    public SuccessResponse updateUnidade(@NotNull final UnidadeEntity unidadeParaEdicao) {
         try {
             final UnidadeEntity oldUnidade = dao.findById(unidadeParaEdicao.getCodigo())
                     .orElseThrow(() -> new NotFoundException("O registro não foi encontrado para ser atualizado.",
