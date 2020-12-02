@@ -3,10 +3,12 @@ package br.com.zalf.prolog.webservice.geral.unidade;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
 import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeEdicaoDto;
+import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeEntity;
 import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeVisualizacaoDto;
 import br.com.zalf.prolog.webservice.interceptors.ApiExposed;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
+import br.com.zalf.prolog.webservice.mappers.Mapper;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,9 +32,14 @@ public final class UnidadeResource implements UnidadeResourceApiDoc {
     @NotNull
     private final UnidadeService service;
 
+    @NotNull
+    private final Mapper<UnidadeEdicaoDto, UnidadeEntity> mapper;
+
     @Autowired
-    public UnidadeResource(@NotNull final UnidadeService unidadeService) {
+    public UnidadeResource(@NotNull final UnidadeService unidadeService,
+                           final @NotNull Mapper<UnidadeEdicaoDto, UnidadeEntity> mapper) {
         this.service = unidadeService;
+        this.mapper = mapper;
     }
 
     @ApiExposed
