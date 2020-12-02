@@ -37,7 +37,7 @@ public class UnidadeService {
     @Transactional
     public SuccessResponse updateUnidade(@Valid @NotNull final UnidadeEntity unidadeParaEdicao) {
         try {
-            final UnidadeEntity unidade = dao.findById(unidadeEdicao.getCodUnidade())
+            final UnidadeEntity unidade = dao.findById(unidadeParaEdicao.getCodigo())
                     .orElseThrow(() -> new NotFoundException("O registro não foi encontrado para ser atualizado.",
                                                              "A chave enviada para atualização não existe na tabela " +
                                                                      "de unidades para poder ser atualizada.\n"
@@ -45,11 +45,13 @@ public class UnidadeService {
                                                                      "novamente,",
                                                              "A chave da unidade não existe na tabela unidade. " +
                                                                      "Primeiro crie o registro e depois o atualize!"));
-            unidade.setNome(unidadeEdicao.getNomeUnidade());
-            unidade.setCodAuxiliar(unidadeEdicao.getCodAuxiliarUnidade());
-            unidade.setLatitudeUnidade(unidadeEdicao.getLatitudeUnidade());
-            unidade.setLongitudeUnidade(unidadeEdicao.getLongitudeUnidade());
-            final Long codigoAtualizacaoUnidade = Optional.of(dao.save(unidade))
+            final UnidadeEntity unidadeEditada = unidade.toBuilder()
+                    .nome(unidadeParaEdicao.getNome())
+                    .codAuxiliar(unidadeParaEdicao.getCodAuxiliar())
+                    .latitudeUnidade(unidadeParaEdicao.getLatitudeUnidade())
+                    .longitudeUnidade(unidadeParaEdicao.getLongitudeUnidade())
+                    .build();
+            final Long codigoAtualizacaoUnidade = Optional.of(dao.save(unidadeEditada))
                     .orElseThrow(() -> new ServerSideErrorException("Ocorreu um erro ao atualizar a unidade!",
                                                                     "O servidor sofreu um erro no banco de " +
                                                                             "dados ao atualizar a unidade." +
@@ -58,7 +60,7 @@ public class UnidadeService {
                     .getCodigo();
             return new SuccessResponse(codigoAtualizacaoUnidade, "Unidade atualizada com sucesso.");
         } catch (final Throwable t) {
-            Log.e(TAG, String.format("Erro ao atualizar a unidade %d", unidadeEdicao.getCodUnidade()), t);
+            Log.e(TAG, String.format("Erro ao atualizar a unidade %d", unidadeParaEdicao.getCodigo()), t);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao atualizar unidade, tente novamente.");
