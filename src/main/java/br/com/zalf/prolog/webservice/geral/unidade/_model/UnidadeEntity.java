@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.geral.unidade._model;
 
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.gente.empresa._model.EmpresaEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -96,12 +95,12 @@ public class UnidadeEntity {
     private String timezone;
 
     @Column(name = "data_hora_cadastro",
-            nullable = false)
-    private LocalDateTime dataHoraCadastro = Now.localDateTimeUtc();
+            nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    private LocalDateTime dataHoraCadastro;
 
     @Column(name = "status_ativo",
-            nullable = false)
-    private boolean ativo = true;
+            nullable = false, columnDefinition = "BOOLEAN DEFAULT TRUE")
+    private boolean ativo;
 
     @Column(name = "cod_auxiliar")
     private String codAuxiliar;
@@ -111,5 +110,4 @@ public class UnidadeEntity {
 
     @Column(name = "longitude_unidade")
     private String longitudeUnidade;
-
 }
