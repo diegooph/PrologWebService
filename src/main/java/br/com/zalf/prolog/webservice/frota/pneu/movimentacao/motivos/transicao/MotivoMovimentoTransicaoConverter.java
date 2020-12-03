@@ -6,7 +6,6 @@ import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.transicao._
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.transicao._model.listagem.MotivoMovimentoUnidade;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.transicao._model.listagem.TransicaoUnidadeMotivos;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos.transicao._model.listagem.UnidadeTransicoesMotivoMovimento;
-import br.com.zalf.prolog.webservice.geral.unidade.UnidadeConverter;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
@@ -22,7 +21,8 @@ import java.util.List;
 public final class MotivoMovimentoTransicaoConverter {
 
     private MotivoMovimentoTransicaoConverter() {
-        throw new IllegalStateException(UnidadeConverter.class.getSimpleName() + " cannot be instantiated!");
+        throw new IllegalStateException(MotivoMovimentoTransicaoConverter.class.getSimpleName() + " cannot be " +
+                                                "instantiated!");
     }
 
     @NotNull

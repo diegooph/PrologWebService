@@ -2,8 +2,8 @@ package br.com.zalf.prolog.webservice.geral.unidade;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
-import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeEdicao;
-import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeVisualizacaoListagem;
+import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeEdicaoDto;
+import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeVisualizacaoDto;
 import io.swagger.annotations.*;
 
 import java.util.List;
@@ -25,23 +25,23 @@ public interface UnidadeResourceApiDoc {
     SuccessResponse updateUnidade(
             @ApiParam(
                     value = "Um json contendo informações de uma unidade para atualizá-la.",
-                    required = true) final UnidadeEdicao unidade);
+                    required = true) final UnidadeEdicaoDto unidade);
 
     @ApiOperation(value = "Método depreciado para atualização de unidades.", hidden = true)
-    Response updateUnidadeOld(final UnidadeEdicao unidade);
+    Response updateUnidadeOld(final UnidadeEdicaoDto unidade);
 
     @ApiOperation(
             value = "Busca as informações de uma unidade através de um código específico.",
-            response = UnidadeVisualizacaoListagem.class)
+            response = UnidadeVisualizacaoDto.class)
     @ApiResponses(value = {
             @ApiResponse(
                     code = 200, message = "Operação efetuada com sucesso.",
-                    response = UnidadeVisualizacaoListagem.class),
+                    response = UnidadeVisualizacaoDto.class),
             @ApiResponse(code = 401, message = "Operação não autorizada", response = Response.class),
             @ApiResponse(code = 404, message = "Operação não encontrada", response = Response.class),
             @ApiResponse(code = 500, message = "Erro ao executar operação", response = Response.class)
     })
-    UnidadeVisualizacaoListagem getUnidadeByCodigo(
+    UnidadeVisualizacaoDto getUnidadeByCodigo(
             @ApiParam(value = "O código da unidade que será buscada.", required = true) final Long codUnidade);
 
     @ApiOperation(
@@ -50,13 +50,13 @@ public interface UnidadeResourceApiDoc {
     @ApiResponses(value = {
             @ApiResponse(
                     code = 200, message = "Operação efetuada com sucesso.",
-                    response = UnidadeVisualizacaoListagem.class,
+                    response = UnidadeVisualizacaoDto.class,
                     responseContainer = "List"),
             @ApiResponse(code = 401, message = "Operação não autorizada", response = Response.class),
             @ApiResponse(code = 404, message = "Operação não encontrada", response = Response.class),
             @ApiResponse(code = 500, message = "Erro ao executar operação", response = Response.class)
     })
-    List<UnidadeVisualizacaoListagem> getUnidadesListagem(
+    List<UnidadeVisualizacaoDto> getUnidadesListagem(
             @ApiParam(value = "Um código de empresa existente.", required = true) final Long codEmpresa,
             @ApiParam(value = "Um ou mais códigos de regional, existentes." +
                     "<br><b>Importante:</b> Se nenhum código for informado, será realizada a busca por todas as " +

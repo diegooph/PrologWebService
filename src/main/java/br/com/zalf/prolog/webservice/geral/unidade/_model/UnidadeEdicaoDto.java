@@ -2,7 +2,8 @@ package br.com.zalf.prolog.webservice.geral.unidade._model;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
+import lombok.Builder;
+import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
 import javax.validation.constraints.NotBlank;
@@ -18,8 +19,9 @@ import javax.validation.constraints.Size;
         "preenchidos, porque todos são atualizados. Isso significa que mesmo que a única mudança seja nomeUnidade," +
         "precisa-se enviar também codAuxiliar antigo, latitudadeUnidade antiga e longitudeUnidade antiga, pois elas" +
         "farão parte do update.")
-@Data
-public final class UnidadeEdicao {
+@Builder
+@Getter
+public final class UnidadeEdicaoDto {
     @ApiModelProperty(
             value = "Um código de unidade, que será utilizado como chave para saber qual unidade sofrerá as " +
                     "atualizações.",
