@@ -166,6 +166,7 @@ public final class VeiculoAcoplamentoDaoImpl implements VeiculoAcoplamentoDao {
                                                                 rSet.getLong("cod_diagrama"),
                                                                 rSet.getBoolean("motorizado")));
                 } while (rSet.next());
+                return acoplamentosAtuais;
             } else {
                 throw new IllegalStateException("Erro ao inserir processo de acoplamento");
             }
@@ -174,7 +175,5 @@ public final class VeiculoAcoplamentoDaoImpl implements VeiculoAcoplamentoDao {
         } finally {
             DatabaseConnection.close(stmt);
         }
-
-        return null;
     }
 }
