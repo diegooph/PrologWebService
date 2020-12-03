@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.mappers.geral.unidade;
 import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeEdicaoDto;
 import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeEntity;
 import br.com.zalf.prolog.webservice.mappers.Mapper;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 /**
@@ -14,7 +15,8 @@ import org.springframework.stereotype.Component;
 public class UnidadeEdicaoMapper implements Mapper<UnidadeEdicaoDto, UnidadeEntity> {
 
     @Override
-    public UnidadeEdicaoDto toDto(final UnidadeEntity entity) {
+    @NotNull
+    public UnidadeEdicaoDto toDto(@NotNull final UnidadeEntity entity) {
         return UnidadeEdicaoDto.builder()
                 .codUnidade(entity.getCodigo())
                 .nomeUnidade(entity.getNome())
@@ -25,7 +27,8 @@ public class UnidadeEdicaoMapper implements Mapper<UnidadeEdicaoDto, UnidadeEnti
     }
 
     @Override
-    public UnidadeEntity toEntity(final UnidadeEdicaoDto dto) {
+    @NotNull
+    public UnidadeEntity toEntity(@NotNull final UnidadeEdicaoDto dto) {
         return UnidadeEntity.builder()
                 .codigo(dto.getCodUnidade())
                 .nome(dto.getNomeUnidade())
