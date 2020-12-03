@@ -8,9 +8,9 @@ import java.util.stream.Collectors;
 /**
  * Created on 2020-12-02
  *
- * @author Guilherme Steinert (https://github.com/steinert999)
  * @param <D> dto
  * @param <E> entity
+ * @author Guilherme Steinert (https://github.com/steinert999)
  */
 public interface Mapper<D, E> {
 
