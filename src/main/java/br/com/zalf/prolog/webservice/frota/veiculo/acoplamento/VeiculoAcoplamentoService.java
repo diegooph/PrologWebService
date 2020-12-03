@@ -28,7 +28,9 @@ public final class VeiculoAcoplamentoService {
                     .runInTransaction(connection -> {
                         final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
                         final VeiculoAcoplamentoDao acoplamentoDao = Injection.provideVeiculoAcoplamentoDao(connection);
-                        new VeiculoAcoplamentoValidator(connection, acoplamentoDao, veiculoDao);
+                        new VeiculoAcoplamentoValidator(connection,
+                                                        acoplamentoDao,
+                                                        veiculoDao).veiculoAcoplamentoValidator(processoRealizacao);
                         return new VeiculoAcoplamentoRealizacaoEngine(connection, acoplamentoDao, veiculoDao)
                                 .realizaProcessoAcoplamento(codColaboradorRealizacao, processoRealizacao);
                     });

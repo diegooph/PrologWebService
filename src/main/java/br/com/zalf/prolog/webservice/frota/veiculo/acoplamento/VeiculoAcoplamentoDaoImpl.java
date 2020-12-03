@@ -147,13 +147,13 @@ public final class VeiculoAcoplamentoDaoImpl implements VeiculoAcoplamentoDao {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            stmt = connection.prepareCall("select vaa.cod_processo," +
-                                                  "vaa.cod_unidade," +
-                                                  "vaa.cod_veiculo," +
-                                                  "vaa.cod_posicao," +
-                                                  "vaa.cod_diagrama," +
-                                                  "vaa.motorizado from veiculo_acoplamento_atual vaa" +
-                                                  "where cod_veiculo in (?) ");
+            stmt = connection.prepareCall("select vaa.cod_processo, " +
+                                                  "vaa.cod_unidade, " +
+                                                  "vaa.cod_veiculo, " +
+                                                  "vaa.cod_posicao, " +
+                                                  "vaa.cod_diagrama, " +
+                                                  "vaa.motorizado from veiculo_acoplamento_atual vaa " +
+                                                  "where cod_veiculo = any (?) ");
             stmt.setObject(1, codVeiculosMantidos);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
