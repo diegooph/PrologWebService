@@ -20,6 +20,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -34,6 +35,7 @@ import javax.ws.rs.ext.Provider;
  */
 @SpringBootApplication(scanBasePackages = {"br.com.zalf.prolog.webservice"})
 @EntityScan(basePackages = {"br.com.zalf.prolog.webservice"})
+@EnableScheduling
 public class PrologApplication extends SpringBootServletInitializer {
 
     public static void main(final String[] args) {
