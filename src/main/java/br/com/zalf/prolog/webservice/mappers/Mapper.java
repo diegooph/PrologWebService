@@ -41,9 +41,11 @@ public interface Mapper<D, E> {
     E toEntity(@NotNull final D dto);
 
     /**
+     * <p>
      * Método responsavel por mapear uma lista de entidades para DTOs.
      * utiliza-se do metodo toDto
      * para mapeamento dentro da stream de dados.
+     * </p>
      *
      * @param entities para mapeamento.
      * @return lista de entidades mapeadas para DTO.
