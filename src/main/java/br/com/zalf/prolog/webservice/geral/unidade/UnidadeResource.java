@@ -38,7 +38,7 @@ public final class UnidadeResource implements UnidadeResourceApiDoc {
 
     @Autowired
     public UnidadeResource(@NotNull final UnidadeService unidadeService,
-                           final @NotNull Mapper<UnidadeEdicaoDto, UnidadeEntity> mapper) {
+                           @NotNull final Mapper<UnidadeEdicaoDto, UnidadeEntity> mapper) {
         this.service = unidadeService;
         this.mapper = mapper;
     }
