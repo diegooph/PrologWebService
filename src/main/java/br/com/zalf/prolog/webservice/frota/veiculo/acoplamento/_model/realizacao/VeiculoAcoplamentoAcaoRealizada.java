@@ -28,6 +28,7 @@ public final class VeiculoAcoplamentoAcaoRealizada {
     private final Long kmColetado;
 
     public boolean foiAcopladoOuMantidoNaComposicao() {
-        return acaoRealizada != VeiculoAcoplamentoAcaoEnum.DESACOPLADO;
+        return (acaoRealizada != VeiculoAcoplamentoAcaoEnum.DESACOPLADO &&
+                acaoRealizada != VeiculoAcoplamentoAcaoEnum.MUDOU_POSICAO_ORIGEM);
     }
 }
