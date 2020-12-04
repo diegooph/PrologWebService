@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.log;
 
-import br.com.zalf.prolog.webservice.commons.KeyCaseInsensitiveMap;
+import br.com.zalf.prolog.webservice.commons.KeyCaseInsensitiveMultivaluedMap;
 import br.com.zalf.prolog.webservice.log._model.RequestLog;
 import br.com.zalf.prolog.webservice.log._model.ResponseLog;
 import okhttp3.*;
@@ -19,7 +19,7 @@ import java.nio.charset.StandardCharsets;
  */
 public final class OkHttpLogInterceptor implements Interceptor {
     @Nullable
-    private KeyCaseInsensitiveMap<String, String> processedHeaders;
+    private KeyCaseInsensitiveMultivaluedMap<String, String> processedHeaders;
 
     @NotNull
     @Override
@@ -63,13 +63,11 @@ public final class OkHttpLogInterceptor implements Interceptor {
     }
 
     @NotNull
-    private KeyCaseInsensitiveMap<String, String> getHeaders(@NotNull final Headers headers) {
+    private KeyCaseInsensitiveMultivaluedMap<String, String> getHeaders(@NotNull final Headers headers) {
         if (processedHeaders == null) {
-            final KeyCaseInsensitiveMap<String, String> headersMap = new KeyCaseInsensitiveMap<>();
-            headers
-                    .toMultimap()
-                    .forEach((headerKey, headerValues) ->
-                            headersMap.put(headerKey, String.join(",", headerValues)));
+            final KeyCaseInsensitiveMultivaluedMap<String, String> headersMap =
+                    new KeyCaseInsensitiveMultivaluedMap<>();
+            headers.toMultimap().forEach(headersMap::put);
             processedHeaders = headersMap;
         }
         return processedHeaders;
