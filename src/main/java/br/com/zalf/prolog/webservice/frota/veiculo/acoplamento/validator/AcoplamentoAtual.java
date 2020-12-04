@@ -9,17 +9,17 @@ import org.jetbrains.annotations.Nullable;
  * @author Thais Francisco (https://github.com/thaisksf)
  */
 @Data
+@Nullable
 public class AcoplamentoAtual {
 
-    @Nullable
     private final Long codProcessoAcoplamento;
-    @Nullable
+
     private final Long codUnidadeAcoplamento;
-    @Nullable
+
     private final Long codVeiculo;
     private final short codPosicao;
-    @Nullable
+
     private final Long codDiagramaVeiculo;
-    @Nullable
+
     private final Boolean motorizado;
 }
