@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.frota.veiculo.acoplamento.validator;
 
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Created on 2020-12-02
@@ -10,6 +11,8 @@ import org.jetbrains.annotations.NotNull;
  */
 @Data
 public class AcoplamentoRecebido {
+    @Nullable
+    private final Long codProcessoAcoplamento;
     @NotNull
     private final Long codUnidadeAcoplamento;
     @NotNull

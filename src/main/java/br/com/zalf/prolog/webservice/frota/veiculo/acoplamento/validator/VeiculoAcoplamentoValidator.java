@@ -38,20 +38,38 @@ public class VeiculoAcoplamentoValidator {
                                             @NotNull final List<AcoplamentoRecebido> acoplamentoRecebido,
                                             @NotNull final List<AcoplamentoAtual> acoplamentoAtual) {
         //verificar tamanho e verificar se as posições são as mesmas
-        final List<String> concatVeiculoPosicaoRecebido = acoplamentoRecebido.stream()
-                .map(a -> String.format("%s%s", a.getCodVeiculo(), a.getCodPosicao()))
-                .collect(Collectors.toList());
+        if (veiculoAcoplamentoProcessoRealizacao.getAcoesRealizadas().size() != acoplamentoRecebido.size()) {
+            // TODO prossegue o insert de acoplamento
+        } else {
+            final List<String> concatVeiculoPosicaoRecebido = acoplamentoRecebido.stream()
+                    .map(recebido -> String.format("%s%s%s",
+                                                   recebido.getCodProcessoAcoplamento(),
+                                                   recebido.getCodVeiculo(),
+                                                   recebido.getCodPosicao()))
+                    .collect(Collectors.toList());
 
-        final List<String> concatVeiculoPosicaoAtual = acoplamentoAtual.stream()
-                .map(a -> String.format("%s%s", a.getCodVeiculo(), a.getCodPosicao()))
-                .collect(Collectors.toList());
-
-        if (concatVeiculoPosicaoRecebido.containsAll(concatVeiculoPosicaoAtual)) {
-            System.out.println(true);
-        }
-        //TODO - Aqui ainda tá errado. Se não cair no de cima tem que voltar e não ir pro próximo.
-        else if (veiculoAcoplamentoProcessoRealizacao.getAcoesRealizadas().size() == acoplamentoRecebido.size()) {
-            System.out.println(true);
+            final List<String> concatVeiculoPosicaoAtual = acoplamentoAtual.stream()
+                    .map(atual -> String.format("%s%s%s",
+                                                atual.getCodProcessoAcoplamento(),
+                                                atual.getCodVeiculo(),
+                                                atual.getCodPosicao()))
+                    .collect(Collectors.toList());
+            if (concatVeiculoPosicaoRecebido.containsAll(concatVeiculoPosicaoAtual)) {
+                // TODO retorna ok
+            } else {
+                // tem que ver se os processos são iguais
+                final List<Long> codProcessoAcoplamentoAtual = acoplamentoAtual.stream()
+                        .map(AcoplamentoAtual::getCodProcessoAcoplamento).distinct()
+                        .collect(Collectors.toList());
+                final List<Long> codProcessoAcoplamentoRecebido = acoplamentoRecebido.stream()
+                        .map(AcoplamentoRecebido::getCodProcessoAcoplamento).distinct()
+                        .collect(Collectors.toList());
+                if (codProcessoAcoplamentoRecebido.containsAll(codProcessoAcoplamentoAtual)) {
+                    //TODO pode fazer o insert
+                } else {
+                    //TODO erro porque existem veículos em outros processos.
+                }
+            }
         }
     }
 

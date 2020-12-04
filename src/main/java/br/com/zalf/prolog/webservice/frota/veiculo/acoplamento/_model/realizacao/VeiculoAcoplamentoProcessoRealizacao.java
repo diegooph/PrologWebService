@@ -58,6 +58,8 @@ public final class VeiculoAcoplamentoProcessoRealizacao {
                 .stream()
                 .filter(VeiculoAcoplamentoAcaoRealizada::foiAcopladoOuMantidoNaComposicao)
                 .map(acao -> new AcoplamentoRecebido(
+                        //TODO ver com o allan se esse código é o do acoplamento atual.
+                        codProcessoAcoplamentoEditado,
                         codUnidade,
                         acao.getCodVeiculo(),
                         acao.getPosicaoAcaoRealizada(),
