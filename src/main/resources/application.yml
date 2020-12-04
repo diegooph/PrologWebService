@@ -28,7 +28,7 @@ spring:
     hikari:
       connection-init-sql: "SET application_name = 'ProLog WS'"
       connection-test-query: "SELECT 1"
-      maximum-pool-size: 125
+      maximum-pool-size: 190
       idle-timeout: 60000
       auto-commit: true
       connection-timeout: 30000
