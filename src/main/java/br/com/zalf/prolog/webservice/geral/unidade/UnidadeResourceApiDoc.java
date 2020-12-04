@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeEdicaoDto;
 import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeVisualizacaoDto;
 import io.swagger.annotations.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -25,10 +26,10 @@ public interface UnidadeResourceApiDoc {
     SuccessResponse updateUnidade(
             @ApiParam(
                     value = "Um json contendo informações de uma unidade para atualizá-la.",
-                    required = true) final UnidadeEdicaoDto unidade);
+                    required = true) @Valid final UnidadeEdicaoDto unidade);
 
     @ApiOperation(value = "Método depreciado para atualização de unidades.", hidden = true)
-    Response updateUnidadeOld(final UnidadeEdicaoDto unidade);
+    Response updateUnidadeOld(@Valid final UnidadeEdicaoDto unidade);
 
     @ApiOperation(
             value = "Busca as informações de uma unidade através de um código específico.",

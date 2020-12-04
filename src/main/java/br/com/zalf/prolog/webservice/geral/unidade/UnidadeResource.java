@@ -63,7 +63,7 @@ public final class UnidadeResource implements UnidadeResourceApiDoc {
     @PUT
     @Secured(permissions = {Pilares.Geral.Empresa.EDITAR_ESTRUTURA})
     @Override
-    public Response updateUnidadeOld(final UnidadeEdicaoDto unidadeEdicaoDto) {
+    public Response updateUnidadeOld(@Valid final UnidadeEdicaoDto unidadeEdicaoDto) {
         final UnidadeEntity unidade = mapper.toEntity(unidadeEdicaoDto);
         service.updateUnidade(unidade);
         return Response.ok("Unidade atualizada com sucesso.");
