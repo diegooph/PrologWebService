@@ -19,6 +19,9 @@ public final class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester 
     @Override
     public void insertChecklistOs(@NotNull final ApiAutenticacaoHolder apiAutenticacaoHolder,
                                   @NotNull final OrdemServicoAvaCorpAvilan ordemServicoAvaCorpAvilan) throws Throwable {
+        if (apiAutenticacaoHolder.getApiTokenClient() == null) {
+            throw new IllegalArgumentException("apiTokenClient não pode ser nulo.");
+        }
         final AvaCorpAvilanRest service = RestClient.getService(AvaCorpAvilanRest.class);
         final Call<Object> call = service.insertChecklistOs(
                 apiAutenticacaoHolder.getPrologTokenIntegracao(),
