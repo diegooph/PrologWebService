@@ -57,8 +57,50 @@ public final class SistemaGlobusPiccolotur extends Sistema {
 
     @NotNull
     @Override
-    public Long insertChecklistOffline(@NotNull final ChecklistInsercao checklist) throws Throwable {
-        return insertChecklist(checklist, true, false);
+    public ResultInsertModeloChecklist insertModeloChecklist(
+            @NotNull final ModeloChecklistInsercao modeloChecklist,
+            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener,
+            final boolean statusAtivo,
+            @NotNull final String token) throws Throwable {
+        if (unidadeEstaComIntegracaoAtiva(modeloChecklist.getCodUnidade())) {
+            // Ignoramos o statusAtivo, pois queremos forçar que o modelo de checklist tenha o statusAtivo = false.
+            return getIntegradorProLog()
+                    .insertModeloChecklist(modeloChecklist, checklistOfflineListener, false, token);
+        }
+        // Direcionamos a requisição normalmente para o Prolog.
+        return getIntegradorProLog()
+                .insertModeloChecklist(modeloChecklist, checklistOfflineListener, statusAtivo, token);
+    }
+
+    @Override
+    public void updateModeloChecklist(@NotNull final Long codUnidade,
+                                      @NotNull final Long codModelo,
+                                      @NotNull final ModeloChecklistEdicao modeloChecklist,
+                                      @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener,
+                                      final boolean podeMudarCodigoContextoPerguntasEAlternativas,
+                                      @NotNull final String token) throws Throwable {
+        if (unidadeEstaComIntegracaoAtiva(modeloChecklist.getCodUnidade())) {
+            // Ignoramos a propriedade sobrescreverPerguntasAlternativas pois queremos que para essa integração todas as
+            // edições de perguntas e alternativas sobrescrevam os valores antigos sem alterar os códigos existentes.
+            getIntegradorProLog()
+                    .updateModeloChecklist(
+                            codUnidade,
+                            codModelo,
+                            modeloChecklist,
+                            checklistOfflineListener,
+                            false,
+                            token);
+            return;
+        }
+        // Direcionamos a requisição normalmente para o Prolog.
+        getIntegradorProLog()
+                .updateModeloChecklist(
+                        codUnidade,
+                        codModelo,
+                        modeloChecklist,
+                        checklistOfflineListener,
+                        podeMudarCodigoContextoPerguntasEAlternativas,
+                        token);
     }
 
     @NotNull
@@ -122,50 +164,8 @@ public final class SistemaGlobusPiccolotur extends Sistema {
 
     @NotNull
     @Override
-    public ResultInsertModeloChecklist insertModeloChecklist(
-            @NotNull final ModeloChecklistInsercao modeloChecklist,
-            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener,
-            final boolean statusAtivo,
-            @NotNull final String token) throws Throwable {
-        if (unidadeEstaComIntegracaoAtiva(modeloChecklist.getCodUnidade())) {
-            // Ignoramos o statusAtivo, pois queremos forçar que o modelo de checklist tenha o statusAtivo = false.
-            return getIntegradorProLog()
-                    .insertModeloChecklist(modeloChecklist, checklistOfflineListener, false, token);
-        }
-        // Direcionamos a requisição normalmente para o Prolog.
-        return getIntegradorProLog()
-                .insertModeloChecklist(modeloChecklist, checklistOfflineListener, statusAtivo, token);
-    }
-
-    @Override
-    public void updateModeloChecklist(@NotNull final Long codUnidade,
-                                      @NotNull final Long codModelo,
-                                      @NotNull final ModeloChecklistEdicao modeloChecklist,
-                                      @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener,
-                                      final boolean podeMudarCodigoContextoPerguntasEAlternativas,
-                                      @NotNull final String token) throws Throwable {
-        if (unidadeEstaComIntegracaoAtiva(modeloChecklist.getCodUnidade())) {
-            // Ignoramos a propriedade sobrescreverPerguntasAlternativas pois queremos que para essa integração todas as
-            // edições de perguntas e alternativas sobrescrevam os valores antigos sem alterar os códigos existentes.
-            getIntegradorProLog()
-                    .updateModeloChecklist(
-                            codUnidade,
-                            codModelo,
-                            modeloChecklist,
-                            checklistOfflineListener,
-                            false,
-                            token);
-            return;
-        }
-        // Direcionamos a requisição normalmente para o Prolog.
-        getIntegradorProLog()
-                .updateModeloChecklist(
-                        codUnidade,
-                        codModelo,
-                        modeloChecklist,
-                        checklistOfflineListener,
-                        podeMudarCodigoContextoPerguntasEAlternativas,
-                        token);
+    public Long insertChecklistOffline(@NotNull final ChecklistInsercao checklist) throws Throwable {
+        return insertChecklist(checklist, true, false);
     }
 
     @Override
@@ -251,10 +251,7 @@ public final class SistemaGlobusPiccolotur extends Sistema {
                                     getSistemaKey(),
                                     MetodoIntegrado.GET_AUTENTICACAO);
             final GlobusPiccoloturAutenticacaoResponse autenticacaoResponse =
-                    requester.getTokenAutenticacaoIntegracao(
-                            autenticacaoHolder.getUrl(),
-                            autenticacaoHolder.getApiTokenClient(),
-                            autenticacaoHolder.getApiShortCode());
+                    requester.getTokenAutenticacaoIntegracao(autenticacaoHolder);
             final Long codMovimentacao =
                     Injection
                             .provideMovimentacaoDao()
@@ -271,11 +268,15 @@ public final class SistemaGlobusPiccolotur extends Sistema {
                                     processoMovimentacao.getRespostasCamposPersonalizados());
 
             // Buscamos no Globus as informações dos locais de movimentos para inserir nas movimentações.
-            final String url =
+            final ApiAutenticacaoHolder apiAutenticacaoHolder =
                     getIntegradorProLog()
-                            .getUrl(conn, codEmpresa, getSistemaKey(), MetodoIntegrado.GET_LOCAIS_DE_MOVIMENTO);
+                            .getApiAutenticacaoHolder(
+                                    conn,
+                                    codEmpresa,
+                                    getSistemaKey(),
+                                    MetodoIntegrado.GET_LOCAIS_DE_MOVIMENTO);
             final GlobusPiccoloturLocalMovimentoResponse globusResponse = requester.getLocaisMovimentoGlobusResponse(
-                    url,
+                    apiAutenticacaoHolder,
                     autenticacaoResponse.getFormattedBearerToken(),
                     processoMovimentacao.getColaborador().getCpfAsString());
 
@@ -317,10 +318,16 @@ public final class SistemaGlobusPiccolotur extends Sistema {
                 }
             }
 
+            final ApiAutenticacaoHolder apiAutenticacaoHolderInsertMovimentacao =
+                    getIntegradorProLog()
+                            .getApiAutenticacaoHolder(
+                                    conn,
+                                    codEmpresa,
+                                    getSistemaKey(),
+                                    MetodoIntegrado.INSERT_MOVIMENTACAO);
             //noinspection ConstantConditions
             final GlobusPiccoloturMovimentacaoResponse response = requester.insertProcessoMovimentacao(
-                    getIntegradorProLog()
-                            .getUrl(conn, codEmpresa, getSistemaKey(), MetodoIntegrado.INSERT_MOVIMENTACAO),
+                    apiAutenticacaoHolderInsertMovimentacao,
                     autenticacaoResponse.getFormattedBearerToken(),
                     // Convertemos a dataHoraMovimentacao para LocalDateTime pois usamos assim na integração.
                     GlobusPiccoloturConverter.convert(
@@ -385,27 +392,28 @@ public final class SistemaGlobusPiccolotur extends Sistema {
                                     getSistemaKey(),
                                     MetodoIntegrado.GET_AUTENTICACAO);
             final GlobusPiccoloturAutenticacaoResponse autenticacaoResponse =
-                    requester.getTokenAutenticacaoIntegracao(
-                            autenticacaoHolder.getUrl(),
-                            autenticacaoHolder.getApiTokenClient(),
-                            autenticacaoHolder.getApiShortCode());
+                    requester.getTokenAutenticacaoIntegracao(autenticacaoHolder);
 
             final String cpfColaborador =
                     ProLogUtils.isDebug()
                             ? GlobusPiccoloturConstants.CPF_COLABORADOR_LOCAIS_MOVIMENTO
                             : getIntegradorProLog().getColaboradorByToken(getUserToken()).getCpfAsString();
-            final String url =
-                    getIntegradorProLog()
-                            .getUrl(conn, codEmpresa, getSistemaKey(), MetodoIntegrado.GET_LOCAIS_DE_MOVIMENTO);
+            final ApiAutenticacaoHolder apiAutenticacaoHolder = getIntegradorProLog()
+                    .getApiAutenticacaoHolder(
+                            conn,
+                            codEmpresa,
+                            getSistemaKey(),
+                            MetodoIntegrado.GET_LOCAIS_DE_MOVIMENTO);
             final List<GlobusPiccoloturLocalMovimento> locaisMovimentoGlobus =
                     requester.getLocaisMovimentoGlobusResponse(
-                            url,
+                            apiAutenticacaoHolder,
                             autenticacaoResponse.getFormattedBearerToken(),
                             cpfColaborador)
                             .getLocais();
 
             // Os locais de movimento já são validados no request, não chegaram null aqui.
-            @SuppressWarnings("ConstantConditions") final CampoPersonalizadoParaRealizacao novoCampoSelecaoLocalMovimento =
+            @SuppressWarnings("ConstantConditions")
+            final CampoPersonalizadoParaRealizacao novoCampoSelecaoLocalMovimento =
                     GlobusPiccoloturConverter.convert(oldCampoSelecaoLocalMovimento, locaisMovimentoGlobus);
             // Removemos o campo de selção antigo.
             camposParaRealizacaoMovimentacao.remove(oldCampoSelecaoLocalMovimento);
