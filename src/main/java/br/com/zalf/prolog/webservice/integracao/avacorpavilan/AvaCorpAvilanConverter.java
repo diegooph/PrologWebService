@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan;
 
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.*;
+import br.com.zalf.prolog.webservice.integracao.praxio.data.ApiAutenticacaoHolder;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
@@ -20,7 +21,10 @@ public final class AvaCorpAvilanConverter {
 
     @NotNull
     public static OrdemServicoAvaCorpAvilan convert(@NotNull final OsIntegracao osIntegracao,
-                                                    @NotNull final Long codigoUsuario) {
+                                                    @NotNull final ApiAutenticacaoHolder apiAutenticacaoHolder) {
+        if (apiAutenticacaoHolder.getApiShortCode() == null) {
+            throw new IllegalArgumentException("apiShortCode não pode ser nulo.");
+        }
         return new OrdemServicoAvaCorpAvilan(
                 getIntegerValueFromString(osIntegracao.getCodFilial()),
                 getIntegerValueFromString(osIntegracao.getCodUnidade()),
@@ -29,7 +33,7 @@ public final class AvaCorpAvilanConverter {
                 osIntegracao.getDataHoraFechamento(),
                 osIntegracao.getDataHoraFechamento(),
                 osIntegracao.getDataHoraAbertura(),
-                codigoUsuario,
+                apiAutenticacaoHolder.getApiShortCode(),
                 osIntegracao.getPlacaVeiculo(),
                 osIntegracao.getKmVeiculoNaAbertura(),
                 osIntegracao.getCpfColaboradorChecklist(),
