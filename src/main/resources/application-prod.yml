@@ -4,3 +4,5 @@ spring:
     url: "jdbc:postgresql://${prolog-rds-hostname}:${prolog-rds-port}/${prolog-rds-db-name}"
     username: "${prolog-rds-username}"
     password: "${prolog-rds-password}"
+    hikari:
+      maximum-pool-size: 190

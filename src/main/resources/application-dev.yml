@@ -4,3 +4,5 @@ spring:
     url: ""
     username: ""
     password: ""
+    hikari:
+      maximum-pool-size: 10
