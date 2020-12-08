@@ -12,8 +12,8 @@ import java.sql.ResultSet;
 /**
  * Classe responsável por conter os métodos de criar e fechar a conexão com o banco de dados.
  *
- * @author Luiz Felipe <luiz.felipe_95@hotmail.com>
  * @author Guilherme Steinert (https://github.com/steinert999)
+ * @author Luiz Felipe (https://github.com/luizfp)
  * @version 2.0
  * @apiNote Esta classe está sendo instanciada pelos DAO's atualmente, posteriormente para refatoração
  * deve-se alterar todos os DAO's corretamente.
@@ -22,7 +22,6 @@ import java.sql.ResultSet;
 @Component
 public class DatabaseConnection {
 
-
     public static void close(@Nullable final AutoCloseable... closeable) {
         PrologApplication.getActions().close(closeable);
     }
@@ -30,6 +29,7 @@ public class DatabaseConnection {
     /**
      * Método responsável por fechar a conexão com o banco.
      *
+     * @param conn conexão com o banco de dados.
      * @apiNote O Método atualmente é só um intermédio para a classe DatabaseConnectionActions
      * @see DatabaseConnectionActions
      * @since 17 de nov de 2020
@@ -43,9 +43,13 @@ public class DatabaseConnection {
     /**
      * Método responsável por fechar a conexão com o banco.
      *
+     * @param conn conexão com o banco de dados para fechar.
+     * @param stmt statement para ser fechado.
+     * @param rSet resultset para ser fechado.
      * @apiNote O Método atualmente é só um intermédio para a classe DatabaseConnectionActions
      * @see DatabaseConnectionActions
      * @since 17 de nov de 2020
+     * @deprecated
      */
     @Deprecated
     public static void closeConnection(@Nullable final Connection conn,
@@ -58,6 +62,7 @@ public class DatabaseConnection {
      * Método responsável por criar conexão com o banco.
      *
      * @return Connection
+     *
      * @apiNote O Método atualmente é só um intermédio para a classe DatabaseConnectionActions
      * @see DatabaseConnectionActions
      * @since 17 de nov de 2020
@@ -70,6 +75,7 @@ public class DatabaseConnection {
     /**
      * Método responsável por fechar o PreparedStatement.
      *
+     * @param stmt statement para ser fechado.
      * @apiNote O Método atualmente é só um intermédio para a classe DatabaseConnectionActions
      * @see DatabaseConnectionActions
      * @since 17 de nov de 2020
@@ -83,6 +89,7 @@ public class DatabaseConnection {
     /**
      * Método responsável por fechar o ResultSet.
      *
+     * @param rSet resultset para ser fechado.
      * @apiNote O Método atualmente é só um intermédio para a classe DatabaseConnectionActions
      * @see DatabaseConnectionActions
      * @since 17 de nov de 2020

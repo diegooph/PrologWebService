@@ -9,10 +9,12 @@ spring:
 
   main:
     banner-mode: off
+
   # Evita que o processo do servidor seja restartado a cada vez que um arquivo observado mudar.
   devtools:
     restart:
       enabled: false
+
   jpa:
     open-in-view: false
     hibernate:
@@ -22,6 +24,7 @@ spring:
         temp:
           use_jdbc_metadata_defaults: false
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+
   datasource:
     driver-class-name: org.postgresql.Driver
 

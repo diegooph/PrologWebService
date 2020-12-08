@@ -20,7 +20,6 @@ import javax.sql.DataSource;
 @EnableJpaRepositories(basePackages = {"br.com.zalf.prolog.webservice"})
 public class SpringDatabaseManager {
 
-
     @Value("${spring.datasource.url}")
     private String url;
     @Value("${spring.datasource.username}")
