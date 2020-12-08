@@ -28,9 +28,6 @@ public interface UnidadeResourceApiDoc {
                     value = "Um json contendo informações de uma unidade para atualizá-la.",
                     required = true) @Valid final UnidadeEdicaoDto unidade);
 
-    @ApiOperation(value = "Método depreciado para atualização de unidades.", hidden = true)
-    Response updateUnidadeOld(@Valid final UnidadeEdicaoDto unidade);
-
     @ApiOperation(
             value = "Busca as informações de uma unidade através de um código específico.",
             response = UnidadeVisualizacaoDto.class)
@@ -62,4 +59,7 @@ public interface UnidadeResourceApiDoc {
             @ApiParam(value = "Um ou mais códigos de regional, existentes." +
                     "<br><b>Importante:</b> Se nenhum código for informado, será realizada a busca por todas as " +
                     "regionais da empresa.") final List<Long> codigosRegionais);
+
+    @ApiOperation(value = "Método depreciado para atualização de unidades.", hidden = true)
+    Response updateUnidadeOld(@Valid final UnidadeEdicaoDto unidade);
 }

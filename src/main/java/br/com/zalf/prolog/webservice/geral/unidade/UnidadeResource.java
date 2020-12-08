@@ -53,22 +53,6 @@ public final class UnidadeResource implements UnidadeResourceApiDoc {
         return service.updateUnidade(unidade);
     }
 
-    /**
-     * @deprecated em 09/11/2020. Deve ser utilizado o método {@link #updateUnidade}. Este método foi depreciado
-     * para a criação de um método que contenha um retorno específico, com informações úteis acerca da atualização
-     * ocorrida.
-     */
-    @Deprecated
-    @ApiExposed
-    @PUT
-    @Secured(permissions = {Pilares.Geral.Empresa.EDITAR_ESTRUTURA})
-    @Override
-    public Response updateUnidadeOld(@Valid final UnidadeEdicaoDto unidadeEdicaoDto) {
-        final UnidadeEntity unidade = mapper.toEntity(unidadeEdicaoDto);
-        service.updateUnidade(unidade);
-        return Response.ok("Unidade atualizada com sucesso.");
-    }
-
     @ApiExposed
     @GET
     @Secured(permissions = {Pilares.Geral.Empresa.VISUALIZAR_ESTRUTURA, Pilares.Geral.Empresa.EDITAR_ESTRUTURA})
@@ -86,5 +70,20 @@ public final class UnidadeResource implements UnidadeResourceApiDoc {
             @QueryParam("codEmpresa") final Long codEmpresa,
             @QueryParam("codigosRegionais") final List<Long> codigosRegionais) {
         return service.getUnidadesListagem(codEmpresa, codigosRegionais);
+    }
+
+    /**
+     * @deprecated em 09/11/2020. Deve ser utilizado o método {@link #updateUnidade}. Este método foi depreciado
+     * para a criação de um método que contenha um retorno específico, com informações úteis acerca da atualização
+     * ocorrida.
+     */
+    @Deprecated
+    @ApiExposed
+    @PUT
+    @Secured(permissions = {Pilares.Geral.Empresa.EDITAR_ESTRUTURA})
+    @Override
+    public Response updateUnidadeOld(@Valid final UnidadeEdicaoDto unidadeEdicaoDto) {
+        this.updateUnidade(unidadeEdicaoDto);
+        return Response.ok("Unidade atualizada com sucesso.");
     }
 }

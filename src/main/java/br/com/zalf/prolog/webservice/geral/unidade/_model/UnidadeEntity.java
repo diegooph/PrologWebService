@@ -41,8 +41,8 @@ import java.time.LocalDateTime;
                           resultSetMapping = "UnidadeVisualizacaoDtoMapper",
                           query = "select * " +
                                   "from func_unidade_listagem(" +
-                                  "F_COD_EMPRESA => :fCodEmpresa," +
-                                  "F_COD_REGIONAIS => cast(" +
+                                  "f_cod_empresa => :fCodEmpresa," +
+                                  "f_cod_regionais => cast(" +
                                   "(string_to_array(text(:fCodRegionais), text(',')))" +
                                   "as bigint[]));",
                           resultClass = UnidadeVisualizacaoDto.class)
@@ -52,14 +52,11 @@ import java.time.LocalDateTime;
                           @NamedAttributeNode("regional"),
                           @NamedAttributeNode("empresa")
                   })
-@Table(name = "unidade",
-       indexes = {@Index(name = "idx_unidade_cod_empresa", columnList = "codigo")})
 @Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 public class UnidadeEntity {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "codigo",

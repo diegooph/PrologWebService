@@ -24,7 +24,7 @@ public interface UnidadeDao extends JpaRepository<UnidadeEntity, Long> {
     @Override
     @NotNull
     @EntityGraph(value = "graph.RegionalEmpresa", type = EntityGraph.EntityGraphType.LOAD)
-    Optional<UnidadeEntity> findById(Long id);
+    Optional<UnidadeEntity> findById(@NotNull final Long id);
 
     /**
      * Busca uma unidade baseado no seu código.
@@ -41,21 +41,20 @@ public interface UnidadeDao extends JpaRepository<UnidadeEntity, Long> {
 
     /**
      * Busca todas as unidades baseado no código da empresa e da regional.
+     *
      * <p>
      * A lista de códigos de regionais pode ser {@code null}, significando que o usuário quer trazer de todas as
      * regionais.
      *
      * @param codEmpresa       um código de uma empresa;
      * @param codigosRegionais códigos das regionais para as quais se quer filtrar, ou {@code null}.
-     * @return uma {@link List<UnidadeVisualizacaoDto> lista de unidades}.
+     * @return uma lista de unidades.
      *
      * @throws Throwable caso qualquer erro ocorrer.
      */
     @NotNull
     @Query(name = "funcUnidadeListagem", nativeQuery = true)
-    List<UnidadeVisualizacaoDto> getUnidadesListagem(@NotNull
-                                                     @Param("fCodEmpresa") final Long codEmpresa,
-                                                     @Nullable
-                                                     @Param("fCodRegionais") final String codigosRegionais)
+    List<UnidadeVisualizacaoDto> getUnidadesListagem(@NotNull @Param("fCodEmpresa") final Long codEmpresa,
+                                                     @Nullable @Param("fCodRegionais") final String codigosRegionais)
             throws Throwable;
 }
