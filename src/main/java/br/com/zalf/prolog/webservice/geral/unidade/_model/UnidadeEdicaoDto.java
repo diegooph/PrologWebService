@@ -15,43 +15,38 @@ import javax.validation.constraints.Size;
  *
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
-@ApiModel(description = "Dados a serem usados na atualização de uma unidade. Aqui os campos precisam ser todos " +
-        "preenchidos, porque todos são atualizados. Isso significa que mesmo que a única mudança seja nomeUnidade," +
-        "precisa-se enviar também codAuxiliar antigo, latitudadeUnidade antiga e longitudeUnidade antiga, pois elas" +
-        "farão parte do update.")
+@ApiModel(description = "Objeto utilizado para sobrescrever informações da Unidade. Se tratando de sobrescrita, caso " +
+        "alguma propriedade não for fornecida, assumiremos null.\nPara sobrescrever apenas uma propriedade envie as " +
+        "demais contendo o valor original.\nPara remover uma propriedade, envie null e as demais contendo o valor " +
+        "original.")
 @Builder
 @Getter
 public final class UnidadeEdicaoDto {
     @ApiModelProperty(
-            value = "Um código de unidade, que será utilizado como chave para saber qual unidade sofrerá as " +
-                    "atualizações.",
-            example = "215"
-    )
+            value = "Código da unidade",
+            example = "215")
     @NotNull(message = "O código da unidade é obrigatório.")
     private final Long codUnidade;
     @ApiModelProperty(
-            value = "Um nome para a unidade.",
-            example = "Unidade de testes"
-    )
+            value = "Nome da unidade.",
+            example = "Unidade de testes")
     @NotBlank(message = "O nome da unidade não pode estar vazio.")
-    @Size(max = 40, message = "O nome da unidade precisa conter até 40 caracteres.")
+    @Size(max = 40, message = "O nome da unidade pode conter no máximo 40 caracteres.")
     private final String nomeUnidade;
     @ApiModelProperty(
-            value = "Um código auxiliar para a unidade unidade.",
-            example = "01:01"
-    )
+            value = "Um código auxiliar para a unidade.",
+            example = "01:01",
+            notes = "O código auxiliar é normalmente utilizado para integrações com sistemas externos.")
     @Nullable
     private final String codAuxiliarUnidade;
     @ApiModelProperty(
-            value = "A latitude da localização da unidade em questão.",
-            example = "-27.641369"
-    )
+            value = "A latitude da localização da unidade.",
+            example = "-27.641369")
     @Nullable
     private final String latitudeUnidade;
     @ApiModelProperty(
-            value = "A latitude da localização da unidade em questão.",
-            example = "-48.679233"
-    )
+            value = "A latitude da localização da unidade.",
+            example = "-48.679233")
     @Nullable
     private final String longitudeUnidade;
 }
