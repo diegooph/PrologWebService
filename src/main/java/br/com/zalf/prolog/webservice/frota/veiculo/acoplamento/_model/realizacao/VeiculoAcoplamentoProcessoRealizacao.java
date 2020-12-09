@@ -21,7 +21,7 @@ public final class VeiculoAcoplamentoProcessoRealizacao {
     @Nullable
     private final String observacao;
     @NotNull
-    @Size(min = 2, max = 6)
+    @Size(min = 2, max = 12)
     private final List<VeiculoAcoplamentoAcaoRealizada> acoesRealizadas;
     @Nullable
     private final Long codProcessoAcoplamentoEditado;

@@ -29,6 +29,6 @@ public final class VeiculoAcoplamentoAcaoRealizada {
 
     public boolean foiAcopladoOuMantidoNaComposicao() {
         return (acaoRealizada != VeiculoAcoplamentoAcaoEnum.DESACOPLADO &&
-                acaoRealizada != VeiculoAcoplamentoAcaoEnum.MUDOU_POSICAO_ORIGEM);
+                acaoRealizada != VeiculoAcoplamentoAcaoEnum.MUDOU_POSICAO);
     }
 }
