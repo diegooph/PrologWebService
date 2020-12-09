@@ -52,6 +52,7 @@ import java.time.LocalDateTime;
                           @NamedAttributeNode("regional"),
                           @NamedAttributeNode("empresa")
                   })
+@Table(schema = "public", name = "unidade")
 @Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
