@@ -101,7 +101,8 @@ public final class MovimentacaoDaoImpl extends DatabaseConnection implements Mov
                         processoMovimentacao,
                         dataHoraMovimentacao,
                         fecharServicosAutomaticamente);
-                final List<CampoPersonalizadoResposta> respostas = processoMovimentacao.getRespostasCamposPersonalizados();
+                final List<CampoPersonalizadoResposta> respostas =
+                        processoMovimentacao.getRespostasCamposPersonalizados();
                 if (respostas != null && !respostas.isEmpty()) {
                     campoPersonalizadoDao.salvaRespostasCamposPersonalizados(
                             conn,
@@ -130,9 +131,9 @@ public final class MovimentacaoDaoImpl extends DatabaseConnection implements Mov
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("INSERT INTO " +
-                    "movimentacao_motivo_descarte_empresa(cod_empresa, motivo, ativo, " +
-                    "data_hora_insercao, data_hora_ultima_alteracao) " +
-                    "VALUES (?, ?, ?, ?, ?) RETURNING codigo");
+                                                 "movimentacao_motivo_descarte_empresa(cod_empresa, motivo, ativo, " +
+                                                 "data_hora_insercao, data_hora_ultima_alteracao) " +
+                                                 "VALUES (?, ?, ?, ?, ?) RETURNING codigo");
             stmt.setLong(1, codEmpresa);
             stmt.setString(2, motivo.getMotivo());
             stmt.setBoolean(3, true);
@@ -161,9 +162,12 @@ public final class MovimentacaoDaoImpl extends DatabaseConnection implements Mov
         try {
             conn = getConnection();
             if (onlyAtivos) {
-                stmt = conn.prepareStatement("SELECT * FROM movimentacao_motivo_descarte_empresa WHERE cod_empresa = ? AND ativo = TRUE");
+                stmt = conn.prepareStatement(
+                        "SELECT * FROM movimentacao_motivo_descarte_empresa WHERE cod_empresa = ? AND ativo = TRUE");
             } else {
-                stmt = conn.prepareStatement("SELECT * FROM movimentacao_motivo_descarte_empresa WHERE cod_empresa = ?");
+                stmt =
+                        conn.prepareStatement("SELECT * FROM movimentacao_motivo_descarte_empresa WHERE cod_empresa =" +
+                                                      " ?");
             }
             stmt.setLong(1, codEmpresa);
             rSet = stmt.executeQuery();
@@ -185,8 +189,8 @@ public final class MovimentacaoDaoImpl extends DatabaseConnection implements Mov
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("UPDATE movimentacao_motivo_descarte_empresa " +
-                    "SET ativo = ?, data_hora_ultima_alteracao = ?" +
-                    " WHERE cod_empresa = ? AND codigo = ?");
+                                                 "SET ativo = ?, data_hora_ultima_alteracao = ?" +
+                                                 " WHERE cod_empresa = ? AND codigo = ?");
             stmt.setBoolean(1, motivo.isAtivo());
             stmt.setObject(2, LocalDateTime.now(Clock.systemUTC()));
             stmt.setLong(3, codEmpresa);
@@ -223,10 +227,10 @@ public final class MovimentacaoDaoImpl extends DatabaseConnection implements Mov
             removePneusComOrigemVeiculo(conn, veiculoDao, processoMov);
             final Long codUnidade = processoMov.getUnidade().getCodigo();
             stmt = conn.prepareStatement("SELECT * FROM FUNC_MOVIMENTACAO_INSERE_MOVIMENTACAO(" +
-                    "F_COD_UNIDADE => ?, " +
-                    "F_COD_MOVIMENTACAO_PROCESSO => ? ," +
-                    "F_COD_PNEU => ?," +
-                    "F_OBSERVACAO => ?) AS V_COD_MOVIMENTACAO_REALIZADA; ");
+                                                 "F_COD_UNIDADE => ?, " +
+                                                 "F_COD_MOVIMENTACAO_PROCESSO => ? ," +
+                                                 "F_COD_PNEU => ?," +
+                                                 "F_OBSERVACAO => ?) AS V_COD_MOVIMENTACAO_REALIZADA; ");
             // Podemos realizar o suppress pois neste ponto já temos que possuir um código não nulo.
             stmt.setLong(1, codUnidade);
             stmt.setLong(2, processoMov.getCodigo());
@@ -268,7 +272,8 @@ public final class MovimentacaoDaoImpl extends DatabaseConnection implements Mov
      */
     private void removePneusComOrigemVeiculo(@NotNull final Connection conn,
                                              @NotNull final VeiculoDao veiculoDao,
-                                             @NotNull final ProcessoMovimentacao processoMovimentacao) throws Throwable {
+                                             @NotNull final ProcessoMovimentacao processoMovimentacao)
+            throws Throwable {
         for (final Movimentacao mov : processoMovimentacao.getMovimentacoes()) {
             if (mov.getOrigem().getTipo().equals(OrigemDestinoEnum.VEICULO)) {
                 final OrigemVeiculo origem = (OrigemVeiculo) mov.getOrigem();
@@ -292,8 +297,9 @@ public final class MovimentacaoDaoImpl extends DatabaseConnection implements Mov
                     numCount++;
                     if (numCount > 1) {
                         throw new IllegalStateException("Não é possível movimentar o mesmo pneu mais de uma vez no " +
-                                "mesmo processo de movimentação! Pneu com mais de uma movimentação: "
-                                + pneuMovimentado.getCodigo());
+                                                                "mesmo processo de movimentação! Pneu com mais de uma" +
+                                                                " movimentação: "
+                                                                + pneuMovimentado.getCodigo());
                     }
                 }
             }
@@ -312,8 +318,8 @@ public final class MovimentacaoDaoImpl extends DatabaseConnection implements Mov
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("SELECT FUNC_MOVIMENTACAO_INSERE_MOTIVO_MOVIMENTO_RESPOSTA(" +
-                    "F_COD_MOVIMENTO := ?," +
-                    "F_COD_MOTIVO := ?);");
+                                                 "F_COD_MOVIMENTO := ?," +
+                                                 "F_COD_MOTIVO := ?);");
             stmt.setLong(1, codMovimento);
             stmt.setLong(2, codMotivo);
             stmt.executeQuery();
@@ -343,7 +349,8 @@ public final class MovimentacaoDaoImpl extends DatabaseConnection implements Mov
                 }
                 break;
             case DESCARTE:
-                throw new SQLException("O ProLog não possibilita movimentar pneus do DESCARTE para nenhum outro destino");
+                throw new SQLException("O ProLog não possibilita movimentar pneus do DESCARTE para nenhum outro " +
+                                               "destino");
         }
     }
 
@@ -398,11 +405,12 @@ public final class MovimentacaoDaoImpl extends DatabaseConnection implements Mov
     }
 
     private void validaServicosRealizados(@NotNull final Long codPneu,
-                                          @NotNull final List<PneuServicoRealizado> servicosRealizados) throws Throwable {
+                                          @NotNull final List<PneuServicoRealizado> servicosRealizados)
+            throws Throwable {
         if (servicosRealizados.isEmpty()) {
             throw new IllegalStateException("O pneu " + codPneu + " foi movido dá análise " +
-                    "para o estoque e " +
-                    "não teve nenhum serviço aplicado!");
+                                                    "para o estoque e " +
+                                                    "não teve nenhum serviço aplicado!");
         }
 
         boolean temIncrementaVida = false;
@@ -411,7 +419,7 @@ public final class MovimentacaoDaoImpl extends DatabaseConnection implements Mov
             if (servico instanceof PneuServicoRealizadoIncrementaVida) {
                 if (temIncrementaVida) {
                     throw new GenericException("Não é possível realizar dois serviços de troca de banda na " +
-                            "mesma movimentação");
+                                                       "mesma movimentação");
                 }
                 temIncrementaVida = true;
             }
@@ -424,15 +432,15 @@ public final class MovimentacaoDaoImpl extends DatabaseConnection implements Mov
         ResultSet rSet = null;
         try {
             stmt = conn.prepareStatement("SELECT " +
-                    "  CASE " +
-                    "  WHEN (SELECT MD.COD_RECAPADORA_DESTINO " +
-                    "        FROM MOVIMENTACAO_DESTINO AS MD " +
-                    "          JOIN MOVIMENTACAO AS M ON MD.COD_MOVIMENTACAO = M.CODIGO " +
-                    "        WHERE M.COD_PNEU = ? AND MD.TIPO_DESTINO = 'ANALISE' " +
-                    "        ORDER BY M.CODIGO DESC LIMIT 1) IS NULL " +
-                    "    THEN FALSE " +
-                    "  ELSE TRUE " +
-                    "  END AS TEM_RECAPADORA;");
+                                                 "  CASE " +
+                                                 "  WHEN (SELECT MD.COD_RECAPADORA_DESTINO " +
+                                                 "        FROM MOVIMENTACAO_DESTINO AS MD " +
+                                                 "          JOIN MOVIMENTACAO AS M ON MD.COD_MOVIMENTACAO = M.CODIGO " +
+                                                 "        WHERE M.COD_PNEU = ? AND MD.TIPO_DESTINO = 'ANALISE' " +
+                                                 "        ORDER BY M.CODIGO DESC LIMIT 1) IS NULL " +
+                                                 "    THEN FALSE " +
+                                                 "  ELSE TRUE " +
+                                                 "  END AS TEM_RECAPADORA;");
             stmt.setLong(1, codPneu);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
@@ -451,13 +459,14 @@ public final class MovimentacaoDaoImpl extends DatabaseConnection implements Mov
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("INSERT INTO MOVIMENTACAO_PNEU_SERVICO_REALIZADO " +
-                    "(COD_MOVIMENTACAO, COD_SERVICO_REALIZADO) " +
-                    "VALUES (?, ?);");
+                                                 "(COD_MOVIMENTACAO, COD_SERVICO_REALIZADO) " +
+                                                 "VALUES (?, ?);");
             stmt.setLong(1, codMovimentacao);
             stmt.setLong(2, codServicoRealizado);
             if (stmt.executeUpdate() == 0) {
                 throw new SQLException("Não foi possível inserir o Serviço Realizado " +
-                        "na tabela de vínculo com a Movimentação (movimentacao_servico_realizado)");
+                                               "na tabela de vínculo com a Movimentação " +
+                                               "(movimentacao_servico_realizado)");
             }
         } finally {
             close(stmt);
@@ -471,18 +480,19 @@ public final class MovimentacaoDaoImpl extends DatabaseConnection implements Mov
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("INSERT INTO MOVIMENTACAO_PNEU_SERVICO_REALIZADO_RECAPADORA " +
-                    "(COD_MOVIMENTACAO, COD_SERVICO_REALIZADO_MOVIMENTACAO, COD_RECAPADORA) " +
-                    "VALUES (?, ?, (SELECT MD.COD_RECAPADORA_DESTINO " +
-                    "FROM MOVIMENTACAO_DESTINO AS MD " +
-                    "JOIN MOVIMENTACAO AS M ON MD.COD_MOVIMENTACAO = M.CODIGO " +
-                    "WHERE M.COD_PNEU = ? AND MD.TIPO_DESTINO = 'ANALISE' " +
-                    "ORDER BY M.CODIGO DESC LIMIT 1));");
+                                                 "(COD_MOVIMENTACAO, COD_SERVICO_REALIZADO_MOVIMENTACAO, " +
+                                                 "COD_RECAPADORA) " +
+                                                 "VALUES (?, ?, (SELECT MD.COD_RECAPADORA_DESTINO " +
+                                                 "FROM MOVIMENTACAO_DESTINO AS MD " +
+                                                 "JOIN MOVIMENTACAO AS M ON MD.COD_MOVIMENTACAO = M.CODIGO " +
+                                                 "WHERE M.COD_PNEU = ? AND MD.TIPO_DESTINO = 'ANALISE' " +
+                                                 "ORDER BY M.CODIGO DESC LIMIT 1));");
             stmt.setLong(1, codMovimentacao);
             stmt.setLong(2, codServicoRealizado);
             stmt.setLong(3, codPneu);
             if (stmt.executeUpdate() == 0) {
                 throw new SQLException("Erro ao inserir vinculo da movimentacao com o serviço realizado " +
-                        "na tabale MOVIMENTACAO_PNEU_SERVICO_REALIZADO_RECAPADORA");
+                                               "na tabale MOVIMENTACAO_PNEU_SERVICO_REALIZADO_RECAPADORA");
             }
         } finally {
             close(stmt);
@@ -495,10 +505,11 @@ public final class MovimentacaoDaoImpl extends DatabaseConnection implements Mov
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("INSERT INTO MOVIMENTACAO_ORIGEM(TIPO_ORIGEM, COD_MOVIMENTACAO) " +
-                    "VALUES ((SELECT P.STATUS " +
-                    "  FROM PNEU P " +
-                    "  WHERE P.CODIGO = ? AND COD_UNIDADE = ? AND ? IN (SELECT P.STATUS FROM PNEU P WHERE P.CODIGO = ? " +
-                    "  and P.COD_UNIDADE = ?)), ?);");
+                                                 "VALUES ((SELECT P.STATUS " +
+                                                 "  FROM PNEU P " +
+                                                 "  WHERE P.CODIGO = ? AND COD_UNIDADE = ? AND ? IN (SELECT P.STATUS " +
+                                                 "FROM PNEU P WHERE P.CODIGO = ? " +
+                                                 "  and P.COD_UNIDADE = ?)), ?);");
             stmt.setLong(1, movimentacao.getPneu().getCodigo());
             stmt.setLong(2, codUnidade);
             stmt.setString(3, movimentacao.getOrigem().getTipo().asString());
@@ -519,10 +530,11 @@ public final class MovimentacaoDaoImpl extends DatabaseConnection implements Mov
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("INSERT INTO MOVIMENTACAO_ORIGEM(TIPO_ORIGEM, COD_MOVIMENTACAO) " +
-                    "VALUES ((SELECT P.STATUS " +
-                    "  FROM PNEU P " +
-                    "  WHERE P.CODIGO = ? AND COD_UNIDADE = ? AND ? IN (SELECT P.STATUS FROM PNEU P WHERE P.CODIGO = ? " +
-                    "  and P.COD_UNIDADE = ?)), ?);");
+                                                 "VALUES ((SELECT P.STATUS " +
+                                                 "  FROM PNEU P " +
+                                                 "  WHERE P.CODIGO = ? AND COD_UNIDADE = ? AND ? IN (SELECT P.STATUS " +
+                                                 "FROM PNEU P WHERE P.CODIGO = ? " +
+                                                 "  and P.COD_UNIDADE = ?)), ?);");
             stmt.setLong(1, movimentacao.getPneu().getCodigo());
             stmt.setLong(2, codUnidade);
             stmt.setString(3, movimentacao.getOrigem().getTipo().asString());
@@ -593,6 +605,7 @@ public final class MovimentacaoDaoImpl extends DatabaseConnection implements Mov
                                             "f_cod_veiculo => ?," +
                                             "f_km_atual => ?, " +
                                             "f_posicao_prolog => ?)}");
+
             stmt.setLong(1, movimentacao.getCodigo());
             stmt.setString(2, destinoVeiculo.getTipo().asString());
             stmt.setLong(3, destinoVeiculo.getVeiculo().getCodigo());
@@ -609,8 +622,8 @@ public final class MovimentacaoDaoImpl extends DatabaseConnection implements Mov
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("INSERT INTO " +
-                    "MOVIMENTACAO_DESTINO(COD_MOVIMENTACAO, TIPO_DESTINO) " +
-                    "VALUES (?, ?);");
+                                                 "MOVIMENTACAO_DESTINO(COD_MOVIMENTACAO, TIPO_DESTINO) " +
+                                                 "VALUES (?, ?);");
             stmt.setLong(1, movimentacao.getCodigo());
             stmt.setString(2, movimentacao.getDestino().getTipo().asString());
             if (stmt.executeUpdate() == 0) {
@@ -626,8 +639,9 @@ public final class MovimentacaoDaoImpl extends DatabaseConnection implements Mov
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("INSERT INTO " +
-                    "MOVIMENTACAO_DESTINO(COD_MOVIMENTACAO, TIPO_DESTINO, COD_RECAPADORA_DESTINO, COD_COLETA) " +
-                    "VALUES (?, ?, ?, ?);");
+                                                 "MOVIMENTACAO_DESTINO(COD_MOVIMENTACAO, TIPO_DESTINO, " +
+                                                 "COD_RECAPADORA_DESTINO, COD_COLETA) " +
+                                                 "VALUES (?, ?, ?, ?);");
             final DestinoAnalise destinoAnalise = (DestinoAnalise) movimentacao.getDestino();
             stmt.setLong(1, movimentacao.getCodigo());
             stmt.setString(2, destinoAnalise.getTipo().asString());
@@ -646,9 +660,11 @@ public final class MovimentacaoDaoImpl extends DatabaseConnection implements Mov
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("INSERT INTO " +
-                    "MOVIMENTACAO_DESTINO(COD_MOVIMENTACAO, TIPO_DESTINO, COD_MOTIVO_DESCARTE, " +
-                    "URL_IMAGEM_DESCARTE_1, URL_IMAGEM_DESCARTE_2, URL_IMAGEM_DESCARTE_3) " +
-                    "VALUES (?, ?, ?, ?, ?, ?);");
+                                                 "MOVIMENTACAO_DESTINO(COD_MOVIMENTACAO, TIPO_DESTINO, " +
+                                                 "COD_MOTIVO_DESCARTE, " +
+                                                 "URL_IMAGEM_DESCARTE_1, URL_IMAGEM_DESCARTE_2, " +
+                                                 "URL_IMAGEM_DESCARTE_3) " +
+                                                 "VALUES (?, ?, ?, ?, ?, ?);");
             final DestinoDescarte destinoDescarte = (DestinoDescarte) movimentacao.getDestino();
             stmt.setLong(1, movimentacao.getCodigo());
             stmt.setString(2, destinoDescarte.getTipo().asString());
@@ -693,12 +709,14 @@ public final class MovimentacaoDaoImpl extends DatabaseConnection implements Mov
                         origemVeiculo.getVeiculo().getKmAtual());
 
                 if (qtdServicosEmAbertoPneu != qtdServicosFechadosPneu) {
-                    throw new IllegalStateException("Erro ao fechar os serviços do pneu: " + codPneu + ". Deveriam ser fechados "
-                            + qtdServicosEmAbertoPneu + " serviços mas foram fechados " + qtdServicosFechadosPneu + "!");
+                    throw new IllegalStateException("Erro ao fechar os serviços do pneu: " + codPneu + ". Deveriam " +
+                                                            "ser fechados "
+                                                            + qtdServicosEmAbertoPneu + " serviços mas foram fechados" +
+                                                            " " + qtdServicosFechadosPneu + "!");
                 }
             } else {
                 throw new IllegalStateException("O pneu " + codPneu + " não está sendo movido do veículo mas possui " +
-                        "serviços em aberto!");
+                                                        "serviços em aberto!");
             }
         } else {
             Log.d(TAG, "Não existem serviços em aberto para o pneu: " + codPneu);
