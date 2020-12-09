@@ -13,25 +13,42 @@ import javax.ws.rs.core.Response;
 public final class NotFoundException extends DataAccessException {
     public NotFoundException(@NotNull final String message) {
         super(Response.Status.ACCEPTED.getStatusCode(),
-                ProLogErrorCodes.CHAVE_NAO_EXISTENTE.errorCode(),
-                message);
+              ProLogErrorCodes.CHAVE_NAO_EXISTENTE.errorCode(),
+              message);
     }
 
     public NotFoundException(@NotNull final String message, @NotNull final String detailedMessage) {
         super(Response.Status.ACCEPTED.getStatusCode(),
-                ProLogErrorCodes.CHAVE_NAO_EXISTENTE.errorCode(),
-                message,
-                detailedMessage);
+              ProLogErrorCodes.CHAVE_NAO_EXISTENTE.errorCode(),
+              message,
+              detailedMessage);
+    }
+
+    public NotFoundException(@NotNull final String message,
+                             @NotNull final String detailedMessage,
+                             final boolean loggableOnErrorReportSystem) {
+        super(Response.Status.ACCEPTED.getStatusCode(),
+              ProLogErrorCodes.CHAVE_NAO_EXISTENTE.errorCode(),
+              message,
+              detailedMessage,
+              loggableOnErrorReportSystem);
     }
 
     public NotFoundException(@NotNull final String message,
                              @NotNull final String detailedMessage,
                              @NotNull final String developerMessage) {
         super(Response.Status.ACCEPTED.getStatusCode(),
-                ProLogErrorCodes.CHAVE_NAO_EXISTENTE.errorCode(),
-                message,
-                detailedMessage,
-                developerMessage,
-                false);
+              ProLogErrorCodes.CHAVE_NAO_EXISTENTE.errorCode(),
+              message,
+              detailedMessage,
+              developerMessage,
+              false);
+    }
+
+    @NotNull
+    public static NotFoundException defaultNotLoggableException() {
+        return new NotFoundException("Registro não encontrado.",
+                                     "Chave de acesso ao registro não consta na base de dados.",
+                                     false);
     }
 }
