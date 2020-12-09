@@ -1,8 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Data;
 import lombok.ToString;
 
 import java.util.List;
@@ -12,11 +10,10 @@ import java.util.List;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-@Getter
-@Setter
+@Data
 @ToString
-@NoArgsConstructor
-public final class FamiliasModelosBloqueio {
+public final class FamiliasModelosPlacasBloqueio {
     private List<String> familiasBloqueadas;
     private List<String> modelosBloqueados;
+    private List<String> placasBloqueadas;
 }

@@ -1,11 +1,12 @@
 Change Log
 ==========
 
-## Staged
+## Stage
 
 ### Features
 
 * Adiciona scheduler para deleção dos arquivos temporários do tomcat (PL-3318)
+* Implementa bloqueios de placa para Nepomuceno (PL-3351)
 
 <a name="v1.4.3"></a>
 
