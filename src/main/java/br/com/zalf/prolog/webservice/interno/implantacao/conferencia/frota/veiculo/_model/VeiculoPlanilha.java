@@ -15,6 +15,7 @@ public final class VeiculoPlanilha {
     private String tipo;
     private String qtdEixos;
     private String identificadorFrota;
+    private String possuiHubodometro;
 
     public VeiculoPlanilha() {
     }
@@ -71,7 +72,15 @@ public final class VeiculoPlanilha {
         return identificadorFrota;
     }
 
-    public void setIdentificadorFrota(String identificadorFrota) {
+    public void setIdentificadorFrota(final String identificadorFrota) {
         this.identificadorFrota = identificadorFrota;
+    }
+
+    public String getPossuiHubodometro() {
+        return possuiHubodometro;
+    }
+
+    public void setPossuiHubodometro(final String motorizado) {
+        this.possuiHubodometro = motorizado;
     }
 }
