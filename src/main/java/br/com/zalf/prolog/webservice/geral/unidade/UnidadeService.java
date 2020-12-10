@@ -37,7 +37,7 @@ public class UnidadeService {
     public SuccessResponse updateUnidade(@NotNull final UnidadeEntity unidadeEditada) {
         try {
             final UnidadeEntity unidadeToUpdate = dao.findById(unidadeEditada.getCodigo())
-                    .orElseThrow(NotFoundException::defaultNotLoggableException);
+                    .orElseThrow(NotFoundException::new);
             unidadeToUpdate.toBuilder()
                     .nome(unidadeEditada.getNome())
                     .codAuxiliar(unidadeEditada.getCodAuxiliar())
