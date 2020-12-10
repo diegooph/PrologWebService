@@ -88,7 +88,6 @@ public final class VeiculoAcoplamentoRealizacaoEngine {
                         throw new ClientSideErrorException(
                                 "Não é possível salvar uma composição de apenas um veículo.");
                     }
-
                     veiculoAcoplamentoDao.insertEstadoAtualAcoplamentos(veiculosAcopladosMantidos);
                 });
     }
