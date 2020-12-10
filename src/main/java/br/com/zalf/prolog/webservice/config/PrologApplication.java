@@ -1,6 +1,8 @@
 package br.com.zalf.prolog.webservice.config;
 
 import br.com.zalf.prolog.webservice.database.DataSourceLifecycleManager;
+import br.com.zalf.prolog.webservice.database.DatabaseConnectionActions;
+import br.com.zalf.prolog.webservice.database.DatabaseConnectionActionsWrapper;
 import br.com.zalf.prolog.webservice.messaging.push.FirebaseLifecycleManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.jaxrs.config.BeanConfig;
@@ -13,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
@@ -31,11 +34,22 @@ import javax.ws.rs.ext.Provider;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 @SpringBootApplication(scanBasePackages = {"br.com.zalf.prolog.webservice"})
+@EntityScan(basePackages = {"br.com.zalf.prolog.webservice"})
 @EnableScheduling
 public class PrologApplication extends SpringBootServletInitializer {
 
     public static void main(final String[] args) {
         SpringApplication.run(PrologApplication.class, args);
+    }
+
+    public static DatabaseConnectionActions getActions() {
+        return DatabaseConnectionActionsWrapper.getActions();
+    }
+
+    @Override
+    protected SpringApplicationBuilder configure(@NotNull final SpringApplicationBuilder builder) {
+        builder.sources(PrologApplication.class);
+        return builder;
     }
 
     @Bean
@@ -57,12 +71,6 @@ public class PrologApplication extends SpringBootServletInitializer {
         final ServletListenerRegistrationBean<ServletContextListener> bean = new ServletListenerRegistrationBean<>();
         bean.setListener(new PrologConsoleTextMaker());
         return bean;
-    }
-
-    @Override
-    protected SpringApplicationBuilder configure(@NotNull final SpringApplicationBuilder builder) {
-        builder.sources(PrologApplication.class);
-        return builder;
     }
 
     @Component

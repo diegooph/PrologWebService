@@ -5,6 +5,10 @@ Change Log
 
 ### Features
 
+* Adiciona Spring como gerenciador de conexões, não utilizando mais a classe `DatabaseManager`, configurando através de
+  YAML (PL-3265)
+* Adiciona `Hikari` como gerenciador de pool de conexões (PL-3266)
+* Adiciona `Spring Data JPA` para realizar o mapeamento e CRUD de Unidade (PL-3309)
 * Adiciona scheduler para deleção dos arquivos temporários do tomcat (PL-3318)
 * Implementa bloqueios de placa para Nepomuceno (PL-3351)
 
