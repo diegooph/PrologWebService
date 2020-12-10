@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
+import java.time.OffsetDateTime;
 
 /**
  * Created on 2020-11-11
@@ -28,15 +29,17 @@ public final class VeiculoAcoplamentoRealizacaoEngine {
     @NotNull
     public Long realizaProcessoAcoplamento(@NotNull final Long codColaboradorRealizacao,
                                            @NotNull final VeiculoAcoplamentoProcessoRealizacao processoRealizacao) {
-        atualizaKms(processoRealizacao);
         removeAcoplamentoAtual(processoRealizacao);
         final Long codProcessoInserido = insertProcessoAcoplamento(codColaboradorRealizacao, processoRealizacao);
+        atualizaKms(codProcessoInserido, processoRealizacao, Now.offsetDateTimeUtc());
         insertHistoricoAcoplamentos(codProcessoInserido, processoRealizacao);
         insertEstadoAtualAcoplamentos(codProcessoInserido, processoRealizacao);
         return codProcessoInserido;
     }
 
-    private void atualizaKms(@NotNull final VeiculoAcoplamentoProcessoRealizacao processoRealizacao) {
+    private void atualizaKms(@NotNull final Long codProcessoRealizacao,
+                             @NotNull final VeiculoAcoplamentoProcessoRealizacao processoRealizacao,
+                             @NotNull final OffsetDateTime dataHoraProcesso) {
         processoRealizacao
                 .getAcoesRealizadas()
                 .stream()
@@ -45,7 +48,9 @@ public final class VeiculoAcoplamentoRealizacaoEngine {
                         connection,
                         processoRealizacao.getCodUnidade(),
                         acaoRealizada.getCodVeiculo(),
+                        codProcessoRealizacao,
                         VeiculoTipoProcesso.ACOPLAMENTO,
+                        dataHoraProcesso,
                         acaoRealizada.getKmColetado(),
                         true));
     }
