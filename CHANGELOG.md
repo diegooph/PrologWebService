@@ -15,7 +15,6 @@ Change Log
 * Adiciona novas ações no insert do histórico de acoplamento (PL-3344)
 * Adiciona novas validações no import massivo de veículos (PL-3288)
 * Realiza ajustes no acoplamento para funcionar apenas com MUDOU_POSICAO (PL-3355)
-* Refatora updates de km dos processos para usarem function centralizadora (PL-3290)
 
 <a name="v1.4.3"></a>
 ## Version [v1.4.3](https://github.com/luizfp/PrologWebService/compare/v1.4.2...v1.4.3) (release-date) [unreleased]
@@ -32,9 +31,6 @@ Change Log
 
 ### Refactors
 * Revisa e excluí testes unitários sem sentido (PL-3220)
-
-#### Features
-* Cria busca de acoplamentos (PL-3209)
 
 <a name="v1.4.1"></a>
 ## Version [v1.4.1](https://github.com/luizfp/PrologWebService/compare/v1.4.0...v1.4.1) (2020-11-08)
