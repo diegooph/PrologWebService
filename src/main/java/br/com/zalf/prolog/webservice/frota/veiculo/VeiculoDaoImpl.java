@@ -28,6 +28,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.OffsetDateTime;
 import java.util.Optional;
 import java.util.*;
 
@@ -325,7 +326,9 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
     public Long updateKmByCodVeiculo(@NotNull final Connection conn,
                                      @NotNull final Long codUnidade,
                                      @NotNull final Long codVeiculo,
+                                     @NotNull final Long veiculoCodProcesso,
                                      @NotNull final VeiculoTipoProcesso veiculoTipoProcesso,
+                                     @NotNull final OffsetDateTime dataHoraProcesso,
                                      final long kmVeiculo,
                                      final boolean devePropagarKmParaReboques) {
         PreparedStatement stmt = null;
@@ -335,13 +338,17 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
                                                  "f_cod_unidade => ?," +
                                                  "f_cod_veiculo => ?," +
                                                  "f_km_coletado => ?," +
+                                                 "f_cod_processo => ?," +
                                                  "f_tipo_processo => ?::types.veiculo_processo_type," +
-                                                 "f_deve_propagar_km => ?) as km_processo;");
+                                                 "f_deve_propagar_km => ?," +
+                                                 "f_data_hora => ?) as km_processo;");
             stmt.setLong(1, codUnidade);
             stmt.setLong(2, codVeiculo);
             stmt.setLong(3, kmVeiculo);
-            stmt.setString(4, veiculoTipoProcesso.asString());
-            stmt.setBoolean(5, devePropagarKmParaReboques);
+            stmt.setLong(4, veiculoCodProcesso);
+            stmt.setString(5, veiculoTipoProcesso.asString());
+            stmt.setBoolean(6, devePropagarKmParaReboques);
+            stmt.setObject(7, dataHoraProcesso);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 final long kmProcesso = rSet.getLong("km_processo");
@@ -486,7 +493,7 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
             }
             return marcas;
         } finally {
-            close(conn, stmt, rSet);
+            close(conn, stmt);
         }
     }
 
