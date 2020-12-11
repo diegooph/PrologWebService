@@ -9,6 +9,10 @@ public final class VeiculoAcoplamentoDiffChecker {
     @NotNull
     private final VeiculoAcoplamentoProcessoRealizacao processoRealizacao;
 
+    public boolean nadaFoiAlterado() {
+        return !algoMudou();
+    }
+
     public boolean algoMudou() {
         return processoRealizacao.getTotalAcoesRealizadas() != processoRealizacao.getTotalVeiculosMantidosPosicao();
     }

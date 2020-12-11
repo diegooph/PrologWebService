@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
-public class VeiculoAcoplamentoValidator {
+public final class VeiculoAcoplamentoValidator {
     @NotNull
     private final HolderAcomplamentoValidacao dadosBanco;
     @NotNull

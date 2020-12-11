@@ -6,15 +6,14 @@ import org.jetbrains.annotations.Nullable;
 import javax.validation.constraints.NotNull;
 
 @Data
-public class VeiculoEstadoAcoplamento {
+public final class VeiculoEstadoAcoplamento {
     @NotNull
     private final Long codVeiculo;
     @Nullable
-    private final Long codProcessoAcoplamento;
-    @Nullable
-    private final Short posicaoAcoplado;
+    private final Long codProcessoAcoplamentoVinculado;
+    private final short posicaoAcoplado;
 
     public boolean isAcoplado() {
-        return codProcessoAcoplamento != null;
+        return codProcessoAcoplamentoVinculado != null;
     }
 }

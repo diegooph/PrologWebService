@@ -10,7 +10,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
-public class HolderAcomplamentoValidacao {
+public final class HolderAcomplamentoValidacao {
     @NotNull
     private final Map<Long, VeiculoEstadoAcoplamento> veiculosEstadoAcoplamento;
 
@@ -26,7 +26,8 @@ public class HolderAcomplamentoValidacao {
     public boolean isVeiculoAcopladoProcesso(@NotNull final Long codVeiculo,
                                              @NotNull final Long codProcessoAcoplamento) {
         return isVeiculoAcoplado(codVeiculo) &&
-                codProcessoAcoplamento.equals(veiculosEstadoAcoplamento.get(codVeiculo).getCodProcessoAcoplamento());
+                codProcessoAcoplamento.equals(veiculosEstadoAcoplamento.get(codVeiculo)
+                                                      .getCodProcessoAcoplamentoVinculado());
     }
 
     public boolean isVeiculoAcopladoProcessoEPosicao(@NotNull final Long codVeiculo,
