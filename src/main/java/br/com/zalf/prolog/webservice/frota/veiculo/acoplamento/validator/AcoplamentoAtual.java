@@ -1,15 +1,8 @@
 package br.com.zalf.prolog.webservice.frota.veiculo.acoplamento.validator;
 
 import lombok.Data;
-import org.jetbrains.annotations.Nullable;
 
-/**
- * Created on 2020-12-02
- *
- * @author Thais Francisco (https://github.com/thaisksf)
- */
 @Data
-@Nullable
 public class AcoplamentoAtual {
 
     private final Long codProcessoAcoplamento;

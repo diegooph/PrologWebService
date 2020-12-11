@@ -6,7 +6,7 @@ import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.database.transaction.DatabaseTransaction;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcoplamentoProcessoRealizacao;
-import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento.validator.VeiculoAcoplamentoValidator;
+import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento.validator.VeiculoAcoplamentoValidatorOld;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -21,6 +21,9 @@ public final class VeiculoAcoplamentoService {
     public Long insertProcessoAcoplamento(@NotNull final Long codColaboradorRealizacao,
                                           @NotNull final VeiculoAcoplamentoProcessoRealizacao processoRealizacao) {
         try {
+
+            // TODO - implementar um DiffChecker para ver se o acoplamento mudou.
+
             return DatabaseTransaction.builder()
                     .withConnection(DatabaseConnection.getConnection())
                     .withCloseConnectionOnFinish(true)
@@ -28,9 +31,9 @@ public final class VeiculoAcoplamentoService {
                     .runInTransaction(connection -> {
                         final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
                         final VeiculoAcoplamentoDao acoplamentoDao = Injection.provideVeiculoAcoplamentoDao(connection);
-                        new VeiculoAcoplamentoValidator(connection,
-                                                        acoplamentoDao,
-                                                        veiculoDao).veiculoAcoplamentoValidator(processoRealizacao);
+                        new VeiculoAcoplamentoValidatorOld(connection,
+                                                           acoplamentoDao,
+                                                           veiculoDao).veiculoAcoplamentoValidator(processoRealizacao);
                         return new VeiculoAcoplamentoRealizacaoEngine(connection, acoplamentoDao, veiculoDao)
                                 .realizaProcessoAcoplamento(codColaboradorRealizacao, processoRealizacao);
                     });
