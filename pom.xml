@@ -19,6 +19,23 @@
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>2.3.3.RELEASE</version>
     </parent>
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <active-profile>dev</active-profile>
+            </properties>
+        </profile>
+        <profile>
+            <id>prod</id>
+            <properties>
+                <active-profile>prod</active-profile>
+            </properties>
+        </profile>
+    </profiles>
     <dependencies>
         <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-jersey -->
         <dependency>
@@ -41,6 +58,16 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.tomcat</groupId>
+                    <artifactId>tomcat-jdbc</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>io.swagger.core.v3</groupId>
@@ -377,7 +404,6 @@
             <artifactId>tomcat-jdbc</artifactId>
             <version>8.0.45</version>
         </dependency>
-
         <!-- Esse projeto adiciona classes extras utilitárias as novas classes do pacote java.time do Java 8.
              http://www.threeten.org/threeten-extra/ -->
         <dependency>
@@ -435,6 +461,12 @@
         </dependency>
     </dependencies>
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
         <finalName>prolog.webservice</finalName>
         <plugins>
             <!-- Compiler -->

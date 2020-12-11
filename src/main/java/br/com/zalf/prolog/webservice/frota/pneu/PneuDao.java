@@ -16,6 +16,7 @@ public interface PneuDao {
      *
      * @param placa placa do veículo
      * @return lista de pneus
+     *
      * @throws SQLException caso ocorra erro no banco
      */
     List<Pneu> getPneusByPlaca(String placa) throws SQLException;
@@ -26,6 +27,7 @@ public interface PneuDao {
      * @param pneu       um pneu
      * @param codUnidade código da unidade
      * @return código do pneu recém cadastrado
+     *
      * @throws Throwable caso ocorra erro no banco
      */
     @NotNull
@@ -36,6 +38,7 @@ public interface PneuDao {
      *
      * @param pneus Pneus para inserir.
      * @return Códigos dos pneus recém cadastrados.
+     *
      * @throws Throwable Caso ocorra erro no banco.
      */
     @NotNull
@@ -49,6 +52,7 @@ public interface PneuDao {
      * @param novosSulcos Valores de {@link Sulcos} a serem inseridos.
      * @param novaPressao Valor da pressão coletada.
      * @return Valor booleano indicando se a operação foi sucesso ou não.
+     *
      * @throws Throwable Se algum erro ocorrer na atualização.
      */
     @SuppressWarnings("UnusedReturnValue")
@@ -77,6 +81,7 @@ public interface PneuDao {
      * @param codPneu Código do {@link Pneu} que será atualizado.
      * @param pressao Nova pressão a ser inserida no pneu.
      * @return Valor booleano indicando se a operação foi sucesso ou não.
+     *
      * @throws Throwable Se algum erro ocorrer na atualização.
      */
     @SuppressWarnings("UnusedReturnValue")
@@ -128,6 +133,7 @@ public interface PneuDao {
      * @param codUnidades Array com os códigos de unidade
      * @param status      status do pneu
      * @return uma lista de pneus
+     *
      * @throws Throwable caso aconteça um erro
      */
     @NotNull
@@ -139,6 +145,7 @@ public interface PneuDao {
      *
      * @param codUnidades
      * @return
+     *
      * @throws Throwable
      */
     @NotNull
@@ -152,6 +159,7 @@ public interface PneuDao {
      *
      * @param codEmpresa código da empresa
      * @return uma lista de marcas
+     *
      * @throws SQLException caso ocorra erro no banco
      */
     List<Marca> getMarcaModeloPneuByCodEmpresa(Long codEmpresa) throws SQLException;
@@ -160,6 +168,7 @@ public interface PneuDao {
      * lista todas as dimensões
      *
      * @return uma lista com todas as dimensões
+     *
      * @throws SQLException caso ocorra erro no banco
      */
     List<PneuComum.Dimensao> getDimensoes() throws SQLException;
@@ -188,10 +197,23 @@ public interface PneuDao {
      * @param codEmpresa         Código da empresa onde esses códigos serão buscados.
      * @param codigoClientePneus Códigos dos clientes, para utilizar na busca.
      * @return Uma lista dos códigos internos que representam os códigos do cliente.
+     *
      * @throws Throwable Caso algum erro ocorrer.
      */
     @NotNull
     List<Long> getCodPneuByCodCliente(@NotNull final Connection conn,
                                       @NotNull final Long codEmpresa,
                                       @NotNull final List<String> codigoClientePneus) throws Throwable;
+
+    /**
+     * Método usado para retornar um pneu do descarte.
+     *
+     * @param pneuRetornoDescarte objeto com as informações do retorno do descarte a ser passado para function.
+     * @return Objeto com informações úteis acerca do retorno realizado.
+     *
+     * @throws Throwable caso ocorra qualquer erro.
+     */
+    @NotNull
+    PneuRetornoDescarteSuccess retornarPneuDescarte(@NotNull final PneuRetornoDescarte pneuRetornoDescarte)
+            throws Throwable;
 }
