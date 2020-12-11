@@ -19,7 +19,7 @@ public final class HolderAcomplamentoValidacao {
     }
 
     @NotNull
-    public Collection<Long> getCodVeiculosProcesso() {
+    public Collection<Long> getCodVeiculos() {
         return veiculosEstadoAcoplamento.keySet();
     }
 
@@ -56,8 +56,9 @@ public final class HolderAcomplamentoValidacao {
         return getCodProcessosAcoplamentosDistintos().size() > 1;
     }
 
-    public boolean mesmoProcessoAcoplamento(@NotNull final Long codPrecessoAcoplamento) {
-        return getCodProcessosAcoplamentosDistintos().stream()
+    public boolean isTodosProcessosAcoplamentosDoCodigo(@NotNull final Long codPrecessoAcoplamento) {
+        return getCodProcessosAcoplamentosDistintos()
+                .stream()
                 .allMatch(codigo -> codigo.equals(codPrecessoAcoplamento));
     }
 
@@ -70,7 +71,7 @@ public final class HolderAcomplamentoValidacao {
     }
 
     @NotNull
-    private List<Long> getCodProcessosAcoplamentosDistintos() {
+    public List<Long> getCodProcessosAcoplamentosDistintos() {
         return veiculosEstadoAcoplamento
                 .values()
                 .stream()
