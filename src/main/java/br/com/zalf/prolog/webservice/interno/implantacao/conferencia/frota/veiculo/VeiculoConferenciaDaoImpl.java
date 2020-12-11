@@ -21,7 +21,7 @@ import static br.com.zalf.prolog.webservice.database.DatabaseConnection.getConne
  */
 public final class VeiculoConferenciaDaoImpl implements VeiculoConferenciaDao {
     @NotNull
-    private ConferenciaDao dao = new ConferenciaDaoImpl();
+    private final ConferenciaDao dao = new ConferenciaDaoImpl();
 
     @Override
     public void importPlanilhaVeiculos(@NotNull final Long codEmpresa,

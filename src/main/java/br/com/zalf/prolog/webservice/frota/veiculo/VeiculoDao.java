@@ -14,6 +14,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -146,7 +147,9 @@ public interface VeiculoDao {
     Long updateKmByCodVeiculo(@NotNull final Connection conn,
                               @NotNull final Long codUnidade,
                               @NotNull final Long codVeiculo,
+                              @NotNull final Long veiculoCodProcesso,
                               @NotNull final VeiculoTipoProcesso veiculoTipoProcesso,
+                              @NotNull final OffsetDateTime dataHoraProcesso,
                               final long kmVeiculo,
                               final boolean devePropagarKmParaReboques);
 

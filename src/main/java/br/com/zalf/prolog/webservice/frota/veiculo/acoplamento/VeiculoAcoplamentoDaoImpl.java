@@ -84,7 +84,6 @@ public final class VeiculoAcoplamentoDaoImpl implements VeiculoAcoplamentoDao {
                     "f_cod_diagrama_veiculo => ?," +
                     "f_posicao_acao_realizada => ?," +
                     "f_veiculo_motorizado => ?," +
-                    "f_km_coletado => ?," +
                     "f_acao_realizada => ?)}");
             for (final VeiculoAcoplamentoAcaoRealizada acoplamento : acoesRealizadas) {
                 DatabaseUtils.bind(stmt,
@@ -93,7 +92,6 @@ public final class VeiculoAcoplamentoDaoImpl implements VeiculoAcoplamentoDao {
                         acoplamento.getCodDiagramaVeiculo(),
                         acoplamento.getPosicaoAcaoRealizada(),
                         acoplamento.getMotorizado(),
-                        acoplamento.getKmColetado(),
                         acoplamento.getAcaoRealizada().asString());
                 stmt.addBatch();
             }
