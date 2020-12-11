@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.veiculo.acoplamento;
 
+import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.StatementUtils;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.database.DatabaseUtils;
@@ -16,6 +17,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+
+import static br.com.zalf.prolog.webservice.commons.util.PostgresUtils.listToArray;
 
 /**
  * Created on 2020-11-03
@@ -148,7 +151,7 @@ public final class VeiculoAcoplamentoDaoImpl implements VeiculoAcoplamentoDao {
         try {
             stmt = connection.prepareStatement("select * from func_veiculo_get_estado_acoplamento(" +
                                                        "f_cod_veiculos => ?);");
-            DatabaseUtils.bind(stmt, codVeiculosProcessoAcoplamento);
+            stmt.setArray(1, listToArray(connection, SqlType.BIGINT, codVeiculosProcessoAcoplamento));
             rSet = stmt.executeQuery();
             return VeiculoAcoplamentoConverter.createHolderAcomplamentoValidacao(rSet);
         } catch (final SQLException e) {

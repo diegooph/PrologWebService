@@ -61,8 +61,12 @@ public final class HolderAcomplamentoValidacao {
                 .allMatch(codigo -> codigo.equals(codPrecessoAcoplamento));
     }
 
-    public boolean nenhumProcesso() {
-        return veiculosEstadoAcoplamento.values().stream().noneMatch(Objects::nonNull);
+    public boolean isTodosVeiculosNaoAcoplados() {
+        return veiculosEstadoAcoplamento
+                .values()
+                .stream()
+                .map(VeiculoEstadoAcoplamento::getCodProcessoAcoplamentoVinculado)
+                .allMatch(Objects::isNull);
     }
 
     @NotNull
@@ -70,9 +74,9 @@ public final class HolderAcomplamentoValidacao {
         return veiculosEstadoAcoplamento
                 .values()
                 .stream()
-                .map(VeiculoEstadoAcoplamento::getCodVeiculo)
-                .distinct()
+                .map(VeiculoEstadoAcoplamento::getCodProcessoAcoplamentoVinculado)
                 .filter(Objects::nonNull)
+                .distinct()
                 .collect(Collectors.toList());
     }
 }

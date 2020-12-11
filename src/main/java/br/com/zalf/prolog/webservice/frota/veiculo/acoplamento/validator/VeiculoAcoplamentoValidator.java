@@ -66,14 +66,14 @@ public final class VeiculoAcoplamentoValidator {
             throw new IllegalStateException();
         }
 
-        // Se estou criando, as placas não devem conter acoplamentos
         if (processoRealizacao.getCodProcessoAcoplamentoEditado().isPresent()) {
             final Long codigo = processoRealizacao.getCodProcessoAcoplamentoEditado().get();
             if (!dadosBanco.mesmoProcessoAcoplamento(codigo)) {
                 throw new IllegalStateException();
             }
         } else {
-            if (!dadosBanco.nenhumProcesso()) {
+            // Se estou criando, as placas não devem conter acoplamentos
+            if (!dadosBanco.isTodosVeiculosNaoAcoplados()) {
                 throw new IllegalStateException();
             }
         }
