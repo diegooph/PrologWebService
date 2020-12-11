@@ -39,8 +39,6 @@ public final class VeiculoAcoplamentoRealizacaoEngine {
     private void atualizaKms(@NotNull final VeiculoAcoplamentoProcessoRealizacao processoRealizacao) {
         processoRealizacao
                 .getAcoesRealizadas()
-                .stream()
-                .filter(acaoRealizada -> acaoRealizada.getKmColetado() != null)
                 .forEach(acaoRealizada -> veiculoDao.updateKmByCodVeiculo(
                         connection,
                         processoRealizacao.getCodUnidade(),
