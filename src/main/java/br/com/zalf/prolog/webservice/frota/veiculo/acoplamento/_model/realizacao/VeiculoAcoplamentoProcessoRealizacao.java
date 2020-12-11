@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao;
 
-import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento.validator.AcoplamentoRecebido;
 import lombok.Data;
 
 import javax.annotation.Nullable;
@@ -17,12 +16,23 @@ import java.util.stream.Collectors;
  */
 @Data
 public final class VeiculoAcoplamentoProcessoRealizacao {
+    /**
+     * O maior acoplamento possível pode conter 6 veículos, logo, a realização deve contemplar um acoplamento total
+     * e uma remoção total ao mesmo tempo.
+     */
+    private static final int MAXIMO_ACOES_POR_PROCESSO = 12;
+    /**
+     * O menor acoplamento possível é composto por dois veículos. Por mais que o usuário edite apenas um, o outro
+     * será enviado também.
+     */
+    private static final int MINIMO_ACOES_POR_PROCESSO = 2;
+
     @NotNull
     private final Long codUnidade;
     @Nullable
     private final String observacao;
     @NotNull
-    @Size(min = 2, max = 6)
+    @Size(min = MINIMO_ACOES_POR_PROCESSO, max = MAXIMO_ACOES_POR_PROCESSO)
     private final List<VeiculoAcoplamentoAcaoRealizada> acoesRealizadas;
     @Nullable
     private final Long codProcessoAcoplamentoEditado;
@@ -50,21 +60,5 @@ public final class VeiculoAcoplamentoProcessoRealizacao {
         return acopladosOuMantidos.isEmpty()
                 ? Optional.empty()
                 : Optional.of(acopladosOuMantidos);
-    }
-
-    @NotNull
-    public List<AcoplamentoRecebido> getAcoplamentosRecebidos() {
-        return acoesRealizadas
-                .stream()
-                .filter(VeiculoAcoplamentoAcaoRealizada::foiAcopladoOuMantidoNaComposicao)
-                .map(acao -> new AcoplamentoRecebido(
-                        //TODO ver com o allan se esse código é o do acoplamento atual.
-                        codProcessoAcoplamentoEditado,
-                        codUnidade,
-                        acao.getCodVeiculo(),
-                        acao.getPosicaoAcaoRealizada(),
-                        acao.getCodDiagramaVeiculo(),
-                        acao.getMotorizado()))
-                .collect(Collectors.toList());
     }
 }
