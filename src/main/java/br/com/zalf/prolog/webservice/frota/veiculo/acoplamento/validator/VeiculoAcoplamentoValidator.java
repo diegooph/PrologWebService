@@ -49,7 +49,9 @@ public final class VeiculoAcoplamentoValidator {
 
     private void validateOrdenacao() {
         final List<Short> posicoesAcoplamento = processoRealizacao.getAcoesRealizadas().stream()
+                .filter(VeiculoAcoplamentoAcaoRealizada::foiAcopladoOuMantidoNaComposicao)
                 .map(VeiculoAcoplamentoAcaoRealizada::getPosicaoAcaoRealizada)
+                .sorted()
                 .collect(Collectors.toList());
         for (int i = 0; i < posicoesAcoplamento.size(); i++) {
             if (posicoesAcoplamento.get(i) != i + 1) {
