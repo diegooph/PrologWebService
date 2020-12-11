@@ -54,8 +54,7 @@ public final class VeiculoAcoplamentoRealizacaoEngine {
     }
 
     private void removeAcoplamentoAtual(@NotNull final VeiculoAcoplamentoProcessoRealizacao processoRealizacao) {
-        processoRealizacao
-                .estaEditandoProcessoAcoplamento()
+        processoRealizacao.getCodProcessoAcoplamentoEditado()
                 .ifPresent(veiculoAcoplamentoDao::removeAcoplamentoAtual);
     }
 

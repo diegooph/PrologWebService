@@ -38,8 +38,17 @@ public final class VeiculoAcoplamentoProcessoRealizacao {
     private final Long codProcessoAcoplamentoEditado;
 
     @NotNull
-    public Optional<Long> estaEditandoProcessoAcoplamento() {
+    public Optional<Long> getCodProcessoAcoplamentoEditado() {
         return Optional.ofNullable(codProcessoAcoplamentoEditado);
+    }
+
+    @NotNull
+    public boolean isEditandoProcessoAcoplamento() {
+        return codProcessoAcoplamentoEditado != null;
+    }
+
+    public boolean isNotEditandoProcessoAcoplamento() {
+        return !isEditandoProcessoAcoplamento();
     }
 
     @NotNull
@@ -60,5 +69,37 @@ public final class VeiculoAcoplamentoProcessoRealizacao {
         return acopladosOuMantidos.isEmpty()
                 ? Optional.empty()
                 : Optional.of(acopladosOuMantidos);
+    }
+
+    @NotNull
+    public List<VeiculoAcoplamentoAcaoRealizada> getVeiculosAcoplados() {
+        return acoesRealizadas
+                .stream()
+                .filter(VeiculoAcoplamentoAcaoRealizada::foiAcoplado)
+                .collect(Collectors.toList());
+    }
+
+    @NotNull
+    public List<VeiculoAcoplamentoAcaoRealizada> getVeiculosDesacoplados() {
+        return acoesRealizadas
+                .stream()
+                .filter(VeiculoAcoplamentoAcaoRealizada::foiDesacoplado)
+                .collect(Collectors.toList());
+    }
+
+    @NotNull
+    public List<VeiculoAcoplamentoAcaoRealizada> getVeiculosMantidosPosicao() {
+        return acoesRealizadas
+                .stream()
+                .filter(VeiculoAcoplamentoAcaoRealizada::foiMantidoPosicao)
+                .collect(Collectors.toList());
+    }
+
+    @NotNull
+    public List<VeiculoAcoplamentoAcaoRealizada> getVeiculosMudaramPosicao() {
+        return acoesRealizadas
+                .stream()
+                .filter(VeiculoAcoplamentoAcaoRealizada::foiMudadoPosicao)
+                .collect(Collectors.toList());
     }
 }

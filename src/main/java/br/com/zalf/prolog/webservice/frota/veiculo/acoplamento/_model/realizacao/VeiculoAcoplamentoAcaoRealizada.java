@@ -29,4 +29,20 @@ public final class VeiculoAcoplamentoAcaoRealizada {
     public boolean foiAcopladoOuMantidoNaComposicao() {
         return acaoRealizada != VeiculoAcoplamentoAcaoEnum.DESACOPLADO;
     }
+
+    public boolean foiAcoplado() {
+        return acaoRealizada == VeiculoAcoplamentoAcaoEnum.ACOPLADO;
+    }
+
+    public boolean foiDesacoplado() {
+        return acaoRealizada == VeiculoAcoplamentoAcaoEnum.DESACOPLADO;
+    }
+
+    public boolean foiMantidoPosicao() {
+        return acaoRealizada == VeiculoAcoplamentoAcaoEnum.PERMANECEU;
+    }
+
+    public boolean foiMudadoPosicao() {
+        return acaoRealizada == VeiculoAcoplamentoAcaoEnum.MUDOU_POSICAO;
+    }
 }
