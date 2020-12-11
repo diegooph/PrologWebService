@@ -62,6 +62,10 @@ public final class VeiculoAcoplamentoProcessoRealizacao {
                 : Optional.of(acopladosOuMantidos);
     }
 
+    public int getTotalAcoesRealizadas() {
+        return acoesRealizadas.size();
+    }
+
     public int getTotalVeiculosProcesso() {
         return (int) acoesRealizadas
                 .stream()
@@ -93,6 +97,11 @@ public final class VeiculoAcoplamentoProcessoRealizacao {
                 .stream()
                 .filter(VeiculoAcoplamentoAcaoRealizada::foiDesacoplado)
                 .collect(Collectors.toList());
+    }
+
+    @NotNull
+    public int getTotalVeiculosMantidosPosicao() {
+        return getVeiculosMantidosPosicao().size();
     }
 
     @NotNull
