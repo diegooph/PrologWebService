@@ -1,7 +1,6 @@
 Change Log
 ==========
 <a name="v1.4.3"></a>
-
 ## Version [v1.4.3](https://github.com/luizfp/PrologWebService/compare/v1.4.2...v1.4.3) (release-date) [unreleased]
 
 ### Features
@@ -13,12 +12,14 @@ Change Log
 * Adiciona scheduler para deleção dos arquivos temporários do tomcat (PL-3318)
 * Implementa bloqueios de placa para Nepomuceno (PL-3351)
 
+### Refactors
+* Adiciona o token_integração em todas as requisições integradas (PL-3251)
+
 ### Bug Fixes
 
 * Relatório qtd aferições by tipo e data não traz primeira linha (PL-3188)
 
 <a name="v1.4.2"></a>
-
 ## Version [v1.4.2](https://github.com/luizfp/PrologWebService/compare/v1.4.1...v1.4.2) (2020-11-22)
 
 ### Features

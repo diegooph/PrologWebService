@@ -227,20 +227,21 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            stmt = conn.prepareStatement("SELECT *" +
-                    "FROM INTEGRACAO.FUNC_GERAL_BUSCA_INFOS_AUTENTICACAO(" +
-                    "F_COD_EMPRESA := ?, " +
-                    "F_SISTEMA_KEY := ?, " +
-                    "F_METODO_INTEGRADO := ?);");
+            stmt = conn.prepareStatement("select *" +
+                    "from integracao.func_geral_busca_infos_autenticacao(" +
+                    "f_cod_empresa => ?, " +
+                    "f_sistema_key => ?, " +
+                    "f_metodo_integrado => ?);");
             stmt.setLong(1, codEmpresa);
             stmt.setString(2, sistemaKey.getKey());
             stmt.setString(3, metodoIntegrado.getKey());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return new ApiAutenticacaoHolder(
-                        rSet.getString("URL_COMPLETA"),
-                        rSet.getString("API_TOKEN_CLIENT"),
-                        rSet.getLong("API_SHORT_CODE"));
+                        rSet.getString("prolog_token_integracao"),
+                        rSet.getString("url_completa"),
+                        rSet.getString("api_token_client"),
+                        rSet.getLong("api_short_code"));
             } else {
                 throw new SQLException("Nenhuma URL encontrada para:\n" +
                         "codEmpresa: " + codEmpresa + "\n" +
