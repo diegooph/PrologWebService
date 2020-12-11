@@ -146,7 +146,7 @@ public final class VeiculoAcoplamentoDaoImpl implements VeiculoAcoplamentoDao {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            stmt = connection.prepareStatement("select * from func_veiculo_insert_processo_acoplamento(" +
+            stmt = connection.prepareStatement("select * from func_veiculo_get_estado_acoplamento(" +
                                                        "f_cod_veiculos => ?);");
             DatabaseUtils.bind(stmt, codVeiculosProcessoAcoplamento);
             rSet = stmt.executeQuery();
