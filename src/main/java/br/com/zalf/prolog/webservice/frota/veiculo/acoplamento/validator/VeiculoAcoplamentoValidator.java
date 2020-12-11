@@ -3,26 +3,36 @@ package br.com.zalf.prolog.webservice.frota.veiculo.acoplamento.validator;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcoplamentoAcaoRealizada;
 import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcoplamentoProcessoRealizacao;
-import lombok.Data;
+import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Data
+@AllArgsConstructor
 public class VeiculoAcoplamentoValidator {
     @NotNull
-    private final HolderAcomplamentoValidacao acomplamentoValidacao;
+    private final HolderAcomplamentoValidacao dadosBanco;
     @NotNull
     private final VeiculoAcoplamentoProcessoRealizacao processoRealizacao;
 
     public void validate() {
-        //TODO acomplamentoValidacao == processoRealizacao
+        validateVeiculosProcessoIguaisVeiculosBanco();
         validateVeiculosRepetidosAcoplamento();
         validateOrdenacao();
         validateVeiculosPertencemUnicoProcesso();
         validateAcoesAcoplamentos();
+    }
+
+    private void validateVeiculosProcessoIguaisVeiculosBanco() {
+        if (processoRealizacao.getTotalVeiculosProcesso() != dadosBanco.getTotalVeiculos()) {
+            throw new IllegalStateException();
+        }
+
+        if (!dadosBanco.getCodVeiculosProcesso().containsAll(processoRealizacao.getCodVeiculosProcesso())) {
+            throw new IllegalStateException();
+        }
     }
 
     private void validateVeiculosRepetidosAcoplamento() {
@@ -52,18 +62,18 @@ public class VeiculoAcoplamentoValidator {
 
     private void validateVeiculosPertencemUnicoProcesso() {
         // Estou editando veículos de vários acoplamentos.
-        if (acomplamentoValidacao.existemVeiculosComProcessosDiferentes()) {
+        if (dadosBanco.existemVeiculosComProcessosDiferentes()) {
             throw new IllegalStateException();
         }
 
         // Se estou criando, as placas não devem conter acoplamentos
         if (processoRealizacao.getCodProcessoAcoplamentoEditado().isPresent()) {
             final Long codigo = processoRealizacao.getCodProcessoAcoplamentoEditado().get();
-            if (!acomplamentoValidacao.mesmoProcessoAcoplamento(codigo)) {
+            if (!dadosBanco.mesmoProcessoAcoplamento(codigo)) {
                 throw new IllegalStateException();
             }
         } else {
-            if (!acomplamentoValidacao.nenhumProcesso()) {
+            if (!dadosBanco.nenhumProcesso()) {
                 throw new IllegalStateException();
             }
         }
@@ -73,7 +83,7 @@ public class VeiculoAcoplamentoValidator {
         processoRealizacao
                 .getVeiculosAcoplados()
                 .forEach(veiculo -> {
-                    if (acomplamentoValidacao.isVeiculoAcoplado(veiculo.getCodVeiculo())) {
+                    if (dadosBanco.isVeiculoAcoplado(veiculo.getCodVeiculo())) {
                         throw new IllegalStateException();
                     }
                 });
@@ -83,8 +93,8 @@ public class VeiculoAcoplamentoValidator {
                 .forEach(veiculo -> {
                     if (processoRealizacao.getCodProcessoAcoplamentoEditado().isPresent()) {
                         final Long codProcessoAcoplamento = processoRealizacao.getCodProcessoAcoplamentoEditado().get();
-                        if (!acomplamentoValidacao.isVeiculoAcopladoProcesso(veiculo.getCodVeiculo(),
-                                                                             codProcessoAcoplamento)) {
+                        if (!dadosBanco.isVeiculoAcopladoProcesso(veiculo.getCodVeiculo(),
+                                                                  codProcessoAcoplamento)) {
                             throw new IllegalStateException();
                         }
                     } else {
@@ -97,9 +107,9 @@ public class VeiculoAcoplamentoValidator {
                 .forEach(veiculo -> {
                     if (processoRealizacao.getCodProcessoAcoplamentoEditado().isPresent()) {
                         final Long codProcessoAcoplamento = processoRealizacao.getCodProcessoAcoplamentoEditado().get();
-                        if (!acomplamentoValidacao.isVeiculoAcopladoProcessoEPosicao(veiculo.getCodVeiculo(),
-                                                                                     codProcessoAcoplamento,
-                                                                                     veiculo.getPosicaoAcaoRealizada())) {
+                        if (!dadosBanco.isVeiculoAcopladoProcessoEPosicao(veiculo.getCodVeiculo(),
+                                                                          codProcessoAcoplamento,
+                                                                          veiculo.getPosicaoAcaoRealizada())) {
                             throw new IllegalStateException();
                         }
                     } else {
@@ -112,9 +122,9 @@ public class VeiculoAcoplamentoValidator {
                 .forEach(veiculo -> {
                     if (processoRealizacao.getCodProcessoAcoplamentoEditado().isPresent()) {
                         final Long codProcessoAcoplamento = processoRealizacao.getCodProcessoAcoplamentoEditado().get();
-                        if (!acomplamentoValidacao.isVeiculoAcopladoProcessoComPosicaoDiferente(veiculo.getCodVeiculo(),
-                                                                                                codProcessoAcoplamento,
-                                                                                                veiculo.getPosicaoAcaoRealizada())) {
+                        if (!dadosBanco.isVeiculoAcopladoProcessoComPosicaoDiferente(veiculo.getCodVeiculo(),
+                                                                                     codProcessoAcoplamento,
+                                                                                     veiculo.getPosicaoAcaoRealizada())) {
                             throw new IllegalStateException();
                         }
                     } else {

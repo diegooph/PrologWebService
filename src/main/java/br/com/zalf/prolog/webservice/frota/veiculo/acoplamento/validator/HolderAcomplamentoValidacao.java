@@ -1,17 +1,27 @@
 package br.com.zalf.prolog.webservice.frota.veiculo.acoplamento.validator;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
 
 import javax.validation.constraints.NotNull;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-@Data
+@AllArgsConstructor
 public class HolderAcomplamentoValidacao {
     @NotNull
     private final Map<Long, VeiculoEstadoAcoplamento> veiculosEstadoAcoplamento;
+
+    public int getTotalVeiculos() {
+        return veiculosEstadoAcoplamento.size();
+    }
+
+    @NotNull
+    public Collection<Long> getCodVeiculosProcesso() {
+        return veiculosEstadoAcoplamento.keySet();
+    }
 
     public boolean isVeiculoAcopladoProcesso(@NotNull final Long codVeiculo,
                                              @NotNull final Long codProcessoAcoplamento) {

@@ -43,15 +43,6 @@ public final class VeiculoAcoplamentoProcessoRealizacao {
     }
 
     @NotNull
-    public boolean isEditandoProcessoAcoplamento() {
-        return codProcessoAcoplamentoEditado != null;
-    }
-
-    public boolean isNotEditandoProcessoAcoplamento() {
-        return !isEditandoProcessoAcoplamento();
-    }
-
-    @NotNull
     public Optional<List<VeiculoAcopladoMantido>> getVeiculosAcopladosOuMantidos(
             @NotNull final Long codProcessoAcoplamentoRealizado) {
         final List<VeiculoAcopladoMantido> acopladosOuMantidos = acoesRealizadas
@@ -69,6 +60,23 @@ public final class VeiculoAcoplamentoProcessoRealizacao {
         return acopladosOuMantidos.isEmpty()
                 ? Optional.empty()
                 : Optional.of(acopladosOuMantidos);
+    }
+
+    public int getTotalVeiculosProcesso() {
+        return (int) acoesRealizadas
+                .stream()
+                .map(VeiculoAcoplamentoAcaoRealizada::getCodVeiculo)
+                .distinct()
+                .count();
+    }
+
+    @NotNull
+    public List<Long> getCodVeiculosProcesso() {
+        return acoesRealizadas
+                .stream()
+                .map(VeiculoAcoplamentoAcaoRealizada::getCodVeiculo)
+                .distinct()
+                .collect(Collectors.toList());
     }
 
     @NotNull
