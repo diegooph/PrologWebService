@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.frota.veiculo.acoplamento.validator;
 
-import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcoplamentoAcaoRealizada;
 import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcoplamentoProcessoRealizacao;
 import lombok.AllArgsConstructor;
@@ -27,15 +26,14 @@ public final class VeiculoAcoplamentoValidator {
 
     private void validateVeiculosProcessoIguaisVeiculosBanco() {
         if (processoRealizacao.getTotalVeiculosProcesso() != dadosBanco.getTotalVeiculos()) {
-            throw new IllegalStateException(String.format(
-                    "Total de veículos no processo (%d) está diferente do total de veículos " +
-                            "buscados do banco (%d).",
+            throw new VeiculoAcoplamentoValidatorException(String.format(
+                    "Total de veículos no processo (%d) está diferente do total de veículos buscados do banco (%d).",
                     processoRealizacao.getTotalVeiculosProcesso(),
                     dadosBanco.getTotalVeiculos()));
         }
 
         if (!dadosBanco.getCodVeiculos().containsAll(processoRealizacao.getCodVeiculosProcesso())) {
-            throw new IllegalStateException(String.format(
+            throw new VeiculoAcoplamentoValidatorException(String.format(
                     "Veículos no processo (%s) divergem dos veículos buscados do banco (%s).",
                     processoRealizacao.getCodVeiculosProcesso(),
                     dadosBanco.getCodVeiculos()));
@@ -52,7 +50,8 @@ public final class VeiculoAcoplamentoValidator {
                 .filter(codVeiculo -> Collections.frequency(codVeiculos, codVeiculo) > 1)
                 .findAny()
                 .ifPresent(codVeiculo -> {
-                    throw new GenericException("Não podem existir veículos duplicados no acoplamento.");
+                    throw new VeiculoAcoplamentoValidatorException(
+                            "Não podem existir veículos duplicados no acoplamento.");
                 });
     }
 
@@ -66,36 +65,33 @@ public final class VeiculoAcoplamentoValidator {
                 .collect(Collectors.toList());
         for (int i = 0; i < posicoesAcoplamento.size(); i++) {
             if (posicoesAcoplamento.get(i) != i + 1) {
-                throw new GenericException("Erro ao realizar operação.",
-                                           "A ordem do acoplamento não está correta, devem ser sequenciais: "
-                                                   + posicoesAcoplamento);
+                throw new VeiculoAcoplamentoValidatorException(
+                        "A ordem do acoplamento não está correta, devem ser sequenciais: " + posicoesAcoplamento);
             }
         }
     }
 
     private void validateVeiculosPertencemUnicoProcesso() {
-        // Estou editando veículos de vários acoplamentos.
         if (dadosBanco.existemVeiculosComProcessosDiferentes()) {
-            throw new IllegalStateException(String.format("Os veículos do processo pertencem a " +
-                                                                  "diferentes processos de acoplamento: %s",
-                                                          dadosBanco.getCodProcessosAcoplamentosDistintos()));
+            throw new VeiculoAcoplamentoValidatorException(String.format(
+                    "Os veículos do processo pertencem a diferentes processos de acoplamento: %s",
+                    dadosBanco.getCodProcessosAcoplamentosDistintos()));
         }
 
         if (processoRealizacao.getCodProcessoAcoplamentoEditado().isPresent()) {
             final Long codProcessoAcoplamento = processoRealizacao.getCodProcessoAcoplamentoEditado().get();
             if (!dadosBanco.isTodosProcessosAcoplamentosDoCodigo(codProcessoAcoplamento)) {
-                throw new IllegalStateException(String.format(
+                throw new VeiculoAcoplamentoValidatorException(String.format(
                         "Veículos no BD estão nos processos de acoplamento de códigos %s porém o processo sendo " +
                                 "editado é o de código %d.",
                         dadosBanco.getCodProcessosAcoplamentosDistintos(),
                         codProcessoAcoplamento));
             }
         } else {
-            // Se estou criando, as placas não devem conter acoplamentos
             if (!dadosBanco.isTodosVeiculosNaoAcoplados()) {
-                throw new IllegalStateException(
-                        String.format("Nenhum processo está sendo editado, porém algum dos veículos recebidos" +
-                                              " já está acoplado: %s.", dadosBanco.getCodVeiculos()));
+                throw new VeiculoAcoplamentoValidatorException(
+                        String.format("Um novo acoplamento está sendo inserido, porém alguns dos veículos recebidos" +
+                                              " já estão acoplados: %s.", dadosBanco.getCodVeiculos()));
             }
         }
     }
@@ -106,7 +102,7 @@ public final class VeiculoAcoplamentoValidator {
                 .forEach(veiculo -> {
                     final Long codVeiculo = veiculo.getCodVeiculo();
                     if (dadosBanco.isVeiculoAcoplado(codVeiculo)) {
-                        throw new IllegalStateException(
+                        throw new VeiculoAcoplamentoValidatorException(
                                 String.format("Não é possível acoplar o veículo %d pois ele já está acoplado.",
                                               codVeiculo));
                     }
@@ -119,14 +115,15 @@ public final class VeiculoAcoplamentoValidator {
                     if (processoRealizacao.getCodProcessoAcoplamentoEditado().isPresent()) {
                         final Long codProcessoAcoplamento = processoRealizacao.getCodProcessoAcoplamentoEditado().get();
                         if (!dadosBanco.isVeiculoAcopladoProcesso(codVeiculo, codProcessoAcoplamento)) {
-                            throw new IllegalStateException(
-                                    String.format("O veículo %d foi desacoplado porém ele não está acoplado " +
-                                                          "no processo de código %d.",
+                            throw new VeiculoAcoplamentoValidatorException(
+                                    String.format("Não é possível desacoplar um veículo que não está acoplado." +
+                                                          "\nVeículo: %d." +
+                                                          "\nProcesso: %d.",
                                                   codVeiculo,
                                                   codProcessoAcoplamento));
                         }
                     } else {
-                        throw new IllegalStateException(
+                        throw new VeiculoAcoplamentoValidatorException(
                                 String.format("Não é possível desacoplar o veículo %d pois nenhum " +
                                                       "código de processo para edição foi recebido.",
                                               codVeiculo));
@@ -143,7 +140,7 @@ public final class VeiculoAcoplamentoValidator {
                         if (!dadosBanco.isVeiculoAcopladoProcessoEPosicao(codVeiculo,
                                                                           codProcessoAcoplamento,
                                                                           posicaoAcaoRealizada)) {
-                            throw new IllegalStateException(
+                            throw new VeiculoAcoplamentoValidatorException(
                                     String.format("O veículo %d foi mantido na posição %d porém ele " +
                                                           "não está acoplado nesta posição no processo de código %d.",
                                                   codVeiculo,
@@ -151,7 +148,7 @@ public final class VeiculoAcoplamentoValidator {
                                                   codProcessoAcoplamento));
                         }
                     } else {
-                        throw new IllegalStateException(
+                        throw new VeiculoAcoplamentoValidatorException(
                                 String.format("Não é possível manter na posição o veículo %d pois nenhum " +
                                                       "código de processo para edição foi recebido.",
                                               codVeiculo));
@@ -168,16 +165,18 @@ public final class VeiculoAcoplamentoValidator {
                         if (!dadosBanco.isVeiculoAcopladoProcessoComPosicaoDiferente(codVeiculo,
                                                                                      codProcessoAcoplamento,
                                                                                      posicaoAcaoRealizada)) {
-                            throw new IllegalStateException(
-                                    String.format("O veículo %d mudou para a posição %d porém ele " +
-                                                          "não está acoplado em outra posição no processo de " +
-                                                          "código %d (para justificar essa mudança de posição).",
+                            throw new VeiculoAcoplamentoValidatorException(
+                                    String.format("Não é possível realizar uma mudança de posição pois o veículo não " +
+                                                          "está acoplado em outra posição deste processo." +
+                                                          "\nVeículo: %d." +
+                                                          "\nPosição acoplado: %d." +
+                                                          "\nProcesso editado: %d.",
                                                   codVeiculo,
                                                   posicaoAcaoRealizada,
                                                   codProcessoAcoplamento));
                         }
                     } else {
-                        throw new IllegalStateException(
+                        throw new VeiculoAcoplamentoValidatorException(
                                 String.format("Não é possível mudar de posição o veículo %d pois nenhum " +
                                                       "código de processo para edição foi recebido.",
                                               codVeiculo));

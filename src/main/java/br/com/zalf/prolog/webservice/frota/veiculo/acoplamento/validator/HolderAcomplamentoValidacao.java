@@ -46,7 +46,7 @@ public final class HolderAcomplamentoValidacao {
 
     public boolean isVeiculoAcoplado(@NotNull final Long codVeiculo) {
         if (!veiculosEstadoAcoplamento.containsKey(codVeiculo)) {
-            throw new IllegalArgumentException("Veículo de código " + codVeiculo + " não encontrado!");
+            throw new VeiculoAcoplamentoValidatorException("Veículo de código " + codVeiculo + " não encontrado!");
         }
 
         return veiculosEstadoAcoplamento.get(codVeiculo).isAcoplado();
