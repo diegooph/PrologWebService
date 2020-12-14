@@ -57,12 +57,12 @@ public final class AcomplamentoValidacaoHolder {
                 .allMatch(codigo -> codigo.equals(codPrecessoAcoplamento));
     }
 
-    public boolean isTodosVeiculosNaoAcoplados() {
+    public boolean isAlgumVeiculoAcoplado() {
         return veiculosEstadoAcoplamento
                 .values()
                 .stream()
                 .map(VeiculoEstadoAcoplamento::getCodProcessoAcoplamentoVinculado)
-                .allMatch(Objects::isNull);
+                .anyMatch(Objects::nonNull);
     }
 
     @NotNull

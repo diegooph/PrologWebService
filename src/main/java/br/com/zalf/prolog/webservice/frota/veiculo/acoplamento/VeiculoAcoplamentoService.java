@@ -56,7 +56,9 @@ public final class VeiculoAcoplamentoService {
         final VeiculoAcoplamentoDiffChecker diffChecker = new VeiculoAcoplamentoDiffChecker(processoRealizacao);
 
         validator.validate();
-        if (diffChecker.nadaFoiAlterado()) {
+
+        if (processoRealizacao.isEditandoProcesso() && diffChecker.nadaFoiAlterado()) {
+            //noinspection OptionalGetWithoutIsPresent
             return processoRealizacao.getCodProcessoAcoplamentoEditado().get();
         }
 

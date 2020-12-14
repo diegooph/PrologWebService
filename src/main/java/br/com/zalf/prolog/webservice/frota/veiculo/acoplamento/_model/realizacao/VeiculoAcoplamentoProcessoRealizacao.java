@@ -16,6 +16,8 @@ import java.util.stream.Collectors;
  */
 @Data
 public final class VeiculoAcoplamentoProcessoRealizacao {
+    @NotNull
+    public static final Short[] POSICOES_VALIDAS_ORDENADAS = new Short[]{1, 2, 3, 4, 5, 6};
     /**
      * O maior acoplamento possível pode conter 6 veículos, logo, a realização deve contemplar um acoplamento total
      * e uma remoção total ao mesmo tempo.
@@ -26,7 +28,6 @@ public final class VeiculoAcoplamentoProcessoRealizacao {
      * será enviado também.
      */
     private static final int MINIMO_ACOES_POR_PROCESSO = 2;
-
     @NotNull
     private final Long codUnidade;
     @Nullable
@@ -40,6 +41,14 @@ public final class VeiculoAcoplamentoProcessoRealizacao {
     @NotNull
     public Optional<Long> getCodProcessoAcoplamentoEditado() {
         return Optional.ofNullable(codProcessoAcoplamentoEditado);
+    }
+
+    public boolean isEditandoProcesso() {
+        return codProcessoAcoplamentoEditado != null;
+    }
+
+    public boolean isInserindoNovoProcesso() {
+        return !isEditandoProcesso();
     }
 
     @NotNull
@@ -79,7 +88,16 @@ public final class VeiculoAcoplamentoProcessoRealizacao {
         return acoesRealizadas
                 .stream()
                 .map(VeiculoAcoplamentoAcaoRealizada::getCodVeiculo)
-                .distinct()
+                .collect(Collectors.toList());
+    }
+
+    @NotNull
+    public List<Short> getPosicoesOrdenadas() {
+        return acoesRealizadas
+                .stream()
+                .filter(VeiculoAcoplamentoAcaoRealizada::foiAcopladoOuMantidoNaComposicao)
+                .map(VeiculoAcoplamentoAcaoRealizada::getPosicaoAcaoRealizada)
+                .sorted()
                 .collect(Collectors.toList());
     }
 

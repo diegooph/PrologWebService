@@ -30,6 +30,19 @@ public final class ListUtils {
         return elements != null && elements.size() > 0;
     }
 
+    public static boolean constainsInOrder(@NotNull final List<? extends Number> numbersToVerify,
+                                           @NotNull final Number... containedNumbers) {
+        return internalConstainsInOrder(numbersToVerify, containedNumbers);
+    }
+
+    public static boolean constainsAllInOrder(@NotNull final List<? extends Number> numbersToVerify,
+                                              @NotNull final Number... containedNumbers) {
+        if (numbersToVerify.size() != containedNumbers.length) {
+            return false;
+        }
+        return internalConstainsInOrder(numbersToVerify, containedNumbers);
+    }
+
     @Nullable
     public static <T> List<T> combineInNew(@Nullable final List<T> list1,
                                            @Nullable final List<T> list2) {
@@ -46,9 +59,13 @@ public final class ListUtils {
                 : new ArrayList<>(list2);
     }
 
-    @NotNull
-    public static int getLastIndex (@NotNull final List<?> list){
-        return list.size()-1;
+    private static boolean internalConstainsInOrder(@NotNull final List<? extends Number> numbersToVerify,
+                                                    @NotNull final Number... containedNumbers) {
+        for (int i = 0; i < numbersToVerify.size(); i++) {
+            if (!numbersToVerify.get(i).equals(containedNumbers[i])) {
+                return false;
+            }
+        }
+        return true;
     }
-
 }
