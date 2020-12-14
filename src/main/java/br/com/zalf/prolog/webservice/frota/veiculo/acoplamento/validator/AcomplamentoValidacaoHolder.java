@@ -10,7 +10,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
-public final class HolderAcomplamentoValidacao {
+public final class AcomplamentoValidacaoHolder {
     @NotNull
     private final Map<Long, VeiculoEstadoAcoplamento> veiculosEstadoAcoplamento;
 
@@ -26,30 +26,25 @@ public final class HolderAcomplamentoValidacao {
     public boolean isVeiculoAcopladoProcesso(@NotNull final Long codVeiculo,
                                              @NotNull final Long codProcessoAcoplamento) {
         return isVeiculoAcoplado(codVeiculo) &&
-                codProcessoAcoplamento.equals(veiculosEstadoAcoplamento.get(codVeiculo)
-                                                      .getCodProcessoAcoplamentoVinculado());
+                codProcessoAcoplamento.equals(getVeiculo(codVeiculo).getCodProcessoAcoplamentoVinculado());
     }
 
     public boolean isVeiculoAcopladoProcessoEPosicao(@NotNull final Long codVeiculo,
                                                      @NotNull final Long codProcessoAcoplamento,
                                                      @NotNull final Short posicaoAcoplado) {
         return isVeiculoAcopladoProcesso(codVeiculo, codProcessoAcoplamento) &&
-                posicaoAcoplado.equals(veiculosEstadoAcoplamento.get(codVeiculo).getPosicaoAcoplado());
+                posicaoAcoplado.equals(getVeiculo(codVeiculo).getPosicaoAcoplado());
     }
 
     public boolean isVeiculoAcopladoProcessoComPosicaoDiferente(@NotNull final Long codVeiculo,
                                                                 @NotNull final Long codProcessoAcoplamento,
                                                                 @NotNull final Short posicaoAcoplado) {
         return isVeiculoAcopladoProcesso(codVeiculo, codProcessoAcoplamento) &&
-                !posicaoAcoplado.equals(veiculosEstadoAcoplamento.get(codVeiculo).getPosicaoAcoplado());
+                !posicaoAcoplado.equals(getVeiculo(codVeiculo).getPosicaoAcoplado());
     }
 
     public boolean isVeiculoAcoplado(@NotNull final Long codVeiculo) {
-        if (!veiculosEstadoAcoplamento.containsKey(codVeiculo)) {
-            throw new VeiculoAcoplamentoValidatorException("Veículo de código " + codVeiculo + " não encontrado!");
-        }
-
-        return veiculosEstadoAcoplamento.get(codVeiculo).isAcoplado();
+        return getVeiculo(codVeiculo).isAcoplado();
     }
 
     public boolean existemVeiculosComProcessosDiferentes() {
@@ -79,5 +74,13 @@ public final class HolderAcomplamentoValidacao {
                 .filter(Objects::nonNull)
                 .distinct()
                 .collect(Collectors.toList());
+    }
+
+    @NotNull
+    private VeiculoEstadoAcoplamento getVeiculo(@NotNull final Long codVeiculo) {
+        if (!veiculosEstadoAcoplamento.containsKey(codVeiculo)) {
+            throw new VeiculoAcoplamentoValidatorException("Veículo de código " + codVeiculo + " não encontrado!");
+        }
+        return veiculosEstadoAcoplamento.get(codVeiculo);
     }
 }

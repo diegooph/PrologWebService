@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.veiculo.acoplamento;
 
 import br.com.zalf.prolog.webservice.commons.util.NullIf;
-import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento.validator.HolderAcomplamentoValidacao;
+import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento.validator.AcomplamentoValidacaoHolder;
 import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento.validator.VeiculoEstadoAcoplamento;
 import org.jetbrains.annotations.NotNull;
 
@@ -18,7 +18,7 @@ public final class VeiculoAcoplamentoConverter {
     }
 
     @NotNull
-    public static HolderAcomplamentoValidacao createHolderAcomplamentoValidacao(
+    public static AcomplamentoValidacaoHolder createHolderAcomplamentoValidacao(
             @NotNull final ResultSet rSet) throws SQLException {
         if (rSet.next()) {
             final Map<Long, VeiculoEstadoAcoplamento> veiculosEstadoAcoplamento = new HashMap<>();
@@ -30,9 +30,9 @@ public final class VeiculoAcoplamentoConverter {
                         rSet.getShort("posicao_acoplado"));
                 veiculosEstadoAcoplamento.put(codVeiculo, veiculoEstadoAcoplamento);
             } while (rSet.next());
-            return new HolderAcomplamentoValidacao(veiculosEstadoAcoplamento);
+            return new AcomplamentoValidacaoHolder(veiculosEstadoAcoplamento);
         } else {
-            return new HolderAcomplamentoValidacao(Collections.emptyMap());
+            return new AcomplamentoValidacaoHolder(Collections.emptyMap());
         }
     }
 }

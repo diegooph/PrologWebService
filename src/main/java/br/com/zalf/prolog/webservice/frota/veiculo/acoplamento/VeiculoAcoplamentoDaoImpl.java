@@ -8,7 +8,7 @@ import br.com.zalf.prolog.webservice.errorhandling.Exceptions;
 import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcopladoMantido;
 import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcoplamentoAcaoRealizada;
 import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcoplamentoProcessoInsert;
-import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento.validator.HolderAcomplamentoValidacao;
+import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento.validator.AcomplamentoValidacaoHolder;
 import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
@@ -144,7 +144,7 @@ public final class VeiculoAcoplamentoDaoImpl implements VeiculoAcoplamentoDao {
 
     @NotNull
     @Override
-    public HolderAcomplamentoValidacao getHolderAcomplamentoValidacao(
+    public AcomplamentoValidacaoHolder getHolderAcomplamentoValidacao(
             @NotNull final List<Long> codVeiculosProcessoAcoplamento) {
         PreparedStatement stmt = null;
         ResultSet rSet = null;

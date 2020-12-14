@@ -6,7 +6,7 @@ import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.database.transaction.DatabaseTransaction;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcoplamentoProcessoRealizacao;
-import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento.validator.HolderAcomplamentoValidacao;
+import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento.validator.AcomplamentoValidacaoHolder;
 import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento.validator.VeiculoAcoplamentoDiffChecker;
 import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento.validator.VeiculoAcoplamentoValidator;
 import org.jetbrains.annotations.NotNull;
@@ -50,7 +50,7 @@ public final class VeiculoAcoplamentoService {
         final VeiculoAcoplamentoDao acoplamentoDao = Injection.provideVeiculoAcoplamentoDao(connection);
 
         final List<Long> codVeiculosProcesso = processoRealizacao.getCodVeiculosProcesso();
-        final HolderAcomplamentoValidacao dadosBanco =
+        final AcomplamentoValidacaoHolder dadosBanco =
                 acoplamentoDao.getHolderAcomplamentoValidacao(codVeiculosProcesso);
         final VeiculoAcoplamentoValidator validator = new VeiculoAcoplamentoValidator(dadosBanco, processoRealizacao);
         final VeiculoAcoplamentoDiffChecker diffChecker = new VeiculoAcoplamentoDiffChecker(processoRealizacao);

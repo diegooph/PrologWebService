@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public final class VeiculoAcoplamentoValidator {
     @NotNull
-    private final HolderAcomplamentoValidacao dadosBanco;
+    private final AcomplamentoValidacaoHolder dadosBanco;
     @NotNull
     private final VeiculoAcoplamentoProcessoRealizacao processoRealizacao;
 
