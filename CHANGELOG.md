@@ -11,6 +11,8 @@ Change Log
 * Adiciona `Spring Data JPA` para realizar o mapeamento e CRUD de Unidade (PL-3309)
 * Adiciona scheduler para deleção dos arquivos temporários do tomcat (PL-3318)
 * Implementa bloqueios de placa para Nepomuceno (PL-3351)
+* Adiciona deleção das checklists (PL-3217)
+* Corrige busca de histórico de edições (PL-3204)
 
 ### Refactors
 * Adiciona o token_integração em todas as requisições integradas (PL-3251)

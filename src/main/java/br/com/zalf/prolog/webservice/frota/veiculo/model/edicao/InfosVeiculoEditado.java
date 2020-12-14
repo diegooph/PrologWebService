@@ -14,12 +14,16 @@ public final class InfosVeiculoEditado {
     @NotNull
     private final Long codVeiculo;
     @Nullable
-    private final Long codEdicaoHistorico;
+    private final Long codEdicaoHistoricoAntigoEstadoVeiculo;
+    @Nullable
+    private final Long codEdicaoHistoricoNovoEstadoVeiculo;
     private final int totalEdicoes;
     @NotNull
     private final VeiculoAntesEdicao veiculoAntesEdicao;
 
     public boolean algoMudou() {
-        return codEdicaoHistorico != null && totalEdicoes > 0;
+        return codEdicaoHistoricoAntigoEstadoVeiculo != null
+                && codEdicaoHistoricoNovoEstadoVeiculo != null
+                && totalEdicoes > 0;
     }
 }
