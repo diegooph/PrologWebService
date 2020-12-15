@@ -29,9 +29,9 @@ public final class VeiculoAcoplamentoRealizacaoEngine {
     @NotNull
     public Long realizaProcessoAcoplamento(@NotNull final Long codColaboradorRealizacao,
                                            @NotNull final VeiculoAcoplamentoProcessoRealizacao processoRealizacao) {
-        removeAcoplamentoAtual(processoRealizacao);
         final Long codProcessoInserido = insertProcessoAcoplamento(codColaboradorRealizacao, processoRealizacao);
         atualizaKms(codProcessoInserido, processoRealizacao, Now.offsetDateTimeUtc());
+        removeAcoplamentoAtual(processoRealizacao);
         insertHistoricoAcoplamentos(codProcessoInserido, processoRealizacao);
         insertEstadoAtualAcoplamentos(codProcessoInserido, processoRealizacao);
         return codProcessoInserido;
