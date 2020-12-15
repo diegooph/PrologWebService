@@ -589,23 +589,23 @@ public final class MovimentacaoDaoImpl extends DatabaseConnection implements Mov
                 destinoVeiculo.getVeiculo().getPlaca(),
                 movimentacao.getPneu().getCodigo(),
                 destinoVeiculo.getPosicaoDestinoPneu());
-        veiculoDao.updateKmByPlaca(
-                destinoVeiculo.getVeiculo().getPlaca(),
-                destinoVeiculo.getVeiculo().getKmAtual(),
-                conn);
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareCall("{CALL FUNC_MOVIMENTACAO_INSERT_MOVIMENTACAO_VEICULO_DESTINO(" +
+                                            "F_COD_UNIDADE => ?," +
                                             "F_COD_MOVIMENTACAO => ?, " +
                                             "F_TIPO_DESTINO => ?, " +
                                             "F_PLACA_VEICULO => ?," +
+                                            "F_COD_VEICULO => ?," +
                                             "F_KM_ATUAL => ?, " +
                                             "F_POSICAO_PROLOG => ?)}");
-            stmt.setLong(1, movimentacao.getCodigo());
-            stmt.setString(2, destinoVeiculo.getTipo().asString());
-            stmt.setString(3, destinoVeiculo.getVeiculo().getPlaca());
-            stmt.setLong(4, destinoVeiculo.getVeiculo().getKmAtual());
-            stmt.setInt(5, destinoVeiculo.getPosicaoDestinoPneu());
+            stmt.setLong(1, codUnidade);
+            stmt.setLong(2, movimentacao.getCodigo());
+            stmt.setString(3, destinoVeiculo.getTipo().asString());
+            stmt.setString(4, destinoVeiculo.getVeiculo().getPlaca());
+            stmt.setLong(5, destinoVeiculo.getVeiculo().getCodigo());
+            stmt.setLong(6, destinoVeiculo.getVeiculo().getKmAtual());
+            stmt.setInt(7, destinoVeiculo.getPosicaoDestinoPneu());
             stmt.execute();
         } finally {
             close(stmt);
