@@ -22,7 +22,15 @@ public final class ErrorReportSystem {
 
     public static void init() {
         if (!ProLogUtils.isDebug()) {
-            Sentry.init(EnvironmentHelper.SENTRY_DSN + "?release=" + BuildConfig.VERSION_CODE);
+            Sentry.init(sentryOptions -> {
+                sentryOptions.setDsn(EnvironmentHelper.SENTRY_DSN + "?release=" + BuildConfig.VERSION_CODE);
+                sentryOptions.setEnableSessionTracking(true);
+                sentryOptions.setAttachStacktrace(true);
+                sentryOptions.addInAppExclude("sun");
+                sentryOptions.addInAppExclude("java");
+                sentryOptions.addInAppExclude("org");
+                sentryOptions.addInAppInclude("br.com.zalf");
+            });
             initialized = true;
         }
     }
