@@ -9,6 +9,7 @@ import br.com.zalf.prolog.webservice.gente.controlejornada.DadosIntervaloChanged
 import br.com.zalf.prolog.webservice.geral.unidade._model.Unidade;
 import br.com.zalf.prolog.webservice.permissao.pilares.FuncaoProLog;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -83,6 +84,7 @@ public interface ColaboradorDao {
      * @return um {@link Colaborador}.
      * @throws SQLException caso aconteça algum erro na consulta ao banco.
      */
+    @Nullable
     Colaborador getByCpf(Long cpf, boolean apenasAtivos) throws SQLException;
 
     /**
