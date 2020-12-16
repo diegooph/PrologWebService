@@ -13,7 +13,11 @@ import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Created on 2020-10-20
@@ -127,5 +131,16 @@ public final class InternalExceptionMapper {
         return String.format(
                 totalErrors > 1 ? "%d erros encontrados" : "%d erro encontrado",
                 totalErrors);
+    }
+
+    private static Map<String, Object> getExtrasByException(final ProLogException proLogException) {
+        return Stream.of(
+                new AbstractMap.SimpleImmutableEntry<>("Developer message",
+                                                       proLogException.getDeveloperMessage()),
+                new AbstractMap.SimpleImmutableEntry<>("Parent exception",
+                                                       proLogException.getParentException()))
+                .collect(Collectors.collectingAndThen(
+                        Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue),
+                        Collections::unmodifiableMap));
     }
 }
