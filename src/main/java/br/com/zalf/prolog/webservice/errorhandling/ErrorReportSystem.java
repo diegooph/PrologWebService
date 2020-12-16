@@ -5,6 +5,7 @@ import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.ProLogUtils;
 import br.com.zalf.prolog.webservice.config.BuildConfig;
 import io.sentry.Sentry;
+import io.sentry.SentryEvent;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -43,7 +44,16 @@ public final class ErrorReportSystem {
                     "Call init() first!");
         }
     }
-    
+
+    public static void logEvent(@NotNull final SentryEvent event) {
+        if (initialized) {
+            Sentry.captureEvent(event);
+        } else {
+            Log.w(TAG, "Tried to log an exception on a not initialized error report system. " +
+                    "Call init() first!");
+        }
+    }
+
     public static void logMessage(@NotNull final String message) {
         if (initialized) {
             Sentry.captureMessage(message);
