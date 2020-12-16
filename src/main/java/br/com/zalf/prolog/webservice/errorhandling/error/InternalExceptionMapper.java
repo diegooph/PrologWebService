@@ -100,7 +100,6 @@ public final class InternalExceptionMapper {
             final String developerMessage = "Erro mapeado no PrologExceptionMapper: " +
                     ((throwable != null) ? throwable.getMessage() : "null");
             final ProLogException ex = new GenericException(genericMessage, developerMessage, throwable);
-            System.err.println(ex.getDeveloperMessage());
             return ex;
         } else {
             return (ProLogException) throwable;
