@@ -88,15 +88,16 @@ public final class InternalExceptionMapper {
 
     @NotNull
     private static ProLogException convertToPrologException(@Nullable final Throwable throwable) {
-        final ProLogException proLogException = (!(throwable instanceof ProLogException))
-                ? new GenericException(
-                "Algo deu errado, tente novamente",
-                "Erro mapeado no ProLogExceptionMapper: " + (throwable != null
-                        ? throwable.getMessage()
-                        : "null"),
-                throwable)
-                : (ProLogException) throwable;
-        return proLogException;
+        if (!(throwable instanceof ProLogException)) {
+            final String genericMessage = "Algo deu errado, tente novamente";
+            final String developerMessage = "Erro mapeado no PrologExceptionMapper: " +
+                    ((throwable != null) ? throwable.getMessage() : "null");
+            final ProLogException ex = new GenericException(genericMessage, developerMessage, throwable);
+            System.err.println(ex.getDeveloperMessage());
+            return ex;
+        } else {
+            return (ProLogException) throwable;
+        }
     }
 
     private static void tryToLogException(final ProLogException proLogException) {
