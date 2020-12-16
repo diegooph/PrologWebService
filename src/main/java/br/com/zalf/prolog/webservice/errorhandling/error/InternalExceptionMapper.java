@@ -40,7 +40,7 @@ public final class InternalExceptionMapper {
         }
 
         final ProLogException proLogException = convertToPrologException(throwable);
-        tryToLogException(proLogException);
+        tryToLogEventException(proLogException);
         return createResponse(
                 proLogException.getHttpStatusCode(),
                 createPrologError(proLogException)
@@ -100,7 +100,7 @@ public final class InternalExceptionMapper {
         }
     }
 
-    private static void tryToLogException(final ProLogException proLogException) {
+    private static void tryToLogEventException(final ProLogException proLogException) {
         if (proLogException.isloggableOnErrorReportSystem()) {
             ErrorReportSystem.logException(proLogException);
         }
