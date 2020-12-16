@@ -17,6 +17,7 @@ import br.com.zalf.prolog.webservice.permissao.Visao;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilar;
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.*;
 import java.time.Clock;
@@ -283,6 +284,7 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
     }
 
     @Override
+    @Nullable
     public Colaborador getByCpf(final Long cpf, final boolean apenasAtivos) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -328,47 +330,6 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
             close(conn, stmt, rSet);
         }
         return null;
-    }
-
-    @NotNull
-    @Override
-    public Colaborador getByToken(@NotNull final String token) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT C.CODIGO, C.CPF, C.PIS, C.MATRICULA_AMBEV, C.MATRICULA_TRANS, "
-                    + "C.DATA_NASCIMENTO, C.DATA_ADMISSAO, C.DATA_DEMISSAO, C.STATUS_ATIVO, "
-                    + "C.NOME AS NOME_COLABORADOR, EM.NOME AS NOME_EMPRESA, EM.CODIGO AS COD_EMPRESA, EM" +
-                    ".LOGO_THUMBNAIL_URL, "
-                    + "R.REGIAO AS NOME_REGIONAL, R.CODIGO AS COD_REGIONAL, U.NOME AS NOME_UNIDADE, U.CODIGO AS " +
-                    "COD_UNIDADE, EQ.NOME AS NOME_EQUIPE, EQ.CODIGO AS COD_EQUIPE, "
-                    + "S.NOME AS NOME_SETOR, S.CODIGO AS COD_SETOR, "
-                    + "C.COD_FUNCAO, F.NOME AS NOME_FUNCAO, C.COD_PERMISSAO AS PERMISSAO, U.TIMEZONE AS TZ_UNIDADE, "
-                    + "CT.SIGLA_ISO2, CT.PREFIXO_PAIS, CT.NUMERO_TELEFONE, CE.EMAIL "
-                    + "FROM COLABORADOR C JOIN FUNCAO F ON C.COD_FUNCAO = F.CODIGO "
-                    + " JOIN EQUIPE EQ ON EQ.CODIGO = C.COD_EQUIPE "
-                    + " JOIN UNIDADE U ON U.CODIGO = C.COD_UNIDADE "
-                    + " JOIN EMPRESA EM ON EM.CODIGO = C.COD_EMPRESA AND EM.CODIGO = U.COD_EMPRESA "
-                    + " JOIN REGIONAL R ON R.CODIGO = U.COD_REGIONAL "
-                    + " JOIN SETOR S ON S.CODIGO = C.COD_SETOR AND C.COD_UNIDADE = S.COD_UNIDADE "
-                    + " LEFT JOIN COLABORADOR_TELEFONE CT ON C.CODIGO = CT.COD_COLABORADOR "
-                    + " LEFT JOIN COLABORADOR_EMAIL CE ON C.CODIGO = CE.COD_COLABORADOR "
-                    + " JOIN TOKEN_AUTENTICACAO TA ON TA.TOKEN = ? AND TA.CPF_COLABORADOR = C.CPF "
-                    + "WHERE C.STATUS_ATIVO = TRUE");
-            stmt.setString(1, token);
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                final Colaborador c = ColaboradorConverter.createColaborador(rSet);
-                c.setVisao(getVisaoByCpf(c.getCpf()));
-                return c;
-            } else {
-                throw new IllegalStateException("Colaborador não encontrado com o token: " + token);
-            }
-        } finally {
-            close(conn, stmt, rSet);
-        }
     }
 
     @NotNull
@@ -490,6 +451,47 @@ public class ColaboradorDaoImpl extends DatabaseConnection implements Colaborado
             closeConnection(conn, stmt, rSet);
         }
         return false;
+    }
+
+    @NotNull
+    @Override
+    public Colaborador getByToken(@NotNull final String token) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT C.CODIGO, C.CPF, C.PIS, C.MATRICULA_AMBEV, C.MATRICULA_TRANS, "
+                    + "C.DATA_NASCIMENTO, C.DATA_ADMISSAO, C.DATA_DEMISSAO, C.STATUS_ATIVO, "
+                    + "C.NOME AS NOME_COLABORADOR, EM.NOME AS NOME_EMPRESA, EM.CODIGO AS COD_EMPRESA, EM" +
+                    ".LOGO_THUMBNAIL_URL, "
+                    + "R.REGIAO AS NOME_REGIONAL, R.CODIGO AS COD_REGIONAL, U.NOME AS NOME_UNIDADE, U.CODIGO AS " +
+                    "COD_UNIDADE, EQ.NOME AS NOME_EQUIPE, EQ.CODIGO AS COD_EQUIPE, "
+                    + "S.NOME AS NOME_SETOR, S.CODIGO AS COD_SETOR, "
+                    + "C.COD_FUNCAO, F.NOME AS NOME_FUNCAO, C.COD_PERMISSAO AS PERMISSAO, U.TIMEZONE AS TZ_UNIDADE, "
+                    + "CT.SIGLA_ISO2, CT.PREFIXO_PAIS, CT.NUMERO_TELEFONE, CE.EMAIL "
+                    + "FROM COLABORADOR C JOIN FUNCAO F ON C.COD_FUNCAO = F.CODIGO "
+                    + " JOIN EQUIPE EQ ON EQ.CODIGO = C.COD_EQUIPE "
+                    + " JOIN UNIDADE U ON U.CODIGO = C.COD_UNIDADE "
+                    + " JOIN EMPRESA EM ON EM.CODIGO = C.COD_EMPRESA AND EM.CODIGO = U.COD_EMPRESA "
+                    + " JOIN REGIONAL R ON R.CODIGO = U.COD_REGIONAL "
+                    + " JOIN SETOR S ON S.CODIGO = C.COD_SETOR AND C.COD_UNIDADE = S.COD_UNIDADE "
+                    + " LEFT JOIN COLABORADOR_TELEFONE CT ON C.CODIGO = CT.COD_COLABORADOR "
+                    + " LEFT JOIN COLABORADOR_EMAIL CE ON C.CODIGO = CE.COD_COLABORADOR "
+                    + " JOIN TOKEN_AUTENTICACAO TA ON TA.TOKEN = ? AND TA.CPF_COLABORADOR = C.CPF "
+                    + "WHERE C.STATUS_ATIVO = TRUE");
+            stmt.setString(1, token);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                final Colaborador c = ColaboradorConverter.createColaborador(rSet);
+                c.setVisao(getVisaoByCpf(c.getCpf()));
+                return c;
+            } else {
+                throw new IllegalStateException("Colaborador não encontrado com o token: " + token);
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
     }
 
     @NotNull
