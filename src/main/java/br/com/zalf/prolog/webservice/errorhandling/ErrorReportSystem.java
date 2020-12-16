@@ -37,16 +37,16 @@ public final class ErrorReportSystem {
 
     public static void logException(@NotNull final Throwable throwable) {
         if (initialized) {
-            Sentry.capture(throwable);
+            Sentry.captureException(throwable);
         } else {
             Log.w(TAG, "Tried to log an exception on a not initialized error report system. " +
                     "Call init() first!");
         }
     }
-
+    
     public static void logMessage(@NotNull final String message) {
         if (initialized) {
-            Sentry.capture(message);
+            Sentry.captureMessage(message);
         } else {
             Log.w(TAG, "Tried to log a message on a not initialized error report system. " +
                     "Call init() first!");
