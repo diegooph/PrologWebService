@@ -106,7 +106,7 @@ public final class InternalExceptionMapper {
         }
     }
 
-    private static void tryToLogEventException(final ProLogException proLogException) {
+    private static void tryToLogEventException(@NotNull final ProLogException proLogException) {
         if (proLogException.isloggableOnErrorReportSystem()) {
 
             final SentryEvent event = new SentryEvent();
@@ -146,7 +146,8 @@ public final class InternalExceptionMapper {
                 totalErrors);
     }
 
-    private static Map<String, Object> getExtrasByException(final ProLogException proLogException) {
+    @NotNull
+    private static Map<String, Object> getExtrasByException(@NotNull final ProLogException proLogException) {
         return Stream.of(
                 new AbstractMap.SimpleImmutableEntry<>("Developer message",
                                                        proLogException.getDeveloperMessage()),
