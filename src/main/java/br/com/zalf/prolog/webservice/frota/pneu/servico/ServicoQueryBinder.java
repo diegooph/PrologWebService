@@ -397,7 +397,8 @@ final class ServicoQueryBinder {
     @NotNull
     static PreparedStatement fechaCalibragem(@NotNull final Connection connection,
                                              @NotNull final OffsetDateTime dataHorafechamentoServico,
-                                             @NotNull final ServicoCalibragem servico) throws SQLException {
+                                             @NotNull final ServicoCalibragem servico,
+                                             @NotNull final Long kmFinal) throws SQLException {
         final PreparedStatement stmt = connection.prepareStatement("UPDATE AFERICAO_MANUTENCAO SET "
                                                                            + "DATA_HORA_RESOLUCAO = ?, "
                                                                            + "CPF_MECANICO = ?, "
@@ -412,7 +413,7 @@ final class ServicoQueryBinder {
         stmt.setObject(1, dataHorafechamentoServico);
         stmt.setLong(2, servico.getCpfResponsavelFechamento());
         stmt.setDouble(3, servico.getPressaoColetadaFechamento());
-        stmt.setLong(4, servico.getKmVeiculoMomentoFechamento());
+        stmt.setLong(4, kmFinal);
         stmt.setLong(5, servico.getTempoRealizacaoServicoInMillis());
         stmt.setString(6, servico.getFormaColetaDadosFechamentoAsStringOrEquipamentoIfNull());
         stmt.setLong(7, servico.getCodigo());
@@ -423,7 +424,8 @@ final class ServicoQueryBinder {
     @NotNull
     static PreparedStatement fechaInspecao(@NotNull final Connection connection,
                                            @NotNull final OffsetDateTime dataHorafechamentoServico,
-                                           @NotNull final ServicoInspecao servico) throws SQLException {
+                                           @NotNull final ServicoInspecao servico,
+                                           @NotNull final Long kmFinal) throws SQLException {
         final PreparedStatement stmt = connection.prepareStatement("UPDATE AFERICAO_MANUTENCAO SET "
                                                                            + "DATA_HORA_RESOLUCAO = ?, "
                                                                            + "CPF_MECANICO = ?, "
@@ -439,7 +441,7 @@ final class ServicoQueryBinder {
         stmt.setObject(1, dataHorafechamentoServico);
         stmt.setLong(2, servico.getCpfResponsavelFechamento());
         stmt.setDouble(3, servico.getPressaoColetadaFechamento());
-        stmt.setLong(4, servico.getKmVeiculoMomentoFechamento());
+        stmt.setLong(4, kmFinal);
         stmt.setLong(5, servico.getAlternativaSelecionada().codigo);
         stmt.setLong(6, servico.getTempoRealizacaoServicoInMillis());
         stmt.setString(7, servico.getFormaColetaDadosFechamentoAsStringOrEquipamentoIfNull());
@@ -451,7 +453,8 @@ final class ServicoQueryBinder {
     @NotNull
     static PreparedStatement fechaMovimentacao(@NotNull final Connection connection,
                                                @NotNull final OffsetDateTime dataHorafechamentoServico,
-                                               @NotNull final ServicoMovimentacao servico) throws SQLException {
+                                               @NotNull final ServicoMovimentacao servico,
+                                               @NotNull final Long kmFinal) throws SQLException {
         final PreparedStatement stmt = connection.prepareStatement("update afericao_manutencao set "
                                                                            + "data_hora_resolucao = ?, "
                                                                            + "cpf_mecanico = ?, "
@@ -467,7 +470,7 @@ final class ServicoQueryBinder {
                                                                            "returning codigo;");
         stmt.setObject(1, dataHorafechamentoServico);
         stmt.setLong(2, servico.getCpfResponsavelFechamento());
-        stmt.setLong(3, servico.getKmVeiculoMomentoFechamento());
+        stmt.setLong(3, kmFinal);
         stmt.setLong(4, servico.getCodProcessoMovimentacao());
         // Salva também o PSI após o conserto, já que os sulcos são salvos na tabela de movimentaçao.
         stmt.setDouble(5, servico.getPressaoColetadaFechamento());

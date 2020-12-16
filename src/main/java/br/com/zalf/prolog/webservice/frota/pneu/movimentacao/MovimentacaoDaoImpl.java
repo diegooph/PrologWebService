@@ -63,7 +63,8 @@ public final class MovimentacaoDaoImpl extends DatabaseConnection implements Mov
                     campoPersonalizadoDao,
                     processoMovimentacao,
                     dataHoraMovimentacao,
-                    fecharServicosAutomaticamente);
+                    fecharServicosAutomaticamente,
+                    false);
             conn.commit();
             return codigoProcessoMovimentacao;
         } catch (final Throwable e) {
@@ -84,6 +85,24 @@ public final class MovimentacaoDaoImpl extends DatabaseConnection implements Mov
                        @NotNull final ProcessoMovimentacao processoMovimentacao,
                        @NotNull final OffsetDateTime dataHoraMovimentacao,
                        final boolean fecharServicosAutomaticamente) throws Throwable {
+        return insert(conn,
+                      servicoDao,
+                      campoPersonalizadoDao,
+                      processoMovimentacao,
+                      dataHoraMovimentacao,
+                      fecharServicosAutomaticamente,
+                      false);
+    }
+
+    @NotNull
+    @Override
+    public Long insert(@NotNull final Connection conn,
+                       @NotNull final ServicoDao servicoDao,
+                       @NotNull final CampoPersonalizadoDao campoPersonalizadoDao,
+                       @NotNull final ProcessoMovimentacao processoMovimentacao,
+                       @NotNull final OffsetDateTime dataHoraMovimentacao,
+                       final boolean fecharServicosAutomaticamente,
+                       final boolean veioDoServico) throws Throwable {
         validaMovimentacoes(processoMovimentacao.getMovimentacoes());
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -104,7 +123,8 @@ public final class MovimentacaoDaoImpl extends DatabaseConnection implements Mov
                         servicoDao,
                         processoMovimentacao,
                         dataHoraMovimentacao,
-                        fecharServicosAutomaticamente);
+                        fecharServicosAutomaticamente,
+                        veioDoServico);
                 final List<CampoPersonalizadoResposta> respostas =
                         processoMovimentacao.getRespostasCamposPersonalizados();
                 if (respostas != null && !respostas.isEmpty()) {
@@ -124,6 +144,23 @@ public final class MovimentacaoDaoImpl extends DatabaseConnection implements Mov
         } finally {
             close(stmt, rSet);
         }
+    }
+
+    @NotNull
+    @Override
+    public Long insertMovimentacaoServicoAfericao(@NotNull final Connection conn,
+                                                  @NotNull final ServicoDao servicoDao,
+                                                  @NotNull final CampoPersonalizadoDao campoPersonalizadoDao,
+                                                  @NotNull final ProcessoMovimentacao processoMovimentacao,
+                                                  @NotNull final OffsetDateTime dataHoraMovimentacao,
+                                                  final boolean fecharServicosAutomaticamente) throws Throwable {
+        return insert(conn,
+                      servicoDao,
+                      campoPersonalizadoDao,
+                      processoMovimentacao,
+                      dataHoraMovimentacao,
+                      fecharServicosAutomaticamente,
+                      true);
     }
 
     @NotNull
@@ -222,7 +259,8 @@ public final class MovimentacaoDaoImpl extends DatabaseConnection implements Mov
                                      @NotNull final ServicoDao servicoDao,
                                      @NotNull final ProcessoMovimentacao processoMov,
                                      @NotNull final OffsetDateTime dataHoraMovimentacao,
-                                     final boolean fecharServicosAutomaticamente) throws Throwable {
+                                     final boolean fecharServicosAutomaticamente,
+                                     final boolean veioDoServico) throws Throwable {
         final PneuDao pneuDao = Injection.providePneuDao();
         final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
         final PneuServicoRealizadoDao pneuServicoRealizadoDao = Injection.providePneuServicoRealizadoDao();
@@ -246,7 +284,7 @@ public final class MovimentacaoDaoImpl extends DatabaseConnection implements Mov
                 rSet = stmt.executeQuery();
                 if (rSet.next()) {
                     mov.setCodigo(rSet.getLong("V_COD_MOVIMENTACAO_REALIZADA"));
-                    if (isOrigemOuDestinoVeiculo(mov)) {
+                    if (isOrigemOuDestinoVeiculo(mov) && !veioDoServico) {
                         final Veiculo veiculo = getVeiculoMovimentacao(mov);
                         updateKmVeiculo(conn,
                                         codUnidade,
