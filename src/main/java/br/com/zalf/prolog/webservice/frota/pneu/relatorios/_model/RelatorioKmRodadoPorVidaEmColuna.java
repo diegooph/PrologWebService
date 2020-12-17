@@ -133,7 +133,6 @@ public final class RelatorioKmRodadoPorVidaEmColuna implements CsvReport {
             // Processamos a vida 1 novamente, assim todas as infos de vida ficam concentradas nesse 'for'.
             IntStream.range(1, TOTAL_VIDAS_BUSCADAS + 1)
                     .forEach(vidaSendoEscritaAgora -> {
-                        
                         final Optional<PneuKmRodadoPorVida> vidaPneuEncontrada = vidasPneu
                                 .stream()
                                 .filter(vidaPneu -> Integer.parseInt(vidaPneu.getVida()) == vidaSendoEscritaAgora)
@@ -155,8 +154,30 @@ public final class RelatorioKmRodadoPorVidaEmColuna implements CsvReport {
                         }
                     });
 
+            final Integer somatorioValorVidaTotal = vidasPneu.stream()
+                    .map(PneuKmRodadoPorVida::getValorVida)
+                    .map(valorVida -> {
+                        if (valorVida.equals("-")) {
+                            return 0;
+                        }
+                        return Integer.parseInt(valorVida);
+                    })
+                    .reduce(0, Integer::sum);
+
+            final Integer somatorioCpkTotal = vidasPneu.stream()
+                    .map(PneuKmRodadoPorVida::getValorPorKmVida)
+                    .map(cpk -> {
+                        if (cpk.equals("-")) {
+                            return 0;
+                        }
+                        return Integer.parseInt(cpk);
+                    })
+                    .reduce(0, Integer::sum);
+
             // Por último, adicionamos o total de km rodado em todas as vidas.
             row.add(infoVida1.getKmRodadoTodasVidas());
+            row.add(somatorioCpkTotal.toString());
+            row.add(somatorioValorVidaTotal.toString());
 
             innerTable.add(row);
         });
