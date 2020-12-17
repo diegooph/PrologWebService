@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collections;
 import java.util.List;
 
-import static br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcoplamentoAcaoRealizada.POSICAO_TRATOR;
+import static br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcoplamentoAcaoRealizada.POSICAO_ACOPLAMENTO_TRATOR;
 import static br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcoplamentoProcessoRealizacao.POSICOES_VALIDAS_ORDENADAS_COM_TRATOR;
 import static br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcoplamentoProcessoRealizacao.POSICOES_VALIDAS_ORDENADAS_SEM_TRATOR;
 
@@ -38,7 +38,7 @@ public final class VeiculoAcoplamentoValidator {
         processoRealizacao.getVeiculosRebocadosProcesso()
                 .stream()
                 .map(VeiculoAcoplamentoAcaoRealizada::getPosicaoAcaoRealizada)
-                .filter(posicao -> posicao == POSICAO_TRATOR)
+                .filter(posicao -> posicao == POSICAO_ACOPLAMENTO_TRATOR)
                 .findAny()
                 .ifPresent(posicao -> fail("Os reboques não podem ocupar posições de tratores (1)."));
     }
@@ -47,7 +47,7 @@ public final class VeiculoAcoplamentoValidator {
         processoRealizacao.getVeiculosMotorizadosProcesso()
                 .stream()
                 .map(VeiculoAcoplamentoAcaoRealizada::getPosicaoAcaoRealizada)
-                .filter(posicao -> posicao != POSICAO_TRATOR)
+                .filter(posicao -> posicao != POSICAO_ACOPLAMENTO_TRATOR)
                 .findAny()
                 .ifPresent(posicao -> fail("O trator não pode ser aplicado numa posição que não é a 1."));
     }

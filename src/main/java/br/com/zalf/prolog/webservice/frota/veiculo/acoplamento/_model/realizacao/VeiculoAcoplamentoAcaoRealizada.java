@@ -15,7 +15,7 @@ import javax.validation.constraints.NotNull;
 @Data
 public final class VeiculoAcoplamentoAcaoRealizada {
     @NotNull
-    public static final short POSICAO_TRATOR = 1;
+    public static final short POSICAO_ACOPLAMENTO_TRATOR = 1;
     @NotNull
     private final Long codVeiculo;
     @NotNull
