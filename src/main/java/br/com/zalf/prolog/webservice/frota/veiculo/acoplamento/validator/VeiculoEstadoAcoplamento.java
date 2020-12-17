@@ -12,8 +12,18 @@ public final class VeiculoEstadoAcoplamento {
     @Nullable
     private final Long codProcessoAcoplamentoVinculado;
     private final short posicaoAcoplado;
+    private final boolean motorizado;
+    private final boolean possuiHubodometro;
 
     public boolean isAcoplado() {
         return codProcessoAcoplamentoVinculado != null;
+    }
+
+    public boolean isTrator() {
+        return motorizado;
+    }
+
+    public boolean isNotTrator() {
+        return !motorizado;
     }
 }

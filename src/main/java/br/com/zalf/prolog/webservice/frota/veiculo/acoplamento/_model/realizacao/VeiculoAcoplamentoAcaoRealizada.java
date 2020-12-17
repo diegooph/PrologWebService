@@ -56,4 +56,8 @@ public final class VeiculoAcoplamentoAcaoRealizada {
     public boolean isRebocado() {
         return !motorizado;
     }
+
+    public boolean naoColetouKm() {
+        return kmColetado != null;
+    }
 }

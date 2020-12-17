@@ -143,7 +143,6 @@ public final class VeiculoAcoplamentoProcessoRealizacao {
     public List<VeiculoAcoplamentoAcaoRealizada> getVeiculosMotorizadosProcesso() {
         return acoesRealizadas
                 .stream()
-                .filter(VeiculoAcoplamentoAcaoRealizada::foiAcopladoOuMantidoNaComposicao)
                 .filter(VeiculoAcoplamentoAcaoRealizada::isMotorizado)
                 .collect(Collectors.toList());
     }
@@ -164,6 +163,17 @@ public final class VeiculoAcoplamentoProcessoRealizacao {
                 .stream()
                 .filter(VeiculoAcoplamentoAcaoRealizada::foiAcopladoOuMantidoNaComposicao)
                 .filter(VeiculoAcoplamentoAcaoRealizada::isRebocado)
+                .collect(Collectors.toList());
+    }
+
+    @NotNull
+    public List<VeiculoAcoplamentoAcaoRealizada> getVeiculosByCodigos(
+            @NotNull final List<Long> codVeiculosAcoplamento) {
+        return acoesRealizadas
+                .stream()
+                .filter(veiculoAcaoRealizada -> codVeiculosAcoplamento
+                        .stream()
+                        .anyMatch(codVeiculo -> codVeiculo.equals(veiculoAcaoRealizada.getCodVeiculo())))
                 .collect(Collectors.toList());
     }
 }

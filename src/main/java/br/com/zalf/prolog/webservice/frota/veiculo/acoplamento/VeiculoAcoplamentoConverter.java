@@ -27,7 +27,9 @@ public final class VeiculoAcoplamentoConverter {
                 final VeiculoEstadoAcoplamento veiculoEstadoAcoplamento = new VeiculoEstadoAcoplamento(
                         codVeiculo,
                         NullIf.equalOrLess(rSet.getLong("cod_processo_acoplamento_vinculado"), 0),
-                        rSet.getShort("posicao_acoplado"));
+                        rSet.getShort("posicao_acoplado"),
+                        rSet.getBoolean("motorizado"),
+                        rSet.getBoolean("possui_hubodometro"));
                 veiculosEstadoAcoplamento.put(codVeiculo, veiculoEstadoAcoplamento);
             } while (rSet.next());
             return new AcomplamentoValidacaoHolder(veiculosEstadoAcoplamento);

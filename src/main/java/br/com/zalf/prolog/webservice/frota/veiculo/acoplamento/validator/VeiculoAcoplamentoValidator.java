@@ -25,13 +25,32 @@ public final class VeiculoAcoplamentoValidator {
         garanteVeiculosProcessoComVeiculosBanco();
         garanteVeiculosRecebidosSejamDiferentes();
         garantePosicoesEmOrdem();
-        garanteUnicoTratorAcoplado();
-        garanteTratorNaPosicaoCorreta();
+        garanteUnicoVeiculoMotorizadoAcoplado();
+        garanteVeiculoMotorizadoNaPosicaoCorreta();
         garanteReboquesNasPosicoesCorretas();
+        garanteVeiculoMotorizadoColetouKm();
+        garanteReboquesComHubodometroColetaramKm();
         garanteVeiculosPertencemUnicoProcesso();
         garanteVeiculosPercentemProcessoSendoEditado();
         garanteVeiculosDesacopladosEmNovoProcesso();
         garanteAcoesAcoplamentosCorretas();
+    }
+
+    private void garanteReboquesComHubodometroColetaramKm() {
+        final List<Long> codVeiculosComHubodometro = dadosBanco.getCodVeiculosComHubodometro();
+        processoRealizacao.getVeiculosByCodigos(codVeiculosComHubodometro)
+                .stream()
+                .filter(VeiculoAcoplamentoAcaoRealizada::naoColetouKm)
+                .findAny()
+                .ifPresent(veiculo -> fail("Não foi realizado a coleta do KM dos roboques com hubodometro."));
+    }
+
+    private void garanteVeiculoMotorizadoColetouKm() {
+        processoRealizacao.getVeiculosMotorizadosProcesso()
+                .stream()
+                .filter(VeiculoAcoplamentoAcaoRealizada::naoColetouKm)
+                .findAny()
+                .ifPresent(veiculo -> fail("Não foi realizado a coleta do KM dos tratores."));
     }
 
     private void garanteReboquesNasPosicoesCorretas() {
@@ -43,7 +62,7 @@ public final class VeiculoAcoplamentoValidator {
                 .ifPresent(posicao -> fail("Os reboques não podem ocupar posições de tratores (1)."));
     }
 
-    private void garanteTratorNaPosicaoCorreta() {
+    private void garanteVeiculoMotorizadoNaPosicaoCorreta() {
         processoRealizacao.getVeiculosMotorizadosProcesso()
                 .stream()
                 .map(VeiculoAcoplamentoAcaoRealizada::getPosicaoAcaoRealizada)
@@ -52,7 +71,7 @@ public final class VeiculoAcoplamentoValidator {
                 .ifPresent(posicao -> fail("O trator não pode ser aplicado numa posição que não é a 1."));
     }
 
-    private void garanteUnicoTratorAcoplado() {
+    private void garanteUnicoVeiculoMotorizadoAcoplado() {
         final List<Long> codVeiculosMotorizadosProcesso = processoRealizacao.getCodVeiculosMotorizadosProcesso();
         if (codVeiculosMotorizadosProcesso.size() > 1) {
             fail("É permitido apenas um veículo motorizado no acoplamento, " +

@@ -51,10 +51,10 @@ public final class AcomplamentoValidacaoHolder {
         return getCodProcessosAcoplamentosDistintos().size() > 1;
     }
 
-    public boolean isTodosProcessosAcoplamentosDoCodigo(@NotNull final Long codPrecessoAcoplamento) {
+    public boolean isTodosProcessosAcoplamentosDoCodigo(@NotNull final Long codProcessoAcoplamento) {
         return getCodProcessosAcoplamentosDistintos()
                 .stream()
-                .allMatch(codigo -> codigo.equals(codPrecessoAcoplamento));
+                .allMatch(codigo -> codigo.equals(codProcessoAcoplamento));
     }
 
     public boolean faltaAlgumVeiculo(@NotNull final List<Long> codVeiculos) {
@@ -77,6 +77,17 @@ public final class AcomplamentoValidacaoHolder {
                 .map(VeiculoEstadoAcoplamento::getCodProcessoAcoplamentoVinculado)
                 .filter(Objects::nonNull)
                 .distinct()
+                .collect(Collectors.toList());
+    }
+
+    @NotNull
+    public List<Long> getCodVeiculosComHubodometro() {
+        return veiculosEstadoAcoplamento
+                .values()
+                .stream()
+                .filter(VeiculoEstadoAcoplamento::isNotTrator)
+                .filter(VeiculoEstadoAcoplamento::isPossuiHubodometro)
+                .map(VeiculoEstadoAcoplamento::getCodVeiculo)
                 .collect(Collectors.toList());
     }
 
