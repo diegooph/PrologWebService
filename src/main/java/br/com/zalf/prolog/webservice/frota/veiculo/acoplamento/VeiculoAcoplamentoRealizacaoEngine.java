@@ -11,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
 import java.time.OffsetDateTime;
+import java.util.Objects;
 
 /**
  * Created on 2020-11-11
@@ -42,6 +43,8 @@ public final class VeiculoAcoplamentoRealizacaoEngine {
                              @NotNull final OffsetDateTime dataHoraProcesso) {
         processoRealizacao
                 .getAcoesRealizadas()
+                .stream()
+                .filter(acaoRealizada -> Objects.nonNull(acaoRealizada.getKmColetado()))
                 .forEach(acaoRealizada -> veiculoDao.updateKmByCodVeiculo(
                         connection,
                         processoRealizacao.getCodUnidade(),
