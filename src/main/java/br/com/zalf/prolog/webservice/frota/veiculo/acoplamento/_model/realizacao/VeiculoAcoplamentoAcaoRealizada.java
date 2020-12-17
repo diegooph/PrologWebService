@@ -58,6 +58,6 @@ public final class VeiculoAcoplamentoAcaoRealizada {
     }
 
     public boolean naoColetouKm() {
-        return kmColetado != null;
+        return kmColetado == null;
     }
 }
