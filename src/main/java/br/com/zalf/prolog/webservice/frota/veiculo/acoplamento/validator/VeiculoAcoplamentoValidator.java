@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.veiculo.acoplamento.validator;
 
 import br.com.zalf.prolog.webservice.commons.util.ListUtils;
+import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcoplamentoAcaoRealizada;
 import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcoplamentoProcessoRealizacao;
 import io.sentry.util.Nullable;
 import lombok.AllArgsConstructor;
@@ -9,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collections;
 import java.util.List;
 
+import static br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcoplamentoAcaoRealizada.POSICAO_TRATOR;
 import static br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcoplamentoProcessoRealizacao.POSICOES_VALIDAS_ORDENADAS_COM_TRATOR;
 import static br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcoplamentoProcessoRealizacao.POSICOES_VALIDAS_ORDENADAS_SEM_TRATOR;
 
@@ -23,10 +25,39 @@ public final class VeiculoAcoplamentoValidator {
         garanteVeiculosProcessoComVeiculosBanco();
         garanteVeiculosRecebidosSejamDiferentes();
         garantePosicoesEmOrdem();
+        garanteUnicoTratorAcoplado();
+        garanteTratorNaPosicaoCorreta();
+        garanteReboquesNasPosicoesCorretas();
         garanteVeiculosPertencemUnicoProcesso();
         garanteVeiculosPercentemProcessoSendoEditado();
         garanteVeiculosDesacopladosEmNovoProcesso();
         garanteAcoesAcoplamentosCorretas();
+    }
+
+    private void garanteReboquesNasPosicoesCorretas() {
+        processoRealizacao.getVeiculosRebocadosProcesso()
+                .stream()
+                .map(VeiculoAcoplamentoAcaoRealizada::getPosicaoAcaoRealizada)
+                .filter(posicao -> posicao == POSICAO_TRATOR)
+                .findAny()
+                .ifPresent(posicao -> fail("Os reboques não podem ocupar posições de tratores (1)."));
+    }
+
+    private void garanteTratorNaPosicaoCorreta() {
+        processoRealizacao.getVeiculosMotorizadosProcesso()
+                .stream()
+                .map(VeiculoAcoplamentoAcaoRealizada::getPosicaoAcaoRealizada)
+                .filter(posicao -> posicao != POSICAO_TRATOR)
+                .findAny()
+                .ifPresent(posicao -> fail("O trator não pode ser aplicado numa posição que não é a 1."));
+    }
+
+    private void garanteUnicoTratorAcoplado() {
+        final List<Long> codVeiculosMotorizadosProcesso = processoRealizacao.getCodVeiculosMotorizadosProcesso();
+        if (codVeiculosMotorizadosProcesso.size() > 1) {
+            fail("É permitido apenas um veículo motorizado no acoplamento, " +
+                         "encontrados: " + codVeiculosMotorizadosProcesso);
+        }
     }
 
     private void garanteVeiculosProcessoComVeiculosBanco() {

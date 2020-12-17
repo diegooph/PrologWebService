@@ -119,7 +119,6 @@ public final class VeiculoAcoplamentoProcessoRealizacao {
                 .collect(Collectors.toList());
     }
 
-    @NotNull
     public int getTotalVeiculosMantidosPosicao() {
         return getVeiculosMantidosPosicao().size();
     }
@@ -137,6 +136,34 @@ public final class VeiculoAcoplamentoProcessoRealizacao {
         return acoesRealizadas
                 .stream()
                 .filter(VeiculoAcoplamentoAcaoRealizada::foiMudadoPosicao)
+                .collect(Collectors.toList());
+    }
+
+    @NotNull
+    public List<VeiculoAcoplamentoAcaoRealizada> getVeiculosMotorizadosProcesso() {
+        return acoesRealizadas
+                .stream()
+                .filter(VeiculoAcoplamentoAcaoRealizada::foiAcopladoOuMantidoNaComposicao)
+                .filter(VeiculoAcoplamentoAcaoRealizada::isMotorizado)
+                .collect(Collectors.toList());
+    }
+
+    @NotNull
+    public List<Long> getCodVeiculosMotorizadosProcesso() {
+        return acoesRealizadas
+                .stream()
+                .filter(VeiculoAcoplamentoAcaoRealizada::foiAcopladoOuMantidoNaComposicao)
+                .filter(VeiculoAcoplamentoAcaoRealizada::isMotorizado)
+                .map(VeiculoAcoplamentoAcaoRealizada::getCodVeiculo)
+                .collect(Collectors.toList());
+    }
+
+    @NotNull
+    public List<VeiculoAcoplamentoAcaoRealizada> getVeiculosRebocadosProcesso() {
+        return acoesRealizadas
+                .stream()
+                .filter(VeiculoAcoplamentoAcaoRealizada::foiAcopladoOuMantidoNaComposicao)
+                .filter(VeiculoAcoplamentoAcaoRealizada::isRebocado)
                 .collect(Collectors.toList());
     }
 }

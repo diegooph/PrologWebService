@@ -15,6 +15,8 @@ import javax.validation.constraints.NotNull;
 @Data
 public final class VeiculoAcoplamentoAcaoRealizada {
     @NotNull
+    public static final short POSICAO_TRATOR = 1;
+    @NotNull
     private final Long codVeiculo;
     @NotNull
     private final Long codDiagramaVeiculo;
@@ -45,5 +47,13 @@ public final class VeiculoAcoplamentoAcaoRealizada {
 
     public boolean foiMudadoPosicao() {
         return acaoRealizada == VeiculoAcoplamentoAcaoEnum.MUDOU_POSICAO;
+    }
+
+    public boolean isMotorizado() {
+        return motorizado;
+    }
+
+    public boolean isRebocado() {
+        return !motorizado;
     }
 }
