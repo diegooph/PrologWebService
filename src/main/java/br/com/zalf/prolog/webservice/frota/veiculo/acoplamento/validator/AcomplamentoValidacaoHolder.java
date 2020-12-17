@@ -57,6 +57,10 @@ public final class AcomplamentoValidacaoHolder {
                 .allMatch(codigo -> codigo.equals(codPrecessoAcoplamento));
     }
 
+    public boolean faltaAlgumVeiculo(@NotNull final List<Long> codVeiculos) {
+        return !getCodVeiculos().containsAll(codVeiculos);
+    }
+
     public boolean isAlgumVeiculoAcoplado() {
         return veiculosEstadoAcoplamento
                 .values()

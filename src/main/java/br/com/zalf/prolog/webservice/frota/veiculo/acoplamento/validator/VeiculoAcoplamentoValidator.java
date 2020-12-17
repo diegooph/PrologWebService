@@ -40,7 +40,7 @@ public final class VeiculoAcoplamentoValidator {
     }
 
     private void garanteVeiculosRecebidosIguaisVeiculosBanco() {
-        if (!dadosBanco.getCodVeiculos().containsAll(processoRealizacao.getCodVeiculosProcesso())) {
+        if (dadosBanco.faltaAlgumVeiculo(processoRealizacao.getCodVeiculosProcesso())) {
             fail("Veículos no processo (%s) divergem dos veículos buscados do banco (%s).",
                  processoRealizacao.getCodVeiculosProcesso(),
                  dadosBanco.getCodVeiculos());
@@ -71,15 +71,16 @@ public final class VeiculoAcoplamentoValidator {
     }
 
     private void garanteVeiculosPercentemProcessoSendoEditado() {
-        if (processoRealizacao.getCodProcessoAcoplamentoEditado().isPresent()) {
-            final Long codProcessoAcoplamento = processoRealizacao.getCodProcessoAcoplamentoEditado().get();
-            if (!dadosBanco.isTodosProcessosAcoplamentosDoCodigo(codProcessoAcoplamento)) {
-                fail("Veículos no BD estão nos processos de acoplamento de códigos %s porém o processo sendo " +
-                             "editado é o de código %d.",
-                     dadosBanco.getCodProcessosAcoplamentosDistintos(),
-                     codProcessoAcoplamento);
-            }
-        }
+        processoRealizacao
+                .getCodProcessoAcoplamentoEditado()
+                .ifPresent(codProcessoAcoplamento -> {
+                    if (!dadosBanco.isTodosProcessosAcoplamentosDoCodigo(codProcessoAcoplamento)) {
+                        fail("Veículos no BD estão nos processos de acoplamento de códigos %s porém o processo sendo " +
+                                     "editado é o de código %d.",
+                             dadosBanco.getCodProcessosAcoplamentosDistintos(),
+                             codProcessoAcoplamento);
+                    }
+                });
     }
 
     private void garanteVeiculosDesacopladosEmNovoProcesso() {
