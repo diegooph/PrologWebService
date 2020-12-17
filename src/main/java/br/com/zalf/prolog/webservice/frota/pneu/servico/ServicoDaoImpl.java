@@ -218,15 +218,18 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
             conn = getConnection();
             conn.setAutoCommit(false);
             final PneuDao pneuDao = Injection.providePneuDao();
-            Long codServicoFechado = null;
+            final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
+            final Colaborador colaborador = Injection.provideColaboradorDao().getByCpf(
+                    servico.getColaboradorResponsavelFechamento().getCpf(),
+                    true);
+            final Long kmFinal =
+                    updateKm(codUnidade, dataHorafechamentoServico, servico, conn, veiculoDao, colaborador);
             switch (servico.getTipoServico()) {
                 case CALIBRAGEM:
-                    codServicoFechado =
-                            fechaCalibragem(conn, pneuDao, dataHorafechamentoServico, (ServicoCalibragem) servico);
+                    fechaCalibragem(conn, pneuDao, dataHorafechamentoServico, (ServicoCalibragem) servico, kmFinal);
                     break;
                 case INSPECAO:
-                    codServicoFechado =
-                            fechaInspecao(conn, pneuDao, dataHorafechamentoServico, (ServicoInspecao) servico);
+                    fechaInspecao(conn, pneuDao, dataHorafechamentoServico, (ServicoInspecao) servico, kmFinal);
                     break;
                 case MOVIMENTACAO:
                     final ServicoMovimentacao movimentacao = (ServicoMovimentacao) servico;
@@ -236,7 +239,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
                     movimentacao.getPneuNovo().setPosicao(movimentacao.getPneuComProblema().getPosicao());
                     final ProcessoMovimentacao processoMovimentacao =
                             convertServicoToProcessoMovimentacao(codUnidade, movimentacao);
-                    final Long codProcessoMovimentacao = movimentacaoDao.insert(
+                    final Long codProcessoMovimentacao = movimentacaoDao.insertMovimentacaoServicoAfericao(
                             conn,
                             this,
                             Injection.provideCampoPersonalizadoDao(),
@@ -249,7 +252,10 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
                     // nós agora fechamos o de movimentação como sendo fechado pelo usuário e depois os demais que
                     // ficarem pendentes do mesmo pneu. Essa ordem de execução dos métodos é necessária e não deve
                     // ser alterada!
-                    codServicoFechado = fechaMovimentacao(conn, pneuDao, dataHorafechamentoServico, movimentacao);
+
+                    /* TODO esse km final é coletado aqui em cima.
+                     * */
+                    fechaMovimentacao(conn, pneuDao, dataHorafechamentoServico, movimentacao, kmFinal);
                     final Long codPneu = servico.getPneuComProblema().getCodigo();
                     final int qtdServicosEmAbertoPneu = getQuantidadeServicosEmAbertoPneu(
                             codUnidade,
@@ -274,23 +280,6 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
                     }
                     break;
             }
-            final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
-            final Colaborador colaborador = Injection.provideColaboradorDao().getByCpf(
-                    servico.getColaboradorResponsavelFechamento().getCpf(),
-                    true);
-            veiculoDao.updateKmByCodVeiculo(conn,
-                                            codUnidade,
-                                            VeiculoBackwardHelper.getCodVeiculoByPlaca(
-                                                    Injection.provideColaboradorDao().getCodColaboradorByCpf(
-                                                            conn,
-                                                            colaborador.getCodEmpresa(),
-                                                            colaborador.getCpfAsString()),
-                                                    servico.getPlacaVeiculo()),
-                                            codServicoFechado,
-                                            VeiculoTipoProcesso.FECHAMENTO_SERVICO_PNEU,
-                                            dataHorafechamentoServico,
-                                            servico.getKmVeiculoMomentoFechamento(),
-                                            true);
             conn.commit();
         } catch (final Throwable e) {
             if (conn != null) {
@@ -496,6 +485,28 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
         }
     }
 
+    private Long updateKm(final @NotNull Long codUnidade,
+                          final @NotNull OffsetDateTime dataHorafechamentoServico,
+                          final @NotNull Servico servico,
+                          final Connection conn,
+                          final VeiculoDao veiculoDao,
+                          final Colaborador colaborador) throws Throwable {
+        return veiculoDao.updateKmByCodVeiculo(conn,
+                                               codUnidade,
+                                               VeiculoBackwardHelper.getCodVeiculoByPlaca(
+                                                       Injection.provideColaboradorDao()
+                                                               .getCodColaboradorByCpf(
+                                                                       conn,
+                                                                       colaborador.getCodEmpresa(),
+                                                                       colaborador.getCpfAsString()),
+                                                       servico.getPlacaVeiculo()),
+                                               servico.getCodigo(),
+                                               VeiculoTipoProcesso.FECHAMENTO_SERVICO_PNEU,
+                                               dataHorafechamentoServico,
+                                               servico.getKmVeiculoMomentoFechamento(),
+                                               true);
+    }
+
     @NotNull
     private FormaColetaDadosAfericaoEnum getFormaColetaDadosFechamentoServico(@NotNull final Connection conn,
                                                                               @NotNull final String placa)
@@ -621,11 +632,12 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
     private Long fechaCalibragem(@NotNull final Connection conn,
                                  @NotNull final PneuDao pneuDao,
                                  @NotNull final OffsetDateTime dataHorafechamentoServico,
-                                 @NotNull final ServicoCalibragem servico) throws Throwable {
+                                 @NotNull final ServicoCalibragem servico,
+                                 @NotNull final Long kmFinal) throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            stmt = ServicoQueryBinder.fechaCalibragem(conn, dataHorafechamentoServico, servico);
+            stmt = ServicoQueryBinder.fechaCalibragem(conn, dataHorafechamentoServico, servico, kmFinal);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 pneuDao.updatePressao(
@@ -644,11 +656,12 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
     private Long fechaInspecao(@NotNull final Connection conn,
                                @NotNull final PneuDao pneuDao,
                                @NotNull final OffsetDateTime dataHorafechamentoServico,
-                               @NotNull final ServicoInspecao servico) throws Throwable {
+                               @NotNull final ServicoInspecao servico,
+                               @NotNull final Long kmFinal) throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            stmt = ServicoQueryBinder.fechaInspecao(conn, dataHorafechamentoServico, servico);
+            stmt = ServicoQueryBinder.fechaInspecao(conn, dataHorafechamentoServico, servico, kmFinal);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 pneuDao.updatePressao(
@@ -667,11 +680,12 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
     private Long fechaMovimentacao(@NotNull final Connection conn,
                                    @NotNull final PneuDao pneuDao,
                                    @NotNull final OffsetDateTime dataHorafechamentoServico,
-                                   @NotNull final ServicoMovimentacao servico) throws Throwable {
+                                   @NotNull final ServicoMovimentacao servico,
+                                   @NotNull final Long kmFinal) throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            stmt = ServicoQueryBinder.fechaMovimentacao(conn, dataHorafechamentoServico, servico);
+            stmt = ServicoQueryBinder.fechaMovimentacao(conn, dataHorafechamentoServico, servico, kmFinal);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 // No caso da movimentação precisamos atualizar o Pneu Novo.

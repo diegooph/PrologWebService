@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.VeiculoAco
 import lombok.Data;
 import org.hibernate.validator.constraints.Range;
 
+import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -23,7 +24,7 @@ public final class VeiculoAcoplamentoAcaoRealizada {
     private final VeiculoAcoplamentoAcaoEnum acaoRealizada;
     @Range(min = 1, max = 6)
     private final short posicaoAcaoRealizada;
-    @NotNull
+    @Nullable
     private final Long kmColetado;
 
     public boolean foiAcopladoOuMantidoNaComposicao() {

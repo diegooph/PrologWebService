@@ -81,20 +81,20 @@ public final class VeiculoAcoplamentoDaoImpl implements VeiculoAcoplamentoDao {
         PreparedStatement stmt = null;
         try {
             stmt = connection.prepareCall(" {call func_veiculo_insert_historico_acoplamento(" +
-                                                  "f_cod_processo_acoplamento => ?," +
-                                                  "f_cod_veiculo => ?," +
-                                                  "f_cod_diagrama_veiculo => ?," +
-                                                  "f_posicao_acao_realizada => ?," +
-                                                  "f_veiculo_motorizado => ?," +
-                                                  "f_acao_realizada => ?)}");
+                    "f_cod_processo_acoplamento => ?," +
+                    "f_cod_veiculo => ?," +
+                    "f_cod_diagrama_veiculo => ?," +
+                    "f_posicao_acao_realizada => ?," +
+                    "f_veiculo_motorizado => ?," +
+                    "f_acao_realizada => ?)}");
             for (final VeiculoAcoplamentoAcaoRealizada acoplamento : acoesRealizadas) {
                 DatabaseUtils.bind(stmt,
-                                   codProcessoAcoplamento,
-                                   acoplamento.getCodVeiculo(),
-                                   acoplamento.getCodDiagramaVeiculo(),
-                                   acoplamento.getPosicaoAcaoRealizada(),
-                                   acoplamento.getMotorizado(),
-                                   acoplamento.getAcaoRealizada().asString());
+                        codProcessoAcoplamento,
+                        acoplamento.getCodVeiculo(),
+                        acoplamento.getCodDiagramaVeiculo(),
+                        acoplamento.getPosicaoAcaoRealizada(),
+                        acoplamento.getMotorizado(),
+                        acoplamento.getAcaoRealizada().asString());
                 stmt.addBatch();
             }
             StatementUtils.executeBatchAndValidate(
@@ -114,20 +114,20 @@ public final class VeiculoAcoplamentoDaoImpl implements VeiculoAcoplamentoDao {
         PreparedStatement stmt = null;
         try {
             stmt = connection.prepareCall(" {call func_veiculo_insert_estado_atual_acoplamentos(" +
-                                                  "f_cod_processo_acoplamento => ?," +
-                                                  "f_cod_unidade => ?," +
-                                                  "f_cod_veiculo => ?," +
-                                                  "f_cod_diagrama_veiculo => ?," +
-                                                  "f_posicao_acoplamento => ?," +
-                                                  "f_veiculo_motorizado => ?)}");
+                    "f_cod_processo_acoplamento => ?," +
+                    "f_cod_unidade => ?," +
+                    "f_cod_veiculo => ?," +
+                    "f_cod_diagrama_veiculo => ?," +
+                    "f_posicao_acoplamento => ?," +
+                    "f_veiculo_motorizado => ?)}");
             for (final VeiculoAcopladoMantido veiculo : veiculosAcopladosMantidos) {
                 DatabaseUtils.bind(stmt,
-                                   veiculo.getCodProcessoAcoplamento(),
-                                   veiculo.getCodUnidadeAcoplamento(),
-                                   veiculo.getCodVeiculo(),
-                                   veiculo.getCodDiagramaVeiculo(),
-                                   veiculo.getPosicaoAcaoRealizada(),
-                                   veiculo.getMotorizado());
+                        veiculo.getCodProcessoAcoplamento(),
+                        veiculo.getCodUnidadeAcoplamento(),
+                        veiculo.getCodVeiculo(),
+                        veiculo.getCodDiagramaVeiculo(),
+                        veiculo.getPosicaoAcaoRealizada(),
+                        veiculo.getMotorizado());
                 stmt.addBatch();
             }
             StatementUtils.executeBatchAndValidate(
