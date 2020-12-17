@@ -57,8 +57,8 @@ public final class VeiculoAcoplamentoValidator {
 
     private void garantePosicoesEmOrdem() {
         final List<Short> posicoesAcoplamento = processoRealizacao.getPosicoesOrdenadas();
-        if (!ListUtils.constainsInOrder(posicoesAcoplamento,
-                                        VeiculoAcoplamentoProcessoRealizacao.POSICOES_VALIDAS_ORDENADAS)) {
+        if (!ListUtils.constainsSomeInOrder(posicoesAcoplamento,
+                                            VeiculoAcoplamentoProcessoRealizacao.POSICOES_VALIDAS_ORDENADAS)) {
             fail("A ordem do acoplamento não está correta, devem ser sequenciais: " + posicoesAcoplamento);
         }
     }

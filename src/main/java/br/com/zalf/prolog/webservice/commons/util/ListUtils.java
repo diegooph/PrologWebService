@@ -30,8 +30,8 @@ public final class ListUtils {
         return elements != null && elements.size() > 0;
     }
 
-    public static boolean constainsInOrder(@NotNull final List<? extends Number> numbersToVerify,
-                                           @NotNull final Number... containedNumbers) {
+    public static boolean constainsSomeInOrder(@NotNull final List<? extends Number> numbersToVerify,
+                                               @NotNull final Number... containedNumbers) {
         return internalConstainsInOrder(numbersToVerify, containedNumbers);
     }
 
