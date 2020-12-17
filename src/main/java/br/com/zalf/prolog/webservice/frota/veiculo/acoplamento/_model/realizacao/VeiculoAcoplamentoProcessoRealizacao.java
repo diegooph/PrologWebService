@@ -17,7 +17,9 @@ import java.util.stream.Collectors;
 @Data
 public final class VeiculoAcoplamentoProcessoRealizacao {
     @NotNull
-    public static final Short[] POSICOES_VALIDAS_ORDENADAS = new Short[]{1, 2, 3, 4, 5, 6};
+    public static final Short[] POSICOES_VALIDAS_ORDENADAS_COM_TRATOR = new Short[]{1, 2, 3, 4, 5, 6};
+    @NotNull
+    public static final Short[] POSICOES_VALIDAS_ORDENADAS_SEM_TRATOR = new Short[]{2, 3, 4, 5, 6};
     /**
      * O maior acoplamento possível pode conter 6 veículos, logo, a realização deve contemplar um acoplamento total
      * e uma remoção total ao mesmo tempo.

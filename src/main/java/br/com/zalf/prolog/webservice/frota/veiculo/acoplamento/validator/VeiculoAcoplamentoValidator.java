@@ -9,6 +9,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collections;
 import java.util.List;
 
+import static br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcoplamentoProcessoRealizacao.POSICOES_VALIDAS_ORDENADAS_COM_TRATOR;
+import static br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcoplamentoProcessoRealizacao.POSICOES_VALIDAS_ORDENADAS_SEM_TRATOR;
+
 @AllArgsConstructor
 public final class VeiculoAcoplamentoValidator {
     @NotNull
@@ -57,8 +60,8 @@ public final class VeiculoAcoplamentoValidator {
 
     private void garantePosicoesEmOrdem() {
         final List<Short> posicoesAcoplamento = processoRealizacao.getPosicoesOrdenadas();
-        if (!ListUtils.constainsSomeInOrder(posicoesAcoplamento,
-                                            VeiculoAcoplamentoProcessoRealizacao.POSICOES_VALIDAS_ORDENADAS)) {
+        if (!ListUtils.constainsSomeInOrder(posicoesAcoplamento, POSICOES_VALIDAS_ORDENADAS_COM_TRATOR)
+                && !ListUtils.constainsSomeInOrder(posicoesAcoplamento, POSICOES_VALIDAS_ORDENADAS_SEM_TRATOR)) {
             fail("A ordem do acoplamento não está correta, devem ser sequenciais: " + posicoesAcoplamento);
         }
     }
@@ -75,8 +78,8 @@ public final class VeiculoAcoplamentoValidator {
                 .getCodProcessoAcoplamentoEditado()
                 .ifPresent(codProcessoAcoplamento -> {
                     if (!dadosBanco.isTodosProcessosAcoplamentosDoCodigo(codProcessoAcoplamento)) {
-                        fail("Veículos no BD estão nos processos de acoplamento de códigos %s porém o processo sendo " +
-                                     "editado é o de código %d.",
+                        fail("Veículos no BD estão nos processos de acoplamento de códigos %s " +
+                                     "porém o processo sendo editado é o de código %d.",
                              dadosBanco.getCodProcessosAcoplamentosDistintos(),
                              codProcessoAcoplamento);
                     }
