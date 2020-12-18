@@ -7,6 +7,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento.validator.Acompla
 import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento.validator.VeiculoAcoplamentoValidator;
 import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento.validator.VeiculoAcoplamentoValidatorException;
 import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento.validator.VeiculoEstadoAcoplamento;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
@@ -16,82 +17,84 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class VeiculoAcoplamentoValidatorTest {
-    @Test
-    void validate_NovoProcessoAcoplamento_WhenNovoProcessoSendoInserido() {
-        final Map<Long, VeiculoEstadoAcoplamento> veiculosEstadoAcoplamento = new HashMap<>();
-        final VeiculoEstadoAcoplamento veiculo1 = new VeiculoEstadoAcoplamento(1L,
-                                                                               null,
-                                                                               (short) 0,
-                                                                               true,
-                                                                               false);
-        final VeiculoEstadoAcoplamento veiculo2 = new VeiculoEstadoAcoplamento(2L,
-                                                                               null,
-                                                                               (short) 0,
-                                                                               false,
-                                                                               false);
-        veiculosEstadoAcoplamento.put(veiculo1.getCodVeiculo(), veiculo1);
-        veiculosEstadoAcoplamento.put(veiculo2.getCodVeiculo(), veiculo2);
-        final AcomplamentoValidacaoHolder dadosBanco = new AcomplamentoValidacaoHolder(veiculosEstadoAcoplamento);
 
-        final List<VeiculoAcoplamentoAcaoRealizada> acoesRealizadas = new ArrayList<>();
-        acoesRealizadas.add(new VeiculoAcoplamentoAcaoRealizada(1L,
-                                                                1L,
-                                                                true,
-                                                                VeiculoAcoplamentoAcaoEnum.ACOPLADO,
-                                                                (short) 1,
-                                                                1000L));
-        acoesRealizadas.add(new VeiculoAcoplamentoAcaoRealizada(2L,
-                                                                1L,
-                                                                false,
-                                                                VeiculoAcoplamentoAcaoEnum.ACOPLADO,
-                                                                (short) 2,
-                                                                null));
-        final VeiculoAcoplamentoProcessoRealizacao processoRealizacao =
-                new VeiculoAcoplamentoProcessoRealizacao(5L,
-                                                         "observação qualquer",
-                                                         acoesRealizadas,
-                                                         null);
+    private void validateDoesNotThrow(@NotNull final AcomplamentoValidacaoHolder dadosBanco,
+                                      @NotNull final VeiculoAcoplamentoProcessoRealizacao processoRealizacao) {
         final VeiculoAcoplamentoValidator validator = new VeiculoAcoplamentoValidator(dadosBanco, processoRealizacao);
         assertDoesNotThrow(validator::validate);
     }
 
     @Test
-    void validate_EdicaoProcessoAcoplamento_WhenProcessoCompletoExiste() {
-        final Map<Long, VeiculoEstadoAcoplamento> veiculosEstadoAcoplamento = new HashMap<>();
-        final VeiculoEstadoAcoplamento veiculo1 = new VeiculoEstadoAcoplamento(1L,
-                                                                               1L,
-                                                                               (short) 1,
-                                                                               true,
-                                                                               false);
-        final VeiculoEstadoAcoplamento veiculo2 = new VeiculoEstadoAcoplamento(2L,
-                                                                               1L,
-                                                                               (short) 2,
-                                                                               false,
-                                                                               false);
-        veiculosEstadoAcoplamento.put(veiculo1.getCodVeiculo(), veiculo1);
-        veiculosEstadoAcoplamento.put(veiculo2.getCodVeiculo(), veiculo2);
-        final AcomplamentoValidacaoHolder dadosBanco = new AcomplamentoValidacaoHolder(veiculosEstadoAcoplamento);
+    void givenNovoProcessoAcoplamento_whenInserted_shouldNotFail() {
+        final AcomplamentoValidacaoHolder dadosBanco = AcoplamentoCreator.createAcomplamentoValidacaoHolder(
+                VeiculoEstadoAcoplamento.builder()
+                        .withCodVeiculo(1L)
+                        .withMotorizado(true)
+                        .withPossuiHubodometro(false)
+                        .build(),
+                VeiculoEstadoAcoplamento.builder()
+                        .withCodVeiculo(2L)
+                        .withMotorizado(false)
+                        .withPossuiHubodometro(false)
+                        .build());
+        final VeiculoAcoplamentoProcessoRealizacao processoRealizacao = AcoplamentoCreator.createAcoesRealizadas(
+                null,
+                VeiculoAcoplamentoAcaoRealizada.builder()
+                        .withCodVeiculo(1L)
+                        .withCodDiagramaVeiculo(1L)
+                        .withMotorizado(true)
+                        .withAcaoRealizada(VeiculoAcoplamentoAcaoEnum.ACOPLADO)
+                        .withPosicaoAcaoRealizada((short) 1)
+                        .withKmColetado(1000L)
+                        .build(),
+                VeiculoAcoplamentoAcaoRealizada.builder()
+                        .withCodVeiculo(2L)
+                        .withCodDiagramaVeiculo(1L)
+                        .withMotorizado(false)
+                        .withAcaoRealizada(VeiculoAcoplamentoAcaoEnum.ACOPLADO)
+                        .withPosicaoAcaoRealizada((short) 2)
+                        .withKmColetado(null)
+                        .build());
+        validateDoesNotThrow(dadosBanco, processoRealizacao);
+    }
 
-        final List<VeiculoAcoplamentoAcaoRealizada> acoesRealizadas = new ArrayList<>();
-        acoesRealizadas.add(new VeiculoAcoplamentoAcaoRealizada(1L,
-                                                                1L,
-                                                                true,
-                                                                VeiculoAcoplamentoAcaoEnum.PERMANECEU,
-                                                                (short) 1,
-                                                                1000L));
-        acoesRealizadas.add(new VeiculoAcoplamentoAcaoRealizada(2L,
-                                                                1L,
-                                                                false,
-                                                                VeiculoAcoplamentoAcaoEnum.PERMANECEU,
-                                                                (short) 2,
-                                                                null));
-        final VeiculoAcoplamentoProcessoRealizacao processoRealizacao =
-                new VeiculoAcoplamentoProcessoRealizacao(5L,
-                                                         "observação qualquer",
-                                                         acoesRealizadas,
-                                                         1L);
-        final VeiculoAcoplamentoValidator validator = new VeiculoAcoplamentoValidator(dadosBanco, processoRealizacao);
-        assertDoesNotThrow(validator::validate);
+    @Test
+    void givenEdicaoProcessoAcoplamento_whenNadaMudou_shouldNotFail() {
+        final AcomplamentoValidacaoHolder dadosBanco = AcoplamentoCreator.createAcomplamentoValidacaoHolder(
+                VeiculoEstadoAcoplamento.builder()
+                        .withCodVeiculo(1L)
+                        .withCodProcessoAcoplamentoVinculado(1L)
+                        .withPosicaoAcoplado((short) 1)
+                        .withMotorizado(true)
+                        .withPossuiHubodometro(false)
+                        .build(),
+                VeiculoEstadoAcoplamento.builder()
+                        .withCodVeiculo(2L)
+                        .withCodProcessoAcoplamentoVinculado(1L)
+                        .withPosicaoAcoplado((short) 2)
+                        .withMotorizado(false)
+                        .withPossuiHubodometro(false)
+                        .build());
+
+        final VeiculoAcoplamentoProcessoRealizacao processoRealizacao = AcoplamentoCreator.createAcoesRealizadas(
+                1L,
+                VeiculoAcoplamentoAcaoRealizada.builder()
+                        .withCodVeiculo(1L)
+                        .withCodDiagramaVeiculo(1L)
+                        .withMotorizado(true)
+                        .withAcaoRealizada(VeiculoAcoplamentoAcaoEnum.PERMANECEU)
+                        .withPosicaoAcaoRealizada((short) 1)
+                        .withKmColetado(1000L)
+                        .build(),
+                VeiculoAcoplamentoAcaoRealizada.builder()
+                        .withCodVeiculo(2L)
+                        .withCodDiagramaVeiculo(1L)
+                        .withMotorizado(false)
+                        .withAcaoRealizada(VeiculoAcoplamentoAcaoEnum.PERMANECEU)
+                        .withPosicaoAcaoRealizada((short) 2)
+                        .withKmColetado(null)
+                        .build());
+        validateDoesNotThrow(dadosBanco, processoRealizacao);
     }
 
     @Test
@@ -129,8 +132,7 @@ class VeiculoAcoplamentoValidatorTest {
                                                          "observação qualquer",
                                                          acoesRealizadas,
                                                          1L);
-        final VeiculoAcoplamentoValidator validator = new VeiculoAcoplamentoValidator(dadosBanco, processoRealizacao);
-        assertDoesNotThrow(validator::validate);
+        validateDoesNotThrow(dadosBanco, processoRealizacao);
     }
 
     @Test
@@ -180,8 +182,7 @@ class VeiculoAcoplamentoValidatorTest {
                                                          "observação qualquer",
                                                          acoesRealizadas,
                                                          1L);
-        final VeiculoAcoplamentoValidator validator = new VeiculoAcoplamentoValidator(dadosBanco, processoRealizacao);
-        assertDoesNotThrow(validator::validate);
+        validateDoesNotThrow(dadosBanco, processoRealizacao);
     }
 
     @Test
@@ -231,8 +232,7 @@ class VeiculoAcoplamentoValidatorTest {
                                                          "observação qualquer",
                                                          acoesRealizadas,
                                                          1L);
-        final VeiculoAcoplamentoValidator validator = new VeiculoAcoplamentoValidator(dadosBanco, processoRealizacao);
-        assertDoesNotThrow(validator::validate);
+        validateDoesNotThrow(dadosBanco, processoRealizacao);
     }
 
     @Test
@@ -294,8 +294,7 @@ class VeiculoAcoplamentoValidatorTest {
                                                          "observação qualquer",
                                                          acoesRealizadas,
                                                          1L);
-        final VeiculoAcoplamentoValidator validator = new VeiculoAcoplamentoValidator(dadosBanco, processoRealizacao);
-        assertDoesNotThrow(validator::validate);
+        validateDoesNotThrow(dadosBanco, processoRealizacao);
     }
 
     @Test
@@ -333,8 +332,7 @@ class VeiculoAcoplamentoValidatorTest {
                                                          "observação qualquer",
                                                          acoesRealizadas,
                                                          null);
-        final VeiculoAcoplamentoValidator validator = new VeiculoAcoplamentoValidator(dadosBanco, processoRealizacao);
-        assertDoesNotThrow(validator::validate);
+        validateDoesNotThrow(dadosBanco, processoRealizacao);
     }
 
     @Test

@@ -1,6 +1,8 @@
 package br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao;
 
 import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.VeiculoAcoplamentoAcaoEnum;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import org.hibernate.validator.constraints.Range;
 
@@ -13,6 +15,8 @@ import javax.validation.constraints.NotNull;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 @Data
+@Builder(setterPrefix = "with")
+@AllArgsConstructor
 public final class VeiculoAcoplamentoAcaoRealizada {
     @NotNull
     public static final short POSICAO_ACOPLAMENTO_TRATOR = 1;
