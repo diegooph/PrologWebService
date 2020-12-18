@@ -38,7 +38,7 @@ public final class VeiculosEstadoBancoCreator {
     @NotNull
     public VeiculosEstadoBancoCreator codProcessosAcoplamentosVinculados(
             @NotNull final Long... codProcessosAcoplamentosVinculados) {
-        this.codVeiculos = Arrays.asList(codProcessosAcoplamentosVinculados);
+        this.codProcessosAcoplamentosVinculados = Arrays.asList(codProcessosAcoplamentosVinculados);
         return this;
     }
 
