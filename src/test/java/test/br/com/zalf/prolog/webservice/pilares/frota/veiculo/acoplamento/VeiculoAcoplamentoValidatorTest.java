@@ -150,34 +150,13 @@ class VeiculoAcoplamentoValidatorTest {
 
     @Test
     void validate_MudouPosicaoAcoplamento_WhenVeiculosMudaramPosicaoMesmoAcoplamento() {
-        final List<VeiculoEstadoAcoplamento> veiculosBanco = VeiculosEstadoBancoCreator.builder()
-                .codVeiculos(1L, 2L, 3L)
-                .codProcessosAcoplamentosVinculados(1L, 1L, 1L)
-                .posicoesAcoplados(1, 2, 3)
-                .motorizados(true, false, false)
-                .build();
-
         final AcomplamentoValidacaoHolder dadosBanco = AcoplamentoCreator.createAcomplamentoValidacaoHolder(
-                VeiculoEstadoAcoplamento.builder()
-                        .withCodVeiculo(1L)
-                        .withCodProcessoAcoplamentoVinculado(1L)
-                        .withPosicaoAcoplado((short) 1)
-                        .withMotorizado(true)
-                        .withPossuiHubodometro(false)
-                        .build(),
-                VeiculoEstadoAcoplamento.builder()
-                        .withCodVeiculo(2L)
-                        .withCodProcessoAcoplamentoVinculado(1L)
-                        .withPosicaoAcoplado((short) 2)
-                        .withMotorizado(false)
-                        .withPossuiHubodometro(false)
-                        .build(),
-                VeiculoEstadoAcoplamento.builder()
-                        .withCodVeiculo(3L)
-                        .withCodProcessoAcoplamentoVinculado(1L)
-                        .withPosicaoAcoplado((short) 3)
-                        .withMotorizado(false)
-                        .withPossuiHubodometro(false)
+                VeiculosEstadoBancoCreator.builder()
+                        .codVeiculos(1L, 2L, 3L)
+                        .codProcessosAcoplamentosVinculados(1L, 1L, 1L)
+                        .posicoesAcoplados(1, 2, 3)
+                        .motorizados(true, false, false)
+                        .possuemHubodometro(false, false, false)
                         .build());
 
         final VeiculoAcoplamentoProcessoRealizacao processoRealizacao = AcoplamentoCreator.createAcoesRealizadas(
