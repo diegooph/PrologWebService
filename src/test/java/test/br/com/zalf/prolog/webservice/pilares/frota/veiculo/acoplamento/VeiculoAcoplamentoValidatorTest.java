@@ -1260,3 +1260,35 @@ class VeiculoAcoplamentoValidatorTest {
                 VeiculoEstadoAcoplamento.builder()
                         .withCodVeiculo(3L)
                         .withMotorizado(false)
+                        .withPossuiHubodometro(false)
+                        .build());
+
+        final VeiculoAcoplamentoProcessoRealizacao processoRealizacao = AcoplamentoCreator.createAcoesRealizadas(
+                null,
+                VeiculoAcoplamentoAcaoRealizada.builder()
+                        .withCodVeiculo(1L)
+                        .withCodDiagramaVeiculo(1L)
+                        .withMotorizado(true)
+                        .withAcaoRealizada(VeiculoAcoplamentoAcaoEnum.MUDOU_POSICAO)
+                        .withPosicaoAcaoRealizada((short) 1)
+                        .withKmColetado(1000L)
+                        .build(),
+                VeiculoAcoplamentoAcaoRealizada.builder()
+                        .withCodVeiculo(2L)
+                        .withCodDiagramaVeiculo(1L)
+                        .withMotorizado(false)
+                        .withAcaoRealizada(VeiculoAcoplamentoAcaoEnum.MUDOU_POSICAO)
+                        .withPosicaoAcaoRealizada((short) 2)
+                        .build(),
+                VeiculoAcoplamentoAcaoRealizada.builder()
+                        .withCodVeiculo(3L)
+                        .withCodDiagramaVeiculo(1L)
+                        .withMotorizado(false)
+                        .withAcaoRealizada(VeiculoAcoplamentoAcaoEnum.MUDOU_POSICAO)
+                        .withPosicaoAcaoRealizada((short) 3)
+                        .build());
+        final String errorMessage = String.format("Não é possível mudar de posição o veículo %d pois nenhum código " +
+                                                          "de processo para edição foi recebido.", 1);
+        validateThrowsWithErrorMessage(dadosBanco, processoRealizacao, errorMessage);
+    }
+}
