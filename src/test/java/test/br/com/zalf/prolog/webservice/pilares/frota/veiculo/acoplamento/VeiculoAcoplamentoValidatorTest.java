@@ -983,321 +983,265 @@ class VeiculoAcoplamentoValidatorTest {
 
     @Test
     void validateAcao_ThrowsException_WhenVeiculosAcopladosEstaoLivres() {
-        final Map<Long, VeiculoEstadoAcoplamento> veiculosEstadoAcoplamento = new HashMap<>();
-        final VeiculoEstadoAcoplamento veiculo1 = new VeiculoEstadoAcoplamento(1L,
-                                                                               1L,
-                                                                               (short) 1,
-                                                                               true,
-                                                                               false);
-        final VeiculoEstadoAcoplamento veiculo2 = new VeiculoEstadoAcoplamento(2L,
-                                                                               null,
-                                                                               (short) 0,
-                                                                               false,
-                                                                               false);
-        veiculosEstadoAcoplamento.put(veiculo1.getCodVeiculo(), veiculo1);
-        veiculosEstadoAcoplamento.put(veiculo2.getCodVeiculo(), veiculo2);
-        final AcomplamentoValidacaoHolder dadosBanco =
-                new AcomplamentoValidacaoHolder(veiculosEstadoAcoplamento);
+        final AcomplamentoValidacaoHolder dadosBanco = AcoplamentoCreator.createAcomplamentoValidacaoHolder(
+                VeiculoEstadoAcoplamento.builder()
+                        .withCodVeiculo(1L)
+                        .withCodProcessoAcoplamentoVinculado(1L)
+                        .withPosicaoAcoplado((short) 1)
+                        .withMotorizado(true)
+                        .withPossuiHubodometro(false)
+                        .build(),
+                VeiculoEstadoAcoplamento.builder()
+                        .withCodVeiculo(2L)
+                        .withMotorizado(false)
+                        .withPossuiHubodometro(false)
+                        .build());
 
-        final List<VeiculoAcoplamentoAcaoRealizada> acoesRealizadas = new ArrayList<>();
-        acoesRealizadas.add(new VeiculoAcoplamentoAcaoRealizada(1L,
-                                                                1L,
-                                                                true,
-                                                                VeiculoAcoplamentoAcaoEnum.ACOPLADO,
-                                                                (short) 1,
-                                                                1000L));
-        acoesRealizadas.add(new VeiculoAcoplamentoAcaoRealizada(2L,
-                                                                1L,
-                                                                false,
-                                                                VeiculoAcoplamentoAcaoEnum.ACOPLADO,
-                                                                (short) 2,
-                                                                null));
+        final VeiculoAcoplamentoProcessoRealizacao processoRealizacao = AcoplamentoCreator.createAcoesRealizadas(
+                1L,
+                VeiculoAcoplamentoAcaoRealizada.builder()
+                        .withCodVeiculo(1L)
+                        .withCodDiagramaVeiculo(1L)
+                        .withMotorizado(true)
+                        .withAcaoRealizada(VeiculoAcoplamentoAcaoEnum.ACOPLADO)
+                        .withPosicaoAcaoRealizada((short) 1)
+                        .withKmColetado(1000L)
+                        .build(),
+                VeiculoAcoplamentoAcaoRealizada.builder()
+                        .withCodVeiculo(2L)
+                        .withCodDiagramaVeiculo(1L)
+                        .withMotorizado(false)
+                        .withAcaoRealizada(VeiculoAcoplamentoAcaoEnum.ACOPLADO)
+                        .withPosicaoAcaoRealizada((short) 2)
+                        .build());
 
-        final VeiculoAcoplamentoProcessoRealizacao processoRealizacao =
-                new VeiculoAcoplamentoProcessoRealizacao(5L,
-                                                         "observação qualquer",
-                                                         acoesRealizadas,
-                                                         1L);
-        final VeiculoAcoplamentoValidator validator =
-                new VeiculoAcoplamentoValidator(dadosBanco, processoRealizacao);
-
-        final VeiculoAcoplamentoValidatorException throwable =
-                assertThrows(VeiculoAcoplamentoValidatorException.class, validator::validate);
-        assertThat(throwable).isNotNull();
-        assertThat(throwable.getDetailedMessage())
-                .isEqualToIgnoringCase("Não é possível acoplar o veículo 1 pois ele já está acoplado.");
+        final String errorMessage = "Não é possível acoplar o veículo 1 pois ele já está acoplado.";
+        validateThrowsWithErrorMessage(dadosBanco, processoRealizacao, errorMessage);
     }
 
     @Test
     void validateAcao_ThrowsException_WhenVeiculosDesacopladosJaEstaoDesacopladosEmEdicaoProcesso() {
-        final Map<Long, VeiculoEstadoAcoplamento> veiculosEstadoAcoplamento = new HashMap<>();
-        final VeiculoEstadoAcoplamento veiculo1 = new VeiculoEstadoAcoplamento(1L,
-                                                                               null,
-                                                                               (short) 0,
-                                                                               true,
-                                                                               false);
-        final VeiculoEstadoAcoplamento veiculo2 = new VeiculoEstadoAcoplamento(2L,
-                                                                               null,
-                                                                               (short) 0,
-                                                                               false,
-                                                                               false);
-        veiculosEstadoAcoplamento.put(veiculo1.getCodVeiculo(), veiculo1);
-        veiculosEstadoAcoplamento.put(veiculo2.getCodVeiculo(), veiculo2);
-        final AcomplamentoValidacaoHolder dadosBanco =
-                new AcomplamentoValidacaoHolder(veiculosEstadoAcoplamento);
+        final AcomplamentoValidacaoHolder dadosBanco = AcoplamentoCreator.createAcomplamentoValidacaoHolder(
+                VeiculoEstadoAcoplamento.builder()
+                        .withCodVeiculo(1L)
+                        .withMotorizado(true)
+                        .withPossuiHubodometro(false)
+                        .build(),
+                VeiculoEstadoAcoplamento.builder()
+                        .withCodVeiculo(2L)
+                        .withMotorizado(false)
+                        .withPossuiHubodometro(false)
+                        .build());
 
-        final List<VeiculoAcoplamentoAcaoRealizada> acoesRealizadas = new ArrayList<>();
-        acoesRealizadas.add(new VeiculoAcoplamentoAcaoRealizada(1L,
-                                                                1L,
-                                                                true,
-                                                                VeiculoAcoplamentoAcaoEnum.DESACOPLADO,
-                                                                (short) 1,
-                                                                1000L));
-        acoesRealizadas.add(new VeiculoAcoplamentoAcaoRealizada(2L,
-                                                                1L,
-                                                                false,
-                                                                VeiculoAcoplamentoAcaoEnum.DESACOPLADO,
-                                                                (short) 2,
-                                                                null));
-
-        final VeiculoAcoplamentoProcessoRealizacao processoRealizacao =
-                new VeiculoAcoplamentoProcessoRealizacao(5L,
-                                                         "observação qualquer",
-                                                         acoesRealizadas,
-                                                         1L);
-        final VeiculoAcoplamentoValidator validator =
-                new VeiculoAcoplamentoValidator(dadosBanco, processoRealizacao);
-
-        final VeiculoAcoplamentoValidatorException throwable =
-                assertThrows(VeiculoAcoplamentoValidatorException.class, validator::validate);
-        assertThat(throwable).isNotNull();
-        assertThat(throwable.getDetailedMessage())
-                .isEqualToIgnoringCase(String.format(
-                        "Não é possível desacoplar um veículo que não está acoplado." +
-                                "\nVeículo: %d." +
-                                "\nProcesso: %d.", 1, 1));
+        final VeiculoAcoplamentoProcessoRealizacao processoRealizacao = AcoplamentoCreator.createAcoesRealizadas(
+                1L,
+                VeiculoAcoplamentoAcaoRealizada.builder()
+                        .withCodVeiculo(1L)
+                        .withCodDiagramaVeiculo(1L)
+                        .withMotorizado(true)
+                        .withAcaoRealizada(VeiculoAcoplamentoAcaoEnum.DESACOPLADO)
+                        .withPosicaoAcaoRealizada((short) 1)
+                        .withKmColetado(1000L)
+                        .build(),
+                VeiculoAcoplamentoAcaoRealizada.builder()
+                        .withCodVeiculo(2L)
+                        .withCodDiagramaVeiculo(1L)
+                        .withMotorizado(false)
+                        .withAcaoRealizada(VeiculoAcoplamentoAcaoEnum.DESACOPLADO)
+                        .withPosicaoAcaoRealizada((short) 2)
+                        .build());
+        final String errorMessage = String.format("Não é possível desacoplar um veículo que não está acoplado." +
+                                                          "\nVeículo: %d." +
+                                                          "\nProcesso: %d.", 1, 1);
+        validateThrowsWithErrorMessage(dadosBanco, processoRealizacao, errorMessage);
     }
 
     @Test
     void validateAcao_ThrowsException_WhenVeiculosDesacopladosEmNovoProcesso() {
-        final Map<Long, VeiculoEstadoAcoplamento> veiculosEstadoAcoplamento = new HashMap<>();
-        final VeiculoEstadoAcoplamento veiculo1 = new VeiculoEstadoAcoplamento(1L,
-                                                                               null,
-                                                                               (short) 0,
-                                                                               true,
-                                                                               false);
-        final VeiculoEstadoAcoplamento veiculo2 = new VeiculoEstadoAcoplamento(2L,
-                                                                               null,
-                                                                               (short) 0,
-                                                                               false,
-                                                                               false);
-        veiculosEstadoAcoplamento.put(veiculo1.getCodVeiculo(), veiculo1);
-        veiculosEstadoAcoplamento.put(veiculo2.getCodVeiculo(), veiculo2);
-        final AcomplamentoValidacaoHolder dadosBanco =
-                new AcomplamentoValidacaoHolder(veiculosEstadoAcoplamento);
+        final AcomplamentoValidacaoHolder dadosBanco = AcoplamentoCreator.createAcomplamentoValidacaoHolder(
+                VeiculoEstadoAcoplamento.builder()
+                        .withCodVeiculo(1L)
+                        .withMotorizado(true)
+                        .withPossuiHubodometro(false)
+                        .build(),
+                VeiculoEstadoAcoplamento.builder()
+                        .withCodVeiculo(2L)
+                        .withMotorizado(false)
+                        .withPossuiHubodometro(false)
+                        .build());
 
-        final List<VeiculoAcoplamentoAcaoRealizada> acoesRealizadas = new ArrayList<>();
-        acoesRealizadas.add(new VeiculoAcoplamentoAcaoRealizada(1L,
-                                                                1L,
-                                                                true,
-                                                                VeiculoAcoplamentoAcaoEnum.DESACOPLADO,
-                                                                (short) 1,
-                                                                1000L));
-        acoesRealizadas.add(new VeiculoAcoplamentoAcaoRealizada(2L,
-                                                                1L,
-                                                                false,
-                                                                VeiculoAcoplamentoAcaoEnum.DESACOPLADO,
-                                                                (short) 2,
-                                                                null));
-
-        final VeiculoAcoplamentoProcessoRealizacao processoRealizacao =
-                new VeiculoAcoplamentoProcessoRealizacao(5L,
-                                                         "observação qualquer",
-                                                         acoesRealizadas,
-                                                         null);
-        final VeiculoAcoplamentoValidator validator =
-                new VeiculoAcoplamentoValidator(dadosBanco, processoRealizacao);
-
-        final VeiculoAcoplamentoValidatorException throwable =
-                assertThrows(VeiculoAcoplamentoValidatorException.class, validator::validate);
-        assertThat(throwable).isNotNull();
-        assertThat(throwable.getDetailedMessage())
-                .isEqualToIgnoringCase(String.format("Não é possível desacoplar o veículo %d pois nenhum " +
-                                                             "código de processo para edição foi recebido.", 1));
+        final VeiculoAcoplamentoProcessoRealizacao processoRealizacao = AcoplamentoCreator.createAcoesRealizadas(
+                null,
+                VeiculoAcoplamentoAcaoRealizada.builder()
+                        .withCodVeiculo(1L)
+                        .withCodDiagramaVeiculo(1L)
+                        .withMotorizado(true)
+                        .withAcaoRealizada(VeiculoAcoplamentoAcaoEnum.DESACOPLADO)
+                        .withPosicaoAcaoRealizada((short) 1)
+                        .withKmColetado(1000L)
+                        .build(),
+                VeiculoAcoplamentoAcaoRealizada.builder()
+                        .withCodVeiculo(2L)
+                        .withCodDiagramaVeiculo(1L)
+                        .withMotorizado(false)
+                        .withAcaoRealizada(VeiculoAcoplamentoAcaoEnum.DESACOPLADO)
+                        .withPosicaoAcaoRealizada((short) 2)
+                        .build());
+        final String errorMessage = String.format("Não é possível desacoplar o veículo %d pois nenhum " +
+                                                          "código de processo para edição foi recebido.", 1);
+        validateThrowsWithErrorMessage(dadosBanco, processoRealizacao, errorMessage);
     }
 
     @Test
     void validateAcao_ThrowsException_WhenVeiculosMantidosPosicaoNaoEstaoNaMesmaPosicaoEmEdicaoProcesso() {
-        final Map<Long, VeiculoEstadoAcoplamento> veiculosEstadoAcoplamento = new HashMap<>();
-        final VeiculoEstadoAcoplamento veiculo1 = new VeiculoEstadoAcoplamento(1L,
-                                                                               1L,
-                                                                               (short) 1,
-                                                                               true,
-                                                                               false);
-        final VeiculoEstadoAcoplamento veiculo2 = new VeiculoEstadoAcoplamento(2L,
-                                                                               1L,
-                                                                               (short) 3,
-                                                                               false,
-                                                                               false);
-        final VeiculoEstadoAcoplamento veiculo3 = new VeiculoEstadoAcoplamento(3L,
-                                                                               1L,
-                                                                               (short) 2,
-                                                                               false,
-                                                                               false);
-        veiculosEstadoAcoplamento.put(veiculo1.getCodVeiculo(), veiculo1);
-        veiculosEstadoAcoplamento.put(veiculo2.getCodVeiculo(), veiculo2);
-        veiculosEstadoAcoplamento.put(veiculo3.getCodVeiculo(), veiculo3);
-        final AcomplamentoValidacaoHolder dadosBanco =
-                new AcomplamentoValidacaoHolder(veiculosEstadoAcoplamento);
+        final AcomplamentoValidacaoHolder dadosBanco = AcoplamentoCreator.createAcomplamentoValidacaoHolder(
+                VeiculoEstadoAcoplamento.builder()
+                        .withCodVeiculo(1L)
+                        .withCodProcessoAcoplamentoVinculado(1L)
+                        .withPosicaoAcoplado((short) 1)
+                        .withMotorizado(true)
+                        .withPossuiHubodometro(false)
+                        .build(),
+                VeiculoEstadoAcoplamento.builder()
+                        .withCodVeiculo(2L)
+                        .withCodProcessoAcoplamentoVinculado(1L)
+                        .withPosicaoAcoplado((short) 3)
+                        .withMotorizado(false)
+                        .withPossuiHubodometro(false)
+                        .build(),
+                VeiculoEstadoAcoplamento.builder()
+                        .withCodVeiculo(3L)
+                        .withCodProcessoAcoplamentoVinculado(1L)
+                        .withPosicaoAcoplado((short) 2)
+                        .withMotorizado(false)
+                        .withPossuiHubodometro(false)
+                        .build());
 
-        final List<VeiculoAcoplamentoAcaoRealizada> acoesRealizadas = new ArrayList<>();
-        acoesRealizadas.add(new VeiculoAcoplamentoAcaoRealizada(1L,
-                                                                1L,
-                                                                true,
-                                                                VeiculoAcoplamentoAcaoEnum.PERMANECEU,
-                                                                (short) 1,
-                                                                1000L));
-        acoesRealizadas.add(new VeiculoAcoplamentoAcaoRealizada(2L,
-                                                                1L,
-                                                                false,
-                                                                VeiculoAcoplamentoAcaoEnum.PERMANECEU,
-                                                                (short) 2,
-                                                                null));
-        acoesRealizadas.add(new VeiculoAcoplamentoAcaoRealizada(3L,
-                                                                1L,
-                                                                false,
-                                                                VeiculoAcoplamentoAcaoEnum.PERMANECEU,
-                                                                (short) 3,
-                                                                null));
+        final VeiculoAcoplamentoProcessoRealizacao processoRealizacao = AcoplamentoCreator.createAcoesRealizadas(
+                1L,
+                VeiculoAcoplamentoAcaoRealizada.builder()
+                        .withCodVeiculo(1L)
+                        .withCodDiagramaVeiculo(1L)
+                        .withMotorizado(true)
+                        .withAcaoRealizada(VeiculoAcoplamentoAcaoEnum.PERMANECEU)
+                        .withPosicaoAcaoRealizada((short) 1)
+                        .withKmColetado(1000L)
+                        .build(),
+                VeiculoAcoplamentoAcaoRealizada.builder()
+                        .withCodVeiculo(2L)
+                        .withCodDiagramaVeiculo(1L)
+                        .withMotorizado(false)
+                        .withAcaoRealizada(VeiculoAcoplamentoAcaoEnum.PERMANECEU)
+                        .withPosicaoAcaoRealizada((short) 2)
+                        .build(),
+                VeiculoAcoplamentoAcaoRealizada.builder()
+                        .withCodVeiculo(3L)
+                        .withCodDiagramaVeiculo(1L)
+                        .withMotorizado(false)
+                        .withAcaoRealizada(VeiculoAcoplamentoAcaoEnum.PERMANECEU)
+                        .withPosicaoAcaoRealizada((short) 3)
+                        .build());
 
-        final VeiculoAcoplamentoProcessoRealizacao processoRealizacao =
-                new VeiculoAcoplamentoProcessoRealizacao(5L,
-                                                         "observação qualquer",
-                                                         acoesRealizadas,
-                                                         1L);
-        final VeiculoAcoplamentoValidator validator =
-                new VeiculoAcoplamentoValidator(dadosBanco, processoRealizacao);
-
-        final VeiculoAcoplamentoValidatorException throwable =
-                assertThrows(VeiculoAcoplamentoValidatorException.class, validator::validate);
-        assertThat(throwable).isNotNull();
-        assertThat(throwable.getDetailedMessage())
-                .isEqualToIgnoringCase(String.format(
-                        "O veículo %d foi mantido na posição %d porém ele não está acoplado nesta posição no processo" +
-                                " " +
-                                "de código %d.", 2, 2, 1));
+        final String errorMessage = String.format(
+                "O veículo %d foi mantido na posição %d porém ele não está acoplado nesta posição no processo" +
+                        " de código %d.", 2, 2, 1);
+        validateThrowsWithErrorMessage(dadosBanco, processoRealizacao, errorMessage);
     }
 
     @Test
     void validateAcao_ThrowsException_WhenVeiculosMantidosPosicaoNaoEstaoNaMesmaPosicaoEmNovoProcesso() {
-        final Map<Long, VeiculoEstadoAcoplamento> veiculosEstadoAcoplamento = new HashMap<>();
-        final VeiculoEstadoAcoplamento veiculo1 = new VeiculoEstadoAcoplamento(1L,
-                                                                               null,
-                                                                               (short) 0,
-                                                                               true,
-                                                                               false);
-        final VeiculoEstadoAcoplamento veiculo2 = new VeiculoEstadoAcoplamento(2L,
-                                                                               null,
-                                                                               (short) 0,
-                                                                               false,
-                                                                               false);
-        veiculosEstadoAcoplamento.put(veiculo1.getCodVeiculo(), veiculo1);
-        veiculosEstadoAcoplamento.put(veiculo2.getCodVeiculo(), veiculo2);
-        final AcomplamentoValidacaoHolder dadosBanco =
-                new AcomplamentoValidacaoHolder(veiculosEstadoAcoplamento);
+        final AcomplamentoValidacaoHolder dadosBanco = AcoplamentoCreator.createAcomplamentoValidacaoHolder(
+                VeiculoEstadoAcoplamento.builder()
+                        .withCodVeiculo(1L)
+                        .withMotorizado(true)
+                        .withPossuiHubodometro(false)
+                        .build(),
+                VeiculoEstadoAcoplamento.builder()
+                        .withCodVeiculo(2L)
+                        .withMotorizado(false)
+                        .withPossuiHubodometro(false)
+                        .build());
 
-        final List<VeiculoAcoplamentoAcaoRealizada> acoesRealizadas = new ArrayList<>();
-        acoesRealizadas.add(new VeiculoAcoplamentoAcaoRealizada(1L,
-                                                                1L,
-                                                                true,
-                                                                VeiculoAcoplamentoAcaoEnum.PERMANECEU,
-                                                                (short) 1,
-                                                                1000L));
-        acoesRealizadas.add(new VeiculoAcoplamentoAcaoRealizada(2L,
-                                                                1L,
-                                                                false,
-                                                                VeiculoAcoplamentoAcaoEnum.PERMANECEU,
-                                                                (short) 2,
-                                                                null));
+        final VeiculoAcoplamentoProcessoRealizacao processoRealizacao = AcoplamentoCreator.createAcoesRealizadas(
+                null,
+                VeiculoAcoplamentoAcaoRealizada.builder()
+                        .withCodVeiculo(1L)
+                        .withCodDiagramaVeiculo(1L)
+                        .withMotorizado(true)
+                        .withAcaoRealizada(VeiculoAcoplamentoAcaoEnum.PERMANECEU)
+                        .withPosicaoAcaoRealizada((short) 1)
+                        .withKmColetado(1000L)
+                        .build(),
+                VeiculoAcoplamentoAcaoRealizada.builder()
+                        .withCodVeiculo(2L)
+                        .withCodDiagramaVeiculo(1L)
+                        .withMotorizado(false)
+                        .withAcaoRealizada(VeiculoAcoplamentoAcaoEnum.PERMANECEU)
+                        .withPosicaoAcaoRealizada((short) 2)
+                        .build());
 
-        final VeiculoAcoplamentoProcessoRealizacao processoRealizacao =
-                new VeiculoAcoplamentoProcessoRealizacao(5L,
-                                                         "observação qualquer",
-                                                         acoesRealizadas,
-                                                         null);
-        final VeiculoAcoplamentoValidator validator =
-                new VeiculoAcoplamentoValidator(dadosBanco, processoRealizacao);
-
-        final VeiculoAcoplamentoValidatorException throwable =
-                assertThrows(VeiculoAcoplamentoValidatorException.class, validator::validate);
-        assertThat(throwable).isNotNull();
-        assertThat(throwable.getDetailedMessage())
-                .isEqualToIgnoringCase(String.format(
-                        "Não é possível manter na posição o veículo %d pois nenhum código de processo para edição " +
-                                "foi recebido.", 1));
+        final String errorMessage = String.format(
+                "Não é possível manter na posição o veículo %d pois nenhum código de processo para edição " +
+                        "foi recebido.", 1);
+        validateThrowsWithErrorMessage(dadosBanco, processoRealizacao, errorMessage);
     }
 
     @Test
     void validateAcao_ThrowsException_WhenVeiculosMudaramPosicaoEstaoEmPosicaoIguaisEmEdicaoProcesso() {
-        final Map<Long, VeiculoEstadoAcoplamento> veiculosEstadoAcoplamento = new HashMap<>();
-        final VeiculoEstadoAcoplamento veiculo1 = new VeiculoEstadoAcoplamento(1L,
-                                                                               1L,
-                                                                               (short) 1,
-                                                                               true,
-                                                                               false);
-        final VeiculoEstadoAcoplamento veiculo2 = new VeiculoEstadoAcoplamento(2L,
-                                                                               1L,
-                                                                               (short) 2,
-                                                                               false,
-                                                                               false);
-        final VeiculoEstadoAcoplamento veiculo3 = new VeiculoEstadoAcoplamento(3L,
-                                                                               1L,
-                                                                               (short) 3,
-                                                                               false,
-                                                                               false);
-        veiculosEstadoAcoplamento.put(veiculo1.getCodVeiculo(), veiculo1);
-        veiculosEstadoAcoplamento.put(veiculo2.getCodVeiculo(), veiculo2);
-        veiculosEstadoAcoplamento.put(veiculo3.getCodVeiculo(), veiculo3);
-        final AcomplamentoValidacaoHolder dadosBanco = new AcomplamentoValidacaoHolder(veiculosEstadoAcoplamento);
+        final AcomplamentoValidacaoHolder dadosBanco = AcoplamentoCreator.createAcomplamentoValidacaoHolder(
+                VeiculoEstadoAcoplamento.builder()
+                        .withCodVeiculo(1L)
+                        .withCodProcessoAcoplamentoVinculado(1L)
+                        .withPosicaoAcoplado((short) 1)
+                        .withMotorizado(true)
+                        .withPossuiHubodometro(false)
+                        .build(),
+                VeiculoEstadoAcoplamento.builder()
+                        .withCodVeiculo(2L)
+                        .withCodProcessoAcoplamentoVinculado(1L)
+                        .withPosicaoAcoplado((short) 2)
+                        .withMotorizado(false)
+                        .withPossuiHubodometro(false)
+                        .build(),
+                VeiculoEstadoAcoplamento.builder()
+                        .withCodVeiculo(3L)
+                        .withCodProcessoAcoplamentoVinculado(1L)
+                        .withPosicaoAcoplado((short) 3)
+                        .withMotorizado(false)
+                        .withPossuiHubodometro(false)
+                        .build());
 
-        final List<VeiculoAcoplamentoAcaoRealizada> acoesRealizadas = new ArrayList<>();
-        acoesRealizadas.add(new VeiculoAcoplamentoAcaoRealizada(1L,
-                                                                1L,
-                                                                true,
-                                                                VeiculoAcoplamentoAcaoEnum.PERMANECEU,
-                                                                (short) 1,
-                                                                1000L));
-        acoesRealizadas.add(new VeiculoAcoplamentoAcaoRealizada(2L,
-                                                                1L,
-                                                                false,
-                                                                VeiculoAcoplamentoAcaoEnum.MUDOU_POSICAO,
-                                                                (short) 2,
-                                                                null));
-        acoesRealizadas.add(new VeiculoAcoplamentoAcaoRealizada(3L,
-                                                                1L,
-                                                                false,
-                                                                VeiculoAcoplamentoAcaoEnum.MUDOU_POSICAO,
-                                                                (short) 3,
-                                                                null));
+        final VeiculoAcoplamentoProcessoRealizacao processoRealizacao = AcoplamentoCreator.createAcoesRealizadas(
+                1L,
+                VeiculoAcoplamentoAcaoRealizada.builder()
+                        .withCodVeiculo(1L)
+                        .withCodDiagramaVeiculo(1L)
+                        .withMotorizado(true)
+                        .withAcaoRealizada(VeiculoAcoplamentoAcaoEnum.PERMANECEU)
+                        .withPosicaoAcaoRealizada((short) 1)
+                        .withKmColetado(1000L)
+                        .build(),
+                VeiculoAcoplamentoAcaoRealizada.builder()
+                        .withCodVeiculo(2L)
+                        .withCodDiagramaVeiculo(1L)
+                        .withMotorizado(false)
+                        .withAcaoRealizada(VeiculoAcoplamentoAcaoEnum.MUDOU_POSICAO)
+                        .withPosicaoAcaoRealizada((short) 2)
+                        .build(),
+                VeiculoAcoplamentoAcaoRealizada.builder()
+                        .withCodVeiculo(3L)
+                        .withCodDiagramaVeiculo(1L)
+                        .withMotorizado(false)
+                        .withAcaoRealizada(VeiculoAcoplamentoAcaoEnum.MUDOU_POSICAO)
+                        .withPosicaoAcaoRealizada((short) 3)
+                        .build());
 
-        final VeiculoAcoplamentoProcessoRealizacao processoRealizacao =
-                new VeiculoAcoplamentoProcessoRealizacao(5L,
-                                                         "observação qualquer",
-                                                         acoesRealizadas,
-                                                         1L);
-        final VeiculoAcoplamentoValidator validator =
-                new VeiculoAcoplamentoValidator(dadosBanco, processoRealizacao);
-
-        final VeiculoAcoplamentoValidatorException throwable =
-                assertThrows(VeiculoAcoplamentoValidatorException.class, validator::validate);
-        assertThat(throwable).isNotNull();
-        assertThat(throwable.getDetailedMessage())
-                .isEqualToIgnoringCase(String.format(
-                        "Não é possível realizar uma mudança de posição pois o veículo não " +
-                                "está acoplado em outra posição deste processo." +
-                                "\nVeículo: %d." +
-                                "\nPosição acoplado: %d." +
-                                "\nProcesso editado: %d.", 2, 2, 1));
+        final String errorMessage = String.format("Não é possível realizar uma mudança de posição pois o veículo não " +
+                                                          "está acoplado em outra posição deste processo." +
+                                                          "\nVeículo: %d." +
+                                                          "\nPosição acoplado: %d." +
+                                                          "\nProcesso editado: %d.", 2, 2, 1);
+        validateThrowsWithErrorMessage(dadosBanco, processoRealizacao, errorMessage);
     }
 
     @Test
@@ -1316,35 +1260,3 @@ class VeiculoAcoplamentoValidatorTest {
                 VeiculoEstadoAcoplamento.builder()
                         .withCodVeiculo(3L)
                         .withMotorizado(false)
-                        .withPossuiHubodometro(false)
-                        .build());
-
-        final VeiculoAcoplamentoProcessoRealizacao processoRealizacao = AcoplamentoCreator.createAcoesRealizadas(
-                null,
-                VeiculoAcoplamentoAcaoRealizada.builder()
-                        .withCodVeiculo(1L)
-                        .withCodDiagramaVeiculo(1L)
-                        .withMotorizado(true)
-                        .withAcaoRealizada(VeiculoAcoplamentoAcaoEnum.MUDOU_POSICAO)
-                        .withPosicaoAcaoRealizada((short) 1)
-                        .withKmColetado(1000L)
-                        .build(),
-                VeiculoAcoplamentoAcaoRealizada.builder()
-                        .withCodVeiculo(2L)
-                        .withCodDiagramaVeiculo(1L)
-                        .withMotorizado(false)
-                        .withAcaoRealizada(VeiculoAcoplamentoAcaoEnum.MUDOU_POSICAO)
-                        .withPosicaoAcaoRealizada((short) 2)
-                        .build(),
-                VeiculoAcoplamentoAcaoRealizada.builder()
-                        .withCodVeiculo(3L)
-                        .withCodDiagramaVeiculo(1L)
-                        .withMotorizado(false)
-                        .withAcaoRealizada(VeiculoAcoplamentoAcaoEnum.MUDOU_POSICAO)
-                        .withPosicaoAcaoRealizada((short) 3)
-                        .build());
-        final String errorMessage = String.format("Não é possível mudar de posição o veículo %d pois nenhum código " +
-                                                          "de processo para edição foi recebido.", 1);
-        validateThrowsWithErrorMessage(dadosBanco, processoRealizacao, errorMessage);
-    }
-}
