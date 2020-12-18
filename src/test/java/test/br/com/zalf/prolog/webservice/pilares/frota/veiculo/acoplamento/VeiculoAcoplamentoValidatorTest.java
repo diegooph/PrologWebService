@@ -1,6 +1,5 @@
 package test.br.com.zalf.prolog.webservice.pilares.frota.veiculo.acoplamento;
 
-import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.VeiculoAcoplamentoAcaoEnum;
 import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcoplamentoAcaoRealizada;
 import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcoplamentoProcessoRealizacao;
 import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento.validator.AcomplamentoValidacaoHolder;
@@ -12,6 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.*;
 
+import static br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.VeiculoAcoplamentoAcaoEnum.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -38,46 +38,34 @@ class VeiculoAcoplamentoValidatorTest {
 
     @Test
     void givenNovoProcessoAcoplamento_whenInserted_shouldNotFail() {
-        final AcomplamentoValidacaoHolder dadosBanco = AcoplamentoCreator.createAcomplamentoValidacaoHolder(
-                VeiculosEstadoBancoCreator.builder()
-                        .codVeiculos(1L, 2L)
-                        .codProcessosAcoplamentosVinculados(null, null)
-                        .posicoesAcoplados(1, 2)
-                        .motorizados(true, false)
-                        .possuemHubodometro(false, false)
-                        .build());
+        final AcomplamentoValidacaoHolder dadosBanco = VeiculosEstadoBancoCreator.builder()
+                .codVeiculos(1L, 2L)
+                .codProcessosAcoplamentosVinculados(null, null)
+                .posicoesAcoplados(1, 2)
+                .motorizados(true, false)
+                .possuemHubodometro(false, false)
+                .build();
 
-        final VeiculoAcoplamentoProcessoRealizacao processoRealizacao = AcoplamentoCreator.createAcoesRealizadas(
-                null,
-                VeiculoAcoplamentoAcaoRealizada.builder()
-                        .withCodVeiculo(1L)
-                        .withCodDiagramaVeiculo(1L)
-                        .withMotorizado(true)
-                        .withAcaoRealizada(VeiculoAcoplamentoAcaoEnum.ACOPLADO)
-                        .withPosicaoAcaoRealizada((short) 1)
-                        .withKmColetado(1000L)
-                        .build(),
-                VeiculoAcoplamentoAcaoRealizada.builder()
-                        .withCodVeiculo(2L)
-                        .withCodDiagramaVeiculo(1L)
-                        .withMotorizado(false)
-                        .withAcaoRealizada(VeiculoAcoplamentoAcaoEnum.ACOPLADO)
-                        .withPosicaoAcaoRealizada((short) 2)
-                        .withKmColetado(null)
-                        .build());
+        final VeiculoAcoplamentoProcessoRealizacao processoRealizacao = AcoesRealizadasCreator.builder()
+                .codVeiculos(1L, 2L)
+                .codDiagramasVeiculos(1L, 1L)
+                .motorizados(true, false)
+                .acoesRealizadas(ACOPLADO, ACOPLADO)
+                .posicoesAcoesRealizadas(1, 2)
+                .kmsColetados(1000L, null)
+                .build(null);
         validateDoesNotThrow(dadosBanco, processoRealizacao);
     }
 
     @Test
     void givenEdicaoProcessoAcoplamento_whenNadaMudou_shouldNotFail() {
-        final AcomplamentoValidacaoHolder dadosBanco = AcoplamentoCreator.createAcomplamentoValidacaoHolder(
-                VeiculosEstadoBancoCreator.builder()
-                        .codVeiculos(1L, 2L)
-                        .codProcessosAcoplamentosVinculados(1L, 1L)
-                        .posicoesAcoplados(1, 2)
-                        .motorizados(true, false)
-                        .possuemHubodometro(false, false)
-                        .build());
+        final AcomplamentoValidacaoHolder dadosBanco = VeiculosEstadoBancoCreator.builder()
+                .codVeiculos(1L, 2L)
+                .codProcessosAcoplamentosVinculados(1L, 1L)
+                .posicoesAcoplados(1, 2)
+                .motorizados(true, false)
+                .possuemHubodometro(false, false)
+                .build();
 
         final VeiculoAcoplamentoProcessoRealizacao processoRealizacao = AcoplamentoCreator.createAcoesRealizadas(
                 1L,
@@ -85,7 +73,7 @@ class VeiculoAcoplamentoValidatorTest {
                         .withCodVeiculo(1L)
                         .withCodDiagramaVeiculo(1L)
                         .withMotorizado(true)
-                        .withAcaoRealizada(VeiculoAcoplamentoAcaoEnum.PERMANECEU)
+                        .withAcaoRealizada(PERMANECEU)
                         .withPosicaoAcaoRealizada((short) 1)
                         .withKmColetado(1000L)
                         .build(),
@@ -93,7 +81,7 @@ class VeiculoAcoplamentoValidatorTest {
                         .withCodVeiculo(2L)
                         .withCodDiagramaVeiculo(1L)
                         .withMotorizado(false)
-                        .withAcaoRealizada(VeiculoAcoplamentoAcaoEnum.PERMANECEU)
+                        .withAcaoRealizada(PERMANECEU)
                         .withPosicaoAcaoRealizada((short) 2)
                         .withKmColetado(null)
                         .build());
@@ -102,14 +90,13 @@ class VeiculoAcoplamentoValidatorTest {
 
     @Test
     void validate_DesacoplamentoCompleto_WhenTodasVeiculosDesacoplados() {
-        final AcomplamentoValidacaoHolder dadosBanco = AcoplamentoCreator.createAcomplamentoValidacaoHolder(
-                VeiculosEstadoBancoCreator.builder()
-                        .codVeiculos(1L, 2L)
-                        .codProcessosAcoplamentosVinculados(1L, 1L)
-                        .posicoesAcoplados(1, 2)
-                        .motorizados(true, false)
-                        .possuemHubodometro(false, false)
-                        .build());
+        final AcomplamentoValidacaoHolder dadosBanco = VeiculosEstadoBancoCreator.builder()
+                .codVeiculos(1L, 2L)
+                .codProcessosAcoplamentosVinculados(1L, 1L)
+                .posicoesAcoplados(1, 2)
+                .motorizados(true, false)
+                .possuemHubodometro(false, false)
+                .build();
 
         final VeiculoAcoplamentoProcessoRealizacao processoRealizacao = AcoplamentoCreator.createAcoesRealizadas(
                 1L,
@@ -117,7 +104,7 @@ class VeiculoAcoplamentoValidatorTest {
                         .withCodVeiculo(1L)
                         .withCodDiagramaVeiculo(1L)
                         .withMotorizado(true)
-                        .withAcaoRealizada(VeiculoAcoplamentoAcaoEnum.DESACOPLADO)
+                        .withAcaoRealizada(DESACOPLADO)
                         .withPosicaoAcaoRealizada((short) 1)
                         .withKmColetado(1000L)
                         .build(),
@@ -125,7 +112,7 @@ class VeiculoAcoplamentoValidatorTest {
                         .withCodVeiculo(2L)
                         .withCodDiagramaVeiculo(1L)
                         .withMotorizado(false)
-                        .withAcaoRealizada(VeiculoAcoplamentoAcaoEnum.DESACOPLADO)
+                        .withAcaoRealizada(DESACOPLADO)
                         .withPosicaoAcaoRealizada((short) 2)
                         .build());
 
@@ -134,14 +121,13 @@ class VeiculoAcoplamentoValidatorTest {
 
     @Test
     void validate_MudouPosicaoAcoplamento_WhenVeiculosMudaramPosicaoMesmoAcoplamento() {
-        final AcomplamentoValidacaoHolder dadosBanco = AcoplamentoCreator.createAcomplamentoValidacaoHolder(
-                VeiculosEstadoBancoCreator.builder()
-                        .codVeiculos(1L, 2L, 3L)
-                        .codProcessosAcoplamentosVinculados(1L, 1L, 1L)
-                        .posicoesAcoplados(1, 2, 3)
-                        .motorizados(true, false, false)
-                        .possuemHubodometro(false, false, false)
-                        .build());
+        final AcomplamentoValidacaoHolder dadosBanco = VeiculosEstadoBancoCreator.builder()
+                .codVeiculos(1L, 2L, 3L)
+                .codProcessosAcoplamentosVinculados(1L, 1L, 1L)
+                .posicoesAcoplados(1, 2, 3)
+                .motorizados(true, false, false)
+                .possuemHubodometro(false, false, false)
+                .build();
 
         final VeiculoAcoplamentoProcessoRealizacao processoRealizacao = AcoplamentoCreator.createAcoesRealizadas(
                 1L,
@@ -149,7 +135,7 @@ class VeiculoAcoplamentoValidatorTest {
                         .withCodVeiculo(1L)
                         .withCodDiagramaVeiculo(1L)
                         .withMotorizado(true)
-                        .withAcaoRealizada(VeiculoAcoplamentoAcaoEnum.DESACOPLADO)
+                        .withAcaoRealizada(DESACOPLADO)
                         .withPosicaoAcaoRealizada((short) 1)
                         .withKmColetado(1000L)
                         .build(),
@@ -157,14 +143,14 @@ class VeiculoAcoplamentoValidatorTest {
                         .withCodVeiculo(2L)
                         .withCodDiagramaVeiculo(1L)
                         .withMotorizado(false)
-                        .withAcaoRealizada(VeiculoAcoplamentoAcaoEnum.MUDOU_POSICAO)
+                        .withAcaoRealizada(MUDOU_POSICAO)
                         .withPosicaoAcaoRealizada((short) 3)
                         .build(),
                 VeiculoAcoplamentoAcaoRealizada.builder()
                         .withCodVeiculo(3L)
                         .withCodDiagramaVeiculo(1L)
                         .withMotorizado(false)
-                        .withAcaoRealizada(VeiculoAcoplamentoAcaoEnum.MUDOU_POSICAO)
+                        .withAcaoRealizada(MUDOU_POSICAO)
                         .withPosicaoAcaoRealizada((short) 2)
                         .build());
         validateDoesNotThrow(dadosBanco, processoRealizacao);
@@ -201,7 +187,7 @@ class VeiculoAcoplamentoValidatorTest {
                         .withCodVeiculo(1L)
                         .withCodDiagramaVeiculo(1L)
                         .withMotorizado(true)
-                        .withAcaoRealizada(VeiculoAcoplamentoAcaoEnum.DESACOPLADO)
+                        .withAcaoRealizada(DESACOPLADO)
                         .withPosicaoAcaoRealizada((short) 1)
                         .withKmColetado(1000L)
                         .build(),
@@ -209,14 +195,14 @@ class VeiculoAcoplamentoValidatorTest {
                         .withCodVeiculo(2L)
                         .withCodDiagramaVeiculo(1L)
                         .withMotorizado(false)
-                        .withAcaoRealizada(VeiculoAcoplamentoAcaoEnum.PERMANECEU)
+                        .withAcaoRealizada(PERMANECEU)
                         .withPosicaoAcaoRealizada((short) 3)
                         .build(),
                 VeiculoAcoplamentoAcaoRealizada.builder()
                         .withCodVeiculo(3L)
                         .withCodDiagramaVeiculo(1L)
                         .withMotorizado(true)
-                        .withAcaoRealizada(VeiculoAcoplamentoAcaoEnum.ACOPLADO)
+                        .withAcaoRealizada(ACOPLADO)
                         .withPosicaoAcaoRealizada((short) 1)
                         .withKmColetado(1500L)
                         .build());
@@ -256,25 +242,25 @@ class VeiculoAcoplamentoValidatorTest {
         acoesRealizadas.add(new VeiculoAcoplamentoAcaoRealizada(1L,
                                                                 1L,
                                                                 true,
-                                                                VeiculoAcoplamentoAcaoEnum.DESACOPLADO,
+                                                                DESACOPLADO,
                                                                 (short) 1,
                                                                 1000L));
         acoesRealizadas.add(new VeiculoAcoplamentoAcaoRealizada(2L,
                                                                 1L,
                                                                 false,
-                                                                VeiculoAcoplamentoAcaoEnum.DESACOPLADO,
+                                                                DESACOPLADO,
                                                                 (short) 2,
                                                                 null));
         acoesRealizadas.add(new VeiculoAcoplamentoAcaoRealizada(3L,
                                                                 1L,
                                                                 true,
-                                                                VeiculoAcoplamentoAcaoEnum.ACOPLADO,
+                                                                ACOPLADO,
                                                                 (short) 1,
                                                                 1000L));
         acoesRealizadas.add(new VeiculoAcoplamentoAcaoRealizada(4L,
                                                                 1L,
                                                                 false,
-                                                                VeiculoAcoplamentoAcaoEnum.ACOPLADO,
+                                                                ACOPLADO,
                                                                 (short) 2,
                                                                 null));
         final VeiculoAcoplamentoProcessoRealizacao processoRealizacao =
@@ -306,13 +292,13 @@ class VeiculoAcoplamentoValidatorTest {
         acoesRealizadas.add(new VeiculoAcoplamentoAcaoRealizada(1L,
                                                                 1L,
                                                                 false,
-                                                                VeiculoAcoplamentoAcaoEnum.ACOPLADO,
+                                                                ACOPLADO,
                                                                 (short) 2,
                                                                 null));
         acoesRealizadas.add(new VeiculoAcoplamentoAcaoRealizada(2L,
                                                                 1L,
                                                                 false,
-                                                                VeiculoAcoplamentoAcaoEnum.ACOPLADO,
+                                                                ACOPLADO,
                                                                 (short) 3,
                                                                 null));
         final VeiculoAcoplamentoProcessoRealizacao processoRealizacao =
@@ -378,13 +364,13 @@ class VeiculoAcoplamentoValidatorTest {
         acoesRealizadas.add(new VeiculoAcoplamentoAcaoRealizada(1L,
                                                                 1L,
                                                                 true,
-                                                                VeiculoAcoplamentoAcaoEnum.PERMANECEU,
+                                                                PERMANECEU,
                                                                 (short) 1,
                                                                 1000L));
         acoesRealizadas.add(new VeiculoAcoplamentoAcaoRealizada(4L,
                                                                 1L,
                                                                 false,
-                                                                VeiculoAcoplamentoAcaoEnum.PERMANECEU,
+                                                                PERMANECEU,
                                                                 (short) 1,
                                                                 null));
 
@@ -427,19 +413,19 @@ class VeiculoAcoplamentoValidatorTest {
         acoesRealizadas.add(new VeiculoAcoplamentoAcaoRealizada(1L,
                                                                 1L,
                                                                 true,
-                                                                VeiculoAcoplamentoAcaoEnum.PERMANECEU,
+                                                                PERMANECEU,
                                                                 (short) 1,
                                                                 1000L));
         acoesRealizadas.add(new VeiculoAcoplamentoAcaoRealizada(2L,
                                                                 1L,
                                                                 false,
-                                                                VeiculoAcoplamentoAcaoEnum.PERMANECEU,
+                                                                PERMANECEU,
                                                                 (short) 2,
                                                                 null));
         acoesRealizadas.add(new VeiculoAcoplamentoAcaoRealizada(2L,
                                                                 1L,
                                                                 false,
-                                                                VeiculoAcoplamentoAcaoEnum.PERMANECEU,
+                                                                PERMANECEU,
                                                                 (short) 3,
                                                                 null));
 
@@ -480,13 +466,13 @@ class VeiculoAcoplamentoValidatorTest {
         acoesRealizadas.add(new VeiculoAcoplamentoAcaoRealizada(1L,
                                                                 1L,
                                                                 true,
-                                                                VeiculoAcoplamentoAcaoEnum.PERMANECEU,
+                                                                PERMANECEU,
                                                                 (short) 1,
                                                                 1000L));
         acoesRealizadas.add(new VeiculoAcoplamentoAcaoRealizada(2L,
                                                                 1L,
                                                                 false,
-                                                                VeiculoAcoplamentoAcaoEnum.PERMANECEU,
+                                                                PERMANECEU,
                                                                 (short) 3,
                                                                 null));
 
@@ -533,19 +519,19 @@ class VeiculoAcoplamentoValidatorTest {
         acoesRealizadas.add(new VeiculoAcoplamentoAcaoRealizada(1L,
                                                                 1L,
                                                                 true,
-                                                                VeiculoAcoplamentoAcaoEnum.PERMANECEU,
+                                                                PERMANECEU,
                                                                 (short) 1,
                                                                 1000L));
         acoesRealizadas.add(new VeiculoAcoplamentoAcaoRealizada(2L,
                                                                 1L,
                                                                 false,
-                                                                VeiculoAcoplamentoAcaoEnum.MUDOU_POSICAO,
+                                                                MUDOU_POSICAO,
                                                                 (short) 3,
                                                                 null));
         acoesRealizadas.add(new VeiculoAcoplamentoAcaoRealizada(3L,
                                                                 1L,
                                                                 false,
-                                                                VeiculoAcoplamentoAcaoEnum.DESACOPLADO,
+                                                                DESACOPLADO,
                                                                 (short) 2,
                                                                 null));
         final VeiculoAcoplamentoProcessoRealizacao processoRealizacao =
@@ -584,13 +570,13 @@ class VeiculoAcoplamentoValidatorTest {
         acoesRealizadas.add(new VeiculoAcoplamentoAcaoRealizada(1L,
                                                                 1L,
                                                                 true,
-                                                                VeiculoAcoplamentoAcaoEnum.PERMANECEU,
+                                                                PERMANECEU,
                                                                 (short) 1,
                                                                 1000L));
         acoesRealizadas.add(new VeiculoAcoplamentoAcaoRealizada(2L,
                                                                 1L,
                                                                 true,
-                                                                VeiculoAcoplamentoAcaoEnum.PERMANECEU,
+                                                                PERMANECEU,
                                                                 (short) 2,
                                                                 1000L));
 
@@ -632,13 +618,13 @@ class VeiculoAcoplamentoValidatorTest {
         acoesRealizadas.add(new VeiculoAcoplamentoAcaoRealizada(1L,
                                                                 1L,
                                                                 true,
-                                                                VeiculoAcoplamentoAcaoEnum.ACOPLADO,
+                                                                ACOPLADO,
                                                                 (short) 2,
                                                                 1000L));
         acoesRealizadas.add(new VeiculoAcoplamentoAcaoRealizada(2L,
                                                                 1L,
                                                                 false,
-                                                                VeiculoAcoplamentoAcaoEnum.ACOPLADO,
+                                                                ACOPLADO,
                                                                 (short) 3,
                                                                 null));
 
@@ -679,13 +665,13 @@ class VeiculoAcoplamentoValidatorTest {
         acoesRealizadas.add(new VeiculoAcoplamentoAcaoRealizada(1L,
                                                                 1L,
                                                                 true,
-                                                                VeiculoAcoplamentoAcaoEnum.DESACOPLADO,
+                                                                DESACOPLADO,
                                                                 (short) 1,
                                                                 1000L));
         acoesRealizadas.add(new VeiculoAcoplamentoAcaoRealizada(2L,
                                                                 1L,
                                                                 false,
-                                                                VeiculoAcoplamentoAcaoEnum.ACOPLADO,
+                                                                ACOPLADO,
                                                                 (short) 1,
                                                                 null));
 
@@ -726,13 +712,13 @@ class VeiculoAcoplamentoValidatorTest {
         acoesRealizadas.add(new VeiculoAcoplamentoAcaoRealizada(1L,
                                                                 1L,
                                                                 true,
-                                                                VeiculoAcoplamentoAcaoEnum.ACOPLADO,
+                                                                ACOPLADO,
                                                                 (short) 1,
                                                                 null));
         acoesRealizadas.add(new VeiculoAcoplamentoAcaoRealizada(2L,
                                                                 1L,
                                                                 false,
-                                                                VeiculoAcoplamentoAcaoEnum.ACOPLADO,
+                                                                ACOPLADO,
                                                                 (short) 2,
                                                                 null));
 
@@ -773,13 +759,13 @@ class VeiculoAcoplamentoValidatorTest {
         acoesRealizadas.add(new VeiculoAcoplamentoAcaoRealizada(1L,
                                                                 1L,
                                                                 true,
-                                                                VeiculoAcoplamentoAcaoEnum.ACOPLADO,
+                                                                ACOPLADO,
                                                                 (short) 1,
                                                                 1000L));
         acoesRealizadas.add(new VeiculoAcoplamentoAcaoRealizada(2L,
                                                                 1L,
                                                                 false,
-                                                                VeiculoAcoplamentoAcaoEnum.ACOPLADO,
+                                                                ACOPLADO,
                                                                 (short) 2,
                                                                 null));
 
@@ -820,13 +806,13 @@ class VeiculoAcoplamentoValidatorTest {
         acoesRealizadas.add(new VeiculoAcoplamentoAcaoRealizada(1L,
                                                                 1L,
                                                                 true,
-                                                                VeiculoAcoplamentoAcaoEnum.ACOPLADO,
+                                                                ACOPLADO,
                                                                 (short) 1,
                                                                 1000L));
         acoesRealizadas.add(new VeiculoAcoplamentoAcaoRealizada(2L,
                                                                 1L,
                                                                 false,
-                                                                VeiculoAcoplamentoAcaoEnum.ACOPLADO,
+                                                                ACOPLADO,
                                                                 (short) 2,
                                                                 null));
 
@@ -868,13 +854,13 @@ class VeiculoAcoplamentoValidatorTest {
         acoesRealizadas.add(new VeiculoAcoplamentoAcaoRealizada(1L,
                                                                 1L,
                                                                 true,
-                                                                VeiculoAcoplamentoAcaoEnum.ACOPLADO,
+                                                                ACOPLADO,
                                                                 (short) 1,
                                                                 1000L));
         acoesRealizadas.add(new VeiculoAcoplamentoAcaoRealizada(2L,
                                                                 1L,
                                                                 false,
-                                                                VeiculoAcoplamentoAcaoEnum.ACOPLADO,
+                                                                ACOPLADO,
                                                                 (short) 2,
                                                                 null));
 
@@ -917,13 +903,13 @@ class VeiculoAcoplamentoValidatorTest {
         acoesRealizadas.add(new VeiculoAcoplamentoAcaoRealizada(1L,
                                                                 1L,
                                                                 true,
-                                                                VeiculoAcoplamentoAcaoEnum.ACOPLADO,
+                                                                ACOPLADO,
                                                                 (short) 1,
                                                                 1000L));
         acoesRealizadas.add(new VeiculoAcoplamentoAcaoRealizada(2L,
                                                                 1L,
                                                                 false,
-                                                                VeiculoAcoplamentoAcaoEnum.ACOPLADO,
+                                                                ACOPLADO,
                                                                 (short) 2,
                                                                 null));
 
@@ -966,7 +952,7 @@ class VeiculoAcoplamentoValidatorTest {
                         .withCodVeiculo(1L)
                         .withCodDiagramaVeiculo(1L)
                         .withMotorizado(true)
-                        .withAcaoRealizada(VeiculoAcoplamentoAcaoEnum.ACOPLADO)
+                        .withAcaoRealizada(ACOPLADO)
                         .withPosicaoAcaoRealizada((short) 1)
                         .withKmColetado(1000L)
                         .build(),
@@ -974,7 +960,7 @@ class VeiculoAcoplamentoValidatorTest {
                         .withCodVeiculo(2L)
                         .withCodDiagramaVeiculo(1L)
                         .withMotorizado(false)
-                        .withAcaoRealizada(VeiculoAcoplamentoAcaoEnum.ACOPLADO)
+                        .withAcaoRealizada(ACOPLADO)
                         .withPosicaoAcaoRealizada((short) 2)
                         .build());
 
@@ -1002,7 +988,7 @@ class VeiculoAcoplamentoValidatorTest {
                         .withCodVeiculo(1L)
                         .withCodDiagramaVeiculo(1L)
                         .withMotorizado(true)
-                        .withAcaoRealizada(VeiculoAcoplamentoAcaoEnum.DESACOPLADO)
+                        .withAcaoRealizada(DESACOPLADO)
                         .withPosicaoAcaoRealizada((short) 1)
                         .withKmColetado(1000L)
                         .build(),
@@ -1010,7 +996,7 @@ class VeiculoAcoplamentoValidatorTest {
                         .withCodVeiculo(2L)
                         .withCodDiagramaVeiculo(1L)
                         .withMotorizado(false)
-                        .withAcaoRealizada(VeiculoAcoplamentoAcaoEnum.DESACOPLADO)
+                        .withAcaoRealizada(DESACOPLADO)
                         .withPosicaoAcaoRealizada((short) 2)
                         .build());
         final String errorMessage = String.format("Não é possível desacoplar um veículo que não está acoplado." +
@@ -1039,7 +1025,7 @@ class VeiculoAcoplamentoValidatorTest {
                         .withCodVeiculo(1L)
                         .withCodDiagramaVeiculo(1L)
                         .withMotorizado(true)
-                        .withAcaoRealizada(VeiculoAcoplamentoAcaoEnum.DESACOPLADO)
+                        .withAcaoRealizada(DESACOPLADO)
                         .withPosicaoAcaoRealizada((short) 1)
                         .withKmColetado(1000L)
                         .build(),
@@ -1047,7 +1033,7 @@ class VeiculoAcoplamentoValidatorTest {
                         .withCodVeiculo(2L)
                         .withCodDiagramaVeiculo(1L)
                         .withMotorizado(false)
-                        .withAcaoRealizada(VeiculoAcoplamentoAcaoEnum.DESACOPLADO)
+                        .withAcaoRealizada(DESACOPLADO)
                         .withPosicaoAcaoRealizada((short) 2)
                         .build());
         final String errorMessage = String.format("Não é possível desacoplar o veículo %d pois nenhum " +
@@ -1086,7 +1072,7 @@ class VeiculoAcoplamentoValidatorTest {
                         .withCodVeiculo(1L)
                         .withCodDiagramaVeiculo(1L)
                         .withMotorizado(true)
-                        .withAcaoRealizada(VeiculoAcoplamentoAcaoEnum.PERMANECEU)
+                        .withAcaoRealizada(PERMANECEU)
                         .withPosicaoAcaoRealizada((short) 1)
                         .withKmColetado(1000L)
                         .build(),
@@ -1094,14 +1080,14 @@ class VeiculoAcoplamentoValidatorTest {
                         .withCodVeiculo(2L)
                         .withCodDiagramaVeiculo(1L)
                         .withMotorizado(false)
-                        .withAcaoRealizada(VeiculoAcoplamentoAcaoEnum.PERMANECEU)
+                        .withAcaoRealizada(PERMANECEU)
                         .withPosicaoAcaoRealizada((short) 2)
                         .build(),
                 VeiculoAcoplamentoAcaoRealizada.builder()
                         .withCodVeiculo(3L)
                         .withCodDiagramaVeiculo(1L)
                         .withMotorizado(false)
-                        .withAcaoRealizada(VeiculoAcoplamentoAcaoEnum.PERMANECEU)
+                        .withAcaoRealizada(PERMANECEU)
                         .withPosicaoAcaoRealizada((short) 3)
                         .build());
 
@@ -1131,7 +1117,7 @@ class VeiculoAcoplamentoValidatorTest {
                         .withCodVeiculo(1L)
                         .withCodDiagramaVeiculo(1L)
                         .withMotorizado(true)
-                        .withAcaoRealizada(VeiculoAcoplamentoAcaoEnum.PERMANECEU)
+                        .withAcaoRealizada(PERMANECEU)
                         .withPosicaoAcaoRealizada((short) 1)
                         .withKmColetado(1000L)
                         .build(),
@@ -1139,7 +1125,7 @@ class VeiculoAcoplamentoValidatorTest {
                         .withCodVeiculo(2L)
                         .withCodDiagramaVeiculo(1L)
                         .withMotorizado(false)
-                        .withAcaoRealizada(VeiculoAcoplamentoAcaoEnum.PERMANECEU)
+                        .withAcaoRealizada(PERMANECEU)
                         .withPosicaoAcaoRealizada((short) 2)
                         .build());
 
@@ -1180,7 +1166,7 @@ class VeiculoAcoplamentoValidatorTest {
                         .withCodVeiculo(1L)
                         .withCodDiagramaVeiculo(1L)
                         .withMotorizado(true)
-                        .withAcaoRealizada(VeiculoAcoplamentoAcaoEnum.PERMANECEU)
+                        .withAcaoRealizada(PERMANECEU)
                         .withPosicaoAcaoRealizada((short) 1)
                         .withKmColetado(1000L)
                         .build(),
@@ -1188,14 +1174,14 @@ class VeiculoAcoplamentoValidatorTest {
                         .withCodVeiculo(2L)
                         .withCodDiagramaVeiculo(1L)
                         .withMotorizado(false)
-                        .withAcaoRealizada(VeiculoAcoplamentoAcaoEnum.MUDOU_POSICAO)
+                        .withAcaoRealizada(MUDOU_POSICAO)
                         .withPosicaoAcaoRealizada((short) 2)
                         .build(),
                 VeiculoAcoplamentoAcaoRealizada.builder()
                         .withCodVeiculo(3L)
                         .withCodDiagramaVeiculo(1L)
                         .withMotorizado(false)
-                        .withAcaoRealizada(VeiculoAcoplamentoAcaoEnum.MUDOU_POSICAO)
+                        .withAcaoRealizada(MUDOU_POSICAO)
                         .withPosicaoAcaoRealizada((short) 3)
                         .build());
 
@@ -1232,7 +1218,7 @@ class VeiculoAcoplamentoValidatorTest {
                         .withCodVeiculo(1L)
                         .withCodDiagramaVeiculo(1L)
                         .withMotorizado(true)
-                        .withAcaoRealizada(VeiculoAcoplamentoAcaoEnum.MUDOU_POSICAO)
+                        .withAcaoRealizada(MUDOU_POSICAO)
                         .withPosicaoAcaoRealizada((short) 1)
                         .withKmColetado(1000L)
                         .build(),
@@ -1240,14 +1226,14 @@ class VeiculoAcoplamentoValidatorTest {
                         .withCodVeiculo(2L)
                         .withCodDiagramaVeiculo(1L)
                         .withMotorizado(false)
-                        .withAcaoRealizada(VeiculoAcoplamentoAcaoEnum.MUDOU_POSICAO)
+                        .withAcaoRealizada(MUDOU_POSICAO)
                         .withPosicaoAcaoRealizada((short) 2)
                         .build(),
                 VeiculoAcoplamentoAcaoRealizada.builder()
                         .withCodVeiculo(3L)
                         .withCodDiagramaVeiculo(1L)
                         .withMotorizado(false)
-                        .withAcaoRealizada(VeiculoAcoplamentoAcaoEnum.MUDOU_POSICAO)
+                        .withAcaoRealizada(MUDOU_POSICAO)
                         .withPosicaoAcaoRealizada((short) 3)
                         .build());
         final String errorMessage = String.format("Não é possível mudar de posição o veículo %d pois nenhum código " +

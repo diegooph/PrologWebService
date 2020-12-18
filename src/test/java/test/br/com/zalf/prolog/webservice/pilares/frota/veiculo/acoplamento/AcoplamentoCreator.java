@@ -9,7 +9,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -18,14 +17,6 @@ import java.util.Map;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public final class AcoplamentoCreator {
-
-    @NotNull
-    public static AcomplamentoValidacaoHolder createAcomplamentoValidacaoHolder(
-            @NotNull final List<VeiculoEstadoAcoplamento> veiculos) {
-        final Map<Long, VeiculoEstadoAcoplamento> veiculosEstadoAcoplamento = new HashMap<>();
-        veiculos.forEach(veiculo -> veiculosEstadoAcoplamento.put(veiculo.getCodVeiculo(), veiculo));
-        return new AcomplamentoValidacaoHolder(veiculosEstadoAcoplamento);
-    }
 
     @NotNull
     public static AcomplamentoValidacaoHolder createAcomplamentoValidacaoHolder(

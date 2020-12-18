@@ -1,12 +1,11 @@
 package test.br.com.zalf.prolog.webservice.pilares.frota.veiculo.acoplamento;
 
+import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento.validator.AcomplamentoValidacaoHolder;
 import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento.validator.VeiculoEstadoAcoplamento;
 import org.apache.commons.lang3.ObjectUtils;
 
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -64,7 +63,7 @@ public final class VeiculosEstadoBancoCreator {
     }
 
     @NotNull
-    public List<VeiculoEstadoAcoplamento> build() {
+    public AcomplamentoValidacaoHolder build() {
         validaTodosNotNull();
         validaTodosMesmoTamanho();
 
@@ -78,7 +77,10 @@ public final class VeiculosEstadoBancoCreator {
                                  .withPossuiHubodometro(possuemHubodometro.get(i))
                                  .build());
         }
-        return veiculos;
+
+        final Map<Long, VeiculoEstadoAcoplamento> veiculosEstadoAcoplamento = new HashMap<>();
+        veiculos.forEach(veiculo -> veiculosEstadoAcoplamento.put(veiculo.getCodVeiculo(), veiculo));
+        return new AcomplamentoValidacaoHolder(veiculosEstadoAcoplamento);
     }
 
     private void validaTodosNotNull() {
