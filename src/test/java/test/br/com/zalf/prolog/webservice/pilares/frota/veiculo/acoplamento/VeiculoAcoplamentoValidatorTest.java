@@ -39,16 +39,14 @@ class VeiculoAcoplamentoValidatorTest {
     @Test
     void givenNovoProcessoAcoplamento_whenInserted_shouldNotFail() {
         final AcomplamentoValidacaoHolder dadosBanco = AcoplamentoCreator.createAcomplamentoValidacaoHolder(
-                VeiculoEstadoAcoplamento.builder()
-                        .withCodVeiculo(1L)
-                        .withMotorizado(true)
-                        .withPossuiHubodometro(false)
-                        .build(),
-                VeiculoEstadoAcoplamento.builder()
-                        .withCodVeiculo(2L)
-                        .withMotorizado(false)
-                        .withPossuiHubodometro(false)
+                VeiculosEstadoBancoCreator.builder()
+                        .codVeiculos(1L, 2L)
+                        .codProcessosAcoplamentosVinculados(null, null)
+                        .posicoesAcoplados(1, 2)
+                        .motorizados(true, false)
+                        .possuemHubodometro(false, false)
                         .build());
+
         final VeiculoAcoplamentoProcessoRealizacao processoRealizacao = AcoplamentoCreator.createAcoesRealizadas(
                 null,
                 VeiculoAcoplamentoAcaoRealizada.builder()
@@ -73,19 +71,12 @@ class VeiculoAcoplamentoValidatorTest {
     @Test
     void givenEdicaoProcessoAcoplamento_whenNadaMudou_shouldNotFail() {
         final AcomplamentoValidacaoHolder dadosBanco = AcoplamentoCreator.createAcomplamentoValidacaoHolder(
-                VeiculoEstadoAcoplamento.builder()
-                        .withCodVeiculo(1L)
-                        .withCodProcessoAcoplamentoVinculado(1L)
-                        .withPosicaoAcoplado((short) 1)
-                        .withMotorizado(true)
-                        .withPossuiHubodometro(false)
-                        .build(),
-                VeiculoEstadoAcoplamento.builder()
-                        .withCodVeiculo(2L)
-                        .withCodProcessoAcoplamentoVinculado(1L)
-                        .withPosicaoAcoplado((short) 2)
-                        .withMotorizado(false)
-                        .withPossuiHubodometro(false)
+                VeiculosEstadoBancoCreator.builder()
+                        .codVeiculos(1L, 2L)
+                        .codProcessosAcoplamentosVinculados(1L, 1L)
+                        .posicoesAcoplados(1, 2)
+                        .motorizados(true, false)
+                        .possuemHubodometro(false, false)
                         .build());
 
         final VeiculoAcoplamentoProcessoRealizacao processoRealizacao = AcoplamentoCreator.createAcoesRealizadas(
@@ -112,19 +103,12 @@ class VeiculoAcoplamentoValidatorTest {
     @Test
     void validate_DesacoplamentoCompleto_WhenTodasVeiculosDesacoplados() {
         final AcomplamentoValidacaoHolder dadosBanco = AcoplamentoCreator.createAcomplamentoValidacaoHolder(
-                VeiculoEstadoAcoplamento.builder()
-                        .withCodVeiculo(1L)
-                        .withCodProcessoAcoplamentoVinculado(1L)
-                        .withPosicaoAcoplado((short) 1)
-                        .withMotorizado(true)
-                        .withPossuiHubodometro(false)
-                        .build(),
-                VeiculoEstadoAcoplamento.builder()
-                        .withCodVeiculo(2L)
-                        .withCodProcessoAcoplamentoVinculado(1L)
-                        .withPosicaoAcoplado((short) 2)
-                        .withMotorizado(false)
-                        .withPossuiHubodometro(false)
+                VeiculosEstadoBancoCreator.builder()
+                        .codVeiculos(1L, 2L)
+                        .codProcessosAcoplamentosVinculados(1L, 1L)
+                        .posicoesAcoplados(1, 2)
+                        .motorizados(true, false)
+                        .possuemHubodometro(false, false)
                         .build());
 
         final VeiculoAcoplamentoProcessoRealizacao processoRealizacao = AcoplamentoCreator.createAcoesRealizadas(
