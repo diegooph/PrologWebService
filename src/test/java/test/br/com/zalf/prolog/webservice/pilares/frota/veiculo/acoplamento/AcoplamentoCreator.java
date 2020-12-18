@@ -5,6 +5,11 @@ import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao
 import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento.validator.AcomplamentoValidacaoHolder;
 import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento.validator.VeiculoEstadoAcoplamento;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created on 2020-12-18
@@ -18,13 +23,18 @@ public final class AcoplamentoCreator {
     @NotNull
     public static AcomplamentoValidacaoHolder createAcomplamentoValidacaoHolder(
             @NotNull final VeiculoEstadoAcoplamento... veiculos) {
-        return null;
+        final Map<Long, VeiculoEstadoAcoplamento> veiculosEstadoAcoplamento = new HashMap<>();
+        Arrays.stream(veiculos)
+                .forEach(veiculo -> veiculosEstadoAcoplamento.put(veiculo.getCodVeiculo(), veiculo));
+        return new AcomplamentoValidacaoHolder(veiculosEstadoAcoplamento);
     }
-
     @NotNull
     public static VeiculoAcoplamentoProcessoRealizacao createAcoesRealizadas(
-            @NotNull final Long codProcessoAcoplamentoEditado,
+            @Nullable final Long codProcessoAcoplamentoEditado,
             @NotNull final VeiculoAcoplamentoAcaoRealizada... acoesRealizadas) {
-        return null;
+        return new VeiculoAcoplamentoProcessoRealizacao(COD_UNIDADE_TESTES,
+                                                        "Teste Validator",
+                                                        Arrays.asList(acoesRealizadas),
+                                                        codProcessoAcoplamentoEditado);
     }
 }
