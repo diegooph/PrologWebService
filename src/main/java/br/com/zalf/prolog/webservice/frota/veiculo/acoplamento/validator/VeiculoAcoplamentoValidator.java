@@ -24,7 +24,7 @@ public final class VeiculoAcoplamentoValidator {
     public void validate() {
         garanteVeiculosProcessoComVeiculosBanco();
         garanteVeiculosRecebidosSejamDiferentes();
-        garantePosicoesEmOrdem();
+        garantePosicoesEmOrdemSemGaps();
         garanteUnicoVeiculoMotorizadoAcoplado();
         garanteVeiculoMotorizadoNaPosicaoCorreta();
         garanteReboquesNasPosicoesCorretas();
@@ -108,7 +108,7 @@ public final class VeiculoAcoplamentoValidator {
                 .ifPresent(codVeiculo -> fail("Não podem existir veículos duplicados no acoplamento."));
     }
 
-    private void garantePosicoesEmOrdem() {
+    private void garantePosicoesEmOrdemSemGaps() {
         final List<Short> posicoesAcoplamento = processoRealizacao.getPosicoesOrdenadas();
         if (!ListUtils.constainsSomeInOrder(posicoesAcoplamento, POSICOES_VALIDAS_ORDENADAS_COM_TRATOR)
                 && !ListUtils.constainsSomeInOrder(posicoesAcoplamento, POSICOES_VALIDAS_ORDENADAS_SEM_TRATOR)) {
