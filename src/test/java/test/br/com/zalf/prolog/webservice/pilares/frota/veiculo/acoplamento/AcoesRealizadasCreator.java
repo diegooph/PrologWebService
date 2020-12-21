@@ -51,7 +51,12 @@ public final class AcoesRealizadasCreator {
     @NotNull
     public AcoesRealizadasCreator posicoesAcoesRealizadas(@NotNull final Integer... posicoesAcoesRealizadas) {
         this.posicoesAcoesRealizadas = Arrays.stream(posicoesAcoesRealizadas)
-                .map(Integer::shortValue)
+                .map(integer -> {
+                    if (integer != null) {
+                        return integer.shortValue();
+                    }
+                    return (short) 0;
+                })
                 .collect(Collectors.toList());
         return this;
     }

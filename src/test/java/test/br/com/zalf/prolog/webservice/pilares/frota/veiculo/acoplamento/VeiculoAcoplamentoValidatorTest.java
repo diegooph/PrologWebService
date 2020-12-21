@@ -118,7 +118,7 @@ class VeiculoAcoplamentoValidatorTest {
         final AcomplamentoValidacaoHolder dadosBanco = VeiculosEstadoBancoCreator.builder()
                 .codVeiculos(1L, 2L, 3L)
                 .codProcessosAcoplamentosVinculados(1L, 1L, null)
-                .posicoesAcoplados(1, 2, 3)
+                .posicoesAcoplados(1, 2, null)
                 .motorizados(true, false, true)
                 .possuemHubodometro(false, false, false)
                 .build();
@@ -127,7 +127,7 @@ class VeiculoAcoplamentoValidatorTest {
                 .codDiagramasVeiculos(1L, 1L, 1L)
                 .motorizados(true, false, true)
                 .acoesRealizadas(DESACOPLADO, PERMANECEU, ACOPLADO)
-                .posicoesAcoesRealizadas(1, 3, 1)
+                .posicoesAcoesRealizadas(1, 2, 1)
                 .kmsColetados(1000L, null, 1000L)
                 .build(1L);
         validateDoesNotThrow(dadosBanco, processoRealizacao);
@@ -159,6 +159,8 @@ class VeiculoAcoplamentoValidatorTest {
                 .codVeiculos(1L, 2L)
                 .motorizados(false, false)
                 .possuemHubodometro(false, false)
+                .posicoesAcoplados(null, null)
+                .codProcessosAcoplamentosVinculados(null, null)
                 .build();
         final VeiculoAcoplamentoProcessoRealizacao processoRealizacao = AcoesRealizadasCreator.builder()
                 .codVeiculos(1L, 2L)
@@ -166,6 +168,7 @@ class VeiculoAcoplamentoValidatorTest {
                 .motorizados(false, false)
                 .acoesRealizadas(ACOPLADO, ACOPLADO)
                 .posicoesAcoesRealizadas(2, 3)
+                .kmsColetados(null, null)
                 .build(null);
         validateDoesNotThrow(dadosBanco, processoRealizacao);
     }
@@ -242,6 +245,8 @@ class VeiculoAcoplamentoValidatorTest {
                 .codVeiculos(1L, 2L)
                 .motorizados(true, false)
                 .possuemHubodometro(false, false)
+                .posicoesAcoplados(null, null)
+                .codProcessosAcoplamentosVinculados(null, null)
                 .build();
         final VeiculoAcoplamentoProcessoRealizacao processoRealizacao = AcoesRealizadasCreator.builder()
                 .codVeiculos(1L, 2L)
@@ -286,6 +291,8 @@ class VeiculoAcoplamentoValidatorTest {
                 .codVeiculos(1L, 2L)
                 .motorizados(true, true)
                 .possuemHubodometro(false, false)
+                .posicoesAcoplados(null, null)
+                .codProcessosAcoplamentosVinculados(null, null)
                 .build();
         final VeiculoAcoplamentoProcessoRealizacao processoRealizacao = AcoesRealizadasCreator.builder()
                 .codVeiculos(1L, 2L)
@@ -307,6 +314,8 @@ class VeiculoAcoplamentoValidatorTest {
                 .codVeiculos(1L, 2L)
                 .motorizados(true, true)
                 .possuemHubodometro(false, false)
+                .posicoesAcoplados(null, null)
+                .codProcessosAcoplamentosVinculados(null, null)
                 .build();
         final VeiculoAcoplamentoProcessoRealizacao processoRealizacao = AcoesRealizadasCreator.builder()
                 .codVeiculos(1L, 2L)
@@ -327,6 +336,8 @@ class VeiculoAcoplamentoValidatorTest {
                 .codVeiculos(1L, 2L)
                 .motorizados(true, true)
                 .possuemHubodometro(false, false)
+                .posicoesAcoplados(null, null)
+                .codProcessosAcoplamentosVinculados(null, null)
                 .build();
         final VeiculoAcoplamentoProcessoRealizacao processoRealizacao = AcoesRealizadasCreator.builder()
                 .codVeiculos(1L, 2L)
@@ -347,6 +358,8 @@ class VeiculoAcoplamentoValidatorTest {
                 .codVeiculos(1L, 2L)
                 .motorizados(true, false)
                 .possuemHubodometro(false, false)
+                .posicoesAcoplados(null, null)
+                .codProcessosAcoplamentosVinculados(null, null)
                 .build();
         final VeiculoAcoplamentoProcessoRealizacao processoRealizacao = AcoesRealizadasCreator.builder()
                 .codVeiculos(1L, 2L)
@@ -354,6 +367,7 @@ class VeiculoAcoplamentoValidatorTest {
                 .motorizados(true, false)
                 .acoesRealizadas(ACOPLADO, ACOPLADO)
                 .posicoesAcoesRealizadas(1, 2)
+                .kmsColetados(null, null)
                 .build(null);
 
         final String errorMessage = "Não foi realizado a coleta do KM dos tratores.";
@@ -366,6 +380,8 @@ class VeiculoAcoplamentoValidatorTest {
                 .codVeiculos(1L, 2L)
                 .motorizados(true, false)
                 .possuemHubodometro(false, true)
+                .posicoesAcoplados(null, null)
+                .codProcessosAcoplamentosVinculados(null, null)
                 .build();
         final VeiculoAcoplamentoProcessoRealizacao processoRealizacao = AcoesRealizadasCreator.builder()
                 .codVeiculos(1L, 2L)
@@ -481,6 +497,8 @@ class VeiculoAcoplamentoValidatorTest {
                 .codVeiculos(1L, 2L)
                 .motorizados(true, false)
                 .possuemHubodometro(false, false)
+                .posicoesAcoplados(null, null)
+                .codProcessosAcoplamentosVinculados(null, null)
                 .build();
 
         final VeiculoAcoplamentoProcessoRealizacao processoRealizacao = AcoesRealizadasCreator.builder()
@@ -504,6 +522,8 @@ class VeiculoAcoplamentoValidatorTest {
                 .codVeiculos(1L, 2L)
                 .motorizados(true, false)
                 .possuemHubodometro(false, false)
+                .posicoesAcoplados(null, null)
+                .codProcessosAcoplamentosVinculados(null, null)
                 .build();
 
         final VeiculoAcoplamentoProcessoRealizacao processoRealizacao = AcoesRealizadasCreator.builder()
@@ -551,6 +571,8 @@ class VeiculoAcoplamentoValidatorTest {
                 .codVeiculos(1L, 2L)
                 .motorizados(true, false)
                 .possuemHubodometro(false, false)
+                .posicoesAcoplados(null, null)
+                .codProcessosAcoplamentosVinculados(null, null)
                 .build();
         final VeiculoAcoplamentoProcessoRealizacao processoRealizacao = AcoesRealizadasCreator.builder()
                 .codVeiculos(1L, 2L)
@@ -599,6 +621,8 @@ class VeiculoAcoplamentoValidatorTest {
                 .codVeiculos(1L, 2L, 3L)
                 .motorizados(true, false, false)
                 .possuemHubodometro(false, false, false)
+                .posicoesAcoplados(null, null, null)
+                .codProcessosAcoplamentosVinculados(null, null, null)
                 .build();
         final VeiculoAcoplamentoProcessoRealizacao processoRealizacao = AcoesRealizadasCreator.builder()
                 .codVeiculos(1L, 2L, 3L)

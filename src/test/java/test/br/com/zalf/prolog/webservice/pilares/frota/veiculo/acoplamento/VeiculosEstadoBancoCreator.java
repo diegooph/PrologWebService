@@ -46,7 +46,12 @@ public final class VeiculosEstadoBancoCreator {
     @NotNull
     public VeiculosEstadoBancoCreator posicoesAcoplados(@NotNull final Integer... posicoesAcoplados) {
         this.posicoesAcoplados = Arrays.stream(posicoesAcoplados)
-                .map(Integer::shortValue)
+                .map(integer -> {
+                    if (integer != null) {
+                        return integer.shortValue();
+                    }
+                    return (short) 0;
+                })
                 .collect(Collectors.toList());
         return this;
     }
