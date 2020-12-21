@@ -114,7 +114,7 @@ class VeiculoAcoplamentoValidatorTest {
     }
 
     @Test
-    void givenEdicaoProcessoAcoplamento_whenTratorMudouPosicao_shouldNotFail() {
+    void givenEdicaoProcessoAcoplamento_whenTratorAlterado_shouldNotFail() {
         final AcomplamentoValidacaoHolder dadosBanco = VeiculosEstadoBancoCreator.builder()
                 .codVeiculos(1L, 2L, 3L)
                 .codProcessosAcoplamentosVinculados(1L, 1L, null)
@@ -183,8 +183,8 @@ class VeiculoAcoplamentoValidatorTest {
                 .possuemHubodometro(false, false)
                 .build();
         final VeiculoAcoplamentoProcessoRealizacao processoRealizacao =
-                new VeiculoAcoplamentoProcessoRealizacao(5L,
-                                                         "observação qualquer",
+                new VeiculoAcoplamentoProcessoRealizacao(ValidatorTestConstants.COD_UNIDADE_TESTES,
+                                                         "Teste validator",
                                                          Collections.emptyList(),
                                                          1L);
         final String errorMessage =
@@ -240,7 +240,7 @@ class VeiculoAcoplamentoValidatorTest {
     }
 
     @Test
-    void givenEdicaoProcessoAcoplamento_whenPosicoesComGaps_shouldFail() {
+    void givenNovoProcessoAcoplamento_whenPosicoesComGaps_shouldFail() {
         final AcomplamentoValidacaoHolder dadosBanco = VeiculosEstadoBancoCreator.builder()
                 .codVeiculos(1L, 2L)
                 .motorizados(true, false)
@@ -252,7 +252,7 @@ class VeiculoAcoplamentoValidatorTest {
                 .codVeiculos(1L, 2L)
                 .codDiagramasVeiculos(1L, 1L)
                 .motorizados(true, false)
-                .acoesRealizadas(PERMANECEU, PERMANECEU)
+                .acoesRealizadas(ACOPLADO, ACOPLADO)
                 .posicoesAcoesRealizadas(1, 3)
                 .kmsColetados(1000L, null)
                 .build(null);
@@ -276,7 +276,7 @@ class VeiculoAcoplamentoValidatorTest {
                 .codDiagramasVeiculos(1L, 1L, 1L)
                 .motorizados(true, false, false)
                 .acoesRealizadas(PERMANECEU, MUDOU_POSICAO, DESACOPLADO)
-                .posicoesAcoesRealizadas(1, 3, 2)
+                .posicoesAcoesRealizadas(1, 3, 3)
                 .kmsColetados(1000L, null, null)
                 .build(1L);
 
@@ -286,7 +286,7 @@ class VeiculoAcoplamentoValidatorTest {
     }
 
     @Test
-    void givenEdicaoProcessoAcoplamento_whenVariosVeiculoMotorizadoAcoplados_shouldFail() {
+    void givenNovoProcessoAcoplamento_whenVariosVeiculoMotorizadoAcoplados_shouldFail() {
         final AcomplamentoValidacaoHolder dadosBanco = VeiculosEstadoBancoCreator.builder()
                 .codVeiculos(1L, 2L)
                 .motorizados(true, true)
@@ -298,7 +298,7 @@ class VeiculoAcoplamentoValidatorTest {
                 .codVeiculos(1L, 2L)
                 .codDiagramasVeiculos(1L, 1L)
                 .motorizados(true, true)
-                .acoesRealizadas(PERMANECEU, PERMANECEU)
+                .acoesRealizadas(ACOPLADO, ACOPLADO)
                 .posicoesAcoesRealizadas(1, 2)
                 .kmsColetados(1000L, 1000L)
                 .build(null);
@@ -309,7 +309,7 @@ class VeiculoAcoplamentoValidatorTest {
     }
 
     @Test
-    void givenEdicaoProcessoAcoplamento_whenVeiculoMotorizadoNaPosicaoErrada_shouldFail() {
+    void givenNovoProcessoAcoplamento_whenVeiculoMotorizadoNaPosicaoErrada_shouldFail() {
         final AcomplamentoValidacaoHolder dadosBanco = VeiculosEstadoBancoCreator.builder()
                 .codVeiculos(1L, 2L)
                 .motorizados(true, true)
@@ -331,10 +331,10 @@ class VeiculoAcoplamentoValidatorTest {
     }
 
     @Test
-    void givenEdicaoProcessoAcoplamento_whenReboquesNasPosicoesErradas_shouldFail() {
+    void givenNovoProcessoAcoplamento_whenReboquesNasPosicoesErradas_shouldFail() {
         final AcomplamentoValidacaoHolder dadosBanco = VeiculosEstadoBancoCreator.builder()
                 .codVeiculos(1L, 2L)
-                .motorizados(true, true)
+                .motorizados(false, false)
                 .possuemHubodometro(false, false)
                 .posicoesAcoplados(null, null)
                 .codProcessosAcoplamentosVinculados(null, null)
@@ -342,9 +342,9 @@ class VeiculoAcoplamentoValidatorTest {
         final VeiculoAcoplamentoProcessoRealizacao processoRealizacao = AcoesRealizadasCreator.builder()
                 .codVeiculos(1L, 2L)
                 .codDiagramasVeiculos(1L, 1L)
-                .motorizados(true, false)
-                .acoesRealizadas(DESACOPLADO, ACOPLADO)
-                .posicoesAcoesRealizadas(1, 1)
+                .motorizados(false, false)
+                .acoesRealizadas(ACOPLADO, ACOPLADO)
+                .posicoesAcoesRealizadas(1, 2)
                 .kmsColetados(1000L, null)
                 .build(null);
 
@@ -353,7 +353,7 @@ class VeiculoAcoplamentoValidatorTest {
     }
 
     @Test
-    void givenEdicaoProcessoAcoplamento_whenVeiculoMotorizadoNaoColetouKm_shouldFail() {
+    void givenNovoProcessoAcoplamento_whenVeiculoMotorizadoNaoColetouKm_shouldFail() {
         final AcomplamentoValidacaoHolder dadosBanco = VeiculosEstadoBancoCreator.builder()
                 .codVeiculos(1L, 2L)
                 .motorizados(true, false)
@@ -375,7 +375,7 @@ class VeiculoAcoplamentoValidatorTest {
     }
 
     @Test
-    void givenEdicaoProcessoAcoplamento_whenReboquesComHubodometroNaoColetaramKm_shouldFail() {
+    void givenNovoProcessoAcoplamento_whenReboquesComHubodometroNaoColetaramKm_shouldFail() {
         final AcomplamentoValidacaoHolder dadosBanco = VeiculosEstadoBancoCreator.builder()
                 .codVeiculos(1L, 2L)
                 .motorizados(true, false)
@@ -409,7 +409,7 @@ class VeiculoAcoplamentoValidatorTest {
                 .codVeiculos(1L, 2L)
                 .codDiagramasVeiculos(1L, 1L)
                 .motorizados(true, false)
-                .acoesRealizadas(ACOPLADO, ACOPLADO)
+                .acoesRealizadas(PERMANECEU, PERMANECEU)
                 .posicoesAcoesRealizadas(1, 2)
                 .kmsColetados(1000L, null)
                 .build(1L);
@@ -432,7 +432,7 @@ class VeiculoAcoplamentoValidatorTest {
                 .codVeiculos(1L, 2L)
                 .codDiagramasVeiculos(1L, 1L)
                 .motorizados(true, false)
-                .acoesRealizadas(ACOPLADO, ACOPLADO)
+                .acoesRealizadas(PERMANECEU, PERMANECEU)
                 .posicoesAcoesRealizadas(1, 2)
                 .kmsColetados(1000L, null)
                 .build(1L);
@@ -444,7 +444,7 @@ class VeiculoAcoplamentoValidatorTest {
     }
 
     @Test
-    void givenEdicaoProcessoAcoplamento_whenVeiculosJaAcopladosPresentesEmNovoProcesso_shouldFail() {
+    void givenNovoProcessoAcoplamento_whenVeiculosJaAcopladosPresentesEmNovoProcesso_shouldFail() {
         final AcomplamentoValidacaoHolder dadosBanco = VeiculosEstadoBancoCreator.builder()
                 .codVeiculos(1L, 2L)
                 .codProcessosAcoplamentosVinculados(2L, 2L)
