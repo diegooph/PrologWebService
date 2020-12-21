@@ -10,8 +10,8 @@ import org.jetbrains.annotations.NotNull;
 public final class ValidatorTestConstants {
     @NotNull
     public static final Long COD_UNIDADE_TESTES = 5L;
-    @NotNull
-    public static final Long COD_DIAGRAMA_TESTES = 1L;
-    @NotNull
-    public static final Long KM_COLETADO_TESTES = 1000L;
+
+    private ValidatorTestConstants() {
+        throw new IllegalStateException(ValidatorTestConstants.class.getSimpleName() + " cannot be instantiated!");
+    }
 }
