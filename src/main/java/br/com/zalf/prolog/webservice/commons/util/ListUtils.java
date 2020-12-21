@@ -30,6 +30,21 @@ public final class ListUtils {
         return elements != null && elements.size() > 0;
     }
 
+    public static boolean allSameSize(@NotNull final List<?>... lists) {
+        if (lists.length == 0) {
+            return true;
+        }
+
+        final List<?> firsList = lists[0];
+        for (final List<?> list : lists) {
+            if (list.size() != firsList.size()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public static boolean constainsSomeInOrder(@NotNull final List<? extends Number> numbersToVerify,
                                                @NotNull final Number... containedNumbers) {
         return internalConstainsInOrder(numbersToVerify, containedNumbers);

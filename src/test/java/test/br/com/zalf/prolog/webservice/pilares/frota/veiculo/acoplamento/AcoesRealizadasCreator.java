@@ -1,5 +1,6 @@
 package test.br.com.zalf.prolog.webservice.pilares.frota.veiculo.acoplamento;
 
+import br.com.zalf.prolog.webservice.commons.util.ListUtils;
 import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.VeiculoAcoplamentoAcaoEnum;
 import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcoplamentoAcaoRealizada;
 import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcoplamentoProcessoRealizacao;
@@ -108,11 +109,12 @@ public final class AcoesRealizadasCreator {
     }
 
     private void validaTodosMesmoTamanho() {
-        if (codVeiculos.size() != codDiagramasVeiculos.size() ||
-                codVeiculos.size() != posicoesAcoesRealizadas.size() ||
-                codVeiculos.size() != motorizados.size() ||
-                codVeiculos.size() != acoesRealizadas.size() ||
-                codVeiculos.size() != kmsColetados.size()) {
+        if (!ListUtils.allSameSize(codVeiculos,
+                                   codDiagramasVeiculos,
+                                   posicoesAcoesRealizadas,
+                                   motorizados,
+                                   acoesRealizadas,
+                                   kmsColetados)) {
             throw new IllegalArgumentException("Todas as listas precisam ser do mesmo tamanho.");
         }
     }

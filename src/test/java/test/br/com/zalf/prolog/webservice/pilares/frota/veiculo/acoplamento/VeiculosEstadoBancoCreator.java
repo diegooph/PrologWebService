@@ -1,5 +1,6 @@
 package test.br.com.zalf.prolog.webservice.pilares.frota.veiculo.acoplamento;
 
+import br.com.zalf.prolog.webservice.commons.util.ListUtils;
 import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento.validator.AcomplamentoValidacaoHolder;
 import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento.validator.VeiculoEstadoAcoplamento;
 import org.apache.commons.lang3.ObjectUtils;
@@ -94,10 +95,11 @@ public final class VeiculosEstadoBancoCreator {
     }
 
     private void validaTodosMesmoTamanho() {
-        if (codVeiculos.size() != codProcessosAcoplamentosVinculados.size() ||
-                codVeiculos.size() != posicoesAcoplados.size() ||
-                codVeiculos.size() != motorizados.size() ||
-                codVeiculos.size() != possuemHubodometro.size()) {
+        if (!ListUtils.allSameSize(codVeiculos,
+                                   codProcessosAcoplamentosVinculados,
+                                   posicoesAcoplados,
+                                   motorizados,
+                                   possuemHubodometro)) {
             throw new IllegalArgumentException("Todas as listas precisam ser do mesmo tamanho.");
         }
     }
