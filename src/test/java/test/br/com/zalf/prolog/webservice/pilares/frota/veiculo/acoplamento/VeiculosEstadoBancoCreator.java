@@ -95,7 +95,17 @@ public final class VeiculosEstadoBancoCreator {
                                     posicoesAcoplados,
                                     motorizados,
                                     possuemHubodometro)) {
-            throw new IllegalArgumentException("Todos os atributos precisam ser diferentes de null.");
+            throw new IllegalArgumentException(String.format("Todos os atributos precisam ser diferentes de null.\n" +
+                                                                     "codProcessosAcoplamentosVinculados => %s\n" +
+                                                                     "codVeiculos => %s\n" +
+                                                                     "posicoesAcoplados => %s\n" +
+                                                                     "motorizados => %s\n" +
+                                                                     "possuemHubodometro => %s",
+                                                             codProcessosAcoplamentosVinculados,
+                                                             codVeiculos,
+                                                             posicoesAcoplados,
+                                                             motorizados,
+                                                             possuemHubodometro));
         }
     }
 

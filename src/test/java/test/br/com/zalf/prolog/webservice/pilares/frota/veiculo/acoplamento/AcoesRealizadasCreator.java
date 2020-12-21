@@ -109,7 +109,19 @@ public final class AcoesRealizadasCreator {
                                     motorizados,
                                     acoesRealizadas,
                                     kmsColetados)) {
-            throw new IllegalArgumentException("Todos os atributos precisam ser diferentes de null.");
+            throw new IllegalArgumentException(String.format("Todos os atributos precisam ser diferentes de null.\n" +
+                                                                     "codVeiculos => %s\n" +
+                                                                     "codDiagramasVeiculos => %s\n" +
+                                                                     "posicoesAcoesRealizadas => %s\n" +
+                                                                     "motorizados => %s\n" +
+                                                                     "acoesRealizadas => %s\n" +
+                                                                     "kmsColetados => %s",
+                                                             codVeiculos,
+                                                             codDiagramasVeiculos,
+                                                             posicoesAcoesRealizadas,
+                                                             motorizados,
+                                                             acoesRealizadas,
+                                                             kmsColetados));
         }
     }
 
