@@ -15,6 +15,12 @@ import java.util.ArrayList;
  * @author Thais Francisco (https://github.com/thaisksf)
  */
 public final class VeiculoAcoplamentoHistoricoConverter {
+
+    public VeiculoAcoplamentoHistoricoConverter() {
+        throw new IllegalStateException(VeiculoAcoplamentoHistoricoConverter.class.getSimpleName()
+                                                + " cannot be instantiated!");
+    }
+
     @NotNull
     public static VeiculoAcoplamentoHistorico createVeiculoAcoplamentoHistorico(@NotNull final ResultSet rSet)
             throws SQLException {

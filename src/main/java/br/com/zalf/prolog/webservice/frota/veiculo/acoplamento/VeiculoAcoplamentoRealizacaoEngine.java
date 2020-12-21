@@ -11,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
 import java.time.OffsetDateTime;
+import java.util.Objects;
 
 /**
  * Created on 2020-11-11
@@ -43,7 +44,7 @@ public final class VeiculoAcoplamentoRealizacaoEngine {
         processoRealizacao
                 .getAcoesRealizadas()
                 .stream()
-                .filter(acaoRealizada -> acaoRealizada.getKmColetado() != null)
+                .filter(acaoRealizada -> Objects.nonNull(acaoRealizada.getKmColetado()))
                 .forEach(acaoRealizada -> veiculoDao.updateKmByCodVeiculo(
                         connection,
                         processoRealizacao.getCodUnidade(),
@@ -56,8 +57,7 @@ public final class VeiculoAcoplamentoRealizacaoEngine {
     }
 
     private void removeAcoplamentoAtual(@NotNull final VeiculoAcoplamentoProcessoRealizacao processoRealizacao) {
-        processoRealizacao
-                .estaEditandoProcessoAcoplamento()
+        processoRealizacao.getCodProcessoAcoplamentoEditado()
                 .ifPresent(veiculoAcoplamentoDao::removeAcoplamentoAtual);
     }
 
@@ -88,7 +88,6 @@ public final class VeiculoAcoplamentoRealizacaoEngine {
                         throw new ClientSideErrorException(
                                 "Não é possível salvar uma composição de apenas um veículo.");
                     }
-
                     veiculoAcoplamentoDao.insertEstadoAtualAcoplamentos(veiculosAcopladosMantidos);
                 });
     }

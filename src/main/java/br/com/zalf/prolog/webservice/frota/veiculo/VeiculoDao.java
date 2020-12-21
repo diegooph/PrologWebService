@@ -42,7 +42,6 @@ public interface VeiculoDao {
      * @param veiculo                         Objeto contendo as informações que serão atualizadas.
      * @param checklistOfflineListener        Listener utilizado para notificar a alteração em um veículo.
      * @return Dados sobre a edição realizada.
-     *
      * @throws Throwable Se algum erro ocorrer durante a operação.
      */
     @NotNull
@@ -58,7 +57,6 @@ public interface VeiculoDao {
      * @param apenasAtivos   indica se queremos buscar somente por veículos ativos.
      * @param codTipoVeiculo codigo de tipo de veiculo para filtragem - opcional
      * @return lista de {@link VeiculoListagem}
-     *
      * @throws Throwable caso não seja possível realizar a busca
      */
     List<VeiculoListagem> getVeiculosByUnidades(@NotNull final List<Long> codUnidades,
@@ -70,7 +68,6 @@ public interface VeiculoDao {
      *
      * @param cpf um cpf, ao qual será feita a busca da unidade
      * @return lista de Veiculo
-     *
      * @throws SQLException caso não seja possível realizar a busca
      */
     List<Veiculo> getVeiculosAtivosByUnidadeByColaborador(Long cpf)
@@ -81,7 +78,6 @@ public interface VeiculoDao {
      *
      * @param codVeiculo código do {@link VeiculoVisualizacao}.
      * @return O {@link VeiculoVisualizacao} contendo as informações.
-     *
      * @throws Throwable Caso aconteça algum erro no banco.
      */
     @NotNull
@@ -93,7 +89,6 @@ public interface VeiculoDao {
      * @param codColaborador código do colaborador que realizou a requisição.
      * @param placas         lista de uma ou mais placas, para cada placa retornará um código, do contrário dará erro.
      * @return Uma lista de códigos de veículos.
-     *
      * @throws Throwable Caso aconteça algum erro no banco.
      */
     @NotNull
@@ -106,7 +101,6 @@ public interface VeiculoDao {
      * @param placa     Placa do {@link Veiculo}.
      * @param withPneus Retornar o {@link Veiculo} com seus pneus.
      * @return O {@link Veiculo} contendo as informações.
-     *
      * @throws SQLException Caso aconteça algum erro no banco.
      */
     @Deprecated
@@ -119,7 +113,6 @@ public interface VeiculoDao {
      * @param placa     Placa do {@link Veiculo}.
      * @param withPneus Retornar o {@link Veiculo} com seus pneus.
      * @return O {@link Veiculo} contendo as informações.
-     *
      * @throws SQLException Caso aconteça algum erro no banco.
      */
     @Deprecated
@@ -144,10 +137,8 @@ public interface VeiculoDao {
      * @param conn                       Uma conexão já estabelecida com o banco de dados.
      * @param codUnidade                 Unidade do veículo.
      * @param codVeiculo                 O código do veículo que terá seu KM atualizado.
-     * @param veiculoCodProcesso         O código do processo que o veículo sofreu.
-     * @param veiculoTipoProcesso        O tipo de processo que está sendo realizado.
-     * @param dataHoraProcesso           A data e a hora em que o processo sofrido pelo veículo ocorreu.
      * @param kmVeiculo                  O KM que será setado no veículo.
+     * @param veiculoTipoProcesso        O tipo de processo que está sendo realizado.
      * @param devePropagarKmParaReboques No caso de um trator, indica se o KM coletado deve ser propagado para os
      *                                   reboques acoplados que não possuem hubodômetro.
      * @return km para inserir no processo.
@@ -167,7 +158,6 @@ public interface VeiculoDao {
      *
      * @param codEmpresa código da empresa
      * @return lista de marcas
-     *
      * @throws SQLException se ocorrer erro no banco
      */
     @Deprecated
@@ -178,7 +168,6 @@ public interface VeiculoDao {
      * Importante lembrar que os modelos para cada marca não serão setados, já que modelos de veículos são por empresa.
      *
      * @return uma lista de {@link Marca marcas}.
-     *
      * @throws Throwable caso qualquer erro aconteça.
      */
     @NotNull
@@ -192,7 +181,6 @@ public interface VeiculoDao {
      * não nula.
      *
      * @return uma lista de {@link Marca marcas}.
-     *
      * @throws Throwable caso qualquer erro aconteça.
      */
     @NotNull
@@ -205,7 +193,6 @@ public interface VeiculoDao {
      * @param codEmpresa código da empresa.
      * @param codMarca   códiga da marca.
      * @return código do novo modelo inserido.
-     *
      * @throws Throwable caso ocorrer erro.
      */
     @NotNull
@@ -219,7 +206,6 @@ public interface VeiculoDao {
      * @param codUnidade código da unidade
      * @param conn       conexão com o banco
      * @return o numero de veículos
-     *
      * @throws SQLException caso ocorrer erro no banco
      */
     int getTotalVeiculosByUnidade(Long codUnidade, Connection conn) throws SQLException;
@@ -230,7 +216,6 @@ public interface VeiculoDao {
      * @param codUnidade código da unidade
      * @param codTipo    codígo do tipo
      * @return lista de placas de veículos
-     *
      * @throws SQLException se acontecer erro no banco
      */
     List<String> getPlacasVeiculosByTipo(Long codUnidade, String codTipo) throws SQLException;
@@ -243,7 +228,6 @@ public interface VeiculoDao {
      * @param conn  {@link Connection} que será utilizada para realizar a operação.
      * @param placa Placa do {@link Veiculo}.
      * @return Caso exista, retornará o {@link DiagramaVeiculo} caso contrário NULL.
-     *
      * @throws SQLException Se qualquer erro ocorrer na busca.
      */
     Optional<DiagramaVeiculo> getDiagramaVeiculoByPlaca(@NotNull final Connection conn,
@@ -259,7 +243,6 @@ public interface VeiculoDao {
      * @param codUnidade
      * @param codModelo
      * @return
-     *
      * @throws SQLException
      */
     Modelo getModeloVeiculo(Long codUnidade, Long codModelo) throws SQLException;
@@ -270,7 +253,6 @@ public interface VeiculoDao {
      * @param modelo
      * @param codUnidade
      * @return
-     *
      * @throws SQLException
      */
     boolean updateModelo(Modelo modelo, Long codUnidade, Long codMarca) throws SQLException;
@@ -281,7 +263,6 @@ public interface VeiculoDao {
      * @param codModelo
      * @param codUnidade
      * @return
-     *
      * @throws SQLException
      */
     boolean deleteModelo(Long codModelo, Long codUnidade) throws SQLException;
@@ -323,7 +304,6 @@ public interface VeiculoDao {
      * @param codVeiculo Código do {@link Veiculo veículo} do qual serão buscados os pneus aplicados.
      * @return Um {@link Optional optional} contendo a lista de códigos de pneus aplicados ao veículo,
      * caso exista algum aplicado; Um {@link Optional optional} vazio caso não exista nenhum.
-     *
      * @throws Throwable Se algum erro ocorrer.
      */
     @NotNull
@@ -336,7 +316,6 @@ public interface VeiculoDao {
      * @param conn         Conexão utilizada para realizar busca no bando de dados.
      * @param placaVeiculo Placa do veículo para buscar a unidade.
      * @return O código da unidade onde o veículo está situado.
-     *
      * @throws Throwable Se algum erro ocorrer.
      */
     Long getCodUnidadeByPlaca(@NotNull final Connection conn, @NotNull final String placaVeiculo) throws Throwable;
@@ -347,7 +326,6 @@ public interface VeiculoDao {
      * @param conn         Conexão que será utilizada para buscar o código do veículo.
      * @param placaVeiculo Placa que será utilizada para identificar o código.
      * @return O código único de identificação do veículo no sistema.
-     *
      * @throws Throwable Se algum erro acontecer.
      */
     @NotNull
@@ -370,7 +348,6 @@ public interface VeiculoDao {
      *
      * @param codVeiculo código do veiculo.
      * @return Um VeiculoEstadoAcoplamento.
-     *
      * @throws Throwable Caso tenha algum erro no banco.
      * @see VeiculoDadosColetaKm
      */
