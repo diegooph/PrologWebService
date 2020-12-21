@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-public class ValidatorTestConstants {
+public final class ValidatorTestConstants {
     @NotNull
     public static final Long COD_UNIDADE_TESTES = 5L;
     @NotNull
