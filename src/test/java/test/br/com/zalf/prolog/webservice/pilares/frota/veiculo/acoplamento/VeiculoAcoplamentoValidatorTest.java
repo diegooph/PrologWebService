@@ -74,7 +74,7 @@ class VeiculoAcoplamentoValidatorTest {
     }
 
     @Test
-    void validate_DesacoplamentoCompleto_WhenTodasVeiculosDesacoplados() {
+    void givenEdicaoProcessoAcoplamento_whenTodosDesacoplados_shouldNotFail() {
         final AcomplamentoValidacaoHolder dadosBanco = VeiculosEstadoBancoCreator.builder()
                 .codVeiculos(1L, 2L)
                 .codProcessosAcoplamentosVinculados(1L, 1L)
@@ -94,7 +94,7 @@ class VeiculoAcoplamentoValidatorTest {
     }
 
     @Test
-    void validate_MudouPosicaoAcoplamento_WhenVeiculosMudaramPosicaoMesmoAcoplamento() {
+    void givenEdicaoProcessoAcoplamento_whenVeiculosMudaramPosicaoMesmoAcoplamento_shouldNotFail() {
         final AcomplamentoValidacaoHolder dadosBanco = VeiculosEstadoBancoCreator.builder()
                 .codVeiculos(1L, 2L, 3L)
                 .codProcessosAcoplamentosVinculados(1L, 1L, 1L)
@@ -114,7 +114,7 @@ class VeiculoAcoplamentoValidatorTest {
     }
 
     @Test
-    void validate_MudouPosicaoAcoplamento_WhenApenasTratorMudouPosicao() {
+    void givenEdicaoProcessoAcoplamento_whenTratorMudouPosicao_shouldNotFail() {
         final AcomplamentoValidacaoHolder dadosBanco = VeiculosEstadoBancoCreator.builder()
                 .codVeiculos(1L, 2L, 3L)
                 .codProcessosAcoplamentosVinculados(1L, 1L, null)
@@ -134,7 +134,7 @@ class VeiculoAcoplamentoValidatorTest {
     }
 
     @Test
-    void validate_DesacoplamentoCompletoAndNovoAcoplamento_WhenTodasVeiculosDesacopladosAndNovosVeiculosAcoplados() {
+    void givenEdicaoProcessoAcoplamento_whenDesacoplaTodosAcoplaNovos_shouldNotFail() {
         final AcomplamentoValidacaoHolder dadosBanco = VeiculosEstadoBancoCreator.builder()
                 .codVeiculos(1L, 2L, 3L, 4L)
                 .codProcessosAcoplamentosVinculados(1L, 1L, null, null)
@@ -154,7 +154,7 @@ class VeiculoAcoplamentoValidatorTest {
     }
 
     @Test
-    void validate_NovoAcoplamentoReboque_WhenAcoplamentoSemTrator() {
+    void givenNovoProcessoAcoplamento_whenApenasReboquesAcoplados_shouldNotFail() {
         final AcomplamentoValidacaoHolder dadosBanco = VeiculosEstadoBancoCreator.builder()
                 .codVeiculos(1L, 2L)
                 .motorizados(false, false)
@@ -171,7 +171,7 @@ class VeiculoAcoplamentoValidatorTest {
     }
 
     @Test
-    void validate_ThrowsException_WhenQtdVeiculosRecebidosDiferenteQtdVeiculosBanco() {
+    void givenEdicaoProcessoAcoplamento_whenQtdVeiculosRecebidosDiferenteQtdVeiculosBanco_shouldFail() {
         final AcomplamentoValidacaoHolder dadosBanco = VeiculosEstadoBancoCreator.builder()
                 .codVeiculos(1L, 2L)
                 .codProcessosAcoplamentosVinculados(1L, 1L)
@@ -190,7 +190,7 @@ class VeiculoAcoplamentoValidatorTest {
     }
 
     @Test
-    void validate_ThrowsException_WhenVeiculosRecebidosDiferentesVeiculosBanco() {
+    void givenEdicaoProcessoAcoplamento_whenVeiculosRecebidosDiferenteVeiculosBanco_shouldFail() {
         final AcomplamentoValidacaoHolder dadosBanco = VeiculosEstadoBancoCreator.builder()
                 .codVeiculos(1L, 2L)
                 .codProcessosAcoplamentosVinculados(1L, 1L)
@@ -215,7 +215,7 @@ class VeiculoAcoplamentoValidatorTest {
     }
 
     @Test
-    void validate_ThrowsException_WhenVeiculosRecebidosRepetidosEmDiferentesProcessos() {
+    void givenEdicaoProcessoAcoplamento_whenVeiculosRecebidosRepetidosEmDiferentesProcessos_shouldFail() {
         final AcomplamentoValidacaoHolder dadosBanco = VeiculosEstadoBancoCreator.builder()
                 .codVeiculos(1L, 2L)
                 .codProcessosAcoplamentosVinculados(1L, 1L)
@@ -237,7 +237,7 @@ class VeiculoAcoplamentoValidatorTest {
     }
 
     @Test
-    void validate_ThrowsException_WhenPosicoesComGaps() {
+    void givenEdicaoProcessoAcoplamento_whenPosicoesComGaps_shouldFail() {
         final AcomplamentoValidacaoHolder dadosBanco = VeiculosEstadoBancoCreator.builder()
                 .codVeiculos(1L, 2L)
                 .motorizados(true, false)
@@ -258,7 +258,7 @@ class VeiculoAcoplamentoValidatorTest {
     }
 
     @Test
-    void validate_ThrowsException_WhenVeiculosMudaramPosicaoDeixandoGaps() {
+    void givenEdicaoProcessoAcoplamento_whenVeiculosMudaramPosicaoDeixandoGaps_shouldFail() {
         final AcomplamentoValidacaoHolder dadosBanco = VeiculosEstadoBancoCreator.builder()
                 .codVeiculos(1L, 2L, 3L)
                 .codProcessosAcoplamentosVinculados(1L, 1L, 1L)
@@ -281,7 +281,7 @@ class VeiculoAcoplamentoValidatorTest {
     }
 
     @Test
-    void validate_ThrowsException_WhenVariosVeiculoMotorizadoAcoplados() {
+    void givenEdicaoProcessoAcoplamento_whenVariosVeiculoMotorizadoAcoplados_shouldFail() {
         final AcomplamentoValidacaoHolder dadosBanco = VeiculosEstadoBancoCreator.builder()
                 .codVeiculos(1L, 2L)
                 .motorizados(true, true)
@@ -302,7 +302,7 @@ class VeiculoAcoplamentoValidatorTest {
     }
 
     @Test
-    void validate_ThrowsException_WhenVeiculoMotorizadoNaPosicaoErrada() {
+    void givenEdicaoProcessoAcoplamento_whenVeiculoMotorizadoNaPosicaoErrada_shouldFail() {
         final AcomplamentoValidacaoHolder dadosBanco = VeiculosEstadoBancoCreator.builder()
                 .codVeiculos(1L, 2L)
                 .motorizados(true, true)
@@ -322,7 +322,7 @@ class VeiculoAcoplamentoValidatorTest {
     }
 
     @Test
-    void validate_ThrowsException_WhenReboquesNasPosicoesErradas() {
+    void givenEdicaoProcessoAcoplamento_whenReboquesNasPosicoesErradas_shouldFail() {
         final AcomplamentoValidacaoHolder dadosBanco = VeiculosEstadoBancoCreator.builder()
                 .codVeiculos(1L, 2L)
                 .motorizados(true, true)
@@ -342,7 +342,7 @@ class VeiculoAcoplamentoValidatorTest {
     }
 
     @Test
-    void validate_ThrowsException_WhenVeiculoMotorizadoNaoColetouKm() {
+    void givenEdicaoProcessoAcoplamento_whenVeiculoMotorizadoNaoColetouKm_shouldFail() {
         final AcomplamentoValidacaoHolder dadosBanco = VeiculosEstadoBancoCreator.builder()
                 .codVeiculos(1L, 2L)
                 .motorizados(true, false)
@@ -361,7 +361,7 @@ class VeiculoAcoplamentoValidatorTest {
     }
 
     @Test
-    void validate_ThrowsException_WhenReboquesComHubodometroNaoColetaramKm() {
+    void givenEdicaoProcessoAcoplamento_whenReboquesComHubodometroNaoColetaramKm_shouldFail() {
         final AcomplamentoValidacaoHolder dadosBanco = VeiculosEstadoBancoCreator.builder()
                 .codVeiculos(1L, 2L)
                 .motorizados(true, false)
@@ -381,7 +381,7 @@ class VeiculoAcoplamentoValidatorTest {
     }
 
     @Test
-    void validate_ThrowsException_WhenVeiculosPertencemProcessoDistintos() {
+    void givenEdicaoProcessoAcoplamento_whenVeiculosPertencemProcessoDistintos_shouldFail() {
         final AcomplamentoValidacaoHolder dadosBanco = VeiculosEstadoBancoCreator.builder()
                 .codVeiculos(1L, 2L)
                 .codProcessosAcoplamentosVinculados(1L, 2L)
@@ -404,7 +404,7 @@ class VeiculoAcoplamentoValidatorTest {
     }
 
     @Test
-    void validate_ThrowsException_WhenVeiculosNaoPercentemProcessoSendoEditado() {
+    void givenEdicaoProcessoAcoplamento_whenVeiculosNaoPercentemProcessoSendoEditado_shouldFail() {
         final AcomplamentoValidacaoHolder dadosBanco = VeiculosEstadoBancoCreator.builder()
                 .codVeiculos(1L, 2L)
                 .codProcessosAcoplamentosVinculados(2L, 2L)
@@ -428,7 +428,7 @@ class VeiculoAcoplamentoValidatorTest {
     }
 
     @Test
-    void validate_ThrowsException_WhenVeiculosJaAcopladosPresentesEmNovoProcesso() {
+    void givenEdicaoProcessoAcoplamento_whenVeiculosJaAcopladosPresentesEmNovoProcesso_shouldFail() {
         final AcomplamentoValidacaoHolder dadosBanco = VeiculosEstadoBancoCreator.builder()
                 .codVeiculos(1L, 2L)
                 .codProcessosAcoplamentosVinculados(2L, 2L)
@@ -453,7 +453,7 @@ class VeiculoAcoplamentoValidatorTest {
     }
 
     @Test
-    void validateAcao_ThrowsException_WhenVeiculosAcopladosEstaoLivres() {
+    void givenEdicaoProcessoAcoplamento_whenVeiculosAcopladosNaoEstaoLivres_shouldFail() {
         final AcomplamentoValidacaoHolder dadosBanco = VeiculosEstadoBancoCreator.builder()
                 .codVeiculos(1L, 2L)
                 .codProcessosAcoplamentosVinculados(1L, null)
@@ -476,7 +476,7 @@ class VeiculoAcoplamentoValidatorTest {
     }
 
     @Test
-    void validateAcao_ThrowsException_WhenVeiculosDesacopladosJaEstaoDesacopladosEmEdicaoProcesso() {
+    void givenEdicaoProcessoAcoplamento_whenVeiculosDesacopladosJaEstaoDesacoplados_shouldFail() {
         final AcomplamentoValidacaoHolder dadosBanco = VeiculosEstadoBancoCreator.builder()
                 .codVeiculos(1L, 2L)
                 .motorizados(true, false)
@@ -499,7 +499,7 @@ class VeiculoAcoplamentoValidatorTest {
     }
 
     @Test
-    void validateAcao_ThrowsException_WhenVeiculosDesacopladosEmNovoProcesso() {
+    void givenNovoProcessoAcoplamento_whenVeiculosDesacoplados_shouldFail() {
         final AcomplamentoValidacaoHolder dadosBanco = VeiculosEstadoBancoCreator.builder()
                 .codVeiculos(1L, 2L)
                 .motorizados(true, false)
@@ -521,7 +521,7 @@ class VeiculoAcoplamentoValidatorTest {
     }
 
     @Test
-    void validateAcao_ThrowsException_WhenVeiculosMantidosPosicaoNaoEstaoNaMesmaPosicaoEmEdicaoProcesso() {
+    void givenEdicaoProcessoAcoplamento_whenVeiculosMantidosPosicaoNaoEstaoNaMesmaPosicao_shouldFail() {
         final AcomplamentoValidacaoHolder dadosBanco = VeiculosEstadoBancoCreator.builder()
                 .codVeiculos(1L, 2L, 3L)
                 .codProcessosAcoplamentosVinculados(1L, 1L, 1L)
@@ -546,7 +546,7 @@ class VeiculoAcoplamentoValidatorTest {
     }
 
     @Test
-    void validateAcao_ThrowsException_WhenVeiculosMantidosPosicaoNaoEstaoNaMesmaPosicaoEmNovoProcesso() {
+    void givenNovoProcessoAcoplamento_whenVeiculosMantidosPosicao_shouldFail() {
         final AcomplamentoValidacaoHolder dadosBanco = VeiculosEstadoBancoCreator.builder()
                 .codVeiculos(1L, 2L)
                 .motorizados(true, false)
@@ -568,7 +568,7 @@ class VeiculoAcoplamentoValidatorTest {
     }
 
     @Test
-    void validateAcao_ThrowsException_WhenVeiculosMudaramPosicaoEstaoEmPosicaoIguaisEmEdicaoProcesso() {
+    void givenEdicaoProcessoAcoplamento_whenVeiculosMudaramPosicaoEstaoEmPosicoesIguais_shouldFail() {
         final AcomplamentoValidacaoHolder dadosBanco = VeiculosEstadoBancoCreator.builder()
                 .codVeiculos(1L, 2L, 3L)
                 .codProcessosAcoplamentosVinculados(1L, 1L, 1L)
@@ -594,7 +594,7 @@ class VeiculoAcoplamentoValidatorTest {
     }
 
     @Test
-    void validateAcao_ThrowsException_WhenVeiculosMudaramPosicaoEstaoEmPosicaoIguaisEmNovoProcesso() {
+    void givenNovoProcessoAcoplamento_whenVeiculosMudaramPosicao_shouldFail() {
         final AcomplamentoValidacaoHolder dadosBanco = VeiculosEstadoBancoCreator.builder()
                 .codVeiculos(1L, 2L, 3L)
                 .motorizados(true, false, false)
