@@ -120,7 +120,8 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
             stmt.setLong(5, veiculo.getCodTipoVeiculo());
             stmt.setLong(6, veiculo.getCodModeloVeiculo());
             stmt.setBoolean(7, veiculo.isStatusAtivo());
-            stmt.setBoolean(8, veiculo.getPossuiHubodometro());
+            //todo
+            stmt.setBoolean(8, false);
             stmt.setLong(9, codColaboradorResponsavelEdicao);
             stmt.setString(10, OrigemAcaoEnum.PROLOG.toString());
             stmt.setObject(11, Now.offsetDateTimeUtc());
@@ -141,11 +142,11 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
                         statusAntigoVeiculo,
                         statusNovoVeiculo);
                 conn.commit();
-
                 return new InfosVeiculoEditado(
                         veiculo.getCodigo(),
-                        NullIf.equalOrLess(rSet.getLong("COD_EDICAO_HISTORICO"), 0),
-                        rSet.getInt("TOTAL_EDICOES"),
+                        NullIf.equalOrLess(rSet.getLong("cod_edicao_historico_antigo"), 0),
+                        NullIf.equalOrLess(rSet.getLong("cod_edicao_historico_novo"), 0),
+                        rSet.getInt("total_edicoes"),
                         veiculoAntesEdicao);
             } else {
                 throw new SQLException("Erro ao atualizar o veículo de código: " + veiculo.getCodigo());
