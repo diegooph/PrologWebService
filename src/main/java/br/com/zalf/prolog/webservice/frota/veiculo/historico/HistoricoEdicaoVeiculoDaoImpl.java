@@ -30,27 +30,20 @@ public final class HistoricoEdicaoVeiculoDaoImpl extends DatabaseConnection impl
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("select * from func_veiculo_listagem_historico_edicoes(" +
-                    "f_cod_empresa => ?," +
-                    "f_cod_veiculo => ?);");
+                                                 "f_cod_empresa => ?," +
+                                                 "f_cod_veiculo => ?);");
             stmt.setLong(1, codEmpresa);
             stmt.setLong(2, codVeiculo);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 final List<HistoricoEdicaoVeiculo> historicoEdicoesVeiculo = new ArrayList<>();
-                // Ordenamos o select em ordem descrescente. Por conta disso, os resultados acima são sempre os mais
-                // novos e os resultados abaixo os mais antigos. Dessa forma, a primeira linha do resultSet vai ser
-                // sempre o veículo atualmente (ou o último estado dele antes de deixar de pertencer a empresa)
-                // e a segunda, sempre o estado anterior ao atual. Depois de realizada a comparação, a segunda linha
-                // será sempre o estadoNovo (o mais atual tirando o que já foi processado) e a terceira o estadoAntigo,
-                // e assim por diante. Se por ventura a ordenação do select for alterada, essa lógica precisa ser
-                // alterada igualmente.
-                EstadoVeiculo estadoNovo = createEstadoVeiculo(rSet);
-                while (rSet.next()) {
+                do {
+                    final EstadoVeiculo estadoNovo = createEstadoVeiculo(rSet);
+                    rSet.next();
                     final EstadoVeiculo estadoAntigo = createEstadoVeiculo(rSet);
                     historicoEdicoesVeiculo.add(
                             HistoricoEdicaoVeiculoConverter.createHistoricoEdicaoVeiculo(estadoAntigo, estadoNovo));
-                    estadoNovo = estadoAntigo;
-                }
+                } while (rSet.next());
                 return historicoEdicoesVeiculo;
             } else {
                 return Collections.emptyList();
