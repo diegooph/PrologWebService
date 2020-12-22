@@ -8,6 +8,8 @@ import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu.Dimensao;
+import br.com.zalf.prolog.webservice.frota.pneu._model.PneuRetornoDescarte;
+import br.com.zalf.prolog.webservice.frota.pneu._model.PneuRetornoDescarteSuccess;
 import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.error.PneuValidator;
 import br.com.zalf.prolog.webservice.frota.pneu.importar.PneuImportReader;
@@ -69,7 +71,7 @@ public final class PneuService {
                            @NotNull final Long codOriginal,
                            @NotNull final Pneu pneu) throws ProLogException {
         try {
-            PneuValidator.validacaoAtributosPneu(pneu,codUnidade,false);
+            PneuValidator.validacaoAtributosPneu(pneu, codUnidade, false);
             RouterPneu
                     .create(dao, userToken)
                     .update(pneu, codUnidade, codOriginal);
@@ -139,6 +141,20 @@ public final class PneuService {
         } catch (final SQLException e) {
             Log.e(TAG, "Erro ao marcar a foto como sincronizada com URL: " + urlFotoPneu, e);
             throw new RuntimeException(e);
+        }
+    }
+
+    @NotNull
+    public PneuRetornoDescarteSuccess retornarPneuDescarte(@NotNull final PneuRetornoDescarte pneuRetornoDescarte) {
+        try {
+            return dao.retornarPneuDescarte(pneuRetornoDescarte);
+        } catch (final Throwable t) {
+            final String message = String
+                    .format("Erro ao retornar o pneu: %s do descarte.", pneuRetornoDescarte.getCodPneu());
+            Log.e(TAG, message, t);
+            throw Injection
+                    .providePneuExceptionHandler()
+                    .map(t, message);
         }
     }
 }
