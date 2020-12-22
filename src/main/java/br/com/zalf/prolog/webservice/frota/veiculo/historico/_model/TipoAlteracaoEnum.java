@@ -64,6 +64,13 @@ public enum TipoAlteracaoEnum {
         public String getLegibleString() {
             return "MARCA DO VEICULO";
         }
+    },
+    POSSUI_HUBODOMETRO("POSSUI_HUBODOMETRO") {
+        @NotNull
+        @Override
+        public String getLegibleString() {
+            return "POSSUI HUBODÔMETRO";
+        }
     };
 
     @NotNull
