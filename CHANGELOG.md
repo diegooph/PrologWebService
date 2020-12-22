@@ -1,5 +1,10 @@
 Change Log
 ==========
+
+## Staged
+#### Refactors
+* Adiciona flag "motorizado" no tipo de veículo (PL-3387).
+
 <a name="v1.4.3"></a>
 ## Version [v1.4.3](https://github.com/luizfp/PrologWebService/compare/v1.4.2...v1.4.3) (release-date) [unreleased]
 
