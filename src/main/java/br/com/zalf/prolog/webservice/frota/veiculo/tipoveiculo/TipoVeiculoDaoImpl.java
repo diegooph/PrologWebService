@@ -89,7 +89,7 @@ public final class TipoVeiculoDaoImpl extends DatabaseConnection implements Tipo
                             "from " +
                             "veiculo_tipo vt " +
                             "join veiculo_diagrama vd on vt.cod_diagrama = vd.codigo " +
-                            "where vt.codigo = ?;");
+                            "where vt.cod_empresa = ?;");
             stmt.setLong(1, codEmpresa);
             rSet = stmt.executeQuery();
             final List<TipoVeiculo> tiposVeiculos = new ArrayList<>();
