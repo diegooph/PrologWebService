@@ -252,8 +252,11 @@ public class ProdutividadeRelatorioDaoImpl extends DatabaseConnection implements
         return stmt;
     }
 
-    private PreparedStatement getAcessosProdutividadeStatement(Connection conn, String cpf, Long codUnidade,
-                                                               Date dataInicial, Date dataFinal) throws SQLException {
+    private PreparedStatement getAcessosProdutividadeStatement(final Connection conn,
+                                                               final String cpf,
+                                                               final Long codUnidade,
+                                                               final Date dataInicial,
+                                                               final Date dataFinal) throws SQLException {
         final PreparedStatement stmt = conn.prepareStatement(
                 "SELECT * FROM func_relatorio_acessos_produtividade_estratificado(?, ?, ?, ?);");
         stmt.setLong(1, codUnidade);
