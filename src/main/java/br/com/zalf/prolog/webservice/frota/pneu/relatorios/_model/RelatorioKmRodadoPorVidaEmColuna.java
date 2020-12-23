@@ -154,6 +154,16 @@ public final class RelatorioKmRodadoPorVidaEmColuna implements CsvReport {
                         }
                     });
 
+            final Double somatorioCpkTotal = vidasPneu.stream()
+                    .map(PneuKmRodadoPorVida::getValorPorKmVida)
+                    .map(cpk -> {
+                        if (cpk.equals("-")) {
+                            return 0d;
+                        }
+                        return Double.parseDouble(cpk);
+                    })
+                    .reduce(0d, Double::sum);
+
             final Double somatorioValorVidaTotal = vidasPneu.stream()
                     .map(PneuKmRodadoPorVida::getValorVida)
                     .map(valorVida -> {
@@ -164,16 +174,6 @@ public final class RelatorioKmRodadoPorVidaEmColuna implements CsvReport {
                     })
                     .reduce(0d, Double::sum);
 
-            final Double somatorioCpkTotal = vidasPneu.stream()
-                    .map(PneuKmRodadoPorVida::getValorPorKmVida)
-                    .map(cpk -> {
-                        if (cpk.equals("-")) {
-                            return 0d;
-                        }
-                        return Double.parseDouble(cpk);
-                    })
-                    .reduce(0d, Double::sum);
-            
             row.add(infoVida1.getKmRodadoTodasVidas());
             row.add(somatorioCpkTotal.toString());
             row.add(somatorioValorVidaTotal.toString());
