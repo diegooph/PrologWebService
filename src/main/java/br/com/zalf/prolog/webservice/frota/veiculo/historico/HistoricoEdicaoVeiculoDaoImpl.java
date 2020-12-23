@@ -24,18 +24,14 @@ public final class HistoricoEdicaoVeiculoDaoImpl extends DatabaseConnection impl
     @NotNull
     public List<HistoricoEdicaoVeiculo> getHistoricoEdicaoVeiculo(@NotNull final Long codEmpresa,
                                                                   @NotNull final Long codVeiculo) throws Throwable {
-
         final String sql = "select * " +
                 "from func_veiculo_listagem_historico_edicoes(" +
                 "f_cod_empresa => ?," +
                 "f_cod_veiculo => ?);";
-
         try (final Connection conn = getConnection();
              final PreparedStatement stmt = conn.prepareStatement(sql)) {
-
             stmt.setLong(1, codEmpresa);
             stmt.setLong(2, codVeiculo);
-
             try (final ResultSet rSet = stmt.executeQuery()) {
                 if (rSet.next()) {
                     final List<HistoricoEdicaoVeiculo> historicoEdicoesVeiculo = new ArrayList<>();
