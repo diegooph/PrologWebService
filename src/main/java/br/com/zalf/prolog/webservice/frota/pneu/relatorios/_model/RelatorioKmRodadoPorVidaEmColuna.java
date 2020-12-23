@@ -154,25 +154,25 @@ public final class RelatorioKmRodadoPorVidaEmColuna implements CsvReport {
                         }
                     });
 
-            final Float somatorioValorVidaTotal = vidasPneu.stream()
+            final Double somatorioValorVidaTotal = vidasPneu.stream()
                     .map(PneuKmRodadoPorVida::getValorVida)
                     .map(valorVida -> {
                         if (valorVida.equals("-")) {
-                            return 0f;
+                            return 0d;
                         }
-                        return Float.parseFloat(valorVida);
+                        return Double.parseDouble(valorVida);
                     })
-                    .reduce(0f, Float::sum);
+                    .reduce(0d, Double::sum);
 
-            final Float somatorioCpkTotal = vidasPneu.stream()
+            final Double somatorioCpkTotal = vidasPneu.stream()
                     .map(PneuKmRodadoPorVida::getValorPorKmVida)
                     .map(cpk -> {
                         if (cpk.equals("-")) {
-                            return 0f;
+                            return 0d;
                         }
-                        return Float.parseFloat(cpk);
+                        return Double.parseDouble(cpk);
                     })
-                    .reduce(0f, Float::sum);
+                    .reduce(0d, Double::sum);
 
             // Por último, adicionamos o total de km rodado em todas as vidas.
             row.add(infoVida1.getKmRodadoTodasVidas());
