@@ -1,6 +1,22 @@
 Change Log
 ==========
+
 ## Staged
+#### Features
+* Cria update único de KM de veiculo por código (PL-3213)
+* Cria funcionalidade de insert de processo de acoplamento (PL-3210)
+* Cria funcionalidade de verificação de dados de coleta de km (PL-3291)
+
+### Refactors
+* Realiza modificação mo CRUD de veiculos, incluindo os campos ```motorizado``` e ```possuiHubodometro``` (PL-3223)
+* Adiciona os veículos acoplados no objeto de `VeiculoVisualizacao` (PL-3212)
+* Adiciona os veículos acoplados no objeto de `VeiculoListagem` (PL-3211)
+* Adiciona propagação de km no fechamento de OS (PL-3335)
+* Adiciona novas ações no insert do histórico de acoplamento (PL-3344)
+* Adiciona novas validações no import massivo de veículos (PL-3288)
+* Realiza ajustes no acoplamento para funcionar apenas com MUDOU_POSICAO (PL-3355)
+* Refatora updates de km dos processos para usarem function centralizadora (PL-3290)
+
 ### Bug Fixes
 * Corrige diferenças entre branches na edição de veículo (PL-3326)
 
@@ -29,7 +45,6 @@ Change Log
 ## Version [v1.4.2](https://github.com/luizfp/PrologWebService/compare/v1.4.1...v1.4.2) (2020-11-22)
 
 ### Features
-
 * Implementa documentação da classe de unidade (PL-2898)
 * Configura FileWatcher no Prolog (PL-3267)
 
