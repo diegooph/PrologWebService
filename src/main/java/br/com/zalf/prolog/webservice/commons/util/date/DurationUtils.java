@@ -26,6 +26,10 @@ public final class DurationUtils {
             return format;
         }
     }
+    
+    private DurationUtils() {
+        throw new UnsupportedOperationException("An util class cannot be instatied!");
+    }
 
     @NotNull
     public static String formatDuration(final long durationInMillisToFormat, @NotNull final Format format) {
