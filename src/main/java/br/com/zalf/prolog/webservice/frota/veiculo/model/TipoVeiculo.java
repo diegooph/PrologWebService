@@ -9,8 +9,13 @@ public class TipoVeiculo {
     private Long codigo;
     private String nome;
     private String codAuxiliar;
+    private boolean motorizado;
 
-    public TipoVeiculo(Long codEmpresa, Long codDiagrama, Long codigo, String nome, String codAuxiliar) {
+    public TipoVeiculo(final Long codEmpresa,
+                       final Long codDiagrama,
+                       final Long codigo,
+                       final String nome,
+                       final String codAuxiliar) {
         this.codEmpresa = codEmpresa;
         this.codDiagrama = codDiagrama;
         this.codigo = codigo;
@@ -18,8 +23,40 @@ public class TipoVeiculo {
         this.codAuxiliar = codAuxiliar;
     }
 
+    public TipoVeiculo(final Long codEmpresa,
+                       final Long codDiagrama,
+                       final Long codigo,
+                       final String nome,
+                       final String codAuxiliar,
+                       final boolean motorizado) {
+        this.codEmpresa = codEmpresa;
+        this.codDiagrama = codDiagrama;
+        this.codigo = codigo;
+        this.nome = nome;
+        this.codAuxiliar = codAuxiliar;
+        this.motorizado = motorizado;
+    }
+
     public TipoVeiculo() {
 
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (obj == null) {
+            return false;
+        }
+
+        if (!(obj instanceof TipoVeiculo)) {
+            return false;
+        }
+
+        if (obj == this) {
+            return true;
+        }
+
+        final TipoVeiculo tipoVeiculo = (TipoVeiculo) obj;
+        return !(codigo == null || tipoVeiculo.codigo == null) && codigo.equals(tipoVeiculo.codigo);
     }
 
     public Long getCodEmpresa() {
@@ -42,7 +79,7 @@ public class TipoVeiculo {
         return codigo;
     }
 
-    public void setCodigo(Long codigo) {
+    public void setCodigo(final Long codigo) {
         this.codigo = codigo;
     }
 
@@ -50,26 +87,19 @@ public class TipoVeiculo {
         return nome;
     }
 
-    public void setNome(String nome) {
+    public void setNome(final String nome) {
         this.nome = nome;
     }
 
     public String getCodAuxiliar() { return codAuxiliar; }
 
-    public void setCodAuxiliar(String codAuxiliar) { this.codAuxiliar = codAuxiliar; }
+    public void setCodAuxiliar(final String codAuxiliar) { this.codAuxiliar = codAuxiliar; }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null)
-            return false;
+    public boolean isMotorizado() {
+        return motorizado;
+    }
 
-        if (!(obj instanceof TipoVeiculo))
-            return false;
-
-        if (obj == this)
-            return true;
-
-        final TipoVeiculo tipoVeiculo = (TipoVeiculo) obj;
-        return !(codigo == null || tipoVeiculo.codigo == null) && codigo.equals(tipoVeiculo.codigo);
+    public void setMotorizado(final boolean motorizado) {
+        this.motorizado = motorizado;
     }
 }

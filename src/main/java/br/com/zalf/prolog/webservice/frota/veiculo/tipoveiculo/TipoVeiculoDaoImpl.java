@@ -80,16 +80,16 @@ public final class TipoVeiculoDaoImpl extends DatabaseConnection implements Tipo
         try {
             conn = getConnection();
             stmt = conn.prepareStatement(
-                    "SELECT " +
-                            "  VT.COD_EMPRESA, " +
-                            "  VT.COD_DIAGRAMA, " +
-                            "  VT.CODIGO, " +
-                            "  VT.NOME, " +
-                            "  VT.COD_AUXILIAR " +
-                            "FROM VEICULO_TIPO VT " +
-                            "WHERE VT.COD_EMPRESA = ? " +
-                            "      AND VT.STATUS_ATIVO = TRUE " +
-                            "ORDER BY VT.NOME;");
+                    "select vt.cod_empresa, " +
+                            "vt.cod_diagrama, " +
+                            "vt.codigo, " +
+                            "vt.nome, " +
+                            "vt.cod_auxiliar, " +
+                            "vd.motorizado " +
+                            "from " +
+                            "veiculo_tipo vt " +
+                            "join veiculo_diagrama vd on vt.cod_diagrama = vd.codigo " +
+                            "where vt.cod_empresa = ?;");
             stmt.setLong(1, codEmpresa);
             rSet = stmt.executeQuery();
             final List<TipoVeiculo> tiposVeiculos = new ArrayList<>();
@@ -99,7 +99,8 @@ public final class TipoVeiculoDaoImpl extends DatabaseConnection implements Tipo
                         NullIf.equalOrLess(rSet.getLong("COD_DIAGRAMA"), 0),
                         rSet.getLong("CODIGO"),
                         rSet.getString("NOME"),
-                        rSet.getString("COD_AUXILIAR")));
+                        rSet.getString("COD_AUXILIAR"),
+                        rSet.getBoolean("MOTORIZADO")));
             }
             return tiposVeiculos;
         } finally {

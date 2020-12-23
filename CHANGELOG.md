@@ -3,11 +3,12 @@ Change Log
 
 ## Staged
 #### Features
-* Cria update único de KM de veiculo por código (PL-3213)
 * Cria funcionalidade de insert de processo de acoplamento (PL-3210)
 * Cria funcionalidade de verificação de dados de coleta de km (PL-3291)
+* Cria update único de KM de veiculo por código (PL-3213)
 
-### Refactors
+#### Refactors
+* Adiciona flag "motorizado" no tipo de veículo (PL-3387).
 * Realiza modificação mo CRUD de veiculos, incluindo os campos ```motorizado``` e ```possuiHubodometro``` (PL-3223)
 * Adiciona os veículos acoplados no objeto de `VeiculoVisualizacao` (PL-3212)
 * Adiciona os veículos acoplados no objeto de `VeiculoListagem` (PL-3211)
