@@ -10,8 +10,7 @@ import java.time.Duration;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-public class Durations {
-
+public final class Durations {
     public enum Format {
         HH_MM_SS("HH:mm:ss");
 
@@ -29,21 +28,25 @@ public class Durations {
     }
 
     @NotNull
-    public static String formatDuration(final long millis, @NotNull final Format format) {
-        return DurationFormatUtils.formatDuration(millis, format.getFormat());
+    public static String formatDuration(final long durationInMillisToFormat, @NotNull final Format format) {
+        return DurationFormatUtils.formatDuration(durationInMillisToFormat, format.getFormat());
     }
 
     @NotNull
-    public static String formatDurationHandleNegative(final long millis, @NotNull final Format format) {
-        if (millis < 0) {
-            return "-" + formatDuration(Math.abs(millis), format);
-        } else {
-            return formatDuration(millis, format);
+    public static String formatDuration(@NotNull final Duration durationToFormat, @NotNull final Format format) {
+        return formatDuration(durationToFormat.toMillis(), format);
+    }
+
+    @NotNull
+    public static String formatDurationHandleNegative(final long durationsInMillisToFormat,
+                                                      @NotNull final Format format) {
+        if (isDurationNegative(durationsInMillisToFormat)) {
+            return "-" + formatDuration(Math.abs(durationsInMillisToFormat), format);
         }
+        return formatDuration(durationsInMillisToFormat, format);
     }
 
-    @NotNull
-    public static String formatDuration(@NotNull final Duration duration, @NotNull final Format format) {
-        return formatDuration(duration.toMillis(), format);
+    private static boolean isDurationNegative(final long durationsInMillisToFormat) {
+        return durationsInMillisToFormat < 0;
     }
 }
