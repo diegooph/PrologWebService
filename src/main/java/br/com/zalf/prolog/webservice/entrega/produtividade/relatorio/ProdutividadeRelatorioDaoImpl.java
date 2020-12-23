@@ -8,6 +8,7 @@ import br.com.zalf.prolog.webservice.commons.report.ReportTransformer;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.entrega.produtividade.relatorio._model.ProdutividadeColaboradorDia;
 import br.com.zalf.prolog.webservice.entrega.produtividade.relatorio._model.ProdutividadeColaboradorRelatorio;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -16,6 +17,7 @@ import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static br.com.zalf.prolog.webservice.entrega.produtividade.relatorio._model.ProdutividadeRelatorioConverter.createProdutividadeColaboradorDia;
 import static br.com.zalf.prolog.webservice.entrega.produtividade.relatorio._model.ProdutividadeRelatorioConverter.createProdutividadeColaboradorRelatorio;
@@ -192,7 +194,15 @@ public class ProdutividadeRelatorioDaoImpl extends DatabaseConnection implements
         } finally {
             close(conn, stmt, rSet);
         }
-        return relatorioColaboradores;
+        return relatorioColaboradores.stream()
+                .sorted((produtividade1, produtividade2) -> {
+                    final Colaborador colaborador1 = produtividade1.getColaborador();
+                    final Colaborador colaborador2 = produtividade2.getColaborador();
+                    final int nomeComparison = colaborador1.getNome().compareTo(colaborador2.getNome());
+                    final int cpfComparison = colaborador1.getCpf().compareTo(colaborador2.getCpf());
+                    return Integer.compare(nomeComparison, cpfComparison);
+                })
+                .collect(Collectors.toList());
     }
 
     @NotNull
