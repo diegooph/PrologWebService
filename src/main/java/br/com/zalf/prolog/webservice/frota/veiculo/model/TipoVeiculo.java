@@ -6,13 +6,11 @@ package br.com.zalf.prolog.webservice.frota.veiculo.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@EqualsAndHashCode
 public class TipoVeiculo {
     private Long codEmpresa;
     private Long codDiagrama;
