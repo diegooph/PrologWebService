@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.frota.pneu;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
+import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
@@ -437,7 +438,7 @@ public final class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             stmt.setLong(2, pneuRetornoDescarte.getCodUnidade());
             stmt.setLong(3, pneuRetornoDescarte.getCodPneu());
             stmt.setLong(4, pneuRetornoDescarte.getCodColaborador());
-            stmt.setString(5, pneuRetornoDescarte.getMotivoRetornoDescarte());
+            stmt.setString(5, StringUtils.trimToNull(pneuRetornoDescarte.getMotivoRetornoDescarte()));
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return PneuConverter.createPneuRetornoDescarteSuccess(rSet);

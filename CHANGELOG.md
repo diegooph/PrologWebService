@@ -16,6 +16,7 @@ Change Log
 
 ### Refactors
 * Adiciona o token_integração em todas as requisições integradas (PL-3251)
+* Refatora objeto de resposta do retorno de pneu de descarte (PL-3371)
 
 ### Bug Fixes
 

@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu._model;
 
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestinoEnum;
+import lombok.Builder;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 
@@ -10,11 +10,12 @@ import org.jetbrains.annotations.NotNull;
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
 @Data
+@Builder(toBuilder = true)
 public final class PneuRetornoDescarteSuccess {
     @NotNull
     private final Long codPneuRetornado;
     @NotNull
-    private final OrigemDestinoEnum destinoFinalPneuRetornado;
+    private final Long codMovimentacaoGerada;
     @NotNull
-    private final Long codProcessoMovimentacaoUtilizadoParaRetorno;
+    private final String msg;
 }

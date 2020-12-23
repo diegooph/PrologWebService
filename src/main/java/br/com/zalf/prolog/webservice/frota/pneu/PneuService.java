@@ -147,7 +147,10 @@ public final class PneuService {
     @NotNull
     public PneuRetornoDescarteSuccess retornarPneuDescarte(@NotNull final PneuRetornoDescarte pneuRetornoDescarte) {
         try {
-            return dao.retornarPneuDescarte(pneuRetornoDescarte);
+            return dao.retornarPneuDescarte(pneuRetornoDescarte)
+                    .toBuilder()
+                    .msg("Retorno realizado com sucesso!")
+                    .build();
         } catch (final Throwable t) {
             final String message = String
                     .format("Erro ao retornar o pneu: %s do descarte.", pneuRetornoDescarte.getCodPneu());
