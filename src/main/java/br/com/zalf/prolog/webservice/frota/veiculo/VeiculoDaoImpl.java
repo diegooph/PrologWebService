@@ -141,7 +141,6 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
                         statusAntigoVeiculo,
                         statusNovoVeiculo);
                 conn.commit();
-
                 return new InfosVeiculoEditado(
                         veiculo.getCodigo(),
                         NullIf.equalOrLess(rSet.getLong("cod_edicao_historico_antigo"), 0),

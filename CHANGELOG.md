@@ -17,6 +17,9 @@ Change Log
 * Realiza ajustes no acoplamento para funcionar apenas com MUDOU_POSICAO (PL-3355)
 * Refatora updates de km dos processos para usarem function centralizadora (PL-3290)
 
+### Bug Fixes
+* Corrige diferenças entre branches na edição de veículo (PL-3326)
+
 <a name="v1.4.3"></a>
 ## Version [v1.4.3](https://github.com/luizfp/PrologWebService/compare/v1.4.2...v1.4.3) (release-date) [unreleased]
 
