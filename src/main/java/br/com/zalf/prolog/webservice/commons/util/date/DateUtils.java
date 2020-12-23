@@ -13,7 +13,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
-public class DateUtils {
+public final class DateUtils {
 
     private DateUtils() {
         throw new UnsupportedOperationException("An util class cannot be instatied!");
