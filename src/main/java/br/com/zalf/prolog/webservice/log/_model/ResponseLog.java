@@ -1,12 +1,11 @@
 package br.com.zalf.prolog.webservice.log._model;
 
+import br.com.zalf.prolog.webservice.commons.KeyCaseInsensitiveMultivaluedMap;
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
 import lombok.Data;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Map;
 
 /**
  * Created on 18/09/19.
@@ -16,7 +15,7 @@ import java.util.Map;
 @Data
 public final class ResponseLog {
     @Nullable
-    private final Map<String, String> headers;
+    private final KeyCaseInsensitiveMultivaluedMap<String, String> headers;
     @Nullable
     private final String annotations;
     @Nullable
@@ -28,7 +27,7 @@ public final class ResponseLog {
     @Nullable
     private final String errorBody;
 
-    public ResponseLog(@Nullable final Map<String, String> headers,
+    public ResponseLog(@Nullable final KeyCaseInsensitiveMultivaluedMap<String, String> headers,
                        @Nullable final String annotations,
                        @Nullable final String entityType,
                        final boolean isError,

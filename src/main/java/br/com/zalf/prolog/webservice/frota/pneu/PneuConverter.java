@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.frota.pneu;
 
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.frota.pneu._model.*;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestinoEnum;
 import br.com.zalf.prolog.webservice.frota.pneu.recapadoras.Recapadora;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
 import org.jetbrains.annotations.NotNull;
@@ -34,7 +35,7 @@ public final class PneuConverter {
         pneu.setValor(rSet.getBigDecimal("VALOR"));
         pneu.setCodUnidadeAlocado(rSet.getLong("COD_UNIDADE_ALOCADO"));
         pneu.setCodRegionalAlocado(rSet.getLong("COD_REGIONAL_ALOCADO"));
-        if(listagem) {
+        if (listagem) {
             pneu.setNomeUnidadeAlocado(rSet.getString("NOME_UNIDADE_ALOCADO"));
             pneu.setNomeRegionalAlocado(rSet.getString("NOME_REGIONAL_ALOCADO"));
         }
@@ -100,6 +101,15 @@ public final class PneuConverter {
         pneuAnalise.setRecapadora(createRecapadoraPneu(rSet));
         pneuAnalise.setCodigoColeta(rSet.getString("COD_COLETA"));
         return pneuAnalise;
+    }
+
+    @NotNull
+    public static PneuRetornoDescarteSuccess createPneuRetornoDescarteSuccess(@NotNull final ResultSet rSet)
+            throws SQLException {
+        return new PneuRetornoDescarteSuccess(
+                rSet.getLong("cod_pneu_retornado"),
+                OrigemDestinoEnum.fromString(rSet.getString("destino_final_pneu_retornado")),
+                rSet.getLong("cod_processo_movimentacao_utilizado_para_retorno"));
     }
 
     @NotNull

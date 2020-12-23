@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.log._model;
 
-import br.com.zalf.prolog.webservice.commons.KeyCaseInsensitiveMap;
+import br.com.zalf.prolog.webservice.commons.KeyCaseInsensitiveMultivaluedMap;
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
 import br.com.zalf.prolog.webservice.commons.util.ProLogCustomHeaders;
 import lombok.Data;
@@ -15,7 +15,7 @@ import org.jetbrains.annotations.Nullable;
 @Data
 public final class RequestLog {
     @Nullable
-    private final KeyCaseInsensitiveMap<String, String> headers;
+    private final KeyCaseInsensitiveMultivaluedMap<String, String> headers;
     @Nullable
     private final String url;
     @Nullable
@@ -30,7 +30,7 @@ public final class RequestLog {
     @Nullable
     public String getTokenIntegracao() {
         if (headers != null) {
-            return headers.get(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO);
+            return headers.get(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO).stream().findFirst().orElse(null);
         }
 
         return null;

@@ -234,7 +234,6 @@
         <module name="UnnecessarySemicolonInEnumeration"/>
         <module name="UnnecessarySemicolonInTryWithResources"/>
         <module name="UnusedImports"/>
-        <module name="CommentsIndentation"/>
         <!-- Fim Organização de código -->
     </module>
 </module>

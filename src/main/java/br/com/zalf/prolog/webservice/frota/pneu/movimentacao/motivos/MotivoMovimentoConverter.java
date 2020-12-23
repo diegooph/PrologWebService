@@ -3,7 +3,6 @@ package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoMovimentoHistoricoListagem;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoMovimentoListagem;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.MotivoMovimentoVisualizacao;
-import br.com.zalf.prolog.webservice.geral.unidade.UnidadeConverter;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
@@ -17,7 +16,7 @@ import java.time.LocalDateTime;
 public final class MotivoMovimentoConverter {
 
     private MotivoMovimentoConverter() {
-        throw new IllegalStateException(UnidadeConverter.class.getSimpleName() + " cannot be instantiated!");
+        throw new IllegalStateException(MotivoMovimentoConverter.class.getSimpleName() + " cannot be instantiated!");
     }
 
     @NotNull

@@ -2,6 +2,7 @@ package test.br.com.zalf.prolog.webservice.routines;
 
 import br.com.zalf.prolog.webservice.database.DatabaseConnectionProvider;
 import br.com.zalf.prolog.webservice.database.DatabaseManager;
+import br.com.zalf.prolog.webservice.integracao.praxio.data.ApiAutenticacaoHolder;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.SistemaProtheusNepomucenoDaoImpl;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.VeiculoAfericaoProtheusNepomuceno;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.VeiculoListagemProtheusNepomuceno;
@@ -33,7 +34,10 @@ public final class ModelosNaoMapeadosTest {
     @NotNull
     private static final Long COD_EMPRESA = 3L;
     @NotNull
-    private static final String URL_CRONOGRAMA = "http://mercurio.expressonepomuceno.com.br:9052/rest/CRONOGRAMA_AFERICAO";
+    private static final String TOKEN = "TOKEN_NEPOMUCENO";
+    @NotNull
+    private static final String URL_CRONOGRAMA =
+            "http://mercurio.expressonepomuceno.com.br:9052/rest/CRONOGRAMA_AFERICAO";
     @NotNull
     private static final String URL_NOVA_AFERICAO = "http://mercurio.expressonepomuceno.com.br:9052/rest/NOVA_AFERICAO";
     @NotNull
@@ -52,6 +56,33 @@ public final class ModelosNaoMapeadosTest {
         DatabaseManager.finish();
     }
 
+    @NotNull
+    private List<String> buscaModelosMapeados() throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        final DatabaseConnectionProvider provider = new DatabaseConnectionProvider();
+        try {
+            conn = provider.provideDatabaseConnection();
+            stmt = conn.prepareStatement("select regexp_split_to_table(vt.cod_auxiliar, ',') as cod_auxiliar " +
+                                                 "from veiculo_tipo vt " +
+                                                 "where vt.cod_empresa = ?;");
+            stmt.setLong(1, COD_EMPRESA);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                final List<String> modelosMapeados = new ArrayList<>();
+                do {
+                    modelosMapeados.add(rSet.getString("cod_auxiliar"));
+                } while (rSet.next());
+                return modelosMapeados;
+            } else {
+                return Collections.emptyList();
+            }
+        } finally {
+            provider.closeResources(conn, stmt, rSet);
+        }
+    }
+
     /**
      * Buscamos todas as placas e para cada uma, verificamos se ela está mapeada em um cod_auxiliar no nosso banco.
      * <p>
@@ -67,8 +98,10 @@ public final class ModelosNaoMapeadosTest {
         final List<String> modelosMapeados = buscaModelosMapeados();
 
         final ProtheusNepomucenoRequester requester = new ProtheusNepomucenoRequesterImpl();
+        final ApiAutenticacaoHolder apiAutenticacaoHolder =
+                new ApiAutenticacaoHolder(TOKEN, URL_CRONOGRAMA, null, null);
         final List<VeiculoListagemProtheusNepomuceno> listaPlacas =
-                requester.getListagemVeiculosUnidadesSelecionadas(URL_CRONOGRAMA, COD_FILIAIS);
+                requester.getListagemVeiculosUnidadesSelecionadas(apiAutenticacaoHolder, COD_FILIAIS);
         final List<String> modelosNepomuceno =
                 listaPlacas
                         .stream()
@@ -78,7 +111,8 @@ public final class ModelosNaoMapeadosTest {
 
         final List<VeiculoListagemProtheusNepomuceno> placasSemPneus = listaPlacas
                 .stream()
-                .filter(s -> s.getCodEstruturaVeiculo().contains("FA008") || s.getCodEstruturaVeiculo().contains("FA011"))
+                .filter(s -> s.getCodEstruturaVeiculo().contains("FA008") || s.getCodEstruturaVeiculo()
+                        .contains("FA011"))
                 .filter(s -> s.getQtdPneusAplicadosVeiculo() > 0)
                 .collect(Collectors.toList());
 
@@ -103,8 +137,10 @@ public final class ModelosNaoMapeadosTest {
         final ProtheusNepomucenoRequester requester = new ProtheusNepomucenoRequesterImpl();
         final DatabaseConnectionProvider provider = new DatabaseConnectionProvider();
 
+        final ApiAutenticacaoHolder apiAutenticacaoHolder =
+                new ApiAutenticacaoHolder(TOKEN, URL_CRONOGRAMA, null, null);
         final List<VeiculoListagemProtheusNepomuceno> placasFiltradas =
-                requester.getListagemVeiculosUnidadesSelecionadas(URL_CRONOGRAMA, COD_FILIAIS)
+                requester.getListagemVeiculosUnidadesSelecionadas(apiAutenticacaoHolder, COD_FILIAIS)
                         .stream()
                         .filter(v -> !v.deveRemover())
                         .collect(Collectors.toList());
@@ -119,15 +155,20 @@ public final class ModelosNaoMapeadosTest {
                     continue;
                 }
                 try {
+                    final ApiAutenticacaoHolder apiAutenticacaoHolderNovaAfericao =
+                            new ApiAutenticacaoHolder(TOKEN, URL_NOVA_AFERICAO, null, null);
                     final VeiculoAfericaoProtheusNepomuceno veiculoAfericao =
                             requester.getPlacaPneusAfericaoPlaca(
-                                    URL_NOVA_AFERICAO,
+                                    apiAutenticacaoHolderNovaAfericao,
                                     placa.getCodEmpresaFilialVeiculo(),
                                     placa.getPlacaVeiculo());
 
-                    final ProtheusNepomucenoPosicaoPneuMapper posicaoPneuMapper = new ProtheusNepomucenoPosicaoPneuMapper(
-                            veiculoAfericao.getCodEstruturaVeiculo(),
-                            sistema.getMapeamentoPosicoesProlog(conn, COD_EMPRESA, veiculoAfericao.getCodEstruturaVeiculo()));
+                    final ProtheusNepomucenoPosicaoPneuMapper posicaoPneuMapper =
+                            new ProtheusNepomucenoPosicaoPneuMapper(
+                                    veiculoAfericao.getCodEstruturaVeiculo(),
+                                    sistema.getMapeamentoPosicoesProlog(conn,
+                                                                        COD_EMPRESA,
+                                                                        veiculoAfericao.getCodEstruturaVeiculo()));
 
                     try {
                         ProtheusNepomucenoUtils
@@ -170,32 +211,5 @@ public final class ModelosNaoMapeadosTest {
                         + s.getCodEstruturaVeiculo() + " - "
                         + s.getPlacaVeiculo())
                 .forEach(System.out::println);
-    }
-
-    @NotNull
-    private List<String> buscaModelosMapeados() throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        final DatabaseConnectionProvider provider = new DatabaseConnectionProvider();
-        try {
-            conn = provider.provideDatabaseConnection();
-            stmt = conn.prepareStatement("select regexp_split_to_table(vt.cod_auxiliar, ',') as cod_auxiliar " +
-                    "from veiculo_tipo vt " +
-                    "where vt.cod_empresa = ?;");
-            stmt.setLong(1, COD_EMPRESA);
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                final List<String> modelosMapeados = new ArrayList<>();
-                do {
-                    modelosMapeados.add(rSet.getString("cod_auxiliar"));
-                } while (rSet.next());
-                return modelosMapeados;
-            } else {
-                return Collections.emptyList();
-            }
-        } finally {
-            provider.closeResources(conn, stmt, rSet);
-        }
     }
 }

@@ -1,0 +1,8 @@
+spring:
+  profiles: dev
+  datasource:
+    url: ""
+    username: ""
+    password: ""
+    hikari:
+      maximum-pool-size: 10

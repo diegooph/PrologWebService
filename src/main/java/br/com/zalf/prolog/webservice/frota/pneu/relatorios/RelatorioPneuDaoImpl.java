@@ -664,7 +664,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 final List<QuantidadeAfericao> qtdAfericoes = new ArrayList<>();
-                while (rSet.next()) {
+                do {
                     qtdAfericoes.add(
                             new QuantidadeAfericao(
                                     rSet.getDate("DATA_REFERENCIA"),
@@ -672,7 +672,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
                                     rSet.getInt("QTD_AFERICAO_SULCO"),
                                     rSet.getInt("QTD_AFERICAO_PRESSAO"),
                                     rSet.getInt("QTD_AFERICAO_SULCO_PRESSAO")));
-                }
+                } while (rSet.next());
                 return qtdAfericoes;
             } else {
                 throw new IllegalStateException("Erro ao buscar as informações de aferições realizadas para as " +
@@ -821,31 +821,6 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         return resultados;
     }
 
-    @NotNull
-    @Override
-    public List<SulcoPressao> getMenorSulcoEPressaoPneus(@NotNull final List<Long> codUnidades) throws Throwable {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        final List<SulcoPressao> valores = new ArrayList<>();
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_RELATORIO_MENOR_SULCO_E_PRESSAO_PNEUS(?);");
-            stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
-            rSet = stmt.executeQuery();
-            while (rSet.next()) {
-                valores.add(new SulcoPressao(
-                        rSet.getLong("COD_PNEU"),
-                        rSet.getString("COD_PNEU_CLIENTE"),
-                        rSet.getDouble("MENOR_SULCO"),
-                        rSet.getDouble("PRESSAO_ATUAL")));
-            }
-        } finally {
-            close(conn, stmt, rSet);
-        }
-        return valores;
-    }
-
     @Override
     public int getQtdPneusPressaoIncorreta(@NotNull final List<Long> codUnidades) throws SQLException {
         Connection conn = null;
@@ -872,6 +847,31 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
             close(conn, stmt, rSet);
         }
         return total;
+    }
+
+    @NotNull
+    @Override
+    public List<SulcoPressao> getMenorSulcoEPressaoPneus(@NotNull final List<Long> codUnidades) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        final List<SulcoPressao> valores = new ArrayList<>();
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_RELATORIO_MENOR_SULCO_E_PRESSAO_PNEUS(?);");
+            stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
+            rSet = stmt.executeQuery();
+            while (rSet.next()) {
+                valores.add(new SulcoPressao(
+                        rSet.getLong("COD_PNEU"),
+                        rSet.getString("COD_PNEU_CLIENTE"),
+                        rSet.getDouble("MENOR_SULCO"),
+                        rSet.getDouble("PRESSAO_ATUAL")));
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
+        return valores;
     }
 
     @Override
