@@ -10,7 +10,7 @@ import java.time.Duration;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-public final class Durations {
+public final class DurationUtils {
     public enum Format {
         HH_MM_SS("HH:mm:ss");
 
