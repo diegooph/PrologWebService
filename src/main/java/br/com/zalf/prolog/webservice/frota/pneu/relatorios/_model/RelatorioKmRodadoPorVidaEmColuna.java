@@ -1,11 +1,13 @@
 package br.com.zalf.prolog.webservice.frota.pneu.relatorios._model;
 
 import br.com.zalf.prolog.webservice.commons.report.CsvReport;
+import br.com.zalf.prolog.webservice.commons.util.FormatUtils;
 import com.google.common.annotations.VisibleForTesting;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -174,9 +176,15 @@ public final class RelatorioKmRodadoPorVidaEmColuna implements CsvReport {
                     })
                     .reduce(0d, Double::sum);
 
+            final String roundedSomatorioCpk =
+                    FormatUtils.truncateToString(BigDecimal.valueOf(somatorioCpkTotal), 3);
+
+            final String roundedSomatorioValorVida =
+                    FormatUtils.truncateToString(BigDecimal.valueOf(somatorioValorVidaTotal), 2);
+
             row.add(infoVida1.getKmRodadoTodasVidas());
-            row.add(somatorioCpkTotal.toString());
-            row.add(somatorioValorVidaTotal.toString());
+            row.add(roundedSomatorioCpk);
+            row.add(roundedSomatorioValorVida);
 
             innerTable.add(row);
         });
