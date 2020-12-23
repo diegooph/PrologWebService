@@ -173,8 +173,7 @@ public final class RelatorioKmRodadoPorVidaEmColuna implements CsvReport {
                         return Double.parseDouble(cpk);
                     })
                     .reduce(0d, Double::sum);
-
-            // Por último, adicionamos o total de km rodado em todas as vidas.
+            
             row.add(infoVida1.getKmRodadoTodasVidas());
             row.add(somatorioCpkTotal.toString());
             row.add(somatorioValorVidaTotal.toString());
