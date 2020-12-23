@@ -3,73 +3,31 @@ package br.com.zalf.prolog.webservice.frota.veiculo.model;
 /**
  * Created by jean on 25/05/16.
  */
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
 public class TipoVeiculo {
     private Long codEmpresa;
     private Long codDiagrama;
     private Long codigo;
     private String nome;
     private String codAuxiliar;
+    private boolean motorizado;
 
-    public TipoVeiculo(Long codEmpresa, Long codDiagrama, Long codigo, String nome, String codAuxiliar) {
+    public TipoVeiculo(final Long codEmpresa,
+                       final Long codDiagrama,
+                       final Long codigo,
+                       final String nome,
+                       final String codAuxiliar) {
         this.codEmpresa = codEmpresa;
         this.codDiagrama = codDiagrama;
         this.codigo = codigo;
         this.nome = nome;
         this.codAuxiliar = codAuxiliar;
-    }
-
-    public TipoVeiculo() {
-
-    }
-
-    public Long getCodEmpresa() {
-        return codEmpresa;
-    }
-
-    public void setCodEmpresa(final Long codEmpresa) {
-        this.codEmpresa = codEmpresa;
-    }
-
-    public Long getCodDiagrama() {
-        return codDiagrama;
-    }
-
-    public void setCodDiagrama(final Long codDiagrama) {
-        this.codDiagrama = codDiagrama;
-    }
-
-    public Long getCodigo() {
-        return codigo;
-    }
-
-    public void setCodigo(Long codigo) {
-        this.codigo = codigo;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public String getCodAuxiliar() { return codAuxiliar; }
-
-    public void setCodAuxiliar(String codAuxiliar) { this.codAuxiliar = codAuxiliar; }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null)
-            return false;
-
-        if (!(obj instanceof TipoVeiculo))
-            return false;
-
-        if (obj == this)
-            return true;
-
-        final TipoVeiculo tipoVeiculo = (TipoVeiculo) obj;
-        return !(codigo == null || tipoVeiculo.codigo == null) && codigo.equals(tipoVeiculo.codigo);
     }
 }

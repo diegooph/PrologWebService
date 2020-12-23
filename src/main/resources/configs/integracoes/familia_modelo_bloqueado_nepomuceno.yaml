@@ -55,3 +55,8 @@ modelosBloqueados:
   - 'FA012:M0398'
   - 'FA013:M0462'
   - 'FA013:M0476'
+
+# Código de placas específicas a serem bloqueadas no Prolog. Todas as placas aqui exibidas não
+# serão exibidos no Prolog.
+placasBloqueadas:
+  - 'GUS1234'

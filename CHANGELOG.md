@@ -3,11 +3,12 @@ Change Log
 
 ## Staged
 #### Features
-* Cria update único de KM de veiculo por código (PL-3213)
 * Cria funcionalidade de insert de processo de acoplamento (PL-3210)
 * Cria funcionalidade de verificação de dados de coleta de km (PL-3291)
+* Cria update único de KM de veiculo por código (PL-3213)
 
-### Refactors
+#### Refactors
+* Adiciona flag "motorizado" no tipo de veículo (PL-3387).
 * Realiza modificação mo CRUD de veiculos, incluindo os campos ```motorizado``` e ```possuiHubodometro``` (PL-3223)
 * Adiciona os veículos acoplados no objeto de `VeiculoVisualizacao` (PL-3212)
 * Adiciona os veículos acoplados no objeto de `VeiculoListagem` (PL-3211)
@@ -17,8 +18,29 @@ Change Log
 * Realiza ajustes no acoplamento para funcionar apenas com MUDOU_POSICAO (PL-3355)
 * Refatora updates de km dos processos para usarem function centralizadora (PL-3290)
 
+### Bug Fixes
+* Corrige diferenças entre branches na edição de veículo (PL-3326)
+
 <a name="v1.4.3"></a>
 ## Version [v1.4.3](https://github.com/luizfp/PrologWebService/compare/v1.4.2...v1.4.3) (release-date) [unreleased]
+
+### Features
+
+* Adiciona Spring como gerenciador de conexões, não utilizando mais a classe `DatabaseManager`, configurando através de
+  YAML (PL-3265)
+* Adiciona `Hikari` como gerenciador de pool de conexões (PL-3266)
+* Adiciona `Spring Data JPA` para realizar o mapeamento e CRUD de Unidade (PL-3309)
+* Adiciona scheduler para deleção dos arquivos temporários do tomcat (PL-3318)
+* Implementa bloqueios de placa para Nepomuceno (PL-3351)
+* Adiciona deleção das checklists (PL-3217)
+* Corrige busca de histórico de edições (PL-3204)
+
+### Refactors
+* Adiciona o token_integração em todas as requisições integradas (PL-3251)
+
+### Bug Fixes
+
+* Relatório qtd aferições by tipo e data não traz primeira linha (PL-3188)
 
 <a name="v1.4.2"></a>
 ## Version [v1.4.2](https://github.com/luizfp/PrologWebService/compare/v1.4.1...v1.4.2) (2020-11-22)

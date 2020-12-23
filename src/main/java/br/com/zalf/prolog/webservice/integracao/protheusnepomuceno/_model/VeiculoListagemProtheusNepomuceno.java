@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model;
 
 import org.jetbrains.annotations.NotNull;
 
-import static br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.utils.FamiliaModeloBloqueadoLoader.getFamiliasModelosBloqueio;
+import static br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.utils.FamiliaModeloBloqueadoLoader.getFamiliasModelosPlacasBloqueio;
 import static br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.utils.ProtheusNepomucenoConstants.DEFAULT_CODIGOS_SEPARATOR;
 
 /**
@@ -162,20 +162,28 @@ public final class VeiculoListagemProtheusNepomuceno {
     }
 
     public boolean deveRemover() {
-        for (final String familiaBloqueada : getFamiliasModelosBloqueio().getFamiliasBloqueadas()) {
-            if (codEstruturaVeiculo.contains(familiaBloqueada)) {
-                return true;
-            }
-        }
-        for (final String familiaModeloBloqueado : getFamiliasModelosBloqueio().getModelosBloqueados()) {
-            if (codEstruturaVeiculo.equals(familiaModeloBloqueado)) {
-                return true;
-            }
-        }
-        return false;
+        return verificaSeFamiliaBloqueada() || verificaSeModeloBloqueado() || verificaSePlacaBloqueada();
     }
 
     public boolean temPneusAplicados() {
         return qtdPneusAplicadosVeiculo > 0;
+    }
+
+    private boolean verificaSePlacaBloqueada() {
+        return getFamiliasModelosPlacasBloqueio()
+                .getPlacasBloqueadas()
+                .stream()
+                .anyMatch(placa -> placa.equalsIgnoreCase(placaVeiculo));
+    }
+
+    private boolean verificaSeModeloBloqueado() {
+        return getFamiliasModelosPlacasBloqueio().getModelosBloqueados().stream().anyMatch(codEstruturaVeiculo::equals);
+    }
+
+    private boolean verificaSeFamiliaBloqueada() {
+        return getFamiliasModelosPlacasBloqueio()
+                .getFamiliasBloqueadas()
+                .stream()
+                .anyMatch(codEstruturaVeiculo::contains);
     }
 }

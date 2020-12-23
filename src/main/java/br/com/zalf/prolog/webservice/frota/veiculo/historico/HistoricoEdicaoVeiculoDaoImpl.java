@@ -48,6 +48,6 @@ public final class HistoricoEdicaoVeiculoDaoImpl extends DatabaseConnection impl
                     return Collections.emptyList();
                 }
             }
-        }
-    }
+         }
+     }
 }

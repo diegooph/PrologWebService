@@ -28,6 +28,14 @@ class DataAccessException extends ProLogException {
         super(httpStatusCode, proLogErrorCode, message, detailedMessage);
     }
 
+    public DataAccessException(final int httpStatusCode,
+                               final int proLogErrorCode,
+                               @NotNull final String message,
+                               @NotNull final String detailedMessage,
+                               final boolean loggableOnErrorReportSystem) {
+        super(httpStatusCode, proLogErrorCode, message, detailedMessage, loggableOnErrorReportSystem);
+    }
+
     DataAccessException(final int httpStatusCode,
                         final int proLogErrorCode,
                         @NotNull final String message,

@@ -63,36 +63,50 @@ public final class GlobusPiccoloturRequesterImpl implements GlobusPiccoloturRequ
     @NotNull
     @Override
     public GlobusPiccoloturAutenticacaoResponse getTokenAutenticacaoIntegracao(
-            @NotNull final String url,
-            @NotNull final String token,
-            @NotNull final Long shortCode) throws Throwable {
+            @NotNull final ApiAutenticacaoHolder autenticacaoHolder) throws Throwable {
+        if (autenticacaoHolder.getApiTokenClient() == null
+                || autenticacaoHolder.getApiShortCode() == null) {
+            throw new IllegalArgumentException("apiTokenClient e apiShortCode não pode ser nulos!");
+        }
         final GlobusPiccoloturRest service = GlobusPiccoloturRestClient.getService(GlobusPiccoloturRest.class);
         final Call<GlobusPiccoloturAutenticacaoResponse> call =
-                service.getTokenAutenticacaoIntegracao(url, token, shortCode);
+                service.getTokenAutenticacaoIntegracao(
+                        autenticacaoHolder.getPrologTokenIntegracao(),
+                        autenticacaoHolder.getUrl(),
+                        autenticacaoHolder.getApiTokenClient(),
+                        autenticacaoHolder.getApiShortCode());
         return handleJsonResponse(call.execute(), true);
     }
 
     @NotNull
     @Override
     public GlobusPiccoloturMovimentacaoResponse insertProcessoMovimentacao(
-            @NotNull final String url,
+            @NotNull final ApiAutenticacaoHolder autenticacaoHolder,
             @NotNull final String tokenIntegracao,
             @NotNull final ProcessoMovimentacaoGlobus processoMovimentacaoGlobus) throws Throwable {
         final GlobusPiccoloturRest service = GlobusPiccoloturRestClient.getService(GlobusPiccoloturRest.class);
         final Call<GlobusPiccoloturMovimentacaoResponse> call =
-                service.insertProcessoMovimentacao(url, tokenIntegracao, processoMovimentacaoGlobus);
+                service.insertProcessoMovimentacao(
+                        autenticacaoHolder.getPrologTokenIntegracao(),
+                        autenticacaoHolder.getUrl(),
+                        tokenIntegracao,
+                        processoMovimentacaoGlobus);
         return handleJsonResponse(call.execute());
     }
 
     @NotNull
     @Override
     public GlobusPiccoloturLocalMovimentoResponse getLocaisMovimentoGlobusResponse(
-            @NotNull final String url,
+            @NotNull final ApiAutenticacaoHolder autenticacaoHolder,
             @NotNull final String tokenIntegracao,
             @NotNull final String cpfColaborador) throws Throwable {
         final GlobusPiccoloturRest service = GlobusPiccoloturRestClient.getService(GlobusPiccoloturRest.class);
         final Call<GlobusPiccoloturLocalMovimentoResponse> call =
-                service.getLocaisMovimentoGlobus(url, tokenIntegracao, cpfColaborador);
+                service.getLocaisMovimentoGlobus(
+                        autenticacaoHolder.getPrologTokenIntegracao(),
+                        autenticacaoHolder.getUrl(),
+                        tokenIntegracao,
+                        cpfColaborador);
         final GlobusPiccoloturLocalMovimentoResponse response = handleJsonResponse(call.execute());
         if (!response.isSucesso() || response.getLocais() == null || response.getUsuarioGlobus() == null) {
             throw new GlobusPiccoloturException("[INTEGRAÇÂO] Erro ao buscar Locais de Movimento para a movimentação");
@@ -115,7 +129,7 @@ public final class GlobusPiccoloturRequesterImpl implements GlobusPiccoloturRequ
                 if (tokenResponse) {
                     try {
                         final GlobusPiccoloturAutenticacaoResponse atenticacaoResponse =
-                                ((GlobusPiccoloturAutenticacaoResponse) response.body());
+                                (GlobusPiccoloturAutenticacaoResponse) response.body();
                         if (atenticacaoResponse.isSucesso()) {
                             return response.body();
                         }
@@ -125,11 +139,11 @@ public final class GlobusPiccoloturRequesterImpl implements GlobusPiccoloturRequ
                                 // Lançamos uma exception contendo o conteúdo do erro recebido, assim podemos logar essa
                                 // informação facilitando a correção de erros.
                                 new Exception(atenticacaoResponse.getData()));
-                    } catch (final ClassCastException c) {
+                    } catch (final ClassCastException exception) {
                         throw new GlobusPiccoloturException(
                                 ERRO_AO_AUTENTICAR_INTEGRACAO,
                                 "O retorno obtido da integração não está no padrão esperado",
-                                c);
+                                exception);
                     }
                 }
                 return response.body();
@@ -156,7 +170,7 @@ public final class GlobusPiccoloturRequesterImpl implements GlobusPiccoloturRequ
             return GlobusPiccoloturMovimentacaoResponse.generateFromString(jsonBody);
         } catch (final Throwable t) {
             final String msg = String.format("Erro ao realizar o parse da mensagem de erro recebida da integração:\n" +
-                    "jsonBody: %s", jsonBody);
+                                                     "jsonBody: %s", jsonBody);
             Log.e(TAG, msg, t);
             throw new GlobusPiccoloturException("[INTEGRAÇÃO] Erro ao movimentar pneus no sistema integrado");
         }

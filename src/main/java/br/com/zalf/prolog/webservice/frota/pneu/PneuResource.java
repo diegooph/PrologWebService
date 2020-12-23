@@ -6,6 +6,8 @@ import br.com.zalf.prolog.webservice.commons.util.Required;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu._model.PneuComum;
+import br.com.zalf.prolog.webservice.frota.pneu._model.PneuRetornoDescarte;
+import br.com.zalf.prolog.webservice.frota.pneu._model.PneuRetornoDescarteSuccess;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.AppVersionCodeHandler;
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.DefaultAppVersionCodeHandler;
@@ -13,7 +15,9 @@ import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.VersionCode
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.VersionNotPresentAction;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import org.glassfish.jersey.media.multipart.FormDataParam;
+import org.jetbrains.annotations.NotNull;
 
+import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.io.InputStream;
@@ -50,6 +54,14 @@ public final class PneuResource {
         return service.insert(userToken, codUnidade, pneu, ignoreDotValidation);
     }
 
+    @POST
+    @Secured(permissions = Pilares.Frota.Pneu.ALTERAR)
+    @Path("/retornar-descarte")
+    public PneuRetornoDescarteSuccess retornarPneuDescarte(
+            @Valid @NotNull @Required final PneuRetornoDescarte pneuRetornoDescarte) {
+        return service.retornarPneuDescarte(pneuRetornoDescarte);
+    }
+
     @PUT
     @Secured(permissions = {Pilares.Frota.Pneu.CADASTRAR, Pilares.Frota.Pneu.ALTERAR})
     @Path("/{codUnidade}/{codPneuOriginal}")
@@ -75,8 +87,8 @@ public final class PneuResource {
             targetVersionCode = 68,
             versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
             actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
-    public List<Pneu> getPneuByCodUnidadeByStatus(@PathParam("codUnidade") Long codUnidade,
-                                                  @PathParam("status") String status) throws ProLogException {
+    public List<Pneu> getPneuByCodUnidadeByStatus(@PathParam("codUnidade") final Long codUnidade,
+                                                  @PathParam("status") final String status) throws ProLogException {
         return service.getPneusByCodUnidadesByStatus(Collections.singletonList(codUnidade), status);
     }
 
@@ -95,7 +107,7 @@ public final class PneuResource {
             versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
             actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
     public List<Pneu> getPneuByCodUnidadesByStatus(@QueryParam("codUnidades") @Required final List<Long> codUnidades,
-                                                   @QueryParam("status") @Required String status) {
+                                                   @QueryParam("status") @Required final String status) {
         return service.getPneusByCodUnidadesByStatus(codUnidades, status);
     }
 
@@ -109,8 +121,8 @@ public final class PneuResource {
     @GET
     @Secured
     @Path("/unidades/{codUnidade}/{codPneu}")
-    public Pneu getPneuByCod(@PathParam("codPneu") Long codPneu,
-                             @PathParam("codUnidade") Long codUnidade) throws ProLogException {
+    public Pneu getPneuByCod(@PathParam("codPneu") final Long codPneu,
+                             @PathParam("codUnidade") final Long codUnidade) throws ProLogException {
         return service.getPneuByCod(codPneu, codUnidade);
     }
 
