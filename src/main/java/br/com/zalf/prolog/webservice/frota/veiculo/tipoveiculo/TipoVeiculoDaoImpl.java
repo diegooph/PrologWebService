@@ -113,7 +113,7 @@ public final class TipoVeiculoDaoImpl extends DatabaseConnection implements Tipo
     public TipoVeiculo getTipoVeiculo(@NotNull final Long codTipoVeiculo) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
-        final ResultSet rSet = null;
+        ResultSet rSet = null;
         try {
             conn = getConnection();
             stmt = conn.prepareStatement(
@@ -124,9 +124,11 @@ public final class TipoVeiculoDaoImpl extends DatabaseConnection implements Tipo
                             "VT.NOME, " +
                             "VT.COD_AUXILIAR," +
                             "VD.MOTORIZADO " +
-                            "FROM VEICULO_TIPO VT" +
-                            "JOIN VEICULO_DIAGRAMA VD ON VT.COD_DIAGRAMA = VD.CODIGO" +
+                            "FROM VEICULO_TIPO VT " +
+                            "JOIN VEICULO_DIAGRAMA VD ON VT.COD_DIAGRAMA = VD.CODIGO " +
                             "WHERE VT.CODIGO = ?;");
+            stmt.setLong(1, codTipoVeiculo);
+            rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return new TipoVeiculo(
                         rSet.getLong("COD_EMPRESA"),
