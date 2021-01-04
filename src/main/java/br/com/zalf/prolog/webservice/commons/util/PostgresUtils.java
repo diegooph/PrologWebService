@@ -13,7 +13,8 @@ import java.util.List;
 
 public class PostgresUtils {
     @Deprecated
-    public static Array listToArray(final Connection conn, final List<String> list) throws SQLException {
+    public static Array listToArray(@NotNull final Connection conn, @NotNull final List<String> list)
+            throws SQLException {
         final String[] array = list.toArray(new String[0]);
         return conn.createArrayOf("text", array);
     }
@@ -26,7 +27,8 @@ public class PostgresUtils {
     }
 
     @Deprecated
-    public static Array listLongToArray(final Connection conn, final List<Long> list) throws SQLException {
+    public static Array listLongToArray(@NotNull final Connection conn, @NotNull final List<Long> list)
+            throws SQLException {
         return conn.createArrayOf("text", list.toArray(new Long[0]));
     }
 
