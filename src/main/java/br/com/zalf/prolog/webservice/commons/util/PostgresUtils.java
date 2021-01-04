@@ -12,15 +12,14 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class PostgresUtils {
-
     @Deprecated
-    public static Array ListToArray(Connection conn, List<String> list) throws SQLException {
-        String[] array = list.toArray(new String[0]);
+    public static Array ListToArray(final Connection conn, final List<String> list) throws SQLException {
+        final String[] array = list.toArray(new String[0]);
         return conn.createArrayOf("text", array);
     }
 
     @Deprecated
-    public static Array ListLongToArray(Connection conn, List<Long> list) throws SQLException {
+    public static Array ListLongToArray(final Connection conn, final List<Long> list) throws SQLException {
         return conn.createArrayOf("text", list.toArray(new Long[0]));
     }
 
