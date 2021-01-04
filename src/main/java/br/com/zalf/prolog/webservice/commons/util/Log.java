@@ -3,7 +3,6 @@ package br.com.zalf.prolog.webservice.commons.util;
 import org.apache.logging.log4j.LogManager;
 
 public class Log {
-
     public static void d(final String tag, final String message) {
         if (ProLogUtils.isDebug()) {
             LogManager.getLogger(tag).debug(message);
