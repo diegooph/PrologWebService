@@ -7,7 +7,7 @@ import java.time.LocalTime;
 
 /**
  * A TimeRange is the range between two times.
- *
+ * <p>
  * Created on 24/07/2018
  *
  * @author Luiz Felipe (https://github.com/luizfp)
@@ -17,6 +17,11 @@ public class TimeRange {
     private final LocalTime start;
     @NotNull
     private final LocalTime end;
+
+    private TimeRange(@NotNull final LocalTime start, @NotNull final LocalTime end) {
+        this.start = start;
+        this.end = end;
+    }
 
     @NotNull
     public static TimeRange of(final int startHour, final int endHour) {
@@ -35,64 +40,6 @@ public class TimeRange {
         return new TimeRange(start, start.plus(length));
     }
 
-    private TimeRange(@NotNull final LocalTime start, @NotNull final LocalTime end) {
-        this.start = start;
-        this.end = end;
-    }
-
-    @NotNull
-    public LocalTime getStart() {
-        return start;
-    }
-
-    @NotNull
-    public LocalTime getEnd() {
-        return end;
-    }
-
-    public boolean overlaps(@NotNull final TimeRange other) {
-        if (endsNextDay()) {
-            return overlapsDayEnd(other);
-        }
-        if (other.endsNextDay()) {
-            return other.overlapsDayEnd(this);
-        }
-        assert start.isBefore(end) : "start '" + start + "' must be less than end '" + end + "'!";
-        assert other.start.isBefore(other.end) : "other start must be less than other end!";
-        return !start.isAfter(other.end) && !end.isBefore(other.start);
-    }
-
-    private boolean overlapsDayEnd(@NotNull final TimeRange other) {
-        // check rest of this day and start of next day separately
-        final TimeRange firstPart = new TimeRange(start, LocalTime.MAX);
-        final TimeRange secondPart = new TimeRange(LocalTime.MIN, end);
-        return firstPart.overlaps(other) || secondPart.getDuration().isZero() || secondPart.overlaps(other);
-    }
-
-    /**
-     * @return <code>true</code> if the end of this time range is an the next day.
-     */
-    public boolean endsNextDay() {
-        return start.isAfter(end);
-    }
-
-    @NotNull
-    public Duration getDuration() {
-        final Duration duration = Duration.between(start, end);
-        if (duration.isNegative()) {
-            return duration.plusDays(1);
-        }
-        return duration;
-    }
-
-    public int toHours() {
-        return (int) getDuration().toHours();
-    }
-
-    public int toMinutes() {
-        return (int) getDuration().toMinutes();
-    }
-
     @SuppressWarnings("ConstantConditions")
     @Override
     public int hashCode() {
@@ -105,7 +52,7 @@ public class TimeRange {
 
     @SuppressWarnings("ConstantConditions")
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (this == obj) {
             return true;
         }
@@ -130,5 +77,54 @@ public class TimeRange {
         } else {
             return start.equals(other.start);
         }
+    }
+
+    @NotNull
+    public LocalTime getStart() {
+        return start;
+    }
+
+    @NotNull
+    public LocalTime getEnd() {
+        return end;
+    }
+
+    public boolean overlaps(@NotNull final TimeRange other) {
+        if (startLaterThanEnd()) {
+            return overlapsDayEnd(other);
+        }
+        if (other.startLaterThanEnd()) {
+            return other.overlapsDayEnd(this);
+        }
+        assert start.isBefore(end) : "start '" + start + "' must be less than end '" + end + "'!";
+        assert other.start.isBefore(other.end) : "other start must be less than other end!";
+        return !start.isAfter(other.end) && !end.isBefore(other.start);
+    }
+
+    public boolean startLaterThanEnd() {
+        return start.isAfter(end);
+    }
+
+    @NotNull
+    public Duration getDuration() {
+        final Duration duration = Duration.between(start, end);
+        if (duration.isNegative()) {
+            return duration.plusDays(1);
+        }
+        return duration;
+    }
+
+    public int toHours() {
+        return (int) getDuration().toHours();
+    }
+
+    public int toMinutes() {
+        return (int) getDuration().toMinutes();
+    }
+
+    private boolean overlapsDayEnd(@NotNull final TimeRange other) {
+        final TimeRange firstPart = new TimeRange(start, LocalTime.MAX);
+        final TimeRange secondPart = new TimeRange(LocalTime.MIN, end);
+        return firstPart.overlaps(other) || secondPart.getDuration().isZero() || secondPart.overlaps(other);
     }
 }
