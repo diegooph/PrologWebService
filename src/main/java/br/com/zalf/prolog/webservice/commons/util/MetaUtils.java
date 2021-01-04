@@ -9,8 +9,9 @@ import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
 
 /**
- * Created by jean on 16/12/15.
- * Utilitária para cáculo das metas e das flags de atingimento.
+ * Created 16/12/15
+ *
+ * @author Jean Zart (https://github.com/jeanzart)
  */
 public class MetaUtils {
 
@@ -20,7 +21,7 @@ public class MetaUtils {
      * @param meta
      * @return
      */
-    public static boolean bateuMeta(double resultado, double meta){
+    public static boolean bateuMeta(final double resultado, final double meta){
         if(resultado <= meta) {
             return true;
         }
@@ -35,9 +36,9 @@ public class MetaUtils {
      * @param meta
      * @return
      */
-    public static boolean bateuMeta(Time resultado, Time meta) {
-        LocalTime r = TimeUtils.toLocalTime(resultado);
-        LocalTime m = TimeUtils.toLocalTime(meta);
+    public static boolean bateuMeta(final Time resultado, final Time meta) {
+        final LocalTime r = TimeUtils.toLocalTime(resultado);
+        final LocalTime m = TimeUtils.toLocalTime(meta);
         if(r.isBefore(m) || r.equals(m)) {
             return true;
         }
@@ -50,7 +51,7 @@ public class MetaUtils {
      * @param meta
      * @return
      */
-    public static boolean bateuMetaMapas(double resultado, double meta){
+    public static boolean bateuMetaMapas(final double resultado, final double meta){
         if(resultado >= meta) {
             return true;
         }
@@ -63,13 +64,13 @@ public class MetaUtils {
      * @param hrMatinal
      * @return
      */
-    public static Time calculaTempoLargada(Time hrSaida, Time hrMatinal) {
-        LocalTime horaSaida = TimeUtils.toLocalTime(hrSaida);
-        LocalTime horaMatinal = TimeUtils.toLocalTime(hrMatinal);
+    public static Time calculaTempoLargada(final Time hrSaida, final Time hrMatinal) {
+        final LocalTime horaSaida = TimeUtils.toLocalTime(hrSaida);
+        final LocalTime horaMatinal = TimeUtils.toLocalTime(hrMatinal);
         /**
          * Tempo fixo de matinal, 30 minutos.
          */
-        LocalTime matinal = LocalTime.of(00, 30, 00);
+        final LocalTime matinal = LocalTime.of(00, 30, 00);
         if(horaMatinal.isAfter(horaSaida)){
             return TimeUtils.toSqlTime(matinal);
         } else {
