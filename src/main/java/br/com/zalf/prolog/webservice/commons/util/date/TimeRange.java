@@ -15,6 +15,9 @@ public class TimeRange {
     private final LocalTime start;
     @NotNull
     private final LocalTime end;
+    private TimeRange() {
+        throw new IllegalStateException(TimeRange.class.getSimpleName() + " cannot be instantiated!");
+    }
 
     private TimeRange(@NotNull final LocalTime start, @NotNull final LocalTime end) {
         this.start = start;
