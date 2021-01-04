@@ -15,15 +15,19 @@ import java.time.temporal.ChronoUnit;
  * @author Jean Zart (https://github.com/jeanzart)
  */
 public class TimeUtils {
+    private TimeUtils() {
+        throw new IllegalStateException(TimeUtils.class.getSimpleName() + " cannot be instantiated!");
+    }
+
     @NotNull
-    public static Time differenceBetween(final Time time1, final Time time2) {
+    public static Time differenceBetween(@NotNull final Time time1, final Time time2) {
         final LocalTime localTime1 = TimeUtils.toLocalTime(time1);
         final LocalTime localTime2 = TimeUtils.toLocalTime(time2);
         return TimeUtils.toSqlTime(localTime1.minus(localTime2.getLong(ChronoField.MILLI_OF_DAY), ChronoUnit.MILLIS));
     }
 
     @NotNull
-    public static Time somaHoras(final Time originalTime, final Time timeToBeAdded) {
+    public static Time somaHoras(@NotNull final Time originalTime, final Time timeToBeAdded) {
         final LocalTime originalTimeConverted = TimeUtils.toLocalTime(originalTime);
         final LocalTime timeToBeAddedConverted = TimeUtils.toLocalTime(timeToBeAdded);
         return TimeUtils.toSqlTime(
@@ -32,27 +36,27 @@ public class TimeUtils {
     }
 
     @NotNull
-    public static LocalTime toLocalTime(final Time sqlTime) {
+    public static LocalTime toLocalTime(@NotNull final Time sqlTime) {
         return sqlTime.toLocalTime();
     }
 
     @NotNull
-    public static LocalTime toLocalTime(final Timestamp timeStamp) {
+    public static LocalTime toLocalTime(@NotNull final Timestamp timeStamp) {
         return timeStamp.toLocalDateTime().toLocalTime();
     }
 
     @NotNull
-    public static Time toSqlTime(final LocalTime localTime) {
+    public static Time toSqlTime(@NotNull final LocalTime localTime) {
         return Time.valueOf(localTime);
     }
 
     @NotNull
-    public static Time toSqlTime(final Timestamp timestamp) {
+    public static Time toSqlTime(@NotNull final Timestamp timestamp) {
         return new Time(timestamp.getTime());
     }
 
     @NotNull
-    public static Time toSqlTime(final String stringToParse) {
+    public static Time toSqlTime(@NotNull final String stringToParse) {
         return toSqlTime(LocalTime.parse(stringToParse));
     }
 
