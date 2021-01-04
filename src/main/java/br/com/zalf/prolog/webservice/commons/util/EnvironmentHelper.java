@@ -1,7 +1,9 @@
 package br.com.zalf.prolog.webservice.commons.util;
 
 /**
- * Created by luiz on 13/02/17.
+ * Created on 13/02/2017
+ *
+ * @author Luiz Felipe (https://github.com/luizfp)
  */
 public class EnvironmentHelper {
     public static final String PROLOG_RDS_HOSTNAME;
