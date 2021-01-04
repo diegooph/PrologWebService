@@ -18,15 +18,15 @@ import java.util.List;
 public class ServicoService {
 
     private static final String TAG = ServicoService.class.getSimpleName();
-    private ServicoDao dao = Injection.provideServicoDao();
+    private final ServicoDao dao = Injection.provideServicoDao();
 
-    public ServicosAbertosHolder getQuantidadeServicosAbertosVeiculo(Long codUnidade,
-                                                                     String agrupamento) {
+    public ServicosAbertosHolder getQuantidadeServicosAbertosVeiculo(final Long codUnidade,
+                                                                     final String agrupamento) {
         final AgrupamentoQuantidadeServicos tipoAgrupamento = AgrupamentoQuantidadeServicos.fromString(agrupamento);
         if (tipoAgrupamento.equals(AgrupamentoQuantidadeServicos.POR_VEICULO)) {
             try {
                 return dao.getQuantidadeServicosAbertosVeiculo(codUnidade);
-            } catch (SQLException e) {
+            } catch (final SQLException e) {
                 Log.e(TAG, String.format("Erro ao buscar quantidade de serviços abertos por veículo. \n," +
                         "Unidade: %d", codUnidade), e);
                 return null;
@@ -51,10 +51,10 @@ public class ServicoService {
         }
     }
 
-    public List<Servico> getServicosAbertosByPlaca(String placa, String tipoServico) {
+    public List<Servico> getServicosAbertosByPlaca(final String placa, final String tipoServico) {
         try {
             return dao.getServicosAbertosByPlaca(placa, tipoServico != null ? TipoServico.fromString(tipoServico) : null);
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar os serviços abertos da placa. \n," +
                     "TipoServico: %s \n" +
                     "Placa: %s", tipoServico, placa), e);
@@ -69,7 +69,7 @@ public class ServicoService {
         try {
             RouterAfericaoServico
                     .create(dao, userToken)
-                    .fechaServico(codUnidade, Now.offsetDateTimeUtc(), servico);
+                    .fechaServico(codUnidade, Now.getOffsetDateTimeUtc(), servico);
             return Response.ok("Serviço consertado com sucesso");
         } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao inserir o conserto de um item\n" +
@@ -84,7 +84,7 @@ public class ServicoService {
     public Servico getServicoByCod(final Long codUnidade, final Long codServico) {
         try {
             return dao.getServicoByCod(codUnidade, codServico);
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             final String message = String.format("Erro ao buscar os serviço. \n," +
                     "Unidade: %d \n" +
                     "Código serviço: %d", codUnidade, codServico);
@@ -93,10 +93,10 @@ public class ServicoService {
         }
     }
 
-    public ServicosFechadosHolder getQuantidadeServicosFechados(Long codUnidade,
-                                                                long dataInicial,
-                                                                long dataFinal,
-                                                                String agrupamento) {
+    public ServicosFechadosHolder getQuantidadeServicosFechados(final Long codUnidade,
+                                                                final long dataInicial,
+                                                                final long dataFinal,
+                                                                final String agrupamento) {
         final AgrupamentoQuantidadeServicos tipoAgrupamento = AgrupamentoQuantidadeServicos.fromString(agrupamento);
         try {
             if (tipoAgrupamento.equals(AgrupamentoQuantidadeServicos.POR_VEICULO)) {
@@ -104,7 +104,7 @@ public class ServicoService {
             } else {
                 return dao.getQuantidadeServicosFechadosByPneu(codUnidade, dataInicial, dataFinal);
             }
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             final String message = String.format("Erro ao buscar os serviços fechados. \n" +
                     "Unidade: %d \n" +
                     "Data Inicial: %d \n" +
@@ -114,12 +114,12 @@ public class ServicoService {
         }
     }
 
-    public List<Servico> getServicosFechados(Long codUnidade,
-                                             long dataInicial,
-                                             long dataFinal) {
+    public List<Servico> getServicosFechados(final Long codUnidade,
+                                             final long dataInicial,
+                                             final long dataFinal) {
         try {
             return dao.getServicosFechados(codUnidade, dataInicial, dataFinal);
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             final String message = String.format("Erro ao buscar os serviços fechados. \n," +
                     "Unidade: %d \n" +
                     "Data Inicial: %d \n" +
@@ -135,7 +135,7 @@ public class ServicoService {
                                                  final long dataFinal) {
         try {
             return dao.getServicosFechadosPneu(codUnidade, codPneu, dataInicial, dataFinal);
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             final String message = String.format("Erro ao buscar os serviços fechados. \n," +
                     "Unidade: %d \n" +
                     "Pneu: %d \n" +
@@ -152,7 +152,7 @@ public class ServicoService {
                                                     final long dataFinal) {
         try {
             return dao.getServicosFechadosVeiculo(codUnidade, placaVeiculo, dataInicial, dataFinal);
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             final String message = String.format("Erro ao buscar os serviços fechados. \n," +
                     "Unidade: %d \n" +
                     "Veículo: %s \n" +

@@ -66,7 +66,7 @@ public final class LogDaoImpl extends DatabaseConnection implements LogDao {
             } else {
                 stmt.setObject(5, PostgresUtils.toJsonb(responseLog.toJson()));
             }
-            stmt.setObject(6, Now.offsetDateTimeUtc());
+            stmt.setObject(6, Now.getOffsetDateTimeUtc());
             stmt.execute();
         } finally {
             close(conn, stmt);

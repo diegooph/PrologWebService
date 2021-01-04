@@ -53,7 +53,7 @@ public final class MotivoMovimentoTransicaoDaoImpl extends DatabaseConnection im
             if (unidades.size() > 0) {
                 delete(unidades.get(0).getCodEmpresa(), conn);
             }
-            stmt.setObject(7, Now.offsetDateTimeUtc());
+            stmt.setObject(7, Now.getOffsetDateTimeUtc());
             stmt.setLong(8, codigoColaboradorInsercao);
 
             int totalInserts = 0;

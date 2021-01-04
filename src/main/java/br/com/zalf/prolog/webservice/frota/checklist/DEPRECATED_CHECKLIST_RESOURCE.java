@@ -148,7 +148,7 @@ public final class DEPRECATED_CHECKLIST_RESOURCE {
 				null,
 				null,
 				calendar.getTimeInMillis(),
-				Now.utcMillis(),
+				Now.getUtcMillis(),
 				limit,
 				offset,
 				true,

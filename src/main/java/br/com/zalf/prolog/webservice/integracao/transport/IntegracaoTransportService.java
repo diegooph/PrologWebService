@@ -36,7 +36,7 @@ public final class IntegracaoTransportService extends BaseIntegracaoService {
                 throw new GenericException("Uma lista de itens resolvidos deve ser fornecida");
             }
             ensureValidToken(tokenIntegracao, TAG);
-            final LocalDateTime dataHoraAtualUtc = Now.localDateTimeUtc();
+            final LocalDateTime dataHoraAtualUtc = Now.getLocalDateTimeUtc();
             validateDadosItensResolvidos(dataHoraAtualUtc, itensResolvidos);
             dao.resolverMultiplosItens(tokenIntegracao, dataHoraAtualUtc, itensResolvidos);
             return new SuccessResponseIntegracao("Itens resolvidos com sucesso");
@@ -137,6 +137,22 @@ public final class IntegracaoTransportService extends BaseIntegracaoService {
     }
 
     @NotNull
+    private SuccessResponseIntegracao verifyItensDummy(
+            @NotNull final List<ItemResolvidoIntegracaoTransport> itensResolvidos) throws ProLogException {
+        final LocalDateTime dataHoraAtualUtc = Now.getLocalDateTimeUtc();
+        validateDadosItensResolvidos(dataHoraAtualUtc, itensResolvidos);
+        return new SuccessResponseIntegracao("Itens resolvidos");
+    }
+
+    @NotNull
+    private List<ItemPendenteIntegracaoTransport> getDummy() {
+        final List<ItemPendenteIntegracaoTransport> itensPendentes = new ArrayList<>();
+        itensPendentes.add(ItemPendenteIntegracaoTransport.getDummy());
+        itensPendentes.add(ItemPendenteIntegracaoTransport.getDummyTipoOutros());
+        return itensPendentes;
+    }
+
+    @NotNull
     SuccessResponseIntegracao resolverMultiplosItensDummy(
             final String tokenIntegracao,
             final List<ItemResolvidoIntegracaoTransport> itensResolvidos) throws ProLogException {
@@ -175,21 +191,5 @@ public final class IntegracaoTransportService extends BaseIntegracaoService {
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao buscar itens pendentes para sincronizar");
         }
-    }
-
-    @NotNull
-    private SuccessResponseIntegracao verifyItensDummy(
-            @NotNull final List<ItemResolvidoIntegracaoTransport> itensResolvidos) throws ProLogException {
-        final LocalDateTime dataHoraAtualUtc = Now.localDateTimeUtc();
-        validateDadosItensResolvidos(dataHoraAtualUtc, itensResolvidos);
-        return new SuccessResponseIntegracao("Itens resolvidos");
-    }
-
-    @NotNull
-    private List<ItemPendenteIntegracaoTransport> getDummy() {
-        final List<ItemPendenteIntegracaoTransport> itensPendentes = new ArrayList<>();
-        itensPendentes.add(ItemPendenteIntegracaoTransport.getDummy());
-        itensPendentes.add(ItemPendenteIntegracaoTransport.getDummyTipoOutros());
-        return itensPendentes;
     }
 }

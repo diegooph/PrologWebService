@@ -180,7 +180,7 @@ public class RaizenProdutividadeService {
     private File createFileFromImport(@NotNull final Long codUnidade,
                                       @NotNull final InputStream fileInputStream,
                                       @NotNull final FormDataContentDisposition fileDetail) throws Throwable {
-        final String fileName = String.valueOf(Now.utcMillis()) + "_" + codUnidade
+        final String fileName = String.valueOf(Now.getUtcMillis()) + "_" + codUnidade
                 + "_" + fileDetail.getFileName().replace(" ", "_");
         // Pasta temporária
         final File tmpDir = Files.createTempDir();

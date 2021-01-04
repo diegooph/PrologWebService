@@ -59,7 +59,7 @@ public final class ColaboradorConferenciaService {
                                       @NotNull final InputStream fileInputStream,
                                       @NotNull final FormDataContentDisposition fileDetail) throws ProLogException {
         try {
-            final String fileName = Now.utcMillis() + "_" + codUnidade
+            final String fileName = Now.getUtcMillis() + "_" + codUnidade
                     + "_" + fileDetail.getFileName().replace(" ", "_");
             final File tmpDir = Files.createTempDir();
             final File file = new File(tmpDir, fileName);

@@ -52,7 +52,7 @@ public final class FirebaseSaveLogTask {
                 "F_PLATAFORM_DESTINATION     => ? :: MESSAGING.PUSH_PLATAFORM_DESTINATION," +
                 "F_REQUEST_RESPONSE_FIREBASE => ?," +
                 "F_FATAL_SEND_EXCEPTION      => ?)}")) {
-            stmt.setObject(1, Now.offsetDateTimeUtc());
+            stmt.setObject(1, Now.getOffsetDateTimeUtc());
             stmt.setString(2, messageScope.asString());
             stmt.setObject(3, PostgresUtils.toJsonb(pushMessageString));
             // Enviamos apenas Multicast por enquanto.

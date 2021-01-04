@@ -36,7 +36,7 @@ public final class PrologEmailSaveLogTask {
                 "F_REQUEST_TO_API       => ?," +
                 "F_RESPONSE_FROM_API    => ?," +
                 "F_FATAL_SEND_EXCEPTION => ?)}")) {
-            stmt.setObject(1, Now.offsetDateTimeUtc());
+            stmt.setObject(1, Now.getOffsetDateTimeUtc());
             stmt.setString(2, messageScope.asString());
             if (request != null) {
                 stmt.setObject(3, PostgresUtils.toJsonb(request));

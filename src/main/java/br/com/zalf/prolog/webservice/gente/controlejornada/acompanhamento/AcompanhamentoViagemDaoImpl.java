@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.gente.controlejornada.acompanhamento;
 
 import br.com.zalf.prolog.webservice.TimeZoneManager;
+import br.com.zalf.prolog.webservice.commons.FonteDataHora;
 import br.com.zalf.prolog.webservice.commons.util.NullIf;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
@@ -12,7 +13,6 @@ import br.com.zalf.prolog.webservice.gente.controlejornada.acompanhamento.andame
 import br.com.zalf.prolog.webservice.gente.controlejornada.acompanhamento.andamento.ViagemEmAndamento;
 import br.com.zalf.prolog.webservice.gente.controlejornada.acompanhamento.descanso.ColaboradorEmDescanso;
 import br.com.zalf.prolog.webservice.gente.controlejornada.acompanhamento.descanso.ViagemEmDescanso;
-import br.com.zalf.prolog.webservice.commons.FonteDataHora;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.Localizacao;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.TipoInicioFim;
 import org.jetbrains.annotations.NotNull;
@@ -45,7 +45,7 @@ public final class AcompanhamentoViagemDaoImpl extends DatabaseConnection implem
             stmt = conn.prepareStatement("SELECT * FROM FUNC_MARCACAO_GET_COLABORADORES_EM_DESCANSO(?, ?, ?);");
             stmt.setLong(1, codUnidade);
             stmt.setArray(2, PostgresUtils.listToArray(conn, SqlType.BIGINT, codCargos));
-            stmt.setObject(3, Now.offsetDateTimeUtc());
+            stmt.setObject(3, Now.getOffsetDateTimeUtc());
             rSet = stmt.executeQuery();
             final List<ColaboradorEmDescanso> colaboradores = new ArrayList<>();
             while (rSet.next()) {
@@ -80,7 +80,7 @@ public final class AcompanhamentoViagemDaoImpl extends DatabaseConnection implem
                     ";");
             stmt.setLong(1, codUnidade);
             stmt.setArray(2, PostgresUtils.listToArray(conn, SqlType.BIGINT, codCargos));
-            stmt.setObject(3, Now.offsetDateTimeUtc());
+            stmt.setObject(3, Now.getOffsetDateTimeUtc());
             rSet = stmt.executeQuery();
             final List<ColaboradorEmViagem> viagens = new ArrayList<>();
             Long cpfAnterior = null;

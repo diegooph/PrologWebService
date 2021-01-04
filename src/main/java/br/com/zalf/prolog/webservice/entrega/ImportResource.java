@@ -44,7 +44,7 @@ public class ImportResource {
 			// Salva o arquivo
 			// FIXME: fileName não pode ser algo genérico porque se outra pessoa enviar pode
 			// ser que substitua enquanto está ainda usando o arquivo
-			final String fileName =  String.valueOf(Now.utcMillis()) + "_" +
+			final String fileName =  String.valueOf(Now.getUtcMillis()) + "_" +
 					String.valueOf(codUnidade) + "_" + fileDetail.getFileName().replace(" ", "_");
 			Log.d(TAG, "fileName: " + fileName);
 			Log.d(TAG, "Colaborador");

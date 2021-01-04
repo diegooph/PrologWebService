@@ -530,7 +530,7 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
             stmt.setString(3, checkListsDelecao.getAcaoExecutada().getValue());
             stmt.setString(4, OrigemAcaoEnum.PROLOG.toString());
             stmt.setString(5, StringUtils.trimToNull(checkListsDelecao.getObservacao()));
-            stmt.setObject(6, Now.offsetDateTimeUtc());
+            stmt.setObject(6, Now.getOffsetDateTimeUtc());
             stmt.execute();
         } finally {
             close(conn, stmt);
@@ -591,7 +591,7 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
             // TODO: Se a data/hora do WS estiver incorreta, iremos salvar informação errada no check off.
             final OffsetDateTime dataHoraRealizacao = foiOffline
                     ? checklist.getDataHoraRealizacao().atZone(zoneId).toOffsetDateTime()
-                    : Now.offsetDateTimeUtc();
+                    : Now.getOffsetDateTimeUtc();
             stmt.setObject(4, dataHoraRealizacao);
             stmt.setLong(5, checklist.getCodColaborador());
             stmt.setLong(6, checklist.getCodVeiculo());
@@ -599,7 +599,7 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
             stmt.setLong(8, checklist.getKmColetadoVeiculo());
             stmt.setString(9, StringUtils.trimToNull(checklist.getObservacao()));
             stmt.setLong(10, checklist.getTempoRealizacaoCheckInMillis());
-            stmt.setObject(11, Now.offsetDateTimeUtc());
+            stmt.setObject(11, Now.getOffsetDateTimeUtc());
             stmt.setString(12, checklist.getFonteDataHoraRealizacao().asString());
             stmt.setInt(13, checklist.getVersaoAppMomentoRealizacao());
             stmt.setInt(14, checklist.getVersaoAppMomentoSincronizacao());

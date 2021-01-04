@@ -49,6 +49,6 @@ public final class Cnh {
     }
 
     private void calculaVencimento() {
-        cnhVencida = Now.localDateUtc().isAfter(vencimento);
+        cnhVencida = Now.getLocalDateUtc().isAfter(vencimento);
     }
 }

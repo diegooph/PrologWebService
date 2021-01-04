@@ -89,7 +89,7 @@ public final class AutenticacaoInternaDaoImpl implements AutenticacaoInternaDao 
                     "f_data_hora_atual => ?);");
             stmt.setLong(1, codUsuarioProlog);
             stmt.setString(2, token);
-            stmt.setObject(3, Now.offsetDateTimeUtc());
+            stmt.setObject(3, Now.getOffsetDateTimeUtc());
             stmt.execute();
         } catch (final Throwable t) {
             throw new RuntimeException("Erro ao criar sessão para o usuário Prolog de código: " + codUsuarioProlog, t);

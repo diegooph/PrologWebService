@@ -41,7 +41,7 @@ final class ControleJornadaRelatorioConverter {
             @NotNull final ResultSet rSet,
             @NotNull final List<TipoMarcacao> tiposIntervalos,
             @NotNull final ZoneId zoneIdUnidade) throws Throwable {
-        final LocalDateTime dataHoraGeracaoRelatorioUtc = Now.localDateTimeUtc();
+        final LocalDateTime dataHoraGeracaoRelatorioUtc = Now.getLocalDateTimeUtc();
         final LocalDateTime dataHoraGeracaoRelatorioZoned = dataHoraGeracaoRelatorioUtc
                 .atZone(ZoneOffset.UTC)
                 .withZoneSameInstant(zoneIdUnidade)
@@ -136,7 +136,7 @@ final class ControleJornadaRelatorioConverter {
             @NotNull final List<TipoMarcacao> tiposIntervalos,
             @NotNull final FormulaCalculoJornada formulaCalculoJornada,
             @NotNull final ZoneId zoneIdUnidade) throws Throwable {
-        final LocalDateTime dataHoraGeracaoRelatorioZoned = Now.localDateTimeUtc()
+        final LocalDateTime dataHoraGeracaoRelatorioZoned = Now.getLocalDateTimeUtc()
                 .atZone(ZoneOffset.UTC)
                 .withZoneSameInstant(zoneIdUnidade)
                 .toLocalDateTime();

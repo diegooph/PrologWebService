@@ -548,7 +548,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
                 unidade,
                 movimentacoes,
                 colaborador,
-                Now.timestampUtc(),
+                Now.getTimestampUtc(),
                 "Fechamento de serviço");
     }
 

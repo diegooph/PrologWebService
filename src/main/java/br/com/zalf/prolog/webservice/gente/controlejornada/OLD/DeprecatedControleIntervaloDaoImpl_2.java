@@ -153,7 +153,7 @@ public final class DeprecatedControleIntervaloDaoImpl_2 extends DatabaseConnecti
                 stmt.setNull(9, Types.VARCHAR);
                 stmt.setNull(10, Types.VARCHAR);
             }
-            stmt.setTimestamp(11, Now.timestampUtc());
+            stmt.setTimestamp(11, Now.getTimestampUtc());
             if (stmt.executeUpdate() == 0) {
                 throw new SQLException("Erro ao inserir marcação de intervalo");
             }

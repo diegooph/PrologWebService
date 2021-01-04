@@ -95,7 +95,7 @@ public final class InfosAfericaoAvulsa {
                 1L,
                 "1",
                 "P0001",
-                Now.localDateTimeUtc(),
+                Now.getLocalDateTimeUtc(),
                 "John Doe",
                 TipoMedicaoColetadaAfericao.SULCO_PRESSAO,
                 TipoProcessoColetaAfericao.PLACA,

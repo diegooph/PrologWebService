@@ -74,7 +74,7 @@ public final class DashboardPneuService {
     public VerticalComboChartComponent getQtdAfericoesUltimaSemana(@NotNull final Integer codComponente,
                                                                    @NotNull final List<Long> codUnidades) throws ProLogException {
         final Calendar calendar = Calendar.getInstance();
-        final long now = Now.utcMillis();
+        final long now = Now.getUtcMillis();
         calendar.setTimeInMillis(now);
         while (calendar.get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY) {
             calendar.add(Calendar.DAY_OF_YEAR, -1);

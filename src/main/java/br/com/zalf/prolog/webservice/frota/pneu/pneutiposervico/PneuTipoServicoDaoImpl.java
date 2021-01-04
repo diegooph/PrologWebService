@@ -60,7 +60,7 @@ public class PneuTipoServicoDaoImpl extends DatabaseConnection implements PneuTi
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            String sql = "SELECT * FROM PNEU_TIPO_SERVICO " +
+            final String sql = "SELECT * FROM PNEU_TIPO_SERVICO " +
                     "WHERE COD_EMPRESA = ? " +
                     "AND UTILIZADO_CADASTRO_PNEU = FALSE " +
                     "AND (? = 1 OR STATUS_ATIVO = ?) ORDER BY ";
@@ -150,7 +150,7 @@ public class PneuTipoServicoDaoImpl extends DatabaseConnection implements PneuTi
             stmt.setString(2, tipoServico.getNome().toUpperCase());
             stmt.setString(3, token);
             stmt.setBoolean(4, tipoServico.isIncrementaVida());
-            stmt.setTimestamp(5, Now.timestampUtc());
+            stmt.setTimestamp(5, Now.getTimestampUtc());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return rSet.getLong("CODIGO");
@@ -175,7 +175,7 @@ public class PneuTipoServicoDaoImpl extends DatabaseConnection implements PneuTi
                     "WHERE C.CPF = (SELECT TA.CPF_COLABORADOR FROM TOKEN_AUTENTICACAO AS TA WHERE TOKEN = ?)), " +
                     "DATA_HORA_EDICAO = ? WHERE CODIGO = ? AND COD_EMPRESA = ?;");
             stmt.setString(1, token);
-            stmt.setTimestamp(2, Now.timestampUtc());
+            stmt.setTimestamp(2, Now.getTimestampUtc());
             stmt.setLong(3, tipoServico.getCodigo());
             stmt.setLong(4, codEmpresa);
             if (stmt.executeUpdate() == 0) {

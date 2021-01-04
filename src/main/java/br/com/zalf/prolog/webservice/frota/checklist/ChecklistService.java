@@ -273,7 +273,7 @@ public final class ChecklistService {
         LocalDate hojeComTz = null;
         try {
             hojeComTz = Now
-                    .zonedDateTimeTzAware(TimeZoneManager.getZoneIdForCodUnidade(codUnidade))
+                    .getZonedDateTimeTzAware(TimeZoneManager.getZoneIdForCodUnidade(codUnidade))
                     .toLocalDate();
         } catch (final Throwable throwable) {
             Log.e(TAG, "Erro ao buscar TZ do cliente para gerar farol do checklist.\n" +

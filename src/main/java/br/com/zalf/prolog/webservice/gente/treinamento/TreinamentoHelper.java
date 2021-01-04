@@ -15,7 +15,7 @@ public class TreinamentoHelper {
 		return String.format(
 				"%d_%s.%s",
 				treinamento.getCodUnidade(),
-				s.format(new Date(Now.utcMillis())),
+				s.format(new Date(Now.getUtcMillis())),
 				extensao);
 	}
 }

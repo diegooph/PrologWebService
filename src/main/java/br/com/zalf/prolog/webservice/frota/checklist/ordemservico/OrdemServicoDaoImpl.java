@@ -153,7 +153,7 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
             stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_OS_GET_ORDEM_SERVICO_RESOLUCAO(?, ?, ?)");
             stmt.setLong(1, codUnidade);
             stmt.setLong(2, codOrdemServico);
-            stmt.setObject(3, Now.offsetDateTimeUtc());
+            stmt.setObject(3, Now.getOffsetDateTimeUtc());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return OrdemServicoConverter.createHolderResolucaoOrdemServico(rSet);
@@ -194,7 +194,7 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
             } else {
                 stmt.setNull(5, Types.VARCHAR);
             }
-            stmt.setObject(6, Now.offsetDateTimeUtc());
+            stmt.setObject(6, Now.getOffsetDateTimeUtc());
             bindValueOrNull(stmt, 7, limit, SqlType.INTEGER);
             bindValueOrNull(stmt, 8, offset, SqlType.INTEGER);
             rSet = stmt.executeQuery();
@@ -264,8 +264,9 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
                     "F_DATA_HORA_INICIO_RESOLUCAO := ?," +
                     "F_DATA_HORA_FIM_RESOLUCAO := ?," +
                     "F_FEEDBACK_CONSERTO := ?);");
-            final OffsetDateTime now = Now.offsetDateTimeUtc();
-            final ZoneId zoneId = TimeZoneManager.getZoneIdForCodUnidade(itensResolucao.getCodUnidadeOrdemServico(), conn);
+            final OffsetDateTime now = Now.getOffsetDateTimeUtc();
+            final ZoneId zoneId =
+                    TimeZoneManager.getZoneIdForCodUnidade(itensResolucao.getCodUnidadeOrdemServico(), conn);
             stmt.setLong(1, itensResolucao.getCodUnidadeOrdemServico());
             stmt.setArray(2, PostgresUtils.listToArray(conn, SqlType.BIGINT, itensResolucao.getCodigosItens()));
             stmt.setLong(3, itensResolucao.getCpfColaboradorResolucao());

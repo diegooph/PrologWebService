@@ -720,7 +720,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM PUBLIC.FUNC_PNEU_RELATORIO_STATUS_PLACAS_AFERICAO(?, ?);");
             stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
-            stmt.setObject(2, Now.offsetDateTimeUtc());
+            stmt.setObject(2, Now.getOffsetDateTimeUtc());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return new StatusPlacasAfericao(
@@ -919,7 +919,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM FUNC_AFERICAO_RELATORIO_QTD_DIAS_PLACAS_VENCIDAS(?, ?);");
             stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
-            stmt.setObject(2, Now.offsetDateTimeUtc());
+            stmt.setObject(2, Now.getOffsetDateTimeUtc());
             rSet = stmt.executeQuery();
             final List<QtdDiasAfericoesVencidas> qtdDiasAfericoesVencidas = new ArrayList<>();
             while (rSet.next()) {
@@ -954,7 +954,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
             stmt = conn.prepareStatement("SELECT * FROM " +
                     "FUNC_AFERICAO_RELATORIO_QTD_AFERICOES_REALIZADAS_POR_DIA(?, ?, ?);");
             stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
-            stmt.setObject(2, Now.localDateUtc());
+            stmt.setObject(2, Now.getLocalDateUtc());
             stmt.setInt(3, diasRetroativosParaBuscar);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
@@ -1064,7 +1064,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
                                                    @NotNull final List<Long> codUnidades,
                                                    @NotNull final String userToken) throws Throwable {
         final ZoneId zoneId = TimeZoneManager.getZoneIdForToken(userToken, conn);
-        final LocalDateTime dataHoraAtual = Now.localDateTimeUtc()
+        final LocalDateTime dataHoraAtual = Now.getLocalDateTimeUtc()
                 .atZone(ZoneOffset.UTC)
                 .withZoneSameInstant(zoneId)
                 .toLocalDateTime();

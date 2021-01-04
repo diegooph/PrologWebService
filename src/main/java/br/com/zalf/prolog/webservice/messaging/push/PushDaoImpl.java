@@ -32,7 +32,7 @@ public final class PushDaoImpl extends DatabaseConnection implements PushDao {
             stmt.setString(2, userToken);
             stmt.setString(3, pushColaborador.getAplicacaoReferenciaToken().asString());
             stmt.setString(4, pushColaborador.getTokenPushFirebase());
-            stmt.setObject(5, Now.offsetDateTimeUtc());
+            stmt.setObject(5, Now.getOffsetDateTimeUtc());
             stmt.execute();
         } finally {
             close(conn, stmt);

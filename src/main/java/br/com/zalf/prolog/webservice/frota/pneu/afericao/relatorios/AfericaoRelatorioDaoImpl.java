@@ -144,7 +144,7 @@ public class AfericaoRelatorioDaoImpl extends DatabaseConnection implements Afer
                                                                @NotNull final List<Long> codUnidades,
                                                                @NotNull final String userToken) throws Throwable {
         final ZoneId zoneId = TimeZoneManager.getZoneIdForToken(userToken, conn);
-        final LocalDateTime dataHoraGeracaoRelatorio = Now.localDateTimeUtc()
+        final LocalDateTime dataHoraGeracaoRelatorio = Now.getLocalDateTimeUtc()
                 .atZone(ZoneOffset.UTC)
                 .withZoneSameInstant(zoneId)
                 .toLocalDateTime();

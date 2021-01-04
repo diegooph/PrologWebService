@@ -59,7 +59,7 @@ public class MovimentacaoService {
                             .insert(Injection.provideServicoDao(),
                                     Injection.provideCampoPersonalizadoDao(),
                                     movimentacao,
-                                    Now.offsetDateTimeUtc(),
+                                    Now.getOffsetDateTimeUtc(),
                                     true);
             return ResponseWithCod.ok("Movimentações realizadas com sucesso", codigo);
         } catch (final Throwable throwable) {

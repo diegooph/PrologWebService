@@ -57,7 +57,7 @@ public final class ApiAjusteMarcacao {
                 "Colaborador alegou que esqueceu de marcar",
                 ApiAcaoAjusteMarcacao.ADICAO,
                 "03383283194",
-                Now.localDateTimeUtc(),
+                Now.getLocalDateTimeUtc(),
                 ApiMarcacao.getDummy());
     }
 

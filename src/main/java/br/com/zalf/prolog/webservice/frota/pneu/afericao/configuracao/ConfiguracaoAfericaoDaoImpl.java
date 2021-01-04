@@ -183,7 +183,7 @@ public final class ConfiguracaoAfericaoDaoImpl extends DatabaseConnection implem
                     "F_PERIODO_AFERICAO_SULCO := ?," +
                     "F_COD_COLABORADOR := ?," +
                     "F_DATA_HORA_ATUAL_UTC := ?)}");
-            final OffsetDateTime now = Now.offsetDateTimeUtc();
+            final OffsetDateTime now = Now.getOffsetDateTimeUtc();
             for (final ConfiguracaoCronogramaServicoUpsert configuracao : configuracoes) {
                 stmt.setLong(1, configuracao.getCodEmpresaReferente());
                 stmt.setLong(2, configuracao.getCodUnidadeReferente());

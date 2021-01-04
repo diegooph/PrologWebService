@@ -102,7 +102,7 @@ public final class ChecklistItensNokGlobus {
                 "PRO0001",
                 54920L,
                 TipoChecklistGlobus.SAIDA,
-                Now.localDateTimeUtc(),
+                Now.getLocalDateTimeUtc(),
                 respostasNok);
     }
 

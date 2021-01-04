@@ -28,7 +28,7 @@ public class EmpresaEntity {
     private String logoThumbnailUrl;
 
     @Column(name = "data_hora_cadastro", nullable = false)
-    private LocalDateTime dataHoraCadastro = Now.localDateTimeUtc();
+    private LocalDateTime dataHoraCadastro = Now.getLocalDateTimeUtc();
 
     @Column(name = "cod_auxiliar")
     private String codAuxiliar;

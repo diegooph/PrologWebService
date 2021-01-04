@@ -378,7 +378,7 @@ public class ControleJornadaDaoImpl extends DatabaseConnection implements Contro
             final Localizacao localizacao = intervaloMarcacao.getLocalizacaoMarcacao();
             bindValueOrNull(stmt, 9, localizacao != null ? localizacao.getLatitude() : null, SqlType.VARCHAR);
             bindValueOrNull(stmt, 10, localizacao != null ? localizacao.getLongitude() : null, SqlType.VARCHAR);
-            stmt.setObject(11, Now.offsetDateTimeUtc());
+            stmt.setObject(11, Now.getOffsetDateTimeUtc());
             bindValueOrNull(stmt, 12, intervaloMarcacao.getVersaoAppMomentoMarcacao(), SqlType.INTEGER);
             bindValueOrNull(stmt, 13, intervaloMarcacao.getVersaoAppMomentoSincronizacao(), SqlType.INTEGER);
             stmt.setString(14, intervaloMarcacao.getDeviceId());

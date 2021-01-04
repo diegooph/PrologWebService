@@ -62,7 +62,7 @@ public final class PneuNomenclaturaDaoImpl implements PneuNomenclaturaDao {
                 stmt.setString(4, StringUtils.trimToNull(nomenclaturaItem.getNomenclatura()));
                 bindValueOrNull(stmt, 5, StringUtils.trimToNull(nomenclaturaItem.getCodAuxiliar()), SqlType.TEXT);
                 stmt.setString(6, userToken);
-                stmt.setObject(7, Now.offsetDateTimeUtc());
+                stmt.setObject(7, Now.getOffsetDateTimeUtc());
                 stmt.addBatch();
             }
             final int[] batchResult = stmt.executeBatch();

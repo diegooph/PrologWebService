@@ -384,7 +384,7 @@ public final class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             stmt = conn.prepareStatement("UPDATE PNEU_FOTO_CADASTRO SET FOTO_SINCRONIZADA = TRUE, " +
                                                  "DATA_HORA_SINCRONIZACAO_FOTO = ? WHERE COD_PNEU = ? AND URL_FOTO = " +
                                                  "?;");
-            stmt.setTimestamp(1, Now.timestampUtc());
+            stmt.setTimestamp(1, Now.getTimestampUtc());
             stmt.setLong(2, codPneu);
             stmt.setString(3, urlFotoPneu);
             if (stmt.executeUpdate() == 0) {

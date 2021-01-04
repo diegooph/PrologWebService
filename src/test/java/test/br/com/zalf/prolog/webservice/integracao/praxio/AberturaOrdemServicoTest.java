@@ -88,298 +88,6 @@ public final class AberturaOrdemServicoTest extends BaseTest {
     }
 
     /**
-     * Método para testar o Roteamento da Inserção de Checklist.
-     * <p>
-     * Esse teste deve simular e validar a realização de um checklit por um colaborador de uma empresa que possua
-     * integração de Ordem de Serviço ativa. Para isso o teste deve:
-     * 1 - Criar um modelo de checklist para simular a realização.
-     * 2 - Criar um checklist realizado a partir do modelo criado.
-     * 3 - Inserir o checklist na base de dados utilizando o método integrado e roteado.
-     * <p>
-     * Para esse teste ser considerado sucesso, devemos validar:
-     * 1 - Se o checklist foi inserido na base do ProLog corretamente.
-     * 2 - Se o código do checklist inserido está presente na tabela da integração como pendente de sincronização.
-     *
-     * @throws Throwable Teste executado apresentou erro
-     */
-    @Order(1)
-    @Test
-    void testInsercaoChecklistRoteamentoIntegracao() throws Throwable {
-        // ################################### ETAPA 1 - Cria um modelo de checklist ###################################
-        final ResultInsertModeloChecklist resultModeloChecklist =
-                criaModeloChecklist(COD_UNIDADE, "Modelo Teste Inserção Checklist Roteado ");
-
-        // ################################## ETAPA 2 - Insere um checklist do modelo ##################################
-        final ChecklistInsercao checklistInsercao = insertChecklistModeloCriado(COD_UNIDADE, resultModeloChecklist);
-
-        // Configura modelo para ser integrado
-        permiteSincronizarModeloChecklist(resultModeloChecklist);
-
-        final Long codChecklistInserido = checklistService.insert(tokenIntegrado, checklistInsercao);
-        assertThat(codChecklistInserido).isNotNull();
-        assertThat(codChecklistInserido).isGreaterThan(0);
-
-        // ################################## ETAPA 3 - VALIDAR INFORMAÇÕES INSERIDAS ##################################
-        { // region Validações do teste
-            final Checklist checklist = checklistService.getByCod(codChecklistInserido, tokenIntegrado);
-            assertThat(checklist).isNotNull();
-
-            final DatabaseConnectionProvider connectionProvider = new DatabaseConnectionProvider();
-            Connection conn = null;
-            PreparedStatement stmt = null;
-            ResultSet rSet = null;
-            try {
-                conn = connectionProvider.provideDatabaseConnection();
-                stmt = conn.prepareStatement("select * " +
-                        "from piccolotur.checklist_pendente_para_sincronizar " +
-                        "where cod_checklist_para_sincronizar = ?;");
-                stmt.setLong(1, codChecklistInserido);
-                rSet = stmt.executeQuery();
-                if (rSet.next()) {
-                    assertThat(rSet.getBoolean("SINCRONIZADO")).isFalse();
-                    assertThat(rSet.getBoolean("PRECISA_SER_SINCRONIZADO")).isTrue();
-                } else {
-                    throw new SQLException("Erro! Checklist não foi mapeado como pendente");
-                }
-            } finally {
-                connectionProvider.closeResources(conn, stmt, rSet);
-            }
-        }
-    }
-
-    /**
-     * Método utilizado para testar a Abertura de uma Ordem de Serviço a partir da integração de O.S.
-     * <p>
-     * Esse método deve simular e validar a abertura de Ordens de Serviço pelo sistema parceiro.
-     * Para isso o teste deve:
-     * 1 - Criar um modelo de checklist.
-     * 2 - Realizar um checklist do modelo criado.
-     * 3 - Inserir o checklist na base do ProLog utilizando o roteamento.
-     * 4 - A partir do checklist realizado, utilizar os itens NOK para montar uma O.S;
-     * 5 - Utilizar o método de integração para inserir a O.S na base de dados.
-     * <p>
-     * Para esse teste ser considerado sucesso, devemos validar:
-     * 1 - Se existe uma O.S aberta no ProLog com os itens apontados como NOK.
-     * 2 - Se existe nas tabelas de mapeamento, os vinculos entre a O.S aberta e as informações do sistema parceiro.
-     *
-     * @throws Throwable Teste executado apresentou erro
-     */
-    @Order(2)
-    @Test
-    void testAberturaOrdemServicoIntegracao() throws Throwable {
-        final ResultInsertModeloChecklist resultModeloChecklist =
-                criaModeloChecklist(COD_UNIDADE, "Modelo Abertura Ordem Serviço Integração ");
-
-        // ################################### ETAPA 2 - Cria um checklist do modelo ###################################
-        final ChecklistInsercao checklistInsercao = insertChecklistModeloCriado(COD_UNIDADE, resultModeloChecklist);
-
-        // Configura modelo para ser integrado
-        permiteSincronizarModeloChecklist(resultModeloChecklist);
-
-        final Long codChecklistInserido = checklistService.insert(tokenIntegrado, checklistInsercao);
-        Thread.sleep(100);
-        // ############################### ETAPA 3 - Marcar checklist como sincronizado ################################
-        final SistemaGlobusPiccoloturDaoImpl sistemaGlobusPiccoloturDao = new SistemaGlobusPiccoloturDaoImpl();
-        marcarChecklistComoSincronizado(codChecklistInserido, sistemaGlobusPiccoloturDao);
-
-        // ################################# ETAPA 4 - Insere uma O.S Globus no ProLog #################################
-        final List<ItemOSAbertaGlobus> itensOSAbertaGlobus = new ArrayList<>();
-        final long nextCodOs = getNextCodOsUnidade(COD_UNIDADE);
-        final List<Long> codsAlaternativasOS = new ArrayList<>();
-
-        { // region Insere a Ordem de Serviço Globus a partir do checklist
-            final ChecklistItensNokGlobus checklistItensNokGlobus =
-                    getChecklistToSyncGlobus(codChecklistInserido, sistemaGlobusPiccoloturDao)
-                            .getChecklistItensNokGlobus();
-
-            final PerguntaNokGlobus pergunta1 = checklistItensNokGlobus.getPerguntasNok().get(0);
-            // Adiciona item 1
-            itensOSAbertaGlobus.add(
-                    new ItemOSAbertaGlobus(
-                            getRandomCodItenGlobus(),
-                            pergunta1.getCodContextoPerguntaNok(),
-                            pergunta1.getAlternativasNok().get(0).getCodContextoAlternativaNok()));
-            codsAlaternativasOS.add(pergunta1.getAlternativasNok().get(0).getCodContextoAlternativaNok());
-
-            final PerguntaNokGlobus pergunta2 = checklistItensNokGlobus.getPerguntasNok().get(1);
-            // Adiciona item 1
-            itensOSAbertaGlobus.add(
-                    new ItemOSAbertaGlobus(
-                            getRandomCodItenGlobus(),
-                            pergunta2.getCodContextoPerguntaNok(),
-                            pergunta2.getAlternativasNok().get(0).getCodContextoAlternativaNok()));
-            codsAlaternativasOS.add(pergunta2.getAlternativasNok().get(0).getCodContextoAlternativaNok());
-
-            // Adiciona item 1
-            itensOSAbertaGlobus.add(
-                    new ItemOSAbertaGlobus(
-                            getRandomCodItenGlobus(),
-                            pergunta2.getCodContextoPerguntaNok(),
-                            pergunta2.getAlternativasNok().get(1).getCodContextoAlternativaNok()));
-            codsAlaternativasOS.add(pergunta2.getAlternativasNok().get(1).getCodContextoAlternativaNok());
-        }
-
-        final OrdemServicoAbertaGlobus ordemServicoAbertaGlobus =
-                new OrdemServicoAbertaGlobus(
-                        nextCodOs,
-                        COD_UNIDADE,
-                        codChecklistInserido,
-                        itensOSAbertaGlobus);
-
-        final IntegracaoPraxioService integracaoPraxioService = new IntegracaoPraxioService();
-        final SuccessResponseIntegracao successResponseIntegracao =
-                integracaoPraxioService
-                        .inserirOrdensServicoGlobus(
-                                TOKEN_INTEGRACAO,
-                                Collections.singletonList(ordemServicoAbertaGlobus));
-
-        // ################################## ETAPA 4 - VALIDAR INFORMAÇÕES INSERIDAS ##################################
-        { // region Validação das informações
-            assertThat(successResponseIntegracao).isNotNull();
-
-            final HolderResolucaoOrdemServico ordemServico =
-                    Injection
-                            .provideOrdemServicoDao()
-                            .getHolderResolucaoOrdemServico(COD_UNIDADE, nextCodOs);
-
-            assertThat(ordemServico).isNotNull();
-            assertThat(ordemServico.getOrdemServico()).isNotNull();
-            assertThat(ordemServico.getKmAtualVeiculo()).isEqualTo(checklistInsercao.getKmColetadoVeiculo());
-            assertThat(ordemServico.getPlacaVeiculo()).isEqualTo(checklistInsercao.getPlacaVeiculo());
-            assertThat(ordemServico.getOrdemServico().getCodOrdemServico()).isEqualTo(nextCodOs);
-            final List<ItemOrdemServicoVisualizacao> itens = ordemServico.getOrdemServico().getItens();
-            assertThat(itens).isNotNull();
-            assertThat(itens).isNotEmpty();
-            assertThat(itens).hasSize(itensOSAbertaGlobus.size());
-
-            final DatabaseConnectionProvider provider = new DatabaseConnectionProvider();
-            Connection conn = null;
-            PreparedStatement stmt = null;
-            ResultSet rSet = null;
-            try {
-                conn = provider.provideDatabaseConnection();
-                stmt = conn.prepareStatement("SELECT * " +
-                        "FROM PICCOLOTUR.CHECKLIST_ORDEM_SERVICO_ITEM_VINCULO " +
-                        "WHERE COD_UNIDADE = ? " +
-                        "  AND COD_OS_GLOBUS = ?;");
-                stmt.setLong(1, COD_UNIDADE);
-                stmt.setLong(2, nextCodOs);
-                rSet = stmt.executeQuery();
-
-                boolean rSetHasData = false;
-                while (rSet.next()) {
-                    rSetHasData = true;
-                    assertThat(rSet.getLong("COD_CONTEXTO_ALTERNATIVA_OS_PROLOG"))
-                            .isIn(codsAlaternativasOS);
-                }
-                assertThat(rSetHasData).isTrue();
-
-            } finally {
-                provider.closeResources(conn, stmt, rSet);
-            }
-        }
-    }
-
-    @Order(3)
-    @Test
-    void testIncrementoQtdApontamentoItemOsIntegracao() throws Throwable {
-        final ResultInsertModeloChecklist resultModeloChecklist =
-                criaModeloChecklist(COD_UNIDADE, "Modelo Abertura OS Integração ");
-
-        // ################################### ETAPA 2 - Cria um checklist do modelo ###################################
-        final ChecklistInsercao checklistInsercao =
-                insertChecklistModeloCriadoComTipoOutros(COD_UNIDADE, resultModeloChecklist);
-
-        // Configura modelo para ser integrado
-        permiteSincronizarModeloChecklist(resultModeloChecklist);
-
-        final Long codChecklistInserido = checklistService.insert(tokenIntegrado, checklistInsercao);
-        Thread.sleep(100);
-        // ############################### ETAPA 3 - Marcar checklist como sincronizado ################################
-        final SistemaGlobusPiccoloturDaoImpl sistemaGlobusPiccoloturDao = new SistemaGlobusPiccoloturDaoImpl();
-        marcarChecklistComoSincronizado(codChecklistInserido, sistemaGlobusPiccoloturDao);
-
-        // ################################# ETAPA 4 - Insere uma O.S Globus no ProLog #################################
-        final long nextCodOs = getNextCodOsUnidade(COD_UNIDADE);
-        { // region Insere a Ordem de Serviço Globus a partir do checklist
-            final List<ItemOSAbertaGlobus> itensOSAbertaGlobus = new ArrayList<>();
-
-            final ChecklistItensNokGlobus checklistItensNokGlobus =
-                    getChecklistToSyncGlobus(codChecklistInserido, sistemaGlobusPiccoloturDao)
-                            .getChecklistItensNokGlobus();
-
-            final PerguntaNokGlobus pergunta1 = checklistItensNokGlobus.getPerguntasNok().get(0);
-            // Adiciona item 1
-            itensOSAbertaGlobus.add(
-                    new ItemOSAbertaGlobus(
-                            getRandomCodItenGlobus(),
-                            pergunta1.getCodContextoPerguntaNok(),
-                            pergunta1.getAlternativasNok().get(0).getCodContextoAlternativaNok()));
-
-            itensOSAbertaGlobus.add(
-                    new ItemOSAbertaGlobus(
-                            getRandomCodItenGlobus(),
-                            pergunta1.getCodContextoPerguntaNok(),
-                            pergunta1.getAlternativasNok().get(1).getCodContextoAlternativaNok()));
-
-            final PerguntaNokGlobus pergunta2 = checklistItensNokGlobus.getPerguntasNok().get(1);
-            // Adiciona item 1
-            itensOSAbertaGlobus.add(
-                    new ItemOSAbertaGlobus(
-                            getRandomCodItenGlobus(),
-                            pergunta2.getCodContextoPerguntaNok(),
-                            pergunta2.getAlternativasNok().get(0).getCodContextoAlternativaNok()));
-
-            // Adiciona item 1
-            itensOSAbertaGlobus.add(
-                    new ItemOSAbertaGlobus(
-                            getRandomCodItenGlobus(),
-                            pergunta2.getCodContextoPerguntaNok(),
-                            pergunta2.getAlternativasNok().get(1).getCodContextoAlternativaNok()));
-
-            final OrdemServicoAbertaGlobus ordemServicoAbertaGlobus =
-                    new OrdemServicoAbertaGlobus(
-                            nextCodOs,
-                            COD_UNIDADE,
-                            codChecklistInserido,
-                            itensOSAbertaGlobus);
-
-            final IntegracaoPraxioService integracaoPraxioService = new IntegracaoPraxioService();
-            integracaoPraxioService
-                    .inserirOrdensServicoGlobus(
-                            TOKEN_INTEGRACAO,
-                            Collections.singletonList(ordemServicoAbertaGlobus));
-        }
-
-        // ################################## ETAPA 4 - INSERE UM NOVO CHECKLIST ##################################
-        final ChecklistInsercao checklistInsercao1 =
-                insertChecklistModeloCriadoComTipoOutros(COD_UNIDADE, resultModeloChecklist);
-
-        final Long codChecklistInserido1 = checklistService.insert(tokenIntegrado, checklistInsercao1);
-        Thread.sleep(100);
-        // ############################### ETAPA 3 - Marcar checklist como sincronizado ################################
-        Executors.newSingleThreadExecutor().execute(
-                new ChecklistItensNokGlobusTask(
-                        codChecklistInserido1,
-                        true,
-                        sistemaGlobusPiccoloturDao,
-                        new GlobusPiccoloturRequesterImpl(),
-                        null));
-        Thread.sleep(500);
-        // ################################# ETAPA 4 - Valida informações #################################
-        { // region Insere a Ordem de Serviço Globus a partir do checklist
-            final HolderResolucaoOrdemServico ordemServico =
-                    Injection
-                            .provideOrdemServicoDao()
-                            .getHolderResolucaoOrdemServico(COD_UNIDADE, nextCodOs);
-
-            for (final ItemOrdemServicoVisualizacao iten : ordemServico.getOrdemServico().getItens()) {
-                assertThat(iten.getQtdApontamentos()).isGreaterThan(1);
-            }
-        }
-    }
-
-    /**
      * Método para testar o fechamento de uma Ordem de Serviço a partir do sistema parceiro, utilizando a integração.
      * <p>
      * Esse método deve simular e validar as informações necessárias para que o fechamento de uma Ordem de Serviço
@@ -481,9 +189,9 @@ public final class AberturaOrdemServicoTest extends BaseTest {
                         11222L,
                         30000L,
                         "Item consertado no teste",
-                        Now.localDateTimeUtc(),
-                        Now.localDateTimeUtc().minusDays(1L),
-                        Now.localDateTimeUtc()));
+                        Now.getLocalDateTimeUtc(),
+                        Now.getLocalDateTimeUtc().minusDays(1L),
+                        Now.getLocalDateTimeUtc()));
             }
 
         }
@@ -657,9 +365,9 @@ public final class AberturaOrdemServicoTest extends BaseTest {
                         11222L,
                         30000L,
                         "Item consertado no teste",
-                        Now.localDateTimeUtc(),
-                        Now.localDateTimeUtc().minusDays(1L),
-                        Now.localDateTimeUtc()));
+                        Now.getLocalDateTimeUtc(),
+                        Now.getLocalDateTimeUtc().minusDays(1L),
+                        Now.getLocalDateTimeUtc()));
             }
 
         }
@@ -835,9 +543,9 @@ public final class AberturaOrdemServicoTest extends BaseTest {
                         11222L,
                         30000L,
                         "Item consertado no teste",
-                        Now.localDateTimeUtc(),
-                        Now.localDateTimeUtc().minusDays(1L),
-                        Now.localDateTimeUtc()));
+                        Now.getLocalDateTimeUtc(),
+                        Now.getLocalDateTimeUtc().minusDays(1L),
+                        Now.getLocalDateTimeUtc()));
             }
 
         }
@@ -903,96 +611,6 @@ public final class AberturaOrdemServicoTest extends BaseTest {
             } finally {
                 provider.closeResources(conn, stmt, rSet);
             }
-        }
-    }
-
-    /**
-     * Método que testa o incremento da quantidade de tentativas de sincronia do checklist. Valida também se as
-     * mensagens são salvas da forma correta.
-     * <p>
-     * Esse método deve simular a realização de um checklist, tentativa de sincronia, e após isso, validar se as
-     * informações estão de acordo com o que deve ser.
-     * Para isso o teste deve:
-     * 1 - Criar um modelo de checklist para utilizar no teste.
-     * 2 - Realizar um checklist utilizando o modelo de checklist criado.
-     * 3 - Inserir esse checklist na base do ProLog e nas tabelas de mapeamento.
-     * 4 - Simular uma tentativa de sincronia.
-     * 5 - Validar se a contagem de tentativas aumentou.
-     *
-     * @throws Throwable Teste executado apresentou erro
-     */
-    @Order(7)
-    @Test
-    void testIncrementaQtdTentativasSincronia() throws Throwable {
-        // ################################### ETAPA 1 - Cria um modelo de checklist ###################################
-        final ResultInsertModeloChecklist resultModeloChecklist =
-                criaModeloChecklist(COD_UNIDADE, "Modelo Abertura Ordem Serviço Integração ");
-
-        // ################################### ETAPA 2 - Cria um checklist do modelo ###################################
-        final ChecklistInsercao checklistInsercao = insertChecklistModeloCriado(COD_UNIDADE, resultModeloChecklist);
-
-        // Configura modelo para ser integrado
-        permiteSincronizarModeloChecklist(resultModeloChecklist);
-
-        final Long codChecklistInserido = checklistService.insert(tokenIntegrado, checklistInsercao);
-
-        Thread.sleep(1000);
-
-        Executors.newSingleThreadExecutor().execute(
-                new ChecklistItensNokGlobusTask(
-                        codChecklistInserido,
-                        true,
-                        new SistemaGlobusPiccoloturDaoImpl(),
-                        new GlobusPiccoloturRequesterImpl(),
-                        null));
-
-        Thread.sleep(1000);
-
-        Executors.newSingleThreadExecutor().execute(
-                new ChecklistItensNokGlobusTask(
-                        codChecklistInserido,
-                        true,
-                        new SistemaGlobusPiccoloturDaoImpl(),
-                        new GlobusPiccoloturRequesterImpl(),
-                        null));
-
-        Thread.sleep(1000);
-
-        Executors.newSingleThreadExecutor().execute(
-                new ChecklistItensNokGlobusTask(
-                        codChecklistInserido,
-                        true,
-                        new SistemaGlobusPiccoloturDaoImpl(),
-                        new GlobusPiccoloturRequesterImpl(),
-                        null));
-        Thread.sleep(1000);
-    }
-
-    @Order(8)
-    @Test
-    void testConverterChecklistRealizacaoIntoOrdemDeServicoCorretivaPrologVO() throws Throwable {
-        // ################################### ETAPA 1 - Cria um modelo de checklist ###################################
-        final ResultInsertModeloChecklist resultModeloChecklist =
-                criaModeloChecklist(COD_UNIDADE, "Modelo Abertura Ordem Serviço Integração ");
-
-        // ################################### ETAPA 2 - Cria um checklist do modelo ###################################
-        final ChecklistInsercao checklistInsercao = insertChecklistModeloCriado(COD_UNIDADE, resultModeloChecklist);
-        final Long codChecklistInserido =
-                checklistOfflineService.insertChecklistOffline(TOKEN_CHECK_OFF, checklistInsercao).getCodigo();
-
-        final SistemaGlobusPiccoloturDaoImpl sistema = new SistemaGlobusPiccoloturDaoImpl();
-        final DatabaseConnectionProvider provider = new DatabaseConnectionProvider();
-        Connection conn = null;
-        try {
-            conn = provider.provideDatabaseConnection();
-            final ChecklistToSyncGlobus checklistToSyncGlobus =
-                    sistema.getChecklistToSyncGlobus(conn, codChecklistInserido);
-            final ChecklistItensNokGlobus checklistItensNokGlobus = checklistToSyncGlobus.getChecklistItensNokGlobus();
-            final OrdemDeServicoCorretivaPrologVO ordemDeServicoCorretivaPrologVO =
-                    GlobusPiccoloturConverter.convert(checklistItensNokGlobus);
-            assertThat(ordemDeServicoCorretivaPrologVO).isNotNull();
-        } finally {
-            provider.closeResources(conn);
         }
     }
 
@@ -1417,6 +1035,388 @@ public final class AberturaOrdemServicoTest extends BaseTest {
             }
         } finally {
             provider.closeResources(conn, stmt);
+        }
+    }
+
+    /**
+     * Método para testar o Roteamento da Inserção de Checklist.
+     * <p>
+     * Esse teste deve simular e validar a realização de um checklit por um colaborador de uma empresa que possua
+     * integração de Ordem de Serviço ativa. Para isso o teste deve:
+     * 1 - Criar um modelo de checklist para simular a realização.
+     * 2 - Criar um checklist realizado a partir do modelo criado.
+     * 3 - Inserir o checklist na base de dados utilizando o método integrado e roteado.
+     * <p>
+     * Para esse teste ser considerado sucesso, devemos validar:
+     * 1 - Se o checklist foi inserido na base do ProLog corretamente.
+     * 2 - Se o código do checklist inserido está presente na tabela da integração como pendente de sincronização.
+     *
+     * @throws Throwable Teste executado apresentou erro
+     */
+    @Order(1)
+    @Test
+    void testInsercaoChecklistRoteamentoIntegracao() throws Throwable {
+        // ################################### ETAPA 1 - Cria um modelo de checklist ###################################
+        final ResultInsertModeloChecklist resultModeloChecklist =
+                criaModeloChecklist(COD_UNIDADE, "Modelo Teste Inserção Checklist Roteado ");
+
+        // ################################## ETAPA 2 - Insere um checklist do modelo ##################################
+        final ChecklistInsercao checklistInsercao = insertChecklistModeloCriado(COD_UNIDADE, resultModeloChecklist);
+
+        // Configura modelo para ser integrado
+        permiteSincronizarModeloChecklist(resultModeloChecklist);
+
+        final Long codChecklistInserido = checklistService.insert(tokenIntegrado, checklistInsercao);
+        assertThat(codChecklistInserido).isNotNull();
+        assertThat(codChecklistInserido).isGreaterThan(0);
+
+        // ################################## ETAPA 3 - VALIDAR INFORMAÇÕES INSERIDAS ##################################
+        { // region Validações do teste
+            final Checklist checklist = checklistService.getByCod(codChecklistInserido, tokenIntegrado);
+            assertThat(checklist).isNotNull();
+
+            final DatabaseConnectionProvider connectionProvider = new DatabaseConnectionProvider();
+            Connection conn = null;
+            PreparedStatement stmt = null;
+            ResultSet rSet = null;
+            try {
+                conn = connectionProvider.provideDatabaseConnection();
+                stmt = conn.prepareStatement("select * " +
+                        "from piccolotur.checklist_pendente_para_sincronizar " +
+                        "where cod_checklist_para_sincronizar = ?;");
+                stmt.setLong(1, codChecklistInserido);
+                rSet = stmt.executeQuery();
+                if (rSet.next()) {
+                    assertThat(rSet.getBoolean("SINCRONIZADO")).isFalse();
+                    assertThat(rSet.getBoolean("PRECISA_SER_SINCRONIZADO")).isTrue();
+                } else {
+                    throw new SQLException("Erro! Checklist não foi mapeado como pendente");
+                }
+            } finally {
+                connectionProvider.closeResources(conn, stmt, rSet);
+            }
+        }
+    }
+
+    /**
+     * Método utilizado para testar a Abertura de uma Ordem de Serviço a partir da integração de O.S.
+     * <p>
+     * Esse método deve simular e validar a abertura de Ordens de Serviço pelo sistema parceiro.
+     * Para isso o teste deve:
+     * 1 - Criar um modelo de checklist.
+     * 2 - Realizar um checklist do modelo criado.
+     * 3 - Inserir o checklist na base do ProLog utilizando o roteamento.
+     * 4 - A partir do checklist realizado, utilizar os itens NOK para montar uma O.S;
+     * 5 - Utilizar o método de integração para inserir a O.S na base de dados.
+     * <p>
+     * Para esse teste ser considerado sucesso, devemos validar:
+     * 1 - Se existe uma O.S aberta no ProLog com os itens apontados como NOK.
+     * 2 - Se existe nas tabelas de mapeamento, os vinculos entre a O.S aberta e as informações do sistema parceiro.
+     *
+     * @throws Throwable Teste executado apresentou erro
+     */
+    @Order(2)
+    @Test
+    void testAberturaOrdemServicoIntegracao() throws Throwable {
+        final ResultInsertModeloChecklist resultModeloChecklist =
+                criaModeloChecklist(COD_UNIDADE, "Modelo Abertura Ordem Serviço Integração ");
+
+        // ################################### ETAPA 2 - Cria um checklist do modelo ###################################
+        final ChecklistInsercao checklistInsercao = insertChecklistModeloCriado(COD_UNIDADE, resultModeloChecklist);
+
+        // Configura modelo para ser integrado
+        permiteSincronizarModeloChecklist(resultModeloChecklist);
+
+        final Long codChecklistInserido = checklistService.insert(tokenIntegrado, checklistInsercao);
+        Thread.sleep(100);
+        // ############################### ETAPA 3 - Marcar checklist como sincronizado ################################
+        final SistemaGlobusPiccoloturDaoImpl sistemaGlobusPiccoloturDao = new SistemaGlobusPiccoloturDaoImpl();
+        marcarChecklistComoSincronizado(codChecklistInserido, sistemaGlobusPiccoloturDao);
+
+        // ################################# ETAPA 4 - Insere uma O.S Globus no ProLog #################################
+        final List<ItemOSAbertaGlobus> itensOSAbertaGlobus = new ArrayList<>();
+        final long nextCodOs = getNextCodOsUnidade(COD_UNIDADE);
+        final List<Long> codsAlaternativasOS = new ArrayList<>();
+
+        { // region Insere a Ordem de Serviço Globus a partir do checklist
+            final ChecklistItensNokGlobus checklistItensNokGlobus =
+                    getChecklistToSyncGlobus(codChecklistInserido, sistemaGlobusPiccoloturDao)
+                            .getChecklistItensNokGlobus();
+
+            final PerguntaNokGlobus pergunta1 = checklistItensNokGlobus.getPerguntasNok().get(0);
+            // Adiciona item 1
+            itensOSAbertaGlobus.add(
+                    new ItemOSAbertaGlobus(
+                            getRandomCodItenGlobus(),
+                            pergunta1.getCodContextoPerguntaNok(),
+                            pergunta1.getAlternativasNok().get(0).getCodContextoAlternativaNok()));
+            codsAlaternativasOS.add(pergunta1.getAlternativasNok().get(0).getCodContextoAlternativaNok());
+
+            final PerguntaNokGlobus pergunta2 = checklistItensNokGlobus.getPerguntasNok().get(1);
+            // Adiciona item 1
+            itensOSAbertaGlobus.add(
+                    new ItemOSAbertaGlobus(
+                            getRandomCodItenGlobus(),
+                            pergunta2.getCodContextoPerguntaNok(),
+                            pergunta2.getAlternativasNok().get(0).getCodContextoAlternativaNok()));
+            codsAlaternativasOS.add(pergunta2.getAlternativasNok().get(0).getCodContextoAlternativaNok());
+
+            // Adiciona item 1
+            itensOSAbertaGlobus.add(
+                    new ItemOSAbertaGlobus(
+                            getRandomCodItenGlobus(),
+                            pergunta2.getCodContextoPerguntaNok(),
+                            pergunta2.getAlternativasNok().get(1).getCodContextoAlternativaNok()));
+            codsAlaternativasOS.add(pergunta2.getAlternativasNok().get(1).getCodContextoAlternativaNok());
+        }
+
+        final OrdemServicoAbertaGlobus ordemServicoAbertaGlobus =
+                new OrdemServicoAbertaGlobus(
+                        nextCodOs,
+                        COD_UNIDADE,
+                        codChecklistInserido,
+                        itensOSAbertaGlobus);
+
+        final IntegracaoPraxioService integracaoPraxioService = new IntegracaoPraxioService();
+        final SuccessResponseIntegracao successResponseIntegracao =
+                integracaoPraxioService
+                        .inserirOrdensServicoGlobus(
+                                TOKEN_INTEGRACAO,
+                                Collections.singletonList(ordemServicoAbertaGlobus));
+
+        // ################################## ETAPA 4 - VALIDAR INFORMAÇÕES INSERIDAS ##################################
+        { // region Validação das informações
+            assertThat(successResponseIntegracao).isNotNull();
+
+            final HolderResolucaoOrdemServico ordemServico =
+                    Injection
+                            .provideOrdemServicoDao()
+                            .getHolderResolucaoOrdemServico(COD_UNIDADE, nextCodOs);
+
+            assertThat(ordemServico).isNotNull();
+            assertThat(ordemServico.getOrdemServico()).isNotNull();
+            assertThat(ordemServico.getKmAtualVeiculo()).isEqualTo(checklistInsercao.getKmColetadoVeiculo());
+            assertThat(ordemServico.getPlacaVeiculo()).isEqualTo(checklistInsercao.getPlacaVeiculo());
+            assertThat(ordemServico.getOrdemServico().getCodOrdemServico()).isEqualTo(nextCodOs);
+            final List<ItemOrdemServicoVisualizacao> itens = ordemServico.getOrdemServico().getItens();
+            assertThat(itens).isNotNull();
+            assertThat(itens).isNotEmpty();
+            assertThat(itens).hasSize(itensOSAbertaGlobus.size());
+
+            final DatabaseConnectionProvider provider = new DatabaseConnectionProvider();
+            Connection conn = null;
+            PreparedStatement stmt = null;
+            ResultSet rSet = null;
+            try {
+                conn = provider.provideDatabaseConnection();
+                stmt = conn.prepareStatement("SELECT * " +
+                        "FROM PICCOLOTUR.CHECKLIST_ORDEM_SERVICO_ITEM_VINCULO " +
+                        "WHERE COD_UNIDADE = ? " +
+                        "  AND COD_OS_GLOBUS = ?;");
+                stmt.setLong(1, COD_UNIDADE);
+                stmt.setLong(2, nextCodOs);
+                rSet = stmt.executeQuery();
+
+                boolean rSetHasData = false;
+                while (rSet.next()) {
+                    rSetHasData = true;
+                    assertThat(rSet.getLong("COD_CONTEXTO_ALTERNATIVA_OS_PROLOG"))
+                            .isIn(codsAlaternativasOS);
+                }
+                assertThat(rSetHasData).isTrue();
+
+            } finally {
+                provider.closeResources(conn, stmt, rSet);
+            }
+        }
+    }
+
+    @Order(3)
+    @Test
+    void testIncrementoQtdApontamentoItemOsIntegracao() throws Throwable {
+        final ResultInsertModeloChecklist resultModeloChecklist =
+                criaModeloChecklist(COD_UNIDADE, "Modelo Abertura OS Integração ");
+
+        // ################################### ETAPA 2 - Cria um checklist do modelo ###################################
+        final ChecklistInsercao checklistInsercao =
+                insertChecklistModeloCriadoComTipoOutros(COD_UNIDADE, resultModeloChecklist);
+
+        // Configura modelo para ser integrado
+        permiteSincronizarModeloChecklist(resultModeloChecklist);
+
+        final Long codChecklistInserido = checklistService.insert(tokenIntegrado, checklistInsercao);
+        Thread.sleep(100);
+        // ############################### ETAPA 3 - Marcar checklist como sincronizado ################################
+        final SistemaGlobusPiccoloturDaoImpl sistemaGlobusPiccoloturDao = new SistemaGlobusPiccoloturDaoImpl();
+        marcarChecklistComoSincronizado(codChecklistInserido, sistemaGlobusPiccoloturDao);
+
+        // ################################# ETAPA 4 - Insere uma O.S Globus no ProLog #################################
+        final long nextCodOs = getNextCodOsUnidade(COD_UNIDADE);
+        { // region Insere a Ordem de Serviço Globus a partir do checklist
+            final List<ItemOSAbertaGlobus> itensOSAbertaGlobus = new ArrayList<>();
+
+            final ChecklistItensNokGlobus checklistItensNokGlobus =
+                    getChecklistToSyncGlobus(codChecklistInserido, sistemaGlobusPiccoloturDao)
+                            .getChecklistItensNokGlobus();
+
+            final PerguntaNokGlobus pergunta1 = checklistItensNokGlobus.getPerguntasNok().get(0);
+            // Adiciona item 1
+            itensOSAbertaGlobus.add(
+                    new ItemOSAbertaGlobus(
+                            getRandomCodItenGlobus(),
+                            pergunta1.getCodContextoPerguntaNok(),
+                            pergunta1.getAlternativasNok().get(0).getCodContextoAlternativaNok()));
+
+            itensOSAbertaGlobus.add(
+                    new ItemOSAbertaGlobus(
+                            getRandomCodItenGlobus(),
+                            pergunta1.getCodContextoPerguntaNok(),
+                            pergunta1.getAlternativasNok().get(1).getCodContextoAlternativaNok()));
+
+            final PerguntaNokGlobus pergunta2 = checklistItensNokGlobus.getPerguntasNok().get(1);
+            // Adiciona item 1
+            itensOSAbertaGlobus.add(
+                    new ItemOSAbertaGlobus(
+                            getRandomCodItenGlobus(),
+                            pergunta2.getCodContextoPerguntaNok(),
+                            pergunta2.getAlternativasNok().get(0).getCodContextoAlternativaNok()));
+
+            // Adiciona item 1
+            itensOSAbertaGlobus.add(
+                    new ItemOSAbertaGlobus(
+                            getRandomCodItenGlobus(),
+                            pergunta2.getCodContextoPerguntaNok(),
+                            pergunta2.getAlternativasNok().get(1).getCodContextoAlternativaNok()));
+
+            final OrdemServicoAbertaGlobus ordemServicoAbertaGlobus =
+                    new OrdemServicoAbertaGlobus(
+                            nextCodOs,
+                            COD_UNIDADE,
+                            codChecklistInserido,
+                            itensOSAbertaGlobus);
+
+            final IntegracaoPraxioService integracaoPraxioService = new IntegracaoPraxioService();
+            integracaoPraxioService
+                    .inserirOrdensServicoGlobus(
+                            TOKEN_INTEGRACAO,
+                            Collections.singletonList(ordemServicoAbertaGlobus));
+        }
+
+        // ################################## ETAPA 4 - INSERE UM NOVO CHECKLIST ##################################
+        final ChecklistInsercao checklistInsercao1 =
+                insertChecklistModeloCriadoComTipoOutros(COD_UNIDADE, resultModeloChecklist);
+
+        final Long codChecklistInserido1 = checklistService.insert(tokenIntegrado, checklistInsercao1);
+        Thread.sleep(100);
+        // ############################### ETAPA 3 - Marcar checklist como sincronizado ################################
+        Executors.newSingleThreadExecutor().execute(
+                new ChecklistItensNokGlobusTask(
+                        codChecklistInserido1,
+                        true,
+                        sistemaGlobusPiccoloturDao,
+                        new GlobusPiccoloturRequesterImpl(),
+                        null));
+        Thread.sleep(500);
+        // ################################# ETAPA 4 - Valida informações #################################
+        { // region Insere a Ordem de Serviço Globus a partir do checklist
+            final HolderResolucaoOrdemServico ordemServico =
+                    Injection
+                            .provideOrdemServicoDao()
+                            .getHolderResolucaoOrdemServico(COD_UNIDADE, nextCodOs);
+
+            for (final ItemOrdemServicoVisualizacao iten : ordemServico.getOrdemServico().getItens()) {
+                assertThat(iten.getQtdApontamentos()).isGreaterThan(1);
+            }
+        }
+    }
+
+    /**
+     * Método que testa o incremento da quantidade de tentativas de sincronia do checklist. Valida também se as
+     * mensagens são salvas da forma correta.
+     * <p>
+     * Esse método deve simular a realização de um checklist, tentativa de sincronia, e após isso, validar se as
+     * informações estão de acordo com o que deve ser.
+     * Para isso o teste deve:
+     * 1 - Criar um modelo de checklist para utilizar no teste.
+     * 2 - Realizar um checklist utilizando o modelo de checklist criado.
+     * 3 - Inserir esse checklist na base do ProLog e nas tabelas de mapeamento.
+     * 4 - Simular uma tentativa de sincronia.
+     * 5 - Validar se a contagem de tentativas aumentou.
+     *
+     * @throws Throwable Teste executado apresentou erro
+     */
+    @Order(7)
+    @Test
+    void testIncrementaQtdTentativasSincronia() throws Throwable {
+        // ################################### ETAPA 1 - Cria um modelo de checklist ###################################
+        final ResultInsertModeloChecklist resultModeloChecklist =
+                criaModeloChecklist(COD_UNIDADE, "Modelo Abertura Ordem Serviço Integração ");
+
+        // ################################### ETAPA 2 - Cria um checklist do modelo ###################################
+        final ChecklistInsercao checklistInsercao = insertChecklistModeloCriado(COD_UNIDADE, resultModeloChecklist);
+
+        // Configura modelo para ser integrado
+        permiteSincronizarModeloChecklist(resultModeloChecklist);
+
+        final Long codChecklistInserido = checklistService.insert(tokenIntegrado, checklistInsercao);
+
+        Thread.sleep(1000);
+
+        Executors.newSingleThreadExecutor().execute(
+                new ChecklistItensNokGlobusTask(
+                        codChecklistInserido,
+                        true,
+                        new SistemaGlobusPiccoloturDaoImpl(),
+                        new GlobusPiccoloturRequesterImpl(),
+                        null));
+
+        Thread.sleep(1000);
+
+        Executors.newSingleThreadExecutor().execute(
+                new ChecklistItensNokGlobusTask(
+                        codChecklistInserido,
+                        true,
+                        new SistemaGlobusPiccoloturDaoImpl(),
+                        new GlobusPiccoloturRequesterImpl(),
+                        null));
+
+        Thread.sleep(1000);
+
+        Executors.newSingleThreadExecutor().execute(
+                new ChecklistItensNokGlobusTask(
+                        codChecklistInserido,
+                        true,
+                        new SistemaGlobusPiccoloturDaoImpl(),
+                        new GlobusPiccoloturRequesterImpl(),
+                        null));
+        Thread.sleep(1000);
+    }
+
+    @Order(8)
+    @Test
+    void testConverterChecklistRealizacaoIntoOrdemDeServicoCorretivaPrologVO() throws Throwable {
+        // ################################### ETAPA 1 - Cria um modelo de checklist ###################################
+        final ResultInsertModeloChecklist resultModeloChecklist =
+                criaModeloChecklist(COD_UNIDADE, "Modelo Abertura Ordem Serviço Integração ");
+
+        // ################################### ETAPA 2 - Cria um checklist do modelo ###################################
+        final ChecklistInsercao checklistInsercao = insertChecklistModeloCriado(COD_UNIDADE, resultModeloChecklist);
+        final Long codChecklistInserido =
+                checklistOfflineService.insertChecklistOffline(TOKEN_CHECK_OFF, checklistInsercao).getCodigo();
+
+        final SistemaGlobusPiccoloturDaoImpl sistema = new SistemaGlobusPiccoloturDaoImpl();
+        final DatabaseConnectionProvider provider = new DatabaseConnectionProvider();
+        Connection conn = null;
+        try {
+            conn = provider.provideDatabaseConnection();
+            final ChecklistToSyncGlobus checklistToSyncGlobus =
+                    sistema.getChecklistToSyncGlobus(conn, codChecklistInserido);
+            final ChecklistItensNokGlobus checklistItensNokGlobus = checklistToSyncGlobus.getChecklistItensNokGlobus();
+            final OrdemDeServicoCorretivaPrologVO ordemDeServicoCorretivaPrologVO =
+                    GlobusPiccoloturConverter.convert(checklistItensNokGlobus);
+            assertThat(ordemDeServicoCorretivaPrologVO).isNotNull();
+        } finally {
+            provider.closeResources(conn);
         }
     }
 }

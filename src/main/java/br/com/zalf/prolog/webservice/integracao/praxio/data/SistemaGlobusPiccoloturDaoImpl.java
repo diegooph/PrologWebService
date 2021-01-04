@@ -136,7 +136,7 @@ public final class SistemaGlobusPiccoloturDaoImpl extends DatabaseConnection imp
                     stmt.setLong(6, perguntaNokGlobus.getCodContextoPerguntaNok());
                     stmt.setLong(7, alternativaNokGlobus.getCodAlternativaNok());
                     stmt.setLong(8, alternativaNokGlobus.getCodContextoAlternativaNok());
-                    stmt.setObject(9, Now.offsetDateTimeUtc());
+                    stmt.setObject(9, Now.getOffsetDateTimeUtc());
                     stmt.addBatch();
                 }
             }
@@ -162,7 +162,7 @@ public final class SistemaGlobusPiccoloturDaoImpl extends DatabaseConnection imp
                     "F_COD_CHECKLIST => ?, " +
                     "F_DATA_HORA_ATUALIZACAO => ?)}");
             stmt.setLong(1, codChecklistNaoPrecisaSincronizar);
-            stmt.setObject(2, Now.offsetDateTimeUtc());
+            stmt.setObject(2, Now.getOffsetDateTimeUtc());
             stmt.execute();
         } finally {
             close(stmt);
@@ -178,7 +178,7 @@ public final class SistemaGlobusPiccoloturDaoImpl extends DatabaseConnection imp
                     "F_COD_CHECKLIST => ?, " +
                     "F_DATA_HORA_ATUALIZACAO => ?)}");
             stmt.setLong(1, codChecklistSincronizado);
-            stmt.setObject(2, Now.offsetDateTimeUtc());
+            stmt.setObject(2, Now.getOffsetDateTimeUtc());
             stmt.execute();
         } finally {
             close(stmt);
@@ -200,10 +200,27 @@ public final class SistemaGlobusPiccoloturDaoImpl extends DatabaseConnection imp
             stmt.setLong(1, codChecklistProLog);
             stmt.setString(2, errorMessage);
             stmt.setString(3, ExceptionUtils.getStackTrace(throwable));
-            stmt.setObject(4, Now.offsetDateTimeUtc());
+            stmt.setObject(4, Now.getOffsetDateTimeUtc());
             stmt.execute();
         } finally {
             close(stmt);
+        }
+    }
+
+    @Override
+    public boolean verificaItensIntegrados(@NotNull final List<Long> codItensResolver) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM PICCOLOTUR.CHECKLIST_ORDEM_SERVICO_ITEM_VINCULO " +
+                    "WHERE COD_ITEM_OS_PROLOG = ANY(?);");
+            stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codItensResolver));
+            rSet = stmt.executeQuery();
+            return rSet.next();
+        } finally {
+            close(conn, stmt, rSet);
         }
     }
 
@@ -224,22 +241,5 @@ public final class SistemaGlobusPiccoloturDaoImpl extends DatabaseConnection imp
                 rSet.getLong("COD_CONTEXTO_PERGUNTA_NOK"),
                 rSet.getString("DESCRICAO_PERGUNTA_NOK"),
                 new ArrayList<>());
-    }
-
-    @Override
-    public boolean verificaItensIntegrados(@NotNull final List<Long> codItensResolver) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM PICCOLOTUR.CHECKLIST_ORDEM_SERVICO_ITEM_VINCULO " +
-                    "WHERE COD_ITEM_OS_PROLOG = ANY(?);");
-            stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codItensResolver));
-            rSet = stmt.executeQuery();
-            return rSet.next();
-        } finally {
-            close(conn, stmt, rSet);
-        }
     }
 }

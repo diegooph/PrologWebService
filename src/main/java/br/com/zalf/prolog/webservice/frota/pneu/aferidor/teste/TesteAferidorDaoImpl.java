@@ -54,7 +54,7 @@ public final class TesteAferidorDaoImpl extends DatabaseConnection implements Te
                     "F_NOME_DISPOSITIVO         :=?," +
                     "F_COMANDOS_EXECUTADOS      :=?);");
             stmt.setLong(1, teste.getCodColaboradorExecucao());
-            stmt.setObject(2, Now.offsetDateTimeUtc());
+            stmt.setObject(2, Now.getOffsetDateTimeUtc());
             stmt.setString(3, teste.getNomeDispositivo());
             final String json = GsonUtils.getGson().toJson(teste.getComandosExecutados());
             stmt.setObject(4, PostgresUtils.toJsonb(json));

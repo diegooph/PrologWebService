@@ -256,7 +256,7 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            List<MarcacaoInconsistencia> inconsistencias;
+            final List<MarcacaoInconsistencia> inconsistencias;
             switch (tipoInconsistencia) {
                 case SEM_VINCULO:
                     stmt = conn.prepareStatement("SELECT * FROM " +
@@ -309,7 +309,7 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
             stmt.setLong(2, marcacaoAjuste.getCodTipoMarcacaoReferente());
             stmt.setObject(3, marcacaoAjuste.getDataHoraInicio().atZone(zoneId).toOffsetDateTime());
             stmt.setObject(4, marcacaoAjuste.getDataHoraFim().atZone(zoneId).toOffsetDateTime());
-            stmt.setObject(5, Now.offsetDateTimeUtc());
+            stmt.setObject(5, Now.getOffsetDateTimeUtc());
             stmt.setString(6, token);
             rSet = stmt.executeQuery();
             if (rSet.next()
@@ -338,7 +338,7 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
                     "FROM FUNC_MARCACAO_INSERT_MARCACAO_AVULSA_AJUSTE(?, ?, ?, ?) AS CODIGO;");
             stmt.setObject(1, marcacaoAjuste.getDataHoraInserida().atZone(zoneIdCliente).toOffsetDateTime());
             stmt.setLong(2, marcacaoAjuste.getCodMarcacaoVinculo());
-            stmt.setObject(3, Now.offsetDateTimeUtc());
+            stmt.setObject(3, Now.getOffsetDateTimeUtc());
             stmt.setString(4, token);
             rSet = stmt.executeQuery();
             if (rSet.next() && rSet.getLong("CODIGO") > 0) {
@@ -368,7 +368,7 @@ public final class ControleJornadaAjusteDaoImpl extends DatabaseConnection imple
             bindValueOrNull(stmt, 4, StringUtils.emptyToNull(marcacaoAjuste.getObservacaoAjuste()), SqlType.TEXT);
             stmt.setString(5, marcacaoAjuste.getTipoAcaoAjuste().asString());
             stmt.setString(6, tokenResponsavelAjuste);
-            stmt.setObject(7, Now.offsetDateTimeUtc());
+            stmt.setObject(7, Now.getOffsetDateTimeUtc());
             rSet = stmt.executeQuery();
             if (!rSet.next() || rSet.getLong("CODIGO") <= 0) {
                 throw new SQLException("Não foi possível inserir as edições da marcação");

@@ -62,7 +62,7 @@ public final class ChecklistMigracaoEstruturaSuporte {
         final Checklist checklistAntigo = new Checklist();
         checklistAntigo.setCodModelo(checklist.getCodModelo());
         checklistAntigo.setCodVersaoModeloChecklist(checklist.getCodVersaoModeloChecklist());
-        final LocalDateTime now = Now.localDateTimeUtc();
+        final LocalDateTime now = Now.getLocalDateTimeUtc();
         checklistAntigo.setData(now);
         checklistAntigo.setDataHoraImportadoProLog(now);
         checklistAntigo.setPlacaVeiculo(checklist.getPlacaVeiculo());

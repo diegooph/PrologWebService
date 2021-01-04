@@ -68,7 +68,7 @@ public final class ChecklistResource {
             checklistNew = GsonUtils.getGson().fromJson(checklistJson, ChecklistInsercao.class);
         } else {
             final Checklist checklistOld = GsonUtils.getGson().fromJson(checklistJson, Checklist.class);
-            final LocalDateTime agora = Now.localDateTimeUtc();
+            final LocalDateTime agora = Now.getLocalDateTimeUtc();
             checklistNew = ChecklistMigracaoEstruturaSuporte.toChecklistInsercao(checklistOld, agora, versaoApp);
             checklistNew.setChecklistAntigo(checklistOld);
         }

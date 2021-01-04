@@ -100,7 +100,7 @@ public class SocorroRotaRelatorioDaoImpl implements SocorroRotaRelatorioDao {
                     "F_DATA_HORA_BUSCA_RELATORIO := ?);");
 
             stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
-            stmt.setObject(2, Now.localDateUtc());
+            stmt.setObject(2, Now.getLocalDateUtc());
 
             rSet = stmt.executeQuery();
             while (rSet.next()) {

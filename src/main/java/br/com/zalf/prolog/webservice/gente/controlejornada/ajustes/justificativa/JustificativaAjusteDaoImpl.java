@@ -46,7 +46,7 @@ public final class JustificativaAjusteDaoImpl extends DatabaseConnection impleme
             stmt.setString(1, justificativaAjuste.getNomeJustificativaAjuste());
             stmt.setBoolean(2, justificativaAjuste.isObrigatorioObservacao());
             stmt.setString(3, token);
-            stmt.setObject(4, Now.localDateTimeUtc());
+            stmt.setObject(4, Now.getLocalDateTimeUtc());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return rSet.getLong("CODIGO");

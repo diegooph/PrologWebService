@@ -93,7 +93,7 @@ public final class AfericaoPlacaRodoparHorizonte {
                 "03383283194",
                 987654L,
                 Duration.ofMinutes(10L).toMillis(),
-                Now.localDateTimeUtc(),
+                Now.getLocalDateTimeUtc(),
                 TipoMedicaoAfericaoRodoparHorizonte.SULCO_PRESSAO,
                 medicoes);
     }

@@ -253,6 +253,7 @@ public final class VeiculoTransferenciaDaoImpl extends DatabaseConnection implem
         }
     }
 
+    @Override
     @NotNull
     public AvisoDelecaoTransferenciaVeiculo buscaAvisoDelecaoAutomaticaPorTransferencia(@NotNull final Long codEmpresa)
             throws Throwable {
@@ -317,7 +318,7 @@ public final class VeiculoTransferenciaDaoImpl extends DatabaseConnection implem
             stmt = conn.prepareStatement("SET CONSTRAINTS ALL DEFERRED;");
             stmt.execute();
 
-            final OffsetDateTime dataHoraRealizacaoProcesso = Now.offsetDateTimeUtc();
+            final OffsetDateTime dataHoraRealizacaoProcesso = Now.getOffsetDateTimeUtc();
             stmt = conn.prepareStatement("INSERT INTO VEICULO_TRANSFERENCIA_PROCESSO(" +
                     "  COD_UNIDADE_ORIGEM," +
                     "  COD_UNIDADE_DESTINO," +

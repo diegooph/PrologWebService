@@ -30,7 +30,7 @@ public final class PneuTransferenciaService {
             @NotNull final String userToken,
             @NotNull final PneuTransferenciaRealizacao pneuTransferenciaRealizacao) throws ProLogException {
         try {
-            final OffsetDateTime dataHoraSincronizacao = Now.offsetDateTimeUtc();
+            final OffsetDateTime dataHoraSincronizacao = Now.getOffsetDateTimeUtc();
             return ResponseWithCod.ok(
                     "Transferência realizada com sucesso",
                     RouterPneuTransferencia

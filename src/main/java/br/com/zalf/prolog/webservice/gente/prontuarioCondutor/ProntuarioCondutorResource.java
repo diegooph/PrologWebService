@@ -69,7 +69,7 @@ public final class ProntuarioCondutorResource {
             @FormDataParam("file") FormDataContentDisposition fileDetail,
             @PathParam("codUnidade") Long codUnidade) {
         try {
-            final String fileName = Now.utcMillis() + "_" +
+            final String fileName = Now.getUtcMillis() + "_" +
                     codUnidade + "_" + fileDetail.getFileName().replace(" ", "_");
             final File tmpDir = new File(System.getProperty("java.io.tmpdir"), "prontuarios");
             if (!tmpDir.exists()) {

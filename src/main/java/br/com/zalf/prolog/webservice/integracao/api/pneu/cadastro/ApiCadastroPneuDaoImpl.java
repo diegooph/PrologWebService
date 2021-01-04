@@ -75,8 +75,8 @@ public final class ApiCadastroPneuDaoImpl extends DatabaseConnection implements 
                     bindValueOrNull(stmt, 15,
                             pneuCargaInicial.getPlacaVeiculoPneuAplicado(), SqlType.VARCHAR);
                     bindValueOrNull(stmt, 16,
-                            pneuCargaInicial.getPosicaoPneuAplicado(), SqlType.INTEGER);
-                    stmt.setObject(17, Now.offsetDateTimeUtc());
+                                    pneuCargaInicial.getPosicaoPneuAplicado(), SqlType.INTEGER);
+                    stmt.setObject(17, Now.getOffsetDateTimeUtc());
                     stmt.setString(18, tokenIntegracao);
                     rSet = stmt.executeQuery();
                     final long codPneuProlog;
@@ -154,7 +154,7 @@ public final class ApiCadastroPneuDaoImpl extends DatabaseConnection implements 
             stmt.setBoolean(11, pneuCadastro.getPneuNovoNuncaRodado());
             bindValueOrNull(stmt, 12, pneuCadastro.getCodModeloBanda(), SqlType.BIGINT);
             bindValueOrNull(stmt, 13, pneuCadastro.getValorBandaPneu(), SqlType.NUMERIC);
-            stmt.setObject(14, Now.offsetDateTimeUtc());
+            stmt.setObject(14, Now.getOffsetDateTimeUtc());
             stmt.setString(15, tokenIntegracao);
             rSet = stmt.executeQuery();
             final long codPneuProlog;
@@ -196,7 +196,7 @@ public final class ApiCadastroPneuDaoImpl extends DatabaseConnection implements 
             stmt.setBigDecimal(6, pneuEdicao.getNovoValorPneu());
             bindValueOrNull(stmt, 7, pneuEdicao.getNovoCodModeloBanda(), SqlType.BIGINT);
             bindValueOrNull(stmt, 8, pneuEdicao.getNovoValorBandaPneu(), SqlType.REAL);
-            stmt.setObject(9, Now.offsetDateTimeUtc());
+            stmt.setObject(9, Now.getOffsetDateTimeUtc());
             stmt.setString(10, tokenIntegracao);
             rSet = stmt.executeQuery();
             final long codPneuProlog;
@@ -235,7 +235,7 @@ public final class ApiCadastroPneuDaoImpl extends DatabaseConnection implements 
                     PostgresUtils.listToArray(conn, SqlType.TEXT, pneuTransferencia.getCodPneusTransferidos()));
             stmt.setString(5, pneuTransferencia.getObservacao());
             stmt.setString(6, tokenIntegracao);
-            stmt.setObject(7, Now.offsetDateTimeUtc());
+            stmt.setObject(7, Now.getOffsetDateTimeUtc());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return rSet.getLong("COD_PROCESSO");

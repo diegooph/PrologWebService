@@ -201,7 +201,7 @@ public final class QuizModeloDaoImpl extends DatabaseConnection implements QuizM
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM FUNC_QUIZ_GET_LISTAGEM_MODELOS(?, ?);");
             stmt.setLong(1, codUnidade);
-            stmt.setObject(2, Now.offsetDateTimeUtc());
+            stmt.setObject(2, Now.getOffsetDateTimeUtc());
             rSet = stmt.executeQuery();
             final List<ModeloQuizListagem> modelos = new ArrayList<>();
             Set<String> cargosLiberados = null;

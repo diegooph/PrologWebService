@@ -3,9 +3,9 @@ package br.com.zalf.prolog.webservice.entrega.escaladiaria;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
 import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
+import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.errorhandling.exception.EscalaDiariaException;
 import com.google.common.base.Preconditions;
 import com.google.common.io.Files;
@@ -47,7 +47,7 @@ public class EscalaDiariaService {
         try {
             dao.insertEscalaDiariaItem(TokenCleaner.getOnlyToken(token), codUnidade, escalaDiariaItem);
             return Response.ok("Item escala diária cadastrado com sucesso");
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             Log.e(TAG, "Erro ao cadastrar/alterar o item escala diária na unidade: " + codUnidade, e);
             throw new EscalaDiariaException(
                     "Não foi possível cadastrar este item, tente novamente",
@@ -63,7 +63,7 @@ public class EscalaDiariaService {
         try {
             dao.updateEscalaDiariaItem(TokenCleaner.getOnlyToken(token), codUnidade, escalaDiariaItem);
             return Response.ok("Item escala diária alterado com sucesso");
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             Log.e(TAG, "Erro ao alterar o item escala diária na unidade: " + codUnidade, e);
             throw new EscalaDiariaException(
                     "Não foi possível cadastrar este item, tente novamente",
@@ -80,7 +80,7 @@ public class EscalaDiariaService {
                     codUnidade,
                     ProLogDateParser.toLocalDate(dataInicial),
                     ProLogDateParser.toLocalDate(dataFinal));
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             Log.e(TAG, "Erro ao buscar Escalas Diarias para a Unidade: " + codUnidade, e);
             throw new EscalaDiariaException(
                     "Não foi possível buscar as escalas diárias, tente novamente",
@@ -93,7 +93,7 @@ public class EscalaDiariaService {
                                                 @NotNull final Long codEscala) throws EscalaDiariaException {
         try {
             return dao.getEscalaDiariaItem(codUnidade, codEscala);
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             Log.e(TAG, "Erro ao buscar Escala Diaria Item de codigo: " + codEscala, e);
             throw new EscalaDiariaException(
                     "Não foi possível recuperrar este item, tente novamente",
@@ -107,7 +107,7 @@ public class EscalaDiariaService {
         try {
             dao.deleteEscalaDiariaItens(codUnidade, codEscalas);
             return Response.ok("Escalas deletadas com sucesso!");
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             Log.e(TAG, "Erro ao deletar os itens da unidade: " + codUnidade, e);
             throw new EscalaDiariaException(
                     "Não foi possível deletar estes itens, tente novamente",
@@ -120,7 +120,7 @@ public class EscalaDiariaService {
                                       @NotNull final InputStream fileInputStream,
                                       @NotNull final FormDataContentDisposition fileDetail) throws EscalaDiariaException {
         try {
-            final String fileName = String.valueOf(Now.utcMillis()) + "_" + codUnidade
+            final String fileName = String.valueOf(Now.getUtcMillis()) + "_" + codUnidade
                     + "_" + fileDetail.getFileName().replace(" ", "_");
             // Pasta temporária da JVM
             final File tmpDir = Files.createTempDir();
@@ -129,7 +129,7 @@ public class EscalaDiariaService {
             IOUtils.copy(fileInputStream, out);
             IOUtils.closeQuietly(out);
             return file;
-        } catch (IOException e) {
+        } catch (final IOException e) {
             Log.e(TAG, "Erro ao ler arquivo binário do import", e);
             throw new EscalaDiariaException(
                     "O arquivo importado possui inconsistências",
@@ -145,13 +145,13 @@ public class EscalaDiariaService {
         try {
             final List<EscalaDiariaItem> escalaItens = EscalaDiariaReader.readListFromCsvFilePath(file);
             dao.insertOrUpdateEscalaDiaria(TokenCleaner.getOnlyToken(token), codUnidade, escalaItens);
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             Log.e(TAG, "Erro ao inserir dados da escala no BD", e);
             throw new EscalaDiariaException(
                     "Não foi possível inserir os dados no banco de dados, tente novamente!",
                     "Erro ao inserir informações no banco",
                     e);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             Log.e(TAG, "Erro ao ler arquivo no servidor", e);
             throw new EscalaDiariaException(
                     "O arquivo enviado está com problemas, tente novamente!",

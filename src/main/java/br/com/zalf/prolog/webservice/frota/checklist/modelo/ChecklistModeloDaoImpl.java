@@ -71,7 +71,7 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
                     conn,
                     SqlType.BIGINT,
                     modeloChecklist.getTiposVeiculoLiberados()));
-            stmt.setObject(6, Now.offsetDateTimeUtc());
+            stmt.setObject(6, Now.getOffsetDateTimeUtc());
             stmt.setString(7, userToken);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
@@ -956,7 +956,7 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
             stmt.setLong(2, modeloChecklist.getCodModelo());
             stmt.setString(3, modeloChecklist.getNome());
             stmt.setBoolean(4, modeloChecklist.isAtivo());
-            stmt.setObject(5, Now.offsetDateTimeUtc());
+            stmt.setObject(5, Now.getOffsetDateTimeUtc());
             stmt.setString(6, userToken);
             rSet = stmt.executeQuery();
             if (rSet.next()) {

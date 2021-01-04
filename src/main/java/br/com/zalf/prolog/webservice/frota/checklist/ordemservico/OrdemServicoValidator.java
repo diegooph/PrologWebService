@@ -46,7 +46,7 @@ final class OrdemServicoValidator {
             throw new GenericException("A data/hora de início da resolução não pode ser posterior a data/hora de fim");
         }
 
-        final LocalDateTime dataHoraAtualUtc = Now.localDateTimeUtc();
+        final LocalDateTime dataHoraAtualUtc = Now.getLocalDateTimeUtc();
         final LocalDateTime dataHoraInicioUtc = dataHoraInicioResolucao
                 .atZone(zoneIdCliente)
                 .withZoneSameInstant(ZoneOffset.UTC)

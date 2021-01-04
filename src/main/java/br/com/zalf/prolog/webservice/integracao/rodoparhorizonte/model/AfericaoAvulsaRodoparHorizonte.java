@@ -71,7 +71,7 @@ public final class AfericaoAvulsaRodoparHorizonte {
                 5L,
                 "03383283194",
                 Duration.ofMinutes(1L).toMillis(),
-                Now.localDateTimeUtc(),
+                Now.getLocalDateTimeUtc(),
                 TipoMedicaoAfericaoRodoparHorizonte.SULCO,
                 MedicaoAfericaoRodoparHorizonte.getDummy(TipoMedicaoAfericaoRodoparHorizonte.SULCO));
     }
