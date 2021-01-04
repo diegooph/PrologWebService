@@ -5,9 +5,6 @@ import br.com.zalf.prolog.webservice.commons.util.Log;
 
 import java.sql.SQLException;
 
-/**
- * Classe AppService responsavel por comunicar-se com a interface DAO
- */
 public class AppService {
 	private static final String TAG = AppService.class.getSimpleName();
 	private final AppDao dao = Injection.provideAppDao();
