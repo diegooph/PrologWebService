@@ -27,7 +27,7 @@ import java.util.List;
 public class RelatoRelatorioDaoImpl extends DatabaseConnection implements RelatoRelatorioDao {
 
     @Override
-    public void getRelatosEstratificadosCsv(Long codUnidade, Date dataInicial, Date dataFinal, String equipe, OutputStream out)
+    public void getRelatosEstratificadosCsv(final Long codUnidade, final Date dataInicial, final Date dataFinal, final String equipe, final OutputStream out)
             throws SQLException, IOException {
         Connection conn = null;
         ResultSet rSet = null;
@@ -45,7 +45,7 @@ public class RelatoRelatorioDaoImpl extends DatabaseConnection implements Relato
 
     @NotNull
     @Override
-    public Report getRelatosEstratificadosReport(Long codUnidade, Date dataInicial, Date dataFinal, String equipe)
+    public Report getRelatosEstratificadosReport(final Long codUnidade, final Date dataInicial, final Date dataFinal, final String equipe)
             throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -62,16 +62,17 @@ public class RelatoRelatorioDaoImpl extends DatabaseConnection implements Relato
     }
 
     @Override
-    public int getQtdRelatosRealizadosHoje(@NotNull List<Long> codUnidades) throws SQLException {
+    public int getQtdRelatosRealizadosHoje(@NotNull final List<Long> codUnidades) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT COUNT(R.CODIGO) AS TOTAL FROM RELATO R " +
-                    "WHERE R.COD_UNIDADE::TEXT LIKE ANY (ARRAY[?]) " +
-                    "AND R.DATA_HORA_DATABASE::DATE = (? AT TIME ZONE (SELECT TIMEZONE FROM func_get_time_zone_unidade(R.COD_UNIDADE)));");
-            stmt.setArray(1, PostgresUtils.ListLongToArray(conn, codUnidades));
+                                                 "WHERE R.COD_UNIDADE::TEXT LIKE ANY (ARRAY[?]) " +
+                                                 "AND R.DATA_HORA_DATABASE::DATE = (? AT TIME ZONE (SELECT TIMEZONE " +
+                                                 "FROM func_get_time_zone_unidade(R.COD_UNIDADE)));");
+            stmt.setArray(1, PostgresUtils.listLongToArray(conn, codUnidades));
             stmt.setObject(2, LocalDate.now(Clock.systemUTC()));
             rSet = stmt.executeQuery();
             if (rSet.next()) {
@@ -107,9 +108,9 @@ public class RelatoRelatorioDaoImpl extends DatabaseConnection implements Relato
         }
     }
 
-    private PreparedStatement getRelatosEstratificadosStmt(Long codUnidade, Date dataInicial, Date dataFinal, String equipe, Connection conn)
+    private PreparedStatement getRelatosEstratificadosStmt(final Long codUnidade, final Date dataInicial, final Date dataFinal, final String equipe, final Connection conn)
             throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM func_relatorio_extrato_relatos(?,?,?,?)");
+        final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM func_relatorio_extrato_relatos(?,?,?,?)");
         stmt.setDate(1, DateUtils.toSqlDate(dataInicial));
         stmt.setDate(2, DateUtils.toSqlDate(dataFinal));
         stmt.setLong(3, codUnidade);

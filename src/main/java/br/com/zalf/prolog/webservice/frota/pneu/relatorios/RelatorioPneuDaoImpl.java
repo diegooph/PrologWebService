@@ -591,13 +591,15 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
 
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT COALESCE((((PRESSAO_ATUAL - PRESSAO_RECOMENDADA)/ PRESSAO_RECOMENDADA) *100)::TEXT, "
-                    + "(((PRESSAO_ATUAL - PRESSAO_RECOMENDADA)/ PRESSAO_RECOMENDADA) *100)::TEXT, 'N') AS PORC  "
-                    + "FROM PNEU  "
-                    + "WHERE COD_UNIDADE::TEXT LIKE ANY (ARRAY[?]) AND STATUS LIKE ANY (ARRAY[?]) "
-                    + "ORDER BY 1 asc");
-            stmt.setArray(1, PostgresUtils.ListToArray(conn, codUnidades));
-            stmt.setArray(2, PostgresUtils.ListToArray(conn, status));
+            stmt = conn.prepareStatement(
+                    "SELECT COALESCE((((PRESSAO_ATUAL - PRESSAO_RECOMENDADA)/ PRESSAO_RECOMENDADA) *100)::TEXT, "
+                            + "(((PRESSAO_ATUAL - PRESSAO_RECOMENDADA)/ PRESSAO_RECOMENDADA) *100)::TEXT, 'N') AS " +
+                            "PORC  "
+                            + "FROM PNEU  "
+                            + "WHERE COD_UNIDADE::TEXT LIKE ANY (ARRAY[?]) AND STATUS LIKE ANY (ARRAY[?]) "
+                            + "ORDER BY 1 asc");
+            stmt.setArray(1, PostgresUtils.listToArray(conn, codUnidades));
+            stmt.setArray(2, PostgresUtils.listToArray(conn, status));
             rSet = stmt.executeQuery();
             while (rSet.next()) {
                 if (rSet.getString("PORC").equals("N")) {

@@ -202,7 +202,7 @@ public class EscalaDiariaDaoImpl extends DatabaseConnection implements EscalaDia
             stmt = conn.prepareStatement("DELETE FROM ESCALA_DIARIA " +
                     "WHERE COD_UNIDADE = ? AND CODIGO::TEXT LIKE ANY (ARRAY[?])");
             stmt.setLong(1, codUnidade);
-            stmt.setArray(2, PostgresUtils.ListLongToArray(conn, codEscalas));
+            stmt.setArray(2, PostgresUtils.listLongToArray(conn, codEscalas));
             if (stmt.executeUpdate() == 0) {
                 throw new SQLException("Erro ao deletar Escala");
             }

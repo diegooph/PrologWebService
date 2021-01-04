@@ -18,16 +18,16 @@ public class PostgresUtils {
         return conn.createArrayOf("text", array);
     }
 
-    @Deprecated
-    public static Array listLongToArray(final Connection conn, final List<Long> list) throws SQLException {
-        return conn.createArrayOf("text", list.toArray(new Long[0]));
-    }
-
     @NotNull
     public static Array listToArray(@NotNull final Connection conn,
                                     @NotNull final SqlType type,
                                     @NotNull final List<?> list) throws SQLException {
         return conn.createArrayOf(type.asString(), list.toArray());
+    }
+
+    @Deprecated
+    public static Array listLongToArray(final Connection conn, final List<Long> list) throws SQLException {
+        return conn.createArrayOf("text", list.toArray(new Long[0]));
     }
 
     @NotNull
