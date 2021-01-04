@@ -6,8 +6,6 @@ import java.time.Duration;
 import java.time.LocalTime;
 
 /**
- * A TimeRange is the range between two times.
- * <p>
  * Created on 24/07/2018
  *
  * @author Luiz Felipe (https://github.com/luizfp)
