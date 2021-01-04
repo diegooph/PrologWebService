@@ -11,7 +11,6 @@ import java.io.File;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public final class Files {
-
     private Files() {
         throw new IllegalStateException(Files.class.getSimpleName() + " cannot be instantiated!");
     }
