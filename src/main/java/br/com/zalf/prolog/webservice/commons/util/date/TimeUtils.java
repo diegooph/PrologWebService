@@ -10,78 +10,49 @@ import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
 
 /**
- * Created by jean on 08/12/15.
+ * Created on 08/12/15
+ *
+ * @author Jean Zart (https://github.com/jeanzart)
  */
 public class TimeUtils {
-
-    /**
-     * Faz a diferença entre duas horas (contando os minutos, não somente a hora) de dois objetos
-     * java.sql.Time
-     *
-     * @param hora1 um Time
-     * @param hora2 um Time
-     * @return java.sql.Time
-     */
-    public static Time differenceBetween(Time hora1, Time hora2) {
-        LocalTime h1 = TimeUtils.toLocalTime(hora1);
-        LocalTime h2 = TimeUtils.toLocalTime(hora2);
-        return TimeUtils.toSqlTime(h1.minus(h2.getLong(ChronoField.MILLI_OF_DAY), ChronoUnit.MILLIS));
+    @NotNull
+    public static Time differenceBetween(final Time time1, final Time time2) {
+        final LocalTime localTime1 = TimeUtils.toLocalTime(time1);
+        final LocalTime localTime2 = TimeUtils.toLocalTime(time2);
+        return TimeUtils.toSqlTime(localTime1.minus(localTime2.getLong(ChronoField.MILLI_OF_DAY), ChronoUnit.MILLIS));
     }
 
-    /**
-     * Soma as horas (contando os minutos, não somente a hora) de dois objetos java.sql.Time
-     *
-     * @param hora1 um Time
-     * @param hora2 um Time
-     * @return java.sql.Time
-     */
-    public static Time somaHoras(Time hora1, Time hora2) {
-        LocalTime h1 = TimeUtils.toLocalTime(hora1);
-        LocalTime h2 = TimeUtils.toLocalTime(hora2);
-        return TimeUtils.toSqlTime(h1.plus(h2.getLong(ChronoField.MILLI_OF_DAY), ChronoUnit.MILLIS));
+    @NotNull
+    public static Time somaHoras(final Time originalTime, final Time timeToBeAdded) {
+        final LocalTime originalTimeConverted = TimeUtils.toLocalTime(originalTime);
+        final LocalTime timeToBeAddedConverted = TimeUtils.toLocalTime(timeToBeAdded);
+        return TimeUtils.toSqlTime(
+                originalTimeConverted.plus(
+                        timeToBeAddedConverted.getLong(ChronoField.MILLI_OF_DAY), ChronoUnit.MILLIS));
     }
 
-    /**
-     * Converte um java.sql.Time para java.time.LocalTime
-     *
-     * @param sqlTime um Time
-     * @return java.time.LocalTime
-     */
-    public static LocalTime toLocalTime(Time sqlTime) {
+    @NotNull
+    public static LocalTime toLocalTime(final Time sqlTime) {
         return sqlTime.toLocalTime();
     }
 
-    /**
-     * Converte um java.sql.Timestamp para java.time.LocalTime
-     *
-     * @param timeStamp um Timestamp
-     * @return java.time.LocalTime
-     */
-    public static LocalTime toLocalTime(Timestamp timeStamp) {
+    @NotNull
+    public static LocalTime toLocalTime(final Timestamp timeStamp) {
         return timeStamp.toLocalDateTime().toLocalTime();
     }
 
-    /**
-     * Converte um java.time.LocalTime para java.sql.Time
-     *
-     * @param localTime um LocalTime
-     * @return java.sql.Time
-     */
-    public static Time toSqlTime(LocalTime localTime) {
+    @NotNull
+    public static Time toSqlTime(final LocalTime localTime) {
         return Time.valueOf(localTime);
     }
 
-    /**
-     * Converte um java.sql.Timestamp para java.sql.Time
-     *
-     * @param timestamp um Timestamp
-     * @return java.sql.Time
-     */
-    public static Time toSqlTime(Timestamp timestamp) {
+    @NotNull
+    public static Time toSqlTime(final Timestamp timestamp) {
         return new Time(timestamp.getTime());
     }
 
-    public static Time toSqlTime(String stringToParse) {
+    @NotNull
+    public static Time toSqlTime(final String stringToParse) {
         return toSqlTime(LocalTime.parse(stringToParse));
     }
 
