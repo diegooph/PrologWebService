@@ -83,7 +83,7 @@ public final class SistemaProtheusNepomuceno extends Sistema {
             listagemVeiculos.removeIf(VeiculoListagemProtheusNepomuceno::deveRemover);
 
             final List<String> placasNepomuceno = listagemVeiculos.stream()
-                    .map(VeiculoListagemProtheusNepomuceno::getPlacaVeiculo)
+                    .map(VeiculoListagemProtheusNepomuceno::getCodVeiculo)
                     .distinct()
                     .collect(Collectors.toList());
 
@@ -113,7 +113,7 @@ public final class SistemaProtheusNepomuceno extends Sistema {
                                 tipoVeiculoConfiguracao.get(
                                         veiculo.getCodEmpresaFilialVeiculo(),
                                         veiculo.getCodEstruturaVeiculo()),
-                                afericaoRealizadaPlaca.get(veiculo.getPlacaVeiculo())));
+                                afericaoRealizadaPlaca.get(veiculo.getCodVeiculo())));
 
                 if (!modelosEstruturaVeiculo.containsKey(veiculo.getCodModeloVeiculo())) {
                     modelosEstruturaVeiculo.put(
