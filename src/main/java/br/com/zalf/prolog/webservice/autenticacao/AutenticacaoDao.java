@@ -16,10 +16,11 @@ public interface AutenticacaoDao {
      *
      * @param cpf CPF do usuário.
      * @return Objeto {@link Autenticacao autenticação} com o token gerado e o status do login.
+     *
      * @throws Throwable Caso ocorra algum erro.
      */
     @NotNull
-    Autenticacao insertOrUpdate(@NotNull final Long cpf) throws Throwable;
+    Autenticacao createTokenByCpf(@NotNull final Long cpf) throws Throwable;
 
     /**
      * Cria um novo token para o usuário. Esse Token será utilizado para fazer a validação

@@ -27,7 +27,7 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
 
     @NotNull
     @Override
-    public Autenticacao insertOrUpdate(@NotNull final Long cpf) throws Throwable {
+    public Autenticacao createTokenByCpf(@NotNull final Long cpf) throws Throwable {
         final String token = new SessionIdentifierGenerator().nextSessionId();
         return insert(cpf, token);
     }
