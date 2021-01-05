@@ -4,12 +4,12 @@ import br.com.zalf.prolog.webservice.config.BuildConfig;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public final class ValidationUtils {
+public final class CpfValidationUtils {
     private static final int[] PESOS_CPF_DV1 = {10, 9, 8, 7, 6, 5, 4, 3, 2};
     private static final int[] PESOS_CPF_DV2 = {11, 10, 9, 8, 7, 6, 5, 4, 3, 2};
 
-    private ValidationUtils() {
-        throw new IllegalStateException(ValidationUtils.class.getSimpleName() + " cannot be instantiated!");
+    private CpfValidationUtils() {
+        throw new IllegalStateException(CpfValidationUtils.class.getSimpleName() + " cannot be instantiated!");
     }
 
     public static boolean isCpfValid(@NotNull final String cpf) {

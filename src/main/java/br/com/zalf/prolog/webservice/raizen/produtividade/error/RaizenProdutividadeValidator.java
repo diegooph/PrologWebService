@@ -1,8 +1,8 @@
 package br.com.zalf.prolog.webservice.raizen.produtividade.error;
 
+import br.com.zalf.prolog.webservice.commons.util.CpfValidationUtils;
 import br.com.zalf.prolog.webservice.commons.util.ProLogValidator;
 import br.com.zalf.prolog.webservice.commons.util.StringUtils;
-import br.com.zalf.prolog.webservice.commons.util.ValidationUtils;
 import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
@@ -54,7 +54,7 @@ public class RaizenProdutividadeValidator extends ProLogValidator {
     private static void validacaoCPF(@NotNull final Long cpfMotorista) throws ProLogException {
         checkNotNull(cpfMotorista, "Você precisa fornecer o CPF");
 
-        if (!ValidationUtils.isCpfValid(String.format("%011d", cpfMotorista))) {
+        if (!CpfValidationUtils.isCpfValid(String.format("%011d", cpfMotorista))) {
             throw new GenericException("CPF inválido\n", "CPF informado: " + cpfMotorista);
         }
     }
