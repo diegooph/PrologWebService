@@ -4,9 +4,10 @@ import com.google.common.collect.ImmutableMap;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Created by luiz on 8/8/17.
+ * Created on 8/8/17
+ *
+ * @author luiz (https://github.com/luizfp)
  */
-
 public final class ProLogPosicaoPneuOrdemMapper {
     @NotNull
     private static final ImmutableMap<Integer, Integer> MAP_POSICAO_ORDEM_PNEU;
