@@ -8,69 +8,69 @@ import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 
 public class S3FileSender {
+    @NotNull
     private final String accessKeyId;
+    @NotNull
     private final String secretKey;
     private AmazonS3 amazonS3Client;
 
-    public S3FileSender(final String accessKeyId, final String secretKey) {
-        Preconditions.checkNotNull(accessKeyId);
-        Preconditions.checkNotNull(secretKey);
-
+    public S3FileSender(@NotNull final String accessKeyId, @NotNull final String secretKey) {
         this.accessKeyId = accessKeyId;
         this.secretKey = secretKey;
     }
 
-    public void sendFile(final String bucketName, final String fileName, final File file) throws S3FileSenderException {
-        Preconditions.checkNotNull(bucketName);
-        Preconditions.checkNotNull(fileName);
-        Preconditions.checkNotNull(file);
-
-        final PutObjectRequest put = new PutObjectRequest(bucketName, fileName, file);
+    public void sendFile(@NotNull final String bucketName, @NotNull final String fileName, @NotNull final File file)
+            throws S3FileSenderException {
+        final PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, fileName, file);
         try {
-            putObject(put);
+            putObject(putObjectRequest);
         } catch (final Exception e) {
-            // Erro ao enviar arquivo, subimos o erro.
             throw new S3FileSenderException(e);
         }
     }
 
-    public String generateFileUrl(final String bucketName, final String fileName) {
-        Preconditions.checkNotNull(bucketName);
-        Preconditions.checkNotNull(fileName);
-
+    @NotNull
+    public String generateFileUrl(@NotNull final String bucketName, @NotNull final String fileName) {
         return getS3Client().getUrl(bucketName, fileName).toString();
     }
 
-    private void putObject(final PutObjectRequest putObjectRequest) throws Exception {
+    private void putObject(@NotNull final PutObjectRequest putObjectRequest) {
         getS3Client().putObject(putObjectRequest);
     }
 
+    @NotNull
     private AmazonS3 getS3Client() {
         if (amazonS3Client == null) {
             final ClientConfiguration clientConfiguration = getClientConfiguration();
             final AWSCredentials awsCreds = getAwsCredentials();
-            return amazonS3Client = AmazonS3ClientBuilder
+            amazonS3Client = AmazonS3ClientBuilder
                     .standard()
                     .withRegion(Regions.SA_EAST_1)
                     .withCredentials(new AWSStaticCredentialsProvider(awsCreds))
                     .withClientConfiguration(clientConfiguration)
                     .build();
+            return amazonS3Client;
         }
         return amazonS3Client;
     }
 
+    @NotNull
     private ClientConfiguration getClientConfiguration() {
         final ClientConfiguration clientConfiguration = new ClientConfiguration();
-        clientConfiguration.setSocketTimeout(60 * 1000); // 60 segundos
+        clientConfiguration.setSocketTimeout(getSocketTimeoutInSeconds());
         return clientConfiguration;
     }
 
+    private int getSocketTimeoutInSeconds() {
+        return 60 * 1000;
+    }
+
+    @NotNull
     private AWSCredentials getAwsCredentials() {
         return new BasicAWSCredentials(accessKeyId, secretKey);
     }
