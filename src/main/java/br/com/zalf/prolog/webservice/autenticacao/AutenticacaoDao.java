@@ -28,10 +28,11 @@ public interface AutenticacaoDao {
      *
      * @param codColaborador Código do colaborador que será autenticado
      * @return Objeto {@link Autenticacao autenticação} com o token gerado e o status do login.
+     *
      * @throws Throwable Caso ocorra algum erro.
      */
     @NotNull
-    Autenticacao insertOrUpdateByCodColaborador(@NotNull final Long codColaborador) throws Throwable;
+    Autenticacao createTokenByCodColaborador(@NotNull final Long codColaborador) throws Throwable;
 
     /**
      * Deleta um token da tabela. Este método é usado quando o usuário realiza logout do sistema.

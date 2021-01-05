@@ -34,7 +34,7 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
 
     @NotNull
     @Override
-    public Autenticacao insertOrUpdateByCodColaborador(@NotNull final Long codColaborador) throws Throwable {
+    public Autenticacao createTokenByCodColaborador(@NotNull final Long codColaborador) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
