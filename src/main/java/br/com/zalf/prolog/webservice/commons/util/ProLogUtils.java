@@ -8,7 +8,6 @@ import br.com.zalf.prolog.webservice.config.BuildConfig;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public final class ProLogUtils {
-
     private ProLogUtils() {
         throw new IllegalStateException(ProLogUtils.class.getSimpleName() + " cannot be instantiated!");
     }
