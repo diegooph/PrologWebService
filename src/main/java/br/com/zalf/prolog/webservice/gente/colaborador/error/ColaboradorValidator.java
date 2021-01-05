@@ -146,7 +146,7 @@ public class ColaboradorValidator {
 
         if (pis.length() < MAX_LENGTH_PIS) {
             throw new GenericException("PIS inválido\nO PIS deve conter onze dígitos", "PIS informado:" + pis);
-        } else if (!ValidationUtils.validaPIS(pis)) {
+        } else if (!ValidationUtils.isPisPasepValid(pis)) {
             throw new GenericException("PIS inválido", "PIS informado: " + pis);
         }
     }

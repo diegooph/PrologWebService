@@ -54,7 +54,7 @@ public class RaizenProdutividadeValidator extends ProLogValidator {
     private static void validacaoCPF(@NotNull final Long cpfMotorista) throws ProLogException {
         checkNotNull(cpfMotorista, "Você precisa fornecer o CPF");
 
-        if (!ValidationUtils.isValidCpf(String.format("%011d", cpfMotorista))) {
+        if (!ValidationUtils.isCpfValid(String.format("%011d", cpfMotorista))) {
             throw new GenericException("CPF inválido\n", "CPF informado: " + cpfMotorista);
         }
     }
