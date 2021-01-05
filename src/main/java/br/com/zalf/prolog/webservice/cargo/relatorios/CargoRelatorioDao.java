@@ -12,22 +12,7 @@ import java.util.List;
  * @author Thais Francisco (https://github.com/thaisksf)
  */
 public interface CargoRelatorioDao {
-
-    /**
-     * Método para gerar um relatório contendo as permissões detalhadas em arquivo CSV.
-     *
-     * @param out         Streaming onde os dados serão escritos.
-     * @param codUnidades Códigos das unidades pela quais as informações serão filtradas.
-     * @throws Throwable Se algum erro ocorrer.
-     */
     void getPermissoesDetalhadasCsv(@NotNull final OutputStream out, @NotNull final List<Long> codUnidades)
             throws Throwable;
-
-    /**
-     * Método para gerar um relatório contendo todos as permissões detalhadas em formato {@link Report report}.
-     *
-     * @param codUnidades Códigos das unidades pela quais as informações serão filtradas.
-     * @throws Throwable Se algum erro ocorrer.
-     */
     Report getPermissoesDetalhadasReport(@NotNull final List<Long> codUnidades) throws Throwable;
 }
