@@ -9,9 +9,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
 import java.util.Optional;
 
-/**
- * Classe AutenticacaoService responsavel por comunicar-se com a interface DAO.
- */
 public class AutenticacaoService {
     private static final String TAG = AutenticacaoService.class.getSimpleName();
     private final AutenticacaoDao dao = Injection.provideAutenticacaoDao();
