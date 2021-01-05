@@ -13,9 +13,13 @@ import java.time.format.DateTimeFormatter;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public final class ProLogDateParser {
+    @NotNull
     private static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
+    @NotNull
     private static final String DEFAULT_DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
+    @NotNull
     private static final DateTimeFormatter DEFAULT_DATE_FORMATTER;
+    @NotNull
     private static final DateTimeFormatter DEFAULT_DATE_TIME_FORMATTER;
 
     static {
@@ -45,9 +49,7 @@ public final class ProLogDateParser {
     public static LocalDateTime toLocalDateTime(@NotNull final String date) {
         Preconditions.checkNotNull(date);
 
-        // - 2 para descontar as duas aspas simples ao redor do T. Elas NÃO devem ser enviadas nas datas em formato
-        // String.
-        if (date.length() != (DEFAULT_DATE_TIME_FORMAT.length() - 2)) {
+        if (date.length() != formatSizeWithoutQuotationMarks()) {
             throw new IllegalArgumentException(String.format(
                     "The provided date-time %s is not in the expected format: %s",
                     date,
@@ -62,5 +64,9 @@ public final class ProLogDateParser {
         Preconditions.checkNotNull(localDate);
 
         return localDate.format(DEFAULT_DATE_FORMATTER);
+    }
+
+    private static int formatSizeWithoutQuotationMarks() {
+        return DEFAULT_DATE_TIME_FORMAT.length() - 2;
     }
 }
