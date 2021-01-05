@@ -16,9 +16,6 @@ import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.Optional;
 
-/**
- * Classe responsável pela comunicação com o banco de dados da aplicação.
- */
 public class AutenticacaoDaoImpl extends DatabaseConnection implements AutenticacaoDao {
 
     public AutenticacaoDaoImpl() {
