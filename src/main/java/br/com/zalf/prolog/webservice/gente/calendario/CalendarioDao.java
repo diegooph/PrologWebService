@@ -12,13 +12,12 @@ public interface CalendarioDao {
 
 	List<Evento> getEventosByCpf(Long cpf) throws SQLException;
 
-	List<Evento> getAll (long dataInicial, long dataFinal, Long codEmpresa, String codUnidade,
-						 String codEquipe, String codFuncao) throws SQLException;
+	List<Evento> getAll(long dataInicial, long dataFinal, Long codEmpresa, String codUnidade,
+						String codEquipe, String codFuncao) throws SQLException;
 
-	boolean delete (Long codUnidade, Long codEvento) throws SQLException;
+	boolean delete(Long codUnidade, Long codEvento) throws SQLException;
 
-	AbstractResponse insert (Evento evento, String codUnidade, String codFuncao, String codEquipe) throws SQLException;
-	
-	boolean update (Evento evento, String codUnidade, String codFuncao, String codEquipe) throws SQLException;
+	AbstractResponse insert(Evento evento, String codUnidade, String codFuncao, String codEquipe) throws SQLException;
 
+	boolean update(Evento evento, String codUnidade, String codFuncao, String codEquipe) throws SQLException;
 }
