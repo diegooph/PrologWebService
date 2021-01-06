@@ -11,14 +11,7 @@ import java.util.List;
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
 public interface HistoricoEdicaoVeiculoDao {
-    /**
-     * Busca o histórico de edições de um veiculo baseado em um código de veiculo e um código de empresa.
-     *
-     * @param codVeiculo um código de um veiculo para buscar o histórico.
-     * @param codEmpresa o código da empresa do histórico desejado.
-     * @return uma lista de {@link HistoricoEdicaoVeiculo históricos} com o histórico e algumas informações pertinentes.
-     * @throws Throwable caso qualquer erro ocorrer.
-     */
+    
     @NotNull
     List<HistoricoEdicaoVeiculo> getHistoricoEdicaoVeiculo(@NotNull final Long codEmpresa,
                                                            @NotNull final Long codVeiculo) throws Throwable;
