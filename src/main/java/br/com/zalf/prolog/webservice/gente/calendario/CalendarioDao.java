@@ -10,57 +10,15 @@ import java.util.List;
  */
 public interface CalendarioDao {
 
-	/**
-	 * Busca os eventos visíveis a um usuário
-	 * @param cpf a ser buscando os eventos
-	 * @return uma lista com todos os eventos visíveis 
-	 * @throws SQLException caso não consiga acessar a tabela com os eventos
-	 */
 	List<Evento> getEventosByCpf(Long cpf) throws SQLException;
 
-	/**
-	 * busca todos os eventos de uma data até outra
-	 * @param dataInicial data inicial
-	 * @param dataFinal data final
-	 * @param codEmpresa código da empresa
-	 * @param codUnidade código da unidade
-	 * @param codEquipe equipe
-	 * @param codFuncao função
-	 * @return uma lista de eventos
-	 * @throws SQLException se ocorrer erro no banco
-	 */
 	List<Evento> getAll (long dataInicial, long dataFinal, Long codEmpresa, String codUnidade,
 						 String codEquipe, String codFuncao) throws SQLException;
 
-	/**
-	 * deleta um evento
-	 * @param codUnidade código da unidade
-	 * @param codEvento código do evento
-	 * @return valor da operação
-	 * @throws SQLException se ocorrer erro no banco
-	 */
 	boolean delete (Long codUnidade, Long codEvento) throws SQLException;
 
-	/**
-	 * insere um novo evento
-	 * @param evento um evento
-	 * @param codUnidade código da unidade
-	 * @param codFuncao código da função
-	 * @param codEquipe código da equipe
-	 * @return uma resposta abstrata, contendo o valor da operação
-	 * @throws SQLException se ocorrer erro no banco
-	 */
 	AbstractResponse insert (Evento evento, String codUnidade, String codFuncao, String codEquipe) throws SQLException;
-
-	/**
-	 * atualiza um evento
-	 * @param evento um evento
-	 * @param codUnidade código da unidade
-	 * @param codFuncao código da função
-	 * @param codEquipe código da equipe
-	 * @return o valor da operação
-	 * @throws SQLException se ocorrer erro no banco
-	 */
+	
 	boolean update (Evento evento, String codUnidade, String codFuncao, String codEquipe) throws SQLException;
 
 }
