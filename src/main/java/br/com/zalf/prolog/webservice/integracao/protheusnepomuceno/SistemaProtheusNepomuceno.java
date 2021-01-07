@@ -48,83 +48,6 @@ public final class SistemaProtheusNepomuceno extends Sistema {
         this.requester = requester;
     }
 
-    @NotNull
-    @Override
-    public Long insertTipoVeiculo(@NotNull final TipoVeiculo tipoVeiculo) throws Throwable {
-        // Validamos se o codAuxiliar está dentro dos padrões. Uma exception personalizada é lançada caso não estiver
-        // de acordo.
-        validateCodAuxiliar(tipoVeiculo.getCodEmpresa(), tipoVeiculo.getCodigo(), tipoVeiculo.getCodAuxiliar());
-        // Usamos o fluxo padrão do Prolog, apenas validamos antes
-        return getIntegradorProLog().insertTipoVeiculo(tipoVeiculo);
-    }
-
-    @Override
-    public void updateTipoVeiculo(@NotNull final TipoVeiculo tipoVeiculo) throws Throwable {
-        // Validamos se o codAuxiliar está dentro dos padrões. Uma exception personalizada é lançada caso não estiver
-        // de acordo.
-        validateCodAuxiliar(tipoVeiculo.getCodEmpresa(), tipoVeiculo.getCodigo(), tipoVeiculo.getCodAuxiliar());
-        // Usamos o fluxo padrão do Prolog, apenas validamos antes
-        getIntegradorProLog().updateTipoVeiculo(tipoVeiculo);
-    }
-
-    @Override
-    @NotNull
-    public Long insertAfericao(@NotNull final Long codUnidade,
-                               @NotNull final Afericao afericao,
-                               final boolean deveAbrirServico) throws Throwable {
-        Connection conn = null;
-        final DatabaseConnectionProvider connectionProvider = new DatabaseConnectionProvider();
-        try {
-            conn = connectionProvider.provideDatabaseConnection();
-            conn.setAutoCommit(false);
-            // buscamos as informações logo no começo do processo, assim, se der erro nada mais é executado.
-            final SistemaProtheusNepomucenoDao sistema = new SistemaProtheusNepomucenoDaoImpl();
-            final Long codEmpresaProlog = getIntegradorProLog().getCodEmpresaByCodUnidadeProLog(conn, codUnidade);
-            final ZoneId zoneIdForCodUnidade = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn);
-            String codAuxiliarUnidade = getIntegradorProLog().getCodAuxiliarByCodUnidadeProlog(conn, codUnidade);
-
-            // Não precisamos fazer essa tratativa na Aferição Avulsa.
-            if (afericao instanceof AfericaoPlaca
-                    && ProtheusNepomucenoUtils.containsMoreThanOneCodAuxiliar(codAuxiliarUnidade)) {
-                codAuxiliarUnidade =
-                        getCodFilialByPlacaCronograma(
-                                conn,
-                                codEmpresaProlog,
-                                codUnidade,
-                                ((AfericaoPlaca) afericao).getVeiculo().getPlaca(),
-                                sistema);
-            }
-
-            // Deixamos para inserir a aferição no Prolog logo antes de enviar para o Protheus. Assim garantimos que
-            // só teremos um rollback caso tenhamos erro no Protheus.
-            final Long codAfericaoInserida = sistema.insert(conn, codUnidade, codAuxiliarUnidade, afericao);
-
-            if (afericao instanceof AfericaoPlaca) {
-                requester.insertAfericaoPlaca(
-                        getIntegradorProLog()
-                                .getUrl(conn, codEmpresaProlog, getSistemaKey(), MetodoIntegrado.INSERT_AFERICAO_PLACA),
-                        ProtheusNepomucenoConverter
-                                .convert(codAuxiliarUnidade, (AfericaoPlaca) afericao, zoneIdForCodUnidade));
-            } else {
-                final String url = getIntegradorProLog()
-                        .getUrl(conn, codEmpresaProlog, getSistemaKey(), MetodoIntegrado.INSERT_AFERICAO_AVULSA);
-                requester.insertAfericaoAvulsa(
-                        url,
-                        ProtheusNepomucenoConverter
-                                .convert(codAuxiliarUnidade, (AfericaoAvulsa) afericao));
-            }
-            conn.commit();
-            return codAfericaoInserida;
-        } catch (final Throwable t) {
-            if (conn != null) {
-                conn.rollback();
-            }
-            throw t;
-        } finally {
-            connectionProvider.closeResources(conn);
-        }
-    }
-
     @Override
     @NotNull
     public CronogramaAfericao getCronogramaAfericao(@NotNull final List<Long> codUnidades) throws Throwable {
@@ -364,6 +287,83 @@ public final class SistemaProtheusNepomuceno extends Sistema {
         }
     }
 
+    @Override
+    @NotNull
+    public Long insertAfericao(@NotNull final Long codUnidade,
+                               @NotNull final Afericao afericao,
+                               final boolean deveAbrirServico) throws Throwable {
+        Connection conn = null;
+        final DatabaseConnectionProvider connectionProvider = new DatabaseConnectionProvider();
+        try {
+            conn = connectionProvider.provideDatabaseConnection();
+            conn.setAutoCommit(false);
+            // buscamos as informações logo no começo do processo, assim, se der erro nada mais é executado.
+            final SistemaProtheusNepomucenoDao sistema = new SistemaProtheusNepomucenoDaoImpl();
+            final Long codEmpresaProlog = getIntegradorProLog().getCodEmpresaByCodUnidadeProLog(conn, codUnidade);
+            final ZoneId zoneIdForCodUnidade = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn);
+            String codAuxiliarUnidade = getIntegradorProLog().getCodAuxiliarByCodUnidadeProlog(conn, codUnidade);
+
+            // Não precisamos fazer essa tratativa na Aferição Avulsa.
+            if (afericao instanceof AfericaoPlaca
+                    && ProtheusNepomucenoUtils.containsMoreThanOneCodAuxiliar(codAuxiliarUnidade)) {
+                codAuxiliarUnidade =
+                        getCodFilialByPlacaCronograma(
+                                conn,
+                                codEmpresaProlog,
+                                codUnidade,
+                                ((AfericaoPlaca) afericao).getVeiculo().getPlaca(),
+                                sistema);
+            }
+
+            // Deixamos para inserir a aferição no Prolog logo antes de enviar para o Protheus. Assim garantimos que
+            // só teremos um rollback caso tenhamos erro no Protheus.
+            final Long codAfericaoInserida = sistema.insert(conn, codUnidade, codAuxiliarUnidade, afericao);
+
+            if (afericao instanceof AfericaoPlaca) {
+                requester.insertAfericaoPlaca(
+                        getIntegradorProLog()
+                                .getUrl(conn, codEmpresaProlog, getSistemaKey(), MetodoIntegrado.INSERT_AFERICAO_PLACA),
+                        ProtheusNepomucenoConverter
+                                .convert(codAuxiliarUnidade, (AfericaoPlaca) afericao, zoneIdForCodUnidade));
+            } else {
+                final String url = getIntegradorProLog()
+                        .getUrl(conn, codEmpresaProlog, getSistemaKey(), MetodoIntegrado.INSERT_AFERICAO_AVULSA);
+                requester.insertAfericaoAvulsa(
+                        url,
+                        ProtheusNepomucenoConverter
+                                .convert(codAuxiliarUnidade, (AfericaoAvulsa) afericao));
+            }
+            conn.commit();
+            return codAfericaoInserida;
+        } catch (final Throwable t) {
+            if (conn != null) {
+                conn.rollback();
+            }
+            throw t;
+        } finally {
+            connectionProvider.closeResources(conn);
+        }
+    }
+
+    @NotNull
+    @Override
+    public Long insertTipoVeiculo(@NotNull final TipoVeiculo tipoVeiculo) throws Throwable {
+        // Validamos se o codAuxiliar está dentro dos padrões. Uma exception personalizada é lançada caso não estiver
+        // de acordo.
+        validateCodAuxiliar(tipoVeiculo.getCodEmpresa(), tipoVeiculo.getCodigo(), tipoVeiculo.getCodAuxiliar());
+        // Usamos o fluxo padrão do Prolog, apenas validamos antes
+        return getIntegradorProLog().insertTipoVeiculo(tipoVeiculo);
+    }
+
+    @Override
+    public void updateTipoVeiculo(@NotNull final TipoVeiculo tipoVeiculo) throws Throwable {
+        // Validamos se o codAuxiliar está dentro dos padrões. Uma exception personalizada é lançada caso não estiver
+        // de acordo.
+        validateCodAuxiliar(tipoVeiculo.getCodEmpresa(), tipoVeiculo.getCodigo(), tipoVeiculo.getCodAuxiliar());
+        // Usamos o fluxo padrão do Prolog, apenas validamos antes
+        getIntegradorProLog().updateTipoVeiculo(tipoVeiculo);
+    }
+
     /**
      * Método privado utilizado para buscar a Filial Protheus de uma Placa específica.
      * <p>
@@ -392,7 +392,8 @@ public final class SistemaProtheusNepomuceno extends Sistema {
         return listagemVeiculos
                 .stream()
                 .filter(veiculo -> !veiculo.deveRemover())
-                .filter(veiculo -> veiculo.getPlacaVeiculo().equals(placaVeiculo))
+                .filter(veiculo -> veiculo.getPlacaVeiculo().equals(placaVeiculo)
+                        || veiculo.getCodVeiculo().equals(placaVeiculo))
                 .map(VeiculoListagemProtheusNepomuceno::getCodEmpresaFilialVeiculo)
                 .findFirst()
                 .orElseThrow(() -> {
