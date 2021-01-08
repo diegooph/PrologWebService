@@ -25,7 +25,6 @@ import java.sql.SQLException;
 import java.util.Optional;
 import java.util.*;
 
-
 public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
 
     public VeiculoDaoImpl() {
@@ -134,8 +133,9 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
 
                 return new InfosVeiculoEditado(
                         veiculo.getCodigo(),
-                        NullIf.equalOrLess(rSet.getLong("COD_EDICAO_HISTORICO"), 0),
-                        rSet.getInt("TOTAL_EDICOES"),
+                        NullIf.equalOrLess(rSet.getLong("cod_edicao_historico_antigo"), 0),
+                        NullIf.equalOrLess(rSet.getLong("cod_edicao_historico_novo"), 0),
+                        rSet.getInt("total_edicoes"),
                         veiculoAntesEdicao);
             } else {
                 throw new SQLException("Erro ao atualizar o veículo de código: " + veiculo.getCodigo());

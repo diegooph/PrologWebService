@@ -3,6 +3,6 @@
   <component name="GitToolBoxProjectSettings">
     <option name="commitDialogCompletion" value="false" />
     <option name="commitMessageValidation" value="true" />
-    <option name="commitMessageValidationRegex" value="(fix|chore|docs|feat|refactor|style|test)\((aferição|cargo|checklist|colaborador|core|cs|dashboard|dispositivo|escala|prontuário|quiz|relato|socorro|treinamento|indicador|integração|interno|jornada|login|mapa|movimentação|pneu|pré-contracheque|produtividade|suporte|tracking|transferência|veículo)\):\s.*\n\nPL-\d+" />
+    <option name="commitMessageValidationRegex" value="(fix|chore|docs|feat|refactor|style|test)\((aferição|cargo|checklist|colaborador|core|cs|dashboard|dispositivo|escala|prontuário|quiz|relato|socorro|treinamento|indicador|integração|interno|jornada|login|mapa|movimentação|pneu|pré-contracheque|produtividade|suporte|tracking|transferência|veículo)\):\s.*(\n\nPL-\d+)?" />
   </component>
 </project>

@@ -11,8 +11,8 @@ import java.util.List;
  *
  * @deprecated at 2020-03-17. Esse objeto é utilizado para inúmeros casos de uso, listagem, visualização, seleção e etc.
  * Nosso novo padrão é termos um objeto para cada ação realizada no sistema.
- * Isso já começou a ser migrado com os novos objetos para {@link UnidadeEdicao edição} e
- * para {@link UnidadeVisualizacaoListagem visualização}.
+ * Isso já começou a ser migrado com os novos objetos para {@link UnidadeEdicaoDto edição} e
+ * para {@link UnidadeVisualizacaoDto visualização}.
  */
 @Deprecated
 public final class Unidade {
@@ -35,6 +35,33 @@ public final class Unidade {
         this.codigo = codigo;
         this.nome = nome;
         this.listNomesEquipes = listEquipe;
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (obj == null) {
+            return false;
+        }
+
+        if (!(obj instanceof Unidade)) {
+            return false;
+        }
+
+        if (obj == this) {
+            return true;
+        }
+
+        final Unidade unidade = (Unidade) obj;
+        return !(codigo == null || unidade.codigo == null) && codigo.equals(unidade.codigo);
+    }
+
+    @Override
+    public String toString() {
+        return "Unidade{" +
+                "codigo=" + codigo +
+                ", nome='" + nome + '\'' +
+                ", listNomesEquipes=" + listNomesEquipes +
+                '}';
     }
 
     public Long getCodigo() {
@@ -67,32 +94,5 @@ public final class Unidade {
 
     public void setEquipes(final List<Equipe> equipes) {
         this.equipes = equipes;
-    }
-
-    @Override
-    public String toString() {
-        return "Unidade{" +
-                "codigo=" + codigo +
-                ", nome='" + nome + '\'' +
-                ", listNomesEquipes=" + listNomesEquipes +
-                '}';
-    }
-
-    @Override
-    public boolean equals(final Object obj) {
-        if (obj == null) {
-            return false;
-        }
-
-        if (!(obj instanceof Unidade)) {
-            return false;
-        }
-
-        if (obj == this) {
-            return true;
-        }
-
-        final Unidade unidade = (Unidade) obj;
-        return !(codigo == null || unidade.codigo == null) && codigo.equals(unidade.codigo);
     }
 }

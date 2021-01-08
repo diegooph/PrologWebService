@@ -21,7 +21,7 @@ public final class ProLogCustomHeaders {
     @NotNull
     public static final String HEADER_TOKEN_AGENDADOR = "ProLog-Token-Agendador";
 
-    public final class AppVersionAndroid {
+    public static final class AppVersionAndroid {
         @NotNull
         public static final String AFERE_FACIL_APP_VERSION = "Praxio-AfereFacil-Android-App-Version";
         @NotNull

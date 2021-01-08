@@ -8,6 +8,7 @@ import br.com.zalf.prolog.webservice.commons.report.ReportTransformer;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.entrega.produtividade.relatorio._model.ProdutividadeColaboradorDia;
 import br.com.zalf.prolog.webservice.entrega.produtividade.relatorio._model.ProdutividadeColaboradorRelatorio;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -16,6 +17,7 @@ import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static br.com.zalf.prolog.webservice.entrega.produtividade.relatorio._model.ProdutividadeRelatorioConverter.createProdutividadeColaboradorDia;
 import static br.com.zalf.prolog.webservice.entrega.produtividade.relatorio._model.ProdutividadeRelatorioConverter.createProdutividadeColaboradorRelatorio;
@@ -145,19 +147,20 @@ public class ProdutividadeRelatorioDaoImpl extends DatabaseConnection implements
             @NotNull final String cpfColaborador,
             @NotNull final LocalDate dataInicial,
             @NotNull final LocalDate dataFinal) throws SQLException {
+
         final List<ProdutividadeColaboradorRelatorio> relatorioColaboradores = new ArrayList<>();
         List<ProdutividadeColaboradorDia> relatorioDias = new ArrayList<>();
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement(
-                    "select * from func_relatorio_produtividade_remuneracao_acumulada_colaborador(" +
-                            "f_cod_unidade => ?, " +
-                            "f_cpf_colaborador => ?, " +
-                            "f_data_inicial => ?, " +
-                            "f_data_final => ?);");
+
+        final String sql = "select * " +
+                "from func_relatorio_produtividade_remuneracao_acumulada_colaborador(" +
+                "f_cod_unidade => ?, " +
+                "f_cpf_colaborador => ?, " +
+                "f_data_inicial => ?, " +
+                "f_data_final => ?);";
+
+        try (final Connection conn = getConnection();
+             final PreparedStatement stmt = conn.prepareStatement(sql)) {
+
             stmt.setLong(1, codUnidade);
             if (Filtros.isFiltroTodos(cpfColaborador)) {
                 stmt.setNull(2, Types.BIGINT);
@@ -166,33 +169,46 @@ public class ProdutividadeRelatorioDaoImpl extends DatabaseConnection implements
             }
             stmt.setObject(3, dataInicial);
             stmt.setObject(4, dataFinal);
-            rSet = stmt.executeQuery();
-            String ultimoNomeColaborador = null, nomeColaboradorAtual;
-            Long ultimoCpf = null, cpfAtual;
-            while (rSet.next()) {
-                cpfAtual = rSet.getLong("CPF_COLABORADOR");
-                nomeColaboradorAtual = rSet.getString("NOME_COLABORADOR");
-                if (ultimoCpf == null) {
-                    ultimoCpf = cpfAtual;
-                    ultimoNomeColaborador = nomeColaboradorAtual;
-                } else if (!cpfAtual.equals(ultimoCpf)) {
-                    // trocou de usuário
+
+            try (final ResultSet rSet = stmt.executeQuery()) {
+                String ultimoNomeColaborador = null;
+                String nomeColaboradorAtual;
+                Long ultimoCpf = null;
+                Long cpfAtual;
+
+                while (rSet.next()) {
+                    cpfAtual = rSet.getLong("CPF_COLABORADOR");
+                    nomeColaboradorAtual = rSet.getString("NOME_COLABORADOR");
+                    if (ultimoCpf == null) {
+                        ultimoCpf = cpfAtual;
+                        ultimoNomeColaborador = nomeColaboradorAtual;
+                    } else if (!cpfAtual.equals(ultimoCpf)) {
+                        // trocou de usuário
+                        relatorioColaboradores.add(
+                                createProdutividadeColaboradorRelatorio(ultimoCpf,
+                                                                        ultimoNomeColaborador,
+                                                                        relatorioDias));
+                        relatorioDias = new ArrayList<>();
+                        ultimoCpf = cpfAtual;
+                        ultimoNomeColaborador = nomeColaboradorAtual;
+                    }
+                    relatorioDias.add(createProdutividadeColaboradorDia(rSet));
+                }
+                if (ultimoCpf != null) {
                     relatorioColaboradores.add(
                             createProdutividadeColaboradorRelatorio(ultimoCpf, ultimoNomeColaborador, relatorioDias));
-                    relatorioDias = new ArrayList<>();
-                    ultimoCpf = cpfAtual;
-                    ultimoNomeColaborador = nomeColaboradorAtual;
                 }
-                relatorioDias.add(createProdutividadeColaboradorDia(rSet));
             }
-            if (ultimoCpf != null) {
-                relatorioColaboradores.add(
-                        createProdutividadeColaboradorRelatorio(ultimoCpf, ultimoNomeColaborador, relatorioDias));
-            }
-        } finally {
-            close(conn, stmt, rSet);
         }
-        return relatorioColaboradores;
+        return relatorioColaboradores.stream()
+                .sorted((produtividade1, produtividade2) -> {
+                    final Colaborador colaborador1 = produtividade1.getColaborador();
+                    final Colaborador colaborador2 = produtividade2.getColaborador();
+                    final int nomeComparison = colaborador1.getNome().compareTo(colaborador2.getNome());
+                    final int cpfComparison = colaborador1.getCpf().compareTo(colaborador2.getCpf());
+                    return Integer.compare(nomeComparison, cpfComparison);
+                })
+                .collect(Collectors.toList());
     }
 
     @NotNull
@@ -242,8 +258,11 @@ public class ProdutividadeRelatorioDaoImpl extends DatabaseConnection implements
         return stmt;
     }
 
-    private PreparedStatement getAcessosProdutividadeStatement(Connection conn, String cpf, Long codUnidade,
-                                                               Date dataInicial, Date dataFinal) throws SQLException {
+    private PreparedStatement getAcessosProdutividadeStatement(final Connection conn,
+                                                               final String cpf,
+                                                               final Long codUnidade,
+                                                               final Date dataInicial,
+                                                               final Date dataFinal) throws SQLException {
         final PreparedStatement stmt = conn.prepareStatement(
                 "SELECT * FROM func_relatorio_acessos_produtividade_estratificado(?, ?, ?, ?);");
         stmt.setLong(1, codUnidade);
