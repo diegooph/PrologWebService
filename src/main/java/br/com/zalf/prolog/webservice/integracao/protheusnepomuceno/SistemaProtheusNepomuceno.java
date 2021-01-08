@@ -414,7 +414,8 @@ public final class SistemaProtheusNepomuceno extends Sistema {
         return listagemVeiculos
                 .stream()
                 .filter(veiculo -> !veiculo.deveRemover())
-                .filter(veiculo -> veiculo.getPlacaVeiculo().equals(placaVeiculo))
+                .filter(veiculo -> veiculo.getPlacaVeiculo().equals(placaVeiculo)
+                        || veiculo.getCodVeiculo().equals(placaVeiculo))
                 .map(VeiculoListagemProtheusNepomuceno::getCodEmpresaFilialVeiculo)
                 .findFirst()
                 .orElseThrow(() -> {

@@ -31,6 +31,7 @@ Change Log
 
 ### Bug Fixes
 * Corrige uso de data hora de queries que geram histórico de edição de veículo (PL-3264)
+* Corrige envio de aferição de placas mercosul na integração da Nepomuceno (PL-3392)
 
 ### Refactors
 * Revisa e excluí testes unitários sem sentido (PL-3220)
