@@ -108,7 +108,6 @@ public final class InternalExceptionMapper {
 
     private static void tryToLogEventException(@NotNull final ProLogException proLogException) {
         if (proLogException.isloggableOnErrorReportSystem()) {
-
             final SentryEvent event = new SentryEvent();
             final Message message = new Message();
             final Map<String, Object> extras = getExtrasByException(proLogException);
@@ -118,7 +117,6 @@ public final class InternalExceptionMapper {
             event.setLogger(proLogException.getClass().getSimpleName());
             event.setThrowable(proLogException);
             event.setExtras(extras);
-
             ErrorReportSystem.logEvent(event);
         }
     }
