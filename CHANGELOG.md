@@ -1,11 +1,6 @@
 Change Log
 ==========
 
-## Stage
-
-### Refactor
-* Adiciona código de veiculo nas movimentações de origem e destino (PL-3321)
-
 <a name="v1.4.3"></a>
 ## Version [v1.4.3](https://github.com/luizfp/PrologWebService/compare/v1.4.2...v1.4.3) (release-date) [unreleased]
 
@@ -21,6 +16,7 @@ Change Log
 * Corrige busca de histórico de edições (PL-3204)
 
 ### Refactors
+* Adiciona código de veiculo nas movimentações de origem e destino (PL-3321)
 * Adiciona o token_integração em todas as requisições integradas (PL-3251)
 * Refatora objeto de resposta do retorno de pneu de descarte (PL-3371)
 * Adiciona ordenação do relatório de remuneração acumulada com nome do colaborador e cpf (PL-3137)
