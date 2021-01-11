@@ -24,7 +24,7 @@ public class AutenticacaoResource {
                                      @FormParam("dataNascimento") final String dataNascimento) {
         Log.d(TAG, "CPF: " + cpf + "\nData: " + dataNascimento);
         if (service.verifyIfUserExists(cpf, dataNascimento, true).isPresent()) {
-            final Autenticacao autenticacao = service.insertOrUpdate(cpf);
+            final Autenticacao autenticacao = service.createTokenByCpf(cpf);
             Log.d(TAG, autenticacao.getToken());
             return autenticacao;
         } else {

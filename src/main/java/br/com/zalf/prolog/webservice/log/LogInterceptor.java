@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.log;
 
-import br.com.zalf.prolog.webservice.commons.KeyCaseInsensitiveMap;
+import br.com.zalf.prolog.webservice.commons.KeyCaseInsensitiveMultivaluedMap;
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.log._model.LogLevel;
@@ -14,6 +14,7 @@ import org.jetbrains.annotations.Nullable;
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.container.*;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.Provider;
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,7 +22,6 @@ import java.lang.reflect.Method;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-import java.util.Map;
 
 /**
  * Created on 13/12/18.
@@ -89,7 +89,6 @@ public final class LogInterceptor implements ContainerRequestFilter, ContainerRe
         }
 
         final String requestBody = (String) requestContext.getProperty(REQUEST_BODY_CONSTANT);
-
         return new RequestLog(
                 shouldLogHeaders(logRequest) ? getHeaders(requestContext.getHeaders()) : null,
                 getPath(requestContext),
@@ -107,7 +106,7 @@ public final class LogInterceptor implements ContainerRequestFilter, ContainerRe
         final ResponseLog responseLog;
         final boolean isError = verifyIfResponseStatusIsError(responseContext.getStatus());
         responseLog = new ResponseLog(
-                shouldLogHeaders(logRequest) ? getHeaders(responseContext.getHeaders()) : null,
+                shouldLogHeaders(logRequest) ? getHeaders(responseContext.getStringHeaders()) : null,
                 getMethodAnnotations(responseContext),
                 getEntityType(responseContext),
                 isError,
@@ -146,13 +145,14 @@ public final class LogInterceptor implements ContainerRequestFilter, ContainerRe
     }
 
     @Nullable
-    private KeyCaseInsensitiveMap<String, String> getHeaders(@Nullable final Map<String, ?> maybeHeaders) {
+    private KeyCaseInsensitiveMultivaluedMap<String, String> getHeaders(
+            @Nullable final MultivaluedMap<String, String> maybeHeaders) {
         if (maybeHeaders == null) {
             return null;
         }
 
-        final KeyCaseInsensitiveMap<String, String> headers = new KeyCaseInsensitiveMap<>();
-        maybeHeaders.forEach((s, objects) -> headers.put(s, objects.toString()));
+        final KeyCaseInsensitiveMultivaluedMap<String, String> headers = new KeyCaseInsensitiveMultivaluedMap<>();
+        maybeHeaders.forEach(headers::put);
         return headers;
     }
 
@@ -172,7 +172,7 @@ public final class LogInterceptor implements ContainerRequestFilter, ContainerRe
             final InputStream in = IOUtils.toInputStream(body, StandardCharsets.UTF_8);
             requestContext.setEntityStream(in);
             return body;
-        } catch (final IOException io) {
+        } catch (final IOException ignore) {
             return null;
         }
     }

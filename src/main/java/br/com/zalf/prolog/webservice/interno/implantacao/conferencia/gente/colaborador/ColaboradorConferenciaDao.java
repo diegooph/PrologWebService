@@ -10,16 +10,6 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface ColaboradorConferenciaDao {
 
-    /**
-     * Método para retornar a conferência da planilha de import de colaborador.
-     *
-     * @param codEmpresa            Código da empresa para a qual as informações serão conferidas.
-     * @param codUnidade            Código da unidade para a qual as informações serão conferidas.
-     * @param usuario               Usuário responsável pelo import.
-     * @param jsonPlanilha          Informações da planilha de import de colaboradores em formato Json.
-     * @param tipoImportColaborador Informação do tipo de import.
-     * @throws Throwable Se algum erro ocorrer.
-     */
     void importPlanilhaColaborador(@NotNull final Long codEmpresa,
                                    @NotNull final Long codUnidade,
                                    @NotNull final String usuario,

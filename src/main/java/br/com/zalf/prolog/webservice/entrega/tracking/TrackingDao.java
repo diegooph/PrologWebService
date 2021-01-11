@@ -9,11 +9,5 @@ import java.text.ParseException;
  */
 public interface TrackingDao {
 
-	/**
-	 * Insere um mapa caso não exista, atualiza caso exista
-	 * @return resultado da requisição
-	 * @throws SQLException caso não seja possível realizar o import
-	 */
-	public boolean insertOrUpdateTracking (String path, Long codUnidade)throws SQLException, IOException, ParseException;
-
+	boolean insertOrUpdateTracking(String path, Long codUnidade) throws SQLException, IOException, ParseException;
 }

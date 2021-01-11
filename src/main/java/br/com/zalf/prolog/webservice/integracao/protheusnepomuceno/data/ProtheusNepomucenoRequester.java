@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.data;
 
+import br.com.zalf.prolog.webservice.integracao.praxio.data.ApiAutenticacaoHolder;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.*;
 import br.com.zalf.prolog.webservice.integracao.sistema.Requester;
 import org.jetbrains.annotations.NotNull;
@@ -14,30 +15,33 @@ import java.util.List;
 public interface ProtheusNepomucenoRequester extends Requester {
     @NotNull
     List<VeiculoListagemProtheusNepomuceno> getListagemVeiculosUnidadesSelecionadas(
-            @NotNull final String url,
+            @NotNull final ApiAutenticacaoHolder apiAutenticacaoHolder,
             @NotNull final String codFiliais) throws Throwable;
 
     @NotNull
-    VeiculoAfericaoProtheusNepomuceno getPlacaPneusAfericaoPlaca(@NotNull final String url,
-                                                                 @NotNull final String codFilial,
-                                                                 @NotNull final String placaVeiculo) throws Throwable;
+    VeiculoAfericaoProtheusNepomuceno getPlacaPneusAfericaoPlaca(
+            @NotNull final ApiAutenticacaoHolder apiAutenticacaoHolder,
+            @NotNull final String codFilial,
+            @NotNull final String placaVeiculo) throws Throwable;
 
     @NotNull
     ResponseAfericaoProtheusNepomuceno insertAfericaoPlaca(
-            @NotNull final String url,
+            @NotNull final ApiAutenticacaoHolder apiAutenticacaoHolder,
             @NotNull final AfericaoPlacaProtheusNepomuceno afericaoPlaca) throws Throwable;
 
     @NotNull
-    List<PneuEstoqueProtheusNepomuceno> getListagemPneusEmEstoque(@NotNull final String url,
-                                                                  @NotNull final String codFiliais) throws Throwable;
+    List<PneuEstoqueProtheusNepomuceno> getListagemPneusEmEstoque(
+            @NotNull final ApiAutenticacaoHolder apiAutenticacaoHolder,
+            @NotNull final String codFiliais) throws Throwable;
 
     @NotNull
-    PneuEstoqueProtheusNepomuceno getPneuEmEstoqueAfericaoAvulsa(@NotNull final String url,
-                                                                 @NotNull final String codFilial,
-                                                                 @NotNull final String codPneu) throws Throwable;
+    PneuEstoqueProtheusNepomuceno getPneuEmEstoqueAfericaoAvulsa(
+            @NotNull final ApiAutenticacaoHolder apiAutenticacaoHolder,
+            @NotNull final String codFilial,
+            @NotNull final String codPneu) throws Throwable;
 
     @NotNull
     ResponseAfericaoProtheusNepomuceno insertAfericaoAvulsa(
-            @NotNull final String url,
+            @NotNull final ApiAutenticacaoHolder apiAutenticacaoHolder,
             @NotNull final AfericaoAvulsaProtheusNepomuceno afericaoAvulsa) throws Throwable;
 }

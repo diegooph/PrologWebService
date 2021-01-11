@@ -1,49 +1,39 @@
 package br.com.zalf.prolog.webservice.geral.unidade;
 
-import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeEdicao;
-import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeVisualizacaoListagem;
+import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeEntity;
+import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeVisualizacaoDto;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.springframework.data.jpa.repository.EntityGraph;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created on 2020-03-12
  *
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
-public interface UnidadeDao {
-    /**
-     * Atualiza os dados de uma {@link UnidadeEdicao unidade}.
-     *
-     * @param unidade Dados da unidade a ser atualizada.
-     * @return o código da unidade atualizada.
-     * @throws Throwable caso qualquer erro ocorrer.
-     */
-    Long update(@NotNull final UnidadeEdicao unidade) throws Throwable;
+@Repository
+public interface UnidadeDao extends JpaRepository<UnidadeEntity, Long> {
 
-    /**
-     * Busca uma unidade baseado no seu código.
-     *
-     * @param codUnidade um código de uma unidade.
-     * @return uma {@link UnidadeVisualizacaoListagem unidade}.
-     * @throws Throwable caso qualquer erro ocorrer.
-     */
+    @Override
     @NotNull
-    UnidadeVisualizacaoListagem getUnidadeByCodigo(@NotNull final Long codUnidade) throws Throwable;
+    @EntityGraph(value = "graph.RegionalEmpresa", type = EntityGraph.EntityGraphType.LOAD)
+    Optional<UnidadeEntity> findById(@NotNull final Long id);
 
-    /**
-     * Busca todas as unidades baseado no código da empresa e da regional.
-     * <p>
-     * A lista de códigos de regionais pode ser {@code null}, significando que o usuário quer trazer de todas as
-     * regionais.
-     *
-     * @param codEmpresa       um código de uma empresa;
-     * @param codigosRegionais códigos das regionais para as quais se quer filtrar, ou {@code null}.
-     * @return uma {@link List<UnidadeVisualizacaoListagem> lista de unidades}.
-     * @throws Throwable caso qualquer erro ocorrer.
-     */
     @NotNull
-    List<UnidadeVisualizacaoListagem> getUnidadesListagem(@NotNull final Long codEmpresa,
-                                                          @Nullable final List<Long> codigosRegionais) throws Throwable;
+    @Query(name = "funcUnidadeVisualizacao", nativeQuery = true)
+    UnidadeVisualizacaoDto getUnidadeByCodigo(@NotNull
+                                              @Param("fCodUnidade") final Long codUnidade) throws Throwable;
+
+    @NotNull
+    @Query(name = "funcUnidadeListagem", nativeQuery = true)
+    List<UnidadeVisualizacaoDto> getUnidadesListagem(@NotNull @Param("fCodEmpresa") final Long codEmpresa,
+                                                     @Nullable @Param("fCodRegionais") final String codigosRegionais)
+            throws Throwable;
 }

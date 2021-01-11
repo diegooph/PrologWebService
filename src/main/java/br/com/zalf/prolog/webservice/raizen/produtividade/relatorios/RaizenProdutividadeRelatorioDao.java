@@ -13,28 +13,11 @@ import java.time.LocalDate;
  */
 public interface RaizenProdutividadeRelatorioDao {
 
-    /**
-     * Método para gerar um relatório contendo todos os dados da produtividade em arquivo CSV.
-     *
-     * @param out         - Streaming onde os dados serão escritos.
-     * @param codUnidade  - Código da unidade pela qual as informações serão filtradas.
-     * @param dataInicial - Data inicial do período de filtro.
-     * @param dataFinal   - Data final do período de filtro.
-     * @throws Throwable - Se algum erro ocorrer.
-     */
     void getDadosGeraisProdutividadeCsv(@NotNull final OutputStream out,
                                         @NotNull final Long codUnidade,
                                         @NotNull final LocalDate dataInicial,
                                         @NotNull final LocalDate dataFinal) throws Throwable;
 
-    /**
-     * Método para gerar um relatório contendo todos os dados da produtividade em arquivo CSV.
-     *
-     * @param codUnidade  - Código da unidade pela qual as informações serão filtradas.
-     * @param dataInicial - Data inicial do período de filtro.
-     * @param dataFinal   - Data final do período de filtro.
-     * @throws Throwable - Se algum erro ocorrer.
-     */
     @NotNull
     Report getDadosGeraisProdutividadeReport(@NotNull final Long codUnidade,
                                              @NotNull final LocalDate dataInicial,

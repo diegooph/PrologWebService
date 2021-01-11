@@ -13,15 +13,25 @@ import org.jetbrains.annotations.NotNull;
 public final class ServerSideErrorException extends ProLogException {
     public ServerSideErrorException(@NotNull final String message) {
         super(StatusEnum.UNPROCESSABLE_ENTITY.getAsInteger(),
-                ProLogErrorCodes.SERVER_SIDE_ERROR.errorCode(),
-                message);
+              ProLogErrorCodes.SERVER_SIDE_ERROR.errorCode(),
+              message);
     }
 
     public ServerSideErrorException(@NotNull final String message, @NotNull final String detailedMessage) {
         super(StatusEnum.UNPROCESSABLE_ENTITY.getAsInteger(),
-                ProLogErrorCodes.SERVER_SIDE_ERROR.errorCode(),
-                message,
-                detailedMessage);
+              ProLogErrorCodes.SERVER_SIDE_ERROR.errorCode(),
+              message,
+              detailedMessage);
+    }
+
+    public ServerSideErrorException(@NotNull final String message,
+                                    @NotNull final String detailedMessage,
+                                    final boolean loggableOnErrorReportSystem) {
+        super(StatusEnum.UNPROCESSABLE_ENTITY.getAsInteger(),
+              ProLogErrorCodes.SERVER_SIDE_ERROR.errorCode(),
+              message,
+              detailedMessage,
+              loggableOnErrorReportSystem);
     }
 
     public ServerSideErrorException(@NotNull final String message,
@@ -29,10 +39,17 @@ public final class ServerSideErrorException extends ProLogException {
                                     @NotNull final String developerMessage,
                                     final boolean loggableOnErrorReportSystem) {
         super(StatusEnum.UNPROCESSABLE_ENTITY.getAsInteger(),
-                ProLogErrorCodes.SERVER_SIDE_ERROR.errorCode(),
-                message,
-                detailedMessage,
-                developerMessage,
-                loggableOnErrorReportSystem);
+              ProLogErrorCodes.SERVER_SIDE_ERROR.errorCode(),
+              message,
+              detailedMessage,
+              developerMessage,
+              loggableOnErrorReportSystem);
+    }
+
+    @NotNull
+    public static ServerSideErrorException defaultNotLoggableException() {
+        return new ServerSideErrorException("Erro ao processar registro.",
+                                            "Não foi possível processar o registro, verifique os dados enviados.",
+                                            false);
     }
 }

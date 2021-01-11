@@ -4,23 +4,42 @@ Change Log
 ## Stage
 
 ### Refactor
-
 * Adiciona código de veiculo nas movimentações de origem e destino (PL-3321)
-  <a name="v1.4.3"></a>
 
+<a name="v1.4.3"></a>
 ## Version [v1.4.3](https://github.com/luizfp/PrologWebService/compare/v1.4.2...v1.4.3) (release-date) [unreleased]
+
+### Features
+* Altera integração da Nepomuceno para trabalhar com código ao invés de placa (PL-3366)
+* Adiciona Spring como gerenciador de conexões, não utilizando mais a classe `DatabaseManager`, configurando através de
+  YAML (PL-3265)
+* Adiciona `Hikari` como gerenciador de pool de conexões (PL-3266)
+* Adiciona `Spring Data JPA` para realizar o mapeamento e CRUD de Unidade (PL-3309)
+* Adiciona scheduler para deleção dos arquivos temporários do tomcat (PL-3318)
+* Implementa bloqueios de placa para Nepomuceno (PL-3351)
+* Adiciona deleção das checklists (PL-3217)
+* Corrige busca de histórico de edições (PL-3204)
+
+### Refactors
+* Adiciona o token_integração em todas as requisições integradas (PL-3251)
+* Refatora objeto de resposta do retorno de pneu de descarte (PL-3371)
+* Adiciona ordenação do relatório de remuneração acumulada com nome do colaborador e cpf (PL-3137)
+* Remove javadocs das DAOs (PL-3400)
+
+### Bug Fixes
+* Relatório qtd aferições by tipo e data não traz primeira linha (PL-3188)
 
 <a name="v1.4.2"></a>
 
 ## Version [v1.4.2](https://github.com/luizfp/PrologWebService/compare/v1.4.1...v1.4.2) (2020-11-22)
 
 ### Features
-
 * Implementa documentação da classe de unidade (PL-2898)
 * Configura FileWatcher no Prolog (PL-3267)
 
 ### Bug Fixes
 * Corrige uso de data hora de queries que geram histórico de edição de veículo (PL-3264)
+* Corrige envio de aferição de placas mercosul na integração da Nepomuceno (PL-3392)
 
 ### Refactors
 * Revisa e excluí testes unitários sem sentido (PL-3220)

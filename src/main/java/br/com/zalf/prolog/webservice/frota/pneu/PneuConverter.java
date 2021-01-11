@@ -34,7 +34,7 @@ public final class PneuConverter {
         pneu.setValor(rSet.getBigDecimal("VALOR"));
         pneu.setCodUnidadeAlocado(rSet.getLong("COD_UNIDADE_ALOCADO"));
         pneu.setCodRegionalAlocado(rSet.getLong("COD_REGIONAL_ALOCADO"));
-        if(listagem) {
+        if (listagem) {
             pneu.setNomeUnidadeAlocado(rSet.getString("NOME_UNIDADE_ALOCADO"));
             pneu.setNomeRegionalAlocado(rSet.getString("NOME_REGIONAL_ALOCADO"));
         }
@@ -100,6 +100,15 @@ public final class PneuConverter {
         pneuAnalise.setRecapadora(createRecapadoraPneu(rSet));
         pneuAnalise.setCodigoColeta(rSet.getString("COD_COLETA"));
         return pneuAnalise;
+    }
+
+    @NotNull
+    public static PneuRetornoDescarteSuccess createPneuRetornoDescarteSuccess(@NotNull final ResultSet rSet)
+            throws SQLException {
+        return PneuRetornoDescarteSuccess.builder()
+                .codPneuRetornado(rSet.getLong("cod_pneu_retornado"))
+                .codMovimentacaoGerada(rSet.getLong("cod_movimentacao_gerada"))
+                .build();
     }
 
     @NotNull
