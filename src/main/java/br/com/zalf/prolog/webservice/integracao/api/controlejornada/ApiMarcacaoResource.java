@@ -1,9 +1,9 @@
 package br.com.zalf.prolog.webservice.integracao.api.controlejornada;
 
+import br.com.zalf.prolog.webservice.commons.network.PrologCustomHeaders;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Platform;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Required;
 import br.com.zalf.prolog.webservice.commons.network.metadata.UsedBy;
-import br.com.zalf.prolog.webservice.commons.util.PrologCustomHeaders;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.integracao.api.controlejornada._model.ApiMarcacao;
 import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;

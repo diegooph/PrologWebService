@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.log._model;
 
 import br.com.zalf.prolog.webservice.commons.KeyCaseInsensitiveMultivaluedMap;
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
-import br.com.zalf.prolog.webservice.commons.util.PrologCustomHeaders;
+import br.com.zalf.prolog.webservice.commons.network.PrologCustomHeaders;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

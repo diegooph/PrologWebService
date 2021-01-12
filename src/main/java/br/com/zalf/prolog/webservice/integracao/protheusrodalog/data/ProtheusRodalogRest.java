@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.protheusrodalog.data;
 
-import br.com.zalf.prolog.webservice.commons.util.PrologCustomHeaders;
+import br.com.zalf.prolog.webservice.commons.network.PrologCustomHeaders;
 import br.com.zalf.prolog.webservice.integracao.protheusrodalog.model.*;
 import org.jetbrains.annotations.NotNull;
 import retrofit2.Call;

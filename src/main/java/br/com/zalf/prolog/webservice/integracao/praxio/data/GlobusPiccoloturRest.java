@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.praxio.data;
 
-import br.com.zalf.prolog.webservice.commons.util.PrologCustomHeaders;
+import br.com.zalf.prolog.webservice.commons.network.PrologCustomHeaders;
 import br.com.zalf.prolog.webservice.integracao.praxio.movimentacao.GlobusPiccoloturLocalMovimentoResponse;
 import br.com.zalf.prolog.webservice.integracao.praxio.movimentacao.ProcessoMovimentacaoGlobus;
 import org.jetbrains.annotations.NotNull;

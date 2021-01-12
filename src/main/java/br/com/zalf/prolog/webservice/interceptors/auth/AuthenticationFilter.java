@@ -1,8 +1,8 @@
 package br.com.zalf.prolog.webservice.interceptors.auth;
 
 import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoService;
+import br.com.zalf.prolog.webservice.commons.network.PrologCustomHeaders;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.commons.util.PrologCustomHeaders;
 import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.errorhandling.exception.MultiAuthorizationHeadersException;
 import br.com.zalf.prolog.webservice.integracao.BaseIntegracaoService;

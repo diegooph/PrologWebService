@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.interceptors.versioncodebarrier;
 
+import br.com.zalf.prolog.webservice.commons.network.PrologCustomHeaders;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.commons.util.PrologCustomHeaders;
 import br.com.zalf.prolog.webservice.commons.util.ReflectionHelper;
 import br.com.zalf.prolog.webservice.errorhandling.error.ProLogError;
 import br.com.zalf.prolog.webservice.errorhandling.exception.VersaoAppBloqueadaException;
