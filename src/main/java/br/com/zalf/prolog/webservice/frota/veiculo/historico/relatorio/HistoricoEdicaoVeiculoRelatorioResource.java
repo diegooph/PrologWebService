@@ -1,8 +1,8 @@
 package br.com.zalf.prolog.webservice.frota.veiculo.historico.relatorio;
 
-import br.com.zalf.prolog.webservice.commons.util.Platform;
-import br.com.zalf.prolog.webservice.commons.util.Required;
-import br.com.zalf.prolog.webservice.commons.util.UsedBy;
+import br.com.zalf.prolog.webservice.commons.network.metadata.Platform;
+import br.com.zalf.prolog.webservice.commons.network.metadata.Required;
+import br.com.zalf.prolog.webservice.commons.network.metadata.UsedBy;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;

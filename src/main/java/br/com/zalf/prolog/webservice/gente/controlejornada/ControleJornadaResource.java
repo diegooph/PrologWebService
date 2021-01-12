@@ -1,6 +1,10 @@
 package br.com.zalf.prolog.webservice.gente.controlejornada;
 
 import br.com.zalf.prolog.webservice.commons.util.*;
+import br.com.zalf.prolog.webservice.commons.network.metadata.Optional;
+import br.com.zalf.prolog.webservice.commons.network.metadata.Platform;
+import br.com.zalf.prolog.webservice.commons.network.metadata.Required;
+import br.com.zalf.prolog.webservice.commons.network.metadata.UsedBy;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.gente.colaborador.ColaboradorService;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.*;

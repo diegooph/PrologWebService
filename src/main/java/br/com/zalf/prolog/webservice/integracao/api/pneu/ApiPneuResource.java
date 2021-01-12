@@ -1,9 +1,9 @@
 package br.com.zalf.prolog.webservice.integracao.api.pneu;
 
-import br.com.zalf.prolog.webservice.commons.util.Platform;
+import br.com.zalf.prolog.webservice.commons.network.metadata.Platform;
 import br.com.zalf.prolog.webservice.commons.util.ProLogCustomHeaders;
-import br.com.zalf.prolog.webservice.commons.util.Required;
-import br.com.zalf.prolog.webservice.commons.util.UsedBy;
+import br.com.zalf.prolog.webservice.commons.network.metadata.Required;
+import br.com.zalf.prolog.webservice.commons.network.metadata.UsedBy;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.integracao.api.pneu.model.ApiPneuAlteracaoStatus;
 import br.com.zalf.prolog.webservice.integracao.api.pneu.model.DiagramaPosicaoMapeado;
