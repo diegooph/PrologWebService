@@ -73,6 +73,9 @@ public final class XlsxConverter {
                                         //noinspection ConstantConditions
                                         sb.append(dateFormat.format(cell.getDateCellValue()));
                                     } else {
+                                        // Excel stores integer values as double values
+                                        // read an integer if the double value equals the
+                                        // integer value.
                                         final double x = cell.getNumericCellValue();
                                         if (x == Math.rint(x) && !Double.isNaN(x) && !Double.isInfinite(x)) {
                                             sb.append((long) x);
