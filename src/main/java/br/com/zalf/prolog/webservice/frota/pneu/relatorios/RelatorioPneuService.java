@@ -3,7 +3,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.relatorios;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.commons.util.date.PrologDateParser;
+import br.com.zalf.prolog.webservice.commons.util.datetime.PrologDateParser;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios._model.Aderencia;

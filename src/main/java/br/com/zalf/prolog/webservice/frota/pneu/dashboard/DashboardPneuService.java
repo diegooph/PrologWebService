@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.dashboard;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
+import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import br.com.zalf.prolog.webservice.dashboard.DashboardDao;
 import br.com.zalf.prolog.webservice.dashboard.components.QuantidadeItemComponent;
 import br.com.zalf.prolog.webservice.dashboard.components.charts.bar.VerticalBarChartComponent;

@@ -2,7 +2,7 @@ package test.br.com.zalf.prolog.webservice.pilares.frota.checklist.offline;
 
 import br.com.zalf.prolog.webservice.commons.FonteDataHora;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
-import br.com.zalf.prolog.webservice.commons.util.date.PrologDateParser;
+import br.com.zalf.prolog.webservice.commons.util.datetime.PrologDateParser;
 import br.com.zalf.prolog.webservice.database.DatabaseManager;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.checklist.model.TipoChecklist;

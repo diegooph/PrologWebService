@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.log;
 
 import br.com.zalf.prolog.webservice.commons.util.database.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.database.SqlType;
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
+import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.integracao.logger._model.LogType;
 import br.com.zalf.prolog.webservice.log._model.RequestLog;

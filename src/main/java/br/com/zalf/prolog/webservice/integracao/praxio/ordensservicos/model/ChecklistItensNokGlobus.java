@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model;
 
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
+import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;

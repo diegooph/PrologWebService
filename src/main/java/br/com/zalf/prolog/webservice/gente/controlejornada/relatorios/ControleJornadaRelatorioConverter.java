@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.gente.controlejornada.relatorios;
 
 import br.com.zalf.prolog.webservice.commons.util.FormatUtils;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
+import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.FolhaPontoDia;

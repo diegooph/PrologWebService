@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.messaging.email.task;
 
 import br.com.zalf.prolog.webservice.commons.util.database.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.database.SqlType;
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
+import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import br.com.zalf.prolog.webservice.messaging.MessageScope;
 import br.com.zalf.prolog.webservice.messaging.email._model.EmailRequestResponseHolder;
 import com.google.common.base.Throwables;

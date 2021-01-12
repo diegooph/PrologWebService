@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.gente.colaborador.error;
 
 import br.com.zalf.prolog.webservice.commons.util.StringUtils;
-import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
+import br.com.zalf.prolog.webservice.commons.util.datetime.DateUtils;
 import br.com.zalf.prolog.webservice.commons.util.validators.PisPasepValidator;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Cargo;

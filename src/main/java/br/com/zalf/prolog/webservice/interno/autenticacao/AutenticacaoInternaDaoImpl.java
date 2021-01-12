@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.interno.autenticacao;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
+import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import br.com.zalf.prolog.webservice.interno.PrologInternalUser;
 import org.jetbrains.annotations.NotNull;
 

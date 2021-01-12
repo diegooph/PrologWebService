@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.cs.nps;
 
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
+import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import br.com.zalf.prolog.webservice.cs.nps.model.PesquisaNpsBloqueio;
 import br.com.zalf.prolog.webservice.cs.nps.model.PesquisaNpsDisponivel;
 import br.com.zalf.prolog.webservice.cs.nps.model.PesquisaNpsRealizada;

@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.commons.util.date;
+package br.com.zalf.prolog.webservice.commons.util.datetime;
 
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;

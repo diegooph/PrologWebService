@@ -1,8 +1,8 @@
 package br.com.zalf.prolog.webservice.entrega.tracking;
 
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
+import br.com.zalf.prolog.webservice.commons.util.datetime.DateUtils;
+import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;

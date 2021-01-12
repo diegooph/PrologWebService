@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.controlejornada.ajustes.model.exibicao;
 
-import br.com.zalf.prolog.webservice.commons.util.date.PrologDateParser;
+import br.com.zalf.prolog.webservice.commons.util.datetime.PrologDateParser;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDate;

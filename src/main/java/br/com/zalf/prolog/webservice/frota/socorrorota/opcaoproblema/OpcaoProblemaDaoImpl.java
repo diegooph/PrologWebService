@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.socorrorota.opcaoproblema;
 
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
+import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.socorrorota.opcaoproblema._model.*;
 import org.jetbrains.annotations.NotNull;

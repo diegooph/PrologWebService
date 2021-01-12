@@ -1,8 +1,8 @@
 package br.com.zalf.prolog.webservice.frota.pneu.nomenclatura;
 
-import br.com.zalf.prolog.webservice.commons.util.database.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.StringUtils;
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
+import br.com.zalf.prolog.webservice.commons.util.database.SqlType;
+import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import br.com.zalf.prolog.webservice.frota.pneu.nomenclatura._model.PneuNomenclaturaCadastro;
 import br.com.zalf.prolog.webservice.frota.pneu.nomenclatura._model.PneuNomenclaturaItemCadastro;
 import br.com.zalf.prolog.webservice.frota.pneu.nomenclatura._model.PneuNomenclaturaItemVisualizacao;

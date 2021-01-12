@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model;
 
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
+import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.TipoMedicaoColetadaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.TipoProcessoColetaAfericao;
 import org.jetbrains.annotations.NotNull;

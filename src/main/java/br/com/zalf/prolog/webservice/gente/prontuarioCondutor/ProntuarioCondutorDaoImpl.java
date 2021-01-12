@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.gente.prontuarioCondutor;
 
 import br.com.zalf.prolog.webservice.commons.util.StringUtils;
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
+import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.entrega.ImportUtils;
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;

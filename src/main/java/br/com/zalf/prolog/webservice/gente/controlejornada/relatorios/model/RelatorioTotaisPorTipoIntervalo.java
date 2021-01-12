@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model;
 
 import br.com.zalf.prolog.webservice.commons.report.CsvReport;
-import br.com.zalf.prolog.webservice.commons.util.date.DurationUtils;
+import br.com.zalf.prolog.webservice.commons.util.datetime.DurationUtils;
 import br.com.zalf.prolog.webservice.gente.controlejornada.tipomarcacao.TipoMarcacao;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

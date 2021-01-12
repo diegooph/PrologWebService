@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.gente.treinamento.relatorios;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.commons.util.date.PrologDateParser;
+import br.com.zalf.prolog.webservice.commons.util.datetime.PrologDateParser;
 import org.jetbrains.annotations.NotNull;
 
 import javax.ws.rs.core.StreamingOutput;

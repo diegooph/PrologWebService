@@ -1,10 +1,10 @@
 package test.br.com.zalf.prolog.webservice.pilares.frota.checklist.realizacao;
 
 import br.com.zalf.prolog.webservice.commons.FonteDataHora;
-import br.com.zalf.prolog.webservice.commons.util.database.PostgresUtils;
-import br.com.zalf.prolog.webservice.commons.util.date.PrologDateParser;
 import br.com.zalf.prolog.webservice.commons.util.RandomUtils;
+import br.com.zalf.prolog.webservice.commons.util.database.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.database.SqlType;
+import br.com.zalf.prolog.webservice.commons.util.datetime.PrologDateParser;
 import br.com.zalf.prolog.webservice.database.DatabaseConnectionProvider;
 import br.com.zalf.prolog.webservice.database.DatabaseManager;
 import br.com.zalf.prolog.webservice.frota.checklist.ChecklistService;

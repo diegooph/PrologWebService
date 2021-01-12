@@ -1,8 +1,8 @@
 package test.br.com.zalf.prolog.webservice.pilares.gente.controlejornada;
 
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
-import br.com.zalf.prolog.webservice.commons.util.date.PrologDateParser;
-import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
+import br.com.zalf.prolog.webservice.commons.util.datetime.DateUtils;
+import br.com.zalf.prolog.webservice.commons.util.datetime.PrologDateParser;
 import br.com.zalf.prolog.webservice.gente.controlejornada.ajustes.ControleJornadaAjusteService;
 import br.com.zalf.prolog.webservice.gente.controlejornada.ajustes.model.MarcacaoAjusteAdicao;
 import br.com.zalf.prolog.webservice.gente.controlejornada.ajustes.model.MarcacaoAjusteAdicaoInicioFim;

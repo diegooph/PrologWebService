@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.empresa._model;
 
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
+import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import lombok.Data;
 
 import javax.persistence.*;

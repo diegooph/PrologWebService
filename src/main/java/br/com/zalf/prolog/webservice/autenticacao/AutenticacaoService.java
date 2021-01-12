@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.autenticacao;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.commons.util.date.PrologDateParser;
+import br.com.zalf.prolog.webservice.commons.util.datetime.PrologDateParser;
 import br.com.zalf.prolog.webservice.interceptors.auth.ColaboradorAutenticado;
 import org.jetbrains.annotations.NotNull;
 

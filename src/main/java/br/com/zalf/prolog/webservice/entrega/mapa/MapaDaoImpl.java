@@ -2,8 +2,8 @@ package br.com.zalf.prolog.webservice.entrega.mapa;
 
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.StringUtils;
-import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
+import br.com.zalf.prolog.webservice.commons.util.datetime.DateUtils;
+import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.entrega.mapa._model.PlanilhaMapaColunaHolder;
 import br.com.zalf.prolog.webservice.entrega.mapa._model.PlanilhaMapaImport;
