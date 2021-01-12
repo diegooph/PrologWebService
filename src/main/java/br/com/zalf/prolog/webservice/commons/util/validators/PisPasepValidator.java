@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.commons.util;
+package br.com.zalf.prolog.webservice.commons.util.validators;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -7,7 +7,7 @@ import org.jetbrains.annotations.Nullable;
  *
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
-public final class PisPasepValidationUtils {
+public final class PisPasepValidator {
     public static boolean isPisPasepValid(@Nullable final String pisOrPasep) {
         if (pisOrPasep == null) {
             return false;

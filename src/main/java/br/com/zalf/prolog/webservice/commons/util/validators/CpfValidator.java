@@ -1,14 +1,14 @@
-package br.com.zalf.prolog.webservice.commons.util;
+package br.com.zalf.prolog.webservice.commons.util.validators;
 
 import br.com.zalf.prolog.webservice.config.BuildConfig;
 import org.jetbrains.annotations.NotNull;
 
-public final class CpfValidationUtils {
+public final class CpfValidator {
     private static final int[] PESOS_CPF_DV1 = {10, 9, 8, 7, 6, 5, 4, 3, 2};
     private static final int[] PESOS_CPF_DV2 = {11, 10, 9, 8, 7, 6, 5, 4, 3, 2};
 
-    private CpfValidationUtils() {
-        throw new IllegalStateException(CpfValidationUtils.class.getSimpleName() + " cannot be instantiated!");
+    private CpfValidator() {
+        throw new IllegalStateException(CpfValidator.class.getSimpleName() + " cannot be instantiated!");
     }
 
     public static boolean isCpfValid(@NotNull final String cpf) {
