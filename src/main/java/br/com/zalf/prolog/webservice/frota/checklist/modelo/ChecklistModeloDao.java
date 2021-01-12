@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.checklist.modelo;
 
 import br.com.zalf.prolog.webservice.commons.imagens.Galeria;
-import br.com.zalf.prolog.webservice.commons.imagens.ImagemProLog;
+import br.com.zalf.prolog.webservice.commons.imagens.ImagemProlog;
 import br.com.zalf.prolog.webservice.frota.checklist.model.TipoChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.ModeloChecklistListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.ModeloChecklistEdicao;
@@ -125,10 +125,11 @@ public interface ChecklistModeloDao {
      * @param codEmpresa   Código da empresa a qual devemos inserir a imagem.
      * @param imagemProLog Imagem que deve ser inserida.
      * @return Código da imagem que foi inserida.
+     *
      * @throws SQLException Caso algum erro na query ocorrer.
      */
     @NotNull
-    Long insertImagem(@NotNull final Long codEmpresa, @NotNull final ImagemProLog imagemProLog) throws Throwable;
+    Long insertImagem(@NotNull final Long codEmpresa, @NotNull final ImagemProlog imagemProLog) throws Throwable;
 
     /**
      * Busca a URLs das imagens das perguntas.

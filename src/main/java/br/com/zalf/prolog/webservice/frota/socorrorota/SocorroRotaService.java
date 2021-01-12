@@ -3,7 +3,7 @@ package br.com.zalf.prolog.webservice.frota.socorrorota;
 import br.com.zalf.prolog.webservice.AmazonConstants;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.imagens.FileFormatNotSupportException;
-import br.com.zalf.prolog.webservice.commons.imagens.ImagemProLog;
+import br.com.zalf.prolog.webservice.commons.imagens.ImagemProlog;
 import br.com.zalf.prolog.webservice.commons.imagens.UploadImageHelper;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
@@ -89,7 +89,7 @@ public final class SocorroRotaService {
             @NotNull final FormDataContentDisposition fileDetail) {
         try {
             final String imageType = FilenameUtils.getExtension(fileDetail.getFileName());
-            final ImagemProLog imagemProLog = UploadImageHelper.uploadCompressedImagem(
+            final ImagemProlog imagemProLog = UploadImageHelper.uploadCompressedImagem(
                     fileInputStream,
                     AmazonConstants.BUCKET_SOCORRO_ROTA_IMAGENS,
                     imageType);

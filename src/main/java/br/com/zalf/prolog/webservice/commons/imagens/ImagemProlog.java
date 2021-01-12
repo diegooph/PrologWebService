@@ -7,15 +7,25 @@ import java.time.LocalDateTime;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class ImagemProLog {
+public class ImagemProlog {
 
     private Long codImagem;
     private String urlImagem;
     private LocalDateTime dataHoraCadastro;
     private Boolean statusImagem;
 
-    public ImagemProLog() {
+    public ImagemProlog() {
 
+    }
+
+    @Override
+    public String toString() {
+        return "ImagemProLog{" +
+                "codImagem=" + codImagem +
+                ", urlImagem='" + urlImagem + '\'' +
+                ", dataHoraCadastro=" + dataHoraCadastro +
+                ", statusImagem=" + statusImagem +
+                '}';
     }
 
     public Long getCodImagem() {
@@ -48,15 +58,5 @@ public class ImagemProLog {
 
     public void setStatusImagem(final Boolean statusImagem) {
         this.statusImagem = statusImagem;
-    }
-
-    @Override
-    public String toString() {
-        return "ImagemProLog{" +
-                "codImagem=" + codImagem +
-                ", urlImagem='" + urlImagem + '\'' +
-                ", dataHoraCadastro=" + dataHoraCadastro +
-                ", statusImagem=" + statusImagem +
-                '}';
     }
 }

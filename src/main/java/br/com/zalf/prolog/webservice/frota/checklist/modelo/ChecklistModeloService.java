@@ -2,14 +2,14 @@ package br.com.zalf.prolog.webservice.frota.checklist.modelo;
 
 import br.com.zalf.prolog.webservice.AmazonConstants;
 import br.com.zalf.prolog.webservice.Injection;
+import br.com.zalf.prolog.webservice.autenticacao.token.TokenCleaner;
 import br.com.zalf.prolog.webservice.commons.imagens.FileFormatNotSupportException;
 import br.com.zalf.prolog.webservice.commons.imagens.Galeria;
-import br.com.zalf.prolog.webservice.commons.imagens.ImagemProLog;
+import br.com.zalf.prolog.webservice.commons.imagens.ImagemProlog;
 import br.com.zalf.prolog.webservice.commons.imagens.UploadImageHelper;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.autenticacao.token.TokenCleaner;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.checklist.model.TipoChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.ModeloChecklistListagem;
@@ -178,7 +178,7 @@ public final class ChecklistModeloService {
                     modeloChecklist.isAtivo(),
                     Injection.provideDadosChecklistOfflineChangedListener());
             return Response.ok("Modelo de checklist " + (modeloChecklist.isAtivo() ? "ativado" : "inativado"));
-        } catch (Throwable t) {
+        } catch (final Throwable t) {
             Log.e(TAG, "Erro ao ativar/inativar o modelo de checklist: " + codModelo, t);
             throw Injection
                     .provideProLogExceptionHandler()
@@ -228,7 +228,7 @@ public final class ChecklistModeloService {
                                   @NotNull final FormDataContentDisposition fileDetail) throws ProLogException {
         try {
             final String imageType = FilenameUtils.getExtension(fileDetail.getFileName());
-            final ImagemProLog imagemProLog = UploadImageHelper.uploadCompressedImagem(
+            final ImagemProlog imagemProLog = UploadImageHelper.uploadCompressedImagem(
                     fileInputStream,
                     AmazonConstants.BUCKET_CHECKLIST_GALERIA_IMAGENS,
                     imageType);

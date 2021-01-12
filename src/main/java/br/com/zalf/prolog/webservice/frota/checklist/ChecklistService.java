@@ -4,12 +4,12 @@ import br.com.zalf.prolog.webservice.AmazonConstants;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.commons.imagens.FileFormatNotSupportException;
-import br.com.zalf.prolog.webservice.commons.imagens.ImagemProLog;
+import br.com.zalf.prolog.webservice.commons.imagens.ImagemProlog;
 import br.com.zalf.prolog.webservice.commons.imagens.UploadImageHelper;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.commons.util.date.PrologDateParser;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
+import br.com.zalf.prolog.webservice.commons.util.date.PrologDateParser;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.ChecklistListagem;
@@ -80,7 +80,7 @@ public final class ChecklistService {
             }
 
             final String imageType = FilenameUtils.getExtension(fileDetail.getFileName());
-            final ImagemProLog imagemProlog = UploadImageHelper.uploadCompressedImagem(
+            final ImagemProlog imagemProlog = UploadImageHelper.uploadCompressedImagem(
                     fileInputStream,
                     AmazonConstants.BUCKET_CHECKLIST_REALIZACAO_IMAGENS,
                     imageType);

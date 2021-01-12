@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.frota.checklist.modelo;
 
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
 import br.com.zalf.prolog.webservice.commons.imagens.Galeria;
-import br.com.zalf.prolog.webservice.commons.imagens.ImagemProLog;
+import br.com.zalf.prolog.webservice.commons.imagens.ImagemProlog;
 import br.com.zalf.prolog.webservice.commons.util.database.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.database.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
@@ -292,7 +292,7 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
     @NotNull
     @Override
     public Long insertImagem(@NotNull final Long codEmpresa,
-                             @NotNull final ImagemProLog imagemProLog) throws Throwable {
+                             @NotNull final ImagemProlog imagemProLog) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -300,7 +300,7 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
             conn = getConnection();
             conn.setAutoCommit(false);
             stmt = conn.prepareStatement("INSERT INTO CHECKLIST_GALERIA_IMAGENS(URL_IMAGEM, COD_EMPRESA) " +
-                    "VALUES (?, ?) RETURNING COD_IMAGEM;");
+                                                 "VALUES (?, ?) RETURNING COD_IMAGEM;");
             stmt.setString(1, imagemProLog.getUrlImagem());
             stmt.setLong(2, codEmpresa);
             rSet = stmt.executeQuery();
@@ -713,7 +713,7 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
                         "WHERE COD_EMPRESA IS NULL AND STATUS_ATIVO = TRUE;");
             }
             rSet = stmt.executeQuery();
-            final List<ImagemProLog> imagensProLog = new ArrayList<>();
+            final List<ImagemProlog> imagensProLog = new ArrayList<>();
             while (rSet.next()) {
                 imagensProLog.add(ChecklistModeloConverter.createImagemProLog(rSet));
             }
