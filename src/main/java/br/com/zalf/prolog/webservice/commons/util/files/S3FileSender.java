@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.commons.util;
+package br.com.zalf.prolog.webservice.commons.util.files;
 
 import com.amazonaws.ClientConfiguration;
 import com.amazonaws.auth.AWSCredentials;

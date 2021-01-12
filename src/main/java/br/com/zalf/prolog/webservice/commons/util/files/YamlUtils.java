@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.commons.util;
+package br.com.zalf.prolog.webservice.commons.util.files;
 
 import org.apache.commons.io.IOUtils;
 import org.jetbrains.annotations.NotNull;

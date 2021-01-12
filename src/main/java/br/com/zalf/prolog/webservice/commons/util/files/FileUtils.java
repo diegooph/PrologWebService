@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.commons.util;
+package br.com.zalf.prolog.webservice.commons.util.files;
 
 import org.apache.commons.io.FilenameUtils;
 import org.jetbrains.annotations.NotNull;
@@ -10,9 +10,9 @@ import java.io.File;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-public final class Files {
-    private Files() {
-        throw new IllegalStateException(Files.class.getSimpleName() + " cannot be instantiated!");
+public final class FileUtils {
+    private FileUtils() {
+        throw new IllegalStateException(FileUtils.class.getSimpleName() + " cannot be instantiated!");
     }
 
     @NotNull

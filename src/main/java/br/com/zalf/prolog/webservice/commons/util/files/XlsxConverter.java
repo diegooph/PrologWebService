@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.commons.util;
+package br.com.zalf.prolog.webservice.commons.util.files;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.Preconditions;
