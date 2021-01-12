@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.commons.util;
+package br.com.zalf.prolog.webservice.autenticacao.token;
 
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;

@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.pneu.transferencia;
 
-import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
-import br.com.zalf.prolog.webservice.commons.util.SqlType;
+import br.com.zalf.prolog.webservice.commons.util.database.PostgresUtils;
+import br.com.zalf.prolog.webservice.commons.util.database.SqlType;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Sulcos;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.LinkTransferenciaVeiculo;
 import br.com.zalf.prolog.webservice.frota.pneu.transferencia._model.TipoProcessoTransferenciaPneu;

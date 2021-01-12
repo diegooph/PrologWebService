@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.autenticacao;
 
-import br.com.zalf.prolog.webservice.commons.util.TokenGenerator;
+import br.com.zalf.prolog.webservice.autenticacao.token.TokenGenerator;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ResourceAlreadyDeletedException;
 import br.com.zalf.prolog.webservice.interceptors.auth.ColaboradorAutenticado;

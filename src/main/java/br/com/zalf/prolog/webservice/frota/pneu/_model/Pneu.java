@@ -17,7 +17,7 @@ import java.math.RoundingMode;
 import java.util.Comparator;
 import java.util.List;
 
-import static br.com.zalf.prolog.webservice.commons.util.PrologPosicaoPneuOrdemMapper.fromPosicao;
+import static br.com.zalf.prolog.webservice.frota.pneu._model.PrologPosicaoPneuOrdemMapper.fromPosicao;
 
 /**
  * Created on 31/05/2018

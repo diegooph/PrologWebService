@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.commons.util;
+package br.com.zalf.prolog.webservice.commons.util.database;
 /*
 Database Table Printer
 Copyright (C) 2014  Hami Galip Torun

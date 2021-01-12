@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.commons.util;
+package br.com.zalf.prolog.webservice.frota.pneu._model;
 
 import com.google.common.collect.ImmutableMap;
 import org.jetbrains.annotations.NotNull;

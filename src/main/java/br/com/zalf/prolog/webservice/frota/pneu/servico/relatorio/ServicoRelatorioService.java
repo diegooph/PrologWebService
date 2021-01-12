@@ -3,7 +3,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.servico.relatorio;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.commons.util.PrologDateParser;
+import br.com.zalf.prolog.webservice.commons.util.date.PrologDateParser;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;

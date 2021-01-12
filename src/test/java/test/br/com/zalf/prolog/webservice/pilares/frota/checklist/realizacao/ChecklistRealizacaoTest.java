@@ -1,7 +1,7 @@
 package test.br.com.zalf.prolog.webservice.pilares.frota.checklist.realizacao;
 
 import br.com.zalf.prolog.webservice.commons.FonteDataHora;
-import br.com.zalf.prolog.webservice.commons.util.PrologDateParser;
+import br.com.zalf.prolog.webservice.commons.util.date.PrologDateParser;
 import br.com.zalf.prolog.webservice.database.DatabaseManager;
 import br.com.zalf.prolog.webservice.frota.checklist.ChecklistService;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;

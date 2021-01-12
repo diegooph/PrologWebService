@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.integracao.avacorpavilan;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.commons.util.PrologDateParser;
+import br.com.zalf.prolog.webservice.commons.util.date.PrologDateParser;
 import br.com.zalf.prolog.webservice.integracao.BaseIntegracaoService;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

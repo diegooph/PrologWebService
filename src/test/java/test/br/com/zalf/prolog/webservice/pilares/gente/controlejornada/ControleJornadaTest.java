@@ -1,7 +1,7 @@
 package test.br.com.zalf.prolog.webservice.pilares.gente.controlejornada;
 
 import br.com.zalf.prolog.webservice.commons.FonteDataHora;
-import br.com.zalf.prolog.webservice.commons.util.PrologDateParser;
+import br.com.zalf.prolog.webservice.commons.util.date.PrologDateParser;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.gente.controlejornada.ControleJornadaService;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.IntervaloMarcacao;
