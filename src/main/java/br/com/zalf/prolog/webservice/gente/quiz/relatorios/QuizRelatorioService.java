@@ -3,7 +3,7 @@ package br.com.zalf.prolog.webservice.gente.quiz.relatorios;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
+import br.com.zalf.prolog.webservice.commons.util.PrologDateParser;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import org.jetbrains.annotations.NotNull;
 
@@ -27,8 +27,8 @@ class QuizRelatorioService {
                     out,
                     codUnidade,
                     codModeloQuiz,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal));
+                    PrologDateParser.toLocalDate(dataInicial),
+                    PrologDateParser.toLocalDate(dataFinal));
         } catch (final Throwable throwable) {
             Log.e(TAG, String.format("Erro ao buscar o relatório com a estratificação de realização do quiz (CSV).\n" +
                             "codUnidade: %d\n" +
@@ -53,8 +53,8 @@ class QuizRelatorioService {
             return dao.getEstratificacaoRealizacaoQuizReport(
                     codUnidade,
                     codModeloQuiz,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal));
+                    PrologDateParser.toLocalDate(dataInicial),
+                    PrologDateParser.toLocalDate(dataFinal));
         } catch (final Throwable throwable) {
             Log.e(TAG, String.format("Erro ao buscar o relatório com a estratificação de realização do quiz (REPORT).\n" +
                             "codUnidade: %d\n" +
@@ -157,8 +157,8 @@ class QuizRelatorioService {
             dao.getExtratoGeralCsv(
                     out,
                     codUnidade,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal));
+                    PrologDateParser.toLocalDate(dataInicial),
+                    PrologDateParser.toLocalDate(dataFinal));
         } catch (final Throwable throwable) {
             Log.e(TAG, String.format("Erro a buscar o relatório com o extrato geral de respostas do quiz (CSV).\n" +
                             "codUnidade: %d\n" +
@@ -179,8 +179,8 @@ class QuizRelatorioService {
         try {
             return dao.getExtratoGeralReport(
                     codUnidade,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal));
+                    PrologDateParser.toLocalDate(dataInicial),
+                    PrologDateParser.toLocalDate(dataFinal));
         } catch (final Throwable throwable) {
             Log.e(TAG, String.format("Erro a buscar o relatório com o extrato geral de respostas do quiz (REPORT).\n" +
                             "codUnidade: %d\n" +
@@ -205,12 +205,12 @@ class QuizRelatorioService {
                                    final boolean apenasSelecionadas) {
         try {
             dao.getRespostasRealizadosCsv(out,
-                    codUnidade,
-                    codModeloQuiz,
-                    cpfColaborador,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal),
-                    apenasSelecionadas);
+                                          codUnidade,
+                                          codModeloQuiz,
+                                          cpfColaborador,
+                                          PrologDateParser.toLocalDate(dataInicial),
+                                          PrologDateParser.toLocalDate(dataFinal),
+                                          apenasSelecionadas);
         } catch (final Throwable throwable) {
             Log.e(TAG, String.format("Erro a buscar o relatório de respostas de quizzes realizados (CSV).\n" +
                             "codUnidade: %d\n" +
@@ -242,8 +242,8 @@ class QuizRelatorioService {
                     codUnidade,
                     codModeloQuiz,
                     cpfColaborador,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal),
+                    PrologDateParser.toLocalDate(dataInicial),
+                    PrologDateParser.toLocalDate(dataFinal),
                     apenasSelecionadas);
         } catch (final Throwable throwable) {
             Log.e(TAG, String.format("Erro a buscar o relatório de respostas de quizzes realizados (REPORT).\n" +

@@ -3,7 +3,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.relatorios;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
+import br.com.zalf.prolog.webservice.commons.util.PrologDateParser;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios._model.Aderencia;
@@ -32,8 +32,8 @@ public class RelatorioPneuService {
             dao.getFarolAfericaoCsv(
                     outputStream,
                     codUnidades,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal));
+                    PrologDateParser.toLocalDate(dataInicial),
+                    PrologDateParser.toLocalDate(dataFinal));
         } catch (final Throwable throwable) {
             Log.e(TAG, "Erro ao buscar o relatório de aferições avulsas (CSV).\n" +
                     "Unidades: " + codUnidades.toString() + "\n" +
@@ -149,8 +149,8 @@ public class RelatorioPneuService {
             dao.getAfericoesAvulsasCsv(
                     outputStream,
                     codUnidades,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal));
+                    PrologDateParser.toLocalDate(dataInicial),
+                    PrologDateParser.toLocalDate(dataFinal));
         } catch (final Throwable throwable) {
             Log.e(TAG, "Erro ao buscar o relatório de aferições avulsas (CSV)", throwable);
             throw new RuntimeException(throwable);
@@ -164,8 +164,8 @@ public class RelatorioPneuService {
         try {
             return dao.getAfericoesAvulsasReport(
                     codUnidades,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal));
+                    PrologDateParser.toLocalDate(dataInicial),
+                    PrologDateParser.toLocalDate(dataFinal));
         } catch (final Throwable throwable) {
             Log.e(TAG, "Erro ao buscar o relatório de aferições avulsas (REPORT)", throwable);
             throw Injection
@@ -216,8 +216,8 @@ public class RelatorioPneuService {
             dao.getPrevisaoTrocaEstratificadoCsv(
                     outputStream,
                     codUnidades,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal));
+                    PrologDateParser.toLocalDate(dataInicial),
+                    PrologDateParser.toLocalDate(dataFinal));
         } catch (final SQLException | IOException e) {
             Log.e(TAG, String.format("Erro ao buscar o relatório de previsão de troca (CSV). \n" +
                     "Unidades: %s \n" +
@@ -232,8 +232,8 @@ public class RelatorioPneuService {
         try {
             return dao.getPrevisaoTrocaEstratificadoReport(
                     codUnidades,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal));
+                    PrologDateParser.toLocalDate(dataInicial),
+                    PrologDateParser.toLocalDate(dataFinal));
         } catch (final SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar o relatório de previsão de troca (REPORT). \n" +
                     "Unidades: %s \n" +
@@ -250,8 +250,8 @@ public class RelatorioPneuService {
             dao.getPrevisaoTrocaConsolidadoCsv(
                     outputStream,
                     codUnidades,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal));
+                    PrologDateParser.toLocalDate(dataInicial),
+                    PrologDateParser.toLocalDate(dataFinal));
         } catch (final SQLException | IOException e) {
             Log.e(TAG, String.format("Erro ao buscar o relatório de previsão de troca consolidado (CSV). \n" +
                     "Unidades: %s \n" +
@@ -266,8 +266,8 @@ public class RelatorioPneuService {
         try {
             return dao.getPrevisaoTrocaConsolidadoReport(
                     codUnidades,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal));
+                    PrologDateParser.toLocalDate(dataInicial),
+                    PrologDateParser.toLocalDate(dataFinal));
         } catch (final SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar o relatório de previsão de troca consolidado (REPORT). \n" +
                     "Unidades: %s \n" +
@@ -284,8 +284,8 @@ public class RelatorioPneuService {
             dao.getAderenciaPlacasCsv(
                     outputStream,
                     codUnidades,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal));
+                    PrologDateParser.toLocalDate(dataInicial),
+                    PrologDateParser.toLocalDate(dataFinal));
         } catch (final SQLException | IOException e) {
             Log.e(TAG, String.format("Erro ao buscar o relatório de aderência das placas (CSV). \n" +
                     "Unidades: %s \n" +
@@ -300,8 +300,8 @@ public class RelatorioPneuService {
         try {
             return dao.getAderenciaPlacasReport(
                     codUnidades,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal));
+                    PrologDateParser.toLocalDate(dataInicial),
+                    PrologDateParser.toLocalDate(dataFinal));
         } catch (final SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar o relatório de aderência das placas (REPORT). \n" +
                     "Unidades: %s \n" +
@@ -316,8 +316,8 @@ public class RelatorioPneuService {
         try {
             return dao.getPneusDescartadosReport(
                     codUnidades,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal));
+                    PrologDateParser.toLocalDate(dataInicial),
+                    PrologDateParser.toLocalDate(dataFinal));
         } catch (final SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar o relatório de pneus descartados (REPORT). \n" +
                     "Unidades: %s \n" +
@@ -335,8 +335,8 @@ public class RelatorioPneuService {
             dao.getPneusDescartadosCsv(
                     outputStream,
                     codUnidades,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal));
+                    PrologDateParser.toLocalDate(dataInicial),
+                    PrologDateParser.toLocalDate(dataFinal));
         } catch (final SQLException | IOException e) {
             Log.e(TAG, String.format("Erro ao buscar o relatório de pneus descartados (CSV). \n" +
                     "Unidades: %s \n" +

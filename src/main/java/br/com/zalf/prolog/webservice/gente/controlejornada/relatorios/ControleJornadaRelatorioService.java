@@ -3,7 +3,7 @@ package br.com.zalf.prolog.webservice.gente.controlejornada.relatorios;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
+import br.com.zalf.prolog.webservice.commons.util.PrologDateParser;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.FolhaPontoRelatorio;
 import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model.jornada.FolhaPontoJornadaRelatorio;
@@ -105,8 +105,8 @@ public class ControleJornadaRelatorioService {
                     out,
                     codUnidade,
                     cpf,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal));
+                    PrologDateParser.toLocalDate(dataInicial),
+                    PrologDateParser.toLocalDate(dataFinal));
         } catch (final Throwable e) {
             Log.e(TAG, String.format("Erro ao buscar o relatório com a aderência por colaborador(CSV). \n" +
                     "codUnidade: %d\n" +
@@ -127,8 +127,8 @@ public class ControleJornadaRelatorioService {
             return dao.getAderenciaMarcacoesColaboradoresReport(
                     codUnidade,
                     cpf,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal));
+                    PrologDateParser.toLocalDate(dataInicial),
+                    PrologDateParser.toLocalDate(dataFinal));
         } catch (final Throwable e) {
             Log.e(TAG, String.format("Erro ao buscar o relatório com a aderência por colaborador(REPORT).\n" +
                     "codUnidade: %d\n" +
@@ -153,8 +153,8 @@ public class ControleJornadaRelatorioService {
                     codUnidade,
                     codTipoIntervalo,
                     cpf,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal));
+                    PrologDateParser.toLocalDate(dataInicial),
+                    PrologDateParser.toLocalDate(dataFinal));
         } catch (final SQLException | IOException e) {
             Log.e(TAG, String.format("Erro ao buscar o relatório csv no padrão da portaria 1510. \n" +
                     "codUnidade: %d \n" +
@@ -177,8 +177,8 @@ public class ControleJornadaRelatorioService {
                     codUnidade,
                     codTipoIntervalo,
                     cpf,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal),
+                    PrologDateParser.toLocalDate(dataInicial),
+                    PrologDateParser.toLocalDate(dataFinal),
                     apenasColaboradoresAtivos);
         } catch (final Throwable e) {
             final String errorMessage = String.format("Erro ao buscar o relatório de folha de ponto. \n" +
@@ -207,8 +207,8 @@ public class ControleJornadaRelatorioService {
                     codUnidade,
                     codTipoIntervalo,
                     cpf,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal),
+                    PrologDateParser.toLocalDate(dataInicial),
+                    PrologDateParser.toLocalDate(dataFinal),
                     apenasColaboradoresAtivos);
         } catch (final Throwable e) {
             final String errorMessage = String.format("Erro ao buscar o relatório de folha de ponto jornada.\n" +
@@ -233,8 +233,8 @@ public class ControleJornadaRelatorioService {
             return dao.getMarcacoesComparandoEscalaDiariaReport(
                     codUnidade,
                     codTipoIntervalo,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal));
+                    PrologDateParser.toLocalDate(dataInicial),
+                    PrologDateParser.toLocalDate(dataFinal));
         } catch (final SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar report do relatório de marcações comparando com escala diária. \n" +
                     "codUnidade: %d \n" +
@@ -255,8 +255,8 @@ public class ControleJornadaRelatorioService {
                     out,
                     codUnidade,
                     codTipoIntervalo,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal));
+                    PrologDateParser.toLocalDate(dataInicial),
+                    PrologDateParser.toLocalDate(dataFinal));
         } catch (final IOException | SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar csv do relatório de marcações comparando com escala diária. \n" +
                     "codUnidade: %d \n" +
@@ -277,8 +277,8 @@ public class ControleJornadaRelatorioService {
                     out,
                     codUnidade,
                     codTipoIntervalo,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal));
+                    PrologDateParser.toLocalDate(dataInicial),
+                    PrologDateParser.toLocalDate(dataFinal));
         } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao buscar csv do relatório de total de tempo para cada tipo de intervalo. \n" +
                     "codUnidade: %d \n" +
@@ -303,8 +303,8 @@ public class ControleJornadaRelatorioService {
                     codTipoIntervalo,
                     codColaborador,
                     apenasMarcacoesAtivas,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal));
+                    PrologDateParser.toLocalDate(dataInicial),
+                    PrologDateParser.toLocalDate(dataFinal));
         } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao buscar o relatório csv para exportação genérica de marcações.\n" +
                     "codUnidade: %d\n" +

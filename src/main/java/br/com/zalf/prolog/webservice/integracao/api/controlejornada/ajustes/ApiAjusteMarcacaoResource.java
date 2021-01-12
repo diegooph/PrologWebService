@@ -1,9 +1,9 @@
 package br.com.zalf.prolog.webservice.integracao.api.controlejornada.ajustes;
 
 import br.com.zalf.prolog.webservice.commons.network.metadata.Platform;
-import br.com.zalf.prolog.webservice.commons.util.ProLogCustomHeaders;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Required;
 import br.com.zalf.prolog.webservice.commons.network.metadata.UsedBy;
+import br.com.zalf.prolog.webservice.commons.util.PrologCustomHeaders;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.integracao.api.controlejornada.ajustes.model.ApiAjusteMarcacao;
 import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
@@ -32,7 +32,7 @@ public final class ApiAjusteMarcacaoResource {
     @Path("ajustes-realizados")
     @UsedBy(platforms = Platform.INTEGRACOES)
     public List<ApiAjusteMarcacao> getAjustesMarcacaoRealizados(
-            @HeaderParam(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
+            @HeaderParam(PrologCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
             @QueryParam("codUltimoAjusteMarcacaoSincronizado") @Required final Long codUltimoAjusteMarcacaoSincronizado)
             throws ProLogException {
         return service.getAjustesMarcacaoRealizados(tokenIntegracao, codUltimoAjusteMarcacaoSincronizado);

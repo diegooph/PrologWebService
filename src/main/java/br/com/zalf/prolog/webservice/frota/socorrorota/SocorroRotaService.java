@@ -8,7 +8,7 @@ import br.com.zalf.prolog.webservice.commons.imagens.UploadImageHelper;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
+import br.com.zalf.prolog.webservice.commons.util.PrologDateParser;
 import br.com.zalf.prolog.webservice.frota.socorrorota._model.*;
 import org.apache.commons.io.FilenameUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
@@ -26,6 +26,62 @@ public final class SocorroRotaService {
     private static final String TAG = SocorroRotaService.class.getSimpleName();
     @NotNull
     private final SocorroRotaDao dao = Injection.provideSocorroDao();
+
+    @NotNull
+    public List<UnidadeAberturaSocorro> getUnidadesDisponiveisAberturaSocorroByCodColaborador(@NotNull final Long codColaborador) {
+        try {
+            return dao.getUnidadesDisponiveisAberturaSocorroByCodColaborador(codColaborador);
+        } catch (final Throwable e) {
+            Log.e(TAG, "Erro ao buscar as unidades disponíveis para abertura de socorro.", e);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(e, "Erro ao buscar as unidades, tente novamente");
+        }
+    }
+
+    @NotNull
+    public List<VeiculoAberturaSocorro> getVeiculosDisponiveisAberturaSocorroByUnidade(@NotNull final Long codUnidade) {
+        try {
+            return dao.getVeiculosDisponiveisAberturaSocorroByUnidade(codUnidade);
+        } catch (final Throwable e) {
+            Log.e(TAG, "Erro ao buscar os veículos disponíveis para abertura de socorro.", e);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(e, "Erro ao buscar os veículos, tente novamente");
+        }
+    }
+
+    @NotNull
+    public List<SocorroRotaListagem> getListagemSocorroRota(@NotNull final List<Long> codUnidades,
+                                                            @NotNull final String dataInicial,
+                                                            @NotNull final String dataFinal,
+                                                            @NotNull final String userToken) {
+        try {
+            return dao.getListagemSocorroRota(
+                    codUnidades,
+                    PrologDateParser.toLocalDate(dataInicial),
+                    PrologDateParser.toLocalDate(dataFinal),
+                    userToken);
+        } catch (final Throwable e) {
+            Log.e(TAG, "Erro ao buscar a lista de socorros em rota.", e);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(e, "Erro ao buscar a lista de socorros em rota, tente novamente.");
+        }
+    }
+
+    @NotNull
+    public SocorroRotaVisualizacao getVisualizacaoSocorroRota(@NotNull final Long codColaboradorRequest,
+                                                              @NotNull final Long codSocorroRota) {
+        try {
+            return dao.getVisualizacaoSocorroRota(codColaboradorRequest, codSocorroRota);
+        } catch (final Throwable e) {
+            Log.e(TAG, "Erro ao buscar as informações deste socorro em rota.", e);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(e, "Erro ao buscar as informações deste socorro em rota, tente novamente.");
+        }
+    }
 
     @NotNull
     SuccessResponseSocorroRotaUploadImagem uploadImagemSocorroRotaAbertura(
@@ -72,49 +128,6 @@ public final class SocorroRotaService {
                 socorroRotaAbertura.getPlacaVeiculoProblema(),
                 codSocorro);
         return ResponseWithCod.ok("Solicitação de socorro aberta com sucesso", codSocorro);
-    }
-
-    @NotNull
-    public List<UnidadeAberturaSocorro> getUnidadesDisponiveisAberturaSocorroByCodColaborador(@NotNull final Long codColaborador) {
-        try {
-            return dao.getUnidadesDisponiveisAberturaSocorroByCodColaborador(codColaborador);
-        } catch (final Throwable e) {
-            Log.e(TAG, "Erro ao buscar as unidades disponíveis para abertura de socorro.", e);
-            throw Injection
-                    .provideProLogExceptionHandler()
-                    .map(e, "Erro ao buscar as unidades, tente novamente");
-        }
-    }
-
-    @NotNull
-    public List<VeiculoAberturaSocorro> getVeiculosDisponiveisAberturaSocorroByUnidade(@NotNull final Long codUnidade) {
-        try {
-            return dao.getVeiculosDisponiveisAberturaSocorroByUnidade(codUnidade);
-        } catch (final Throwable e) {
-            Log.e(TAG, "Erro ao buscar os veículos disponíveis para abertura de socorro.", e);
-            throw Injection
-                    .provideProLogExceptionHandler()
-                    .map(e, "Erro ao buscar os veículos, tente novamente");
-        }
-    }
-
-    @NotNull
-    public List<SocorroRotaListagem> getListagemSocorroRota(@NotNull final List<Long> codUnidades,
-                                                            @NotNull final String dataInicial,
-                                                            @NotNull final String dataFinal,
-                                                            @NotNull final String userToken) {
-        try {
-            return dao.getListagemSocorroRota(
-                    codUnidades,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal),
-                    userToken);
-        } catch (final Throwable e) {
-            Log.e(TAG, "Erro ao buscar a lista de socorros em rota.", e);
-            throw Injection
-                    .provideProLogExceptionHandler()
-                    .map(e, "Erro ao buscar a lista de socorros em rota, tente novamente.");
-        }
     }
 
     @NotNull
@@ -201,18 +214,5 @@ public final class SocorroRotaService {
         return ResponseWithCod.ok(
                 "Solicitação de socorro invalidada com sucesso.",
                 codSocorro);
-    }
-
-    @NotNull
-    public SocorroRotaVisualizacao getVisualizacaoSocorroRota(@NotNull final Long codColaboradorRequest,
-                                                              @NotNull final Long codSocorroRota) {
-        try {
-            return dao.getVisualizacaoSocorroRota(codColaboradorRequest, codSocorroRota);
-        } catch (final Throwable e) {
-            Log.e(TAG, "Erro ao buscar as informações deste socorro em rota.", e);
-            throw Injection
-                    .provideProLogExceptionHandler()
-                    .map(e, "Erro ao buscar as informações deste socorro em rota, tente novamente.");
-        }
     }
 }

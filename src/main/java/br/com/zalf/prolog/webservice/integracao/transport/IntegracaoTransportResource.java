@@ -1,9 +1,9 @@
 package br.com.zalf.prolog.webservice.integracao.transport;
 
 import br.com.zalf.prolog.webservice.commons.network.metadata.Platform;
-import br.com.zalf.prolog.webservice.commons.util.ProLogCustomHeaders;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Required;
 import br.com.zalf.prolog.webservice.commons.network.metadata.UsedBy;
+import br.com.zalf.prolog.webservice.commons.util.PrologCustomHeaders;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.integracao.response.SuccessResponseIntegracao;
 import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
@@ -32,7 +32,7 @@ public final class IntegracaoTransportResource {
     @Path("/ordens-servicos/resolver-multiplos-itens")
     @UsedBy(platforms = Platform.INTEGRACOES)
     public SuccessResponseIntegracao resolverMultiplosItens(
-            @HeaderParam(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
+            @HeaderParam(PrologCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
             @Required final List<ItemResolvidoIntegracaoTransport> itensResolvidos) throws ProLogException {
         return service.resolverMultiplosItens(tokenIntegracao, itensResolvidos);
     }
@@ -42,7 +42,7 @@ public final class IntegracaoTransportResource {
     @Path("/ordens-servicos/itens-pendentes")
     @UsedBy(platforms = Platform.INTEGRACOES)
     public List<ItemPendenteIntegracaoTransport> getItensPendentes(
-            @HeaderParam(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
+            @HeaderParam(PrologCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
             @QueryParam("codUltimoItemPendenteSincronizado") @Required final Long codUltimoItemPendenteSincronizado)
             throws ProLogException {
         return service.getItensPendentes(tokenIntegracao, codUltimoItemPendenteSincronizado);
@@ -53,7 +53,7 @@ public final class IntegracaoTransportResource {
     @Path("/ordens-servicos/resolver-multiplos-itens/dummies")
     @UsedBy(platforms = Platform.INTEGRACOES)
     public SuccessResponseIntegracao resolverMultiplosItensDummies(
-            @HeaderParam(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
+            @HeaderParam(PrologCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
             @Required final List<ItemResolvidoIntegracaoTransport> itensResolvidos) throws ProLogException {
         return service.resolverMultiplosItensDummy(tokenIntegracao, itensResolvidos);
     }
@@ -63,7 +63,7 @@ public final class IntegracaoTransportResource {
     @Path("/ordens-servicos/itens-pendentes/dummies")
     @UsedBy(platforms = Platform.INTEGRACOES)
     public List<ItemPendenteIntegracaoTransport> getItensPendentesDummies(
-            @HeaderParam(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
+            @HeaderParam(PrologCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
             @QueryParam("codUltimoItemPendenteSincronizado") @Required final Long codUltimoItemPendenteSincronizado)
             throws ProLogException {
         return service.getItensPendentesDummy(tokenIntegracao, codUltimoItemPendenteSincronizado);

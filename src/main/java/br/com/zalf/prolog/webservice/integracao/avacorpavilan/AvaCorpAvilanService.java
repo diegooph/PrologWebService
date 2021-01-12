@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.integracao.avacorpavilan;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
+import br.com.zalf.prolog.webservice.commons.util.PrologDateParser;
 import br.com.zalf.prolog.webservice.integracao.BaseIntegracaoService;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -26,8 +26,8 @@ public final class AvaCorpAvilanService extends BaseIntegracaoService {
         try {
             dao.getOrdensServicosPendentesSincroniaCsv(
                     outputStream,
-                    dataInicial != null ? ProLogDateParser.toLocalDate(dataInicial) : null,
-                    dataFinal != null ? ProLogDateParser.toLocalDate(dataFinal) : null);
+                    dataInicial != null ? PrologDateParser.toLocalDate(dataInicial) : null,
+                    dataFinal != null ? PrologDateParser.toLocalDate(dataFinal) : null);
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao buscar Ordens de Serviços pendentes de sincronizar", t);
             throw Injection

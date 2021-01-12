@@ -12,7 +12,7 @@ import java.time.format.DateTimeFormatter;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-public final class ProLogDateParser {
+public final class PrologDateParser {
     @NotNull
     private static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
     @NotNull
@@ -27,8 +27,8 @@ public final class ProLogDateParser {
         DEFAULT_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
     }
 
-    private ProLogDateParser() {
-        throw new IllegalStateException(ProLogDateParser.class.getSimpleName() + " cannot be instantiated!");
+    private PrologDateParser() {
+        throw new IllegalStateException(PrologDateParser.class.getSimpleName() + " cannot be instantiated!");
     }
 
     @NotNull

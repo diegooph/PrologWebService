@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.config;
 
-import br.com.zalf.prolog.webservice.commons.util.ProLogUtils;
+import br.com.zalf.prolog.webservice.commons.util.PrologUtils;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -15,7 +15,7 @@ public final class PrologConsoleTextMaker implements ServletContextListener {
     @SuppressWarnings("StringBufferReplaceableByString")
     @Override
     public void contextInitialized(final ServletContextEvent sce) {
-        if (!ProLogUtils.isDebug()) {
+        if (!PrologUtils.isDebug()) {
             return;
         }
 

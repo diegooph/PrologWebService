@@ -3,7 +3,7 @@ package br.com.zalf.prolog.webservice.gente.controlejornada.ajustes;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
+import br.com.zalf.prolog.webservice.commons.util.PrologDateParser;
 import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogExceptionHandler;
@@ -29,52 +29,6 @@ public final class ControleJornadaAjusteService {
     private final ControleJornadaAjusteDao dao = Injection.provideControleJornadaAjustesDao();
     @NotNull
     private final ProLogExceptionHandler exceptionHandler = Injection.provideProLogExceptionHandler();
-
-    @NotNull
-    List<ConsolidadoMarcacoesDia> getMarcacoesConsolidadasParaAjuste(
-            @NotNull final Long codUnidade,
-            @Nullable final Long codTipoMarcacao,
-            @Nullable final Long codColaborador,
-            @NotNull final String dataInicial,
-            @NotNull final String dataFinal) throws ProLogException {
-        try {
-            return dao.getMarcacoesConsolidadasParaAjuste(
-                    codUnidade,
-                    codTipoMarcacao,
-                    codColaborador,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal));
-        } catch (final Throwable e) {
-            final String log = String.format("Erro ao buscar as marcações:\n" +
-                    "codUnidade: %d\n" +
-                    "codTipoMarcacao %d\n" +
-                    "codColaborador: %d\n" +
-                    "dataInicial: %s\n" +
-                    "dataFinal: %s", codUnidade, codTipoMarcacao, codColaborador, dataInicial, dataFinal);
-            Log.e(TAG, log, e);
-            throw exceptionHandler.map(e, "Erro ao buscar as marcações");
-        }
-    }
-
-    @NotNull
-    List<MarcacaoColaboradorAjuste> getMarcacoesColaboradorParaAjuste(
-            @NotNull final Long codColaborador,
-            @Nullable final Long codTipoMarcacao,
-            @NotNull final String dia) throws ProLogException {
-        try {
-            return dao.getMarcacoesColaboradorParaAjuste(
-                    codColaborador,
-                    codTipoMarcacao,
-                    ProLogDateParser.toLocalDate(dia));
-        } catch (final Throwable e) {
-            final String log = String.format("Erro ao buscar as marcações do colaborador:\n" +
-                    "codColaborador: %d\n" +
-                    "codTipoMarcacao: %d\n" +
-                    "dia: %s\n", codColaborador, codTipoMarcacao, dia);
-            Log.e(TAG, log, e);
-            throw exceptionHandler.map(e, "Erro ao buscar as marcações do colaborador");
-        }
-    }
 
     @NotNull
     public Response adicionarMarcacaoAjuste(@NotNull final String userToken,
@@ -171,7 +125,7 @@ public final class ControleJornadaAjusteService {
         try {
             return dao.getInconsistenciasColaboradorDia(
                     codColaborador,
-                    ProLogDateParser.toLocalDate(dia),
+                    PrologDateParser.toLocalDate(dia),
                     TipoInconsistenciaMarcacao.fromString(tipoInconsistencia));
         } catch (final Throwable e) {
             Log.e(TAG, String.format("Erro ao buscar as inconsistências.\n" +
@@ -179,6 +133,52 @@ public final class ControleJornadaAjusteService {
                     "dia: %s\n" +
                     "tipoInconsistencia: %s", codColaborador, dia, tipoInconsistencia), e);
             throw exceptionHandler.map(e, "Erro ao buscar as inconsistências, tente novamente");
+        }
+    }
+
+    @NotNull
+    List<ConsolidadoMarcacoesDia> getMarcacoesConsolidadasParaAjuste(
+            @NotNull final Long codUnidade,
+            @Nullable final Long codTipoMarcacao,
+            @Nullable final Long codColaborador,
+            @NotNull final String dataInicial,
+            @NotNull final String dataFinal) throws ProLogException {
+        try {
+            return dao.getMarcacoesConsolidadasParaAjuste(
+                    codUnidade,
+                    codTipoMarcacao,
+                    codColaborador,
+                    PrologDateParser.toLocalDate(dataInicial),
+                    PrologDateParser.toLocalDate(dataFinal));
+        } catch (final Throwable e) {
+            final String log = String.format("Erro ao buscar as marcações:\n" +
+                    "codUnidade: %d\n" +
+                    "codTipoMarcacao %d\n" +
+                    "codColaborador: %d\n" +
+                    "dataInicial: %s\n" +
+                    "dataFinal: %s", codUnidade, codTipoMarcacao, codColaborador, dataInicial, dataFinal);
+            Log.e(TAG, log, e);
+            throw exceptionHandler.map(e, "Erro ao buscar as marcações");
+        }
+    }
+
+    @NotNull
+    List<MarcacaoColaboradorAjuste> getMarcacoesColaboradorParaAjuste(
+            @NotNull final Long codColaborador,
+            @Nullable final Long codTipoMarcacao,
+            @NotNull final String dia) throws ProLogException {
+        try {
+            return dao.getMarcacoesColaboradorParaAjuste(
+                    codColaborador,
+                    codTipoMarcacao,
+                    PrologDateParser.toLocalDate(dia));
+        } catch (final Throwable e) {
+            final String log = String.format("Erro ao buscar as marcações do colaborador:\n" +
+                    "codColaborador: %d\n" +
+                    "codTipoMarcacao: %d\n" +
+                    "dia: %s\n", codColaborador, codTipoMarcacao, dia);
+            Log.e(TAG, log, e);
+            throw exceptionHandler.map(e, "Erro ao buscar as marcações do colaborador");
         }
     }
 }

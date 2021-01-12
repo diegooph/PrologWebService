@@ -3,7 +3,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.afericao;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
+import br.com.zalf.prolog.webservice.commons.util.PrologDateParser;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogExceptionHandler;
@@ -115,8 +115,8 @@ public class AfericaoService {
                             codUnidade,
                             codTipoVeiculo,
                             placaVeiculo,
-                            ProLogDateParser.toLocalDate(dataInicial),
-                            ProLogDateParser.toLocalDate(dataFinal),
+                            PrologDateParser.toLocalDate(dataInicial),
+                            PrologDateParser.toLocalDate(dataFinal),
                             limit,
                             offset);
         } catch (final Throwable e) {
@@ -137,8 +137,8 @@ public class AfericaoService {
         try {
             return dao.getAfericoesAvulsas(
                     codUnidade,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal),
+                    PrologDateParser.toLocalDate(dataInicial),
+                    PrologDateParser.toLocalDate(dataFinal),
                     limit,
                     offset);
         } catch (final Throwable e) {
@@ -159,8 +159,8 @@ public class AfericaoService {
                     .getAfericoesAvulsas(
                             codUnidade,
                             codColaborador,
-                            ProLogDateParser.toLocalDate(dataInicial),
-                            ProLogDateParser.toLocalDate(dataFinal));
+                            PrologDateParser.toLocalDate(dataInicial),
+                            PrologDateParser.toLocalDate(dataFinal));
         } catch (final Throwable throwable) {
             Log.e(TAG, "Erro ao buscar o relatório de aferições avulsas por colaborador (REPORT)", throwable);
             throw exceptionHandler.map(

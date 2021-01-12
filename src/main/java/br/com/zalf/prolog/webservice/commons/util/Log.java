@@ -8,7 +8,7 @@ public class Log {
     }
 
     public static void d(final String tag, final String message) {
-        if (ProLogUtils.isDebug()) {
+        if (PrologUtils.isDebug()) {
             LogManager.getLogger(tag).debug(message);
         }
     }

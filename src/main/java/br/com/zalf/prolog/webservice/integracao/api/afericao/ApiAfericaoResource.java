@@ -1,9 +1,9 @@
 package br.com.zalf.prolog.webservice.integracao.api.afericao;
 
 import br.com.zalf.prolog.webservice.commons.network.metadata.Platform;
-import br.com.zalf.prolog.webservice.commons.util.ProLogCustomHeaders;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Required;
 import br.com.zalf.prolog.webservice.commons.network.metadata.UsedBy;
+import br.com.zalf.prolog.webservice.commons.util.PrologCustomHeaders;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.integracao.api.afericao._model.ApiPneuMedicaoRealizada;
 import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
@@ -32,7 +32,7 @@ public class ApiAfericaoResource {
     @Path("/afericoes-realizadas")
     @UsedBy(platforms = Platform.INTEGRACOES)
     public List<ApiPneuMedicaoRealizada> getAfericoesRealizadas(
-            @HeaderParam(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
+            @HeaderParam(PrologCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
             @QueryParam("codUltimoProcessoAfericao") final Long codUltimoProcessoAfericao,
             @QueryParam("dataHoraUltimaAtualizacaoUtc") final String dataHoraUltimaAtualizacaoUtc) throws ProLogException {
         return service.getAfericoesRealizadas(tokenIntegracao, codUltimoProcessoAfericao, dataHoraUltimaAtualizacaoUtc);

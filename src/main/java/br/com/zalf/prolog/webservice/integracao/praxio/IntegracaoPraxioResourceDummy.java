@@ -1,9 +1,9 @@
 package br.com.zalf.prolog.webservice.integracao.praxio;
 
 import br.com.zalf.prolog.webservice.commons.network.metadata.Platform;
-import br.com.zalf.prolog.webservice.commons.util.ProLogCustomHeaders;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Required;
 import br.com.zalf.prolog.webservice.commons.network.metadata.UsedBy;
+import br.com.zalf.prolog.webservice.commons.util.PrologCustomHeaders;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.integracao.praxio.afericao.MedicaoIntegracaoPraxio;
@@ -45,7 +45,7 @@ public final class IntegracaoPraxioResourceDummy {
     @Path("/validate-token/dummy")
     @UsedBy(platforms = Platform.INTEGRACOES)
     public SuccessResponseIntegracao validateTokenIntegracao(
-            @HeaderParam(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao)
+            @HeaderParam(PrologCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao)
             throws ProLogException {
         if (tokenIntegracao.equals("kffdm2ba5ai3lsk79kqur9rb3mq7hv59qa8pr0sho4mcr56clck")) {
             return new SuccessResponseIntegracao("Token validado com sucesso!");
@@ -59,7 +59,7 @@ public final class IntegracaoPraxioResourceDummy {
     @Path("/veiculo/cadastro/dummy")
     @UsedBy(platforms = Platform.INTEGRACOES)
     public SuccessResponseIntegracao inserirVeiculoPraxio(
-            @HeaderParam(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
+            @HeaderParam(PrologCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
             @Required final VeiculoCadastroPraxio veiculoCadastroPraxio) throws ProLogException {
         return service.inserirVeiculoCadastroPraxioDummy(tokenIntegracao, veiculoCadastroPraxio);
     }
@@ -69,7 +69,7 @@ public final class IntegracaoPraxioResourceDummy {
     @Path("/veiculo/edicao/dummy")
     @UsedBy(platforms = Platform.INTEGRACOES)
     public SuccessResponseIntegracao atualizarVeiculoPraxio(
-            @HeaderParam(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
+            @HeaderParam(PrologCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
             @QueryParam("codUnidadeVeiculoAntesEdicao") @Required final Long codUnidadeVeiculoAntesEdicao,
             @QueryParam("placaVeiculoAntesEdicao") @Required final String placaVeiculoAntesEdicao,
             @Required final VeiculoEdicaoPraxio veiculoEdicaoPraxio) throws ProLogException {
@@ -85,7 +85,7 @@ public final class IntegracaoPraxioResourceDummy {
     @Path("/veiculo/transferencia/dummy")
     @UsedBy(platforms = Platform.INTEGRACOES)
     public SuccessResponseIntegracao transferirVeiculoPraxio(
-            @HeaderParam(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
+            @HeaderParam(PrologCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
             @Required final VeiculoTransferenciaPraxio veiculoTransferenciaPraxio) throws ProLogException {
         return service.transferirVeiculoPraxioDummy(tokenIntegracao, veiculoTransferenciaPraxio);
     }
@@ -95,7 +95,7 @@ public final class IntegracaoPraxioResourceDummy {
     @Path("/veiculo/ativar-desativar/dummy")
     @UsedBy(platforms = Platform.INTEGRACOES)
     public SuccessResponseIntegracao ativarDesativarVeiculoPraxio(
-            @HeaderParam(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
+            @HeaderParam(PrologCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
             @QueryParam("placaVeiculo") @Required final String placaVeiculo,
             @QueryParam("veiculoAtivo") @Required final Boolean veiculoAtivo) throws ProLogException {
         if (placaVeiculo == null || placaVeiculo.isEmpty() || placaVeiculo.length() > 7) {
@@ -115,7 +115,7 @@ public final class IntegracaoPraxioResourceDummy {
     @Path("/afericoes/dummies")
     @UsedBy(platforms = Platform.INTEGRACOES)
     public List<MedicaoIntegracaoPraxio> getAfericoesRealizadasDummies(
-            @HeaderParam(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
+            @HeaderParam(PrologCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
             @QueryParam("codUltimaAfericao") @Required final Long codUltimaAfericao) {
         return service.getAfericoesRealizadasDummy();
     }
@@ -125,7 +125,7 @@ public final class IntegracaoPraxioResourceDummy {
     @Path("/ordens-servico/itens-pendentes/dummy")
     @UsedBy(platforms = Platform.INTEGRACOES)
     public SuccessResponseIntegracao inserirOrdensServicoGlobusDummy(
-            @HeaderParam(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
+            @HeaderParam(PrologCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
             @Required final List<OrdemServicoAbertaGlobus> ordensServicoAbertas) throws ProLogException {
         return service.inserirOrdensServicoGlobusDummy(tokenIntegracao, ordensServicoAbertas);
     }
@@ -135,7 +135,7 @@ public final class IntegracaoPraxioResourceDummy {
     @Path("/ordens-servicos/resolver-multiplos-itens/dummy")
     @UsedBy(platforms = Platform.INTEGRACOES)
     public SuccessResponseIntegracao resolverMultiplosItensDummy(
-            @HeaderParam(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
+            @HeaderParam(PrologCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
             @Required final List<ItemResolvidoGlobus> itensResolvidos) throws ProLogException {
         return service.resolverMultiplosItensDummy(tokenIntegracao, itensResolvidos);
     }

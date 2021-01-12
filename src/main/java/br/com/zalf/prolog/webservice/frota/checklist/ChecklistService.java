@@ -8,7 +8,7 @@ import br.com.zalf.prolog.webservice.commons.imagens.ImagemProLog;
 import br.com.zalf.prolog.webservice.commons.imagens.UploadImageHelper;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
+import br.com.zalf.prolog.webservice.commons.util.PrologDateParser;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
@@ -210,8 +210,8 @@ public final class ChecklistService {
                     .create(dao, userToken)
                     .getListagemByColaborador(
                             codColaborador,
-                            ProLogDateParser.toLocalDate(dataInicial),
-                            ProLogDateParser.toLocalDate(dataFinal),
+                            PrologDateParser.toLocalDate(dataInicial),
+                            PrologDateParser.toLocalDate(dataFinal),
                             limit,
                             offset);
         } catch (final Throwable t) {
@@ -240,8 +240,8 @@ public final class ChecklistService {
                             codEquipe,
                             codTipoVeiculo,
                             codVeiculo,
-                            ProLogDateParser.toLocalDate(dataInicial),
-                            ProLogDateParser.toLocalDate(dataFinal),
+                            PrologDateParser.toLocalDate(dataInicial),
+                            PrologDateParser.toLocalDate(dataFinal),
                             limit,
                             offset);
         } catch (final Throwable t) {
@@ -260,8 +260,8 @@ public final class ChecklistService {
                                                       final String userToken) throws ProLogException {
         return internalGetFarolChecklist(
                 codUnidade,
-                ProLogDateParser.toLocalDate(dataInicial),
-                ProLogDateParser.toLocalDate(dataFinal),
+                PrologDateParser.toLocalDate(dataInicial),
+                PrologDateParser.toLocalDate(dataFinal),
                 itensCriticosRetroativos,
                 userToken);
     }

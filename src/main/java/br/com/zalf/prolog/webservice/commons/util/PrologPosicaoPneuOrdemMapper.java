@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author luiz (https://github.com/luizfp)
  */
-public final class ProLogPosicaoPneuOrdemMapper {
+public final class PrologPosicaoPneuOrdemMapper {
     @NotNull
     private static final ImmutableMap<Integer, Integer> MAP_POSICAO_ORDEM_PNEU;
 
@@ -90,9 +90,9 @@ public final class ProLogPosicaoPneuOrdemMapper {
                 .build();
     }
 
-    private ProLogPosicaoPneuOrdemMapper() {
+    private PrologPosicaoPneuOrdemMapper() {
         throw new IllegalStateException(
-                ProLogPosicaoPneuOrdemMapper.class.getSimpleName() + " cannot be instantiated!");
+                PrologPosicaoPneuOrdemMapper.class.getSimpleName() + " cannot be instantiated!");
     }
 
     public static int fromPosicao(final int posicao) {

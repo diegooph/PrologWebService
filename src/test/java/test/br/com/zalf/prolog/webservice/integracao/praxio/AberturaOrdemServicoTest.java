@@ -2,7 +2,7 @@ package test.br.com.zalf.prolog.webservice.integracao.praxio;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.FonteDataHora;
-import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
+import br.com.zalf.prolog.webservice.commons.util.PrologDateParser;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnectionProvider;
 import br.com.zalf.prolog.webservice.database.DatabaseManager;
@@ -788,7 +788,7 @@ public final class AberturaOrdemServicoTest extends BaseTest {
                 "uma observacao",
                 10000,
                 respostas,
-                ProLogDateParser.toLocalDateTime("2019-12-11T09:35:10"),
+                PrologDateParser.toLocalDateTime("2019-12-11T09:35:10"),
                 FonteDataHora.LOCAL_CELULAR,
                 80,
                 83,
@@ -868,7 +868,7 @@ public final class AberturaOrdemServicoTest extends BaseTest {
                 "uma observacao",
                 10000,
                 respostas,
-                ProLogDateParser.toLocalDateTime("2019-12-11T09:35:00"),
+                PrologDateParser.toLocalDateTime("2019-12-11T09:35:00"),
                 FonteDataHora.LOCAL_CELULAR,
                 80,
                 83,

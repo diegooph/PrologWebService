@@ -1,9 +1,9 @@
 package br.com.zalf.prolog.webservice.integracao.api.pneu.marcamodelo;
 
 import br.com.zalf.prolog.webservice.commons.network.metadata.Platform;
-import br.com.zalf.prolog.webservice.commons.util.ProLogCustomHeaders;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Required;
 import br.com.zalf.prolog.webservice.commons.network.metadata.UsedBy;
+import br.com.zalf.prolog.webservice.commons.util.PrologCustomHeaders;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.integracao.api.pneu.marcamodelo.model.ApiMarcaBanda;
 import br.com.zalf.prolog.webservice.integracao.api.pneu.marcamodelo.model.ApiMarcaPneu;
@@ -35,7 +35,7 @@ public final class ApiMarcaModeloPneuResource {
     @Path("/marcas-pneu")
     @UsedBy(platforms = Platform.INTEGRACOES)
     public List<ApiMarcaPneu> getMarcasPneu(
-            @HeaderParam(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
+            @HeaderParam(PrologCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
             @QueryParam("apenasMarcasPneuAtivas") @Required final boolean apenasMarcasPneuAtivas) throws ProLogException {
         return service.getMarcasPneu(tokenIntegracao, apenasMarcasPneuAtivas);
     }
@@ -45,7 +45,7 @@ public final class ApiMarcaModeloPneuResource {
     @Path("/modelos-pneu")
     @UsedBy(platforms = Platform.INTEGRACOES)
     public List<ApiModeloPneu> getModelosPneu(
-            @HeaderParam(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
+            @HeaderParam(PrologCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
             @QueryParam("codMarcaPneu") @Required final Long codMarcaPneu,
             @QueryParam("apenasModelosPneuAtivos") @Required final boolean apenasModelosPneuAtivos) throws ProLogException {
         return service.getModelosPneu(tokenIntegracao, codMarcaPneu, apenasModelosPneuAtivos);
@@ -56,7 +56,7 @@ public final class ApiMarcaModeloPneuResource {
     @Path("/marcas-banda")
     @UsedBy(platforms = Platform.INTEGRACOES)
     public List<ApiMarcaBanda> getMarcasBanda(
-            @HeaderParam(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
+            @HeaderParam(PrologCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
             @QueryParam("apenasMarcasBandaAtivas") @Required final boolean apenasMarcasBandaAtivas) throws ProLogException {
         return service.getMarcasBanda(tokenIntegracao, apenasMarcasBandaAtivas);
     }
@@ -66,7 +66,7 @@ public final class ApiMarcaModeloPneuResource {
     @Path("/modelos-banda")
     @UsedBy(platforms = Platform.INTEGRACOES)
     public List<ApiModeloBanda> getModelosBanda(
-            @HeaderParam(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
+            @HeaderParam(PrologCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
             @QueryParam("codMarcaBanda") @Required final Long codMarcaBanda,
             @QueryParam("apenasModelosBandaAtivos") @Required final boolean apenasModelosBandaAtivos) throws ProLogException {
         return service.getModelosBanda(tokenIntegracao, codMarcaBanda, apenasModelosBandaAtivos);

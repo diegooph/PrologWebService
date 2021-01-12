@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.interceptors.versioncodebarrier;
 
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.commons.util.ProLogCustomHeaders;
+import br.com.zalf.prolog.webservice.commons.util.PrologCustomHeaders;
 import br.com.zalf.prolog.webservice.commons.util.ReflectionHelper;
 import br.com.zalf.prolog.webservice.errorhandling.error.ProLogError;
 import br.com.zalf.prolog.webservice.errorhandling.exception.VersaoAppBloqueadaException;
@@ -42,7 +42,7 @@ public final class AppVersionCodeHandlerDelegator implements ContainerRequestFil
         }
         // Se chegou até aqui sabemos que a requisição partiu do App Android.
 
-        if (requestContext.getHeaders().containsKey(ProLogCustomHeaders.AppVersionAndroid.AFERE_FACIL_APP_VERSION)) {
+        if (requestContext.getHeaders().containsKey(PrologCustomHeaders.AppVersionAndroid.AFERE_FACIL_APP_VERSION)) {
             Log.d(TAG, "Requisição veio do Afere Fácil, iremos ignorar");
             return;
         }
@@ -62,7 +62,7 @@ public final class AppVersionCodeHandlerDelegator implements ContainerRequestFil
         }
 
         final String versionCodeString = requestContext
-                .getHeaderString(ProLogCustomHeaders.AppVersionAndroid.PROLOG_APP_VERSION);
+                .getHeaderString(PrologCustomHeaders.AppVersionAndroid.PROLOG_APP_VERSION);
 
         final VersionNotPresentAction notPresentAction = annotation.actionIfVersionNotPresent();
         try {

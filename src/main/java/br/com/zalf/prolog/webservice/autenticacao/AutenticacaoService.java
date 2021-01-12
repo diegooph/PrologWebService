@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.autenticacao;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
+import br.com.zalf.prolog.webservice.commons.util.PrologDateParser;
 import br.com.zalf.prolog.webservice.interceptors.auth.ColaboradorAutenticado;
 import org.jetbrains.annotations.NotNull;
 
@@ -15,16 +15,6 @@ import java.util.Optional;
 public class AutenticacaoService {
     private static final String TAG = AutenticacaoService.class.getSimpleName();
     private final AutenticacaoDao dao = Injection.provideAutenticacaoDao();
-
-    @NotNull
-    Autenticacao insertOrUpdate(@NotNull final Long cpf) {
-        try {
-            return dao.insertOrUpdate(cpf);
-        } catch (final Throwable throwable) {
-            Log.e(TAG, String.format("Erro ao inserir o token para o cpf: %d", cpf), throwable);
-            return new Autenticacao(Autenticacao.ERROR, cpf, "-1");
-        }
-    }
 
     public boolean delete(@NotNull final String token) {
         try {
@@ -55,7 +45,7 @@ public class AutenticacaoService {
         try {
             return dao.verifyIfUserExists(
                     cpf,
-                    ProLogDateParser.toLocalDate(dataNascimento),
+                    PrologDateParser.toLocalDate(dataNascimento),
                     apenasUsuariosAtivos);
         } catch (final Throwable throwable) {
             Log.e(TAG, String.format("Erro ao verificar se o usuário com os seguintes dados existe: cpf - %s |" +
@@ -96,7 +86,7 @@ public class AutenticacaoService {
         try {
             return dao.userHasPermission(
                     cpf,
-                    ProLogDateParser.toLocalDate(dataNascimento),
+                    PrologDateParser.toLocalDate(dataNascimento),
                     permissions,
                     needsToHaveAllPermissions,
                     apenasUsuariosAtivos);
@@ -111,6 +101,16 @@ public class AutenticacaoService {
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao validar permissões");
+        }
+    }
+
+    @NotNull
+    Autenticacao insertOrUpdate(@NotNull final Long cpf) {
+        try {
+            return dao.insertOrUpdate(cpf);
+        } catch (final Throwable throwable) {
+            Log.e(TAG, String.format("Erro ao inserir o token para o cpf: %d", cpf), throwable);
+            return new Autenticacao(Autenticacao.ERROR, cpf, "-1");
         }
     }
 }

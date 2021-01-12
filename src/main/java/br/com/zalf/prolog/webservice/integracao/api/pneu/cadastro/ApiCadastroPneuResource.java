@@ -1,9 +1,9 @@
 package br.com.zalf.prolog.webservice.integracao.api.pneu.cadastro;
 
 import br.com.zalf.prolog.webservice.commons.network.metadata.Platform;
-import br.com.zalf.prolog.webservice.commons.util.ProLogCustomHeaders;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Required;
 import br.com.zalf.prolog.webservice.commons.network.metadata.UsedBy;
+import br.com.zalf.prolog.webservice.commons.util.PrologCustomHeaders;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.integracao.api.pneu.cadastro.model.*;
 import br.com.zalf.prolog.webservice.integracao.response.SuccessResponseIntegracao;
@@ -33,7 +33,7 @@ public final class ApiCadastroPneuResource {
     @Path("/carga-inicial-pneu")
     @UsedBy(platforms = Platform.INTEGRACOES)
     public List<ApiPneuCargaInicialResponse> inserirCargaInicialPneu(
-            @HeaderParam(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
+            @HeaderParam(PrologCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
             @Required final List<ApiPneuCargaInicial> pneusCargaInicial) throws ProLogException {
         return service.inserirCargaInicialPneu(tokenIntegracao, pneusCargaInicial);
     }
@@ -43,7 +43,7 @@ public final class ApiCadastroPneuResource {
     @Path("/cadastro-pneu")
     @UsedBy(platforms = Platform.INTEGRACOES)
     public SuccessResponseIntegracao inserirPneuCadastro(
-            @HeaderParam(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
+            @HeaderParam(PrologCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
             @Required final ApiPneuCadastro pneuCadastro) throws ProLogException {
         return service.inserirPneuCadastro(tokenIntegracao, pneuCadastro);
     }
@@ -53,7 +53,7 @@ public final class ApiCadastroPneuResource {
     @Path("/edicao-pneu")
     @UsedBy(platforms = Platform.INTEGRACOES)
     public SuccessResponseIntegracao atualizarPneuEdicao(
-            @HeaderParam(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
+            @HeaderParam(PrologCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
             @Required final ApiPneuEdicao pneuEdicao) throws ProLogException {
         return service.atualizarPneuEdicao(tokenIntegracao, pneuEdicao);
     }
@@ -63,7 +63,7 @@ public final class ApiCadastroPneuResource {
     @Path("/transferencia-pneu")
     @UsedBy(platforms = Platform.INTEGRACOES)
     public SuccessResponseIntegracao transferirPneu(
-            @HeaderParam(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
+            @HeaderParam(PrologCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
             @Required final ApiPneuTransferencia pneuTransferencia) throws ProLogException {
         return service.transferirPneu(tokenIntegracao, pneuTransferencia);
     }

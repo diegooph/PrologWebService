@@ -3,7 +3,7 @@ package br.com.zalf.prolog.webservice.frota.veiculo.transferencia;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
+import br.com.zalf.prolog.webservice.commons.util.PrologDateParser;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.listagem.ProcessoTransferenciaVeiculoListagem;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.AvisoDelecaoTransferenciaVeiculo;
@@ -71,8 +71,8 @@ public final class VeiculoTransferenciaService {
             return dao.getProcessosTransferenciaVeiculoListagem(
                     codUnidadesOrigem,
                     codUnidadesDestino,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal));
+                    PrologDateParser.toLocalDate(dataInicial),
+                    PrologDateParser.toLocalDate(dataFinal));
         } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao listar processos de transferência:\n" +
                     "codUnidadesOrigem: %s\n" +

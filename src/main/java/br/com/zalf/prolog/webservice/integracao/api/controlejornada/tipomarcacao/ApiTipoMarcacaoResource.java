@@ -1,9 +1,9 @@
 package br.com.zalf.prolog.webservice.integracao.api.controlejornada.tipomarcacao;
 
 import br.com.zalf.prolog.webservice.commons.network.metadata.Platform;
-import br.com.zalf.prolog.webservice.commons.util.ProLogCustomHeaders;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Required;
 import br.com.zalf.prolog.webservice.commons.network.metadata.UsedBy;
+import br.com.zalf.prolog.webservice.commons.util.PrologCustomHeaders;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.integracao.api.controlejornada.tipomarcacao._model.ApiTipoMarcacao;
 import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
@@ -31,7 +31,7 @@ public final class ApiTipoMarcacaoResource {
     @LogRequest
     @UsedBy(platforms = Platform.INTEGRACOES)
     public List<ApiTipoMarcacao> getTipoMarcacoes(
-            @HeaderParam(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
+            @HeaderParam(PrologCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
             @QueryParam("apenasTiposMarcacoesAtivos") @Required final boolean apenasTiposMarcacoesAtivos)
             throws ProLogException {
         return service.getTiposMarcacoes(tokenIntegracao, apenasTiposMarcacoesAtivos);

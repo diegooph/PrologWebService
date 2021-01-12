@@ -3,7 +3,7 @@ package br.com.zalf.prolog.webservice.messaging.push.send.task;
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
-import br.com.zalf.prolog.webservice.commons.util.ProLogUtils;
+import br.com.zalf.prolog.webservice.commons.util.PrologUtils;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.messaging.MessageScope;
@@ -97,7 +97,7 @@ public final class FirebaseSaveLogTask {
 
     private void logResponseToTerminalIfInDebug(@NotNull final List<PushDestination> destinations,
                                                 @Nullable final BatchResponse batchResponse) {
-        if (batchResponse == null || !ProLogUtils.isDebug()) {
+        if (batchResponse == null || !PrologUtils.isDebug()) {
             return;
         }
 

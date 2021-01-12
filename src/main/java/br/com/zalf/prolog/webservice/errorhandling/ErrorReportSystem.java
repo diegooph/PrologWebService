@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.errorhandling;
 
 import br.com.zalf.prolog.webservice.commons.util.EnvironmentHelper;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.commons.util.ProLogUtils;
+import br.com.zalf.prolog.webservice.commons.util.PrologUtils;
 import br.com.zalf.prolog.webservice.config.BuildConfig;
 import io.sentry.Sentry;
 import org.jetbrains.annotations.NotNull;
@@ -21,7 +21,7 @@ public final class ErrorReportSystem {
     }
 
     public static void init() {
-        if (!ProLogUtils.isDebug()) {
+        if (!PrologUtils.isDebug()) {
             Sentry.init(EnvironmentHelper.SENTRY_DSN + "?release=" + BuildConfig.VERSION_CODE);
             initialized = true;
         }

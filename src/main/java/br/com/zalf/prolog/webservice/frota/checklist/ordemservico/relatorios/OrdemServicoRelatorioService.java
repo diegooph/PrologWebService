@@ -3,7 +3,7 @@ package br.com.zalf.prolog.webservice.frota.checklist.ordemservico.relatorios;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
+import br.com.zalf.prolog.webservice.commons.util.PrologDateParser;
 import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -19,133 +19,8 @@ class OrdemServicoRelatorioService {
     @NotNull
     private final OrdemServicoRelatorioDao dao = Injection.provideRelatoriosOrdemServicoDao();
 
-    void getItensMaiorQuantidadeNokCsv(@NotNull final OutputStream outputStream,
-                                       @NotNull final List<Long> codUnidades,
-                                       @NotNull final String dataInicial,
-                                       @NotNull final String dataFinal) {
-        try {
-            dao.getItensMaiorQuantidadeNokCsv(
-                    outputStream, 
-                    codUnidades,
-                    ProLogDateParser.toLocalDate(dataInicial), 
-                    ProLogDateParser.toLocalDate(dataFinal));
-        } catch (final Throwable e) {
-            Log.e(TAG, String.format("Erro ao buscar o relatório com os itens com maior quantidade de apontamentos " +
-                    "nok (CSV)\n" +
-                    "Unidades: %s\n" +
-                    "Data Inicial: %s\n" +
-                    "Data Final: %s", codUnidades.toString(), dataInicial, dataFinal), e);
-            throw Injection
-                    .provideProLogExceptionHandler()
-                    .map(e, "Erro ao gerar relatório, tente novamente");
-        }
-    }
-
     @NotNull
-    Report getItensMaiorQuantidadeNokReport(@NotNull final List<Long> codUnidades,
-                                            @NotNull final String dataInicial,
-                                            @NotNull final String dataFinal) {
-        try {
-            return dao.getItensMaiorQuantidadeNokReport(
-                    codUnidades,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal));
-        } catch (final Throwable e) {
-            Log.e(TAG, String.format("Erro ao buscar o relatório com os itens com maior quantidade de apontamentos " +
-                    "nok (REPORT)\n" +
-                    "Unidades: %s\n" +
-                    "Data Inicial: %s\n" +
-                    "Data Final: %s", codUnidades.toString(), dataInicial, dataFinal), e);
-            throw Injection
-                    .provideProLogExceptionHandler()
-                    .map(e, "Erro ao gerar relatório, tente novamente");
-        }
-    }
-
-    void getMediaTempoConsertoItemCsv(@NotNull final OutputStream outputStream,
-                                      @NotNull final List<Long> codUnidades,
-                                      @NotNull final String dataInicial,
-                                      @NotNull final String dataFinal) {
-        try {
-            dao.getMediaTempoConsertoItemCsv(
-                    outputStream,
-                    codUnidades,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal));
-        } catch (final Throwable e) {
-            Log.e(TAG, String.format("Erro ao buscar a média de tempo de conserto dos itens(CSV)\n" +
-                    "Unidades: %s\n" +
-                    "Data Inicial: %s\n" +
-                    "Data Final: %s", codUnidades.toString(), dataInicial, dataFinal), e);
-            throw Injection
-                    .provideProLogExceptionHandler()
-                    .map(e, "Erro ao gerar relatório, tente novamente");
-        }
-    }
-
-    @NotNull
-    Report getMediaTempoConsertoItemReport(@NotNull final List<Long> codUnidades,
-                                           @NotNull final String dataInicial,
-                                           @NotNull final String dataFinal) {
-        try {
-            return dao.getMediaTempoConsertoItemReport(
-                    codUnidades,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal));
-        } catch (final Throwable e) {
-            Log.e(TAG, String.format("Erro ao buscar a média de tempo de conserto dos itens (CSV)\n" +
-                    "Unidades: %s\n" +
-                    "Data Inicial: %s\n" +
-                    "Data Final: %s", codUnidades.toString(), dataInicial, dataFinal), e);
-            throw Injection
-                    .provideProLogExceptionHandler()
-                    .map(e, "Erro ao gerar relatório, tente novamente");
-        }
-    }
-
-    void getProdutividadeMecanicosCsv(@NotNull final OutputStream outputStream,
-                                      @NotNull final List<Long> codUnidades,
-                                      @NotNull final String dataInicial,
-                                      @NotNull final String dataFinal) {
-        try {
-            dao.getProdutividadeMecanicosCsv(
-                    outputStream,
-                    codUnidades,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal));
-        } catch (final Throwable e) {
-            Log.e(TAG, String.format("Erro ao o relatório com a produtividade dos mecânicos(CSV)\n" +
-                    "Unidades: %s\n" +
-                    "Data Inicial: %s\n" +
-                    "Data Final: %s", codUnidades.toString(), dataInicial, dataFinal), e);
-            throw Injection
-                    .provideProLogExceptionHandler()
-                    .map(e, "Erro ao gerar relatório, tente novamente");
-        }
-    }
-
-    @NotNull
-    Report getProdutividadeMecanicosReport(@NotNull final List<Long> codUnidades,
-                                           @NotNull final String dataInicial,
-                                           @NotNull final String dataFinal) {
-        try {
-            return dao.getProdutividadeMecanicosReport(
-                    codUnidades,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal));
-        } catch (final Throwable e) {
-            Log.e(TAG, String.format("Erro ao o relatório com a produtividade dos mecânicos(REPORT)\n" +
-                    "Unidades: %s\n" +
-                    "Data Inicial: %s\n" +
-                    "Data Final: %s", codUnidades.toString(), dataInicial, dataFinal), e);
-            throw Injection
-                    .provideProLogExceptionHandler()
-                    .map(e, "Erro ao gerar relatório, tente novamente");
-        }
-    }
-
-    @NotNull
-    public Report getEstratificacaoOsReport(@NotNull final List<Long> codUnidades, 
+    public Report getEstratificacaoOsReport(@NotNull final List<Long> codUnidades,
                                             @NotNull final String placa,
                                             @NotNull final String statusOs,
                                             @NotNull final String statusItemOs,
@@ -159,10 +34,18 @@ class OrdemServicoRelatorioService {
                     placa,
                     statusOs,
                     statusItemOs,
-                    StringUtils.isNullOrEmpty(dataInicialAbertura) ? null : ProLogDateParser.toLocalDate(dataInicialAbertura),
-                    StringUtils.isNullOrEmpty(dataFinalAbertura) ? null : ProLogDateParser.toLocalDate(dataFinalAbertura),
-                    StringUtils.isNullOrEmpty(dataInicialResolucao) ? null : ProLogDateParser.toLocalDate(dataInicialResolucao),
-                    StringUtils.isNullOrEmpty(dataFinalResolucao) ? null : ProLogDateParser.toLocalDate(dataFinalResolucao));
+                    StringUtils.isNullOrEmpty(dataInicialAbertura)
+                            ? null
+                            : PrologDateParser.toLocalDate(dataInicialAbertura),
+                    StringUtils.isNullOrEmpty(dataFinalAbertura)
+                            ? null
+                            : PrologDateParser.toLocalDate(dataFinalAbertura),
+                    StringUtils.isNullOrEmpty(dataInicialResolucao)
+                            ? null
+                            : PrologDateParser.toLocalDate(dataInicialResolucao),
+                    StringUtils.isNullOrEmpty(dataFinalResolucao)
+                            ? null
+                            : PrologDateParser.toLocalDate(dataFinalResolucao));
         } catch (final Throwable e) {
             Log.e(TAG, String.format("Erro ao buscar a estratificação das OS (REPORT)\n" +
                     "Unidades: %s\n" +
@@ -187,6 +70,131 @@ class OrdemServicoRelatorioService {
         }
     }
 
+    void getItensMaiorQuantidadeNokCsv(@NotNull final OutputStream outputStream,
+                                       @NotNull final List<Long> codUnidades,
+                                       @NotNull final String dataInicial,
+                                       @NotNull final String dataFinal) {
+        try {
+            dao.getItensMaiorQuantidadeNokCsv(
+                    outputStream,
+                    codUnidades,
+                    PrologDateParser.toLocalDate(dataInicial),
+                    PrologDateParser.toLocalDate(dataFinal));
+        } catch (final Throwable e) {
+            Log.e(TAG, String.format("Erro ao buscar o relatório com os itens com maior quantidade de apontamentos " +
+                    "nok (CSV)\n" +
+                    "Unidades: %s\n" +
+                    "Data Inicial: %s\n" +
+                    "Data Final: %s", codUnidades.toString(), dataInicial, dataFinal), e);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(e, "Erro ao gerar relatório, tente novamente");
+        }
+    }
+
+    @NotNull
+    Report getItensMaiorQuantidadeNokReport(@NotNull final List<Long> codUnidades,
+                                            @NotNull final String dataInicial,
+                                            @NotNull final String dataFinal) {
+        try {
+            return dao.getItensMaiorQuantidadeNokReport(
+                    codUnidades,
+                    PrologDateParser.toLocalDate(dataInicial),
+                    PrologDateParser.toLocalDate(dataFinal));
+        } catch (final Throwable e) {
+            Log.e(TAG, String.format("Erro ao buscar o relatório com os itens com maior quantidade de apontamentos " +
+                    "nok (REPORT)\n" +
+                    "Unidades: %s\n" +
+                    "Data Inicial: %s\n" +
+                    "Data Final: %s", codUnidades.toString(), dataInicial, dataFinal), e);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(e, "Erro ao gerar relatório, tente novamente");
+        }
+    }
+
+    void getMediaTempoConsertoItemCsv(@NotNull final OutputStream outputStream,
+                                      @NotNull final List<Long> codUnidades,
+                                      @NotNull final String dataInicial,
+                                      @NotNull final String dataFinal) {
+        try {
+            dao.getMediaTempoConsertoItemCsv(
+                    outputStream,
+                    codUnidades,
+                    PrologDateParser.toLocalDate(dataInicial),
+                    PrologDateParser.toLocalDate(dataFinal));
+        } catch (final Throwable e) {
+            Log.e(TAG, String.format("Erro ao buscar a média de tempo de conserto dos itens(CSV)\n" +
+                    "Unidades: %s\n" +
+                    "Data Inicial: %s\n" +
+                    "Data Final: %s", codUnidades.toString(), dataInicial, dataFinal), e);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(e, "Erro ao gerar relatório, tente novamente");
+        }
+    }
+
+    @NotNull
+    Report getMediaTempoConsertoItemReport(@NotNull final List<Long> codUnidades,
+                                           @NotNull final String dataInicial,
+                                           @NotNull final String dataFinal) {
+        try {
+            return dao.getMediaTempoConsertoItemReport(
+                    codUnidades,
+                    PrologDateParser.toLocalDate(dataInicial),
+                    PrologDateParser.toLocalDate(dataFinal));
+        } catch (final Throwable e) {
+            Log.e(TAG, String.format("Erro ao buscar a média de tempo de conserto dos itens (CSV)\n" +
+                    "Unidades: %s\n" +
+                    "Data Inicial: %s\n" +
+                    "Data Final: %s", codUnidades.toString(), dataInicial, dataFinal), e);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(e, "Erro ao gerar relatório, tente novamente");
+        }
+    }
+
+    void getProdutividadeMecanicosCsv(@NotNull final OutputStream outputStream,
+                                      @NotNull final List<Long> codUnidades,
+                                      @NotNull final String dataInicial,
+                                      @NotNull final String dataFinal) {
+        try {
+            dao.getProdutividadeMecanicosCsv(
+                    outputStream,
+                    codUnidades,
+                    PrologDateParser.toLocalDate(dataInicial),
+                    PrologDateParser.toLocalDate(dataFinal));
+        } catch (final Throwable e) {
+            Log.e(TAG, String.format("Erro ao o relatório com a produtividade dos mecânicos(CSV)\n" +
+                    "Unidades: %s\n" +
+                    "Data Inicial: %s\n" +
+                    "Data Final: %s", codUnidades.toString(), dataInicial, dataFinal), e);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(e, "Erro ao gerar relatório, tente novamente");
+        }
+    }
+
+    @NotNull
+    Report getProdutividadeMecanicosReport(@NotNull final List<Long> codUnidades,
+                                           @NotNull final String dataInicial,
+                                           @NotNull final String dataFinal) {
+        try {
+            return dao.getProdutividadeMecanicosReport(
+                    codUnidades,
+                    PrologDateParser.toLocalDate(dataInicial),
+                    PrologDateParser.toLocalDate(dataFinal));
+        } catch (final Throwable e) {
+            Log.e(TAG, String.format("Erro ao o relatório com a produtividade dos mecânicos(REPORT)\n" +
+                    "Unidades: %s\n" +
+                    "Data Inicial: %s\n" +
+                    "Data Final: %s", codUnidades.toString(), dataInicial, dataFinal), e);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(e, "Erro ao gerar relatório, tente novamente");
+        }
+    }
+
     void getEstratificacaoOsCsv(@NotNull final OutputStream outputStream,
                                 @NotNull final List<Long> codUnidades,
                                 @NotNull final String placa,
@@ -203,10 +211,18 @@ class OrdemServicoRelatorioService {
                     placa,
                     statusOs,
                     statusItemOs,
-                    StringUtils.isNullOrEmpty(dataInicialAbertura) ? null : ProLogDateParser.toLocalDate(dataInicialAbertura),
-                    StringUtils.isNullOrEmpty(dataFinalAbertura) ? null : ProLogDateParser.toLocalDate(dataFinalAbertura),
-                    StringUtils.isNullOrEmpty(dataInicialResolucao) ? null : ProLogDateParser.toLocalDate(dataInicialResolucao),
-                    StringUtils.isNullOrEmpty(dataFinalResolucao) ? null : ProLogDateParser.toLocalDate(dataFinalResolucao));
+                    StringUtils.isNullOrEmpty(dataInicialAbertura)
+                            ? null
+                            : PrologDateParser.toLocalDate(dataInicialAbertura),
+                    StringUtils.isNullOrEmpty(dataFinalAbertura)
+                            ? null
+                            : PrologDateParser.toLocalDate(dataFinalAbertura),
+                    StringUtils.isNullOrEmpty(dataInicialResolucao)
+                            ? null
+                            : PrologDateParser.toLocalDate(dataInicialResolucao),
+                    StringUtils.isNullOrEmpty(dataFinalResolucao)
+                            ? null
+                            : PrologDateParser.toLocalDate(dataFinalResolucao));
         } catch (final Throwable e) {
             Log.e(TAG, String.format("Erro ao buscar a estratificação das OS (CSV)\n" +
                     "Unidades: %s\n" +

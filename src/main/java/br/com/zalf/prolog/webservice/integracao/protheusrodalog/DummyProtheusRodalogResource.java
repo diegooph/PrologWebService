@@ -1,9 +1,9 @@
 package br.com.zalf.prolog.webservice.integracao.protheusrodalog;
 
 import br.com.zalf.prolog.webservice.commons.network.metadata.Platform;
-import br.com.zalf.prolog.webservice.commons.util.ProLogCustomHeaders;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Required;
 import br.com.zalf.prolog.webservice.commons.network.metadata.UsedBy;
+import br.com.zalf.prolog.webservice.commons.util.PrologCustomHeaders;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.integracao.protheusrodalog.model.AfericaoProtheusRodalog;
@@ -31,7 +31,7 @@ public final class DummyProtheusRodalogResource {
     @Path("/inserir-afericao")
     @UsedBy(platforms = Platform.INTEGRACOES)
     public Long insertAfericao(
-            @HeaderParam(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
+            @HeaderParam(PrologCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
             @QueryParam("codUnidade") @Required final Long codUnidade,
             @Required final AfericaoProtheusRodalog afericao) throws ProLogException {
         if (!tokenIntegracao.equals("tk33g4sbev1vi5l53okcugdsuk0q8lgtu8l14knuroqju9orob2")) {
@@ -51,7 +51,7 @@ public final class DummyProtheusRodalogResource {
     @UsedBy(platforms = Platform.INTEGRACOES)
     @Path("/buscar-cronograma")
     public CronogramaAfericaoProtheusRodalog getCronogramaAfericao(
-            @HeaderParam(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
+            @HeaderParam(PrologCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
             @QueryParam("codUnidade") @Required final Long codUnidade) {
         return CronogramaAfericaoProtheusRodalog.createCronogramaDummy();
     }
@@ -60,7 +60,7 @@ public final class DummyProtheusRodalogResource {
     @UsedBy(platforms = Platform.INTEGRACOES)
     @Path("/nova-afericao")
     public NovaAfericaoPlacaProtheusRodalog getNovaAfericaoPlaca(
-            @HeaderParam(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
+            @HeaderParam(PrologCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
             @QueryParam("codUnidade") @Required final Long codUnidade,
             @QueryParam("placa") @Required final String placa,
             @QueryParam("tipoAfericao") @Required final String tipoAfericao) {

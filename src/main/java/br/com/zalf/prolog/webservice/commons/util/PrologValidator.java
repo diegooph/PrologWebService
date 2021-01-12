@@ -12,7 +12,7 @@ import javax.annotation.Nullable;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-public abstract class ProLogValidator {
+public abstract class PrologValidator {
     @NotNull
     @CanIgnoreReturnValue
     public static <T> T checkNotNull(@Nullable final T reference, @Nullable final Object errorMessage)

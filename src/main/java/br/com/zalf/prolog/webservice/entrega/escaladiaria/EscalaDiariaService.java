@@ -3,7 +3,7 @@ package br.com.zalf.prolog.webservice.entrega.escaladiaria;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
+import br.com.zalf.prolog.webservice.commons.util.PrologDateParser;
 import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.errorhandling.exception.EscalaDiariaException;
@@ -78,8 +78,8 @@ public class EscalaDiariaService {
         try {
             return dao.getEscalasDiarias(
                     codUnidade,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal));
+                    PrologDateParser.toLocalDate(dataInicial),
+                    PrologDateParser.toLocalDate(dataFinal));
         } catch (final SQLException e) {
             Log.e(TAG, "Erro ao buscar Escalas Diarias para a Unidade: " + codUnidade, e);
             throw new EscalaDiariaException(

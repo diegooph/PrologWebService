@@ -2,7 +2,7 @@ package test.br.com.zalf.prolog.webservice.integracao.avilan;
 
 import br.com.zalf.prolog.webservice.commons.FonteDataHora;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
+import br.com.zalf.prolog.webservice.commons.util.PrologDateParser;
 import br.com.zalf.prolog.webservice.database.DatabaseManager;
 import br.com.zalf.prolog.webservice.frota.checklist.ChecklistService;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
@@ -369,7 +369,7 @@ public class AvaCorpAvilanIntegracaoOrdemServicoTest extends BaseTest {
                 "uma observacao",
                 10000,
                 respostas,
-                ProLogDateParser.toLocalDateTime("2019-10-14T09:35:10"),
+                PrologDateParser.toLocalDateTime("2019-10-14T09:35:10"),
                 FonteDataHora.LOCAL_CELULAR,
                 80,
                 83,

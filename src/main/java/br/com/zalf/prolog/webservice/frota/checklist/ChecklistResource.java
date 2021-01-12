@@ -43,7 +43,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
-import static br.com.zalf.prolog.webservice.commons.util.ProLogCustomHeaders.AppVersionAndroid.PROLOG_APP_VERSION;
+import static br.com.zalf.prolog.webservice.commons.util.PrologCustomHeaders.AppVersionAndroid.PROLOG_APP_VERSION;
 
 @Path("/checklists")
 @ConsoleDebugLog

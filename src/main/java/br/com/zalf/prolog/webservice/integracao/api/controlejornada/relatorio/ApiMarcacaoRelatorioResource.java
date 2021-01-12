@@ -1,9 +1,9 @@
 package br.com.zalf.prolog.webservice.integracao.api.controlejornada.relatorio;
 
 import br.com.zalf.prolog.webservice.commons.network.metadata.Platform;
-import br.com.zalf.prolog.webservice.commons.util.ProLogCustomHeaders;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Required;
 import br.com.zalf.prolog.webservice.commons.network.metadata.UsedBy;
+import br.com.zalf.prolog.webservice.commons.util.PrologCustomHeaders;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.integracao.api.controlejornada.relatorio._model.ApiMarcacaoRelatorio1510;
 import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
@@ -33,7 +33,7 @@ public final class ApiMarcacaoRelatorioResource {
     @Path("padrao-portaria-1510-tipo-3")
     @UsedBy(platforms = Platform.INTEGRACOES)
     public List<ApiMarcacaoRelatorio1510> getRelatorioPortaria1510(
-            @HeaderParam(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
+            @HeaderParam(PrologCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
             @QueryParam("dataInicial") @Required final String dataInicial,
             @QueryParam("dataFinal") @Required final String dataFinal,
             @QueryParam("codUnidadeProLog") @Nullable final Long codUnidadeProLog,

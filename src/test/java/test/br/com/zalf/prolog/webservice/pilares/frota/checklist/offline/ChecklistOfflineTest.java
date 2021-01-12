@@ -2,7 +2,7 @@ package test.br.com.zalf.prolog.webservice.pilares.frota.checklist.offline;
 
 import br.com.zalf.prolog.webservice.commons.FonteDataHora;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
-import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
+import br.com.zalf.prolog.webservice.commons.util.PrologDateParser;
 import br.com.zalf.prolog.webservice.database.DatabaseManager;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.checklist.model.TipoChecklist;
@@ -164,7 +164,7 @@ public class ChecklistOfflineTest extends BaseTest {
                 "uma observacao",
                 10000,
                 createRespostas(),
-                ProLogDateParser.toLocalDateTime("2019-03-30T00:26:10"),
+                PrologDateParser.toLocalDateTime("2019-03-30T00:26:10"),
                 FonteDataHora.LOCAL_CELULAR,
                 50,
                 53,

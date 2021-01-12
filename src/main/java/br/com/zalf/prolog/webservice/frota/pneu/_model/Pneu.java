@@ -17,7 +17,7 @@ import java.math.RoundingMode;
 import java.util.Comparator;
 import java.util.List;
 
-import static br.com.zalf.prolog.webservice.commons.util.ProLogPosicaoPneuOrdemMapper.fromPosicao;
+import static br.com.zalf.prolog.webservice.commons.util.PrologPosicaoPneuOrdemMapper.fromPosicao;
 
 /**
  * Created on 31/05/2018
@@ -141,6 +141,10 @@ public abstract class Pneu {
     @NotNull
     private PneuTipo tipo;
 
+    public enum Problema {
+        NUMERO_INCORRETO, PRESSAO_INDISPONIVEL
+    }
+
     public Pneu(@NotNull final PneuTipo pneuTipo) {
         this.tipo = pneuTipo;
     }
@@ -174,6 +178,33 @@ public abstract class Pneu {
             Log.e(TAG, "Erro ao validar o DOT: " + dot, ex);
         }
         return false;
+    }
+
+    @Override
+    public String toString() {
+        return "Pneu{" +
+                "problemas=" + problemas +
+                ", codPneuProblema='" + codPneuProblema + '\'' +
+                ", codigoCliente='" + codigoCliente + '\'' +
+                ", codigo=" + codigo +
+                ", marca=" + marca +
+                ", modelo=" + modelo +
+                ", valor=" + valor +
+                ", banda=" + banda +
+                ", dimensao=" + dimensao +
+                ", pressaoCorreta=" + pressaoCorreta +
+                ", pressaoAtual=" + pressaoAtual +
+                ", sulcosAtuais=" + sulcosAtuais +
+                ", vidaAtual=" + vidaAtual +
+                ", vidasTotal=" + vidasTotal +
+                ", status=" + status +
+                ", codRegionalAlocado=" + codRegionalAlocado +
+                ", codUnidadeAlocado=" + codUnidadeAlocado +
+                ", dot='" + dot + '\'' +
+                ", posicao=" + posicao +
+                ", pneuNovoNuncaRodado=" + pneuNovoNuncaRodado +
+                ", fotosCadastro=" + fotosCadastro +
+                '}';
     }
 
     @NotNull
@@ -322,7 +353,7 @@ public abstract class Pneu {
     @Nullable
     public String getNomeRegionalAlocado() { return nomeRegionalAlocado; }
 
-    public void setNomeRegionalAlocado(String nomeRegionalAlocado) { this.nomeRegionalAlocado = nomeRegionalAlocado; }
+    public void setNomeRegionalAlocado(final String nomeRegionalAlocado) { this.nomeRegionalAlocado = nomeRegionalAlocado; }
 
     public Long getCodUnidadeAlocado() {
         return codUnidadeAlocado;
@@ -335,7 +366,7 @@ public abstract class Pneu {
     @Nullable
     public String getNomeUnidadeAlocado() { return nomeUnidadeAlocado; }
 
-    public void setNomeUnidadeAlocado(String nomeUnidadeAlocado) { this.nomeUnidadeAlocado = nomeUnidadeAlocado; }
+    public void setNomeUnidadeAlocado(final String nomeUnidadeAlocado) { this.nomeUnidadeAlocado = nomeUnidadeAlocado; }
 
     public int getPosicao() {
         return posicao;
@@ -392,20 +423,6 @@ public abstract class Pneu {
         return sulcosAtuais.getMenorSulco();
     }
 
-    /**
-     * Se o pneu estiver na primeira vida, então a sua quantidade de sulcos é o atributo
-     * quantidadeSulcos do modelo de pneu, senão, é o quantidadeSulcos do modelo de banda.
-     *
-     * @return a quantidade de sulcos desse pneu.
-     */
-    private int getQuantidadeSulcos() {
-        if (vidaAtual == 1) {
-            return modelo.getQuantidadeSulcos();
-        } else {
-            return banda.getModelo().getQuantidadeSulcos();
-        }
-    }
-
     public boolean jaFoiRecapado() {
         return vidaAtual > 1;
     }
@@ -434,35 +451,18 @@ public abstract class Pneu {
         }
     }
 
-    @Override
-    public String toString() {
-        return "Pneu{" +
-                "problemas=" + problemas +
-                ", codPneuProblema='" + codPneuProblema + '\'' +
-                ", codigoCliente='" + codigoCliente + '\'' +
-                ", codigo=" + codigo +
-                ", marca=" + marca +
-                ", modelo=" + modelo +
-                ", valor=" + valor +
-                ", banda=" + banda +
-                ", dimensao=" + dimensao +
-                ", pressaoCorreta=" + pressaoCorreta +
-                ", pressaoAtual=" + pressaoAtual +
-                ", sulcosAtuais=" + sulcosAtuais +
-                ", vidaAtual=" + vidaAtual +
-                ", vidasTotal=" + vidasTotal +
-                ", status=" + status +
-                ", codRegionalAlocado=" + codRegionalAlocado +
-                ", codUnidadeAlocado=" + codUnidadeAlocado +
-                ", dot='" + dot + '\'' +
-                ", posicao=" + posicao +
-                ", pneuNovoNuncaRodado=" + pneuNovoNuncaRodado +
-                ", fotosCadastro=" + fotosCadastro +
-                '}';
-    }
-
-    public enum Problema {
-        NUMERO_INCORRETO, PRESSAO_INDISPONIVEL
+    /**
+     * Se o pneu estiver na primeira vida, então a sua quantidade de sulcos é o atributo
+     * quantidadeSulcos do modelo de pneu, senão, é o quantidadeSulcos do modelo de banda.
+     *
+     * @return a quantidade de sulcos desse pneu.
+     */
+    private int getQuantidadeSulcos() {
+        if (vidaAtual == 1) {
+            return modelo.getQuantidadeSulcos();
+        } else {
+            return banda.getModelo().getQuantidadeSulcos();
+        }
     }
 
     public static class Dimensao {
@@ -474,6 +474,16 @@ public abstract class Pneu {
 
         public Dimensao() {
 
+        }
+
+        @Override
+        public String toString() {
+            return "Dimensao{" +
+                    "codigo=" + codigo +
+                    ", altura=" + altura +
+                    ", largura=" + largura +
+                    ", aro=" + aro +
+                    '}';
         }
 
         public long getCodigo() {
@@ -506,16 +516,6 @@ public abstract class Pneu {
 
         public void setAro(final double aro) {
             this.aro = aro;
-        }
-
-        @Override
-        public String toString() {
-            return "Dimensao{" +
-                    "codigo=" + codigo +
-                    ", altura=" + altura +
-                    ", largura=" + largura +
-                    ", aro=" + aro +
-                    '}';
         }
     }
 }
