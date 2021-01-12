@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.colaborador.error;
 
-import br.com.zalf.prolog.webservice.commons.util.CpfValidationUtils;
+import br.com.zalf.prolog.webservice.commons.util.PisPasepValidationUtils;
 import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
@@ -53,7 +53,6 @@ public class ColaboradorValidator {
         Preconditions.checkNotNull(regional, "Você precisa selecionar a regional");
         Preconditions.checkArgument(regional > 0, "Regional inválida");
     }
-
 
     private static void validacaoCpf(@Nullable final Long cpf) throws Exception {
         Preconditions.checkNotNull(cpf, "Você precisa fornecer o CPF");
@@ -146,7 +145,7 @@ public class ColaboradorValidator {
 
         if (pis.length() < MAX_LENGTH_PIS) {
             throw new GenericException("PIS inválido\nO PIS deve conter onze dígitos", "PIS informado:" + pis);
-        } else if (!CpfValidationUtils.isPisPasepValid(pis)) {
+        } else if (!PisPasepValidationUtils.isPisPasepValid(pis)) {
             throw new GenericException("PIS inválido", "PIS informado: " + pis);
         }
     }
