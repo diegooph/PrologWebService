@@ -7,9 +7,9 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-public final class ReflectionHelper {
-    private ReflectionHelper() {
-        throw new IllegalStateException(ReflectionHelper.class.getSimpleName() + " cannot be instantiated!");
+public final class ReflectionUtils {
+    private ReflectionUtils() {
+        throw new IllegalStateException(ReflectionUtils.class.getSimpleName() + " cannot be instantiated!");
     }
 
     @NotNull
