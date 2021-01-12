@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.commons.imagens;
 
 import br.com.zalf.prolog.webservice.AmazonConstants;
 import br.com.zalf.prolog.webservice.commons.util.RandomUtils;
-import br.com.zalf.prolog.webservice.commons.util.S3FileSender;
+import br.com.zalf.prolog.webservice.commons.util.files.S3FileSender;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;

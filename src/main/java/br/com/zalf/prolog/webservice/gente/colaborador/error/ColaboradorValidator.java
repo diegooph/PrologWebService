@@ -1,8 +1,8 @@
 package br.com.zalf.prolog.webservice.gente.colaborador.error;
 
-import br.com.zalf.prolog.webservice.commons.util.PisPasepValidationUtils;
 import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
+import br.com.zalf.prolog.webservice.commons.util.validators.PisPasepValidator;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Cargo;
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
@@ -145,7 +145,7 @@ public class ColaboradorValidator {
 
         if (pis.length() < MAX_LENGTH_PIS) {
             throw new GenericException("PIS inválido\nO PIS deve conter onze dígitos", "PIS informado:" + pis);
-        } else if (!PisPasepValidationUtils.isPisPasepValid(pis)) {
+        } else if (!PisPasepValidator.isPisPasepValid(pis)) {
             throw new GenericException("PIS inválido", "PIS informado: " + pis);
         }
     }

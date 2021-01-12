@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.colaborador.constraints.validator;
 
-import br.com.zalf.prolog.webservice.commons.util.PisPasepValidationUtils;
+import br.com.zalf.prolog.webservice.commons.util.validators.PisPasepValidator;
 import br.com.zalf.prolog.webservice.gente.colaborador.constraints.Pis;
 
 import javax.validation.ConstraintValidator;
@@ -20,6 +20,6 @@ public final class PisValidator implements ConstraintValidator<Pis, CharSequence
             return true;
         }
 
-        return PisPasepValidationUtils.isPisPasepValid(String.valueOf(pis));
+        return PisPasepValidator.isPisPasepValid(String.valueOf(pis));
     }
 }
