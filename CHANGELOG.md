@@ -24,6 +24,7 @@ Change Log
 
 ### Bug Fixes
 * Relatório qtd aferições by tipo e data não traz primeira linha (PL-3188)
+* Realiza validação mapeamento de exception no internal mapper com sentry (PL-3280)
 
 <a name="v1.4.2"></a>
 
