@@ -4,6 +4,9 @@ import br.com.zalf.prolog.webservice.errorhandling.ErrorReportSystem;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.errorhandling.sql.ClientSideErrorException;
+import io.sentry.SentryEvent;
+import io.sentry.SentryLevel;
+import io.sentry.protocol.Message;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -13,7 +16,11 @@ import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Created on 2020-10-20
@@ -40,7 +47,7 @@ public final class InternalExceptionMapper {
         }
 
         final ProLogException proLogException = convertToPrologException(throwable);
-        tryToLogException(proLogException);
+        tryToLogEventException(proLogException);
         return createResponse(
                 proLogException.getHttpStatusCode(),
                 createPrologError(proLogException)
@@ -88,20 +95,29 @@ public final class InternalExceptionMapper {
 
     @NotNull
     private static ProLogException convertToPrologException(@Nullable final Throwable throwable) {
-        final ProLogException proLogException = (!(throwable instanceof ProLogException))
-                ? new GenericException(
-                "Algo deu errado, tente novamente",
-                "Erro mapeado no ProLogExceptionMapper: " + (throwable != null
-                        ? throwable.getMessage()
-                        : "null"),
-                throwable)
-                : (ProLogException) throwable;
-        return proLogException;
+        if (!(throwable instanceof ProLogException)) {
+            final String genericMessage = "Algo deu errado, tente novamente";
+            final String developerMessage = "Erro mapeado no PrologExceptionMapper: " +
+                    ((throwable != null) ? throwable.getMessage() : "null");
+            final ProLogException ex = new GenericException(genericMessage, developerMessage, throwable);
+            return ex;
+        } else {
+            return (ProLogException) throwable;
+        }
     }
 
-    private static void tryToLogException(final ProLogException proLogException) {
+    private static void tryToLogEventException(@NotNull final ProLogException proLogException) {
         if (proLogException.isloggableOnErrorReportSystem()) {
-            ErrorReportSystem.logException(proLogException);
+            final SentryEvent event = new SentryEvent();
+            final Message message = new Message();
+            final Map<String, Object> extras = getExtrasByException(proLogException);
+            message.setMessage(proLogException.getMessage());
+            event.setMessage(message);
+            event.setLevel(SentryLevel.ERROR);
+            event.setLogger(proLogException.getClass().getSimpleName());
+            event.setThrowable(proLogException);
+            event.setExtras(extras);
+            ErrorReportSystem.logEvent(event);
         }
     }
 
@@ -126,5 +142,17 @@ public final class InternalExceptionMapper {
         return String.format(
                 totalErrors > 1 ? "%d erros encontrados" : "%d erro encontrado",
                 totalErrors);
+    }
+
+    @NotNull
+    private static Map<String, Object> getExtrasByException(@NotNull final ProLogException proLogException) {
+        return Stream.of(
+                new AbstractMap.SimpleImmutableEntry<>("Developer message",
+                                                       proLogException.getDeveloperMessage()),
+                new AbstractMap.SimpleImmutableEntry<>("Parent exception",
+                                                       proLogException.getParentException()))
+                .collect(Collectors.collectingAndThen(
+                        Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue),
+                        Collections::unmodifiableMap));
     }
 }
