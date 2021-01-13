@@ -1,9 +1,13 @@
 package br.com.zalf.prolog.webservice.frota.veiculo.validator;
 
+import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.VeiculoCadastro;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicao;
+import br.com.zalf.prolog.webservice.frota.veiculo.tipoveiculo.TipoVeiculoDao;
 import com.google.common.base.Preconditions;
+import io.sentry.util.Nullable;
 import org.jetbrains.annotations.NotNull;
 
 public class VeiculoValidator {
@@ -20,6 +24,18 @@ public class VeiculoValidator {
             validacaoPlaca(veiculo.getPlacaVeiculo());
             validacaoKmAtual(veiculo.getKmAtualVeiculo());
             validacaoMarca(veiculo.getCodMarcaVeiculo());
+            validacaoModelo(veiculo.getCodModeloVeiculo());
+            validacaoTipo(veiculo.getCodTipoVeiculo());
+        } catch (final Exception e) {
+            throw new GenericException(e.getMessage(), null);
+        }
+        validacaoMotorizadoSemHubodometro(veiculo.getPossuiHubodometro(), veiculo.getCodTipoVeiculo());
+    }
+
+    public static void validacaoAtributosVeiculo(@NotNull final VeiculoEdicao veiculo) throws Throwable {
+        try {
+            validacaoPlaca(veiculo.getPlacaVeiculo());
+            validacaoKmAtual(veiculo.getKmAtualVeiculo());
             validacaoModelo(veiculo.getCodModeloVeiculo());
             validacaoTipo(veiculo.getCodTipoVeiculo());
         } catch (final Exception e) {
