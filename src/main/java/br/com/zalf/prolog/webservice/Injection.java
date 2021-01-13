@@ -98,8 +98,6 @@ import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento.VeiculoAcoplament
 import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento.VeiculoAcoplamentoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento.historico.VeiculoAcoplamentoHistoricoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento.historico.VeiculoAcoplamentoHistoricoDaoImpl;
-import br.com.zalf.prolog.webservice.frota.veiculo.error.VeiculoExceptionHandler;
-import br.com.zalf.prolog.webservice.frota.veiculo.error.VeiculoSqlExceptionTranslator;
 import br.com.zalf.prolog.webservice.frota.veiculo.evolucaoKm.VeiculoEvolucaoKmDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.evolucaoKm.VeiculoEvolucaoKmDaoImpl;
 import br.com.zalf.prolog.webservice.frota.veiculo.historico.HistoricoEdicaoVeiculoDao;
@@ -112,6 +110,8 @@ import br.com.zalf.prolog.webservice.frota.veiculo.tipoveiculo.TipoVeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.tipoveiculo.TipoVeiculoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.VeiculoTransferenciaDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.VeiculoTransferenciaDaoImpl;
+import br.com.zalf.prolog.webservice.frota.veiculo.validator.VeiculoExceptionHandler;
+import br.com.zalf.prolog.webservice.frota.veiculo.validator.VeiculoSqlExceptionTranslator;
 import br.com.zalf.prolog.webservice.gente.calendario.CalendarioDao;
 import br.com.zalf.prolog.webservice.gente.calendario.CalendarioDaoImpl;
 import br.com.zalf.prolog.webservice.gente.colaborador.ColaboradorDao;
