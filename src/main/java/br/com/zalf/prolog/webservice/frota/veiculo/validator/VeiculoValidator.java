@@ -83,7 +83,7 @@ public class VeiculoValidator {
 
     private static void validacaoMotorizadoSemHubodometro(@NotNull final Boolean possuiHubodometro,
                                                           @NotNull final Long codTipoVeiculo) throws Throwable {
-        if (dao.getTipoVeiculo(codTipoVeiculo).getMotorizado() && possuiHubodometro) {
+        if (dao.getTipoVeiculo(codTipoVeiculo).isMotorizado() && possuiHubodometro) {
             fail("Veículos motorizados não devem possuir hubodômetro.", codTipoVeiculo);
         }
     }

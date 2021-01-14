@@ -17,5 +17,5 @@ public class TipoVeiculo {
     private Long codigo;
     private String nome;
     private String codAuxiliar;
-    private Boolean motorizado;
+    private boolean motorizado;
 }
