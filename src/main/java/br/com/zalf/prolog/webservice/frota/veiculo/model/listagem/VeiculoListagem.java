@@ -51,6 +51,7 @@ public final class VeiculoListagem {
     private final Long codMarca;
     private final boolean motorizado;
     private final boolean possuiHubodometro;
+    private final boolean acoplado;
     @Nullable
     private final VeiculosAcopladosListagem veiculosAcoplados;
 }

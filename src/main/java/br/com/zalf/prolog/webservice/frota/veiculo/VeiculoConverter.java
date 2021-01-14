@@ -75,6 +75,7 @@ public final class VeiculoConverter {
                 rSet.getLong("COD_MARCA"),
                 rSet.getBoolean("MOTORIZADO"),
                 rSet.getBoolean("POSSUI_HUBODOMETRO"),
+                rSet.getBoolean("ACOPLADO"),
                 veiculosAcoplados.getVeiculosAcopladosByCodVeiculo(rSet.getLong("CODIGO")));
     }
 
