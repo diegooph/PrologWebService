@@ -15,8 +15,8 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeicul
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculoPosicaoNomenclatura;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicaoStatus;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoDadosColetaKm;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.listagem.VeiculoListagem;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoDadosColetaKm;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoVisualizacao;
 import br.com.zalf.prolog.webservice.integracao.router.RouterVeiculo;
 import org.jetbrains.annotations.NotNull;
@@ -133,6 +133,7 @@ public final class VeiculoService {
                                  @NotNull final String userToken,
                                  @NotNull final VeiculoEdicaoStatus veiculo) {
         try {
+            VeiculoValidator.validacaoAtributosVeiculo(veiculo);
             final VeiculoEdicao edicao = dao
                     .getVeiculoByCodigo(veiculo.getCodigo())
                     .toVeiculoEdicao(veiculo.isStatusAtivo());
