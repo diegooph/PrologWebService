@@ -13,4 +13,5 @@ public final class VeiculoEdicaoStatus {
     @NotNull
     private final Long codigo;
     private final boolean statusAtivo;
+    private final boolean acoplado;
 }
