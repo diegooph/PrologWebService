@@ -17,6 +17,7 @@ Change Log
 * Adiciona novas validações no import massivo de veículos (PL-3288)
 * Realiza ajustes no acoplamento para funcionar apenas com MUDOU_POSICAO (PL-3355)
 * Refatora updates de km dos processos para usarem function centralizadora (PL-3290)
+* Adiciona erro especifico ao tentar por hubodômetro em veículos motorizados (PL-3386)
 
 ### Bug Fixes
 * Corrige diferenças entre branches na edição de veículo (PL-3326)
