@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.praxio;
 
+import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicaoStatus;
 import br.com.zalf.prolog.webservice.integracao.praxio.afericao.MedicaoIntegracaoPraxio;
 import br.com.zalf.prolog.webservice.integracao.praxio.cadastro.VeiculoCadastroPraxio;
 import br.com.zalf.prolog.webservice.integracao.praxio.cadastro.VeiculoEdicaoPraxio;
@@ -144,4 +145,6 @@ interface IntegracaoPraxioDao {
      */
     @NotNull
     ChecklistParaSincronizar getCodChecklistParaSincronizar() throws Throwable;
+
+    VeiculoEdicaoStatus getVeiculoEdicaoStatus(String placaVeiculo, final Boolean veiculoAtivo) throws Throwable;
 }

@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.integracao.praxio;
 import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicaoStatus;
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.integracao.praxio.afericao.AfericaoIntegracaoPraxioConverter;
 import br.com.zalf.prolog.webservice.integracao.praxio.afericao.MedicaoIntegracaoPraxio;
@@ -346,6 +347,29 @@ final class IntegracaoPraxioDaoImpl extends DatabaseConnection implements Integr
             }
         } finally {
             close(conn, stmt, rSet);
+        }
+    }
+
+    @Override
+    public VeiculoEdicaoStatus getVeiculoEdicaoStatus(final String placaVeiculo, final Boolean veiculoAtivo)
+            throws Throwable {
+        final String sql = "select  v.codigo,  v.status_ativo, v.acoplado from veiculo v  where v.placa = ?;";
+
+        try (final Connection conn = getConnection();
+             final PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, placaVeiculo);
+
+            try (final ResultSet rSet = stmt.executeQuery()) {
+                if (rSet.next()) {
+                    return new VeiculoEdicaoStatus(
+                            rSet.getLong("codigo"),
+                            veiculoAtivo,
+                            rSet.getBoolean("acoplado"));
+                } else {
+                    throw new SQLException("Não foi possível inativar o veículo.");
+                }
+            }
         }
     }
 }

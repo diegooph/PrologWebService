@@ -6,6 +6,8 @@ import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
+import br.com.zalf.prolog.webservice.frota.veiculo.error.VeiculoValidator;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicaoStatus;
 import br.com.zalf.prolog.webservice.integracao.BaseIntegracaoService;
 import br.com.zalf.prolog.webservice.integracao.RecursoIntegrado;
 import br.com.zalf.prolog.webservice.integracao.agendador.AgendadorService;
@@ -36,22 +38,6 @@ public final class IntegracaoPraxioService extends BaseIntegracaoService {
     private static final String TAG = IntegracaoPraxioService.class.getSimpleName();
     @NotNull
     private final IntegracaoPraxioDao dao = new IntegracaoPraxioDaoImpl();
-
-    @NotNull
-    SuccessResponseIntegracao validateTokenIntegracao(final String tokenIntegracao) {
-        // Esse método é utilizado para a parametrização do sistema parceiro. Lá ao inserir o token que será utilizado
-        // o Sistema realiza uma requisição afim de validar se o token é de fato o que será utilizado para autenticar
-        // os métodos integrados.
-        try {
-            ensureValidToken(tokenIntegracao, TAG);
-            return new SuccessResponseIntegracao("Token está autorizado a realizar requisições");
-        } catch (final Throwable t) {
-            Log.e(TAG, "Erro ao validar o token na integração", t);
-            throw Injection
-                    .provideProLogExceptionHandler()
-                    .map(t, "Erro ao validar o token na integração");
-        }
-    }
 
     @NotNull
     public SuccessResponseIntegracao inserirVeiculoPraxio(
@@ -161,6 +147,8 @@ public final class IntegracaoPraxioService extends BaseIntegracaoService {
                 throw new GenericException("A informação para ativar ou desativar o veículo não foi fornecida");
             }
             ensureValidToken(tokenIntegracao, TAG);
+            final VeiculoEdicaoStatus veiculo = dao.getVeiculoEdicaoStatus(placaVeiculo, veiculoAtivo);
+            VeiculoValidator.validacaoAtributosVeiculo(veiculo);
             dao.ativarDesativarVeiculoPraxio(tokenIntegracao, placaVeiculo, veiculoAtivo);
             return new SuccessResponseIntegracao(
                     "Veículo foi " + (veiculoAtivo ? "ativado" : "desativado") + " com sucesso no ProLog");
@@ -222,7 +210,7 @@ public final class IntegracaoPraxioService extends BaseIntegracaoService {
             final String tokenIntegracao,
             final List<ItemResolvidoGlobus> itensResolvidos) throws ProLogException {
         //Realiza validação para CPF
-        for (ItemResolvidoGlobus item : itensResolvidos) {
+        for (final ItemResolvidoGlobus item : itensResolvidos) {
             validaCpfColaborador(item.getCpfColaboradorResolucao());
         }
         try {
@@ -260,143 +248,6 @@ public final class IntegracaoPraxioService extends BaseIntegracaoService {
         Executors.newSingleThreadExecutor().execute(() -> new AgendadorService().sincronizaChecklists());
     }
 
-////----------------------------------------------------------------------------------------------------------------////
-////---------------------------------- DUMMY MÉTODOS ---------------------------------------------------------------////
-////----------------------------------------------------------------------------------------------------------------////
-
-    @NotNull
-    SuccessResponseIntegracao inserirVeiculoCadastroPraxioDummy(
-            final String tokenIntegracao,
-            final VeiculoCadastroPraxio veiculoCadastroPraxio) throws ProLogException {
-        try {
-            if (tokenIntegracao == null) {
-                throw new GenericException("Um Token deve ser fornecido");
-            }
-            if (!tokenIntegracao.equals("kffdm2ba5ai3lsk79kqur9rb3mq7hv59qa8pr0sho4mcr56clck")) {
-                throw new GenericException("O Token fornecido é inválido");
-            }
-            validateVeiculoCadastro(veiculoCadastroPraxio);
-            return new SuccessResponseIntegracao("Veículo do Globus inserido no ProLog com sucesso");
-        } catch (final Throwable t) {
-            Log.e(TAG, "Erro ao inserir o veículo do Globus no ProLog", t);
-            throw Injection
-                    .provideProLogExceptionHandler()
-                    .map(t, "Erro ao inserir o veículo do Globus no ProLog");
-        }
-    }
-
-    @NotNull
-    SuccessResponseIntegracao atualizarVeiculoPraxioDummy(
-            final String tokenIntegracao,
-            final Long codUnidadeVeiculoAntesEdicao,
-            final String placaVeiculoAntesEdicao,
-            final VeiculoEdicaoPraxio veiculoEdicaoPraxio) throws ProLogException {
-        try {
-            if (tokenIntegracao == null) {
-                throw new GenericException("Um Token deve ser fornecido");
-            }
-            if (codUnidadeVeiculoAntesEdicao == null) {
-                throw new GenericException("A propriedade 'codUnidadeVeiculoAntesEdicao' deve ser fornecida");
-            }
-            if (placaVeiculoAntesEdicao == null
-                    || placaVeiculoAntesEdicao.isEmpty()
-                    || placaVeiculoAntesEdicao.length() > 7) {
-                throw new GenericException(
-                        "A propriedade 'placaVeiculoAntesEdicao' deve ser fornecida e ter 7 caracteres");
-            }
-            if (!tokenIntegracao.equals("kffdm2ba5ai3lsk79kqur9rb3mq7hv59qa8pr0sho4mcr56clck")) {
-                throw new GenericException("O Token fornecido é inválido");
-            }
-            validateVeiculoEdicao(veiculoEdicaoPraxio);
-            return new SuccessResponseIntegracao("Veículo do Globus atualizado no ProLog com sucesso");
-        } catch (final Throwable t) {
-            Log.e(TAG, "Erro ao atualizar o veículo do Globus no ProLog", t);
-            throw Injection
-                    .provideProLogExceptionHandler()
-                    .map(t, "Erro ao atualizar o veículo do Globus no ProLog");
-        }
-    }
-
-    @NotNull
-    SuccessResponseIntegracao transferirVeiculoPraxioDummy(
-            final String tokenIntegracao,
-            final VeiculoTransferenciaPraxio veiculoTransferenciaPraxio) throws ProLogException {
-        try {
-            if (tokenIntegracao == null) {
-                throw new GenericException("Um Token deve ser fornecido");
-            }
-            if (!tokenIntegracao.equals("kffdm2ba5ai3lsk79kqur9rb3mq7hv59qa8pr0sho4mcr56clck")) {
-                throw new GenericException("O Token fornecido é inválido");
-            }
-            validateTransferenciaVeiculoPraxio(veiculoTransferenciaPraxio);
-            return new SuccessResponseIntegracao("Veículo do Globus transferido com sucesso");
-        } catch (final Throwable t) {
-            Log.e(TAG, "Erro ao realizar transferências de veículos do Globus no ProLog", t);
-            throw Injection
-                    .provideProLogExceptionHandler()
-                    .map(t, "Erro ao realizar transferências de veículos do Globus no ProLog");
-        }
-    }
-
-    @NotNull
-    List<MedicaoIntegracaoPraxio> getAfericoesRealizadasDummy() {
-        final List<MedicaoIntegracaoPraxio> afericoes = new ArrayList<>();
-        afericoes.add(MedicaoIntegracaoPraxio.createDummyAfericaoPlacaSulcoPressao());
-        afericoes.add(MedicaoIntegracaoPraxio.createDummyAfericaoPlacaSulco());
-        afericoes.add(MedicaoIntegracaoPraxio.createDummyAfericaoPlacaPressao());
-        afericoes.add(MedicaoIntegracaoPraxio.createDummyAfericaoPneuAvulsoSulco());
-        return afericoes;
-    }
-
-    @NotNull
-    SuccessResponseIntegracao inserirOrdensServicoGlobusDummy(
-            final String tokenIntegracao,
-            final List<OrdemServicoAbertaGlobus> ordensServicoAbertas) throws ProLogException {
-        try {
-            if (tokenIntegracao == null) {
-                throw new GenericException("Um Token deve ser fornecido");
-            }
-            if (!tokenIntegracao.equals("kffdm2ba5ai3lsk79kqur9rb3mq7hv59qa8pr0sho4mcr56clck")) {
-                throw new GenericException("O Token fornecido é inválido");
-            }
-            if (ordensServicoAbertas == null || ordensServicoAbertas.isEmpty()) {
-                throw new GenericException("Nenhuma informação de O.S. aberta foi recebida");
-            }
-            validateOrdensServico(ordensServicoAbertas);
-            return new SuccessResponseIntegracao("Ordens de Serviços Abertas foram inseridas no ProLog");
-        } catch (final Throwable t) {
-            Log.e(TAG, "Erro ao inserir as Ordens de Serviços Abertas no banco de dados do ProLog", t);
-            throw Injection
-                    .provideProLogExceptionHandler()
-                    .map(t, "Erro ao inserir as Ordens de Serviços Abertas no ProLog");
-        }
-    }
-
-    @NotNull
-    SuccessResponseIntegracao resolverMultiplosItensDummy(
-            final String tokenIntegracao,
-            final List<ItemResolvidoGlobus> itensResolvidos) throws ProLogException {
-        try {
-            if (tokenIntegracao == null) {
-                throw new GenericException("Um Token deve ser fornecido");
-            }
-            if (!tokenIntegracao.equals("kffdm2ba5ai3lsk79kqur9rb3mq7hv59qa8pr0sho4mcr56clck")) {
-                throw new GenericException("O Token fornecido é inválido");
-            }
-            if (itensResolvidos == null || itensResolvidos.isEmpty()) {
-                throw new GenericException("Nenhuma informação de O.S. aberta foi recebida");
-            }
-            final LocalDateTime dataHoraAtualUtc = Now.localDateTimeUtc();
-            validateDadosItensResolvidos(dataHoraAtualUtc, itensResolvidos);
-            return new SuccessResponseIntegracao("Todos os itens foram resolvidos com sucesso no ProLog");
-        } catch (final Throwable t) {
-            Log.e(TAG, "Erro ao resolver os itens no ProLog", t);
-            throw Injection
-                    .provideProLogExceptionHandler()
-                    .map(t, "Erro ao resolver os itens no ProLog");
-        }
-    }
-
     private void validateVeiculoCadastro(
             @NotNull final VeiculoCadastroPraxio veiculoCadastroPraxio) throws ProLogException {
         if (veiculoCadastroPraxio.getCodUnidadeAlocado() <= 0) {
@@ -417,6 +268,11 @@ public final class IntegracaoPraxioService extends BaseIntegracaoService {
             throw new GenericException("A propriedade 'codTipoVeiculo' deve ser um número positivo");
         }
     }
+
+    ////----------------------------------------------------------------------------------------------------------------////
+    ////---------------------------------- DUMMY MÉTODOS
+    // ---------------------------------------------------------------////
+    ////----------------------------------------------------------------------------------------------------------------////
 
     private void validateVeiculoEdicao(@NotNull final VeiculoEdicaoPraxio veiculoEdicaoPraxio) throws ProLogException {
         if (veiculoEdicaoPraxio.getNovoKmVeiculo() <= 0) {
@@ -549,6 +405,155 @@ public final class IntegracaoPraxioService extends BaseIntegracaoService {
     private void validaCpfColaborador(@NotNull final String cpfColaborador) throws GenericException {
         if (StringUtils.isNullOrEmpty(StringUtils.trimToNull(cpfColaborador))) {
             throw new GenericException("O CPF do colaborador deve ser informado no fechamento de O.S");
+        }
+    }
+
+    @NotNull
+    SuccessResponseIntegracao validateTokenIntegracao(final String tokenIntegracao) {
+        // Esse método é utilizado para a parametrização do sistema parceiro. Lá ao inserir o token que será utilizado
+        // o Sistema realiza uma requisição afim de validar se o token é de fato o que será utilizado para autenticar
+        // os métodos integrados.
+        try {
+            ensureValidToken(tokenIntegracao, TAG);
+            return new SuccessResponseIntegracao("Token está autorizado a realizar requisições");
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao validar o token na integração", t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao validar o token na integração");
+        }
+    }
+
+    @NotNull
+    SuccessResponseIntegracao inserirVeiculoCadastroPraxioDummy(
+            final String tokenIntegracao,
+            final VeiculoCadastroPraxio veiculoCadastroPraxio) throws ProLogException {
+        try {
+            if (tokenIntegracao == null) {
+                throw new GenericException("Um Token deve ser fornecido");
+            }
+            if (!tokenIntegracao.equals("kffdm2ba5ai3lsk79kqur9rb3mq7hv59qa8pr0sho4mcr56clck")) {
+                throw new GenericException("O Token fornecido é inválido");
+            }
+            validateVeiculoCadastro(veiculoCadastroPraxio);
+            return new SuccessResponseIntegracao("Veículo do Globus inserido no ProLog com sucesso");
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao inserir o veículo do Globus no ProLog", t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao inserir o veículo do Globus no ProLog");
+        }
+    }
+
+    @NotNull
+    SuccessResponseIntegracao atualizarVeiculoPraxioDummy(
+            final String tokenIntegracao,
+            final Long codUnidadeVeiculoAntesEdicao,
+            final String placaVeiculoAntesEdicao,
+            final VeiculoEdicaoPraxio veiculoEdicaoPraxio) throws ProLogException {
+        try {
+            if (tokenIntegracao == null) {
+                throw new GenericException("Um Token deve ser fornecido");
+            }
+            if (codUnidadeVeiculoAntesEdicao == null) {
+                throw new GenericException("A propriedade 'codUnidadeVeiculoAntesEdicao' deve ser fornecida");
+            }
+            if (placaVeiculoAntesEdicao == null
+                    || placaVeiculoAntesEdicao.isEmpty()
+                    || placaVeiculoAntesEdicao.length() > 7) {
+                throw new GenericException(
+                        "A propriedade 'placaVeiculoAntesEdicao' deve ser fornecida e ter 7 caracteres");
+            }
+            if (!tokenIntegracao.equals("kffdm2ba5ai3lsk79kqur9rb3mq7hv59qa8pr0sho4mcr56clck")) {
+                throw new GenericException("O Token fornecido é inválido");
+            }
+            validateVeiculoEdicao(veiculoEdicaoPraxio);
+            return new SuccessResponseIntegracao("Veículo do Globus atualizado no ProLog com sucesso");
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao atualizar o veículo do Globus no ProLog", t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao atualizar o veículo do Globus no ProLog");
+        }
+    }
+
+    @NotNull
+    SuccessResponseIntegracao transferirVeiculoPraxioDummy(
+            final String tokenIntegracao,
+            final VeiculoTransferenciaPraxio veiculoTransferenciaPraxio) throws ProLogException {
+        try {
+            if (tokenIntegracao == null) {
+                throw new GenericException("Um Token deve ser fornecido");
+            }
+            if (!tokenIntegracao.equals("kffdm2ba5ai3lsk79kqur9rb3mq7hv59qa8pr0sho4mcr56clck")) {
+                throw new GenericException("O Token fornecido é inválido");
+            }
+            validateTransferenciaVeiculoPraxio(veiculoTransferenciaPraxio);
+            return new SuccessResponseIntegracao("Veículo do Globus transferido com sucesso");
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao realizar transferências de veículos do Globus no ProLog", t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao realizar transferências de veículos do Globus no ProLog");
+        }
+    }
+
+    @NotNull
+    List<MedicaoIntegracaoPraxio> getAfericoesRealizadasDummy() {
+        final List<MedicaoIntegracaoPraxio> afericoes = new ArrayList<>();
+        afericoes.add(MedicaoIntegracaoPraxio.createDummyAfericaoPlacaSulcoPressao());
+        afericoes.add(MedicaoIntegracaoPraxio.createDummyAfericaoPlacaSulco());
+        afericoes.add(MedicaoIntegracaoPraxio.createDummyAfericaoPlacaPressao());
+        afericoes.add(MedicaoIntegracaoPraxio.createDummyAfericaoPneuAvulsoSulco());
+        return afericoes;
+    }
+
+    @NotNull
+    SuccessResponseIntegracao inserirOrdensServicoGlobusDummy(
+            final String tokenIntegracao,
+            final List<OrdemServicoAbertaGlobus> ordensServicoAbertas) throws ProLogException {
+        try {
+            if (tokenIntegracao == null) {
+                throw new GenericException("Um Token deve ser fornecido");
+            }
+            if (!tokenIntegracao.equals("kffdm2ba5ai3lsk79kqur9rb3mq7hv59qa8pr0sho4mcr56clck")) {
+                throw new GenericException("O Token fornecido é inválido");
+            }
+            if (ordensServicoAbertas == null || ordensServicoAbertas.isEmpty()) {
+                throw new GenericException("Nenhuma informação de O.S. aberta foi recebida");
+            }
+            validateOrdensServico(ordensServicoAbertas);
+            return new SuccessResponseIntegracao("Ordens de Serviços Abertas foram inseridas no ProLog");
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao inserir as Ordens de Serviços Abertas no banco de dados do ProLog", t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao inserir as Ordens de Serviços Abertas no ProLog");
+        }
+    }
+
+    @NotNull
+    SuccessResponseIntegracao resolverMultiplosItensDummy(
+            final String tokenIntegracao,
+            final List<ItemResolvidoGlobus> itensResolvidos) throws ProLogException {
+        try {
+            if (tokenIntegracao == null) {
+                throw new GenericException("Um Token deve ser fornecido");
+            }
+            if (!tokenIntegracao.equals("kffdm2ba5ai3lsk79kqur9rb3mq7hv59qa8pr0sho4mcr56clck")) {
+                throw new GenericException("O Token fornecido é inválido");
+            }
+            if (itensResolvidos == null || itensResolvidos.isEmpty()) {
+                throw new GenericException("Nenhuma informação de O.S. aberta foi recebida");
+            }
+            final LocalDateTime dataHoraAtualUtc = Now.localDateTimeUtc();
+            validateDadosItensResolvidos(dataHoraAtualUtc, itensResolvidos);
+            return new SuccessResponseIntegracao("Todos os itens foram resolvidos com sucesso no ProLog");
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao resolver os itens no ProLog", t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao resolver os itens no ProLog");
         }
     }
 }
