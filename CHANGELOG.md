@@ -1,8 +1,8 @@
 Change Log
 ==========
 
-<a name="v1.4.3"></a>
-## Version [v1.4.3](https://github.com/luizfp/PrologWebService/compare/v1.4.2...v1.4.3) (release-date) [unreleased]
+<a name="v1.5.0"></a>
+## Version [v1.5.0](https://github.com/luizfp/PrologWebService/compare/v1.4.2...v1.5.0) (2021-01-18)
 
 ### Features
 * Altera integração da Nepomuceno para trabalhar com código ao invés de placa (PL-3366)
