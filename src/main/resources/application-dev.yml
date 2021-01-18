@@ -1,8 +1,8 @@
 spring:
   profiles: dev
   datasource:
-    url: ""
-    username: ""
-    password: ""
+    url: "jdbc:postgresql://localhost:5432/DATABASE_NAME_HERE"
+    username: "USERNAME_HERE"
+    password: "PASSWORD_HERE"
     hikari:
       maximum-pool-size: 10
