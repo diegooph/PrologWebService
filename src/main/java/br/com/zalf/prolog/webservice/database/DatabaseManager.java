@@ -11,11 +11,15 @@ public final class DatabaseManager {
 
     @VisibleForTesting
     public static void init() {
-        // no-op.
+        throw new IllegalStateException("This class is not available anymore to manage a database." +
+                                                "Now we do the spring way! See: " +
+                                                SpringDatabaseManager.class.getSimpleName());
     }
 
     @VisibleForTesting
     public static void finish() {
-        // no-op.
+        throw new IllegalStateException("This class is not available anymore to manage a database." +
+                                                "Now we do the spring way! See: " +
+                                                SpringDatabaseManager.class.getSimpleName());
     }
 }
