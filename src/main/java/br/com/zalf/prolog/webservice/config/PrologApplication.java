@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.config;
 
-import br.com.zalf.prolog.webservice.database.DataSourceLifecycleManager;
 import br.com.zalf.prolog.webservice.database.DatabaseConnectionActions;
 import br.com.zalf.prolog.webservice.database.DatabaseConnectionActionsWrapper;
 import br.com.zalf.prolog.webservice.messaging.push.FirebaseLifecycleManager;
@@ -50,13 +49,6 @@ public class PrologApplication extends SpringBootServletInitializer {
     protected SpringApplicationBuilder configure(@NotNull final SpringApplicationBuilder builder) {
         builder.sources(PrologApplication.class);
         return builder;
-    }
-
-    @Bean
-    public ServletListenerRegistrationBean<ServletContextListener> dataSourceLifecycleManagerRegistrationBean() {
-        final ServletListenerRegistrationBean<ServletContextListener> bean = new ServletListenerRegistrationBean<>();
-        bean.setListener(new DataSourceLifecycleManager());
-        return bean;
     }
 
     @Bean
