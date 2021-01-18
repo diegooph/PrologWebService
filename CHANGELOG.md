@@ -21,6 +21,7 @@ Change Log
 * Refatora objeto de resposta do retorno de pneu de descarte (PL-3371)
 * Adiciona ordenação do relatório de remuneração acumulada com nome do colaborador e cpf (PL-3137)
 * Remove javadocs das DAOs (PL-3400)
+* Remove dependência de pooling do tomcat
 
 ### Bug Fixes
 * Relatório qtd aferições by tipo e data não traz primeira linha (PL-3188)
