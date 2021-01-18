@@ -22,6 +22,7 @@ Change Log
 * Adiciona ordenação do relatório de remuneração acumulada com nome do colaborador e cpf (PL-3137)
 * Remove javadocs das DAOs (PL-3400)
 * Remove dependência de pooling do tomcat
+* Refactor altera movimentações para utilizarem código do veículo ao invés da placa (PL-3301)
 
 ### Bug Fixes
 * Relatório qtd aferições by tipo e data não traz primeira linha (PL-3188)
