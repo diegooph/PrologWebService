@@ -2,7 +2,7 @@ Change Log
 ==========
 
 <a name="v1.5.1"></a>
-## Version [v1.5.1](https://github.com/luizfp/PrologWebService/compare/v1.5.0...v1.5.1) (release-date) [unreleased]
+## Version [v1.5.1](https://github.com/luizfp/PrologWebService/compare/v1.5.0...v1.5.1) (2021-01-19)
 
 ### Refactors
 * Altera forma de lidar com o sentry para utilizar integração com Spring Boot
