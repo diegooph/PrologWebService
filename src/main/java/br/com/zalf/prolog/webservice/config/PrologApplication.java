@@ -58,13 +58,6 @@ public class PrologApplication extends SpringBootServletInitializer {
         return bean;
     }
 
-    @Bean
-    public ServletListenerRegistrationBean<ServletContextListener> prologConsoleTextMakerRegistrationBean() {
-        final ServletListenerRegistrationBean<ServletContextListener> bean = new ServletListenerRegistrationBean<>();
-        bean.setListener(new PrologConsoleTextMaker());
-        return bean;
-    }
-
     @Component
 //    @ApplicationPath("/prolog/v2")
     public static class JerseyConfig extends ResourceConfig {
