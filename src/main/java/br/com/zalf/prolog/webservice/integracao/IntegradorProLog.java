@@ -343,7 +343,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         if (afericaoDao == null) {
             afericaoDao = Injection.provideAfericaoDao();
         }
-        return afericaoDao.getNovaAfericaoPlaca(codUnidade, placaVeiculo, tipoAfericao);
+        return afericaoDao.getNovaAfericaoPlaca(afericaoBusca);
     }
 
     @NotNull

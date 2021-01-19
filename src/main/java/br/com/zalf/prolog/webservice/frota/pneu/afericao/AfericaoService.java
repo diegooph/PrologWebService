@@ -62,9 +62,7 @@ public class AfericaoService {
         try {
             return RouterAfericao
                     .create(dao, userToken)
-                    .getNovaAfericaoPlaca(afericaoBusca.getCodigoUnidade(),
-                                          afericaoBusca.getPlacaVeiculo(),
-                                          afericaoBusca.getTipoAfericao().asString());
+                    .getNovaAfericaoPlaca(afericaoBusca);
         } catch (final Throwable e) {
             Log.e(TAG, "Erro ao buscar NovaAfericao para a placa: " + afericaoBusca.getPlacaVeiculo(), e);
             throw exceptionHandler.map(e, "Erro ao iniciar uma nova aferição, tente novamente");

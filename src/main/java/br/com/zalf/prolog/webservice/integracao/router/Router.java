@@ -98,9 +98,9 @@ public abstract class Router implements OperacoesIntegradas {
     @Override
     public NovaAfericaoPlaca getNovaAfericaoPlaca(@NotNull final AfericaoBuscaFiltro afericaoBusca) throws Throwable {
         if (getSistema() != null) {
-            return getSistema().getNovaAfericaoPlaca(codUnidade, placaVeiculo, tipoAfericao);
+            return getSistema().getNovaAfericaoPlaca(afericaoBusca);
         } else {
-            return integradorProLog.getNovaAfericaoPlaca(codUnidade, placaVeiculo, tipoAfericao);
+            return integradorProLog.getNovaAfericaoPlaca(afericaoBusca);
         }
     }
 
