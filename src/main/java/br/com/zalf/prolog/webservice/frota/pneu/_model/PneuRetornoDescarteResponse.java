@@ -11,7 +11,9 @@ import org.jetbrains.annotations.NotNull;
 @Data
 public final class PneuRetornoDescarteResponse {
     @NotNull
-    private final PneuRetornoDescarteSuccess pneuRetornoDescarteSuccess;
+    private final Long codPneuRetornado;
+    @NotNull
+    private final Long codMovimentacaoGerada;
     @NotNull
     private final String msg;
 }
