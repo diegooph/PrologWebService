@@ -6,11 +6,8 @@ import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
-import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu;
+import br.com.zalf.prolog.webservice.frota.pneu._model.*;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu.Dimensao;
-import br.com.zalf.prolog.webservice.frota.pneu._model.PneuRetornoDescarte;
-import br.com.zalf.prolog.webservice.frota.pneu._model.PneuRetornoDescarteResponse;
-import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.error.PneuValidator;
 import br.com.zalf.prolog.webservice.frota.pneu.importar.PneuImportReader;
 import br.com.zalf.prolog.webservice.integracao.router.RouterPneu;
@@ -147,7 +144,9 @@ public final class PneuService {
     @NotNull
     public PneuRetornoDescarteResponse retornarPneuDescarte(@NotNull final PneuRetornoDescarte pneuRetornoDescarte) {
         try {
-            return new PneuRetornoDescarteResponse(dao.retornarPneuDescarte(pneuRetornoDescarte),
+            final PneuRetornoDescarteSuccess success = dao.retornarPneuDescarte(pneuRetornoDescarte);
+            return new PneuRetornoDescarteResponse(success.getCodPneuRetornado(),
+                                                   success.getCodMovimentacaoGerada(),
                                                    "Retorno realizado com sucesso!");
         } catch (final Throwable t) {
             final String message = String

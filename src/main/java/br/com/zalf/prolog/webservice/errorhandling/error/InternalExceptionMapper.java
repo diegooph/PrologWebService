@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.errorhandling.ErrorReportSystem;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.errorhandling.sql.ClientSideErrorException;
+import com.google.common.collect.ImmutableMap;
 import io.sentry.SentryEvent;
 import io.sentry.SentryLevel;
 import io.sentry.protocol.Message;
@@ -16,11 +17,8 @@ import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.AbstractMap;
-import java.util.Collections;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Created on 2020-10-20
@@ -50,8 +48,7 @@ public final class InternalExceptionMapper {
         tryToLogEventException(proLogException);
         return createResponse(
                 proLogException.getHttpStatusCode(),
-                createPrologError(proLogException)
-        );
+                createPrologError(proLogException));
     }
 
     @NotNull
@@ -99,8 +96,7 @@ public final class InternalExceptionMapper {
             final String genericMessage = "Algo deu errado, tente novamente";
             final String developerMessage = "Erro mapeado no PrologExceptionMapper: " +
                     ((throwable != null) ? throwable.getMessage() : "null");
-            final ProLogException ex = new GenericException(genericMessage, developerMessage, throwable);
-            return ex;
+            return new GenericException(genericMessage, developerMessage, throwable);
         } else {
             return (ProLogException) throwable;
         }
@@ -145,14 +141,15 @@ public final class InternalExceptionMapper {
     }
 
     @NotNull
-    private static Map<String, Object> getExtrasByException(@NotNull final ProLogException proLogException) {
-        return Stream.of(
-                new AbstractMap.SimpleImmutableEntry<>("Developer message",
-                                                       proLogException.getDeveloperMessage()),
-                new AbstractMap.SimpleImmutableEntry<>("Parent exception",
-                                                       proLogException.getParentException()))
-                .collect(Collectors.collectingAndThen(
-                        Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue),
-                        Collections::unmodifiableMap));
+    private static Map<String, Object> getExtrasByException(@NotNull final ProLogException prologException) {
+        final ImmutableMap.Builder<String, Object> builder = ImmutableMap.<String, Object>builder()
+                .put("Error message", prologException.getMessage());
+        if (prologException.getDetailedMessage() != null) {
+            builder.put("Detailed message", prologException.getDetailedMessage());
+        }
+        if (prologException.getDeveloperMessage() != null) {
+            builder.put("Developer message", prologException.getDeveloperMessage());
+        }
+        return builder.build();
     }
 }

@@ -58,13 +58,6 @@ public class PrologApplication extends SpringBootServletInitializer {
         return bean;
     }
 
-    @Bean
-    public ServletListenerRegistrationBean<ServletContextListener> prologConsoleTextMakerRegistrationBean() {
-        final ServletListenerRegistrationBean<ServletContextListener> bean = new ServletListenerRegistrationBean<>();
-        bean.setListener(new PrologConsoleTextMaker());
-        return bean;
-    }
-
     @Component
 //    @ApplicationPath("/prolog/v2")
     public static class JerseyConfig extends ResourceConfig {
@@ -75,7 +68,6 @@ public class PrologApplication extends SpringBootServletInitializer {
             this.property(ServerProperties.BV_SEND_ERROR_IN_RESPONSE, true);
             this.property(ServerProperties.BV_DISABLE_VALIDATE_ON_EXECUTABLE_OVERRIDE_CHECK, true);
             this.register(MultiPartFeature.class);
-            this.register(ProLogApplicationEventListener.class);
             this.register(new ObjectMapperContextResolver(objectMapper));
         }
 
