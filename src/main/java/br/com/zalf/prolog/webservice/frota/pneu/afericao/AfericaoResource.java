@@ -100,9 +100,15 @@ public class AfericaoResource {
             @PathParam("codUnidade") @Required final Long codUnidade,
             @PathParam("placaVeiculo") @Required final String placa,
             @QueryParam("tipoAfericao") @Required final String tipoAfericao) throws ProLogException {
-        return service.getNovaAfericaoPlaca(userToken, codUnidade, placa, tipoAfericao);
-    }
 
+        final Long codigoColaborador = this.colaboradorAutenticadoProvider.get().getCodigo();
+        final Long codigoVeiculo = VeiculoBackwardHelper.getCodVeiculoByPlaca(codigoColaborador, placa);
+        final TipoMedicaoColetadaAfericao tipoAfericaoEnum = TipoMedicaoColetadaAfericao.fromString(tipoAfericao);
+        final AfericaoBuscaFiltro afericaoBusca =
+                AfericaoBuscaFiltro.of(codigoVeiculo, placa, codUnidade, tipoAfericaoEnum);
+        return service.getNovaAfericaoPlaca(afericaoBusca, userToken);
+    }
+    
     @GET
     @Path("/unidades/{codUnidade}/nova-afericao-avulsa/{codPneu}")
     @Secured(permissions = Pilares.Frota.Afericao.REALIZAR_AFERICAO_PNEU_AVULSO)
