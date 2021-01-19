@@ -43,7 +43,7 @@ final class ServicoQueryBinder {
             + "AM.FECHADO_AUTOMATICAMENTE_INTEGRACAO, "
             + "AM.FORMA_COLETA_DADOS_FECHAMENTO, "
             + "A.DATA_HORA AT TIME ZONE (SELECT FUNC_GET_TIME_ZONE_UNIDADE(AM.COD_UNIDADE)) AS DATA_HORA_ABERTURA, "
-            + "A.PLACA_VEICULO AS PLACA_VEICULO, "
+            + "V.PLACA AS PLACA_VEICULO, "
             + "V.IDENTIFICADOR_FROTA AS IDENTIFICADOR_FROTA, "
             + "A.CODIGO AS COD_AFERICAO, "
             + "A.CODIGO AS COD_AFERICAO, "
@@ -74,7 +74,7 @@ final class ServicoQueryBinder {
     static PreparedStatement getQuantidadeServicosAbertosVeiculo(@NotNull final Connection connection,
                                                                  @NotNull final Long codUnidade) throws SQLException {
         final PreparedStatement stmt = connection.prepareStatement("SELECT " +
-                "  A.PLACA_VEICULO," +
+                "  V.PLACA AS PLACA_VEICULO," +
                 "  V.IDENTIFICADOR_FROTA, " +
                 "  SUM(CASE WHEN AM.TIPO_SERVICO = ? THEN 1 ELSE 0 END) AS TOTAL_CALIBRAGENS, " +
                 "  SUM(CASE WHEN AM.TIPO_SERVICO = ? THEN 1 ELSE 0 END) AS TOTAL_INSPECOES, " +
@@ -145,7 +145,7 @@ final class ServicoQueryBinder {
                                                                   final long dataInicial,
                                                                   final long dataFinal) throws SQLException {
         final PreparedStatement stmt = connection.prepareStatement("SELECT" +
-                "  A.PLACA_VEICULO," +
+                "  V.PLACA AS PLACA_VEICULO," +
                 "  V.IDENTIFICADOR_FROTA," +
                 "  SUM(CASE WHEN AM.TIPO_SERVICO = ? THEN 1 ELSE 0 END) AS TOTAL_CALIBRAGENS," +
                 "  SUM(CASE WHEN AM.TIPO_SERVICO = ? THEN 1 ELSE 0 END) AS TOTAL_INSPECOES," +
@@ -194,7 +194,7 @@ final class ServicoQueryBinder {
                 "   M.SULCO_INTERNO AS SULCO_INTERNO_PNEU_NOVO, " +
                 "   M.VIDA AS VIDA_PNEU_NOVO, " +
                 "   A.DATA_HORA AT TIME ZONE ? AS DATA_HORA_ABERTURA, " +
-                "   A.PLACA_VEICULO AS PLACA_VEICULO, " +
+                "   V.PLACA AS PLACA_VEICULO, " +
                 "   V.IDENTIFICADOR_FROTA AS IDENTIFICADOR_FROTA, " +
                 "   A.CODIGO AS COD_AFERICAO, " +
                 "   C.NOME AS NOME_RESPONSAVEL_FECHAMENTO, " +
@@ -287,7 +287,7 @@ final class ServicoQueryBinder {
                                                        @NotNull final Long codServico,
                                                        @NotNull final String placaVeiculo) throws SQLException {
         final PreparedStatement stmt = connection.prepareStatement("SELECT " +
-                "  A.PLACA_VEICULO, " +
+                "  V.PLACA AS PLACA_VEICULO, " +
                 "  V.IDENTIFICADOR_FROTA, " +
                 "  A.KM_VEICULO AS KM_ABERTURA_SERVICO, " +
                 "  AV.COD_PNEU AS COD_PNEU, " +
