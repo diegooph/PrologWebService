@@ -1,3 +1,5 @@
+prolog:
+  version_code: "v2_1.5.1"
 spring:
   profiles: prod
   datasource:
@@ -6,3 +8,6 @@ spring:
     password: "${prolog-rds-password}"
     hikari:
       maximum-pool-size: 190
+sentry:
+  dsn: "${sentry-dsn}"
+  release: "${prolog.version_code}"

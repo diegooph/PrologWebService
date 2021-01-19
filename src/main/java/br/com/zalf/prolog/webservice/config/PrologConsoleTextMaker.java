@@ -28,7 +28,6 @@ public final class PrologConsoleTextMaker implements ServletContextListener {
         builder.append("  `-0-0-'\"`-0-0-'\"`-0-0-'\"`-0-0-'\"`-0-0-'\"`-0-0-'\n");
         System.out.println();
         System.out.print(builder.toString());
-        System.out.println("  DEBUG ENV                              " + BuildConfig.VERSION_CODE);
         System.out.println();
     }
 }
