@@ -28,7 +28,7 @@ public final class DurationUtils {
     }
 
     private DurationUtils() {
-        throw new UnsupportedOperationException("An util class cannot be instatied!");
+        throw new UnsupportedOperationException("An util class cannot be instantiated!");
     }
 
     @NotNull
