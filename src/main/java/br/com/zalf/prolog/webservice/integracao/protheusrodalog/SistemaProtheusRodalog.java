@@ -38,23 +38,6 @@ public class SistemaProtheusRodalog extends Sistema {
 
     @NotNull
     @Override
-    public Long insertAfericao(@NotNull final Long codUnidade,
-                               @NotNull final Afericao afericao,
-                               final boolean deveAbrirServico) throws Throwable {
-        final String tokenIntegracao = getIntegradorProLog().getTokenIntegracaoByCodUnidadeProLog(codUnidade);
-        final ProtheusRodalogResponseAfericao responseAfericao = requester.insertAfericao(
-                tokenIntegracao,
-                codUnidade,
-                ProtheusRodalogConverter.convertAfericao(afericao));
-        if (responseAfericao.isStatus() && responseAfericao.getCodigoAfericaoInserida() != null) {
-            return responseAfericao.getCodigoAfericaoInserida();
-        } else {
-            throw new Exception("[INTEGRACAO - RODALOG] Não foi possível inserir a Aferição no sistema");
-        }
-    }
-
-    @NotNull
-    @Override
     public CronogramaAfericao getCronogramaAfericao(@NotNull final List<Long> codUnidades) throws Throwable {
         // Deixamos buscando a primeira unidade de forma fixa apenas para ignorar o erro. Essa integração não está
         // sendo utilizada então não há por que refatorar toda ela.
@@ -98,6 +81,23 @@ public class SistemaProtheusRodalog extends Sistema {
                     "[INTEGRACAO - RODALOG] Erro na integração com o Protheus",
                     "Alguma informação veio errada do Protheus",
                     t);
+        }
+    }
+
+    @NotNull
+    @Override
+    public Long insertAfericao(@NotNull final Long codUnidade,
+                               @NotNull final Afericao afericao,
+                               final boolean deveAbrirServico) throws Throwable {
+        final String tokenIntegracao = getIntegradorProLog().getTokenIntegracaoByCodUnidadeProLog(codUnidade);
+        final ProtheusRodalogResponseAfericao responseAfericao = requester.insertAfericao(
+                tokenIntegracao,
+                codUnidade,
+                ProtheusRodalogConverter.convertAfericao(afericao));
+        if (responseAfericao.isStatus() && responseAfericao.getCodigoAfericaoInserida() != null) {
+            return responseAfericao.getCodigoAfericaoInserida();
+        } else {
+            throw new Exception("[INTEGRACAO - RODALOG] Não foi possível inserir a Aferição no sistema");
         }
     }
 }
