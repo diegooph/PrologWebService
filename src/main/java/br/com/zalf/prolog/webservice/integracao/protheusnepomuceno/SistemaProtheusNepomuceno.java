@@ -139,19 +139,23 @@ public final class SistemaProtheusNepomuceno extends Sistema {
 
     @Override
     @NotNull
-    public NovaAfericaoPlaca getNovaAfericaoPlaca(@NotNull final Long codUnidade,
-                                                  @NotNull final String placaVeiculo,
-                                                  @NotNull final String tipoAfericao) throws Throwable {
+    public NovaAfericaoPlaca getNovaAfericaoPlaca(@NotNull final AfericaoBuscaFiltro afericaoBusca) throws Throwable {
         Connection conn = null;
         final DatabaseConnectionProvider connectionProvider = new DatabaseConnectionProvider();
         try {
             conn = connectionProvider.provideDatabaseConnection();
             final SistemaProtheusNepomucenoDao sistema = new SistemaProtheusNepomucenoDaoImpl();
-            final Long codEmpresa = getIntegradorProLog().getCodEmpresaByCodUnidadeProLog(conn, codUnidade);
+            final Long codEmpresa =
+                    getIntegradorProLog().getCodEmpresaByCodUnidadeProLog(conn, afericaoBusca.getCodigoUnidade());
 
-            String codEmpresaFilial = getIntegradorProLog().getCodAuxiliarByCodUnidadeProlog(conn, codUnidade);
+            String codEmpresaFilial =
+                    getIntegradorProLog().getCodAuxiliarByCodUnidadeProlog(conn, afericaoBusca.getCodigoUnidade());
             if (ProtheusNepomucenoUtils.containsMoreThanOneCodAuxiliar(codEmpresaFilial)) {
-                codEmpresaFilial = getCodFilialByPlacaCronograma(conn, codEmpresa, codUnidade, placaVeiculo, sistema);
+                codEmpresaFilial = getCodFilialByPlacaCronograma(conn,
+                                                                 codEmpresa,
+                                                                 afericaoBusca.getCodigoUnidade(),
+                                                                 afericaoBusca.getPlacaVeiculo(),
+                                                                 sistema);
             }
 
             final ApiAutenticacaoHolder apiAutenticacaoHolder =
@@ -160,12 +164,14 @@ public final class SistemaProtheusNepomuceno extends Sistema {
                                                            getSistemaKey(),
                                                            MetodoIntegrado.GET_VEICULO_NOVA_AFERICAO_PLACA);
             final VeiculoAfericaoProtheusNepomuceno veiculoAfericao =
-                    requester.getPlacaPneusAfericaoPlaca(apiAutenticacaoHolder, codEmpresaFilial, placaVeiculo);
+                    requester.getPlacaPneusAfericaoPlaca(apiAutenticacaoHolder,
+                                                         codEmpresaFilial,
+                                                         afericaoBusca.getPlacaVeiculo());
 
             final ConfiguracaoNovaAfericaoPlaca configuracaoAfericao =
                     sistema.getConfigNovaAfericaoPlaca(
                             conn,
-                            codUnidade,
+                            afericaoBusca.getCodigoUnidade(),
                             veiculoAfericao.getCodEstruturaVeiculo());
             final Short codDiagramaProlog =
                     sistema.getCodDiagramaByCodEstrutura(conn, codEmpresa, veiculoAfericao.getCodEstruturaVeiculo());
@@ -191,7 +197,7 @@ public final class SistemaProtheusNepomuceno extends Sistema {
             final Veiculo veiculo =
                     ProtheusNepomucenoConverter
                             .createVeiculoProlog(
-                                    codUnidade,
+                                    afericaoBusca.getCodigoUnidade(),
                                     codDiagramaProlog,
                                     veiculoAfericao,
                                     posicaoPneuMapper);
