@@ -149,8 +149,7 @@ public final class PneuService {
                                                    success.getCodMovimentacaoGerada(),
                                                    "Retorno realizado com sucesso!");
         } catch (final Throwable t) {
-            final String message = String
-                    .format("Erro ao retornar o pneu: %s do descarte.", pneuRetornoDescarte.getCodPneu());
+            final String message = "Erro ao retornar o pneu do descarte.";
             Log.e(TAG, message, t);
             throw Injection
                     .providePneuExceptionHandler()
