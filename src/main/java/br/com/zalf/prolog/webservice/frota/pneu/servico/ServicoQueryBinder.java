@@ -62,7 +62,7 @@ final class ServicoQueryBinder {
             + "LEFT JOIN COLABORADOR C ON AM.CPF_MECANICO = C.CPF "
             + "JOIN PNEU P ON AM.COD_PNEU = P.CODIGO "
             + "JOIN AFERICAO A ON A.CODIGO = AM.COD_AFERICAO "
-            + "JOIN VEICULO V ON V.PLACA = A.PLACA_VEICULO "
+            + "JOIN VEICULO V ON V.CODIGO = A.COD_VEICULO "
             + "JOIN AFERICAO_VALORES AV ON AV.COD_AFERICAO = AM.COD_AFERICAO AND AV.COD_PNEU = AM.COD_PNEU "
             + "JOIN UNIDADE U ON U.CODIGO = AM.COD_UNIDADE ";
 
@@ -83,7 +83,7 @@ final class ServicoQueryBinder {
                 "  JOIN AFERICAO AS A " +
                 "    ON A.CODIGO = AM.COD_AFERICAO " +
                 "  JOIN VEICULO V" +
-                "    ON V.PLACA = A.PLACA_VEICULO"+
+                "    ON V.CODIGO = A.COD_VEICULO"+
                 "  JOIN VEICULO_PNEU AS VP " +
                 "    ON AM.COD_PNEU = VP.COD_PNEU AND AM.COD_UNIDADE = VP.COD_UNIDADE " +
                 "WHERE AM.COD_UNIDADE = ? " +
@@ -152,7 +152,7 @@ final class ServicoQueryBinder {
                 "  SUM(CASE WHEN AM.TIPO_SERVICO = ? THEN 1 ELSE 0 END) AS TOTAL_MOVIMENTACOES" +
                 " FROM AFERICAO_MANUTENCAO AM  " +
                 "  JOIN AFERICAO A ON A.CODIGO = AM.COD_AFERICAO" +
-                "  JOIN VEICULO V ON A.PLACA_VEICULO = V.PLACA" +
+                "  JOIN VEICULO V ON V.CODIGO = A.COD_VEICULO" +
                 " WHERE AM.COD_UNIDADE = ?" +
                 "      AND AM.DATA_HORA_RESOLUCAO IS NOT NULL  " +
                 "      AND (AM.DATA_HORA_RESOLUCAO AT TIME ZONE TZ_UNIDADE(AM.COD_UNIDADE))::DATE BETWEEN ? AND ?" +
@@ -210,7 +210,7 @@ final class ServicoQueryBinder {
                 "   PNEU_PROBLEMA.PRESSAO_RECOMENDADA " +
                 "   FROM AFERICAO_MANUTENCAO AM " +
                 "   JOIN AFERICAO A ON A.CODIGO = AM.COD_AFERICAO " +
-                "   JOIN VEICULO V ON V.PLACA = A.PLACA_VEICULO " +
+                "   JOIN VEICULO V ON V.CODIGO = A.COD_VEICULO " +
                 "   JOIN AFERICAO_VALORES AV ON AV.COD_AFERICAO = AM.COD_AFERICAO AND AV.COD_PNEU = AM.COD_PNEU " +
                 "   JOIN UNIDADE U ON U.CODIGO = AM.COD_UNIDADE " +
                 "   JOIN PNEU PNEU_PROBLEMA ON AM.COD_PNEU = PNEU_PROBLEMA.CODIGO " +
@@ -307,7 +307,7 @@ final class ServicoQueryBinder {
                 "    ON AM.COD_AFERICAO = AV.COD_AFERICAO " +
                 "       AND A.CODIGO = AV.COD_AFERICAO " +
                 "  JOIN VEICULO V " +
-                "    ON V.PLACA = A.PLACA_VEICULO " +
+                "    ON V.CODIGO = A.COD_VEICULO " +
                 "  JOIN PNEU P " +
                 "    ON P.CODIGO = AV.COD_PNEU " +
                 "WHERE AM.CODIGO = ? " +
