@@ -8,6 +8,10 @@ import org.jetbrains.annotations.Nullable;
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
 public final class PisPasepValidator {
+    public PisPasepValidator() {
+        throw new UnsupportedOperationException("An util class cannot be instantiated!");
+    }
+
     public static boolean isPisPasepValid(@Nullable final String pisOrPasep) {
         if (pisOrPasep == null) {
             return false;
