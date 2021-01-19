@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.frota.pneu._model;
 import lombok.Builder;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Created on 2020-12-07
@@ -16,6 +17,6 @@ public final class PneuRetornoDescarteSuccess {
     private final Long codPneuRetornado;
     @NotNull
     private final Long codMovimentacaoGerada;
-    @NotNull
+    @Nullable
     private final String msg;
 }
