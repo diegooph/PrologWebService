@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.protheusrodalog;
 
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.Afericao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.AfericaoBuscaFiltro;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.CronogramaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.NovaAfericaoPlaca;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
@@ -64,21 +65,20 @@ public class SistemaProtheusRodalog extends Sistema {
 
     @NotNull
     @Override
-    public NovaAfericaoPlaca getNovaAfericaoPlaca(@NotNull final Long codUnidade,
-                                                  @NotNull final String placaVeiculo,
-                                                  @NotNull final String tipoAfericao) {
+    public NovaAfericaoPlaca getNovaAfericaoPlaca(@NotNull final AfericaoBuscaFiltro afericaoBusca) {
         try {
-            final String tokenIntegracao = getIntegradorProLog().getTokenIntegracaoByCodUnidadeProLog(codUnidade);
+            final String tokenIntegracao =
+                    getIntegradorProLog().getTokenIntegracaoByCodUnidadeProLog(afericaoBusca.getCodigoUnidade());
             final NovaAfericaoPlacaProtheusRodalog novaAfericaoPlaca =
                     requester.getNovaAfericaoPlaca(
                             tokenIntegracao,
-                            codUnidade,
-                            placaVeiculo,
-                            TipoMedicaoAfericaoProtheusRodalog.fromString(tipoAfericao));
+                            afericaoBusca.getCodigoUnidade(),
+                            afericaoBusca.getPlacaVeiculo(),
+                            TipoMedicaoAfericaoProtheusRodalog.fromString(afericaoBusca.getTipoAfericao().asString()));
             if (novaAfericaoPlaca.getCodDiagrama() == null) {
                 throw new IllegalStateException("[INTEGRACAO - RODALOG] O código do diagrama é null\n" +
-                        "CodUnidade: " + codUnidade + "\n" +
-                        "Placa: " + placaVeiculo);
+                                                        "CodUnidade: " + afericaoBusca.getCodigoUnidade() + "\n" +
+                                                        "Placa: " + afericaoBusca.getPlacaVeiculo());
             }
             final Optional<DiagramaVeiculo> diagramaVeiculo =
                     getIntegradorProLog()
