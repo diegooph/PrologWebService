@@ -116,7 +116,17 @@ public class AfericaoResource {
                 AfericaoBuscaFiltro.of(codigoVeiculo, placa, codUnidade, tipoAfericaoEnum);
         return service.getNovaAfericaoPlaca(afericaoBusca, userToken);
     }
-    
+
+    @GET
+    @Path("/nova-afericao-placa")
+    @Secured(permissions = Pilares.Frota.Afericao.REALIZAR_AFERICAO_PLACA)
+    @UsedBy(platforms = Platform.ANDROID)
+    public NovaAfericaoPlaca getNovaAfericaoPlaca(final @Required AfericaoBuscaFiltro afericaoBusca,
+                                                  @HeaderParam("Authorization") @Required final String userToken)
+            throws ProLogException {
+        return service.getNovaAfericaoPlaca(afericaoBusca, userToken);
+    }
+
     @GET
     @Path("/unidades/{codUnidade}/nova-afericao-avulsa/{codPneu}")
     @Secured(permissions = Pilares.Frota.Afericao.REALIZAR_AFERICAO_PNEU_AVULSO)
