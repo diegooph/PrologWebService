@@ -9,7 +9,7 @@ import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu.Dimensao;
 import br.com.zalf.prolog.webservice.frota.pneu._model.PneuRetornoDescarte;
-import br.com.zalf.prolog.webservice.frota.pneu._model.PneuRetornoDescarteSuccess;
+import br.com.zalf.prolog.webservice.frota.pneu._model.PneuRetornoDescarteResponse;
 import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.error.PneuValidator;
 import br.com.zalf.prolog.webservice.frota.pneu.importar.PneuImportReader;
@@ -145,12 +145,10 @@ public final class PneuService {
     }
 
     @NotNull
-    public PneuRetornoDescarteSuccess retornarPneuDescarte(@NotNull final PneuRetornoDescarte pneuRetornoDescarte) {
+    public PneuRetornoDescarteResponse retornarPneuDescarte(@NotNull final PneuRetornoDescarte pneuRetornoDescarte) {
         try {
-            return dao.retornarPneuDescarte(pneuRetornoDescarte)
-                    .toBuilder()
-                    .msg("Retorno realizado com sucesso!")
-                    .build();
+            return new PneuRetornoDescarteResponse(dao.retornarPneuDescarte(pneuRetornoDescarte),
+                                                   "Retorno realizado com sucesso!");
         } catch (final Throwable t) {
             final String message = String
                     .format("Erro ao retornar o pneu: %s do descarte.", pneuRetornoDescarte.getCodPneu());

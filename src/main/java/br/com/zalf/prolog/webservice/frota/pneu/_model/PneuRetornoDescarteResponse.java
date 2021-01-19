@@ -4,14 +4,14 @@ import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Created on 2020-12-07
+ * Created on 2021-01-19
  *
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
 @Data
-public final class PneuRetornoDescarteSuccess {
+public final class PneuRetornoDescarteResponse {
     @NotNull
-    private final Long codPneuRetornado;
+    private final PneuRetornoDescarteSuccess pneuRetornoDescarteSuccess;
     @NotNull
-    private final Long codMovimentacaoGerada;
+    private final String msg;
 }
