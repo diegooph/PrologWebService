@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 public final class DateUtils {
 
     private DateUtils() {
-        throw new UnsupportedOperationException("An util class cannot be instatied!");
+        throw new UnsupportedOperationException("An util class cannot be instantiated!");
     }
 
     @NotNull
