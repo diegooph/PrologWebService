@@ -130,9 +130,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
 
     @NotNull
     @Override
-    public NovaAfericaoPlaca getNovaAfericaoPlaca(@NotNull final Long codUnidade,
-                                                  @NotNull final String placa,
-                                                  @NotNull final String tipoAfericao) throws Throwable {
+    public NovaAfericaoPlaca getNovaAfericaoPlaca(@NotNull final AfericaoBuscaFiltro afericaoBusca) throws Throwable {
         Connection conn = null;
         try {
             conn = getConnection();
