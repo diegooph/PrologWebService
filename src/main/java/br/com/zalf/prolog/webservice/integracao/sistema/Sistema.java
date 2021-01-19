@@ -195,12 +195,6 @@ public abstract class Sistema implements OperacoesIntegradas {
 
     @NotNull
     @Override
-    public Long insertChecklistOffline(@NotNull final ChecklistInsercao checklist) throws Throwable {
-        return getIntegradorProLog().insertChecklistOffline(checklist);
-    }
-
-    @NotNull
-    @Override
     public List<TipoVeiculo> getTiposVeiculosFiltroChecklist(@NotNull final Long codEmpresa) throws Throwable {
         return getIntegradorProLog().getTiposVeiculosFiltroChecklist(codEmpresa);
     }
@@ -284,6 +278,12 @@ public abstract class Sistema implements OperacoesIntegradas {
                                                       @NotNull final LocalDate dataFinal,
                                                       final boolean itensCriticosRetroativos) throws Throwable {
         return getIntegradorProLog().getFarolChecklist(codUnidade, dataInicial, dataFinal, itensCriticosRetroativos);
+    }
+
+    @NotNull
+    @Override
+    public Long insertChecklistOffline(@NotNull final ChecklistInsercao checklist) throws Throwable {
+        return getIntegradorProLog().insertChecklistOffline(checklist);
     }
 
     // #################################################################################################################
@@ -417,6 +417,14 @@ public abstract class Sistema implements OperacoesIntegradas {
                         fecharServicosAutomaticamente);
     }
 
+    @NotNull
+    @Override
+    public List<CampoPersonalizadoParaRealizacao> getCamposParaRealizacaoMovimentacao(
+            @NotNull final Long codUnidade,
+            @NotNull final CampoPersonalizadoDao campoPersonalizadoDao) throws Throwable {
+        return getIntegradorProLog().getCamposParaRealizacaoMovimentacao(codUnidade, campoPersonalizadoDao);
+    }
+
     // #################################################################################################################
     // #################################################################################################################
     // #################################### OPERAÇÕES INTEGRADAS - AFERIÇÃO SERVIÇO ####################################
@@ -450,14 +458,6 @@ public abstract class Sistema implements OperacoesIntegradas {
     @Override
     public void updateTipoVeiculo(@NotNull final TipoVeiculo tipoVeiculo) throws Throwable {
         getIntegradorProLog().updateTipoVeiculo(tipoVeiculo);
-    }
-
-    @NotNull
-    @Override
-    public List<CampoPersonalizadoParaRealizacao> getCamposParaRealizacaoMovimentacao(
-            @NotNull final Long codUnidade,
-            @NotNull final CampoPersonalizadoDao campoPersonalizadoDao) throws Throwable {
-        return getIntegradorProLog().getCamposParaRealizacaoMovimentacao(codUnidade, campoPersonalizadoDao);
     }
 
     @NotNull
