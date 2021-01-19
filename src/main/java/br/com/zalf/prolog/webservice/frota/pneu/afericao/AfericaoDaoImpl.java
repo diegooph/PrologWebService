@@ -135,12 +135,15 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         try {
             conn = getConnection();
             final NovaAfericaoPlaca novaAfericao = new NovaAfericaoPlaca();
-            final Veiculo veiculo = Injection.provideVeiculoDao().getVeiculoByPlaca(conn, placa, true);
+            final Veiculo veiculo =
+                    Injection.provideVeiculoDao().getVeiculoByPlaca(conn,
+                                                                    afericaoBusca.getPlacaVeiculo(),
+                                                                    true);
             novaAfericao.setEstepesVeiculo(veiculo.getEstepes());
             novaAfericao.setVeiculo(veiculo);
-
             // Configurações/parametrizações necessárias para a aferição.
-            final ConfiguracaoNovaAfericaoPlaca configuracao = getConfiguracaoNovaAfericaoPlaca(conn, placa);
+            final ConfiguracaoNovaAfericaoPlaca configuracao =
+                    getConfiguracaoNovaAfericaoPlaca(conn, afericaoBusca.getPlacaVeiculo());
             novaAfericao.setRestricao(Restricao.createRestricaoFrom(configuracao));
             novaAfericao.setDeveAferirEstepes(configuracao.isPodeAferirEstepe());
             novaAfericao.setVariacaoAceitaSulcoMenorMilimetros(configuracao.getVariacaoAceitaSulcoMenorMilimetros());
