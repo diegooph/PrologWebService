@@ -49,7 +49,7 @@ public final class PrologDateParser {
     public static LocalDateTime toLocalDateTime(@NotNull final String date) {
         Preconditions.checkNotNull(date);
 
-        if (date.length() != formatSizeWithoutQuotationMarks()) {
+        if (date.length() != getDefaultDateTimeFormatSizeWithoutQuotationMarks()) {
             throw new IllegalArgumentException(String.format(
                     "The provided date-time %s is not in the expected format: %s",
                     date,
@@ -66,7 +66,14 @@ public final class PrologDateParser {
         return localDate.format(DEFAULT_DATE_FORMATTER);
     }
 
-    private static int formatSizeWithoutQuotationMarks() {
+    /**
+     * This method gets the size of the default date time format constant disregarding the quotation marks.
+     * Example: the default date time format may be yyyy-MM-dd'T'HH:mm:ss. The full size is 21. But, disregarding the
+     * quotation marks, it is 19.
+     *
+     * @return the size of the default date time format disregarding the quotation marks.
+     */
+    private static int getDefaultDateTimeFormatSizeWithoutQuotationMarks() {
         return DEFAULT_DATE_TIME_FORMAT.length() - 2;
     }
 }
