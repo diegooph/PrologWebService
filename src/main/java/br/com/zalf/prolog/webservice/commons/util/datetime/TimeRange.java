@@ -91,10 +91,10 @@ public class TimeRange {
     }
 
     public boolean overlaps(@NotNull final TimeRange other) {
-        if (startLaterThanEnd()) {
+        if (endsNextDay()) {
             return overlapsDayEnd(other);
         }
-        if (other.startLaterThanEnd()) {
+        if (other.endsNextDay()) {
             return other.overlapsDayEnd(this);
         }
         assert start.isBefore(end) : "start '" + start + "' must be less than end '" + end + "'!";
@@ -102,7 +102,7 @@ public class TimeRange {
         return !start.isAfter(other.end) && !end.isBefore(other.start);
     }
 
-    public boolean startLaterThanEnd() {
+    public boolean endsNextDay() {
         return start.isAfter(end);
     }
 
