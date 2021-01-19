@@ -11,3 +11,11 @@ spring:
 sentry:
   dsn: "${sentry-dsn}"
   release: "${prolog.version_code}"
+  enable-session-tracking: true
+  attach-stacktrace: true
+  in-app-excludes:
+    - "sun"
+    - "java"
+    - "org"
+  in-app-includes:
+    - "br.com.zalf"
