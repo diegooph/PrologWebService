@@ -4,6 +4,8 @@ Change Log
 <a name="v1.5.1"></a>
 ## Version [v1.5.1](https://github.com/luizfp/PrologWebService/compare/v1.5.0...v1.5.1) (release-date) [unreleased]
 
+### Bug Fixes
+* Corrige criação de objetos de response do retorno de pneu de descarte
 
 <a name="v1.5.0"></a>
 ## Version [v1.5.0](https://github.com/luizfp/PrologWebService/compare/v1.4.2...v1.5.0) (2021-01-18)
