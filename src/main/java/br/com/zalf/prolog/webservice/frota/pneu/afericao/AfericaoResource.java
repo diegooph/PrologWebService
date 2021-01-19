@@ -102,6 +102,7 @@ public class AfericaoResource {
     @Path("/unidades/{codUnidade}/nova-afericao-placa/{placaVeiculo}")
     @Secured(permissions = Pilares.Frota.Afericao.REALIZAR_AFERICAO_PLACA)
     @UsedBy(platforms = Platform.ANDROID)
+    @Deprecated
     public NovaAfericaoPlaca getNovaAfericaoPlaca(
             @HeaderParam("Authorization") @Required final String userToken,
             @PathParam("codUnidade") @Required final Long codUnidade,
