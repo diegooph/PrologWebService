@@ -6,7 +6,6 @@ import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
-import br.com.zalf.prolog.webservice.frota.veiculo.error.VeiculoValidator;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicaoStatus;
 import br.com.zalf.prolog.webservice.integracao.BaseIntegracaoService;
 import br.com.zalf.prolog.webservice.integracao.RecursoIntegrado;
@@ -148,7 +147,9 @@ public final class IntegracaoPraxioService extends BaseIntegracaoService {
             }
             ensureValidToken(tokenIntegracao, TAG);
             final VeiculoEdicaoStatus veiculo = dao.getVeiculoEdicaoStatus(placaVeiculo, veiculoAtivo);
-            VeiculoValidator.validacaoAtributosVeiculo(veiculo);
+            if (!veiculo.isStatusAtivo() && veiculo.isAcoplado()) {
+                throw new GenericException("Não é possível inativar um veículo acoplado.");
+            }
             dao.ativarDesativarVeiculoPraxio(tokenIntegracao, placaVeiculo, veiculoAtivo);
             return new SuccessResponseIntegracao(
                     "Veículo foi " + (veiculoAtivo ? "ativado" : "desativado") + " com sucesso no ProLog");
