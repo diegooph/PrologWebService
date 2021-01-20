@@ -9,7 +9,8 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface ApresentacaoDao {
 
-    String getResetaClonaEmpresaApresentacao(@NotNull final String username,
-                                             @NotNull final Long codEmpresaBase,
-                                             @NotNull final Long codEmpresaUsuario) throws Throwable;
+    @NotNull
+    String resetaEmpresaApresentacaoUsuario(@NotNull final Long codUsuario,
+                                            @NotNull final Long codEmpresaBase,
+                                            @NotNull final Long codEmpresaUsuario) throws Throwable;
 }
