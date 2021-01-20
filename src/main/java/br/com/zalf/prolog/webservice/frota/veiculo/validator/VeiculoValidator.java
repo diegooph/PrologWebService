@@ -19,7 +19,7 @@ public class VeiculoValidator {
         throw new IllegalStateException(StringUtils.class.getSimpleName() + " cannot be instantiated!");
     }
 
-    public static void validacaoAtributosVeiculo(@NotNull final VeiculoCadastro veiculo) throws Throwable {
+    public static void validacaoAtributosVeiculo(@NotNull final VeiculoCadastro veiculo) throws GenericException {
         try {
             validacaoPlaca(veiculo.getPlacaVeiculo());
             validacaoKmAtual(veiculo.getKmAtualVeiculo());
@@ -29,7 +29,6 @@ public class VeiculoValidator {
         } catch (final Exception e) {
             throw new GenericException(e.getMessage(), null);
         }
-        validacaoMotorizadoSemHubodometro(veiculo.getPossuiHubodometro(), veiculo.getCodTipoVeiculo());
     }
 
     public static void validacaoAtributosVeiculo(@NotNull final VeiculoEdicao veiculo) throws Throwable {
@@ -44,6 +43,11 @@ public class VeiculoValidator {
         validacaoMotorizadoSemHubodometro(veiculo.getPossuiHubodometro(), veiculo.getCodTipoVeiculo());
     }
 
+    public static void validacaoAtributosVeiculo(@NotNull final VeiculoEdicaoStatus veiculo)
+            throws VeiculoValidatorException {
+        garanteVeiculosAcopladosNaoSejamInativados(veiculo.isStatusAtivo(), veiculo.isAcoplado());
+    }
+
     private static void validacaoPlaca(final String placa) throws Exception {
         Preconditions.checkNotNull(placa, "Você deve fornecer a placa");
 
@@ -56,7 +60,8 @@ public class VeiculoValidator {
         }
 
         if (!(StringUtils.stripAccents(placa)).equals(placa)) {
-            throw new GenericException("Placa inválida\nA placa não deve conter caracteres especiais", "Placa informada: " + placa);
+            throw new GenericException("Placa inválida\nA placa não deve conter caracteres especiais",
+                                       "Placa informada: " + placa);
         }
     }
 
@@ -85,6 +90,12 @@ public class VeiculoValidator {
                                                           @NotNull final Long codTipoVeiculo) throws Throwable {
         if (dao.getTipoVeiculo(codTipoVeiculo).isMotorizado() && possuiHubodometro) {
             fail("Veículos motorizados não devem possuir hubodômetro.", codTipoVeiculo);
+        }
+    }
+
+    private static void garanteVeiculosAcopladosNaoSejamInativados(final boolean statusAtivo, final boolean acoplado) {
+        if (!statusAtivo && acoplado) {
+            fail("Não é possível inativar um veículo acoplado.");
         }
     }
 

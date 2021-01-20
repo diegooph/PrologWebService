@@ -29,5 +29,4 @@ public final class VeiculoEdicao {
     private final Boolean possuiHubodometro;
     private final long kmAtualVeiculo;
     private final boolean statusAtivo;
-
 }

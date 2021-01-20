@@ -134,6 +134,7 @@ public final class VeiculoService {
                                  @NotNull final String userToken,
                                  @NotNull final VeiculoEdicaoStatus veiculo) {
         try {
+            VeiculoValidator.validacaoAtributosVeiculo(veiculo);
             final VeiculoEdicao edicao = dao
                     .getVeiculoByCodigo(veiculo.getCodigo())
                     .toVeiculoEdicao(veiculo.isStatusAtivo());

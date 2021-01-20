@@ -129,7 +129,7 @@ final class BloqueioUnidadesIntegradasTest {
     @Test
     void testUpdateStatusVeiculoUnidadeLiberada() {
         // TODO:
-        final VeiculoEdicaoStatus edicaoStatus = new VeiculoEdicaoStatus(-1L, true);
+        final VeiculoEdicaoStatus edicaoStatus = new VeiculoEdicaoStatus(-1L, true, false);
         final Throwable throwable = assertThrows(
                 ProLogException.class,
                 () -> new VeiculoService()
@@ -139,7 +139,7 @@ final class BloqueioUnidadesIntegradasTest {
 
     @Test
     void testUpdateStatusVeiculoUnidadeBloqueada() {
-        final VeiculoEdicaoStatus edicaoStatus = new VeiculoEdicaoStatus(-1L, true);
+        final VeiculoEdicaoStatus edicaoStatus = new VeiculoEdicaoStatus(-1L, true, false);
         final Throwable throwable = assertThrows(
                 ProLogException.class,
                 () -> new VeiculoService()
