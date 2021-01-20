@@ -1,8 +1,8 @@
 spring:
   profiles: dev
   datasource:
-    url: ""
-    username: ""
-    password: ""
+    url: "jdbc:postgresql://teste-prolog-19.c9sc1w2qsese.us-east-1.rds.amazonaws.com:5432/prolog_database_julho"
+    username: "prolog_user_thais"
+    password: "Zalfsistemas123"
     hikari:
       maximum-pool-size: 10
