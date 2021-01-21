@@ -2,7 +2,7 @@ Change Log
 ==========
 
 <a name="v1.5.2"></a>
-## Version [v1.5.2](https://github.com/luizfp/PrologWebService/compare/v1.5.1...v1.5.2) (release-date) [unreleased]
+## Version [v1.5.2](https://github.com/luizfp/PrologWebService/compare/v1.5.1...v1.5.2) (2021-01-21)
 
 ### Refactors
 * Melhora forma de resetar uma empresa de apresentação
