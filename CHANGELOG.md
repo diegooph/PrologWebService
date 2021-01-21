@@ -7,6 +7,9 @@ Change Log
 ### Refactors
 * Melhora forma de resetar uma empresa de apresentação
 
+### Bug Fixes
+* Corrige marshaller de XML na integração com a Praxio (PL-3429)
+
 <a name="v1.5.1"></a>
 ## Version [v1.5.1](https://github.com/luizfp/PrologWebService/compare/v1.5.0...v1.5.1) (2021-01-19)
 
