@@ -531,7 +531,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
             final double meta = totalVeiculos / restricao.getPeriodoDiasAfericaoPressao();
             stmt = conn.prepareStatement("SELECT EXTRACT(DAY from (A.DATA_HORA AT TIME ZONE ?)) AS DIA," +
                     " COUNT(EXTRACT(DAY from (A.DATA_HORA AT TIME ZONE ?))) AS REALIZADAS\n" +
-                    "FROM AFERICAO A JOIN VEICULO V ON V.PLACA = A.PLACA_VEICULO\n" +
+                    "FROM AFERICAO A JOIN VEICULO V ON V.CODIGO = A.COD_VEICULO\n" +
                     "WHERE A.DATA_HORA >= (? AT TIME ZONE ?) AND A.DATA_HORA <= (? AT TIME ZONE ?) AND\n" +
                     "      V.COD_UNIDADE = ?\n" +
                     "GROUP BY 1\n" +
