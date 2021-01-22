@@ -1,6 +1,8 @@
 package br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.data;
 
 import br.com.zalf.prolog.webservice.errorhandling.error.ProLogError;
+import br.com.zalf.prolog.webservice.integracao.network.RestClient;
+import br.com.zalf.prolog.webservice.integracao.praxio.data.ApiAutenticacaoHolder;
 import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.model.AfericaoAvulsaRodoparHorizonte;
 import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.model.AfericaoPlacaRodoparHorizonte;
 import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.model.ResponseAfericaoRodoparHorizonte;
@@ -25,10 +27,14 @@ public class RodoparHorizonteRequesterImpl implements RodoparHorizonteRequester 
 
     @NotNull
     @Override
-    public RodoparHorizonteTokenIntegracao getTokenUsuarioIntegracao(@NotNull final RodoparCredentials credentials) throws Throwable {
-        final RodoparHorizonteRest service = RodoparHorizonteRestClient.getService(RodoparHorizonteRest.class);
+    public RodoparHorizonteTokenIntegracao getTokenUsuarioIntegracao(
+            @NotNull final ApiAutenticacaoHolder autenticacaoHolder,
+            @NotNull final RodoparCredentials credentials) throws Throwable {
+        final RodoparHorizonteRest service = RestClient.getService(RodoparHorizonteRest.class);
         final Call<RodoparHorizonteTokenIntegracao> call =
                 service.getTokenUsuarioIntegracao(
+                        autenticacaoHolder.getPrologTokenIntegracao(),
+                        autenticacaoHolder.getUrl(),
                         credentials.getUsername(),
                         credentials.getPassword(),
                         credentials.getGrantType());
@@ -38,22 +44,32 @@ public class RodoparHorizonteRequesterImpl implements RodoparHorizonteRequester 
     @NotNull
     @Override
     public ResponseAfericaoRodoparHorizonte insertAfericaoPlaca(
+            @NotNull final ApiAutenticacaoHolder autenticacaoHolder,
             @NotNull final String tokenIntegracao,
             @NotNull final AfericaoPlacaRodoparHorizonte afericao) throws Throwable {
-        final RodoparHorizonteRest service = RodoparHorizonteRestClient.getService(RodoparHorizonteRest.class);
+        final RodoparHorizonteRest service = RestClient.getService(RodoparHorizonteRest.class);
         final Call<ResponseAfericaoRodoparHorizonte> call =
-                service.insertAfericaoPlaca(RodoparHorizonteTokenCreator.createToken(tokenIntegracao), afericao);
+                service.insertAfericaoPlaca(
+                        autenticacaoHolder.getPrologTokenIntegracao(),
+                        autenticacaoHolder.getUrl(),
+                        RodoparHorizonteTokenCreator.createToken(tokenIntegracao),
+                        afericao);
         return handleResponse(call.execute());
     }
 
     @NotNull
     @Override
     public ResponseAfericaoRodoparHorizonte insertAfericaoAvulsa(
+            @NotNull final ApiAutenticacaoHolder autenticacaoHolder,
             @NotNull final String tokenIntegracao,
             @NotNull final AfericaoAvulsaRodoparHorizonte afericao) throws Throwable {
-        final RodoparHorizonteRest service = RodoparHorizonteRestClient.getService(RodoparHorizonteRest.class);
+        final RodoparHorizonteRest service = RestClient.getService(RodoparHorizonteRest.class);
         final Call<ResponseAfericaoRodoparHorizonte> call =
-                service.insertAfericaoAvulsa(RodoparHorizonteTokenCreator.createToken(tokenIntegracao), afericao);
+                service.insertAfericaoAvulsa(
+                        autenticacaoHolder.getPrologTokenIntegracao(),
+                        autenticacaoHolder.getUrl(),
+                        RodoparHorizonteTokenCreator.createToken(tokenIntegracao),
+                        afericao);
         return handleResponse(call.execute());
     }
 
