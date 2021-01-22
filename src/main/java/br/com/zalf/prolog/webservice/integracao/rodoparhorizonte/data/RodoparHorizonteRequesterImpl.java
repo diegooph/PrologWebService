@@ -86,7 +86,7 @@ public class RodoparHorizonteRequesterImpl implements RodoparHorizonteRequester 
             } else {
                 if (response.errorBody() == null) {
                     throw new RodoparHorizonteException(
-                            "[INTEGRACAO - HORIZONTE] Rodopar não retornou todas as informações",
+                            "[INTEGRACAO] Rodopar não retornou todas as informações",
                             "A comunicação retornou erro porém sem nenhuma informação no corpo do erro");
                 }
                 if (tokenResponse) {
@@ -105,7 +105,7 @@ public class RodoparHorizonteRequesterImpl implements RodoparHorizonteRequester 
             }
         } else {
             throw new RodoparHorizonteException(
-                    "[INTEGRACAO - HORIZONTE] Nunhuma resposta obtida da integração com o sistema Rodopar",
+                    "[INTEGRACAO] Nunhuma resposta obtida da integração com o sistema Rodopar",
                     "A comunicação com o Rodopar retornou um response vazio");
         }
     }
@@ -116,7 +116,7 @@ public class RodoparHorizonteRequesterImpl implements RodoparHorizonteRequester 
             return ErrorBodyHandler.getProLogErrorFromBody(errorBody);
         } catch (final Throwable t) {
             throw new RodoparHorizonteException(
-                    "[INTEGRACAO - HORIZONTE] Mensagem do sistema Rodopar fora do padrão esperado",
+                    "[INTEGRACAO] Mensagem do sistema Rodopar fora do padrão esperado",
                     "Não foi possível obter o JSON de resposta da requisição",
                     t);
         }
