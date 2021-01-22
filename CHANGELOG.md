@@ -4,7 +4,8 @@ Change Log
 <a name="v1.5.3"></a>
 ## Version [v1.5.3](https://github.com/luizfp/PrologWebService/compare/v1.5.1...v1.5.3) (release-date) [unreleased]
 
-
+### Bug Fixes
+* Corrige uso de autoCommit em conexões com o Banco
 
 <a name="v1.5.2"></a>
 ## Version [v1.5.2](https://github.com/luizfp/PrologWebService/compare/v1.5.1...v1.5.2) (2021-01-21)
