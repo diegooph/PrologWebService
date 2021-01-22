@@ -1,6 +1,10 @@
 Change Log
 ==========
 
+## Staged
+#### Refactors
+* Adiciona numero de viagens ao cálculo de bônus no pré-contracheque (PL-3368)
+
 <a name="v1.5.2"></a>
 ## Version [v1.5.2](https://github.com/luizfp/PrologWebService/compare/v1.5.1...v1.5.2) (release-date) [unreleased]
 
