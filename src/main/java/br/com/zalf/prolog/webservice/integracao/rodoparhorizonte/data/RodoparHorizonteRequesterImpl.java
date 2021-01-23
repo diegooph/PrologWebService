@@ -51,8 +51,8 @@ public class RodoparHorizonteRequesterImpl implements RodoparHorizonteRequester 
         final Call<ResponseAfericaoRodoparHorizonte> call =
                 service.insertAfericaoPlaca(
                         autenticacaoHolder.getPrologTokenIntegracao(),
-                        autenticacaoHolder.getUrl(),
                         RodoparHorizonteTokenCreator.createToken(tokenIntegracao),
+                        autenticacaoHolder.getUrl(),
                         afericao);
         return handleResponse(call.execute());
     }
@@ -67,8 +67,8 @@ public class RodoparHorizonteRequesterImpl implements RodoparHorizonteRequester 
         final Call<ResponseAfericaoRodoparHorizonte> call =
                 service.insertAfericaoAvulsa(
                         autenticacaoHolder.getPrologTokenIntegracao(),
-                        autenticacaoHolder.getUrl(),
                         RodoparHorizonteTokenCreator.createToken(tokenIntegracao),
+                        autenticacaoHolder.getUrl(),
                         afericao);
         return handleResponse(call.execute());
     }
