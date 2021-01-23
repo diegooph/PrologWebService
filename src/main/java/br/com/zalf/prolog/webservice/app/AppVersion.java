@@ -2,22 +2,9 @@ package br.com.zalf.prolog.webservice.app;
 
 import java.util.Date;
 
-/**
- * Created by luiz on 1/4/16.
- * Classe utilizada para verificar a versão do app no botão "Atualizar"
- */
 public class AppVersion {
-    /**
-     * Código da versão, única e sequencial
-     */
     private int versionCode;
-    /**
-     * Nome da versão exibida
-     */
     private String versionName;
-    /**
-     * Data em que foi liberada a atualização na loja
-     */
     private Date dataLiberacao;
 
     public AppVersion() {

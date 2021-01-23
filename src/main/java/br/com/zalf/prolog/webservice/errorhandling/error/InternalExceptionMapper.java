@@ -4,6 +4,10 @@ import br.com.zalf.prolog.webservice.errorhandling.ErrorReportSystem;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.errorhandling.sql.ClientSideErrorException;
+import com.google.common.collect.ImmutableMap;
+import io.sentry.SentryEvent;
+import io.sentry.SentryLevel;
+import io.sentry.protocol.Message;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -13,6 +17,7 @@ import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -40,11 +45,10 @@ public final class InternalExceptionMapper {
         }
 
         final ProLogException proLogException = convertToPrologException(throwable);
-        tryToLogException(proLogException);
+        tryToLogEventException(proLogException);
         return createResponse(
                 proLogException.getHttpStatusCode(),
-                createPrologError(proLogException)
-        );
+                createPrologError(proLogException));
     }
 
     @NotNull
@@ -88,20 +92,28 @@ public final class InternalExceptionMapper {
 
     @NotNull
     private static ProLogException convertToPrologException(@Nullable final Throwable throwable) {
-        final ProLogException proLogException = (!(throwable instanceof ProLogException))
-                ? new GenericException(
-                "Algo deu errado, tente novamente",
-                "Erro mapeado no ProLogExceptionMapper: " + (throwable != null
-                        ? throwable.getMessage()
-                        : "null"),
-                throwable)
-                : (ProLogException) throwable;
-        return proLogException;
+        if (!(throwable instanceof ProLogException)) {
+            final String genericMessage = "Algo deu errado, tente novamente";
+            final String developerMessage = "Erro mapeado no PrologExceptionMapper: " +
+                    ((throwable != null) ? throwable.getMessage() : "null");
+            return new GenericException(genericMessage, developerMessage, throwable);
+        } else {
+            return (ProLogException) throwable;
+        }
     }
 
-    private static void tryToLogException(final ProLogException proLogException) {
+    private static void tryToLogEventException(@NotNull final ProLogException proLogException) {
         if (proLogException.isloggableOnErrorReportSystem()) {
-            ErrorReportSystem.logException(proLogException);
+            final SentryEvent event = new SentryEvent();
+            final Message message = new Message();
+            final Map<String, Object> extras = getExtrasByException(proLogException);
+            message.setMessage(proLogException.getMessage());
+            event.setMessage(message);
+            event.setLevel(SentryLevel.ERROR);
+            event.setLogger(proLogException.getClass().getSimpleName());
+            event.setThrowable(proLogException);
+            event.setExtras(extras);
+            ErrorReportSystem.logEvent(event);
         }
     }
 
@@ -126,5 +138,18 @@ public final class InternalExceptionMapper {
         return String.format(
                 totalErrors > 1 ? "%d erros encontrados" : "%d erro encontrado",
                 totalErrors);
+    }
+
+    @NotNull
+    private static Map<String, Object> getExtrasByException(@NotNull final ProLogException prologException) {
+        final ImmutableMap.Builder<String, Object> builder = ImmutableMap.<String, Object>builder()
+                .put("Error message", prologException.getMessage());
+        if (prologException.getDetailedMessage() != null) {
+            builder.put("Detailed message", prologException.getDetailedMessage());
+        }
+        if (prologException.getDeveloperMessage() != null) {
+            builder.put("Developer message", prologException.getDeveloperMessage());
+        }
+        return builder.build();
     }
 }

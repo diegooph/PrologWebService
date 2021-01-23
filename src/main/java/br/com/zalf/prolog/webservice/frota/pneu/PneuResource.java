@@ -7,7 +7,7 @@ import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu._model.PneuComum;
 import br.com.zalf.prolog.webservice.frota.pneu._model.PneuRetornoDescarte;
-import br.com.zalf.prolog.webservice.frota.pneu._model.PneuRetornoDescarteSuccess;
+import br.com.zalf.prolog.webservice.frota.pneu._model.PneuRetornoDescarteResponse;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.AppVersionCodeHandler;
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.DefaultAppVersionCodeHandler;
@@ -56,7 +56,7 @@ public final class PneuResource {
     @POST
     @Secured(permissions = Pilares.Frota.Pneu.ALTERAR)
     @Path("/retornar-descarte")
-    public PneuRetornoDescarteSuccess retornarPneuDescarte(
+    public PneuRetornoDescarteResponse retornarPneuDescarte(
             @NotNull @Required final PneuRetornoDescarte pneuRetornoDescarte) {
         return service.retornarPneuDescarte(pneuRetornoDescarte);
     }

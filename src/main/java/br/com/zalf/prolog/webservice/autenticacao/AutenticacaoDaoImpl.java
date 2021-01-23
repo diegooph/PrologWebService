@@ -16,9 +16,6 @@ import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.Optional;
 
-/**
- * Classe responsável pela comunicação com o banco de dados da aplicação.
- */
 public class AutenticacaoDaoImpl extends DatabaseConnection implements AutenticacaoDao {
 
     public AutenticacaoDaoImpl() {
@@ -27,14 +24,14 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
 
     @NotNull
     @Override
-    public Autenticacao insertOrUpdate(@NotNull final Long cpf) throws Throwable {
+    public Autenticacao createTokenByCpf(@NotNull final Long cpf) throws Throwable {
         final String token = new TokenGenerator().getNextToken();
         return insert(cpf, token);
     }
 
     @NotNull
     @Override
-    public Autenticacao insertOrUpdateByCodColaborador(@NotNull final Long codColaborador) throws Throwable {
+    public Autenticacao createTokenByCodColaborador(@NotNull final Long codColaborador) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;

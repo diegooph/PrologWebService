@@ -7,9 +7,6 @@ spring:
   profiles:
     active: "@active-profile@"
 
-  main:
-    banner-mode: off
-
   # Evita que o processo do servidor seja restartado a cada vez que um arquivo observado mudar.
   devtools:
     restart:

@@ -9,9 +9,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
 import java.util.Optional;
 
-/**
- * Classe AutenticacaoService responsavel por comunicar-se com a interface DAO.
- */
 public class AutenticacaoService {
     private static final String TAG = AutenticacaoService.class.getSimpleName();
     private final AutenticacaoDao dao = Injection.provideAutenticacaoDao();
@@ -105,9 +102,9 @@ public class AutenticacaoService {
     }
 
     @NotNull
-    Autenticacao insertOrUpdate(@NotNull final Long cpf) {
+    Autenticacao createTokenByCpf(@NotNull final Long cpf) {
         try {
-            return dao.insertOrUpdate(cpf);
+            return dao.createTokenByCpf(cpf);
         } catch (final Throwable throwable) {
             Log.e(TAG, String.format("Erro ao inserir o token para o cpf: %d", cpf), throwable);
             return new Autenticacao(Autenticacao.ERROR, cpf, "-1");

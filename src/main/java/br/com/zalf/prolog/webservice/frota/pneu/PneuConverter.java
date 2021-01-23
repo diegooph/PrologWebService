@@ -105,10 +105,8 @@ public final class PneuConverter {
     @NotNull
     public static PneuRetornoDescarteSuccess createPneuRetornoDescarteSuccess(@NotNull final ResultSet rSet)
             throws SQLException {
-        return PneuRetornoDescarteSuccess.builder()
-                .codPneuRetornado(rSet.getLong("cod_pneu_retornado"))
-                .codMovimentacaoGerada(rSet.getLong("cod_movimentacao_gerada"))
-                .build();
+        return new PneuRetornoDescarteSuccess(rSet.getLong("cod_pneu_retornado"),
+                                              rSet.getLong("cod_movimentacao_gerada"));
     }
 
     @NotNull

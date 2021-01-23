@@ -52,11 +52,6 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-tomcat</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
         </dependency>
         <dependency>
@@ -193,8 +188,8 @@
         <!-- https://mvnrepository.com/artifact/io.sentry/sentry -->
         <dependency>
             <groupId>io.sentry</groupId>
-            <artifactId>sentry</artifactId>
-            <version>1.7.29</version>
+            <artifactId>sentry-spring-boot-starter</artifactId>
+            <version>3.2.0</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.assertj/assertj-core -->
@@ -398,12 +393,6 @@
             <version>3.6</version>
         </dependency>
 
-        <!-- Para realizar pool de conexões -->
-        <dependency>
-            <groupId>org.apache.tomcat</groupId>
-            <artifactId>tomcat-jdbc</artifactId>
-            <version>8.0.45</version>
-        </dependency>
         <!-- Esse projeto adiciona classes extras utilitárias as novas classes do pacote java.time do Java 8.
              http://www.threeten.org/threeten-extra/ -->
         <dependency>

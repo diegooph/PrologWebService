@@ -19,6 +19,7 @@ public class ApresentacaoService {
     @NotNull
     private final ApresentacaoDao dao = Injection.provideApresentacaoDao();
 
+    @NotNull
     public Response getResetaClonaEmpresaApresentacao(@NotNull final String authorization,
                                                       @NotNull final Long codEmpresaBase,
                                                       @NotNull final Long codEmpresaUsuario) throws ProLogException {
@@ -27,13 +28,16 @@ public class ApresentacaoService {
         final PrologInternalUser internalUser = new AutenticacaoInternaService().authorize(authorization);
 
         try {
-            return Response.ok(dao.getResetaClonaEmpresaApresentacao(internalUser.getUsername(), codEmpresaBase,
+            return Response.ok(dao.resetaEmpresaApresentacaoUsuario(
+                    internalUser.getCodigo(),
+                    codEmpresaBase,
                     codEmpresaUsuario));
         } catch (final Throwable throwable) {
-            Log.e(TAG, "Erro ao resetar e clonar empresa de apresentação", throwable);
+            final String message = "Erro ao resetar e clonar empresa de apresentação";
+            Log.e(TAG, message, throwable);
             throw Injection
                     .provideProLogExceptionHandler()
-                    .map(throwable, "Erro com a conexão");
+                    .map(throwable, message);
         }
     }
 }
