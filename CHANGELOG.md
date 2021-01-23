@@ -2,7 +2,7 @@ Change Log
 ==========
 
 <a name="v1.5.3"></a>
-## Version [v1.5.3](https://github.com/luizfp/PrologWebService/compare/v1.5.1...v1.5.3) (release-date) [unreleased]
+## Version [v1.5.3](https://github.com/luizfp/PrologWebService/compare/v1.5.2...v1.5.3) (2021-01-23)
 
 ### Refactors
 * Adapta integração com Visual Rodopar para funcionar na Imediato (PL-3430)
