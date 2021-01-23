@@ -29,7 +29,7 @@ public final class RequestLog {
 
     @Nullable
     public String getTokenIntegracao() {
-        if (headers != null) {
+        if (headers != null && headers.containsKey(PrologCustomHeaders.HEADER_TOKEN_INTEGRACAO)) {
             return headers.get(PrologCustomHeaders.HEADER_TOKEN_INTEGRACAO).stream().findFirst().orElse(null);
         }
 
