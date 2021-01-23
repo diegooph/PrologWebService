@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.messaging.push;
 
 import br.com.zalf.prolog.webservice.commons.util.EnvironmentHelper;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.commons.util.ProLogUtils;
+import br.com.zalf.prolog.webservice.commons.util.PrologUtils;
 import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
@@ -21,14 +21,14 @@ import java.io.IOException;
 public final class FirebaseLifecycleManager implements ServletContextListener {
     private static final String DATABASE_URL_DEBUG = "https://prolog-debug.firebaseio.com";
     private static final String DATABASE_URL_PROD = "https://prolog-prod.firebaseio.com";
-    private static final String DATABASE_URL = ProLogUtils.isDebug() ? DATABASE_URL_DEBUG : DATABASE_URL_PROD;
+    private static final String DATABASE_URL = PrologUtils.isDebug() ? DATABASE_URL_DEBUG : DATABASE_URL_PROD;
     private static final String TAG = FirebaseLifecycleManager.class.getSimpleName();
 
     @Override
     public void contextInitialized(final ServletContextEvent sce) {
         // Estando em debug, não faz mal se não tivermos as credenciais, apenas ignoramos a inicialização do app do
         // Firebase.
-        if (ProLogUtils.isDebug() && StringUtils.isNullOrEmpty(EnvironmentHelper.GOOGLE_APPLICATION_CREDENTIALS)) {
+        if (PrologUtils.isDebug() && StringUtils.isNullOrEmpty(EnvironmentHelper.GOOGLE_APPLICATION_CREDENTIALS)) {
             Log.d(TAG, "Sem credenciais do google para iniciar o firebase!");
             return;
         }
@@ -40,7 +40,7 @@ public final class FirebaseLifecycleManager implements ServletContextListener {
             } catch (final Throwable t) {
                 // Em debug damos apenas um warning, pois não será necessário ter o firebase rodando para a maioria dos
                 // casos.
-                if (ProLogUtils.isDebug()) {
+                if (PrologUtils.isDebug()) {
                     Log.w(TAG, "Erro ao iniciar firebase!");
                 } else {
                     Log.e(TAG, "Erro ao iniciar FirebaseApp", t);

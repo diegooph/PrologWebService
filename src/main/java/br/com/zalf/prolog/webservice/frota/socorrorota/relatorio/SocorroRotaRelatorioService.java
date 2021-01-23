@@ -3,7 +3,7 @@ package br.com.zalf.prolog.webservice.frota.socorrorota.relatorio;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
+import br.com.zalf.prolog.webservice.commons.util.datetime.PrologDateParser;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import org.jetbrains.annotations.NotNull;
 
@@ -18,7 +18,7 @@ import java.util.List;
 public class SocorroRotaRelatorioService {
     private static final String TAG = SocorroRotaRelatorioService.class.getSimpleName();
     @NotNull
-    private SocorroRotaRelatorioDao dao = Injection.provideSocorroRotaRelatorioDao();
+    private final SocorroRotaRelatorioDao dao = Injection.provideSocorroRotaRelatorioDao();
 
     public void getDadosGeraisSocorrosRotasCsv(@NotNull final OutputStream out,
                                                @NotNull final List<Long> codUnidades,
@@ -29,8 +29,8 @@ public class SocorroRotaRelatorioService {
             dao.getDadosGeraisSocorrosRotasCsv(
                     out,
                     codUnidades,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal),
+                    PrologDateParser.toLocalDate(dataInicial),
+                    PrologDateParser.toLocalDate(dataFinal),
                     statusSocorrosRotas);
         } catch (final Throwable throwable) {
             Log.e(TAG, "Erro ao gerar relatório de dados gerais dos socorros em rotas (CSV)", throwable);
@@ -47,8 +47,8 @@ public class SocorroRotaRelatorioService {
         try {
             return dao.getDadosGeraisSocorrosRotasReport(
                     codUnidades,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal),
+                    PrologDateParser.toLocalDate(dataInicial),
+                    PrologDateParser.toLocalDate(dataFinal),
                     statusSocorrosRotas);
         } catch (final Throwable throwable) {
             Log.e(TAG, "Erro ao gerar relatório de dados gerais dos socorros em rota (REPORT)", throwable);

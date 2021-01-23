@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.praxio;
 
-import br.com.zalf.prolog.webservice.commons.util.SqlType;
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
+import br.com.zalf.prolog.webservice.commons.util.database.SqlType;
+import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.integracao.praxio.afericao.AfericaoIntegracaoPraxioConverter;
@@ -25,7 +25,7 @@ import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 
-import static br.com.zalf.prolog.webservice.commons.util.StatementUtils.bindValueOrNull;
+import static br.com.zalf.prolog.webservice.commons.util.database.StatementUtils.bindValueOrNull;
 
 /**
  * Created on 12/12/18.
@@ -56,7 +56,7 @@ final class IntegracaoPraxioDaoImpl extends DatabaseConnection implements Integr
             stmt.setLong(3, veiculoCadastroPraxio.getKmAtualVeiculo());
             stmt.setLong(4, veiculoCadastroPraxio.getCodModeloVeiculo());
             stmt.setLong(5, veiculoCadastroPraxio.getCodTipoVeiculo());
-            stmt.setObject(6, Now.offsetDateTimeUtc());
+            stmt.setObject(6, Now.getOffsetDateTimeUtc());
             stmt.setString(7, tokenIntegracao);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
@@ -99,7 +99,7 @@ final class IntegracaoPraxioDaoImpl extends DatabaseConnection implements Integr
             stmt.setLong(5, veiculoEdicaoPraxio.getNovoKmVeiculo());
             stmt.setLong(6, veiculoEdicaoPraxio.getNovoCodModeloVeiculo());
             stmt.setLong(7, veiculoEdicaoPraxio.getNovoCodTipoVeiculo());
-            stmt.setObject(8, Now.offsetDateTimeUtc());
+            stmt.setObject(8, Now.getOffsetDateTimeUtc());
             stmt.setString(9, tokenIntegracao);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
@@ -138,7 +138,7 @@ final class IntegracaoPraxioDaoImpl extends DatabaseConnection implements Integr
             stmt.setString(4, veiculoTransferenciaPraxio.getPlacaTransferida());
             bindValueOrNull(stmt, 5, veiculoTransferenciaPraxio.getObservacao(), SqlType.TEXT);
             stmt.setString(6, tokenIntegracao);
-            stmt.setObject(7, Now.offsetDateTimeUtc());
+            stmt.setObject(7, Now.getOffsetDateTimeUtc());
             stmt.executeQuery();
         } finally {
             close(conn, stmt);
@@ -162,7 +162,7 @@ final class IntegracaoPraxioDaoImpl extends DatabaseConnection implements Integr
                             " F_TOKEN_INTEGRACAO          := ?) AS COD_VEICULO_PROLOG;");
             stmt.setString(1, placaVeiculo);
             stmt.setBoolean(2, veiculoAtivo);
-            stmt.setObject(3, Now.offsetDateTimeUtc());
+            stmt.setObject(3, Now.getOffsetDateTimeUtc());
             stmt.setString(4, tokenIntegracao);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
@@ -221,7 +221,7 @@ final class IntegracaoPraxioDaoImpl extends DatabaseConnection implements Integr
                             "F_COD_CONTEXTO_ALTERNATIVA_CHECKLIST := ?, " +
                             "F_DATA_HORA_SINCRONIZACAO_PENDENCIA  := ?, " +
                             "F_TOKEN_INTEGRACAO                   := ?);");
-            final OffsetDateTime dataHoraAtualUtc = Now.offsetDateTimeUtc();
+            final OffsetDateTime dataHoraAtualUtc = Now.getOffsetDateTimeUtc();
             int totalItensNoBatch = 0;
             for (final OrdemServicoAbertaGlobus ordemServicoAberta : ordensServicoAbertas) {
                 // Primeiro setamos as informações de cada O.S..
@@ -286,7 +286,7 @@ final class IntegracaoPraxioDaoImpl extends DatabaseConnection implements Integr
                                                  "F_DATA_HORA_FIM_RESOLUCAO       := ?, " +
                                                  "F_TOKEN_INTEGRACAO              := ?, " +
                                                  "F_DATA_HORA_SINCRONIA_RESOLUCAO := ?);");
-            final OffsetDateTime dataHoraAtualUtc = Now.offsetDateTimeUtc();
+            final OffsetDateTime dataHoraAtualUtc = Now.getOffsetDateTimeUtc();
             int totalItensNoBatch = 0;
             for (final ItemResolvidoGlobus itemResolvido : itensResolvidos) {
                 stmt.setLong(1, itemResolvido.getCodUnidadeItemOs());

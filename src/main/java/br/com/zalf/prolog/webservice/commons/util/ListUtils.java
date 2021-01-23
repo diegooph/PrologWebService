@@ -12,7 +12,6 @@ import java.util.List;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public final class ListUtils {
-
     private ListUtils() {
         throw new IllegalStateException(ListUtils.class.getSimpleName() + " cannot be instantiated!");
     }
@@ -45,5 +44,4 @@ public final class ListUtils {
                 ? new ArrayList<>(list1)
                 : new ArrayList<>(list2);
     }
-
 }

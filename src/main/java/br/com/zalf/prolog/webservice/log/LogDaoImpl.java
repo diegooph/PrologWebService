@@ -1,8 +1,8 @@
 package br.com.zalf.prolog.webservice.log;
 
-import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
-import br.com.zalf.prolog.webservice.commons.util.SqlType;
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
+import br.com.zalf.prolog.webservice.commons.util.database.PostgresUtils;
+import br.com.zalf.prolog.webservice.commons.util.database.SqlType;
+import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.integracao.logger._model.LogType;
 import br.com.zalf.prolog.webservice.log._model.RequestLog;
@@ -15,7 +15,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Types;
 
-import static br.com.zalf.prolog.webservice.commons.util.StatementUtils.bindValueOrNull;
+import static br.com.zalf.prolog.webservice.commons.util.database.StatementUtils.bindValueOrNull;
 
 public final class LogDaoImpl extends DatabaseConnection implements LogDao {
 
@@ -66,7 +66,7 @@ public final class LogDaoImpl extends DatabaseConnection implements LogDao {
             } else {
                 stmt.setObject(5, PostgresUtils.toJsonb(responseLog.toJson()));
             }
-            stmt.setObject(6, Now.offsetDateTimeUtc());
+            stmt.setObject(6, Now.getOffsetDateTimeUtc());
             stmt.execute();
         } finally {
             close(conn, stmt);

@@ -1,10 +1,10 @@
 package br.com.zalf.prolog.webservice.frota.pneu;
 
 import br.com.zalf.prolog.webservice.Injection;
-import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
-import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.StringUtils;
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
+import br.com.zalf.prolog.webservice.commons.util.database.PostgresUtils;
+import br.com.zalf.prolog.webservice.commons.util.database.SqlType;
+import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.errorhandling.sql.ServerSideErrorException;
@@ -384,7 +384,7 @@ public final class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             stmt = conn.prepareStatement("UPDATE PNEU_FOTO_CADASTRO SET FOTO_SINCRONIZADA = TRUE, " +
                                                  "DATA_HORA_SINCRONIZACAO_FOTO = ? WHERE COD_PNEU = ? AND URL_FOTO = " +
                                                  "?;");
-            stmt.setTimestamp(1, Now.timestampUtc());
+            stmt.setTimestamp(1, Now.getTimestampUtc());
             stmt.setLong(2, codPneu);
             stmt.setString(3, urlFotoPneu);
             if (stmt.executeUpdate() == 0) {

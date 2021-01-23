@@ -4,10 +4,10 @@ import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
-import br.com.zalf.prolog.webservice.commons.util.Platform;
-import br.com.zalf.prolog.webservice.commons.util.Required;
-import br.com.zalf.prolog.webservice.commons.util.UsedBy;
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
+import br.com.zalf.prolog.webservice.commons.network.metadata.Platform;
+import br.com.zalf.prolog.webservice.commons.network.metadata.Required;
+import br.com.zalf.prolog.webservice.commons.network.metadata.UsedBy;
+import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.ModeloChecklist;
@@ -43,7 +43,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
-import static br.com.zalf.prolog.webservice.commons.util.ProLogCustomHeaders.AppVersionAndroid.PROLOG_APP_VERSION;
+import static br.com.zalf.prolog.webservice.commons.network.PrologCustomHeaders.AppVersionAndroid.PROLOG_APP_VERSION;
 
 @Path("/checklists")
 @ConsoleDebugLog
@@ -68,7 +68,7 @@ public final class ChecklistResource {
             checklistNew = GsonUtils.getGson().fromJson(checklistJson, ChecklistInsercao.class);
         } else {
             final Checklist checklistOld = GsonUtils.getGson().fromJson(checklistJson, Checklist.class);
-            final LocalDateTime agora = Now.localDateTimeUtc();
+            final LocalDateTime agora = Now.getLocalDateTimeUtc();
             checklistNew = ChecklistMigracaoEstruturaSuporte.toChecklistInsercao(checklistOld, agora, versaoApp);
             checklistNew.setChecklistAntigo(checklistOld);
         }

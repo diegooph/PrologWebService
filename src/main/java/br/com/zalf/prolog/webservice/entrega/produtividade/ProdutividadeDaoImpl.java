@@ -1,12 +1,12 @@
 package br.com.zalf.prolog.webservice.entrega.produtividade;
 
-import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
-import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
-import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.commons.util.datetime.DateUtils;
+import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.entrega.indicador.IndicadorDao;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 
 import java.sql.*;
 import java.time.OffsetDateTime;
@@ -16,9 +16,10 @@ import java.util.List;
 
 public class ProdutividadeDaoImpl extends DatabaseConnection implements ProdutividadeDao {
 
-    private static String TAG = ProdutividadeDaoImpl.class.getSimpleName();
+    private static final String TAG = ProdutividadeDaoImpl.class.getSimpleName();
 
-    public List<ItemProdutividade> getProdutividadeByPeriodo(int ano, int mes, Long cpf, boolean salvaLog)
+    @Override
+    public List<ItemProdutividade> getProdutividadeByPeriodo(final int ano, final int mes, final Long cpf, final boolean salvaLog)
             throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -59,28 +60,16 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
         return itens;
     }
 
-    private void insertMesAnoConsultaProdutividade(int ano, int mes, Connection conn, Long cpf) throws SQLException {
-        final PreparedStatement stmt = conn.prepareStatement("INSERT INTO ACESSOS_PRODUTIVIDADE VALUES ( " +
-                " (SELECT COD_UNIDADE FROM COLABORADOR WHERE CPF = ?), ?, ?, ?);");
-        stmt.setLong(1, cpf);
-        stmt.setLong(2, cpf);
-        stmt.setObject(3, OffsetDateTime.now(TimeZoneManager.getZoneIdForCpf(cpf, conn)));
-        stmt.setString(4, mes + "/" + ano);
-        int count = stmt.executeUpdate();
-        if (count == 0) {
-            throw new SQLException("Erro ao inserir o log de consulta");
-        }
-    }
-
-    public List<HolderColaboradorProdutividade> getConsolidadoProdutividade(Long codUnidade, String equipe, String codFuncao,
-                                                                            long dataInicial, long dataFinal) throws SQLException {
+    @Override
+    public List<HolderColaboradorProdutividade> getConsolidadoProdutividade(final Long codUnidade, final String equipe, final String codFuncao,
+                                                                            final long dataInicial, final long dataFinal) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
-        List<HolderColaboradorProdutividade> holders = new ArrayList<>();
+        final List<HolderColaboradorProdutividade> holders = new ArrayList<>();
         HolderColaboradorProdutividade holder = null;
         List<ColaboradorProdutividade> colaboradores = new ArrayList<>();
-        Colaborador c = null;
+        final Colaborador c = null;
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("select * from func_get_produtividade_consolidado_colaboradores(?,?,?,?,?)");
@@ -120,20 +109,8 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
         return holders;
     }
 
-    private ColaboradorProdutividade createColaboradorProdutividade(ResultSet rSet) throws SQLException {
-        ColaboradorProdutividade c = new ColaboradorProdutividade();
-        Colaborador co = new Colaborador();
-        co.setCpf(rSet.getLong("cpf"));
-        co.setNome(rSet.getString("nome"));
-        c.setColaborador(co);
-        c.setQtdCaixas(rSet.getInt("caixas"));
-        c.setQtdMapas(rSet.getInt("mapas"));
-        c.setValor(rSet.getDouble("valor"));
-        return c;
-    }
-
     @Override
-    public PeriodoProdutividade getPeriodoProdutividade(int ano, int mes, Long codUnidade, Long cpf) throws
+    public PeriodoProdutividade getPeriodoProdutividade(final int ano, final int mes, final Long codUnidade, final Long cpf) throws
 			SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -174,5 +151,30 @@ public class ProdutividadeDaoImpl extends DatabaseConnection implements Produtiv
             closeConnection(conn, stmt, rSet);
         }
         return null;
+    }
+
+    private void insertMesAnoConsultaProdutividade(final int ano, final int mes, final Connection conn, final Long cpf) throws SQLException {
+        final PreparedStatement stmt = conn.prepareStatement("INSERT INTO ACESSOS_PRODUTIVIDADE VALUES ( " +
+                " (SELECT COD_UNIDADE FROM COLABORADOR WHERE CPF = ?), ?, ?, ?);");
+        stmt.setLong(1, cpf);
+        stmt.setLong(2, cpf);
+        stmt.setObject(3, OffsetDateTime.now(TimeZoneManager.getZoneIdForCpf(cpf, conn)));
+        stmt.setString(4, mes + "/" + ano);
+        final int count = stmt.executeUpdate();
+        if (count == 0) {
+            throw new SQLException("Erro ao inserir o log de consulta");
+        }
+    }
+
+    private ColaboradorProdutividade createColaboradorProdutividade(final ResultSet rSet) throws SQLException {
+        final ColaboradorProdutividade c = new ColaboradorProdutividade();
+        final Colaborador co = new Colaborador();
+        co.setCpf(rSet.getLong("cpf"));
+        co.setNome(rSet.getString("nome"));
+        c.setColaborador(co);
+        c.setQtdCaixas(rSet.getInt("caixas"));
+        c.setQtdMapas(rSet.getInt("mapas"));
+        c.setValor(rSet.getDouble("valor"));
+        return c;
     }
 }

@@ -1,6 +1,10 @@
 package br.com.zalf.prolog.webservice.gente.controlejornada;
 
-import br.com.zalf.prolog.webservice.commons.util.*;
+import br.com.zalf.prolog.webservice.commons.network.PrologCustomHeaders;
+import br.com.zalf.prolog.webservice.commons.network.metadata.Optional;
+import br.com.zalf.prolog.webservice.commons.network.metadata.Platform;
+import br.com.zalf.prolog.webservice.commons.network.metadata.Required;
+import br.com.zalf.prolog.webservice.commons.network.metadata.UsedBy;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.gente.colaborador.ColaboradorService;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.*;
@@ -40,7 +44,7 @@ public class ControleJornadaResource {
     public ResponseIntervalo insertIntervalo(
             @HeaderParam(IntervaloOfflineSupport.HEADER_NAME_TOKEN_MARCACAO) final String tokenMarcacao,
             @HeaderParam(IntervaloOfflineSupport.HEADER_NAME_VERSAO_DADOS_INTERVALO) final long versaoDadosIntervalo,
-            @HeaderParam(ProLogCustomHeaders.AppVersionAndroid.PROLOG_APP_VERSION) final Integer versaoApp,
+            @HeaderParam(PrologCustomHeaders.AppVersionAndroid.PROLOG_APP_VERSION) final Integer versaoApp,
             final IntervaloMarcacao intervaloMarcacao) throws ProLogException {
         return service.insertMarcacaoIntervalo(tokenMarcacao, versaoDadosIntervalo, intervaloMarcacao, versaoApp);
     }

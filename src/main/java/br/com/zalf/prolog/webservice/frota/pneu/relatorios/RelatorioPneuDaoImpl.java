@@ -7,9 +7,9 @@ import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.report.ReportTransformer;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.NullIf;
-import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
-import br.com.zalf.prolog.webservice.commons.util.SqlType;
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
+import br.com.zalf.prolog.webservice.commons.util.database.PostgresUtils;
+import br.com.zalf.prolog.webservice.commons.util.database.SqlType;
+import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Restricao;
 import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
@@ -591,13 +591,15 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
 
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT COALESCE((((PRESSAO_ATUAL - PRESSAO_RECOMENDADA)/ PRESSAO_RECOMENDADA) *100)::TEXT, "
-                    + "(((PRESSAO_ATUAL - PRESSAO_RECOMENDADA)/ PRESSAO_RECOMENDADA) *100)::TEXT, 'N') AS PORC  "
-                    + "FROM PNEU  "
-                    + "WHERE COD_UNIDADE::TEXT LIKE ANY (ARRAY[?]) AND STATUS LIKE ANY (ARRAY[?]) "
-                    + "ORDER BY 1 asc");
-            stmt.setArray(1, PostgresUtils.ListToArray(conn, codUnidades));
-            stmt.setArray(2, PostgresUtils.ListToArray(conn, status));
+            stmt = conn.prepareStatement(
+                    "SELECT COALESCE((((PRESSAO_ATUAL - PRESSAO_RECOMENDADA)/ PRESSAO_RECOMENDADA) *100)::TEXT, "
+                            + "(((PRESSAO_ATUAL - PRESSAO_RECOMENDADA)/ PRESSAO_RECOMENDADA) *100)::TEXT, 'N') AS " +
+                            "PORC  "
+                            + "FROM PNEU  "
+                            + "WHERE COD_UNIDADE::TEXT LIKE ANY (ARRAY[?]) AND STATUS LIKE ANY (ARRAY[?]) "
+                            + "ORDER BY 1 asc");
+            stmt.setArray(1, PostgresUtils.listToArray(conn, codUnidades));
+            stmt.setArray(2, PostgresUtils.listToArray(conn, status));
             rSet = stmt.executeQuery();
             while (rSet.next()) {
                 if (rSet.getString("PORC").equals("N")) {
@@ -720,7 +722,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM PUBLIC.FUNC_PNEU_RELATORIO_STATUS_PLACAS_AFERICAO(?, ?);");
             stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
-            stmt.setObject(2, Now.offsetDateTimeUtc());
+            stmt.setObject(2, Now.getOffsetDateTimeUtc());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return new StatusPlacasAfericao(
@@ -919,7 +921,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM FUNC_AFERICAO_RELATORIO_QTD_DIAS_PLACAS_VENCIDAS(?, ?);");
             stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
-            stmt.setObject(2, Now.offsetDateTimeUtc());
+            stmt.setObject(2, Now.getOffsetDateTimeUtc());
             rSet = stmt.executeQuery();
             final List<QtdDiasAfericoesVencidas> qtdDiasAfericoesVencidas = new ArrayList<>();
             while (rSet.next()) {
@@ -954,7 +956,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
             stmt = conn.prepareStatement("SELECT * FROM " +
                     "FUNC_AFERICAO_RELATORIO_QTD_AFERICOES_REALIZADAS_POR_DIA(?, ?, ?);");
             stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
-            stmt.setObject(2, Now.localDateUtc());
+            stmt.setObject(2, Now.getLocalDateUtc());
             stmt.setInt(3, diasRetroativosParaBuscar);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
@@ -1064,7 +1066,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
                                                    @NotNull final List<Long> codUnidades,
                                                    @NotNull final String userToken) throws Throwable {
         final ZoneId zoneId = TimeZoneManager.getZoneIdForToken(userToken, conn);
-        final LocalDateTime dataHoraAtual = Now.localDateTimeUtc()
+        final LocalDateTime dataHoraAtual = Now.getLocalDateTimeUtc()
                 .atZone(ZoneOffset.UTC)
                 .withZoneSameInstant(zoneId)
                 .toLocalDateTime();

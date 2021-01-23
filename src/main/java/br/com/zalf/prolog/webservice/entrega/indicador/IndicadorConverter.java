@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.entrega.indicador;
 
-import br.com.zalf.prolog.webservice.commons.util.date.TimeUtils;
+import br.com.zalf.prolog.webservice.commons.util.datetime.TimeUtils;
 import br.com.zalf.prolog.webservice.entrega.indicador.acumulado.*;
 import br.com.zalf.prolog.webservice.entrega.indicador.item.*;
 

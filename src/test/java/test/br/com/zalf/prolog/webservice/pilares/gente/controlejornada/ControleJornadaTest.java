@@ -1,9 +1,9 @@
 package test.br.com.zalf.prolog.webservice.pilares.gente.controlejornada;
 
-import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
+import br.com.zalf.prolog.webservice.commons.FonteDataHora;
+import br.com.zalf.prolog.webservice.commons.util.datetime.PrologDateParser;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.gente.controlejornada.ControleJornadaService;
-import br.com.zalf.prolog.webservice.commons.FonteDataHora;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.IntervaloMarcacao;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.ResponseIntervalo;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.TipoInicioFim;
@@ -70,49 +70,49 @@ public class ControleJornadaTest extends BaseTest {
         // MARCACAO DE JORNADA
         IntervaloMarcacao marcacao = getIntervaloMarcacaoInicio(
                 TIPO_INTERVALO_JORNADA,
-                ProLogDateParser.toLocalDateTime("2019-01-10T06:15:00"));
+                PrologDateParser.toLocalDateTime("2019-01-10T06:15:00"));
         Long codMarcacaoInserida = insertMarcacaoIntervalo(marcacao);
 
         marcacao = getIntervaloMarcacaoFim(
                 codMarcacaoInserida,
                 TIPO_INTERVALO_JORNADA,
-                ProLogDateParser.toLocalDateTime("2019-01-10T18:00:00"));
+                PrologDateParser.toLocalDateTime("2019-01-10T18:00:00"));
         insertMarcacaoIntervalo(marcacao);
 
         // MARCACAO DE DESCANSO
         marcacao = getIntervaloMarcacaoInicio(
                 TIPO_INTERVALO_DESCANSO,
-                ProLogDateParser.toLocalDateTime("2019-01-10T09:15:00"));
+                PrologDateParser.toLocalDateTime("2019-01-10T09:15:00"));
         codMarcacaoInserida = insertMarcacaoIntervalo(marcacao);
 
         marcacao = getIntervaloMarcacaoFim(
                 codMarcacaoInserida,
                 TIPO_INTERVALO_DESCANSO,
-                ProLogDateParser.toLocalDateTime("2019-01-10T09:45:00"));
+                PrologDateParser.toLocalDateTime("2019-01-10T09:45:00"));
         insertMarcacaoIntervalo(marcacao);
 
         // MARCACAO DE ALMOCO
         marcacao = getIntervaloMarcacaoInicio(
                 TIPO_INTERVALO_REFEICAO,
-                ProLogDateParser.toLocalDateTime("2019-01-10T12:00:00"));
+                PrologDateParser.toLocalDateTime("2019-01-10T12:00:00"));
         codMarcacaoInserida = insertMarcacaoIntervalo(marcacao);
 
         marcacao = getIntervaloMarcacaoFim(
                 codMarcacaoInserida,
                 TIPO_INTERVALO_REFEICAO,
-                ProLogDateParser.toLocalDateTime("2019-01-10T13:00:00"));
+                PrologDateParser.toLocalDateTime("2019-01-10T13:00:00"));
         insertMarcacaoIntervalo(marcacao);
 
         // MARCACAO DE INTERVALO
         marcacao = getIntervaloMarcacaoInicio(
                 TIPO_INTERVALO_INTERVALO,
-                ProLogDateParser.toLocalDateTime("2019-01-10T15:00:00"));
+                PrologDateParser.toLocalDateTime("2019-01-10T15:00:00"));
         codMarcacaoInserida = insertMarcacaoIntervalo(marcacao);
 
         marcacao = getIntervaloMarcacaoFim(
                 codMarcacaoInserida,
                 TIPO_INTERVALO_INTERVALO,
-                ProLogDateParser.toLocalDateTime("2019-01-10T15:45:00"));
+                PrologDateParser.toLocalDateTime("2019-01-10T15:45:00"));
         insertMarcacaoIntervalo(marcacao);
     }
 
@@ -130,85 +130,85 @@ public class ControleJornadaTest extends BaseTest {
         // MARCACAO DE JORNADA
         IntervaloMarcacao marcacao = getIntervaloMarcacaoInicio(
                 TIPO_INTERVALO_JORNADA,
-                ProLogDateParser.toLocalDateTime("2019-01-11T06:15:00"));
+                PrologDateParser.toLocalDateTime("2019-01-11T06:15:00"));
         Long codMarcacaoInserida = insertMarcacaoIntervalo(marcacao);
 
         marcacao = getIntervaloMarcacaoFim(
                 codMarcacaoInserida,
                 TIPO_INTERVALO_JORNADA,
-                ProLogDateParser.toLocalDateTime("2019-01-11T18:00:00"));
+                PrologDateParser.toLocalDateTime("2019-01-11T18:00:00"));
         insertMarcacaoIntervalo(marcacao);
 
         // MARCACAO DE DESCANSO
         marcacao = getIntervaloMarcacaoInicio(
                 TIPO_INTERVALO_DESCANSO,
-                ProLogDateParser.toLocalDateTime("2019-01-11T09:15:00"));
+                PrologDateParser.toLocalDateTime("2019-01-11T09:15:00"));
         codMarcacaoInserida = insertMarcacaoIntervalo(marcacao);
 
         marcacao = getIntervaloMarcacaoFim(
                 codMarcacaoInserida,
                 TIPO_INTERVALO_DESCANSO,
-                ProLogDateParser.toLocalDateTime("2019-01-11T09:45:00"));
+                PrologDateParser.toLocalDateTime("2019-01-11T09:45:00"));
         insertMarcacaoIntervalo(marcacao);
 
         // MARCACAO DE ALMOCO
         marcacao = getIntervaloMarcacaoInicio(
                 TIPO_INTERVALO_REFEICAO,
-                ProLogDateParser.toLocalDateTime("2019-01-11T12:00:00"));
+                PrologDateParser.toLocalDateTime("2019-01-11T12:00:00"));
         codMarcacaoInserida = insertMarcacaoIntervalo(marcacao);
 
         marcacao = getIntervaloMarcacaoFim(
                 codMarcacaoInserida,
                 TIPO_INTERVALO_REFEICAO,
-                ProLogDateParser.toLocalDateTime("2019-01-11T13:00:00"));
+                PrologDateParser.toLocalDateTime("2019-01-11T13:00:00"));
         insertMarcacaoIntervalo(marcacao);
 
         // MARCACAO DE INTERVALO
         marcacao = getIntervaloMarcacaoInicio(
                 TIPO_INTERVALO_INTERVALO,
-                ProLogDateParser.toLocalDateTime("2019-01-11T15:00:00"));
+                PrologDateParser.toLocalDateTime("2019-01-11T15:00:00"));
         codMarcacaoInserida = insertMarcacaoIntervalo(marcacao);
 
         marcacao = getIntervaloMarcacaoFim(
                 codMarcacaoInserida,
                 TIPO_INTERVALO_INTERVALO,
-                ProLogDateParser.toLocalDateTime("2019-01-11T15:45:00"));
+                PrologDateParser.toLocalDateTime("2019-01-11T15:45:00"));
         insertMarcacaoIntervalo(marcacao);
 
         // MARCACAO DE INTERVALO
         marcacao = getIntervaloMarcacaoInicio(
                 TIPO_INTERVALO_INTERVALO,
-                ProLogDateParser.toLocalDateTime("2019-01-11T14:00:00"));
+                PrologDateParser.toLocalDateTime("2019-01-11T14:00:00"));
         codMarcacaoInserida = insertMarcacaoIntervalo(marcacao);
 
         marcacao = getIntervaloMarcacaoFim(
                 codMarcacaoInserida,
                 TIPO_INTERVALO_INTERVALO,
-                ProLogDateParser.toLocalDateTime("2019-01-11T14:45:00"));
+                PrologDateParser.toLocalDateTime("2019-01-11T14:45:00"));
         insertMarcacaoIntervalo(marcacao);
 
         // MARCACAO DE DESCANSO
         marcacao = getIntervaloMarcacaoInicio(
                 TIPO_INTERVALO_DESCANSO,
-                ProLogDateParser.toLocalDateTime("2019-01-11T16:15:00"));
+                PrologDateParser.toLocalDateTime("2019-01-11T16:15:00"));
         codMarcacaoInserida = insertMarcacaoIntervalo(marcacao);
 
         marcacao = getIntervaloMarcacaoFim(
                 codMarcacaoInserida,
                 TIPO_INTERVALO_DESCANSO,
-                ProLogDateParser.toLocalDateTime("2019-01-11T16:45:00"));
+                PrologDateParser.toLocalDateTime("2019-01-11T16:45:00"));
         insertMarcacaoIntervalo(marcacao);
 
         // MARCACAO DE DESCANSO
         marcacao = getIntervaloMarcacaoInicio(
                 TIPO_INTERVALO_DESCANSO,
-                ProLogDateParser.toLocalDateTime("2019-01-11T17:15:00"));
+                PrologDateParser.toLocalDateTime("2019-01-11T17:15:00"));
         codMarcacaoInserida = insertMarcacaoIntervalo(marcacao);
 
         marcacao = getIntervaloMarcacaoFim(
                 codMarcacaoInserida,
                 TIPO_INTERVALO_DESCANSO,
-                ProLogDateParser.toLocalDateTime("2019-01-11T17:45:00"));
+                PrologDateParser.toLocalDateTime("2019-01-11T17:45:00"));
         insertMarcacaoIntervalo(marcacao);
     }
 
@@ -227,49 +227,49 @@ public class ControleJornadaTest extends BaseTest {
         // MARCACAO DE JORNADA
         IntervaloMarcacao marcacao = getIntervaloMarcacaoInicio(
                 TIPO_INTERVALO_JORNADA,
-                ProLogDateParser.toLocalDateTime("2019-01-12T06:15:00"));
+                PrologDateParser.toLocalDateTime("2019-01-12T06:15:00"));
         Long codMarcacaoInserida = insertMarcacaoIntervalo(marcacao);
 
         marcacao = getIntervaloMarcacaoFim(
                 codMarcacaoInserida,
                 TIPO_INTERVALO_JORNADA,
-                ProLogDateParser.toLocalDateTime("2019-01-12T14:00:00"));
+                PrologDateParser.toLocalDateTime("2019-01-12T14:00:00"));
         insertMarcacaoIntervalo(marcacao);
 
         // MARCACAO DE ALMOCO
         marcacao = getIntervaloMarcacaoInicio(
                 TIPO_INTERVALO_REFEICAO,
-                ProLogDateParser.toLocalDateTime("2019-01-12T12:00:00"));
+                PrologDateParser.toLocalDateTime("2019-01-12T12:00:00"));
         codMarcacaoInserida = insertMarcacaoIntervalo(marcacao);
 
         marcacao = getIntervaloMarcacaoFim(
                 codMarcacaoInserida,
                 TIPO_INTERVALO_REFEICAO,
-                ProLogDateParser.toLocalDateTime("2019-01-12T13:00:00"));
+                PrologDateParser.toLocalDateTime("2019-01-12T13:00:00"));
         insertMarcacaoIntervalo(marcacao);
 
         // MARCACAO DE HOSPEDAGEM
         marcacao = getIntervaloMarcacaoInicio(
                 TIPO_INTERVALO_HOSPEDAGEM,
-                ProLogDateParser.toLocalDateTime("2019-01-12T19:00:00"));
+                PrologDateParser.toLocalDateTime("2019-01-12T19:00:00"));
         codMarcacaoInserida = insertMarcacaoIntervalo(marcacao);
 
         marcacao = getIntervaloMarcacaoFim(
                 codMarcacaoInserida,
                 TIPO_INTERVALO_HOSPEDAGEM,
-                ProLogDateParser.toLocalDateTime("2019-01-12T20:00:00"));
+                PrologDateParser.toLocalDateTime("2019-01-12T20:00:00"));
         insertMarcacaoIntervalo(marcacao);
 
         // MARCACAO DE DESCANSO
         marcacao = getIntervaloMarcacaoInicio(
                 TIPO_INTERVALO_DESCANSO,
-                ProLogDateParser.toLocalDateTime("2019-01-12T15:00:00"));
+                PrologDateParser.toLocalDateTime("2019-01-12T15:00:00"));
         codMarcacaoInserida = insertMarcacaoIntervalo(marcacao);
 
         marcacao = getIntervaloMarcacaoFim(
                 codMarcacaoInserida,
                 TIPO_INTERVALO_DESCANSO,
-                ProLogDateParser.toLocalDateTime("2019-01-12T17:00:00"));
+                PrologDateParser.toLocalDateTime("2019-01-12T17:00:00"));
         insertMarcacaoIntervalo(marcacao);
     }
 
@@ -286,31 +286,31 @@ public class ControleJornadaTest extends BaseTest {
         // MARCACAO DE JORNADA
         IntervaloMarcacao marcacao = getIntervaloMarcacaoInicio(
                 TIPO_INTERVALO_JORNADA,
-                ProLogDateParser.toLocalDateTime("2019-01-13T06:15:00"));
+                PrologDateParser.toLocalDateTime("2019-01-13T06:15:00"));
         insertMarcacaoIntervalo(marcacao);
 
         // MARCACAO DE ALMOCO
         marcacao = getIntervaloMarcacaoInicio(
                 TIPO_INTERVALO_REFEICAO,
-                ProLogDateParser.toLocalDateTime("2019-01-13T12:00:00"));
+                PrologDateParser.toLocalDateTime("2019-01-13T12:00:00"));
         Long codMarcacaoInserida = insertMarcacaoIntervalo(marcacao);
 
         marcacao = getIntervaloMarcacaoFim(
                 codMarcacaoInserida,
                 TIPO_INTERVALO_REFEICAO,
-                ProLogDateParser.toLocalDateTime("2019-01-13T13:00:00"));
+                PrologDateParser.toLocalDateTime("2019-01-13T13:00:00"));
         insertMarcacaoIntervalo(marcacao);
 
         // MARCACAO DE DESCANSO
         marcacao = getIntervaloMarcacaoInicio(
                 TIPO_INTERVALO_DESCANSO,
-                ProLogDateParser.toLocalDateTime("2019-01-13T15:00:00"));
+                PrologDateParser.toLocalDateTime("2019-01-13T15:00:00"));
         codMarcacaoInserida = insertMarcacaoIntervalo(marcacao);
 
         marcacao = getIntervaloMarcacaoFim(
                 codMarcacaoInserida,
                 TIPO_INTERVALO_DESCANSO,
-                ProLogDateParser.toLocalDateTime("2019-01-13T17:00:00"));
+                PrologDateParser.toLocalDateTime("2019-01-13T17:00:00"));
         insertMarcacaoIntervalo(marcacao);
     }
 
@@ -328,37 +328,37 @@ public class ControleJornadaTest extends BaseTest {
         // MARCACAO DE JORNADA
         IntervaloMarcacao marcacao = getIntervaloMarcacaoInicio(
                 TIPO_INTERVALO_JORNADA,
-                ProLogDateParser.toLocalDateTime("2019-01-14T06:15:00"));
+                PrologDateParser.toLocalDateTime("2019-01-14T06:15:00"));
         Long codMarcacaoInserida = insertMarcacaoIntervalo(marcacao);
 
         marcacao = getIntervaloMarcacaoFim(
                 codMarcacaoInserida,
                 TIPO_INTERVALO_JORNADA,
-                ProLogDateParser.toLocalDateTime("2019-01-15T18:00:00"));
+                PrologDateParser.toLocalDateTime("2019-01-15T18:00:00"));
         insertMarcacaoIntervalo(marcacao);
 
         // MARCACAO DE DESCANSO
         marcacao = getIntervaloMarcacaoInicio(
                 TIPO_INTERVALO_DESCANSO,
-                ProLogDateParser.toLocalDateTime("2019-01-14T09:15:00"));
+                PrologDateParser.toLocalDateTime("2019-01-14T09:15:00"));
         codMarcacaoInserida = insertMarcacaoIntervalo(marcacao);
 
         marcacao = getIntervaloMarcacaoFim(
                 codMarcacaoInserida,
                 TIPO_INTERVALO_DESCANSO,
-                ProLogDateParser.toLocalDateTime("2019-01-14T09:45:00"));
+                PrologDateParser.toLocalDateTime("2019-01-14T09:45:00"));
         insertMarcacaoIntervalo(marcacao);
 
         // MARCACAO DE ALMOCO
         marcacao = getIntervaloMarcacaoInicio(
                 TIPO_INTERVALO_REFEICAO,
-                ProLogDateParser.toLocalDateTime("2019-01-15T12:00:00"));
+                PrologDateParser.toLocalDateTime("2019-01-15T12:00:00"));
         codMarcacaoInserida = insertMarcacaoIntervalo(marcacao);
 
         marcacao = getIntervaloMarcacaoFim(
                 codMarcacaoInserida,
                 TIPO_INTERVALO_REFEICAO,
-                ProLogDateParser.toLocalDateTime("2019-01-15T13:00:00"));
+                PrologDateParser.toLocalDateTime("2019-01-15T13:00:00"));
         insertMarcacaoIntervalo(marcacao);
     }
 
@@ -377,49 +377,49 @@ public class ControleJornadaTest extends BaseTest {
         // MARCACAO DE JORNADA
         IntervaloMarcacao marcacao = getIntervaloMarcacaoInicio(
                 TIPO_INTERVALO_JORNADA,
-                ProLogDateParser.toLocalDateTime("2019-01-16T06:15:00"));
+                PrologDateParser.toLocalDateTime("2019-01-16T06:15:00"));
         Long codMarcacaoInserida = insertMarcacaoIntervalo(marcacao);
 
         marcacao = getIntervaloMarcacaoFim(
                 codMarcacaoInserida,
                 TIPO_INTERVALO_JORNADA,
-                ProLogDateParser.toLocalDateTime("2019-01-16T11:00:00"));
+                PrologDateParser.toLocalDateTime("2019-01-16T11:00:00"));
         insertMarcacaoIntervalo(marcacao);
 
         // MARCACAO DE DESCANSO
         marcacao = getIntervaloMarcacaoInicio(
                 TIPO_INTERVALO_DESCANSO,
-                ProLogDateParser.toLocalDateTime("2019-01-16T09:15:00"));
+                PrologDateParser.toLocalDateTime("2019-01-16T09:15:00"));
         codMarcacaoInserida = insertMarcacaoIntervalo(marcacao);
 
         marcacao = getIntervaloMarcacaoFim(
                 codMarcacaoInserida,
                 TIPO_INTERVALO_DESCANSO,
-                ProLogDateParser.toLocalDateTime("2019-01-16T09:45:00"));
+                PrologDateParser.toLocalDateTime("2019-01-16T09:45:00"));
         insertMarcacaoIntervalo(marcacao);
 
         // MARCACAO DE JORNADA
         marcacao = getIntervaloMarcacaoInicio(
                 TIPO_INTERVALO_JORNADA,
-                ProLogDateParser.toLocalDateTime("2019-01-16T12:30:00"));
+                PrologDateParser.toLocalDateTime("2019-01-16T12:30:00"));
         codMarcacaoInserida = insertMarcacaoIntervalo(marcacao);
 
         marcacao = getIntervaloMarcacaoFim(
                 codMarcacaoInserida,
                 TIPO_INTERVALO_JORNADA,
-                ProLogDateParser.toLocalDateTime("2019-01-16T17:00:00"));
+                PrologDateParser.toLocalDateTime("2019-01-16T17:00:00"));
         insertMarcacaoIntervalo(marcacao);
 
         // MARCACAO DE DESCANSO
         marcacao = getIntervaloMarcacaoInicio(
                 TIPO_INTERVALO_DESCANSO,
-                ProLogDateParser.toLocalDateTime("2019-01-16T14:15:00"));
+                PrologDateParser.toLocalDateTime("2019-01-16T14:15:00"));
         codMarcacaoInserida = insertMarcacaoIntervalo(marcacao);
 
         marcacao = getIntervaloMarcacaoFim(
                 codMarcacaoInserida,
                 TIPO_INTERVALO_DESCANSO,
-                ProLogDateParser.toLocalDateTime("2019-01-16T14:45:00"));
+                PrologDateParser.toLocalDateTime("2019-01-16T14:45:00"));
         insertMarcacaoIntervalo(marcacao);
     }
 
@@ -439,43 +439,43 @@ public class ControleJornadaTest extends BaseTest {
         // MARCACAO DE JORNADA
         IntervaloMarcacao marcacao = getIntervaloMarcacaoInicio(
                 TIPO_INTERVALO_JORNADA,
-                ProLogDateParser.toLocalDateTime("2019-01-17T06:15:00"));
+                PrologDateParser.toLocalDateTime("2019-01-17T06:15:00"));
         insertMarcacaoIntervalo(marcacao);
 
         // MARCACAO DE DESCANSO
         marcacao = getIntervaloMarcacaoInicio(
                 TIPO_INTERVALO_DESCANSO,
-                ProLogDateParser.toLocalDateTime("2019-01-17T09:15:00"));
+                PrologDateParser.toLocalDateTime("2019-01-17T09:15:00"));
         Long codMarcacaoInserida = insertMarcacaoIntervalo(marcacao);
 
         marcacao = getIntervaloMarcacaoFim(
                 codMarcacaoInserida,
                 TIPO_INTERVALO_DESCANSO,
-                ProLogDateParser.toLocalDateTime("2019-01-17T09:45:00"));
+                PrologDateParser.toLocalDateTime("2019-01-17T09:45:00"));
         insertMarcacaoIntervalo(marcacao);
 
         // MARCACAO DE JORNADA
         marcacao = getIntervaloMarcacaoInicio(
                 TIPO_INTERVALO_JORNADA,
-                ProLogDateParser.toLocalDateTime("2019-01-17T12:30:00"));
+                PrologDateParser.toLocalDateTime("2019-01-17T12:30:00"));
         codMarcacaoInserida = insertMarcacaoIntervalo(marcacao);
 
         marcacao = getIntervaloMarcacaoFim(
                 codMarcacaoInserida,
                 TIPO_INTERVALO_JORNADA,
-                ProLogDateParser.toLocalDateTime("2019-01-17T17:00:00"));
+                PrologDateParser.toLocalDateTime("2019-01-17T17:00:00"));
         insertMarcacaoIntervalo(marcacao);
 
         // MARCACAO DE DESCANSO
         marcacao = getIntervaloMarcacaoInicio(
                 TIPO_INTERVALO_DESCANSO,
-                ProLogDateParser.toLocalDateTime("2019-01-17T14:15:00"));
+                PrologDateParser.toLocalDateTime("2019-01-17T14:15:00"));
         codMarcacaoInserida = insertMarcacaoIntervalo(marcacao);
 
         marcacao = getIntervaloMarcacaoFim(
                 codMarcacaoInserida,
                 TIPO_INTERVALO_DESCANSO,
-                ProLogDateParser.toLocalDateTime("2019-01-17T14:45:00"));
+                PrologDateParser.toLocalDateTime("2019-01-17T14:45:00"));
         insertMarcacaoIntervalo(marcacao);
     }
 
@@ -494,37 +494,37 @@ public class ControleJornadaTest extends BaseTest {
         // MARCACAO DE JORNADA
         IntervaloMarcacao marcacao = getIntervaloMarcacaoInicio(
                 TIPO_INTERVALO_JORNADA,
-                ProLogDateParser.toLocalDateTime("2019-01-18T12:30:00"));
+                PrologDateParser.toLocalDateTime("2019-01-18T12:30:00"));
         Long codMarcacaoInserida = insertMarcacaoIntervalo(marcacao);
 
         marcacao = getIntervaloMarcacaoFim(
                 codMarcacaoInserida,
                 TIPO_INTERVALO_JORNADA,
-                ProLogDateParser.toLocalDateTime("2019-01-18T17:00:00"));
+                PrologDateParser.toLocalDateTime("2019-01-18T17:00:00"));
         insertMarcacaoIntervalo(marcacao);
 
         // MARCACAO DE DESCANSO
         marcacao = getIntervaloMarcacaoInicio(
                 TIPO_INTERVALO_DESCANSO,
-                ProLogDateParser.toLocalDateTime("2019-01-18T11:15:00"));
+                PrologDateParser.toLocalDateTime("2019-01-18T11:15:00"));
         codMarcacaoInserida = insertMarcacaoIntervalo(marcacao);
 
         marcacao = getIntervaloMarcacaoFim(
                 codMarcacaoInserida,
                 TIPO_INTERVALO_DESCANSO,
-                ProLogDateParser.toLocalDateTime("2019-01-18T12:45:00"));
+                PrologDateParser.toLocalDateTime("2019-01-18T12:45:00"));
         insertMarcacaoIntervalo(marcacao);
 
         // MARCACAO DE DESCANSO
         marcacao = getIntervaloMarcacaoInicio(
                 TIPO_INTERVALO_DESCANSO,
-                ProLogDateParser.toLocalDateTime("2019-01-18T16:15:00"));
+                PrologDateParser.toLocalDateTime("2019-01-18T16:15:00"));
         codMarcacaoInserida = insertMarcacaoIntervalo(marcacao);
 
         marcacao = getIntervaloMarcacaoFim(
                 codMarcacaoInserida,
                 TIPO_INTERVALO_DESCANSO,
-                ProLogDateParser.toLocalDateTime("2019-01-18T17:45:00"));
+                PrologDateParser.toLocalDateTime("2019-01-18T17:45:00"));
         insertMarcacaoIntervalo(marcacao);
     }
 
@@ -544,85 +544,85 @@ public class ControleJornadaTest extends BaseTest {
         // MARCACAO DE JORNADA
         IntervaloMarcacao marcacao = getIntervaloMarcacaoInicio(
                 TIPO_INTERVALO_JORNADA,
-                ProLogDateParser.toLocalDateTime("2019-01-19T06:15:00"));
+                PrologDateParser.toLocalDateTime("2019-01-19T06:15:00"));
         Long codMarcacaoInserida = insertMarcacaoIntervalo(marcacao);
 
         marcacao = getIntervaloMarcacaoFim(
                 codMarcacaoInserida,
                 TIPO_INTERVALO_JORNADA,
-                ProLogDateParser.toLocalDateTime("2019-01-20T13:15:00"));
+                PrologDateParser.toLocalDateTime("2019-01-20T13:15:00"));
         insertMarcacaoIntervalo(marcacao);
 
         // MARCACAO DE REFEICAO
         marcacao = getIntervaloMarcacaoInicio(
                 TIPO_INTERVALO_REFEICAO,
-                ProLogDateParser.toLocalDateTime("2019-01-19T12:00:00"));
+                PrologDateParser.toLocalDateTime("2019-01-19T12:00:00"));
         codMarcacaoInserida = insertMarcacaoIntervalo(marcacao);
 
         marcacao = getIntervaloMarcacaoFim(
                 codMarcacaoInserida,
                 TIPO_INTERVALO_REFEICAO,
-                ProLogDateParser.toLocalDateTime("2019-01-19T13:00:00"));
+                PrologDateParser.toLocalDateTime("2019-01-19T13:00:00"));
         insertMarcacaoIntervalo(marcacao);
 
         // MARCACAO DE HOSPEDAGEM
         marcacao = getIntervaloMarcacaoInicio(
                 TIPO_INTERVALO_HOSPEDAGEM,
-                ProLogDateParser.toLocalDateTime("2019-01-19T22:00:00"));
+                PrologDateParser.toLocalDateTime("2019-01-19T22:00:00"));
         codMarcacaoInserida = insertMarcacaoIntervalo(marcacao);
 
         marcacao = getIntervaloMarcacaoFim(
                 codMarcacaoInserida,
                 TIPO_INTERVALO_HOSPEDAGEM,
-                ProLogDateParser.toLocalDateTime("2019-01-20T05:00:00"));
+                PrologDateParser.toLocalDateTime("2019-01-20T05:00:00"));
         insertMarcacaoIntervalo(marcacao);
 
         // MARCACAO DE REFEICAO
         marcacao = getIntervaloMarcacaoInicio(
                 TIPO_INTERVALO_REFEICAO,
-                ProLogDateParser.toLocalDateTime("2019-01-20T12:00:00"));
+                PrologDateParser.toLocalDateTime("2019-01-20T12:00:00"));
         codMarcacaoInserida = insertMarcacaoIntervalo(marcacao);
 
         marcacao = getIntervaloMarcacaoFim(
                 codMarcacaoInserida,
                 TIPO_INTERVALO_REFEICAO,
-                ProLogDateParser.toLocalDateTime("2019-01-20T13:00:00"));
+                PrologDateParser.toLocalDateTime("2019-01-20T13:00:00"));
         insertMarcacaoIntervalo(marcacao);
 
         // MARCACAO DE JORNADA
         marcacao = getIntervaloMarcacaoInicio(
                 TIPO_INTERVALO_JORNADA,
-                ProLogDateParser.toLocalDateTime("2019-01-20T14:00:00"));
+                PrologDateParser.toLocalDateTime("2019-01-20T14:00:00"));
         codMarcacaoInserida = insertMarcacaoIntervalo(marcacao);
 
         marcacao = getIntervaloMarcacaoFim(
                 codMarcacaoInserida,
                 TIPO_INTERVALO_JORNADA,
-                ProLogDateParser.toLocalDateTime("2019-01-20T18:00:00"));
+                PrologDateParser.toLocalDateTime("2019-01-20T18:00:00"));
         insertMarcacaoIntervalo(marcacao);
 
         // MARCACAO DE DESCANSO
         marcacao = getIntervaloMarcacaoInicio(
                 TIPO_INTERVALO_DESCANSO,
-                ProLogDateParser.toLocalDateTime("2019-01-20T15:00:00"));
+                PrologDateParser.toLocalDateTime("2019-01-20T15:00:00"));
         codMarcacaoInserida = insertMarcacaoIntervalo(marcacao);
 
         marcacao = getIntervaloMarcacaoFim(
                 codMarcacaoInserida,
                 TIPO_INTERVALO_DESCANSO,
-                ProLogDateParser.toLocalDateTime("2019-01-20T16:00:00"));
+                PrologDateParser.toLocalDateTime("2019-01-20T16:00:00"));
         insertMarcacaoIntervalo(marcacao);
 
         // MARCACAO DE INTERVALO
         marcacao = getIntervaloMarcacaoInicio(
                 TIPO_INTERVALO_INTERVALO,
-                ProLogDateParser.toLocalDateTime("2019-01-20T18:00:00"));
+                PrologDateParser.toLocalDateTime("2019-01-20T18:00:00"));
         codMarcacaoInserida = insertMarcacaoIntervalo(marcacao);
 
         marcacao = getIntervaloMarcacaoFim(
                 codMarcacaoInserida,
                 TIPO_INTERVALO_INTERVALO,
-                ProLogDateParser.toLocalDateTime("2019-01-20T20:00:00"));
+                PrologDateParser.toLocalDateTime("2019-01-20T20:00:00"));
         insertMarcacaoIntervalo(marcacao);
     }
 
@@ -642,61 +642,61 @@ public class ControleJornadaTest extends BaseTest {
         // MARCACAO DE JORNADA
         IntervaloMarcacao marcacao = getIntervaloMarcacaoInicio(
                 TIPO_INTERVALO_JORNADA,
-                ProLogDateParser.toLocalDateTime("2019-01-22T06:15:00"));
+                PrologDateParser.toLocalDateTime("2019-01-22T06:15:00"));
         Long codMarcacaoInserida = insertMarcacaoIntervalo(marcacao);
 
         marcacao = getIntervaloMarcacaoFim(
                 codMarcacaoInserida,
                 TIPO_INTERVALO_JORNADA,
-                ProLogDateParser.toLocalDateTime("2019-01-24T18:00:00"));
+                PrologDateParser.toLocalDateTime("2019-01-24T18:00:00"));
         insertMarcacaoIntervalo(marcacao);
 
         // MARCACAO DE DESCANSO
         marcacao = getIntervaloMarcacaoInicio(
                 TIPO_INTERVALO_DESCANSO,
-                ProLogDateParser.toLocalDateTime("2019-01-21T22:00:00"));
+                PrologDateParser.toLocalDateTime("2019-01-21T22:00:00"));
         codMarcacaoInserida = insertMarcacaoIntervalo(marcacao);
 
         marcacao = getIntervaloMarcacaoFim(
                 codMarcacaoInserida,
                 TIPO_INTERVALO_DESCANSO,
-                ProLogDateParser.toLocalDateTime("2019-01-22T07:00:00"));
+                PrologDateParser.toLocalDateTime("2019-01-22T07:00:00"));
         insertMarcacaoIntervalo(marcacao);
 
         // MARCACAO DE REFEIÇÃO
         marcacao = getIntervaloMarcacaoInicio(
                 TIPO_INTERVALO_REFEICAO,
-                ProLogDateParser.toLocalDateTime("2019-01-22T12:00:00"));
+                PrologDateParser.toLocalDateTime("2019-01-22T12:00:00"));
         codMarcacaoInserida = insertMarcacaoIntervalo(marcacao);
 
         marcacao = getIntervaloMarcacaoFim(
                 codMarcacaoInserida,
                 TIPO_INTERVALO_REFEICAO,
-                ProLogDateParser.toLocalDateTime("2019-01-22T13:00:00"));
+                PrologDateParser.toLocalDateTime("2019-01-22T13:00:00"));
         insertMarcacaoIntervalo(marcacao);
 
         // MARCACAO DE HOSPEDAGEM
         marcacao = getIntervaloMarcacaoInicio(
                 TIPO_INTERVALO_HOSPEDAGEM,
-                ProLogDateParser.toLocalDateTime("2019-01-22T20:00:00"));
+                PrologDateParser.toLocalDateTime("2019-01-22T20:00:00"));
         codMarcacaoInserida = insertMarcacaoIntervalo(marcacao);
 
         marcacao = getIntervaloMarcacaoFim(
                 codMarcacaoInserida,
                 TIPO_INTERVALO_HOSPEDAGEM,
-                ProLogDateParser.toLocalDateTime("2019-01-23T05:00:00"));
+                PrologDateParser.toLocalDateTime("2019-01-23T05:00:00"));
         insertMarcacaoIntervalo(marcacao);
 
         // MARCACAO DE DESCANSO
         marcacao = getIntervaloMarcacaoInicio(
                 TIPO_INTERVALO_DESCANSO,
-                ProLogDateParser.toLocalDateTime("2019-01-24T22:00:00"));
+                PrologDateParser.toLocalDateTime("2019-01-24T22:00:00"));
         codMarcacaoInserida = insertMarcacaoIntervalo(marcacao);
 
         marcacao = getIntervaloMarcacaoFim(
                 codMarcacaoInserida,
                 TIPO_INTERVALO_DESCANSO,
-                ProLogDateParser.toLocalDateTime("2019-01-25T07:00:00"));
+                PrologDateParser.toLocalDateTime("2019-01-25T07:00:00"));
         insertMarcacaoIntervalo(marcacao);
     }
 
@@ -713,37 +713,37 @@ public class ControleJornadaTest extends BaseTest {
         // MARCACAO DE JORNADA
         IntervaloMarcacao marcacao = getIntervaloMarcacaoInicio(
                 TIPO_INTERVALO_JORNADA,
-                ProLogDateParser.toLocalDateTime("2019-01-25T06:15:00"));
+                PrologDateParser.toLocalDateTime("2019-01-25T06:15:00"));
         Long codMarcacaoInserida = insertMarcacaoIntervalo(marcacao);
 
         marcacao = getIntervaloMarcacaoFim(
                 codMarcacaoInserida,
                 TIPO_INTERVALO_JORNADA,
-                ProLogDateParser.toLocalDateTime("2019-01-26T07:00:00"));
+                PrologDateParser.toLocalDateTime("2019-01-26T07:00:00"));
         insertMarcacaoIntervalo(marcacao);
 
         // MARCACAO DE DESCANSO
         marcacao = getIntervaloMarcacaoInicio(
                 TIPO_INTERVALO_DESCANSO,
-                ProLogDateParser.toLocalDateTime("2019-01-25T22:00:00"));
+                PrologDateParser.toLocalDateTime("2019-01-25T22:00:00"));
         codMarcacaoInserida = insertMarcacaoIntervalo(marcacao);
 
         marcacao = getIntervaloMarcacaoFim(
                 codMarcacaoInserida,
                 TIPO_INTERVALO_DESCANSO,
-                ProLogDateParser.toLocalDateTime("2019-01-26T14:00:00"));
+                PrologDateParser.toLocalDateTime("2019-01-26T14:00:00"));
         insertMarcacaoIntervalo(marcacao);
 
         // MARCACAO DE JORNADA
         marcacao = getIntervaloMarcacaoInicio(
                 TIPO_INTERVALO_JORNADA,
-                ProLogDateParser.toLocalDateTime("2019-01-26T12:00:00"));
+                PrologDateParser.toLocalDateTime("2019-01-26T12:00:00"));
         codMarcacaoInserida = insertMarcacaoIntervalo(marcacao);
 
         marcacao = getIntervaloMarcacaoFim(
                 codMarcacaoInserida,
                 TIPO_INTERVALO_JORNADA,
-                ProLogDateParser.toLocalDateTime("2019-01-26T18:00:00"));
+                PrologDateParser.toLocalDateTime("2019-01-26T18:00:00"));
         insertMarcacaoIntervalo(marcacao);
     }
 
@@ -757,31 +757,31 @@ public class ControleJornadaTest extends BaseTest {
         // MARCACAO DE JORNADA
         IntervaloMarcacao marcacao = getIntervaloMarcacaoInicio(
                 TIPO_INTERVALO_JORNADA,
-                ProLogDateParser.toLocalDateTime("2019-01-27T06:15:00"));
-        Long codMarcacaoInserida = insertMarcacaoIntervalo(marcacao);
+                PrologDateParser.toLocalDateTime("2019-01-27T06:15:00"));
+        final Long codMarcacaoInserida = insertMarcacaoIntervalo(marcacao);
 
         marcacao = getIntervaloMarcacaoFim(
                 codMarcacaoInserida,
                 TIPO_INTERVALO_JORNADA,
-                ProLogDateParser.toLocalDateTime("2019-01-27T18:00:00"));
+                PrologDateParser.toLocalDateTime("2019-01-27T18:00:00"));
         insertMarcacaoIntervalo(marcacao);
 
         // MARCACAO DE INICIO DE DESCANSO
         marcacao = getIntervaloMarcacaoInicio(
                 TIPO_INTERVALO_DESCANSO,
-                ProLogDateParser.toLocalDateTime("2019-01-27T09:00:00"));
+                PrologDateParser.toLocalDateTime("2019-01-27T09:00:00"));
         insertMarcacaoIntervalo(marcacao);
 
         // MARCACAO DE INICIO DE REFEICAO
         marcacao = getIntervaloMarcacaoInicio(
                 TIPO_INTERVALO_REFEICAO,
-                ProLogDateParser.toLocalDateTime("2019-01-27T12:00:00"));
+                PrologDateParser.toLocalDateTime("2019-01-27T12:00:00"));
         insertMarcacaoIntervalo(marcacao);
 
         // MARCACAO DE INICIO DE INTERVALO
         marcacao = getIntervaloMarcacaoInicio(
                 TIPO_INTERVALO_INTERVALO,
-                ProLogDateParser.toLocalDateTime("2019-01-27T19:00:00"));
+                PrologDateParser.toLocalDateTime("2019-01-27T19:00:00"));
         insertMarcacaoIntervalo(marcacao);
     }
 
@@ -796,31 +796,31 @@ public class ControleJornadaTest extends BaseTest {
         // MARCACAO DE JORNADA
         IntervaloMarcacao marcacao = getIntervaloMarcacaoInicio(
                 TIPO_INTERVALO_JORNADA,
-                ProLogDateParser.toLocalDateTime("2019-01-28T06:15:00"));
-        Long codMarcacaoInserida = insertMarcacaoIntervalo(marcacao);
+                PrologDateParser.toLocalDateTime("2019-01-28T06:15:00"));
+        final Long codMarcacaoInserida = insertMarcacaoIntervalo(marcacao);
 
         marcacao = getIntervaloMarcacaoFim(
                 codMarcacaoInserida,
                 TIPO_INTERVALO_JORNADA,
-                ProLogDateParser.toLocalDateTime("2019-01-30T18:00:00"));
+                PrologDateParser.toLocalDateTime("2019-01-30T18:00:00"));
         insertMarcacaoIntervalo(marcacao);
 
         // MARCACAO DE INICIO DE DESCANSO
         marcacao = getIntervaloMarcacaoInicio(
                 TIPO_INTERVALO_DESCANSO,
-                ProLogDateParser.toLocalDateTime("2019-01-28T09:00:00"));
+                PrologDateParser.toLocalDateTime("2019-01-28T09:00:00"));
         insertMarcacaoIntervalo(marcacao);
 
         // MARCACAO DE INICIO DE REFEICAO
         marcacao = getIntervaloMarcacaoInicio(
                 TIPO_INTERVALO_REFEICAO,
-                ProLogDateParser.toLocalDateTime("2019-01-29T12:00:00"));
+                PrologDateParser.toLocalDateTime("2019-01-29T12:00:00"));
         insertMarcacaoIntervalo(marcacao);
 
         // MARCACAO DE INICIO DE INTERVALO
         marcacao = getIntervaloMarcacaoInicio(
                 TIPO_INTERVALO_INTERVALO,
-                ProLogDateParser.toLocalDateTime("2019-01-30T15:00:00"));
+                PrologDateParser.toLocalDateTime("2019-01-30T15:00:00"));
         insertMarcacaoIntervalo(marcacao);
     }
 
@@ -834,31 +834,31 @@ public class ControleJornadaTest extends BaseTest {
         // MARCACAO DE INICIO DE DESCANSO
         IntervaloMarcacao marcacao = getIntervaloMarcacaoInicio(
                 TIPO_INTERVALO_DESCANSO,
-                ProLogDateParser.toLocalDateTime("2019-01-31T09:00:00"));
-        Long codMarcacaoInserida = insertMarcacaoIntervalo(marcacao);
+                PrologDateParser.toLocalDateTime("2019-01-31T09:00:00"));
+        final Long codMarcacaoInserida = insertMarcacaoIntervalo(marcacao);
 
         marcacao = getIntervaloMarcacaoFim(
                 codMarcacaoInserida,
                 TIPO_INTERVALO_DESCANSO,
-                ProLogDateParser.toLocalDateTime("2019-01-31T10:00:00"));
+                PrologDateParser.toLocalDateTime("2019-01-31T10:00:00"));
         insertMarcacaoIntervalo(marcacao);
 
         // MARCACAO DE INICIO DE REFEICAO
         marcacao = getIntervaloMarcacaoInicio(
                 TIPO_INTERVALO_REFEICAO,
-                ProLogDateParser.toLocalDateTime("2019-01-31T12:00:00"));
+                PrologDateParser.toLocalDateTime("2019-01-31T12:00:00"));
         insertMarcacaoIntervalo(marcacao);
 
         // MARCACAO DE INICIO DE INTERVALO
         marcacao = getIntervaloMarcacaoInicio(
                 TIPO_INTERVALO_INTERVALO,
-                ProLogDateParser.toLocalDateTime("2019-01-31T15:00:00"));
+                PrologDateParser.toLocalDateTime("2019-01-31T15:00:00"));
         insertMarcacaoIntervalo(marcacao);
     }
 
     @NotNull
     private Long insertMarcacaoIntervalo(final IntervaloMarcacao marcacao) throws ProLogException {
-        ResponseIntervalo responseIntervalo =
+        final ResponseIntervalo responseIntervalo =
                 service.insertMarcacaoIntervalo(TOKEN_MARCACAO, VERSAO_DADOS, marcacao, null);
 
         Assert.assertNotNull(responseIntervalo);

@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.recapadoras;
 
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
+import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import org.jetbrains.annotations.NotNull;
 
@@ -31,7 +31,7 @@ public class RecapadoraDaoImpl extends DatabaseConnection implements RecapadoraD
                     "VALUES (?, ?, ?, (SELECT TA.CPF_COLABORADOR FROM TOKEN_AUTENTICACAO AS TA WHERE TA.TOKEN = ?)) RETURNING CODIGO;");
             stmt.setString(1, recapadora.getNome());
             stmt.setLong(2, recapadora.getCodEmpresa());
-            stmt.setTimestamp(3, Now.timestampUtc());
+            stmt.setTimestamp(3, Now.getTimestampUtc());
             stmt.setString(4, token);
             rSet = stmt.executeQuery();
             if (rSet.next()) {

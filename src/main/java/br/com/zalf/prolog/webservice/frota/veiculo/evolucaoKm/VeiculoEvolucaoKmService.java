@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.frota.veiculo.evolucaoKm;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
+import br.com.zalf.prolog.webservice.commons.util.datetime.PrologDateParser;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.veiculo.evolucaoKm._model.VeiculoEvolucaoKmResponse;
 import org.jetbrains.annotations.NotNull;
@@ -29,9 +29,11 @@ public final class VeiculoEvolucaoKmService {
                                          @NotNull final String dataFinal) throws ProLogException {
         try {
             final Optional<VeiculoEvolucaoKmResponse> optional = dao.getVeiculoEvolucaoKm(codEmpresa,
-                    codVeiculo,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal));
+                                                                                          codVeiculo,
+                                                                                          PrologDateParser.toLocalDate(
+                                                                                                  dataInicial),
+                                                                                          PrologDateParser.toLocalDate(
+                                                                                                  dataFinal));
             if (optional.isPresent()) {
                 return Response
                         .ok(optional.get())

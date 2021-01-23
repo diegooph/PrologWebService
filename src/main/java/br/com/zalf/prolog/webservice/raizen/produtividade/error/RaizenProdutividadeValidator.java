@@ -1,9 +1,9 @@
 package br.com.zalf.prolog.webservice.raizen.produtividade.error;
 
-import br.com.zalf.prolog.webservice.commons.util.ProLogValidator;
 import br.com.zalf.prolog.webservice.commons.util.StringUtils;
-import br.com.zalf.prolog.webservice.commons.util.ValidationUtils;
-import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
+import br.com.zalf.prolog.webservice.commons.util.datetime.DateUtils;
+import br.com.zalf.prolog.webservice.commons.util.validators.CpfValidator;
+import br.com.zalf.prolog.webservice.commons.util.validators.PrologValidator;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.insert.RaizenProdutividadeItemInsert;
@@ -17,7 +17,7 @@ import java.time.LocalDate;
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-public class RaizenProdutividadeValidator extends ProLogValidator {
+public class RaizenProdutividadeValidator extends PrologValidator {
 
     private static final int MAX_LENGTH_PLACA = 7;
     private static final int QTD_NUMEROS_PLACA = 4;
@@ -26,7 +26,8 @@ public class RaizenProdutividadeValidator extends ProLogValidator {
     private static final int ANO_MAXIMO_PERMITIDO = 2050;
 
     private RaizenProdutividadeValidator() {
-        throw new IllegalStateException(RaizenProdutividadeValidator.class.getSimpleName() + " cannot be instantiated!");
+        throw new IllegalStateException(RaizenProdutividadeValidator.class.getSimpleName() + " cannot be " +
+                                                "instantiated!");
     }
 
     public static void validacaoAtributosRaizenProdutividade(
@@ -54,7 +55,7 @@ public class RaizenProdutividadeValidator extends ProLogValidator {
     private static void validacaoCPF(@NotNull final Long cpfMotorista) throws ProLogException {
         checkNotNull(cpfMotorista, "Você precisa fornecer o CPF");
 
-        if (!ValidationUtils.isValidCpf(String.format("%011d", cpfMotorista))) {
+        if (!CpfValidator.isCpfValid(String.format("%011d", cpfMotorista))) {
             throw new GenericException("CPF inválido\n", "CPF informado: " + cpfMotorista);
         }
     }

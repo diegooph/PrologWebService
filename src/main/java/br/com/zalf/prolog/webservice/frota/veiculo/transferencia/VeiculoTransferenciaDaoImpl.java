@@ -1,10 +1,10 @@
 package br.com.zalf.prolog.webservice.frota.veiculo.transferencia;
 
 import br.com.zalf.prolog.webservice.Injection;
-import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
-import br.com.zalf.prolog.webservice.commons.util.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.StringUtils;
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
+import br.com.zalf.prolog.webservice.commons.util.database.PostgresUtils;
+import br.com.zalf.prolog.webservice.commons.util.database.SqlType;
+import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
 import br.com.zalf.prolog.webservice.frota.pneu.transferencia.PneuTransferenciaDao;
@@ -253,6 +253,7 @@ public final class VeiculoTransferenciaDaoImpl extends DatabaseConnection implem
         }
     }
 
+    @Override
     @NotNull
     public AvisoDelecaoTransferenciaVeiculo buscaAvisoDelecaoAutomaticaPorTransferencia(@NotNull final Long codEmpresa)
             throws Throwable {
@@ -317,7 +318,7 @@ public final class VeiculoTransferenciaDaoImpl extends DatabaseConnection implem
             stmt = conn.prepareStatement("SET CONSTRAINTS ALL DEFERRED;");
             stmt.execute();
 
-            final OffsetDateTime dataHoraRealizacaoProcesso = Now.offsetDateTimeUtc();
+            final OffsetDateTime dataHoraRealizacaoProcesso = Now.getOffsetDateTimeUtc();
             stmt = conn.prepareStatement("INSERT INTO VEICULO_TRANSFERENCIA_PROCESSO(" +
                     "  COD_UNIDADE_ORIGEM," +
                     "  COD_UNIDADE_DESTINO," +

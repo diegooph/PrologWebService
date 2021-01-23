@@ -6,6 +6,7 @@ Change Log
 
 ### Refactors
 * Adapta integração com Visual Rodopar para funcionar na Imediato (PL-3430)
+* Refatorações e reestruturações dos utils
 
 ### Bug Fixes
 * Corrige uso de autoCommit em conexões com o Banco

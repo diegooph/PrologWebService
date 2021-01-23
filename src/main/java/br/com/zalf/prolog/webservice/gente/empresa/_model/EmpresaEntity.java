@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.empresa._model;
 
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
+import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -28,7 +28,7 @@ public class EmpresaEntity {
     private String logoThumbnailUrl;
 
     @Column(name = "data_hora_cadastro", nullable = false)
-    private LocalDateTime dataHoraCadastro = Now.localDateTimeUtc();
+    private LocalDateTime dataHoraCadastro = Now.getLocalDateTimeUtc();
 
     @Column(name = "cod_auxiliar")
     private String codAuxiliar;

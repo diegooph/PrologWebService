@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.config;
 
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.commons.util.ProLogUtils;
+import br.com.zalf.prolog.webservice.commons.util.PrologUtils;
 import br.com.zalf.prolog.webservice.entrega.mapa.validator.RegrasPlanilhaMapaLoader;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.utils.FamiliaModeloBloqueadoLoader;
 import com.google.common.collect.ImmutableMap;
@@ -26,10 +26,10 @@ public class PrologConfigFilesWatcher implements FileChangeListener {
     private static final String WATCH_DIRECTORY = "configs/";
     @NotNull
     private static final Duration TIME_BETWEEN_CHECKS =
-            ProLogUtils.isDebug() ? Duration.ofMillis(5000L) : Duration.ofMinutes(5);
+            PrologUtils.isDebug() ? Duration.ofMillis(5000L) : Duration.ofMinutes(5);
     @NotNull
     private static final Duration TIME_TO_APPLY_CHANGES =
-            ProLogUtils.isDebug() ? Duration.ofMillis(3000L) : Duration.ofMinutes(1);
+            PrologUtils.isDebug() ? Duration.ofMillis(3000L) : Duration.ofMinutes(1);
     @NotNull
     private static final ImmutableMap<String, FileWatchListener> LISTENERS = setupListeners();
 
@@ -38,6 +38,27 @@ public class PrologConfigFilesWatcher implements FileChangeListener {
         String getFileNameToWatchChanges();
 
         void onWatchedFileChanged();
+    }
+
+    @NotNull
+    private static ImmutableMap<String, FileWatchListener> setupListeners() {
+        final FamiliaModeloBloqueadoLoader familiaModeloBloqueadoLoader = FamiliaModeloBloqueadoLoader.of();
+        final RegrasPlanilhaMapaLoader regrasPlanilhaMapaLoader = RegrasPlanilhaMapaLoader.of();
+        return ImmutableMap
+                .<String, FileWatchListener>builder()
+                .put(familiaModeloBloqueadoLoader.getFileNameToWatchChanges(), familiaModeloBloqueadoLoader)
+                .put(regrasPlanilhaMapaLoader.getFileNameToWatchChanges(), regrasPlanilhaMapaLoader)
+                .build();
+    }
+
+    @Override
+    public void onChange(final Set<ChangedFiles> changeSet) {
+        Log.d(TAG, "File changed");
+        changeSet.forEach(
+                changedFiles -> changedFiles.getFiles().stream()
+                        .map(file -> file.getFile().getName())
+                        .filter(LISTENERS::containsKey)
+                        .forEach(fileName -> LISTENERS.get(fileName).onWatchedFileChanged()));
     }
 
     @Bean
@@ -59,26 +80,5 @@ public class PrologConfigFilesWatcher implements FileChangeListener {
     public void onDestroy() {
         Log.d(TAG, "stopping watcher");
         fileSystemWatcher().stop();
-    }
-
-    @Override
-    public void onChange(final Set<ChangedFiles> changeSet) {
-        Log.d(TAG, "File changed");
-        changeSet.forEach(
-                changedFiles -> changedFiles.getFiles().stream()
-                        .map(file -> file.getFile().getName())
-                        .filter(LISTENERS::containsKey)
-                        .forEach(fileName -> LISTENERS.get(fileName).onWatchedFileChanged()));
-    }
-
-    @NotNull
-    private static ImmutableMap<String, FileWatchListener> setupListeners() {
-        final FamiliaModeloBloqueadoLoader familiaModeloBloqueadoLoader = FamiliaModeloBloqueadoLoader.of();
-        final RegrasPlanilhaMapaLoader regrasPlanilhaMapaLoader = RegrasPlanilhaMapaLoader.of();
-        return ImmutableMap
-                .<String, FileWatchListener>builder()
-                .put(familiaModeloBloqueadoLoader.getFileNameToWatchChanges(), familiaModeloBloqueadoLoader)
-                .put(regrasPlanilhaMapaLoader.getFileNameToWatchChanges(), regrasPlanilhaMapaLoader)
-                .build();
     }
 }

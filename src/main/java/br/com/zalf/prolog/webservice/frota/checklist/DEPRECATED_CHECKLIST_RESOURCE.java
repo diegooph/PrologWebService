@@ -1,8 +1,8 @@
 package br.com.zalf.prolog.webservice.frota.checklist;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
-import br.com.zalf.prolog.webservice.commons.util.Required;
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
+import br.com.zalf.prolog.webservice.commons.network.metadata.Required;
+import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
@@ -148,7 +148,7 @@ public final class DEPRECATED_CHECKLIST_RESOURCE {
 				null,
 				null,
 				calendar.getTimeInMillis(),
-				Now.utcMillis(),
+				Now.getUtcMillis(),
 				limit,
 				offset,
 				true,
