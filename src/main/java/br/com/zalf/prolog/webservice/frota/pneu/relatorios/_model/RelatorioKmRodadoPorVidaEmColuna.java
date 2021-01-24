@@ -158,7 +158,6 @@ public final class RelatorioKmRodadoPorVidaEmColuna implements CsvReport {
 
             final BigDecimal somatorioValorVidaTotal = vidasPneu.stream()
                     .map(PneuKmRodadoPorVida::getValorVida)
-                    //                    .map(valorVida -> valorVida == null ? BigDecimal.ZERO : valorVida)
                     .reduce(BigDecimal.ZERO, BigDecimal::add);
             final long kmRodadoTodasVidas = infoVida1.getKmRodadoTodasVidas();
             final BigDecimal cpkTotal = kmRodadoTodasVidas != 0
