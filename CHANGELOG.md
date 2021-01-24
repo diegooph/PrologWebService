@@ -7,6 +7,7 @@ Change Log
 ### Refactors
 * Altera estrutura de unidades para utilizar projections do Spring
 * Altera nome atributo de objeto de sucesso do retorno do descarte
+* Adiciona informação de valor e CPK acumulados no relatório de KM rodado por pneu e vida (PL-3262)
 
 ### Bug Fixes
 * Corrige salvamento de logs de integração
