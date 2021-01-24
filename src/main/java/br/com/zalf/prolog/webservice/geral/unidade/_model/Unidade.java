@@ -12,7 +12,7 @@ import java.util.List;
  * @deprecated at 2020-03-17. Esse objeto é utilizado para inúmeros casos de uso, listagem, visualização, seleção e etc.
  * Nosso novo padrão é termos um objeto para cada ação realizada no sistema.
  * Isso já começou a ser migrado com os novos objetos para {@link UnidadeEdicaoDto edição} e
- * para {@link UnidadeVisualizacaoDto visualização}.
+ * para {@link UnidadeVisualizacaoListagemDto visualização}.
  */
 @Deprecated
 public final class Unidade {

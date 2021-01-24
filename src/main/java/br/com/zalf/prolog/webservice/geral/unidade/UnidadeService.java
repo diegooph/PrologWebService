@@ -6,7 +6,7 @@ import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.sql.NotFoundException;
 import br.com.zalf.prolog.webservice.errorhandling.sql.ServerSideErrorException;
 import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeEntity;
-import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeVisualizacaoDto;
+import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeProjection;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * Created on 2020-03-12
@@ -57,8 +56,7 @@ public class UnidadeService {
     }
 
     @NotNull
-    @Transactional
-    public UnidadeVisualizacaoDto getUnidadeByCodigo(@NotNull final Long codUnidade) {
+    public UnidadeProjection getUnidadeByCodigo(@NotNull final Long codUnidade) {
         try {
             return dao.getUnidadeByCodigo(codUnidade);
         } catch (final Throwable t) {
@@ -71,23 +69,15 @@ public class UnidadeService {
     }
 
     @NotNull
-    @Transactional
-    public List<UnidadeVisualizacaoDto> getUnidadesListagem(
+    public List<UnidadeProjection> getUnidadesListagem(
             @NotNull final Long codEmpresa,
-            @Nullable final List<Long> codigosRegionais) {
+            @Nullable final List<Long> codRegionais) {
         try {
-            String codRegionais = null;
-            if (codigosRegionais != null && codigosRegionais.size() > 0) {
-                codRegionais = codigosRegionais
-                        .stream()
-                        .map(Object::toString)
-                        .collect(Collectors.joining(","));
-            }
             return dao.getUnidadesListagem(codEmpresa, codRegionais);
         } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao buscar lista de unidades da empresa.\n" +
                                              "Código da Empresa: %d\n" +
-                                             "Código da Regional: %s", codEmpresa, codigosRegionais), t);
+                                             "Códigos das Regionais: %s", codEmpresa, codRegionais), t);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao atualizar unidades, tente novamente.");

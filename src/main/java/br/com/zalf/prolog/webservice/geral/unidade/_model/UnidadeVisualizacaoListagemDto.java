@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
  */
 @ApiModel(description = "Objeto com as informações de uma unidade.")
 @Value
-public class UnidadeVisualizacaoDto {
+public class UnidadeVisualizacaoListagemDto {
     @ApiModelProperty(
             value = "Código único da unidade.",
             example = "215")
