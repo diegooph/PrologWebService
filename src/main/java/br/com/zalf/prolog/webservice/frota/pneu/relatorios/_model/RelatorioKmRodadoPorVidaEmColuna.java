@@ -62,7 +62,7 @@ public final class RelatorioKmRodadoPorVidaEmColuna implements CsvReport {
         // Último geral.
         HEADER.add("KM RODADO TODAS AS VIDAS");
         HEADER.add("CPK TODAS AS VIDAS");
-        HEADER.add("VALOR VIDA TODAS AS VIDAS");
+        HEADER.add("VALOR TODAS AS VIDAS");
     }
 
     @NotNull
