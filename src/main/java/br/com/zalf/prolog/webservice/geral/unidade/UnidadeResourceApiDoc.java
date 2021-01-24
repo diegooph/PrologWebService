@@ -59,7 +59,4 @@ public interface UnidadeResourceApiDoc {
             @ApiParam(value = "Um ou mais códigos de regional, existentes." +
                     "<br><b>Importante:</b> Se nenhum código for informado, será realizada a busca por todas as " +
                     "regionais da empresa.") final List<Long> codigosRegionais);
-
-    @ApiOperation(value = "Método depreciado para atualização de unidades.", hidden = true)
-    Response updateUnidadeOld(@Valid final UnidadeEdicaoDto unidade);
 }

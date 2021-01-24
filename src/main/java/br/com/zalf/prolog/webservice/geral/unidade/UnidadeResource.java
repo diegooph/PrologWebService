@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.geral.unidade;
 
-import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
 import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeEdicaoDto;
 import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeEntity;
@@ -69,20 +68,5 @@ public final class UnidadeResource implements UnidadeResourceApiDoc {
             @QueryParam("codEmpresa") final Long codEmpresa,
             @QueryParam("codRegionais") final List<Long> codRegionais) {
         return mapper.toDto(service.getUnidadesListagem(codEmpresa, codRegionais));
-    }
-
-    /**
-     * @deprecated em 09/11/2020. Deve ser utilizado o método {@link #updateUnidade}. Este método foi depreciado
-     * para a criação de um método que contenha um retorno específico, com informações úteis acerca da atualização
-     * ocorrida.
-     */
-    @Deprecated
-    @ApiExposed
-    @PUT
-    @Secured(permissions = {Pilares.Geral.Empresa.EDITAR_ESTRUTURA})
-    @Override
-    public Response updateUnidadeOld(@Valid final UnidadeEdicaoDto unidadeEdicaoDto) {
-        this.updateUnidade(unidadeEdicaoDto);
-        return Response.ok("Unidade atualizada com sucesso.");
     }
 }
