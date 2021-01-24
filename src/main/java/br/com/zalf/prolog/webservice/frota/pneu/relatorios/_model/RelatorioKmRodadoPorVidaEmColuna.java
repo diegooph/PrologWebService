@@ -60,9 +60,9 @@ public final class RelatorioKmRodadoPorVidaEmColuna implements CsvReport {
         }
 
         // Último geral.
+        HEADER.add("VALOR TODAS AS VIDAS");
         HEADER.add("KM RODADO TODAS AS VIDAS");
         HEADER.add("CPK TODAS AS VIDAS");
-        HEADER.add("VALOR TODAS AS VIDAS");
     }
 
     @NotNull
@@ -182,9 +182,9 @@ public final class RelatorioKmRodadoPorVidaEmColuna implements CsvReport {
             final String roundedSomatorioValorVida =
                     FormatUtils.truncateToString(BigDecimal.valueOf(somatorioValorVidaTotal), 2);
 
+            row.add(roundedSomatorioValorVida);
             row.add(infoVida1.getKmRodadoTodasVidas());
             row.add(roundedSomatorioCpk);
-            row.add(roundedSomatorioValorVida);
 
             innerTable.add(row);
         });
