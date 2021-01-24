@@ -198,10 +198,10 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
                             rSet.getString("marca"),
                             rSet.getString("modelo"),
                             rSet.getString("vida_pneu"),
-                            rSet.getString("valor_vida"),
-                            rSet.getString("km_rodado_vida"),
+                            rSet.getBigDecimal("valor_vida"),
+                            rSet.getLong("km_rodado_vida"),
                             rSet.getString("valor_por_km_vida"),
-                            rSet.getString("km_rodado_todas_vidas")));
+                            rSet.getLong("km_rodado_todas_vidas")));
                 } while (rSet.next());
 
                 new CsvWriter

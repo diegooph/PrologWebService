@@ -143,8 +143,8 @@ public final class RelatorioKmRodadoPorVidaEmColuna implements CsvReport {
                         vidaPneuEncontrada.ifPresent(vidaEncontrada -> {
                             row.add(vidaEncontrada.getMarca());
                             row.add(vidaEncontrada.getModelo());
-                            row.add(vidaEncontrada.getValorVida());
-                            row.add(vidaEncontrada.getKmRodadoVida());
+                            row.add(FormatUtils.truncateToString(vidaEncontrada.getValorVida(), 2));
+                            row.add(String.valueOf(vidaEncontrada.getKmRodadoVida()));
                             row.add(vidaEncontrada.getValorPorKmVida());
                         });
                         if (!vidaPneuEncontrada.isPresent()) {
@@ -156,34 +156,20 @@ public final class RelatorioKmRodadoPorVidaEmColuna implements CsvReport {
                         }
                     });
 
-            final Double somatorioCpkTotal = vidasPneu.stream()
-                    .map(PneuKmRodadoPorVida::getValorPorKmVida)
-                    .map(cpk -> {
-                        if (cpk.equals("-")) {
-                            return 0d;
-                        }
-                        return Double.parseDouble(cpk);
-                    })
-                    .reduce(0d, Double::sum);
-
-            final Double somatorioValorVidaTotal = vidasPneu.stream()
+            final BigDecimal somatorioValorVidaTotal = vidasPneu.stream()
                     .map(PneuKmRodadoPorVida::getValorVida)
-                    .map(valorVida -> {
-                        if (valorVida.equals("-")) {
-                            return 0d;
-                        }
-                        return Double.parseDouble(valorVida);
-                    })
-                    .reduce(0d, Double::sum);
+                    //                    .map(valorVida -> valorVida == null ? BigDecimal.ZERO : valorVida)
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+            final long kmRodadoTodasVidas = infoVida1.getKmRodadoTodasVidas();
+            final BigDecimal cpkTotal = kmRodadoTodasVidas != 0
+                    ? BigDecimal.valueOf(somatorioValorVidaTotal.doubleValue() / kmRodadoTodasVidas)
+                    : BigDecimal.ZERO;
 
-            final String roundedSomatorioCpk =
-                    FormatUtils.truncateToString(BigDecimal.valueOf(somatorioCpkTotal), 3);
-
-            final String roundedSomatorioValorVida =
-                    FormatUtils.truncateToString(BigDecimal.valueOf(somatorioValorVidaTotal), 2);
+            final String roundedSomatorioValorVida = FormatUtils.truncateToString(somatorioValorVidaTotal, 2);
+            final String roundedSomatorioCpk = FormatUtils.truncateToString(cpkTotal, 3);
 
             row.add(roundedSomatorioValorVida);
-            row.add(infoVida1.getKmRodadoTodasVidas());
+            row.add(String.valueOf(kmRodadoTodasVidas));
             row.add(roundedSomatorioCpk);
 
             innerTable.add(row);
