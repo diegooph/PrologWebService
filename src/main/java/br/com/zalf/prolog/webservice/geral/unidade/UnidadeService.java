@@ -71,13 +71,13 @@ public class UnidadeService {
     @NotNull
     public List<UnidadeProjection> getUnidadesListagem(
             @NotNull final Long codEmpresa,
-            @Nullable final List<Long> codRegionais) {
+            @Nullable final List<Long> codsRegionais) {
         try {
-            return dao.getUnidadesListagem(codEmpresa, codRegionais);
+            return dao.getUnidadesListagem(codEmpresa, codsRegionais);
         } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao buscar lista de unidades da empresa.\n" +
                                              "Código da Empresa: %d\n" +
-                                             "Códigos das Regionais: %s", codEmpresa, codRegionais), t);
+                                             "Códigos das Regionais: %s", codEmpresa, codsRegionais), t);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao atualizar unidades, tente novamente.");

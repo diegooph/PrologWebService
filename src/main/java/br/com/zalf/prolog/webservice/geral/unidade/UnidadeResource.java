@@ -43,7 +43,6 @@ public final class UnidadeResource implements UnidadeResourceApiDoc {
 
     @ApiExposed
     @PUT
-    @Path("/atualiza")
     @Secured(permissions = {Pilares.Geral.Empresa.EDITAR_ESTRUTURA})
     @Override
     public SuccessResponse updateUnidade(@Valid final UnidadeEdicaoDto unidadeEdicaoDto) {
@@ -66,7 +65,7 @@ public final class UnidadeResource implements UnidadeResourceApiDoc {
     @Override
     public List<UnidadeVisualizacaoListagemDto> getUnidadesListagem(
             @QueryParam("codEmpresa") final Long codEmpresa,
-            @QueryParam("codRegionais") final List<Long> codRegionais) {
-        return mapper.toDto(service.getUnidadesListagem(codEmpresa, codRegionais));
+            @QueryParam("codsRegionais") final List<Long> codsRegionais) {
+        return mapper.toDto(service.getUnidadesListagem(codEmpresa, codsRegionais));
     }
 }
