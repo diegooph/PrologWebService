@@ -35,9 +35,9 @@ public class UnidadeService {
     @Transactional
     public SuccessResponse updateUnidade(@NotNull final UnidadeEntity unidadeEditada) {
         try {
-            final UnidadeEntity unidadeToUpdate = dao.findById(unidadeEditada.getCodigo())
+            UnidadeEntity unidadeToUpdate = dao.findById(unidadeEditada.getCodigo())
                     .orElseThrow(NotFoundException::new);
-            unidadeToUpdate.toBuilder()
+            unidadeToUpdate = unidadeToUpdate.toBuilder()
                     .nome(unidadeEditada.getNome())
                     .codAuxiliar(unidadeEditada.getCodAuxiliar())
                     .latitudeUnidade(unidadeEditada.getLatitudeUnidade())
