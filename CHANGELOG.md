@@ -4,6 +4,9 @@ Change Log
 <a name="v1.5.4"></a>
 ## Version [v1.5.4](https://github.com/luizfp/PrologWebService/compare/v1.5.3...v1.5.4) (release-date) [unreleased]
 
+### Bug Fixes
+* Corrige salvamento de logs de integração
+* Corrige uso de URL na integração com a Horizonte
 
 <a name="v1.5.3"></a>
 ## Version [v1.5.3](https://github.com/luizfp/PrologWebService/compare/v1.5.2...v1.5.3) (2021-01-23)
