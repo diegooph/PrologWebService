@@ -53,7 +53,7 @@ public class PrologConfigFilesWatcher implements FileChangeListener {
 
     @Override
     public void onChange(final Set<ChangedFiles> changeSet) {
-        Log.d(TAG, "File changed");
+        Log.i(TAG, "File changed");
         changeSet.forEach(
                 changedFiles -> changedFiles.getFiles().stream()
                         .map(file -> file.getFile().getName())
@@ -72,13 +72,13 @@ public class PrologConfigFilesWatcher implements FileChangeListener {
         watcher.addSourceDirectory(new File(resource.getFile()));
         watcher.addListener(this);
         watcher.start();
-        Log.d(TAG, "starting watcher");
+        Log.i(TAG, "starting watcher");
         return watcher;
     }
 
     @PreDestroy
     public void onDestroy() {
-        Log.d(TAG, "stopping watcher");
+        Log.i(TAG, "stopping watcher");
         fileSystemWatcher().stop();
     }
 }
