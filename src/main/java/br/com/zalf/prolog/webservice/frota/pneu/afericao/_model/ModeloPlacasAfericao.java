@@ -92,6 +92,7 @@ public class ModeloPlacasAfericao {
          * Indentificar do veículo.
          */
         private String placa;
+        private Long codigoVeiculo;
         private String identificadorFrota;
 
         /**
@@ -206,6 +207,10 @@ public class ModeloPlacasAfericao {
         public void setPlaca(final String placa) {
             this.placa = placa;
         }
+
+        public Long getCodigoVeiculo() { return codigoVeiculo;}
+
+        public void setCodigoVeiculo(final Long codigoVeiculo) { this.codigoVeiculo = codigoVeiculo;}
 
         public String getIdentificadorFrota() {
             return identificadorFrota;
