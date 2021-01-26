@@ -102,7 +102,7 @@ final class ServicoQueryBinder {
                                                        @NotNull final String placa,
                                                        @Nullable final TipoServico tipoServico) throws SQLException {
         final PreparedStatement stmt = connection.prepareStatement(BASE_QUERY_BUSCA_SERVICOS
-                + "WHERE A.PLACA_VEICULO = ? "
+                + "WHERE V.PLACA = ? "
                 + "AND AM.DATA_HORA_RESOLUCAO IS NULL "
                 + "AND AM.TIPO_SERVICO LIKE ? "
                 + "ORDER BY AM.TIPO_SERVICO;");
