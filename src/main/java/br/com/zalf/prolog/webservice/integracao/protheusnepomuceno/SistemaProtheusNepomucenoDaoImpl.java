@@ -75,6 +75,7 @@ public final class SistemaProtheusNepomucenoDaoImpl extends DatabaseConnection i
                     "F_COD_UNIDADE_PROLOG => ?," +
                     "F_COD_AUXILIAR_UNIDADE => ?," +
                     "F_CPF_AFERIDOR => ?, " +
+                    "F_COD_VEICULO => ?," +
                     "F_PLACA_VEICULO => ?::TEXT, " +
                     "F_COD_AUXILIAR_TIPO_VEICULO_PROLOG => ?, " +
                     "F_KM_VEICULO => ?::TEXT, " +
@@ -87,19 +88,21 @@ public final class SistemaProtheusNepomucenoDaoImpl extends DatabaseConnection i
             stmt.setString(3, String.valueOf(afericao.getColaborador().getCpf()));
             if (afericao instanceof AfericaoPlaca) {
                 final AfericaoPlaca afericaoPlaca = (AfericaoPlaca) afericao;
-                stmt.setString(4, afericaoPlaca.getVeiculo().getPlaca());
+                stmt.setLong(4, afericaoPlaca.getVeiculo().getCodigo());
+                stmt.setString(5, afericaoPlaca.getVeiculo().getPlaca());
                 // Setamos o código auxiliar do tipo no nome do diagrama.
-                stmt.setString(5, afericaoPlaca.getVeiculo().getDiagrama().getNome());
-                stmt.setString(6, String.valueOf(afericaoPlaca.getKmMomentoAfericao()));
+                stmt.setString(6, afericaoPlaca.getVeiculo().getDiagrama().getNome());
+                stmt.setString(7, String.valueOf(afericaoPlaca.getKmMomentoAfericao()));
             } else {
-                stmt.setNull(4, Types.VARCHAR);
+                stmt.setNull(4, Types.BIGINT);
                 stmt.setNull(5, Types.VARCHAR);
                 stmt.setNull(6, Types.VARCHAR);
+                stmt.setNull(7, Types.VARCHAR);
             }
-            stmt.setLong(7, afericao.getTempoRealizacaoAfericaoInMillis());
-            stmt.setObject(8, afericao.getDataHora().atOffset(ZoneOffset.UTC));
-            stmt.setString(9, afericao.getTipoMedicaoColetadaAfericao().asString());
-            stmt.setString(10, afericao.getTipoProcessoColetaAfericao().asString());
+            stmt.setLong(8, afericao.getTempoRealizacaoAfericaoInMillis());
+            stmt.setObject(9, afericao.getDataHora().atOffset(ZoneOffset.UTC));
+            stmt.setString(10, afericao.getTipoMedicaoColetadaAfericao().asString());
+            stmt.setString(11, afericao.getTipoProcessoColetaAfericao().asString());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 final long codAfericaoIntegrada = rSet.getLong("COD_AFERICAO_INTEGRADA");
