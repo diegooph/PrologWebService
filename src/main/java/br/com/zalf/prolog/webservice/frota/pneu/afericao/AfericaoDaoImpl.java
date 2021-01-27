@@ -429,18 +429,6 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         ResultSet rSet = null;
         try {
             stmt = conn.prepareStatement("SELECT * FROM FUNC_AFERICAO_INSERT_AFERICAO(" +
-<<<<<<< HEAD
-                                                 "F_COD_UNIDADE => ?," +
-                                                 "F_DATA_HORA => ?, " +
-                                                 "F_CPF_AFERIDOR => ?, " +
-                                                 "F_TEMPO_REALIZACAO => ?, " +
-                                                 "F_TIPO_MEDICAO_COLETADA => ?, " +
-                                                 "F_TIPO_PROCESSO_COLETA => ?, " +
-                                                 "F_FORMA_COLETA_DADOS => ?," +
-                                                 "F_PLACA_VEICULO => ?," +
-                                                 "F_COD_VEICULO => ?, " +
-                                                 "F_KM_VEICULO => ?) AS COD_AFERICAO;");
-=======
                     "F_COD_UNIDADE => ?," +
                     "F_DATA_HORA => ?, " +
                     "F_CPF_AFERIDOR => ?, " +
@@ -450,7 +438,6 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                     "F_FORMA_COLETA_DADOS => ?," +
                     "F_COD_VEICULO => ?, " +
                     "F_KM_VEICULO => ?) AS COD_AFERICAO;");
->>>>>>> c0d4e554b9810886468e1c7e67105c45e3519e4e
             stmt.setLong(1, codUnidade);
             stmt.setObject(2, afericao.getDataHora().atOffset(ZoneOffset.UTC));
             stmt.setLong(3, afericao.getColaborador().getCpf());
@@ -464,28 +451,16 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
 
             if (afericao instanceof AfericaoPlaca) {
                 final AfericaoPlaca afericaoPlaca = (AfericaoPlaca) afericao;
-<<<<<<< HEAD
-                stmt.setString(8, afericaoPlaca.getVeiculo().getPlaca());
-                stmt.setLong(9, afericaoPlaca.getVeiculo().getCodigo());
-                stmt.setLong(10, afericaoPlaca.getKmMomentoAfericao());
-=======
                 stmt.setLong(8, afericaoPlaca.getVeiculo().getCodigo());
                 stmt.setLong(9, afericaoPlaca.getKmMomentoAfericao());
->>>>>>> c0d4e554b9810886468e1c7e67105c45e3519e4e
                 Injection.provideVeiculoDao()
                         .updateKmByPlaca(
                                 afericaoPlaca.getVeiculo().getPlaca(),
                                 afericaoPlaca.getKmMomentoAfericao(),
                                 conn);
             } else {
-<<<<<<< HEAD
-                stmt.setNull(8, Types.VARCHAR);
-                stmt.setNull(9, Types.BIGINT);
-                stmt.setNull(10, Types.BIGINT);
-=======
                 stmt.setNull(8, Types.BIGINT);
                 stmt.setNull(9, Types.BIGINT);
->>>>>>> c0d4e554b9810886468e1c7e67105c45e3519e4e
             }
             Long codAfericao = null;
             rSet = stmt.executeQuery();
