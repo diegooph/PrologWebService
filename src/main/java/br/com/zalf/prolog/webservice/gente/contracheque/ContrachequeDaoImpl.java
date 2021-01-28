@@ -52,13 +52,13 @@ public class ContrachequeDaoImpl extends DatabaseConnection implements Contrache
                 final List<ItemProdutividade> itensProdutividade =
                         produtividadeDao.getProdutividadeByPeriodo(ano, mes, cpf, false);
                 // Depois é verificado se o colaborador recebe prêmio, ou seja, se é um motorista ou um ajudante
-                // e se o número de viagens é igual ou maior ao rm_numero_viagens.
-                if ((restricoes.codFuncaoSolicitante == restricoes.codFuncaoAjudante
-                        || restricoes.codFuncaoSolicitante == restricoes.codFuncaoMotorista)
-                        && restricoes.rmNumeroViagens <= itensProdutividade.size()) {
+                if (restricoes.codFuncaoSolicitante == restricoes.codFuncaoAjudante
+                        || restricoes.codFuncaoSolicitante == restricoes.codFuncaoMotorista) {
                     final double bonus;
                     // Para algumas unidades, a recarga compõem o cálculo do prêmio, para outra é uma verba separada.
-                    if (recebeBonus(ano, mes, cpf, restricoes.indicadorBonus)) {
+                    // O bônus só será considerado apenas se número de viagens for acima ou igual o parametrizado.
+                    if ((recebeBonus(ano, mes, cpf, restricoes.indicadorBonus))
+                            && restricoes.rmNumeroViagens <= itensProdutividade.size()) {
                         if (restricoes.codFuncaoSolicitante == restricoes.codFuncaoMotorista) {
                             bonus = restricoes.valorBonusMotorista;
                         } else {
