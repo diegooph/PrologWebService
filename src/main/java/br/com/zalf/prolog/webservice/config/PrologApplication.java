@@ -48,7 +48,6 @@ public class PrologApplication extends SpringBootServletInitializer {
     }
 
     @Component
-//    @ApplicationPath("/prolog/v2")
     public static class JerseyConfig extends ResourceConfig {
 
         @Autowired
