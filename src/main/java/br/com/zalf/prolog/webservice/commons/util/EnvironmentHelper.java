@@ -6,12 +6,10 @@ package br.com.zalf.prolog.webservice.commons.util;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public class EnvironmentHelper {
-    public static final String GOOGLE_APPLICATION_CREDENTIALS;
     public static final String MAILJET_APIKEY_PUBLIC;
     public static final String MAILJET_APIKEY_PRIVATE;
 
     static {
-        GOOGLE_APPLICATION_CREDENTIALS = System.getenv("GOOGLE_APPLICATION_CREDENTIALS");
         MAILJET_APIKEY_PUBLIC = System.getenv("MAILJET_APIKEY_PUBLIC");
         MAILJET_APIKEY_PRIVATE = System.getenv("MAILJET_APIKEY_PRIVATE");
     }
