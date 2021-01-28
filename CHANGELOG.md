@@ -4,6 +4,8 @@ Change Log
 <a name="v1.5.5"></a>
 ## Version [v1.5.5](https://github.com/luizfp/PrologWebService/compare/v1.5.4...v1.5.5) (release-date) [unreleased]
 
+### Bug Fixes
+* Corrige uso de autoCommit no salvamento de imagens do checklist
 
 <a name="v1.5.4"></a>
 ## Version [v1.5.4](https://github.com/luizfp/PrologWebService/compare/v1.5.3...v1.5.4) (2021-01-24)
