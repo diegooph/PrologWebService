@@ -250,6 +250,28 @@ public class ControleJornadaDaoImpl extends DatabaseConnection implements Contro
         }
     }
 
+    @Override
+    public boolean isMarcacaoInicioFinalizada(@NotNull final Long codMarcacao) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("select exists(select cod_marcacao_fim " +
+                                                 "from marcacao_vinculo_inicio_fim " +
+                                                 "where cod_marcacao_inicio = ?) as is_inicio_finalizado;");
+            stmt.setLong(1, codMarcacao);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return rSet.getBoolean("is_inicio_finalizado");
+            } else {
+                throw new IllegalStateException("Erro ao validar se a marcação de início possui fim vinculado.");
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
     @NotNull
     private Long marcacaoIntervaloJaExiste(@NotNull final Connection conn,
                                            @NotNull final IntervaloMarcacao intervaloMarcacao) throws SQLException {
