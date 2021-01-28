@@ -298,7 +298,6 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            conn.setAutoCommit(false);
             stmt = conn.prepareStatement("INSERT INTO CHECKLIST_GALERIA_IMAGENS(URL_IMAGEM, COD_EMPRESA) " +
                                                  "VALUES (?, ?) RETURNING COD_IMAGEM;");
             stmt.setString(1, imagemProLog.getUrlImagem());
