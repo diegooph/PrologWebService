@@ -20,13 +20,11 @@ public final class GlobusPiccoloturConstants {
      * validação.
      */
     @NotNull
-    private static final String URL_TESTES = BuildConfig.DEBUG
-            ? "http://localhost:8184/bruno.maia/ManutencaoWsTerceiros.asmx"
-            : "http://sp.bgmrodotec.com.br:8184/bruno.maia/ManutencaoWsTerceiros.asmx";
+    // URL_TESTES_LOCAL = "http://localhost:8184/bruno.maia/ManutencaoWsTerceiros.asmx"
+    private static final String URL_TESTES = "http://sp.bgmrodotec.com.br:8184/bruno.maia/ManutencaoWsTerceiros.asmx";
     @NotNull
-    public static final String WSDL_LOCATION = BuildConfig.DEBUG
-            ? URL_TESTES
-            : "http://erp.piccolotur.com.br:55582/GlobusMais/ManutencaoWsTerceiros.asmx";
+    public static final String WSDL_LOCATION =
+            "http://erp.piccolotur.com.br:55582/GlobusMais/ManutencaoWsTerceiros.asmx";
     public static final String NAMESPACE = "http://bgmrodotec.com.br/globus5/ManutencaoWsTerceiros";
 
     public static final String TOKEN_AUTENTICACAO_OS =
