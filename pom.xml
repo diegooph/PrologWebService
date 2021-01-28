@@ -27,12 +27,14 @@
             </activation>
             <properties>
                 <active-profile>dev</active-profile>
+                <prolog-debug>true</prolog-debug>
             </properties>
         </profile>
         <profile>
             <id>prod</id>
             <properties>
                 <active-profile>prod</active-profile>
+                <prolog-debug>false</prolog-debug>
             </properties>
         </profile>
     </profiles>
