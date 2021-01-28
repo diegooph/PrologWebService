@@ -279,29 +279,32 @@ public class ContrachequeDaoImpl extends DatabaseConnection implements Contrache
                 restricoes.indicadorBonus = rSet.getString("INDICADOR");
                 restricoes.recargaPartePremio = rSet.getBoolean("RECARGA_PARTE_PREMIO");
                 restricoes.codFuncaoSolicitante = rSet.getLong("COD_FUNCAO_SOLICITANTE");
+                restricoes.numeroViagensNecessariasParaReceberBonus =
+                        getNumeroViagensParaReceberBonus(conn, restricoes.codUnidade);
             }
-            return getRestricoesComRmNumeroViagens(conn, restricoes);
+            return restricoes;
         } finally {
             close(stmt, rSet);
         }
     }
 
-    private RestricoesContracheque getRestricoesComRmNumeroViagens(final Connection conn,
-                                                                   final RestricoesContracheque restricoes)
+    private Short getNumeroViagensParaReceberBonus(final Connection conn,
+                                                   final Long codUnidade)
             throws SQLException {
         final String sql = "select uvrm.rm_numero_viagens " +
                 "from unidade_valores_rm uvrm " +
                 "where uvrm.cod_unidade = ?;";
 
         try (final PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setLong(1, restricoes.codUnidade);
+            stmt.setLong(1, codUnidade);
             try (final ResultSet rSet = stmt.executeQuery()) {
                 if (rSet.next()) {
-                    restricoes.numeroViagensNecessariasParaReceberBonus = rSet.getShort("RM_NUMERO_VIAGENS");
+                    return rSet.getShort("RM_NUMERO_VIAGENS");
+                } else {
+                    throw new SQLException("Erro buscar o numero de viagens necessarias para receber bônus.");
                 }
             }
         }
-        return restricoes;
     }
 
     private boolean recebeBonus(int ano, int mes, Long cpf, String indicador) throws SQLException {
