@@ -1,6 +1,9 @@
 Change Log
 ==========
 
+### Refactors
+* Cria método para verificar se uma marcação está finalizada (PL-3191)
+
 <a name="v1.5.5"></a>
 ## Version [v1.5.5](https://github.com/luizfp/PrologWebService/compare/v1.5.4...v1.5.5) (release-date) [unreleased]
 
