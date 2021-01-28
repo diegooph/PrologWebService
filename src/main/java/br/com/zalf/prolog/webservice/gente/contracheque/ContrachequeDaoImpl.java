@@ -58,7 +58,7 @@ public class ContrachequeDaoImpl extends DatabaseConnection implements Contrache
                     // Para algumas unidades, a recarga compõem o cálculo do prêmio, para outra é uma verba separada.
                     // O bônus só será considerado apenas se número de viagens for acima ou igual o parametrizado.
                     if ((recebeBonus(ano, mes, cpf, restricoes.indicadorBonus))
-                            && restricoes.rmNumeroViagens <= itensProdutividade.size()) {
+                            && restricoes.numeroViagensNecessariasParaReceberBonus <= itensProdutividade.size()) {
                         if (restricoes.codFuncaoSolicitante == restricoes.codFuncaoMotorista) {
                             bonus = restricoes.valorBonusMotorista;
                         } else {
@@ -297,7 +297,7 @@ public class ContrachequeDaoImpl extends DatabaseConnection implements Contrache
             stmt.setLong(1, restricoes.codUnidade);
             try (final ResultSet rSet = stmt.executeQuery()) {
                 if (rSet.next()) {
-                    restricoes.rmNumeroViagens = rSet.getShort("RM_NUMERO_VIAGENS");
+                    restricoes.numeroViagensNecessariasParaReceberBonus = rSet.getShort("RM_NUMERO_VIAGENS");
                 }
             }
         }

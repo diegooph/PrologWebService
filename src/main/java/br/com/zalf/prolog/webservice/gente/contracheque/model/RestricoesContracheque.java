@@ -14,7 +14,7 @@ public class RestricoesContracheque {
     public String indicadorBonus;
     public Long codFuncaoSolicitante;
     public Long codUnidade;
-    public short rmNumeroViagens;
+    public short numeroViagensNecessariasParaReceberBonus;
 
     public RestricoesContracheque() {
     }
