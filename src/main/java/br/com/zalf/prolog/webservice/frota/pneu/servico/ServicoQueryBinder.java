@@ -88,7 +88,7 @@ final class ServicoQueryBinder {
                 "    ON AM.COD_PNEU = VP.COD_PNEU AND AM.COD_UNIDADE = VP.COD_UNIDADE " +
                 "WHERE AM.COD_UNIDADE = ? " +
                 "      AND AM.DATA_HORA_RESOLUCAO IS NULL " +
-                "GROUP BY A.PLACA_VEICULO, V.IDENTIFICADOR_FROTA " +
+                "GROUP BY V.PLACA, V.IDENTIFICADOR_FROTA " +
                 "ORDER BY TOTAL_CALIBRAGENS DESC, TOTAL_INSPECOES DESC, TOTAL_MOVIMENTACOES DESC;");
         stmt.setString(1, TipoServico.CALIBRAGEM.asString());
         stmt.setString(2, TipoServico.INSPECAO.asString());
@@ -156,7 +156,7 @@ final class ServicoQueryBinder {
                 " WHERE AM.COD_UNIDADE = ?" +
                 "      AND AM.DATA_HORA_RESOLUCAO IS NOT NULL  " +
                 "      AND (AM.DATA_HORA_RESOLUCAO AT TIME ZONE TZ_UNIDADE(AM.COD_UNIDADE))::DATE BETWEEN ? AND ?" +
-                " GROUP BY A.PLACA_VEICULO, V.IDENTIFICADOR_FROTA" +
+                " GROUP BY V.PLACA, V.IDENTIFICADOR_FROTA" +
                 " ORDER BY TOTAL_CALIBRAGENS DESC, TOTAL_INSPECOES DESC, TOTAL_MOVIMENTACOES DESC;");
         stmt.setString(1, TipoServico.CALIBRAGEM.asString());
         stmt.setString(2, TipoServico.INSPECAO.asString());
@@ -271,7 +271,7 @@ final class ServicoQueryBinder {
                                                         final long dataFinal) throws SQLException {
         final PreparedStatement stmt = connection.prepareStatement(BASE_QUERY_BUSCA_SERVICOS
                 + "WHERE AM.COD_UNIDADE = ? "
-                + "AND A.PLACA_VEICULO = ? "
+                + "AND V.PLACA = ? "
                 + "AND AM.DATA_HORA_RESOLUCAO IS NOT NULL "
                 + "AND (AM.DATA_HORA_RESOLUCAO AT TIME ZONE TZ_UNIDADE(AM.COD_UNIDADE))::DATE BETWEEN ? AND ? "
                 + "ORDER BY DATA_HORA_RESOLUCAO DESC;");
@@ -311,7 +311,7 @@ final class ServicoQueryBinder {
                 "  JOIN PNEU P " +
                 "    ON P.CODIGO = AV.COD_PNEU " +
                 "WHERE AM.CODIGO = ? " +
-                "      AND A.PLACA_VEICULO = ?;");
+                "      AND V.PLACA = ?;");
         stmt.setLong(1, codServico);
         stmt.setString(2, placaVeiculo);
         return stmt;
