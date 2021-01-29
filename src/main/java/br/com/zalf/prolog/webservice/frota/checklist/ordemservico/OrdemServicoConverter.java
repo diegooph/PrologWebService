@@ -94,6 +94,7 @@ final class OrdemServicoConverter {
     static HolderResolucaoItensOrdemServico createHolderResolucaoItensOrdemServico(@NotNull final ResultSet rSet)
             throws Throwable {
         final HolderResolucaoItensOrdemServico holder = new HolderResolucaoItensOrdemServico();
+        holder.setCodVeiculo(rSet.getLong("COD_VEICULO"));
         holder.setPlacaVeiculo(rSet.getString("PLACA_VEICULO"));
         holder.setKmAtualVeiculo(rSet.getLong("KM_ATUAL_VEICULO"));
 
