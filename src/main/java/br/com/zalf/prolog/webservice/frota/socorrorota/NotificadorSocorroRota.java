@@ -6,7 +6,7 @@ import br.com.zalf.prolog.webservice.frota.socorrorota._model.ColaboradorNotific
 import br.com.zalf.prolog.webservice.frota.socorrorota._model.ColaboradorNotificacaoAtendimentoSocorroRota;
 import br.com.zalf.prolog.webservice.frota.socorrorota._model.ColaboradorNotificacaoInvalidacaoSocorroRota;
 import br.com.zalf.prolog.webservice.messaging.MessageScope;
-import br.com.zalf.prolog.webservice.messaging.email.PrologEmailApi;
+import br.com.zalf.prolog.webservice.messaging.email.PrologEmailService;
 import br.com.zalf.prolog.webservice.messaging.email._model.EmailReceiver;
 import br.com.zalf.prolog.webservice.messaging.email._model.EmailSender;
 import br.com.zalf.prolog.webservice.messaging.email._model.EmailTemplate;
@@ -54,7 +54,7 @@ final class NotificadorSocorroRota {
     };
 
     @Autowired
-    private PrologEmailApi prologEmailApi;
+    private PrologEmailService prologEmailService;
 
     NotificadorSocorroRota() {
         service = MoreExecutors.listeningDecorator(Executors.newSingleThreadExecutor());
@@ -246,7 +246,7 @@ final class NotificadorSocorroRota {
                 .map(EmailReceiver::of)
                 .collect(Collectors.toSet());
         if (!emails.isEmpty()) {
-            this.prologEmailApi
+            this.prologEmailService
                     .deliverTemplate(
                             emails,
                             MessageScope.ABERTURA_SOCORRO_ROTA,

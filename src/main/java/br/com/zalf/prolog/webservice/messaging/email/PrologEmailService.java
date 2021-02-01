@@ -18,15 +18,15 @@ import java.util.Set;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 @Service
-public final class PrologEmailApi {
+public final class PrologEmailService {
 
-    private static final String TAG = PrologEmailApi.class.getSimpleName();
+    private static final String TAG = PrologEmailService.class.getSimpleName();
 
     private final EmailApi emailApi;
     private final PrologEmailSaveLogTask logTask;
 
     @Autowired
-    public PrologEmailApi(@NotNull final EmailApi emailApi, @NotNull final PrologEmailSaveLogTask logTask) {
+    public PrologEmailService(@NotNull final EmailApi emailApi, @NotNull final PrologEmailSaveLogTask logTask) {
         this.emailApi = emailApi;
         this.logTask = logTask;
     }
