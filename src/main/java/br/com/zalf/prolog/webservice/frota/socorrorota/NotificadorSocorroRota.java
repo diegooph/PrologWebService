@@ -7,6 +7,7 @@ import br.com.zalf.prolog.webservice.frota.socorrorota._model.ColaboradorNotific
 import br.com.zalf.prolog.webservice.frota.socorrorota._model.ColaboradorNotificacaoInvalidacaoSocorroRota;
 import br.com.zalf.prolog.webservice.messaging.MessageScope;
 import br.com.zalf.prolog.webservice.messaging.email.PrologEmailApi;
+import br.com.zalf.prolog.webservice.messaging.email._model.EmailReceiver;
 import br.com.zalf.prolog.webservice.messaging.email._model.EmailSender;
 import br.com.zalf.prolog.webservice.messaging.email._model.EmailTemplate;
 import br.com.zalf.prolog.webservice.messaging.email._model.EmailTemplateMessage;
@@ -16,11 +17,10 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.util.concurrent.*;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
@@ -239,12 +239,12 @@ final class NotificadorSocorroRota {
             @NotNull final String nomeColaboradorAbertura,
             @NotNull final String placaVeiculoProblema,
             @NotNull final Long codSocorro) {
-        final List<String> emails = colaboradores
+        final Set<EmailReceiver> emails = colaboradores
                 .stream()
                 .map(ColaboradorNotificacaoAberturaSocorroRota::getEmailColaborador)
                 .filter(Objects::nonNull)
-                .distinct()
-                .collect(Collectors.toList());
+                .map(EmailReceiver::of)
+                .collect(Collectors.toSet());
         if (!emails.isEmpty()) {
             this.prologEmailApi
                     .deliverTemplate(
