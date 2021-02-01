@@ -37,17 +37,13 @@ public final class EmailRequestResponseHolder {
         return response;
     }
 
-    @Nullable
-    public String getRequestAsJsonOrNull() {
-        return getRequest() != null
-                ? GsonUtils.getGson().toJson(getRequest())
-                : null;
+    @NotNull
+    public Optional<String> getRequestAsJson() {
+        return Optional.ofNullable(GsonUtils.getGson().toJson(request));
     }
 
-    @Nullable
-    public String getResponseAsJsonOrNull() {
-        return getResponse() != null
-                ? GsonUtils.getGson().toJson(getResponse())
-                : null;
+    @NotNull
+    public Optional<String> getResponseAsJson() {
+        return Optional.ofNullable(GsonUtils.getGson().toJson(response));
     }
 }

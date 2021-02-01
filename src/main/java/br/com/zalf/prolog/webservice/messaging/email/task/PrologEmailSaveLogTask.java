@@ -38,9 +38,9 @@ public class PrologEmailSaveLogTask {
 
     public void saveToDatabase(@NotNull final MessageScope messageScope,
                                @Nullable final EmailRequestResponseHolder holder,
-                               @Nullable final Throwable fatalSendException) throws Throwable {
-        final String request = holder != null ? holder.getRequestAsJsonOrNull() : null;
-        final String response = holder != null ? holder.getResponseAsJsonOrNull() : null;
+                               @Nullable final Throwable fatalSendException) {
+        final Optional<String> request = holder.getRequestAsJson();
+        final Optional<String> response = holder.getResponseAsJson();
         final String fatalSendExceptionString = getFatalSendExceptionAsStringOrNull(fatalSendException);
 
         try (final PreparedStatement stmt = connection.prepareCall("{CALL MESSAGING.FUNC_EMAIL_SALVA_LOG(" +
@@ -51,13 +51,14 @@ public class PrologEmailSaveLogTask {
                 "F_FATAL_SEND_EXCEPTION => ?)}")) {
             stmt.setObject(1, Now.getOffsetDateTimeUtc());
             stmt.setString(2, messageScope.asString());
-            if (request != null) {
-                stmt.setObject(3, PostgresUtils.toJsonb(request));
+
+            if (request.isPresent()) {
+                stmt.setObject(3, PostgresUtils.toJsonb(request.get()));
             } else {
                 stmt.setNull(3, Types.NULL);
             }
-            if (response != null) {
-                stmt.setObject(4, PostgresUtils.toJsonb(response));
+            if (response.isPresent()) {
+                stmt.setObject(4, PostgresUtils.toJsonb(response.get()));
             } else {
                 stmt.setNull(4, Types.NULL);
             }
