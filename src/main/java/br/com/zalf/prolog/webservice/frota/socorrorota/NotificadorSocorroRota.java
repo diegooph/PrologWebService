@@ -32,6 +32,7 @@ import static br.com.zalf.prolog.webservice.commons.util.StringUtils.stripSpecia
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
+@Service
 final class NotificadorSocorroRota {
     private static final String TAG = NotificadorSocorroRota.class.getSimpleName();
     private static final int MAX_LENGTH_NOME_COLABORADOR = 20;
@@ -51,6 +52,9 @@ final class NotificadorSocorroRota {
             shutdowService();
         }
     };
+
+    @Autowired
+    private PrologEmailApi prologEmailApi;
 
     NotificadorSocorroRota() {
         service = MoreExecutors.listeningDecorator(Executors.newSingleThreadExecutor());
@@ -242,7 +246,7 @@ final class NotificadorSocorroRota {
                 .distinct()
                 .collect(Collectors.toList());
         if (!emails.isEmpty()) {
-            new PrologEmailApi()
+            this.prologEmailApi
                     .deliverTemplate(
                             emails,
                             MessageScope.ABERTURA_SOCORRO_ROTA,
