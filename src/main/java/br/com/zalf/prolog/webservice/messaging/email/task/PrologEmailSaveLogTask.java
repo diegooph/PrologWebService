@@ -43,12 +43,16 @@ public class PrologEmailSaveLogTask {
         final Optional<String> response = holder.getResponseAsJson();
         final String fatalSendExceptionString = getFatalSendExceptionAsStringOrNull(fatalSendException);
 
-        try (final PreparedStatement stmt = connection.prepareCall("{CALL MESSAGING.FUNC_EMAIL_SALVA_LOG(" +
+        final String functionCall = "{CALL MESSAGING.FUNC_EMAIL_SALVA_LOG(" +
                 "F_DATA_HORA_ATUAL      => ?," +
                 "F_EMAIL_MESSAGE_SCOPE  => ?," +
                 "F_REQUEST_TO_API       => ?," +
                 "F_RESPONSE_FROM_API    => ?," +
-                "F_FATAL_SEND_EXCEPTION => ?)}")) {
+                "F_FATAL_SEND_EXCEPTION => ?)}";
+
+        try (final Connection connection = actions.getConnection();
+             final PreparedStatement stmt = connection.prepareCall(functionCall)) {
+
             stmt.setObject(1, Now.getOffsetDateTimeUtc());
             stmt.setString(2, messageScope.asString());
 
@@ -64,6 +68,8 @@ public class PrologEmailSaveLogTask {
             }
             bindValueOrNull(stmt, 5, fatalSendExceptionString, SqlType.TEXT);
             stmt.execute();
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao salvar logs de e-mail", t);
         }
     }
 
