@@ -1,17 +1,22 @@
 package br.com.zalf.prolog.webservice.messaging.email.task;
 
+import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.database.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.database.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
+import br.com.zalf.prolog.webservice.database.DatabaseConnectionActions;
 import br.com.zalf.prolog.webservice.messaging.MessageScope;
 import br.com.zalf.prolog.webservice.messaging.email._model.EmailRequestResponseHolder;
 import com.google.common.base.Throwables;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.Types;
+import java.util.Optional;
 
 import static br.com.zalf.prolog.webservice.commons.util.database.StatementUtils.bindValueOrNull;
 
@@ -20,10 +25,18 @@ import static br.com.zalf.prolog.webservice.commons.util.database.StatementUtils
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-public final class PrologEmailSaveLogTask {
+@Repository
+public class PrologEmailSaveLogTask {
 
-    public void saveToDatabase(@NotNull final Connection connection,
-                               @NotNull final MessageScope messageScope,
+    private static final String TAG = PrologEmailSaveLogTask.class.getSimpleName();
+    private final DatabaseConnectionActions actions;
+
+    @Autowired
+    PrologEmailSaveLogTask(final DatabaseConnectionActions actions) {
+        this.actions = actions;
+    }
+
+    public void saveToDatabase(@NotNull final MessageScope messageScope,
                                @Nullable final EmailRequestResponseHolder holder,
                                @Nullable final Throwable fatalSendException) throws Throwable {
         final String request = holder != null ? holder.getRequestAsJsonOrNull() : null;
