@@ -6,6 +6,7 @@ Change Log
 * Cria funcionalidade de insert de processo de acoplamento (PL-3210)
 * Cria funcionalidade de verificação de dados de coleta de km (PL-3291)
 * Cria update único de KM de veiculo por código (PL-3213)
+* Corrige bug em propagação de km ao realizar aferição (PL-3439)
 
 #### Refactors
 * Adiciona flag "motorizado" no tipo de veículo (PL-3387).
