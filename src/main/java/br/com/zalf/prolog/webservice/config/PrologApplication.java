@@ -37,10 +37,6 @@ public class PrologApplication extends SpringBootServletInitializer {
         SpringApplication.run(PrologApplication.class, args);
     }
 
-    public static DatabaseConnectionActions getActions() {
-        return DatabaseConnectionActionsWrapper.getActions();
-    }
-
     @Override
     protected SpringApplicationBuilder configure(@NotNull final SpringApplicationBuilder builder) {
         builder.sources(PrologApplication.class);
