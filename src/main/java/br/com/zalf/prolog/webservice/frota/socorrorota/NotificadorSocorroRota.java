@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.socorrorota;
 
+import br.com.zalf.prolog.webservice.commons.spring.SpringContext;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.Exceptions;
 import br.com.zalf.prolog.webservice.frota.socorrorota._model.ColaboradorNotificacaoAberturaSocorroRota;
@@ -32,7 +33,6 @@ import static br.com.zalf.prolog.webservice.commons.util.StringUtils.stripSpecia
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-@Service
 final class NotificadorSocorroRota {
     private static final String TAG = NotificadorSocorroRota.class.getSimpleName();
     private static final int MAX_LENGTH_NOME_COLABORADOR = 20;
@@ -53,10 +53,10 @@ final class NotificadorSocorroRota {
         }
     };
 
-    @Autowired
-    private PrologEmailService prologEmailService;
+    private final PrologEmailService prologEmailService;
 
     NotificadorSocorroRota() {
+        prologEmailService = SpringContext.getBean(PrologEmailService.class);
         service = MoreExecutors.listeningDecorator(Executors.newSingleThreadExecutor());
     }
 

@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.database;
 
+import br.com.zalf.prolog.webservice.commons.spring.SpringContext;
 import br.com.zalf.prolog.webservice.config.PrologApplication;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -22,8 +23,10 @@ import java.sql.ResultSet;
 @Component
 public class DatabaseConnection {
 
+    private static DatabaseConnectionActions actions = SpringContext.getBean(DatabaseConnectionActions.class);
+
     public static void close(@Nullable final AutoCloseable... closeable) {
-        PrologApplication.getActions().close(closeable);
+        actions.close(closeable);
     }
 
     /**
@@ -37,7 +40,7 @@ public class DatabaseConnection {
      */
     @Deprecated
     public static void closeConnection(@Nullable final Connection conn) {
-        PrologApplication.getActions().close(conn);
+        actions.close(conn);
     }
 
     /**
@@ -55,7 +58,7 @@ public class DatabaseConnection {
     public static void closeConnection(@Nullable final Connection conn,
                                        @Nullable final PreparedStatement stmt,
                                        @Nullable final ResultSet rSet) {
-        PrologApplication.getActions().close(conn, rSet, stmt);
+        actions.close(conn, rSet, stmt);
     }
 
     /**
@@ -69,7 +72,7 @@ public class DatabaseConnection {
      */
     @NotNull
     public static Connection getConnection() {
-        return PrologApplication.getActions().getConnection();
+        return actions.getConnection();
     }
 
     /**
@@ -83,7 +86,7 @@ public class DatabaseConnection {
      */
     @Deprecated
     public static void closeStatement(@Nullable final PreparedStatement stmt) {
-        PrologApplication.getActions().close(stmt);
+        actions.close(stmt);
     }
 
     /**
@@ -97,6 +100,6 @@ public class DatabaseConnection {
      */
     @Deprecated
     public static void closeResultSet(@Nullable final ResultSet rSet) {
-        PrologApplication.getActions().close(rSet);
+        actions.close(rSet);
     }
 }
