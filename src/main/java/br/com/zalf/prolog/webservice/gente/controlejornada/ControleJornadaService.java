@@ -184,6 +184,19 @@ public class ControleJornadaService {
         }
     }
 
+    public boolean isMarcacaoInicioFinalizada(@NotNull final String tokenMarcacao,
+                                              @NotNull final Long codMarcacao) throws ProLogException {
+        ensureValidToken(tokenMarcacao);
+        try {
+            return dao.isMarcacaoInicioFinalizada(codMarcacao);
+        } catch (final Throwable t) {
+            Log.e(TAG, String.format("Erro ao buscar se marcação está finalizada: %d", codMarcacao), t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao buscar se marcação está finalizada.");
+        }
+    }
+
     private void ensureValidToken(@NotNull final String tokenMarcacao) throws ProLogException {
         try {
             if (!dao.verifyIfTokenMarcacaoExists(tokenMarcacao)) {

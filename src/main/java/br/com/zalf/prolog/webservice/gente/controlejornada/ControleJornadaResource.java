@@ -62,6 +62,15 @@ public class ControleJornadaResource {
 
     @GET
     @UsedBy(platforms = Platform.ANDROID)
+    @Path("/marcacao-inicio-vinculada")
+    public boolean isMarcacaoInicioFinalizada(
+            @HeaderParam(IntervaloOfflineSupport.HEADER_NAME_TOKEN_MARCACAO) final String tokenMarcacao,
+            @QueryParam("codMarcacao") @Required final Long codMarcacao) throws ProLogException {
+        return service.isMarcacaoInicioFinalizada(tokenMarcacao, codMarcacao);
+    }
+
+    @GET
+    @UsedBy(platforms = Platform.ANDROID)
     @Path("/marcacoes")
     public List<Intervalo> getMarcacoesColaborador(
             @HeaderParam(IntervaloOfflineSupport.HEADER_NAME_TOKEN_MARCACAO) final String tokenMarcacao,
