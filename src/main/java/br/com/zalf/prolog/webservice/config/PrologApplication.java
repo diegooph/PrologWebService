@@ -1,7 +1,5 @@
 package br.com.zalf.prolog.webservice.config;
 
-import br.com.zalf.prolog.webservice.database.DatabaseConnectionActions;
-import br.com.zalf.prolog.webservice.database.DatabaseConnectionActionsWrapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.jaxrs.config.BeanConfig;
 import io.swagger.jaxrs.listing.ApiListingResource;
