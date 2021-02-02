@@ -32,7 +32,7 @@ public class PrologEmailSaveLogTask {
     private final DatabaseConnectionActions actions;
 
     @Autowired
-    PrologEmailSaveLogTask(final DatabaseConnectionActions actions) {
+    PrologEmailSaveLogTask(@NotNull final DatabaseConnectionActions actions) {
         this.actions = actions;
     }
 

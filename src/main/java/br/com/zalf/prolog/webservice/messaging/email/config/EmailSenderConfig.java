@@ -2,6 +2,8 @@ package br.com.zalf.prolog.webservice.messaging.email.config;
 
 import com.mailjet.client.ClientOptions;
 import com.mailjet.client.MailjetClient;
+import lombok.var;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -17,13 +19,12 @@ import org.springframework.context.annotation.Profile;
 @Configuration
 public class EmailSenderConfig {
 
-    private static final String CLIENT_VERSION = "v3.1";
     private final String apikey;
     private final String apiSecretKey;
 
     @Autowired
-    public EmailSenderConfig(@Value("${mailjet.api-key:}") final String apikey,
-                             @Value("${mailjet.api-secret-key:}") final String apiSecretKey) {
+    public EmailSenderConfig(@Value("${mailjet.api-key:}") @NotNull final String apikey,
+                             @Value("${mailjet.api-secret-key:}") @NotNull final String apiSecretKey) {
 
         this.apikey = apikey;
         this.apiSecretKey = apiSecretKey;
@@ -31,14 +32,14 @@ public class EmailSenderConfig {
 
     @Bean
     public MailjetClient getMailJetClient() {
-        return new MailjetClient(this.getOptions());
+        final var client = new MailjetClient(this.getOptions());
+        return client;
     }
 
     private ClientOptions getOptions() {
         return ClientOptions.builder()
                 .apiKey(this.apikey)
                 .apiSecretKey(this.apiSecretKey)
-                .baseUrl(CLIENT_VERSION)
                 .build();
     }
 }

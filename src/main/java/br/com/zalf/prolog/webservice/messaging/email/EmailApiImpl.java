@@ -25,7 +25,7 @@ public class EmailApiImpl implements EmailApi {
     private final MailjetClient client;
 
     @Autowired
-    public EmailApiImpl(final MailjetClient client) {
+    public EmailApiImpl(@NotNull final MailjetClient client) {
         this.client = client;
     }
 
