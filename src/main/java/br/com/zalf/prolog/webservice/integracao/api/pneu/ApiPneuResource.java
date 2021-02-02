@@ -1,9 +1,9 @@
 package br.com.zalf.prolog.webservice.integracao.api.pneu;
 
-import br.com.zalf.prolog.webservice.commons.util.Platform;
-import br.com.zalf.prolog.webservice.commons.util.ProLogCustomHeaders;
-import br.com.zalf.prolog.webservice.commons.util.Required;
-import br.com.zalf.prolog.webservice.commons.util.UsedBy;
+import br.com.zalf.prolog.webservice.commons.network.PrologCustomHeaders;
+import br.com.zalf.prolog.webservice.commons.network.metadata.Platform;
+import br.com.zalf.prolog.webservice.commons.network.metadata.Required;
+import br.com.zalf.prolog.webservice.commons.network.metadata.UsedBy;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.integracao.api.pneu.model.ApiPneuAlteracaoStatus;
 import br.com.zalf.prolog.webservice.integracao.api.pneu.model.DiagramaPosicaoMapeado;
@@ -35,7 +35,7 @@ public final class ApiPneuResource {
     @Path("/atualiza-status")
     @UsedBy(platforms = Platform.INTEGRACOES)
     public SuccessResponseIntegracao atualizaStatusPneus(
-            @HeaderParam(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
+            @HeaderParam(PrologCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
             @Required final List<ApiPneuAlteracaoStatus> pneusAtualizacaoStatus) throws ProLogException {
         return service.atualizaStatusPneus(tokenIntegracao, pneusAtualizacaoStatus);
     }
@@ -45,7 +45,7 @@ public final class ApiPneuResource {
     @Path("/valida-posicoes-mapeadas")
     @UsedBy(platforms = Platform.INTEGRACOES)
     public List<PosicaoPneuMepadoResponse> validaPosicoesMapeadasSistemaParceiro(
-            @HeaderParam(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
+            @HeaderParam(PrologCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
             @Required final List<DiagramaPosicaoMapeado> diagramasPosicoes) throws ProLogException {
         return service.validaPosicoesMapeadasSistemaParceiro(tokenIntegracao, diagramasPosicoes);
     }

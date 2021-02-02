@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.interno.implantacao.conferencia.frota.pneu;
 
 import br.com.zalf.prolog.webservice.commons.util.StringUtils;
-import br.com.zalf.prolog.webservice.commons.util.XlsxConverter;
+import br.com.zalf.prolog.webservice.commons.util.files.XlsxConverter;
 import br.com.zalf.prolog.webservice.interno.implantacao.conferencia.frota.pneu._model.PneuPlanilha;
 import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvParserSettings;

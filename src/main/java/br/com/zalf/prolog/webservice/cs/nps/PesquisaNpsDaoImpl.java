@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.cs.nps;
 
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
+import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import br.com.zalf.prolog.webservice.cs.nps.model.PesquisaNpsBloqueio;
 import br.com.zalf.prolog.webservice.cs.nps.model.PesquisaNpsDisponivel;
 import br.com.zalf.prolog.webservice.cs.nps.model.PesquisaNpsRealizada;
@@ -32,7 +32,7 @@ public final class PesquisaNpsDaoImpl extends DatabaseConnection implements Pesq
                     "F_COD_COLABORADOR := ?," +
                     "F_DATA_ATUAL      := ?)}");
             stmt.setLong(1, codColaborador);
-            stmt.setObject(2, Now.localDateUtc());
+            stmt.setObject(2, Now.getLocalDateUtc());
             rSet = stmt.executeQuery();
             if (rSet.next() && rSet.getLong("COD_PESQUISA_NPS") > 0) {
                 return Optional.of(
@@ -69,7 +69,7 @@ public final class PesquisaNpsDaoImpl extends DatabaseConnection implements Pesq
                     "F_RESPOSTA_PERGUNTA_DESCRITIVA  := ?)}");
             stmt.setLong(1, pesquisaRealizada.getCodPesquisaNps());
             stmt.setLong(2, pesquisaRealizada.getCodColaboradorRealizacao());
-            stmt.setObject(3, Now.offsetDateTimeUtc());
+            stmt.setObject(3, Now.getOffsetDateTimeUtc());
             stmt.setShort(4, pesquisaRealizada.getRespostaPerguntaEscala());
             stmt.setString(5, pesquisaRealizada.getRespostaPerguntaDescritiva());
             rSet = stmt.executeQuery();
@@ -95,7 +95,7 @@ public final class PesquisaNpsDaoImpl extends DatabaseConnection implements Pesq
                     "F_DATA_HORA_BLOQUEIO_PESQUISA := ?)}");
             stmt.setLong(1, pesquisaBloqueio.getCodPesquisaNps());
             stmt.setLong(2, pesquisaBloqueio.getCodColaboradorBloqueio());
-            stmt.setObject(3, Now.offsetDateTimeUtc());
+            stmt.setObject(3, Now.getOffsetDateTimeUtc());
             stmt.execute();
         } finally {
             close(conn, stmt);

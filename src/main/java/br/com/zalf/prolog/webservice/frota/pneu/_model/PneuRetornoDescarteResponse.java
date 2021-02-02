@@ -15,5 +15,5 @@ public final class PneuRetornoDescarteResponse {
     @NotNull
     private final Long codMovimentacaoGerada;
     @NotNull
-    private final String msg;
+    private final String message;
 }

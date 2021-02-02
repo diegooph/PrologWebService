@@ -10,7 +10,6 @@ import org.jetbrains.annotations.NotNull;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public final class ErrorReportSystem {
-    private static final String TAG = ErrorReportSystem.class.getSimpleName();
 
     private ErrorReportSystem() {
         throw new IllegalStateException(ErrorReportSystem.class.getSimpleName() + " cannot be instantiated!");

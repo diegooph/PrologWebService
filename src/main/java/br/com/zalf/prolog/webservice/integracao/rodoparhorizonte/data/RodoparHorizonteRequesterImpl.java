@@ -1,6 +1,8 @@
 package br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.data;
 
 import br.com.zalf.prolog.webservice.errorhandling.error.ProLogError;
+import br.com.zalf.prolog.webservice.integracao.network.RestClient;
+import br.com.zalf.prolog.webservice.integracao.praxio.data.ApiAutenticacaoHolder;
 import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.model.AfericaoAvulsaRodoparHorizonte;
 import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.model.AfericaoPlacaRodoparHorizonte;
 import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.model.ResponseAfericaoRodoparHorizonte;
@@ -25,10 +27,14 @@ public class RodoparHorizonteRequesterImpl implements RodoparHorizonteRequester 
 
     @NotNull
     @Override
-    public RodoparHorizonteTokenIntegracao getTokenUsuarioIntegracao(@NotNull final RodoparCredentials credentials) throws Throwable {
-        final RodoparHorizonteRest service = RodoparHorizonteRestClient.getService(RodoparHorizonteRest.class);
+    public RodoparHorizonteTokenIntegracao getTokenUsuarioIntegracao(
+            @NotNull final ApiAutenticacaoHolder autenticacaoHolder,
+            @NotNull final RodoparCredentials credentials) throws Throwable {
+        final RodoparHorizonteRest service = RestClient.getService(RodoparHorizonteRest.class);
         final Call<RodoparHorizonteTokenIntegracao> call =
                 service.getTokenUsuarioIntegracao(
+                        autenticacaoHolder.getPrologTokenIntegracao(),
+                        autenticacaoHolder.getUrl(),
                         credentials.getUsername(),
                         credentials.getPassword(),
                         credentials.getGrantType());
@@ -38,22 +44,32 @@ public class RodoparHorizonteRequesterImpl implements RodoparHorizonteRequester 
     @NotNull
     @Override
     public ResponseAfericaoRodoparHorizonte insertAfericaoPlaca(
+            @NotNull final ApiAutenticacaoHolder autenticacaoHolder,
             @NotNull final String tokenIntegracao,
             @NotNull final AfericaoPlacaRodoparHorizonte afericao) throws Throwable {
-        final RodoparHorizonteRest service = RodoparHorizonteRestClient.getService(RodoparHorizonteRest.class);
+        final RodoparHorizonteRest service = RestClient.getService(RodoparHorizonteRest.class);
         final Call<ResponseAfericaoRodoparHorizonte> call =
-                service.insertAfericaoPlaca(RodoparHorizonteTokenCreator.createToken(tokenIntegracao), afericao);
+                service.insertAfericaoPlaca(
+                        autenticacaoHolder.getPrologTokenIntegracao(),
+                        RodoparHorizonteTokenCreator.createToken(tokenIntegracao),
+                        autenticacaoHolder.getUrl(),
+                        afericao);
         return handleResponse(call.execute());
     }
 
     @NotNull
     @Override
     public ResponseAfericaoRodoparHorizonte insertAfericaoAvulsa(
+            @NotNull final ApiAutenticacaoHolder autenticacaoHolder,
             @NotNull final String tokenIntegracao,
             @NotNull final AfericaoAvulsaRodoparHorizonte afericao) throws Throwable {
-        final RodoparHorizonteRest service = RodoparHorizonteRestClient.getService(RodoparHorizonteRest.class);
+        final RodoparHorizonteRest service = RestClient.getService(RodoparHorizonteRest.class);
         final Call<ResponseAfericaoRodoparHorizonte> call =
-                service.insertAfericaoAvulsa(RodoparHorizonteTokenCreator.createToken(tokenIntegracao), afericao);
+                service.insertAfericaoAvulsa(
+                        autenticacaoHolder.getPrologTokenIntegracao(),
+                        RodoparHorizonteTokenCreator.createToken(tokenIntegracao),
+                        autenticacaoHolder.getUrl(),
+                        afericao);
         return handleResponse(call.execute());
     }
 
@@ -70,7 +86,7 @@ public class RodoparHorizonteRequesterImpl implements RodoparHorizonteRequester 
             } else {
                 if (response.errorBody() == null) {
                     throw new RodoparHorizonteException(
-                            "[INTEGRACAO - HORIZONTE] Rodopar não retornou todas as informações",
+                            "[INTEGRACAO] Rodopar não retornou todas as informações",
                             "A comunicação retornou erro porém sem nenhuma informação no corpo do erro");
                 }
                 if (tokenResponse) {
@@ -89,7 +105,7 @@ public class RodoparHorizonteRequesterImpl implements RodoparHorizonteRequester 
             }
         } else {
             throw new RodoparHorizonteException(
-                    "[INTEGRACAO - HORIZONTE] Nunhuma resposta obtida da integração com o sistema Rodopar",
+                    "[INTEGRACAO] Nunhuma resposta obtida da integração com o sistema Rodopar",
                     "A comunicação com o Rodopar retornou um response vazio");
         }
     }
@@ -100,7 +116,7 @@ public class RodoparHorizonteRequesterImpl implements RodoparHorizonteRequester 
             return ErrorBodyHandler.getProLogErrorFromBody(errorBody);
         } catch (final Throwable t) {
             throw new RodoparHorizonteException(
-                    "[INTEGRACAO - HORIZONTE] Mensagem do sistema Rodopar fora do padrão esperado",
+                    "[INTEGRACAO] Mensagem do sistema Rodopar fora do padrão esperado",
                     "Não foi possível obter o JSON de resposta da requisição",
                     t);
         }

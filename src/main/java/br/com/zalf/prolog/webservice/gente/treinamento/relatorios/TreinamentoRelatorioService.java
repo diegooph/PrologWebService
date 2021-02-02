@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.gente.treinamento.relatorios;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
+import br.com.zalf.prolog.webservice.commons.util.datetime.PrologDateParser;
 import org.jetbrains.annotations.NotNull;
 
 import javax.ws.rs.core.StreamingOutput;
@@ -30,9 +30,9 @@ public class TreinamentoRelatorioService {
                         .getRelatorioEstratificadoPorColaboradorCsv(
                                 outputStream,
                                 codUnidade,
-                                ProLogDateParser.toLocalDate(dataInicial),
-                                ProLogDateParser.toLocalDate(dataFinal));
-            } catch (SQLException | IOException e) {
+                                PrologDateParser.toLocalDate(dataInicial),
+                                PrologDateParser.toLocalDate(dataFinal));
+            } catch (final SQLException | IOException e) {
                 Log.e(TAG, String.format("Erro ao buscar o relatório com a estratificação de visualização do treinamento (CSV). \n" +
                                 "codUnidade: %d \n" +
                                 "dataInicial: %s \n" +

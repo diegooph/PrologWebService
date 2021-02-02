@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos;
 
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
+import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.motivos._model.*;
 import org.jetbrains.annotations.NotNull;
@@ -43,7 +43,7 @@ public final class MotivoMovimentoDaoImpl extends DatabaseConnection implements 
             stmt.setString(2, trimToNull(motivoMovimentoInsercao.getDescricaoMotivoMovimento()));
             stmt.setBoolean(3, true);
             stmt.setString(4, trimToNull(motivoMovimentoInsercao.getCodAuxiliarMotivoMovimento()));
-            stmt.setObject(5, Now.offsetDateTimeUtc());
+            stmt.setObject(5, Now.getOffsetDateTimeUtc());
             stmt.setLong(6, codigoColaborador);
 
             rSet = stmt.executeQuery();
@@ -133,7 +133,7 @@ public final class MotivoMovimentoDaoImpl extends DatabaseConnection implements 
             stmt.setString(2, trimToNull(motivoMovimentoEdicao.getDescricaoMotivoMovimento()));
             stmt.setBoolean(3, motivoMovimentoEdicao.isAtivo());
             stmt.setString(4, trimToNull(motivoMovimentoEdicao.getCodAuxiliarMotivoMovimento()));
-            stmt.setObject(5, Now.offsetDateTimeUtc());
+            stmt.setObject(5, Now.getOffsetDateTimeUtc());
             stmt.setLong(6, codColaboradorUpdate);
             stmt.executeQuery();
         } finally {

@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.controlejornada.model;
 
-import br.com.zalf.prolog.webservice.commons.util.date.TimeRange;
+import br.com.zalf.prolog.webservice.commons.util.datetime.TimeRange;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalTime;

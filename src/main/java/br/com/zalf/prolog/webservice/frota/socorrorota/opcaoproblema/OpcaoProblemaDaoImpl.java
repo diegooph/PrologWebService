@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.socorrorota.opcaoproblema;
 
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
+import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.socorrorota.opcaoproblema._model.*;
 import org.jetbrains.annotations.NotNull;
@@ -106,7 +106,7 @@ public final class OpcaoProblemaDaoImpl extends DatabaseConnection implements Op
             stmt.setString(2, opcaoProblemaSocorroRotaCadastro.getDescricao());
             stmt.setBoolean(3, opcaoProblemaSocorroRotaCadastro.isObrigaDescricao());
             stmt.setLong(4, opcaoProblemaSocorroRotaCadastro.getCodColaborador());
-            stmt.setObject(5, Now.localDateTimeUtc());
+            stmt.setObject(5, Now.getLocalDateTimeUtc());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return rSet.getLong("CODIGO");
@@ -138,7 +138,7 @@ public final class OpcaoProblemaDaoImpl extends DatabaseConnection implements Op
             stmt.setLong(3, opcaoProblemaSocorroRotaEdicao.getCodColaborador());
             stmt.setString(4, opcaoProblemaSocorroRotaEdicao.getDescricao());
             stmt.setBoolean(5, opcaoProblemaSocorroRotaEdicao.isObrigaDescricao());
-            stmt.setObject(6, Now.localDateTimeUtc());
+            stmt.setObject(6, Now.getLocalDateTimeUtc());
 
             rSet = stmt.executeQuery();
             if (rSet.next()) {

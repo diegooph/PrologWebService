@@ -1,15 +1,47 @@
 Change Log
 ==========
 
-## Staged
+<a name="v1.5.5"></a>
+## Version [v1.5.5](https://github.com/luizfp/PrologWebService/compare/v1.5.4...v1.5.5) (release-date) [unreleased]
+
 #### Refactors
-* Considera bônus no pré-contracheque apenas se número de viagens for acima ou igual o parametrizado. (PL-3368)
+* Considera bônus no pré-contracheque apenas se número de viagens for acima ou igual o parametrizado (PL-3368)
+
+### Bug Fixes
+* Corrige uso de autoCommit no salvamento de imagens do checklist
+
+<a name="v1.5.4"></a>
+## Version [v1.5.4](https://github.com/luizfp/PrologWebService/compare/v1.5.3...v1.5.4) (2021-01-24)
+
+### Refactors
+* Altera estrutura de unidades para utilizar projections do Spring
+* Altera nome atributo de objeto de sucesso do retorno do descarte
+* Adiciona informação de valor e CPK acumulados no relatório de KM rodado por pneu e vida (PL-3262)
+
+### Bug Fixes
+* Corrige salvamento de logs de integração
+* Corrige uso de URL na integração com a Horizonte
+* Corrige update de unidade
+* Corrige testes do relatório de pneu por coluna
+
+<a name="v1.5.3"></a>
+## Version [v1.5.3](https://github.com/luizfp/PrologWebService/compare/v1.5.2...v1.5.3) (2021-01-23)
+
+### Refactors
+* Adapta integração com Visual Rodopar para funcionar na Imediato (PL-3430)
+* Refatorações e reestruturações dos utils
+
+### Bug Fixes
+* Corrige uso de autoCommit em conexões com o Banco
 
 <a name="v1.5.2"></a>
-## Version [v1.5.2](https://github.com/luizfp/PrologWebService/compare/v1.5.1...v1.5.2) (release-date) [unreleased]
+## Version [v1.5.2](https://github.com/luizfp/PrologWebService/compare/v1.5.1...v1.5.2) (2021-01-21)
 
 ### Refactors
 * Melhora forma de resetar uma empresa de apresentação
+
+### Bug Fixes
+* Corrige marshaller de XML na integração com a Praxio (PL-3429)
 
 <a name="v1.5.1"></a>
 ## Version [v1.5.1](https://github.com/luizfp/PrologWebService/compare/v1.5.0...v1.5.1) (2021-01-19)

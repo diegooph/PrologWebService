@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.messaging.push;
 
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
+import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.messaging.push._model.PushColaboradorCadastro;
 import org.jetbrains.annotations.NotNull;
@@ -32,7 +32,7 @@ public final class PushDaoImpl extends DatabaseConnection implements PushDao {
             stmt.setString(2, userToken);
             stmt.setString(3, pushColaborador.getAplicacaoReferenciaToken().asString());
             stmt.setString(4, pushColaborador.getTokenPushFirebase());
-            stmt.setObject(5, Now.offsetDateTimeUtc());
+            stmt.setObject(5, Now.getOffsetDateTimeUtc());
             stmt.execute();
         } finally {
             close(conn, stmt);

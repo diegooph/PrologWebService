@@ -9,7 +9,7 @@ import org.jetbrains.annotations.Nullable;
  */
 public final class NullIf {
     private NullIf() {
-
+        throw new IllegalStateException(NullIf.class.getSimpleName() + " cannot be instantiated!");
     }
 
     @Nullable

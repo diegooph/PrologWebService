@@ -1,9 +1,9 @@
 package br.com.zalf.prolog.webservice.entrega.tracking;
 
-import br.com.zalf.prolog.webservice.database.DatabaseConnection;
-import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
+import br.com.zalf.prolog.webservice.commons.util.datetime.DateUtils;
+import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
+import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 
@@ -26,16 +26,26 @@ public class TrackingDaoImpl extends DatabaseConnection implements TrackingDao {
 
     }
 
+    /**
+     * Método usado para verificar se uma string contém algum número
+     *
+     * @param str uma String
+     * @return um boolean
+     */
+    private static boolean containsNumber(final String str) {
+        return str.matches(".*\\d+.*");
+    }
+
     @Override
-    public boolean insertOrUpdateTracking(String path, Long codUnidade) throws SQLException, IOException, ParseException {
+    public boolean insertOrUpdateTracking(final String path, final Long codUnidade) throws SQLException, IOException, ParseException {
         Connection conn = null;
         try {
             conn = getConnection();
-            Reader in = new FileReader(path);
-            List<CSVRecord> tabela = CSVFormat.DEFAULT.withDelimiter(';').parse(in).getRecords();
+            final Reader in = new FileReader(path);
+            final List<CSVRecord> tabela = CSVFormat.DEFAULT.withDelimiter(';').parse(in).getRecords();
             //List<CSVRecord> tabela = CSVFormat.DEFAULT.parse(in).getRecords();
             for (int i = 1; i < tabela.size(); i++) {
-                TrackingImport tracking = createTracking(tabela.get(i));
+                final TrackingImport tracking = createTracking(tabela.get(i));
                 if (tracking != null) {
                     Log.d(TAG, "Entrou no insertOrUpdateTracking, mapa/entrega: " + tracking.mapa + "/" + tracking.codCliente);
                     if (updateTracking(tracking, codUnidade, conn)) {
@@ -54,7 +64,7 @@ public class TrackingDaoImpl extends DatabaseConnection implements TrackingDao {
         return true;
     }
 
-    private boolean insertTracking(TrackingImport tracking, Long codUnidade, Connection conn) throws SQLException {
+    private boolean insertTracking(final TrackingImport tracking, final Long codUnidade, final Connection conn) throws SQLException {
 
         PreparedStatement stmt = null;
         try {
@@ -108,7 +118,7 @@ public class TrackingDaoImpl extends DatabaseConnection implements TrackingDao {
             stmt.setString(42, tracking.aderenciaJanelaEntrega);
             stmt.setString(43, tracking.pdvLacrado);
             stmt.setLong(44, codUnidade);
-            int count = stmt.executeUpdate();
+            final int count = stmt.executeUpdate();
             if (count == 0) {
                 throw new SQLException("Erro ao inserir a tabela");
             }
@@ -118,7 +128,7 @@ public class TrackingDaoImpl extends DatabaseConnection implements TrackingDao {
         return true;
     }
 
-    private boolean updateTracking(TrackingImport tracking, Long codUnidade, Connection conn) throws SQLException {
+    private boolean updateTracking(final TrackingImport tracking, final Long codUnidade, final Connection conn) throws SQLException {
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("UPDATE TRACKING "
@@ -214,12 +224,12 @@ public class TrackingDaoImpl extends DatabaseConnection implements TrackingDao {
             stmt.setString(42, tracking.aderenciaJanelaEntrega);
             stmt.setString(43, tracking.pdvLacrado);
             stmt.setLong(44, codUnidade);
-            stmt.setTimestamp(45, Now.timestampUtc());
+            stmt.setTimestamp(45, Now.getTimestampUtc());
             stmt.setInt(46, tracking.mapa);
             stmt.setDate(47, DateUtils.toSqlDate(tracking.data));
             stmt.setString(48, tracking.placa);
             stmt.setInt(49, tracking.codCliente);
-            int count = stmt.executeUpdate();
+            final int count = stmt.executeUpdate();
             if (count == 0) {
                 return false;
             }
@@ -229,11 +239,11 @@ public class TrackingDaoImpl extends DatabaseConnection implements TrackingDao {
         return true;
     }
 
-    private TrackingImport createTracking(CSVRecord linha) throws ParseException {
+    private TrackingImport createTracking(final CSVRecord linha) throws ParseException {
         if (linha.get(1).isEmpty()) {
             return null;
         }
-        TrackingImport tracking = new TrackingImport();
+        final TrackingImport tracking = new TrackingImport();
         if (!String.valueOf(linha.get(0)).trim().isEmpty()) {
             //tracking.classe = Integer.parseInt(linha.get(0));
         }
@@ -400,15 +410,5 @@ public class TrackingDaoImpl extends DatabaseConnection implements TrackingDao {
             tracking.pdvLacrado = linha.get(42).trim();
         }
         return tracking;
-    }
-
-    /**
-     * Método usado para verificar se uma string contém algum número
-     *
-     * @param str uma String
-     * @return um boolean
-     */
-    private static boolean containsNumber(String str) {
-        return str.matches(".*\\d+.*");
     }
 }

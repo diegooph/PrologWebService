@@ -2,7 +2,7 @@ package test.br.com.zalf.prolog.webservice.pilares.frota.checklist.os;
 
 import br.com.zalf.prolog.webservice.commons.FonteDataHora;
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
-import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
+import br.com.zalf.prolog.webservice.commons.util.datetime.PrologDateParser;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.database.DatabaseManager;
 import br.com.zalf.prolog.webservice.frota.checklist.ChecklistService;
@@ -85,6 +85,94 @@ public class ChecklistFluxoOsTest extends BaseTest {
     public void destroy() {
         DatabaseManager.finish();
         service = null;
+    }
+
+    //region Métodos de auxílio para os testes
+    private boolean verifyIfContextoAlternativaExists(@NotNull final Long codigoContextoAlternativa) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = DatabaseConnection.getConnection();
+            stmt = conn.prepareStatement("SELECT EXISTS(SELECT * FROM CHECKLIST_ORDEM_SERVICO_ITENS_DATA " +
+                    "WHERE COD_CONTEXTO_ALTERNATIVA IN (?)) AS EXISTE_ITEM;");
+            stmt.setLong(1, codigoContextoAlternativa);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return rSet.getBoolean("EXISTE_ITEM");
+            } else {
+                throw new SQLException(
+                        "Não foi possível encontrar a O.S. da alternativa com o código de contexto: " + codigoContextoAlternativa);
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+    private long getQuantidadeApontamentosAlternativaItemOs(@NotNull final Long codigoContextoAlternativa)
+            throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = DatabaseConnection.getConnection();
+            stmt = conn.prepareStatement("SELECT QT_APONTAMENTOS FROM CHECKLIST_ORDEM_SERVICO_ITENS_DATA " +
+                    "WHERE COD_CONTEXTO_ALTERNATIVA IN (?);");
+            stmt.setLong(1, codigoContextoAlternativa);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return rSet.getLong("QT_APONTAMENTOS");
+            } else {
+                throw new SQLException(
+                        "Não foi possível encontrar a O.S. da alternativa com o código de contexto: "
+                                + codigoContextoAlternativa);
+            }
+        } finally {
+            DatabaseConnection.close(conn, stmt, rSet);
+        }
+    }
+
+    @NotNull
+    private List<PerguntaModeloChecklistEdicao> toPerguntasEdicao(
+            @NotNull final ModeloChecklistVisualizacao modeloBuscado) {
+        return jsonToCollection(
+                GsonUtils.getGson(),
+                GsonUtils.getGson().toJson(modeloBuscado.getPerguntas()));
+    }
+
+    @NotNull
+    private List<Long> getCodigosTiposVeiculos(@NotNull final ModeloChecklistVisualizacao modeloBuscado) {
+        return modeloBuscado
+                .getTiposVeiculoLiberados()
+                .stream()
+                .map(TipoVeiculo::getCodigo)
+                .collect(Collectors.toList());
+    }
+
+    @NotNull
+    private List<Long> getCodigosCargos(@NotNull final ModeloChecklistVisualizacao modeloBuscado) {
+        return modeloBuscado
+                .getCargosLiberados()
+                .stream()
+                .map(Cargo::getCodigo)
+                .collect(Collectors.toList());
+    }
+
+    @NotNull
+    private ModeloChecklistEdicao createModeloEdicao(
+            @NotNull final ModeloChecklistVisualizacao modeloBuscado,
+            @NotNull final List<PerguntaModeloChecklistEdicao> perguntas,
+            @NotNull final List<Long> cargos,
+            @NotNull final List<Long> tiposVeiculo) {
+        return new ModeloChecklistEdicao(
+                modeloBuscado.getCodUnidade(),
+                modeloBuscado.getCodModelo(),
+                modeloBuscado.getCodVersaoModelo(),
+                modeloBuscado.getNome(),
+                tiposVeiculo,
+                cargos,
+                perguntas,
+                modeloBuscado.isAtivo());
     }
 
     @ParameterizedTest
@@ -239,7 +327,7 @@ public class ChecklistFluxoOsTest extends BaseTest {
                 "uma observacao",
                 10000,
                 respostas,
-                ProLogDateParser.toLocalDateTime("2019-10-14T09:35:10"),
+                PrologDateParser.toLocalDateTime("2019-10-14T09:35:10"),
                 FonteDataHora.LOCAL_CELULAR,
                 80,
                 83,
@@ -496,7 +584,7 @@ public class ChecklistFluxoOsTest extends BaseTest {
                 observacao,
                 tempoRealizacaoCheckInMillis,
                 respostasC1,
-                ProLogDateParser.toLocalDateTime("2019-10-22T01:35:10"),
+                PrologDateParser.toLocalDateTime("2019-10-22T01:35:10"),
                 FonteDataHora.LOCAL_CELULAR,
                 versaoAppMomentoRealizacao,
                 versaoAppMomentoSincronizacao,
@@ -588,7 +676,7 @@ public class ChecklistFluxoOsTest extends BaseTest {
                 observacao,
                 tempoRealizacaoCheckInMillis,
                 respostasC2,
-                ProLogDateParser.toLocalDateTime("2019-10-22T02:35:10"),
+                PrologDateParser.toLocalDateTime("2019-10-22T02:35:10"),
                 FonteDataHora.LOCAL_CELULAR,
                 versaoAppMomentoRealizacao,
                 versaoAppMomentoSincronizacao,
@@ -792,7 +880,7 @@ public class ChecklistFluxoOsTest extends BaseTest {
                 observacao,
                 tempoRealizacaoCheckInMillis,
                 respostasC1,
-                ProLogDateParser.toLocalDateTime("2019-10-22T01:35:10"),
+                PrologDateParser.toLocalDateTime("2019-10-22T01:35:10"),
                 FonteDataHora.LOCAL_CELULAR,
                 versaoAppMomentoRealizacao,
                 versaoAppMomentoSincronizacao,
@@ -885,7 +973,7 @@ public class ChecklistFluxoOsTest extends BaseTest {
                 observacao,
                 tempoRealizacaoCheckInMillis,
                 respostasC2,
-                ProLogDateParser.toLocalDateTime("2019-10-22T02:35:10"),
+                PrologDateParser.toLocalDateTime("2019-10-22T02:35:10"),
                 FonteDataHora.LOCAL_CELULAR,
                 versaoAppMomentoRealizacao,
                 versaoAppMomentoSincronizacao,
@@ -906,94 +994,6 @@ public class ChecklistFluxoOsTest extends BaseTest {
             assertThat(getQuantidadeApontamentosAlternativaItemOs(codigoContextoP1A2)).isEqualTo(2);
             assertThat(getQuantidadeApontamentosAlternativaItemOs(codigoContextoP2B2)).isEqualTo(1);
         }
-    }
-
-    //region Métodos de auxílio para os testes
-    private boolean verifyIfContextoAlternativaExists(@NotNull final Long codigoContextoAlternativa) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = DatabaseConnection.getConnection();
-            stmt = conn.prepareStatement("SELECT EXISTS(SELECT * FROM CHECKLIST_ORDEM_SERVICO_ITENS_DATA " +
-                    "WHERE COD_CONTEXTO_ALTERNATIVA IN (?)) AS EXISTE_ITEM;");
-            stmt.setLong(1, codigoContextoAlternativa);
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                return rSet.getBoolean("EXISTE_ITEM");
-            } else {
-                throw new SQLException(
-                        "Não foi possível encontrar a O.S. da alternativa com o código de contexto: " + codigoContextoAlternativa);
-            }
-        } finally {
-            close(conn, stmt, rSet);
-        }
-    }
-
-    private long getQuantidadeApontamentosAlternativaItemOs(@NotNull final Long codigoContextoAlternativa)
-            throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = DatabaseConnection.getConnection();
-            stmt = conn.prepareStatement("SELECT QT_APONTAMENTOS FROM CHECKLIST_ORDEM_SERVICO_ITENS_DATA " +
-                    "WHERE COD_CONTEXTO_ALTERNATIVA IN (?);");
-            stmt.setLong(1, codigoContextoAlternativa);
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                return rSet.getLong("QT_APONTAMENTOS");
-            } else {
-                throw new SQLException(
-                        "Não foi possível encontrar a O.S. da alternativa com o código de contexto: "
-                                + codigoContextoAlternativa);
-            }
-        } finally {
-            DatabaseConnection.close(conn, stmt, rSet);
-        }
-    }
-
-    @NotNull
-    private List<PerguntaModeloChecklistEdicao> toPerguntasEdicao(
-            @NotNull final ModeloChecklistVisualizacao modeloBuscado) {
-        return jsonToCollection(
-                GsonUtils.getGson(),
-                GsonUtils.getGson().toJson(modeloBuscado.getPerguntas()));
-    }
-
-    @NotNull
-    private List<Long> getCodigosTiposVeiculos(@NotNull final ModeloChecklistVisualizacao modeloBuscado) {
-        return modeloBuscado
-                .getTiposVeiculoLiberados()
-                .stream()
-                .map(TipoVeiculo::getCodigo)
-                .collect(Collectors.toList());
-    }
-
-    @NotNull
-    private List<Long> getCodigosCargos(@NotNull final ModeloChecklistVisualizacao modeloBuscado) {
-        return modeloBuscado
-                .getCargosLiberados()
-                .stream()
-                .map(Cargo::getCodigo)
-                .collect(Collectors.toList());
-    }
-
-    @NotNull
-    private ModeloChecklistEdicao createModeloEdicao(
-            @NotNull final ModeloChecklistVisualizacao modeloBuscado,
-            @NotNull final List<PerguntaModeloChecklistEdicao> perguntas,
-            @NotNull final List<Long> cargos,
-            @NotNull final List<Long> tiposVeiculo) {
-        return new ModeloChecklistEdicao(
-                modeloBuscado.getCodUnidade(),
-                modeloBuscado.getCodModelo(),
-                modeloBuscado.getCodVersaoModelo(),
-                modeloBuscado.getNome(),
-                tiposVeiculo,
-                cargos,
-                perguntas,
-                modeloBuscado.isAtivo());
     }
     //endregion
 }

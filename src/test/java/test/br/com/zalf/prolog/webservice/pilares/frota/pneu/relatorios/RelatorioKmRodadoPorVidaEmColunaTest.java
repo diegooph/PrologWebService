@@ -2,10 +2,12 @@ package test.br.com.zalf.prolog.webservice.pilares.frota.pneu.relatorios;
 
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios._model.PneuKmRodadoPorVida;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios._model.RelatorioKmRodadoPorVidaEmColuna;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import test.br.com.zalf.prolog.webservice.BaseTest;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -18,6 +20,10 @@ import static com.google.common.truth.Truth.assertThat;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public final class RelatorioKmRodadoPorVidaEmColunaTest extends BaseTest {
 
+    private int getIndexColunaKmRodadoTodasAsVidas(@NotNull final RelatorioKmRodadoPorVidaEmColuna relatorio) {
+        return relatorio.getTotalColunasRelatorio() - 2;
+    }
+
     @SuppressWarnings("unchecked")
     @Test
     void testUmPneuComUmaVida() {
@@ -29,10 +35,10 @@ public final class RelatorioKmRodadoPorVidaEmColunaTest extends BaseTest {
                 "Marca 1",
                 "Modelo 1",
                 "1",
-                "1.500",
-                "560",
+                BigDecimal.valueOf(1500),
+                560,
                 "0.003",
-                "560");
+                560);
 
         final RelatorioKmRodadoPorVidaEmColuna relatorio =
                 new RelatorioKmRodadoPorVidaEmColuna(Collections.singletonList(vidaPneu));
@@ -53,16 +59,16 @@ public final class RelatorioKmRodadoPorVidaEmColunaTest extends BaseTest {
         // Vida 1.
         assertThat(columns.get(3)).isEqualTo("Marca 1");
         assertThat(columns.get(4)).isEqualTo("Modelo 1");
-        assertThat(columns.get(5)).isEqualTo("1.500");
+        assertThat(columns.get(5)).isEqualTo("1500.00");
         assertThat(columns.get(6)).isEqualTo("560");
         assertThat(columns.get(7)).isEqualTo("0.003");
 
         // Outras vidas.
-        for (int i = 8; i < relatorio.getTotalColunasRelatorio() - 2; i++) {
+        for (int i = 8; i < relatorio.getTotalColunasRelatorio() - 4; i++) {
             assertThat(columns.get(i)).isEqualTo(RelatorioKmRodadoPorVidaEmColuna.CARACTERE_SEM_DADOS);
         }
 
-        assertThat(columns.get(relatorio.getTotalColunasRelatorio() - 1)).isEqualTo("560");
+        assertThat(columns.get(getIndexColunaKmRodadoTodasAsVidas(relatorio))).isEqualTo("560");
     }
 
     @SuppressWarnings("unchecked")
@@ -76,10 +82,10 @@ public final class RelatorioKmRodadoPorVidaEmColunaTest extends BaseTest {
                 "Marca 1",
                 "Modelo 1",
                 "1",
-                "1.000",
-                "560",
+                BigDecimal.valueOf(1000),
+                560,
                 "0.002",
-                "1160");
+                1160);
         final PneuKmRodadoPorVida vida2Pneu = new PneuKmRodadoPorVida(
                 "Unidade A",
                 1L,
@@ -88,10 +94,10 @@ public final class RelatorioKmRodadoPorVidaEmColunaTest extends BaseTest {
                 "Marca 2",
                 "Modelo 2",
                 "2",
-                "500",
-                "600",
+                BigDecimal.valueOf(500),
+                600,
                 "0.003",
-                "1160");
+                1160);
 
         final RelatorioKmRodadoPorVidaEmColuna relatorio =
                 new RelatorioKmRodadoPorVidaEmColuna(Arrays.asList(vida1Pneu, vida2Pneu));
@@ -112,23 +118,23 @@ public final class RelatorioKmRodadoPorVidaEmColunaTest extends BaseTest {
         // Vida 1.
         assertThat(columns.get(3)).isEqualTo("Marca 1");
         assertThat(columns.get(4)).isEqualTo("Modelo 1");
-        assertThat(columns.get(5)).isEqualTo("1.000");
+        assertThat(columns.get(5)).isEqualTo("1000.00");
         assertThat(columns.get(6)).isEqualTo("560");
         assertThat(columns.get(7)).isEqualTo("0.002");
 
         // Vida 2.
         assertThat(columns.get(8)).isEqualTo("Marca 2");
         assertThat(columns.get(9)).isEqualTo("Modelo 2");
-        assertThat(columns.get(10)).isEqualTo("500");
+        assertThat(columns.get(10)).isEqualTo("500.00");
         assertThat(columns.get(11)).isEqualTo("600");
         assertThat(columns.get(12)).isEqualTo("0.003");
 
         // Outras vidas.
-        for (int i = 13; i < relatorio.getTotalColunasRelatorio() - 2; i++) {
+        for (int i = 13; i < relatorio.getTotalColunasRelatorio() - 4; i++) {
             assertThat(columns.get(i)).isEqualTo(RelatorioKmRodadoPorVidaEmColuna.CARACTERE_SEM_DADOS);
         }
 
-        assertThat(columns.get(relatorio.getTotalColunasRelatorio() - 1)).isEqualTo("1160");
+        assertThat(columns.get(getIndexColunaKmRodadoTodasAsVidas(relatorio))).isEqualTo("1160");
     }
 
     @SuppressWarnings("unchecked")
@@ -142,10 +148,10 @@ public final class RelatorioKmRodadoPorVidaEmColunaTest extends BaseTest {
                 "Marca 1",
                 "Modelo 1",
                 "1",
-                "1.000",
-                "560",
+                BigDecimal.valueOf(1000),
+                560,
                 "0.002",
-                "560");
+                560);
         final PneuKmRodadoPorVida vida2Pneu = new PneuKmRodadoPorVida(
                 "Unidade B",
                 2L,
@@ -154,10 +160,10 @@ public final class RelatorioKmRodadoPorVidaEmColunaTest extends BaseTest {
                 "Marca 2",
                 "Modelo 2",
                 "2",
-                "500",
-                "600",
+                BigDecimal.valueOf(500),
+                600,
                 "0.003",
-                "650");
+                650);
 
         final RelatorioKmRodadoPorVidaEmColuna relatorio =
                 new RelatorioKmRodadoPorVidaEmColuna(Arrays.asList(vida1Pneu, vida2Pneu));
@@ -180,16 +186,16 @@ public final class RelatorioKmRodadoPorVidaEmColunaTest extends BaseTest {
             // Pneu 1 - Vida 1.
             assertThat(columnsPneu1.get(3)).isEqualTo("Marca 1");
             assertThat(columnsPneu1.get(4)).isEqualTo("Modelo 1");
-            assertThat(columnsPneu1.get(5)).isEqualTo("1.000");
+            assertThat(columnsPneu1.get(5)).isEqualTo("1000.00");
             assertThat(columnsPneu1.get(6)).isEqualTo("560");
             assertThat(columnsPneu1.get(7)).isEqualTo("0.002");
 
             // Pneu 1 - Outras vidas.
-            for (int i = 8; i < relatorio.getTotalColunasRelatorio() - 2; i++) {
+            for (int i = 8; i < relatorio.getTotalColunasRelatorio() - 4; i++) {
                 assertThat(columnsPneu1.get(i)).isEqualTo(RelatorioKmRodadoPorVidaEmColuna.CARACTERE_SEM_DADOS);
             }
 
-            assertThat(columnsPneu1.get(relatorio.getTotalColunasRelatorio() - 1)).isEqualTo("560");
+            assertThat(columnsPneu1.get(getIndexColunaKmRodadoTodasAsVidas(relatorio))).isEqualTo("560");
         }
 
         {
@@ -203,18 +209,18 @@ public final class RelatorioKmRodadoPorVidaEmColunaTest extends BaseTest {
             assertThat(columnsPneu2.get(2)).isEqualTo("Dimensão 2");
 
             // Pneu 1 - Vida 1.
-            assertThat(columnsPneu2.get(3)).isEqualTo("Marca 2");
-            assertThat(columnsPneu2.get(4)).isEqualTo("Modelo 2");
-            assertThat(columnsPneu2.get(5)).isEqualTo("500");
-            assertThat(columnsPneu2.get(6)).isEqualTo("600");
-            assertThat(columnsPneu2.get(7)).isEqualTo("0.003");
+            assertThat(columnsPneu2.get(8)).isEqualTo("Marca 2");
+            assertThat(columnsPneu2.get(9)).isEqualTo("Modelo 2");
+            assertThat(columnsPneu2.get(10)).isEqualTo("500.00");
+            assertThat(columnsPneu2.get(11)).isEqualTo("600");
+            assertThat(columnsPneu2.get(12)).isEqualTo("0.003");
 
             // Pneu 1 - Outras vidas.
-            for (int i = 8; i < relatorio.getTotalColunasRelatorio() - 2; i++) {
+            for (int i = 13; i < relatorio.getTotalColunasRelatorio() - 4; i++) {
                 assertThat(columnsPneu2.get(i)).isEqualTo(RelatorioKmRodadoPorVidaEmColuna.CARACTERE_SEM_DADOS);
             }
 
-            assertThat(columnsPneu2.get(relatorio.getTotalColunasRelatorio() - 1)).isEqualTo("650");
+            assertThat(columnsPneu2.get(getIndexColunaKmRodadoTodasAsVidas(relatorio))).isEqualTo("650");
         }
     }
 
@@ -232,10 +238,10 @@ public final class RelatorioKmRodadoPorVidaEmColunaTest extends BaseTest {
                         "Marca Vida " + vida,
                         "Modelo Vida " + vida,
                         String.valueOf(vida),
-                        String.valueOf(vida * 1000),
-                        String.valueOf(vida * 500),
+                        BigDecimal.valueOf(vida * 1000),
+                        vida * 500,
                         String.valueOf((vida * 1000) / (vida * 500)),
-                        "123456789");
+                        123456789);
                 pneusVidas.add(vidaPneu);
             }
         }
@@ -265,14 +271,14 @@ public final class RelatorioKmRodadoPorVidaEmColunaTest extends BaseTest {
                 assertThat(column.get(vida + offset + 2)).isEqualTo("Marca Vida " + vida);
                 assertThat(column.get(vida + offset + 3)).isEqualTo("Modelo Vida " + vida);
                 // Precisamos converter para String pois a tipagem também é comparada.
-                assertThat(column.get(vida + offset + 4)).isEqualTo(String.valueOf(vida * 1000));
+                assertThat(column.get(vida + offset + 4)).isEqualTo(String.valueOf(vida * 1000).concat(".00"));
                 assertThat(column.get(vida + offset + 5)).isEqualTo(String.valueOf(vida * 500));
                 assertThat(column.get(vida + offset + 6)).isEqualTo(String.valueOf((vida * 1000) / (vida * 500)));
                 vida++;
                 offset += 4;
             }
 
-            assertThat(column.get(relatorio.getTotalColunasRelatorio() - 1)).isEqualTo("123456789");
+            assertThat(column.get(getIndexColunaKmRodadoTodasAsVidas(relatorio))).isEqualTo("123456789");
 
             codPneu++;
         }
@@ -315,6 +321,8 @@ public final class RelatorioKmRodadoPorVidaEmColunaTest extends BaseTest {
             offset += 4;
         }
 
-        assertThat(header.get(relatorio.getTotalColunasRelatorio() - 1)).isEqualTo("KM RODADO TODAS AS VIDAS");
+        assertThat(header.get(relatorio.getTotalColunasRelatorio() - 3)).isEqualTo("VALOR TODAS AS VIDAS");
+        assertThat(header.get(getIndexColunaKmRodadoTodasAsVidas(relatorio))).isEqualTo("KM RODADO TODAS AS VIDAS");
+        assertThat(header.get(relatorio.getTotalColunasRelatorio() - 1)).isEqualTo("CPK TODAS AS VIDAS");
     }
 }

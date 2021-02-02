@@ -84,6 +84,29 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
     }
 
     @Override
+    public Equipe getEquipe(final Long codUnidade, final Long codEquipe) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM EQUIPE WHERE COD_UNIDADE = ?  AND CODIGO = ?");
+            stmt.setLong(1, codUnidade);
+            stmt.setLong(2, codEquipe);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                final Equipe equipe = new Equipe();
+                equipe.setCodigo(rSet.getLong("CODIGO"));
+                equipe.setNome(rSet.getString("NOME"));
+                return equipe;
+            }
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+        return null;
+    }
+
+    @Override
     public AbstractResponse insertEquipe(@NotNull final Long codUnidade,
                                          @NotNull final Equipe equipe) throws SQLException {
         Connection conn = null;
@@ -127,29 +150,6 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
             closeConnection(conn, stmt, null);
         }
         return true;
-    }
-
-    @Override
-    public Equipe getEquipe(final Long codUnidade, final Long codEquipe) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM EQUIPE WHERE COD_UNIDADE = ?  AND CODIGO = ?");
-            stmt.setLong(1, codUnidade);
-            stmt.setLong(2, codEquipe);
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                final Equipe equipe = new Equipe();
-                equipe.setCodigo(rSet.getLong("CODIGO"));
-                equipe.setNome(rSet.getString("NOME"));
-                return equipe;
-            }
-        } finally {
-            closeConnection(conn, stmt, rSet);
-        }
-        return null;
     }
 
     @Override
@@ -240,144 +240,6 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
     }
 
     @Override
-    public Cargo getCargo(final Long codEmpresa, final Long codCargo) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT f.codigo, f.nome " +
-                    "FROM funcao f " +
-                    "WHERE f.cod_empresa = ? and f.codigo = ?;");
-            stmt.setLong(1, codEmpresa);
-            stmt.setLong(2, codCargo);
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                return createCargo(rSet);
-            }
-        } finally {
-            closeConnection(conn, stmt, rSet);
-        }
-        return null;
-    }
-
-    @Override
-    public Visao getVisaoCargo(final Long codUnidade, final Long codCargo) throws SQLException {
-        final Visao visao = new Visao();
-        visao.setPilares(getPilaresCargo(codUnidade, codCargo));
-        return visao;
-    }
-
-    @Override
-    public Visao getVisaoUnidade(final Long codUnidade) throws SQLException {
-        final List<Pilar> pilares;
-        ResultSet rSet = null;
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("select * " +
-                    "from func_empresa_get_funcoes_pilares_by_unidade(f_cod_unidade => ?);");
-            stmt.setLong(1, codUnidade);
-            rSet = stmt.executeQuery();
-            pilares = createPilares(rSet);
-            final Visao visao = new Visao();
-            visao.setPilares(pilares);
-            return visao;
-        } finally {
-            close(conn, stmt, rSet);
-        }
-    }
-
-    private List<Pilar> getPilaresCargo(final Long codUnidade, final Long codCargo) throws SQLException {
-        final List<Pilar> pilares;
-        ResultSet rSet = null;
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("select * " +
-                    "from func_empresa_get_funcoes_pilares_by_cargo(" +
-                    "f_cod_unidade => ?, " +
-                    "f_cod_cargo_colaborador => ?);");
-            stmt.setLong(1, codUnidade);
-            stmt.setLong(2, codCargo);
-            rSet = stmt.executeQuery();
-            pilares = createPilares(rSet);
-        } finally {
-            close(conn, stmt, rSet);
-        }
-
-        return pilares;
-    }
-
-    @Override
-    public List<Pilar> createPilares(final ResultSet rSet) throws SQLException {
-        final List<Pilar> pilares = new ArrayList<>();
-        List<FuncaoProLog> funcoes = new ArrayList<>();
-        Pilar pilar = null;
-        while (rSet.next()) {
-            if (pilar == null) {//primeira linha do rSet
-                pilar = createPilar(rSet);
-                funcoes.add(createFuncaoProLog(rSet));
-            } else {
-                if (rSet.getString("PILAR").equals(pilar.nome)) {
-                    funcoes.add(createFuncaoProLog(rSet));
-                } else {
-                    pilar.funcoes = funcoes;
-                    pilares.add(pilar);
-                    pilar = createPilar(rSet);
-                    funcoes = new ArrayList<>();
-                    funcoes.add(createFuncaoProLog(rSet));
-                }
-            }
-        }
-        if (pilar != null) {
-            pilar.funcoes = funcoes;
-            pilares.add(pilar);
-        }
-        return pilares;
-    }
-
-    private FuncaoProLog createFuncaoProLog(final ResultSet rSet) throws SQLException {
-        final FuncaoProLog funcao = new FuncaoProLog();
-        funcao.setCodigo(rSet.getInt("COD_FUNCAO"));
-        funcao.setDescricao(rSet.getString("FUNCAO"));
-        return funcao;
-    }
-
-    private Pilar createPilar(final ResultSet rSet) throws SQLException {
-        final Pilar pilar = new Pilar();
-        pilar.codigo = rSet.getInt("COD_PILAR");
-        pilar.nome = rSet.getString("PILAR");
-        return pilar;
-    }
-
-    @Override
-    public List<Setor> getSetorByCodUnidade(final Long codUnidade) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        final List<Setor> setores = new ArrayList<>();
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM setor WHERE cod_unidade = ?\n" +
-                    "ORDER BY nome");
-            stmt.setLong(1, codUnidade);
-            rSet = stmt.executeQuery();
-            while (rSet.next()) {
-                final Setor setor = new Setor();
-                setor.setCodigo(rSet.getLong("codigo"));
-                setor.setNome(rSet.getString("nome"));
-                setores.add(setor);
-            }
-        } finally {
-            closeConnection(conn, stmt, rSet);
-        }
-        return setores;
-    }
-
-    @Override
     public List<HolderMapaTracking> getResumoAtualizacaoDados(final int ano,
                                                               final int mes,
                                                               final Long codUnidade) throws SQLException, NoContentException {
@@ -457,6 +319,52 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
         return holders;
     }
 
+    @Override
+    public List<Setor> getSetorByCodUnidade(final Long codUnidade) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        final List<Setor> setores = new ArrayList<>();
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM setor WHERE cod_unidade = ?\n" +
+                                                 "ORDER BY nome");
+            stmt.setLong(1, codUnidade);
+            rSet = stmt.executeQuery();
+            while (rSet.next()) {
+                final Setor setor = new Setor();
+                setor.setCodigo(rSet.getLong("codigo"));
+                setor.setNome(rSet.getString("nome"));
+                setores.add(setor);
+            }
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+        return setores;
+    }
+
+    @Override
+    public Cargo getCargo(final Long codEmpresa, final Long codCargo) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT f.codigo, f.nome " +
+                                                 "FROM funcao f " +
+                                                 "WHERE f.cod_empresa = ? and f.codigo = ?;");
+            stmt.setLong(1, codEmpresa);
+            stmt.setLong(2, codCargo);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return createCargo(rSet);
+            }
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+        return null;
+    }
+
     /**
      * Busca dos filtros para os relatórios a partir da permissão cadastrada.
      */
@@ -498,6 +406,227 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
             closeConnection(conn, stmt, rSet);
         }
         return listEmpresa;
+    }
+
+    @Override
+    public Visao getVisaoCargo(final Long codUnidade, final Long codCargo) throws SQLException {
+        final Visao visao = new Visao();
+        visao.setPilares(getPilaresCargo(codUnidade, codCargo));
+        return visao;
+    }
+
+    @Override
+    public Visao getVisaoUnidade(final Long codUnidade) throws SQLException {
+        final List<Pilar> pilares;
+        ResultSet rSet = null;
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("select * " +
+                                                 "from func_empresa_get_funcoes_pilares_by_unidade(f_cod_unidade => " +
+                                                 "?);");
+            stmt.setLong(1, codUnidade);
+            rSet = stmt.executeQuery();
+            pilares = createPilares(rSet);
+            final Visao visao = new Visao();
+            visao.setPilares(pilares);
+            return visao;
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+    @Override
+    public void alterarVisaoCargo(
+            @NotNull final Long codUnidade,
+            @NotNull final Long codCargo,
+            @NotNull final Visao visao,
+            @NotNull final DadosIntervaloChangedListener intervaloListener,
+            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = getConnection();
+            conn.setAutoCommit(false);
+            final boolean tinhaPermissaoRealizarChecklist = temPermissaoFuncaoProLog(
+                    conn,
+                    codUnidade,
+                    codCargo,
+                    Pilares.Frota.Checklist.REALIZAR);
+            // Primeiro deletamos qualquer função dos pilares ativos do ProLog cadastrada nesse cargo para essa unidade.
+            deleteCargoFuncaoProlog(codCargo, codUnidade, conn);
+
+            stmt = conn.prepareStatement("INSERT INTO CARGO_FUNCAO_PROLOG_V11(COD_UNIDADE, COD_FUNCAO_COLABORADOR, " +
+                                                 "COD_FUNCAO_PROLOG, COD_PILAR_PROLOG) VALUES (?,?,?,?)");
+            stmt.setLong(1, codUnidade);
+            stmt.setLong(2, codCargo);
+            for (final Pilar pilar : visao.getPilares()) {
+                for (final FuncaoProLog funcao : pilar.funcoes) {
+                    stmt.setInt(3, funcao.getCodigo());
+                    stmt.setInt(4, pilar.codigo);
+                    final int count = stmt.executeUpdate();
+                    if (count == 0) {
+                        throw new SQLException("Erro ao vincular a permissão "
+                                                       + funcao.getCodigo() + " do ProLog ao cargo "
+                                                       + codCargo + " da unidade " + codUnidade);
+                    }
+                }
+            }
+
+            // Notificamos a alteração de um cargo para os Listeners.
+            intervaloListener.onCargoAtualizado(conn, this, visao, codCargo, codUnidade);
+            checklistOfflineListener.onCargoAtualizado(
+                    conn,
+                    codUnidade,
+                    codCargo,
+                    tinhaPermissaoRealizarChecklist,
+                    visao.hasAccessToFunction(Pilares.Frota.Checklist.REALIZAR));
+
+            // Tudo certo, commita.
+            conn.commit();
+        } catch (final Throwable e) {
+            if (conn != null) {
+                conn.rollback();
+            }
+            throw e;
+        } finally {
+            close(conn, stmt);
+        }
+    }
+
+    @Override
+    public Long getCodEquipeByCodUnidadeByNome(final Long codUnidade, final String nomeEquipe) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT DISTINCT E.NOME, E.CODIGO "
+                                                 + "FROM EQUIPE E JOIN UNIDADE U ON U.CODIGO = E.COD_UNIDADE "
+                                                 + "WHERE U.CODIGO = ? AND E.NOME LIKE ? "
+                                                 + "ORDER BY 1");
+            stmt.setLong(1, codUnidade);
+            stmt.setString(2, nomeEquipe);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return rSet.getLong("codigo");
+            }
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+        return null;
+    }
+
+    @Override
+    public Long insertFuncao(final Cargo cargo, final Long codUnidade) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("INSERT INTO funcao(nome, cod_empresa) VALUES " +
+                                                 "(?,(SELECT cod_empresa FROM unidade WHERE codigo = ?)) RETURNING " +
+                                                 "CODIGO");
+            stmt.setString(1, cargo.getNome());
+            stmt.setLong(2, codUnidade);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return rSet.getLong("CODIGO");
+            } else {
+                throw new IllegalStateException("Erro ao inserir cargo.");
+            }
+        } catch (final SQLException e) {
+            conn.rollback();
+            throw e;
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+    @Override
+    public List<Pilar> createPilares(final ResultSet rSet) throws SQLException {
+        final List<Pilar> pilares = new ArrayList<>();
+        List<FuncaoProLog> funcoes = new ArrayList<>();
+        Pilar pilar = null;
+        while (rSet.next()) {
+            if (pilar == null) {
+                pilar = createPilar(rSet);
+                funcoes.add(createFuncaoProLog(rSet));
+            } else {
+                if (rSet.getString("PILAR").equals(pilar.nome)) {
+                    funcoes.add(createFuncaoProLog(rSet));
+                } else {
+                    pilar.funcoes = funcoes;
+                    pilares.add(pilar);
+                    pilar = createPilar(rSet);
+                    funcoes = new ArrayList<>();
+                    funcoes.add(createFuncaoProLog(rSet));
+                }
+            }
+        }
+        if (pilar != null) {
+            pilar.funcoes = funcoes;
+            pilares.add(pilar);
+        }
+        return pilares;
+    }
+
+    @NotNull
+    @Override
+    public Long getCodEmpresaByCodUnidade(@NotNull final Long codUnidade) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT U.COD_EMPRESA FROM UNIDADE U WHERE U.CODIGO = ?;");
+            stmt.setLong(1, codUnidade);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return rSet.getLong("COD_EMPRESA");
+            } else {
+                throw new IllegalStateException("Empresa não encontrada para o código de unidade: " + codUnidade);
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+    private List<Pilar> getPilaresCargo(final Long codUnidade, final Long codCargo) throws SQLException {
+        final List<Pilar> pilares;
+        ResultSet rSet = null;
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("select * " +
+                                                 "from func_empresa_get_funcoes_pilares_by_cargo(" +
+                                                 "f_cod_unidade => ?, " +
+                                                 "f_cod_cargo_colaborador => ?);");
+            stmt.setLong(1, codUnidade);
+            stmt.setLong(2, codCargo);
+            rSet = stmt.executeQuery();
+            pilares = createPilares(rSet);
+        } finally {
+            close(conn, stmt, rSet);
+        }
+
+        return pilares;
+    }
+
+    private FuncaoProLog createFuncaoProLog(final ResultSet rSet) throws SQLException {
+        final FuncaoProLog funcao = new FuncaoProLog();
+        funcao.setCodigo(rSet.getInt("COD_FUNCAO"));
+        funcao.setDescricao(rSet.getString("FUNCAO"));
+        return funcao;
+    }
+
+    private Pilar createPilar(final ResultSet rSet) throws SQLException {
+        final Pilar pilar = new Pilar();
+        pilar.codigo = rSet.getInt("COD_PILAR");
+        pilar.nome = rSet.getString("PILAR");
+        return pilar;
     }
 
     private Equipe createEquipe(final ResultSet rset) throws SQLException {
@@ -718,87 +847,6 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
         unidade.setEquipes(equipes);
     }
 
-    @Override
-    public Long getCodEquipeByCodUnidadeByNome(final Long codUnidade, final String nomeEquipe) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT DISTINCT E.NOME, E.CODIGO "
-                    + "FROM EQUIPE E JOIN UNIDADE U ON U.CODIGO = E.COD_UNIDADE "
-                    + "WHERE U.CODIGO = ? AND E.NOME LIKE ? "
-                    + "ORDER BY 1");
-            stmt.setLong(1, codUnidade);
-            stmt.setString(2, nomeEquipe);
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                return rSet.getLong("codigo");
-            }
-        } finally {
-            closeConnection(conn, stmt, rSet);
-        }
-        return null;
-    }
-
-    @Override
-    public void alterarVisaoCargo(
-            @NotNull final Long codUnidade,
-            @NotNull final Long codCargo,
-            @NotNull final Visao visao,
-            @NotNull final DadosIntervaloChangedListener intervaloListener,
-            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        try {
-            conn = getConnection();
-            conn.setAutoCommit(false);
-            final boolean tinhaPermissaoRealizarChecklist = temPermissaoFuncaoProLog(
-                    conn,
-                    codUnidade,
-                    codCargo,
-                    Pilares.Frota.Checklist.REALIZAR);
-            // Primeiro deletamos qualquer função dos pilares ativos do ProLog cadastrada nesse cargo para essa unidade.
-            deleteCargoFuncaoProlog(codCargo, codUnidade, conn);
-
-            stmt = conn.prepareStatement("INSERT INTO CARGO_FUNCAO_PROLOG_V11(COD_UNIDADE, COD_FUNCAO_COLABORADOR, " +
-                    "COD_FUNCAO_PROLOG, COD_PILAR_PROLOG) VALUES (?,?,?,?)");
-            stmt.setLong(1, codUnidade);
-            stmt.setLong(2, codCargo);
-            for (final Pilar pilar : visao.getPilares()) {
-                for (final FuncaoProLog funcao : pilar.funcoes) {
-                    stmt.setInt(3, funcao.getCodigo());
-                    stmt.setInt(4, pilar.codigo);
-                    final int count = stmt.executeUpdate();
-                    if (count == 0) {
-                        throw new SQLException("Erro ao vincular a permissão "
-                                + funcao.getCodigo() + " do ProLog ao cargo "
-                                + codCargo + " da unidade " + codUnidade);
-                    }
-                }
-            }
-
-            // Notificamos a alteração de um cargo para os Listeners.
-            intervaloListener.onCargoAtualizado(conn, this, visao, codCargo, codUnidade);
-            checklistOfflineListener.onCargoAtualizado(
-                    conn,
-                    codUnidade,
-                    codCargo,
-                    tinhaPermissaoRealizarChecklist,
-                    visao.hasAccessToFunction(Pilares.Frota.Checklist.REALIZAR));
-
-            // Tudo certo, commita.
-            conn.commit();
-        } catch (final Throwable e) {
-            if (conn != null) {
-                conn.rollback();
-            }
-            throw e;
-        } finally {
-            close(conn, stmt);
-        }
-    }
-
     private boolean temPermissaoFuncaoProLog(@NotNull final Connection conn,
                                              @NotNull final Long codUnidade,
                                              @NotNull final Long codCargo,
@@ -836,51 +884,5 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
         stmt.setLong(3, codUnidade);
         stmt.executeUpdate();
         // Não precisamos verificar se o delete afetou alguma linha pois o cargo pode não ter nenhuma permissão vinculada.
-    }
-
-    @Override
-    public Long insertFuncao(final Cargo cargo, final Long codUnidade) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            conn.setAutoCommit(false);
-            stmt = conn.prepareStatement("INSERT INTO funcao(nome, cod_empresa) VALUES " +
-                    "(?,(SELECT cod_empresa FROM unidade WHERE codigo = ?)) RETURNING CODIGO");
-            stmt.setString(1, cargo.getNome());
-            stmt.setLong(2, codUnidade);
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                return rSet.getLong("CODIGO");
-            }
-        } catch (final SQLException e) {
-            conn.rollback();
-            throw e;
-        } finally {
-            closeConnection(conn, stmt, rSet);
-        }
-        return null;
-    }
-
-    @NotNull
-    @Override
-    public Long getCodEmpresaByCodUnidade(@NotNull final Long codUnidade) throws Throwable {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT U.COD_EMPRESA FROM UNIDADE U WHERE U.CODIGO = ?;");
-            stmt.setLong(1, codUnidade);
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                return rSet.getLong("COD_EMPRESA");
-            } else {
-                throw new IllegalStateException("Empresa não encontrada para o código de unidade: " + codUnidade);
-            }
-        } finally {
-            close(conn, stmt, rSet);
-        }
     }
 }

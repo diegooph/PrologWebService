@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.checklist.modelo;
 
 import br.com.zalf.prolog.webservice.commons.imagens.Galeria;
-import br.com.zalf.prolog.webservice.commons.imagens.ImagemProLog;
+import br.com.zalf.prolog.webservice.commons.imagens.ImagemProlog;
 import br.com.zalf.prolog.webservice.frota.checklist.model.TipoChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.ModeloChecklistListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.ModeloChecklistEdicao;
@@ -53,7 +53,7 @@ public interface ChecklistModeloDao {
     List<ModeloChecklistVisualizacao> getModelosChecklistProLog() throws Throwable;
 
     @NotNull
-    Long insertImagem(@NotNull final Long codEmpresa, @NotNull final ImagemProLog imagemProLog) throws Throwable;
+    Long insertImagem(@NotNull final Long codEmpresa, @NotNull final ImagemProlog imagemProLog) throws Throwable;
 
     List<String> getUrlImagensPerguntas(@NotNull final Long codUnidade,
                                         @NotNull final Long codFuncao) throws Throwable;

@@ -3,7 +3,7 @@ package br.com.zalf.prolog.webservice.raizen.produtividade.relatorios;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
+import br.com.zalf.prolog.webservice.commons.util.datetime.PrologDateParser;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import org.jetbrains.annotations.NotNull;
 
@@ -17,7 +17,7 @@ import java.io.OutputStream;
 public class RaizenProdutividadeRelatorioService {
     private static final String TAG = RaizenProdutividadeRelatorioService.class.getSimpleName();
     @NotNull
-    private RaizenProdutividadeRelatorioDao dao = Injection.provideRaizenProdutividadeRelatorioDao();
+    private final RaizenProdutividadeRelatorioDao dao = Injection.provideRaizenProdutividadeRelatorioDao();
 
     public void getDadosGeraisProdutividadeCsv(@NotNull final OutputStream out,
                                                @NotNull final Long codUnidade,
@@ -27,8 +27,8 @@ public class RaizenProdutividadeRelatorioService {
             dao.getDadosGeraisProdutividadeCsv(
                     out,
                     codUnidade,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal));
+                    PrologDateParser.toLocalDate(dataInicial),
+                    PrologDateParser.toLocalDate(dataFinal));
         } catch (final Throwable throwable) {
             Log.e(TAG, "Erro ao gerar relatório dos dados da produtividade da Raízen (CSV)", throwable);
             throw new RuntimeException(throwable);
@@ -42,8 +42,8 @@ public class RaizenProdutividadeRelatorioService {
         try {
             return dao.getDadosGeraisProdutividadeReport(
                     codUnidade,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal));
+                    PrologDateParser.toLocalDate(dataInicial),
+                    PrologDateParser.toLocalDate(dataFinal));
         } catch (final Throwable throwable) {
             Log.e(TAG, "Erro ao gerar relatório dos dados da produtividade da Raízen (REPORT)", throwable);
             throw Injection

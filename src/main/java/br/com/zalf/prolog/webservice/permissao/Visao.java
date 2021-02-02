@@ -17,47 +17,6 @@ import java.util.stream.Collectors;
 public class Visao {
     List<Pilar> pilares;
 
-    public List<Pilar> getPilares() {
-        return pilares;
-    }
-
-    public void setPilares(List<Pilar> pilares) {
-        this.pilares = pilares;
-    }
-
-    @Deprecated
-    public boolean hasAccessToFunction(final int codPilar, final int codPermissao) {
-        return hasAccessToFunction(codPermissao);
-    }
-
-    public boolean hasAccessToFunction(final int codPermissao) {
-        if (pilares == null)
-            return false;
-
-        // O primeiro dígito de uma permissão é sempre o código do pilar.
-        final int codPilar = MathUtils.getNthDigit(codPermissao, 1);
-        for (final Pilar pilar : pilares) {
-            if (pilar.codigo == codPilar) {
-                if (pilar.funcoes == null)
-                    return false;
-
-                for (final FuncaoProLog funcao : pilar.funcoes) {
-                    if (funcao != null && funcao.getCodigo() == codPermissao)
-                        return true;
-                }
-                return false;
-            }
-        }
-        return false;
-    }
-
-    public void removePilar(final int codPilar) {
-        pilares = pilares
-                .stream()
-                .filter(p -> p.getCodigo() != codPilar)
-                .collect(Collectors.toList());
-    }
-
     @NotNull
     public static Visao createDummy() {
         final Visao visao = new Visao();
@@ -78,5 +37,49 @@ public class Visao {
         pilares.add(frota);
         visao.setPilares(pilares);
         return visao;
+    }
+
+    public List<Pilar> getPilares() {
+        return pilares;
+    }
+
+    public void setPilares(final List<Pilar> pilares) {
+        this.pilares = pilares;
+    }
+
+    @Deprecated
+    public boolean hasAccessToFunction(final int codPilar, final int codPermissao) {
+        return hasAccessToFunction(codPermissao);
+    }
+
+    public boolean hasAccessToFunction(final int codPermissao) {
+        if (pilares == null) {
+            return false;
+        }
+
+        // O primeiro dígito de uma permissão é sempre o código do pilar.
+        final int codPilar = MathUtils.getNumberInPosition(codPermissao, 1);
+        for (final Pilar pilar : pilares) {
+            if (pilar.codigo == codPilar) {
+                if (pilar.funcoes == null) {
+                    return false;
+                }
+
+                for (final FuncaoProLog funcao : pilar.funcoes) {
+                    if (funcao != null && funcao.getCodigo() == codPermissao) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        }
+        return false;
+    }
+
+    public void removePilar(final int codPilar) {
+        pilares = pilares
+                .stream()
+                .filter(p -> p.getCodigo() != codPilar)
+                .collect(Collectors.toList());
     }
 }

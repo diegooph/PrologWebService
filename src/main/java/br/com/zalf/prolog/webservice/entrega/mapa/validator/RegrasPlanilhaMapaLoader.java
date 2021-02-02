@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.entrega.mapa.validator;
 
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.commons.util.YamlUtils;
+import br.com.zalf.prolog.webservice.commons.util.files.YamlUtils;
 import br.com.zalf.prolog.webservice.config.PrologConfigFilesWatcher;
 import lombok.Data;
 import org.apache.commons.io.FilenameUtils;

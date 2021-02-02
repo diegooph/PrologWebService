@@ -3,9 +3,9 @@ package br.com.zalf.prolog.webservice.interno.implantacao.conferencia.gente.cola
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
 import br.com.zalf.prolog.webservice.commons.network.Response;
-import br.com.zalf.prolog.webservice.commons.util.Files;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
+import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
+import br.com.zalf.prolog.webservice.commons.util.files.FileUtils;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.interno.PrologInternalUser;
 import br.com.zalf.prolog.webservice.interno.autenticacao.AutenticacaoInternaService;
@@ -59,9 +59,9 @@ public final class ColaboradorConferenciaService {
                                       @NotNull final InputStream fileInputStream,
                                       @NotNull final FormDataContentDisposition fileDetail) throws ProLogException {
         try {
-            final String fileName = Now.utcMillis() + "_" + codUnidade
+            final String fileName = Now.getUtcMillis() + "_" + codUnidade
                     + "_" + fileDetail.getFileName().replace(" ", "_");
-            final File tmpDir = Files.createTempDir();
+            final File tmpDir = FileUtils.createTempDir();
             final File file = new File(tmpDir, fileName);
             final FileOutputStream out = new FileOutputStream(file);
             IOUtils.copy(fileInputStream, out);

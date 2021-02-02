@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.transport;
 
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
+import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.StatusItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.StatusOrdemServico;
@@ -105,10 +105,10 @@ public final class ItemPendenteIntegracaoTransport {
                 90051L,
                 94L,
                 5L,
-                Now.localDateTimeUtc(),
+                Now.getLocalDateTimeUtc(),
                 106851L,
                 5L,
-                Now.localDateTimeUtc(),
+                Now.getLocalDateTimeUtc(),
                 1,
                 1,
                 80931L,
@@ -128,10 +128,10 @@ public final class ItemPendenteIntegracaoTransport {
                 854966L,
                 65L,
                 5L,
-                Now.localDateTimeUtc(),
+                Now.getLocalDateTimeUtc(),
                 26304L,
                 5L,
-                Now.localDateTimeUtc(),
+                Now.getLocalDateTimeUtc(),
                 720,
                 1,
                 80931L,

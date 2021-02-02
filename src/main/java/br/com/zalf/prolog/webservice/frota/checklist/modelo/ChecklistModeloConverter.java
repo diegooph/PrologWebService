@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.checklist.modelo;
 
-import br.com.zalf.prolog.webservice.commons.imagens.ImagemProLog;
+import br.com.zalf.prolog.webservice.commons.imagens.ImagemProlog;
 import br.com.zalf.prolog.webservice.commons.util.NullIf;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
@@ -195,8 +195,8 @@ public final class ChecklistModeloConverter {
     }
 
     @NotNull
-    public static ImagemProLog createImagemProLog(@NotNull final ResultSet rSet) throws Throwable {
-        final ImagemProLog imagemProLog = new ImagemProLog();
+    public static ImagemProlog createImagemProLog(@NotNull final ResultSet rSet) throws Throwable {
+        final ImagemProlog imagemProLog = new ImagemProlog();
         imagemProLog.setCodImagem(rSet.getLong("COD_IMAGEM"));
         imagemProLog.setUrlImagem(rSet.getString("URL_IMAGEM"));
         imagemProLog.setDataHoraCadastro(rSet.getObject("DATA_HORA_CADASTRO", LocalDateTime.class));
