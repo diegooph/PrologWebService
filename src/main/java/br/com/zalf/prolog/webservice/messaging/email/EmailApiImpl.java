@@ -32,7 +32,7 @@ public class EmailApiImpl implements EmailApi {
     @Override
     @NotNull
     public EmailRequestResponseHolder sendMessage(final @NotNull Set<EmailReceiver> receivers,
-                                                           final @NotNull EmailTemplateMessage template)
+                                                  final @NotNull EmailTemplateMessage template)
             throws MailjetException {
         final TransactionalEmail message = getMessage(receivers, template);
         final SendEmailsRequest request = getRequest(message);
