@@ -7,7 +7,7 @@ Change Log
 #### Refactors
 * Considera bônus no pré-contracheque apenas se número de viagens for acima ou igual o parametrizado (PL-3368)
 * Cria método para verificar se uma marcação está finalizada (PL-3191)
-* Remove placa do processo de inserção de Aferição (PL-3403)
+* Remove placa de todo o fluxo de aferições (PL-3403)
 
 ### Bug Fixes
 * Corrige uso de autoCommit no salvamento de imagens do checklist
@@ -57,7 +57,6 @@ Change Log
 
 <a name="v1.5.0"></a>
 ## Version [v1.5.0](https://github.com/luizfp/PrologWebService/compare/v1.4.2...v1.5.0) (2021-01-18)
->>>>>>> afd32984031a55f4cdad708ddd297e0ff309f052
 
 ### Features
 * Altera integração da Nepomuceno para trabalhar com código ao invés de placa (PL-3366)
