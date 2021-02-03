@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.schedules;
 
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.commons.util.files.FileUtils;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -30,7 +31,7 @@ public class DeleteTempFileScheduler implements Scheduler {
     @Override
     @Scheduled(cron = "0 2 */2 * * *")
     public void doWork() {
-        final File tmpDir = br.com.zalf.prolog.webservice.commons.util.Files.createTempDir();
+        final File tmpDir = FileUtils.createTempDir();
         final String message = String.format("Iniciando execução do schedule para limpeza da pasta %s",
                                              tmpDir.getName());
         Log.i(TAG, message);

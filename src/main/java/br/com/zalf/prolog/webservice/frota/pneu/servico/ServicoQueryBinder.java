@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.pneu.servico;
 
 import br.com.zalf.prolog.webservice.TimeZoneManager;
-import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
+import br.com.zalf.prolog.webservice.commons.util.datetime.DateUtils;
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.ServicoCalibragem;
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.ServicoInspecao;
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.ServicoMovimentacao;

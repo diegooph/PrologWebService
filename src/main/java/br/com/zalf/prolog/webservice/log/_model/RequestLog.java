@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.log._model;
 
 import br.com.zalf.prolog.webservice.commons.KeyCaseInsensitiveMultivaluedMap;
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
-import br.com.zalf.prolog.webservice.commons.util.ProLogCustomHeaders;
+import br.com.zalf.prolog.webservice.commons.network.PrologCustomHeaders;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -29,8 +29,8 @@ public final class RequestLog {
 
     @Nullable
     public String getTokenIntegracao() {
-        if (headers != null) {
-            return headers.get(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO).stream().findFirst().orElse(null);
+        if (headers != null && headers.containsKey(PrologCustomHeaders.HEADER_TOKEN_INTEGRACAO)) {
+            return headers.get(PrologCustomHeaders.HEADER_TOKEN_INTEGRACAO).stream().findFirst().orElse(null);
         }
 
         return null;

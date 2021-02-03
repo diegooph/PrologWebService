@@ -1,8 +1,8 @@
 package br.com.zalf.prolog.webservice.entrega.escaladiaria;
 
-import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
-import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
+import br.com.zalf.prolog.webservice.commons.util.database.PostgresUtils;
+import br.com.zalf.prolog.webservice.commons.util.datetime.DateUtils;
+import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import org.jetbrains.annotations.NotNull;
 
@@ -113,7 +113,7 @@ public class EscalaDiariaDaoImpl extends DatabaseConnection implements EscalaDia
             } else {
                 stmt.setNull(7, Types.BIGINT);
             }
-            stmt.setTimestamp(8, Now.timestampUtc());
+            stmt.setTimestamp(8, Now.getTimestampUtc());
             stmt.setString(9, token);
             stmt.setLong(10, item.getCodigo());
             if (stmt.executeUpdate() == 0) {
@@ -191,8 +191,9 @@ public class EscalaDiariaDaoImpl extends DatabaseConnection implements EscalaDia
     @Override
     public void deleteEscalaDiariaItens(@NotNull final Long codUnidade,
                                         @NotNull final List<Long> codEscalas) throws SQLException {
-        if (codEscalas.isEmpty())
+        if (codEscalas.isEmpty()) {
             return;
+        }
 
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -201,7 +202,7 @@ public class EscalaDiariaDaoImpl extends DatabaseConnection implements EscalaDia
             stmt = conn.prepareStatement("DELETE FROM ESCALA_DIARIA " +
                     "WHERE COD_UNIDADE = ? AND CODIGO::TEXT LIKE ANY (ARRAY[?])");
             stmt.setLong(1, codUnidade);
-            stmt.setArray(2, PostgresUtils.ListLongToArray(conn, codEscalas));
+            stmt.setArray(2, PostgresUtils.listLongToArray(conn, codEscalas));
             if (stmt.executeUpdate() == 0) {
                 throw new SQLException("Erro ao deletar Escala");
             }
@@ -270,8 +271,8 @@ public class EscalaDiariaDaoImpl extends DatabaseConnection implements EscalaDia
             } else {
                 stmt.setNull(7, Types.BIGINT);
             }
-            stmt.setTimestamp(8, Now.timestampUtc());
-            stmt.setTimestamp(9, Now.timestampUtc());
+            stmt.setTimestamp(8, Now.getTimestampUtc());
+            stmt.setTimestamp(9, Now.getTimestampUtc());
             stmt.setString(10, token);
             stmt.setString(11, token);
             if (stmt.executeUpdate() == 0) {
@@ -322,7 +323,7 @@ public class EscalaDiariaDaoImpl extends DatabaseConnection implements EscalaDia
             } else {
                 stmt.setNull(7, Types.BIGINT);
             }
-            stmt.setTimestamp(8, Now.timestampUtc());
+            stmt.setTimestamp(8, Now.getTimestampUtc());
             stmt.setString(9, token);
 
             stmt.setDate(10, DateUtils.toSqlDate(item.getData()));

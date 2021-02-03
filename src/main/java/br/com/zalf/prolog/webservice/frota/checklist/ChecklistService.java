@@ -4,12 +4,12 @@ import br.com.zalf.prolog.webservice.AmazonConstants;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.commons.imagens.FileFormatNotSupportException;
-import br.com.zalf.prolog.webservice.commons.imagens.ImagemProLog;
+import br.com.zalf.prolog.webservice.commons.imagens.ImagemProlog;
 import br.com.zalf.prolog.webservice.commons.imagens.UploadImageHelper;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
+import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
+import br.com.zalf.prolog.webservice.commons.util.datetime.PrologDateParser;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.ChecklistListagem;
@@ -80,7 +80,7 @@ public final class ChecklistService {
             }
 
             final String imageType = FilenameUtils.getExtension(fileDetail.getFileName());
-            final ImagemProLog imagemProlog = UploadImageHelper.uploadCompressedImagem(
+            final ImagemProlog imagemProlog = UploadImageHelper.uploadCompressedImagem(
                     fileInputStream,
                     AmazonConstants.BUCKET_CHECKLIST_REALIZACAO_IMAGENS,
                     imageType);
@@ -210,8 +210,8 @@ public final class ChecklistService {
                     .create(dao, userToken)
                     .getListagemByColaborador(
                             codColaborador,
-                            ProLogDateParser.toLocalDate(dataInicial),
-                            ProLogDateParser.toLocalDate(dataFinal),
+                            PrologDateParser.toLocalDate(dataInicial),
+                            PrologDateParser.toLocalDate(dataFinal),
                             limit,
                             offset);
         } catch (final Throwable t) {
@@ -240,8 +240,8 @@ public final class ChecklistService {
                             codEquipe,
                             codTipoVeiculo,
                             codVeiculo,
-                            ProLogDateParser.toLocalDate(dataInicial),
-                            ProLogDateParser.toLocalDate(dataFinal),
+                            PrologDateParser.toLocalDate(dataInicial),
+                            PrologDateParser.toLocalDate(dataFinal),
                             limit,
                             offset);
         } catch (final Throwable t) {
@@ -260,8 +260,8 @@ public final class ChecklistService {
                                                       final String userToken) throws ProLogException {
         return internalGetFarolChecklist(
                 codUnidade,
-                ProLogDateParser.toLocalDate(dataInicial),
-                ProLogDateParser.toLocalDate(dataFinal),
+                PrologDateParser.toLocalDate(dataInicial),
+                PrologDateParser.toLocalDate(dataFinal),
                 itensCriticosRetroativos,
                 userToken);
     }
@@ -273,7 +273,7 @@ public final class ChecklistService {
         LocalDate hojeComTz = null;
         try {
             hojeComTz = Now
-                    .zonedDateTimeTzAware(TimeZoneManager.getZoneIdForCodUnidade(codUnidade))
+                    .getZonedDateTimeTzAware(TimeZoneManager.getZoneIdForCodUnidade(codUnidade))
                     .toLocalDate();
         } catch (final Throwable throwable) {
             Log.e(TAG, "Erro ao buscar TZ do cliente para gerar farol do checklist.\n" +

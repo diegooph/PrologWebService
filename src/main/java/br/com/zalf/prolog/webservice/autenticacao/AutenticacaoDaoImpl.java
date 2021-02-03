@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.autenticacao;
 
-import br.com.zalf.prolog.webservice.commons.util.SessionIdentifierGenerator;
+import br.com.zalf.prolog.webservice.autenticacao.token.TokenGenerator;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ResourceAlreadyDeletedException;
 import br.com.zalf.prolog.webservice.interceptors.auth.ColaboradorAutenticado;
@@ -25,7 +25,7 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
     @NotNull
     @Override
     public Autenticacao createTokenByCpf(@NotNull final Long cpf) throws Throwable {
-        final String token = new SessionIdentifierGenerator().nextSessionId();
+        final String token = new TokenGenerator().getNextToken();
         return insert(cpf, token);
     }
 
@@ -41,7 +41,7 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
                     "f_cod_colaborador => ?, " +
                     "f_token_autenticacao => ?);");
             stmt.setLong(1, codColaborador);
-            stmt.setString(2, new SessionIdentifierGenerator().nextSessionId());
+            stmt.setString(2, new TokenGenerator().getNextToken());
             rSet = stmt.executeQuery();
             final Autenticacao autenticacao = new Autenticacao();
             if (rSet.next()) {

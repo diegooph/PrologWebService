@@ -50,4 +50,6 @@ public interface ControleJornadaDao {
 
     @NotNull
     Optional<DadosMarcacaoUnidade> getDadosMarcacaoUnidade(@NotNull final Long codUnidade) throws Throwable;
+
+    boolean isMarcacaoInicioFinalizada(@NotNull final Long codMarcacao) throws Throwable;
 }

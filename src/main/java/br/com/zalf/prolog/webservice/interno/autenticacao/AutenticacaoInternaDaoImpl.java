@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.interno.autenticacao;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
+import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import br.com.zalf.prolog.webservice.interno.PrologInternalUser;
 import org.jetbrains.annotations.NotNull;
 
@@ -89,7 +89,7 @@ public final class AutenticacaoInternaDaoImpl implements AutenticacaoInternaDao 
                     "f_data_hora_atual => ?);");
             stmt.setLong(1, codUsuarioProlog);
             stmt.setString(2, token);
-            stmt.setObject(3, Now.offsetDateTimeUtc());
+            stmt.setObject(3, Now.getOffsetDateTimeUtc());
             stmt.execute();
         } catch (final Throwable t) {
             throw new RuntimeException("Erro ao criar sessão para o usuário Prolog de código: " + codUsuarioProlog, t);

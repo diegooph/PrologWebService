@@ -1,7 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan;
 
-import br.com.zalf.prolog.webservice.commons.util.Optional;
-import br.com.zalf.prolog.webservice.commons.util.Required;
+import br.com.zalf.prolog.webservice.commons.network.metadata.Optional;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import org.jetbrains.annotations.NotNull;
 

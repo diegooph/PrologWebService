@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.model;
 
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
+import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
@@ -71,7 +71,7 @@ public final class AfericaoAvulsaRodoparHorizonte {
                 5L,
                 "03383283194",
                 Duration.ofMinutes(1L).toMillis(),
-                Now.localDateTimeUtc(),
+                Now.getLocalDateTimeUtc(),
                 TipoMedicaoAfericaoRodoparHorizonte.SULCO,
                 MedicaoAfericaoRodoparHorizonte.getDummy(TipoMedicaoAfericaoRodoparHorizonte.SULCO));
     }

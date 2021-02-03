@@ -1,10 +1,10 @@
 package br.com.zalf.prolog.webservice.gente.prontuarioCondutor;
 
-import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.util.StringUtils;
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
+import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.entrega.ImportUtils;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.gente.prontuarioCondutor.model.Cnh;
 import br.com.zalf.prolog.webservice.gente.prontuarioCondutor.model.Documento;
 import br.com.zalf.prolog.webservice.gente.prontuarioCondutor.model.ProntuarioCondutor;
@@ -137,6 +137,7 @@ public final class ProntuarioCondutorDaoImpl extends DatabaseConnection implemen
         }
     }
 
+    @Override
     @NotNull
     public ProntuarioCondutor getProntuario(@NotNull final Long cpf) throws SQLException {
         Connection conn = null;
@@ -250,8 +251,9 @@ public final class ProntuarioCondutorDaoImpl extends DatabaseConnection implemen
 
     @NotNull
     private List<List<String>> criarDadosSemColunasVazias(@NotNull final List<CSVRecord> tabela) {
-        if (tabela.isEmpty())
+        if (tabela.isEmpty()) {
             return Collections.emptyList();
+        }
 
         final Map<Integer, String> colunasVazias = new HashMap<>();
         final int totalColunas = tabela.get(0).size();
@@ -466,7 +468,7 @@ public final class ProntuarioCondutorDaoImpl extends DatabaseConnection implemen
             stmt.setInt(35, prontuario.getTelemetria().getForcaG());
             stmt.setInt(36, prontuario.getTelemetria().getFrenagemBrusca());
             stmt.setInt(37, prontuario.getTelemetria().getPowerOn());
-            stmt.setObject(38, Now.offsetDateTimeUtc());
+            stmt.setObject(38, Now.getOffsetDateTimeUtc());
             stmt.execute();
         } finally {
             close(stmt);

@@ -3,8 +3,8 @@ package br.com.zalf.prolog.webservice.frota.pneu.afericao;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
+import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
+import br.com.zalf.prolog.webservice.commons.util.datetime.PrologDateParser;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogExceptionHandler;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Restricao;
@@ -30,7 +30,7 @@ public class AfericaoService {
                        @NotNull final Long codUnidade,
                        @NotNull final Afericao afericao) throws ProLogException {
         try {
-            afericao.setDataHora(Now.localDateTimeUtc());
+            afericao.setDataHora(Now.getLocalDateTimeUtc());
             return RouterAfericao
                     .create(dao, userToken)
                     .insertAfericao(codUnidade, afericao, true);
@@ -114,8 +114,8 @@ public class AfericaoService {
                             codUnidade,
                             codTipoVeiculo,
                             placaVeiculo,
-                            ProLogDateParser.toLocalDate(dataInicial),
-                            ProLogDateParser.toLocalDate(dataFinal),
+                            PrologDateParser.toLocalDate(dataInicial),
+                            PrologDateParser.toLocalDate(dataFinal),
                             limit,
                             offset);
         } catch (final Throwable e) {
@@ -136,8 +136,8 @@ public class AfericaoService {
         try {
             return dao.getAfericoesAvulsas(
                     codUnidade,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal),
+                    PrologDateParser.toLocalDate(dataInicial),
+                    PrologDateParser.toLocalDate(dataFinal),
                     limit,
                     offset);
         } catch (final Throwable e) {
@@ -158,8 +158,8 @@ public class AfericaoService {
                     .getAfericoesAvulsas(
                             codUnidade,
                             codColaborador,
-                            ProLogDateParser.toLocalDate(dataInicial),
-                            ProLogDateParser.toLocalDate(dataFinal));
+                            PrologDateParser.toLocalDate(dataInicial),
+                            PrologDateParser.toLocalDate(dataFinal));
         } catch (final Throwable throwable) {
             Log.e(TAG, "Erro ao buscar o relatório de aferições avulsas por colaborador (REPORT)", throwable);
             throw exceptionHandler.map(

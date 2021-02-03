@@ -3,7 +3,7 @@ package br.com.zalf.prolog.webservice.frota.checklist.relatorios;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
+import br.com.zalf.prolog.webservice.commons.util.datetime.PrologDateParser;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogExceptionHandler;
 import org.jetbrains.annotations.NotNull;
@@ -30,8 +30,8 @@ class ChecklistRelatorioService {
             dao.getChecklistsRealizadosDiaAmbevCsv(
                     outputStream,
                     codUnidade,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal));
+                    PrologDateParser.toLocalDate(dataInicial),
+                    PrologDateParser.toLocalDate(dataFinal));
         } catch (final Throwable e) {
             Log.e(TAG, "Erro ao buscar o relatório com os checklists realizados por dia (CSV)", e);
             throw new RuntimeException(e);
@@ -45,8 +45,8 @@ class ChecklistRelatorioService {
         try {
             return dao.getChecklistsRealizadosDiaAmbevReport(
                     codUnidade,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal));
+                    PrologDateParser.toLocalDate(dataInicial),
+                    PrologDateParser.toLocalDate(dataFinal));
         } catch (final Throwable e) {
             Log.e(TAG, "Erro ao buscar o relatório com os checklists realizados por dia (REPORT)", e);
             throw exceptionHandler.map(e,
@@ -63,8 +63,8 @@ class ChecklistRelatorioService {
             dao.getExtratoChecklistsRealizadosDiaAmbevCsv(
                     outputStream,
                     codUnidade,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal));
+                    PrologDateParser.toLocalDate(dataInicial),
+                    PrologDateParser.toLocalDate(dataFinal));
         } catch (final Throwable e) {
             Log.e(TAG, "Erro ao buscar o relatório com o extrato dos checklists realizados por dia (CSV)", e);
             throw new RuntimeException(e);
@@ -78,8 +78,8 @@ class ChecklistRelatorioService {
         try {
             return dao.getExtratoChecklistsRealizadosDiaAmbevReport(
                     codUnidade,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal));
+                    PrologDateParser.toLocalDate(dataInicial),
+                    PrologDateParser.toLocalDate(dataFinal));
         } catch (final Throwable e) {
             Log.e(TAG, "Erro ao buscar o relatório com o extrato dos checklists realizados por dia (CSV)", e);
             throw exceptionHandler.map(e,
@@ -96,8 +96,8 @@ class ChecklistRelatorioService {
             dao.getTempoRealizacaoChecklistsMotoristasCsv(
                     outputStream,
                     codUnidade,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal));
+                    PrologDateParser.toLocalDate(dataInicial),
+                    PrologDateParser.toLocalDate(dataFinal));
         } catch (final Throwable e) {
             Log.e(TAG, "Erro ao buscar o relatório com o tempo de realização por motorista (CSV)", e);
             throw new RuntimeException(e);
@@ -111,8 +111,8 @@ class ChecklistRelatorioService {
         try {
             return dao.getTempoRealizacaoChecklistsMotoristasReport(
                     codUnidade,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal));
+                    PrologDateParser.toLocalDate(dataInicial),
+                    PrologDateParser.toLocalDate(dataFinal));
         } catch (final Throwable e) {
             Log.e(TAG, "Erro ao buscar o relatório com o tempo de realização por motorista (REPORT)", e);
             throw exceptionHandler.map(e,
@@ -131,8 +131,8 @@ class ChecklistRelatorioService {
                     outputStream,
                     codUnidade,
                     placa,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal));
+                    PrologDateParser.toLocalDate(dataInicial),
+                    PrologDateParser.toLocalDate(dataFinal));
         } catch (final Throwable e) {
             Log.e(TAG, "Erro ao buscar o relatório com o resumo dos checklist (CSV)", e);
             throw new RuntimeException(e);
@@ -148,8 +148,8 @@ class ChecklistRelatorioService {
             return dao.getResumoChecklistsReport(
                     codUnidade,
                     placa,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal));
+                    PrologDateParser.toLocalDate(dataInicial),
+                    PrologDateParser.toLocalDate(dataFinal));
         } catch (final Throwable e) {
             Log.e(TAG, "Erro ao buscar o relatório com o resumo dos checklist (REPORT)", e);
             throw exceptionHandler.map(e,
@@ -167,8 +167,8 @@ class ChecklistRelatorioService {
             return dao.getEstratificacaoRespostasNokReport(
                     codUnidade,
                     placa,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal));
+                    PrologDateParser.toLocalDate(dataInicial),
+                    PrologDateParser.toLocalDate(dataFinal));
         } catch (final Throwable e) {
             Log.e(TAG, "Erro ao buscar o relatório com a estratificação das respostas NOK dos checklists (REPORT)", e);
             throw exceptionHandler.map(e,
@@ -187,8 +187,8 @@ class ChecklistRelatorioService {
                     outputStream,
                     codUnidade,
                     placa,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal));
+                    PrologDateParser.toLocalDate(dataInicial),
+                    PrologDateParser.toLocalDate(dataFinal));
         } catch (final Throwable e) {
             Log.e(TAG, "Erro ao buscar o relatório com a estratificação das respostas NOK dos checklists (CSV)", e);
             throw new RuntimeException(e);
@@ -230,8 +230,8 @@ class ChecklistRelatorioService {
                     codUnidades,
                     codColaborador,
                     placa,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal));
+                    PrologDateParser.toLocalDate(dataInicial),
+                    PrologDateParser.toLocalDate(dataFinal));
         } catch (final Throwable e) {
             Log.e(TAG, "Erro ao buscar o relatório de dados dos checklists (REPORT)", e);
             throw exceptionHandler.map(e,
@@ -252,8 +252,8 @@ class ChecklistRelatorioService {
                     codUnidades,
                     codColaborador,
                     placa,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal));
+                    PrologDateParser.toLocalDate(dataInicial),
+                    PrologDateParser.toLocalDate(dataFinal));
         } catch (final Throwable e) {
             Log.e(TAG, "Erro ao buscar o relatório de dados gerais dos checklists (CSV)", e);
             throw new RuntimeException(e);

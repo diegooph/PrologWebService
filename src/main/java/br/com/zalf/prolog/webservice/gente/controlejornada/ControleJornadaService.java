@@ -1,11 +1,11 @@
 package br.com.zalf.prolog.webservice.gente.controlejornada;
 
 import br.com.zalf.prolog.webservice.Injection;
+import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.commons.util.datetime.PrologDateParser;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.gente.colaborador.ColaboradorService;
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
-import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
-import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.*;
 import br.com.zalf.prolog.webservice.gente.controlejornada.tipomarcacao.TipoMarcacao;
 import br.com.zalf.prolog.webservice.gente.controlejornada.tipomarcacao.TipoMarcacaoDao;
@@ -59,32 +59,13 @@ public class ControleJornadaService {
         }
     }
 
-    @Nullable
-    IntervaloMarcacao getUltimaMarcacaoInicioNaoFechada(@NotNull final String tokenMarcacao,
-                                                        @NotNull final Long codUnidade,
-                                                        @NotNull final Long cpfColaborador,
-                                                        @NotNull final Long codTipoIntervalo) throws ProLogException {
-        ensureValidToken(tokenMarcacao);
-
-        try {
-            return dao.getUltimaMarcacaoInicioNaoFechada(codUnidade, cpfColaborador, codTipoIntervalo);
-        } catch (final Throwable t) {
-            Log.e(TAG, String.format("Erro ao marcação em andamento de um colaborador\n" +
-                    "cpfColaborador: %d \n" +
-                    "codTipoIntervalo: %d", cpfColaborador, codTipoIntervalo), t);
-            throw Injection.provideProLogExceptionHandler().map(
-                    t,
-                    "Erro ao marcação em andamento de um colaborador");
-        }
-    }
-
     @NotNull
     public List<Intervalo> getMarcacoesColaborador(@NotNull final String tokenMarcacao,
-                                                   Long codUnidade,
-                                                   Long cpf,
-                                                   String codTipo,
-                                                   long limit,
-                                                   long offset) throws ProLogException {
+                                                   final Long codUnidade,
+                                                   final Long cpf,
+                                                   final String codTipo,
+                                                   final long limit,
+                                                   final long offset) throws ProLogException {
         ensureValidToken(tokenMarcacao);
 
         try {
@@ -110,8 +91,8 @@ public class ControleJornadaService {
                     codUnidade,
                     cpf,
                     codTipo,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal));
+                    PrologDateParser.toLocalDate(dataInicial),
+                    PrologDateParser.toLocalDate(dataFinal));
         } catch (final Throwable t) {
             final String errorMessage = String.format("Erro ao buscar marcações de um colaborador.\n" +
                     "cpf: %d\n" +
@@ -127,9 +108,9 @@ public class ControleJornadaService {
 
     @SuppressWarnings("Duplicates")
     @NotNull
-    public IntervaloOfflineSupport getIntervaloOfflineSupport(Long versaoDadosApp,
-                                                              Long codUnidade,
-                                                              ColaboradorService colaboradorService) throws
+    public IntervaloOfflineSupport getIntervaloOfflineSupport(final Long versaoDadosApp,
+                                                              final Long codUnidade,
+                                                              final ColaboradorService colaboradorService) throws
             ProLogException {
         try {
             final List<Colaborador> colaboradores = colaboradorService.getColaboradoresComAcessoFuncaoByUnidade(
@@ -138,7 +119,7 @@ public class ControleJornadaService {
             final TipoMarcacaoDao tipoMarcacaoDao = Injection.provideTipoMarcacaoDao();
             final List<TipoMarcacao> tiposIntervalo = tipoMarcacaoDao.getTiposMarcacoes(codUnidade, true, true);
             final Optional<DadosMarcacaoUnidade> dadosMarcacaoUnidade = dao.getDadosMarcacaoUnidade(codUnidade);
-            EstadoVersaoIntervalo estadoVersaoIntervalo;
+            final EstadoVersaoIntervalo estadoVersaoIntervalo;
 
             // Isso é algo importante para se destacar: se ao buscarmos a versão dos dados de intervalo para uma unidade
             // e não existir nada, assumimos que a unidade também não possui nenhum colaborador com acesso a essa
@@ -203,6 +184,19 @@ public class ControleJornadaService {
         }
     }
 
+    public boolean isMarcacaoInicioFinalizada(@NotNull final String tokenMarcacao,
+                                              @NotNull final Long codMarcacao) throws ProLogException {
+        ensureValidToken(tokenMarcacao);
+        try {
+            return dao.isMarcacaoInicioFinalizada(codMarcacao);
+        } catch (final Throwable t) {
+            Log.e(TAG, String.format("Erro ao buscar se marcação está finalizada: %d", codMarcacao), t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao buscar se marcação está finalizada.");
+        }
+    }
+
     private void ensureValidToken(@NotNull final String tokenMarcacao) throws ProLogException {
         try {
             if (!dao.verifyIfTokenMarcacaoExists(tokenMarcacao)) {
@@ -214,6 +208,25 @@ public class ControleJornadaService {
                 throw (NotAuthorizedException) t;
             }
             throw Injection.provideProLogExceptionHandler().map(t, "Erro ao verificar token");
+        }
+    }
+
+    @Nullable
+    IntervaloMarcacao getUltimaMarcacaoInicioNaoFechada(@NotNull final String tokenMarcacao,
+                                                        @NotNull final Long codUnidade,
+                                                        @NotNull final Long cpfColaborador,
+                                                        @NotNull final Long codTipoIntervalo) throws ProLogException {
+        ensureValidToken(tokenMarcacao);
+
+        try {
+            return dao.getUltimaMarcacaoInicioNaoFechada(codUnidade, cpfColaborador, codTipoIntervalo);
+        } catch (final Throwable t) {
+            Log.e(TAG, String.format("Erro ao marcação em andamento de um colaborador\n" +
+                    "cpfColaborador: %d \n" +
+                    "codTipoIntervalo: %d", cpfColaborador, codTipoIntervalo), t);
+            throw Injection.provideProLogExceptionHandler().map(
+                    t,
+                    "Erro ao marcação em andamento de um colaborador");
         }
     }
 }

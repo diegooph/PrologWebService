@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.pneu;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
-import br.com.zalf.prolog.webservice.commons.util.Required;
+import br.com.zalf.prolog.webservice.commons.network.metadata.Required;
 import br.com.zalf.prolog.webservice.errorhandling.exception.VersaoAppBloqueadaException;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;

@@ -3,7 +3,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.movimentacao.relatorios;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
+import br.com.zalf.prolog.webservice.commons.util.datetime.PrologDateParser;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import org.jetbrains.annotations.NotNull;
 
@@ -18,7 +18,7 @@ import java.util.List;
 public class MovimentacaoRelatorioService {
     private static final String TAG = MovimentacaoRelatorioService.class.getSimpleName();
     @NotNull
-    private MovimentacaoRelatorioDao dao = Injection.provideMovimentacaoRelatorioDao();
+    private final MovimentacaoRelatorioDao dao = Injection.provideMovimentacaoRelatorioDao();
 
     public void getDadosGeraisMovimentacoesCsv(@NotNull final OutputStream out,
                                                @NotNull final List<Long> codUnidades,
@@ -28,8 +28,8 @@ public class MovimentacaoRelatorioService {
             dao.getDadosGeraisMovimentacoesCsv(
                     out,
                     codUnidades,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal));
+                    PrologDateParser.toLocalDate(dataInicial),
+                    PrologDateParser.toLocalDate(dataFinal));
         } catch (final Throwable throwable) {
             Log.e(TAG, "Erro ao gerar relatório das movimentações (CSV)", throwable);
             throw new RuntimeException(throwable);
@@ -43,8 +43,8 @@ public class MovimentacaoRelatorioService {
         try {
             return dao.getDadosGeraisMovimentacoesReport(
                     codUnidades,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal));
+                    PrologDateParser.toLocalDate(dataInicial),
+                    PrologDateParser.toLocalDate(dataFinal));
         } catch (final Throwable throwable) {
             Log.e(TAG, "Erro ao gerar relatório das movimentações (REPORT)", throwable);
             throw Injection

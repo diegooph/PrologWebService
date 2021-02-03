@@ -1,7 +1,7 @@
 package test.br.com.zalf.prolog.webservice.pilares.frota.checklist.realizacao;
 
 import br.com.zalf.prolog.webservice.commons.FonteDataHora;
-import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
+import br.com.zalf.prolog.webservice.commons.util.datetime.PrologDateParser;
 import br.com.zalf.prolog.webservice.database.DatabaseManager;
 import br.com.zalf.prolog.webservice.frota.checklist.ChecklistService;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
@@ -223,7 +223,7 @@ public final class ChecklistRealizacaoTest extends BaseTest {
                 "uma observacao",
                 10000,
                 respostas,
-                ProLogDateParser.toLocalDateTime("2019-10-14T09:35:10"),
+                PrologDateParser.toLocalDateTime("2019-10-14T09:35:10"),
                 FonteDataHora.LOCAL_CELULAR,
                 80,
                 83,
@@ -454,7 +454,7 @@ public final class ChecklistRealizacaoTest extends BaseTest {
                 "uma observacao",
                 10000,
                 respostas,
-                ProLogDateParser.toLocalDateTime("2019-10-14T09:35:10"),
+                PrologDateParser.toLocalDateTime("2019-10-14T09:35:10"),
                 FonteDataHora.LOCAL_CELULAR,
                 80,
                 83,
@@ -484,7 +484,7 @@ public final class ChecklistRealizacaoTest extends BaseTest {
             assertThat(checklist.getTipo()).isEqualTo(TipoChecklist.SAIDA.asChar());
             assertThat(checklist.getKmAtualVeiculo()).isEqualTo(112);
             assertThat(checklist.getTempoRealizacaoCheckInMillis()).isEqualTo(10000);
-            assertThat(checklist.getData()).isEqualTo(ProLogDateParser.toLocalDateTime("2019-10-14T09:35:10"));
+            assertThat(checklist.getData()).isEqualTo(PrologDateParser.toLocalDateTime("2019-10-14T09:35:10"));
             assertThat(checklist.getQtdItensOk()).isEqualTo(0);
             assertThat(checklist.getQtdItensNok()).isEqualTo(2);
             assertThat(checklist.getQtdAlternativasOk()).isEqualTo(1);

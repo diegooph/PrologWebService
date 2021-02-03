@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.gente.controlejornada.OLD;
 
 import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.commons.FonteDataHora;
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
+import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.IntervaloMarcacao;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.Localizacao;
@@ -153,7 +153,7 @@ public final class DeprecatedControleIntervaloDaoImpl_2 extends DatabaseConnecti
                 stmt.setNull(9, Types.VARCHAR);
                 stmt.setNull(10, Types.VARCHAR);
             }
-            stmt.setTimestamp(11, Now.timestampUtc());
+            stmt.setTimestamp(11, Now.getTimestampUtc());
             if (stmt.executeUpdate() == 0) {
                 throw new SQLException("Erro ao inserir marcação de intervalo");
             }

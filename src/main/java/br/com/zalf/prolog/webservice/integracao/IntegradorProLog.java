@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.integracao;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.report.Report;
-import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
+import br.com.zalf.prolog.webservice.autenticacao.token.TokenCleaner;
 import br.com.zalf.prolog.webservice.customfields.CampoPersonalizadoDao;
 import br.com.zalf.prolog.webservice.customfields._model.CampoPersonalizadoParaRealizacao;
 import br.com.zalf.prolog.webservice.frota.checklist.ChecklistDao;
@@ -250,6 +250,28 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         return integracaoDao.getConfigAberturaServicoPneuIntegracao(codUnidade);
     }
 
+    @Override
+    public void insert(
+            @NotNull final VeiculoCadastro veiculo,
+            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
+        if (veiculoDao == null) {
+            veiculoDao = Injection.provideVeiculoDao();
+        }
+        veiculoDao.insert(veiculo, checklistOfflineListener);
+    }
+
+    @NotNull
+    @Override
+    public InfosVeiculoEditado update(
+            @NotNull final Long codColaboradorResponsavelEdicao,
+            @NotNull final VeiculoEdicao veiculo,
+            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
+        if (veiculoDao == null) {
+            veiculoDao = Injection.provideVeiculoDao();
+        }
+        return veiculoDao.update(codColaboradorResponsavelEdicao, veiculo, checklistOfflineListener);
+    }
+
     //
     //
     // Operações Integradas
@@ -283,28 +305,6 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         return veiculoDao.getVeiculoByPlaca(placa, withPneus);
     }
 
-    @Override
-    public void insert(
-            @NotNull final VeiculoCadastro veiculo,
-            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
-        if (veiculoDao == null) {
-            veiculoDao = Injection.provideVeiculoDao();
-        }
-        veiculoDao.insert(veiculo, checklistOfflineListener);
-    }
-
-    @NotNull
-    @Override
-    public InfosVeiculoEditado update(
-            @NotNull final Long codColaboradorResponsavelEdicao,
-            @NotNull final VeiculoEdicao veiculo,
-            @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
-        if (veiculoDao == null) {
-            veiculoDao = Injection.provideVeiculoDao();
-        }
-        return veiculoDao.update(codColaboradorResponsavelEdicao, veiculo, checklistOfflineListener);
-    }
-
     @NotNull
     @Override
     public Long insertProcessoTransferenciaVeiculo(
@@ -317,15 +317,6 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
                 .insertProcessoTransferenciaVeiculo(
                         processoTransferenciaVeiculo,
                         dadosChecklistOfflineChangedListener);
-    }
-
-    @NotNull
-    @Override
-    public List<TipoVeiculo> getTiposVeiculosFiltroChecklist(@NotNull final Long codEmpresa) throws Throwable {
-        if (tipoVeiculoDao == null) {
-            tipoVeiculoDao = Injection.provideTipoVeiculoDao();
-        }
-        return tipoVeiculoDao.getTiposVeiculosByEmpresa(codEmpresa);
     }
 
     @NotNull
@@ -484,11 +475,11 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
 
     @NotNull
     @Override
-    public Long insertChecklistOffline(@NotNull final ChecklistInsercao checklist) throws Throwable {
-        if (checklistOfflineDao == null) {
-            checklistOfflineDao = Injection.provideChecklistOfflineDao();
+    public List<TipoVeiculo> getTiposVeiculosFiltroChecklist(@NotNull final Long codEmpresa) throws Throwable {
+        if (tipoVeiculoDao == null) {
+            tipoVeiculoDao = Injection.provideTipoVeiculoDao();
         }
-        return checklistOfflineDao.insertChecklistOffline(checklist);
+        return tipoVeiculoDao.getTiposVeiculosByEmpresa(codEmpresa);
     }
 
     @NotNull
@@ -579,6 +570,15 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
             checklistDao = Injection.provideChecklistDao();
         }
         return checklistDao.getFarolChecklist(codUnidade, dataInicial, dataFinal, itensCriticosRetroativos);
+    }
+
+    @NotNull
+    @Override
+    public Long insertChecklistOffline(@NotNull final ChecklistInsercao checklist) throws Throwable {
+        if (checklistOfflineDao == null) {
+            checklistOfflineDao = Injection.provideChecklistOfflineDao();
+        }
+        return checklistOfflineDao.insertChecklistOffline(checklist);
     }
 
     @Override
@@ -677,6 +677,14 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
 
     @NotNull
     @Override
+    public List<CampoPersonalizadoParaRealizacao> getCamposParaRealizacaoMovimentacao(
+            @NotNull final Long codUnidade,
+            @NotNull final CampoPersonalizadoDao campoPersonalizadoDao) throws Throwable {
+        return campoPersonalizadoDao.getCamposParaRealizacaoMovimentacao(codUnidade);
+    }
+
+    @NotNull
+    @Override
     public Long insertTipoVeiculo(@NotNull final TipoVeiculo tipoVeiculo) throws Throwable {
         if (tipoVeiculoDao == null) {
             tipoVeiculoDao = Injection.provideTipoVeiculoDao();
@@ -690,14 +698,6 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
             tipoVeiculoDao = Injection.provideTipoVeiculoDao();
         }
         tipoVeiculoDao.updateTipoVeiculo(tipoVeiculo);
-    }
-
-    @NotNull
-    @Override
-    public List<CampoPersonalizadoParaRealizacao> getCamposParaRealizacaoMovimentacao(
-            @NotNull final Long codUnidade,
-            @NotNull final CampoPersonalizadoDao campoPersonalizadoDao) throws Throwable {
-        return campoPersonalizadoDao.getCamposParaRealizacaoMovimentacao(codUnidade);
     }
 
     public static final class Builder {

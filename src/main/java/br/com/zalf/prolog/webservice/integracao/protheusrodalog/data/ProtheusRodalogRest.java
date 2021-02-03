@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.protheusrodalog.data;
 
-import br.com.zalf.prolog.webservice.commons.util.ProLogCustomHeaders;
+import br.com.zalf.prolog.webservice.commons.network.PrologCustomHeaders;
 import br.com.zalf.prolog.webservice.integracao.protheusrodalog.model.*;
 import org.jetbrains.annotations.NotNull;
 import retrofit2.Call;
@@ -41,7 +41,7 @@ public interface ProtheusRodalogRest {
     @Headers({"Connection:close", "Content-Type: application/json"})
     @POST("NEWAFERI")
     Call<ProtheusRodalogResponseAfericao> insertAfericao(
-            @Header(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @NotNull final String tokenIntegracao,
+            @Header(PrologCustomHeaders.HEADER_TOKEN_INTEGRACAO) @NotNull final String tokenIntegracao,
             @Query("codUnidade") @NotNull final Long codUnidade,
             @Body @NotNull final AfericaoProtheusRodalog afericao);
 
@@ -64,7 +64,7 @@ public interface ProtheusRodalogRest {
     @Headers("Connection:close")
     @GET("CRONOGRAMA")
     Call<CronogramaAfericaoProtheusRodalog> getCronogramaAfericao(
-            @Header(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @NotNull final String tokenIntegracao,
+            @Header(PrologCustomHeaders.HEADER_TOKEN_INTEGRACAO) @NotNull final String tokenIntegracao,
             @Query("codUnidade") @NotNull final Long codUnidade);
 
     /**
@@ -88,7 +88,7 @@ public interface ProtheusRodalogRest {
     @Headers("Connection:close")
     @GET("NEWAFERI")
     Call<NovaAfericaoPlacaProtheusRodalog> getNovaAfericaoPlaca(
-            @Header(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @NotNull final String tokenIntegracao,
+            @Header(PrologCustomHeaders.HEADER_TOKEN_INTEGRACAO) @NotNull final String tokenIntegracao,
             @Query("codUnidade") @NotNull final Long codUnidade,
             @Query("placa") @NotNull final String placa,
             @Query("tipoAfericao") @NotNull final String tipoAfericao);

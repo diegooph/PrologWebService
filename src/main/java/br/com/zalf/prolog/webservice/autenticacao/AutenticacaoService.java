@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.autenticacao;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
+import br.com.zalf.prolog.webservice.commons.util.datetime.PrologDateParser;
 import br.com.zalf.prolog.webservice.interceptors.auth.ColaboradorAutenticado;
 import org.jetbrains.annotations.NotNull;
 
@@ -42,7 +42,7 @@ public class AutenticacaoService {
         try {
             return dao.verifyIfUserExists(
                     cpf,
-                    ProLogDateParser.toLocalDate(dataNascimento),
+                    PrologDateParser.toLocalDate(dataNascimento),
                     apenasUsuariosAtivos);
         } catch (final Throwable throwable) {
             Log.e(TAG, String.format("Erro ao verificar se o usuário com os seguintes dados existe: cpf - %s |" +
@@ -83,7 +83,7 @@ public class AutenticacaoService {
         try {
             return dao.userHasPermission(
                     cpf,
-                    ProLogDateParser.toLocalDate(dataNascimento),
+                    PrologDateParser.toLocalDate(dataNascimento),
                     permissions,
                     needsToHaveAllPermissions,
                     apenasUsuariosAtivos);

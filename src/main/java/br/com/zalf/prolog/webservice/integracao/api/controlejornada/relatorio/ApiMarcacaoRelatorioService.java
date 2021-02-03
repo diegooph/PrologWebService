@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.integracao.api.controlejornada.relatorio;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
+import br.com.zalf.prolog.webservice.commons.util.datetime.PrologDateParser;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.integracao.BaseIntegracaoService;
 import br.com.zalf.prolog.webservice.integracao.api.controlejornada.relatorio._model.ApiMarcacaoRelatorio1510;
@@ -34,8 +34,8 @@ public final class ApiMarcacaoRelatorioService extends BaseIntegracaoService {
             ensureValidToken(tokenIntegracao, TAG);
             return dao.getRelatorioPortaria1510(
                     tokenIntegracao,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal),
+                    PrologDateParser.toLocalDate(dataInicial),
+                    PrologDateParser.toLocalDate(dataFinal),
                     codUnidadeProLog,
                     codTipoMarcacao,
                     cpfColaborador);

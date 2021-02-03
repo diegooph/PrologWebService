@@ -1,6 +1,6 @@
 package test.br.com.zalf.prolog.webservice.integracao.nepomuceno;
 
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
+import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnectionProvider;
 import br.com.zalf.prolog.webservice.database.DatabaseManager;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu;
@@ -67,7 +67,7 @@ public final class OperacoesIntegradasProtheusNepomucenoTest extends BaseTest {
         afericaoPlaca.setKmMomentoAfericao(11111L);
 
         afericaoPlaca.setCodUnidade(codUnidade);
-        afericaoPlaca.setDataHora(Now.localDateTimeUtc());
+        afericaoPlaca.setDataHora(Now.getLocalDateTimeUtc());
         final Colaborador colaborador = new Colaborador();
         colaborador.setCpf(3383283194L);
         afericaoPlaca.setColaborador(colaborador);
@@ -84,16 +84,16 @@ public final class OperacoesIntegradasProtheusNepomucenoTest extends BaseTest {
         try {
             conn = provider.provideDatabaseConnection();
             stmt = conn.prepareStatement("update unidade " +
-                                                 "set cod_auxiliar = '09:02' " +
-                                                 "where codigo = 5 or codigo = 103;");
+                    "set cod_auxiliar = '09:02' " +
+                    "where codigo = 5 or codigo = 103;");
             stmt.addBatch();
             stmt = conn.prepareStatement("update unidade " +
-                                                 "set cod_auxiliar = '09:04' " +
-                                                 "where codigo = 215;");
+                    "set cod_auxiliar = '09:04' " +
+                    "where codigo = 215;");
             stmt.addBatch();
             stmt = conn.prepareStatement("update unidade " +
-                                                 "set cod_auxiliar = '01:21,01:01' " +
-                                                 "where codigo = 215;");
+                    "set cod_auxiliar = '01:21,01:01' " +
+                    "where codigo = 215;");
             stmt.addBatch();
             stmt.executeBatch();
         } finally {
@@ -108,8 +108,8 @@ public final class OperacoesIntegradasProtheusNepomucenoTest extends BaseTest {
         try {
             conn = provider.provideDatabaseConnection();
             stmt = conn.prepareStatement("update unidade " +
-                                                 "set cod_auxiliar = null " +
-                                                 "where cod_empresa = 3;");
+                    "set cod_auxiliar = null " +
+                    "where cod_empresa = 3;");
             stmt.executeUpdate();
         } finally {
             provider.closeResources(conn, stmt);

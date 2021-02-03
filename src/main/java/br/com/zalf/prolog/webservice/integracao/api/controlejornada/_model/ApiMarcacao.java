@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.api.controlejornada._model;
 
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
+import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -109,12 +109,12 @@ public final class ApiMarcacao {
                 35L,
                 "03383283194",
                 ApiTipoInicioFim.MARCACAO_FIM,
-                Now.localDateTimeUtc(),
+                Now.getLocalDateTimeUtc(),
                 ApiFonteDataHora.REDE_CELULAR,
                 null,
                 "Esqueci de finalizar antes",
                 new ApiCoordenadasMarcacao("12345", "12345"),
-                Now.localDateTimeUtc(),
+                Now.getLocalDateTimeUtc(),
                 "XXXXXXXXX",
                 "A23DSJLC43",
                 "Samsung",
