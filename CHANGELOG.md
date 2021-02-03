@@ -1,19 +1,13 @@
 Change Log
 ==========
 
-<<<<<<< HEAD
-### Refactors
-* Remove placa do processo de inserção de Aferição (PL-3405)
-
-<a name="v1.4.3"></a>
-## Version [v1.4.3](https://github.com/luizfp/PrologWebService/compare/v1.4.2...v1.4.3) (release-date) [unreleased]
-=======
 <a name="v1.5.5"></a>
 ## Version [v1.5.5](https://github.com/luizfp/PrologWebService/compare/v1.5.4...v1.5.5) (release-date) [unreleased]
 
 #### Refactors
 * Considera bônus no pré-contracheque apenas se número de viagens for acima ou igual o parametrizado (PL-3368)
 * Cria método para verificar se uma marcação está finalizada (PL-3191)
+* Remove placa do processo de inserção de Aferição (PL-3403)
 
 ### Bug Fixes
 * Corrige uso de autoCommit no salvamento de imagens do checklist
