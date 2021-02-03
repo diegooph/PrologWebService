@@ -12,6 +12,8 @@ import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.VersaoAppBloqueadaException;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Restricao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.*;
+import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoBackwardHelper;
+import br.com.zalf.prolog.webservice.interceptors.auth.ColaboradorAutenticado;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.AppVersionCodeHandler;
@@ -20,6 +22,8 @@ import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.VersionNotP
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import org.jetbrains.annotations.NotNull;
 
+import javax.inject.Inject;
+import javax.inject.Provider;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.Collections;
@@ -42,6 +46,9 @@ public class AfericaoResource {
 
     @NotNull
     private final AfericaoService service = new AfericaoService();
+
+    @Inject
+    private Provider<ColaboradorAutenticado> colaboradorAutenticadoProvider;
 
     @POST
     @Secured(permissions = {
@@ -95,12 +102,29 @@ public class AfericaoResource {
     @Path("/unidades/{codUnidade}/nova-afericao-placa/{placaVeiculo}")
     @Secured(permissions = Pilares.Frota.Afericao.REALIZAR_AFERICAO_PLACA)
     @UsedBy(platforms = Platform.ANDROID)
+    @Deprecated
     public NovaAfericaoPlaca getNovaAfericaoPlaca(
             @HeaderParam("Authorization") @Required final String userToken,
             @PathParam("codUnidade") @Required final Long codUnidade,
             @PathParam("placaVeiculo") @Required final String placa,
             @QueryParam("tipoAfericao") @Required final String tipoAfericao) throws ProLogException {
-        return service.getNovaAfericaoPlaca(userToken, codUnidade, placa, tipoAfericao);
+
+        final Long codigoColaborador = this.colaboradorAutenticadoProvider.get().getCodigo();
+        final Long codigoVeiculo = VeiculoBackwardHelper.getCodVeiculoByPlaca(codigoColaborador, placa);
+        final TipoMedicaoColetadaAfericao tipoAfericaoEnum = TipoMedicaoColetadaAfericao.fromString(tipoAfericao);
+        final AfericaoBuscaFiltro afericaoBusca =
+                AfericaoBuscaFiltro.of(codigoVeiculo, placa, codUnidade, tipoAfericaoEnum);
+        return service.getNovaAfericaoPlaca(afericaoBusca, userToken);
+    }
+
+    @GET
+    @Path("/nova-afericao-placa")
+    @Secured(permissions = Pilares.Frota.Afericao.REALIZAR_AFERICAO_PLACA)
+    @UsedBy(platforms = Platform.ANDROID)
+    public NovaAfericaoPlaca getNovaAfericaoPlaca(final @Required AfericaoBuscaFiltro afericaoBusca,
+                                                  @HeaderParam("Authorization") @Required final String userToken)
+            throws ProLogException {
+        return service.getNovaAfericaoPlaca(afericaoBusca, userToken);
     }
 
     @GET

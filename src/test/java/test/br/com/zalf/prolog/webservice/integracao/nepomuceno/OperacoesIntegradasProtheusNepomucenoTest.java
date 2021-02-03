@@ -37,105 +37,16 @@ public final class OperacoesIntegradasProtheusNepomucenoTest extends BaseTest {
     @NotNull
     private static final List<Long> COD_UNIDADES_PROLOG = Arrays.asList(5L, 103L, 179L, 215L);
 
+    @Override
     @BeforeAll
     public void initialize() {
         DatabaseManager.init();
     }
 
+    @Override
     @AfterAll
     public void destroy() {
         DatabaseManager.finish();
-    }
-
-    @Test
-    void testBuscaCronogramaAfericaoSemUnidadesConfiguradas() throws Throwable {
-        // Removemos o mapeamento para testar sem nenhum código mapeado
-        removeMapeamentoUnidades();
-        final AfericaoService service = new AfericaoService();
-        final CronogramaAfericao cronogramaAfericao =
-                service.getCronogramaAfericao(getValidToken(CPF_COLABORADOR), COD_UNIDADES_PROLOG);
-
-        assertThat(cronogramaAfericao).isNotNull();
-        assertThat(cronogramaAfericao.getModelosPlacasAfericao()).isEmpty();
-        insereMapeamentoUnidades();
-    }
-
-    @Test
-    void testBuscaCronogramaAfericaoComUnidadesConfiguradas() throws Throwable {
-        final AfericaoService service = new AfericaoService();
-        final CronogramaAfericao cronogramaAfericao =
-                service.getCronogramaAfericao(getValidToken(CPF_COLABORADOR), COD_UNIDADES_PROLOG);
-
-        assertThat(cronogramaAfericao).isNotNull();
-        assertThat(cronogramaAfericao.getModelosPlacasAfericao()).isNotEmpty();
-    }
-
-    @Test
-    void testBuscaNovaAfericao() throws Throwable {
-        final AfericaoService service = new AfericaoService();
-
-        final CronogramaAfericao cronogramaAfericao =
-                service.getCronogramaAfericao(getValidToken(CPF_COLABORADOR), COD_UNIDADES_PROLOG);
-        final ModeloPlacasAfericao.PlacaAfericao placa = cronogramaAfericao.getModelosPlacasAfericao()
-                .stream()
-                .filter(modeloPlacasAfericao -> modeloPlacasAfericao.getTotalVeiculosModelo() > 0)
-                .map(ModeloPlacasAfericao::getPlacasAfericao)
-                .map(Collection::stream)
-                .map(placaAfericaoStream ->
-                        placaAfericaoStream
-                                .filter(placaAfericao -> placaAfericao.getQuantidadePneus() > 0)
-                                .findAny()
-                                .orElse(null))
-                .findFirst()
-                .orElse(null);
-
-        assertThat(placa).isNotNull();
-
-        final NovaAfericaoPlaca novaAfericaoPlaca = service.getNovaAfericaoPlaca(
-                getValidToken(CPF_COLABORADOR),
-                placa.getCodUnidadePlaca(),
-                placa.getPlaca(),
-                TipoProcessoColetaAfericao.PLACA.asString());
-
-        assertThat(novaAfericaoPlaca).isNotNull();
-        assertThat(novaAfericaoPlaca.getVeiculo()).isNotNull();
-    }
-
-    @Test
-    void testRealizacaoAfericaoPlaca() throws Throwable {
-        final AfericaoService service = new AfericaoService();
-
-        final CronogramaAfericao cronogramaAfericao =
-                service.getCronogramaAfericao(getValidToken(CPF_COLABORADOR), COD_UNIDADES_PROLOG);
-        final ModeloPlacasAfericao.PlacaAfericao placa = cronogramaAfericao.getModelosPlacasAfericao()
-                .stream()
-                .filter(modeloPlacasAfericao -> modeloPlacasAfericao.getTotalVeiculosModelo() > 0)
-                .map(ModeloPlacasAfericao::getPlacasAfericao)
-                .map(Collection::stream)
-                .map(placaAfericaoStream ->
-                        placaAfericaoStream
-                                .filter(placaAfericao -> placaAfericao.getQuantidadePneus() > 0)
-                                .findAny()
-                                .orElse(null))
-                .findFirst()
-                .orElse(null);
-
-        assertThat(placa).isNotNull();
-
-        final NovaAfericaoPlaca novaAfericaoPlaca = service.getNovaAfericaoPlaca(
-                getValidToken(CPF_COLABORADOR),
-                placa.getCodUnidadePlaca(),
-                placa.getPlaca(),
-                "PLACA");
-
-        final Long codAfericao =
-                service.insert(
-                        getValidToken(CPF_COLABORADOR),
-                        placa.getCodUnidadePlaca(),
-                        createAfericaoPlaca(placa.getCodUnidadePlaca(), novaAfericaoPlaca));
-
-        assertThat(codAfericao).isNotNull();
-        assertThat(codAfericao).isGreaterThan(0);
     }
 
     @NotNull
@@ -173,16 +84,16 @@ public final class OperacoesIntegradasProtheusNepomucenoTest extends BaseTest {
         try {
             conn = provider.provideDatabaseConnection();
             stmt = conn.prepareStatement("update unidade " +
-                    "set cod_auxiliar = '09:02' " +
-                    "where codigo = 5 or codigo = 103;");
+                                                 "set cod_auxiliar = '09:02' " +
+                                                 "where codigo = 5 or codigo = 103;");
             stmt.addBatch();
             stmt = conn.prepareStatement("update unidade " +
-                    "set cod_auxiliar = '09:04' " +
-                    "where codigo = 215;");
+                                                 "set cod_auxiliar = '09:04' " +
+                                                 "where codigo = 215;");
             stmt.addBatch();
             stmt = conn.prepareStatement("update unidade " +
-                    "set cod_auxiliar = '01:21,01:01' " +
-                    "where codigo = 215;");
+                                                 "set cod_auxiliar = '01:21,01:01' " +
+                                                 "where codigo = 215;");
             stmt.addBatch();
             stmt.executeBatch();
         } finally {
@@ -197,11 +108,105 @@ public final class OperacoesIntegradasProtheusNepomucenoTest extends BaseTest {
         try {
             conn = provider.provideDatabaseConnection();
             stmt = conn.prepareStatement("update unidade " +
-                    "set cod_auxiliar = null " +
-                    "where cod_empresa = 3;");
+                                                 "set cod_auxiliar = null " +
+                                                 "where cod_empresa = 3;");
             stmt.executeUpdate();
         } finally {
             provider.closeResources(conn, stmt);
         }
+    }
+
+    @Test
+    void testBuscaCronogramaAfericaoSemUnidadesConfiguradas() throws Throwable {
+        // Removemos o mapeamento para testar sem nenhum código mapeado
+        removeMapeamentoUnidades();
+        final AfericaoService service = new AfericaoService();
+        final CronogramaAfericao cronogramaAfericao =
+                service.getCronogramaAfericao(getValidToken(CPF_COLABORADOR), COD_UNIDADES_PROLOG);
+
+        assertThat(cronogramaAfericao).isNotNull();
+        assertThat(cronogramaAfericao.getModelosPlacasAfericao()).isEmpty();
+        insereMapeamentoUnidades();
+    }
+
+    @Test
+    void testBuscaCronogramaAfericaoComUnidadesConfiguradas() throws Throwable {
+        final AfericaoService service = new AfericaoService();
+        final CronogramaAfericao cronogramaAfericao =
+                service.getCronogramaAfericao(getValidToken(CPF_COLABORADOR), COD_UNIDADES_PROLOG);
+
+        assertThat(cronogramaAfericao).isNotNull();
+        assertThat(cronogramaAfericao.getModelosPlacasAfericao()).isNotEmpty();
+    }
+
+    @Test
+    void testBuscaNovaAfericao() throws Throwable {
+        final AfericaoService service = new AfericaoService();
+
+        final CronogramaAfericao cronogramaAfericao =
+                service.getCronogramaAfericao(getValidToken(CPF_COLABORADOR), COD_UNIDADES_PROLOG);
+        final ModeloPlacasAfericao.PlacaAfericao placa = cronogramaAfericao.getModelosPlacasAfericao()
+                .stream()
+                .filter(modeloPlacasAfericao -> modeloPlacasAfericao.getTotalVeiculosModelo() > 0)
+                .map(ModeloPlacasAfericao::getPlacasAfericao)
+                .map(Collection::stream)
+                .map(placaAfericaoStream ->
+                             placaAfericaoStream
+                                     .filter(placaAfericao -> placaAfericao.getQuantidadePneus() > 0)
+                                     .findAny()
+                                     .orElse(null))
+                .findFirst()
+                .orElse(null);
+
+        assertThat(placa).isNotNull();
+
+        final NovaAfericaoPlaca novaAfericaoPlaca = service.getNovaAfericaoPlaca(
+                AfericaoBuscaFiltro.of(null,
+                                       placa.getPlaca(),
+                                       placa.getCodUnidadePlaca(),
+                                       null),
+                getValidToken(CPF_COLABORADOR)
+        );
+
+        assertThat(novaAfericaoPlaca).isNotNull();
+        assertThat(novaAfericaoPlaca.getVeiculo()).isNotNull();
+    }
+
+    @Test
+    void testRealizacaoAfericaoPlaca() throws Throwable {
+        final AfericaoService service = new AfericaoService();
+
+        final CronogramaAfericao cronogramaAfericao =
+                service.getCronogramaAfericao(getValidToken(CPF_COLABORADOR), COD_UNIDADES_PROLOG);
+        final ModeloPlacasAfericao.PlacaAfericao placa = cronogramaAfericao.getModelosPlacasAfericao()
+                .stream()
+                .filter(modeloPlacasAfericao -> modeloPlacasAfericao.getTotalVeiculosModelo() > 0)
+                .map(ModeloPlacasAfericao::getPlacasAfericao)
+                .map(Collection::stream)
+                .map(placaAfericaoStream ->
+                        placaAfericaoStream
+                                .filter(placaAfericao -> placaAfericao.getQuantidadePneus() > 0)
+                                .findAny()
+                                .orElse(null))
+                .findFirst()
+                .orElse(null);
+
+        assertThat(placa).isNotNull();
+
+        final NovaAfericaoPlaca novaAfericaoPlaca = service.getNovaAfericaoPlaca(
+                AfericaoBuscaFiltro.of(null,
+                                       placa.getPlaca(),
+                                       placa.getCodUnidadePlaca(),
+                                       null),
+                getValidToken(CPF_COLABORADOR));
+
+        final Long codAfericao =
+                service.insert(
+                        getValidToken(CPF_COLABORADOR),
+                        placa.getCodUnidadePlaca(),
+                        createAfericaoPlaca(placa.getCodUnidadePlaca(), novaAfericaoPlaca));
+
+        assertThat(codAfericao).isNotNull();
+        assertThat(codAfericao).isGreaterThan(0);
     }
 }

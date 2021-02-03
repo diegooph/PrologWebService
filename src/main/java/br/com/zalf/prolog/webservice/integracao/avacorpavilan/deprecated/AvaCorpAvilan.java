@@ -65,231 +65,6 @@ public final class AvaCorpAvilan extends Sistema {
 
     @NotNull
     @Override
-    public List<Veiculo> getVeiculosAtivosByUnidade(@NotNull final Long codUnidade,
-                                                    @Nullable final Boolean ativos) throws Exception {
-        return AvaCorpAvilanConverter.convert(requester.getVeiculosAtivos(getCpf(), getDataNascimento()), codUnidade);
-    }
-
-    @NotNull
-    @Override
-    public List<TipoVeiculo> getTiposVeiculosFiltroChecklist(@NotNull final Long codEmpresa) throws Throwable {
-        final ArrayOfVeiculo veiculosAtivos = requester.getVeiculosAtivos(getCpf(), getDataNascimento());
-        final List<TipoVeiculoAvilan> tiposVeiculosAvilan = new ArrayList<>();
-
-        // Adiciona os tipos diferentes na listagem de tipos de veículo da Avilan.
-        veiculosAtivos.getVeiculo().forEach(veiculo -> {
-            if (!tiposVeiculosAvilan.contains(veiculo.getTipo())) {
-                tiposVeiculosAvilan.add(veiculo.getTipo());
-            }
-        });
-
-        // Sincroniza os tipos buscados com o nosso banco de dados.
-        final List<TipoVeiculoAvilanProLog> tiposVeiculosProLog =
-                new AvaCorpAvilanSincronizadorTiposVeiculos(getAvaCorpAvilanDao()).sync(tiposVeiculosAvilan);
-
-        final List<TipoVeiculoAvilanProLog> tiposPrologFiltrados = new ArrayList<>();
-
-        // O veículo pode ter sido salvo no banco do ProLog e posteriormente desativado na Avilan esse método separa
-        // em uma lista apenas os veiculos que estejam ativos no ProLog e na Avilan.
-        for (final TipoVeiculoAvilanProLog tipoVeiculoAvilanProLog : tiposVeiculosProLog) {
-            for (final TipoVeiculoAvilan tipoVeiculoAvilan : tiposVeiculosAvilan) {
-                if (tipoVeiculoAvilan.getCodigo().equals(tipoVeiculoAvilanProLog.getCodigoAvilan())) {
-                    tiposPrologFiltrados.add(tipoVeiculoAvilanProLog);
-                }
-            }
-        }
-
-        return AvaCorpAvilanConverter.convert(tiposPrologFiltrados);
-    }
-
-    @NotNull
-    @Override
-    public List<String> getPlacasVeiculosByTipo(@NotNull final Long codUnidade,
-                                                @NotNull String codTipo) throws Exception {
-        // Caso venha %, significa que queremos todos os tipos, para buscar de todos os tipos na integração, mandamos
-        // vazio.
-        final AvaCorpAvilanDaoImpl dao = getAvaCorpAvilanDao();
-        if (codTipo.equals(FILTRO_TODOS)) {
-            codTipo = "";
-        } else {
-            codTipo = dao.getCodTipoVeiculoAvilanByCodTipoVeiculoProLog(Long.parseLong(codTipo));
-        }
-
-        return AvaCorpAvilanConverter.convert(requester.getPlacasVeiculoByTipo(
-                codTipo,
-                getCpf(),
-                getDataNascimento()));
-    }
-
-    @NotNull
-    @Override
-    public Veiculo getVeiculoByPlaca(@NotNull final String placa, final boolean withPneus) throws Exception {
-        throw new IllegalStateException("O sistema " + AvaCorpAvilan.class.getSimpleName() +
-                " não possui integração com o ProLog.");
-    }
-
-    @NotNull
-    @Override
-    public List<ModeloChecklistSelecao> getModelosSelecaoRealizacao(@NotNull final Long codUnidade,
-                                                                    @NotNull final Long codCargo) throws Throwable {
-        return ChecklistMigracaoEstruturaSuporte.toEstruturaNovaSelecaoModelo(
-                AvaCorpAvilanConverter.convert(codUnidade, requester.getSelecaoModeloChecklistPlacaVeiculo(
-                        getCpf(),
-                        getDataNascimento())));
-    }
-
-    @NotNull
-    @Override
-    public ModeloChecklistRealizacao getModeloChecklistRealizacao(
-            final @NotNull Long codModeloChecklist,
-            final @NotNull Long codVeiculo,
-            final @NotNull String placaVeiculo,
-            final @NotNull TipoChecklist tipoChecklist) throws Throwable {
-        final ArrayOfVeiculoQuestao questoesVeiculo = requester.getQuestoesVeiculo(
-                Math.toIntExact(codModeloChecklist),
-                placaVeiculo,
-                AvacorpAvilanTipoChecklist.fromTipoProLog(tipoChecklist.asChar()),
-                getCpf(),
-                getDataNascimento());
-        final Map<Long, String> mapCodPerguntUrlImagem =
-                getAvaCorpAvilanDao().getMapeamentoCodPerguntaUrlImagem(codModeloChecklist);
-
-        return ChecklistMigracaoEstruturaSuporte.toEstruturaNovaRealizacaoModelo(
-                AvaCorpAvilanConverter.convert(
-                        questoesVeiculo,
-                        getCodUnidade(),
-                        mapCodPerguntUrlImagem,
-                        placaVeiculo));
-    }
-
-    @NotNull
-    @Override
-    public Long insertChecklist(@NotNull final ChecklistInsercao checklist,
-                                final boolean foiOffline,
-                                final boolean deveAbrirOs) throws Throwable {
-        if (checklist.getKmColetadoVeiculo() == 0) {
-            throw new AvaCorpAvilanException(
-                    "O KM enviado não pode ser 0!",
-                    "A integração com a Avilan não aceita mais KMs 0");
-        }
-
-        return requester.insertChecklist(
-                AvaCorpAvilanConverter.convert(checklist.getChecklistAntigo(), getCpf(), getDataNascimento()),
-                getCpf(),
-                getDataNascimento());
-    }
-
-    @NotNull
-    @Override
-    public Checklist getChecklistByCodigo(@NotNull final Long codChecklist) throws Exception {
-        return AvaCorpAvilanConverter.convert(requester.getChecklistByCodigo(
-                Math.toIntExact(codChecklist),
-                getCpf(),
-                getDataNascimento()));
-    }
-
-    @NotNull
-    @Override
-    public List<Checklist> getChecklistsByColaborador(@NotNull final Long cpf,
-                                                      @NotNull final Long dataInicialLong,
-                                                      @NotNull final Long dataFinalLong,
-                                                      final int limit,
-                                                      final long offset,
-                                                      final boolean resumido) throws Exception {
-        final List<ChecklistFiltro> checksColaborador =
-                internalGetChecklistByColaborador(
-                        AvaCorpAvilanUtils.createDatePattern(new Date(dataInicialLong)),
-                        AvaCorpAvilanUtils.createDatePattern(new Date(dataFinalLong)));
-        final List<Checklist> checklists = paginateAndConvertChecklists(checksColaborador, limit, offset, resumido);
-        return Checklist.sortByDate(checklists, false);
-    }
-
-    @NotNull
-    @Override
-    public List<Checklist> getTodosChecklists(@NotNull final Long codUnidade,
-                                              @Nullable final Long codEquipe,
-                                              @Nullable final Long codTipoVeiculo,
-                                              @Nullable final String placaVeiculo,
-                                              final long dataInicial,
-                                              final long dataFinal,
-                                              final int limit,
-                                              final long offset,
-                                              final boolean resumido) throws Exception {
-        final List<ChecklistFiltro> checklistsFiltro =
-                internalGetChecklist(
-                        codUnidade,
-                        codTipoVeiculo,
-                        placaVeiculo,
-                        AvaCorpAvilanUtils.createDatePattern(new Date(dataInicial)),
-                        AvaCorpAvilanUtils.createDatePattern(new Date(dataFinal)));
-        final List<Checklist> checklists = paginateAndConvertChecklists(checklistsFiltro, limit, offset, resumido);
-        return Checklist.sortByDate(checklists, false);
-    }
-
-    @NotNull
-    @Override
-    public List<ChecklistListagem> getListagemByColaborador(@NotNull final Long codColaborador,
-                                                            @NotNull final LocalDate dataInicial,
-                                                            @NotNull final LocalDate dataFinal,
-                                                            final int limit,
-                                                            final long offset) throws Exception {
-        final List<ChecklistFiltro> checksColaborador =
-                internalGetChecklistByColaborador(
-                        AvaCorpAvilanUtils.createDatePattern(dataInicial),
-                        AvaCorpAvilanUtils.createDatePattern(dataFinal));
-        final List<Checklist> checklists =
-                paginateAndConvertChecklists(checksColaborador, limit, offset, false);
-        return Checklist.toChecklistListagem(Checklist.sortByDate(checklists, false));
-    }
-
-    @NotNull
-    @Override
-    public List<ChecklistListagem> getListagem(@NotNull final Long codUnidade,
-                                               @Nullable final Long codEquipe,
-                                               @Nullable final Long codTipoVeiculo,
-                                               @Nullable final Long codVeiculo,
-                                               @NotNull final LocalDate dataInicial,
-                                               @NotNull final LocalDate dataFinal,
-                                               final int limit,
-                                               final long offset) throws Exception {
-        String placa = null;
-        if (codVeiculo != null) {
-            placa = getAvaCorpAvilanDao().getPlacaByCodVeiculo(codVeiculo);
-        }
-        final List<ChecklistFiltro> checklistsFiltro =
-                internalGetChecklist(
-                        codUnidade,
-                        codTipoVeiculo,
-                        placa,
-                        AvaCorpAvilanUtils.createDatePattern(dataInicial),
-                        AvaCorpAvilanUtils.createDatePattern(dataFinal));
-        final List<Checklist> checklists =
-                paginateAndConvertChecklists(checklistsFiltro, limit, offset, false);
-        return Checklist.toChecklistListagem(Checklist.sortByDate(checklists, false));
-    }
-
-    @NotNull
-    @Override
-    public DeprecatedFarolChecklist getFarolChecklist(@NotNull final Long codUnidade,
-                                                      @NotNull final LocalDate dataInicial,
-                                                      @NotNull final LocalDate dataFinal,
-                                                      final boolean itensCriticosRetroativos) throws Exception {
-        final FilialUnidadeAvilanProLog filialUnidade = getAvaCorpAvilanDao()
-                .getFilialUnidadeAvilanByCodUnidadeProLog(getCodUnidade());
-
-        final ArrayOfFarolDia farolChecklist = requester.getFarolChecklist(
-                filialUnidade.getCodFilialAvilan(),
-                filialUnidade.getCodUnidadeAvilan(),
-                AvaCorpAvilanUtils.createDatePattern(dataInicial),
-                AvaCorpAvilanUtils.createDatePattern(dataFinal),
-                itensCriticosRetroativos,
-                getCpf(),
-                getDataNascimento());
-        return AvaCorpAvilanConverter.convert(farolChecklist);
-    }
-
-    @NotNull
-    @Override
     public CronogramaAfericao getCronogramaAfericao(@NotNull final List<Long> codUnidadesCronograma) throws Throwable {
         // A Avilan não possui a busca do cronograma para todas as unidades, então temos que limitar a apenas 1 por vez.
         if (codUnidadesCronograma.size() > 1) {
@@ -323,17 +98,16 @@ public final class AvaCorpAvilan extends Sistema {
 
     @NotNull
     @Override
-    public NovaAfericaoPlaca getNovaAfericaoPlaca(@NotNull final Long codUnidade,
-                                                  @NotNull final String placaVeiculo,
-                                                  @NotNull final String tipoAfericao) throws Throwable {
+    public NovaAfericaoPlaca getNovaAfericaoPlaca(@NotNull final AfericaoBuscaFiltro afericaoBusca) throws Throwable {
         /*
          * A Avilan não suporta afericões de Sulco e Pressão separadamente, então lançamos uma
          * exceção caso o tipo selecionado for diferentes de {@link TipoAfericao#SULCO_PRESSAO}
          */
-        if (!tipoAfericao.equals(TipoMedicaoColetadaAfericao.SULCO_PRESSAO.asString())) {
+        if (!afericaoBusca.getTipoAfericao().equals(TipoMedicaoColetadaAfericao.SULCO_PRESSAO)) {
             throw new TipoAfericaoNotSupported(
                     Response.Status.BAD_REQUEST.getStatusCode(),
-                    "Avilan só aceita aferição de " + TipoMedicaoColetadaAfericao.SULCO_PRESSAO.getLegibleString(),
+                    "Avilan só aceita aferição de " +
+                            TipoMedicaoColetadaAfericao.SULCO_PRESSAO.getLegibleString(),
                     "Usuários da Avilan não podem realizar aferições de Sulco ou Pressão separadamente.");
         }
 
@@ -341,28 +115,30 @@ public final class AvaCorpAvilan extends Sistema {
          * Por enquanto a Avilan não suporta (por conta da integração) que um usuário faça uma aferição de um veículo
          * que não esteja presente na mesma unidade dele.
          */
-        final List<String> placas = getPlacasVeiculosByTipo(codUnidade, FILTRO_TODOS);
-        if (!placas.contains(placaVeiculo)) {
+        final List<String> placas = getPlacasVeiculosByTipo(afericaoBusca.getCodigoUnidade(), FILTRO_TODOS);
+        if (!placas.contains(afericaoBusca.getPlacaVeiculo())) {
             throw new AvaCorpAvilanException(
                     "Você só pode aferir veículos da sua unidade",
-                    String.format("Placa: %s -- Unidade: %d", placaVeiculo, codUnidade));
+                    String.format("Placa: %s -- Unidade: %d",
+                                  afericaoBusca.getPlacaVeiculo(),
+                                  afericaoBusca.getCodigoUnidade()));
         }
 
         final br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.cadastro.Veiculo veiculoAvilan =
-                requester.getVeiculoAtivo(placaVeiculo, getCpf(), getDataNascimento());
+                requester.getVeiculoAtivo(afericaoBusca.getPlacaVeiculo(), getCpf(), getDataNascimento());
 
         final AvaCorpAvilanDaoImpl dao = getAvaCorpAvilanDao();
         final String codTipoVeiculo = veiculoAvilan.getTipo().getCodigo();
         final List<Pneu> pneus = AvaCorpAvilanConverter.convert(
                 new PosicaoPneuMapper(dao.getPosicoesPneuAvilanProLogByCodTipoVeiculoAvilan(codTipoVeiculo)),
-                requester.getPneusVeiculo(placaVeiculo, getCpf(), getDataNascimento()));
+                requester.getPneusVeiculo(afericaoBusca.getPlacaVeiculo(), getCpf(), getDataNascimento()));
         final Short codDiagrama = dao.getCodDiagramaVeiculoProLogByCodTipoVeiculoAvilan(codTipoVeiculo);
         final Optional<DiagramaVeiculo> optional = getIntegradorProLog().getDiagramaVeiculoByCodDiagrama(codDiagrama);
         if (!optional.isPresent()) {
             throw new IllegalStateException("Erro ao buscar diagrama de código: " + codDiagrama);
         }
 
-        final Veiculo veiculo = AvaCorpAvilanConverter.convert(veiculoAvilan, codUnidade);
+        final Veiculo veiculo = AvaCorpAvilanConverter.convert(veiculoAvilan, afericaoBusca.getCodigoUnidade());
         veiculo.setDiagrama(optional.get());
         veiculo.setListPneus(pneus);
 
@@ -484,6 +260,231 @@ public final class AvaCorpAvilan extends Sistema {
     }
 
     @NotNull
+    @Override
+    public List<ModeloChecklistSelecao> getModelosSelecaoRealizacao(@NotNull final Long codUnidade,
+                                                                    @NotNull final Long codCargo) throws Throwable {
+        return ChecklistMigracaoEstruturaSuporte.toEstruturaNovaSelecaoModelo(
+                AvaCorpAvilanConverter.convert(codUnidade, requester.getSelecaoModeloChecklistPlacaVeiculo(
+                        getCpf(),
+                        getDataNascimento())));
+    }
+
+    @NotNull
+    @Override
+    public ModeloChecklistRealizacao getModeloChecklistRealizacao(
+            final @NotNull Long codModeloChecklist,
+            final @NotNull Long codVeiculo,
+            final @NotNull String placaVeiculo,
+            final @NotNull TipoChecklist tipoChecklist) throws Throwable {
+        final ArrayOfVeiculoQuestao questoesVeiculo = requester.getQuestoesVeiculo(
+                Math.toIntExact(codModeloChecklist),
+                placaVeiculo,
+                AvacorpAvilanTipoChecklist.fromTipoProLog(tipoChecklist.asChar()),
+                getCpf(),
+                getDataNascimento());
+        final Map<Long, String> mapCodPerguntUrlImagem =
+                getAvaCorpAvilanDao().getMapeamentoCodPerguntaUrlImagem(codModeloChecklist);
+
+        return ChecklistMigracaoEstruturaSuporte.toEstruturaNovaRealizacaoModelo(
+                AvaCorpAvilanConverter.convert(
+                        questoesVeiculo,
+                        getCodUnidade(),
+                        mapCodPerguntUrlImagem,
+                        placaVeiculo));
+    }
+
+    @NotNull
+    @Override
+    public Long insertChecklist(@NotNull final ChecklistInsercao checklist,
+                                final boolean foiOffline,
+                                final boolean deveAbrirOs) throws Throwable {
+        if (checklist.getKmColetadoVeiculo() == 0) {
+            throw new AvaCorpAvilanException(
+                    "O KM enviado não pode ser 0!",
+                    "A integração com a Avilan não aceita mais KMs 0");
+        }
+
+        return requester.insertChecklist(
+                AvaCorpAvilanConverter.convert(checklist.getChecklistAntigo(), getCpf(), getDataNascimento()),
+                getCpf(),
+                getDataNascimento());
+    }
+
+    @NotNull
+    @Override
+    public List<TipoVeiculo> getTiposVeiculosFiltroChecklist(@NotNull final Long codEmpresa) throws Throwable {
+        final ArrayOfVeiculo veiculosAtivos = requester.getVeiculosAtivos(getCpf(), getDataNascimento());
+        final List<TipoVeiculoAvilan> tiposVeiculosAvilan = new ArrayList<>();
+
+        // Adiciona os tipos diferentes na listagem de tipos de veículo da Avilan.
+        veiculosAtivos.getVeiculo().forEach(veiculo -> {
+            if (!tiposVeiculosAvilan.contains(veiculo.getTipo())) {
+                tiposVeiculosAvilan.add(veiculo.getTipo());
+            }
+        });
+
+        // Sincroniza os tipos buscados com o nosso banco de dados.
+        final List<TipoVeiculoAvilanProLog> tiposVeiculosProLog =
+                new AvaCorpAvilanSincronizadorTiposVeiculos(getAvaCorpAvilanDao()).sync(tiposVeiculosAvilan);
+
+        final List<TipoVeiculoAvilanProLog> tiposPrologFiltrados = new ArrayList<>();
+
+        // O veículo pode ter sido salvo no banco do ProLog e posteriormente desativado na Avilan esse método separa
+        // em uma lista apenas os veiculos que estejam ativos no ProLog e na Avilan.
+        for (final TipoVeiculoAvilanProLog tipoVeiculoAvilanProLog : tiposVeiculosProLog) {
+            for (final TipoVeiculoAvilan tipoVeiculoAvilan : tiposVeiculosAvilan) {
+                if (tipoVeiculoAvilan.getCodigo().equals(tipoVeiculoAvilanProLog.getCodigoAvilan())) {
+                    tiposPrologFiltrados.add(tipoVeiculoAvilanProLog);
+                }
+            }
+        }
+
+        return AvaCorpAvilanConverter.convert(tiposPrologFiltrados);
+    }
+
+    @NotNull
+    @Override
+    public Checklist getChecklistByCodigo(@NotNull final Long codChecklist) throws Exception {
+        return AvaCorpAvilanConverter.convert(requester.getChecklistByCodigo(
+                Math.toIntExact(codChecklist),
+                getCpf(),
+                getDataNascimento()));
+    }
+
+    @NotNull
+    @Override
+    public List<Checklist> getChecklistsByColaborador(@NotNull final Long cpf,
+                                                      @NotNull final Long dataInicialLong,
+                                                      @NotNull final Long dataFinalLong,
+                                                      final int limit,
+                                                      final long offset,
+                                                      final boolean resumido) throws Exception {
+        final List<ChecklistFiltro> checksColaborador =
+                internalGetChecklistByColaborador(
+                        AvaCorpAvilanUtils.createDatePattern(new Date(dataInicialLong)),
+                        AvaCorpAvilanUtils.createDatePattern(new Date(dataFinalLong)));
+        final List<Checklist> checklists = paginateAndConvertChecklists(checksColaborador, limit, offset, resumido);
+        return Checklist.sortByDate(checklists, false);
+    }
+
+    @NotNull
+    @Override
+    public List<Checklist> getTodosChecklists(@NotNull final Long codUnidade,
+                                              @Nullable final Long codEquipe,
+                                              @Nullable final Long codTipoVeiculo,
+                                              @Nullable final String placaVeiculo,
+                                              final long dataInicial,
+                                              final long dataFinal,
+                                              final int limit,
+                                              final long offset,
+                                              final boolean resumido) throws Exception {
+        final List<ChecklistFiltro> checklistsFiltro =
+                internalGetChecklist(
+                        codUnidade,
+                        codTipoVeiculo,
+                        placaVeiculo,
+                        AvaCorpAvilanUtils.createDatePattern(new Date(dataInicial)),
+                        AvaCorpAvilanUtils.createDatePattern(new Date(dataFinal)));
+        final List<Checklist> checklists = paginateAndConvertChecklists(checklistsFiltro, limit, offset, resumido);
+        return Checklist.sortByDate(checklists, false);
+    }
+
+    @NotNull
+    @Override
+    public List<ChecklistListagem> getListagemByColaborador(@NotNull final Long codColaborador,
+                                                            @NotNull final LocalDate dataInicial,
+                                                            @NotNull final LocalDate dataFinal,
+                                                            final int limit,
+                                                            final long offset) throws Exception {
+        final List<ChecklistFiltro> checksColaborador =
+                internalGetChecklistByColaborador(
+                        AvaCorpAvilanUtils.createDatePattern(dataInicial),
+                        AvaCorpAvilanUtils.createDatePattern(dataFinal));
+        final List<Checklist> checklists =
+                paginateAndConvertChecklists(checksColaborador, limit, offset, false);
+        return Checklist.toChecklistListagem(Checklist.sortByDate(checklists, false));
+    }
+
+    @NotNull
+    @Override
+    public List<ChecklistListagem> getListagem(@NotNull final Long codUnidade,
+                                               @Nullable final Long codEquipe,
+                                               @Nullable final Long codTipoVeiculo,
+                                               @Nullable final Long codVeiculo,
+                                               @NotNull final LocalDate dataInicial,
+                                               @NotNull final LocalDate dataFinal,
+                                               final int limit,
+                                               final long offset) throws Exception {
+        String placa = null;
+        if (codVeiculo != null) {
+            placa = getAvaCorpAvilanDao().getPlacaByCodVeiculo(codVeiculo);
+        }
+        final List<ChecklistFiltro> checklistsFiltro =
+                internalGetChecklist(
+                        codUnidade,
+                        codTipoVeiculo,
+                        placa,
+                        AvaCorpAvilanUtils.createDatePattern(dataInicial),
+                        AvaCorpAvilanUtils.createDatePattern(dataFinal));
+        final List<Checklist> checklists =
+                paginateAndConvertChecklists(checklistsFiltro, limit, offset, false);
+        return Checklist.toChecklistListagem(Checklist.sortByDate(checklists, false));
+    }
+
+    @NotNull
+    @Override
+    public DeprecatedFarolChecklist getFarolChecklist(@NotNull final Long codUnidade,
+                                                      @NotNull final LocalDate dataInicial,
+                                                      @NotNull final LocalDate dataFinal,
+                                                      final boolean itensCriticosRetroativos) throws Exception {
+        final FilialUnidadeAvilanProLog filialUnidade = getAvaCorpAvilanDao()
+                .getFilialUnidadeAvilanByCodUnidadeProLog(getCodUnidade());
+
+        final ArrayOfFarolDia farolChecklist = requester.getFarolChecklist(
+                filialUnidade.getCodFilialAvilan(),
+                filialUnidade.getCodUnidadeAvilan(),
+                AvaCorpAvilanUtils.createDatePattern(dataInicial),
+                AvaCorpAvilanUtils.createDatePattern(dataFinal),
+                itensCriticosRetroativos,
+                getCpf(),
+                getDataNascimento());
+        return AvaCorpAvilanConverter.convert(farolChecklist);
+    }
+
+    @NotNull
+    @Override
+    public List<Veiculo> getVeiculosAtivosByUnidade(@NotNull final Long codUnidade,
+                                                    @Nullable final Boolean ativos) throws Exception {
+        return AvaCorpAvilanConverter.convert(requester.getVeiculosAtivos(getCpf(), getDataNascimento()), codUnidade);
+    }
+
+    @NotNull
+    @Override
+    public List<String> getPlacasVeiculosByTipo(@NotNull final Long codUnidade,
+                                                @NotNull String codTipo) throws Exception {
+        // Caso venha %, significa que queremos todos os tipos, para buscar de todos os tipos na integração, mandamos
+        // vazio.
+        final AvaCorpAvilanDaoImpl dao = getAvaCorpAvilanDao();
+        if (codTipo.equals(FILTRO_TODOS)) {
+            codTipo = "";
+        } else {
+            codTipo = dao.getCodTipoVeiculoAvilanByCodTipoVeiculoProLog(Long.parseLong(codTipo));
+        }
+
+        return AvaCorpAvilanConverter.convert(requester.getPlacasVeiculoByTipo(
+                codTipo,
+                getCpf(),
+                getDataNascimento()));
+    }
+
+    @NotNull
+    @Override
+    public Veiculo getVeiculoByPlaca(@NotNull final String placa, final boolean withPneus) throws Exception {
+        throw new IllegalStateException("O sistema " + AvaCorpAvilan.class.getSimpleName() +
+                " não possui integração com o ProLog.");
+    }
+
+    @NotNull
     private List<ChecklistFiltro> internalGetChecklist(@NotNull final Long codUnidade,
                                                        @Nullable final Long codTipoVeiculo,
                                                        @Nullable final String placaVeiculo,
@@ -552,7 +553,7 @@ public final class AvaCorpAvilan extends Sistema {
                         } else {
                             return getChecklistByCodigo((long) checklistFiltro.getCodigoChecklist());
                         }
-                    } catch (Exception e) {
+                    } catch (final Exception e) {
                         throw new RuntimeException(e);
                     }
                 })

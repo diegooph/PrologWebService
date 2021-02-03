@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.protheusrodalog;
 
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.Afericao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.AfericaoBuscaFiltro;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.CronogramaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.NovaAfericaoPlaca;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
@@ -37,23 +38,6 @@ public class SistemaProtheusRodalog extends Sistema {
 
     @NotNull
     @Override
-    public Long insertAfericao(@NotNull final Long codUnidade,
-                               @NotNull final Afericao afericao,
-                               final boolean deveAbrirServico) throws Throwable {
-        final String tokenIntegracao = getIntegradorProLog().getTokenIntegracaoByCodUnidadeProLog(codUnidade);
-        final ProtheusRodalogResponseAfericao responseAfericao = requester.insertAfericao(
-                tokenIntegracao,
-                codUnidade,
-                ProtheusRodalogConverter.convertAfericao(afericao));
-        if (responseAfericao.isStatus() && responseAfericao.getCodigoAfericaoInserida() != null) {
-            return responseAfericao.getCodigoAfericaoInserida();
-        } else {
-            throw new Exception("[INTEGRACAO - RODALOG] Não foi possível inserir a Aferição no sistema");
-        }
-    }
-
-    @NotNull
-    @Override
     public CronogramaAfericao getCronogramaAfericao(@NotNull final List<Long> codUnidades) throws Throwable {
         // Deixamos buscando a primeira unidade de forma fixa apenas para ignorar o erro. Essa integração não está
         // sendo utilizada então não há por que refatorar toda ela.
@@ -64,21 +48,20 @@ public class SistemaProtheusRodalog extends Sistema {
 
     @NotNull
     @Override
-    public NovaAfericaoPlaca getNovaAfericaoPlaca(@NotNull final Long codUnidade,
-                                                  @NotNull final String placaVeiculo,
-                                                  @NotNull final String tipoAfericao) {
+    public NovaAfericaoPlaca getNovaAfericaoPlaca(@NotNull final AfericaoBuscaFiltro afericaoBusca) {
         try {
-            final String tokenIntegracao = getIntegradorProLog().getTokenIntegracaoByCodUnidadeProLog(codUnidade);
+            final String tokenIntegracao =
+                    getIntegradorProLog().getTokenIntegracaoByCodUnidadeProLog(afericaoBusca.getCodigoUnidade());
             final NovaAfericaoPlacaProtheusRodalog novaAfericaoPlaca =
                     requester.getNovaAfericaoPlaca(
                             tokenIntegracao,
-                            codUnidade,
-                            placaVeiculo,
-                            TipoMedicaoAfericaoProtheusRodalog.fromString(tipoAfericao));
+                            afericaoBusca.getCodigoUnidade(),
+                            afericaoBusca.getPlacaVeiculo(),
+                            TipoMedicaoAfericaoProtheusRodalog.fromString(afericaoBusca.getTipoAfericao().asString()));
             if (novaAfericaoPlaca.getCodDiagrama() == null) {
                 throw new IllegalStateException("[INTEGRACAO - RODALOG] O código do diagrama é null\n" +
-                        "CodUnidade: " + codUnidade + "\n" +
-                        "Placa: " + placaVeiculo);
+                                                        "CodUnidade: " + afericaoBusca.getCodigoUnidade() + "\n" +
+                                                        "Placa: " + afericaoBusca.getPlacaVeiculo());
             }
             final Optional<DiagramaVeiculo> diagramaVeiculo =
                     getIntegradorProLog()
@@ -98,6 +81,23 @@ public class SistemaProtheusRodalog extends Sistema {
                     "[INTEGRACAO - RODALOG] Erro na integração com o Protheus",
                     "Alguma informação veio errada do Protheus",
                     t);
+        }
+    }
+
+    @NotNull
+    @Override
+    public Long insertAfericao(@NotNull final Long codUnidade,
+                               @NotNull final Afericao afericao,
+                               final boolean deveAbrirServico) throws Throwable {
+        final String tokenIntegracao = getIntegradorProLog().getTokenIntegracaoByCodUnidadeProLog(codUnidade);
+        final ProtheusRodalogResponseAfericao responseAfericao = requester.insertAfericao(
+                tokenIntegracao,
+                codUnidade,
+                ProtheusRodalogConverter.convertAfericao(afericao));
+        if (responseAfericao.isStatus() && responseAfericao.getCodigoAfericaoInserida() != null) {
+            return responseAfericao.getCodigoAfericaoInserida();
+        } else {
+            throw new Exception("[INTEGRACAO - RODALOG] Não foi possível inserir a Aferição no sistema");
         }
     }
 }

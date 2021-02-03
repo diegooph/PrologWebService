@@ -68,19 +68,20 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
 
     @NotNull
     @Override
-    public NovaAfericaoPlaca getNovaAfericaoPlaca(@NotNull final Long codUnidade,
-                                                  @NotNull final String placa,
-                                                  @NotNull final String tipoAfericao) throws Throwable {
+    public NovaAfericaoPlaca getNovaAfericaoPlaca(@NotNull final AfericaoBuscaFiltro afericaoBusca) throws Throwable {
         Connection conn = null;
         try {
             conn = getConnection();
             final NovaAfericaoPlaca novaAfericao = new NovaAfericaoPlaca();
-            final Veiculo veiculo = Injection.provideVeiculoDao().getVeiculoByPlaca(conn, placa, true);
+            final Veiculo veiculo =
+                    Injection.provideVeiculoDao().getVeiculoByPlaca(conn,
+                                                                    afericaoBusca.getPlacaVeiculo(),
+                                                                    true);
             novaAfericao.setEstepesVeiculo(veiculo.getEstepes());
             novaAfericao.setVeiculo(veiculo);
-
             // Configurações/parametrizações necessárias para a aferição.
-            final ConfiguracaoNovaAfericaoPlaca configuracao = getConfiguracaoNovaAfericaoPlaca(conn, placa);
+            final ConfiguracaoNovaAfericaoPlaca configuracao =
+                    getConfiguracaoNovaAfericaoPlaca(conn, afericaoBusca.getPlacaVeiculo());
             novaAfericao.setRestricao(Restricao.createRestricaoFrom(configuracao));
             novaAfericao.setDeveAferirEstepes(configuracao.isPodeAferirEstepe());
             novaAfericao.setVariacaoAceitaSulcoMenorMilimetros(configuracao.getVariacaoAceitaSulcoMenorMilimetros());
@@ -605,6 +606,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
     private ModeloPlacasAfericao.PlacaAfericao createPlacaAfericao(@NotNull final ResultSet rSet) throws Throwable {
         final ModeloPlacasAfericao.PlacaAfericao placa = new ModeloPlacasAfericao.PlacaAfericao();
         placa.setPlaca(rSet.getString("PLACA"));
+        placa.setCodigoVeiculo(rSet.getLong("COD_VEICULO"));
         placa.setIdentificadorFrota(rSet.getString("IDENTIFICADOR_FROTA"));
         placa.setCodUnidadePlaca(rSet.getLong("COD_UNIDADE_PLACA"));
         placa.setIntervaloUltimaAfericaoSulco(rSet.getInt("INTERVALO_SULCO"));
