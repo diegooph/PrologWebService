@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.utility.DockerImageName;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -17,10 +18,13 @@ import static org.junit.Assert.assertEquals;
 @Testcontainers
 public class PostgresTest {
     @Container
-    public static PostgreSQLContainer<?> postgresContainer = new PostgreSQLContainer<>("postgres:11.1")
-            .withDatabaseName("integration-tests-db")
-            .withUsername("sa")
-            .withPassword("sa");
+    public static PostgreSQLContainer<?> postgresContainer =
+            new PostgreSQLContainer<>(DockerImageName
+                                              .parse("postgis/postgis:12-2.5-alpine")
+                                              .asCompatibleSubstituteFor("postgres"))
+                    .withDatabaseName("integration-tests-db")
+                    .withUsername("sa")
+                    .withPassword("sa");
     private final Connection conn = getConnection();
 
     @Test
@@ -41,13 +45,13 @@ public class PostgresTest {
                 .load()
                 .migrate();
 
-        final ResultSet resultSet = conn.createStatement().executeQuery("SELECT * " +
-                                                                                "FROM CUSTOMERS " +
-                                                                                "WHERE ID = 1");
+        final ResultSet resultSet = conn.createStatement().executeQuery("SELECT CODIGO " +
+                                                                                "FROM COLABORADOR_DATA " +
+                                                                                "WHERE CPF = 3383283194");
         resultSet.next();
         final int result = resultSet.getInt(1);
 
-        assertEquals(1, result);
+        assertEquals(2272, result);
     }
 
     @NotNull
