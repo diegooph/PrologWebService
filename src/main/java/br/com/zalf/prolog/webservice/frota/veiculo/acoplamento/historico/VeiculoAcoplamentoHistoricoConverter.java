@@ -27,7 +27,9 @@ public final class VeiculoAcoplamentoHistoricoConverter {
         return new VeiculoAcoplamentoHistorico(
                 rSet.getString("placa"),
                 rSet.getString("identificador_frota"),
+                rSet.getBoolean("motorizado"),
                 rSet.getLong("km"),
+                rSet.getLong("cod_posicao"),
                 rSet.getString("nome_posicao"),
                 rSet.getString("acao"));
     }
