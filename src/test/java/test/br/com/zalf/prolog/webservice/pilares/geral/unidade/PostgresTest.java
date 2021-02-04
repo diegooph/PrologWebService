@@ -1,8 +1,9 @@
 package test.br.com.zalf.prolog.webservice.pilares.geral.unidade;
 
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -10,9 +11,10 @@ import java.sql.ResultSet;
 
 import static org.junit.Assert.assertEquals;
 
+@Testcontainers
 public class PostgresTest {
-    @ClassRule
-    public static PostgreSQLContainer postgresContainer = new PostgreSQLContainer("postgres:11.1")
+    @Container
+    public static PostgreSQLContainer<?> postgresContainer = new PostgreSQLContainer<>("postgres:11.1")
             .withDatabaseName("integration-tests-db")
             .withUsername("sa")
             .withPassword("sa");
