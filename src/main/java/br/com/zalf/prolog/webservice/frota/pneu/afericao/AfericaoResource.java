@@ -98,11 +98,20 @@ public class AfericaoResource {
         return service.getPneusAfericaoAvulsa(userToken, codUnidade);
     }
 
+    /**
+     * @deprecated Este método foi depreciado, visto que, há uma versão com uma abstração usando
+     * o body da requisição
+     * para receber os dados:
+     * <br>
+     * {@link #getNovaAfericaoPlaca(AfericaoBuscaFiltro, String) getNovaAfericaoPlaca(afericaoBuscaFiltro, userToken)}
+     * <br>
+     * Porém há sistemas dependentes desse endpoint ainda (WS, Android).
+     */
+    @Deprecated
     @GET
     @Path("/unidades/{codUnidade}/nova-afericao-placa/{placaVeiculo}")
     @Secured(permissions = Pilares.Frota.Afericao.REALIZAR_AFERICAO_PLACA)
     @UsedBy(platforms = Platform.ANDROID)
-    @Deprecated
     public NovaAfericaoPlaca getNovaAfericaoPlaca(
             @HeaderParam("Authorization") @Required final String userToken,
             @PathParam("codUnidade") @Required final Long codUnidade,
