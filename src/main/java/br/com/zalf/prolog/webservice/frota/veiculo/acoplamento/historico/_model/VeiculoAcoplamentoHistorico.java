@@ -16,7 +16,11 @@ public final class VeiculoAcoplamentoHistorico {
     @Nullable
     private final String identificadorFrota;
     @NotNull
+    private final Boolean isMotorizado;
+    @NotNull
     private final Long km;
+    @NotNull
+    private final Long codPosicao;
     @NotNull
     private final String nomePosicao;
     @NotNull
