@@ -1,0 +1,18 @@
+database:
+  properties:
+    host: ""
+    port: ""
+    name: "test"
+  connection:
+    user: "sa"
+    password: "sa"
+
+spring:
+  profiles: test
+  datasource:
+    url: "jdbc:tc:postgresql:///${database.properties.name}"
+    username: "${database.connection.user}"
+    password: "${database.connection.password}"
+    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
+    hikari:
+      maximum-pool-size: 10

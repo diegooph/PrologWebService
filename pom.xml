@@ -35,6 +35,12 @@
                 <active-profile>prod</active-profile>
             </properties>
         </profile>
+        <profile>
+            <id>test</id>
+            <properties>
+                <active-profile>test</active-profile>
+            </properties>
+        </profile>
     </profiles>
     <dependencies>
         <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-jersey -->
@@ -282,6 +288,12 @@
         </dependency>
         <dependency>
             <groupId>org.testcontainers</groupId>
+            <artifactId>jdbc</artifactId>
+            <version>1.15.1</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
             <artifactId>postgresql</artifactId>
             <version>1.15.1</version>
             <scope>test</scope>
@@ -296,7 +308,6 @@
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
-            <version>7.5.2</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
