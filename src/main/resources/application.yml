@@ -28,11 +28,14 @@ spring:
     hikari:
       connection-init-sql: "SET application_name = 'ProLog WS'"
       connection-test-query: "SELECT 1"
-
       idle-timeout: 60000
       auto-commit: true
       connection-timeout: 30000
       validation-timeout: 30000
+
+  flyway:
+    enabled: false
+
 
 logging:
   level:

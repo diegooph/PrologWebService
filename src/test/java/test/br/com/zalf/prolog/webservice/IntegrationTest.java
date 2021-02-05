@@ -1,35 +1,41 @@
 package test.br.com.zalf.prolog.webservice;
 
 import br.com.zalf.prolog.webservice.config.PrologApplication;
-import org.junit.ClassRule;
+import org.flywaydb.core.Flyway;
+import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.util.TestPropertyValues;
-import org.springframework.context.ApplicationContextInitializer;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.test.context.ContextConfiguration;
+import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.utility.DockerImageName;
 
 @ExtendWith({SpringExtension.class})
 @SpringBootTest(classes = PrologApplication.class,
                 webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ContextConfiguration(initializers = {IntegrationTest.Initializer.class})
+@Testcontainers
 public class IntegrationTest {
+    @NotNull
+    private static final String POSTGRES_IMAGE_WITH_POSTGIS = "postgis/postgis:12-2.5-alpine";
+    @Container
+    protected static PostgreSQLContainer<?> postgresContainer =
+            new PostgreSQLContainer<>(DockerImageName
+                                              .parse(POSTGRES_IMAGE_WITH_POSTGIS)
+                                              .asCompatibleSubstituteFor("postgres:12.2"));
+    @Autowired
+    protected TestRestTemplate restTemplate;
 
-    @ClassRule
-    public static PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer("postgres:11.1")
-            .withDatabaseName("integration-tests-db")
-            .withUsername("sa")
-            .withPassword("sa");
-
-    static class Initializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
-        @Override
-        public void initialize(final ConfigurableApplicationContext configurableApplicationContext) {
-            TestPropertyValues.of("spring.datasource.url=" + postgreSQLContainer.getJdbcUrl(),
-                                  "spring.datasource.username=" + postgreSQLContainer.getUsername(),
-                                  "spring.datasource.password=" + postgreSQLContainer.getPassword())
-                    .applyTo(configurableApplicationContext.getEnvironment());
-        }
+    @BeforeAll
+    static void beforeAll() {
+        Flyway.configure()
+                .dataSource(postgresContainer.getJdbcUrl(),
+                            postgresContainer.getUsername(),
+                            postgresContainer.getPassword())
+                .load()
+                .migrate();
     }
 }
