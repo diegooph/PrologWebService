@@ -34,9 +34,9 @@ public class IntegrationTest {
 
     @BeforeAll
     static void beforeAll() {
-        //        final String setupFilePath =
-        //                Location.FILESYSTEM_PREFIX
-        //                        .concat(new File("sql/migrations/db_setup").getAbsolutePath());
+        final String setupFilePath =
+                Location.FILESYSTEM_PREFIX
+                        .concat(new File("sql/prolog_setup_db/scripts/base").getAbsolutePath());
         final String migrationsDoneFilePath =
                 Location.FILESYSTEM_PREFIX.concat(new File("sql/migrations/done").getAbsolutePath());
         Flyway.configure()
@@ -45,7 +45,7 @@ public class IntegrationTest {
                             postgresContainer.getPassword())
                 .sqlMigrationPrefix("")
                 .sqlMigrationSeparator("_")
-                .locations(migrationsDoneFilePath)
+                .locations(setupFilePath, migrationsDoneFilePath)
                 .load()
                 .migrate();
     }
