@@ -22,6 +22,7 @@ import java.util.Set;
 @Service
 public class EmailApiImpl implements EmailApi {
 
+    @NotNull
     private final MailjetClient client;
 
     @Autowired
@@ -31,34 +32,36 @@ public class EmailApiImpl implements EmailApi {
 
     @Override
     @NotNull
-    public EmailRequestResponseHolder sendMessage(final @NotNull Set<EmailReceiver> receivers,
-                                                  final @NotNull EmailTemplateMessage template)
+    public EmailRequestResponseHolder sendMessage(@NotNull final Set<EmailReceiver> receivers,
+                                                  @NotNull final EmailTemplateMessage template)
             throws MailjetException {
-        final TransactionalEmail message = getMessage(receivers, template);
-        final SendEmailsRequest request = getRequest(message);
-        final SendEmailsResponse response = getResponse(request);
+        final TransactionalEmail message = buildMessage(receivers, template);
+        final SendEmailsRequest request = buildRequest(message);
+        final SendEmailsResponse response = sendRequest(request);
         return getHolder(request, response);
     }
 
-    private EmailRequestResponseHolder getHolder(final SendEmailsRequest request, final SendEmailsResponse response) {
+    @NotNull
+    private EmailRequestResponseHolder getHolder(@NotNull final SendEmailsRequest request,
+                                                 @NotNull final SendEmailsResponse response) {
         return new EmailRequestResponseHolder(request, response);
     }
 
     @NotNull
-    private SendEmailsRequest getRequest(@NotNull final TransactionalEmail message) {
+    private SendEmailsRequest buildRequest(@NotNull final TransactionalEmail message) {
         return SendEmailsRequest.builder()
                 .message(message)
                 .build();
     }
 
     @NotNull
-    private SendEmailsResponse getResponse(@NotNull final SendEmailsRequest request) throws MailjetException {
+    private SendEmailsResponse sendRequest(@NotNull final SendEmailsRequest request) throws MailjetException {
         return request.sendWith(this.client);
     }
 
     @NotNull
-    private TransactionalEmail getMessage(@NotNull final Set<EmailReceiver> receivers,
-                                          @NotNull final EmailTemplateMessage template) {
+    private TransactionalEmail buildMessage(@NotNull final Set<EmailReceiver> receivers,
+                                            @NotNull final EmailTemplateMessage template) {
         return TransactionalEmail.builder()
                 .from(template.getSender())
                 .to(receivers)
@@ -66,6 +69,6 @@ public class EmailApiImpl implements EmailApi {
                 .templateID(template.getEmailTemplate().getTemplateId())
                 .templateLanguage(true)
                 .variables(template.getTemplateVariables())
-               .build();
+                .build();
     }
 }
