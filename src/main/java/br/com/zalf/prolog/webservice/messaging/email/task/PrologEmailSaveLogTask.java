@@ -27,8 +27,8 @@ import static br.com.zalf.prolog.webservice.commons.util.database.StatementUtils
  */
 @Repository
 public class PrologEmailSaveLogTask {
-
     private static final String TAG = PrologEmailSaveLogTask.class.getSimpleName();
+    @NotNull
     private final DatabaseConnectionActions actions;
 
     @Autowired
@@ -39,8 +39,8 @@ public class PrologEmailSaveLogTask {
     public void saveToDatabase(@NotNull final MessageScope messageScope,
                                @Nullable final EmailRequestResponseHolder holder,
                                @Nullable final Throwable fatalSendException) {
-        final Optional<String> request = holder.getRequestAsJson();
-        final Optional<String> response = holder.getResponseAsJson();
+        final Optional<String> request = holder != null ? holder.getRequestAsJson() : Optional.empty();
+        final Optional<String> response = holder != null ? holder.getResponseAsJson() : Optional.empty();
         final String fatalSendExceptionString = getFatalSendExceptionAsStringOrNull(fatalSendException);
 
         final String functionCall = "{CALL MESSAGING.FUNC_EMAIL_SALVA_LOG(" +
