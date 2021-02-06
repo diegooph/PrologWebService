@@ -1,8 +1,6 @@
 package br.com.zalf.prolog.webservice.messaging.email._model;
 
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
-import com.mailjet.client.MailjetRequest;
-import com.mailjet.client.MailjetResponse;
 import com.mailjet.client.transactional.SendEmailsRequest;
 import com.mailjet.client.transactional.response.SendEmailsResponse;
 import org.jetbrains.annotations.NotNull;
@@ -39,11 +37,19 @@ public final class EmailRequestResponseHolder {
 
     @NotNull
     public Optional<String> getRequestAsJson() {
-        return Optional.ofNullable(GsonUtils.getGson().toJson(request));
+        if (request != null) {
+            return Optional.ofNullable(GsonUtils.getGson().toJson(request));
+        }
+
+        return Optional.empty();
     }
 
     @NotNull
     public Optional<String> getResponseAsJson() {
-        return Optional.ofNullable(GsonUtils.getGson().toJson(response));
+        if (response != null) {
+            return Optional.ofNullable(GsonUtils.getGson().toJson(response));
+        }
+
+        return Optional.empty();
     }
 }
