@@ -18,6 +18,9 @@ import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.destino.Dest
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.origem.OrigemEstoque;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.origem.OrigemVeiculo;
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.*;
+import br.com.zalf.prolog.webservice.frota.pneu.servico._model.filtro.ServicoHolderBuscaFiltro;
+import br.com.zalf.prolog.webservice.frota.pneu.servico._model.filtro.ServicosAbertosBuscaFiltro;
+import br.com.zalf.prolog.webservice.frota.pneu.servico._model.filtro.ServicosFechadosVeiculoFiltro;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoBackwardHelper;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
@@ -386,15 +389,12 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
             rSet = stmt.executeQuery();
             return ServicoConverter.createServicos(rSet);
         } finally {
-            closeConnection(conn, stmt, rSet);
+            close(conn, stmt, rSet);
         }
     }
 
     @Override
-    public List<Servico> getServicosFechadosVeiculo(final Long codUnidade,
-                                                    final String placaVeiculo,
-                                                    final long dataInicial,
-                                                    final long dataFinal)
+    public List<Servico> getServicosFechadosVeiculo(@NotNull final ServicosFechadosVeiculoFiltro filtro)
             throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -402,10 +402,10 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
         try {
             conn = getConnection();
             stmt = ServicoQueryBinder.getServicosFechadosVeiculo(conn,
-                                                                 codUnidade,
-                                                                 placaVeiculo,
-                                                                 dataInicial,
-                                                                 dataFinal);
+                                                                 filtro.getCodUnidade(),
+                                                                 filtro.getCodVeiculo(),
+                                                                 filtro.getDataInicial(),
+                                                                 filtro.getDataFinal());
             rSet = stmt.executeQuery();
             return ServicoConverter.createServicos(rSet);
         } finally {

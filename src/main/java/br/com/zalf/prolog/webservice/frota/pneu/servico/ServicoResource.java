@@ -4,6 +4,9 @@ import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Required;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.*;
+import br.com.zalf.prolog.webservice.frota.pneu.servico._model.filtro.ServicoHolderBuscaFiltro;
+import br.com.zalf.prolog.webservice.frota.pneu.servico._model.filtro.ServicosAbertosBuscaFiltro;
+import br.com.zalf.prolog.webservice.frota.pneu.servico._model.filtro.ServicosFechadosVeiculoFiltro;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.AppVersionCodeHandler;
@@ -97,12 +100,9 @@ public class ServicoResource {
 
     @GET
     @Secured(permissions = {Pilares.Frota.OrdemServico.Pneu.VISUALIZAR, Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
-    @Path("/fechados/{codUnidade}/veiculos/{placaVeiculo}")
-    public List<Servico> getServicosFechadosVeiculo(@PathParam("codUnidade") @Required final Long codUnidade,
-                                                    @PathParam("placaVeiculo") @Required final String placaVeiculo,
-                                                    @QueryParam("dataInicial") @Required final long dataInicial,
-                                                    @QueryParam("dataFinal") @Required final long dataFinal) {
-        return service.getServicosFechadosVeiculo(codUnidade, placaVeiculo, dataInicial, dataFinal);
+    @Path("/fechados/veiculos")
+    public List<Servico> getServicosFechadosVeiculo(@Required final ServicosFechadosVeiculoFiltro filtro) {
+        return service.getServicosFechadosVeiculo(filtro);
     }
 
     @GET

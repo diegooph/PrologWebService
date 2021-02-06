@@ -1,5 +1,6 @@
-package br.com.zalf.prolog.webservice.frota.pneu.servico._model;
+package br.com.zalf.prolog.webservice.frota.pneu.servico._model.filtro;
 
+import br.com.zalf.prolog.webservice.frota.pneu.servico._model.TipoServico;
 import lombok.Value;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

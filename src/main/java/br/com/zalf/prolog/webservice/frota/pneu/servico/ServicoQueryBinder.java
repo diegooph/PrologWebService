@@ -12,6 +12,7 @@ import org.jetbrains.annotations.Nullable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 
@@ -267,19 +268,21 @@ final class ServicoQueryBinder {
     @NotNull
     static PreparedStatement getServicosFechadosVeiculo(@NotNull final Connection connection,
                                                         @NotNull final Long codUnidade,
-                                                        @NotNull final String placaVeiculo,
-                                                        final long dataInicial,
-                                                        final long dataFinal) throws SQLException {
+                                                        @NotNull final Long codVeiculo,
+                                                        @NotNull final LocalDate dataInicial,
+                                                        @NotNull final LocalDate dataFinal) throws SQLException {
         final PreparedStatement stmt = connection.prepareStatement(BASE_QUERY_BUSCA_SERVICOS
-                + "WHERE AM.COD_UNIDADE = ? "
-                + "AND V.PLACA = ? "
-                + "AND AM.DATA_HORA_RESOLUCAO IS NOT NULL "
-                + "AND (AM.DATA_HORA_RESOLUCAO AT TIME ZONE TZ_UNIDADE(AM.COD_UNIDADE))::DATE BETWEEN ? AND ? "
-                + "ORDER BY DATA_HORA_RESOLUCAO DESC;");
+                                                                           + "WHERE AM.COD_UNIDADE = ? "
+                                                                           + "AND V.CODIGO = ? "
+                                                                           + "AND AM.DATA_HORA_RESOLUCAO IS NOT NULL "
+                                                                           + "AND (AM.DATA_HORA_RESOLUCAO AT TIME " +
+                                                                           "ZONE TZ_UNIDADE(AM.COD_UNIDADE))::DATE " +
+                                                                           "BETWEEN ? AND ? "
+                                                                           + "ORDER BY DATA_HORA_RESOLUCAO DESC;");
         stmt.setLong(1, codUnidade);
-        stmt.setString(2, placaVeiculo);
-        stmt.setObject(3, DateUtils.toLocalDate(new java.sql.Date(dataInicial)));
-        stmt.setObject(4, DateUtils.toLocalDate(new java.sql.Date(dataFinal)));
+        stmt.setLong(2, codVeiculo);
+        stmt.setObject(3, dataInicial);
+        stmt.setObject(4, dataFinal);
         return stmt;
     }
 

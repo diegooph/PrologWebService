@@ -1,6 +1,9 @@
 package br.com.zalf.prolog.webservice.frota.pneu.servico;
 
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.*;
+import br.com.zalf.prolog.webservice.frota.pneu.servico._model.filtro.ServicoHolderBuscaFiltro;
+import br.com.zalf.prolog.webservice.frota.pneu.servico._model.filtro.ServicosAbertosBuscaFiltro;
+import br.com.zalf.prolog.webservice.frota.pneu.servico._model.filtro.ServicosFechadosVeiculoFiltro;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
@@ -62,10 +65,8 @@ public interface ServicoDao {
                                           final long dataInicial,
                                           final long dataFinal) throws SQLException;
 
-    List<Servico> getServicosFechadosVeiculo(final Long codUnidade,
-                                             final String placaVeiculo,
-                                             final long dataInicial,
-                                             final long dataFinal) throws SQLException;
+    @NotNull
+    List<Servico> getServicosFechadosVeiculo(@NotNull final ServicosFechadosVeiculoFiltro filtro) throws Throwable;
 
     int getQuantidadeServicosEmAbertoPneu(final Long codUnidade,
                                           final Long codPneu,
