@@ -1,0 +1,23 @@
+Sobre a estrutura de mensagens push do Prolog
+
+
+Nós utilizamos o FCM (Firebase Cloud Messaging) para enviar mensagens Push do nosso WS e também utilizamos o Firebase
+para tratar o recebimento dessas mensagens no aplicativo Android.
+
+Aqui é possível encontrar uma explicação do FCM: https://firebase.google.com/docs/cloud-messaging
+Aqui tem um tutorial de como fazer o setup no Android: https://firebase.google.com/docs/cloud-messaging/android/client
+
+No WS, nós utilizamos o FCM por meio do Firebase Admin SDK. É possível ver como fazer o setup aqui:
+https://firebase.google.com/docs/admin/setup
+
+
+Alguns pontos dignos de nota:
+-> A aplicação que recebe a notificação é identificada por meio de um token único gerado pelo Firebase. O token é único
+   por aplicação + aparelho, mas ele não leva em conta usuário logado, isso é lógica de negócio da aplicação e nós
+   tratamos tal situação na tabela 'messaging.push_colaborador_token'.
+
+-> O token, uma vez gerado pelo Firebase, é único e nunca mais será usado para nenhuma outra aplicação + aparelho:
+   https://stackoverflow.com/questions/52070864/is-a-fcm-token-reused
+
+-> Toda mensagem enviada (ou tentativa de envio) é logada no nosso BD na tabela 'messaging.push_log'.
+

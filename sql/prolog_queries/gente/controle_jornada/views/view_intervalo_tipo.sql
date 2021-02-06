@@ -1,0 +1,26 @@
+-- Sobre:
+--
+-- Esta view retorna uma lista de tipos de marcação
+--
+-- Histórico:
+-- 2019-08-29 -> Adicionada coluna de código auxiliar (wvinim - PL-2223).
+CREATE OR REPLACE VIEW VIEW_INTERVALO_TIPO AS
+  SELECT
+    ROW_NUMBER()
+    OVER (
+      PARTITION BY IT.COD_UNIDADE
+      ORDER BY IT.CODIGO )           AS CODIGO_TIPO_INTERVALO_POR_UNIDADE,
+    IT.CODIGO                        AS CODIGO,
+    IT.COD_UNIDADE                   AS COD_UNIDADE,
+    IT.NOME                          AS NOME,
+    IT.ICONE                         AS ICONE,
+    IT.TEMPO_RECOMENDADO_MINUTOS     AS TEMPO_RECOMENDADO_MINUTOS,
+    IT.TEMPO_ESTOURO_MINUTOS         AS TEMPO_ESTOURO_MINUTOS,
+    IT.HORARIO_SUGERIDO              AS HORARIO_SUGERIDO,
+    IT.ATIVO                         AS ATIVO,
+    MTJ.COD_TIPO_JORNADA IS NOT NULL AS TIPO_JORNADA,
+    IT.COD_AUXILIAR                  AS COD_AUXILIAR
+  FROM INTERVALO_TIPO IT
+    LEFT JOIN MARCACAO_TIPO_JORNADA MTJ
+      ON IT.COD_UNIDADE = MTJ.COD_UNIDADE
+         AND IT.CODIGO = MTJ.COD_TIPO_JORNADA;

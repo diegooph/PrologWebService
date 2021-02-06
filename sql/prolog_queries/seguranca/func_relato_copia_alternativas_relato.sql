@@ -1,0 +1,80 @@
+-- Sobre:
+-- A lógica aplicada nessa function é a seguinte:
+-- Se as alternativas de relato que não existirem na unidade e setor de destinos serão copiadas.
+--
+-- Précondições:
+-- 1) Para a function funcionar é verificado a integridade entre unidade-setor.
+-- 2) Verificado se existem aternativas de origem para serem copiadas.
+-- 3) Na hora do insert é realizado um select apenas para copiar as alternativas que não estão no destino, com base na
+-- desrição da alternativa.
+--
+-- Histórico:
+-- 2019-07-23 -> Function criada (thaisksf - PL-2100).
+CREATE OR REPLACE FUNCTION FUNC_RELATO_COPIA_ALTERNATIVAS_RELATO(
+      F_COD_UNIDADE_ORIGEM       BIGINT,
+      F_COD_SETOR_ORIGEM         BIGINT,
+      F_COD_UNIDADE_DESTINO      BIGINT,
+      F_COD_SETOR_DESTINO        BIGINT,
+  OUT AVISO_ALTERNATIVA_INSERIDA TEXT)
+  RETURNS TEXT
+LANGUAGE PLPGSQL
+SECURITY DEFINER
+AS $$
+DECLARE
+  QTD_INSERTS BIGINT;
+  NENHUMA_ALTERNATIVA_INSERIDA BIGINT := 0;
+BEGIN
+  -- VERIFICA SE O SETOR EXISTE NA UNIDADE DESTINO.
+  PERFORM FUNC_GARANTE_SETOR_EXISTE(F_COD_UNIDADE_DESTINO, F_COD_SETOR_DESTINO);
+
+  -- VERIFICA SE O SETOR EXISTE NA UNIDADE ORIGEM.
+  PERFORM FUNC_GARANTE_SETOR_EXISTE(F_COD_UNIDADE_ORIGEM, F_COD_SETOR_ORIGEM);
+
+  -- VERIFICA SE EXISTEM ALTERNATIVAS DE RELATO PARA SER COPIADO COM BASE NA UNIDADE E SETOR INFORMADOS.
+  IF NOT EXISTS(SELECT RA.CODIGO
+                FROM RELATO_ALTERNATIVA RA
+                WHERE RA.COD_UNIDADE = F_COD_UNIDADE_ORIGEM AND
+                      RA.COD_SETOR = F_COD_SETOR_ORIGEM)
+  THEN RAISE EXCEPTION 'Não existem alternativas de relato para a unidade; %, setor: %!', F_COD_UNIDADE_ORIGEM,
+  F_COD_SETOR_ORIGEM;
+  END IF;
+
+    -- COPIA ALTERNATIVAS DE RELATO QUE NÃO ESTÃO NA UNIDADE DESTINO
+    INSERT INTO RELATO_ALTERNATIVA (COD_UNIDADE, COD_SETOR, ALTERNATIVA, STATUS_ATIVO)
+      SELECT
+        F_COD_UNIDADE_DESTINO,
+        F_COD_SETOR_DESTINO,
+        TRIM_AND_REMOVE_EXTRA_SPACES(RA.ALTERNATIVA),
+        RA.STATUS_ATIVO
+      FROM RELATO_ALTERNATIVA RA
+      WHERE RA.COD_UNIDADE = F_COD_UNIDADE_ORIGEM AND
+            RA.COD_SETOR = F_COD_SETOR_ORIGEM AND NOT EXISTS(SELECT * FROM RELATO_ALTERNATIVA R
+      WHERE R.cod_unidade = F_COD_UNIDADE_DESTINO  AND
+            R.cod_setor = F_COD_SETOR_DESTINO AND
+            (TRIM_AND_REMOVE_EXTRA_SPACES(UNACCENT(RA.alternativa)) ILIKE
+              TRIM_AND_REMOVE_EXTRA_SPACES(UNACCENT(R.alternativa))));
+      GET DIAGNOSTICS QTD_INSERTS = ROW_COUNT;
+
+  IF (QTD_INSERTS > NENHUMA_ALTERNATIVA_INSERIDA)
+    THEN
+      SELECT ('ALTERNATIVAS DE RELATO COPIADOS COM SUCESSO PARA A UNIDADE: '
+              || (SELECT U.NOME FROM UNIDADE U WHERE U.CODIGO = F_COD_UNIDADE_DESTINO)
+              || ' DE CÓDIGO: '
+              || F_COD_UNIDADE_DESTINO
+              || ' , SETOR: '
+              || F_COD_SETOR_DESTINO
+              || ' , QUANTIDADE DE ALTERNATIVAS INSERIDAS: '
+              || QTD_INSERTS)
+      INTO AVISO_ALTERNATIVA_INSERIDA;
+    ELSE
+      SELECT ('NENHUMA ALTERNATIVA INSERIDA - A UNIDADE: '
+              || (SELECT U.NOME FROM UNIDADE U WHERE U.CODIGO = F_COD_UNIDADE_DESTINO)
+              || ' DE CÓDIGO: '
+              || F_COD_UNIDADE_DESTINO
+              || ' - , SETOR: '
+              || F_COD_SETOR_DESTINO
+              || ', JÁ POSSUEM AS ALTERNATIVAS')
+      INTO AVISO_ALTERNATIVA_INSERIDA;
+    END IF;
+END;
+$$;
