@@ -38,13 +38,17 @@ public class ServicoService {
     }
 
     @NotNull
-    public ServicoHolder getServicoHolder(@NotNull final String placa, @NotNull final Long codUnidade) {
+    public ServicoHolder getServicoHolder(@NotNull final ServicoHolderBuscaFiltro filtro) {
         try {
-            return dao.getServicoHolder(placa, codUnidade);
+            return dao.getServicoHolder(filtro);
         } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao buscar os serviços da placa.\n" +
-                    "Unidade: %d\n" +
-                    "Placa: %s", codUnidade, placa), t);
+                                             "codUnidade: %d\n" +
+                                             "codVeiculo: %d\n" +
+                                             "placaVeiculo: %s",
+                                     filtro.getCodUnidade(),
+                                     filtro.getCodVeiculo(),
+                                     filtro.getPlacaVeiculo()), t);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao buscar serviços, tente novamente");

@@ -163,22 +163,24 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
 
     @NotNull
     @Override
-    public ServicoHolder getServicoHolder(@NotNull final String placa, @NotNull final Long codUnidade)
+    public ServicoHolder getServicoHolder(@NotNull final ServicoHolderBuscaFiltro filtro)
             throws Throwable {
         Connection conn = null;
         try {
             conn = getConnection();
-
-            final List<Servico> servicos = internalGetServicosAbertosByPlaca(conn, placa, null);
+            final List<Servico> servicos = internalGetServicosAbertosByCodVeiculo(
+                    conn,
+                    filtro.getCodVeiculo(),
+                    null);
             //  Se não existirem serviços para a placa buscada, nada mais será setado no Holder.
             Restricao restricao = null;
             FormaColetaDadosAfericaoEnum formaColetaDadosAfericaoEnum = null;
             List<Alternativa> alternativasInspecao = null;
             if (!servicos.isEmpty()) {
-                Log.d(TAG, "Existem serviços para a placa: " + placa);
+                Log.d(TAG, "Existem serviços para o codVeículo: " + filtro.getCodVeiculo());
                 final AfericaoDao afericaoDao = Injection.provideAfericaoDao();
-                restricao = afericaoDao.getRestricaoByCodUnidade(conn, codUnidade);
-                formaColetaDadosAfericaoEnum = getFormaColetaDadosFechamentoServico(conn, placa);
+                restricao = afericaoDao.getRestricaoByCodUnidade(conn, filtro.getCodUnidade());
+                formaColetaDadosAfericaoEnum = getFormaColetaDadosFechamentoServico(conn, filtro.getCodVeiculo());
                 if (contains(servicos, TipoServico.INSPECAO)) {
                     Log.d(TAG, "Contém inspeção");
                     alternativasInspecao = getAlternativasInspecao(conn);
@@ -186,7 +188,8 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
             }
 
             return new ServicoHolder(
-                    placa,
+                    filtro.getCodVeiculo(),
+                    filtro.getPlacaVeiculo(),
                     servicos,
                     restricao,
                     formaColetaDadosAfericaoEnum,
@@ -202,7 +205,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
         Connection conn = null;
         try {
             conn = getConnection();
-            return internalGetServicosAbertosByPlaca(conn, placa, tipoServico);
+            return internalGetServicosAbertosByCodVeiculo(conn, -1L, tipoServico);
         } finally {
             close(conn);
         }
@@ -494,7 +497,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
 
     @NotNull
     private FormaColetaDadosAfericaoEnum getFormaColetaDadosFechamentoServico(@NotNull final Connection conn,
-                                                                              @NotNull final String placa)
+                                                                              @NotNull final Long codVeiculo)
             throws SQLException {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -504,8 +507,8 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
                                                  "from afericao_configuracao_tipo_afericao_veiculo actav " +
                                                  "join veiculo v on actav.cod_tipo_veiculo = v.cod_tipo and actav" +
                                                  ".cod_unidade = v.cod_unidade " +
-                                                 "where v.placa = ?;");
-            stmt.setString(1, placa);
+                                                 "where v.codigo = ?;");
+            stmt.setLong(1, codVeiculo);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return FormaColetaDadosAfericaoEnum.fromString(rSet.getString(1));
@@ -519,14 +522,14 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
     }
 
     @NotNull
-    private List<Servico> internalGetServicosAbertosByPlaca(@NotNull final Connection conn,
-                                                            @NotNull final String placa,
-                                                            @Nullable final TipoServico tipoServico)
+    private List<Servico> internalGetServicosAbertosByCodVeiculo(@NotNull final Connection conn,
+                                                                 @NotNull final Long codVeiculo,
+                                                                 @Nullable final TipoServico tipoServico)
             throws SQLException {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
-            stmt = ServicoQueryBinder.getServicosAbertosByPlaca(conn, placa, tipoServico);
+            stmt = ServicoQueryBinder.getServicosAbertosByCodVeiculo(conn, codVeiculo, tipoServico);
             rSet = stmt.executeQuery();
             return ServicoConverter.createServicos(rSet);
         } finally {

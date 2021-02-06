@@ -56,9 +56,8 @@ public class ServicoResource {
     @GET
     @Secured(permissions = {Pilares.Frota.OrdemServico.Pneu.VISUALIZAR, Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
     @Path("/abertos/veiculos/{placaVeiculo}/completo")
-    public ServicoHolder getServicoHolder(@PathParam("placaVeiculo") @Required final String placa,
-                                          @QueryParam("codUnidade") @Required final Long codUnidade) {
-        return service.getServicoHolder(placa, codUnidade);
+    public ServicoHolder getServicoHolder(@Required final ServicoHolderBuscaFiltro filtro) {
+        return service.getServicoHolder(filtro);
     }
 
     @GET

@@ -98,15 +98,16 @@ final class ServicoQueryBinder {
     }
 
     @NotNull
-    static PreparedStatement getServicosAbertosByPlaca(@NotNull final Connection connection,
-                                                       @NotNull final String placa,
-                                                       @Nullable final TipoServico tipoServico) throws SQLException {
+    static PreparedStatement getServicosAbertosByCodVeiculo(@NotNull final Connection connection,
+                                                            @NotNull final Long codVeiculo,
+                                                            @Nullable final TipoServico tipoServico)
+            throws SQLException {
         final PreparedStatement stmt = connection.prepareStatement(BASE_QUERY_BUSCA_SERVICOS
-                + "WHERE V.PLACA = ? "
-                + "AND AM.DATA_HORA_RESOLUCAO IS NULL "
-                + "AND AM.TIPO_SERVICO LIKE ? "
-                + "ORDER BY AM.TIPO_SERVICO;");
-        stmt.setString(1, placa);
+                                                                           + "WHERE V.CODIGO = ? "
+                                                                           + "AND AM.DATA_HORA_RESOLUCAO IS NULL "
+                                                                           + "AND AM.TIPO_SERVICO LIKE ? "
+                                                                           + "ORDER BY AM.TIPO_SERVICO;");
+        stmt.setLong(1, codVeiculo);
         stmt.setString(2, tipoServico != null ? tipoServico.asString() : "%");
         return stmt;
     }
