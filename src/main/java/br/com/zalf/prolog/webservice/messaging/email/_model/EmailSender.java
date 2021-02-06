@@ -8,7 +8,6 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-
 public final class EmailSender extends SendContact {
 
     private EmailSender(@NotNull final String email, @NotNull final String name) {
