@@ -27,7 +27,7 @@ public final class VeiculoAcoplamentoHistoricoResource {
     private final VeiculoAcoplamentoHistoricoService service = new VeiculoAcoplamentoHistoricoService();
 
     @GET
-    @Path("/busca")
+    @Path("/historicos")
     @UsedBy(platforms = Platform.WEBSITE)
     @Secured(permissions
             = {Pilares.Frota.Veiculo.VISUALIZAR, Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
