@@ -13,9 +13,9 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public final class SpringContext implements ApplicationContextAware {
-
     private static ApplicationContext CONTEXT;
 
+    @NotNull
     public static <T> T getBean(final Class<T> clazz) {
         return CONTEXT.getBean(clazz);
     }
