@@ -38,12 +38,12 @@ public class EmailApiImpl implements EmailApi {
         final TransactionalEmail message = buildMessage(receivers, template);
         final SendEmailsRequest request = buildRequest(message);
         final SendEmailsResponse response = sendRequest(request);
-        return getHolder(request, response);
+        return buildRequestResponseHolder(request, response);
     }
 
     @NotNull
-    private EmailRequestResponseHolder getHolder(@NotNull final SendEmailsRequest request,
-                                                 @NotNull final SendEmailsResponse response) {
+    private EmailRequestResponseHolder buildRequestResponseHolder(@NotNull final SendEmailsRequest request,
+                                                                  @NotNull final SendEmailsResponse response) {
         return new EmailRequestResponseHolder(request, response);
     }
 
