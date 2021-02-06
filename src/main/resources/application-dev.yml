@@ -1,11 +1,11 @@
 database:
   properties:
-    host: ""
-    port: ""
-    name: ""
+    host: "localhost"
+    port: "5432"
+    name: "teste_lucas_2"
   connection:
-    user: ""
-    password: ""
+    user: "postgres"
+    password: "postgres"
 
 spring:
   profiles: dev
