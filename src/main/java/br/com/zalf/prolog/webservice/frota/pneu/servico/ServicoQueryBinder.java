@@ -358,6 +358,7 @@ final class ServicoQueryBinder {
                                                        @NotNull final Long codServico,
                                                        @NotNull final String placaVeiculo) throws SQLException {
         final PreparedStatement stmt = connection.prepareStatement("SELECT " +
+                                                                           "  V.CODIGO AS COD_VEICULO, " +
                                                                            "  A.PLACA_VEICULO, " +
                                                                            "  V.IDENTIFICADOR_FROTA, " +
                                                                            "  A.KM_VEICULO AS KM_ABERTURA_SERVICO, " +

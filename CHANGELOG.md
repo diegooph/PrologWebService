@@ -20,6 +20,7 @@ Change Log
 * Refatora updates de km dos processos para usarem function centralizadora (PL-3290)
 * Adiciona erro especifico ao tentar por hubodômetro em veículos motorizados (PL-3386)
 * Adiciona validação para impedir que veículos acoplados sejam inativados (PL-3397)
+* Adiciona código veiculo nos objetos de O.S (PL-3472)
 
 ### Bug Fixes
 * Corrige diferenças entre branches na edição de veículo (PL-3326)
