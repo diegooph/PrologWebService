@@ -3,9 +3,9 @@ package br.com.zalf.prolog.webservice.frota.veiculo.acoplamento.validator;
 import br.com.zalf.prolog.webservice.commons.util.ListUtils;
 import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcoplamentoAcaoRealizada;
 import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcoplamentoProcessoRealizacao;
-import io.sentry.util.Nullable;
 import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
