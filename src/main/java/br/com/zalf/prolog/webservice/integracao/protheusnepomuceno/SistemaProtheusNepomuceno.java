@@ -146,14 +146,14 @@ public final class SistemaProtheusNepomuceno extends Sistema {
             conn = connectionProvider.provideDatabaseConnection();
             final SistemaProtheusNepomucenoDao sistema = new SistemaProtheusNepomucenoDaoImpl();
             final Long codEmpresa =
-                    getIntegradorProLog().getCodEmpresaByCodUnidadeProLog(conn, afericaoBusca.getCodigoUnidade());
+                    getIntegradorProLog().getCodEmpresaByCodUnidadeProLog(conn, afericaoBusca.getCodUnidade());
 
             String codEmpresaFilial =
-                    getIntegradorProLog().getCodAuxiliarByCodUnidadeProlog(conn, afericaoBusca.getCodigoUnidade());
+                    getIntegradorProLog().getCodAuxiliarByCodUnidadeProlog(conn, afericaoBusca.getCodUnidade());
             if (ProtheusNepomucenoUtils.containsMoreThanOneCodAuxiliar(codEmpresaFilial)) {
                 codEmpresaFilial = getCodFilialByPlacaCronograma(conn,
                                                                  codEmpresa,
-                                                                 afericaoBusca.getCodigoUnidade(),
+                                                                 afericaoBusca.getCodUnidade(),
                                                                  afericaoBusca.getPlacaVeiculo(),
                                                                  sistema);
             }
@@ -171,7 +171,7 @@ public final class SistemaProtheusNepomuceno extends Sistema {
             final ConfiguracaoNovaAfericaoPlaca configuracaoAfericao =
                     sistema.getConfigNovaAfericaoPlaca(
                             conn,
-                            afericaoBusca.getCodigoUnidade(),
+                            afericaoBusca.getCodUnidade(),
                             veiculoAfericao.getCodEstruturaVeiculo());
             final Short codDiagramaProlog =
                     sistema.getCodDiagramaByCodEstrutura(conn, codEmpresa, veiculoAfericao.getCodEstruturaVeiculo());
@@ -197,7 +197,7 @@ public final class SistemaProtheusNepomuceno extends Sistema {
             final Veiculo veiculo =
                     ProtheusNepomucenoConverter
                             .createVeiculoProlog(
-                                    afericaoBusca.getCodigoUnidade(),
+                                    afericaoBusca.getCodUnidade(),
                                     codDiagramaProlog,
                                     veiculoAfericao,
                                     posicaoPneuMapper);

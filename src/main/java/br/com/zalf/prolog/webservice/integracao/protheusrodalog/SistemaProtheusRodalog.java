@@ -51,16 +51,16 @@ public class SistemaProtheusRodalog extends Sistema {
     public NovaAfericaoPlaca getNovaAfericaoPlaca(@NotNull final AfericaoBuscaFiltro afericaoBusca) {
         try {
             final String tokenIntegracao =
-                    getIntegradorProLog().getTokenIntegracaoByCodUnidadeProLog(afericaoBusca.getCodigoUnidade());
+                    getIntegradorProLog().getTokenIntegracaoByCodUnidadeProLog(afericaoBusca.getCodUnidade());
             final NovaAfericaoPlacaProtheusRodalog novaAfericaoPlaca =
                     requester.getNovaAfericaoPlaca(
                             tokenIntegracao,
-                            afericaoBusca.getCodigoUnidade(),
+                            afericaoBusca.getCodUnidade(),
                             afericaoBusca.getPlacaVeiculo(),
                             TipoMedicaoAfericaoProtheusRodalog.fromString(afericaoBusca.getTipoAfericao().asString()));
             if (novaAfericaoPlaca.getCodDiagrama() == null) {
                 throw new IllegalStateException("[INTEGRACAO - RODALOG] O código do diagrama é null\n" +
-                                                        "CodUnidade: " + afericaoBusca.getCodigoUnidade() + "\n" +
+                                                        "CodUnidade: " + afericaoBusca.getCodUnidade() + "\n" +
                                                         "Placa: " + afericaoBusca.getPlacaVeiculo());
             }
             final Optional<DiagramaVeiculo> diagramaVeiculo =

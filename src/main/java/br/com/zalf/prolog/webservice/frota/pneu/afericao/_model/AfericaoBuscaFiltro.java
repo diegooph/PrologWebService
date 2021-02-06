@@ -11,11 +11,11 @@ import org.jetbrains.annotations.NotNull;
 @Value(staticConstructor = "of")
 public class AfericaoBuscaFiltro {
     @NotNull
-    Long codigoVeiculo;
+    Long codVeiculo;
     @NotNull
     String placaVeiculo;
     @NotNull
-    Long codigoUnidade;
+    Long codUnidade;
     @NotNull
     TipoMedicaoColetadaAfericao tipoAfericao;
 }

@@ -115,13 +115,13 @@ public final class AvaCorpAvilan extends Sistema {
          * Por enquanto a Avilan não suporta (por conta da integração) que um usuário faça uma aferição de um veículo
          * que não esteja presente na mesma unidade dele.
          */
-        final List<String> placas = getPlacasVeiculosByTipo(afericaoBusca.getCodigoUnidade(), FILTRO_TODOS);
+        final List<String> placas = getPlacasVeiculosByTipo(afericaoBusca.getCodUnidade(), FILTRO_TODOS);
         if (!placas.contains(afericaoBusca.getPlacaVeiculo())) {
             throw new AvaCorpAvilanException(
                     "Você só pode aferir veículos da sua unidade",
                     String.format("Placa: %s -- Unidade: %d",
                                   afericaoBusca.getPlacaVeiculo(),
-                                  afericaoBusca.getCodigoUnidade()));
+                                  afericaoBusca.getCodUnidade()));
         }
 
         final br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.cadastro.Veiculo veiculoAvilan =
@@ -138,7 +138,7 @@ public final class AvaCorpAvilan extends Sistema {
             throw new IllegalStateException("Erro ao buscar diagrama de código: " + codDiagrama);
         }
 
-        final Veiculo veiculo = AvaCorpAvilanConverter.convert(veiculoAvilan, afericaoBusca.getCodigoUnidade());
+        final Veiculo veiculo = AvaCorpAvilanConverter.convert(veiculoAvilan, afericaoBusca.getCodUnidade());
         veiculo.setDiagrama(optional.get());
         veiculo.setListPneus(pneus);
 
