@@ -200,12 +200,11 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
     }
 
     @Override
-    public List<Servico> getServicosAbertosByPlaca(@NotNull final String placa,
-                                                   @Nullable final TipoServico tipoServico) throws SQLException {
+    public List<Servico> getServicosAbertos(@NotNull final ServicosAbertosBuscaFiltro filtro) throws Throwable {
         Connection conn = null;
         try {
             conn = getConnection();
-            return internalGetServicosAbertosByCodVeiculo(conn, -1L, tipoServico);
+            return internalGetServicosAbertosByCodVeiculo(conn, filtro.getCodVeiculo(), filtro.getTipoServico());
         } finally {
             close(conn);
         }

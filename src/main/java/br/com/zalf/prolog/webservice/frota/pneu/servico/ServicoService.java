@@ -55,14 +55,21 @@ public class ServicoService {
         }
     }
 
-    public List<Servico> getServicosAbertosByPlaca(final String placa, final String tipoServico) {
+    @NotNull
+    public List<Servico> getServicosAbertos(@NotNull final ServicosAbertosBuscaFiltro filtro) {
         try {
-            return dao.getServicosAbertosByPlaca(placa, tipoServico != null ? TipoServico.fromString(tipoServico) : null);
-        } catch (final SQLException e) {
+            return dao.getServicosAbertos(filtro);
+        } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao buscar os serviços abertos da placa. \n," +
-                    "TipoServico: %s \n" +
-                    "Placa: %s", tipoServico, placa), e);
-            return null;
+                                             "codVeiculo: %d \n" +
+                                             "placaVeiculo: %s \n" +
+                                             "tipoServico: %s",
+                                     filtro.getCodVeiculo(),
+                                     filtro.getPlacaVeiculo(),
+                                     filtro.getTipoServico()), t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao buscar serviços abertos, tente novamente");
         }
     }
 

@@ -1,7 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.servico;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
-import br.com.zalf.prolog.webservice.commons.network.metadata.Optional;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Required;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.*;
@@ -62,10 +61,9 @@ public class ServicoResource {
 
     @GET
     @Secured(permissions = {Pilares.Frota.OrdemServico.Pneu.VISUALIZAR, Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
-    @Path("/abertos/veiculos/{placaVeiculo}")
-    public List<Servico> getServicosAbertosByPlaca(@PathParam("placaVeiculo") @Required final String placa,
-                                                   @QueryParam("tipoServico") @Optional final String tipoServico) {
-        return service.getServicosAbertosByPlaca(placa, tipoServico);
+    @Path("/abertos/veiculos")
+    public List<Servico> getServicosAbertos(@Required final ServicosAbertosBuscaFiltro filtro) {
+        return service.getServicosAbertos(filtro);
     }
 
     @GET
