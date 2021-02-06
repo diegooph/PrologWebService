@@ -19,10 +19,10 @@ import java.util.Set;
  */
 @Service
 public final class PrologEmailService {
-
     private static final String TAG = PrologEmailService.class.getSimpleName();
-
+    @NotNull
     private final EmailApi emailApi;
+    @NotNull
     private final PrologEmailSaveLogTask logTask;
 
     @Autowired
