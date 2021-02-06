@@ -4,7 +4,7 @@ import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
-import br.com.zalf.prolog.webservice.commons.util.ProLogUtils;
+import br.com.zalf.prolog.webservice.commons.util.PrologUtils;
 import br.com.zalf.prolog.webservice.dashboard.Color;
 import br.com.zalf.prolog.webservice.entrega.mapa._model.ResponseErrorUploadMapa;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
@@ -73,7 +73,7 @@ public final class GsonUtils {
                 .setLenient()
                 .enableComplexMapKeySerialization();
 
-        if (ProLogUtils.isDebug()) {
+        if (PrologUtils.isDebug()) {
             builder.setPrettyPrinting();
         }
 

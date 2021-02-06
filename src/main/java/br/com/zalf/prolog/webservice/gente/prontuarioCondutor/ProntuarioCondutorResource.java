@@ -1,9 +1,9 @@
 package br.com.zalf.prolog.webservice.gente.prontuarioCondutor;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
-import br.com.zalf.prolog.webservice.commons.util.Platform;
-import br.com.zalf.prolog.webservice.commons.util.UsedBy;
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
+import br.com.zalf.prolog.webservice.commons.network.metadata.Platform;
+import br.com.zalf.prolog.webservice.commons.network.metadata.UsedBy;
+import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import br.com.zalf.prolog.webservice.gente.prontuarioCondutor.model.ProntuarioCondutor;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
@@ -69,7 +69,7 @@ public final class ProntuarioCondutorResource {
             @FormDataParam("file") FormDataContentDisposition fileDetail,
             @PathParam("codUnidade") Long codUnidade) {
         try {
-            final String fileName = Now.utcMillis() + "_" +
+            final String fileName = Now.getUtcMillis() + "_" +
                     codUnidade + "_" + fileDetail.getFileName().replace(" ", "_");
             final File tmpDir = new File(System.getProperty("java.io.tmpdir"), "prontuarios");
             if (!tmpDir.exists()) {

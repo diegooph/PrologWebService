@@ -1,11 +1,11 @@
 package br.com.zalf.prolog.webservice.gente.faleConosco.relatorios;
 
 import br.com.zalf.prolog.webservice.TimeZoneManager;
-import br.com.zalf.prolog.webservice.commons.report.Report;
-import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
 import br.com.zalf.prolog.webservice.commons.report.CsvWriter;
-import br.com.zalf.prolog.webservice.database.DatabaseConnection;
+import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.report.ReportTransformer;
+import br.com.zalf.prolog.webservice.commons.util.datetime.DateUtils;
+import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -25,7 +25,7 @@ public class FaleConoscoRelatorioDaoImpl extends DatabaseConnection implements F
     }
 
     @Override
-    public void getResumoCsv(Long codUnidade, OutputStream outputStream, Date dataInicial, Date dataFinal)
+    public void getResumoCsv(final Long codUnidade, final OutputStream outputStream, final Date dataInicial, final Date dataFinal)
             throws IOException, SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -41,7 +41,7 @@ public class FaleConoscoRelatorioDaoImpl extends DatabaseConnection implements F
     }
 
     @Override
-    public Report getResumoReport(Long codUnidade, Date dataInicial, Date dataFinal) throws SQLException{
+    public Report getResumoReport(final Long codUnidade, final Date dataInicial, final Date dataFinal) throws SQLException{
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -55,7 +55,7 @@ public class FaleConoscoRelatorioDaoImpl extends DatabaseConnection implements F
         }
     }
 
-    private PreparedStatement getResumoStatement(Connection conn, long codUnidade, Date dataInicial, Date dataFinal)
+    private PreparedStatement getResumoStatement(final Connection conn, final long codUnidade, final Date dataInicial, final Date dataFinal)
             throws SQLException {
         final PreparedStatement stmt = conn.prepareStatement("SELECT dados.total_geral as \"TOTAL\",\n" +
                 "  dados.total_sugestao as \"SUGESTÕES\",\n" +

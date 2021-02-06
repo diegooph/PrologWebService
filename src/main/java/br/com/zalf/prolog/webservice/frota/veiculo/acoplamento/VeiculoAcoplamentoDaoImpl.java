@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.veiculo.acoplamento;
 
-import br.com.zalf.prolog.webservice.commons.util.SqlType;
-import br.com.zalf.prolog.webservice.commons.util.StatementUtils;
+import br.com.zalf.prolog.webservice.commons.util.database.SqlType;
+import br.com.zalf.prolog.webservice.commons.util.database.StatementUtils;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.database.DatabaseUtils;
 import br.com.zalf.prolog.webservice.errorhandling.Exceptions;
@@ -18,7 +18,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-import static br.com.zalf.prolog.webservice.commons.util.PostgresUtils.listToArray;
+import static br.com.zalf.prolog.webservice.commons.util.database.PostgresUtils.listToArray;
 
 /**
  * Created on 2020-11-03

@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model;
 
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
+import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
@@ -114,9 +114,9 @@ public final class ItemResolvidoGlobus {
                 54939L,
                 Duration.ofHours(2L).getSeconds(),
                 "Item consertado através da integração com o Globus",
-                Now.localDateTimeUtc(),
-                Now.localDateTimeUtc().minus(Duration.ofHours(1)),
-                Now.localDateTimeUtc().minus(Duration.ofMinutes(15)));
+                Now.getLocalDateTimeUtc(),
+                Now.getLocalDateTimeUtc().minus(Duration.ofHours(1)),
+                Now.getLocalDateTimeUtc().minus(Duration.ofMinutes(15)));
     }
 
     @NotNull

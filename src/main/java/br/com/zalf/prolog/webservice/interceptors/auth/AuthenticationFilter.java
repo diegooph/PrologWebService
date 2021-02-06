@@ -1,8 +1,8 @@
 package br.com.zalf.prolog.webservice.interceptors.auth;
 
 import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoService;
+import br.com.zalf.prolog.webservice.commons.network.PrologCustomHeaders;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.commons.util.ProLogCustomHeaders;
 import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.errorhandling.exception.MultiAuthorizationHeadersException;
 import br.com.zalf.prolog.webservice.integracao.BaseIntegracaoService;
@@ -38,7 +38,7 @@ public final class AuthenticationFilter implements ContainerRequestFilter {
         // Get the HTTP Authorization header from the request.
         final String authorizationHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
         final String prologAuthorizationHeader =
-                requestContext.getHeaderString(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO);
+                requestContext.getHeaderString(PrologCustomHeaders.HEADER_TOKEN_INTEGRACAO);
 
         Log.d(TAG, "AuthorizationHeader: " + authorizationHeader);
         Log.d(TAG, "PrologAuthorizationHeader: " + prologAuthorizationHeader);

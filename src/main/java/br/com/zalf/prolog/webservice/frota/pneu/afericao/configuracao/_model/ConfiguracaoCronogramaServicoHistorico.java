@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model;
 
-import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
+import br.com.zalf.prolog.webservice.commons.util.datetime.PrologDateParser;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -91,7 +91,7 @@ public final class ConfiguracaoCronogramaServicoHistorico {
         return new ConfiguracaoCronogramaServicoHistorico(
                 "Unidade Teste Zalf",
                 "Colaborador teste",
-                ProLogDateParser.toLocalDateTime("2019-01-10T09:45:00"),
+                PrologDateParser.toLocalDateTime("2019-01-10T09:45:00"),
                 0.1D,
                 0.2D,
                 11.1D,

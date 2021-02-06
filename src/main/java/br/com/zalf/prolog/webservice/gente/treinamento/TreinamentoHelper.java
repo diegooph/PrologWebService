@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.treinamento;
 
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
+import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import br.com.zalf.prolog.webservice.gente.treinamento.model.Treinamento;
 
 import java.sql.Date;
@@ -15,7 +15,7 @@ public class TreinamentoHelper {
 		return String.format(
 				"%d_%s.%s",
 				treinamento.getCodUnidade(),
-				s.format(new Date(Now.utcMillis())),
+				s.format(new Date(Now.getUtcMillis())),
 				extensao);
 	}
 }

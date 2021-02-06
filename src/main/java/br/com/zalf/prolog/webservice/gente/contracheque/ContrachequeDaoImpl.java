@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.gente.contracheque;
 
-import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
-import br.com.zalf.prolog.webservice.commons.util.SqlType;
+import br.com.zalf.prolog.webservice.commons.util.database.PostgresUtils;
+import br.com.zalf.prolog.webservice.commons.util.database.SqlType;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
@@ -49,11 +49,16 @@ public class ContrachequeDaoImpl extends DatabaseConnection implements Contrache
             // Primeiro é verificado se existem itens para o período selecionado.
             if (itens != null) {
                 contracheque = new Contracheque();
-                // Depois é verificado se o colaborador recebe prêmio, ou seja, é um motorista ou um ajudante.
-                if (restricoes.codFuncaoSolicitante == restricoes.codFuncaoAjudante || restricoes.codFuncaoSolicitante == restricoes.codFuncaoMotorista) {
-                    double bonus;
+                final List<ItemProdutividade> itensProdutividade =
+                        produtividadeDao.getProdutividadeByPeriodo(ano, mes, cpf, false);
+                // Depois é verificado se o colaborador recebe prêmio, ou seja, se é um motorista ou um ajudante
+                if (restricoes.codFuncaoSolicitante == restricoes.codFuncaoAjudante
+                        || restricoes.codFuncaoSolicitante == restricoes.codFuncaoMotorista) {
+                    final double bonus;
                     // Para algumas unidades, a recarga compõem o cálculo do prêmio, para outra é uma verba separada.
-                    if (recebeBonus(ano, mes, cpf, restricoes.indicadorBonus)) {
+                    // O bônus só será considerado apenas se número de viagens for acima ou igual o parametrizado.
+                    if ((recebeBonus(ano, mes, cpf, restricoes.indicadorBonus))
+                            && restricoes.numeroViagensNecessariasParaReceberBonus <= itensProdutividade.size()) {
                         if (restricoes.codFuncaoSolicitante == restricoes.codFuncaoMotorista) {
                             bonus = restricoes.valorBonusMotorista;
                         } else {
@@ -64,13 +69,12 @@ public class ContrachequeDaoImpl extends DatabaseConnection implements Contrache
                     }
                     // Agora temos o valor do bônus para compor o calculo do prêmio.
                     // Calcularemos agora o valor das recargas e da produtividade.
-                    final List<ItemProdutividade> itensProdutividade = produtividadeDao.getProdutividadeByPeriodo(ano, mes, cpf, false);
                     final int qtRecargas = getQtRecargas(itensProdutividade);
                     final double valorRecargas = getValorTotalRecargas(itensProdutividade);
                     final double produtividade = getTotalItens(itensProdutividade) - valorRecargas;
 
                     // A partir daqui temos todos os valores para realizar o cálculo do prêmio.
-                    double premio;
+                    final double premio;
                     if (restricoes.recargaPartePremio) {
                         premio = getPremio(conn, codUnidade, itens, bonus, valorRecargas, produtividade);
                         final ItemContracheque itemPremio = new ItemContracheque();
@@ -261,11 +265,13 @@ public class ContrachequeDaoImpl extends DatabaseConnection implements Contrache
         try {
             final RestricoesContracheque restricoes = new RestricoesContracheque();
             stmt = conn.prepareStatement("SELECT pc.*, c.cod_funcao as COD_FUNCAO_SOLICITANTE\n" +
-                    "FROM colaborador c JOIN pre_contracheque_informacoes pc on c.cod_unidade = pc.cod_unidade\n" +
-                    "WHERE c.cpf = ?");
+                                                 "FROM colaborador c JOIN pre_contracheque_informacoes pc on c" +
+                                                 ".cod_unidade = pc.cod_unidade\n" +
+                                                 "WHERE c.cpf = ?");
             stmt.setLong(1, cpf);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
+                restricoes.codUnidade = rSet.getLong("COD_UNIDADE");
                 restricoes.codFuncaoAjudante = rSet.getInt("COD_CARGO_AJUDANTE");
                 restricoes.codFuncaoMotorista = rSet.getInt("COD_CARGO_MOTORISTA");
                 restricoes.valorBonusAjudante = rSet.getDouble("BONUS_AJUDANTE");
@@ -273,10 +279,31 @@ public class ContrachequeDaoImpl extends DatabaseConnection implements Contrache
                 restricoes.indicadorBonus = rSet.getString("INDICADOR");
                 restricoes.recargaPartePremio = rSet.getBoolean("RECARGA_PARTE_PREMIO");
                 restricoes.codFuncaoSolicitante = rSet.getLong("COD_FUNCAO_SOLICITANTE");
+                restricoes.numeroViagensNecessariasParaReceberBonus =
+                        getNumeroViagensParaReceberBonus(conn, restricoes.codUnidade);
             }
             return restricoes;
         } finally {
-            closeConnection(null, stmt, rSet);
+            close(stmt, rSet);
+        }
+    }
+
+    private Short getNumeroViagensParaReceberBonus(final Connection conn,
+                                                   final Long codUnidade)
+            throws SQLException {
+        final String sql = "select uvrm.rm_numero_viagens " +
+                "from unidade_valores_rm uvrm " +
+                "where uvrm.cod_unidade = ?;";
+
+        try (final PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setLong(1, codUnidade);
+            try (final ResultSet rSet = stmt.executeQuery()) {
+                if (rSet.next()) {
+                    return rSet.getShort("RM_NUMERO_VIAGENS");
+                } else {
+                    throw new SQLException("Erro buscar o numero de viagens necessarias para receber bônus.");
+                }
+            }
         }
     }
 

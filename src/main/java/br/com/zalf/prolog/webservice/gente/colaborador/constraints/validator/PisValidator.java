@@ -1,7 +1,8 @@
 package br.com.zalf.prolog.webservice.gente.colaborador.constraints.validator;
 
+import br.com.zalf.prolog.webservice.commons.util.validators.PisPasepValidator;
 import br.com.zalf.prolog.webservice.gente.colaborador.constraints.Pis;
-import br.com.zalf.prolog.webservice.commons.util.ValidationUtils;
+
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
@@ -13,12 +14,12 @@ import javax.validation.ConstraintValidatorContext;
 public final class PisValidator implements ConstraintValidator<Pis, CharSequence> {
 
     @Override
-    public boolean isValid(CharSequence pis, ConstraintValidatorContext constraintValidatorContext) {
+    public boolean isValid(final CharSequence pis, final ConstraintValidatorContext constraintValidatorContext) {
         // Pis é Nullable.
         if (pis == null) {
             return true;
         }
 
-        return ValidationUtils.validaPIS(String.valueOf(pis));
+        return PisPasepValidator.isPisPasepValid(String.valueOf(pis));
     }
 }

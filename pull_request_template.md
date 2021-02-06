@@ -11,7 +11,6 @@
 
 #### [WS] Específicas
 - [ ] Connection, ResulSet e Statement fechados
-- [ ] Documentação atualizada para refletir novas funcionalidades (DAOs)
 - [ ] Integrações testadas
 - [ ] Foi aplicado um ordenamento que faz sentido para os usuários (caso seja uma listagem)?
 

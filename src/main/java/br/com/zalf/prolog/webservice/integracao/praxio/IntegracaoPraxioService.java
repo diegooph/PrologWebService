@@ -3,7 +3,7 @@ package br.com.zalf.prolog.webservice.integracao.praxio;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.StringUtils;
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
+import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicaoStatus;
@@ -547,7 +547,7 @@ public final class IntegracaoPraxioService extends BaseIntegracaoService {
             if (itensResolvidos == null || itensResolvidos.isEmpty()) {
                 throw new GenericException("Nenhuma informação de O.S. aberta foi recebida");
             }
-            final LocalDateTime dataHoraAtualUtc = Now.localDateTimeUtc();
+            final LocalDateTime dataHoraAtualUtc = Now.getLocalDateTimeUtc();
             validateDadosItensResolvidos(dataHoraAtualUtc, itensResolvidos);
             return new SuccessResponseIntegracao("Todos os itens foram resolvidos com sucesso no ProLog");
         } catch (final Throwable t) {

@@ -4,10 +4,10 @@ import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.commons.report.CsvWriter;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.report.ReportTransformer;
-import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
-import br.com.zalf.prolog.webservice.commons.util.SqlType;
-import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
+import br.com.zalf.prolog.webservice.commons.util.database.PostgresUtils;
+import br.com.zalf.prolog.webservice.commons.util.database.SqlType;
+import br.com.zalf.prolog.webservice.commons.util.datetime.DateUtils;
+import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.relatorios._model.AfericaoExportacaoProtheus;
 import org.jetbrains.annotations.NotNull;
@@ -144,7 +144,7 @@ public class AfericaoRelatorioDaoImpl extends DatabaseConnection implements Afer
                                                                @NotNull final List<Long> codUnidades,
                                                                @NotNull final String userToken) throws Throwable {
         final ZoneId zoneId = TimeZoneManager.getZoneIdForToken(userToken, conn);
-        final LocalDateTime dataHoraGeracaoRelatorio = Now.localDateTimeUtc()
+        final LocalDateTime dataHoraGeracaoRelatorio = Now.getLocalDateTimeUtc()
                 .atZone(ZoneOffset.UTC)
                 .withZoneSameInstant(zoneId)
                 .toLocalDateTime();

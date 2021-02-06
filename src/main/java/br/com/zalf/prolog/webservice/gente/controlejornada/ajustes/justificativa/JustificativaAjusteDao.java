@@ -12,15 +12,6 @@ import java.util.List;
  */
 public interface JustificativaAjusteDao {
 
-    /**
-     * Método utilizado para inserir uma {@link JustificativaAjuste}. Uma {@link JustificativaAjuste}
-     * é uma opção que o usuário seleciona ao editar uma marcação de jornada.
-     *
-     * @param token               Identificador do usuário que está solicitando a operação.
-     * @param justificativaAjuste A {@link JustificativaAjuste} a ser inserida.
-     * @return O código da {@link JustificativaAjuste} criada.
-     * @throws Throwable Caso algum erro no processamento ou conexão com o Banco de Dados ocorrer.
-     */
     @NotNull
     Long insertJustificativaAjuste(@NotNull final String token,
                                    @NotNull final JustificativaAjuste justificativaAjuste) throws Throwable;

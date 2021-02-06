@@ -1,14 +1,14 @@
 package br.com.zalf.prolog.webservice.frota.checklist.ordemservico.OLD;
 
-import br.com.zalf.prolog.webservice.commons.util.SqlType;
-import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
-import br.com.zalf.prolog.webservice.commons.util.StatementUtils;
-import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
+import br.com.zalf.prolog.webservice.commons.util.database.PostgresUtils;
+import br.com.zalf.prolog.webservice.commons.util.database.SqlType;
+import br.com.zalf.prolog.webservice.commons.util.database.StatementUtils;
+import br.com.zalf.prolog.webservice.commons.util.datetime.DateUtils;
+import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.PerguntaRespostaChecklist;
@@ -24,9 +24,12 @@ import java.sql.SQLException;
 import java.time.Clock;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
 
-import static br.com.zalf.prolog.webservice.commons.util.StatementUtils.bindValueOrNull;
+import static br.com.zalf.prolog.webservice.commons.util.database.StatementUtils.bindValueOrNull;
 
 /**
  * Created by jean on 10/08/16.
@@ -139,8 +142,8 @@ public class DEPRECATED_ORDEM_SERVICO_DAO_IMPL_2 extends DatabaseConnection impl
     }
 
     @Override
-    public List<OrdemServico> getOs(String placa, String status, Long codUnidade,
-                                    String tipoVeiculo, Integer limit, Long offset) throws SQLException {
+    public List<OrdemServico> getOs(final String placa, final String status, final Long codUnidade,
+                                    final String tipoVeiculo, final Integer limit, final Long offset) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -287,7 +290,7 @@ public class DEPRECATED_ORDEM_SERVICO_DAO_IMPL_2 extends DatabaseConnection impl
     }
 
     @Override
-    public void insertItemOs(Checklist checklist, Connection conn, Long codUnidade) throws SQLException {
+    public void insertItemOs(final Checklist checklist, final Connection conn, final Long codUnidade) throws SQLException {
         Long tempCodOs = null;
         Long gerouOs = null;
         // Todas as os de uma unica placa.
@@ -367,7 +370,7 @@ public class DEPRECATED_ORDEM_SERVICO_DAO_IMPL_2 extends DatabaseConnection impl
      * @return um Long com o códdigo da OS criada
      * @throws SQLException caso não seja possivel inserir a OS
      */
-    private Long createOs(String placa, Long codChecklist, Connection conn) throws SQLException {
+    private Long createOs(final String placa, final Long codChecklist, final Connection conn) throws SQLException {
         Log.d("criando OS", "Placa: " + placa + "checklist: " + codChecklist);
         ResultSet rSet = null;
         PreparedStatement stmt = null;
@@ -440,7 +443,7 @@ public class DEPRECATED_ORDEM_SERVICO_DAO_IMPL_2 extends DatabaseConnection impl
         }
     }
 
-    private void insertServicoOs(Long codPergunta, Long codAlternativa, Long codOs, String placa, Connection conn) throws SQLException {
+    private void insertServicoOs(final Long codPergunta, final Long codAlternativa, final Long codOs, final String placa, final Connection conn) throws SQLException {
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("INSERT INTO checklist_ordem_servico_itens(COD_UNIDADE, COD_OS, cod_pergunta, cod_alternativa, status_resolucao)\n" +
@@ -469,7 +472,7 @@ public class DEPRECATED_ORDEM_SERVICO_DAO_IMPL_2 extends DatabaseConnection impl
      * @param conn           uma Connection
      * @throws SQLException caso não seja possivel realizar a busca
      */
-    private void incrementaQtApontamento(String placa, Long codOs, Long codPergunta, Long codAlternativa, Connection conn) throws SQLException {
+    private void incrementaQtApontamento(final String placa, final Long codOs, final Long codPergunta, final Long codAlternativa, final Connection conn) throws SQLException {
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("UPDATE checklist_ordem_servico_itens SET qt_apontamentos =\n" +
@@ -514,7 +517,7 @@ public class DEPRECATED_ORDEM_SERVICO_DAO_IMPL_2 extends DatabaseConnection impl
      * @return um list de ItemOrdemServico
      * @throws SQLException caso não seja possível realizar a busca
      */
-    private List<ItemOrdemServico> getItensOs(String placa, String codOs, String status, Connection conn, Long codUnidade) throws SQLException {
+    private List<ItemOrdemServico> getItensOs(final String placa, final String codOs, final String status, final Connection conn, final Long codUnidade) throws SQLException {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
@@ -538,7 +541,7 @@ public class DEPRECATED_ORDEM_SERVICO_DAO_IMPL_2 extends DatabaseConnection impl
      * @param oss            Todas as OS em aberto de uma placa
      * @return Long com o código da OS no qual o item se encontra em aberto
      */
-    private Long jaPossuiItemEmAberto(Long codPergunta, long codAlternativa, List<OrdemServico> oss) {
+    private Long jaPossuiItemEmAberto(final Long codPergunta, final long codAlternativa, final List<OrdemServico> oss) {
         Log.d("verificando se possui item em aberto", "Pergunta: " + codPergunta + "Alternativa: " + codAlternativa);
         for (final OrdemServico os : oss) {
             for (final ItemOrdemServico item : os.getItens()) {
@@ -586,7 +589,7 @@ public class DEPRECATED_ORDEM_SERVICO_DAO_IMPL_2 extends DatabaseConnection impl
          * Compara primeiro pela pontuação e depois pela devolução em NF, evitando empates.
          */
         @Override
-        public int compare(ManutencaoHolder o1, ManutencaoHolder o2) {
+        public int compare(final ManutencaoHolder o1, final ManutencaoHolder o2) {
             final Integer valor1 = Double.compare(o1.getQtdCritica(), o2.getQtdCritica());
             if (valor1 != 0) {
                 return valor1;

@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.dashboard;
 
-import br.com.zalf.prolog.webservice.commons.util.Required;
+import br.com.zalf.prolog.webservice.commons.network.metadata.Required;
 import br.com.zalf.prolog.webservice.dashboard.components.QuantidadeItemComponent;
 import br.com.zalf.prolog.webservice.dashboard.components.charts.bar.VerticalBarChartComponent;
 import br.com.zalf.prolog.webservice.dashboard.components.charts.combo.VerticalComboChartComponent;

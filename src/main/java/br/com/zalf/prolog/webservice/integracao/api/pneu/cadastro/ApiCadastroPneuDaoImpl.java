@@ -1,8 +1,8 @@
 package br.com.zalf.prolog.webservice.integracao.api.pneu.cadastro;
 
-import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
-import br.com.zalf.prolog.webservice.commons.util.SqlType;
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
+import br.com.zalf.prolog.webservice.commons.util.database.PostgresUtils;
+import br.com.zalf.prolog.webservice.commons.util.database.SqlType;
+import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.integracao.api.pneu.cadastro.model.*;
@@ -16,7 +16,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static br.com.zalf.prolog.webservice.commons.util.StatementUtils.bindValueOrNull;
+import static br.com.zalf.prolog.webservice.commons.util.database.StatementUtils.bindValueOrNull;
 
 /**
  * Created on 13/08/19.
@@ -75,8 +75,8 @@ public final class ApiCadastroPneuDaoImpl extends DatabaseConnection implements 
                     bindValueOrNull(stmt, 15,
                             pneuCargaInicial.getPlacaVeiculoPneuAplicado(), SqlType.VARCHAR);
                     bindValueOrNull(stmt, 16,
-                            pneuCargaInicial.getPosicaoPneuAplicado(), SqlType.INTEGER);
-                    stmt.setObject(17, Now.offsetDateTimeUtc());
+                                    pneuCargaInicial.getPosicaoPneuAplicado(), SqlType.INTEGER);
+                    stmt.setObject(17, Now.getOffsetDateTimeUtc());
                     stmt.setString(18, tokenIntegracao);
                     rSet = stmt.executeQuery();
                     final long codPneuProlog;
@@ -154,7 +154,7 @@ public final class ApiCadastroPneuDaoImpl extends DatabaseConnection implements 
             stmt.setBoolean(11, pneuCadastro.getPneuNovoNuncaRodado());
             bindValueOrNull(stmt, 12, pneuCadastro.getCodModeloBanda(), SqlType.BIGINT);
             bindValueOrNull(stmt, 13, pneuCadastro.getValorBandaPneu(), SqlType.NUMERIC);
-            stmt.setObject(14, Now.offsetDateTimeUtc());
+            stmt.setObject(14, Now.getOffsetDateTimeUtc());
             stmt.setString(15, tokenIntegracao);
             rSet = stmt.executeQuery();
             final long codPneuProlog;
@@ -196,7 +196,7 @@ public final class ApiCadastroPneuDaoImpl extends DatabaseConnection implements 
             stmt.setBigDecimal(6, pneuEdicao.getNovoValorPneu());
             bindValueOrNull(stmt, 7, pneuEdicao.getNovoCodModeloBanda(), SqlType.BIGINT);
             bindValueOrNull(stmt, 8, pneuEdicao.getNovoValorBandaPneu(), SqlType.REAL);
-            stmt.setObject(9, Now.offsetDateTimeUtc());
+            stmt.setObject(9, Now.getOffsetDateTimeUtc());
             stmt.setString(10, tokenIntegracao);
             rSet = stmt.executeQuery();
             final long codPneuProlog;
@@ -235,7 +235,7 @@ public final class ApiCadastroPneuDaoImpl extends DatabaseConnection implements 
                     PostgresUtils.listToArray(conn, SqlType.TEXT, pneuTransferencia.getCodPneusTransferidos()));
             stmt.setString(5, pneuTransferencia.getObservacao());
             stmt.setString(6, tokenIntegracao);
-            stmt.setObject(7, Now.offsetDateTimeUtc());
+            stmt.setObject(7, Now.getOffsetDateTimeUtc());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return rSet.getLong("COD_PROCESSO");

@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.controlejornada.ajustes.model.exibicao;
 
-import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
+import br.com.zalf.prolog.webservice.commons.util.datetime.PrologDateParser;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDate;
@@ -46,7 +46,7 @@ public final class ConsolidadoMarcacoesDia {
     @NotNull
     public static ConsolidadoMarcacoesDia createDummy() {
         final ConsolidadoMarcacoesDia consolidada = new ConsolidadoMarcacoesDia();
-        consolidada.setDia(ProLogDateParser.toLocalDate("2018-09-04"));
+        consolidada.setDia(PrologDateParser.toLocalDate("2018-09-04"));
         consolidada.setTotalMarcacoesDia(10);
         consolidada.setTotalInconsistenciasDia(5);
         final List<MarcacoesDiaColaborador> consolidadaColaboradores = new ArrayList<>();
@@ -55,6 +55,16 @@ public final class ConsolidadoMarcacoesDia {
         }
         consolidada.setMarcacoesColaboradores(consolidadaColaboradores);
         return consolidada;
+    }
+
+    @Override
+    public String toString() {
+        return "MarcacaoConsolidada{" +
+                "dia=" + dia +
+                ", totalMarcacoesDia=" + totalMarcacoesDia +
+                ", totalInconsistenciasDia=" + totalInconsistenciasDia +
+                ", marcacoesColaboradores=" + marcacoesColaboradores +
+                '}';
     }
 
     public LocalDate getDia() {
@@ -87,15 +97,5 @@ public final class ConsolidadoMarcacoesDia {
 
     public void setMarcacoesColaboradores(final List<MarcacoesDiaColaborador> marcacoesColaboradores) {
         this.marcacoesColaboradores = marcacoesColaboradores;
-    }
-
-    @Override
-    public String toString() {
-        return "MarcacaoConsolidada{" +
-                "dia=" + dia +
-                ", totalMarcacoesDia=" + totalMarcacoesDia +
-                ", totalInconsistenciasDia=" + totalInconsistenciasDia +
-                ", marcacoesColaboradores=" + marcacoesColaboradores +
-                '}';
     }
 }

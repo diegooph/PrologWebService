@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.customfields;
 
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.commons.util.SqlType;
+import br.com.zalf.prolog.webservice.commons.util.database.SqlType;
 import br.com.zalf.prolog.webservice.customfields._model.CampoPersonalizadoFuncaoProlog;
 import br.com.zalf.prolog.webservice.customfields._model.CampoPersonalizadoParaRealizacao;
 import br.com.zalf.prolog.webservice.customfields._model.CampoPersonalizadoResposta;
@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static br.com.zalf.prolog.webservice.commons.util.PostgresUtils.listToArray;
+import static br.com.zalf.prolog.webservice.commons.util.database.PostgresUtils.listToArray;
 
 /**
  * Created on 2020-03-19

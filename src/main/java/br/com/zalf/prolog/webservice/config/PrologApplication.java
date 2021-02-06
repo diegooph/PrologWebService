@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.config;
 
-import br.com.zalf.prolog.webservice.database.DataSourceLifecycleManager;
 import br.com.zalf.prolog.webservice.database.DatabaseConnectionActions;
 import br.com.zalf.prolog.webservice.database.DatabaseConnectionActionsWrapper;
 import br.com.zalf.prolog.webservice.messaging.push.FirebaseLifecycleManager;
@@ -53,23 +52,9 @@ public class PrologApplication extends SpringBootServletInitializer {
     }
 
     @Bean
-    public ServletListenerRegistrationBean<ServletContextListener> dataSourceLifecycleManagerRegistrationBean() {
-        final ServletListenerRegistrationBean<ServletContextListener> bean = new ServletListenerRegistrationBean<>();
-        bean.setListener(new DataSourceLifecycleManager());
-        return bean;
-    }
-
-    @Bean
     public ServletListenerRegistrationBean<ServletContextListener> firebaseLifecycleManagerRegistrationBean() {
         final ServletListenerRegistrationBean<ServletContextListener> bean = new ServletListenerRegistrationBean<>();
         bean.setListener(new FirebaseLifecycleManager());
-        return bean;
-    }
-
-    @Bean
-    public ServletListenerRegistrationBean<ServletContextListener> prologConsoleTextMakerRegistrationBean() {
-        final ServletListenerRegistrationBean<ServletContextListener> bean = new ServletListenerRegistrationBean<>();
-        bean.setListener(new PrologConsoleTextMaker());
         return bean;
     }
 
@@ -83,7 +68,6 @@ public class PrologApplication extends SpringBootServletInitializer {
             this.property(ServerProperties.BV_SEND_ERROR_IN_RESPONSE, true);
             this.property(ServerProperties.BV_DISABLE_VALIDATE_ON_EXECUTABLE_OVERRIDE_CHECK, true);
             this.register(MultiPartFeature.class);
-            this.register(ProLogApplicationEventListener.class);
             this.register(new ObjectMapperContextResolver(objectMapper));
         }
 

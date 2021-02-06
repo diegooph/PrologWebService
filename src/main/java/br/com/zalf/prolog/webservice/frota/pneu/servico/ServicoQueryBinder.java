@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.pneu.servico;
 
 import br.com.zalf.prolog.webservice.TimeZoneManager;
-import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
+import br.com.zalf.prolog.webservice.commons.util.datetime.DateUtils;
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.ServicoCalibragem;
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.ServicoInspecao;
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.ServicoMovimentacao;
@@ -358,6 +358,7 @@ final class ServicoQueryBinder {
                                                        @NotNull final Long codServico,
                                                        @NotNull final String placaVeiculo) throws SQLException {
         final PreparedStatement stmt = connection.prepareStatement("SELECT " +
+                                                                           "  V.CODIGO AS COD_VEICULO, " +
                                                                            "  A.PLACA_VEICULO, " +
                                                                            "  V.IDENTIFICADOR_FROTA, " +
                                                                            "  A.KM_VEICULO AS KM_ABERTURA_SERVICO, " +

@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.network;
 
-import br.com.zalf.prolog.webservice.commons.util.ProLogUtils;
+import br.com.zalf.prolog.webservice.commons.util.PrologUtils;
 import br.com.zalf.prolog.webservice.log.OkHttpLogInterceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -20,7 +20,7 @@ public final class OkHttp {
                 .writeTimeout(DEFAULT_TIMEOUT_SECONDS, TimeUnit.SECONDS)
                 .addInterceptor(new OkHttpLogInterceptor());
 
-        if (ProLogUtils.isDebug()) {
+        if (PrologUtils.isDebug()) {
             // Add logging as last interceptor.
             final HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
             logging.setLevel(HttpLoggingInterceptor.Level.BODY);

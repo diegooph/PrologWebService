@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.autenticacao;
 
-import br.com.zalf.prolog.webservice.commons.util.SessionIdentifierGenerator;
+import br.com.zalf.prolog.webservice.autenticacao.token.TokenGenerator;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ResourceAlreadyDeletedException;
 import br.com.zalf.prolog.webservice.interceptors.auth.ColaboradorAutenticado;
@@ -16,9 +16,6 @@ import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.Optional;
 
-/**
- * Classe responsável pela comunicação com o banco de dados da aplicação.
- */
 public class AutenticacaoDaoImpl extends DatabaseConnection implements AutenticacaoDao {
 
     public AutenticacaoDaoImpl() {
@@ -27,14 +24,14 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
 
     @NotNull
     @Override
-    public Autenticacao insertOrUpdate(@NotNull final Long cpf) throws Throwable {
-        final String token = new SessionIdentifierGenerator().nextSessionId();
+    public Autenticacao createTokenByCpf(@NotNull final Long cpf) throws Throwable {
+        final String token = new TokenGenerator().getNextToken();
         return insert(cpf, token);
     }
 
     @NotNull
     @Override
-    public Autenticacao insertOrUpdateByCodColaborador(@NotNull final Long codColaborador) throws Throwable {
+    public Autenticacao createTokenByCodColaborador(@NotNull final Long codColaborador) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -44,7 +41,7 @@ public class AutenticacaoDaoImpl extends DatabaseConnection implements Autentica
                     "f_cod_colaborador => ?, " +
                     "f_token_autenticacao => ?);");
             stmt.setLong(1, codColaborador);
-            stmt.setString(2, new SessionIdentifierGenerator().nextSessionId());
+            stmt.setString(2, new TokenGenerator().getNextToken());
             rSet = stmt.executeQuery();
             final Autenticacao autenticacao = new Autenticacao();
             if (rSet.next()) {

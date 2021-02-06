@@ -2,10 +2,10 @@ package br.com.zalf.prolog.webservice.messaging.push.send.task;
 
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
-import br.com.zalf.prolog.webservice.commons.util.ProLogUtils;
-import br.com.zalf.prolog.webservice.commons.util.SqlType;
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
+import br.com.zalf.prolog.webservice.commons.util.PrologUtils;
+import br.com.zalf.prolog.webservice.commons.util.database.PostgresUtils;
+import br.com.zalf.prolog.webservice.commons.util.database.SqlType;
+import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import br.com.zalf.prolog.webservice.messaging.MessageScope;
 import br.com.zalf.prolog.webservice.messaging.push._model.*;
 import com.google.common.base.Throwables;
@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static br.com.zalf.prolog.webservice.commons.util.StatementUtils.bindValueOrNull;
+import static br.com.zalf.prolog.webservice.commons.util.database.StatementUtils.bindValueOrNull;
 
 /**
  * Created on 2020-01-29
@@ -52,7 +52,7 @@ public final class FirebaseSaveLogTask {
                 "F_PLATAFORM_DESTINATION     => ? :: MESSAGING.PUSH_PLATAFORM_DESTINATION," +
                 "F_REQUEST_RESPONSE_FIREBASE => ?," +
                 "F_FATAL_SEND_EXCEPTION      => ?)}")) {
-            stmt.setObject(1, Now.offsetDateTimeUtc());
+            stmt.setObject(1, Now.getOffsetDateTimeUtc());
             stmt.setString(2, messageScope.asString());
             stmt.setObject(3, PostgresUtils.toJsonb(pushMessageString));
             // Enviamos apenas Multicast por enquanto.
@@ -97,7 +97,7 @@ public final class FirebaseSaveLogTask {
 
     private void logResponseToTerminalIfInDebug(@NotNull final List<PushDestination> destinations,
                                                 @Nullable final BatchResponse batchResponse) {
-        if (batchResponse == null || !ProLogUtils.isDebug()) {
+        if (batchResponse == null || !PrologUtils.isDebug()) {
             return;
         }
 

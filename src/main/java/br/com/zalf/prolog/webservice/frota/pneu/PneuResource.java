@@ -2,12 +2,12 @@ package br.com.zalf.prolog.webservice.frota.pneu;
 
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
-import br.com.zalf.prolog.webservice.commons.util.Required;
+import br.com.zalf.prolog.webservice.commons.network.metadata.Required;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu._model.PneuComum;
 import br.com.zalf.prolog.webservice.frota.pneu._model.PneuRetornoDescarte;
-import br.com.zalf.prolog.webservice.frota.pneu._model.PneuRetornoDescarteSuccess;
+import br.com.zalf.prolog.webservice.frota.pneu._model.PneuRetornoDescarteResponse;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.AppVersionCodeHandler;
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.DefaultAppVersionCodeHandler;
@@ -17,7 +17,6 @@ import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.jetbrains.annotations.NotNull;
 
-import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.io.InputStream;
@@ -57,8 +56,8 @@ public final class PneuResource {
     @POST
     @Secured(permissions = Pilares.Frota.Pneu.ALTERAR)
     @Path("/retornar-descarte")
-    public PneuRetornoDescarteSuccess retornarPneuDescarte(
-            @Valid @NotNull @Required final PneuRetornoDescarte pneuRetornoDescarte) {
+    public PneuRetornoDescarteResponse retornarPneuDescarte(
+            @NotNull @Required final PneuRetornoDescarte pneuRetornoDescarte) {
         return service.retornarPneuDescarte(pneuRetornoDescarte);
     }
 

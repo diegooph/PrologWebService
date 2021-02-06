@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.frota.veiculo.acoplamento.historico;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
+import br.com.zalf.prolog.webservice.commons.util.datetime.PrologDateParser;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento.historico._model.VeiculoAcoplamentoHistoricoResponse;
 import org.jetbrains.annotations.NotNull;
@@ -33,8 +33,8 @@ public final class VeiculoAcoplamentoHistoricoService {
             final Optional<List<VeiculoAcoplamentoHistoricoResponse>> optional = dao.getVeiculoAcoplamentosHistorico(
                     codUnidades,
                     codVeiculos,
-                    dataInicial != null ? ProLogDateParser.toLocalDate(dataInicial) : null,
-                    dataFinal != null ? ProLogDateParser.toLocalDate(dataFinal) : null);
+                    dataInicial != null ? PrologDateParser.toLocalDate(dataInicial) : null,
+                    dataFinal != null ? PrologDateParser.toLocalDate(dataFinal) : null);
             if (optional.isPresent()) {
                 return Response
                         .ok(optional.get())

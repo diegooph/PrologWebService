@@ -3,7 +3,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.servico.relatorio;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
+import br.com.zalf.prolog.webservice.commons.util.datetime.PrologDateParser;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -21,9 +21,9 @@ public final class ServicoRelatorioService {
         try {
             return dao.getEstratificacaoServicosFechadosReport(
                     codUnidades,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal));
-        } catch (SQLException e) {
+                    PrologDateParser.toLocalDate(dataInicial),
+                    PrologDateParser.toLocalDate(dataFinal));
+        } catch (final SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar o relatório que estratifica os serviços fechados (REPORT). \n" +
                     "Unidades: %s \n" +
                     "Data Inicial: %s \n" +
@@ -40,9 +40,9 @@ public final class ServicoRelatorioService {
             dao.getEstratificacaoServicosFechadosCsv(
                     outputStream,
                     codUnidades,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal));
-        } catch (SQLException | IOException e) {
+                    PrologDateParser.toLocalDate(dataInicial),
+                    PrologDateParser.toLocalDate(dataFinal));
+        } catch (final SQLException | IOException e) {
             Log.e(TAG, String.format("Erro ao buscar o relatório que estratifica os serviços fechados (CSV). \n" +
                     "Unidades: %s \n" +
                     "Data Inicial: %s \n" +
@@ -57,9 +57,9 @@ public final class ServicoRelatorioService {
         try {
             return dao.getEstratificacaoServicosAbertosReport(
                     codUnidades,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal));
-        } catch (SQLException e) {
+                    PrologDateParser.toLocalDate(dataInicial),
+                    PrologDateParser.toLocalDate(dataFinal));
+        } catch (final SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar o relatório que estratifica os serviços abertos (REPORT). \n" +
                     "Unidades: %s \n" +
                     "Data Inicial: %s \n" +
@@ -76,9 +76,9 @@ public final class ServicoRelatorioService {
             dao.getEstratificacaoServicosAbertosCsv(
                     outputStream,
                     codUnidades,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal));
-        } catch (SQLException | IOException e) {
+                    PrologDateParser.toLocalDate(dataInicial),
+                    PrologDateParser.toLocalDate(dataFinal));
+        } catch (final SQLException | IOException e) {
             Log.e(TAG, String.format("Erro ao buscar o relatório que estratifica os serviços abertos (CSV). \n" +
                     "Unidades: %s \n" +
                     "Data Inicial: %s \n" +

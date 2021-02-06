@@ -1,13 +1,16 @@
 package br.com.zalf.prolog.webservice.frota.pneu.relatorios._model;
 
 import br.com.zalf.prolog.webservice.commons.report.CsvReport;
+import br.com.zalf.prolog.webservice.commons.util.FormatUtils;
 import com.google.common.annotations.VisibleForTesting;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * Esta classe é responsável por gerar o relatório de km por vida dos pneus de forma colunada, onde as informações
@@ -57,7 +60,9 @@ public final class RelatorioKmRodadoPorVidaEmColuna implements CsvReport {
         }
 
         // Último geral.
+        HEADER.add("VALOR TODAS AS VIDAS");
         HEADER.add("KM RODADO TODAS AS VIDAS");
+        HEADER.add("CPK TODAS AS VIDAS");
     }
 
     @NotNull
@@ -128,31 +133,43 @@ public final class RelatorioKmRodadoPorVidaEmColuna implements CsvReport {
             row.add(infoVida1.getDimensao());
 
             // Processamos a vida 1 novamente, assim todas as infos de vida ficam concentradas nesse 'for'.
-            for (int i = 0; i < TOTAL_VIDAS_BUSCADAS; i++) {
-                final int vidaSendoEscritaAgora = i + 1;
-                final Optional<PneuKmRodadoPorVida> vidaPneuEncontrada = vidasPneu
-                        .stream()
-                        .filter(vidaPneu -> Integer.parseInt(vidaPneu.getVida()) == vidaSendoEscritaAgora)
-                        .findFirst();
-                if (vidaPneuEncontrada.isPresent()) {
-                    // Vida existe.
-                    row.add(vidaPneuEncontrada.get().getMarca());
-                    row.add(vidaPneuEncontrada.get().getModelo());
-                    row.add(vidaPneuEncontrada.get().getValorVida());
-                    row.add(vidaPneuEncontrada.get().getKmRodadoVida());
-                    row.add(vidaPneuEncontrada.get().getValorPorKmVida());
-                } else {
-                    // Precisamos setar valores padrões para a vida.
-                    row.add(CARACTERE_SEM_DADOS);
-                    row.add(CARACTERE_SEM_DADOS);
-                    row.add(CARACTERE_SEM_DADOS);
-                    row.add(CARACTERE_SEM_DADOS);
-                    row.add(CARACTERE_SEM_DADOS);
-                }
-            }
+            IntStream.range(1, TOTAL_VIDAS_BUSCADAS + 1)
+                    .forEach(vidaSendoEscritaAgora -> {
+                        final Optional<PneuKmRodadoPorVida> vidaPneuEncontrada = vidasPneu
+                                .stream()
+                                .filter(vidaPneu -> Integer.parseInt(vidaPneu.getVida()) == vidaSendoEscritaAgora)
+                                .findFirst();
 
-            // Por último, adicionamos o total de km rodado em todas as vidas.
-            row.add(infoVida1.getKmRodadoTodasVidas());
+                        vidaPneuEncontrada.ifPresent(vidaEncontrada -> {
+                            row.add(vidaEncontrada.getMarca());
+                            row.add(vidaEncontrada.getModelo());
+                            row.add(FormatUtils.truncateToString(vidaEncontrada.getValorVida(), 2));
+                            row.add(String.valueOf(vidaEncontrada.getKmRodadoVida()));
+                            row.add(vidaEncontrada.getValorPorKmVida());
+                        });
+                        if (!vidaPneuEncontrada.isPresent()) {
+                            row.add(CARACTERE_SEM_DADOS);
+                            row.add(CARACTERE_SEM_DADOS);
+                            row.add(CARACTERE_SEM_DADOS);
+                            row.add(CARACTERE_SEM_DADOS);
+                            row.add(CARACTERE_SEM_DADOS);
+                        }
+                    });
+
+            final BigDecimal somatorioValorVidaTotal = vidasPneu.stream()
+                    .map(PneuKmRodadoPorVida::getValorVida)
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+            final long kmRodadoTodasVidas = infoVida1.getKmRodadoTodasVidas();
+            final BigDecimal cpkTotal = kmRodadoTodasVidas != 0
+                    ? BigDecimal.valueOf(somatorioValorVidaTotal.doubleValue() / kmRodadoTodasVidas)
+                    : BigDecimal.ZERO;
+
+            final String roundedSomatorioValorVida = FormatUtils.truncateToString(somatorioValorVidaTotal, 2);
+            final String roundedSomatorioCpk = FormatUtils.truncateToString(cpkTotal, 3);
+
+            row.add(roundedSomatorioValorVida);
+            row.add(String.valueOf(kmRodadoTodasVidas));
+            row.add(roundedSomatorioCpk);
 
             innerTable.add(row);
         });

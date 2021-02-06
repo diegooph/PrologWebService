@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.model;
 
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
+import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
@@ -93,7 +93,7 @@ public final class AfericaoPlacaRodoparHorizonte {
                 "03383283194",
                 987654L,
                 Duration.ofMinutes(10L).toMillis(),
-                Now.localDateTimeUtc(),
+                Now.getLocalDateTimeUtc(),
                 TipoMedicaoAfericaoRodoparHorizonte.SULCO_PRESSAO,
                 medicoes);
     }

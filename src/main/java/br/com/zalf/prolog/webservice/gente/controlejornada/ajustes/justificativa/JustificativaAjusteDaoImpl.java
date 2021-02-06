@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.gente.controlejornada.ajustes.justificativa;
 
-import br.com.zalf.prolog.webservice.commons.util.SqlType;
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
+import br.com.zalf.prolog.webservice.commons.util.database.SqlType;
+import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -13,7 +13,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static br.com.zalf.prolog.webservice.commons.util.StatementUtils.bindValueOrNull;
+import static br.com.zalf.prolog.webservice.commons.util.database.StatementUtils.bindValueOrNull;
 
 /**
  * Created on 05/09/18.
@@ -46,7 +46,7 @@ public final class JustificativaAjusteDaoImpl extends DatabaseConnection impleme
             stmt.setString(1, justificativaAjuste.getNomeJustificativaAjuste());
             stmt.setBoolean(2, justificativaAjuste.isObrigatorioObservacao());
             stmt.setString(3, token);
-            stmt.setObject(4, Now.localDateTimeUtc());
+            stmt.setObject(4, Now.getLocalDateTimeUtc());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return rSet.getLong("CODIGO");

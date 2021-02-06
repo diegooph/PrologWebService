@@ -2,8 +2,8 @@ package br.com.zalf.prolog.webservice.entrega.mapa;
 
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.StringUtils;
-import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
+import br.com.zalf.prolog.webservice.commons.util.datetime.DateUtils;
+import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.entrega.mapa._model.PlanilhaMapaColunaHolder;
 import br.com.zalf.prolog.webservice.entrega.mapa._model.PlanilhaMapaImport;
@@ -173,7 +173,7 @@ public final class MapaDaoImpl extends DatabaseConnection implements MapaDao {
             stmt.setDouble(83, mapa.capacidadeVeiculoKg);
             stmt.setDouble(84, mapa.pesoCargaKg);
             stmt.setLong(85, codUnidade);
-            stmt.setTimestamp(86, Now.timestampUtc());
+            stmt.setTimestamp(86, Now.getTimestampUtc());
             stmt.setInt(87, mapa.capacVeiculoCx);
             stmt.setInt(88, mapa.entregasCompletas);
             stmt.setInt(89, mapa.entregasParciais);
@@ -494,7 +494,7 @@ public final class MapaDaoImpl extends DatabaseConnection implements MapaDao {
             stmt.setTimestamp(100, DateUtils.toTimestamp(mapa.hrPCFinanceira));
             stmt.setString(101, mapa.stMapa);
             stmt.setLong(102, codUnidade);
-            stmt.setTimestamp(103, Now.timestampUtc());
+            stmt.setTimestamp(103, Now.getTimestampUtc());
             stmt.setString(104, mapa.classificacaoRoadShow);
             if (mapa.dataEntrega != null) {
                 stmt.setDate(105, DateUtils.toSqlDate(mapa.dataEntrega));

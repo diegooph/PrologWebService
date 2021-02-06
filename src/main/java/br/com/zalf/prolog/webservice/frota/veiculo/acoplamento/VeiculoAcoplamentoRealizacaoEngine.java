@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.veiculo.acoplamento;
 
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
+import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import br.com.zalf.prolog.webservice.errorhandling.sql.ClientSideErrorException;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento._model.realizacao.VeiculoAcoplamentoProcessoInsert;
@@ -31,7 +31,7 @@ public final class VeiculoAcoplamentoRealizacaoEngine {
     public Long realizaProcessoAcoplamento(@NotNull final Long codColaboradorRealizacao,
                                            @NotNull final VeiculoAcoplamentoProcessoRealizacao processoRealizacao) {
         final Long codProcessoInserido = insertProcessoAcoplamento(codColaboradorRealizacao, processoRealizacao);
-        atualizaKms(codProcessoInserido, processoRealizacao, Now.offsetDateTimeUtc());
+        atualizaKms(codProcessoInserido, processoRealizacao, Now.getOffsetDateTimeUtc());
         removeAcoplamentoAtual(processoRealizacao);
         insertHistoricoAcoplamentos(codProcessoInserido, processoRealizacao);
         insertEstadoAtualAcoplamentos(codProcessoInserido, processoRealizacao);
@@ -68,7 +68,7 @@ public final class VeiculoAcoplamentoRealizacaoEngine {
                 VeiculoAcoplamentoProcessoInsert.of(
                         processoRealizacao.getCodUnidade(),
                         codColaboradorRealizacao,
-                        Now.offsetDateTimeUtc(),
+                        Now.getOffsetDateTimeUtc(),
                         processoRealizacao.getObservacao()));
     }
 

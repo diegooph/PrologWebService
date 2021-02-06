@@ -1,8 +1,8 @@
 package test.br.com.zalf.prolog.webservice.pilares.gente.controlejornada;
 
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
-import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
-import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
+import br.com.zalf.prolog.webservice.commons.util.datetime.DateUtils;
+import br.com.zalf.prolog.webservice.commons.util.datetime.PrologDateParser;
 import br.com.zalf.prolog.webservice.gente.controlejornada.ajustes.ControleJornadaAjusteService;
 import br.com.zalf.prolog.webservice.gente.controlejornada.ajustes.model.MarcacaoAjusteAdicao;
 import br.com.zalf.prolog.webservice.gente.controlejornada.ajustes.model.MarcacaoAjusteAdicaoInicioFim;
@@ -60,7 +60,7 @@ public class ControleJornadaAjusteTest extends BaseTest {
     @NotNull
     private MarcacaoAjusteEdicao createMarcacaoAjusteEdicao() {
         final MarcacaoAjusteEdicao ajusteEdicao = new MarcacaoAjusteEdicao();
-        ajusteEdicao.setDataHoraNovaInserida(ProLogDateParser.toLocalDateTime("2018-02-23T16:30:00"));
+        ajusteEdicao.setDataHoraNovaInserida(PrologDateParser.toLocalDateTime("2018-02-23T16:30:00"));
         ajusteEdicao.setCodJustificativaAjuste(1L);
         ajusteEdicao.setObservacaoAjuste("Dummy Data Test Edicao");
         ajusteEdicao.setDataHoraAjuste(LocalDateTime.now());
@@ -81,7 +81,7 @@ public class ControleJornadaAjusteTest extends BaseTest {
     private MarcacaoAjusteAdicao createMarcacaoAjusteAdicao() {
         final MarcacaoAjusteAdicao ajusteAdicao = new MarcacaoAjusteAdicao();
         ajusteAdicao.setCodMarcacaoVinculo(57056L);
-        ajusteAdicao.setDataHoraInserida(ProLogDateParser.toLocalDateTime("2018-02-27T21:20:45"));
+        ajusteAdicao.setDataHoraInserida(PrologDateParser.toLocalDateTime("2018-02-27T21:20:45"));
         ajusteAdicao.setCodJustificativaAjuste(1L);
         ajusteAdicao.setObservacaoAjuste("Dummy Data Test Adicao FIM");
         ajusteAdicao.setDataHoraAjuste(DateUtils.toLocalDateTime(Calendar.getInstance().getTime()));
@@ -94,8 +94,8 @@ public class ControleJornadaAjusteTest extends BaseTest {
         final MarcacaoAjusteAdicaoInicioFim adicaoInicioFim = new MarcacaoAjusteAdicaoInicioFim();
         adicaoInicioFim.setCodColaboradorMarcacao(2272L);
         adicaoInicioFim.setCodTipoMarcacaoReferente(15L);
-        adicaoInicioFim.setDataHoraInicio(ProLogDateParser.toLocalDateTime("2018-09-16T15:40:41"));
-        adicaoInicioFim.setDataHoraFim(ProLogDateParser.toLocalDateTime("2018-09-16T19:38:41"));
+        adicaoInicioFim.setDataHoraInicio(PrologDateParser.toLocalDateTime("2018-09-16T15:40:41"));
+        adicaoInicioFim.setDataHoraFim(PrologDateParser.toLocalDateTime("2018-09-16T19:38:41"));
         adicaoInicioFim.setCodJustificativaAjuste(5L);
         adicaoInicioFim.setObservacaoAjuste("Dummy Data Test Adicao Inicio e Fim");
         adicaoInicioFim.setDataHoraAjuste(DateUtils.toLocalDateTime(Calendar.getInstance().getTime()));
