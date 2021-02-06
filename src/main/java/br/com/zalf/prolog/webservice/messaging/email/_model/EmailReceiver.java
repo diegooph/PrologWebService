@@ -8,11 +8,12 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Guilherme Steinert (https://github.com/steinert999)
  */
-public class EmailReceiver extends SendContact {
+public final class EmailReceiver extends SendContact {
 
     private EmailReceiver(final String email, final String name) {
         super(email, name);
     }
+
     private EmailReceiver(final String email) {
         super(email);
     }
