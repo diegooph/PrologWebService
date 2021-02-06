@@ -1,7 +1,6 @@
 package br.com.zalf.prolog.webservice.messaging.email._model;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
