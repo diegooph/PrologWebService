@@ -2,6 +2,7 @@ package test.br.com.zalf.prolog.webservice;
 
 import br.com.zalf.prolog.webservice.config.PrologApplication;
 import org.flywaydb.core.Flyway;
+import org.flywaydb.core.api.Location;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,6 +14,8 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
+
+import java.io.File;
 
 @ExtendWith({SpringExtension.class})
 @SpringBootTest(classes = PrologApplication.class,
@@ -31,10 +34,18 @@ public class IntegrationTest {
 
     @BeforeAll
     static void beforeAll() {
+        //        final String setupFilePath =
+        //                Location.FILESYSTEM_PREFIX
+        //                        .concat(new File("sql/migrations/db_setup").getAbsolutePath());
+        final String migrationsDoneFilePath =
+                Location.FILESYSTEM_PREFIX.concat(new File("sql/migrations/done").getAbsolutePath());
         Flyway.configure()
                 .dataSource(postgresContainer.getJdbcUrl(),
                             postgresContainer.getUsername(),
                             postgresContainer.getPassword())
+                .sqlMigrationPrefix("")
+                .sqlMigrationSeparator("_")
+                .locations(migrationsDoneFilePath)
                 .load()
                 .migrate();
     }
