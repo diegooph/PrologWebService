@@ -5,6 +5,9 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.report.ReportTransformer;
+import br.com.zalf.prolog.webservice.commons.util.database.PostgresUtils;
+import br.com.zalf.prolog.webservice.commons.util.database.SqlType;
+import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.pneu.PneuConverter;
 import br.com.zalf.prolog.webservice.frota.pneu.PneuDao;
@@ -60,63 +63,6 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             throw e;
         } finally {
             close(conn);
-        }
-    }
-
-    @NotNull
-    private Long internalInsertAfericao(@NotNull final Connection conn,
-                                        @NotNull final Long codUnidade,
-                                        @NotNull final Afericao afericao,
-                                        final boolean deveAbrirServico) throws Throwable {
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_AFERICAO_INSERT_AFERICAO(" +
-                    "F_COD_UNIDADE => ?," +
-                    "F_DATA_HORA => ?, " +
-                    "F_CPF_AFERIDOR => ?, " +
-                    "F_TEMPO_REALIZACAO => ?, " +
-                    "F_TIPO_MEDICAO_COLETADA => ?, " +
-                    "F_TIPO_PROCESSO_COLETA => ?, " +
-                    "F_FORMA_COLETA_DADOS => ?," +
-                    "F_PLACA_VEICULO => ?," +
-                    "F_COD_VEICULO => ?, " +
-                    "F_KM_VEICULO => ?) AS COD_AFERICAO;");
-            stmt.setLong(1, codUnidade);
-            stmt.setObject(2, afericao.getDataHora().atOffset(ZoneOffset.UTC));
-            stmt.setLong(3, afericao.getColaborador().getCpf());
-            stmt.setLong(4, afericao.getTempoRealizacaoAfericaoInMillis());
-            stmt.setString(5, afericao.getTipoMedicaoColetadaAfericao().asString());
-            stmt.setString(6, afericao.getTipoProcessoColetaAfericao().asString());
-            // Os apps antigos não enviam essa informação, então pode vir nulo.
-            stmt.setString(7, afericao.getFormaColetaDadosAfericao() != null
-                    ? afericao.getFormaColetaDadosAfericao().toString()
-                    : FormaColetaDadosAfericaoEnum.EQUIPAMENTO.toString());
-
-            if (afericao instanceof AfericaoPlaca) {
-                final AfericaoPlaca afericaoPlaca = (AfericaoPlaca) afericao;
-                stmt.setString(8, afericaoPlaca.getVeiculo().getPlaca());
-                stmt.setLong(9, afericaoPlaca.getVeiculo().getCodigo());
-                stmt.setLong(10, afericaoPlaca.getKmMomentoAfericao());
-            } else {
-                stmt.setNull(8, Types.VARCHAR);
-                stmt.setNull(9, Types.BIGINT);
-                stmt.setNull(10, Types.BIGINT);
-            }
-            Long codAfericao = null;
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                codAfericao = rSet.getLong("COD_AFERICAO");
-                afericao.setCodigo(codAfericao);
-                insertValores(conn, codUnidade, afericao, deveAbrirServico, afericao instanceof AfericaoPlaca);
-            }
-            if (codAfericao != null && codAfericao != 0) {
-                return codAfericao;
-            } else {
-                throw new IllegalStateException("Não foi possível retornar o código da aferição realizada");
-            }
-        } finally {
-            close(stmt, rSet);
         }
     }
 
@@ -470,6 +416,63 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             }
         } finally {
             closeConnection(conn, stmt, rSet);
+        }
+    }
+
+    @NotNull
+    private Long internalInsertAfericao(@NotNull final Connection conn,
+                                        @NotNull final Long codUnidade,
+                                        @NotNull final Afericao afericao,
+                                        final boolean deveAbrirServico) throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_AFERICAO_INSERT_AFERICAO(" +
+                    "F_COD_UNIDADE => ?," +
+                    "F_DATA_HORA => ?, " +
+                    "F_CPF_AFERIDOR => ?, " +
+                    "F_TEMPO_REALIZACAO => ?, " +
+                    "F_TIPO_MEDICAO_COLETADA => ?, " +
+                    "F_TIPO_PROCESSO_COLETA => ?, " +
+                    "F_FORMA_COLETA_DADOS => ?," +
+                    "F_PLACA_VEICULO => ?," +
+                    "F_COD_VEICULO => ?, " +
+                    "F_KM_VEICULO => ?) AS COD_AFERICAO;");
+            stmt.setLong(1, codUnidade);
+            stmt.setObject(2, afericao.getDataHora().atOffset(ZoneOffset.UTC));
+            stmt.setLong(3, afericao.getColaborador().getCpf());
+            stmt.setLong(4, afericao.getTempoRealizacaoAfericaoInMillis());
+            stmt.setString(5, afericao.getTipoMedicaoColetadaAfericao().asString());
+            stmt.setString(6, afericao.getTipoProcessoColetaAfericao().asString());
+            // Os apps antigos não enviam essa informação, então pode vir nulo.
+            stmt.setString(7, afericao.getFormaColetaDadosAfericao() != null
+                    ? afericao.getFormaColetaDadosAfericao().toString()
+                    : FormaColetaDadosAfericaoEnum.EQUIPAMENTO.toString());
+
+            if (afericao instanceof AfericaoPlaca) {
+                final AfericaoPlaca afericaoPlaca = (AfericaoPlaca) afericao;
+                stmt.setString(8, afericaoPlaca.getVeiculo().getPlaca());
+                stmt.setLong(9, afericaoPlaca.getVeiculo().getCodigo());
+                stmt.setLong(10, afericaoPlaca.getKmMomentoAfericao());
+            } else {
+                stmt.setNull(8, Types.VARCHAR);
+                stmt.setNull(9, Types.BIGINT);
+                stmt.setNull(10, Types.BIGINT);
+            }
+            Long codAfericao = null;
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                codAfericao = rSet.getLong("COD_AFERICAO");
+                afericao.setCodigo(codAfericao);
+                insertValores(conn, codUnidade, afericao, deveAbrirServico, afericao instanceof AfericaoPlaca);
+            }
+            if (codAfericao != null && codAfericao != 0) {
+                return codAfericao;
+            } else {
+                throw new IllegalStateException("Não foi possível retornar o código da aferição realizada");
+            }
+        } finally {
+            close(stmt, rSet);
         }
     }
 
