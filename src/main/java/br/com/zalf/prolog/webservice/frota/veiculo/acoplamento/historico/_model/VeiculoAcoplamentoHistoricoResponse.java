@@ -20,7 +20,7 @@ public final class VeiculoAcoplamentoHistoricoResponse {
     private final String nomeUnidade;
     @NotNull
     private final String nomeColaborador;
-    @Nullable
+    @NotNull
     private final LocalDateTime dataHora;
     @Nullable
     private final String observacao;
