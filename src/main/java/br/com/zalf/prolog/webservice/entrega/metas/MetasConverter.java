@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.entrega.metas;
 
-import br.com.zalf.prolog.webservice.commons.util.date.TimeUtils;
+import br.com.zalf.prolog.webservice.commons.util.datetime.TimeUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;

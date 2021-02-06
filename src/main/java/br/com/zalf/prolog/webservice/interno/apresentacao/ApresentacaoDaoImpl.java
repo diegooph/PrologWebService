@@ -18,22 +18,22 @@ import static br.com.zalf.prolog.webservice.database.DatabaseConnection.getConne
  */
 public class ApresentacaoDaoImpl implements ApresentacaoDao {
 
+    @NotNull
     @Override
-    public String getResetaClonaEmpresaApresentacao(@NotNull final String username,
-                                                    @NotNull final Long codEmpresaBase,
-                                                    @NotNull final Long codEmpresaUsuario) throws Throwable {
+    public String resetaEmpresaApresentacaoUsuario(@NotNull final Long codUsuario,
+                                                   @NotNull final Long codEmpresaBase,
+                                                   @NotNull final Long codEmpresaUsuario) throws Throwable {
 
-        //Verificar se empresa pertence a usuário
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            final boolean verificaUsuarioEmpresa = verifyUsuarioEmpresa(conn, username, codEmpresaUsuario);
+            final boolean verificaUsuarioEmpresa = verifyUsuarioEmpresa(conn, codUsuario, codEmpresaUsuario);
             if (verificaUsuarioEmpresa) {
                 stmt = conn.prepareStatement("SELECT * FROM INTERNO.FUNC_RESETA_EMPRESA_APRESENTACAO(" +
-                        "F_COD_EMPRESA_BASE := ?," +
-                        "F_COD_EMPRESA_USUARIO := ? );");
+                                                     "F_COD_EMPRESA_BASE := ?," +
+                                                     "F_COD_EMPRESA_USUARIO := ? );");
                 stmt.setLong(1, codEmpresaBase);
                 stmt.setLong(2, codEmpresaUsuario);
                 rSet = stmt.executeQuery();
@@ -51,22 +51,18 @@ public class ApresentacaoDaoImpl implements ApresentacaoDao {
     }
 
     private boolean verifyUsuarioEmpresa(@NotNull final Connection conn,
-                                         @NotNull final String username,
+                                         @NotNull final Long codUsuario,
                                          @NotNull final Long codEmpresaUsuario) throws Throwable {
 
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             stmt = conn.prepareStatement("SELECT * FROM INTERNO.USUARIO_EMPRESA WHERE COD_EMPRESA = ? AND " +
-                    "USERNAME = ?;");
+                                                 "COD_PROLOG_USER = ?;");
             stmt.setLong(1, codEmpresaUsuario);
-            stmt.setString(2, username);
+            stmt.setLong(2, codUsuario);
             rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                return true;
-            } else {
-                return false;
-            }
+            return rSet.next();
         } finally {
             close(stmt, rSet);
         }

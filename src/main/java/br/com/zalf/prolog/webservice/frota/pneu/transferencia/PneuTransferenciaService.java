@@ -3,8 +3,8 @@ package br.com.zalf.prolog.webservice.frota.pneu.transferencia;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
+import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
+import br.com.zalf.prolog.webservice.commons.util.datetime.PrologDateParser;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.pneu.transferencia._model.listagem.PneuTransferenciaListagem;
 import br.com.zalf.prolog.webservice.frota.pneu.transferencia._model.realizacao.PneuTransferenciaRealizacao;
@@ -30,7 +30,7 @@ public final class PneuTransferenciaService {
             @NotNull final String userToken,
             @NotNull final PneuTransferenciaRealizacao pneuTransferenciaRealizacao) throws ProLogException {
         try {
-            final OffsetDateTime dataHoraSincronizacao = Now.offsetDateTimeUtc();
+            final OffsetDateTime dataHoraSincronizacao = Now.getOffsetDateTimeUtc();
             return ResponseWithCod.ok(
                     "Transferência realizada com sucesso",
                     RouterPneuTransferencia
@@ -56,8 +56,8 @@ public final class PneuTransferenciaService {
             return dao.getListagem(
                     codUnidadesOrigem,
                     codUnidadesDestino,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal));
+                    PrologDateParser.toLocalDate(dataInicial),
+                    PrologDateParser.toLocalDate(dataFinal));
         } catch (final Throwable e) {
             Log.e(TAG, "Erro ao buscar as transferências", e);
             throw Injection

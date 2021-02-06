@@ -2,6 +2,8 @@ package br.com.zalf.prolog.webservice.commons.util;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -24,5 +26,10 @@ public final class FormatUtils {
     @NotNull
     public static String toUserFriendlyDateTime(@NotNull final LocalDateTime localDateTime) {
         return localDateTime.format(USER_FRIENDLY_DATE_TIME_FORMAT);
+    }
+
+    @NotNull
+    public static String truncateToString(@NotNull final BigDecimal number, @NotNull final Integer casasDecimais) {
+        return number.setScale(casasDecimais, RoundingMode.CEILING).toString();
     }
 }

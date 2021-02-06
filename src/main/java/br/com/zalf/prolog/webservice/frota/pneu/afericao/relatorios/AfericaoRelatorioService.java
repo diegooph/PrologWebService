@@ -3,7 +3,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.afericao.relatorios;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
+import br.com.zalf.prolog.webservice.commons.util.datetime.PrologDateParser;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.relatorios._model.AfericaoExportacaoProtheus;
 import org.jetbrains.annotations.NotNull;
@@ -57,8 +57,8 @@ public class AfericaoRelatorioService {
             dao.getDadosGeraisAfericoesCsv(
                     out,
                     codUnidades,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal));
+                    PrologDateParser.toLocalDate(dataInicial),
+                    PrologDateParser.toLocalDate(dataFinal));
         } catch (final Throwable throwable) {
             Log.e(TAG, "Erro ao gerar relatório de dados gerais das aferições (CSV)", throwable);
             throw new RuntimeException(throwable);
@@ -72,8 +72,8 @@ public class AfericaoRelatorioService {
         try {
             return dao.getDadosGeraisAfericoesReport(
                     codUnidades,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal));
+                    PrologDateParser.toLocalDate(dataInicial),
+                    PrologDateParser.toLocalDate(dataFinal));
         } catch (final Throwable throwable) {
             Log.e(TAG, "Erro ao gerar relatório de dados gerais das aferições (REPORT)", throwable);
             throw Injection
@@ -92,8 +92,8 @@ public class AfericaoRelatorioService {
             return dao.getExportacaoAfericoesProtheus(
                     codUnidades,
                     codVeiculos,
-                    ProLogDateParser.toLocalDate(dataInicial),
-                    ProLogDateParser.toLocalDate(dataFinal));
+                    PrologDateParser.toLocalDate(dataInicial),
+                    PrologDateParser.toLocalDate(dataFinal));
         } catch (final Throwable throwable) {
             Log.e(TAG, "Erro ao gerar relatório de exportação de aferições no padrão Protheus", throwable);
             throw Injection

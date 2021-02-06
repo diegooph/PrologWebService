@@ -14,15 +14,6 @@ import java.time.LocalDate;
  */
 public interface TreinamentoRelatorioDao {
 
-    /**
-     * Retorna um relatório estratificado por colaborador, listando os treinamentos que por ele foram visualizados
-     * e também a data e hora de quando cada treinamento foi visualizados;
-     *
-     * @param outputStream - Referencia onde relatório será escrito
-     * @param codUnidade   - Código da unidade que será gerado o relatório
-     * @param dataInicial  - Data inicial da busca
-     * @param dataFinal    - Data final da busca
-     */
     void getRelatorioEstratificadoPorColaboradorCsv(@NotNull final OutputStream outputStream,
                                                     @NotNull final Long codUnidade,
                                                     @NotNull final LocalDate dataInicial,

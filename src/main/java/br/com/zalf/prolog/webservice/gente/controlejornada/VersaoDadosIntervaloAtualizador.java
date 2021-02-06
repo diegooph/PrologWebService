@@ -1,9 +1,9 @@
 package br.com.zalf.prolog.webservice.gente.controlejornada;
 
+import br.com.zalf.prolog.webservice.autenticacao.token.TokenGenerator;
 import br.com.zalf.prolog.webservice.gente.colaborador.ColaboradorDao;
 import br.com.zalf.prolog.webservice.gente.colaborador.model.ColaboradorEdicao;
 import br.com.zalf.prolog.webservice.gente.colaborador.model.ColaboradorInsercao;
-import br.com.zalf.prolog.webservice.commons.util.SessionIdentifierGenerator;
 import br.com.zalf.prolog.webservice.gente.empresa.EmpresaDao;
 import br.com.zalf.prolog.webservice.permissao.Visao;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
@@ -37,8 +37,9 @@ public final class VersaoDadosIntervaloAtualizador implements DadosIntervaloChan
                                   @NotNull final Long codUnidade) throws Throwable {
         final Visao visaoAtual = empresaDao.getVisaoCargo(codUnidade, codCargo);
 
-        if (visaoAtual == null)
+        if (visaoAtual == null) {
             throw new IllegalStateException();
+        }
 
         if (permissaoMarcacaoIntervaloRemovidaOuAdicionada(visaoAtual, visaoNova)) {
             incrementaVersaoDadosUnidade(connection, codUnidade);
@@ -67,8 +68,9 @@ public final class VersaoDadosIntervaloAtualizador implements DadosIntervaloChan
                 colaborador.getCodUnidade(),
                 colaborador.getCodFuncao());
 
-        if (visaoCargoColaborador == null)
+        if (visaoCargoColaborador == null) {
             throw new IllegalStateException();
+        }
 
         // Se o cargo no qual esse colaborador foi adicionado tem permissão para marcar intervalo, precisamos
         // incrementar a versão dos dados para invalidar o BD dos aplicativos.
@@ -93,8 +95,9 @@ public final class VersaoDadosIntervaloAtualizador implements DadosIntervaloChan
                 colaborador.getCodUnidade(),
                 colaborador.getCodFuncao());
 
-        if (visaoCargoColaborador == null)
+        if (visaoCargoColaborador == null) {
             throw new IllegalStateException();
+        }
 
         // Se o colaborador tinha permissão de marcação e parou de ter ou vice-versa, precisamos incrementar a versão
         // dos dados para invalidar o BD dos aplicativos.
@@ -147,7 +150,7 @@ public final class VersaoDadosIntervaloAtualizador implements DadosIntervaloChan
 
     @NotNull
     private String getValidTokenMarcacaoJornada(@NotNull final Connection connection) throws SQLException {
-        final String tokenMarcacao = new SessionIdentifierGenerator().nextSessionId();
+        final String tokenMarcacao = new TokenGenerator().getNextToken();
         if (tokenExiste(connection, tokenMarcacao)) {
             getValidTokenMarcacaoJornada(connection);
         }

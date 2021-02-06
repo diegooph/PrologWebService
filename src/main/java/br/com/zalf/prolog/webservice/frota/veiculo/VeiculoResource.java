@@ -2,10 +2,10 @@ package br.com.zalf.prolog.webservice.frota.veiculo;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
-import br.com.zalf.prolog.webservice.commons.util.Optional;
-import br.com.zalf.prolog.webservice.commons.util.Platform;
-import br.com.zalf.prolog.webservice.commons.util.Required;
-import br.com.zalf.prolog.webservice.commons.util.UsedBy;
+import br.com.zalf.prolog.webservice.commons.network.metadata.Optional;
+import br.com.zalf.prolog.webservice.commons.network.metadata.Platform;
+import br.com.zalf.prolog.webservice.commons.network.metadata.Required;
+import br.com.zalf.prolog.webservice.commons.network.metadata.UsedBy;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
@@ -141,7 +141,8 @@ public final class VeiculoResource {
     @GET
     @Secured(permissions = {Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
     @Path("/marcas-modelos/{codEmpresa}")
-    public List<Marca> getMarcasModelosVeiculosByEmpresa(@PathParam("codEmpresa") final Long codEmpresa) throws ProLogException {
+    public List<Marca> getMarcasModelosVeiculosByEmpresa(@PathParam("codEmpresa") final Long codEmpresa)
+            throws ProLogException {
         return service.getMarcasModelosVeiculosByEmpresa(codEmpresa);
     }
 
@@ -157,7 +158,8 @@ public final class VeiculoResource {
     }
 
     @GET
-    @Secured(permissions = {Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR, Pilares.Frota.Veiculo.VISUALIZAR})
+    @Secured(permissions = {Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR,
+            Pilares.Frota.Veiculo.VISUALIZAR})
     @Path("/modelos/{codUnidade}/{codModelo}")
     public Modelo getModeloVeiculo(@PathParam("codUnidade") final Long codUnidade,
                                    @PathParam("codModelo") final Long codModelo) {
@@ -269,7 +271,8 @@ public final class VeiculoResource {
      * por depreciar e criar outros.
      * <p>
      * Dessa forma, separamos essa lógica em dois métodos, caso queira o caso 1, utilize
-     * {@link #getMarcasVeiculosNivelProLog()} se for o caso 2, utilize {@link #getMarcasModelosVeiculosByEmpresa(Long)}.
+     * {@link #getMarcasVeiculosNivelProLog()} se for o caso 2, utilize
+     * {@link #getMarcasModelosVeiculosByEmpresa(Long)}.
      */
     @Deprecated
     @GET
@@ -303,10 +306,15 @@ public final class VeiculoResource {
             Pilares.Frota.Veiculo.VISUALIZAR,
             Pilares.Frota.Veiculo.ALTERAR,
             Pilares.Frota.Veiculo.CADASTRAR,
-            Pilares.Frota.Veiculo.VISUALIZAR_RELATORIOS})
+            Pilares.Frota.Veiculo.VISUALIZAR_RELATORIOS,
+            Pilares.Frota.Checklist.REALIZAR,
+            Pilares.Frota.OrdemServico.Checklist.RESOLVER_ITEM,
+            Pilares.Frota.Afericao.REALIZAR_AFERICAO_PLACA,
+            Pilares.Frota.SocorroRota.SOLICITAR_SOCORRO,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_VEICULO_ESTOQUE,
+            Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
     @Path("/dados-coleta-km")
     public VeiculoDadosColetaKm getDadosColetaKmByCodigo(@QueryParam("codVeiculo") final Long codVeiculo) {
         return service.getDadosColetaKmByCodigo(codVeiculo);
     }
-
 }

@@ -3,7 +3,6 @@ package br.com.zalf.prolog.webservice.frota.veiculo.relatorio;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import org.jetbrains.annotations.NotNull;
 
@@ -19,7 +18,7 @@ public class VeiculoRelatorioService {
     @NotNull
     private static final String TAG = VeiculoRelatorioService.class.getSimpleName();
     @NotNull
-    private VeiculoRelatorioDao dao = Injection.provideVeiculoRelatorioDao();
+    private final VeiculoRelatorioDao dao = Injection.provideVeiculoRelatorioDao();
 
     void getListagemVeiculosByUnidadeCsv(final OutputStream out, final List<Long> codUnidades) {
         try {

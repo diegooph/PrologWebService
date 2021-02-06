@@ -1,10 +1,10 @@
 package br.com.zalf.prolog.webservice.entrega.indicador;
 
-import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.commons.util.datetime.DateUtils;
+import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.entrega.indicador.acumulado.*;
 import br.com.zalf.prolog.webservice.entrega.indicador.item.*;
-import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -16,8 +16,6 @@ import java.util.Date;
 import java.util.List;
 
 public class IndicadorDaoImpl extends DatabaseConnection implements IndicadorDao {
-
-	private static final String TAG = IndicadorDaoImpl.class.getSimpleName();
 
 	public static final String COLUNAS_ACUMULADOS = "-- CaixaViagem\n" +
 			"sum(m.cxcarreg) as carregadas_total, count(m.mapa) as viagens_total,\n" +
@@ -96,7 +94,6 @@ public class IndicadorDaoImpl extends DatabaseConnection implements IndicadorDao
 			"um.meta_dev_hl,um.meta_dev_pdv,um.meta_dispersao_km,um.meta_dispersao_tempo,to_seconds(um.meta_jornada_liquida_horas::text) as meta_jornada_liquida_horas,\n" +
 			"um.meta_jornada_liquida_mapas,um.meta_raio_tracking,to_seconds(um.meta_tempo_interno_horas::text) as meta_tempo_interno_horas,um.meta_tempo_interno_mapas,to_seconds(um.meta_tempo_largada_horas::text) as meta_tempo_largada_horas,\n" +
 			"um.meta_tempo_largada_mapas, um.meta_dev_nf\n ";
-
 	public static final String COLUNAS_EXTRATO = " M.DATA,  M.mapa, M.PLACA, E.nome as equipe, c1.nome as motorista,c2.nome as aj1," +
 			"c3.nome as aj2,M.cxcarreg, M.QTHLCARREGADOS,  M.QTHLENTREGUES, M.QTNFCARREGADAS, M.QTNFENTREGUES,  M.entregascompletas,  M.entregasnaorealizadas,  m.entregasparciais, " +
 			"M.kmprevistoroad, M.kmsai, M.kmentr, to_seconds(M.tempoprevistoroad::text) as tempoprevistoroad,\n" +
@@ -120,7 +117,7 @@ public class IndicadorDaoImpl extends DatabaseConnection implements IndicadorDao
 			"to_seconds(um.meta_tempo_interno_horas::text) as meta_tempo_interno_horas, " +
 			"to_seconds(um.meta_tempo_largada_horas::text) as meta_tempo_largada_horas,\n" +
 			"to_seconds(um.meta_jornada_liquida_horas::text) as meta_jornada_liquida_horas \n";
-
+	private static final String TAG = IndicadorDaoImpl.class.getSimpleName();
 	private static final String BUSCA_EXTRATO_INDICADORES = "SELECT DISTINCT\n" +
 			" M.DATA,  M.mapa, M.PLACA, E.nome as equipe,\n" +
 			" M.cxcarreg, M.QTHLCARREGADOS,  M.QTHLENTREGUES, M.QTNFCARREGADAS, M.QTNFENTREGUES,  M.entregascompletas,  M.entregasnaorealizadas, m.entregasparciais, M.kmprevistoroad, M.kmsai, M.kmentr, extract(epoch from (M.tempoprevistoroad)) as tempoprevistoroad,\n" +
@@ -176,8 +173,31 @@ public class IndicadorDaoImpl extends DatabaseConnection implements IndicadorDao
 	}
 
 	@Override
-	public List<Indicador> getExtratoIndicador(Long dataInicial, Long dataFinal, String codRegional, String codEmpresa,
-											   String codUnidade, String equipe, String cpf, String indicador) throws SQLException {
+	public List<IndicadorAcumulado> getAcumuladoIndicadoresIndividual(final Long dataInicial, final Long dataFinal, final Long cpf) throws SQLException {
+		Connection conn = null;
+		ResultSet rSet = null;
+		PreparedStatement stmt = null;
+		List<IndicadorAcumulado> acumulados = new ArrayList<>();
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement(BUSCA_ACUMULADO_INDICADORES_INDIVIDUAL);
+			stmt.setDate(1, DateUtils.toSqlDate(new Date(dataInicial)));
+			stmt.setDate(2, DateUtils.toSqlDate(new Date(dataFinal)));
+			stmt.setLong(3, cpf);
+			Log.d(TAG, stmt.toString());
+			rSet = stmt.executeQuery();
+			if (rSet.next()) {
+				acumulados = createAcumulados(rSet);
+			}
+		} finally {
+			closeConnection(conn, stmt, rSet);
+		}
+		return acumulados;
+	}
+
+	@Override
+	public List<Indicador> getExtratoIndicador(final Long dataInicial, final Long dataFinal, final String codRegional, final String codEmpresa,
+											   final String codUnidade, final String equipe, final String cpf, final String indicador) throws SQLException {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rSet = null;
@@ -202,30 +222,7 @@ public class IndicadorDaoImpl extends DatabaseConnection implements IndicadorDao
 	}
 
 	@Override
-	public List<IndicadorAcumulado> getAcumuladoIndicadoresIndividual(Long dataInicial, Long dataFinal, Long cpf) throws SQLException {
-		Connection conn = null;
-		ResultSet rSet = null;
-		PreparedStatement stmt = null;
-		List<IndicadorAcumulado> acumulados = new ArrayList<>();
-		try {
-			conn = getConnection();
-			stmt = conn.prepareStatement(BUSCA_ACUMULADO_INDICADORES_INDIVIDUAL);
-			stmt.setDate(1, DateUtils.toSqlDate(new Date(dataInicial)));
-			stmt.setDate(2, DateUtils.toSqlDate(new Date(dataFinal)));
-			stmt.setLong(3, cpf);
-			Log.d(TAG, stmt.toString());
-			rSet = stmt.executeQuery();
-			if (rSet.next()) {
-				acumulados = createAcumulados(rSet);
-			}
-		} finally {
-			closeConnection(conn, stmt, rSet);
-		}
-		return acumulados;
-	}
-
-	@Override
-	public List<IndicadorItem> createExtratoDia(ResultSet rSet) throws SQLException {
+	public List<IndicadorItem> createExtratoDia(final ResultSet rSet) throws SQLException {
 		final List<IndicadorItem> itens = new ArrayList<>();
 		itens.add(IndicadorConverter.createDevHl(rSet));
 		itens.add(IndicadorConverter.createDevPdv(rSet));
@@ -242,7 +239,7 @@ public class IndicadorDaoImpl extends DatabaseConnection implements IndicadorDao
 	}
 
 	@Override
-	public List<IndicadorAcumulado> createAcumulados(ResultSet rSet) throws SQLException {
+	public List<IndicadorAcumulado> createAcumulados(final ResultSet rSet) throws SQLException {
 		final List<IndicadorAcumulado> acumulados = new ArrayList<>();
 		acumulados.add(IndicadorConverter.createAcumuladoDevHl(rSet));
 		acumulados.add(IndicadorConverter.createAcumuladoDevPdv(rSet));
@@ -264,7 +261,7 @@ public class IndicadorDaoImpl extends DatabaseConnection implements IndicadorDao
 	}
 
 	@Override
-	public IndicadorAcumulado createAcumuladoIndicador(ResultSet rSet, String indicador) throws SQLException {
+	public IndicadorAcumulado createAcumuladoIndicador(final ResultSet rSet, final String indicador) throws SQLException {
 		switch (indicador) {
 			case CaixaViagemAcumulado.CAIXA_VIAGEM_ACUMULADO:
 				return IndicadorConverter.createAcumuladoCaixaViagem(rSet);
@@ -310,7 +307,7 @@ public class IndicadorDaoImpl extends DatabaseConnection implements IndicadorDao
 	 * @return uma lista de Indicador {@link Indicador}
 	 * @throws SQLException caso não seja possível recuparar alguma coluna do ResultSet
 	 */
-	private List<Indicador> createExtratoIndicador(ResultSet rSet, String indicador) throws SQLException {
+	private List<Indicador> createExtratoIndicador(final ResultSet rSet, final String indicador) throws SQLException {
 		switch (indicador) {
 			case CaixaViagem.CAIXA_VIAGEM:
 				return IndicadorConverter.createExtratoCaixaViagem(rSet);

@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.gente.prontuarioCondutor.model;
 
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
+import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import com.google.common.base.Preconditions;
 
 import java.time.LocalDate;
@@ -49,6 +49,6 @@ public final class Cnh {
     }
 
     private void calculaVencimento() {
-        cnhVencida = Now.localDateUtc().isAfter(vencimento);
+        cnhVencida = Now.getLocalDateUtc().isAfter(vencimento);
     }
 }

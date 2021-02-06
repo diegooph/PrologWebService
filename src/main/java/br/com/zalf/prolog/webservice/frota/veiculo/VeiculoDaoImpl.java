@@ -1,8 +1,13 @@
 package br.com.zalf.prolog.webservice.frota.veiculo;
 
 import br.com.zalf.prolog.webservice.Injection;
-import br.com.zalf.prolog.webservice.commons.util.*;
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
+import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.commons.util.NullIf;
+import br.com.zalf.prolog.webservice.commons.util.StringUtils;
+import br.com.zalf.prolog.webservice.commons.util.database.PostgresUtils;
+import br.com.zalf.prolog.webservice.commons.util.database.SqlType;
+import br.com.zalf.prolog.webservice.commons.util.database.StatementUtils;
+import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.errorhandling.Exceptions;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
@@ -29,7 +34,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.OffsetDateTime;
-import java.util.Optional;
 import java.util.*;
 
 public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoDao {
@@ -123,7 +127,7 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
             stmt.setBoolean(8, veiculo.getPossuiHubodometro());
             stmt.setLong(9, codColaboradorResponsavelEdicao);
             stmt.setString(10, OrigemAcaoEnum.PROLOG.toString());
-            stmt.setObject(11, Now.offsetDateTimeUtc());
+            stmt.setObject(11, Now.getOffsetDateTimeUtc());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 final VeiculoAntesEdicao veiculoAntesEdicao = VeiculoConverter.createVeiculoAntesEdicao(rSet);
@@ -321,6 +325,7 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         }
     }
 
+    @Deprecated
     @Override
     @NotNull
     public Long updateKmByCodVeiculo(@NotNull final Connection conn,
@@ -388,12 +393,10 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
 
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement(
-                    "SELECT MO.CODIGO AS COD_MODELO, MO.NOME AS MODELO, MA.CODIGO AS COD_MARCA, MA.NOME AS MARCA"
-                            + " FROM MARCA_VEICULO MA left JOIN MODELO_VEICULO MO ON MA.CODIGO = MO.COD_MARCA AND MO" +
-                            ".cod_empresa = ? "
-                            + "WHERE MO.COD_EMPRESA = ? OR MO.COD_EMPRESA IS NULL "
-                            + "ORDER BY COD_MARCA, COD_MODELO");
+            stmt = conn.prepareStatement("SELECT MO.CODIGO AS COD_MODELO, MO.NOME AS MODELO, MA.CODIGO AS COD_MARCA, MA.NOME AS MARCA"
+                    + " FROM MARCA_VEICULO MA left JOIN MODELO_VEICULO MO ON MA.CODIGO = MO.COD_MARCA AND MO.cod_empresa = ? "
+                    + "WHERE MO.COD_EMPRESA = ? OR MO.COD_EMPRESA IS NULL "
+                    + "ORDER BY COD_MARCA, COD_MODELO");
             stmt.setLong(1, codEmpresa);
             stmt.setLong(2, codEmpresa);
             rSet = stmt.executeQuery();
@@ -407,8 +410,7 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
                     }
                 } else {
                     Log.d("metodo", "marcas.size > 0");
-                    if (marca.getCodigo() == rSet.getLong("COD_MARCA")) { // se o modelo atual pertence a mesma marca
-                        // do modelo anterior
+                    if (marca.getCodigo() == rSet.getLong("COD_MARCA")) { // se o modelo atual pertence a mesma marca do modelo anterior
                         if (rSet.getString("MODELO") != null) {
                             modelos.add(createModelo(rSet));
                         }

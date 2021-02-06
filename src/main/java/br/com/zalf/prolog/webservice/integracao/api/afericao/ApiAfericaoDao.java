@@ -13,20 +13,7 @@ import java.util.List;
  * @author Natan Rotta (https://github.com/natanrotta)
  */
 public interface ApiAfericaoDao {
-
-    /**
-     * Método responsável por buscar todas as aferições realizadas a partir do {@code codUltimaAfericao} ou do
-     * {@code dataHoraUltimaAtualizacaoUtc} recebido.
-     * Os parâmetros recebidos, são utilizados como um Offset de busca, todas as aferições a partir de tal parâmetro
-     * serão retornadas por este método.
-     *
-     * @param tokenIntegracao              Token utilizado para a requisição. Este token será utilizado para
-     *                                     descobrir qual empresa está requisitando as informações.
-     * @param codigoProcessoAfericao       Código da Última aferição sincronizada.
-     * @param dataHoraUltimaAtualizacaoUtc Data e hora da ultima aferição realizada.
-     * @return Uma lista de {@link List<ApiPneuMedicaoRealizada> aferições}.
-     * @throws Throwable Se algum erro ocorrer durante a busca das novas aferições.
-     */
+    
     List<ApiPneuMedicaoRealizada> getAfericoesRealizadas(
             @NotNull final String tokenIntegracao,
             @Nullable final Long codigoProcessoAfericao,

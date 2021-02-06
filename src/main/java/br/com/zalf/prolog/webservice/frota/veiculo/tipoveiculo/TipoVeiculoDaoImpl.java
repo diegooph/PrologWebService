@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.veiculo.tipoveiculo;
 
 import br.com.zalf.prolog.webservice.commons.util.NullIf;
-import br.com.zalf.prolog.webservice.commons.util.SqlType;
+import br.com.zalf.prolog.webservice.commons.util.database.SqlType;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import org.jetbrains.annotations.NotNull;
@@ -13,7 +13,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static br.com.zalf.prolog.webservice.commons.util.StatementUtils.bindValueOrNull;
+import static br.com.zalf.prolog.webservice.commons.util.database.StatementUtils.bindValueOrNull;
 import static br.com.zalf.prolog.webservice.commons.util.StringUtils.trimToNull;
 
 /**

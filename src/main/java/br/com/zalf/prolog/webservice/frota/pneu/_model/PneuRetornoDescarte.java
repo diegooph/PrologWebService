@@ -2,8 +2,7 @@ package br.com.zalf.prolog.webservice.frota.pneu._model;
 
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
-
-import javax.validation.constraints.NotBlank;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Created on 2020-12-07
@@ -20,6 +19,6 @@ public final class PneuRetornoDescarte {
     private final Long codPneu;
     @NotNull
     private final Long codColaborador;
-    @NotBlank(message = "É necessário haver um motivo do retorno do pneu do descarte.")
+    @Nullable
     private final String motivoRetornoDescarte;
 }

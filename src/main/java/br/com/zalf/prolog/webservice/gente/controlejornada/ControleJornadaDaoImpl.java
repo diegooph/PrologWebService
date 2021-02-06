@@ -2,9 +2,9 @@ package br.com.zalf.prolog.webservice.gente.controlejornada;
 
 import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.commons.FonteDataHora;
-import br.com.zalf.prolog.webservice.commons.util.SqlType;
-import br.com.zalf.prolog.webservice.commons.util.StatementUtils;
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
+import br.com.zalf.prolog.webservice.commons.util.database.SqlType;
+import br.com.zalf.prolog.webservice.commons.util.database.StatementUtils;
+import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Cargo;
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static br.com.zalf.prolog.webservice.commons.util.StatementUtils.bindValueOrNull;
+import static br.com.zalf.prolog.webservice.commons.util.database.StatementUtils.bindValueOrNull;
 
 /**
  * Created on 08/11/18.
@@ -250,6 +250,28 @@ public class ControleJornadaDaoImpl extends DatabaseConnection implements Contro
         }
     }
 
+    @Override
+    public boolean isMarcacaoInicioFinalizada(@NotNull final Long codMarcacao) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("select exists(select cod_marcacao_fim " +
+                                                 "from marcacao_vinculo_inicio_fim " +
+                                                 "where cod_marcacao_inicio = ?) as is_inicio_finalizado;");
+            stmt.setLong(1, codMarcacao);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return rSet.getBoolean("is_inicio_finalizado");
+            } else {
+                throw new IllegalStateException("Erro ao validar se a marcação de início possui fim vinculado.");
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
     @NotNull
     private Long marcacaoIntervaloJaExiste(@NotNull final Connection conn,
                                            @NotNull final IntervaloMarcacao intervaloMarcacao) throws SQLException {
@@ -378,7 +400,7 @@ public class ControleJornadaDaoImpl extends DatabaseConnection implements Contro
             final Localizacao localizacao = intervaloMarcacao.getLocalizacaoMarcacao();
             bindValueOrNull(stmt, 9, localizacao != null ? localizacao.getLatitude() : null, SqlType.VARCHAR);
             bindValueOrNull(stmt, 10, localizacao != null ? localizacao.getLongitude() : null, SqlType.VARCHAR);
-            stmt.setObject(11, Now.offsetDateTimeUtc());
+            stmt.setObject(11, Now.getOffsetDateTimeUtc());
             bindValueOrNull(stmt, 12, intervaloMarcacao.getVersaoAppMomentoMarcacao(), SqlType.INTEGER);
             bindValueOrNull(stmt, 13, intervaloMarcacao.getVersaoAppMomentoSincronizacao(), SqlType.INTEGER);
             stmt.setString(14, intervaloMarcacao.getDeviceId());

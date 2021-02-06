@@ -1,13 +1,13 @@
 package br.com.zalf.prolog.webservice.seguranca.relato;
 
 import br.com.zalf.prolog.webservice.TimeZoneManager;
-import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
-import br.com.zalf.prolog.webservice.commons.util.SqlType;
-import br.com.zalf.prolog.webservice.commons.util.StatementUtils;
-import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
-import br.com.zalf.prolog.webservice.seguranca.pdv.Pdv;
+import br.com.zalf.prolog.webservice.commons.util.database.SqlType;
+import br.com.zalf.prolog.webservice.commons.util.database.StatementUtils;
+import br.com.zalf.prolog.webservice.commons.util.datetime.DateUtils;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
+import br.com.zalf.prolog.webservice.seguranca.pdv.Pdv;
 import br.com.zalf.prolog.webservice.seguranca.relato.model.Relato;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -55,7 +55,7 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
                 stmt.setNull(14, Types.INTEGER);
             }
             StatementUtils.bindValueOrNull(stmt, 15, versaoApp, SqlType.INTEGER);
-            int count = stmt.executeUpdate();
+            final int count = stmt.executeUpdate();
             if (count == 0) {
                 throw new SQLException("Erro ao inserir o relato");
             }
@@ -66,7 +66,7 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
     }
 
     @Override
-    public boolean delete(Long codRelato) throws SQLException {
+    public boolean delete(final Long codRelato) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
@@ -134,8 +134,8 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
     }
 
     @Override
-    public List<Relato> getAll(Long codUnidade, int limit, long offset, double latitude, double longitude, boolean
-            isOrderByDate, String status) throws SQLException {
+    public List<Relato> getAll(final Long codUnidade, final int limit, final long offset, final double latitude, final double longitude, final boolean
+            isOrderByDate, final String status) throws SQLException {
         final List<Relato> relatos = new ArrayList<>();
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -203,8 +203,8 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
     }
 
     @Override
-    public List<Relato> getRealizadosByColaborador(Long cpf, int limit, long offset, double latitude,
-                                                   double longitude, boolean isOrderByDate, String status, String
+    public List<Relato> getRealizadosByColaborador(final Long cpf, final int limit, final long offset, final double latitude,
+                                                   final double longitude, final boolean isOrderByDate, final String status, final String
                                                            campoFiltro) throws SQLException {
         final List<Relato> relatos = new ArrayList<>();
         Connection conn = null;
@@ -272,9 +272,9 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
     }
 
     @Override
-    public List<Relato> getAllExcetoColaborador(Long cpf, int limit, long offset, double latitude, double longitude,
-                                                boolean isOrderByDate, String status) throws SQLException {
-        List<Relato> relatos = new ArrayList<>();
+    public List<Relato> getAllExcetoColaborador(final Long cpf, final int limit, final long offset, final double latitude, final double longitude,
+                                                final boolean isOrderByDate, final String status) throws SQLException {
+        final List<Relato> relatos = new ArrayList<>();
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -344,8 +344,8 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
     }
 
     @Override
-    public List<Relato> getAllByUnidade(LocalDate dataInicial, LocalDate dataFinal, String equipe,
-                                        Long codUnidade, long limit, long offset, String status) throws SQLException {
+    public List<Relato> getAllByUnidade(final LocalDate dataInicial, final LocalDate dataFinal, final String equipe,
+                                        final Long codUnidade, final long limit, final long offset, final String status) throws SQLException {
 
         final List<Relato> relatos = new ArrayList<>();
         Connection conn = null;
@@ -414,7 +414,7 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
     }
 
     @Override
-    public boolean classificaRelato(Relato relato) throws SQLException {
+    public boolean classificaRelato(final Relato relato) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
@@ -439,7 +439,7 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
     }
 
     @Override
-    public boolean fechaRelato(Relato relato) throws SQLException {
+    public boolean fechaRelato(final Relato relato) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
@@ -491,7 +491,7 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
         }
     }
 
-    private String getCampoFiltro(String campoFiltro) {
+    private String getCampoFiltro(final String campoFiltro) {
         String s = null;
         switch (campoFiltro) {
             case "realizados":
@@ -509,7 +509,7 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
         return s;
     }
 
-    private Relato createRelato(ResultSet rSet) throws SQLException {
+    private Relato createRelato(final ResultSet rSet) throws SQLException {
         final Relato relato = new Relato();
         relato.setCodigo(rSet.getLong("CODIGO"));
         // A hora que será mostrada no android deve ser a Data_Hora_Database
@@ -531,7 +531,7 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
         final Alternativa alternativa = createAlternativa(rSet);
         relato.setAlternativa(alternativa);
         relato.setDistanciaColaborador(rSet.getDouble("DISTANCIA"));
-        int codPdv = rSet.getInt("COD_PDV");
+        final int codPdv = rSet.getInt("COD_PDV");
         if (codPdv > 0) {
             final Pdv pdv = new Pdv();
             pdv.setCodigo(codPdv);
@@ -540,14 +540,14 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
         return relato;
     }
 
-    private Colaborador createColaborador(String nome, Long cpf) {
+    private Colaborador createColaborador(final String nome, final Long cpf) {
         final Colaborador colaborador = new Colaborador();
         colaborador.setCpf(cpf);
         colaborador.setNome(nome);
         return colaborador;
     }
 
-    private Alternativa createAlternativa(ResultSet rSet) throws SQLException {
+    private Alternativa createAlternativa(final ResultSet rSet) throws SQLException {
         final Alternativa alternativa = new Alternativa();
         alternativa.codigo = rSet.getLong("COD_ALTERNATIVA");
         alternativa.alternativa = rSet.getString("ALTERNATIVA");

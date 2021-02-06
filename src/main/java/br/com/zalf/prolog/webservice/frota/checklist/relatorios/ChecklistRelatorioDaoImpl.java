@@ -3,9 +3,9 @@ package br.com.zalf.prolog.webservice.frota.checklist.relatorios;
 import br.com.zalf.prolog.webservice.commons.report.CsvWriter;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.report.ReportTransformer;
-import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
-import br.com.zalf.prolog.webservice.commons.util.SqlType;
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
+import br.com.zalf.prolog.webservice.commons.util.database.PostgresUtils;
+import br.com.zalf.prolog.webservice.commons.util.database.SqlType;
+import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.checklist.model.ChecksRealizadosAbaixoTempoEspecifico;
 import br.com.zalf.prolog.webservice.frota.checklist.model.QuantidadeChecklists;
@@ -21,7 +21,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static br.com.zalf.prolog.webservice.commons.util.StatementUtils.bindValueOrNull;
+import static br.com.zalf.prolog.webservice.commons.util.database.StatementUtils.bindValueOrNull;
 
 /**
  * Created by luiz on 25/04/17.
@@ -35,7 +35,7 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
     @NotNull
     @Override
     public List<ChecksRealizadosAbaixoTempoEspecifico> getQtdChecksRealizadosAbaixoTempoEspecifico(
-            @NotNull List<Long> codUnidades,
+            @NotNull final List<Long> codUnidades,
             final long tempoRealizacaoFiltragemMilis,
             final int diasRetroativosParaBuscar) throws Throwable {
         Connection conn = null;
@@ -47,7 +47,7 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
                     "FUNC_CHECKLIST_RELATORIO_REALIZADOS_ABAIXO_TEMPO_DEFINIDO(?, ?, ?, ?);");
             stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
             stmt.setLong(2, tempoRealizacaoFiltragemMilis);
-            stmt.setObject(3, Now.localDateUtc());
+            stmt.setObject(3, Now.getLocalDateUtc());
             stmt.setInt(4, diasRetroativosParaBuscar);
 
             rSet = stmt.executeQuery();
@@ -79,7 +79,7 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
             stmt = conn.prepareStatement("SELECT * FROM " +
                     "FUNC_CHECKLIST_RELATORIO_QTD_POR_TIPO(?, ?, ?);");
             stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
-            stmt.setObject(2, Now.localDateUtc());
+            stmt.setObject(2, Now.getLocalDateUtc());
             stmt.setInt(3, diasRetroativosParaBuscar);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
@@ -209,24 +209,7 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
         }
     }
 
-    @NotNull
-    public Report getResumoChecklistsReport(@NotNull final List<Long> codUnidades,
-                                            @NotNull final String placa,
-                                            @NotNull final LocalDate dataInicial,
-                                            @NotNull final LocalDate dataFinal) throws Throwable {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            stmt = getResumoChecklistsStatement(conn, codUnidades, placa, dataInicial, dataFinal);
-            rSet = stmt.executeQuery();
-            return ReportTransformer.createReport(rSet);
-        } finally {
-            closeConnection(conn, stmt, rSet);
-        }
-    }
-
+    @Override
     public void getResumoChecklistsCsv(@NotNull final OutputStream outputStream,
                                        @NotNull final List<Long> codUnidades,
                                        @NotNull final String placa,
@@ -245,6 +228,24 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
         }
     }
 
+    @Override
+    @NotNull
+    public Report getResumoChecklistsReport(@NotNull final List<Long> codUnidades,
+                                            @NotNull final String placa,
+                                            @NotNull final LocalDate dataInicial,
+                                            @NotNull final LocalDate dataFinal) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = getResumoChecklistsStatement(conn, codUnidades, placa, dataInicial, dataFinal);
+            rSet = stmt.executeQuery();
+            return ReportTransformer.createReport(rSet);
+        } finally {
+            closeConnection(conn, stmt, rSet);
+        }
+    }
 
     @Override
     public void getEstratificacaoRespostasNokCsv(@NotNull final OutputStream outputStream,

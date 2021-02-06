@@ -13,16 +13,6 @@ import java.util.Optional;
  */
 public interface VeiculoEvolucaoKmDao {
 
-    /**
-     * Busca a evolução de kms de um veículo pela placa, código da empresa e em um determinado intervalo de data.
-     *
-     * @param codEmpresa  Código da empresa para a qual as informações serão filtradas.
-     * @param codVeiculo  Código do veículo para o qual as informações serão filtradas.
-     * @param dataInicial Data inicial para a qual as informações serão filtradas.
-     * @param dataFinal   Data final para a qual as informações serão filtradas.
-     * @return um veículo e sua evolução de km.
-     * @throws Throwable Se algum erro ocorrer.
-     */
     Optional<VeiculoEvolucaoKmResponse> getVeiculoEvolucaoKm(@NotNull final Long codEmpresa,
                                                              @NotNull final Long codVeiculo,
                                                              @NotNull final LocalDate dataInicial,

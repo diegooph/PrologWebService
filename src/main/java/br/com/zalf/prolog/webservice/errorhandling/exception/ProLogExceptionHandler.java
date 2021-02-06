@@ -27,7 +27,7 @@ public class ProLogExceptionHandler {
         if (throwable instanceof ProLogException) {
             return (ProLogException) throwable;
         } else {
-            return new GenericException(fallBackErrorMessage, null);
+            return new GenericException(fallBackErrorMessage, "Erro genérico não mapeado", throwable);
         }
     }
 }

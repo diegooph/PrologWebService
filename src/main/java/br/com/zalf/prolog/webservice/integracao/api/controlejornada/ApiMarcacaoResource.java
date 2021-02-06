@@ -1,9 +1,9 @@
 package br.com.zalf.prolog.webservice.integracao.api.controlejornada;
 
-import br.com.zalf.prolog.webservice.commons.util.Platform;
-import br.com.zalf.prolog.webservice.commons.util.ProLogCustomHeaders;
-import br.com.zalf.prolog.webservice.commons.util.Required;
-import br.com.zalf.prolog.webservice.commons.util.UsedBy;
+import br.com.zalf.prolog.webservice.commons.network.PrologCustomHeaders;
+import br.com.zalf.prolog.webservice.commons.network.metadata.Platform;
+import br.com.zalf.prolog.webservice.commons.network.metadata.Required;
+import br.com.zalf.prolog.webservice.commons.network.metadata.UsedBy;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.integracao.api.controlejornada._model.ApiMarcacao;
 import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
@@ -32,7 +32,7 @@ public final class ApiMarcacaoResource {
     @Path("marcacoes-realizadas")
     @UsedBy(platforms = Platform.INTEGRACOES)
     public List<ApiMarcacao> getMarcacoesRealizadas(
-            @HeaderParam(ProLogCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
+            @HeaderParam(PrologCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Required final String tokenIntegracao,
             @QueryParam("codUltimaMarcacaoSincronizada") @Required final Long codUltimaMarcacaoSincronizada)
             throws ProLogException {
         return service.getMarcacoesRealizadas(tokenIntegracao, codUltimaMarcacaoSincronizada);

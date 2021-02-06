@@ -1,14 +1,17 @@
 package br.com.zalf.prolog.webservice.gente.solicitacaoFolga;
 
-import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
-import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
-import br.com.zalf.prolog.webservice.commons.util.date.DateUtils;
+import br.com.zalf.prolog.webservice.commons.util.datetime.DateUtils;
+import br.com.zalf.prolog.webservice.database.DatabaseConnection;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
@@ -18,7 +21,7 @@ import java.util.List;
 public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements SolicitacaoFolgaDao {
 
     @Override
-    public AbstractResponse insert(SolicitacaoFolga s) throws SQLException {
+    public AbstractResponse insert(final SolicitacaoFolga s) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -50,7 +53,7 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements Solic
     }
 
     @Override
-    public boolean update(SolicitacaoFolga solicitacaoFolga) throws SQLException {
+    public boolean update(final SolicitacaoFolga solicitacaoFolga) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
@@ -103,7 +106,7 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements Solic
     }
 
     @Override
-    public boolean delete(Long codigo) throws SQLException {
+    public boolean delete(final Long codigo) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
@@ -121,8 +124,8 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements Solic
     }
 
     @Override
-    public List<SolicitacaoFolga> getAll(LocalDate dataInicial, LocalDate dataFinal,
-                                         Long codUnidade, String codEquipe, String status, String cpfColaborador) throws SQLException {
+    public List<SolicitacaoFolga> getAll(final LocalDate dataInicial, final LocalDate dataFinal,
+                                         final Long codUnidade, final String codEquipe, final String status, final String cpfColaborador) throws SQLException {
 
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -174,8 +177,8 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements Solic
     }
 
     @Override
-    public List<SolicitacaoFolga> getByColaborador(Long cpf) throws SQLException {
-        List<SolicitacaoFolga> list = new ArrayList<>();
+    public List<SolicitacaoFolga> getByColaborador(final Long cpf) throws SQLException {
+        final List<SolicitacaoFolga> list = new ArrayList<>();
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -209,7 +212,7 @@ public class SolicitacaoFolgaDaoImpl extends DatabaseConnection implements Solic
         return list;
     }
 
-    private SolicitacaoFolga createSolicitacaoFolga(ResultSet rSet) throws SQLException {
+    private SolicitacaoFolga createSolicitacaoFolga(final ResultSet rSet) throws SQLException {
         final SolicitacaoFolga solicitacaoFolga = new SolicitacaoFolga();
         solicitacaoFolga.setCodigo(rSet.getLong("CODIGO"));
 

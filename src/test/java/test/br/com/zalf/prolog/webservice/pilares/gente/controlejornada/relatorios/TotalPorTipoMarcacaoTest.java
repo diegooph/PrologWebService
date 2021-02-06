@@ -1,6 +1,6 @@
 package test.br.com.zalf.prolog.webservice.pilares.gente.controlejornada.relatorios;
 
-import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
+import br.com.zalf.prolog.webservice.commons.util.datetime.PrologDateParser;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.database.DatabaseManager;
 import br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.ControleJornadaRelatorioService;
@@ -60,8 +60,8 @@ public final class TotalPorTipoMarcacaoTest extends BaseTest {
                 connection,
                 COD_UNIDADE,
                 TODOS_TIPOS_INTERVALOS,
-                ProLogDateParser.toLocalDate(DATA_INICIAL),
-                ProLogDateParser.toLocalDate(DATA_FIM));
+                PrologDateParser.toLocalDate(DATA_INICIAL),
+                PrologDateParser.toLocalDate(DATA_FIM));
 
         final List<FolhaPontoRelatorio> relatorios = service.getFolhaPontoRelatorio(
                 COD_UNIDADE,
