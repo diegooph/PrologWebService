@@ -8,7 +8,6 @@ import br.com.zalf.prolog.webservice.frota.pneu.servico._model.*;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.AppVersionCodeHandler;
-import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.DefaultAppVersionCodeHandler;
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.VersionCodeHandlerMode;
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.VersionNotPresentAction;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
@@ -22,8 +21,7 @@ import java.util.List;
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @AppVersionCodeHandler(
-        implementation = DefaultAppVersionCodeHandler.class,
-        targetVersionCode = 64,
+        targetVersionCode = 115,
         versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
         actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
 public class ServicoResource {
@@ -58,11 +56,6 @@ public class ServicoResource {
     @GET
     @Secured(permissions = {Pilares.Frota.OrdemServico.Pneu.VISUALIZAR, Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
     @Path("/abertos/veiculos/{placaVeiculo}/completo")
-    @AppVersionCodeHandler(
-            implementation = DefaultAppVersionCodeHandler.class,
-            targetVersionCode = 101,
-            versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
-            actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
     public ServicoHolder getServicoHolder(@PathParam("placaVeiculo") @Required final String placa,
                                           @QueryParam("codUnidade") @Required final Long codUnidade) {
         return service.getServicoHolder(placa, codUnidade);
