@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.router;
 
-import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.autenticacao.token.TokenCleaner;
+import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.customfields.CampoPersonalizadoDao;
 import br.com.zalf.prolog.webservice.customfields._model.CampoPersonalizadoParaRealizacao;
 import br.com.zalf.prolog.webservice.frota.checklist.ChecklistResource;
@@ -24,6 +24,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.ProcessoMovi
 import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.Servico;
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.VeiculoServico;
+import br.com.zalf.prolog.webservice.frota.pneu.servico._model.filtro.VeiculoAberturaServicoFiltro;
 import br.com.zalf.prolog.webservice.frota.pneu.transferencia._model.realizacao.PneuTransferenciaRealizacao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
@@ -329,11 +330,11 @@ public abstract class Router implements OperacoesIntegradas {
         if (getSistema() != null) {
             return getSistema()
                     .getTodosChecklists(codUnidade, codEquipe, codTipoVeiculo, placaVeiculo, dataInicial, dataFinal,
-                            limit, offset, resumido);
+                                        limit, offset, resumido);
         } else {
             return integradorProLog
                     .getTodosChecklists(codUnidade, codEquipe, codTipoVeiculo, placaVeiculo, dataInicial, dataFinal,
-                            limit, offset, resumido);
+                                        limit, offset, resumido);
         }
     }
 
@@ -375,13 +376,13 @@ public abstract class Router implements OperacoesIntegradas {
         } else {
             return integradorProLog
                     .getListagem(codUnidade,
-                            codEquipe,
-                            codTipoVeiculo,
-                            codVeiculo,
-                            dataInicial,
-                            dataFinal,
-                            limit,
-                            offset);
+                                 codEquipe,
+                                 codTipoVeiculo,
+                                 codVeiculo,
+                                 dataInicial,
+                                 dataFinal,
+                                 limit,
+                                 offset);
         }
     }
 
@@ -462,7 +463,8 @@ public abstract class Router implements OperacoesIntegradas {
 
     @NotNull
     @Override
-    public List<Veiculo> getVeiculosAtivosByUnidade(@NotNull final Long codUnidade, @Nullable final Boolean ativos) throws
+    public List<Veiculo> getVeiculosAtivosByUnidade(@NotNull final Long codUnidade, @Nullable final Boolean ativos)
+            throws
             Exception {
         if (getSistema() != null) {
             return getSistema().getVeiculosAtivosByUnidade(codUnidade, ativos);
@@ -473,7 +475,8 @@ public abstract class Router implements OperacoesIntegradas {
 
     @NotNull
     @Override
-    public List<String> getPlacasVeiculosByTipo(@NotNull final Long codUnidade, @NotNull final String codTipo) throws Exception {
+    public List<String> getPlacasVeiculosByTipo(@NotNull final Long codUnidade, @NotNull final String codTipo)
+            throws Exception {
         if (getSistema() != null) {
             return getSistema().getPlacasVeiculosByTipo(codUnidade, codTipo);
         } else {
@@ -623,12 +626,12 @@ public abstract class Router implements OperacoesIntegradas {
     // #################################################################################################################
     @NotNull
     @Override
-    public VeiculoServico getVeiculoAberturaServico(@NotNull final Long codServico,
-                                                    @NotNull final String placaVeiculo) throws Throwable {
+    public VeiculoServico getVeiculoAberturaServico(@NotNull final VeiculoAberturaServicoFiltro filtro)
+            throws Throwable {
         if (getSistema() != null) {
-            return getSistema().getVeiculoAberturaServico(codServico, placaVeiculo);
+            return getSistema().getVeiculoAberturaServico(filtro);
         } else {
-            return integradorProLog.getVeiculoAberturaServico(codServico, placaVeiculo);
+            return integradorProLog.getVeiculoAberturaServico(filtro);
         }
     }
 

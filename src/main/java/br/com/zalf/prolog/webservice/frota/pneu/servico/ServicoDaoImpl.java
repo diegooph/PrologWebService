@@ -21,6 +21,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.servico._model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.filtro.ServicoHolderBuscaFiltro;
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.filtro.ServicosAbertosBuscaFiltro;
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.filtro.ServicosFechadosVeiculoFiltro;
+import br.com.zalf.prolog.webservice.frota.pneu.servico._model.filtro.VeiculoAberturaServicoFiltro;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoBackwardHelper;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
@@ -394,7 +395,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
     }
 
     @Override
-    public List<Servico> getServicosFechadosVeiculo(@NotNull final ServicosFechadosVeiculoFiltro filtro)
+    public @NotNull List<Servico> getServicosFechadosVeiculo(@NotNull final ServicosFechadosVeiculoFiltro filtro)
             throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -456,14 +457,14 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
 
     @NotNull
     @Override
-    public VeiculoServico getVeiculoAberturaServico(@NotNull final Long codServico,
-                                                    @NotNull final String placaVeiculo) throws SQLException {
+    public VeiculoServico getVeiculoAberturaServico(@NotNull final VeiculoAberturaServicoFiltro filtro)
+            throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = ServicoQueryBinder.getVeiculoAberturaServico(conn, codServico, placaVeiculo);
+            stmt = ServicoQueryBinder.getVeiculoAberturaServico(conn, filtro.getCodVeiculo(), filtro.getCodServico());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 final VeiculoServico veiculo = ServicoConverter.createVeiculoAberturaServico(rSet);

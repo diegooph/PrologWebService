@@ -9,6 +9,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.servico._model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.filtro.ServicoHolderBuscaFiltro;
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.filtro.ServicosAbertosBuscaFiltro;
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.filtro.ServicosFechadosVeiculoFiltro;
+import br.com.zalf.prolog.webservice.frota.pneu.servico._model.filtro.VeiculoAberturaServicoFiltro;
 import br.com.zalf.prolog.webservice.integracao.router.RouterAfericaoServico;
 import org.jetbrains.annotations.NotNull;
 
@@ -18,7 +19,7 @@ import java.util.List;
 /**
  * Classe ServicoService responsavel por comunicar-se com a interface DAO.
  */
-public class ServicoService {
+public final class ServicoService {
 
     private static final String TAG = ServicoService.class.getSimpleName();
     private final ServicoDao dao = Injection.provideServicoDao();
@@ -186,17 +187,21 @@ public class ServicoService {
 
     @NotNull
     public VeiculoServico getVeiculoAberturaServico(@NotNull final String userToken,
-                                                    @NotNull final Long codServico,
-                                                    @NotNull final String placaVeiculo) throws ProLogException {
+                                                    @NotNull final VeiculoAberturaServicoFiltro filtro) {
         try {
             return RouterAfericaoServico
                     .create(dao, userToken)
-                    .getVeiculoAberturaServico(codServico, placaVeiculo);
+                    .getVeiculoAberturaServico(filtro);
         } catch (final Throwable t) {
             final String message = String.format("Erro ao buscar o veículo para um serviço.\n" +
                                                          "userToken: %s\n" +
-                                                         "Serviço: %d\n" +
-                                                         "Veículo: %s\n", userToken, codServico, placaVeiculo);
+                                                         "codVeiculo: %d\n" +
+                                                         "placaVeiculo: %s\n" +
+                                                         "codServico: %d\n",
+                                                 userToken,
+                                                 filtro.getCodVeiculo(),
+                                                 filtro.getPlacaVeiculo(),
+                                                 filtro.getCodServico());
             Log.e(TAG, message, t);
             throw Injection
                     .provideProLogExceptionHandler()

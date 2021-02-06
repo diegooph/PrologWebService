@@ -7,6 +7,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.servico._model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.filtro.ServicoHolderBuscaFiltro;
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.filtro.ServicosAbertosBuscaFiltro;
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.filtro.ServicosFechadosVeiculoFiltro;
+import br.com.zalf.prolog.webservice.frota.pneu.servico._model.filtro.VeiculoAberturaServicoFiltro;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.AppVersionCodeHandler;
@@ -26,7 +27,7 @@ import java.util.List;
         targetVersionCode = 115,
         versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
         actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
-public class ServicoResource {
+public final class ServicoResource {
 
     private final ServicoService service = new ServicoService();
 
@@ -107,11 +108,10 @@ public class ServicoResource {
 
     @GET
     @Secured(permissions = {Pilares.Frota.OrdemServico.Pneu.VISUALIZAR, Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
-    @Path("/{codServico}/veiculos/{placaVeiculo}")
+    @Path("/veiculos")
     public VeiculoServico getVeiculoAberturaServico(
             @HeaderParam("Authorization") @Required final String userToken,
-            @PathParam("codServico") @Required final Long codServico,
-            @PathParam("placaVeiculo") @Required final String placaVeiculo) throws ProLogException {
-        return service.getVeiculoAberturaServico(userToken, codServico, placaVeiculo);
+            @Required final VeiculoAberturaServicoFiltro filtro) throws ProLogException {
+        return service.getVeiculoAberturaServico(userToken, filtro);
     }
 }

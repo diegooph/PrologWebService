@@ -288,36 +288,36 @@ final class ServicoQueryBinder {
 
     @NotNull
     static PreparedStatement getVeiculoAberturaServico(@NotNull final Connection connection,
-                                                       @NotNull final Long codServico,
-                                                       @NotNull final String placaVeiculo) throws SQLException {
+                                                       @NotNull final Long codVeiculo,
+                                                       @NotNull final Long codServico) throws Throwable {
         final PreparedStatement stmt = connection.prepareStatement("SELECT " +
-                "  V.PLACA AS PLACA_VEICULO, " +
-                "  V.IDENTIFICADOR_FROTA, " +
-                "  A.KM_VEICULO AS KM_ABERTURA_SERVICO, " +
-                "  AV.COD_PNEU AS COD_PNEU, " +
-                "  P.CODIGO_CLIENTE AS COD_PNEU_CLIENTE, " +
-                "  AV.ALTURA_SULCO_EXTERNO, " +
-                "  AV.ALTURA_SULCO_CENTRAL_EXTERNO, " +
-                "  AV.ALTURA_SULCO_CENTRAL_INTERNO, " +
-                "  AV.ALTURA_SULCO_INTERNO, " +
+                                                                           "  V.PLACA AS PLACA_VEICULO, " +
+                                                                           "  V.IDENTIFICADOR_FROTA, " +
+                                                                           "  A.KM_VEICULO AS KM_ABERTURA_SERVICO, " +
+                                                                           "  AV.COD_PNEU AS COD_PNEU, " +
+                                                                           "  P.CODIGO_CLIENTE AS COD_PNEU_CLIENTE, " +
+                                                                           "  AV.ALTURA_SULCO_EXTERNO, " +
+                                                                           "  AV.ALTURA_SULCO_CENTRAL_EXTERNO, " +
+                                                                           "  AV.ALTURA_SULCO_CENTRAL_INTERNO, " +
+                                                                           "  AV.ALTURA_SULCO_INTERNO, " +
                 "  AV.PSI, " +
                 "  AV.POSICAO, " +
                 "  AV.VIDA_MOMENTO_AFERICAO, " +
                 "  V.KM AS KM_ATUAL_VEICULO " +
                 "FROM AFERICAO_MANUTENCAO AM " +
-                "  JOIN AFERICAO A " +
-                "    ON AM.COD_AFERICAO = A.CODIGO " +
-                "  JOIN AFERICAO_VALORES AV " +
-                "    ON AM.COD_AFERICAO = AV.COD_AFERICAO " +
-                "       AND A.CODIGO = AV.COD_AFERICAO " +
-                "  JOIN VEICULO V " +
-                "    ON V.CODIGO = A.COD_VEICULO " +
-                "  JOIN PNEU P " +
-                "    ON P.CODIGO = AV.COD_PNEU " +
-                "WHERE AM.CODIGO = ? " +
-                "      AND V.PLACA = ?;");
+                                                                           "  JOIN AFERICAO A " +
+                                                                           "    ON AM.COD_AFERICAO = A.CODIGO " +
+                                                                           "  JOIN AFERICAO_VALORES AV " +
+                                                                           "    ON AM.COD_AFERICAO = AV.COD_AFERICAO " +
+                                                                           "       AND A.CODIGO = AV.COD_AFERICAO " +
+                                                                           "  JOIN VEICULO V " +
+                                                                           "    ON V.CODIGO = A.COD_VEICULO " +
+                                                                           "  JOIN PNEU P " +
+                                                                           "    ON P.CODIGO = AV.COD_PNEU " +
+                                                                           "WHERE AM.CODIGO = ? " +
+                                                                           "      AND V.CODIGO = ?;");
         stmt.setLong(1, codServico);
-        stmt.setString(2, placaVeiculo);
+        stmt.setLong(2, codVeiculo);
         return stmt;
     }
 
