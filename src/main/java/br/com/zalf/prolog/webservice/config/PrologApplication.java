@@ -1,8 +1,5 @@
 package br.com.zalf.prolog.webservice.config;
 
-import br.com.zalf.prolog.webservice.database.DatabaseConnectionActions;
-import br.com.zalf.prolog.webservice.database.DatabaseConnectionActionsWrapper;
-import br.com.zalf.prolog.webservice.messaging.push.FirebaseLifecycleManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.jaxrs.config.BeanConfig;
 import io.swagger.jaxrs.listing.ApiListingResource;
@@ -16,14 +13,11 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
-import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import javax.servlet.ServletContextListener;
 import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.Provider;
 
@@ -41,25 +35,13 @@ public class PrologApplication extends SpringBootServletInitializer {
         SpringApplication.run(PrologApplication.class, args);
     }
 
-    public static DatabaseConnectionActions getActions() {
-        return DatabaseConnectionActionsWrapper.getActions();
-    }
-
     @Override
     protected SpringApplicationBuilder configure(@NotNull final SpringApplicationBuilder builder) {
         builder.sources(PrologApplication.class);
         return builder;
     }
 
-    @Bean
-    public ServletListenerRegistrationBean<ServletContextListener> firebaseLifecycleManagerRegistrationBean() {
-        final ServletListenerRegistrationBean<ServletContextListener> bean = new ServletListenerRegistrationBean<>();
-        bean.setListener(new FirebaseLifecycleManager());
-        return bean;
-    }
-
     @Component
-//    @ApplicationPath("/prolog/v2")
     public static class JerseyConfig extends ResourceConfig {
 
         @Autowired

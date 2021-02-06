@@ -19,3 +19,11 @@ sentry:
     - "org"
   in-app-includes:
     - "br.com.zalf"
+firebase:
+  database:
+    url: "https://prolog-prod.firebaseio.com"
+  credentials: "${google-application-credentials}"
+
+mailjet:
+  api-key: "${mailjet-apikey-public}"
+  api-secret-key: "${mailjet-apikey-private}"

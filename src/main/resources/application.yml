@@ -1,3 +1,6 @@
+prolog:
+  debug: "@prolog-debug@"
+
 server:
   port: 8080
   servlet:

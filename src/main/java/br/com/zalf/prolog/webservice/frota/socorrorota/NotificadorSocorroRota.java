@@ -1,12 +1,14 @@
 package br.com.zalf.prolog.webservice.frota.socorrorota;
 
+import br.com.zalf.prolog.webservice.commons.spring.SpringContext;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.Exceptions;
 import br.com.zalf.prolog.webservice.frota.socorrorota._model.ColaboradorNotificacaoAberturaSocorroRota;
 import br.com.zalf.prolog.webservice.frota.socorrorota._model.ColaboradorNotificacaoAtendimentoSocorroRota;
 import br.com.zalf.prolog.webservice.frota.socorrorota._model.ColaboradorNotificacaoInvalidacaoSocorroRota;
 import br.com.zalf.prolog.webservice.messaging.MessageScope;
-import br.com.zalf.prolog.webservice.messaging.email.PrologEmailApi;
+import br.com.zalf.prolog.webservice.messaging.email.PrologEmailService;
+import br.com.zalf.prolog.webservice.messaging.email._model.EmailReceiver;
 import br.com.zalf.prolog.webservice.messaging.email._model.EmailSender;
 import br.com.zalf.prolog.webservice.messaging.email._model.EmailTemplate;
 import br.com.zalf.prolog.webservice.messaging.email._model.EmailTemplateMessage;
@@ -17,10 +19,7 @@ import com.google.common.util.concurrent.*;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
@@ -52,73 +51,11 @@ final class NotificadorSocorroRota {
         }
     };
 
+    private final PrologEmailService prologEmailService;
+
     NotificadorSocorroRota() {
+        prologEmailService = SpringContext.getBean(PrologEmailService.class);
         service = MoreExecutors.listeningDecorator(Executors.newSingleThreadExecutor());
-    }
-
-    @SuppressWarnings("UnstableApiUsage")
-    void notificaSobreAbertura(@NotNull final SocorroRotaDao socorroRotaDao,
-                               @NotNull final Long codUnidadeSocorro,
-                               @NotNull final String nomeColaboradorAbertura,
-                               @NotNull final String placaVeiculoProblema,
-                               @NotNull final Long codSocorro) {
-        Log.d(TAG, "notificaSobreAbertura(...) on thread: " + Thread.currentThread().getName());
-        try {
-            // Se estourar algo nessa chamada, não será logado no BD a tentativa de envio de mensagem. Além desse caso,
-            // também não será logado no BD se acontecer um erro na busca dos colaboradores para notificar.
-            final ListenableFuture<Void> future = Futures.submit(
-                    () -> internalNotificaSobreAbertura(
-                            socorroRotaDao,
-                            codUnidadeSocorro,
-                            nomeColaboradorAbertura,
-                            placaVeiculoProblema,
-                            codSocorro),
-                    service);
-            Futures.addCallback(
-                    future,
-                    shutdownServiceCallback,
-                    service);
-        } catch (final Throwable t) {
-            Log.e(TAG, "Erro ao realizar envio de notificações sobre abertura de socorro", t);
-            shutdowService();
-        }
-    }
-
-    @SuppressWarnings("UnstableApiUsage")
-    void notificaSobreAtendimento(@NotNull final SocorroRotaDao socorroDao,
-                                  @NotNull final Long codSocorro) {
-        Log.d(TAG, "notificaSobreAtendimento(...) on thread: " + Thread.currentThread().getName());
-        try {
-            final ListenableFuture<Void> future = Futures.submit(
-                    () -> internalNotificaSobreAtendimento(socorroDao, codSocorro),
-                    service);
-            Futures.addCallback(
-                    future,
-                    shutdownServiceCallback,
-                    service);
-        } catch (final Throwable t) {
-            Log.e(TAG, "Erro ao realizar envio de notificações sobre atendimento de socorro", t);
-            shutdowService();
-        }
-    }
-
-    @SuppressWarnings("UnstableApiUsage")
-    void notificaSobreInvalidacao(@NotNull final SocorroRotaDao socorroDao,
-                                  @NotNull final Long codColaboradorInvalidacaoSocorro,
-                                  @NotNull final Long codSocorro) {
-        Log.d(TAG, "notificaSobreInvalidacao(...) on thread: " + Thread.currentThread().getName());
-        try {
-            final ListenableFuture<Void> future = Futures.submit(
-                    () -> internalNotificaSobreInvalidacao(socorroDao, codColaboradorInvalidacaoSocorro, codSocorro),
-                    service);
-            Futures.addCallback(
-                    future,
-                    shutdownServiceCallback,
-                    service);
-        } catch (final Throwable t) {
-            Log.e(TAG, "Erro ao realizar envio de notificações sobre invalidação de socorro", t);
-            shutdowService();
-        }
     }
 
     private void internalNotificaSobreAbertura(@NotNull final SocorroRotaDao socorroDao,
@@ -235,14 +172,15 @@ final class NotificadorSocorroRota {
             @NotNull final String nomeColaboradorAbertura,
             @NotNull final String placaVeiculoProblema,
             @NotNull final Long codSocorro) {
-        final List<String> emails = colaboradores
+        final Set<EmailReceiver> emails = colaboradores
                 .stream()
                 .map(ColaboradorNotificacaoAberturaSocorroRota::getEmailColaborador)
                 .filter(Objects::nonNull)
                 .distinct()
-                .collect(Collectors.toList());
+                .map(EmailReceiver::of)
+                .collect(Collectors.toSet());
         if (!emails.isEmpty()) {
-            new PrologEmailApi()
+            this.prologEmailService
                     .deliverTemplate(
                             emails,
                             MessageScope.ABERTURA_SOCORRO_ROTA,
@@ -326,5 +264,70 @@ final class NotificadorSocorroRota {
 
     private void shutdowService() {
         Exceptions.swallowAny(service::shutdown);
+    }
+
+    @SuppressWarnings("UnstableApiUsage")
+    void notificaSobreAbertura(@NotNull final SocorroRotaDao socorroRotaDao,
+                               @NotNull final Long codUnidadeSocorro,
+                               @NotNull final String nomeColaboradorAbertura,
+                               @NotNull final String placaVeiculoProblema,
+                               @NotNull final Long codSocorro) {
+        Log.d(TAG, "notificaSobreAbertura(...) on thread: " + Thread.currentThread().getName());
+        try {
+            // Se estourar algo nessa chamada, não será logado no BD a tentativa de envio de mensagem. Além desse caso,
+            // também não será logado no BD se acontecer um erro na busca dos colaboradores para notificar.
+            final ListenableFuture<Void> future = Futures.submit(
+                    () -> internalNotificaSobreAbertura(
+                            socorroRotaDao,
+                            codUnidadeSocorro,
+                            nomeColaboradorAbertura,
+                            placaVeiculoProblema,
+                            codSocorro),
+                    service);
+            Futures.addCallback(
+                    future,
+                    shutdownServiceCallback,
+                    service);
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao realizar envio de notificações sobre abertura de socorro", t);
+            shutdowService();
+        }
+    }
+
+    @SuppressWarnings("UnstableApiUsage")
+    void notificaSobreAtendimento(@NotNull final SocorroRotaDao socorroDao,
+                                  @NotNull final Long codSocorro) {
+        Log.d(TAG, "notificaSobreAtendimento(...) on thread: " + Thread.currentThread().getName());
+        try {
+            final ListenableFuture<Void> future = Futures.submit(
+                    () -> internalNotificaSobreAtendimento(socorroDao, codSocorro),
+                    service);
+            Futures.addCallback(
+                    future,
+                    shutdownServiceCallback,
+                    service);
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao realizar envio de notificações sobre atendimento de socorro", t);
+            shutdowService();
+        }
+    }
+
+    @SuppressWarnings("UnstableApiUsage")
+    void notificaSobreInvalidacao(@NotNull final SocorroRotaDao socorroDao,
+                                  @NotNull final Long codColaboradorInvalidacaoSocorro,
+                                  @NotNull final Long codSocorro) {
+        Log.d(TAG, "notificaSobreInvalidacao(...) on thread: " + Thread.currentThread().getName());
+        try {
+            final ListenableFuture<Void> future = Futures.submit(
+                    () -> internalNotificaSobreInvalidacao(socorroDao, codColaboradorInvalidacaoSocorro, codSocorro),
+                    service);
+            Futures.addCallback(
+                    future,
+                    shutdownServiceCallback,
+                    service);
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao realizar envio de notificações sobre invalidação de socorro", t);
+            shutdowService();
+        }
     }
 }
