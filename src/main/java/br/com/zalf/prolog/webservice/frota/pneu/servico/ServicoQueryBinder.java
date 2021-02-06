@@ -12,6 +12,7 @@ import org.jetbrains.annotations.Nullable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 
@@ -98,15 +99,16 @@ final class ServicoQueryBinder {
     }
 
     @NotNull
-    static PreparedStatement getServicosAbertosByPlaca(@NotNull final Connection connection,
-                                                       @NotNull final String placa,
-                                                       @Nullable final TipoServico tipoServico) throws SQLException {
+    static PreparedStatement getServicosAbertosByCodVeiculo(@NotNull final Connection connection,
+                                                            @NotNull final Long codVeiculo,
+                                                            @Nullable final TipoServico tipoServico)
+            throws SQLException {
         final PreparedStatement stmt = connection.prepareStatement(BASE_QUERY_BUSCA_SERVICOS
-                + "WHERE V.PLACA = ? "
-                + "AND AM.DATA_HORA_RESOLUCAO IS NULL "
-                + "AND AM.TIPO_SERVICO LIKE ? "
-                + "ORDER BY AM.TIPO_SERVICO;");
-        stmt.setString(1, placa);
+                                                                           + "WHERE V.CODIGO = ? "
+                                                                           + "AND AM.DATA_HORA_RESOLUCAO IS NULL "
+                                                                           + "AND AM.TIPO_SERVICO LIKE ? "
+                                                                           + "ORDER BY AM.TIPO_SERVICO;");
+        stmt.setLong(1, codVeiculo);
         stmt.setString(2, tipoServico != null ? tipoServico.asString() : "%");
         return stmt;
     }
@@ -266,54 +268,56 @@ final class ServicoQueryBinder {
     @NotNull
     static PreparedStatement getServicosFechadosVeiculo(@NotNull final Connection connection,
                                                         @NotNull final Long codUnidade,
-                                                        @NotNull final String placaVeiculo,
-                                                        final long dataInicial,
-                                                        final long dataFinal) throws SQLException {
+                                                        @NotNull final Long codVeiculo,
+                                                        @NotNull final LocalDate dataInicial,
+                                                        @NotNull final LocalDate dataFinal) throws SQLException {
         final PreparedStatement stmt = connection.prepareStatement(BASE_QUERY_BUSCA_SERVICOS
-                + "WHERE AM.COD_UNIDADE = ? "
-                + "AND V.PLACA = ? "
-                + "AND AM.DATA_HORA_RESOLUCAO IS NOT NULL "
-                + "AND (AM.DATA_HORA_RESOLUCAO AT TIME ZONE TZ_UNIDADE(AM.COD_UNIDADE))::DATE BETWEEN ? AND ? "
-                + "ORDER BY DATA_HORA_RESOLUCAO DESC;");
+                                                                           + "WHERE AM.COD_UNIDADE = ? "
+                                                                           + "AND V.CODIGO = ? "
+                                                                           + "AND AM.DATA_HORA_RESOLUCAO IS NOT NULL "
+                                                                           + "AND (AM.DATA_HORA_RESOLUCAO AT TIME " +
+                                                                           "ZONE TZ_UNIDADE(AM.COD_UNIDADE))::DATE " +
+                                                                           "BETWEEN ? AND ? "
+                                                                           + "ORDER BY DATA_HORA_RESOLUCAO DESC;");
         stmt.setLong(1, codUnidade);
-        stmt.setString(2, placaVeiculo);
-        stmt.setObject(3, DateUtils.toLocalDate(new java.sql.Date(dataInicial)));
-        stmt.setObject(4, DateUtils.toLocalDate(new java.sql.Date(dataFinal)));
+        stmt.setLong(2, codVeiculo);
+        stmt.setObject(3, dataInicial);
+        stmt.setObject(4, dataFinal);
         return stmt;
     }
 
     @NotNull
     static PreparedStatement getVeiculoAberturaServico(@NotNull final Connection connection,
-                                                       @NotNull final Long codServico,
-                                                       @NotNull final String placaVeiculo) throws SQLException {
+                                                       @NotNull final Long codVeiculo,
+                                                       @NotNull final Long codServico) throws Throwable {
         final PreparedStatement stmt = connection.prepareStatement("SELECT " +
-                "  V.PLACA AS PLACA_VEICULO, " +
-                "  V.IDENTIFICADOR_FROTA, " +
-                "  A.KM_VEICULO AS KM_ABERTURA_SERVICO, " +
-                "  AV.COD_PNEU AS COD_PNEU, " +
-                "  P.CODIGO_CLIENTE AS COD_PNEU_CLIENTE, " +
-                "  AV.ALTURA_SULCO_EXTERNO, " +
-                "  AV.ALTURA_SULCO_CENTRAL_EXTERNO, " +
-                "  AV.ALTURA_SULCO_CENTRAL_INTERNO, " +
-                "  AV.ALTURA_SULCO_INTERNO, " +
+                                                                           "  V.PLACA AS PLACA_VEICULO, " +
+                                                                           "  V.IDENTIFICADOR_FROTA, " +
+                                                                           "  A.KM_VEICULO AS KM_ABERTURA_SERVICO, " +
+                                                                           "  AV.COD_PNEU AS COD_PNEU, " +
+                                                                           "  P.CODIGO_CLIENTE AS COD_PNEU_CLIENTE, " +
+                                                                           "  AV.ALTURA_SULCO_EXTERNO, " +
+                                                                           "  AV.ALTURA_SULCO_CENTRAL_EXTERNO, " +
+                                                                           "  AV.ALTURA_SULCO_CENTRAL_INTERNO, " +
+                                                                           "  AV.ALTURA_SULCO_INTERNO, " +
                 "  AV.PSI, " +
                 "  AV.POSICAO, " +
                 "  AV.VIDA_MOMENTO_AFERICAO, " +
                 "  V.KM AS KM_ATUAL_VEICULO " +
                 "FROM AFERICAO_MANUTENCAO AM " +
-                "  JOIN AFERICAO A " +
-                "    ON AM.COD_AFERICAO = A.CODIGO " +
-                "  JOIN AFERICAO_VALORES AV " +
-                "    ON AM.COD_AFERICAO = AV.COD_AFERICAO " +
-                "       AND A.CODIGO = AV.COD_AFERICAO " +
-                "  JOIN VEICULO V " +
-                "    ON V.CODIGO = A.COD_VEICULO " +
-                "  JOIN PNEU P " +
-                "    ON P.CODIGO = AV.COD_PNEU " +
-                "WHERE AM.CODIGO = ? " +
-                "      AND V.PLACA = ?;");
+                                                                           "  JOIN AFERICAO A " +
+                                                                           "    ON AM.COD_AFERICAO = A.CODIGO " +
+                                                                           "  JOIN AFERICAO_VALORES AV " +
+                                                                           "    ON AM.COD_AFERICAO = AV.COD_AFERICAO " +
+                                                                           "       AND A.CODIGO = AV.COD_AFERICAO " +
+                                                                           "  JOIN VEICULO V " +
+                                                                           "    ON V.CODIGO = A.COD_VEICULO " +
+                                                                           "  JOIN PNEU P " +
+                                                                           "    ON P.CODIGO = AV.COD_PNEU " +
+                                                                           "WHERE AM.CODIGO = ? " +
+                                                                           "      AND V.CODIGO = ?;");
         stmt.setLong(1, codServico);
-        stmt.setString(2, placaVeiculo);
+        stmt.setLong(2, codVeiculo);
         return stmt;
     }
 

@@ -3,11 +3,11 @@ package br.com.zalf.prolog.webservice.frota.pneu.afericao;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
-import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Optional;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Platform;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Required;
 import br.com.zalf.prolog.webservice.commons.network.metadata.UsedBy;
+import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.VersaoAppBloqueadaException;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Restricao;
@@ -130,7 +130,7 @@ public class AfericaoResource {
     @Path("/nova-afericao-placa")
     @Secured(permissions = Pilares.Frota.Afericao.REALIZAR_AFERICAO_PLACA)
     @UsedBy(platforms = Platform.ANDROID)
-    public NovaAfericaoPlaca getNovaAfericaoPlaca(final @Required AfericaoBuscaFiltro afericaoBusca,
+    public NovaAfericaoPlaca getNovaAfericaoPlaca(@Required final AfericaoBuscaFiltro afericaoBusca,
                                                   @HeaderParam("Authorization") @Required final String userToken)
             throws ProLogException {
         return service.getNovaAfericaoPlaca(afericaoBusca, userToken);
