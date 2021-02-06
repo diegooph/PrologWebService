@@ -2,10 +2,11 @@ package br.com.zalf.prolog.webservice.frota.checklist.ordemservico;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
-import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
-import br.com.zalf.prolog.webservice.commons.util.SqlType;
-import br.com.zalf.prolog.webservice.commons.util.StatementUtils;
 import br.com.zalf.prolog.webservice.commons.util.StringUtils;
+import br.com.zalf.prolog.webservice.commons.util.database.PostgresUtils;
+import br.com.zalf.prolog.webservice.commons.util.database.SqlType;
+import br.com.zalf.prolog.webservice.commons.util.database.StatementUtils;
+import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.errorhandling.sql.ServerSideErrorException;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
@@ -34,7 +35,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static br.com.zalf.prolog.webservice.commons.util.StatementUtils.bindValueOrNull;
+import static br.com.zalf.prolog.webservice.commons.util.database.StatementUtils.bindValueOrNull;
 
 /**
  * Created on 20/11/18
@@ -263,7 +264,7 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
                                                  "f_data_hora_inicio_resolucao => ?," +
                                                  "f_data_hora_fim_resolucao => ?," +
                                                  "f_feedback_conserto => ?);");
-            final OffsetDateTime now = Now.offsetDateTimeUtc();
+            final OffsetDateTime now = Now.getOffsetDateTimeUtc();
             final ZoneId zoneId =
                     TimeZoneManager.getZoneIdForCodUnidade(itensResolucao.getCodUnidadeOrdemServico(), conn);
             stmt.setLong(1, itensResolucao.getCodUnidadeOrdemServico());
