@@ -16,7 +16,7 @@ import java.util.Set;
 public interface EmailApi {
 
     @NotNull
-    EmailRequestResponseHolder sendMessage(@NotNull Set<EmailReceiver> receivers,
-                                           @NotNull EmailTemplateMessage message) throws MailjetException;
+    EmailRequestResponseHolder sendMessage(@NotNull final Set<EmailReceiver> receivers,
+                                           @NotNull final EmailTemplateMessage message) throws MailjetException;
 
 }
