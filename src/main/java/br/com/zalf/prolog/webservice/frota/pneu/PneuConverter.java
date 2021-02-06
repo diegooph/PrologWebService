@@ -2,7 +2,6 @@ package br.com.zalf.prolog.webservice.frota.pneu;
 
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.frota.pneu._model.*;
-import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestinoEnum;
 import br.com.zalf.prolog.webservice.frota.pneu.recapadoras.Recapadora;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
 import org.jetbrains.annotations.NotNull;
@@ -106,10 +105,8 @@ public final class PneuConverter {
     @NotNull
     public static PneuRetornoDescarteSuccess createPneuRetornoDescarteSuccess(@NotNull final ResultSet rSet)
             throws SQLException {
-        return new PneuRetornoDescarteSuccess(
-                rSet.getLong("cod_pneu_retornado"),
-                OrigemDestinoEnum.fromString(rSet.getString("destino_final_pneu_retornado")),
-                rSet.getLong("cod_processo_movimentacao_utilizado_para_retorno"));
+        return new PneuRetornoDescarteSuccess(rSet.getLong("cod_pneu_retornado"),
+                                              rSet.getLong("cod_movimentacao_gerada"));
     }
 
     @NotNull

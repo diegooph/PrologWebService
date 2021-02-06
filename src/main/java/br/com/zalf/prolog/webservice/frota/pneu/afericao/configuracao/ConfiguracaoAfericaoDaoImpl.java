@@ -1,8 +1,8 @@
 package br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao;
 
-import br.com.zalf.prolog.webservice.commons.util.SqlType;
-import br.com.zalf.prolog.webservice.commons.util.StatementUtils;
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
+import br.com.zalf.prolog.webservice.commons.util.database.SqlType;
+import br.com.zalf.prolog.webservice.commons.util.database.StatementUtils;
+import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.*;
 import org.jetbrains.annotations.NotNull;
@@ -16,7 +16,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import static br.com.zalf.prolog.webservice.commons.util.StatementUtils.bindValueOrNull;
+import static br.com.zalf.prolog.webservice.commons.util.database.StatementUtils.bindValueOrNull;
 
 /**
  * Created on 03/05/18.
@@ -183,7 +183,7 @@ public final class ConfiguracaoAfericaoDaoImpl extends DatabaseConnection implem
                     "F_PERIODO_AFERICAO_SULCO := ?," +
                     "F_COD_COLABORADOR := ?," +
                     "F_DATA_HORA_ATUAL_UTC := ?)}");
-            final OffsetDateTime now = Now.offsetDateTimeUtc();
+            final OffsetDateTime now = Now.getOffsetDateTimeUtc();
             for (final ConfiguracaoCronogramaServicoUpsert configuracao : configuracoes) {
                 stmt.setLong(1, configuracao.getCodEmpresaReferente());
                 stmt.setLong(2, configuracao.getCodUnidadeReferente());

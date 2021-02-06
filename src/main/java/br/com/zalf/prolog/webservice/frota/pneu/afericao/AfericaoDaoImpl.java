@@ -5,9 +5,6 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.report.ReportTransformer;
-import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
-import br.com.zalf.prolog.webservice.commons.util.SqlType;
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.pneu.PneuConverter;
 import br.com.zalf.prolog.webservice.frota.pneu.PneuDao;
@@ -216,27 +213,6 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         }
     }
 
-    @NotNull
-    @Override
-    public Restricao getRestricoesByPlaca(@NotNull final String placa) throws Throwable {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_AFERICAO_GET_RESTRICAO_BY_PLACA(?);");
-            stmt.setString(1, placa);
-            rSet = stmt.executeQuery();
-            if (rSet.next() && rSet.isLast()) {
-                return createRestricao(rSet);
-            } else {
-                throw new Throwable("Dados de restrição não encontrados para a placa: " + placa);
-            }
-        } finally {
-            closeConnection(conn, stmt, rSet);
-        }
-    }
-
     @Override
     @NotNull
     public CronogramaAfericao getCronogramaAfericao(@NotNull final List<Long> codUnidades) throws Throwable {
@@ -249,7 +225,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                     "F_COD_UNIDADES := ?," +
                     "F_DATA_HORA_ATUAL := ?);");
             stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
-            stmt.setObject(2, Now.localDateTimeUtc());
+            stmt.setObject(2, Now.getLocalDateTimeUtc());
             rSet = stmt.executeQuery();
 
             final boolean multiUnidades = codUnidades.size() > 1;
@@ -473,6 +449,27 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             return getConfiguracaoNovaAfericaoPlaca(conn, placa);
         } finally {
             close(conn);
+        }
+    }
+
+    @NotNull
+    @Override
+    public Restricao getRestricoesByPlaca(@NotNull final String placa) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_AFERICAO_GET_RESTRICAO_BY_PLACA(?);");
+            stmt.setString(1, placa);
+            rSet = stmt.executeQuery();
+            if (rSet.next() && rSet.isLast()) {
+                return createRestricao(rSet);
+            } else {
+                throw new Throwable("Dados de restrição não encontrados para a placa: " + placa);
+            }
+        } finally {
+            closeConnection(conn, stmt, rSet);
         }
     }
 

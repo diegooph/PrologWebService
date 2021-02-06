@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.praxio;
 
 import br.com.zalf.prolog.webservice.Injection;
-import br.com.zalf.prolog.webservice.commons.util.ProLogUtils;
+import br.com.zalf.prolog.webservice.commons.util.PrologUtils;
 import br.com.zalf.prolog.webservice.customfields.CampoPersonalizadoDao;
 import br.com.zalf.prolog.webservice.customfields._model.CampoPersonalizadoParaRealizacao;
 import br.com.zalf.prolog.webservice.customfields._model.TipoCampoPersonalizado;
@@ -395,7 +395,7 @@ public final class SistemaGlobusPiccolotur extends Sistema {
                     requester.getTokenAutenticacaoIntegracao(autenticacaoHolder);
 
             final String cpfColaborador =
-                    ProLogUtils.isDebug()
+                    PrologUtils.isDebug()
                             ? GlobusPiccoloturConstants.CPF_COLABORADOR_LOCAIS_MOVIMENTO
                             : getIntegradorProLog().getColaboradorByToken(getUserToken()).getCpfAsString();
             final ApiAutenticacaoHolder apiAutenticacaoHolder = getIntegradorProLog()

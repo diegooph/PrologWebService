@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.praxio.data;
 
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.config.BuildConfig;
+import br.com.zalf.prolog.webservice.commons.util.PrologUtils;
 import br.com.zalf.prolog.webservice.integracao.praxio.movimentacao.GlobusPiccoloturLocalMovimentoResponse;
 import br.com.zalf.prolog.webservice.integracao.praxio.movimentacao.ProcessoMovimentacaoGlobus;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.error.GlobusPiccoloturException;
@@ -35,12 +35,13 @@ public final class GlobusPiccoloturRequesterImpl implements GlobusPiccoloturRequ
     @NotNull
     @Override
     public Long insertItensNok(@NotNull final OrdemDeServicoCorretivaPrologVO ordemDeServicoCorretivaPrologVO) {
-        if (BuildConfig.DEBUG) {
+        if (PrologUtils.isDebug()) {
             System.setProperty("com.sun.xml.ws.transport.http.client.HttpTransportPipe.dump", "true");
             System.setProperty("com.sun.xml.internal.ws.transport.http.client.HttpTransportPipe.dump", "true");
             System.setProperty("com.sun.xml.ws.transport.http.HttpAdapter.dump", "true");
             System.setProperty("com.sun.xml.internal.ws.transport.http.HttpAdapter.dump", "true");
             System.setProperty("com.sun.xml.internal.ws.transport.http.HttpAdapter.dumpTreshold", "999999");
+            System.setProperty("javax.xml.bind.JAXBContext", "com.sun.xml.internal.bind.v2.ContextFactory");
         }
         // Utilizamos este try/catch para lançar um erro da integração para qualquer coisa que acontecer que não for
         // algo já mapeado pelo ProLog.

@@ -17,14 +17,7 @@ public final class CargoPermissaoProlog {
     private final ImpactoPermissaoProLog impacto;
     @NotNull
     private final String descricao;
-    /**
-     * Atributo que indica se a permissão está associada ao cargo.
-     */
     private final boolean permissaoAssociada;
-    /**
-     * Atributo que indica se a permissão está bloqueada no banco de dados.
-     * Isso não impede que a permissão esteja associada ao cargo.
-     */
     private final boolean permissaoBloqueada;
     @Nullable
     private final CargoPermissaoInfosBloqueio infosBloqueio;

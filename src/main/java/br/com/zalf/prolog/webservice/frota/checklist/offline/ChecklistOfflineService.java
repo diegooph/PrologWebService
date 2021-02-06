@@ -33,7 +33,7 @@ public class ChecklistOfflineService {
             ensureValidToken(tokenSincronizacao);
             // Buscamos um token para o usuário que realizou o checklist sendo sincronizado
             final Autenticacao autenticacao =
-                    Injection.provideAutenticacaoDao().insertOrUpdateByCodColaborador(checklist.getCodColaborador());
+                    Injection.provideAutenticacaoDao().createTokenByCodColaborador(checklist.getCodColaborador());
             return ResponseWithCod.ok(
                     "Checklist inserido com sucesso",
                     RouterChecklistOffline.create(dao, autenticacao.getToken()).insertChecklistOffline(checklist));

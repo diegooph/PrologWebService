@@ -4,7 +4,7 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.commons.util.StringUtils;
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
+import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Cargo;
 import br.com.zalf.prolog.webservice.gente.quiz.quiz.model.AlternativaEscolhaQuiz;
@@ -201,7 +201,7 @@ public final class QuizModeloDaoImpl extends DatabaseConnection implements QuizM
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM FUNC_QUIZ_GET_LISTAGEM_MODELOS(?, ?);");
             stmt.setLong(1, codUnidade);
-            stmt.setObject(2, Now.offsetDateTimeUtc());
+            stmt.setObject(2, Now.getOffsetDateTimeUtc());
             rSet = stmt.executeQuery();
             final List<ModeloQuizListagem> modelos = new ArrayList<>();
             Set<String> cargosLiberados = null;

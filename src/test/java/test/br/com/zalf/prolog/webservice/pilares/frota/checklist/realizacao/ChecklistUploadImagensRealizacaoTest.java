@@ -1,10 +1,10 @@
 package test.br.com.zalf.prolog.webservice.pilares.frota.checklist.realizacao;
 
 import br.com.zalf.prolog.webservice.commons.FonteDataHora;
-import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
-import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
 import br.com.zalf.prolog.webservice.commons.util.RandomUtils;
-import br.com.zalf.prolog.webservice.commons.util.SqlType;
+import br.com.zalf.prolog.webservice.commons.util.database.PostgresUtils;
+import br.com.zalf.prolog.webservice.commons.util.database.SqlType;
+import br.com.zalf.prolog.webservice.commons.util.datetime.PrologDateParser;
 import br.com.zalf.prolog.webservice.database.DatabaseConnectionProvider;
 import br.com.zalf.prolog.webservice.database.DatabaseManager;
 import br.com.zalf.prolog.webservice.frota.checklist.ChecklistService;
@@ -75,6 +75,173 @@ public final class ChecklistUploadImagensRealizacaoTest extends BaseTest {
     public void destroy() {
         DatabaseManager.finish();
         service = null;
+    }
+
+    @NotNull
+    private ChecklistInsercao criaChecklistRespondidoDefault() {
+        //region Insere modelo de checklist
+        final List<PerguntaModeloChecklistInsercao> perguntas = new ArrayList<>();
+        {
+            // P1.
+
+            final List<AlternativaModeloChecklistInsercao> alternativas = new ArrayList<>();
+            // A1.
+            alternativas.add(new AlternativaModeloChecklistInsercao(
+                    "A1",
+                    PrioridadeAlternativa.ALTA,
+                    false,
+                    1,
+                    false,
+                    AnexoMidiaChecklistEnum.BLOQUEADO, "TESTE"));
+            // A2.
+            alternativas.add(new AlternativaModeloChecklistInsercao(
+                    "Outros",
+                    PrioridadeAlternativa.CRITICA,
+                    true,
+                    2,
+                    true,
+                    AnexoMidiaChecklistEnum.BLOQUEADO, "TESTE"));
+
+            perguntas.add(new PerguntaModeloChecklistInsercao(
+                    "P1",
+                    1L,
+                    1,
+                    true,
+                    AnexoMidiaChecklistEnum.BLOQUEADO,
+                    alternativas));
+        }
+
+        {
+            // P2.
+
+            final List<AlternativaModeloChecklistInsercao> alternativas = new ArrayList<>();
+            // B1.
+            alternativas.add(new AlternativaModeloChecklistInsercao(
+                    "B1",
+                    PrioridadeAlternativa.ALTA,
+                    false,
+                    1,
+                    true,
+                    AnexoMidiaChecklistEnum.BLOQUEADO, "TESTE"));
+            // B2.
+            alternativas.add(new AlternativaModeloChecklistInsercao(
+                    "Outros",
+                    PrioridadeAlternativa.BAIXA,
+                    true,
+                    2,
+                    false,
+                    AnexoMidiaChecklistEnum.BLOQUEADO, "TESTE"));
+
+            perguntas.add(new PerguntaModeloChecklistInsercao(
+                    "P2",
+                    null,
+                    2,
+                    false,
+                    AnexoMidiaChecklistEnum.BLOQUEADO,
+                    alternativas));
+        }
+
+        final Long codUnidade = 5L;
+        final String nomeModelo = "ModeloChecklist - " + RandomUtils.randomAlphanumeric(10);
+        // 4 - Então inserimos o modelo.
+        final ResultInsertModeloChecklist result =
+                service.insertModeloChecklist(
+                        new ModeloChecklistInsercao(
+                                nomeModelo,
+                                codUnidade,
+                                Collections.emptyList(),
+                                Collections.emptyList(),
+                                perguntas),
+                        tokenUsuario);
+
+        /* Agora buscamos o modelo inserido.*/
+        final ModeloChecklistVisualizacao modeloBuscado = service.getModeloChecklist(
+                codUnidade,
+                result.getCodModeloChecklistInserido());
+        //endregion
+
+        //region Insere a realização do checklist.
+        final List<ChecklistResposta> respostas = new ArrayList<>();
+
+        {
+            // Responde a P1 - ela É single_choice.
+            final PerguntaModeloChecklistVisualizacao p1 = modeloBuscado.getPerguntas().get(0);
+            final List<ChecklistAlternativaResposta> alternativas = new ArrayList<>();
+
+            // A1.
+            final AlternativaModeloChecklist a1 = p1.getAlternativas().get(0);
+            alternativas.add(new ChecklistAlternativaResposta(
+                    a1.getCodigo(),
+                    true,
+                    false,
+                    null));
+
+            // A2.
+            final AlternativaModeloChecklist a2 = p1.getAlternativas().get(1);
+            alternativas.add(new ChecklistAlternativaResposta(
+                    a2.getCodigo(),
+                    false,
+                    true,
+                    null));
+
+            respostas.add(new ChecklistResposta(p1.getCodigo(), alternativas));
+        }
+
+        {
+            // Responde a P2 - ela NÃO É single_choice.
+            final PerguntaModeloChecklistVisualizacao p2 = modeloBuscado.getPerguntas().get(1);
+            final List<ChecklistAlternativaResposta> alternativas = new ArrayList<>();
+
+            // B1.
+            final AlternativaModeloChecklist b1 = p2.getAlternativas().get(0);
+            alternativas.add(new ChecklistAlternativaResposta(
+                    b1.getCodigo(),
+                    true,
+                    false,
+                    null));
+
+            // B2.
+            final AlternativaModeloChecklist b2 = p2.getAlternativas().get(1);
+            alternativas.add(new ChecklistAlternativaResposta(
+                    b2.getCodigo(),
+                    true,
+                    true,
+                    "Está com problema..."));
+
+            respostas.add(new ChecklistResposta(p2.getCodigo(), alternativas));
+        }
+        //endregion
+
+        return new ChecklistInsercao(
+                5L,
+                result.getCodModeloChecklistInserido(),
+                result.getCodVersaoModeloChecklistInserido(),
+                2272L,
+                3195L,
+                "PRO0001",
+                TipoChecklist.SAIDA,
+                112,
+                "uma observacao",
+                10000,
+                respostas,
+                PrologDateParser.toLocalDateTime("2019-10-14T09:35:10"),
+                FonteDataHora.LOCAL_CELULAR,
+                80,
+                83,
+                "device didID",
+                "deviceImei",
+                10000,
+                11000,
+                0,
+                0);
+    }
+
+    @NotNull
+    private InputStream getImagemFromResources(@NotNull final String fileName) throws IOException {
+        final Path path = Paths.get("src", "test", "resources", fileName);
+        final InputStream imagem = Files.newInputStream(path);
+        assertThat(imagem).isNotNull();
+        return imagem;
     }
 
     //region Chamadas dos testes
@@ -228,172 +395,5 @@ public final class ChecklistUploadImagensRealizacaoTest extends BaseTest {
             }
         }
         //endregion
-    }
-
-    @NotNull
-    private ChecklistInsercao criaChecklistRespondidoDefault() {
-        //region Insere modelo de checklist
-        final List<PerguntaModeloChecklistInsercao> perguntas = new ArrayList<>();
-        {
-            // P1.
-
-            final List<AlternativaModeloChecklistInsercao> alternativas = new ArrayList<>();
-            // A1.
-            alternativas.add(new AlternativaModeloChecklistInsercao(
-                    "A1",
-                    PrioridadeAlternativa.ALTA,
-                    false,
-                    1,
-                    false,
-                    AnexoMidiaChecklistEnum.BLOQUEADO, "TESTE"));
-            // A2.
-            alternativas.add(new AlternativaModeloChecklistInsercao(
-                    "Outros",
-                    PrioridadeAlternativa.CRITICA,
-                    true,
-                    2,
-                    true,
-                    AnexoMidiaChecklistEnum.BLOQUEADO, "TESTE"));
-
-            perguntas.add(new PerguntaModeloChecklistInsercao(
-                    "P1",
-                    1L,
-                    1,
-                    true,
-                    AnexoMidiaChecklistEnum.BLOQUEADO,
-                    alternativas));
-        }
-
-        {
-            // P2.
-
-            final List<AlternativaModeloChecklistInsercao> alternativas = new ArrayList<>();
-            // B1.
-            alternativas.add(new AlternativaModeloChecklistInsercao(
-                    "B1",
-                    PrioridadeAlternativa.ALTA,
-                    false,
-                    1,
-                    true,
-                    AnexoMidiaChecklistEnum.BLOQUEADO, "TESTE"));
-            // B2.
-            alternativas.add(new AlternativaModeloChecklistInsercao(
-                    "Outros",
-                    PrioridadeAlternativa.BAIXA,
-                    true,
-                    2,
-                    false,
-                    AnexoMidiaChecklistEnum.BLOQUEADO, "TESTE"));
-
-            perguntas.add(new PerguntaModeloChecklistInsercao(
-                    "P2",
-                    null,
-                    2,
-                    false,
-                    AnexoMidiaChecklistEnum.BLOQUEADO,
-                    alternativas));
-        }
-
-        final Long codUnidade = 5L;
-        final String nomeModelo = "ModeloChecklist - " + RandomUtils.randomAlphanumeric(10);
-        // 4 - Então inserimos o modelo.
-        final ResultInsertModeloChecklist result =
-                service.insertModeloChecklist(
-                        new ModeloChecklistInsercao(
-                                nomeModelo,
-                                codUnidade,
-                                Collections.emptyList(),
-                                Collections.emptyList(),
-                                perguntas),
-                        tokenUsuario);
-
-        /* Agora buscamos o modelo inserido.*/
-        final ModeloChecklistVisualizacao modeloBuscado = service.getModeloChecklist(
-                codUnidade,
-                result.getCodModeloChecklistInserido());
-        //endregion
-
-        //region Insere a realização do checklist.
-        final List<ChecklistResposta> respostas = new ArrayList<>();
-
-        {
-            // Responde a P1 - ela É single_choice.
-            final PerguntaModeloChecklistVisualizacao p1 = modeloBuscado.getPerguntas().get(0);
-            final List<ChecklistAlternativaResposta> alternativas = new ArrayList<>();
-
-            // A1.
-            final AlternativaModeloChecklist a1 = p1.getAlternativas().get(0);
-            alternativas.add(new ChecklistAlternativaResposta(
-                    a1.getCodigo(),
-                    true,
-                    false,
-                    null));
-
-            // A2.
-            final AlternativaModeloChecklist a2 = p1.getAlternativas().get(1);
-            alternativas.add(new ChecklistAlternativaResposta(
-                    a2.getCodigo(),
-                    false,
-                    true,
-                    null));
-
-            respostas.add(new ChecklistResposta(p1.getCodigo(), alternativas));
-        }
-
-        {
-            // Responde a P2 - ela NÃO É single_choice.
-            final PerguntaModeloChecklistVisualizacao p2 = modeloBuscado.getPerguntas().get(1);
-            final List<ChecklistAlternativaResposta> alternativas = new ArrayList<>();
-
-            // B1.
-            final AlternativaModeloChecklist b1 = p2.getAlternativas().get(0);
-            alternativas.add(new ChecklistAlternativaResposta(
-                    b1.getCodigo(),
-                    true,
-                    false,
-                    null));
-
-            // B2.
-            final AlternativaModeloChecklist b2 = p2.getAlternativas().get(1);
-            alternativas.add(new ChecklistAlternativaResposta(
-                    b2.getCodigo(),
-                    true,
-                    true,
-                    "Está com problema..."));
-
-            respostas.add(new ChecklistResposta(p2.getCodigo(), alternativas));
-        }
-        //endregion
-
-        return new ChecklistInsercao(
-                5L,
-                result.getCodModeloChecklistInserido(),
-                result.getCodVersaoModeloChecklistInserido(),
-                2272L,
-                3195L,
-                "PRO0001",
-                TipoChecklist.SAIDA,
-                112,
-                "uma observacao",
-                10000,
-                respostas,
-                ProLogDateParser.toLocalDateTime("2019-10-14T09:35:10"),
-                FonteDataHora.LOCAL_CELULAR,
-                80,
-                83,
-                "device didID",
-                "deviceImei",
-                10000,
-                11000,
-                0,
-                0);
-    }
-
-    @NotNull
-    private InputStream getImagemFromResources(@NotNull final String fileName) throws IOException {
-        final Path path = Paths.get("src", "test", "resources", fileName);
-        final InputStream imagem = Files.newInputStream(path);
-        assertThat(imagem).isNotNull();
-        return imagem;
     }
 }

@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.commons.imagens;
 
 import br.com.zalf.prolog.webservice.AmazonConstants;
 import br.com.zalf.prolog.webservice.commons.util.RandomUtils;
-import br.com.zalf.prolog.webservice.commons.util.S3FileSender;
+import br.com.zalf.prolog.webservice.commons.util.files.S3FileSender;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -17,7 +17,7 @@ import java.io.InputStream;
 public class UploadImageHelper {
 
     @NotNull
-    public static ImagemProLog uploadCompressedImagem(@NotNull final InputStream inputStream,
+    public static ImagemProlog uploadCompressedImagem(@NotNull final InputStream inputStream,
                                                       @NotNull final String amazonBucket,
                                                       @NotNull final String imageType)
             throws IOException, S3FileSender.S3FileSenderException, FileFormatNotSupportException {
@@ -27,11 +27,11 @@ public class UploadImageHelper {
     }
 
     @NotNull
-    private static ImagemProLog internalImageSender(
+    private static ImagemProlog internalImageSender(
             @NotNull final String amazonBucket,
             @NotNull final String imageName,
             @NotNull final File imageFile) throws S3FileSender.S3FileSenderException {
-        final ImagemProLog imagemProLog = new ImagemProLog();
+        final ImagemProlog imagemProLog = new ImagemProlog();
         final S3FileSender fileSender = new S3FileSender(
                 AmazonConstants.AWS_ACCESS_KEY_ID,
                 AmazonConstants.AWS_SECRET_KEY);

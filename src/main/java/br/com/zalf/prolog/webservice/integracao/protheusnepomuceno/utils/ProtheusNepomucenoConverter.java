@@ -105,6 +105,9 @@ public final class ProtheusNepomucenoConverter {
             @NotNull final InfosAfericaoRealizadaPlaca infosAfericaoRealizadaPlaca) {
         final ModeloPlacasAfericao.PlacaAfericao placaAfericao = new ModeloPlacasAfericao.PlacaAfericao();
         placaAfericao.setPlaca(veiculo.getPlacaVeiculo());
+        if (!veiculo.getCodVeiculo().equals(veiculo.getPlacaVeiculo())) {
+            placaAfericao.setIdentificadorFrota(veiculo.getCodVeiculo());
+        }
 
         placaAfericao.setIntervaloUltimaAfericaoPressao(infosAfericaoRealizadaPlaca.getDiasUltimaAfericaoPressao());
         placaAfericao.setIntervaloUltimaAfericaoSulco(infosAfericaoRealizadaPlaca.getDiasUltimaAfericaoSulco());
@@ -150,7 +153,10 @@ public final class ProtheusNepomucenoConverter {
                                               @NotNull final VeiculoAfericaoProtheusNepomuceno veiculoAfericao,
                                               @NotNull final ProtheusNepomucenoPosicaoPneuMapper posicaoPneuMapper) {
         final Veiculo veiculo = new Veiculo();
-        veiculo.setPlaca(veiculoAfericao.getPlacaVeiculo());
+        veiculo.setPlaca(veiculoAfericao.getCodVeiculo());
+        if (!veiculoAfericao.getCodVeiculo().equals(veiculoAfericao.getPlacaVeiculo())) {
+            veiculo.setIdentificadorFrota(veiculoAfericao.getPlacaVeiculo());
+        }
         veiculo.setKmAtual(veiculoAfericao.getKmAtualVeiculo());
         veiculo.setCodUnidadeAlocado(codUnidadeProlog);
         veiculo.setDiagrama(createDiagramaProlog(codDiagramaProlog, veiculoAfericao.getCodEstruturaVeiculo()));

@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.gente.controlejornada.relatorios.model;
 
 import br.com.zalf.prolog.webservice.commons.report.CsvReport;
-import br.com.zalf.prolog.webservice.commons.util.date.Durations;
+import br.com.zalf.prolog.webservice.commons.util.datetime.DurationUtils;
 import br.com.zalf.prolog.webservice.gente.controlejornada.tipomarcacao.TipoMarcacao;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -105,17 +105,17 @@ public class RelatorioTotaisPorTipoIntervalo implements CsvReport {
             for (int i = COLUNA_CARGO_COLABORADOR + 1; i < table.get(cpf).size(); i++) {
                 final long valorMarcacao = ((Long) table.get(cpf).get(i));
                 table.get(cpf).set(i, valorMarcacao != 0
-                        ? Durations.formatDurationHandleNegative(valorMarcacao, Durations.Format.HH_MM_SS)
+                        ? DurationUtils.formatDurationHandleNegative(valorMarcacao, DurationUtils.Format.HH_MM_SS)
                         : ZERO_HORAS);
             }
             if (tipoJornada != null) {
                 final Long totalJornadaBruta = totaisJornadaBruta.get(cpf);
                 table.get(cpf).set(COLUNA_JORNADA_BRUTA, totalJornadaBruta != 0
-                        ? Durations.formatDurationHandleNegative(totalJornadaBruta, Durations.Format.HH_MM_SS)
+                        ? DurationUtils.formatDurationHandleNegative(totalJornadaBruta, DurationUtils.Format.HH_MM_SS)
                         : ZERO_HORAS);
                 final Long totalJornadaLiquida = totaisJornadaLiquida.get(cpf);
                 table.get(cpf).set(COLUNA_JORNADA_LIQUIDA, totalJornadaLiquida != 0
-                        ? Durations.formatDurationHandleNegative(totalJornadaLiquida, Durations.Format.HH_MM_SS)
+                        ? DurationUtils.formatDurationHandleNegative(totalJornadaLiquida, DurationUtils.Format.HH_MM_SS)
                         : ZERO_HORAS);
             } else {
                 table.get(cpf).set(COLUNA_JORNADA_BRUTA, "-");

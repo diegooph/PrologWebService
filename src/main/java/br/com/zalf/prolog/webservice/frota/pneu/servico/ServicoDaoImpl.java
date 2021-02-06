@@ -3,7 +3,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.servico;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.questoes.Alternativa;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
+import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.pneu.PneuDao;
@@ -217,6 +217,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
         try {
             conn = getConnection();
             conn.setAutoCommit(false);
+            servico.setCodVeiculo(getCodVeiculoServico(servico, getColaboradorServico(servico)));
             final PneuDao pneuDao = Injection.providePneuDao();
             final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
             final Colaborador colaborador = Injection.provideColaboradorDao().getByCpf(
@@ -508,6 +509,19 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
     }
 
     @NotNull
+    private Long getCodVeiculoServico(final @NotNull Servico servico, final Colaborador colaborador) {
+        return VeiculoBackwardHelper.getCodVeiculoByPlaca(
+                colaborador.getCodigo(),
+                servico.getPlacaVeiculo());
+    }
+
+    private Colaborador getColaboradorServico(final @NotNull Servico servico) throws SQLException {
+        return Injection.provideColaboradorDao().getByCpf(
+                servico.getColaboradorResponsavelFechamento().getCpf(),
+                true);
+    }
+
+    @NotNull
     private FormaColetaDadosAfericaoEnum getFormaColetaDadosFechamentoServico(@NotNull final Connection conn,
                                                                               @NotNull final String placa)
             throws SQLException {
@@ -553,6 +567,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
     private ProcessoMovimentacao convertServicoToProcessoMovimentacao(@NotNull final Long codUnidade,
                                                                       @NotNull final ServicoMovimentacao servico) {
         final Veiculo veiculo = new Veiculo();
+        veiculo.setCodigo(servico.getCodVeiculo());
         veiculo.setPlaca(servico.getPlacaVeiculo());
         veiculo.setKmAtual(servico.getKmVeiculoMomentoFechamento());
 
@@ -592,7 +607,7 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
                 unidade,
                 movimentacoes,
                 colaborador,
-                Now.timestampUtc(),
+                Now.getTimestampUtc(),
                 "Fechamento de serviço");
     }
 

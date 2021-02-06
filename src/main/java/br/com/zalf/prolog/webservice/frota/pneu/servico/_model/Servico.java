@@ -34,6 +34,7 @@ public abstract class Servico {
     private Colaborador colaboradorResponsavelFechamento;
     private int qtdApontamentos;
     private long kmVeiculoMomentoFechamento;
+    private Long codVeiculo;
     private String placaVeiculo;
     private String identificadorFrota;
     private Double pressaoColetadaFechamento;
@@ -161,6 +162,14 @@ public abstract class Servico {
         this.kmVeiculoMomentoFechamento = kmVeiculoMomentoFechamento;
     }
 
+    public Long getCodVeiculo() {
+        return codVeiculo;
+    }
+
+    public void setCodVeiculo(final Long codVeiculo) {
+        this.codVeiculo = codVeiculo;
+    }
+
     public String getPlacaVeiculo() {
         return placaVeiculo;
     }
@@ -228,7 +237,7 @@ public abstract class Servico {
         return identificadorFrota;
     }
 
-    public void setIdentificadorFrota(String identificadorFrota) {
+    public void setIdentificadorFrota(final String identificadorFrota) {
         this.identificadorFrota = identificadorFrota;
     }
 }

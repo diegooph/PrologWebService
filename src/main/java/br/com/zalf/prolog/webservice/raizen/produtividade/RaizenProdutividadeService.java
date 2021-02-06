@@ -1,11 +1,11 @@
 package br.com.zalf.prolog.webservice.raizen.produtividade;
 
 import br.com.zalf.prolog.webservice.Injection;
+import br.com.zalf.prolog.webservice.autenticacao.token.TokenCleaner;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.commons.util.ProLogDateParser;
-import br.com.zalf.prolog.webservice.commons.util.TokenCleaner;
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
+import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
+import br.com.zalf.prolog.webservice.commons.util.datetime.PrologDateParser;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogExceptionHandler;
 import br.com.zalf.prolog.webservice.raizen.produtividade.error.RaizenProdutividadeValidator;
@@ -47,7 +47,7 @@ public class RaizenProdutividadeService {
             final File file = createFileFromImport(codUnidade, fileInputStream, fileDetail);
             final List<RaizenProdutividadeItemInsert> raizenProdutividadeItens = RaizenProdutividadeReader
                     .readListFromCsvFilePath(file);
-            for (RaizenProdutividadeItemInsert item : raizenProdutividadeItens) {
+            for (final RaizenProdutividadeItemInsert item : raizenProdutividadeItens) {
                 RaizenProdutividadeValidator.validacaoAtributosRaizenProdutividade(item);
                 // O código da unidade vem no path pois os itens são importados através de arquivo.
                 item.setCodUnidade(codUnidade);
@@ -73,7 +73,7 @@ public class RaizenProdutividadeService {
                     TokenCleaner.getOnlyToken(token),
                     raizenProdutividadeItemInsert);
             return Response.ok("Produtividade cadastrada com sucesso");
-        } catch (Throwable e) {
+        } catch (final Throwable e) {
             final String errorMessage = "Não foi possível cadastrar este item, tente novamente";
             Log.e(TAG, errorMessage, e);
             throw exceptionHandler.map(e, errorMessage);
@@ -92,7 +92,7 @@ public class RaizenProdutividadeService {
                     codItem,
                     updateRaizenProdutividadeItemInsert);
             return Response.ok("Produtividade alterada com sucesso");
-        } catch (Throwable e) {
+        } catch (final Throwable e) {
             final String errorMessage = "Não foi possível atualizar este item, tente novamente";
             Log.e(TAG, errorMessage, e);
             throw exceptionHandler.map(e, errorMessage);
@@ -112,14 +112,14 @@ public class RaizenProdutividadeService {
                 case POR_COLABORADOR:
                     itens = dao.getRaizenProdutividadeColaborador(
                             codUnidade,
-                            ProLogDateParser.toLocalDate(dataInicial),
-                            ProLogDateParser.toLocalDate(dataFinal));
+                            PrologDateParser.toLocalDate(dataInicial),
+                            PrologDateParser.toLocalDate(dataFinal));
                     break;
                 case POR_DATA:
                     itens = dao.getRaizenProdutividadeData(
                             codUnidade,
-                            ProLogDateParser.toLocalDate(dataInicial),
-                            ProLogDateParser.toLocalDate(dataFinal));
+                            PrologDateParser.toLocalDate(dataInicial),
+                            PrologDateParser.toLocalDate(dataFinal));
                     break;
                 default:
                     throw new IllegalStateException();
@@ -156,7 +156,7 @@ public class RaizenProdutividadeService {
                     codColaborador,
                     mes,
                     ano);
-        } catch (Throwable e) {
+        } catch (final Throwable e) {
             final String errorMessage = "Não foi possível buscar a produtividade, tente novamente";
             Log.e(TAG, errorMessage, e);
             throw exceptionHandler.map(e, errorMessage);
@@ -168,7 +168,7 @@ public class RaizenProdutividadeService {
         try {
             dao.deleteRaizenProdutividadeItens(codRaizenProdutividades);
             return Response.ok("Produtividades deletadas com sucesso!");
-        } catch (Throwable e) {
+        } catch (final Throwable e) {
             final String errorMessage = "Não foi possível deletar estes itens, tente novamente";
             Log.e(TAG, errorMessage, e);
             throw exceptionHandler.map(e, errorMessage);
@@ -180,7 +180,7 @@ public class RaizenProdutividadeService {
     private File createFileFromImport(@NotNull final Long codUnidade,
                                       @NotNull final InputStream fileInputStream,
                                       @NotNull final FormDataContentDisposition fileDetail) throws Throwable {
-        final String fileName = String.valueOf(Now.utcMillis()) + "_" + codUnidade
+        final String fileName = String.valueOf(Now.getUtcMillis()) + "_" + codUnidade
                 + "_" + fileDetail.getFileName().replace(" ", "_");
         // Pasta temporária
         final File tmpDir = Files.createTempDir();

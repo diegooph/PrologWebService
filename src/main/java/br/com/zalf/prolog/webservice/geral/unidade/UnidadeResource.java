@@ -1,14 +1,13 @@
 package br.com.zalf.prolog.webservice.geral.unidade;
 
-import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
 import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeEdicaoDto;
 import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeEntity;
-import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeVisualizacaoDto;
+import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeMapper;
+import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeVisualizacaoListagemDto;
 import br.com.zalf.prolog.webservice.interceptors.ApiExposed;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
-import br.com.zalf.prolog.webservice.mappers.Mapper;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,20 +31,18 @@ import java.util.List;
 public final class UnidadeResource implements UnidadeResourceApiDoc {
     @NotNull
     private final UnidadeService service;
-
     @NotNull
-    private final Mapper<UnidadeEdicaoDto, UnidadeEntity> mapper;
+    private final UnidadeMapper mapper;
 
     @Autowired
     public UnidadeResource(@NotNull final UnidadeService unidadeService,
-                           @NotNull final Mapper<UnidadeEdicaoDto, UnidadeEntity> mapper) {
+                           @NotNull final UnidadeMapper mapper) {
         this.service = unidadeService;
         this.mapper = mapper;
     }
 
     @ApiExposed
     @PUT
-    @Path("/atualiza")
     @Secured(permissions = {Pilares.Geral.Empresa.EDITAR_ESTRUTURA})
     @Override
     public SuccessResponse updateUnidade(@Valid final UnidadeEdicaoDto unidadeEdicaoDto) {
@@ -58,32 +55,17 @@ public final class UnidadeResource implements UnidadeResourceApiDoc {
     @Secured(permissions = {Pilares.Geral.Empresa.VISUALIZAR_ESTRUTURA, Pilares.Geral.Empresa.EDITAR_ESTRUTURA})
     @Path("/{codUnidade}")
     @Override
-    public UnidadeVisualizacaoDto getUnidadeByCodigo(@PathParam("codUnidade") final Long codUnidade) {
-        return service.getUnidadeByCodigo(codUnidade);
+    public UnidadeVisualizacaoListagemDto getUnidadeByCodigo(@PathParam("codUnidade") final Long codUnidade) {
+        return mapper.toDto(service.getUnidadeByCodigo(codUnidade));
     }
 
     @ApiExposed
     @GET
     @Secured(permissions = {Pilares.Geral.Empresa.VISUALIZAR_ESTRUTURA, Pilares.Geral.Empresa.EDITAR_ESTRUTURA})
     @Override
-    public List<UnidadeVisualizacaoDto> getUnidadesListagem(
+    public List<UnidadeVisualizacaoListagemDto> getUnidadesListagem(
             @QueryParam("codEmpresa") final Long codEmpresa,
-            @QueryParam("codigosRegionais") final List<Long> codigosRegionais) {
-        return service.getUnidadesListagem(codEmpresa, codigosRegionais);
-    }
-
-    /**
-     * @deprecated em 09/11/2020. Deve ser utilizado o método {@link #updateUnidade}. Este método foi depreciado
-     * para a criação de um método que contenha um retorno específico, com informações úteis acerca da atualização
-     * ocorrida.
-     */
-    @Deprecated
-    @ApiExposed
-    @PUT
-    @Secured(permissions = {Pilares.Geral.Empresa.EDITAR_ESTRUTURA})
-    @Override
-    public Response updateUnidadeOld(@Valid final UnidadeEdicaoDto unidadeEdicaoDto) {
-        this.updateUnidade(unidadeEdicaoDto);
-        return Response.ok("Unidade atualizada com sucesso.");
+            @QueryParam("codsRegionais") final List<Long> codsRegionais) {
+        return mapper.toDto(service.getUnidadesListagem(codEmpresa, codsRegionais));
     }
 }

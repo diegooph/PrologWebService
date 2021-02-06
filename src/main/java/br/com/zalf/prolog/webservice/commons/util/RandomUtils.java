@@ -10,7 +10,9 @@ import java.util.Random;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public class RandomUtils {
+    @NotNull
     private static final String DATA = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    @NotNull
     private final static Random RANDOM = new Random();
 
     private RandomUtils() {
@@ -26,7 +28,6 @@ public class RandomUtils {
         return sb.toString();
     }
 
-    @NotNull
     public static boolean randomBoolean() {
         return RANDOM.nextBoolean();
     }

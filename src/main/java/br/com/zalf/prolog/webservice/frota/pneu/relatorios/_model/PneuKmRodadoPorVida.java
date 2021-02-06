@@ -3,6 +3,8 @@ package br.com.zalf.prolog.webservice.frota.pneu.relatorios._model;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 
+import java.math.BigDecimal;
+
 /**
  * Created on 2020-05-21
  *
@@ -23,8 +25,8 @@ public final class PneuKmRodadoPorVida {
     @NotNull
     private final String modelo;
     private final String vida;
-    private final String valorVida;
-    private final String kmRodadoVida;
+    private final BigDecimal valorVida;
+    private final long kmRodadoVida;
     private final String valorPorKmVida;
-    private final String kmRodadoTodasVidas;
+    private final long kmRodadoTodasVidas;
 }

@@ -8,17 +8,9 @@ import java.util.List;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public class Galeria {
-    private List<ImagemProLog> imagens;
+    private List<ImagemProlog> imagens;
 
-    public Galeria(final List<ImagemProLog> imagens) {
-        this.imagens = imagens;
-    }
-
-    public List<ImagemProLog> getImagens() {
-        return imagens;
-    }
-
-    public void setImagens(final List<ImagemProLog> imagens) {
+    public Galeria(final List<ImagemProlog> imagens) {
         this.imagens = imagens;
     }
 
@@ -27,5 +19,13 @@ public class Galeria {
         return "Galeria{" +
                 "imagens=" + imagens +
                 '}';
+    }
+
+    public List<ImagemProlog> getImagens() {
+        return imagens;
+    }
+
+    public void setImagens(final List<ImagemProlog> imagens) {
+        this.imagens = imagens;
     }
 }

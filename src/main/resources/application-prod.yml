@@ -1,3 +1,5 @@
+prolog:
+  version_code: "v2_1.5.5"
 spring:
   profiles: prod
   datasource:
@@ -6,3 +8,14 @@ spring:
     password: "${prolog-rds-password}"
     hikari:
       maximum-pool-size: 190
+sentry:
+  dsn: "${sentry-dsn}"
+  release: "${prolog.version_code}"
+  enable-session-tracking: true
+  attach-stacktrace: true
+  in-app-excludes:
+    - "sun"
+    - "java"
+    - "org"
+  in-app-includes:
+    - "br.com.zalf"

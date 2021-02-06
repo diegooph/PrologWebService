@@ -1,8 +1,8 @@
 package br.com.zalf.prolog.webservice.messaging.email.task;
 
-import br.com.zalf.prolog.webservice.commons.util.PostgresUtils;
-import br.com.zalf.prolog.webservice.commons.util.SqlType;
-import br.com.zalf.prolog.webservice.commons.util.date.Now;
+import br.com.zalf.prolog.webservice.commons.util.database.PostgresUtils;
+import br.com.zalf.prolog.webservice.commons.util.database.SqlType;
+import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import br.com.zalf.prolog.webservice.messaging.MessageScope;
 import br.com.zalf.prolog.webservice.messaging.email._model.EmailRequestResponseHolder;
 import com.google.common.base.Throwables;
@@ -13,7 +13,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.Types;
 
-import static br.com.zalf.prolog.webservice.commons.util.StatementUtils.bindValueOrNull;
+import static br.com.zalf.prolog.webservice.commons.util.database.StatementUtils.bindValueOrNull;
 
 /**
  * Created on 2020-02-25
@@ -36,7 +36,7 @@ public final class PrologEmailSaveLogTask {
                 "F_REQUEST_TO_API       => ?," +
                 "F_RESPONSE_FROM_API    => ?," +
                 "F_FATAL_SEND_EXCEPTION => ?)}")) {
-            stmt.setObject(1, Now.offsetDateTimeUtc());
+            stmt.setObject(1, Now.getOffsetDateTimeUtc());
             stmt.setString(2, messageScope.asString());
             if (request != null) {
                 stmt.setObject(3, PostgresUtils.toJsonb(request));

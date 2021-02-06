@@ -4,8 +4,8 @@ import br.com.zalf.prolog.webservice.DummyData;
 import br.com.zalf.prolog.webservice.cargo._model.CargoEmUso;
 import br.com.zalf.prolog.webservice.cargo._model.CargoNaoUtilizado;
 import br.com.zalf.prolog.webservice.cargo._model.CargoSelecao;
-import br.com.zalf.prolog.webservice.commons.util.Platform;
-import br.com.zalf.prolog.webservice.commons.util.UsedBy;
+import br.com.zalf.prolog.webservice.commons.network.metadata.Platform;
+import br.com.zalf.prolog.webservice.commons.network.metadata.UsedBy;
 import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 import br.com.zalf.prolog.webservice.interceptors.debug.ResourceDebugOnly;
 
