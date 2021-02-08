@@ -45,5 +45,5 @@ logging:
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
-    url: /prolog/v2/swagger.json
+    url: /prolog/swagger.json
     operations-sorter: method
