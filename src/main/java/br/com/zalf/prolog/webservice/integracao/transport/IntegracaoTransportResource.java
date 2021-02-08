@@ -20,7 +20,7 @@ import java.util.List;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 @ConsoleDebugLog
-@Path("/integracoes/fgt-sistemas")
+@Path("/v2/integracoes/fgt-sistemas")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public final class IntegracaoTransportResource {
