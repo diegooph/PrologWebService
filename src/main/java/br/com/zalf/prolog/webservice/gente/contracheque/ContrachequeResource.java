@@ -25,7 +25,7 @@ import java.util.List;
 /**
  * Created by Zalf on 23/11/16.
  */
-@Path("/contracheque")
+@Path("/v2/contracheque")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class ContrachequeResource {
