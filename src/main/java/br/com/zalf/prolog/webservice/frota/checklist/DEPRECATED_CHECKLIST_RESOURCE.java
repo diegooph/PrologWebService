@@ -25,7 +25,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
-@Path("/checklist")
+@Path("/v2/checklist")
 @ConsoleDebugLog
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")

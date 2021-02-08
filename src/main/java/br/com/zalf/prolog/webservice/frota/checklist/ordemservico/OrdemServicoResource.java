@@ -34,7 +34,7 @@ import java.util.List;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 @ConsoleDebugLog
-@Path("/checklists/ordens-servicos")
+@Path("/v2/checklists/ordens-servicos")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @AppVersionCodeHandler(
