@@ -4,7 +4,7 @@ prolog:
 server:
   port: 8080
   servlet:
-    context-path: /prolog/v2
+    context-path: /prolog
 
 spring:
   profiles:
