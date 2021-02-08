@@ -14,7 +14,7 @@ import javax.ws.rs.core.StreamingOutput;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-@Path("/treinamentos/relatorios")
+@Path("/v2/treinamentos/relatorios")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class TreinamentoRelatorioResource {
