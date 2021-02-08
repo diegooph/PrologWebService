@@ -24,7 +24,7 @@ import java.util.List;
  * Created by Zart on 03/03/17.
  */
 @ConsoleDebugLog
-@Path("/movimentacoes")
+@Path("/v2/movimentacoes")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @AppVersionCodeHandler(
