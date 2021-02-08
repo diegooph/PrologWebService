@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * Created by Zalf on 05/01/17.
  */
-@Path("/quizzes/modelos")
+@Path("/v2/quizzes/modelos")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public final class QuizModeloResource {
