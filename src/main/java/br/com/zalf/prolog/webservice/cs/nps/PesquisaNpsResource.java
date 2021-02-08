@@ -19,7 +19,7 @@ import javax.ws.rs.core.Response;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-@Path("/cs/nps")
+@Path("/v2/cs/nps")
 @ConsoleDebugLog
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
