@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
-@Path("/metas")
+@Path("/v2/metas")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public final class MetaResource{

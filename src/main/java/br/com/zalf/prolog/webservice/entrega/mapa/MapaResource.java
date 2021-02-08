@@ -18,7 +18,7 @@ import java.io.InputStream;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-@Path("/mapas")
+@Path("/v2/mapas")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public final class MapaResource {
