@@ -12,7 +12,7 @@ import javax.ws.rs.core.MediaType;
 import java.sql.Date;
 import java.util.List;
 
-@Path("/solicitacaoFolga")
+@Path("/v2/solicitacaoFolga")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Deprecated
