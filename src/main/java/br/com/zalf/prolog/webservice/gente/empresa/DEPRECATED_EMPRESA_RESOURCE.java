@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * Depreciado em 07/06/2017.
  */
-@Path("/empresa")
+@Path("/v2/empresa")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Deprecated
