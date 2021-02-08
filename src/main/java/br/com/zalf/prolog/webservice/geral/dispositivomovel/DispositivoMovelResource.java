@@ -22,7 +22,7 @@ import java.util.List;
  *
  * @author Wellington Moraes (https://github.com/wvinim)
  */
-@Path("dispositivos")
+@Path("/v2/dispositivos")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public final class DispositivoMovelResource {
