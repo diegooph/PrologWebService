@@ -10,7 +10,7 @@ import javax.ws.rs.core.MediaType;
 import java.sql.SQLException;
 import java.util.List;
 
-@Path("/calendario")
+@Path("/v2/calendario")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class CalendarioResource {
