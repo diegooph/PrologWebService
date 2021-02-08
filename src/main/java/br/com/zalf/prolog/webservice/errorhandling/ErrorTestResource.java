@@ -15,7 +15,7 @@ import javax.ws.rs.core.MediaType;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-@Path("/error-test")
+@Path("/v2/error-test")
 @ConsoleDebugLog
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
