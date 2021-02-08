@@ -18,7 +18,7 @@ import java.io.InputStream;
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-@Path("/implantacoes/vinculo")
+@Path("/v2/implantacoes/vinculo")
 @Consumes({MediaType.MULTIPART_FORM_DATA})
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public final class VinculoVeiculoPneuResource {
