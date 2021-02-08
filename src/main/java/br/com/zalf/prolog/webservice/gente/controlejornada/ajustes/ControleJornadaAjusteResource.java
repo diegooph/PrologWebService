@@ -26,7 +26,7 @@ import java.util.List;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 @ConsoleDebugLog
-@Path("/controle-jornada/ajustes")
+@Path("/v2/controle-jornada/ajustes")
 @Secured(permissions = Pilares.Gente.Intervalo.AJUSTE_MARCACOES)
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")

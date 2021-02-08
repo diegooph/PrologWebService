@@ -19,7 +19,7 @@ import java.util.List;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 @ConsoleDebugLog
-@Path("/controle-jornada/tipos-marcacoes")
+@Path("/v2/controle-jornada/tipos-marcacoes")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public final class TipoMarcacaoResource {
