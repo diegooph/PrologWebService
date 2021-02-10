@@ -1,9 +1,9 @@
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.header;
 
+import jakarta.xml.ws.BindingProvider;
+import jakarta.xml.ws.handler.MessageContext;
 import org.jetbrains.annotations.NotNull;
 
-import javax.xml.ws.BindingProvider;
-import javax.xml.ws.handler.MessageContext;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -20,7 +20,7 @@ public final class HeaderUtils {
         throw new IllegalStateException(HeaderUtils.class.getSimpleName() + " cannot be instantiated!");
     }
 
-    public static void bindHeadersToService(@NotNull BindingProvider bindingProvider, @NotNull HeaderEntry... entries) {
+    public static void bindHeadersToService(@NotNull final BindingProvider bindingProvider, @NotNull final HeaderEntry... entries) {
         checkNotNull(bindingProvider);
         checkNotNull(entries);
 

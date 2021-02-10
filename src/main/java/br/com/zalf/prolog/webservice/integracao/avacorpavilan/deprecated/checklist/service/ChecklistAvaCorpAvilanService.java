@@ -2,9 +2,9 @@
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.checklist.service;
 
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.AvaCorpAvilanConstants;
+import jakarta.xml.ws.*;
 
 import javax.xml.namespace.QName;
-import javax.xml.ws.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -31,7 +31,7 @@ public class ChecklistAvaCorpAvilanService
         WebServiceException e = null;
         try {
             url = new URL(AvaCorpAvilanConstants.BASE_URL + "Checklist.asmx?WSDL");
-        } catch (MalformedURLException ex) {
+        } catch (final MalformedURLException ex) {
             e = new WebServiceException(ex);
         }
         CHECKLIST_WSDL_LOCATION = url;
@@ -42,28 +42,35 @@ public class ChecklistAvaCorpAvilanService
         super(__getWsdlLocation(), CHECKLIST_QNAME);
     }
 
-    public ChecklistAvaCorpAvilanService(WebServiceFeature... features) {
+    public ChecklistAvaCorpAvilanService(final WebServiceFeature... features) {
         super(__getWsdlLocation(), CHECKLIST_QNAME, features);
     }
 
-    public ChecklistAvaCorpAvilanService(URL wsdlLocation) {
+    public ChecklistAvaCorpAvilanService(final URL wsdlLocation) {
         super(wsdlLocation, CHECKLIST_QNAME);
     }
 
-    public ChecklistAvaCorpAvilanService(URL wsdlLocation, WebServiceFeature... features) {
+    public ChecklistAvaCorpAvilanService(final URL wsdlLocation, final WebServiceFeature... features) {
         super(wsdlLocation, CHECKLIST_QNAME, features);
     }
 
-    public ChecklistAvaCorpAvilanService(URL wsdlLocation, QName serviceName) {
+    public ChecklistAvaCorpAvilanService(final URL wsdlLocation, final QName serviceName) {
         super(wsdlLocation, serviceName);
     }
 
-    public ChecklistAvaCorpAvilanService(URL wsdlLocation, QName serviceName, WebServiceFeature... features) {
+    public ChecklistAvaCorpAvilanService(final URL wsdlLocation, final QName serviceName, final WebServiceFeature... features) {
         super(wsdlLocation, serviceName, features);
     }
 
+    private static URL __getWsdlLocation() {
+        if (CHECKLIST_EXCEPTION!= null) {
+            throw CHECKLIST_EXCEPTION;
+        }
+        return CHECKLIST_WSDL_LOCATION;
+    }
+
     /**
-     * 
+     *
      * @return
      *     returns ChecklistSoap
      */
@@ -73,22 +80,15 @@ public class ChecklistAvaCorpAvilanService
     }
 
     /**
-     * 
+     *
      * @param features
      *     A list of {@link WebServiceFeature} to configure on the proxy.  Supported features not in the <code>features</code> parameter will have their default values.
      * @return
      *     returns ChecklistSoap
      */
     @WebEndpoint(name = "ChecklistSoap")
-    public ChecklistAvaCorpAvilanSoap getChecklistSoap(WebServiceFeature... features) {
+    public ChecklistAvaCorpAvilanSoap getChecklistSoap(final WebServiceFeature... features) {
         return super.getPort(new QName(AvaCorpAvilanConstants.NAMESPACE, "ChecklistSoap"), ChecklistAvaCorpAvilanSoap.class, features);
-    }
-
-    private static URL __getWsdlLocation() {
-        if (CHECKLIST_EXCEPTION!= null) {
-            throw CHECKLIST_EXCEPTION;
-        }
-        return CHECKLIST_WSDL_LOCATION;
     }
 
 }

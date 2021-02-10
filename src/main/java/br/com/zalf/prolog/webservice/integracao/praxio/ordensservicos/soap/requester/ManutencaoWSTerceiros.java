@@ -2,12 +2,12 @@
 package br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap.requester;
 
 import br.com.zalf.prolog.webservice.integracao.praxio.GlobusPiccoloturConstants;
+import jakarta.xml.ws.Service;
+import jakarta.xml.ws.WebEndpoint;
+import jakarta.xml.ws.WebServiceClient;
+import jakarta.xml.ws.WebServiceException;
 
 import javax.xml.namespace.QName;
-import javax.xml.ws.Service;
-import javax.xml.ws.WebEndpoint;
-import javax.xml.ws.WebServiceClient;
-import javax.xml.ws.WebServiceException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -35,7 +35,7 @@ public class ManutencaoWSTerceiros extends Service {
         WebServiceException e = null;
         try {
             url = new URL(GlobusPiccoloturConstants.WSDL_LOCATION);
-        } catch (MalformedURLException ex) {
+        } catch (final MalformedURLException ex) {
             e = new WebServiceException(ex);
         }
         MANUTENCAOWSTERCEIROS_WSDL_LOCATION = url;
@@ -44,6 +44,13 @@ public class ManutencaoWSTerceiros extends Service {
 
     public ManutencaoWSTerceiros() {
         super(__getWsdlLocation(), MANUTENCAOWSTERCEIROS_QNAME);
+    }
+
+    private static URL __getWsdlLocation() {
+        if (MANUTENCAOWSTERCEIROS_EXCEPTION != null) {
+            throw MANUTENCAOWSTERCEIROS_EXCEPTION;
+        }
+        return MANUTENCAOWSTERCEIROS_WSDL_LOCATION;
     }
 
     /**
@@ -56,13 +63,6 @@ public class ManutencaoWSTerceiros extends Service {
                         GlobusPiccoloturConstants.NAMESPACE,
                         "ManutencaoWSTerceirosSoap"),
                 ManutencaoWSTerceirosSoap.class);
-    }
-
-    private static URL __getWsdlLocation() {
-        if (MANUTENCAOWSTERCEIROS_EXCEPTION != null) {
-            throw MANUTENCAOWSTERCEIROS_EXCEPTION;
-        }
-        return MANUTENCAOWSTERCEIROS_WSDL_LOCATION;
     }
 
 }

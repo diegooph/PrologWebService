@@ -17,10 +17,10 @@ import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.checkli
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.header.HeaderEntry;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.header.HeaderUtils;
 import com.google.common.base.Strings;
+import jakarta.xml.ws.BindingProvider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.xml.ws.BindingProvider;
 import java.util.List;
 
 /**
@@ -328,6 +328,32 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
                 true);
     }
 
+    @Override
+    public ArrayOfFarolDia getFarolChecklist(final int codFilialAvilan,
+                                             final int codUnidadeAvilan,
+                                             @NotNull final String dataInicial,
+                                             @NotNull final String dataFinal,
+                                             final boolean itensCriticosRetroativos,
+                                             @NotNull final String cpf,
+                                             @NotNull final String dataNascimento) throws Exception {
+        try {
+            final FarolChecklist2 request = getChecklistSoap(cpf, dataNascimento).farolChecklist(
+                    codFilialAvilan,
+                    codUnidadeAvilan,
+                    dataInicial,
+                    dataFinal,
+                    itensCriticosRetroativos);
+
+            if (success(request)) {
+                return request.getFarolDia();
+            }
+
+            throw new Exception(Strings.isNullOrEmpty(request.getMensagem()) ? "SEM MENSAGEM" : request.getMensagem());
+        } catch (final Throwable t) {
+            throw new AvaCorpAvilanException("[INTEGRAÇÃO - AVILAN] Erro ao buscar farol do checklist", t);
+        }
+    }
+
     @NotNull
     private ArrayOfChecklistFiltro internalGetChecklists(
             final int codFilialAvilan,
@@ -356,32 +382,6 @@ public class AvaCorpAvilanRequesterImpl implements AvaCorpAvilanRequester {
             throw new Exception(Strings.isNullOrEmpty(request.getMensagem()) ? "SEM MENSAGEM" : request.getMensagem());
         } catch (final Throwable t) {
             throw new AvaCorpAvilanException("[INTEGRAÇÃO - AVILAN] Erro ao buscar checklists", t);
-        }
-    }
-
-    @Override
-    public ArrayOfFarolDia getFarolChecklist(final int codFilialAvilan,
-                                             final int codUnidadeAvilan,
-                                             @NotNull final String dataInicial,
-                                             @NotNull final String dataFinal,
-                                             final boolean itensCriticosRetroativos,
-                                             @NotNull final String cpf,
-                                             @NotNull final String dataNascimento) throws Exception {
-        try {
-            final FarolChecklist2 request = getChecklistSoap(cpf, dataNascimento).farolChecklist(
-                    codFilialAvilan,
-                    codUnidadeAvilan,
-                    dataInicial,
-                    dataFinal,
-                    itensCriticosRetroativos);
-
-            if (success(request)) {
-                return request.getFarolDia();
-            }
-
-            throw new Exception(Strings.isNullOrEmpty(request.getMensagem()) ? "SEM MENSAGEM" : request.getMensagem());
-        } catch (final Throwable t) {
-            throw new AvaCorpAvilanException("[INTEGRAÇÃO - AVILAN] Erro ao buscar farol do checklist", t);
         }
     }
 

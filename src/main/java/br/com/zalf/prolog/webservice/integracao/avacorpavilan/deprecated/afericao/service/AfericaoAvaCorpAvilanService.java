@@ -2,9 +2,9 @@
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.afericao.service;
 
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.AvaCorpAvilanConstants;
+import jakarta.xml.ws.*;
 
 import javax.xml.namespace.QName;
-import javax.xml.ws.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -29,7 +29,7 @@ public class AfericaoAvaCorpAvilanService extends Service {
         WebServiceException e = null;
         try {
             url = new URL(AvaCorpAvilanConstants.BASE_URL + "Afericao.asmx?WSDL");
-        } catch (MalformedURLException ex) {
+        } catch (final MalformedURLException ex) {
             e = new WebServiceException(ex);
         }
         AFERICAO_WSDL_LOCATION = url;
@@ -40,28 +40,35 @@ public class AfericaoAvaCorpAvilanService extends Service {
         super(__getWsdlLocation(), AFERICAO_QNAME);
     }
 
-    public AfericaoAvaCorpAvilanService(WebServiceFeature... features) {
+    public AfericaoAvaCorpAvilanService(final WebServiceFeature... features) {
         super(__getWsdlLocation(), AFERICAO_QNAME, features);
     }
 
-    public AfericaoAvaCorpAvilanService(URL wsdlLocation) {
+    public AfericaoAvaCorpAvilanService(final URL wsdlLocation) {
         super(wsdlLocation, AFERICAO_QNAME);
     }
 
-    public AfericaoAvaCorpAvilanService(URL wsdlLocation, WebServiceFeature... features) {
+    public AfericaoAvaCorpAvilanService(final URL wsdlLocation, final WebServiceFeature... features) {
         super(wsdlLocation, AFERICAO_QNAME, features);
     }
 
-    public AfericaoAvaCorpAvilanService(URL wsdlLocation, QName serviceName) {
+    public AfericaoAvaCorpAvilanService(final URL wsdlLocation, final QName serviceName) {
         super(wsdlLocation, serviceName);
     }
 
-    public AfericaoAvaCorpAvilanService(URL wsdlLocation, QName serviceName, WebServiceFeature... features) {
+    public AfericaoAvaCorpAvilanService(final URL wsdlLocation, final QName serviceName, final WebServiceFeature... features) {
         super(wsdlLocation, serviceName, features);
     }
 
+    private static URL __getWsdlLocation() {
+        if (AFERICAO_EXCEPTION!= null) {
+            throw AFERICAO_EXCEPTION;
+        }
+        return AFERICAO_WSDL_LOCATION;
+    }
+
     /**
-     * 
+     *
      * @return
      *     returns AfericaoSoap
      */
@@ -71,22 +78,15 @@ public class AfericaoAvaCorpAvilanService extends Service {
     }
 
     /**
-     * 
+     *
      * @param features
      *     A list of {@link WebServiceFeature} to configure on the proxy.  Supported features not in the <code>features</code> parameter will have their default values.
      * @return
      *     returns AfericaoSoap
      */
     @WebEndpoint(name = "AfericaoSoap")
-    public AfericaoAvaCorpAvilanSoap getAfericaoSoap(WebServiceFeature... features) {
+    public AfericaoAvaCorpAvilanSoap getAfericaoSoap(final WebServiceFeature... features) {
         return super.getPort(new QName(AvaCorpAvilanConstants.NAMESPACE, "AfericaoSoap"), AfericaoAvaCorpAvilanSoap.class, features);
-    }
-
-    private static URL __getWsdlLocation() {
-        if (AFERICAO_EXCEPTION!= null) {
-            throw AFERICAO_EXCEPTION;
-        }
-        return AFERICAO_WSDL_LOCATION;
     }
 
 }

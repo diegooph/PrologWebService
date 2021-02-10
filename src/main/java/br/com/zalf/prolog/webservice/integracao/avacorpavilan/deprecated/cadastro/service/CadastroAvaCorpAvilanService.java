@@ -2,9 +2,9 @@
 package br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.cadastro.service;
 
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.AvaCorpAvilanConstants;
+import jakarta.xml.ws.*;
 
 import javax.xml.namespace.QName;
-import javax.xml.ws.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -31,7 +31,7 @@ public class CadastroAvaCorpAvilanService
         WebServiceException e = null;
         try {
             url = new URL(AvaCorpAvilanConstants.BASE_URL + "Cadastro.asmx?WSDL");
-        } catch (MalformedURLException ex) {
+        } catch (final MalformedURLException ex) {
             e = new WebServiceException(ex);
         }
         CADASTRO_WSDL_LOCATION = url;
@@ -42,28 +42,35 @@ public class CadastroAvaCorpAvilanService
         super(__getWsdlLocation(), CADASTRO_QNAME);
     }
 
-    public CadastroAvaCorpAvilanService(WebServiceFeature... features) {
+    public CadastroAvaCorpAvilanService(final WebServiceFeature... features) {
         super(__getWsdlLocation(), CADASTRO_QNAME, features);
     }
 
-    public CadastroAvaCorpAvilanService(URL wsdlLocation) {
+    public CadastroAvaCorpAvilanService(final URL wsdlLocation) {
         super(wsdlLocation, CADASTRO_QNAME);
     }
 
-    public CadastroAvaCorpAvilanService(URL wsdlLocation, WebServiceFeature... features) {
+    public CadastroAvaCorpAvilanService(final URL wsdlLocation, final WebServiceFeature... features) {
         super(wsdlLocation, CADASTRO_QNAME, features);
     }
 
-    public CadastroAvaCorpAvilanService(URL wsdlLocation, QName serviceName) {
+    public CadastroAvaCorpAvilanService(final URL wsdlLocation, final QName serviceName) {
         super(wsdlLocation, serviceName);
     }
 
-    public CadastroAvaCorpAvilanService(URL wsdlLocation, QName serviceName, WebServiceFeature... features) {
+    public CadastroAvaCorpAvilanService(final URL wsdlLocation, final QName serviceName, final WebServiceFeature... features) {
         super(wsdlLocation, serviceName, features);
     }
 
+    private static URL __getWsdlLocation() {
+        if (CADASTRO_EXCEPTION!= null) {
+            throw CADASTRO_EXCEPTION;
+        }
+        return CADASTRO_WSDL_LOCATION;
+    }
+
     /**
-     * 
+     *
      * @return
      *     returns CadastroSoap
      */
@@ -73,22 +80,15 @@ public class CadastroAvaCorpAvilanService
     }
 
     /**
-     * 
+     *
      * @param features
      *     A list of {@link WebServiceFeature} to configure on the proxy.  Supported features not in the <code>features</code> parameter will have their default values.
      * @return
      *     returns CadastroSoap
      */
     @WebEndpoint(name = "CadastroSoap")
-    public CadastroAvaCorpAvilanSoap getCadastroSoap(WebServiceFeature... features) {
+    public CadastroAvaCorpAvilanSoap getCadastroSoap(final WebServiceFeature... features) {
         return super.getPort(new QName(AvaCorpAvilanConstants.NAMESPACE, "CadastroSoap"), CadastroAvaCorpAvilanSoap.class, features);
-    }
-
-    private static URL __getWsdlLocation() {
-        if (CADASTRO_EXCEPTION!= null) {
-            throw CADASTRO_EXCEPTION;
-        }
-        return CADASTRO_WSDL_LOCATION;
     }
 
 }
