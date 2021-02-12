@@ -2,7 +2,6 @@
 -- https://rosettacode.org/wiki/Jaro_distance
 -- Esse é o mesmo algortimo usado para detectar mudanças nas respostas de alternativas tipo_outros no java, na classe
 -- TipoOutrosSimilarityFinder.
-CREATE EXTENSION PG_SIMILARITY;
 
 CREATE FUNCTION FUNC_JARO(TEXT, TEXT)
     RETURNS DOUBLE PRECISION
