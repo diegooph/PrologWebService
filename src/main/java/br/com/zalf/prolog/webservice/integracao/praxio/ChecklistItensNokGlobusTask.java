@@ -153,8 +153,7 @@ public final class ChecklistItensNokGlobusTask implements Runnable {
             }
         } catch (final Throwable throwable) {
             // Não logamos mais exception no Sentry para não exceder a contagem do plano.
-            // Log.e(TAG, "Erro ao tentar sincronizar o checklist com o Globus", throwable);
-            Log.d(TAG, "Erro ao tentar sincronizar o checklist com o Globus");
+            Log.e(TAG, "Erro ao tentar sincronizar o checklist com o Globus", throwable);
             try {
                 // Se tivemos um erro ao sincronizar o checklist, precisamos logar para saber como proceder na solução
                 // do erro e conseguir sincronizar esse checklist.
