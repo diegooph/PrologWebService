@@ -42,6 +42,11 @@ public final class GlobusPiccoloturRequesterImpl implements GlobusPiccoloturRequ
             System.setProperty("com.sun.xml.internal.ws.transport.http.HttpAdapter.dump", "true");
             System.setProperty("com.sun.xml.internal.ws.transport.http.HttpAdapter.dumpTreshold", "999999");
             System.setProperty("javax.xml.bind.JAXBContext", "com.sun.xml.internal.bind.v2.ContextFactory");
+            System.setProperty("com.sun.xml.ws.transport.http.client.HttpTransportPipe.dump", "true");
+            System.setProperty("com.sun.xml.internal.ws.transport.http.client.HttpTransportPipe.dump", "true");
+            System.setProperty("com.sun.xml.ws.transport.http.HttpAdapter.dump", "true");
+            System.setProperty("com.sun.xml.internal.ws.transport.http.HttpAdapter.dump", "true");
+            System.setProperty("com.sun.xml.internal.ws.transport.http.HttpAdapter.dumpTreshold", "999999");
         }
         // Utilizamos este try/catch para lançar um erro da integração para qualquer coisa que acontecer que não for
         // algo já mapeado pelo ProLog.
