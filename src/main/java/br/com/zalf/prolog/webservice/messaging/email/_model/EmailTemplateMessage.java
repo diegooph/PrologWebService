@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice.messaging.email._model;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -10,6 +12,8 @@ import java.util.Map;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
+@AllArgsConstructor
+@Getter
 public final class EmailTemplateMessage {
     @NotNull
     private final EmailTemplate emailTemplate;
@@ -19,36 +23,6 @@ public final class EmailTemplateMessage {
     private final String emailSubject;
     @Nullable
     private final Map<String, String> templateVariables;
-
-    public EmailTemplateMessage(@NotNull final EmailTemplate emailTemplate,
-                                @NotNull final EmailSender sender,
-                                @NotNull final String emailSubject,
-                                @Nullable final Map<String, String> templateVariables) {
-        this.emailTemplate = emailTemplate;
-        this.sender = sender;
-        this.emailSubject = emailSubject;
-        this.templateVariables = templateVariables;
-    }
-
-    @NotNull
-    public EmailTemplate getEmailTemplate() {
-        return emailTemplate;
-    }
-
-    @NotNull
-    public EmailSender getSender() {
-        return sender;
-    }
-
-    @NotNull
-    public String getEmailSubject() {
-        return emailSubject;
-    }
-
-    @Nullable
-    public Map<String, String> getTemplateVariables() {
-        return templateVariables;
-    }
 
     @Override
     public String toString() {
