@@ -26,13 +26,21 @@ Change Log
 ### Bug Fixes
 * Corrige diferenças entre branches na edição de veículo (PL-3326)
 
+<a name="v1.6.1"></a>
+## Version [v1.6.1](https://github.com/luizfp/PrologWebService/compare/v1.6.0...v1.6.1) (release-date) [unreleased]
 
-<a name="v1.5.5"></a>
-## Version [v1.5.5](https://github.com/luizfp/PrologWebService/compare/v1.5.4...v1.5.5) (release-date) [unreleased]
+
+<a name="v1.6.0"></a>
+## Version [v1.6.0](https://github.com/luizfp/PrologWebService/compare/v1.5.4...v1.6.0) (2021-02-09)
+
+### Features
+* Cria método para verificar se uma marcação está finalizada (PL-3191)
 
 #### Refactors
+* Remove classe EnvironmentHelper (PL-3414)
+* Altera API de e-mail para utilizar gerenciamento pelo Spring (PL-3414)
+* Altera Firebase para utilizar gerenciamento pelo Spring (PL-3414)
 * Considera bônus no pré-contracheque apenas se número de viagens for acima ou igual o parametrizado (PL-3368)
-* Cria método para verificar se uma marcação está finalizada (PL-3191)
 
 ### Bug Fixes
 * Corrige uso de autoCommit no salvamento de imagens do checklist

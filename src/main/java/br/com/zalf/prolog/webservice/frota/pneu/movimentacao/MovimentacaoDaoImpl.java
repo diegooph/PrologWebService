@@ -633,19 +633,19 @@ public final class MovimentacaoDaoImpl extends DatabaseConnection implements Mov
                                                  @NotNull final Movimentacao movimentacao) throws Throwable {
         PreparedStatement stmt = null;
         try {
-            stmt = conn.prepareCall("{ CALL FUNC_MOVIMENTACAO_INSERT_MOVIMENTACAO_VEICULO_ORIGEM(" +
-                                            "F_COD_PNEU => ?, " +
-                                            "F_COD_UNIDADE => ?, " +
-                                            "F_TIPO_ORIGEM => ?, " +
-                                            "F_COD_MOVIMENTACAO => ?, " +
-                                            "F_PLACA_VEICULO => ?," +
-                                            "F_POSICAO_PROLOG => ?)}");
+            stmt = conn.prepareCall("{ call func_movimentacao_insert_movimentacao_veiculo_origem(" +
+                                            "f_cod_pneu => ?, " +
+                                            "f_cod_unidade => ?, " +
+                                            "f_tipo_origem => ?, " +
+                                            "f_cod_movimentacao => ?, " +
+                                            "f_cod_veiculo => ?," +
+                                            "f_posicao_prolog => ?)}");
             stmt.setLong(1, movimentacao.getPneu().getCodigo());
             stmt.setLong(2, codUnidade);
             stmt.setString(3, movimentacao.getOrigem().getTipo().asString());
             stmt.setLong(4, movimentacao.getCodigo());
             final OrigemVeiculo origemVeiculo = (OrigemVeiculo) movimentacao.getOrigem();
-            stmt.setString(5, origemVeiculo.getVeiculo().getPlaca());
+            stmt.setLong(5, origemVeiculo.getVeiculo().getCodigo());
             stmt.setInt(6, origemVeiculo.getPosicaoOrigemPneu());
             stmt.execute();
         } finally {
@@ -667,14 +667,14 @@ public final class MovimentacaoDaoImpl extends DatabaseConnection implements Mov
                 destinoVeiculo.getPosicaoDestinoPneu());
         PreparedStatement stmt = null;
         try {
-            stmt = conn.prepareCall("{CALL FUNC_MOVIMENTACAO_INSERT_MOVIMENTACAO_VEICULO_DESTINO(" +
-                                            "F_COD_MOVIMENTACAO => ?, " +
-                                            "F_TIPO_DESTINO => ?, " +
-                                            "F_PLACA_VEICULO => ?," +
-                                            "F_POSICAO_PROLOG => ?)}");
+            stmt = conn.prepareCall("{call func_movimentacao_insert_movimentacao_veiculo_destino(" +
+                                            "f_cod_movimentacao => ?, " +
+                                            "f_tipo_destino => ?, " +
+                                            "f_cod_veiculo => ?," +
+                                            "f_posicao_prolog => ?)}");
             stmt.setLong(1, movimentacao.getCodigo());
             stmt.setString(2, destinoVeiculo.getTipo().asString());
-            stmt.setString(3, destinoVeiculo.getVeiculo().getPlaca());
+            stmt.setLong(3, destinoVeiculo.getVeiculo().getCodigo());
             stmt.setInt(4, destinoVeiculo.getPosicaoDestinoPneu());
             stmt.execute();
         } finally {
