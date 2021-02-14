@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.frota.veiculo.error;
+package br.com.zalf.prolog.webservice.frota.veiculo.validator;
 
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogExceptionHandler;
 import org.jetbrains.annotations.NotNull;

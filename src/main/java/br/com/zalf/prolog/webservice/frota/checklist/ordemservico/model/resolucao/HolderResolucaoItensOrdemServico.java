@@ -10,12 +10,13 @@ import java.util.List;
 
 /**
  * Classe que contém informações para resolução de Itens de uma Ordem de Serviço.
- *
+ * <p>
  * Created on 14/11/18
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public final class HolderResolucaoItensOrdemServico {
+    private Long codVeiculo;
     /**
      * Placa do {@link Veiculo} a qual os Itens que serão resolvidos pertencem.
      */
@@ -39,6 +40,7 @@ public final class HolderResolucaoItensOrdemServico {
     @NotNull
     public static HolderResolucaoItensOrdemServico createDummy() {
         final HolderResolucaoItensOrdemServico resolucaoItensOrdemServico = new HolderResolucaoItensOrdemServico();
+        resolucaoItensOrdemServico.setCodVeiculo(1L);
         resolucaoItensOrdemServico.setPlacaVeiculo("AAA1234");
         resolucaoItensOrdemServico.setKmAtualVeiculo(12345);
         final List<ItemOrdemServicoVisualizacao> itens = new ArrayList<>();
@@ -47,6 +49,14 @@ public final class HolderResolucaoItensOrdemServico {
         itens.add(ItemOrdemServicoPendente.createDummy());
         resolucaoItensOrdemServico.setItens(itens);
         return resolucaoItensOrdemServico;
+    }
+
+    public Long getCodVeiculo() {
+        return codVeiculo;
+    }
+
+    public void setCodVeiculo(final Long codVeiculo) {
+        this.codVeiculo = codVeiculo;
     }
 
     public String getPlacaVeiculo() {

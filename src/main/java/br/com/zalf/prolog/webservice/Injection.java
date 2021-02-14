@@ -94,8 +94,10 @@ import br.com.zalf.prolog.webservice.frota.socorrorota.relatorio.SocorroRotaRela
 import br.com.zalf.prolog.webservice.frota.socorrorota.relatorio.SocorroRotaRelatorioDaoImpl;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDaoImpl;
-import br.com.zalf.prolog.webservice.frota.veiculo.error.VeiculoExceptionHandler;
-import br.com.zalf.prolog.webservice.frota.veiculo.error.VeiculoSqlExceptionTranslator;
+import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento.VeiculoAcoplamentoDao;
+import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento.VeiculoAcoplamentoDaoImpl;
+import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento.historico.VeiculoAcoplamentoHistoricoDao;
+import br.com.zalf.prolog.webservice.frota.veiculo.acoplamento.historico.VeiculoAcoplamentoHistoricoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.veiculo.evolucaoKm.VeiculoEvolucaoKmDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.evolucaoKm.VeiculoEvolucaoKmDaoImpl;
 import br.com.zalf.prolog.webservice.frota.veiculo.historico.HistoricoEdicaoVeiculoDao;
@@ -108,6 +110,8 @@ import br.com.zalf.prolog.webservice.frota.veiculo.tipoveiculo.TipoVeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.tipoveiculo.TipoVeiculoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.VeiculoTransferenciaDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.VeiculoTransferenciaDaoImpl;
+import br.com.zalf.prolog.webservice.frota.veiculo.validator.VeiculoExceptionHandler;
+import br.com.zalf.prolog.webservice.frota.veiculo.validator.VeiculoSqlExceptionTranslator;
 import br.com.zalf.prolog.webservice.gente.calendario.CalendarioDao;
 import br.com.zalf.prolog.webservice.gente.calendario.CalendarioDaoImpl;
 import br.com.zalf.prolog.webservice.gente.colaborador.ColaboradorDao;
@@ -188,6 +192,8 @@ import br.com.zalf.prolog.webservice.seguranca.relato.relatorio.RelatoRelatorioD
 import br.com.zalf.prolog.webservice.seguranca.relato.relatorio.RelatoRelatorioDaoImpl;
 import org.jetbrains.annotations.NotNull;
 
+import java.sql.Connection;
+
 /**
  * Provide a simple way to use DI by hand.
  */
@@ -244,6 +250,7 @@ public final class Injection {
     public static VinculoVeiculoPneuDao provideVinculoVeiculoPneuDao() {
         return new VinculoVeiculoPneuDaoImpl(Injection.provideConferenciaDao());
     }
+
     @NotNull
     public static ApresentacaoDao provideApresentacaoDao() {
         return new ApresentacaoDaoImpl();
@@ -682,14 +689,24 @@ public final class Injection {
     public static HistoricoEdicaoVeiculoDao provideHistoricoEdicaoVeiculoDao() {
         return new HistoricoEdicaoVeiculoDaoImpl();
     }
-  
+
     @NotNull
-      public static HistoricoEdicaoVeiculoRelatorioDao provideHistoricoEdicaoVeiculoRelatorioDao() {
+    public static HistoricoEdicaoVeiculoRelatorioDao provideHistoricoEdicaoVeiculoRelatorioDao() {
         return new HistoricoEdicaoVeiculoRelatorioDaoImpl();
     }
-  
+
     @NotNull
     public static VeiculoEvolucaoKmDao provideVeiculoEvolucaoKmDao() {
         return new VeiculoEvolucaoKmDaoImpl();
+    }
+
+    @NotNull
+    public static VeiculoAcoplamentoDao provideVeiculoAcoplamentoDao(@NotNull final Connection connection) {
+        return new VeiculoAcoplamentoDaoImpl(connection);
+    }
+
+    @NotNull
+    public static VeiculoAcoplamentoHistoricoDao provideVeiculoAcoplamentoDao() {
+        return new VeiculoAcoplamentoHistoricoDaoImpl();
     }
 }

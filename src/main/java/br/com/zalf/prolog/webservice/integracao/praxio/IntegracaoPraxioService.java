@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicaoStatus;
 import br.com.zalf.prolog.webservice.integracao.BaseIntegracaoService;
 import br.com.zalf.prolog.webservice.integracao.RecursoIntegrado;
 import br.com.zalf.prolog.webservice.integracao.agendador.AgendadorService;
@@ -145,6 +146,10 @@ public final class IntegracaoPraxioService extends BaseIntegracaoService {
                 throw new GenericException("A informação para ativar ou desativar o veículo não foi fornecida");
             }
             ensureValidToken(tokenIntegracao, TAG);
+            final VeiculoEdicaoStatus veiculo = dao.getVeiculoEdicaoStatus(placaVeiculo, veiculoAtivo);
+            if (!veiculo.isStatusAtivo() && veiculo.isAcoplado()) {
+                throw new GenericException("Não é possível inativar um veículo acoplado.");
+            }
             dao.ativarDesativarVeiculoPraxio(tokenIntegracao, placaVeiculo, veiculoAtivo);
             return new SuccessResponseIntegracao(
                     "Veículo foi " + (veiculoAtivo ? "ativado" : "desativado") + " com sucesso no ProLog");
@@ -265,9 +270,10 @@ public final class IntegracaoPraxioService extends BaseIntegracaoService {
         }
     }
 
-////----------------------------------------------------------------------------------------------------------------////
-////---------------------------------- DUMMY MÉTODOS ---------------------------------------------------------------////
-////----------------------------------------------------------------------------------------------------------------////
+    ////----------------------------------------------------------------------------------------------------------------////
+    ////---------------------------------- DUMMY MÉTODOS
+    // ---------------------------------------------------------------////
+    ////----------------------------------------------------------------------------------------------------------------////
 
     private void validateVeiculoEdicao(@NotNull final VeiculoEdicaoPraxio veiculoEdicaoPraxio) throws ProLogException {
         if (veiculoEdicaoPraxio.getNovoKmVeiculo() <= 0) {

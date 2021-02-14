@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.frota.veiculo.error;
+package br.com.zalf.prolog.webservice.frota.veiculo.validator;
 
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.errorhandling.sql.ProLogSqlExceptionTranslator;
@@ -6,7 +6,6 @@ import br.com.zalf.prolog.webservice.errorhandling.sql.SqlErrorCodes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.net.ProtocolException;
 import java.sql.SQLException;
 
 /**
