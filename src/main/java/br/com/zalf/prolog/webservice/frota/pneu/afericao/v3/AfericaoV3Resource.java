@@ -93,7 +93,7 @@ public class AfericaoV3Resource implements AfericaoV3ResourceApiDoc {
             Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
     @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
     @Override
-    public List<AfericaoAvulsaDto> getAfericoesAvulsas(@QueryParam("unidade") final @NotNull List<Long> codUnidades,
+    public List<AfericaoAvulsaDto> getAfericoesAvulsas(@QueryParam("unidades") final @NotNull List<Long> codUnidades,
                                                        @QueryParam("dataInicial") final @NotNull String dataInicial,
                                                        @QueryParam("dataFinal") final @NotNull String dataFinal,
                                                        @QueryParam("limit") final int limit,
