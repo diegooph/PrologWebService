@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
  */
 @Component
 public class AfericaoAvulsaMapper implements AfericaoMapper<AfericaoAvulsaDto, AfericaoAvulsaProjection> {
+
     @Override
     @NotNull
     public List<AfericaoAvulsaDto> toDtos(final @NotNull List<AfericaoAvulsaProjection> projections) {
@@ -27,15 +28,7 @@ public class AfericaoAvulsaMapper implements AfericaoMapper<AfericaoAvulsaDto, A
     @NotNull
     public AfericaoAvulsaDto toDto(@NotNull final AfericaoAvulsaProjection projection) {
         return AfericaoAvulsaDto.builder()
-                .codigo(projection.getCodigo())
-                .codUnidade(projection.getCodUnidade())
-                .dataHora(projection.getDataHora())
-                .tipoMedicaoColetada(projection.getTipoMedicaoColetadaAfericao())
-                .tempoRealizacao(projection.getTempoRealizacaoAfericaoInMillis())
-                .formaColetaDados(projection.getFormaColetaDadosAfericao())
-                .cpfAferidor(projection.getCpfAferidor())
-                .nomeAferidor(projection.getNomeAferidor())
-                .kmVeiculo(projection.getKmVeiculo())
+                .dadosGerais(getDadosGerais(projection))
                 .build();
     }
 }

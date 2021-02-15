@@ -28,17 +28,10 @@ public class AfericaoPlacaMapper implements AfericaoMapper<AfericaoPlacaDto, Afe
     @NotNull
     public AfericaoPlacaDto toDto(@NotNull final AfericaoPlacaProjection projection) {
         return AfericaoPlacaDto.builder()
-                .codigo(projection.getCodigo())
-                .codUnidade(projection.getCodUnidade())
-                .dataHora(projection.getDataHora())
-                .tipoMedicaoColetada(projection.getTipoMedicaoColetadaAfericao())
-                .tempoRealizacao(projection.getTempoRealizacaoAfericaoInMillis())
-                .formaColetaDados(projection.getFormaColetaDadosAfericao())
-                .cpfAferidor(projection.getCpfAferidor())
-                .nomeAferidor(projection.getNomeAferidor())
                 .kmVeiculo(projection.getKmVeiculo())
                 .placaVeiculo(projection.getPlacaVeiculo())
                 .identificadorFrota(projection.getIdentificadorFrota())
+                .dadosGerais(getDadosGerais(projection))
                 .build();
     }
 }
