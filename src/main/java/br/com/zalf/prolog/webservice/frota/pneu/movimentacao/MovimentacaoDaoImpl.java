@@ -37,6 +37,7 @@ import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestinoEnum.VEICULO;
 
@@ -123,8 +124,8 @@ public final class MovimentacaoDaoImpl extends DatabaseConnection implements Mov
                         servicoDao,
                         processoMovimentacao,
                         dataHoraMovimentacao,
-                        fecharServicosAutomaticamente,
-                        veioDoServico);
+                        fecharServicosAutomaticamente);
+                updateKmVeiculoIfNeeded(conn, processoMovimentacao, dataHoraMovimentacao, veioDoServico);
                 final List<CampoPersonalizadoResposta> respostas =
                         processoMovimentacao.getRespostasCamposPersonalizados();
                 if (respostas != null && !respostas.isEmpty()) {
@@ -259,8 +260,7 @@ public final class MovimentacaoDaoImpl extends DatabaseConnection implements Mov
                                      @NotNull final ServicoDao servicoDao,
                                      @NotNull final ProcessoMovimentacao processoMov,
                                      @NotNull final OffsetDateTime dataHoraMovimentacao,
-                                     final boolean fecharServicosAutomaticamente,
-                                     final boolean veioDoServico) throws Throwable {
+                                     final boolean fecharServicosAutomaticamente) throws Throwable {
         final PneuDao pneuDao = Injection.providePneuDao();
         final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
         final PneuServicoRealizadoDao pneuServicoRealizadoDao = Injection.providePneuServicoRealizadoDao();
@@ -284,15 +284,6 @@ public final class MovimentacaoDaoImpl extends DatabaseConnection implements Mov
                 rSet = stmt.executeQuery();
                 if (rSet.next()) {
                     mov.setCodigo(rSet.getLong("V_COD_MOVIMENTACAO_REALIZADA"));
-                    if (isOrigemOuDestinoVeiculo(mov) && !veioDoServico) {
-                        final Veiculo veiculo = getVeiculoMovimentacao(mov);
-                        updateKmVeiculo(conn,
-                                        codUnidade,
-                                        veiculo.getCodigo(),
-                                        mov.getCodigo(),
-                                        dataHoraMovimentacao,
-                                        veiculo.getKmAtual());
-                    }
                     insertOrigem(conn, pneuDao, pneuServicoRealizadoDao, codUnidade, mov);
                     insertDestino(conn, veiculoDao, codUnidade, mov);
                     if (mov.getCodMotivoMovimento() != null) {
@@ -315,33 +306,46 @@ public final class MovimentacaoDaoImpl extends DatabaseConnection implements Mov
         }
     }
 
-    private void updateKmVeiculo(@NotNull final Connection conn,
-                                 @NotNull final Long codUnidade,
-                                 @NotNull final Long codVeiculo,
-                                 @NotNull final Long codMovimentacao,
-                                 @NotNull final OffsetDateTime dataHoraMovimentacao,
-                                 @NotNull final Long kmAtual) {
-        Injection
-                .provideVeiculoDao()
-                .updateKmByCodVeiculo(conn,
-                                      codUnidade,
-                                      codVeiculo,
-                                      codMovimentacao,
-                                      VeiculoTipoProcesso.MOVIMENTACAO,
-                                      dataHoraMovimentacao,
-                                      kmAtual,
-                                      true);
+    private void updateKmVeiculoIfNeeded(@NotNull final Connection conn,
+                                         @NotNull final ProcessoMovimentacao processoMovimentacao,
+                                         @NotNull final OffsetDateTime dataHoraMovimentacao,
+                                         final boolean veioDoServico) {
+        final Optional<Veiculo> veiculoMovimentacao = getVeiculoMovimentacao(processoMovimentacao);
+        veiculoMovimentacao
+                .ifPresent(veiculo -> {
+                    if (!veioDoServico) {
+                        //noinspection ConstantConditions
+                        Injection
+                                .provideVeiculoDao()
+                                .updateKmByCodVeiculo(conn,
+                                                      processoMovimentacao.getUnidade().getCodigo(),
+                                                      veiculo.getCodigo(),
+                                                      processoMovimentacao.getCodigo(),
+                                                      VeiculoTipoProcesso.MOVIMENTACAO,
+                                                      dataHoraMovimentacao,
+                                                      veiculo.getKmAtual(),
+                                                      true);
+                    }
+                });
     }
 
     @NotNull
-    private Veiculo getVeiculoMovimentacao(final Movimentacao movimentacao) {
-        return (movimentacao.getOrigem().getTipo() == VEICULO)
-                ? ((OrigemVeiculo) movimentacao.getOrigem()).getVeiculo()
-                : ((DestinoVeiculo) movimentacao.getDestino()).getVeiculo();
-    }
+    private Optional<Veiculo> getVeiculoMovimentacao(@NotNull final ProcessoMovimentacao processoMovimentacao) {
+        final Optional<Movimentacao> movimentacao = processoMovimentacao
+                .getMovimentacoes()
+                .stream()
+                .filter(mov -> mov.isFrom(VEICULO) || mov.isTo(VEICULO))
+                .findFirst();
 
-    private boolean isOrigemOuDestinoVeiculo(final Movimentacao mov) {
-        return mov.getOrigem().getTipo() == VEICULO || mov.getDestino().getTipo() == VEICULO;
+        if (movimentacao.isPresent()) {
+            final Movimentacao mov = movimentacao.get();
+            return Optional.of(
+                    mov.isFrom(VEICULO)
+                            ? ((OrigemVeiculo) mov.getOrigem()).getVeiculo()
+                            : ((DestinoVeiculo) mov.getDestino()).getVeiculo());
+        }
+
+        return Optional.empty();
     }
 
     /**
