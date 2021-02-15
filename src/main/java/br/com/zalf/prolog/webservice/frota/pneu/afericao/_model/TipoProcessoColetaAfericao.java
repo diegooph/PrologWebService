@@ -3,6 +3,8 @@ package br.com.zalf.prolog.webservice.frota.pneu.afericao._model;
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.stream.Stream;
+
 /**
  * Created on 27/07/2018
  *
@@ -30,14 +32,11 @@ public enum TipoProcessoColetaAfericao {
     }
 
     public static TipoProcessoColetaAfericao fromString(@NotNull final String tipoProcessoAfericao) {
-        Preconditions.checkNotNull(tipoProcessoAfericao, "tipoProcessoAfericao cannot be null!");
-
-        for (final TipoProcessoColetaAfericao value : TipoProcessoColetaAfericao.values()) {
-            if (tipoProcessoAfericao.equals(value.stringRepresentation)) {
-                return value;
-            }
-        }
-
-        throw new IllegalArgumentException("Not found in this enum: " + tipoProcessoAfericao);
+        Preconditions.checkNotNull(tipoProcessoAfericao, "Tipo de processo não pode ser nulo!");
+        return Stream.of(TipoProcessoColetaAfericao.values())
+                .filter(e -> e.stringRepresentation.equals(tipoProcessoAfericao))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Nenhum tipo de processo encontrado para a string: "
+                        + tipoProcessoAfericao));
     }
 }

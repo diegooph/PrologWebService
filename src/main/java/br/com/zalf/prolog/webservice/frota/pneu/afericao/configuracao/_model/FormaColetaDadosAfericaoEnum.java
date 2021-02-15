@@ -1,7 +1,9 @@
 package br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model;
 
+import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import java.util.stream.Stream;
 
 /**
  * Created on 2020-04-27
@@ -22,15 +24,13 @@ public enum FormaColetaDadosAfericaoEnum {
     }
 
     @NotNull
-    public static FormaColetaDadosAfericaoEnum fromString(@Nullable final String text) throws IllegalArgumentException {
-        if (text != null) {
-            for (final FormaColetaDadosAfericaoEnum formaColetaDadosAfericaoEnum : FormaColetaDadosAfericaoEnum.values()) {
-                if (text.equalsIgnoreCase(formaColetaDadosAfericaoEnum.toString())) {
-                    return formaColetaDadosAfericaoEnum;
-                }
-            }
-        }
-        throw new IllegalArgumentException("Nenhuma forma de coleta dos dados encontrada para a String: " + text);
+    public static FormaColetaDadosAfericaoEnum fromString(@NotNull final String text) throws IllegalArgumentException {
+        Preconditions.checkNotNull(text, "Forma de coleta não pode ser nula!");
+        return Stream.of(FormaColetaDadosAfericaoEnum.values())
+                .filter(e -> e.stringRepresentation.equals(text))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Nenhuma forma de coleta dos dados encontrada " +
+                                                                        "para a String: " + text));
     }
 
     @NotNull
