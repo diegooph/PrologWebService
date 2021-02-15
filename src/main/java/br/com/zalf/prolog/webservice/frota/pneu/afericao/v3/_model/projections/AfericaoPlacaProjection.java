@@ -15,4 +15,6 @@ public interface AfericaoPlacaProjection extends AfericaoProjection {
     @Value("#{target.IDENTIFICADOR_FROTA}")
     String getIdentificadorFrota();
 
+    @Value("#{target.KM_VEICULO}")
+    Long getKmVeiculo();
 }

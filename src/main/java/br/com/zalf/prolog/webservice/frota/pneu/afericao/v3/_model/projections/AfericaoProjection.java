@@ -36,7 +36,4 @@ public interface AfericaoProjection {
 
     @Value("#{target.NOME}")
     String getNomeAferidor();
-
-    @Value("#{target.KM_VEICULO}")
-    Long getKmVeiculo();
 }
