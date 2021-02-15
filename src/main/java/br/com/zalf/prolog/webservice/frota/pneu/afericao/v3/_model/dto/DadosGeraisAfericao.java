@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
  */
 @Builder
 @Value
-public class AfericaoDto {
+public class DadosGeraisAfericao {
 
     @NotNull
     Long codigo;
