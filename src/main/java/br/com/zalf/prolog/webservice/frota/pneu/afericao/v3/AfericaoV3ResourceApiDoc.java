@@ -15,7 +15,7 @@ import java.util.List;
 public interface AfericaoV3ResourceApiDoc {
 
 
-   List<AfericaoPlacaDto> getAfericoesPlacas(@NotNull final Long codUnidade,
+   List<AfericaoPlacaDto> getAfericoesPlacas(@NotNull final List<Long> codUnidades,
                                              @Nullable final String placaVeiculo,
                                              @Nullable final Long codTipoVeiculo,
                                              @NotNull final String dataInicial,
@@ -23,7 +23,7 @@ public interface AfericaoV3ResourceApiDoc {
                                              final int limit,
                                              final int offset);
 
-   List<AfericaoAvulsaDto> getAfericoesAvulsas(@NotNull final Long codUnidade,
+   List<AfericaoAvulsaDto> getAfericoesAvulsas(@NotNull final List<Long> codUnidades,
                                                @NotNull final String dataInicial,
                                                @NotNull final String dataFinal,
                                                final int limit,

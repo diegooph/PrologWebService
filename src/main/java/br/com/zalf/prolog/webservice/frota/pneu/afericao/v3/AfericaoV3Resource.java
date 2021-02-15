@@ -66,7 +66,7 @@ public class AfericaoV3Resource implements AfericaoV3ResourceApiDoc {
             Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
     @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
     @Override
-    public List<AfericaoPlacaDto> getAfericoesPlacas(@PathParam("codUnidade") final @NotNull Long codUnidade,
+    public List<AfericaoPlacaDto> getAfericoesPlacas(@QueryParam("unidade") final @NotNull List<Long> codUnidades,
                                                      @QueryParam("placa") final @Nullable String placaVeiculo,
                                                      @QueryParam("codTipoVeiculo") final @Nullable Long codTipoVeiculo,
                                                      @QueryParam("dataInicial") final @NotNull String dataInicial,
@@ -77,7 +77,7 @@ public class AfericaoV3Resource implements AfericaoV3ResourceApiDoc {
         final FiltroAfericaoPlaca filtro = FiltroAfericaoPlaca.builder()
                 .placaVeiculo(placaVeiculo)
                 .codTipoVeiculo(codTipoVeiculo)
-                .dadosGerais(generateDadosGerais(codUnidade, dataInicial, dataFinal, limit, offset))
+                .dadosGerais(generateDadosGerais(codUnidades, dataInicial, dataFinal, limit, offset))
                 .build();
 
         final List<AfericaoPlacaProjection> projections = this.service.getAfericoesPlacas(filtro);
@@ -93,25 +93,25 @@ public class AfericaoV3Resource implements AfericaoV3ResourceApiDoc {
             Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
     @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
     @Override
-    public List<AfericaoAvulsaDto> getAfericoesAvulsas(@PathParam("codUnidade") final @NotNull Long codUnidade,
+    public List<AfericaoAvulsaDto> getAfericoesAvulsas(@QueryParam("unidade") final @NotNull List<Long> codUnidades,
                                                        @QueryParam("dataInicial") final @NotNull String dataInicial,
                                                        @QueryParam("dataFinal") final @NotNull String dataFinal,
                                                        @QueryParam("limit") final int limit,
                                                        @QueryParam("offset") final int offset) {
         final FiltroAfericaoAvulsa filtro = FiltroAfericaoAvulsa.builder()
-                .dadosGerais(generateDadosGerais(codUnidade, dataInicial, dataFinal, limit, offset))
+                .dadosGerais(generateDadosGerais(codUnidades, dataInicial, dataFinal, limit, offset))
                 .build();
         final List<AfericaoAvulsaProjection> projections = this.service.getAfericoesAvulsas(filtro);
         return this.afericaoAvulsaMapper.toDtos(projections);
     }
 
     @NotNull
-    private DadosGeraisFiltro generateDadosGerais(@NotNull final Long codUnidade,
+    private DadosGeraisFiltro generateDadosGerais(@NotNull final List<Long> codUnidades,
                                                   @NotNull final String dataInicial,
                                                   @NotNull final String dataFinal,
                                                   final int limit,
                                                   final int offset) {
-        return DadosGeraisFiltro.of(codUnidade,
+        return DadosGeraisFiltro.of(codUnidades,
                                     DateUtils.parseDate(dataInicial),
                                     DateUtils.parseDate(dataFinal),
                                     limit,

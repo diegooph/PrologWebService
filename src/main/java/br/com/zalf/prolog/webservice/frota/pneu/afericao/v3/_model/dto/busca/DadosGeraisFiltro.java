@@ -5,6 +5,7 @@ import lombok.Value;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDate;
+import java.util.List;
 
 /**
  * Created on 2021-02-11
@@ -15,7 +16,7 @@ import java.time.LocalDate;
 @Getter
 public class DadosGeraisFiltro {
        @NotNull
-       Long codUnidade;
+       List<Long> codUnidades;
 
        @NotNull
        LocalDate dataInicial;

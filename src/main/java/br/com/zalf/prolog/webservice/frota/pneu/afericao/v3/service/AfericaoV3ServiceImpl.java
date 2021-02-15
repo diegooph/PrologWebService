@@ -31,7 +31,7 @@ public class AfericaoV3ServiceImpl implements AfericaoV3Service {
     @NotNull
     public List<AfericaoPlacaProjection> getAfericoesPlacas(@NotNull final FiltroAfericaoPlaca filtro) {
 
-        return dao.getAfericoes(filtro.getDadosGerais().getCodUnidade(),
+        return dao.getAfericoes(filtro.getDadosGerais().getCodUnidades(),
                                 filtro.getCodTipoVeiculo(),
                                 filtro.getPlacaVeiculo(),
                                 filtro.getDadosGerais().getDataInicial(),
@@ -44,7 +44,7 @@ public class AfericaoV3ServiceImpl implements AfericaoV3Service {
     @NotNull
     public List<AfericaoAvulsaProjection> getAfericoesAvulsas(@NotNull final FiltroAfericaoAvulsa filtro) {
 
-        return this.dao.getAfericoes(filtro.getDadosGerais().getCodUnidade(),
+        return this.dao.getAfericoes(filtro.getDadosGerais().getCodUnidades(),
                                      filtro.getDadosGerais().getDataInicial(),
                                      filtro.getDadosGerais().getDataFinal(),
                                      filtro.getDadosGerais().getLimit(),
