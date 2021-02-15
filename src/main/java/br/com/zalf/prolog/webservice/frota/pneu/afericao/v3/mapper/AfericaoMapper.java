@@ -25,6 +25,7 @@ public interface AfericaoMapper<T, P extends AfericaoProjection> {
                 .codUnidade(projection.getCodUnidade())
                 .dataHora(projection.getDataHora())
                 .tipoMedicaoColetada(projection.getTipoMedicaoColetadaAfericao())
+                .tipoProcessoColeta(projection.getTipoProcessoColetaAfericao())
                 .tempoRealizacao(projection.getTempoRealizacaoAfericaoInMillis())
                 .formaColetaDados(projection.getFormaColetaDadosAfericao())
                 .cpfAferidor(projection.getCpfAferidor())
