@@ -5,6 +5,8 @@ import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.validation.constraints.Size;
+
 /**
  * Created on 2021-02-11
  *
@@ -19,6 +21,7 @@ public class FiltroAfericaoPlaca {
     @NotNull
     Long codTipoVeiculo;
     @NotNull
+    @Size(max = 7)
     String placaVeiculo;
 
     @NotNull
