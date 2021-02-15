@@ -1,7 +1,9 @@
 Change Log
 ==========
 
-## Staged
+<a name="v2.0.0"></a>
+## Version [v2.0.0](https://github.com/luizfp/PrologWebService/compare/v1.6.0...v2.0.0) (2021-02-14)
+
 #### Features
 * Cria funcionalidade de insert de processo de acoplamento (PL-3210)
 * Cria funcionalidade de verificação de dados de coleta de km (PL-3291)
@@ -25,10 +27,6 @@ Change Log
 
 ### Bug Fixes
 * Corrige diferenças entre branches na edição de veículo (PL-3326)
-
-<a name="v1.6.1"></a>
-## Version [v1.6.1](https://github.com/luizfp/PrologWebService/compare/v1.6.0...v1.6.1) (release-date) [unreleased]
-
 
 <a name="v1.6.0"></a>
 ## Version [v1.6.0](https://github.com/luizfp/PrologWebService/compare/v1.5.4...v1.6.0) (2021-02-09)
