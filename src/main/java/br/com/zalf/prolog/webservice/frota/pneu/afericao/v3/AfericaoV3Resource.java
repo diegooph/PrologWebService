@@ -58,7 +58,7 @@ public class AfericaoV3Resource implements AfericaoV3ResourceApiDoc {
     }
 
     @GET
-    @Path("/placas/unidade/{codUnidade}")
+    @Path("/placas")
     @Secured(permissions = {
             Pilares.Frota.Afericao.VISUALIZAR_TODAS_AFERICOES,
             Pilares.Frota.Afericao.REALIZAR_AFERICAO_PLACA,
@@ -85,7 +85,7 @@ public class AfericaoV3Resource implements AfericaoV3ResourceApiDoc {
     }
 
     @GET
-    @Path("/avulsas/unidade/{codUnidade}")
+    @Path("/avulsas")
     @Secured(permissions = {
             Pilares.Frota.Afericao.VISUALIZAR_TODAS_AFERICOES,
             Pilares.Frota.Afericao.REALIZAR_AFERICAO_PNEU_AVULSO,
