@@ -2,8 +2,8 @@ package br.com.zalf.prolog.webservice.frota.pneu.afericao.v3._model.dto;
 
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.TipoMedicaoColetadaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.FormaColetaDadosAfericaoEnum;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Builder;
+import lombok.Value;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
@@ -13,34 +13,31 @@ import java.time.LocalDateTime;
  *
  * @author Guilherme Steinert (https://github.com/steinert999)
  */
-@Getter
-@AllArgsConstructor
-public abstract class AfericaoDto {
+@Builder
+@Value
+public class AfericaoDto {
 
     @NotNull
-    protected final Long codigo;
+    Long codigo;
 
     @NotNull
-    protected final Long codUnidade;
+    Long codUnidade;
 
     @NotNull
-    protected final LocalDateTime dataHora;
+    LocalDateTime dataHora;
 
     @NotNull
-    protected final TipoMedicaoColetadaAfericao tipoMedicaoColetada;
+    TipoMedicaoColetadaAfericao tipoMedicaoColetada;
 
     @NotNull
-    protected final Long tempoRealizacao;
+    Long tempoRealizacao;
 
     @NotNull
-    protected final FormaColetaDadosAfericaoEnum formaColetaDados;
+    FormaColetaDadosAfericaoEnum formaColetaDados;
 
     @NotNull
-    protected final String cpfAferidor;
+    String cpfAferidor;
 
     @NotNull
-    protected final String nomeAferidor;
-
-    @NotNull
-    protected final Long kmVeiculo;
+    String nomeAferidor;
 }
