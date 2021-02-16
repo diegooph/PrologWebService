@@ -94,6 +94,7 @@ final class ProtheusRodalogConverter {
     private static Veiculo convertVeiculo(@NotNull final NovaAfericaoPlacaProtheusRodalog novaAfericaoRodalog,
                                           @NotNull final DiagramaVeiculo diagramaVeiculo) {
         final Veiculo veiculo = new Veiculo();
+        veiculo.setCodigo(-1L);
         veiculo.setCodUnidadeAlocado(novaAfericaoRodalog.getCodUnidadePlacaAlocada());
         veiculo.setPlaca(novaAfericaoRodalog.getPlaca());
         veiculo.setKmAtual(novaAfericaoRodalog.getUltimoKmVeiculo());
