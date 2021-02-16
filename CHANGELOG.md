@@ -1,10 +1,12 @@
 Change Log
 ==========
-## Stage
+
+<a name="v2.0.2"></a>
+## Version [v2.0.2](https://github.com/luizfp/PrologWebService/compare/v2.0.1...v2.0.2) (release-date) [unreleased]
 
 
 <a name="v2.0.1"></a>
-## Version [v2.0.1](https://github.com/luizfp/PrologWebService/compare/v1.6.0...v2.0.1) (2021-02-16)
+## Version [v2.0.1](https://github.com/luizfp/PrologWebService/compare/v2.0.0...v2.0.1) (2021-02-16)
 
 ### Bug Fixes
 * Adiciona código veículo no fluxo da integração (PL-3521)
