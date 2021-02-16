@@ -13,6 +13,9 @@ import java.time.format.DateTimeFormatter;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public final class FileUtils {
+
+    private static final String TEMP_DIR_REF = System.getProperty("java.io.tmpdir");
+
     private FileUtils() {
         throw new IllegalStateException(FileUtils.class.getSimpleName() + " cannot be instantiated!");
     }
@@ -30,6 +33,11 @@ public final class FileUtils {
     @NotNull
     public static File createTempDir() {
         return com.google.common.io.Files.createTempDir();
+    }
+
+    public static File getTempDir() {
+        final String baseName = getBaseName();
+        return new File(TEMP_DIR_REF, baseName);
     }
 
     private static String getBaseName() {
