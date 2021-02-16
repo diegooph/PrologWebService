@@ -31,7 +31,7 @@ public class DeleteTempFileScheduler implements Scheduler {
     @Override
     @Scheduled(cron = "0 2 */2 * * *")
     public void doWork() {
-        final File tmpDir = FileUtils.createTempDir();
+        final File tmpDir = FileUtils.getTempDir();
         final String message = String.format("Iniciando execução do schedule para limpeza da pasta %s",
                                              tmpDir.getName());
         Log.i(TAG, message);
