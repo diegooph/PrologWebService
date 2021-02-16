@@ -4,6 +4,8 @@ import org.apache.commons.io.FilenameUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Created on 17/09/2018
@@ -25,9 +27,12 @@ public final class FileUtils {
         return normalized;
     }
 
-
     @NotNull
     public static File createTempDir() {
         return com.google.common.io.Files.createTempDir();
+    }
+
+    private static String getBaseName() {
+        return LocalDate.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
     }
 }
