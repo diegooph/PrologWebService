@@ -4,6 +4,7 @@ Change Log
 ## Stage
 ### Refactors
 * Altera ServicoResource para utilizar código do veículo nos métodos e não placa (PL-3406)
+* Altera métodos do ServicoResource que recebem objeto de filtro de GET para POST
 
 <a name="v1.5.5"></a>
 ## Version [v1.5.5](https://github.com/luizfp/PrologWebService/compare/v1.5.4...v1.5.5) (release-date) [unreleased]

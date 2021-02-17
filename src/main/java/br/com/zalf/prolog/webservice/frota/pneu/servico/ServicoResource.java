@@ -56,14 +56,14 @@ public final class ServicoResource {
         return service.getQuantidadeServicosAbertosVeiculo(codUnidade, agrupamento);
     }
 
-    @GET
+    @POST
     @Secured(permissions = {Pilares.Frota.OrdemServico.Pneu.VISUALIZAR, Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
     @Path("/abertos")
     public ServicoHolder getServicoHolder(@Required final ServicoHolderBuscaFiltro filtro) {
         return service.getServicoHolder(filtro);
     }
 
-    @GET
+    @POST
     @Secured(permissions = {Pilares.Frota.OrdemServico.Pneu.VISUALIZAR, Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
     @Path("/abertos/veiculos")
     public List<Servico> getServicosAbertos(@Required final ServicosAbertosBuscaFiltro filtro) {
@@ -99,14 +99,14 @@ public final class ServicoResource {
         return service.getServicosFechadosPneu(codUnidade, codPneu, dataInicial, dataFinal);
     }
 
-    @GET
+    @POST
     @Secured(permissions = {Pilares.Frota.OrdemServico.Pneu.VISUALIZAR, Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
     @Path("/fechados/veiculos")
     public List<Servico> getServicosFechadosVeiculo(@Required final ServicosFechadosVeiculoFiltro filtro) {
         return service.getServicosFechadosVeiculo(filtro);
     }
 
-    @GET
+    @POST
     @Secured(permissions = {Pilares.Frota.OrdemServico.Pneu.VISUALIZAR, Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
     @Path("/veiculos")
     public VeiculoServico getVeiculoAberturaServico(
