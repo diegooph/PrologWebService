@@ -11,29 +11,32 @@ public interface SistemaWebFinattoRequester {
     @NotNull
     List<VeiculoWebFinatto> getVeiculosByFiliais(@NotNull final ApiAutenticacaoHolder autenticacaoHolder,
                                                  @NotNull final String codFiliais,
-                                                 @Nullable final String placaVeiculo);
+                                                 @Nullable final String placaVeiculo) throws Throwable;
 
     @NotNull
     VeiculoWebFinatto getVeiculoByPlaca(@NotNull final ApiAutenticacaoHolder autenticacaoHolder,
                                         @NotNull final String codFilial,
-                                        @NotNull final String placaSelecionada);
+                                        @NotNull final String placaSelecionada) throws Throwable;
 
     @NotNull
     List<PneuWebFinatto> getPneusByFiliais(@NotNull final ApiAutenticacaoHolder autenticacaoHolder,
                                            @NotNull final String codFiliais,
                                            @Nullable final String statusPneus,
-                                           @Nullable final String codPneu);
+                                           @Nullable final String codPneu) throws Throwable;
 
     @NotNull
     PneuWebFinatto getPneusByCodigo(@NotNull final ApiAutenticacaoHolder autenticacaoHolder,
                                     @NotNull final String codFilial,
-                                    @NotNull final String codPneuSelecionado);
+                                    @NotNull final String codPneuSelecionado) throws Throwable;
 
     @NotNull
-    ResponseAfericaoWebFinatto insertAfericaoPlaca(@NotNull final ApiAutenticacaoHolder autenticacaoHolder,
-                                                   @NotNull final AfericaoPlacaWebFinatto afericaoPlaca);
+    ResponseAfericaoWebFinatto insertAfericaoPlaca(
+            @NotNull final ApiAutenticacaoHolder autenticacaoHolder,
+            @NotNull final AfericaoPlacaWebFinatto afericaoPlaca)
+            throws Throwable;
 
     @NotNull
-    ResponseAfericaoWebFinatto insertAfericaoPlaca(@NotNull final ApiAutenticacaoHolder autenticacaoHolder,
-                                                   @NotNull final AfericaoPneuWebFinatto afericaoPneu);
+    ResponseAfericaoWebFinatto insertAfericaoAvulsa(
+            @NotNull final ApiAutenticacaoHolder autenticacaoHolder,
+            @NotNull final AfericaoPneuWebFinatto afericaoPneu) throws Throwable;
 }
