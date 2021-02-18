@@ -87,6 +87,7 @@ final class ServicoConverter {
     @NotNull
     static QuantidadeServicosVeiculo createQtdServicosVeiculo(@NotNull final ResultSet resultSet) throws SQLException {
         final QuantidadeServicosVeiculo qtdServicosFechados = new QuantidadeServicosVeiculo();
+        qtdServicosFechados.setCodVeiculo(resultSet.getLong("COD_VEICULO"));
         qtdServicosFechados.setPlacaVeiculo(resultSet.getString("PLACA_VEICULO"));
         qtdServicosFechados.setIdentificadorFrota(resultSet.getString("IDENTIFICADOR_FROTA"));
         qtdServicosFechados.setQtdServicosCalibragem(resultSet.getInt("TOTAL_CALIBRAGENS"));

@@ -147,6 +147,7 @@ final class ServicoQueryBinder {
                                                                   final long dataInicial,
                                                                   final long dataFinal) throws SQLException {
         final PreparedStatement stmt = connection.prepareStatement("SELECT" +
+                "  V.CODIGO AS COD_VEICULO," +
                 "  V.PLACA AS PLACA_VEICULO," +
                 "  V.IDENTIFICADOR_FROTA," +
                 "  SUM(CASE WHEN AM.TIPO_SERVICO = ? THEN 1 ELSE 0 END) AS TOTAL_CALIBRAGENS," +
@@ -158,7 +159,7 @@ final class ServicoQueryBinder {
                 " WHERE AM.COD_UNIDADE = ?" +
                 "      AND AM.DATA_HORA_RESOLUCAO IS NOT NULL  " +
                 "      AND (AM.DATA_HORA_RESOLUCAO AT TIME ZONE TZ_UNIDADE(AM.COD_UNIDADE))::DATE BETWEEN ? AND ?" +
-                " GROUP BY V.PLACA, V.IDENTIFICADOR_FROTA" +
+                " GROUP BY V.CODIGO, V.PLACA, V.IDENTIFICADOR_FROTA" +
                 " ORDER BY TOTAL_CALIBRAGENS DESC, TOTAL_INSPECOES DESC, TOTAL_MOVIMENTACOES DESC;");
         stmt.setString(1, TipoServico.CALIBRAGEM.asString());
         stmt.setString(2, TipoServico.INSPECAO.asString());
