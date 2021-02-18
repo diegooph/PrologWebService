@@ -23,7 +23,7 @@ import java.util.List;
 /**
  * Created by Zart on 03/07/2017.
  */
-@Path("/prontuarios")
+@Path("/v2/prontuarios")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public final class ProntuarioCondutorResource {

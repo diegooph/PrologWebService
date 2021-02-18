@@ -20,7 +20,7 @@ import java.util.List;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 @ConsoleDebugLog
-@Path("/api/marcacoes/tipos-marcacoes")
+@Path("/v2/api/marcacoes/tipos-marcacoes")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public final class ApiTipoMarcacaoResource {

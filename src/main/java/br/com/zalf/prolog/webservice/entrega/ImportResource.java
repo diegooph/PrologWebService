@@ -23,7 +23,7 @@ import java.io.InputStream;
  * @deprecated in v2_56. Devemos mover esses métodos de import para seus respectivos resources. Criando MapaResource
  * e um Tracking resource.
  */
-@Path("/import")
+@Path("/v2/import")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Deprecated

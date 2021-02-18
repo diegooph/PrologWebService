@@ -13,7 +13,7 @@ import javax.ws.rs.core.StreamingOutput;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-@Path("/integracoes/avilan")
+@Path("/v2/integracoes/avilan")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public final class AvaCorpAvilanResource {

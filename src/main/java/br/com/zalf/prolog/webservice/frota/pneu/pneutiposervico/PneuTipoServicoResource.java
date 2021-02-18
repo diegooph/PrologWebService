@@ -19,7 +19,7 @@ import java.util.List;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-@Path("/pneus/tipos-servicos")
+@Path("/v2/pneus/tipos-servicos")
 public class PneuTipoServicoResource {
 
     private final PneuTipoServicoService service = new PneuTipoServicoService();

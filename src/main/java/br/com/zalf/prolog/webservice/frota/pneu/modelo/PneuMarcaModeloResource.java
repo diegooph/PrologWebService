@@ -24,7 +24,7 @@ import java.util.List;
  * @author Thais Francisco (https://github.com/thaisksf)
  */
 @ConsoleDebugLog
-@Path("pneus")
+@Path("/v2/pneus")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public final class PneuMarcaModeloResource {

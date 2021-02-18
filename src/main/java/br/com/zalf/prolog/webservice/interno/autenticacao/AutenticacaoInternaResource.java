@@ -17,7 +17,7 @@ import javax.ws.rs.core.MediaType;
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-@Path("/interno/autenticacao")
+@Path("/v2/interno/autenticacao")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public final class AutenticacaoInternaResource {

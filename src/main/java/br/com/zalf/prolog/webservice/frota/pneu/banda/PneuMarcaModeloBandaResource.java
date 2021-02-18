@@ -21,7 +21,7 @@ import java.util.List;
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-@Path("pneus/bandas")
+@Path("/v2/pneus/bandas")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public final class PneuMarcaModeloBandaResource {

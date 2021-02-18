@@ -25,7 +25,7 @@ import java.util.List;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 @Secured
-@Path("/dummies")
+@Path("/v2/dummies")
 @ResourceDebugOnly
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")

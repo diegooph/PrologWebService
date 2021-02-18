@@ -17,7 +17,7 @@ import javax.ws.rs.core.MediaType;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-@Path("push")
+@Path("/v2/push")
 @Secured
 @ConsoleDebugLog
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")

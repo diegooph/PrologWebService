@@ -22,7 +22,7 @@ import java.util.List;
  *
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
-@Path("/movimentacoes/motivos")
+@Path("/v2/movimentacoes/motivos")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public final class MotivoMovimentoResource {
