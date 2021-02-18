@@ -57,15 +57,15 @@ public class SistemaWebFinattoRequesterImpl implements SistemaWebFinattoRequeste
 
     @Override
     @NotNull
-    public PneuWebFinatto getPneusByCodigo(@NotNull final ApiAutenticacaoHolder autenticacaoHolder,
-                                           @NotNull final String codFilial,
-                                           @NotNull final String codPneuSelecionado) throws Throwable {
+    public PneuWebFinatto getPneuByCodigo(@NotNull final ApiAutenticacaoHolder autenticacaoHolder,
+                                          @NotNull final String codFilial,
+                                          @NotNull final String codPneuSelecionado) throws Throwable {
         final SistemaWebFinattoRest service = RestClient.getService(SistemaWebFinattoRest.class);
         final Call<PneuWebFinatto> call =
-                service.getPneusByCodigo(autenticacaoHolder.getPrologTokenIntegracao(),
-                                         autenticacaoHolder.getUrl(),
-                                         codFilial,
-                                         codPneuSelecionado);
+                service.getPneuByCodigo(autenticacaoHolder.getPrologTokenIntegracao(),
+                                        autenticacaoHolder.getUrl(),
+                                        codFilial,
+                                        codPneuSelecionado);
         return handleResponse(call.execute());
     }
 

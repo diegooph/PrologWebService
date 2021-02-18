@@ -33,7 +33,7 @@ public interface SistemaWebFinattoRest {
             @Query("codPneu") @Nullable final String codPneu);
 
     @GET()
-    Call<PneuWebFinatto> getPneusByCodigo(
+    Call<PneuWebFinatto> getPneuByCodigo(
             @Header(PrologCustomHeaders.HEADER_TOKEN_INTEGRACAO) @NotNull final String tokenIntegracao,
             @Url @NotNull final String url,
             @Query("codFilial") @NotNull final String codFilial,

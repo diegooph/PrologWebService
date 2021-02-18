@@ -25,9 +25,9 @@ public interface SistemaWebFinattoRequester {
                                            @Nullable final String codPneu) throws Throwable;
 
     @NotNull
-    PneuWebFinatto getPneusByCodigo(@NotNull final ApiAutenticacaoHolder autenticacaoHolder,
-                                    @NotNull final String codFilial,
-                                    @NotNull final String codPneuSelecionado) throws Throwable;
+    PneuWebFinatto getPneuByCodigo(@NotNull final ApiAutenticacaoHolder autenticacaoHolder,
+                                   @NotNull final String codFilial,
+                                   @NotNull final String codPneuSelecionado) throws Throwable;
 
     @NotNull
     ResponseAfericaoWebFinatto insertAfericaoPlaca(
