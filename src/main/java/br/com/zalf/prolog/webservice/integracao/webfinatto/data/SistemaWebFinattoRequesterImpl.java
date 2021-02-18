@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.integracao.webfinatto.data;
 import br.com.zalf.prolog.webservice.integracao.network.RestClient;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.ApiAutenticacaoHolder;
 import br.com.zalf.prolog.webservice.integracao.webfinatto._model.*;
+import br.com.zalf.prolog.webservice.integracao.webfinatto._model.error.SistemaWebFinattoException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit2.Call;
@@ -101,12 +102,13 @@ public class SistemaWebFinattoRequesterImpl implements SistemaWebFinattoRequeste
             if (response.isSuccessful() && response.body() != null) {
                 return response.body();
             } else {
-                throw new SistemaWebFinattoException(
-                        "[INTEGRAÇÃO] Nenhuma resposta obtida do sistema Protheus-Nepomuceno");
+                if (response.errorBody() == null) {
+                    throw new SistemaWebFinattoException("[INTEGRAÇÃO] Nenhuma resposta obtida do sistema WebFinatto");
+                }
+                throw SistemaWebFinattoException.from(response.errorBody());
             }
         } else {
-            throw new SistemaWebFinattoException(
-                    "[INTEGRAÇÃO] Nenhuma resposta obtida do sistema Protheus-Nepomuceno");
+            throw new SistemaWebFinattoException("[INTEGRAÇÃO] Nenhuma resposta obtida do sistema WebFinatto");
         }
     }
 }
