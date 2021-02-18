@@ -12,7 +12,7 @@ public class VeiculoWebFinatto {
     private final String placaVeiculo;
     @NotNull
     private final String codVeiculo;
-    @NotNull
+    @Nullable
     private final String codigoFrota;
     @NotNull
     private final String codEmpresaVeiculo;
