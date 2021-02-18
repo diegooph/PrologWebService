@@ -198,6 +198,7 @@ final class ServicoQueryBinder {
                 "   M.SULCO_INTERNO AS SULCO_INTERNO_PNEU_NOVO, " +
                 "   M.VIDA AS VIDA_PNEU_NOVO, " +
                 "   A.DATA_HORA AT TIME ZONE ? AS DATA_HORA_ABERTURA, " +
+                "   V.CODIGO AS COD_VEICULO, " +
                 "   V.PLACA AS PLACA_VEICULO, " +
                 "   V.IDENTIFICADOR_FROTA AS IDENTIFICADOR_FROTA, " +
                 "   A.CODIGO AS COD_AFERICAO, " +
