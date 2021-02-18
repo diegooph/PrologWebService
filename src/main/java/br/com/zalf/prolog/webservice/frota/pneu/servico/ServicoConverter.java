@@ -175,6 +175,7 @@ final class ServicoConverter {
         servico.setCodUnidade(resultSet.getLong("COD_UNIDADE"));
         servico.setDataHoraAbertura(resultSet.getObject("DATA_HORA_ABERTURA", LocalDateTime.class));
         servico.setDataHoraFechamento(resultSet.getObject("DATA_HORA_FECHAMENTO", LocalDateTime.class));
+        servico.setCodVeiculo(resultSet.getLong("COD_VEICULO"));
         servico.setPlacaVeiculo(resultSet.getString("PLACA_VEICULO"));
         servico.setIdentificadorFrota(resultSet.getString("IDENTIFICADOR_FROTA"));
         servico.setFechadoAutomaticamenteMovimentacao(resultSet.getBoolean("FECHADO_AUTOMATICAMENTE_MOVIMENTACAO"));
