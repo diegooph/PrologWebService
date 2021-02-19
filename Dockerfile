@@ -1,5 +1,4 @@
-FROM postgres:10-alpine as builder_extensions
-#FROM postgres:10-alpine
+FROM kartoza/postgis:12.4
 
 RUN apk add --update --no-cache git build-base \
     && git clone https://github.com/eulerto/pg_similarity.git \
