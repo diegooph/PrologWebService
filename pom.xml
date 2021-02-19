@@ -35,12 +35,6 @@
                 <active-profile>prod</active-profile>
             </properties>
         </profile>
-        <profile>
-            <id>test</id>
-            <properties>
-                <active-profile>test</active-profile>
-            </properties>
-        </profile>
     </profiles>
     <dependencies>
         <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-jersey -->
