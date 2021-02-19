@@ -76,6 +76,7 @@ final class ServicoQueryBinder {
     static PreparedStatement getQuantidadeServicosAbertosVeiculo(@NotNull final Connection connection,
                                                                  @NotNull final Long codUnidade) throws SQLException {
         final PreparedStatement stmt = connection.prepareStatement("SELECT " +
+                "  V.CODIGO AS COD_VEICULO," +
                 "  V.PLACA AS PLACA_VEICULO," +
                 "  V.IDENTIFICADOR_FROTA, " +
                 "  SUM(CASE WHEN AM.TIPO_SERVICO = ? THEN 1 ELSE 0 END) AS TOTAL_CALIBRAGENS, " +
@@ -90,7 +91,7 @@ final class ServicoQueryBinder {
                 "    ON AM.COD_PNEU = VP.COD_PNEU AND AM.COD_UNIDADE = VP.COD_UNIDADE " +
                 "WHERE AM.COD_UNIDADE = ? " +
                 "      AND AM.DATA_HORA_RESOLUCAO IS NULL " +
-                "GROUP BY V.PLACA, V.IDENTIFICADOR_FROTA " +
+                "GROUP BY V.CODIGO, V.PLACA, V.IDENTIFICADOR_FROTA " +
                 "ORDER BY TOTAL_CALIBRAGENS DESC, TOTAL_INSPECOES DESC, TOTAL_MOVIMENTACOES DESC;");
         stmt.setString(1, TipoServico.CALIBRAGEM.asString());
         stmt.setString(2, TipoServico.INSPECAO.asString());
