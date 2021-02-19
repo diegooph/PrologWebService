@@ -3,7 +3,6 @@ FROM kartoza/postgis:12.4
 RUN apt-get update\
     && apt-get install git -y
 
-COPY ./db.sql /docker-entrypoint-initdb.d
 
 RUN apt-get -y --purge autoremove  \
     && apt-get clean \
@@ -15,7 +14,4 @@ RUN git clone https://github.com/eulerto/pg_similarity.git\
     && make install\
     && cd /scripts
 
-COPY --from=builder_extensions /var/lib/postgresql/10.16/lib /var/lib/postgresql/12/lib
-COPY --from=builder_extensions /var/share/postgresql/10.16/extension /var/share/postgresql/12/extension
-
-COPY ./db2.sql /docker-entrypoint-initdb.d
+COPY ./script_install_extensions.sql /docker-entrypoint-initdb.d
