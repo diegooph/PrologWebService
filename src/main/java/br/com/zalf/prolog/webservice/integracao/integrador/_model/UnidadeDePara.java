@@ -5,7 +5,7 @@ import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 
 @Data
-public class UnidadeDePara {
+public final class UnidadeDePara {
     @NotNull
     private final Long codUnidadeProlog;
     @NotNull
