@@ -76,7 +76,7 @@ public final class SistemaProtheusNepomuceno extends Sistema {
             final Long codEmpresa = getIntegradorProLog().getCodEmpresaByCodUnidadeProLog(conn, codUnidades.get(0));
 
             final Map<String, UnidadeRestricao> unidadeRestricao =
-                    integracaoDao.getUnidadeRestricaoHolder(conn, codUnidadesMapeadas).getInfosUnidadeRestricao();
+                    integracaoDao.getUnidadeRestricaoHolder(conn, codUnidadesMapeadas).getUnidadeRestricao();
             // Apenas tipos de veículos que possuem cod_auxiliar estarão nessa estrutura.
             final Table<String, String, TipoVeiculoConfigAfericao> tipoVeiculoConfiguracao =
                     integracaoDao

@@ -8,5 +8,10 @@ import java.util.Map;
 @Data
 public final class UnidadeRestricaoHolder {
     @NotNull
-    final Map<String, UnidadeRestricao> infosUnidadeRestricao;
+    final Map<String, UnidadeRestricao> unidadeRestricao;
+
+    @NotNull
+    public UnidadeRestricao get(@NotNull final String codEmpresaFilialVeiculo) {
+        return unidadeRestricao.get(codEmpresaFilialVeiculo);
+    }
 }

@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.webfinatto._model;
 
+import br.com.zalf.prolog.webservice.integracao.webfinatto.utils.SistemaWebFinattoConstants;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -45,5 +46,10 @@ public class VeiculoWebFinatto {
             return qtdPneusAplicadosVeiculo;
         }
         return pneusAplicados.size();
+    }
+
+    @NotNull
+    public String getCodEmpresaFilialVeiculo() {
+        return codEmpresaVeiculo.concat(SistemaWebFinattoConstants.SEPARADOR_EMPRESA_FILIAL).concat(codFilialVeiculo);
     }
 }

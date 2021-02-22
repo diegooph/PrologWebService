@@ -9,4 +9,9 @@ import java.util.Map;
 public final class AfericaoRealizadaPlacaHolder {
     @NotNull
     final Map<String, AfericaoRealizadaPlaca> afericaoRealizadaPlaca;
+
+    @NotNull
+    public AfericaoRealizadaPlaca get(@NotNull final String placaVeiculo) {
+        return afericaoRealizadaPlaca.get(placaVeiculo);
+    }
 }
