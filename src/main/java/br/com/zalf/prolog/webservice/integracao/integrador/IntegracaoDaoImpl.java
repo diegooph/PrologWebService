@@ -1,12 +1,15 @@
-package br.com.zalf.prolog.webservice.integracao;
+package br.com.zalf.prolog.webservice.integracao.integrador;
 
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.database.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.database.SqlType;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
+import br.com.zalf.prolog.webservice.integracao.MetodoIntegrado;
+import br.com.zalf.prolog.webservice.integracao.RecursoIntegrado;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.IntegracaoOsFilter;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.ModelosChecklistBloqueados;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.OsIntegracao;
+import br.com.zalf.prolog.webservice.integracao.integrador._model.UnidadeDeParaHolder;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.ApiAutenticacaoHolder;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
 import com.google.common.base.Preconditions;
@@ -79,8 +82,9 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT TI.TOKEN_INTEGRACAO " +
-                    "FROM INTEGRACAO.TOKEN_INTEGRACAO TI " +
-                    "WHERE TI.COD_EMPRESA = (SELECT COD_EMPRESA FROM UNIDADE WHERE CODIGO = ?);");
+                                                 "FROM INTEGRACAO.TOKEN_INTEGRACAO TI " +
+                                                 "WHERE TI.COD_EMPRESA = (SELECT COD_EMPRESA FROM UNIDADE WHERE " +
+                                                 "CODIGO = ?);");
             stmt.setLong(1, codUnidadeProLog);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
@@ -102,8 +106,8 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
         ResultSet rSet = null;
         try {
             stmt = conn.prepareStatement("SELECT TI.COD_EMPRESA " +
-                    "FROM INTEGRACAO.TOKEN_INTEGRACAO TI " +
-                    "WHERE TI.TOKEN_INTEGRACAO = ?;");
+                                                 "FROM INTEGRACAO.TOKEN_INTEGRACAO TI " +
+                                                 "WHERE TI.TOKEN_INTEGRACAO = ?;");
             stmt.setString(1, tokenIntegracao);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
@@ -173,9 +177,9 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
                 return rSet.getString("URL_COMPLETA");
             } else {
                 throw new SQLException("Nenhuma URL encontrada para:\n" +
-                        "codEmpresa: " + codEmpresa + "\n" +
-                        "sistemaKey: " + sistemaKey.getKey() + "\n" +
-                        "metodoIntegrado: " + metodoIntegrado.getKey());
+                                               "codEmpresa: " + codEmpresa + "\n" +
+                                               "sistemaKey: " + sistemaKey.getKey() + "\n" +
+                                               "metodoIntegrado: " + metodoIntegrado.getKey());
             }
         } finally {
             close(stmt, rSet);
@@ -196,7 +200,33 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
                 return rSet.getString("COD_AUXILIAR");
             }
             throw new SQLException("Não foi possível buscar o código auxiliar para a unidade:\n" +
-                    "codUnidadeProlog: " + codUnidadeProlog);
+                                           "codUnidadeProlog: " + codUnidadeProlog);
+        } finally {
+            close(stmt, rSet);
+        }
+    }
+
+    @NotNull
+    @Override
+    public UnidadeDeParaHolder getCodAuxiliarByCodUnidadeProlog(
+            @NotNull final Connection conn,
+            @NotNull final List<Long> codUnidades) throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = conn.prepareStatement(
+                    "select * from integracao.func_geral_unidade_get_infos_de_para(f_cod_unidades => ?);");
+            stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.TEXT, codUnidades));
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                final UnidadeDeParaHolder unidadeDeParaHolder = IntegracaoConverter.createUnidadeDeParaHolder(rSet);
+                do {
+                    unidadeDeParaHolder.getUnidadesDePara().add(IntegracaoConverter.createUnidadeDePara(rSet));
+                } while (rSet.next());
+                return unidadeDeParaHolder;
+            } else {
+                throw new SQLException("Nenhum código auxiliar mapeado para as unidades: " + codUnidades);
+            }
         } finally {
             close(stmt, rSet);
         }
@@ -228,10 +258,10 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
         ResultSet rSet = null;
         try {
             stmt = conn.prepareStatement("select *" +
-                    "from integracao.func_geral_busca_infos_autenticacao(" +
-                    "f_cod_empresa => ?, " +
-                    "f_sistema_key => ?, " +
-                    "f_metodo_integrado => ?);");
+                                                 "from integracao.func_geral_busca_infos_autenticacao(" +
+                                                 "f_cod_empresa => ?, " +
+                                                 "f_sistema_key => ?, " +
+                                                 "f_metodo_integrado => ?);");
             stmt.setLong(1, codEmpresa);
             stmt.setString(2, sistemaKey.getKey());
             stmt.setString(3, metodoIntegrado.getKey());
@@ -244,9 +274,9 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
                         rSet.getLong("api_short_code"));
             } else {
                 throw new SQLException("Nenhuma URL encontrada para:\n" +
-                        "codEmpresa: " + codEmpresa + "\n" +
-                        "sistemaKey: " + sistemaKey.getKey() + "\n" +
-                        "metodoIntegrado: " + metodoIntegrado.getKey());
+                                               "codEmpresa: " + codEmpresa + "\n" +
+                                               "sistemaKey: " + sistemaKey.getKey() + "\n" +
+                                               "metodoIntegrado: " + metodoIntegrado.getKey());
             }
         } finally {
             close(stmt, rSet);
@@ -265,10 +295,10 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("select * " +
-                    "from integracao.func_geral_busca_unidades_bloqueadas_integracao(" +
-                    "f_user_token => ?, " +
-                    "f_sistema_key => ?, " +
-                    "f_recurso_integrado => ?);");
+                                                 "from integracao.func_geral_busca_unidades_bloqueadas_integracao(" +
+                                                 "f_user_token => ?, " +
+                                                 "f_sistema_key => ?, " +
+                                                 "f_recurso_integrado => ?);");
             stmt.setString(1, userToken);
             stmt.setString(2, sistemaKey.getKey());
             stmt.setString(3, recursoIntegrado.getKey());
@@ -299,10 +329,11 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("select * " +
-                    "from integracao.func_geral_busca_unidades_bloqueadas_by_token_integracao(" +
-                    "f_token_integracao => ?, " +
-                    "f_sistema_key => ?, " +
-                    "f_recurso_integrado => ?);");
+                                                 "from integracao" +
+                                                 ".func_geral_busca_unidades_bloqueadas_by_token_integracao(" +
+                                                 "f_token_integracao => ?, " +
+                                                 "f_sistema_key => ?, " +
+                                                 "f_recurso_integrado => ?);");
             stmt.setString(1, tokenIntegracao);
             stmt.setString(2, sistemaKey.getKey());
             stmt.setString(3, recursoIntegrado.getKey());
@@ -329,38 +360,15 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * " +
-                    "FROM INTEGRACAO.FUNC_GERAL_BUSCA_CONFIG_ABERTURA_SERVICO_PNEU(F_COD_UNIDADE => ?) " +
-                    "AS DEVE_ABRIR_SERVICO_PNEU");
+                                                 "FROM INTEGRACAO.FUNC_GERAL_BUSCA_CONFIG_ABERTURA_SERVICO_PNEU" +
+                                                 "(F_COD_UNIDADE => ?) " +
+                                                 "AS DEVE_ABRIR_SERVICO_PNEU");
             stmt.setLong(1, codUnidade);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return rSet.getBoolean("DEVE_ABRIR_SERVICO_PNEU");
             } else {
                 throw new SQLException("Erro ao buscar configuração para a unidade");
-            }
-        } finally {
-            close(conn, stmt, rSet);
-        }
-    }
-
-    @NotNull
-    @Override
-    public Long insertOsPendente(@NotNull final Long codUnidade, @NotNull final Long codOs) throws Throwable {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("select * from integracao.func_checklist_os_insert_os_pendente(" +
-                    "f_cod_unidade => ?," +
-                    "f_cod_os => ?) as codigo_interno_os_prolog");
-            stmt.setLong(1, codUnidade);
-            stmt.setLong(2, codOs);
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                return rSet.getLong("CODIGO_INTERNO_OS_PROLOG");
-            } else {
-                throw new SQLException("Erro ao inserir OS pendente.");
             }
         } finally {
             close(conn, stmt, rSet);
@@ -377,15 +385,15 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * " +
-                    "FROM INTEGRACAO.FUNC_CHECKLIST_MODELO_GET_MODELOS_BLOQUEADOS(" +
-                    "F_COD_UNIDADE => ?);");
+                                                 "FROM INTEGRACAO.FUNC_CHECKLIST_MODELO_GET_MODELOS_BLOQUEADOS(" +
+                                                 "F_COD_UNIDADE => ?);");
             stmt.setLong(1, codUnidade);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 final List<Long> codModelosBloqueados = new ArrayList<>();
                 final ModelosChecklistBloqueados modelosChecklistBloqueados =
                         new ModelosChecklistBloqueados(rSet.getLong("cod_unidade"),
-                                codModelosBloqueados);
+                                                       codModelosBloqueados);
                 do {
                     modelosChecklistBloqueados
                             .getCodModelosBloqueados()
@@ -394,6 +402,30 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
                 return modelosChecklistBloqueados;
             } else {
                 return new ModelosChecklistBloqueados(codUnidade, Collections.emptyList());
+            }
+        } finally {
+            close(conn, stmt, rSet);
+        }
+    }
+
+    @NotNull
+    @Override
+    public Long insertOsPendente(@NotNull final Long codUnidade, @NotNull final Long codOs) throws Throwable {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement("select * from integracao.func_checklist_os_insert_os_pendente(" +
+                                                 "f_cod_unidade => ?," +
+                                                 "f_cod_os => ?) as codigo_interno_os_prolog");
+            stmt.setLong(1, codUnidade);
+            stmt.setLong(2, codOs);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return rSet.getLong("CODIGO_INTERNO_OS_PROLOG");
+            } else {
+                throw new SQLException("Erro ao inserir OS pendente.");
             }
         } finally {
             close(conn, stmt, rSet);
@@ -411,8 +443,8 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("select * from integracao.func_checklist_os_busca_informacoes_os(" +
-                    "f_cod_interno_os_prolog => ?, " +
-                    "f_status_os => ?);");
+                                                 "f_cod_interno_os_prolog => ?, " +
+                                                 "f_status_os => ?);");
             stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codsOrdensServicos));
             stmt.setString(2, integracaoOsFilter.asString());
             rSet = stmt.executeQuery();
@@ -477,10 +509,10 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("select * from integracao.func_checklist_os_atualiza_status_os(" +
-                    "f_cods_interno_os_prolog => ?, " +
-                    "f_pendente => ?, " +
-                    "f_bloqueada => ?, " +
-                    "f_incrementar_tentativas => ?);");
+                                                 "f_cods_interno_os_prolog => ?, " +
+                                                 "f_pendente => ?, " +
+                                                 "f_bloqueada => ?, " +
+                                                 "f_incrementar_tentativas => ?);");
             stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codsInternoOsProlog));
             stmt.setBoolean(2, pendente);
             stmt.setBoolean(3, bloqueada);
@@ -500,9 +532,9 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("select * from integracao.func_checklist_os_atualiza_erro_os(" +
-                    "f_cod_interno_os_prolog => ?, " +
-                    "f_error_message => ?, " +
-                    "f_exception_logada => ?);");
+                                                 "f_cod_interno_os_prolog => ?, " +
+                                                 "f_error_message => ?, " +
+                                                 "f_exception_logada => ?);");
             stmt.setLong(1, codInternoOsProlog);
             stmt.setString(2, throwable.getMessage());
             stmt.setString(3, ExceptionUtils.getStackTrace(throwable));
@@ -521,7 +553,7 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("select * from integracao.func_checklist_os_busca_codigo_os(" +
-                    "f_cod_itens_os => ?);");
+                                                 "f_cod_itens_os => ?);");
             stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codItensProlog));
             rSet = stmt.executeQuery();
             if (rSet.next()) {

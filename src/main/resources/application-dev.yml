@@ -1,11 +1,11 @@
 database:
   properties:
-    host: ""
-    port: ""
-    name: ""
+    host: "teste-prolog-25.c9sc1w2qsese.us-east-1.rds.amazonaws.com"
+    port: "5432"
+    name: "prolog_database_julho"
   connection:
-    user: ""
-    password: ""
+    user: "prolog_user_diogenes"
+    password: "aferequevai"
 
 spring:
   profiles: dev

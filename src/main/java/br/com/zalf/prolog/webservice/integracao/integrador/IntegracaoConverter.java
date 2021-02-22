@@ -1,10 +1,12 @@
-package br.com.zalf.prolog.webservice.integracao;
+package br.com.zalf.prolog.webservice.integracao.integrador;
 
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.StatusItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.StatusOrdemServico;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.ItemOsIntegracao;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.OsIntegracao;
+import br.com.zalf.prolog.webservice.integracao.integrador._model.UnidadeDePara;
+import br.com.zalf.prolog.webservice.integracao.integrador._model.UnidadeDeParaHolder;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
@@ -59,5 +61,17 @@ public final class IntegracaoConverter {
                         null : rSet.getObject("data_hora_inicio_resolucao", LocalDateTime.class),
                 statusItemOs == StatusItemOrdemServico.PENDENTE ?
                         null : rSet.getObject("data_hora_fim_resolucao", LocalDateTime.class));
+    }
+
+    @NotNull
+    public static UnidadeDeParaHolder createUnidadeDeParaHolder(@NotNull final ResultSet rSet) throws Throwable {
+        return new UnidadeDeParaHolder(rSet.getLong("cod_empresa_prolog"),
+                                       new ArrayList<>());
+    }
+
+    @NotNull
+    public static UnidadeDePara createUnidadeDePara(@NotNull final ResultSet rSet) throws Throwable {
+        return new UnidadeDePara(rSet.getLong("cod_unidade_prolog"),
+                                 rSet.getString("cod_auxiliar_unidade"));
     }
 }
