@@ -126,7 +126,7 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
             stmt.setBoolean(7, veiculo.isStatusAtivo());
             stmt.setBoolean(8, veiculo.getPossuiHubodometro());
             stmt.setLong(9, codColaboradorResponsavelEdicao);
-            stmt.setString(10, OrigemAcaoEnum.PROLOG.toString());
+            stmt.setString(10, OrigemAcaoEnum.PROLOG_WEB.toString());
             stmt.setObject(11, Now.getOffsetDateTimeUtc());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
