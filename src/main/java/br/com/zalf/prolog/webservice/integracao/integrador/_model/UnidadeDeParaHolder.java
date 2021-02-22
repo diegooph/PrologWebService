@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 @Data
-public class UnidadeDeParaHolder {
+public final class UnidadeDeParaHolder {
     @NotNull
     private final Long codEmpresaProlog;
     @NotNull

@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Map;
 
 @Data
-public class UnidadeRestricaoHolder {
+public final class UnidadeRestricaoHolder {
     @NotNull
     final Map<String, UnidadeRestricao> infosUnidadeRestricao;
 }
