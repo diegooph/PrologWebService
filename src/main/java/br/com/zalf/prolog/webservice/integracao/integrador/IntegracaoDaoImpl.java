@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.integracao.integrador;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.database.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.database.SqlType;
+import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.integracao.MetodoIntegrado;
 import br.com.zalf.prolog.webservice.integracao.RecursoIntegrado;
@@ -285,6 +286,40 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
                 return IntegracaoConverter.createTipoVeiculoConfigAfericaoHolder(tipoVeiculoConfiguracao);
             } else {
                 return IntegracaoConverter.createTipoVeiculoConfigAfericaoHolder(HashBasedTable.create());
+            }
+        } finally {
+            close(stmt, rSet);
+        }
+    }
+
+    @NotNull
+    @Override
+    public AfericaoRealizadaPlacaHolder getAfericaoRealizadaPlacaHolder(
+            @NotNull final Connection conn,
+            @NotNull final Long codEmpresa,
+            @NotNull final List<String> placas) throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = conn.prepareStatement("select * " +
+                                                 "from integracao.func_pneu_afericao_get_infos_placas_aferidas(" +
+                                                 "f_cod_empresa => ?, " +
+                                                 "f_placas_afericao => ?, " +
+                                                 "f_data_hora_atual => ?);");
+            stmt.setLong(1, codEmpresa);
+            stmt.setArray(2, PostgresUtils.listToArray(conn, SqlType.TEXT, placas));
+            stmt.setObject(3, Now.getOffsetDateTimeUtc());
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                final Map<String, AfericaoRealizadaPlaca> afericaoRealizadaPlaca = new HashMap<>();
+                do {
+                    afericaoRealizadaPlaca.put(rSet.getString("placa_afericao"),
+                                               IntegracaoConverter.createAfericaoRealizadaPlaca(rSet));
+                } while (rSet.next());
+                return IntegracaoConverter.createAfericaoRealizadaPlacaHolder(afericaoRealizadaPlaca);
+            } else {
+                throw new SQLException("Nenhuma informação de aferição encontrada para as placas:\n" +
+                                               "placas: " + placas.toString());
             }
         } finally {
             close(stmt, rSet);

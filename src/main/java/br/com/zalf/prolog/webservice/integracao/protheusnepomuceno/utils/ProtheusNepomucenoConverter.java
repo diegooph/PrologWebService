@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
+import br.com.zalf.prolog.webservice.integracao.integrador._model.AfericaoRealizadaPlaca;
 import br.com.zalf.prolog.webservice.integracao.integrador._model.TipoVeiculoConfigAfericao;
 import br.com.zalf.prolog.webservice.integracao.integrador._model.UnidadeRestricao;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.*;
@@ -104,15 +105,15 @@ public final class ProtheusNepomucenoConverter {
             @NotNull final VeiculoListagemProtheusNepomuceno veiculo,
             @NotNull final UnidadeRestricao unidadeRestricao,
             @NotNull final TipoVeiculoConfigAfericao tipoVeiculoConfigAfericao,
-            @NotNull final InfosAfericaoRealizadaPlaca infosAfericaoRealizadaPlaca) {
+            @NotNull final AfericaoRealizadaPlaca afericaoRealizadaPlaca) {
         final ModeloPlacasAfericao.PlacaAfericao placaAfericao = new ModeloPlacasAfericao.PlacaAfericao();
         placaAfericao.setPlaca(veiculo.getPlacaVeiculo());
         if (!veiculo.getCodVeiculo().equals(veiculo.getPlacaVeiculo())) {
             placaAfericao.setIdentificadorFrota(veiculo.getCodVeiculo());
         }
 
-        placaAfericao.setIntervaloUltimaAfericaoPressao(infosAfericaoRealizadaPlaca.getDiasUltimaAfericaoPressao());
-        placaAfericao.setIntervaloUltimaAfericaoSulco(infosAfericaoRealizadaPlaca.getDiasUltimaAfericaoSulco());
+        placaAfericao.setIntervaloUltimaAfericaoPressao(afericaoRealizadaPlaca.getDiasUltimaAfericaoPressao());
+        placaAfericao.setIntervaloUltimaAfericaoSulco(afericaoRealizadaPlaca.getDiasUltimaAfericaoSulco());
         placaAfericao.setQuantidadePneus(veiculo.getQtdPneusAplicadosVeiculo());
 
         placaAfericao.setFormaColetaDadosSulco(tipoVeiculoConfigAfericao.getFormaColetaDadosSulco());

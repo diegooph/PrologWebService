@@ -12,6 +12,7 @@ import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.MetodoIntegrado;
 import br.com.zalf.prolog.webservice.integracao.RecursoIntegrado;
 import br.com.zalf.prolog.webservice.integracao.integrador.IntegracaoDao;
+import br.com.zalf.prolog.webservice.integracao.integrador._model.AfericaoRealizadaPlaca;
 import br.com.zalf.prolog.webservice.integracao.integrador._model.TipoVeiculoConfigAfericao;
 import br.com.zalf.prolog.webservice.integracao.integrador._model.UnidadeRestricao;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.ApiAutenticacaoHolder;
@@ -91,8 +92,10 @@ public final class SistemaProtheusNepomuceno extends Sistema {
                     .distinct()
                     .collect(Collectors.toList());
 
-            final Map<String, InfosAfericaoRealizadaPlaca> afericaoRealizadaPlaca =
-                    sistema.getInfosAfericaoRealizadaPlaca(conn, codEmpresa, placasNepomuceno);
+            final Map<String, AfericaoRealizadaPlaca> afericaoRealizadaPlaca =
+                    integracaoDao
+                            .getAfericaoRealizadaPlacaHolder(conn, codEmpresa, placasNepomuceno)
+                            .getAfericaoRealizadaPlaca();
 
             // Aqui começamos a montar o cronograma
             final Map<String, ModeloPlacasAfericao> modelosEstruturaVeiculo = new HashMap<>();

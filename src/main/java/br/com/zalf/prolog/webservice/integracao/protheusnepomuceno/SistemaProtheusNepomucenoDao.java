@@ -4,7 +4,6 @@ import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.Afericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.ConfiguracaoNovaAfericaoAvulsa;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.ConfiguracaoNovaAfericaoPlaca;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosAfericaoAvulsa;
-import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosAfericaoRealizadaPlaca;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -33,12 +32,6 @@ public interface SistemaProtheusNepomucenoDao {
     List<InfosAfericaoAvulsa> getInfosAfericaoAvulsa(@NotNull final Connection conn,
                                                      @NotNull final Long codUnidade,
                                                      @NotNull final List<String> codPneus) throws Throwable;
-
-    @NotNull
-    Map<String, InfosAfericaoRealizadaPlaca> getInfosAfericaoRealizadaPlaca(
-            @NotNull final Connection conn,
-            @NotNull final Long codEmpresa,
-            @NotNull final List<String> placasNepomuceno) throws Throwable;
 
     @NotNull
     ConfiguracaoNovaAfericaoPlaca getConfigNovaAfericaoPlaca(

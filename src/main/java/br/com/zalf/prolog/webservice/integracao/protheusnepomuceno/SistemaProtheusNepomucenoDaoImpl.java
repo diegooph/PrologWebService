@@ -3,12 +3,10 @@ package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno;
 import br.com.zalf.prolog.webservice.commons.util.database.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.database.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.database.StatementUtils;
-import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.*;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosAfericaoAvulsa;
-import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosAfericaoRealizadaPlaca;
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -130,45 +128,6 @@ public final class SistemaProtheusNepomucenoDaoImpl extends DatabaseConnection i
                 infosAfericaoAvulsa.add(createInfosAfericaoAvulsa(rSet));
             }
             return infosAfericaoAvulsa;
-        } finally {
-            close(stmt, rSet);
-        }
-    }
-
-    @NotNull
-    @Override
-    public Map<String, InfosAfericaoRealizadaPlaca> getInfosAfericaoRealizadaPlaca(
-            @NotNull final Connection conn,
-            @NotNull final Long codEmpresa,
-            @NotNull final List<String> placasNepomuceno) throws Throwable {
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            stmt = conn.prepareStatement("select * " +
-                    "from integracao.func_pneu_afericao_get_infos_placas_aferidas(" +
-                    "f_cod_empresa => ?, " +
-                    "f_placas_afericao => ?, " +
-                    "f_data_hora_atual => ?);");
-            stmt.setLong(1, codEmpresa);
-            stmt.setArray(2, PostgresUtils.listToArray(conn, SqlType.TEXT, placasNepomuceno));
-            stmt.setObject(3, Now.getOffsetDateTimeUtc());
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                final Map<String, InfosAfericaoRealizadaPlaca> afericaoRealizadaPlaca = new HashMap<>();
-                do {
-                    afericaoRealizadaPlaca.put(
-                            rSet.getString("PLACA_AFERICAO"),
-                            new InfosAfericaoRealizadaPlaca(
-                                    rSet.getString("PLACA_AFERICAO"),
-                                    rSet.getInt("INTERVALO_SULCO"),
-                                    rSet.getInt("INTERVALO_PRESSAO")
-                            ));
-                } while (rSet.next());
-                return afericaoRealizadaPlaca;
-            } else {
-                throw new SQLException("Nenhuma informação de aferição encontrada para as placas:\n" +
-                        "placasNepomuceno: " + placasNepomuceno.toString());
-            }
         } finally {
             close(stmt, rSet);
         }

@@ -109,4 +109,18 @@ public final class IntegracaoConverter {
             @NotNull final Table<String, String, TipoVeiculoConfigAfericao> tipoVeiculoConfiguracao) {
         return new TipoVeiculoConfigAfericaoHolder(tipoVeiculoConfiguracao);
     }
+
+    @NotNull
+    public static AfericaoRealizadaPlaca createAfericaoRealizadaPlaca(@NotNull final ResultSet rSet) throws Throwable {
+        return new AfericaoRealizadaPlaca(
+                rSet.getString("placa_afericao"),
+                rSet.getInt("intervalo_sulco"),
+                rSet.getInt("intervalo_pressao"));
+    }
+
+    @NotNull
+    public static AfericaoRealizadaPlacaHolder createAfericaoRealizadaPlacaHolder(
+            @NotNull final Map<String, AfericaoRealizadaPlaca> afericaoRealizadaPlaca) {
+        return new AfericaoRealizadaPlacaHolder(afericaoRealizadaPlaca);
+    }
 }
