@@ -5,16 +5,16 @@ import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.StatusIt
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.StatusOrdemServico;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.ItemOsIntegracao;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.OsIntegracao;
-import br.com.zalf.prolog.webservice.integracao.integrador._model.UnidadeDePara;
-import br.com.zalf.prolog.webservice.integracao.integrador._model.UnidadeDeParaHolder;
-import br.com.zalf.prolog.webservice.integracao.integrador._model.UnidadeRestricao;
-import br.com.zalf.prolog.webservice.integracao.integrador._model.UnidadeRestricaoHolder;
+import br.com.zalf.prolog.webservice.integracao.integrador._model.*;
+import com.google.common.collect.Table;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Map;
+
+import static br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.FormaColetaDadosAfericaoEnum.fromString;
 
 /**
  * Created on 2020-08-19
@@ -90,5 +90,23 @@ public final class IntegracaoConverter {
     public static UnidadeRestricaoHolder createUnidadeRestricaoHolder(
             @NotNull final Map<String, UnidadeRestricao> unidadeRestricao) {
         return new UnidadeRestricaoHolder(unidadeRestricao);
+    }
+
+    @NotNull
+    public static TipoVeiculoConfigAfericao createTipoVeiculoConfigAfericao(
+            @NotNull final ResultSet rSet) throws Throwable {
+        return new TipoVeiculoConfigAfericao(
+                rSet.getLong("cod_unidade"),
+                rSet.getLong("cod_tipo_veiculo"),
+                fromString(rSet.getString("forma_coleta_dados_sulco")),
+                fromString(rSet.getString("forma_coleta_dados_pressao")),
+                fromString(rSet.getString("forma_coleta_dados_sulco_pressao")),
+                rSet.getBoolean("pode_aferir_estepe"));
+    }
+
+    @NotNull
+    public static TipoVeiculoConfigAfericaoHolder createTipoVeiculoConfigAfericaoHolder(
+            @NotNull final Table<String, String, TipoVeiculoConfigAfericao> tipoVeiculoConfiguracao) {
+        return new TipoVeiculoConfigAfericaoHolder(tipoVeiculoConfiguracao);
     }
 }

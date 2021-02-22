@@ -12,6 +12,7 @@ import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.MetodoIntegrado;
 import br.com.zalf.prolog.webservice.integracao.RecursoIntegrado;
 import br.com.zalf.prolog.webservice.integracao.integrador.IntegracaoDao;
+import br.com.zalf.prolog.webservice.integracao.integrador._model.TipoVeiculoConfigAfericao;
 import br.com.zalf.prolog.webservice.integracao.integrador._model.UnidadeRestricao;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.ApiAutenticacaoHolder;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.*;
@@ -76,8 +77,10 @@ public final class SistemaProtheusNepomuceno extends Sistema {
             final Map<String, UnidadeRestricao> unidadeRestricao =
                     integracaoDao.getUnidadeRestricaoHolder(conn, codUnidadesMapeadas).getInfosUnidadeRestricao();
             // Apenas tipos de veículos que possuem cod_auxiliar estarão nessa estrutura.
-            final Table<String, String, InfosTipoVeiculoConfiguracaoAfericao> tipoVeiculoConfiguracao =
-                    sistema.getInfosTipoVeiculoConfiguracaoAfericao(conn, codUnidadesMapeadas);
+            final Table<String, String, TipoVeiculoConfigAfericao> tipoVeiculoConfiguracao =
+                    integracaoDao
+                            .getTipoVeiculoConfigAfericaoHolder(conn, codUnidadesMapeadas)
+                            .getTipoVeiculoConfiguracao();
 
             final List<VeiculoListagemProtheusNepomuceno> listagemVeiculos =
                     internalGetVeiculos(conn, codEmpresa, codUnidadesMapeadas, sistema);

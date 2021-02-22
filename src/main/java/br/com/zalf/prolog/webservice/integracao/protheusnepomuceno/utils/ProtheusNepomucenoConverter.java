@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
+import br.com.zalf.prolog.webservice.integracao.integrador._model.TipoVeiculoConfigAfericao;
 import br.com.zalf.prolog.webservice.integracao.integrador._model.UnidadeRestricao;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.*;
 import org.jetbrains.annotations.NotNull;
@@ -102,7 +103,7 @@ public final class ProtheusNepomucenoConverter {
     public static ModeloPlacasAfericao.PlacaAfericao createPlacaAfericaoProlog(
             @NotNull final VeiculoListagemProtheusNepomuceno veiculo,
             @NotNull final UnidadeRestricao unidadeRestricao,
-            @NotNull final InfosTipoVeiculoConfiguracaoAfericao infosTipoVeiculoConfiguracaoAfericao,
+            @NotNull final TipoVeiculoConfigAfericao tipoVeiculoConfigAfericao,
             @NotNull final InfosAfericaoRealizadaPlaca infosAfericaoRealizadaPlaca) {
         final ModeloPlacasAfericao.PlacaAfericao placaAfericao = new ModeloPlacasAfericao.PlacaAfericao();
         placaAfericao.setPlaca(veiculo.getPlacaVeiculo());
@@ -114,10 +115,10 @@ public final class ProtheusNepomucenoConverter {
         placaAfericao.setIntervaloUltimaAfericaoSulco(infosAfericaoRealizadaPlaca.getDiasUltimaAfericaoSulco());
         placaAfericao.setQuantidadePneus(veiculo.getQtdPneusAplicadosVeiculo());
 
-        placaAfericao.setFormaColetaDadosSulco(infosTipoVeiculoConfiguracaoAfericao.getFormaColetaDadosSulco());
-        placaAfericao.setFormaColetaDadosPressao(infosTipoVeiculoConfiguracaoAfericao.getFormaColetaDadosPressao());
-        placaAfericao.setFormaColetaDadosSulcoPressao(infosTipoVeiculoConfiguracaoAfericao.getFormaColetaDadosSulcoPressao());
-        placaAfericao.setPodeAferirEstepe(infosTipoVeiculoConfiguracaoAfericao.isPodeAferirEstepes());
+        placaAfericao.setFormaColetaDadosSulco(tipoVeiculoConfigAfericao.getFormaColetaDadosSulco());
+        placaAfericao.setFormaColetaDadosPressao(tipoVeiculoConfigAfericao.getFormaColetaDadosPressao());
+        placaAfericao.setFormaColetaDadosSulcoPressao(tipoVeiculoConfigAfericao.getFormaColetaDadosSulcoPressao());
+        placaAfericao.setPodeAferirEstepe(tipoVeiculoConfigAfericao.isPodeAferirEstepes());
 
         placaAfericao.setMetaAfericaoSulco(unidadeRestricao.getPeriodoDiasAfericaoSulco());
         placaAfericao.setMetaAfericaoPressao(unidadeRestricao.getPeriodoDiasAfericaoPressao());

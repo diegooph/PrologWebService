@@ -9,10 +9,7 @@ import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.*;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosAfericaoAvulsa;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosAfericaoRealizadaPlaca;
-import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosTipoVeiculoConfiguracaoAfericao;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -133,42 +130,6 @@ public final class SistemaProtheusNepomucenoDaoImpl extends DatabaseConnection i
                 infosAfericaoAvulsa.add(createInfosAfericaoAvulsa(rSet));
             }
             return infosAfericaoAvulsa;
-        } finally {
-            close(stmt, rSet);
-        }
-    }
-
-    @NotNull
-    @Override
-    public Table<String, String, InfosTipoVeiculoConfiguracaoAfericao> getInfosTipoVeiculoConfiguracaoAfericao(
-            @NotNull final Connection conn,
-            @NotNull final List<Long> codUnidades) throws Throwable {
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            stmt = conn.prepareStatement("select * " +
-                    "from integracao.func_pneu_afericao_get_infos_configuracao_afericao(f_cod_unidades => ?);");
-            stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                final Table<String, String, InfosTipoVeiculoConfiguracaoAfericao> tipoVeiculoConfiguracao =
-                        HashBasedTable.create();
-                do {
-                    tipoVeiculoConfiguracao.put(
-                            rSet.getString("COD_AUXILIAR_UNIDADE"),
-                            rSet.getString("COD_AUXILIAR_TIPO_VEICULO"),
-                            new InfosTipoVeiculoConfiguracaoAfericao(
-                                    rSet.getLong("COD_UNIDADE"),
-                                    rSet.getLong("COD_TIPO_VEICULO"),
-                                    fromString(rSet.getString("FORMA_COLETA_DADOS_SULCO")),
-                                    fromString(rSet.getString("FORMA_COLETA_DADOS_PRESSAO")),
-                                    fromString(rSet.getString("FORMA_COLETA_DADOS_SULCO_PRESSAO")),
-                                    rSet.getBoolean("PODE_AFERIR_ESTEPE")));
-                } while (rSet.next());
-                return tipoVeiculoConfiguracao;
-            } else {
-                return HashBasedTable.create();
-            }
         } finally {
             close(stmt, rSet);
         }

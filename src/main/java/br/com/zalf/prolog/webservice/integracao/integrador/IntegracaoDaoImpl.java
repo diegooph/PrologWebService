@@ -9,12 +9,12 @@ import br.com.zalf.prolog.webservice.integracao.RecursoIntegrado;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.IntegracaoOsFilter;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.ModelosChecklistBloqueados;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.OsIntegracao;
-import br.com.zalf.prolog.webservice.integracao.integrador._model.UnidadeDeParaHolder;
-import br.com.zalf.prolog.webservice.integracao.integrador._model.UnidadeRestricao;
-import br.com.zalf.prolog.webservice.integracao.integrador._model.UnidadeRestricaoHolder;
+import br.com.zalf.prolog.webservice.integracao.integrador._model.*;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.ApiAutenticacaoHolder;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -254,6 +254,37 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
             } else {
                 throw new SQLException("Nenhuma informação de restrição de unidade encontrarada para as unidades:\n" +
                                                "codUnidades: " + codUnidades.toString());
+            }
+        } finally {
+            close(stmt, rSet);
+        }
+    }
+
+    @NotNull
+    @Override
+    public TipoVeiculoConfigAfericaoHolder getTipoVeiculoConfigAfericaoHolder(
+            @NotNull final Connection conn,
+            @NotNull final List<Long> codUnidades) throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = conn.prepareStatement(
+                    "select * from " +
+                            "integracao.func_pneu_afericao_get_infos_configuracao_afericao(f_cod_unidades => ?);");
+            stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                final Table<String, String, TipoVeiculoConfigAfericao> tipoVeiculoConfiguracao =
+                        HashBasedTable.create();
+                do {
+                    tipoVeiculoConfiguracao.put(
+                            rSet.getString("cod_auxiliar_unidade"),
+                            rSet.getString("cod_auxiliar_tipo_veiculo"),
+                            IntegracaoConverter.createTipoVeiculoConfigAfericao(rSet));
+                } while (rSet.next());
+                return IntegracaoConverter.createTipoVeiculoConfigAfericaoHolder(tipoVeiculoConfiguracao);
+            } else {
+                return IntegracaoConverter.createTipoVeiculoConfigAfericaoHolder(HashBasedTable.create());
             }
         } finally {
             close(stmt, rSet);
