@@ -10,6 +10,8 @@ import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.IntegracaoO
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.ModelosChecklistBloqueados;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.OsIntegracao;
 import br.com.zalf.prolog.webservice.integracao.integrador._model.UnidadeDeParaHolder;
+import br.com.zalf.prolog.webservice.integracao.integrador._model.UnidadeRestricao;
+import br.com.zalf.prolog.webservice.integracao.integrador._model.UnidadeRestricaoHolder;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.ApiAutenticacaoHolder;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
 import com.google.common.base.Preconditions;
@@ -21,9 +23,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by luiz on 18/07/17.
@@ -225,7 +225,35 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
                 } while (rSet.next());
                 return unidadeDeParaHolder;
             } else {
-                throw new SQLException("Nenhum código auxiliar mapeado para as unidades: " + codUnidades);
+                throw new SQLException("Nenhum código auxiliar mapeado para as unidades:\n" +
+                                               "codUnidades: " + codUnidades.toString());
+            }
+        } finally {
+            close(stmt, rSet);
+        }
+    }
+
+    @NotNull
+    @Override
+    public UnidadeRestricaoHolder getUnidadeRestricaoHolder(@NotNull final Connection conn,
+                                                            @NotNull final List<Long> codUnidades) throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = conn.prepareStatement(
+                    "select * from integracao.func_pneu_afericao_get_infos_unidade_afericao(f_cod_unidades => ?);");
+            stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                final Map<String, UnidadeRestricao> unidadeRestricao = new HashMap<>();
+                do {
+                    unidadeRestricao.put(rSet.getString("cod_auxiliar"),
+                                         IntegracaoConverter.createUnidadeRestricao(rSet));
+                } while (rSet.next());
+                return IntegracaoConverter.createUnidadeRestricaoHolder(unidadeRestricao);
+            } else {
+                throw new SQLException("Nenhuma informação de restrição de unidade encontrarada para as unidades:\n" +
+                                               "codUnidades: " + codUnidades.toString());
             }
         } finally {
             close(stmt, rSet);

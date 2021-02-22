@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
+import br.com.zalf.prolog.webservice.integracao.integrador._model.UnidadeRestricao;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -100,7 +101,7 @@ public final class ProtheusNepomucenoConverter {
     @NotNull
     public static ModeloPlacasAfericao.PlacaAfericao createPlacaAfericaoProlog(
             @NotNull final VeiculoListagemProtheusNepomuceno veiculo,
-            @NotNull final InfosUnidadeRestricao infosUnidadeRestricao,
+            @NotNull final UnidadeRestricao unidadeRestricao,
             @NotNull final InfosTipoVeiculoConfiguracaoAfericao infosTipoVeiculoConfiguracaoAfericao,
             @NotNull final InfosAfericaoRealizadaPlaca infosAfericaoRealizadaPlaca) {
         final ModeloPlacasAfericao.PlacaAfericao placaAfericao = new ModeloPlacasAfericao.PlacaAfericao();
@@ -118,9 +119,9 @@ public final class ProtheusNepomucenoConverter {
         placaAfericao.setFormaColetaDadosSulcoPressao(infosTipoVeiculoConfiguracaoAfericao.getFormaColetaDadosSulcoPressao());
         placaAfericao.setPodeAferirEstepe(infosTipoVeiculoConfiguracaoAfericao.isPodeAferirEstepes());
 
-        placaAfericao.setMetaAfericaoSulco(infosUnidadeRestricao.getPeriodoDiasAfericaoSulco());
-        placaAfericao.setMetaAfericaoPressao(infosUnidadeRestricao.getPeriodoDiasAfericaoPressao());
-        placaAfericao.setCodUnidadePlaca(infosUnidadeRestricao.getCodUnidade());
+        placaAfericao.setMetaAfericaoSulco(unidadeRestricao.getPeriodoDiasAfericaoSulco());
+        placaAfericao.setMetaAfericaoPressao(unidadeRestricao.getPeriodoDiasAfericaoPressao());
+        placaAfericao.setCodUnidadePlaca(unidadeRestricao.getCodUnidade());
         return placaAfericao;
     }
 

@@ -7,11 +7,14 @@ import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.ItemOsInteg
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.OsIntegracao;
 import br.com.zalf.prolog.webservice.integracao.integrador._model.UnidadeDePara;
 import br.com.zalf.prolog.webservice.integracao.integrador._model.UnidadeDeParaHolder;
+import br.com.zalf.prolog.webservice.integracao.integrador._model.UnidadeRestricao;
+import br.com.zalf.prolog.webservice.integracao.integrador._model.UnidadeRestricaoHolder;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * Created on 2020-08-19
@@ -73,5 +76,19 @@ public final class IntegracaoConverter {
     public static UnidadeDePara createUnidadeDePara(@NotNull final ResultSet rSet) throws Throwable {
         return new UnidadeDePara(rSet.getLong("cod_unidade_prolog"),
                                  rSet.getString("cod_auxiliar_unidade"));
+    }
+
+    @NotNull
+    public static UnidadeRestricao createUnidadeRestricao(@NotNull final ResultSet rSet) throws Throwable {
+        return new UnidadeRestricao(
+                rSet.getLong("cod_unidade"),
+                rSet.getInt("periodo_dias_afericao_sulco"),
+                rSet.getInt("periodo_dias_afericao_pressao"));
+    }
+
+    @NotNull
+    public static UnidadeRestricaoHolder createUnidadeRestricaoHolder(
+            @NotNull final Map<String, UnidadeRestricao> unidadeRestricao) {
+        return new UnidadeRestricaoHolder(unidadeRestricao);
     }
 }

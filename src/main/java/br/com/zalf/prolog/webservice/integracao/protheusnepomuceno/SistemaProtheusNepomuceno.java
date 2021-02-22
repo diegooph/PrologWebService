@@ -12,6 +12,7 @@ import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.MetodoIntegrado;
 import br.com.zalf.prolog.webservice.integracao.RecursoIntegrado;
 import br.com.zalf.prolog.webservice.integracao.integrador.IntegracaoDao;
+import br.com.zalf.prolog.webservice.integracao.integrador._model.UnidadeRestricao;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.ApiAutenticacaoHolder;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.*;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.error.ProtheusNepomucenoException;
@@ -72,8 +73,8 @@ public final class SistemaProtheusNepomuceno extends Sistema {
             // Podemos, com toda certeza, utilizar codUnidades.get(0) pois no mínimo teremos uma unidade nesta lista.
             final Long codEmpresa = getIntegradorProLog().getCodEmpresaByCodUnidadeProLog(conn, codUnidades.get(0));
 
-            final Map<String, InfosUnidadeRestricao> unidadeRestricao =
-                    sistema.getInfosUnidadeRestricao(conn, codUnidadesMapeadas);
+            final Map<String, UnidadeRestricao> unidadeRestricao =
+                    integracaoDao.getUnidadeRestricaoHolder(conn, codUnidadesMapeadas).getInfosUnidadeRestricao();
             // Apenas tipos de veículos que possuem cod_auxiliar estarão nessa estrutura.
             final Table<String, String, InfosTipoVeiculoConfiguracaoAfericao> tipoVeiculoConfiguracao =
                     sistema.getInfosTipoVeiculoConfiguracaoAfericao(conn, codUnidadesMapeadas);

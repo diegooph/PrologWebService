@@ -10,7 +10,6 @@ import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.*;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosAfericaoAvulsa;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosAfericaoRealizadaPlaca;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosTipoVeiculoConfiguracaoAfericao;
-import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosUnidadeRestricao;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
@@ -134,38 +133,6 @@ public final class SistemaProtheusNepomucenoDaoImpl extends DatabaseConnection i
                 infosAfericaoAvulsa.add(createInfosAfericaoAvulsa(rSet));
             }
             return infosAfericaoAvulsa;
-        } finally {
-            close(stmt, rSet);
-        }
-    }
-
-    @NotNull
-    @Override
-    public Map<String, InfosUnidadeRestricao> getInfosUnidadeRestricao(
-            @NotNull final Connection conn,
-            @NotNull final List<Long> codUnidades) throws Throwable {
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            stmt = conn.prepareStatement("select * " +
-                    "from integracao.func_pneu_afericao_get_infos_unidade_afericao(f_cod_unidades => ?);");
-            stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                final Map<String, InfosUnidadeRestricao> infosUnidadeRestricao = new HashMap<>();
-                do {
-                    infosUnidadeRestricao.put(
-                            rSet.getString("COD_AUXILIAR"),
-                            new InfosUnidadeRestricao(
-                                    rSet.getLong("COD_UNIDADE"),
-                                    rSet.getInt("PERIODO_DIAS_AFERICAO_SULCO"),
-                                    rSet.getInt("PERIODO_DIAS_AFERICAO_PRESSAO")));
-                } while (rSet.next());
-                return infosUnidadeRestricao;
-            } else {
-                throw new SQLException("Nenhuma informação de restrição de unidade encontrarada para as unidades:\n" +
-                        "codUnidades: " + codUnidades.toString());
-            }
         } finally {
             close(stmt, rSet);
         }

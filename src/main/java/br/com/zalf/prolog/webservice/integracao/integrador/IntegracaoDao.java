@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.IntegracaoO
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.ModelosChecklistBloqueados;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.OsIntegracao;
 import br.com.zalf.prolog.webservice.integracao.integrador._model.UnidadeDeParaHolder;
+import br.com.zalf.prolog.webservice.integracao.integrador._model.UnidadeRestricaoHolder;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.ApiAutenticacaoHolder;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
 import org.jetbrains.annotations.NotNull;
@@ -54,6 +55,10 @@ public interface IntegracaoDao {
     @NotNull
     UnidadeDeParaHolder getCodAuxiliarByCodUnidadeProlog(@NotNull final Connection conn,
                                                          @NotNull final List<Long> codUnidades) throws Throwable;
+
+    @NotNull
+    UnidadeRestricaoHolder getUnidadeRestricaoHolder(@NotNull final Connection conn,
+                                                     @NotNull final List<Long> codUnidades) throws Throwable;
 
     @NotNull
     ApiAutenticacaoHolder getApiAutenticacaoHolder(@NotNull final Long codEmpresa,
