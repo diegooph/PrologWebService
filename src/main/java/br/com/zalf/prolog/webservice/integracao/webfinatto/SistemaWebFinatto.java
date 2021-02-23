@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.integracao.webfinatto;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.database.DatabaseConnectionProvider;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.*;
+import br.com.zalf.prolog.webservice.integracao.IntegracaoPosicaoPneuMapper;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.MetodoIntegrado;
 import br.com.zalf.prolog.webservice.integracao.RecursoIntegrado;
@@ -17,11 +18,13 @@ import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
 import br.com.zalf.prolog.webservice.integracao.webfinatto._model.PneuWebFinatto;
 import br.com.zalf.prolog.webservice.integracao.webfinatto._model.ResponseAfericaoWebFinatto;
 import br.com.zalf.prolog.webservice.integracao.webfinatto._model.VeiculoWebFinatto;
+import br.com.zalf.prolog.webservice.integracao.webfinatto._model.error.SistemaWebFinattoException;
 import br.com.zalf.prolog.webservice.integracao.webfinatto.data.SistemaWebFinattoRequester;
 import br.com.zalf.prolog.webservice.integracao.webfinatto.utils.SistemaWebFinattoConverter;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -55,20 +58,23 @@ public class SistemaWebFinatto extends Sistema {
             if (unidadeDeParaHolder.isEmpty()) {
                 return SistemaWebFinattoConverter.createEmptyCronogramaAfericaoProlog();
             }
-            final Long codEmpresaProlog = integracaoDao.getCodEmpresaByCodUnidadeProLog(conn, codUnidades.get(0));
             final UnidadeRestricaoHolder unidadeRestricaoHolder =
                     integracaoDao.getUnidadeRestricaoHolder(conn, unidadeDeParaHolder.getCodUnidadesMapeadas());
             final TipoVeiculoConfigAfericaoHolder tipoVeiculoConfigAfericaoHolder =
                     integracaoDao.getTipoVeiculoConfigAfericaoHolder(conn,
                                                                      unidadeDeParaHolder.getCodUnidadesMapeadas());
             final List<VeiculoWebFinatto> veiculosByFiliais =
-                    internalGetVeiculosByFiliais(conn, codEmpresaProlog, unidadeDeParaHolder.getCodFiliais());
+                    internalGetVeiculosByFiliais(conn,
+                                                 unidadeDeParaHolder.getCodEmpresaProlog(),
+                                                 unidadeDeParaHolder.getCodFiliais());
             final List<String> placas = veiculosByFiliais.stream()
                     .map(VeiculoWebFinatto::getCodVeiculo)
                     .distinct()
                     .collect(Collectors.toList());
             final AfericaoRealizadaPlacaHolder afericaoRealizadaPlacaHolder =
-                    integracaoDao.getAfericaoRealizadaPlacaHolder(conn, codEmpresaProlog, placas);
+                    integracaoDao.getAfericaoRealizadaPlacaHolder(conn,
+                                                                  unidadeDeParaHolder.getCodEmpresaProlog(),
+                                                                  placas);
 
             return SistemaWebFinattoConverter.createCronogramaAfericaoProlog(veiculosByFiliais,
                                                                              unidadeRestricaoHolder,
@@ -88,14 +94,47 @@ public class SistemaWebFinatto extends Sistema {
         final DatabaseConnectionProvider connectionProvider = new DatabaseConnectionProvider();
         try {
             conn = connectionProvider.provideDatabaseConnection();
+            final UnidadeDeParaHolder unidadeDeParaHolder =
+                    integracaoDao.getCodAuxiliarByCodUnidadeProlog(conn, Collections.singletonList(codUnidade));
+
             final ApiAutenticacaoHolder apiAutenticacaoHolder =
                     integracaoDao.getApiAutenticacaoHolder(conn,
-                                                           3L,
+                                                           unidadeDeParaHolder.getCodEmpresaProlog(),
                                                            getSistemaKey(),
                                                            MetodoIntegrado.GET_VEICULO_NOVA_AFERICAO_PLACA);
             final VeiculoWebFinatto veiculoByPlaca =
-                    requester.getVeiculoByPlaca(apiAutenticacaoHolder, "10:01", "MJA8092");
-            return super.getNovaAfericaoPlaca(codUnidade, placaVeiculo, tipoAfericao);
+                    requester.getVeiculoByPlaca(apiAutenticacaoHolder,
+                                                unidadeDeParaHolder.getCodFiliais(),
+                                                placaVeiculo);
+
+            final ConfiguracaoNovaAfericaoPlaca configNovaAfericaoPlaca =
+                    integracaoDao.getConfigNovaAfericaoPlaca(conn,
+                                                             codUnidade,
+                                                             veiculoByPlaca.getCodEstruturaVeiculo());
+
+            final Short codDiagramaProlog =
+                    integracaoDao.getCodDiagramaByDeParaTipoVeiculo(conn,
+                                                                    unidadeDeParaHolder.getCodEmpresaProlog(),
+                                                                    veiculoByPlaca.getCodEstruturaVeiculo());
+            if (codDiagramaProlog <= 0) {
+                throw new SistemaWebFinattoException(
+                        "Identificamos aque a estrutura (" + veiculoByPlaca.getCodEstruturaVeiculo() + ") " +
+                                "não está configurada no Prolog.\n" +
+                                "Por favor, solicite que esta esta estrutura seja cadastrada no Prolog para " +
+                                "realizar a aferição.");
+            }
+
+            final IntegracaoPosicaoPneuMapper posicaoPneuMapper = new IntegracaoPosicaoPneuMapper(
+                    veiculoByPlaca.getCodEstruturaVeiculo(),
+                    integracaoDao.getMapeamentoPosicoesPrologByDeParaTipoVeiculo(
+                            conn,
+                            unidadeDeParaHolder.getCodEmpresaProlog(),
+                            veiculoByPlaca.getCodEstruturaVeiculo()));
+            return SistemaWebFinattoConverter.createNovaAfericaoPlacaProlog(codUnidade,
+                                                                            codDiagramaProlog,
+                                                                            veiculoByPlaca,
+                                                                            posicaoPneuMapper,
+                                                                            configNovaAfericaoPlaca);
         } finally {
             connectionProvider.closeResources(conn);
         }
