@@ -80,6 +80,11 @@ public interface IntegracaoDao {
             @NotNull final String codEstruturaVeiculo) throws Throwable;
 
     @NotNull
+    Short getCodDiagramaByDeParaTipoVeiculo(@NotNull final Connection conn,
+                                            @NotNull final Long codEmpresa,
+                                            @NotNull final String codEstruturaVeiculo) throws Throwable;
+
+    @NotNull
     ApiAutenticacaoHolder getApiAutenticacaoHolder(@NotNull final Long codEmpresa,
                                                    @NotNull final SistemaKey sistemaKey,
                                                    @NotNull final MetodoIntegrado metodoIntegrado) throws Throwable;

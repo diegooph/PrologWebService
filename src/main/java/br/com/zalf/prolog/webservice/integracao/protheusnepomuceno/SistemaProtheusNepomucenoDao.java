@@ -43,11 +43,6 @@ public interface SistemaProtheusNepomucenoDao {
             @NotNull final String codEstruturaVeiculo) throws Throwable;
 
     @NotNull
-    Short getCodDiagramaByCodEstrutura(@NotNull final Connection conn,
-                                       @NotNull final Long codEmpresa,
-                                       @NotNull final String codEstruturaVeiculo) throws Throwable;
-
-    @NotNull
     Map<Long, String> getCodFiliais(@NotNull final Connection conn,
                                     @NotNull final List<Long> codUnidades) throws Throwable;
 

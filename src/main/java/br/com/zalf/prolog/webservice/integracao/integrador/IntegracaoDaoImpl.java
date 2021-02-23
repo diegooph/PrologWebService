@@ -357,6 +357,33 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
 
     @NotNull
     @Override
+    public Short getCodDiagramaByDeParaTipoVeiculo(@NotNull final Connection conn,
+                                                   @NotNull final Long codEmpresa,
+                                                   @NotNull final String codEstruturaVeiculo) throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = conn.prepareStatement(
+                    "select * from integracao.func_pneu_afericao_get_cod_diagrama_by_cod_auxiliar(" +
+                            "f_cod_empresa => ?, " +
+                            "f_cod_auxiliar_tipo_veiculo => ?) as cod_diagrama;");
+            stmt.setLong(1, codEmpresa);
+            stmt.setString(2, codEstruturaVeiculo);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return rSet.getShort("cod_diagrama");
+            } else {
+                throw new SQLException("Nenhum diagrama encontrado para a estrutura do veículo:\n" +
+                                               "codEmpresa: " + codEmpresa + "\n" +
+                                               "codEstruturaVeiculo: " + codEstruturaVeiculo);
+            }
+        } finally {
+            close(stmt, rSet);
+        }
+    }
+
+    @NotNull
+    @Override
     public ApiAutenticacaoHolder getApiAutenticacaoHolder(
             @NotNull final Long codEmpresa,
             @NotNull final SistemaKey sistemaKey,

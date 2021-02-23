@@ -174,7 +174,9 @@ public final class SistemaProtheusNepomuceno extends Sistema {
                                                              codUnidade,
                                                              veiculoAfericao.getCodEstruturaVeiculo());
             final Short codDiagramaProlog =
-                    sistema.getCodDiagramaByCodEstrutura(conn, codEmpresa, veiculoAfericao.getCodEstruturaVeiculo());
+                    integracaoDao.getCodDiagramaByDeParaTipoVeiculo(conn,
+                                                                    codEmpresa,
+                                                                    veiculoAfericao.getCodEstruturaVeiculo());
             if (codDiagramaProlog <= 0) {
                 throw new ProtheusNepomucenoException(
                         "Identificamos aque a estrutura (" + veiculoAfericao.getCodEstruturaVeiculo() + ") " +
