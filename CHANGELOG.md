@@ -2,7 +2,7 @@ Change Log
 ==========
 
 <a name="v2.0.2"></a>
-## Version [v2.0.2](https://github.com/luizfp/PrologWebService/compare/v2.0.1...v2.0.2) (release-date) [unreleased]
+## Version [v2.0.2](https://github.com/luizfp/PrologWebService/compare/v2.0.1...v2.0.2) (2021-02-22)
 
 ### Refactors
 * Altera root path do projeto removendo o v2 e colocando em cada Resource (PL-3500)
