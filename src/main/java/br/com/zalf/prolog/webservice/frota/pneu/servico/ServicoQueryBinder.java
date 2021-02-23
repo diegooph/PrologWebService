@@ -44,6 +44,7 @@ final class ServicoQueryBinder {
             + "AM.FECHADO_AUTOMATICAMENTE_INTEGRACAO, "
             + "AM.FORMA_COLETA_DADOS_FECHAMENTO, "
             + "A.DATA_HORA AT TIME ZONE (SELECT FUNC_GET_TIME_ZONE_UNIDADE(AM.COD_UNIDADE)) AS DATA_HORA_ABERTURA, "
+            + "V.CODIGO AS COD_VEICULO, "
             + "V.PLACA AS PLACA_VEICULO, "
             + "V.IDENTIFICADOR_FROTA AS IDENTIFICADOR_FROTA, "
             + "A.CODIGO AS COD_AFERICAO, "
@@ -75,6 +76,7 @@ final class ServicoQueryBinder {
     static PreparedStatement getQuantidadeServicosAbertosVeiculo(@NotNull final Connection connection,
                                                                  @NotNull final Long codUnidade) throws SQLException {
         final PreparedStatement stmt = connection.prepareStatement("SELECT " +
+                "  V.CODIGO AS COD_VEICULO," +
                 "  V.PLACA AS PLACA_VEICULO," +
                 "  V.IDENTIFICADOR_FROTA, " +
                 "  SUM(CASE WHEN AM.TIPO_SERVICO = ? THEN 1 ELSE 0 END) AS TOTAL_CALIBRAGENS, " +
@@ -89,7 +91,7 @@ final class ServicoQueryBinder {
                 "    ON AM.COD_PNEU = VP.COD_PNEU AND AM.COD_UNIDADE = VP.COD_UNIDADE " +
                 "WHERE AM.COD_UNIDADE = ? " +
                 "      AND AM.DATA_HORA_RESOLUCAO IS NULL " +
-                "GROUP BY V.PLACA, V.IDENTIFICADOR_FROTA " +
+                "GROUP BY V.CODIGO, V.PLACA, V.IDENTIFICADOR_FROTA " +
                 "ORDER BY TOTAL_CALIBRAGENS DESC, TOTAL_INSPECOES DESC, TOTAL_MOVIMENTACOES DESC;");
         stmt.setString(1, TipoServico.CALIBRAGEM.asString());
         stmt.setString(2, TipoServico.INSPECAO.asString());
@@ -147,6 +149,7 @@ final class ServicoQueryBinder {
                                                                   final long dataInicial,
                                                                   final long dataFinal) throws SQLException {
         final PreparedStatement stmt = connection.prepareStatement("SELECT" +
+                "  V.CODIGO AS COD_VEICULO," +
                 "  V.PLACA AS PLACA_VEICULO," +
                 "  V.IDENTIFICADOR_FROTA," +
                 "  SUM(CASE WHEN AM.TIPO_SERVICO = ? THEN 1 ELSE 0 END) AS TOTAL_CALIBRAGENS," +
@@ -158,7 +161,7 @@ final class ServicoQueryBinder {
                 " WHERE AM.COD_UNIDADE = ?" +
                 "      AND AM.DATA_HORA_RESOLUCAO IS NOT NULL  " +
                 "      AND (AM.DATA_HORA_RESOLUCAO AT TIME ZONE TZ_UNIDADE(AM.COD_UNIDADE))::DATE BETWEEN ? AND ?" +
-                " GROUP BY V.PLACA, V.IDENTIFICADOR_FROTA" +
+                " GROUP BY V.CODIGO, V.PLACA, V.IDENTIFICADOR_FROTA" +
                 " ORDER BY TOTAL_CALIBRAGENS DESC, TOTAL_INSPECOES DESC, TOTAL_MOVIMENTACOES DESC;");
         stmt.setString(1, TipoServico.CALIBRAGEM.asString());
         stmt.setString(2, TipoServico.INSPECAO.asString());
@@ -196,6 +199,7 @@ final class ServicoQueryBinder {
                 "   M.SULCO_INTERNO AS SULCO_INTERNO_PNEU_NOVO, " +
                 "   M.VIDA AS VIDA_PNEU_NOVO, " +
                 "   A.DATA_HORA AT TIME ZONE ? AS DATA_HORA_ABERTURA, " +
+                "   V.CODIGO AS COD_VEICULO, " +
                 "   V.PLACA AS PLACA_VEICULO, " +
                 "   V.IDENTIFICADOR_FROTA AS IDENTIFICADOR_FROTA, " +
                 "   A.CODIGO AS COD_AFERICAO, " +
