@@ -14,6 +14,8 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import static br.com.zalf.prolog.webservice.commons.network.PrologCustomHeaders.AppVersionAndroid.PROLOG_APP_VERSION;
+
 /**
  * Created on 2019-10-10
  *
@@ -37,15 +39,17 @@ public final class PesquisaNpsResource {
     @POST
     @Secured
     @UsedBy(platforms = Platform.WEBSITE)
-    public ResponseWithCod insereRespostasPesquisaNps(@Required final PesquisaNpsRealizada pesquisaRealizada) {
-        return service.insertRespostasPesquisaNps(pesquisaRealizada);
+    public ResponseWithCod insereRespostasPesquisaNps(@HeaderParam(PROLOG_APP_VERSION) final Integer versaoApp,
+                                                      @Required final PesquisaNpsRealizada pesquisaRealizada) {
+        return service.insertRespostasPesquisaNps(versaoApp, pesquisaRealizada);
     }
 
     @POST
     @Secured
     @Path("/bloqueio")
     @UsedBy(platforms = Platform.WEBSITE)
-    public void bloqueiaPesquisaNpsColaborador(@Required final PesquisaNpsBloqueio pesquisaBloqueio) {
-        service.bloqueiaPesquisaNpsColaborador(pesquisaBloqueio);
+    public void bloqueiaPesquisaNpsColaborador(@HeaderParam(PROLOG_APP_VERSION) final Integer versaoApp,
+                                               @Required final PesquisaNpsBloqueio pesquisaBloqueio) {
+        service.bloqueiaPesquisaNpsColaborador(versaoApp, pesquisaBloqueio);
     }
 }

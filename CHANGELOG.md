@@ -5,8 +5,8 @@ Change Log
 ## Version [v2.0.2](https://github.com/luizfp/PrologWebService/compare/v2.0.1...v2.0.2) (release-date) [unreleased]
 
 ### Refactors
-* Altera root path do projeto removendo o v2 e colocando em cada Resource (PL-3500) 
-
+* Altera root path do projeto removendo o v2 e colocando em cada Resource (PL-3500)
+* Altera pesquisa de NPS para salvar origem da resposta e do bloqueio
 
 <a name="v2.0.1"></a>
 ## Version [v2.0.1](https://github.com/luizfp/PrologWebService/compare/v2.0.0...v2.0.1) (2021-02-16)
