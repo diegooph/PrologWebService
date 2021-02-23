@@ -170,10 +170,9 @@ public final class SistemaProtheusNepomuceno extends Sistema {
                     requester.getPlacaPneusAfericaoPlaca(apiAutenticacaoHolder, codEmpresaFilial, placaVeiculo);
 
             final ConfiguracaoNovaAfericaoPlaca configuracaoAfericao =
-                    sistema.getConfigNovaAfericaoPlaca(
-                            conn,
-                            codUnidade,
-                            veiculoAfericao.getCodEstruturaVeiculo());
+                    integracaoDao.getConfigNovaAfericaoPlaca(conn,
+                                                             codUnidade,
+                                                             veiculoAfericao.getCodEstruturaVeiculo());
             final Short codDiagramaProlog =
                     sistema.getCodDiagramaByCodEstrutura(conn, codEmpresa, veiculoAfericao.getCodEstruturaVeiculo());
             if (codDiagramaProlog <= 0) {

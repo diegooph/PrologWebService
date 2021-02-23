@@ -5,6 +5,7 @@ import br.com.zalf.prolog.webservice.commons.util.database.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.database.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.ConfiguracaoNovaAfericaoPlaca;
 import br.com.zalf.prolog.webservice.integracao.MetodoIntegrado;
 import br.com.zalf.prolog.webservice.integracao.RecursoIntegrado;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.IntegracaoOsFilter;
@@ -320,6 +321,34 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
             } else {
                 throw new SQLException("Nenhuma informação de aferição encontrada para as placas:\n" +
                                                "placas: " + placas.toString());
+            }
+        } finally {
+            close(stmt, rSet);
+        }
+    }
+
+    @NotNull
+    @Override
+    public ConfiguracaoNovaAfericaoPlaca getConfigNovaAfericaoPlaca(
+            @NotNull final Connection conn,
+            @NotNull final Long codUnidade,
+            @NotNull final String codEstruturaVeiculo) throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = conn.prepareStatement("select * " +
+                                                 "from integracao.func_pneu_afericao_get_config_nova_afericao_placa(" +
+                                                 "f_cod_unidade => ?, " +
+                                                 "f_cod_auxiliar_tipo_veiculo => ?);");
+            stmt.setLong(1, codUnidade);
+            stmt.setString(2, codEstruturaVeiculo);
+            rSet = stmt.executeQuery();
+            if (rSet.next()) {
+                return IntegracaoConverter.createConfiguracaoNovaAfericaoPlaca(rSet);
+            } else {
+                throw new SQLException("Nenhuma configuração de aferição encontrada para a estrutura:\n" +
+                                               "codUnidade: " + codUnidade + "\n" +
+                                               "codEstruturaVeiculo: " + codEstruturaVeiculo);
             }
         } finally {
             close(stmt, rSet);

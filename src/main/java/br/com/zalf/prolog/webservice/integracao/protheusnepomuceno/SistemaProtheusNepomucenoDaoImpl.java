@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 
 import static br.com.zalf.prolog.webservice.commons.util.database.StatementUtils.executeBatchAndValidate;
-import static br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.FormaColetaDadosAfericaoEnum.fromString;
 
 /**
  * Created on 12/03/20
@@ -128,50 +127,6 @@ public final class SistemaProtheusNepomucenoDaoImpl extends DatabaseConnection i
                 infosAfericaoAvulsa.add(createInfosAfericaoAvulsa(rSet));
             }
             return infosAfericaoAvulsa;
-        } finally {
-            close(stmt, rSet);
-        }
-    }
-
-    @NotNull
-    @Override
-    public ConfiguracaoNovaAfericaoPlaca getConfigNovaAfericaoPlaca(
-            @NotNull final Connection conn,
-            @NotNull final Long codUnidade,
-            @NotNull final String codEstruturaVeiculo) throws Throwable {
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            stmt = conn.prepareStatement("select * " +
-                    "from integracao.func_pneu_afericao_get_config_nova_afericao_placa(" +
-                    "f_cod_unidade => ?, " +
-                    "f_cod_auxiliar_tipo_veiculo => ?);");
-            stmt.setLong(1, codUnidade);
-            stmt.setString(2, codEstruturaVeiculo);
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                //noinspection DuplicatedCode
-                return new ConfiguracaoNovaAfericaoPlaca(
-                        fromString(rSet.getString("FORMA_COLETA_DADOS_SULCO")),
-                        fromString(rSet.getString("FORMA_COLETA_DADOS_PRESSAO")),
-                        fromString(rSet.getString("FORMA_COLETA_DADOS_SULCO_PRESSAO")),
-                        rSet.getBoolean("PODE_AFERIR_ESTEPE"),
-                        rSet.getDouble("SULCO_MINIMO_DESCARTE"),
-                        rSet.getDouble("SULCO_MINIMO_RECAPAGEM"),
-                        rSet.getDouble("TOLERANCIA_INSPECAO"),
-                        rSet.getDouble("TOLERANCIA_CALIBRAGEM"),
-                        rSet.getInt("PERIODO_AFERICAO_SULCO"),
-                        rSet.getInt("PERIODO_AFERICAO_PRESSAO"),
-                        rSet.getDouble("VARIACAO_ACEITA_SULCO_MENOR_MILIMETROS"),
-                        rSet.getDouble("VARIACAO_ACEITA_SULCO_MAIOR_MILIMETROS"),
-                        rSet.getBoolean("VARIACOES_SULCO_DEFAULT_PROLOG"),
-                        rSet.getBoolean("BLOQUEAR_VALORES_MENORES"),
-                        rSet.getBoolean("BLOQUEAR_VALORES_MAIORES"));
-            } else {
-                throw new SQLException("Nenhuma configuração de aferição encontrada para a estrutura:\n" +
-                        "codUnidade: " + codUnidade + "\n" +
-                        "codEstruturaVeiculo: " + codEstruturaVeiculo);
-            }
         } finally {
             close(stmt, rSet);
         }

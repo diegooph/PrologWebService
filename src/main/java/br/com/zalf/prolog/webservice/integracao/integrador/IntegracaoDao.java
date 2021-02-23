@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.integrador;
 
+import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.ConfiguracaoNovaAfericaoPlaca;
 import br.com.zalf.prolog.webservice.integracao.MetodoIntegrado;
 import br.com.zalf.prolog.webservice.integracao.RecursoIntegrado;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.IntegracaoOsFilter;
@@ -71,6 +72,12 @@ public interface IntegracaoDao {
     AfericaoRealizadaPlacaHolder getAfericaoRealizadaPlacaHolder(@NotNull final Connection conn,
                                                                  @NotNull final Long codEmpresa,
                                                                  @NotNull final List<String> placas) throws Throwable;
+
+    @NotNull
+    ConfiguracaoNovaAfericaoPlaca getConfigNovaAfericaoPlaca(
+            @NotNull final Connection conn,
+            @NotNull final Long codUnidade,
+            @NotNull final String codEstruturaVeiculo) throws Throwable;
 
     @NotNull
     ApiAutenticacaoHolder getApiAutenticacaoHolder(@NotNull final Long codEmpresa,

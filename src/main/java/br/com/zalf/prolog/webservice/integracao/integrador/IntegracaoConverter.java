@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.integracao.integrador;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.StatusItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.StatusOrdemServico;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.ConfiguracaoNovaAfericaoPlaca;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.ItemOsIntegracao;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.OsIntegracao;
 import br.com.zalf.prolog.webservice.integracao.integrador._model.*;
@@ -122,5 +123,26 @@ public final class IntegracaoConverter {
     public static AfericaoRealizadaPlacaHolder createAfericaoRealizadaPlacaHolder(
             @NotNull final Map<String, AfericaoRealizadaPlaca> afericaoRealizadaPlaca) {
         return new AfericaoRealizadaPlacaHolder(afericaoRealizadaPlaca);
+    }
+
+    @NotNull
+    public static ConfiguracaoNovaAfericaoPlaca createConfiguracaoNovaAfericaoPlaca(
+            @NotNull final ResultSet rSet) throws Throwable {
+        return new ConfiguracaoNovaAfericaoPlaca(
+                fromString(rSet.getString("forma_coleta_dados_sulco")),
+                fromString(rSet.getString("forma_coleta_dados_pressao")),
+                fromString(rSet.getString("forma_coleta_dados_sulco_pressao")),
+                rSet.getBoolean("pode_aferir_estepe"),
+                rSet.getDouble("sulco_minimo_descarte"),
+                rSet.getDouble("sulco_minimo_recapagem"),
+                rSet.getDouble("tolerancia_inspecao"),
+                rSet.getDouble("tolerancia_calibragem"),
+                rSet.getInt("periodo_afericao_sulco"),
+                rSet.getInt("periodo_afericao_pressao"),
+                rSet.getDouble("variacao_aceita_sulco_menor_milimetros"),
+                rSet.getDouble("variacao_aceita_sulco_maior_milimetros"),
+                rSet.getBoolean("variacoes_sulco_default_prolog"),
+                rSet.getBoolean("bloquear_valores_menores"),
+                rSet.getBoolean("bloquear_valores_maiores"));
     }
 }
