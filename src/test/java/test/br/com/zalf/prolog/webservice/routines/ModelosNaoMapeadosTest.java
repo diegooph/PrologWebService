@@ -1,9 +1,10 @@
 package test.br.com.zalf.prolog.webservice.routines;
 
+import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.database.DatabaseConnectionProvider;
 import br.com.zalf.prolog.webservice.database.DatabaseManager;
+import br.com.zalf.prolog.webservice.integracao.integrador.IntegracaoDao;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.ApiAutenticacaoHolder;
-import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.SistemaProtheusNepomucenoDaoImpl;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.VeiculoAfericaoProtheusNepomuceno;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.VeiculoListagemProtheusNepomuceno;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.error.ProtheusNepomucenoException;
@@ -133,7 +134,7 @@ public final class ModelosNaoMapeadosTest {
      */
     @Test
     void testPosicoesMapeadasIncorretamente() throws Throwable {
-        final SistemaProtheusNepomucenoDaoImpl sistema = new SistemaProtheusNepomucenoDaoImpl();
+        final IntegracaoDao integracaoDao = Injection.provideIntegracaoDao();
         final ProtheusNepomucenoRequester requester = new ProtheusNepomucenoRequesterImpl();
         final DatabaseConnectionProvider provider = new DatabaseConnectionProvider();
 
@@ -166,9 +167,10 @@ public final class ModelosNaoMapeadosTest {
                     final ProtheusNepomucenoPosicaoPneuMapper posicaoPneuMapper =
                             new ProtheusNepomucenoPosicaoPneuMapper(
                                     veiculoAfericao.getCodEstruturaVeiculo(),
-                                    sistema.getMapeamentoPosicoesProlog(conn,
-                                                                        COD_EMPRESA,
-                                                                        veiculoAfericao.getCodEstruturaVeiculo()));
+                                    integracaoDao.getMapeamentoPosicoesPrologByDeParaTipoVeiculo(
+                                            conn,
+                                            COD_EMPRESA,
+                                            veiculoAfericao.getCodEstruturaVeiculo()));
 
                     try {
                         ProtheusNepomucenoUtils

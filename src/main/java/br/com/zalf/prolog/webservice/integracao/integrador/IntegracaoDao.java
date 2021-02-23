@@ -17,6 +17,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.sql.Connection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * DAO que conterá todos os métodos necessários para que as integrações funcionem.
@@ -83,6 +84,12 @@ public interface IntegracaoDao {
     Short getCodDiagramaByDeParaTipoVeiculo(@NotNull final Connection conn,
                                             @NotNull final Long codEmpresa,
                                             @NotNull final String codEstruturaVeiculo) throws Throwable;
+
+    @NotNull
+    Map<String, Integer> getMapeamentoPosicoesPrologByDeParaTipoVeiculo(
+            @NotNull final Connection conn,
+            @NotNull final Long codEmpresa,
+            @NotNull final String codEstruturaVeiculo) throws Throwable;
 
     @NotNull
     ApiAutenticacaoHolder getApiAutenticacaoHolder(@NotNull final Long codEmpresa,

@@ -167,36 +167,6 @@ public final class SistemaProtheusNepomucenoDaoImpl extends DatabaseConnection i
 
     @NotNull
     @Override
-    public Map<String, Integer> getMapeamentoPosicoesProlog(
-            @NotNull final Connection conn,
-            @NotNull final Long codEmpresa,
-            @NotNull final String codEstruturaVeiculo) throws Throwable {
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            stmt = conn.prepareStatement("select *" +
-                    "from integracao.func_pneu_afericao_get_mapeamento_posicoes_prolog(" +
-                    "f_cod_empresa => ?, " +
-                    "f_cod_auxiliar_tipo_veiculo => ?);");
-            stmt.setLong(1, codEmpresa);
-            stmt.setString(2, codEstruturaVeiculo);
-            rSet = stmt.executeQuery();
-            final Map<String, Integer> posicoesPneusProlog = new HashMap<>();
-            while (rSet.next()) {
-                posicoesPneusProlog.put(
-                        // Utilizamos o 'COD_AUXILIAR_NOMENCLATURA_CLIENTE' pois as posições dos pneus estão
-                        // mapeadas no cod_auxiliar para a empresa Nepomuceno.
-                        rSet.getString("COD_AUXILIAR_NOMENCLATURA_CLIENTE"),
-                        rSet.getInt("POSICAO_PROLOG"));
-            }
-            return posicoesPneusProlog;
-        } finally {
-            close(stmt, rSet);
-        }
-    }
-
-    @NotNull
-    @Override
     public Map<Long, String> getCodFiliais(@NotNull final Connection conn,
                                            @NotNull final List<Long> codUnidades) throws Throwable {
         PreparedStatement stmt = null;

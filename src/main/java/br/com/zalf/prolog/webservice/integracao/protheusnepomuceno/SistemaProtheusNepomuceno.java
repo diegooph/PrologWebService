@@ -186,7 +186,10 @@ public final class SistemaProtheusNepomuceno extends Sistema {
             }
             final ProtheusNepomucenoPosicaoPneuMapper posicaoPneuMapper = new ProtheusNepomucenoPosicaoPneuMapper(
                     veiculoAfericao.getCodEstruturaVeiculo(),
-                    sistema.getMapeamentoPosicoesProlog(conn, codEmpresa, veiculoAfericao.getCodEstruturaVeiculo()));
+                    integracaoDao.getMapeamentoPosicoesPrologByDeParaTipoVeiculo(
+                            conn,
+                            codEmpresa,
+                            veiculoAfericao.getCodEstruturaVeiculo()));
 
             // Garantimos, antes de criar a nova aferição, que todas as posições estão mapeadas. Caso não estiverem,
             // estouramos uma exception mostrando as posições não mapeadas.
