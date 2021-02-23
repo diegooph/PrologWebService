@@ -21,7 +21,7 @@ import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.error.
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.data.ProtheusNepomucenoRequesterImpl;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.utils.ProtheusNepomucenoConverter;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.utils.ProtheusNepomucenoEncoderDecoder;
-import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.utils.ProtheusNepomucenoPosicaoPneuMapper;
+import br.com.zalf.prolog.webservice.integracao.IntegracaoPosicaoPneuMapper;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.utils.ProtheusNepomucenoUtils;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
@@ -184,7 +184,7 @@ public final class SistemaProtheusNepomuceno extends Sistema {
                                 "Por favor, solicite que esta esta estrutura seja cadastrada no Prolog para " +
                                 "realizar a aferição.");
             }
-            final ProtheusNepomucenoPosicaoPneuMapper posicaoPneuMapper = new ProtheusNepomucenoPosicaoPneuMapper(
+            final IntegracaoPosicaoPneuMapper posicaoPneuMapper = new IntegracaoPosicaoPneuMapper(
                     veiculoAfericao.getCodEstruturaVeiculo(),
                     integracaoDao.getMapeamentoPosicoesPrologByDeParaTipoVeiculo(
                             conn,

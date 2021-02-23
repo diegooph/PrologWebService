@@ -10,7 +10,7 @@ import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.Veicul
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.error.ProtheusNepomucenoException;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.data.ProtheusNepomucenoRequester;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.data.ProtheusNepomucenoRequesterImpl;
-import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.utils.ProtheusNepomucenoPosicaoPneuMapper;
+import br.com.zalf.prolog.webservice.integracao.IntegracaoPosicaoPneuMapper;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.utils.ProtheusNepomucenoUtils;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterAll;
@@ -164,8 +164,8 @@ public final class ModelosNaoMapeadosTest {
                                     placa.getCodEmpresaFilialVeiculo(),
                                     placa.getPlacaVeiculo());
 
-                    final ProtheusNepomucenoPosicaoPneuMapper posicaoPneuMapper =
-                            new ProtheusNepomucenoPosicaoPneuMapper(
+                    final IntegracaoPosicaoPneuMapper posicaoPneuMapper =
+                            new IntegracaoPosicaoPneuMapper(
                                     veiculoAfericao.getCodEstruturaVeiculo(),
                                     integracaoDao.getMapeamentoPosicoesPrologByDeParaTipoVeiculo(
                                             conn,

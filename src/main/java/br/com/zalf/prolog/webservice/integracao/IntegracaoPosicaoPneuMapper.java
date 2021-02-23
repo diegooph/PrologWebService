@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.utils;
+package br.com.zalf.prolog.webservice.integracao;
 
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
@@ -12,7 +12,7 @@ import java.util.Map;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 @Data
-public final class ProtheusNepomucenoPosicaoPneuMapper {
+public final class IntegracaoPosicaoPneuMapper {
     @NotNull
     private final String codEstruturaVeiculo;
     @NotNull

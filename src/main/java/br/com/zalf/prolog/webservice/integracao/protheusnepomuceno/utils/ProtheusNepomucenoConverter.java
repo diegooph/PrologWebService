@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
+import br.com.zalf.prolog.webservice.integracao.IntegracaoPosicaoPneuMapper;
 import br.com.zalf.prolog.webservice.integracao.integrador._model.AfericaoRealizadaPlaca;
 import br.com.zalf.prolog.webservice.integracao.integrador._model.TipoVeiculoConfigAfericao;
 import br.com.zalf.prolog.webservice.integracao.integrador._model.UnidadeRestricao;
@@ -154,7 +155,7 @@ public final class ProtheusNepomucenoConverter {
     public static Veiculo createVeiculoProlog(@NotNull final Long codUnidadeProlog,
                                               @NotNull final Short codDiagramaProlog,
                                               @NotNull final VeiculoAfericaoProtheusNepomuceno veiculoAfericao,
-                                              @NotNull final ProtheusNepomucenoPosicaoPneuMapper posicaoPneuMapper) {
+                                              @NotNull final IntegracaoPosicaoPneuMapper posicaoPneuMapper) {
         final Veiculo veiculo = new Veiculo();
         veiculo.setCodigo(-1L);
         veiculo.setPlaca(veiculoAfericao.getCodVeiculo());
@@ -329,7 +330,7 @@ public final class ProtheusNepomucenoConverter {
     @NotNull
     private static List<Pneu> createPneusProlog(@NotNull final Long codUnidadeProlog,
                                                 @NotNull final List<PneuAplicadoProtheusNepomuceno> pneusAplicados,
-                                                @NotNull final ProtheusNepomucenoPosicaoPneuMapper posicaoPneuMapper) {
+                                                @NotNull final IntegracaoPosicaoPneuMapper posicaoPneuMapper) {
         final List<Pneu> pneus = new ArrayList<>();
         for (final PneuAplicadoProtheusNepomuceno pneuAplicado : pneusAplicados) {
             pneus.add(createPneuProlog(codUnidadeProlog, pneuAplicado, posicaoPneuMapper));
@@ -341,7 +342,7 @@ public final class ProtheusNepomucenoConverter {
     @NotNull
     private static Pneu createPneuProlog(@NotNull final Long codUnidadeProlog,
                                          @NotNull final PneuAplicadoProtheusNepomuceno pneuAplicado,
-                                         @NotNull final ProtheusNepomucenoPosicaoPneuMapper posicaoPneuMapper) {
+                                         @NotNull final IntegracaoPosicaoPneuMapper posicaoPneuMapper) {
         final Pneu pneu = new PneuComum();
         pneu.setCodigoCliente(pneuAplicado.getCodigoCliente());
         pneu.setCodigo(ProtheusNepomucenoEncoderDecoder.encode(pneuAplicado.getCodigoCliente()));
