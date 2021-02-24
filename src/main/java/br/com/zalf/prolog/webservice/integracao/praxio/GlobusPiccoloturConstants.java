@@ -19,8 +19,8 @@ public final class GlobusPiccoloturConstants {
             "http://erp.piccolotur.com.br:55582/GlobusMais/ManutencaoWsTerceiros.asmx";
     public static final String NAMESPACE = "http://bgmrodotec.com.br/globus5/ManutencaoWsTerceiros";
     public static final String TOKEN_AUTENTICACAO_OS =
-            BuildConfig.DEBUG ? "?==" : "?=";
-    public static final int SHORT_CODE_AUTENTICACAO_OS = -1;
+            BuildConfig.DEBUG ? "MTc0Nzs0OTk7ODEzNA==" : "MTEzNzI7NDk5OzgxMzQ=";
+    public static final int SHORT_CODE_AUTENTICACAO_OS = 1032;
     public static final String METODO_PARA_LIBERAR = "GerarOrdemDeServicoCorretivaProlog";
     public static final String USUARIO_PROLOG_INTEGRACAO = "MANAGER";
     public static final String CPF_COLABORADOR_LOCAIS_MOVIMENTO = "35118345898";
