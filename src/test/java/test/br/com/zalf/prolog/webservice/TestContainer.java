@@ -27,6 +27,7 @@ public class TestContainer {
     private static final String TEST_PASSWORD = "testaquevai";
 
     @ClassRule
+    @NotNull
     private static final JdbcDatabaseContainer<?> JDBC_BASE_CONTAINER =
             new PostgreSQLContainer<>(getDockerImageName())
             .withReuse(true)
@@ -39,10 +40,12 @@ public class TestContainer {
         JDBC_BASE_CONTAINER.start();
     }
 
+    @NotNull
     public static JdbcDatabaseContainer<?> getContainer() {
         return JDBC_BASE_CONTAINER;
     }
 
+    @NotNull
     private static DockerImageName getDockerImageName() {
         return DockerImageName.parse("prolog-test-image:latest")
                 .asCompatibleSubstituteFor("postgres");
@@ -54,6 +57,7 @@ public class TestContainer {
                .get();
     }
 
+    @NotNull
     private static Path getDockerfilePath() {
         return new File("./Dockerfile").toPath();
     }
