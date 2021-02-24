@@ -138,25 +138,17 @@ public class SistemaWebFinatto extends Sistema {
             conn = connectionProvider.provideDatabaseConnection();
             final UnidadeDeParaHolder unidadeDeParaHolder =
                     integracaoDao.getCodAuxiliarByCodUnidadeProlog(conn, Collections.singletonList(codUnidade));
-            final ApiAutenticacaoHolder apiAutenticacaoHolder =
-                    integracaoDao.getApiAutenticacaoHolder(conn,
-                                                           unidadeDeParaHolder.getCodEmpresaProlog(),
-                                                           getSistemaKey(),
-                                                           MetodoIntegrado.GET_PNEUS_AFERICAO_AVULSA);
             final List<PneuWebFinatto> pneusByFiliais =
-                    requester.getPneusByFiliais(apiAutenticacaoHolder,
-                                                unidadeDeParaHolder.getCodFiliais(),
-                                                "ESTOQUE",
-                                                null);
+                    internalGetPneusByFiliais(conn,
+                                              unidadeDeParaHolder.getCodEmpresaProlog(),
+                                              unidadeDeParaHolder.getCodFiliais());
 
             final List<String> codPneus = pneusByFiliais.stream()
                     .map(PneuWebFinatto::getCodigoCliente)
                     .collect(Collectors.toList());
 
             final AfericaoRealizadaAvulsaHolder afericaoRealizadaAvulsaHolder =
-                    integracaoDao.getAfericaoRealizadaAvulsaHolder(conn,
-                                                                   codUnidade,
-                                                                   codPneus);
+                    integracaoDao.getAfericaoRealizadaAvulsaHolder(conn, codUnidade, codPneus);
             return SistemaWebFinattoConverter.createPneusAfericaoAvulsa(codUnidade,
                                                                         pneusByFiliais,
                                                                         afericaoRealizadaAvulsaHolder);
@@ -238,5 +230,20 @@ public class SistemaWebFinatto extends Sistema {
         return requester.getVeiculoByPlaca(apiAutenticacaoHolder,
                                            codFilial,
                                            placaVeiculo);
+    }
+
+    @NotNull
+    private List<PneuWebFinatto> internalGetPneusByFiliais(@NotNull final Connection conn,
+                                                           @NotNull final Long codEmpresaProlog,
+                                                           @NotNull final String codFiliais) throws Throwable {
+        final ApiAutenticacaoHolder apiAutenticacaoHolder =
+                integracaoDao.getApiAutenticacaoHolder(conn,
+                                                       codEmpresaProlog,
+                                                       getSistemaKey(),
+                                                       MetodoIntegrado.GET_PNEUS_AFERICAO_AVULSA);
+        return requester.getPneusByFiliais(apiAutenticacaoHolder,
+                                           codFiliais,
+                                           "ESTOQUE",
+                                           null);
     }
 }
