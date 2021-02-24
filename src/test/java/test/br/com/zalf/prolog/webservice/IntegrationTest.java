@@ -1,5 +1,6 @@
 package test.br.com.zalf.prolog.webservice;
 
+import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
 import br.com.zalf.prolog.webservice.config.PrologApplication;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -7,6 +8,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.http.MediaType;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.GsonHttpMessageConverter;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
@@ -40,5 +47,27 @@ public class IntegrationTest {
 
     protected String createPathWithPort(final String uri) {
         return "http://localhost:" + port + "/prolog/v2/" + uri;
+    }
+
+    protected TestRestTemplate getTestRestTemplate() {
+        final RestTemplateBuilder builder = new RestTemplateBuilder()
+                .defaultHeader("Authorization", "Bearer PROLOG_DEV_TEAM")
+                .messageConverters(getConverters());
+        return new TestRestTemplate(builder);
+    }
+
+    private List<HttpMessageConverter<?>> getConverters() {
+        return Collections.singletonList(getGsonHttpConverter());
+    }
+
+    private GsonHttpMessageConverter getGsonHttpConverter() {
+        final GsonHttpMessageConverter gsonHttpMessageConverter = new GsonHttpMessageConverter();
+        gsonHttpMessageConverter.setGson(GsonUtils.getGson());
+        gsonHttpMessageConverter.setSupportedMediaTypes(getMediaTypes());
+        return gsonHttpMessageConverter;
+    }
+
+    private List<MediaType> getMediaTypes() {
+        return Collections.singletonList(MediaType.APPLICATION_JSON);
     }
 }
