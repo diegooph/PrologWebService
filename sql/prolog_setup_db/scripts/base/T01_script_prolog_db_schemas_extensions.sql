@@ -4,6 +4,7 @@
 create extension citext;
 create extension pg_trgm;
 create extension unaccent;
+create extension pg_similarity;
 
 create schema aferidor;
 create schema agendador;
