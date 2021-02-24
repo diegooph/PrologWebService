@@ -19,7 +19,7 @@ import javax.ws.rs.core.MediaType;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-@Path("/aferidores")
+@Path("/v2/aferidores")
 @ConsoleDebugLog
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")

@@ -20,7 +20,7 @@ import javax.ws.rs.core.MediaType;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-@Path("/dummies/rodalog-protheus")
+@Path("/v2/dummies/rodalog-protheus")
 @ConsoleDebugLog
 @ResourceDebugOnly
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")

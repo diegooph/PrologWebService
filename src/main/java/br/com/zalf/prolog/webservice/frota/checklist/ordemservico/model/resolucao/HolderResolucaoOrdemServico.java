@@ -7,12 +7,13 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * Classe que contém informações para resolver uma Ordem de Serviço completa.
- *
+ * <p>
  * Created on 14/11/18
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public final class HolderResolucaoOrdemServico {
+    private Long codVeiculo;
     /**
      * Placa do {@link Veiculo} a qual a Ordem de Serviço a ser resolvida pertence.
      */
@@ -36,10 +37,19 @@ public final class HolderResolucaoOrdemServico {
     @NotNull
     public static HolderResolucaoOrdemServico createDummy() {
         final HolderResolucaoOrdemServico resolucaoOrdemServico = new HolderResolucaoOrdemServico();
+        resolucaoOrdemServico.setCodVeiculo(1L);
         resolucaoOrdemServico.setPlacaVeiculo("AAA1234");
         resolucaoOrdemServico.setKmAtualVeiculo(12345);
         resolucaoOrdemServico.setOrdemServico(OrdemServicoAbertaVisualizacao.createDummy());
         return resolucaoOrdemServico;
+    }
+
+    public Long getCodVeiculo() {
+        return codVeiculo;
+    }
+
+    public void setCodVeiculo(final Long codVeiculo) {
+        this.codVeiculo = codVeiculo;
     }
 
     public String getPlacaVeiculo() {

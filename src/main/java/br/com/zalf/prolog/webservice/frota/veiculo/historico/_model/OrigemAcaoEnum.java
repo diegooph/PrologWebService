@@ -15,9 +15,14 @@ public enum OrigemAcaoEnum {
     API("API"),
 
     /**
-     * Ação com origem no próprio sistema do Prolog, seja via web ou app.
+     * Ação com origem no próprio sistema do Prolog via web.
      */
-    PROLOG("PROLOG"),
+    PROLOG_WEB("PROLOG_WEB"),
+
+    /**
+     * Ação com origem no próprio sistema do Prolog via app android.
+     */
+    PROLOG_ANDROID("PROLOG_ANDROID"),
 
     /**
      * Ação com origem no sistema interno do Prolog. Usado para auxiliar em demandas de suporte e implantação.

@@ -17,7 +17,7 @@ import java.util.List;
  * Created by Zart on 28/08/2017.
  */
 @ConsoleDebugLog
-@Path("/intervalos/relatorios")
+@Path("/v2/intervalos/relatorios")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class ControleJornadaRelatorioResource {

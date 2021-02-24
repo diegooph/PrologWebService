@@ -17,7 +17,7 @@ import javax.ws.rs.core.Response;
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-@Path("/veiculos/evolucao-km")
+@Path("/v2/veiculos/evolucao-km")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public final class VeiculoEvolucaoKmResource {

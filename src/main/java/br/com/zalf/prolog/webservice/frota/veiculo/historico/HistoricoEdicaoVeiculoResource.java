@@ -19,7 +19,7 @@ import java.util.List;
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
 @ConsoleDebugLog
-@Path("/veiculos/historicos")
+@Path("/v2/veiculos/historicos")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public final class HistoricoEdicaoVeiculoResource {

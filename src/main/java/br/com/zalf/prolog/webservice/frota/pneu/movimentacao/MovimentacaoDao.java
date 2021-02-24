@@ -24,13 +24,28 @@ public interface MovimentacaoDao {
                 @NotNull final OffsetDateTime dataHoraMovimentacao,
                 final boolean fecharServicosAutomaticamente) throws Throwable;
 
-    @NotNull
     Long insert(@NotNull final Connection conn,
                 @NotNull final ServicoDao servicoDao,
                 @NotNull final CampoPersonalizadoDao campoPersonalizadoDao,
                 @NotNull final ProcessoMovimentacao processoMovimentacao,
                 @NotNull final OffsetDateTime dataHoraMovimentacao,
                 final boolean fecharServicosAutomaticamente) throws Throwable;
+
+    @NotNull
+    Long insert(@NotNull final Connection conn,
+                @NotNull final ServicoDao servicoDao,
+                @NotNull final CampoPersonalizadoDao campoPersonalizadoDao,
+                @NotNull final ProcessoMovimentacao processoMovimentacao,
+                @NotNull final OffsetDateTime dataHoraMovimentacao,
+                final boolean fecharServicosAutomaticamente,
+                final boolean veioDoServico) throws Throwable;
+
+    Long insertMovimentacaoServicoAfericao(@NotNull final Connection conn,
+                                           @NotNull final ServicoDao servicoDao,
+                                           @NotNull final CampoPersonalizadoDao campoPersonalizadoDao,
+                                           @NotNull final ProcessoMovimentacao processoMovimentacao,
+                                           @NotNull final OffsetDateTime dataHoraMovimentacao,
+                                           final boolean fecharServicosAutomaticamente) throws Throwable;
 
     @NotNull
     Long insertMotivo(@NotNull final Motivo motivo, @NotNull final Long codEmpresa) throws Throwable;

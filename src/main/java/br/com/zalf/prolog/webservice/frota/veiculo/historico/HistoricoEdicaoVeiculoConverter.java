@@ -82,6 +82,7 @@ public final class HistoricoEdicaoVeiculoConverter {
         valoresModificaveis.put(TipoAlteracaoEnum.TIPO_VEICULO, rSet.getString("tipo_veiculo"));
         valoresModificaveis.put(TipoAlteracaoEnum.MARCA_VEICULO, rSet.getString("marca_veiculo"));
         valoresModificaveis.put(TipoAlteracaoEnum.MODELO_VEICULO, rSet.getString("modelo_veiculo"));
+        valoresModificaveis.put(TipoAlteracaoEnum.POSSUI_HUBODOMETRO, rSet.getBoolean("possui_hubodometro"));
         return valoresModificaveis;
     }
 

@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @ConsoleDebugLog
-@Path("/treinamentos")
+@Path("/v2/treinamentos")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class TreinamentoResource {

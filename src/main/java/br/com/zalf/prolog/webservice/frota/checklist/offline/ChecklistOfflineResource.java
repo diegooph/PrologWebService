@@ -17,7 +17,7 @@ import javax.ws.rs.core.MediaType;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-@Path("/checklist-offline/")
+@Path("/v2/checklist-offline/")
 @ConsoleDebugLog
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")

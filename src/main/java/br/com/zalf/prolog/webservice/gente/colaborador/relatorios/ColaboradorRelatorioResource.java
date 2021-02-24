@@ -17,7 +17,7 @@ import java.util.List;
  * @author Thais Francisco (https://github.com/thaisksf)
  */
 
-@Path("/colaboradores/relatorios")
+@Path("/v2/colaboradores/relatorios")
 @Secured(permissions = {
         Pilares.Gente.Colaborador.VISUALIZAR,
         Pilares.Gente.Colaborador.CADASTRAR,

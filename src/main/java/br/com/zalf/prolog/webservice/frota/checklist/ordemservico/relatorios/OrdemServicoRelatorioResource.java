@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Created by luiz on 26/04/17.
  */
-@Path("/checklists/ordens-servico/relatorios")
+@Path("/v2/checklists/ordens-servico/relatorios")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Secured(permissions = Pilares.Frota.Relatorios.CHECKLIST)

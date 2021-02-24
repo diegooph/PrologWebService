@@ -21,7 +21,7 @@ import java.util.List;
  * Created by jean on 11/08/16.
  */
 @ConsoleDebugLog
-@Path("/checklist/old-ordens-servicos")
+@Path("/v2/checklist/old-ordens-servicos")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Deprecated

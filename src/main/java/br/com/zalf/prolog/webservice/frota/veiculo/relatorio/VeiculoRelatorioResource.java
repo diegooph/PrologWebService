@@ -18,7 +18,7 @@ import java.util.List;
  */
 
 
-@Path("/veiculos/relatorios")
+@Path("/v2/veiculos/relatorios")
 @Secured(permissions = {
         Pilares.Frota.Veiculo.VISUALIZAR_RELATORIOS})
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
