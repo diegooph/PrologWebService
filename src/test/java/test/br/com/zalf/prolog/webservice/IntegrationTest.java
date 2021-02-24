@@ -21,7 +21,10 @@ import java.util.List;
 public class IntegrationTest {
 
     private static final JdbcDatabaseContainer<?> container = TestContainer.getContainer();
-    
+
+    @LocalServerPort
+    private int port;
+
     @BeforeAll
     static void beforeAll() {
         final FlywayConfiguration configuration = new FlywayConfiguration(container.getJdbcUrl(),
@@ -33,5 +36,9 @@ public class IntegrationTest {
     @AfterAll
     static void afterAll() {
         container.stop();
+    }
+
+    protected String createPathWithPort(final String uri) {
+        return "http://localhost:" + port + "/prolog/v2/" + uri;
     }
 }
