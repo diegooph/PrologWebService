@@ -1,9 +1,7 @@
 package test.br.com.zalf.prolog.webservice;
 
 import br.com.zalf.prolog.webservice.config.PrologApplication;
-import org.flywaydb.core.Flyway;
-import org.flywaydb.core.api.Location;
-import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,19 +39,9 @@ public class IntegrationTest {
 
     @BeforeAll
     static void beforeAll() {
-        final String setupFilePath =
-                Location.FILESYSTEM_PREFIX
-                        .concat(new File("sql/prolog_setup_db/scripts/base").getAbsolutePath());
-        final String migrationsDoneFilePath =
-                Location.FILESYSTEM_PREFIX.concat(new File("sql/migrations/done").getAbsolutePath());
-        Flyway.configure()
-                .dataSource(postgresContainer.getJdbcUrl(),
-                            postgresContainer.getUsername(),
-                            postgresContainer.getPassword())
-                .sqlMigrationPrefix("")
-                .sqlMigrationSeparator("_")
-                .locations(setupFilePath, migrationsDoneFilePath)
-                .load()
-                .migrate();
+        final FlywayConfiguration configuration = new FlywayConfiguration(container.getJdbcUrl(),
+                                                                          container.getUsername(),
+                                                                          container.getPassword());
+        configuration.migrate();
     }
 }
