@@ -13,7 +13,4 @@ RUN git clone https://github.com/eulerto/pg_similarity.git\
     && make\
     && make install\
     && cd /scripts
-
-COPY ./script_install_extensions.sql /docker-entrypoint-initdb.d
-
 EXPOSE 5432
