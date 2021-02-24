@@ -7,7 +7,6 @@ import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.Afericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.AfericaoPlaca;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.ConfiguracaoNovaAfericaoAvulsa;
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -101,39 +100,6 @@ public final class SistemaProtheusNepomucenoDaoImpl extends DatabaseConnection i
             } else {
                 throw new IllegalStateException(
                         "Não foi possível inserir a aferição realizada no schema de integração");
-            }
-        } finally {
-            close(stmt, rSet);
-        }
-    }
-
-    @NotNull
-    @Override
-    public ConfiguracaoNovaAfericaoAvulsa getConfigNovaAfericaoAvulsa(@NotNull final Connection conn,
-                                                                      @NotNull final Long codUnidade) throws Throwable {
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            stmt = conn.prepareStatement("select * " +
-                    "from integracao.func_pneu_afericao_get_config_nova_afericao_avulsa(f_cod_unidade => ?);");
-            stmt.setLong(1, codUnidade);
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                return new ConfiguracaoNovaAfericaoAvulsa(
-                        rSet.getDouble("SULCO_MINIMO_DESCARTE"),
-                        rSet.getDouble("SULCO_MINIMO_RECAPAGEM"),
-                        rSet.getDouble("TOLERANCIA_INSPECAO"),
-                        rSet.getDouble("TOLERANCIA_CALIBRAGEM"),
-                        rSet.getInt("PERIODO_AFERICAO_SULCO"),
-                        rSet.getInt("PERIODO_AFERICAO_PRESSAO"),
-                        rSet.getDouble("VARIACAO_ACEITA_SULCO_MENOR_MILIMETROS"),
-                        rSet.getDouble("VARIACAO_ACEITA_SULCO_MAIOR_MILIMETROS"),
-                        rSet.getBoolean("VARIACOES_SULCO_DEFAULT_PROLOG"),
-                        rSet.getBoolean("BLOQUEAR_VALORES_MENORES"),
-                        rSet.getBoolean("BLOQUEAR_VALORES_MAIORES"));
-            } else {
-                throw new SQLException("Nenhuma configuração de aferição encontrada para a estrutura:\n" +
-                        "codUnidade: " + codUnidade);
             }
         } finally {
             close(stmt, rSet);

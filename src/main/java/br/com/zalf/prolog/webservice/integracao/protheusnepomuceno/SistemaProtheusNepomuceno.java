@@ -304,7 +304,7 @@ public final class SistemaProtheusNepomuceno extends Sistema {
                     .orElse(null);
 
             final ConfiguracaoNovaAfericaoAvulsa configuracaoAfericao =
-                    sistema.getConfigNovaAfericaoAvulsa(conn, codUnidade);
+                    integracaoDao.getConfigNovaAfericaoAvulsa(conn, codUnidade);
 
             return ProtheusNepomucenoConverter
                     .createNovaAfericaoAvulsaProlog(

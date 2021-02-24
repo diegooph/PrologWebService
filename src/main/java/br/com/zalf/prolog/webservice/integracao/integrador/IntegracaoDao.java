@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.integrador;
 
+import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.ConfiguracaoNovaAfericaoAvulsa;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.ConfiguracaoNovaAfericaoPlaca;
 import br.com.zalf.prolog.webservice.integracao.MetodoIntegrado;
 import br.com.zalf.prolog.webservice.integracao.RecursoIntegrado;
@@ -82,6 +83,10 @@ public interface IntegracaoDao {
             @NotNull final Connection conn,
             @NotNull final Long codUnidade,
             @NotNull final String codEstruturaVeiculo) throws Throwable;
+
+    @NotNull
+    ConfiguracaoNovaAfericaoAvulsa getConfigNovaAfericaoAvulsa(@NotNull final Connection conn,
+                                                               @NotNull final Long codUnidade) throws Throwable;
 
     @NotNull
     Short getCodDiagramaByDeParaTipoVeiculo(@NotNull final Connection conn,
