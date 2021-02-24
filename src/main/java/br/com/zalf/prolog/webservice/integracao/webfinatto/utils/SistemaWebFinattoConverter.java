@@ -3,10 +3,8 @@ package br.com.zalf.prolog.webservice.integracao.webfinatto.utils;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.ErrorReportSystem;
 import br.com.zalf.prolog.webservice.frota.pneu._model.*;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.ConfiguracaoNovaAfericaoPlaca;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.CronogramaAfericao;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.ModeloPlacasAfericao;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.NovaAfericaoPlaca;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.*;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoPosicaoPneuMapper;
@@ -14,6 +12,7 @@ import br.com.zalf.prolog.webservice.integracao.integrador._model.*;
 import br.com.zalf.prolog.webservice.integracao.webfinatto._model.PneuWebFinatto;
 import br.com.zalf.prolog.webservice.integracao.webfinatto._model.VeiculoWebFinatto;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -80,6 +79,28 @@ public class SistemaWebFinattoConverter {
     }
 
     @NotNull
+    public static List<PneuAfericaoAvulsa> createPneusAfericaoAvulsa(
+            @NotNull final Long codUnidade,
+            @NotNull final List<PneuWebFinatto> pneusByFiliais,
+            @NotNull final AfericaoRealizadaAvulsaHolder afericaoRealizadaAvulsaHolder) {
+        final List<PneuAfericaoAvulsa> pneusAfericaoAvulsa = new ArrayList<>();
+        for (final PneuWebFinatto pneuWebFinatto : pneusByFiliais) {
+            final AfericaoRealizadaAvulsa pneuInfoAfericaoAvulsa =
+                    afericaoRealizadaAvulsaHolder
+                            .getAfericoesRealizadasAvulsas()
+                            .stream()
+                            .filter(infoPneu ->
+                                            infoPneu.getCodPneuCliente().equals(pneuWebFinatto.getCodigoCliente()))
+                            .findFirst()
+                            .orElse(null);
+            pneusAfericaoAvulsa.add(createPneuAfericaoAvulsaProlog(codUnidade,
+                                                                   pneuWebFinatto,
+                                                                   pneuInfoAfericaoAvulsa));
+        }
+        return pneusAfericaoAvulsa;
+    }
+
+    @NotNull
     public static NovaAfericaoPlaca createNovaAfericaoPlacaProlog(
             @NotNull final Long codUnidade,
             @NotNull final Short codDiagramaProlog,
@@ -88,6 +109,83 @@ public class SistemaWebFinattoConverter {
             @NotNull final ConfiguracaoNovaAfericaoPlaca configNovaAfericaoPlaca) {
         final Veiculo veiculo = createVeiculoProlog(codUnidade, codDiagramaProlog, veiculoByPlaca, posicaoPneuMapper);
         return internalCreateNovaAfericaoPlacaProlog(veiculo, configNovaAfericaoPlaca);
+    }
+
+    @NotNull
+    private static PneuAfericaoAvulsa createPneuAfericaoAvulsaProlog(
+            @NotNull final Long codUnidade,
+            @NotNull final PneuWebFinatto pneuWebFinatto,
+            @Nullable final AfericaoRealizadaAvulsa pneuInfoAfericaoAvulsa) {
+        final PneuAfericaoAvulsa pneuAfericaoAvulsa = new PneuAfericaoAvulsa();
+        pneuAfericaoAvulsa.setPneu(createPneuEstoqueProlog(codUnidade, pneuWebFinatto));
+        if (pneuInfoAfericaoAvulsa != null) {
+            pneuAfericaoAvulsa.setDataHoraUltimaAfericao(pneuInfoAfericaoAvulsa.getDataHoraUltimaAfericao());
+            pneuAfericaoAvulsa.setNomeColaboradorAfericao(pneuInfoAfericaoAvulsa.getNomeColaboradorAfericao());
+            pneuAfericaoAvulsa.setTipoMedicaoColetadaUltimaAfericao(
+                    pneuInfoAfericaoAvulsa.getTipoMedicaoColetadaAfericao());
+            pneuAfericaoAvulsa.setCodigoUltimaAfericao(pneuInfoAfericaoAvulsa.getCodUltimaAfericao());
+            pneuAfericaoAvulsa.setTipoProcessoAfericao(pneuInfoAfericaoAvulsa.getTipoProcessoColetaAfericao());
+            pneuAfericaoAvulsa.setPlacaAplicadoQuandoAferido(pneuInfoAfericaoAvulsa.getPlacaAplicadoQuandoAferido());
+        }
+        return pneuAfericaoAvulsa;
+    }
+
+    @NotNull
+    private static Pneu createPneuEstoqueProlog(@NotNull final Long codUnidade,
+                                                @NotNull final PneuWebFinatto pneuWebFinatto) {
+        final PneuEstoque pneu = new PneuEstoque();
+        pneu.setCodigo(Long.parseLong(pneuWebFinatto.getCodPneu()));
+        pneu.setCodigoCliente(pneuWebFinatto.getCodigoCliente());
+        pneu.setPressaoCorreta(pneuWebFinatto.getPressaoRecomendadaPneuEmPsi());
+        pneu.setPressaoAtual(pneuWebFinatto.getPressaoAtualPneuEmPsi());
+        pneu.setVidaAtual(pneuWebFinatto.getVidaAtualPneu());
+        pneu.setVidasTotal(pneuWebFinatto.getVidaTotalPneu());
+        pneu.setCodUnidadeAlocado(codUnidade);
+        pneu.setDimensao(new Pneu.Dimensao());
+
+        final Marca marcaPneu = new Marca();
+        marcaPneu.setCodigo(Long.parseLong(pneuWebFinatto.getCodMarcaPneu()));
+        marcaPneu.setNome(pneuWebFinatto.getNomeMarcaPneu());
+        pneu.setMarca(marcaPneu);
+
+        final ModeloPneu modeloPneu = new ModeloPneu();
+        modeloPneu.setCodigo(Long.valueOf(pneuWebFinatto.getCodModeloPneu()));
+        modeloPneu.setNome(pneuWebFinatto.getNomeModeloPneu());
+        modeloPneu.setQuantidadeSulcos(pneuWebFinatto.getQtdSulcosModeloPneu());
+        pneu.setModelo(modeloPneu);
+
+        if (pneuWebFinatto.isRecapado()) {
+            final Banda banda = new Banda();
+            final Marca marcaBanda = new Marca();
+            marcaBanda.setCodigo(Long.parseLong(pneuWebFinatto.getCodMarcaBanda()));
+            marcaBanda.setNome(pneuWebFinatto.getNomeMarcaBanda());
+            banda.setMarca(marcaBanda);
+
+            final ModeloBanda modeloBanda = new ModeloBanda();
+            modeloBanda.setCodigo(Long.parseLong(pneuWebFinatto.getCodModeloBanda()));
+            modeloBanda.setNome(pneuWebFinatto.getNomeModeloBanda());
+            modeloBanda.setQuantidadeSulcos(pneuWebFinatto.getQtdSulcosModeloBanda());
+            banda.setModelo(modeloBanda);
+            pneu.setBanda(banda);
+        } else {
+            // Caso o pneu é novo então as informações da Banda são reflexo da Marca e Modelo do pneu.
+            final Banda banda = new Banda();
+            final ModeloBanda modeloBanda = new ModeloBanda();
+            modeloBanda.setCodigo(modeloPneu.getCodigo());
+            modeloBanda.setNome(modeloPneu.getNome());
+            modeloBanda.setQuantidadeSulcos(modeloPneu.getQuantidadeSulcos());
+            banda.setModelo(modeloBanda);
+            banda.setMarca(marcaPneu);
+            pneu.setBanda(banda);
+        }
+
+        final Sulcos sulcos = new Sulcos();
+        sulcos.setInterno(pneuWebFinatto.getSulcoInternoPneuEmMilimetros());
+        sulcos.setCentralInterno(pneuWebFinatto.getSulcoCentralInternoPneuEmMilimetros());
+        sulcos.setCentralExterno(pneuWebFinatto.getSulcoCentralExternoPneuEmMilimetros());
+        sulcos.setExterno(pneuWebFinatto.getSulcoExternoPneuEmMilimetros());
+        pneu.setSulcosAtuais(sulcos);
+        return pneu;
     }
 
     @NotNull

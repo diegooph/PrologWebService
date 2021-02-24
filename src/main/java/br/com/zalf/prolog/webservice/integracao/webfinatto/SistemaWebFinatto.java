@@ -8,10 +8,7 @@ import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.MetodoIntegrado;
 import br.com.zalf.prolog.webservice.integracao.RecursoIntegrado;
 import br.com.zalf.prolog.webservice.integracao.integrador.IntegracaoDao;
-import br.com.zalf.prolog.webservice.integracao.integrador._model.AfericaoRealizadaPlacaHolder;
-import br.com.zalf.prolog.webservice.integracao.integrador._model.TipoVeiculoConfigAfericaoHolder;
-import br.com.zalf.prolog.webservice.integracao.integrador._model.UnidadeDeParaHolder;
-import br.com.zalf.prolog.webservice.integracao.integrador._model.UnidadeRestricaoHolder;
+import br.com.zalf.prolog.webservice.integracao.integrador._model.*;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.ApiAutenticacaoHolder;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
@@ -139,17 +136,30 @@ public class SistemaWebFinatto extends Sistema {
         final DatabaseConnectionProvider connectionProvider = new DatabaseConnectionProvider();
         try {
             conn = connectionProvider.provideDatabaseConnection();
+            final UnidadeDeParaHolder unidadeDeParaHolder =
+                    integracaoDao.getCodAuxiliarByCodUnidadeProlog(conn, Collections.singletonList(codUnidade));
             final ApiAutenticacaoHolder apiAutenticacaoHolder =
                     integracaoDao.getApiAutenticacaoHolder(conn,
-                                                           3L,
+                                                           unidadeDeParaHolder.getCodEmpresaProlog(),
                                                            getSistemaKey(),
                                                            MetodoIntegrado.GET_PNEUS_AFERICAO_AVULSA);
             final List<PneuWebFinatto> pneusByFiliais =
                     requester.getPneusByFiliais(apiAutenticacaoHolder,
-                                                "10:01",
+                                                unidadeDeParaHolder.getCodFiliais(),
                                                 "ESTOQUE",
                                                 null);
-            return super.getPneusAfericaoAvulsa(codUnidade);
+
+            final List<String> codPneus = pneusByFiliais.stream()
+                    .map(PneuWebFinatto::getCodigoCliente)
+                    .collect(Collectors.toList());
+
+            final AfericaoRealizadaAvulsaHolder afericaoRealizadaAvulsaHolder =
+                    integracaoDao.getAfericaoRealizadaAvulsaHolder(conn,
+                                                                   codUnidade,
+                                                                   codPneus);
+            return SistemaWebFinattoConverter.createPneusAfericaoAvulsa(codUnidade,
+                                                                        pneusByFiliais,
+                                                                        afericaoRealizadaAvulsaHolder);
         } finally {
             connectionProvider.closeResources(conn);
         }
