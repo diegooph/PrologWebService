@@ -6,10 +6,7 @@ import br.com.zalf.prolog.webservice.integracao.RecursoIntegrado;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.IntegracaoOsFilter;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.ModelosChecklistBloqueados;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.OsIntegracao;
-import br.com.zalf.prolog.webservice.integracao.integrador._model.AfericaoRealizadaPlacaHolder;
-import br.com.zalf.prolog.webservice.integracao.integrador._model.TipoVeiculoConfigAfericaoHolder;
-import br.com.zalf.prolog.webservice.integracao.integrador._model.UnidadeDeParaHolder;
-import br.com.zalf.prolog.webservice.integracao.integrador._model.UnidadeRestricaoHolder;
+import br.com.zalf.prolog.webservice.integracao.integrador._model.*;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.ApiAutenticacaoHolder;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
 import org.jetbrains.annotations.NotNull;
@@ -73,6 +70,12 @@ public interface IntegracaoDao {
     AfericaoRealizadaPlacaHolder getAfericaoRealizadaPlacaHolder(@NotNull final Connection conn,
                                                                  @NotNull final Long codEmpresa,
                                                                  @NotNull final List<String> placas) throws Throwable;
+
+    @NotNull
+    AfericaoRealizadaAvulsaHolder getAfericaoRealizadaAvulsaHolder(
+            @NotNull final Connection conn,
+            @NotNull final Long codUnidade,
+            @NotNull final List<String> codPneus) throws Throwable;
 
     @NotNull
     ConfiguracaoNovaAfericaoPlaca getConfigNovaAfericaoPlaca(

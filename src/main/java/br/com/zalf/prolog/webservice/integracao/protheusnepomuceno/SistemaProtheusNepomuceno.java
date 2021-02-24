@@ -8,10 +8,12 @@ import br.com.zalf.prolog.webservice.errorhandling.ErrorReportSystem;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
+import br.com.zalf.prolog.webservice.integracao.IntegracaoPosicaoPneuMapper;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.MetodoIntegrado;
 import br.com.zalf.prolog.webservice.integracao.RecursoIntegrado;
 import br.com.zalf.prolog.webservice.integracao.integrador.IntegracaoDao;
+import br.com.zalf.prolog.webservice.integracao.integrador._model.AfericaoRealizadaAvulsa;
 import br.com.zalf.prolog.webservice.integracao.integrador._model.AfericaoRealizadaPlaca;
 import br.com.zalf.prolog.webservice.integracao.integrador._model.TipoVeiculoConfigAfericao;
 import br.com.zalf.prolog.webservice.integracao.integrador._model.UnidadeRestricao;
@@ -21,7 +23,6 @@ import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.error.
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.data.ProtheusNepomucenoRequesterImpl;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.utils.ProtheusNepomucenoConverter;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.utils.ProtheusNepomucenoEncoderDecoder;
-import br.com.zalf.prolog.webservice.integracao.IntegracaoPosicaoPneuMapper;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.utils.ProtheusNepomucenoUtils;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
@@ -95,7 +96,7 @@ public final class SistemaProtheusNepomuceno extends Sistema {
             final Map<String, AfericaoRealizadaPlaca> afericaoRealizadaPlaca =
                     integracaoDao
                             .getAfericaoRealizadaPlacaHolder(conn, codEmpresa, placasNepomuceno)
-                            .getAfericaoRealizadaPlaca();
+                            .getAfericoesRealizadasPlacas();
 
             // Aqui começamos a montar o cronograma
             final Map<String, ModeloPlacasAfericao> modelosEstruturaVeiculo = new HashMap<>();
@@ -237,12 +238,14 @@ public final class SistemaProtheusNepomuceno extends Sistema {
                     .collect(Collectors.toList());
 
             // Busca as infos de aferição com base nos pneus da lista codPneus.
-            final List<InfosAfericaoAvulsa> infosAfericaoAvulsa =
-                    sistema.getInfosAfericaoAvulsa(conn, codUnidade, codPneus);
+            final List<AfericaoRealizadaAvulsa> infosAfericaoAvulsa =
+                    integracaoDao
+                            .getAfericaoRealizadaAvulsaHolder(conn, codUnidade, codPneus)
+                            .getAfericoesRealizadasAvulsas();
 
             final List<PneuAfericaoAvulsa> pneusAfericaoAvulsa = new ArrayList<>();
             for (final PneuEstoqueProtheusNepomuceno pneuEstoqueNepomuceno : pneusEstoqueNepomuceno) {
-                final InfosAfericaoAvulsa pneuInfoAfericaoAvulsa = infosAfericaoAvulsa.stream()
+                final AfericaoRealizadaAvulsa pneuInfoAfericaoAvulsa = infosAfericaoAvulsa.stream()
                         .filter(infoPneu ->
                                         infoPneu.getCodPneuCliente().equals(pneuEstoqueNepomuceno.getCodigoCliente()))
                         .findFirst()
@@ -287,13 +290,14 @@ public final class SistemaProtheusNepomuceno extends Sistema {
                             ProtheusNepomucenoEncoderDecoder.decode(codPneu));
 
             // Busca as infos de aferição com base nos pneus da lista codPneus.
-            final List<InfosAfericaoAvulsa> infosAfericaoAvulsa =
-                    sistema.getInfosAfericaoAvulsa(
-                            conn,
-                            codUnidade,
-                            Collections.singletonList(pneuEstoqueNepomuceno.getCodigoCliente()));
+            final List<AfericaoRealizadaAvulsa> infosAfericaoAvulsa =
+                    integracaoDao
+                            .getAfericaoRealizadaAvulsaHolder(conn,
+                                                              codUnidade,
+                                                              Collections.singletonList(pneuEstoqueNepomuceno.getCodigoCliente()))
+                            .getAfericoesRealizadasAvulsas();
 
-            final InfosAfericaoAvulsa pneuInfoAfericaoAvulsa = infosAfericaoAvulsa.stream()
+            final AfericaoRealizadaAvulsa pneuInfoAfericaoAvulsa = infosAfericaoAvulsa.stream()
                     .filter(infoPneu ->
                                     infoPneu.getCodPneuCliente().equals(pneuEstoqueNepomuceno.getCodigoCliente()))
                     .findFirst()

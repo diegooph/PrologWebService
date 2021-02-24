@@ -7,6 +7,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoPosicaoPneuMapper;
+import br.com.zalf.prolog.webservice.integracao.integrador._model.AfericaoRealizadaAvulsa;
 import br.com.zalf.prolog.webservice.integracao.integrador._model.AfericaoRealizadaPlaca;
 import br.com.zalf.prolog.webservice.integracao.integrador._model.TipoVeiculoConfigAfericao;
 import br.com.zalf.prolog.webservice.integracao.integrador._model.UnidadeRestricao;
@@ -193,10 +194,12 @@ public final class ProtheusNepomucenoConverter {
             @NotNull final Long codUnidadePneuAlocado,
             @NotNull final PneuEstoqueProtheusNepomuceno pneuEstoqueNepomuceno,
             @NotNull final ConfiguracaoNovaAfericaoAvulsa configuracaoAfericao,
-            @Nullable final InfosAfericaoAvulsa pneuInfoAfericaoAvulsa) {
+            @Nullable final AfericaoRealizadaAvulsa pneuInfoAfericaoAvulsa) {
         final NovaAfericaoAvulsa novaAfericaoAvulsa = new NovaAfericaoAvulsa();
         novaAfericaoAvulsa.setPneuParaAferir(ProtheusNepomucenoConverter
-                .createPneuAfericaoAvulsaProlog(codUnidadePneuAlocado, pneuEstoqueNepomuceno, pneuInfoAfericaoAvulsa));
+                                                     .createPneuAfericaoAvulsaProlog(codUnidadePneuAlocado,
+                                                                                     pneuEstoqueNepomuceno,
+                                                                                     pneuInfoAfericaoAvulsa));
         novaAfericaoAvulsa.setRestricao(Restricao.createRestricaoFrom(configuracaoAfericao));
         novaAfericaoAvulsa.setBloqueiaValoresMaiores(configuracaoAfericao.isBloqueiaValoresMaiores());
         novaAfericaoAvulsa.setBloqueiaValoresMenores(configuracaoAfericao.isBloqueiaValoresMenores());
@@ -211,7 +214,7 @@ public final class ProtheusNepomucenoConverter {
     public static PneuAfericaoAvulsa createPneuAfericaoAvulsaProlog(
             @NotNull final Long codUnidadePneuAlocado,
             @NotNull final PneuEstoqueProtheusNepomuceno pneuEstoqueNepomuceno,
-            @Nullable final InfosAfericaoAvulsa pneuInfoAfericaoAvulsa) {
+            @Nullable final AfericaoRealizadaAvulsa pneuInfoAfericaoAvulsa) {
         final PneuAfericaoAvulsa pneuAfericaoAvulsa = new PneuAfericaoAvulsa();
         pneuAfericaoAvulsa.setPneu(createPneuEstoqueProlog(codUnidadePneuAlocado, pneuEstoqueNepomuceno));
         if (pneuInfoAfericaoAvulsa != null) {

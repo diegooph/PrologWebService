@@ -2,7 +2,6 @@ package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno;
 
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.Afericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.ConfiguracaoNovaAfericaoAvulsa;
-import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.InfosAfericaoAvulsa;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -26,11 +25,6 @@ public interface SistemaProtheusNepomucenoDao {
                 @NotNull final Long codUnidade,
                 @NotNull final String codAuxiliarUnidade,
                 @NotNull final Afericao afericao) throws Throwable;
-
-    @NotNull
-    List<InfosAfericaoAvulsa> getInfosAfericaoAvulsa(@NotNull final Connection conn,
-                                                     @NotNull final Long codUnidade,
-                                                     @NotNull final List<String> codPneus) throws Throwable;
 
     @NotNull
     ConfiguracaoNovaAfericaoAvulsa getConfigNovaAfericaoAvulsa(@NotNull final Connection conn,

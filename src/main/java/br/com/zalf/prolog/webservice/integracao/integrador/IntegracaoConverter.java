@@ -4,6 +4,8 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.StatusItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.StatusOrdemServico;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.ConfiguracaoNovaAfericaoPlaca;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.TipoMedicaoColetadaAfericao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.TipoProcessoColetaAfericao;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.ItemOsIntegracao;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.OsIntegracao;
 import br.com.zalf.prolog.webservice.integracao.integrador._model.*;
@@ -13,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import java.sql.ResultSet;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import static br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.FormaColetaDadosAfericaoEnum.fromString;
@@ -120,9 +123,29 @@ public final class IntegracaoConverter {
     }
 
     @NotNull
+    public static AfericaoRealizadaAvulsa createAfericaoRealizadaAvulsa(
+            @NotNull final ResultSet rSet) throws Throwable {
+        return new AfericaoRealizadaAvulsa(
+                rSet.getLong("codigo_ultima_afericao"),
+                rSet.getString("cod_pneu"),
+                rSet.getString("cod_pneu_cliente"),
+                rSet.getObject("data_hora_ultima_afericao", LocalDateTime.class),
+                rSet.getString("nome_colaborador_afericao"),
+                TipoMedicaoColetadaAfericao.fromString(rSet.getString("tipo_medicao_coletada")),
+                TipoProcessoColetaAfericao.fromString(rSet.getString("tipo_processo_coleta")),
+                rSet.getString("placa_aplicado_quando_aferido"));
+    }
+
+    @NotNull
     public static AfericaoRealizadaPlacaHolder createAfericaoRealizadaPlacaHolder(
             @NotNull final Map<String, AfericaoRealizadaPlaca> afericaoRealizadaPlaca) {
         return new AfericaoRealizadaPlacaHolder(afericaoRealizadaPlaca);
+    }
+
+    @NotNull
+    public static AfericaoRealizadaAvulsaHolder createAfericaoRealizadaAvulsaHolder(
+            @NotNull final List<AfericaoRealizadaAvulsa> afericaoRealizadaAvulsa) {
+        return new AfericaoRealizadaAvulsaHolder(afericaoRealizadaAvulsa);
     }
 
     @NotNull
