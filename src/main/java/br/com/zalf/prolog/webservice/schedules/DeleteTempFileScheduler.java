@@ -20,6 +20,7 @@ import java.util.stream.Stream;
  *
  * @author Guilherme Steinert (https://github.com/steinert999)
  */
+@Profile("prod")
 @Component
 public class DeleteTempFileScheduler implements Scheduler {
 
