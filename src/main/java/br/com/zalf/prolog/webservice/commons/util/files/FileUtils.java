@@ -49,11 +49,13 @@ public final class FileUtils {
         }
     }
 
+    @NotNull
     public static File getTempDir() {
         final String baseName = getBaseName();
         return new File(TEMP_DIR_REF, baseName);
     }
 
+    @NotNull
     public static List<File> getAllCreatedTempDirs() {
         final File baseTempDir = new File(TEMP_DIR_REF);
         return Arrays.stream(baseTempDir.listFiles())
@@ -63,6 +65,7 @@ public final class FileUtils {
                 .collect(Collectors.toList());
     }
 
+    @NotNull
     private static String getBaseName() {
         return LocalDate.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
     }

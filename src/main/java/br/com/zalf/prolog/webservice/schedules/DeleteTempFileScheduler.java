@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.schedules;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.files.FileUtils;
 import br.com.zalf.prolog.webservice.schedules.time.EveryTwoDaysAtTwoHours;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
@@ -39,7 +40,7 @@ public class DeleteTempFileScheduler implements Scheduler {
                 .forEach(this::deleteFiles);
     }
 
-    private void deleteFiles(final File dir) {
+    private void deleteFiles(@NotNull final File dir) {
         Log.i(TAG, "Diretório analisado: " + dir.getAbsolutePath());
         final Path absolutePath = Paths.get(dir.toURI());
         try (final Stream<Path> walk = Files.walk(absolutePath)) {
