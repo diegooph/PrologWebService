@@ -167,15 +167,27 @@ public class SistemaWebFinatto extends Sistema {
         final DatabaseConnectionProvider connectionProvider = new DatabaseConnectionProvider();
         try {
             conn = connectionProvider.provideDatabaseConnection();
+            final UnidadeDeParaHolder unidadeDeParaHolder =
+                    integracaoDao.getCodAuxiliarByCodUnidadeProlog(conn, Collections.singletonList(codUnidade));
             final ApiAutenticacaoHolder apiAutenticacaoHolder =
                     integracaoDao.getApiAutenticacaoHolder(conn,
                                                            3L,
                                                            getSistemaKey(),
                                                            MetodoIntegrado.GET_PNEU_NOVA_AFERICAO_AVULSA);
             final PneuWebFinatto pneuByCodigo = requester.getPneuByCodigo(apiAutenticacaoHolder,
-                                                                          "10:01",
-                                                                          "507");
-            return super.getNovaAfericaoAvulsa(codUnidade, codPneu, tipoMedicaoColetadaAfericao);
+                                                                          unidadeDeParaHolder.getCodFiliais(),
+                                                                          codPneu.toString());
+
+            final AfericaoRealizadaAvulsaHolder afericaoRealizadaAvulsaHolder =
+                    integracaoDao.getAfericaoRealizadaAvulsaHolder(conn,
+                                                                   codUnidade,
+                                                                   Collections.singletonList(pneuByCodigo.getCodPneu()));
+            final ConfiguracaoNovaAfericaoAvulsa configuracaoAfericao =
+                    integracaoDao.getConfigNovaAfericaoAvulsa(conn, codUnidade);
+            return SistemaWebFinattoConverter.createNovaAfericaoAvulsa(codUnidade,
+                                                                       pneuByCodigo,
+                                                                       configuracaoAfericao,
+                                                                       afericaoRealizadaAvulsaHolder);
         } finally {
             connectionProvider.closeResources(conn);
         }

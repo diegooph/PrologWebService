@@ -112,6 +112,33 @@ public class SistemaWebFinattoConverter {
     }
 
     @NotNull
+    public static NovaAfericaoAvulsa createNovaAfericaoAvulsa(
+            @NotNull final Long codUnidade,
+            @NotNull final PneuWebFinatto pneuByCodigo,
+            @NotNull final ConfiguracaoNovaAfericaoAvulsa configuracaoAfericao,
+            @NotNull final AfericaoRealizadaAvulsaHolder afericaoRealizadaAvulsaHolder) {
+        final AfericaoRealizadaAvulsa afericaoRealizadaAvulsa = afericaoRealizadaAvulsaHolder
+                .getAfericoesRealizadasAvulsas()
+                .stream()
+                .filter(infoPneu -> infoPneu.getCodPneuCliente().equals(pneuByCodigo.getCodigoCliente()))
+                .findFirst()
+                .orElse(null);
+
+        final NovaAfericaoAvulsa novaAfericaoAvulsa = new NovaAfericaoAvulsa();
+        novaAfericaoAvulsa.setPneuParaAferir(createPneuAfericaoAvulsaProlog(codUnidade,
+                                                                            pneuByCodigo,
+                                                                            afericaoRealizadaAvulsa));
+        novaAfericaoAvulsa.setRestricao(Restricao.createRestricaoFrom(configuracaoAfericao));
+        novaAfericaoAvulsa.setBloqueiaValoresMaiores(configuracaoAfericao.isBloqueiaValoresMaiores());
+        novaAfericaoAvulsa.setBloqueiaValoresMenores(configuracaoAfericao.isBloqueiaValoresMenores());
+        novaAfericaoAvulsa.setVariacaoAceitaSulcoMaiorMilimetros(
+                configuracaoAfericao.getVariacaoAceitaSulcoMaiorMilimetros());
+        novaAfericaoAvulsa.setVariacaoAceitaSulcoMenorMilimetros(
+                configuracaoAfericao.getVariacaoAceitaSulcoMenorMilimetros());
+        return novaAfericaoAvulsa;
+    }
+
+    @NotNull
     private static PneuAfericaoAvulsa createPneuAfericaoAvulsaProlog(
             @NotNull final Long codUnidade,
             @NotNull final PneuWebFinatto pneuWebFinatto,
