@@ -9,6 +9,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.time.format.ResolverStyle;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -99,5 +101,16 @@ public final class DateUtils {
                                       final int anoMinimoPermitido) {
         final int anoExtraido = dataASerVerificada.getYear();
         return anoExtraido >= anoMaximoPermitido || anoExtraido <= anoMinimoPermitido;
+    }
+
+    public static boolean isValid(final String date, final String pattern) {
+        boolean valid;
+        try {
+            LocalDate.parse(date, DateTimeFormatter.ofPattern(pattern));
+            valid = true;
+        } catch (DateTimeParseException e) {
+            valid = false;
+        }
+        return valid;
     }
 }
