@@ -1,12 +1,16 @@
 package br.com.zalf.prolog.webservice.commons.util.files;
 
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.commons.util.datetime.DateUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created on 17/09/2018
@@ -50,6 +54,15 @@ public final class FileUtils {
     public static File getTempDir() {
         final String baseName = getBaseName();
         return new File(TEMP_DIR_REF, baseName);
+    }
+
+    public static List<File> getAllCreatedTempDirs() {
+        final File baseTempDir = new File(TEMP_DIR_REF);
+        return Arrays.stream(baseTempDir.listFiles())
+                .filter(File::isDirectory)
+                .filter(subDir -> DateUtils.isValid(subDir.getName(), "dd-MM-yyyy"))
+                .peek(subDir -> Log.i(TAG, "Diretório adquirido: " + subDir.getName()))
+                .collect(Collectors.toList());
     }
 
     private static String getBaseName() {
