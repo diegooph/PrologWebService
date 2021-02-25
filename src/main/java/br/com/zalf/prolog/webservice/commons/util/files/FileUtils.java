@@ -37,8 +37,7 @@ public final class FileUtils {
         return normalized;
     }
 
-    @NotNull
-    public static File createTempDir() {
+    public static void createTempDir() {
         final String baseName = getBaseName();
         final File baseDir = new File(TEMP_DIR_REF);
         final File tmpDir = new File(baseDir, baseName);
@@ -48,7 +47,6 @@ public final class FileUtils {
                 throw new IllegalStateException("Failed to create temp directory: " + baseName);
             }
         }
-        return tmpDir;
     }
 
     public static File getTempDir() {
