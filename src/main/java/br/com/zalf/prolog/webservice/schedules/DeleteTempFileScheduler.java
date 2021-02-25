@@ -2,7 +2,8 @@ package br.com.zalf.prolog.webservice.schedules;
 
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.files.FileUtils;
-import org.springframework.scheduling.annotation.Scheduled;
+import br.com.zalf.prolog.webservice.schedules.time.EveryTwoDaysAtTwoHours;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -24,12 +25,8 @@ public class DeleteTempFileScheduler implements Scheduler {
 
     private static final String TAG = DeleteTempFileScheduler.class.getSimpleName();
 
-    /*
-     * Essa cron foi programada para ser executada á cada dois dias às 02:00,
-     * todos os meses em todos os dias da semana
-     */
     @Override
-    @Scheduled(cron = "0 2 */2 * * *")
+    @EveryTwoDaysAtTwoHours
     public void doWork() {
         final List<File> allTempDirs = FileUtils.getAllCreatedTempDirs();
         allTempDirs.stream()
