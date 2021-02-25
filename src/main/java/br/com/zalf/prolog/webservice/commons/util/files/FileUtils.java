@@ -26,17 +26,7 @@ public final class FileUtils {
     private FileUtils() {
         throw new IllegalStateException(FileUtils.class.getSimpleName() + " cannot be instantiated!");
     }
-
-    @NotNull
-    public static String normalizeNameOrThrow(@NotNull final String fileName) {
-        final String normalized = FilenameUtils.normalize(fileName);
-        if (normalized == null) {
-            throw new IllegalStateException("Error to normalize filename: " + fileName);
-        }
-
-        return normalized;
-    }
-
+    
     public static void createTempDir() {
         final String baseName = getBaseName();
         final File baseDir = new File(TEMP_DIR_REF);
