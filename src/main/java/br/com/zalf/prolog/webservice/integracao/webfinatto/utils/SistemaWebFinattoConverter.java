@@ -7,19 +7,23 @@ import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoPosicaoPneuMapper;
 import br.com.zalf.prolog.webservice.integracao.integrador._model.*;
-import br.com.zalf.prolog.webservice.integracao.webfinatto._model.PneuWebFinatto;
-import br.com.zalf.prolog.webservice.integracao.webfinatto._model.VeiculoWebFinatto;
+import br.com.zalf.prolog.webservice.integracao.webfinatto._model.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("DuplicatedCode")
 public class SistemaWebFinattoConverter {
+    @NotNull
     private static final String TAG = SistemaWebFinattoConverter.class.getSimpleName();
+    private static final double VALOR_NAO_COLETADO = 0.0;
 
     private SistemaWebFinattoConverter() {
         throw new IllegalStateException(SistemaWebFinattoConverter.class.getSimpleName() + " cannot be instantiated!");
@@ -139,6 +143,84 @@ public class SistemaWebFinattoConverter {
     }
 
     @NotNull
+    public static AfericaoPlacaWebFinatto createAfericaoPlaca(@NotNull final UnidadeDeParaHolder unidadeDeParaHolder,
+                                                              @NotNull final ZoneId zoneId,
+                                                              @NotNull final AfericaoPlaca afericaoPlaca) {
+        final List<MedicaoAfericaoWebFinatto> medicoes = afericaoPlaca.getPneusAferidos()
+                .stream()
+                .map(pneu -> createMedicaoAfericao(pneu, afericaoPlaca.getTipoMedicaoColetadaAfericao()))
+                .collect(Collectors.toList());
+        return new AfericaoPlacaWebFinatto(
+                unidadeDeParaHolder.getCodFiliais(),
+                unidadeDeParaHolder.getCodFiliais(),
+                afericaoPlaca.getVeiculo().getPlaca(),
+                Colaborador.formatCpf(afericaoPlaca.getColaborador().getCpf()),
+                afericaoPlaca.getKmMomentoAfericao(),
+                afericaoPlaca.getTempoRealizacaoAfericaoInMillis(),
+                afericaoPlaca.getDataHora(),
+                afericaoPlaca.getDataHora().atOffset(ZoneOffset.UTC).atZoneSameInstant(zoneId).toLocalDateTime(),
+                afericaoPlaca.getTipoMedicaoColetadaAfericao().asString(),
+                medicoes);
+    }
+
+    @NotNull
+    public static AfericaoPneuWebFinatto createAfericaoAvulsa(@NotNull final UnidadeDeParaHolder unidadeDeParaHolder,
+                                                              @NotNull final ZoneId zoneId,
+                                                              @NotNull final AfericaoAvulsa afericaoAvulsa) {
+        return new AfericaoPneuWebFinatto(
+                unidadeDeParaHolder.getCodFiliais(),
+                unidadeDeParaHolder.getCodFiliais(),
+                Colaborador.formatCpf(afericaoAvulsa.getColaborador().getCpf()),
+                afericaoAvulsa.getTempoRealizacaoAfericaoInMillis(),
+                afericaoAvulsa.getDataHora(),
+                afericaoAvulsa.getDataHora().atOffset(ZoneOffset.UTC).atZoneSameInstant(zoneId).toLocalDateTime(),
+                afericaoAvulsa.getTipoMedicaoColetadaAfericao().asString(),
+                Collections.singletonList(createMedicaoAfericao(afericaoAvulsa.getPneuAferido(),
+                                                                afericaoAvulsa.getTipoMedicaoColetadaAfericao())));
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    @NotNull
+    private static MedicaoAfericaoWebFinatto createMedicaoAfericao(
+            @NotNull final Pneu pneu,
+            @NotNull final TipoMedicaoColetadaAfericao tipoMedicaoColetadaAfericao) {
+        switch (tipoMedicaoColetadaAfericao) {
+            case SULCO:
+                return new MedicaoAfericaoWebFinatto(
+                        pneu.getCodigo().toString(),
+                        pneu.getCodigoCliente(),
+                        pneu.getVidaAtual(),
+                        VALOR_NAO_COLETADO,
+                        pneu.getSulcosAtuais().getInterno(),
+                        pneu.getSulcosAtuais().getCentralInterno(),
+                        pneu.getSulcosAtuais().getCentralExterno(),
+                        pneu.getSulcosAtuais().getExterno());
+            case PRESSAO:
+                return new MedicaoAfericaoWebFinatto(
+                        pneu.getCodigo().toString(),
+                        pneu.getCodigoCliente(),
+                        pneu.getVidaAtual(),
+                        pneu.getPressaoAtual(),
+                        VALOR_NAO_COLETADO,
+                        VALOR_NAO_COLETADO,
+                        VALOR_NAO_COLETADO,
+                        VALOR_NAO_COLETADO);
+            case SULCO_PRESSAO:
+                return new MedicaoAfericaoWebFinatto(
+                        pneu.getCodigo().toString(),
+                        pneu.getCodigoCliente(),
+                        pneu.getVidaAtual(),
+                        pneu.getPressaoAtual(),
+                        pneu.getSulcosAtuais().getInterno(),
+                        pneu.getSulcosAtuais().getCentralInterno(),
+                        pneu.getSulcosAtuais().getCentralExterno(),
+                        pneu.getSulcosAtuais().getExterno());
+            default:
+                throw new IllegalStateException("Unexpected value: " + tipoMedicaoColetadaAfericao);
+        }
+    }
+
+    @NotNull
     private static PneuAfericaoAvulsa createPneuAfericaoAvulsaProlog(
             @NotNull final Long codUnidade,
             @NotNull final PneuWebFinatto pneuWebFinatto,
@@ -158,8 +240,9 @@ public class SistemaWebFinattoConverter {
     }
 
     @NotNull
-    private static Pneu createPneuEstoqueProlog(@NotNull final Long codUnidade,
-                                                @NotNull final PneuWebFinatto pneuWebFinatto) {
+    private static Pneu createPneuEstoqueProlog(
+            @NotNull final Long codUnidade,
+            @NotNull final PneuWebFinatto pneuWebFinatto) {
         final PneuEstoque pneu = new PneuEstoque();
         pneu.setCodigo(Long.parseLong(pneuWebFinatto.getCodPneu()));
         pneu.setCodigoCliente(pneuWebFinatto.getCodigoCliente());
@@ -234,10 +317,11 @@ public class SistemaWebFinattoConverter {
     }
 
     @NotNull
-    private static Veiculo createVeiculoProlog(@NotNull final Long codUnidadeProlog,
-                                               @NotNull final Short codDiagramaProlog,
-                                               @NotNull final VeiculoWebFinatto veiculoByPlaca,
-                                               @NotNull final IntegracaoPosicaoPneuMapper posicaoPneuMapper) {
+    private static Veiculo createVeiculoProlog(
+            @NotNull final Long codUnidadeProlog,
+            @NotNull final Short codDiagramaProlog,
+            @NotNull final VeiculoWebFinatto veiculoByPlaca,
+            @NotNull final IntegracaoPosicaoPneuMapper posicaoPneuMapper) {
         final Veiculo veiculo = new Veiculo();
         veiculo.setCodigo(Long.parseLong(veiculoByPlaca.getCodVeiculo()));
         veiculo.setPlaca(veiculoByPlaca.getPlacaVeiculo());
@@ -252,9 +336,10 @@ public class SistemaWebFinattoConverter {
     }
 
     @NotNull
-    private static List<Pneu> createPneusProlog(@NotNull final Long codUnidadeProlog,
-                                                @NotNull final List<PneuWebFinatto> pneusAplicados,
-                                                @NotNull final IntegracaoPosicaoPneuMapper posicaoPneuMapper) {
+    private static List<Pneu> createPneusProlog(
+            @NotNull final Long codUnidadeProlog,
+            @NotNull final List<PneuWebFinatto> pneusAplicados,
+            @NotNull final IntegracaoPosicaoPneuMapper posicaoPneuMapper) {
         return pneusAplicados.stream()
                 .map(pneuAplicado -> createPneuProlog(codUnidadeProlog, pneuAplicado, posicaoPneuMapper))
                 .sorted(Pneu.POSICAO_PNEU_COMPARATOR)
@@ -262,9 +347,10 @@ public class SistemaWebFinattoConverter {
     }
 
     @NotNull
-    private static Pneu createPneuProlog(@NotNull final Long codUnidadeProlog,
-                                         @NotNull final PneuWebFinatto pneuAplicado,
-                                         @NotNull final IntegracaoPosicaoPneuMapper posicaoPneuMapper) {
+    private static Pneu createPneuProlog(
+            @NotNull final Long codUnidadeProlog,
+            @NotNull final PneuWebFinatto pneuAplicado,
+            @NotNull final IntegracaoPosicaoPneuMapper posicaoPneuMapper) {
         final Pneu pneu = new PneuComum();
         pneu.setCodigoCliente(pneuAplicado.getCodigoCliente());
         pneu.setCodigo(Long.parseLong(pneuAplicado.getCodPneu()));
@@ -318,7 +404,8 @@ public class SistemaWebFinattoConverter {
     private static CronogramaAfericao internalCreateCronogramaAfericaoProlog(
             @NotNull final Map<String, ModeloPlacasAfericao> modelosEstruturaVeiculo) {
         final CronogramaAfericao cronogramaAfericao = new CronogramaAfericao();
-        final ArrayList<ModeloPlacasAfericao> modelosPlacasAfericao = new ArrayList<>(modelosEstruturaVeiculo.values());
+        final ArrayList<ModeloPlacasAfericao> modelosPlacasAfericao =
+                new ArrayList<>(modelosEstruturaVeiculo.values());
         cronogramaAfericao.setModelosPlacasAfericao(modelosPlacasAfericao);
         cronogramaAfericao.calcularQuatidadeSulcosPressaoOk(true);
         cronogramaAfericao.calcularTotalVeiculos();
@@ -382,8 +469,9 @@ public class SistemaWebFinattoConverter {
     }
 
     @NotNull
-    private static DiagramaVeiculo createDiagramaProlog(@NotNull final Short codDiagramaProlog,
-                                                        @NotNull final String codEstruturaVeiculo) {
+    private static DiagramaVeiculo createDiagramaProlog(
+            @NotNull final Short codDiagramaProlog,
+            @NotNull final String codEstruturaVeiculo) {
         return new DiagramaVeiculo(
                 codDiagramaProlog,
                 // Utilizamos a propriedade 'nome' como metadata para repassar o codEstruturaVeiculo.
@@ -392,7 +480,8 @@ public class SistemaWebFinattoConverter {
                 "");
     }
 
-    private static void logEstruturasNaoMapeadas(@NotNull final Set<String> estruturasNaoMapeadas) {
+    private static void logEstruturasNaoMapeadas(
+            @NotNull final Set<String> estruturasNaoMapeadas) {
         final String message = "Estruturas não mapeadas: " + estruturasNaoMapeadas;
         Log.i(TAG, message);
         ErrorReportSystem.logMessage(message);

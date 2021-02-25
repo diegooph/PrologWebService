@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.webfinatto;
 
 import br.com.zalf.prolog.webservice.Injection;
+import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.database.DatabaseConnectionProvider;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.*;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoPosicaoPneuMapper;
@@ -12,8 +13,9 @@ import br.com.zalf.prolog.webservice.integracao.integrador._model.*;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.ApiAutenticacaoHolder;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
+import br.com.zalf.prolog.webservice.integracao.webfinatto._model.AfericaoPlacaWebFinatto;
+import br.com.zalf.prolog.webservice.integracao.webfinatto._model.AfericaoPneuWebFinatto;
 import br.com.zalf.prolog.webservice.integracao.webfinatto._model.PneuWebFinatto;
-import br.com.zalf.prolog.webservice.integracao.webfinatto._model.ResponseAfericaoWebFinatto;
 import br.com.zalf.prolog.webservice.integracao.webfinatto._model.VeiculoWebFinatto;
 import br.com.zalf.prolog.webservice.integracao.webfinatto._model.error.SistemaWebFinattoException;
 import br.com.zalf.prolog.webservice.integracao.webfinatto.data.SistemaWebFinattoRequester;
@@ -21,6 +23,7 @@ import br.com.zalf.prolog.webservice.integracao.webfinatto.utils.SistemaWebFinat
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
+import java.time.ZoneId;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -142,11 +145,9 @@ public class SistemaWebFinatto extends Sistema {
                     internalGetPneusByFiliais(conn,
                                               unidadeDeParaHolder.getCodEmpresaProlog(),
                                               unidadeDeParaHolder.getCodFiliais());
-
             final List<String> codPneus = pneusByFiliais.stream()
                     .map(PneuWebFinatto::getCodigoCliente)
                     .collect(Collectors.toList());
-
             final AfericaoRealizadaAvulsaHolder afericaoRealizadaAvulsaHolder =
                     integracaoDao.getAfericaoRealizadaAvulsaHolder(conn, codUnidade, codPneus);
             return SistemaWebFinattoConverter.createPneusAfericaoAvulsa(codUnidade,
@@ -171,13 +172,12 @@ public class SistemaWebFinatto extends Sistema {
                     integracaoDao.getCodAuxiliarByCodUnidadeProlog(conn, Collections.singletonList(codUnidade));
             final ApiAutenticacaoHolder apiAutenticacaoHolder =
                     integracaoDao.getApiAutenticacaoHolder(conn,
-                                                           3L,
+                                                           unidadeDeParaHolder.getCodEmpresaProlog(),
                                                            getSistemaKey(),
                                                            MetodoIntegrado.GET_PNEU_NOVA_AFERICAO_AVULSA);
             final PneuWebFinatto pneuByCodigo = requester.getPneuByCodigo(apiAutenticacaoHolder,
                                                                           unidadeDeParaHolder.getCodFiliais(),
                                                                           codPneu.toString());
-
             final AfericaoRealizadaAvulsaHolder afericaoRealizadaAvulsaHolder =
                     integracaoDao.getAfericaoRealizadaAvulsaHolder(conn,
                                                                    codUnidade,
@@ -202,17 +202,57 @@ public class SistemaWebFinatto extends Sistema {
         final DatabaseConnectionProvider connectionProvider = new DatabaseConnectionProvider();
         try {
             conn = connectionProvider.provideDatabaseConnection();
-            final ApiAutenticacaoHolder apiAutenticacaoHolder =
-                    integracaoDao.getApiAutenticacaoHolder(conn,
-                                                           3L,
-                                                           getSistemaKey(),
-                                                           MetodoIntegrado.INSERT_AFERICAO_PLACA);
-            final ResponseAfericaoWebFinatto responseAfericaoWebFinatto =
-                    requester.insertAfericaoPlaca(apiAutenticacaoHolder, null);
-            return super.insertAfericao(codUnidade, afericao, deveAbrirServico);
+            conn.setAutoCommit(false);
+            final ZoneId zoneIdForCodUnidade = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn);
+            final UnidadeDeParaHolder unidadeDeParaHolder =
+                    integracaoDao.getCodAuxiliarByCodUnidadeProlog(conn, Collections.singletonList(codUnidade));
+
+            final Long codAfericaoInserida = sistema.insert(conn,
+                                                            codUnidade,
+                                                            unidadeDeParaHolder.getCodFiliais(),
+                                                            afericao);
+            if (afericao instanceof AfericaoPlaca) {
+                internalInsertAfericaoPlaca(conn, unidadeDeParaHolder, zoneIdForCodUnidade, (AfericaoPlaca) afericao);
+            } else {
+                internalInsertAfericaoAvulsa(conn, unidadeDeParaHolder, zoneIdForCodUnidade, (AfericaoAvulsa) afericao);
+            }
+            conn.commit();
+            return codAfericaoInserida;
         } finally {
             connectionProvider.closeResources(conn);
         }
+    }
+
+    private void internalInsertAfericaoPlaca(@NotNull final Connection conn,
+                                             @NotNull final UnidadeDeParaHolder unidadeDeParaHolder,
+                                             @NotNull final ZoneId zoneIdForCodUnidade,
+                                             @NotNull final AfericaoPlaca afericaoPlaca) throws Throwable {
+        final ApiAutenticacaoHolder apiAutenticacaoHolder =
+                integracaoDao.getApiAutenticacaoHolder(conn,
+                                                       unidadeDeParaHolder.getCodEmpresaProlog(),
+                                                       getSistemaKey(),
+                                                       MetodoIntegrado.INSERT_AFERICAO_PLACA);
+        final AfericaoPlacaWebFinatto afericaoPlacaWebFinatto =
+                SistemaWebFinattoConverter.createAfericaoPlaca(unidadeDeParaHolder,
+                                                               zoneIdForCodUnidade,
+                                                               afericaoPlaca);
+        requester.insertAfericaoPlaca(apiAutenticacaoHolder, afericaoPlacaWebFinatto);
+    }
+
+    private void internalInsertAfericaoAvulsa(@NotNull final Connection conn,
+                                              @NotNull final UnidadeDeParaHolder unidadeDeParaHolder,
+                                              @NotNull final ZoneId zoneIdForCodUnidade,
+                                              @NotNull final AfericaoAvulsa afericaoAvulsa) throws Throwable {
+        final ApiAutenticacaoHolder apiAutenticacaoHolder =
+                integracaoDao.getApiAutenticacaoHolder(conn,
+                                                       unidadeDeParaHolder.getCodEmpresaProlog(),
+                                                       getSistemaKey(),
+                                                       MetodoIntegrado.INSERT_AFERICAO_AVULSA);
+        final AfericaoPneuWebFinatto afericaoPneuWebFinatto =
+                SistemaWebFinattoConverter.createAfericaoAvulsa(unidadeDeParaHolder,
+                                                                zoneIdForCodUnidade,
+                                                                afericaoAvulsa);
+        requester.insertAfericaoAvulsa(apiAutenticacaoHolder, afericaoPneuWebFinatto);
     }
 
     @NotNull
