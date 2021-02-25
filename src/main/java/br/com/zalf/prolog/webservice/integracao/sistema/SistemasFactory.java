@@ -8,6 +8,8 @@ import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.AvaCorp
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.requester.AvaCorpAvilanRequesterImpl;
 import br.com.zalf.prolog.webservice.integracao.praxio.SistemaGlobusPiccolotur;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.GlobusPiccoloturRequesterImpl;
+import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap.SoapHandlerGlobusPiccolotur;
+import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap.SoapRequesterGlobusPiccolotur;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.SistemaProtheusNepomuceno;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.data.ProtheusNepomucenoRequesterImpl;
 import br.com.zalf.prolog.webservice.integracao.protheusrodalog.ProtheusRodalogRequesterImpl;
@@ -62,8 +64,10 @@ public final class SistemasFactory {
                         integradorProLog,
                         userToken);
             case GLOBUS_PICCOLOTUR:
+                final SoapRequesterGlobusPiccolotur soapRequester =
+                        new SoapRequesterGlobusPiccolotur(new SoapHandlerGlobusPiccolotur());
                 return new SistemaGlobusPiccolotur(
-                        new GlobusPiccoloturRequesterImpl(),
+                        new GlobusPiccoloturRequesterImpl(soapRequester),
                         sistemaKey,
                         recursoIntegrado,
                         integradorProLog,

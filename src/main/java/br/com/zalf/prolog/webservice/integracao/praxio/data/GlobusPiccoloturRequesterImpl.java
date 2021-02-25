@@ -4,21 +4,14 @@ import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.integracao.praxio.movimentacao.GlobusPiccoloturLocalMovimentoResponse;
 import br.com.zalf.prolog.webservice.integracao.praxio.movimentacao.ProcessoMovimentacaoGlobus;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.error.GlobusPiccoloturException;
-import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap.OrdemDeServicoCorretivaPrologVO;
-import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap.RetornoOsCorretivaVO;
-import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap.headerhandler.SoapHeaderHandler;
-import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap.requester.ManutencaoWSTerceiros;
-import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap.requester.ManutencaoWSTerceirosSoap;
-import jakarta.xml.ws.Binding;
-import jakarta.xml.ws.BindingProvider;
-import jakarta.xml.ws.handler.Handler;
+import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap.OrdemServicoHolderDto;
+import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap.OrdemServicoResponseDto;
+import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap.SoapRequesterGlobusPiccolotur;
 import okhttp3.ResponseBody;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit2.Call;
 import retrofit2.Response;
-
-import java.util.List;
 
 /**
  * Created on 01/06/19.
@@ -30,17 +23,22 @@ public final class GlobusPiccoloturRequesterImpl implements GlobusPiccoloturRequ
     private static final String ERRO_AO_AUTENTICAR_INTEGRACAO = "[INTEGRAÇÃO] Erro ao autenticar integração";
     @NotNull
     private static final String TAG = GlobusPiccoloturRequesterImpl.class.getSimpleName();
+    @NotNull
+    private final SoapRequesterGlobusPiccolotur soapRequester;
+
+    public GlobusPiccoloturRequesterImpl(@NotNull final SoapRequesterGlobusPiccolotur soapRequester) {
+        this.soapRequester = soapRequester;
+    }
 
     @NotNull
     @Override
-    public Long insertItensNok(@NotNull final OrdemDeServicoCorretivaPrologVO ordemDeServicoCorretivaPrologVO) {
+    public Long insertItensNok(@NotNull final OrdemServicoHolderDto ordemServico) throws Throwable {
         // Utilizamos este try/catch para lançar um erro da integração para qualquer coisa que acontecer que não for
         // algo já mapeado pelo ProLog.
         // Com essa verificação, o usuário sempre receberá um erro personalizado informando que o erro que está
         // acontecendo é devido à integração e não algo interno do ProLog.
         try {
-            return handleXmlResponse(
-                    getSoapRequester().gerarOrdemDeServicoCorretivaProlog(ordemDeServicoCorretivaPrologVO));
+            return handleXmlResponse(soapRequester.enviarItensNokOrdemServico(ordemServico));
         } catch (final Throwable t) {
             if (!(t instanceof GlobusPiccoloturException)) {
                 throw new GlobusPiccoloturException(
@@ -169,25 +167,15 @@ public final class GlobusPiccoloturRequesterImpl implements GlobusPiccoloturRequ
     }
 
     @NotNull
-    private Long handleXmlResponse(@Nullable final RetornoOsCorretivaVO result) {
+    private Long handleXmlResponse(@Nullable final OrdemServicoResponseDto result) {
         if (result != null) {
             if (result.isSucesso()) {
-                return (long) result.getCodigoOS();
+                return (long) result.getCodigoOs();
             } else {
-                throw new GlobusPiccoloturException("[ERRO INTEGRAÇÃO]: " + result.getMensagemDeRetorno());
+                throw new GlobusPiccoloturException("[ERRO INTEGRAÇÃO]: " + result.getMensagemRetorno());
             }
         } else {
-            throw new GlobusPiccoloturException("[ERRO INTEGRAÇÃO]: Nenhuma informação retornada pelo Globus");
+            throw new GlobusPiccoloturException("[ERRO INTEGRAÇÃO]: Nenhuma informação retornada pelo Globus.");
         }
-    }
-
-    @NotNull
-    private ManutencaoWSTerceirosSoap getSoapRequester() {
-        final ManutencaoWSTerceirosSoap soap = new ManutencaoWSTerceiros().getManutencaoWSTerceirosSoap();
-        final Binding binding = ((BindingProvider) soap).getBinding();
-        final List<Handler> handlerChain = binding.getHandlerChain();
-        handlerChain.add(new SoapHeaderHandler(GlobusPiccoloturAutenticacaoCreator.createCredentials()));
-        binding.setHandlerChain(handlerChain);
-        return soap;
     }
 }
