@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
  */
 @AllArgsConstructor
 public final class SoapRequesterGlobusPiccolotur {
-    @NotNull
+    public static final String SOAP_ACTION_HEADER = "SOAPAction";
     private static final String TAG = SoapRequesterGlobusPiccolotur.class.getSimpleName();
     @NotNull
     private final SoapHandlerGlobusPiccolotur soapHandler;
@@ -29,7 +29,7 @@ public final class SoapRequesterGlobusPiccolotur {
 
         final Request request = new Request.Builder()
                 .url(GlobusPiccoloturConstants.WSDL_LOCATION)
-                .addHeader("SOAPAction", GlobusPiccoloturConstants.METODO_ENVIO_OS_SOAP_ACTION)
+                .addHeader(SOAP_ACTION_HEADER, GlobusPiccoloturConstants.METODO_ENVIO_OS_SOAP_ACTION)
                 .post(RequestBody.create(MediaType.parse("text/xml"), xmlInput))
                 .build();
         final OkHttpClient okHttpClient = OkHttp.provideNetworkDefaultClient();
