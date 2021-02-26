@@ -27,3 +27,6 @@ firebase:
 mailjet:
   api-key: "${mailjet-apikey-public}"
   api-secret-key: "${mailjet-apikey-private}"
+logging:
+  level:
+    root: info
