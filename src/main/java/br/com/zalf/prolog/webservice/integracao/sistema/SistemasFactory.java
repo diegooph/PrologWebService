@@ -4,8 +4,6 @@ import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.RecursoIntegrado;
 import br.com.zalf.prolog.webservice.integracao.api.SistemaApiProLog;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.SistemaAvaCorpAvilan;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.AvaCorpAvilan;
-import br.com.zalf.prolog.webservice.integracao.avacorpavilan.deprecated.requester.AvaCorpAvilanRequesterImpl;
 import br.com.zalf.prolog.webservice.integracao.praxio.SistemaGlobusPiccolotur;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.GlobusPiccoloturRequesterImpl;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap.SoapHandlerGlobusPiccolotur;
@@ -34,13 +32,6 @@ public final class SistemasFactory {
             @NotNull final IntegradorProLog integradorProLog,
             @NotNull final String userToken) {
         switch (sistemaKey) {
-            case AVACORP_AVILAN_OLD:
-                return new AvaCorpAvilan(
-                        new AvaCorpAvilanRequesterImpl(),
-                        sistemaKey,
-                        recursoIntegrado,
-                        integradorProLog,
-                        userToken);
             case AVACORP_AVILAN:
                 return new SistemaAvaCorpAvilan(sistemaKey, recursoIntegrado, integradorProLog, userToken);
             case TRANSPORT_TRANSLECCHI:
