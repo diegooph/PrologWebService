@@ -37,11 +37,6 @@ spring:
       connection-timeout: 30000
       validation-timeout: 30000
 
-logging:
-  level:
-    org:
-      springframework: error
-
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
