@@ -17,6 +17,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOffli
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverMultiplosItensOs;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu;
+import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.ProcessoMovimentacao;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoDao;
@@ -390,6 +391,13 @@ public abstract class Sistema implements OperacoesIntegradas {
                        @NotNull final Long codUnidade,
                        @NotNull final Long codOriginalPneu) throws Throwable {
         getIntegradorProLog().update(pneu, codUnidade, codOriginalPneu);
+    }
+
+    @NotNull
+    @Override
+    public List<Pneu> getPneusByCodUnidadesByStatus(@NotNull final List<Long> codUnidades,
+                                                    @NotNull final StatusPneu status) throws Throwable {
+        return getIntegradorProLog().getPneusByCodUnidadesByStatus(codUnidades, status);
     }
 
     // #################################################################################################################

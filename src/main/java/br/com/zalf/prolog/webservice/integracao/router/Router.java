@@ -19,6 +19,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOffli
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverMultiplosItensOs;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu;
+import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.ProcessoMovimentacao;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoDao;
@@ -564,6 +565,17 @@ public abstract class Router implements OperacoesIntegradas {
             getSistema().update(pneu, codUnidade, codOriginalPneu);
         } else {
             integradorProLog.update(pneu, codUnidade, codOriginalPneu);
+        }
+    }
+
+    @NotNull
+    @Override
+    public List<Pneu> getPneusByCodUnidadesByStatus(@NotNull final List<Long> codUnidades,
+                                                    @NotNull final StatusPneu status) throws Throwable {
+        if (getSistema() != null) {
+            return getSistema().getPneusByCodUnidadesByStatus(codUnidades, status);
+        } else {
+            return integradorProLog.getPneusByCodUnidadesByStatus(codUnidades, status);
         }
     }
 

@@ -5,6 +5,8 @@ import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.customfields.CampoPersonalizadoDao;
 import br.com.zalf.prolog.webservice.database.DatabaseConnectionProvider;
+import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu;
+import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.ProcessoMovimentacao;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoDao;
@@ -242,6 +244,14 @@ public class SistemaWebFinatto extends Sistema {
     public Veiculo getVeiculoByPlaca(@NotNull final String placa, final boolean withPneus) throws Exception {
         Log.d(TAG, "passando pela integração");
         return super.getVeiculoByPlaca(placa, withPneus);
+    }
+
+    @Override
+    @NotNull
+    public List<Pneu> getPneusByCodUnidadesByStatus(@NotNull final List<Long> codUnidades,
+                                                    @NotNull final StatusPneu status) throws Throwable {
+        Log.d(TAG, "passando pela integração");
+        return super.getPneusByCodUnidadesByStatus(codUnidades, status);
     }
 
     @Override

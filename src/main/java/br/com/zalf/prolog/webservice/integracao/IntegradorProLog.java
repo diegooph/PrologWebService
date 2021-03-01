@@ -25,6 +25,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resoluca
 import br.com.zalf.prolog.webservice.frota.pneu.PneuDao;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Restricao;
+import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.MovimentacaoDao;
@@ -649,6 +650,16 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
             pneuDao = Injection.providePneuDao();
         }
         pneuDao.update(pneu, codUnidade, codOriginalPneu);
+    }
+
+    @NotNull
+    @Override
+    public List<Pneu> getPneusByCodUnidadesByStatus(@NotNull final List<Long> codUnidades,
+                                                    @NotNull final StatusPneu status) throws Throwable {
+        if (pneuDao == null) {
+            pneuDao = Injection.providePneuDao();
+        }
+        return pneuDao.getPneusByCodUnidadesByStatus(codUnidades, status);
     }
 
     @NotNull
