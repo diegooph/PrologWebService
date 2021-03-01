@@ -205,7 +205,9 @@ public class SistemaWebFinattoConverter {
     private static VeiculoListagem createVeiculoListagem(@NotNull final UnidadeDePara unidadeDePara,
                                                          @NotNull final TipoVeiculoConfigAfericao tipoVeiculoConfigAfericao,
                                                          @NotNull final VeiculoWebFinatto veiculo) {
-        return new VeiculoListagem(Long.valueOf(veiculo.getCodVeiculo()),
+        final Long codVeiculo = WebFinattoEncoderDecoder.generateCodVeiculo(unidadeDePara.getCodUnidadeProlog(),
+                                                                            Long.valueOf(veiculo.getCodVeiculo()));
+        return new VeiculoListagem(codVeiculo,
                                    veiculo.getPlacaVeiculo(),
                                    unidadeDePara.getCodRegionalProlog(),
                                    unidadeDePara.getNomeRegionalProlog(),
