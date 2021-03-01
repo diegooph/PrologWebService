@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.integracao.integrador._model;
 import br.com.zalf.prolog.webservice.integracao.webfinatto.utils.SistemaWebFinattoConstants;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,5 +35,15 @@ public final class UnidadeDeParaHolder {
                 .map(UnidadeDePara::getCodUnidadeProlog)
                 .distinct()
                 .collect(Collectors.toList());
+    }
+
+    @Nullable
+    public UnidadeDePara getByCodAuxiliar(@NotNull final String codEmpresaFilialVeiculo) {
+        return unidadesDePara
+                .stream()
+                .filter(unidadeDePara ->
+                                unidadeDePara.getCodAuxiliarUnidade().equalsIgnoreCase(codEmpresaFilialVeiculo))
+                .findAny()
+                .orElse(null);
     }
 }
