@@ -2,7 +2,6 @@ package test.br.com.zalf.prolog.webservice.pilares.geral.unidade;
 
 import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeVisualizacaoListagemDto;
 import lombok.var;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.ParameterizedTypeReference;
@@ -17,7 +16,6 @@ public class UnidadeIT extends IntegrationTest {
 
     @Test
     @DisplayName("Busca uma unidade através de um código.")
-    @Disabled
     void givenCodUnidadeToRequest_ThenReturnUnidadeVisualizacaoListagemAndStatusOK() {
         final Long codUnidade = 5L;
         final String path = createPathWithPort("unidades/" + codUnidade);
