@@ -347,7 +347,8 @@ public final class SistemaProtheusNepomuceno extends Sistema {
 
             // Deixamos para inserir a aferição no Prolog logo antes de enviar para o Protheus. Assim garantimos que
             // só teremos um rollback caso tenhamos erro no Protheus.
-            final Long codAfericaoInserida = sistema.insert(conn, codUnidade, codAuxiliarUnidade, afericao);
+            final Long codAfericaoInserida =
+                    integracaoDao.insertAfericao(conn, codUnidade, codAuxiliarUnidade, afericao);
 
             if (afericao instanceof AfericaoPlaca) {
                 final ApiAutenticacaoHolder apiAutenticacaoHolder =

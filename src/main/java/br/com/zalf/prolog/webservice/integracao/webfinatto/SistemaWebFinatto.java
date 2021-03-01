@@ -206,11 +206,8 @@ public class SistemaWebFinatto extends Sistema {
             final ZoneId zoneIdForCodUnidade = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn);
             final UnidadeDeParaHolder unidadeDeParaHolder =
                     integracaoDao.getCodAuxiliarByCodUnidadeProlog(conn, Collections.singletonList(codUnidade));
-
-            final Long codAfericaoInserida = sistema.insert(conn,
-                                                            codUnidade,
-                                                            unidadeDeParaHolder.getCodFiliais(),
-                                                            afericao);
+            final Long codAfericaoInserida =
+                    integracaoDao.insertAfericao(conn, codUnidade, unidadeDeParaHolder.getCodFiliais(), afericao);
             if (afericao instanceof AfericaoPlaca) {
                 internalInsertAfericaoPlaca(conn, unidadeDeParaHolder, zoneIdForCodUnidade, (AfericaoPlaca) afericao);
             } else {

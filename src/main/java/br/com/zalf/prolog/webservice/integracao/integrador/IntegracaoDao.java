@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.integrador;
 
+import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.Afericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.ConfiguracaoNovaAfericaoAvulsa;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.ConfiguracaoNovaAfericaoPlaca;
 import br.com.zalf.prolog.webservice.integracao.MetodoIntegrado;
@@ -109,6 +110,12 @@ public interface IntegracaoDao {
                                                    @NotNull final Long codEmpresa,
                                                    @NotNull final SistemaKey sistemaKey,
                                                    @NotNull final MetodoIntegrado metodoIntegrado) throws Throwable;
+
+    @NotNull
+    Long insertAfericao(@NotNull final Connection conn,
+                        @NotNull final Long codUnidade,
+                        @NotNull final String codAuxiliarUnidade,
+                        @NotNull final Afericao afericao) throws Throwable;
 
     @NotNull
     List<Long> getCodUnidadesIntegracaoBloqueada(@NotNull final String userToken,
