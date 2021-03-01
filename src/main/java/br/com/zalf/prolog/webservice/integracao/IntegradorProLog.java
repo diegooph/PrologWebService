@@ -1,8 +1,8 @@
 package br.com.zalf.prolog.webservice.integracao;
 
 import br.com.zalf.prolog.webservice.Injection;
-import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.autenticacao.token.TokenCleaner;
+import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.customfields.CampoPersonalizadoDao;
 import br.com.zalf.prolog.webservice.customfields._model.CampoPersonalizadoParaRealizacao;
 import br.com.zalf.prolog.webservice.frota.checklist.ChecklistDao;
@@ -46,6 +46,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.VeiculoTransfer
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.ProcessoTransferenciaVeiculoRealizacao;
 import br.com.zalf.prolog.webservice.gente.colaborador.ColaboradorDao;
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
+import br.com.zalf.prolog.webservice.integracao.integrador.IntegracaoDao;
 import br.com.zalf.prolog.webservice.integracao.operacoes.OperacoesIntegradas;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.ApiAutenticacaoHolder;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;

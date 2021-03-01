@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.webfinatto._model;
 
+import br.com.zalf.prolog.webservice.integracao.webfinatto.utils.SistemaWebFinattoConstants;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -34,6 +35,19 @@ public class VeiculoWebFinatto {
     private final Integer qtdPneusAplicadosVeiculo;
     @Nullable
     private final List<PneuWebFinatto> pneusAplicados;
+
+    @NotNull
+    public String getCodEmpresaFilialVeiculo() {
+        return codEmpresaVeiculo.concat(SistemaWebFinattoConstants.SEPARADOR_EMPRESA_FILIAL).concat(codFilialVeiculo);
+    }
+
+    @NotNull
+    public List<PneuWebFinatto> getPneusAplicados() {
+        if (pneusAplicados == null) {
+            throw new IllegalStateException("A lista de pneus não pode ser nula para esse cenário.");
+        }
+        return pneusAplicados;
+    }
 
     @NotNull
     public Integer getQtdPneusAplicadosVeiculo() {

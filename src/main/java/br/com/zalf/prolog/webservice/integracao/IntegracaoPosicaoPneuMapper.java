@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.utils;
+package br.com.zalf.prolog.webservice.integracao;
 
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
@@ -12,7 +12,9 @@ import java.util.Map;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 @Data
-public final class ProtheusNepomucenoPosicaoPneuMapper {
+public final class IntegracaoPosicaoPneuMapper {
+    @NotNull
+    private static final String ESTRUTURA_POSICAO_SEPARATOR = "::";
     @NotNull
     private final String codEstruturaVeiculo;
     @NotNull
@@ -21,6 +23,8 @@ public final class ProtheusNepomucenoPosicaoPneuMapper {
     @Nullable
     public Integer mapPosicaoToProlog(@NotNull final String posicao) {
         final String keyEstruturaPosicao = getKeyEstruturaPosicao(posicao.trim());
+        // Algumas posições podem ser mapeadas de forma específica para algumas estruturas de veículos. Se existir,
+        // priorizamos estas, caso contrário, usamos o mapeamento genérico.
         if (posicoesPneuMapper.containsKey(keyEstruturaPosicao)) {
             return posicoesPneuMapper.get(keyEstruturaPosicao);
         }
@@ -29,6 +33,6 @@ public final class ProtheusNepomucenoPosicaoPneuMapper {
 
     @NotNull
     private String getKeyEstruturaPosicao(@NotNull final String posicao) {
-        return codEstruturaVeiculo.concat("::").concat(posicao.trim());
+        return codEstruturaVeiculo.concat(ESTRUTURA_POSICAO_SEPARATOR).concat(posicao.trim());
     }
 }

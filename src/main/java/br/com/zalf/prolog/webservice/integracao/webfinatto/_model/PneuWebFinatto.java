@@ -67,4 +67,16 @@ public class PneuWebFinatto {
     @Nullable
     private final Integer qtdSulcosModeloBanda;
     private final boolean isPneuEstepe;
+
+    public boolean isRecapado() {
+        return vidaAtualPneu > 1;
+    }
+
+    @NotNull
+    public String getPosicaoAplicado() {
+        if (posicaoAplicado == null) {
+            throw new IllegalStateException("A posição do pneu não pode ser nula para esse cenário.");
+        }
+        return posicaoAplicado;
+    }
 }

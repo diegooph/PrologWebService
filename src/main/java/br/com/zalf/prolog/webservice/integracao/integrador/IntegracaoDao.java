@@ -1,8 +1,14 @@
-package br.com.zalf.prolog.webservice.integracao;
+package br.com.zalf.prolog.webservice.integracao.integrador;
 
+import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.Afericao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.ConfiguracaoNovaAfericaoAvulsa;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.ConfiguracaoNovaAfericaoPlaca;
+import br.com.zalf.prolog.webservice.integracao.MetodoIntegrado;
+import br.com.zalf.prolog.webservice.integracao.RecursoIntegrado;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.IntegracaoOsFilter;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.ModelosChecklistBloqueados;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan._model.OsIntegracao;
+import br.com.zalf.prolog.webservice.integracao.integrador._model.*;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.ApiAutenticacaoHolder;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
 import org.jetbrains.annotations.NotNull;
@@ -10,6 +16,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.sql.Connection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * DAO que conterá todos os métodos necessários para que as integrações funcionem.
@@ -49,6 +56,51 @@ public interface IntegracaoDao {
                                             @NotNull final Long codUnidadeProlog) throws Throwable;
 
     @NotNull
+    UnidadeDeParaHolder getCodAuxiliarByCodUnidadeProlog(@NotNull final Connection conn,
+                                                         @NotNull final List<Long> codUnidades) throws Throwable;
+
+    @NotNull
+    UnidadeRestricaoHolder getUnidadeRestricaoHolder(@NotNull final Connection conn,
+                                                     @NotNull final List<Long> codUnidades) throws Throwable;
+
+    @NotNull
+    TipoVeiculoConfigAfericaoHolder getTipoVeiculoConfigAfericaoHolder(
+            @NotNull final Connection conn,
+            @NotNull final List<Long> codUnidades) throws Throwable;
+
+    @NotNull
+    AfericaoRealizadaPlacaHolder getAfericaoRealizadaPlacaHolder(@NotNull final Connection conn,
+                                                                 @NotNull final Long codEmpresa,
+                                                                 @NotNull final List<String> placas) throws Throwable;
+
+    @NotNull
+    AfericaoRealizadaAvulsaHolder getAfericaoRealizadaAvulsaHolder(
+            @NotNull final Connection conn,
+            @NotNull final Long codUnidade,
+            @NotNull final List<String> codPneus) throws Throwable;
+
+    @NotNull
+    ConfiguracaoNovaAfericaoPlaca getConfigNovaAfericaoPlaca(
+            @NotNull final Connection conn,
+            @NotNull final Long codUnidade,
+            @NotNull final String codEstruturaVeiculo) throws Throwable;
+
+    @NotNull
+    ConfiguracaoNovaAfericaoAvulsa getConfigNovaAfericaoAvulsa(@NotNull final Connection conn,
+                                                               @NotNull final Long codUnidade) throws Throwable;
+
+    @NotNull
+    Short getCodDiagramaByDeParaTipoVeiculo(@NotNull final Connection conn,
+                                            @NotNull final Long codEmpresa,
+                                            @NotNull final String codEstruturaVeiculo) throws Throwable;
+
+    @NotNull
+    Map<String, Integer> getMapeamentoPosicoesPrologByDeParaTipoVeiculo(
+            @NotNull final Connection conn,
+            @NotNull final Long codEmpresa,
+            @NotNull final String codEstruturaVeiculo) throws Throwable;
+
+    @NotNull
     ApiAutenticacaoHolder getApiAutenticacaoHolder(@NotNull final Long codEmpresa,
                                                    @NotNull final SistemaKey sistemaKey,
                                                    @NotNull final MetodoIntegrado metodoIntegrado) throws Throwable;
@@ -58,6 +110,12 @@ public interface IntegracaoDao {
                                                    @NotNull final Long codEmpresa,
                                                    @NotNull final SistemaKey sistemaKey,
                                                    @NotNull final MetodoIntegrado metodoIntegrado) throws Throwable;
+
+    @NotNull
+    Long insertAfericao(@NotNull final Connection conn,
+                        @NotNull final Long codUnidade,
+                        @NotNull final String codAuxiliarUnidade,
+                        @NotNull final Afericao afericao) throws Throwable;
 
     @NotNull
     List<Long> getCodUnidadesIntegracaoBloqueada(@NotNull final String userToken,

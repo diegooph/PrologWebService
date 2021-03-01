@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.router;
 
-import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.autenticacao.token.TokenCleaner;
+import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.customfields.CampoPersonalizadoDao;
 import br.com.zalf.prolog.webservice.customfields._model.CampoPersonalizadoParaRealizacao;
 import br.com.zalf.prolog.webservice.frota.checklist.ChecklistResource;
@@ -31,9 +31,9 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.VeiculoCadastro;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.InfosVeiculoEditado;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicao;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.ProcessoTransferenciaVeiculoRealizacao;
-import br.com.zalf.prolog.webservice.integracao.IntegracaoDao;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.RecursoIntegrado;
+import br.com.zalf.prolog.webservice.integracao.integrador.IntegracaoDao;
 import br.com.zalf.prolog.webservice.integracao.operacoes.OperacoesIntegradas;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;

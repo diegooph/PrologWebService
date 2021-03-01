@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.utils;
 
+import br.com.zalf.prolog.webservice.integracao.IntegracaoPosicaoPneuMapper;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.error.ProtheusNepomucenoException;
 import org.jetbrains.annotations.NotNull;
 
@@ -38,7 +39,7 @@ public final class ProtheusNepomucenoUtils {
     public static void validatePosicoesMapeadasVeiculo(
             @NotNull final String codEstruturaVeiculo,
             @NotNull final List<String> posicoesPneusAplicados,
-            @NotNull final ProtheusNepomucenoPosicaoPneuMapper posicaoPneuMapper) {
+            @NotNull final IntegracaoPosicaoPneuMapper posicaoPneuMapper) {
         final List<String> posicaoNaoMapeadas =
                 posicoesPneusAplicados
                         .stream()
@@ -46,9 +47,10 @@ public final class ProtheusNepomucenoUtils {
                         .collect(Collectors.toList());
 
         if (!posicaoNaoMapeadas.isEmpty()) {
-            throw new ProtheusNepomucenoException("As posições " + posicaoNaoMapeadas + " não estão mapeadas para a " +
-                    "estrutura " + codEstruturaVeiculo + ".\n" +
-                    "Realize as configurações necessárias na tela Pneus -> Nomenclaturas.");
+            throw new ProtheusNepomucenoException(
+                    "As posições " + posicaoNaoMapeadas + " não estão mapeadas para a " +
+                            "estrutura " + codEstruturaVeiculo + ".\n" +
+                            "Realize as configurações necessárias na tela Pneus -> Nomenclaturas.");
         }
 
         final List<Integer> posicoesMapeadas =
