@@ -7,12 +7,8 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.test.context.support.TestPropertySourceUtils;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.images.builder.ImageFromDockerfile;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
-
-import java.io.File;
-import java.nio.file.Path;
 
 /**
  * Created on 2021-02-24
@@ -25,7 +21,7 @@ public class TestContainer {
     private static final String TEST_DB_NAME = "prolog_test";
     private static final String TEST_USERNAME = "prolog_user_test";
     private static final String TEST_PASSWORD = "testaquevai";
-
+    private static final String DOCKER_IMAGE_REPO = "prologapp/postgres-postgis-pg_similarity:latest";
     @ClassRule
     @NotNull
     private static final JdbcDatabaseContainer<?> JDBC_BASE_CONTAINER =
@@ -36,7 +32,6 @@ public class TestContainer {
             .withPassword(TEST_PASSWORD);
 
     static {
-        generateDockerFileImage();
         JDBC_BASE_CONTAINER.start();
     }
 
@@ -47,19 +42,8 @@ public class TestContainer {
 
     @NotNull
     private static DockerImageName getDockerImageName() {
-        return DockerImageName.parse("prolog-test-image:latest")
+        return DockerImageName.parse(DOCKER_IMAGE_REPO)
                 .asCompatibleSubstituteFor("postgres");
-    }
-
-    private static void generateDockerFileImage() {
-       new ImageFromDockerfile("prolog-test-image", false)
-                .withDockerfile(getDockerfilePath())
-               .get();
-    }
-
-    @NotNull
-    private static Path getDockerfilePath() {
-        return new File("./Dockerfile").toPath();
     }
 
     static class DockerPostgresDatasourceInitializer
