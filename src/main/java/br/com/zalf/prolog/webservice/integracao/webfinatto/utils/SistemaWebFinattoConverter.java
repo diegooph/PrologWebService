@@ -7,6 +7,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.listagem.VeiculoListagem;
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoPosicaoPneuMapper;
 import br.com.zalf.prolog.webservice.integracao.integrador._model.*;
@@ -143,6 +144,27 @@ public class SistemaWebFinattoConverter {
     }
 
     @NotNull
+    public static List<VeiculoListagem> createVeiculosListagem(
+            @NotNull final UnidadeDeParaHolder unidadeDeParaHolder,
+            @NotNull final TipoVeiculoConfigAfericaoHolder tipoVeiculoConfigAfericaoHolder,
+            @NotNull final List<VeiculoWebFinatto> veiculosByFiliais) {
+        final List<VeiculoListagem> veiculosListagem = new ArrayList<>();
+        for (final VeiculoWebFinatto veiculo : veiculosByFiliais) {
+            final UnidadeDePara unidadeDePara =
+                    unidadeDeParaHolder.getByCodAuxiliar(veiculo.getCodEmpresaFilialVeiculo());
+            if (unidadeDePara == null) {
+                throw new IllegalStateException("Nenhum código de unidade mapeado para o código auxiliar:" +
+                                                        "\ncodAuxiliar: " + veiculo.getCodEmpresaFilialVeiculo());
+            }
+            final TipoVeiculoConfigAfericao tipoVeiculoConfigAfericao =
+                    tipoVeiculoConfigAfericaoHolder.get(veiculo.getCodEmpresaFilialVeiculo(),
+                                                        veiculo.getCodEstruturaVeiculo());
+            veiculosListagem.add(createVeiculoListagem(unidadeDePara, tipoVeiculoConfigAfericao, veiculo));
+        }
+        return veiculosListagem;
+    }
+
+    @NotNull
     public static AfericaoPlacaWebFinatto createAfericaoPlaca(@NotNull final UnidadeDeParaHolder unidadeDeParaHolder,
                                                               @NotNull final ZoneId zoneId,
                                                               @NotNull final AfericaoPlaca afericaoPlaca) {
@@ -177,6 +199,35 @@ public class SistemaWebFinattoConverter {
                 afericaoAvulsa.getTipoMedicaoColetadaAfericao().asString(),
                 Collections.singletonList(createMedicaoAfericao(afericaoAvulsa.getPneuAferido(),
                                                                 afericaoAvulsa.getTipoMedicaoColetadaAfericao())));
+    }
+
+    @NotNull
+    private static VeiculoListagem createVeiculoListagem(@NotNull final UnidadeDePara unidadeDePara,
+                                                         @NotNull final TipoVeiculoConfigAfericao tipoVeiculoConfigAfericao,
+                                                         @NotNull final VeiculoWebFinatto veiculo) {
+        return new VeiculoListagem(Long.valueOf(veiculo.getCodVeiculo()),
+                                   veiculo.getPlacaVeiculo(),
+                                   unidadeDePara.getCodRegionalProlog(),
+                                   unidadeDePara.getNomeRegionalProlog(),
+                                   unidadeDePara.getCodUnidadeProlog(),
+                                   unidadeDePara.getNomeUnidadeProlog(),
+                                   veiculo.getKmAtualVeiculo(),
+                                   true,
+                                   tipoVeiculoConfigAfericao.getCodTipoVeiculo(),
+                                   Long.valueOf(veiculo.getCodModeloVeiculo()),
+                                   Long.valueOf(tipoVeiculoConfigAfericao.getCodDiagramaVeiculo()),
+                                   veiculo.getCodigoFrota(),
+                                   veiculo.getNomeModeloVeiculo(),
+                                   tipoVeiculoConfigAfericao.getNomeDiagramaVeiculo(),
+                                   tipoVeiculoConfigAfericao.getQtdEixoDianteiro(),
+                                   tipoVeiculoConfigAfericao.getQtdEixoTraseiro(),
+                                   tipoVeiculoConfigAfericao.getNomeDiagramaVeiculo(),
+                                   veiculo.getNomeMarcaVeiculo(),
+                                   Long.valueOf(veiculo.getCodMarcaVeiculo()),
+                                   true,
+                                   false,
+                                   false,
+                                   null);
     }
 
     @SuppressWarnings("ConstantConditions")
