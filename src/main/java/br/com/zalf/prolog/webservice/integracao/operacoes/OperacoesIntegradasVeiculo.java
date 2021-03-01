@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.VeiculoCadastro;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.InfosVeiculoEditado;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.listagem.VeiculoListagem;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoVisualizacao;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -36,6 +37,9 @@ interface OperacoesIntegradasVeiculo {
     List<VeiculoListagem> getVeiculosByUnidades(@NotNull final List<Long> codUnidades,
                                                 final boolean apenasAtivos,
                                                 @Nullable final Long codTipoVeiculo) throws Throwable;
+
+    @NotNull
+    VeiculoVisualizacao getVeiculoByCodigo(@NotNull final Long codVeiculo) throws Throwable;
 
     @NotNull
     Veiculo getVeiculoByPlaca(@NotNull final String placa, final boolean withPneus) throws Exception;

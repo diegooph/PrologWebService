@@ -12,6 +12,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.ProcessoMovi
 import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.listagem.VeiculoListagem;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoVisualizacao;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoPosicaoPneuMapper;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.MetodoIntegrado;
@@ -235,25 +236,34 @@ public class SistemaWebFinatto extends Sistema {
     public List<VeiculoListagem> getVeiculosByUnidades(@NotNull final List<Long> codUnidades,
                                                        final boolean apenasAtivos,
                                                        @Nullable final Long codTipoVeiculo) throws Throwable {
-        Connection conn = null;
-        final DatabaseConnectionProvider connectionProvider = new DatabaseConnectionProvider();
-        try {
-            conn = connectionProvider.provideDatabaseConnection();
-            final UnidadeDeParaHolder unidadeDeParaHolder =
-                    integracaoDao.getCodAuxiliarByCodUnidadeProlog(conn, codUnidades);
-            final TipoVeiculoConfigAfericaoHolder tipoVeiculoConfigAfericaoHolder =
-                    integracaoDao.getTipoVeiculoConfigAfericaoHolder(conn,
-                                                                     unidadeDeParaHolder.getCodUnidadesMapeadas());
-            final List<VeiculoWebFinatto> veiculosByFiliais =
-                    internalGetVeiculosByFiliais(conn,
-                                                 unidadeDeParaHolder.getCodEmpresaProlog(),
-                                                 unidadeDeParaHolder.getCodFiliais());
-            return SistemaWebFinattoConverter.createVeiculosListagem(unidadeDeParaHolder,
-                                                                     tipoVeiculoConfigAfericaoHolder,
-                                                                     veiculosByFiliais);
-        } finally {
-            connectionProvider.closeResources(conn);
-        }
+        return super.getVeiculosByUnidades(codUnidades, apenasAtivos, codTipoVeiculo);
+        //        Connection conn = null;
+        //        final DatabaseConnectionProvider connectionProvider = new DatabaseConnectionProvider();
+        //        try {
+        //            conn = connectionProvider.provideDatabaseConnection();
+        //            final UnidadeDeParaHolder unidadeDeParaHolder =
+        //                    integracaoDao.getCodAuxiliarByCodUnidadeProlog(conn, codUnidades);
+        //            final TipoVeiculoConfigAfericaoHolder tipoVeiculoConfigAfericaoHolder =
+        //                    integracaoDao.getTipoVeiculoConfigAfericaoHolder(conn,
+        //                                                                     unidadeDeParaHolder
+        //                                                                     .getCodUnidadesMapeadas());
+        //            final List<VeiculoWebFinatto> veiculosByFiliais =
+        //                    internalGetVeiculosByFiliais(conn,
+        //                                                 unidadeDeParaHolder.getCodEmpresaProlog(),
+        //                                                 unidadeDeParaHolder.getCodFiliais());
+        //            return SistemaWebFinattoConverter.createVeiculosListagem(unidadeDeParaHolder,
+        //                                                                     tipoVeiculoConfigAfericaoHolder,
+        //                                                                     veiculosByFiliais);
+        //        } finally {
+        //            connectionProvider.closeResources(conn);
+        //        }
+    }
+
+    @Override
+    @NotNull
+    public VeiculoVisualizacao getVeiculoByCodigo(@NotNull final Long codVeiculo) throws Throwable {
+        Log.d(TAG, "passando pela integração");
+        return super.getVeiculoByCodigo(codVeiculo);
     }
 
     @Override

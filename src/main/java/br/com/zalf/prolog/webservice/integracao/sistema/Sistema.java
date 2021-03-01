@@ -30,6 +30,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.VeiculoCadastro;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.InfosVeiculoEditado;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.listagem.VeiculoListagem;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoVisualizacao;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.ProcessoTransferenciaVeiculoRealizacao;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.RecursoIntegrado;
@@ -345,6 +346,12 @@ public abstract class Sistema implements OperacoesIntegradas {
                                                        final boolean apenasAtivos,
                                                        @Nullable final Long codTipoVeiculo) throws Throwable {
         return getIntegradorProLog().getVeiculosByUnidades(codUnidades, apenasAtivos, codTipoVeiculo);
+    }
+
+    @NotNull
+    @Override
+    public VeiculoVisualizacao getVeiculoByCodigo(@NotNull final Long codVeiculo) throws Throwable {
+        return getIntegradorProLog().getVeiculoByCodigo(codVeiculo);
     }
 
     @NotNull
