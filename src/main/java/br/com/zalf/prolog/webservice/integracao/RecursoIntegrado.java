@@ -21,18 +21,14 @@ public enum RecursoIntegrado {
     AFERICAO_SERVICO("AFERICAO_SERVICO"),
     PNEUS("PNEUS"),
     MOVIMENTACAO("MOVIMENTACAO"),
-    PNEU_TRANSFERENCIA("PNEU_TRANSFERENCIA");
+    PNEU_TRANSFERENCIA("PNEU_TRANSFERENCIA"),
+    EMPRESA("EMPRESA");
 
     @NotNull
     private final String key;
 
     RecursoIntegrado(@NotNull final String key) {
         this.key = key;
-    }
-
-    @NotNull
-    public String getKey() {
-        return key;
     }
 
     @NotNull
@@ -48,5 +44,10 @@ public enum RecursoIntegrado {
         }
 
         throw new IllegalArgumentException("Nenhum recurso integrado encontrado com a chave: " + key);
+    }
+
+    @NotNull
+    public String getKey() {
+        return key;
     }
 }

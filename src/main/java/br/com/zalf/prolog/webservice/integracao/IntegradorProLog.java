@@ -49,6 +49,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.VeiculoTransfer
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.ProcessoTransferenciaVeiculoRealizacao;
 import br.com.zalf.prolog.webservice.gente.colaborador.ColaboradorDao;
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
+import br.com.zalf.prolog.webservice.gente.empresa.EmpresaDao;
 import br.com.zalf.prolog.webservice.integracao.integrador.IntegracaoDao;
 import br.com.zalf.prolog.webservice.integracao.operacoes.OperacoesIntegradas;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.ApiAutenticacaoHolder;
@@ -86,6 +87,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
     private VeiculoDao veiculoDao;
     private AfericaoDao afericaoDao;
     private ColaboradorDao colaboradorDao;
+    private final EmpresaDao empresaDao;
     private IntegracaoDao integracaoDao;
 
     private IntegradorProLog(@NotNull final String userToken,
@@ -102,6 +104,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
                              final ServicoDao afericaoServicoDao,
                              final MovimentacaoDao movimentacaoDao,
                              final ColaboradorDao colaboradorDao,
+                             final EmpresaDao empresaDao,
                              final IntegracaoDao integracaoDao) {
         this.userToken = TokenCleaner.getOnlyToken(userToken);
         this.veiculoDao = veiculoDao;
@@ -117,6 +120,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         this.afericaoServicoDao = afericaoServicoDao;
         this.movimentacaoDao = movimentacaoDao;
         this.colaboradorDao = colaboradorDao;
+        this.empresaDao = empresaDao;
         this.integracaoDao = integracaoDao;
     }
 
@@ -137,6 +141,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
                 Injection.provideServicoDao(),
                 Injection.provideMovimentacaoDao(),
                 Injection.provideColaboradorDao(),
+                Injection.provideEmpresaDao(),
                 Injection.provideIntegracaoDao());
     }
 
@@ -762,6 +767,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         private ServicoDao afericaoServicoDao;
         private MovimentacaoDao movimentacaoDao;
         private ColaboradorDao colaboradorDao;
+        private EmpresaDao empresaDao;
         private IntegracaoDao integracaoDao;
 
         public Builder(@NotNull final String userToken) {
@@ -833,6 +839,11 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
             return this;
         }
 
+        public Builder withEmpresaDao(final EmpresaDao empresaDao) {
+            this.empresaDao = empresaDao;
+            return this;
+        }
+
         public Builder withIntegracaoDao(final IntegracaoDao integracaoDao) {
             this.integracaoDao = integracaoDao;
             return this;
@@ -854,6 +865,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
                     afericaoServicoDao,
                     movimentacaoDao,
                     colaboradorDao,
+                    empresaDao,
                     integracaoDao);
         }
     }
