@@ -34,6 +34,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.listagem.VeiculoListagem;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoVisualizacao;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.ProcessoTransferenciaVeiculoRealizacao;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Empresa;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.RecursoIntegrado;
 import br.com.zalf.prolog.webservice.integracao.integrador.IntegracaoDao;
@@ -703,6 +704,21 @@ public abstract class Router implements OperacoesIntegradas {
             getSistema().updateTipoVeiculo(tipoVeiculo);
         } else {
             integradorProLog.updateTipoVeiculo(tipoVeiculo);
+        }
+    }
+
+    // #################################################################################################################
+    // #################################################################################################################
+    // ###################################### OPERAÇÕES INTEGRADAS - EMPRESA ###########################################
+    // #################################################################################################################
+    // #################################################################################################################
+    @NotNull
+    @Override
+    public List<Empresa> getFiltros(@NotNull final Long cpf) throws Throwable {
+        if (getSistema() != null) {
+            return getSistema().getFiltros(cpf);
+        } else {
+            return integradorProLog.getFiltros(cpf);
         }
     }
 

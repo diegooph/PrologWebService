@@ -49,6 +49,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.VeiculoTransfer
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.ProcessoTransferenciaVeiculoRealizacao;
 import br.com.zalf.prolog.webservice.gente.colaborador.ColaboradorDao;
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Empresa;
 import br.com.zalf.prolog.webservice.gente.empresa.EmpresaDao;
 import br.com.zalf.prolog.webservice.integracao.integrador.IntegracaoDao;
 import br.com.zalf.prolog.webservice.integracao.operacoes.OperacoesIntegradas;
@@ -87,7 +88,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
     private VeiculoDao veiculoDao;
     private AfericaoDao afericaoDao;
     private ColaboradorDao colaboradorDao;
-    private final EmpresaDao empresaDao;
+    private EmpresaDao empresaDao;
     private IntegracaoDao integracaoDao;
 
     private IntegradorProLog(@NotNull final String userToken,
@@ -750,6 +751,15 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
             tipoVeiculoDao = Injection.provideTipoVeiculoDao();
         }
         tipoVeiculoDao.updateTipoVeiculo(tipoVeiculo);
+    }
+
+    @NotNull
+    @Override
+    public List<Empresa> getFiltros(@NotNull final Long cpf) throws Throwable {
+        if (empresaDao == null) {
+            empresaDao = Injection.provideEmpresaDao();
+        }
+        return empresaDao.getFiltros(cpf);
     }
 
     public static final class Builder {

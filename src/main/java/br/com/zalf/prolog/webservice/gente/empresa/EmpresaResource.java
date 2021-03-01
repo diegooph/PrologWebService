@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Platform;
+import br.com.zalf.prolog.webservice.commons.network.metadata.Required;
 import br.com.zalf.prolog.webservice.commons.network.metadata.UsedBy;
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Cargo;
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Empresa;
@@ -41,7 +42,9 @@ public class EmpresaResource {
     @PUT
     @Path("/unidades/{codUnidade}/equipes/{codEquipe}")
     @Secured(permissions = Pilares.Gente.Equipe.EDITAR)
-    public Response updateEquipe(@PathParam("codUnidade") final Long codUnidade, @PathParam("codEquipe") final Long codEquipe, final Equipe equipe) {
+    public Response updateEquipe(@PathParam("codUnidade") final Long codUnidade,
+                                 @PathParam("codEquipe") final Long codEquipe,
+                                 final Equipe equipe) {
         if (service.updateEquipe(codUnidade, codEquipe, equipe)) {
             return Response.ok("Equipe editada com sucesso");
         } else {
@@ -58,7 +61,8 @@ public class EmpresaResource {
             Pilares.Gente.Colaborador.CADASTRAR,
             Pilares.Gente.Colaborador.EDITAR})
     @Path("/unidades/{codUnidade}/equipes/{codEquipe}")
-    public Equipe getEquipe(@PathParam("codUnidade") final Long codUnidade, @PathParam("codEquipe") final Long codEquipe) {
+    public Equipe getEquipe(@PathParam("codUnidade") final Long codUnidade,
+                            @PathParam("codEquipe") final Long codEquipe) {
         return service.getEquipe(codUnidade, codEquipe);
     }
 
@@ -127,7 +131,8 @@ public class EmpresaResource {
     }
 
     @POST
-    @Secured(permissions = {Pilares.Gente.Colaborador.CADASTRAR, Pilares.Gente.Colaborador.EDITAR, Pilares.Gente.Permissao.VINCULAR_CARGO})
+    @Secured(permissions = {Pilares.Gente.Colaborador.CADASTRAR, Pilares.Gente.Colaborador.EDITAR,
+            Pilares.Gente.Permissao.VINCULAR_CARGO})
     @Path("/unidades/{codUnidade}/cargos/{codCargo}/visao")
     public Response alterarVisaoCargo(final Visao visao,
                                       @PathParam("codUnidade") final Long codUnidade,
@@ -162,9 +167,9 @@ public class EmpresaResource {
     @GET
     @Secured
     @Path("/filtros/{cpf}")
-    public List<Empresa> getFiltros(
-            @PathParam("cpf") final Long cpf) {
-        return service.getFiltros(cpf);
+    public List<Empresa> getFiltros(@HeaderParam("Authorization") @Required final String userToken,
+                                    @PathParam("cpf") final Long cpf) {
+        return service.getFiltros(userToken, cpf);
     }
 
     @POST

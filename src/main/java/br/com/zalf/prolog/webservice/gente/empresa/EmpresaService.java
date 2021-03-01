@@ -1,15 +1,18 @@
 package br.com.zalf.prolog.webservice.gente.empresa;
 
 import br.com.zalf.prolog.webservice.Injection;
-import br.com.zalf.prolog.webservice.gente.colaborador.model.Cargo;
-import br.com.zalf.prolog.webservice.gente.colaborador.model.Empresa;
-import br.com.zalf.prolog.webservice.gente.colaborador.model.Equipe;
-import br.com.zalf.prolog.webservice.gente.colaborador.model.Setor;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Cargo;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Empresa;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Equipe;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Setor;
+import br.com.zalf.prolog.webservice.integracao.router.RouterEmpresa;
 import br.com.zalf.prolog.webservice.permissao.Visao;
+import org.jetbrains.annotations.NotNull;
 
 import javax.ws.rs.core.NoContentException;
 import java.sql.SQLException;
@@ -21,134 +24,147 @@ import java.util.List;
  */
 public class EmpresaService {
 
-    private final EmpresaDao dao = Injection.provideEmpresaDao();
     private static final String TAG = EmpresaService.class.getSimpleName();
+    private final EmpresaDao dao = Injection.provideEmpresaDao();
 
-    public AbstractResponse insertEquipe(Long codUnidade, Equipe equipe) {
+    public AbstractResponse insertEquipe(final Long codUnidade, final Equipe equipe) {
         try {
             return dao.insertEquipe(codUnidade, equipe);
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             Log.e(TAG, "Erro ao inserir a equipe", e);
             return Response.error("Erro ao inserir a equipe");
         }
     }
 
-    public Equipe getEquipe(Long codUnidade, Long codEquipe) {
+    public Equipe getEquipe(final Long codUnidade, final Long codEquipe) {
         try {
             return dao.getEquipe(codUnidade, codEquipe);
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar a equipe. \n" +
-                    "Código: %d \n" +
-                    "Unidade: %d", codEquipe, codUnidade), e);
+                                             "Código: %d \n" +
+                                             "Unidade: %d", codEquipe, codUnidade), e);
             return null;
         }
     }
 
-    public boolean updateEquipe(Long codUnidade, Long codEquipe, Equipe equipe) {
+    public boolean updateEquipe(final Long codUnidade, final Long codEquipe, final Equipe equipe) {
         try {
             return dao.updateEquipe(codUnidade, codEquipe, equipe);
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             Log.e(TAG, String.format("Erro ao atualizar a equipe. \n" +
-                    "Código: %d \n" +
-                    "Unidade: %d", codEquipe, codUnidade), e);
+                                             "Código: %d \n" +
+                                             "Unidade: %d", codEquipe, codUnidade), e);
             return false;
         }
     }
 
-    public AbstractResponse insertSetor(Long codUnidade, Setor setor) {
+    public AbstractResponse insertSetor(final Long codUnidade, final Setor setor) {
         try {
             return dao.insertSetor(codUnidade, setor);
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             Log.e(TAG, String.format("Erro ao inserir o setor na unidade %d", codUnidade), e);
             return Response.error("Erro ao inserir o setor");
         }
     }
 
-    public boolean updateSetor(Long codUnidade, Long codSetor, Setor setor) {
+    public boolean updateSetor(final Long codUnidade, final Long codSetor, final Setor setor) {
         try {
             return dao.updateSetor(codUnidade, codSetor, setor);
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             Log.e(TAG, String.format("Erro ao atualizar o setor %d da unidade %d", codSetor, codUnidade), e);
             return false;
         }
     }
 
-    public Setor getSetor(Long codUnidade, Long codSetor) {
+    public Setor getSetor(final Long codUnidade, final Long codSetor) {
         try {
             return dao.getSetor(codUnidade, codSetor);
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar o setor %d da unidade %d", codSetor, codUnidade), e);
             return null;
         }
     }
 
-    public List<Equipe> getEquipesByCodUnidade(Long codUnidade) {
+    public List<Equipe> getEquipesByCodUnidade(final Long codUnidade) {
         try {
             return dao.getEquipesByCodUnidade(codUnidade);
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar as equipes da unidade %d", codUnidade), e);
             return null;
         }
     }
 
-    public Cargo getCargoByCodEmpresa(Long codEmpresa, Long codCargo) {
+    public Cargo getCargoByCodEmpresa(final Long codEmpresa, final Long codCargo) {
         try {
             return dao.getCargo(codEmpresa, codCargo);
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar o cargo %d da empresa %d", codCargo, codEmpresa), e);
             return null;
         }
     }
 
-    public Visao getVisaoCargo(Long codUnidade, Long codCargo) {
+    public Visao getVisaoCargo(final Long codUnidade, final Long codCargo) {
         try {
             return dao.getVisaoCargo(codUnidade, codCargo);
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar a visão do cargo %d da unidade %d", codCargo, codUnidade), e);
             return null;
         }
     }
 
-    public Visao getVisaoUnidade(Long codUnidade) {
+    public Visao getVisaoUnidade(final Long codUnidade) {
         try {
             return dao.getVisaoUnidade(codUnidade);
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar a visão da unidade %d", codUnidade), e);
             return null;
         }
     }
 
-    public List<Setor> getSetorByCodUnidade(Long codUnidade) {
+    public List<Setor> getSetorByCodUnidade(final Long codUnidade) {
         try {
             return dao.getSetorByCodUnidade(codUnidade);
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar os setores da unidade %d", codUnidade), e);
             return null;
         }
     }
 
-    public List<HolderMapaTracking> getResumoAtualizacaoDados(int ano, int mes, Long codUnidade) {
+    public List<HolderMapaTracking> getResumoAtualizacaoDados(final int ano, final int mes, final Long codUnidade) {
         try {
             return dao.getResumoAtualizacaoDados(ano, mes, codUnidade);
-        } catch (SQLException e) {
-            Log.e(TAG, String.format("Erro ao buscar o resumo de atualização dos dados do ano: %d e mês %d da unidade %d", ano, mes, codUnidade), e);
+        } catch (final SQLException e) {
+            Log.e(TAG,
+                  String.format("Erro ao buscar o resumo de atualização dos dados do ano: %d e mês %d da unidade %d",
+                                ano,
+                                mes,
+                                codUnidade),
+                  e);
             return new ArrayList<>();
-        } catch (NoContentException e) {
-            Log.e(TAG, String.format("Erro ao buscar o resumo de atualização dos dados do ano: %d e mês %d  da unidade %d", ano, mes, codUnidade), e);
+        } catch (final NoContentException e) {
+            Log.e(TAG,
+                  String.format("Erro ao buscar o resumo de atualização dos dados do ano: %d e mês %d  da unidade %d",
+                                ano,
+                                mes,
+                                codUnidade),
+                  e);
             return new ArrayList<>();
         }
     }
 
-    public List<Empresa> getFiltros(Long cpf) {
+    public List<Empresa> getFiltros(@NotNull final String userToken, final Long cpf) throws ProLogException {
         try {
-            return dao.getFiltros(cpf);
-        } catch (SQLException e) {
-            Log.e(TAG, String.format("Erro ao buscar os filtrod do cpf %d", cpf), e);
-            return null;
+            return RouterEmpresa
+                    .create(dao, userToken)
+                    .getFiltros(cpf);
+        } catch (final Throwable throwable) {
+            final String errorMessage = String.format("Erro ao buscar os filtro do cpf %d", cpf);
+            Log.e(TAG, errorMessage, throwable);
+            throw Injection.provideProLogExceptionHandler().map(throwable, errorMessage);
         }
     }
 
-    public boolean alterarVisaoCargo(Visao visao, Long codUnidade, Long codCargo) {
+    public boolean alterarVisaoCargo(final Visao visao, final Long codUnidade, final Long codCargo) {
         try {
             dao.alterarVisaoCargo(
                     codUnidade,
@@ -157,22 +173,22 @@ public class EmpresaService {
                     Injection.provideDadosIntervaloChangedListener(),
                     Injection.provideDadosChecklistOfflineChangedListener());
             return true;
-        } catch (Throwable e) {
+        } catch (final Throwable e) {
             Log.e(TAG, String.format("Erro ao alterar a visão do cargo %d da unidade %d", codCargo, codUnidade), e);
             return false;
         }
     }
 
-    public Long getCodEquipeByCodUnidadeByNome(Long codUnidade, String nomeEquipe) {
+    public Long getCodEquipeByCodUnidadeByNome(final Long codUnidade, final String nomeEquipe) {
         try {
             return dao.getCodEquipeByCodUnidadeByNome(codUnidade, nomeEquipe);
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar o código da equipe %s da unidade %d", nomeEquipe, codUnidade), e);
             return null;
         }
     }
 
-    public AbstractResponse insertFuncao(Cargo cargo, Long codUnidade) {
+    public AbstractResponse insertFuncao(final Cargo cargo, final Long codUnidade) {
         try {
             final Long codFuncaoInserida = dao.insertFuncao(cargo, codUnidade);
             if (codFuncaoInserida != null) {
@@ -180,7 +196,7 @@ public class EmpresaService {
             } else {
                 return Response.error("Erro ao inserir o cargo");
             }
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             Log.e(TAG, String.format("Erro ao inserir o cargo na unidade %d", codUnidade), e);
             return Response.error("Erro ao inserir o cargo");
         }

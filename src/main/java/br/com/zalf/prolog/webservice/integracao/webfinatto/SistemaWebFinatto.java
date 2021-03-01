@@ -13,6 +13,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.listagem.VeiculoListagem;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoVisualizacao;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Empresa;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoPosicaoPneuMapper;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.MetodoIntegrado;
@@ -294,6 +295,13 @@ public class SistemaWebFinatto extends Sistema {
                             processoMovimentacao,
                             dataHoraMovimentacao,
                             fecharServicosAutomaticamente);
+    }
+
+    @NotNull
+    @Override
+    public List<Empresa> getFiltros(@NotNull final Long cpf) throws Throwable {
+        Log.d(TAG, "passando pela integração");
+        return super.getFiltros(cpf);
     }
 
     private void internalInsertAfericaoPlaca(@NotNull final Connection conn,
