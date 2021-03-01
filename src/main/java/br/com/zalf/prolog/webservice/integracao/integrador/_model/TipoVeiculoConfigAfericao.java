@@ -10,6 +10,16 @@ public final class TipoVeiculoConfigAfericao {
     private final Long codUnidade;
     @NotNull
     private final Long codTipoVeiculo;
+    @NotNull
+    private final String nomeTipoVeiculo;
+    @NotNull
+    private final Short codDiagramaVeiculo;
+    @NotNull
+    private final String nomeDiagramaVeiculo;
+    @NotNull
+    private final Long qtdEixoDianteiro;
+    @NotNull
+    private final Long qtdEixoTraseiro;
     private final FormaColetaDadosAfericaoEnum formaColetaDadosSulco;
     private final FormaColetaDadosAfericaoEnum formaColetaDadosPressao;
     private final FormaColetaDadosAfericaoEnum formaColetaDadosSulcoPressao;

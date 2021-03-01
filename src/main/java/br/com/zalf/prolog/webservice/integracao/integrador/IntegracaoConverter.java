@@ -80,6 +80,9 @@ public final class IntegracaoConverter {
     @NotNull
     public static UnidadeDePara createUnidadeDePara(@NotNull final ResultSet rSet) throws Throwable {
         return new UnidadeDePara(rSet.getLong("cod_unidade_prolog"),
+                                 rSet.getString("nome_unidade_prolog"),
+                                 rSet.getLong("cod_regional_prolog"),
+                                 rSet.getString("nome_regional_prolog"),
                                  rSet.getString("cod_auxiliar_unidade"));
     }
 
@@ -103,6 +106,11 @@ public final class IntegracaoConverter {
         return new TipoVeiculoConfigAfericao(
                 rSet.getLong("cod_unidade"),
                 rSet.getLong("cod_tipo_veiculo"),
+                rSet.getString("nome_tipo_veiculo"),
+                rSet.getShort("cod_diagrama_veiculo"),
+                rSet.getString("nome_diagrama_veiculo"),
+                rSet.getLong("qtd_eixo_dianteiro"),
+                rSet.getLong("qtd_eixo_traseiro"),
                 fromString(rSet.getString("forma_coleta_dados_sulco")),
                 fromString(rSet.getString("forma_coleta_dados_pressao")),
                 fromString(rSet.getString("forma_coleta_dados_sulco_pressao")),
