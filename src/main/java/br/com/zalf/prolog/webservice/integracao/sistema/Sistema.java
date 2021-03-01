@@ -28,6 +28,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.VeiculoCadastro;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.InfosVeiculoEditado;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicao;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.listagem.VeiculoListagem;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.ProcessoTransferenciaVeiculoRealizacao;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.RecursoIntegrado;
@@ -195,12 +196,6 @@ public abstract class Sistema implements OperacoesIntegradas {
 
     @NotNull
     @Override
-    public Long insertChecklistOffline(@NotNull final ChecklistInsercao checklist) throws Throwable {
-        return getIntegradorProLog().insertChecklistOffline(checklist);
-    }
-
-    @NotNull
-    @Override
     public List<TipoVeiculo> getTiposVeiculosFiltroChecklist(@NotNull final Long codEmpresa) throws Throwable {
         return getIntegradorProLog().getTiposVeiculosFiltroChecklist(codEmpresa);
     }
@@ -286,6 +281,12 @@ public abstract class Sistema implements OperacoesIntegradas {
         return getIntegradorProLog().getFarolChecklist(codUnidade, dataInicial, dataFinal, itensCriticosRetroativos);
     }
 
+    @NotNull
+    @Override
+    public Long insertChecklistOffline(@NotNull final ChecklistInsercao checklist) throws Throwable {
+        return getIntegradorProLog().insertChecklistOffline(checklist);
+    }
+
     // #################################################################################################################
     // #################################################################################################################
     // ############################## OPERAÇÕES INTEGRADAS - CHECKLIST ORDEM DE SERVIÇO ################################
@@ -335,6 +336,14 @@ public abstract class Sistema implements OperacoesIntegradas {
     public List<String> getPlacasVeiculosByTipo(@NotNull final Long codUnidade,
                                                 @NotNull final String codTipo) throws Exception {
         return getIntegradorProLog().getPlacasVeiculosByTipo(codUnidade, codTipo);
+    }
+
+    @NotNull
+    @Override
+    public List<VeiculoListagem> getVeiculosByUnidades(@NotNull final List<Long> codUnidades,
+                                                       final boolean apenasAtivos,
+                                                       @Nullable final Long codTipoVeiculo) throws Throwable {
+        return getIntegradorProLog().getVeiculosByUnidades(codUnidades, apenasAtivos, codTipoVeiculo);
     }
 
     @NotNull
@@ -417,6 +426,14 @@ public abstract class Sistema implements OperacoesIntegradas {
                         fecharServicosAutomaticamente);
     }
 
+    @NotNull
+    @Override
+    public List<CampoPersonalizadoParaRealizacao> getCamposParaRealizacaoMovimentacao(
+            @NotNull final Long codUnidade,
+            @NotNull final CampoPersonalizadoDao campoPersonalizadoDao) throws Throwable {
+        return getIntegradorProLog().getCamposParaRealizacaoMovimentacao(codUnidade, campoPersonalizadoDao);
+    }
+
     // #################################################################################################################
     // #################################################################################################################
     // #################################### OPERAÇÕES INTEGRADAS - AFERIÇÃO SERVIÇO ####################################
@@ -450,14 +467,6 @@ public abstract class Sistema implements OperacoesIntegradas {
     @Override
     public void updateTipoVeiculo(@NotNull final TipoVeiculo tipoVeiculo) throws Throwable {
         getIntegradorProLog().updateTipoVeiculo(tipoVeiculo);
-    }
-
-    @NotNull
-    @Override
-    public List<CampoPersonalizadoParaRealizacao> getCamposParaRealizacaoMovimentacao(
-            @NotNull final Long codUnidade,
-            @NotNull final CampoPersonalizadoDao campoPersonalizadoDao) throws Throwable {
-        return getIntegradorProLog().getCamposParaRealizacaoMovimentacao(codUnidade, campoPersonalizadoDao);
     }
 
     @NotNull

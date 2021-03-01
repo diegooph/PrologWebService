@@ -36,16 +36,19 @@ public final class VeiculoService {
     private final VeiculoDao dao = Injection.provideVeiculoDao();
 
     @NotNull
-    public List<VeiculoListagem> getVeiculosByUnidades(@NotNull final List<Long> codUnidades,
+    public List<VeiculoListagem> getVeiculosByUnidades(@NotNull final String userToken,
+                                                       @NotNull final List<Long> codUnidades,
                                                        final boolean apenasAtivos,
                                                        @Nullable final Long codTipoVeiculo) {
         try {
-            return dao.getVeiculosByUnidades(codUnidades, apenasAtivos, codTipoVeiculo);
+            return RouterVeiculo
+                    .create(dao, userToken)
+                    .getVeiculosByUnidades(codUnidades, apenasAtivos, codTipoVeiculo);
         } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao buscar os veículos.\n" +
-                    "codUnidades: %s\n" +
-                    "apenasAtivos: %b\n" +
-                    "codTipoVeiculo: %d\n", codUnidades, apenasAtivos, codTipoVeiculo), t);
+                                             "codUnidades: %s\n" +
+                                             "apenasAtivos: %b\n" +
+                                             "codTipoVeiculo: %d\n", codUnidades, apenasAtivos, codTipoVeiculo), t);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao buscar os veículos da unidade, tente novamente.");
@@ -58,7 +61,7 @@ public final class VeiculoService {
             return dao.getVeiculoByCodigo(codVeiculo);
         } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao buscar o veículo.\n" +
-                    "código: %d", codVeiculo), t);
+                                             "código: %d", codVeiculo), t);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao buscar o veículo, tente novamente.");
@@ -73,9 +76,9 @@ public final class VeiculoService {
                     .getVeiculoByPlaca(placa, withPneus);
         } catch (final Exception e) {
             Log.e(TAG, String.format("Erro ao buscar o veículo. \n" +
-                    "Placa: %s \n" +
-                    "withPneus: %b \n" +
-                    "userToken: %s", placa, withPneus, userToken), e);
+                                             "Placa: %s \n" +
+                                             "withPneus: %b \n" +
+                                             "userToken: %s", placa, withPneus, userToken), e);
             return null;
         }
     }
@@ -85,7 +88,7 @@ public final class VeiculoService {
             return dao.getVeiculosAtivosByUnidadeByColaborador(cpf);
         } catch (final SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar os veículos ativos da unidade do colaborador. \n" +
-                    "cpf: %s", cpf), e);
+                                             "cpf: %s", cpf), e);
             return null;
         }
     }
@@ -101,8 +104,8 @@ public final class VeiculoService {
             return Response.ok("Veículo inserido com sucesso");
         } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao inserir o veículo. \n" +
-                    "userToken: %s\n" +
-                    "codUnidade: %d", userToken, veiculo.getCodUnidadeAlocado()), t);
+                                             "userToken: %s\n" +
+                                             "codUnidade: %d", userToken, veiculo.getCodUnidadeAlocado()), t);
             throw Injection
                     .provideVeiculoExceptionHandler()
                     .map(t, "Erro ao inserir o veículo, tente novamente");
@@ -140,12 +143,14 @@ public final class VeiculoService {
                     .toVeiculoEdicao(veiculo.isStatusAtivo());
             update(codColaboradorResponsavelEdicao, userToken, edicao);
             return Response.ok(veiculo.isStatusAtivo()
-                    ? "Veículo ativado com sucesso"
-                    : "Veículo inativado com sucesso");
+                                       ? "Veículo ativado com sucesso"
+                                       : "Veículo inativado com sucesso");
         } catch (final Throwable t) {
-            Log.e(TAG, String.format("Erro ao atualizar o status do veículo:\n" +
-                    "codColaboradorResponsavelEdicao: %d\n" +
-                    "codVeiculo: %d\n", codColaboradorResponsavelEdicao, veiculo.getCodigo()), t);
+            Log.e(TAG,
+                  String.format("Erro ao atualizar o status do veículo:\n" +
+                                        "codColaboradorResponsavelEdicao: %d\n" +
+                                        "codVeiculo: %d\n", codColaboradorResponsavelEdicao, veiculo.getCodigo()),
+                  t);
             throw Injection
                     .provideVeiculoExceptionHandler()
                     .map(t, "Erro ao atualizar o status do veículo, tente novamente.");
@@ -158,7 +163,7 @@ public final class VeiculoService {
             return dao.getMarcaModeloVeiculoByCodEmpresa(codEmpresa);
         } catch (final SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar as marcas e modelos dos veículos. \n" +
-                    "Empresa: %d", codEmpresa), e);
+                                             "Empresa: %d", codEmpresa), e);
             return new ArrayList<>();
         }
     }
@@ -199,8 +204,8 @@ public final class VeiculoService {
             return dao.insertModeloVeiculo(modelo, codEmpresa, codMarca);
         } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao inserir o modelo de veículo.\n" +
-                    "Empresa: %d\n" +
-                    "codMarca: %d", codEmpresa, codMarca), t);
+                                             "Empresa: %d\n" +
+                                             "codMarca: %d", codEmpresa, codMarca), t);
             throw Injection
                     .provideVeiculoExceptionHandler()
                     .map(t, "Erro ao cadastrar modelo de veículo, tente novamente");
@@ -247,9 +252,9 @@ public final class VeiculoService {
                     .getPlacasVeiculosByTipo(codUnidade, codTipo);
         } catch (final Exception e) {
             Log.e(TAG, String.format("Erro ao buscar os veículos de um tipo específico. \n" +
-                    "codUnidade: %d \n" +
-                    "codTipo: %s \n" +
-                    "userToken: %s", codUnidade, codTipo, userToken), e);
+                                             "codUnidade: %d \n" +
+                                             "codTipo: %s \n" +
+                                             "userToken: %s", codUnidade, codTipo, userToken), e);
             throw new RuntimeException("Erro ao buscar placas dos veículos para o tipo: " + codTipo + " e unidade: " + codUnidade);
         }
     }
@@ -259,8 +264,8 @@ public final class VeiculoService {
             return dao.getModeloVeiculo(codUnidade, codModelo);
         } catch (final SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar um modelo de veículo. \n" +
-                    "codUnidade: %d \n" +
-                    "codModelo: %s \n", codUnidade, codModelo), e);
+                                             "codUnidade: %d \n" +
+                                             "codModelo: %s \n", codUnidade, codModelo), e);
             return null;
         }
     }
@@ -270,8 +275,8 @@ public final class VeiculoService {
             return dao.updateModelo(modelo, codUnidade, codMarca);
         } catch (final SQLException e) {
             Log.e(TAG, String.format("Erro ao atualizar o modelo de veículo. \n" +
-                    "codUnidade: %d \n" +
-                    "codMarca: %d", codUnidade, codMarca), e);
+                                             "codUnidade: %d \n" +
+                                             "codMarca: %d", codUnidade, codMarca), e);
             return false;
         }
     }
@@ -281,8 +286,8 @@ public final class VeiculoService {
             return dao.deleteModelo(codModelo, codUnidade);
         } catch (final SQLException e) {
             Log.e(TAG, String.format("Erro ao deletar o modelo de veículo. \n" +
-                    "codUnidade: %d \n" +
-                    "codModelo: %d", codUnidade, codModelo), e);
+                                             "codUnidade: %d \n" +
+                                             "codModelo: %d", codUnidade, codModelo), e);
             return false;
         }
     }
@@ -297,8 +302,8 @@ public final class VeiculoService {
                     .getVeiculosAtivosByUnidade(codUnidade, ativos);
         } catch (final Exception e) {
             Log.e(TAG, String.format("Erro ao buscar os veículos ativos da unidade. \n" +
-                    "Unidade: %d \n" +
-                    "userToken: %s", codUnidade, userToken), e);
+                                             "Unidade: %d \n" +
+                                             "userToken: %s", codUnidade, userToken), e);
             throw new RuntimeException("Erro ao buscar os veículos ativos da unidade: " + codUnidade);
         }
     }

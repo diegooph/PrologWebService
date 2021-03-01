@@ -2,8 +2,14 @@ package br.com.zalf.prolog.webservice.integracao.webfinatto;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
+import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.customfields.CampoPersonalizadoDao;
 import br.com.zalf.prolog.webservice.database.DatabaseConnectionProvider;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.*;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.ProcessoMovimentacao;
+import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoDao;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.listagem.VeiculoListagem;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoPosicaoPneuMapper;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.MetodoIntegrado;
@@ -21,8 +27,10 @@ import br.com.zalf.prolog.webservice.integracao.webfinatto._model.error.SistemaW
 import br.com.zalf.prolog.webservice.integracao.webfinatto.data.SistemaWebFinattoRequester;
 import br.com.zalf.prolog.webservice.integracao.webfinatto.utils.SistemaWebFinattoConverter;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.Connection;
+import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.util.Collections;
 import java.util.List;
@@ -218,6 +226,37 @@ public class SistemaWebFinatto extends Sistema {
         } finally {
             connectionProvider.closeResources(conn);
         }
+    }
+
+    @Override
+    @NotNull
+    public List<VeiculoListagem> getVeiculosByUnidades(@NotNull final List<Long> codUnidades,
+                                                       final boolean apenasAtivos,
+                                                       @Nullable final Long codTipoVeiculo) throws Throwable {
+        Log.d(TAG, "passando pela integração");
+        return super.getVeiculosByUnidades(codUnidades, apenasAtivos, codTipoVeiculo);
+    }
+
+    @Override
+    @NotNull
+    public Veiculo getVeiculoByPlaca(@NotNull final String placa, final boolean withPneus) throws Exception {
+        Log.d(TAG, "passando pela integração");
+        return super.getVeiculoByPlaca(placa, withPneus);
+    }
+
+    @Override
+    @NotNull
+    public Long insert(@NotNull final ServicoDao servicoDao,
+                       @NotNull final CampoPersonalizadoDao campoPersonalizadoDao,
+                       @NotNull final ProcessoMovimentacao processoMovimentacao,
+                       @NotNull final OffsetDateTime dataHoraMovimentacao,
+                       final boolean fecharServicosAutomaticamente) throws Throwable {
+        Log.d(TAG, "passando pela integração");
+        return super.insert(servicoDao,
+                            campoPersonalizadoDao,
+                            processoMovimentacao,
+                            dataHoraMovimentacao,
+                            fecharServicosAutomaticamente);
     }
 
     private void internalInsertAfericaoPlaca(@NotNull final Connection conn,

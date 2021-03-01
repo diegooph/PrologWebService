@@ -20,6 +20,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoDad
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoVisualizacao;
 import br.com.zalf.prolog.webservice.interceptors.auth.ColaboradorAutenticado;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
+import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.AppVersionCodeHandler;
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.DefaultAppVersionCodeHandler;
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.VersionCodeHandlerMode;
@@ -35,6 +36,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+@ConsoleDebugLog
 @Path("veiculos")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
@@ -93,7 +95,10 @@ public final class VeiculoResource {
     public List<VeiculoListagem> getVeiculosByUnidade(@HeaderParam("Authorization") @Required final String userToken,
                                                       @QueryParam("codUnidade") @Required final Long codUnidade,
                                                       @QueryParam("somenteAtivos") @Optional final boolean somenteAtivos) {
-        return service.getVeiculosByUnidades(Collections.singletonList(codUnidade), somenteAtivos, null);
+        return service.getVeiculosByUnidades(userToken,
+                                             Collections.singletonList(codUnidade),
+                                             somenteAtivos,
+                                             null);
     }
 
     @GET
@@ -103,10 +108,11 @@ public final class VeiculoResource {
             Pilares.Frota.Veiculo.CADASTRAR,
             Pilares.Frota.Checklist.VISUALIZAR_TODOS})
     @Path("/listagem")
-    public List<VeiculoListagem> getVeiculosByUnidades(@QueryParam("codUnidades") @Required final List<Long> codUnidades,
+    public List<VeiculoListagem> getVeiculosByUnidades(@HeaderParam("Authorization") @Required final String userToken,
+                                                       @QueryParam("codUnidades") @Required final List<Long> codUnidades,
                                                        @QueryParam("apenasAtivos") @Optional final boolean apenasAtivos,
                                                        @QueryParam("codTipoVeiculo") @Optional final Long codTipoVeiculo) {
-        return service.getVeiculosByUnidades(codUnidades, apenasAtivos, codTipoVeiculo);
+        return service.getVeiculosByUnidades(userToken, codUnidades, apenasAtivos, codTipoVeiculo);
     }
 
     @GET

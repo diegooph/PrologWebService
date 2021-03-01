@@ -30,6 +30,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.VeiculoCadastro;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.InfosVeiculoEditado;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicao;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.listagem.VeiculoListagem;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.ProcessoTransferenciaVeiculoRealizacao;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.RecursoIntegrado;
@@ -331,11 +332,11 @@ public abstract class Router implements OperacoesIntegradas {
         if (getSistema() != null) {
             return getSistema()
                     .getTodosChecklists(codUnidade, codEquipe, codTipoVeiculo, placaVeiculo, dataInicial, dataFinal,
-                            limit, offset, resumido);
+                                        limit, offset, resumido);
         } else {
             return integradorProLog
                     .getTodosChecklists(codUnidade, codEquipe, codTipoVeiculo, placaVeiculo, dataInicial, dataFinal,
-                            limit, offset, resumido);
+                                        limit, offset, resumido);
         }
     }
 
@@ -377,13 +378,13 @@ public abstract class Router implements OperacoesIntegradas {
         } else {
             return integradorProLog
                     .getListagem(codUnidade,
-                            codEquipe,
-                            codTipoVeiculo,
-                            codVeiculo,
-                            dataInicial,
-                            dataFinal,
-                            limit,
-                            offset);
+                                 codEquipe,
+                                 codTipoVeiculo,
+                                 codVeiculo,
+                                 dataInicial,
+                                 dataFinal,
+                                 limit,
+                                 offset);
         }
     }
 
@@ -464,7 +465,8 @@ public abstract class Router implements OperacoesIntegradas {
 
     @NotNull
     @Override
-    public List<Veiculo> getVeiculosAtivosByUnidade(@NotNull final Long codUnidade, @Nullable final Boolean ativos) throws
+    public List<Veiculo> getVeiculosAtivosByUnidade(@NotNull final Long codUnidade, @Nullable final Boolean ativos)
+            throws
             Exception {
         if (getSistema() != null) {
             return getSistema().getVeiculosAtivosByUnidade(codUnidade, ativos);
@@ -475,11 +477,24 @@ public abstract class Router implements OperacoesIntegradas {
 
     @NotNull
     @Override
-    public List<String> getPlacasVeiculosByTipo(@NotNull final Long codUnidade, @NotNull final String codTipo) throws Exception {
+    public List<String> getPlacasVeiculosByTipo(@NotNull final Long codUnidade, @NotNull final String codTipo)
+            throws Exception {
         if (getSistema() != null) {
             return getSistema().getPlacasVeiculosByTipo(codUnidade, codTipo);
         } else {
             return integradorProLog.getPlacasVeiculosByTipo(codUnidade, codTipo);
+        }
+    }
+
+    @NotNull
+    @Override
+    public List<VeiculoListagem> getVeiculosByUnidades(@NotNull final List<Long> codUnidades,
+                                                       final boolean apenasAtivos,
+                                                       @Nullable final Long codTipoVeiculo) throws Throwable {
+        if (getSistema() != null) {
+            return getSistema().getVeiculosByUnidades(codUnidades, apenasAtivos, codTipoVeiculo);
+        } else {
+            return integradorProLog.getVeiculosByUnidades(codUnidades, apenasAtivos, codTipoVeiculo);
         }
     }
 

@@ -41,6 +41,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.VeiculoCadastro;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.InfosVeiculoEditado;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicao;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.listagem.VeiculoListagem;
 import br.com.zalf.prolog.webservice.frota.veiculo.tipoveiculo.TipoVeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.VeiculoTransferenciaDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.ProcessoTransferenciaVeiculoRealizacao;
@@ -171,7 +172,8 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
 
     @NotNull
     @Override
-    public Optional<DiagramaVeiculo> getDiagramaVeiculoByCodDiagrama(@NotNull final Short codDiagrama) throws Exception {
+    public Optional<DiagramaVeiculo> getDiagramaVeiculoByCodDiagrama(@NotNull final Short codDiagrama)
+            throws Exception {
         if (veiculoDao == null) {
             veiculoDao = Injection.provideVeiculoDao();
         }
@@ -236,7 +238,8 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
     @Override
     public List<Long> getCodUnidadesIntegracaoBloqueada(@NotNull final String userToken,
                                                         @NotNull final SistemaKey sistemaKey,
-                                                        @NotNull final RecursoIntegrado recursoIntegrado) throws Throwable {
+                                                        @NotNull final RecursoIntegrado recursoIntegrado)
+            throws Throwable {
         if (integracaoDao == null) {
             integracaoDao = Injection.provideIntegracaoDao();
         }
@@ -280,7 +283,8 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
     //
     @NotNull
     @Override
-    public List<Veiculo> getVeiculosAtivosByUnidade(@NotNull final Long codUnidade, @Nullable final Boolean ativos) throws
+    public List<Veiculo> getVeiculosAtivosByUnidade(@NotNull final Long codUnidade, @Nullable final Boolean ativos)
+            throws
             Exception {
         if (veiculoDao == null) {
             veiculoDao = Injection.provideVeiculoDao();
@@ -290,11 +294,23 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
 
     @NotNull
     @Override
-    public List<String> getPlacasVeiculosByTipo(@NotNull final Long codUnidade, @NotNull final String codTipo) throws Exception {
+    public List<String> getPlacasVeiculosByTipo(@NotNull final Long codUnidade, @NotNull final String codTipo)
+            throws Exception {
         if (veiculoDao == null) {
             veiculoDao = Injection.provideVeiculoDao();
         }
         return veiculoDao.getPlacasVeiculosByTipo(codUnidade, codTipo);
+    }
+
+    @NotNull
+    @Override
+    public List<VeiculoListagem> getVeiculosByUnidades(@NotNull final List<Long> codUnidades,
+                                                       final boolean apenasAtivos,
+                                                       @Nullable final Long codTipoVeiculo) throws Throwable {
+        if (veiculoDao == null) {
+            veiculoDao = Injection.provideVeiculoDao();
+        }
+        return veiculoDao.getVeiculosByUnidades(codUnidades, apenasAtivos, codTipoVeiculo);
     }
 
     @NotNull
@@ -386,7 +402,8 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
 
     @NotNull
     @Override
-    public Afericao getAfericaoByCodigo(@NotNull final Long codUnidade, @NotNull final Long codAfericao) throws Throwable {
+    public Afericao getAfericaoByCodigo(@NotNull final Long codUnidade, @NotNull final Long codAfericao)
+            throws Throwable {
         if (afericaoDao == null) {
             afericaoDao = Injection.provideAfericaoDao();
         }
@@ -406,7 +423,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
             afericaoDao = Injection.provideAfericaoDao();
         }
         return afericaoDao.getAfericoesPlacas(codUnidade, codTipoVeiculo, placaVeiculo, dataInicial, dataFinal, limit,
-                offset);
+                                              offset);
     }
 
     @NotNull
@@ -419,7 +436,10 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         if (checklistModeloDao == null) {
             checklistModeloDao = Injection.provideChecklistModeloDao();
         }
-        return checklistModeloDao.insertModeloChecklist(modeloChecklist, checklistOfflineListener, statusAtivo, userToken);
+        return checklistModeloDao.insertModeloChecklist(modeloChecklist,
+                                                        checklistOfflineListener,
+                                                        statusAtivo,
+                                                        userToken);
     }
 
     @Override
@@ -462,7 +482,10 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         if (checklistModeloDao == null) {
             checklistModeloDao = Injection.provideChecklistModeloDao();
         }
-        return checklistModeloDao.getModeloChecklistRealizacao(codModeloChecklist, codVeiculo, placaVeiculo, tipoChecklist);
+        return checklistModeloDao.getModeloChecklistRealizacao(codModeloChecklist,
+                                                               codVeiculo,
+                                                               placaVeiculo,
+                                                               tipoChecklist);
     }
 
     @NotNull
@@ -523,7 +546,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
             checklistDao = Injection.provideChecklistDao();
         }
         return checklistDao.getAll(codUnidade, codEquipe, codTipoVeiculo, placaVeiculo, dataInicial, dataFinal,
-                limit, offset, resumido);
+                                   limit, offset, resumido);
     }
 
     @NotNull
