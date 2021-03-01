@@ -11,6 +11,11 @@ import java.util.List;
 
 public interface SistemaWebFinattoRest {
     @GET()
+    Call<List<EmpresaWebFinatto>> getFiltrosClientes(
+            @Header(PrologCustomHeaders.HEADER_TOKEN_INTEGRACAO) @NotNull final String tokenIntegracao,
+            @Url @NotNull final String url);
+
+    @GET()
     Call<List<VeiculoWebFinatto>> getVeiculosByFiliais(
             @Header(PrologCustomHeaders.HEADER_TOKEN_INTEGRACAO) @NotNull final String tokenIntegracao,
             @Url @NotNull final String url,

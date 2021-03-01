@@ -14,6 +14,17 @@ import java.util.List;
 public class SistemaWebFinattoRequesterImpl implements SistemaWebFinattoRequester {
     @Override
     @NotNull
+    public List<EmpresaWebFinatto> getFiltrosClientes(
+            @NotNull final ApiAutenticacaoHolder autenticacaoHolder) throws Throwable {
+        final SistemaWebFinattoRest service = RestClient.getService(SistemaWebFinattoRest.class);
+        final Call<List<EmpresaWebFinatto>> call =
+                service.getFiltrosClientes(autenticacaoHolder.getPrologTokenIntegracao(),
+                                           autenticacaoHolder.getUrl());
+        return handleResponse(call.execute());
+    }
+
+    @Override
+    @NotNull
     public List<VeiculoWebFinatto> getVeiculosByFiliais(@NotNull final ApiAutenticacaoHolder autenticacaoHolder,
                                                         @NotNull final String codFiliais,
                                                         @Nullable final String placaVeiculo) throws Throwable {
