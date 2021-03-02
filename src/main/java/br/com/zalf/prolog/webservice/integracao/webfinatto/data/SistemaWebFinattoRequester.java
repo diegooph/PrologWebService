@@ -7,6 +7,7 @@ import br.com.zalf.prolog.webservice.integracao.webfinatto._model.ResponseAferic
 import br.com.zalf.prolog.webservice.integracao.webfinatto._model.VeiculoWebFinatto;
 import br.com.zalf.prolog.webservice.integracao.webfinatto._model.afericao.AfericaoPlacaWebFinatto;
 import br.com.zalf.prolog.webservice.integracao.webfinatto._model.afericao.AfericaoPneuWebFinatto;
+import br.com.zalf.prolog.webservice.integracao.webfinatto._model.movimentacao.ProcessoMovimentacaoWebFinatto;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -48,4 +49,9 @@ public interface SistemaWebFinattoRequester {
     ResponseAfericaoWebFinatto insertAfericaoAvulsa(
             @NotNull final ApiAutenticacaoHolder autenticacaoHolder,
             @NotNull final AfericaoPneuWebFinatto afericaoPneu) throws Throwable;
+
+    @NotNull
+    ResponseAfericaoWebFinatto insertProcessoMovimentacao(
+            @NotNull final ApiAutenticacaoHolder autenticacaoHolder,
+            @NotNull final ProcessoMovimentacaoWebFinatto processoMovimentacao) throws Throwable;
 }

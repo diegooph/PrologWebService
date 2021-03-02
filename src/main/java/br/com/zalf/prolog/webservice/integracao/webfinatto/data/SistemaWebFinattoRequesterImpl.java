@@ -9,6 +9,7 @@ import br.com.zalf.prolog.webservice.integracao.webfinatto._model.VeiculoWebFina
 import br.com.zalf.prolog.webservice.integracao.webfinatto._model.afericao.AfericaoPlacaWebFinatto;
 import br.com.zalf.prolog.webservice.integracao.webfinatto._model.afericao.AfericaoPneuWebFinatto;
 import br.com.zalf.prolog.webservice.integracao.webfinatto._model.error.SistemaWebFinattoException;
+import br.com.zalf.prolog.webservice.integracao.webfinatto._model.movimentacao.ProcessoMovimentacaoWebFinatto;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit2.Call;
@@ -109,6 +110,19 @@ public class SistemaWebFinattoRequesterImpl implements SistemaWebFinattoRequeste
                 service.insertAfericaoAvulsa(autenticacaoHolder.getPrologTokenIntegracao(),
                                              autenticacaoHolder.getUrl(),
                                              afericaoPneu);
+        return handleResponse(call.execute());
+    }
+
+    @Override
+    @NotNull
+    public ResponseAfericaoWebFinatto insertProcessoMovimentacao(
+            @NotNull final ApiAutenticacaoHolder autenticacaoHolder,
+            @NotNull final ProcessoMovimentacaoWebFinatto processoMovimentacao) throws Throwable {
+        final SistemaWebFinattoRest service = RestClient.getService(SistemaWebFinattoRest.class);
+        final Call<ResponseAfericaoWebFinatto> call =
+                service.insertProcessoMovimentacao(autenticacaoHolder.getPrologTokenIntegracao(),
+                                                   autenticacaoHolder.getUrl(),
+                                                   processoMovimentacao);
         return handleResponse(call.execute());
     }
 
