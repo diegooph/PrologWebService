@@ -27,6 +27,7 @@ import br.com.zalf.prolog.webservice.integracao.webfinatto._model.*;
 import br.com.zalf.prolog.webservice.integracao.webfinatto._model.error.SistemaWebFinattoException;
 import br.com.zalf.prolog.webservice.integracao.webfinatto.data.SistemaWebFinattoRequester;
 import br.com.zalf.prolog.webservice.integracao.webfinatto.utils.SistemaWebFinattoConverter;
+import br.com.zalf.prolog.webservice.integracao.webfinatto.utils.WebFinattoEncoderDecoder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -242,8 +243,7 @@ public class SistemaWebFinatto extends Sistema {
                     integracaoDao.getCodAuxiliarByCodUnidadeProlog(conn, codUnidades);
             final TipoVeiculoConfigAfericaoHolder tipoVeiculoConfigAfericaoHolder =
                     integracaoDao.getTipoVeiculoConfigAfericaoHolder(conn,
-                                                                     unidadeDeParaHolder
-                                                                             .getCodUnidadesMapeadas());
+                                                                     unidadeDeParaHolder.getCodUnidadesMapeadas());
             final List<VeiculoWebFinatto> veiculosByFiliais =
                     internalGetVeiculosByFiliais(conn,
                                                  unidadeDeParaHolder.getCodEmpresaProlog(),
@@ -260,7 +260,46 @@ public class SistemaWebFinatto extends Sistema {
     @NotNull
     public VeiculoVisualizacao getVeiculoByCodigo(@NotNull final Long codVeiculo) throws Throwable {
         Log.d(TAG, "passando pela integração");
-        return super.getVeiculoByCodigo(codVeiculo);
+        Connection conn = null;
+        final DatabaseConnectionProvider connectionProvider = new DatabaseConnectionProvider();
+        try {
+            conn = connectionProvider.provideDatabaseConnection();
+            final Long codUnidadeProlog = WebFinattoEncoderDecoder.extraiCodUnidade(codVeiculo);
+            final Long codVeiculoProlog = WebFinattoEncoderDecoder.extraiCodVeiculo(codVeiculo);
+            final UnidadeDeParaHolder unidadeDeParaHolder =
+                    integracaoDao.getCodAuxiliarByCodUnidadeProlog(conn, Collections.singletonList(codUnidadeProlog));
+
+            final List<VeiculoWebFinatto> veiculosByFiliais =
+                    internalGetVeiculosByFiliais(conn,
+                                                 unidadeDeParaHolder.getCodEmpresaProlog(),
+                                                 unidadeDeParaHolder.getCodFiliais());
+            final VeiculoWebFinatto veiculoWebFinatto = veiculosByFiliais.stream()
+                    .filter(veiculo -> veiculo.getCodVeiculo().equalsIgnoreCase(codVeiculoProlog.toString()))
+                    .findAny()
+                    .orElseThrow(() -> {
+                        throw new SistemaWebFinattoException("Placa não encontrada para movimentar");
+                    });
+            final VeiculoWebFinatto veiculoByPlaca =
+                    internalGetVeiculoByPlaca(conn,
+                                              unidadeDeParaHolder.getCodEmpresaProlog(),
+                                              unidadeDeParaHolder.getCodFiliais(),
+                                              veiculoWebFinatto.getPlacaVeiculo());
+            final TipoVeiculoConfigAfericaoHolder tipoVeiculoConfigAfericaoHolder =
+                    integracaoDao.getTipoVeiculoConfigAfericaoHolder(conn,
+                                                                     unidadeDeParaHolder.getCodUnidadesMapeadas());
+            final IntegracaoPosicaoPneuMapper posicaoPneuMapper = new IntegracaoPosicaoPneuMapper(
+                    veiculoByPlaca.getCodEstruturaVeiculo(),
+                    integracaoDao.getMapeamentoPosicoesPrologByDeParaTipoVeiculo(
+                            conn,
+                            unidadeDeParaHolder.getCodEmpresaProlog(),
+                            veiculoByPlaca.getCodEstruturaVeiculo()));
+            return SistemaWebFinattoConverter.createVeiculoVisualizacao(unidadeDeParaHolder,
+                                                                        tipoVeiculoConfigAfericaoHolder,
+                                                                        posicaoPneuMapper,
+                                                                        veiculoByPlaca);
+        } finally {
+            connectionProvider.closeResources(conn);
+        }
     }
 
     @Override
