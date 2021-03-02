@@ -32,6 +32,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.VeiculoCadastro;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.InfosVeiculoEditado;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.listagem.VeiculoListagem;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoDadosColetaKm;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoVisualizacao;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.ProcessoTransferenciaVeiculoRealizacao;
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Empresa;
@@ -518,6 +519,16 @@ public abstract class Router implements OperacoesIntegradas {
             return getSistema().getVeiculoByPlaca(placa, withPneus);
         } else {
             return integradorProLog.getVeiculoByPlaca(placa, withPneus);
+        }
+    }
+
+    @NotNull
+    @Override
+    public VeiculoDadosColetaKm getDadosColetaKmByCodigo(@NotNull final Long codVeiculo) throws Throwable {
+        if (getSistema() != null) {
+            return getSistema().getDadosColetaKmByCodigo(codVeiculo);
+        } else {
+            return integradorProLog.getDadosColetaKmByCodigo(codVeiculo);
         }
     }
 

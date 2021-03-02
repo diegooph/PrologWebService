@@ -321,7 +321,8 @@ public final class VeiculoResource {
             Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_VEICULO_ESTOQUE,
             Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
     @Path("/dados-coleta-km")
-    public VeiculoDadosColetaKm getDadosColetaKmByCodigo(@QueryParam("codVeiculo") final Long codVeiculo) {
-        return service.getDadosColetaKmByCodigo(codVeiculo);
+    public VeiculoDadosColetaKm getDadosColetaKmByCodigo(@HeaderParam("Authorization") @Required final String userToken,
+                                                         @QueryParam("codVeiculo") final Long codVeiculo) {
+        return service.getDadosColetaKmByCodigo(userToken, codVeiculo);
     }
 }

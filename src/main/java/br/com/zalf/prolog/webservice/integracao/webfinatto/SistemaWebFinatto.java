@@ -12,6 +12,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.ProcessoMovi
 import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.listagem.VeiculoListagem;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoDadosColetaKm;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoVisualizacao;
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Empresa;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoPosicaoPneuMapper;
@@ -311,6 +312,13 @@ public class SistemaWebFinatto extends Sistema {
     public Veiculo getVeiculoByPlaca(@NotNull final String placa, final boolean withPneus) throws Exception {
         Log.d(TAG, "passando pela integração");
         return super.getVeiculoByPlaca(placa, withPneus);
+    }
+
+    @Override
+    @NotNull
+    public VeiculoDadosColetaKm getDadosColetaKmByCodigo(@NotNull final Long codVeiculo) throws Throwable {
+        Log.d(TAG, "passando pela integração");
+        return super.getDadosColetaKmByCodigo(codVeiculo);
     }
 
     @Override

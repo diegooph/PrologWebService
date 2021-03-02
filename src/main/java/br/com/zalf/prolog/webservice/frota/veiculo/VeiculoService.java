@@ -312,9 +312,12 @@ public final class VeiculoService {
     }
 
     @NotNull
-    public VeiculoDadosColetaKm getDadosColetaKmByCodigo(final Long codVeiculo) {
+    public VeiculoDadosColetaKm getDadosColetaKmByCodigo(@NotNull final String userToken,
+                                                         @NotNull final Long codVeiculo) {
         try {
-            return this.dao.getDadosColetaKmByCodigo(codVeiculo);
+            return RouterVeiculo
+                    .create(dao, userToken)
+                    .getDadosColetaKmByCodigo(codVeiculo);
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao buscar o estado do veículo.", t);
             throw Injection
