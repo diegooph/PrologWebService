@@ -77,7 +77,7 @@ public class SistemaWebFinatto extends Sistema {
                                                  unidadeDeParaHolder.getCodEmpresaProlog(),
                                                  unidadeDeParaHolder.getCodFiliais());
             final List<String> placas = veiculosByFiliais.stream()
-                    .map(VeiculoWebFinatto::getCodVeiculo)
+                    .map(VeiculoWebFinatto::getPlacaVeiculo)
                     .distinct()
                     .collect(Collectors.toList());
             final AfericaoRealizadaPlacaHolder afericaoRealizadaPlacaHolder =
