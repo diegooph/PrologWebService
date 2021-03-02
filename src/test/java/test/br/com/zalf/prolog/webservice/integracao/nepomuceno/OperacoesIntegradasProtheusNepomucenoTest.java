@@ -161,9 +161,9 @@ public final class OperacoesIntegradasProtheusNepomucenoTest extends BaseTest {
         assertThat(placa).isNotNull();
 
         final NovaAfericaoPlaca novaAfericaoPlaca = service.getNovaAfericaoPlaca(
-                AfericaoBuscaFiltro.of(null,
+                AfericaoBuscaFiltro.of(placa.getCodUnidadePlaca(),
+                                       null,
                                        placa.getPlaca(),
-                                       placa.getCodUnidadePlaca(),
                                        null),
                 getValidToken(CPF_COLABORADOR)
         );
@@ -195,8 +195,8 @@ public final class OperacoesIntegradasProtheusNepomucenoTest extends BaseTest {
 
         final NovaAfericaoPlaca novaAfericaoPlaca = service.getNovaAfericaoPlaca(
                 AfericaoBuscaFiltro.of(null,
+                                       placa.getCodigoVeiculo(),
                                        placa.getPlaca(),
-                                       placa.getCodUnidadePlaca(),
                                        null),
                 getValidToken(CPF_COLABORADOR));
 
