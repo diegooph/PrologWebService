@@ -224,7 +224,7 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
         try {
             stmt = conn.prepareStatement(
                     "select * from integracao.func_geral_unidade_get_infos_de_para(f_cod_unidades => ?);");
-            stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.TEXT, codUnidades));
+            stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 final UnidadeDeParaHolder unidadeDeParaHolder = IntegracaoConverter.createUnidadeDeParaHolder(rSet);
