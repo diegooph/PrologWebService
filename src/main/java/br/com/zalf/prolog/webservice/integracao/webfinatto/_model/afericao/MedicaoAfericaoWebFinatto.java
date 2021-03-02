@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.integracao.webfinatto._model;
+package br.com.zalf.prolog.webservice.integracao.webfinatto._model.afericao;
 
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;

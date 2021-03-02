@@ -16,7 +16,13 @@ import br.com.zalf.prolog.webservice.gente.colaborador.model.Regional;
 import br.com.zalf.prolog.webservice.geral.unidade._model.Unidade;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoPosicaoPneuMapper;
 import br.com.zalf.prolog.webservice.integracao.integrador._model.*;
-import br.com.zalf.prolog.webservice.integracao.webfinatto._model.*;
+import br.com.zalf.prolog.webservice.integracao.webfinatto._model.EmpresaWebFinatto;
+import br.com.zalf.prolog.webservice.integracao.webfinatto._model.PneuWebFinatto;
+import br.com.zalf.prolog.webservice.integracao.webfinatto._model.UnidadeWebFinatto;
+import br.com.zalf.prolog.webservice.integracao.webfinatto._model.VeiculoWebFinatto;
+import br.com.zalf.prolog.webservice.integracao.webfinatto._model.afericao.AfericaoPlacaWebFinatto;
+import br.com.zalf.prolog.webservice.integracao.webfinatto._model.afericao.AfericaoPneuWebFinatto;
+import br.com.zalf.prolog.webservice.integracao.webfinatto._model.afericao.MedicaoAfericaoWebFinatto;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
