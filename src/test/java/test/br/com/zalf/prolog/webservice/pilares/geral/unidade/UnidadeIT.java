@@ -18,6 +18,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class UnidadeIT extends IntegrationTest {
 
+    private <T> void assertBaseValidations(final ResponseEntity<T> responseEntity) {
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseEntity.getBody()).isNotNull();
+    }
+
     @Test
     @DisplayName("Busca uma unidade através de um código.")
     void givenCodUnidadeToRequest_ThenReturnUnidadeVisualizacaoListagemAndStatusOK() {
