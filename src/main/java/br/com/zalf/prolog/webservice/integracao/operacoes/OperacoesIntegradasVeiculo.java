@@ -43,7 +43,9 @@ interface OperacoesIntegradasVeiculo {
     VeiculoVisualizacao getVeiculoByCodigo(@NotNull final Long codVeiculo) throws Throwable;
 
     @NotNull
-    Veiculo getVeiculoByPlaca(@NotNull final String placa, final boolean withPneus) throws Exception;
+    Veiculo getVeiculoByPlaca(@NotNull final String placa,
+                              @Nullable final Long codUnidade,
+                              final boolean withPneus) throws Exception;
 
     @NotNull
     VeiculoDadosColetaKm getDadosColetaKmByCodigo(@NotNull final Long codVeiculo) throws Throwable;

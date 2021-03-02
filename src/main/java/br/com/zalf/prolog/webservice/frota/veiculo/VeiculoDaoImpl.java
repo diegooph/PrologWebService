@@ -288,7 +288,9 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
     @Deprecated
     @NotNull
     @Override
-    public Veiculo getVeiculoByPlaca(@NotNull final String placa, final boolean withPneus) throws SQLException {
+    public Veiculo getVeiculoByPlaca(@NotNull final String placa,
+                                     @Nullable final Long codUnidade,
+                                     final boolean withPneus) throws SQLException {
         Connection conn = null;
         try {
             conn = getConnection();
@@ -393,10 +395,12 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
 
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT MO.CODIGO AS COD_MODELO, MO.NOME AS MODELO, MA.CODIGO AS COD_MARCA, MA.NOME AS MARCA"
-                    + " FROM MARCA_VEICULO MA left JOIN MODELO_VEICULO MO ON MA.CODIGO = MO.COD_MARCA AND MO.cod_empresa = ? "
-                    + "WHERE MO.COD_EMPRESA = ? OR MO.COD_EMPRESA IS NULL "
-                    + "ORDER BY COD_MARCA, COD_MODELO");
+            stmt = conn.prepareStatement(
+                    "SELECT MO.CODIGO AS COD_MODELO, MO.NOME AS MODELO, MA.CODIGO AS COD_MARCA, MA.NOME AS MARCA"
+                            + " FROM MARCA_VEICULO MA left JOIN MODELO_VEICULO MO ON MA.CODIGO = MO.COD_MARCA AND MO" +
+                            ".cod_empresa = ? "
+                            + "WHERE MO.COD_EMPRESA = ? OR MO.COD_EMPRESA IS NULL "
+                            + "ORDER BY COD_MARCA, COD_MODELO");
             stmt.setLong(1, codEmpresa);
             stmt.setLong(2, codEmpresa);
             rSet = stmt.executeQuery();
@@ -410,7 +414,8 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
                     }
                 } else {
                     Log.d("metodo", "marcas.size > 0");
-                    if (marca.getCodigo() == rSet.getLong("COD_MARCA")) { // se o modelo atual pertence a mesma marca do modelo anterior
+                    if (marca.getCodigo() == rSet.getLong("COD_MARCA")) { // se o modelo atual pertence a mesma marca
+                        // do modelo anterior
                         if (rSet.getString("MODELO") != null) {
                             modelos.add(createModelo(rSet));
                         }

@@ -514,11 +514,13 @@ public abstract class Router implements OperacoesIntegradas {
 
     @NotNull
     @Override
-    public Veiculo getVeiculoByPlaca(@NotNull final String placa, final boolean withPneus) throws Exception {
+    public Veiculo getVeiculoByPlaca(@NotNull final String placa,
+                                     @Nullable final Long codUnidade,
+                                     final boolean withPneus) throws Exception {
         if (getSistema() != null) {
-            return getSistema().getVeiculoByPlaca(placa, withPneus);
+            return getSistema().getVeiculoByPlaca(placa, codUnidade, withPneus);
         } else {
-            return integradorProLog.getVeiculoByPlaca(placa, withPneus);
+            return integradorProLog.getVeiculoByPlaca(placa, codUnidade, withPneus);
         }
     }
 

@@ -237,8 +237,9 @@ public final class VeiculoResource {
             Pilares.Frota.Veiculo.ALTERAR})
     @Path("/sem-pneus/{placa}")
     public Veiculo getVeiculoByPlacaSemPneus(@HeaderParam("Authorization") final String userToken,
-                                             @PathParam("placa") final String placa) {
-        return service.getVeiculoByPlaca(userToken, placa, false);
+                                             @PathParam("placa") final String placa,
+                                             @QueryParam("codUnidade") @Optional final Long codUnidade) {
+        return service.getVeiculoByPlaca(userToken, placa, codUnidade, false);
     }
 
     /**
@@ -262,8 +263,9 @@ public final class VeiculoResource {
             versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
             actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
     public Veiculo getVeiculoByPlacaComPneus(@HeaderParam("Authorization") final String userToken,
-                                             @PathParam("placa") final String placa) {
-        return service.getVeiculoByPlaca(userToken, placa, true);
+                                             @PathParam("placa") final String placa,
+                                             @QueryParam("codUnidade") @Optional final Long codUnidade) {
+        return service.getVeiculoByPlaca(userToken, placa, codUnidade, true);
     }
 
     /**

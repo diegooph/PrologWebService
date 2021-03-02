@@ -309,13 +309,6 @@ public class SistemaWebFinatto extends Sistema {
 
     @Override
     @NotNull
-    public Veiculo getVeiculoByPlaca(@NotNull final String placa, final boolean withPneus) throws Exception {
-        Log.d(TAG, "passando pela integração");
-        return super.getVeiculoByPlaca(placa, withPneus);
-    }
-
-    @Override
-    @NotNull
     public VeiculoDadosColetaKm getDadosColetaKmByCodigo(@NotNull final Long codVeiculo) throws Throwable {
         Connection conn = null;
         final DatabaseConnectionProvider connectionProvider = new DatabaseConnectionProvider();
@@ -417,6 +410,15 @@ public class SistemaWebFinatto extends Sistema {
         } finally {
             connectionProvider.closeResources(conn);
         }
+    }
+
+    @Override
+    @NotNull
+    public Veiculo getVeiculoByPlaca(@NotNull final String placa,
+                                     @Nullable final Long codUnidade,
+                                     final boolean withPneus) throws Exception {
+        Log.d(TAG, "passando pela integração");
+        return super.getVeiculoByPlaca(placa, codUnidade, withPneus);
     }
 
     private void internalInsertAfericaoPlaca(@NotNull final Connection conn,

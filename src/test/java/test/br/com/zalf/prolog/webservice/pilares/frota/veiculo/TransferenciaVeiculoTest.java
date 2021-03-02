@@ -33,9 +33,9 @@ public class TransferenciaVeiculoTest extends BaseTest {
     private static final Long COD_UNIDADE_DESTINO = 103L;
     private static final Long COD_COLABORADOR = 2272L;
     @NotNull
-    private VeiculoTransferenciaService service = new VeiculoTransferenciaService();
+    private final VeiculoTransferenciaService service = new VeiculoTransferenciaService();
     @NotNull
-    private VeiculoDao veiculoDao = Injection.provideVeiculoDao();
+    private final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
 
     @Override
     public void initialize() throws Throwable {
@@ -55,7 +55,7 @@ public class TransferenciaVeiculoTest extends BaseTest {
 
         // Busca Veículos a serem transferidos.
         final List<Veiculo> veiculos = new ArrayList<>();
-        veiculos.add(veiculoDao.getVeiculoByPlaca(placas.get(0), true));
+        veiculos.add(veiculoDao.getVeiculoByPlaca(placas.get(0), null, true));
 
         // Cria processo de Transferência com as placas selecionadas.
         final ProcessoTransferenciaVeiculoRealizacao processoRealizacao = convertTo(veiculos);
@@ -103,31 +103,34 @@ public class TransferenciaVeiculoTest extends BaseTest {
 
         // Agora buscamos os detalhes da trasferencia
         final DetalhesVeiculoTransferido detalhesVeiculoTransferido =
-                service.getDetalhesVeiculoTransferido(processoVisualizacao.getCodProcessoTransferencia(), veiculos.get(0).getCodigo());
+                service.getDetalhesVeiculoTransferido(processoVisualizacao.getCodProcessoTransferencia(),
+                                                      veiculos.get(0).getCodigo());
 
         assertThat(detalhesVeiculoTransferido).isNotNull();
         assertThat(detalhesVeiculoTransferido.getPlacaVeiculo()).isEqualTo(veiculos.get(0).getPlaca());
-        assertThat(detalhesVeiculoTransferido.getPneusAplicadosMomentoTransferencia().size()).isEqualTo(veiculos.get(0).getListPneus().size());
+        assertThat(detalhesVeiculoTransferido.getPneusAplicadosMomentoTransferencia().size()).isEqualTo(veiculos.get(0)
+                                                                                                                .getListPneus()
+                                                                                                                .size());
     }
 
     @Test
     public void insertTransferenciaVeiculoTest() throws Throwable {
-        List<String> placas = veiculoDao.getPlacasVeiculosByTipo(5L, COD_TIPO_TOCO);
+        final List<String> placas = veiculoDao.getPlacasVeiculosByTipo(5L, COD_TIPO_TOCO);
         Collections.shuffle(placas);
 
         final String placa1 = placas.get(0);
-//        final String placa2 = placas.get(1);
+        //        final String placa2 = placas.get(1);
 
         final List<Veiculo> veiculos = new ArrayList<>();
-        veiculos.add(veiculoDao.getVeiculoByPlaca(placa1, true));
-//        veiculos.add(veiculoDao.getVeiculoByPlaca(placa2, true));
+        veiculos.add(veiculoDao.getVeiculoByPlaca(placa1, null, true));
+        //        veiculos.add(veiculoDao.getVeiculoByPlaca(placa2, true));
 
         final ProcessoTransferenciaVeiculoRealizacao processo = convertTo(veiculos);
 
-//        System.out.println("Transferindo placas: " + veiculos.toString());
-//
-//        assertThat(processo).isNotNull();
-//        assertThat(processo.getVeiculosTransferencia()).hasSize(2);
+        //        System.out.println("Transferindo placas: " + veiculos.toString());
+        //
+        //        assertThat(processo).isNotNull();
+        //        assertThat(processo.getVeiculosTransferencia()).hasSize(2);
 
         final ResponseWithCod response = service.insertProcessoTransferenciaVeiculo(USER_TOKEN, processo);
 

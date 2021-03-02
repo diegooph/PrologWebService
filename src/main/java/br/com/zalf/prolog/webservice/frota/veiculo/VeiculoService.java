@@ -72,11 +72,14 @@ public final class VeiculoService {
     }
 
     @Deprecated
-    public Veiculo getVeiculoByPlaca(final String userToken, final String placa, final boolean withPneus) {
+    public Veiculo getVeiculoByPlaca(@NotNull final String userToken,
+                                     @NotNull final String placa,
+                                     @Nullable final Long codUnidade,
+                                     final boolean withPneus) {
         try {
             return RouterVeiculo
                     .create(dao, userToken)
-                    .getVeiculoByPlaca(placa, withPneus);
+                    .getVeiculoByPlaca(placa, codUnidade, withPneus);
         } catch (final Exception e) {
             Log.e(TAG, String.format("Erro ao buscar o veículo. \n" +
                                              "Placa: %s \n" +

@@ -35,6 +35,24 @@ public final class SistemaApiProLog extends Sistema {
         super(integradorProLog, sistemaKey, recursoIntegrado, userToken);
     }
 
+    @NotNull
+    @Override
+    public Long insertAfericao(@NotNull final Long codUnidade,
+                               @NotNull final Afericao afericao,
+                               final boolean deveAbrirServico) throws Throwable {
+        final boolean abrirServico;
+        if (unidadeEstaComIntegracaoAtiva(codUnidade)) {
+            // Se a unidade possui a integração ativada, precisamos saber se existe algo configurado para abertura
+            // de serviços de pneus nesta unidade.
+            abrirServico = configUnidadeDeveAbrirServicoPneu(codUnidade);
+        } else {
+            // Se a unidade não tem integração ativada, então não nos interessa qualquer outra coisa, devemos abrir
+            // serviços de pneus.
+            abrirServico = true;
+        }
+        return getIntegradorProLog().insertAfericao(codUnidade, afericao, abrirServico);
+    }
+
     @Override
     public void insert(
             @NotNull final VeiculoCadastro veiculo,
@@ -56,6 +74,19 @@ public final class SistemaApiProLog extends Sistema {
                     "Para atualizar os dados do veículo utilize o seu sistema de gestão");
         }
         return getIntegradorProLog().update(codColaboradorResponsavelEdicao, veiculo, checklistOfflineListener);
+    }
+
+    @NotNull
+    @Override
+    public Long insertProcessoTransferenciaVeiculo(
+            @NotNull final ProcessoTransferenciaVeiculoRealizacao processoTransferenciaVeiculo,
+            @NotNull final DadosChecklistOfflineChangedListener dadosChecklistOfflineChangedListener) throws Throwable {
+        if (unidadeEstaComIntegracaoAtiva(processoTransferenciaVeiculo.getCodUnidadeOrigem())
+                && unidadeEstaComIntegracaoAtiva(processoTransferenciaVeiculo.getCodUnidadeDestino())) {
+            throw new BloqueadoIntegracaoException("Para transferir veículos utilize o seu sistema de gestão");
+        }
+        return getIntegradorProLog()
+                .insertProcessoTransferenciaVeiculo(processoTransferenciaVeiculo, dadosChecklistOfflineChangedListener);
     }
 
     @NotNull
@@ -99,47 +130,16 @@ public final class SistemaApiProLog extends Sistema {
 
     @NotNull
     @Override
-    public Long insertProcessoTransferenciaVeiculo(
-            @NotNull final ProcessoTransferenciaVeiculoRealizacao processoTransferenciaVeiculo,
-            @NotNull final DadosChecklistOfflineChangedListener dadosChecklistOfflineChangedListener) throws Throwable {
-        if (unidadeEstaComIntegracaoAtiva(processoTransferenciaVeiculo.getCodUnidadeOrigem())
-                && unidadeEstaComIntegracaoAtiva(processoTransferenciaVeiculo.getCodUnidadeDestino())) {
-            throw new BloqueadoIntegracaoException("Para transferir veículos utilize o seu sistema de gestão");
-        }
-        return getIntegradorProLog()
-                .insertProcessoTransferenciaVeiculo(processoTransferenciaVeiculo, dadosChecklistOfflineChangedListener);
-    }
-
-    @NotNull
-    @Override
     public VeiculoServico getVeiculoAberturaServico(@NotNull final Long codServico,
                                                     @NotNull final String placaVeiculo) throws Throwable {
         final Long codUnidadeVeiculo =
-                getIntegradorProLog().getVeiculoByPlaca(placaVeiculo, false).getCodUnidadeAlocado();
+                getIntegradorProLog().getVeiculoByPlaca(placaVeiculo, null, false).getCodUnidadeAlocado();
         if (unidadeEstaComIntegracaoAtiva(codUnidadeVeiculo) && getSistemaApiProLog().isServicoMovimentacao(codServico)) {
             throw new BloqueadoIntegracaoException(
                     "O fechamento de serviço de movimentação está sendo integrado e ainda não está disponível.\n" +
                             "Por enquanto, utilize o seu sistema para movimentar os pneus.");
         }
         return getIntegradorProLog().getVeiculoAberturaServico(codServico, placaVeiculo);
-    }
-
-    @NotNull
-    @Override
-    public Long insertAfericao(@NotNull final Long codUnidade,
-                               @NotNull final Afericao afericao,
-                               final boolean deveAbrirServico) throws Throwable {
-        final boolean abrirServico;
-        if (unidadeEstaComIntegracaoAtiva(codUnidade)) {
-            // Se a unidade possui a integração ativada, precisamos saber se existe algo configurado para abertura
-            // de serviços de pneus nesta unidade.
-            abrirServico = configUnidadeDeveAbrirServicoPneu(codUnidade);
-        } else {
-            // Se a unidade não tem integração ativada, então não nos interessa qualquer outra coisa, devemos abrir
-            // serviços de pneus.
-            abrirServico = true;
-        }
-        return getIntegradorProLog().insertAfericao(codUnidade, afericao, abrirServico);
     }
 
     @Override

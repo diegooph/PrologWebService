@@ -358,8 +358,10 @@ public abstract class Sistema implements OperacoesIntegradas {
 
     @NotNull
     @Override
-    public Veiculo getVeiculoByPlaca(@NotNull final String placa, final boolean withPneus) throws Exception {
-        return getIntegradorProLog().getVeiculoByPlaca(placa, withPneus);
+    public Veiculo getVeiculoByPlaca(@NotNull final String placa,
+                                     @Nullable final Long codUnidade,
+                                     final boolean withPneus) throws Exception {
+        return getIntegradorProLog().getVeiculoByPlaca(placa, codUnidade, withPneus);
     }
 
     @NotNull
