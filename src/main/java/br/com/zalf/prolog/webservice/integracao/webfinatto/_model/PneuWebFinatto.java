@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.integracao.webfinatto._model;
 
+import br.com.zalf.prolog.webservice.integracao.webfinatto.utils.SistemaWebFinattoConstants;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -78,6 +79,11 @@ public class PneuWebFinatto {
             throw new IllegalStateException("A posição do pneu não pode ser nula para esse cenário.");
         }
         return posicaoAplicado;
+    }
+
+    @NotNull
+    public String getCodEmpresaFilial() {
+        return codEmpresaPneu.concat(SistemaWebFinattoConstants.SEPARADOR_EMPRESA_FILIAL).concat(codFilialPneu);
     }
 
     @NotNull

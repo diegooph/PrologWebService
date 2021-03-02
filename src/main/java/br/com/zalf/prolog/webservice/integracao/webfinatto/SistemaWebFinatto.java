@@ -313,8 +313,22 @@ public class SistemaWebFinatto extends Sistema {
     @NotNull
     public List<Pneu> getPneusByCodUnidadesByStatus(@NotNull final List<Long> codUnidades,
                                                     @NotNull final StatusPneu status) throws Throwable {
-        Log.d(TAG, "passando pela integração");
-        return super.getPneusByCodUnidadesByStatus(codUnidades, status);
+        Connection conn = null;
+        final DatabaseConnectionProvider connectionProvider = new DatabaseConnectionProvider();
+        try {
+            conn = connectionProvider.provideDatabaseConnection();
+            final UnidadeDeParaHolder unidadeDeParaHolder =
+                    integracaoDao.getCodAuxiliarByCodUnidadeProlog(conn, codUnidades);
+            final List<PneuWebFinatto> pneusByFiliais =
+                    internalGetPneusByFiliais(conn,
+                                              unidadeDeParaHolder.getCodEmpresaProlog(),
+                                              unidadeDeParaHolder.getCodFiliais());
+            return SistemaWebFinattoConverter.createPneusByStatus(unidadeDeParaHolder,
+                                                                  status,
+                                                                  pneusByFiliais);
+        } finally {
+            connectionProvider.closeResources(conn);
+        }
     }
 
     @Override
