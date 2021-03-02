@@ -342,12 +342,33 @@ public class SistemaWebFinatto extends Sistema {
                        @NotNull final ProcessoMovimentacao processoMovimentacao,
                        @NotNull final OffsetDateTime dataHoraMovimentacao,
                        final boolean fecharServicosAutomaticamente) throws Throwable {
-        Log.d(TAG, "passando pela integração");
-        return super.insert(servicoDao,
-                            campoPersonalizadoDao,
-                            processoMovimentacao,
-                            dataHoraMovimentacao,
-                            fecharServicosAutomaticamente);
+        Connection conn = null;
+        final DatabaseConnectionProvider connectionProvider = new DatabaseConnectionProvider();
+        try {
+            conn = connectionProvider.provideDatabaseConnection();
+            conn.setAutoCommit(false);
+            final Long codUnidadeProlog = processoMovimentacao.getUnidade().getCodigo();
+            final ZoneId zoneIdForCodUnidade = TimeZoneManager.getZoneIdForCodUnidade(codUnidadeProlog, conn);
+            final UnidadeDeParaHolder unidadeDeParaHolder =
+                    integracaoDao.getCodAuxiliarByCodUnidadeProlog(conn, Collections.singletonList(codUnidadeProlog));
+            final ApiAutenticacaoHolder apiAutenticacaoHolder =
+                    integracaoDao.getApiAutenticacaoHolder(conn,
+                                                           unidadeDeParaHolder.getCodEmpresaProlog(),
+                                                           getSistemaKey(),
+                                                           MetodoIntegrado.INSERT_AFERICAO_PLACA);
+
+            requester.insertProcessoMovimentacao(apiAutenticacaoHolder,
+                                                 SistemaWebFinattoConverter.createProcessoMovimentacao(
+                                                         unidadeDeParaHolder,
+                                                         dataHoraMovimentacao,
+                                                         zoneIdForCodUnidade,
+                                                         processoMovimentacao));
+
+            conn.commit();
+            return 1L;
+        } finally {
+            connectionProvider.closeResources(conn);
+        }
     }
 
     @NotNull

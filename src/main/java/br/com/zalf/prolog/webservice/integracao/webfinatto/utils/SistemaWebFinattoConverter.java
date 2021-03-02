@@ -4,6 +4,11 @@ import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.ErrorReportSystem;
 import br.com.zalf.prolog.webservice.frota.pneu._model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.*;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.Movimentacao;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestinoEnum;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.ProcessoMovimentacao;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.destino.DestinoVeiculo;
+import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.origem.OrigemVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
@@ -23,10 +28,15 @@ import br.com.zalf.prolog.webservice.integracao.webfinatto._model.VeiculoWebFina
 import br.com.zalf.prolog.webservice.integracao.webfinatto._model.afericao.AfericaoPlacaWebFinatto;
 import br.com.zalf.prolog.webservice.integracao.webfinatto._model.afericao.AfericaoPneuWebFinatto;
 import br.com.zalf.prolog.webservice.integracao.webfinatto._model.afericao.MedicaoAfericaoWebFinatto;
+import br.com.zalf.prolog.webservice.integracao.webfinatto._model.movimentacao.MovimentacaoWebFinatto;
+import br.com.zalf.prolog.webservice.integracao.webfinatto._model.movimentacao.PneuMovimentavaoWebFinatto;
+import br.com.zalf.prolog.webservice.integracao.webfinatto._model.movimentacao.ProcessoMovimentacaoWebFinatto;
+import br.com.zalf.prolog.webservice.integracao.webfinatto._model.movimentacao.VeiculoMovimentacaoWebFinatto;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.math.BigDecimal;
+import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.*;
@@ -36,7 +46,7 @@ import java.util.stream.Collectors;
 public class SistemaWebFinattoConverter {
     @NotNull
     private static final String TAG = SistemaWebFinattoConverter.class.getSimpleName();
-    private static final double VALOR_NAO_COLETADO = 0.0;
+    private static final double VALOR_NAO_COLETADO = -1.0;
 
     private SistemaWebFinattoConverter() {
         throw new IllegalStateException(SistemaWebFinattoConverter.class.getSimpleName() + " cannot be instantiated!");
@@ -408,9 +418,10 @@ public class SistemaWebFinattoConverter {
     public static AfericaoPneuWebFinatto createAfericaoAvulsa(@NotNull final UnidadeDeParaHolder unidadeDeParaHolder,
                                                               @NotNull final ZoneId zoneId,
                                                               @NotNull final AfericaoAvulsa afericaoAvulsa) {
+        final String[] codEmpresaFilial = unidadeDeParaHolder.getCodFiliais().split(":");
         return new AfericaoPneuWebFinatto(
-                unidadeDeParaHolder.getCodFiliais(),
-                unidadeDeParaHolder.getCodFiliais(),
+                codEmpresaFilial[0],
+                codEmpresaFilial[1],
                 Colaborador.formatCpf(afericaoAvulsa.getColaborador().getCpf()),
                 afericaoAvulsa.getTempoRealizacaoAfericaoInMillis(),
                 afericaoAvulsa.getDataHora(),
@@ -418,6 +429,109 @@ public class SistemaWebFinattoConverter {
                 afericaoAvulsa.getTipoMedicaoColetadaAfericao().asString(),
                 Collections.singletonList(createMedicaoAfericao(afericaoAvulsa.getPneuAferido(),
                                                                 afericaoAvulsa.getTipoMedicaoColetadaAfericao())));
+    }
+
+    @NotNull
+    public static ProcessoMovimentacaoWebFinatto createProcessoMovimentacao(
+            @NotNull final UnidadeDeParaHolder unidadeDeParaHolder,
+            @NotNull final OffsetDateTime dataHoraMovimentacao,
+            @NotNull final ZoneId zoneIdForCodUnidade,
+            @NotNull final ProcessoMovimentacao processoMovimentacao) {
+        final String[] codEmpresaFilial = unidadeDeParaHolder.getCodFiliais().split(":");
+        return new ProcessoMovimentacaoWebFinatto(codEmpresaFilial[0],
+                                                  codEmpresaFilial[1],
+                                                  processoMovimentacao.getColaborador().getCpfAsString(),
+                                                  dataHoraMovimentacao.toLocalDateTime(),
+                                                  dataHoraMovimentacao.atZoneSameInstant(zoneIdForCodUnidade)
+                                                          .toLocalDateTime(),
+                                                  processoMovimentacao.getObservacao(),
+                                                  null,
+                                                  createVeiculoMovimentacao(codEmpresaFilial, processoMovimentacao),
+                                                  createMovimentacoes(codEmpresaFilial, processoMovimentacao));
+    }
+
+    @NotNull
+    private static List<MovimentacaoWebFinatto> createMovimentacoes(
+            @NotNull final String[] codEmpresaFilial,
+            @NotNull final ProcessoMovimentacao processoMovimentacao) {
+        final List<MovimentacaoWebFinatto> movimentacoesWebFinatto = new ArrayList<>();
+        for (final Movimentacao movimentacao : processoMovimentacao.getMovimentacoes()) {
+            movimentacoesWebFinatto.add(createMovimentacao(codEmpresaFilial, movimentacao));
+        }
+        return movimentacoesWebFinatto;
+    }
+
+    @NotNull
+    private static MovimentacaoWebFinatto createMovimentacao(@NotNull final String[] codEmpresaFilial,
+                                                             @NotNull final Movimentacao movimentacao) {
+        final String tipoOrigem;
+        final String tipoDestino;
+        Integer posicaoOrigem = null;
+        Integer posicaoDestino = null;
+
+        if (movimentacao.isFrom(OrigemDestinoEnum.VEICULO)) {
+            final OrigemVeiculo origem = (OrigemVeiculo) movimentacao.getOrigem();
+            tipoOrigem = "APLICADO";
+            posicaoOrigem = origem.getPosicaoOrigemPneu();
+        } else {
+            tipoOrigem = "ESTOQUE";
+        }
+        if (movimentacao.isTo(OrigemDestinoEnum.VEICULO)) {
+            final DestinoVeiculo destino = (DestinoVeiculo) movimentacao.getDestino();
+            tipoDestino = "APLICADO";
+            posicaoDestino = destino.getPosicaoDestinoPneu();
+        } else {
+            tipoDestino = "ESTOQUE";
+        }
+
+        return new MovimentacaoWebFinatto(createPneuMovimentacao(codEmpresaFilial, movimentacao.getPneu()),
+                                          tipoOrigem,
+                                          posicaoOrigem,
+                                          tipoDestino,
+                                          posicaoDestino,
+                                          movimentacao.getObservacao());
+    }
+
+    @NotNull
+    private static PneuMovimentavaoWebFinatto createPneuMovimentacao(@NotNull final String[] codEmpresaFilial,
+                                                                     @NotNull final Pneu pneu) {
+        return new PneuMovimentavaoWebFinatto(codEmpresaFilial[0],
+                                              codEmpresaFilial[1],
+                                              pneu.getCodigo().toString(),
+                                              pneu.getCodigoCliente(),
+                                              pneu.getVidaAtual(),
+                                              VALOR_NAO_COLETADO,
+                                              VALOR_NAO_COLETADO,
+                                              VALOR_NAO_COLETADO,
+                                              VALOR_NAO_COLETADO,
+                                              VALOR_NAO_COLETADO);
+    }
+
+    @NotNull
+    private static VeiculoMovimentacaoWebFinatto createVeiculoMovimentacao(
+            @NotNull final String[] codEmpresaFilial,
+            @NotNull final ProcessoMovimentacao processoMovimentacao) {
+        Veiculo veiculo = null;
+        for (final Movimentacao movimentacoe : processoMovimentacao.getMovimentacoes()) {
+            if (movimentacoe.isFrom(OrigemDestinoEnum.VEICULO)) {
+                veiculo = ((OrigemVeiculo) movimentacoe.getOrigem()).getVeiculo();
+                break;
+            }
+            if (movimentacoe.isTo(OrigemDestinoEnum.VEICULO)) {
+                veiculo = ((DestinoVeiculo) movimentacoe.getDestino()).getVeiculo();
+                break;
+            }
+        }
+
+        if (veiculo == null) {
+            throw new IllegalStateException("A movimentação deve envolver um veículo");
+        }
+
+        return new VeiculoMovimentacaoWebFinatto(codEmpresaFilial[0],
+                                                 codEmpresaFilial[1],
+                                                 veiculo.getKmAtual(),
+                                                 veiculo.getPlaca(),
+                                                 veiculo.getCodigo().toString());
     }
 
     @NotNull
