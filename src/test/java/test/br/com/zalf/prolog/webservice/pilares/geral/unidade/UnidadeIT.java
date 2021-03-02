@@ -1,5 +1,6 @@
 package test.br.com.zalf.prolog.webservice.pilares.geral.unidade;
 
+import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
 import br.com.zalf.prolog.webservice.errorhandling.sql.NotFoundException;
 import br.com.zalf.prolog.webservice.geral.unidade.UnidadeDao;
 import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeEdicaoDto;
@@ -92,4 +93,28 @@ public class UnidadeIT extends IntegrationTest {
             baseEntity = dao.findById(TEST_UNIDADE_ID)
                     .orElseThrow(NotFoundException::new);
         }
+
+        @Test
+        @DisplayName("Dado UnidadeEdicaoDto, retorne SuccessResponse")
+        void givenUnidadeEdicaoDto_ThenReturnSuccessResponseAndStatusOk() {
+            final UnidadeEdicaoDto dtoToUpdate = UnidadeEdicaoDto.builder()
+                    .codUnidade(baseEntity.getCodigo())
+                    .nomeUnidade(baseEntity.getNome() + "Test")
+                    .codAuxiliarUnidade(baseEntity.getCodAuxiliar())
+                    .latitudeUnidade(baseEntity.getLatitudeUnidade())
+                    .longitudeUnidade(baseEntity.getLongitudeUnidade())
+                    .build();
+
+            final RequestEntity<UnidadeEdicaoDto> requestEntity = RequestEntity
+                    .put(URI.create(createPathWithPort(RESOURCE)))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(dtoToUpdate);
+
+            final ResponseEntity<SuccessResponse> response = getTestRestTemplate()
+                    .exchange(requestEntity, SuccessResponse.class);
+
+            assertBaseValidations(response);
+            assertThat(response.getBody().getUniqueItemId()).isEqualTo(dtoToUpdate.getCodUnidade());
+        }
     }
+}
