@@ -175,9 +175,10 @@ public class SistemaWebFinattoConverter {
                 .stream()
                 .map(pneu -> createMedicaoAfericao(pneu, afericaoPlaca.getTipoMedicaoColetadaAfericao()))
                 .collect(Collectors.toList());
+        final String[] codEmpresaFilial = unidadeDeParaHolder.getCodFiliais().split(":");
         return new AfericaoPlacaWebFinatto(
-                unidadeDeParaHolder.getCodFiliais(),
-                unidadeDeParaHolder.getCodFiliais(),
+                codEmpresaFilial[0],
+                codEmpresaFilial[1],
                 afericaoPlaca.getVeiculo().getPlaca(),
                 Colaborador.formatCpf(afericaoPlaca.getColaborador().getCpf()),
                 afericaoPlaca.getKmMomentoAfericao(),
