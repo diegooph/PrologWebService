@@ -1,11 +1,15 @@
 package test.br.com.zalf.prolog.webservice.pilares.geral.unidade;
 
+import br.com.zalf.prolog.webservice.errorhandling.sql.NotFoundException;
 import br.com.zalf.prolog.webservice.geral.unidade.UnidadeDao;
+import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeEdicaoDto;
+import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeEntity;
 import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeVisualizacaoListagemDto;
 import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
@@ -27,6 +31,9 @@ public class UnidadeIT extends IntegrationTest {
 
     private static final String RESOURCE = "unidades/";
     private static final Long TEST_UNIDADE_ID = 5L;
+
+    @Autowired
+    private UnidadeDao dao;
 
     private <T> void assertBaseValidations(final ResponseEntity<T> responseEntity) {
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -74,4 +81,15 @@ public class UnidadeIT extends IntegrationTest {
                 .map(Assertions::assertThat)
                 .forEach(AbstractAssert::isNotNull);
     }
-}
+
+    @Nested
+    class PersistenceTests {
+
+        private UnidadeEntity baseEntity;
+
+        @BeforeEach
+        void setUp() {
+            baseEntity = dao.findById(TEST_UNIDADE_ID)
+                    .orElseThrow(NotFoundException::new);
+        }
+    }
