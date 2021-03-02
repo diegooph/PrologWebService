@@ -42,7 +42,7 @@ public class UnidadeIT extends IntegrationTest {
     }
 
     @Test
-    @DisplayName("Busca uma unidade através de um código.")
+    @DisplayName("Dado código da unidade, retorne a UnidadeVisualizacaoListagem correspondente.")
     void givenCodUnidadeToRequest_ThenReturnUnidadeVisualizacaoListagemAndStatusOK() {
 
         final RequestEntity<Void> requestEntity = RequestEntity
