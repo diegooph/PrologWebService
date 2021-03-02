@@ -5,6 +5,7 @@ import okhttp3.ResponseBody;
 import org.jetbrains.annotations.NotNull;
 
 import javax.ws.rs.core.Response;
+import java.util.List;
 
 public class SistemaWebFinattoException extends IntegracaoException {
     public SistemaWebFinattoException(@NotNull final String message) {
@@ -22,8 +23,9 @@ public class SistemaWebFinattoException extends IntegracaoException {
         try {
             final String jsonErrorBody = errorBody.string();
             try {
-                final ErrorResponseWebFinatto error = ErrorResponseWebFinatto.generateFromString(jsonErrorBody);
-                return new SistemaWebFinattoException(error.getErrorMessage());
+                final List<ErrorResponseWebFinatto> error =
+                        ErrorResponseWebFinattoHolder.generateFromString(jsonErrorBody);
+                return new SistemaWebFinattoException(error.toString());
             } catch (final Exception e) {
                 // Lançamos essa Exception para conseguirmos encapsular o JSON de erro que não foi convertido.
                 // Só assim conseguiremos tratar de forma mais eficaz.
