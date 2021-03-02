@@ -34,7 +34,7 @@ public class PneuWebFinatto {
     private final Double sulcoInternoPneuEmMilimetros;
     @Nullable
     private final String dotPneu;
-    @NotNull
+    @Nullable
     private final Long codEstruturaPneu;
     @NotNull
     private final Double alturaEstruturaPneu;
@@ -78,5 +78,13 @@ public class PneuWebFinatto {
             throw new IllegalStateException("A posição do pneu não pode ser nula para esse cenário.");
         }
         return posicaoAplicado;
+    }
+
+    @NotNull
+    public Long getCodEstruturaPneu() {
+        if (codEstruturaPneu == null) {
+            return 1L;
+        }
+        return codEstruturaPneu;
     }
 }
