@@ -317,8 +317,29 @@ public class SistemaWebFinatto extends Sistema {
     @Override
     @NotNull
     public VeiculoDadosColetaKm getDadosColetaKmByCodigo(@NotNull final Long codVeiculo) throws Throwable {
-        Log.d(TAG, "passando pela integração");
-        return super.getDadosColetaKmByCodigo(codVeiculo);
+        Connection conn = null;
+        final DatabaseConnectionProvider connectionProvider = new DatabaseConnectionProvider();
+        try {
+            conn = connectionProvider.provideDatabaseConnection();
+            final Long codUnidadeProlog = WebFinattoEncoderDecoder.extraiCodUnidade(codVeiculo);
+            final Long codVeiculoProlog = WebFinattoEncoderDecoder.extraiCodVeiculo(codVeiculo);
+            final UnidadeDeParaHolder unidadeDeParaHolder =
+                    integracaoDao.getCodAuxiliarByCodUnidadeProlog(conn, Collections.singletonList(codUnidadeProlog));
+
+            final List<VeiculoWebFinatto> veiculosByFiliais =
+                    internalGetVeiculosByFiliais(conn,
+                                                 unidadeDeParaHolder.getCodEmpresaProlog(),
+                                                 unidadeDeParaHolder.getCodFiliais());
+            final VeiculoWebFinatto veiculoWebFinatto = veiculosByFiliais.stream()
+                    .filter(veiculo -> veiculo.getCodVeiculo().equalsIgnoreCase(codVeiculoProlog.toString()))
+                    .findAny()
+                    .orElseThrow(() -> {
+                        throw new SistemaWebFinattoException("Placa não encontrada para movimentar");
+                    });
+            return SistemaWebFinattoConverter.createVeiculoDadosColetaKm(veiculoWebFinatto);
+        } finally {
+            connectionProvider.closeResources(conn);
+        }
     }
 
     @Override

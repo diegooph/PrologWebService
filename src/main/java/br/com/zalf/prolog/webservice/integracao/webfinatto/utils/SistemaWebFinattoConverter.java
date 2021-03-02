@@ -13,6 +13,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.listagem.VeiculoListagem;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoDadosColetaKm;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoVisualizacao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoVisualizacaoPneu;
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
@@ -238,6 +239,19 @@ public class SistemaWebFinattoConverter {
             pneus.add(createPneuByStatus(unidadeDeParaHolder, status, pneuWebFinatto));
         }
         return pneus;
+    }
+
+    @NotNull
+    public static VeiculoDadosColetaKm createVeiculoDadosColetaKm(@NotNull final VeiculoWebFinatto veiculoWebFinatto) {
+        return VeiculoDadosColetaKm.of(Long.valueOf(veiculoWebFinatto.getCodVeiculo()),
+                                       veiculoWebFinatto.getPlacaVeiculo(),
+                                       veiculoWebFinatto.getKmAtualVeiculo(),
+                                       veiculoWebFinatto.getCodigoFrota(),
+                                       true,
+                                       true,
+                                       false,
+                                       true,
+                                       VeiculoDadosColetaKm.VeiculoDadosTratorColetaKm.builder().build());
     }
 
     @NotNull
