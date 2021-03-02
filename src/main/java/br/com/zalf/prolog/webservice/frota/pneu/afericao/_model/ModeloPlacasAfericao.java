@@ -20,6 +20,18 @@ public class ModeloPlacasAfericao {
     public ModeloPlacasAfericao() {
     }
 
+    @Override
+    public String toString() {
+        return "ModeloPlacasAfericao{" +
+                "nomeModelo='" + nomeModelo + '\'' +
+                ", placasAfericao=" + placasAfericao +
+                ", qtdModeloSulcoOk=" + qtdModeloSulcoOk +
+                ", qtdModeloPressaoOk=" + qtdModeloPressaoOk +
+                ", qtdModeloSulcoPressaoOk=" + qtdModeloSulcoPressaoOk +
+                ", totalVeiculosModelo=" + totalVeiculosModelo +
+                '}';
+    }
+
     public String getNomeModelo() {
         return nomeModelo;
     }
@@ -68,18 +80,7 @@ public class ModeloPlacasAfericao {
         this.totalVeiculosModelo = totalVieculosModelo;
     }
 
-    @Override
-    public String toString() {
-        return "ModeloPlacasAfericao{" +
-                "nomeModelo='" + nomeModelo + '\'' +
-                ", placasAfericao=" + placasAfericao +
-                ", qtdModeloSulcoOk=" + qtdModeloSulcoOk +
-                ", qtdModeloPressaoOk=" + qtdModeloPressaoOk +
-                ", qtdModeloSulcoPressaoOk=" + qtdModeloSulcoPressaoOk +
-                ", totalVeiculosModelo=" + totalVeiculosModelo +
-                '}';
-    }
-
+    @SuppressWarnings("checkstyle:WhitespaceAround")
     public static class PlacaAfericao {
 
         /**
@@ -173,6 +174,15 @@ public class ModeloPlacasAfericao {
         public PlacaAfericao() {
         }
 
+        @Override
+        public String toString() {
+            return "PlacaAfericao{" +
+                    "placa='" + placa + '\'' +
+                    ", intervaloUltimaAfericaoSulco=" + intervaloUltimaAfericaoSulco +
+                    ", intervaloUltimaAfericaoPressao=" + intervaloUltimaAfericaoPressao +
+                    '}';
+        }
+
         public FormaColetaDadosAfericaoEnum getFormaColetaDadosSulco() {
             return formaColetaDadosSulco;
         }
@@ -208,6 +218,7 @@ public class ModeloPlacasAfericao {
             this.placa = placa;
         }
 
+        @SuppressWarnings("checkstyle:WhitespaceAfter")
         public Long getCodigoVeiculo() { return codigoVeiculo;}
 
         public void setCodigoVeiculo(final Long codigoVeiculo) { this.codigoVeiculo = codigoVeiculo;}
@@ -216,7 +227,7 @@ public class ModeloPlacasAfericao {
             return identificadorFrota;
         }
 
-        public void setIdentificadorFrota(String identificadorFrota) {
+        public void setIdentificadorFrota(final String identificadorFrota) {
             this.identificadorFrota = identificadorFrota;
         }
 
@@ -304,15 +315,6 @@ public class ModeloPlacasAfericao {
         private boolean isAfericaoSulcoVencidaOuNuncaAferida(final int metaSulco) {
             return intervaloUltimaAfericaoSulco > metaSulco
                     || intervaloUltimaAfericaoSulco == PlacaAfericao.INTERVALO_INVALIDO;
-        }
-
-        @Override
-        public String toString() {
-            return "PlacaAfericao{" +
-                    "placa='" + placa + '\'' +
-                    ", intervaloUltimaAfericaoSulco=" + intervaloUltimaAfericaoSulco +
-                    ", intervaloUltimaAfericaoPressao=" + intervaloUltimaAfericaoPressao +
-                    '}';
         }
     }
 }

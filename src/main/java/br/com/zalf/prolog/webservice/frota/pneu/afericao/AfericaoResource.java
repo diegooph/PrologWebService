@@ -103,7 +103,8 @@ public class AfericaoResource {
      * o body da requisição
      * para receber os dados:
      * <br>
-     * {@link #getNovaAfericaoPlaca(AfericaoBuscaFiltro, String) getNovaAfericaoPlaca(afericaoBuscaFiltro, userToken)}
+     * {@link #getNovaAfericaoPlaca(String, Long, Long, String, TipoMedicaoColetadaAfericao)}
+     * getNovaAfericaoPlaca(afericaoBuscaFiltro, userToken)}
      * <br>
      * Porém há sistemas dependentes desse endpoint ainda (WS, Android).
      */
@@ -122,7 +123,7 @@ public class AfericaoResource {
         final Long codigoVeiculo = VeiculoBackwardHelper.getCodVeiculoByPlaca(codigoColaborador, placa);
         final TipoMedicaoColetadaAfericao tipoAfericaoEnum = TipoMedicaoColetadaAfericao.fromString(tipoAfericao);
         final AfericaoBuscaFiltro afericaoBusca =
-                AfericaoBuscaFiltro.of(codigoVeiculo, placa, codUnidade, tipoAfericaoEnum);
+                AfericaoBuscaFiltro.of(codUnidade, codigoVeiculo, placa, tipoAfericaoEnum);
         return service.getNovaAfericaoPlaca(afericaoBusca, userToken);
     }
 
@@ -130,9 +131,15 @@ public class AfericaoResource {
     @Path("/nova-afericao-placa")
     @Secured(permissions = Pilares.Frota.Afericao.REALIZAR_AFERICAO_PLACA)
     @UsedBy(platforms = Platform.ANDROID)
-    public NovaAfericaoPlaca getNovaAfericaoPlaca(@Required final AfericaoBuscaFiltro afericaoBusca,
-                                                  @HeaderParam("Authorization") @Required final String userToken)
+    public NovaAfericaoPlaca getNovaAfericaoPlaca(@HeaderParam("Authorization") @Required final String userToken,
+                                                  @QueryParam("codUnidade") @Required final Long codUnidade,
+                                                  @QueryParam("codVeiculo") @Required final Long codVeiculo,
+                                                  @QueryParam("placaVeiculo") @Required final String placaVeiculo,
+                                                  @QueryParam("tipoAfericao") @Required final TipoMedicaoColetadaAfericao tipoAfericao)
             throws ProLogException {
+        final TipoMedicaoColetadaAfericao tipoAfericaoEnum = tipoAfericao;
+        final AfericaoBuscaFiltro afericaoBusca =
+                AfericaoBuscaFiltro.of(codUnidade, codVeiculo, placaVeiculo, tipoAfericaoEnum);
         return service.getNovaAfericaoPlaca(afericaoBusca, userToken);
     }
 
