@@ -469,7 +469,7 @@ public class SistemaWebFinattoConverter {
         dimensao.setAro(pneuAplicado.getAroEstruturaPneu());
         pneu.setDimensao(dimensao);
         final ModeloPneu modeloPneu = new ModeloPneu();
-        modeloPneu.setCodigo(Long.parseLong(pneuAplicado.getCodModeloBanda()));
+        modeloPneu.setCodigo(Long.parseLong(pneuAplicado.getCodModeloPneu()));
         modeloPneu.setNome(pneuAplicado.getNomeModeloPneu());
         modeloPneu.setQuantidadeSulcos(pneuAplicado.getQtdSulcosModeloPneu());
         modeloPneu.setAlturaSulcos(pneuAplicado.getAlturaSulcosModeloPneuEmMilimetros().doubleValue());
