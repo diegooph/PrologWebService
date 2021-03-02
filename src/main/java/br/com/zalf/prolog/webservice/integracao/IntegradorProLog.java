@@ -335,7 +335,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
     @Override
     public Veiculo getVeiculoByPlaca(@NotNull final String placa,
                                      @Nullable final Long codUnidade,
-                                     final boolean withPneus) throws Exception {
+                                     final boolean withPneus) throws Throwable {
         if (veiculoDao == null) {
             veiculoDao = Injection.provideVeiculoDao();
         }

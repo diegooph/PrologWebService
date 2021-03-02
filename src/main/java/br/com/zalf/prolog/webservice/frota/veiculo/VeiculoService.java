@@ -80,12 +80,16 @@ public final class VeiculoService {
             return RouterVeiculo
                     .create(dao, userToken)
                     .getVeiculoByPlaca(placa, codUnidade, withPneus);
-        } catch (final Exception e) {
-            Log.e(TAG, String.format("Erro ao buscar o veículo. \n" +
-                                             "Placa: %s \n" +
-                                             "withPneus: %b \n" +
-                                             "userToken: %s", placa, withPneus, userToken), e);
-            return null;
+        } catch (final Throwable throwable) {
+            final String errorMessage = String.format("Erro ao buscar o veículo. \n" +
+                                                              "Placa: %s \n" +
+                                                              "codUnidade: %s \n" +
+                                                              "withPneus: %b \n" +
+                                                              "userToken: %s", placa, codUnidade, withPneus, userToken);
+            Log.e(TAG, errorMessage, throwable);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(throwable, "Erro ao buscar o veículo, tente novamente.");
         }
     }
 

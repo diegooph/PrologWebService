@@ -516,7 +516,7 @@ public abstract class Router implements OperacoesIntegradas {
     @Override
     public Veiculo getVeiculoByPlaca(@NotNull final String placa,
                                      @Nullable final Long codUnidade,
-                                     final boolean withPneus) throws Exception {
+                                     final boolean withPneus) throws Throwable {
         if (getSistema() != null) {
             return getSistema().getVeiculoByPlaca(placa, codUnidade, withPneus);
         } else {

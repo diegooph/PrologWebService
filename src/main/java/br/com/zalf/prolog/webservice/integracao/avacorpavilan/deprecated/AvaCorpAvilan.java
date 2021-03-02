@@ -486,7 +486,7 @@ public final class AvaCorpAvilan extends Sistema {
     @Override
     public Veiculo getVeiculoByPlaca(@NotNull final String placa,
                                      @Nullable final Long codUnidade,
-                                     final boolean withPneus) throws Exception {
+                                     final boolean withPneus) throws Throwable {
         throw new IllegalStateException("O sistema " + AvaCorpAvilan.class.getSimpleName() +
                                                 " não possui integração com o ProLog.");
     }
