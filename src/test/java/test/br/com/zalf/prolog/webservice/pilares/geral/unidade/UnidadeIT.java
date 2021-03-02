@@ -18,6 +18,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class UnidadeIT extends IntegrationTest {
 
+    private static final String RESOURCE = "unidades/";
+    private static final Long TEST_UNIDADE_ID = 5L;
+
     private <T> void assertBaseValidations(final ResponseEntity<T> responseEntity) {
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(responseEntity.getBody()).isNotNull();
