@@ -56,9 +56,12 @@ public final class VeiculoService {
     }
 
     @NotNull
-    public VeiculoVisualizacao getVeiculoByCodigo(@NotNull final Long codVeiculo) {
+    public VeiculoVisualizacao getVeiculoByCodigo(@NotNull final String userToken,
+                                                  @NotNull final Long codVeiculo) {
         try {
-            return dao.getVeiculoByCodigo(codVeiculo);
+            return RouterVeiculo
+                    .create(dao, userToken)
+                    .getVeiculoByCodigo(codVeiculo);
         } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao buscar o veículo.\n" +
                                              "código: %d", codVeiculo), t);

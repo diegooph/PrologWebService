@@ -226,8 +226,9 @@ public final class VeiculoResource {
             targetVersionCode = 68,
             versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
             actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
-    public VeiculoVisualizacao getVeiculoByCodigo(@QueryParam("codVeiculo") final Long codVeiculo) {
-        return service.getVeiculoByCodigo(codVeiculo);
+    public VeiculoVisualizacao getVeiculoByCodigo(@HeaderParam("Authorization") final String userToken,
+                                                  @QueryParam("codVeiculo") final Long codVeiculo) {
+        return service.getVeiculoByCodigo(userToken, codVeiculo);
     }
 
     @GET
