@@ -7,6 +7,7 @@ Change Log
 * Altera métodos do ServicoResource que recebem objeto de filtro de GET para POST
 * Adicionar código do veículo no retorno das buscas de serviço (PL-3524)
 * Remove placa de todo o fluxo de aferições (PL-3403)
+* Adiciona código de veículo no cronograma de aferição (PL-3496)
 
 
 <a name="v2.0.3"></a>
