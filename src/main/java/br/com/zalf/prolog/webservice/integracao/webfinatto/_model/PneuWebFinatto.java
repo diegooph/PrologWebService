@@ -87,4 +87,12 @@ public class PneuWebFinatto {
         }
         return codEstruturaPneu;
     }
+
+    @NotNull
+    public String getDotPneu() {
+        if (dotPneu == null) {
+            return "";
+        }
+        return dotPneu;
+    }
 }
