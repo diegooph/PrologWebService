@@ -9,6 +9,9 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.listagem.VeiculoListagem;
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Empresa;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Regional;
+import br.com.zalf.prolog.webservice.geral.unidade._model.Unidade;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoPosicaoPneuMapper;
 import br.com.zalf.prolog.webservice.integracao.integrador._model.*;
 import br.com.zalf.prolog.webservice.integracao.webfinatto._model.*;
@@ -199,6 +202,37 @@ public class SistemaWebFinattoConverter {
                 afericaoAvulsa.getTipoMedicaoColetadaAfericao().asString(),
                 Collections.singletonList(createMedicaoAfericao(afericaoAvulsa.getPneuAferido(),
                                                                 afericaoAvulsa.getTipoMedicaoColetadaAfericao())));
+    }
+
+    @NotNull
+    public static List<Empresa> createEmpresa(@NotNull final List<EmpresaWebFinatto> filtrosClientes) {
+        final Empresa empresa = new Empresa();
+        empresa.setCodigo(3L);
+        empresa.setNome("Finatto");
+        empresa.setListRegional(createRegionaisUnidades(filtrosClientes));
+        return Collections.singletonList(empresa);
+    }
+
+    @NotNull
+    private static List<Regional> createRegionaisUnidades(@NotNull final List<EmpresaWebFinatto> filtrosClientes) {
+        final List<Regional> regionais = new ArrayList<>();
+        for (final EmpresaWebFinatto empresaFinatto : filtrosClientes) {
+            final List<Unidade> unidades = new ArrayList<>();
+            for (final UnidadeWebFinatto unidadeFinatto : empresaFinatto.getUnidades()) {
+                final Unidade unidade = new Unidade();
+                unidade.setCodigo(unidadeFinatto.getIdUnidade());
+                unidade.setNome(unidadeFinatto.getDescricaoUnidade());
+                unidades.add(unidade);
+            }
+
+            final Regional regional = new Regional();
+            regional.setCodigo(empresaFinatto.getIdCliente());
+            regional.setNome(empresaFinatto.getNomeCliente());
+            regional.setListUnidade(unidades);
+
+            regionais.add(regional);
+        }
+        return regionais;
     }
 
     @NotNull

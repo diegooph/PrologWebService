@@ -23,10 +23,7 @@ import br.com.zalf.prolog.webservice.integracao.integrador._model.*;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.ApiAutenticacaoHolder;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
-import br.com.zalf.prolog.webservice.integracao.webfinatto._model.AfericaoPlacaWebFinatto;
-import br.com.zalf.prolog.webservice.integracao.webfinatto._model.AfericaoPneuWebFinatto;
-import br.com.zalf.prolog.webservice.integracao.webfinatto._model.PneuWebFinatto;
-import br.com.zalf.prolog.webservice.integracao.webfinatto._model.VeiculoWebFinatto;
+import br.com.zalf.prolog.webservice.integracao.webfinatto._model.*;
 import br.com.zalf.prolog.webservice.integracao.webfinatto._model.error.SistemaWebFinattoException;
 import br.com.zalf.prolog.webservice.integracao.webfinatto.data.SistemaWebFinattoRequester;
 import br.com.zalf.prolog.webservice.integracao.webfinatto.utils.SistemaWebFinattoConverter;
@@ -300,8 +297,20 @@ public class SistemaWebFinatto extends Sistema {
     @NotNull
     @Override
     public List<Empresa> getFiltros(@NotNull final Long cpf) throws Throwable {
-        Log.d(TAG, "passando pela integração");
-        return super.getFiltros(cpf);
+        Connection conn = null;
+        final DatabaseConnectionProvider connectionProvider = new DatabaseConnectionProvider();
+        try {
+            conn = connectionProvider.provideDatabaseConnection();
+            final ApiAutenticacaoHolder apiAutenticacaoHolder =
+                    integracaoDao.getApiAutenticacaoHolder(conn,
+                                                           3L,
+                                                           getSistemaKey(),
+                                                           MetodoIntegrado.GET_LOCAIS_DE_MOVIMENTO);
+            final List<EmpresaWebFinatto> filtrosClientes = requester.getFiltrosClientes(apiAutenticacaoHolder);
+            return SistemaWebFinattoConverter.createEmpresa(filtrosClientes);
+        } finally {
+            connectionProvider.closeResources(conn);
+        }
     }
 
     private void internalInsertAfericaoPlaca(@NotNull final Connection conn,
