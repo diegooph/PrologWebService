@@ -2,7 +2,6 @@ package br.com.zalf.prolog.webservice.integracao.webfinatto;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
-import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.customfields.CampoPersonalizadoDao;
 import br.com.zalf.prolog.webservice.database.DatabaseConnectionProvider;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu;
@@ -11,6 +10,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.ProcessoMovimentacao;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.EixoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.listagem.VeiculoListagem;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoDadosColetaKm;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoVisualizacao;
@@ -41,6 +41,7 @@ import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class SistemaWebFinatto extends Sistema {
@@ -264,7 +265,6 @@ public class SistemaWebFinatto extends Sistema {
     @Override
     @NotNull
     public VeiculoVisualizacao getVeiculoByCodigo(@NotNull final Long codVeiculo) throws Throwable {
-        Log.d(TAG, "passando pela integração");
         Connection conn = null;
         final DatabaseConnectionProvider connectionProvider = new DatabaseConnectionProvider();
         try {
@@ -302,6 +302,48 @@ public class SistemaWebFinatto extends Sistema {
                                                                         tipoVeiculoConfigAfericaoHolder,
                                                                         posicaoPneuMapper,
                                                                         veiculoByPlaca);
+        } finally {
+            connectionProvider.closeResources(conn);
+        }
+    }
+
+    @Override
+    @NotNull
+    public Veiculo getVeiculoByPlaca(@NotNull final String placa,
+                                     @Nullable final Long codUnidade,
+                                     final boolean withPneus) throws Throwable {
+        Connection conn = null;
+        final DatabaseConnectionProvider connectionProvider = new DatabaseConnectionProvider();
+        try {
+            conn = connectionProvider.provideDatabaseConnection();
+            final UnidadeDeParaHolder unidadeDeParaHolder =
+                    integracaoDao.getCodAuxiliarByCodUnidadeProlog(conn, Collections.singletonList(codUnidade));
+            final VeiculoWebFinatto veiculoByPlaca =
+                    internalGetVeiculoByPlaca(conn,
+                                              unidadeDeParaHolder.getCodEmpresaProlog(),
+                                              unidadeDeParaHolder.getCodFiliais(),
+                                              placa);
+            final TipoVeiculoConfigAfericaoHolder tipoVeiculoConfigAfericaoHolder =
+                    integracaoDao.getTipoVeiculoConfigAfericaoHolder(conn,
+                                                                     unidadeDeParaHolder.getCodUnidadesMapeadas());
+            final TipoVeiculoConfigAfericao tipoVeiculoConfigAfericao =
+                    tipoVeiculoConfigAfericaoHolder.get(veiculoByPlaca.getCodEmpresaFilialVeiculo(),
+                                                        veiculoByPlaca.getCodEstruturaVeiculo());
+            final IntegracaoPosicaoPneuMapper posicaoPneuMapper =
+                    new IntegracaoPosicaoPneuMapper(veiculoByPlaca.getCodEstruturaVeiculo(),
+                                                    integracaoDao.getMapeamentoPosicoesPrologByDeParaTipoVeiculo(
+                                                            conn,
+                                                            unidadeDeParaHolder.getCodEmpresaProlog(),
+                                                            veiculoByPlaca.getCodEstruturaVeiculo()));
+
+            final Set<EixoVeiculo> eixosDiagrama = Injection.provideVeiculoDao()
+                    .getEixosDiagrama(tipoVeiculoConfigAfericao.getCodDiagramaVeiculo(), conn);
+
+            return SistemaWebFinattoConverter.createVeiculo(unidadeDeParaHolder,
+                                                            tipoVeiculoConfigAfericao,
+                                                            posicaoPneuMapper,
+                                                            eixosDiagrama,
+                                                            veiculoByPlaca);
         } finally {
             connectionProvider.closeResources(conn);
         }
@@ -410,15 +452,6 @@ public class SistemaWebFinatto extends Sistema {
         } finally {
             connectionProvider.closeResources(conn);
         }
-    }
-
-    @Override
-    @NotNull
-    public Veiculo getVeiculoByPlaca(@NotNull final String placa,
-                                     @Nullable final Long codUnidade,
-                                     final boolean withPneus) throws Exception {
-        Log.d(TAG, "passando pela integração");
-        return super.getVeiculoByPlaca(placa, codUnidade, withPneus);
     }
 
     private void internalInsertAfericaoPlaca(@NotNull final Connection conn,

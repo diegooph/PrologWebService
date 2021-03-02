@@ -9,9 +9,9 @@ import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestin
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.ProcessoMovimentacao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.destino.DestinoVeiculo;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.origem.OrigemVeiculo;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.EixoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.listagem.VeiculoListagem;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoDadosColetaKm;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoVisualizacao;
@@ -228,6 +228,147 @@ public class SistemaWebFinattoConverter {
                                                                veiculo,
                                                                veiculo.getPneusAplicados()),
                                        null);
+    }
+
+    @NotNull
+    public static Veiculo createVeiculo(@NotNull final UnidadeDeParaHolder unidadeDeParaHolder,
+                                        @NotNull final TipoVeiculoConfigAfericao tipoVeiculoConfigAfericao,
+                                        @NotNull final IntegracaoPosicaoPneuMapper posicaoPneuMapper,
+                                        @NotNull final Set<EixoVeiculo> eixosDiagrama,
+                                        @NotNull final VeiculoWebFinatto veiculoByPlaca) {
+        final UnidadeDePara unidadeDePara =
+                unidadeDeParaHolder.getByCodAuxiliar(veiculoByPlaca.getCodEmpresaFilialVeiculo());
+        if (unidadeDePara == null) {
+            throw new IllegalStateException("Nenhum código de unidade mapeado para o código auxiliar:" +
+                                                    "\ncodAuxiliar: " + veiculoByPlaca.getCodEmpresaFilialVeiculo());
+        }
+
+        final Veiculo veiculo = new Veiculo();
+        veiculo.setCodigo(Long.parseLong(veiculoByPlaca.getCodVeiculo()));
+        veiculo.setPlaca(veiculoByPlaca.getPlacaVeiculo());
+        veiculo.setIdentificadorFrota(veiculoByPlaca.getCodigoFrota());
+        veiculo.setAtivo(true);
+        veiculo.setKmAtual(veiculoByPlaca.getKmAtualVeiculo());
+        veiculo.setCodRegionalAlocado(unidadeDePara.getCodRegionalProlog());
+        veiculo.setCodUnidadeAlocado(unidadeDePara.getCodUnidadeProlog());
+
+        // Eixos.
+        final Eixos eixos = new Eixos();
+        eixos.codigo = 1L;
+        eixos.dianteiro = tipoVeiculoConfigAfericao.getQtdEixoDianteiro().intValue();
+        eixos.traseiro = tipoVeiculoConfigAfericao.getQtdEixoTraseiro().intValue();
+        veiculo.setEixos(eixos);
+
+        // Tipo do veículo.
+        final TipoVeiculo tipo = new TipoVeiculo();
+        tipo.setCodigo(tipoVeiculoConfigAfericao.getCodTipoVeiculo());
+        tipo.setNome(tipoVeiculoConfigAfericao.getNomeTipoVeiculo());
+        veiculo.setTipo(tipo);
+
+        // Marca do veículo.
+        final Marca marca = new Marca();
+        marca.setCodigo(Long.parseLong(veiculoByPlaca.getCodMarcaVeiculo()));
+        marca.setNome(veiculoByPlaca.getNomeMarcaVeiculo());
+        veiculo.setMarca(marca);
+
+        // Modelo do veículo.
+        final ModeloVeiculo modelo = new ModeloVeiculo();
+        modelo.setCodigo(Long.parseLong(veiculoByPlaca.getCodModeloVeiculo()));
+        modelo.setNome(veiculoByPlaca.getNomeModeloVeiculo());
+        veiculo.setModelo(modelo);
+
+        // Diagrama do veículo.
+        veiculo.setDiagrama(new DiagramaVeiculo(tipoVeiculoConfigAfericao.getCodDiagramaVeiculo(),
+                                                tipoVeiculoConfigAfericao.getNomeDiagramaVeiculo(),
+                                                eixosDiagrama,
+                                                null));
+        veiculo.setListPneus(createListPneus(unidadeDePara,
+                                             posicaoPneuMapper,
+                                             veiculoByPlaca,
+                                             veiculoByPlaca.getPneusAplicados()));
+        return veiculo;
+    }
+
+    @NotNull
+    private static List<Pneu> createListPneus(@NotNull final UnidadeDePara unidadeDePara,
+                                              @NotNull final IntegracaoPosicaoPneuMapper posicaoPneuMapper,
+                                              @NotNull final VeiculoWebFinatto veiculoByPlaca,
+                                              @NotNull final List<PneuWebFinatto> pneusAplicados) {
+        final List<Pneu> pneus = new ArrayList<>();
+        for (final PneuWebFinatto pneusAplicado : pneusAplicados) {
+            pneus.add(createPneu(unidadeDePara, posicaoPneuMapper, veiculoByPlaca, pneusAplicado));
+        }
+        return pneus;
+    }
+
+    @NotNull
+    private static Pneu createPneu(@NotNull final UnidadeDePara unidadeDePara,
+                                   @NotNull final IntegracaoPosicaoPneuMapper posicaoPneuMapper,
+                                   @NotNull final VeiculoWebFinatto veiculoByPlaca,
+                                   @NotNull final PneuWebFinatto pneuAplicado) {
+        final PneuEmUso pneu = new PneuEmUso();
+        pneu.setCodigoCliente(pneuAplicado.getCodigoCliente());
+        pneu.setCodigo(Long.parseLong(pneuAplicado.getCodPneu()));
+        pneu.setCodUnidadeAlocado(unidadeDePara.getCodUnidadeProlog());
+        pneu.setNomeUnidadeAlocado(unidadeDePara.getNomeUnidadeProlog());
+        pneu.setCodRegionalAlocado(unidadeDePara.getCodRegionalProlog());
+        pneu.setNomeRegionalAlocado(unidadeDePara.getNomeRegionalProlog());
+        pneu.setPneuNovoNuncaRodado(false);
+        pneu.setVidaAtual(pneuAplicado.getVidaAtualPneu());
+        pneu.setVidasTotal(pneuAplicado.getVidaTotalPneu());
+        final Integer posicaoProlog = posicaoPneuMapper.mapPosicaoToProlog(pneuAplicado.getPosicaoAplicado());
+        if (posicaoProlog == null || posicaoProlog <= 0) {
+            // Antes de criar o pneu fazemos uma validação em todas as posições e identificamos se existe algo não
+            // mapeado. É 'quase' impossível essa exception estourar, porém, preferimos pecar pelo excesso.
+            throw new IllegalStateException("Posição de pneu não mapeada:" +
+                                                    "\nposicaoNaoMapeada: " + pneuAplicado.getPosicaoAplicado() +
+                                                    "\nposicaoProlog: " + posicaoProlog);
+        }
+        pneu.setStatus(StatusPneu.EM_USO);
+        pneu.setPosicao(posicaoProlog);
+        pneu.setPressaoAtual(pneuAplicado.getPressaoAtualPneuEmPsi());
+        pneu.setPressaoCorreta(pneuAplicado.getPressaoRecomendadaPneuEmPsi());
+        final Sulcos sulcosAtuais = new Sulcos();
+        sulcosAtuais.setInterno(pneuAplicado.getSulcoInternoPneuEmMilimetros());
+        sulcosAtuais.setCentralInterno(pneuAplicado.getSulcoCentralInternoPneuEmMilimetros());
+        sulcosAtuais.setCentralExterno(pneuAplicado.getSulcoCentralExternoPneuEmMilimetros());
+        sulcosAtuais.setExterno(pneuAplicado.getSulcoExternoPneuEmMilimetros());
+        pneu.setSulcosAtuais(sulcosAtuais);
+        pneu.setDot(pneuAplicado.getDotPneu());
+        final Pneu.Dimensao dimensao = new Pneu.Dimensao();
+        dimensao.setCodigo(pneuAplicado.getCodEstruturaPneu());
+        dimensao.setAltura(pneuAplicado.getAlturaEstruturaPneu().intValue());
+        dimensao.setLargura(pneuAplicado.getLarguraEstruturaPneu().intValue());
+        dimensao.setAro(pneuAplicado.getAroEstruturaPneu());
+        pneu.setDimensao(dimensao);
+        final Marca marcaPneu = new Marca();
+        marcaPneu.setCodigo(Long.parseLong(pneuAplicado.getCodMarcaPneu()));
+        marcaPneu.setNome(pneuAplicado.getNomeMarcaPneu());
+        pneu.setMarca(marcaPneu);
+
+        final ModeloPneu modeloPneu = new ModeloPneu();
+        modeloPneu.setCodigo(Long.parseLong(pneuAplicado.getCodModeloPneu()));
+        modeloPneu.setNome(pneuAplicado.getNomeModeloPneu());
+        modeloPneu.setQuantidadeSulcos(pneuAplicado.getQtdSulcosModeloPneu());
+        modeloPneu.setAlturaSulcos(pneuAplicado.getAlturaSulcosModeloPneuEmMilimetros().doubleValue());
+        pneu.setModelo(modeloPneu);
+        pneu.setValor(new BigDecimal("0.0"));
+        if (pneuAplicado.isRecapado()) {
+            final ModeloBanda modeloBanda = new ModeloBanda();
+            modeloBanda.setCodigo(Long.parseLong(pneuAplicado.getCodModeloBanda()));
+            modeloBanda.setNome(pneuAplicado.getNomeModeloBanda());
+            modeloBanda.setQuantidadeSulcos(pneuAplicado.getQtdSulcosModeloBanda());
+            modeloBanda.setAlturaSulcos(pneuAplicado.getAlturaSulcosModeloBandaEmMilimetros().doubleValue());
+            final Banda banda = new Banda();
+            banda.setModelo(modeloBanda);
+            pneu.setBanda(banda);
+        }
+
+        pneu.setPlaca(veiculoByPlaca.getPlacaVeiculo());
+        pneu.setIdentificadorFrota(veiculoByPlaca.getCodigoFrota());
+        pneu.setCodVeiculo(Long.parseLong(veiculoByPlaca.getCodVeiculo()));
+        pneu.setPosicaoAplicado("DE");
+        return pneu;
     }
 
     @NotNull

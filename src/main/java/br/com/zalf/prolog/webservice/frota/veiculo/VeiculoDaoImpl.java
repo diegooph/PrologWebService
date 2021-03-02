@@ -895,6 +895,33 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         }
     }
 
+    @Override
+    @NotNull
+    public Set<EixoVeiculo> getEixosDiagrama(final int codDiagrama, final Connection conn) throws SQLException {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        final Set<EixoVeiculo> eixos = new HashSet<>();
+        try {
+            stmt = conn.prepareStatement("SELECT * " +
+                                                 "FROM veiculo_diagrama_eixos " +
+                                                 "WHERE cod_diagrama = ? " +
+                                                 "ORDER BY posicao;");
+            stmt.setInt(1, codDiagrama);
+            rSet = stmt.executeQuery();
+            while (rSet.next()) {
+                final EixoVeiculo eixoVeiculo = new EixoVeiculo(
+                        TipoEixoVeiculo.fromString(rSet.getString("TIPO_EIXO")),
+                        rSet.getInt("QT_PNEUS"),
+                        rSet.getInt("POSICAO"),
+                        rSet.getBoolean("EIXO_DIRECIONAL"));
+                eixos.add(eixoVeiculo);
+            }
+        } finally {
+            close(stmt, rSet);
+        }
+        return eixos;
+    }
+
     @NotNull
     private Optional<VeiculosAcopladosVisualizacao> getVeiculosAcopladosByCodVeiculo(@NotNull final Connection conn,
                                                                                      @NotNull final Long codVeiculo)
@@ -1038,32 +1065,6 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
                 rSet.getString("NOME"),
                 getEixosDiagrama(rSet.getInt("CODIGO"), conn),
                 rSet.getString("URL_IMAGEM")));
-    }
-
-    @NotNull
-    private Set<EixoVeiculo> getEixosDiagrama(final int codDiagrama, final Connection conn) throws SQLException {
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        final Set<EixoVeiculo> eixos = new HashSet<>();
-        try {
-            stmt = conn.prepareStatement("SELECT * " +
-                                                 "FROM veiculo_diagrama_eixos " +
-                                                 "WHERE cod_diagrama = ? " +
-                                                 "ORDER BY posicao;");
-            stmt.setInt(1, codDiagrama);
-            rSet = stmt.executeQuery();
-            while (rSet.next()) {
-                final EixoVeiculo eixoVeiculo = new EixoVeiculo(
-                        TipoEixoVeiculo.fromString(rSet.getString("TIPO_EIXO")),
-                        rSet.getInt("QT_PNEUS"),
-                        rSet.getInt("POSICAO"),
-                        rSet.getBoolean("EIXO_DIRECIONAL"));
-                eixos.add(eixoVeiculo);
-            }
-        } finally {
-            close(stmt, rSet);
-        }
-        return eixos;
     }
 
     @NotNull
