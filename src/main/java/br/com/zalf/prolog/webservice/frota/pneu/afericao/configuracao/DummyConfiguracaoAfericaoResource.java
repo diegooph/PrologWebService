@@ -17,7 +17,7 @@ import java.util.List;
  *
  * @author Wellington Moraes (https://github.com/wvinim)
  */
-@Path("/dummies")
+@Path("/v2/dummies")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public final class DummyConfiguracaoAfericaoResource {

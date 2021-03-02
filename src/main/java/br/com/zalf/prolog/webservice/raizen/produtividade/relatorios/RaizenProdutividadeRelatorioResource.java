@@ -17,7 +17,7 @@ import javax.ws.rs.core.StreamingOutput;
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-@Path("/raizen/produtividades/relatorios")
+@Path("/v2/raizen/produtividades/relatorios")
 @ConsoleDebugLog
 @Secured(permissions = Pilares.Entrega.RaizenProdutividade.VISUALIZAR_RELATORIOS)
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")

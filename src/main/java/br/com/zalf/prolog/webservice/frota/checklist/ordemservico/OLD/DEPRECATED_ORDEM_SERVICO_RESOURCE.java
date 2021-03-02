@@ -22,7 +22,7 @@ import java.util.List;
  *DEPRECATED_ORDEM_SERVICO_RESOURCE
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-@Path("/checklist/ordemServico")
+@Path("/v2/checklist/ordemServico")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Deprecated

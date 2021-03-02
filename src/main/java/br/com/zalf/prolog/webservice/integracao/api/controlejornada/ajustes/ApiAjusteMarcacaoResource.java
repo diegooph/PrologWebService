@@ -20,7 +20,7 @@ import java.util.List;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 @ConsoleDebugLog
-@Path("/api/marcacoes/ajustes/")
+@Path("/v2/api/marcacoes/ajustes/")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public final class ApiAjusteMarcacaoResource {

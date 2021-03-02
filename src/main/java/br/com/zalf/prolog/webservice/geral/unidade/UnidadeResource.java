@@ -24,7 +24,7 @@ import java.util.List;
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
 @ConsoleDebugLog
-@Path("/unidades")
+@Path("/v2/unidades")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @Controller

@@ -16,7 +16,21 @@ public final class Exceptions {
     public static void swallowAny(@NotNull final RunnableException runnable) {
         try {
             runnable.run();
-        } catch (Throwable ignored) { }
+        } catch (final Throwable ignored) {
+        }
+    }
+
+    /**
+     * Cast a CheckedException as an unchecked one.
+     *
+     * @param throwable to cast
+     * @param <T>       the type of the Throwable
+     * @return this method will never return a Throwable instance, it will just throw it.
+     * @throws T the throwable as an unchecked throwable
+     */
+    @SuppressWarnings("unchecked")
+    public static <T extends Throwable> RuntimeException rethrow(final Throwable throwable) throws T {
+        throw (T) throwable;
     }
 
     @FunctionalInterface

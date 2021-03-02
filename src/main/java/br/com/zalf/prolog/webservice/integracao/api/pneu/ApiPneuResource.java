@@ -23,7 +23,7 @@ import java.util.List;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 @ConsoleDebugLog
-@Path("/api/pneus/")
+@Path("/v2/api/pneus/")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public final class ApiPneuResource {

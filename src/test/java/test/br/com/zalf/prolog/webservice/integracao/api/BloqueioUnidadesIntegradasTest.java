@@ -62,7 +62,8 @@ final class BloqueioUnidadesIntegradasTest {
                 10L,
                 13L,
                 1L,
-                1111L);
+                1111L,
+                false);
 
         final Throwable throwable = assertThrows(
                 ProLogException.class, () -> new VeiculoService().insert(USER_TOKEN_INTEGRADO, veiculoCadastro));
@@ -79,7 +80,8 @@ final class BloqueioUnidadesIntegradasTest {
                 10L,
                 13L,
                 1L,
-                1111L);
+                1111L,
+                false);
 
         final Throwable throwable = assertThrows(
                 ProLogException.class, () -> new VeiculoService().insert(USER_TOKEN_INTEGRADO, veiculoCadastro));
@@ -96,8 +98,9 @@ final class BloqueioUnidadesIntegradasTest {
                 null,
                 -1L,
                 -1L,
+                true,
                 1,
-                true);
+                false);
         final Throwable throwable = assertThrows(
                 ProLogException.class,
                 () -> new VeiculoService().update(-1L, USER_TOKEN_INTEGRADO, edicao));
@@ -114,8 +117,9 @@ final class BloqueioUnidadesIntegradasTest {
                 null,
                 -1L,
                 -1L,
+                true,
                 1,
-                true);
+                false);
         final Throwable throwable = assertThrows(
                 ProLogException.class,
                 () -> new VeiculoService().update(-1L, USER_TOKEN_INTEGRADO, edicao));
@@ -125,7 +129,7 @@ final class BloqueioUnidadesIntegradasTest {
     @Test
     void testUpdateStatusVeiculoUnidadeLiberada() {
         // TODO:
-        final VeiculoEdicaoStatus edicaoStatus = new VeiculoEdicaoStatus(-1L, true);
+        final VeiculoEdicaoStatus edicaoStatus = new VeiculoEdicaoStatus(-1L, true, false);
         final Throwable throwable = assertThrows(
                 ProLogException.class,
                 () -> new VeiculoService()
@@ -135,7 +139,7 @@ final class BloqueioUnidadesIntegradasTest {
 
     @Test
     void testUpdateStatusVeiculoUnidadeBloqueada() {
-        final VeiculoEdicaoStatus edicaoStatus = new VeiculoEdicaoStatus(-1L, true);
+        final VeiculoEdicaoStatus edicaoStatus = new VeiculoEdicaoStatus(-1L, true, false);
         final Throwable throwable = assertThrows(
                 ProLogException.class,
                 () -> new VeiculoService()

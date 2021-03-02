@@ -5,14 +5,19 @@ import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.pneu.nomenclatura.PneuNomenclaturaService;
-import br.com.zalf.prolog.webservice.frota.veiculo.error.VeiculoValidator;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.VeiculoCadastro;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculoNomenclatura;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculoPosicaoNomenclatura;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicaoStatus;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.listagem.VeiculoListagem;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoDadosColetaKm;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoVisualizacao;
+import br.com.zalf.prolog.webservice.frota.veiculo.validator.VeiculoValidator;
 import br.com.zalf.prolog.webservice.integracao.router.RouterVeiculo;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -35,7 +40,7 @@ public final class VeiculoService {
                                                        final boolean apenasAtivos,
                                                        @Nullable final Long codTipoVeiculo) {
         try {
-            return dao.buscaVeiculosByUnidades(codUnidades, apenasAtivos, codTipoVeiculo);
+            return dao.getVeiculosByUnidades(codUnidades, apenasAtivos, codTipoVeiculo);
         } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao buscar os veículos.\n" +
                     "codUnidades: %s\n" +
@@ -48,14 +53,12 @@ public final class VeiculoService {
     }
 
     @NotNull
-    public VeiculoVisualizacao getVeiculoByCodigo(@NotNull final String userToken,
-                                                  @NotNull final Long codVeiculo) {
+    public VeiculoVisualizacao getVeiculoByCodigo(@NotNull final Long codVeiculo) {
         try {
             return dao.getVeiculoByCodigo(codVeiculo);
         } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao buscar o veículo.\n" +
-                    "código: %d\n" +
-                    "userToken: %s", codVeiculo, userToken), t);
+                    "código: %d", codVeiculo), t);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao buscar o veículo, tente novamente.");
@@ -111,6 +114,7 @@ public final class VeiculoService {
                            @NotNull final String userToken,
                            @NotNull final VeiculoEdicao veiculo) {
         try {
+            VeiculoValidator.validacaoAtributosVeiculo(veiculo);
             RouterVeiculo
                     .create(dao, userToken)
                     .update(codColaboradorResponsavelEdicao,
@@ -130,6 +134,7 @@ public final class VeiculoService {
                                  @NotNull final String userToken,
                                  @NotNull final VeiculoEdicaoStatus veiculo) {
         try {
+            VeiculoValidator.validacaoAtributosVeiculo(veiculo);
             final VeiculoEdicao edicao = dao
                     .getVeiculoByCodigo(veiculo.getCodigo())
                     .toVeiculoEdicao(veiculo.isStatusAtivo());
@@ -295,6 +300,18 @@ public final class VeiculoService {
                     "Unidade: %d \n" +
                     "userToken: %s", codUnidade, userToken), e);
             throw new RuntimeException("Erro ao buscar os veículos ativos da unidade: " + codUnidade);
+        }
+    }
+
+    @NotNull
+    public VeiculoDadosColetaKm getDadosColetaKmByCodigo(final Long codVeiculo) {
+        try {
+            return this.dao.getDadosColetaKmByCodigo(codVeiculo);
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao buscar o estado do veículo.", t);
+            throw Injection
+                    .provideVeiculoExceptionHandler()
+                    .map(t, "Erro ao buscar estado do veiculo, tente novamente");
         }
     }
 }

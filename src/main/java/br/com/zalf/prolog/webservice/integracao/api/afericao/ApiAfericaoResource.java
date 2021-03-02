@@ -20,7 +20,7 @@ import java.util.List;
  * @author Natan Rotta (https://github.com/natanrotta)
  */
 @ConsoleDebugLog
-@Path("/api/afericoes")
+@Path("/v2/api/afericoes")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class ApiAfericaoResource {

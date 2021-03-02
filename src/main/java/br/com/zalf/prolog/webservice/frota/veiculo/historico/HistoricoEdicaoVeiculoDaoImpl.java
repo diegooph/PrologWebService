@@ -24,32 +24,30 @@ public final class HistoricoEdicaoVeiculoDaoImpl extends DatabaseConnection impl
     @NotNull
     public List<HistoricoEdicaoVeiculo> getHistoricoEdicaoVeiculo(@NotNull final Long codEmpresa,
                                                                   @NotNull final Long codVeiculo) throws Throwable {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("select * from func_veiculo_listagem_historico_edicoes(" +
-                    "f_cod_empresa => ?," +
-                    "f_cod_veiculo => ?);");
+        final String sql = "select * " +
+                "from func_veiculo_listagem_historico_edicoes(" +
+                "f_cod_empresa => ?," +
+                "f_cod_veiculo => ?);";
+        try (final Connection conn = getConnection();
+             final PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setLong(1, codEmpresa);
             stmt.setLong(2, codVeiculo);
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                final List<HistoricoEdicaoVeiculo> historicoEdicoesVeiculo = new ArrayList<>();
-                do {
-                    final EstadoVeiculo estadoNovo = createEstadoVeiculo(rSet);
-                    rSet.next();
-                    final EstadoVeiculo estadoAntigo = createEstadoVeiculo(rSet);
-                    historicoEdicoesVeiculo.add(
-                            HistoricoEdicaoVeiculoConverter.createHistoricoEdicaoVeiculo(estadoAntigo, estadoNovo));
-                } while (rSet.next());
-                return historicoEdicoesVeiculo;
-            } else {
-                return Collections.emptyList();
+            try (final ResultSet rSet = stmt.executeQuery()) {
+                if (rSet.next()) {
+                    final List<HistoricoEdicaoVeiculo> historicoEdicoesVeiculo = new ArrayList<>();
+                    do {
+                        final EstadoVeiculo estadoNovo = createEstadoVeiculo(rSet);
+                        rSet.next();
+                        final EstadoVeiculo estadoAntigo = createEstadoVeiculo(rSet);
+                        historicoEdicoesVeiculo.add(
+                                HistoricoEdicaoVeiculoConverter.createHistoricoEdicaoVeiculo(estadoAntigo,
+                                                                                             estadoNovo));
+                    } while (rSet.next());
+                    return historicoEdicoesVeiculo;
+                } else {
+                    return Collections.emptyList();
+                }
             }
-        } finally {
-            close(conn, stmt, rSet);
         }
     }
 }

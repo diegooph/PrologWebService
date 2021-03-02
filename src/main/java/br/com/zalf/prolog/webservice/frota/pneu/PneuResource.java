@@ -23,7 +23,7 @@ import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
 
-@Path("/pneus")
+@Path("/v2/pneus")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @AppVersionCodeHandler(

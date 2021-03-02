@@ -26,7 +26,7 @@ import java.util.List;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 @ConsoleDebugLog
-@Path("veiculos/transferencias")
+@Path("/v2/veiculos/transferencias")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Secured(permissions = Pilares.Frota.TRANSFERENCIA_PNEUS_VEICULOS)

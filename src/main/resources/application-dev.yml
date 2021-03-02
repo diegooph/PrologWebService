@@ -15,3 +15,10 @@ spring:
     password: "${database.connection.password}"
     hikari:
       maximum-pool-size: 10
+logging:
+  level:
+    root: debug
+    org: info
+    sun: info
+    io: info
+    jdk: info

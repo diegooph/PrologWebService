@@ -453,11 +453,6 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                 final AfericaoPlaca afericaoPlaca = (AfericaoPlaca) afericao;
                 stmt.setLong(8, afericaoPlaca.getVeiculo().getCodigo());
                 stmt.setLong(9, afericaoPlaca.getKmMomentoAfericao());
-                Injection.provideVeiculoDao()
-                        .updateKmByPlaca(
-                                afericaoPlaca.getVeiculo().getPlaca(),
-                                afericaoPlaca.getKmMomentoAfericao(),
-                                conn);
             } else {
                 stmt.setNull(8, Types.BIGINT);
                 stmt.setNull(9, Types.BIGINT);

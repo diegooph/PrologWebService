@@ -33,7 +33,8 @@ final class ServicoQueryBinder {
     private static final String BASE_QUERY_BUSCA_SERVICOS = "SELECT "
             + "AM.CODIGO AS CODIGO_SERVICO, "
             + "AM.CPF_MECANICO AS CPF_RESPONSAVEL_FECHAMENTO, "
-            + "AM.DATA_HORA_RESOLUCAO AT TIME ZONE (SELECT FUNC_GET_TIME_ZONE_UNIDADE(AM.COD_UNIDADE)) AS DATA_HORA_FECHAMENTO, "
+            + "AM.DATA_HORA_RESOLUCAO AT TIME ZONE (SELECT FUNC_GET_TIME_ZONE_UNIDADE(AM.COD_UNIDADE)) AS " 
+            + "DATA_HORA_FECHAMENTO, "
             + "AM.KM_MOMENTO_CONSERTO AS KM_VEICULO_MOMENTO_FECHAMENTO, "
             + "AM.TEMPO_REALIZACAO_MILLIS AS TEMPO_REALIZACAO_MILLIS, "
             + "AM.COD_UNIDADE AS COD_UNIDADE, "
@@ -121,19 +122,29 @@ final class ServicoQueryBinder {
                                                                final long dataInicial,
                                                                final long dataFinal) throws SQLException {
         final PreparedStatement stmt = connection.prepareStatement("SELECT " +
-                "  AM.COD_PNEU, " +
-                "  P.CODIGO_CLIENTE AS CODIGO_PNEU_CLIENTE, " +
-                "  SUM(CASE WHEN AM.TIPO_SERVICO = ? THEN 1 ELSE 0 END) AS TOTAL_CALIBRAGENS, " +
-                "  SUM(CASE WHEN AM.TIPO_SERVICO = ? THEN 1 ELSE 0 END) AS TOTAL_INSPECOES, " +
-                "  SUM(CASE WHEN AM.TIPO_SERVICO = ? THEN 1 ELSE 0 END) AS TOTAL_MOVIMENTACOES " +
-                "FROM AFERICAO_MANUTENCAO AM " +
-                "  JOIN AFERICAO A ON A.CODIGO = AM.COD_AFERICAO " +
-                "  JOIN PNEU P ON AM.COD_PNEU = P.CODIGO " +
-                "WHERE AM.COD_UNIDADE = ? " +
-                "      AND AM.DATA_HORA_RESOLUCAO IS NOT NULL " +
-                "      AND (AM.DATA_HORA_RESOLUCAO AT TIME ZONE TZ_UNIDADE(AM.COD_UNIDADE))::DATE BETWEEN ? AND ? " +
-                "GROUP BY P.CODIGO_CLIENTE, AM.COD_PNEU " +
-                "ORDER BY TOTAL_CALIBRAGENS DESC, TOTAL_INSPECOES DESC, TOTAL_MOVIMENTACOES DESC;");
+                                                                           "  AM.COD_PNEU, " +
+                                                                           "  P.CODIGO_CLIENTE AS " +
+                                                                           "CODIGO_PNEU_CLIENTE, " +
+                                                                           "  SUM(CASE WHEN AM.TIPO_SERVICO = ? THEN " +
+                                                                           "1 ELSE 0 END) AS TOTAL_CALIBRAGENS, " +
+                                                                           "  SUM(CASE WHEN AM.TIPO_SERVICO = ? THEN " +
+                                                                           "1 ELSE 0 END) AS TOTAL_INSPECOES, " +
+                                                                           "  SUM(CASE WHEN AM.TIPO_SERVICO = ? THEN " +
+                                                                           "1 ELSE 0 END) AS TOTAL_MOVIMENTACOES " +
+                                                                           "FROM AFERICAO_MANUTENCAO AM " +
+                                                                           "  JOIN AFERICAO A ON A.CODIGO = AM" +
+                                                                           ".COD_AFERICAO " +
+                                                                           "  JOIN PNEU P ON AM.COD_PNEU = P.CODIGO " +
+                                                                           "WHERE AM.COD_UNIDADE = ? " +
+                                                                           "      AND AM.DATA_HORA_RESOLUCAO IS NOT " +
+                                                                           "NULL " +
+                                                                           "      AND (AM.DATA_HORA_RESOLUCAO AT TIME" +
+                                                                           " ZONE TZ_UNIDADE(AM.COD_UNIDADE))::DATE " +
+                                                                           "BETWEEN ? AND ? " +
+                                                                           "GROUP BY P.CODIGO_CLIENTE, AM.COD_PNEU " +
+                                                                           "ORDER BY TOTAL_CALIBRAGENS DESC, " +
+                                                                           "TOTAL_INSPECOES DESC, TOTAL_MOVIMENTACOES" +
+                                                                           " DESC;");
         stmt.setString(1, TipoServico.CALIBRAGEM.asString());
         stmt.setString(2, TipoServico.INSPECAO.asString());
         stmt.setString(3, TipoServico.MOVIMENTACAO.asString());
@@ -240,10 +251,12 @@ final class ServicoQueryBinder {
                                                  final long dataInicial,
                                                  final long dataFinal) throws SQLException {
         final PreparedStatement stmt = connection.prepareStatement(BASE_QUERY_BUSCA_SERVICOS
-                + "WHERE AM.COD_UNIDADE = ? "
-                + "AND AM.DATA_HORA_RESOLUCAO IS NOT NULL "
-                + "AND (AM.DATA_HORA_RESOLUCAO AT TIME ZONE TZ_UNIDADE(AM.COD_UNIDADE))::DATE BETWEEN ? AND ? "
-                + "ORDER BY DATA_HORA_RESOLUCAO DESC;");
+                                                                           + "WHERE AM.COD_UNIDADE = ? "
+                                                                           + "AND AM.DATA_HORA_RESOLUCAO IS NOT NULL "
+                                                                           + "AND (AM.DATA_HORA_RESOLUCAO AT TIME " +
+                                                                           "ZONE TZ_UNIDADE(AM.COD_UNIDADE))::DATE " +
+                                                                           "BETWEEN ? AND ? "
+                                                                           + "ORDER BY DATA_HORA_RESOLUCAO DESC;");
         stmt.setLong(1, codUnidade);
         stmt.setObject(2, DateUtils.toLocalDate(new java.sql.Date(dataInicial)));
         stmt.setObject(3, DateUtils.toLocalDate(new java.sql.Date(dataFinal)));
@@ -257,11 +270,13 @@ final class ServicoQueryBinder {
                                                      final long dataInicial,
                                                      final long dataFinal) throws SQLException {
         final PreparedStatement stmt = connection.prepareStatement(BASE_QUERY_BUSCA_SERVICOS
-                + "WHERE AM.COD_UNIDADE = ? "
-                + "AND AM.COD_PNEU = ? "
-                + "AND AM.DATA_HORA_RESOLUCAO IS NOT NULL "
-                + "AND (AM.DATA_HORA_RESOLUCAO AT TIME ZONE TZ_UNIDADE(AM.COD_UNIDADE))::DATE BETWEEN ? AND ? "
-                + "ORDER BY DATA_HORA_RESOLUCAO DESC;");
+                                                                           + "WHERE AM.COD_UNIDADE = ? "
+                                                                           + "AND AM.COD_PNEU = ? "
+                                                                           + "AND AM.DATA_HORA_RESOLUCAO IS NOT NULL "
+                                                                           + "AND (AM.DATA_HORA_RESOLUCAO AT TIME " +
+                                                                           "ZONE TZ_UNIDADE(AM.COD_UNIDADE))::DATE " +
+                                                                           "BETWEEN ? AND ? "
+                                                                           + "ORDER BY DATA_HORA_RESOLUCAO DESC;");
         stmt.setLong(1, codUnidade);
         stmt.setLong(2, codPneu);
         stmt.setObject(3, DateUtils.toLocalDate(new java.sql.Date(dataInicial)));
@@ -328,27 +343,29 @@ final class ServicoQueryBinder {
     @NotNull
     static PreparedStatement getAlternativasInspecao(@NotNull final Connection connection) throws SQLException {
         return connection.prepareStatement("SELECT * FROM AFERICAO_ALTERNATIVA_MANUTENCAO_INSPECAO A "
-                + "WHERE A.STATUS_ATIVO = TRUE");
+                                                   + "WHERE A.STATUS_ATIVO = TRUE");
     }
 
     @NotNull
     static PreparedStatement fechaCalibragem(@NotNull final Connection connection,
                                              @NotNull final OffsetDateTime dataHorafechamentoServico,
-                                             @NotNull final ServicoCalibragem servico) throws SQLException {
+                                             @NotNull final ServicoCalibragem servico,
+                                             @NotNull final Long kmFinal) throws SQLException {
         final PreparedStatement stmt = connection.prepareStatement("UPDATE AFERICAO_MANUTENCAO SET "
-                + "DATA_HORA_RESOLUCAO = ?, "
-                + "CPF_MECANICO = ?, "
-                + "PSI_APOS_CONSERTO = ?, "
-                + "KM_MOMENTO_CONSERTO = ?, "
-                + "TEMPO_REALIZACAO_MILLIS = ?, "
-                + "FORMA_COLETA_DADOS_FECHAMENTO = ? "
-                + "WHERE CODIGO = ? "
-                + "AND TIPO_SERVICO = ? "
-                + "AND DATA_HORA_RESOLUCAO IS NULL;");
+                                                                           + "DATA_HORA_RESOLUCAO = ?, "
+                                                                           + "CPF_MECANICO = ?, "
+                                                                           + "PSI_APOS_CONSERTO = ?, "
+                                                                           + "KM_MOMENTO_CONSERTO = ?, "
+                                                                           + "TEMPO_REALIZACAO_MILLIS = ?, "
+                                                                           + "FORMA_COLETA_DADOS_FECHAMENTO = ? "
+                                                                           + "WHERE CODIGO = ? "
+                                                                           + "AND TIPO_SERVICO = ? "
+                                                                           + "AND DATA_HORA_RESOLUCAO IS NULL " +
+                                                                           "returning codigo;");
         stmt.setObject(1, dataHorafechamentoServico);
         stmt.setLong(2, servico.getCpfResponsavelFechamento());
         stmt.setDouble(3, servico.getPressaoColetadaFechamento());
-        stmt.setLong(4, servico.getKmVeiculoMomentoFechamento());
+        stmt.setLong(4, kmFinal);
         stmt.setLong(5, servico.getTempoRealizacaoServicoInMillis());
         stmt.setString(6, servico.getFormaColetaDadosFechamentoAsStringOrEquipamentoIfNull());
         stmt.setLong(7, servico.getCodigo());
@@ -359,22 +376,24 @@ final class ServicoQueryBinder {
     @NotNull
     static PreparedStatement fechaInspecao(@NotNull final Connection connection,
                                            @NotNull final OffsetDateTime dataHorafechamentoServico,
-                                           @NotNull final ServicoInspecao servico) throws SQLException {
+                                           @NotNull final ServicoInspecao servico,
+                                           @NotNull final Long kmFinal) throws SQLException {
         final PreparedStatement stmt = connection.prepareStatement("UPDATE AFERICAO_MANUTENCAO SET "
-                + "DATA_HORA_RESOLUCAO = ?, "
-                + "CPF_MECANICO = ?, "
-                + "PSI_APOS_CONSERTO = ?, "
-                + "KM_MOMENTO_CONSERTO = ?, "
-                + "COD_ALTERNATIVA = ?, "
-                + "TEMPO_REALIZACAO_MILLIS = ?, "
-                + "FORMA_COLETA_DADOS_FECHAMENTO = ? "
-                + "WHERE CODIGO = ? "
-                + "AND TIPO_SERVICO = ? "
-                + "AND DATA_HORA_RESOLUCAO IS NULL;");
+                                                                           + "DATA_HORA_RESOLUCAO = ?, "
+                                                                           + "CPF_MECANICO = ?, "
+                                                                           + "PSI_APOS_CONSERTO = ?, "
+                                                                           + "KM_MOMENTO_CONSERTO = ?, "
+                                                                           + "COD_ALTERNATIVA = ?, "
+                                                                           + "TEMPO_REALIZACAO_MILLIS = ?, "
+                                                                           + "FORMA_COLETA_DADOS_FECHAMENTO = ? "
+                                                                           + "WHERE CODIGO = ? "
+                                                                           + "AND TIPO_SERVICO = ? "
+                                                                           + "AND DATA_HORA_RESOLUCAO IS NULL " +
+                                                                           "returning codigo;");
         stmt.setObject(1, dataHorafechamentoServico);
         stmt.setLong(2, servico.getCpfResponsavelFechamento());
         stmt.setDouble(3, servico.getPressaoColetadaFechamento());
-        stmt.setLong(4, servico.getKmVeiculoMomentoFechamento());
+        stmt.setLong(4, kmFinal);
         stmt.setLong(5, servico.getAlternativaSelecionada().codigo);
         stmt.setLong(6, servico.getTempoRealizacaoServicoInMillis());
         stmt.setString(7, servico.getFormaColetaDadosFechamentoAsStringOrEquipamentoIfNull());
@@ -386,22 +405,24 @@ final class ServicoQueryBinder {
     @NotNull
     static PreparedStatement fechaMovimentacao(@NotNull final Connection connection,
                                                @NotNull final OffsetDateTime dataHorafechamentoServico,
-                                               @NotNull final ServicoMovimentacao servico) throws SQLException {
-        final PreparedStatement stmt = connection.prepareStatement("UPDATE AFERICAO_MANUTENCAO SET "
-                + "DATA_HORA_RESOLUCAO = ?, "
-                + "CPF_MECANICO = ?, "
-                + "KM_MOMENTO_CONSERTO = ?, "
-                + "COD_PROCESSO_MOVIMENTACAO = ?, "
-                + "PSI_APOS_CONSERTO = ?, "
-                + "TEMPO_REALIZACAO_MILLIS = ?, "
-                + "COD_PNEU_INSERIDO = ?, "
-                + "FORMA_COLETA_DADOS_FECHAMENTO = ? "
-                + "WHERE CODIGO = ? "
-                + "AND TIPO_SERVICO = ? "
-                + "AND DATA_HORA_RESOLUCAO IS NULL;");
+                                               @NotNull final ServicoMovimentacao servico,
+                                               @NotNull final Long kmFinal) throws SQLException {
+        final PreparedStatement stmt = connection.prepareStatement("update afericao_manutencao set "
+                                                                           + "data_hora_resolucao = ?, "
+                                                                           + "cpf_mecanico = ?, "
+                                                                           + "km_momento_conserto = ?, "
+                                                                           + "cod_processo_movimentacao = ?, "
+                                                                           + "psi_apos_conserto = ?, "
+                                                                           + "tempo_realizacao_millis = ?, "
+                                                                           + "cod_pneu_inserido = ?, "
+                                                                           + "forma_coleta_dados_fechamento = ? "
+                                                                           + "where codigo = ? "
+                                                                           + "and tipo_servico = ? "
+                                                                           + "and data_hora_resolucao is null " +
+                                                                           "returning codigo;");
         stmt.setObject(1, dataHorafechamentoServico);
         stmt.setLong(2, servico.getCpfResponsavelFechamento());
-        stmt.setLong(3, servico.getKmVeiculoMomentoFechamento());
+        stmt.setLong(3, kmFinal);
         stmt.setLong(4, servico.getCodProcessoMovimentacao());
         // Salva também o PSI após o conserto, já que os sulcos são salvos na tabela de movimentaçao.
         stmt.setDouble(5, servico.getPressaoColetadaFechamento());
@@ -418,8 +439,9 @@ final class ServicoQueryBinder {
                                                                @NotNull final Long codUnidade,
                                                                @NotNull final Long codPneu) throws SQLException {
         final PreparedStatement stmt = conn.prepareStatement("SELECT COUNT(CODIGO) AS QTD_SERVICOS_ABERTOS FROM " +
-                "AFERICAO_MANUTENCAO AM " +
-                "WHERE AM.COD_UNIDADE = ? AND AM.COD_PNEU = ? AND DATA_HORA_RESOLUCAO IS NULL;");
+                                                                     "AFERICAO_MANUTENCAO AM " +
+                                                                     "WHERE AM.COD_UNIDADE = ? AND AM.COD_PNEU = ? " +
+                                                                     "AND DATA_HORA_RESOLUCAO IS NULL;");
         stmt.setLong(1, codUnidade);
         stmt.setLong(2, codPneu);
         return stmt;
@@ -433,13 +455,13 @@ final class ServicoQueryBinder {
                                                                @NotNull final OffsetDateTime dataHorafechamentoServico,
                                                                final long kmColetadoVeiculo) throws SQLException {
         final PreparedStatement stmt = conn.prepareStatement("UPDATE AFERICAO_MANUTENCAO SET "
-                + "DATA_HORA_RESOLUCAO = ?, "
-                + "COD_PROCESSO_MOVIMENTACAO = ?, "
-                + "KM_MOMENTO_CONSERTO = ?, "
-                + "FECHADO_AUTOMATICAMENTE_MOVIMENTACAO = TRUE "
-                + "WHERE COD_UNIDADE = ? "
-                + "AND COD_PNEU = ? "
-                + "AND DATA_HORA_RESOLUCAO IS NULL;");
+                                                                     + "DATA_HORA_RESOLUCAO = ?, "
+                                                                     + "COD_PROCESSO_MOVIMENTACAO = ?, "
+                                                                     + "KM_MOMENTO_CONSERTO = ?, "
+                                                                     + "FECHADO_AUTOMATICAMENTE_MOVIMENTACAO = TRUE "
+                                                                     + "WHERE COD_UNIDADE = ? "
+                                                                     + "AND COD_PNEU = ? "
+                                                                     + "AND DATA_HORA_RESOLUCAO IS NULL;");
         stmt.setObject(1, dataHorafechamentoServico);
         stmt.setLong(2, codProcessoMovimentacao);
         stmt.setLong(3, kmColetadoVeiculo);

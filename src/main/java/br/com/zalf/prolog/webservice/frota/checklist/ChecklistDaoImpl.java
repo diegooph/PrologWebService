@@ -528,7 +528,7 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
             stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, checkListsDelecao.getCodigos()));
             stmt.setLong(2, codigoColaborador);
             stmt.setString(3, checkListsDelecao.getAcaoExecutada().getValue());
-            stmt.setString(4, OrigemAcaoEnum.PROLOG.toString());
+            stmt.setString(4, OrigemAcaoEnum.PROLOG_WEB.toString());
             stmt.setString(5, StringUtils.trimToNull(checkListsDelecao.getObservacao()));
             stmt.setObject(6, Now.getOffsetDateTimeUtc());
             stmt.execute();

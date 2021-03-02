@@ -7,6 +7,7 @@ import br.com.zalf.prolog.webservice.gente.colaborador.model.ColaboradorInsercao
 import br.com.zalf.prolog.webservice.gente.colaborador.model.ColaboradorListagem;
 import br.com.zalf.prolog.webservice.gente.controlejornada.DadosIntervaloChangedListener;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.Connection;
 import java.sql.SQLException;

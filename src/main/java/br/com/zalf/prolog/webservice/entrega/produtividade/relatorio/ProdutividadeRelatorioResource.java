@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * Created by Zart on 18/05/2017.
  */
-@Path("/produtividades/relatorios")
+@Path("/v2/produtividades/relatorios")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Secured(permissions = Pilares.Entrega.Relatorios.PRODUTIVIDADE)

@@ -1,17 +1,22 @@
 package br.com.zalf.prolog.webservice.messaging.email.task;
 
+import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.database.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.database.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
+import br.com.zalf.prolog.webservice.database.DatabaseConnectionActions;
 import br.com.zalf.prolog.webservice.messaging.MessageScope;
 import br.com.zalf.prolog.webservice.messaging.email._model.EmailRequestResponseHolder;
 import com.google.common.base.Throwables;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.Types;
+import java.util.Optional;
 
 import static br.com.zalf.prolog.webservice.commons.util.database.StatementUtils.bindValueOrNull;
 
@@ -20,36 +25,51 @@ import static br.com.zalf.prolog.webservice.commons.util.database.StatementUtils
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-public final class PrologEmailSaveLogTask {
+@Repository
+public class PrologEmailSaveLogTask {
+    private static final String TAG = PrologEmailSaveLogTask.class.getSimpleName();
+    @NotNull
+    private final DatabaseConnectionActions actions;
 
-    public void saveToDatabase(@NotNull final Connection connection,
-                               @NotNull final MessageScope messageScope,
+    @Autowired
+    PrologEmailSaveLogTask(@NotNull final DatabaseConnectionActions actions) {
+        this.actions = actions;
+    }
+
+    public void saveToDatabase(@NotNull final MessageScope messageScope,
                                @Nullable final EmailRequestResponseHolder holder,
-                               @Nullable final Throwable fatalSendException) throws Throwable {
-        final String request = holder != null ? holder.getRequestAsJsonOrNull() : null;
-        final String response = holder != null ? holder.getResponseAsJsonOrNull() : null;
+                               @Nullable final Throwable fatalSendException) {
+        final Optional<String> request = holder != null ? holder.getRequestAsJson() : Optional.empty();
+        final Optional<String> response = holder != null ? holder.getResponseAsJson() : Optional.empty();
         final String fatalSendExceptionString = getFatalSendExceptionAsStringOrNull(fatalSendException);
 
-        try (final PreparedStatement stmt = connection.prepareCall("{CALL MESSAGING.FUNC_EMAIL_SALVA_LOG(" +
+        final String functionCall = "{CALL MESSAGING.FUNC_EMAIL_SALVA_LOG(" +
                 "F_DATA_HORA_ATUAL      => ?," +
                 "F_EMAIL_MESSAGE_SCOPE  => ?," +
                 "F_REQUEST_TO_API       => ?," +
                 "F_RESPONSE_FROM_API    => ?," +
-                "F_FATAL_SEND_EXCEPTION => ?)}")) {
+                "F_FATAL_SEND_EXCEPTION => ?)}";
+
+        try (final Connection connection = actions.getConnection();
+             final PreparedStatement stmt = connection.prepareCall(functionCall)) {
+
             stmt.setObject(1, Now.getOffsetDateTimeUtc());
             stmt.setString(2, messageScope.asString());
-            if (request != null) {
-                stmt.setObject(3, PostgresUtils.toJsonb(request));
+
+            if (request.isPresent()) {
+                stmt.setObject(3, PostgresUtils.toJsonb(request.get()));
             } else {
                 stmt.setNull(3, Types.NULL);
             }
-            if (response != null) {
-                stmt.setObject(4, PostgresUtils.toJsonb(response));
+            if (response.isPresent()) {
+                stmt.setObject(4, PostgresUtils.toJsonb(response.get()));
             } else {
                 stmt.setNull(4, Types.NULL);
             }
             bindValueOrNull(stmt, 5, fatalSendExceptionString, SqlType.TEXT);
             stmt.execute();
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao salvar logs de e-mail", t);
         }
     }
 

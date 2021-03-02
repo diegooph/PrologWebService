@@ -30,7 +30,7 @@ import java.util.List;
  *
  * @author Wellington Moraes (https://github.com/wvinim)
  */
-@Path("socorro-rota")
+@Path("/v2/socorro-rota")
 @ConsoleDebugLog
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
