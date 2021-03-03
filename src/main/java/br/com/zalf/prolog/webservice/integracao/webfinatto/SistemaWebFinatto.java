@@ -165,7 +165,9 @@ public class SistemaWebFinatto extends Sistema {
                     .map(PneuWebFinatto::getCodigoCliente)
                     .collect(Collectors.toList());
             final AfericaoRealizadaAvulsaHolder afericaoRealizadaAvulsaHolder =
-                    integracaoDao.getAfericaoRealizadaAvulsaHolder(conn, codUnidade, codPneus);
+                    integracaoDao.getAfericaoRealizadaAvulsaHolder(conn,
+                                                                   unidadeDeParaHolder.getCodEmpresaProlog(),
+                                                                   codPneus);
             return SistemaWebFinattoConverter.createPneusAfericaoAvulsa(codUnidade,
                                                                         pneusByFiliais,
                                                                         afericaoRealizadaAvulsaHolder);
@@ -196,8 +198,8 @@ public class SistemaWebFinatto extends Sistema {
                                                                           codPneu.toString());
             final AfericaoRealizadaAvulsaHolder afericaoRealizadaAvulsaHolder =
                     integracaoDao.getAfericaoRealizadaAvulsaHolder(conn,
-                                                                   codUnidade,
-                                                                   Collections.singletonList(pneuByCodigo.getCodPneu()));
+                                                                   unidadeDeParaHolder.getCodEmpresaProlog(),
+                                                                   Collections.singletonList(pneuByCodigo.getCodigoCliente()));
             final ConfiguracaoNovaAfericaoAvulsa configuracaoAfericao =
                     integracaoDao.getConfigNovaAfericaoAvulsa(conn, codUnidade);
             return SistemaWebFinattoConverter.createNovaAfericaoAvulsa(codUnidade,

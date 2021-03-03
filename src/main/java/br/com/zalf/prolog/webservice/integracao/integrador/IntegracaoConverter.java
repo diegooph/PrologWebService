@@ -135,9 +135,8 @@ public final class IntegracaoConverter {
     public static AfericaoRealizadaAvulsa createAfericaoRealizadaAvulsa(
             @NotNull final ResultSet rSet) throws Throwable {
         return new AfericaoRealizadaAvulsa(
-                rSet.getLong("codigo_ultima_afericao"),
-                rSet.getString("cod_pneu"),
                 rSet.getString("cod_pneu_cliente"),
+                rSet.getLong("codigo_ultima_afericao"),
                 rSet.getObject("data_hora_ultima_afericao", LocalDateTime.class),
                 rSet.getString("nome_colaborador_afericao"),
                 TipoMedicaoColetadaAfericao.fromString(rSet.getString("tipo_medicao_coletada")),

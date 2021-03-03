@@ -337,16 +337,16 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
     @Override
     public AfericaoRealizadaAvulsaHolder getAfericaoRealizadaAvulsaHolder(
             @NotNull final Connection conn,
-            @NotNull final Long codUnidade,
+            @NotNull final Long codEmpresa,
             @NotNull final List<String> codPneus) throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             stmt = conn.prepareStatement(
-                    "select * from integracao.func_pneu_afericao_get_infos_afericoes_integrada(" +
-                            "f_cod_unidade => ?," +
+                    "select * from integracao.func_pneu_afericao_get_infos_pneus_aferidos(" +
+                            "f_cod_empresa => ?," +
                             "f_cod_pneus_cliente => ?);");
-            stmt.setLong(1, codUnidade);
+            stmt.setLong(1, codEmpresa);
             stmt.setArray(2, PostgresUtils.listToArray(conn, SqlType.TEXT, codPneus));
             rSet = stmt.executeQuery();
             if (rSet.next()) {
@@ -356,8 +356,7 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
                 } while (rSet.next());
                 return IntegracaoConverter.createAfericaoRealizadaAvulsaHolder(afericaoRealizadaAvulsa);
             } else {
-                throw new SQLException("Nenhuma informação de aferição encontrada para os pneus:\n" +
-                                               "codPneus: " + codPneus.toString());
+                return IntegracaoConverter.createAfericaoRealizadaAvulsaHolder(new ArrayList<>());
             }
         } finally {
             close(stmt, rSet);

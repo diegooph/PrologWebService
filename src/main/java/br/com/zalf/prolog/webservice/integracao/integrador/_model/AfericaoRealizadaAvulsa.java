@@ -11,11 +11,9 @@ import java.time.LocalDateTime;
 @Data
 public final class AfericaoRealizadaAvulsa {
     @NotNull
-    private final Long codUltimaAfericao;
-    @Nullable
-    private final String codPneu;
-    @NotNull
     private final String codPneuCliente;
+    @NotNull
+    private final Long codUltimaAfericao;
     @NotNull
     private final LocalDateTime dataHoraUltimaAfericao;
     @NotNull

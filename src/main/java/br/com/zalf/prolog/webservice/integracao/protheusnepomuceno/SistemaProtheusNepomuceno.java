@@ -240,7 +240,7 @@ public final class SistemaProtheusNepomuceno extends Sistema {
             // Busca as infos de aferição com base nos pneus da lista codPneus.
             final List<AfericaoRealizadaAvulsa> infosAfericaoAvulsa =
                     integracaoDao
-                            .getAfericaoRealizadaAvulsaHolder(conn, codUnidade, codPneus)
+                            .getAfericaoRealizadaAvulsaHolder(conn, codEmpresaProlog, codPneus)
                             .getAfericoesRealizadasAvulsas();
 
             final List<PneuAfericaoAvulsa> pneusAfericaoAvulsa = new ArrayList<>();
@@ -293,7 +293,7 @@ public final class SistemaProtheusNepomuceno extends Sistema {
             final List<AfericaoRealizadaAvulsa> infosAfericaoAvulsa =
                     integracaoDao
                             .getAfericaoRealizadaAvulsaHolder(conn,
-                                                              codUnidade,
+                                                              codEmpresaProlog,
                                                               Collections.singletonList(pneuEstoqueNepomuceno.getCodigoCliente()))
                             .getAfericoesRealizadasAvulsas();
 

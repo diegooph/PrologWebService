@@ -76,7 +76,7 @@ public interface IntegracaoDao {
     @NotNull
     AfericaoRealizadaAvulsaHolder getAfericaoRealizadaAvulsaHolder(
             @NotNull final Connection conn,
-            @NotNull final Long codUnidade,
+            @NotNull final Long codEmpresa,
             @NotNull final List<String> codPneus) throws Throwable;
 
     @NotNull
