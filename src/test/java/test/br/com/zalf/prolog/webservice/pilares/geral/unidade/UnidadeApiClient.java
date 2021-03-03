@@ -24,7 +24,7 @@ import java.util.List;
 @TestComponent
 public class UnidadeApiClient {
 
-    private static final String RESOURCE = "/unidades";
+    private static final String RESOURCE = "/v2/unidades";
     @Autowired
     private TestRestTemplate restTemplate;
 

@@ -45,7 +45,7 @@ public class RestTemplateBuilderConfig {
     }
 
     private String generateBasePath() {
-        return "http://localhost:" + port + "/prolog/v2/";
+        return "http://localhost:" + port + "/prolog";
     }
 
     @NotNull
