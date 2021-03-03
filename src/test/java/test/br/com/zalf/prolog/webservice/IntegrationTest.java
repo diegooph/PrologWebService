@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.testcontainers.containers.JdbcDatabaseContainer;
@@ -18,6 +19,7 @@ import javax.annotation.PreDestroy;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ComponentScan({"br.com.zalf.prolog.webservice", "test.br.com.zalf.prolog.webservice"})
 @ContextConfiguration(initializers = {TestContainer.DockerPostgresDatasourceInitializer.class})
+@ActiveProfiles(profiles = {"test"})
 public class IntegrationTest {
 
     @Autowired
