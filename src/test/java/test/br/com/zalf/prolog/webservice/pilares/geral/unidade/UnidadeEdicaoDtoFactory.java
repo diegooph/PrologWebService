@@ -20,4 +20,13 @@ public class UnidadeEdicaoDtoFactory {
                 .build();
     }
 
+    public static UnidadeEdicaoDto createUnidadeEdicaoDtoWithInvalidCodUnidade(final UnidadeEntity entity) {
+        return UnidadeEdicaoDto.builder()
+                .codUnidade(-1L)
+                .nomeUnidade(entity.getNome())
+                .codAuxiliarUnidade(entity.getCodAuxiliar())
+                .longitudeUnidade(entity.getLongitudeUnidade())
+                .latitudeUnidade(entity.getLatitudeUnidade())
+                .build();
+    }
 }

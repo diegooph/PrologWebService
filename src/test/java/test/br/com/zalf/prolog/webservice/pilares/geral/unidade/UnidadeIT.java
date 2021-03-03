@@ -84,14 +84,8 @@ public class UnidadeIT extends IntegrationTest {
         @Test
         @DisplayName("Dado DTO com código de unidade inválido, retorne BadRequestException")
         void givenUnidadeEdicaoDtoWithInvalidCodUnidade_ThenReturnBadRequestException() {
-            final Long invalidCodUnidade = 9999L;
-            final UnidadeEdicaoDto dtoWithInvalidCodUnidade = UnidadeEdicaoDto.builder()
-                    .codUnidade(invalidCodUnidade)
-                    .nomeUnidade(baseEntity.getNome())
-                    .codAuxiliarUnidade(baseEntity.getCodAuxiliar())
-                    .latitudeUnidade(baseEntity.getLatitudeUnidade())
-                    .longitudeUnidade(baseEntity.getLongitudeUnidade())
-                    .build();
+            final UnidadeEdicaoDto dtoWithInvalidCodUnidade =
+                    UnidadeEdicaoDtoFactory.createUnidadeEdicaoDtoWithInvalidCodUnidade(baseEntity);
             final ResponseEntity<BadRequestException> response =
                     client.updateUnidade(dtoWithInvalidCodUnidade, BadRequestException.class);
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
