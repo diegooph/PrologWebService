@@ -3,6 +3,7 @@ package test.br.com.zalf.prolog.webservice.pilares.geral.unidade;
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
 import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeEdicaoDto;
 import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeVisualizacaoListagemDto;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestComponent;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -26,6 +27,7 @@ public class UnidadeApiClient {
 
     private static final String RESOURCE = "/v2/unidades";
     @Autowired
+    @NotNull
     private TestRestTemplate restTemplate;
 
     public ResponseEntity<UnidadeVisualizacaoListagemDto> getUnidadeByCodigo(final Long codUnidade) {

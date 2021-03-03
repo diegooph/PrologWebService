@@ -40,10 +40,12 @@ public class RestTemplateBuilderConfig {
                 .messageConverters(getConverters());
     }
 
+    @NotNull
     private UriTemplateHandler getUriTemplateHandler() {
         return new DefaultUriBuilderFactory(generateBasePath());
     }
 
+    @NotNull
     private String generateBasePath() {
         return "http://localhost:" + port + "/prolog";
     }
