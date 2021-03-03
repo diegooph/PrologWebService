@@ -1,6 +1,7 @@
 package test.br.com.zalf.prolog.webservice.pilares.geral.unidade;
 
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
+import br.com.zalf.prolog.webservice.errorhandling.exception.BadRequestException;
 import br.com.zalf.prolog.webservice.errorhandling.sql.NotFoundException;
 import br.com.zalf.prolog.webservice.geral.unidade.UnidadeDao;
 import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeEdicaoDto;
@@ -84,6 +85,25 @@ public class UnidadeIT extends IntegrationTest {
 
             assertBaseValidations(response);
             assertThat(response.getBody().getUniqueItemId()).isEqualTo(dtoToUpdate.getCodUnidade());
+        }
+
+        @Test
+        @DisplayName("Dado DTO com código de unidade inválido, retorne BadRequestException")
+        void givenUnidadeEdicaoDtoWithInvalidCodUnidade_ThenReturnBadRequestException() {
+            final Long invalidCodUnidade = 9999L;
+            final UnidadeEdicaoDto dtoWithInvalidCodUnidade = UnidadeEdicaoDto.builder()
+                    .codUnidade(invalidCodUnidade)
+                    .nomeUnidade(baseEntity.getNome())
+                    .codAuxiliarUnidade(baseEntity.getCodAuxiliar())
+                    .latitudeUnidade(baseEntity.getLatitudeUnidade())
+                    .longitudeUnidade(baseEntity.getLongitudeUnidade())
+                    .build();
+
+            final ResponseEntity<BadRequestException> response =
+                    client.updateUnidade(dtoWithInvalidCodUnidade, BadRequestException.class);
+
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+            assertThat(response.getBody().getHttpStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
         }
     }
 }
