@@ -1,6 +1,7 @@
 package test.br.com.zalf.prolog.webservice;
 
 import br.com.zalf.prolog.webservice.config.PrologApplication;
+import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -25,12 +26,12 @@ public class IntegrationTest {
     @Autowired
     private JdbcDatabaseContainer<?> container;
 
+    @Autowired
+    private Flyway flyway;
+
     @PostConstruct
     void initialSetup() {
-        final FlywayConfiguration configuration = new FlywayConfiguration(container.getJdbcUrl(),
-                                                                          container.getUsername(),
-                                                                          container.getPassword());
-        configuration.migrate();
+        flyway.migrate();
     }
 
     @PreDestroy
