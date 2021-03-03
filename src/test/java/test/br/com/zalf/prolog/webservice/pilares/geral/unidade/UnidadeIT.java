@@ -77,13 +77,8 @@ public class UnidadeIT extends IntegrationTest {
         @Test
         @DisplayName("Dado UnidadeEdicaoDto, retorne SuccessResponse")
         void givenUnidadeEdicaoDto_ThenReturnSuccessResponseAndStatusOk() {
-            final UnidadeEdicaoDto dtoToUpdate = UnidadeEdicaoDto.builder()
-                    .codUnidade(baseEntity.getCodigo())
-                    .nomeUnidade(baseEntity.getNome() + "Test")
-                    .codAuxiliarUnidade(baseEntity.getCodAuxiliar())
-                    .latitudeUnidade(baseEntity.getLatitudeUnidade())
-                    .longitudeUnidade(baseEntity.getLongitudeUnidade())
-                    .build();
+            final UnidadeEdicaoDto dtoToUpdate =
+                    UnidadeEdicaoDtoFactory.createValidUnidadeEdicaoDtoToUpdate(baseEntity);
 
             final ResponseEntity<SuccessResponse> response = client.updateUnidade(dtoToUpdate);
 
