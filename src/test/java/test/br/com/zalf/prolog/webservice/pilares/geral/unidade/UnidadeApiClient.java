@@ -57,11 +57,14 @@ public class UnidadeApiClient {
     }
 
     public ResponseEntity<SuccessResponse> updateUnidade(final UnidadeEdicaoDto dto) {
+        return updateUnidade(dto, SuccessResponse.class);
+    }
+
+    public <T> ResponseEntity<T> updateUnidade(final UnidadeEdicaoDto dto, final Class<T> responseType) {
         final RequestEntity<UnidadeEdicaoDto> reqEntity = RequestEntity
                 .put(URI.create(RESOURCE))
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(dto);
-
-        return restTemplate.exchange(reqEntity, SuccessResponse.class);
+        return restTemplate.exchange(reqEntity, responseType);
     }
 }
