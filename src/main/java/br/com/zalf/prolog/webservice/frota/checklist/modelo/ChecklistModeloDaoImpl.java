@@ -53,13 +53,13 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
             conn.setAutoCommit(false);
             // Essa function insere o modelo e já cria a primeira versão (1).
             stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_INSERT_MODELO_CHECKLIST_INFOS(" +
-                    "F_COD_UNIDADE_MODELO := ?," +
-                    "F_NOME_MODELO        := ?," +
-                    "F_STATUS_ATIVO       := ?," +
-                    "F_COD_CARGOS         := ?," +
-                    "F_COD_TIPOS_VEICULOS := ?," +
-                    "F_DATA_HORA_ATUAL    := ?," +
-                    "F_TOKEN_COLABORADOR  := ?);");
+                                                 "F_COD_UNIDADE_MODELO := ?," +
+                                                 "F_NOME_MODELO        := ?," +
+                                                 "F_STATUS_ATIVO       := ?," +
+                                                 "F_COD_CARGOS         := ?," +
+                                                 "F_COD_TIPOS_VEICULOS := ?," +
+                                                 "F_DATA_HORA_ATUAL    := ?," +
+                                                 "F_TOKEN_COLABORADOR  := ?);");
             stmt.setLong(1, modeloChecklist.getCodUnidade());
             stmt.setString(2, modeloChecklist.getNome());
             stmt.setBoolean(3, statusAtivo);
@@ -79,10 +79,13 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
                 final long codVersaoModeloChecklist = rSet.getLong("COD_VERSAO_MODELO_CHECKLIST");
                 if (codModeloChecklistInserido <= 0 || codVersaoModeloChecklist <= 0) {
                     throw new SQLException("Erro ao inserir modelo de checklist:\n" +
-                            "codModeloChecklistInserido: " + codModeloChecklistInserido);
+                                                   "codModeloChecklistInserido: " + codModeloChecklistInserido);
                 }
 
-                insertPerguntasEAlternativasCadastro(conn, modeloChecklist, codModeloChecklistInserido, codVersaoModeloChecklist);
+                insertPerguntasEAlternativasCadastro(conn,
+                                                     modeloChecklist,
+                                                     codModeloChecklistInserido,
+                                                     codVersaoModeloChecklist);
 
                 // Devemos notificar que uma inserção de modelo de checklist foi realizada.
                 checklistOfflineListener.onInsertModeloChecklist(conn, codModeloChecklistInserido);
@@ -92,7 +95,7 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
                         codVersaoModeloChecklist);
             } else {
                 throw new SQLException("Não foi possível inserir o modelo de checklist para a unidade: "
-                        + modeloChecklist.getCodUnidade());
+                                               + modeloChecklist.getCodUnidade());
             }
         } catch (final Throwable t) {
             if (conn != null) {
@@ -168,7 +171,7 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_GET_LISTAGEM_MODELOS_CHECKLIST(" +
-                    "F_COD_UNIDADE := ?);");
+                                                 "F_COD_UNIDADE := ?);");
             stmt.setLong(1, codUnidade);
             rSet = stmt.executeQuery();
             Set<String> setCargos = new HashSet<>();
@@ -213,12 +216,12 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT DISTINCT CM.NOME AS MODELO, "
-                    + "CM.CODIGO AS COD_MODELO, "
-                    + "CM.COD_VERSAO_ATUAL AS COD_VERSAO_ATUAL, "
-                    + "CM.STATUS_ATIVO AS STATUS_ATIVO "
-                    + "FROM CHECKLIST_MODELO CM "
-                    + "WHERE CM.COD_UNIDADE = ? AND CM.CODIGO = ? "
-                    + "ORDER BY MODELO");
+                                                 + "CM.CODIGO AS COD_MODELO, "
+                                                 + "CM.COD_VERSAO_ATUAL AS COD_VERSAO_ATUAL, "
+                                                 + "CM.STATUS_ATIVO AS STATUS_ATIVO "
+                                                 + "FROM CHECKLIST_MODELO CM "
+                                                 + "WHERE CM.COD_UNIDADE = ? AND CM.CODIGO = ? "
+                                                 + "ORDER BY MODELO");
             stmt.setLong(1, codUnidade);
             stmt.setLong(2, codModelo);
             rSet = stmt.executeQuery();
@@ -234,8 +237,8 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
                         rSet.getBoolean("STATUS_ATIVO"));
             } else {
                 throw new SQLException("Não foi possível buscar o modelo de checklist: "
-                        + "unidade: " + codUnidade + "\n"
-                        + "modelo: " + codModelo);
+                                               + "unidade: " + codUnidade + "\n"
+                                               + "modelo: " + codModelo);
             }
         } finally {
             close(conn, stmt, rSet);
@@ -253,9 +256,9 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
         try {
             conn = getConnection();
             stmt = conn.prepareCall("{CALL FUNC_CHECKLIST_UPDATE_STATUS_MODELO(" +
-                    "F_COD_UNIDADE  := ?," +
-                    "F_COD_MODELO   := ?," +
-                    "F_STATUS_ATIVO := ?)}");
+                                            "F_COD_UNIDADE  := ?," +
+                                            "F_COD_MODELO   := ?," +
+                                            "F_STATUS_ATIVO := ?)}");
             stmt.setLong(1, codUnidade);
             stmt.setLong(2, codModelo);
             stmt.setBoolean(3, statusAtivo);
@@ -274,10 +277,10 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT " +
-                    "  CMP.CODIGO, " +
-                    "  CMP.NOME " +
-                    "FROM CHECKLIST_MODELO_PROLOG CMP " +
-                    "WHERE CMP.STATUS_ATIVO = TRUE;");
+                                                 "  CMP.CODIGO, " +
+                                                 "  CMP.NOME " +
+                                                 "FROM CHECKLIST_MODELO_PROLOG CMP " +
+                                                 "WHERE CMP.STATUS_ATIVO = TRUE;");
             rSet = stmt.executeQuery();
             final List<ModeloChecklistVisualizacao> modelos = new ArrayList<>();
             while (rSet.next()) {
@@ -298,7 +301,6 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            conn.setAutoCommit(false);
             stmt = conn.prepareStatement("INSERT INTO CHECKLIST_GALERIA_IMAGENS(URL_IMAGEM, COD_EMPRESA) " +
                                                  "VALUES (?, ?) RETURNING COD_IMAGEM;");
             stmt.setString(1, imagemProLog.getUrlImagem());
@@ -309,11 +311,6 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
             } else {
                 throw new SQLException("Erro ao inserir imagem na galeria da empresa: " + codEmpresa);
             }
-        } catch (final Throwable t) {
-            if (conn != null) {
-                conn.rollback();
-            }
-            throw t;
         } finally {
             close(conn, stmt, rSet);
         }
@@ -328,14 +325,17 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT " +
-                    "       DISTINCT CGI.URL_IMAGEM AS URL_IMAGEM " +
-                    "FROM CHECKLIST_MODELO CM " +
-                    "         JOIN CHECKLIST_PERGUNTAS CP ON CP.COD_VERSAO_CHECKLIST_MODELO = CM.COD_VERSAO_ATUAL " +
-                    "         JOIN CHECKLIST_GALERIA_IMAGENS CGI ON CP.COD_IMAGEM = CGI.COD_IMAGEM " +
-                    "         JOIN CHECKLIST_MODELO_FUNCAO CMF ON CM.CODIGO = CMF.COD_CHECKLIST_MODELO " +
-                    "WHERE CM.COD_UNIDADE = ? " +
-                    "  AND CMF.COD_FUNCAO = ? " +
-                    "  AND CM.STATUS_ATIVO = TRUE;");
+                                                 "       DISTINCT CGI.URL_IMAGEM AS URL_IMAGEM " +
+                                                 "FROM CHECKLIST_MODELO CM " +
+                                                 "         JOIN CHECKLIST_PERGUNTAS CP ON CP" +
+                                                 ".COD_VERSAO_CHECKLIST_MODELO = CM.COD_VERSAO_ATUAL " +
+                                                 "         JOIN CHECKLIST_GALERIA_IMAGENS CGI ON CP.COD_IMAGEM = CGI" +
+                                                 ".COD_IMAGEM " +
+                                                 "         JOIN CHECKLIST_MODELO_FUNCAO CMF ON CM.CODIGO = CMF" +
+                                                 ".COD_CHECKLIST_MODELO " +
+                                                 "WHERE CM.COD_UNIDADE = ? " +
+                                                 "  AND CMF.COD_FUNCAO = ? " +
+                                                 "  AND CM.STATUS_ATIVO = TRUE;");
             stmt.setLong(1, codUnidade);
             stmt.setLong(2, codFuncao);
             rSet = stmt.executeQuery();
@@ -371,8 +371,8 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_GET_MODELOS_SELECAO_REALIZACAO(" +
-                    "F_COD_UNIDADE := ?, " +
-                    "F_COD_CARGO   := ?);");
+                                                 "F_COD_UNIDADE := ?, " +
+                                                 "F_COD_CARGO   := ?);");
             stmt.setLong(1, codUnidade);
             stmt.setLong(2, codCargo);
             rSet = stmt.executeQuery();
@@ -391,7 +391,8 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
                             modelos.add(modeloSelecao);
                             veiculosSelecao = new ArrayList<>();
                             veiculosSelecao.add(ChecklistModeloConverter.createVeiculoChecklistSelecao(rSet));
-                            modeloSelecao = ChecklistModeloConverter.createModeloChecklistSelecao(rSet, veiculosSelecao);
+                            modeloSelecao =
+                                    ChecklistModeloConverter.createModeloChecklistSelecao(rSet, veiculosSelecao);
                         }
                     }
                 } while (rSet.next());
@@ -418,8 +419,8 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_GET_MODELO_REALIZACAO(" +
-                    "F_COD_MODELO_CHECKLIST   := ?," +
-                    "F_COD_VEICULO_REALIZACAO := ?);");
+                                                 "F_COD_MODELO_CHECKLIST   := ?," +
+                                                 "F_COD_VEICULO_REALIZACAO := ?);");
             stmt.setLong(1, codModeloChecklist);
             stmt.setLong(2, codVeiculo);
             rSet = stmt.executeQuery();
@@ -435,7 +436,9 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
                                 rSet.getLong("COD_MODELO_CHECKLIST"),
                                 rSet.getLong("COD_VERSAO_MODELO_CHECKLIST"),
                                 rSet.getString("NOME_MODELO_CHECKLIST"),
-                                ChecklistModeloConverter.createVeiculoChecklistRealizacao(codVeiculo, placaVeiculo, rSet),
+                                ChecklistModeloConverter.createVeiculoChecklistRealizacao(codVeiculo,
+                                                                                          placaVeiculo,
+                                                                                          rSet),
                                 perguntas);
                         pergunta = ChecklistModeloConverter.createPerguntaRealizacaoChecklist(rSet, alternativas);
                         alternativas.add(ChecklistModeloConverter.createAlternativaRealizacaoChecklist(rSet));
@@ -515,7 +518,7 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
                         // contexto ou se ela mesmo editada não mudou de contexto.
                         final boolean manterContextoAlternativa =
                                 alternativa instanceof AlternativaModeloChecklistEdicaoAtualiza
-                                && (usarMesmoCodigoDeContexto || !analiseAlternativa.isItemMudouContexto());
+                                        && (usarMesmoCodigoDeContexto || !analiseAlternativa.isItemMudouContexto());
                         insertAlternativaChecklist(
                                 conn,
                                 modeloChecklist.getCodUnidade(),
@@ -578,12 +581,12 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
         ResultSet rSet = null;
         try {
             stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_ANALISA_MUDANCAS_MODELO(" +
-                    "F_COD_MODELO                  := ?," +
-                    "F_COD_VERSAO_MODELO           := ?," +
-                    "F_NOME_MODELO                 := ?," +
-                    "F_COD_CARGOS                  := ?," +
-                    "F_COD_TIPOS_VEICULOS          := ?," +
-                    "F_PERGUNTAS_ALTERNATIVAS_JSON := ?);");
+                                                 "F_COD_MODELO                  := ?," +
+                                                 "F_COD_VERSAO_MODELO           := ?," +
+                                                 "F_NOME_MODELO                 := ?," +
+                                                 "F_COD_CARGOS                  := ?," +
+                                                 "F_COD_TIPOS_VEICULOS          := ?," +
+                                                 "F_PERGUNTAS_ALTERNATIVAS_JSON := ?);");
             stmt.setLong(1, codModelo);
             stmt.setLong(2, modeloChecklist.getCodVersaoModelo());
             stmt.setString(3, modeloChecklist.getNome());
@@ -654,9 +657,9 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
         ResultSet rSet = null;
         try {
             stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_GET_PERGUNTAS_MODELOS_CHECKLIST(" +
-                    "F_COD_UNIDADE                 := ?," +
-                    "F_COD_MODELO                  := ?," +
-                    "F_COD_VERSAO_MODELO           := ?);");
+                                                 "F_COD_UNIDADE                 := ?," +
+                                                 "F_COD_MODELO                  := ?," +
+                                                 "F_COD_VERSAO_MODELO           := ?);");
             stmt.setLong(1, codUnidade);
             stmt.setLong(2, codModelo);
             stmt.setLong(3, codVersaoModelo);
@@ -675,11 +678,11 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareCall("{CALL FUNC_CHECKLIST_UPDATE_MODELO_CHECKLIST_INFOS(" +
-                    "F_COD_UNIDADE        := ?," +
-                    "F_COD_MODELO         := ?," +
-                    "F_NOME_MODELO        := ?," +
-                    "F_COD_CARGOS         := ?," +
-                    "F_COD_TIPOS_VEICULOS := ?)}");
+                                            "F_COD_UNIDADE        := ?," +
+                                            "F_COD_MODELO         := ?," +
+                                            "F_NOME_MODELO        := ?," +
+                                            "F_COD_CARGOS         := ?," +
+                                            "F_COD_TIPOS_VEICULOS := ?)}");
             stmt.setLong(1, codUnidade);
             stmt.setLong(2, codModelo);
             stmt.setString(3, modeloChecklist.getNome());
@@ -706,11 +709,11 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
             conn = getConnection();
             if (codEmpresa != null) {
                 stmt = conn.prepareStatement("SELECT * FROM CHECKLIST_GALERIA_IMAGENS " +
-                        "WHERE COD_EMPRESA = ? AND STATUS_ATIVO = TRUE;");
+                                                     "WHERE COD_EMPRESA = ? AND STATUS_ATIVO = TRUE;");
                 stmt.setLong(1, codEmpresa);
             } else {
                 stmt = conn.prepareStatement("SELECT * FROM CHECKLIST_GALERIA_IMAGENS " +
-                        "WHERE COD_EMPRESA IS NULL AND STATUS_ATIVO = TRUE;");
+                                                     "WHERE COD_EMPRESA IS NULL AND STATUS_ATIVO = TRUE;");
             }
             rSet = stmt.executeQuery();
             final List<ImagemProlog> imagensProLog = new ArrayList<>();
@@ -731,11 +734,11 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
         ResultSet rSet = null;
         try {
             stmt = conn.prepareStatement("SELECT VT.NOME AS TIPO_VEICULO, VT.CODIGO "
-                    + "FROM CHECKLIST_MODELO_VEICULO_TIPO CM "
-                    + "JOIN VEICULO_TIPO VT ON CM.COD_TIPO_VEICULO = VT.CODIGO "
-                    + "WHERE CM.COD_UNIDADE = ? "
-                    + "AND CM.COD_MODELO = ? "
-                    + "ORDER BY VT.NOME");
+                                                 + "FROM CHECKLIST_MODELO_VEICULO_TIPO CM "
+                                                 + "JOIN VEICULO_TIPO VT ON CM.COD_TIPO_VEICULO = VT.CODIGO "
+                                                 + "WHERE CM.COD_UNIDADE = ? "
+                                                 + "AND CM.COD_MODELO = ? "
+                                                 + "ORDER BY VT.NOME");
             stmt.setLong(1, codUnidade);
             stmt.setLong(2, codModelo);
             rSet = stmt.executeQuery();
@@ -757,11 +760,11 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
         ResultSet rSet = null;
         try {
             stmt = conn.prepareStatement("SELECT F.CODIGO, F.NOME "
-                    + "FROM CHECKLIST_MODELO_FUNCAO CM "
-                    + "JOIN FUNCAO F ON F.CODIGO = CM.COD_FUNCAO "
-                    + "WHERE CM.COD_UNIDADE = ? "
-                    + "AND CM.COD_CHECKLIST_MODELO = ? "
-                    + "ORDER BY F.NOME");
+                                                 + "FROM CHECKLIST_MODELO_FUNCAO CM "
+                                                 + "JOIN FUNCAO F ON F.CODIGO = CM.COD_FUNCAO "
+                                                 + "WHERE CM.COD_UNIDADE = ? "
+                                                 + "AND CM.COD_CHECKLIST_MODELO = ? "
+                                                 + "ORDER BY F.NOME");
             stmt.setLong(1, codUnidade);
             stmt.setLong(2, codModelo);
             rSet = stmt.executeQuery();
@@ -815,13 +818,16 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
         try {
             if (usarMesmoCodigoDeContexto) {
                 stmt = conn.prepareStatement("INSERT INTO CHECKLIST_PERGUNTAS ("
-                        + "COD_UNIDADE, COD_CHECKLIST_MODELO, COD_VERSAO_CHECKLIST_MODELO, ORDEM, PERGUNTA, COD_IMAGEM, "
-                        + "SINGLE_CHOICE, ANEXO_MIDIA_RESPOSTA_OK, CODIGO_CONTEXTO) "
-                        + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING CODIGO;");
+                                                     + "COD_UNIDADE, COD_CHECKLIST_MODELO, " +
+                                                     "COD_VERSAO_CHECKLIST_MODELO, ORDEM, PERGUNTA, COD_IMAGEM, "
+                                                     + "SINGLE_CHOICE, ANEXO_MIDIA_RESPOSTA_OK, CODIGO_CONTEXTO) "
+                                                     + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING CODIGO;");
             } else {
                 stmt = conn.prepareStatement("INSERT INTO CHECKLIST_PERGUNTAS ("
-                        + "COD_UNIDADE, COD_CHECKLIST_MODELO, COD_VERSAO_CHECKLIST_MODELO, ORDEM, PERGUNTA, COD_IMAGEM, "
-                        + "SINGLE_CHOICE, ANEXO_MIDIA_RESPOSTA_OK) VALUES (?, ?, ?, ?, ?, ?, ?, ?) RETURNING CODIGO");
+                                                     + "COD_UNIDADE, COD_CHECKLIST_MODELO, " +
+                                                     "COD_VERSAO_CHECKLIST_MODELO, ORDEM, PERGUNTA, COD_IMAGEM, "
+                                                     + "SINGLE_CHOICE, ANEXO_MIDIA_RESPOSTA_OK) VALUES (?, ?, ?, ?, " +
+                                                     "?, ?, ?, ?) RETURNING CODIGO");
             }
             stmt.setLong(1, codUnidade);
             stmt.setLong(2, codModelo);
@@ -839,8 +845,8 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
                 return rSet.getLong("CODIGO");
             } else {
                 throw new SQLException("Erro ao inserir a pergunta do checklist:\n"
-                        + "unidade: " + codUnidade + "\n"
-                        + "modelo: " + codModelo);
+                                               + "unidade: " + codUnidade + "\n"
+                                               + "modelo: " + codModelo);
             }
         } finally {
             close(stmt, rSet);
@@ -858,14 +864,20 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
         try {
             if (usarMesmoCodigoDeContexto) {
                 stmt = conn.prepareStatement("INSERT INTO CHECKLIST_ALTERNATIVA_PERGUNTA ( "
-                        + "COD_UNIDADE, COD_CHECKLIST_MODELO, COD_VERSAO_CHECKLIST_MODELO, COD_PERGUNTA, ALTERNATIVA, PRIORIDADE, ORDEM, "
-                        + "ALTERNATIVA_TIPO_OUTROS, DEVE_ABRIR_ORDEM_SERVICO, ANEXO_MIDIA, COD_AUXILIAR, CODIGO_CONTEXTO) "
-                        + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
+                                                     + "COD_UNIDADE, COD_CHECKLIST_MODELO, " +
+                                                     "COD_VERSAO_CHECKLIST_MODELO, COD_PERGUNTA, ALTERNATIVA, " +
+                                                     "PRIORIDADE, ORDEM, "
+                                                     + "ALTERNATIVA_TIPO_OUTROS, DEVE_ABRIR_ORDEM_SERVICO, " +
+                                                     "ANEXO_MIDIA, COD_AUXILIAR, CODIGO_CONTEXTO) "
+                                                     + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
             } else {
                 stmt = conn.prepareStatement("INSERT INTO CHECKLIST_ALTERNATIVA_PERGUNTA ( "
-                        + "COD_UNIDADE, COD_CHECKLIST_MODELO, COD_VERSAO_CHECKLIST_MODELO, COD_PERGUNTA, ALTERNATIVA, PRIORIDADE, ORDEM, "
-                        + "ALTERNATIVA_TIPO_OUTROS, DEVE_ABRIR_ORDEM_SERVICO, ANEXO_MIDIA, COD_AUXILIAR) "
-                        + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
+                                                     + "COD_UNIDADE, COD_CHECKLIST_MODELO, " +
+                                                     "COD_VERSAO_CHECKLIST_MODELO, COD_PERGUNTA, ALTERNATIVA, " +
+                                                     "PRIORIDADE, ORDEM, "
+                                                     + "ALTERNATIVA_TIPO_OUTROS, DEVE_ABRIR_ORDEM_SERVICO, " +
+                                                     "ANEXO_MIDIA, COD_AUXILIAR) "
+                                                     + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
             }
             stmt.setLong(1, codUnidade);
             stmt.setLong(2, codModelo);
@@ -896,8 +908,8 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("UPDATE CHECKLIST_PERGUNTAS " +
-                    "SET PERGUNTA = ?, ORDEM = ?, SINGLE_CHOICE = ?, COD_IMAGEM = ? " +
-                    "WHERE COD_CHECKLIST_MODELO = ? AND CODIGO = ?;");
+                                                 "SET PERGUNTA = ?, ORDEM = ?, SINGLE_CHOICE = ?, COD_IMAGEM = ? " +
+                                                 "WHERE COD_CHECKLIST_MODELO = ? AND CODIGO = ?;");
             stmt.setString(1, pergunta.getDescricao());
             stmt.setInt(2, pergunta.getOrdemExibicao());
             stmt.setBoolean(3, pergunta.isSingleChoice());
@@ -919,8 +931,9 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("UPDATE CHECKLIST_ALTERNATIVA_PERGUNTA " +
-                    "SET ALTERNATIVA = ?, ORDEM = ?, PRIORIDADE = ?, DEVE_ABRIR_ORDEM_SERVICO = ?, COD_AUXILIAR = ? " +
-                    "WHERE COD_CHECKLIST_MODELO = ? AND CODIGO = ?;");
+                                                 "SET ALTERNATIVA = ?, ORDEM = ?, PRIORIDADE = ?, " +
+                                                 "DEVE_ABRIR_ORDEM_SERVICO = ?, COD_AUXILIAR = ? " +
+                                                 "WHERE COD_CHECKLIST_MODELO = ? AND CODIGO = ?;");
             stmt.setString(1, alternativa.getDescricao());
             stmt.setInt(2, alternativa.getOrdemExibicao());
             stmt.setString(3, alternativa.getPrioridade().asString());
@@ -930,8 +943,8 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
             stmt.setLong(7, alternativa.getCodigo());
             if (stmt.executeUpdate() <= 0) {
                 throw new SQLException("Não foi possível atualizar a alternativa:\n" +
-                        "codModelo: " + codModelo + "\n" +
-                        "codigo: " + alternativa.getCodigo());
+                                               "codModelo: " + codModelo + "\n" +
+                                               "codigo: " + alternativa.getCodigo());
             }
         } finally {
             close(stmt);
@@ -946,12 +959,12 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
         ResultSet rSet = null;
         try {
             stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_INSERT_NOVA_VERSAO_MODELO(" +
-                    "F_COD_UNIDADE_MODELO := ?," +
-                    "F_COD_MODELO         := ?," +
-                    "F_NOME_MODELO        := ?," +
-                    "F_STATUS_ATIVO       := ?," +
-                    "F_DATA_HORA_ATUAL    := ?," +
-                    "F_TOKEN_COLABORADOR  := ?);");
+                                                 "F_COD_UNIDADE_MODELO := ?," +
+                                                 "F_COD_MODELO         := ?," +
+                                                 "F_NOME_MODELO        := ?," +
+                                                 "F_STATUS_ATIVO       := ?," +
+                                                 "F_DATA_HORA_ATUAL    := ?," +
+                                                 "F_TOKEN_COLABORADOR  := ?);");
             stmt.setLong(1, modeloChecklist.getCodUnidade());
             stmt.setLong(2, modeloChecklist.getCodModelo());
             stmt.setString(3, modeloChecklist.getNome());
@@ -963,12 +976,12 @@ public final class ChecklistModeloDaoImpl extends DatabaseConnection implements 
                 final long codVersaoModeloChecklist = rSet.getLong("COD_VERSAO_MODELO_CHECKLIST");
                 if (codVersaoModeloChecklist <= 0) {
                     throw new SQLException("Erro ao criar nova versão do modelo de checklist: "
-                            + modeloChecklist.getCodModelo());
+                                                   + modeloChecklist.getCodModelo());
                 }
                 return codVersaoModeloChecklist;
             } else {
                 throw new SQLException("Erro ao criar nova versão do modelo de checklist: "
-                        + modeloChecklist.getCodModelo());
+                                               + modeloChecklist.getCodModelo());
             }
         } finally {
             close(stmt, rSet);

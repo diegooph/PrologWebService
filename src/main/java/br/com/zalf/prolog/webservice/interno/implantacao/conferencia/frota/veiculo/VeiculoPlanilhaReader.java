@@ -41,7 +41,7 @@ public final class VeiculoPlanilhaReader {
         final CsvParserSettings settings = new CsvParserSettings();
         settings.setDelimiterDetectionEnabled(true, ',', ';');
         settings.setHeaderExtractionEnabled(true);
-        settings.setNumberOfRowsToSkip(13);
+        settings.setNumberOfRowsToSkip(14);
         final CsvParser parser = new CsvParser(settings);
         final List<String[]> rows = parser.parseAll(file);
         final List<VeiculoPlanilha> veiculoPlanilha = new ArrayList<>();
@@ -85,6 +85,9 @@ public final class VeiculoPlanilhaReader {
         }
         // IDENTIFICADOR FROTA.
         item.setIdentificadorFrota(linha[7]);
+
+        // POSSUI HUBODOMETRO.
+        item.setPossuiHubodometro(linha[8]);
         return item;
     }
 }

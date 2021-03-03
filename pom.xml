@@ -27,12 +27,14 @@
             </activation>
             <properties>
                 <active-profile>dev</active-profile>
+                <prolog-debug>true</prolog-debug>
             </properties>
         </profile>
         <profile>
             <id>prod</id>
             <properties>
                 <active-profile>prod</active-profile>
+                <prolog-debug>false</prolog-debug>
             </properties>
         </profile>
     </profiles>
@@ -148,7 +150,7 @@
         <dependency>
             <groupId>com.mailjet</groupId>
             <artifactId>mailjet-client</artifactId>
-            <version>4.2.1</version>
+            <version>5.1.1</version>
         </dependency>
 
         <dependency>
@@ -361,18 +363,6 @@
             <artifactId>aws-java-sdk-s3</artifactId>
             <version>1.11.844</version>
         </dependency>
-
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-api</artifactId>
-            <version>2.8.2</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
-            <version>2.8.2</version>
-        </dependency>
-
         <!-- Dependências para fazer comunicação cross-domain -->
         <dependency>
             <groupId>com.thetransactioncompany</groupId>

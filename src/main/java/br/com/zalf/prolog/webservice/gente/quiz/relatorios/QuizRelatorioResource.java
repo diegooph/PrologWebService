@@ -19,7 +19,7 @@ import javax.ws.rs.core.StreamingOutput;
 /**
  * Created by Zart on 20/03/17.
  */
-@Path("/quizzes/relatorios")
+@Path("/v2/quizzes/relatorios")
 @Secured(permissions = Pilares.Gente.Relatorios.QUIZ)
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")

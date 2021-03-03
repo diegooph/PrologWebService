@@ -1,20 +1,19 @@
 package br.com.zalf.prolog.webservice.messaging.email._model;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Created on 2020-02-25
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
+@AllArgsConstructor
+@Getter
 public enum EmailTemplate {
-    ABERTURA_SOCORRO_ROTA(1255647);
+    ABERTURA_SOCORRO_ROTA(1255647L);
 
-    private final int templateId;
-
-    EmailTemplate(final int templateId) {
-        this.templateId = templateId;
-    }
-
-    public int getTemplateId() {
-        return templateId;
-    }
+    @NotNull
+    private final Long templateId;
 }

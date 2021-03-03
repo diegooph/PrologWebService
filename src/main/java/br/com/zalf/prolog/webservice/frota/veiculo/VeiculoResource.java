@@ -7,11 +7,16 @@ import br.com.zalf.prolog.webservice.commons.network.metadata.Platform;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Required;
 import br.com.zalf.prolog.webservice.commons.network.metadata.UsedBy;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.VeiculoCadastro;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculoNomenclatura;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicaoStatus;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.listagem.VeiculoListagem;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoDadosColetaKm;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoVisualizacao;
 import br.com.zalf.prolog.webservice.interceptors.auth.ColaboradorAutenticado;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
@@ -30,7 +35,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-@Path("veiculos")
+@Path("/v2/veiculos")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public final class VeiculoResource {
@@ -136,7 +141,8 @@ public final class VeiculoResource {
     @GET
     @Secured(permissions = {Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
     @Path("/marcas-modelos/{codEmpresa}")
-    public List<Marca> getMarcasModelosVeiculosByEmpresa(@PathParam("codEmpresa") final Long codEmpresa) throws ProLogException {
+    public List<Marca> getMarcasModelosVeiculosByEmpresa(@PathParam("codEmpresa") final Long codEmpresa)
+            throws ProLogException {
         return service.getMarcasModelosVeiculosByEmpresa(codEmpresa);
     }
 
@@ -152,7 +158,8 @@ public final class VeiculoResource {
     }
 
     @GET
-    @Secured(permissions = {Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR, Pilares.Frota.Veiculo.VISUALIZAR})
+    @Secured(permissions = {Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR,
+            Pilares.Frota.Veiculo.VISUALIZAR})
     @Path("/modelos/{codUnidade}/{codModelo}")
     public Modelo getModeloVeiculo(@PathParam("codUnidade") final Long codUnidade,
                                    @PathParam("codModelo") final Long codModelo) {
@@ -213,9 +220,8 @@ public final class VeiculoResource {
             targetVersionCode = 68,
             versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
             actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
-    public VeiculoVisualizacao getVeiculoByCodigo(@HeaderParam("Authorization") final String userToken,
-                                                  @QueryParam("codVeiculo") final Long codVeiculo) {
-        return service.getVeiculoByCodigo(userToken, codVeiculo);
+    public VeiculoVisualizacao getVeiculoByCodigo(@QueryParam("codVeiculo") final Long codVeiculo) {
+        return service.getVeiculoByCodigo(codVeiculo);
     }
 
     @GET
@@ -231,7 +237,7 @@ public final class VeiculoResource {
     /**
      * @deprecated at 2020-05-07.
      * <p>
-     * Este método foi depreciado pois um novo foi criado: {@link #getVeiculoByCodigo(String, Long)}
+     * Este método foi depreciado pois um novo foi criado: {@link #getVeiculoByCodigo(Long)}
      */
     @Deprecated
     @GET
@@ -265,7 +271,8 @@ public final class VeiculoResource {
      * por depreciar e criar outros.
      * <p>
      * Dessa forma, separamos essa lógica em dois métodos, caso queira o caso 1, utilize
-     * {@link #getMarcasVeiculosNivelProLog()} se for o caso 2, utilize {@link #getMarcasModelosVeiculosByEmpresa(Long)}.
+     * {@link #getMarcasVeiculosNivelProLog()} se for o caso 2, utilize
+     * {@link #getMarcasModelosVeiculosByEmpresa(Long)}.
      */
     @Deprecated
     @GET
@@ -294,4 +301,20 @@ public final class VeiculoResource {
         return service.getVeiculosAtivosByUnidade(userToken, codUnidade, ativos);
     }
 
+    @GET
+    @Secured(permissions = {
+            Pilares.Frota.Veiculo.VISUALIZAR,
+            Pilares.Frota.Veiculo.ALTERAR,
+            Pilares.Frota.Veiculo.CADASTRAR,
+            Pilares.Frota.Veiculo.VISUALIZAR_RELATORIOS,
+            Pilares.Frota.Checklist.REALIZAR,
+            Pilares.Frota.OrdemServico.Checklist.RESOLVER_ITEM,
+            Pilares.Frota.Afericao.REALIZAR_AFERICAO_PLACA,
+            Pilares.Frota.SocorroRota.SOLICITAR_SOCORRO,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_VEICULO_ESTOQUE,
+            Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
+    @Path("/dados-coleta-km")
+    public VeiculoDadosColetaKm getDadosColetaKmByCodigo(@QueryParam("codVeiculo") final Long codVeiculo) {
+        return service.getDadosColetaKmByCodigo(codVeiculo);
+    }
 }

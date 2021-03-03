@@ -13,6 +13,8 @@ public class RestricoesContracheque {
     public boolean recargaPartePremio;
     public String indicadorBonus;
     public Long codFuncaoSolicitante;
+    public Long codUnidade;
+    public short numeroViagensNecessariasParaReceberBonus;
 
     public RestricoesContracheque() {
     }

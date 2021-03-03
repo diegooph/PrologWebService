@@ -18,7 +18,7 @@ import java.io.InputStream;
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-@Path("/implantacoes/colaboradores")
+@Path("/v2/implantacoes/colaboradores")
 @Consumes({MediaType.MULTIPART_FORM_DATA})
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public final class ColaboradorConferenciaResource {

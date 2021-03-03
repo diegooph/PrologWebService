@@ -13,7 +13,7 @@ import javax.ws.rs.core.MediaType;
 import java.util.Date;
 import java.util.List;
 
-@Path("/relatos")
+@Path("/v2/relatos")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class RelatoResource {

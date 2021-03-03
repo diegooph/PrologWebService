@@ -153,6 +153,7 @@ public final class ProtheusNepomucenoConverter {
                                               @NotNull final VeiculoAfericaoProtheusNepomuceno veiculoAfericao,
                                               @NotNull final ProtheusNepomucenoPosicaoPneuMapper posicaoPneuMapper) {
         final Veiculo veiculo = new Veiculo();
+        veiculo.setCodigo(-1L);
         veiculo.setPlaca(veiculoAfericao.getCodVeiculo());
         if (!veiculoAfericao.getCodVeiculo().equals(veiculoAfericao.getPlacaVeiculo())) {
             veiculo.setIdentificadorFrota(veiculoAfericao.getPlacaVeiculo());

@@ -20,7 +20,7 @@ import javax.ws.rs.core.MediaType;
 import java.util.List;
 
 @ConsoleDebugLog
-@Path("/colaboradores")
+@Path("/v2/colaboradores")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class ColaboradorResource {
 

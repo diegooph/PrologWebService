@@ -12,7 +12,7 @@ import javax.ws.rs.*;
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-@Path("/interno/apresentacao")
+@Path("/v2/interno/apresentacao")
 public class ApresentacaoResource {
     @NotNull
     private final ApresentacaoService service = new ApresentacaoService();

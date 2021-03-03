@@ -19,7 +19,7 @@ import java.util.List;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-@Path("/controle-jornada/justificativas-ajustes")
+@Path("/v2/controle-jornada/justificativas-ajustes")
 @ConsoleDebugLog
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")

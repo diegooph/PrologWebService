@@ -15,7 +15,7 @@ import java.util.List;
  *
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
-@Path("/dashboards/socorro-rota")
+@Path("/v2/dashboards/socorro-rota")
 @Secured
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")

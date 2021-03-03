@@ -25,7 +25,7 @@ import java.util.List;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 @ConsoleDebugLog
-@Path("/controle-jornada")
+@Path("/v2/controle-jornada")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class ControleJornadaResource {
@@ -58,6 +58,15 @@ public class ControleJornadaResource {
             @QueryParam("cpf") @Required final Long cpf,
             @QueryParam("codTipoIntervalo") @Required final Long codTipoInvervalo) throws ProLogException {
         return service.getUltimaMarcacaoInicioNaoFechada(tokenMarcacao, codUnidade, cpf, codTipoInvervalo);
+    }
+
+    @GET
+    @UsedBy(platforms = Platform.ANDROID)
+    @Path("/marcacao-inicio-vinculada")
+    public boolean isMarcacaoInicioFinalizada(
+            @HeaderParam(IntervaloOfflineSupport.HEADER_NAME_TOKEN_MARCACAO) final String tokenMarcacao,
+            @QueryParam("codMarcacao") @Required final Long codMarcacao) throws ProLogException {
+        return service.isMarcacaoInicioFinalizada(tokenMarcacao, codMarcacao);
     }
 
     @GET
