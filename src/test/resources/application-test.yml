@@ -3,6 +3,18 @@ spring:
     ansi:
       enabled: always
   profiles: test
+  flyway:
+    enabled: true
+    url: "${spring.datasource.url}"
+    user: "${spring.datasource.username}"
+    password: "${spring.datasource.password}"
+    baseline-on-migrate: true
+    baseline-version: "0"
+    sql-migration-prefix: "T"
+    sql-migration-separator: "_"
+    locations:
+      - filesystem:sql/prolog_setup_db/scripts/base
+      - filesystem:sql/migrations/done
   main:
     banner-mode: off
 logging:
