@@ -35,25 +35,21 @@ public class UnidadeApiClient {
                 .get(URI.create(RESOURCE + "/" + codUnidade))
                 .accept(MediaType.APPLICATION_JSON)
                 .build();
-
         return restTemplate.exchange(reqEntity,
                                      ParameterizedTypeReference.forType(UnidadeVisualizacaoListagemDto.class));
     }
 
     public ResponseEntity<List<UnidadeVisualizacaoListagemDto>> getUnidadesListagem(final Long codEmpresa,
                                                                                     final List<Long> codRegionais) {
-
         final UriComponents components = UriComponentsBuilder
                 .fromPath(RESOURCE)
                 .queryParam("codEmpresa", codEmpresa)
                 .queryParam("codsRegionais", codRegionais)
                 .build();
-
         final RequestEntity<Void> requestEntity = RequestEntity
                 .get(components.toUri())
                 .accept(MediaType.APPLICATION_JSON)
                 .build();
-
         return restTemplate.exchange(requestEntity,
                                      new ParameterizedTypeReference<List<UnidadeVisualizacaoListagemDto>>() {});
     }

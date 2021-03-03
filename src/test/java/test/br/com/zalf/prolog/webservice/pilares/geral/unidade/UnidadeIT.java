@@ -41,9 +41,7 @@ public class UnidadeIT extends IntegrationTest {
     @Test
     @DisplayName("Dado código da unidade, retorne a UnidadeVisualizacaoListagem correspondente.")
     void givenCodUnidadeToRequest_ThenReturnUnidadeVisualizacaoListagemAndStatusOK() {
-
         final ResponseEntity<UnidadeVisualizacaoListagemDto> response = client.getUnidadeByCodigo(TEST_UNIDADE_ID);
-
         assertBaseValidations(response);
         assertThat(response.getBody().getCodUnidade())
                 .isEqualTo(TEST_UNIDADE_ID);
@@ -54,10 +52,8 @@ public class UnidadeIT extends IntegrationTest {
     void givenCodUnidadeAndCodRegionais_ThenReturnListUnidadeVisualizacaoListagemAndStatusOk() {
         final Long codEmpresa = 3L;
         final List<Long> codsRegionais = Collections.singletonList(1L);
-
         final ResponseEntity<List<UnidadeVisualizacaoListagemDto>> response = client.getUnidadesListagem(codEmpresa,
                                                                                                          codsRegionais);
-
         assertBaseValidations(response);
         response.getBody().stream()
                 .map(Assertions::assertThat)
@@ -80,9 +76,7 @@ public class UnidadeIT extends IntegrationTest {
         void givenUnidadeEdicaoDto_ThenReturnSuccessResponseAndStatusOk() {
             final UnidadeEdicaoDto dtoToUpdate =
                     UnidadeEdicaoDtoFactory.createValidUnidadeEdicaoDtoToUpdate(baseEntity);
-
             final ResponseEntity<SuccessResponse> response = client.updateUnidade(dtoToUpdate);
-
             assertBaseValidations(response);
             assertThat(response.getBody().getUniqueItemId()).isEqualTo(dtoToUpdate.getCodUnidade());
         }
@@ -98,10 +92,8 @@ public class UnidadeIT extends IntegrationTest {
                     .latitudeUnidade(baseEntity.getLatitudeUnidade())
                     .longitudeUnidade(baseEntity.getLongitudeUnidade())
                     .build();
-
             final ResponseEntity<BadRequestException> response =
                     client.updateUnidade(dtoWithInvalidCodUnidade, BadRequestException.class);
-
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
             assertThat(response.getBody().getHttpStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
         }
