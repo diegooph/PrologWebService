@@ -33,7 +33,7 @@ final class ServicoQueryBinder {
     private static final String BASE_QUERY_BUSCA_SERVICOS = "SELECT "
             + "AM.CODIGO AS CODIGO_SERVICO, "
             + "AM.CPF_MECANICO AS CPF_RESPONSAVEL_FECHAMENTO, "
-            + "AM.DATA_HORA_RESOLUCAO AT TIME ZONE (SELECT FUNC_GET_TIME_ZONE_UNIDADE(AM.COD_UNIDADE)) AS " 
+            + "AM.DATA_HORA_RESOLUCAO AT TIME ZONE (SELECT FUNC_GET_TIME_ZONE_UNIDADE(AM.COD_UNIDADE)) AS "
             + "DATA_HORA_FECHAMENTO, "
             + "AM.KM_MOMENTO_CONSERTO AS KM_VEICULO_MOMENTO_FECHAMENTO, "
             + "AM.TEMPO_REALIZACAO_MILLIS AS TEMPO_REALIZACAO_MILLIS, "
@@ -312,6 +312,7 @@ final class ServicoQueryBinder {
         final PreparedStatement stmt = connection.prepareStatement("SELECT " +
                                                                            "  V.PLACA AS PLACA_VEICULO, " +
                                                                            "  V.IDENTIFICADOR_FROTA, " +
+                                                                           "  V.CODIGO AS COD_VEICULO, " +
                                                                            "  A.KM_VEICULO AS KM_ABERTURA_SERVICO, " +
                                                                            "  AV.COD_PNEU AS COD_PNEU, " +
                                                                            "  P.CODIGO_CLIENTE AS COD_PNEU_CLIENTE, " +
@@ -319,9 +320,9 @@ final class ServicoQueryBinder {
                                                                            "  AV.ALTURA_SULCO_CENTRAL_EXTERNO, " +
                                                                            "  AV.ALTURA_SULCO_CENTRAL_INTERNO, " +
                                                                            "  AV.ALTURA_SULCO_INTERNO, " +
-                "  AV.PSI, " +
-                "  AV.POSICAO, " +
-                "  AV.VIDA_MOMENTO_AFERICAO, " +
+                                                                           "  AV.PSI, " +
+                                                                           "  AV.POSICAO, " +
+                                                                           "  AV.VIDA_MOMENTO_AFERICAO, " +
                 "  V.KM AS KM_ATUAL_VEICULO " +
                 "FROM AFERICAO_MANUTENCAO AM " +
                                                                            "  JOIN AFERICAO A " +
