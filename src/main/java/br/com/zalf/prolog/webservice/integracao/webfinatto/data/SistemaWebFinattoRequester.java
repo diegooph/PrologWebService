@@ -16,7 +16,8 @@ import java.util.List;
 public interface SistemaWebFinattoRequester {
     @NotNull
     List<EmpresaWebFinatto> getFiltrosClientes(
-            @NotNull final ApiAutenticacaoHolder autenticacaoHolder) throws Throwable;
+            @NotNull final ApiAutenticacaoHolder autenticacaoHolder,
+            @NotNull final String cpfColaborador) throws Throwable;
 
     @NotNull
     List<VeiculoWebFinatto> getVeiculosByFiliais(@NotNull final ApiAutenticacaoHolder autenticacaoHolder,

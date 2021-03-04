@@ -21,11 +21,13 @@ public class SistemaWebFinattoRequesterImpl implements SistemaWebFinattoRequeste
     @Override
     @NotNull
     public List<EmpresaWebFinatto> getFiltrosClientes(
-            @NotNull final ApiAutenticacaoHolder autenticacaoHolder) throws Throwable {
+            @NotNull final ApiAutenticacaoHolder autenticacaoHolder,
+            @NotNull final String cpfColaborador) throws Throwable {
         final SistemaWebFinattoRest service = RestClient.getService(SistemaWebFinattoRest.class);
         final Call<List<EmpresaWebFinatto>> call =
                 service.getFiltrosClientes(autenticacaoHolder.getPrologTokenIntegracao(),
-                                           autenticacaoHolder.getUrl());
+                                           autenticacaoHolder.getUrl(),
+                                           cpfColaborador);
         return handleResponse(call.execute());
     }
 

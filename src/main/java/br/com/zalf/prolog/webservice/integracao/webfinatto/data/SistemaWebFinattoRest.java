@@ -19,7 +19,8 @@ public interface SistemaWebFinattoRest {
     @GET()
     Call<List<EmpresaWebFinatto>> getFiltrosClientes(
             @Header(PrologCustomHeaders.HEADER_TOKEN_INTEGRACAO) @NotNull final String tokenIntegracao,
-            @Url @NotNull final String url);
+            @Url @NotNull final String url,
+            @Query("cpfColaborador") @NotNull final String cpfColaborador);
 
     @GET()
     Call<List<VeiculoWebFinatto>> getVeiculosByFiliais(
