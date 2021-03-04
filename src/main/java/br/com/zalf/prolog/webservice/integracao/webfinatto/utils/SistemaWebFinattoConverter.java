@@ -16,7 +16,6 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.listagem.VeiculoListage
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoDadosColetaKm;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoVisualizacao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoVisualizacaoPneu;
-import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Empresa;
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Regional;
 import br.com.zalf.prolog.webservice.geral.unidade._model.Unidade;
@@ -559,7 +558,7 @@ public class SistemaWebFinattoConverter {
                 unidadeDeParaHolder.getCodAuxiliarEmpresa(),
                 unidadeDeParaHolder.getCodAuxiliarFilial(),
                 afericaoPlaca.getVeiculo().getPlaca(),
-                Colaborador.formatCpf(afericaoPlaca.getColaborador().getCpf()),
+                String.format("%011d", afericaoPlaca.getColaborador().getCpf()),
                 afericaoPlaca.getKmMomentoAfericao(),
                 afericaoPlaca.getTempoRealizacaoAfericaoInMillis(),
                 afericaoPlaca.getDataHora(),
@@ -575,7 +574,7 @@ public class SistemaWebFinattoConverter {
         return new AfericaoPneuWebFinatto(
                 unidadeDeParaHolder.getCodAuxiliarEmpresa(),
                 unidadeDeParaHolder.getCodAuxiliarFilial(),
-                Colaborador.formatCpf(afericaoAvulsa.getColaborador().getCpf()),
+                String.format("%011d", afericaoAvulsa.getColaborador().getCpf()),
                 afericaoAvulsa.getTempoRealizacaoAfericaoInMillis(),
                 afericaoAvulsa.getDataHora(),
                 afericaoAvulsa.getDataHora().atOffset(ZoneOffset.UTC).atZoneSameInstant(zoneId).toLocalDateTime(),
