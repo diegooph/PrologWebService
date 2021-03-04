@@ -13,6 +13,8 @@ public final class UnidadeDeParaHolder {
     @NotNull
     private final Long codEmpresaProlog;
     @NotNull
+    private final String nomeEmpresaProlog;
+    @NotNull
     private final List<UnidadeDePara> unidadesDePara;
 
     public boolean isEmpty() {

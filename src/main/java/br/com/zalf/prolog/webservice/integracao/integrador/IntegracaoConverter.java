@@ -74,6 +74,7 @@ public final class IntegracaoConverter {
     @NotNull
     public static UnidadeDeParaHolder createUnidadeDeParaHolder(@NotNull final ResultSet rSet) throws Throwable {
         return new UnidadeDeParaHolder(rSet.getLong("cod_empresa_prolog"),
+                                       rSet.getString("nome_empresa_prolog"),
                                        new ArrayList<>());
     }
 
