@@ -67,8 +67,7 @@ public class UnidadeIT extends IntegrationTest {
 
         @BeforeEach
         void setUp() {
-            baseEntity = dao.findById(TEST_UNIDADE_ID)
-                    .orElseThrow(NotFoundException::new);
+            baseEntity = dao.findById(TEST_UNIDADE_ID).orElseThrow(NotFoundException::new);
         }
 
         @Test
