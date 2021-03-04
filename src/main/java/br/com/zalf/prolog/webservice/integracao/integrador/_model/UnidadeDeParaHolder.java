@@ -34,6 +34,7 @@ public final class UnidadeDeParaHolder {
     public List<Long> getCodUnidadesMapeadas() {
         return unidadesDePara
                 .stream()
+                .filter(unidadeDePara -> unidadeDePara.getCodAuxiliarUnidade() != null)
                 .map(UnidadeDePara::getCodUnidadeProlog)
                 .distinct()
                 .collect(Collectors.toList());

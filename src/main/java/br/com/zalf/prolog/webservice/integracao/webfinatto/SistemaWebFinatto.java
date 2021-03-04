@@ -74,7 +74,7 @@ public class SistemaWebFinatto extends Sistema {
             conn = connectionProvider.provideDatabaseConnection();
             final UnidadeDeParaHolder unidadeDeParaHolder =
                     integracaoDao.getCodAuxiliarByCodUnidadeProlog(conn, codUnidades);
-            if (unidadeDeParaHolder.isEmpty()) {
+            if (unidadeDeParaHolder.getCodUnidadesMapeadas().isEmpty()) {
                 return SistemaWebFinattoConverter.createEmptyCronogramaAfericaoProlog();
             }
             final UnidadeRestricaoHolder unidadeRestricaoHolder =
