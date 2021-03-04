@@ -1,0 +1,625 @@
+BEGIN TRANSACTION;
+--######################################################################################################################
+--######################################################################################################################
+-- PL-2020
+CREATE SCHEMA PICCOLOTUR;
+
+CREATE TABLE IF NOT EXISTS PICCOLOTUR.CHECKLIST_PENDENTE_PARA_SINCRONIZAR (
+  COD_CHECKLIST_PARA_SINCRONIZAR BIGINT NOT NULL,
+  SINCRONIZADO BOOLEAN NOT NULL DEFAULT FALSE,
+  PRECISA_SER_SINCRONIZADO BOOLEAN NOT NULL DEFAULT TRUE,
+  NEXT_TO_SYNC BOOLEAN NOT NULL DEFAULT FALSE,
+  MENSAGEM_ERRO_AO_SINCRONIZAR TEXT DEFAULT NULL,
+  CONSTRAINT UNIQUE_COD_CHECKLIST_PARA_SINCRONIZAR UNIQUE (COD_CHECKLIST_PARA_SINCRONIZAR),
+  CONSTRAINT FK_CHECKLIST_PENDENTE_PARA_SINCRONIZAR FOREIGN KEY (COD_CHECKLIST_PARA_SINCRONIZAR)
+  REFERENCES CHECKLIST_DATA(CODIGO)
+);
+COMMENT ON TABLE PICCOLOTUR.CHECKLIST_PENDENTE_PARA_SINCRONIZAR
+IS 'Tabela para armazenar os códigos dos checklists que precisam ser sincronizados e se já foram sincronizados';
+
+CREATE TABLE IF NOT EXISTS PICCOLOTUR.CHECKLIST_ITEM_NOK_ENVIADO_GLOBUS (
+  COD_UNIDADE      BIGINT NOT NULL,
+  PLACA_VEICULO_OS TEXT   NOT NULL,
+  CPF_COLABORADOR  BIGINT NOT NULL,
+  COD_CHECKLIST    BIGINT NOT NULL,
+  COD_PERGUNTA     BIGINT NOT NULL,
+  COD_ALTERNATIVA  BIGINT NOT NULL,
+  DATA_HORA_ENVIO  TIMESTAMP WITH TIME ZONE NOT NULL,
+  CONSTRAINT UNIQUE_ITEM_ENVIADO_GLOBUS UNIQUE (COD_CHECKLIST, COD_PERGUNTA, COD_ALTERNATIVA),
+  CONSTRAINT FK_ITEM_ENVIADO_UNIDADE FOREIGN KEY (COD_UNIDADE) REFERENCES UNIDADE(CODIGO),
+  CONSTRAINT FK_ITEM_ENVIADO_CHECKLIST FOREIGN KEY (COD_CHECKLIST) REFERENCES CHECKLIST_DATA(CODIGO),
+  CONSTRAINT FK_ITEM_ENVIADO_PERGUNTA_CHECKLIST FOREIGN KEY (COD_PERGUNTA) REFERENCES CHECKLIST_PERGUNTAS_DATA(CODIGO),
+  CONSTRAINT FK_ITEM_ENVIADO_ALTERNATIVA_CHECKLIST FOREIGN KEY (COD_ALTERNATIVA)
+  REFERENCES CHECKLIST_ALTERNATIVA_PERGUNTA_DATA(CODIGO)
+);
+COMMENT ON TABLE PICCOLOTUR.CHECKLIST_ITEM_NOK_ENVIADO_GLOBUS
+IS 'Tabela para armazenar os itens nok que foram enviados para o Globus';
+
+CREATE TABLE IF NOT EXISTS PICCOLOTUR.CHECKLIST_ORDEM_SERVICO_ITEM_VINCULO (
+  COD_UNIDADE                   BIGINT NOT NULL,
+  COD_OS_GLOBUS                 BIGINT NOT NULL,
+  COD_ITEM_OS_GLOBUS            BIGINT NOT NULL,
+  COD_ITEM_OS_PROLOG            BIGINT NOT NULL,
+  PLACA_VEICULO_OS              TEXT   NOT NULL,
+  COD_CHECKLIST_OS_PROLOG       BIGINT NOT NULL,
+  COD_PERGUNTA_OS_PROLOG        BIGINT NOT NULL,
+  COD_ALTERNATIVA_OS_PROLOG     BIGINT NOT NULL,
+  DATA_HORA_SINCRONIA_PENDENCIA TIMESTAMP WITH TIME ZONE NOT NULL,
+  DATA_HORA_SINCRONIA_RESOLUCAO TIMESTAMP WITH TIME ZONE,
+  CONSTRAINT UNIQUE_ITEM_ORDEM_SERVICO_VINCULO_ITEM_PROLOG UNIQUE (COD_OS_GLOBUS, COD_ITEM_OS_PROLOG),
+  CONSTRAINT FK_INTEGRACAO_ITEM_VINCULO_UNIDADE FOREIGN KEY (COD_UNIDADE) REFERENCES UNIDADE(CODIGO),
+  CONSTRAINT FK_INTEGRACAO_OS_VINCULO_OS_PROLOG FOREIGN KEY (COD_UNIDADE, COD_OS_GLOBUS)
+  REFERENCES CHECKLIST_ORDEM_SERVICO_DATA(COD_UNIDADE, CODIGO),
+  CONSTRAINT FK_INTEGRACAO_ITEM_VINCULO_ITEM_PROLOG FOREIGN KEY (COD_ITEM_OS_PROLOG)
+  REFERENCES CHECKLIST_ORDEM_SERVICO_ITENS_DATA(CODIGO),
+  CONSTRAINT FK_INTEGRACAO_ITEM_VINCULO_ITEM_NOK_ENVIADO_GLOBUS
+  FOREIGN KEY (COD_CHECKLIST_OS_PROLOG, COD_PERGUNTA_OS_PROLOG, COD_ALTERNATIVA_OS_PROLOG)
+  REFERENCES PICCOLOTUR.CHECKLIST_ITEM_NOK_ENVIADO_GLOBUS(COD_CHECKLIST, COD_PERGUNTA, COD_ALTERNATIVA)
+);
+COMMENT ON TABLE PICCOLOTUR.CHECKLIST_ORDEM_SERVICO_ITEM_VINCULO
+IS 'Tabela utilizada para vincular as ordens de serviço abertas no ProLog a partir do Globus';
+--######################################################################################################################
+--######################################################################################################################
+
+--######################################################################################################################
+--######################################################################################################################
+-- PL-2047
+INSERT INTO INTEGRACAO(COD_EMPRESA, CHAVE_SISTEMA, RECURSO_INTEGRADO)
+VALUES (11, 'GLOBUS_PICCOLOTUR', 'CHECKLIST');
+INSERT INTO INTEGRACAO(COD_EMPRESA, CHAVE_SISTEMA, RECURSO_INTEGRADO)
+VALUES (11, 'GLOBUS_PICCOLOTUR', 'CHECKLIST_MODELO');
+INSERT INTO INTEGRACAO(COD_EMPRESA, CHAVE_SISTEMA, RECURSO_INTEGRADO)
+VALUES (11, 'GLOBUS_PICCOLOTUR', 'CHECKLIST_ORDEM_SERVICO');
+--######################################################################################################################
+--######################################################################################################################
+
+--######################################################################################################################
+--######################################################################################################################
+-- PL-2019
+CREATE OR REPLACE FUNCTION PICCOLOTUR.FUNC_CHECK_OS_INSERE_ITEM_OS_ABERTA(
+  F_COD_OS_GLOBUS                     BIGINT,
+  F_COD_UNIDADE_OS                    BIGINT,
+  F_COD_CHECKLIST                     BIGINT,
+  F_COD_ITEM_OS_GLOBUS                BIGINT,
+  F_COD_PERGUNTA_CHECKLIST            BIGINT,
+  F_COD_ALTERNATIVA_CHECKLIST         BIGINT,
+  F_DATA_HORA_SINCRONIZACAO_PENDENCIA TIMESTAMP WITH TIME ZONE,
+  F_TOKEN_INTEGRACAO                  TEXT)
+  RETURNS BIGINT
+LANGUAGE PLPGSQL
+AS $$
+DECLARE
+  STATUS_OS_ABERTA        TEXT := 'A';
+  STATUS_OS_FECHADA       TEXT := 'F';
+  STATUS_ITEM_OS_PENDENTE TEXT := 'P';
+  COD_ITEM_OS_PROLOG      BIGINT;
+BEGIN
+  -- Antes de processarmos a abertura da O.S e Inserção de Itens de O.S, validamos todos os códigos de vínculo.
+  -- Validamos se o código da Unidade da O.S bate com a empresa do Token
+  IF ((SELECT U.COD_EMPRESA FROM PUBLIC.UNIDADE U WHERE U.CODIGO = F_COD_UNIDADE_OS)
+      <>
+      (SELECT TI.COD_EMPRESA FROM INTEGRACAO.TOKEN_INTEGRACAO TI
+      WHERE TI.TOKEN_INTEGRACAO = F_TOKEN_INTEGRACAO))
+  THEN
+    PERFORM PUBLIC.THROW_GENERIC_ERROR(
+        FORMAT('[ERRO DE VÍNCULO] O token "%s" não está autorizado a inserir dados da unidade "%s"',
+               F_TOKEN_INTEGRACAO,
+               F_COD_UNIDADE_OS));
+  END IF;
+
+  -- Validamos se a Ordem de Serviço já existe no ProLog.
+  IF (SELECT EXISTS(
+      SELECT
+        *
+      FROM PICCOLOTUR.CHECKLIST_ORDEM_SERVICO_ITEM_VINCULO
+      WHERE COD_OS_GLOBUS = F_COD_OS_GLOBUS
+            AND COD_UNIDADE = F_COD_UNIDADE_OS
+            AND COD_ALTERNATIVA_OS_PROLOG = F_COD_ITEM_OS_GLOBUS))
+  THEN
+    PERFORM PUBLIC.THROW_GENERIC_ERROR(
+        FORMAT('[ERRO DE STATUS] A alternativa "%s" já está existe na O.S "%s" do ProLog',
+               F_COD_ALTERNATIVA_CHECKLIST,
+               F_COD_OS_GLOBUS));
+  END IF;
+
+  -- Validamos se a Ordem de Serviço já está fechada.
+  IF ((SELECT COS.STATUS
+       FROM PUBLIC.CHECKLIST_ORDEM_SERVICO COS
+       WHERE COS.CODIGO = F_COD_OS_GLOBUS
+             AND COS.COD_UNIDADE = F_COD_UNIDADE_OS) = STATUS_OS_FECHADA)
+  THEN
+    PERFORM PUBLIC.THROW_GENERIC_ERROR(
+        FORMAT('[ERRO DE STATUS] A O.S "%s" já está FECHADA no ProLog', F_COD_OS_GLOBUS));
+  END IF;
+
+  -- Validamos se o código do checklist existe.
+  IF (SELECT NOT EXISTS(
+      SELECT C.CODIGO FROM PUBLIC.CHECKLIST C WHERE C.CODIGO = F_COD_CHECKLIST
+                                                    AND C.COD_UNIDADE = F_COD_UNIDADE_OS))
+  THEN
+    PERFORM PUBLIC.THROW_GENERIC_ERROR(
+        FORMAT('[ERRO DE VÍNCULO] O checklist "%s" não encontra-se na base de dados do ProLog', F_COD_CHECKLIST));
+  END IF;
+
+  -- Validamos se a pergunta existe e está mesmo vinculada ao checklist realizado.
+  IF (SELECT NOT EXISTS(
+      SELECT CR.COD_PERGUNTA FROM PUBLIC.CHECKLIST_RESPOSTAS CR
+      WHERE CR.COD_CHECKLIST = F_COD_CHECKLIST
+            AND CR.COD_PERGUNTA = F_COD_PERGUNTA_CHECKLIST))
+  THEN
+    PERFORM PUBLIC.THROW_GENERIC_ERROR(
+        FORMAT('[ERRO DE VÍNCULO] A pergunta "%s" não possui vínculo com o checklist "%s"',
+               F_COD_PERGUNTA_CHECKLIST,
+               F_COD_CHECKLIST));
+  END IF;
+
+  -- Validamos se a alternativa existe e pertence a pergunta do checklist realizado.
+  IF (SELECT NOT EXISTS(
+      SELECT CR.COD_ALTERNATIVA FROM PUBLIC.CHECKLIST_RESPOSTAS CR
+      WHERE CR.COD_CHECKLIST = F_COD_CHECKLIST
+            AND CR.COD_PERGUNTA = F_COD_PERGUNTA_CHECKLIST
+            AND CR.COD_ALTERNATIVA = F_COD_ALTERNATIVA_CHECKLIST))
+  THEN
+    PERFORM PUBLIC.THROW_GENERIC_ERROR(
+        FORMAT('[ERRO DE VÍNCULO] A alternativa "%s" não possui vínculo com a pergunta "%s"',
+               F_COD_ALTERNATIVA_CHECKLIST,
+               F_COD_PERGUNTA_CHECKLIST));
+  END IF;
+
+  -- Validamos se os itens da O.S pertencem ao checklist correto.
+  IF (NOT(SELECT EXISTS(
+      SELECT
+        *
+      FROM PICCOLOTUR.CHECKLIST_ITEM_NOK_ENVIADO_GLOBUS
+      WHERE COD_CHECKLIST = F_COD_CHECKLIST
+            AND COD_PERGUNTA = F_COD_PERGUNTA_CHECKLIST
+            AND COD_ALTERNATIVA = F_COD_ALTERNATIVA_CHECKLIST)))
+  THEN
+    PERFORM PUBLIC.THROW_GENERIC_ERROR(
+        FORMAT(
+            '[ERRO DE VÍNCULO] Não existe vínculo entre o cod_checklist "%s", cod_pergunta "%s" e cod_alternativa "%s"',
+            F_COD_CHECKLIST,
+            F_COD_PERGUNTA_CHECKLIST,
+            F_COD_ALTERNATIVA_CHECKLIST));
+  END IF;
+
+  -- Se a Ordem de Serviço não existe, então criamos ela.
+  IF (SELECT NOT EXISTS(
+      SELECT COS.CODIGO FROM PUBLIC.CHECKLIST_ORDEM_SERVICO COS
+      WHERE COS.CODIGO = F_COD_OS_GLOBUS AND COS.COD_UNIDADE = F_COD_UNIDADE_OS))
+  THEN
+    INSERT INTO
+      PUBLIC.CHECKLIST_ORDEM_SERVICO_DATA(
+        CODIGO,
+        COD_UNIDADE,
+        COD_CHECKLIST,
+        STATUS)
+    VALUES (F_COD_OS_GLOBUS, F_COD_UNIDADE_OS, F_COD_CHECKLIST, STATUS_OS_ABERTA);
+  END IF;
+
+  -- Não precisamos validar novamente se o item já existe no banco de dados, apenas inserimos.
+  INSERT INTO
+    PUBLIC.CHECKLIST_ORDEM_SERVICO_ITENS_DATA(
+      COD_UNIDADE,
+      COD_OS,
+      STATUS_RESOLUCAO,
+      COD_PERGUNTA,
+      COD_ALTERNATIVA)
+  VALUES (F_COD_UNIDADE_OS, F_COD_OS_GLOBUS, STATUS_ITEM_OS_PENDENTE, F_COD_PERGUNTA_CHECKLIST, F_COD_ALTERNATIVA_CHECKLIST)
+  RETURNING CODIGO INTO COD_ITEM_OS_PROLOG;
+
+  -- Após salvar o item, criamos o vínculo dele na tabela DE X PARA.
+  INSERT INTO
+    PICCOLOTUR.CHECKLIST_ORDEM_SERVICO_ITEM_VINCULO(
+      COD_UNIDADE,
+      COD_OS_GLOBUS,
+      COD_ITEM_OS_GLOBUS,
+      COD_ITEM_OS_PROLOG,
+      PLACA_VEICULO_OS,
+      COD_CHECKLIST_OS_PROLOG,
+      COD_PERGUNTA_OS_PROLOG,
+      COD_ALTERNATIVA_OS_PROLOG,
+      DATA_HORA_SINCRONIA_PENDENCIA)
+  VALUES (F_COD_UNIDADE_OS,
+          F_COD_OS_GLOBUS,
+          F_COD_ITEM_OS_GLOBUS,
+          COD_ITEM_OS_PROLOG,
+          (SELECT C.PLACA_VEICULO FROM PUBLIC.CHECKLIST C WHERE C.CODIGO = F_COD_CHECKLIST),
+          F_COD_CHECKLIST,
+          F_COD_PERGUNTA_CHECKLIST,
+          F_COD_ALTERNATIVA_CHECKLIST,
+          F_DATA_HORA_SINCRONIZACAO_PENDENCIA);
+
+  RETURN COD_ITEM_OS_PROLOG;
+END;
+$$;
+--######################################################################################################################
+--######################################################################################################################
+
+--######################################################################################################################
+--######################################################################################################################
+-- PL-2021
+CREATE OR REPLACE FUNCTION PICCOLOTUR.FUNC_CHECK_OS_RESOLVE_ITEM_PENDENTE(
+  F_COD_UNIDADE_ITEM_OS           BIGINT,
+  F_COD_OS_GLOBUS                 BIGINT,
+  F_COD_ITEM_RESOLVIDO_GLOBUS     BIGINT,
+  F_CPF_COLABORADOR_RESOLUCAO     BIGINT,
+  F_PLACA_VEICULO_ITEM_OS         TEXT,
+  F_KM_COLETADO_RESOLUCAO         BIGINT,
+  F_DURACAO_RESOLUCAO_MS          BIGINT,
+  F_FEEDBACK_RESOLUCAO            TEXT,
+  F_DATA_HORA_RESOLVIDO_PROLOG    TIMESTAMP WITH TIME ZONE,
+  F_DATA_HORA_INICIO_RESOLUCAO    TIMESTAMP WITH TIME ZONE,
+  F_DATA_HORA_FIM_RESOLUCAO       TIMESTAMP WITH TIME ZONE,
+  F_TOKEN_INTEGRACAO              TEXT,
+  F_DATA_HORA_SINCRONIA_RESOLUCAO TIMESTAMP WITH TIME ZONE)
+  RETURNS BIGINT
+LANGUAGE PLPGSQL
+AS $$
+DECLARE
+  STATUS_ITEM_OS_PENDENTE       TEXT := 'P';
+  COD_ITEM_RESOLVIDO_PROLOG     BIGINT;
+  F_QTD_ROWS_ITENS_OS           BIGINT;
+  F_QTD_ROWS_VINCULOS_ALTERADOS BIGINT;
+BEGIN
+  -- Antes de processarmos a resolução de Itens de O.S., validamos todos os códigos de vínculo possíveis.
+  -- Por segurança, verificamos se a integração está fechando os itens de o.s. que pertencem a empresa correta.
+  IF (F_COD_UNIDADE_ITEM_OS NOT IN (SELECT CODIGO
+                                    FROM PUBLIC.UNIDADE
+                                    WHERE COD_EMPRESA = (SELECT TI.COD_EMPRESA
+                                                         FROM INTEGRACAO.TOKEN_INTEGRACAO TI
+                                                         WHERE TI.TOKEN_INTEGRACAO = F_TOKEN_INTEGRACAO)))
+  THEN
+    PERFORM PUBLIC.THROW_GENERIC_ERROR('Você está tentando fechar um item de uma O.S. que não pertence à sua empresa');
+  END IF;
+
+  -- Validamos se o código do item fechado no Globus, está mapeado no ProLog.
+  IF (SELECT EXISTS(SELECT COD_ITEM_OS_PROLOG
+                    FROM PICCOLOTUR.CHECKLIST_ORDEM_SERVICO_ITEM_VINCULO
+                    WHERE COD_ITEM_OS_GLOBUS = F_COD_ITEM_RESOLVIDO_GLOBUS))
+  THEN SELECT COD_ITEM_OS_PROLOG
+       FROM PICCOLOTUR.CHECKLIST_ORDEM_SERVICO_ITEM_VINCULO
+       WHERE COD_OS_GLOBUS = F_COD_OS_GLOBUS
+             AND COD_ITEM_OS_GLOBUS = F_COD_ITEM_RESOLVIDO_GLOBUS INTO COD_ITEM_RESOLVIDO_PROLOG;
+  ELSE
+    PERFORM PUBLIC.THROW_GENERIC_ERROR(
+        FORMAT('[ERRO DE VÍNCULO] O item "%s" da O.S. "%s" não possuí vínculo no ProLog',
+               F_COD_ITEM_RESOLVIDO_GLOBUS,
+               F_COD_OS_GLOBUS));
+  END IF;
+
+  -- Validamos se o item mapeado está pendente no ProLog.
+  IF (SELECT COSID.STATUS_RESOLUCAO
+      FROM PICCOLOTUR.CHECKLIST_ORDEM_SERVICO_ITEM_VINCULO COSIV
+        JOIN CHECKLIST_ORDEM_SERVICO_ITENS_DATA COSID
+          ON COSIV.COD_ITEM_OS_PROLOG = COSID.CODIGO
+      WHERE COD_OS_GLOBUS = F_COD_OS_GLOBUS
+            AND COD_ITEM_OS_GLOBUS = F_COD_ITEM_RESOLVIDO_GLOBUS) != STATUS_ITEM_OS_PENDENTE
+  THEN
+    PERFORM PUBLIC.THROW_GENERIC_ERROR(
+        FORMAT('[ERRO DE VÍNCULO] O item "%s" da O.S. "%s" já está resolvido no ProLog',
+               F_COD_ITEM_RESOLVIDO_GLOBUS,
+               F_COD_OS_GLOBUS));
+  END IF;
+
+  -- Validamos se o usuário está na base de dados do ProLog, em qualquer unidade da empresa integrada.
+  IF (SELECT NOT EXISTS(SELECT C.CODIGO
+                        FROM PUBLIC.COLABORADOR C
+                        WHERE C.CPF = F_CPF_COLABORADOR_RESOLUCAO
+                              AND C.COD_EMPRESA = (SELECT U.COD_EMPRESA
+                                                   FROM PUBLIC.UNIDADE U WHERE U.CODIGO = F_COD_UNIDADE_ITEM_OS)))
+  THEN
+    PERFORM
+      PUBLIC.THROW_GENERIC_ERROR(FORMAT('O CPF "%s" não encontra-se cadastrado no ProLog',
+                                        PUBLIC.FORMAT_CPF(F_CPF_COLABORADOR_RESOLUCAO)));
+  END IF;
+
+  -- Validamos se a placa é a mesma do item pendente mapeado no ProLog.
+  IF ((SELECT PLACA_VEICULO_OS
+       FROM PICCOLOTUR.CHECKLIST_ORDEM_SERVICO_ITEM_VINCULO
+       WHERE COD_OS_GLOBUS = F_COD_OS_GLOBUS
+             AND COD_ITEM_OS_GLOBUS = F_COD_ITEM_RESOLVIDO_GLOBUS) != F_PLACA_VEICULO_ITEM_OS)
+  THEN
+    PERFORM PUBLIC.THROW_GENERIC_ERROR(FORMAT('A placa "%s" não bate com a placa do item pendente "%s" do ProLog',
+                                              F_PLACA_VEICULO_ITEM_OS,
+                                              COD_ITEM_RESOLVIDO_PROLOG));
+  END IF;
+
+  -- Depois de validar podemos resolver o item.
+  UPDATE CHECKLIST_ORDEM_SERVICO_ITENS_DATA SET
+    CPF_MECANICO = F_CPF_COLABORADOR_RESOLUCAO,
+    KM = F_KM_COLETADO_RESOLUCAO,
+    STATUS_RESOLUCAO = 'R',
+    TEMPO_REALIZACAO = F_DURACAO_RESOLUCAO_MS,
+    DATA_HORA_CONSERTO = F_DATA_HORA_RESOLVIDO_PROLOG,
+    FEEDBACK_CONSERTO = F_FEEDBACK_RESOLUCAO,
+    DATA_HORA_INICIO_RESOLUCAO = F_DATA_HORA_INICIO_RESOLUCAO,
+    DATA_HORA_FIM_RESOLUCAO = F_DATA_HORA_FIM_RESOLUCAO
+  WHERE CODIGO = COD_ITEM_RESOLVIDO_PROLOG;
+
+  -- O ATRIBUTO 'ROW_COUNT' CONTERÁ A QUANTIDADE DE LINHAS QUE FORAM ATUALIZADAS PELO UPDATE ACIMA. A FUNCITON
+  -- IRÁ RETORNAR ESSE ATRIBUTO PARA QUE POSSAMOS VALIDAR SE TODOS OS UPDATES ACONTECERAM COMO DEVERIAM.
+  GET DIAGNOSTICS F_QTD_ROWS_ITENS_OS = ROW_COUNT;
+
+  -- SE APÓS O UPDATE NENHUMA LINHA FOR ALTERADA, SIGNIFICA QUE O UPDATE NÃO EXECUTOU CORRETAMENTE.
+  -- LANÇAMOS AQUI UMA EXCEÇÃO PARA RASTREAR ESSE ERRO.
+  IF F_QTD_ROWS_ITENS_OS <= 0
+  THEN RAISE EXCEPTION 'Não foi possível resolver o item do ProLog "%s"', COD_ITEM_RESOLVIDO_PROLOG;
+  END IF;
+
+  -- Vamos fechar a O.S. caso todos os itens dela já estejam resolvidos.
+  UPDATE CHECKLIST_ORDEM_SERVICO_DATA SET
+    STATUS = 'F',
+    DATA_HORA_FECHAMENTO = F_DATA_HORA_RESOLVIDO_PROLOG
+  WHERE CODIGO = F_COD_OS_GLOBUS
+        AND COD_UNIDADE = F_COD_UNIDADE_ITEM_OS
+        AND (SELECT COUNT(*)
+             FROM PUBLIC.CHECKLIST_ORDEM_SERVICO_ITENS COSI
+             WHERE COSI.COD_OS = F_COD_OS_GLOBUS
+                   AND COSI.COD_UNIDADE = F_COD_UNIDADE_ITEM_OS
+                   AND COSI.STATUS_RESOLUCAO = 'P') = 0;
+
+  -- Para finalizar, atualizamos a tabela de vínculo marcando o item como resolvido.
+  UPDATE PICCOLOTUR.CHECKLIST_ORDEM_SERVICO_ITEM_VINCULO SET
+    DATA_HORA_SINCRONIA_RESOLUCAO = F_DATA_HORA_SINCRONIA_RESOLUCAO
+  WHERE COD_ITEM_OS_PROLOG = COD_ITEM_RESOLVIDO_PROLOG AND COD_ITEM_OS_GLOBUS = F_COD_ITEM_RESOLVIDO_GLOBUS;
+
+  GET DIAGNOSTICS F_QTD_ROWS_VINCULOS_ALTERADOS = ROW_COUNT;
+
+  -- VERIFICAMOS SE O INSERT NA TABELA DE MAPEAMENTO DE ITENS RESOLVIDOS NA INTEGRAÇÃO OCORREU COM ÊXITO.
+  IF F_QTD_ROWS_VINCULOS_ALTERADOS <= 0
+  THEN
+    RAISE EXCEPTION
+    'Não foi possível inserir o item do ProLog resolvido na tabela de mapeamento, item "%s"', COD_ITEM_RESOLVIDO_PROLOG;
+  END IF;
+
+  RETURN F_QTD_ROWS_ITENS_OS;
+END;
+$$;
+--######################################################################################################################
+--######################################################################################################################
+
+--######################################################################################################################
+--######################################################################################################################
+-- PL-2066
+DROP FUNCTION FUNC_CHECKLIST_OS_ALTERNATIVAS_ABERTURA_OS(BIGINT, TEXT);
+CREATE OR REPLACE FUNCTION FUNC_CHECKLIST_OS_ALTERNATIVAS_ABERTURA_OS(
+  F_COD_MODELO_CHECKLIST BIGINT,
+  F_PLACA_VEICULO        TEXT)
+  RETURNS TABLE(
+    COD_ALTERNATIVA          BIGINT,
+    COD_ITEM_ORDEM_SERVICO   BIGINT,
+    TEM_ITEM_OS_PENDENTE     BOOLEAN,
+    DEVE_ABRIR_ORDEM_SERVICO BOOLEAN,
+    QTD_APONTAMENTOS_ITEM    INTEGER,
+    PRIORIDADE_ALTERNATIVA   TEXT)
+LANGUAGE PLPGSQL
+AS $$
+DECLARE
+  STATUS_ITEM_PENDENTE TEXT = 'P';
+BEGIN
+  RETURN QUERY
+  WITH ITENS_PENDENTES AS (
+      SELECT
+        COSI.CODIGO            AS COD_ITEM_ORDEM_SERVICO,
+        COSI.COD_ALTERNATIVA   AS COD_ALTERNATIVA,
+        COSI.QT_APONTAMENTOS   AS QTD_APONTAMENTOS_ITEM,
+        C.COD_CHECKLIST_MODELO AS COD_CHECKLIST_MODELO
+      FROM CHECKLIST C
+        JOIN CHECKLIST_ORDEM_SERVICO COS
+          ON C.CODIGO = COS.COD_CHECKLIST
+        JOIN CHECKLIST_ORDEM_SERVICO_ITENS COSI
+          ON COS.CODIGO = COSI.COD_OS
+             AND COS.COD_UNIDADE = COSI.COD_UNIDADE
+      WHERE C.PLACA_VEICULO = F_PLACA_VEICULO
+            AND C.COD_CHECKLIST_MODELO = F_COD_MODELO_CHECKLIST
+            AND COSI.STATUS_RESOLUCAO = STATUS_ITEM_PENDENTE
+  )
+
+  SELECT
+    CAP.CODIGO                                          AS COD_ALTERNATIVA,
+    IP.COD_ITEM_ORDEM_SERVICO                           AS COD_ITEM_ORDEM_SERVICO,
+    F_IF(IP.COD_ITEM_ORDEM_SERVICO ISNULL, FALSE, TRUE) AS TEM_ITEM_OS_PENDENTE,
+    CAP.DEVE_ABRIR_ORDEM_SERVICO                        AS DEVE_ABRIR_ORDEM_SERVICO,
+    IP.QTD_APONTAMENTOS_ITEM                            AS QTD_APONTAMENTOS_ITEM,
+    CAP.PRIORIDADE::TEXT                                AS PRIORIDADE_ALTERNATIVA
+  FROM CHECKLIST_MODELO CM
+    JOIN CHECKLIST_PERGUNTAS CP
+      ON CP.COD_CHECKLIST_MODELO = CM.CODIGO
+    JOIN CHECKLIST_ALTERNATIVA_PERGUNTA CAP
+      ON CAP.COD_PERGUNTA = CP.CODIGO
+    LEFT JOIN ITENS_PENDENTES IP
+      ON IP.COD_ALTERNATIVA = CAP.CODIGO
+  WHERE CM.CODIGO = F_COD_MODELO_CHECKLIST;
+END;
+$$;
+--######################################################################################################################
+--######################################################################################################################
+
+--######################################################################################################################
+--######################################################################################################################
+-- PL-2212
+CREATE OR REPLACE FUNCTION PICCOLOTUR.FUNC_CHECK_GET_NEXT_COD_CHECKLIST_PARA_SINCRONIZAR()
+  RETURNS TABLE (
+    COD_CHECKLIST BIGINT,
+    IS_LAST_COD BOOLEAN)
+LANGUAGE PLPGSQL
+AS $$
+DECLARE
+  COD_CHECKLIST BIGINT;
+  IS_LAST_COD   BOOLEAN;
+BEGIN
+  --   1° - VERIFICA SE EXISTE UM TOKEN, SE NÃO, SETA O DE MENOR CÓDIGO COMO DETENTOR DO TOKEN
+  IF ((SELECT
+         COD_CHECKLIST_PARA_SINCRONIZAR
+       FROM PICCOLOTUR.CHECKLIST_PENDENTE_PARA_SINCRONIZAR
+       WHERE NEXT_TO_SYNC IS TRUE
+             AND SINCRONIZADO IS FALSE
+             AND PRECISA_SER_SINCRONIZADO IS TRUE) IS NULL)
+  THEN
+    UPDATE PICCOLOTUR.CHECKLIST_PENDENTE_PARA_SINCRONIZAR
+    SET NEXT_TO_SYNC = TRUE
+    WHERE COD_CHECKLIST_PARA_SINCRONIZAR = (SELECT CPPS.COD_CHECKLIST_PARA_SINCRONIZAR
+                                            FROM PICCOLOTUR.CHECKLIST_PENDENTE_PARA_SINCRONIZAR CPPS
+                                            WHERE CPPS.SINCRONIZADO IS FALSE
+                                                  AND CPPS.PRECISA_SER_SINCRONIZADO IS TRUE
+                                            ORDER BY CPPS.COD_CHECKLIST_PARA_SINCRONIZAR
+                                            LIMIT 1);
+  END IF;
+
+  --   2° - VERIFICA SE O CÓDIGO MARCADO COM O TOKEN É O ÚLTIMO CÓDIGO A SER SINCRONIZADO
+  SELECT
+    CPPS.NEXT_TO_SYNC
+  FROM PICCOLOTUR.CHECKLIST_PENDENTE_PARA_SINCRONIZAR CPPS
+  WHERE CPPS.PRECISA_SER_SINCRONIZADO
+        AND CPPS.SINCRONIZADO IS FALSE
+  ORDER BY CPPS.COD_CHECKLIST_PARA_SINCRONIZAR DESC
+  LIMIT 1 INTO IS_LAST_COD;
+
+  --   3° - PEGA O CÓDIGO QUE ESTÁ MARCADO COM O TOKEN PARA TENTAR SINCRONIZAR
+  SELECT COD_CHECKLIST_PARA_SINCRONIZAR
+  FROM PICCOLOTUR.CHECKLIST_PENDENTE_PARA_SINCRONIZAR
+  WHERE NEXT_TO_SYNC = TRUE INTO COD_CHECKLIST;
+
+  --   4° - REMOVE O TOKEN DO CÓDIGO QUE SERÁ SINCRONIZADO
+  UPDATE PICCOLOTUR.CHECKLIST_PENDENTE_PARA_SINCRONIZAR
+  SET NEXT_TO_SYNC = FALSE
+  WHERE COD_CHECKLIST_PARA_SINCRONIZAR = COD_CHECKLIST;
+
+  --   5° - PASSA O TOKEN PARA O PRÓXIMO CÓDIGO QUE PRECISA SER SINCRONIZADO, SE FOR O ÚLTIMO CÓDIGO, ENTÃO SETA O
+  -- PRIMEIRO COMO O PRÓXIMO A SER SINCRONIZADO
+  IF IS_LAST_COD
+  THEN
+    UPDATE PICCOLOTUR.CHECKLIST_PENDENTE_PARA_SINCRONIZAR
+    SET NEXT_TO_SYNC = TRUE
+    WHERE COD_CHECKLIST_PARA_SINCRONIZAR = (SELECT CPPS.COD_CHECKLIST_PARA_SINCRONIZAR
+                                            FROM PICCOLOTUR.CHECKLIST_PENDENTE_PARA_SINCRONIZAR CPPS
+                                            WHERE CPPS.SINCRONIZADO IS FALSE
+                                                  AND CPPS.PRECISA_SER_SINCRONIZADO IS TRUE
+                                            ORDER BY CPPS.COD_CHECKLIST_PARA_SINCRONIZAR
+                                            LIMIT 1);
+  ELSE
+    UPDATE PICCOLOTUR.CHECKLIST_PENDENTE_PARA_SINCRONIZAR
+    SET NEXT_TO_SYNC = TRUE
+    WHERE COD_CHECKLIST_PARA_SINCRONIZAR = (SELECT
+                                              COD_CHECKLIST_PARA_SINCRONIZAR
+                                            FROM PICCOLOTUR.CHECKLIST_PENDENTE_PARA_SINCRONIZAR
+                                            WHERE SINCRONIZADO IS FALSE
+                                                  AND PRECISA_SER_SINCRONIZADO IS TRUE
+                                                  AND NEXT_TO_SYNC IS FALSE
+                                                  AND COD_CHECKLIST_PARA_SINCRONIZAR > COD_CHECKLIST
+                                            ORDER BY COD_CHECKLIST_PARA_SINCRONIZAR
+                                            LIMIT 1);
+  END IF;
+
+  --   6° - RETORNA O CÓDIGO QUE SERÁ SINCRONIZADO
+  RETURN QUERY
+  SELECT COD_CHECKLIST, IS_LAST_COD;
+END;
+$$;
+
+--######################################################################################################################
+--######################################################################################################################
+-- PL-2212
+CREATE OR REPLACE FUNCTION INTEGRACAO.FUNC_CHECKLIST_ALTERNATIVAS_MODELO_CHECKLIST(
+  F_TOKEN_INTEGRACAO                TEXT,
+  F_APENAS_MODELOS_CHECKLIST_ATIVOS BOOLEAN,
+  F_APENAS_PERGUNTAS_ATIVAS         BOOLEAN,
+  F_APENAS_ALTERNATIVAS_ATIVAS      BOOLEAN)
+  RETURNS TABLE(
+    COD_UNIDADE              BIGINT,
+    NOME_UNIDADE             TEXT,
+    COD_MODELO_CHECKLIST     BIGINT,
+    NOME_MODELO              TEXT,
+    STATUS_MODELO_CHECKLIST  BOOLEAN,
+    CODIGO_PERGUNTA          BIGINT,
+    DESCRICAO_PERGUNTA       TEXT,
+    TIPO_DE_RESPOSTA         BOOLEAN,
+    STATUS_PERGUNTA          BOOLEAN,
+    CODIGO_ALTERNATIVA       BIGINT,
+    DESCRICAO_ALTERNATIVA    TEXT,
+    ALTERNATIVA_TIPO_OUTROS  BOOLEAN,
+    PRIORIDADE               TEXT,
+    DEVE_ABRIR_ORDEM_SERVICO BOOLEAN,
+    STATUS_ALTERNATIVA       BOOLEAN)
+LANGUAGE SQL
+AS $$
+SELECT
+  U.CODIGO                     AS COD_UNIDADE,
+  U.NOME                       AS NOME_UNIDADE,
+  CM.CODIGO                    AS COD_MODELO_CHECKLIST,
+  CM.NOME                      AS NOME_MODELO,
+  CM.STATUS_ATIVO              AS STATUS_MODELO_CHECKLIST,
+  CP.CODIGO                    AS CODIGO_PERGUNTA,
+  CP.PERGUNTA                  AS DESCRICAO_PERGUNTA,
+  CP.SINGLE_CHOICE             AS TIPO_DE_RESPOSTA,
+  CP.STATUS_ATIVO              AS STATUS_PERGUNTA,
+  CAP.CODIGO                   AS CODIGO_ALTERNATIVA,
+  CAP.ALTERNATIVA              AS DESCRICAO_ALTERNATIVA,
+  CAP.ALTERNATIVA_TIPO_OUTROS  AS ALTERNATIVA_TIPO_OUTROS,
+  CAP.PRIORIDADE               AS PRIORIDADE,
+  CAP.DEVE_ABRIR_ORDEM_SERVICO AS DEVE_ABRIR_ORDEM_SERVICO,
+  CAP.STATUS_ATIVO             AS STATUS_ALTERNATIVA
+FROM CHECKLIST_PERGUNTAS CP
+  JOIN CHECKLIST_ALTERNATIVA_PERGUNTA CAP
+    ON CP.COD_UNIDADE = CAP.COD_UNIDADE
+       AND CP.COD_CHECKLIST_MODELO = CAP.COD_CHECKLIST_MODELO
+       AND CP.CODIGO = CAP.COD_PERGUNTA
+  JOIN CHECKLIST_MODELO CM
+    ON CAP.COD_CHECKLIST_MODELO = CM.CODIGO
+  JOIN UNIDADE U
+    ON CM.COD_UNIDADE = U.CODIGO
+WHERE CM.COD_UNIDADE IN (SELECT U.CODIGO
+                         FROM UNIDADE U
+                         WHERE U.COD_EMPRESA = (SELECT TI.COD_EMPRESA
+                                                FROM INTEGRACAO.TOKEN_INTEGRACAO TI
+                                                WHERE TI.TOKEN_INTEGRACAO = F_TOKEN_INTEGRACAO))
+      AND F_IF(F_APENAS_MODELOS_CHECKLIST_ATIVOS, CM.STATUS_ATIVO = TRUE, TRUE)
+      AND F_IF(F_APENAS_PERGUNTAS_ATIVAS, CP.STATUS_ATIVO = TRUE, TRUE)
+      AND F_IF(F_APENAS_ALTERNATIVAS_ATIVAS, CAP.STATUS_ATIVO = TRUE, TRUE)
+ORDER BY CM.STATUS_ATIVO DESC, CP.STATUS_ATIVO DESC, CAP.STATUS_ATIVO DESC, U.CODIGO, CM.CODIGO, CP.CODIGO, CAP.CODIGO;
+$$;
+
+--######################################################################################################################
+--######################################################################################################################
+--########################      ESTRUTURA PARA CONFIGURAR O AGENDADOR DE SERVIÇOS     ##################################
+--######################################################################################################################
+--######################################################################################################################
+-- PL-2282
+CREATE SCHEMA AGENDADOR;
+
+CREATE TABLE IF NOT EXISTS AGENDADOR.CONFIGURACAO_AGENDAMENTO (
+  COD_EMPRESA BIGINT NOT NULL,
+  INITIAL_DELAY_IN_MINUTES BIGINT NOT NULL,
+  DELAY_IN_MINUTES BIGINT NOT NULL,
+  FUNCIONALIDADE_KEY TEXT NOT NULL,
+  CONSTRAINT UNIQUE_COD_EMPRESA_AGENDADOR UNIQUE (COD_EMPRESA),
+  CONSTRAINT FK_CONFIGURACAO_AGENDAMENTO_EMPRESA FOREIGN KEY (COD_EMPRESA) REFERENCES PUBLIC.EMPRESA(CODIGO)
+);
+COMMENT ON TABLE AGENDADOR.CONFIGURACAO_AGENDAMENTO
+IS 'Tabela para armazenar as configurações de agendamento de sincronização que a empresa utilizará.';
+
+--######################################################################################################################
+
+CREATE OR REPLACE FUNCTION AGENDADOR.TG_NOTIFY_CONFIGURACAO_AGENDAMENTO()
+  RETURNS TRIGGER AS $$
+DECLARE
+    JSON_ROW JSON := CASE
+                         WHEN TG_OP::TEXT = 'DELETE'
+                             THEN ROW_TO_JSON(OLD)
+                         ELSE ROW_TO_JSON(NEW)
+                     END;
+BEGIN
+    PERFORM PG_NOTIFY('configuracao_agendamento_event', JSON_BUILD_OBJECT('tableName', TG_TABLE_NAME,
+                                                                          'operation', TG_OP,
+                                                                          'configuracaoAgendamento', JSON_ROW) :: TEXT);
+
+    RETURN NULL;
+END;
+$$ LANGUAGE PLPGSQL;
+
+CREATE TRIGGER TG_NOTIFY_CONFIGURACAO_AGENDAMENTO
+  AFTER INSERT OR UPDATE OR DELETE ON AGENDADOR.CONFIGURACAO_AGENDAMENTO
+  FOR EACH ROW EXECUTE PROCEDURE AGENDADOR.TG_NOTIFY_CONFIGURACAO_AGENDAMENTO();
+
+END TRANSACTION;

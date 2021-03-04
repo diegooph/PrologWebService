@@ -31,7 +31,7 @@ import java.io.InputStream;
 import java.util.List;
 
 @ConsoleDebugLog
-@Path("/checklists/modelos")
+@Path("/v2/checklists/modelos")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public final class ChecklistModeloResource {

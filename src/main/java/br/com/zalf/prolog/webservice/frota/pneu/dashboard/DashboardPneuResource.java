@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * Created by Zart on 09/01/2018.
  */
-@Path("/dashboards/pneus")
+@Path("/v2/dashboards/pneus")
 @Secured(permissions = Pilares.Frota.Relatorios.PNEU)
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")

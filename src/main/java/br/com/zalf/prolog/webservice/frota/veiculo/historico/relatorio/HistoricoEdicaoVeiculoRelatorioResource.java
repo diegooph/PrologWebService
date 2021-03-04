@@ -20,7 +20,7 @@ import javax.ws.rs.core.StreamingOutput;
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
 @ConsoleDebugLog
-@Path("/veiculos/historicos/relatorios")
+@Path("/v2/veiculos/historicos/relatorios")
 public final class HistoricoEdicaoVeiculoRelatorioResource {
     @NotNull
     private final HistoricoEdicaoVeiculoRelatorioService service = new HistoricoEdicaoVeiculoRelatorioService();

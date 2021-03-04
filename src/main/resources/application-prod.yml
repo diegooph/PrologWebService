@@ -1,5 +1,5 @@
 prolog:
-  version_code: "v2_1.5.5"
+  version_code: "v2_2.0.3"
 spring:
   profiles: prod
   datasource:
@@ -27,3 +27,6 @@ firebase:
 mailjet:
   api-key: "${mailjet-apikey-public}"
   api-secret-key: "${mailjet-apikey-private}"
+logging:
+  level:
+    root: info

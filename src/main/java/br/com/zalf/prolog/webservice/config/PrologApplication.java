@@ -66,7 +66,7 @@ public class PrologApplication extends SpringBootServletInitializer {
             swaggerConfigBean.setContact("diogenes@prologapp.com");
             swaggerConfigBean.setSchemes(new String[]{"http", "https"});
             swaggerConfigBean.setHost("localhost:8080");
-            swaggerConfigBean.setBasePath("/prolog/v2");
+            swaggerConfigBean.setBasePath("/prolog");
             swaggerConfigBean.setResourcePackage("br.com.zalf.prolog.webservice");
             swaggerConfigBean.setPrettyPrint(true);
             swaggerConfigBean.setScan(true);

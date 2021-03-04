@@ -16,7 +16,7 @@ import java.util.List;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-@Path("/recapadoras")
+@Path("/v2/recapadoras")
 public class RecapadoraResource {
 
     private final RecapadoraService service = new RecapadoraService();

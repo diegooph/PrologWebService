@@ -1,11 +1,11 @@
 database:
   properties:
-    host: ""
-    port: ""
-    name: ""
+    host: "localhost"
+    port: "5432"
+    name: "teste_lucas_2"
   connection:
-    user: ""
-    password: ""
+    user: "postgres"
+    password: "postgres"
 
 spring:
   profiles: dev
@@ -15,3 +15,10 @@ spring:
     password: "${database.connection.password}"
     hikari:
       maximum-pool-size: 10
+logging:
+  level:
+    root: debug
+    org: info
+    sun: info
+    io: info
+    jdk: info

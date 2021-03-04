@@ -1,0 +1,15 @@
+-- Essa query busca os cargos que possuem acesso a uma permissão específica mas não a outra.
+
+WITH CARGOS AS (
+    SELECT *
+    FROM CARGO_FUNCAO_PROLOG_V11 CFP
+    WHERE CFP.COD_FUNCAO_PROLOG = PERMISSAO_QUE_CARGO_DEVE_TER
+)
+
+SELECT *
+FROM CARGOS CI
+WHERE CI.COD_FUNCAO_COLABORADOR NOT IN (SELECT CFP.COD_FUNCAO_COLABORADOR
+                                        FROM CARGO_FUNCAO_PROLOG_V11 CFP
+                                        WHERE CFP.COD_FUNCAO_PROLOG = PERMISSAO_QUE_CARGO_NAO_DEVE_TER
+                                        AND CI.COD_UNIDADE = CFP.COD_UNIDADE)
+ORDER BY CI.COD_FUNCAO_COLABORADOR, CI.COD_UNIDADE;

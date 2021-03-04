@@ -16,7 +16,7 @@ import java.util.List;
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-@Path("socorro-rota/relatorios")
+@Path("/v2/socorro-rota/relatorios")
 @Secured(permissions = {Pilares.Frota.SocorroRota.TRATAR_SOCORRO,
         Pilares.Frota.SocorroRota.VISUALIZAR_SOCORROS_E_RELATORIOS})
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")

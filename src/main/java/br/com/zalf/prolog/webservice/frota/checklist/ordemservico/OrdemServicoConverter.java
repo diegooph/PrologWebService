@@ -84,6 +84,7 @@ final class OrdemServicoConverter {
     static HolderResolucaoOrdemServico createHolderResolucaoOrdemServico(
             @NotNull final ResultSet rSet) throws Throwable {
         final HolderResolucaoOrdemServico holder = new HolderResolucaoOrdemServico();
+        holder.setCodVeiculo(rSet.getLong("COD_VEICULO"));
         holder.setPlacaVeiculo(rSet.getString("PLACA_VEICULO"));
         holder.setKmAtualVeiculo(rSet.getLong("KM_ATUAL_VEICULO"));
         holder.setOrdemServico(createOrdemServicoVisualizacao(rSet));
@@ -94,6 +95,7 @@ final class OrdemServicoConverter {
     static HolderResolucaoItensOrdemServico createHolderResolucaoItensOrdemServico(@NotNull final ResultSet rSet)
             throws Throwable {
         final HolderResolucaoItensOrdemServico holder = new HolderResolucaoItensOrdemServico();
+        holder.setCodVeiculo(rSet.getLong("COD_VEICULO"));
         holder.setPlacaVeiculo(rSet.getString("PLACA_VEICULO"));
         holder.setKmAtualVeiculo(rSet.getLong("KM_ATUAL_VEICULO"));
 
@@ -225,5 +227,4 @@ final class OrdemServicoConverter {
                 rSet.getString("PRIORIDADE_ALTERNATIVA")));
         return alternativa;
     }
-
 }

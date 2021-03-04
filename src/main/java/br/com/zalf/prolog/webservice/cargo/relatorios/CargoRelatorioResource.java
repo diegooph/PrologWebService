@@ -16,7 +16,7 @@ import java.util.List;
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-@Path("cargos/relatorios")
+@Path("/v2/cargos/relatorios")
 @Secured(permissions = {
         Pilares.Gente.Permissao.VINCULAR_CARGO,
         Pilares.Gente.Permissao.VISUALIZAR})

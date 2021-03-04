@@ -1,0 +1,58 @@
+-- Sobre:
+-- A lógica aplicada nessa function é a seguinte:
+-- Primeiro é feito a validação de todos os dados.
+-- Logo, a tabela PNEU_DATA que possui a empresa, unidade informadas por parâmetro e que possui o codigo
+-- na tabela VEICULO_PNEU, tem a coluna status atualizada para EM_USO.
+--
+-- Précondições:
+-- Empresa e unidade precisam ter vínculo.
+-- F_QUANTIDADE_PNEUS que foram vinculados.
+--
+-- Histórico:
+-- 2019-08-28 -> Function criada (Natan - PL-2219).
+--
+CREATE OR REPLACE FUNCTION FUNC_PNEU_ALTERA_STATUS_PNEU_VINCULADO(F_COD_EMPRESA BIGINT,
+                                                                  F_COD_UNIDADE BIGINT,
+                                                                  F_QUANTIDADE_PNEUS BIGINT,
+                                                                  OUT AVISO_STATUS_ATUALIZADO TEXT)
+    RETURNS TEXT
+    LANGUAGE PLPGSQL
+    SECURITY DEFINER
+AS
+$$
+DECLARE
+    F_STATUS_PNEU_VINCULADO TEXT := 'EM_USO';
+    F_STATUS_ATUAL          TEXT := 'ESTOQUE';
+    QTD_LINHAS_ATUALIZADAS  BIGINT;
+BEGIN
+    --VERIFICA SE EMPRESA EXISTE.
+    PERFORM FUNC_GARANTE_EMPRESA_EXISTE(F_COD_EMPRESA);
+
+    --VERIFICA SE UNIDADE EXISTE.
+    PERFORM FUNC_GARANTE_UNIDADE_EXISTE(F_COD_UNIDADE);
+
+    --VERIFICA SE EMPRESA POSSUI UNIDADE.
+    PERFORM FUNC_GARANTE_EMPRESA_POSSUI_UNIDADE(F_COD_EMPRESA, F_COD_UNIDADE);
+
+    --EXECUTA UPDATE NA TABELA.
+    UPDATE PNEU_DATA
+    SET STATUS = F_STATUS_PNEU_VINCULADO
+    WHERE COD_EMPRESA = F_COD_EMPRESA
+      AND COD_UNIDADE = F_COD_UNIDADE
+      AND STATUS = F_STATUS_ATUAL
+      AND CODIGO IN (SELECT COD_PNEU FROM VEICULO_PNEU);
+
+    GET DIAGNOSTICS QTD_LINHAS_ATUALIZADAS = ROW_COUNT;
+
+    --VERIFICA SE A QUANTIDADE DE LINHAS ATUALIZADAS É IGUAL A DE PNEUS A SEREM ATUALIZADOS.
+    IF (QTD_LINHAS_ATUALIZADAS != F_QUANTIDADE_PNEUS)
+    THEN
+        RAISE EXCEPTION 'ERRO AO ATUALIZAR! A QUANTIDADE DE PNEUS: % NÃO É A MESMA DE LINHAS AFETADAS: % '
+            'NA ATUALIZAÇÃO!', F_QUANTIDADE_PNEUS, QTD_LINHAS_ATUALIZADAS;
+    ELSE
+        --MENSAGEM DE SUCESSO.
+        SELECT 'ATUALIZADO COM SUCESSO! NÚMERO TOTAL DE: ' || F_QUANTIDADE_PNEUS || ' PNEUS.'
+        INTO AVISO_STATUS_ATUALIZADO;
+    END IF;
+END
+$$;

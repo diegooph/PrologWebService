@@ -1,0 +1,16 @@
+-- Sobre:
+--
+-- Esta função retorna uma lista de marcas de dispositivos móveis, a nível prolog.
+--
+-- Histórico:
+-- 2019-07-25 -> Function criada (wvinim - PL-2150).
+CREATE OR REPLACE FUNCTION FUNC_DISPOSITIVO_GET_MARCAS_DISPOSITIVO_MOVEL()
+  RETURNS TABLE(
+    COD_MARCA  INT,
+    NOME_MARCA TEXT)
+LANGUAGE SQL
+AS $$
+SELECT MDP.CODIGO AS COD_MARCA, MDP.NOME :: TEXT AS NOME_MARCA
+FROM DISPOSITIVO_MOVEL_MARCA_PROLOG MDP
+ORDER BY MDP.NOME ASC;
+$$;

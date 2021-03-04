@@ -32,7 +32,7 @@ import java.util.List;
  *
  * @deprecated at 09/03/2018. Use {@link DeprecatedControleIntervaloResource_2} instead.
  */
-@Path("/intervalos")
+@Path("/v2/intervalos")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @ConsoleDebugLog

@@ -22,7 +22,7 @@ import java.util.List;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-@Path("/dummies")
+@Path("/v2/dummies")
 @ConsoleDebugLog
 @ResourceDebugOnly
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")

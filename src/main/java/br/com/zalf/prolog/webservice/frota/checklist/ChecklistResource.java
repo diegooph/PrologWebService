@@ -45,7 +45,7 @@ import java.util.Map;
 
 import static br.com.zalf.prolog.webservice.commons.network.PrologCustomHeaders.AppVersionAndroid.PROLOG_APP_VERSION;
 
-@Path("/checklists")
+@Path("/v2/checklists")
 @ConsoleDebugLog
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
