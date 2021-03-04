@@ -159,6 +159,9 @@ public class SistemaWebFinatto extends Sistema {
             conn = connectionProvider.provideDatabaseConnection();
             final UnidadeDeParaHolder unidadeDeParaHolder =
                     integracaoDao.getCodAuxiliarByCodUnidadeProlog(conn, Collections.singletonList(codUnidade));
+            if (unidadeDeParaHolder.getCodUnidadesMapeadas().isEmpty()) {
+                return SistemaWebFinattoConverter.createEmptyPneusAfericaoAvulsa();
+            }
             final List<PneuWebFinatto> pneusByFiliais =
                     internalGetPneusByFiliais(conn,
                                               unidadeDeParaHolder.getCodEmpresaProlog(),
