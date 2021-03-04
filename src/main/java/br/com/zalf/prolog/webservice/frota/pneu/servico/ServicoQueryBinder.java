@@ -77,23 +77,30 @@ final class ServicoQueryBinder {
     static PreparedStatement getQuantidadeServicosAbertosVeiculo(@NotNull final Connection connection,
                                                                  @NotNull final Long codUnidade) throws SQLException {
         final PreparedStatement stmt = connection.prepareStatement("SELECT " +
-                "  V.CODIGO AS COD_VEICULO," +
-                "  V.PLACA AS PLACA_VEICULO," +
-                "  V.IDENTIFICADOR_FROTA, " +
-                "  SUM(CASE WHEN AM.TIPO_SERVICO = ? THEN 1 ELSE 0 END) AS TOTAL_CALIBRAGENS, " +
-                "  SUM(CASE WHEN AM.TIPO_SERVICO = ? THEN 1 ELSE 0 END) AS TOTAL_INSPECOES, " +
-                "  SUM(CASE WHEN AM.TIPO_SERVICO = ? THEN 1 ELSE 0 END) AS TOTAL_MOVIMENTACOES " +
-                "FROM AFERICAO_MANUTENCAO AS AM " +
-                "  JOIN AFERICAO AS A " +
-                "    ON A.CODIGO = AM.COD_AFERICAO " +
-                "  JOIN VEICULO V" +
-                "    ON V.CODIGO = A.COD_VEICULO"+
-                "  JOIN VEICULO_PNEU AS VP " +
-                "    ON AM.COD_PNEU = VP.COD_PNEU AND AM.COD_UNIDADE = VP.COD_UNIDADE " +
-                "WHERE AM.COD_UNIDADE = ? " +
-                "      AND AM.DATA_HORA_RESOLUCAO IS NULL " +
-                "GROUP BY V.CODIGO, V.PLACA, V.IDENTIFICADOR_FROTA " +
-                "ORDER BY TOTAL_CALIBRAGENS DESC, TOTAL_INSPECOES DESC, TOTAL_MOVIMENTACOES DESC;");
+                                                                           "  V.CODIGO AS COD_VEICULO," +
+                                                                           "  V.PLACA AS PLACA_VEICULO," +
+                                                                           "  V.IDENTIFICADOR_FROTA, " +
+                                                                           "  SUM(CASE WHEN AM.TIPO_SERVICO = ? THEN " +
+                                                                           "1 ELSE 0 END) AS TOTAL_CALIBRAGENS, " +
+                                                                           "  SUM(CASE WHEN AM.TIPO_SERVICO = ? THEN " +
+                                                                           "1 ELSE 0 END) AS TOTAL_INSPECOES, " +
+                                                                           "  SUM(CASE WHEN AM.TIPO_SERVICO = ? THEN " +
+                                                                           "1 ELSE 0 END) AS TOTAL_MOVIMENTACOES " +
+                                                                           "FROM AFERICAO_MANUTENCAO AS AM " +
+                                                                           "  JOIN AFERICAO AS A " +
+                                                                           "    ON A.CODIGO = AM.COD_AFERICAO " +
+                                                                           "  JOIN VEICULO V" +
+                                                                           "    ON V.CODIGO = A.COD_VEICULO" +
+                                                                           "  JOIN VEICULO_PNEU AS VP " +
+                                                                           "    ON AM.COD_PNEU = VP.COD_PNEU AND AM" +
+                                                                           ".COD_UNIDADE = VP.COD_UNIDADE " +
+                                                                           "WHERE AM.COD_UNIDADE = ? " +
+                                                                           "      AND AM.DATA_HORA_RESOLUCAO IS NULL " +
+                                                                           "GROUP BY V.CODIGO, V.PLACA, V" +
+                                                                           ".IDENTIFICADOR_FROTA " +
+                                                                           "ORDER BY TOTAL_CALIBRAGENS DESC, " +
+                                                                           "TOTAL_INSPECOES DESC, TOTAL_MOVIMENTACOES" +
+                                                                           " DESC;");
         stmt.setString(1, TipoServico.CALIBRAGEM.asString());
         stmt.setString(2, TipoServico.INSPECAO.asString());
         stmt.setString(3, TipoServico.MOVIMENTACAO.asString());
@@ -160,20 +167,31 @@ final class ServicoQueryBinder {
                                                                   final long dataInicial,
                                                                   final long dataFinal) throws SQLException {
         final PreparedStatement stmt = connection.prepareStatement("SELECT" +
-                "  V.CODIGO AS COD_VEICULO," +
-                "  V.PLACA AS PLACA_VEICULO," +
-                "  V.IDENTIFICADOR_FROTA," +
-                "  SUM(CASE WHEN AM.TIPO_SERVICO = ? THEN 1 ELSE 0 END) AS TOTAL_CALIBRAGENS," +
-                "  SUM(CASE WHEN AM.TIPO_SERVICO = ? THEN 1 ELSE 0 END) AS TOTAL_INSPECOES," +
-                "  SUM(CASE WHEN AM.TIPO_SERVICO = ? THEN 1 ELSE 0 END) AS TOTAL_MOVIMENTACOES" +
-                " FROM AFERICAO_MANUTENCAO AM  " +
-                "  JOIN AFERICAO A ON A.CODIGO = AM.COD_AFERICAO" +
-                "  JOIN VEICULO V ON V.CODIGO = A.COD_VEICULO" +
-                " WHERE AM.COD_UNIDADE = ?" +
-                "      AND AM.DATA_HORA_RESOLUCAO IS NOT NULL  " +
-                "      AND (AM.DATA_HORA_RESOLUCAO AT TIME ZONE TZ_UNIDADE(AM.COD_UNIDADE))::DATE BETWEEN ? AND ?" +
-                " GROUP BY V.CODIGO, V.PLACA, V.IDENTIFICADOR_FROTA" +
-                " ORDER BY TOTAL_CALIBRAGENS DESC, TOTAL_INSPECOES DESC, TOTAL_MOVIMENTACOES DESC;");
+                                                                           "  V.CODIGO AS COD_VEICULO," +
+                                                                           "  V.PLACA AS PLACA_VEICULO," +
+                                                                           "  V.IDENTIFICADOR_FROTA," +
+                                                                           "  SUM(CASE WHEN AM.TIPO_SERVICO = ? THEN " +
+                                                                           "1 ELSE 0 END) AS TOTAL_CALIBRAGENS," +
+                                                                           "  SUM(CASE WHEN AM.TIPO_SERVICO = ? THEN " +
+                                                                           "1 ELSE 0 END) AS TOTAL_INSPECOES," +
+                                                                           "  SUM(CASE WHEN AM.TIPO_SERVICO = ? THEN " +
+                                                                           "1 ELSE 0 END) AS TOTAL_MOVIMENTACOES" +
+                                                                           " FROM AFERICAO_MANUTENCAO AM  " +
+                                                                           "  JOIN AFERICAO A ON A.CODIGO = AM" +
+                                                                           ".COD_AFERICAO" +
+                                                                           "  JOIN VEICULO V ON V.CODIGO = A" +
+                                                                           ".COD_VEICULO" +
+                                                                           " WHERE AM.COD_UNIDADE = ?" +
+                                                                           "      AND AM.DATA_HORA_RESOLUCAO IS NOT " +
+                                                                           "NULL  " +
+                                                                           "      AND (AM.DATA_HORA_RESOLUCAO AT TIME" +
+                                                                           " ZONE TZ_UNIDADE(AM.COD_UNIDADE))::DATE " +
+                                                                           "BETWEEN ? AND ?" +
+                                                                           " GROUP BY V.CODIGO, V.PLACA, V" +
+                                                                           ".IDENTIFICADOR_FROTA" +
+                                                                           " ORDER BY TOTAL_CALIBRAGENS DESC, " +
+                                                                           "TOTAL_INSPECOES DESC, TOTAL_MOVIMENTACOES" +
+                                                                           " DESC;");
         stmt.setString(1, TipoServico.CALIBRAGEM.asString());
         stmt.setString(2, TipoServico.INSPECAO.asString());
         stmt.setString(3, TipoServico.MOVIMENTACAO.asString());
@@ -188,55 +206,91 @@ final class ServicoQueryBinder {
                                              @NotNull final Long codUnidade,
                                              @NotNull final Long codServico) throws SQLException {
         final PreparedStatement stmt = connection.prepareStatement("SELECT " +
-                "   AM.CODIGO AS CODIGO_SERVICO, " +
-                "   AM.CPF_MECANICO AS CPF_RESPONSAVEL_FECHAMENTO, " +
-                "   AM.DATA_HORA_RESOLUCAO AT TIME ZONE ? AS DATA_HORA_FECHAMENTO, " +
-                "   AM.KM_MOMENTO_CONSERTO AS KM_VEICULO_MOMENTO_FECHAMENTO, " +
-                "   AM.TEMPO_REALIZACAO_MILLIS AS TEMPO_REALIZACAO_MILLIS, " +
-                "   AM.COD_UNIDADE AS COD_UNIDADE, " +
-                "   AM.TIPO_SERVICO, " +
-                "   AM.QT_APONTAMENTOS, " +
-                "   AM.PSI_APOS_CONSERTO AS PRESSAO_COLETADA_FECHAMENTO, " +
-                "   AM.COD_ALTERNATIVA AS COD_ALTERNATIVA_SELECIONADA, " +
-                "   AM.FECHADO_AUTOMATICAMENTE_MOVIMENTACAO, " +
-                "   AM.FECHADO_AUTOMATICAMENTE_INTEGRACAO, " +
-                "   AM.FORMA_COLETA_DADOS_FECHAMENTO, " +
-                "   AAMI.ALTERNATIVA AS DESCRICAO_ALTERNATIVA_SELECIONADA, " +
-                "   M.COD_PNEU AS COD_PNEU_NOVO, " +
-                "   PNEU_NOVO.CODIGO_CLIENTE AS COD_PNEU_NOVO_CLIENTE, " +
-                "   M.SULCO_EXTERNO AS SULCO_EXTERNO_PNEU_NOVO, " +
-                "   M.SULCO_CENTRAL_EXTERNO AS SULCO_CENTRAL_EXTERNO_PNEU_NOVO, " +
-                "   M.SULCO_CENTRAL_INTERNO AS SULCO_CENTRAL_INTERNO_PNEU_NOVO, " +
-                "   M.SULCO_INTERNO AS SULCO_INTERNO_PNEU_NOVO, " +
-                "   M.VIDA AS VIDA_PNEU_NOVO, " +
-                "   A.DATA_HORA AT TIME ZONE ? AS DATA_HORA_ABERTURA, " +
-                "   V.CODIGO AS COD_VEICULO, " +
-                "   V.PLACA AS PLACA_VEICULO, " +
-                "   V.IDENTIFICADOR_FROTA AS IDENTIFICADOR_FROTA, " +
-                "   A.CODIGO AS COD_AFERICAO, " +
-                "   C.NOME AS NOME_RESPONSAVEL_FECHAMENTO, " +
-                "   AV.COD_PNEU AS COD_PNEU_PROBLEMA, " +
-                "   PNEU_PROBLEMA.CODIGO_CLIENTE AS COD_PNEU_PROBLEMA_CLIENTE, " +
-                "   AV.ALTURA_SULCO_EXTERNO AS SULCO_EXTERNO_PNEU_PROBLEMA, " +
-                "   AV.ALTURA_SULCO_CENTRAL_EXTERNO AS SULCO_CENTRAL_EXTERNO_PNEU_PROBLEMA, " +
-                "   AV.ALTURA_SULCO_CENTRAL_INTERNO AS SULCO_CENTRAL_INTERNO_PNEU_PROBLEMA, " +
-                "   AV.ALTURA_SULCO_INTERNO AS SULCO_INTERNO_PNEU_PROBLEMA, " +
-                "   AV.PSI AS PRESSAO_PNEU_PROBLEMA, " +
-                "   AV.POSICAO AS POSICAO_PNEU_PROBLEMA, " +
-                "   AV.VIDA_MOMENTO_AFERICAO AS VIDA_PNEU_PROBLEMA, " +
-                "   PNEU_PROBLEMA.PRESSAO_RECOMENDADA " +
-                "   FROM AFERICAO_MANUTENCAO AM " +
-                "   JOIN AFERICAO A ON A.CODIGO = AM.COD_AFERICAO " +
-                "   JOIN VEICULO V ON V.CODIGO = A.COD_VEICULO " +
-                "   JOIN AFERICAO_VALORES AV ON AV.COD_AFERICAO = AM.COD_AFERICAO AND AV.COD_PNEU = AM.COD_PNEU " +
-                "   JOIN UNIDADE U ON U.CODIGO = AM.COD_UNIDADE " +
-                "   JOIN PNEU PNEU_PROBLEMA ON AM.COD_PNEU = PNEU_PROBLEMA.CODIGO " +
-                "   LEFT JOIN MOVIMENTACAO M ON M.COD_MOVIMENTACAO_PROCESSO = AM.COD_PROCESSO_MOVIMENTACAO " +
-                "   AND M.COD_PNEU = AM.COD_PNEU_INSERIDO " +
-                "   LEFT JOIN PNEU PNEU_NOVO ON AM.COD_PNEU_INSERIDO = PNEU_NOVO.CODIGO " +
-                "   LEFT JOIN AFERICAO_ALTERNATIVA_MANUTENCAO_INSPECAO AAMI ON AAMI.CODIGO = AM.COD_ALTERNATIVA " +
-                "   LEFT JOIN COLABORADOR C ON AM.CPF_MECANICO = C.CPF " +
-                "   WHERE AM.COD_UNIDADE = ? AND AM.CODIGO = ?;");
+                                                                           "   AM.CODIGO AS CODIGO_SERVICO, " +
+                                                                           "   AM.CPF_MECANICO AS " +
+                                                                           "CPF_RESPONSAVEL_FECHAMENTO, " +
+                                                                           "   AM.DATA_HORA_RESOLUCAO AT TIME ZONE ? " +
+                                                                           "AS DATA_HORA_FECHAMENTO, " +
+                                                                           "   AM.KM_MOMENTO_CONSERTO AS " +
+                                                                           "KM_VEICULO_MOMENTO_FECHAMENTO, " +
+                                                                           "   AM.TEMPO_REALIZACAO_MILLIS AS " +
+                                                                           "TEMPO_REALIZACAO_MILLIS, " +
+                                                                           "   AM.COD_UNIDADE AS COD_UNIDADE, " +
+                                                                           "   AM.TIPO_SERVICO, " +
+                                                                           "   AM.QT_APONTAMENTOS, " +
+                                                                           "   AM.PSI_APOS_CONSERTO AS " +
+                                                                           "PRESSAO_COLETADA_FECHAMENTO, " +
+                                                                           "   AM.COD_ALTERNATIVA AS " +
+                                                                           "COD_ALTERNATIVA_SELECIONADA, " +
+                                                                           "   AM" +
+                                                                           ".FECHADO_AUTOMATICAMENTE_MOVIMENTACAO, " +
+                                                                           "   AM.FECHADO_AUTOMATICAMENTE_INTEGRACAO," +
+                                                                           " " +
+                                                                           "   AM.FORMA_COLETA_DADOS_FECHAMENTO, " +
+                                                                           "   AAMI.ALTERNATIVA AS " +
+                                                                           "DESCRICAO_ALTERNATIVA_SELECIONADA, " +
+                                                                           "   M.COD_PNEU AS COD_PNEU_NOVO, " +
+                                                                           "   PNEU_NOVO.CODIGO_CLIENTE AS " +
+                                                                           "COD_PNEU_NOVO_CLIENTE, " +
+                                                                           "   M.SULCO_EXTERNO AS " +
+                                                                           "SULCO_EXTERNO_PNEU_NOVO, " +
+                                                                           "   M.SULCO_CENTRAL_EXTERNO AS " +
+                                                                           "SULCO_CENTRAL_EXTERNO_PNEU_NOVO, " +
+                                                                           "   M.SULCO_CENTRAL_INTERNO AS " +
+                                                                           "SULCO_CENTRAL_INTERNO_PNEU_NOVO, " +
+                                                                           "   M.SULCO_INTERNO AS " +
+                                                                           "SULCO_INTERNO_PNEU_NOVO, " +
+                                                                           "   M.VIDA AS VIDA_PNEU_NOVO, " +
+                                                                           "   A.DATA_HORA AT TIME ZONE ? AS " +
+                                                                           "DATA_HORA_ABERTURA, " +
+                                                                           "   V.CODIGO AS COD_VEICULO, " +
+                                                                           "   V.PLACA AS PLACA_VEICULO, " +
+                                                                           "   V.IDENTIFICADOR_FROTA AS " +
+                                                                           "IDENTIFICADOR_FROTA, " +
+                                                                           "   A.CODIGO AS COD_AFERICAO, " +
+                                                                           "   C.NOME AS NOME_RESPONSAVEL_FECHAMENTO," +
+                                                                           " " +
+                                                                           "   AV.COD_PNEU AS COD_PNEU_PROBLEMA, " +
+                                                                           "   PNEU_PROBLEMA.CODIGO_CLIENTE AS " +
+                                                                           "COD_PNEU_PROBLEMA_CLIENTE, " +
+                                                                           "   AV.ALTURA_SULCO_EXTERNO AS " +
+                                                                           "SULCO_EXTERNO_PNEU_PROBLEMA, " +
+                                                                           "   AV.ALTURA_SULCO_CENTRAL_EXTERNO AS " +
+                                                                           "SULCO_CENTRAL_EXTERNO_PNEU_PROBLEMA, " +
+                                                                           "   AV.ALTURA_SULCO_CENTRAL_INTERNO AS " +
+                                                                           "SULCO_CENTRAL_INTERNO_PNEU_PROBLEMA, " +
+                                                                           "   AV.ALTURA_SULCO_INTERNO AS " +
+                                                                           "SULCO_INTERNO_PNEU_PROBLEMA, " +
+                                                                           "   AV.PSI AS PRESSAO_PNEU_PROBLEMA, " +
+                                                                           "   AV.POSICAO AS POSICAO_PNEU_PROBLEMA, " +
+                                                                           "   AV.VIDA_MOMENTO_AFERICAO AS " +
+                                                                           "VIDA_PNEU_PROBLEMA, " +
+                                                                           "   PNEU_PROBLEMA.PRESSAO_RECOMENDADA " +
+                                                                           "   FROM AFERICAO_MANUTENCAO AM " +
+                                                                           "   JOIN AFERICAO A ON A.CODIGO = AM" +
+                                                                           ".COD_AFERICAO " +
+                                                                           "   JOIN VEICULO V ON V.CODIGO = A" +
+                                                                           ".COD_VEICULO " +
+                                                                           "   JOIN AFERICAO_VALORES AV ON AV" +
+                                                                           ".COD_AFERICAO = AM.COD_AFERICAO AND AV" +
+                                                                           ".COD_PNEU = AM.COD_PNEU " +
+                                                                           "   JOIN UNIDADE U ON U.CODIGO = AM" +
+                                                                           ".COD_UNIDADE " +
+                                                                           "   JOIN PNEU PNEU_PROBLEMA ON AM.COD_PNEU" +
+                                                                           " = PNEU_PROBLEMA.CODIGO " +
+                                                                           "   LEFT JOIN MOVIMENTACAO M ON M" +
+                                                                           ".COD_MOVIMENTACAO_PROCESSO = AM" +
+                                                                           ".COD_PROCESSO_MOVIMENTACAO " +
+                                                                           "   AND M.COD_PNEU = AM.COD_PNEU_INSERIDO " +
+                                                                           "   LEFT JOIN PNEU PNEU_NOVO ON AM" +
+                                                                           ".COD_PNEU_INSERIDO = PNEU_NOVO.CODIGO " +
+                                                                           "   LEFT JOIN " +
+                                                                           "AFERICAO_ALTERNATIVA_MANUTENCAO_INSPECAO " +
+                                                                           "AAMI ON AAMI.CODIGO = AM.COD_ALTERNATIVA " +
+                                                                           "   LEFT JOIN COLABORADOR C ON AM" +
+                                                                           ".CPF_MECANICO = C.CPF " +
+                                                                           "   WHERE AM.COD_UNIDADE = ? AND AM.CODIGO" +
+                                                                           " = ?;");
         final ZoneId zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, connection);
         stmt.setString(1, zoneId.getId());
         stmt.setString(2, zoneId.getId());
@@ -323,8 +377,8 @@ final class ServicoQueryBinder {
                                                                            "  AV.PSI, " +
                                                                            "  AV.POSICAO, " +
                                                                            "  AV.VIDA_MOMENTO_AFERICAO, " +
-                "  V.KM AS KM_ATUAL_VEICULO " +
-                "FROM AFERICAO_MANUTENCAO AM " +
+                                                                           "  V.KM AS KM_ATUAL_VEICULO " +
+                                                                           "FROM AFERICAO_MANUTENCAO AM " +
                                                                            "  JOIN AFERICAO A " +
                                                                            "    ON AM.COD_AFERICAO = A.CODIGO " +
                                                                            "  JOIN AFERICAO_VALORES AV " +
