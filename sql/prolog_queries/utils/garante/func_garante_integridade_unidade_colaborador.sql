@@ -1,0 +1,34 @@
+-- Sobre:
+-- A lógica aplicada nessa function é a seguinte:
+-- Verifica se colaborador está na unidade informada.
+--
+-- Precondições:
+-- 1) Necessário o CPF do colaborador e o código da undiade para a verificar a integração.
+--
+-- Histórico:
+-- 2019-07-30 -> Function criada (thaisksf).
+CREATE OR REPLACE FUNCTION FUNC_GARANTE_INTEGRIDADE_UNIDADE_COLABORADOR(
+  F_COD_UNIDADE BIGINT,
+  F_CPF_COLABORADOR BIGINT)
+  RETURNS VOID
+LANGUAGE PLPGSQL
+AS $$
+BEGIN
+  --VERIFICA SE COLABORADOR EXISTE
+  PERFORM FUNC_GARANTE_COLABORADOR_EXISTE(F_CPF_COLABORADOR);
+
+  --VERIFICA SE UNIDADE EXISTE
+  PERFORM FUNC_GARANTE_UNIDADE_EXISTE(F_COD_UNIDADE);
+
+  -- VERIFICA SE O COLABORADOR PERTENCE A UNIDADE.
+  IF NOT EXISTS(SELECT C.CPF
+                FROM COLABORADOR C
+                WHERE C.CPF = F_CPF_COLABORADOR AND C.COD_UNIDADE = F_COD_UNIDADE)
+  THEN RAISE EXCEPTION 'O colaborador com CPF: %, nome: %, não pertence a unidade: % - %!',
+  F_CPF_COLABORADOR,
+  (SELECT C.NOME FROM COLABORADOR C WHERE C.CPF = F_CPF_COLABORADOR),
+  F_COD_UNIDADE,
+  (SELECT U.NOME FROM UNIDADE U WHERE U.CODIGO = F_COD_UNIDADE);
+  END IF;
+END;
+$$;
