@@ -688,24 +688,34 @@ public class SistemaWebFinattoConverter {
     }
 
     @NotNull
-    public static List<Empresa> createEmpresa(@NotNull final List<EmpresaWebFinatto> filtrosClientes) {
+    public static List<Empresa> createEmpresa(@NotNull final UnidadeDeParaHolder unidadeDeParaHolder,
+                                              @NotNull final List<EmpresaWebFinatto> filtrosClientes) {
         final Empresa empresa = new Empresa();
-        empresa.setCodigo(3L);
-        empresa.setNome("Finatto");
-        empresa.setListRegional(createRegionaisUnidades(filtrosClientes));
+        empresa.setCodigo(unidadeDeParaHolder.getCodEmpresaProlog());
+        empresa.setNome(unidadeDeParaHolder.getNomeEmpresaProlog());
+        empresa.setListRegional(createRegionaisUnidades(unidadeDeParaHolder, filtrosClientes));
         return Collections.singletonList(empresa);
     }
 
     @NotNull
-    private static List<Regional> createRegionaisUnidades(@NotNull final List<EmpresaWebFinatto> filtrosClientes) {
+    private static List<Regional> createRegionaisUnidades(@NotNull final UnidadeDeParaHolder unidadeDeParaHolder,
+                                                          @NotNull final List<EmpresaWebFinatto> filtrosClientes) {
         final List<Regional> regionais = new ArrayList<>();
         for (final EmpresaWebFinatto empresaFinatto : filtrosClientes) {
             final List<Unidade> unidades = new ArrayList<>();
             for (final UnidadeWebFinatto unidadeFinatto : empresaFinatto.getUnidades()) {
-                final Unidade unidade = new Unidade();
-                unidade.setCodigo(unidadeFinatto.getIdUnidade());
-                unidade.setNome(unidadeFinatto.getDescricaoUnidade());
-                unidades.add(unidade);
+                final String codEmpresaFilial = empresaFinatto.getIdCliente()
+                        .toString()
+                        .concat(":")
+                        .concat(unidadeFinatto.getIdUnidade().toString());
+                final UnidadeDePara byCodAuxiliar = unidadeDeParaHolder.getByCodAuxiliar(codEmpresaFilial);
+                if (byCodAuxiliar != null) {
+                    final Unidade unidade = new Unidade();
+                    unidade.setCodigo(byCodAuxiliar.getCodUnidadeProlog());
+                    unidade.setNome(unidadeFinatto.getDescricaoUnidade());
+                    unidade.setEquipes(new ArrayList<>());
+                    unidades.add(unidade);
+                }
             }
 
             final Regional regional = new Regional();
