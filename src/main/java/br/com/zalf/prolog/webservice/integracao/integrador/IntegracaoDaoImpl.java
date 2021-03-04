@@ -255,8 +255,11 @@ public final class IntegracaoDaoImpl extends DatabaseConnection implements Integ
             if (rSet.next()) {
                 final Map<String, UnidadeRestricao> unidadeRestricao = new HashMap<>();
                 do {
-                    unidadeRestricao.put(rSet.getString("cod_auxiliar"),
-                                         IntegracaoConverter.createUnidadeRestricao(rSet));
+                    final String codAuxiliar = rSet.getString("cod_auxiliar");
+                    if (codAuxiliar != null) {
+                        unidadeRestricao.put(codAuxiliar,
+                                             IntegracaoConverter.createUnidadeRestricao(rSet));
+                    }
                 } while (rSet.next());
                 return IntegracaoConverter.createUnidadeRestricaoHolder(unidadeRestricao);
             } else {

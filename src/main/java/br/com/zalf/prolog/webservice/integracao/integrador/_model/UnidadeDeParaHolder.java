@@ -41,9 +41,22 @@ public final class UnidadeDeParaHolder {
     public UnidadeDePara getByCodAuxiliar(@NotNull final String codEmpresaFilialVeiculo) {
         return unidadesDePara
                 .stream()
+                .filter(unidadeDePara -> unidadeDePara.getCodAuxiliarUnidade() != null)
                 .filter(unidadeDePara ->
                                 unidadeDePara.getCodAuxiliarUnidade().equalsIgnoreCase(codEmpresaFilialVeiculo))
                 .findAny()
                 .orElse(null);
+    }
+
+    @NotNull
+    public String getCodAuxiliarEmpresa() {
+        final String[] empresaFilial = getCodFiliais().split(SistemaWebFinattoConstants.SEPARADOR_EMPRESA_FILIAL);
+        return empresaFilial[SistemaWebFinattoConstants.COD_EMPRESA_INDEX];
+    }
+
+    @NotNull
+    public String getCodAuxiliarFilial() {
+        final String[] empresaFilial = getCodFiliais().split(SistemaWebFinattoConstants.SEPARADOR_EMPRESA_FILIAL);
+        return empresaFilial[SistemaWebFinattoConstants.COD_FILIAL_INDEX];
     }
 }

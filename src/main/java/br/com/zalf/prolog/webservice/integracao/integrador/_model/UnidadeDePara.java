@@ -1,8 +1,8 @@
 package br.com.zalf.prolog.webservice.integracao.integrador._model;
 
-import br.com.zalf.prolog.webservice.integracao.webfinatto.utils.SistemaWebFinattoConstants;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Data
 public final class UnidadeDePara {
@@ -14,18 +14,6 @@ public final class UnidadeDePara {
     private final Long codRegionalProlog;
     @NotNull
     private final String nomeRegionalProlog;
-    @NotNull
+    @Nullable
     private final String codAuxiliarUnidade;
-
-    @NotNull
-    public String getCodEmpresaFromCodAuxiliarUnidade() {
-        final String[] empresaFilial = codAuxiliarUnidade.split(SistemaWebFinattoConstants.SEPARADOR_EMPRESA_FILIAL);
-        return empresaFilial[0];
-    }
-
-    @NotNull
-    public String getCodFilialFromCodAuxiliarUnidade() {
-        final String[] empresaFilial = codAuxiliarUnidade.split(SistemaWebFinattoConstants.SEPARADOR_EMPRESA_FILIAL);
-        return empresaFilial[1];
-    }
 }

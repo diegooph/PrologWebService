@@ -91,7 +91,6 @@ public class SistemaWebFinatto extends Sistema {
                     integracaoDao.getAfericaoRealizadaPlacaHolder(conn,
                                                                   unidadeDeParaHolder.getCodEmpresaProlog(),
                                                                   placas);
-
             return SistemaWebFinattoConverter.createCronogramaAfericaoProlog(veiculosByFiliais,
                                                                              unidadeRestricaoHolder,
                                                                              tipoVeiculoConfigAfericaoHolder,

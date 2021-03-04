@@ -555,10 +555,9 @@ public class SistemaWebFinattoConverter {
                 .stream()
                 .map(pneu -> createMedicaoAfericao(pneu, afericaoPlaca.getTipoMedicaoColetadaAfericao()))
                 .collect(Collectors.toList());
-        final String[] codEmpresaFilial = unidadeDeParaHolder.getCodFiliais().split(":");
         return new AfericaoPlacaWebFinatto(
-                codEmpresaFilial[0],
-                codEmpresaFilial[1],
+                unidadeDeParaHolder.getCodAuxiliarEmpresa(),
+                unidadeDeParaHolder.getCodAuxiliarFilial(),
                 afericaoPlaca.getVeiculo().getPlaca(),
                 Colaborador.formatCpf(afericaoPlaca.getColaborador().getCpf()),
                 afericaoPlaca.getKmMomentoAfericao(),
@@ -573,10 +572,9 @@ public class SistemaWebFinattoConverter {
     public static AfericaoPneuWebFinatto createAfericaoAvulsa(@NotNull final UnidadeDeParaHolder unidadeDeParaHolder,
                                                               @NotNull final ZoneId zoneId,
                                                               @NotNull final AfericaoAvulsa afericaoAvulsa) {
-        final String[] codEmpresaFilial = unidadeDeParaHolder.getCodFiliais().split(":");
         return new AfericaoPneuWebFinatto(
-                codEmpresaFilial[0],
-                codEmpresaFilial[1],
+                unidadeDeParaHolder.getCodAuxiliarEmpresa(),
+                unidadeDeParaHolder.getCodAuxiliarFilial(),
                 Colaborador.formatCpf(afericaoAvulsa.getColaborador().getCpf()),
                 afericaoAvulsa.getTempoRealizacaoAfericaoInMillis(),
                 afericaoAvulsa.getDataHora(),
@@ -592,32 +590,31 @@ public class SistemaWebFinattoConverter {
             @NotNull final OffsetDateTime dataHoraMovimentacao,
             @NotNull final ZoneId zoneIdForCodUnidade,
             @NotNull final ProcessoMovimentacao processoMovimentacao) {
-        final String[] codEmpresaFilial = unidadeDeParaHolder.getCodFiliais().split(":");
-        return new ProcessoMovimentacaoWebFinatto(codEmpresaFilial[0],
-                                                  codEmpresaFilial[1],
+        return new ProcessoMovimentacaoWebFinatto(unidadeDeParaHolder.getCodAuxiliarEmpresa(),
+                                                  unidadeDeParaHolder.getCodAuxiliarFilial(),
                                                   processoMovimentacao.getColaborador().getCpfAsString(),
                                                   dataHoraMovimentacao.toLocalDateTime(),
                                                   dataHoraMovimentacao.atZoneSameInstant(zoneIdForCodUnidade)
                                                           .toLocalDateTime(),
                                                   processoMovimentacao.getObservacao(),
                                                   null,
-                                                  createVeiculoMovimentacao(codEmpresaFilial, processoMovimentacao),
-                                                  createMovimentacoes(codEmpresaFilial, processoMovimentacao));
+                                                  createVeiculoMovimentacao(unidadeDeParaHolder, processoMovimentacao),
+                                                  createMovimentacoes(unidadeDeParaHolder, processoMovimentacao));
     }
 
     @NotNull
     private static List<MovimentacaoWebFinatto> createMovimentacoes(
-            @NotNull final String[] codEmpresaFilial,
+            @NotNull final UnidadeDeParaHolder unidadeDeParaHolder,
             @NotNull final ProcessoMovimentacao processoMovimentacao) {
         final List<MovimentacaoWebFinatto> movimentacoesWebFinatto = new ArrayList<>();
         for (final Movimentacao movimentacao : processoMovimentacao.getMovimentacoes()) {
-            movimentacoesWebFinatto.add(createMovimentacao(codEmpresaFilial, movimentacao));
+            movimentacoesWebFinatto.add(createMovimentacao(unidadeDeParaHolder, movimentacao));
         }
         return movimentacoesWebFinatto;
     }
 
     @NotNull
-    private static MovimentacaoWebFinatto createMovimentacao(@NotNull final String[] codEmpresaFilial,
+    private static MovimentacaoWebFinatto createMovimentacao(@NotNull final UnidadeDeParaHolder unidadeDeParaHolder,
                                                              @NotNull final Movimentacao movimentacao) {
         final String tipoOrigem;
         final String tipoDestino;
@@ -639,7 +636,7 @@ public class SistemaWebFinattoConverter {
             tipoDestino = "ESTOQUE";
         }
 
-        return new MovimentacaoWebFinatto(createPneuMovimentacao(codEmpresaFilial, movimentacao.getPneu()),
+        return new MovimentacaoWebFinatto(createPneuMovimentacao(unidadeDeParaHolder, movimentacao.getPneu()),
                                           tipoOrigem,
                                           posicaoOrigem,
                                           tipoDestino,
@@ -648,10 +645,11 @@ public class SistemaWebFinattoConverter {
     }
 
     @NotNull
-    private static PneuMovimentavaoWebFinatto createPneuMovimentacao(@NotNull final String[] codEmpresaFilial,
-                                                                     @NotNull final Pneu pneu) {
-        return new PneuMovimentavaoWebFinatto(codEmpresaFilial[0],
-                                              codEmpresaFilial[1],
+    private static PneuMovimentavaoWebFinatto createPneuMovimentacao(
+            @NotNull final UnidadeDeParaHolder unidadeDeParaHolder,
+            @NotNull final Pneu pneu) {
+        return new PneuMovimentavaoWebFinatto(unidadeDeParaHolder.getCodAuxiliarEmpresa(),
+                                              unidadeDeParaHolder.getCodAuxiliarFilial(),
                                               pneu.getCodigo().toString(),
                                               pneu.getCodigoCliente(),
                                               pneu.getVidaAtual(),
@@ -664,7 +662,7 @@ public class SistemaWebFinattoConverter {
 
     @NotNull
     private static VeiculoMovimentacaoWebFinatto createVeiculoMovimentacao(
-            @NotNull final String[] codEmpresaFilial,
+            @NotNull final UnidadeDeParaHolder unidadeDeParaHolder,
             @NotNull final ProcessoMovimentacao processoMovimentacao) {
         Veiculo veiculo = null;
         for (final Movimentacao movimentacoe : processoMovimentacao.getMovimentacoes()) {
@@ -682,8 +680,8 @@ public class SistemaWebFinattoConverter {
             throw new IllegalStateException("A movimentação deve envolver um veículo");
         }
 
-        return new VeiculoMovimentacaoWebFinatto(codEmpresaFilial[0],
-                                                 codEmpresaFilial[1],
+        return new VeiculoMovimentacaoWebFinatto(unidadeDeParaHolder.getCodAuxiliarEmpresa(),
+                                                 unidadeDeParaHolder.getCodAuxiliarFilial(),
                                                  veiculo.getKmAtual(),
                                                  veiculo.getPlaca(),
                                                  veiculo.getCodigo().toString());
