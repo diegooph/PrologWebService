@@ -7,6 +7,9 @@ Change Log
 ### Features
 * Adiciona estrutura de testes e2e com testcontainers e Flyway (PL-3307)
 
+### Refactors
+* Ordena lista de histórico de acoplamentos por data/hora
+
 ### Bug Fixes
 * Corrige path de resource de histórico de acoplamentos
 
