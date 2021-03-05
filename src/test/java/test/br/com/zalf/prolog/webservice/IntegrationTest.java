@@ -36,7 +36,12 @@ public class IntegrationTest {
 
     @PostConstruct
     void initialSetup() {
-        flyway.migrate();
+        configs.stream()
+                .map(FlywayInstanceProvider::getFlyway)
+                .forEach(flyway -> {
+                    flyway.repair();
+                    flyway.migrate();
+                });
     }
 
     @PreDestroy
