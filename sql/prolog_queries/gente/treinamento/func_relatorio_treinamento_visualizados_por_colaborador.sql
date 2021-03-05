@@ -1,10 +1,3 @@
--- Sobre:
---
--- Function utilizada para gerar o relatório de treinamentos visualizados por colaborador.
---
--- Histórico:
--- 2020-08-12 -> Function criada (luizfp - PS-1192).
--- 2020-08-12 -> Adiciona cargo do colaborador e filtra por ativos (luizfp - PS-1192).
 create or replace function func_relatorio_treinamento_visualizados_por_colaborador(f_data_inicial date,
                                                                                    f_data_final date,
                                                                                    f_time_zone_datas text,

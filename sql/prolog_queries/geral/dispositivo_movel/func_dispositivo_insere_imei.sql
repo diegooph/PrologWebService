@@ -1,15 +1,3 @@
--- Sobre:
--- Esta função insere um IMEI a um dispositivo móvel.
---
--- Parâmetros:
--- F_COD_EMPRESA: Código da empresa.
--- F_COD_DISPOSITIVO: Código do dispositivo que será vinculado.
--- F_IMEI: Texto com o número do IMEI inserido pelo usuário.
---
--- Atenção: Esta função é utilizada dentro da function FUNC_DISPOSITIVO_INSERE_DISPOSITIVO_MOVEL_COM_IMEI.
---
--- Histórico:
--- 2019-07-25 -> Function criada (wvinim - PL-2150).
 CREATE OR REPLACE FUNCTION FUNC_DISPOSITIVO_INSERE_IMEI(
   F_COD_EMPRESA     BIGINT,
   F_COD_DISPOSITIVO BIGINT,

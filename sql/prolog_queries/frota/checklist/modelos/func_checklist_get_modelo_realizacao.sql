@@ -1,12 +1,3 @@
--- Sobre:
---
--- Function para buscar um modelo de checklist na versão atual para realização.
---
--- Histórico:
--- 2020-03-03 -> Atualização de arquivo e documentação (wvinim - PL-2494).
--- 2020-07-07 -> Adição das informações de parametrização de fotos (luiz_fp - PL-2705).
--- 2020-07-13 -> Atualização de arquivo e documentação (wvinim - PL-2824).
--- 2020-07-24 -> Insere código auxiliar (gustavocnp95 - PLI-178).
 CREATE OR REPLACE FUNCTION FUNC_CHECKLIST_GET_MODELO_REALIZACAO(F_COD_MODELO_CHECKLIST BIGINT,
                                                                 F_COD_VEICULO_REALIZACAO BIGINT)
     RETURNS TABLE

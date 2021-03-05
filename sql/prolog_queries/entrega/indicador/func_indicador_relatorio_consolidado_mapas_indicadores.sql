@@ -1,21 +1,3 @@
--- Sobre:
---
--- Function responsável por gerar o relatório do resultado acumulado dos indicadores no período selecionado,
--- para um colaborador específico ou para todos.
---
--- Parâmetros de filtro:
--- cod_empresa  => O código da empresa que se deseja filtrar.
--- cod_regional => O código da regional que se deseja filtrar ou 'null' para todas.
--- cod_unidade  => O código da unidade que se deseja filtrar ou 'null para todas.
--- cod_equipe   => O código da equipe que se deseja filtrar ou 'null' para todas.
--- cpf          => O CPF que se deseja filtrar ou 'null' para todos.
--- data_inicial => A data inicial do período de filtro (incluvisa).
--- data_final   => A data final do período de filtro (incluvisa).
---
--- Histórico:
--- 2020-09-02 -> Cria arquivo da function (luiz_fp - PL-3132).
--- 2020-09-02 -> Corrige filtro de data (luiz_fp - PL-3132).
--- 2020-10-18 -> Refatora filtragens e altera o nome (luiz_fp - PL-3199).
 create or replace function func_indicador_relatorio_consolidado_mapas_indicadores(f_cod_empresa bigint,
                                                                                   f_cod_regional bigint,
                                                                                   f_cod_unidade bigint,

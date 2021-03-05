@@ -1,15 +1,3 @@
--- Sobre:
---
--- A lógica aplicada nessa function é a seguinte:
--- Extratifica os Serviços fechados de pneus dentro de um determinado período.
---
--- Histórico:
--- 2019-09-06 -> Altera vínculo da tabela PNEU_ORDEM_NOMENCLATURA_UNIDADE
---               para PNEU_POSICAO_NOMENCLATURA_EMPRESA. (thaisksf PL-2258).
--- 2019-10-14 -> Adiciona verificação da flag 'FECHADO_AUTOMATICAMENTE_INTEGRACAO' (diogenesvanzella - PLI-31).
--- 2020-05-12 -> Altera nome do relatório, forma de receber array de unidades e retorna forma de coleta dos
---               dados no fechamento (luiz_fp - PL-2715).
--- 2020-06-12 -> Adiciona identificador de frota (thaisksf - PL-2761).
 CREATE OR REPLACE FUNCTION FUNC_PNEU_RELATORIO_EXTRATO_SERVICOS_FECHADOS(F_COD_UNIDADES BIGINT[],
                                                                          F_DATA_INICIAL DATE,
                                                                          F_DATA_FINAL DATE)

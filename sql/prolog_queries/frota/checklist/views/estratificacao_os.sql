@@ -1,9 +1,3 @@
--- Sobre:
---
--- Essa view retorna a estratificação das ordens de serviço.
---
--- Histórico:
--- 2020-03-03 -> Atualização de arquivo e documentação (wvinim - PL-2494).
 CREATE OR REPLACE VIEW ESTRATIFICACAO_OS AS
 SELECT COS.CODIGO                                                       AS COD_OS,
        REALIZADOR.NOME                                                  AS NOME_REALIZADOR_CHECKLIST,

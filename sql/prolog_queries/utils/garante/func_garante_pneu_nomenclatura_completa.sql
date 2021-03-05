@@ -1,13 +1,3 @@
--- Sobre:
--- A lógica aplicada nessa function é a seguinte:
--- Garante que a nomenclatura enviada pelo servidor possui todas as posições nomeadas.
---
--- Precondições:
--- 1) Tabela veiculo_diagrama_posicao_prolog criada
--- 2) Function array_sort criada
---
--- Histórico:
--- 2019-09-03 -> Function criada (thaisksf PL-2259).
 CREATE OR REPLACE FUNCTION FUNC_GARANTE_PNEU_NOMENCLATURA_COMPLETA(F_COD_DIAGRAMA BIGINT,
                                                                    F_POSICOES_PROLOG INTEGER[],
                                                                    F_ERROR_MESSAGE TEXT DEFAULT NULL)

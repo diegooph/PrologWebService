@@ -1,10 +1,3 @@
--- Sobre:
---
--- Function utilizada para gerar o relatório de extrato geral dos quizzes respondidos.
---
--- Histórico:
--- 2020-07-31 -> Function criada (luizfp - PS-1189).
--- 2020-07-31 -> Corrige comparação para saber se usuário foi aprovado no quiz (luizfp - PS-1189).
 create or replace function func_quiz_relatorio_extrato_geral(f_cod_unidade bigint,
                                                              f_data_inicial date,
                                                              f_data_final date)

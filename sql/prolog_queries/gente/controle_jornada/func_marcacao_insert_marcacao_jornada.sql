@@ -1,9 +1,3 @@
--- Sobre:
---
--- Essa function insere os dados de intervalo originados no APP.
---
--- Histórico:
--- 2019-07-31 -> Adicionados dados do dispositivo (wvinim - PL-2152).
 CREATE OR REPLACE FUNCTION FUNC_MARCACAO_INSERT_MARCACAO_JORNADA(
                                                       F_COD_UNIDADE                        BIGINT,
                                                       F_COD_TIPO_INTERVALO                 BIGINT,

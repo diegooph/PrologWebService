@@ -1,11 +1,3 @@
--- Sobre:
--- Esta função retorna a lista de todas as relações motivo, origem e destino existentes
--- para as unidades permitidas pro usuário que realizou a requisição.
---
--- Histórico:
--- 2020-03-23 -> Function criada (gustavocnp95 - PL-2607).
--- 2020-04-14 -> Function refatorada para fazer left join com unidade (gustavocnp95 - PL-2681).
--- 2020-08-20 -> Altera para buscar mesmo as unidades que não possuem equipe. (luizfp).
 CREATE OR REPLACE FUNCTION FUNC_MOTIVO_MOVIMENTO_TRANSICAO_LISTAGEM(F_COD_COLABORADOR BIGINT)
     RETURNS TABLE
             (

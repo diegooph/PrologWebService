@@ -1,12 +1,3 @@
--- Sobre:
---
--- Function responsável por mesclar um modelo de banda no outro.
---
--- Ela funciona da seguinte forma: dado dois modelos A e B, todos os vínculos existentes no modelo B são alterados
--- para vincular o modelo A. Depois disso o modelo B é deletado.
---
--- Histórico:
--- 2020-09-08 -> Function criada (luiz_fp - PL-3134).
 create or replace function suporte.func_pneu_mescla_modelos_banda(f_cod_empresa bigint,
                                                                   f_cod_modelo_banda_destino_mescla bigint,
                                                                   f_cod_modelo_banda_que_sera_deletado bigint,

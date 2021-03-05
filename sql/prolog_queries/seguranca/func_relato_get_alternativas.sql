@@ -1,11 +1,3 @@
--- Sobre:
--- Busca as alternatias de seleção para abertura de um relato, filtrando por unidade, setor e status_ativo.
--- Caso a alternativa tenha COD_SETOR nulo na tabela, ela será retornada independente do F_COD_SETOR fornecido, mas
--- ainda respeitando F_COD_UNIDADE e F_STATUS_ATIVO.
---
--- Histórico:
--- 2020-02-27 -> Arquivo do function criado (luizfp).
--- 2020-02-27 -> Altera para retornar as alternativas se a coluna COD_SETOR for NULL (luizfp).
 CREATE OR REPLACE FUNCTION FUNC_RELATO_GET_ALTERNATIVAS(F_COD_UNIDADE BIGINT, F_COD_SETOR BIGINT, F_STATUS_ATIVO BOOLEAN)
     RETURNS TABLE
             (

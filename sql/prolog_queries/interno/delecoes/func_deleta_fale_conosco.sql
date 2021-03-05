@@ -1,9 +1,3 @@
--- Sobre:
--- A lógica aplicada nessa function é a seguinte:
--- Deleta fale conosco de uma unidade e suas dependências.
---
--- Histórico:
--- 2020-04-06 -> Function criada (thaisksf - PL-2034).
 CREATE OR REPLACE FUNCTION INTERNO.FUNC_DELETA_FALE_CONOSCO(F_COD_FALE_CONOSCO BIGINT[])
     RETURNS VOID
     LANGUAGE PLPGSQL

@@ -1,5 +1,3 @@
---Adiciona estepes na tabela pneu_ordem_nomenclatura_unidade, e seus respectivos nomes, para todas as unidades da empresa
-
 BEGIN TRANSACTION ;
 insert into pneu_ordem_nomenclatura_unidade
   select vt.codigo, vt.cod_unidade, 900, 'Z1'

@@ -1,9 +1,3 @@
---######################################################################################################################
---######################################################################################################################
--- FUNCTION PARA RELATÓRIO QUE BUSCA O MENOR SULCO E PRESSÃO DE CADA PNEU DAS UNIDADES FILTRADAS. ELE É UTILIZADO
--- PARA POPULAR O COMPONENT DE SCATTER DA DASHBOARD.
---######################################################################################################################
---######################################################################################################################
 CREATE OR REPLACE FUNCTION FUNC_PNEU_RELATORIO_MENOR_SULCO_E_PRESSAO_PNEUS(F_COD_UNIDADES BIGINT [])
   RETURNS TABLE(
     COD_PNEU         BIGINT,

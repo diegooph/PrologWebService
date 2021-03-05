@@ -1,13 +1,3 @@
--- Sobre:
---
--- Esta function retorna a lista de perguntas de acordo com a unidade, modelo e versão de um checklist.
---
--- Histórico:
--- 2019-10-02 -> Function criada (wvinim - PL-2231).
--- 2020-03-03 -> Atualização de arquivo e documentação (wvinim - PL-2494).
--- 2020-07-07 -> Adição de colunas de mídia para pergunta e alternativa (wvinim - PL-2705).
--- 2020-07-13 -> Atualização de arquivo e documentação (wvinim - PL-2824).
--- 2020-07-27 -> Insere nova coluna de cod auxiliar (gustavocnp95 - PLI-178)
 CREATE OR REPLACE FUNCTION FUNC_CHECKLIST_GET_PERGUNTAS_MODELOS_CHECKLIST(F_COD_UNIDADE BIGINT,
                                                                           F_COD_MODELO BIGINT,
                                                                           F_COD_VERSAO_MODELO BIGINT)

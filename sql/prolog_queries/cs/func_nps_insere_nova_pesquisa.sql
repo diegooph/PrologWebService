@@ -1,9 +1,3 @@
--- Sobre:
--- Insere uma nova pesquisa de NPS. Ao inserir, todas as pesquisas antigas são desativadas (status_ativo = false).
---
--- Histórico:
--- 2019-10-10 -> Function criada (luizfp - PL-2350).
--- 2019-10-28 -> Adição de colunas para legenda de escala alta/baixa (wvinim - PL-2355).
 create or replace function cs.func_nps_insere_nova_pesquisa(f_titulo_pesquisa text,
                                                             f_breve_descricao_pesquisa text,
                                                             f_titulo_pergunta_escala text,

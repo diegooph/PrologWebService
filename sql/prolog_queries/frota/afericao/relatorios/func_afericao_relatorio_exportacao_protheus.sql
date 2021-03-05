@@ -1,15 +1,3 @@
--- Sobre:
---
--- Esta function retorna as informações necessárias para permitir, no front-end, a extração de um txt no formato padrão
--- do Protheus para importação em seu sistema. A function busca apenas aferições de placa, não trabalha com 4 sulcos,
--- duplica a pressão (calibragem aferida e relizada) e tem os cabeçalhos padrão, de forma fixa, conforme pede o
--- Protheus.
---
--- Histórico:
--- 2020-10-08 -> Function criada (gustavocnp95 - PL-3182).
--- 2020-10-23 -> Corrige joins da function (gustavocnp95 - PL-3237).
--- 2020-11-04 -> Adiciona lpad no código cliente e cast para date (gustavocnp95 - PL-3277).
--- 2020-11-05 -> Adiciona caractere especial no trim (gustavocnp95 - PL-3277).
 create or replace function func_afericao_relatorio_exportacao_protheus(f_cod_unidades bigint[],
                                                                        f_cod_veiculos bigint[],
                                                                        f_data_inicial date,

@@ -1,9 +1,3 @@
--- Sobre:
---
--- Function que retorna a listagem de modelos de checklist na versão atual.
---
--- Histórico:
--- 2020-03-03 -> Atualização de arquivo e documentação (wvinim - PL-2494).
 CREATE OR REPLACE FUNCTION FUNC_CHECKLIST_GET_LISTAGEM_MODELOS_CHECKLIST(F_COD_UNIDADE BIGINT)
     RETURNS TABLE
             (

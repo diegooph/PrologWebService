@@ -1,13 +1,3 @@
--- Sobre:
---
--- Retorna informações de 1 pneu
---
--- Précondições:
--- 1) Código do pneu.
---
--- Histórico:
--- 2019-09-06 -> Altera vínculo da tabela PNEU_ORDEM_NOMENCLATURA_UNIDADE para PNEU_POSICAO_NOMENCLATURA_EMPRESA. (thaisksf - PL-2258)
--- 2020-06-19 -> Adiciona identificador frota (thaisksf - PL-2760).
 CREATE OR REPLACE FUNCTION FUNC_PNEU_GET_PNEU_BY_CODIGO(F_COD_PNEU BIGINT)
     RETURNS TABLE
             (

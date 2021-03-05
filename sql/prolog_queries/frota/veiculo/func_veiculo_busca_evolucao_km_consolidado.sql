@@ -1,12 +1,3 @@
--- Sobre:
--- Esta function retorna a evolução dos kms coletados de um veículo dentro de um determidado período. Caso os filtros de
--- f_data_inicial e f_data_final não forem fornecidos, a busca retornará de todos os registros encotrados.
---
--- Histórico:
--- 2020-09-29 -> Function criada (thaisksf - PL-3171).
--- 2020-10-09 -> Adiciona informações sobre a evolução de km buscadas em socorro em rota e em edição de véiculos
--- (thaisksf - PL-3197).
--- 2020-10-15 -> Adiciona distinct para mostrar apenas 1 entrada do processo de movimentação (thaisksf).
 create or replace function func_veiculo_busca_evolucao_km_consolidado(f_cod_empresa bigint,
                                                                       f_cod_veiculo bigint,
                                                                       f_data_inicial date,
@@ -35,19 +26,22 @@ declare
 begin
     return query
         with dados as (
-            (select distinct on (mp.codigo) 'MOVIMENTACAO'                         as processo,
-                                            m.codigo                               as codigo,
+            (select distinct on (mp.codigo) 'MOVIMENTACAO'                            as processo,
+                                            m.codigo                                  as codigo,
                                             mp.data_hora at time zone tz_unidade(mp.cod_unidade)
-                                                                                   as data_hora,
-                                            coalesce(mo.placa, md.placa)           as placa,
-                                            coalesce(mo.km_veiculo, md.km_veiculo) as km_coletado
+                                                                                      as data_hora,
+                                            coalesce(v_origem.placa, v_destino.placa) as placa,
+                                            coalesce(mo.km_veiculo, md.km_veiculo)    as km_coletado
              from movimentacao_processo mp
                       join movimentacao m on mp.codigo = m.cod_movimentacao_processo
                  and mp.cod_unidade = m.cod_unidade
                       join movimentacao_destino md on m.codigo = md.cod_movimentacao
+                      join veiculo v_destino on v_destino.codigo = md.cod_veiculo
                       join movimentacao_origem mo on m.codigo = mo.cod_movimentacao
+                      join veiculo v_origem on v_origem.codigo = mo.cod_veiculo
              where coalesce(mo.cod_veiculo, md.cod_veiculo) = f_cod_veiculo
-             group by m.codigo, mp.cod_unidade, mp.codigo, mo.placa, md.placa, mo.km_veiculo, md.km_veiculo)
+             group by m.codigo, mp.cod_unidade, mp.codigo, v_origem.placa, v_destino.placa, mo.km_veiculo,
+                      md.km_veiculo)
             union
             (select 'CHECKLIST'                                        as processo,
                     c.codigo                                           as codigo,

@@ -13,16 +13,6 @@
 -- relevante neste caso já que um veículo só pode ser transferido sem pneus, o que restringe o impacto negativo de
 -- perder KM).
 -- Por tudo isso, resolvemos deixar passar este cenário.
---
--- Precondições:
--- Veículo não possuir pneus vinculados.
---
--- Histórico:
--- 2019-11-11 -> Function criada (natanrotta - pl-2383).
--- 2020-02-26 -> Adiciona validação de diagrama devido a implementação das amarrações (wvinim - PL-1965).
--- 2020-05-22 -> Adiciona estrutura para atualizar a transferência do veículo integrado (natanrotta - PLI-157).
--- 2020-08-14 -> Adiciona chamada para logar execução da function (gustavocnp95 - PL-3066).
--- 2020-11-09 -> Deleta OSs de checklist abertas do veículo (luizfp - PL-3285).
 create or replace function suporte.func_veiculo_transfere_veiculo_entre_empresas(f_placa_veiculo varchar(7),
                                                                                  f_cod_empresa_origem bigint,
                                                                                  f_cod_unidade_origem bigint,

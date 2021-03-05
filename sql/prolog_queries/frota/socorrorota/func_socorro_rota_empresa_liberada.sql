@@ -1,10 +1,3 @@
--- Sobre:
--- Esta function gera um erro genérico caso a funcionalidade de socorro em rota não esteja liberada para a empresa.
---
--- Histórico:
--- 2020-02-11 -> Function criada (wvinim).
--- 2020-02-20 -> Altera para buscar códigos das empresas liberadas de tabela do BD (luizfp).
--- 2020-08-03 -> Altera e-mail de contato em caso de funcionalidade bloqueada (luizfp).
 CREATE OR REPLACE FUNCTION FUNC_SOCORRO_ROTA_EMPRESA_LIBERADA(F_COD_EMPRESA BIGINT)
     RETURNS VOID
     LANGUAGE PLPGSQL

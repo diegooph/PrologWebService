@@ -1,10 +1,3 @@
--- Sobre:
---
--- Essa view retorna uma lista de aferições realizadas não deletadas.
---
--- Histórico:
--- 2020-10-12 -> Insere nova coluna cod_veiculo (thaisksf - PL-3187).
--- 2020-10-26 -> Insere coluna de codigo de diagrama (gustavocnp95 - PL-3237).
 create or replace view afericao as
 select ad.codigo,
        ad.data_hora,

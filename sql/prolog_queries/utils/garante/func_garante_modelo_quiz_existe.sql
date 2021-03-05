@@ -1,9 +1,3 @@
--- Sobre:
---
--- Verifica se um modelo de quiz existe com o código informando, lançando uma exception caso não exista.
---
--- Histórico:
--- 2020-09-21 -> Function criada (luiz_fp - PS-1248).
 create or replace function func_garante_modelo_quiz_existe(f_cod_modelo_quiz bigint)
     returns void
     language plpgsql

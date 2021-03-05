@@ -4,24 +4,28 @@
 --
 -- Histórico:
 -- 2019-11-27 -> Function criada (diogenesvanzella - PLI-41).
-CREATE OR REPLACE FUNCTION INTEGRACAO.FUNC_GERAL_BUSCA_INFOS_AUTENTICACAO(F_COD_EMPRESA BIGINT,
-                                                                          F_SISTEMA_KEY TEXT,
-                                                                          F_METODO_INTEGRADO TEXT)
-    RETURNS TABLE
+-- 2020-11-08 -> Adiciona token Prolog no retorno (didivz - PL-3251).
+create or replace function integracao.func_geral_busca_infos_autenticacao(f_cod_empresa bigint,
+                                                                          f_sistema_key text,
+                                                                          f_metodo_integrado text)
+    returns table
             (
-                URL_COMPLETA     TEXT,
-                API_TOKEN_CLIENT TEXT,
-                API_SHORT_CODE   BIGINT
+                prolog_token_integracao text,
+                url_completa            text,
+                api_token_client        text,
+                api_short_code          bigint
             )
-    LANGUAGE SQL
-AS
+    language sql
+as
 $$
-SELECT EIM.URL_COMPLETA     AS URL_COMPLETA,
-       EIM.API_TOKEN_CLIENT AS API_TOKEN_CLIENT,
-       EIM.API_SHORT_CODE   AS API_SHORT_CODE
-FROM INTEGRACAO.EMPRESA_INTEGRACAO_METODOS EIM
-         JOIN INTEGRACAO.EMPRESA_INTEGRACAO_SISTEMA EIS ON EIM.COD_INTEGRACAO_SISTEMA = EIS.CODIGO
-WHERE EIS.COD_EMPRESA = F_COD_EMPRESA
-  AND EIS.CHAVE_SISTEMA = F_SISTEMA_KEY
-  AND EIM.METODO_INTEGRADO = F_METODO_INTEGRADO;
+select ti.token_integracao  as prolog_token_integracao,
+       eim.url_completa     as url_completa,
+       eim.api_token_client as api_token_client,
+       eim.api_short_code   as api_short_code
+from integracao.empresa_integracao_metodos eim
+         join integracao.empresa_integracao_sistema eis on eim.cod_integracao_sistema = eis.codigo
+         join integracao.token_integracao ti on ti.cod_empresa = eis.cod_empresa
+where eis.cod_empresa = f_cod_empresa
+  and eis.chave_sistema = f_sistema_key
+  and eim.metodo_integrado = f_metodo_integrado;
 $$;

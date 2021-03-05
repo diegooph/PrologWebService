@@ -1,8 +1,3 @@
--- Sobre:
--- Esta função deleta todos os registros de transição.
---
--- Histórico:
--- 2020-04-15 -> Function criada (gustavocnp95 - PL-2607).
 CREATE OR REPLACE FUNCTION FUNC_MOTIVO_MOVIMENTO_TRANSICAO_DELETA(F_COD_EMPRESA BIGINT)
     RETURNS VOID
     LANGUAGE PLPGSQL

@@ -14,13 +14,13 @@ where u.column_name = 'placa'
   and u.table_name = 'veiculo_data';
 
 -- Tabelas do GSD podem ser removidas, funcionalidade não existe mais.
-drop table gsd_respostas;
-drop table gsd_perguntas;
-drop table pdv_gsd;
-drop table gsd;
+drop table if exists gsd_respostas;
+drop table if exists gsd_perguntas;
+drop table if exists pdv_gsd;
+drop table if exists gsd;
 
 -- Tabela pode ser dropada, não é mais utilizada.
-drop table veiculo_pneu_inconsistencia;
+drop table if exists veiculo_pneu_inconsistencia;
 
 -- Tabelas que ainda utilizam a placa:
 -- afericao_data

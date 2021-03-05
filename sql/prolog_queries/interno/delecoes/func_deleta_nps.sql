@@ -1,9 +1,3 @@
--- Sobre:
--- A lógica aplicada nessa function é a seguinte:
--- Deleta nps de acordo com codigo de colaboradores.
---
--- Histórico:
--- 2020-04-06 -> Function criada (thaisksf - PL-2034).
 CREATE OR REPLACE FUNCTION INTERNO.FUNC_DELETA_NPS(F_COD_COLABORADORES BIGINT[])
     RETURNS VOID
     LANGUAGE PLPGSQL

@@ -1,10 +1,3 @@
--- Sobre:
---
--- Function que retorna os compontes de dashboard que um usuário tem acesso. A function utiliza o token do usuário que
--- está realizando a requisição para identificar se ele possui acesso à algum componente.
---
--- Histórico:
--- 2020-07-08 -> Function criada (diogenesvanzella - PL-2671).
 create or replace function func_dashboard_get_componentes_colaborador(f_user_token text)
     returns table
             (

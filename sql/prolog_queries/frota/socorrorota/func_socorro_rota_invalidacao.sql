@@ -1,22 +1,3 @@
--- Sobre:
--- Esta function invalida uma solicitação de socorro através dos dados recebidos por parâmetro.
---
--- A invalidação consiste em uma atualização de status, na tabela pai socorro_rota, e uma inserção na tabela
--- socorro_rota_invalidacao.
---
--- Observação:
--- Verificar permissões TRATAR_SOCORRO ou ABERTURA_SOCORRO.
---
--- Quem tem TRATAR_SOCORRO, pode invalidar qualquer socorro que:
--- Não esteja finalizado ou invalidado (verificado e lançado mensagens personalizadas).
---
--- Quem tem ABERTURA_SOCORRO, pode invalidar somente as próprias solicitações em aberto (verificado e lançado
--- mensagens personalizadas).
---
--- Histórico:
--- 2019-12-23 -> Function criada (wvinim - PL-2427).
--- 2020-02-11 -> Atualiza na tabela pai o código de invalidação (wvinim PL-2521).
--- 2020-02-14 -> Insere a plataforma de origem e a versão (wvinim PL-2527).
 CREATE OR REPLACE FUNCTION FUNC_SOCORRO_ROTA_INVALIDACAO(F_COD_SOCORRO_ROTA BIGINT,
                                                          F_COD_COLABORADOR_INVALIDACAO BIGINT,
                                                          F_MOTIVO_INVALIDACAO TEXT,

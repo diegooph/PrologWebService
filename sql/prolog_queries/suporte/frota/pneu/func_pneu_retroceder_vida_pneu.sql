@@ -49,10 +49,6 @@
 --
 -- Os sulcos do pneu não foram tratados, isso foi proposital. Temos ciência que tal escolha pode influenciar com alertas
 -- na tela de aferição, mas optamos por deixar assim ao invés de aumentar a complexidade da function.
---
--- Histórico:
--- 2020-07-15 -> Function criada (luiz_fp - PL-2205).
--- 2020-08-14 -> Adiciona chamada para logar execução da function (gustavocnp95 - PL-3066).
 CREATE OR REPLACE FUNCTION SUPORTE.FUNC_PNEU_RETROCEDER_VIDA_PNEU(F_COD_UNIDADE_PNEU BIGINT,
                                                                   F_COD_CLIENTE_PNEU TEXT,
                                                                   F_VIDA_NOVA_PNEU INTEGER,

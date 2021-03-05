@@ -1,10 +1,3 @@
--- Sobre:
---
--- Esta function edita o modelo de uma banda.
---
---
--- Histórico:
--- 2019-09-23 -> Function criada. (thaisksf PL-2263)
 CREATE OR REPLACE FUNCTION FUNC_PNEU_EDITA_MODELO_BANDA(F_COD_EMPRESA BIGINT,
                                                         F_COD_MARCA_BANDA BIGINT,
                                                         F_COD_MODELO_BANDA BIGINT,

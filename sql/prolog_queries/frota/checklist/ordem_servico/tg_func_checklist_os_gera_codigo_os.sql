@@ -1,6 +1,3 @@
--- Se o código da OS for null, nós geramos um código baseado no maior código já existente para a unidade + 1.
--- Utilizamos a tabela CHECKLIST_ORDEM_SERVICO_DATA para isso e não a view CHECKLIST_ORDEM_SERVICO para considerar
--- OSs deletadas na busca do maior código.
 CREATE OR REPLACE FUNCTION TG_FUNC_CHECKLIST_OS_GERA_CODIGO_OS()
   RETURNS TRIGGER AS $$
 BEGIN

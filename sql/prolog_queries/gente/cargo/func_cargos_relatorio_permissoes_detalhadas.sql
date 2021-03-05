@@ -1,13 +1,3 @@
--- Sobre:
---
--- Function retorna os cargos de determinadas unidades com suas permissões detalhadas.
---
--- Histórico:
--- 2020-03-25 -> Function criada (thaisksf - PL-2627).
--- 2020-04-22 -> Altera nome function para o escopo de cargos (luiz_fp).
--- 2020-05-18 -> Adiciona acentos aos cabeçalhos (thais)
--- 2020-07-02 -> Altera relatório para não trazer permissões bloqueadas (luiz_fp - PL-2671)
--- 2020-07-08 -> Remove verificação sobre as permissões bloqueadas (diogenesvanzella - PL-2671)
 create or replace function func_cargos_relatorio_permissoes_detalhadas(f_cod_unidades bigint[])
     returns table
             (

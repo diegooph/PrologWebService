@@ -1,13 +1,3 @@
--- Sobre:
---
--- Essa function resolve itens de O.S.
---
--- Histórico:
--- 2020-02-28 -> Function criada (wvinim - PL-2500).
--- 2020-07-06 -> Melhora mensagem de erro (natanrotta - PL-2657).
--- 2020-09-24 -> Corrige tipo de variável (BIGINT -> TEXT) (luiz_fp).
--- 2020-11-23 -> Adiciona propagação de km na function (steinert999 - PL-3335).
--- 2020-12-16 -> Corrige propagação de km na function (gustavocnp95|thaisksf - PL-3367).
 create or replace function func_checklist_os_resolver_itens(f_cod_unidade bigint,
                                                             f_cod_veiculo bigint,
                                                             f_cod_itens bigint[],

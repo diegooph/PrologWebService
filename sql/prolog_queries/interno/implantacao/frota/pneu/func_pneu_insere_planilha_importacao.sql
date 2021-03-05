@@ -1,13 +1,3 @@
--- Sobre:
--- A lógica aplicada nessa function é a seguinte:
--- Insere os dados na tabela dinâmica criada através da function: func_import_cria_tabela_import.
---
--- Pré-requisitos:
--- function func_import_cria_tabela_import criada.
---
--- Histórico:
--- 2019-12-13 -> Function criada (thaisksf - PL-2320).
--- 2020-05-25 -> Adiciona cod_empresa no insert da planilha (thaisksf - PL-2511).
 CREATE OR REPLACE FUNCTION IMPLANTACAO.FUNC_PNEU_INSERE_PLANILHA_IMPORTACAO(F_COD_DADOS_AUTOR_IMPORT BIGINT,
                                                                             F_NOME_TABELA_IMPORT TEXT,
                                                                             F_COD_EMPRESA BIGINT,

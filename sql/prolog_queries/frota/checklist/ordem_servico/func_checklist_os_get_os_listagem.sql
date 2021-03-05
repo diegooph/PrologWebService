@@ -1,12 +1,3 @@
--- Sobre:
---
--- Realiza a busca de ordens de serviço para exibição em listagem.
---
--- Os parâmetros 'f_cod_unidade', 'f_limit' e 'f_offset' são obrigatórios. Os demais são filtros opcionais, basta enviar
--- 'null' que o filtro não será aplicado.
---
--- Histórico:
--- 2020-10-13 -> Query otimizada (luizfp - PL-3199).
 create or replace function func_checklist_os_get_os_listagem(f_cod_unidade bigint,
                                                              f_cod_tipo_veiculo bigint,
                                                              f_placa_veiculo text,

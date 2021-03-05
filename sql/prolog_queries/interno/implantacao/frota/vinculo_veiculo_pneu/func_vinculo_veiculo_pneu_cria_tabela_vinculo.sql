@@ -1,13 +1,3 @@
--- Sobre:
--- A lógica aplicada nessa function é a seguinte:
--- Cria uma tabela de "pré-import" e aplica uma trigger para verificar os dados inseridos e realizar o vinculo entre
--- veículos e pneus.
---
--- Pré-requisitos:
--- Func remove_all_apaces criada.
---
--- Histórico:
--- 2020-08-27 -> Function criada (thaisksf - PL-2771).
 CREATE OR REPLACE FUNCTION IMPLANTACAO.FUNC_VINCULO_VEICULO_PNEU_CRIA_TABELA_VINCULO(F_COD_EMPRESA BIGINT,
                                                                                      F_COD_UNIDADE BIGINT,
                                                                                      F_USUARIO TEXT,

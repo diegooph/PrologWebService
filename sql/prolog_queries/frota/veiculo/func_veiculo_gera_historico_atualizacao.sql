@@ -1,15 +1,3 @@
--- Sobre:
---
--- Function responsável por gerar o histórico de edições de um veículo. Ela recebe os novos valores do veículo
--- sendo editado, verifica se houve uma mudança e, caso sim, gera o histórico.
---
--- O retorno da function é o código único do histórico gerado.
---
--- Histórico:
--- 2020-09-04 -> Function criada (luiz_fp - PL-3096).
--- 2020-11-03 -> Atualiza function para gerar histórico antigo e novo (gustavocnp95 - PL-3204)
--- 2020-11-06 -> Adicionado parâmetro f_possui_hubodometro (steinert999 - PL-3223)
--- 2020-12-21 -> Mescla as duas PL's anteriores (thaisksf - PL-3326).
 create or replace function func_veiculo_gera_historico_atualizacao(f_cod_empresa bigint,
                                                                    f_cod_veiculo bigint,
                                                                    f_cod_colaborador_edicao bigint,

@@ -1,15 +1,3 @@
--- Sobre:
---
--- Esta function retorna os dados dos pneus descartados por período e unidades
---
--- Précondições:
--- 1) Function: FUNC_PNEU_FORMAT_SULCO criada.
--- 2) Function: TZ_UNIDADE criada.
---
--- Histórico:
--- 2019-08-28 -> Adicionada coluna com o menor sulco (wvinim - PL-2169).
--- 2020-08-31 -> Adicionada informações da origem do descarte (origem, placa e posição) (luiz_fp - PL-2843).
--- 2020-10-02 -> Adiciona colunas "observação movimentação" e "observação geral" (thaisksf - PL-3145).
 create or replace function func_pneu_relatorio_pneus_descartados(f_cod_unidades text[],
                                                                  f_data_inicial date,
                                                                  f_data_final date)
@@ -58,7 +46,7 @@ select u.nome                                                           as unida
                                                                         as dimensao_pneu,
        replace(coalesce(trunc(p.pressao_atual) :: text, '-'), '.', ',') as ultima_pressao,
        mo.tipo_origem                                                   as origem_descarte,
-       coalesce(mo.placa :: text, '-')                                  as placa_aplicado_momento_descarte,
+       coalesce(v.placa :: text, '-')                                   as placa_aplicado_momento_descarte,
        coalesce(ppne.nomenclatura :: text, '-')                         as posicao_aplicado_momento_descarte,
        p.vida_atual :: text                                             as total_vidas,
        func_pneu_format_sulco(p.altura_sulco_interno)                   as sulco_interno,
@@ -93,6 +81,7 @@ from pneu p
                    on ppne.cod_diagrama = mo.cod_diagrama
                        and ppne.posicao_prolog = mo.posicao_pneu_origem
                        and ppne.cod_empresa = u.cod_empresa
+         left join veiculo v on v.codigo = mo.cod_veiculo
 where p.cod_unidade :: text like any (f_cod_unidades)
   and p.status = 'DESCARTE'
   and m.cod_pneu = p.codigo

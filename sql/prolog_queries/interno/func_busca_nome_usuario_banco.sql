@@ -1,10 +1,3 @@
--- Sobre:
---
--- Function para buscar o nome de usuário do BD com base no username do sistema.
---
--- Histórico:
--- 2020-07-21 -> Function criada (luiz_fp - PL-2830).
--- 2020-10-14 -> Altera tabelas utilizadas (luizfp).
 create or replace function interno.func_busca_nome_usuario_banco(f_username text)
     returns text
     language plpgsql

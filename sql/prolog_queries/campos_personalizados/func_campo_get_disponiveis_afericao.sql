@@ -1,12 +1,7 @@
--- Sobre:
--- Busca os campos personalizados que estão disponíveis para preenchimento durante um processo de aferição na
--- unidade. Note que para um campo estar disponível para uso no processo de aferição na unidade, além de estar
+--! Importante:
+-- Para um campo personalizado estar disponível para uso no processo de aferição na unidade, além de estar
 -- cadastrado na empresa para a funcionalidade de aferição, também precisa estar vinculado à unidade na tabela:
 -- "aferição_campo_personalizado_unidade".
---
--- Histórico:
--- 2020-09-17 -> Function criada (gustavocnp95 - PL-2909).
--- 2020-10-27 -> Adiciona tipo do processo coleta de aferição (didivz - PL-3254).
 create or replace function func_campo_get_disponiveis_afericao(f_cod_unidade bigint,
                                                                f_tipo_processo_coleta_afericao text)
     returns table

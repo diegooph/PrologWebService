@@ -1,8 +1,3 @@
--- Sobre:
--- Esta function retorna uma lista das opções de problemas com base no código de empresa
---
--- Histórico:
--- 2020-01-14 -> Function criada (wvinim - PL-2465).
 CREATE OR REPLACE FUNCTION FUNC_SOCORRO_ROTA_OPCOES_PROBLEMAS_LISTAGEM(F_COD_EMPRESA BIGINT)
     RETURNS TABLE
             (

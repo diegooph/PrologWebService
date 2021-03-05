@@ -1,8 +1,3 @@
--- Sobre:
--- Esta função realiza a busca do histórico de um determinado motivo.
---
--- Histórico:
--- 2020-03-18 -> Function criada (gustavocnp95 - PL-2607).
 CREATE OR REPLACE FUNCTION FUNC_MOTIVO_MOVIMENTO_HISTORICO_LISTAGEM(F_COD_MOTIVO BIGINT,
                                                                     F_TIME_ZONE TEXT)
     RETURNS TABLE

@@ -1,16 +1,3 @@
--- Sobre:
--- A lógica aplicada nessa function é a seguinte:
--- Primeiro é feito a validação de todos os dados.
--- Logo, a tabela PNEU_DATA que possui a empresa, unidade e o dot igual a 1199, tem a coluna DOT atualizada
--- para NULL.
---
--- Précondições:
--- Empresa e unidade precisam ter vínculo.
--- F_QUANTIDADE_DOT deve ser maior/diferente de 0(zero).
---
--- Histórico:
--- 2019-09-02 -> Function criada (Natan - PL-2218).
---
 CREATE OR REPLACE FUNCTION FUNC_PNEU_ALTERA_DOT_PNEU(F_COD_EMPRESA BIGINT,
                                                      F_COD_UNIDADE BIGINT,
                                                      F_QUANTIDADE_DOT BIGINT,

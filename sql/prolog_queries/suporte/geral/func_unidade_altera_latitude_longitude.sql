@@ -1,9 +1,3 @@
--- Sobre:
--- Function para alterar a latitude e longitude de uma unidade.
---
--- Histórico:
--- 2020-03-04 -> Function criada (luizfp).
--- 2020-08-14 -> Adiciona chamada para logar execução da function (gustavocnp95 - PL-3066).
 CREATE OR REPLACE FUNCTION SUPORTE.FUNC_UNIDADE_ALTERA_LATITUDE_LONGITUDE(F_COD_UNIDADE BIGINT,
                                                                           F_LATITUDE_UNIDADE TEXT,
                                                                           F_LONGITUDE_UNIDADE TEXT,

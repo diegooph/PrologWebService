@@ -1,8 +1,3 @@
--- Sobre:
--- Cria trigger function para obrigar que a solicitação de socorro tenha uma descrição de acordo com o tipo de problema.
---
--- Histórico:
--- 2019-12-09 -> Function criada (wvinim - PL-2420).
 CREATE OR REPLACE FUNCTION TG_FUNC_SOCORRO_VERIFICA_DESCRICAO_PROBLEMA() RETURNS trigger
     LANGUAGE plpgsql
 AS

@@ -1,12 +1,3 @@
--- Sobre:
--- A lógica aplicada nessa function é a seguinte:
--- Function responsável por deletar logicamente todos os serviços em aberto de um determinado pneu.
---
--- Précondições:
---
--- Histórico:
--- 2019-09-17 -> Adiciona SESSION_USER (natanrotta - PL-2229).
--- 2020-07-08 -> Padroniza variáveis (natanrotta - PL-2661).
 CREATE OR REPLACE FUNCTION FUNC_VEICULO_TRANSFERENCIA_DELETA_SERVICOS_PNEU(F_COD_VEICULO BIGINT,
                                                                            F_COD_PNEU BIGINT,
                                                                            F_COD_TRANSFERENCIA_VEICULO_INFORMACOES BIGINT,

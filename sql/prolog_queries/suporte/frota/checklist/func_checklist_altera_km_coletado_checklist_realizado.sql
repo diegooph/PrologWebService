@@ -1,13 +1,3 @@
--- Sobre:
--- Altera o KM coletado em um checklist específico.
--- Não será permitido um KM maior do que o KM atual do veículo existente na tabela VEICULO_DATA.
---
--- Précondições:
---
--- Histórico:
--- 2019-07-02 -> Function criada (wvinim - PL-2098).
--- 2019-10-07 -> Adiciona no schema suporte (luizfp).
--- 2020-08-14 -> Adiciona chamada para logar execução da function (gustavocnp95 - PL-3066).
 CREATE OR REPLACE FUNCTION SUPORTE.FUNC_CHECKLIST_ALTERA_KM_COLETADO_CHECKLIST_REALIZADO(F_COD_UNIDADE BIGINT,
                                                                                          F_PLACA TEXT,
                                                                                          F_COD_CHECKLIST_REALIZADO BIGINT,

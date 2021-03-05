@@ -1,9 +1,3 @@
--- Sobre:
---
--- Function que gera o relatório listagem de modelos de checklist.
---
--- Histórico:
--- 2020-03-03 -> Atualização de arquivo e documentação (wvinim - PL-2494).
 CREATE OR REPLACE FUNCTION FUNC_CHECKLIST_RELATORIO_LISTAGEM_MODELOS_CHECKLIST(F_COD_UNIDADES BIGINT[])
     RETURNS TABLE
             (

@@ -1,9 +1,3 @@
--- Sobre:
---
--- Function para atualizar um modelo de checklist.
---
--- Histórico:
--- 2020-03-03 -> Atualização de arquivo e documentação (wvinim - PL-2494).
 CREATE OR REPLACE FUNCTION FUNC_CHECKLIST_UPDATE_MODELO_CHECKLIST_INFOS(F_COD_UNIDADE BIGINT,
                                                                         F_COD_MODELO BIGINT,
                                                                         F_NOME_MODELO TEXT,

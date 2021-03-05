@@ -1,11 +1,3 @@
--- Sobre:
---
--- Function utilizada para liberar ou bloquear todas as permissões associadas aos pilares informados. O bloqueio poderá
--- ser realizado para todas as unidades das empresas ou ainda para unidades específicas das empresas.
---
--- Histórico:
--- 2020-06-26 -> Function criada (diogenesvanzella - PL-2671).
--- 2020-08-14 -> Adiciona chamada para logar execução da function (gustavocnp95 - PL-3066).
 create or replace function
     suporte.func_cargos_libera_bloqueia_permissoes_by_pilar(f_liberar_bloquear text,
                                                             f_cod_pilares bigint[],

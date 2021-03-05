@@ -1,9 +1,3 @@
--- Sobre:
---
--- Esta function insere ou atualiza uma configuração de abertura de serviço.
---
--- Histórico:
--- 2019-11-26 -> Function criada (wvinim - PL-1989).
 CREATE OR REPLACE FUNCTION FUNC_AFERICAO_UPSERT_CONFIGURACAO_CRONOGRAMA_SERVICO(F_CODIGO_EMPRESA BIGINT,
                                                                                 F_CODIGO_UNIDADE BIGINT,
                                                                                 F_TOLERANCIA_CALIBRAGEM NUMERIC,

@@ -1,10 +1,3 @@
--- Sobre:
---
--- Esta função retorna a lista de configurações de aferição de acordo com as unidades que o colaborador tem acesso.
--- Retorna valores padrão para as unidades que ainda não tem as configurações setadas.
---
--- Histórico:
--- 2019-12-10 -> Adição de colunas de bloqueio  (wvinim - PL-1934).
 CREATE OR REPLACE FUNCTION FUNC_AFERICAO_GET_CONFIG_ALERTA_COLETA_SULCO(F_COD_COLABORADOR BIGINT)
     RETURNS TABLE
             (

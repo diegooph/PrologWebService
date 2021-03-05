@@ -1,16 +1,3 @@
--- Sobre:
---
--- Altera o tipo de veículo mesmo se ele possuir pneus aplicados.
---
--- Como:
--- Verifica se o veículo possui pneus aplicados, se possuir: verifica se as posições estão contidas no diagrama do
--- tipo de veículo para o qual está sendo alterado.
---
--- Histórico:
--- 2020-01-15 -> Function criada (thais - PL-2191).
--- 2020-03-03 -> Corrige problema de permissão usando SECURITY DEFINER (luizfp).
--- 2020-08-14 -> Adiciona chamada para logar execução da function (gustavocnp95 - PL-3066).
--- 2020-09-15 -> Altera para atualizar o veículo e gerar histórico (luiz_fp - PL-3133).
 create or replace function suporte.func_veiculo_altera_tipo_veiculo(f_placa_veiculo text,
                                                                     f_cod_veiculo_tipo_novo bigint,
                                                                     f_cod_unidade bigint,
@@ -37,7 +24,6 @@ declare
     v_cod_tipo_antigo            bigint;
     v_cod_modelo                 bigint;
     v_status_antigo              boolean;
-
 begin
     perform suporte.func_historico_salva_execucao();
 
@@ -124,6 +110,24 @@ begin
         end if;
     end if;
 
+    -- Precisamos gerar o histórico também.
+    perform func_veiculo_gera_historico_atualizacao(v_cod_empresa,
+                                                    v_cod_veiculo,
+                                                    null,
+                                                    'SUPORTE',
+                                                    now(),
+                                                    f_informacoes_extras_suporte,
+                                                    f_placa_veiculo,
+                                                    v_identificador_frota_antigo,
+                                                    v_km_antigo,
+                                                    v_cod_diagrama_novo,
+                                                    f_cod_veiculo_tipo_novo,
+                                                    v_cod_modelo,
+                                                    v_status_antigo,
+                                                    (f_if(v_cod_tipo_antigo <> f_cod_veiculo_tipo_novo, 1, 0)
+                                                        +
+                                                     f_if(v_cod_diagrama_antigo <> v_cod_diagrama_novo, 1, 0))::smallint);
+
     -- Nesta function, fazemos o update diretamente ao invés de chamar a function de atualizar o
     -- veículo. Precisamos fazer assim pois no postgres como cada function roda dentro de uma transaction, se
     -- chamássemos uma nova function para atualizar o veículo, o "set constraints all deferred;" utilizado para
@@ -135,25 +139,6 @@ begin
     where codigo = v_cod_veiculo
       and placa = f_placa_veiculo
       and cod_unidade = f_cod_unidade;
-
-    -- Precisamos gerar o histórico também.
-    perform func_veiculo_gera_historico_atualizacao(v_cod_empresa,
-                                                    f_cod_unidade,
-                                                    v_cod_veiculo,
-                                                    f_placa_veiculo,
-                                                    v_identificador_frota_antigo,
-                                                    v_km_antigo,
-                                                    v_cod_diagrama_antigo,
-                                                    v_cod_tipo_antigo,
-                                                    v_cod_modelo,
-                                                    v_status_antigo,
-                                                    (f_if(v_cod_tipo_antigo <> f_cod_veiculo_tipo_novo, 1, 0)
-                                                        +
-                                                     f_if(v_cod_diagrama_antigo <> v_cod_diagrama_novo, 1, 0))::smallint,
-                                                    null,
-                                                    'SUPORTE',
-                                                    now(),
-                                                    f_informacoes_extras_suporte);
 
     -- Mensagem de sucesso.
     select 'Tipo do veículo alterado! ' ||

@@ -1,16 +1,3 @@
--- Sobre:
--- Esta function salva um token de push notification para um colaborador e aplicação específicos.
---
--- Na estrutura do FCM, um token é vinculado a um aparelho e aplicação (aplicativo), assim, o mesmo colaborador pode
--- ter um token válido para cada aplicação mapeada no MESSAGING.APLICACAO_REFERENCIA_TOKEN_TYPE.
---
--- Caso o insert falhe violando a unique UNIQUE_COLABORADOR_POR_APLICACAO, será feito um UPDATE atualizando o token e
--- a DATA_HORA_CADASTRO.
--- Como a tabela de token possui audit ativado, podemos saber as mudanças de token que um colaborador teve para uma
--- mesma aplicação, caso necessário.
---
--- Histórico:
--- 2020-01-31 -> Function criada (luizfp - PL-2496).
 CREATE OR REPLACE FUNCTION
     MESSAGING.FUNC_PUSH_SALVA_TOKEN_COLABORADOR(F_COD_COLABORADOR BIGINT,
                                                 F_TOKEN_COLABORADOR_LOGADO TEXT,

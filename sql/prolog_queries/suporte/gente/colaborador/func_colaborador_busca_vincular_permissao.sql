@@ -1,10 +1,3 @@
--- Sobre:
--- Busca todos os colaboradores ATIVOS de uma empresa que possuam a permissão de poder liberar permissões para outros.
--- cargos. Essa function é um atalho para a function: FUNC_COLABORADOR_BUSCA_POR_PERMISSAO_EMPRESA.
---
--- Histórico:
--- 2019-09-18 -> Adiciona no schema suporte (natanrotta - PL-2242).
--- 2020-08-14 -> Adiciona chamada para logar execução da function (gustavocnp95 - PL-3066).
 CREATE OR REPLACE FUNCTION SUPORTE.FUNC_COLABORADOR_BUSCA_VINCULAR_PERMISSAO(F_COD_EMPRESA BIGINT)
     RETURNS TABLE
             (

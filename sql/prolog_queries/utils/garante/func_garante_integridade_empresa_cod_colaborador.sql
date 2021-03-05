@@ -1,12 +1,3 @@
--- Sobre:
--- A lógica aplicada nessa function é a seguinte:
--- Verifica se colaborador está na empresa informada.
---
--- Precondições:
--- 1) Necessário o código do colaborador e o código da empresa para a verificar a integridade.
---
--- Histórico:
--- 2020-02-03 -> Function criada (wvinim).
 CREATE OR REPLACE FUNCTION FUNC_GARANTE_INTEGRIDADE_EMPRESA_COD_COLABORADOR(
   F_COD_EMPRESA BIGINT,
   F_COD_COLABORADOR BIGINT)

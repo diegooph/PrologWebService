@@ -1,8 +1,3 @@
--- Sobre:
--- Verifica compara código da empresa com o nome fornecidos.
---
--- Histórico:
--- 2020-06-24 -> Function criada (thaisksf - PL-2744)
 CREATE OR REPLACE FUNCTION FUNC_GARANTE_INTEGRIDADE_EMPRESA(F_COD_EMPRESA BIGINT,
                                                             F_NOME_EMPRESA TEXT,
                                                             F_ERROR_MESSAGE TEXT DEFAULT NULL)

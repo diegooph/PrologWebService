@@ -1,12 +1,3 @@
--- Sobre:
--- A lógica aplicada nessa function é a seguinte:
--- Verifica se a placa recebida está cadastrada no sistema.
---
--- Precondições:
---
--- Histórico:
--- 2019-07-31-> Function criada (natanrotta - PL-2131).
---
 CREATE OR REPLACE FUNCTION FUNC_GARANTE_PLACA_CADASTRADA(F_PLACA VARCHAR(7))
     RETURNS VOID
     LANGUAGE PLPGSQL

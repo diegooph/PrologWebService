@@ -1,15 +1,3 @@
--- Sobre:
--- Esta function busca os colaboradores que devem ser notificados quando um socorro em rota for invalidado.
---
--- Por enquanto, ela utiliza o código do socorro em rota e busca apenas os tokens de push do colaborador responsável
--- pela abertura. Se o colaborador que invalidou for o mesmo que abriu o socorro, nenhum token será retornado para
--- notificação.
---
--- Também é verificado se o colaborador ainda tem alguma permissão que conceda acesso a visualização de socorro, só se
--- tiver os tokens retornam.
---
--- Histórico:
--- 2020-04-15 -> Function criada (luizfp - PL-2580).
 CREATE OR REPLACE FUNCTION
     FUNC_SOCORRO_ROTA_INVALIDACAO_GET_COLABORADORES_NOTIFICACAO(F_COD_COLABORADOR_INVALIDACAO_SOCORRO BIGINT,
                                                                 F_COD_SOCORRO_ROTA BIGINT)

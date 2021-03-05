@@ -5,22 +5,6 @@
 -- Essa function utiliza a F_PLACA_VEICULO para descobrir se alguma alternativa possui item pendente na placa em
 -- questão. Além de lista as alternativas, a function retorna informações úteis à abertura de O.S, como:
 -- TEM_ITEM_OS_PENDENTE, DEVE_ABRIR_ORDEM_SERVICO, QTD_APONTAMENTOS_ITEM, PRIORIDADE_ALTERNATIVA...
---
--- A function não deve filtrar por alternativas ou perguntas ativas. Deve sempre trazer todas. O ws se baseia nesse
--- comportamento.
---
--- Histórico:
--- 2018-12-14 -> Function criada (luizfp).
--- 2019-08-07 -> Adiciona novas colunas no retorno da function (didi - PL-2066).
---               • tem_item_os_pendente.
---               • qtd_apontamentos_item.
---               • prioridade_alternativa.
--- 2020-01-18 -> Function totalmente refatorada para considerar o código da versão do modelo de checklist.
---               Agora ela também retorna se a alternativa é do tipo_outros. E, caso tenha item em aberto, retorna o
---               texto tipo_outros que o usuário forneceu como resposta. Essas alterações fizeram parte da mudança de
---               estrutura do checklist.
--- 2020-01-28 -> Altera para não utilizar tabelas _DATA para buscar itens de OS, pois não queremos incrementar itens
---               deletados.
 CREATE OR REPLACE FUNCTION FUNC_CHECKLIST_OS_ALTERNATIVAS_ABERTURA_OS(F_COD_MODELO_CHECKLIST BIGINT,
                                                                       F_COD_VERSAO_MODELO_CHECKLIST BIGINT,
                                                                       F_PLACA_VEICULO TEXT)

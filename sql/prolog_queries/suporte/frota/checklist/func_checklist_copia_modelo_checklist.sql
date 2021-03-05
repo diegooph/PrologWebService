@@ -1,16 +1,3 @@
--- Sobre:
--- Realiza a cópia de um modelo de checklist entre unidades de uma mesma empresa. Os caros e tipos de veículos
--- vinculados ao modelo são copiados por default. As imagens associadas a cada pergunta também são mantidas.
---
--- Histórico:
--- 2019-09-18 -> Adiciona no schema suporte (natanrotta - PL-2242).
--- 2019-10-04 -> Altera para copiar concatenando (cópia) ao nome (luizfp).
--- 2020-02-03 -> Adapta para a nova estrutura (wvinim - PL-2489).
--- 2020-03-06 -> Corrige a coluna sobre abrir ordem de serviço (wvinim).
--- 2020-07-07 -> Adição das informações de parametrização de mídias (wvinim - PL-2705).
--- 2020-07-13 -> Atualização de arquivo e documentação (wvinim - PL-2824).
--- 2020-08-14 -> Adiciona chamada para logar execução da function (gustavocnp95 - PL-3066).
--- 2020-11-08 -> Copia também o cod_auxiliar das anternativas (didivz).
 create or replace function suporte.func_checklist_copia_modelo_checklist(f_cod_modelo_checklist_copiado bigint,
                                                                          f_cod_unidade_destino_modelo_checklist bigint,
                                                                          f_cod_colaborador_solicitante_copia bigint,

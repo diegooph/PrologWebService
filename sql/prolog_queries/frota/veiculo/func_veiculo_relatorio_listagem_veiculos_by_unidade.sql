@@ -1,17 +1,3 @@
--- Sobre:
--- A lógica aplicada nessa function é a seguinte:
--- Gera um relatório dos veículos existentes a partir de um array de unidades.
---
--- O relatório contém também a quantidade de pneus vinculados ao veículo, quantidade de posições que possui e se possui
--- diagrama.
---
--- Précondições:
--- 1) Possuir veículos na unidade
---
--- Histórico:
--- 2019-05-16 -> Function criada (thaisksf - PL-1964)
--- 2019-07-30 -> Adicionada coluna "Veículo Completo" (thaisksf - PL-2196).
--- 2020-05-07 -> Adicionada coluna "Identificador Frota" (thaisksf - PL-2692).
 CREATE OR REPLACE FUNCTION FUNC_VEICULO_RELATORIO_LISTAGEM_VEICULOS_BY_UNIDADE(F_COD_UNIDADES BIGINT[])
     RETURNS TABLE
             (

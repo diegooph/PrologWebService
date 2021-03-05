@@ -1,14 +1,3 @@
--- Sobre:
---
--- Esta function retorna os dados dos serviços abertos por data e unidades.
---
--- Histórico:
--- 2019-08-28 -> Adicionada coluna com o menor sulco (wvinim - PL-2169).
--- 2019-09-09 -> Altera vínculo da tabela PNEU_ORDEM_NOMENCLATURA_UNIDADE
---               para PNEU_POSICAO_NOMENCLATURA_EMPRESA (thaisksf - PL-2258)
--- 2019-10-14 -> Adiciona verificação da flag 'FECHADO_AUTOMATICAMENTE_INTEGRACAO' (diogenesvanzella - PLI-31).
--- 2020-05-12 -> Altera nome do relatório e forma de receber array de unidades (luiz_fp - PL-2715).
--- 2020-06-12 -> Adiciona identificador de frota (thaisksf - PL-2761).
 CREATE OR REPLACE FUNCTION FUNC_PNEU_RELATORIO_EXTRATO_SERVICOS_ABERTOS(F_COD_UNIDADES BIGINT[],
                                                                         F_DATA_INICIAL DATE,
                                                                         F_DATA_FINAL DATE,

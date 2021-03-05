@@ -1,17 +1,3 @@
--- Sobre:
--- Lógica aplicada:
--- Consiste basicamente em transferir um colaborador entre unidades, desde que as unidades pertençam a mesma empresa.
---
--- Précondições:
--- Empresa possuir unidade origem.
--- Empresa possuir unidade destino.
--- Colaborador existir na unidade origem.
--- Setor existir na unidade destino.
--- Equipe existir na unidade destino.
---
--- Histórico:
--- 2019-11-07 -> function criada (natanrotta - PL-2377).
--- 2020-08-14 -> Adiciona chamada para logar execução da function (gustavocnp95 - PL-3066).
 CREATE OR REPLACE FUNCTION SUPORTE.FUNC_COLABORADOR_TRANSFERE_ENTRE_UNIDADES(F_COD_EMPRESA_ORIGEM BIGINT,
                                                                              F_COD_UNIDADE_ORIGEM BIGINT,
                                                                              F_COD_UNIDADE_DESTINO BIGINT,

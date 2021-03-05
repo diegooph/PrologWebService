@@ -1,11 +1,3 @@
--- Sobre:
--- Function para inserir um veículo no Prolog, utiliza dados vindos do sistema web
---
--- Histórico:
--- 2020-02-07 -> Function criada (wvinim - PL-1965)
--- 2020-04-29 -> Altera function para salvar identificador de frota (thaisksf - PL-2691)
--- 2020-11-05 -> Adiciona campo possui_hubodometro para cadastro (steinert999 - PL_3223)
--- 2020-11-10 -> Adiciona campo motorizado para cadastro (steinert999 - PL-3223)
 CREATE OR REPLACE FUNCTION FUNC_VEICULO_INSERE_VEICULO(F_COD_UNIDADE BIGINT,
                                                        F_PLACA TEXT,
                                                        F_IDENTIFICADOR_FROTA TEXT,

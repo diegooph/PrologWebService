@@ -1,8 +1,3 @@
--- Sobre:
--- Insere os valores de um procedimento de testes executados pelo aplicativo no aferidor.
---
--- Histórico:
--- 2019-10-08 -> Function criada (luizfp - PL-2343).
 CREATE OR REPLACE FUNCTION AFERIDOR.FUNC_AFERIDOR_INSERE_TESTE(F_COD_COLABORADOR_EXECUCAO BIGINT,
                                                                F_DATA_HORA_EXECUCAO TIMESTAMP WITH TIME ZONE,
                                                                F_NOME_DISPOSITIVO TEXT,

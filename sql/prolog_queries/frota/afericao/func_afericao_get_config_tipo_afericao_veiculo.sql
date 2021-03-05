@@ -1,14 +1,3 @@
--- Sobre:
--- Esta função lista todas as configurações de aferíção por tipo de veículo de uma unidade,
--- mesmo que essa configuração ainda não tenha sido criada.
---
--- Atenção: No caso de a configuração ainda não ter sido criada, a function retornada como padrão
--- true para os booleans e 'EQUIPAMENTO' para as formas de coleta dos dados, fazendo com que o default
--- seja poder realizar todas as aferições apenas com equipamento.
---
--- Histórico:
--- 2020-04-28 -> Function alterada para inserir no retorno novos campo de tipo de aferição (gustavocnp95 - PL-2689).
--- 2020-05-07 -> Function alterada para retirar campos nao mais existentes (gustavocnp95 - PL-2689)
 CREATE OR REPLACE FUNCTION FUNC_AFERICAO_GET_CONFIG_TIPO_AFERICAO_VEICULO(
     F_COD_UNIDADE BIGINT)
     RETURNS TABLE

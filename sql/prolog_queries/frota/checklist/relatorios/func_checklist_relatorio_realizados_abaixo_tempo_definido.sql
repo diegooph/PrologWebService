@@ -1,4 +1,3 @@
---################### Essa function busca checklists realizados abaixo de um determinado tempo de realização ###########
 CREATE OR REPLACE FUNCTION FUNC_CHECKLIST_RELATORIO_REALIZADOS_ABAIXO_TEMPO_DEFINIDO(
   F_COD_UNIDADES                  BIGINT[],
   F_TEMPO_REALIZACAO_MILLIS       BIGINT,

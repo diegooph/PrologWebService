@@ -1,12 +1,3 @@
--- Sobre:
---
--- Function que gera o relatório checklists realizados
---
--- Histórico:
--- 2020-03-03 -> Atualização de arquivo e documentação (wvinim - PL-2494).
--- 2020-07-07 -> Altera nome da function antiga para manter a compatibilidade (wvinim - PL-2824).
--- 2020-07-13 -> Criação de arquivo e documentação (wvinim - PL-2824).
--- 2020-10-14 -> Adiciona observação ao retorno (luizfp).
 CREATE OR REPLACE FUNCTION FUNC_CHECKLIST_GET_ALL_CHECKLISTS_REALIZADOS_DEPRECATED(F_COD_UNIDADE BIGINT,
                                                                                    F_COD_EQUIPE BIGINT,
                                                                                    F_COD_TIPO_VEICULO BIGINT,

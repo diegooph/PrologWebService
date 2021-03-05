@@ -1,15 +1,3 @@
--- Sobre:
---
--- Esta function copiava nomenclaturas de uma unidade para várias outras (dentro da mesma empresa).
---
--- Précondições:
--- 1) Código de unidade de origem (aonde existia a nomenclatura para ser copiada)
--- 2) Códigos das unidades de destino
---
--- Histórico:
--- 2019-09-10 -> Depreciada. (thaisksf PL-2258)
--- Alterada a forma de inserção de nomenclatura, agora será por empresa e por diagrama de veículo, portanto a cópia de
--- nomenclaturas entre unidades de uma mesma empresa não tem mais aplicabilidade.
 CREATE OR REPLACE FUNCTION DEPRECIATED_FUNC_PNEUS_COPIA_NOMENCLATURAS_ENTRE_UNIDADES(F_COD_UNIDADE_ORIGEM_COPIA_NOMENCLATURAS BIGINT,
                                                                                      F_COD_UNIDADES_DESTINO_NOMENCLATURAS BIGINT[],
                                                                                      OUT AVISO_NOMENCLATURAS_COPIADAS TEXT)

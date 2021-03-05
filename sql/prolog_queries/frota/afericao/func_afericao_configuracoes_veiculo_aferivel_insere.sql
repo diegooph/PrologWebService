@@ -1,11 +1,3 @@
--- Sobre:
--- Esta função cria uma nova configuração para um tipo de veículo aferível.
---
--- Atenção: a function é um upsert, ou seja, ela verifica se a configuração existe. Se sim, apenas atualiza. Se não,
--- cria uma nova linha na tabela.
---
--- Histórico:
--- 2020-04-28 -> Function criada (gustavocnp95 - PL-2689).
 CREATE OR REPLACE FUNCTION FUNC_AFERICAO_CONFIGURACOES_VEICULO_AFERIVEL_INSERE(F_COD_CONFIGURACAO BIGINT,
                                                                                F_COD_UNIDADE BIGINT,
                                                                                F_COD_TIPO_VEICULO BIGINT,

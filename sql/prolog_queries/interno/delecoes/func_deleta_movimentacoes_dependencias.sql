@@ -1,9 +1,3 @@
--- Sobre:
--- A lógica aplicada nessa function é a seguinte:
--- Deleta movimentacoes de uma unidade e suas dependências.
---
--- Histórico:
--- 2020-04-06 -> Function criada (thaisksf - PL-2034).
 CREATE OR REPLACE FUNCTION INTERNO.FUNC_DELETA_MOVIMENTACOES_DEPENDENCIAS(F_COD_UNIDADES BIGINT[],
                                                                           F_COD_MOVIMENTACOES BIGINT[])
     RETURNS VOID

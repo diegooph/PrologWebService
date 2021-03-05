@@ -1,19 +1,3 @@
--- Sobre:
--- A lógica aplicada nessa function é a seguinte:
--- Cria uma tabela de "pré-import" e aplica uma trigger para verificar os dados inseridos e importar o que estiver de
--- acordo com as verificações.
---
--- Pré-requisitos:
--- Func remove_all_apaces criada.
---
--- Histórico:
--- 2019-10-31 -> Function criada (thaisksf - PL-2318).
--- 2020-01-17 -> Corrige SQL de grant de permissão (luizfp).
--- 2020-05-19 -> Adiciona a coluna identificador_frota na tabela de import (thaisksf - PL-2712).
--- 2020-05-25 -> Remove FK cod_unidade (thaisksf - PL-2711).
--- 2020-05-26 -> Adiciona cod_empresa na criação da tabela (thaisksf - PL-2711).
--- 2020-07-21 -> Altera grant de permissões na tabela criada para conceder ao usuário recebido (luiz_fp - PL-2830).
--- 2020-11-23 -> Adiciona possui_hubodometro no insert da planilha (thaisksf - PL-3288).
 create or replace function implantacao.func_veiculo_import_cria_tabela_import(f_cod_empresa bigint,
                                                                               f_cod_unidade bigint,
                                                                               f_usuario text,

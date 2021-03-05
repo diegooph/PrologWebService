@@ -1,80 +1,71 @@
--- Sobre:
--- Function que traz a produtividade de um colaborador.
---
--- Pré-requisitos:
--- view VIEW_PRODUTIVIDADE_EXTRATO criada.
--- function FUNC_GET_DATA_INICIO_PRODUTIVIDADE criada.
--- function FUNC_GET_DATA_FIM_PRODUTIVIDADE criada.
---
--- Histórico:
--- 2020-09-09 -> Corrige tipagem (thaisksf - PL-3131).
-CREATE OR REPLACE FUNCTION FUNC_GET_PRODUTIVIDADE_COLABORADOR(F_MES INTEGER, F_ANO INTEGER, F_CPF BIGINT)
-    RETURNS TABLE
+create or replace function func_get_produtividade_colaborador(f_mes integer, f_ano integer, f_cpf bigint)
+    returns table
             (
-                COD_UNIDADE                INTEGER,
-                MATRICULA_AMBEV            INTEGER,
-                DATA                       DATE,
-                CPF                        BIGINT,
-                NOME_COLABORADOR           CHARACTER VARYING,
-                DATA_NASCIMENTO            DATE,
-                FUNCAO                     CHARACTER VARYING,
-                COD_FUNCAO                 BIGINT,
-                NOME_EQUIPE                CHARACTER VARYING,
-                FATOR                      REAL,
-                CARGAATUAL                 CHARACTER VARYING,
-                ENTREGA                    CHARACTER VARYING,
-                MAPA                       INTEGER,
-                PLACA                      CHARACTER VARYING,
-                CXCARREG                   REAL,
-                CXENTREG                   REAL,
-                QTHLCARREGADOS             REAL,
-                QTHLENTREGUES              REAL,
-                QTNFCARREGADAS             INTEGER,
-                QTNFENTREGUES              INTEGER,
-                ENTREGASCOMPLETAS          INTEGER,
-                ENTREGASNAOREALIZADAS      INTEGER,
-                ENTREGASPARCIAIS           INTEGER,
-                KMPREVISTOROAD             REAL,
-                KMSAI                      INTEGER,
-                KMENTR                     INTEGER,
-                TEMPOPREVISTOROAD          INTEGER,
-                HRSAI                      TIMESTAMP WITHOUT TIME ZONE,
-                HRENTR                     TIMESTAMP WITHOUT TIME ZONE,
-                TEMPO_ROTA                 BIGINT,
-                TEMPOINTERNO               INTEGER,
-                HRMATINAL                  TIME WITHOUT TIME ZONE,
-                APONTAMENTOS_OK            BIGINT,
-                TOTAL_TRACKING             BIGINT,
-                TEMPO_LARGADA              INTEGER,
-                META_TRACKING              REAL,
-                META_TEMPO_ROTA_MAPAS      REAL,
-                META_CAIXA_VIAGEM          REAL,
-                META_DEV_HL                REAL,
-                META_DEV_NF                REAL,
-                META_DEV_PDV               REAL,
-                META_DISPERSAO_KM          REAL,
-                META_DISPERSAO_TEMPO       REAL,
-                META_JORNADA_LIQUIDA_MAPAS REAL,
-                META_RAIO_TRACKING         REAL,
-                META_TEMPO_INTERNO_MAPAS   REAL,
-                META_TEMPO_LARGADA_MAPAS   REAL,
-                META_TEMPO_ROTA_HORAS      INTEGER,
-                META_TEMPO_INTERNO_HORAS   INTEGER,
-                META_TEMPO_LARGADA_HORAS   INTEGER,
-                META_JORNADA_LIQUIDA_HORAS INTEGER,
-                VALOR_ROTA                 REAL,
-                VALOR_RECARGA              REAL,
-                VALOR_DIFERENCA_ELD        DOUBLE PRECISION,
-                VALOR_AS                   REAL,
-                VALOR                      DOUBLE PRECISION
+                cod_unidade                integer,
+                matricula_ambev            integer,
+                data                       date,
+                cpf                        bigint,
+                nome_colaborador           character varying,
+                data_nascimento            date,
+                funcao                     character varying,
+                cod_funcao                 bigint,
+                nome_equipe                character varying,
+                fator                      real,
+                cargaatual                 character varying,
+                entrega                    character varying,
+                mapa                       integer,
+                placa                      character varying,
+                cxcarreg                   real,
+                cxentreg                   real,
+                qthlcarregados             real,
+                qthlentregues              real,
+                qtnfcarregadas             integer,
+                qtnfentregues              integer,
+                entregascompletas          integer,
+                entregasnaorealizadas      integer,
+                entregasparciais           integer,
+                kmprevistoroad             real,
+                kmsai                      integer,
+                kmentr                     integer,
+                tempoprevistoroad          integer,
+                hrsai                      timestamp without time zone,
+                hrentr                     timestamp without time zone,
+                tempo_rota                 bigint,
+                tempointerno               integer,
+                hrmatinal                  time without time zone,
+                apontamentos_ok            bigint,
+                total_tracking             bigint,
+                tempo_largada              integer,
+                meta_tracking              real,
+                meta_tempo_rota_mapas      real,
+                meta_caixa_viagem          real,
+                meta_dev_hl                real,
+                meta_dev_nf                real,
+                meta_dev_pdv               real,
+                meta_dispersao_km          real,
+                meta_dispersao_tempo       real,
+                meta_jornada_liquida_mapas real,
+                meta_raio_tracking         real,
+                meta_tempo_interno_mapas   real,
+                meta_tempo_largada_mapas   real,
+                meta_tempo_rota_horas      integer,
+                meta_tempo_interno_horas   integer,
+                meta_tempo_largada_horas   integer,
+                meta_jornada_liquida_horas integer,
+                valor_rota                 real,
+                valor_recarga              real,
+                valor_diferenca_eld        double precision,
+                valor_as                   real,
+                valor                      double precision,
+                rm_numero_viagens          smallint
             )
-    LANGUAGE SQL
-AS
+    language sql
+as
 $$
-SELECT *
-FROM VIEW_PRODUTIVIDADE_EXTRATO
-WHERE DATA BETWEEN FUNC_GET_DATA_INICIO_PRODUTIVIDADE(F_ANO, F_MES, F_CPF, NULL) AND
-    FUNC_GET_DATA_FIM_PRODUTIVIDADE(F_ANO, F_MES, F_CPF, NULL)
-  AND CPF = F_CPF
-ORDER BY DATA ASC
+select *
+from view_produtividade_extrato
+where data between func_get_data_inicio_produtividade(f_ano, f_mes, f_cpf, null) and
+    func_get_data_fim_produtividade(f_ano, f_mes, f_cpf, null)
+  and cpf = f_cpf
+order by data asc
 $$;
