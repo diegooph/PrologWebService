@@ -12,9 +12,11 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.testcontainers.containers.JdbcDatabaseContainer;
+import test.br.com.zalf.prolog.webservice.config.FlywayInstanceProvider;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import java.util.List;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = {PrologApplication.class})
@@ -30,7 +32,7 @@ public class IntegrationTest {
 
     @Autowired
     @NotNull
-    private Flyway flyway;
+    private List<FlywayInstanceProvider> configs;
 
     @PostConstruct
     void initialSetup() {
