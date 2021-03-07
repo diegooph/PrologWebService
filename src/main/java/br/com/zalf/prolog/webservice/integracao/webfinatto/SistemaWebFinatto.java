@@ -15,8 +15,6 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.listagem.VeiculoListage
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoDadosColetaKm;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoVisualizacao;
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Empresa;
-import br.com.zalf.prolog.webservice.gente.colaborador.model.Regional;
-import br.com.zalf.prolog.webservice.geral.unidade._model.Unidade;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoPosicaoPneuMapper;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.MetodoIntegrado;
@@ -34,6 +32,7 @@ import br.com.zalf.prolog.webservice.integracao.webfinatto._model.afericao.Aferi
 import br.com.zalf.prolog.webservice.integracao.webfinatto._model.error.SistemaWebFinattoException;
 import br.com.zalf.prolog.webservice.integracao.webfinatto.data.SistemaWebFinattoRequester;
 import br.com.zalf.prolog.webservice.integracao.webfinatto.utils.SistemaWebFinattoConverter;
+import br.com.zalf.prolog.webservice.integracao.webfinatto.utils.SistemaWebFinattoUtils;
 import br.com.zalf.prolog.webservice.integracao.webfinatto.utils.WebFinattoEncoderDecoder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -41,7 +40,6 @@ import org.jetbrains.annotations.Nullable;
 import java.sql.Connection;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -450,7 +448,7 @@ public class SistemaWebFinatto extends Sistema {
         try {
             conn = connectionProvider.provideDatabaseConnection();
             final List<Empresa> filtrosProlog = super.getFiltros(cpf);
-            final List<Long> codUnidadesProlog = internalGetCodUnidadesProlog(filtrosProlog);
+            final List<Long> codUnidadesProlog = SistemaWebFinattoUtils.getCodUnidadesFiltroProlog(filtrosProlog);
             final UnidadeDeParaHolder unidadeDeParaHolder =
                     integracaoDao.getCodAuxiliarByCodUnidadeProlog(conn, codUnidadesProlog);
             final ApiAutenticacaoHolder apiAutenticacaoHolder =
@@ -459,22 +457,11 @@ public class SistemaWebFinatto extends Sistema {
                                                            getSistemaKey(),
                                                            MetodoIntegrado.GET_LOCAIS_DE_MOVIMENTO);
             final List<EmpresaWebFinatto> filtrosClientes =
-                    requester.getFiltrosClientes(apiAutenticacaoHolder, String.format("%011d", cpf));
+                    requester.getFiltrosClientes(apiAutenticacaoHolder, SistemaWebFinattoUtils.formatCpfAsString(cpf));
             return SistemaWebFinattoConverter.createEmpresa(unidadeDeParaHolder, filtrosClientes);
         } finally {
             connectionProvider.closeResources(conn);
         }
-    }
-
-    @NotNull
-    private List<Long> internalGetCodUnidadesProlog(@NotNull final List<Empresa> filtrosProlog) {
-        return filtrosProlog.stream()
-                .map(Empresa::getListRegional)
-                .flatMap(Collection::stream)
-                .map(Regional::getListUnidade)
-                .flatMap(Collection::stream)
-                .map(Unidade::getCodigo)
-                .collect(Collectors.toList());
     }
 
     private void internalInsertAfericaoPlaca(@NotNull final Connection conn,
