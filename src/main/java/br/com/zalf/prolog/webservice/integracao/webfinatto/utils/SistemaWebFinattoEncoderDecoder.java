@@ -8,14 +8,14 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public final class WebFinattoEncoderDecoder {
+public final class SistemaWebFinattoEncoderDecoder {
     private static final int IDENTIFICADOR_UNIDADE = 1;
     private static final int NUMERO_CARACTERES_UNIDADE = 5;
     private static final int NUMERO_CARACTERES_VEICULO = 13;
 
-    private WebFinattoEncoderDecoder() {
+    private SistemaWebFinattoEncoderDecoder() {
         throw new IllegalStateException(
-                WebFinattoEncoderDecoder.class.getSimpleName() + "cannot be instantiated!");
+                SistemaWebFinattoEncoderDecoder.class.getSimpleName() + "cannot be instantiated!");
     }
 
     @NotNull

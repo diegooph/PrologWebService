@@ -33,8 +33,8 @@ import br.com.zalf.prolog.webservice.integracao.webfinatto._model.error.SistemaW
 import br.com.zalf.prolog.webservice.integracao.webfinatto._model.movimentacao.ProcessoMovimentacaoWebFinatto;
 import br.com.zalf.prolog.webservice.integracao.webfinatto.data.SistemaWebFinattoRequester;
 import br.com.zalf.prolog.webservice.integracao.webfinatto.utils.SistemaWebFinattoConverter;
+import br.com.zalf.prolog.webservice.integracao.webfinatto.utils.SistemaWebFinattoEncoderDecoder;
 import br.com.zalf.prolog.webservice.integracao.webfinatto.utils.SistemaWebFinattoUtils;
-import br.com.zalf.prolog.webservice.integracao.webfinatto.utils.WebFinattoEncoderDecoder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -275,8 +275,8 @@ public class SistemaWebFinatto extends Sistema {
         final DatabaseConnectionProvider connectionProvider = new DatabaseConnectionProvider();
         try {
             conn = connectionProvider.provideDatabaseConnection();
-            final Long codUnidadeProlog = WebFinattoEncoderDecoder.extraiCodUnidade(codVeiculo);
-            final Long codVeiculoProlog = WebFinattoEncoderDecoder.extraiCodVeiculo(codVeiculo);
+            final Long codUnidadeProlog = SistemaWebFinattoEncoderDecoder.extraiCodUnidade(codVeiculo);
+            final Long codVeiculoProlog = SistemaWebFinattoEncoderDecoder.extraiCodVeiculo(codVeiculo);
             final UnidadeDeParaHolder unidadeDeParaHolder =
                     integracaoDao.getCodAuxiliarByCodUnidadeProlog(conn, Collections.singletonList(codUnidadeProlog));
 
@@ -362,8 +362,8 @@ public class SistemaWebFinatto extends Sistema {
         final DatabaseConnectionProvider connectionProvider = new DatabaseConnectionProvider();
         try {
             conn = connectionProvider.provideDatabaseConnection();
-            final Long codUnidadeProlog = WebFinattoEncoderDecoder.extraiCodUnidade(codVeiculo);
-            final Long codVeiculoProlog = WebFinattoEncoderDecoder.extraiCodVeiculo(codVeiculo);
+            final Long codUnidadeProlog = SistemaWebFinattoEncoderDecoder.extraiCodUnidade(codVeiculo);
+            final Long codVeiculoProlog = SistemaWebFinattoEncoderDecoder.extraiCodVeiculo(codVeiculo);
             final UnidadeDeParaHolder unidadeDeParaHolder =
                     integracaoDao.getCodAuxiliarByCodUnidadeProlog(conn, Collections.singletonList(codUnidadeProlog));
 
