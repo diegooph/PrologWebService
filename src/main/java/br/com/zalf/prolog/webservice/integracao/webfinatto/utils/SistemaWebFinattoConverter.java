@@ -69,6 +69,16 @@ public class SistemaWebFinattoConverter {
     }
 
     @NotNull
+    public static List<VeiculoListagem> createEmptyVeiculosListagem() {
+        return new ArrayList<>();
+    }
+
+    @NotNull
+    public static List<Pneu> createEmptyPneusByStatus() {
+        return new ArrayList<>();
+    }
+
+    @NotNull
     public static CronogramaAfericao createCronogramaAfericaoProlog(
             @NotNull final List<VeiculoWebFinatto> veiculosByFiliais,
             @NotNull final UnidadeRestricaoHolder unidadeRestricaoHolder,
