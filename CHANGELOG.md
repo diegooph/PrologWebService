@@ -1,5 +1,8 @@
 Change Log
 ==========
+## Stage
+#### Features
+* Cria integração com sistema WebFinatto (PL-2874)
 
 <a name="v2.0.3"></a>
 ## Version [v2.0.3](https://github.com/luizfp/PrologWebService/compare/v2.0.2...v2.0.3) (release-date) [unreleased]

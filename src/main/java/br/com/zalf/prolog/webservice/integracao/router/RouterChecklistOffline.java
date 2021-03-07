@@ -2,9 +2,9 @@ package br.com.zalf.prolog.webservice.integracao.router;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.ChecklistOfflineDao;
-import br.com.zalf.prolog.webservice.integracao.IntegracaoDao;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.RecursoIntegrado;
+import br.com.zalf.prolog.webservice.integracao.integrador.IntegracaoDao;
 import org.jetbrains.annotations.NotNull;
 
 /**

@@ -14,18 +14,14 @@ public enum SistemaKey {
     PROTHEUS_NEPOMUCENO("PROTHEUS_NEPOMUCENO"),
     GLOBUS_PICCOLOTUR("GLOBUS_PICCOLOTUR"),
     RODOPAR_HORIZONTE("RODOPAR_HORIZONTE"),
-    API_PROLOG("API_PROLOG");
+    API_PROLOG("API_PROLOG"),
+    WEB_FINATTO("WEB_FINATTO");
 
     @NotNull
     private final String key;
 
     SistemaKey(@NotNull final String key) {
         this.key = key;
-    }
-
-    @NotNull
-    public String getKey() {
-        return key;
     }
 
     @NotNull
@@ -41,5 +37,10 @@ public enum SistemaKey {
         }
 
         throw new IllegalArgumentException("Nenhum sistema encontrado com a chave: " + key);
+    }
+
+    @NotNull
+    public String getKey() {
+        return key;
     }
 }

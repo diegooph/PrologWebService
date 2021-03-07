@@ -83,7 +83,8 @@ public final class PneuService {
     }
 
     @NotNull
-    public List<Pneu> getPneusByCodUnidadesByStatus(@NotNull final List<Long> codUnidades,
+    public List<Pneu> getPneusByCodUnidadesByStatus(@NotNull final String userToken,
+                                                    @NotNull final List<Long> codUnidades,
                                                     @NotNull final String status) {
         try {
             if (status.equals("%")) {
@@ -96,7 +97,9 @@ public final class PneuService {
                     case EM_USO:
                     case ESTOQUE:
                     case DESCARTE:
-                        return dao.getPneusByCodUnidadesByStatus(codUnidades, statusPneu);
+                        return RouterPneu
+                                .create(dao, userToken)
+                                .getPneusByCodUnidadesByStatus(codUnidades, statusPneu);
                     default:
                         throw new IllegalArgumentException("Status de Pneu não existente: " + status);
                 }

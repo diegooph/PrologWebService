@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.frota.veiculo;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.EixoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.InfosVeiculoEditado;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.listagem.VeiculoListagem;
@@ -48,7 +49,9 @@ public interface VeiculoDao {
 
     @Deprecated
     @NotNull
-    Veiculo getVeiculoByPlaca(@NotNull final String placa, final boolean withPneus) throws SQLException;
+    Veiculo getVeiculoByPlaca(@NotNull final String placa,
+                              @Nullable final Long codUnidade,
+                              final boolean withPneus) throws SQLException;
 
     @Deprecated
     @NotNull
@@ -125,7 +128,10 @@ public interface VeiculoDao {
 
     @Deprecated
     List<Veiculo> getVeiculosAtivosByUnidade(Long codUnidade, @Nullable Boolean ativos) throws SQLException;
-    
+
     @NotNull
     VeiculoDadosColetaKm getDadosColetaKmByCodigo(@NotNull final Long codVeiculo) throws Throwable;
+
+    @NotNull
+    Set<EixoVeiculo> getEixosDiagrama(final int codDiagrama, final Connection conn) throws SQLException;
 }

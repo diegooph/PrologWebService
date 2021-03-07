@@ -133,7 +133,7 @@ public final class SistemaApiProLog extends Sistema {
     public VeiculoServico getVeiculoAberturaServico(@NotNull final Long codServico,
                                                     @NotNull final String placaVeiculo) throws Throwable {
         final Long codUnidadeVeiculo =
-                getIntegradorProLog().getVeiculoByPlaca(placaVeiculo, false).getCodUnidadeAlocado();
+                getIntegradorProLog().getVeiculoByPlaca(placaVeiculo, null, false).getCodUnidadeAlocado();
         if (unidadeEstaComIntegracaoAtiva(codUnidadeVeiculo) && getSistemaApiProLog().isServicoMovimentacao(codServico)) {
             throw new BloqueadoIntegracaoException(
                     "O fechamento de serviço de movimentação não está disponível.\n" +
