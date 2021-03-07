@@ -449,9 +449,7 @@ public class SistemaWebFinattoConverter {
             modeloBanda.setCodigo(Long.valueOf(pneuWebFinatto.getCodModeloBanda()));
             modeloBanda.setNome(pneuWebFinatto.getNomeModeloBanda());
             modeloBanda.setQuantidadeSulcos(pneuWebFinatto.getQtdSulcosModeloBanda());
-            modeloBanda.setAlturaSulcos(pneuWebFinatto.getAlturaSulcosModeloBandaEmMilimetros() == null
-                                                ? 10.0
-                                                : pneuWebFinatto.getAlturaSulcosModeloBandaEmMilimetros());
+            modeloBanda.setAlturaSulcos(pneuWebFinatto.getAlturaSulcosModeloBandaEmMilimetros());
             banda.setModelo(modeloBanda);
             banda.setValor(new BigDecimal("0.0"));
             pneu.setBanda(banda);
