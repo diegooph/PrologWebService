@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.webfinatto.utils;
 
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.errorhandling.ErrorReportSystem;
 import br.com.zalf.prolog.webservice.frota.pneu._model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.*;
@@ -601,7 +602,7 @@ public class SistemaWebFinattoConverter {
                                                   dataHoraMovimentacao.toLocalDateTime(),
                                                   dataHoraMovimentacao.atZoneSameInstant(zoneIdForCodUnidade)
                                                           .toLocalDateTime(),
-                                                  processoMovimentacao.getObservacao(),
+                                                  StringUtils.trimToNull(processoMovimentacao.getObservacao()),
                                                   null,
                                                   createVeiculoMovimentacao(unidadeDeParaHolder, processoMovimentacao),
                                                   createMovimentacoes(unidadeDeParaHolder,
@@ -652,7 +653,7 @@ public class SistemaWebFinattoConverter {
                                           posicaoOrigem,
                                           tipoDestino,
                                           posicaoDestino,
-                                          movimentacao.getObservacao());
+                                          StringUtils.trimToNull(movimentacao.getObservacao()));
     }
 
     @NotNull
