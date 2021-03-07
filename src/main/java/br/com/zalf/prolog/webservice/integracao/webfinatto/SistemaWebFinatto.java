@@ -426,7 +426,7 @@ public class SistemaWebFinatto extends Sistema {
                     integracaoDao.getApiAutenticacaoHolder(conn,
                                                            unidadeDeParaHolder.getCodEmpresaProlog(),
                                                            getSistemaKey(),
-                                                           MetodoIntegrado.INSERT_AFERICAO_PLACA);
+                                                           MetodoIntegrado.INSERT_MOVIMENTACAO);
             final VeiculoWebFinatto veiculoByPlaca =
                     internalGetVeiculoByPlaca(conn,
                                               unidadeDeParaHolder.getCodEmpresaProlog(),
