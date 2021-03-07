@@ -11,11 +11,11 @@ public class MovimentacaoWebFinatto {
     @NotNull
     private final String tipoOrigem;
     @Nullable
-    private final Integer posicaoOrigemPneu;
+    private final String posicaoOrigemPneu;
     @NotNull
     private final String tipoDestino;
     @Nullable
-    private final Integer posicaoDestinoPneu;
+    private final String posicaoDestinoPneu;
     @Nullable
     private final String observacaoProcessoMovimentacao;
 }

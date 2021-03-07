@@ -591,6 +591,7 @@ public class SistemaWebFinattoConverter {
     @NotNull
     public static ProcessoMovimentacaoWebFinatto createProcessoMovimentacao(
             @NotNull final UnidadeDeParaHolder unidadeDeParaHolder,
+            @NotNull final IntegracaoPosicaoPneuMapper posicaoPneuMapper,
             @NotNull final OffsetDateTime dataHoraMovimentacao,
             @NotNull final ZoneId zoneIdForCodUnidade,
             @NotNull final ProcessoMovimentacao processoMovimentacao) {
@@ -603,41 +604,47 @@ public class SistemaWebFinattoConverter {
                                                   processoMovimentacao.getObservacao(),
                                                   null,
                                                   createVeiculoMovimentacao(unidadeDeParaHolder, processoMovimentacao),
-                                                  createMovimentacoes(unidadeDeParaHolder, processoMovimentacao));
+                                                  createMovimentacoes(unidadeDeParaHolder,
+                                                                      posicaoPneuMapper,
+                                                                      processoMovimentacao));
     }
 
     @NotNull
     private static List<MovimentacaoWebFinatto> createMovimentacoes(
             @NotNull final UnidadeDeParaHolder unidadeDeParaHolder,
+            @NotNull final IntegracaoPosicaoPneuMapper posicaoPneuMapper,
             @NotNull final ProcessoMovimentacao processoMovimentacao) {
-        final List<MovimentacaoWebFinatto> movimentacoesWebFinatto = new ArrayList<>();
-        for (final Movimentacao movimentacao : processoMovimentacao.getMovimentacoes()) {
-            movimentacoesWebFinatto.add(createMovimentacao(unidadeDeParaHolder, movimentacao));
-        }
-        return movimentacoesWebFinatto;
+        return processoMovimentacao.getMovimentacoes()
+                .stream()
+                .map(movimentacao -> createMovimentacao(unidadeDeParaHolder, posicaoPneuMapper, movimentacao))
+                .collect(Collectors.toList());
     }
 
     @NotNull
-    private static MovimentacaoWebFinatto createMovimentacao(@NotNull final UnidadeDeParaHolder unidadeDeParaHolder,
-                                                             @NotNull final Movimentacao movimentacao) {
+    private static MovimentacaoWebFinatto createMovimentacao(
+            @NotNull final UnidadeDeParaHolder unidadeDeParaHolder,
+            @NotNull final IntegracaoPosicaoPneuMapper posicaoPneuMapper,
+            @NotNull final Movimentacao movimentacao) {
         final String tipoOrigem;
         final String tipoDestino;
-        Integer posicaoOrigem = null;
-        Integer posicaoDestino = null;
+        final String posicaoOrigem;
+        final String posicaoDestino;
 
         if (movimentacao.isFrom(OrigemDestinoEnum.VEICULO)) {
             final OrigemVeiculo origem = (OrigemVeiculo) movimentacao.getOrigem();
             tipoOrigem = "APLICADO";
-            posicaoOrigem = origem.getPosicaoOrigemPneu();
+            posicaoOrigem = posicaoPneuMapper.mapToPosicaoAuxiliar(origem.getPosicaoOrigemPneu());
         } else {
             tipoOrigem = "ESTOQUE";
+            posicaoOrigem = null;
         }
         if (movimentacao.isTo(OrigemDestinoEnum.VEICULO)) {
             final DestinoVeiculo destino = (DestinoVeiculo) movimentacao.getDestino();
             tipoDestino = "APLICADO";
-            posicaoDestino = destino.getPosicaoDestinoPneu();
+            posicaoDestino = posicaoPneuMapper.mapToPosicaoAuxiliar(destino.getPosicaoDestinoPneu());
         } else {
             tipoDestino = "ESTOQUE";
+            posicaoDestino = null;
         }
 
         return new MovimentacaoWebFinatto(createPneuMovimentacao(unidadeDeParaHolder, movimentacao.getPneu()),

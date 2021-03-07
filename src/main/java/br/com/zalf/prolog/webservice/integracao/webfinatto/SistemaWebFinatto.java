@@ -30,6 +30,7 @@ import br.com.zalf.prolog.webservice.integracao.webfinatto._model.VeiculoWebFina
 import br.com.zalf.prolog.webservice.integracao.webfinatto._model.afericao.AfericaoPlacaWebFinatto;
 import br.com.zalf.prolog.webservice.integracao.webfinatto._model.afericao.AfericaoPneuWebFinatto;
 import br.com.zalf.prolog.webservice.integracao.webfinatto._model.error.SistemaWebFinattoException;
+import br.com.zalf.prolog.webservice.integracao.webfinatto._model.movimentacao.ProcessoMovimentacaoWebFinatto;
 import br.com.zalf.prolog.webservice.integracao.webfinatto.data.SistemaWebFinattoRequester;
 import br.com.zalf.prolog.webservice.integracao.webfinatto.utils.SistemaWebFinattoConverter;
 import br.com.zalf.prolog.webservice.integracao.webfinatto.utils.SistemaWebFinattoUtils;
@@ -417,6 +418,7 @@ public class SistemaWebFinatto extends Sistema {
             conn = connectionProvider.provideDatabaseConnection();
             conn.setAutoCommit(false);
             final Long codUnidadeProlog = processoMovimentacao.getUnidade().getCodigo();
+            final String placaVeiculo = SistemaWebFinattoUtils.getPlacaFromProcessoMovimentacao(processoMovimentacao);
             final ZoneId zoneIdForCodUnidade = TimeZoneManager.getZoneIdForCodUnidade(codUnidadeProlog, conn);
             final UnidadeDeParaHolder unidadeDeParaHolder =
                     integracaoDao.getCodAuxiliarByCodUnidadeProlog(conn, Collections.singletonList(codUnidadeProlog));
@@ -425,13 +427,24 @@ public class SistemaWebFinatto extends Sistema {
                                                            unidadeDeParaHolder.getCodEmpresaProlog(),
                                                            getSistemaKey(),
                                                            MetodoIntegrado.INSERT_AFERICAO_PLACA);
-
-            requester.insertProcessoMovimentacao(apiAutenticacaoHolder,
-                                                 SistemaWebFinattoConverter.createProcessoMovimentacao(
-                                                         unidadeDeParaHolder,
-                                                         dataHoraMovimentacao,
-                                                         zoneIdForCodUnidade,
-                                                         processoMovimentacao));
+            final VeiculoWebFinatto veiculoByPlaca =
+                    internalGetVeiculoByPlaca(conn,
+                                              unidadeDeParaHolder.getCodEmpresaProlog(),
+                                              unidadeDeParaHolder.getCodFiliais(),
+                                              placaVeiculo);
+            final IntegracaoPosicaoPneuMapper posicaoPneuMapper = new IntegracaoPosicaoPneuMapper(
+                    veiculoByPlaca.getCodEstruturaVeiculo(),
+                    integracaoDao.getMapeamentoPosicoesPrologByDeParaTipoVeiculo(
+                            conn,
+                            unidadeDeParaHolder.getCodEmpresaProlog(),
+                            veiculoByPlaca.getCodEstruturaVeiculo()));
+            final ProcessoMovimentacaoWebFinatto processoMovimentacaoWebFinatto =
+                    SistemaWebFinattoConverter.createProcessoMovimentacao(unidadeDeParaHolder,
+                                                                          posicaoPneuMapper,
+                                                                          dataHoraMovimentacao,
+                                                                          zoneIdForCodUnidade,
+                                                                          processoMovimentacao);
+            requester.insertProcessoMovimentacao(apiAutenticacaoHolder, processoMovimentacaoWebFinatto);
 
             conn.commit();
             return 1L;

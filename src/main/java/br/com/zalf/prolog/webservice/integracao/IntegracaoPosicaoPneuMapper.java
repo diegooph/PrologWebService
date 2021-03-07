@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Created on 2020-05-13
@@ -29,6 +30,22 @@ public final class IntegracaoPosicaoPneuMapper {
             return posicoesPneuMapper.get(keyEstruturaPosicao);
         }
         return posicoesPneuMapper.get(posicao.trim());
+    }
+
+    @Nullable
+    public String mapToPosicaoAuxiliar(@NotNull final Integer posicaoProlog) {
+        return posicoesPneuMapper
+                .entrySet()
+                .stream()
+                .map(entry -> {
+                    if (entry.getValue().equals(posicaoProlog)) {
+                        return entry.getKey();
+                    }
+                    return null;
+                })
+                .filter(Objects::nonNull)
+                .findAny()
+                .orElse(null);
     }
 
     @NotNull
