@@ -52,7 +52,7 @@ public class PneuWebFinatto {
     @NotNull
     private final String codModeloPneu;
     @NotNull
-    private final Long alturaSulcosModeloPneuEmMilimetros;
+    private final Double alturaSulcosModeloPneuEmMilimetros;
     @NotNull
     private final Integer qtdSulcosModeloPneu;
     @Nullable
@@ -64,7 +64,7 @@ public class PneuWebFinatto {
     @Nullable
     private final String codModeloBanda;
     @Nullable
-    private final Long alturaSulcosModeloBandaEmMilimetros;
+    private final Double alturaSulcosModeloBandaEmMilimetros;
     @Nullable
     private final Integer qtdSulcosModeloBanda;
     private final boolean isPneuEstepe;

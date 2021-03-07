@@ -436,7 +436,7 @@ public class SistemaWebFinattoConverter {
         modeloPneu.setCodigo(Long.valueOf(pneuWebFinatto.getCodModeloPneu()));
         modeloPneu.setNome(pneuWebFinatto.getNomeModeloPneu());
         modeloPneu.setQuantidadeSulcos(pneuWebFinatto.getQtdSulcosModeloPneu());
-        modeloPneu.setAlturaSulcos(pneuWebFinatto.getAlturaSulcosModeloPneuEmMilimetros().doubleValue());
+        modeloPneu.setAlturaSulcos(pneuWebFinatto.getAlturaSulcosModeloPneuEmMilimetros());
         pneu.setModelo(modeloPneu);
 
         if (pneuWebFinatto.isRecapado()) {
@@ -449,7 +449,9 @@ public class SistemaWebFinattoConverter {
             modeloBanda.setCodigo(Long.valueOf(pneuWebFinatto.getCodModeloBanda()));
             modeloBanda.setNome(pneuWebFinatto.getNomeModeloBanda());
             modeloBanda.setQuantidadeSulcos(pneuWebFinatto.getQtdSulcosModeloBanda());
-            modeloBanda.setAlturaSulcos(pneuWebFinatto.getAlturaSulcosModeloBandaEmMilimetros().doubleValue());
+            modeloBanda.setAlturaSulcos(pneuWebFinatto.getAlturaSulcosModeloBandaEmMilimetros() == null
+                                                ? 10.0
+                                                : pneuWebFinatto.getAlturaSulcosModeloBandaEmMilimetros());
             banda.setModelo(modeloBanda);
             banda.setValor(new BigDecimal("0.0"));
             pneu.setBanda(banda);
