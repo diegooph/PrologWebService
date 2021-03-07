@@ -701,16 +701,18 @@ public class SistemaWebFinattoConverter {
 
     @NotNull
     public static List<Empresa> createEmpresa(@NotNull final UnidadeDeParaHolder unidadeDeParaHolder,
+                                              @NotNull final List<Empresa> filtrosProlog,
                                               @NotNull final List<EmpresaWebFinatto> filtrosClientes) {
         final Empresa empresa = new Empresa();
         empresa.setCodigo(unidadeDeParaHolder.getCodEmpresaProlog());
         empresa.setNome(unidadeDeParaHolder.getNomeEmpresaProlog());
-        empresa.setListRegional(createRegionaisUnidades(unidadeDeParaHolder, filtrosClientes));
+        empresa.setListRegional(createRegionaisUnidades(unidadeDeParaHolder, filtrosProlog, filtrosClientes));
         return Collections.singletonList(empresa);
     }
 
     @NotNull
     private static List<Regional> createRegionaisUnidades(@NotNull final UnidadeDeParaHolder unidadeDeParaHolder,
+                                                          @NotNull final List<Empresa> filtrosProlog,
                                                           @NotNull final List<EmpresaWebFinatto> filtrosClientes) {
         final List<Regional> regionais = new ArrayList<>();
         for (final EmpresaWebFinatto empresaFinatto : filtrosClientes) {
@@ -718,7 +720,7 @@ public class SistemaWebFinattoConverter {
             for (final UnidadeWebFinatto unidadeFinatto : empresaFinatto.getUnidades()) {
                 final String codEmpresaFilial = empresaFinatto.getIdCliente()
                         .toString()
-                        .concat(":")
+                        .concat(SistemaWebFinattoConstants.SEPARADOR_EMPRESA_FILIAL)
                         .concat(unidadeFinatto.getIdUnidade().toString());
                 final UnidadeDePara byCodAuxiliar = unidadeDeParaHolder.getByCodAuxiliar(codEmpresaFilial);
                 if (byCodAuxiliar != null) {
@@ -737,6 +739,30 @@ public class SistemaWebFinattoConverter {
 
             regionais.add(regional);
         }
+
+        for (final Empresa empresa : filtrosProlog) {
+            for (final Regional regional : empresa.getListRegional()) {
+                for (final Unidade unidade : regional.getListUnidade()) {
+                    // para cada unidade do Prolog, vemos se ela
+                    boolean unidadeProcessada = false;
+                    Regional regionalParaAdicionar = null;
+                    for (final Regional regional1 : regionais) {
+                        for (final Unidade unidade1 : regional1.getListUnidade()) {
+                            if (unidade.getCodigo().equals(unidade1.getCodigo())) {
+                                unidadeProcessada = true;
+                            }
+                        }
+                        if (!unidadeProcessada) {
+                            regionalParaAdicionar = regional1;
+                        }
+                    }
+                    if (!unidadeProcessada && regionalParaAdicionar != null) {
+                        regionalParaAdicionar.getListUnidade().add(unidade);
+                    }
+                }
+            }
+        }
+
         return regionais;
     }
 

@@ -471,7 +471,7 @@ public class SistemaWebFinatto extends Sistema {
                                                            MetodoIntegrado.GET_LOCAIS_DE_MOVIMENTO);
             final List<EmpresaWebFinatto> filtrosClientes =
                     requester.getFiltrosClientes(apiAutenticacaoHolder, SistemaWebFinattoUtils.formatCpfAsString(cpf));
-            return SistemaWebFinattoConverter.createEmpresa(unidadeDeParaHolder, filtrosClientes);
+            return SistemaWebFinattoConverter.createEmpresa(unidadeDeParaHolder, filtrosProlog, filtrosClientes);
         } finally {
             connectionProvider.closeResources(conn);
         }
