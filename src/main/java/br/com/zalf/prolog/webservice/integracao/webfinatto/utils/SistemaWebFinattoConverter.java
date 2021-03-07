@@ -563,7 +563,7 @@ public class SistemaWebFinattoConverter {
                 unidadeDeParaHolder.getCodAuxiliarEmpresa(),
                 unidadeDeParaHolder.getCodAuxiliarFilial(),
                 afericaoPlaca.getVeiculo().getPlaca(),
-                String.format("%011d", afericaoPlaca.getColaborador().getCpf()),
+                afericaoPlaca.getColaborador().getCpfAsString(),
                 afericaoPlaca.getKmMomentoAfericao(),
                 afericaoPlaca.getTempoRealizacaoAfericaoInMillis(),
                 afericaoPlaca.getDataHora(),
@@ -579,7 +579,7 @@ public class SistemaWebFinattoConverter {
         return new AfericaoPneuWebFinatto(
                 unidadeDeParaHolder.getCodAuxiliarEmpresa(),
                 unidadeDeParaHolder.getCodAuxiliarFilial(),
-                String.format("%011d", afericaoAvulsa.getColaborador().getCpf()),
+                afericaoAvulsa.getColaborador().getCpfAsString(),
                 afericaoAvulsa.getTempoRealizacaoAfericaoInMillis(),
                 afericaoAvulsa.getDataHora(),
                 afericaoAvulsa.getDataHora().atOffset(ZoneOffset.UTC).atZoneSameInstant(zoneId).toLocalDateTime(),
