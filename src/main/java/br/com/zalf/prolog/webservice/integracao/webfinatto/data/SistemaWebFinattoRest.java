@@ -3,7 +3,6 @@ package br.com.zalf.prolog.webservice.integracao.webfinatto.data;
 import br.com.zalf.prolog.webservice.commons.network.PrologCustomHeaders;
 import br.com.zalf.prolog.webservice.integracao.webfinatto._model.EmpresaWebFinatto;
 import br.com.zalf.prolog.webservice.integracao.webfinatto._model.PneuWebFinatto;
-import br.com.zalf.prolog.webservice.integracao.webfinatto._model.ResponseAfericaoWebFinatto;
 import br.com.zalf.prolog.webservice.integracao.webfinatto._model.VeiculoWebFinatto;
 import br.com.zalf.prolog.webservice.integracao.webfinatto._model.afericao.AfericaoPlacaWebFinatto;
 import br.com.zalf.prolog.webservice.integracao.webfinatto._model.afericao.AfericaoPneuWebFinatto;
@@ -52,19 +51,19 @@ public interface SistemaWebFinattoRest {
             @Query("codPneuSelecionado") @NotNull final String codPneuSelecionado);
 
     @POST()
-    Call<ResponseAfericaoWebFinatto> insertAfericaoPlaca(
+    Call<Void> insertAfericaoPlaca(
             @Header(PrologCustomHeaders.HEADER_TOKEN_INTEGRACAO) @NotNull final String tokenIntegracao,
             @Url @NotNull final String url,
             @Body @NotNull final AfericaoPlacaWebFinatto afericaoPlaca);
 
     @POST()
-    Call<ResponseAfericaoWebFinatto> insertAfericaoAvulsa(
+    Call<Void> insertAfericaoAvulsa(
             @Header(PrologCustomHeaders.HEADER_TOKEN_INTEGRACAO) @NotNull final String tokenIntegracao,
             @Url @NotNull final String url,
             @Body @NotNull final AfericaoPneuWebFinatto afericaoPneu);
 
     @POST()
-    Call<ResponseAfericaoWebFinatto> insertProcessoMovimentacao(
+    Call<Void> insertProcessoMovimentacao(
             @Header(PrologCustomHeaders.HEADER_TOKEN_INTEGRACAO) @NotNull final String tokenIntegracao,
             @Url @NotNull final String url,
             @Body @NotNull final ProcessoMovimentacaoWebFinatto processoMovimentacao);

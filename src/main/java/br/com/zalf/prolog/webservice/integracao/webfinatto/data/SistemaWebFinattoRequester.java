@@ -3,7 +3,6 @@ package br.com.zalf.prolog.webservice.integracao.webfinatto.data;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.ApiAutenticacaoHolder;
 import br.com.zalf.prolog.webservice.integracao.webfinatto._model.EmpresaWebFinatto;
 import br.com.zalf.prolog.webservice.integracao.webfinatto._model.PneuWebFinatto;
-import br.com.zalf.prolog.webservice.integracao.webfinatto._model.ResponseAfericaoWebFinatto;
 import br.com.zalf.prolog.webservice.integracao.webfinatto._model.VeiculoWebFinatto;
 import br.com.zalf.prolog.webservice.integracao.webfinatto._model.afericao.AfericaoPlacaWebFinatto;
 import br.com.zalf.prolog.webservice.integracao.webfinatto._model.afericao.AfericaoPneuWebFinatto;
@@ -40,19 +39,13 @@ public interface SistemaWebFinattoRequester {
                                    @NotNull final String codFilial,
                                    @NotNull final String codPneuSelecionado) throws Throwable;
 
-    @NotNull
-    ResponseAfericaoWebFinatto insertAfericaoPlaca(
-            @NotNull final ApiAutenticacaoHolder autenticacaoHolder,
-            @NotNull final AfericaoPlacaWebFinatto afericaoPlaca)
-            throws Throwable;
+    void insertAfericaoPlaca(@NotNull final ApiAutenticacaoHolder autenticacaoHolder,
+                             @NotNull final AfericaoPlacaWebFinatto afericaoPlaca) throws Throwable;
 
-    @NotNull
-    ResponseAfericaoWebFinatto insertAfericaoAvulsa(
-            @NotNull final ApiAutenticacaoHolder autenticacaoHolder,
-            @NotNull final AfericaoPneuWebFinatto afericaoPneu) throws Throwable;
+    void insertAfericaoAvulsa(@NotNull final ApiAutenticacaoHolder autenticacaoHolder,
+                              @NotNull final AfericaoPneuWebFinatto afericaoPneu) throws Throwable;
 
-    @NotNull
-    ResponseAfericaoWebFinatto insertProcessoMovimentacao(
+    void insertProcessoMovimentacao(
             @NotNull final ApiAutenticacaoHolder autenticacaoHolder,
             @NotNull final ProcessoMovimentacaoWebFinatto processoMovimentacao) throws Throwable;
 }

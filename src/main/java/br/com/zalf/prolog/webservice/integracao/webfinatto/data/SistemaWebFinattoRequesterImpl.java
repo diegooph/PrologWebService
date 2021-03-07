@@ -4,7 +4,6 @@ import br.com.zalf.prolog.webservice.integracao.network.RestClient;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.ApiAutenticacaoHolder;
 import br.com.zalf.prolog.webservice.integracao.webfinatto._model.EmpresaWebFinatto;
 import br.com.zalf.prolog.webservice.integracao.webfinatto._model.PneuWebFinatto;
-import br.com.zalf.prolog.webservice.integracao.webfinatto._model.ResponseAfericaoWebFinatto;
 import br.com.zalf.prolog.webservice.integracao.webfinatto._model.VeiculoWebFinatto;
 import br.com.zalf.prolog.webservice.integracao.webfinatto._model.afericao.AfericaoPlacaWebFinatto;
 import br.com.zalf.prolog.webservice.integracao.webfinatto._model.afericao.AfericaoPneuWebFinatto;
@@ -90,48 +89,48 @@ public class SistemaWebFinattoRequesterImpl implements SistemaWebFinattoRequeste
     }
 
     @Override
-    @NotNull
-    public ResponseAfericaoWebFinatto insertAfericaoPlaca(
+    public void insertAfericaoPlaca(
             @NotNull final ApiAutenticacaoHolder autenticacaoHolder,
             @NotNull final AfericaoPlacaWebFinatto afericaoPlaca) throws Throwable {
         final SistemaWebFinattoRest service = RestClient.getService(SistemaWebFinattoRest.class);
-        final Call<ResponseAfericaoWebFinatto> call =
+        final Call<Void> call =
                 service.insertAfericaoPlaca(autenticacaoHolder.getPrologTokenIntegracao(),
                                             autenticacaoHolder.getUrl(),
                                             afericaoPlaca);
-        return handleResponse(call.execute());
+        handleResponse(call.execute());
     }
 
     @Override
-    @NotNull
-    public ResponseAfericaoWebFinatto insertAfericaoAvulsa(
+    public void insertAfericaoAvulsa(
             @NotNull final ApiAutenticacaoHolder autenticacaoHolder,
             @NotNull final AfericaoPneuWebFinatto afericaoPneu) throws Throwable {
         final SistemaWebFinattoRest service = RestClient.getService(SistemaWebFinattoRest.class);
-        final Call<ResponseAfericaoWebFinatto> call =
+        final Call<Void> call =
                 service.insertAfericaoAvulsa(autenticacaoHolder.getPrologTokenIntegracao(),
                                              autenticacaoHolder.getUrl(),
                                              afericaoPneu);
-        return handleResponse(call.execute());
+        handleResponse(call.execute());
     }
 
     @Override
-    @NotNull
-    public ResponseAfericaoWebFinatto insertProcessoMovimentacao(
+    public void insertProcessoMovimentacao(
             @NotNull final ApiAutenticacaoHolder autenticacaoHolder,
             @NotNull final ProcessoMovimentacaoWebFinatto processoMovimentacao) throws Throwable {
         final SistemaWebFinattoRest service = RestClient.getService(SistemaWebFinattoRest.class);
-        final Call<ResponseAfericaoWebFinatto> call =
+        final Call<Void> call =
                 service.insertProcessoMovimentacao(autenticacaoHolder.getPrologTokenIntegracao(),
                                                    autenticacaoHolder.getUrl(),
                                                    processoMovimentacao);
-        return handleResponse(call.execute());
+        handleResponse(call.execute());
     }
 
     @NotNull
     private <T> T handleResponse(@Nullable final Response<T> response) {
         if (response != null) {
-            if (response.isSuccessful() && response.body() != null) {
+            if (response.isSuccessful()) {
+                if (response.body() == null) {
+                    return (T) "";
+                }
                 return response.body();
             } else {
                 if (response.errorBody() == null) {
