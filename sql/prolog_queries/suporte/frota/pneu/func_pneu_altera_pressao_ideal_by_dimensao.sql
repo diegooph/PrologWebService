@@ -1,12 +1,3 @@
--- Sobre:
--- A lógica aplicada nessa function é a seguinte:
---
--- Précondições:
---
--- Histórico:
--- PL-2063
--- 2019-09-18 -> Adiciona no schema suporte (natanrotta - PL-2242).
--- 2020-08-14 -> Adiciona chamada para logar execução da function (gustavocnp95 - PL-3066).
 CREATE OR REPLACE FUNCTION SUPORTE.FUNC_PNEU_ALTERA_PRESSAO_IDEAL_BY_DIMENSAO(F_COD_EMPRESA BIGINT,
                                                                               F_COD_UNIDADE BIGINT,
                                                                               F_COD_DIMENSAO BIGINT,

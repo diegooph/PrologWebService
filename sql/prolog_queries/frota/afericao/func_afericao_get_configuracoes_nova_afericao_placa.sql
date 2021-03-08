@@ -1,10 +1,3 @@
--- Sobre:
---
--- Esta função retorna a lista de configurações para uma nova aferição avulsa de acordo com uma placa.
---
--- Histórico:
--- 2019-12-10 -> Adição de colunas de bloqueio  (wvinim - PL-1934).
--- 2020-05-07 -> Modifica campos de retorno de liberação de aferição de boolean para text (gustavocnp95 - PL-2689)
 CREATE OR REPLACE FUNCTION FUNC_AFERICAO_GET_CONFIGURACOES_NOVA_AFERICAO_PLACA(F_PLACA_VEICULO TEXT)
     RETURNS TABLE
             (

@@ -1,10 +1,3 @@
--- sobre:
---
--- function utilizada para buscar pneu para aferição avulsa
---
--- histórico:
--- 2019-05-07 -> Function criada.
--- 2020-06-19 -> Adiciona identificador frota (thaisksf - PL-2760).
 CREATE OR REPLACE FUNCTION FUNC_AFERICAO_GET_PNEU_PARA_AFERICAO_AVULSA(F_COD_PNEU BIGINT, F_TZ_UNIDADE TEXT)
     RETURNS TABLE
             (

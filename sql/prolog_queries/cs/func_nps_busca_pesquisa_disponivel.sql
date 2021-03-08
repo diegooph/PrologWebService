@@ -1,14 +1,3 @@
--- Sobre:
--- Busca uma pesquisa de NPS que esteja disponível para o colaborador realizar. Uma pesquisa está disponível para
--- realização se passar nas quatro condições seguintes:
--- 1 - Está ativa (status_ativo = true).
--- 2 - O período de veículação da pesquisa deve abranger a data em que a busca é feita.
--- 3 - O colaborador não deve ter bloqueado a pesquisa.
--- 4 - O colaborador não pode já ter respondido a pesquisa.
---
--- Histórico:
--- 2019-10-10 -> Function criada (luizfp - PL-2350).
--- 2019-10-28 -> Adição de colunas para legenda de escala alta/baixa (wvinim - PL-2355).
 create or replace function cs.func_nps_busca_pesquisa_disponivel(f_cod_colaborador bigint,
                                                                  f_data_atual date)
     returns table

@@ -1,8 +1,3 @@
--- Sobre:
--- Esta function insere uma opção de problema
---
--- Histórico:
--- 2020-01-15 -> Function criada (wvinim - PL-2466).
 CREATE OR REPLACE FUNCTION FUNC_SOCORRO_ROTA_INSERT_OPCOES_PROBLEMAS(F_COD_EMPRESA BIGINT,
                                                                      F_DESCRICAO TEXT,
                                                                      F_OBRIGA_DESCRICAO BOOLEAN,

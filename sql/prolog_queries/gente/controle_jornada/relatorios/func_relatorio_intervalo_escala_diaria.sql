@@ -1,11 +1,3 @@
--- Sobre:
---
--- Esta função retorna o relatório de marcações comparando com a escala diária.
---
--- Histórico:
--- 2019-08-06 -> Criado tracking da function (wvinim - PL-2152).
--- 2020-04-28 -> Aplica 'order by' (luiz_fp - PL-2720).
--- 2020-07-30 -> Retira marcações inativas da exibição (wvinim - PL-2832).
 CREATE OR REPLACE FUNCTION FUNC_RELATORIO_INTERVALO_ESCALA_DIARIA(F_COD_UNIDADE BIGINT,
                                                                   F_COD_TIPO_INTERVALO BIGINT,
                                                                   F_DATA_INICIAL DATE,

@@ -1,14 +1,3 @@
--- Sobre:
--- A lógica aplicada nessa function é a seguinte:
--- Deleta um serviço específico de uma aferição. Os Serviços existem na tabela AFERICAO_MANUTENCAO.
---
--- Précondições:
---
--- Histórico:
--- 2019-09-17 -> Adiciona SESSION_USER. (natanrotta - PL-2229).
--- 2019-09-18 -> Adicona no schema de suporte. (natanrotta - PL-2242).
--- 2020-07-07 -> Adiciona motivo de deleção. (thaisksf - PL-2801).
--- 2020-08-14 -> Adiciona chamada para logar execução da function (gustavocnp95 - PL-3066).
 CREATE OR REPLACE FUNCTION SUPORTE.FUNC_AFERICAO_DELETA_SERVICO_AFERICAO(F_COD_EMPRESA BIGINT,
                                                                          F_COD_UNIDADE BIGINT,
                                                                          F_COD_PNEU BIGINT,

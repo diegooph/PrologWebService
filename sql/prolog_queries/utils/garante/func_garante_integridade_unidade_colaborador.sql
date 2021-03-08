@@ -1,12 +1,3 @@
--- Sobre:
--- A lógica aplicada nessa function é a seguinte:
--- Verifica se colaborador está na unidade informada.
---
--- Precondições:
--- 1) Necessário o CPF do colaborador e o código da undiade para a verificar a integração.
---
--- Histórico:
--- 2019-07-30 -> Function criada (thaisksf).
 CREATE OR REPLACE FUNCTION FUNC_GARANTE_INTEGRIDADE_UNIDADE_COLABORADOR(
   F_COD_UNIDADE BIGINT,
   F_CPF_COLABORADOR BIGINT)

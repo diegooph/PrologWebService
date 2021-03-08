@@ -1,9 +1,3 @@
--- Sobre:
---
--- Esta função retorna uma lista de marcas de dispositivos móveis, a nível prolog.
---
--- Histórico:
--- 2019-07-25 -> Function criada (wvinim - PL-2150).
 CREATE OR REPLACE FUNCTION FUNC_DISPOSITIVO_GET_MARCAS_DISPOSITIVO_MOVEL()
   RETURNS TABLE(
     COD_MARCA  INT,

@@ -1,9 +1,3 @@
--- Sobre:
---
--- Esta function cadastra um login e senha.
---
--- Histórico:
--- 2020-03-02 -> Function criada (thaisksf - PL-2550).
 CREATE OR REPLACE FUNCTION INTERNO.FUNC_CREATE_LOGIN_SENHA(F_USERNAME TEXT, F_PASSWORD TEXT)
     RETURNS VOID
     LANGUAGE PLPGSQL

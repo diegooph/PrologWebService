@@ -1,13 +1,3 @@
--- Sobre:
---
--- Esta function retorna a validade do pneu de acordo com o seu dot
---
--- Précondições:
--- 1) Código de unidades
--- 2) Data atual
---
--- Histórico:
--- 2019-09-09 -> Altera vínculo da tabela PNEU_ORDEM_NOMENCLATURA_UNIDADE para PNEU_POSICAO_NOMENCLATURA_EMPRESA. (thaisksf PL-2258)
 CREATE OR REPLACE FUNCTION FUNC_PNEU_RELATORIO_VALIDADE_DOT(F_COD_UNIDADES BIGINT[],
                                                             F_DATA_ATUAL TIMESTAMP WITHOUT TIME ZONE)
     RETURNS TABLE

@@ -1,9 +1,3 @@
--- Sobre:
---
--- View que busca dados não deletados da tabela AFERICAO_MANUTENCAO_DATA.
---
--- Histórico:
--- 2020-05-12 -> Arquivo criado e nova coluna adicionada (FORMA_COLETA_DADOS_FECHAMENTO) (luiz_fp - PL-2714).
 CREATE OR REPLACE VIEW AFERICAO_MANUTENCAO AS
 SELECT AM.COD_AFERICAO,
        AM.COD_PNEU,

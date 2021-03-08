@@ -1,11 +1,3 @@
--- Sobre:
---
--- Essa view retorna uma lista de alternativas de perguntas dos modelos de checklist.
---
--- Histórico:
--- 2020-03-02 -> Atualização de arquivo e documentação (wvinim - PL-2494).
--- 2020-07-07 -> Adição de coluna de mídia alternativa NOK (wvinim - PL-2705).
--- 2020-07-13 -> Atualização de arquivo e documentação (wvinim - PL-2824).
 CREATE OR REPLACE VIEW CHECKLIST_ALTERNATIVA_PERGUNTA AS
 SELECT CAP.COD_CHECKLIST_MODELO,
        CAP.COD_VERSAO_CHECKLIST_MODELO,

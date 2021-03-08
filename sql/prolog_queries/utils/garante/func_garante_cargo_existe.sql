@@ -1,12 +1,3 @@
--- Sobre:
--- A lógica aplicada nessa function é a seguinte:
--- Verifica se a função - cargo - existe na empresa informada.
---
--- Precondições:
--- 1) Necessário o código da empresa e o código da funcao para a verificação da integridade entre empresa-funcao.
---
--- Histórico:
--- 2019-07-26 -> Function criada (thaisksf).
 CREATE OR REPLACE FUNCTION FUNC_GARANTE_CARGO_EXISTE(
   F_COD_EMPRESA BIGINT,
   F_COD_FUNCAO BIGINT)

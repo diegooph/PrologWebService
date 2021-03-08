@@ -1,16 +1,3 @@
--- Sobre:
---
--- Esta function retorna a previsão de troca dos pneus
---
--- Précondições:
--- 1) Data inicial: o filtro com data inicial estava bugando a query e não trazia pneus com troca já vencida.
--- Pra não precisar refatorar e poder corrigir na hora foi retirado a utilização desse filtro.
--- 2) Data final.
--- 3) Array de unidades.
--- 4) Status do pneu.
---
--- Histórico:
--- 2019-09-09 -> Altera vínculo da tabela PNEU_ORDEM_NOMENCLATURA_UNIDADE para PNEU_POSICAO_NOMENCLATURA_EMPRESA. (thaisksf PL-2258)
 CREATE OR REPLACE FUNCTION FUNC_RELATORIO_PREVISAO_TROCA(F_DATA_INICIAL DATE,
                                                          F_DATA_FINAL DATE,
                                                          F_COD_UNIDADE TEXT[],

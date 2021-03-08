@@ -1,14 +1,3 @@
--- Sobre:
---
--- Function para analisar mudanças em um modelo de checklist.
--- Gera dados para facilitar a tomada de decisão sobre criar uma nova versão com base nas alterações no modelo.
---
--- Histórico:
--- 2020-03-03 -> Atualização de arquivo e documentação (wvinim - PL-2494).
--- 2020-07-07 -> Altera o algoritmo de comparação de Jaro para soundex (luiz_fp - PL-2705).
--- 2020-07-07 -> Adiciona a consideração das midias no processo de análise de mudanças no modelo (luiz_fp - PL-2705).
--- 2020-07-13 -> Atualização de arquivo e documentação (wvinim - PL-2824).
--- 2020-07-27 -> Insere código auxiliar na verificação de mudança (gustavocnp95 - PLI-178)
 CREATE OR REPLACE FUNCTION FUNC_CHECKLIST_ANALISA_MUDANCAS_MODELO(F_COD_MODELO BIGINT,
                                                                   F_COD_VERSAO_MODELO BIGINT,
                                                                   F_NOME_MODELO TEXT,

@@ -1,10 +1,3 @@
--- Sobre:
---
--- Esta function lista os mapas e os intervalos realizados pelos seus colaboradores.
---
--- Histórico:
--- 2019-08-06 -> Criado tracking da function (wvinim - PL-2152).
--- 2020-04-28 -> Altera busca para usar nova function base e remove where não mais necessário. (luiz_fp - PL-2720).
 CREATE OR REPLACE FUNCTION FUNC_RELATORIO_INTERVALOS_MAPAS(F_COD_UNIDADE BIGINT, F_DATA_INICIAL DATE, F_DATA_FINAL DATE)
   RETURNS TABLE(
     "DATA"                                 VARCHAR,

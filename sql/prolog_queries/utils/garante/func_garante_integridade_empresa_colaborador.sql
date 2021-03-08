@@ -1,12 +1,3 @@
--- Sobre:
--- A lógica aplicada nessa function é a seguinte:
--- Verifica se colaborador está na empresa informada.
---
--- Precondições:
--- 1) Necessário o CPF do colaborador e o código da empresa para a verificar a integração.
---
--- Histórico:
--- 2019-08-20 -> Function criada (thaisksf).
 CREATE OR REPLACE FUNCTION FUNC_GARANTE_INTEGRIDADE_EMPRESA_COLABORADOR(
   F_COD_EMPRESA BIGINT,
   F_CPF_COLABORADOR BIGINT)

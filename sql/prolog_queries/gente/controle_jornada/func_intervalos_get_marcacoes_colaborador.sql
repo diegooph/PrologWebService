@@ -1,14 +1,3 @@
--- Sobre:
---
--- Busca os intervalos (início e fim) de um colaborador específico.
---
--- Os parâmetros 'f_cod_unidade' e 'f_cpf_colaborador' são obrigatórios e para esta function espera-se que nunca sejam
--- nulos.
--- O parâmetro 'f_cod_tipo_intervalo' é opcional. Caso seja nulo, será buscado intervalos de todos os tipos.
---
--- Histórico:
--- 2020-10-14 -> Arquivo específico criado (luizfp).
--- 2020-10-14 -> Query alterada para otimização (luizfp).
 create or replace function func_intervalos_get_marcacoes_colaborador(f_cod_unidade bigint,
                                                                      f_cpf_colaborador bigint,
                                                                      f_cod_tipo_intervalo bigint,

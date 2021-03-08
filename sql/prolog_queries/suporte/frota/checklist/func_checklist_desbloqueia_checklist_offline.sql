@@ -1,10 +1,3 @@
--- Sobre:
--- A lógica aplicada nessa function é a seguinte:
--- Libera a função de checklist offline para uma determinada empresa.
---
--- Histórico:
--- 2020-06-24 - Function criada. (thaisksf - PL-2744).
--- 2020-08-14 -> Adiciona chamada para logar execução da function (gustavocnp95 - PL-3066).
 CREATE OR REPLACE FUNCTION SUPORTE.FUNC_CHECKLIST_DESBLOQUEIA_CHECKLIST_OFFLINE(F_COD_EMPRESA BIGINT,
                                                                                 F_NOME_EMPRESA TEXT,
                                                                                 OUT AVISO_CHECKLIST_OFFLINE_LIBERADO TEXT)

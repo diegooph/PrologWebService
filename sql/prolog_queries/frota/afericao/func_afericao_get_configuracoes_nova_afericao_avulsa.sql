@@ -1,9 +1,3 @@
--- Sobre:
---
--- Esta função retorna a lista de configurações para uma nova aferição avulsa de acordo com o código de um pneu.
---
--- Histórico:
--- 2019-12-10 -> Adição de colunas de bloqueio  (wvinim - PL-1934).
 CREATE OR REPLACE FUNCTION FUNC_AFERICAO_GET_CONFIGURACOES_NOVA_AFERICAO_AVULSA(F_COD_PNEU BIGINT)
     RETURNS TABLE
             (

@@ -5,9 +5,6 @@
 -- checklist_ordem_servico_data,
 -- checklist_ordem_servico_itens_data,
 -- assim realizando a ação solicitada em todas os checklists encaminhadas
---
--- Histórico:
--- 2020-10-28 -> Function criada (steinert999 - PL-3217).
 create or replace function func_checklist_deleta_checklist_e_os(f_cod_checklists bigint[],
                                                                 f_cod_colaborador bigint,
                                                                 f_acao_executada text,

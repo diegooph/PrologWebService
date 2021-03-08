@@ -313,7 +313,6 @@ INSERT INTO public.funcao_prolog_agrupamento (codigo, nome, cod_pilar) VALUES (2
 INSERT INTO public.funcao_prolog_agrupamento (codigo, nome, cod_pilar) VALUES (26, 'Veículo', 1);
 INSERT INTO public.funcao_prolog_agrupamento (codigo, nome, cod_pilar) VALUES (27, 'Dispositivos Móveis', 5);
 INSERT INTO public.funcao_prolog_agrupamento (codigo, nome, cod_pilar) VALUES (28, 'Socorro em Rota', 1);
-INSERT INTO public.funcao_prolog_agrupamento (codigo, nome, cod_pilar) VALUES (29, 'Empresa', 5);
 
 INSERT INTO public.funcao_prolog_v11 (codigo, cod_pilar, impacto, cod_agrupamento, descricao, funcao) VALUES (10, 1, 'ALTO', 4, 'Permite ao usuário visualizar a listagem do Farol de Checklist, que indica, de acordo com os Checklists realizados no dia, quais placas estão aptas ou não a partirem para sua rota.', 'Visualizar farol de realização do checklist');
 INSERT INTO public.funcao_prolog_v11 (codigo, cod_pilar, impacto, cod_agrupamento, descricao, funcao) VALUES (11, 1, 'BAIXO', 4, 'Permite ao usuário realizar o processo de Checklists para os modelos aos quais o mesmo possui acesso em sua unidade.', 'Realizar ');
@@ -421,8 +420,6 @@ INSERT INTO public.funcao_prolog_v11 (codigo, cod_pilar, impacto, cod_agrupament
 INSERT INTO public.funcao_prolog_v11 (codigo, cod_pilar, impacto, cod_agrupamento, descricao, funcao) VALUES (418, 4, 'ALTO', 20, 'Permite ao usuário deletar registros de produtividade.', 'Deletar');
 INSERT INTO public.funcao_prolog_v11 (codigo, cod_pilar, impacto, cod_agrupamento, descricao, funcao) VALUES (419, 4, 'MEDIO', 20, 'Permite ao usuário visualizar os relatórios de produtividade.', 'Visualizar Relatórios');
 INSERT INTO public.funcao_prolog_v11 (codigo, cod_pilar, impacto, cod_agrupamento, descricao, funcao) VALUES (501, 5, 'MEDIO', 27, 'Permite ao usuário fazer a gestão dos dispositivos móveis', 'Gestão (cadastro, edição e deleção)');
-INSERT INTO public.funcao_prolog_v11 (codigo, cod_pilar, impacto, cod_agrupamento, descricao, funcao) VALUES (502, 5, 'CRITICO', 29, 'Permite ao usuário alterar o nome, as regionais e unidades da empresa.', 'Alterar estrutura');
-INSERT INTO public.funcao_prolog_v11 (codigo, cod_pilar, impacto, cod_agrupamento, descricao, funcao) VALUES (503, 5, 'MEDIO', 29, 'Permite ao usuário acessar a listagem de regionais e unidades.', 'Visualizar estrutura');
 
 
 

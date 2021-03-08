@@ -1,9 +1,3 @@
--- Sobre:
---
--- Essa view retorna uma lista de modelos de checklist.
---
--- Histórico:
--- 2020-03-02 -> Atualização de arquivo e documentação (wvinim - PL-2494).
 CREATE OR REPLACE VIEW CHECKLIST_MODELO AS
     SELECT CM.COD_UNIDADE,
            CM.CODIGO,

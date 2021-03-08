@@ -1,8 +1,3 @@
--- Sobre:
--- Busca as regionais e unidades que o colaborador tem acesso para seleção na realização de um checklist.
---
--- Histórico:
--- 2019-10-25 -> Corrige order by da function (luizfp).
 CREATE OR REPLACE FUNCTION FUNC_CHECKLIST_GET_REGIONAIS_UNIDADES_SELECAO(F_COD_COLABORADOR BIGINT)
   RETURNS TABLE(
     CODIGO_REGIONAL                                            BIGINT,

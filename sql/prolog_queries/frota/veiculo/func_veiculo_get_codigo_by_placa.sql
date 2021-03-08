@@ -1,12 +1,3 @@
--- Sobre:
--- Retorna uma lista de códigos de veículo com base no código do colaborador e uma lista de placas.
---
--- Observação:
--- O código do colaborador é utilizado para verificar se a placa pertence à empresa de quem fez a requisição.
--- Caso uma placa recebida não exista na empresa, retorna uma mensagem de erro específica com a placa inconsistente.
---
--- Histórico:
--- 2020-07-07 -> Function criada (wvinim - PL-2621).
 CREATE OR REPLACE FUNCTION FUNC_VEICULO_GET_CODIGO_BY_PLACA(F_COD_COLABORADOR BIGINT, F_PLACAS TEXT[])
     RETURNS BIGINT[]
     LANGUAGE PLPGSQL

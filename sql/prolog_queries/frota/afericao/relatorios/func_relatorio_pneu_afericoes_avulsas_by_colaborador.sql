@@ -1,9 +1,4 @@
--- Sobre:
---
--- Esta function retorna os dados das aferições avulsas por data, unidade e colaborador.
---
--- Histórico:
--- 2020-05-15 -> Criado arquivo especifico (gustavocnp95 - PL-2684).
+
 CREATE OR REPLACE FUNCTION FUNC_RELATORIO_PNEU_AFERICOES_AVULSAS_BY_COLABORADOR(F_COD_UNIDADE BIGINT,
                                                                                 F_COD_COLABORADOR BIGINT,
                                                                                 F_DATA_INICIAL DATE, F_DATA_FINAL DATE)

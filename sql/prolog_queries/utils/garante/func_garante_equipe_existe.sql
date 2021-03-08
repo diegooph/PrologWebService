@@ -1,12 +1,3 @@
--- Sobre:
--- A lógica aplicada nessa function é a seguinte:
--- Verifica se a equipe existe na unidade informada.
---
--- Precondições:
--- 1) Necessário o código da unidade e o código da equipe para a verificação da integridade entre unidade-equipe.
---
--- Histórico:
--- 2019-07-26 -> Function criada (thaisksf).
 CREATE OR REPLACE FUNCTION FUNC_GARANTE_EQUIPE_EXISTE(
   F_COD_UNIDADE BIGINT,
   F_COD_EQUIPE BIGINT)

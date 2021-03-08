@@ -1,15 +1,3 @@
--- Sobre:
---
--- Esta function retorna os dados das aferições avulsas por data e unidades
---
--- Précondições:
--- 1) Function: FUNC_PNEU_FORMAT_SULCO criada.
--- 2) Function: TZ_UNIDADE criada.
---
--- Histórico:
--- 2019-08-28 -> Adicionada coluna com o menor sulco (wvinim - PL-2169).
--- 2020-01-20 -> Adicão das colunas "pressão" e "tipo de coleta" (wvinim - PL-2413).
--- 2020-05-15 -> Adiciona coluna de forma_coleta_dados (gustavocnp95 - PL-2684)
 CREATE OR REPLACE FUNCTION FUNC_RELATORIO_PNEU_AFERICOES_AVULSAS(F_COD_UNIDADES BIGINT[], F_DATA_INICIAL DATE, F_DATA_FINAL DATE)
     RETURNS TABLE
             (

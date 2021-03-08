@@ -1,30 +1,3 @@
--- Sobre:
---
--- Relatório que cálculo a aderência do colaborador nas marcações de intervalo dentro do período filtrado. É considerado
--- para o cálculo da aderência a tabela MAPA. Os colaboradores que tiverem mapa em um dia, é contabilizado como tendo a
--- necessidade de realizar as marcações que seu cargo pede.
---
--- Histórico:
--- 2020-04-24 -> Function documentada e adicionada ao GitHub (luiz_fp - PL-2720).
--- 2020-04-27 -> Nome da function alterado de 'func_relatorio_aderencia_intervalo_colaborador' para
---               'func_marcacao_relatorio_aderencia_marcacoes_colaboradores_mapa'.
---               CPF tmbém foi alterado para ser BIGINT ao invés de TEXT. (luiz_fp - PL-2720).
--- 2020-04-28 -> O relatório foi extensivamente alterado visando otimização, dentre as alterações:
---               1. Paramos de utilizar a 'view_extrato_mapas_versus_intervalos' que era muito lenta. Agora é
---                  utilizado a nova function: func_marcacao_intervalos_versus_mapas.
---               2. As junções dos dados de motoristas e ajudantes no mesmo CPF é feita diretamente nesse relatório
---                  e através de UNION ALL, não mais UNION, como era feito na antiga 'view_intervalo_mapa_colaborador'.
---               3. Valores de filtragens são aplicados o quanto antes no processo de busca dos dados, por isso mesmo
---                  repassamos os parâmetros de unidade e data inicial/final para a
---                  'func_marcacao_intervalos_versus_mapas'.
---               4. O uso de CTEs nos permite buscar informações de dados já filtrados (vide item 3). Isso pode ser
---                  visto na CTE 'mapas_intervalos_por_funcao', que realiza três consultas na CTE
---                  'mapas_intervalos_todos'.
---               5. As condições de filtragem (os WHEREs) foram alterados de modo que contemplem a aplicação de um
---                  index e evitem um scan sequencial.
---               6. Alguns counts e sums foram feitos em CTEs inicias para poderem ser reaproveitados mais adiante no
---                  fluxo, evitando a necessidade de derivá-los novamente
---                  (luiz_fp - PL-2720).
 create or replace function func_marcacao_relatorio_aderencia_marcacoes_colaboradores_mapa(f_cod_unidade bigint,
                                                                                           f_cpf bigint,
                                                                                           f_data_inicial date,

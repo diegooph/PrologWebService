@@ -1,16 +1,3 @@
--- Sobre:
--- Essa function realiza o cadastro de uma unidade no sistema. Além disso, já é vinculado os pilares que a unidade
--- terá acesso.
--- Toda unidade criada terá acesso ao pilar Gente (3). Mesmo que não seja informado explicitamente para liberar esse
--- pilar.
--- Dessa forma, garantimos que toda a unidade cadastrada terá acesso ao pilar de gestão de cargos e pessoas.
---
--- Todos os parâmetros fornecidos para a function são validados.
---
--- Histórico:
--- 2019-08-15 -> Function criada (luizfp - PL-2200).
--- 2019-09-18 -> Adiciona no schema suporte (natanrotta - PL-2242).
--- 2020-08-14 -> Adiciona chamada para logar execução da function (gustavocnp95 - PL-3066).
 CREATE OR REPLACE FUNCTION SUPORTE.FUNC_UNIDADE_CADASTRA_UNIDADE(F_COD_EMPRESA BIGINT,
                                                                  F_COD_REGIONAL BIGINT,
                                                                  F_NOME_UNIDADE TEXT,

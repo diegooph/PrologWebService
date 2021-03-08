@@ -1,17 +1,3 @@
--- Sobre:
--- Esta function retorna uma lista dos socorros em rota com base nos filtros de múltiplas unidades, data inicial e final
---
--- Observação:
--- O filtro de data se baseia apenas na data de abertura.
---
--- Histórico:
--- 2019-12-20 -> Function criada (wvinim - PL-2424).
--- 2020-01-13 -> Adição de colunas para indicar se veículo ou colaborador foram deletados (wvinim - PL-2424).
--- 2020-01-14 -> Aplica o filtro por colaborador apenas se não tiver permissão para ver todos (wvinim - PL-2424).
--- 2020-01-30 -> Adiciona ordenamento pela data de abertura decrescente (wvinim - PL-2424).
--- 2020-02-11 -> Aplica a verificação que restringe a utilização apenas para empresas liberadas.
--- 2020-02-14 -> Adiciona as fotos de abertura (wvinim - PL-2517).
--- 2020-03-19 -> Adiciona as colunas refentes às datas de deslocamento (wvinim - PL-2631).
 CREATE OR REPLACE FUNCTION PUBLIC.FUNC_SOCORRO_ROTA_LISTAGEM(F_COD_UNIDADES BIGINT[],
                                                              F_DATA_INICIAL DATE,
                                                              F_DATA_FINAL DATE,

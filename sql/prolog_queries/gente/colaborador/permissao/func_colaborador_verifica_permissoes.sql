@@ -1,18 +1,3 @@
--- Sobre:
---
--- Function para verificar se um colaborador que faz uma requisição no WS do ProLog possui as permissões necessárias
--- que o método que ele utiliza está pedindo.
---
--- A function pode tanto verificar se o F_PERMISSOES_COLABORADOR possui ALGUMA DAS permissões passadas em
--- F_PERMISSSOES_NECESSARIAS ou se o F_PERMISSOES_COLABORADOR possui TODAS AS permissões de F_PERMISSSOES_NECESSARIAS.
--- Depende do valor de F_PRECISA_TER_TODAS_AS_PERMISSOES.
---
--- Essa function será usada em conjunto das functions:
--- -> FUNC_COLABORADOR_VERIFICA_PERMISSOES_TOKEN
--- -> FUNC_COLABORADOR_VERIFICA_PERMISSOES_CPF_DATA_NASCIMENTO
---
--- Histórico:
--- 2019-08-29 -> Function criada (luizfp - PL-2267).
 CREATE OR REPLACE FUNCTION FUNC_COLABORADOR_VERIFICA_PERMISSOES(F_PERMISSOES_COLABORADOR INTEGER[],
                                                                 F_PERMISSSOES_NECESSARIAS INTEGER[],
                                                                 F_PRECISA_TER_TODAS_AS_PERMISSOES BOOLEAN)

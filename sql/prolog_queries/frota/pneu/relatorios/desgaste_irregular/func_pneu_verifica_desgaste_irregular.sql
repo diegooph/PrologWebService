@@ -1,7 +1,3 @@
--- Essa function analisa e categoriza os pneus, atualmente, em 3 tipos de desgastes: DESGASTE_OMBROS_BANDA_RODAGEM,
--- DESGASTE_CENTRALIZADO e DESGASTE_ACENTUADO_UM_OMBRO_PNEU. Se o desgaste não se enquadrar em nenhum desses 3, será
--- retornado null para TIPO_DESGASTE_IRREGULAR e NIVEL_DESGASTE_IRREGULAR. O código do pneu sempre retornará o mesmo
--- fornecido.
 CREATE OR REPLACE FUNCTION FUNC_PNEU_VERIFICA_DESGASTE_IRREGULAR(
   F_COD_PNEU              BIGINT,
   F_SULCO_EXTERNO         REAL,

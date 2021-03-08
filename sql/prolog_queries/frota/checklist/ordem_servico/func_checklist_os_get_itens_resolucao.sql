@@ -1,3 +1,6 @@
+-- Sobre:
+--
+-- Function utilizada para buscar os Itens de uma Ordem de Serviço para serem resolvidos.
 create or replace function func_checklist_os_get_itens_resolucao(f_cod_unidade bigint,
                                                                  f_cod_os bigint,
                                                                  f_placa_veiculo text,

@@ -1,13 +1,3 @@
--- Sobre:
--- A lógica aplicada nessa function é a seguinte:
--- Cria uma tabela de "pré-import" e aplica uma trigger para verificar os dados inseridos e importar o que estiver de
--- acordo com as verificações.
---
--- Pré-requisitos:
--- Func remove_all_apaces criada.
---
--- Histórico:
--- 2020-07-30 -> Function criada (thaisksf - PL-2460).
 CREATE OR REPLACE FUNCTION IMPLANTACAO.FUNC_COLABORADOR_IMPORT_CRIA_TABELA_IMPORT(F_COD_EMPRESA BIGINT,
                                                                                   F_COD_UNIDADE BIGINT,
                                                                                   F_USUARIO TEXT,

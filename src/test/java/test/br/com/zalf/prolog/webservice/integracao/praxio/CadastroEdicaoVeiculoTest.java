@@ -48,7 +48,10 @@ public class CadastroEdicaoVeiculoTest extends BaseTest {
         serviceIntegracao.inserirVeiculoPraxio(TOKEN_INTEGRACAO, veiculoCadastro);
 
         final Veiculo veiculoByPlaca =
-                serviceVeiculo.getVeiculoByPlaca(getValidToken(CPF_USUARIO), veiculoCadastro.getPlacaVeiculo(), false);
+                serviceVeiculo.getVeiculoByPlaca(getValidToken(CPF_USUARIO),
+                                                 veiculoCadastro.getPlacaVeiculo(),
+                                                 null,
+                                                 false);
 
         assertThat(veiculoByPlaca).isNotNull();
         assertThat(veiculoByPlaca.getKmAtual()).isEqualTo(veiculoCadastro.getKmAtualVeiculo());
@@ -68,7 +71,10 @@ public class CadastroEdicaoVeiculoTest extends BaseTest {
                 veiculoEdicao);
 
         final Veiculo veiculoByPlaca =
-                serviceVeiculo.getVeiculoByPlaca(getValidToken(CPF_USUARIO), veiculoEdicao.getPlacaVeiculo(), false);
+                serviceVeiculo.getVeiculoByPlaca(getValidToken(CPF_USUARIO),
+                                                 veiculoEdicao.getPlacaVeiculo(),
+                                                 null,
+                                                 false);
 
         assertThat(veiculoByPlaca).isNotNull();
         assertThat(veiculoByPlaca.getKmAtual()).isEqualTo(veiculoEdicao.getNovoKmVeiculo());
@@ -92,7 +98,10 @@ public class CadastroEdicaoVeiculoTest extends BaseTest {
         serviceIntegracao.transferirVeiculoPraxio(TOKEN_INTEGRACAO, veiculoTransferencia);
 
         final Veiculo veiculoByPlaca =
-                serviceVeiculo.getVeiculoByPlaca(getValidToken(CPF_USUARIO), veiculoTransferencia.getPlacaTransferida(), false);
+                serviceVeiculo.getVeiculoByPlaca(getValidToken(CPF_USUARIO),
+                                                 veiculoTransferencia.getPlacaTransferida(),
+                                                 null,
+                                                 false);
 
         assertThat(veiculoByPlaca).isNotNull();
         assertThat(veiculoByPlaca.getCodUnidadeAlocado()).isEqualTo(veiculoTransferencia.getCodUnidadeDestino());

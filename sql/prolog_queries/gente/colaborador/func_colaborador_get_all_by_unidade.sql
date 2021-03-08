@@ -1,11 +1,3 @@
--- Sobre:
---
--- Esta function retorna uma lista dos colaboradores de acordo com o código de unidade e o filtro de status.
---
--- Histórico:
--- 2020-01-07 -> Function criada (wvinim - PL-2367).
--- 2020-01-29 -> Adiciona telefone e e-mail ao retorno (wvinim - PL-2471).
--- 2020-02-04 -> Adiciona a sigla iso2 (wvinim - PL-2471).
 CREATE OR REPLACE FUNCTION FUNC_COLABORADOR_GET_ALL_BY_UNIDADE(F_COD_UNIDADE BIGINT, F_STATUS_ATIVOS BOOLEAN)
     RETURNS TABLE
             (

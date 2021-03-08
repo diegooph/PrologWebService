@@ -1,6 +1,3 @@
--- Dado uma variação de desgaste e um tipo de desgaste, verifica em qual nível se enquadra o desgaste atual.
--- Atualmente essa function compara apenas os padrões do ProLog para o tipo de desgaste informado.
--- Caso a variação seja <= 0, será retornado null.
 CREATE OR REPLACE FUNCTION FUNC_PNEU_GET_NIVEL_DESGASTE_IRREGULAR(
   F_VARIACAO                REAL,
   F_TIPO_DESGASTE_ANALISADO PNEU_DESGASTE_IRREGULAR_TYPE)

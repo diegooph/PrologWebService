@@ -1,12 +1,3 @@
--- Sobre:
---
--- Associa um treinamento a um modelo de quiz.
---
--- Caso o modelo de quiz informado já possua um treinamento vinculado, o mesmo será alterado para o treinamento
--- informado.
---
--- Histórico:
--- 2020-09-21 -> Function criada (luiz_fp - PS-1248).
 create or replace function suporte.func_quiz_associar_treinamento_modelo_quiz(f_cod_unidade bigint,
                                                                               f_cod_modelo_quiz bigint,
                                                                               f_cod_treinamento bigint,

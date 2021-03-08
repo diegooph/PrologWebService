@@ -1,6 +1,3 @@
-DROP FUNCTION FUNC_PNEU_GET_PRIMEIRA_ULTIMA_AFERICAO(F_COD_PNEU BIGINT);
-
--- Function para trazer a primeira e última aferições de um pneu
 CREATE FUNCTION FUNC_PNEU_GET_PRIMEIRA_ULTIMA_AFERICAO(F_COD_PNEU BIGINT)
   RETURNS TABLE(
     COD_PNEU                               BIGINT,

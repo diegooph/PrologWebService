@@ -1,16 +1,3 @@
--- Sobre:
---
--- Function que gera o farol de checklists. A function está preparada para lidar com itens criticos retroativos, ou
--- seja, itens que estão pendentes mas que não foram apontados no checklist do dia.
--- Para não prejudicar o desempenho da function, limitamos em cinco o número de itens críticos pendentes retornados pela
--- function. Isso não impacta negativamente o farol, pois a placa é mostrada como bloqueada, independente da quantidade
--- de itens mostrados.
---
--- Histórico:
--- 2020-03-03 -> Atualização de arquivo e documentação (wvinim - PL-2494).
--- 2020-07-07 -> Corrige funcionamento da query (diogenesvanzella - PL-2816).
--- 2020-10-13 -> Melhora performance da query (luizfp - PL-3199).
--- 2020-10-13 -> Aumenta memória disponível para uso para 8MB (luizfp - PL-3199).
 create or replace function func_checklist_get_farol_checklist(f_cod_unidade bigint,
                                                               f_data_inicial date,
                                                               f_data_final date,

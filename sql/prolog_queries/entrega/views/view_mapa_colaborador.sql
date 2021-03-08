@@ -1,19 +1,5 @@
--- Sobre:
---
--- View responsável por buscar os mapas apenas de colaboradores que estejam cadastrados no Prolog.
--- São trazidos os mapas de motoristas e também os de ajudantes.
---
--- Para identificar se um mapa tem um colaborador vinculado no Prolog, é preciso que o código da unidade do colaborador
--- e a matrícula ambev tenham um correspondente na tabela mapa.
---
--- Perceba que um mapa pode retornar mais de uma vez, sendo o máximo de 3: uma para o motorista e outras duas para os
+-- Obs.: um mapa pode retornar mais de uma vez, sendo o máximo de 3: uma para o motorista e outras duas para os
 -- dois ajudantes.
---
--- Histórico:
--- 2019-02-15 -> View criada (thaisksf - PL-985).
--- 2020-10-17 -> View otimizada — alterado ordem dos joins e usado 'union all' ao invés de 'union' (luizfp - PL-3199).
--- 2020-10-23 -> Correção: existem casos em que podem vir dados duplicados, precisamos manter com 'union'
---               (luizfp - PL-3199).
 create or replace view view_mapa_colaborador as
 select m.mapa        as mapa,
        c.cpf         as cpf,

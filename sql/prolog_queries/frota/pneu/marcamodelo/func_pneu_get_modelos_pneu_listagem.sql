@@ -1,12 +1,3 @@
--- Sobre:
---
--- Esta function retorna todos os modelos de pneu de uma empresa, podendo também filtrar por marca.
---
---
--- Histórico:
--- 2019-10-15 -> Function criada (thaisksf PL-2263).
--- 2019-11-17 -> Permite filtrar para incluir marcas não utilizadas pela empresa (luizfp PL-2390).
--- 2019-11-20 -> Evita buscar todos os modelos presentes no ProLog (diogenesvanzella PL-2390).
 CREATE OR REPLACE FUNCTION FUNC_PNEU_GET_MODELOS_PNEU_LISTAGEM(F_COD_EMPRESA BIGINT,
                                                                F_COD_MARCA BIGINT,
                                                                F_INCLUIR_MARCAS_NAO_UTILIZADAS BOOLEAN)

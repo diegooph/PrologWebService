@@ -1,1 +1,0 @@
-select * from func_libera_todas_permissoes(3383283194);

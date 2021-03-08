@@ -1,12 +1,24 @@
 Change Log
 ==========
 
-<a name="v2.0.3"></a>
-## Version [v2.0.3](https://github.com/luizfp/PrologWebService/compare/v2.0.2...v2.0.3) (release-date) [unreleased]
+<a name="v2.1.1"></a>
+## Version [v2.1.1](https://github.com/luizfp/PrologWebService/compare/v2.1.0...v2.1.1) (release-date) [unreleased]
 
-#### Features
+### Refactors
+* Remove classes depreciadas e não utilizadas de O.S. de checklist
+
+<a name="v2.1.0"></a>
+## Version [v2.1.0](https://github.com/luizfp/PrologWebService/compare/v2.0.2...v2.1.0) (2021-03-07)
+
+### Features
 * Adiciona estrutura de testes e2e com testcontainers e Flyway (PL-3307)
+* Cria integração com sistema WebFinatto (PL-2874)
 
+### Refactors
+* Ordena lista de histórico de acoplamentos por data/hora
+
+### Bug Fixes
+* Corrige path de resource de histórico de acoplamentos
 
 <a name="v2.0.2"></a>
 ## Version [v2.0.2](https://github.com/luizfp/PrologWebService/compare/v2.0.1...v2.0.2) (2021-02-22)

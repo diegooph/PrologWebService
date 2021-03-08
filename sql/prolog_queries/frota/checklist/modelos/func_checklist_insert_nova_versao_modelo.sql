@@ -1,9 +1,3 @@
--- Sobre:
---
--- Function para criar uma nova versão de um modelo de checklist.
---
--- Histórico:
--- 2020-03-03 -> Atualização de arquivo e documentação (wvinim - PL-2494).
 CREATE OR REPLACE FUNCTION FUNC_CHECKLIST_INSERT_NOVA_VERSAO_MODELO(F_COD_UNIDADE_MODELO BIGINT,
                                                                     F_COD_MODELO BIGINT,
                                                                     F_NOME_MODELO TEXT,

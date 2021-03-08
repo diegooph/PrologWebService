@@ -1,13 +1,3 @@
--- Sobre:
---
--- Function que gera o relatório de estratificação de repostas não ok.
---
--- Histórico:
--- 2020-03-03 -> Atualização de arquivo e documentação (wvinim - PL-2494).
--- 2020-03-25 -> Adiciona a coluna de tipo de veículo (wvinim - PL-2546).
--- 2020-07-07 -> Adição das informações de totais de mídias coletadas por alternativa (wvinim - PL-2705).
--- 2020-07-13 -> Atualização de arquivo e documentação (wvinim - PL-2824).
--- 2020-07-14 -> Adição da coluna de ação gerada pela resposta  (wvinim - PL-2822).
 create or replace function func_checklist_relatorio_estratificacao_respostas_nok(f_cod_unidades bigint[],
                                                                                  f_placa_veiculo character varying,
                                                                                  f_data_inicial date,

@@ -1,10 +1,3 @@
--- Sobre:
--- Busca o aviso de bloqueio que deve ser exibido na tela de transferência de veículos para uma empresa específica.
--- Caso a empresa não tenha bloqueado a deleção de OS de check ou serviços de pneus por conta de transferência,
--- uma mensagem default é retornada.
---
--- Histórico:
--- 2019-09-16 -> Function criada (luizfp - PL-2083)
 CREATE OR REPLACE FUNCTION FUNC_VEICULO_TRANSFERENCIA_BUSCA_AVISO_BLOQUEIO(F_COD_EMPRESA BIGINT)
     RETURNS TABLE
             (

@@ -75,7 +75,9 @@ public class MovimentacaoTest extends BaseTest {
 
         // Valida informações do pneu
         final List<Pneu> pneusAnalise =
-                pneuService.getPneusByCodUnidadesByStatus(Collections.singletonList(5L), StatusPneu.ANALISE.asString());
+                pneuService.getPneusByCodUnidadesByStatus("PROLOG_DEV",
+                                                          Collections.singletonList(5L),
+                                                          StatusPneu.ANALISE.asString());
 
         PneuAnalise pneuAnalise = null;
         for (final Pneu pneu : pneusAnalise) {

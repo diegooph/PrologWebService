@@ -1,16 +1,3 @@
--- Sobre:
--- A lógica aplicada nessa function é a seguinte:
--- Ao receber o código do checklist, é realizado a deleção lógica do mesmo junto com as suas respectivas OS.
--- Caso o checklist é integrado, também é realizado a deleção na tabela de integração.
---
--- Précondições:
---
--- Histórico:
--- 2019-09-17 -> Adiciona SESSION_USER. (natanrotta - PL-2229).
--- 2019-09-18 -> Adiciona no schema suporte. (natanrotta - PL-2242).
--- 2020-05-22 -> Adiciona estrutura para deletar correspondentes na integração. (natanrotta - PLI-157).
--- 2020-07-07 -> Adiciona motivo de deleção. (thaisksf - PL-2801).
--- 2020-08-14 -> Adiciona chamada para logar execução da function (gustavocnp95 - PL-3066).
 CREATE OR REPLACE FUNCTION SUPORTE.FUNC_CHECKLIST_DELETA_CHECKLIST_E_OS(F_COD_UNIDADE BIGINT,
                                                                         F_COD_CHECKLIST BIGINT,
                                                                         F_PLACA TEXT,

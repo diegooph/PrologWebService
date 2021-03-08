@@ -1,11 +1,3 @@
--- Sobre:
---
--- Function utilizada para listar os cargos não utilizados na unidade. Um cargo não utilizado é um cargo que não está
--- associado a nenhum colaborador, não tendo relação com a quantidade de permissões liberadas que possui.
---
--- Histórico:
--- 2020-06-25 -> Removemos as funções bloqueadas da contagem de permissões (diogenesvanzella - PL-2671).
--- 2020-07-08 -> Remove verificação das funções bloqueadas (diogenesvanzella - PL-2671).
 create or replace function func_cargos_get_cargos_nao_utilizados(f_cod_unidade bigint)
     returns table
             (

@@ -1,14 +1,3 @@
--- Sobre:
---
--- A lógica aplicada nessa function é a seguinte:
--- Altera o km do fechamento da OS.
---
--- Précondições:
--- FUNC_GARANTE_UNIDADE_EXISTE criada.
---
--- Histórico:
--- 2020-04-29 -> Function criada (thaisksf - PL-2663).
--- 2020-08-14 -> Adiciona chamada para logar execução da function (gustavocnp95 - PL-3066).
 CREATE OR REPLACE FUNCTION SUPORTE.FUNC_CHECKLIST_OS_ALTERA_KM_FECHAMENTO_OS(F_COD_UNIDADE BIGINT,
                                                                              F_COD_OS BIGINT,
                                                                              F_KM_ATUAL BIGINT,

@@ -1,7 +1,6 @@
 package test.br.com.zalf.prolog.webservice;
 
 import br.com.zalf.prolog.webservice.config.PrologApplication;
-import org.flywaydb.core.Flyway;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,9 +11,11 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.testcontainers.containers.JdbcDatabaseContainer;
+import test.br.com.zalf.prolog.webservice.config.FlywayInstanceProvider;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import java.util.List;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = {PrologApplication.class})
@@ -23,18 +24,22 @@ import javax.annotation.PreDestroy;
 @ContextConfiguration(initializers = {TestContainer.DockerPostgresDatasourceInitializer.class})
 @ActiveProfiles(profiles = {"test"})
 public class IntegrationTest {
-
     @Autowired
     @NotNull
     private JdbcDatabaseContainer<?> container;
 
     @Autowired
     @NotNull
-    private Flyway flyway;
+    private List<FlywayInstanceProvider> configs;
 
     @PostConstruct
     void initialSetup() {
-        flyway.migrate();
+        configs.stream()
+                .map(FlywayInstanceProvider::getFlyway)
+                .forEach(flyway -> {
+                    flyway.repair();
+                    flyway.migrate();
+                });
     }
 
     @PreDestroy

@@ -1,9 +1,3 @@
--- Sobre:
---
--- Function responsável por alterar as informações de banda de um pneu.
---
--- Histórico:
--- 2019-11-28 -> Altera nome de colunas de algumas tabelas (luizfp - PL-2295).
 CREATE OR REPLACE FUNCTION FUNC_PNEUS_UPDATE_BANDA_PNEU(F_COD_PNEU BIGINT,
                                                         F_COD_MODELO_BANDA BIGINT,
                                                         F_CUSTO_BANDA REAL)

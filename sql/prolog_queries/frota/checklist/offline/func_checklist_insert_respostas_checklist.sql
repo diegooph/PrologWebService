@@ -1,9 +1,3 @@
--- Sobre:
---
--- Essa function insere uma resposta não ok de um checklist realizado
---
--- Histórico:
--- 2020-03-02 -> Atualização de arquivo e documentação (wvinim - PL-2494).
 CREATE OR REPLACE FUNCTION FUNC_CHECKLIST_INSERT_RESPOSTAS_CHECKLIST(F_COD_UNIDADE_CHECKLIST BIGINT,
                                                                      F_COD_MODELO_CHECKLIST BIGINT,
                                                                      F_COD_VERSAO_MODELO_CHECKLIST BIGINT,

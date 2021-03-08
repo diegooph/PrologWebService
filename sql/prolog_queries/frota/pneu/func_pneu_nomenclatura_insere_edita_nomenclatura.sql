@@ -1,14 +1,3 @@
--- Sobre:
--- A lógica aplicada nessa function é a seguinte:
--- insere/edita a nomenclatura de um diagrama de veículo.
---
--- Precondições:
--- 1) Informações necessárias para realizar o insert.
--- 2) Tabela diagrama_empresa_posicao_idioma criada.
---
--- Histórico:
--- 2019-09-03 -> Function criada (thaisksf PL-2259).
--- 2020-05-11 -> Adiciona cod_auxiliar (diogenesvanzella - PLI-142).
 CREATE OR REPLACE FUNCTION
     FUNC_PNEU_NOMENCLATURA_INSERE_EDITA_NOMENCLATURA(F_COD_EMPRESA BIGINT,
                                                      F_COD_DIAGRAMA BIGINT,

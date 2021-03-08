@@ -1,10 +1,3 @@
--- Sobre:
---
--- Function para buscar os modelos de checklist que estão bloqueados para fins de integração com base
--- em um código de unidade.
---
--- Histórico:
--- 2020-08-07 -> Cria function (gustavocnp95 - PLI-183).
 create or replace function integracao.func_checklist_modelo_get_modelos_bloqueados(f_cod_unidade bigint)
     returns table
             (

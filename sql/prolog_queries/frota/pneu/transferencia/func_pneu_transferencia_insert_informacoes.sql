@@ -1,11 +1,3 @@
--- Sobre:
---
--- Function utilizada para inserir as informações dos pneus sendo transferidos. As informações são baseadas no status
--- atual do pneu.
---
--- Histórico:
--- 2019-12-18 -> Function criada (thaisksf - PL-1535).
--- 2020-03-25 -> Altera function para melhorar o desempenho (diogenesvanzella - PLI-80).
 CREATE OR REPLACE FUNCTION FUNC_PNEU_TRANSFERENCIA_INSERT_INFORMACOES(F_COD_PROCESSO_TRANSFERENCIA BIGINT,
                                                                       F_COD_PNEUS BIGINT[])
     RETURNS BIGINT

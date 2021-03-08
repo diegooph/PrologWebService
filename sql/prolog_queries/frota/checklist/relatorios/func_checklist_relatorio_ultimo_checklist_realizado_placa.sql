@@ -1,11 +1,3 @@
--- Sobre:
---
--- Function que gera o relatório que mostra o ultimo checklist realizado por placa - múltiplas unidades.
---
--- Histórico:
--- 2020-09-02 -> Cria function (thaisksf - PL-3092).
--- 2020-09-18 -> Adiciona LPAD no cpf do colaborador (diogenesvanzella - PL-3092).
--- 2020-09-22 -> Adiciona coluna observação (gustavocnp95 - PL-3165)
 create or replace function func_checklist_relatorio_ultimo_checklist_realizado_placa(f_cod_unidades bigint[],
                                                                                      f_cod_tipos_veiculos bigint[])
     returns table

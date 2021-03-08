@@ -1,13 +1,3 @@
--- sobre:
---
--- function utilizada para buscar o cronograma de aferição de uma empresa. a function recebe um array de unidades,
--- retornando o cronograma das unidades requisitadas.
---
--- histórico:
--- 2019-11-21 -> Function atualizada para filtrar por várias unidades (diogenesvanzella - pli-51).
--- 2020-04-07 -> Adiciona código da unidade da placa (diogenesvanzella - pli-119).
--- 2020-05-08 -> Modifica atributos pode aferir de boolean para text, conforme novo formato da tabela (gustavocnp95 - PL-2689)
--- 2020-06-17 -> Adiciona identificador de frota ao cronograma de aferições. (thaisksf - PL-2760)
 CREATE OR REPLACE FUNCTION FUNC_AFERICAO_GET_CRONOGRAMA_AFERICOES_PLACAS(F_COD_UNIDADES BIGINT[],
                                                                          F_DATA_HORA_ATUAL TIMESTAMP WITH TIME ZONE)
     RETURNS TABLE

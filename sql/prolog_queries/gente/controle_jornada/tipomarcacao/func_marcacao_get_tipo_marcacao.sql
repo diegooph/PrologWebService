@@ -1,12 +1,3 @@
--- Sobre:
---
--- Esta function retorna um objeto de tipo de marcação
---
--- Precondições:
--- 1) Criada a view VIEW_INTERVALO_TIPO
---
--- Histórico:
--- 2019-08-29 -> Adicionada coluna de código auxiliar (wvinim - PL-2223).
 CREATE OR REPLACE FUNCTION FUNC_MARCACAO_GET_TIPO_MARCACAO(F_COD_TIPO_MARCACAO BIGINT)
   RETURNS TABLE(
     CODIGO_TIPO_INTERVALO             BIGINT,

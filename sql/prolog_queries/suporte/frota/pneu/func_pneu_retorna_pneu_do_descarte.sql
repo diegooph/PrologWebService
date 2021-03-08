@@ -19,11 +19,6 @@
 -- 1) Para a function funcionar, a última movimentação do pneu deve ser para descarte.
 -- 2) Assumimos que não exista mais de uma movimentação para descarte, o que seria uma inconsistência e não é nem
 -- verificado e nem tratado por essa function.
---
--- Histórico:
--- 2019-07-09 -> Function criada (thaisksf - PL-2090).
--- 2019-09-18 -> Adiciona ao schema suporte (natanrotta - PL-2242).
--- 2020-08-14 -> Adiciona chamada para logar execução da function (gustavocnp95 - PL-3066).
 CREATE OR REPLACE FUNCTION SUPORTE.FUNC_PNEU_RETORNA_PNEU_DO_DESCARTE(F_COD_EMPRESA BIGINT,
                                                                       F_COD_UNIDADE BIGINT,
                                                                       F_COD_PNEU BIGINT,

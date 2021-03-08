@@ -1,8 +1,3 @@
--- Sobre:
--- Esta função cria um novo motivo.
---
--- Histórico:
--- 2020-03-18 -> Function criada (gustavocnp95 - PL-2607).
 CREATE OR REPLACE FUNCTION FUNC_MOTIVO_MOVIMENTO_INSERE(F_COD_EMPRESA_MOTIVO BIGINT,
                                                         F_DESCRICAO_MOTIVO TEXT,
                                                         F_ATIVO_MOTIVO BOOLEAN,

@@ -1,12 +1,3 @@
--- Sobre:
--- A lógica aplicada nessa function é a seguinte:
--- Verifica se o setor existe na unidade informada.
---
--- Precondições:
--- 1) Necessário o código da unidade e o código do setor para a verificação da integridade entre unidade-setor.
---
--- Histórico:
--- 2019-07-23 -> Function criada (thaisksf).
 CREATE OR REPLACE FUNCTION FUNC_GARANTE_SETOR_EXISTE(
   F_COD_UNIDADE BIGINT,
   F_COD_SETOR BIGINT)

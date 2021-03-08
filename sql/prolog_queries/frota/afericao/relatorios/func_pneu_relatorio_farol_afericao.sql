@@ -1,11 +1,3 @@
--- Sobre:
---
--- Esta function retorna os dados necessários para a construção do relatório de farol de aferições.
--- Este relatório exibe as quantidades e percentuais de pneus que estão aplicados (atualmente) e
--- foram aferidos em um range de data.
---
--- Histórico:
--- 2019-11-22 -> Function criada (wvinim - PL-2268).
 CREATE OR REPLACE FUNCTION FUNC_PNEU_RELATORIO_FAROL_AFERICAO(F_COD_UNIDADES BIGINT[], F_DATA_INICIAL DATE, F_DATA_FINAL DATE)
     RETURNS TABLE
             (

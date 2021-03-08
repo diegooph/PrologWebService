@@ -1,11 +1,3 @@
--- Sobre:
---
--- Esta function apresenta, por placa, informações sobre o número de aferições realizadas, tanto de pressão quanto
--- medição de sulcos, e sua aderência ao longo do período pesquisado.
---
--- Histórico:
--- 2020-04-23 -> Corrige para realizar calculo do periodo da primeira afericao tambem (gustavocnp95 - PL-1900).
--- 2020-06-18 -> Adiciona identificador de frota ao relatório. (thaisksf - PL-2760).
 CREATE OR REPLACE FUNCTION FUNC_RELATORIO_PNEU_ADERENCIA_AFERICAO(F_COD_UNIDADE TEXT[], F_DATA_INICIAL DATE, F_DATA_FINAL DATE)
     RETURNS TABLE
             (

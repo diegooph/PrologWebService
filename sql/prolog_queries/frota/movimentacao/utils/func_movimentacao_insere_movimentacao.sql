@@ -1,11 +1,3 @@
--- Sobre:
--- A lógica aplicada nessa function é a seguinte:
--- Ao receber os dados da movimentação através do servidor, a function realiza a inserção de uma nova movimentação.
--- Criada para suprir a nova coluna "pressao_atual" da tabela movimentacao. Assim não precisamos mexer no objeto que
--- trata pressão null = 0.
---
--- Histórico:
--- 2019-11-29 -> Function criada (thaisksf - PL-2819).
 CREATE OR REPLACE FUNCTION FUNC_MOVIMENTACAO_INSERE_MOVIMENTACAO(F_COD_UNIDADE BIGINT,
                                                                  F_COD_MOVIMENTACAO_PROCESSO BIGINT,
                                                                  F_COD_PNEU BIGINT,

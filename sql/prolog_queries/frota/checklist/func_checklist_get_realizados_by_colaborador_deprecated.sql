@@ -1,12 +1,3 @@
--- Sobre:
---
--- Function que realiza a busca dos checklists realizados por colaborador.
---
--- Histórico:
--- 2020-06-03 -> Atualização do arquivo específico (wvinim - PL-2773).
--- 2020-07-07 -> Altera nome da function antiga para manter a compatibilidade (wvinim - PL-2824).
--- 2020-07-13 -> Criação de arquivo e documentação (wvinim - PL-2824).
--- 2020-10-14 -> Adiciona observação ao retorno (luizfp).
 CREATE OR REPLACE FUNCTION FUNC_CHECKLIST_GET_REALIZADOS_BY_COLABORADOR_DEPRECATED(F_CPF_COLABORADOR BIGINT,
                                                                                    F_DATA_INICIAL DATE,
                                                                                    F_DATA_FINAL DATE,

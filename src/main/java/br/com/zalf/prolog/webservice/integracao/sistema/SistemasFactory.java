@@ -15,6 +15,8 @@ import br.com.zalf.prolog.webservice.integracao.protheusrodalog.SistemaProtheusR
 import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.SistemaRodoparHorizonte;
 import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.data.RodoparHorizonteRequesterImpl;
 import br.com.zalf.prolog.webservice.integracao.transport.SistemaTransportTranslecchi;
+import br.com.zalf.prolog.webservice.integracao.webfinatto.SistemaWebFinatto;
+import br.com.zalf.prolog.webservice.integracao.webfinatto.data.SistemaWebFinattoRequesterImpl;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -26,11 +28,10 @@ public final class SistemasFactory {
         throw new IllegalStateException(SistemasFactory.class.getSimpleName() + " cannot be instantiated!");
     }
 
-    public static Sistema createSistema(
-            @NotNull final SistemaKey sistemaKey,
-            @NotNull final RecursoIntegrado recursoIntegrado,
-            @NotNull final IntegradorProLog integradorProLog,
-            @NotNull final String userToken) {
+    public static Sistema createSistema(@NotNull final SistemaKey sistemaKey,
+                                        @NotNull final RecursoIntegrado recursoIntegrado,
+                                        @NotNull final IntegradorProLog integradorProLog,
+                                        @NotNull final String userToken) {
         switch (sistemaKey) {
             case AVACORP_AVILAN_OLD:
                 return new AvaCorpAvilan(
@@ -80,6 +81,13 @@ public final class SistemasFactory {
                         integradorProLog,
                         sistemaKey,
                         recursoIntegrado,
+                        userToken);
+            case WEB_FINATTO:
+                return new SistemaWebFinatto(
+                        new SistemaWebFinattoRequesterImpl(),
+                        sistemaKey,
+                        recursoIntegrado,
+                        integradorProLog,
                         userToken);
             default:
                 throw new IllegalStateException("Nenhum sistema encontrado com a chave: " + sistemaKey.getKey());

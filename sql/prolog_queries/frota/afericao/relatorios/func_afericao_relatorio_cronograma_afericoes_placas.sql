@@ -1,13 +1,3 @@
--- Sobre:
---
--- Esta função retorna uma lista do cronograma de aferições por placa, em formato de relatório.
---
--- Histórico:
--- 2020-02-26 -> Adiciona novas colunas no relatório de cronograma de aferições (wvinim - PL-2511).
--- 2020-05-15 -> Muda tratativa do status do sulco e pressão (gustavocnp95 - PL-2684)
--- 2020-06-18 -> Adiciona identificador de frota ao relatório. (thaisksf - PL-2760).
--- 2020-07-21 -> Corrige verificação se coleta de sulco/pressão está bloqueada (luiz_fp - PS-1177).
--- 2020-09-10 -> Corrige verificação se coleta de sulco/pressão está bloqueada (diogenesvanzella - PL-3113).
 CREATE OR REPLACE FUNCTION
     FUNC_AFERICAO_RELATORIO_CRONOGRAMA_AFERICOES_PLACAS(F_COD_UNIDADES BIGINT[],
                                                         F_DATA_HORA_ATUAL_UTC TIMESTAMP WITH TIME ZONE,

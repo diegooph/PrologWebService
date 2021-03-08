@@ -1,9 +1,3 @@
--- Sobre:
---
--- Function utilizada para validar se um cargo específico possui acesso à uma função específica do Prolog.
---
--- Histórico:
--- 2020-07-08 -> Function criada (diogenesvanzella - PL-2671).
 create or replace function func_empresa_tem_permissao_funcao_prolog(f_cod_unidade bigint,
                                                                     f_cod_funcao_colaborador bigint,
                                                                     f_cod_funcao_prolog bigint)

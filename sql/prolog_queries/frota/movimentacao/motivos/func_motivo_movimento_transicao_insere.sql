@@ -1,12 +1,3 @@
--- Sobre:
--- Esta função cria uma nova relação motivo, origem e destino por unidade.
---
--- Atenção: A function realiza a validação da já existência da relação por unidade.
--- Se existir, verifica se as informações mudaram, que neste momento é apenas obrigatoriedade.
--- Se sim, exclui a linha e a recria. Se não, apenas ignora, retornando o código já existente.
---
--- Histórico:
--- 2020-03-18 -> Function criada (gustavocnp95 - PL-2607).
 CREATE OR REPLACE FUNCTION FUNC_MOTIVO_MOVIMENTO_TRANSICAO_INSERE(F_COD_MOTIVO BIGINT,
                                                                   F_COD_EMPRESA BIGINT,
                                                                   F_COD_UNIDADE BIGINT,

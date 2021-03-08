@@ -1,9 +1,3 @@
--- Sobre:
---
--- Function para criar um modelo de checklist.
---
--- Histórico:
--- 2020-03-03 -> Atualização de arquivo e documentação (wvinim - PL-2494).
 CREATE OR REPLACE FUNCTION FUNC_CHECKLIST_INSERT_MODELO_CHECKLIST_INFOS(F_COD_UNIDADE_MODELO BIGINT,
                                                                         F_NOME_MODELO TEXT,
                                                                         F_STATUS_ATIVO BOOLEAN,

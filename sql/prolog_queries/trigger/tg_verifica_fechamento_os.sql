@@ -1,5 +1,3 @@
--- Realiza verificações e fecha (ou não) os itens da COSI e a OS da COS, com base no que foi preenchido na tabela
--- SUPORTE.FECHAMENTO_OS
 CREATE TRIGGER TG_VERIFICA_FECHAMENTO_OS
     BEFORE INSERT OR UPDATE
     ON SUPORTE.FECHAMENTO_OS

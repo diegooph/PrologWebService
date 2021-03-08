@@ -1,12 +1,3 @@
--- Sobre:
--- Essa function deleta todas as permissões que um cargo possui em uma determinada unidade e libera as permissões
--- informadas por parâmetro.
---
--- Pré-condições:
--- FUNC_GARANTE_COLABORADOR_EXISTE criada.
---
--- Histórico:
--- 2020-02-19 -> Function criada (thaisksf - PL-2150).
 CREATE OR REPLACE FUNCTION FUNC_LIBERA_APENAS_PERMISSOES_ESPECIFICAS(F_CPF BIGINT, F_COD_FUNCOES_PROLOG BIGINT[],
                                                                      OUT F_AVISO_PERMISSOES_INSERIDAS TEXT)
     RETURNS TEXT

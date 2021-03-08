@@ -1,19 +1,3 @@
--- Sobre:
--- A lógica aplicada nessa function é a seguinte:
--- Se o colaborador está inativo, será transferido para a unidade de outra empresa e terá seu status modificado para ativo.
--- Caso contrário, é necessário entrar em contato com a empresa de origem e perguntar se o funcionário n faz mais parte do quadro.
---
--- Precondições:
--- 1) Para a function funcionar é verificado a integridade entre unidade-setor.
--- 2) Verificado se unidades são de empresas distintas
--- 3) Verificado se o colaborador está inativo.
---
--- Histórico:
--- 2019-07-24 -> Function criada (thaisksf - PL-2164).
--- 2019-09-04 -> Corrige update (luizfp).
--- 2019-09-18 -> Adiciona no schema suporte (natanrotta - PL-2242).
--- 2019-12-04 -> Remove tratamento de colaborador inativo (natanrotta - PL-2407).
--- 2020-08-14 -> Adiciona chamada para logar execução da function (gustavocnp95 - PL-3066).
 CREATE OR REPLACE FUNCTION SUPORTE.FUNC_COLABORADOR_TRANSFERE_ENTRE_EMPRESAS(F_COD_UNIDADE_ORIGEM BIGINT,
                                                                              F_CPF_COLABORADOR BIGINT,
                                                                              F_COD_UNIDADE_DESTINO INTEGER,

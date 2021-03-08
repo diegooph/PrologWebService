@@ -1,9 +1,3 @@
--- Sobre:
--- A lógica aplicada nessa function é a seguinte:
--- Clona unidades de uma empresa para outra.
---
--- Histórico:
--- 2020-04-06 -> Function criada (thaisksf - PL-2034).
 CREATE OR REPLACE FUNCTION INTERNO.FUNC_CLONA_UNIDADES(F_COD_EMPRESA_BASE BIGINT,
                                                        F_COD_EMPRESA_USUARIO BIGINT)
     RETURNS VOID

@@ -1,9 +1,3 @@
--- Sobre:
--- Esta função permite estourar um erro que indica que algum problema ocorreu com o processamento das informações
--- enviadas pelo cliente em nosso servidor (do lado do servidor).
---
--- Histórico:
--- 2020-10-20 -> Function criada (gustavocnp95 - PL-2939).
 create or replace function throw_server_side_error(f_message text) returns void
     language plpgsql
 as

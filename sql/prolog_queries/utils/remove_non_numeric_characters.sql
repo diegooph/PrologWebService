@@ -1,9 +1,3 @@
--- Sobre:
--- A lógica aplicada nessa function é a seguinte:
--- Remove letras, characteres especiais e espaços do text recebido na function.
---
--- Histórico:
--- 2019-12-13 -> Function criada (thaisksf - PL-2320).
 CREATE OR REPLACE FUNCTION REMOVE_NON_NUMERIC_CHARACTERS(F_TEXTO TEXT)
     RETURNS TEXT
     IMMUTABLE STRICT

@@ -1,10 +1,3 @@
--- Sobre:
---
--- Retorna informações dos pneus vinculados de uma placa.
---
--- Histórico:
--- 2020-05-13 -> Function criada (thaisksf PL-2690).
--- 2020-06-04 -> Corrige DOT – adicionado coalesce para retornar '-' caso DOT nulo (luiz_fp).
 CREATE OR REPLACE FUNCTION FUNC_PNEU_GET_PNEU_BY_COD_VEICULO(F_COD_VEICULO BIGINT)
     RETURNS TABLE
             (

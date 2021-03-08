@@ -1,21 +1,6 @@
--- Sobre:
--- A lógica aplicada nessa function é a seguinte:
--- Recebe-se uma lista de pneus que devem estar vinculados a placa informada. Após as validações, os pneus são
--- movidos para estoque, utilizando o processo de movimentação. Se algum pneu tiver um serviço em aberto, o mesmo
--- é fechado automaticamente pela movimentação.
---
--- Précondições:
--- Pneus estarem vinculados ao veículo informado.
--- Pneu estar na unidade informada.
---
---
--- Histórico:
--- 2020-02-12 -> Function criada (natanrotta - PL-2502).
--- 2020-06-03 -> Substitui código do cliente por cod_pneu e corrige a function. (thaisksf - PL-2799).
--- 2020-08-14 -> Adiciona chamada para logar execução da function (gustavocnp95 - PL-3066).
 CREATE OR REPLACE FUNCTION SUPORTE.FUNC_PNEU_REMOVE_VINCULO_PNEU(F_CPF_SOLICITANTE BIGINT,
                                                                  F_COD_UNIDADE BIGINT,
-                                                                 F_PLACA_VEICULO TEXT,
+                                                                 F_COD_VEICULO BIGINT,
                                                                  F_LISTA_COD_PNEUS BIGINT[],
                                                                  OUT AVISO_PNEUS_DESVINCULADOS TEXT)
     RETURNS TEXT
@@ -35,7 +20,7 @@ DECLARE
     KM_ATUAL_VEICULO                 BIGINT                   := (SELECT V.KM
                                                                   FROM VEICULO V
                                                                   WHERE V.COD_UNIDADE = F_COD_UNIDADE
-                                                                    AND V.PLACA = F_PLACA_VEICULO);
+                                                                    AND V.CODIGO = F_COD_VEICULO);
     NOME_COLABORADOR                 TEXT                     := (SELECT C.NOME
                                                                   FROM COLABORADOR C
                                                                   WHERE C.CPF = F_CPF_SOLICITANTE);
@@ -48,7 +33,7 @@ BEGIN
     PERFORM FUNC_GARANTE_UNIDADE_EXISTE(F_COD_UNIDADE);
 
     -- Verifica se veículo existe;
-    PERFORM FUNC_GARANTE_VEICULO_EXISTE(F_COD_UNIDADE, F_PLACA_VEICULO);
+    perform func_garante_veiculo_existe_by_codigo(f_cod_unidade, f_cod_veiculo);
 
     -- Verifica quantiade de pneus recebida;
     IF (ARRAY_LENGTH(F_LISTA_COD_PNEUS, 1) > 0)
@@ -66,11 +51,11 @@ BEGIN
                 -- Verifica se pneu não está vinculado a placa informada;
                 IF NOT EXISTS(SELECT VP.PLACA
                               FROM VEICULO_PNEU VP
-                              WHERE VP.PLACA = F_PLACA_VEICULO
+                              WHERE VP.COD_VEICULO = F_COD_VEICULO
                                 AND VP.COD_PNEU = COD_PNEU_DA_VEZ)
                 THEN
-                    RAISE EXCEPTION 'Erro! O pneu com código: % não está vinculado ao veículo %',
-                        COD_PNEU_DA_VEZ, F_PLACA_VEICULO;
+                    RAISE EXCEPTION 'Erro! O pneu com código: % não está vinculado ao veículo de código %',
+                        COD_PNEU_DA_VEZ, F_COD_VEICULO;
                 END IF;
 
                 -- Busca vida atual e posicao do pneu;
@@ -114,12 +99,12 @@ BEGIN
                                                                                  F_COD_UNIDADE,
                                                                                  STATUS_PNEU_EM_USO,
                                                                                  COD_MOVIMENTACAO_CRIADA,
-                                                                                 F_PLACA_VEICULO,
+                                                                                 F_COD_VEICULO,
                                                                                  KM_ATUAL_VEICULO,
                                                                                  POSICAO_PNEU);
 
                     -- Remove pneu do vinculo;
-                    DELETE FROM VEICULO_PNEU WHERE COD_PNEU = COD_PNEU_DA_VEZ AND PLACA = F_PLACA_VEICULO;
+                    DELETE FROM VEICULO_PNEU WHERE COD_PNEU = COD_PNEU_DA_VEZ AND COD_VEICULO = F_COD_VEICULO;
 
                     -- Atualiza status do pneu
                     UPDATE PNEU
@@ -137,7 +122,7 @@ BEGIN
                                 AND AM.FECHADO_AUTOMATICAMENTE_MOVIMENTACAO IS FALSE
                                 AND AM.FECHADO_AUTOMATICAMENTE_INTEGRACAO IS FALSE)
                     THEN
-                        -- REmove serviços em aberto;
+                        -- Remove serviços em aberto;
                         UPDATE AFERICAO_MANUTENCAO
                         SET FECHADO_AUTOMATICAMENTE_MOVIMENTACAO = TRUE,
                             COD_PROCESSO_MOVIMENTACAO            = COD_PROCESSO_MOVIMENTACAO_CRIADO,
@@ -160,7 +145,7 @@ BEGIN
 
     -- Mensagem de sucesso;
     SELECT 'Movimentação realizada com sucesso!! Autorizada por ' || NOME_COLABORADOR ||
-           ' com CPF: ' || F_CPF_SOLICITANTE || '. Os pneus que estavam na placa ' || F_PLACA_VEICULO ||
+           ' com CPF: ' || F_CPF_SOLICITANTE || '. Os pneus que estavam na placa de código ' || F_COD_VEICULO ||
            ' foram movidos para estoque.'
     INTO AVISO_PNEUS_DESVINCULADOS;
 END
