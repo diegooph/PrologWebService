@@ -1,10 +1,3 @@
--- Sobre:
--- A lógica aplicada nessa function é a seguinte:
--- Reseta uma empresa de apresentação de uma unidade para outra.
---
--- Histórico:
--- 2020-04-06 -> Function criada (thaisksf - PL-2034).
--- 2020-07-06 -> Adiciona informações dos colaboradores cadastrados ao retorno de sucesso. (thaisksf - PL-2802).
 CREATE OR REPLACE FUNCTION INTERNO.FUNC_RESETA_EMPRESA_APRESENTACAO(F_COD_EMPRESA_BASE BIGINT,
                                                                     F_COD_EMPRESA_USUARIO BIGINT,
                                                                     OUT MENSAGEM_SUCESSO TEXT)

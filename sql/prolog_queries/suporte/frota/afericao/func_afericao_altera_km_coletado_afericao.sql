@@ -1,14 +1,3 @@
--- Sobre:
--- Altera o KM coletado em uma aferição específica.
--- Não será permitido um KM maior do que o KM atual do veículo existente na tabela VEICULO_DATA.
---
--- Précondições:
---
--- Histórico:
--- PL-2097
--- 2019-09-18 -> Adiciona no schema suporte (natanrotta - PL-2242).
--- 2020-08-14 -> Adiciona chamada para logar execução da function (gustavocnp95 - PL-3066).
--- 2020-08-14 -> Remove código da unidade dos parâmetros (luiz_fp - PL-1251).
 CREATE OR REPLACE FUNCTION SUPORTE.FUNC_AFERICAO_ALTERA_KM_COLETADO_AFERICAO(F_PLACA TEXT,
                                                                              F_COD_AFERICAO BIGINT,
                                                                              F_NOVO_KM BIGINT,

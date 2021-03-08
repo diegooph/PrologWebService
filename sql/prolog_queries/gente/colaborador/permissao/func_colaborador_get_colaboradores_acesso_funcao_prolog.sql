@@ -1,9 +1,3 @@
--- Sobre:
---
--- Function utilizada para buscar os colaboradores de uma unidade que possuem acesso à uma função específica do Prolog.
---
--- Histórico:
--- 2020-07-08 -> Function criada (diogenesvanzella - PL-2671).
 create or replace function func_colaborador_get_colaboradores_acesso_funcao_prolog(f_cod_unidade bigint,
                                                                                    f_cod_funcao_prolog bigint)
     returns table

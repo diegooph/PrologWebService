@@ -1,10 +1,3 @@
--- Sobre:
--- Relatório mostrando todas as marcações que aconteceram na unidade e período filtrados.
--- Apenas o filtro de CPF é opcional. Para trazer de todos os CPFs, basta passar NULL.
---
--- Histórico:
--- 2019-10-23 -> Adicionado coluna EQUIPE ao relatório (luizfp - PL-2364).
--- 2020-07-30 -> Retira marcações inativas da exibição (wvinim - PL-2832).
 CREATE OR REPLACE FUNCTION FUNC_MARCACAO_RELATORIO_MARCACOES_DIARIAS(F_COD_UNIDADE BIGINT,
                                                                      F_DATA_INICIAL DATE,
                                                                      F_DATA_FINAL DATE,

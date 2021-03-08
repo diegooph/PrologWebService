@@ -1,11 +1,3 @@
--- Sobre:
--- A lógica aplicada nessa function é a seguinte:
--- Deleta um intervalo e suas dependências com base no CPF e no código de intervalo.
---
--- Histórico:
--- 2020-07-15 -> Function criada (wvinim - PL-2825).
--- 2020-07-20 -> Corrige erro na function na deleção de históricos (wvinim - PL-2825).
--- 2020-08-14 -> Adiciona chamada para logar execução da function (gustavocnp95 - PL-3066).
 CREATE OR REPLACE FUNCTION SUPORTE.FUNC_INTERVALO_DELETA_INTERVALO_BY_CODIGO(F_COD_UNIDADE_INTERVALO BIGINT,
                                                                              F_CPF BIGINT,
                                                                              F_COD_INTERVALO BIGINT,

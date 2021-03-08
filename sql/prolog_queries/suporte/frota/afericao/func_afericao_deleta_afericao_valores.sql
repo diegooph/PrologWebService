@@ -1,17 +1,3 @@
---PL-2099
--- Deleta uma coleta de valor específico de uma aferição. Ou seja, as medidas coletadas em um único pneu.
--- Essas medidas existem na tabela AFERICAO_VALORES_DATA.
--- Os serviços existentes para o pneu cujo os valores coletados estão sendo deletados, também serão removidos. Esses
--- serviços ficam na tabela AFERICAO_MANUTENCAO_DATA.
---
--- Se ao deletar os valores coletados para um pneu não sobrar nenhum outro valor não-deletado, a aferição como um todo
--- será automaticamente deletada pela function.
---
--- Histórico:
--- 2019-09-17 -> Adiciona SESSION_USER. (natanrotta - PL-2229).
--- 2019-09-18 -> Adiciona no schema suporte. (natanrotta - PL-2242).
--- 2020-07-07 -> Adiciona motivo de deleção e corrige uso de placa. (thaisksf - PL-2801).
--- 2020-08-14 -> Adiciona chamada para logar execução da function (gustavocnp95 - PL-3066).
 CREATE OR REPLACE FUNCTION SUPORTE.FUNC_AFERICAO_DELETA_AFERICAO_VALORES(F_COD_UNIDADE BIGINT,
                                                                          F_CODIGO_PNEU BIGINT,
                                                                          F_CODIGO_AFERICAO BIGINT,
@@ -32,9 +18,6 @@ DECLARE
 
     -- Variável utilizada para melhorar o feedback da function de acordo com o fluxo
     V_PREFIXO_MENSAGEM_RETORNO TEXT;
-    V_PLACA                    TEXT   := (SELECT A.PLACA_VEICULO
-                                          FROM AFERICAO A
-                                          WHERE A.CODIGO = F_CODIGO_AFERICAO);
 BEGIN
     PERFORM SUPORTE.FUNC_HISTORICO_SALVA_EXECUCAO();
     PERFORM FUNC_GARANTE_UNIDADE_EXISTE(F_COD_UNIDADE);
@@ -54,7 +37,8 @@ BEGIN
         WHEN 1
             THEN
                 -- Somente um valor de aferição foi encontrado, deletar toda a aferição, manutenção e valores
-                PERFORM SUPORTE.FUNC_AFERICAO_DELETA_AFERICAO(F_COD_UNIDADE, V_PLACA, F_CODIGO_AFERICAO,
+                PERFORM SUPORTE.FUNC_AFERICAO_DELETA_AFERICAO(F_COD_UNIDADE,
+                                                              F_CODIGO_AFERICAO,
                                                               F_MOTIVO_DELECAO);
                 V_PREFIXO_MENSAGEM_RETORNO := 'AFERIÇÃO, MANUTENÇÃO E VALOR DE AFERIÇÃO DELETADO ';
         ELSE

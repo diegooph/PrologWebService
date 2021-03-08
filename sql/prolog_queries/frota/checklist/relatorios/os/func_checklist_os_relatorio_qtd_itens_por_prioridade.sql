@@ -1,9 +1,3 @@
--- Sobre:
---
--- Function que gera o relatório de quantidade de itens abertos ou fechados (via F_STATUS_ITENS) por prioridade.
---
--- Histórico:
--- 2020-03-17 -> Atualização de arquivo e documentação (luizfp - PL-2494).
 CREATE OR REPLACE FUNCTION FUNC_CHECKLIST_OS_RELATORIO_QTD_ITENS_POR_PRIORIDADE(F_COD_UNIDADES BIGINT[],
                                                                                 F_STATUS_ITENS TEXT)
     RETURNS TABLE

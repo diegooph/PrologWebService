@@ -1,11 +1,3 @@
--- Sobre:
---
--- Esta function retorna uma lista de configurações de abertura de serviço por unidade.
--- Retorna apenas as informações que o colaborador tenha acesso.
---
--- Histórico:
--- 2019-11-25 -> Function criada (wvinim - PL-1989).
--- 2020-02-18 -> Adiciona parâmetro na busca pelas unidades de acesso (wvinim - PL-2547).
 CREATE OR REPLACE FUNCTION FUNC_AFERICAO_GET_CONFIGURACAO_CRONOGRAMA_SERVICO_BY_COLABORADOR(F_COD_COLABORADOR BIGINT)
     RETURNS TABLE
             (

@@ -1,8 +1,3 @@
--- Sobre:
--- Esta função realiza a busca de um motivo com base no código do motivo.
---
--- Histórico:
--- 2020-03-18 -> Function criada (gustavocnp95 - PL-2607).
 CREATE OR REPLACE FUNCTION FUNC_MOTIVO_MOVIMENTO_VISUALIZACAO(F_COD_MOTIVO BIGINT,
                                                               F_TIME_ZONE TEXT)
     RETURNS TABLE

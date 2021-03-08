@@ -1,17 +1,3 @@
--- Sobre:
--- A lógica aplicada nessa function é a seguinte:
--- Cria uma tabela de "pré-import" e aplica uma trigger para verificar os dados inseridos e importar o que estiver de
--- acordo com as verificações.
---
--- Pré-requisitos:
--- Func remove_all_apaces criada.
---
--- Histórico:
--- 2019-12-13 -> Function criada (thaisksf - PL-2320).
--- 2020-01-17 -> Corrige SQL de grant de permissão (luizfp).
--- 2020-05-25 -> Remove FK cod_unidade (thaisksf - PL-2711).
--- 2020-05-25 -> Adiciona cod_empresa na criação da tabela (thaisksf - PL-2711).
--- 2020-07-21 -> Altera grant de permissões na tabela criada para conceder ao usuário recebido (luiz_fp - PL-2830).
 CREATE OR REPLACE FUNCTION IMPLANTACAO.FUNC_PNEU_IMPORT_CRIA_TABELA_IMPORT(F_COD_EMPRESA BIGINT,
                                                                            F_COD_UNIDADE BIGINT,
                                                                            F_USUARIO TEXT,

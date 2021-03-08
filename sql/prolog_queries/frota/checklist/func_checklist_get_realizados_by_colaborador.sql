@@ -1,11 +1,3 @@
--- Sobre:
---
--- Function que realiza a busca dos checklists realizados por colaborador.
---
--- Histórico:
--- 2020-06-03 -> Atualização do arquivo específico (wvinim - PL-2773).
--- 2020-07-07 -> Adição das informações de totais de mídias coletadas (wvinim - PL-2705).
--- 2020-07-13 -> Atualização de arquivo e documentação (wvinim - PL-2824).
 CREATE FUNCTION FUNC_CHECKLIST_GET_REALIZADOS_BY_COLABORADOR(F_COD_COLABORADOR BIGINT,
                                                              F_DATA_INICIAL DATE,
                                                              F_DATA_FINAL DATE,

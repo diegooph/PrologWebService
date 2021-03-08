@@ -1,9 +1,3 @@
--- Sobre:
--- A lógica aplicada nessa function é a seguinte:
--- Deleta transferencias de veiculos de uma unidade e suas dependências.
---
--- Histórico:
--- 2020-04-06 -> Function criada (thaisksf - PL-2034).
 CREATE OR REPLACE FUNCTION INTERNO.FUNC_DELETA_TRANSFERENCIAS_VEICULOS_DEPENDENCIAS(F_CODIGOS_TRANSFERENCIAS_PROCESSOS BIGINT[])
     RETURNS VOID
     LANGUAGE PLPGSQL

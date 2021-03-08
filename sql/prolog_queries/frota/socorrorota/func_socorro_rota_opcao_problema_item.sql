@@ -1,8 +1,3 @@
--- Sobre:
--- Esta function retorna uma das opções de problemas com base em seu código.
---
--- Histórico:
--- 2020-01-16 -> Function criada (thais - PL-2468).
 CREATE OR REPLACE FUNCTION FUNC_SOCORRO_ROTA_OPCAO_PROBLEMA_ITEM(F_COD_OPCAO_PROBLEMA BIGINT)
     RETURNS TABLE
             (

@@ -1,18 +1,3 @@
--- Sobre:
--- A lógica aplicada nessa function é a seguinte:
--- Insere os dados na tabela dados_autor_import, após isso chama a function correspondente ao tipo de import, e
--- retorna o código que foi inserido na tabela de dados_autor_import e o nome da tabela de pré-import criada.
---
--- Pré-requisitos:
--- function func_veiculo_import_cria_tabela_import criada.
--- function func_pneu_import_cria_tabela_import criada.
--- function func_colaborador_import_cria_tabela_import criada.
--- function func_vinculo_veiculo_pneu_cria_tabela_vinculo criada.
---
--- Histórico:
--- 2019-10-31 -> Function criada (thaisksf - PL-2318).
--- 2019-12-13 -> Mescla para ser utilizada em qualquer tipo de import (thaisksf - PL-2320).
--- 2020-08-31 -> Adiciona tipo 'vinculo' para criação de tabela (thaisksf - PL-2771).
 CREATE OR REPLACE FUNCTION IMPLANTACAO.FUNC_IMPORT_INSERE_DADOS_AUTOR(F_COD_EMPRESA BIGINT,
                                                                       F_COD_UNIDADE BIGINT,
                                                                       F_USUARIO TEXT,

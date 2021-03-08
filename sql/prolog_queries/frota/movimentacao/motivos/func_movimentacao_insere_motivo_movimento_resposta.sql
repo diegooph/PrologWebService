@@ -1,8 +1,3 @@
--- Sobre:
--- Esta função cria uma relação movimentação x motivo.
---
--- Histórico:
--- 2020-03-18 -> Function criada (gustavocnp95 - PL-2607).
 CREATE OR REPLACE FUNCTION FUNC_MOVIMENTACAO_INSERE_MOTIVO_MOVIMENTO_RESPOSTA(F_COD_MOVIMENTO BIGINT,
                                                                               F_COD_MOTIVO BIGINT)
     RETURNS VOID

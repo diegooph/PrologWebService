@@ -1,11 +1,7 @@
--- Sobre:
--- Busca os campos personalizados que estão disponíveis para preenchimento durante um processo de movimentação na
--- unidade. Note que para um campo estar disponível para uso no processo de movimentação na unidade, além de estar
+--! Importante:
+-- Para um campo personalizado estar disponível para uso no processo de movimentação na unidade, além de estar
 -- cadastrado na empresa para a funcionalidade de movimentação, também precisa estar vinculado à unidade na tabela:
 -- "movimentacao_campo_personalizado_unidade".
---
--- Histórico:
--- 2020-03-23 -> Function criada (luizfp - PL-2615).
 CREATE OR REPLACE FUNCTION FUNC_CAMPO_GET_DISPONIVEIS_MOVIMENTACAO(F_COD_UNIDADE BIGINT)
     RETURNS TABLE
             (

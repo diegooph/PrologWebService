@@ -1,11 +1,3 @@
--- Sobre:
--- Altera o KM no momento do conserto na tabela afericao_manutencao_data.
---
--- Atenção: Para a alteração ocorrer com sucesso, todos os parâmetros devem ser informados.
---
--- Histórico:
--- 2019-09-18 -> Cria function e adiciona no schema suporte (gustavocnp95 - PL-2594)
--- 2020-08-14 -> Adiciona chamada para logar execução da function (gustavocnp95 - PL-3066).
 CREATE OR REPLACE FUNCTION SUPORTE.FUNC_AFERICAO_MANUTENCAO_ALTERA_KM_MOMENTO_CONSERTO(F_COD_UNIDADE BIGINT,
                                                                                        F_COD_PNEU BIGINT,
                                                                                        F_COD_AFERICAO BIGINT,

@@ -1,12 +1,6 @@
 -- Sobre:
 --
 -- Essa function insere as mídias das alternativas NOK na realização de um checklist.
---
--- Histórico:
--- 2020-07-07 -> Function criada (luiz_fp - PL-2705).
--- 2020-07-13 -> Criação do arquivo específico e documentação (wvinim - PL-2824).
--- 2020-07-16 -> Alteração para inserir midia e código do item em tabela específica (gustavocnp95 - PL-2827)
--- 2020-08-03 -> Insere verificacao de nulo no v_cod_midia para os casos de conflito (gustavocnp95 - PL-2848)
 CREATE OR REPLACE FUNCTION FUNC_CHECKLIST_INSERT_MIDIA_ALTERNATIVA(F_UUID_MIDIA UUID,
                                                                    F_COD_CHECKLIST BIGINT,
                                                                    F_COD_ALTERNATIVA BIGINT,

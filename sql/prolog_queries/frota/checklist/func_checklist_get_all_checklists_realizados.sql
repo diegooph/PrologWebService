@@ -1,18 +1,3 @@
--- Sobre:
---
--- Function que gera o relatório checklists realizados
---
--- Histórico:
--- 2020-03-03 -> Atualização de arquivo e documentação (wvinim - PL-2494).
--- 2020-07-07 -> Adição das informações de totais de mídias coletadas (wvinim - PL-2705).
--- 2020-07-13 -> Atualização de arquivo e documentação (wvinim - PL-2824).
--- 2020-10-14 -> Otimiza function.
---               Em nossos testes, conseguimos levar o tempo de execução de 60ms para uns 14ms. Fizemos isso alterando
---               a query para primeiro buscar as infos do checklist em uma CTE onde os filtros são aplicados e só
---               depois fazer os joins com as demais tabelas (luizfp - PL-3199).
--- 2020-10-15 -> Altera function de plpgsql para sql (luizfp - PL-3199).
--- 2020-10-16 -> Move order by para query de fora também — o que melhorou desempenho (luizfp - PL-3199).
--- 2020-10-20 -> Corrige aplicação de limit e offset (luizfp - P2-1282).
 create or replace function func_checklist_get_all_checklists_realizados(f_cod_unidade bigint,
                                                                         f_cod_equipe bigint,
                                                                         f_cod_tipo_veiculo bigint,

@@ -1,18 +1,3 @@
--- Sobre:
--- Busca um extrato dos checklists realizados no dia e que se enquadram nos parâmetros de filtro utilizados.
---
--- Parâmetros:
--- F_COD_UNIDADES: Um array com os códigos das unidades das quais queremos buscar os checklists realizados.
--- F_DATA_INICIAL: Data inicial pela qual se quer filtrar os dados. Apenas checks realizados nessa data ou após serão
---                 buscados.
--- F_DATA_FINAL: Data final pela qual se quer filtrar os dados. Apenas checks realizados nessa data ou antes serão
---               buscados.
---
--- Todos os parâmetros são obrigatórios.
---
--- Histórico:
--- 2020-03-25 -> Criada documentação da function (wvinim - PL-2546).
--- 2020-03-25 -> Adiciona a coluna de tipo de veículo (wvinim - PL-2546).
 CREATE OR REPLACE FUNCTION FUNC_CHECKLIST_RELATORIO_AMBEV_EXTRATO_REALIZADOS_DIA(F_COD_UNIDADES BIGINT[],
                                                                                  F_DATA_INICIAL DATE,
                                                                                  F_DATA_FINAL DATE)

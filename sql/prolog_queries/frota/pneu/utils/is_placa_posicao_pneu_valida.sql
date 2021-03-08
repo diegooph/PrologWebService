@@ -1,13 +1,3 @@
--- Sobre:
---
--- Function genérica utilizada para validar se a posição é valida para o pneu em questão. A function valida a posição,
--- inclusive, se tratando de posições de ESTEPES, mas para isso é preciso indicar para a function que o pneu é um
--- estepe.
---
--- Histórico:
--- 2019-08-15 -> Function criada (diogenesvanzella - PL-2222).
--- 2019-09-10 -> Altera vínculo da tabela pneu_ordem_nomenclatura_unidade para
---               veiculo_diagrama_posicao_prolog. (thaisksf - PL-2258)
 CREATE OR REPLACE FUNCTION IS_PLACA_POSICAO_PNEU_VALIDA(
   F_COD_VEICULO BIGINT,
   F_POSICAO_PNEU INTEGER,

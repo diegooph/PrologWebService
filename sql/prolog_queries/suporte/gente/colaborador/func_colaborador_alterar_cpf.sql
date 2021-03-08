@@ -1,11 +1,3 @@
--- Sobre:
---
--- Function utilizada para alterar o CPF de um colaborador.
--- Além da alteração do CPF, todos os tokens do colaborador são removidos, forçando que ele faça um novo login no
--- sistema, dessa vez já com o novo CPF.
---
--- Histórico:
--- 2020-09-22 -> Cria function de alterar CPF (luiz_fp - PL-3147).
 create or replace function suporte.func_colaborador_alterar_cpf(f_cod_colaborador bigint,
                                                                 f_cpf_atual bigint,
                                                                 f_cpf_novo bigint,

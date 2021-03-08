@@ -1,17 +1,3 @@
--- Sobre:
---
--- Esta function retorna os dados do resumo geral de pneus, por status e unidades
---
--- Précondições:
--- 1) Function: FUNC_PNEU_FORMAT_SULCO criada.
--- 2) Function: TZ_UNIDADE criada.
--- 3) Function: FUNC_PNEU_GET_PRIMEIRA_ULTIMA_AFERICAO criada.
---
--- Histórico:
--- 2019-08-28 -> Adicionada coluna com o menor sulco (wvinim - PL-2169).
--- 2019-09-10 -> Altera vínculo da tabela PNEU_ORDEM_NOMENCLATURA_UNIDADE para PNEU_POSICAO_NOMENCLATURA_EMPRESA.
--- (thaisksf PL-2258)
--- 2020-10-29 -> Adiciona identificador da frota (steinert999 - PL-3195)
 CREATE OR REPLACE FUNCTION FUNC_RELATORIO_PNEU_RESUMO_GERAL_PNEUS(F_COD_UNIDADE TEXT[],
                                                                   F_STATUS_PNEU TEXT)
     RETURNS TABLE
@@ -31,6 +17,7 @@ CREATE OR REPLACE FUNCTION FUNC_RELATORIO_PNEU_RESUMO_GERAL_PNEUS(F_COD_UNIDADE 
                 "TIPO"                  TEXT,
                 "POSIÇÃO"               TEXT,
                 "QUANTIDADE DE SULCOS"  TEXT,
+                "ALTURA DO SULCO NOVO"  TEXT,
                 "SULCO INTERNO"         TEXT,
                 "SULCO CENTRAL INTERNO" TEXT,
                 "SULCO CENTRAL EXTERNO" TEXT,
@@ -66,6 +53,11 @@ SELECT U.NOME                                                                   
        COALESCE(POSICAO_PNEU_VEICULO.VEICULO_TIPO, '-')                         AS TIPO_VEICULO,
        COALESCE(POSICAO_PNEU_VEICULO.POSICAO_PNEU, '-') :: TEXT                 AS POSICAO_PNEU,
        COALESCE(MODB.QT_SULCOS, MP.QT_SULCOS) :: TEXT                           AS QTD_SULCOS,
+       CASE P.VIDA_ATUAL
+       WHEN 1 THEN
+           FUNC_PNEU_FORMAT_SULCO(MP.ALTURA_SULCOS)
+       ELSE
+           FUNC_PNEU_FORMAT_SULCO(MODB.ALTURA_SULCOS) END                       AS ALTURA_SULCO_NOVO,
        FUNC_PNEU_FORMAT_SULCO(P.ALTURA_SULCO_INTERNO)                           AS SULCO_INTERNO,
        FUNC_PNEU_FORMAT_SULCO(P.ALTURA_SULCO_CENTRAL_INTERNO)                   AS SULCO_CENTRAL_INTERNO,
        FUNC_PNEU_FORMAT_SULCO(P.ALTURA_SULCO_CENTRAL_EXTERNO)                   AS SULCO_CENTRAL_EXTERNO,

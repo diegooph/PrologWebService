@@ -1,9 +1,3 @@
--- Sobre:
---
--- Function que gera o relatório de itens com maior quantidade de apontamentos não ok.
---
--- Histórico:
--- 2020-03-03 -> Atualização de arquivo e documentação (wvinim - PL-2494).
 CREATE OR REPLACE FUNCTION FUNC_CHECKLIST_OS_RELATORIO_ITENS_MAIOR_QUANTIDADE_NOK(F_COD_UNIDADES BIGINT[],
                                                                                   F_DATA_INICIAL DATE,
                                                                                   F_DATA_FINAL DATE)

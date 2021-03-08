@@ -1,11 +1,3 @@
--- Sobre:
--- Esta função edita um colaborador.
---
--- Atenção: Esta função foi criada diante da necessidade de armazenar telefone e e-mail para o socorro em rota.
---
--- Histórico:
--- 2020-01-24 -> Function criada (wvinim - PL-2471).
--- 2020-02-04 -> Adiciona a sigla iso2 (wvinim - PL-2471).
 CREATE OR REPLACE FUNCTION FUNC_COLABORADOR_UPDATE_COLABORADOR(F_COD_COLABORADOR BIGINT,
                                                                F_CPF BIGINT,
                                                                F_MATRICULA_AMBEV INTEGER,

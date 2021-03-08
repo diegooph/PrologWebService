@@ -1,10 +1,7 @@
--- Sobre:
+--* Sobre:
 -- Trigger utilizada para notificar um evento de alteração de uma linha da tabela AGENDADOR.CONFIGURACAO_AGENDAMENTO.
 -- A notificação lançada é composta do conteúdo da linha alterada, o nome e operação realizada na tabela.
 -- Caso a alteração seja uma DELEÇÃO então enviamos o conteúdo da linha antes da deleção.
---
--- Histórico:
--- 2019-09-05 -> Function criada (diogenesvanzella - PL-2282).
 CREATE OR REPLACE FUNCTION AGENDADOR.TG_NOTIFY_CONFIGURACAO_AGENDAMENTO()
   RETURNS TRIGGER AS $$
 DECLARE

@@ -1,12 +1,3 @@
--- Sobre:
--- Verifica se o código da empresa fornecido é um código válido, ou seja, existe no banco de dados.
--- A function pode receber como parâmetro a mensagem de erro que deverá lançar caso o código da empresa não seja
--- válido. Caso não receber nenhuma mensagem no parâmetro, irá lançar uma mensagem genérica.
---
--- Histórico:
--- 2019-07-03 -> Function criada (luizfp).
--- 2019-08-19 -> Function alterada (diogenesvanzella - PL-2222).
---  • Recebe mensagem que deve lançar em caso de erro.
 CREATE OR REPLACE FUNCTION FUNC_GARANTE_EMPRESA_EXISTE(F_COD_EMPRESA BIGINT, F_ERROR_MESSAGE TEXT DEFAULT NULL)
   RETURNS VOID
 LANGUAGE PLPGSQL

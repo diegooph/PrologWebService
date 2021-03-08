@@ -1,10 +1,3 @@
--- Sobre:
---
--- Function utilizada para inserir um item em uma ordem de serviço. A function, além de inserir o item na O.S, também
--- salva qual foi a alteranativa/checklist que gerou o primeiro apontamento.
---
--- Histórico:
--- 2019-12-11 -> Function criada (diogenesvanzella - PL-2416).
 CREATE OR REPLACE FUNCTION FUNC_CHECKLIST_OS_INSERE_ITEM_OS(F_COD_UNIDADE BIGINT,
                                                             F_COD_OS BIGINT,
                                                             F_COD_PERGUNTA_PRIMEIRO_APONTAMENTO BIGINT,

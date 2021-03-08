@@ -1,10 +1,3 @@
--- Sobre:
---
--- Function para buscar os modelos de checklist disponíveis para realização.
---
--- Histórico:
--- 2020-03-03 -> Atualização de arquivo e documentação (wvinim - PL-2494).
--- 2020-10-15 -> Otimiza query (luizfp - PL-3199).
 create or replace function func_checklist_get_modelos_selecao_realizacao(f_cod_unidade bigint,
                                                                          f_cod_cargo bigint)
     returns table

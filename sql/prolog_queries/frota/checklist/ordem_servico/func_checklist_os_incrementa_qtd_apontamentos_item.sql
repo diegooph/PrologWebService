@@ -1,12 +1,3 @@
--- Sobre:
---
--- Function utilizada para incrementar a quantidade de apontamentos de um item específico de Ordem de Serviço. A
--- function, além de incrementar a quantidade de apontamento, também salva qual foi a alteranativa/checklist que gerou
--- a nova contagem de apontamentos.
---
--- Histórico:
--- 2019-12-11 -> Function criada (diogenesvanzella - PL-2416).
--- 2020-07-14 -> Adiciona verificação para evitar reprocessamento de item já existente (luiz_fp).
 create or replace function func_checklist_os_incrementa_qtd_apontamentos_item(f_cod_item_ordem_servico bigint,
                                                                               f_cod_checklist_realizado bigint,
                                                                               f_cod_alternativa bigint,

@@ -1,11 +1,3 @@
--- Sobre:
---
--- Essa function busca as permissões associadas à um cargo específico. A busca retorna todas as informações das
--- permissões, incluindo se está liberada, associada, ou bloqueada para o cargo em questão.
---
--- Histórico:
--- 2020-06-25 -> Adiciona informações se a permissão está bloqueada (diogenesvanzella - PL-2671).
--- 2020-07-08 -> Permite que a permissão esteja associada e bloqueada ao mesmo tempo (diogenesvanzella - PL-2671).
 create or replace function func_cargos_get_permissoes_detalhadas(f_cod_unidade bigint,
                                                                  f_cod_cargo bigint)
     returns table

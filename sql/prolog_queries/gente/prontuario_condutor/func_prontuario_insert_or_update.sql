@@ -1,11 +1,3 @@
--- Sobre:
---
--- Function utilizada para cadastrar as informações de um prontuário de condutor. O prontuário é vinculado ao CPF de
--- um colaborador. Se, no momento do cadastro, já existir um prontuário para o CPF sendo inserido, todas as informações
--- serão sobrescritas pelas nova recebidas. Ou seja, essa function trabalha como um UPSERT.
---
--- Histórico:
--- 2019-11-07 -> Function criada (luizfp - PL-2269).
 CREATE OR REPLACE FUNCTION FUNC_PRONTUARIO_INSERT_OR_UPDATE(F_CPF_COLABORADOR BIGINT,
                                                             F_STATUS TEXT,
                                                             F_MOTIVO TEXT,

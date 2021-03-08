@@ -1,0 +1,1 @@
+alter table veiculo_data alter column possui_hubodometro set default false;

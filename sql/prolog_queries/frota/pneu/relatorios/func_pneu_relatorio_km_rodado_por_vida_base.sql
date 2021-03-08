@@ -1,17 +1,9 @@
 -- Sobre:
 --
--- Function base do relatório de km rodado por vida de cada pneu.
--- Ela será usada tanto para gerar o relatório que traz as vidas por linhas quanto o que traz as vidas por coluna.
+-- Essa function será usada tanto para gerar o relatório que traz as vidas por linhas quanto o que traz as vidas por coluna.
 --
 -- Todos os pneus das unidades filtradas são retornadas nessa busca, mesmo os que não tem nenhum KM rodado.
 --
--- Histórico:
--- 2020-05-21 -> O nome foi alterado e a busca agora é feita de outra function.
---               Além disso, foram adicionadas novas colunas ao relatório, sendo:
---               MARCA, MODELO, DIMENSÃO, VALOR VIDA e CPK VIDA (luiz_fp - PL-2598).
--- 2020-06-05 -> Corrigido cálculo de km para pneus em primeira vida (luiz_fp - PL-2803).
---               Um join com pneu_valor_vida estava removendo as informações da primeira vida dos pneus.
--- 2020-09-18 -> Corrige busca de vidas de pneu para buscar todas vidas (gustavocnp95 - PL-3156)
 create or replace function func_pneu_relatorio_km_rodado_por_vida_base(f_cod_unidades bigint[])
     returns table
             (
@@ -36,7 +28,7 @@ with pneu_valor_todas_vidas as (
                                              p.codigo_cliente                                      as cod_cliente_pneu,
                                              p.cod_dimensao                                        as cod_dimensao,
                                              p.cod_modelo                                          as cod_modelo_pneu,
-                                             pvv.cod_modelo_banda                                  as cod_modelo_banda,
+                                             coalesce(pvv.cod_modelo_banda, p.cod_modelo_banda)    as cod_modelo_banda,
                                              -- O generate series só serve pra gerar a vida 1. Então, se for a vida 1,
                                              -- o dado da vida vem dele, se não, vem da pvv.
                                              f_if(g.vida_pneu = 1, g.vida_pneu, pvv.vida::integer) as vida_pneu,
@@ -46,23 +38,38 @@ with pneu_valor_todas_vidas as (
                                              f_if(g.vida_pneu = 1, round(p.valor::numeric, 2),
                                                   round(pvv.valor::numeric, 2))                    as valor_vida
     from pneu p
-             inner join pneu_valor_vida pvv
-                        on pvv.cod_pneu = p.codigo
+             left join pneu_valor_vida pvv
+                       on pvv.cod_pneu = p.codigo
         -- O generate series só serve pra gerar a vida 1, porque a pvv não tem ela. Sendo assim, o valor final
         -- para gerar o generate series será sempre a menor vida existente na pvv.
         -- Para o valor inicial, é buscado na propria pvv a menor vida que seja fonte_cadastro. Se encontrar, vai
         -- ser ela. Se não, se for movimento, será ela - 1 (porque a fonte_cadastro guarda a vida que iniciou, a
         -- fonte_movimento guarda para que vida irá, diminuindo 1, será a que iniciou).
              cross join generate_series(
-            f_if(
-                        (select pnvv.fonte_servico_realizado
-                         from pneu_valor_vida pnvv
-                         where pnvv.cod_pneu = p.codigo
-                         order by vida
-                         limit 1) = 'FONTE_CADASTRO',
-                        (select min(vida) from pneu_valor_vida pnvv where pnvv.cod_pneu = p.codigo)::integer,
-                        (select min(vida) from pneu_valor_vida pnvv where pnvv.cod_pneu = p.codigo) - 1),
-            (select min(pnvv.vida) from pneu_valor_vida pnvv where pnvv.cod_pneu = p.codigo)) g(vida_pneu)
+            f_if((select pnvv.fonte_servico_realizado
+                  from pneu_valor_vida pnvv
+                  where pnvv.cod_pneu = p.codigo
+                  order by vida
+                  limit 1) is not null,
+                 f_if(
+                             (select pnvv.fonte_servico_realizado
+                              from pneu_valor_vida pnvv
+                              where pnvv.cod_pneu = p.codigo
+                              order by vida
+                              limit 1) = 'FONTE_CADASTRO',
+                             (select min(vida) from pneu_valor_vida pnvv where pnvv.cod_pneu = p.codigo)::integer,
+                             (select min(vida) from pneu_valor_vida pnvv where pnvv.cod_pneu = p.codigo) - 1),
+                 1::integer),
+            (f_if((select pnvv.fonte_servico_realizado
+                   from pneu_valor_vida pnvv
+                   where pnvv.cod_pneu = p.codigo
+                   order by vida
+                   limit 1) is not null,
+                  (select min(pnvv.vida)
+                   from pneu_valor_vida pnvv
+                   where pnvv.cod_pneu = p.codigo),
+                  1::smallint))
+        ) g(vida_pneu)
     where p.cod_unidade = any (f_cod_unidades)
 )
 select u.nome                                                    as unidade_alocado,

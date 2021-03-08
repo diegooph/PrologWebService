@@ -1,12 +1,3 @@
--- Sobre:
--- Altera a pressão ideal (recomendada) de um pneu específico.
--- Só permite pressões entre 25 e 150 psi (ambos inclusivos).
---
--- Précondições:
---
--- Histórico:
--- 2019-09-18 -> Adiciona no schema suporte (natanrotta - PL-2242).
--- 2020-08-14 -> Adiciona chamada para logar execução da function (gustavocnp95 - PL-3066).
 CREATE OR REPLACE FUNCTION SUPORTE.FUNC_PNEU_ALTERA_PRESSAO_IDEAL_BY_NUMERO_FOGO(F_COD_EMPRESA BIGINT,
                                                                                  F_COD_UNIDADE BIGINT,
                                                                                  F_NUMERO_FOGO TEXT,

@@ -4,29 +4,13 @@
 -- compõem cada mapa (motorista, ajudante 1 e ajudante 2).
 -- As informações são trazidas apenas para os colaboradores que além de terem mapas vinculados, também estão cadastrados
 -- no Prolog.
--- Para cada integrante do mapa são trazidas as seguintes informações:
---  • CPF (ou "-" se não tiver);
---  • Nome (ou "-" se não tiver);
---  • Horas e minutos do início do intervalo (ou "-" se não tiver);
---  • Horas e minutos do fim do intervalo (ou "-" se não tiver);
---  • O tempo decorrido entre a marcação de início e fim (ou "-" se não tiver);
---  • Se cumpriu o tempo mínimo (ou "-" se não tiver);
---  • Booleano indicado se marcações (de início e fim) foram de aparelhos reconhecidos pela empresa (através do IMEI);
---
+
 -- Precondições:
 --  • Para trazer alguma informação significativa, é necessário que a unidade tenha importado o arquivo de mapa
 --    (tabela MAPA).
 --  • Também é preciso que a unidade tenha as parametrizações necessárias definidas na tabela
 --    UNIDADE_FUNCAO_PRODUTIVIDADE.
 --  • Apenas intervalos que tenham início e fim no mesmo dia do mapa são contabilizadas para a aderência.
---
--- Histórico:
--- 2020-04-28 -> Function criada (luiz_fp - PL-2720).
--- 2020-07-30 -> Retira marcações inativas da exibição (wvinim - PL-2832).
---      Dependências afetadas:
---          func_marcacao_relatorio_aderencia_marcacoes_colaboradores_mapa
---          func_relatorio_intervalos_mapas
---          func_relatorio_aderencia_intervalo_dias
 CREATE OR REPLACE FUNCTION func_marcacao_intervalos_versus_mapas(F_COD_UNIDADE BIGINT,
                                                                  F_DATA_INICIAL DATE,
                                                                  F_DATA_FINAL DATE)

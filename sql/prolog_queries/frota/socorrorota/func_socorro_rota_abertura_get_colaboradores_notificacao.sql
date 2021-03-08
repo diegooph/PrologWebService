@@ -1,16 +1,3 @@
--- Sobre:
--- Esta function busca os colaboradores que devem ser notificados quando um socorro em rota for aberto.
---
--- Ela recebe o código da unidade onde o socorro foi solicitado pois apenas colaboradores dessa unidade serão notificados.
--- Além de ser da unidade do socorro, o colaborador precisa ter a permissão de tratar socorro para receber a
--- notificação de abertura (146).
---
--- Como as notificações enviadas são via e-mail ou push, são retornadados os colaboradores que cumpram os critérios
--- acima e que tenham um e-mail OU token do FCM cadastrado.
---
--- Histórico:
--- 2020-01-31 -> Function criada (luizfp - PL-2496).
--- 2020-02-28 -> Altera function para buscar e-mails e tokens do FCM para notificação (luizfp - PL-2522).
 CREATE OR REPLACE FUNCTION FUNC_SOCORRO_ROTA_ABERTURA_GET_COLABORADORES_NOTIFICACAO(F_COD_UNIDADE BIGINT)
     RETURNS TABLE
             (

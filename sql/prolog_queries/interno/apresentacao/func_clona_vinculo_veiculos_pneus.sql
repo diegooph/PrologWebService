@@ -1,10 +1,3 @@
--- Sobre:
--- A lógica aplicada nessa function é a seguinte:
--- Clona vinculo de veículos_pneus de uma unidade para outra.
---
--- Histórico:
--- 2020-04-06 -> Function criada (thaisksf - PL-2034).
--- 2020-09-24 -> Adiciona cod_veiculo (thaisksf - PL-3170).
 create or replace function
     interno.func_clona_vinculo_veiculos_pneus(f_cod_unidade_base bigint, f_cod_unidade_usuario bigint)
     returns void

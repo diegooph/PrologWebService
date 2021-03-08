@@ -1,9 +1,3 @@
--- Sobre:
--- Esta function retorna uma lista dos socorros em rota por status, usando como base de filtro os códigos de unidade
--- passados por parâmetro e a data atual, também passado por parâmetro pelo webservice.
---
--- Histórico:
--- 2020-04-03 -> Function criada (gustavocnp95 - PL-2618).
 CREATE OR REPLACE FUNCTION PUBLIC.FUNC_SOCORRO_ROTA_RELATORIO_SOCORROS_POR_STATUS(F_COD_UNIDADES BIGINT[],
                                                                                   F_DATA_HORA_BUSCA_RELATORIO DATE)
     RETURNS TABLE

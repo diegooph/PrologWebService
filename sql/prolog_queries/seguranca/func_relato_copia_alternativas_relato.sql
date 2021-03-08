@@ -1,15 +1,3 @@
--- Sobre:
--- A lógica aplicada nessa function é a seguinte:
--- Se as alternativas de relato que não existirem na unidade e setor de destinos serão copiadas.
---
--- Précondições:
--- 1) Para a function funcionar é verificado a integridade entre unidade-setor.
--- 2) Verificado se existem aternativas de origem para serem copiadas.
--- 3) Na hora do insert é realizado um select apenas para copiar as alternativas que não estão no destino, com base na
--- desrição da alternativa.
---
--- Histórico:
--- 2019-07-23 -> Function criada (thaisksf - PL-2100).
 CREATE OR REPLACE FUNCTION FUNC_RELATO_COPIA_ALTERNATIVAS_RELATO(
       F_COD_UNIDADE_ORIGEM       BIGINT,
       F_COD_SETOR_ORIGEM         BIGINT,

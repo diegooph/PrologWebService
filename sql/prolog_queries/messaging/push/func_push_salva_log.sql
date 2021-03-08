@@ -1,9 +1,3 @@
--- Sobre:
--- Esta function salva o log de cada requisição feita ao FCM. Esse log contém tanto as informações da requisição quanto
--- da resposta da API.
---
--- Histórico:
--- 2020-01-31 -> Function criada (luizfp - PL-2496).
 CREATE OR REPLACE FUNCTION MESSAGING.FUNC_PUSH_SALVA_LOG(F_DATA_HORA_ATUAL TIMESTAMP WITH TIME ZONE,
                                                          F_PUSH_MESSAGE_SCOPE TEXT,
                                                          F_PUSH_MESSAGE_SENT JSONB,

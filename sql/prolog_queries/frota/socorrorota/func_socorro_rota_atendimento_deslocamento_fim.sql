@@ -1,8 +1,3 @@
--- Sobre:
--- Esta function registra os dados de finalização de deslocamento para os atendimentos de socorro em rota.
---
--- Histórico:
--- 2020-03-19 -> Function criada (wvinim - PL-2631).
 CREATE OR REPLACE FUNCTION PUBLIC.FUNC_SOCORRO_ROTA_ATENDIMENTO_DESLOCAMENTO_FIM(F_COD_SOCORRO_ROTA BIGINT,
                                                                                  F_COD_COLABORADOR BIGINT,
                                                                                  F_DATA_HORA TIMESTAMP WITH TIME ZONE,

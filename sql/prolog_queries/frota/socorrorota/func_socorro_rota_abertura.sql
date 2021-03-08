@@ -1,26 +1,3 @@
--- Sobre:
--- Esta function abre uma solicitação de socorro através dos dados recebidos por parâmetro.
---
--- A abertura depende de uma inserção na tabela pai socorro_rota, pois, o código dela será usado como fk
--- nas outras tabelas exclusivas para cada status.
---
--- A abertura de um socorro em rota poderá atualizar o KM atual do veículo, se:
--- 1 - Não estiver deletado logicamente
--- 2 - O KM coletado na abertura for maior que o atual
---
--- Observação:
--- Existe uma trigger que valida a obrigatoriedade do parâmetro F_DESCRICAO_PROBLEMA de acordo com o
--- F_COD_PROBLEMA_SOCORRO_ROTA.
---
--- Histórico:
--- 2019-12-09 -> Function criada (wvinim - PL-2423).
--- 2020-02-10 -> Atualiza o KM atual do veículo (wvinim PL-2528).
--- 2020-02-11 -> Aplica a verificação que restringe a utilização apenas para empresas liberadas
--- 2020-02-12 -> Adiciona à tabela pai o código de abertura (wvinim PL-2521).
--- 2020-02-12 -> Insere o código da empresa na tabela de abertura (wvinim PL-2521).
--- 2020-02-13 -> Insere a plataforma de origem e a versão (wvinim PL-2527).
--- 2020-11-23 -> Modifica update de km na function (gustavocnp95 - PL-3290).
--- 2020-12-16 -> Corrige propagação de km na function (gustavocnp95|thaisksf - PL-3367).
 create or replace function func_socorro_rota_abertura(f_cod_unidade bigint,
                                                       f_cod_colaborador_abertura bigint,
                                                       f_cod_veiculo_problema bigint,

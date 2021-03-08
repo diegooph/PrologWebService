@@ -1,12 +1,3 @@
--- Sobre:
--- Essa function libera todas as permissões existentes no prolog para um determinado cargo e unidade
--- (buscados pelo cpf do usuário)
---
--- Pré-condições:
--- FUNC_GARANTE_COLABORADOR_EXISTE criada.
---
--- Histórico:
--- 2020-02-19 -> Function criada (thaisksf - PL-2549).
 CREATE OR REPLACE FUNCTION FUNC_LIBERA_TODAS_PERMISSOES(F_CPF BIGINT, OUT F_AVISO_PERMISSOES_INSERIDAS TEXT)
     RETURNS TEXT
     LANGUAGE PLPGSQL

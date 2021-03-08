@@ -1,13 +1,3 @@
--- Sobre:
---
--- Esta function retorna os dados para exportação genérica de marcações
---
--- Precondições:
--- 1) Function criada TZ_UNIDADE
---
--- Histórico:
--- 2019-08-29 -> Function criada (wvinim - PL-2223).
--- 2020-07-30 -> Retira marcações inativas da exibição (wvinim - PL-2832).
 CREATE OR REPLACE FUNCTION FUNC_MARCACAO_RELATORIO_EXPORTACAO_GENERICA(F_COD_UNIDADE             BIGINT,
                                                                        F_COD_TIPO_INTERVALO      BIGINT,
                                                                        F_COD_COLABORADOR         BIGINT,

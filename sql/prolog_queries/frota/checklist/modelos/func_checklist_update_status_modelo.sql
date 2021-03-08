@@ -1,9 +1,3 @@
--- Sobre:
--- Verifica se já existe um modelo ativo com mesmo nome do que está se tentando ativar, se existir, retorna um erro.
--- Se não, deixa a ativação acontecer.
---
--- Histórico:
--- 2019-09-13 -> Function criada (Natan - PL-2140).
 CREATE OR REPLACE FUNCTION FUNC_CHECKLIST_UPDATE_STATUS_MODELO(F_COD_UNIDADE BIGINT,
                                                                F_COD_MODELO BIGINT,
                                                                F_STATUS_ATIVO BOOLEAN)

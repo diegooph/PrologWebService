@@ -1,11 +1,3 @@
--- Sobre:
---
--- Esta function retorna os dados para o dashboard 'Placas com Aferição Vencida'.
---
--- Histórico:
--- 2019-05-14 -> Criado function e modificado composiço das colunas pode_aferir_sulco e pressao para utilizar
--- 2020-05-15 -> nova coluna forma_coleta (gustavocnp95 - PL-2689).
--- 2020-06-18 -> Adiciona identificador de frota ao relatório. (thaisksf - PL-2760).
 CREATE OR REPLACE FUNCTION FUNC_AFERICAO_RELATORIO_QTD_DIAS_PLACAS_VENCIDAS(F_COD_UNIDADES BIGINT[],
                                                                             F_DATA_HOJE_UTC TIMESTAMP WITH TIME ZONE)
     RETURNS TABLE

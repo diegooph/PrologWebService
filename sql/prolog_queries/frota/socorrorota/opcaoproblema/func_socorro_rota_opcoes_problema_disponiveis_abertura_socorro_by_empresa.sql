@@ -1,8 +1,3 @@
--- Sobre:
--- Essa function retorna as opções de problema possíveis para abertura de socorro, por código de cadastro de empresa.
---
--- Histórico:
--- 2020-03-11 -> Function criada (gustavocnp95 - PL-2577).
 CREATE OR REPLACE FUNCTION FUNC_SOCORRO_ROTA_OPS_PROBLEM_DISP_ABERTURA_SOCORRO_BY_EMP(
     F_COD_EMPRESA BIGINT
 )

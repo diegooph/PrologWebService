@@ -1,10 +1,3 @@
--- Sobre:
---
--- Function utilizada para buscar as funções liberadas de cada pilar para a unidade selecionada. Caso a unidade possuir
--- alguma função bloqueada, ela não será retornada pela function.
---
--- Histórico:
--- 2020-07-08 -> Function criada (diogenesvanzella - PL-2671).
 create or replace function func_empresa_get_funcoes_pilares_by_unidade(f_cod_unidade bigint)
     returns table
             (

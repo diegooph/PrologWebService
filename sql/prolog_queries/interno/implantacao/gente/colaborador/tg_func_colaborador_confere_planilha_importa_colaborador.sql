@@ -1,18 +1,3 @@
--- Sobre:
--- A lógica aplicada nessa function é a seguinte:
--- Verifica os dados que são inseridos na tabela de 'pré-import', procurando os códigos correspondentes para efetuar a
--- importação dos colaboradores.
---
--- Pré-requisitos:
--- functions criadas:
--- REMOVE_ESPACOS_E_CARACTERES_ESPECIAIS.
--- FUNC_GERA_SIMILARIDADE.
--- REMOVE_ALL_SPACES.
--- CHECK_NON_NUMERIC_CHARACTERS.
---
--- Histórico:
--- 2020-07-31 -> Function criada (thaisksf - PL-2460).
--- 2020-09-10 -> Remove caracteres especiais da data (thaisksf - PL-3139).
 CREATE OR REPLACE FUNCTION IMPLANTACAO.TG_FUNC_COLABORADOR_CONFERE_PLANILHA_IMPORTA_COLABORADOR()
     RETURNS TRIGGER
     LANGUAGE PLPGSQL

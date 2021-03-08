@@ -1,10 +1,3 @@
--- Sobre:
---
--- Function utilizada para validar se um colaborador específico possui acesso à uma função específica do Prolog.
---
--- Histórico:
--- 2019-07-06 -> Function criada (luizfp).
--- 2020-07-08 -> Altera function para minúsculo (diogenesvanzella - PL-2671).
 create or replace function func_colaborador_verifica_possui_funcao_prolog(f_cod_colaborador bigint,
                                                                           f_cod_funcao_prolog integer)
     returns boolean

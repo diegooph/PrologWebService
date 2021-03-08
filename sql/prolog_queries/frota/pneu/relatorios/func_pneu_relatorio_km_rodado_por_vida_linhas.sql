@@ -1,11 +1,3 @@
--- Sobre:
---
--- Function para gerar o relatório que traz o km rodado por cada vida por linha.
---
--- Os dados desse relatório, bem como o header são exibidos diretamente em front, sem nenhum tratamento adicional
---
--- Histórico:
--- 2020-05-21 -> Function criada. (luiz_fp - PL-2702).
 create or replace function func_pneu_relatorio_km_rodado_por_vida_linhas(f_cod_unidades bigint[])
     returns table
             (

@@ -1,9 +1,3 @@
--- Sobre:
--- A lógica aplicada nessa function é a seguinte:
--- Deleta unidades de uma empresa.
---
--- Histórico:
--- 2020-04-06 -> Function criada (thaisksf - PL-2034).
 CREATE OR REPLACE FUNCTION INTERNO.FUNC_DELETA_UNIDADES(F_COD_EMPRESA BIGINT, F_COD_UNIDADES BIGINT[])
     RETURNS VOID
     LANGUAGE PLPGSQL

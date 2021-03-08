@@ -1,10 +1,3 @@
--- Sobre:
---
--- Function para atualizar um tipo de veículo
---
--- Histórico:
--- 2020-03-05-> Atualização de arquivo e documentação (wvinim - PL-2560).
--- 2020-03-05-> Adiciona código auxiliar (wvinim - PL-2560).
 CREATE OR REPLACE FUNCTION FUNC_VEICULO_UPDATE_TIPO_VEICULO(F_COD_TIPO_VEICULO BIGINT,
                                                             F_NOME_TIPO_VEICULO TEXT,
                                                             F_COD_DIAGRAMA_TIPO_VEICULO BIGINT,

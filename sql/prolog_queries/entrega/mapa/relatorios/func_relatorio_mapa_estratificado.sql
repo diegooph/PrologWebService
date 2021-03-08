@@ -1,12 +1,3 @@
--- Sobre:
---
--- function utilizada para gerar o relatório de estratificação de mapa.
--- Nome no front: Mapa - Relatório de entrega.
--- Path no back: "/mapas/estratificados/{codUnidade}/csv" e "/mapas/estratificados/{codUnidade}/report".
---
--- Histórico:
--- 2020-06-22 -> Adiciona data de import (thaisksf - PL-2723).
--- 2020-11-04 -> Corrige filtro de data (luizfp - PS-1315).
 create or replace function func_relatorio_mapa_estratificado(f_cod_unidade bigint, f_data_inicial date, f_data_final date)
     returns table
             (

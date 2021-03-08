@@ -1,11 +1,6 @@
 -- Sobre:
 --
 -- Function utilizada para buscar uma Ordem de Serviço para ser fechada.
---
--- Histórico:
--- 2020-03-02 -> Atualização de arquivo e documentação (wvinim - PL-2494).
--- 2020-04-02 -> Altera join com perguntas e alternativas para utilizar tabela _DATA (luizfp).
--- 2020-07-17 -> Insere retorno de url de midia e cod checklist (gustavocnp95 - PL-2827).
 create or replace function func_checklist_os_get_ordem_servico_resolucao(f_cod_unidade bigint,
                                                                          f_cod_os bigint,
                                                                          f_data_hora_atual_utc timestamp with time zone)

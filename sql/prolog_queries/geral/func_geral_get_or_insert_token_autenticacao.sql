@@ -1,11 +1,3 @@
--- Sobre:
---
--- Function utilizada para inserir a token de autenticação de um usuário através do seu código. Caso o usuário já
--- possua um token válido, nenhum novo será inserido, iserimos um novo apenas para o caso de o usuário não possuir
--- nenhum.
---
--- Histórico:
--- 2020-04-08 -> Function criada (diogenesvanzella - PLI-118).
 create or replace function func_geral_get_or_insert_token_autenticacao(f_cod_colaborador bigint,
                                                                        f_token_autenticacao text)
     returns table

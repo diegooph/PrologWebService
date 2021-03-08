@@ -1,10 +1,3 @@
--- Sobre:
---
--- Essa view retorna uma lista de itens de ordem de serviço.
---
--- Histórico:
--- 2020-03-02 -> Atualização de arquivo e documentação (wvinim - PL-2494).
--- 2020-11-23 -> Adiciona campo código processo (steinert999 - PL-3335).
 CREATE OR REPLACE VIEW CHECKLIST_ORDEM_SERVICO_ITENS AS
 SELECT COSI.COD_UNIDADE,
        COSI.CODIGO,

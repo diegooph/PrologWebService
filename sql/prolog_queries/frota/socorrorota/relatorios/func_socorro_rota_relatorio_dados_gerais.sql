@@ -1,22 +1,3 @@
--- Sobre:
--- Esta function retorna um relatório de dados gerais dos socorros em rota com base nos filtros de múltiplas unidades,
--- data inicial, data final, e multiplos status.
---
--- Observação:
--- O filtro de data se baseia nos múltiplos status.
---
--- Pré-requisitos:
--- func FUNC_CONVERTE_INTERVAL_HHMMSS criada.
---
--- Histórico:
--- 2020-02-13 -> Function criada (thaisksf - PL-2523).
--- 2020-02-21 -> Corrigido condição do where (luizfp).
--- 2020-03-04 -> Adiciona distância entre a abertura e a unidade (luizfp).
--- 2020-03-19 -> Adiciona dados de deslocamento (wvinim - PL-2631).
--- 2020-04-13 -> Adiciona duração de tempo entre deslocamentos e entre final deslocamento e finalização do socorro.
---               Também foi aplicado uma ordenação ao relatório (luiz_fp - PL-2670).
--- 2020-07-06 -> Adiciona coluna de tempo máximo de socorro (wvinim - PL-2808).
--- 2020-07-22 -> Adiciona coluna de tempo entre abertura e finalização do socorro em rota (luiz_fp).
 CREATE OR REPLACE FUNCTION PUBLIC.FUNC_SOCORRO_ROTA_RELATORIO_DADOS_GERAIS(F_COD_UNIDADES BIGINT[],
                                                                            F_DATA_INICIAL DATE,
                                                                            F_DATA_FINAL DATE,
@@ -24,8 +5,8 @@ CREATE OR REPLACE FUNCTION PUBLIC.FUNC_SOCORRO_ROTA_RELATORIO_DADOS_GERAIS(F_COD
     RETURNS TABLE
             (
                 "UNIDADE"                                                     TEXT,
-                "DISTÂNCIA ENTRE UNIDADE E ABERTURA"                          TEXT,
-                "TEMPO MÁXIMO DE SOCORRO (DPO)"                               TEXT,
+                "DISTÂNCIA ENTRE UNIDADE E ABERTURA (EM KM)"                  TEXT,
+                "TEMPO MÁXIMO DE SOCORRO (DPO EM HORAS)"                      TEXT,
                 "CÓDIGO SOCORRO ROTA"                                         TEXT,
                 "STATUS SOCORRO ROTA"                                         TEXT,
                 "PLACA VEÍCULO ABERTURA"                                      TEXT,
@@ -119,13 +100,13 @@ BEGIN
     RETURN QUERY
         SELECT U.NOME :: TEXT                                          AS NOME_UNIDADE,
                COALESCE(
-                       DISTANCIA.DISTANCIA_UNIDADE_ABERTURA::TEXT || ' KM',
+                       DISTANCIA.DISTANCIA_UNIDADE_ABERTURA::TEXT,
                        'Unidade sem localização definida no Prolog')   AS DISTANCIA_ENTRE_UNIDADE_ABERTURA,
                CASE
-                   WHEN DISTANCIA.DISTANCIA_UNIDADE_ABERTURA::NUMERIC BETWEEN 0.01 AND 51 THEN '2 Horas'
+                   WHEN DISTANCIA.DISTANCIA_UNIDADE_ABERTURA::NUMERIC BETWEEN 0.01 AND 51 THEN '2'
                    WHEN (DISTANCIA.DISTANCIA_UNIDADE_ABERTURA::NUMERIC > 50
-                       AND DISTANCIA.DISTANCIA_UNIDADE_ABERTURA::NUMERIC <= 100) THEN '3 Horas'
-                   WHEN DISTANCIA.DISTANCIA_UNIDADE_ABERTURA::NUMERIC > 100 THEN '4 Horas'
+                       AND DISTANCIA.DISTANCIA_UNIDADE_ABERTURA::NUMERIC <= 100) THEN '3'
+                   WHEN DISTANCIA.DISTANCIA_UNIDADE_ABERTURA::NUMERIC > 100 THEN '4'
                    ELSE '-'
                    END                                                 AS DPO,
                COALESCE(SR.CODIGO ::TEXT, '-')                         AS COD_SOCORRO_ROTA,

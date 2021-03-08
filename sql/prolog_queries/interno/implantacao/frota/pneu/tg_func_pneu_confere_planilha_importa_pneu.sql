@@ -1,19 +1,3 @@
--- Sobre:
--- A lógica aplicada nessa function é a seguinte:
--- Verifica os dados que são inseridos na tabela de 'pré-import', procurando os códigos correspondentes para efetuar a
--- importação dos pneus.
---
--- Pré-requisitos:
--- functions criadas:
--- REMOVE_ESPACOS_E_CARACTERES_ESPECIAIS.
--- FUNC_GERA_SIMILARIDADE.
--- REMOVE_ALL_SPACES.--
---
--- Histórico:
--- 2019-12-13 -> Function criada (thaisksf - PL-2320).
--- 2020-01-23 -> Corrige busca de modelos para empresas/unidades novas (thaisksf - PL-2495)
--- 2020-01-23 -> Altera function para ser SECURITY DEFINER e para utilizar a view PNEU (luizfp).
--- 2020-05-25 -> Adiciona verificações de cod_empresa e cod_unidade (thaisksf - PL-2711).
 CREATE OR REPLACE FUNCTION IMPLANTACAO.TG_FUNC_PNEU_CONFERE_PLANILHA_IMPORTA_PNEU()
     RETURNS TRIGGER
     LANGUAGE PLPGSQL

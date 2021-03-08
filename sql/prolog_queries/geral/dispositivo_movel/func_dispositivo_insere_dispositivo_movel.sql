@@ -1,16 +1,3 @@
--- Sobre:
--- Esta função insere um dispositivo móvel e retorna o respectivo código.
---
--- Parâmetros:
--- F_COD_EMPRESA: Código da empresa.
--- F_COD_MARCA: Código da marca (MARCA_DISPOSITIVO_MOVEL_PROLOG).
--- F_MODELO: Texto de nome do modelo inserido pelo usuário (Ex: Galaxy S10).
--- F_DESCRICAO: Texto de descrição do dispositivo inserido pelo usuário.
---
--- Atenção: Esta função é utilizada dentro da function FUNC_DISPOSITIVO_INSERE_DISPOSITIVO_MOVEL_COM_IMEI.
---
--- Histórico:
--- 2019-07-25 -> Function criada (wvinim - PL-2150).
 CREATE OR REPLACE FUNCTION FUNC_DISPOSITIVO_INSERE_DISPOSITIVO_MOVEL(
   F_COD_EMPRESA BIGINT,
   F_COD_MARCA   BIGINT,

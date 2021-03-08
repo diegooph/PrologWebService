@@ -1,10 +1,3 @@
--- Sobre:
---
--- Cria uma sessão para o usuário informado na tabela `usuario_prolog_sessao`.
---
--- Histórico:
--- 2020-10-14 -> Function criada (luizfp).
--- 2020-10-14 -> Realiza cast para UUID antes do insert (luizfp).
 create or replace function interno.func_usuario_iniciar_sessao(f_cod_usuario bigint,
                                                                f_token_usuario text,
                                                                f_data_hora_atual timestamp with time zone)

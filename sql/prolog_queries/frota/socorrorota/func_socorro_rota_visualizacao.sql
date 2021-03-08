@@ -1,24 +1,3 @@
--- Sobre:
--- Esta function retorna todas as colunas referentes aos estados de uma solicitação de socorro através do código.
--- Ela também verifica se a empresa possui a funcionalidade de socorro em rota adquirida e se o colaborador que está
--- buscando os dados (F_COD_COLABORADOR_REQUEST) pode ver o socorro do código informado (F_COD_SOCORRO_ROTA).
---
--- Observação:
--- A lógica de exibição das informações depende dos estados e está aplicada dessa forma:
---      - Socorros em rota no estado "INVALIDO" podem ter também informações de atendimento
---      - Socorros em rota no estado "FINALIZADO" deverão ter também informações de atendimento
---
--- Histórico:
--- 2020-01-09 -> Function criada (wvinim - PL-2425).
--- 2020-01-29 -> Adiciona urls das fotos (wvinim - PL-2425).
--- 2020-02-03 -> Adiciona a descrição fornecida na abertura (wvinim - PL-2425).
--- 2020-02-03 -> Adiciona o ponto de referência fornecido na abertura (wvinim - PL-2425).
--- 2020-02-04 -> Adiciona o observação de atendimento, finalização e motivo de invalidação (wvinim - PL-2425).
--- 2020-02-04 -> Adiciona o km do veículo coletado na abertura (wvinim - PL-2425).
--- 2020-02-11 -> Aplica a verificação que restringe a utilização apenas para empresas liberadas (wvinim).
--- 2020-03-19 -> Adiciona dados de deslocamento (wvinim - PL-2631).
--- 2020-04-03 -> Adiciona tempos entre status (wvinim - PL-2585).
--- 2020-04-16 -> Verifica se colaborador que busca os dados do socorro tem a permissão necessária (luiz_fp - PL-2587).
 CREATE OR REPLACE FUNCTION PUBLIC.FUNC_SOCORRO_ROTA_VISUALIZACAO(F_COD_COLABORADOR_REQUEST BIGINT,
                                                                  F_COD_SOCORRO_ROTA BIGINT)
     RETURNS TABLE

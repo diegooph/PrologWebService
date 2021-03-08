@@ -1,38 +1,3 @@
--- Sobre:
--- A lógica aplicada nessa function é a seguinte:
--- Recebe as informações da planilha de import de veículos em formato Json. Após, as informações são colocadas em uma
--- tabela temporária, a fim de facilitar a manipulação.
---
--- Então, é realizado as seguintes análises:
---  - placa: aponta duplicidade;
---           remove caracteres e espaços excedentes;
---           verifica quantidade de caracteres acima de 7;
---           procura se já possui cadastro no banco:
---              -> se posuir, qual o status do veículo.
---
---  - marca: remove duplicidade;
---           procura por similaridade no banco:
---              -> se encontrar, retorna o código.
---
---  - modelo: remove duplicidade com base no cod_marca + modelo;
---            procura por similaridade no banco com base no cod_marca + modelo:
---              -> se encontrar, retorna o código.
---
---  - diagrama: remove duplicidade;
---              procura por similaridade no banco:
---                -> se encontrar, retorna o código.
---
---   - tipo: remove duplicidade com base no cod_diagrama + tipo;
---           procura por similaridade no banco com base no cod_diagrama + tipo:
---              -> se encontrar, retorna o código.
---
--- Précondições:
--- Planilha de import de veículo preenchida.
--- Function: FUNC_GARANTE_SIMILARIDADE(TEXT, TEXT) criada.
--- Function: REMOVE_ESPACOS_E_CARACTERES_ESPECIAIS(TEXT) criada.
---
--- Histórico:
--- 2019-08-13 -> Function criada (thaisksf - PL-2186).
 CREATE OR REPLACE FUNCTION IMPLANTACAO.FUNC_VEICULO_CONFERE_PLANILHA_IMPORTACAO(F_COD_UNIDADE BIGINT,
                                                                                 F_JSON_VEICULOS JSONB)
     RETURNS TABLE

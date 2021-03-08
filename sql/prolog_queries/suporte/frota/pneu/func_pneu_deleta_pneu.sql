@@ -1,26 +1,3 @@
--- Sobre:
--- A lógica aplicada nessa function é a seguinte:
--- Verifica se o pneu existe, se ele não está aplicado ou em análise.
--- Deleta todoas os serviços do pneu em afericao_manutencao_data.
--- Deleta todos os valores do pneu em afericao_valores_data.
--- Caso todos os valores da aferição sejam deletados, deve-se deletar a aferição.
--- Caso o pneu possui integração, é deletado.
---
--- Précondições:
--- Pneu deve existir;
--- Pneu não deve estar aplicado;
--- Pneu não deve estar em análise;
--- Deletar dependências de aferições;
---
--- Histórico:
--- 2019-09-17 -> Adiciona SESSION_USER (natanrotta - PL-2229).
--- 2019-09-18 -> Adiciona no schema suporte (natanrotta - PL-2242).
--- 2019-11-27 -> Deleta os serviços em aberto do pneu e não deletados (luizfp - PL-2270).
--- 2020-01-21 -> Implementa melhoria na lógica de deleção das dependências (natanrotta - PL-2270).
--- 2020-02-24 -> Implementa melhoria na lógica de deleção das dependências (luizfp - PL-2270).
--- 2020-05-22 -> Implementa estrutura para deletar pneu integrado (natanrotta PLI-157).
--- 2020-07-07 -> Adiciona motivo de deleção. (thaisksf - PL-2801).
--- 2020-08-14 -> Adiciona chamada para logar execução da function (gustavocnp95 - PL-3066).
 CREATE OR REPLACE FUNCTION SUPORTE.FUNC_PNEU_DELETA_PNEU(F_COD_UNIDADE BIGINT,
                                                          F_CODIGO_PNEU BIGINT,
                                                          F_CODIGO_CLIENTE TEXT,

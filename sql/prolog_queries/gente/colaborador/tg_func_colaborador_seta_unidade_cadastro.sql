@@ -1,5 +1,3 @@
--- Se o código da unidade cadastrada for null, seta igual o código da unidade. do contrário, apenas garante
--- que cod_unidade e cod_unidade_cadastro sejam iguais.
 CREATE OR REPLACE FUNCTION TG_FUNC_COLABORADOR_SETA_UNIDADE_CADASTRO()
   RETURNS TRIGGER AS $$
 BEGIN

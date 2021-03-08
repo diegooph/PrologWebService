@@ -1,9 +1,3 @@
--- Sobre:
--- Esta função atualiza um pneu. O update é realizado apenas se alguma informação do pneu mudou.
---
--- Histórico:
--- 2020-03-30 -> Function criada (gustavocnp95 - PL-2607).
--- 2020-07-29 -> Modifica verificação de mudança de código de modelo (gustavocnp95 - PL-2844)
 CREATE OR REPLACE FUNCTION FUNC_PNEU_ATUALIZA(F_COD_CLIENTE TEXT,
                                               F_COD_MODELO BIGINT,
                                               F_COD_DIMENSAO BIGINT,

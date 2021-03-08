@@ -1,10 +1,3 @@
--- Sobre:
---
--- Esta function retorna um modelo de banda.
---
---
--- Histórico:
--- 2019-10-15 -> Function criada. (thaisksf PL-2263)
 CREATE OR REPLACE FUNCTION FUNC_PNEU_GET_MODELO_BANDA_VISUALIZACAO(F_COD_MODELO_BANDA BIGINT)
     RETURNS TABLE
             (

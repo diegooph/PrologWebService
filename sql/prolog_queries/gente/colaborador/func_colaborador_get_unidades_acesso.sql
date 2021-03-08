@@ -1,10 +1,3 @@
--- Sobre:
---
--- Esta function retorna uma listagem das unidades em que o colaborador tem acesso.
--- O JOIN com a tabela de equipe pode ser opcional.
---
--- Histórico:
--- 2020-02-18 -> Adiciona parâmetro na busca pelas unidades de acesso (wvinim - PL-2547).
 CREATE OR REPLACE FUNCTION FUNC_COLABORADOR_GET_UNIDADES_ACESSO(F_COD_COLABORADOR BIGINT, F_EQUIPE_OBRIGATORIA BOOLEAN DEFAULT TRUE)
     RETURNS TABLE
             (

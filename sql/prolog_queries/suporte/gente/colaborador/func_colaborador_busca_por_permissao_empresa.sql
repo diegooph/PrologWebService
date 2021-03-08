@@ -1,12 +1,3 @@
--- Sobre:
--- Busca todos os colaboradores ATIVOS de uma empresa que possuam uma permissão específica do ProLog.
--- A lista de permissões (e seus códigos para uso nessa function) pode ser encontrada na tabela FUNCAO_PROLOG_V11.
---
--- Histórico:
--- 2019-09-18 -> Adiciona no schema suporte (natanrotta - PL-2242).
--- 2020-07-02 -> Altera function para não considerar permissões bloqueadas (luiz_fp - PL-2671)
--- 2020-07-08 -> Remove verificação das permissões bloqueadas (diogenesvanzella - PL-2671)
--- 2020-08-14 -> Adiciona chamada para logar execução da function (gustavocnp95 - PL-3066).
 create or replace function suporte.func_colaborador_busca_por_permissao_empresa(f_cod_empresa bigint,
                                                                                 f_cod_permissao bigint)
     returns table

@@ -1,12 +1,3 @@
--- Sobre:
--- A lógica aplicada nessa function é a seguinte:
--- Reúne dados de pneus que serão processados para gerar o relatório de custo por km.
---
--- Atenção: Os registros da tabela PNEU_VALOR_VIDA que estiverem com a vida maior que a atual do pneu
--- serão ignorados do cálculo.
---
--- Histórico:
--- 2020-05-13 -> Function criada (wvinim - PL-2699).
 CREATE OR REPLACE FUNCTION FUNC_PNEU_RELATORIO_CPK_MARCA_MODELO_DIMENSAO(F_COD_UNIDADES BIGINT[])
     RETURNS TABLE
             (

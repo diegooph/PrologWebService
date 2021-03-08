@@ -1,14 +1,3 @@
--- Sobre:
--- A lógica aplicada nessa function é a seguinte:
--- Ao receber o código da unidade e do modelo de checklist, é realizada a deleção lógica dos checklists juntamente
--- com as suas respectivas OS's.
--- Caso o checklist seja integrado, também é realizada a deleção na tabela de integração.
---
--- Précondições:
---
--- Histórico:
--- 2020-07-07 -> Function criada. (thaisksf - PL-2801).
--- 2020-08-14 -> Adiciona chamada para logar execução da function (gustavocnp95 - PL-3066).
 CREATE OR REPLACE FUNCTION SUPORTE.FUNC_CHECKLIST_DELETA_CHECKLIST_E_OS_BY_UNIDADE_MODELO(F_COD_UNIDADE BIGINT,
                                                                                           F_COD_CHECKLIST_MODELO BIGINT,
                                                                                           F_MOTIVO_DELECAO TEXT,

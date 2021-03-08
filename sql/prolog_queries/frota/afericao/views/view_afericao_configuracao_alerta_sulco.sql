@@ -1,10 +1,3 @@
--- Sobre:
---
--- Esta função retorna uma lista com as configurações de aferição por unidade.
--- Retorna valores padrão para as unidades que ainda não tem as configurações setadas.
---
--- Histórico:
--- 2019-12-10 -> Adição de colunas de bloqueio  (wvinim - PL-1934).
 CREATE OR REPLACE VIEW VIEW_AFERICAO_CONFIGURACAO_ALERTA_SULCO AS
 WITH CONFIGURACAO_PROLOG AS (
     SELECT AP.VARIACAO_ACEITA_SULCO_MAIOR_MILIMETROS,

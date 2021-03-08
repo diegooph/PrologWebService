@@ -1,10 +1,3 @@
--- Sobre:
--- A function retorna as aferições por placa com paginação.
---
--- Histórico:
--- 2020-05-05 -> Arquivo especifico da function criado (gustavocnp95 - PL-2684).
--- 2020-05-05 -> Adiciona nova coluna de forma de coleta de dados (gustavocnp95 - PL-2684).
--- 2020-06-18 -> Adiciona identificador de frota (thaisksf - PL-2760).
 CREATE OR REPLACE FUNCTION FUNC_AFERICAO_GET_AFERICOES_PLACAS_PAGINADA(F_COD_UNIDADE BIGINT, F_COD_TIPO_VEICULO BIGINT,
                                                                        F_PLACA_VEICULO TEXT, F_DATA_INICIAL DATE,
                                                                        F_DATA_FINAL DATE, F_LIMIT BIGINT,

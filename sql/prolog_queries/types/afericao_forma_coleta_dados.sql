@@ -1,9 +1,3 @@
--- Sobre:
--- Esta view busca os tipos ativos de forma de coleta dos dados da aferição. Ela já considera a config LC_MESSAGES
--- do postgres para retornar o traduzio (ou não) no status_legivel.
---
--- Histórico:
--- 2020-05-08 -> View criada (luiz_fp - PL-2689).
 CREATE OR REPLACE VIEW TYPES.AFERICAO_FORMA_COLETA_DADOS AS
 SELECT FORMA_COLETA_DADOS                     AS FORMA_COLETA_DADOS,
        F_IF((SELECT current_setting('lc_messages') = 'es_es.UTF-8'),

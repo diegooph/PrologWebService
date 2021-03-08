@@ -1,13 +1,3 @@
--- Sobre:
---
--- Esta função agrupa e retorna uma lista de marcações, filtradas por tipo, colaborador e unidade.
---
--- Histórico:
--- 2019-08-01 -> Function alterada para inserir registros de IMEI (wvinim - PL-2152).
--- 2020-04-28 -> Alterado para usar views ao invés de CTEs e removido order by (para não pagarmos esse tempo de sort)
---               (luiz_fp - PL-2720).
--- 2020-05-06 -> Corrige para aplicar filtragem em inícios ou fins apenas se houverem marcações (luiz_fp).
--- 2020-10-14 -> Corrige ordem dos parâmetros: FONTE_DATA_HORA_INICIO e FONTE_DATA_HORA_FIM (luizfp - PL-3199).
 create or replace function func_intervalos_agrupados(f_cod_unidade bigint,
                                                      f_cpf_colaborador bigint,
                                                      f_cod_tipo_intervalo bigint)

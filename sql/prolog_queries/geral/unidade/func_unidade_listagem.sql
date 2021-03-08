@@ -1,10 +1,3 @@
--- Sobre:
--- Esta função realiza a busca de uma lista de unidades com base na empresa e em códigos de regionais.
---
--- Atenção: A variável F_COD_REGIONAIS (códigos das regionais) pode ser nula.
---
--- Histórico:
--- 2020-03-16 -> Function criada (gustavocnp95 - PL-2588).
 CREATE OR REPLACE FUNCTION FUNC_UNIDADE_LISTAGEM(F_COD_EMPRESA BIGINT,
                                                  F_COD_REGIONAIS BIGINT[])
     RETURNS TABLE

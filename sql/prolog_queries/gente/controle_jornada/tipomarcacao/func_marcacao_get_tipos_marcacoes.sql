@@ -1,12 +1,3 @@
--- Sobre:
---
--- Esta function retorna uma lista com os tipos de marcações por unidade
---
--- Precondições:
--- 1) Criada a view VIEW_INTERVALO_TIPO
---
--- Histórico:
--- 2019-08-29 -> Adicionada coluna de código auxiliar (wvinim - PL-2223).
 CREATE OR REPLACE FUNCTION FUNC_MARCACAO_GET_TIPOS_MARCACOES(F_COD_UNIDADE BIGINT, F_APENAS_ATIVOS BOOLEAN)
   RETURNS TABLE(
     CODIGO_TIPO_INTERVALO             BIGINT,

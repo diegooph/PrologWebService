@@ -1,6 +1,4 @@
 --Impede que seja alterado a unidade na tabela veiculo_pneu, caso o veículo tenha pneus associados que estejam na unidade anterior
-
-
 CREATE OR REPLACE FUNCTION tg_func_veiculo_pneu_mesma_unidade()
   RETURNS trigger AS $veiculo_pneu_mesma_unidade_trigger$
 BEGIN

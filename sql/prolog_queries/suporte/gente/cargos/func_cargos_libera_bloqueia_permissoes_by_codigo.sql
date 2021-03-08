@@ -1,19 +1,3 @@
--- Sobre:
---
--- Function utilizada para liberar ou bloquear permissões específicas para empresas ou mesmo unidades específicas
--- das empresas. A function pode ser utilizada para liberar ou bloquear permissões e deve-se utilizar EXATAMENTE o
--- texto liberar/bloquear ou LIBERAR/BLOQUEAR para executar cada ação.
--- Para realizar o bloqueio de todas as unidades das empresas, basta não enviar nenhuma unidade no parâmetro
--- 'f_cod_unidades'.
--- Pode-se ainda informar o motivo pelo qual está sendo realizado o bloqueio. O parâmentro 'f_observacao_bloqueio' é
--- opcional e se informado será replicado para todas as permissões bloqueadas pela function.
--- Caso a operação realizada for LIBERAR, então 'f_cod_motivo_bloqueio' e 'f_observacao_bloqueio' serão ignorados.
--- IMPORTANTE: Ao realizar o bloqueio de uma permissão ela é automaticamente retirada de todos os cargos que a possuem.
---
--- Histórico:
--- 2020-06-26 -> Function criada (diogenesvanzella - PL-2671).
--- 2020-07-08 -> Passa a remover a permissão do cargo quando bloqueia (diogenesvanzella - PL-2671).
--- 2020-08-14 -> Adiciona chamada para logar execução da function (gustavocnp95 - PL-3066).
 create or replace function
     suporte.func_cargos_libera_bloqueia_permissoes_by_codigo(f_liberar_bloquear text,
                                                              f_cod_permissoes bigint[],

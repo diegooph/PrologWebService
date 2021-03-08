@@ -1,10 +1,3 @@
--- Sobre:
---
--- Esta função retorna uma lista dos IMEIs e seus dispositivos móveis, com base no código da empresa.
--- Devido a estrutura adotada, o agrupamento pelo dispositivo deverá ser realizado no WS.
---
--- Histórico:
--- 2019-07-25 -> Function criada (wvinim - PL-2150).
 CREATE OR REPLACE FUNCTION FUNC_DISPOSITIVO_GET_DISPOSITIVOS_MOVEIS(F_COD_EMPRESA BIGINT)
   RETURNS TABLE(
     COD_EMPRESA     BIGINT,

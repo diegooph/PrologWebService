@@ -1,16 +1,3 @@
--- Sobre:
---
--- Esta function retorna uma listagem detalhada dos pneus de acordo com seu status
---
--- Précondições:
--- 1) Código de unidade.
--- 2) Status do pneu.
---
--- Histórico:
--- 2019-09-06 -> Altera vínculo da tabela PNEU_ORDEM_NOMENCLATURA_UNIDADE para PNEU_POSICAO_NOMENCLATURA_EMPRESA
---               (thaisksf - PL-2258).
--- 2020-06-18 -> Permite filtro por múltiplas unidades (wellington - PL-2695).
--- 2020-07-01 -> Adiciona identificador de frota (luiz_fp - PL-2760).
 CREATE OR REPLACE FUNCTION FUNC_PNEU_GET_LISTAGEM_PNEUS_BY_STATUS(F_COD_UNIDADES BIGINT[],
                                                                   F_STATUS_PNEU TEXT)
     RETURNS TABLE

@@ -1,10 +1,3 @@
--- Sobre:
---
--- Esta function busca uma marca específica de banda pelo seu código.
---
---
--- Histórico:
--- 2019-10-25 -> Function criada. (thaisksf PL-2263)
 CREATE OR REPLACE FUNCTION FUNC_PNEU_GET_MARCA_BANDA_VISUALIZACAO(F_COD_MARCA BIGINT)
     RETURNS TABLE
             (

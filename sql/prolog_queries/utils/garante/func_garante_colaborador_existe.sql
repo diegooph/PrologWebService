@@ -1,13 +1,3 @@
--- Sobre:
--- A lógica aplicada nessa function é a seguinte:
--- Verifica se colaborador existe a partir do cpf informado.
---
--- Precondições:
--- 1) Necessário o CPF do colaborador para a verificação.
---
--- Histórico:
--- 2019-07-30 -> Function criada (thaisksf).
--- 2020-03-25 -> altara function para lançar mensagem genérica (diogenesvanzella - PLI-80).
 CREATE OR REPLACE FUNCTION FUNC_GARANTE_COLABORADOR_EXISTE(F_CPF_COLABORADOR BIGINT, F_ERROR_MESSAGE TEXT DEFAULT NULL)
     RETURNS VOID
     LANGUAGE PLPGSQL

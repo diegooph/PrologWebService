@@ -1,8 +1,3 @@
--- Sobre:
--- Essa function retorna as opcoes de problema disponiveis para abertura por codigo de empresa.
---
--- Histórico:
--- 2020-03-11 -> Function criada (gustavocnp95 - PL-2577).
 CREATE OR REPLACE FUNCTION FUNC_SOCORRO_ROTA_OPCOES_PROBLEMAS_ABERTURA_BY_EMPRESA(
     F_COD_EMPRESA BIGINT
 )

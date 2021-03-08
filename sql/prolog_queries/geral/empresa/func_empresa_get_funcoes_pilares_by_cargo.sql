@@ -1,9 +1,3 @@
--- Sobre:
---
--- Function utilizada para buscar as funções liberadas de cada pilar para o cargo selecionado.
---
--- Histórico:
--- 2020-07-08 -> Function criada (diogenesvanzella - PL-2671).
 create or replace function func_empresa_get_funcoes_pilares_by_cargo(f_cod_unidade bigint,
                                                                      f_cod_cargo_colaborador bigint)
     returns table

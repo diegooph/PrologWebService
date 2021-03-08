@@ -1,10 +1,3 @@
--- Sobre:
--- Busca uma aferição específica com base no código da aferição e da unidade.
---
--- Histórico:
--- 2020-05-18 -> Arquivo especifico da function criado (luiz_fp - PL-2684).
--- 2020-06-18 -> Adiciona identificador de frota (thaisksf - PL-2760).
-DROP FUNCTION FUNC_AFERICAO_GET_AFERICAO_BY_CODIGO(F_COD_UNIDADE BIGINT, F_COD_AFERICAO BIGINT, F_TZ_UNIDADE TEXT);
 CREATE OR REPLACE FUNCTION FUNC_AFERICAO_GET_AFERICAO_BY_CODIGO(F_COD_UNIDADE BIGINT,
                                                                 F_COD_AFERICAO BIGINT,
                                                                 F_TZ_UNIDADE TEXT)

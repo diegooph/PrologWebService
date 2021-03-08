@@ -1,16 +1,3 @@
--- Sobre:
--- A lógica aplicada nessa function é a seguinte:
--- Primeiro é feito a validação de todos os dados.
--- Logo, a tabela PNEU_DATA que possui a empresa, unidade informadas por parâmetro e que possui o codigo
--- na tabela VEICULO_PNEU, tem a coluna status atualizada para EM_USO.
---
--- Précondições:
--- Empresa e unidade precisam ter vínculo.
--- F_QUANTIDADE_PNEUS que foram vinculados.
---
--- Histórico:
--- 2019-08-28 -> Function criada (Natan - PL-2219).
---
 CREATE OR REPLACE FUNCTION FUNC_PNEU_ALTERA_STATUS_PNEU_VINCULADO(F_COD_EMPRESA BIGINT,
                                                                   F_COD_UNIDADE BIGINT,
                                                                   F_QUANTIDADE_PNEUS BIGINT,

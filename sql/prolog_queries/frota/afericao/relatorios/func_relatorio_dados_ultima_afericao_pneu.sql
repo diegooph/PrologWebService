@@ -1,16 +1,3 @@
--- Sobre:
---
--- Esta function retorna os dados dos pneus em sua última aferição
---
--- Précondições:
--- 1) Function: FUNC_PNEU_FORMAT_SULCO criada.
--- 2) Function: TZ_UNIDADE criada.
---
--- Histórico:
--- 2019-08-28 -> Adicionada coluna com o menor sulco (wvinim - PL-2169).
--- 2019-09-09 -> Altera vínculo da tabela PNEU_ORDEM_NOMENCLATURA_UNIDADE para PNEU_POSICAO_NOMENCLATURA_EMPRESA.
---               (thaisksf - PL-2258)
--- 2020-06-17 -> Adiciona identificador frota ao relatório. (thaisksf - PL-2760)
 CREATE OR REPLACE FUNCTION FUNC_RELATORIO_DADOS_ULTIMA_AFERICAO_PNEU(F_COD_UNIDADES TEXT[])
     RETURNS TABLE
             (

@@ -1,12 +1,3 @@
--- Sobre:
--- Esta function edita uma opção de problema
---
--- Observações:
--- É mantida uma tabela de histórico de alterações, ela recebe todas as informações anteriores ao update
--- da tabela socorro_rota_opcao_problema.
---
--- Histórico:
--- 2020-01-15 -> Function criada (wvinim - PL-2467).
 CREATE OR REPLACE FUNCTION FUNC_SOCORRO_ROTA_UPDATE_OPCOES_PROBLEMAS(F_COD_OPCAO_PROBLEMA BIGINT,
                                                                      F_COD_EMPRESA BIGINT,
                                                                      F_DESCRICAO TEXT,
