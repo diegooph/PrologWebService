@@ -1,8 +1,8 @@
 Change Log
 ==========
 
-<a name="v2.0.3"></a>
-## Version [v2.0.3](https://github.com/luizfp/PrologWebService/compare/v2.0.2...v2.0.3) (release-date) [unreleased]
+<a name="v2.1.0"></a>
+## Version [v2.1.0](https://github.com/luizfp/PrologWebService/compare/v2.0.2...v2.1.0) (2021-03-07)
 
 ### Features
 * Adiciona estrutura de testes e2e com testcontainers e Flyway (PL-3307)
