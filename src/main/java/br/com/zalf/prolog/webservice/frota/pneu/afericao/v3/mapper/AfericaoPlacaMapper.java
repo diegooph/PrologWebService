@@ -27,11 +27,9 @@ public class AfericaoPlacaMapper implements AfericaoMapper<AfericaoPlacaDto, Afe
     @Override
     @NotNull
     public AfericaoPlacaDto toDto(@NotNull final AfericaoPlacaProjection projection) {
-        return AfericaoPlacaDto.builder()
-                .kmVeiculo(projection.getKmVeiculo())
-                .placaVeiculo(projection.getPlacaVeiculo())
-                .identificadorFrota(projection.getIdentificadorFrota())
-                .dadosGerais(getDadosGerais(projection))
-                .build();
+        return AfericaoPlacaDto.of(projection.getKmVeiculo(),
+                                   projection.getPlacaVeiculo(),
+                                   projection.getIdentificadorFrota(),
+                                   getDadosGerais(projection));
     }
 }

@@ -27,8 +27,6 @@ public class AfericaoAvulsaMapper implements AfericaoMapper<AfericaoAvulsaDto, A
     @Override
     @NotNull
     public AfericaoAvulsaDto toDto(@NotNull final AfericaoAvulsaProjection projection) {
-        return AfericaoAvulsaDto.builder()
-                .dadosGerais(getDadosGerais(projection))
-                .build();
+        return AfericaoAvulsaDto.of(getDadosGerais(projection));
     }
 }
