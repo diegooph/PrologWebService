@@ -17,7 +17,7 @@ import java.util.List;
 @Api(value = "Aferições")
 public interface AfericaoV3ResourceApiDoc {
     @ApiOperation(
-            value = "Obtém uma lista de aferições realizadas.",
+            value = "Obtém uma lista de aferições de placas realizadas.",
             response = List.class)
     @ApiResponses(value = {
             @ApiResponse(
@@ -42,9 +42,25 @@ public interface AfericaoV3ResourceApiDoc {
             @ApiParam(value = "Um limite de registros a serem retornados.") final int limit,
             @ApiParam(value = "Um deslocamento para realizar a paginação.") final int offset);
 
-    List<AfericaoAvulsaDto> getAfericoesAvulsas(@NotNull final List<Long> codUnidades,
-                                                @NotNull final String dataInicial,
-                                                @NotNull final String dataFinal,
-                                                final int limit,
-                                                final int offset);
+    @ApiOperation(
+            value = "Obtém uma lista de aferições avulsas (apenas pneus avulsos) realizadas.",
+            response = List.class)
+    @ApiResponses(value = {
+            @ApiResponse(
+                    code = 200, message = "Operação efetuada com sucesso.",
+                    response = AfericaoPlacaDto.class,
+                    responseContainer = "List"),
+            @ApiResponse(code = 401, message = "Operação não autorizada", response = Response.class),
+            @ApiResponse(code = 404, message = "Operação não encontrada", response = Response.class),
+            @ApiResponse(code = 500, message = "Erro ao executar operação", response = Response.class)
+    })
+    List<AfericaoAvulsaDto> getAfericoesAvulsas(
+            @ApiParam(value = "Uma lista de códigos de unidade.",
+                      required = true) @NotNull final List<Long> codUnidades,
+            @ApiParam(value = "Uma data inicial, a qual a aferição tenha sido realizadas.",
+                      required = true) @NotNull final String dataInicial,
+            @ApiParam(value = "Uma data final, a qual a aferição tenha sido realizadas.",
+                      required = true) @NotNull final String dataFinal,
+            @ApiParam(value = "Um limite de registros a serem retornados.") final int limit,
+            @ApiParam(value = "Um deslocamento para realizar a paginação.") final int offset);
 }
