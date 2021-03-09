@@ -73,13 +73,14 @@ public class AfericaoV3Resource implements AfericaoV3ResourceApiDoc {
                                                      @QueryParam("dataFinal") final @NotNull String dataFinal,
                                                      @QueryParam("limit") final int limit,
                                                      @QueryParam("offset") final int offset) {
-
-        final FiltroAfericaoPlaca filtro = FiltroAfericaoPlaca.builder()
-                .placaVeiculo(placaVeiculo)
-                .codTipoVeiculo(codTipoVeiculo)
-                .dadosGerais(generateDadosGerais(codUnidades, dataInicial, dataFinal, limit, offset))
-                .build();
-
+        final DadosGeraisFiltro dadosGeraisFiltro = generateDadosGerais(codUnidades,
+                                                                        dataInicial,
+                                                                        dataFinal,
+                                                                        limit,
+                                                                        offset);
+        final FiltroAfericaoPlaca filtro = FiltroAfericaoPlaca.of(codTipoVeiculo,
+                                                                  placaVeiculo,
+                                                                  dadosGeraisFiltro);
         final List<AfericaoPlacaProjection> projections = this.service.getAfericoesPlacas(filtro);
         return this.afericaoPlacaMapper.toDtos(projections);
     }
@@ -98,9 +99,12 @@ public class AfericaoV3Resource implements AfericaoV3ResourceApiDoc {
                                                        @QueryParam("dataFinal") final @NotNull String dataFinal,
                                                        @QueryParam("limit") final int limit,
                                                        @QueryParam("offset") final int offset) {
-        final FiltroAfericaoAvulsa filtro = FiltroAfericaoAvulsa.builder()
-                .dadosGerais(generateDadosGerais(codUnidades, dataInicial, dataFinal, limit, offset))
-                .build();
+        final DadosGeraisFiltro dadosGeraisFiltro = generateDadosGerais(codUnidades,
+                                                                        dataInicial,
+                                                                        dataFinal,
+                                                                        limit,
+                                                                        offset);
+        final FiltroAfericaoAvulsa filtro = FiltroAfericaoAvulsa.of(dadosGeraisFiltro);
         final List<AfericaoAvulsaProjection> projections = this.service.getAfericoesAvulsas(filtro);
         return this.afericaoAvulsaMapper.toDtos(projections);
     }
