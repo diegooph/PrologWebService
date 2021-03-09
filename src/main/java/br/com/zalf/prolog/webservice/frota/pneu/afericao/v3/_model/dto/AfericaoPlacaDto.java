@@ -10,8 +10,7 @@ import org.jetbrains.annotations.Nullable;
  *
  * @author Guilherme Steinert (https://github.com/steinert999)
  */
-@Builder
-@Value
+@Value(staticConstructor = "of")
 public class AfericaoPlacaDto {
 
     @NotNull

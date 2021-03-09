@@ -2,19 +2,16 @@ package br.com.zalf.prolog.webservice.frota.pneu.afericao.v3._model.dto.busca;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Value;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Created on 2021-02-11
  *
  * @author Guilherme Steinert (https://github.com/steinert999)
  */
-@Getter
+@Value(staticConstructor = "of")
 public class FiltroAfericaoAvulsa {
-
+    @NotNull
     DadosGeraisFiltro dadosGerais;
-
-    @Builder
-    private FiltroAfericaoAvulsa(final DadosGeraisFiltro dadosGerais) {
-        this.dadosGerais = dadosGerais;
-    }
 }

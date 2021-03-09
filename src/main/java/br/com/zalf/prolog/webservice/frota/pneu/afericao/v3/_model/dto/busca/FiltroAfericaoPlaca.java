@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.afericao.v3._model.dto.busca;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Value;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -12,7 +13,7 @@ import javax.validation.constraints.Size;
  *
  * @author Guilherme Steinert (https://github.com/steinert999)
  */
-@Getter
+@Value(staticConstructor = "of")
 public class FiltroAfericaoPlaca {
 
     private static final Long DEFAULT_VALUE_TIPO_VEICULO = -1L;
@@ -27,7 +28,6 @@ public class FiltroAfericaoPlaca {
     @NotNull
     DadosGeraisFiltro dadosGerais;
 
-    @Builder
     private FiltroAfericaoPlaca(
             @Nullable final Long codTipoVeiculo,
             @Nullable final String placaVeiculo,
