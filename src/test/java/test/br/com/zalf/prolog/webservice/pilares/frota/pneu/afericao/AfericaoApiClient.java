@@ -7,12 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestComponent;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created on 2021-03-05
@@ -38,8 +40,10 @@ public class AfericaoApiClient {
 
         final UriComponents components = UriComponentsBuilder
                 .fromPath(RESOURCE)
-                .path("/placa")
-                .queryParam("unidades", codUnidades)
+                .path("/placas")
+                .queryParam("unidades", codUnidades.stream()
+                        .map(Object::toString)
+                        .collect(Collectors.joining(",")))
                 .queryParam("placa", placaVeiculo)
                 .queryParam("codTipoVeiculo", codTipoVeiculo)
                 .queryParam("dataInicial", dataInicial)
@@ -49,6 +53,7 @@ public class AfericaoApiClient {
                 .build();
         final RequestEntity<Void> reqEntity = RequestEntity
                 .get(components.toUri())
+                .accept(MediaType.APPLICATION_JSON)
                 .build();
 
         return restTemplate.exchange(reqEntity, new ParameterizedTypeReference<List<AfericaoPlacaDto>>() {});
@@ -61,8 +66,10 @@ public class AfericaoApiClient {
                                                        final int offset) {
         final UriComponents components = UriComponentsBuilder
                 .fromPath(RESOURCE)
-                .path("/avulsa")
-                .queryParam("unidades", codUnidades)
+                .path("/avulsas")
+                .queryParam("unidades", codUnidades.stream()
+                        .map(Object::toString)
+                        .collect(Collectors.joining(",")))
                 .queryParam("dataInicial", dataInicial)
                 .queryParam("dataFinal", dataFinal)
                 .queryParam("limit", limit)
@@ -71,6 +78,7 @@ public class AfericaoApiClient {
 
         final RequestEntity<Void> reqEntity = RequestEntity
                 .get(components.toUri())
+                .accept(MediaType.APPLICATION_JSON)
                 .build();
         return restTemplate.exchange(reqEntity, new ParameterizedTypeReference<List<AfericaoAvulsaDto>>() {});
     }
