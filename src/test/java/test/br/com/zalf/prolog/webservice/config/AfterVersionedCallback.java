@@ -30,6 +30,7 @@ public class AfterVersionedCallback extends BaseCallback {
             } catch (final SQLException e) {
                 Log.e(TAG, "Erro ao executar callback após migrations", e);
             }
+            Log.i(TAG, "Finalizando execução da query: " + query);
         }
     }
 }
