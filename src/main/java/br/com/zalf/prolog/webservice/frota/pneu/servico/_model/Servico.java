@@ -50,6 +50,11 @@ public abstract class Servico {
     private boolean fechadoAutomaticamenteIntegracao;
 
     /**
+     * Indica se esse serviço foi fechado automaticamente por um método de aferição.
+     */
+    private boolean fechadoAutomaticamenteAfericao;
+
+    /**
      * Armazena o tempo que o colaborador levou para realizar esse serviço, em milissegundos.
      */
     private long tempoRealizacaoServicoInMillis;
@@ -212,6 +217,14 @@ public abstract class Servico {
 
     public void setFechadoAutomaticamenteIntegracao(final boolean fechadoAutomaticamenteIntegracao) {
         this.fechadoAutomaticamenteIntegracao = fechadoAutomaticamenteIntegracao;
+    }
+
+    public boolean isFechadoAutomaticamenteAfericao() {
+        return fechadoAutomaticamenteAfericao;
+    }
+
+    public void setFechadoAutomaticamenteAfericao(final boolean fechadoAutomaticamenteAfericao) {
+        this.fechadoAutomaticamenteAfericao = fechadoAutomaticamenteAfericao;
     }
 
     @Nullable

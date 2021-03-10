@@ -179,11 +179,13 @@ final class ServicoConverter {
         servico.setIdentificadorFrota(resultSet.getString("IDENTIFICADOR_FROTA"));
         servico.setFechadoAutomaticamenteMovimentacao(resultSet.getBoolean("FECHADO_AUTOMATICAMENTE_MOVIMENTACAO"));
         servico.setFechadoAutomaticamenteIntegracao(resultSet.getBoolean("FECHADO_AUTOMATICAMENTE_INTEGRACAO"));
+        servico.setFechadoAutomaticamenteAfericao(resultSet.getBoolean("FECHADO_AUTOMATICAMENTE_AFERICAO"));
         final String formaColetaDadosFechamento = resultSet.getString("FORMA_COLETA_DADOS_FECHAMENTO");
         if (formaColetaDadosFechamento != null) {
             servico.setFormaColetaDadosFechamento(FormaColetaDadosAfericaoEnum.fromString(formaColetaDadosFechamento));
         }
-        if (!servico.isFechadoAutomaticamenteIntegracao() && !servico.isFechadoAutomaticamenteMovimentacao()) {
+        if (!servico.isFechadoAutomaticamenteIntegracao() && !servico.isFechadoAutomaticamenteMovimentacao() &&
+                !servico.isFechadoAutomaticamenteAfericao()) {
             final Colaborador colaborador = new Colaborador();
             colaborador.setCpf(resultSet.getLong("CPF_RESPONSAVEL_FECHAMENTO"));
             colaborador.setNome(resultSet.getString("NOME_RESPONSAVEL_FECHAMENTO"));

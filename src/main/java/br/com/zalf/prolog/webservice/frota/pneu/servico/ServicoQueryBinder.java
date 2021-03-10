@@ -220,6 +220,7 @@ final class ServicoQueryBinder {
                                                                            "   AM" +
                                                                            ".FECHADO_AUTOMATICAMENTE_MOVIMENTACAO, " +
                                                                            "   AM.FECHADO_AUTOMATICAMENTE_INTEGRACAO," +
+                                                                           "   AM.FECHADO_AUTOMATICAMENTE_AFERICAO, " +
                                                                            " " +
                                                                            "   AM.FORMA_COLETA_DADOS_FECHAMENTO, " +
                                                                            "   AAMI.ALTERNATIVA AS " +
