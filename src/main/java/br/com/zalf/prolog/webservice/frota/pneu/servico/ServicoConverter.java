@@ -5,6 +5,8 @@ import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu._model.PneuComum;
 import br.com.zalf.prolog.webservice.frota.pneu._model.PneuEstoque;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Sulcos;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.Afericao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.AfericaoPlaca;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.FormaColetaDadosAfericaoEnum;
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.*;
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
@@ -190,6 +192,10 @@ final class ServicoConverter {
             colaborador.setCpf(resultSet.getLong("CPF_RESPONSAVEL_FECHAMENTO"));
             colaborador.setNome(resultSet.getString("NOME_RESPONSAVEL_FECHAMENTO"));
             servico.setColaboradorResponsavelFechamento(colaborador);
+        }
+
+        if(servico.isFechadoAutomaticamenteAfericao()) {
+            servico.setCodAfericaoFechamentoAutomatico(resultSet.getLong("COD_AFERICAO_FECHAMENTO_AUTOMATICO"));
         }
 
         // Cria pneu com problema, responsável por originar o serviço.
