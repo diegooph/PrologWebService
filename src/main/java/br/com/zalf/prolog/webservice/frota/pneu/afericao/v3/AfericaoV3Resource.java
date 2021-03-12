@@ -38,16 +38,12 @@ import java.util.List;
 @Controller
 public class AfericaoV3Resource implements AfericaoV3ResourceApiDoc {
 
-
     @NotNull
     private final AfericaoV3Service service;
-
     @NotNull
     private final AfericaoPlacaMapper afericaoPlacaMapper;
-
     @NotNull
     private final AfericaoAvulsaMapper afericaoAvulsaMapper;
-
 
     @Autowired
     AfericaoV3Resource(@NotNull final AfericaoV3Service service,
