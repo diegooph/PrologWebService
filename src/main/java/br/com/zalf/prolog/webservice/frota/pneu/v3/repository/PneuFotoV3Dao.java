@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.v3.repository;
 
-import br.com.zalf.prolog.webservice.frota.pneu.v3._model.PneuEntity;
+import br.com.zalf.prolog.webservice.frota.pneu.v3._model.PneuFotoEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -10,5 +10,5 @@ import org.springframework.stereotype.Repository;
  * @author Guilherme Steinert (https://github.com/steinert999)
  */
 @Repository
-public interface PneuV3Repository extends JpaRepository<PneuEntity, Long> {
+public interface PneuFotoV3Dao extends JpaRepository<PneuFotoEntity, Long> {
 }
