@@ -18,7 +18,7 @@ public class AfericaoPlacaMapper implements AfericaoMapper<AfericaoPlacaDto, Afe
 
     @Override
     @NotNull
-    public List<AfericaoPlacaDto> toDtos(final @NotNull List<AfericaoPlacaProjection> projections) {
+    public List<AfericaoPlacaDto> toDtos(@NotNull final List<AfericaoPlacaProjection> projections) {
         return projections.stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());

@@ -18,7 +18,7 @@ public class AfericaoAvulsaMapper implements AfericaoMapper<AfericaoAvulsaDto, A
 
     @Override
     @NotNull
-    public List<AfericaoAvulsaDto> toDtos(final @NotNull List<AfericaoAvulsaProjection> projections) {
+    public List<AfericaoAvulsaDto> toDtos(@NotNull final List<AfericaoAvulsaProjection> projections) {
         return projections.stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
