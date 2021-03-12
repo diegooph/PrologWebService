@@ -17,7 +17,7 @@ public class PneuFotoV3ServiceImpl implements PneuFotoV3Service {
 
     @Override
     @NotNull
-    public List<PneuFotoEntity> addPhotosToPneu(@NotNull final PneuEntity pneu, @NotNull final List<String> urls) {
+    public List<PneuFotoEntity> createPneuFotos(@NotNull final PneuEntity pneu, @NotNull final List<String> urls) {
         throw new NotImplementedException("metodo não implementado até o momento.");
     }
 }
