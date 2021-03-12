@@ -16,7 +16,8 @@ import java.util.List;
 public class PneuFotoV3ServiceImpl implements PneuFotoV3Service {
 
     @Override
-    public PneuFotoEntity addPhotosToPneu(final PneuEntity pneu, final List<String> urls) {
+    @NotNull
+    public List<PneuFotoEntity> addPhotosToPneu(@NotNull final PneuEntity pneu, @NotNull final List<String> urls) {
         throw new NotImplementedException("metodo não implementado até o momento.");
     }
 }
