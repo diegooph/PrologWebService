@@ -17,8 +17,8 @@ public interface AfericaoV3Service {
 
 
     @NotNull
-    List<AfericaoPlacaProjection> getAfericoesPlacas(FiltroAfericaoPlaca filtro);
+    List<AfericaoPlacaProjection> getAfericoesPlacas(@NotNull final FiltroAfericaoPlaca filtro);
 
     @NotNull
-    List<AfericaoAvulsaProjection> getAfericoesAvulsas(FiltroAfericaoAvulsa filtro);
+    List<AfericaoAvulsaProjection> getAfericoesAvulsas(@NotNull final FiltroAfericaoAvulsa filtro);
 }
