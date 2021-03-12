@@ -15,10 +15,9 @@ import java.util.concurrent.TimeUnit;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public final class AfericaoIntegracaoPraxioConverter {
-
     public AfericaoIntegracaoPraxioConverter() {
-        throw new IllegalStateException(AfericaoIntegracaoPraxioConverter.class.getSimpleName()
-                + " cannot be instatiated!");
+        throw new IllegalStateException(
+                AfericaoIntegracaoPraxioConverter.class.getSimpleName() + " cannot be instatiated!");
     }
 
     @NotNull
@@ -61,8 +60,12 @@ public final class AfericaoIntegracaoPraxioConverter {
             return createMedicaoPneuAvulsoSulco(rSet, medicao);
         }
 
-        throw new IllegalStateException(
-                "Não é possível existir uma aferição de PNEU_AVULSO que não seja com medição de SULCO");
+        if (tipoProcesso.equals(TipoProcessoColetaAfericao.PNEU_AVULSO)
+                && tipoMedicao.equals(TipoMedicaoColetadaAfericao.PRESSAO)) {
+            return createMedicaoPneuAvulsoPressao(rSet, medicao);
+        }
+
+        return createMedicaoPneuAvulsoSulcoPressao(rSet, medicao);
     }
 
     @NotNull
@@ -113,6 +116,26 @@ public final class AfericaoIntegracaoPraxioConverter {
         medicao.setAlturaSulcoCentralInterno(rSet.getDouble("ALTURA_SULCO_CENTRAL_INTERNO"));
         medicao.setAlturaSulcoCentralExterno(rSet.getDouble("ALTURA_SULCO_CENTRAL_EXTERNO"));
         medicao.setAlturaSulcoExterno(rSet.getDouble("ALTURA_SULCO_EXTERNO"));
+        return medicao;
+    }
+
+    @NotNull
+    private static MedicaoIntegracaoPraxio createMedicaoPneuAvulsoPressao(
+            @NotNull final ResultSet rSet,
+            @NotNull final MedicaoIntegracaoPraxio medicao) throws SQLException {
+        medicao.setPressao(rSet.getDouble("PRESSAO"));
+        return medicao;
+    }
+
+    @NotNull
+    private static MedicaoIntegracaoPraxio createMedicaoPneuAvulsoSulcoPressao(
+            @NotNull final ResultSet rSet,
+            @NotNull final MedicaoIntegracaoPraxio medicao) throws SQLException {
+        medicao.setAlturaSulcoInterno(rSet.getDouble("ALTURA_SULCO_INTERNO"));
+        medicao.setAlturaSulcoCentralInterno(rSet.getDouble("ALTURA_SULCO_CENTRAL_INTERNO"));
+        medicao.setAlturaSulcoCentralExterno(rSet.getDouble("ALTURA_SULCO_CENTRAL_EXTERNO"));
+        medicao.setAlturaSulcoExterno(rSet.getDouble("ALTURA_SULCO_EXTERNO"));
+        medicao.setPressao(rSet.getDouble("PRESSAO"));
         return medicao;
     }
 }

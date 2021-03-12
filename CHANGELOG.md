@@ -1,6 +1,9 @@
 Change Log
 ==========
 
+### Bug Fixes
+* Corrige busca do relatório de aferições integrado (PL-3568)
+
 <a name="v2.1.1"></a>
 ## Version [v2.1.1](https://github.com/luizfp/PrologWebService/compare/v2.1.0...v2.1.1) (release-date) [unreleased]
 
