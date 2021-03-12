@@ -27,6 +27,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
@@ -255,8 +256,9 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
             stmt = conn.prepareStatement("SELECT * FROM FUNC_AFERICAO_GET_AFERICOES_PLACAS_PAGINADA(?, ?, ?, ?, ?, ?," +
                                                  " ?);");
             final String zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId();
-            stmt.setLong(1, codUnidade);
-
+            stmt.setArray(1, PostgresUtils.listToArray(conn,
+                                                                      SqlType.BIGINT,
+                                                                      Collections.singletonList(codUnidade)));
             if (Filtros.isFiltroTodos(codTipoVeiculo)) {
                 stmt.setNull(2, Types.BIGINT);
             } else {
@@ -295,7 +297,9 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM FUNC_AFERICAO_GET_AFERICOES_AVULSAS_PAGINADA(?, ?, ?, ?, ?);");
-            stmt.setLong(1, codUnidade);
+            stmt.setArray(1, PostgresUtils.listToArray(conn,
+                                                                      SqlType.BIGINT,
+                                                                     Collections.singletonList(codUnidade)));
             stmt.setObject(2, dataInicial);
             stmt.setObject(3, dataFinal);
             stmt.setInt(4, limit);
