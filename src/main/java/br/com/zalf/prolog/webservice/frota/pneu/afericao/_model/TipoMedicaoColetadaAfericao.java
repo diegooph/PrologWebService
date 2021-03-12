@@ -69,7 +69,6 @@ public enum TipoMedicaoColetadaAfericao implements BarColor {
     }
 
     public static TipoMedicaoColetadaAfericao fromString(@NotNull final String string) {
-        Preconditions.checkNotNull(string, "Tipo de medição não pode ser nulo!");
         return Stream.of(TipoMedicaoColetadaAfericao.values())
                 .filter(e -> e.stringRepresentation.equals(string))
                 .findFirst()

@@ -32,7 +32,6 @@ public enum TipoProcessoColetaAfericao {
     }
 
     public static TipoProcessoColetaAfericao fromString(@NotNull final String tipoProcessoAfericao) {
-        Preconditions.checkNotNull(tipoProcessoAfericao, "Tipo de processo não pode ser nulo!");
         return Stream.of(TipoProcessoColetaAfericao.values())
                 .filter(e -> e.stringRepresentation.equals(tipoProcessoAfericao))
                 .findFirst()

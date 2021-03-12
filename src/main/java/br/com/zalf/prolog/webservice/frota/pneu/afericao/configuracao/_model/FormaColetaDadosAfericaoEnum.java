@@ -25,7 +25,6 @@ public enum FormaColetaDadosAfericaoEnum {
 
     @NotNull
     public static FormaColetaDadosAfericaoEnum fromString(@NotNull final String text) throws IllegalArgumentException {
-        Preconditions.checkNotNull(text, "Forma de coleta não pode ser nula!");
         return Stream.of(FormaColetaDadosAfericaoEnum.values())
                 .filter(e -> e.stringRepresentation.equals(text))
                 .findFirst()
