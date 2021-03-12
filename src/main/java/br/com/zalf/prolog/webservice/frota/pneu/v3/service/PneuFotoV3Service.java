@@ -14,5 +14,5 @@ import java.util.List;
 public interface PneuFotoV3Service {
 
     @NotNull
-    List<PneuFotoEntity> addPhotosToPneu(@NotNull final PneuEntity pneu, @NotNull final List<String> urls);
+    List<PneuFotoEntity> createPneuFotos (@NotNull final PneuEntity pneu, @NotNull final List<String> urls);
 }
