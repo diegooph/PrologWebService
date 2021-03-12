@@ -68,6 +68,7 @@ public enum TipoMedicaoColetadaAfericao implements BarColor {
         return stringRepresentation;
     }
 
+    @NotNull
     public static TipoMedicaoColetadaAfericao fromString(@NotNull final String string) {
         return Stream.of(TipoMedicaoColetadaAfericao.values())
                 .filter(e -> e.stringRepresentation.equals(string))

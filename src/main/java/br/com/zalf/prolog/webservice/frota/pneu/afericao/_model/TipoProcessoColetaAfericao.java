@@ -31,6 +31,7 @@ public enum TipoProcessoColetaAfericao {
         return asString();
     }
 
+    @NotNull
     public static TipoProcessoColetaAfericao fromString(@NotNull final String tipoProcessoAfericao) {
         return Stream.of(TipoProcessoColetaAfericao.values())
                 .filter(e -> e.stringRepresentation.equals(tipoProcessoAfericao))
