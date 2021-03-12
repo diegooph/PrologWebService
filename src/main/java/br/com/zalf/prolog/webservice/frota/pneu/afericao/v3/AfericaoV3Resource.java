@@ -13,6 +13,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.afericao.v3._model.projections.A
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.v3.mapper.AfericaoAvulsaMapper;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.v3.mapper.AfericaoPlacaMapper;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.v3.service.AfericaoV3Service;
+import br.com.zalf.prolog.webservice.interceptors.ApiExposed;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
@@ -57,6 +58,7 @@ public class AfericaoV3Resource implements AfericaoV3ResourceApiDoc {
         this.afericaoAvulsaMapper = afericaoAvulsaMapper;
     }
 
+    @ApiExposed
     @GET
     @Path("/placas")
     @Secured(permissions = {
@@ -85,6 +87,7 @@ public class AfericaoV3Resource implements AfericaoV3ResourceApiDoc {
         return this.afericaoPlacaMapper.toDtos(projections);
     }
 
+    @ApiExposed
     @GET
     @Path("/avulsas")
     @Secured(permissions = {
