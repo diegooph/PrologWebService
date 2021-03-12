@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.v3.service;
 
 import br.com.zalf.prolog.webservice.frota.pneu.v3._model.PneuEntity;
 import br.com.zalf.prolog.webservice.frota.pneu.v3._model.PneuFotoEntity;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -12,5 +13,6 @@ import java.util.List;
  */
 public interface PneuFotoV3Service {
 
-    PneuFotoEntity addPhotosToPneu(PneuEntity pneu, List<String> urls);
+    @NotNull
+    List<PneuFotoEntity> addPhotosToPneu(@NotNull final PneuEntity pneu, @NotNull final List<String> urls);
 }
