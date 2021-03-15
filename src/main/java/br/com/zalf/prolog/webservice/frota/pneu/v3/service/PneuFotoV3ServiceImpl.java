@@ -1,10 +1,12 @@
 package br.com.zalf.prolog.webservice.frota.pneu.v3.service;
 
+import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.frota.pneu.v3._model.PneuEntity;
 import br.com.zalf.prolog.webservice.frota.pneu.v3._model.PneuFotoEntity;
 import br.com.zalf.prolog.webservice.frota.pneu.v3.dao.PneuFotoV3Dao;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -36,5 +38,9 @@ public class PneuFotoV3ServiceImpl implements PneuFotoV3Service {
                 .map(dao::save)
                 .peek(foto -> Log.d(TAG, "Foi inserido a imagem: " + foto + " para o pneu de id: " + pneu.getId()))
                 .collect(Collectors.toList());
+    }
+
+    private boolean notCreated(@NotNull final PneuFotoEntity pneuFoto) {
+        return !dao.exists(Example.of(pneuFoto));
     }
 }
