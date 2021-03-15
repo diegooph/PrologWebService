@@ -78,7 +78,7 @@ public interface OrdemServicoDao {
     /**
      * Método usado apenas pela integrção
      *
-     * @deprecated at 2020-03-15. Use {@link getItensStatus(Connection,Long, Long, Long)}.
+     * @deprecated at 2020-03-15. Use {@link OrdemServicoDao#getItensStatus(Connection, Long, Long, Long)}.
      * Será retirado em tarefa própria de integração que irá remover placa do checklist - PL.
      */
     @Deprecated
