@@ -23,7 +23,7 @@ public class PneuCadastro {
     Long codEmpresa;
 
     @NotNull(message = "O código do cliente não pode ser nulo.")
-    Long codCliente;
+    String codCliente;
 
     @NotNull(message = "O código de modelo de banda não pode ser nulo.")
     Long codModeloBanda;
