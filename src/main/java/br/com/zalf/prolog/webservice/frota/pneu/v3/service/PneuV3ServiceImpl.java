@@ -13,7 +13,8 @@ import org.springframework.stereotype.Service;
 public class PneuV3ServiceImpl implements PneuV3Service {
 
     @Override
-    public PneuEntity create(final PneuEntity pneu) {
+    @NotNull
+    public PneuEntity create(@NotNull final PneuEntity pneu) {
         throw new NotImplementedException("metodo não implementado até o momento.");
     }
 }
