@@ -1,6 +1,8 @@
 package br.com.zalf.prolog.webservice.frota.pneu.v3._model;
 
-import lombok.Data;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -14,7 +16,9 @@ import java.time.LocalDateTime;
  */
 @Entity
 @Table(name = "pneu_data", schema = "public")
-@Data
+@Builder
+@NoArgsConstructor
+@Getter
 public class PneuEntity {
 
     @Id
@@ -100,8 +104,10 @@ public class PneuEntity {
     }
 
     @Embeddable
-    @Data
-    static class AlturaSulco {
+    @Builder
+    @NoArgsConstructor
+    @Getter
+    public static class AlturaSulco {
 
         private BigDecimal interno;
 
@@ -113,22 +119,28 @@ public class PneuEntity {
     }
 
     @Embeddable
-    @Data
-    static class Pressao {
-        private BigDecimal recomendada;
-        private BigDecimal atual;
+    @Builder
+    @NoArgsConstructor
+    @Getter
+    public static class Pressao {
+        BigDecimal recomendada;
+        BigDecimal atual;
     }
 
     @Embeddable
-    @Data
-    static class DadosCadastro {
+    @Builder
+    @NoArgsConstructor
+    @Getter
+    public static class DadosCadastro {
         private Long codUnidade;
         private LocalDateTime dataInclusao;
     }
 
     @Embeddable
-    @Data
-    static class DadosDelecao {
+    @Builder
+    @NoArgsConstructor
+    @Getter
+    public static class DadosDelecao {
         private boolean deletado;
         private LocalDateTime data;
         private String username;
