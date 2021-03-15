@@ -49,12 +49,8 @@ public class PneuCadastro {
 
     boolean pneuUsado;
 
-    @Nullable
-    DadosFotoPneu dadosFotoPneu;
+    @Size(max = 3, message = "quantidade de imagens suportadas: 3")
+    @NotNull
+    List<String> urlImagesPneu;
 
-    @Value(staticConstructor = "of")
-    public static class DadosFotoPneu {
-        @Size(max = 3, message = "quantidade de imagens suportadas: 3")
-        List<String> urls;
-    }
 }
