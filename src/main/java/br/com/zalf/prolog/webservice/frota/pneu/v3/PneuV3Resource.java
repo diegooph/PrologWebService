@@ -26,7 +26,8 @@ public class PneuV3Resource implements PneuV3ApiDoc {
 
     @POST
     @Override
-    public Response insert(final PneuCadastro pneuCadastro) {
+    @NotNull
+    public Response insert(@NotNull final PneuCadastro pneuCadastro) {
         throw new NotImplementedException("metodo não implementado até o momento.");
     }
 }
