@@ -1,6 +1,10 @@
 package br.com.zalf.prolog.webservice.frota.pneu.v3._model;
 
-import lombok.Data;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.With;
+import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -12,7 +16,9 @@ import java.time.LocalDateTime;
  */
 @Entity
 @Table(name = "pneu_foto_cadastro", schema = "public")
-@Data
+@With(AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor
 public class PneuFotoEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,4 +42,10 @@ public class PneuFotoEntity {
 
     @Column(name = "data_hora_sincronizacao_foto")
     private LocalDateTime dataSincronizacao;
+
+    public static PneuFotoEntity createPneuFotoEntity(@NotNull final PneuEntity pneu, @NotNull final String url) {
+        return new PneuFotoEntity()
+                .withPneu(pneu)
+                .withUrl(url);
+    }
 }
