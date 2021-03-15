@@ -31,5 +31,11 @@ public class PneuV3ServiceImpl implements PneuV3Service {
         validatePneuToInsert(pneu);
         return this.dao.save(pneu);
     }
+
+    private void validatePneuToInsert(@NotNull final PneuEntity pneu) {
+        if (this.dao.exists(Example.of(pneu))) {
+            throw new EntityExistsException("Pneu já existe no banco de dados.");
+        }
+    }
 }
 
