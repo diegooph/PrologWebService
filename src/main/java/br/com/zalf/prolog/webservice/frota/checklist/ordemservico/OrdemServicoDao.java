@@ -75,10 +75,24 @@ public interface OrdemServicoDao {
             @NotNull final List<InfosAlternativaAberturaOrdemServico> itensOsIncrementaQtdApontamentos)
             throws Throwable;
 
+    /**
+     * Método usado apenas pela integrção
+     *
+     * @deprecated at 2020-03-15. Use {@link getItensStatus(Connection,Long, Long, Long)}.
+     * Será retirado em tarefa própria de integração que irá remover placa do checklist - PL.
+     */
+    @Deprecated
     @NotNull
     Map<Long, List<InfosAlternativaAberturaOrdemServico>> getItensStatus(
             @NotNull final Connection conn,
             @NotNull final Long codModelo,
             @NotNull final Long codVersaoModelo,
             @NotNull final String placaVeiculo) throws Throwable;
+
+    @NotNull
+    Map<Long, List<InfosAlternativaAberturaOrdemServico>> getItensStatus(
+            @NotNull final Connection conn,
+            @NotNull final Long codModelo,
+            @NotNull final Long codVersaoModelo,
+            @NotNull final Long codVeiculo) throws Throwable;
 }
