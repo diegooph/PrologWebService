@@ -1,14 +1,15 @@
 Change Log
 ==========
 
-### Bug Fixes
-* Corrige busca do relatório de aferições integrado (PL-3568)
-
 <a name="v2.1.1"></a>
 ## Version [v2.1.1](https://github.com/luizfp/PrologWebService/compare/v2.1.0...v2.1.1) (release-date) [unreleased]
 
 ### Refactors
 * Remove classes depreciadas e não utilizadas de O.S. de checklist
+
+### Bug Fixes
+* Corrige busca do relatório de aferições integrado (PL-3568)
+* Corrige permissões ao listar veículos
 
 <a name="v2.1.0"></a>
 ## Version [v2.1.0](https://github.com/luizfp/PrologWebService/compare/v2.0.2...v2.1.0) (2021-03-07)
