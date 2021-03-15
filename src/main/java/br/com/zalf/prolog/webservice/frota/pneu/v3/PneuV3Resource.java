@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.v3;
 
+import br.com.zalf.prolog.webservice.frota.pneu.v3._model.PneuEntity;
 import br.com.zalf.prolog.webservice.frota.pneu.v3._model.dto.PneuCadastro;
 import br.com.zalf.prolog.webservice.frota.pneu.v3.mapper.PneuMapper;
 import br.com.zalf.prolog.webservice.frota.pneu.v3.service.PneuFotoV3Service;
@@ -15,6 +16,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.net.URI;
 
 /**
  * Created on 2021-03-12
@@ -47,6 +49,12 @@ public class PneuV3Resource implements PneuV3ApiDoc {
     @Override
     @NotNull
     public Response insert(@NotNull final PneuCadastro pneuCadastro) {
-        throw new NotImplementedException("metodo não implementado até o momento.");
+        final PneuEntity dtoConvertedToEntity = this.pneuCadastroMapper.toEntity(pneuCadastro);
+        final PneuEntity savedPneu = this.service.create(dtoConvertedToEntity);
+        this.pneuFotoService.createPneuFotos(savedPneu, pneuCadastro.getUrlImagesPneu());
+        return Response
+                .created(URI.create("/v3/pneus/" + savedPneu.getId()))
+                .header("Location-id", savedPneu.getId().toString())
+                .build();
     }
 }
