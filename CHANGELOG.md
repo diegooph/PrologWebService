@@ -6,6 +6,7 @@ Change Log
 
 ### Refactors
 * Remove classes depreciadas e não utilizadas de O.S. de checklist
+* Ordena busca de tipos de veículo por nome
 
 ### Bug Fixes
 * Corrige busca do relatório de aferições integrado (PL-3568)
