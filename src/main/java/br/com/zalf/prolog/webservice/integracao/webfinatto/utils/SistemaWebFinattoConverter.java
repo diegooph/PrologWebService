@@ -529,7 +529,7 @@ public class SistemaWebFinattoConverter {
                                            pneuAplicado.getNomeModeloPneu(),
                                            Long.valueOf(pneuAplicado.getCodModeloPneu()),
                                            pneuAplicado.getQtdSulcosModeloPneu(),
-                                           pneuAplicado.getAlturaSulcosModeloPneuEmMilimetros().doubleValue(),
+                                           pneuAplicado.getAlturaSulcosModeloPneuEmMilimetros(),
                                            pneuAplicado.getAlturaEstruturaPneu().intValue(),
                                            pneuAplicado.getLarguraEstruturaPneu().intValue(),
                                            pneuAplicado.getAroEstruturaPneu(),
@@ -550,8 +550,7 @@ public class SistemaWebFinattoConverter {
                                                    : pneuAplicado.getQtdSulcosModeloBanda(),
                                            pneuAplicado.getAlturaSulcosModeloBandaEmMilimetros() == null
                                                    ? null
-                                                   : pneuAplicado.getAlturaSulcosModeloBandaEmMilimetros()
-                                                           .doubleValue(),
+                                                   : pneuAplicado.getAlturaSulcosModeloBandaEmMilimetros(),
                                            pneuAplicado.getCodMarcaBanda() == null
                                                    ? null
                                                    : Long.valueOf(pneuAplicado.getCodMarcaBanda()),
@@ -918,13 +917,14 @@ public class SistemaWebFinattoConverter {
             banda.setMarca(marcaPneu);
             pneu.setBanda(banda);
         }
-
-        final Sulcos sulcos = new Sulcos();
-        sulcos.setInterno(pneuWebFinatto.getSulcoInternoPneuEmMilimetros());
-        sulcos.setCentralInterno(pneuWebFinatto.getSulcoCentralInternoPneuEmMilimetros());
-        sulcos.setCentralExterno(pneuWebFinatto.getSulcoCentralExternoPneuEmMilimetros());
-        sulcos.setExterno(pneuWebFinatto.getSulcoExternoPneuEmMilimetros());
-        pneu.setSulcosAtuais(sulcos);
+        if (pneuWebFinatto.temSulcos()) {
+            final Sulcos sulcos = new Sulcos();
+            sulcos.setInterno(pneuWebFinatto.getSulcoInternoPneuEmMilimetros());
+            sulcos.setCentralInterno(pneuWebFinatto.getSulcoCentralInternoPneuEmMilimetros());
+            sulcos.setCentralExterno(pneuWebFinatto.getSulcoCentralExternoPneuEmMilimetros());
+            sulcos.setExterno(pneuWebFinatto.getSulcoExternoPneuEmMilimetros());
+            pneu.setSulcosAtuais(sulcos);
+        }
         return pneu;
     }
 
