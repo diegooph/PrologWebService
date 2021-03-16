@@ -5,6 +5,8 @@ import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import static br.com.zalf.prolog.webservice.integracao.webfinatto.utils.SistemaWebFinattoConstants.VALOR_NAO_COLETADO;
+
 @Data
 public class PneuWebFinatto {
     @NotNull
@@ -100,5 +102,12 @@ public class PneuWebFinatto {
             return "";
         }
         return dotPneu;
+    }
+
+    public boolean temSulcos() {
+        return sulcoInternoPneuEmMilimetros != VALOR_NAO_COLETADO
+                && sulcoCentralInternoPneuEmMilimetros != VALOR_NAO_COLETADO
+                && sulcoCentralExternoPneuEmMilimetros != VALOR_NAO_COLETADO
+                && sulcoExternoPneuEmMilimetros != VALOR_NAO_COLETADO;
     }
 }

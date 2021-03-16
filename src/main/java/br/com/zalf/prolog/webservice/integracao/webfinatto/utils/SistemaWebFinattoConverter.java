@@ -43,11 +43,12 @@ import java.time.ZoneOffset;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static br.com.zalf.prolog.webservice.integracao.webfinatto.utils.SistemaWebFinattoConstants.VALOR_NAO_COLETADO;
+
 @SuppressWarnings("DuplicatedCode")
 public class SistemaWebFinattoConverter {
     @NotNull
     private static final String TAG = SistemaWebFinattoConverter.class.getSimpleName();
-    private static final double VALOR_NAO_COLETADO = -1.0;
 
     private SistemaWebFinattoConverter() {
         throw new IllegalStateException(SistemaWebFinattoConverter.class.getSimpleName() + " cannot be instantiated!");
@@ -997,12 +998,14 @@ public class SistemaWebFinattoConverter {
         pneu.setPosicao(posicaoProlog);
         pneu.setPressaoAtual(pneuAplicado.getPressaoAtualPneuEmPsi());
         pneu.setPressaoCorreta(pneuAplicado.getPressaoRecomendadaPneuEmPsi());
-        final Sulcos sulcosAtuais = new Sulcos();
-        sulcosAtuais.setInterno(pneuAplicado.getSulcoInternoPneuEmMilimetros());
-        sulcosAtuais.setCentralInterno(pneuAplicado.getSulcoCentralInternoPneuEmMilimetros());
-        sulcosAtuais.setCentralExterno(pneuAplicado.getSulcoCentralExternoPneuEmMilimetros());
-        sulcosAtuais.setExterno(pneuAplicado.getSulcoExternoPneuEmMilimetros());
-        pneu.setSulcosAtuais(sulcosAtuais);
+        if (pneuAplicado.temSulcos()) {
+            final Sulcos sulcosAtuais = new Sulcos();
+            sulcosAtuais.setInterno(pneuAplicado.getSulcoInternoPneuEmMilimetros());
+            sulcosAtuais.setCentralInterno(pneuAplicado.getSulcoCentralInternoPneuEmMilimetros());
+            sulcosAtuais.setCentralExterno(pneuAplicado.getSulcoCentralExternoPneuEmMilimetros());
+            sulcosAtuais.setExterno(pneuAplicado.getSulcoExternoPneuEmMilimetros());
+            pneu.setSulcosAtuais(sulcosAtuais);
+        }
         pneu.setDot(pneuAplicado.getDotPneu());
         final Pneu.Dimensao dimensao = new Pneu.Dimensao();
         dimensao.setCodigo(pneuAplicado.getCodEstruturaPneu());
@@ -1014,14 +1017,14 @@ public class SistemaWebFinattoConverter {
         modeloPneu.setCodigo(Long.parseLong(pneuAplicado.getCodModeloPneu()));
         modeloPneu.setNome(pneuAplicado.getNomeModeloPneu());
         modeloPneu.setQuantidadeSulcos(pneuAplicado.getQtdSulcosModeloPneu());
-        modeloPneu.setAlturaSulcos(pneuAplicado.getAlturaSulcosModeloPneuEmMilimetros().doubleValue());
+        modeloPneu.setAlturaSulcos(pneuAplicado.getAlturaSulcosModeloPneuEmMilimetros());
         pneu.setModelo(modeloPneu);
         if (pneuAplicado.isRecapado()) {
             final ModeloBanda modeloBanda = new ModeloBanda();
             modeloBanda.setCodigo(Long.parseLong(pneuAplicado.getCodModeloBanda()));
             modeloBanda.setNome(pneuAplicado.getNomeModeloBanda());
             modeloBanda.setQuantidadeSulcos(pneuAplicado.getQtdSulcosModeloBanda());
-            modeloBanda.setAlturaSulcos(pneuAplicado.getAlturaSulcosModeloBandaEmMilimetros().doubleValue());
+            modeloBanda.setAlturaSulcos(pneuAplicado.getAlturaSulcosModeloBandaEmMilimetros());
             final Banda banda = new Banda();
             banda.setModelo(modeloBanda);
             pneu.setBanda(banda);
