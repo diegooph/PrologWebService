@@ -45,7 +45,7 @@ public class PneuCadastro {
     String dot;
 
     @NotNull(message = "O custo de aquisição não pode ser nulo.")
-    Long custoAquisicao;
+    Double custoAquisicao;
 
     boolean pneuUsado;
 
