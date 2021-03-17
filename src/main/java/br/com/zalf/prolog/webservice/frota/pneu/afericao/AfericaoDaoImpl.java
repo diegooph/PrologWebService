@@ -168,8 +168,8 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM FUNC_AFERICAO_GET_CRONOGRAMA_AFERICOES_PLACAS(" +
-                    "F_COD_UNIDADES := ?," +
-                    "F_DATA_HORA_ATUAL := ?);");
+                                                 "F_COD_UNIDADES := ?," +
+                                                 "F_DATA_HORA_ATUAL := ?);");
             stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
             stmt.setObject(2, Now.getLocalDateTimeUtc());
             rSet = stmt.executeQuery();
@@ -253,7 +253,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM FUNC_AFERICAO_GET_AFERICOES_PLACAS_PAGINADA(?, ?, ?, ?, ?, ?," +
-                    " ?, ?);");
+                                                 " ?, ?);");
             final String zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId();
             stmt.setLong(1, codUnidade);
 
@@ -296,7 +296,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM FUNC_AFERICAO_GET_AFERICOES_AVULSAS_PAGINADA(?, ?, ?, ?, ?, " +
-                    "?);");
+                                                 "?);");
             final String zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId();
             stmt.setLong(1, codUnidade);
             stmt.setObject(2, dataInicial);
@@ -428,16 +428,16 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         ResultSet rSet = null;
         try {
             stmt = conn.prepareStatement("SELECT * FROM FUNC_AFERICAO_INSERT_AFERICAO(" +
-                    "F_COD_UNIDADE => ?," +
-                    "F_DATA_HORA => ?, " +
-                    "F_CPF_AFERIDOR => ?, " +
-                    "F_TEMPO_REALIZACAO => ?, " +
-                    "F_TIPO_MEDICAO_COLETADA => ?, " +
-                    "F_TIPO_PROCESSO_COLETA => ?, " +
-                    "F_FORMA_COLETA_DADOS => ?," +
-                    "F_PLACA_VEICULO => ?," +
-                    "F_COD_VEICULO => ?, " +
-                    "F_KM_VEICULO => ?) AS COD_AFERICAO;");
+                                                 "F_COD_UNIDADE => ?," +
+                                                 "F_DATA_HORA => ?, " +
+                                                 "F_CPF_AFERIDOR => ?, " +
+                                                 "F_TEMPO_REALIZACAO => ?, " +
+                                                 "F_TIPO_MEDICAO_COLETADA => ?, " +
+                                                 "F_TIPO_PROCESSO_COLETA => ?, " +
+                                                 "F_FORMA_COLETA_DADOS => ?," +
+                                                 "F_PLACA_VEICULO => ?," +
+                                                 "F_COD_VEICULO => ?, " +
+                                                 "F_KM_VEICULO => ?) AS COD_AFERICAO;");
             stmt.setLong(1, codUnidade);
             stmt.setObject(2, afericao.getDataHora().atOffset(ZoneOffset.UTC));
             stmt.setLong(3, afericao.getColaborador().getCpf());
@@ -490,7 +490,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                 return createConfiguracaoNovaAfericaoPlaca(rSet);
             } else {
                 throw new IllegalStateException("Dados de configurações de aferição não encontrados para a placa: "
-                        + placa);
+                                                        + placa);
             }
         } finally {
             close(stmt, rSet);
@@ -511,7 +511,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                 return createConfiguracaoNovaAfericaoAvulsa(rSet);
             } else {
                 throw new IllegalStateException("Dados de configurações de aferição não encontrados para o pneu: "
-                        + codPneu);
+                                                        + codPneu);
             }
         } finally {
             close(stmt, rSet);
@@ -574,7 +574,8 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                     .fromString(rSet.getString("TIPO_PROCESSO_COLETA_ULTIMA_AFERICAO"));
             pneuAvulso.setTipoProcessoAfericao(tipoProcesso);
             pneuAvulso.setPlacaAplicadoQuandoAferido(rSet.getString("PLACA_VEICULO_ULTIMA_AFERICAO"));
-            pneuAvulso.setIdentificadorFrotaAplicadoQuandoAferido(rSet.getString("IDENTIFICADOR_FROTA_ULTIMA_AFERICAO"));
+            pneuAvulso.setIdentificadorFrotaAplicadoQuandoAferido(rSet.getString("IDENTIFICADOR_FROTA_ULTIMA_AFERICAO"
+            ));
         }
         return pneuAvulso;
     }
@@ -608,9 +609,12 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         placa.setIntervaloUltimaAfericaoSulco(rSet.getInt("INTERVALO_SULCO"));
         placa.setIntervaloUltimaAfericaoPressao(rSet.getInt("INTERVALO_PRESSAO"));
         placa.setQuantidadePneus(rSet.getInt("PNEUS_APLICADOS"));
-        placa.setFormaColetaDadosSulco(FormaColetaDadosAfericaoEnum.fromString(rSet.getString("FORMA_COLETA_DADOS_SULCO")));
-        placa.setFormaColetaDadosPressao(FormaColetaDadosAfericaoEnum.fromString(rSet.getString("FORMA_COLETA_DADOS_PRESSAO")));
-        placa.setFormaColetaDadosSulcoPressao(FormaColetaDadosAfericaoEnum.fromString(rSet.getString("FORMA_COLETA_DADOS_SULCO_PRESSAO")));
+        placa.setFormaColetaDadosSulco(FormaColetaDadosAfericaoEnum.fromString(rSet.getString(
+                "FORMA_COLETA_DADOS_SULCO")));
+        placa.setFormaColetaDadosPressao(FormaColetaDadosAfericaoEnum.fromString(rSet.getString(
+                "FORMA_COLETA_DADOS_PRESSAO")));
+        placa.setFormaColetaDadosSulcoPressao(FormaColetaDadosAfericaoEnum.fromString(rSet.getString(
+                "FORMA_COLETA_DADOS_SULCO_PRESSAO")));
         placa.setPodeAferirEstepe(rSet.getBoolean("PODE_AFERIR_ESTEPE"));
         placa.setMetaAfericaoPressao(rSet.getInt("PERIODO_AFERICAO_PRESSAO"));
         placa.setMetaAfericaoSulco(rSet.getInt("PERIODO_AFERICAO_SULCO"));
@@ -627,10 +631,13 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         final Restricao restricao = getRestricaoByCodUnidade(conn, codUnidade);
 
         final PreparedStatement stmt = conn.prepareStatement("INSERT INTO AFERICAO_VALORES "
-                + "(COD_AFERICAO, COD_PNEU, COD_UNIDADE, PSI, ALTURA_SULCO_CENTRAL_INTERNO, " +
-                "ALTURA_SULCO_CENTRAL_EXTERNO, ALTURA_SULCO_EXTERNO, " +
-                "ALTURA_SULCO_INTERNO, POSICAO, VIDA_MOMENTO_AFERICAO) VALUES "
-                + "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                                                                     + "(COD_AFERICAO, COD_PNEU, COD_UNIDADE, PSI, " +
+                                                                     "ALTURA_SULCO_CENTRAL_INTERNO, " +
+                                                                     "ALTURA_SULCO_CENTRAL_EXTERNO, " +
+                                                                     "ALTURA_SULCO_EXTERNO, " +
+                                                                     "ALTURA_SULCO_INTERNO, POSICAO, " +
+                                                                     "VIDA_MOMENTO_AFERICAO) VALUES "
+                                                                     + "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
         final List<Pneu> pneusAferidos = afericao.getPneusAferidos();
         for (final Pneu pneu : pneusAferidos) {
@@ -775,6 +782,21 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
 
         final List<TipoServico> servicosCadastrados = servicoDao.getServicosCadastradosByPneu(codUnidade, codPneu);
 
+        for (final TipoServico servicoCadastrado : servicosCadastrados) {
+            if (servicoCadastrado.equals(TipoServico.MOVIMENTACAO)) {
+                if (!servicosPendentes.contains(TipoServico.MOVIMENTACAO)) {
+                    fechaServicoMovimentacao(codPneu);
+                }
+            } else if (servicoCadastrado.equals(TipoServico.CALIBRAGEM)
+                    || servicoCadastrado.equals(TipoServico.INSPECAO)) {
+                if (!servicosPendentes.contains(TipoServico.INSPECAO)
+                        || !servicosPendentes.contains(TipoServico.CALIBRAGEM)) {
+                    fechaServicoCalibragem(codPneu);
+                    fechaServicoInspecao(codPneu);
+                }
+            }
+        }
+
         for (final TipoServico servicoPendente : servicosPendentes) {
             // Se o pneu ja tem uma calibragem cadastrada e é gerada uma inspeção posteriormente,
             // convertemos a antiga calibragem para uma inspeção.
@@ -828,12 +850,11 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                 ("TIPO_MEDICAO_COLETADA")));
         afericao.setTempoRealizacaoAfericaoInMillis(rSet.getLong("TEMPO_REALIZACAO"));
         afericao.setFormaColetaDadosAfericao(FormaColetaDadosAfericaoEnum
-                .fromString(rSet.getString("FORMA_COLETA_DADOS")));
+                                                     .fromString(rSet.getString("FORMA_COLETA_DADOS")));
         // Colaborador que realizou a aferição.
         final Colaborador colaborador = new Colaborador();
         colaborador.setCpf(rSet.getLong("CPF"));
         colaborador.setNome(rSet.getString("NOME"));
         afericao.setColaborador(colaborador);
     }
-
 }

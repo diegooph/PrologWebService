@@ -502,7 +502,7 @@ final class ServicoQueryBinder {
     static PreparedStatement fecharAutomaticamenteServicosPneu(
             @NotNull final Connection conn,
             @NotNull final Long codUnidade,
-            @NotNull final Long codProcessoAfericao,
+            @NotNull final Long codProcesso,
             @NotNull final Long codPneu,
             @NotNull final OffsetDateTime dataHorafechamentoServico,
             @NotNull final Long kmColetadoVeiculo,
@@ -520,7 +520,7 @@ final class ServicoQueryBinder {
 
         final PreparedStatement stmt = conn.prepareStatement(sql);
         stmt.setObject(1, dataHorafechamentoServico);
-        stmt.setLong(2, codProcessoAfericao);
+        stmt.setLong(2, codProcesso);
         bindValueOrNull(stmt, 3, kmColetadoVeiculo, SqlType.BIGINT);
         stmt.setLong(4, codUnidade);
         stmt.setLong(5, codPneu);
