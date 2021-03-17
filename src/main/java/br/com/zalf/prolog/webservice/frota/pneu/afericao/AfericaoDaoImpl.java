@@ -779,38 +779,37 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         final List<TipoServico> servicosCadastrados = servicoDao.getServicosCadastradosByPneu(codUnidade, codPneu);
 
         for (final TipoServico servicoCadastrado : servicosCadastrados) {
-            if (servicoCadastrado.equals(TipoServico.MOVIMENTACAO)) {
-                if (!servicosPendentes.contains(TipoServico.MOVIMENTACAO)) {
-                    servicoDao.fecharAutomaticamenteServicosMovimentacaoPneu(conn,
-                                                                             codUnidade,
-                                                                             codPneu,
-                                                                             afericao.getCodigo(),
-                                                                             afericao.getDataHora()
-                                                                                     .atOffset(ZoneOffset.UTC),
-                                                                             afericao.getKmMomentoAfericao(),
-                                                                             OrigemFechamentoAutomaticoEnum.AFERICAO);
-                }
-            } else if (servicoCadastrado.equals(TipoServico.CALIBRAGEM)
-                    || servicoCadastrado.equals(TipoServico.INSPECAO)) {
-                if (!servicosPendentes.contains(TipoServico.INSPECAO)
-                        || !servicosPendentes.contains(TipoServico.CALIBRAGEM)) {
-                    servicoDao.fecharAutomaticamenteServicosCalibragemPneu(conn,
-                                                                             codUnidade,
-                                                                             codPneu,
-                                                                             afericao.getCodigo(),
-                                                                             afericao.getDataHora()
-                                                                                     .atOffset(ZoneOffset.UTC),
-                                                                             afericao.getKmMomentoAfericao(),
-                                                                             OrigemFechamentoAutomaticoEnum.AFERICAO);
-                    servicoDao.fecharAutomaticamenteServicosInspecaoPneu(conn,
-                                                                           codUnidade,
-                                                                           codPneu,
-                                                                           afericao.getCodigo(),
-                                                                           afericao.getDataHora()
-                                                                                   .atOffset(ZoneOffset.UTC),
-                                                                           afericao.getKmMomentoAfericao(),
-                                                                           OrigemFechamentoAutomaticoEnum.AFERICAO);
-                }
+            if (afericao.getTipoMedicaoColetadaAfericao().equals(TipoMedicaoColetadaAfericao.SULCO)) {
+                fechaAutomaticamenteServicosMovimentacao(conn,
+                                                         servicoDao,
+                                                         codUnidade,
+                                                         codPneu,
+                                                         afericao,
+                                                         servicosPendentes,
+                                                         servicoCadastrado);
+            } else if (afericao.getTipoMedicaoColetadaAfericao().equals(TipoMedicaoColetadaAfericao.PRESSAO)) {
+                fechaAutomaticamenteServicosInspecaoCalibragem(conn,
+                                                               servicoDao,
+                                                               codUnidade,
+                                                               codPneu,
+                                                               afericao,
+                                                               servicosPendentes,
+                                                               servicoCadastrado);
+            } else {
+                fechaAutomaticamenteServicosMovimentacao(conn,
+                                                         servicoDao,
+                                                         codUnidade,
+                                                         codPneu,
+                                                         afericao,
+                                                         servicosPendentes,
+                                                         servicoCadastrado);
+                fechaAutomaticamenteServicosInspecaoCalibragem(conn,
+                                                               servicoDao,
+                                                               codUnidade,
+                                                               codPneu,
+                                                               afericao,
+                                                               servicosPendentes,
+                                                               servicoCadastrado);
             }
         }
 
@@ -832,6 +831,60 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                         && servicoPendente.equals(TipoServico.CALIBRAGEM))) {
                     servicoDao.criaServico(conn, codUnidade, codPneu, afericao.getCodigo(), servicoPendente);
                 }
+            }
+        }
+    }
+
+    private void fechaAutomaticamenteServicosInspecaoCalibragem(@NotNull final Connection conn,
+                                                                @NotNull final ServicoDao servicoDao,
+                                                                @NotNull final Long codUnidade,
+                                                                @NotNull final Long codPneu,
+                                                                @NotNull final AfericaoPlaca afericao,
+                                                                @NotNull final List<TipoServico> servicosPendentes,
+                                                                @NotNull final TipoServico servicoCadastrado)
+            throws SQLException {
+        if (servicoCadastrado.equals(TipoServico.CALIBRAGEM)
+                || servicoCadastrado.equals(TipoServico.INSPECAO)) {
+            if (!servicosPendentes.contains(TipoServico.INSPECAO)
+                    || !servicosPendentes.contains(TipoServico.CALIBRAGEM)) {
+                servicoDao.fecharAutomaticamenteServicosCalibragemPneu(conn,
+                                                                       codUnidade,
+                                                                       codPneu,
+                                                                       afericao.getCodigo(),
+                                                                       afericao.getDataHora()
+                                                                               .atOffset(ZoneOffset.UTC),
+                                                                       afericao.getKmMomentoAfericao(),
+                                                                       OrigemFechamentoAutomaticoEnum.AFERICAO);
+                servicoDao.fecharAutomaticamenteServicosInspecaoPneu(conn,
+                                                                     codUnidade,
+                                                                     codPneu,
+                                                                     afericao.getCodigo(),
+                                                                     afericao.getDataHora()
+                                                                             .atOffset(ZoneOffset.UTC),
+                                                                     afericao.getKmMomentoAfericao(),
+                                                                     OrigemFechamentoAutomaticoEnum.AFERICAO);
+            }
+        }
+    }
+
+    private void fechaAutomaticamenteServicosMovimentacao(@NotNull final Connection conn,
+                                                          @NotNull final ServicoDao servicoDao,
+                                                          @NotNull final Long codUnidade,
+                                                          @NotNull final Long codPneu,
+                                                          @NotNull final AfericaoPlaca afericao,
+                                                          @NotNull final List<TipoServico> servicosPendentes,
+                                                          @NotNull final TipoServico servicoCadastrado)
+            throws SQLException {
+        if (servicoCadastrado.equals(TipoServico.MOVIMENTACAO)) {
+            if (!servicosPendentes.contains(TipoServico.MOVIMENTACAO)) {
+                servicoDao.fecharAutomaticamenteServicosMovimentacaoPneu(conn,
+                                                                         codUnidade,
+                                                                         codPneu,
+                                                                         afericao.getCodigo(),
+                                                                         afericao.getDataHora()
+                                                                                 .atOffset(ZoneOffset.UTC),
+                                                                         afericao.getKmMomentoAfericao(),
+                                                                         OrigemFechamentoAutomaticoEnum.AFERICAO);
             }
         }
     }
