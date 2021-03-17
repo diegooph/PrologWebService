@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.frota.pneu.v3.mapper;
 
-import br.com.zalf.prolog.webservice.frota.pneu.relatorios._model.SulcoPressao;
 import br.com.zalf.prolog.webservice.frota.pneu.v3._model.PneuEntity;
 import br.com.zalf.prolog.webservice.frota.pneu.v3._model.dto.PneuCadastro;
 import org.apache.commons.lang3.NotImplementedException;
@@ -31,10 +30,13 @@ public class PneuCadastroMapper implements PneuMapper<PneuEntity, PneuCadastro> 
         return PneuEntity.builder()
                 .dadosCadastro(getDadosCadastro(dto))
                 .pressao(getPressao(dto))
+                .codDimensao(dto.getCodDimensao())
                 .codCliente(dto.getCodCliente())
                 .codUnidade(dto.getCodUnidade())
                 .codEmpresa(dto.getCodEmpresa())
                 .codEmpresa(dto.getCodEmpresa())
+                .dadosDelecao(getDadosDelecao())
+                .status(PneuEntity.Status.ESTOQUE)
                 .codModelo(dto.getCodModeloBanda())
                 .vidaAtual(BigInteger.valueOf(dto.getVidaAtual()))
                 .vidaTotal(BigInteger.valueOf(dto.getVidaTotal()))
@@ -57,6 +59,11 @@ public class PneuCadastroMapper implements PneuMapper<PneuEntity, PneuCadastro> 
         return PneuEntity.DadosCadastro.builder()
                 .codUnidade(dto.getCodUnidade())
                 .dataInclusao(LocalDateTime.now())
+                .build();
+    }
+
+    private PneuEntity.DadosDelecao getDadosDelecao() {
+        return PneuEntity.DadosDelecao.builder()
                 .build();
     }
 
