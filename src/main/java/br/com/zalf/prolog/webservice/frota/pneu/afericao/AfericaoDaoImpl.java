@@ -839,7 +839,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         if (servicoCadastrado.equals(TipoServico.CALIBRAGEM)
                 || servicoCadastrado.equals(TipoServico.INSPECAO)) {
             if (!servicosPendentes.contains(TipoServico.INSPECAO)
-                    || !servicosPendentes.contains(TipoServico.CALIBRAGEM)) {
+                    && !servicosPendentes.contains(TipoServico.CALIBRAGEM)) {
                 servicoDao.fecharAutomaticamenteServicosCalibragemPneu(conn,
                                                                        codUnidade,
                                                                        codPneu,
