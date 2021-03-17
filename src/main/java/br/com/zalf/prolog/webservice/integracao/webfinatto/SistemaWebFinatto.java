@@ -472,7 +472,7 @@ public class SistemaWebFinatto extends Sistema {
             final UnidadeDeParaHolder unidadeDeParaHolder =
                     integracaoDao.getCodAuxiliarByCodUnidadeProlog(conn, codUnidadesProlog);
             final Colaborador byToken = Injection.provideColaboradorDao().getByToken(getUserToken());
-            if (!unidadeDeParaHolder.isCodUnidadePrologMapeado(byToken.getCodUnidade())) {
+            if (SistemaWebFinattoUtils.isUnidadeMasterProlog(byToken.getCodUnidade())) {
                 return filtrosProlog;
             }
             final ApiAutenticacaoHolder apiAutenticacaoHolder =
