@@ -776,11 +776,6 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                                         @NotNull final Long codPneu,
                                         @NotNull final AfericaoPlaca afericao,
                                         @NotNull final List<TipoServico> servicosPendentes) throws Throwable {
-        // Se não houver nenhum serviço para inserir/atualizar podemos retornar e poupar uma consulta ao banco.
-        if (servicosPendentes.isEmpty()) {
-            return;
-        }
-
         final List<TipoServico> servicosCadastrados = servicoDao.getServicosCadastradosByPneu(codUnidade, codPneu);
 
         for (final TipoServico servicoCadastrado : servicosCadastrados) {
