@@ -452,22 +452,22 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
         int qtdServicosFechados = 0;
         qtdServicosFechados += fecharAutomaticamenteServicosInspecaoPneu(conn,
                                                                          codUnidade,
-                                                                         codProcesso,
                                                                          codPneu,
+                                                                         codProcesso,
                                                                          dataHorafechamentoServico,
                                                                          kmColetadoVeiculo,
                                                                          origemFechamentoServico);
         qtdServicosFechados += fecharAutomaticamenteServicosCalibragemPneu(conn,
                                                                            codUnidade,
-                                                                           codProcesso,
                                                                            codPneu,
+                                                                           codProcesso,
                                                                            dataHorafechamentoServico,
                                                                            kmColetadoVeiculo,
                                                                            origemFechamentoServico);
         qtdServicosFechados += fecharAutomaticamenteServicosMovimentacaoPneu(conn,
                                                                              codUnidade,
-                                                                             codProcesso,
                                                                              codPneu,
+                                                                             codProcesso,
                                                                              dataHorafechamentoServico,
                                                                              kmColetadoVeiculo,
                                                                              origemFechamentoServico);

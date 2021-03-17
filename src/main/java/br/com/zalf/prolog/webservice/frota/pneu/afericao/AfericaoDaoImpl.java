@@ -15,6 +15,7 @@ import br.com.zalf.prolog.webservice.frota.pneu._model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.FormaColetaDadosAfericaoEnum;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoDao;
+import br.com.zalf.prolog.webservice.frota.pneu.servico._model.OrigemFechamentoAutomaticoEnum;
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.TipoServico;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
@@ -694,7 +695,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                     servicoDao,
                     codUnidade,
                     pneu.getCodigo(),
-                    afericao.getCodigo(),
+                    (AfericaoPlaca) afericao,
                     servicosACadastrar);
         }
     }
@@ -773,7 +774,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                                         @NotNull final ServicoDao servicoDao,
                                         @NotNull final Long codUnidade,
                                         @NotNull final Long codPneu,
-                                        @NotNull final Long codAfericao,
+                                        @NotNull final AfericaoPlaca afericao,
                                         @NotNull final List<TipoServico> servicosPendentes) throws Throwable {
         // Se não houver nenhum serviço para inserir/atualizar podemos retornar e poupar uma consulta ao banco.
         if (servicosPendentes.isEmpty()) {
@@ -785,14 +786,35 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         for (final TipoServico servicoCadastrado : servicosCadastrados) {
             if (servicoCadastrado.equals(TipoServico.MOVIMENTACAO)) {
                 if (!servicosPendentes.contains(TipoServico.MOVIMENTACAO)) {
-                    fechaServicoMovimentacao(codPneu);
+                    servicoDao.fecharAutomaticamenteServicosMovimentacaoPneu(conn,
+                                                                             codUnidade,
+                                                                             codPneu,
+                                                                             afericao.getCodigo(),
+                                                                             afericao.getDataHora()
+                                                                                     .atOffset(ZoneOffset.UTC),
+                                                                             afericao.getKmMomentoAfericao(),
+                                                                             OrigemFechamentoAutomaticoEnum.AFERICAO);
                 }
             } else if (servicoCadastrado.equals(TipoServico.CALIBRAGEM)
                     || servicoCadastrado.equals(TipoServico.INSPECAO)) {
                 if (!servicosPendentes.contains(TipoServico.INSPECAO)
                         || !servicosPendentes.contains(TipoServico.CALIBRAGEM)) {
-                    fechaServicoCalibragem(codPneu);
-                    fechaServicoInspecao(codPneu);
+                    servicoDao.fecharAutomaticamenteServicosCalibragemPneu(conn,
+                                                                             codUnidade,
+                                                                             codPneu,
+                                                                             afericao.getCodigo(),
+                                                                             afericao.getDataHora()
+                                                                                     .atOffset(ZoneOffset.UTC),
+                                                                             afericao.getKmMomentoAfericao(),
+                                                                             OrigemFechamentoAutomaticoEnum.AFERICAO);
+                    servicoDao.fecharAutomaticamenteServicosInspecaoPneu(conn,
+                                                                           codUnidade,
+                                                                           codPneu,
+                                                                           afericao.getCodigo(),
+                                                                           afericao.getDataHora()
+                                                                                   .atOffset(ZoneOffset.UTC),
+                                                                           afericao.getKmMomentoAfericao(),
+                                                                           OrigemFechamentoAutomaticoEnum.AFERICAO);
                 }
             }
         }
@@ -813,7 +835,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                     // com duas inspeções abertas para o mesmo pneu. :s
                 } else if (!(servicosCadastrados.contains(TipoServico.INSPECAO)
                         && servicoPendente.equals(TipoServico.CALIBRAGEM))) {
-                    servicoDao.criaServico(conn, codUnidade, codPneu, codAfericao, servicoPendente);
+                    servicoDao.criaServico(conn, codUnidade, codPneu, afericao.getCodigo(), servicoPendente);
                 }
             }
         }
