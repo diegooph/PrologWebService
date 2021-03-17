@@ -814,23 +814,16 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         }
 
         for (final TipoServico servicoPendente : servicosPendentes) {
-            // Se o pneu ja tem uma calibragem cadastrada e é gerada uma inspeção posteriormente,
-            // convertemos a antiga calibragem para uma inspeção.
             if (servicoPendente.equals(TipoServico.INSPECAO)
                     && servicosCadastrados.contains(TipoServico.CALIBRAGEM)) {
-                servicoDao.calibragemToInspecao(conn, codUnidade, codPneu);
+                servicoDao.convertServico(conn, codUnidade, codPneu, TipoServico.CALIBRAGEM, TipoServico.INSPECAO);
+            } else if (servicoPendente.equals(TipoServico.CALIBRAGEM)
+                    && servicosCadastrados.contains(TipoServico.INSPECAO)) {
+                servicoDao.convertServico(conn, codUnidade, codPneu, TipoServico.INSPECAO, TipoServico.CALIBRAGEM);
+            } else if (servicosCadastrados.contains(servicoPendente)) {
+                servicoDao.incrementaQtdApontamentosServico(conn, codUnidade, codPneu, servicoPendente);
             } else {
-                if (servicosCadastrados.contains(servicoPendente)) {
-                    servicoDao.incrementaQtdApontamentosServico(conn, codUnidade, codPneu, servicoPendente);
-
-                    // Não podemos criar um serviço de calibragem caso já exista um de inspeção aberto.
-                    // Já que calibragens (se existirem) são convertidas para inspeções quando um serviço de inspeção
-                    // precisa ser aberto se deixassemos esse caso passar, geraria um erro bizarro onde acabariamos
-                    // com duas inspeções abertas para o mesmo pneu. :s
-                } else if (!(servicosCadastrados.contains(TipoServico.INSPECAO)
-                        && servicoPendente.equals(TipoServico.CALIBRAGEM))) {
-                    servicoDao.criaServico(conn, codUnidade, codPneu, afericao.getCodigo(), servicoPendente);
-                }
+                servicoDao.criaServico(conn, codUnidade, codPneu, afericao.getCodigo(), servicoPendente);
             }
         }
     }
