@@ -690,7 +690,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                     pneu,
                     restricao,
                     afericao.getTipoMedicaoColetadaAfericao());
-            insertOrUpdateServicos(
+            atualizaServicos(
                     conn,
                     servicoDao,
                     codUnidade,
@@ -770,12 +770,12 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         return restricao;
     }
 
-    private void insertOrUpdateServicos(@NotNull final Connection conn,
-                                        @NotNull final ServicoDao servicoDao,
-                                        @NotNull final Long codUnidade,
-                                        @NotNull final Long codPneu,
-                                        @NotNull final AfericaoPlaca afericao,
-                                        @NotNull final List<TipoServico> servicosPendentes) throws Throwable {
+    private void atualizaServicos(@NotNull final Connection conn,
+                                  @NotNull final ServicoDao servicoDao,
+                                  @NotNull final Long codUnidade,
+                                  @NotNull final Long codPneu,
+                                  @NotNull final AfericaoPlaca afericao,
+                                  @NotNull final List<TipoServico> servicosPendentes) throws Throwable {
         final List<TipoServico> servicosCadastrados = servicoDao.getServicosCadastradosByPneu(codUnidade, codPneu);
 
         for (final TipoServico servicoCadastrado : servicosCadastrados) {
