@@ -370,25 +370,26 @@ public class RelatoDaoImpl extends DatabaseConnection implements RelatoDao {
                     "  R.FEEDBACK_FECHAMENTO AS FEEDBACK_FECHAMENTO, " +
                     "  R.STATUS AS STATUS, " +
                     "  R.RESPOSTA_OUTROS AS RESPOSTA_OUTROS, " +
-                    "  R.COD_ALTERNATIVA AS COD_ALTERNATIVA, " +
-                    "  R.COD_PDV AS COD_PDV, " +
-                    "  RA.ALTERNATIVA AS ALTERNATIVA, " +
-                    "  C.NOME AS NOME, " +
-                    "  C2.NOME AS NOME_CLASSIFICACAO, " +
-                    "  C3.NOME AS NOME_FECHAMENTO, " +
-                    "  NULL AS DISTANCIA " +
-                    "FROM RELATO R " +
-                    "  JOIN COLABORADOR C ON R.CPF_COLABORADOR = C.CPF " +
-                    "  JOIN EQUIPE E ON E.CODIGO = C.COD_EQUIPE " +
-                    "  JOIN RELATO_ALTERNATIVA RA ON RA.COD_SETOR = C.COD_SETOR AND RA.CODIGO = R.COD_ALTERNATIVA AND RA.COD_UNIDADE = R.COD_UNIDADE " +
-                    "  LEFT JOIN COLABORADOR C2 ON R.CPF_CLASSIFICACAO = C2.CPF " +
-                    "  LEFT JOIN COLABORADOR C3 ON R.CPF_FECHAMENTO = C3.CPF " +
-                    "WHERE R.COD_UNIDADE = ? " +
-                    "      AND R.STATUS LIKE ? " +
-                    "      AND E.CODIGO::TEXT LIKE ? " +
-                    "      AND R.DATA_HORA_DATABASE::DATE >= (? AT TIME ZONE ?) AND R.DATA_HORA_DATABASE::DATE <= (? AT TIME ZONE ?) " +
-                    "ORDER BY DATA_HORA_DATABASE DESC " +
-                    "LIMIT ? OFFSET ?");
+                                                 "  R.COD_ALTERNATIVA AS COD_ALTERNATIVA, " +
+                                                 "  R.COD_PDV AS COD_PDV, " +
+                                                 "  RA.ALTERNATIVA AS ALTERNATIVA, " +
+                                                 "  C.NOME AS NOME, " +
+                                                 "  C2.NOME AS NOME_CLASSIFICACAO, " +
+                                                 "  C3.NOME AS NOME_FECHAMENTO, " +
+                                                 "  NULL AS DISTANCIA " +
+                                                 "FROM RELATO R " +
+                                                 "  JOIN COLABORADOR C ON R.CPF_COLABORADOR = C.CPF " +
+                                                 "  JOIN EQUIPE E ON E.CODIGO = C.COD_EQUIPE " +
+                                                 "  JOIN RELATO_ALTERNATIVA RA ON RA.CODIGO = R.COD_ALTERNATIVA AND " +
+                                                 "RA.COD_UNIDADE = R.COD_UNIDADE " +
+                                                 "  LEFT JOIN COLABORADOR C2 ON R.CPF_CLASSIFICACAO = C2.CPF " +
+                                                 "  LEFT JOIN COLABORADOR C3 ON R.CPF_FECHAMENTO = C3.CPF " +
+                                                 "WHERE R.COD_UNIDADE = ? " +
+                                                 "      AND R.STATUS LIKE ? " +
+                                                 "      AND E.CODIGO::TEXT LIKE ? " +
+                                                 "      AND R.DATA_HORA_DATABASE::DATE >= (? AT TIME ZONE ?) AND R.DATA_HORA_DATABASE::DATE <= (? AT TIME ZONE ?) " +
+                                                 "ORDER BY DATA_HORA_DATABASE DESC " +
+                                                 "LIMIT ? OFFSET ?");
             final ZoneId zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn);
             stmt.setString(1, zoneId.getId());
             stmt.setString(2, zoneId.getId());
