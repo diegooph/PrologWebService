@@ -1,12 +1,10 @@
 package br.com.zalf.prolog.webservice.frota.pneu.servico;
 
-import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.TipoMedicaoColetadaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -25,9 +23,11 @@ public interface ServicoDao {
                                           @NotNull final Long codPneu,
                                           @NotNull final TipoServico tipoServico) throws Throwable;
 
-    void calibragemToInspecao(@NotNull final Connection conn,
-                              @NotNull final Long codUnidade,
-                              @NotNull final Long codPneu) throws Throwable;
+    void convertServico(@NotNull final Connection conn,
+                        @NotNull final Long codUnidade,
+                        @NotNull final Long codPneu,
+                        @NotNull final TipoServico tipoServicoOriginal,
+                        @NotNull final TipoServico tipoServicoNovo) throws Throwable;
 
     @NotNull
     List<TipoServico> getServicosCadastradosByPneu(@NotNull final Long codUnidade,

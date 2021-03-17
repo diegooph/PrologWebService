@@ -9,7 +9,6 @@ import br.com.zalf.prolog.webservice.frota.checklist.OLD.AlternativaChecklist;
 import br.com.zalf.prolog.webservice.frota.pneu.PneuDao;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Restricao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDao;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.TipoMedicaoColetadaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.FormaColetaDadosAfericaoEnum;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.MovimentacaoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.Movimentacao;
@@ -96,25 +95,24 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
     }
 
     @Override
-    public void calibragemToInspecao(@NotNull final Connection conn,
-                                     @NotNull final Long codUnidade,
-                                     @NotNull final Long codPneu) throws SQLException {
+    public void convertServico(@NotNull final Connection conn,
+                               @NotNull final Long codUnidade,
+                               @NotNull final Long codPneu,
+                               @NotNull final TipoServico tipoServicoOriginal,
+                               @NotNull final TipoServico tipoServicoNovo) throws SQLException {
         PreparedStatement stmt = null;
         try {
-            stmt = conn.prepareStatement("UPDATE AFERICAO_MANUTENCAO SET QT_APONTAMENTOS = "
-                                                 + "(SELECT QT_APONTAMENTOS FROM AFERICAO_MANUTENCAO WHERE COD_PNEU =" +
-                                                 " ? AND COD_UNIDADE = ? AND "
-                                                 + "TIPO_SERVICO = ? AND DATA_HORA_RESOLUCAO IS NULL) + 1, " +
-                                                 "TIPO_SERVICO = ? "
-                                                 + "WHERE COD_PNEU = ? AND COD_UNIDADE = ? AND TIPO_SERVICO = ? AND " +
-                                                 "DATA_HORA_RESOLUCAO IS NULL;");
-            stmt.setLong(1, codPneu);
-            stmt.setLong(2, codUnidade);
-            stmt.setString(3, TipoServico.CALIBRAGEM.asString());
-            stmt.setString(4, TipoServico.INSPECAO.asString());
-            stmt.setLong(5, codPneu);
-            stmt.setLong(6, codUnidade);
-            stmt.setString(7, TipoServico.CALIBRAGEM.asString());
+            stmt = conn.prepareStatement("UPDATE AFERICAO_MANUTENCAO " +
+                                                 "SET QT_APONTAMENTOS = QT_APONTAMENTOS + 1, " +
+                                                 "TIPO_SERVICO = ? " +
+                                                 "WHERE COD_PNEU = ? " +
+                                                 "AND COD_UNIDADE = ? " +
+                                                 "AND TIPO_SERVICO = ? " +
+                                                 "AND DATA_HORA_RESOLUCAO IS NULL;");
+            stmt.setString(1, tipoServicoNovo.asString());
+            stmt.setLong(2, codPneu);
+            stmt.setLong(3, codUnidade);
+            stmt.setString(4, tipoServicoOriginal.asString());
             stmt.executeUpdate();
         } finally {
             close(stmt);
