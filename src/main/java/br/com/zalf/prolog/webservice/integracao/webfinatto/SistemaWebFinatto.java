@@ -468,13 +468,13 @@ public class SistemaWebFinatto extends Sistema {
         try {
             conn = connectionProvider.provideDatabaseConnection();
             final List<Empresa> filtrosProlog = super.getFiltros(cpf);
-            final List<Long> codUnidadesProlog = SistemaWebFinattoUtils.getCodUnidadesFiltroProlog(filtrosProlog);
-            final UnidadeDeParaHolder unidadeDeParaHolder =
-                    integracaoDao.getCodAuxiliarByCodUnidadeProlog(conn, codUnidadesProlog);
             final Colaborador byToken = Injection.provideColaboradorDao().getByToken(getUserToken());
             if (SistemaWebFinattoUtils.isUnidadeMasterProlog(byToken.getCodUnidade())) {
                 return filtrosProlog;
             }
+            final List<Long> codUnidadesProlog = SistemaWebFinattoUtils.getCodUnidadesFiltroProlog(filtrosProlog);
+            final UnidadeDeParaHolder unidadeDeParaHolder =
+                    integracaoDao.getCodAuxiliarByCodUnidadeProlog(conn, codUnidadesProlog);
             final ApiAutenticacaoHolder apiAutenticacaoHolder =
                     integracaoDao.getApiAutenticacaoHolder(conn,
                                                            unidadeDeParaHolder.getCodEmpresaProlog(),

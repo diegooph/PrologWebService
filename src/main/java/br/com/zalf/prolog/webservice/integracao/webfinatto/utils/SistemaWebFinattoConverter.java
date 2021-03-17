@@ -750,29 +750,6 @@ public class SistemaWebFinattoConverter {
             regionais.add(regional);
         }
 
-        for (final Empresa empresa : filtrosProlog) {
-            for (final Regional regional : empresa.getListRegional()) {
-                for (final Unidade unidade : regional.getListUnidade()) {
-                    // para cada unidade do Prolog, vemos se ela
-                    boolean unidadeProcessada = false;
-                    Regional regionalParaAdicionar = null;
-                    for (final Regional regional1 : regionais) {
-                        for (final Unidade unidade1 : regional1.getListUnidade()) {
-                            if (unidade.getCodigo().equals(unidade1.getCodigo())) {
-                                unidadeProcessada = true;
-                            }
-                        }
-                        if (!unidadeProcessada) {
-                            regionalParaAdicionar = regional1;
-                        }
-                    }
-                    if (!unidadeProcessada && regionalParaAdicionar != null) {
-                        regionalParaAdicionar.getListUnidade().add(unidade);
-                    }
-                }
-            }
-        }
-
         return regionais;
     }
 
