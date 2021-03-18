@@ -1,6 +1,10 @@
 Change Log
 ==========
 
+## Stage
+### Refactors
+* Alterar buscas de serviços fechados para considerar flag de fechado por aferição (PL-3561)
+
 <a name="v2.1.1"></a>
 ## Version [v2.1.1](https://github.com/luizfp/PrologWebService/compare/v2.1.0...v2.1.1) (release-date) [unreleased]
 
