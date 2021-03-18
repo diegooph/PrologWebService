@@ -95,7 +95,8 @@ public class PneuEntity {
                                                            columnDefinition = "boolean default false",
                                                            nullable = false)),
         @AttributeOverride(name = "data", column = @Column(name = "data_hora_deletado")),
-        @AttributeOverride(name = "username", column = @Column(name = "pg_username_delecao"))
+        @AttributeOverride(name = "username", column = @Column(name = "pg_username_delecao")),
+        @AttributeOverride(name = "motivo", column = @Column(name = "motivo_delecao"))
     })
     private DadosDelecao dadosDelecao;
 
@@ -129,20 +130,11 @@ public class PneuEntity {
 
     @Embeddable
     @Builder
+    @AllArgsConstructor
     @NoArgsConstructor
     @Getter
     public static class DadosCadastro {
         private Long codUnidade;
         private LocalDateTime dataInclusao;
-    }
-
-    @Embeddable
-    @Builder
-    @NoArgsConstructor
-    @Getter
-    public static class DadosDelecao {
-        private boolean deletado;
-        private LocalDateTime data;
-        private String username;
     }
 }
