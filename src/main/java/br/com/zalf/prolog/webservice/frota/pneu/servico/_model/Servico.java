@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.servico._model;
 import br.com.zalf.prolog.webservice.commons.gson.Exclude;
 import br.com.zalf.prolog.webservice.commons.gson.RuntimeTypeAdapterFactory;
 import br.com.zalf.prolog.webservice.frota.pneu._model.PneuComum;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.Afericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.AfericaoPlaca;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.FormaColetaDadosAfericaoEnum;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.ProcessoMovimentacao;
@@ -38,6 +39,7 @@ public abstract class Servico {
     private String placaVeiculo;
     private String identificadorFrota;
     private Double pressaoColetadaFechamento;
+    private Long codAfericaoFechamentoAutomatico;
 
     /**
      * Indica se esse serviço foi fechado automaticamente por um {@link ProcessoMovimentacao}.
@@ -48,6 +50,11 @@ public abstract class Servico {
      * Indica se esse serviço foi fechado automaticamente por um método de integração.
      */
     private boolean fechadoAutomaticamenteIntegracao;
+
+    /**
+     * Indica se esse serviço foi fechado automaticamente por um método de aferição.
+     */
+    private boolean fechadoAutomaticamenteAfericao;
 
     /**
      * Armazena o tempo que o colaborador levou para realizar esse serviço, em milissegundos.
@@ -214,6 +221,14 @@ public abstract class Servico {
         this.fechadoAutomaticamenteIntegracao = fechadoAutomaticamenteIntegracao;
     }
 
+    public boolean isFechadoAutomaticamenteAfericao() {
+        return fechadoAutomaticamenteAfericao;
+    }
+
+    public void setFechadoAutomaticamenteAfericao(final boolean fechadoAutomaticamenteAfericao) {
+        this.fechadoAutomaticamenteAfericao = fechadoAutomaticamenteAfericao;
+    }
+
     @Nullable
     public FormaColetaDadosAfericaoEnum getFormaColetaDadosFechamento() {
         return formaColetaDadosFechamento;
@@ -239,5 +254,13 @@ public abstract class Servico {
 
     public void setIdentificadorFrota(final String identificadorFrota) {
         this.identificadorFrota = identificadorFrota;
+    }
+
+    public Long getCodAfericaoFechamentoAutomatico() {
+        return codAfericaoFechamentoAutomatico;
+    }
+
+    public void setCodAfericaoFechamentoAutomatico(final Long codAfericaoFechamentoAutomatico) {
+        this.codAfericaoFechamentoAutomatico = codAfericaoFechamentoAutomatico;
     }
 }

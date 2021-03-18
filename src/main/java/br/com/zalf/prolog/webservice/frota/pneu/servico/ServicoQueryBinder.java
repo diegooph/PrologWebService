@@ -42,6 +42,8 @@ final class ServicoQueryBinder {
             + "AM.PSI_APOS_CONSERTO AS PRESSAO_COLETADA_FECHAMENTO, "
             + "AM.FECHADO_AUTOMATICAMENTE_MOVIMENTACAO, "
             + "AM.FECHADO_AUTOMATICAMENTE_INTEGRACAO, "
+            + "AM.FECHADO_AUTOMATICAMENTE_AFERICAO, "
+            + "AM.COD_AFERICAO_FECHAMENTO_AUTOMATICO, "
             + "AM.FORMA_COLETA_DADOS_FECHAMENTO, "
             + "A.DATA_HORA AT TIME ZONE (SELECT FUNC_GET_TIME_ZONE_UNIDADE(AM.COD_UNIDADE)) AS DATA_HORA_ABERTURA, "
             + "A.PLACA_VEICULO AS PLACA_VEICULO, "
@@ -220,6 +222,8 @@ final class ServicoQueryBinder {
                                                                            "   AM" +
                                                                            ".FECHADO_AUTOMATICAMENTE_MOVIMENTACAO, " +
                                                                            "   AM.FECHADO_AUTOMATICAMENTE_INTEGRACAO," +
+                                                                           "   AM.FECHADO_AUTOMATICAMENTE_AFERICAO, " +
+                                                                           "   AM.COD_AFERICAO_FECHAMENTO_AUTOMATICO, " +
                                                                            " " +
                                                                            "   AM.FORMA_COLETA_DADOS_FECHAMENTO, " +
                                                                            "   AAMI.ALTERNATIVA AS " +
