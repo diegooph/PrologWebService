@@ -25,8 +25,7 @@ public class PneuFotoEntity {
     @Column(name = "codigo", nullable = false)
     private Long codigo;
 
-    @ManyToOne(cascade = CascadeType.ALL,
-               fetch = FetchType.LAZY,
+    @ManyToOne(fetch = FetchType.LAZY,
                targetEntity = PneuEntity.class)
     @JoinColumn(name = "cod_pneu",
                 referencedColumnName = "codigo",
