@@ -9,6 +9,8 @@ Change Log
 * Ordena busca de tipos de veículo por nome
 
 ### Bug Fixes
+* Corrige listagem de relatos realizados (PL-3572)
+* Corrige leitura dos headers de Logs de integração (PL-3519)
 * Corrige busca do relatório de aferições integrado (PL-3568)
 * Corrige permissões ao listar veículos
 
