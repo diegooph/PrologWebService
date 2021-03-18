@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.v3.mapper;
 
+import br.com.zalf.prolog.webservice.database._model.DadosDelecao;
 import br.com.zalf.prolog.webservice.frota.pneu.v3._model.PneuEntity;
 import br.com.zalf.prolog.webservice.frota.pneu.v3._model.dto.PneuCadastro;
 import org.apache.commons.lang3.NotImplementedException;
@@ -62,8 +63,8 @@ public class PneuCadastroMapper implements PneuMapper<PneuEntity, PneuCadastro> 
                 .build();
     }
 
-    private PneuEntity.DadosDelecao getDadosDelecao() {
-        return PneuEntity.DadosDelecao.builder()
+    private DadosDelecao getDadosDelecao() {
+        return DadosDelecao.builder()
                 .build();
     }
 
