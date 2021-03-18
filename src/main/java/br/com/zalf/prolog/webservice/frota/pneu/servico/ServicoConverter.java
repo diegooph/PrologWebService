@@ -41,7 +41,7 @@ final class ServicoConverter {
     @NotNull
     static Servico createServico(@NotNull final ResultSet resultSet,
                                  final boolean incluirAtributosEspecificos) throws SQLException {
-            final TipoServico tipo = TipoServico.fromString(resultSet.getString("TIPO_SERVICO"));
+        final TipoServico tipo = TipoServico.fromString(resultSet.getString("TIPO_SERVICO"));
         final Servico servico;
         switch (tipo) {
             case CALIBRAGEM:
@@ -194,7 +194,7 @@ final class ServicoConverter {
             servico.setColaboradorResponsavelFechamento(colaborador);
         }
 
-        if(servico.isFechadoAutomaticamenteAfericao()) {
+        if (servico.isFechadoAutomaticamenteAfericao()) {
             servico.setCodAfericaoFechamentoAutomatico(resultSet.getLong("COD_AFERICAO_FECHAMENTO_AUTOMATICO"));
         }
 
