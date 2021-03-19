@@ -8,7 +8,6 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.time.LocalDateTime;
 
 /**
@@ -31,19 +30,19 @@ public class PneuCadastroMapper implements PneuMapper<PneuEntity, PneuCadastroDt
         return PneuEntity.builder()
                 .dadosCadastro(getDadosCadastro(dto))
                 .pressao(getPressao(dto))
-                .codDimensao(dto.getCodDimensao())
-                .codCliente(dto.getCodCliente())
-                .codUnidade(dto.getCodUnidade())
+                .codDimensao(dto.getCodDimensaoPneu())
+                .codCliente(dto.getCodigoCliente())
+                .codUnidade(dto.getCodUnidadePneu())
                 .codEmpresa(dto.getCodEmpresa())
                 .dadosDelecao(DadosDelecao.createDefaultDadosDelecao())
                 .status(PneuEntity.Status.ESTOQUE)
                 .codModelo(dto.getCodModeloPneu())
                 .codModeloBanda(dto.getCodModeloBanda())
-                .vidaAtual(dto.getVidaAtual())
-                .vidaTotal(dto.getVidaTotal())
-                .valor(BigDecimal.valueOf(dto.getCustoAquisicao()))
-                .dot(dto.getDot())
-                .usado(dto.isPneuUsado())
+                .vidaAtual(dto.getVidaAtualPneu())
+                .vidaTotal(dto.getVidaTotalPneu())
+                .valor(BigDecimal.valueOf(dto.getValorPneu()))
+                .dot(dto.getDotPneu())
+                .usado(dto.getPneuNovoNuncaUsado())
                 .build();
 
     }
@@ -58,7 +57,7 @@ public class PneuCadastroMapper implements PneuMapper<PneuEntity, PneuCadastroDt
     @NotNull
     private PneuEntity.DadosCadastro getDadosCadastro(@NotNull final PneuCadastroDto dto) {
         return PneuEntity.DadosCadastro.builder()
-                .codUnidade(dto.getCodUnidade())
+                .codUnidade(dto.getCodUnidadePneu())
                 .dataInclusao(LocalDateTime.now())
                 .build();
     }
