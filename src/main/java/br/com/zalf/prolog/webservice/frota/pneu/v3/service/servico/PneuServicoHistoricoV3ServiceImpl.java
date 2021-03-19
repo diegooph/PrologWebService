@@ -35,4 +35,9 @@ public class PneuServicoHistoricoV3ServiceImpl implements PneuServicoHistoricoV3
             this.pneuServicoHistoricoCadastroDao.save(createHistoricoCadastro(pneuServico));
         }
     }
+
+    private boolean isCadastro(final PneuServicoEntity.FonteServico fonteServico) {
+        return fonteServico.equals(PneuServicoEntity.FonteServico.CADASTRO);
+    }
 }
+
