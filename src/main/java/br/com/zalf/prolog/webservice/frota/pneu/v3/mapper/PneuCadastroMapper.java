@@ -35,8 +35,7 @@ public class PneuCadastroMapper implements PneuMapper<PneuEntity, PneuCadastro> 
                 .codCliente(dto.getCodCliente())
                 .codUnidade(dto.getCodUnidade())
                 .codEmpresa(dto.getCodEmpresa())
-                .codEmpresa(dto.getCodEmpresa())
-                .dadosDelecao(getDadosDelecao())
+                .dadosDelecao(DadosDelecao.createDefaultDadosDelecao())
                 .status(PneuEntity.Status.ESTOQUE)
                 .codModelo(dto.getCodModeloBanda())
                 .vidaAtual(BigInteger.valueOf(dto.getVidaAtual()))
@@ -62,10 +61,4 @@ public class PneuCadastroMapper implements PneuMapper<PneuEntity, PneuCadastro> 
                 .dataInclusao(LocalDateTime.now())
                 .build();
     }
-
-    private DadosDelecao getDadosDelecao() {
-        return DadosDelecao.builder()
-                .build();
-    }
-
 }
