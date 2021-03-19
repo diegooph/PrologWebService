@@ -1,19 +1,21 @@
 package br.com.zalf.prolog.webservice.frota.pneu.servico;
 
 import br.com.zalf.prolog.webservice.TimeZoneManager;
+import br.com.zalf.prolog.webservice.commons.util.database.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.datetime.DateUtils;
-import br.com.zalf.prolog.webservice.frota.pneu.servico._model.ServicoCalibragem;
-import br.com.zalf.prolog.webservice.frota.pneu.servico._model.ServicoInspecao;
-import br.com.zalf.prolog.webservice.frota.pneu.servico._model.ServicoMovimentacao;
-import br.com.zalf.prolog.webservice.frota.pneu.servico._model.TipoServico;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.TipoMedicaoColetadaAfericao;
+import br.com.zalf.prolog.webservice.frota.pneu.servico._model.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.SQLType;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
+
+import static br.com.zalf.prolog.webservice.commons.util.database.StatementUtils.bindValueOrNull;
 
 /**
  * Essa classe mantém todas as queries utilizadas na {@link ServicoDaoImpl} e faz o bind na query dos atributos
@@ -501,23 +503,29 @@ final class ServicoQueryBinder {
     }
 
     @NotNull
-    static PreparedStatement fecharAutomaticamenteServicosPneu(@NotNull final Connection conn,
-                                                               @NotNull final Long codUnidade,
-                                                               @NotNull final Long codProcessoMovimentacao,
-                                                               @NotNull final Long codPneu,
-                                                               @NotNull final OffsetDateTime dataHorafechamentoServico,
-                                                               final long kmColetadoVeiculo) throws SQLException {
-        final PreparedStatement stmt = conn.prepareStatement("UPDATE AFERICAO_MANUTENCAO SET "
-                                                                     + "DATA_HORA_RESOLUCAO = ?, "
-                                                                     + "COD_PROCESSO_MOVIMENTACAO = ?, "
-                                                                     + "KM_MOMENTO_CONSERTO = ?, "
-                                                                     + "FECHADO_AUTOMATICAMENTE_MOVIMENTACAO = TRUE "
-                                                                     + "WHERE COD_UNIDADE = ? "
-                                                                     + "AND COD_PNEU = ? "
-                                                                     + "AND DATA_HORA_RESOLUCAO IS NULL;");
+    static PreparedStatement fecharAutomaticamenteServicosPneu(
+            @NotNull final Connection conn,
+            @NotNull final Long codUnidade,
+            @NotNull final Long codProcesso,
+            @NotNull final Long codPneu,
+            @NotNull final OffsetDateTime dataHorafechamentoServico,
+            @NotNull final Long kmColetadoVeiculo,
+            @NotNull final OrigemFechamentoAutomaticoEnum origemFechamentoServico,
+            @NotNull final TipoServico tipoServico) throws SQLException {
+        String sql = "UPDATE AFERICAO_MANUTENCAO SET "
+                + "DATA_HORA_RESOLUCAO = ?, "
+                + origemFechamentoServico.getCodigoColumnName() + " = ?, "
+                + "KM_MOMENTO_CONSERTO = ?, "
+                + origemFechamentoServico.getFlagColumnName() + " = TRUE "
+                + "WHERE COD_UNIDADE = ? "
+                + "AND TIPO_SERVICO = '"+ tipoServico.asString() +"' "
+                + "AND COD_PNEU = ? "
+                + "AND DATA_HORA_RESOLUCAO IS NULL";
+
+        final PreparedStatement stmt = conn.prepareStatement(sql);
         stmt.setObject(1, dataHorafechamentoServico);
-        stmt.setLong(2, codProcessoMovimentacao);
-        stmt.setLong(3, kmColetadoVeiculo);
+        stmt.setLong(2, codProcesso);
+        bindValueOrNull(stmt, 3, kmColetadoVeiculo, SqlType.BIGINT);
         stmt.setLong(4, codUnidade);
         stmt.setLong(5, codPneu);
         return stmt;
