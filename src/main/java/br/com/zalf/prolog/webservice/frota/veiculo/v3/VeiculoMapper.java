@@ -19,8 +19,6 @@ public class VeiculoMapper {
                 .withCodTipo(dto.getCodTipoVeiculo())
                 .withKm(dto.getKmAtualVeiculo())
                 .withPossuiHobodometro(dto.getPossuiHubodometro())
-                .withMotorizado(true)
-                .withCodDiagrama(2L)
                 .build();
     }
 }
