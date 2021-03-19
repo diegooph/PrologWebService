@@ -6,6 +6,8 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+
 /**
  * Created on 2021-03-18
  *
@@ -23,7 +25,8 @@ public class PneuTipoServicoV3ServiceImpl implements PneuTipoServicoV3Service {
 
     @Override
     @NotNull
+    @Transactional
     public PneuTipoServicoEntity getInitialTipoServicoForVidaIncrementada() {
-        throw new NotImplementedException("metodo não implementado");
+        return this.dao.getInitialTipoServicoForVidaIncrementada();
     }
 }
