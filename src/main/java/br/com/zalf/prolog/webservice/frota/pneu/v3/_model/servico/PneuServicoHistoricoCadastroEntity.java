@@ -24,13 +24,13 @@ public class PneuServicoHistoricoCadastroEntity {
     private Id id;
 
     @Embedded
-    @AttributeOverrides({
-          @AttributeOverride(name = "deletado", column = @Column(name = "deletado",
-                                                                 columnDefinition = "boolean default false",
-                                                                 nullable = false)),
-          @AttributeOverride(name = "data", column = @Column(name = "data_hora_deletado")),
-          @AttributeOverride(name = "username", column = @Column(name = "pg_username_delecao")),
-          @AttributeOverride(name = "motivo", column = @Column(name = "motivo_delecao"))
+    @AttributeOverrides(value = {
+            @AttributeOverride(name = "deletado", column = @Column(name = "deletado",
+                                                                   columnDefinition = "boolean default false",
+                                                                   nullable = false)),
+            @AttributeOverride(name = "data", column = @Column(name = "data_hora_deletado")),
+            @AttributeOverride(name = "username", column = @Column(name = "pg_username_delecao")),
+            @AttributeOverride(name = "motivo", column = @Column(name = "motivo_delecao"))
     })
     private DadosDelecao dadosDelecao;
 
