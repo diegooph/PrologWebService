@@ -14,11 +14,11 @@ import br.com.zalf.prolog.webservice.frota.pneu.transferencia.PneuTransferenciaS
 import br.com.zalf.prolog.webservice.frota.pneu.transferencia._model.realizacao.PneuTransferenciaRealizacao;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoService;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.VeiculoCadastro;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicaoStatus;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.VeiculoTransferenciaService;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.ProcessoTransferenciaVeiculoRealizacao;
+import br.com.zalf.prolog.webservice.frota.veiculo.v3._model.VeiculoCadastroDto;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -54,7 +54,7 @@ final class BloqueioUnidadesIntegradasTest {
 
     @Test
     void testInsertVeiculoUnidadeLiberada() {
-        final VeiculoCadastro veiculoCadastro = new VeiculoCadastro(
+        final VeiculoCadastroDto veiculoCadastro = new VeiculoCadastroDto(
                 COD_EMPRESA_INTEGRADA,
                 COD_UNIDADE_LIBERADA,
                 "PRO-001",
@@ -71,7 +71,7 @@ final class BloqueioUnidadesIntegradasTest {
 
     @Test
     void testInsertVeiculoUnidadeBloqueada() {
-        final VeiculoCadastro veiculoCadastro = new VeiculoCadastro(
+        final VeiculoCadastroDto veiculoCadastro = new VeiculoCadastroDto(
                 COD_EMPRESA_INTEGRADA,
                 COD_UNIDADE_BLOQUEADA,
                 "PRO-001",

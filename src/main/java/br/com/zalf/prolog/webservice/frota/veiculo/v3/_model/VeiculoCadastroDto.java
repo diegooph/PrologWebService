@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.frota.veiculo.model;
+package br.com.zalf.prolog.webservice.frota.veiculo.v3._model;
 
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 @Data
-public final class VeiculoCadastro {
+public final class VeiculoCadastroDto {
     @NotNull
     private final Long codEmpresaAlocado;
     @NotNull
