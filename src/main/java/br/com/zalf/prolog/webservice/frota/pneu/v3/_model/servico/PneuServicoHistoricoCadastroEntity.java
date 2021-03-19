@@ -14,7 +14,10 @@ import java.io.Serializable;
  */
 @Entity
 @Table(name = "pneu_servico_cadastro_data", schema = "public")
-@Data
+@Builder
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class PneuServicoHistoricoCadastroEntity {
 
     @EmbeddedId
@@ -34,6 +37,7 @@ public class PneuServicoHistoricoCadastroEntity {
 
     @Embeddable
     @Builder
+    @AllArgsConstructor
     @NoArgsConstructor
     @Getter
     @EqualsAndHashCode

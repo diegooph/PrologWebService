@@ -1,12 +1,13 @@
 package br.com.zalf.prolog.webservice.frota.pneu.v3._model;
 
+import br.com.zalf.prolog.webservice.database._model.DadosDelecao;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.time.LocalDateTime;
 
 /**
@@ -17,6 +18,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "pneu_data", schema = "public")
 @Builder
+@AllArgsConstructor
 @NoArgsConstructor
 @Getter
 public class PneuEntity {
@@ -107,6 +109,7 @@ public class PneuEntity {
 
     @Embeddable
     @Builder
+    @AllArgsConstructor
     @NoArgsConstructor
     @Getter
     public static class AlturaSulco {
@@ -122,6 +125,7 @@ public class PneuEntity {
 
     @Embeddable
     @Builder
+    @AllArgsConstructor
     @NoArgsConstructor
     @Getter
     public static class Pressao {

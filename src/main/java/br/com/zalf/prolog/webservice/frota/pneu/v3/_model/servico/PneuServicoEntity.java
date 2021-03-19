@@ -4,10 +4,7 @@ import br.com.zalf.prolog.webservice.database._model.BaseEntity;
 import br.com.zalf.prolog.webservice.database._model.DadosDelecao;
 import br.com.zalf.prolog.webservice.frota.pneu.v3._model.PneuEntity;
 import br.com.zalf.prolog.webservice.frota.pneu.v3._model.servico.converters.FonteServicoPneuConverter;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.*;
 import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.*;
@@ -22,7 +19,10 @@ import java.util.stream.Stream;
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "pneu_servico_realizado_data", schema = "public")
-@Data
+@Builder
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class PneuServicoEntity extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY,
