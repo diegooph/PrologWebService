@@ -23,4 +23,8 @@ public class DadosDelecao {
     private LocalDateTime data;
     private String username;
     private String motivo;
+
+    public static DadosDelecao createDefaultDadosDelecao() {
+        return DadosDelecao.builder().build();
+    }
 }
