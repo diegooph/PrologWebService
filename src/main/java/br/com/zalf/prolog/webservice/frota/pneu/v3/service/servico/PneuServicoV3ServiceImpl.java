@@ -60,4 +60,8 @@ public class PneuServicoV3ServiceImpl implements PneuServicoV3Service {
                 .dadosDelecao(DadosDelecao.createDefaultDadosDelecao())
                 .build();
     }
+
+    private Integer getVidaServicoFromPneu(final PneuEntity pneu) {
+        return pneu.getVidaAtual() - 1;
+    }
 }
