@@ -1,8 +1,9 @@
 package br.com.zalf.prolog.webservice.frota.veiculo.v3._model;
 
 import lombok.Data;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import javax.validation.constraints.NotNull;
 
 /**
  * Created on 2019-10-04
@@ -11,19 +12,19 @@ import org.jetbrains.annotations.Nullable;
  */
 @Data
 public final class VeiculoCadastroDto {
-    @NotNull
+    @NotNull(message = "O código da empresa é obrigatório.")
     private final Long codEmpresaAlocado;
-    @NotNull
+    @NotNull(message = "O código da unidade é obrigatório.")
     private final Long codUnidadeAlocado;
-    @NotNull
+    @NotNull(message = "A placa do veículo é obrigatória.")
     private final String placaVeiculo;
     @Nullable
     private final String identificadorFrota;
-    @NotNull
+    @NotNull(message = "O código do modelo do veículo é obrigatório.")
     private final Long codModeloVeiculo;
-    @NotNull
+    @NotNull(message = "O código do modelo do tipo do veículo é obrigatório.")
     private final Long codTipoVeiculo;
     private final long kmAtualVeiculo;
-    @NotNull
+    @NotNull(message = "A flag 'possui hubodômetro' é obrigatória.")
     private final Boolean possuiHubodometro;
 }
