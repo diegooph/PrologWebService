@@ -12,5 +12,6 @@ import org.jetbrains.annotations.NotNull;
 public interface PneuServicoV3Service {
 
       @NotNull
-      PneuServicoEntity createServicoByPneu(@NotNull final PneuEntity pneuEntity);
+      PneuServicoEntity createServicoByPneu(@NotNull final PneuEntity pneuEntity,
+                                            @NotNull final Double custoAquisicaoBanda);
 }
