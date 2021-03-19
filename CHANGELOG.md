@@ -1,17 +1,14 @@
 Change Log
 ==========
 
-## Stage
-### Refactors
-* Alterar buscas de serviços fechados para considerar flag de fechado por aferição (PL-3561)
-* Alterar processo de inserção de aferição para fechar serviços automaticamente (PL-3541)
-
 <a name="v2.1.1"></a>
 ## Version [v2.1.1](https://github.com/luizfp/PrologWebService/compare/v2.1.0...v2.1.1) (release-date) [unreleased]
 
 ### Refactors
 * Remove classes depreciadas e não utilizadas de O.S. de checklist
 * Ordena busca de tipos de veículo por nome
+* Alterar buscas de serviços fechados para considerar flag de fechado por aferição (PL-3561)
+* Alterar processo de inserção de aferição para fechar serviços automaticamente (PL-3541)
 
 ### Bug Fixes
 * Corrige listagem de relatos realizados (PL-3572)
