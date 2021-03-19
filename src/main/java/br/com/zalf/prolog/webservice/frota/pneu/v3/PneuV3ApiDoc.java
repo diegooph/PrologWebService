@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.v3;
 
-import br.com.zalf.prolog.webservice.frota.pneu.v3._model.dto.PneuCadastro;
+import br.com.zalf.prolog.webservice.frota.pneu.v3._model.dto.PneuCadastroDto;
 import org.jetbrains.annotations.NotNull;
 
 import javax.ws.rs.core.Response;
@@ -13,5 +13,5 @@ import javax.ws.rs.core.Response;
 public interface PneuV3ApiDoc {
 
     @NotNull
-    Response insert(@NotNull final PneuCadastro pneuCadastro);
+    Response insert(@NotNull final PneuCadastroDto pneuCadastro);
 }
