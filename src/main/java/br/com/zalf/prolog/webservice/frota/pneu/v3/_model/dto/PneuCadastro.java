@@ -38,7 +38,7 @@ public class PneuCadastro {
     Integer vidaTotal;
 
     @NotNull(message = "A pressão recomendada não pode ser nula.")
-    Long pressaoRecomendada;
+    Double pressaoRecomendada;
 
     @Pattern(regexp = "[0-9]", message = "O DOT só pode conter números")
     @Size(max = 4, message = "O DOT só pode conter 4 caracteres")
