@@ -1,35 +1,25 @@
 package br.com.zalf.prolog.webservice.frota.pneu.v3._model.servico;
 
-import br.com.zalf.prolog.webservice.database._model.BaseEntity;
 import br.com.zalf.prolog.webservice.database._model.DadosDelecao;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * Created on 2021-03-18
  *
  * @author Guilherme Steinert (https://github.com/steinert999)
  */
-@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "pneu_servico_realizado_incrementa_vida_data", schema = "public")
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PneuServicoHistoricoVidaEntity extends BaseEntity {
+public class PneuServicoHistoricoVidaEntity {
 
-    @OneToOne(fetch = FetchType.LAZY,
-              targetEntity = PneuServicoEntity.class)
-    @JoinColumns(value = {
-            @JoinColumn(name = "cod_servico_realizado", referencedColumnName = "codigo"),
-            @JoinColumn(name = "fonte_servico_realizado", referencedColumnName = "fonte_servico_realizado")
-    }, foreignKey = @ForeignKey(name = "fk_servico_realizado_incrementa_vida_pneu",
-                                value = ConstraintMode.CONSTRAINT))
-    private PneuServicoEntity servico;
+    @EmbeddedId
+    private Id id;
 
     @Column(name = "vida_nova_pneu", nullable = false)
     private Integer vidaNova;
@@ -49,6 +39,21 @@ public class PneuServicoHistoricoVidaEntity extends BaseEntity {
     })
     private DadosDelecao dadosDelecao;
 
+    @Embeddable
+    @Builder
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @EqualsAndHashCode
+    public static class Id implements Serializable {
 
-
+        @OneToOne(fetch = FetchType.LAZY,
+                  targetEntity = PneuServicoEntity.class)
+        @JoinColumns(value = {
+                @JoinColumn(name = "cod_servico_realizado", referencedColumnName = "codigo"),
+                @JoinColumn(name = "fonte_servico_realizado", referencedColumnName = "fonte_servico_realizado")
+        }, foreignKey = @ForeignKey(name = "fk_servico_realizado_incrementa_vida_pneu",
+                                    value = ConstraintMode.CONSTRAINT))
+        private PneuServicoEntity servico;
+    }
 }
