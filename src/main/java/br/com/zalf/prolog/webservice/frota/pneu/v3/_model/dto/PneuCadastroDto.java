@@ -6,7 +6,6 @@ import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-import java.util.List;
 
 /**
  * Created on 2021-03-10
@@ -17,13 +16,13 @@ import java.util.List;
 public class PneuCadastroDto {
 
     @NotNull(message = "O código da unidade não pode ser nulo.")
-    Long codUnidade;
+    Long codUnidadePneu;
 
     @NotNull(message = "O código de empresa não pode ser nulo.")
     Long codEmpresa;
 
     @NotNull(message = "O código do cliente não pode ser nulo.")
-    String codCliente;
+    String codigoCliente;
 
     @NotNull(message = "O código do modelo do pneu não pode ser nulo.")
     Long codModeloPneu;
@@ -32,23 +31,24 @@ public class PneuCadastroDto {
     Long codModeloBanda;
 
     @NotNull(message = "O código de dimensão não pode ser nulo.")
-    Long codDimensao;
+    Long codDimensaoPneu;
 
     @Nullable
-    Integer vidaAtual;
+    Integer vidaAtualPneu;
 
     @Nullable
-    Integer vidaTotal;
+    Integer vidaTotalPneu;
 
     @NotNull(message = "A pressão recomendada não pode ser nula.")
     Double pressaoRecomendada;
 
     @Pattern(regexp = "[0-9]", message = "O DOT só pode conter números")
     @Size(max = 4, message = "O DOT só pode conter 4 caracteres")
-    String dot;
+    String dotPneu;
 
     @NotNull(message = "O custo de aquisição não pode ser nulo.")
-    Double custoAquisicao;
+    Double valorPneu;
 
-    boolean pneuUsado;
+    @NotNull
+    Boolean pneuNovoNuncaUsado;
 }
