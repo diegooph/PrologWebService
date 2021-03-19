@@ -50,7 +50,7 @@ public class PneuServicoEntity extends BaseEntity {
     private BigDecimal custo;
 
     @Column(name = "vida", nullable = false)
-    private Byte vida;
+    private Integer vida;
 
     @Convert(converter = FonteServicoPneuConverter.class)
     @Column(name = "fonte_servico_realizado", nullable = false, length = 20)

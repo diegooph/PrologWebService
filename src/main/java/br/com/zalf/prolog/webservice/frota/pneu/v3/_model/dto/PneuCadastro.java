@@ -32,10 +32,10 @@ public class PneuCadastro {
     Long codDimensao;
 
     @Nullable
-    Long vidaAtual;
+    Integer vidaAtual;
 
     @Nullable
-    Long vidaTotal;
+    Integer vidaTotal;
 
     @NotNull(message = "A pressão recomendada não pode ser nula.")
     Long pressaoRecomendada;
