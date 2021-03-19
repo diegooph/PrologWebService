@@ -208,7 +208,7 @@ public final class ChecklistResource {
 
     /**
      * @deprecated at 2020-06-08.
-     * Use {@link ChecklistResource#(String, Long, Long, Long, String, String, String, int, long)} instead.
+     * Use {@link ChecklistResource#getListagem(String, Long, Long, Long, String, String, String, int, long)} instead.
      */
     @GET
     @Path("{codUnidade}/resumidos")
