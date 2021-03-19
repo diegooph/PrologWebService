@@ -25,7 +25,7 @@ public class PneuEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "codigo", nullable = false)
+    @Column(name = "codigo", nullable = false, unique = true)
     private Long id;
 
     @Column(name = "codigo_cliente", nullable = false)
@@ -58,6 +58,7 @@ public class PneuEntity {
     private Long codUnidade;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
     private Status status;
 
     @Column(name = "vida_atual")
