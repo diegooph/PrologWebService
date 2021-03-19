@@ -224,17 +224,7 @@ public final class ChecklistResource {
             @QueryParam("limit") final int limit,
             @QueryParam("offset") final long offset,
             @HeaderParam("Authorization") final String userToken) {
-        return service.getAll(
-                codUnidade,
-                codEquipe,
-                codTipoVeiculo,
-                placaVeiculo,
-                dataInicial,
-                dataFinal,
-                limit,
-                offset,
-                true,
-                userToken);
+        return null;
     }
 
     /**
@@ -254,17 +244,7 @@ public final class ChecklistResource {
             @QueryParam("limit") final int limit,
             @QueryParam("offset") final long offset,
             @HeaderParam("Authorization") final String userToken) {
-        return service.getAll(
-                codUnidade,
-                codEquipe,
-                codTipoVeiculo,
-                placaVeiculo,
-                dataInicial,
-                dataFinal,
-                limit,
-                offset,
-                false,
-                userToken);
+        return null;
     }
 
     /**
@@ -361,16 +341,6 @@ public final class ChecklistResource {
                                               @QueryParam("limit") final int limit,
                                               @QueryParam("offset") final long offset,
                                               @HeaderParam("Authorization") final String userToken) {
-        return service.getAll(
-                codUnidade,
-                null,
-                null,
-                placa.equals("%") ? null : placa,
-                dataInicial,
-                dataFinal,
-                limit,
-                offset,
-                false,
-                userToken);
+        return null;
     }
 }

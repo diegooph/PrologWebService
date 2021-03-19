@@ -83,18 +83,6 @@ public interface ChecklistDao {
 
     boolean getChecklistDiferentesUnidadesAtivoEmpresa(@NotNull final Long codEmpresa) throws Throwable;
 
-    @NotNull
-    @Deprecated
-    List<Checklist> getAll(@NotNull final Long codUnidade,
-                           @Nullable final Long codEquipe,
-                           @Nullable final Long codTipoVeiculo,
-                           @Nullable final String placaVeiculo,
-                           final long dataInicial,
-                           final long dataFinal,
-                           final int limit,
-                           final long offset,
-                           final boolean resumido) throws SQLException;
-
     @Deprecated
     List<Checklist> getByColaborador(@NotNull final Long cpf,
                                      @NotNull final Long dataInicial,
