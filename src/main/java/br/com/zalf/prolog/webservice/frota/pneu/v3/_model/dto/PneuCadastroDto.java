@@ -30,6 +30,9 @@ public class PneuCadastroDto {
     @NotNull(message = "O código de modelo de banda não pode ser nulo.")
     Long codModeloBanda;
 
+    @NotNull(message = "O custo de aquisição da banda não pode ser nulo.")
+    Double custoAquisicaoBanda;
+
     @NotNull(message = "O código de dimensão não pode ser nulo.")
     Long codDimensaoPneu;
 
