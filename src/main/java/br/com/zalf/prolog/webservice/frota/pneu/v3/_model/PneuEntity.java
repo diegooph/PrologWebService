@@ -75,10 +75,11 @@ public class PneuEntity {
 
     @Embedded
     @AttributeOverrides({
-        @AttributeOverride(name = "codUnidade", column = @Column(name = "data_hora_cadastro",
-                                                                 columnDefinition = "timestamp with time zone default now()",
+        @AttributeOverride(name = "dataInclusao", column = @Column(name = "data_hora_cadastro",
+                                                                 columnDefinition = "timestamp with time zone default" +
+                                                                         " current_timestamp",
                                                                  nullable = false)),
-        @AttributeOverride(name = "dataInclusao", column = @Column(name = "cod_unidade_cadastro", nullable = false))
+        @AttributeOverride(name = "codUnidade", column = @Column(name = "cod_unidade_cadastro", nullable = false))
     })
     private DadosCadastro dadosCadastro;
 
