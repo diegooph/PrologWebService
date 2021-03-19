@@ -34,6 +34,9 @@ public class PneuServicoHistoricoVidaEntity extends BaseEntity {
     @Column(name = "vida_nova_pneu", nullable = false)
     private Integer vidaNova;
 
+    @Column(name = "cod_modelo_banda", nullable = false)
+    private Long codModeloBanda;
+
     @Embedded
     @AttributeOverrides(value = {
             @AttributeOverride(name = "deletado", column = @Column(name = "deletado",
