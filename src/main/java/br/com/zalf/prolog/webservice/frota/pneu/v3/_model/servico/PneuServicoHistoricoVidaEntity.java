@@ -27,21 +27,22 @@ public class PneuServicoHistoricoVidaEntity extends BaseEntity {
     @JoinColumns(value = {
             @JoinColumn(name = "cod_servico_realizado", referencedColumnName = "codigo"),
             @JoinColumn(name = "fonte_servico_realizado", referencedColumnName = "fonte_servico_realizado")
-        }, foreignKey = @ForeignKey(name = "fk_servico_realizado_incrementa_vida_pneu",
-                                    value = ConstraintMode.CONSTRAINT))
+    }, foreignKey = @ForeignKey(name = "fk_servico_realizado_incrementa_vida_pneu",
+                                value = ConstraintMode.CONSTRAINT))
     private PneuServicoEntity servico;
 
     @Column(name = "vida_nova_pneu", nullable = false)
     private Integer vidaNova;
 
     @Embedded
-    @AttributeOverrides({
-           @AttributeOverride(name = "deletado", column = @Column(name = "deletado",
-                                                                  columnDefinition = "boolean default false",
-                                                                  nullable = false)),
-           @AttributeOverride(name = "data", column = @Column(name = "data_hora_deletado")),
-           @AttributeOverride(name = "username", column = @Column(name = "pg_username_delecao")),
-           @AttributeOverride(name = "motivo", column = @Column(name = "motivo_delecao"))
+    @AttributeOverrides(value = {
+            @AttributeOverride(name = "deletado", column = @Column(name = "deletado",
+                                                                   columnDefinition = "boolean " +
+                                                                           "default false",
+                                                                   nullable = false)),
+            @AttributeOverride(name = "data", column = @Column(name = "data_hora_deletado")),
+            @AttributeOverride(name = "username", column = @Column(name = "pg_username_delecao")),
+            @AttributeOverride(name = "motivo", column = @Column(name = "motivo_delecao"))
     })
     private DadosDelecao dadosDelecao;
 
