@@ -28,7 +28,7 @@ public class PneuServicoHistoricoVidaEntity extends BaseEntity {
     private PneuServicoEntity servico;
 
     @Column(name = "vida_nova_pneu", nullable = false)
-    private Byte vidaNova;
+    private Integer vidaNova;
 
     @Embedded
     @AttributeOverrides({

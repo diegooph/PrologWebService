@@ -59,10 +59,10 @@ public class PneuEntity {
     private Status status;
 
     @Column(name = "vida_atual")
-    private BigInteger vidaAtual;
+    private Integer vidaAtual;
 
     @Column(name = "vida_total")
-    private BigInteger vidaTotal;
+    private Integer vidaTotal;
 
     @Column(name = "cod_modelo_banda")
     private Long codModeloBanda;
