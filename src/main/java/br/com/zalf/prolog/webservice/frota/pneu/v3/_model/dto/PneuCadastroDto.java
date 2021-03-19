@@ -14,7 +14,7 @@ import java.util.List;
  * @author Guilherme Steinert (https://github.com/steinert999)
  */
 @Value(staticConstructor = "of")
-public class PneuCadastro {
+public class PneuCadastroDto {
 
     @NotNull(message = "O código da unidade não pode ser nulo.")
     Long codUnidade;

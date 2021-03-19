@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.pneu.v3;
 
 import br.com.zalf.prolog.webservice.frota.pneu.v3._model.PneuEntity;
-import br.com.zalf.prolog.webservice.frota.pneu.v3._model.dto.PneuCadastro;
+import br.com.zalf.prolog.webservice.frota.pneu.v3._model.dto.PneuCadastroDto;
 import br.com.zalf.prolog.webservice.frota.pneu.v3.mapper.PneuMapper;
 import br.com.zalf.prolog.webservice.frota.pneu.v3.service.PneuV3Service;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
@@ -34,11 +34,11 @@ public class PneuV3Resource implements PneuV3ApiDoc {
     private static final String TAG = PneuV3Resource.class.getSimpleName();
 
     private final PneuV3Service service;
-    private final PneuMapper<PneuEntity, PneuCadastro> pneuCadastroMapper;
+    private final PneuMapper<PneuEntity, PneuCadastroDto> pneuCadastroMapper;
 
     @Autowired
     public PneuV3Resource(@NotNull final PneuV3Service service,
-                          @NotNull final PneuMapper<PneuEntity, PneuCadastro> pneuCadastroMapper) {
+                          @NotNull final PneuMapper<PneuEntity, PneuCadastroDto> pneuCadastroMapper) {
         this.service = service;
         this.pneuCadastroMapper = pneuCadastroMapper;
     }
@@ -47,7 +47,7 @@ public class PneuV3Resource implements PneuV3ApiDoc {
     @Secured(permissions = Pilares.Frota.Pneu.CADASTRAR)
     @Override
     @NotNull
-    public Response insert(@NotNull final PneuCadastro pneuCadastro) {
+    public Response insert(@NotNull final PneuCadastroDto pneuCadastro) {
         final PneuEntity dtoConvertedToEntity = this.pneuCadastroMapper.toEntity(pneuCadastro);
         final PneuEntity savedPneu = this.service.create(dtoConvertedToEntity);
         return Response
