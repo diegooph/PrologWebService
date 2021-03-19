@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.v3.service.servico;
 import br.com.zalf.prolog.webservice.database._model.DadosDelecao;
 import br.com.zalf.prolog.webservice.frota.pneu.v3._model.servico.PneuServicoEntity;
 import br.com.zalf.prolog.webservice.frota.pneu.v3._model.servico.PneuServicoHistoricoCadastroEntity;
+import br.com.zalf.prolog.webservice.frota.pneu.v3._model.servico.PneuServicoHistoricoVidaEntity;
 import br.com.zalf.prolog.webservice.frota.pneu.v3.dao.servico.ServicoHistoricoCadastroV3Dao;
 import br.com.zalf.prolog.webservice.frota.pneu.v3.dao.servico.ServicoHistoricoVidaV3Dao;
 import org.jetbrains.annotations.NotNull;
@@ -36,6 +37,18 @@ public class PneuServicoHistoricoV3ServiceImpl implements PneuServicoHistoricoV3
         if (isCadastro(pneuServico.getFonteServico())) {
             this.pneuServicoHistoricoCadastroDao.save(createHistoricoCadastro(pneuServico));
         }
+    }
+
+    private PneuServicoHistoricoVidaEntity createHistoricoVida(final PneuServicoEntity pneuServico) {
+        final PneuServicoHistoricoVidaEntity.Id id = PneuServicoHistoricoVidaEntity.Id.builder()
+                .servico(pneuServico)
+                .build();
+        return PneuServicoHistoricoVidaEntity.builder()
+                .id(id)
+                .codModeloBanda(pneuServico.getPneu().getCodModeloBanda())
+                .vidaNova(pneuServico.getPneu().getVidaAtual())
+                .dadosDelecao(DadosDelecao.createDefaultDadosDelecao())
+                .build();
     }
 
     private boolean isCadastro(final PneuServicoEntity.FonteServico fonteServico) {
