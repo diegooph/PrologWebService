@@ -2,8 +2,10 @@ package br.com.zalf.prolog.webservice.frota.pneu.v3._model.servico;
 
 import br.com.zalf.prolog.webservice.database._model.BaseEntity;
 import br.com.zalf.prolog.webservice.database._model.DadosDelecao;
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
@@ -15,7 +17,9 @@ import javax.persistence.*;
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "pneu_servico_realizado_incrementa_vida_data", schema = "public")
-@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class PneuServicoHistoricoVidaEntity extends BaseEntity {
 
     @OneToOne(fetch = FetchType.LAZY,
