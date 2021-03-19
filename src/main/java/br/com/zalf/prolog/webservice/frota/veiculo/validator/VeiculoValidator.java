@@ -25,7 +25,6 @@ public class VeiculoValidator {
         try {
             validacaoPlaca(veiculo.getPlacaVeiculo());
             validacaoKmAtual(veiculo.getKmAtualVeiculo());
-            validacaoMarca(veiculo.getCodMarcaVeiculo());
             validacaoModelo(veiculo.getCodModeloVeiculo());
             validacaoTipo(veiculo.getCodTipoVeiculo());
         } catch (final Exception e) {
@@ -72,11 +71,6 @@ public class VeiculoValidator {
         Preconditions.checkNotNull(kmAtual, "Você precisa fornecer o km atual");
         Preconditions.checkArgument(kmAtual > 0, "Km atual inválido\nA quilometragem não deve " +
                 "ser negativa");
-    }
-
-    private static void validacaoMarca(final Long codMarca) {
-        Preconditions.checkNotNull(codMarca, "Você precisa selecionar a marca");
-        Preconditions.checkArgument(codMarca > 0, "Marca inválida");
     }
 
     private static void validacaoModelo(final Long codModelo) {

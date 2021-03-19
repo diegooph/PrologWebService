@@ -20,8 +20,6 @@ public final class VeiculoCadastro {
     @Nullable
     private final String identificadorFrota;
     @NotNull
-    private final Long codMarcaVeiculo;
-    @NotNull
     private final Long codModeloVeiculo;
     @NotNull
     private final Long codTipoVeiculo;
