@@ -28,7 +28,11 @@ public class PneuServicoHistoricoV3ServiceImpl implements PneuServicoHistoricoV3
     }
 
     @Override
+    @Transactional
     public void saveHistorico(@NotNull final PneuServicoEntity pneuServico) {
-        throw new NotImplementedException("metodo não implementado");
+        this.pneuServicoHistoricoVidaDao.save(createHistoricoVida(pneuServico));
+        if (isCadastro(pneuServico.getFonteServico())) {
+            this.pneuServicoHistoricoCadastroDao.save(createHistoricoCadastro(pneuServico));
+        }
     }
 }
