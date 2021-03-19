@@ -35,7 +35,15 @@ public class PneuServicoV3ServiceImpl implements PneuServicoV3Service {
 
     @Override
     @NotNull
-    public PneuServicoEntity createServicoByPneu(@NotNull final PneuEntity pneuEntity) {
-        throw new NotImplementedException("metodo não implementado");
+    @Transactional
+    public PneuServicoEntity createServicoByPneu(@NotNull final PneuEntity pneuEntity,
+                                                 @NotNull final Double custoAquisicaoBanda) {
+        final var tipoServico = this.tipoServicoService.getInitialTipoServicoForVidaIncrementada();
+        final var savedPneuServico = this.dao.save(createPneuServicoForCadastro(tipoServico,
+                                                                                pneuEntity,
+                                                                                custoAquisicaoBanda));
+        this.pneuServicoHistoricoService.saveHistorico(savedPneuServico);
+        return savedPneuServico;
     }
+
 }
