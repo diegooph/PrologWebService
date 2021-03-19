@@ -1,8 +1,14 @@
 package br.com.zalf.prolog.webservice.frota.pneu.v3._model.servico;
 
 import br.com.zalf.prolog.webservice.database._model.BaseEntity;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.time.LocalDateTime;
 
 /**
@@ -13,6 +19,10 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "pneu_tipo_servico", schema = "public")
+@Data
+@EqualsAndHashCode(callSuper = true)
+@NoArgsConstructor
+@Getter
 public class PneuTipoServicoEntity extends BaseEntity {
 
     @Column(name = "cod_empresa", nullable = false)
