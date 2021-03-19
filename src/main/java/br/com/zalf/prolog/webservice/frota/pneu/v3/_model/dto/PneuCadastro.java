@@ -48,9 +48,4 @@ public class PneuCadastro {
     Double custoAquisicao;
 
     boolean pneuUsado;
-
-    @Size(max = 3, message = "quantidade de imagens suportadas: 3")
-    @NotNull
-    List<String> urlImagesPneu;
-
 }

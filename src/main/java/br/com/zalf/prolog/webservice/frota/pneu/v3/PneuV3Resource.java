@@ -3,7 +3,6 @@ package br.com.zalf.prolog.webservice.frota.pneu.v3;
 import br.com.zalf.prolog.webservice.frota.pneu.v3._model.PneuEntity;
 import br.com.zalf.prolog.webservice.frota.pneu.v3._model.dto.PneuCadastro;
 import br.com.zalf.prolog.webservice.frota.pneu.v3.mapper.PneuMapper;
-import br.com.zalf.prolog.webservice.frota.pneu.v3.service.PneuFotoV3Service;
 import br.com.zalf.prolog.webservice.frota.pneu.v3.service.PneuV3Service;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
@@ -35,16 +34,13 @@ public class PneuV3Resource implements PneuV3ApiDoc {
     private static final String TAG = PneuV3Resource.class.getSimpleName();
 
     private final PneuV3Service service;
-    private final PneuFotoV3Service pneuFotoService;
     private final PneuMapper<PneuEntity, PneuCadastro> pneuCadastroMapper;
 
     @Autowired
     public PneuV3Resource(@NotNull final PneuV3Service service,
-                          @NotNull final PneuMapper<PneuEntity, PneuCadastro> pneuCadastroMapper,
-                          @NotNull final PneuFotoV3Service pneuFotoService) {
+                          @NotNull final PneuMapper<PneuEntity, PneuCadastro> pneuCadastroMapper) {
         this.service = service;
         this.pneuCadastroMapper = pneuCadastroMapper;
-        this.pneuFotoService = pneuFotoService;
     }
 
     @POST
@@ -54,7 +50,6 @@ public class PneuV3Resource implements PneuV3ApiDoc {
     public Response insert(@NotNull final PneuCadastro pneuCadastro) {
         final PneuEntity dtoConvertedToEntity = this.pneuCadastroMapper.toEntity(pneuCadastro);
         final PneuEntity savedPneu = this.service.create(dtoConvertedToEntity);
-        this.pneuFotoService.createPneuFotos(savedPneu, pneuCadastro.getUrlImagesPneu());
         return Response
                 .created(URI.create("/v3/pneus/" + savedPneu.getId()))
                 .header("Location-id", savedPneu.getId().toString())
