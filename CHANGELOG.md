@@ -4,6 +4,10 @@ Change Log
 <a name="v2.1.1"></a>
 ## Version [v2.1.1](https://github.com/luizfp/PrologWebService/compare/v2.1.0...v2.1.1) (release-date) [unreleased]
 
+### Features
+* Cria endpoint de cadastro de pneus na API v3 (PL-3459)
+* Cria endpoint de cadastro de veículos na API v3 (PL-3460)
+
 ### Refactors
 * Remove classes depreciadas e não utilizadas de O.S. de checklist
 * Ordena busca de tipos de veículo por nome
@@ -15,6 +19,7 @@ Change Log
 * Corrige leitura dos headers de Logs de integração (PL-3519)
 * Corrige busca do relatório de aferições integrado (PL-3568)
 * Corrige permissões ao listar veículos
+* Corrige filtro de unidades/clientes vindas da integração (PL-3560)
 
 <a name="v2.1.0"></a>
 ## Version [v2.1.0](https://github.com/luizfp/PrologWebService/compare/v2.0.2...v2.1.0) (2021-03-07)
