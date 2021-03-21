@@ -10,7 +10,6 @@ import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.VeiculoCadastro;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculoNomenclatura;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicao;
@@ -18,6 +17,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicaoSta
 import br.com.zalf.prolog.webservice.frota.veiculo.model.listagem.VeiculoListagem;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoDadosColetaKm;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoVisualizacao;
+import br.com.zalf.prolog.webservice.frota.veiculo.v3._model.VeiculoCadastroDto;
 import br.com.zalf.prolog.webservice.interceptors.auth.ColaboradorAutenticado;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
@@ -53,7 +53,7 @@ public final class VeiculoResource {
     @UsedBy(platforms = Platform.WEBSITE)
     @Path("/")
     public Response insert(@HeaderParam("Authorization") @Required final String userToken,
-                           @Required final VeiculoCadastro veiculo) {
+                           @Required final VeiculoCadastroDto veiculo) {
         return service.insert(userToken, veiculo);
     }
 
