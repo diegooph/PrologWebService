@@ -14,6 +14,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public final class SistemaWebFinattoUtils {
+
+    public static boolean isUnidadeMasterProlog(@NotNull final Long codUnidadeProlog) {
+        return codUnidadeProlog.equals(SistemaWebFinattoConstants.UNIDADE_MASTER_PROLOG);
+    }
+
     @NotNull
     public static List<Long> getCodUnidadesFiltroProlog(@NotNull final List<Empresa> filtrosProlog) {
         return filtrosProlog.stream()
