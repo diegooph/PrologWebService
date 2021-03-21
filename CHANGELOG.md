@@ -1,8 +1,8 @@
 Change Log
 ==========
 
-<a name="v2.1.1"></a>
-## Version [v2.1.1](https://github.com/luizfp/PrologWebService/compare/v2.1.0...v2.1.1) (release-date) [unreleased]
+<a name="v2.2.0"></a>
+## Version [v2.2.0](https://github.com/luizfp/PrologWebService/compare/v2.1.0...v2.2.0) (2021-03-21)
 
 ### Features
 * Cria endpoint de cadastro de pneus na API v3 (PL-3459)
