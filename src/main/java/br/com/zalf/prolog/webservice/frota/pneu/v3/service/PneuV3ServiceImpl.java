@@ -30,6 +30,8 @@ public class PneuV3ServiceImpl implements PneuV3Service {
     @Override
     @NotNull
     public PneuEntity create(@NotNull final PneuEntity pneu) {
+        this.operacoesBloqueadas.validateEmpresa(pneu.getCodEmpresa());
+        this.operacoesBloqueadas.validateUnidade(pneu.getCodUnidade());
         validatePneuToInsert(pneu);
         return this.dao.save(pneu);
     }
