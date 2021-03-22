@@ -284,7 +284,7 @@ public final class ChecklistResource {
         return ChecklistMigracaoEstruturaSuporte.toEstruturaAntigaRealizacaoModelo(
                 new ChecklistModeloService().getModeloChecklistRealizacao(
                         codModelo,
-                        ChecklistMigracaoEstruturaSuporte.getCodVeiculoByPlaca(placa),
+                        ChecklistMigracaoEstruturaSuporte.getCodVeiculoByPlaca(placa, codUnidadeModelo),
                         placa,
                         TipoChecklist.SAIDA.asString(),
                         userToken));
@@ -307,7 +307,7 @@ public final class ChecklistResource {
         return ChecklistMigracaoEstruturaSuporte.toEstruturaAntigaRealizacaoModelo(
                 new ChecklistModeloService().getModeloChecklistRealizacao(
                         codModelo,
-                        ChecklistMigracaoEstruturaSuporte.getCodVeiculoByPlaca(placa),
+                        ChecklistMigracaoEstruturaSuporte.getCodVeiculoByPlaca(placa, codUnidadeModelo),
                         placa,
                         TipoChecklist.RETORNO.asString(),
                         userToken));
