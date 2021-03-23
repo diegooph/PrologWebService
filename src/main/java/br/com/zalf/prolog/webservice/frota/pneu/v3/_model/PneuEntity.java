@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.v3._model;
 import br.com.zalf.prolog.webservice.database._model.DadosDelecao;
 import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.v3._model.converter.StatusPneuConverter;
+import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -105,6 +106,9 @@ public class PneuEntity {
         @AttributeOverride(name = "motivo", column = @Column(name = "motivo_delecao"))
     })
     private DadosDelecao dadosDelecao;
+
+    @Column(name = "origem_cadastro", nullable = false)
+    private OrigemAcaoEnum origemCadastro;
 
     @Embeddable
     @Builder
