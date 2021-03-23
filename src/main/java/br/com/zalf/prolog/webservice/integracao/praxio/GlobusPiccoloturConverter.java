@@ -120,7 +120,7 @@ public final class GlobusPiccoloturConverter {
         checklistItensNokGlobus
                 .getPerguntasNok()
                 .forEach(pergunta -> perguntas.add(new PerguntaNokDto(
-                        pergunta.getCodPerguntaNok().intValue(),
+                        pergunta.getCodContextoPerguntaNok().intValue(),
                         pergunta.getDescricaoPerguntaNok(),
                         convertAlternativas(pergunta.getAlternativasNok()))));
         return perguntas;
