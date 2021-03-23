@@ -1,6 +1,8 @@
 package br.com.zalf.prolog.webservice.frota.pneu.v3._model;
 
 import br.com.zalf.prolog.webservice.database._model.DadosDelecao;
+import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
+import br.com.zalf.prolog.webservice.frota.pneu.v3._model.converter.StatusPneuConverter;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -59,7 +61,7 @@ public class PneuEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
-    private Status status;
+    private StatusPneu status;
 
     @Column(name = "vida_atual")
     private Integer vidaAtual;
