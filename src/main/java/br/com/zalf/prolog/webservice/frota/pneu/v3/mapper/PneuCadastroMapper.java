@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.database._model.DadosDelecao;
 import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.v3._model.PneuEntity;
 import br.com.zalf.prolog.webservice.frota.pneu.v3._model.dto.PneuCadastroDto;
+import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
 import org.apache.commons.lang3.NotImplementedException;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
@@ -37,6 +38,7 @@ public class PneuCadastroMapper implements PneuMapper<PneuEntity, PneuCadastroDt
                 .codEmpresa(dto.getCodEmpresa())
                 .dadosDelecao(DadosDelecao.createDefaultDadosDelecao())
                 .status(StatusPneu.ESTOQUE)
+                .origemCadastro(OrigemAcaoEnum.API)
                 .codModelo(dto.getCodModeloPneu())
                 .codModeloBanda(dto.getCodModeloBanda())
                 .vidaAtual(dto.getVidaAtualPneu())
