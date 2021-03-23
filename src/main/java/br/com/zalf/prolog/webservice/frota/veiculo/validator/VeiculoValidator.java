@@ -50,6 +50,13 @@ public class VeiculoValidator {
         garanteVeiculosAcopladosNaoSejamInativados(veiculo.isStatusAtivo(), veiculo.isAcoplado());
     }
 
+    public static void validacaoMotorizadoSemHubodometro(@NotNull final Boolean possuiHubodometro,
+                                                         @NotNull final Long codTipoVeiculo) throws Throwable {
+        if (dao.getTipoVeiculo(codTipoVeiculo).isMotorizado() && possuiHubodometro) {
+            fail("Veículos motorizados não devem possuir hubodômetro.", codTipoVeiculo);
+        }
+    }
+
     private static void validacaoPlaca(final String placa) throws Exception {
         Preconditions.checkNotNull(placa, "Você deve fornecer a placa");
 
@@ -81,13 +88,6 @@ public class VeiculoValidator {
     private static void validacaoTipo(final Long codTipo) {
         Preconditions.checkNotNull(codTipo, "Você precisa selecionar o tipo");
         Preconditions.checkArgument(codTipo > 0, "Tipo inválido");
-    }
-
-    private static void validacaoMotorizadoSemHubodometro(@NotNull final Boolean possuiHubodometro,
-                                                          @NotNull final Long codTipoVeiculo) throws Throwable {
-        if (dao.getTipoVeiculo(codTipoVeiculo).isMotorizado() && possuiHubodometro) {
-            fail("Veículos motorizados não devem possuir hubodômetro.", codTipoVeiculo);
-        }
     }
 
     private static void garanteVeiculosAcopladosNaoSejamInativados(final boolean statusAtivo, final boolean acoplado) {

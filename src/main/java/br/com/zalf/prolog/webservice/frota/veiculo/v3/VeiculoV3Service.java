@@ -9,6 +9,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.tipoveiculo.v3._model.TipoVei
 import br.com.zalf.prolog.webservice.frota.veiculo.v3._model.VeiculoEntity;
 import br.com.zalf.prolog.webservice.frota.veiculo.v3.diagrama.DiagramaService;
 import br.com.zalf.prolog.webservice.frota.veiculo.v3.diagrama._model.DiagramaEntity;
+import br.com.zalf.prolog.webservice.frota.veiculo.validator.VeiculoValidator;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +42,8 @@ public class VeiculoV3Service {
     public SuccessResponse insert(@Nullable final String tokenIntegracao,
                                   @NotNull final VeiculoEntity veiculoEntity) {
         try {
+            VeiculoValidator.validacaoMotorizadoSemHubodometro(veiculoEntity.isPossuiHobodometro(),
+                                                               veiculoEntity.getCodTipo());
             final TipoVeiculoEntity tipoVeiculoEntity = tipoVeiculoService.getByCod(veiculoEntity.getCodTipo());
             final DiagramaEntity diagramaEntity = diagramaService.getByCod(tipoVeiculoEntity.getCodDiagrama());
             final VeiculoEntity veiculoInsert = veiculoEntity.toBuilder()
@@ -48,7 +51,6 @@ public class VeiculoV3Service {
                     .withCodDiagrama(tipoVeiculoEntity.getCodDiagrama().longValue())
                     .withOrigemCadastro(getOrigemCadastro(tokenIntegracao))
                     .build();
-
             final VeiculoEntity saved = veiculoDao.save(veiculoInsert);
             return new SuccessResponse(saved.getCodigo(), "Veículo inserido com sucesso.");
         } catch (final Throwable t) {
