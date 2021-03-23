@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.veiculo.v3._model;
 
+import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -49,4 +50,7 @@ public class VeiculoEntity {
     private boolean motorizado;
     @Column(name = "possui_hubodometro", nullable = false, columnDefinition = "boolean default false")
     private boolean possuiHobodometro;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "origem_cadastro", nullable = false)
+    private OrigemAcaoEnum origemCadastro;
 }

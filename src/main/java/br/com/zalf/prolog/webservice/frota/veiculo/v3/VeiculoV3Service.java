@@ -3,12 +3,14 @@ package br.com.zalf.prolog.webservice.frota.veiculo.v3;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
 import br.com.zalf.prolog.webservice.frota.veiculo.tipoveiculo.v3.TipoVeiculoV3Service;
 import br.com.zalf.prolog.webservice.frota.veiculo.tipoveiculo.v3._model.TipoVeiculoEntity;
 import br.com.zalf.prolog.webservice.frota.veiculo.v3._model.VeiculoEntity;
 import br.com.zalf.prolog.webservice.frota.veiculo.v3.diagrama.DiagramaService;
 import br.com.zalf.prolog.webservice.frota.veiculo.v3.diagrama._model.DiagramaEntity;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,13 +38,16 @@ public class VeiculoV3Service {
 
     @NotNull
     @Transactional
-    public SuccessResponse insert(@NotNull final VeiculoEntity veiculoEntity) {
+    public SuccessResponse insert(@Nullable final String tokenIntegracao,
+                                  @Nullable final Integer versaoApp,
+                                  @NotNull final VeiculoEntity veiculoEntity) {
         try {
             final TipoVeiculoEntity tipoVeiculoEntity = tipoVeiculoService.getByCod(veiculoEntity.getCodTipo());
             final DiagramaEntity diagramaEntity = diagramaService.getByCod(tipoVeiculoEntity.getCodDiagrama());
             final VeiculoEntity veiculoInsert = veiculoEntity.toBuilder()
                     .withMotorizado(diagramaEntity.isMotorizado())
                     .withCodDiagrama(tipoVeiculoEntity.getCodDiagrama().longValue())
+                    .withOrigemCadastro(getOrigemCadastro(tokenIntegracao, versaoApp))
                     .build();
 
             final VeiculoEntity saved = veiculoDao.save(veiculoInsert);
@@ -53,5 +58,14 @@ public class VeiculoV3Service {
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao inserir veículo, tente novamente.");
         }
+    }
+
+    @NotNull
+    private OrigemAcaoEnum getOrigemCadastro(@Nullable final String tokenIntegracao,
+                                             @Nullable final Integer versaoApp) {
+        if (tokenIntegracao != null) {
+            return OrigemAcaoEnum.API;
+        }
+        return versaoApp != null ? OrigemAcaoEnum.PROLOG_ANDROID : OrigemAcaoEnum.PROLOG_WEB;
     }
 }
