@@ -104,10 +104,6 @@ public class PneuEntity {
     })
     private DadosDelecao dadosDelecao;
 
-    public enum Status {
-        EM_USO, ESTOQUE, ANALISE, DESCARTE
-    }
-
     @Embeddable
     @Builder
     @AllArgsConstructor
