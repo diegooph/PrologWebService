@@ -60,7 +60,8 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
                                                  "F_KM_ATUAL := ?, " +
                                                  "F_COD_MODELO := ?, " +
                                                  "F_COD_TIPO := ?," +
-                                                 "F_POSSUI_HUBODOMETRO := ?) AS CODIGO;");
+                                                 "F_POSSUI_HUBODOMETRO := ?," +
+                                                 "F_ORIGEM_RESPOSTA := ?) AS CODIGO;");
             stmt.setLong(1, veiculo.getCodUnidadeAlocado());
             stmt.setString(2, veiculo.getPlacaVeiculo().toUpperCase());
             stmt.setString(3, StringUtils.trimToNull(veiculo.getIdentificadorFrota()));
@@ -68,6 +69,7 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
             stmt.setLong(5, veiculo.getCodModeloVeiculo());
             stmt.setLong(6, veiculo.getCodTipoVeiculo());
             stmt.setBoolean(7, veiculo.getPossuiHubodometro());
+            stmt.setString(8, OrigemAcaoEnum.PROLOG_WEB.asString());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 final long codVeiculoInserido = rSet.getLong("CODIGO");
