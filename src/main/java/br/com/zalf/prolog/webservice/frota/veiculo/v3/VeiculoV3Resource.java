@@ -41,9 +41,8 @@ public class VeiculoV3Resource implements VeiculoV3ResourceApiDoc {
     @Path("/")
     public SuccessResponse insert(
             @HeaderParam(PrologCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Optional final String tokenIntegracao,
-            @HeaderParam(PrologCustomHeaders.AppVersionAndroid.PROLOG_APP_VERSION) @Optional final Integer versaoApp,
             @Valid final VeiculoCadastroDto veiculoCadastroDto) {
         final VeiculoEntity veiculoEntity = veiculoMapper.toEntity(veiculoCadastroDto);
-        return veiculoService.insert(tokenIntegracao, versaoApp, veiculoEntity);
+        return veiculoService.insert(tokenIntegracao, veiculoEntity);
     }
 }

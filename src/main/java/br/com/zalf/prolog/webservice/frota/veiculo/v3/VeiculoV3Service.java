@@ -39,7 +39,6 @@ public class VeiculoV3Service {
     @NotNull
     @Transactional
     public SuccessResponse insert(@Nullable final String tokenIntegracao,
-                                  @Nullable final Integer versaoApp,
                                   @NotNull final VeiculoEntity veiculoEntity) {
         try {
             final TipoVeiculoEntity tipoVeiculoEntity = tipoVeiculoService.getByCod(veiculoEntity.getCodTipo());
@@ -47,7 +46,7 @@ public class VeiculoV3Service {
             final VeiculoEntity veiculoInsert = veiculoEntity.toBuilder()
                     .withMotorizado(diagramaEntity.isMotorizado())
                     .withCodDiagrama(tipoVeiculoEntity.getCodDiagrama().longValue())
-                    .withOrigemCadastro(getOrigemCadastro(tokenIntegracao, versaoApp))
+                    .withOrigemCadastro(getOrigemCadastro(tokenIntegracao))
                     .build();
 
             final VeiculoEntity saved = veiculoDao.save(veiculoInsert);
@@ -61,11 +60,7 @@ public class VeiculoV3Service {
     }
 
     @NotNull
-    private OrigemAcaoEnum getOrigemCadastro(@Nullable final String tokenIntegracao,
-                                             @Nullable final Integer versaoApp) {
-        if (tokenIntegracao != null) {
-            return OrigemAcaoEnum.API;
-        }
-        return versaoApp != null ? OrigemAcaoEnum.PROLOG_ANDROID : OrigemAcaoEnum.PROLOG_WEB;
+    private OrigemAcaoEnum getOrigemCadastro(@Nullable final String tokenIntegracao) {
+        return tokenIntegracao != null ? OrigemAcaoEnum.API : OrigemAcaoEnum.PROLOG_WEB;
     }
 }
