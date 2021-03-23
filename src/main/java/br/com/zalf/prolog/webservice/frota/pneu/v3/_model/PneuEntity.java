@@ -59,7 +59,7 @@ public class PneuEntity {
     @Column(name = "cod_unidade", nullable = false)
     private Long codUnidade;
 
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = StatusPneuConverter.class)
     @Column(name = "status", nullable = false)
     private StatusPneu status;
 
