@@ -131,7 +131,7 @@ public final class GlobusPiccoloturConverter {
             @NotNull final List<AlternativaNokGlobus> alternativas) {
         final List<AlternativaNokDto> alternativasConvertidas = new ArrayList<>();
         alternativas.forEach(alternativa -> alternativasConvertidas.add(new AlternativaNokDto(
-                alternativa.getCodAlternativaNok().intValue(),
+                alternativa.getCodContextoAlternativaNok().intValue(),
                 alternativa.getDescricaoAlternativaNok(),
                 alternativa.getPrioridadeAlternativaNok().asString())));
         return alternativasConvertidas;
