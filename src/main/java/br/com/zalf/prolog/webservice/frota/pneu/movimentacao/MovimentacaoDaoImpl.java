@@ -23,6 +23,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico.PneuServicoReali
 import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico._model.PneuServicoRealizado;
 import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico._model.PneuServicoRealizadoIncrementaVida;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoDao;
+import br.com.zalf.prolog.webservice.frota.pneu.servico._model.OrigemFechamentoAutomaticoEnum;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.VeiculoTipoProcesso;
@@ -769,13 +770,14 @@ public final class MovimentacaoDaoImpl extends DatabaseConnection implements Mov
         if (qtdServicosEmAbertoPneu > 0) {
             if (movimentacao.isFrom(VEICULO)) {
                 final OrigemVeiculo origemVeiculo = (OrigemVeiculo) movimentacao.getOrigem();
-                final int qtdServicosFechadosPneu = servicoDao.fecharAutomaticamenteServicosPneu(
+                final int qtdServicosFechadosPneu = servicoDao.fecharAutomaticamenteTodosServicosPneu(
                         conn,
                         codUnidade,
                         codPneu,
                         codProcessoMovimentacao,
                         dataHoraMovimentacao,
-                        origemVeiculo.getVeiculo().getKmAtual());
+                        origemVeiculo.getVeiculo().getKmAtual(),
+                        OrigemFechamentoAutomaticoEnum.MOVIMENTACAO);
 
                 if (qtdServicosEmAbertoPneu != qtdServicosFechadosPneu) {
                     throw new IllegalStateException("Erro ao fechar os serviços do pneu: " + codPneu + ". Deveriam " +

@@ -8,10 +8,10 @@ import br.com.zalf.prolog.webservice.frota.pneu.servico._model.Servico;
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.TipoServico;
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.VeiculoServico;
 import br.com.zalf.prolog.webservice.frota.pneu.transferencia._model.realizacao.PneuTransferenciaRealizacao;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.VeiculoCadastro;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.InfosVeiculoEditado;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicao;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.ProcessoTransferenciaVeiculoRealizacao;
+import br.com.zalf.prolog.webservice.frota.veiculo.v3._model.VeiculoCadastroDto;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.RecursoIntegrado;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
@@ -35,9 +35,27 @@ public final class SistemaApiProLog extends Sistema {
         super(integradorProLog, sistemaKey, recursoIntegrado, userToken);
     }
 
+    @NotNull
+    @Override
+    public Long insertAfericao(@NotNull final Long codUnidade,
+                               @NotNull final Afericao afericao,
+                               final boolean deveAbrirServico) throws Throwable {
+        final boolean abrirServico;
+        if (unidadeEstaComIntegracaoAtiva(codUnidade)) {
+            // Se a unidade possui a integração ativada, precisamos saber se existe algo configurado para abertura
+            // de serviços de pneus nesta unidade.
+            abrirServico = configUnidadeDeveAbrirServicoPneu(codUnidade);
+        } else {
+            // Se a unidade não tem integração ativada, então não nos interessa qualquer outra coisa, devemos abrir
+            // serviços de pneus.
+            abrirServico = true;
+        }
+        return getIntegradorProLog().insertAfericao(codUnidade, afericao, abrirServico);
+    }
+
     @Override
     public void insert(
-            @NotNull final VeiculoCadastro veiculo,
+            @NotNull final VeiculoCadastroDto veiculo,
             @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
         if (unidadeEstaComIntegracaoAtiva(veiculo.getCodUnidadeAlocado())) {
             throw new BloqueadoIntegracaoException("Para inserir veículos utilize o seu sistema de gestão");
@@ -56,6 +74,19 @@ public final class SistemaApiProLog extends Sistema {
                     "Para atualizar os dados do veículo utilize o seu sistema de gestão");
         }
         return getIntegradorProLog().update(codColaboradorResponsavelEdicao, veiculo, checklistOfflineListener);
+    }
+
+    @NotNull
+    @Override
+    public Long insertProcessoTransferenciaVeiculo(
+            @NotNull final ProcessoTransferenciaVeiculoRealizacao processoTransferenciaVeiculo,
+            @NotNull final DadosChecklistOfflineChangedListener dadosChecklistOfflineChangedListener) throws Throwable {
+        if (unidadeEstaComIntegracaoAtiva(processoTransferenciaVeiculo.getCodUnidadeOrigem())
+                && unidadeEstaComIntegracaoAtiva(processoTransferenciaVeiculo.getCodUnidadeDestino())) {
+            throw new BloqueadoIntegracaoException("Para transferir veículos utilize o seu sistema de gestão");
+        }
+        return getIntegradorProLog()
+                .insertProcessoTransferenciaVeiculo(processoTransferenciaVeiculo, dadosChecklistOfflineChangedListener);
     }
 
     @NotNull
@@ -99,47 +130,16 @@ public final class SistemaApiProLog extends Sistema {
 
     @NotNull
     @Override
-    public Long insertProcessoTransferenciaVeiculo(
-            @NotNull final ProcessoTransferenciaVeiculoRealizacao processoTransferenciaVeiculo,
-            @NotNull final DadosChecklistOfflineChangedListener dadosChecklistOfflineChangedListener) throws Throwable {
-        if (unidadeEstaComIntegracaoAtiva(processoTransferenciaVeiculo.getCodUnidadeOrigem())
-                && unidadeEstaComIntegracaoAtiva(processoTransferenciaVeiculo.getCodUnidadeDestino())) {
-            throw new BloqueadoIntegracaoException("Para transferir veículos utilize o seu sistema de gestão");
-        }
-        return getIntegradorProLog()
-                .insertProcessoTransferenciaVeiculo(processoTransferenciaVeiculo, dadosChecklistOfflineChangedListener);
-    }
-
-    @NotNull
-    @Override
     public VeiculoServico getVeiculoAberturaServico(@NotNull final Long codServico,
                                                     @NotNull final String placaVeiculo) throws Throwable {
         final Long codUnidadeVeiculo =
-                getIntegradorProLog().getVeiculoByPlaca(placaVeiculo, false).getCodUnidadeAlocado();
+                getIntegradorProLog().getVeiculoByPlaca(placaVeiculo, null, false).getCodUnidadeAlocado();
         if (unidadeEstaComIntegracaoAtiva(codUnidadeVeiculo) && getSistemaApiProLog().isServicoMovimentacao(codServico)) {
             throw new BloqueadoIntegracaoException(
-                    "O fechamento de serviço de movimentação está sendo integrado e ainda não está disponível.\n" +
-                            "Por enquanto, utilize o seu sistema para movimentar os pneus.");
+                    "O fechamento de serviço de movimentação não está disponível.\n" +
+                            "Utilize o seu sistema para movimentar os pneus.");
         }
         return getIntegradorProLog().getVeiculoAberturaServico(codServico, placaVeiculo);
-    }
-
-    @NotNull
-    @Override
-    public Long insertAfericao(@NotNull final Long codUnidade,
-                               @NotNull final Afericao afericao,
-                               final boolean deveAbrirServico) throws Throwable {
-        final boolean abrirServico;
-        if (unidadeEstaComIntegracaoAtiva(codUnidade)) {
-            // Se a unidade possui a integração ativada, precisamos saber se existe algo configurado para abertura
-            // de serviços de pneus nesta unidade.
-            abrirServico = configUnidadeDeveAbrirServicoPneu(codUnidade);
-        } else {
-            // Se a unidade não tem integração ativada, então não nos interessa qualquer outra coisa, devemos abrir
-            // serviços de pneus.
-            abrirServico = true;
-        }
-        return getIntegradorProLog().insertAfericao(codUnidade, afericao, abrirServico);
     }
 
     @Override

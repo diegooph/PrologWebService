@@ -4,10 +4,10 @@ import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.frota.veiculo.error.VeiculoValidatorException;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.VeiculoCadastro;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicaoStatus;
 import br.com.zalf.prolog.webservice.frota.veiculo.tipoveiculo.TipoVeiculoDao;
+import br.com.zalf.prolog.webservice.frota.veiculo.v3._model.VeiculoCadastroDto;
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -21,11 +21,10 @@ public class VeiculoValidator {
         throw new IllegalStateException(StringUtils.class.getSimpleName() + " cannot be instantiated!");
     }
 
-    public static void validacaoAtributosVeiculo(@NotNull final VeiculoCadastro veiculo) throws Throwable {
+    public static void validacaoAtributosVeiculo(@NotNull final VeiculoCadastroDto veiculo) throws Throwable {
         try {
             validacaoPlaca(veiculo.getPlacaVeiculo());
             validacaoKmAtual(veiculo.getKmAtualVeiculo());
-            validacaoMarca(veiculo.getCodMarcaVeiculo());
             validacaoModelo(veiculo.getCodModeloVeiculo());
             validacaoTipo(veiculo.getCodTipoVeiculo());
         } catch (final Exception e) {
@@ -72,11 +71,6 @@ public class VeiculoValidator {
         Preconditions.checkNotNull(kmAtual, "Você precisa fornecer o km atual");
         Preconditions.checkArgument(kmAtual > 0, "Km atual inválido\nA quilometragem não deve " +
                 "ser negativa");
-    }
-
-    private static void validacaoMarca(final Long codMarca) {
-        Preconditions.checkNotNull(codMarca, "Você precisa selecionar a marca");
-        Preconditions.checkArgument(codMarca > 0, "Marca inválida");
     }
 
     private static void validacaoModelo(final Long codModelo) {

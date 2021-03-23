@@ -1,15 +1,16 @@
 package test.br.com.zalf.prolog.webservice.routines;
 
+import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.database.DatabaseConnectionProvider;
 import br.com.zalf.prolog.webservice.database.DatabaseManager;
+import br.com.zalf.prolog.webservice.integracao.integrador.IntegracaoDao;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.ApiAutenticacaoHolder;
-import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.SistemaProtheusNepomucenoDaoImpl;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.VeiculoAfericaoProtheusNepomuceno;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.VeiculoListagemProtheusNepomuceno;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.error.ProtheusNepomucenoException;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.data.ProtheusNepomucenoRequester;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.data.ProtheusNepomucenoRequesterImpl;
-import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.utils.ProtheusNepomucenoPosicaoPneuMapper;
+import br.com.zalf.prolog.webservice.integracao.IntegracaoPosicaoPneuMapper;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.utils.ProtheusNepomucenoUtils;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterAll;
@@ -133,7 +134,7 @@ public final class ModelosNaoMapeadosTest {
      */
     @Test
     void testPosicoesMapeadasIncorretamente() throws Throwable {
-        final SistemaProtheusNepomucenoDaoImpl sistema = new SistemaProtheusNepomucenoDaoImpl();
+        final IntegracaoDao integracaoDao = Injection.provideIntegracaoDao();
         final ProtheusNepomucenoRequester requester = new ProtheusNepomucenoRequesterImpl();
         final DatabaseConnectionProvider provider = new DatabaseConnectionProvider();
 
@@ -163,12 +164,13 @@ public final class ModelosNaoMapeadosTest {
                                     placa.getCodEmpresaFilialVeiculo(),
                                     placa.getPlacaVeiculo());
 
-                    final ProtheusNepomucenoPosicaoPneuMapper posicaoPneuMapper =
-                            new ProtheusNepomucenoPosicaoPneuMapper(
+                    final IntegracaoPosicaoPneuMapper posicaoPneuMapper =
+                            new IntegracaoPosicaoPneuMapper(
                                     veiculoAfericao.getCodEstruturaVeiculo(),
-                                    sistema.getMapeamentoPosicoesProlog(conn,
-                                                                        COD_EMPRESA,
-                                                                        veiculoAfericao.getCodEstruturaVeiculo()));
+                                    integracaoDao.getMapeamentoPosicoesPrologByDeParaTipoVeiculo(
+                                            conn,
+                                            COD_EMPRESA,
+                                            veiculoAfericao.getCodEstruturaVeiculo()));
 
                     try {
                         ProtheusNepomucenoUtils

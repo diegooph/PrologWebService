@@ -9,9 +9,43 @@ Change Log
 * Deleta integração antiga da Avilan que era em XML (PL-3475)
 * Altera integração com Globus/Piccolotur de envio de OS para utilizar implementação própria do SOAP (PL-3475)
 
-<a name="v2.0.3"></a>
-## Version [v2.0.3](https://github.com/luizfp/PrologWebService/compare/v2.0.2...v2.0.3) (release-date) [unreleased]
 
+<a name="v2.2.1"></a>
+## Version [v2.2.1](https://github.com/luizfp/PrologWebService/compare/v2.2.0...v2.2.1) (release-date) [unreleased]
+
+
+<a name="v2.2.0"></a>
+## Version [v2.2.0](https://github.com/luizfp/PrologWebService/compare/v2.1.0...v2.2.0) (2021-03-21)
+
+### Features
+* Cria endpoint de cadastro de pneus na API v3 (PL-3459)
+* Cria endpoint de cadastro de veículos na API v3 (PL-3460)
+
+### Refactors
+* Remove classes depreciadas e não utilizadas de O.S. de checklist
+* Ordena busca de tipos de veículo por nome
+* Alterar buscas de serviços fechados para considerar flag de fechado por aferição (PL-3561)
+* Alterar processo de inserção de aferição para fechar serviços automaticamente (PL-3541)
+
+### Bug Fixes
+* Corrige listagem de relatos realizados (PL-3572)
+* Corrige leitura dos headers de Logs de integração (PL-3519)
+* Corrige busca do relatório de aferições integrado (PL-3568)
+* Corrige permissões ao listar veículos
+* Corrige filtro de unidades/clientes vindas da integração (PL-3560)
+
+<a name="v2.1.0"></a>
+## Version [v2.1.0](https://github.com/luizfp/PrologWebService/compare/v2.0.2...v2.1.0) (2021-03-07)
+
+### Features
+* Adiciona estrutura de testes e2e com testcontainers e Flyway (PL-3307)
+* Cria integração com sistema WebFinatto (PL-2874)
+
+### Refactors
+* Ordena lista de histórico de acoplamentos por data/hora
+
+### Bug Fixes
+* Corrige path de resource de histórico de acoplamentos
 
 <a name="v2.0.2"></a>
 ## Version [v2.0.2](https://github.com/luizfp/PrologWebService/compare/v2.0.1...v2.0.2) (2021-02-22)
