@@ -1,5 +1,8 @@
 package br.com.zalf.prolog.webservice.frota.pneu.v3.service;
 
+import br.com.zalf.prolog.webservice.Injection;
+import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
+import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.frota.pneu.v3._model.PneuEntity;
 import br.com.zalf.prolog.webservice.frota.pneu.v3._model.dto.PneuCadastroDto;
 import br.com.zalf.prolog.webservice.frota.pneu.v3.dao.PneuV3Dao;
@@ -22,6 +25,8 @@ import javax.transaction.Transactional;
 @Service
 public class PneuV3Service {
 
+    private static final String TAG = PneuV3Service.class.getSimpleName();
+
     private final PneuV3Dao dao;
     private final OperacoesBloqueadasYaml operacoesBloqueadas;
     private final PneuCadastroMapper pneuCadastroMapper;
@@ -40,16 +45,23 @@ public class PneuV3Service {
 
     @NotNull
     @Transactional
-    public PneuEntity insert(@NotNull final PneuCadastroDto pneuCadastroDto) {
-        final PneuEntity pneu = this.pneuCadastroMapper.toEntity(pneuCadastroDto);
-        this.operacoesBloqueadas.validateEmpresa(pneu.getCodEmpresa());
-        this.operacoesBloqueadas.validateUnidade(pneu.getCodUnidade());
-        validatePneuToInsert(pneu);
-        final PneuEntity savedPneu = this.dao.save(pneu);
-        if (savedPneu.isRecapado()) {
-            this.pneuServicoV3Service.createServicoByPneu(savedPneu, pneuCadastroDto.getCustoAquisicaoBanda());
+    public SuccessResponse insert(@NotNull final PneuCadastroDto pneuCadastroDto) {
+        try {
+            final PneuEntity pneu = this.pneuCadastroMapper.toEntity(pneuCadastroDto);
+            this.operacoesBloqueadas.validateEmpresa(pneu.getCodEmpresa());
+            this.operacoesBloqueadas.validateUnidade(pneu.getCodUnidade());
+            validatePneuToInsert(pneu);
+            final PneuEntity savedPneu = this.dao.save(pneu);
+            if (savedPneu.isRecapado()) {
+                this.pneuServicoV3Service.createServicoByPneu(savedPneu, pneuCadastroDto.getCustoAquisicaoBanda());
+            }
+            return new SuccessResponse(savedPneu.getId(), "Pneu inserido com sucesso.");
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao inserir pneu.", t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao inserir pneu, tente novamente.");
         }
-        return savedPneu;
     }
 
     private void validatePneuToInsert(@NotNull final PneuEntity pneu) {
