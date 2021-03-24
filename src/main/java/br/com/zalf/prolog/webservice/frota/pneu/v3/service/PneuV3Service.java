@@ -28,7 +28,7 @@ public class PneuV3Service {
     }
 
     @NotNull
-    public PneuEntity create(@NotNull final PneuEntity pneu) {
+    public PneuEntity insert(@NotNull final PneuEntity pneu) {
         this.operacoesBloqueadas.validateEmpresa(pneu.getCodEmpresa());
         this.operacoesBloqueadas.validateUnidade(pneu.getCodUnidade());
         validatePneuToInsert(pneu);
