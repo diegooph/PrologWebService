@@ -33,7 +33,6 @@ import java.net.URI;
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class PneuV3Resource implements PneuV3ApiDoc {
 
-    private static final String TAG = PneuV3Resource.class.getSimpleName();
 
     private final PneuV3Service service;
     private final PneuServicoV3Service pneuServicoV3Service;
