@@ -2,6 +2,8 @@ package test.br.com.zalf.prolog.webservice.pilares.frota.pneu.v3;
 
 import br.com.zalf.prolog.webservice.frota.pneu.v3._model.dto.PneuCadastroDto;
 
+import java.math.BigDecimal;
+
 /**
  * Created on 2021-03-16
  *
@@ -10,18 +12,18 @@ import br.com.zalf.prolog.webservice.frota.pneu.v3._model.dto.PneuCadastroDto;
 public class PneuCadastroFactory {
 
     public static PneuCadastroDto createCorrectPneuCadastro() {
-        return PneuCadastroDto.of(5L,
-                                  3L,
+        return PneuCadastroDto.of(3L,
+                                  5L,
                                   "teste04",
                                   28L,
-                                  9L,
-                                  100.00,
-                                  18L,
+                                  10L,
                                   2,
                                   3,
                                   100.00,
                                   "0001",
-                                  1500.00,
-                                  false);
+                                  new BigDecimal("1500"),
+                                  false,
+                                  9L,
+                                  new BigDecimal("100"));
     }
 }
