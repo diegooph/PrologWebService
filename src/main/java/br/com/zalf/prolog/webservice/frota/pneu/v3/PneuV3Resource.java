@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.v3;
 
+import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
 import br.com.zalf.prolog.webservice.frota.pneu.v3._model.PneuEntity;
 import br.com.zalf.prolog.webservice.frota.pneu.v3._model.dto.PneuCadastroDto;
 import br.com.zalf.prolog.webservice.frota.pneu.v3.service.PneuV3Service;
@@ -45,11 +46,7 @@ public class PneuV3Resource implements PneuV3ApiDoc {
     @Secured(permissions = Pilares.Frota.Pneu.CADASTRAR)
     @Override
     @NotNull
-    public Response insert(@Valid @NotNull final PneuCadastroDto pneuCadastro) {
-        final PneuEntity savedPneu = this.service.insert(pneuCadastro);
-        return Response
-                .created(URI.create("/v3/pneus/" + savedPneu.getId()))
-                .header("Location-id", savedPneu.getId().toString())
-                .build();
+    public SuccessResponse insert(@Valid @NotNull final PneuCadastroDto pneuCadastro) {
+        return this.service.insert(pneuCadastro);
     }
 }
