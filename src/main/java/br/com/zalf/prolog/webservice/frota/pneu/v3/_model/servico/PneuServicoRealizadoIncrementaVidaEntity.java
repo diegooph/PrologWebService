@@ -26,6 +26,17 @@ public class PneuServicoRealizadoIncrementaVidaEntity {
     @Column(name = "cod_modelo_banda", nullable = false)
     private Long codModeloBanda;
 
+    public static PneuServicoRealizadoIncrementaVidaEntity createFromPneuServico(final PneuServicoRealizadoEntity pneuServico) {
+        final PneuServicoRealizadoIncrementaVidaEntity.Id id = PneuServicoRealizadoIncrementaVidaEntity.Id.builder()
+                .servico(pneuServico)
+                .build();
+        return PneuServicoRealizadoIncrementaVidaEntity.builder()
+                .id(id)
+                .codModeloBanda(pneuServico.getPneu().getCodModeloBanda())
+                .vidaNova(pneuServico.getPneu().getVidaAtual())
+                .build();
+    }
+
     @Embeddable
     @Builder
     @Getter

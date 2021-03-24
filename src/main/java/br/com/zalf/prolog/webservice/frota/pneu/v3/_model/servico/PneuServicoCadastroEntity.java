@@ -43,6 +43,15 @@ public class PneuServicoCadastroEntity {
         }, foreignKey = @ForeignKey(name = "fk_pneu_servico_cadastro_pneu_servico_realizado",
                                     value = ConstraintMode.CONSTRAINT))
         private PneuServicoRealizadoEntity servico;
+    }
 
+    public static PneuServicoCadastroEntity createFromPneuServico(final PneuServicoRealizadoEntity pneuServico) {
+        final PneuServicoCadastroEntity.Id id = PneuServicoCadastroEntity.Id.builder()
+                .pneu(pneuServico.getPneu())
+                .servico(pneuServico)
+                .build();
+        return PneuServicoCadastroEntity.builder()
+                .id(id)
+                .build();
     }
 }
