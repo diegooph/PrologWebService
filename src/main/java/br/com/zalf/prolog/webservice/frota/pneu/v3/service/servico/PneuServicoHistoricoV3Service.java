@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.pneu.v3.service.servico;
 
 import br.com.zalf.prolog.webservice.frota.pneu.v3._model.servico.PneuServicoEntity;
-import br.com.zalf.prolog.webservice.frota.pneu.v3._model.servico.PneuServicoHistoricoCadastroEntity;
+import br.com.zalf.prolog.webservice.frota.pneu.v3._model.servico.PneuServicoCadastroEntity;
 import br.com.zalf.prolog.webservice.frota.pneu.v3._model.servico.PneuServicoHistoricoVidaEntity;
 import br.com.zalf.prolog.webservice.frota.pneu.v3.dao.servico.ServicoHistoricoCadastroV3Dao;
 import br.com.zalf.prolog.webservice.frota.pneu.v3.dao.servico.ServicoHistoricoVidaV3Dao;
@@ -52,12 +52,12 @@ public class PneuServicoHistoricoV3Service {
         return fonteServico.equals(PneuServicoEntity.FonteServico.CADASTRO);
     }
 
-    private PneuServicoHistoricoCadastroEntity createHistoricoCadastro(final PneuServicoEntity pneuServico) {
-        final PneuServicoHistoricoCadastroEntity.Id id = PneuServicoHistoricoCadastroEntity.Id.builder()
+    private PneuServicoCadastroEntity createHistoricoCadastro(final PneuServicoEntity pneuServico) {
+        final PneuServicoCadastroEntity.Id id = PneuServicoCadastroEntity.Id.builder()
                 .pneu(pneuServico.getPneu())
                 .servico(pneuServico)
                 .build();
-        return PneuServicoHistoricoCadastroEntity.builder()
+        return PneuServicoCadastroEntity.builder()
                 .id(id)
                 .build();
     }
