@@ -1,7 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.v3._model.servico;
 
 import br.com.zalf.prolog.webservice.database._model.BaseEntity;
-import br.com.zalf.prolog.webservice.database._model.DadosDelecao;
 import br.com.zalf.prolog.webservice.frota.pneu.v3._model.PneuEntity;
 import br.com.zalf.prolog.webservice.frota.pneu.v3._model.servico.converters.FonteServicoPneuConverter;
 import lombok.*;
@@ -55,17 +54,6 @@ public class PneuServicoEntity extends BaseEntity {
     @Convert(converter = FonteServicoPneuConverter.class)
     @Column(name = "fonte_servico_realizado", nullable = false, length = 20)
     private FonteServico fonteServico;
-
-    @Embedded
-    @AttributeOverrides(value = {
-            @AttributeOverride(name = "deletado", column = @Column(name = "deletado",
-                                                                   columnDefinition = "boolean default false",
-                                                                   nullable = false)),
-            @AttributeOverride(name = "data", column = @Column(name = "data_hora_deletado")),
-            @AttributeOverride(name = "username", column = @Column(name = "pg_username_delecao")),
-            @AttributeOverride(name = "motivo", column = @Column(name = "motivo_delecao"))
-    })
-    private DadosDelecao dadosDelecao;
 
     @AllArgsConstructor
     @Getter

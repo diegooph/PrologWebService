@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.frota.pneu.v3.service.servico;
 
-import br.com.zalf.prolog.webservice.database._model.DadosDelecao;
 import br.com.zalf.prolog.webservice.frota.pneu.v3._model.servico.PneuServicoEntity;
 import br.com.zalf.prolog.webservice.frota.pneu.v3._model.servico.PneuServicoHistoricoCadastroEntity;
 import br.com.zalf.prolog.webservice.frota.pneu.v3._model.servico.PneuServicoHistoricoVidaEntity;
@@ -47,7 +46,6 @@ public class PneuServicoHistoricoV3ServiceImpl implements PneuServicoHistoricoV3
                 .id(id)
                 .codModeloBanda(pneuServico.getPneu().getCodModeloBanda())
                 .vidaNova(pneuServico.getPneu().getVidaAtual())
-                .dadosDelecao(DadosDelecao.createDefaultDadosDelecao())
                 .build();
     }
 
@@ -62,7 +60,6 @@ public class PneuServicoHistoricoV3ServiceImpl implements PneuServicoHistoricoV3
                 .build();
         return PneuServicoHistoricoCadastroEntity.builder()
                 .id(id)
-                .dadosDelecao(DadosDelecao.createDefaultDadosDelecao())
                 .build();
     }
 }

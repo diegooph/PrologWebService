@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.frota.pneu.v3.service.servico;
 
-import br.com.zalf.prolog.webservice.database._model.DadosDelecao;
 import br.com.zalf.prolog.webservice.frota.pneu.v3._model.PneuEntity;
 import br.com.zalf.prolog.webservice.frota.pneu.v3._model.servico.PneuServicoEntity;
 import br.com.zalf.prolog.webservice.frota.pneu.v3._model.servico.PneuTipoServicoEntity;
@@ -57,7 +56,6 @@ public class PneuServicoV3ServiceImpl implements PneuServicoV3Service {
                 .vida(getVidaServicoFromPneu(pneu))
                 .custo(BigDecimal.valueOf(custoAquisicaoBanda))
                 .fonteServico(PneuServicoEntity.FonteServico.CADASTRO)
-                .dadosDelecao(DadosDelecao.createDefaultDadosDelecao())
                 .build();
     }
 

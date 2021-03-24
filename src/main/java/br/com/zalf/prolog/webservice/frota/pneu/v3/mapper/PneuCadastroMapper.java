@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.frota.pneu.v3.mapper;
 
-import br.com.zalf.prolog.webservice.database._model.DadosDelecao;
 import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.v3._model.PneuEntity;
 import br.com.zalf.prolog.webservice.frota.pneu.v3._model.dto.PneuCadastroDto;
@@ -36,7 +35,6 @@ public class PneuCadastroMapper implements PneuMapper<PneuEntity, PneuCadastroDt
                 .codCliente(dto.getCodigoCliente())
                 .codUnidade(dto.getCodUnidadePneu())
                 .codEmpresa(dto.getCodEmpresa())
-                .dadosDelecao(DadosDelecao.createDefaultDadosDelecao())
                 .status(StatusPneu.ESTOQUE)
                 .origemCadastro(OrigemAcaoEnum.API)
                 .codModelo(dto.getCodModeloPneu())

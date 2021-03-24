@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.frota.pneu.v3._model.servico;
 
-import br.com.zalf.prolog.webservice.database._model.DadosDelecao;
 import lombok.*;
 
 import javax.persistence.*;
@@ -26,18 +25,6 @@ public class PneuServicoHistoricoVidaEntity {
 
     @Column(name = "cod_modelo_banda", nullable = false)
     private Long codModeloBanda;
-
-    @Embedded
-    @AttributeOverrides(value = {
-            @AttributeOverride(name = "deletado", column = @Column(name = "deletado",
-                                                                   columnDefinition = "boolean " +
-                                                                           "default false",
-                                                                   nullable = false)),
-            @AttributeOverride(name = "data", column = @Column(name = "data_hora_deletado")),
-            @AttributeOverride(name = "username", column = @Column(name = "pg_username_delecao")),
-            @AttributeOverride(name = "motivo", column = @Column(name = "motivo_delecao"))
-    })
-    private DadosDelecao dadosDelecao;
 
     @Embeddable
     @Builder

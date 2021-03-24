@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.frota.pneu.v3._model.servico;
 
-import br.com.zalf.prolog.webservice.database._model.DadosDelecao;
 import br.com.zalf.prolog.webservice.frota.pneu.v3._model.PneuEntity;
 import lombok.*;
 
