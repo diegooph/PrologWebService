@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
  * @author Guilherme Steinert (https://github.com/steinert999)
  */
 @Entity
-@Table(name = "pneu_data", schema = "public")
+@Table(name = "pneu", schema = "public")
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor

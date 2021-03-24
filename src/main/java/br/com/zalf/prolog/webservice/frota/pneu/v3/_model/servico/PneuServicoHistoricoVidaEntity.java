@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @author Guilherme Steinert (https://github.com/steinert999)
  */
 @Entity
-@Table(name = "pneu_servico_realizado_incrementa_vida_data", schema = "public")
+@Table(name = "pneu_servico_realizado_incrementa_vida", schema = "public")
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor

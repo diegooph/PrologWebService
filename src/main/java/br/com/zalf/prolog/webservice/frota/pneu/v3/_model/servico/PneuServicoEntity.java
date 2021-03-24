@@ -18,7 +18,7 @@ import java.util.stream.Stream;
  */
 @EqualsAndHashCode(callSuper = true)
 @Entity
-@Table(name = "pneu_servico_realizado_data", schema = "public")
+@Table(name = "pneu_servico_realizado", schema = "public")
 @Builder
 @Getter
 @AllArgsConstructor
