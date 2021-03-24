@@ -15,7 +15,7 @@ import java.io.Serializable;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PneuServicoHistoricoVidaEntity {
+public class PneuServicoRealizadoIncrementaVidaEntity {
 
     @EmbeddedId
     private Id id;
