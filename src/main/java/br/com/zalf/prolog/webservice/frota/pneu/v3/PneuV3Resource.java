@@ -36,13 +36,10 @@ public class PneuV3Resource implements PneuV3ApiDoc {
 
 
     private final PneuV3Service service;
-    private final PneuServicoV3Service pneuServicoV3Service;
 
     @Autowired
-    public PneuV3Resource(@NotNull final PneuV3Service service,
-                          @NotNull final PneuServicoV3Service pneuServicoService) {
+    public PneuV3Resource(@NotNull final PneuV3Service service) {
         this.service = service;
-        this.pneuServicoV3Service = pneuServicoService;
     }
 
     @POST
@@ -52,9 +49,6 @@ public class PneuV3Resource implements PneuV3ApiDoc {
     @NotNull
     public Response insert(@Valid @NotNull final PneuCadastroDto pneuCadastro) {
         final PneuEntity savedPneu = this.service.insert(pneuCadastro);
-        if (savedPneu.getVidaAtual() > 1) {
-            this.pneuServicoV3Service.createServicoByPneu(savedPneu, pneuCadastro.getCustoAquisicaoBanda());
-        }
         return Response
                 .created(URI.create("/v3/pneus/" + savedPneu.getId()))
                 .header("Location-id", savedPneu.getId().toString())

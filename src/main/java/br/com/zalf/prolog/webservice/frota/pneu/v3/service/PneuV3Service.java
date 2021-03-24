@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.v3._model.PneuEntity;
 import br.com.zalf.prolog.webservice.frota.pneu.v3._model.dto.PneuCadastroDto;
 import br.com.zalf.prolog.webservice.frota.pneu.v3.dao.PneuV3Dao;
 import br.com.zalf.prolog.webservice.frota.pneu.v3.mapper.PneuMapper;
+import br.com.zalf.prolog.webservice.frota.pneu.v3.service.servico.PneuServicoV3Service;
 import br.com.zalf.prolog.webservice.interceptors.v3.OperacoesBloqueadasYaml;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,14 +24,17 @@ public class PneuV3Service {
     private final PneuV3Dao dao;
     private final OperacoesBloqueadasYaml operacoesBloqueadas;
     private final PneuMapper<PneuEntity, PneuCadastroDto> pneuCadastroMapper;
+    private final PneuServicoV3Service pneuServicoV3Service;
 
     @Autowired
     public PneuV3Service(@NotNull final PneuV3Dao dao,
                          @NotNull final OperacoesBloqueadasYaml operacoesBloqueadas,
-                         @NotNull final PneuMapper<PneuEntity, PneuCadastroDto> pneuCadastroMapper) {
+                         @NotNull final PneuMapper<PneuEntity, PneuCadastroDto> pneuCadastroMapper,
+                         @NotNull final  PneuServicoV3Service pneuServicoV3Service) {
         this.dao = dao;
         this.operacoesBloqueadas = operacoesBloqueadas;
         this.pneuCadastroMapper = pneuCadastroMapper;
+        this.pneuServicoV3Service = pneuServicoV3Service;
     }
 
     @NotNull
@@ -39,7 +43,11 @@ public class PneuV3Service {
         this.operacoesBloqueadas.validateEmpresa(pneu.getCodEmpresa());
         this.operacoesBloqueadas.validateUnidade(pneu.getCodUnidade());
         validatePneuToInsert(pneu);
-        return this.dao.save(pneu);
+        final PneuEntity savedPneu = this.dao.save(pneu);
+        if (savedPneu.isRecapado()) {
+            this.pneuServicoV3Service.createServicoByPneu(savedPneu, pneuCadastroDto.getCustoAquisicaoBanda());
+        }
+        return savedPneu;
     }
 
     private void validatePneuToInsert(@NotNull final PneuEntity pneu) {
