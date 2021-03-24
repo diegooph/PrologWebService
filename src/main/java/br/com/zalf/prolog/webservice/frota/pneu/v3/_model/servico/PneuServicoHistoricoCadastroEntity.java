@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @author Guilherme Steinert (https://github.com/steinert999)
  */
 @Entity
-@Table(name = "pneu_servico_cadastro_data", schema = "public")
+@Table(name = "pneu_servico_cadastro", schema = "public")
 @Builder
 @Getter
 @AllArgsConstructor
@@ -21,18 +21,6 @@ public class PneuServicoHistoricoCadastroEntity {
 
     @EmbeddedId
     private Id id;
-
-    @Embedded
-    @AttributeOverrides(value = {
-            @AttributeOverride(name = "deletado", column = @Column(name = "deletado",
-                                                                   columnDefinition = "boolean default false",
-                                                                   nullable = false)),
-            @AttributeOverride(name = "data", column = @Column(name = "data_hora_deletado")),
-            @AttributeOverride(name = "username", column = @Column(name = "pg_username_delecao")),
-            @AttributeOverride(name = "motivo", column = @Column(name = "motivo_delecao"))
-    })
-    private DadosDelecao dadosDelecao;
-
 
     @Embeddable
     @Builder
