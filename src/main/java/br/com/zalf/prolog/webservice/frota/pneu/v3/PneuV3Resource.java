@@ -13,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import javax.validation.Valid;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -52,7 +53,7 @@ public class PneuV3Resource implements PneuV3ApiDoc {
     @Secured(permissions = Pilares.Frota.Pneu.CADASTRAR)
     @Override
     @NotNull
-    public Response insert(@NotNull final PneuCadastroDto pneuCadastro) {
+    public Response insert(@Valid @NotNull final PneuCadastroDto pneuCadastro) {
         final PneuEntity dtoConvertedToEntity = this.pneuCadastroMapper.toEntity(pneuCadastro);
         final PneuEntity savedPneu = this.service.create(dtoConvertedToEntity);
         if (savedPneu.getVidaAtual() > 1) {
