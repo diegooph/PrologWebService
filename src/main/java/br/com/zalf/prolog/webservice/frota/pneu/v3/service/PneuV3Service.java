@@ -53,7 +53,7 @@ public class PneuV3Service {
             validatePneuToInsert(pneu);
             final PneuEntity savedPneu = this.dao.save(pneu);
             if (savedPneu.isRecapado()) {
-                this.pneuServicoV3Service.createServicoByPneu(savedPneu, pneuCadastroDto.getCustoAquisicaoBanda());
+                this.pneuServicoV3Service.createServicoByPneu(savedPneu, pneuCadastroDto.getValorBandaPneu());
             }
             return new SuccessResponse(savedPneu.getId(), "Pneu inserido com sucesso.");
         } catch (final Throwable t) {

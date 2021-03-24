@@ -42,7 +42,7 @@ public class PneuServicoV3Service {
     @NotNull
     @Transactional
     public PneuServicoRealizadoEntity createServicoByPneu(@NotNull final PneuEntity pneuEntity,
-                                                          @NotNull final Double custoAquisicaoBanda) {
+                                                          @NotNull final BigDecimal valorBanda) {
 
         final var tipoServico = this.tipoServicoService.getInitialTipoServicoForVidaIncrementada();
         final var savedPneuServico = this.dao.save(createPneuServicoForCadastro(tipoServico,
