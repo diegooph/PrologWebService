@@ -26,6 +26,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoDad
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoVisualizacao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoVisualizacaoPneu;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculosAcopladosVisualizacao;
+import br.com.zalf.prolog.webservice.frota.veiculo.v3._model.VeiculoCadastroDto;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -43,7 +44,7 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
     }
 
     @Override
-    public void insert(@NotNull final VeiculoCadastro veiculo,
+    public void insert(@NotNull final VeiculoCadastroDto veiculo,
                        @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener)
             throws Throwable {
         Connection conn = null;

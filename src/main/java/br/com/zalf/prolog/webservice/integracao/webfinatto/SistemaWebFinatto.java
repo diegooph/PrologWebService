@@ -14,6 +14,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.EixoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.listagem.VeiculoListagem;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoDadosColetaKm;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoVisualizacao;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Empresa;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoPosicaoPneuMapper;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
@@ -467,6 +468,10 @@ public class SistemaWebFinatto extends Sistema {
         try {
             conn = connectionProvider.provideDatabaseConnection();
             final List<Empresa> filtrosProlog = super.getFiltros(cpf);
+            final Colaborador byToken = Injection.provideColaboradorDao().getByToken(getUserToken());
+            if (SistemaWebFinattoUtils.isUnidadeMasterProlog(byToken.getCodUnidade())) {
+                return filtrosProlog;
+            }
             final List<Long> codUnidadesProlog = SistemaWebFinattoUtils.getCodUnidadesFiltroProlog(filtrosProlog);
             final UnidadeDeParaHolder unidadeDeParaHolder =
                     integracaoDao.getCodAuxiliarByCodUnidadeProlog(conn, codUnidadesProlog);

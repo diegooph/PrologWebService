@@ -7,7 +7,6 @@ import okhttp3.*;
 import okio.Buffer;
 import okio.BufferedSource;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -18,9 +17,6 @@ import java.nio.charset.StandardCharsets;
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
 public final class OkHttpLogInterceptor implements Interceptor {
-    @Nullable
-    private KeyCaseInsensitiveMultivaluedMap<String, String> processedHeaders;
-
     @NotNull
     @Override
     public Response intercept(final Chain chain) throws IOException {
@@ -64,13 +60,9 @@ public final class OkHttpLogInterceptor implements Interceptor {
 
     @NotNull
     private KeyCaseInsensitiveMultivaluedMap<String, String> getHeaders(@NotNull final Headers headers) {
-        if (processedHeaders == null) {
-            final KeyCaseInsensitiveMultivaluedMap<String, String> headersMap =
-                    new KeyCaseInsensitiveMultivaluedMap<>();
-            headers.toMultimap().forEach(headersMap::put);
-            processedHeaders = headersMap;
-        }
-        return processedHeaders;
+        final KeyCaseInsensitiveMultivaluedMap<String, String> headersMap = new KeyCaseInsensitiveMultivaluedMap<>();
+        headers.toMultimap().forEach(headersMap::put);
+        return headersMap;
     }
 
     @NotNull

@@ -8,7 +8,6 @@ import br.com.zalf.prolog.webservice.frota.pneu.nomenclatura.PneuNomenclaturaSer
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.VeiculoCadastro;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculoNomenclatura;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculoPosicaoNomenclatura;
@@ -17,6 +16,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicaoSta
 import br.com.zalf.prolog.webservice.frota.veiculo.model.listagem.VeiculoListagem;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoDadosColetaKm;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoVisualizacao;
+import br.com.zalf.prolog.webservice.frota.veiculo.v3._model.VeiculoCadastroDto;
 import br.com.zalf.prolog.webservice.frota.veiculo.validator.VeiculoValidator;
 import br.com.zalf.prolog.webservice.integracao.router.RouterVeiculo;
 import org.jetbrains.annotations.NotNull;
@@ -105,7 +105,7 @@ public final class VeiculoService {
 
     @NotNull
     public Response insert(@NotNull final String userToken,
-                           @NotNull final VeiculoCadastro veiculo) throws ProLogException {
+                           @NotNull final VeiculoCadastroDto veiculo) throws ProLogException {
         try {
             VeiculoValidator.validacaoAtributosVeiculo(veiculo);
             RouterVeiculo

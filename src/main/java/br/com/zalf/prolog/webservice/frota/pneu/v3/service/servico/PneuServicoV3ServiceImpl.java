@@ -5,7 +5,6 @@ import br.com.zalf.prolog.webservice.frota.pneu.v3._model.PneuEntity;
 import br.com.zalf.prolog.webservice.frota.pneu.v3._model.servico.PneuServicoEntity;
 import br.com.zalf.prolog.webservice.frota.pneu.v3._model.servico.PneuTipoServicoEntity;
 import br.com.zalf.prolog.webservice.frota.pneu.v3.dao.servico.PneuServicoV3Dao;
-import lombok.var;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,6 +38,7 @@ public class PneuServicoV3ServiceImpl implements PneuServicoV3Service {
     @Transactional
     public PneuServicoEntity createServicoByPneu(@NotNull final PneuEntity pneuEntity,
                                                  @NotNull final Double custoAquisicaoBanda) {
+
         final var tipoServico = this.tipoServicoService.getInitialTipoServicoForVidaIncrementada();
         final var savedPneuServico = this.dao.save(createPneuServicoForCadastro(tipoServico,
                                                                                                     pneuEntity,

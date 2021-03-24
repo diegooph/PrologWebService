@@ -38,7 +38,6 @@ import br.com.zalf.prolog.webservice.frota.pneu.transferencia._model.realizacao.
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.VeiculoCadastro;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.InfosVeiculoEditado;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicao;
@@ -48,6 +47,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoVis
 import br.com.zalf.prolog.webservice.frota.veiculo.tipoveiculo.TipoVeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.VeiculoTransferenciaDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.ProcessoTransferenciaVeiculoRealizacao;
+import br.com.zalf.prolog.webservice.frota.veiculo.v3._model.VeiculoCadastroDto;
 import br.com.zalf.prolog.webservice.gente.colaborador.ColaboradorDao;
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Empresa;
@@ -265,7 +265,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
 
     @Override
     public void insert(
-            @NotNull final VeiculoCadastro veiculo,
+            @NotNull final VeiculoCadastroDto veiculo,
             @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
         if (veiculoDao == null) {
             veiculoDao = Injection.provideVeiculoDao();

@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.integracao.praxio.data;
 
 import br.com.zalf.prolog.webservice.integracao.praxio.movimentacao.GlobusPiccoloturLocalMovimentoResponse;
 import br.com.zalf.prolog.webservice.integracao.praxio.movimentacao.ProcessoMovimentacaoGlobus;
-import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap.OrdemDeServicoCorretivaPrologVO;
+import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap.OrdemServicoHolderDto;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -18,11 +18,11 @@ public interface GlobusPiccoloturRequester {
      * Só serão enviados os itens que devem abrir um Ordem de Serviço dentro do Globus. Itens que já possuem uma O.S não
      * serão enviados, para estes, apenas será incrementado a quantidade de apontamentos.
      *
-     * @param ordemDeServicoCorretivaPrologVO Objeto que encapsula as informações para enviar ao endpoint do Globus.
+     * @param ordemServico Objeto que encapsula as informações para enviar ao endpoint do Globus.
      * @return O código da Ordem de Serviço que foi criada no Globus.
      */
     @NotNull
-    Long insertItensNok(@NotNull final OrdemDeServicoCorretivaPrologVO ordemDeServicoCorretivaPrologVO);
+    Long insertItensNok(@NotNull final OrdemServicoHolderDto ordemServico) throws Throwable;
 
     @NotNull
     GlobusPiccoloturAutenticacaoResponse getTokenAutenticacaoIntegracao(
