@@ -37,15 +37,12 @@ public class PneuV3Resource implements PneuV3ApiDoc {
 
     private final PneuV3Service service;
     private final PneuServicoV3Service pneuServicoV3Service;
-    private final PneuMapper<PneuEntity, PneuCadastroDto> pneuCadastroMapper;
 
     @Autowired
     public PneuV3Resource(@NotNull final PneuV3Service service,
-                          @NotNull final PneuServicoV3Service pneuServicoService,
-                          @NotNull final PneuMapper<PneuEntity, PneuCadastroDto> pneuCadastroMapper) {
+                          @NotNull final PneuServicoV3Service pneuServicoService) {
         this.service = service;
         this.pneuServicoV3Service = pneuServicoService;
-        this.pneuCadastroMapper = pneuCadastroMapper;
     }
 
     @POST
