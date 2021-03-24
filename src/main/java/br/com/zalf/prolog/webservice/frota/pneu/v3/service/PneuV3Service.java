@@ -12,6 +12,7 @@ import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityExistsException;
+import javax.transaction.Transactional;
 
 /**
  * Created on 2021-03-12
@@ -38,6 +39,7 @@ public class PneuV3Service {
     }
 
     @NotNull
+    @Transactional
     public PneuEntity insert(@NotNull final PneuCadastroDto pneuCadastroDto) {
         final PneuEntity pneu = this.pneuCadastroMapper.toEntity(pneuCadastroDto);
         this.operacoesBloqueadas.validateEmpresa(pneu.getCodEmpresa());
