@@ -5,6 +5,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.v3._model.dto.PneuCadastroDto;
 import br.com.zalf.prolog.webservice.frota.pneu.v3.mapper.PneuMapper;
 import br.com.zalf.prolog.webservice.frota.pneu.v3.service.PneuV3Service;
 import br.com.zalf.prolog.webservice.frota.pneu.v3.service.servico.PneuServicoV3Service;
+import br.com.zalf.prolog.webservice.interceptors.ApiExposed;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
@@ -48,6 +49,7 @@ public class PneuV3Resource implements PneuV3ApiDoc {
     }
 
     @POST
+    @ApiExposed
     @Secured(permissions = Pilares.Frota.Pneu.CADASTRAR)
     @Override
     @NotNull
