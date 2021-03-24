@@ -26,17 +26,17 @@ public class PneuCadastroMapper {
                 .pressao(getPressao(dto))
                 .codDimensao(dto.getCodDimensaoPneu())
                 .codCliente(dto.getCodigoCliente())
-                .codUnidade(dto.getCodUnidadePneu())
-                .codEmpresa(dto.getCodEmpresa())
+                .codUnidade(dto.getCodUnidadeAlocado())
+                .codEmpresa(dto.getCodEmpresaAlocado())
                 .status(StatusPneu.ESTOQUE)
                 .origemCadastro(OrigemAcaoEnum.API)
                 .codModelo(dto.getCodModeloPneu())
                 .codModeloBanda(dto.getCodModeloBanda())
                 .vidaAtual(dto.getVidaAtualPneu())
                 .vidaTotal(dto.getVidaTotalPneu())
-                .valor(BigDecimal.valueOf(dto.getValorPneu()))
+                .valor(dto.getValorPneu())
                 .dot(dto.getDotPneu())
-                .usado(dto.getPneuNovoNuncaUsado())
+                .usado(dto.getPneuNovoNuncaRodado())
                 .build();
 
     }
@@ -51,7 +51,7 @@ public class PneuCadastroMapper {
     @NotNull
     private PneuEntity.DadosCadastro getDadosCadastro(@NotNull final PneuCadastroDto dto) {
         return PneuEntity.DadosCadastro.builder()
-                .codUnidade(dto.getCodUnidadePneu())
+                .codUnidade(dto.getCodUnidadeAlocado())
                 .dataInclusao(LocalDateTime.now())
                 .build();
     }
