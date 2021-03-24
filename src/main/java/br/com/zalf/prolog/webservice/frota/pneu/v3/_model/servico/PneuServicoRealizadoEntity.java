@@ -22,7 +22,7 @@ import java.util.stream.Stream;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class PneuServicoEntity extends BaseEntity {
+public class PneuServicoRealizadoEntity extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY,
                targetEntity = PneuTipoServicoEntity.class)

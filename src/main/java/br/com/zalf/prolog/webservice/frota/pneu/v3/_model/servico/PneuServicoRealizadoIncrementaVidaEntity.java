@@ -35,12 +35,12 @@ public class PneuServicoRealizadoIncrementaVidaEntity {
     public static class Id implements Serializable {
 
         @OneToOne(fetch = FetchType.LAZY,
-                  targetEntity = PneuServicoEntity.class)
+                  targetEntity = PneuServicoRealizadoEntity.class)
         @JoinColumns(value = {
                 @JoinColumn(name = "cod_servico_realizado", referencedColumnName = "codigo"),
                 @JoinColumn(name = "fonte_servico_realizado", referencedColumnName = "fonte_servico_realizado")
         }, foreignKey = @ForeignKey(name = "fk_servico_realizado_incrementa_vida_pneu",
                                     value = ConstraintMode.CONSTRAINT))
-        private PneuServicoEntity servico;
+        private PneuServicoRealizadoEntity servico;
     }
 }

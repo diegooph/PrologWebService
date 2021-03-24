@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.pneu.v3.service.servico;
 
 import br.com.zalf.prolog.webservice.frota.pneu.v3._model.PneuEntity;
-import br.com.zalf.prolog.webservice.frota.pneu.v3._model.servico.PneuServicoEntity;
+import br.com.zalf.prolog.webservice.frota.pneu.v3._model.servico.PneuServicoRealizadoEntity;
 import br.com.zalf.prolog.webservice.frota.pneu.v3._model.servico.PneuTipoServicoEntity;
 import br.com.zalf.prolog.webservice.frota.pneu.v3.dao.servico.PneuServicoV3Dao;
 import org.jetbrains.annotations.NotNull;
@@ -34,8 +34,8 @@ public class PneuServicoV3Service {
 
     @NotNull
     @Transactional
-    public PneuServicoEntity createServicoByPneu(@NotNull final PneuEntity pneuEntity,
-                                                 @NotNull final Double custoAquisicaoBanda) {
+    public PneuServicoRealizadoEntity createServicoByPneu(@NotNull final PneuEntity pneuEntity,
+                                                          @NotNull final Double custoAquisicaoBanda) {
 
         final var tipoServico = this.tipoServicoService.getInitialTipoServicoForVidaIncrementada();
         final var savedPneuServico = this.dao.save(createPneuServicoForCadastro(tipoServico,
@@ -45,16 +45,16 @@ public class PneuServicoV3Service {
         return savedPneuServico;
     }
 
-    private PneuServicoEntity createPneuServicoForCadastro(final PneuTipoServicoEntity pneuTipoServico,
-                                                           final PneuEntity pneu,
-                                                           final Double custoAquisicaoBanda) {
-        return PneuServicoEntity.builder()
+    private PneuServicoRealizadoEntity createPneuServicoForCadastro(final PneuTipoServicoEntity pneuTipoServico,
+                                                                    final PneuEntity pneu,
+                                                                    final Double custoAquisicaoBanda) {
+        return PneuServicoRealizadoEntity.builder()
                 .tipoServico(pneuTipoServico)
                 .codUnidade(pneu.getCodUnidade())
                 .pneu(pneu)
                 .vida(getVidaServicoFromPneu(pneu))
                 .custo(BigDecimal.valueOf(custoAquisicaoBanda))
-                .fonteServico(PneuServicoEntity.FonteServico.CADASTRO)
+                .fonteServico(PneuServicoRealizadoEntity.FonteServico.CADASTRO)
                 .build();
     }
 

@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.pneu.v3.service.servico;
 
-import br.com.zalf.prolog.webservice.frota.pneu.v3._model.servico.PneuServicoEntity;
+import br.com.zalf.prolog.webservice.frota.pneu.v3._model.servico.PneuServicoRealizadoEntity;
 import br.com.zalf.prolog.webservice.frota.pneu.v3._model.servico.PneuServicoCadastroEntity;
 import br.com.zalf.prolog.webservice.frota.pneu.v3._model.servico.PneuServicoRealizadoIncrementaVidaEntity;
 import br.com.zalf.prolog.webservice.frota.pneu.v3.dao.servico.ServicoHistoricoCadastroV3Dao;
@@ -30,14 +30,14 @@ public class PneuServicoHistoricoV3Service {
     }
 
     @Transactional
-    public void saveHistorico(@NotNull final PneuServicoEntity pneuServico) {
+    public void saveHistorico(@NotNull final PneuServicoRealizadoEntity pneuServico) {
         this.pneuServicoHistoricoVidaDao.save(createHistoricoVida(pneuServico));
         if (isCadastro(pneuServico.getFonteServico())) {
             this.pneuServicoHistoricoCadastroDao.save(createHistoricoCadastro(pneuServico));
         }
     }
 
-    private PneuServicoRealizadoIncrementaVidaEntity createHistoricoVida(final PneuServicoEntity pneuServico) {
+    private PneuServicoRealizadoIncrementaVidaEntity createHistoricoVida(final PneuServicoRealizadoEntity pneuServico) {
         final PneuServicoRealizadoIncrementaVidaEntity.Id id = PneuServicoRealizadoIncrementaVidaEntity.Id.builder()
                 .servico(pneuServico)
                 .build();
@@ -48,11 +48,11 @@ public class PneuServicoHistoricoV3Service {
                 .build();
     }
 
-    private boolean isCadastro(final PneuServicoEntity.FonteServico fonteServico) {
-        return fonteServico.equals(PneuServicoEntity.FonteServico.CADASTRO);
+    private boolean isCadastro(final PneuServicoRealizadoEntity.FonteServico fonteServico) {
+        return fonteServico.equals(PneuServicoRealizadoEntity.FonteServico.CADASTRO);
     }
 
-    private PneuServicoCadastroEntity createHistoricoCadastro(final PneuServicoEntity pneuServico) {
+    private PneuServicoCadastroEntity createHistoricoCadastro(final PneuServicoRealizadoEntity pneuServico) {
         final PneuServicoCadastroEntity.Id id = PneuServicoCadastroEntity.Id.builder()
                 .pneu(pneuServico.getPneu())
                 .servico(pneuServico)

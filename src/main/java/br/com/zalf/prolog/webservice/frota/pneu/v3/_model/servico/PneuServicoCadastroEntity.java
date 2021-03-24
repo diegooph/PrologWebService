@@ -36,13 +36,13 @@ public class PneuServicoCadastroEntity {
         private PneuEntity pneu;
 
         @OneToOne(fetch = FetchType.LAZY,
-                  targetEntity = PneuServicoEntity.class)
+                  targetEntity = PneuServicoRealizadoEntity.class)
         @JoinColumns(value = {
                 @JoinColumn(name = "cod_servico_realizado", referencedColumnName = "codigo"),
                 @JoinColumn(name = "fonte_servico_realizado", referencedColumnName = "fonte_servico_realizado")
         }, foreignKey = @ForeignKey(name = "fk_pneu_servico_cadastro_pneu_servico_realizado",
                                     value = ConstraintMode.CONSTRAINT))
-        private PneuServicoEntity servico;
+        private PneuServicoRealizadoEntity servico;
 
     }
 }
