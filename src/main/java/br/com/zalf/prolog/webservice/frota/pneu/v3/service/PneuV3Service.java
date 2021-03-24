@@ -16,7 +16,7 @@ import javax.persistence.EntityExistsException;
  * @author Guilherme Steinert (https://github.com/steinert999)
  */
 @Service
-public class PneuV3Service implements PneuV3Service {
+public class PneuV3Service {
 
     private final PneuV3Dao dao;
     private final OperacoesBloqueadasYaml operacoesBloqueadas;
@@ -27,7 +27,6 @@ public class PneuV3Service implements PneuV3Service {
         this.operacoesBloqueadas = operacoesBloqueadas;
     }
 
-    @Override
     @NotNull
     public PneuEntity create(@NotNull final PneuEntity pneu) {
         this.operacoesBloqueadas.validateEmpresa(pneu.getCodEmpresa());
