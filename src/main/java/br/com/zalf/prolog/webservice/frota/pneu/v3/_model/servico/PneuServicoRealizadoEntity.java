@@ -74,4 +74,8 @@ public class PneuServicoRealizadoEntity extends BaseEntity {
 
     }
 
+    public boolean isCadastro() {
+        return this.fonteServico.equals(FonteServico.CADASTRO);
+    }
+
 }
