@@ -3,7 +3,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.v3.service.servico;
 import br.com.zalf.prolog.webservice.frota.pneu.v3._model.PneuEntity;
 import br.com.zalf.prolog.webservice.frota.pneu.v3._model.servico.PneuServicoRealizadoEntity;
 import br.com.zalf.prolog.webservice.frota.pneu.v3._model.servico.PneuTipoServicoEntity;
-import br.com.zalf.prolog.webservice.frota.pneu.v3.dao.servico.PneuServicoV3Dao;
+import br.com.zalf.prolog.webservice.frota.pneu.v3.dao.servico.PneuServicoRealizadoV3Dao;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,12 +19,12 @@ import java.math.BigDecimal;
 @Service
 public class PneuServicoV3Service {
 
-    private final PneuServicoV3Dao dao;
+    private final PneuServicoRealizadoV3Dao dao;
     private final PneuTipoServicoV3Service tipoServicoService;
     private final PneuServicoHistoricoV3Service pneuServicoHistoricoService;
 
     @Autowired
-    public PneuServicoV3Service(@NotNull final PneuServicoV3Dao dao,
+    public PneuServicoV3Service(@NotNull final PneuServicoRealizadoV3Dao dao,
                                 @NotNull final PneuTipoServicoV3Service tipoServicoService,
                                 @NotNull final PneuServicoHistoricoV3Service pneuServicoHistoricoService) {
         this.dao = dao;
