@@ -10,6 +10,6 @@ import org.springframework.stereotype.Repository;
  * @author Guilherme Steinert (https://github.com/steinert999)
  */
 @Repository
-public interface ServicoHistoricoVidaV3Dao extends JpaRepository<PneuServicoRealizadoIncrementaVidaEntity,
+public interface PneuServicoRealizadoIncrementaVidaV3Dao extends JpaRepository<PneuServicoRealizadoIncrementaVidaEntity,
                                                                  PneuServicoRealizadoIncrementaVidaEntity.Id> {
 }

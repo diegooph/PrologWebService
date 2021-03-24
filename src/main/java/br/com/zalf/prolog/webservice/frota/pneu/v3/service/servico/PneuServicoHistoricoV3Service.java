@@ -4,7 +4,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.v3._model.servico.PneuServicoRea
 import br.com.zalf.prolog.webservice.frota.pneu.v3._model.servico.PneuServicoCadastroEntity;
 import br.com.zalf.prolog.webservice.frota.pneu.v3._model.servico.PneuServicoRealizadoIncrementaVidaEntity;
 import br.com.zalf.prolog.webservice.frota.pneu.v3.dao.servico.PneuServicoCadastroV3Dao;
-import br.com.zalf.prolog.webservice.frota.pneu.v3.dao.servico.ServicoHistoricoVidaV3Dao;
+import br.com.zalf.prolog.webservice.frota.pneu.v3.dao.servico.PneuServicoRealizadoIncrementaVidaV3Dao;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,11 +19,11 @@ import javax.transaction.Transactional;
 @Service
 public class PneuServicoHistoricoV3Service {
 
-    private final ServicoHistoricoVidaV3Dao pneuServicoHistoricoVidaDao;
+    private final PneuServicoRealizadoIncrementaVidaV3Dao pneuServicoHistoricoVidaDao;
     private final PneuServicoCadastroV3Dao pneuServicoHistoricoCadastroDao;
 
     @Autowired
-    public PneuServicoHistoricoV3Service(@NotNull final ServicoHistoricoVidaV3Dao pneuServicoHistoricoVidaDao,
+    public PneuServicoHistoricoV3Service(@NotNull final PneuServicoRealizadoIncrementaVidaV3Dao pneuServicoHistoricoVidaDao,
                                          @NotNull final PneuServicoCadastroV3Dao pneuServicoHistoricoCadastroDao) {
         this.pneuServicoHistoricoVidaDao = pneuServicoHistoricoVidaDao;
         this.pneuServicoHistoricoCadastroDao = pneuServicoHistoricoCadastroDao;
