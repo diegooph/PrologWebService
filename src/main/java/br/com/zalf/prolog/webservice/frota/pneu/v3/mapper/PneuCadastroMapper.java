@@ -17,15 +17,8 @@ import java.time.LocalDateTime;
  * @author Guilherme Steinert (https://github.com/steinert999)
  */
 @Component
-public class PneuCadastroMapper implements PneuMapper<PneuEntity, PneuCadastroDto> {
+public class PneuCadastroMapper {
 
-    @Override
-    @NotNull
-    public PneuCadastroDto toDto(@NotNull final PneuEntity entity) {
-        throw new NotImplementedException("Não há necessidade de implementação deste metodo.");
-    }
-
-    @Override
     @NotNull
     public PneuEntity toEntity(@NotNull final PneuCadastroDto dto) {
         return PneuEntity.builder()

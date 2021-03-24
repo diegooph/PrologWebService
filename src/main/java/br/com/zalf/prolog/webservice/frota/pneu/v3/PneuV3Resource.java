@@ -2,9 +2,7 @@ package br.com.zalf.prolog.webservice.frota.pneu.v3;
 
 import br.com.zalf.prolog.webservice.frota.pneu.v3._model.PneuEntity;
 import br.com.zalf.prolog.webservice.frota.pneu.v3._model.dto.PneuCadastroDto;
-import br.com.zalf.prolog.webservice.frota.pneu.v3.mapper.PneuMapper;
 import br.com.zalf.prolog.webservice.frota.pneu.v3.service.PneuV3Service;
-import br.com.zalf.prolog.webservice.frota.pneu.v3.service.servico.PneuServicoV3Service;
 import br.com.zalf.prolog.webservice.interceptors.ApiExposed;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
