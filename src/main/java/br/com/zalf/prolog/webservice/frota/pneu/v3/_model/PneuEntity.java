@@ -134,4 +134,8 @@ public class PneuEntity {
         private Long codUnidade;
         private LocalDateTime dataInclusao;
     }
+
+    public boolean isRecapado() {
+        return vidaAtual > 1;
+    }
 }
