@@ -22,8 +22,8 @@ public class PneuApiClient {
     @NotNull
     private TestRestTemplate restTemplate;
 
-    public ResponseEntity<String> insert(final PneuCadastroDto dto) {
-        return insert(dto, String.class);
+    public ResponseEntity<Void> insert(final PneuCadastroDto dto) {
+        return insert(dto, Void.class);
     }
 
     public <T> ResponseEntity<T> insert(final PneuCadastroDto dto, final Class<T> responseType) {
