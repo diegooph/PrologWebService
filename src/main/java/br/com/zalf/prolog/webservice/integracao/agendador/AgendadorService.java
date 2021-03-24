@@ -9,6 +9,8 @@ import br.com.zalf.prolog.webservice.integracao.praxio.IntegracaoPraxioService;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.GlobusPiccoloturRequesterImpl;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.SistemaGlobusPiccoloturDaoImpl;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.ChecklistParaSincronizar;
+import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap.SoapHandlerGlobusPiccolotur;
+import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap.SoapRequesterGlobusPiccolotur;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -24,51 +26,6 @@ public final class AgendadorService implements SincroniaChecklistListener {
 
     @NotNull
     private static final String TAG = AgendadorService.class.getSimpleName();
-
-    public void sincronizaChecklists() throws ProLogException {
-        try {
-            // Buscamos qual checklist precisa ser sincronizado. Por questões de dependência entre os checklists
-            // realizados, não podemos sincronizar uma lista de checklists, deve ser um a um para garantir que a
-            // contagem de apontamentos será incrementada corretamente.
-            final ChecklistParaSincronizar checklistParaSincronizar =
-                    new IntegracaoPraxioService().getCodChecklistParaSincronizar();
-            if (!checklistParaSincronizar.temChecklistParaSincronizar()) {
-                return;
-            }
-            // Executamos a sincronia utilizando a thread específica para esse serviço.
-            Executors.newSingleThreadExecutor().execute(
-                    new ChecklistItensNokGlobusTask(
-                            checklistParaSincronizar.getCodChecklist(),
-                            checklistParaSincronizar.isLastCod(),
-                            new SistemaGlobusPiccoloturDaoImpl(),
-                            new GlobusPiccoloturRequesterImpl(),
-                            this));
-        } catch (final Throwable t) {
-            Log.e(TAG, "Erro ao tentar sincronizar o checklist através do agendador", t);
-            throw Injection
-                    .provideProLogExceptionHandler()
-                    .map(t, "Erro ao tentar sincronizar o checklist");
-        }
-    }
-
-    public void sincronizaOrdensServicos() {
-        try {
-            final List<Long> ordensServicoParaSincronizar =
-                    Injection
-                            .provideIntegracaoDao()
-                            .buscaCodOrdensServicoPendenteSincronizacao();
-            if (ordensServicoParaSincronizar.isEmpty()) {
-                return;
-            }
-            // Executamos a sincronia utilizando a thread específica para esse serviço.
-            Executors.newSingleThreadExecutor().execute(new IntegracaoOsTask(ordensServicoParaSincronizar));
-        } catch (final Throwable t) {
-            Log.e(TAG, "Erro ao tentar sincronizar as O.S's através do agendador", t);
-            throw Injection
-                    .provideProLogExceptionHandler()
-                    .map(t, "Erro ao tentar sincronizar as O.S's");
-        }
-    }
 
     @Override
     public void onSincroniaOk(@NotNull final Long codChecklist, @NotNull final Boolean isLastChecklist) {
@@ -98,6 +55,53 @@ public final class AgendadorService implements SincroniaChecklistListener {
         // esse motivo, forçamos a sincronia do próximo checklist, apenas caso não for o último.
         if (!isLastChecklist) {
             sincronizaChecklists();
+        }
+    }
+
+    public void sincronizaChecklists() throws ProLogException {
+        try {
+            // Buscamos qual checklist precisa ser sincronizado. Por questões de dependência entre os checklists
+            // realizados, não podemos sincronizar uma lista de checklists, deve ser um a um para garantir que a
+            // contagem de apontamentos será incrementada corretamente.
+            final ChecklistParaSincronizar checklistParaSincronizar =
+                    new IntegracaoPraxioService().getCodChecklistParaSincronizar();
+            if (!checklistParaSincronizar.temChecklistParaSincronizar()) {
+                return;
+            }
+            // Executamos a sincronia utilizando a thread específica para esse serviço.
+            final SoapRequesterGlobusPiccolotur soapRequester =
+                    new SoapRequesterGlobusPiccolotur(new SoapHandlerGlobusPiccolotur());
+            Executors.newSingleThreadExecutor().execute(
+                    new ChecklistItensNokGlobusTask(
+                            checklistParaSincronizar.getCodChecklist(),
+                            checklistParaSincronizar.isLastCod(),
+                            new SistemaGlobusPiccoloturDaoImpl(),
+                            new GlobusPiccoloturRequesterImpl(soapRequester),
+                            this));
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao tentar sincronizar o checklist através do agendador", t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao tentar sincronizar o checklist");
+        }
+    }
+
+    public void sincronizaOrdensServicos() {
+        try {
+            final List<Long> ordensServicoParaSincronizar =
+                    Injection
+                            .provideIntegracaoDao()
+                            .buscaCodOrdensServicoPendenteSincronizacao();
+            if (ordensServicoParaSincronizar.isEmpty()) {
+                return;
+            }
+            // Executamos a sincronia utilizando a thread específica para esse serviço.
+            Executors.newSingleThreadExecutor().execute(new IntegracaoOsTask(ordensServicoParaSincronizar));
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao tentar sincronizar as O.S's através do agendador", t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao tentar sincronizar as O.S's");
         }
     }
 
