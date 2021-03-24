@@ -1,5 +1,6 @@
 package test.br.com.zalf.prolog.webservice.pilares.frota.pneu.v3;
 
+import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
 import br.com.zalf.prolog.webservice.frota.pneu.v3._model.dto.PneuCadastroDto;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +23,8 @@ public class PneuApiClient {
     @NotNull
     private TestRestTemplate restTemplate;
 
-    public ResponseEntity<Void> insert(final PneuCadastroDto dto) {
-        return insert(dto, Void.class);
+    public ResponseEntity<SuccessResponse> insert(final PneuCadastroDto dto) {
+        return insert(dto, SuccessResponse.class);
     }
 
     public <T> ResponseEntity<T> insert(final PneuCadastroDto dto, final Class<T> responseType) {
