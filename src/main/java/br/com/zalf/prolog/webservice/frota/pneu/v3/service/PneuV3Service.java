@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.pneu.v3.service;
 
 import br.com.zalf.prolog.webservice.frota.pneu.v3._model.PneuEntity;
+import br.com.zalf.prolog.webservice.frota.pneu.v3._model.dto.PneuCadastroDto;
 import br.com.zalf.prolog.webservice.frota.pneu.v3.dao.PneuV3Dao;
 import br.com.zalf.prolog.webservice.interceptors.v3.OperacoesBloqueadasYaml;
 import org.jetbrains.annotations.NotNull;
@@ -28,7 +29,7 @@ public class PneuV3Service {
     }
 
     @NotNull
-    public PneuEntity insert(@NotNull final PneuEntity pneu) {
+    public PneuEntity insert(@NotNull final PneuCadastroDto pneuCadastroDto) {
         this.operacoesBloqueadas.validateEmpresa(pneu.getCodEmpresa());
         this.operacoesBloqueadas.validateUnidade(pneu.getCodUnidade());
         validatePneuToInsert(pneu);

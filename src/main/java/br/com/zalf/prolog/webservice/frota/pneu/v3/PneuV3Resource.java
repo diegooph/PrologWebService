@@ -54,8 +54,7 @@ public class PneuV3Resource implements PneuV3ApiDoc {
     @Override
     @NotNull
     public Response insert(@Valid @NotNull final PneuCadastroDto pneuCadastro) {
-        final PneuEntity dtoConvertedToEntity = this.pneuCadastroMapper.toEntity(pneuCadastro);
-        final PneuEntity savedPneu = this.service.insert(dtoConvertedToEntity);
+        final PneuEntity savedPneu = this.service.insert(pneuCadastro);
         if (savedPneu.getVidaAtual() > 1) {
             this.pneuServicoV3Service.createServicoByPneu(savedPneu, pneuCadastro.getCustoAquisicaoBanda());
         }
