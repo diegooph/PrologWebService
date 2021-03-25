@@ -51,8 +51,8 @@ public class PneuServicoV3Service {
 
         final var tipoServico = this.tipoServicoService.getInitialTipoServicoForVidaIncrementada();
         final var savedPneuServico = this.dao.save(createPneuServicoForCadastro(tipoServico,
-                                                                                                    pneuEntity,
-                                                                                                   valorBanda.doubleValue()));
+                                                                                pneuEntity,
+                                                                                valorBanda));
         this.pneuServicoRealizadoIncrementaVidaV3Dao.save(PneuServicoRealizadoIncrementaVidaEntity
                                                                   .createFromPneuServico(savedPneuServico));
         if (savedPneuServico.isCadastro()) {
