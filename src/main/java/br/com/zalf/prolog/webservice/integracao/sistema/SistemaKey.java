@@ -7,7 +7,6 @@ import org.jetbrains.annotations.NotNull;
  * Created by luiz on 18/07/17.
  */
 public enum SistemaKey {
-    AVACORP_AVILAN_OLD("AVACORP_AVILAN_OLD"),
     AVACORP_AVILAN("AVACORP_AVILAN"),
     TRANSPORT_TRANSLECCHI("TRANSPORT_TRANSLECCHI"),
     PROTHEUS_RODALOG("PROTHEUS_RODALOG"),

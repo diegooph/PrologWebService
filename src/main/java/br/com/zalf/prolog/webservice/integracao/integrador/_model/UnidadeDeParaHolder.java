@@ -51,6 +51,14 @@ public final class UnidadeDeParaHolder {
                 .orElse(null);
     }
 
+    public boolean isCodUnidadePrologMapeado(@NotNull final Long codUnidadeProlog) {
+        return unidadesDePara.stream()
+                .filter(unidadeDePara -> unidadeDePara.getCodUnidadeProlog().equals(codUnidadeProlog))
+                .findFirst()
+                .filter(unidadeDePara -> unidadeDePara.getCodAuxiliarUnidade() != null)
+                .isPresent();
+    }
+
     @NotNull
     public String getCodAuxiliarEmpresa() {
         final String[] empresaFilial = getCodFiliais().split(SistemaWebFinattoConstants.SEPARADOR_EMPRESA_FILIAL);

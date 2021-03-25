@@ -43,11 +43,12 @@ import java.time.ZoneOffset;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static br.com.zalf.prolog.webservice.integracao.webfinatto.utils.SistemaWebFinattoConstants.VALOR_NAO_COLETADO;
+
 @SuppressWarnings("DuplicatedCode")
 public class SistemaWebFinattoConverter {
     @NotNull
     private static final String TAG = SistemaWebFinattoConverter.class.getSimpleName();
-    private static final double VALOR_NAO_COLETADO = -1.0;
 
     private SistemaWebFinattoConverter() {
         throw new IllegalStateException(SistemaWebFinattoConverter.class.getSimpleName() + " cannot be instantiated!");
@@ -528,7 +529,7 @@ public class SistemaWebFinattoConverter {
                                            pneuAplicado.getNomeModeloPneu(),
                                            Long.valueOf(pneuAplicado.getCodModeloPneu()),
                                            pneuAplicado.getQtdSulcosModeloPneu(),
-                                           pneuAplicado.getAlturaSulcosModeloPneuEmMilimetros().doubleValue(),
+                                           pneuAplicado.getAlturaSulcosModeloPneuEmMilimetros(),
                                            pneuAplicado.getAlturaEstruturaPneu().intValue(),
                                            pneuAplicado.getLarguraEstruturaPneu().intValue(),
                                            pneuAplicado.getAroEstruturaPneu(),
@@ -549,8 +550,7 @@ public class SistemaWebFinattoConverter {
                                                    : pneuAplicado.getQtdSulcosModeloBanda(),
                                            pneuAplicado.getAlturaSulcosModeloBandaEmMilimetros() == null
                                                    ? null
-                                                   : pneuAplicado.getAlturaSulcosModeloBandaEmMilimetros()
-                                                           .doubleValue(),
+                                                   : pneuAplicado.getAlturaSulcosModeloBandaEmMilimetros(),
                                            pneuAplicado.getCodMarcaBanda() == null
                                                    ? null
                                                    : Long.valueOf(pneuAplicado.getCodMarcaBanda()),
@@ -750,29 +750,6 @@ public class SistemaWebFinattoConverter {
             regionais.add(regional);
         }
 
-        for (final Empresa empresa : filtrosProlog) {
-            for (final Regional regional : empresa.getListRegional()) {
-                for (final Unidade unidade : regional.getListUnidade()) {
-                    // para cada unidade do Prolog, vemos se ela
-                    boolean unidadeProcessada = false;
-                    Regional regionalParaAdicionar = null;
-                    for (final Regional regional1 : regionais) {
-                        for (final Unidade unidade1 : regional1.getListUnidade()) {
-                            if (unidade.getCodigo().equals(unidade1.getCodigo())) {
-                                unidadeProcessada = true;
-                            }
-                        }
-                        if (!unidadeProcessada) {
-                            regionalParaAdicionar = regional1;
-                        }
-                    }
-                    if (!unidadeProcessada && regionalParaAdicionar != null) {
-                        regionalParaAdicionar.getListUnidade().add(unidade);
-                    }
-                }
-            }
-        }
-
         return regionais;
     }
 
@@ -917,13 +894,14 @@ public class SistemaWebFinattoConverter {
             banda.setMarca(marcaPneu);
             pneu.setBanda(banda);
         }
-
-        final Sulcos sulcos = new Sulcos();
-        sulcos.setInterno(pneuWebFinatto.getSulcoInternoPneuEmMilimetros());
-        sulcos.setCentralInterno(pneuWebFinatto.getSulcoCentralInternoPneuEmMilimetros());
-        sulcos.setCentralExterno(pneuWebFinatto.getSulcoCentralExternoPneuEmMilimetros());
-        sulcos.setExterno(pneuWebFinatto.getSulcoExternoPneuEmMilimetros());
-        pneu.setSulcosAtuais(sulcos);
+        if (pneuWebFinatto.temSulcos()) {
+            final Sulcos sulcos = new Sulcos();
+            sulcos.setInterno(pneuWebFinatto.getSulcoInternoPneuEmMilimetros());
+            sulcos.setCentralInterno(pneuWebFinatto.getSulcoCentralInternoPneuEmMilimetros());
+            sulcos.setCentralExterno(pneuWebFinatto.getSulcoCentralExternoPneuEmMilimetros());
+            sulcos.setExterno(pneuWebFinatto.getSulcoExternoPneuEmMilimetros());
+            pneu.setSulcosAtuais(sulcos);
+        }
         return pneu;
     }
 
@@ -997,12 +975,14 @@ public class SistemaWebFinattoConverter {
         pneu.setPosicao(posicaoProlog);
         pneu.setPressaoAtual(pneuAplicado.getPressaoAtualPneuEmPsi());
         pneu.setPressaoCorreta(pneuAplicado.getPressaoRecomendadaPneuEmPsi());
-        final Sulcos sulcosAtuais = new Sulcos();
-        sulcosAtuais.setInterno(pneuAplicado.getSulcoInternoPneuEmMilimetros());
-        sulcosAtuais.setCentralInterno(pneuAplicado.getSulcoCentralInternoPneuEmMilimetros());
-        sulcosAtuais.setCentralExterno(pneuAplicado.getSulcoCentralExternoPneuEmMilimetros());
-        sulcosAtuais.setExterno(pneuAplicado.getSulcoExternoPneuEmMilimetros());
-        pneu.setSulcosAtuais(sulcosAtuais);
+        if (pneuAplicado.temSulcos()) {
+            final Sulcos sulcosAtuais = new Sulcos();
+            sulcosAtuais.setInterno(pneuAplicado.getSulcoInternoPneuEmMilimetros());
+            sulcosAtuais.setCentralInterno(pneuAplicado.getSulcoCentralInternoPneuEmMilimetros());
+            sulcosAtuais.setCentralExterno(pneuAplicado.getSulcoCentralExternoPneuEmMilimetros());
+            sulcosAtuais.setExterno(pneuAplicado.getSulcoExternoPneuEmMilimetros());
+            pneu.setSulcosAtuais(sulcosAtuais);
+        }
         pneu.setDot(pneuAplicado.getDotPneu());
         final Pneu.Dimensao dimensao = new Pneu.Dimensao();
         dimensao.setCodigo(pneuAplicado.getCodEstruturaPneu());
@@ -1014,14 +994,14 @@ public class SistemaWebFinattoConverter {
         modeloPneu.setCodigo(Long.parseLong(pneuAplicado.getCodModeloPneu()));
         modeloPneu.setNome(pneuAplicado.getNomeModeloPneu());
         modeloPneu.setQuantidadeSulcos(pneuAplicado.getQtdSulcosModeloPneu());
-        modeloPneu.setAlturaSulcos(pneuAplicado.getAlturaSulcosModeloPneuEmMilimetros().doubleValue());
+        modeloPneu.setAlturaSulcos(pneuAplicado.getAlturaSulcosModeloPneuEmMilimetros());
         pneu.setModelo(modeloPneu);
         if (pneuAplicado.isRecapado()) {
             final ModeloBanda modeloBanda = new ModeloBanda();
             modeloBanda.setCodigo(Long.parseLong(pneuAplicado.getCodModeloBanda()));
             modeloBanda.setNome(pneuAplicado.getNomeModeloBanda());
             modeloBanda.setQuantidadeSulcos(pneuAplicado.getQtdSulcosModeloBanda());
-            modeloBanda.setAlturaSulcos(pneuAplicado.getAlturaSulcosModeloBandaEmMilimetros().doubleValue());
+            modeloBanda.setAlturaSulcos(pneuAplicado.getAlturaSulcosModeloBandaEmMilimetros());
             final Banda banda = new Banda();
             banda.setModelo(modeloBanda);
             pneu.setBanda(banda);

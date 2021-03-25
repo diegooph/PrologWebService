@@ -106,7 +106,17 @@ public final class VeiculoResource {
             Pilares.Frota.Veiculo.VISUALIZAR,
             Pilares.Frota.Veiculo.ALTERAR,
             Pilares.Frota.Veiculo.CADASTRAR,
-            Pilares.Frota.Checklist.VISUALIZAR_TODOS})
+            Pilares.Frota.Checklist.REALIZAR,
+            Pilares.Frota.Checklist.VISUALIZAR_TODOS,
+            Pilares.Frota.Relatorios.CHECKLIST,
+            Pilares.Frota.OrdemServico.Pneu.VISUALIZAR,
+            Pilares.Frota.OrdemServico.Checklist.VISUALIZAR,
+            Pilares.Frota.OrdemServico.Checklist.RESOLVER_ITEM,
+            Pilares.Frota.Afericao.REALIZAR_AFERICAO_PLACA,
+            Pilares.Frota.Afericao.VISUALIZAR_TODAS_AFERICOES,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_VEICULO_ESTOQUE,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE,
+            Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_DESCARTE})
     @Path("/listagem")
     public List<VeiculoListagem> getVeiculosByUnidades(@HeaderParam("Authorization") @Required final String userToken,
                                                        @QueryParam("codUnidades") @Required final List<Long> codUnidades,
