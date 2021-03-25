@@ -5,8 +5,6 @@ import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu._model.PneuComum;
 import br.com.zalf.prolog.webservice.frota.pneu._model.PneuEstoque;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Sulcos;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.Afericao;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.AfericaoPlaca;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.FormaColetaDadosAfericaoEnum;
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.*;
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
@@ -207,10 +205,10 @@ final class ServicoConverter {
         pneuProblema.setPressaoAtual(resultSet.getDouble("PRESSAO_PNEU_PROBLEMA"));
         pneuProblema.setPressaoCorreta(resultSet.getDouble("PRESSAO_RECOMENDADA"));
         final Sulcos sulcosProblema = new Sulcos();
-        sulcosProblema.setExterno(resultSet.getDouble("SULCO_EXTERNO_PNEU_PROBLEMA"));
-        sulcosProblema.setCentralExterno(resultSet.getDouble("SULCO_CENTRAL_EXTERNO_PNEU_PROBLEMA"));
-        sulcosProblema.setCentralInterno(resultSet.getDouble("SULCO_CENTRAL_INTERNO_PNEU_PROBLEMA"));
-        sulcosProblema.setInterno(resultSet.getDouble("SULCO_INTERNO_PNEU_PROBLEMA"));
+        sulcosProblema.setExterno(resultSet.getDouble("SULCO_EXTERNO_ATUAL"));
+        sulcosProblema.setCentralExterno(resultSet.getDouble("SULCO_CENTRAL_EXTERNO_ATUAL"));
+        sulcosProblema.setCentralInterno(resultSet.getDouble("SULCO_CENTRAL_INTERNO_ATUAL"));
+        sulcosProblema.setInterno(resultSet.getDouble("SULCO_INTERNO_ATUAL"));
         pneuProblema.setSulcosAtuais(sulcosProblema);
         servico.setPneuComProblema(pneuProblema);
 
