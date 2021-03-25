@@ -727,11 +727,11 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         if (pneu.getVidaAtual() == pneu.getVidasTotal()) {
             // Se o pneu esta na última vida, então ele irá para descarte,
             // por isso devemos considerar o sulco mínimo para esse caso.
-            if (pneu.getValorMenorSulcoAtual() <= restricao.getSulcoMinimoDescarte()) {
+            if (pneu.getValorMenorSulcoAtual() < restricao.getSulcoMinimoDescarte()) {
                 servicos.add(TipoServico.MOVIMENTACAO);
             }
         } else {
-            if (pneu.getValorMenorSulcoAtual() <= restricao.getSulcoMinimoRecape()) {
+            if (pneu.getValorMenorSulcoAtual() < restricao.getSulcoMinimoRecape()) {
                 servicos.add(TipoServico.MOVIMENTACAO);
             }
         }
