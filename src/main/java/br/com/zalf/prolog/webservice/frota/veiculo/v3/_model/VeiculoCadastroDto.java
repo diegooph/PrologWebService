@@ -3,7 +3,9 @@ package br.com.zalf.prolog.webservice.frota.veiculo.v3._model;
 import lombok.Data;
 import org.jetbrains.annotations.Nullable;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PositiveOrZero;
+import javax.validation.constraints.Size;
 
 /**
  * Created on 2019-10-04
@@ -16,9 +18,6 @@ public final class VeiculoCadastroDto {
     private final Long codEmpresaAlocado;
     @NotNull(message = "O código da unidade é obrigatório.")
     private final Long codUnidadeAlocado;
-    @NotBlank(message = "A placa do veículo é obrigatória e deve conter pelo menos um carácter válido.")
-    @Pattern(regexp = "[^\\p{ASCII}]",
-             message = "A placa deve conter apenas letras e números, sem caracteres especiais.")
     @Size(min = 1, max = 7, message = "A placa deve conter entre 1 e 7 caracteres.")
     private final String placaVeiculo;
     @Nullable
