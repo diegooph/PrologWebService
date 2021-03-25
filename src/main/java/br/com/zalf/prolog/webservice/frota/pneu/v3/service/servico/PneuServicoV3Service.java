@@ -9,6 +9,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.v3.dao.servico.PneuServicoCadast
 import br.com.zalf.prolog.webservice.frota.pneu.v3.dao.servico.PneuServicoRealizadoIncrementaVidaV3Dao;
 import br.com.zalf.prolog.webservice.frota.pneu.v3.dao.servico.PneuServicoRealizadoV3Dao;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,9 +24,13 @@ import java.math.BigDecimal;
 @Service
 public class PneuServicoV3Service {
 
+    @NotNull
     private final PneuServicoRealizadoV3Dao dao;
+    @NotNull
     private final PneuServicoRealizadoIncrementaVidaV3Dao pneuServicoRealizadoIncrementaVidaV3Dao;
+    @NotNull
     private final PneuServicoCadastroV3Dao pneuServicoCadastroV3Dao;
+    @NotNull
     private final PneuTipoServicoV3Service tipoServicoService;
 
     @Autowired
@@ -42,7 +47,7 @@ public class PneuServicoV3Service {
     @NotNull
     @Transactional
     public PneuServicoRealizadoEntity createServicoByPneu(@NotNull final PneuEntity pneuEntity,
-                                                          @NotNull final BigDecimal valorBanda) {
+                                                          @Nullable final BigDecimal valorBanda) {
 
         final var tipoServico = this.tipoServicoService.getInitialTipoServicoForVidaIncrementada();
         final var savedPneuServico = this.dao.save(createPneuServicoForCadastro(tipoServico,
@@ -69,8 +74,8 @@ public class PneuServicoV3Service {
                 .fonteServico(PneuServicoRealizadoEntity.FonteServico.CADASTRO)
                 .build();
     }
-
-    private Integer getVidaServicoFromPneu(final PneuEntity pneu) {
+    @NotNull
+    private Integer getVidaServicoFromPneu(@NotNull final PneuEntity pneu) {
         return pneu.getVidaAtual() - 1;
     }
 }

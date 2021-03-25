@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.pneu.v3._model.servico.converters;
 
 import br.com.zalf.prolog.webservice.frota.pneu.v3._model.servico.PneuServicoRealizadoEntity;
+import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
@@ -14,12 +15,14 @@ import javax.persistence.Converter;
 public class FonteServicoPneuConverter implements AttributeConverter<PneuServicoRealizadoEntity.FonteServico, String> {
 
     @Override
-    public String convertToDatabaseColumn(final PneuServicoRealizadoEntity.FonteServico fonteServico) {
+    @NotNull
+    public String convertToDatabaseColumn(@NotNull final PneuServicoRealizadoEntity.FonteServico fonteServico) {
         return fonteServico.getName();
     }
 
     @Override
-    public PneuServicoRealizadoEntity.FonteServico convertToEntityAttribute(final String s) {
+    @NotNull
+    public PneuServicoRealizadoEntity.FonteServico convertToEntityAttribute(@NotNull final String s) {
         return PneuServicoRealizadoEntity.FonteServico.fromName(s);
     }
 }

@@ -33,7 +33,7 @@ import java.net.URI;
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class PneuV3Resource implements PneuV3ApiDoc {
 
-
+    @NotNull
     private final PneuV3Service service;
 
     @Autowired

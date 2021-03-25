@@ -27,9 +27,13 @@ public class PneuV3Service {
 
     private static final String TAG = PneuV3Service.class.getSimpleName();
 
+    @NotNull
     private final PneuV3Dao dao;
+    @NotNull
     private final OperacoesBloqueadasYaml operacoesBloqueadas;
+    @NotNull
     private final PneuCadastroMapper pneuCadastroMapper;
+    @NotNull
     private final PneuServicoV3Service pneuServicoV3Service;
 
     @Autowired
