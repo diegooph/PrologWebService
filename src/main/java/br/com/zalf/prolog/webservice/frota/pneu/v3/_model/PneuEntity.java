@@ -27,7 +27,9 @@ import java.time.LocalDateTime;
 public class PneuEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,
+                    generator = "pneu_generator")
+    @SequenceGenerator(name = "pneu_generator", sequenceName = "pneu_data_codigo_seq")
     @Column(name = "codigo", nullable = false, unique = true)
     private Long id;
 
