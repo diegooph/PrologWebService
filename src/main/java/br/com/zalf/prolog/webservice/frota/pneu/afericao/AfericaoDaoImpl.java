@@ -713,13 +713,13 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         }
 
         // Caso não tenha sido problema, verifica se está apto a ser inspeção.
-        else if (pneu.getPressaoAtual() <= (pneu.getPressaoCorreta() * (1 - restricao.getToleranciaInspecao()))) {
+        else if (pneu.getPressaoAtual() < (pneu.getPressaoCorreta() * (1 - restricao.getToleranciaInspecao()))) {
             servicos.add(TipoServico.INSPECAO);
         }
 
         // Caso não entre em inspeção, verifica se é uma calibragem.
-        else if (pneu.getPressaoAtual() <= (pneu.getPressaoCorreta() * (1 - restricao.getToleranciaCalibragem()))
-                || pneu.getPressaoAtual() >= (pneu.getPressaoCorreta() * (1 + restricao.getToleranciaCalibragem()))) {
+        else if (pneu.getPressaoAtual() < (pneu.getPressaoCorreta() * (1 - restricao.getToleranciaCalibragem()))
+                || pneu.getPressaoAtual() > (pneu.getPressaoCorreta() * (1 + restricao.getToleranciaCalibragem()))) {
             servicos.add(TipoServico.CALIBRAGEM);
         }
 
