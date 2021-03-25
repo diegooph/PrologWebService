@@ -46,7 +46,7 @@ public class PneuV3Resource implements PneuV3ApiDoc {
     @Secured(permissions = Pilares.Frota.Pneu.CADASTRAR)
     @Override
     @NotNull
-    public SuccessResponse insert(@Valid @NotNull final PneuCadastroDto pneuCadastro) {
+    public SuccessResponse insert(@Valid final PneuCadastroDto pneuCadastro) {
         return this.service.insert(pneuCadastro);
     }
 }
