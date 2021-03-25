@@ -53,28 +53,6 @@ public class PneuServicoRealizadoEntity {
     @Column(name = "vida", nullable = false)
     private Integer vida;
 
-    @Convert(converter = FonteServicoPneuConverter.class)
-    @Column(name = "fonte_servico_realizado", nullable = false, length = 20)
-    private FonteServico fonteServico;
-
-    @AllArgsConstructor
-    @Getter
-    public enum FonteServico {
-        CADASTRO("FONTE_CADASTRO"), MOVIMENTACAO("FONTE_MOVIMENTACAO");
-
-        private final String name;
-
-        @NotNull
-        public static FonteServico fromName(@NotNull final String name) {
-            return Stream.of(FonteServico.values())
-                    .filter(e -> e.name.equals(name))
-                    .findFirst()
-                    .orElseThrow(() -> new IllegalArgumentException("Nenhuma fonte de serviço encontrada para a string: "
-                                                                            + name));
-
-        }
-
-    }
 
     public boolean isCadastro() {
         return Objects.equals(key.fonteServicoRealizado, FonteServico.CADASTRO);
