@@ -20,21 +20,23 @@ import java.time.OffsetDateTime;
 @AllArgsConstructor
 @Getter
 @Entity
-@Table(schema = "public", name = "veiculo_processo_edicao_km")
+@Table(schema = "public", name = "veiculo_processo_alteracao_km")
 public final class AlteracaoKmProcessoEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "codigo", nullable = false)
     private Long codigo;
-    @Column(name = "data_hora_alteracao_km", nullable = false)
-    private OffsetDateTime dataHoraAlteraoKm;
-    @Column(name = "cod_colaborador_alteracao_km")
+    @Column(name = "data_hora_alteracao", nullable = false)
+    private OffsetDateTime dataHoraAlteracaoKm;
+    @Column(name = "cod_colaborador_alteracao")
     private Long codColaboradorAlteracaoKm;
+    @Enumerated(EnumType.STRING)
     @Column(name = "origem_alteracao", nullable = false)
     private OrigemAcaoEnum origemAlteracao;
     @Column(name = "cod_processo_alterado", nullable = false)
     private Long codProcessoAlterado;
-    @Column(name = "tipo_processo_alterado", nullable = false)
+    @Enumerated(EnumType.STRING)
+    @Column(name = "tipo_processo_alterado", nullable = false, columnDefinition = "types")
     private VeiculoTipoProcesso tipoProcessoAlterado;
     @Column(name = "km_antigo", nullable = false)
     private long kmAntigo;

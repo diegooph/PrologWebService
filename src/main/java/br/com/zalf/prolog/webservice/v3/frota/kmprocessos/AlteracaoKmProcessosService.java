@@ -35,7 +35,7 @@ public class AlteracaoKmProcessosService {
         alteracaoKmProcesso.accept(visitor);
         final AlteracaoKmProcessoEntity entity = AlteracaoKmProcessoEntity
                 .builder()
-                .withDataHoraAlteraoKm(Now.getOffsetDateTimeUtc())
+                .withDataHoraAlteracaoKm(Now.getOffsetDateTimeUtc())
                 .withCodColaboradorAlteracaoKm(alteracaoKmProcesso.getCodColaboradorAlteracao())
                 .withOrigemAlteracao(OrigemAcaoEnum.PROLOG_WEB)
                 .withCodProcessoAlterado(alteracaoKmProcesso.getCodProcesso())
