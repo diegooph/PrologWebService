@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 @Component
-public class AlteracaoKmProcessoVisitorImpl implements AlteracaoKmProcessoVisitor {
+public final class AlteracaoKmProcessoVisitorImpl implements AlteracaoKmProcessoVisitor {
     @NotNull
     private final UnidadeService unidadeService;
     @NotNull
@@ -63,17 +63,17 @@ public class AlteracaoKmProcessoVisitorImpl implements AlteracaoKmProcessoVisito
     }
 
     @Override
-    public void visitAfericao(@NotNull final AfericaoKmProcesso afericaoKmProcesso) {
+    public void visit(@NotNull final AfericaoKmProcesso afericaoKmProcesso) {
 
     }
 
     @Override
-    public void visitServicoPneu(@NotNull final ServicoPneuKmProcesso afericaoKmProcesso) {
+    public void visit(@NotNull final ServicoPneuKmProcesso afericaoKmProcesso) {
 
     }
 
     @Override
-    public void visitChecklist(@NotNull final ChecklistKmProcesso checklistKmProcesso) {
+    public void visit(@NotNull final ChecklistKmProcesso checklistKmProcesso) {
         final ChecklistEntity entity = checklistService.getByCodigo(checklistKmProcesso.getCodProcesso());
         validaUnidadePertenceEmpresa(checklistKmProcesso.getCodEmpresa(), entity.getCodUnidade());
         final ChecklistEntity updateEntity = entity
@@ -86,24 +86,22 @@ public class AlteracaoKmProcessoVisitorImpl implements AlteracaoKmProcessoVisito
     }
 
     @Override
-    public void visitChecklistOrdemServicoItem(
-            @NotNull final ChecklistOrdemServicoItemKmProcesso checklistOrdemServicoItemKmProcesso) {
+    public void visit(@NotNull final ChecklistOrdemServicoItemKmProcesso checklistOrdemServicoItemKmProcesso) {
 
     }
 
     @Override
-    public void visitMovimentacao(@NotNull final MovimentacaoKmProcesso movimentacaoKmProcesso) {
+    public void visit(@NotNull final MovimentacaoKmProcesso movimentacaoKmProcesso) {
 
     }
 
     @Override
-    public void visitSocorroRota(@NotNull final SocorroRotaKmProcesso socorroRotaKmProcesso) {
+    public void visit(@NotNull final SocorroRotaKmProcesso socorroRotaKmProcesso) {
 
     }
 
     @Override
-    public void visitTransferenciaVeiculo(
-            @NotNull final TransferenciaVeiculoKmProcesso transferenciaVeiculoKmProcesso) {
+    public void visit(@NotNull final TransferenciaVeiculoKmProcesso transferenciaVeiculoKmProcesso) {
 
     }
 

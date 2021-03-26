@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.v3.frota.kmprocessos;
 
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
 import br.com.zalf.prolog.webservice.interceptors.ApiExposed;
+import br.com.zalf.prolog.webservice.interceptors.auth.ColaboradorAutenticado;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
@@ -16,7 +17,9 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.SecurityContext;
 
 /**
  * Created on 2021-03-25
@@ -46,10 +49,10 @@ public final class AlteracaoKmProcessosResource {
     @PUT
     @Secured(permissions = Pilares.Frota.Veiculo.ALTERAR)
     @NotNull
-    public SuccessResponse updateKmProcesso(@NotNull final AlteracaoKmProcessoDto alteracaoKmProcesso) {
-        service.updateKmProcesso(
-                mapper.toAlteracaoKmProcesso(alteracaoKmProcesso),
-                alteracaoKmProcesso.getTipoProcesso());
+    public SuccessResponse updateKmProcesso(@Context final SecurityContext securityContext,
+                                            @NotNull final AlteracaoKmProcessoDto alteracaoKmProcesso) {
+        final ColaboradorAutenticado colaborador = (ColaboradorAutenticado) securityContext.getUserPrincipal();
+        service.updateKmProcesso(mapper.toAlteracaoKmProcesso(alteracaoKmProcesso, colaborador.getCodigo()));
         return new SuccessResponse(null, "KM atualizado com sucesso!");
     }
 }

@@ -10,18 +10,17 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface AlteracaoKmProcessoVisitor {
 
-    void visitAfericao(@NotNull final AfericaoKmProcesso afericaoKmProcesso);
+    void visit(@NotNull final AfericaoKmProcesso afericaoKmProcesso);
 
-    void visitServicoPneu(@NotNull final ServicoPneuKmProcesso afericaoKmProcesso);
+    void visit(@NotNull final ServicoPneuKmProcesso afericaoKmProcesso);
 
-    void visitChecklist(@NotNull final ChecklistKmProcesso checklistKmProcesso);
+    void visit(@NotNull final ChecklistKmProcesso checklistKmProcesso);
 
-    void visitChecklistOrdemServicoItem(
-            @NotNull final ChecklistOrdemServicoItemKmProcesso checklistOrdemServicoItemKmProcesso);
+    void visit(@NotNull final ChecklistOrdemServicoItemKmProcesso checklistOrdemServicoItemKmProcesso);
 
-    void visitMovimentacao(@NotNull final MovimentacaoKmProcesso movimentacaoKmProcesso);
+    void visit(@NotNull final MovimentacaoKmProcesso movimentacaoKmProcesso);
 
-    void visitSocorroRota(@NotNull final SocorroRotaKmProcesso socorroRotaKmProcesso);
+    void visit(@NotNull final SocorroRotaKmProcesso socorroRotaKmProcesso);
 
-    void visitTransferenciaVeiculo(@NotNull final TransferenciaVeiculoKmProcesso transferenciaVeiculoKmProcesso);
+    void visit(@NotNull final TransferenciaVeiculoKmProcesso transferenciaVeiculoKmProcesso);
 }
