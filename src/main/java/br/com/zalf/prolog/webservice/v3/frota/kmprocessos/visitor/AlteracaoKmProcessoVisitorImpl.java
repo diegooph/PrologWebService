@@ -18,10 +18,13 @@ import br.com.zalf.prolog.webservice.v3.frota.servicopneu._model.ServicoPneuEnti
 import br.com.zalf.prolog.webservice.v3.frota.socorrorota.SocorroRotaService;
 import br.com.zalf.prolog.webservice.v3.frota.socorrorota._model.AberturaSocorroRotaEntity;
 import br.com.zalf.prolog.webservice.v3.frota.transferenciaveiculo.TransferenciaVeiculoService;
+import br.com.zalf.prolog.webservice.v3.frota.transferenciaveiculo._model.TransferenciaVeiculoInformacaoEntity;
 import br.com.zalf.prolog.webservice.v3.frota.transferenciaveiculo._model.TransferenciaVeiculoProcessoEntity;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.Optional;
 
 /**
  * Created on 2021-03-25
@@ -194,20 +197,27 @@ public final class AlteracaoKmProcessoVisitorImpl implements AlteracaoKmProcesso
     public AlteracaoKmResponse visit(@NotNull final TransferenciaVeiculoKmProcesso transferenciaVeiculoKmProcesso) {
         final TransferenciaVeiculoProcessoEntity entity =
                 transferenciaVeiculoService.getByCodigo(transferenciaVeiculoKmProcesso.getCodProcesso());
-        applyValidations(transferenciaVeiculoKmProcesso.getCodEmpresa(),
-                         transferenciaVeiculoKmProcesso.getCodVeiculo(),
-                         null);
-        final TransferenciaVeiculoProcessoEntity updateEntity = entity
-                .toBuilder()
-                // TODO: criar transferência informações.
-                .withTransferenciaVeiculoInformacoes(null)
-                .build();
-        transferenciaVeiculoService.update(updateEntity);
-        return AlteracaoKmResponse
-                .builder()
-                // TODO: retornar KM correto.
-                .withKmAntigo(-1)
-                .build();
+        final Optional<TransferenciaVeiculoInformacaoEntity> informacoesTransferenciaVeiculo =
+                entity.getInformacoesTransferenciaVeiculo(transferenciaVeiculoKmProcesso.getCodVeiculo());
+        if (informacoesTransferenciaVeiculo.isPresent()) {
+            final TransferenciaVeiculoInformacaoEntity infoVeiculo = informacoesTransferenciaVeiculo.get();
+            applyValidations(transferenciaVeiculoKmProcesso.getCodEmpresa(),
+                             transferenciaVeiculoKmProcesso.getCodVeiculo(),
+                             infoVeiculo.getCodVeiculo());
+            final TransferenciaVeiculoProcessoEntity updateEntity = entity
+                    .toBuilder()
+                    // TODO: criar transferência informações.
+                    .withTransferenciaVeiculoInformacoes(null)
+                    .build();
+            transferenciaVeiculoService.update(updateEntity);
+            return AlteracaoKmResponse
+                    .builder()
+                    // TODO: retornar KM correto.
+                    .withKmAntigo(-1)
+                    .build();
+        } else {
+            return null;
+        }
     }
 
     private void applyValidations(@NotNull final Long codEmpresaRecebido,
