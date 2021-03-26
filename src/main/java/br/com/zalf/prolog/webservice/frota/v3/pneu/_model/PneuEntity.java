@@ -7,10 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
@@ -27,6 +24,7 @@ import java.time.OffsetDateTime;
 @Getter
 public class PneuEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "codigo", nullable = false)
     private Long codigo;
     @Column(name = "cod_empresa", nullable = false)
@@ -51,6 +49,7 @@ public class PneuEntity {
     private Double alturaSulcoCentralExterno;
     @Column(name = "altura_sulco_externo")
     private Double alturaSulcoExterno;
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private StatusPneu status;
     @Column(name = "vida_atual")
@@ -69,6 +68,7 @@ public class PneuEntity {
     private boolean pneuNovoNuncaRodado;
     @Column(name = "cod_unidade_cadastro", nullable = false)
     private Long codUnidadeCadastro;
+    @Enumerated(EnumType.STRING)
     @Column(name = "origem_cadastro", nullable = false)
     private OrigemAcaoEnum origemCadastro;
 
