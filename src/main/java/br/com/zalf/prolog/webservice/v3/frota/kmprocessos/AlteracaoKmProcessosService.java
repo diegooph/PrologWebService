@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.v3.frota.kmprocessos;
 
+import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
 import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.AlteracaoKmProcesso;
@@ -19,6 +20,7 @@ import javax.transaction.Transactional;
  */
 @Service
 public class AlteracaoKmProcessosService {
+    private static final String TAG = AlteracaoKmProcessosService.class.getSimpleName();
     @NotNull
     private final AlteracaoKmProcessoDao alteracaoKmProcessoDao;
     @NotNull
@@ -34,16 +36,21 @@ public class AlteracaoKmProcessosService {
     @Transactional
     public void updateKmProcesso(@NotNull final AlteracaoKmProcesso alteracaoKmProcesso) {
         final AlteracaoKmResponse response = alteracaoKmProcesso.accept(visitor);
-        final AlteracaoKmProcessoEntity entity = AlteracaoKmProcessoEntity
-                .builder()
-                .withDataHoraAlteracaoKm(Now.getOffsetDateTimeUtc())
-                .withCodColaboradorAlteracaoKm(alteracaoKmProcesso.getCodColaboradorAlteracao())
-                .withOrigemAlteracao(OrigemAcaoEnum.PROLOG_WEB)
-                .withCodProcessoAlterado(alteracaoKmProcesso.getCodProcesso())
-                .withTipoProcessoAlterado(alteracaoKmProcesso.getTipoProcesso())
-                .withKmAntigo(response.getKmAntigo())
-                .withKmNovo(alteracaoKmProcesso.getNovoKm())
-                .build();
-        alteracaoKmProcessoDao.save(entity);
+        if (response.getKmAntigo() != alteracaoKmProcesso.getNovoKm()) {
+            Log.d(TAG, "KM foi alterado, gerando histórico");
+            final AlteracaoKmProcessoEntity entity = AlteracaoKmProcessoEntity
+                    .builder()
+                    .withDataHoraAlteracaoKm(Now.getOffsetDateTimeUtc())
+                    .withCodColaboradorAlteracaoKm(alteracaoKmProcesso.getCodColaboradorAlteracao())
+                    .withOrigemAlteracao(OrigemAcaoEnum.PROLOG_WEB)
+                    .withCodProcessoAlterado(alteracaoKmProcesso.getCodProcesso())
+                    .withTipoProcessoAlterado(alteracaoKmProcesso.getTipoProcesso())
+                    .withKmAntigo(response.getKmAntigo())
+                    .withKmNovo(alteracaoKmProcesso.getNovoKm())
+                    .build();
+            alteracaoKmProcessoDao.save(entity);
+        } else {
+            Log.d(TAG, "KM não foi alterado, nenhum histórico será gerado");
+        }
     }
 }
