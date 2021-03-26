@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.geral.unidade._model;
+package br.com.zalf.prolog.webservice.v3.geral.unidade._model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
