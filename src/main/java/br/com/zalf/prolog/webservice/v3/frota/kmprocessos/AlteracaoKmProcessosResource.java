@@ -1,7 +1,6 @@
 package br.com.zalf.prolog.webservice.v3.frota.kmprocessos;
 
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
-import br.com.zalf.prolog.webservice.interceptors.ApiExposed;
 import br.com.zalf.prolog.webservice.interceptors.auth.ColaboradorAutenticado;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
@@ -45,7 +44,6 @@ public final class AlteracaoKmProcessosResource {
         this.mapper = mapper;
     }
 
-    @ApiExposed
     @PUT
     @Secured(permissions = Pilares.Frota.Veiculo.ALTERAR)
     @NotNull
