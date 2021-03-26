@@ -1,6 +1,7 @@
-package br.com.zalf.prolog.webservice.v3.frota.kmprocessos.visitor;
+package br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model;
 
-import br.com.zalf.prolog.webservice.v3.frota.checklist._model.ChecklistEntity;
+import br.com.zalf.prolog.webservice.v3.frota.kmprocessos.visitor.AlteracaoKmProcesso;
+import br.com.zalf.prolog.webservice.v3.frota.kmprocessos.visitor.AlteracaoKmProcessoVisitor;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -8,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-public final class ChecklistKmProcesso extends AlteracaoKmProcesso<ChecklistEntity> {
+public final class ChecklistKmProcesso extends AlteracaoKmProcesso {
 
     public ChecklistKmProcesso(@NotNull final Long codEmpresa,
                                @NotNull final Long codProcesso,
@@ -16,7 +17,8 @@ public final class ChecklistKmProcesso extends AlteracaoKmProcesso<ChecklistEnti
         super(codEmpresa, codProcesso, novoKm);
     }
 
-    public void accept(@NotNull final AlterarKmProcessoVisitor visitor) {
+    @Override
+    protected void accept(@NotNull final AlteracaoKmProcessoVisitor visitor) {
         visitor.visitChecklist(this);
     }
 }

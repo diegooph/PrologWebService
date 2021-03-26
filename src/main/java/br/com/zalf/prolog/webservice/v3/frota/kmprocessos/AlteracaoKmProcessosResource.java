@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.v3.frota.kmprocessos;
 
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
 import br.com.zalf.prolog.webservice.interceptors.ApiExposed;
+import br.com.zalf.prolog.webservice.interceptors.auth.ColaboradorAutenticado;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
@@ -10,6 +11,9 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import javax.annotation.Resource;
+import javax.inject.Inject;
+import javax.inject.Provider;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -21,6 +25,7 @@ import javax.ws.rs.core.MediaType;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
+@Resource
 @Controller
 @ConsoleDebugLog
 @Path("/v3/processos-coleta-km")
@@ -29,6 +34,8 @@ import javax.ws.rs.core.MediaType;
 public final class AlteracaoKmProcessosResource {
     @NotNull
     private final AlteracaoKmProcessosService service;
+    @Inject
+    private Provider<ColaboradorAutenticado> colaboradorAutenticadoProvider;
 
     @Autowired
     public AlteracaoKmProcessosResource(@NotNull final AlteracaoKmProcessosService service) {

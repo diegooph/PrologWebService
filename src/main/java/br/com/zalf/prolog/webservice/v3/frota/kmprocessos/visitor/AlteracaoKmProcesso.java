@@ -11,10 +11,12 @@ import org.jetbrains.annotations.NotNull;
  */
 @Getter
 @AllArgsConstructor
-public abstract class AlteracaoKmProcesso<T> {
+public abstract class AlteracaoKmProcesso {
     @NotNull
     private final Long codEmpresa;
     @NotNull
     private final Long codProcesso;
     private final long novoKm;
+
+    protected abstract void accept(@NotNull final AlteracaoKmProcessoVisitor visitor);
 }

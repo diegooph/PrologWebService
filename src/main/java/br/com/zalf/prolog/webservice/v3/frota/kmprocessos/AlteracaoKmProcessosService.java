@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice.v3.frota.kmprocessos;
 
+import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
+import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
 import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.AlteracaoKmProcessoDto;
 import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.AlteracaoKmProcessoEntity;
 import org.jetbrains.annotations.NotNull;
@@ -25,6 +27,16 @@ public class AlteracaoKmProcessosService {
 
     @Transactional
     public void updateKmProcesso(@NotNull final AlteracaoKmProcessoDto alteracaoKmProcesso) {
-        alteracaoKmProcessoDao.save(AlteracaoKmProcessoEntity.builder().build());
+        final AlteracaoKmProcessoEntity entity = AlteracaoKmProcessoEntity
+                .builder()
+                .withDataHoraAlteraoKm(Now.getOffsetDateTimeUtc())
+                .withCodColaboradorAlteracaoKm(2272L)
+                .withOrigemAlteracao(OrigemAcaoEnum.PROLOG_WEB)
+                .withCodProcessoAlterado(alteracaoKmProcesso.getCodProcesso())
+                .withTipoProcessoAlterado(alteracaoKmProcesso.getTipoProcesso())
+                .withKmAntigo(-1)
+                .withKmNovo(alteracaoKmProcesso.getNovoKm())
+                .build();
+        alteracaoKmProcessoDao.save(entity);
     }
 }
