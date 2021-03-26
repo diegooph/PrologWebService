@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.frota.v3.pneu.pneuservico;
+package br.com.zalf.prolog.webservice.frota.v3.pneuservico;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -9,6 +9,6 @@ import org.springframework.stereotype.Repository;
  * @author Guilherme Steinert (https://github.com/steinert999)
  */
 @Repository
-public interface PneuServicoCadastroV3Dao
-        extends JpaRepository<PneuServicoCadastroEntity, PneuServicoCadastroEntity.PK> {
+public interface PneuServicoRealizadoIncrementaVidaV3Dao
+        extends JpaRepository<PneuServicoRealizadoIncrementaVidaEntity, PneuServicoRealizadoEntity.PK> {
 }

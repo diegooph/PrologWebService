@@ -1,9 +1,9 @@
-package br.com.zalf.prolog.webservice.frota.v3.pneu.pneuservico;
+package br.com.zalf.prolog.webservice.frota.v3.pneuservico;
 
 import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico._model.PneuServicoRealizado;
 import br.com.zalf.prolog.webservice.frota.v3.pneu._model.PneuEntity;
-import br.com.zalf.prolog.webservice.frota.v3.pneu.pneuservico.tiposervico.PneuTipoServicoEntity;
-import br.com.zalf.prolog.webservice.frota.v3.pneu.pneuservico.tiposervico.PneuTipoServicoV3Service;
+import br.com.zalf.prolog.webservice.frota.v3.pneuservico.tiposervico.PneuTipoServicoEntity;
+import br.com.zalf.prolog.webservice.frota.v3.pneuservico.tiposervico.PneuTipoServicoV3Service;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

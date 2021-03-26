@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.frota.v3.pneu.pneuservico;
+package br.com.zalf.prolog.webservice.frota.v3.pneuservico;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
