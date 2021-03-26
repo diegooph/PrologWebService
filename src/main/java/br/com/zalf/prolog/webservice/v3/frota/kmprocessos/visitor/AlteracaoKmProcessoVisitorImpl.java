@@ -132,7 +132,7 @@ public final class AlteracaoKmProcessoVisitorImpl implements AlteracaoKmProcesso
         final long kmAntigo = entity.getKmColetadoVeiculoFechamentoItem();
         applyValidations(checklistOrdemServicoItemKmProcesso.getCodEmpresa(),
                          checklistOrdemServicoItemKmProcesso.getCodVeiculo(),
-                         entity.getCodVeiculo());
+                         null);
         entity = entity
                 .toBuilder()
                 .withKmColetadoVeiculoFechamentoItem(checklistOrdemServicoItemKmProcesso.getNovoKm())
