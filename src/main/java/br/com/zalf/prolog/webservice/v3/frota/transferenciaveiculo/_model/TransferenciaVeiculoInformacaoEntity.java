@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.v3.frota.kmprocessos.entities;
+package br.com.zalf.prolog.webservice.v3.frota.transferenciaveiculo._model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,14 +17,17 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Getter
 @Entity
-@Table(schema = "public", name = "transferencia_veiculo")
-public final class TransferenciaVeiculoEntity {
+@Table(schema = "public", name = "veiculo_transferencia_informacoes")
+public final class TransferenciaVeiculoInformacaoEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "codigo", nullable = false)
     private Long codigo;
     @Column(name = "cod_unidade", nullable = false)
     private Long codUnidade;
-    @Column(name = "km_veiculo", nullable = false)
-    private long kmColetadoVeiculo;
+    @Column(name = "km_veiculo_momento_transferencia", nullable = false)
+    private long kmColetadoVeiculoMomentoTransferencia;
+    @ManyToOne
+    @JoinColumn(name = "cod_processo_transferencia", nullable = false)
+    private TransferenciaVeiculoProcessoEntity transferenciaVeiculoProcesso;
 }
