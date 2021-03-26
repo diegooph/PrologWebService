@@ -9,7 +9,6 @@ import org.jetbrains.annotations.Nullable;
  * @author Thais Francisco (https://github.com/thaisksf)
  */
 public enum VeiculoTipoProcesso {
-
     ACOPLAMENTO("ACOPLAMENTO"),
     AFERICAO("AFERICAO"),
     FECHAMENTO_SERVICO_PNEU("FECHAMENTO_SERVICO_PNEU"),
@@ -28,17 +27,6 @@ public enum VeiculoTipoProcesso {
     }
 
     @NotNull
-    public String asString() {
-        return stringRepresentation;
-    }
-
-    @NotNull
-    @Override
-    public String toString() {
-        return asString();
-    }
-
-    @NotNull
     public static VeiculoTipoProcesso fromString(@Nullable final String text) throws IllegalArgumentException {
         if (text != null) {
             for (final VeiculoTipoProcesso veiculoTipoProcesso : VeiculoTipoProcesso.values()) {
@@ -48,5 +36,16 @@ public enum VeiculoTipoProcesso {
             }
         }
         throw new IllegalArgumentException("Nenhum processo encontrado para a String: " + text);
+    }
+
+    @NotNull
+    @Override
+    public String toString() {
+        return asString();
+    }
+
+    @NotNull
+    public String asString() {
+        return stringRepresentation;
     }
 }
