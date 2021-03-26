@@ -20,7 +20,7 @@ public class DiagramaService {
     }
 
     @NotNull
-    public DiagramaEntity getByCod(final Short codDiagramaVeiculo) {
+    public DiagramaEntity getByCod(@NotNull final Short codDiagramaVeiculo) {
         try {
             return diagramaDao.getOne(codDiagramaVeiculo);
         } catch (final Throwable t) {
