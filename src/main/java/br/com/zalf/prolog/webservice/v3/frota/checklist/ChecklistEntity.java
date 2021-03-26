@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.v3.frota.kmprocessos.entities;
+package br.com.zalf.prolog.webservice.v3.frota.checklist;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

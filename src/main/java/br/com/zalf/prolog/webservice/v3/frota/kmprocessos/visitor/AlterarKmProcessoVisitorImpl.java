@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.v3.frota.kmprocessos.visitor;
 
-import br.com.zalf.prolog.webservice.v3.frota.kmprocessos.entities.ChecklistEntity;
-import br.com.zalf.prolog.webservice.v3.frota.kmprocessos.entities.ChecklistV3Dao;
+import br.com.zalf.prolog.webservice.v3.frota.checklist.ChecklistDao;
+import br.com.zalf.prolog.webservice.v3.frota.checklist.ChecklistEntity;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -15,10 +15,10 @@ import org.springframework.stereotype.Component;
 public class AlterarKmProcessoVisitorImpl implements AlterarKmProcessoVisitor {
 
     @NotNull
-    private final ChecklistV3Dao checklistDao;
+    private final ChecklistDao checklistDao;
 
     @Autowired
-    public AlterarKmProcessoVisitorImpl(@NotNull final ChecklistV3Dao checklistDao) {
+    public AlterarKmProcessoVisitorImpl(@NotNull final ChecklistDao checklistDao) {
         this.checklistDao = checklistDao;
     }
 

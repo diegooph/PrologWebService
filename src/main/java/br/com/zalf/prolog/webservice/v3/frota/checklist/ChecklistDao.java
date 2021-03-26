@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.v3.frota.kmprocessos.entities;
+package br.com.zalf.prolog.webservice.v3.frota.checklist;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -7,6 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-public interface ChecklistV3Dao extends JpaRepository<ChecklistEntity, Long> {
+public interface ChecklistDao extends JpaRepository<ChecklistEntity, Long> {
 
 }
