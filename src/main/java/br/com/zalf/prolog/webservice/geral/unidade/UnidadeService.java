@@ -83,4 +83,9 @@ public class UnidadeService {
                     .map(t, "Erro ao atualizar unidades, tente novamente.");
         }
     }
+
+    @NotNull
+    public List<UnidadeEntity> getUnidadesByCodEmpresa(@NotNull final Long codEmpresa) {
+        return dao.findAllByCodEmpresa(codEmpresa);
+    }
 }
