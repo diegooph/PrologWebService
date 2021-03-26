@@ -1,6 +1,8 @@
 package br.com.zalf.prolog.webservice.v3.frota.kmprocessos.visitor;
 
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
+import br.com.zalf.prolog.webservice.frota.veiculo.v3.VeiculoV3Service;
+import br.com.zalf.prolog.webservice.frota.veiculo.v3._model.VeiculoEntity;
 import br.com.zalf.prolog.webservice.v3.frota.afericao.AfericaoService;
 import br.com.zalf.prolog.webservice.v3.frota.afericao._model.AfericaoEntity;
 import br.com.zalf.prolog.webservice.v3.frota.checklist.ChecklistService;
@@ -16,14 +18,9 @@ import br.com.zalf.prolog.webservice.v3.frota.socorrorota.SocorroRotaService;
 import br.com.zalf.prolog.webservice.v3.frota.socorrorota._model.AberturaSocorroRotaEntity;
 import br.com.zalf.prolog.webservice.v3.frota.transferenciaveiculo.TransferenciaVeiculoService;
 import br.com.zalf.prolog.webservice.v3.frota.transferenciaveiculo._model.TransferenciaVeiculoProcessoEntity;
-import br.com.zalf.prolog.webservice.v3.geral.unidade.UnidadeService;
-import br.com.zalf.prolog.webservice.v3.geral.unidade._model.UnidadeEntity;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Created on 2021-03-25
@@ -33,7 +30,7 @@ import java.util.stream.Collectors;
 @Component
 public final class AlteracaoKmProcessoVisitorImpl implements AlteracaoKmProcessoVisitor {
     @NotNull
-    private final UnidadeService unidadeService;
+    private final VeiculoV3Service veiculoService;
     @NotNull
     private final AfericaoService afericaoService;
     @NotNull
@@ -50,7 +47,7 @@ public final class AlteracaoKmProcessoVisitorImpl implements AlteracaoKmProcesso
     private final TransferenciaVeiculoService transferenciaVeiculoService;
 
     @Autowired
-    public AlteracaoKmProcessoVisitorImpl(@NotNull final UnidadeService unidadeService,
+    public AlteracaoKmProcessoVisitorImpl(@NotNull final VeiculoV3Service veiculoService,
                                           @NotNull final AfericaoService afericaoService,
                                           @NotNull final ServicoPneuService servicoPneuService,
                                           @NotNull final ChecklistService checklistService,
@@ -58,7 +55,7 @@ public final class AlteracaoKmProcessoVisitorImpl implements AlteracaoKmProcesso
                                           @NotNull final MovimentacaoService movimentacaoService,
                                           @NotNull final SocorroRotaService socorroRotaService,
                                           @NotNull final TransferenciaVeiculoService transferenciaVeiculoService) {
-        this.unidadeService = unidadeService;
+        this.veiculoService = veiculoService;
         this.afericaoService = afericaoService;
         this.servicoPneuService = servicoPneuService;
         this.checklistService = checklistService;
@@ -73,7 +70,9 @@ public final class AlteracaoKmProcessoVisitorImpl implements AlteracaoKmProcesso
     public AlteracaoKmResponse visit(@NotNull final AfericaoKmProcesso afericaoKmProcesso) {
         AfericaoEntity entity = afericaoService.getByCodigo(afericaoKmProcesso.getCodProcesso());
         final long kmAntigo = entity.getKmColetadoVeiculo();
-        validaUnidadePertenceEmpresa(afericaoKmProcesso.getCodEmpresa(), entity.getCodUnidade());
+        applyValidations(afericaoKmProcesso.getCodEmpresa(),
+                         afericaoKmProcesso.getCodVeiculo(),
+                         entity.getCodVeiculo());
         entity = entity
                 .toBuilder()
                 .withKmColetadoVeiculo(afericaoKmProcesso.getNovoKm())
@@ -90,7 +89,9 @@ public final class AlteracaoKmProcessoVisitorImpl implements AlteracaoKmProcesso
     public AlteracaoKmResponse visit(@NotNull final ServicoPneuKmProcesso servicoPneuKmProcesso) {
         ServicoPneuEntity entity = servicoPneuService.getByCodigo(servicoPneuKmProcesso.getCodProcesso());
         final long kmAntigo = entity.getKmColetadoVeiculoFechamentoServico();
-        validaUnidadePertenceEmpresa(servicoPneuKmProcesso.getCodEmpresa(), entity.getCodUnidade());
+        applyValidations(servicoPneuKmProcesso.getCodEmpresa(),
+                         servicoPneuKmProcesso.getCodVeiculo(),
+                         null);
         entity = entity
                 .toBuilder()
                 .withKmColetadoVeiculoFechamentoServico(servicoPneuKmProcesso.getNovoKm())
@@ -107,7 +108,9 @@ public final class AlteracaoKmProcessoVisitorImpl implements AlteracaoKmProcesso
     public AlteracaoKmResponse visit(@NotNull final ChecklistKmProcesso checklistKmProcesso) {
         ChecklistEntity entity = checklistService.getByCodigo(checklistKmProcesso.getCodProcesso());
         final long kmAntigo = entity.getKmColetadoVeiculo();
-        validaUnidadePertenceEmpresa(checklistKmProcesso.getCodEmpresa(), entity.getCodUnidade());
+        applyValidations(checklistKmProcesso.getCodEmpresa(),
+                         checklistKmProcesso.getCodVeiculo(),
+                         entity.getCodVeiculo());
         entity = entity
                 .toBuilder()
                 .withKmColetadoVeiculo(checklistKmProcesso.getNovoKm())
@@ -121,11 +124,14 @@ public final class AlteracaoKmProcessoVisitorImpl implements AlteracaoKmProcesso
 
     @NotNull
     @Override
-    public AlteracaoKmResponse visit(@NotNull final ChecklistOrdemServicoItemKmProcesso checklistOrdemServicoItemKmProcesso) {
+    public AlteracaoKmResponse visit(
+            @NotNull final ChecklistOrdemServicoItemKmProcesso checklistOrdemServicoItemKmProcesso) {
         ChecklistOrdemServicoItemEntity entity =
                 checklistOrdemServicoService.getByCodigo(checklistOrdemServicoItemKmProcesso.getCodProcesso());
         final long kmAntigo = entity.getKmColetadoVeiculoFechamentoItem();
-        validaUnidadePertenceEmpresa(checklistOrdemServicoItemKmProcesso.getCodEmpresa(), entity.getCodUnidade());
+        applyValidations(checklistOrdemServicoItemKmProcesso.getCodEmpresa(),
+                         checklistOrdemServicoItemKmProcesso.getCodVeiculo(),
+                         entity.getCodVeiculo());
         entity = entity
                 .toBuilder()
                 .withKmColetadoVeiculoFechamentoItem(checklistOrdemServicoItemKmProcesso.getNovoKm())
@@ -141,7 +147,9 @@ public final class AlteracaoKmProcessoVisitorImpl implements AlteracaoKmProcesso
     @Override
     public AlteracaoKmResponse visit(@NotNull final MovimentacaoKmProcesso movimentacaoKmProcesso) {
         final MovimentacaoEntity entity = movimentacaoService.getByCodigo(movimentacaoKmProcesso.getCodProcesso());
-        validaUnidadePertenceEmpresa(movimentacaoKmProcesso.getCodEmpresa(), entity.getCodUnidade());
+        applyValidations(movimentacaoKmProcesso.getCodEmpresa(),
+                         movimentacaoKmProcesso.getCodVeiculo(),
+                         null);
         final MovimentacaoEntity updateEntity = entity
                 .toBuilder()
                 // TODO: criar origem e destino.
@@ -162,7 +170,9 @@ public final class AlteracaoKmProcessoVisitorImpl implements AlteracaoKmProcesso
         AberturaSocorroRotaEntity entity =
                 socorroRotaService.getAberturaSocorroRotaByCodSocorro(socorroRotaKmProcesso.getCodProcesso());
         final long kmAntigo = entity.getKmColetadoVeiculoAberturaSocorro();
-        validaEmpresasIguais(socorroRotaKmProcesso.getCodEmpresa(), entity.getCodEmpresa());
+        applyValidations(socorroRotaKmProcesso.getCodEmpresa(),
+                         socorroRotaKmProcesso.getCodVeiculo(),
+                         entity.getCodVeiculo());
         entity = entity
                 .toBuilder()
                 .withKmColetadoVeiculoAberturaSocorro(socorroRotaKmProcesso.getNovoKm())
@@ -179,11 +189,9 @@ public final class AlteracaoKmProcessoVisitorImpl implements AlteracaoKmProcesso
     public AlteracaoKmResponse visit(@NotNull final TransferenciaVeiculoKmProcesso transferenciaVeiculoKmProcesso) {
         final TransferenciaVeiculoProcessoEntity entity =
                 transferenciaVeiculoService.getByCodigo(transferenciaVeiculoKmProcesso.getCodProcesso());
-        validaAlgumaUnidadePertenceEmpresa(
-                transferenciaVeiculoKmProcesso.getCodEmpresa(),
-                List.of(entity.getCodUnidadeColaborador(),
-                        entity.getCodUnidadeOrigem(),
-                        entity.getCodUnidadeDestino()));
+        applyValidations(transferenciaVeiculoKmProcesso.getCodEmpresa(),
+                         transferenciaVeiculoKmProcesso.getCodVeiculo(),
+                         null);
         final TransferenciaVeiculoProcessoEntity updateEntity = entity
                 .toBuilder()
                 // TODO: criar transferência informações.
@@ -197,39 +205,21 @@ public final class AlteracaoKmProcessoVisitorImpl implements AlteracaoKmProcesso
                 .build();
     }
 
-    private void validaEmpresasIguais(@NotNull final Long codEmpresaRecebido,
-                                      @NotNull final Long codEmpresaBanco) {
-        if (!codEmpresaRecebido.equals(codEmpresaBanco)) {
+    private void applyValidations(@NotNull final Long codEmpresaRecebido,
+                                  @NotNull final Long codVeiculoRecebido,
+                                  @NotNull final Long codVeiculoBanco) {
+        if (!codVeiculoRecebido.equals(codVeiculoBanco)) {
             fail();
         }
-    }
-
-    private void validaUnidadePertenceEmpresa(@NotNull final Long codEmpresaProcesso,
-                                              @NotNull final Long codUnidadeProcesso) {
-        final List<Long> codUnidades = getCodUnidadesByCodEmpresa(codEmpresaProcesso);
-        if (!codUnidades.contains(codUnidadeProcesso)) {
+        final VeiculoEntity veiculo = veiculoService.getByCodigo(codVeiculoBanco);
+        // Garantindo que a empresa do veículo é a mesma recebida já garantimos que o processo editado é da empresa
+        // em questão.
+        if (!codEmpresaRecebido.equals(veiculo.getCodEmpresa())) {
             fail();
         }
-    }
-
-    private void validaAlgumaUnidadePertenceEmpresa(@NotNull final Long codEmpresaProcesso,
-                                                    @NotNull final List<Long> codUnidadesProcesso) {
-        final List<Long> codUnidadesEmpresa = getCodUnidadesByCodEmpresa(codEmpresaProcesso);
-        if (codUnidadesEmpresa.stream().noneMatch(codUnidadesProcesso::contains)) {
-            fail();
-        }
-    }
-
-    @NotNull
-    private List<Long> getCodUnidadesByCodEmpresa(@NotNull final Long codEmpresaProcesso) {
-        return unidadeService
-                .getUnidadesByCodEmpresa(codEmpresaProcesso)
-                .stream()
-                .map(UnidadeEntity::getCodigo)
-                .collect(Collectors.toList());
     }
 
     private void fail() {
-        throw new GenericException("Só é possível alterar o KM de processos da sua empresa!");
+        throw new GenericException("Só é possível alterar o KM de veículos e processos da sua empresa!");
     }
 }

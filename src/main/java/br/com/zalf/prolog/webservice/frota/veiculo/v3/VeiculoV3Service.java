@@ -54,4 +54,9 @@ public class VeiculoV3Service {
                     .map(t, "Erro ao inserir veículo, tente novamente.");
         }
     }
+
+    @NotNull
+    public VeiculoEntity getByCodigo(@NotNull final Long codigo) {
+        return veiculoDao.getOne(codigo);
+    }
 }
