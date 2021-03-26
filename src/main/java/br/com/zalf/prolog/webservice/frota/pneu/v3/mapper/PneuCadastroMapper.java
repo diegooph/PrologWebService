@@ -1,15 +1,11 @@
 package br.com.zalf.prolog.webservice.frota.pneu.v3.mapper;
 
+import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.v3._model.PneuEntity;
 import br.com.zalf.prolog.webservice.frota.pneu.v3._model.dto.PneuCadastroDto;
-import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
-import org.apache.commons.lang3.NotImplementedException;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
-
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 /**
  * Created on 2021-03-15
@@ -18,41 +14,24 @@ import java.time.LocalDateTime;
  */
 @Component
 public class PneuCadastroMapper {
-
     @NotNull
     public PneuEntity toEntity(@NotNull final PneuCadastroDto dto) {
         return PneuEntity.builder()
-                .dadosCadastro(getDadosCadastro(dto))
-                .pressao(getPressao(dto))
-                .codDimensao(dto.getCodDimensaoPneu())
-                .codCliente(dto.getCodigoCliente())
-                .codUnidade(dto.getCodUnidadeAlocado())
                 .codEmpresa(dto.getCodEmpresaAlocado())
-                .status(StatusPneu.ESTOQUE)
-                .origemCadastro(OrigemAcaoEnum.API)
+                .codUnidade(dto.getCodUnidadeAlocado())
+                .codigoCliente(dto.getCodigoCliente())
                 .codModelo(dto.getCodModeloPneu())
-                .codModeloBanda(dto.getCodModeloBanda())
+                .codDimensao(dto.getCodDimensaoPneu())
+                .pressaoRecomendada(dto.getPressaoRecomendada())
+                .status(StatusPneu.ESTOQUE)
                 .vidaAtual(dto.getVidaAtualPneu())
                 .vidaTotal(dto.getVidaTotalPneu())
-                .valor(dto.getValorPneu())
+                .codModeloBanda(dto.getCodModeloBanda())
                 .dot(dto.getDotPneu())
-                .usado(dto.getPneuNovoNuncaRodado())
-                .build();
-
-    }
-
-    @NotNull
-    private PneuEntity.Pressao getPressao(@NotNull final PneuCadastroDto dto) {
-        return PneuEntity.Pressao.builder()
-                .recomendada(BigDecimal.valueOf(dto.getPressaoRecomendada()))
-                .build();
-    }
-
-    @NotNull
-    private PneuEntity.DadosCadastro getDadosCadastro(@NotNull final PneuCadastroDto dto) {
-        return PneuEntity.DadosCadastro.builder()
-                .codUnidade(dto.getCodUnidadeAlocado())
-                .dataInclusao(LocalDateTime.now())
+                .valor(dto.getValorPneu())
+                .dataHoraCadastro(Now.getOffsetDateTimeUtc())
+                .pneuNovoNuncaRodado(dto.getPneuNovoNuncaRodado())
+                .codUnidadeCadastro(dto.getCodUnidadeAlocado())
                 .build();
     }
 }

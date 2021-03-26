@@ -10,6 +10,6 @@ import org.springframework.stereotype.Repository;
  * @author Guilherme Steinert (https://github.com/steinert999)
  */
 @Repository
-public interface PneuServicoCadastroV3Dao extends JpaRepository<PneuServicoCadastroEntity,
-                                                                     PneuServicoCadastroEntity.Id> {
+public interface PneuServicoCadastroV3Dao
+        extends JpaRepository<PneuServicoCadastroEntity, PneuServicoCadastroEntity.PK> {
 }

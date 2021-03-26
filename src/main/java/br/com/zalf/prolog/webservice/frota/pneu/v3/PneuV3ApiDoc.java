@@ -5,7 +5,6 @@ import br.com.zalf.prolog.webservice.frota.pneu.v3._model.dto.PneuCadastroDto;
 import org.jetbrains.annotations.NotNull;
 
 import javax.validation.Valid;
-import javax.ws.rs.core.Response;
 
 /**
  * Created on 2021-03-12
@@ -13,7 +12,7 @@ import javax.ws.rs.core.Response;
  * @author Guilherme Steinert (https://github.com/steinert999)
  */
 public interface PneuV3ApiDoc {
-
     @NotNull
-    SuccessResponse insert(@Valid final PneuCadastroDto pneuCadastro);
+    SuccessResponse insert(final String tokenIntegracao,
+                           @Valid final PneuCadastroDto pneuCadastro);
 }

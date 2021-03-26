@@ -15,7 +15,7 @@ import javax.transaction.Transactional;
  */
 @Service
 public class PneuTipoServicoV3Service {
-
+    @NotNull
     private final PneuTipoServicoV3Dao dao;
 
     @Autowired

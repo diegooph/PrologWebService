@@ -8,13 +8,13 @@ import br.com.zalf.prolog.webservice.frota.pneu.v3._model.dto.PneuCadastroDto;
 import br.com.zalf.prolog.webservice.frota.pneu.v3.dao.PneuV3Dao;
 import br.com.zalf.prolog.webservice.frota.pneu.v3.mapper.PneuCadastroMapper;
 import br.com.zalf.prolog.webservice.frota.pneu.v3.service.servico.PneuServicoV3Service;
+import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
 import br.com.zalf.prolog.webservice.interceptors.v3.OperacoesBloqueadasYaml;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityExistsException;
 import javax.transaction.Transactional;
 
 /**
@@ -24,42 +24,43 @@ import javax.transaction.Transactional;
  */
 @Service
 public class PneuV3Service {
-
-    private static final String TAG = PneuV3Service.class.getSimpleName();
-
     @NotNull
-    private final PneuV3Dao dao;
+    private static final String TAG = PneuV3Service.class.getSimpleName();
+    @NotNull
+    private final PneuV3Dao pneuDao;
     @NotNull
     private final OperacoesBloqueadasYaml operacoesBloqueadas;
     @NotNull
     private final PneuCadastroMapper pneuCadastroMapper;
     @NotNull
-    private final PneuServicoV3Service pneuServicoV3Service;
+    private final PneuServicoV3Service pneuServicoService;
 
     @Autowired
-    public PneuV3Service(@NotNull final PneuV3Dao dao,
+    public PneuV3Service(@NotNull final PneuV3Dao pneuDao,
+                         @NotNull final PneuServicoV3Service pneuServicoService,
                          @NotNull final OperacoesBloqueadasYaml operacoesBloqueadas,
-                         @NotNull final PneuCadastroMapper pneuCadastroMapper,
-                         @NotNull final PneuServicoV3Service pneuServicoV3Service) {
-        this.dao = dao;
+                         @NotNull final PneuCadastroMapper pneuCadastroMapper) {
+        this.pneuDao = pneuDao;
+        this.pneuServicoService = pneuServicoService;
         this.operacoesBloqueadas = operacoesBloqueadas;
         this.pneuCadastroMapper = pneuCadastroMapper;
-        this.pneuServicoV3Service = pneuServicoV3Service;
     }
 
     @NotNull
     @Transactional
-    public SuccessResponse insert(@NotNull final PneuCadastroDto pneuCadastroDto) {
+    public SuccessResponse insert(@Nullable final String tokenIntegracao,
+                                  @NotNull final PneuCadastroDto pneuCadastroDto) {
         try {
-            final PneuEntity pneu = this.pneuCadastroMapper.toEntity(pneuCadastroDto);
-            this.operacoesBloqueadas.validateEmpresa(pneu.getCodEmpresa());
-            this.operacoesBloqueadas.validateUnidade(pneu.getCodUnidade());
-            validatePneuToInsert(pneu);
-            final PneuEntity savedPneu = this.dao.save(pneu);
+            final PneuEntity pneuEntity = this.pneuCadastroMapper.toEntity(pneuCadastroDto);
+            final PneuEntity pneuInsert = pneuEntity.toBuilder()
+                    .origemCadastro(getOrigemCadastro(tokenIntegracao))
+                    .build();
+            final PneuEntity savedPneu = this.pneuDao.save(pneuInsert);
             if (savedPneu.isRecapado()) {
-                this.pneuServicoV3Service.createServicoByPneu(savedPneu, pneuCadastroDto.getValorBandaPneu());
+                //noinspection ConstantConditions
+                this.pneuServicoService.createServicoByPneu(savedPneu, pneuCadastroDto.getValorBandaPneu());
             }
-            return new SuccessResponse(savedPneu.getId(), "Pneu inserido com sucesso.");
+            return new SuccessResponse(savedPneu.getCodigo(), "Pneu inserido com sucesso.");
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao inserir pneu.", t);
             throw Injection
@@ -68,10 +69,9 @@ public class PneuV3Service {
         }
     }
 
-    private void validatePneuToInsert(@NotNull final PneuEntity pneu) {
-        if (this.dao.exists(Example.of(pneu))) {
-            throw new EntityExistsException("Pneu já existe no banco de dados.");
-        }
+    @NotNull
+    private OrigemAcaoEnum getOrigemCadastro(@Nullable final String tokenIntegracao) {
+        return tokenIntegracao != null ? OrigemAcaoEnum.API : OrigemAcaoEnum.PROLOG_WEB;
     }
 }
 

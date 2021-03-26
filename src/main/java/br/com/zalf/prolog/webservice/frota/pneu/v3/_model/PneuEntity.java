@@ -1,17 +1,18 @@
 package br.com.zalf.prolog.webservice.frota.pneu.v3._model;
 
 import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
-import br.com.zalf.prolog.webservice.frota.pneu.v3._model.converter.OrigemAcaoConverter;
-import br.com.zalf.prolog.webservice.frota.pneu.v3._model.converter.StatusPneuConverter;
 import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 /**
  * Created on 2021-03-10
@@ -20,122 +21,56 @@ import java.time.LocalDateTime;
  */
 @Entity
 @Table(name = "pneu", schema = "public")
-@Builder
+@Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 public class PneuEntity {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE,
-                    generator = "pneu_generator")
-    @SequenceGenerator(name = "pneu_generator", sequenceName = "pneu_data_codigo_seq")
-    @Column(name = "codigo", nullable = false, unique = true)
-    private Long id;
-
-    @Column(name = "codigo_cliente", nullable = false)
-    private String codCliente;
-
-    @Column(name = "cod_modelo", nullable = false)
-    private Long codModelo;
-
-    @Column(name = "cod_dimensao", nullable = false)
-    private Long codDimensao;
-
-    @Embedded
-    @AttributeOverrides({
-        @AttributeOverride(name = "recomendada", column = @Column(name = "pressao_recomendada", nullable = false)),
-        @AttributeOverride(name = "atual", column = @Column(name = "pressao_atual"))
-    })
-    private Pressao pressao;
-
-    @Embedded
-    @AttributeOverrides({
-        @AttributeOverride(name = "interno", column = @Column(name = "altura_sulco_interno")),
-        @AttributeOverride(name = "centralInterno", column = @Column(name = "altura_sulco_central_interno")),
-        @AttributeOverride(name = "centralExterno", column = @Column(name = "altura_sulco_central_externo")),
-        @AttributeOverride(name = "externo", column = @Column(name = "altura_sulco_externo"))
-    })
-    private AlturaSulco alturaSulco;
-
-
-    @Column(name = "cod_unidade", nullable = false)
-    private Long codUnidade;
-
-    @Convert(converter = StatusPneuConverter.class)
-    @Column(name = "status", nullable = false)
-    private StatusPneu status;
-
-    @Column(name = "vida_atual")
-    private Integer vidaAtual;
-
-    @Column(name = "vida_total")
-    private Integer vidaTotal;
-
-    @Column(name = "cod_modelo_banda")
-    private Long codModeloBanda;
-
-    @Column(name = "dot", length = 20)
-    private String dot;
-
-    @Column(name = "valor", nullable = false)
-    private BigDecimal valor;
-
-    @Embedded
-    @AttributeOverrides({
-        @AttributeOverride(name = "dataInclusao", column = @Column(name = "data_hora_cadastro",
-                                                                 columnDefinition = "timestamp with time zone default" +
-                                                                         " current_timestamp",
-                                                                 nullable = false)),
-        @AttributeOverride(name = "codUnidade", column = @Column(name = "cod_unidade_cadastro", nullable = false))
-    })
-    private DadosCadastro dadosCadastro;
-
-    @Column(name = "pneu_novo_nunca_rodado", columnDefinition = "boolean default false", nullable = false)
-    private boolean usado;
-
+    @Column(name = "codigo", nullable = false)
+    private Long codigo;
     @Column(name = "cod_empresa", nullable = false)
     private Long codEmpresa;
-
-    @Convert(converter = OrigemAcaoConverter.class)
+    @Column(name = "cod_unidade", nullable = false)
+    private Long codUnidade;
+    @Column(name = "codigo_cliente", nullable = false)
+    private String codigoCliente;
+    @Column(name = "cod_modelo", nullable = false)
+    private Long codModelo;
+    @Column(name = "cod_dimensao", nullable = false)
+    private Long codDimensao;
+    @Column(name = "pressao_recomendada", nullable = false)
+    private Double pressaoRecomendada;
+    @Column(name = "pressao_atual")
+    private Double pressaoAtual;
+    @Column(name = "altura_sulco_interno")
+    private Double alturaSulcoInterno;
+    @Column(name = "altura_sulco_central_interno")
+    private Double alturaSulcoCentralInterno;
+    @Column(name = "altura_sulco_central_externo")
+    private Double alturaSulcoCentralExterno;
+    @Column(name = "altura_sulco_externo")
+    private Double alturaSulcoExterno;
+    @Column(name = "status", nullable = false)
+    private StatusPneu status;
+    @Column(name = "vida_atual")
+    private Integer vidaAtual;
+    @Column(name = "vida_total")
+    private Integer vidaTotal;
+    @Column(name = "cod_modelo_banda")
+    private Long codModeloBanda;
+    @Column(name = "dot", length = 20)
+    private String dot;
+    @Column(name = "valor", nullable = false)
+    private BigDecimal valor;
+    @Column(name = "data_hora_cadastro", columnDefinition = "timestamp with time zone default now()")
+    private OffsetDateTime dataHoraCadastro;
+    @Column(name = "pneu_novo_nunca_rodado", columnDefinition = "boolean default false", nullable = false)
+    private boolean pneuNovoNuncaRodado;
+    @Column(name = "cod_unidade_cadastro", nullable = false)
+    private Long codUnidadeCadastro;
     @Column(name = "origem_cadastro", nullable = false)
     private OrigemAcaoEnum origemCadastro;
-
-    @Embeddable
-    @Builder
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Getter
-    public static class AlturaSulco {
-
-        private BigDecimal interno;
-
-        private BigDecimal centralInterno;
-
-        private BigDecimal centralExterno;
-
-        private BigDecimal externo;
-    }
-
-    @Embeddable
-    @Builder
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Getter
-    public static class Pressao {
-        BigDecimal recomendada;
-        BigDecimal atual;
-    }
-
-    @Embeddable
-    @Builder
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Getter
-    public static class DadosCadastro {
-        private Long codUnidade;
-        private LocalDateTime dataInclusao;
-    }
 
     public boolean isRecapado() {
         return vidaAtual > 1;

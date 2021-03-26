@@ -1,7 +1,8 @@
 package br.com.zalf.prolog.webservice.frota.pneu.v3;
 
+import br.com.zalf.prolog.webservice.commons.network.PrologCustomHeaders;
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
-import br.com.zalf.prolog.webservice.frota.pneu.v3._model.PneuEntity;
+import br.com.zalf.prolog.webservice.commons.network.metadata.Optional;
 import br.com.zalf.prolog.webservice.frota.pneu.v3._model.dto.PneuCadastroDto;
 import br.com.zalf.prolog.webservice.frota.pneu.v3.service.PneuV3Service;
 import br.com.zalf.prolog.webservice.interceptors.ApiExposed;
@@ -13,13 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import javax.validation.Valid;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import java.net.URI;
 
 /**
  * Created on 2021-03-12
@@ -32,7 +28,6 @@ import java.net.URI;
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class PneuV3Resource implements PneuV3ApiDoc {
-
     @NotNull
     private final PneuV3Service service;
 
@@ -46,7 +41,9 @@ public class PneuV3Resource implements PneuV3ApiDoc {
     @Secured(permissions = Pilares.Frota.Pneu.CADASTRAR)
     @Override
     @NotNull
-    public SuccessResponse insert(@Valid final PneuCadastroDto pneuCadastro) {
-        return this.service.insert(pneuCadastro);
+    public SuccessResponse insert(
+            @HeaderParam(PrologCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Optional final String tokenIntegracao,
+            @Valid final PneuCadastroDto pneuCadastro) {
+        return this.service.insert(tokenIntegracao, pneuCadastro);
     }
 }

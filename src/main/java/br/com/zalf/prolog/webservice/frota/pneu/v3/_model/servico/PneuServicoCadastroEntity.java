@@ -1,7 +1,10 @@
 package br.com.zalf.prolog.webservice.frota.pneu.v3._model.servico;
 
-import br.com.zalf.prolog.webservice.frota.pneu.v3._model.PneuEntity;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -18,40 +21,29 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PneuServicoCadastroEntity {
-
     @EmbeddedId
-    private Id id;
+    private PneuServicoCadastroEntity.PK pk;
+    @OneToOne(mappedBy = "pneuServicoCadastro")
+    private PneuServicoRealizadoEntity pneuServicoRealizado;
 
-    @Embeddable
+    @NotNull
+    public static PneuServicoCadastroEntity createFromPneuServico(
+            @NotNull final PneuServicoRealizadoEntity pneuServico) {
+        final PK pkCadastro = PK.builder().codPneu(pneuServico.getCodPneu()).build();
+        return PneuServicoCadastroEntity.builder()
+                .pk(pkCadastro)
+                .build();
+    }
+
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
     @Getter
-    @EqualsAndHashCode
-    public static class Id implements Serializable {
-
-        @OneToOne(fetch = FetchType.LAZY,
-                  targetEntity = PneuEntity.class)
-        @JoinColumn(name = "cod_pneu", referencedColumnName = "codigo")
-        private PneuEntity pneu;
-
-        @OneToOne(fetch = FetchType.LAZY,
-                  targetEntity = PneuServicoRealizadoEntity.class)
-        @JoinColumns(value = {
-                @JoinColumn(name = "cod_servico_realizado", referencedColumnName = "codigo"),
-                @JoinColumn(name = "fonte_servico_realizado", referencedColumnName = "fonte_servico_realizado")
-        }, foreignKey = @ForeignKey(name = "fk_pneu_servico_cadastro_pneu_servico_realizado",
-                                    value = ConstraintMode.CONSTRAINT))
-        private PneuServicoRealizadoEntity servico;
-    }
-
-    public static PneuServicoCadastroEntity createFromPneuServico(final PneuServicoRealizadoEntity pneuServico) {
-        final PneuServicoCadastroEntity.Id id = PneuServicoCadastroEntity.Id.builder()
-                .pneu(pneuServico.getPneu())
-                .servico(pneuServico)
-                .build();
-        return PneuServicoCadastroEntity.builder()
-                .id(id)
-                .build();
+    @Embeddable
+    public static class PK implements Serializable {
+        @Column(name = "cod_pneu", nullable = false)
+        private Long codPneu;
+        @Column(name = "cod_servico_realizado", nullable = false)
+        private Long codServicoRealizado;
     }
 }

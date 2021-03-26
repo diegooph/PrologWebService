@@ -1,12 +1,15 @@
 package br.com.zalf.prolog.webservice.frota.pneu.v3.service.servico;
 
+import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico._model.PneuServicoRealizado;
 import br.com.zalf.prolog.webservice.frota.pneu.v3._model.PneuEntity;
-import br.com.zalf.prolog.webservice.frota.pneu.v3._model.servico.*;
+import br.com.zalf.prolog.webservice.frota.pneu.v3._model.servico.PneuServicoCadastroEntity;
+import br.com.zalf.prolog.webservice.frota.pneu.v3._model.servico.PneuServicoRealizadoEntity;
+import br.com.zalf.prolog.webservice.frota.pneu.v3._model.servico.PneuServicoRealizadoIncrementaVidaEntity;
+import br.com.zalf.prolog.webservice.frota.pneu.v3._model.servico.PneuTipoServicoEntity;
 import br.com.zalf.prolog.webservice.frota.pneu.v3.dao.servico.PneuServicoCadastroV3Dao;
 import br.com.zalf.prolog.webservice.frota.pneu.v3.dao.servico.PneuServicoRealizadoIncrementaVidaV3Dao;
 import br.com.zalf.prolog.webservice.frota.pneu.v3.dao.servico.PneuServicoRealizadoV3Dao;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,63 +23,64 @@ import java.math.BigDecimal;
  */
 @Service
 public class PneuServicoV3Service {
-
     @NotNull
-    private final PneuServicoRealizadoV3Dao dao;
+    private final PneuServicoRealizadoV3Dao pneuServicoDao;
     @NotNull
     private final PneuServicoRealizadoIncrementaVidaV3Dao pneuServicoRealizadoIncrementaVidaV3Dao;
     @NotNull
     private final PneuServicoCadastroV3Dao pneuServicoCadastroV3Dao;
     @NotNull
-    private final PneuTipoServicoV3Service tipoServicoService;
+    private final PneuTipoServicoV3Service pneuTipoServicoService;
 
     @Autowired
-    public PneuServicoV3Service(@NotNull final PneuServicoRealizadoV3Dao dao,
-                                @NotNull final PneuServicoRealizadoIncrementaVidaV3Dao pneuServicoRealizadoIncrementaVidaDao,
-                                @NotNull final PneuServicoCadastroV3Dao pneuServicoCadastroDao,
-                                @NotNull final PneuTipoServicoV3Service tipoServicoService) {
-        this.dao = dao;
+    public PneuServicoV3Service(
+            @NotNull final PneuServicoRealizadoV3Dao pneuServicoDao,
+            @NotNull final PneuServicoRealizadoIncrementaVidaV3Dao pneuServicoRealizadoIncrementaVidaDao,
+            @NotNull final PneuServicoCadastroV3Dao pneuServicoCadastroDao,
+            @NotNull final PneuTipoServicoV3Service pneuTipoServicoService) {
+        this.pneuServicoDao = pneuServicoDao;
         this.pneuServicoRealizadoIncrementaVidaV3Dao = pneuServicoRealizadoIncrementaVidaDao;
         this.pneuServicoCadastroV3Dao = pneuServicoCadastroDao;
-        this.tipoServicoService = tipoServicoService;
+        this.pneuTipoServicoService = pneuTipoServicoService;
     }
 
     @NotNull
     @Transactional
     public PneuServicoRealizadoEntity createServicoByPneu(@NotNull final PneuEntity pneuEntity,
-                                                          @Nullable final BigDecimal valorBanda) {
-
-        final var tipoServico = this.tipoServicoService.getInitialTipoServicoForVidaIncrementada();
-        final var savedPneuServico = this.dao.save(createPneuServicoForCadastro(tipoServico,
-                                                                                pneuEntity,
-                                                                                valorBanda));
-        this.pneuServicoRealizadoIncrementaVidaV3Dao.save(PneuServicoRealizadoIncrementaVidaEntity
-                                                                  .createFromPneuServico(savedPneuServico));
-        if (savedPneuServico.isCadastro()) {
-           this.pneuServicoCadastroV3Dao.save(PneuServicoCadastroEntity
-                                                      .createFromPneuServico(savedPneuServico));
-        }
-        return savedPneuServico;
+                                                          @NotNull final BigDecimal valorBanda) {
+        final PneuTipoServicoEntity tipoServico =
+                this.pneuTipoServicoService.getInitialTipoServicoForVidaIncrementada();
+        final PneuServicoRealizadoEntity savedServico =
+                this.pneuServicoDao.save(createPneuServicoForCadastro(tipoServico,
+                                                                      pneuEntity,
+                                                                      valorBanda));
+        final PneuServicoRealizadoIncrementaVidaEntity incrementaVida =
+                PneuServicoRealizadoIncrementaVidaEntity.createFromPneuServico(pneuEntity);
+        pneuServicoRealizadoIncrementaVidaV3Dao.save(incrementaVida);
+        final PneuServicoCadastroEntity servicoCadastro =
+                PneuServicoCadastroEntity.createFromPneuServico(savedServico);
+        pneuServicoCadastroV3Dao.save(servicoCadastro);
+        return savedServico;
     }
 
     @NotNull
-    private PneuServicoRealizadoEntity createPneuServicoForCadastro(@NotNull final PneuTipoServicoEntity pneuTipoServico,
-                                                                    @NotNull final PneuEntity pneu,
-                                                                    @Nullable final BigDecimal custoAquisicaoBanda) {
-
-        final PneuServicoRealizadoEntity.Key key = PneuServicoRealizadoEntity.Key.builder()
-                .fonteServicoRealizado(FonteServico.CADASTRO)
+    private PneuServicoRealizadoEntity createPneuServicoForCadastro(
+            @NotNull final PneuTipoServicoEntity pneuTipoServico,
+            @NotNull final PneuEntity pneu,
+            @NotNull final BigDecimal valorBanda) {
+        final PneuServicoRealizadoEntity.PK pkServicoRealizado = PneuServicoRealizadoEntity.PK.builder()
+                .fonteServicoRealizado(PneuServicoRealizado.FONTE_CADASTRO)
                 .build();
-
         return PneuServicoRealizadoEntity.builder()
-                .key(key)
-                .tipoServico(pneuTipoServico)
+                .pk(pkServicoRealizado)
+                .codTipoServico(pneuTipoServico.getCodigo())
                 .codUnidade(pneu.getCodUnidade())
-                .pneu(pneu)
+                .codPneu(pneu.getCodigo())
+                .custo(valorBanda)
                 .vida(getVidaServicoFromPneu(pneu))
-                .custo(custoAquisicaoBanda)
                 .build();
     }
+
     @NotNull
     private Integer getVidaServicoFromPneu(@NotNull final PneuEntity pneu) {
         return pneu.getVidaAtual() - 1;

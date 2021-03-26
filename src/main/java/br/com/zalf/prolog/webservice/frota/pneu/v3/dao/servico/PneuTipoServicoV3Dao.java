@@ -16,8 +16,8 @@ public interface PneuTipoServicoV3Dao extends JpaRepository<PneuTipoServicoEntit
 
     @Query("select pts from PneuTipoServicoEntity pts " +
                    "where pts.codEmpresa is null " +
-                   "and pts.ativo = true " +
-                   "and pts.incremental = true " +
+                   "and pts.statusAtivo = true " +
+                   "and pts.incrementaVida = true " +
                    "and pts.utilizadoCadastroPneu = true")
     @NotNull
     PneuTipoServicoEntity getInitialTipoServicoForVidaIncrementada();

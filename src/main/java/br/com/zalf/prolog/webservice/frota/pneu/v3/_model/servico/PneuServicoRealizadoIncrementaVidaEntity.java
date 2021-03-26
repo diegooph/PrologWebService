@@ -1,9 +1,12 @@
 package br.com.zalf.prolog.webservice.frota.pneu.v3._model.servico;
 
-import lombok.*;
+import br.com.zalf.prolog.webservice.frota.pneu.v3._model.PneuEntity;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.*;
-import java.io.Serializable;
 
 /**
  * Created on 2021-03-18
@@ -16,42 +19,20 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PneuServicoRealizadoIncrementaVidaEntity {
-
     @EmbeddedId
-    private Id id;
-
-    @Column(name = "vida_nova_pneu", nullable = false)
-    private Integer vidaNova;
-
+    private PneuServicoRealizadoEntity.PK pk;
     @Column(name = "cod_modelo_banda", nullable = false)
     private Long codModeloBanda;
+    @Column(name = "vida_nova_pneu", nullable = false)
+    private Integer vidaNovaPneu;
+    @OneToOne(mappedBy = "pneuServicoRealizadoIncrementaVida")
+    private PneuServicoRealizadoEntity pneuServicoRealizado;
 
-    public static PneuServicoRealizadoIncrementaVidaEntity createFromPneuServico(final PneuServicoRealizadoEntity pneuServico) {
-        final PneuServicoRealizadoIncrementaVidaEntity.Id id = PneuServicoRealizadoIncrementaVidaEntity.Id.builder()
-                .servico(pneuServico)
-                .build();
+    @NotNull
+    public static PneuServicoRealizadoIncrementaVidaEntity createFromPneuServico(@NotNull final PneuEntity pneuEntity) {
         return PneuServicoRealizadoIncrementaVidaEntity.builder()
-                .id(id)
-                .codModeloBanda(pneuServico.getPneu().getCodModeloBanda())
-                .vidaNova(pneuServico.getPneu().getVidaAtual())
+                .codModeloBanda(pneuEntity.getCodModeloBanda())
+                .vidaNovaPneu(pneuEntity.getVidaAtual())
                 .build();
-    }
-
-    @Embeddable
-    @Builder
-    @Getter
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @EqualsAndHashCode
-    public static class Id implements Serializable {
-
-        @OneToOne(fetch = FetchType.LAZY,
-                  targetEntity = PneuServicoRealizadoEntity.class)
-        @JoinColumns(value = {
-                @JoinColumn(name = "cod_servico_realizado", referencedColumnName = "codigo"),
-                @JoinColumn(name = "fonte_servico_realizado", referencedColumnName = "fonte_servico_realizado")
-        }, foreignKey = @ForeignKey(name = "fk_servico_realizado_incrementa_vida_pneu",
-                                    value = ConstraintMode.CONSTRAINT))
-        private PneuServicoRealizadoEntity servico;
     }
 }
