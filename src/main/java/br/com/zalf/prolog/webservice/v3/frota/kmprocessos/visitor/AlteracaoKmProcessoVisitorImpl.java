@@ -69,7 +69,7 @@ public final class AlteracaoKmProcessoVisitorImpl implements AlteracaoKmProcesso
     }
 
     @Override
-    public void visit(@NotNull final AfericaoKmProcesso afericaoKmProcesso) {
+    public AlteracaoKmResponse visit(@NotNull final AfericaoKmProcesso afericaoKmProcesso) {
         final AfericaoEntity entity = afericaoService.getByCodigo(afericaoKmProcesso.getCodProcesso());
         validaUnidadePertenceEmpresa(afericaoKmProcesso.getCodEmpresa(), entity.getCodUnidade());
         final AfericaoEntity updateEntity = entity
@@ -77,10 +77,15 @@ public final class AlteracaoKmProcessoVisitorImpl implements AlteracaoKmProcesso
                 .withKmColetadoVeiculo(afericaoKmProcesso.getNovoKm())
                 .build();
         afericaoService.update(updateEntity);
+        return AlteracaoKmResponse
+                .builder()
+                .withKmAntigo(entity.getKmColetadoVeiculo())
+                .build();
     }
 
+    @NotNull
     @Override
-    public void visit(@NotNull final ServicoPneuKmProcesso servicoPneuKmProcesso) {
+    public AlteracaoKmResponse visit(@NotNull final ServicoPneuKmProcesso servicoPneuKmProcesso) {
         final ServicoPneuEntity entity = servicoPneuService.getByCodigo(servicoPneuKmProcesso.getCodProcesso());
         validaUnidadePertenceEmpresa(servicoPneuKmProcesso.getCodEmpresa(), entity.getCodUnidade());
         final ServicoPneuEntity updateEntity = entity
@@ -88,10 +93,15 @@ public final class AlteracaoKmProcessoVisitorImpl implements AlteracaoKmProcesso
                 .withKmColetadoVeiculoFechamentoServico(servicoPneuKmProcesso.getNovoKm())
                 .build();
         servicoPneuService.update(updateEntity);
+        return AlteracaoKmResponse
+                .builder()
+                .withKmAntigo(entity.getKmColetadoVeiculoFechamentoServico())
+                .build();
     }
 
+    @NotNull
     @Override
-    public void visit(@NotNull final ChecklistKmProcesso checklistKmProcesso) {
+    public AlteracaoKmResponse visit(@NotNull final ChecklistKmProcesso checklistKmProcesso) {
         final ChecklistEntity entity = checklistService.getByCodigo(checklistKmProcesso.getCodProcesso());
         validaUnidadePertenceEmpresa(checklistKmProcesso.getCodEmpresa(), entity.getCodUnidade());
         final ChecklistEntity updateEntity = entity
@@ -99,10 +109,15 @@ public final class AlteracaoKmProcessoVisitorImpl implements AlteracaoKmProcesso
                 .withKmColetadoVeiculo(checklistKmProcesso.getNovoKm())
                 .build();
         checklistService.update(updateEntity);
+        return AlteracaoKmResponse
+                .builder()
+                .withKmAntigo(entity.getKmColetadoVeiculo())
+                .build();
     }
 
+    @NotNull
     @Override
-    public void visit(@NotNull final ChecklistOrdemServicoItemKmProcesso checklistOrdemServicoItemKmProcesso) {
+    public AlteracaoKmResponse visit(@NotNull final ChecklistOrdemServicoItemKmProcesso checklistOrdemServicoItemKmProcesso) {
         final ChecklistOrdemServicoItemEntity entity =
                 checklistOrdemServicoService.getByCodigo(checklistOrdemServicoItemKmProcesso.getCodProcesso());
         validaUnidadePertenceEmpresa(checklistOrdemServicoItemKmProcesso.getCodEmpresa(), entity.getCodUnidade());
@@ -111,10 +126,15 @@ public final class AlteracaoKmProcessoVisitorImpl implements AlteracaoKmProcesso
                 .withKmColetadoVeiculoFechamentoItem(checklistOrdemServicoItemKmProcesso.getNovoKm())
                 .build();
         checklistOrdemServicoService.update(updateEntity);
+        return AlteracaoKmResponse
+                .builder()
+                .withKmAntigo(entity.getKmColetadoVeiculoFechamentoItem())
+                .build();
     }
 
+    @NotNull
     @Override
-    public void visit(@NotNull final MovimentacaoKmProcesso movimentacaoKmProcesso) {
+    public AlteracaoKmResponse visit(@NotNull final MovimentacaoKmProcesso movimentacaoKmProcesso) {
         final MovimentacaoEntity entity = movimentacaoService.getByCodigo(movimentacaoKmProcesso.getCodProcesso());
         validaUnidadePertenceEmpresa(movimentacaoKmProcesso.getCodEmpresa(), entity.getCodUnidade());
         final MovimentacaoEntity updateEntity = entity
@@ -124,10 +144,16 @@ public final class AlteracaoKmProcessoVisitorImpl implements AlteracaoKmProcesso
                 .withMovimentacaoDestino(null)
                 .build();
         movimentacaoService.update(updateEntity);
+        return AlteracaoKmResponse
+                .builder()
+                // TODO: retornar KM correto.
+                .withKmAntigo(-1)
+                .build();
     }
 
+    @NotNull
     @Override
-    public void visit(@NotNull final SocorroRotaKmProcesso socorroRotaKmProcesso) {
+    public AlteracaoKmResponse visit(@NotNull final SocorroRotaKmProcesso socorroRotaKmProcesso) {
         final AberturaSocorroRotaEntity entity =
                 socorroRotaService.getAberturaSocorroRotaByCodSocorro(socorroRotaKmProcesso.getCodProcesso());
         validaEmpresasIguais(socorroRotaKmProcesso.getCodEmpresa(), entity.getCodEmpresa());
@@ -136,10 +162,15 @@ public final class AlteracaoKmProcessoVisitorImpl implements AlteracaoKmProcesso
                 .withKmColetadoVeiculoAberturaSocorro(socorroRotaKmProcesso.getNovoKm())
                 .build();
         socorroRotaService.update(updateEntity);
+        return AlteracaoKmResponse
+                .builder()
+                .withKmAntigo(entity.getKmColetadoVeiculoAberturaSocorro())
+                .build();
     }
 
+    @NotNull
     @Override
-    public void visit(@NotNull final TransferenciaVeiculoKmProcesso transferenciaVeiculoKmProcesso) {
+    public AlteracaoKmResponse visit(@NotNull final TransferenciaVeiculoKmProcesso transferenciaVeiculoKmProcesso) {
         final TransferenciaVeiculoProcessoEntity entity =
                 transferenciaVeiculoService.getByCodigo(transferenciaVeiculoKmProcesso.getCodProcesso());
         validaAlgumaUnidadePertenceEmpresa(
@@ -153,6 +184,11 @@ public final class AlteracaoKmProcessoVisitorImpl implements AlteracaoKmProcesso
                 .withTransferenciaVeiculoInformacoes(null)
                 .build();
         transferenciaVeiculoService.update(updateEntity);
+        return AlteracaoKmResponse
+                .builder()
+                // TODO: retornar KM correto.
+                .withKmAntigo(-1)
+                .build();
     }
 
     private void validaEmpresasIguais(@NotNull final Long codEmpresaRecebido,

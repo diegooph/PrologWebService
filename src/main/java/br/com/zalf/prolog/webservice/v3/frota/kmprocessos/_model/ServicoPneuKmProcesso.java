@@ -20,8 +20,9 @@ public final class ServicoPneuKmProcesso extends AlteracaoKmProcesso {
         super(codEmpresa, codProcesso, tipoProcesso, codColaboradorAlteracao, novoKm);
     }
 
+    @NotNull
     @Override
-    public void accept(@NotNull final AlteracaoKmProcessoVisitor visitor) {
-        visitor.visit(this);
+    public AlteracaoKmResponse accept(@NotNull final AlteracaoKmProcessoVisitor visitor) {
+        return visitor.visit(this);
     }
 }
