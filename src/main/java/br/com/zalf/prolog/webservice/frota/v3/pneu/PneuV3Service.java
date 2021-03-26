@@ -1,13 +1,11 @@
-package br.com.zalf.prolog.webservice.frota.pneu.v3.service;
+package br.com.zalf.prolog.webservice.frota.v3.pneu;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.frota.pneu.v3._model.PneuEntity;
-import br.com.zalf.prolog.webservice.frota.pneu.v3._model.dto.PneuCadastroDto;
-import br.com.zalf.prolog.webservice.frota.pneu.v3.dao.PneuV3Dao;
-import br.com.zalf.prolog.webservice.frota.pneu.v3.mapper.PneuCadastroMapper;
-import br.com.zalf.prolog.webservice.frota.pneu.v3.service.servico.PneuServicoV3Service;
+import br.com.zalf.prolog.webservice.frota.v3.pneu._model.PneuCadastroDto;
+import br.com.zalf.prolog.webservice.frota.v3.pneu._model.PneuEntity;
+import br.com.zalf.prolog.webservice.frota.v3.pneu.pneuservico.PneuServicoV3Service;
 import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
 import br.com.zalf.prolog.webservice.interceptors.v3.OperacoesBloqueadasYaml;
 import org.jetbrains.annotations.NotNull;

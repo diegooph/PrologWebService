@@ -1,7 +1,7 @@
 package test.br.com.zalf.prolog.webservice.pilares.frota.pneu.v3;
 
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
-import br.com.zalf.prolog.webservice.frota.pneu.v3._model.dto.PneuCadastroDto;
+import br.com.zalf.prolog.webservice.frota.v3.pneu._model.PneuCadastroDto;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestComponent;

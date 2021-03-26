@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.frota.pneu.v3._model;
+package br.com.zalf.prolog.webservice.frota.v3.pneu._model;
 
 import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;

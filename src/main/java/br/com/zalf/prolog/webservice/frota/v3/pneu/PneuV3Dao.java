@@ -1,6 +1,6 @@
-package br.com.zalf.prolog.webservice.frota.pneu.v3.dao;
+package br.com.zalf.prolog.webservice.frota.v3.pneu;
 
-import br.com.zalf.prolog.webservice.frota.pneu.v3._model.PneuEntity;
+import br.com.zalf.prolog.webservice.frota.v3.pneu._model.PneuEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

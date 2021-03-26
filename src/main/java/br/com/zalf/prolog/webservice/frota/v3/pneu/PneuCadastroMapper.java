@@ -1,9 +1,9 @@
-package br.com.zalf.prolog.webservice.frota.pneu.v3.mapper;
+package br.com.zalf.prolog.webservice.frota.v3.pneu;
 
 import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
-import br.com.zalf.prolog.webservice.frota.pneu.v3._model.PneuEntity;
-import br.com.zalf.prolog.webservice.frota.pneu.v3._model.dto.PneuCadastroDto;
+import br.com.zalf.prolog.webservice.frota.v3.pneu._model.PneuCadastroDto;
+import br.com.zalf.prolog.webservice.frota.v3.pneu._model.PneuEntity;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 

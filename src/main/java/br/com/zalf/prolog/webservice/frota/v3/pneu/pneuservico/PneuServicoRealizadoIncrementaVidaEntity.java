@@ -1,6 +1,6 @@
-package br.com.zalf.prolog.webservice.frota.pneu.v3._model.servico;
+package br.com.zalf.prolog.webservice.frota.v3.pneu.pneuservico;
 
-import br.com.zalf.prolog.webservice.frota.pneu.v3._model.PneuEntity;
+import br.com.zalf.prolog.webservice.frota.v3.pneu._model.PneuEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;

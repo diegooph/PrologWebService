@@ -1,7 +1,5 @@
-package br.com.zalf.prolog.webservice.frota.pneu.v3.service.servico;
+package br.com.zalf.prolog.webservice.frota.v3.pneu.pneuservico.tiposervico;
 
-import br.com.zalf.prolog.webservice.frota.pneu.v3._model.servico.PneuTipoServicoEntity;
-import br.com.zalf.prolog.webservice.frota.pneu.v3.dao.servico.PneuTipoServicoV3Dao;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

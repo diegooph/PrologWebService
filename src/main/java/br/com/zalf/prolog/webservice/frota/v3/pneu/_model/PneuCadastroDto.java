@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.frota.pneu.v3._model.dto;
+package br.com.zalf.prolog.webservice.frota.v3.pneu._model;
 
 import lombok.Value;
 

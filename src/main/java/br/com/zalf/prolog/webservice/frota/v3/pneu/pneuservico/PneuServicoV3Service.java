@@ -1,14 +1,9 @@
-package br.com.zalf.prolog.webservice.frota.pneu.v3.service.servico;
+package br.com.zalf.prolog.webservice.frota.v3.pneu.pneuservico;
 
 import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico._model.PneuServicoRealizado;
-import br.com.zalf.prolog.webservice.frota.pneu.v3._model.PneuEntity;
-import br.com.zalf.prolog.webservice.frota.pneu.v3._model.servico.PneuServicoCadastroEntity;
-import br.com.zalf.prolog.webservice.frota.pneu.v3._model.servico.PneuServicoRealizadoEntity;
-import br.com.zalf.prolog.webservice.frota.pneu.v3._model.servico.PneuServicoRealizadoIncrementaVidaEntity;
-import br.com.zalf.prolog.webservice.frota.pneu.v3._model.servico.PneuTipoServicoEntity;
-import br.com.zalf.prolog.webservice.frota.pneu.v3.dao.servico.PneuServicoCadastroV3Dao;
-import br.com.zalf.prolog.webservice.frota.pneu.v3.dao.servico.PneuServicoRealizadoIncrementaVidaV3Dao;
-import br.com.zalf.prolog.webservice.frota.pneu.v3.dao.servico.PneuServicoRealizadoV3Dao;
+import br.com.zalf.prolog.webservice.frota.v3.pneu._model.PneuEntity;
+import br.com.zalf.prolog.webservice.frota.v3.pneu.pneuservico.tiposervico.PneuTipoServicoEntity;
+import br.com.zalf.prolog.webservice.frota.v3.pneu.pneuservico.tiposervico.PneuTipoServicoV3Service;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

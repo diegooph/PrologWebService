@@ -1,7 +1,7 @@
-package br.com.zalf.prolog.webservice.frota.pneu.v3;
+package br.com.zalf.prolog.webservice.frota.v3.pneu;
 
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
-import br.com.zalf.prolog.webservice.frota.pneu.v3._model.dto.PneuCadastroDto;
+import br.com.zalf.prolog.webservice.frota.v3.pneu._model.PneuCadastroDto;
 import org.jetbrains.annotations.NotNull;
 
 import javax.validation.Valid;
