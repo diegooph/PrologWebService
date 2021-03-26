@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.frota.kmprocessos._model;
+package br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model;
 
 import br.com.zalf.prolog.webservice.frota.veiculo.model.VeiculoTipoProcesso;
 import lombok.Value;

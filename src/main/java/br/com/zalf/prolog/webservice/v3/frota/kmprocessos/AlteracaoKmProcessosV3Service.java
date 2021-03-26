@@ -1,7 +1,7 @@
-package br.com.zalf.prolog.webservice.frota.kmprocessos;
+package br.com.zalf.prolog.webservice.v3.frota.kmprocessos;
 
-import br.com.zalf.prolog.webservice.frota.kmprocessos._model.AlteracaoKmProcessoDto;
-import br.com.zalf.prolog.webservice.frota.kmprocessos._model.AlteracaoKmProcessoEntity;
+import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.AlteracaoKmProcessoDto;
+import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.AlteracaoKmProcessoEntity;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

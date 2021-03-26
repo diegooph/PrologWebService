@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.frota.kmprocessos.entities;
+package br.com.zalf.prolog.webservice.v3.frota.kmprocessos.entities;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,8 +17,8 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Getter
 @Entity
-@Table(schema = "public", name = "transferencia_veiculo")
-public final class TransferenciaVeiculoEntity {
+@Table(schema = "public", name = "afericao_manutencao")
+public final class AfericaoManutencaoEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "codigo", nullable = false)

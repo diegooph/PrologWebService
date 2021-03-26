@@ -1,7 +1,7 @@
-package br.com.zalf.prolog.webservice.frota.kmprocessos.visitor;
+package br.com.zalf.prolog.webservice.v3.frota.kmprocessos.visitor;
 
-import br.com.zalf.prolog.webservice.frota.kmprocessos.entities.ChecklistEntity;
-import br.com.zalf.prolog.webservice.frota.kmprocessos.entities.ChecklistV3Dao;
+import br.com.zalf.prolog.webservice.v3.frota.kmprocessos.entities.ChecklistEntity;
+import br.com.zalf.prolog.webservice.v3.frota.kmprocessos.entities.ChecklistV3Dao;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

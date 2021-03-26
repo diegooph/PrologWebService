@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.frota.kmprocessos.entities;
+package br.com.zalf.prolog.webservice.v3.frota.kmprocessos.entities;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
