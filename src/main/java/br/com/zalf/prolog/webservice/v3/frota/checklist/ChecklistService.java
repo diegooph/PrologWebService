@@ -21,7 +21,7 @@ public class ChecklistService {
     }
 
     @NotNull
-    public ChecklistEntity getChecklistByCodigo(@NotNull final Long codigo) {
+    public ChecklistEntity getByCodigo(@NotNull final Long codigo) {
         return checklistDao.getOne(codigo);
     }
 }
