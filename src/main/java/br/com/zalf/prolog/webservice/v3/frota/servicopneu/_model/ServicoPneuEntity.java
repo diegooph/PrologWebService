@@ -25,6 +25,8 @@ public final class ServicoPneuEntity {
     private Long codigo;
     @Column(name = "cod_unidade", nullable = false)
     private Long codUnidade;
+    @Column(name = "cod_afericao", nullable = false)
+    private Long codAfericao;
     @Column(name = "km_momento_conserto", nullable = false)
     private long kmColetadoVeiculoFechamentoServico;
 }
