@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.Set;
 
 /**
  * Created on 2021-03-25
@@ -17,21 +18,14 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Getter
 @Entity
-@Table(schema = "public", name = "movimentacao")
-public final class MovimentacaoEntity {
+@Table(schema = "public", name = "movimentacao_processo")
+public final class MovimentacaoProcessoEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "codigo", nullable = false)
     private Long codigo;
     @Column(name = "cod_unidade", nullable = false)
     private Long codUnidade;
-    @OneToOne(mappedBy = "movimentacao")
-    @PrimaryKeyJoinColumn
-    private MovimentacaoOrigemEntity movimentacaoOrigem;
-    @OneToOne(mappedBy = "movimentacao")
-    @PrimaryKeyJoinColumn
-    private MovimentacaoDestinoEntity movimentacaoDestino;
-    @ManyToOne
-    @JoinColumn(name = "cod_movimentacao_processo", nullable = false)
-    private MovimentacaoProcessoEntity movimentacaoProcesso;
+    @OneToMany(mappedBy = "movimentacaoProcesso")
+    private Set<MovimentacaoEntity> movimentacoes;
 }

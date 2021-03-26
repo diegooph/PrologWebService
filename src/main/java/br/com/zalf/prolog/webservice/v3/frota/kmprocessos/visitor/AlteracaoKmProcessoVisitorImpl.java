@@ -10,8 +10,9 @@ import br.com.zalf.prolog.webservice.v3.frota.checklist._model.ChecklistEntity;
 import br.com.zalf.prolog.webservice.v3.frota.checklistordemservico.ChecklistOrdemServicoService;
 import br.com.zalf.prolog.webservice.v3.frota.checklistordemservico._model.ChecklistOrdemServicoItemEntity;
 import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.*;
+import br.com.zalf.prolog.webservice.v3.frota.movimentacao.MovimentacaoProcessoService;
 import br.com.zalf.prolog.webservice.v3.frota.movimentacao.MovimentacaoService;
-import br.com.zalf.prolog.webservice.v3.frota.movimentacao._model.MovimentacaoEntity;
+import br.com.zalf.prolog.webservice.v3.frota.movimentacao._model.MovimentacaoProcessoEntity;
 import br.com.zalf.prolog.webservice.v3.frota.servicopneu.ServicoPneuService;
 import br.com.zalf.prolog.webservice.v3.frota.servicopneu._model.ServicoPneuEntity;
 import br.com.zalf.prolog.webservice.v3.frota.socorrorota.SocorroRotaService;
@@ -42,6 +43,8 @@ public final class AlteracaoKmProcessoVisitorImpl implements AlteracaoKmProcesso
     @NotNull
     private final MovimentacaoService movimentacaoService;
     @NotNull
+    private final MovimentacaoProcessoService movimentacaoProcessoService;
+    @NotNull
     private final SocorroRotaService socorroRotaService;
     @NotNull
     private final TransferenciaVeiculoService transferenciaVeiculoService;
@@ -52,6 +55,7 @@ public final class AlteracaoKmProcessoVisitorImpl implements AlteracaoKmProcesso
                                           @NotNull final ServicoPneuService servicoPneuService,
                                           @NotNull final ChecklistService checklistService,
                                           @NotNull final ChecklistOrdemServicoService checklistOrdemServicoService,
+                                          @NotNull final MovimentacaoProcessoService movimentacaoProcessoService,
                                           @NotNull final MovimentacaoService movimentacaoService,
                                           @NotNull final SocorroRotaService socorroRotaService,
                                           @NotNull final TransferenciaVeiculoService transferenciaVeiculoService) {
@@ -60,6 +64,7 @@ public final class AlteracaoKmProcessoVisitorImpl implements AlteracaoKmProcesso
         this.servicoPneuService = servicoPneuService;
         this.checklistService = checklistService;
         this.checklistOrdemServicoService = checklistOrdemServicoService;
+        this.movimentacaoProcessoService = movimentacaoProcessoService;
         this.movimentacaoService = movimentacaoService;
         this.socorroRotaService = socorroRotaService;
         this.transferenciaVeiculoService = transferenciaVeiculoService;
@@ -147,17 +152,16 @@ public final class AlteracaoKmProcessoVisitorImpl implements AlteracaoKmProcesso
     @NotNull
     @Override
     public AlteracaoKmResponse visit(@NotNull final MovimentacaoKmProcesso movimentacaoKmProcesso) {
-        final MovimentacaoEntity entity = movimentacaoService.getByCodigo(movimentacaoKmProcesso.getCodProcesso());
+        final MovimentacaoProcessoEntity entity =
+                movimentacaoProcessoService.getByCodigo(movimentacaoKmProcesso.getCodProcesso());
         applyValidations(movimentacaoKmProcesso.getCodEmpresa(),
                          movimentacaoKmProcesso.getCodVeiculo(),
                          null);
-        final MovimentacaoEntity updateEntity = entity
+        final MovimentacaoProcessoEntity updateEntity = entity
                 .toBuilder()
                 // TODO: criar origem e destino.
-                .withMovimentacaoOrigem(null)
-                .withMovimentacaoDestino(null)
                 .build();
-        movimentacaoService.update(updateEntity);
+        movimentacaoProcessoService.update(updateEntity);
         return AlteracaoKmResponse
                 .builder()
                 // TODO: retornar KM correto.
