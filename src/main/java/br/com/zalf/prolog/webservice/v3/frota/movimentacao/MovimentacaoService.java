@@ -25,4 +25,8 @@ public class MovimentacaoService {
     public MovimentacaoEntity getByCodigo(@NotNull final Long codigo) {
         return movimentacaoDao.getOne(codigo);
     }
+
+    public void update(@NotNull final MovimentacaoEntity movimentacaoEntity) {
+        movimentacaoDao.save(movimentacaoEntity);
+    }
 }

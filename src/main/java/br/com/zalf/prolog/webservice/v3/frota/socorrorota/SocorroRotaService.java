@@ -25,4 +25,8 @@ public class SocorroRotaService {
     public AberturaSocorroRotaEntity getAberturaSocorroRotaByCodSocorro(@NotNull final Long codSocorroRta) {
         return socorroRotaDao.getAberturaSocorroRotaEntityByCodSocorroRota(codSocorroRta);
     }
+
+    public void update(@NotNull final AberturaSocorroRotaEntity aberturaSocorroRotaEntity) {
+        socorroRotaDao.save(aberturaSocorroRotaEntity);
+    }
 }

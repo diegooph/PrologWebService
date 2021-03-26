@@ -25,4 +25,8 @@ public class AfericaoService {
     public AfericaoEntity getByCodigo(@NotNull final Long codigo) {
         return afericaoDao.getOne(codigo);
     }
+
+    public void update(@NotNull final AfericaoEntity afericaoEntity) {
+        afericaoDao.save(afericaoEntity);
+    }
 }

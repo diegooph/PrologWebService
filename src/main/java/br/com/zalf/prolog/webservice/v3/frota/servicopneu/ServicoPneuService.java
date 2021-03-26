@@ -25,4 +25,8 @@ public class ServicoPneuService {
     public ServicoPneuEntity getByCodigo(@NotNull final Long codigo) {
         return servicoPneuDao.getOne(codigo);
     }
+
+    public void update(@NotNull final ServicoPneuEntity servicoPneuEntity) {
+        servicoPneuDao.save(servicoPneuEntity);
+    }
 }

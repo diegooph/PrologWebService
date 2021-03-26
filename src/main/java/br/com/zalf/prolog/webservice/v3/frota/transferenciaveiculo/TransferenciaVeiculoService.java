@@ -25,4 +25,8 @@ public class TransferenciaVeiculoService {
     public TransferenciaVeiculoProcessoEntity getByCodigo(@NotNull final Long codigo) {
         return transferenciaVeiculoDao.getOne(codigo);
     }
+
+    public void update(@NotNull final TransferenciaVeiculoProcessoEntity transferenciaVeiculoProcessoEntity) {
+        transferenciaVeiculoDao.save(transferenciaVeiculoProcessoEntity);
+    }
 }
