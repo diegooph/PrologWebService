@@ -25,6 +25,8 @@ public final class TransferenciaVeiculoInformacaoEntity {
     private Long codigo;
     @Column(name = "cod_unidade", nullable = false)
     private Long codUnidade;
+    @Column(name = "cod_veiculo", nullable = false)
+    private Long codVeiculo;
     @Column(name = "km_veiculo_momento_transferencia", nullable = false)
     private long kmColetadoVeiculoMomentoTransferencia;
     @ManyToOne

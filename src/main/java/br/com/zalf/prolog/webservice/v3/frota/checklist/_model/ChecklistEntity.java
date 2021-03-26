@@ -25,6 +25,8 @@ public final class ChecklistEntity {
     private Long codigo;
     @Column(name = "cod_unidade", nullable = false)
     private Long codUnidade;
+    @Column(name = "cod_veiculo", nullable = false)
+    private Long codVeiculo;
     @Column(name = "km_veiculo", nullable = false)
     private long kmColetadoVeiculo;
 }

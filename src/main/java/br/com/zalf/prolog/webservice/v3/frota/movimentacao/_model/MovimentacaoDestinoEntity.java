@@ -23,6 +23,8 @@ public final class MovimentacaoDestinoEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "cod_movimentacao", nullable = false)
     private Long codMovimentacao;
+    @Column(name = "cod_veiculo", nullable = false)
+    private Long codVeiculo;
     @Column(name = "km_veiculo", nullable = false)
     private long kmColetadoVeiculo;
     @MapsId

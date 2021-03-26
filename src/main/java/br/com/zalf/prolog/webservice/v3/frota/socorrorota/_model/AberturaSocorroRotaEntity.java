@@ -23,6 +23,8 @@ public final class AberturaSocorroRotaEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "codigo", nullable = false)
     private Long codigo;
+    @Column(name = "cod_veiculo_problema", nullable = false)
+    private Long codVeiculo;
     @Column(name = "cod_socorro_rota", nullable = false)
     private Long codSocorroRota;
     @Column(name = "cod_empresa", nullable = false)
