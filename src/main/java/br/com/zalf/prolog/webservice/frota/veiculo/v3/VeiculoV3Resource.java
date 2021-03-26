@@ -35,6 +35,7 @@ public class VeiculoV3Resource implements VeiculoV3ResourceApiDoc {
         this.veiculoMapper = veiculoMapper;
     }
 
+    @Override
     @ApiExposed
     @POST
     @Secured(permissions = Pilares.Frota.Veiculo.CADASTRAR)
