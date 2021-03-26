@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.v3.frota.movimentacao;
+package br.com.zalf.prolog.webservice.v3.frota.checklist._model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,16 +17,14 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Getter
 @Entity
-@Table(schema = "public", name = "movimentacao_destino")
-public final class MovimentacaoDestinoEntity {
+@Table(schema = "public", name = "checklist")
+public final class ChecklistEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "cod_movimentacao", nullable = false)
-    private Long codMovimentacao;
+    @Column(name = "codigo", nullable = false)
+    private Long codigo;
+    @Column(name = "cod_unidade", nullable = false)
+    private Long codUnidade;
     @Column(name = "km_veiculo", nullable = false)
     private long kmColetadoVeiculo;
-    @MapsId
-    @OneToOne
-    @JoinColumn(name = "cod_movimentacao")
-    private MovimentacaoEntity movimentacao;
 }

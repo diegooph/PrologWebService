@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.v3.frota.kmprocessos.visitor;
 
-import br.com.zalf.prolog.webservice.v3.frota.checklist.ChecklistEntity;
+import br.com.zalf.prolog.webservice.v3.frota.checklist._model.ChecklistEntity;
 import org.jetbrains.annotations.NotNull;
 
 /**

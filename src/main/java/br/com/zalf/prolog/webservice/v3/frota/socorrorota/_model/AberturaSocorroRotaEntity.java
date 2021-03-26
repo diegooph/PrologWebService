@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.v3.frota.socorrorota;
+package br.com.zalf.prolog.webservice.v3.frota.socorrorota._model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

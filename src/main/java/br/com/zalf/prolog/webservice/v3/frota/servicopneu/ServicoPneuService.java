@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.v3.frota.servicopneu;
 
+import br.com.zalf.prolog.webservice.v3.frota.servicopneu._model.ServicoPneuEntity;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

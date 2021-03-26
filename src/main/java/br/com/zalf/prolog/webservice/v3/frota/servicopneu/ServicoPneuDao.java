@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.v3.frota.servicopneu;
 
+import br.com.zalf.prolog.webservice.v3.frota.servicopneu._model.ServicoPneuEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**

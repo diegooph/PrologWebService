@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.v3.frota.checklistordemservico;
+package br.com.zalf.prolog.webservice.v3.frota.checklistordemservico._model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

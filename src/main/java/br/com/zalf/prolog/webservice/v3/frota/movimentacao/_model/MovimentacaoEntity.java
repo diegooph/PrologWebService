@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.v3.frota.servicopneu;
+package br.com.zalf.prolog.webservice.v3.frota.movimentacao._model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,14 +17,18 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Getter
 @Entity
-@Table(schema = "public", name = "afericao_manutencao")
-public final class ServicoPneuEntity {
+@Table(schema = "public", name = "movimentacao")
+public final class MovimentacaoEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "codigo", nullable = false)
     private Long codigo;
     @Column(name = "cod_unidade", nullable = false)
     private Long codUnidade;
-    @Column(name = "km_momento_conserto", nullable = false)
-    private long kmColetadoVeiculoFechamentoServico;
+    @OneToOne(mappedBy = "movimentacao")
+    @PrimaryKeyJoinColumn
+    private MovimentacaoOrigemEntity movimentacaoOrigem;
+    @OneToOne(mappedBy = "movimentacao")
+    @PrimaryKeyJoinColumn
+    private MovimentacaoDestinoEntity movimentacaoDestino;
 }

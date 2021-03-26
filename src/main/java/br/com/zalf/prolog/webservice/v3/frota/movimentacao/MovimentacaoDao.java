@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.v3.frota.movimentacao;
 
+import br.com.zalf.prolog.webservice.v3.frota.movimentacao._model.MovimentacaoEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**

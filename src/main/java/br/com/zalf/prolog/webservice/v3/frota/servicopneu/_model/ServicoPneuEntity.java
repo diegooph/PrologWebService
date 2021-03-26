@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.v3.frota.checklist;
+package br.com.zalf.prolog.webservice.v3.frota.servicopneu._model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,14 +17,14 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Getter
 @Entity
-@Table(schema = "public", name = "checklist")
-public final class ChecklistEntity {
+@Table(schema = "public", name = "afericao_manutencao")
+public final class ServicoPneuEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "codigo", nullable = false)
     private Long codigo;
     @Column(name = "cod_unidade", nullable = false)
     private Long codUnidade;
-    @Column(name = "km_veiculo", nullable = false)
-    private long kmColetadoVeiculo;
+    @Column(name = "km_momento_conserto", nullable = false)
+    private long kmColetadoVeiculoFechamentoServico;
 }

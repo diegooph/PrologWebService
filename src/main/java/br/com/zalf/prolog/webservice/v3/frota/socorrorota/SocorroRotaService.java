@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.v3.frota.socorrorota;
 
+import br.com.zalf.prolog.webservice.v3.frota.socorrorota._model.AberturaSocorroRotaEntity;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

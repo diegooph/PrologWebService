@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.v3.frota.afericao;
 
+import br.com.zalf.prolog.webservice.v3.frota.afericao._model.AfericaoEntity;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
