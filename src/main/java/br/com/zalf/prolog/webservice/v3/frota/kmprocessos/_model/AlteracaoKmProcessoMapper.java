@@ -19,6 +19,7 @@ public final class AlteracaoKmProcessoMapper {
             case AFERICAO:
                 return new AfericaoKmProcesso(
                         dto.getCodEmpresa(),
+                        dto.getCodVeiculo(),
                         dto.getCodProcesso(),
                         dto.getTipoProcesso(),
                         codColaboradorAlteracao,
@@ -26,6 +27,7 @@ public final class AlteracaoKmProcessoMapper {
             case FECHAMENTO_SERVICO_PNEU:
                 return new ServicoPneuKmProcesso(
                         dto.getCodEmpresa(),
+                        dto.getCodVeiculo(),
                         dto.getCodProcesso(),
                         dto.getTipoProcesso(),
                         codColaboradorAlteracao,
@@ -33,6 +35,7 @@ public final class AlteracaoKmProcessoMapper {
             case CHECKLIST:
                 return new ChecklistKmProcesso(
                         dto.getCodEmpresa(),
+                        dto.getCodVeiculo(),
                         dto.getCodProcesso(),
                         dto.getTipoProcesso(),
                         codColaboradorAlteracao,
@@ -40,6 +43,7 @@ public final class AlteracaoKmProcessoMapper {
             case FECHAMENTO_ITEM_CHECKLIST:
                 return new ChecklistOrdemServicoItemKmProcesso(
                         dto.getCodEmpresa(),
+                        dto.getCodVeiculo(),
                         dto.getCodProcesso(),
                         dto.getTipoProcesso(),
                         codColaboradorAlteracao,
@@ -47,6 +51,7 @@ public final class AlteracaoKmProcessoMapper {
             case MOVIMENTACAO:
                 return new MovimentacaoKmProcesso(
                         dto.getCodEmpresa(),
+                        dto.getCodVeiculo(),
                         dto.getCodProcesso(),
                         dto.getTipoProcesso(),
                         codColaboradorAlteracao,
@@ -54,6 +59,7 @@ public final class AlteracaoKmProcessoMapper {
             case SOCORRO_EM_ROTA:
                 return new SocorroRotaKmProcesso(
                         dto.getCodEmpresa(),
+                        dto.getCodVeiculo(),
                         dto.getCodProcesso(),
                         dto.getTipoProcesso(),
                         codColaboradorAlteracao,
@@ -61,6 +67,7 @@ public final class AlteracaoKmProcessoMapper {
             case TRANSFERENCIA_DE_VEICULO:
                 return new TransferenciaVeiculoKmProcesso(
                         dto.getCodEmpresa(),
+                        dto.getCodVeiculo(),
                         dto.getCodProcesso(),
                         dto.getTipoProcesso(),
                         codColaboradorAlteracao,

@@ -14,6 +14,8 @@ public class AlteracaoKmProcessoDto {
     @NotNull
     Long codEmpresa;
     @NotNull
+    Long codVeiculo;
+    @NotNull
     Long codProcesso;
     @NotNull
     VeiculoTipoProcesso tipoProcesso;

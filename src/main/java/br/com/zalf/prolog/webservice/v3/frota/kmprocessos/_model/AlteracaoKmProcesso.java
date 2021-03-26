@@ -18,6 +18,8 @@ public abstract class AlteracaoKmProcesso implements Visitable {
     @NotNull
     private final Long codEmpresa;
     @NotNull
+    private final Long codVeiculo;
+    @NotNull
     private final Long codProcesso;
     @NotNull
     private final VeiculoTipoProcesso tipoProcesso;

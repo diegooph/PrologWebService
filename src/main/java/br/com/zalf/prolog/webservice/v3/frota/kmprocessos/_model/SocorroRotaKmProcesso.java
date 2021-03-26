@@ -13,11 +13,12 @@ import org.jetbrains.annotations.Nullable;
 public final class SocorroRotaKmProcesso extends AlteracaoKmProcesso {
 
     public SocorroRotaKmProcesso(@NotNull final Long codEmpresa,
+                                 @NotNull final Long codVeiculo,
                                  @NotNull final Long codProcesso,
                                  @NotNull final VeiculoTipoProcesso tipoProcesso,
                                  @Nullable final Long codColaboradorAlteracao,
                                  final long novoKm) {
-        super(codEmpresa, codProcesso, tipoProcesso, codColaboradorAlteracao, novoKm);
+        super(codEmpresa, codVeiculo, codProcesso, tipoProcesso, codColaboradorAlteracao, novoKm);
     }
 
     @NotNull
