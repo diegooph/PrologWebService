@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.v3.frota.kmprocessos.visitor;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.v3.frota.afericao.AfericaoService;
 import br.com.zalf.prolog.webservice.v3.frota.checklist.ChecklistService;
+import br.com.zalf.prolog.webservice.v3.frota.checklist._model.ChecklistEntity;
 import br.com.zalf.prolog.webservice.v3.frota.checklistordemservico.ChecklistOrdemServicoService;
 import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.*;
 import br.com.zalf.prolog.webservice.v3.frota.movimentacao.MovimentacaoService;
@@ -73,7 +74,15 @@ public class AlteracaoKmProcessoVisitorImpl implements AlteracaoKmProcessoVisito
 
     @Override
     public void visitChecklist(@NotNull final ChecklistKmProcesso checklistKmProcesso) {
-
+        final ChecklistEntity entity = checklistService.getByCodigo(checklistKmProcesso.getCodProcesso());
+        validaUnidadePertenceEmpresa(checklistKmProcesso.getCodEmpresa(), entity.getCodUnidade());
+        final ChecklistEntity updateEntity = entity
+                .toBuilder()
+                .withCodigo(checklistKmProcesso.getCodProcesso())
+                .withCodUnidade(entity.getCodUnidade())
+                .withKmColetadoVeiculo(checklistKmProcesso.getNovoKm())
+                .build();
+        checklistService.update(updateEntity);
     }
 
     @Override

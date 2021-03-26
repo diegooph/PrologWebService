@@ -18,5 +18,5 @@ public abstract class AlteracaoKmProcesso {
     private final Long codProcesso;
     private final long novoKm;
 
-    protected abstract void accept(@NotNull final AlteracaoKmProcessoVisitor visitor);
+    public abstract void accept(@NotNull final AlteracaoKmProcessoVisitor visitor);
 }

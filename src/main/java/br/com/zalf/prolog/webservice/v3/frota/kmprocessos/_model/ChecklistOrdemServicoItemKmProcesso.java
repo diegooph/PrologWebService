@@ -18,7 +18,7 @@ public final class ChecklistOrdemServicoItemKmProcesso extends AlteracaoKmProces
     }
 
     @Override
-    protected void accept(@NotNull final AlteracaoKmProcessoVisitor visitor) {
+    public void accept(@NotNull final AlteracaoKmProcessoVisitor visitor) {
         visitor.visitChecklistOrdemServicoItem(this);
     }
 }

@@ -25,4 +25,8 @@ public class ChecklistService {
     public ChecklistEntity getByCodigo(@NotNull final Long codigo) {
         return checklistDao.getOne(codigo);
     }
+
+    public void update(@NotNull final ChecklistEntity checklistEntity) {
+        checklistDao.save(checklistEntity);
+    }
 }

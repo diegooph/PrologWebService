@@ -2,8 +2,10 @@ package br.com.zalf.prolog.webservice.v3.frota.kmprocessos;
 
 import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
-import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.AlteracaoKmProcessoDto;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.VeiculoTipoProcesso;
 import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.AlteracaoKmProcessoEntity;
+import br.com.zalf.prolog.webservice.v3.frota.kmprocessos.visitor.AlteracaoKmProcesso;
+import br.com.zalf.prolog.webservice.v3.frota.kmprocessos.visitor.AlteracaoKmProcessoVisitor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,21 +21,27 @@ import javax.transaction.Transactional;
 public class AlteracaoKmProcessosService {
     @NotNull
     private final AlteracaoKmProcessoDao alteracaoKmProcessoDao;
+    @NotNull
+    private final AlteracaoKmProcessoVisitor visitor;
 
     @Autowired
-    public AlteracaoKmProcessosService(@NotNull final AlteracaoKmProcessoDao alteracaoKmProcessoDao) {
+    public AlteracaoKmProcessosService(@NotNull final AlteracaoKmProcessoDao alteracaoKmProcessoDao,
+                                       @NotNull final AlteracaoKmProcessoVisitor visitor) {
         this.alteracaoKmProcessoDao = alteracaoKmProcessoDao;
+        this.visitor = visitor;
     }
 
     @Transactional
-    public void updateKmProcesso(@NotNull final AlteracaoKmProcessoDto alteracaoKmProcesso) {
+    public void updateKmProcesso(@NotNull final AlteracaoKmProcesso alteracaoKmProcesso,
+                                 @NotNull final VeiculoTipoProcesso tipoProcesso) {
+        alteracaoKmProcesso.accept(visitor);
         final AlteracaoKmProcessoEntity entity = AlteracaoKmProcessoEntity
                 .builder()
                 .withDataHoraAlteraoKm(Now.getOffsetDateTimeUtc())
                 .withCodColaboradorAlteracaoKm(2272L)
                 .withOrigemAlteracao(OrigemAcaoEnum.PROLOG_WEB)
                 .withCodProcessoAlterado(alteracaoKmProcesso.getCodProcesso())
-                .withTipoProcessoAlterado(alteracaoKmProcesso.getTipoProcesso())
+                .withTipoProcessoAlterado(tipoProcesso)
                 .withKmAntigo(-1)
                 .withKmNovo(alteracaoKmProcesso.getNovoKm())
                 .build();

@@ -18,7 +18,7 @@ public final class TransferenciaVeiculoKmProcesso extends AlteracaoKmProcesso {
     }
 
     @Override
-    protected void accept(@NotNull final AlteracaoKmProcessoVisitor visitor) {
+    public void accept(@NotNull final AlteracaoKmProcessoVisitor visitor) {
         visitor.visitTransferenciaVeiculo(this);
     }
 }
