@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.v3.frota.kmprocessos.entities;
+package br.com.zalf.prolog.webservice.v3.frota.socorrorota;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,14 +17,16 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Getter
 @Entity
-@Table(schema = "public", name = "checklist")
-public final class SocorroRotaEntity {
+@Table(schema = "public", name = "socorro_rota_abertura")
+public final class AberturaSocorroRotaEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "codigo", nullable = false)
     private Long codigo;
-    @Column(name = "cod_unidade", nullable = false)
-    private Long codUnidade;
-    @Column(name = "km_veiculo", nullable = false)
-    private long kmColetadoVeiculo;
+    @Column(name = "cod_socorro_rota", nullable = false)
+    private Long codSocorroRota;
+    @Column(name = "cod_empresa", nullable = false)
+    private Long codEmpresa;
+    @Column(name = "km_veiculo_abertura", nullable = false)
+    private long kmColetadoVeiculoAberturaSocorro;
 }
