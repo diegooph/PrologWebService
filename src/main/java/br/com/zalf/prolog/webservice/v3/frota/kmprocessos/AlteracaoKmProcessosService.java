@@ -14,12 +14,12 @@ import javax.transaction.Transactional;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 @Service
-public class AlteracaoKmProcessosV3Service {
+public class AlteracaoKmProcessosService {
     @NotNull
     private final AlteracaoKmProcessoDao alteracaoKmProcessoDao;
 
     @Autowired
-    public AlteracaoKmProcessosV3Service(@NotNull final AlteracaoKmProcessoDao alteracaoKmProcessoDao) {
+    public AlteracaoKmProcessosService(@NotNull final AlteracaoKmProcessoDao alteracaoKmProcessoDao) {
         this.alteracaoKmProcessoDao = alteracaoKmProcessoDao;
     }
 

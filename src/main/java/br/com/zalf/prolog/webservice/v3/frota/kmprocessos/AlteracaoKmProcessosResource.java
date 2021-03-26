@@ -26,12 +26,12 @@ import javax.ws.rs.core.MediaType;
 @Path("/v3/processos-coleta-km")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-public final class AlteracaoKmProcessosV3Resource {
+public final class AlteracaoKmProcessosResource {
     @NotNull
-    private final AlteracaoKmProcessosV3Service service;
+    private final AlteracaoKmProcessosService service;
 
     @Autowired
-    public AlteracaoKmProcessosV3Resource(@NotNull final AlteracaoKmProcessosV3Service service) {
+    public AlteracaoKmProcessosResource(@NotNull final AlteracaoKmProcessosService service) {
         this.service = service;
     }
 
