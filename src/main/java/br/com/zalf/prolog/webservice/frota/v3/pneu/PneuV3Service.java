@@ -5,7 +5,7 @@ import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.frota.v3.pneu._model.PneuCadastroDto;
 import br.com.zalf.prolog.webservice.frota.v3.pneu._model.PneuEntity;
-import br.com.zalf.prolog.webservice.frota.v3.pneuservico.PneuServicoV3Service;
+import br.com.zalf.prolog.webservice.frota.v3.pneu.pneuservico.PneuServicoV3Service;
 import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
 import br.com.zalf.prolog.webservice.interceptors.v3.OperacoesBloqueadasYaml;
 import org.jetbrains.annotations.NotNull;

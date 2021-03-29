@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.frota.v3.pneuservico.tiposervico;
+package br.com.zalf.prolog.webservice.frota.v3.pneu.pneuservico.tiposervico;
 
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.jpa.repository.JpaRepository;
