@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.math.BigDecimal;
 
 /**
@@ -21,8 +20,12 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @Getter
 public class PneuServicoRealizadoEntity {
-    @EmbeddedId
-    private PK pk;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "codigo", nullable = false, unique = true, updatable = false)
+    private Long codigo;
+    @Column(name = "fonte_servico_realizado", nullable = false, length = 20)
+    private String fonteServicoRealizado;
     @Column(name = "cod_tipo_servico", nullable = false)
     private Long codTipoServico;
     @Column(name = "cod_unidade", nullable = false)
@@ -33,26 +36,10 @@ public class PneuServicoRealizadoEntity {
     private BigDecimal custo;
     @Column(name = "vida", nullable = false)
     private Integer vida;
-    @OneToOne
-    @JoinColumns({@JoinColumn(name = "codigo", referencedColumnName = "cod_servico_realizado"),
-                         @JoinColumn(name = "fonte_servico_realizado",
-                                     referencedColumnName = "fonte_servico_realizado")})
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumns(@JoinColumn(name = "codigo", referencedColumnName = "cod_servico_realizado"))
     private PneuServicoRealizadoIncrementaVidaEntity pneuServicoRealizadoIncrementaVida;
-    @OneToOne
-    @JoinColumns({@JoinColumn(name = "codigo", referencedColumnName = "cod_servico_realizado"),
-                         @JoinColumn(name = "fonte_servico_realizado",
-                                     referencedColumnName = "fonte_servico_realizado")})
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumns(@JoinColumn(name = "codigo", referencedColumnName = "cod_servico_realizado"))
     private PneuServicoCadastroEntity pneuServicoCadastro;
-
-    @Builder
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Getter
-    @Embeddable
-    public static class PK implements Serializable {
-        @Column(name = "codigo", nullable = false, unique = true, updatable = false)
-        private Long codigo;
-        @Column(name = "fonte_servico_realizado", nullable = false, length = 20)
-        private String fonteServicoRealizado;
-    }
 }
