@@ -24,8 +24,6 @@ public class PneuServicoRealizadoEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "codigo", nullable = false, unique = true, updatable = false)
     private Long codigo;
-    @Column(name = "fonte_servico_realizado", nullable = false, length = 20)
-    private String fonteServicoRealizado;
     @Column(name = "cod_tipo_servico", nullable = false)
     private Long codTipoServico;
     @Column(name = "cod_unidade", nullable = false)
@@ -36,8 +34,6 @@ public class PneuServicoRealizadoEntity {
     private BigDecimal custo;
     @Column(name = "vida", nullable = false)
     private Integer vida;
-    @OneToOne(fetch = FetchType.LAZY)
-    private PneuServicoRealizadoIncrementaVidaEntity pneuServicoRealizadoIncrementaVida;
-    @OneToOne(fetch = FetchType.LAZY)
-    private PneuServicoCadastroEntity pneuServicoCadastro;
+    @Column(name = "fonte_servico_realizado", nullable = false, length = 20)
+    private String fonteServicoRealizado;
 }

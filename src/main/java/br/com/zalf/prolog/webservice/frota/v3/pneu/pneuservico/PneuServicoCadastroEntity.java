@@ -31,9 +31,6 @@ public class PneuServicoCadastroEntity {
     private Long codServicoRealizado;
     @Column(name = "fonte_servico_realizado", nullable = false, length = 20)
     private String fonteServicoRealizado;
-    @OneToOne(mappedBy = "pneuServicoCadastro")
-    @JoinColumns(@JoinColumn(name = "cod_servico_realizado", referencedColumnName = "codigo"))
-    private PneuServicoRealizadoEntity pneuServicoRealizado;
 
     @NotNull
     public static PneuServicoCadastroEntity createFromPneuServico(

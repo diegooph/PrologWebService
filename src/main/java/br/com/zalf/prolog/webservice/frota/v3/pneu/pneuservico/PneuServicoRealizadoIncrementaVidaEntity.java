@@ -25,15 +25,12 @@ public class PneuServicoRealizadoIncrementaVidaEntity {
     private Long codigo;
     @Column(name = "cod_servico_realizado", nullable = false)
     private Long codServicoRealizado;
-    @Column(name = "fonte_servico_realizado", nullable = false, length = 20)
-    private String fonteServicoRealizado;
     @Column(name = "cod_modelo_banda", nullable = false)
     private Long codModeloBanda;
     @Column(name = "vida_nova_pneu", nullable = false)
     private Integer vidaNovaPneu;
-    @OneToOne(mappedBy = "pneuServicoRealizadoIncrementaVida")
-    @JoinColumns(@JoinColumn(name = "cod_servico_realizado", referencedColumnName = "codigo"))
-    private PneuServicoRealizadoEntity pneuServicoRealizado;
+    @Column(name = "fonte_servico_realizado", nullable = false, length = 20)
+    private String fonteServicoRealizado;
 
     @NotNull
     public static PneuServicoRealizadoIncrementaVidaEntity createFromPneuServico(@NotNull final PneuEntity pneuEntity) {
