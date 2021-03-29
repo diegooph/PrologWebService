@@ -20,10 +20,18 @@ public class MovimentacaoProcessoService {
 
     @NotNull
     private final MovimentacaoProcessoDao movimentacaoProcessoDao;
+    @NotNull
+    private final MovimentacaoOrigemDao movimentacaoOrigemDao;
+    @NotNull
+    private final MovimentacaoDestinoDao movimentacaoDestinoDao;
 
     @Autowired
-    public MovimentacaoProcessoService(@NotNull final MovimentacaoProcessoDao movimentacaoProcessoDao) {
+    public MovimentacaoProcessoService(@NotNull final MovimentacaoProcessoDao movimentacaoProcessoDao,
+                                       @NotNull final MovimentacaoOrigemDao movimentacaoOrigemDao,
+                                       @NotNull final MovimentacaoDestinoDao movimentacaoDestinoDao) {
         this.movimentacaoProcessoDao = movimentacaoProcessoDao;
+        this.movimentacaoOrigemDao = movimentacaoOrigemDao;
+        this.movimentacaoDestinoDao = movimentacaoDestinoDao;
     }
 
     @NotNull
@@ -46,16 +54,18 @@ public class MovimentacaoProcessoService {
                     final MovimentacaoOrigemEntity origem = movimentacao.getMovimentacaoOrigem();
                     final MovimentacaoDestinoEntity destino = movimentacao.getMovimentacaoDestino();
                     if (origem.getCodVeiculo() != null) {
-                        movimentacaoProcessoDao.updateKmColetadoOrigem(
-                                movimentacao.getCodigo(),
-                                origem.getCodVeiculo(),
-                                novoKm);
+                        final MovimentacaoOrigemEntity novaOrigem = origem
+                                .toBuilder()
+                                .withKmColetadoVeiculo(novoKm)
+                                .build();
+                        movimentacaoOrigemDao.save(novaOrigem);
                     }
                     if (destino.getCodVeiculo() != null) {
-                        movimentacaoProcessoDao.updateKmColetadoDestino(
-                                movimentacao.getCodigo(),
-                                destino.getCodVeiculo(),
-                                novoKm);
+                        final MovimentacaoDestinoEntity novoDestino = destino
+                                .toBuilder()
+                                .withKmColetadoVeiculo(novoKm)
+                                .build();
+                        movimentacaoDestinoDao.save(novoDestino);
                     }
                 });
     }

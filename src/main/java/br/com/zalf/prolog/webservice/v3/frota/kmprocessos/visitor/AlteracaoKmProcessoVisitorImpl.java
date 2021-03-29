@@ -152,7 +152,10 @@ public final class AlteracaoKmProcessoVisitorImpl implements AlteracaoKmProcesso
                                                            movimentacaoKmProcesso.getCodVeiculo(),
                                                            codVeiculo),
                             () -> {
-                                throw new IllegalStateException();
+                                throw new IllegalStateException(String.format(
+                                        "O veículo %d não está presente no processo de movimentação de %d.",
+                                        movimentacaoKmProcesso.getCodVeiculo(),
+                                        movimentacaoKmProcesso.getCodProcesso()));
                             });
             //noinspection OptionalGetWithoutIsPresent
             final long kmAntigo = entity.getKmColetado().get();
