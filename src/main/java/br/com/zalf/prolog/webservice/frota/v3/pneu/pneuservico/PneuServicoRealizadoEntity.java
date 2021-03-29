@@ -37,9 +37,7 @@ public class PneuServicoRealizadoEntity {
     @Column(name = "vida", nullable = false)
     private Integer vida;
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumns(@JoinColumn(name = "codigo", referencedColumnName = "cod_servico_realizado"))
     private PneuServicoRealizadoIncrementaVidaEntity pneuServicoRealizadoIncrementaVida;
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumns(@JoinColumn(name = "codigo", referencedColumnName = "cod_servico_realizado"))
     private PneuServicoCadastroEntity pneuServicoCadastro;
 }

@@ -63,11 +63,8 @@ public class PneuServicoV3Service {
             @NotNull final PneuTipoServicoEntity pneuTipoServico,
             @NotNull final PneuEntity pneu,
             @NotNull final BigDecimal valorBanda) {
-        final PneuServicoRealizadoEntity.PK pkServicoRealizado = PneuServicoRealizadoEntity.PK.builder()
-                .fonteServicoRealizado(PneuServicoRealizado.FONTE_CADASTRO)
-                .build();
         return PneuServicoRealizadoEntity.builder()
-                .pk(pkServicoRealizado)
+                .fonteServicoRealizado(PneuServicoRealizado.FONTE_CADASTRO)
                 .codTipoServico(pneuTipoServico.getCodigo())
                 .codUnidade(pneu.getCodUnidade())
                 .codPneu(pneu.getCodigo())

@@ -10,5 +10,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface PneuServicoRealizadoIncrementaVidaV3Dao
-        extends JpaRepository<PneuServicoRealizadoIncrementaVidaEntity, PneuServicoRealizadoEntity.PK> {
+        extends JpaRepository<PneuServicoRealizadoIncrementaVidaEntity, Long> {
 }
