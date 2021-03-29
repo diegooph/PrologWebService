@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model;
 
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Value;
 
 /**
@@ -8,7 +8,7 @@ import lombok.Value;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-@Builder(setterPrefix = "with")
+@AllArgsConstructor(staticName = "of")
 @Value
 public class AlteracaoKmResponse {
     long kmAntigo;

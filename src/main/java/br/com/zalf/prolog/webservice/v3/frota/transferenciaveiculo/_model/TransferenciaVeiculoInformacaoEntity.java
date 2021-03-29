@@ -23,13 +23,11 @@ public final class TransferenciaVeiculoInformacaoEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "codigo", nullable = false)
     private Long codigo;
-    @Column(name = "cod_unidade", nullable = false)
-    private Long codUnidade;
     @Column(name = "cod_veiculo", nullable = false)
     private Long codVeiculo;
     @Column(name = "km_veiculo_momento_transferencia", nullable = false)
     private long kmColetadoVeiculoMomentoTransferencia;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_processo_transferencia", nullable = false)
     private TransferenciaVeiculoProcessoEntity transferenciaVeiculoProcesso;
 }

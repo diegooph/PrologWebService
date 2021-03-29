@@ -11,7 +11,7 @@ import br.com.zalf.prolog.webservice.v3.frota.checklistordemservico.ChecklistOrd
 import br.com.zalf.prolog.webservice.v3.frota.checklistordemservico._model.ChecklistOrdemServicoItemEntity;
 import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.*;
 import br.com.zalf.prolog.webservice.v3.frota.movimentacao.MovimentacaoProcessoService;
-import br.com.zalf.prolog.webservice.v3.frota.movimentacao.MovimentacaoService;
+import br.com.zalf.prolog.webservice.v3.frota.movimentacao._model.MovimentacaoEntity;
 import br.com.zalf.prolog.webservice.v3.frota.movimentacao._model.MovimentacaoProcessoEntity;
 import br.com.zalf.prolog.webservice.v3.frota.servicopneu.ServicoPneuService;
 import br.com.zalf.prolog.webservice.v3.frota.servicopneu._model.ServicoPneuEntity;
@@ -24,6 +24,7 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -44,8 +45,6 @@ public final class AlteracaoKmProcessoVisitorImpl implements AlteracaoKmProcesso
     @NotNull
     private final ChecklistOrdemServicoService checklistOrdemServicoService;
     @NotNull
-    private final MovimentacaoService movimentacaoService;
-    @NotNull
     private final MovimentacaoProcessoService movimentacaoProcessoService;
     @NotNull
     private final SocorroRotaService socorroRotaService;
@@ -59,7 +58,6 @@ public final class AlteracaoKmProcessoVisitorImpl implements AlteracaoKmProcesso
                                           @NotNull final ChecklistService checklistService,
                                           @NotNull final ChecklistOrdemServicoService checklistOrdemServicoService,
                                           @NotNull final MovimentacaoProcessoService movimentacaoProcessoService,
-                                          @NotNull final MovimentacaoService movimentacaoService,
                                           @NotNull final SocorroRotaService socorroRotaService,
                                           @NotNull final TransferenciaVeiculoService transferenciaVeiculoService) {
         this.veiculoService = veiculoService;
@@ -68,7 +66,6 @@ public final class AlteracaoKmProcessoVisitorImpl implements AlteracaoKmProcesso
         this.checklistService = checklistService;
         this.checklistOrdemServicoService = checklistOrdemServicoService;
         this.movimentacaoProcessoService = movimentacaoProcessoService;
-        this.movimentacaoService = movimentacaoService;
         this.socorroRotaService = socorroRotaService;
         this.transferenciaVeiculoService = transferenciaVeiculoService;
     }
@@ -86,10 +83,7 @@ public final class AlteracaoKmProcessoVisitorImpl implements AlteracaoKmProcesso
                 .withKmColetadoVeiculo(afericaoKmProcesso.getNovoKm())
                 .build();
         afericaoService.update(entity);
-        return AlteracaoKmResponse
-                .builder()
-                .withKmAntigo(kmAntigo)
-                .build();
+        return AlteracaoKmResponse.of(kmAntigo);
     }
 
     @NotNull
@@ -106,10 +100,7 @@ public final class AlteracaoKmProcessoVisitorImpl implements AlteracaoKmProcesso
                 .withKmColetadoVeiculoFechamentoServico(servicoPneuKmProcesso.getNovoKm())
                 .build();
         servicoPneuService.update(entity);
-        return AlteracaoKmResponse
-                .builder()
-                .withKmAntigo(kmAntigo)
-                .build();
+        return AlteracaoKmResponse.of(kmAntigo);
     }
 
     @NotNull
@@ -125,10 +116,7 @@ public final class AlteracaoKmProcessoVisitorImpl implements AlteracaoKmProcesso
                 .withKmColetadoVeiculo(checklistKmProcesso.getNovoKm())
                 .build();
         checklistService.update(entity);
-        return AlteracaoKmResponse
-                .builder()
-                .withKmAntigo(kmAntigo)
-                .build();
+        return AlteracaoKmResponse.of(kmAntigo);
     }
 
     @NotNull
@@ -146,10 +134,7 @@ public final class AlteracaoKmProcessoVisitorImpl implements AlteracaoKmProcesso
                 .withKmColetadoVeiculoFechamentoItem(checklistOrdemServicoItemKmProcesso.getNovoKm())
                 .build();
         checklistOrdemServicoService.update(entity);
-        return AlteracaoKmResponse
-                .builder()
-                .withKmAntigo(kmAntigo)
-                .build();
+        return AlteracaoKmResponse.of(kmAntigo);
     }
 
     @NotNull
@@ -157,19 +142,28 @@ public final class AlteracaoKmProcessoVisitorImpl implements AlteracaoKmProcesso
     public AlteracaoKmResponse visit(@NotNull final MovimentacaoKmProcesso movimentacaoKmProcesso) {
         final MovimentacaoProcessoEntity entity =
                 movimentacaoProcessoService.getByCodigo(movimentacaoKmProcesso.getCodProcesso());
-        applyValidations(movimentacaoKmProcesso.getCodEmpresa(),
-                         movimentacaoKmProcesso.getCodVeiculo(),
-                         null);
-        final MovimentacaoProcessoEntity updateEntity = entity
-                .toBuilder()
-                // TODO: criar origem e destino.
-                .build();
-        movimentacaoProcessoService.update(updateEntity);
-        return AlteracaoKmResponse
-                .builder()
-                // TODO: retornar KM correto.
-                .withKmAntigo(-1)
-                .build();
+        final List<MovimentacaoEntity> movimentacoes =
+                entity.getMovimentacoesNoVeiculo(movimentacaoKmProcesso.getCodVeiculo());
+        if (!movimentacoes.isEmpty()) {
+            entity
+                    .getCodVeiculo()
+                    .ifPresentOrElse(
+                            codVeiculo -> applyValidations(movimentacaoKmProcesso.getCodEmpresa(),
+                                                           movimentacaoKmProcesso.getCodVeiculo(),
+                                                           codVeiculo),
+                            () -> {
+                                throw new IllegalStateException();
+                            });
+            //noinspection OptionalGetWithoutIsPresent
+            final long kmAntigo = entity.getKmColetado().get();
+            movimentacaoProcessoService.updateKmColetado(entity, movimentacaoKmProcesso.getNovoKm());
+            return AlteracaoKmResponse.of(kmAntigo);
+        } else {
+            throw new IllegalStateException(
+                    String.format("O veículo %d não está presente no processo de movimentação de %d.",
+                                  movimentacaoKmProcesso.getCodVeiculo(),
+                                  movimentacaoKmProcesso.getCodProcesso()));
+        }
     }
 
     @NotNull
@@ -186,10 +180,7 @@ public final class AlteracaoKmProcessoVisitorImpl implements AlteracaoKmProcesso
                 .withKmColetadoVeiculoAberturaSocorro(socorroRotaKmProcesso.getNovoKm())
                 .build();
         socorroRotaService.update(entity);
-        return AlteracaoKmResponse
-                .builder()
-                .withKmAntigo(kmAntigo)
-                .build();
+        return AlteracaoKmResponse.of(kmAntigo);
     }
 
     @NotNull
@@ -204,19 +195,18 @@ public final class AlteracaoKmProcessoVisitorImpl implements AlteracaoKmProcesso
             applyValidations(transferenciaVeiculoKmProcesso.getCodEmpresa(),
                              transferenciaVeiculoKmProcesso.getCodVeiculo(),
                              infoVeiculo.getCodVeiculo());
-            final TransferenciaVeiculoProcessoEntity updateEntity = entity
+            final long kmAntigo = infoVeiculo.getKmColetadoVeiculoMomentoTransferencia();
+            final TransferenciaVeiculoInformacaoEntity updateEntity = infoVeiculo
                     .toBuilder()
-                    // TODO: criar transferência informações.
-                    .withTransferenciaVeiculoInformacoes(null)
+                    .withKmColetadoVeiculoMomentoTransferencia(transferenciaVeiculoKmProcesso.getNovoKm())
                     .build();
-            transferenciaVeiculoService.update(updateEntity);
-            return AlteracaoKmResponse
-                    .builder()
-                    // TODO: retornar KM correto.
-                    .withKmAntigo(-1)
-                    .build();
+            transferenciaVeiculoService.updateInformacoesVeiculo(updateEntity);
+            return AlteracaoKmResponse.of(kmAntigo);
         } else {
-            return null;
+            throw new IllegalStateException(
+                    String.format("O veículo %d não está presente no processo de transferência %d.",
+                                  transferenciaVeiculoKmProcesso.getCodVeiculo(),
+                                  transferenciaVeiculoKmProcesso.getCodProcesso()));
         }
     }
 

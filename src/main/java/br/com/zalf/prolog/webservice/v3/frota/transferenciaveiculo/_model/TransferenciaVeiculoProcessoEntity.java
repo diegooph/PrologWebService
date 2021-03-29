@@ -32,7 +32,7 @@ public final class TransferenciaVeiculoProcessoEntity {
     private Long codUnidadeDestino;
     @Column(name = "cod_unidade_colaborador", nullable = false)
     private Long codUnidadeColaborador;
-    @OneToMany(mappedBy = "transferenciaVeiculoProcesso")
+    @OneToMany(mappedBy = "transferenciaVeiculoProcesso", fetch = FetchType.LAZY)
     private Set<TransferenciaVeiculoInformacaoEntity> transferenciaVeiculoInformacoes;
 
     @NotNull

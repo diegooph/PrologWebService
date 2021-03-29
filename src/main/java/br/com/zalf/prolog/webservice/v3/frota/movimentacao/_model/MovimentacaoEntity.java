@@ -4,8 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.*;
+import java.util.Optional;
 
 /**
  * Created on 2021-03-25
@@ -25,13 +27,31 @@ public final class MovimentacaoEntity {
     private Long codigo;
     @Column(name = "cod_unidade", nullable = false)
     private Long codUnidade;
-    @OneToOne(mappedBy = "movimentacao")
+    @OneToOne(mappedBy = "movimentacao", fetch = FetchType.LAZY)
     @PrimaryKeyJoinColumn
     private MovimentacaoOrigemEntity movimentacaoOrigem;
-    @OneToOne(mappedBy = "movimentacao")
+    @OneToOne(mappedBy = "movimentacao", fetch = FetchType.LAZY)
     @PrimaryKeyJoinColumn
     private MovimentacaoDestinoEntity movimentacaoDestino;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_movimentacao_processo", nullable = false)
     private MovimentacaoProcessoEntity movimentacaoProcesso;
+
+    public boolean isMovimentacaoNoVeiculo(@NotNull final Long codVeiculo) {
+        return codVeiculo.equals(movimentacaoOrigem.getCodVeiculo())
+                || codVeiculo.equals(movimentacaoDestino.getCodVeiculo());
+    }
+
+    public boolean isMovimentacaoNoVeiculo() {
+        return movimentacaoOrigem.getCodVeiculo() != null || movimentacaoDestino.getCodVeiculo() != null;
+    }
+
+    @NotNull
+    public Optional<Long> getCodVeiculo() {
+        if (movimentacaoOrigem.getCodVeiculo() != null) {
+            return Optional.of(movimentacaoOrigem.getCodVeiculo());
+        } else {
+            return Optional.ofNullable(movimentacaoDestino.getCodVeiculo());
+        }
+    }
 }

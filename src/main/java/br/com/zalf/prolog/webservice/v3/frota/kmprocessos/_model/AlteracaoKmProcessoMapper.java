@@ -64,7 +64,7 @@ public final class AlteracaoKmProcessoMapper {
                         dto.getTipoProcesso(),
                         codColaboradorAlteracao,
                         dto.getNovoKm());
-            case TRANSFERENCIA_DE_VEICULO:
+            case TRANSFERENCIA_DE_VEICULOS:
                 return new TransferenciaVeiculoKmProcesso(
                         dto.getCodEmpresa(),
                         dto.getCodVeiculo(),

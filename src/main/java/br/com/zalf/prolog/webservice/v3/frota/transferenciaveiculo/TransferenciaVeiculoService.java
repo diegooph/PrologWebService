@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.v3.frota.transferenciaveiculo;
 
+import br.com.zalf.prolog.webservice.v3.frota.transferenciaveiculo._model.TransferenciaVeiculoInformacaoEntity;
 import br.com.zalf.prolog.webservice.v3.frota.transferenciaveiculo._model.TransferenciaVeiculoProcessoEntity;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +16,15 @@ public class TransferenciaVeiculoService {
 
     @NotNull
     private final TransferenciaVeiculoDao transferenciaVeiculoDao;
+    @NotNull
+    private final TransferenciaVeiculoInformacoesDao transferenciaVeiculoInformacoesDao;
 
     @Autowired
-    public TransferenciaVeiculoService(@NotNull final TransferenciaVeiculoDao transferenciaVeiculoDao) {
+    public TransferenciaVeiculoService(
+            @NotNull final TransferenciaVeiculoDao transferenciaVeiculoDao,
+            @NotNull final TransferenciaVeiculoInformacoesDao transferenciaVeiculoInformacoesDao) {
         this.transferenciaVeiculoDao = transferenciaVeiculoDao;
+        this.transferenciaVeiculoInformacoesDao = transferenciaVeiculoInformacoesDao;
     }
 
     @NotNull
@@ -28,5 +34,10 @@ public class TransferenciaVeiculoService {
 
     public void update(@NotNull final TransferenciaVeiculoProcessoEntity transferenciaVeiculoProcessoEntity) {
         transferenciaVeiculoDao.save(transferenciaVeiculoProcessoEntity);
+    }
+
+    public void updateInformacoesVeiculo(
+            @NotNull final TransferenciaVeiculoInformacaoEntity transferenciaVeiculoInformacaoEntity) {
+        transferenciaVeiculoInformacoesDao.save(transferenciaVeiculoInformacaoEntity);
     }
 }

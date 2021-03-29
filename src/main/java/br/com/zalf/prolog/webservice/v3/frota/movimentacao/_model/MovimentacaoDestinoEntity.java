@@ -23,10 +23,10 @@ public final class MovimentacaoDestinoEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "cod_movimentacao", nullable = false)
     private Long codMovimentacao;
-    @Column(name = "cod_veiculo", nullable = false)
+    @Column(name = "cod_veiculo")
     private Long codVeiculo;
-    @Column(name = "km_veiculo", nullable = false)
-    private long kmColetadoVeiculo;
+    @Column(name = "km_veiculo")
+    private Long kmColetadoVeiculo;
     @MapsId
     @OneToOne
     @JoinColumn(name = "cod_movimentacao")
