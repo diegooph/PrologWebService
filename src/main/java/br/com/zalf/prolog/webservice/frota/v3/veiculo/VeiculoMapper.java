@@ -1,7 +1,8 @@
-package br.com.zalf.prolog.webservice.frota.veiculo.v3;
+package br.com.zalf.prolog.webservice.frota.v3.veiculo;
 
-import br.com.zalf.prolog.webservice.frota.veiculo.v3._model.VeiculoCadastroDto;
-import br.com.zalf.prolog.webservice.frota.veiculo.v3._model.VeiculoEntity;
+import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
+import br.com.zalf.prolog.webservice.frota.v3.veiculo._model.VeiculoCadastroDto;
+import br.com.zalf.prolog.webservice.frota.v3.veiculo._model.VeiculoEntity;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
@@ -19,6 +20,8 @@ public class VeiculoMapper {
                 .withCodTipo(dto.getCodTipoVeiculo())
                 .withKm(dto.getKmAtualVeiculo())
                 .withPossuiHobodometro(dto.getPossuiHubodometro())
+                .withDataHoraCadatro(Now.getOffsetDateTimeUtc())
+                .withStatusAtivo(true)
                 .build();
     }
 }

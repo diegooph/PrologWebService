@@ -22,7 +22,7 @@ public class PneuCadastroMapper {
                 .codigoCliente(dto.getCodigoCliente())
                 .codModelo(dto.getCodModeloPneu())
                 .codDimensao(dto.getCodDimensaoPneu())
-                .pressaoRecomendada(dto.getPressaoRecomendada())
+                .pressaoRecomendada(dto.getPressaoRecomendadaPneu())
                 .status(StatusPneu.ESTOQUE)
                 .vidaAtual(dto.getVidaAtualPneu())
                 .vidaTotal(dto.getVidaTotalPneu())

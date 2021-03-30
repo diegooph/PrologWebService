@@ -1,12 +1,13 @@
-package br.com.zalf.prolog.webservice.frota.veiculo.v3._model;
+package br.com.zalf.prolog.webservice.frota.v3.veiculo._model;
 
+import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Builder(toBuilder = true, setterPrefix = "with")
 @NoArgsConstructor
@@ -42,11 +43,14 @@ public class VeiculoEntity {
     @Column(name = "cod_modelo", nullable = false)
     private Long codModelo;
     @Column(name = "data_hora_cadastro", nullable = false, columnDefinition = "timestamp with time zone default now()")
-    private LocalDateTime dataHoraCadatro;
+    private OffsetDateTime dataHoraCadatro;
     @Column(name = "foi_editado", nullable = false, columnDefinition = "boolean default false")
     private boolean foiEditado;
     @Column(name = "motorizado", nullable = false)
     private boolean motorizado;
     @Column(name = "possui_hubodometro", nullable = false, columnDefinition = "boolean default false")
     private boolean possuiHobodometro;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "origem_cadastro", nullable = false)
+    private OrigemAcaoEnum origemCadastro;
 }

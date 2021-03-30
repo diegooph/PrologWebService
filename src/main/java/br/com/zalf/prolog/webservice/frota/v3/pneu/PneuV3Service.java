@@ -80,7 +80,6 @@ public class PneuV3Service {
         }
         if (pneuCadastroDto.getVidaAtualPneu() > 1) {
             PneuValidator.validacaoModeloDaBanda(pneuCadastroDto.getCodModeloBanda());
-            //noinspection ConstantConditions
             PneuValidator.validacaoValorDaBanda(pneuCadastroDto.getValorBandaPneu());
         }
     }

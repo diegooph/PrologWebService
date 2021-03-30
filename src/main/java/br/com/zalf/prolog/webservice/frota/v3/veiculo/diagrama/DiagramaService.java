@@ -1,8 +1,8 @@
-package br.com.zalf.prolog.webservice.frota.veiculo.v3.diagrama;
+package br.com.zalf.prolog.webservice.frota.v3.veiculo.diagrama;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.frota.veiculo.v3.diagrama._model.DiagramaEntity;
+import br.com.zalf.prolog.webservice.frota.v3.veiculo.diagrama._model.DiagramaEntity;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,7 +20,7 @@ public class DiagramaService {
     }
 
     @NotNull
-    public DiagramaEntity getByCod(final Short codDiagramaVeiculo) {
+    public DiagramaEntity getByCod(@NotNull final Short codDiagramaVeiculo) {
         try {
             return diagramaDao.getOne(codDiagramaVeiculo);
         } catch (final Throwable t) {
