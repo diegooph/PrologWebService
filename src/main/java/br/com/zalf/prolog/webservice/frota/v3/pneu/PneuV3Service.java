@@ -75,6 +75,8 @@ public class PneuV3Service {
     private void validatePneu(@NotNull final PneuCadastroDto pneuCadastroDto,
                               final boolean ignoreDotValidation) throws Throwable {
         PneuValidator.validacaoVida(pneuCadastroDto.getVidaAtualPneu(), pneuCadastroDto.getVidaTotalPneu());
+        PneuValidator.validacaoVidaPneuNovoNuncaRodado(pneuCadastroDto.getVidaAtualPneu(),
+                                                       pneuCadastroDto.getPneuNovoNuncaRodado());
         if (!ignoreDotValidation) {
             PneuValidator.validacaoDot(pneuCadastroDto.getDotPneu());
         }

@@ -82,9 +82,18 @@ public final class PneuValidator {
                                        "vidaAtual: " + vidaAtual);
         }
 
-        if (vidaTotal < VIDA_PNEU_NOVO) {
+        if (vidaAtual < VIDA_PNEU_NOVO) {
             throw new GenericException("Vida inválida\nO pneu deve ter pelo menos vida 1",
-                                       "vidaAtual: " + vidaTotal);
+                                       "vidaAtual: " + vidaAtual);
+        }
+    }
+
+    public static void validacaoVidaPneuNovoNuncaRodado(final int vidaAtual,
+                                                        final boolean pneuNovoNuncaRodado) throws Exception {
+        if (vidaAtual > VIDA_PNEU_NOVO && pneuNovoNuncaRodado) {
+            throw new GenericException("Campo Pneu novo (nunca rodado) inválido\n" +
+                                               "O pneu não pode ser novo (nunca rodado) e estar na primeira vida, " +
+                                               "simultaneamente", "vidaAtual: " + vidaAtual);
         }
     }
 
