@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.v3.pneu.pneuservico;
 
+import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico._model.PneuServicoRealizado;
 import br.com.zalf.prolog.webservice.frota.v3.pneu._model.PneuEntity;
 import br.com.zalf.prolog.webservice.frota.v3.pneu.pneuservico.tiposervico.PneuTipoServicoEntity;
 import br.com.zalf.prolog.webservice.frota.v3.pneu.pneuservico.tiposervico.PneuTipoServicoV3Service;
@@ -40,15 +41,23 @@ public class PneuServicoV3Service {
 
     @NotNull
     @Transactional
-    public PneuServicoRealizadoEntity createServicoByPneu(@NotNull final PneuEntity pneuEntity,
-                                                          @NotNull final BigDecimal valorBanda) {
-        final PneuTipoServicoEntity tipoServico =
-                this.pneuTipoServicoService.getInitialTipoServicoForVidaIncrementada();
-        final PneuServicoRealizadoEntity savedServico = this.pneuServicoDao.save(
-                PneuServicoRealizadoEntity.createPneuServicoForCadastro(tipoServico, pneuEntity, valorBanda));
+    public PneuServicoRealizadoEntity insertServicoCadastroPneu(@NotNull final PneuEntity pneuCadastrado,
+                                                                @NotNull final BigDecimal valorBanda) {
+        final PneuTipoServicoEntity tipoServicoIncrementaVidaCadastroPneu =
+                pneuTipoServicoService.getTipoServicoIncrementaVidaCadastroPneu();
+        final PneuServicoRealizadoEntity savedServicoRealizado =
+                pneuServicoDao.save(
+                        PneuServicoRealizadoCreator.createServicoRealizado(tipoServicoIncrementaVidaCadastroPneu,
+                                                                           pneuCadastrado,
+                                                                           PneuServicoRealizado.FONTE_CADASTRO,
+                                                                           valorBanda));
         pneuServicoRealizadoIncrementaVidaDao.save(
-                PneuServicoRealizadoIncrementaVidaEntity.createFromPneuServico(pneuEntity, savedServico));
-        pneuServicoCadastroDao.save(PneuServicoCadastroEntity.createFromPneuServico(savedServico));
-        return savedServico;
+                PneuServicoRealizadoCreator.createServicoRealizadoIncrementaVida(pneuCadastrado,
+                                                                                 savedServicoRealizado,
+                                                                                 PneuServicoRealizado.FONTE_CADASTRO));
+        pneuServicoCadastroDao.save(
+                PneuServicoRealizadoCreator.createFromPneuServico(savedServicoRealizado,
+                                                                  PneuServicoRealizado.FONTE_CADASTRO));
+        return savedServicoRealizado;
     }
 }

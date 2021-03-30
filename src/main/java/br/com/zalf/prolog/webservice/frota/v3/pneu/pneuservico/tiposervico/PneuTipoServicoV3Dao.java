@@ -12,13 +12,11 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface PneuTipoServicoV3Dao extends JpaRepository<PneuTipoServicoEntity, Long> {
-
+    @NotNull
     @Query("select pts from PneuTipoServicoEntity pts " +
                    "where pts.codEmpresa is null " +
                    "and pts.statusAtivo = true " +
                    "and pts.incrementaVida = true " +
                    "and pts.utilizadoCadastroPneu = true")
-    @NotNull
-    PneuTipoServicoEntity getInitialTipoServicoForVidaIncrementada();
-
+    PneuTipoServicoEntity getTipoServicoIncrementaVidaCadastroPneu();
 }

@@ -1,11 +1,9 @@
 package br.com.zalf.prolog.webservice.frota.v3.pneu.pneuservico;
 
-import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico._model.PneuServicoRealizado;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.*;
 
@@ -31,14 +29,4 @@ public class PneuServicoCadastroEntity {
     private Long codServicoRealizado;
     @Column(name = "fonte_servico_realizado", nullable = false, length = 20)
     private String fonteServicoRealizado;
-
-    @NotNull
-    public static PneuServicoCadastroEntity createFromPneuServico(
-            @NotNull final PneuServicoRealizadoEntity pneuServico) {
-        return PneuServicoCadastroEntity.builder()
-                .codPneu(pneuServico.getCodPneu())
-                .codServicoRealizado(pneuServico.getCodigo())
-                .fonteServicoRealizado(PneuServicoRealizado.FONTE_CADASTRO)
-                .build();
-    }
 }

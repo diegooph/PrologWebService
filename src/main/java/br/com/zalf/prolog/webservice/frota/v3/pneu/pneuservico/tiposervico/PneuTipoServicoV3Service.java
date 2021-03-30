@@ -23,7 +23,7 @@ public class PneuTipoServicoV3Service {
 
     @NotNull
     @Transactional
-    public PneuTipoServicoEntity getInitialTipoServicoForVidaIncrementada() {
-        return this.dao.getInitialTipoServicoForVidaIncrementada();
+    public PneuTipoServicoEntity getTipoServicoIncrementaVidaCadastroPneu() {
+        return dao.getTipoServicoIncrementaVidaCadastroPneu();
     }
 }

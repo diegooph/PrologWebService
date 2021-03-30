@@ -27,17 +27,17 @@ public class PneuV3Service {
     @NotNull
     private final PneuV3Dao pneuDao;
     @NotNull
-    private final OperacoesBloqueadasYaml operacoesBloqueadas;
-    @NotNull
     private final PneuCadastroMapper pneuCadastroMapper;
     @NotNull
     private final PneuServicoV3Service pneuServicoService;
+    @NotNull
+    private final OperacoesBloqueadasYaml operacoesBloqueadas;
 
     @Autowired
     public PneuV3Service(@NotNull final PneuV3Dao pneuDao,
                          @NotNull final PneuServicoV3Service pneuServicoService,
-                         @NotNull final OperacoesBloqueadasYaml operacoesBloqueadas,
-                         @NotNull final PneuCadastroMapper pneuCadastroMapper) {
+                         @NotNull final PneuCadastroMapper pneuCadastroMapper,
+                         @NotNull final OperacoesBloqueadasYaml operacoesBloqueadas) {
         this.pneuDao = pneuDao;
         this.pneuServicoService = pneuServicoService;
         this.operacoesBloqueadas = operacoesBloqueadas;
@@ -56,7 +56,7 @@ public class PneuV3Service {
             final PneuEntity savedPneu = this.pneuDao.save(pneuInsert);
             if (savedPneu.isRecapado()) {
                 //noinspection ConstantConditions
-                this.pneuServicoService.createServicoByPneu(savedPneu, pneuCadastroDto.getValorBandaPneu());
+                this.pneuServicoService.insertServicoCadastroPneu(savedPneu, pneuCadastroDto.getValorBandaPneu());
             }
             return new SuccessResponse(savedPneu.getCodigo(), "Pneu inserido com sucesso.");
         } catch (final Throwable t) {

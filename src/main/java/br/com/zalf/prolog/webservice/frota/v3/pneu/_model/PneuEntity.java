@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -74,5 +75,10 @@ public class PneuEntity {
 
     public boolean isRecapado() {
         return vidaAtual > 1;
+    }
+
+    @NotNull
+    public Integer getVidaAnterior() {
+        return this.vidaAtual - 1;
     }
 }
