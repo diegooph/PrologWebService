@@ -6,6 +6,8 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 /**
  * Created on 2021-03-26
  *
@@ -32,12 +34,24 @@ public class TransferenciaVeiculoService {
         return transferenciaVeiculoDao.getOne(codigo);
     }
 
-    public void update(@NotNull final TransferenciaVeiculoProcessoEntity transferenciaVeiculoProcessoEntity) {
-        transferenciaVeiculoDao.save(transferenciaVeiculoProcessoEntity);
-    }
-
-    public void updateInformacoesVeiculo(
-            @NotNull final TransferenciaVeiculoInformacaoEntity transferenciaVeiculoInformacaoEntity) {
-        transferenciaVeiculoInformacoesDao.save(transferenciaVeiculoInformacaoEntity);
+    public void updateKmColetadoMomentoTransferencia(@NotNull final Long codProcessoTransferencia,
+                                                     @NotNull final Long codVeiculo,
+                                                     final long novoKm) {
+        final TransferenciaVeiculoProcessoEntity entity = getByCodigo(codProcessoTransferencia);
+        final Optional<TransferenciaVeiculoInformacaoEntity> informacoesTransferenciaVeiculo =
+                entity.getInformacoesTransferenciaVeiculo(codVeiculo);
+        if (informacoesTransferenciaVeiculo.isPresent()) {
+            final TransferenciaVeiculoInformacaoEntity infoVeiculo = informacoesTransferenciaVeiculo.get();
+            final TransferenciaVeiculoInformacaoEntity updateEntity = infoVeiculo
+                    .toBuilder()
+                    .withKmColetadoVeiculoMomentoTransferencia(novoKm)
+                    .build();
+            transferenciaVeiculoInformacoesDao.save(updateEntity);
+        } else {
+            throw new IllegalStateException(
+                    String.format("O veículo %d não está presente no processo de transferência %d.",
+                                  codVeiculo,
+                                  codProcessoTransferencia));
+        }
     }
 }

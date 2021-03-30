@@ -5,6 +5,8 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+
 /**
  * Created on 2021-03-26
  *
@@ -28,5 +30,15 @@ public class AfericaoService {
 
     public void update(@NotNull final AfericaoEntity afericaoEntity) {
         afericaoDao.save(afericaoEntity);
+    }
+
+    @Transactional
+    public void updateKmColetado(@NotNull final Long codAfericao,
+                                 final long novoKm) {
+        final AfericaoEntity entity = getByCodigo(codAfericao)
+                .toBuilder()
+                .withKmColetadoVeiculo(novoKm)
+                .build();
+        update(entity);
     }
 }

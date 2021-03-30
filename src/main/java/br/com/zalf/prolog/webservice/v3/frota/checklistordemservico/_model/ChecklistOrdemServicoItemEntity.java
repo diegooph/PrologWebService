@@ -23,8 +23,12 @@ public final class ChecklistOrdemServicoItemEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "codigo", nullable = false)
     private Long codigo;
-    @Column(name = "cod_unidade", nullable = false)
-    private Long codUnidade;
-    @Column(name = "km", nullable = false)
+    @Column(name = "km")
     private long kmColetadoVeiculoFechamentoItem;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumns({
+                         @JoinColumn(name = "cod_unidade", referencedColumnName = "cod_unidade"),
+                         @JoinColumn(name = "cod_os", referencedColumnName = "codigo")
+                 })
+    private ChecklistOrdemServicoEntity ordemServico;
 }

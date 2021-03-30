@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-public interface SocorroRotaDao extends JpaRepository<AberturaSocorroRotaEntity, Long> {
+public interface SocorroRotaAberturaDao extends JpaRepository<AberturaSocorroRotaEntity, Long> {
 
     @NotNull
     AberturaSocorroRotaEntity getAberturaSocorroRotaEntityByCodSocorroRota(@NotNull final Long codSocorroRota);

@@ -14,19 +14,24 @@ import org.springframework.stereotype.Service;
 public class SocorroRotaService {
 
     @NotNull
-    private final SocorroRotaDao socorroRotaDao;
+    private final SocorroRotaAberturaDao socorroRotaAberturaDao;
 
     @Autowired
-    public SocorroRotaService(@NotNull final SocorroRotaDao socorroRotaDao) {
-        this.socorroRotaDao = socorroRotaDao;
+    public SocorroRotaService(@NotNull final SocorroRotaAberturaDao socorroRotaAberturaDao) {
+        this.socorroRotaAberturaDao = socorroRotaAberturaDao;
     }
 
     @NotNull
     public AberturaSocorroRotaEntity getAberturaSocorroRotaByCodSocorro(@NotNull final Long codSocorroRta) {
-        return socorroRotaDao.getAberturaSocorroRotaEntityByCodSocorroRota(codSocorroRta);
+        return socorroRotaAberturaDao.getAberturaSocorroRotaEntityByCodSocorroRota(codSocorroRta);
     }
 
-    public void update(@NotNull final AberturaSocorroRotaEntity aberturaSocorroRotaEntity) {
-        socorroRotaDao.save(aberturaSocorroRotaEntity);
+    public void updateKmColetadoAberturaSocorro(@NotNull final Long codSocorroRota,
+                                                final long novoKm) {
+        final AberturaSocorroRotaEntity entity = getAberturaSocorroRotaByCodSocorro(codSocorroRota)
+                .toBuilder()
+                .withKmColetadoVeiculoAberturaSocorro(novoKm)
+                .build();
+        socorroRotaAberturaDao.save(entity);
     }
 }

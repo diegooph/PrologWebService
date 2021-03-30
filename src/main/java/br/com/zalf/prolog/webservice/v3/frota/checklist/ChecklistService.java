@@ -5,6 +5,8 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+
 /**
  * Created on 2021-03-26
  *
@@ -28,5 +30,15 @@ public class ChecklistService {
 
     public void update(@NotNull final ChecklistEntity checklistEntity) {
         checklistDao.save(checklistEntity);
+    }
+
+    @Transactional
+    public void updateKmColetado(@NotNull final Long codChecklist,
+                                 final long novoKm) {
+        final ChecklistEntity entity = getByCodigo(codChecklist)
+                .toBuilder()
+                .withKmColetadoVeiculo(novoKm)
+                .build();
+        update(entity);
     }
 }

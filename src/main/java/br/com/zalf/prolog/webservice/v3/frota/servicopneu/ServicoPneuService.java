@@ -5,6 +5,8 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+
 /**
  * Created on 2021-03-26
  *
@@ -28,5 +30,15 @@ public class ServicoPneuService {
 
     public void update(@NotNull final ServicoPneuEntity servicoPneuEntity) {
         servicoPneuDao.save(servicoPneuEntity);
+    }
+
+    @Transactional
+    public void updateKmColetadoFechamento(@NotNull final Long codServicoPneu,
+                                           final long novoKm) {
+        final ServicoPneuEntity entity = getByCodigo(codServicoPneu)
+                .toBuilder()
+                .withKmColetadoVeiculoFechamentoServico(novoKm)
+                .build();
+        update(entity);
     }
 }

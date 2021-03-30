@@ -73,67 +73,55 @@ public final class AlteracaoKmProcessoVisitorImpl implements AlteracaoKmProcesso
     @NotNull
     @Override
     public AlteracaoKmResponse visit(@NotNull final AfericaoKmProcesso afericaoKmProcesso) {
-        AfericaoEntity entity = afericaoService.getByCodigo(afericaoKmProcesso.getCodProcesso());
+        final AfericaoEntity entity = afericaoService.getByCodigo(afericaoKmProcesso.getCodProcesso());
         final long kmAntigo = entity.getKmColetadoVeiculo();
         applyValidations(afericaoKmProcesso.getCodEmpresa(),
                          afericaoKmProcesso.getCodVeiculo(),
                          entity.getCodVeiculo());
-        entity = entity
-                .toBuilder()
-                .withKmColetadoVeiculo(afericaoKmProcesso.getNovoKm())
-                .build();
-        afericaoService.update(entity);
+        afericaoService.updateKmColetado(afericaoKmProcesso.getCodProcesso(), afericaoKmProcesso.getNovoKm());
         return AlteracaoKmResponse.of(kmAntigo);
     }
 
     @NotNull
     @Override
     public AlteracaoKmResponse visit(@NotNull final ServicoPneuKmProcesso servicoPneuKmProcesso) {
-        ServicoPneuEntity entity = servicoPneuService.getByCodigo(servicoPneuKmProcesso.getCodProcesso());
+        final ServicoPneuEntity entity = servicoPneuService.getByCodigo(servicoPneuKmProcesso.getCodProcesso());
         final AfericaoEntity afericao = afericaoService.getByCodigo(entity.getCodAfericao());
         final long kmAntigo = entity.getKmColetadoVeiculoFechamentoServico();
         applyValidations(servicoPneuKmProcesso.getCodEmpresa(),
                          servicoPneuKmProcesso.getCodVeiculo(),
                          afericao.getCodVeiculo());
-        entity = entity
-                .toBuilder()
-                .withKmColetadoVeiculoFechamentoServico(servicoPneuKmProcesso.getNovoKm())
-                .build();
-        servicoPneuService.update(entity);
+        servicoPneuService.updateKmColetadoFechamento(
+                servicoPneuKmProcesso.getCodProcesso(),
+                servicoPneuKmProcesso.getNovoKm());
         return AlteracaoKmResponse.of(kmAntigo);
     }
 
     @NotNull
     @Override
     public AlteracaoKmResponse visit(@NotNull final ChecklistKmProcesso checklistKmProcesso) {
-        ChecklistEntity entity = checklistService.getByCodigo(checklistKmProcesso.getCodProcesso());
+        final ChecklistEntity entity = checklistService.getByCodigo(checklistKmProcesso.getCodProcesso());
         final long kmAntigo = entity.getKmColetadoVeiculo();
         applyValidations(checklistKmProcesso.getCodEmpresa(),
                          checklistKmProcesso.getCodVeiculo(),
                          entity.getCodVeiculo());
-        entity = entity
-                .toBuilder()
-                .withKmColetadoVeiculo(checklistKmProcesso.getNovoKm())
-                .build();
-        checklistService.update(entity);
+        checklistService.updateKmColetado(checklistKmProcesso.getCodProcesso(), checklistKmProcesso.getNovoKm());
         return AlteracaoKmResponse.of(kmAntigo);
     }
 
     @NotNull
     @Override
     public AlteracaoKmResponse visit(
-            @NotNull final ChecklistOrdemServicoItemKmProcesso checklistOrdemServicoItemKmProcesso) {
-        ChecklistOrdemServicoItemEntity entity =
-                checklistOrdemServicoService.getByCodigo(checklistOrdemServicoItemKmProcesso.getCodProcesso());
+            @NotNull final ChecklistOrdemServicoItemKmProcesso ordemServicoItemKmProcesso) {
+        final ChecklistOrdemServicoItemEntity entity =
+                checklistOrdemServicoService.getItemOrdemServicoByCodigo(ordemServicoItemKmProcesso.getCodProcesso());
         final long kmAntigo = entity.getKmColetadoVeiculoFechamentoItem();
-        applyValidations(checklistOrdemServicoItemKmProcesso.getCodEmpresa(),
-                         checklistOrdemServicoItemKmProcesso.getCodVeiculo(),
-                         null);
-        entity = entity
-                .toBuilder()
-                .withKmColetadoVeiculoFechamentoItem(checklistOrdemServicoItemKmProcesso.getNovoKm())
-                .build();
-        checklistOrdemServicoService.update(entity);
+        applyValidations(ordemServicoItemKmProcesso.getCodEmpresa(),
+                         ordemServicoItemKmProcesso.getCodVeiculo(),
+                         entity.getOrdemServico().getChecklist().getCodVeiculo());
+        checklistOrdemServicoService.updateKmFechamentoItem(
+                ordemServicoItemKmProcesso.getCodProcesso(),
+                ordemServicoItemKmProcesso.getNovoKm());
         return AlteracaoKmResponse.of(kmAntigo);
     }
 
@@ -172,17 +160,14 @@ public final class AlteracaoKmProcessoVisitorImpl implements AlteracaoKmProcesso
     @NotNull
     @Override
     public AlteracaoKmResponse visit(@NotNull final SocorroRotaKmProcesso socorroRotaKmProcesso) {
-        AberturaSocorroRotaEntity entity =
+        final AberturaSocorroRotaEntity entity =
                 socorroRotaService.getAberturaSocorroRotaByCodSocorro(socorroRotaKmProcesso.getCodProcesso());
         final long kmAntigo = entity.getKmColetadoVeiculoAberturaSocorro();
         applyValidations(socorroRotaKmProcesso.getCodEmpresa(),
                          socorroRotaKmProcesso.getCodVeiculo(),
                          entity.getCodVeiculo());
-        entity = entity
-                .toBuilder()
-                .withKmColetadoVeiculoAberturaSocorro(socorroRotaKmProcesso.getNovoKm())
-                .build();
-        socorroRotaService.update(entity);
+        socorroRotaService.updateKmColetadoAberturaSocorro(socorroRotaKmProcesso.getCodProcesso(),
+                                                           socorroRotaKmProcesso.getNovoKm());
         return AlteracaoKmResponse.of(kmAntigo);
     }
 
@@ -199,11 +184,10 @@ public final class AlteracaoKmProcessoVisitorImpl implements AlteracaoKmProcesso
                              transferenciaVeiculoKmProcesso.getCodVeiculo(),
                              infoVeiculo.getCodVeiculo());
             final long kmAntigo = infoVeiculo.getKmColetadoVeiculoMomentoTransferencia();
-            final TransferenciaVeiculoInformacaoEntity updateEntity = infoVeiculo
-                    .toBuilder()
-                    .withKmColetadoVeiculoMomentoTransferencia(transferenciaVeiculoKmProcesso.getNovoKm())
-                    .build();
-            transferenciaVeiculoService.updateInformacoesVeiculo(updateEntity);
+            transferenciaVeiculoService.updateKmColetadoMomentoTransferencia(
+                    transferenciaVeiculoKmProcesso.getCodProcesso(),
+                    transferenciaVeiculoKmProcesso.getCodVeiculo(),
+                    transferenciaVeiculoKmProcesso.getNovoKm());
             return AlteracaoKmResponse.of(kmAntigo);
         } else {
             throw new IllegalStateException(
