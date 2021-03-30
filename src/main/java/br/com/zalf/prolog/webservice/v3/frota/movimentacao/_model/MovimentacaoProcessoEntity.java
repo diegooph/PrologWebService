@@ -42,28 +42,13 @@ public final class MovimentacaoProcessoEntity {
     }
 
     @NotNull
-    public Optional<Long> getCodVeiculo() {
+    public Optional<VeiculoMovimentacao> getVeiculo() {
         for (final MovimentacaoEntity movimentacao : movimentacoes) {
             // Movimentações no Prolog só podem envolver um veículo. Dessa forma, ao encontrar um veículo podemos
             // retornar imediatamente.
-            final Optional<Long> codVeiculo = movimentacao.getCodVeiculo();
-            if (codVeiculo.isPresent()) {
-                return codVeiculo;
-            }
-        }
-
-        return Optional.empty();
-    }
-
-    @NotNull
-    public Optional<Long> getKmColetado() {
-        for (final MovimentacaoEntity movimentacao : movimentacoes) {
-            // Movimentações no Prolog só podem envolver um veículo. Dessa forma, ao encontrar um veículo podemos
-            // retornar imediatamente.
-            final Optional<Long> codVeiculo = movimentacao.getCodVeiculo();
-            if (codVeiculo.isPresent()) {
-                // TODO: Retornar KM coletado.
-                return codVeiculo;
+            final Optional<VeiculoMovimentacao> veiculo = movimentacao.getVeiculo();
+            if (veiculo.isPresent()) {
+                return veiculo;
             }
         }
 

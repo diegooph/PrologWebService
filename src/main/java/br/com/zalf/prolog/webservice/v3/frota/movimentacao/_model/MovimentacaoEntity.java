@@ -47,11 +47,15 @@ public final class MovimentacaoEntity {
     }
 
     @NotNull
-    public Optional<Long> getCodVeiculo() {
+    public Optional<VeiculoMovimentacao> getVeiculo() {
         if (movimentacaoOrigem.getCodVeiculo() != null) {
-            return Optional.of(movimentacaoOrigem.getCodVeiculo());
-        } else {
-            return Optional.ofNullable(movimentacaoDestino.getCodVeiculo());
+            return Optional.of(new VeiculoMovimentacao(movimentacaoOrigem.getCodVeiculo(),
+                                                       movimentacaoOrigem.getKmColetadoVeiculo()));
+        } else if (movimentacaoDestino.getCodVeiculo() != null) {
+            return Optional.of(new VeiculoMovimentacao(movimentacaoDestino.getCodVeiculo(),
+                                                       movimentacaoDestino.getKmColetadoVeiculo()));
         }
+
+        return Optional.empty();
     }
 }

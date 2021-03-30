@@ -11,8 +11,8 @@ import br.com.zalf.prolog.webservice.v3.frota.checklistordemservico.ChecklistOrd
 import br.com.zalf.prolog.webservice.v3.frota.checklistordemservico._model.ChecklistOrdemServicoItemEntity;
 import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.*;
 import br.com.zalf.prolog.webservice.v3.frota.movimentacao.MovimentacaoProcessoService;
-import br.com.zalf.prolog.webservice.v3.frota.movimentacao._model.MovimentacaoEntity;
 import br.com.zalf.prolog.webservice.v3.frota.movimentacao._model.MovimentacaoProcessoEntity;
+import br.com.zalf.prolog.webservice.v3.frota.movimentacao._model.VeiculoMovimentacao;
 import br.com.zalf.prolog.webservice.v3.frota.servicopneu.ServicoPneuService;
 import br.com.zalf.prolog.webservice.v3.frota.servicopneu._model.ServicoPneuEntity;
 import br.com.zalf.prolog.webservice.v3.frota.socorrorota.SocorroRotaService;
@@ -24,7 +24,6 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -130,30 +129,20 @@ public final class AlteracaoKmProcessoVisitorImpl implements AlteracaoKmProcesso
     public AlteracaoKmResponse visit(@NotNull final MovimentacaoKmProcesso movimentacaoKmProcesso) {
         final MovimentacaoProcessoEntity entity =
                 movimentacaoProcessoService.getByCodigo(movimentacaoKmProcesso.getCodProcesso());
-        final List<MovimentacaoEntity> movimentacoes =
-                entity.getMovimentacoesNoVeiculo(movimentacaoKmProcesso.getCodVeiculo());
-        if (!movimentacoes.isEmpty()) {
-            entity
-                    .getCodVeiculo()
-                    .ifPresentOrElse(
-                            codVeiculo -> applyValidations(movimentacaoKmProcesso.getCodEmpresa(),
-                                                           movimentacaoKmProcesso.getCodVeiculo(),
-                                                           codVeiculo),
-                            () -> {
-                                throw new IllegalStateException(String.format(
-                                        "O veículo %d não está presente no processo de movimentação de %d.",
-                                        movimentacaoKmProcesso.getCodVeiculo(),
-                                        movimentacaoKmProcesso.getCodProcesso()));
-                            });
-            //noinspection OptionalGetWithoutIsPresent
-            final long kmAntigo = entity.getKmColetado().get();
+        final Optional<VeiculoMovimentacao> optional = entity.getVeiculo();
+        if (optional.isPresent()) {
+            final VeiculoMovimentacao veiculo = optional.get();
+            applyValidations(movimentacaoKmProcesso.getCodEmpresa(),
+                             movimentacaoKmProcesso.getCodVeiculo(),
+                             veiculo.getCodVeiculo());
+            final long kmAntigo = veiculo.getKmColetado();
             movimentacaoProcessoService.updateKmColetado(entity, movimentacaoKmProcesso.getNovoKm());
             return AlteracaoKmResponse.of(kmAntigo);
         } else {
-            throw new IllegalStateException(
-                    String.format("O veículo %d não está presente no processo de movimentação de %d.",
-                                  movimentacaoKmProcesso.getCodVeiculo(),
-                                  movimentacaoKmProcesso.getCodProcesso()));
+            throw new IllegalStateException(String.format(
+                    "O veículo %d não está presente no processo de movimentação de %d.",
+                    movimentacaoKmProcesso.getCodVeiculo(),
+                    movimentacaoKmProcesso.getCodProcesso()));
         }
     }
 
