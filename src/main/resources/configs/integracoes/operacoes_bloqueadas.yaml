@@ -1,3 +1,13 @@
-pneu:
-  unidades:
-  empresas:
+# Aqui estão presentes as empresas/unidades que possuem o método de insert de pneu bloqueado por integração. Isso
+#  significa que se alguma das empresas/unidades listadas abaixo requisitar o serviço de inserção de pneus a
+#  'error_message' deve ser lançada.
+# Mapeamento de Empresa/Unidades bloqueadas:
+#  * Para bloquear todas as unidades de uma empresa, basta adicionar o código da empresa nas 'cod_empresas_integradas'.
+#  * Para bloquear apenas algumas unidades de uma empresa, NÃO adicione o código da empresa e insira os códigos das
+#  unidades que estão bloqueadas.
+#   - Uma unidade bloqueada não pode inserir pneus. Para estes códigos a 'error_message' será lançada.
+methods:
+  insert-pneu:
+    cod-empresas-integradas: 45, 48, 51, 52, 53, 57, 58
+    cod-unidades-bloqueadas:
+    error-message: Para inserir pneus utilize o seu sistema de gestão.
