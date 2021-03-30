@@ -8,7 +8,7 @@ Change Log
 ### Refactors
 * Deleta integração antiga da Avilan que era em XML (PL-3475)
 * Altera integração com Globus/Piccolotur de envio de OS para utilizar implementação própria do SOAP (PL-3475)
-
+* Adiciona mais uma opção no enum de evolução de km (PL-3562)
 
 <a name="v2.2.1"></a>
 ## Version [v2.2.1](https://github.com/luizfp/PrologWebService/compare/v2.2.0...v2.2.1) (release-date) [unreleased]
