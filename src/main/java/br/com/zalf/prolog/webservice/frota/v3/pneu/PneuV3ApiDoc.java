@@ -14,5 +14,6 @@ import javax.validation.Valid;
 public interface PneuV3ApiDoc {
     @NotNull
     SuccessResponse insert(final String tokenIntegracao,
+                           final boolean ignoreDotValidation,
                            @Valid final PneuCadastroDto pneuCadastro);
 }

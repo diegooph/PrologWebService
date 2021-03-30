@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.frota.v3.pneu;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.frota.pneu.error.PneuValidator;
 import br.com.zalf.prolog.webservice.frota.v3.pneu._model.PneuCadastroDto;
 import br.com.zalf.prolog.webservice.frota.v3.pneu._model.PneuEntity;
 import br.com.zalf.prolog.webservice.frota.v3.pneu.pneuservico.PneuServicoV3Service;
@@ -47,10 +48,12 @@ public class PneuV3Service {
     @NotNull
     @Transactional
     public SuccessResponse insert(@Nullable final String tokenIntegracao,
-                                  @NotNull final PneuCadastroDto pneuCadastroDto) {
+                                  @NotNull final PneuCadastroDto pneuCadastroDto,
+                                  final boolean ignoreDotValidation) {
         try {
             operacoesBloqueadas.validateEmpresaUnidadeBloqueada(pneuCadastroDto.getCodEmpresaAlocado(),
                                                                 pneuCadastroDto.getCodUnidadeAlocado());
+            validatePneu(pneuCadastroDto, ignoreDotValidation);
             final PneuEntity pneuEntity = pneuCadastroMapper.toEntity(pneuCadastroDto);
             final PneuEntity pneuInsert = pneuEntity.toBuilder()
                     .origemCadastro(getOrigemCadastro(tokenIntegracao))
@@ -66,6 +69,19 @@ public class PneuV3Service {
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao inserir pneu, tente novamente.");
+        }
+    }
+
+    private void validatePneu(@NotNull final PneuCadastroDto pneuCadastroDto,
+                              final boolean ignoreDotValidation) throws Throwable {
+        PneuValidator.validacaoVida(pneuCadastroDto.getVidaAtualPneu(), pneuCadastroDto.getVidaTotalPneu());
+        if (!ignoreDotValidation) {
+            PneuValidator.validacaoDot(pneuCadastroDto.getDotPneu());
+        }
+        if (pneuCadastroDto.getVidaAtualPneu() > 1) {
+            PneuValidator.validacaoModeloDaBanda(pneuCadastroDto.getCodModeloBanda());
+            //noinspection ConstantConditions
+            PneuValidator.validacaoValorDaBanda(pneuCadastroDto.getValorBandaPneu());
         }
     }
 

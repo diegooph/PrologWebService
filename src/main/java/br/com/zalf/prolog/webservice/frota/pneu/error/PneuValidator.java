@@ -31,7 +31,8 @@ public final class PneuValidator {
             validacaoMarca(pneu.getMarca());
             validacaoModelo(pneu.getModelo());
             validacaoValor(pneu.getValor());
-            validacaoVida(pneu);
+            validacaoVida(pneu.getVidaAtual(), pneu.getVidasTotal());
+            validacaoBanda(pneu);
             validacaoPressao(pneu.getPressaoCorreta());
             validacaoDimensao(pneu.getDimensao());
             if (!ignoreDotValidation) {
@@ -64,75 +65,77 @@ public final class PneuValidator {
 
     private static void validacaoModelo(final ModeloPneu modelo) {
         Preconditions.checkNotNull(modelo, "Você precisa selecionar o modelo");
-        Preconditions.checkArgument(Integer.parseInt(String.valueOf(modelo.getCodigo())) > 0,
-                "Modelo inválido");
+        Preconditions.checkArgument(modelo.getCodigo() > 0, "Modelo inválido");
     }
 
     private static void validacaoValor(final BigDecimal valor) {
         Preconditions.checkNotNull(valor, "Você precisa fornecer o valor");
         Preconditions.checkArgument(valor.doubleValue() >= 0,
-                "Valor inválido\nO valor não deve ser negativo");
+                                    "Valor inválido\nO valor não deve ser negativo");
     }
 
-    private static void validacaoVida(final Pneu pneu) throws Exception {
-        validacaoVidaRecapagem(pneu.getVidasTotal(), pneu.getVidaAtual());
+    public static void validacaoVida(final int vidaAtual, final int vidaTotal) throws Exception {
+        validacaoVidaRecapagem(vidaTotal, vidaAtual);
 
-        if (pneu.getVidaAtual() > VIDA_PNEU_NOVO) {
-            validacaoBanda(pneu.getBanda());
+        if (vidaAtual > VIDA_MAXIMA) {
+            throw new GenericException("Vida inválida\nO máximo de vidas que um pneu deve ter é 11",
+                                       "vidaAtual: " + vidaAtual);
         }
 
-        if (pneu.getVidaAtual() > VIDA_MAXIMA) {
-            throw new GenericException("Vida inválida\nO máximo de vidas que um pneu deve ter é 6", "vidaAtual: " + pneu.getVidaAtual());
-        }
-
-        if (pneu.getVidaAtual() < VIDA_PNEU_NOVO) {
-            throw new GenericException("Vida inválida\nO pneu deve ter pelo menos vida 1", "vidaAtual: " + pneu.getVidaAtual());
+        if (vidaTotal < VIDA_PNEU_NOVO) {
+            throw new GenericException("Vida inválida\nO pneu deve ter pelo menos vida 1",
+                                       "vidaAtual: " + vidaTotal);
         }
     }
 
     private static void validacaoVidaRecapagem(final int vidaTotal, final int vidaAtual) throws Exception {
         if (vidaTotal < vidaAtual) {
             throw new GenericException("A vida do pneu precisa ser menor ou igual ao máximo de recapagens",
-                    "vidaTotal é menor que vidaAtual\nvidaAtual: " + vidaAtual + " vidaTotal: " + vidaTotal);
+                                       "vidaTotal é menor que vidaAtual\nvidaAtual: " + vidaAtual +
+                                               " vidaTotal: " + vidaTotal);
         }
     }
 
-    private static void validacaoBanda(final Banda banda) {
-        Preconditions.checkNotNull(banda.getMarca(), "Você precisa selecionar a marca de banda");
-        Preconditions.checkNotNull(banda.getModelo(), "Você precisa selecionar o modelo");
-        Preconditions.checkNotNull(banda.getValor(), "Você precisa fornecer o valor");
+    private static void validacaoBanda(final Pneu pneu) {
+        if (pneu.getVidaAtual() > VIDA_PNEU_NOVO) {
+            final Banda banda = pneu.getBanda();
+            Preconditions.checkNotNull(banda.getMarca(), "Você precisa selecionar a marca de banda");
+            Preconditions.checkNotNull(banda.getModelo(), "Você precisa selecionar o modelo");
 
-        validacaoMarcaDaBanda(banda.getMarca().getCodigo());
-        validacaoModeloDaBanda(banda.getModelo().getCodigo());
-        validacaoValorDaBanda(banda.getValor());
+            validacaoMarcaDaBanda(banda.getMarca().getCodigo());
+            validacaoModeloDaBanda(banda.getModelo().getCodigo());
+            validacaoValorDaBanda(banda.getValor());
+        }
     }
 
     private static void validacaoMarcaDaBanda(final Long codMarcaDaBanda) {
         Preconditions.checkNotNull(codMarcaDaBanda, "Você precisa selecionar a marca da banda");
         Preconditions.checkArgument(Integer.parseInt(String.valueOf(codMarcaDaBanda)) > 0,
-                "Marca da banda inválida");
+                                    "Marca da banda inválida");
     }
 
-    private static void validacaoModeloDaBanda(final Long codModeloDaBanda) {
+    public static void validacaoModeloDaBanda(final Long codModeloDaBanda) {
         Preconditions.checkNotNull(codModeloDaBanda, "Você precisa selecionar o modelo da banda");
         Preconditions.checkArgument(Integer.parseInt(String.valueOf(codModeloDaBanda)) > 0,
-                "Modelo da banda inválido");
+                                    "Modelo da banda inválido");
     }
 
-    private static void validacaoValorDaBanda(final BigDecimal valor) {
+    public static void validacaoValorDaBanda(final BigDecimal valor) {
+        Preconditions.checkNotNull(valor, "Você precisa fornecer o valor");
         Preconditions.checkArgument(valor.doubleValue() >= 0, "Valor " +
-                "inválido\nO valor não deve ser negativo");
+                "inválido\nO valor da banda não pode ser negativo.");
     }
 
     private static void validacaoPressao(final double pressao) {
-        Preconditions.checkArgument(pressao >= 0, "Pressão inválida\nA pressão não deve ser negativa");
+        Preconditions.checkArgument(pressao >= 0,
+                                    "Pressão inválida\nA pressão não deve ser negativa");
     }
 
     private static void validacaoDimensao(final Pneu.Dimensao dimensao) {
         Preconditions.checkNotNull(dimensao, "Você precisa fornecer a dimensão");
     }
 
-    private static void validacaoDot(@Nullable final String dot) {
+    public static void validacaoDot(@Nullable final String dot) {
         if (!StringUtils.isNullOrEmpty(dot) && !isDotValid(dot)) {
             throw new GenericException("DOT inválido", "DOT informado: " + dot);
         }
