@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.v3.pneu.pneuservico;
 
+import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico._model.PneuServicoRealizado;
 import br.com.zalf.prolog.webservice.frota.v3.pneu._model.PneuEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,7 +22,7 @@ import javax.persistence.*;
 public class PneuServicoRealizadoIncrementaVidaEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "codigo", nullable = false, unique = true, updatable = false)
+    @Column(name = "codigo", nullable = false)
     private Long codigo;
     @Column(name = "cod_servico_realizado", nullable = false)
     private Long codServicoRealizado;
@@ -33,10 +34,14 @@ public class PneuServicoRealizadoIncrementaVidaEntity {
     private String fonteServicoRealizado;
 
     @NotNull
-    public static PneuServicoRealizadoIncrementaVidaEntity createFromPneuServico(@NotNull final PneuEntity pneuEntity) {
+    public static PneuServicoRealizadoIncrementaVidaEntity createFromPneuServico(
+            @NotNull final PneuEntity pneuEntity,
+            @NotNull final PneuServicoRealizadoEntity savedServico) {
         return PneuServicoRealizadoIncrementaVidaEntity.builder()
+                .codServicoRealizado(savedServico.getCodigo())
                 .codModeloBanda(pneuEntity.getCodModeloBanda())
                 .vidaNovaPneu(pneuEntity.getVidaAtual())
+                .fonteServicoRealizado(PneuServicoRealizado.FONTE_CADASTRO)
                 .build();
     }
 }

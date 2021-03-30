@@ -23,7 +23,7 @@ import javax.persistence.*;
 public class PneuServicoCadastroEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "codigo", nullable = false, unique = true, updatable = false)
+    @Column(name = "codigo", nullable = false)
     private Long codigo;
     @Column(name = "cod_pneu", nullable = false)
     private Long codPneu;
@@ -36,7 +36,8 @@ public class PneuServicoCadastroEntity {
     public static PneuServicoCadastroEntity createFromPneuServico(
             @NotNull final PneuServicoRealizadoEntity pneuServico) {
         return PneuServicoCadastroEntity.builder()
-                .codPneu(pneuServico.getCodigo())
+                .codPneu(pneuServico.getCodPneu())
+                .codServicoRealizado(pneuServico.getCodigo())
                 .fonteServicoRealizado(PneuServicoRealizado.FONTE_CADASTRO)
                 .build();
     }
