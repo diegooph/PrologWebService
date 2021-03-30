@@ -46,12 +46,12 @@ public final class PneuValidator {
     }
 
     private static void validacaoUnidade(final Long codUnidade) {
-        Preconditions.checkNotNull(codUnidade, "Você precisa selecionar a unidade");
+        Preconditions.checkNotNull(codUnidade, "Você precisa fornecer a unidade do pneu");
         Preconditions.checkArgument(codUnidade > 0, "Unidade inválida");
     }
 
     private static void validacaoCodigoCliente(final String codigoCliente) throws Exception {
-        Preconditions.checkNotNull(codigoCliente, "Você precisa fornecer o código");
+        Preconditions.checkNotNull(codigoCliente, "Você precisa fornecer o código do pneu");
         if (!StringUtils.stripAccents(codigoCliente).equals(codigoCliente)) {
             throw new GenericException("Código inválido\nO código não deve conter acentos", "Código informado: "
                     + codigoCliente);
@@ -59,17 +59,17 @@ public final class PneuValidator {
     }
 
     private static void validacaoMarca(final Marca marca) {
-        Preconditions.checkNotNull(marca, "Você precisa selecionar a marca");
-        Preconditions.checkArgument(marca.getCodigo() > 0, "Marca inválida");
+        Preconditions.checkNotNull(marca, "Você precisa fornecer a marca do pneu");
+        Preconditions.checkArgument(marca.getCodigo() > 0, "Marca do pneu inválida");
     }
 
     private static void validacaoModelo(final ModeloPneu modelo) {
-        Preconditions.checkNotNull(modelo, "Você precisa selecionar o modelo");
-        Preconditions.checkArgument(modelo.getCodigo() > 0, "Modelo inválido");
+        Preconditions.checkNotNull(modelo, "Você precisa fornecer o modelo do pneu");
+        Preconditions.checkArgument(modelo.getCodigo() > 0, "Modelo do pneu inválido");
     }
 
     private static void validacaoValor(final BigDecimal valor) {
-        Preconditions.checkNotNull(valor, "Você precisa fornecer o valor");
+        Preconditions.checkNotNull(valor, "Você precisa fornecer o valor do pneu");
         Preconditions.checkArgument(valor.doubleValue() >= 0,
                                     "Valor inválido\nO valor não deve ser negativo");
     }
@@ -99,8 +99,8 @@ public final class PneuValidator {
     private static void validacaoBanda(final Pneu pneu) {
         if (pneu.getVidaAtual() > VIDA_PNEU_NOVO) {
             final Banda banda = pneu.getBanda();
-            Preconditions.checkNotNull(banda.getMarca(), "Você precisa selecionar a marca de banda");
-            Preconditions.checkNotNull(banda.getModelo(), "Você precisa selecionar o modelo");
+            Preconditions.checkNotNull(banda.getMarca(), "Você precisa fornecer a marca de banda");
+            Preconditions.checkNotNull(banda.getModelo(), "Você precisa fornecer o modelo da banda");
 
             validacaoMarcaDaBanda(banda.getMarca().getCodigo());
             validacaoModeloDaBanda(banda.getModelo().getCodigo());
@@ -109,13 +109,13 @@ public final class PneuValidator {
     }
 
     private static void validacaoMarcaDaBanda(final Long codMarcaDaBanda) {
-        Preconditions.checkNotNull(codMarcaDaBanda, "Você precisa selecionar a marca da banda");
+        Preconditions.checkNotNull(codMarcaDaBanda, "Você precisa fornecer a marca da banda");
         Preconditions.checkArgument(Integer.parseInt(String.valueOf(codMarcaDaBanda)) > 0,
                                     "Marca da banda inválida");
     }
 
     public static void validacaoModeloDaBanda(final Long codModeloDaBanda) {
-        Preconditions.checkNotNull(codModeloDaBanda, "Você precisa selecionar o modelo da banda");
+        Preconditions.checkNotNull(codModeloDaBanda, "Você precisa fornecer o modelo da banda");
         Preconditions.checkArgument(Integer.parseInt(String.valueOf(codModeloDaBanda)) > 0,
                                     "Modelo da banda inválido");
     }
