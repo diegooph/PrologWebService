@@ -76,7 +76,7 @@ public class VeiculoValidator {
 
     private static void validacaoKmAtual(final Long kmAtual) {
         Preconditions.checkNotNull(kmAtual, "Você precisa fornecer o km atual");
-        Preconditions.checkArgument(kmAtual > 0, "Km atual inválido\nA quilometragem não deve " +
+        Preconditions.checkArgument(kmAtual >= 0, "Km atual inválido\nA quilometragem não deve " +
                 "ser negativa");
     }
 
