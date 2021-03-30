@@ -1,10 +1,10 @@
-package br.com.zalf.prolog.webservice.frota.veiculo.v3;
+package br.com.zalf.prolog.webservice.frota.v3.veiculo;
 
 import br.com.zalf.prolog.webservice.commons.network.PrologCustomHeaders;
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Optional;
-import br.com.zalf.prolog.webservice.frota.veiculo.v3._model.VeiculoCadastroDto;
-import br.com.zalf.prolog.webservice.frota.veiculo.v3._model.VeiculoEntity;
+import br.com.zalf.prolog.webservice.frota.v3.veiculo._model.VeiculoCadastroDto;
+import br.com.zalf.prolog.webservice.frota.v3.veiculo._model.VeiculoEntity;
 import br.com.zalf.prolog.webservice.interceptors.ApiExposed;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;

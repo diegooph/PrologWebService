@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.frota.veiculo.v3._model;
+package br.com.zalf.prolog.webservice.frota.v3.veiculo._model;
 
 import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
 import lombok.AllArgsConstructor;

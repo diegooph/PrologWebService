@@ -1,14 +1,14 @@
-package br.com.zalf.prolog.webservice.frota.veiculo.v3;
+package br.com.zalf.prolog.webservice.frota.v3.veiculo;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.frota.v3.veiculo._model.VeiculoEntity;
+import br.com.zalf.prolog.webservice.frota.v3.veiculo.diagrama.DiagramaService;
+import br.com.zalf.prolog.webservice.frota.v3.veiculo.diagrama._model.DiagramaEntity;
 import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
 import br.com.zalf.prolog.webservice.frota.veiculo.tipoveiculo.v3.TipoVeiculoV3Service;
 import br.com.zalf.prolog.webservice.frota.veiculo.tipoveiculo.v3._model.TipoVeiculoEntity;
-import br.com.zalf.prolog.webservice.frota.veiculo.v3._model.VeiculoEntity;
-import br.com.zalf.prolog.webservice.frota.veiculo.v3.diagrama.DiagramaService;
-import br.com.zalf.prolog.webservice.frota.veiculo.v3.diagrama._model.DiagramaEntity;
 import br.com.zalf.prolog.webservice.frota.veiculo.validator.VeiculoValidator;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

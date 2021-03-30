@@ -1,7 +1,7 @@
-package br.com.zalf.prolog.webservice.frota.veiculo.v3;
+package br.com.zalf.prolog.webservice.frota.v3.veiculo;
 
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
-import br.com.zalf.prolog.webservice.frota.veiculo.v3._model.VeiculoCadastroDto;
+import br.com.zalf.prolog.webservice.frota.v3.veiculo._model.VeiculoCadastroDto;
 import io.swagger.annotations.*;
 
 import javax.validation.Valid;
