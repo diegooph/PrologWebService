@@ -31,7 +31,7 @@ public class PneuCadastroDto {
     Integer vidaTotalPneu;
     @PositiveOrZero(message = "A pressão recomendada não pode ser um valor negativo.")
     @NotNull(message = "A pressão recomendada não pode ser nula.")
-    Double pressaoRecomendada;
+    Double pressaoRecomendadaPneu;
     @Size(max = 20, message = "O DOT pode conter no máximo 20 caracteres.")
     @Nullable
     String dotPneu;
