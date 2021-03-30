@@ -7,6 +7,7 @@ import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.AlteracaoKmProc
 import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.AlteracaoKmProcessoEntity;
 import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.AlteracaoKmResponse;
 import br.com.zalf.prolog.webservice.v3.frota.kmprocessos.visitor.AlteracaoKmProcessoVisitor;
+import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,23 +20,22 @@ import javax.transaction.Transactional;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 @Service
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class AlteracaoKmProcessosService {
     private static final String TAG = AlteracaoKmProcessosService.class.getSimpleName();
     @NotNull
     private final AlteracaoKmProcessoDao alteracaoKmProcessoDao;
     @NotNull
+    private final AlteracaoKmProcessosServiceFactory serviceFactory;
+    @NotNull
+    private final AlteradorKmProcesso alteradorKmProcesso;
+    @NotNull
     private final AlteracaoKmProcessoVisitor visitor;
-
-    @Autowired
-    public AlteracaoKmProcessosService(@NotNull final AlteracaoKmProcessoDao alteracaoKmProcessoDao,
-                                       @NotNull final AlteracaoKmProcessoVisitor visitor) {
-        this.alteracaoKmProcessoDao = alteracaoKmProcessoDao;
-        this.visitor = visitor;
-    }
 
     @Transactional
     public void updateKmProcesso(@NotNull final AlteracaoKmProcesso alteracaoKmProcesso) {
-        final AlteracaoKmResponse response = alteracaoKmProcesso.accept(visitor);
+        final KmProcessoAtualizavel service = serviceFactory.createService(alteracaoKmProcesso);
+        final AlteracaoKmResponse response = alteradorKmProcesso.updateKmProcesso(service, alteracaoKmProcesso);
         if (response.getKmAntigo() != alteracaoKmProcesso.getNovoKm()) {
             Log.d(TAG, "KM foi alterado, gerando histórico");
             final AlteracaoKmProcessoEntity entity = AlteracaoKmProcessoEntity

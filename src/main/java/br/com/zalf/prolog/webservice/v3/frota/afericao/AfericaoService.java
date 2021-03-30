@@ -1,6 +1,9 @@
 package br.com.zalf.prolog.webservice.v3.frota.afericao;
 
 import br.com.zalf.prolog.webservice.v3.frota.afericao._model.AfericaoEntity;
+import br.com.zalf.prolog.webservice.v3.frota.kmprocessos.EntityKmColetado;
+import br.com.zalf.prolog.webservice.v3.frota.kmprocessos.KmProcessoAtualizavel;
+import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,23 +16,26 @@ import javax.transaction.Transactional;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 @Service
-public class AfericaoService {
-
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
+public class AfericaoService implements KmProcessoAtualizavel {
     @NotNull
     private final AfericaoDao afericaoDao;
 
-    @Autowired
-    public AfericaoService(@NotNull final AfericaoDao afericaoDao) {
-        this.afericaoDao = afericaoDao;
+    @NotNull
+    @Override
+    public EntityKmColetado getEntityKmColetado(@NotNull final Long entityId) {
+        return getByCodigo(entityId);
+    }
+
+    @Override
+    public void updateKmColetadoProcesso(@NotNull final Long codProcesso,
+                                         final long novoKm) {
+        updateKmColetado(codProcesso, novoKm);
     }
 
     @NotNull
     public AfericaoEntity getByCodigo(@NotNull final Long codigo) {
         return afericaoDao.getOne(codigo);
-    }
-
-    public void update(@NotNull final AfericaoEntity afericaoEntity) {
-        afericaoDao.save(afericaoEntity);
     }
 
     @Transactional
@@ -39,6 +45,6 @@ public class AfericaoService {
                 .toBuilder()
                 .withKmColetadoVeiculo(novoKm)
                 .build();
-        update(entity);
+        afericaoDao.save(entity);
     }
 }

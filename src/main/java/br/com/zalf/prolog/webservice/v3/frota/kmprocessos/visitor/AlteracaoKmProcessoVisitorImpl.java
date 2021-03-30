@@ -72,6 +72,7 @@ public final class AlteracaoKmProcessoVisitorImpl implements AlteracaoKmProcesso
     @NotNull
     @Override
     public AlteracaoKmResponse visit(@NotNull final AfericaoKmProcesso afericaoKmProcesso) {
+
         final AfericaoEntity entity = afericaoService.getByCodigo(afericaoKmProcesso.getCodProcesso());
         final long kmAntigo = entity.getKmColetadoVeiculo();
         applyValidations(afericaoKmProcesso.getCodEmpresa(),

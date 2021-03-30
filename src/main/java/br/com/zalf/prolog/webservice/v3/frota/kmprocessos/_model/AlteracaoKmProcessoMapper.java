@@ -15,67 +15,14 @@ public final class AlteracaoKmProcessoMapper {
     @NotNull
     public AlteracaoKmProcesso toAlteracaoKmProcesso(@NotNull final AlteracaoKmProcessoDto dto,
                                                      @Nullable final Long codColaboradorAlteracao) {
-        switch (dto.getTipoProcesso()) {
-            case AFERICAO:
-                return new AfericaoKmProcesso(
-                        dto.getCodEmpresa(),
-                        dto.getCodVeiculo(),
-                        dto.getCodProcesso(),
-                        dto.getTipoProcesso(),
-                        codColaboradorAlteracao,
-                        dto.getNovoKm());
-            case FECHAMENTO_SERVICO_PNEU:
-                return new ServicoPneuKmProcesso(
-                        dto.getCodEmpresa(),
-                        dto.getCodVeiculo(),
-                        dto.getCodProcesso(),
-                        dto.getTipoProcesso(),
-                        codColaboradorAlteracao,
-                        dto.getNovoKm());
-            case CHECKLIST:
-                return new ChecklistKmProcesso(
-                        dto.getCodEmpresa(),
-                        dto.getCodVeiculo(),
-                        dto.getCodProcesso(),
-                        dto.getTipoProcesso(),
-                        codColaboradorAlteracao,
-                        dto.getNovoKm());
-            case FECHAMENTO_ITEM_CHECKLIST:
-                return new ChecklistOrdemServicoItemKmProcesso(
-                        dto.getCodEmpresa(),
-                        dto.getCodVeiculo(),
-                        dto.getCodProcesso(),
-                        dto.getTipoProcesso(),
-                        codColaboradorAlteracao,
-                        dto.getNovoKm());
-            case MOVIMENTACAO:
-                return new MovimentacaoKmProcesso(
-                        dto.getCodEmpresa(),
-                        dto.getCodVeiculo(),
-                        dto.getCodProcesso(),
-                        dto.getTipoProcesso(),
-                        codColaboradorAlteracao,
-                        dto.getNovoKm());
-            case SOCORRO_EM_ROTA:
-                return new SocorroRotaKmProcesso(
-                        dto.getCodEmpresa(),
-                        dto.getCodVeiculo(),
-                        dto.getCodProcesso(),
-                        dto.getTipoProcesso(),
-                        codColaboradorAlteracao,
-                        dto.getNovoKm());
-            case TRANSFERENCIA_DE_VEICULOS:
-                return new TransferenciaVeiculoKmProcesso(
-                        dto.getCodEmpresa(),
-                        dto.getCodVeiculo(),
-                        dto.getCodProcesso(),
-                        dto.getTipoProcesso(),
-                        codColaboradorAlteracao,
-                        dto.getNovoKm());
-            case ACOPLAMENTO:
-            case EDICAO_DE_VEICULOS:
-            default:
-                throw new IllegalStateException();
-        }
+        return AlteracaoKmProcesso
+                .builder()
+                .withCodEmpresa(dto.getCodEmpresa())
+                .withCodVeiculo(dto.getCodVeiculo())
+                .withCodProcesso(dto.getCodProcesso())
+                .withTipoProcesso(dto.getTipoProcesso())
+                .withCodColaboradorAlteracao(codColaboradorAlteracao)
+                .withNovoKm(dto.getNovoKm())
+                .build();
     }
 }
