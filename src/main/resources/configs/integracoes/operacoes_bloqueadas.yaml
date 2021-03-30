@@ -11,3 +11,7 @@ methods:
     cod-empresas-integradas: 45, 48, 51, 52, 53, 57, 58
     cod-unidades-bloqueadas:
     error-message: Para inserir pneus utilize o seu sistema de gestão.
+  insert-veiculo:
+    cod-empresas-integradas: 45, 48, 51, 52, 53, 57, 58
+    cod-unidades-bloqueadas:
+    error-message: Para inserir veículos utilize o seu sistema de gestão.

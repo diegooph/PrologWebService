@@ -10,6 +10,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEn
 import br.com.zalf.prolog.webservice.frota.veiculo.tipoveiculo.v3.TipoVeiculoV3Service;
 import br.com.zalf.prolog.webservice.frota.veiculo.tipoveiculo.v3._model.TipoVeiculoEntity;
 import br.com.zalf.prolog.webservice.frota.veiculo.validator.VeiculoValidator;
+import br.com.zalf.prolog.webservice.integracao.OperacoesBloqueadasYaml;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,14 +28,18 @@ public class VeiculoV3Service {
     private final TipoVeiculoV3Service tipoVeiculoService;
     @NotNull
     private final DiagramaService diagramaService;
+    @NotNull
+    private final OperacoesBloqueadasYaml operacoesBloqueadas;
 
     @Autowired
     public VeiculoV3Service(@NotNull final VeiculoV3Dao veiculoDao,
                             @NotNull final TipoVeiculoV3Service tipoVeiculoService,
-                            @NotNull final DiagramaService diagramaService) {
+                            @NotNull final DiagramaService diagramaService,
+                            @NotNull final OperacoesBloqueadasYaml operacoesBloqueadas) {
         this.veiculoDao = veiculoDao;
         this.tipoVeiculoService = tipoVeiculoService;
         this.diagramaService = diagramaService;
+        this.operacoesBloqueadas = operacoesBloqueadas;
     }
 
     @NotNull
@@ -42,6 +47,8 @@ public class VeiculoV3Service {
     public SuccessResponse insert(@Nullable final String tokenIntegracao,
                                   @NotNull final VeiculoEntity veiculoEntity) {
         try {
+            operacoesBloqueadas.validateEmpresaUnidadeBloqueada(veiculoEntity.getCodEmpresa(),
+                                                                veiculoEntity.getCodUnidade());
             VeiculoValidator.validacaoMotorizadoSemHubodometro(veiculoEntity.isPossuiHobodometro(),
                                                                veiculoEntity.getCodTipo());
             final TipoVeiculoEntity tipoVeiculoEntity = tipoVeiculoService.getByCod(veiculoEntity.getCodTipo());
