@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.pneu;
 
 import br.com.zalf.prolog.webservice.frota.pneu._model.*;
+import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import org.jetbrains.annotations.NotNull;
@@ -14,7 +15,9 @@ public interface PneuDao {
     List<Pneu> getPneusByPlaca(String placa) throws SQLException;
 
     @NotNull
-    Long insert(Pneu pneu, Long codUnidade) throws Throwable;
+    Long insert(@NotNull final Pneu pneu,
+                @NotNull final Long codUnidade,
+                @NotNull final OrigemAcaoEnum origemCadastro) throws Throwable;
 
     @NotNull
     List<Long> insert(@NotNull final List<Pneu> pneus) throws Throwable;

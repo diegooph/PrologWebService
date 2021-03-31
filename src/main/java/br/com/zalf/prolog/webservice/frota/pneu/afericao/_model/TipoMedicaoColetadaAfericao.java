@@ -5,6 +5,8 @@ import br.com.zalf.prolog.webservice.dashboard.components.charts.bar.BarColor;
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.stream.Stream;
+
 /**
  * Created on 10/11/17.
  *
@@ -66,16 +68,13 @@ public enum TipoMedicaoColetadaAfericao implements BarColor {
         return stringRepresentation;
     }
 
+    @NotNull
     public static TipoMedicaoColetadaAfericao fromString(@NotNull final String string) {
-        Preconditions.checkNotNull(string, "string cannot be null!");
-
-        for (final TipoMedicaoColetadaAfericao tipoMedicaoColetadaAfericao : TipoMedicaoColetadaAfericao.values()) {
-            if (string.equals(tipoMedicaoColetadaAfericao.stringRepresentation)) {
-                return tipoMedicaoColetadaAfericao;
-            }
-        }
-
-        throw new IllegalArgumentException("Nenhum tipo de aferição encontrado para a string: " + string);
+        return Stream.of(TipoMedicaoColetadaAfericao.values())
+                .filter(e -> e.stringRepresentation.equals(string))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Nenhum tipo de aferição encontrado para a string: "
+                                                                        + string));
     }
 
     @Override

@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.pneu;
 
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
+import br.com.zalf.prolog.webservice.commons.network.PrologCustomHeaders;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Required;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
@@ -8,6 +9,7 @@ import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu._model.PneuComum;
 import br.com.zalf.prolog.webservice.frota.pneu._model.PneuRetornoDescarte;
 import br.com.zalf.prolog.webservice.frota.pneu._model.PneuRetornoDescarteResponse;
+import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.AppVersionCodeHandler;
@@ -49,10 +51,17 @@ public final class PneuResource {
     @Secured(permissions = Pilares.Frota.Pneu.CADASTRAR)
     @Path("/{codUnidade}")
     public AbstractResponse insert(@HeaderParam("Authorization") @Required final String userToken,
+                                   @HeaderParam(PrologCustomHeaders.AppVersionAndroid.PROLOG_APP_VERSION)
+                                   @Required final Integer appVersion,
                                    @PathParam("codUnidade") @Required final Long codUnidade,
                                    @QueryParam("ignoreDotValidation") final boolean ignoreDotValidation,
                                    @Required final Pneu pneu) throws ProLogException {
-        return service.insert(userToken, codUnidade, pneu, ignoreDotValidation);
+        return service.insert(
+                userToken,
+                codUnidade,
+                pneu,
+                appVersion != null ? OrigemAcaoEnum.PROLOG_ANDROID : OrigemAcaoEnum.PROLOG_WEB,
+                ignoreDotValidation);
     }
 
     @POST

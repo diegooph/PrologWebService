@@ -3,11 +3,11 @@ package br.com.zalf.prolog.webservice.frota.pneu.afericao;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
-import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Optional;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Platform;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Required;
 import br.com.zalf.prolog.webservice.commons.network.metadata.UsedBy;
+import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.VersaoAppBloqueadaException;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Restricao;
@@ -115,6 +115,13 @@ public class AfericaoResource {
         return service.getNovaAfericaoAvulsa(userToken, codUnidade, codPneu, tipoAfericao);
     }
 
+    /**
+     * @deprecated <p>
+     * Há nova versão em outra classe.
+     * Segue método referencia: <br>
+     * {@link br.com.zalf.prolog.webservice.frota.pneu.afericao.v3.AfericaoV3Resource#getAfericoesPlacas}
+     * </p>
+     */
     @GET
     @Path("/unidades/{codUnidade}/tipos-veiculos/{codTipoVeiculo}/placas/{placaVeiculo}")
     @Secured(permissions = {
@@ -123,6 +130,11 @@ public class AfericaoResource {
             Pilares.Frota.OrdemServico.Pneu.VISUALIZAR,
             Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
     @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
+    @AppVersionCodeHandler(
+            targetVersionCode = 62,
+            versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
+            actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
+    @Deprecated
     public List<AfericaoPlaca> getAfericoesPlacas(
             @PathParam("codUnidade") final Long codUnidade,
             @PathParam("codTipoVeiculo") final String codTipoVeiculo,
@@ -143,6 +155,14 @@ public class AfericaoResource {
                 userToken);
     }
 
+    /**
+     * @deprecated <p>
+     * Há nova versão em outra classe.
+     * Segue método referencia: <br>
+     * {@link br.com.zalf.prolog.webservice.frota.pneu.afericao.v3.AfericaoV3Resource#getAfericoesAvulsas}
+     * </p>
+     */
+
     @GET
     @Path("/unidades/{codUnidade}/avulsas")
     @Secured(permissions = {
@@ -151,6 +171,11 @@ public class AfericaoResource {
             Pilares.Frota.OrdemServico.Pneu.VISUALIZAR,
             Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
     @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
+    @AppVersionCodeHandler(
+            targetVersionCode = 62,
+            versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
+            actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
+    @Deprecated
     public List<AfericaoAvulsa> getAfericoesAvulsas(
             @PathParam("codUnidade") final Long codUnidade,
             @QueryParam("dataInicial") final String dataInicial,
@@ -160,12 +185,24 @@ public class AfericaoResource {
         return service.getAfericoesAvulsas(codUnidade, dataInicial, dataFinal, limit, offset);
     }
 
+    /**
+     * @deprecated <p>
+     * Há nova versão em outra classe.
+     * Segue método referencia: <br>
+     * {@link br.com.zalf.prolog.webservice.frota.pneu.afericao.v3.AfericaoV3Resource#getAfericoesAvulsas}
+     * </p>
+     */
     @GET
     @Path("/unidades/{codUnidade}/avulsas-report")
     @Secured(permissions = {
             Pilares.Frota.Afericao.REALIZAR_AFERICAO_PNEU_AVULSO,
             Pilares.Frota.Afericao.VISUALIZAR_TODAS_AFERICOES})
     @UsedBy(platforms = Platform.ANDROID)
+    @AppVersionCodeHandler(
+            targetVersionCode = 62,
+            versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
+            actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
+    @Deprecated
     public Report getAfericoesAvulsas(
             @PathParam("codUnidade") @Required final Long codUnidade,
             @QueryParam("codColaborador") @Optional final Long codColaborador,
