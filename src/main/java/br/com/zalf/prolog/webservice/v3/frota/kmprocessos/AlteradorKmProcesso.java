@@ -1,8 +1,8 @@
 package br.com.zalf.prolog.webservice.v3.frota.kmprocessos;
 
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
-import br.com.zalf.prolog.webservice.frota.veiculo.v3.VeiculoV3Service;
-import br.com.zalf.prolog.webservice.frota.veiculo.v3._model.VeiculoEntity;
+import br.com.zalf.prolog.webservice.frota.v3.veiculo.VeiculoV3Service;
+import br.com.zalf.prolog.webservice.frota.v3.veiculo._model.VeiculoEntity;
 import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.*;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
