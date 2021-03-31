@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestComponent;
 import org.springframework.core.annotation.Order;
+import test.br.com.zalf.prolog.webservice.pilares.frota.pneu.afericao.InsertAfericaoInitialDataForTestsCallback;
 
 import javax.sql.DataSource;
 
@@ -30,7 +31,8 @@ public class DoneMigrationsFlywayProvider implements FlywayInstanceProvider {
                 .sqlMigrationPrefix("0")
                 .repeatableSqlMigrationPrefix("")
                 .sqlMigrationSeparator("_")
-                .callbacks(new AfterVersionedCallback())
+                .callbacks(new AfterVersionedCallback(),
+                           new InsertAfericaoInitialDataForTestsCallback())
                 .load();
     }
 }
