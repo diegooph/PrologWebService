@@ -1,16 +1,15 @@
 Change Log
 ==========
-## Stage
 
-<a name="v2.2.1"></a>
-## Version [v2.2.1](https://github.com/luizfp/PrologWebService/compare/v2.2.0...v2.2.1) (release-date) [unreleased]
+<a name="v3.0.0"></a>
+## Version [v3.0.0](https://github.com/luizfp/PrologWebService/compare/v2.2.0...v3.0.0) (release-date) [unreleased]
 
 ### Features
 * Migra projeto do Java 8 para o 11 (PL-3475)
+* Finaliza cadastro de pneus na API v3 (PL-3459)
+* Finaliza cadastro de veículos na API v3 (PL-3460)
 
 ### Refactors
-* Melhora cadastro de pneus na API v3 (PL-3459)
-* Melhora cadastro de veículos na API v3 (PL-3460)
 * Deleta integração antiga da Avilan que era em XML (PL-3475)
 * Altera integração com Globus/Piccolotur de envio de OS para utilizar implementação própria do SOAP (PL-3475)
 * Adiciona mais uma opção no enum de evolução de km (PL-3562)
@@ -19,8 +18,8 @@ Change Log
 ## Version [v2.2.0](https://github.com/luizfp/PrologWebService/compare/v2.1.0...v2.2.0) (2021-03-21)
 
 ### Features
-* Cria endpoint de cadastro de pneus na API v3 (PL-3459)
-* Cria endpoint de cadastro de veículos na API v3 (PL-3460)
+* Cria versão inicial de endpoint de cadastro de pneus na API v3 (PL-3459)
+* Cria versão inicial de endpoint de cadastro de veículos na API v3 (PL-3460)
 
 ### Refactors
 * Remove classes depreciadas e não utilizadas de O.S. de checklist
