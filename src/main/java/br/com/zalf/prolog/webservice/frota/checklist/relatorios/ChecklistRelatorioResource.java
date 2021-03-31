@@ -208,12 +208,12 @@ public class ChecklistRelatorioResource {
                                                             @QueryParam("codUnidades") final List<Long> codUnidades,
                                                             @QueryParam("dataInicial") final String dataInicial,
                                                             @QueryParam("dataFinal") final String dataFinal) {
-        final Long codigoColaborador = this.colaboradorAutenticadoProvider.get().getCodigo();
-        final Long codigoVeiculo = VeiculoBackwardHelper.getCodVeiculoByPlaca(codigoColaborador, placa);
+        final Long codColaborador = this.colaboradorAutenticadoProvider.get().getCodigo();
+        final Long codVeiculo = VeiculoBackwardHelper.getCodVeiculoByPlaca(codColaborador, placa);
         return outputStream ->
                 service.getEstratificacaoRespostasNokCsv(outputStream,
                                                          codUnidades,
-                                                         codigoVeiculo,
+                                                         codVeiculo,
                                                          dataInicial,
                                                          dataFinal);
     }
@@ -234,9 +234,9 @@ public class ChecklistRelatorioResource {
             @QueryParam("dataInicial") final String dataInicial,
             @QueryParam("dataFinal") final String dataFinal) throws ProLogException {
 
-        final Long codigoColaborador = this.colaboradorAutenticadoProvider.get().getCodigo();
-        final Long codigoVeiculo = VeiculoBackwardHelper.getCodVeiculoByPlaca(codigoColaborador, placa);
-        return service.getEstratificacaoRespostasNokReport(codUnidades, codigoVeiculo, dataInicial, dataFinal);
+        final Long codColaborador = this.colaboradorAutenticadoProvider.get().getCodigo();
+        final Long codVeiculo = VeiculoBackwardHelper.getCodVeiculoByPlaca(codColaborador, placa);
+        return service.getEstratificacaoRespostasNokReport(codUnidades, codVeiculo, dataInicial, dataFinal);
     }
 
     /**
