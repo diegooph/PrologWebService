@@ -2,7 +2,7 @@ Change Log
 ==========
 
 <a name="v3.0.0"></a>
-## Version [v3.0.0](https://github.com/luizfp/PrologWebService/compare/v2.2.0...v3.0.0) (release-date) [unreleased]
+## Version [v3.0.0](https://github.com/luizfp/PrologWebService/compare/v2.2.0...v3.0.0) (2021-03-30)
 
 ### Features
 * Migra projeto do Java 8 para o 11 (PL-3475)
