@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.v3.frota.kmprocessos;
 
+import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.v3.frota.afericao.AfericaoService;
 import br.com.zalf.prolog.webservice.v3.frota.checklist.ChecklistService;
 import br.com.zalf.prolog.webservice.v3.frota.checklistordemservico.ChecklistOrdemServicoService;
@@ -57,7 +58,8 @@ public class AlteracaoKmProcessosServiceFactory {
             case ACOPLAMENTO:
             case EDICAO_DE_VEICULOS:
             default:
-                throw new IllegalStateException();
+                throw new GenericException(
+                        "Não é possível alterar o km de processos de acoplamento e de edição de veículo.");
         }
     }
 }
