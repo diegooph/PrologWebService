@@ -123,14 +123,14 @@ class ChecklistRelatorioService {
 
     void getResumoChecklistsCsv(@NotNull final OutputStream outputStream,
                                 @NotNull final List<Long> codUnidade,
-                                @NotNull final String placa,
+                                @NotNull final Long codVeiculo,
                                 @NotNull final String dataInicial,
                                 @NotNull final String dataFinal) {
         try {
             dao.getResumoChecklistsCsv(
                     outputStream,
                     codUnidade,
-                    placa,
+                    codVeiculo,
                     PrologDateParser.toLocalDate(dataInicial),
                     PrologDateParser.toLocalDate(dataFinal));
         } catch (final Throwable e) {
@@ -141,13 +141,13 @@ class ChecklistRelatorioService {
 
     @NotNull
     Report getResumoChecklistsReport(@NotNull final List<Long> codUnidade,
-                                     @NotNull final String placa,
+                                     @NotNull final Long codVeiculo,
                                      @NotNull final String dataInicial,
                                      @NotNull final String dataFinal) throws ProLogException {
         try {
             return dao.getResumoChecklistsReport(
                     codUnidade,
-                    placa,
+                    codVeiculo,
                     PrologDateParser.toLocalDate(dataInicial),
                     PrologDateParser.toLocalDate(dataFinal));
         } catch (final Throwable e) {
