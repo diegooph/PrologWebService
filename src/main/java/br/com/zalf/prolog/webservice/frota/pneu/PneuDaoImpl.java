@@ -11,6 +11,7 @@ import br.com.zalf.prolog.webservice.errorhandling.sql.ServerSideErrorException;
 import br.com.zalf.prolog.webservice.frota.pneu._model.*;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu.Dimensao;
 import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico._model.PneuServicoRealizadoIncrementaVida;
+import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
 import org.jetbrains.annotations.NotNull;
@@ -463,9 +464,9 @@ public final class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                             "altura_sulco_central_externo, "
                             + "altura_sulco_externo, cod_unidade, status, vida_atual, vida_total, cod_modelo_banda, " +
                             "dot, valor, "
-                            + "pneu_novo_nunca_rodado, cod_empresa, cod_unidade_cadastro) VALUES (?,?,?,?,?,?,?,?,?," +
-                            "?,?,?,?,?,?,?,?, "
-                            + "(SELECT U.COD_EMPRESA FROM UNIDADE U WHERE U.CODIGO = ?),?) RETURNING CODIGO");
+                            + "pneu_novo_nunca_rodado, cod_empresa, cod_unidade_cadastro, origem_cadastro) " +
+                            "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?, "
+                            + "(SELECT U.COD_EMPRESA FROM UNIDADE U WHERE U.CODIGO = ?),?,?) RETURNING CODIGO");
             stmt.setString(1, pneu.getCodigoCliente());
             stmt.setLong(2, pneu.getModelo().getCodigo());
             stmt.setLong(3, pneu.getDimensao().codigo);
@@ -502,6 +503,7 @@ public final class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             }
             stmt.setLong(18, codUnidade);
             stmt.setLong(19, codUnidade);
+            stmt.setString(20, OrigemAcaoEnum.PROLOG_WEB.asString());
 
             rSet = stmt.executeQuery();
             final Long codPneu;

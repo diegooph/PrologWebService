@@ -1,6 +1,7 @@
 package test.br.com.zalf.prolog.webservice.pilares.frota.pneu.v3;
 
-import br.com.zalf.prolog.webservice.frota.pneu.v3._model.dto.PneuCadastroDto;
+import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
+import br.com.zalf.prolog.webservice.frota.v3.pneu._model.PneuCadastroDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,8 @@ public class PneuIT extends IntegrationTest {
     @DisplayName("given correct PneuCadastro to insert, then return status created")
     void givenCorrectPneuCadastroToInsert_ThenReturnStatusCreated() {
         final PneuCadastroDto pneuForCreation = PneuCadastroFactory.createCorrectPneuCadastro();
-        final ResponseEntity<String> response = client.insert(pneuForCreation);
+        final ResponseEntity<SuccessResponse> response = client.insert(pneuForCreation);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+
     }
 }
