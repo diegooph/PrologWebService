@@ -10,6 +10,7 @@ import br.com.zalf.prolog.webservice.frota.pneu._model.*;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu.Dimensao;
 import br.com.zalf.prolog.webservice.frota.pneu.error.PneuValidator;
 import br.com.zalf.prolog.webservice.frota.pneu.importar.PneuImportReader;
+import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
 import br.com.zalf.prolog.webservice.integracao.router.RouterPneu;
 import org.jetbrains.annotations.NotNull;
 
@@ -28,6 +29,7 @@ public final class PneuService {
     public AbstractResponse insert(@NotNull final String userToken,
                                    @NotNull final Long codUnidade,
                                    @NotNull final Pneu pneu,
+                                   @NotNull final OrigemAcaoEnum origemCadastro,
                                    final boolean ignoreDotValidation) throws ProLogException {
         try {
             PneuValidator.validacaoAtributosPneu(pneu, codUnidade, ignoreDotValidation);
@@ -35,7 +37,7 @@ public final class PneuService {
                     "Pneu inserido com sucesso",
                     RouterPneu
                             .create(dao, userToken)
-                            .insert(pneu, codUnidade));
+                            .insert(pneu, codUnidade, origemCadastro));
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao inserir pneu:" +
                     "\nuserToken: " + userToken +

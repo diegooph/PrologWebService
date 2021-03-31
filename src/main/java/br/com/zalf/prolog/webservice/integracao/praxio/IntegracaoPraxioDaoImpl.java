@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.integracao.praxio;
 import br.com.zalf.prolog.webservice.commons.util.database.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
+import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicaoStatus;
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.integracao.praxio.afericao.AfericaoIntegracaoPraxioConverter;
@@ -51,7 +52,8 @@ final class IntegracaoPraxioDaoImpl extends DatabaseConnection implements Integr
                                                  " F_COD_MODELO_VEICULO_CADASTRADO := ?," +
                                                  " F_COD_TIPO_VEICULO_CADASTRADO   := ?," +
                                                  " F_DATA_HORA_VEICULO_CADASTRO    := ?," +
-                                                 " F_TOKEN_INTEGRACAO              := ?) AS COD_VEICULO_PROLOG;");
+                                                 " F_TOKEN_INTEGRACAO              := ?," +
+                                                 " F_ORIGEM_CADASTRO               := ?) AS COD_VEICULO_PROLOG;");
             stmt.setLong(1, veiculoCadastroPraxio.getCodUnidadeAlocado());
             stmt.setString(2, veiculoCadastroPraxio.getPlacaVeiculo());
             stmt.setLong(3, veiculoCadastroPraxio.getKmAtualVeiculo());
@@ -59,6 +61,7 @@ final class IntegracaoPraxioDaoImpl extends DatabaseConnection implements Integr
             stmt.setLong(5, veiculoCadastroPraxio.getCodTipoVeiculo());
             stmt.setObject(6, Now.getOffsetDateTimeUtc());
             stmt.setString(7, tokenIntegracao);
+            stmt.setString(8, OrigemAcaoEnum.API.asString());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 final long codVeiculoProlog = rSet.getLong("COD_VEICULO_PROLOG");

@@ -17,6 +17,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.origem.Orige
 import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico._model.PneuServicoRealizado;
 import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico._model.PneuServicoRealizadoIncrementaVida;
 import br.com.zalf.prolog.webservice.frota.pneu.recapadoras.Recapadora;
+import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.geral.unidade._model.Unidade;
 import org.jetbrains.annotations.NotNull;
@@ -124,7 +125,8 @@ public class MovimentacaoTest extends BaseTest {
         pneu.setDot("1310");
         pneu.setValor(new BigDecimal(2250));
         pneu.getBanda().setValor(new BigDecimal(399));
-        final AbstractResponse response = pneuService.insert(TOKEN_COLABORADOR, 5L, pneu, false);
+        final AbstractResponse response =
+                pneuService.insert(TOKEN_COLABORADOR, 5L, pneu, OrigemAcaoEnum.PROLOG_WEB, false);
         Assert.assertNotNull(response);
         Assert.assertNotNull(response.getStatus());
     }
