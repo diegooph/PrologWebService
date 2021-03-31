@@ -1,12 +1,16 @@
 package br.com.zalf.prolog.webservice.frota.checklist.relatorios;
 
-import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Platform;
 import br.com.zalf.prolog.webservice.commons.network.metadata.UsedBy;
+import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
+import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoBackwardHelper;
+import br.com.zalf.prolog.webservice.interceptors.auth.ColaboradorAutenticado;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 
+import javax.inject.Inject;
+import javax.inject.Provider;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.StreamingOutput;
@@ -21,6 +25,9 @@ import java.util.List;
 @Secured(permissions = Pilares.Frota.Relatorios.CHECKLIST)
 public class ChecklistRelatorioResource {
     private final ChecklistRelatorioService service = new ChecklistRelatorioService();
+
+    @Inject
+    private Provider<ColaboradorAutenticado> colaboradorAutenticadoProvider;
 
     @GET
     @Path("/ambev-checklists-realizados-dia/csv")
@@ -102,24 +109,24 @@ public class ChecklistRelatorioResource {
     }
 
     @GET
-    @Path("/estratificacao-respostas-nok/{placa}/report")
+    @Path("/estratificacao-respostas-nok/report")
     public Report getEstratificacaoRespostasNokReport(
-            @PathParam("placa") String placa,
-            @QueryParam("codUnidades") List<Long> codUnidades,
-            @QueryParam("dataInicial") String dataInicial,
-            @QueryParam("dataFinal") String dataFinal) throws ProLogException {
-        return service.getEstratificacaoRespostasNokReport(codUnidades, placa, dataInicial, dataFinal);
+            @QueryParam("codUnidades") final List<Long> codUnidades,
+            @QueryParam("codVeiculo") final Long codVeiculo,
+            @QueryParam("dataInicial") final String dataInicial,
+            @QueryParam("dataFinal") final String dataFinal) throws ProLogException {
+        return service.getEstratificacaoRespostasNokReport(codUnidades, codVeiculo, dataInicial, dataFinal);
     }
 
     @GET
-    @Path("/estratificacao-respostas-nok/{placa}/csv")
+    @Path("/estratificacao-respostas-nok/csv")
     @UsedBy(platforms = Platform.WEBSITE)
-    public StreamingOutput getEstratificacaoRespostasNokCsv(@PathParam("placa") String placa,
-                                                            @QueryParam("codUnidades") List<Long> codUnidades,
-                                                            @QueryParam("dataInicial") String dataInicial,
-                                                            @QueryParam("dataFinal") String dataFinal) {
+    public StreamingOutput getEstratificacaoRespostasNokCsv(@QueryParam("codUnidades") final List<Long> codUnidades,
+                                                            @QueryParam("codVeiculo") final Long codVeiculo,
+                                                            @QueryParam("dataInicial") final String dataInicial,
+                                                            @QueryParam("dataFinal") final String dataFinal) {
         return outputStream ->
-                service.getEstratificacaoRespostasNokCsv(outputStream, codUnidades, placa, dataInicial, dataFinal);
+                service.getEstratificacaoRespostasNokCsv(outputStream, codUnidades, codVeiculo, dataInicial, dataFinal);
     }
 
     @GET
@@ -183,5 +190,51 @@ public class ChecklistRelatorioResource {
                         outputStream,
                         codUnidades,
                         codTiposVeiculos);
+    }
+
+    /**
+     * @deprecated Este método foi depreciado afim de criar um novo que recebe codVeiculo no lugar da placa.
+     * <br>
+     * {@link #getEstratificacaoRespostasNokCsv(List, Long, String, String)}
+     * <br>
+     * Porém há sistemas dependentes desse endpoint ainda (WS).
+     */
+    @Deprecated
+    @GET
+    @Path("/estratificacao-respostas-nok/{placa}/csv")
+    @UsedBy(platforms = Platform.WEBSITE)
+    public StreamingOutput getEstratificacaoRespostasNokCsv(@PathParam("placa") final String placa,
+                                                            @QueryParam("codUnidades") final List<Long> codUnidades,
+                                                            @QueryParam("dataInicial") final String dataInicial,
+                                                            @QueryParam("dataFinal") final String dataFinal) {
+        final Long codigoColaborador = this.colaboradorAutenticadoProvider.get().getCodigo();
+        final Long codigoVeiculo = VeiculoBackwardHelper.getCodVeiculoByPlaca(codigoColaborador, placa);
+        return outputStream ->
+                service.getEstratificacaoRespostasNokCsv(outputStream,
+                                                         codUnidades,
+                                                         codigoVeiculo,
+                                                         dataInicial,
+                                                         dataFinal);
+    }
+
+    /**
+     * @deprecated Este método foi depreciado afim de criar um novo que recebe codVeiculo no lugar da placa.
+     * <br>
+     * {@link #getEstratificacaoRespostasNokReport(List, Long, String, String)}
+     * <br>
+     * Porém há sistemas dependentes desse endpoint ainda (WS).
+     */
+    @Deprecated
+    @GET
+    @Path("/estratificacao-respostas-nok/{placa}/report")
+    public Report getEstratificacaoRespostasNokReport(
+            @PathParam("placa") final String placa,
+            @QueryParam("codUnidades") final List<Long> codUnidades,
+            @QueryParam("dataInicial") final String dataInicial,
+            @QueryParam("dataFinal") final String dataFinal) throws ProLogException {
+
+        final Long codigoColaborador = this.colaboradorAutenticadoProvider.get().getCodigo();
+        final Long codigoVeiculo = VeiculoBackwardHelper.getCodVeiculoByPlaca(codigoColaborador, placa);
+        return service.getEstratificacaoRespostasNokReport(codUnidades, codigoVeiculo, dataInicial, dataFinal);
     }
 }

@@ -250,7 +250,7 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
     @Override
     public void getEstratificacaoRespostasNokCsv(@NotNull final OutputStream outputStream,
                                                  @NotNull final List<Long> codUnidades,
-                                                 @NotNull final String placa,
+                                                 @NotNull final Long codVeiculo,
                                                  @NotNull final LocalDate dataInicial,
                                                  @NotNull final LocalDate dataFinal) throws Throwable {
         Connection conn = null;
@@ -258,7 +258,7 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = getEstratificacaoRespostasNokStatement(conn, codUnidades, placa, dataInicial, dataFinal);
+            stmt = getEstratificacaoRespostasNokStatement(conn, codUnidades, codVeiculo, dataInicial, dataFinal);
             rSet = stmt.executeQuery();
             new CsvWriter().write(rSet, outputStream);
         } finally {
@@ -269,7 +269,7 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
     @NotNull
     @Override
     public Report getEstratificacaoRespostasNokReport(@NotNull final List<Long> codUnidades,
-                                                      @NotNull final String placa,
+                                                      @NotNull final Long codVeiculo,
                                                       @NotNull final LocalDate dataInicial,
                                                       @NotNull final LocalDate dataFinal) throws Throwable {
         Connection conn = null;
@@ -277,7 +277,7 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = getEstratificacaoRespostasNokStatement(conn, codUnidades, placa, dataInicial, dataFinal);
+            stmt = getEstratificacaoRespostasNokStatement(conn, codUnidades, codVeiculo, dataInicial, dataFinal);
             rSet = stmt.executeQuery();
             return ReportTransformer.createReport(rSet);
         } finally {
@@ -478,13 +478,14 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
     @NotNull
     private PreparedStatement getEstratificacaoRespostasNokStatement(@NotNull final Connection conn,
                                                                      @NotNull final List<Long> codUnidades,
-                                                                     @NotNull final String placa,
+                                                                     @NotNull final Long codVeiculo,
                                                                      @NotNull final LocalDate dataInicial,
-                                                                     @NotNull final LocalDate dataFinal) throws Throwable {
+                                                                     @NotNull final LocalDate dataFinal)
+            throws Throwable {
         final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM " +
                 "FUNC_CHECKLIST_RELATORIO_ESTRATIFICACAO_RESPOSTAS_NOK(?, ?, ?, ?);");
         stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
-        stmt.setString(2, placa);
+        stmt.setLong(2, codVeiculo);
         stmt.setObject(3, dataInicial);
         stmt.setObject(4, dataFinal);
         return stmt;

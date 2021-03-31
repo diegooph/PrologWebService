@@ -160,13 +160,13 @@ class ChecklistRelatorioService {
 
     @NotNull
     Report getEstratificacaoRespostasNokReport(@NotNull final List<Long> codUnidade,
-                                               @NotNull final String placa,
+                                               @NotNull final Long codVeiculo,
                                                @NotNull final String dataInicial,
                                                @NotNull final String dataFinal) throws ProLogException {
         try {
             return dao.getEstratificacaoRespostasNokReport(
                     codUnidade,
-                    placa,
+                    codVeiculo,
                     PrologDateParser.toLocalDate(dataInicial),
                     PrologDateParser.toLocalDate(dataFinal));
         } catch (final Throwable e) {
@@ -179,14 +179,14 @@ class ChecklistRelatorioService {
 
     void getEstratificacaoRespostasNokCsv(@NotNull final OutputStream outputStream,
                                           @NotNull final List<Long> codUnidade,
-                                          @NotNull final String placa,
+                                          @NotNull final Long codVeiculo,
                                           @NotNull final String dataInicial,
                                           @NotNull final String dataFinal) {
         try {
             dao.getEstratificacaoRespostasNokCsv(
                     outputStream,
                     codUnidade,
-                    placa,
+                    codVeiculo,
                     PrologDateParser.toLocalDate(dataInicial),
                     PrologDateParser.toLocalDate(dataFinal));
         } catch (final Throwable e) {
