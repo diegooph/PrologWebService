@@ -3,8 +3,7 @@ package br.com.zalf.prolog.webservice.v3.frota.kmprocessos;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.frota.veiculo.v3.VeiculoV3Service;
 import br.com.zalf.prolog.webservice.frota.veiculo.v3._model.VeiculoEntity;
-import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.AlteracaoKmProcesso;
-import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.AlteracaoKmResponse;
+import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.*;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,12 +23,15 @@ public final class AlteradorKmProcesso {
     @NotNull
     public AlteracaoKmResponse updateKmProcesso(@NotNull final KmProcessoAtualizavel kmProcessoAtualizavel,
                                                 @NotNull final AlteracaoKmProcesso processo) {
-        final EntityKmColetado entity = kmProcessoAtualizavel.getEntityKmColetado(processo.getCodProcesso());
+        final EntityKmColetado entity = kmProcessoAtualizavel.getEntityKmColetado(processo.getCodProcesso(),
+                                                                                  processo.getCodVeiculo());
         final VeiculoKmColetado veiculoKmColetado = entity.getVeiculoKmColetado();
         applyValidations(processo.getCodEmpresa(),
                          processo.getCodVeiculo(),
                          veiculoKmColetado.getCodVeiculo());
-        kmProcessoAtualizavel.updateKmColetadoProcesso(processo.getCodProcesso(), processo.getNovoKm());
+        kmProcessoAtualizavel.updateKmColetadoProcesso(processo.getCodProcesso(),
+                                                       processo.getCodVeiculo(),
+                                                       processo.getNovoKm());
         return AlteracaoKmResponse.of(veiculoKmColetado.getKmColetado());
     }
 

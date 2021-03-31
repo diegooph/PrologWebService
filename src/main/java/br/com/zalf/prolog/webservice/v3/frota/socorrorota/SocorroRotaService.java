@@ -1,6 +1,9 @@
 package br.com.zalf.prolog.webservice.v3.frota.socorrorota;
 
+import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.EntityKmColetado;
+import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.KmProcessoAtualizavel;
 import br.com.zalf.prolog.webservice.v3.frota.socorrorota._model.AberturaSocorroRotaEntity;
+import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,14 +14,23 @@ import org.springframework.stereotype.Service;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 @Service
-public class SocorroRotaService {
-
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
+public class SocorroRotaService implements KmProcessoAtualizavel {
     @NotNull
     private final SocorroRotaAberturaDao socorroRotaAberturaDao;
 
-    @Autowired
-    public SocorroRotaService(@NotNull final SocorroRotaAberturaDao socorroRotaAberturaDao) {
-        this.socorroRotaAberturaDao = socorroRotaAberturaDao;
+    @NotNull
+    @Override
+    public EntityKmColetado getEntityKmColetado(@NotNull final Long entityId,
+                                                @NotNull final Long codVeiculo) {
+        return getAberturaSocorroRotaByCodSocorro(entityId);
+    }
+
+    @Override
+    public void updateKmColetadoProcesso(@NotNull final Long codProcesso,
+                                         @NotNull final Long codVeiculo,
+                                         final long novoKm) {
+        updateKmColetadoAberturaSocorro(codProcesso, novoKm);
     }
 
     @NotNull

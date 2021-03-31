@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.v3.frota.afericao.AfericaoService;
 import br.com.zalf.prolog.webservice.v3.frota.checklist.ChecklistService;
 import br.com.zalf.prolog.webservice.v3.frota.checklistordemservico.ChecklistOrdemServicoService;
 import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.AlteracaoKmProcesso;
+import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.KmProcessoAtualizavel;
 import br.com.zalf.prolog.webservice.v3.frota.movimentacao.MovimentacaoProcessoService;
 import br.com.zalf.prolog.webservice.v3.frota.servicopneu.ServicoPneuService;
 import br.com.zalf.prolog.webservice.v3.frota.socorrorota.SocorroRotaService;
@@ -38,6 +39,25 @@ public class AlteracaoKmProcessosServiceFactory {
 
     @NotNull
     public KmProcessoAtualizavel createService(@NotNull final AlteracaoKmProcesso alteracaoKmProcesso) {
-        return afericaoService;
+        switch (alteracaoKmProcesso.getTipoProcesso()) {
+            case AFERICAO:
+                return afericaoService;
+            case FECHAMENTO_SERVICO_PNEU:
+                return servicoPneuService;
+            case CHECKLIST:
+                return checklistService;
+            case FECHAMENTO_ITEM_CHECKLIST:
+                return checklistOrdemServicoService;
+            case MOVIMENTACAO:
+                return movimentacaoProcessoService;
+            case SOCORRO_EM_ROTA:
+                return socorroRotaService;
+            case TRANSFERENCIA_DE_VEICULOS:
+                return transferenciaVeiculoService;
+            case ACOPLAMENTO:
+            case EDICAO_DE_VEICULOS:
+            default:
+                throw new IllegalStateException();
+        }
     }
 }

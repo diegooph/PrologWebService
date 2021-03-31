@@ -1,6 +1,9 @@
 package br.com.zalf.prolog.webservice.v3.frota.checklistordemservico;
 
 import br.com.zalf.prolog.webservice.v3.frota.checklistordemservico._model.ChecklistOrdemServicoItemEntity;
+import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.EntityKmColetado;
+import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.KmProcessoAtualizavel;
+import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,18 +16,23 @@ import javax.transaction.Transactional;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 @Service
-public class ChecklistOrdemServicoService {
-
-    @NotNull
-    private final ChecklistOrdemServicoDao checklistOrdemServicoDao;
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
+public class ChecklistOrdemServicoService implements KmProcessoAtualizavel {
     @NotNull
     private final ChecklistOrdemServicoItemDao checklistOrdemServicoItemDao;
 
-    @Autowired
-    public ChecklistOrdemServicoService(@NotNull final ChecklistOrdemServicoDao checklistOrdemServicoDao,
-                                        @NotNull final ChecklistOrdemServicoItemDao checklistOrdemServicoItemDao) {
-        this.checklistOrdemServicoDao = checklistOrdemServicoDao;
-        this.checklistOrdemServicoItemDao = checklistOrdemServicoItemDao;
+    @NotNull
+    @Override
+    public EntityKmColetado getEntityKmColetado(@NotNull final Long entityId,
+                                                @NotNull final Long codVeiculo) {
+        return getItemOrdemServicoByCodigo(entityId);
+    }
+
+    @Override
+    public void updateKmColetadoProcesso(@NotNull final Long codProcesso,
+                                         @NotNull final Long codVeiculo,
+                                         final long novoKm) {
+        updateKmFechamentoItem(codProcesso, novoKm);
     }
 
     @NotNull

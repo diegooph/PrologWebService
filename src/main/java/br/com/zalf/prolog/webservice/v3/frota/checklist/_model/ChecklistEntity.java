@@ -1,9 +1,12 @@
 package br.com.zalf.prolog.webservice.v3.frota.checklist._model;
 
+import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.EntityKmColetado;
+import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.VeiculoKmColetado;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.*;
 
@@ -18,7 +21,7 @@ import javax.persistence.*;
 @Getter
 @Entity
 @Table(schema = "public", name = "checklist")
-public final class ChecklistEntity {
+public final class ChecklistEntity implements EntityKmColetado {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "codigo", nullable = false)
@@ -29,4 +32,10 @@ public final class ChecklistEntity {
     private Long codVeiculo;
     @Column(name = "km_veiculo", nullable = false)
     private long kmColetadoVeiculo;
+
+    @NotNull
+    @Override
+    public VeiculoKmColetado getVeiculoKmColetado() {
+        return VeiculoKmColetado.of(codVeiculo, kmColetadoVeiculo);
+    }
 }

@@ -1,9 +1,12 @@
 package br.com.zalf.prolog.webservice.v3.frota.socorrorota._model;
 
+import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.EntityKmColetado;
+import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.VeiculoKmColetado;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.*;
 
@@ -18,7 +21,7 @@ import javax.persistence.*;
 @Getter
 @Entity
 @Table(schema = "public", name = "socorro_rota_abertura")
-public final class AberturaSocorroRotaEntity {
+public final class AberturaSocorroRotaEntity implements EntityKmColetado {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "codigo", nullable = false)
@@ -31,4 +34,10 @@ public final class AberturaSocorroRotaEntity {
     private Long codEmpresa;
     @Column(name = "km_veiculo_abertura", nullable = false)
     private long kmColetadoVeiculoAberturaSocorro;
+
+    @NotNull
+    @Override
+    public VeiculoKmColetado getVeiculoKmColetado() {
+        return VeiculoKmColetado.of(codVeiculo, kmColetadoVeiculoAberturaSocorro);
+    }
 }

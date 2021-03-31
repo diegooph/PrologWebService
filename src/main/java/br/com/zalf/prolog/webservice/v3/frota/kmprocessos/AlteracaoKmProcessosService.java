@@ -6,7 +6,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEn
 import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.AlteracaoKmProcesso;
 import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.AlteracaoKmProcessoEntity;
 import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.AlteracaoKmResponse;
-import br.com.zalf.prolog.webservice.v3.frota.kmprocessos.visitor.AlteracaoKmProcessoVisitor;
+import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.KmProcessoAtualizavel;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,8 +29,6 @@ public class AlteracaoKmProcessosService {
     private final AlteracaoKmProcessosServiceFactory serviceFactory;
     @NotNull
     private final AlteradorKmProcesso alteradorKmProcesso;
-    @NotNull
-    private final AlteracaoKmProcessoVisitor visitor;
 
     @Transactional
     public void updateKmProcesso(@NotNull final AlteracaoKmProcesso alteracaoKmProcesso) {

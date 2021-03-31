@@ -1,6 +1,9 @@
 package br.com.zalf.prolog.webservice.v3.frota.servicopneu;
 
+import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.EntityKmColetado;
+import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.KmProcessoAtualizavel;
 import br.com.zalf.prolog.webservice.v3.frota.servicopneu._model.ServicoPneuEntity;
+import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,23 +16,28 @@ import javax.transaction.Transactional;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 @Service
-public class ServicoPneuService {
-
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
+public class ServicoPneuService implements KmProcessoAtualizavel {
     @NotNull
     private final ServicoPneuDao servicoPneuDao;
 
-    @Autowired
-    public ServicoPneuService(@NotNull final ServicoPneuDao servicoPneuDao) {
-        this.servicoPneuDao = servicoPneuDao;
+    @NotNull
+    @Override
+    public EntityKmColetado getEntityKmColetado(@NotNull final Long entityId,
+                                                @NotNull final Long codVeiculo) {
+        return getByCodigo(entityId);
+    }
+
+    @Override
+    public void updateKmColetadoProcesso(@NotNull final Long codProcesso,
+                                         @NotNull final Long codVeiculo,
+                                         final long novoKm) {
+        updateKmColetadoFechamento(codProcesso, novoKm);
     }
 
     @NotNull
     public ServicoPneuEntity getByCodigo(@NotNull final Long codigo) {
         return servicoPneuDao.getOne(codigo);
-    }
-
-    public void update(@NotNull final ServicoPneuEntity servicoPneuEntity) {
-        servicoPneuDao.save(servicoPneuEntity);
     }
 
     @Transactional
@@ -39,6 +47,6 @@ public class ServicoPneuService {
                 .toBuilder()
                 .withKmColetadoVeiculoFechamentoServico(novoKm)
                 .build();
-        update(entity);
+        servicoPneuDao.save(entity);
     }
 }

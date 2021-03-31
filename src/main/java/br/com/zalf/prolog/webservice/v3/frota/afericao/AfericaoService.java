@@ -1,8 +1,8 @@
 package br.com.zalf.prolog.webservice.v3.frota.afericao;
 
 import br.com.zalf.prolog.webservice.v3.frota.afericao._model.AfericaoEntity;
-import br.com.zalf.prolog.webservice.v3.frota.kmprocessos.EntityKmColetado;
-import br.com.zalf.prolog.webservice.v3.frota.kmprocessos.KmProcessoAtualizavel;
+import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.EntityKmColetado;
+import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.KmProcessoAtualizavel;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,12 +23,14 @@ public class AfericaoService implements KmProcessoAtualizavel {
 
     @NotNull
     @Override
-    public EntityKmColetado getEntityKmColetado(@NotNull final Long entityId) {
+    public EntityKmColetado getEntityKmColetado(@NotNull final Long entityId,
+                                                @NotNull final Long codVeiculo) {
         return getByCodigo(entityId);
     }
 
     @Override
     public void updateKmColetadoProcesso(@NotNull final Long codProcesso,
+                                         @NotNull final Long codVeiculo,
                                          final long novoKm) {
         updateKmColetado(codProcesso, novoKm);
     }

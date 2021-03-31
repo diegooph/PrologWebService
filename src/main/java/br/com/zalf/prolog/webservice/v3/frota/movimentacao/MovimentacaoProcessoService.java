@@ -1,9 +1,12 @@
 package br.com.zalf.prolog.webservice.v3.frota.movimentacao;
 
+import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.EntityKmColetado;
+import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.KmProcessoAtualizavel;
 import br.com.zalf.prolog.webservice.v3.frota.movimentacao._model.MovimentacaoDestinoEntity;
 import br.com.zalf.prolog.webservice.v3.frota.movimentacao._model.MovimentacaoEntity;
 import br.com.zalf.prolog.webservice.v3.frota.movimentacao._model.MovimentacaoOrigemEntity;
 import br.com.zalf.prolog.webservice.v3.frota.movimentacao._model.MovimentacaoProcessoEntity;
+import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,8 +19,8 @@ import javax.transaction.Transactional;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 @Service
-public class MovimentacaoProcessoService {
-
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
+public class MovimentacaoProcessoService implements KmProcessoAtualizavel {
     @NotNull
     private final MovimentacaoProcessoDao movimentacaoProcessoDao;
     @NotNull
@@ -25,13 +28,18 @@ public class MovimentacaoProcessoService {
     @NotNull
     private final MovimentacaoDestinoDao movimentacaoDestinoDao;
 
-    @Autowired
-    public MovimentacaoProcessoService(@NotNull final MovimentacaoProcessoDao movimentacaoProcessoDao,
-                                       @NotNull final MovimentacaoOrigemDao movimentacaoOrigemDao,
-                                       @NotNull final MovimentacaoDestinoDao movimentacaoDestinoDao) {
-        this.movimentacaoProcessoDao = movimentacaoProcessoDao;
-        this.movimentacaoOrigemDao = movimentacaoOrigemDao;
-        this.movimentacaoDestinoDao = movimentacaoDestinoDao;
+    @NotNull
+    @Override
+    public EntityKmColetado getEntityKmColetado(@NotNull final Long entityId,
+                                                @NotNull final Long codVeiculo) {
+        return getByCodigo(entityId);
+    }
+
+    @Override
+    public void updateKmColetadoProcesso(@NotNull final Long codProcesso,
+                                         @NotNull final Long codVeiculo,
+                                         final long novoKm) {
+        updateKmColetado(codProcesso, novoKm);
     }
 
     @NotNull
@@ -44,9 +52,9 @@ public class MovimentacaoProcessoService {
     }
 
     @Transactional
-    public void updateKmColetado(@NotNull final MovimentacaoProcessoEntity movimentacaoProcesso,
+    public void updateKmColetado(@NotNull final Long codProcessoMovimentacao,
                                  final long novoKm) {
-        movimentacaoProcesso
+        getByCodigo(codProcessoMovimentacao)
                 .getMovimentacoes()
                 .stream()
                 .filter(MovimentacaoEntity::isMovimentacaoNoVeiculo)

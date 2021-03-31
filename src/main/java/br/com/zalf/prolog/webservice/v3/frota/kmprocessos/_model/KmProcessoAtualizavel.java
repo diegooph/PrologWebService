@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.v3.frota.kmprocessos;
+package br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -9,8 +9,10 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface KmProcessoAtualizavel {
     @NotNull
-    EntityKmColetado getEntityKmColetado(@NotNull final Long entityId);
+    EntityKmColetado getEntityKmColetado(@NotNull final Long entityId,
+                                         @NotNull final Long codVeiculo);
 
     void updateKmColetadoProcesso(@NotNull final Long codProcesso,
+                                  @NotNull final Long codVeiculo,
                                   final long novoKm);
 }

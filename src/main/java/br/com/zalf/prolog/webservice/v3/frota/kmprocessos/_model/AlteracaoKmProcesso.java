@@ -1,11 +1,9 @@
 package br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model;
 
 import br.com.zalf.prolog.webservice.frota.veiculo.model.VeiculoTipoProcesso;
-import br.com.zalf.prolog.webservice.v3.frota.kmprocessos.visitor.AlteracaoKmProcessoVisitor;
-import br.com.zalf.prolog.webservice.v3.frota.kmprocessos.visitor.Visitable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Value;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -14,24 +12,19 @@ import org.jetbrains.annotations.Nullable;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-@Getter
+@Value
 @Builder(setterPrefix = "with")
 @AllArgsConstructor
-public class AlteracaoKmProcesso implements Visitable {
+public class AlteracaoKmProcesso {
     @NotNull
-    private final Long codEmpresa;
+    Long codEmpresa;
     @NotNull
-    private final Long codVeiculo;
+    Long codVeiculo;
     @NotNull
-    private final Long codProcesso;
+    Long codProcesso;
     @NotNull
-    private final VeiculoTipoProcesso tipoProcesso;
+    VeiculoTipoProcesso tipoProcesso;
     @Nullable
-    private final Long codColaboradorAlteracao;
-    private final long novoKm;
-
-    @Override
-    public @NotNull AlteracaoKmResponse accept(final @NotNull AlteracaoKmProcessoVisitor visitor) {
-        return null;
-    }
+    Long codColaboradorAlteracao;
+    long novoKm;
 }

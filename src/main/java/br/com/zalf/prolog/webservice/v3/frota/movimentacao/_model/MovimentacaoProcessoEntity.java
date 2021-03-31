@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice.v3.frota.movimentacao._model;
 
+import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.EntityKmColetado;
+import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.VeiculoKmColetado;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,7 +25,7 @@ import java.util.stream.Collectors;
 @Getter
 @Entity
 @Table(schema = "public", name = "movimentacao_processo")
-public final class MovimentacaoProcessoEntity {
+public final class MovimentacaoProcessoEntity implements EntityKmColetado {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "codigo", nullable = false)
@@ -32,6 +34,20 @@ public final class MovimentacaoProcessoEntity {
     private Long codUnidade;
     @OneToMany(mappedBy = "movimentacaoProcesso", fetch = FetchType.LAZY)
     private Set<MovimentacaoEntity> movimentacoes;
+
+    @NotNull
+    @Override
+    public VeiculoKmColetado getVeiculoKmColetado() {
+        final Optional<VeiculoMovimentacao> veiculo = getVeiculo();
+        if (veiculo.isPresent()) {
+            final VeiculoMovimentacao veiculoMovimentacao = veiculo.get();
+            return VeiculoKmColetado.of(veiculoMovimentacao.getCodVeiculo(), veiculoMovimentacao.getKmColetado());
+        } else {
+            throw new IllegalStateException(String.format(
+                    "O processo de movimentação %d não possui veículo associado.",
+                    codigo));
+        }
+    }
 
     @NotNull
     public List<MovimentacaoEntity> getMovimentacoesNoVeiculo(@NotNull final Long codVeiculo) {

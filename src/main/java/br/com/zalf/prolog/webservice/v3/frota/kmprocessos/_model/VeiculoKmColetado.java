@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.v3.frota.kmprocessos;
+package br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model;
 
 import lombok.Value;
 import org.jetbrains.annotations.NotNull;
