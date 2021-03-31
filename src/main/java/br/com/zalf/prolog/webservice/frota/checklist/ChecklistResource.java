@@ -27,6 +27,9 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.interceptors.auth.ColaboradorAutenticado;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
+import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.AppVersionCodeHandler;
+import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.VersionCodeHandlerMode;
+import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.VersionNotPresentAction;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
@@ -196,6 +199,9 @@ public final class ChecklistResource {
     @Path("/colaboradores/{cpf}/resumidos")
     @Secured(permissions = {Pilares.Frota.Checklist.VISUALIZAR_TODOS, Pilares.Frota.Checklist.REALIZAR})
     @Deprecated
+    @AppVersionCodeHandler(targetVersionCode = 120,
+                           versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
+                           actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
     public List<Checklist> getByColaboradorResumidos(
             @PathParam("cpf") final Long cpf,
             @QueryParam("dataInicial") final Long dataInicial,
@@ -214,6 +220,9 @@ public final class ChecklistResource {
     @Path("{codUnidade}/resumidos")
     @Secured(permissions = Pilares.Frota.Checklist.VISUALIZAR_TODOS)
     @Deprecated
+    @AppVersionCodeHandler(targetVersionCode = 120,
+                           versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
+                           actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
     public List<Checklist> getAllResumido(
             @PathParam("codUnidade") final Long codUnidade,
             @QueryParam("codEquipe") final Long codEquipe,
@@ -224,17 +233,7 @@ public final class ChecklistResource {
             @QueryParam("limit") final int limit,
             @QueryParam("offset") final long offset,
             @HeaderParam("Authorization") final String userToken) {
-        return service.getAll(
-                codUnidade,
-                codEquipe,
-                codTipoVeiculo,
-                placaVeiculo,
-                dataInicial,
-                dataFinal,
-                limit,
-                offset,
-                true,
-                userToken);
+        return null;
     }
 
     /**
@@ -244,6 +243,9 @@ public final class ChecklistResource {
     @Path("{codUnidade}/completos")
     @Secured(permissions = Pilares.Frota.Checklist.VISUALIZAR_TODOS)
     @Deprecated
+    @AppVersionCodeHandler(targetVersionCode = 120,
+                           versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
+                           actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
     public List<Checklist> getAllCompletos(
             @PathParam("codUnidade") final Long codUnidade,
             @QueryParam("codEquipe") final Long codEquipe,
@@ -254,17 +256,7 @@ public final class ChecklistResource {
             @QueryParam("limit") final int limit,
             @QueryParam("offset") final long offset,
             @HeaderParam("Authorization") final String userToken) {
-        return service.getAll(
-                codUnidade,
-                codEquipe,
-                codTipoVeiculo,
-                placaVeiculo,
-                dataInicial,
-                dataFinal,
-                limit,
-                offset,
-                false,
-                userToken);
+        return null;
     }
 
     /**
@@ -353,6 +345,9 @@ public final class ChecklistResource {
     @Path("{codUnidade}/{equipe}/{placa}")
     @Secured(permissions = Pilares.Frota.Checklist.VISUALIZAR_TODOS)
     @Deprecated
+    @AppVersionCodeHandler(targetVersionCode = 120,
+                           versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
+                           actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
     public List<Checklist> DEPRECATED_GET_ALL(@PathParam("codUnidade") final Long codUnidade,
                                               @PathParam("equipe") final String equipe,
                                               @PathParam("placa") final String placa,
@@ -361,16 +356,6 @@ public final class ChecklistResource {
                                               @QueryParam("limit") final int limit,
                                               @QueryParam("offset") final long offset,
                                               @HeaderParam("Authorization") final String userToken) {
-        return service.getAll(
-                codUnidade,
-                null,
-                null,
-                placa.equals("%") ? null : placa,
-                dataInicial,
-                dataFinal,
-                limit,
-                offset,
-                false,
-                userToken);
+        return null;
     }
 }

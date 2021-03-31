@@ -517,11 +517,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
                                               final int limit,
                                               final long offset,
                                               final boolean resumido) throws Exception {
-        if (checklistDao == null) {
-            checklistDao = Injection.provideChecklistDao();
-        }
-        return checklistDao.getAll(codUnidade, codEquipe, codTipoVeiculo, placaVeiculo, dataInicial, dataFinal,
-                limit, offset, resumido);
+        return null;
     }
 
     @NotNull
