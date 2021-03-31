@@ -3,8 +3,8 @@ package br.com.zalf.prolog.webservice.frota.veiculo.validator;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
+import br.com.zalf.prolog.webservice.frota.v3.veiculo._model.VeiculoCadastroDto;
 import br.com.zalf.prolog.webservice.frota.veiculo.error.VeiculoValidatorException;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.VeiculoCadastro;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicaoStatus;
 import br.com.zalf.prolog.webservice.frota.veiculo.tipoveiculo.TipoVeiculoDao;
@@ -21,11 +21,10 @@ public class VeiculoValidator {
         throw new IllegalStateException(StringUtils.class.getSimpleName() + " cannot be instantiated!");
     }
 
-    public static void validacaoAtributosVeiculo(@NotNull final VeiculoCadastro veiculo) throws Throwable {
+    public static void validacaoAtributosVeiculo(@NotNull final VeiculoCadastroDto veiculo) throws Throwable {
         try {
             validacaoPlaca(veiculo.getPlacaVeiculo());
             validacaoKmAtual(veiculo.getKmAtualVeiculo());
-            validacaoMarca(veiculo.getCodMarcaVeiculo());
             validacaoModelo(veiculo.getCodModeloVeiculo());
             validacaoTipo(veiculo.getCodTipoVeiculo());
         } catch (final Exception e) {
@@ -51,6 +50,13 @@ public class VeiculoValidator {
         garanteVeiculosAcopladosNaoSejamInativados(veiculo.isStatusAtivo(), veiculo.isAcoplado());
     }
 
+    public static void validacaoMotorizadoSemHubodometro(@NotNull final Boolean possuiHubodometro,
+                                                         @NotNull final Long codTipoVeiculo) throws Throwable {
+        if (dao.getTipoVeiculo(codTipoVeiculo).isMotorizado() && possuiHubodometro) {
+            fail("Veículos motorizados não devem possuir hubodômetro.", codTipoVeiculo);
+        }
+    }
+
     private static void validacaoPlaca(final String placa) throws Exception {
         Preconditions.checkNotNull(placa, "Você deve fornecer a placa");
 
@@ -70,13 +76,8 @@ public class VeiculoValidator {
 
     private static void validacaoKmAtual(final Long kmAtual) {
         Preconditions.checkNotNull(kmAtual, "Você precisa fornecer o km atual");
-        Preconditions.checkArgument(kmAtual > 0, "Km atual inválido\nA quilometragem não deve " +
+        Preconditions.checkArgument(kmAtual >= 0, "Km atual inválido\nA quilometragem não deve " +
                 "ser negativa");
-    }
-
-    private static void validacaoMarca(final Long codMarca) {
-        Preconditions.checkNotNull(codMarca, "Você precisa selecionar a marca");
-        Preconditions.checkArgument(codMarca > 0, "Marca inválida");
     }
 
     private static void validacaoModelo(final Long codModelo) {
@@ -87,13 +88,6 @@ public class VeiculoValidator {
     private static void validacaoTipo(final Long codTipo) {
         Preconditions.checkNotNull(codTipo, "Você precisa selecionar o tipo");
         Preconditions.checkArgument(codTipo > 0, "Tipo inválido");
-    }
-
-    private static void validacaoMotorizadoSemHubodometro(@NotNull final Boolean possuiHubodometro,
-                                                          @NotNull final Long codTipoVeiculo) throws Throwable {
-        if (dao.getTipoVeiculo(codTipoVeiculo).isMotorizado() && possuiHubodometro) {
-            fail("Veículos motorizados não devem possuir hubodômetro.", codTipoVeiculo);
-        }
     }
 
     private static void garanteVeiculosAcopladosNaoSejamInativados(final boolean statusAtivo, final boolean acoplado) {

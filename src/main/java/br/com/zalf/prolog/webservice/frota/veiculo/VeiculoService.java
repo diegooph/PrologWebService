@@ -5,10 +5,10 @@ import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.pneu.nomenclatura.PneuNomenclaturaService;
+import br.com.zalf.prolog.webservice.frota.v3.veiculo._model.VeiculoCadastroDto;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.VeiculoCadastro;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculoNomenclatura;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculoPosicaoNomenclatura;
@@ -105,7 +105,7 @@ public final class VeiculoService {
 
     @NotNull
     public Response insert(@NotNull final String userToken,
-                           @NotNull final VeiculoCadastro veiculo) throws ProLogException {
+                           @NotNull final VeiculoCadastroDto veiculo) throws ProLogException {
         try {
             VeiculoValidator.validacaoAtributosVeiculo(veiculo);
             RouterVeiculo

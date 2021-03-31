@@ -1,7 +1,11 @@
 package br.com.zalf.prolog.webservice.frota.veiculo;
 
 import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
+import br.com.zalf.prolog.webservice.frota.v3.veiculo._model.VeiculoCadastroDto;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.VeiculoTipoProcesso;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.EixoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.InfosVeiculoEditado;
@@ -24,7 +28,7 @@ import java.util.Set;
  */
 public interface VeiculoDao {
 
-    void insert(@NotNull final VeiculoCadastro veiculo,
+    void insert(@NotNull final VeiculoCadastroDto veiculo,
                 @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable;
 
     @NotNull

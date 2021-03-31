@@ -12,6 +12,7 @@ import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.errorhandling.Exceptions;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
 import br.com.zalf.prolog.webservice.frota.pneu.PneuDao;
+import br.com.zalf.prolog.webservice.frota.v3.veiculo._model.VeiculoCadastroDto;
 import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
@@ -43,7 +44,7 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
     }
 
     @Override
-    public void insert(@NotNull final VeiculoCadastro veiculo,
+    public void insert(@NotNull final VeiculoCadastroDto veiculo,
                        @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener)
             throws Throwable {
         Connection conn = null;
@@ -59,7 +60,8 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
                                                  "F_KM_ATUAL := ?, " +
                                                  "F_COD_MODELO := ?, " +
                                                  "F_COD_TIPO := ?," +
-                                                 "F_POSSUI_HUBODOMETRO := ?) AS CODIGO;");
+                                                 "F_POSSUI_HUBODOMETRO := ?," +
+                                                 "F_ORIGEM_CADASTRO := ?) AS CODIGO;");
             stmt.setLong(1, veiculo.getCodUnidadeAlocado());
             stmt.setString(2, veiculo.getPlacaVeiculo().toUpperCase());
             stmt.setString(3, StringUtils.trimToNull(veiculo.getIdentificadorFrota()));
@@ -67,6 +69,7 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
             stmt.setLong(5, veiculo.getCodModeloVeiculo());
             stmt.setLong(6, veiculo.getCodTipoVeiculo());
             stmt.setBoolean(7, veiculo.getPossuiHubodometro());
+            stmt.setString(8, OrigemAcaoEnum.PROLOG_WEB.asString());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 final long codVeiculoInserido = rSet.getLong("CODIGO");

@@ -13,8 +13,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static br.com.zalf.prolog.webservice.commons.util.database.StatementUtils.bindValueOrNull;
 import static br.com.zalf.prolog.webservice.commons.util.StringUtils.trimToNull;
+import static br.com.zalf.prolog.webservice.commons.util.database.StatementUtils.bindValueOrNull;
 
 /**
  * Created on 22/02/19.
@@ -89,7 +89,8 @@ public final class TipoVeiculoDaoImpl extends DatabaseConnection implements Tipo
                             "from " +
                             "veiculo_tipo vt " +
                             "join veiculo_diagrama vd on vt.cod_diagrama = vd.codigo " +
-                            "where vt.cod_empresa = ?;");
+                            "where vt.cod_empresa = ? " +
+                            "order by vt.nome;");
             stmt.setLong(1, codEmpresa);
             rSet = stmt.executeQuery();
             final List<TipoVeiculo> tiposVeiculos = new ArrayList<>();

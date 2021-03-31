@@ -4,6 +4,8 @@ import br.com.zalf.prolog.webservice.dashboard.Color;
 import br.com.zalf.prolog.webservice.dashboard.components.charts.pie.PieSlice;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.stream.Stream;
+
 /**
  * Created on 1/22/18
  *
@@ -108,14 +110,11 @@ public enum StatusPneu implements PieSlice {
     @NotNull
     public abstract PneuTipo toPneuTipo();
 
-    public static StatusPneu fromString(String text) throws IllegalArgumentException {
-        if (text != null) {
-            for (final StatusPneu statusPneu : StatusPneu.values()) {
-                if (text.equalsIgnoreCase(statusPneu.stringRepresentation)) {
-                    return statusPneu;
-                }
-            }
-        }
-        throw new IllegalArgumentException("Nenhum status encontrado para a String: " + text);
+    @NotNull
+    public static StatusPneu fromString(@NotNull final String text) throws IllegalArgumentException {
+        return Stream.of(StatusPneu.values())
+                .filter(statusPneu -> statusPneu.stringRepresentation.equalsIgnoreCase(text))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Nenhum status encontrado para a String: " + text));
     }
 }
