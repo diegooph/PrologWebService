@@ -9,6 +9,8 @@ Change Log
 * Migra projeto do Java 8 para o 11 (PL-3475)
 
 ### Refactors
+* Melhora cadastro de pneus na API v3 (PL-3459)
+* Melhora cadastro de veículos na API v3 (PL-3460)
 * Deleta integração antiga da Avilan que era em XML (PL-3475)
 * Altera integração com Globus/Piccolotur de envio de OS para utilizar implementação própria do SOAP (PL-3475)
 * Adiciona mais uma opção no enum de evolução de km (PL-3562)
