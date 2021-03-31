@@ -2,7 +2,9 @@ package br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model;
 
 import br.com.zalf.prolog.webservice.frota.veiculo.model.VeiculoTipoProcesso;
 import lombok.Value;
-import org.jetbrains.annotations.NotNull;
+
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 
 /**
  * Created on 2021-03-25
@@ -11,13 +13,14 @@ import org.jetbrains.annotations.NotNull;
  */
 @Value
 public class AlteracaoKmProcessoDto {
-    @NotNull
+    @NotNull(message = "O código de empresa não pode ser nulo.")
     Long codEmpresa;
-    @NotNull
+    @NotNull(message = "O código do veículo não pode ser nulo.")
     Long codVeiculo;
-    @NotNull
+    @NotNull(message = "O código do processo não pode ser nulo.")
     Long codProcesso;
-    @NotNull
+    @NotNull(message = "O tipo do processo não pode ser nulo.")
     VeiculoTipoProcesso tipoProcesso;
+    @Positive(message = "O novo km não pode ser um valor negativo.")
     long novoKm;
 }
