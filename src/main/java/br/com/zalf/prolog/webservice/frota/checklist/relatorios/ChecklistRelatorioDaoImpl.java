@@ -321,7 +321,7 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
     public void getDadosGeraisChecklistCsv(@NotNull final OutputStream outputStream,
                                            @NotNull final List<Long> codUnidades,
                                            @Nullable final Long codColaborador,
-                                           @Nullable final String placa,
+                                           @Nullable final Long codVeiculo,
                                            @NotNull final LocalDate dataInicial,
                                            @NotNull final LocalDate dataFinal) throws Throwable {
         Connection conn = null;
@@ -329,7 +329,12 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = getDadosGeraisChecklistStatement(conn, codUnidades, codColaborador, placa, dataInicial, dataFinal);
+            stmt = getDadosGeraisChecklistStatement(conn,
+                                                    codUnidades,
+                                                    codColaborador,
+                                                    codVeiculo,
+                                                    dataInicial,
+                                                    dataFinal);
             rSet = stmt.executeQuery();
             new CsvWriter().write(rSet, outputStream);
         } finally {
@@ -342,7 +347,7 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
     @Override
     public Report getDadosGeraisChecklistReport(@NotNull final List<Long> codUnidades,
                                                 @Nullable final Long codColaborador,
-                                                @Nullable final String placa,
+                                                @Nullable final Long codVeiculo,
                                                 @NotNull final LocalDate dataInicial,
                                                 @NotNull final LocalDate dataFinal) throws Throwable {
         Connection conn = null;
@@ -350,7 +355,12 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = getDadosGeraisChecklistStatement(conn, codUnidades, codColaborador, placa, dataInicial, dataFinal);
+            stmt = getDadosGeraisChecklistStatement(conn,
+                                                    codUnidades,
+                                                    codColaborador,
+                                                    codVeiculo,
+                                                    dataInicial,
+                                                    dataFinal);
             rSet = stmt.executeQuery();
             return ReportTransformer.createReport(rSet);
         } finally {
@@ -396,7 +406,7 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
     private PreparedStatement getDadosGeraisChecklistStatement(@NotNull final Connection conn,
                                                                @NotNull final List<Long> codUnidades,
                                                                @Nullable final Long codColaborador,
-                                                               @Nullable final String placa,
+                                                               @Nullable final Long codVeiculo,
                                                                @NotNull final LocalDate dataInicial,
                                                                @NotNull final LocalDate dataFinal)
             throws Throwable {
@@ -405,7 +415,7 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
         stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
         stmt.setObject(2, dataInicial);
         stmt.setObject(3, dataFinal);
-        bindValueOrNull(stmt, 4, placa, SqlType.TEXT);
+        bindValueOrNull(stmt, 4, codVeiculo, SqlType.BIGINT);
         bindValueOrNull(stmt, 5, codColaborador, SqlType.BIGINT);
         return stmt;
     }
