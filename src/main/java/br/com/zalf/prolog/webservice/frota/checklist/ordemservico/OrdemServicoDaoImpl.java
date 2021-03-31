@@ -57,7 +57,7 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
                         conn,
                         checklist.getCodModelo(),
                         checklist.getCodVersaoModeloChecklist(),
-                        checklist.getPlacaVeiculo());
+                        checklist.getCodVeiculo());
         final TipoOutrosSimilarityFinder similarityFinder = new TipoOutrosSimilarityFinder(StringMetrics.jaro());
 
         return new OrdemServicoProcessor(
@@ -347,6 +347,46 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
             stmt.setLong(1, codModelo);
             stmt.setLong(2, codVersaoModelo);
             stmt.setString(3, placaVeiculo);
+            rSet = stmt.executeQuery();
+            final Map<Long, List<InfosAlternativaAberturaOrdemServico>> map = new HashMap<>();
+            while (rSet.next()) {
+                // TODO: Alterar para usar código de contexto da alternativa.
+                // TESTE: abrir um item de OS em uma versão do modelo, incrementar versão sem mudar alternativa que
+                // abriu o item (manter contexto), realizar novo check apontando mesmo problema.
+                // RESULTADO ESPERADO: deveria incrementar quantidade de apontamentos e não criar novo item.
+                final Long codAlternativa = rSet.getLong("COD_ALTERNATIVA");
+                List<InfosAlternativaAberturaOrdemServico> alternativas = map.get(codAlternativa);
+                if (alternativas != null) {
+                    alternativas.add(OrdemServicoConverter.createAlternativaChecklistAbreOrdemServico(rSet));
+                } else {
+                    alternativas = new ArrayList<>();
+                    alternativas.add(OrdemServicoConverter.createAlternativaChecklistAbreOrdemServico(rSet));
+                    map.put(codAlternativa, alternativas);
+                }
+            }
+            return map;
+        } finally {
+            close(stmt, rSet);
+        }
+    }
+
+    @NotNull
+    @Override
+    public Map<Long, List<InfosAlternativaAberturaOrdemServico>> getItensStatus(
+            @NotNull final Connection conn,
+            @NotNull final Long codModelo,
+            @NotNull final Long codVersaoModelo,
+            @NotNull final Long codVeiculo) throws Throwable {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        try {
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_OS_ALTERNATIVAS_ABERTURA_OS(" +
+                                                 "F_COD_MODELO_CHECKLIST        := ?, " +
+                                                 "F_COD_VERSAO_MODELO_CHECKLIST := ?, " +
+                                                 "F_COD_VEICULO               := ?)");
+            stmt.setLong(1, codModelo);
+            stmt.setLong(2, codVersaoModelo);
+            stmt.setLong(3, codVeiculo);
             rSet = stmt.executeQuery();
             final Map<Long, List<InfosAlternativaAberturaOrdemServico>> map = new HashMap<>();
             while (rSet.next()) {

@@ -229,39 +229,40 @@ public final class ChecklistMigracaoEstruturaSuporte {
                                                         @NotNull final Integer versaoApp) {
         final DadosChecklistInsercaoEstrutraSuporte dados = getDadosChecklistInsercao(
                 antigo.getColaborador().getCpf(),
-                antigo.getPlacaVeiculo());
-
-        return new ChecklistInsercao(
-                dados.getCodUnidadeColaborador(),
-                antigo.getCodModelo(),
-                antigo.getCodVersaoModeloChecklist(),
-                dados.getCodColaborador(),
-                dados.getCodVeiculo(),
                 antigo.getPlacaVeiculo(),
-                TipoChecklist.fromChar(antigo.getTipo()),
-                antigo.getKmAtualVeiculo(),
-                null,
-                antigo.getTempoRealizacaoCheckInMillis(),
-                convertRespostas(antigo.getListRespostas()),
-                dataHoraRealizacao,
-                FonteDataHora.SERVIDOR,
-                versaoApp,
-                versaoApp,
-                null,
-                null,
-                0,
-                0,
-                0,
-                0);
+                antigo.getCodUnidade());
+
+        return new ChecklistInsercao(dados.getCodUnidadeColaborador(),
+                                     antigo.getCodModelo(),
+                                     antigo.getCodVersaoModeloChecklist(),
+                                     dados.getCodColaborador(),
+                                     dados.getCodVeiculo(),
+                                     antigo.getPlacaVeiculo(),
+                                     TipoChecklist.fromChar(antigo.getTipo()),
+                                     antigo.getKmAtualVeiculo(),
+                                     null,
+                                     antigo.getTempoRealizacaoCheckInMillis(),
+                                     convertRespostas(antigo.getListRespostas()),
+                                     dataHoraRealizacao,
+                                     FonteDataHora.SERVIDOR,
+                                     versaoApp,
+                                     versaoApp,
+                                     null,
+                                     null,
+                                     0,
+                                     0,
+                                     0,
+                                     0);
     }
 
     @NotNull
     public static DadosChecklistInsercaoEstrutraSuporte getDadosChecklistInsercao(@NotNull final Long cpfColaborador,
-                                                                                  @NotNull final String placa) {
+                                                                                  @NotNull final String placa,
+                                                                                  @NotNull final Long codUnidade) {
         Connection conn = null;
         try {
             conn = DatabaseConnection.getConnection();
-            final Long codVeiculo = internalGetCodVeiculoByPlaca(conn, placa);
+            final Long codVeiculo = internalGetCodVeiculoByPlaca(conn, placa, codUnidade);
             final Pair<Long, Long> pairUnidadeCodColaborador = internalGetCodColaboradorByCpf(conn, cpfColaborador);
             return new DadosChecklistInsercaoEstrutraSuporte(
                     pairUnidadeCodColaborador.getLeft(),
@@ -276,11 +277,12 @@ public final class ChecklistMigracaoEstruturaSuporte {
     }
 
     @NotNull
-    public static Long getCodVeiculoByPlaca(@NotNull final String placa) {
+    public static Long getCodVeiculoByPlaca(@NotNull final String placa,
+                                            @NotNull final Long codUnidade) {
         Connection conn = null;
         try {
             conn = DatabaseConnection.getConnection();
-            return internalGetCodVeiculoByPlaca(conn, placa);
+            return internalGetCodVeiculoByPlaca(conn, placa, codUnidade);
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao buscar código do veículo pela placa: " + placa);
             throw new RuntimeException(t);
@@ -349,13 +351,16 @@ public final class ChecklistMigracaoEstruturaSuporte {
 
     @NotNull
     private static Long internalGetCodVeiculoByPlaca(@NotNull final Connection conn,
-                                                     @NotNull final String placa) throws Throwable {
+                                                     @NotNull final String placa,
+                                                     @NotNull final Long codUnidade) throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             // Como a placa ainda é PK, a busca só pela placa já basta.
-            stmt = conn.prepareStatement("SELECT VD.CODIGO FROM VEICULO_DATA VD WHERE VD.PLACA = ?;");
+            stmt = conn.prepareStatement("select vd.codigo from veiculo_data vd where vd.placa = ? and " +
+                                                 "vd.cod_unidade = ?;");
             stmt.setString(1, placa);
+            stmt.setLong(2, codUnidade);
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 return rSet.getLong("CODIGO");
