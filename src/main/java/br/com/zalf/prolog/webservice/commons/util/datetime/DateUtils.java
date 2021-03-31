@@ -65,6 +65,11 @@ public final class DateUtils {
     }
 
     @NotNull
+    public static LocalDate parseDate(@NotNull final String dateString) {
+        return LocalDate.parse(dateString, DateTimeFormatter.ISO_LOCAL_DATE);
+    }
+
+    @NotNull
     public static Date getPrimeiroDiaMes(@NotNull final Date date) {
         final Calendar firstDay = Calendar.getInstance();
         firstDay.setTime(DateUtils.toSqlDate(date));
