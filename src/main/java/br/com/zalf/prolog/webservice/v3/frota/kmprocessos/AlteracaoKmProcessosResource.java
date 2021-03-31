@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -48,7 +49,7 @@ public final class AlteracaoKmProcessosResource {
     @Secured(permissions = Pilares.Frota.Veiculo.ALTERAR)
     @NotNull
     public SuccessResponse updateKmProcesso(@Context final SecurityContext securityContext,
-                                            @NotNull final AlteracaoKmProcessoDto alteracaoKmProcesso) {
+                                            @NotNull @Valid final AlteracaoKmProcessoDto alteracaoKmProcesso) {
         final ColaboradorAutenticado colaborador = (ColaboradorAutenticado) securityContext.getUserPrincipal();
         service.updateKmProcesso(mapper.toAlteracaoKmProcesso(alteracaoKmProcesso, colaborador.getCodigo()));
         return new SuccessResponse(null, "KM atualizado com sucesso!");
