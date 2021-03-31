@@ -25,6 +25,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.servico._model.Servico;
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.VeiculoServico;
 import br.com.zalf.prolog.webservice.frota.pneu.transferencia._model.realizacao.PneuTransferenciaRealizacao;
 import br.com.zalf.prolog.webservice.frota.v3.veiculo._model.VeiculoCadastroDto;
+import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.InfosVeiculoEditado;
@@ -393,8 +394,10 @@ public abstract class Sistema implements OperacoesIntegradas {
     // #################################################################################################################
     @NotNull
     @Override
-    public Long insert(@NotNull final Pneu pneu, @NotNull final Long codUnidade) throws Throwable {
-        return getIntegradorProLog().insert(pneu, codUnidade);
+    public Long insert(@NotNull final Pneu pneu,
+                       @NotNull final Long codUnidade,
+                       @NotNull final OrigemAcaoEnum origemCadastro) throws Throwable {
+        return getIntegradorProLog().insert(pneu, codUnidade, origemCadastro);
     }
 
     @NotNull

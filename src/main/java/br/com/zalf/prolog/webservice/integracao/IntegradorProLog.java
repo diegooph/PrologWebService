@@ -37,6 +37,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.transferencia.PneuTransferenciaD
 import br.com.zalf.prolog.webservice.frota.pneu.transferencia._model.realizacao.PneuTransferenciaRealizacao;
 import br.com.zalf.prolog.webservice.frota.v3.veiculo._model.VeiculoCadastroDto;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
+import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
@@ -654,11 +655,13 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
 
     @NotNull
     @Override
-    public Long insert(@NotNull final Pneu pneu, @NotNull final Long codUnidade) throws Throwable {
+    public Long insert(@NotNull final Pneu pneu,
+                       @NotNull final Long codUnidade,
+                       @NotNull final OrigemAcaoEnum origemCadastro) throws Throwable {
         if (pneuDao == null) {
             pneuDao = Injection.providePneuDao();
         }
-        return pneuDao.insert(pneu, codUnidade);
+        return pneuDao.insert(pneu, codUnidade, origemCadastro);
     }
 
     @NotNull

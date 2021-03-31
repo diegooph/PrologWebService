@@ -9,6 +9,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.servico._model.TipoServico;
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.VeiculoServico;
 import br.com.zalf.prolog.webservice.frota.pneu.transferencia._model.realizacao.PneuTransferenciaRealizacao;
 import br.com.zalf.prolog.webservice.frota.v3.veiculo._model.VeiculoCadastroDto;
+import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.InfosVeiculoEditado;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicao;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.ProcessoTransferenciaVeiculoRealizacao;
@@ -91,11 +92,13 @@ public final class SistemaApiProLog extends Sistema {
 
     @NotNull
     @Override
-    public Long insert(@NotNull final Pneu pneu, @NotNull final Long codUnidade) throws Throwable {
+    public Long insert(@NotNull final Pneu pneu,
+                       @NotNull final Long codUnidade,
+                       @NotNull final OrigemAcaoEnum origemCadastro) throws Throwable {
         if (unidadeEstaComIntegracaoAtiva(codUnidade)) {
             throw new BloqueadoIntegracaoException("Para inserir pneus utilize o seu sistema de gestão");
         }
-        return getIntegradorProLog().insert(pneu, codUnidade);
+        return getIntegradorProLog().insert(pneu, codUnidade, origemCadastro);
     }
 
     @NotNull

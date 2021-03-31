@@ -51,12 +51,14 @@ public final class PneuDaoImpl extends DatabaseConnection implements PneuDao {
 
     @Override
     @NotNull
-    public Long insert(final Pneu pneu, final Long codUnidade) throws Throwable {
+    public Long insert(@NotNull final Pneu pneu,
+                       @NotNull final Long codUnidade,
+                       @NotNull final OrigemAcaoEnum origemCadastro) throws Throwable {
         Connection conn = null;
         try {
             conn = getConnection();
             conn.setAutoCommit(false);
-            final Long codPneuInserido = internalInsert(conn, pneu, codUnidade);
+            final Long codPneuInserido = internalInsert(conn, pneu, codUnidade, origemCadastro);
             conn.commit();
             return codPneuInserido;
         } catch (final Throwable e) {
@@ -79,7 +81,7 @@ public final class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             conn.setAutoCommit(false);
             final List<Long> codigosPneus = new ArrayList<>(pneus.size());
             for (final Pneu pneu : pneus) {
-                codigosPneus.add(internalInsert(conn, pneu, pneu.getCodUnidadeAlocado()));
+                codigosPneus.add(internalInsert(conn, pneu, pneu.getCodUnidadeAlocado(), OrigemAcaoEnum.PROLOG_WEB));
                 linha++;
             }
             conn.commit();
@@ -454,7 +456,8 @@ public final class PneuDaoImpl extends DatabaseConnection implements PneuDao {
     @NotNull
     private Long internalInsert(@NotNull final Connection conn,
                                 @NotNull final Pneu pneu,
-                                @NotNull final Long codUnidade) throws Throwable {
+                                @NotNull final Long codUnidade,
+                                @NotNull final OrigemAcaoEnum origemCadastro) throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
@@ -503,7 +506,7 @@ public final class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             }
             stmt.setLong(18, codUnidade);
             stmt.setLong(19, codUnidade);
-            stmt.setString(20, OrigemAcaoEnum.PROLOG_WEB.asString());
+            stmt.setString(20, origemCadastro.asString());
 
             rSet = stmt.executeQuery();
             final Long codPneu;
