@@ -13,6 +13,7 @@ sentry:
   release: "${prolog.version_code}"
   enable-session-tracking: true
   attach-stacktrace: true
+  send-default-pii: true
   in-app-excludes:
     - "sun"
     - "java"
