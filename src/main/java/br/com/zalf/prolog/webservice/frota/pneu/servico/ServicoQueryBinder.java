@@ -257,15 +257,17 @@ final class ServicoQueryBinder {
                                                                            "   AV.COD_PNEU AS COD_PNEU_PROBLEMA, " +
                                                                            "   PNEU_PROBLEMA.CODIGO_CLIENTE AS " +
                                                                            "COD_PNEU_PROBLEMA_CLIENTE, " +
-                                                                           "   AV.ALTURA_SULCO_EXTERNO AS " +
-                                                                           "SULCO_EXTERNO_PNEU_PROBLEMA, " +
-                                                                           "   AV.ALTURA_SULCO_CENTRAL_EXTERNO AS " +
-                                                                           "SULCO_CENTRAL_EXTERNO_PNEU_PROBLEMA, " +
-                                                                           "   AV.ALTURA_SULCO_CENTRAL_INTERNO AS " +
-                                                                           "SULCO_CENTRAL_INTERNO_PNEU_PROBLEMA, " +
-                                                                           "   AV.ALTURA_SULCO_INTERNO AS " +
-                                                                           "SULCO_INTERNO_PNEU_PROBLEMA, " +
-                                                                           "   AV.PSI AS PRESSAO_PNEU_PROBLEMA, " +
+                                                                           "PNEU_PROBLEMA.ALTURA_SULCO_EXTERNO AS " +
+                                                                           "SULCO_EXTERNO_ATUAL, " +
+                                                                           "PNEU_PROBLEMA" +
+                                                                           ".ALTURA_SULCO_CENTRAL_EXTERNO AS " +
+                                                                           "SULCO_CENTRAL_EXTERNO_ATUAL, " +
+                                                                           "PNEU_PROBLEMA" +
+                                                                           ".ALTURA_SULCO_CENTRAL_INTERNO AS " +
+                                                                           "SULCO_CENTRAL_INTERNO_ATUAL, " +
+                                                                           "PNEU_PROBLEMA.ALTURA_SULCO_INTERNO AS " +
+                                                                           "SULCO_INTERNO_ATUAL, " +
+                                                                           "PNEU_PROBLEMA.PRESSAO_ATUAL, " +
                                                                            "   AV.POSICAO AS POSICAO_PNEU_PROBLEMA, " +
                                                                            "   AV.VIDA_MOMENTO_AFERICAO AS " +
                                                                            "VIDA_PNEU_PROBLEMA, " +
