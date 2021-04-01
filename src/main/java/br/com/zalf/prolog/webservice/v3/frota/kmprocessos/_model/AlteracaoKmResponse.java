@@ -12,4 +12,5 @@ import lombok.Value;
 @Value
 public class AlteracaoKmResponse {
     long kmAntigo;
+    boolean kmFoiAlterado;
 }

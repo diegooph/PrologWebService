@@ -34,7 +34,7 @@ public class AlteracaoKmProcessosService {
     public void updateKmProcesso(@NotNull final AlteracaoKmProcesso alteracaoKmProcesso) {
         final KmProcessoAtualizavel service = serviceFactory.createService(alteracaoKmProcesso);
         final AlteracaoKmResponse response = alteradorKmProcesso.updateKmProcesso(service, alteracaoKmProcesso);
-        if (response.getKmAntigo() != alteracaoKmProcesso.getNovoKm()) {
+        if (response.isKmFoiAlterado()) {
             Log.d(TAG, "KM foi alterado, gerando histórico");
             final AlteracaoKmProcessoEntity entity = AlteracaoKmProcessoEntity
                     .builder()

@@ -29,10 +29,14 @@ public final class AlteradorKmProcesso {
         applyValidations(processo.getCodEmpresa(),
                          processo.getCodVeiculo(),
                          veiculoKmColetado.getCodVeiculo());
-        kmProcessoAtualizavel.updateKmColetadoProcesso(processo.getCodProcesso(),
-                                                       processo.getCodVeiculo(),
-                                                       processo.getNovoKm());
-        return AlteracaoKmResponse.of(veiculoKmColetado.getKmColetado());
+        if (veiculoKmColetado.getKmColetado() != processo.getNovoKm()) {
+            kmProcessoAtualizavel.updateKmColetadoProcesso(processo.getCodProcesso(),
+                                                           processo.getCodVeiculo(),
+                                                           processo.getNovoKm());
+            return AlteracaoKmResponse.of(veiculoKmColetado.getKmColetado(), true);
+        }
+
+        return AlteracaoKmResponse.of(veiculoKmColetado.getKmColetado(), false);
     }
 
     private void applyValidations(@NotNull final Long codEmpresaRecebido,
