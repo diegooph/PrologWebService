@@ -1,5 +1,8 @@
 Change Log
 ==========
+## Stage
+### Refactors
+* Configura swagger para rodar em prod (PL-3559)
 
 <a name="v3.0.1"></a>
 ## Version [v3.0.1](https://github.com/luizfp/PrologWebService/compare/v3.0.0...v3.0.1) (release-date) [unreleased]
