@@ -26,5 +26,6 @@ public class AlteracaoKmProcesso {
     VeiculoTipoProcesso tipoProcesso;
     @Nullable
     Long codColaboradorAlteracao;
-    long novoKm;
+    @NotNull
+    Long novoKm;
 }
