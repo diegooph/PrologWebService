@@ -1,12 +1,16 @@
 Change Log
 ==========
-## Stage
-### Refactors
-* Configura swagger para rodar em prod (PL-3559)
 
 <a name="v3.0.1"></a>
 ## Version [v3.0.1](https://github.com/luizfp/PrologWebService/compare/v3.0.0...v3.0.1) (release-date) [unreleased]
 
+### Features
+* Adiciona código do colaborador ao Sentry para ser logado junto em caso de erro
+
+### Refactors
+* Configura swagger para rodar em prod (PL-3559)
+* Altera versão do Sentry para 4.3.0
+* Altera para o Sentry enviar informações sensitivas por default, como o token
 
 <a name="v3.0.0"></a>
 ## Version [v3.0.0](https://github.com/luizfp/PrologWebService/compare/v2.2.0...v3.0.0) (2021-03-30)
