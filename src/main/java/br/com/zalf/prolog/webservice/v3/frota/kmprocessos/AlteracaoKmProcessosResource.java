@@ -11,7 +11,6 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
-import javax.annotation.Resource;
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.PUT;
@@ -26,7 +25,6 @@ import javax.ws.rs.core.SecurityContext;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-@Resource
 @Controller
 @ConsoleDebugLog
 @Path("/v3/processos-coleta-km")
