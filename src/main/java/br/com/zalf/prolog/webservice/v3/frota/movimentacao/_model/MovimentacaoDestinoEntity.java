@@ -20,7 +20,6 @@ import javax.persistence.*;
 @Table(schema = "public", name = "movimentacao_destino")
 public final class MovimentacaoDestinoEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "cod_movimentacao", nullable = false)
     private Long codMovimentacao;
     @Column(name = "cod_veiculo")
