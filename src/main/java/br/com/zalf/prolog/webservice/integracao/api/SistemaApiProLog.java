@@ -8,7 +8,6 @@ import br.com.zalf.prolog.webservice.frota.pneu.servico._model.Servico;
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.TipoServico;
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.VeiculoServico;
 import br.com.zalf.prolog.webservice.frota.pneu.transferencia._model.realizacao.PneuTransferenciaRealizacao;
-import br.com.zalf.prolog.webservice.frota.v3.veiculo._model.VeiculoCadastroDto;
 import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.InfosVeiculoEditado;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicao;
@@ -17,6 +16,7 @@ import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.RecursoIntegrado;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
+import br.com.zalf.prolog.webservice.v3.frota.veiculo._model.VeiculoCadastroDto;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.OffsetDateTime;
@@ -36,6 +36,7 @@ public final class SistemaApiProLog extends Sistema {
         super(integradorProLog, sistemaKey, recursoIntegrado, userToken);
     }
 
+    @java.lang.Override
     @NotNull
     @Override
     public Long insertAfericao(@NotNull final Long codUnidade,
@@ -54,6 +55,7 @@ public final class SistemaApiProLog extends Sistema {
         return getIntegradorProLog().insertAfericao(codUnidade, afericao, abrirServico);
     }
 
+    @java.lang.Override
     @Override
     public void insert(
             @NotNull final VeiculoCadastroDto veiculo,
@@ -64,6 +66,7 @@ public final class SistemaApiProLog extends Sistema {
         getIntegradorProLog().insert(veiculo, checklistOfflineListener);
     }
 
+    @java.lang.Override
     @NotNull
     @Override
     public InfosVeiculoEditado update(
@@ -77,6 +80,7 @@ public final class SistemaApiProLog extends Sistema {
         return getIntegradorProLog().update(codColaboradorResponsavelEdicao, veiculo, checklistOfflineListener);
     }
 
+    @java.lang.Override
     @NotNull
     @Override
     public Long insertProcessoTransferenciaVeiculo(
@@ -90,6 +94,7 @@ public final class SistemaApiProLog extends Sistema {
                 .insertProcessoTransferenciaVeiculo(processoTransferenciaVeiculo, dadosChecklistOfflineChangedListener);
     }
 
+    @java.lang.Override
     @NotNull
     @Override
     public Long insert(@NotNull final Pneu pneu,
@@ -101,6 +106,7 @@ public final class SistemaApiProLog extends Sistema {
         return getIntegradorProLog().insert(pneu, codUnidade, origemCadastro);
     }
 
+    @java.lang.Override
     @NotNull
     @Override
     public List<Long> insert(@NotNull final List<Pneu> pneus) {
@@ -108,6 +114,7 @@ public final class SistemaApiProLog extends Sistema {
         throw new BloqueadoIntegracaoException("Para inserir pneus utilize o seu sistema de gestão");
     }
 
+    @java.lang.Override
     @Override
     public void update(@NotNull final Pneu pneu,
                        @NotNull final Long codUnidade,
@@ -118,6 +125,7 @@ public final class SistemaApiProLog extends Sistema {
         getIntegradorProLog().update(pneu, codUnidade, codOriginalPneu);
     }
 
+    @java.lang.Override
     @NotNull
     @Override
     public Long insertTransferencia(@NotNull final PneuTransferenciaRealizacao pneuTransferenciaRealizacao,
@@ -131,6 +139,7 @@ public final class SistemaApiProLog extends Sistema {
                 .insertTransferencia(pneuTransferenciaRealizacao, dataHoraSincronizacao, isTransferenciaFromVeiculo);
     }
 
+    @java.lang.Override
     @NotNull
     @Override
     public VeiculoServico getVeiculoAberturaServico(@NotNull final Long codServico,
@@ -145,6 +154,7 @@ public final class SistemaApiProLog extends Sistema {
         return getIntegradorProLog().getVeiculoAberturaServico(codServico, placaVeiculo);
     }
 
+    @java.lang.Override
     @Override
     public void fechaServico(@NotNull final Long codUnidade,
                              @NotNull final OffsetDateTime dataHorafechamentoServico,

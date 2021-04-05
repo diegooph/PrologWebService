@@ -5,7 +5,6 @@ import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.pneu.nomenclatura.PneuNomenclaturaService;
-import br.com.zalf.prolog.webservice.frota.v3.veiculo._model.VeiculoCadastroDto;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
@@ -19,6 +18,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoDad
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoVisualizacao;
 import br.com.zalf.prolog.webservice.frota.veiculo.validator.VeiculoValidator;
 import br.com.zalf.prolog.webservice.integracao.router.RouterVeiculo;
+import br.com.zalf.prolog.webservice.v3.frota.veiculo._model.VeiculoCadastroDto;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

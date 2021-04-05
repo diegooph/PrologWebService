@@ -24,7 +24,6 @@ import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.Servico;
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.VeiculoServico;
 import br.com.zalf.prolog.webservice.frota.pneu.transferencia._model.realizacao.PneuTransferenciaRealizacao;
-import br.com.zalf.prolog.webservice.frota.v3.veiculo._model.VeiculoCadastroDto;
 import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
@@ -38,6 +37,7 @@ import br.com.zalf.prolog.webservice.gente.colaborador.model.Empresa;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.RecursoIntegrado;
 import br.com.zalf.prolog.webservice.integracao.operacoes.OperacoesIntegradas;
+import br.com.zalf.prolog.webservice.v3.frota.veiculo._model.VeiculoCadastroDto;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -75,12 +75,14 @@ public abstract class Sistema implements OperacoesIntegradas {
     // ####################################### OPERAÇÕES INTEGRADAS - AFERIÇÃO #########################################
     // #################################################################################################################
     // #################################################################################################################
+    @java.lang.Override
     @NotNull
     @Override
     public CronogramaAfericao getCronogramaAfericao(@NotNull final List<Long> codUnidades) throws Throwable {
         return getIntegradorProLog().getCronogramaAfericao(codUnidades);
     }
 
+    @java.lang.Override
     @NotNull
     @Override
     public NovaAfericaoPlaca getNovaAfericaoPlaca(@NotNull final Long codUnidade,
@@ -89,12 +91,14 @@ public abstract class Sistema implements OperacoesIntegradas {
         return getIntegradorProLog().getNovaAfericaoPlaca(codUnidade, placaVeiculo, tipoAfericao);
     }
 
+    @java.lang.Override
     @NotNull
     @Override
     public List<PneuAfericaoAvulsa> getPneusAfericaoAvulsa(@NotNull final Long codUnidade) throws Throwable {
         return getIntegradorProLog().getPneusAfericaoAvulsa(codUnidade);
     }
 
+    @java.lang.Override
     @NotNull
     @Override
     public NovaAfericaoAvulsa getNovaAfericaoAvulsa(
@@ -104,6 +108,7 @@ public abstract class Sistema implements OperacoesIntegradas {
         return getIntegradorProLog().getNovaAfericaoAvulsa(codUnidade, codPneu, tipoMedicaoColetadaAfericao);
     }
 
+    @java.lang.Override
     @NotNull
     @Override
     public Report getAfericoesAvulsas(@NotNull final Long codUnidade,
@@ -113,6 +118,7 @@ public abstract class Sistema implements OperacoesIntegradas {
         return getIntegradorProLog().getAfericoesAvulsas(codUnidade, codColaborador, dataInicial, dataFinal);
     }
 
+    @java.lang.Override
     @NotNull
     @Override
     public Long insertAfericao(@NotNull final Long codUnidade,
@@ -121,6 +127,7 @@ public abstract class Sistema implements OperacoesIntegradas {
         return getIntegradorProLog().insertAfericao(codUnidade, afericao, deveAbrirServico);
     }
 
+    @java.lang.Override
     @NotNull
     @Override
     public Afericao getAfericaoByCodigo(@NotNull final Long codUnidade,
@@ -128,6 +135,7 @@ public abstract class Sistema implements OperacoesIntegradas {
         return getIntegradorProLog().getAfericaoByCodigo(codUnidade, codAfericao);
     }
 
+    @java.lang.Override
     @NotNull
     @Override
     public List<AfericaoPlaca> getAfericoesPlacas(@NotNull final Long codUnidade,
@@ -146,6 +154,7 @@ public abstract class Sistema implements OperacoesIntegradas {
     // ####################################### OPERAÇÕES INTEGRADAS - CHECKLIST ########################################
     // #################################################################################################################
     // #################################################################################################################
+    @java.lang.Override
     @NotNull
     @Override
     public ResultInsertModeloChecklist insertModeloChecklist(
@@ -157,6 +166,7 @@ public abstract class Sistema implements OperacoesIntegradas {
                 .insertModeloChecklist(modeloChecklist, checklistOfflineListener, statusAtivo, userToken);
     }
 
+    @java.lang.Override
     @Override
     public void updateModeloChecklist(
             @NotNull final Long codUnidade,
@@ -174,6 +184,7 @@ public abstract class Sistema implements OperacoesIntegradas {
                 userToken);
     }
 
+    @java.lang.Override
     @NotNull
     @Override
     public List<ModeloChecklistSelecao> getModelosSelecaoRealizacao(@NotNull final Long codUnidade,
@@ -181,6 +192,7 @@ public abstract class Sistema implements OperacoesIntegradas {
         return getIntegradorProLog().getModelosSelecaoRealizacao(codUnidade, codCargo);
     }
 
+    @java.lang.Override
     @Override
     public @NotNull ModeloChecklistRealizacao getModeloChecklistRealizacao(
             final @NotNull Long codModeloChecklist,
@@ -191,6 +203,7 @@ public abstract class Sistema implements OperacoesIntegradas {
                 .getModeloChecklistRealizacao(codModeloChecklist, codVeiculo, placaVeiculo, tipoChecklist);
     }
 
+    @java.lang.Override
     @NotNull
     @Override
     public Long insertChecklist(@NotNull final ChecklistInsercao checklist,
@@ -199,18 +212,21 @@ public abstract class Sistema implements OperacoesIntegradas {
         return getIntegradorProLog().insertChecklist(checklist, foiOffline, deveAbrirOs);
     }
 
+    @java.lang.Override
     @NotNull
     @Override
     public List<TipoVeiculo> getTiposVeiculosFiltroChecklist(@NotNull final Long codEmpresa) throws Throwable {
         return getIntegradorProLog().getTiposVeiculosFiltroChecklist(codEmpresa);
     }
 
+    @java.lang.Override
     @NotNull
     @Override
     public Checklist getChecklistByCodigo(@NotNull final Long codChecklist) throws Exception {
         return getIntegradorProLog().getChecklistByCodigo(codChecklist);
     }
 
+    @java.lang.Override
     @NotNull
     @Override
     public List<Checklist> getChecklistsByColaborador(@NotNull final Long cpf,
@@ -221,6 +237,7 @@ public abstract class Sistema implements OperacoesIntegradas {
         return getIntegradorProLog().getChecklistsByColaborador(cpf, dataInicial, dataFinal, limit, offset, resumido);
     }
 
+    @java.lang.Override
     @NotNull
     @Override
     public List<Checklist> getTodosChecklists(@NotNull final Long codUnidade,
@@ -245,6 +262,7 @@ public abstract class Sistema implements OperacoesIntegradas {
                         resumido);
     }
 
+    @java.lang.Override
     @NotNull
     @Override
     public List<ChecklistListagem> getListagemByColaborador(@NotNull final Long codColaborador,
@@ -255,6 +273,7 @@ public abstract class Sistema implements OperacoesIntegradas {
         return getIntegradorProLog().getListagemByColaborador(codColaborador, dataInicial, dataFinal, limit, offset);
     }
 
+    @java.lang.Override
     @NotNull
     @Override
     public List<ChecklistListagem> getListagem(@NotNull final Long codUnidade,
@@ -277,6 +296,7 @@ public abstract class Sistema implements OperacoesIntegradas {
                         offset);
     }
 
+    @java.lang.Override
     @NotNull
     @Override
     public DeprecatedFarolChecklist getFarolChecklist(@NotNull final Long codUnidade,
@@ -286,6 +306,7 @@ public abstract class Sistema implements OperacoesIntegradas {
         return getIntegradorProLog().getFarolChecklist(codUnidade, dataInicial, dataFinal, itensCriticosRetroativos);
     }
 
+    @java.lang.Override
     @NotNull
     @Override
     public Long insertChecklistOffline(@NotNull final ChecklistInsercao checklist) throws Throwable {
@@ -297,11 +318,13 @@ public abstract class Sistema implements OperacoesIntegradas {
     // ############################## OPERAÇÕES INTEGRADAS - CHECKLIST ORDEM DE SERVIÇO ################################
     // #################################################################################################################
     // #################################################################################################################
+    @java.lang.Override
     @Override
     public void resolverItem(@NotNull final ResolverItemOrdemServico item) throws Throwable {
         getIntegradorProLog().resolverItem(item);
     }
 
+    @java.lang.Override
     @Override
     public void resolverItens(@NotNull final ResolverMultiplosItensOs itensResolucao) throws Throwable {
         getIntegradorProLog().resolverItens(itensResolucao);
@@ -312,6 +335,7 @@ public abstract class Sistema implements OperacoesIntegradas {
     // ######################################## OPERAÇÕES INTEGRADAS - VEÍCULO #########################################
     // #################################################################################################################
     // #################################################################################################################
+    @java.lang.Override
     @Override
     public void insert(
             @NotNull final VeiculoCadastroDto veiculo,
@@ -319,6 +343,7 @@ public abstract class Sistema implements OperacoesIntegradas {
         getIntegradorProLog().insert(veiculo, checklistOfflineListener);
     }
 
+    @java.lang.Override
     @NotNull
     @Override
     public InfosVeiculoEditado update(
@@ -328,6 +353,7 @@ public abstract class Sistema implements OperacoesIntegradas {
         return getIntegradorProLog().update(codColaboradorResponsavelEdicao, veiculo, checklistOfflineListener);
     }
 
+    @java.lang.Override
     @NotNull
     @Override
     public List<Veiculo> getVeiculosAtivosByUnidade(@NotNull final Long codUnidade,
@@ -336,6 +362,7 @@ public abstract class Sistema implements OperacoesIntegradas {
         return getIntegradorProLog().getVeiculosAtivosByUnidade(codUnidade, ativos);
     }
 
+    @java.lang.Override
     @NotNull
     @Override
     public List<String> getPlacasVeiculosByTipo(@NotNull final Long codUnidade,
@@ -343,6 +370,7 @@ public abstract class Sistema implements OperacoesIntegradas {
         return getIntegradorProLog().getPlacasVeiculosByTipo(codUnidade, codTipo);
     }
 
+    @java.lang.Override
     @NotNull
     @Override
     public List<VeiculoListagem> getVeiculosByUnidades(@NotNull final List<Long> codUnidades,
@@ -351,12 +379,14 @@ public abstract class Sistema implements OperacoesIntegradas {
         return getIntegradorProLog().getVeiculosByUnidades(codUnidades, apenasAtivos, codTipoVeiculo);
     }
 
+    @java.lang.Override
     @NotNull
     @Override
     public VeiculoVisualizacao getVeiculoByCodigo(@NotNull final Long codVeiculo) throws Throwable {
         return getIntegradorProLog().getVeiculoByCodigo(codVeiculo);
     }
 
+    @java.lang.Override
     @NotNull
     @Override
     public Veiculo getVeiculoByPlaca(@NotNull final String placa,
@@ -365,6 +395,7 @@ public abstract class Sistema implements OperacoesIntegradas {
         return getIntegradorProLog().getVeiculoByPlaca(placa, codUnidade, withPneus);
     }
 
+    @java.lang.Override
     @NotNull
     @Override
     public VeiculoDadosColetaKm getDadosColetaKmByCodigo(@NotNull final Long codVeiculo) throws Throwable {
@@ -376,6 +407,7 @@ public abstract class Sistema implements OperacoesIntegradas {
     // ################################# OPERAÇÕES INTEGRADAS - VEÍCULO TRANSFERÊNCIA ##################################
     // #################################################################################################################
     // #################################################################################################################
+    @java.lang.Override
     @NotNull
     @Override
     public Long insertProcessoTransferenciaVeiculo(
@@ -392,6 +424,7 @@ public abstract class Sistema implements OperacoesIntegradas {
     // ########################################## OPERAÇÕES INTEGRADAS - PNEU ##########################################
     // #################################################################################################################
     // #################################################################################################################
+    @java.lang.Override
     @NotNull
     @Override
     public Long insert(@NotNull final Pneu pneu,
@@ -400,12 +433,14 @@ public abstract class Sistema implements OperacoesIntegradas {
         return getIntegradorProLog().insert(pneu, codUnidade, origemCadastro);
     }
 
+    @java.lang.Override
     @NotNull
     @Override
     public List<Long> insert(@NotNull final List<Pneu> pneus) throws Throwable {
         return getIntegradorProLog().insert(pneus);
     }
 
+    @java.lang.Override
     @Override
     public void update(@NotNull final Pneu pneu,
                        @NotNull final Long codUnidade,
@@ -413,6 +448,7 @@ public abstract class Sistema implements OperacoesIntegradas {
         getIntegradorProLog().update(pneu, codUnidade, codOriginalPneu);
     }
 
+    @java.lang.Override
     @NotNull
     @Override
     public List<Pneu> getPneusByCodUnidadesByStatus(@NotNull final List<Long> codUnidades,
@@ -425,6 +461,7 @@ public abstract class Sistema implements OperacoesIntegradas {
     // ################################### OPERAÇÕES INTEGRADAS - PNEU TRANSFERÊNCIA ###################################
     // #################################################################################################################
     // #################################################################################################################
+    @java.lang.Override
     @NotNull
     @Override
     public Long insertTransferencia(@NotNull final PneuTransferenciaRealizacao pneuTransferenciaRealizacao,
@@ -439,6 +476,7 @@ public abstract class Sistema implements OperacoesIntegradas {
     // ###################################### OPERAÇÕES INTEGRADAS - MOVIMENTAÇÃO ######################################
     // #################################################################################################################
     // #################################################################################################################
+    @java.lang.Override
     @NotNull
     @Override
     public Long insert(@NotNull final ServicoDao servicoDao,
@@ -454,6 +492,7 @@ public abstract class Sistema implements OperacoesIntegradas {
                         fecharServicosAutomaticamente);
     }
 
+    @java.lang.Override
     @NotNull
     @Override
     public List<CampoPersonalizadoParaRealizacao> getCamposParaRealizacaoMovimentacao(
@@ -467,6 +506,7 @@ public abstract class Sistema implements OperacoesIntegradas {
     // #################################### OPERAÇÕES INTEGRADAS - AFERIÇÃO SERVIÇO ####################################
     // #################################################################################################################
     // #################################################################################################################
+    @java.lang.Override
     @NotNull
     @Override
     public VeiculoServico getVeiculoAberturaServico(@NotNull final Long codServico,
@@ -474,6 +514,7 @@ public abstract class Sistema implements OperacoesIntegradas {
         return getIntegradorProLog().getVeiculoAberturaServico(codServico, placaVeiculo);
     }
 
+    @java.lang.Override
     @Override
     public void fechaServico(@NotNull final Long codUnidade,
                              @NotNull final OffsetDateTime dataHorafechamentoServico,
@@ -486,12 +527,14 @@ public abstract class Sistema implements OperacoesIntegradas {
     // ###################################### OPERAÇÕES INTEGRADAS - TIPO VEICULO ######################################
     // #################################################################################################################
     // #################################################################################################################
+    @java.lang.Override
     @NotNull
     @Override
     public Long insertTipoVeiculo(@NotNull final TipoVeiculo tipoVeiculo) throws Throwable {
         return getIntegradorProLog().insertTipoVeiculo(tipoVeiculo);
     }
 
+    @java.lang.Override
     @Override
     public void updateTipoVeiculo(@NotNull final TipoVeiculo tipoVeiculo) throws Throwable {
         getIntegradorProLog().updateTipoVeiculo(tipoVeiculo);
@@ -502,6 +545,7 @@ public abstract class Sistema implements OperacoesIntegradas {
     // ###################################### OPERAÇÕES INTEGRADAS - EMPRESA ###########################################
     // #################################################################################################################
     // #################################################################################################################
+    @java.lang.Override
     @NotNull
     @Override
     public List<Empresa> getFiltros(@NotNull final Long cpf) throws Throwable {
