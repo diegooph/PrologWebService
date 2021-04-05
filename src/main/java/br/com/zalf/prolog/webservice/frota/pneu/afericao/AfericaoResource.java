@@ -130,10 +130,6 @@ public class AfericaoResource {
             Pilares.Frota.OrdemServico.Pneu.VISUALIZAR,
             Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
     @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
-    @AppVersionCodeHandler(
-            targetVersionCode = 62,
-            versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
-            actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
     @Deprecated
     public List<AfericaoPlaca> getAfericoesPlacas(
             @PathParam("codUnidade") final Long codUnidade,
@@ -162,7 +158,6 @@ public class AfericaoResource {
      * {@link br.com.zalf.prolog.webservice.frota.pneu.afericao.v3.AfericaoV3Resource#getAfericoesAvulsas}
      * </p>
      */
-
     @GET
     @Path("/unidades/{codUnidade}/avulsas")
     @Secured(permissions = {
@@ -171,10 +166,6 @@ public class AfericaoResource {
             Pilares.Frota.OrdemServico.Pneu.VISUALIZAR,
             Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
     @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
-    @AppVersionCodeHandler(
-            targetVersionCode = 62,
-            versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
-            actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
     @Deprecated
     public List<AfericaoAvulsa> getAfericoesAvulsas(
             @PathParam("codUnidade") final Long codUnidade,
@@ -198,10 +189,6 @@ public class AfericaoResource {
             Pilares.Frota.Afericao.REALIZAR_AFERICAO_PNEU_AVULSO,
             Pilares.Frota.Afericao.VISUALIZAR_TODAS_AFERICOES})
     @UsedBy(platforms = Platform.ANDROID)
-    @AppVersionCodeHandler(
-            targetVersionCode = 62,
-            versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
-            actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
     @Deprecated
     public Report getAfericoesAvulsas(
             @PathParam("codUnidade") @Required final Long codUnidade,
