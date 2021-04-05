@@ -158,29 +158,6 @@ public final class ChecklistService {
         }
     }
 
-    public List<Checklist> getAll(final Long codUnidade,
-                                  final Long codEquipe,
-                                  final Long codTipoVeiculo,
-                                  final String placaVeiculo,
-                                  final long dataInicial,
-                                  final long dataFinal,
-                                  final int limit,
-                                  final long offset,
-                                  final boolean resumido,
-                                  final String userToken) {
-        try {
-            return RouterChecklists
-                    .create(dao, userToken)
-                    .getTodosChecklists(codUnidade, codEquipe, codTipoVeiculo, placaVeiculo, dataInicial, dataFinal,
-                            limit, offset, resumido);
-        } catch (final Throwable t) {
-            Log.e(TAG, "Erro ao buscar checklists", t);
-            throw Injection
-                    .provideProLogExceptionHandler()
-                    .map(t, "Erro ao buscar checklists, tente novamente");
-        }
-    }
-
     public List<Checklist> getByColaborador(final Long cpf,
                                             final Long dataInicial,
                                             final Long dataFinal,

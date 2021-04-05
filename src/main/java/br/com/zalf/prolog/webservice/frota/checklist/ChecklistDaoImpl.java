@@ -440,45 +440,6 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
         }
     }
 
-    @NotNull
-    @Override
-    @Deprecated
-    public List<Checklist> getAll(@NotNull final Long codUnidade,
-                                  @Nullable final Long codEquipe,
-                                  @Nullable final Long codTipoVeiculo,
-                                  @Nullable final String placaVeiculo,
-                                  final long dataInicial,
-                                  final long dataFinal,
-                                  final int limit,
-                                  final long offset,
-                                  final boolean resumido) throws SQLException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * " +
-                    "FROM FUNC_CHECKLIST_GET_ALL_CHECKLISTS_REALIZADOS_DEPRECATED(?, ?, ?, ?, ?, ?, ?, ?, ?)");
-            stmt.setLong(1, codUnidade);
-            bindValueOrNull(stmt, 2, codEquipe, SqlType.BIGINT);
-            bindValueOrNull(stmt, 3, codTipoVeiculo, SqlType.BIGINT);
-            bindValueOrNull(stmt, 4, placaVeiculo, SqlType.VARCHAR);
-            stmt.setDate(5, new java.sql.Date(dataInicial));
-            stmt.setDate(6, new java.sql.Date(dataFinal));
-            stmt.setString(7, TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId());
-            stmt.setInt(8, limit);
-            stmt.setLong(9, offset);
-            rSet = stmt.executeQuery();
-            final List<Checklist> checklists = new ArrayList<>();
-            while (rSet.next()) {
-                checklists.add(createChecklist(rSet, resumido));
-            }
-            return checklists;
-        } finally {
-            close(conn, stmt, rSet);
-        }
-    }
-
     @Override
     @Deprecated
     public List<Checklist> getByColaborador(@NotNull final Long cpf,

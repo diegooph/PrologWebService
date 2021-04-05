@@ -10,6 +10,8 @@ Change Log
 * Adiciona código de veículo no cronograma de aferição (PL-3496)
 * Remove placa na realização de checklist (PL-3545)
 * Remove placa da busca de relatórios de checklist (PL-3548)
+* Remove placa das buscas do checklist (PL-3546)
+
 
 <a name="v2.0.3"></a>
 ## Version [v2.0.3](https://github.com/luizfp/PrologWebService/compare/v2.0.2...v2.0.3) (release-date) [unreleased]
