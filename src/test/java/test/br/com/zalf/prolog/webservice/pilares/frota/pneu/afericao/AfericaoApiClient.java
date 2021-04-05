@@ -23,20 +23,19 @@ import java.util.stream.Collectors;
  */
 @TestComponent
 public class AfericaoApiClient {
-
+    @NotNull
     private static final String RESOURCE = "/v3/afericoes";
-
     @Autowired
     @NotNull
     private TestRestTemplate restTemplate;
 
     public ResponseEntity<List<AfericaoPlacaDto>> getAfericoesPlacas(final List<Long> codUnidades,
-                                                                    final String placaVeiculo,
-                                                                    final Long codTipoVeiculo,
-                                                                    final String dataInicial,
-                                                                    final String dataFinal,
-                                                                    final int limit,
-                                                                    final int offset) {
+                                                                     final String placaVeiculo,
+                                                                     final Long codTipoVeiculo,
+                                                                     final String dataInicial,
+                                                                     final String dataFinal,
+                                                                     final int limit,
+                                                                     final int offset) {
 
         final UriComponents components = UriComponentsBuilder
                 .fromPath(RESOURCE)
@@ -60,10 +59,10 @@ public class AfericaoApiClient {
     }
 
     public ResponseEntity<List<AfericaoAvulsaDto>> getAfericoesAvulsas(final List<Long> codUnidades,
-                                                       final String dataInicial,
-                                                       final String dataFinal,
-                                                       final int limit,
-                                                       final int offset) {
+                                                                       final String dataInicial,
+                                                                       final String dataFinal,
+                                                                       final int limit,
+                                                                       final int offset) {
         final UriComponents components = UriComponentsBuilder
                 .fromPath(RESOURCE)
                 .path("/avulsas")

@@ -21,10 +21,8 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Guilherme Steinert (https://github.com/steinert999)
  */
 public class AfericaoIT extends IntegrationTest {
-
     @Autowired
     private AfericaoApiClient client;
-
 
     @Test
     @DisplayName("Dado parâmetros corretos, retorne List<AfericaoPlacaDto> e status OK")
@@ -42,9 +40,7 @@ public class AfericaoIT extends IntegrationTest {
         final List<AfericaoPlacaDto> body = response.getBody();
         assertThat(status).isEqualTo(HttpStatus.OK);
         assertThat(body).isNotNull();
-        assertThat(body.stream()
-                           .findFirst()
-                           .get().getPlacaVeiculo()).isEqualTo("PRO0001");
+        assertThat(body.stream().findFirst().get().getPlacaVeiculo()).isEqualTo("PRO0001");
     }
 
     @Test
@@ -63,8 +59,6 @@ public class AfericaoIT extends IntegrationTest {
         final List<AfericaoAvulsaDto> body = response.getBody();
         assertThat(status).isEqualTo(HttpStatus.OK);
         assertThat(body).isNotNull();
-        assertThat(body.stream()
-                           .findFirst()
-                           .get()).isNotNull();
+        assertThat(body.stream().findFirst().get()).isNotNull();
     }
 }
