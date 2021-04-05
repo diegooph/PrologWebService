@@ -1,7 +1,7 @@
 package test.br.com.zalf.prolog.webservice.pilares.frota.pneu.afericao;
 
-import br.com.zalf.prolog.webservice.v3.frota.afericao._model.dto.AfericaoAvulsaDto;
-import br.com.zalf.prolog.webservice.v3.frota.afericao._model.dto.AfericaoPlacaDto;
+import br.com.zalf.prolog.webservice.v3.frota.afericao._model.AfericaoAvulsaDto;
+import br.com.zalf.prolog.webservice.v3.frota.afericao._model.AfericaoPlacaDto;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestComponent;

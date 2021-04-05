@@ -1,21 +1,11 @@
 package br.com.zalf.prolog.webservice.v3.frota.afericao;
 
-import br.com.zalf.prolog.webservice.commons.network.metadata.Platform;
-import br.com.zalf.prolog.webservice.commons.network.metadata.UsedBy;
 import br.com.zalf.prolog.webservice.commons.util.datetime.DateUtils;
 import br.com.zalf.prolog.webservice.interceptors.ApiExposed;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
-import br.com.zalf.prolog.webservice.v3.frota.afericao._model.dto.AfericaoAvulsaDto;
-import br.com.zalf.prolog.webservice.v3.frota.afericao._model.dto.AfericaoPlacaDto;
-import br.com.zalf.prolog.webservice.v3.frota.afericao._model.dto.busca.DadosGeraisFiltro;
-import br.com.zalf.prolog.webservice.v3.frota.afericao._model.dto.busca.FiltroAfericaoAvulsa;
-import br.com.zalf.prolog.webservice.v3.frota.afericao._model.dto.busca.FiltroAfericaoPlaca;
-import br.com.zalf.prolog.webservice.v3.frota.afericao._model.projections.AfericaoAvulsaProjection;
-import br.com.zalf.prolog.webservice.v3.frota.afericao._model.projections.AfericaoPlacaProjection;
-import br.com.zalf.prolog.webservice.v3.frota.afericao.mapper.AfericaoAvulsaMapper;
-import br.com.zalf.prolog.webservice.v3.frota.afericao.mapper.AfericaoPlacaMapper;
+import br.com.zalf.prolog.webservice.v3.frota.afericao._model.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,17 +29,13 @@ public class AfericaoResource implements AfericaoResourceApiDoc {
     @NotNull
     private final AfericaoService service;
     @NotNull
-    private final AfericaoPlacaMapper afericaoPlacaMapper;
-    @NotNull
-    private final AfericaoAvulsaMapper afericaoAvulsaMapper;
+    private final AfericaoMapper afericaoMapper;
 
     @Autowired
     AfericaoResource(@NotNull final AfericaoService service,
-                     @NotNull final AfericaoPlacaMapper afericaoPlacaMapper,
-                     @NotNull final AfericaoAvulsaMapper afericaoAvulsaMapper) {
+                     @NotNull final AfericaoMapper afericaoMapper) {
         this.service = service;
-        this.afericaoPlacaMapper = afericaoPlacaMapper;
-        this.afericaoAvulsaMapper = afericaoAvulsaMapper;
+        this.afericaoMapper = afericaoMapper;
     }
 
     @ApiExposed
@@ -60,25 +46,23 @@ public class AfericaoResource implements AfericaoResourceApiDoc {
             Pilares.Frota.Afericao.REALIZAR_AFERICAO_PLACA,
             Pilares.Frota.OrdemServico.Pneu.VISUALIZAR,
             Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
-    @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
     @Override
-    public List<AfericaoPlacaDto> getAfericoesPlacas(@QueryParam("unidades") final @NotNull List<Long> codUnidades,
-                                                     @QueryParam("placa") final @Nullable String placaVeiculo,
-                                                     @QueryParam("codTipoVeiculo") final @Nullable Long codTipoVeiculo,
-                                                     @QueryParam("dataInicial") final @NotNull String dataInicial,
-                                                     @QueryParam("dataFinal") final @NotNull String dataFinal,
+    public List<AfericaoPlacaDto> getAfericoesPlacas(@QueryParam("unidades") @NotNull final List<Long> codUnidades,
+                                                     @QueryParam("placa") @Nullable final String placaVeiculo,
+                                                     @QueryParam("codTipoVeiculo") @Nullable final Long codTipoVeiculo,
+                                                     @QueryParam("dataInicial") @NotNull final String dataInicial,
+                                                     @QueryParam("dataFinal") @NotNull final String dataFinal,
                                                      @QueryParam("limit") final int limit,
                                                      @QueryParam("offset") final int offset) {
-        final DadosGeraisFiltro dadosGeraisFiltro = generateDadosGerais(codUnidades,
-                                                                        dataInicial,
-                                                                        dataFinal,
-                                                                        limit,
-                                                                        offset);
-        final FiltroAfericaoPlaca filtro = FiltroAfericaoPlaca.of(codTipoVeiculo,
+        final FiltroAfericaoPlaca filtro = FiltroAfericaoPlaca.of(codUnidades,
                                                                   placaVeiculo,
-                                                                  dadosGeraisFiltro);
-        final List<AfericaoPlacaProjection> projections = this.service.getAfericoesPlacas(filtro);
-        return this.afericaoPlacaMapper.toDtos(projections);
+                                                                  codTipoVeiculo,
+                                                                  DateUtils.parseDate(dataInicial),
+                                                                  DateUtils.parseDate(dataFinal),
+                                                                  limit,
+                                                                  offset);
+        final List<AfericaoPlacaProjection> afericoesPlacas = service.getAfericoesPlacas(filtro);
+        return afericaoMapper.toAfericaoPlacaDto(afericoesPlacas);
     }
 
     @ApiExposed
@@ -89,34 +73,18 @@ public class AfericaoResource implements AfericaoResourceApiDoc {
             Pilares.Frota.Afericao.REALIZAR_AFERICAO_PNEU_AVULSO,
             Pilares.Frota.OrdemServico.Pneu.VISUALIZAR,
             Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
-    @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
     @Override
-    public List<AfericaoAvulsaDto> getAfericoesAvulsas(@QueryParam("unidades") final @NotNull List<Long> codUnidades,
-                                                       @QueryParam("dataInicial") final @NotNull String dataInicial,
-                                                       @QueryParam("dataFinal") final @NotNull String dataFinal,
+    public List<AfericaoAvulsaDto> getAfericoesAvulsas(@QueryParam("unidades") @NotNull final List<Long> codUnidades,
+                                                       @QueryParam("dataInicial") @NotNull final String dataInicial,
+                                                       @QueryParam("dataFinal") @NotNull final String dataFinal,
                                                        @QueryParam("limit") final int limit,
                                                        @QueryParam("offset") final int offset) {
-        final DadosGeraisFiltro dadosGeraisFiltro = generateDadosGerais(codUnidades,
-                                                                        dataInicial,
-                                                                        dataFinal,
-                                                                        limit,
-                                                                        offset);
-        final FiltroAfericaoAvulsa filtro = FiltroAfericaoAvulsa.of(dadosGeraisFiltro);
-        final List<AfericaoAvulsaProjection> projections = this.service.getAfericoesAvulsas(filtro);
-        return this.afericaoAvulsaMapper.toDtos(projections);
+        final FiltroAfericaoAvulsa filtro = FiltroAfericaoAvulsa.of(codUnidades,
+                                                                    DateUtils.parseDate(dataInicial),
+                                                                    DateUtils.parseDate(dataFinal),
+                                                                    limit,
+                                                                    offset);
+        final List<AfericaoAvulsaProjection> afericoesAvulsas = service.getAfericoesAvulsas(filtro);
+        return afericaoMapper.toAfericaoAvulsaDto(afericoesAvulsas);
     }
-
-    @NotNull
-    private DadosGeraisFiltro generateDadosGerais(@NotNull final List<Long> codUnidades,
-                                                  @NotNull final String dataInicial,
-                                                  @NotNull final String dataFinal,
-                                                  final int limit,
-                                                  final int offset) {
-        return DadosGeraisFiltro.of(codUnidades,
-                                    DateUtils.parseDate(dataInicial),
-                                    DateUtils.parseDate(dataFinal),
-                                    limit,
-                                    offset);
-    }
-
 }

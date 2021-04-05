@@ -1,10 +1,6 @@
 package br.com.zalf.prolog.webservice.v3.frota.afericao;
 
-import br.com.zalf.prolog.webservice.v3.frota.afericao._model.AfericaoEntity;
-import br.com.zalf.prolog.webservice.v3.frota.afericao._model.dto.busca.FiltroAfericaoAvulsa;
-import br.com.zalf.prolog.webservice.v3.frota.afericao._model.dto.busca.FiltroAfericaoPlaca;
-import br.com.zalf.prolog.webservice.v3.frota.afericao._model.projections.AfericaoAvulsaProjection;
-import br.com.zalf.prolog.webservice.v3.frota.afericao._model.projections.AfericaoPlacaProjection;
+import br.com.zalf.prolog.webservice.v3.frota.afericao._model.*;
 import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.EntityKmColetado;
 import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.KmProcessoAtualizavel;
 import lombok.RequiredArgsConstructor;
@@ -41,8 +37,23 @@ public class AfericaoService implements KmProcessoAtualizavel {
     }
 
     @NotNull
-    public AfericaoEntity getByCodigo(@NotNull final Long codigo) {
-        return afericaoDao.getOne(codigo);
+    public List<AfericaoPlacaProjection> getAfericoesPlacas(@NotNull final FiltroAfericaoPlaca filtro) {
+        return afericaoDao.getAfericoesPlacas(filtro.getCodUnidades(),
+                                              filtro.getCodTipoVeiculo(),
+                                              filtro.getPlacaVeiculo(),
+                                              filtro.getDataInicial(),
+                                              filtro.getDataFinal(),
+                                              filtro.getLimit(),
+                                              filtro.getOffset());
+    }
+
+    @NotNull
+    public List<AfericaoAvulsaProjection> getAfericoesAvulsas(@NotNull final FiltroAfericaoAvulsa filtro) {
+        return afericaoDao.getAfericoesAvulsas(filtro.getCodUnidades(),
+                                               filtro.getDataInicial(),
+                                               filtro.getDataFinal(),
+                                               filtro.getLimit(),
+                                               filtro.getOffset());
     }
 
     @Transactional
@@ -56,22 +67,7 @@ public class AfericaoService implements KmProcessoAtualizavel {
     }
 
     @NotNull
-    public List<AfericaoPlacaProjection> getAfericoesPlacas(@NotNull final FiltroAfericaoPlaca filtro) {
-        return afericaoDao.getAfericoes(filtro.getDadosGerais().getCodUnidades(),
-                                        filtro.getCodTipoVeiculo(),
-                                        filtro.getPlacaVeiculo(),
-                                        filtro.getDadosGerais().getDataInicial(),
-                                        filtro.getDadosGerais().getDataFinal(),
-                                        filtro.getDadosGerais().getLimit(),
-                                        filtro.getDadosGerais().getOffset());
-    }
-
-    @NotNull
-    public List<AfericaoAvulsaProjection> getAfericoesAvulsas(@NotNull final FiltroAfericaoAvulsa filtro) {
-        return afericaoDao.getAfericoes(filtro.getDadosGerais().getCodUnidades(),
-                                        filtro.getDadosGerais().getDataInicial(),
-                                        filtro.getDadosGerais().getDataFinal(),
-                                        filtro.getDadosGerais().getLimit(),
-                                        filtro.getDadosGerais().getOffset());
+    public AfericaoEntity getByCodigo(@NotNull final Long codigo) {
+        return afericaoDao.getOne(codigo);
     }
 }

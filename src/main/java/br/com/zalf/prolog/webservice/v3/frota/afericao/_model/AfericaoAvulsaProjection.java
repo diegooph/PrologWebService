@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.v3.frota.afericao._model.projections;
+package br.com.zalf.prolog.webservice.v3.frota.afericao._model;
 
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.TipoMedicaoColetadaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.TipoProcessoColetaAfericao;
@@ -8,12 +8,11 @@ import org.springframework.beans.factory.annotation.Value;
 import java.time.LocalDateTime;
 
 /**
- * Created on 2021-02-09
+ * Created on 2021-02-11
  *
  * @author Guilherme Steinert (https://github.com/steinert999)
  */
-public interface AfericaoProjection {
-
+public interface AfericaoAvulsaProjection {
     @Value("#{target.COD_AFERICAO}")
     Long getCodigo();
 

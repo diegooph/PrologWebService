@@ -1,8 +1,8 @@
 package br.com.zalf.prolog.webservice.v3.frota.afericao;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
-import br.com.zalf.prolog.webservice.v3.frota.afericao._model.dto.AfericaoAvulsaDto;
-import br.com.zalf.prolog.webservice.v3.frota.afericao._model.dto.AfericaoPlacaDto;
+import br.com.zalf.prolog.webservice.v3.frota.afericao._model.AfericaoAvulsaDto;
+import br.com.zalf.prolog.webservice.v3.frota.afericao._model.AfericaoPlacaDto;
 import io.swagger.annotations.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
