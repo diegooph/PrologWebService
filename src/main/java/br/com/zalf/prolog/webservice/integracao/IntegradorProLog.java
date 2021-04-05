@@ -153,7 +153,6 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
     // Informações Providas
     //
     //
-    @java.lang.Override
     @NotNull
     @Override
     public Colaborador getColaboradorByToken(@NotNull final String userToken) throws Exception {
@@ -163,7 +162,6 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         return colaboradorDao.getByToken(userToken);
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public Restricao getRestricaoByCodUnidade(@NotNull final Long codUnidade) throws Throwable {
@@ -173,7 +171,6 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         return afericaoDao.getRestricaoByCodUnidade(codUnidade);
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public ConfiguracaoNovaAfericao getConfiguracaoNovaAfericao(@NotNull final String placa) throws Throwable {
@@ -183,7 +180,6 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         return afericaoDao.getConfiguracaoNovaAfericao(placa);
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public Optional<DiagramaVeiculo> getDiagramaVeiculoByCodDiagrama(@NotNull final Short codDiagrama)
@@ -194,7 +190,6 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         return veiculoDao.getDiagramaVeiculoByCod(codDiagrama);
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public String getTokenIntegracaoByCodUnidadeProLog(@NotNull final Long codUnidadeProLog) throws Throwable {
@@ -204,7 +199,6 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         return integracaoDao.getTokenIntegracaoByCodUnidadeProLog(codUnidadeProLog);
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public Long getCodEmpresaByCodUnidadeProLog(@NotNull final Connection conn,
@@ -215,7 +209,6 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         return integracaoDao.getCodEmpresaByCodUnidadeProLog(conn, codUnidadeProLog);
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public String getUrl(@NotNull final Connection conn,
@@ -228,7 +221,6 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         return integracaoDao.getUrl(conn, codEmpresa, sistemaKey, metodoIntegrado);
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public String getCodAuxiliarByCodUnidadeProlog(@NotNull final Connection conn,
@@ -239,7 +231,6 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         return integracaoDao.getCodAuxiliarByCodUnidadeProlog(conn, codUnidadeProlog);
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public ApiAutenticacaoHolder getApiAutenticacaoHolder(
@@ -253,7 +244,6 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         return integracaoDao.getApiAutenticacaoHolder(conn, codEmpresa, sistemaKey, metodoIntegrado);
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public List<Long> getCodUnidadesIntegracaoBloqueada(@NotNull final String userToken,
@@ -266,7 +256,6 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         return integracaoDao.getCodUnidadesIntegracaoBloqueada(userToken, sistemaKey, recursoIntegrado);
     }
 
-    @java.lang.Override
     @Override
     public boolean getConfigAberturaServicoPneuIntegracao(@NotNull final Long codUnidade) throws Throwable {
         if (integracaoDao == null) {
@@ -275,7 +264,6 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         return integracaoDao.getConfigAberturaServicoPneuIntegracao(codUnidade);
     }
 
-    @java.lang.Override
     @Override
     public void insert(
             @NotNull final VeiculoCadastroDto veiculo,
@@ -286,7 +274,6 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         veiculoDao.insert(veiculo, checklistOfflineListener);
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public InfosVeiculoEditado update(
@@ -304,7 +291,6 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
     // Operações Integradas
     //
     //
-    @java.lang.Override
     @NotNull
     @Override
     public List<Veiculo> getVeiculosAtivosByUnidade(@NotNull final Long codUnidade, @Nullable final Boolean ativos)
@@ -316,7 +302,6 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         return veiculoDao.getVeiculosAtivosByUnidade(codUnidade, ativos);
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public List<String> getPlacasVeiculosByTipo(@NotNull final Long codUnidade, @NotNull final String codTipo)
@@ -327,7 +312,6 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         return veiculoDao.getPlacasVeiculosByTipo(codUnidade, codTipo);
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public List<VeiculoListagem> getVeiculosByUnidades(@NotNull final List<Long> codUnidades,
@@ -339,7 +323,6 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         return veiculoDao.getVeiculosByUnidades(codUnidades, apenasAtivos, codTipoVeiculo);
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public VeiculoVisualizacao getVeiculoByCodigo(@NotNull final Long codVeiculo) throws Throwable {
@@ -349,7 +332,6 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         return veiculoDao.getVeiculoByCodigo(codVeiculo);
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public Veiculo getVeiculoByPlaca(@NotNull final String placa,
@@ -361,7 +343,6 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         return veiculoDao.getVeiculoByPlaca(placa, codUnidade, withPneus);
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public VeiculoDadosColetaKm getDadosColetaKmByCodigo(@NotNull final Long codVeiculo) throws Throwable {
@@ -371,7 +352,6 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         return veiculoDao.getDadosColetaKmByCodigo(codVeiculo);
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public Long insertProcessoTransferenciaVeiculo(
@@ -386,7 +366,6 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
                         dadosChecklistOfflineChangedListener);
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public CronogramaAfericao getCronogramaAfericao(@NotNull final List<Long> codUnidades) throws Throwable {
@@ -396,7 +375,6 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         return afericaoDao.getCronogramaAfericao(codUnidades);
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public NovaAfericaoPlaca getNovaAfericaoPlaca(@NotNull final Long codUnidade,
@@ -408,7 +386,6 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         return afericaoDao.getNovaAfericaoPlaca(codUnidade, placaVeiculo, tipoAfericao);
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public List<PneuAfericaoAvulsa> getPneusAfericaoAvulsa(@NotNull final Long codUnidade) throws Throwable {
@@ -418,7 +395,6 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         return afericaoDao.getPneusAfericaoAvulsa(codUnidade);
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public NovaAfericaoAvulsa getNovaAfericaoAvulsa(
@@ -431,7 +407,6 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         return afericaoDao.getNovaAfericaoAvulsa(codUnidade, codPneu, tipoMedicaoColetadaAfericao);
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public Report getAfericoesAvulsas(@NotNull final Long codUnidade,
@@ -444,7 +419,6 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         return afericaoDao.getAfericoesAvulsas(codUnidade, codColaborador, dataInicial, dataFinal);
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public Long insertAfericao(@NotNull final Long codUnidade,
@@ -456,7 +430,6 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         return afericaoDao.insert(codUnidade, afericao, deveAbrirServico);
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public Afericao getAfericaoByCodigo(@NotNull final Long codUnidade, @NotNull final Long codAfericao)
@@ -467,7 +440,6 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         return afericaoDao.getByCod(codUnidade, codAfericao);
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public List<AfericaoPlaca> getAfericoesPlacas(@NotNull final Long codUnidade,
@@ -484,7 +456,6 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
                                               offset);
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public ResultInsertModeloChecklist insertModeloChecklist(
@@ -501,7 +472,6 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
                                                         userToken);
     }
 
-    @java.lang.Override
     @Override
     public void updateModeloChecklist(
             @NotNull final Long codUnidade,
@@ -522,7 +492,6 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
                 userToken);
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public List<ModeloChecklistSelecao> getModelosSelecaoRealizacao(@NotNull final Long codUnidade,
@@ -533,7 +502,6 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         return checklistModeloDao.getModelosSelecaoRealizacao(codUnidade, codCargo);
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public ModeloChecklistRealizacao getModeloChecklistRealizacao(
@@ -550,7 +518,6 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
                                                                tipoChecklist);
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public Long insertChecklist(@NotNull final ChecklistInsercao checklist,
@@ -562,7 +529,6 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         return checklistDao.insert(checklist, foiOffline, deveAbrirOs);
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public List<TipoVeiculo> getTiposVeiculosFiltroChecklist(@NotNull final Long codEmpresa) throws Throwable {
@@ -572,7 +538,6 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         return tipoVeiculoDao.getTiposVeiculosByEmpresa(codEmpresa);
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public Checklist getChecklistByCodigo(@NotNull final Long codChecklist) throws Exception {
@@ -582,7 +547,6 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         return checklistDao.getByCod(codChecklist);
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public List<Checklist> getChecklistsByColaborador(@NotNull final Long cpf,
@@ -597,7 +561,6 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         return checklistDao.getByColaborador(cpf, dataInicial, dataFinal, limit, offset, resumido);
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public List<Checklist> getTodosChecklists(@NotNull final Long codUnidade,
@@ -616,7 +579,6 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
                                    limit, offset, resumido);
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public List<ChecklistListagem> getListagemByColaborador(@NotNull final Long codColaborador,
@@ -630,7 +592,6 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         return checklistDao.getListagemByColaborador(codColaborador, dataInicial, dataFinal, limit, offset);
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public List<ChecklistListagem> getListagem(@NotNull final Long codUnidade,
@@ -655,7 +616,6 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
                 offset);
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public DeprecatedFarolChecklist getFarolChecklist(@NotNull final Long codUnidade,
@@ -668,7 +628,6 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         return checklistDao.getFarolChecklist(codUnidade, dataInicial, dataFinal, itensCriticosRetroativos);
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public Long insertChecklistOffline(@NotNull final ChecklistInsercao checklist) throws Throwable {
@@ -678,7 +637,6 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         return checklistOfflineDao.insertChecklistOffline(checklist);
     }
 
-    @java.lang.Override
     @Override
     public void resolverItem(@NotNull final ResolverItemOrdemServico item) throws Throwable {
         if (ordemServicoDao == null) {
@@ -687,7 +645,6 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         ordemServicoDao.resolverItem(item);
     }
 
-    @java.lang.Override
     @Override
     public void resolverItens(@NotNull final ResolverMultiplosItensOs itensResolucao) throws Throwable {
         if (ordemServicoDao == null) {
@@ -696,7 +653,6 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         ordemServicoDao.resolverItens(itensResolucao);
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public Long insert(@NotNull final Pneu pneu,
@@ -708,7 +664,6 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         return pneuDao.insert(pneu, codUnidade, origemCadastro);
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public List<Long> insert(@NotNull final List<Pneu> pneus) throws Throwable {
@@ -718,7 +673,6 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         return pneuDao.insert(pneus);
     }
 
-    @java.lang.Override
     @Override
     public void update(@NotNull final Pneu pneu,
                        @NotNull final Long codUnidade,
@@ -729,7 +683,6 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         pneuDao.update(pneu, codUnidade, codOriginalPneu);
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public List<Pneu> getPneusByCodUnidadesByStatus(@NotNull final List<Long> codUnidades,
@@ -740,7 +693,6 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         return pneuDao.getPneusByCodUnidadesByStatus(codUnidades, status);
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public Long insertTransferencia(@NotNull final PneuTransferenciaRealizacao pneuTransferenciaRealizacao,
@@ -753,7 +705,6 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
                 .insertTransferencia(pneuTransferenciaRealizacao, dataHoraSincronizacao, isTransferenciaFromVeiculo);
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public VeiculoServico getVeiculoAberturaServico(@NotNull final Long codServico,
@@ -764,7 +715,6 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         return afericaoServicoDao.getVeiculoAberturaServico(codServico, placaVeiculo);
     }
 
-    @java.lang.Override
     @Override
     public void fechaServico(@NotNull final Long codUnidade,
                              @NotNull final OffsetDateTime dataHorafechamentoServico,
@@ -775,7 +725,6 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         afericaoServicoDao.fechaServico(codUnidade, dataHorafechamentoServico, servico);
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public Long insert(@NotNull final ServicoDao servicoDao,
@@ -794,7 +743,6 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
                         fecharServicosAutomaticamente);
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public List<CampoPersonalizadoParaRealizacao> getCamposParaRealizacaoMovimentacao(
@@ -803,7 +751,6 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         return campoPersonalizadoDao.getCamposParaRealizacaoMovimentacao(codUnidade);
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public Long insertTipoVeiculo(@NotNull final TipoVeiculo tipoVeiculo) throws Throwable {
@@ -813,7 +760,6 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         return tipoVeiculoDao.insertTipoVeiculo(tipoVeiculo);
     }
 
-    @java.lang.Override
     @Override
     public void updateTipoVeiculo(@NotNull final TipoVeiculo tipoVeiculo) throws Throwable {
         if (tipoVeiculoDao == null) {
@@ -822,7 +768,6 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         tipoVeiculoDao.updateTipoVeiculo(tipoVeiculo);
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public List<Empresa> getFiltros(@NotNull final Long cpf) throws Throwable {

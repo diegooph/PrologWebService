@@ -36,7 +36,6 @@ public final class SistemaApiProLog extends Sistema {
         super(integradorProLog, sistemaKey, recursoIntegrado, userToken);
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public Long insertAfericao(@NotNull final Long codUnidade,
@@ -55,7 +54,6 @@ public final class SistemaApiProLog extends Sistema {
         return getIntegradorProLog().insertAfericao(codUnidade, afericao, abrirServico);
     }
 
-    @java.lang.Override
     @Override
     public void insert(
             @NotNull final VeiculoCadastroDto veiculo,
@@ -66,7 +64,6 @@ public final class SistemaApiProLog extends Sistema {
         getIntegradorProLog().insert(veiculo, checklistOfflineListener);
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public InfosVeiculoEditado update(
@@ -80,7 +77,6 @@ public final class SistemaApiProLog extends Sistema {
         return getIntegradorProLog().update(codColaboradorResponsavelEdicao, veiculo, checklistOfflineListener);
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public Long insertProcessoTransferenciaVeiculo(
@@ -94,7 +90,6 @@ public final class SistemaApiProLog extends Sistema {
                 .insertProcessoTransferenciaVeiculo(processoTransferenciaVeiculo, dadosChecklistOfflineChangedListener);
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public Long insert(@NotNull final Pneu pneu,
@@ -106,7 +101,6 @@ public final class SistemaApiProLog extends Sistema {
         return getIntegradorProLog().insert(pneu, codUnidade, origemCadastro);
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public List<Long> insert(@NotNull final List<Pneu> pneus) {
@@ -114,7 +108,6 @@ public final class SistemaApiProLog extends Sistema {
         throw new BloqueadoIntegracaoException("Para inserir pneus utilize o seu sistema de gestão");
     }
 
-    @java.lang.Override
     @Override
     public void update(@NotNull final Pneu pneu,
                        @NotNull final Long codUnidade,
@@ -125,7 +118,6 @@ public final class SistemaApiProLog extends Sistema {
         getIntegradorProLog().update(pneu, codUnidade, codOriginalPneu);
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public Long insertTransferencia(@NotNull final PneuTransferenciaRealizacao pneuTransferenciaRealizacao,
@@ -139,7 +131,6 @@ public final class SistemaApiProLog extends Sistema {
                 .insertTransferencia(pneuTransferenciaRealizacao, dataHoraSincronizacao, isTransferenciaFromVeiculo);
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public VeiculoServico getVeiculoAberturaServico(@NotNull final Long codServico,
@@ -154,7 +145,6 @@ public final class SistemaApiProLog extends Sistema {
         return getIntegradorProLog().getVeiculoAberturaServico(codServico, placaVeiculo);
     }
 
-    @java.lang.Override
     @Override
     public void fechaServico(@NotNull final Long codUnidade,
                              @NotNull final OffsetDateTime dataHorafechamentoServico,

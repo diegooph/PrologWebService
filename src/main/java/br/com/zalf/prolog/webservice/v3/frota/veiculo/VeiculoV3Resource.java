@@ -35,7 +35,6 @@ public class VeiculoV3Resource implements VeiculoV3ResourceApiDoc {
         this.veiculoMapper = veiculoMapper;
     }
 
-    @java.lang.Override
     @Override
     @ApiExposed
     @POST

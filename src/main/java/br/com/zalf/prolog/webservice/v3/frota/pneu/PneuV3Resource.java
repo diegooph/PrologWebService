@@ -35,7 +35,6 @@ public class PneuV3Resource implements PneuV3ApiDoc {
         this.service = service;
     }
 
-    @java.lang.Override
     @POST
     @ApiExposed
     @Secured(permissions = Pilares.Frota.Pneu.CADASTRAR)

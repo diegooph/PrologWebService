@@ -90,7 +90,6 @@ public abstract class Router implements OperacoesIntegradas {
     // ####################################### OPERAÇÕES INTEGRADAS - AFERIÇÃO #########################################
     // #################################################################################################################
     // #################################################################################################################
-    @java.lang.Override
     @NotNull
     @Override
     public CronogramaAfericao getCronogramaAfericao(@NotNull final List<Long> codUnidades) throws Throwable {
@@ -101,7 +100,6 @@ public abstract class Router implements OperacoesIntegradas {
         }
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public NovaAfericaoPlaca getNovaAfericaoPlaca(@NotNull final Long codUnidade,
@@ -114,7 +112,6 @@ public abstract class Router implements OperacoesIntegradas {
         }
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public List<PneuAfericaoAvulsa> getPneusAfericaoAvulsa(@NotNull final Long codUnidade) throws Throwable {
@@ -125,7 +122,6 @@ public abstract class Router implements OperacoesIntegradas {
         }
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public NovaAfericaoAvulsa getNovaAfericaoAvulsa(
@@ -139,7 +135,6 @@ public abstract class Router implements OperacoesIntegradas {
         }
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public Report getAfericoesAvulsas(@NotNull final Long codUnidade,
@@ -153,7 +148,6 @@ public abstract class Router implements OperacoesIntegradas {
         }
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public Long insertAfericao(@NotNull final Long codUnidade,
@@ -166,7 +160,6 @@ public abstract class Router implements OperacoesIntegradas {
         }
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public Afericao getAfericaoByCodigo(@NotNull final Long codUnidade,
@@ -178,7 +171,6 @@ public abstract class Router implements OperacoesIntegradas {
         }
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public List<AfericaoPlaca> getAfericoesPlacas(@NotNull final Long codUnidade,
@@ -214,7 +206,6 @@ public abstract class Router implements OperacoesIntegradas {
     // ####################################### OPERAÇÕES INTEGRADAS - CHECKLIST ########################################
     // #################################################################################################################
     // #################################################################################################################
-    @java.lang.Override
     @NotNull
     @Override
     public ResultInsertModeloChecklist insertModeloChecklist(
@@ -231,7 +222,6 @@ public abstract class Router implements OperacoesIntegradas {
         }
     }
 
-    @java.lang.Override
     @Override
     public void updateModeloChecklist(
             @NotNull final Long codUnidade,
@@ -259,7 +249,6 @@ public abstract class Router implements OperacoesIntegradas {
         }
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public List<ModeloChecklistSelecao> getModelosSelecaoRealizacao(@NotNull final Long codUnidade,
@@ -271,7 +260,6 @@ public abstract class Router implements OperacoesIntegradas {
         }
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public ModeloChecklistRealizacao getModeloChecklistRealizacao(
@@ -288,7 +276,6 @@ public abstract class Router implements OperacoesIntegradas {
         }
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public Long insertChecklist(@NotNull final ChecklistInsercao checklist,
@@ -301,7 +288,6 @@ public abstract class Router implements OperacoesIntegradas {
         }
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public List<TipoVeiculo> getTiposVeiculosFiltroChecklist(@NotNull final Long codEmpresa) throws Throwable {
@@ -312,7 +298,6 @@ public abstract class Router implements OperacoesIntegradas {
         }
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public Checklist getChecklistByCodigo(@NotNull final Long codChecklist) throws Exception {
@@ -323,7 +308,6 @@ public abstract class Router implements OperacoesIntegradas {
         }
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public List<Checklist> getChecklistsByColaborador(@NotNull final Long cpf,
@@ -339,7 +323,6 @@ public abstract class Router implements OperacoesIntegradas {
         }
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public List<Checklist> getTodosChecklists(@NotNull final Long codUnidade,
@@ -362,7 +345,6 @@ public abstract class Router implements OperacoesIntegradas {
         }
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public List<ChecklistListagem> getListagemByColaborador(@NotNull final Long codColaborador,
@@ -377,7 +359,6 @@ public abstract class Router implements OperacoesIntegradas {
         }
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public List<ChecklistListagem> getListagem(@NotNull final Long codUnidade,
@@ -412,7 +393,6 @@ public abstract class Router implements OperacoesIntegradas {
         }
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public DeprecatedFarolChecklist getFarolChecklist(@NotNull final Long codUnidade,
@@ -426,7 +406,6 @@ public abstract class Router implements OperacoesIntegradas {
         }
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public Long insertChecklistOffline(@NotNull final ChecklistInsercao checklist) throws Throwable {
@@ -442,7 +421,6 @@ public abstract class Router implements OperacoesIntegradas {
     // ############################## OPERAÇÕES INTEGRADAS - CHECKLIST ORDEM DE SERVIÇO ################################
     // #################################################################################################################
     // #################################################################################################################
-    @java.lang.Override
     @Override
     public void resolverItem(@NotNull final ResolverItemOrdemServico item) throws Throwable {
         if (getSistema() != null) {
@@ -452,7 +430,6 @@ public abstract class Router implements OperacoesIntegradas {
         }
     }
 
-    @java.lang.Override
     @Override
     public void resolverItens(@NotNull final ResolverMultiplosItensOs itensResolucao) throws Throwable {
         if (getSistema() != null) {
@@ -467,7 +444,6 @@ public abstract class Router implements OperacoesIntegradas {
     // ######################################## OPERAÇÕES INTEGRADAS - VEÍCULO #########################################
     // #################################################################################################################
     // #################################################################################################################
-    @java.lang.Override
     @Override
     public void insert(
             @NotNull final VeiculoCadastroDto veiculo,
@@ -479,7 +455,6 @@ public abstract class Router implements OperacoesIntegradas {
         }
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public InfosVeiculoEditado update(
@@ -493,7 +468,6 @@ public abstract class Router implements OperacoesIntegradas {
         }
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public List<Veiculo> getVeiculosAtivosByUnidade(@NotNull final Long codUnidade, @Nullable final Boolean ativos)
@@ -506,7 +480,6 @@ public abstract class Router implements OperacoesIntegradas {
         }
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public List<String> getPlacasVeiculosByTipo(@NotNull final Long codUnidade, @NotNull final String codTipo)
@@ -518,7 +491,6 @@ public abstract class Router implements OperacoesIntegradas {
         }
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public List<VeiculoListagem> getVeiculosByUnidades(@NotNull final List<Long> codUnidades,
@@ -531,7 +503,6 @@ public abstract class Router implements OperacoesIntegradas {
         }
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public VeiculoVisualizacao getVeiculoByCodigo(@NotNull final Long codVeiculo) throws Throwable {
@@ -542,7 +513,6 @@ public abstract class Router implements OperacoesIntegradas {
         }
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public Veiculo getVeiculoByPlaca(@NotNull final String placa,
@@ -555,7 +525,6 @@ public abstract class Router implements OperacoesIntegradas {
         }
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public VeiculoDadosColetaKm getDadosColetaKmByCodigo(@NotNull final Long codVeiculo) throws Throwable {
@@ -571,7 +540,6 @@ public abstract class Router implements OperacoesIntegradas {
     // ################################# OPERAÇÕES INTEGRADAS - VEÍCULO TRANSFERÊNCIA ##################################
     // #################################################################################################################
     // #################################################################################################################
-    @java.lang.Override
     @NotNull
     @Override
     public Long insertProcessoTransferenciaVeiculo(
@@ -595,7 +563,6 @@ public abstract class Router implements OperacoesIntegradas {
     // ########################################## OPERAÇÕES INTEGRADAS - PNEU ##########################################
     // #################################################################################################################
     // #################################################################################################################
-    @java.lang.Override
     @NotNull
     @Override
     public Long insert(@NotNull final Pneu pneu,
@@ -608,7 +575,6 @@ public abstract class Router implements OperacoesIntegradas {
         }
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public List<Long> insert(@NotNull final List<Pneu> pneus) throws Throwable {
@@ -619,7 +585,6 @@ public abstract class Router implements OperacoesIntegradas {
         }
     }
 
-    @java.lang.Override
     @Override
     public void update(@NotNull final Pneu pneu,
                        @NotNull final Long codUnidade,
@@ -631,7 +596,6 @@ public abstract class Router implements OperacoesIntegradas {
         }
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public List<Pneu> getPneusByCodUnidadesByStatus(@NotNull final List<Long> codUnidades,
@@ -648,7 +612,6 @@ public abstract class Router implements OperacoesIntegradas {
     // ################################### OPERAÇÕES INTEGRADAS - PNEU TRANSFERÊNCIA ###################################
     // #################################################################################################################
     // #################################################################################################################
-    @java.lang.Override
     @NotNull
     @Override
     public Long insertTransferencia(@NotNull final PneuTransferenciaRealizacao pneuTransferenciaRealizacao,
@@ -674,7 +637,6 @@ public abstract class Router implements OperacoesIntegradas {
     // ###################################### OPERAÇÕES INTEGRADAS - MOVIMENTAÇÃO ######################################
     // #################################################################################################################
     // #################################################################################################################
-    @java.lang.Override
     @NotNull
     @Override
     public Long insert(@NotNull final ServicoDao servicoDao,
@@ -699,7 +661,6 @@ public abstract class Router implements OperacoesIntegradas {
         }
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public List<CampoPersonalizadoParaRealizacao> getCamposParaRealizacaoMovimentacao(
@@ -717,7 +678,6 @@ public abstract class Router implements OperacoesIntegradas {
     // #################################### OPERAÇÕES INTEGRADAS - AFERIÇÃO SERVIÇO ####################################
     // #################################################################################################################
     // #################################################################################################################
-    @java.lang.Override
     @NotNull
     @Override
     public VeiculoServico getVeiculoAberturaServico(@NotNull final Long codServico,
@@ -729,7 +689,6 @@ public abstract class Router implements OperacoesIntegradas {
         }
     }
 
-    @java.lang.Override
     @Override
     public void fechaServico(@NotNull final Long codUnidade,
                              @NotNull final OffsetDateTime dataHorafechamentoServico,
@@ -746,7 +705,6 @@ public abstract class Router implements OperacoesIntegradas {
     // ###################################### OPERAÇÕES INTEGRADAS - TIPO VEICULO ######################################
     // #################################################################################################################
     // #################################################################################################################
-    @java.lang.Override
     @Override
     public @NotNull Long insertTipoVeiculo(final @NotNull TipoVeiculo tipoVeiculo) throws Throwable {
         if (getSistema() != null) {
@@ -756,7 +714,6 @@ public abstract class Router implements OperacoesIntegradas {
         }
     }
 
-    @java.lang.Override
     @Override
     public void updateTipoVeiculo(final @NotNull TipoVeiculo tipoVeiculo) throws Throwable {
         if (getSistema() != null) {
@@ -771,7 +728,6 @@ public abstract class Router implements OperacoesIntegradas {
     // ###################################### OPERAÇÕES INTEGRADAS - EMPRESA ###########################################
     // #################################################################################################################
     // #################################################################################################################
-    @java.lang.Override
     @NotNull
     @Override
     public List<Empresa> getFiltros(@NotNull final Long cpf) throws Throwable {

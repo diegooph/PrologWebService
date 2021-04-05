@@ -43,7 +43,6 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
 
     }
 
-    @java.lang.Override
     @Override
     public void insert(@NotNull final VeiculoCadastroDto veiculo,
                        @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener)
@@ -96,7 +95,6 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         }
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public InfosVeiculoEditado update(
@@ -169,7 +167,6 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         }
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public List<VeiculoListagem> getVeiculosByUnidades(@NotNull final List<Long> codUnidades,
@@ -200,7 +197,6 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         }
     }
 
-    @java.lang.Override
     @Override
     public List<Veiculo> getVeiculosAtivosByUnidadeByColaborador(final Long cpf) throws SQLException {
         final List<Veiculo> veiculos = new ArrayList<>();
@@ -242,7 +238,6 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         return veiculos;
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public VeiculoVisualizacao getVeiculoByCodigo(@NotNull final Long codVeiculo) throws Throwable {
@@ -267,7 +262,6 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         }
     }
 
-    @java.lang.Override
     @Override
     @NotNull
     public List<Long> getCodVeiculosByPlacas(@NotNull final Long codColaborador,
@@ -294,7 +288,6 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         }
     }
 
-    @java.lang.Override
     @Deprecated
     @NotNull
     @Override
@@ -310,7 +303,6 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         }
     }
 
-    @java.lang.Override
     @Deprecated
     @NotNull
     @Override
@@ -320,7 +312,6 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         return internalGetVeiculoByPlaca(conn, placa, withPneus);
     }
 
-    @java.lang.Override
     @Override
     public void updateKmByPlaca(final String placa, final long km, final Connection conn) throws SQLException {
         PreparedStatement stmt = null;
@@ -339,7 +330,6 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         }
     }
 
-    @java.lang.Override
     @Deprecated
     @Override
     @NotNull
@@ -395,7 +385,6 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         }
     }
 
-    @java.lang.Override
     @Deprecated
     @Override
     public List<Marca> getMarcaModeloVeiculoByCodEmpresa(final Long codEmpresa) throws SQLException {
@@ -454,7 +443,6 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         return marcas;
     }
 
-    @java.lang.Override
     @Deprecated
     @NotNull
     @Override
@@ -479,7 +467,6 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         }
     }
 
-    @java.lang.Override
     @Deprecated
     @NotNull
     @Override
@@ -520,7 +507,6 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         }
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public Long insertModeloVeiculo(@NotNull final Modelo modelo,
@@ -547,7 +533,6 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         }
     }
 
-    @java.lang.Override
     @Override
     public int getTotalVeiculosByUnidade(final Long codUnidade, final Connection conn) throws SQLException {
         PreparedStatement stmt = null;
@@ -567,7 +552,6 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         return total;
     }
 
-    @java.lang.Override
     @Override
     public List<String> getPlacasVeiculosByTipo(final Long codUnidade, final String codTipo) throws SQLException {
         Connection conn = null;
@@ -594,7 +578,6 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         return placas;
     }
 
-    @java.lang.Override
     @Override
     public Optional<DiagramaVeiculo> getDiagramaVeiculoByPlaca(@NotNull final String placa) throws SQLException {
         Connection conn = null;
@@ -606,14 +589,12 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         }
     }
 
-    @java.lang.Override
     @Override
     public Optional<DiagramaVeiculo> getDiagramaVeiculoByPlaca(@NotNull final Connection conn,
                                                                @NotNull final String placa) throws SQLException {
         return internalGetDiagramaVeiculoByPlaca(conn, placa);
     }
 
-    @java.lang.Override
     @Override
     public Optional<DiagramaVeiculo> getDiagramaVeiculoByCod(@NotNull final Short codDiagrama) throws SQLException {
         Connection conn = null;
@@ -637,7 +618,6 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         return Optional.empty();
     }
 
-    @java.lang.Override
     @Override
     public Set<DiagramaVeiculo> getDiagramasVeiculos() throws SQLException {
         Connection conn = null;
@@ -657,7 +637,6 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         return diagramas;
     }
 
-    @java.lang.Override
     @Override
     public Modelo getModeloVeiculo(final Long codUnidade, final Long codModelo) throws SQLException {
         Connection conn = null;
@@ -682,7 +661,6 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         return null;
     }
 
-    @java.lang.Override
     @Override
     public boolean updateModelo(final Modelo modelo, final Long codUnidade, final Long codMarca) throws SQLException {
         Connection conn = null;
@@ -702,7 +680,6 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         }
     }
 
-    @java.lang.Override
     @Override
     public boolean deleteModelo(final Long codModelo, final Long codUnidade) throws SQLException {
         Connection conn = null;
@@ -719,7 +696,6 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         }
     }
 
-    @java.lang.Override
     @Override
     public void adicionaPneuVeiculo(@NotNull final Connection conn,
                                     @NotNull final Long codUnidade,
@@ -749,7 +725,6 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         }
     }
 
-    @java.lang.Override
     @Override
     public void removePneuVeiculo(@NotNull final Connection conn,
                                   @NotNull final Long codUnidade,
@@ -771,7 +746,6 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         }
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public Optional<List<Long>> getCodPneusAplicadosVeiculo(@NotNull final Connection conn,
@@ -796,7 +770,6 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         }
     }
 
-    @java.lang.Override
     @Override
     public Long getCodUnidadeByPlaca(@NotNull final Connection conn,
                                      @NotNull final String placaVeiculo) throws Throwable {
@@ -824,7 +797,6 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         }
     }
 
-    @java.lang.Override
     @NotNull
     @Override
     public Long getCodVeiculoByPlaca(@NotNull final Connection conn,
@@ -852,7 +824,6 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         }
     }
 
-    @java.lang.Override
     @Deprecated
     @Override
     public List<Veiculo> getVeiculosAtivosByUnidade(final Long codUnidade, @Nullable final Boolean ativos)
@@ -905,7 +876,6 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         return veiculos;
     }
 
-    @java.lang.Override
     @Override
     @NotNull
     public VeiculoDadosColetaKm getDadosColetaKmByCodigo(@NotNull final Long codVeiculo) throws Throwable {
@@ -928,7 +898,6 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         }
     }
 
-    @java.lang.Override
     @Override
     @NotNull
     public Set<EixoVeiculo> getEixosDiagrama(final int codDiagrama, final Connection conn) throws SQLException {
