@@ -1,22 +1,21 @@
-package br.com.zalf.prolog.webservice.frota.pneu.afericao.v3;
+package br.com.zalf.prolog.webservice.v3.frota.afericao;
 
 import br.com.zalf.prolog.webservice.commons.network.metadata.Platform;
 import br.com.zalf.prolog.webservice.commons.network.metadata.UsedBy;
 import br.com.zalf.prolog.webservice.commons.util.datetime.DateUtils;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.v3._model.dto.AfericaoAvulsaDto;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.v3._model.dto.AfericaoPlacaDto;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.v3._model.dto.busca.DadosGeraisFiltro;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.v3._model.dto.busca.FiltroAfericaoAvulsa;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.v3._model.dto.busca.FiltroAfericaoPlaca;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.v3._model.projections.AfericaoAvulsaProjection;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.v3._model.projections.AfericaoPlacaProjection;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.v3.mapper.AfericaoAvulsaMapper;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.v3.mapper.AfericaoPlacaMapper;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.v3.service.AfericaoV3Service;
 import br.com.zalf.prolog.webservice.interceptors.ApiExposed;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
+import br.com.zalf.prolog.webservice.v3.frota.afericao._model.dto.AfericaoAvulsaDto;
+import br.com.zalf.prolog.webservice.v3.frota.afericao._model.dto.AfericaoPlacaDto;
+import br.com.zalf.prolog.webservice.v3.frota.afericao._model.dto.busca.DadosGeraisFiltro;
+import br.com.zalf.prolog.webservice.v3.frota.afericao._model.dto.busca.FiltroAfericaoAvulsa;
+import br.com.zalf.prolog.webservice.v3.frota.afericao._model.dto.busca.FiltroAfericaoPlaca;
+import br.com.zalf.prolog.webservice.v3.frota.afericao._model.projections.AfericaoAvulsaProjection;
+import br.com.zalf.prolog.webservice.v3.frota.afericao._model.projections.AfericaoPlacaProjection;
+import br.com.zalf.prolog.webservice.v3.frota.afericao.mapper.AfericaoAvulsaMapper;
+import br.com.zalf.prolog.webservice.v3.frota.afericao.mapper.AfericaoPlacaMapper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,19 +35,18 @@ import java.util.List;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @Controller
-public class AfericaoV3Resource implements AfericaoV3ResourceApiDoc {
-
+public class AfericaoResource implements AfericaoResourceApiDoc {
     @NotNull
-    private final AfericaoV3Service service;
+    private final AfericaoService service;
     @NotNull
     private final AfericaoPlacaMapper afericaoPlacaMapper;
     @NotNull
     private final AfericaoAvulsaMapper afericaoAvulsaMapper;
 
     @Autowired
-    AfericaoV3Resource(@NotNull final AfericaoV3Service service,
-                       @NotNull final AfericaoPlacaMapper afericaoPlacaMapper,
-                       @NotNull final AfericaoAvulsaMapper afericaoAvulsaMapper) {
+    AfericaoResource(@NotNull final AfericaoService service,
+                     @NotNull final AfericaoPlacaMapper afericaoPlacaMapper,
+                     @NotNull final AfericaoAvulsaMapper afericaoAvulsaMapper) {
         this.service = service;
         this.afericaoPlacaMapper = afericaoPlacaMapper;
         this.afericaoAvulsaMapper = afericaoAvulsaMapper;

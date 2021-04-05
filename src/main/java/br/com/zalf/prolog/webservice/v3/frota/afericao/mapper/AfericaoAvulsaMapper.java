@@ -1,7 +1,7 @@
-package br.com.zalf.prolog.webservice.frota.pneu.afericao.v3.mapper;
+package br.com.zalf.prolog.webservice.v3.frota.afericao.mapper;
 
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.v3._model.dto.AfericaoAvulsaDto;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.v3._model.projections.AfericaoAvulsaProjection;
+import br.com.zalf.prolog.webservice.v3.frota.afericao._model.dto.AfericaoAvulsaDto;
+import br.com.zalf.prolog.webservice.v3.frota.afericao._model.projections.AfericaoAvulsaProjection;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 

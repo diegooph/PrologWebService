@@ -1,8 +1,8 @@
-package br.com.zalf.prolog.webservice.frota.pneu.afericao.v3;
+package br.com.zalf.prolog.webservice.v3.frota.afericao;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.v3._model.dto.AfericaoAvulsaDto;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.v3._model.dto.AfericaoPlacaDto;
+import br.com.zalf.prolog.webservice.v3.frota.afericao._model.dto.AfericaoAvulsaDto;
+import br.com.zalf.prolog.webservice.v3.frota.afericao._model.dto.AfericaoPlacaDto;
 import io.swagger.annotations.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -15,7 +15,7 @@ import java.util.List;
  * @author Guilherme Steinert (https://github.com/steinert999)
  */
 @Api(value = "Aferições")
-public interface AfericaoV3ResourceApiDoc {
+public interface AfericaoResourceApiDoc {
     @ApiOperation(
             value = "Obtém uma lista de aferições de placas realizadas.",
             response = List.class)

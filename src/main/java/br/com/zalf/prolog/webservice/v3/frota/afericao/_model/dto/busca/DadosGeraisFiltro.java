@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.frota.pneu.afericao.v3._model.dto.busca;
+package br.com.zalf.prolog.webservice.v3.frota.afericao._model.dto.busca;
 
 import lombok.Getter;
 import lombok.Value;

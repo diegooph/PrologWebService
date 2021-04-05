@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.frota.pneu.afericao.v3._model.projections;
+package br.com.zalf.prolog.webservice.v3.frota.afericao._model.projections;
 
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.TipoMedicaoColetadaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.TipoProcessoColetaAfericao;

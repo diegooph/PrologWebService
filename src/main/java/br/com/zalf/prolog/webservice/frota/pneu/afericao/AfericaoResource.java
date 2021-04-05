@@ -119,7 +119,7 @@ public class AfericaoResource {
      * @deprecated <p>
      * Há nova versão em outra classe.
      * Segue método referencia: <br>
-     * {@link br.com.zalf.prolog.webservice.frota.pneu.afericao.v3.AfericaoV3Resource#getAfericoesPlacas}
+     * {@link AfericaoResource#getAfericoesPlacas}
      * </p>
      */
     @GET
@@ -155,7 +155,7 @@ public class AfericaoResource {
      * @deprecated <p>
      * Há nova versão em outra classe.
      * Segue método referencia: <br>
-     * {@link br.com.zalf.prolog.webservice.frota.pneu.afericao.v3.AfericaoV3Resource#getAfericoesAvulsas}
+     * {@link AfericaoResource#getAfericoesAvulsas}
      * </p>
      */
     @GET
@@ -180,7 +180,7 @@ public class AfericaoResource {
      * @deprecated <p>
      * Há nova versão em outra classe.
      * Segue método referencia: <br>
-     * {@link br.com.zalf.prolog.webservice.frota.pneu.afericao.v3.AfericaoV3Resource#getAfericoesAvulsas}
+     * {@link AfericaoResource#getAfericoesAvulsas}
      * </p>
      */
     @GET
