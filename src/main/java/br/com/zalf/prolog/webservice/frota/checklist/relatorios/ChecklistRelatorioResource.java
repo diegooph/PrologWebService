@@ -33,9 +33,9 @@ public class ChecklistRelatorioResource {
     @Path("/ambev-checklists-realizados-dia/csv")
     @Produces("application/csv")
     @UsedBy(platforms = Platform.WEBSITE)
-    public StreamingOutput getChecklistsRealizadosDiaAmbevCsv(@QueryParam("codUnidades") List<Long> codUnidades,
-                                                              @QueryParam("dataInicial") String dataInicial,
-                                                              @QueryParam("dataFinal") String dataFinal) {
+    public StreamingOutput getChecklistsRealizadosDiaAmbevCsv(@QueryParam("codUnidades") final List<Long> codUnidades,
+                                                              @QueryParam("dataInicial") final String dataInicial,
+                                                              @QueryParam("dataFinal") final String dataFinal) {
         return outputStream ->
                 service.getChecklistsRealizadosDiaAmbevCsv(outputStream, codUnidades, dataInicial, dataFinal);
     }
@@ -43,9 +43,9 @@ public class ChecklistRelatorioResource {
     @GET
     @Path("/ambev-checklists-realizados-dia/report")
     public Report getChecklistsRealizadosDiaAmbevReport(
-            @QueryParam("codUnidades") List<Long> codUnidades,
-            @QueryParam("dataInicial") String dataInicial,
-            @QueryParam("dataFinal") String dataFinal) throws ProLogException {
+            @QueryParam("codUnidades") final List<Long> codUnidades,
+            @QueryParam("dataInicial") final String dataInicial,
+            @QueryParam("dataFinal") final String dataFinal) throws ProLogException {
         return service.getChecklistsRealizadosDiaAmbevReport(codUnidades, dataInicial, dataFinal);
     }
 
@@ -53,9 +53,9 @@ public class ChecklistRelatorioResource {
     @Path("/ambev-extrato-checklists-realizados-dia/csv")
     @Produces("application/csv")
     @UsedBy(platforms = Platform.WEBSITE)
-    public StreamingOutput getExtratoChecklistsRealizadosDiaAmbevCsv(@QueryParam("codUnidades") List<Long> codUnidades,
-                                                                     @QueryParam("dataInicial") String dataInicial,
-                                                                     @QueryParam("dataFinal") String dataFinal) {
+    public StreamingOutput getExtratoChecklistsRealizadosDiaAmbevCsv(@QueryParam("codUnidades") final List<Long> codUnidades,
+                                                                     @QueryParam("dataInicial") final String dataInicial,
+                                                                     @QueryParam("dataFinal") final String dataFinal) {
         return outputStream ->
                 service.getExtratoChecklistsRealizadosDiaAmbevCsv(outputStream, codUnidades, dataInicial, dataFinal);
     }
@@ -63,9 +63,9 @@ public class ChecklistRelatorioResource {
     @GET
     @Path("/ambev-extrato-checklists-realizados-dia/report")
     public Report getExtratoChecklistsRealizadosDiaAmbevReport(
-            @QueryParam("codUnidades") List<Long> codUnidades,
-            @QueryParam("dataInicial") String dataInicial,
-            @QueryParam("dataFinal") String dataFinal) throws ProLogException {
+            @QueryParam("codUnidades") final List<Long> codUnidades,
+            @QueryParam("dataInicial") final String dataInicial,
+            @QueryParam("dataFinal") final String dataFinal) throws ProLogException {
         return service.getExtratoChecklistsRealizadosDiaAmbevReport(codUnidades, dataInicial, dataFinal);
     }
 
@@ -73,9 +73,9 @@ public class ChecklistRelatorioResource {
     @Path("/tempo-realizacao-checklists-motoristas/csv")
     @Produces("application/csv")
     @UsedBy(platforms = Platform.WEBSITE)
-    public StreamingOutput getTempoRealizacaoChecklistsMotoristasCsv(@QueryParam("codUnidades") List<Long> codUnidades,
-                                                                     @QueryParam("dataInicial") String dataInicial,
-                                                                     @QueryParam("dataFinal") String dataFinal) {
+    public StreamingOutput getTempoRealizacaoChecklistsMotoristasCsv(@QueryParam("codUnidades") final List<Long> codUnidades,
+                                                                     @QueryParam("dataInicial") final String dataInicial,
+                                                                     @QueryParam("dataFinal") final String dataFinal) {
         return outputStream ->
                 service.getTempoRealizacaoChecklistsMotoristasCsv(outputStream, codUnidades, dataInicial, dataFinal);
     }
@@ -83,9 +83,9 @@ public class ChecklistRelatorioResource {
     @GET
     @Path("/tempo-realizacao-checklists-motoristas/report")
     public Report getTempoRealizacaoChecklistsMotoristasReport(
-            @QueryParam("codUnidades") List<Long> codUnidades,
-            @QueryParam("dataInicial") String dataInicial,
-            @QueryParam("dataFinal") String dataFinal) throws ProLogException {
+            @QueryParam("codUnidades") final List<Long> codUnidades,
+            @QueryParam("dataInicial") final String dataInicial,
+            @QueryParam("dataFinal") final String dataFinal) throws ProLogException {
         return service.getTempoRealizacaoChecklistsMotoristasReport(codUnidades, dataInicial, dataFinal);
     }
 
@@ -136,50 +136,21 @@ public class ChecklistRelatorioResource {
     @GET
     @Path("/listagem-modelos/report")
     public Report getListagemModelosChecklistReport(
-            @QueryParam("codUnidades") List<Long> codUnidades) throws ProLogException {
+            @QueryParam("codUnidades") final List<Long> codUnidades) throws ProLogException {
         return service.getListagemModelosChecklistReport(codUnidades);
     }
 
     @GET
     @Path("/listagem-modelos/csv")
     @UsedBy(platforms = Platform.WEBSITE)
-    public StreamingOutput getListagemModelosChecklistCsv(@QueryParam("codUnidades") List<Long> codUnidades) {
+    public StreamingOutput getListagemModelosChecklistCsv(@QueryParam("codUnidades") final List<Long> codUnidades) {
         return outputStream -> service.getListagemModelosChecklistCsv(outputStream, codUnidades);
     }
 
     @GET
-    @Path("/busca-dados-gerais-checklists-realizados/report")
-    public Report buscaDadosGeraisChecklistReport(@QueryParam("codUnidades") final List<Long> codUnidades,
-                                                  @QueryParam("codColaborador") final Long codColaborador,
-                                                  @QueryParam("codVeiculo") final Long codVeiculo,
-                                                  @QueryParam("dataInicial") final String dataInicial,
-                                                  @QueryParam("dataFinal") final String dataFinal)
-            throws ProLogException {
-        return service.getDadosGeraisChecklistReport(codUnidades, codColaborador, codVeiculo, dataInicial, dataFinal);
-    }
-
-    @GET
-    @Path("/busca-dados-gerais-checklists-realizados/csv")
-    @UsedBy(platforms = Platform.WEBSITE)
-    public StreamingOutput buscaDadosGeraisChecklistCsv(@QueryParam("codUnidades") final List<Long> codUnidades,
-                                                        @QueryParam("codColaborador") final Long codColaborador,
-                                                        @QueryParam("codVeiculo") final Long codVeiculo,
-                                                        @QueryParam("dataInicial") final String dataInicial,
-                                                        @QueryParam("dataFinal") final String dataFinal) {
-        return outputStream ->
-                service.getDadosGeraisChecklistCsv(
-                        outputStream,
-                        codUnidades,
-                        codColaborador,
-                        codVeiculo,
-                        dataInicial,
-                        dataFinal);
-    }
-
-    @GET
     @Path("/ultimo-checklists-realizado-placa/report")
-    public Report getUltimoChecklistRealizadoPlacaReport(@QueryParam("codUnidades") List<Long> codUnidades,
-                                                         @QueryParam("codTiposVeiculos") List<Long> codTiposVeiculos)
+    public Report getUltimoChecklistRealizadoPlacaReport(@QueryParam("codUnidades") final List<Long> codUnidades,
+                                                         @QueryParam("codTiposVeiculos") final List<Long> codTiposVeiculos)
             throws ProLogException {
         return service.getUltimoChecklistRealizadoPlacaReport(codUnidades, codTiposVeiculos);
     }
@@ -187,9 +158,9 @@ public class ChecklistRelatorioResource {
     @GET
     @Path("/ultimo-checklists-realizado-placa/csv")
     @UsedBy(platforms = Platform.WEBSITE)
-    public StreamingOutput getUltimoChecklistRealizadoPlacaCsv(@QueryParam("codUnidades") List<Long> codUnidades,
-                                                               @QueryParam("codTiposVeiculos")
-                                                                       List<Long> codTiposVeiculos) {
+    public StreamingOutput getUltimoChecklistRealizadoPlacaCsv(@QueryParam("codUnidades") final List<Long> codUnidades,
+                                                               @QueryParam("codTiposVeiculos") final
+                                                               List<Long> codTiposVeiculos) {
         return outputStream ->
                 service.getUltimoChecklistRealizadoPlacaCsv(
                         outputStream,
@@ -246,53 +217,6 @@ public class ChecklistRelatorioResource {
     /**
      * @deprecated Este método foi depreciado afim de criar um novo que recebe codVeiculo no lugar da placa.
      * <br>
-     * {@link #buscaDadosGeraisChecklistReport(List, Long, Long, String, String)}
-     * <br>
-     * Porém há sistemas dependentes desse endpoint ainda (WS).
-     */
-    @Deprecated
-    @GET
-    @Path("/dados-gerais-checklists-realizados/report")
-    public Report getDadosGeraisChecklistReport(@QueryParam("codUnidades") final List<Long> codUnidades,
-                                                @QueryParam("codColaborador") final Long codColaborador,
-                                                @QueryParam("placa") final String placa,
-                                                @QueryParam("dataInicial") final String dataInicial,
-                                                @QueryParam("dataFinal") final String dataFinal)
-            throws ProLogException {
-        final Long codVeiculo = VeiculoBackwardHelper.getCodVeiculoByPlaca(codColaborador, placa);
-        return service.getDadosGeraisChecklistReport(codUnidades, codColaborador, codVeiculo, dataInicial, dataFinal);
-    }
-
-    /**
-     * @deprecated Este método foi depreciado afim de criar um novo que recebe codVeiculo no lugar da placa.
-     * <br>
-     * {@link #buscatDadosGeraisChecklistCsv(List, Long, Long, String, String)}
-     * <br>
-     * Porém há sistemas dependentes desse endpoint ainda (WS).
-     */
-    @Deprecated
-    @GET
-    @Path("/dados-gerais-checklists-realizados/csv")
-    @UsedBy(platforms = Platform.WEBSITE)
-    public StreamingOutput getDadosGeraisChecklistCsv(@QueryParam("codUnidades") List<Long> codUnidades,
-                                                      @QueryParam("codColaborador") Long codColaborador,
-                                                      @QueryParam("placa") String placa,
-                                                      @QueryParam("dataInicial") String dataInicial,
-                                                      @QueryParam("dataFinal") String dataFinal) {
-        final Long codVeiculo = VeiculoBackwardHelper.getCodVeiculoByPlaca(codColaborador, placa);
-        return outputStream ->
-                service.getDadosGeraisChecklistCsv(
-                        outputStream,
-                        codUnidades,
-                        codColaborador,
-                        codVeiculo,
-                        dataInicial,
-                        dataFinal);
-    }
-
-    /**
-     * @deprecated Este método foi depreciado afim de criar um novo que recebe codVeiculo no lugar da placa.
-     * <br>
      * {@link #buscaResumoChecklistsCsv(List, Long, String, String)}
      * <br>
      * Porém há sistemas dependentes desse endpoint ainda (WS).
@@ -301,10 +225,10 @@ public class ChecklistRelatorioResource {
     @GET
     @Path("/resumo-checklists/{placa}/csv")
     @UsedBy(platforms = Platform.WEBSITE)
-    public StreamingOutput getResumoChecklistsCsv(@PathParam("placa") String placa,
-                                                  @QueryParam("codUnidades") List<Long> codUnidades,
-                                                  @QueryParam("dataInicial") String dataInicial,
-                                                  @QueryParam("dataFinal") String dataFinal) {
+    public StreamingOutput getResumoChecklistsCsv(@PathParam("placa") final String placa,
+                                                  @QueryParam("codUnidades") final List<Long> codUnidades,
+                                                  @QueryParam("dataInicial") final String dataInicial,
+                                                  @QueryParam("dataFinal") final String dataFinal) {
         final Long codColaborador = this.colaboradorAutenticadoProvider.get().getCodigo();
         final Long codVeiculo = VeiculoBackwardHelper.getCodVeiculoByPlaca(codColaborador, placa);
         return outputStream -> service.getResumoChecklistsCsv(outputStream,
@@ -324,10 +248,10 @@ public class ChecklistRelatorioResource {
     @Deprecated
     @GET
     @Path("/resumo-checklists/{placa}/report")
-    public Report getResumoChecklistsReport(@PathParam("placa") String placa,
-                                            @QueryParam("codUnidades") List<Long> codUnidades,
-                                            @QueryParam("dataInicial") String dataInicial,
-                                            @QueryParam("dataFinal") String dataFinal) throws ProLogException {
+    public Report getResumoChecklistsReport(@PathParam("placa") final String placa,
+                                            @QueryParam("codUnidades") final List<Long> codUnidades,
+                                            @QueryParam("dataInicial") final String dataInicial,
+                                            @QueryParam("dataFinal") final String dataFinal) throws ProLogException {
         final Long codColaborador = this.colaboradorAutenticadoProvider.get().getCodigo();
         final Long codVeiculo = VeiculoBackwardHelper.getCodVeiculoByPlaca(codColaborador, placa);
         return service.getResumoChecklistsReport(codUnidades, codVeiculo, dataInicial, dataFinal);
