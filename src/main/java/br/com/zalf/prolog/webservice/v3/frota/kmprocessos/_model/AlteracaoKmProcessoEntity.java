@@ -36,7 +36,7 @@ public final class AlteracaoKmProcessoEntity {
     @Column(name = "cod_processo_alterado", nullable = false)
     private Long codProcessoAlterado;
     @Enumerated(EnumType.STRING)
-    @Column(name = "tipo_processo_alterado", nullable = false, columnDefinition = "types")
+    @Column(name = "tipo_processo_alterado", nullable = false)
     private VeiculoTipoProcesso tipoProcessoAlterado;
     @Column(name = "km_antigo", nullable = false)
     private long kmAntigo;
