@@ -16,6 +16,9 @@ Change Log
 * Altera versão do Sentry para 4.3.0
 * Altera para o Sentry enviar informações sensitivas por default, como o token
 
+### Bug Fixes
+* Corrige checkstyle para detecção de nome de pacote
+
 <a name="v3.0.0"></a>
 ## Version [v3.0.0](https://github.com/luizfp/PrologWebService/compare/v2.2.0...v3.0.0) (2021-03-30)
 
