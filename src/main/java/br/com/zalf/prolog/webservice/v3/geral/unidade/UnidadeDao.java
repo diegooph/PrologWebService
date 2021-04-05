@@ -1,7 +1,7 @@
-package br.com.zalf.prolog.webservice.geral.unidade;
+package br.com.zalf.prolog.webservice.v3.geral.unidade;
 
-import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeEntity;
-import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeProjection;
+import br.com.zalf.prolog.webservice.v3.geral.unidade._model.UnidadeEntity;
+import br.com.zalf.prolog.webservice.v3.geral.unidade._model.UnidadeProjection;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -29,4 +29,7 @@ public interface UnidadeDao extends JpaRepository<UnidadeEntity, Long> {
             "f_cod_regionais => to_bigint_array(:codsRegionais));", nativeQuery = true)
     List<UnidadeProjection> getUnidadesListagem(@NotNull final Long codEmpresa,
                                                 @Nullable final List<Long> codsRegionais);
+
+    @NotNull
+    List<UnidadeEntity> findAllByCodEmpresa(@NotNull final Long codEmpresa);
 }

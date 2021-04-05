@@ -349,7 +349,7 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
                                                  "f_cod_veiculo => ?," +
                                                  "f_km_coletado => ?," +
                                                  "f_cod_processo => ?," +
-                                                 "f_tipo_processo => ?::types.veiculo_processo_type," +
+                                                 "f_tipo_processo => ?," +
                                                  "f_deve_propagar_km => ?," +
                                                  "f_data_hora => ?) as km_processo;");
             stmt.setLong(1, codUnidade);

@@ -1,9 +1,9 @@
-package br.com.zalf.prolog.webservice.geral.unidade;
+package br.com.zalf.prolog.webservice.v3.geral.unidade;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
-import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeEdicaoDto;
-import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeVisualizacaoListagemDto;
+import br.com.zalf.prolog.webservice.v3.geral.unidade._model.UnidadeEdicaoDto;
+import br.com.zalf.prolog.webservice.v3.geral.unidade._model.UnidadeVisualizacaoListagemDto;
 import io.swagger.annotations.*;
 
 import javax.validation.Valid;

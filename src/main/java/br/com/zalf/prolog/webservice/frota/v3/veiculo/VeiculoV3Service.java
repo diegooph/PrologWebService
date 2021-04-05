@@ -69,6 +69,11 @@ public class VeiculoV3Service {
     }
 
     @NotNull
+    public VeiculoEntity getByCodigo(@NotNull final Long codigo) {
+        return veiculoDao.getOne(codigo);
+    }
+
+    @NotNull
     private OrigemAcaoEnum getOrigemCadastro(@Nullable final String tokenIntegracao) {
         return tokenIntegracao != null ? OrigemAcaoEnum.API : OrigemAcaoEnum.PROLOG_WEB;
     }

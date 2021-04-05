@@ -1,12 +1,12 @@
-package br.com.zalf.prolog.webservice.geral.unidade;
+package br.com.zalf.prolog.webservice.v3.geral.unidade;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.sql.NotFoundException;
 import br.com.zalf.prolog.webservice.errorhandling.sql.ServerSideErrorException;
-import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeEntity;
-import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeProjection;
+import br.com.zalf.prolog.webservice.v3.geral.unidade._model.UnidadeEntity;
+import br.com.zalf.prolog.webservice.v3.geral.unidade._model.UnidadeProjection;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,5 +82,10 @@ public class UnidadeService {
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao atualizar unidades, tente novamente.");
         }
+    }
+
+    @NotNull
+    public List<UnidadeEntity> getUnidadesByCodEmpresa(@NotNull final Long codEmpresa) {
+        return dao.findAllByCodEmpresa(codEmpresa);
     }
 }

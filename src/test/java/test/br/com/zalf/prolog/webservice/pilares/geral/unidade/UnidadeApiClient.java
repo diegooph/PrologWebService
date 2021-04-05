@@ -1,8 +1,8 @@
 package test.br.com.zalf.prolog.webservice.pilares.geral.unidade;
 
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
-import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeEdicaoDto;
-import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeVisualizacaoListagemDto;
+import br.com.zalf.prolog.webservice.v3.geral.unidade._model.UnidadeEdicaoDto;
+import br.com.zalf.prolog.webservice.v3.geral.unidade._model.UnidadeVisualizacaoListagemDto;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestComponent;

@@ -22,3 +22,4 @@ logging:
     sun: info
     io: info
     jdk: info
+    org.hibernate.SQL: debug

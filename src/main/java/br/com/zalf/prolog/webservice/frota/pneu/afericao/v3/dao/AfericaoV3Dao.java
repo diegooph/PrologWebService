@@ -1,8 +1,8 @@
 package br.com.zalf.prolog.webservice.frota.pneu.afericao.v3.dao;
 
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.v3._model.AfericaoEntity;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.v3._model.projections.AfericaoAvulsaProjection;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.v3._model.projections.AfericaoPlacaProjection;
+import br.com.zalf.prolog.webservice.v3.frota.afericao._model.AfericaoEntity;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
