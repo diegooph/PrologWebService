@@ -1,9 +1,3 @@
--- Sobre:
--- Calcula a distancia entre a unidade e abertura (ou dois pontos quaisquer).
--- O retorno é em KM.
---
--- Histórico:
--- 2020-07-07 -> Cria func (gustavocnp95 - PL-2808).
 CREATE OR REPLACE FUNCTION FUNC_CALCULA_DISTANCIA_UNIDADE_ABERTURA(F_LONGITUDE_UNIDADE REAL,
                                                                    F_LATITUDE_UNIDADE REAL,
                                                                    F_LONGITUDE_ABERTURA REAL,

@@ -3,10 +3,10 @@ package test.br.com.zalf.prolog.webservice.pilares.geral.unidade;
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
 import br.com.zalf.prolog.webservice.errorhandling.exception.BadRequestException;
 import br.com.zalf.prolog.webservice.errorhandling.sql.NotFoundException;
-import br.com.zalf.prolog.webservice.geral.unidade.UnidadeDao;
-import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeEdicaoDto;
-import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeEntity;
-import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeVisualizacaoListagemDto;
+import br.com.zalf.prolog.webservice.v3.geral.unidade.UnidadeDao;
+import br.com.zalf.prolog.webservice.v3.geral.unidade._model.UnidadeEdicaoDto;
+import br.com.zalf.prolog.webservice.v3.geral.unidade._model.UnidadeEntity;
+import br.com.zalf.prolog.webservice.v3.geral.unidade._model.UnidadeVisualizacaoListagemDto;
 import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -67,8 +67,7 @@ public class UnidadeIT extends IntegrationTest {
 
         @BeforeEach
         void setUp() {
-            baseEntity = dao.findById(TEST_UNIDADE_ID)
-                    .orElseThrow(NotFoundException::new);
+            baseEntity = dao.findById(TEST_UNIDADE_ID).orElseThrow(NotFoundException::new);
         }
 
         @Test

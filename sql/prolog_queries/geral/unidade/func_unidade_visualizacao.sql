@@ -1,8 +1,3 @@
--- Sobre:
--- Esta função realiza a busca de uma unidade com base no código da unidade.
---
--- Histórico:
--- 2020-03-16 -> Function criada (gustavocnp95 - PL-2588).
 CREATE OR REPLACE FUNCTION FUNC_UNIDADE_VISUALIZACAO(
     F_COD_UNIDADE BIGINT
 )

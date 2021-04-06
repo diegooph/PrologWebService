@@ -1,11 +1,3 @@
--- Sobre:
--- Altera o KM no momento do conserto na tabela afericao_manutencao_data.
---
--- Atenção: Para a alteração ocorrer com sucesso, todos os parâmetros devem ser informados.
---
--- Histórico:
--- 2019-09-18 -> Cria function e adiciona no schema suporte (gustavocnp95 - PL-2594)
--- 2020-08-14 -> Adiciona chamada para logar execução da function (gustavocnp95 - PL-3066).
 CREATE OR REPLACE FUNCTION SUPORTE.FUNC_AFERICAO_MANUTENCAO_ALTERA_KM_MOMENTO_CONSERTO(F_COD_UNIDADE BIGINT,
                                                                                        F_COD_PNEU BIGINT,
                                                                                        F_COD_AFERICAO BIGINT,
@@ -22,9 +14,6 @@ DECLARE
     V_COD_EMPRESA BIGINT  := (SELECT U.COD_EMPRESA
                               FROM UNIDADE U
                               WHERE U.CODIGO = F_COD_UNIDADE);
-    V_NUMERO_FOGO VARCHAR := (SELECT P.CODIGO_CLIENTE
-                              FROM PNEU P
-                              WHERE P.CODIGO = F_COD_PNEU);
     V_QTD_UPDATES BIGINT;
 BEGIN
     PERFORM SUPORTE.FUNC_HISTORICO_SALVA_EXECUCAO();
@@ -49,7 +38,7 @@ BEGIN
     PERFORM FUNC_GARANTE_UNIDADE_EXISTE(F_COD_UNIDADE);
 
     -- VERIFICA SE PNEU EXISTE
-    PERFORM FUNC_GARANTE_PNEU_EXISTE(V_COD_EMPRESA, F_COD_UNIDADE, F_COD_PNEU, V_NUMERO_FOGO);
+    PERFORM FUNC_GARANTE_PNEU_EXISTE(V_COD_EMPRESA, F_COD_UNIDADE, F_COD_PNEU);
 
     -- VERIFICA SE A AFERIÇÃO EXISTE NA UNIDADE INFORMADA.
     IF NOT EXISTS(SELECT AM.CODIGO

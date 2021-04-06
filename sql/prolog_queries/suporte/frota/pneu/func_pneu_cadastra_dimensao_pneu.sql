@@ -1,15 +1,3 @@
--- Sobre:
--- A lógica aplicada nessa function é a seguinte:
--- Caso a dimensão que desejamos inserir exista no banco, ela não será cadastrada.
--- Caso a dimensão seja realemtne nova, ela será adicionada na base de dados.
---
--- Précondições:
--- Dimensão não deve existir no banco.
--- Valores maiores que 0.
---
--- Histórico:
--- 2019-10-15 -> Function criada (natanrotta - PL-2312).
--- 2020-08-14 -> Adiciona chamada para logar execução da function (gustavocnp95 - PL-3066).
 CREATE OR REPLACE FUNCTION SUPORTE.FUNC_PNEU_CADASTRA_DIMENSAO_PNEU(F_ALTURA BIGINT,
                                                                     F_LARGURA BIGINT,
                                                                     F_ARO REAL,

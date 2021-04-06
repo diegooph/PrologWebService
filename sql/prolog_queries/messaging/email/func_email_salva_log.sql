@@ -1,9 +1,3 @@
--- Sobre:
--- Esta function salva o log de cada requisição feita à API de e-mail. Esse log contém tanto as informações da
--- requisição quanto da resposta da API.
---
--- Histórico:
--- 2020-02-28 -> Function criada (luizfp - PL-2522).
 CREATE OR REPLACE FUNCTION MESSAGING.FUNC_EMAIL_SALVA_LOG(F_DATA_HORA_ATUAL TIMESTAMP WITH TIME ZONE,
                                                           F_EMAIL_MESSAGE_SCOPE TEXT,
                                                           F_REQUEST_TO_API JSONB,

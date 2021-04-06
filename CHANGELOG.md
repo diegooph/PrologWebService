@@ -1,8 +1,9 @@
 Change Log
 ==========
 
-## Stage
-### Refactors
+### Stage
+### Features
+* Cria funcionalidade para alterar o km coletado nos processos (PL-3557)
 * Altera ServicoResource para utilizar código do veículo nos métodos e não placa (PL-3406)
 * Altera métodos do ServicoResource que recebem objeto de filtro de GET para POST
 * Adicionar código do veículo no retorno das buscas de serviço (PL-3524)
@@ -12,12 +13,62 @@ Change Log
 * Remove placa da busca de relatórios de checklist (PL-3548)
 * Remove placa das buscas do checklist (PL-3546)
 
+<a name="v3.0.1"></a>
+## Version [v3.0.1](https://github.com/luizfp/PrologWebService/compare/v3.0.0...v3.0.1) (release-date) [unreleased]
 
-<a name="v2.0.3"></a>
-## Version [v2.0.3](https://github.com/luizfp/PrologWebService/compare/v2.0.2...v2.0.3) (release-date) [unreleased]
+### Features
+* Adiciona código do colaborador ao Sentry para ser logado junto em caso de erro
+
+### Refactors
+* Configura swagger para rodar em prod (PL-3559)
+* Altera versão do Sentry para 4.3.0
+* Altera para o Sentry enviar informações sensitivas por default, como o token
+
+### Bug Fixes
+* Corrige checkstyle para detecção de nome de pacote
+
+<a name="v3.0.0"></a>
+## Version [v3.0.0](https://github.com/luizfp/PrologWebService/compare/v2.2.0...v3.0.0) (2021-03-30)
+
+### Features
+* Migra projeto do Java 8 para o 11 (PL-3475)
+* Finaliza cadastro de pneus na API v3 (PL-3459)
+* Finaliza cadastro de veículos na API v3 (PL-3460)
+
+### Refactors
+* Deleta integração antiga da Avilan que era em XML (PL-3475)
+* Altera integração com Globus/Piccolotur de envio de OS para utilizar implementação própria do SOAP (PL-3475)
+* Adiciona mais uma opção no enum de evolução de km (PL-3562)
+
+<a name="v2.2.0"></a>
+## Version [v2.2.0](https://github.com/luizfp/PrologWebService/compare/v2.1.0...v2.2.0) (2021-03-21)
+
+### Features
+* Cria versão inicial de endpoint de cadastro de pneus na API v3 (PL-3459)
+* Cria versão inicial de endpoint de cadastro de veículos na API v3 (PL-3460)
+
+### Refactors
+* Remove classes depreciadas e não utilizadas de O.S. de checklist
+* Ordena busca de tipos de veículo por nome
+* Alterar buscas de serviços fechados para considerar flag de fechado por aferição (PL-3561)
+* Alterar processo de inserção de aferição para fechar serviços automaticamente (PL-3541)
+
+### Bug Fixes
+* Corrige listagem de relatos realizados (PL-3572)
+* Corrige leitura dos headers de Logs de integração (PL-3519)
+* Corrige busca do relatório de aferições integrado (PL-3568)
+* Corrige permissões ao listar veículos
+* Corrige filtro de unidades/clientes vindas da integração (PL-3560)
+
+<a name="v2.1.0"></a>
+## Version [v2.1.0](https://github.com/luizfp/PrologWebService/compare/v2.0.2...v2.1.0) (2021-03-07)
 
 ### Features
 * Adiciona estrutura de testes e2e com testcontainers e Flyway (PL-3307)
+* Cria integração com sistema WebFinatto (PL-2874)
+
+### Refactors
+* Ordena lista de histórico de acoplamentos por data/hora
 
 ### Bug Fixes
 * Corrige path de resource de histórico de acoplamentos

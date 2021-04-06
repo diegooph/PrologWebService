@@ -1,11 +1,3 @@
--- Sobre:
---
--- Esta function retorna os dados para o dashboard 'Placas com Aferição Vencida'.
---
--- Histórico:
--- 2019-05-14 -> Criado function e modificado composiço das colunas pode_aferir_sulco e pressao para utilizar
--- 2020-05-15 -> nova coluna forma_coleta (gustavocnp95 - PL-2689).
--- 2020-06-18 -> Adiciona identificador de frota ao relatório. (thaisksf - PL-2760).
 CREATE OR REPLACE FUNCTION FUNC_AFERICAO_RELATORIO_QTD_DIAS_PLACAS_VENCIDAS(F_COD_UNIDADES BIGINT[],
                                                                             F_DATA_HOJE_UTC TIMESTAMP WITH TIME ZONE)
     RETURNS TABLE
@@ -28,18 +20,18 @@ DECLARE
 BEGIN
     RETURN QUERY
         WITH VEICULOS_ATIVOS_UNIDADES AS (
-            SELECT V.PLACA
+            SELECT V.CODIGO
             FROM VEICULO V
             WHERE V.COD_UNIDADE = ANY (F_COD_UNIDADES)
               AND V.STATUS_ATIVO
         ),
-             -- As CTEs ULTIMA_AFERICAO_SULCO e ULTIMA_AFERICAO_PRESSAO retornam a placa de cada veículo e a quantidade de dias
+             -- As CTEs ULTIMA_AFERICAO_SULCO e ULTIMA_AFERICAO_PRESSAO retornam o codigo de cada veículo e a quantidade de dias
              -- que a aferição de sulco e pressão, respectivamente, estão vencidas. Um número negativo será retornado caso ainda
              -- esteja com a aferição no prazo e ele indicará quantos dias faltam para vencer. Um -20, por exemplo, significa
-             -- que a placa vai vencer em 20 dias.
+             -- que a aferição vai vencer em 20 dias.
              ULTIMA_AFERICAO_SULCO AS (
-                 SELECT DISTINCT ON (A.PLACA_VEICULO) A.COD_UNIDADE,
-                                                      A.PLACA_VEICULO              AS PLACA,
+                 SELECT DISTINCT ON (A.COD_VEICULO) A.COD_UNIDADE,
+                                                      A.COD_VEICULO              AS COD_VEICULO,
                                                       DATE_PART('DAY', F_DATA_HOJE_UTC - MAX(DATA_HORA))
                                                           -
                                                       (PRU.PERIODO_AFERICAO_SULCO) AS QTD_DIAS_ENTRE_ULTIMA_AFERICAO_SULCO_E_HOJE
@@ -47,21 +39,21 @@ BEGIN
                           JOIN PNEU_RESTRICAO_UNIDADE PRU
                                ON (SELECT V.COD_UNIDADE
                                    FROM VEICULO V
-                                   WHERE V.PLACA = A.PLACA_VEICULO) = PRU.COD_UNIDADE
+                                   WHERE V.CODIGO = A.COD_VEICULO) = PRU.COD_UNIDADE
                  WHERE A.TIPO_MEDICAO_COLETADA IN (AFERICAO_SULCO, AFERICAO_SULCO_PRESSAO)
                    -- Desse modo nós buscamos a última aferição de cada placa que está ativa nas unidades filtradas, independente
                    -- de onde foram foram aferidas.
-                   AND PLACA_VEICULO = ANY (SELECT VAU.PLACA
+                   AND COD_VEICULO = ANY (SELECT VAU.CODIGO
                                             FROM VEICULOS_ATIVOS_UNIDADES VAU)
                  GROUP BY A.DATA_HORA,
                           A.COD_UNIDADE,
-                          A.PLACA_VEICULO,
+                          A.COD_VEICULO,
                           PRU.PERIODO_AFERICAO_SULCO
-                 ORDER BY A.PLACA_VEICULO, A.DATA_HORA DESC
+                 ORDER BY A.COD_VEICULO, A.DATA_HORA DESC
              ),
              ULTIMA_AFERICAO_PRESSAO AS (
-                 SELECT DISTINCT ON (A.PLACA_VEICULO) A.COD_UNIDADE,
-                                                      A.PLACA_VEICULO                AS PLACA,
+                 SELECT DISTINCT ON (A.COD_VEICULO) A.COD_UNIDADE,
+                                                      A.COD_VEICULO                AS COD_VEICULO,
                                                       DATE_PART('DAY', F_DATA_HOJE_UTC - MAX(DATA_HORA))
                                                           -
                                                       (PRU.PERIODO_AFERICAO_PRESSAO) AS QTD_DIAS_ENTRE_ULTIMA_AFERICAO_PRESSAO_E_HOJE
@@ -69,16 +61,16 @@ BEGIN
                           JOIN PNEU_RESTRICAO_UNIDADE PRU
                                ON (SELECT V.COD_UNIDADE
                                    FROM VEICULO V
-                                   WHERE V.PLACA = A.PLACA_VEICULO) = PRU.COD_UNIDADE
+                                   WHERE V.CODIGO = A.COD_VEICULO) = PRU.COD_UNIDADE
                  WHERE A.COD_UNIDADE = ANY (F_COD_UNIDADES)
                    AND A.TIPO_MEDICAO_COLETADA IN (AFERICAO_PRESSAO, AFERICAO_SULCO_PRESSAO)
-                   AND PLACA_VEICULO = ANY (SELECT VAU.PLACA
+                   AND COD_VEICULO = ANY (SELECT VAU.CODIGO
                                             FROM VEICULOS_ATIVOS_UNIDADES VAU)
                  GROUP BY A.DATA_HORA,
                           A.COD_UNIDADE,
-                          A.PLACA_VEICULO,
+                          A.COD_VEICULO,
                           PRU.PERIODO_AFERICAO_PRESSAO
-                 ORDER BY A.PLACA_VEICULO, A.DATA_HORA DESC
+                 ORDER BY A.COD_VEICULO, A.DATA_HORA DESC
              ),
 
              PRE_SELECT AS (
@@ -105,9 +97,9 @@ BEGIN
                           JOIN VEICULO V
                                ON V.COD_UNIDADE = U.CODIGO
                           LEFT JOIN ULTIMA_AFERICAO_SULCO UAS
-                                    ON UAS.PLACA = V.PLACA
+                                    ON UAS.COD_VEICULO = V.CODIGO
                           LEFT JOIN ULTIMA_AFERICAO_PRESSAO UAP
-                                    ON UAP.PLACA = V.PLACA
+                                    ON UAP.COD_VEICULO = V.CODIGO
                  WHERE
                      -- Se algum dos dois tipos de aferição estiver vencido, retornamos a linha.
                      (UAS.QTD_DIAS_ENTRE_ULTIMA_AFERICAO_SULCO_E_HOJE > 0 OR

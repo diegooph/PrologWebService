@@ -1,11 +1,3 @@
--- Sobre:
---
--- Function utilizada para liberar ou bloquear todas as permissões associadas aos agrupamentos de permissões informados.
--- O bloqueio poderá ser realizado para todas as unidades das empresas ou ainda para unidades específicas das empresas.
---
--- Histórico:
--- 2020-06-26 -> Function criada (diogenesvanzella - PL-2671).
--- 2020-08-14 -> Adiciona chamada para logar execução da function (gustavocnp95 - PL-3066).
 CREATE OR REPLACE FUNCTION
     SUPORTE.FUNC_CARGOS_LIBERA_BLOQUEIA_PERMISSOES_BY_AGRUPAMENTO(F_LIBERAR_BLOQUEAR TEXT,
                                                                   F_COD_AGRUPAMENTOS BIGINT[],

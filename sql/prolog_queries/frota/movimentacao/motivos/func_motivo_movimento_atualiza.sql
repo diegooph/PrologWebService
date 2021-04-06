@@ -1,8 +1,3 @@
--- Sobre:
--- Esta função edita um motivo.
---
--- Histórico:
--- 2020-03-18 -> Function criada (gustavocnp95 - PL-2607).
 CREATE OR REPLACE FUNCTION FUNC_MOTIVO_MOVIMENTO_ATUALIZA(F_COD_MOTIVO BIGINT,
                                                           F_DESCRICAO_MOTIVO CITEXT,
                                                           F_ATIVO_MOTIVO BOOLEAN,

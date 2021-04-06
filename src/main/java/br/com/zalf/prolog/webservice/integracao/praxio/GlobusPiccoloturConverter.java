@@ -15,10 +15,12 @@ import br.com.zalf.prolog.webservice.integracao.praxio.movimentacao.GlobusPiccol
 import br.com.zalf.prolog.webservice.integracao.praxio.movimentacao.MovimentacaoGlobus;
 import br.com.zalf.prolog.webservice.integracao.praxio.movimentacao.ProcessoMovimentacaoGlobus;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.*;
-import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap.*;
+import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap.AlternativaNokDto;
+import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap.OrdemServicoCorretivaDto;
+import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap.OrdemServicoHolderDto;
+import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap.PerguntaNokDto;
 import org.jetbrains.annotations.NotNull;
 
-import javax.xml.datatype.DatatypeFactory;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -68,7 +70,6 @@ public final class GlobusPiccoloturConverter {
                                             infosAlternativaAberturaOrdemServico.getPrioridadeAlternativa())));
                             codContextoPergunta = infosAlternativaAberturaOrdemServico.getCodContextoPergunta();
                         }
-
                     }
                 }
             }
@@ -96,23 +97,44 @@ public final class GlobusPiccoloturConverter {
     }
 
     @NotNull
-    public static OrdemDeServicoCorretivaPrologVO convert(
+    public static OrdemServicoHolderDto convert(
             @NotNull final ChecklistItensNokGlobus checklistItensNokGlobus) throws Throwable {
-        final ObjectFactory factory = new ObjectFactory();
-        final OrdemDeServicoCorretivaPrologVO osGlobus = new OrdemDeServicoCorretivaPrologVO();
-        osGlobus.setCodUnidadeChecklist(checklistItensNokGlobus.getCodUnidadeChecklist().intValue());
-        osGlobus.setCodChecklistRealizado(checklistItensNokGlobus.getCodChecklistRealizado().intValue());
-        osGlobus.setCodModeloChecklist(checklistItensNokGlobus.getCodModeloChecklistRealizado().intValue());
-        osGlobus.setCpfColaboradorRealizacao(checklistItensNokGlobus.getCpfColaboradorRealizacao());
-        osGlobus.setPlacaVeiculoChecklist(checklistItensNokGlobus.getPlacaVeiculoChecklist());
-        osGlobus.setKmColetadoChecklist(checklistItensNokGlobus.getKmColetadoChecklist().intValue());
-        osGlobus.setTipoChecklist(checklistItensNokGlobus.getTipoChecklist().asString());
-        osGlobus.setDataHoraRealizacaoUtc(
-                DatatypeFactory.newInstance().newXMLGregorianCalendar(
-                        checklistItensNokGlobus.getDataHoraRealizacaoUtc()));
-        osGlobus.setUsuario(GlobusPiccoloturConstants.USUARIO_PROLOG_INTEGRACAO);
-        osGlobus.setListaPerguntasNokVO(convertPerguntas(factory, checklistItensNokGlobus.getPerguntasNok()));
-        return osGlobus;
+        final OrdemServicoCorretivaDto os = new OrdemServicoCorretivaDto(
+                checklistItensNokGlobus.getCodUnidadeChecklist().intValue(),
+                checklistItensNokGlobus.getCodChecklistRealizado().intValue(),
+                checklistItensNokGlobus.getCodModeloChecklistRealizado().intValue(),
+                checklistItensNokGlobus.getCpfColaboradorRealizacao(),
+                checklistItensNokGlobus.getPlacaVeiculoChecklist(),
+                checklistItensNokGlobus.getKmColetadoChecklist().intValue(),
+                checklistItensNokGlobus.getTipoChecklist().asString(),
+                checklistItensNokGlobus.getDataHoraRealizacaoUtc(),
+                GlobusPiccoloturConstants.USUARIO_PROLOG_INTEGRACAO,
+                convertPerguntas(checklistItensNokGlobus));
+        return new OrdemServicoHolderDto(os);
+    }
+
+    @NotNull
+    private static List<PerguntaNokDto> convertPerguntas(
+            @NotNull final ChecklistItensNokGlobus checklistItensNokGlobus) {
+        final List<PerguntaNokDto> perguntas = new ArrayList<>();
+        checklistItensNokGlobus
+                .getPerguntasNok()
+                .forEach(pergunta -> perguntas.add(new PerguntaNokDto(
+                        pergunta.getCodContextoPerguntaNok().intValue(),
+                        pergunta.getDescricaoPerguntaNok(),
+                        convertAlternativas(pergunta.getAlternativasNok()))));
+        return perguntas;
+    }
+
+    @NotNull
+    private static List<AlternativaNokDto> convertAlternativas(
+            @NotNull final List<AlternativaNokGlobus> alternativas) {
+        final List<AlternativaNokDto> alternativasConvertidas = new ArrayList<>();
+        alternativas.forEach(alternativa -> alternativasConvertidas.add(new AlternativaNokDto(
+                alternativa.getCodContextoAlternativaNok().intValue(),
+                alternativa.getDescricaoAlternativaNok(),
+                alternativa.getPrioridadeAlternativaNok().asString())));
+        return alternativasConvertidas;
     }
 
     @NotNull
@@ -215,35 +237,6 @@ public final class GlobusPiccoloturConverter {
                         .map(GlobusPiccoloturLocalMovimento::getLocalAsOpcaoSelecao)
                         .toArray(String[]::new),
                 campoSelecaoLocalMovimento.getOrdemExibicao());
-    }
-
-    @NotNull
-    private static ArrayOfPerguntasNokVO convertPerguntas(@NotNull final ObjectFactory factory,
-                                                          @NotNull final List<PerguntaNokGlobus> perguntasNok) {
-        final ArrayOfPerguntasNokVO arrayOfPerguntasNokVO = factory.createArrayOfPerguntasNokVO();
-        for (final PerguntaNokGlobus perguntaNokGlobus : perguntasNok) {
-            final PerguntasNokVO perguntaNokVO = factory.createPerguntasNokVO();
-            perguntaNokVO.setCodPerguntaNok(perguntaNokGlobus.getCodContextoPerguntaNok().intValue());
-            perguntaNokVO.setDescricaoPerguntaNok(perguntaNokGlobus.getDescricaoPerguntaNok());
-            perguntaNokVO.setListaAlternativasNok(convertAlternativas(factory, perguntaNokGlobus.getAlternativasNok()));
-            arrayOfPerguntasNokVO.getPerguntasNokVO().add(perguntaNokVO);
-        }
-        return arrayOfPerguntasNokVO;
-    }
-
-    @NotNull
-    private static ArrayOfAlternativasNokVO convertAlternativas(
-            @NotNull final ObjectFactory factory,
-            @NotNull final List<AlternativaNokGlobus> alternativasNok) {
-        final ArrayOfAlternativasNokVO arrayOfAlternativasNokVO = factory.createArrayOfAlternativasNokVO();
-        for (final AlternativaNokGlobus alternativaNokGlobus : alternativasNok) {
-            final AlternativasNokVO alternativaNokVO = factory.createAlternativasNokVO();
-            alternativaNokVO.setCodAlternativaNok(alternativaNokGlobus.getCodContextoAlternativaNok().intValue());
-            alternativaNokVO.setDescricaoAlternativaNok(alternativaNokGlobus.getDescricaoAlternativaNok());
-            alternativaNokVO.setPrioridadeAlternativaNok(alternativaNokGlobus.getPrioridadeAlternativaNok().asString());
-            arrayOfAlternativasNokVO.getAlternativasNokVO().add(alternativaNokVO);
-        }
-        return arrayOfAlternativasNokVO;
     }
 
     @NotNull

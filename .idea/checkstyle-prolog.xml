@@ -51,7 +51,7 @@
         </module>
         <!-- Valida a nomenclatura das packages. -->
         <module name="PackageName">
-            <property name="format" value="^[a-z]+(\._?[a-z][a-z]*)*$"/>
+            <property name="format" value="^[a-z0-9]+(\._?[a-z0-9]*)*$"/>
         </module>
         <!-- Valida a nomenclatura dos parâmetros de métodos. -->
         <module name="ParameterName">

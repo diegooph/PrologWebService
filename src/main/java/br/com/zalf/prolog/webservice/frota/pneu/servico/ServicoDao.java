@@ -26,9 +26,11 @@ public interface ServicoDao {
                                           @NotNull final Long codPneu,
                                           @NotNull final TipoServico tipoServico) throws Throwable;
 
-    void calibragemToInspecao(@NotNull final Connection conn,
-                              @NotNull final Long codUnidade,
-                              @NotNull final Long codPneu) throws Throwable;
+    void convertServico(@NotNull final Connection conn,
+                        @NotNull final Long codUnidade,
+                        @NotNull final Long codPneu,
+                        @NotNull final TipoServico tipoServicoOriginal,
+                        @NotNull final TipoServico tipoServicoNovo) throws Throwable;
 
     @NotNull
     List<TipoServico> getServicosCadastradosByPneu(@NotNull final Long codUnidade,
@@ -40,7 +42,8 @@ public interface ServicoDao {
     ServicoHolder getServicoHolder(@NotNull final ServicoHolderBuscaFiltro filtro) throws Throwable;
 
     @NotNull
-    List<Servico> getServicosAbertos(@NotNull final ServicosAbertosBuscaFiltro filtro) throws Throwable;
+    List<Servico> getServicosAbertos(@NotNull final ServicosAbertosBuscaFiltro filtro)
+            throws Throwable;
 
     void fechaServico(@NotNull final Long codUnidade,
                       @NotNull final OffsetDateTime dataHorafechamentoServico,
@@ -51,7 +54,6 @@ public interface ServicoDao {
     ServicosFechadosHolder getQuantidadeServicosFechadosByVeiculo(final Long codUnidade,
                                                                   final long dataInicial,
                                                                   final long dataFinal) throws SQLException;
-
 
     ServicosFechadosHolder getQuantidadeServicosFechadosByPneu(final Long codUnidade,
                                                                final long dataInicial,
@@ -73,12 +75,41 @@ public interface ServicoDao {
                                           final Long codPneu,
                                           final Connection connection) throws SQLException;
 
-    int fecharAutomaticamenteServicosPneu(@NotNull final Connection conn,
-                                          @NotNull final Long codUnidade,
-                                          @NotNull final Long codPneu,
-                                          @NotNull final Long codProcessoMovimentacao,
-                                          @NotNull final OffsetDateTime dataHorafechamentoServico,
-                                          final long kmColetadoVeiculo) throws SQLException;
+    int fecharAutomaticamenteTodosServicosPneu(
+            @NotNull final Connection conn,
+            @NotNull final Long codUnidade,
+            @NotNull final Long codPneu,
+            @NotNull final Long codProcesso,
+            @NotNull final OffsetDateTime dataHorafechamentoServico,
+            final long kmColetadoVeiculo,
+            @NotNull final OrigemFechamentoAutomaticoEnum origemFechamentoServico) throws SQLException;
+
+    int fecharAutomaticamenteServicosInspecaoPneu(@NotNull final Connection conn,
+                                                  @NotNull final Long codUnidade,
+                                                  @NotNull final Long codPneu,
+                                                  @NotNull final Long codProcesso,
+                                                  @NotNull final OffsetDateTime dataHorafechamentoServico,
+                                                  final long kmColetadoVeiculo,
+                                                  @NotNull final OrigemFechamentoAutomaticoEnum origemFechamentoServico)
+            throws SQLException;
+
+    int fecharAutomaticamenteServicosCalibragemPneu(@NotNull final Connection conn,
+                                                    @NotNull final Long codUnidade,
+                                                    @NotNull final Long codPneu,
+                                                    @NotNull final Long codProcesso,
+                                                    @NotNull final OffsetDateTime dataHorafechamentoServico,
+                                                    final long kmColetadoVeiculo,
+                                                    @NotNull final OrigemFechamentoAutomaticoEnum origemFechamentoServico)
+            throws SQLException;
+
+    int fecharAutomaticamenteServicosMovimentacaoPneu(@NotNull final Connection conn,
+                                                      @NotNull final Long codUnidade,
+                                                      @NotNull final Long codPneu,
+                                                      @NotNull final Long codProcesso,
+                                                      @NotNull final OffsetDateTime dataHorafechamentoServico,
+                                                      final long kmColetadoVeiculo,
+                                                      @NotNull final OrigemFechamentoAutomaticoEnum origemFechamentoServico)
+            throws SQLException;
 
     @NotNull
     VeiculoServico getVeiculoAberturaServico(@NotNull final VeiculoAberturaServicoFiltro filtro) throws Throwable;

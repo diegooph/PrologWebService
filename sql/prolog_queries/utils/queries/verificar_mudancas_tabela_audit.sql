@@ -7,6 +7,15 @@ from audit.veiculo_data_audit vd
 -- where vd.row_log ->> 'placa' = 'FZM3126'
 order by vd.row_log -> 'codigo', vd.data_hora_utc asc;
 
+-- Pneu.
+select vd.row_log -> 'codigo' as cod_pneu,
+       vd.data_hora_utc       as data_hora_log,
+       vd.operacao            as operacao,
+       (jsonb_populate_record(NULL::pneu_data, vd.row_log)).*
+from audit.pneu_data_audit vd
+-- where vd.row_log ->> 'codigo' = 'FZM3126'
+order by vd.row_log -> 'codigo', vd.data_hora_utc asc;
+
 
 -- Colaborador.
 select cd.row_log -> 'codigo' as cod_colaborador,

@@ -1,12 +1,3 @@
--- Sobre:
---
--- Esta function retorna o status atual dos pneus de uma/várias unidade(s)
---
--- Précondições:
--- 1) Código da unidade
---
--- Histórico:
--- 2019-09-09 -> Altera vínculo da tabela PNEU_ORDEM_NOMENCLATURA_UNIDADE para PNEU_POSICAO_NOMENCLATURA_EMPRESA. (thaisksf PL-2258)
 CREATE OR REPLACE FUNCTION FUNC_PNEU_RELATORIO_STATUS_ATUAL_PNEUS(
     F_COD_UNIDADES BIGINT[])
     RETURNS TABLE

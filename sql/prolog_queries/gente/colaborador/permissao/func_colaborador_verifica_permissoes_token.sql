@@ -1,19 +1,3 @@
--- Sobre:
---
--- Function para verificar se um colaborador representando pelo F_TOKEN que faz uma requisição no WS do ProLog
--- possui as permissões necessárias que o método que ele utiliza está pedindo.
---
--- Também é possível indicar se a verificação deve levar em conta apenas usuários ativos no sistema ou não. Isso é
--- feito através do parâmetro F_APENAS_USUARIOS_ATIVOS.
---
--- Para verifica a lógica das permissões em si, essa function utiliza:
--- -> FUNC_COLABORADOR_VERIFICA_PERMISSOES
---
--- Histórico:
--- 2019-08-29 -> Function criada (luizfp - PL-2267).
--- 2020-03-25 -> Altera function para retornar CPF e código do colaborador (luizfp - PL-2638).
--- 2020-06-25 -> Removemos as funções bloqueadas do colaborador (diogenesvanzella - PL-2671).
--- 2020-07-08 -> Removemos verificação das funções bloqueadas (diogenesvanzella - PL-2671).
 create or replace function func_colaborador_verifica_permissoes_token(f_token text,
                                                                       f_permisssoes_necessarias integer[],
                                                                       f_precisa_ter_todas_as_permissoes boolean,

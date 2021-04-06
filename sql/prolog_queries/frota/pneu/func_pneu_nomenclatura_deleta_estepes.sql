@@ -1,10 +1,6 @@
 -- Sobre:
 -- A lógica aplicada nessa function é a seguinte:
 -- Deleta a nomenclatura de estepes de um diagrama.
---
---
--- Histórico:
--- 2019-09-20 -> Function criada (thaisksf PL-2259).
 CREATE OR REPLACE FUNCTION FUNC_PNEU_NOMENCLATURA_DELETA_ESTEPES(F_COD_EMPRESA BIGINT,
                                                                  F_COD_DIAGRAMA BIGINT)
     RETURNS VOID

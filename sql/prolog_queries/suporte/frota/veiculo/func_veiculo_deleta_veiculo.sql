@@ -1,26 +1,3 @@
--- Sobre:
--- A lógica aplicada nessa function é a seguinte:
--- Após as validações passadas nas précondições, o veículo vai ser deletado logicamente junto com suas dependências.
--- É deletado todos os checklist e aferições da placa, independentemente de unidades e empresas que ela passou.
--- Caso o veículo for da integração, também é deletado.
---
--- Precondições:
--- Veículo pertencer a unidade.
--- Veículo não ter pneus vinculados.
--- Veículo não estar deletado.
--- Remover TODAS aferições do veículo.
--- Remover TODOS checklist do veículo. (COS + COSI)
---
--- Précondições:
---
--- Histórico:
--- 2019-09-17 -> Adiciona SESSION_USER (natanrotta - PL-2229).
--- 2019-09-18 -> Adiciona no schema suporte (natanrotta - PL-2242).
--- 2020-03-04 -> Adiciona melhorias na deleção do veículo e suas dependências (natanrotta - PL-2330).
--- 2020-05-22 -> Adiciona estrutura para deletar veículos integrados (natanrotta - PLI-157).
--- 2020-07-07 -> Adiciona motivo de deleção. (thaisksf - PL-2801).
--- 2020-08-14 -> Adiciona chamada para logar execução da function (gustavocnp95 - PL-3066).
--- 2020-11-19 -> Adiciona impedimento para deleção de veículos que possuem acoplamento (thaisksf - PL-3289).
 create or replace function suporte.func_veiculo_deleta_veiculo(f_cod_unidade bigint,
                                                                f_placa varchar(255),
                                                                f_motivo_delecao text,
@@ -44,12 +21,15 @@ declare
     v_nome_unidade                  varchar(255) := (select u.nome
                                                      from unidade u
                                                      where u.codigo = f_cod_unidade);
+    v_cod_veiculo                   bigint       := (select codigo
+                                                     from veiculo v
+                                                     where v.placa = f_placa
+                                                       and v.cod_unidade = f_cod_unidade);
 begin
     perform suporte.func_historico_salva_execucao();
-    -- Verifica se unidade existe.
+
     perform func_garante_unidade_existe(f_cod_unidade);
 
-    -- VERIFICA SE VEÍCULO EXISTE.
     perform func_garante_veiculo_existe(f_cod_unidade, f_placa);
 
     -- Verifica se veiculo possui pneus aplicados.
@@ -68,16 +48,16 @@ begin
         raise exception 'Erro! A Placa: % possui acoplamentos. Favor removê-los', f_placa;
     end if;
 
-    -- Verifica se a placa possui aferição.
-    if exists(select a.codigo from afericao_data a where a.placa_veiculo = f_placa)
+    -- Verifica se placa possui aferição. Optamos por usar _DATA para garantir que tudo será deletado.
+    if exists(select a.codigo from afericao_data a where a.cod_veiculo = v_cod_veiculo)
     then
         -- Coletamos todos os cod_afericao que a placa possui.
         select array_agg(a.codigo)
         from afericao_data a
-        where a.placa_veiculo = f_placa
+        where a.cod_veiculo = v_cod_veiculo
         into v_lista_cod_afericao_placa;
 
-        -- DELETAMOS AFERIÇÃO EM AFERICAO_MANUTENCAO_DATA.
+        -- Deletamos aferição em afericao_manutencao_data, caso não esteja deletada.
         update afericao_manutencao_data
         set deletado            = true,
             data_hora_deletado  = now(),
@@ -86,7 +66,7 @@ begin
         where deletado = false
           and cod_afericao = any (v_lista_cod_afericao_placa);
 
-        -- DELETAMOS AFERIÇÃO EM AFERICAO_VALORES_DATA.
+        -- Deletamos aferição em afericao_valores_data, caso não esteja deletada.
         update afericao_valores_data
         set deletado            = true,
             data_hora_deletado  = now(),
@@ -95,7 +75,7 @@ begin
         where deletado = false
           and cod_afericao = any (v_lista_cod_afericao_placa);
 
-        -- DELETAMOS AFERIÇÃO.
+        -- Deletamos aferição, caso não esteja deletada.
         update afericao_data
         set deletado            = true,
             data_hora_deletado  = now(),
@@ -105,82 +85,97 @@ begin
           and codigo = any (v_lista_cod_afericao_placa);
     end if;
 
-    -- VERIFICA SE PLACA POSSUI CHECKLIST.
-    if exists(select c.placa_veiculo from checklist_data c where c.placa_veiculo = f_placa)
+    -- Verifica se placa possui checklist. Optamos por usar _DATA para garantir que tudo será deletado.
+    if exists(select c.placa_veiculo from checklist_data c where c.deletado = false and c.placa_veiculo = f_placa)
     then
-        -- BUSCA TODOS OS CÓDIGO DO CHECKLIST DA PLACA.
-        select ARRAY_AGG(c.codigo)
+        -- Busca todos os códigos de checklists da placa.
+        select array_agg(c.codigo)
         from checklist_data c
-        where c.placa_veiculo = f_placa
+        where c.deletado = false
+          and c.placa_veiculo = f_placa
         into v_lista_cod_check_placa;
 
-        -- DELETA COD_CHECK EM COS.
-        update checklist_ordem_servico_data
-        set deletado            = true,
-            data_hora_deletado  = now(),
-            pg_username_delecao = session_user,
-            motivo_delecao      = f_motivo_delecao
-        where deletado = false
-          and cod_checklist = any (v_lista_cod_check_placa);
+        -- Deleta todos os checklists da placa. Usamos deleção lógica em conjunto com uma tabela de deleção específica.
+        insert into checklist_delecao (cod_checklist,
+                                       cod_colaborador,
+                                       data_hora,
+                                       acao_executada,
+                                       origem_delecao,
+                                       observacao,
+                                       pg_username_delecao)
+        select unnest(v_lista_cod_check_placa),
+               null,
+               now(),
+               'DELETADO',
+               'SUPORTE',
+               f_motivo_delecao,
+               session_user;
 
-        -- Busco os códigos prolog deletados em cos.
-        select ARRAY_AGG(codigo_prolog)
-        from checklist_ordem_servico_data
-        where cod_checklist = any (v_lista_cod_check_placa)
-          and cod_unidade = f_cod_unidade
-          and deletado is true
-        into v_lista_cod_prolog_deletado_cos;
+        update checklist_data set deletado = true where codigo = any (v_lista_cod_check_placa);
 
-        -- PARA CADA CÓDIGO PROLOG DELETADO EM COS, DELETAMOS O REFERENTE NA COSI.
-        foreach v_codigo_loop in array v_lista_cod_prolog_deletado_cos
-            loop
-                -- DELETA EM COSI AQUELES QUE FORAM DELETADOS NA COS.
-                update checklist_ordem_servico_itens_data
-                set deletado            = true,
-                    data_hora_deletado  = NOW(),
-                    pg_username_delecao = SESSION_USER,
-                    motivo_delecao      = f_motivo_delecao
-                where deletado = false
-                  and (cod_os, cod_unidade) = (select cos.codigo, cos.cod_unidade
-                                               from checklist_ordem_servico_data cos
-                                               where cos.codigo_prolog = v_codigo_loop);
-            end loop;
+        -- Usamos, obrigatoriamente, a view checklist_ordem_servico para
+        -- evitar de tentar deletar OSs que estão deletadas.
+        if exists(select cos.codigo
+                  from checklist_ordem_servico cos
+                  where cos.cod_checklist = any (v_lista_cod_check_placa))
+        then
+            -- Deleta ordens de serviços dos checklists.
+            update checklist_ordem_servico_data
+            set deletado            = true,
+                data_hora_deletado  = now(),
+                pg_username_delecao = session_user,
+                motivo_delecao      = f_motivo_delecao
+            where deletado = false
+              and cod_checklist = any (v_lista_cod_check_placa);
 
-        -- DELETA TODOS CHECKLIST DA PLACA.
-        update checklist_data
-        set deletado            = true,
-            data_hora_deletado  = NOW(),
-            pg_username_delecao = SESSION_USER,
-            motivo_delecao      = f_motivo_delecao
-        where placa_veiculo = f_placa
-          and deletado = false
-          and codigo = any (v_lista_cod_check_placa);
+            -- Busca os codigo Prolog deletados nas Ordens de Serviços.
+            select array_agg(codigo_prolog)
+            from checklist_ordem_servico_data
+            where cod_checklist = any (v_lista_cod_check_placa)
+              and deletado is true
+            into v_lista_cod_prolog_deletado_cos;
+
+            -- Para cada código prolog deletado em cos, deletamos o referente na cosi.
+            foreach v_codigo_loop in array v_lista_cod_prolog_deletado_cos
+                loop
+                    -- Deleta em cosi aqueles que foram deletados na cos.
+                    update checklist_ordem_servico_itens_data
+                    set deletado            = true,
+                        data_hora_deletado  = now(),
+                        pg_username_delecao = session_user,
+                        motivo_delecao      = f_motivo_delecao
+                    where deletado = false
+                      and (cod_os, cod_unidade) = (select cos.codigo, cos.cod_unidade
+                                                   from checklist_ordem_servico_data cos
+                                                   where cos.codigo_prolog = v_codigo_loop);
+                end loop;
+        end if;
     end if;
 
     -- Verifica se a placa é integrada.
-    if EXISTS(select ivc.placa_veiculo_cadastro
+    if exists(select ivc.placa_veiculo_cadastro
               from integracao.veiculo_cadastrado ivc
               where ivc.cod_unidade_cadastro = f_cod_unidade
                 and ivc.placa_veiculo_cadastro = f_placa)
     then
-        -- Realiza a deleção da placa. (Não possuímos deleção lógica)
+        -- Realiza a deleção da placa (não possuímos deleção lógica).
         delete
         from integracao.veiculo_cadastrado
         where cod_unidade_cadastro = f_cod_unidade
           and placa_veiculo_cadastro = f_placa;
     end if;
 
-    -- REALIZA DELEÇÃO DA PLACA.
+    -- Realiza deleção da placa.
     update veiculo_data
     set deletado            = true,
-        data_hora_deletado  = NOW(),
-        pg_username_delecao = SESSION_USER,
+        data_hora_deletado  = now(),
+        pg_username_delecao = session_user,
         motivo_delecao      = f_motivo_delecao
     where cod_unidade = f_cod_unidade
       and placa = f_placa
       and deletado = false;
 
-    -- MENSAGEM DE SUCESSO.
+    -- Mensagem de sucesso.
     select 'Veículo deletado junto com suas dependências. Veículo: '
                || f_placa
                || ', Empresa: '

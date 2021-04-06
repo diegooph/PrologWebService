@@ -1,12 +1,3 @@
--- Sobre:
---
--- Esta function cadastra um modelo de uma banda.
---
--- Précondicões
--- Func REMOVE_EXTRA_SPACES criada.
-
--- Histórico:
--- 2019-09-25 -> Function criada. (thaisksf PL-2263)
 CREATE OR REPLACE FUNCTION FUNC_PNEU_CADASTRA_MODELO_BANDA(F_COD_EMPRESA BIGINT,
                                                            F_COD_MARCA_BANDA BIGINT,
                                                            F_NOME_MODELO_BANDA VARCHAR(255),

@@ -1,9 +1,3 @@
--- SOBRE:
--- A LÓGICA APLICADA NESSA FUNCTION É A SEGUINTE:
--- CLONA PNEUS DE UMA UNIDADE PARA OUTRA.
---
--- HISTÓRICO:
--- 2020-04-06 -> FUNCTION CRIADA (THAISKSF - PL-2034).
 CREATE OR REPLACE FUNCTION INTERNO.FUNC_CLONA_PNEUS(F_COD_EMPRESA_BASE BIGINT,
                                                     F_COD_UNIDADE_BASE BIGINT,
                                                     F_COD_EMPRESA_USUARIO BIGINT,
@@ -87,6 +81,7 @@ BEGIN
     ON CONFLICT ON CONSTRAINT UNIQUE_NOME_MODELO_BANDA_POR_MARCA
         DO NOTHING;
 
+    PERFORM SETVAL('PNEU_DATA_CODIGO_SEQ', (SELECT MAX(P.CODIGO + 1) FROM PNEU_DATA P));
     -- DADOS DE PARA
     WITH PNEUS_BASE AS (
         SELECT PD.CODIGO_CLIENTE               AS NUMERO_FOGO_BASE,
@@ -103,7 +98,8 @@ BEGIN
                PD.COD_MODELO_BANDA             AS COD_MODELO_BANDA_BASE,
                PD.ALTURA_SULCO_CENTRAL_EXTERNO AS ALTURA_SULCO_CENTRAL_EXTERNO_BASE,
                PD.DOT                          AS DOT_BASE,
-               PD.VALOR                        AS VALOR_BASE
+               PD.VALOR                        AS VALOR_BASE,
+               PD.ORIGEM_CADASTRO              AS ORIGEM_CADASTRO
         FROM PNEU PD
         WHERE COD_UNIDADE = F_COD_UNIDADE_BASE
     ),
@@ -130,7 +126,8 @@ BEGIN
                                                       MOBN.CODIGO AS COD_MODELO_BANDA_NOVO,
                                                       PB.ALTURA_SULCO_CENTRAL_EXTERNO_BASE,
                                                       PB.DOT_BASE,
-                                                      PB.VALOR_BASE
+                                                      PB.VALOR_BASE,
+                                                      PB.ORIGEM_CADASTRO
              FROM PNEUS_BASE PB
                       JOIN MODELO_PNEU MPB
                            ON MPB.CODIGO = PB.COD_MODELO_PNEU_BASE AND MPB.COD_EMPRESA = F_COD_EMPRESA_BASE
@@ -162,7 +159,8 @@ BEGIN
                     DOT,
                     VALOR,
                     COD_EMPRESA,
-                    COD_UNIDADE_CADASTRO)
+                    COD_UNIDADE_CADASTRO,
+                    ORIGEM_CADASTRO)
     SELECT DDP.NUMERO_FOGO_BASE,
            DDP.COD_MODELO_PNEU_NOVO,
            DDP.COD_DIMENSAO_BASE,
@@ -180,7 +178,8 @@ BEGIN
            DDP.DOT_BASE,
            DDP.VALOR_BASE,
            F_COD_EMPRESA_USUARIO,
-           F_COD_UNIDADE_USUARIO
+           F_COD_UNIDADE_USUARIO,
+           DDP.ORIGEM_CADASTRO
     FROM DADOS_DE_PARA DDP;
 END;
 $$;

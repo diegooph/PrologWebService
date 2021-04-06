@@ -1,9 +1,3 @@
--- Sobre:
---
--- Function retorna lista de colaboradores filtrados por unidade.
---
--- Histórico:
--- 2020-05-18 -> Corrige problema ao buscar colaborador sem permissao prolog (thaisksf - PL-2743).
 CREATE OR REPLACE FUNCTION FUNC_COLABORADOR_RELATORIO_LISTAGEM_COLABORADORES_BY_UNIDADE(F_COD_UNIDADES BIGINT[])
     RETURNS TABLE
             (

@@ -1,11 +1,3 @@
--- Sobre:
---
--- Function que retorna os modelos de checklist disponíveis para a realização offline.
---
--- Histórico:
--- 2020-03-03 -> Atualização de arquivo e documentação (wvinim - PL-2494).
--- 2020-07-07 -> Adição das informações de parametrização de fotos (luiz_fp - PL-2705).
--- 2020-07-13 -> Atualização de arquivo e documentação (wvinim - PL-2824).
 CREATE OR REPLACE FUNCTION FUNC_CHECKLIST_OFFLINE_GET_MODELOS_DISPONIVEIS(F_COD_UNIDADE BIGINT)
     RETURNS TABLE
             (

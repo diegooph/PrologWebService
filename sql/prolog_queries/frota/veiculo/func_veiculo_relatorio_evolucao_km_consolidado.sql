@@ -1,9 +1,3 @@
--- Sobre:
--- Esta function retorna um relatório com a evolução dos kms coletados de um veículo.
---
---
--- Histórico:
--- 2020-09-28 -> Function criada (thaisksf - PL-3172).
 create or replace function func_veiculo_relatorio_evolucao_km_consolidado(f_cod_empresa bigint,
                                                                           f_cod_veiculo bigint)
     returns table

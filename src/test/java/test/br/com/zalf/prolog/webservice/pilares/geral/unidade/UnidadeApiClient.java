@@ -1,8 +1,8 @@
 package test.br.com.zalf.prolog.webservice.pilares.geral.unidade;
 
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
-import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeEdicaoDto;
-import br.com.zalf.prolog.webservice.geral.unidade._model.UnidadeVisualizacaoListagemDto;
+import br.com.zalf.prolog.webservice.v3.geral.unidade._model.UnidadeEdicaoDto;
+import br.com.zalf.prolog.webservice.v3.geral.unidade._model.UnidadeVisualizacaoListagemDto;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestComponent;
@@ -30,17 +30,20 @@ public class UnidadeApiClient {
     @NotNull
     private TestRestTemplate restTemplate;
 
-    public ResponseEntity<UnidadeVisualizacaoListagemDto> getUnidadeByCodigo(final Long codUnidade) {
-        final RequestEntity<Void> reqEntity = RequestEntity
+    @NotNull
+    public ResponseEntity<UnidadeVisualizacaoListagemDto> getUnidadeByCodigo(@NotNull final Long codUnidade) {
+        final RequestEntity<Void> requestEntity = RequestEntity
                 .get(URI.create(RESOURCE + "/" + codUnidade))
                 .accept(MediaType.APPLICATION_JSON)
                 .build();
-        return restTemplate.exchange(reqEntity,
+        return restTemplate.exchange(requestEntity,
                                      ParameterizedTypeReference.forType(UnidadeVisualizacaoListagemDto.class));
     }
 
-    public ResponseEntity<List<UnidadeVisualizacaoListagemDto>> getUnidadesListagem(final Long codEmpresa,
-                                                                                    final List<Long> codRegionais) {
+    @NotNull
+    public ResponseEntity<List<UnidadeVisualizacaoListagemDto>> getUnidadesListagem(
+            @NotNull final Long codEmpresa,
+            @NotNull final List<Long> codRegionais) {
         final UriComponents components = UriComponentsBuilder
                 .fromPath(RESOURCE)
                 .queryParam("codEmpresa", codEmpresa)
@@ -54,15 +57,18 @@ public class UnidadeApiClient {
                                      new ParameterizedTypeReference<List<UnidadeVisualizacaoListagemDto>>() {});
     }
 
-    public ResponseEntity<SuccessResponse> updateUnidade(final UnidadeEdicaoDto dto) {
+    @NotNull
+    public ResponseEntity<SuccessResponse> updateUnidade(@NotNull final UnidadeEdicaoDto dto) {
         return updateUnidade(dto, SuccessResponse.class);
     }
 
-    public <T> ResponseEntity<T> updateUnidade(final UnidadeEdicaoDto dto, final Class<T> responseType) {
-        final RequestEntity<UnidadeEdicaoDto> reqEntity = RequestEntity
+    @NotNull
+    public <T> ResponseEntity<T> updateUnidade(@NotNull final UnidadeEdicaoDto dto,
+                                               @NotNull final Class<T> responseType) {
+        final RequestEntity<UnidadeEdicaoDto> requestEntity = RequestEntity
                 .put(URI.create(RESOURCE))
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(dto);
-        return restTemplate.exchange(reqEntity, responseType);
+        return restTemplate.exchange(requestEntity, responseType);
     }
 }

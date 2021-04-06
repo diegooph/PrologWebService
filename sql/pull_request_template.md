@@ -14,7 +14,6 @@
 - [ ] Migration funciona no setup do BD local?
 - [ ] Atualizar no github o arquivo específico da function ou view que foi alterada
 - [ ] Funciona na versão do Postgres de prod (12.2)?
-- [ ] Functions / views documentadas
 - [ ] Impacta functions de suporte?
 - [ ] Foi aplicado um ordenamento que faz sentido para os usuários (caso seja uma listagem)?
 - [ ] Verificado o query plan (explain analyze) para uso de indexes e evitar o uso de disco (disk e batches > 1)?

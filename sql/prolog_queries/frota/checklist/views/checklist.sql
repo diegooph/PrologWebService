@@ -1,15 +1,3 @@
--- Sobre:
---
--- Essa view retorna uma lista de checklists realizados.
---
--- Histórico:
--- 2020-03-02 -> Atualização de arquivo e documentação (wvinim - PL-2494).
--- 2020-07-07 -> Adiciona novas colunas (wvinim - PL-2705).
---  • TOTAL_MIDIAS_PERGUNTAS_OK.
---  • TOTAL_MIDIAS_ALTERNATIVAS_NOK.
--- 2020-07-13 -> Atualização de arquivo e documentação (wvinim - PL-2824).
--- 2020-09-22 -> Insere nova coluna observação (gustavocnp95 - PL-3164).
--- 2020-10-01 -> Insere nova coluna cod_veiculo (thaisksf).
 create or replace view checklist as
 select c.cod_unidade                        as cod_unidade,
        c.cod_checklist_modelo               as cod_checklist_modelo,
@@ -19,7 +7,6 @@ select c.cod_unidade                        as cod_unidade,
        c.data_hora_realizacao_tz_aplicado   as data_hora_realizacao_tz_aplicado,
        c.data_hora_importado_prolog         as data_hora_importado_prolog,
        c.cpf_colaborador                    as cpf_colaborador,
-       c.placa_veiculo                      as placa_veiculo,
        c.cod_veiculo                        as cod_veiculo,
        c.tipo                               as tipo,
        c.tempo_realizacao                   as tempo_realizacao,

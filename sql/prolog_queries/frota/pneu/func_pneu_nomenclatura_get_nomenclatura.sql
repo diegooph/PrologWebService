@@ -1,14 +1,3 @@
--- Sobre:
--- A lógica aplicada nessa function é a seguinte:
--- retorna a nomenclatura das posições de um determinado diagrama.
---
--- Precondições:
--- 1) Informações necessárias para realizar a busca.
--- 2) Informações cadastradas no banco.
---
--- Histórico:
--- 2019-09-03 -> Function criada (thaisksf PL-2259).
--- 2020-05-11 -> Adiciona cod_auxiliar (diogenesvanzella - PLI-142).
 CREATE OR REPLACE FUNCTION FUNC_PNEU_NOMENCLATURA_GET_NOMENCLATURA(F_COD_EMPRESA BIGINT,
                                                                    F_COD_DIAGRAMA BIGINT)
     RETURNS TABLE

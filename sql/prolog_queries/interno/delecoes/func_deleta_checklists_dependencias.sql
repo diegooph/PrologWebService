@@ -1,9 +1,3 @@
--- Sobre:
--- A lógica aplicada nessa function é a seguinte:
--- Deleta os checklists de uma unidade e suas dependências.
---
--- Histórico:
--- 2020-04-06 -> Function criada (thaisksf - PL-2034).
 CREATE OR REPLACE FUNCTION INTERNO.FUNC_DELETA_CHECKLISTS_DEPENDENCIAS(F_COD_UNIDADES BIGINT[],
                                                                        F_COD_CHECKLISTS BIGINT[],
                                                                        F_COD_CHECKLISTS_MODELO BIGINT[])
@@ -88,10 +82,6 @@ BEGIN
     DELETE
     FROM CHECKLIST_MODELO_VEICULO_TIPO CMVT
     WHERE CMVT.COD_UNIDADE = ANY (F_COD_UNIDADES);
-
-    DELETE
-    FROM CHECKLIST_MODELO_VEICULO_TIPO_BACKUP CMVTB
-    WHERE CMVTB.COD_MODELO = ANY (F_COD_CHECKLISTS_MODELO);
 
     DELETE
     FROM CHECKLIST_MODELO_FUNCAO CMF

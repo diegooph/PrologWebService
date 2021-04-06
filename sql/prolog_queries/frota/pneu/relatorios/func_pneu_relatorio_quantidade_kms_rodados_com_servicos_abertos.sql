@@ -10,12 +10,13 @@ DECLARE
 BEGIN
   RETURN QUERY
   WITH DADOS AS (SELECT
-                   DISTINCT ON (A.PLACA_VEICULO)
-                   A.PLACA_VEICULO,
+                   DISTINCT ON (V.PLACA)
+                   V.PLACA AS PLACA_VEICULO,
                    AM.KM_MOMENTO_CONSERTO - A.KM_VEICULO AS TOTAL_KM
                  FROM AFERICAO_MANUTENCAO AM
                    JOIN AFERICAO A ON A.CODIGO = AM.COD_AFERICAO
-                   JOIN VEICULO_PNEU VP ON VP.PLACA = A.PLACA_VEICULO
+                   JOIN VEICULO V ON V.CODIGO = A.COD_VEICULO
+                   JOIN VEICULO_PNEU VP ON VP.COD_VEICULO = A.COD_VEICULO
                                            AND AM.COD_PNEU = VP.COD_PNEU
                                            AND AM.COD_UNIDADE = VP.COD_UNIDADE
                  WHERE AM.COD_UNIDADE = ANY (F_COD_UNIDADES)

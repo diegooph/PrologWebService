@@ -1,9 +1,3 @@
--- Sobre:
--- A lógica aplicada nessa function é a seguinte:
--- Remove letras, characteres especiais e espaços, exceto vírgula e ponto final.
---
--- Histórico:
--- 2019-12-13 -> Function criada (thaisksf - PL-2320).
 CREATE OR REPLACE FUNCTION remove_non_numeric_characters_except_comma_period(F_TEXTO TEXT)
     RETURNS TEXT
     LANGUAGE PLPGSQL

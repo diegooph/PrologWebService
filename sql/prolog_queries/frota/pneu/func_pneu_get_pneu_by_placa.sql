@@ -1,11 +1,3 @@
--- Sobre:
---
--- Retorna informações dos pneus vinculados de uma placa.
---
--- Histórico:
--- 2019-09-06 -> Function criada (thaisksf PL-2258).
--- 2019-10-09 -> Adiciona ordenamento por ordem_exibicao (diogenesvanzella - PL-2344).
--- 2020-07-01 -> Adiciona identificador frota (luiz_fp - PL-2760).
 CREATE OR REPLACE FUNCTION FUNC_PNEU_GET_PNEU_BY_PLACA(F_PLACA VARCHAR(7))
   RETURNS TABLE (
     NOME_MARCA_PNEU              VARCHAR(255),

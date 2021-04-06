@@ -1,107 +1,98 @@
--- sobre:
---
--- function utilizada para buscar pneu para aferição avulsa
---
--- histórico:
--- 2019-05-07 -> Function criada.
--- 2020-06-19 -> Adiciona identificador frota (thaisksf - PL-2760).
-CREATE OR REPLACE FUNCTION FUNC_AFERICAO_GET_PNEU_PARA_AFERICAO_AVULSA(F_COD_PNEU BIGINT, F_TZ_UNIDADE TEXT)
-    RETURNS TABLE
+create or replace function func_afericao_get_pneu_para_afericao_avulsa(f_cod_pneu bigint, f_tz_unidade text)
+    returns table
             (
-                CODIGO                                BIGINT,
-                CODIGO_CLIENTE                        TEXT,
-                DOT                                   TEXT,
-                VALOR                                 REAL,
-                COD_UNIDADE_ALOCADO                   BIGINT,
-                COD_REGIONAL_ALOCADO                  BIGINT,
-                PNEU_NOVO_NUNCA_RODADO                BOOLEAN,
-                COD_MARCA_PNEU                        BIGINT,
-                NOME_MARCA_PNEU                       TEXT,
-                COD_MODELO_PNEU                       BIGINT,
-                NOME_MODELO_PNEU                      TEXT,
-                QT_SULCOS_MODELO_PNEU                 SMALLINT,
-                COD_MARCA_BANDA                       BIGINT,
-                NOME_MARCA_BANDA                      TEXT,
-                ALTURA_SULCOS_MODELO_PNEU             REAL,
-                COD_MODELO_BANDA                      BIGINT,
-                NOME_MODELO_BANDA                     TEXT,
-                QT_SULCOS_MODELO_BANDA                SMALLINT,
-                ALTURA_SULCOS_MODELO_BANDA            REAL,
-                VALOR_BANDA                           REAL,
-                ALTURA                                INTEGER,
-                LARGURA                               INTEGER,
-                ARO                                   REAL,
-                COD_DIMENSAO                          BIGINT,
-                ALTURA_SULCO_CENTRAL_INTERNO          REAL,
-                ALTURA_SULCO_CENTRAL_EXTERNO          REAL,
-                ALTURA_SULCO_INTERNO                  REAL,
-                ALTURA_SULCO_EXTERNO                  REAL,
-                PRESSAO_RECOMENDADA                   REAL,
-                PRESSAO_ATUAL                         REAL,
-                STATUS                                TEXT,
-                VIDA_ATUAL                            INTEGER,
-                VIDA_TOTAL                            INTEGER,
-                POSICAO_PNEU                          INTEGER,
-                POSICAO_APLICADO_CLIENTE              TEXT,
-                COD_VEICULO_APLICADO                  BIGINT,
-                PLACA_APLICADO                        TEXT,
-                IDENTIFICADOR_FROTA                   TEXT,
-                JA_FOI_AFERIDO                        BOOLEAN,
-                COD_ULTIMA_AFERICAO                   BIGINT,
-                DATA_HORA_ULTIMA_AFERICAO             TIMESTAMP WITHOUT TIME ZONE,
-                PLACA_VEICULO_ULTIMA_AFERICAO         TEXT,
-                IDENTIFICADOR_FROTA_ULTIMA_AFERICAO   TEXT,
-                TIPO_MEDICAO_COLETADA_ULTIMA_AFERICAO TEXT,
-                TIPO_PROCESSO_COLETA_ULTIMA_AFERICAO  TEXT,
-                NOME_COLABORADOR_ULTIMA_AFERICAO      TEXT
+                codigo                                bigint,
+                codigo_cliente                        text,
+                dot                                   text,
+                valor                                 real,
+                cod_unidade_alocado                   bigint,
+                cod_regional_alocado                  bigint,
+                pneu_novo_nunca_rodado                boolean,
+                cod_marca_pneu                        bigint,
+                nome_marca_pneu                       text,
+                cod_modelo_pneu                       bigint,
+                nome_modelo_pneu                      text,
+                qt_sulcos_modelo_pneu                 smallint,
+                cod_marca_banda                       bigint,
+                nome_marca_banda                      text,
+                altura_sulcos_modelo_pneu             real,
+                cod_modelo_banda                      bigint,
+                nome_modelo_banda                     text,
+                qt_sulcos_modelo_banda                smallint,
+                altura_sulcos_modelo_banda            real,
+                valor_banda                           real,
+                altura                                integer,
+                largura                               integer,
+                aro                                   real,
+                cod_dimensao                          bigint,
+                altura_sulco_central_interno          real,
+                altura_sulco_central_externo          real,
+                altura_sulco_interno                  real,
+                altura_sulco_externo                  real,
+                pressao_recomendada                   real,
+                pressao_atual                         real,
+                status                                text,
+                vida_atual                            integer,
+                vida_total                            integer,
+                posicao_pneu                          integer,
+                posicao_aplicado_cliente              text,
+                cod_veiculo_aplicado                  bigint,
+                placa_aplicado                        text,
+                identificador_frota                   text,
+                ja_foi_aferido                        boolean,
+                cod_ultima_afericao                   bigint,
+                data_hora_ultima_afericao             timestamp without time zone,
+                placa_veiculo_ultima_afericao         text,
+                identificador_frota_ultima_afericao   text,
+                tipo_medicao_coletada_ultima_afericao text,
+                tipo_processo_coleta_ultima_afericao  text,
+                nome_colaborador_ultima_afericao      text
             )
-    LANGUAGE SQL
-AS
+    language sql
+as
 $$
-WITH AFERICOES AS (
-    SELECT INNER_TABLE.CODIGO           AS COD_AFERICAO,
-           INNER_TABLE.COD_PNEU         AS COD_PNEU,
-           INNER_TABLE.DATA_HORA,
-           INNER_TABLE.PLACA_VEICULO,
-           INNER_TABLE.IDENTIFICADOR_FROTA,
-           INNER_TABLE.TIPO_MEDICAO_COLETADA,
-           INNER_TABLE.TIPO_PROCESSO_COLETA,
-           INNER_TABLE.NOME_COLABORADOR AS NOME_COLABORADOR,
-           CASE
-               WHEN INNER_TABLE.NOME_COLABORADOR IS NOT NULL
-                   THEN TRUE
-               ELSE FALSE END           AS JA_FOI_AFERIDO
-    FROM (SELECT A.CODIGO,
-                 AV.COD_PNEU,
-                 A.DATA_HORA,
-                 A.PLACA_VEICULO,
-                 V.IDENTIFICADOR_FROTA,
-                 A.TIPO_MEDICAO_COLETADA,
-                 A.TIPO_PROCESSO_COLETA,
-                 C.NOME                      AS NOME_COLABORADOR,
-                 MAX(A.CODIGO)
-                 OVER (
-                     PARTITION BY COD_PNEU ) AS MAX_COD_AFERICAO
-          FROM PNEU P
-                   LEFT JOIN AFERICAO_VALORES AV ON P.CODIGO = AV.COD_PNEU
-                   LEFT JOIN AFERICAO A ON AV.COD_AFERICAO = A.CODIGO
-                   LEFT JOIN VEICULO V ON V.PLACA = A.PLACA_VEICULO
-                   LEFT JOIN COLABORADOR C ON A.CPF_AFERIDOR = C.CPF
-          WHERE P.STATUS = 'ESTOQUE'
-            AND P.CODIGO = F_COD_PNEU) AS INNER_TABLE
-    WHERE CODIGO = INNER_TABLE.MAX_COD_AFERICAO
+with afericoes as (
+    select inner_table.codigo           as cod_afericao,
+           inner_table.cod_pneu         as cod_pneu,
+           inner_table.data_hora,
+           inner_table.cod_veiculo,
+           inner_table.tipo_medicao_coletada,
+           inner_table.tipo_processo_coleta,
+           inner_table.nome_colaborador as nome_colaborador,
+           case
+               when inner_table.nome_colaborador is not null
+                   then true
+               else false end           as ja_foi_aferido
+    from (select a.codigo,
+                 av.cod_pneu,
+                 a.data_hora,
+                 a.cod_veiculo,
+                 a.tipo_medicao_coletada,
+                 a.tipo_processo_coleta,
+                 c.nome                      as nome_colaborador,
+                 MAX(a.codigo)
+                 over (
+                     partition by cod_pneu ) as max_cod_afericao
+          from pneu p
+                   left join afericao_valores av on p.codigo = av.cod_pneu
+                   left join afericao a on av.cod_afericao = a.codigo
+                   left join colaborador c on a.cpf_aferidor = c.cpf
+          where p.status = 'ESTOQUE'
+            and p.codigo = f_cod_pneu) as inner_table
+    where codigo = inner_table.max_cod_afericao
 )
 
-SELECT F.*,
-       A.JA_FOI_AFERIDO                      AS JA_FOI_AFERIDO,
-       A.COD_AFERICAO                        AS COD_ULTIMA_AFERICAO,
-       A.DATA_HORA AT TIME ZONE F_TZ_UNIDADE AS DATA_HORA_ULTIMA_AFERICAO,
-       A.PLACA_VEICULO :: TEXT               AS PLACA_VEICULO_ULTIMA_AFERICAO,
-       A.IDENTIFICADOR_FROTA                 AS IDENTIFICADOR_FROTA_ULTIMA_AFERICAO,
-       A.TIPO_MEDICAO_COLETADA :: TEXT       AS TIPO_MEDICAO_COLETADA_ULTIMA_AFERICAO,
-       A.TIPO_PROCESSO_COLETA :: TEXT        AS TIPO_PROCESSO_COLETA_ULTIMA_AFERICAO,
-       A.NOME_COLABORADOR :: TEXT            AS NOME_COLABORADOR_ULTIMA_AFERICAO
-FROM FUNC_PNEU_GET_PNEU_BY_CODIGO(F_COD_PNEU) AS F
-         LEFT JOIN AFERICOES A ON F.CODIGO = A.COD_PNEU
-WHERE F.CODIGO = F_COD_PNEU;
+select func.*,
+       a.ja_foi_aferido                      as ja_foi_aferido,
+       a.cod_afericao                        as cod_ultima_afericao,
+       a.data_hora at time zone f_tz_unidade as data_hora_ultima_afericao,
+       v.placa :: text                       as placa_veiculo_ultima_afericao,
+       v.identificador_frota                 as identificador_frota_ultima_afericao,
+       a.tipo_medicao_coletada :: text       as tipo_medicao_coletada_ultima_afericao,
+       a.tipo_processo_coleta :: text        as tipo_processo_coleta_ultima_afericao,
+       a.nome_colaborador :: text            as nome_colaborador_ultima_afericao
+from func_pneu_get_pneu_by_codigo(f_cod_pneu) as func
+         left join afericoes a on func.codigo = a.cod_pneu
+         left join veiculo v on v.codigo = a.cod_veiculo
+where func.codigo = f_cod_pneu;
 $$;

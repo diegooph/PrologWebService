@@ -1,9 +1,3 @@
--- Sobre:
--- Esta função realiza a busca de uma lista de motivos com base no código da empresa.
---
---
--- Histórico:
--- 2020-03-18 -> Function criada (gustavocnp95 - PL-2607).
 CREATE OR REPLACE FUNCTION FUNC_MOTIVO_MOVIMENTO_LISTAGEM(F_COD_EMPRESA BIGINT,
                                                           F_APENAS_ATIVOS BOOLEAN,
                                                           F_TIME_ZONE TEXT)

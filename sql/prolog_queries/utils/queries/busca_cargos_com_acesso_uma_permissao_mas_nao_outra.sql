@@ -1,5 +1,3 @@
--- Essa query busca os cargos que possuem acesso a uma permissão específica mas não a outra.
-
 WITH CARGOS AS (
     SELECT *
     FROM CARGO_FUNCAO_PROLOG_V11 CFP

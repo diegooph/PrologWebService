@@ -1,12 +1,3 @@
--- Sobre:
--- Esta função deleta um dipositivo móvel e seus IMEIs.
---
--- Parâmetros:
--- F_COD_EMPRESA: Código da empresa.
--- F_COD_DISPOSITIVO: Código do dispositivo.
---
--- Histórico:
--- 2019-07-26 -> Function criada (wvinim - PL-2150).
 CREATE OR REPLACE FUNCTION FUNC_DISPOSITIVO_DELETA_DISPOSITIVO_MOVEL(F_COD_EMPRESA BIGINT, F_COD_DISPOSITIVO BIGINT)
   RETURNS BIGINT
 LANGUAGE PLPGSQL

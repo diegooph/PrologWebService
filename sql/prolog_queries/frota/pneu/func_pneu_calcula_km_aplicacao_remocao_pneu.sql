@@ -9,9 +9,6 @@
 --
 -- Obs.: Caso não haja aferições, nada será calculado. Esta function NÃO irá calcular o km entre aplicação e remoção
 --       do veículo.
---
--- Histórico:
--- 2020-06-05 -> Function criada (luiz_fp - PL-2803).
 create or replace function func_pneu_calcula_km_aplicacao_remocao_pneu(f_cod_pneu bigint,
                                                                        f_vida_pneu integer)
     returns numeric
@@ -22,25 +19,28 @@ with movimentacoes_vida_pneu as (
     select mp.data_hora    as data_hora_movimentacao,
            mo.tipo_origem  as tipo_origem,
            md.tipo_destino as tipo_destino,
-           md.placa        as placa_destino,
+           v_destino.placa as placa_destino,
            md.km_veiculo   as km_veiculo_destino,
-           mo.placa        as placa_origem,
+           v_origem.placa  as placa_origem,
            mo.km_veiculo   as km_veiculo_origem
     from movimentacao_processo mp
              join movimentacao m on mp.codigo = m.cod_movimentacao_processo
              join movimentacao_origem mo on m.codigo = mo.cod_movimentacao
+             left join veiculo v_origem on v_origem.codigo = mo.cod_veiculo
              join movimentacao_destino md on m.codigo = md.cod_movimentacao
+             left join veiculo v_destino on v_destino.codigo = md.cod_veiculo
     where (mo.tipo_origem = 'EM_USO' or md.tipo_destino = 'EM_USO')
       and m.cod_pneu = f_cod_pneu
       and m.vida = f_vida_pneu
 ),
 
      afericoes_vida_pneu as (
-         select a.data_hora     as data_hora_afericao,
-                a.placa_veiculo as placa_afericao,
-                a.km_veiculo    as km_veiculo_afericao
+         select a.data_hora  as data_hora_afericao,
+                v.placa      as placa_afericao,
+                a.km_veiculo as km_veiculo_afericao
          from afericao a
                   join afericao_valores av on av.cod_afericao = a.codigo
+                  join veiculo v on a.cod_veiculo = v.codigo
          where a.tipo_processo_coleta = 'PLACA'
            and av.cod_pneu = f_cod_pneu
            and av.vida_momento_afericao = f_vida_pneu

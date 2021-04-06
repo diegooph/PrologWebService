@@ -1,21 +1,3 @@
--- Sobre:
--- A lógica aplicada nessa function é a seguinte:
--- É feita todas as validações em cima dos dados. Caso o dado seja null, a função vai assumir o mesmo valor
--- da coluna que o dado se refere antes do update.
---
--- Précondições:
--- Empresa existir
--- Unidade existir
--- Empresa possuir unidade
--- Empresa possuir parametrização na unidade
--- Todos os dados devem ser maiores que 0(zero)
--- Se um dado entrar como null, ele assume o mesmo valor que está na tabela antes do update
---
--- Histórico:
--- 2019-10-22 -> Function criada (natanrotta - PL-2337).
--- 2019-11-06 -> Altera nome function de SUPORTE.FUNC_PNEU_ALTERA_PARAMETRIZACAO_PNEU
--- para SUPORTE.FUNC_PNEU_ALTERA_RESTRICAO_PNEU (luizfp).
--- 2020-08-14 -> Adiciona chamada para logar execução da function (gustavocnp95 - PL-3066).
 CREATE OR REPLACE FUNCTION SUPORTE.FUNC_PNEU_ALTERA_RESTRICAO_PNEU(F_COD_EMPRESA BIGINT,
                                                                    F_COD_UNIDADE BIGINT,
                                                                    F_TOLERANCIA_CALIBRAGEM REAL,

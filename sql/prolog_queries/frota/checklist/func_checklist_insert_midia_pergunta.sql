@@ -1,10 +1,6 @@
 -- Sobre:
 --
 -- Essa function insere as mídias das perguntas OK na realização de um checklist.
---
--- Histórico:
--- 2020-07-07 -> Function criada (luiz_fp - PL-2705).
--- 2020-07-13 -> Criação do arquivo específico e documentação (wvinim - PL-2824).
 CREATE OR REPLACE FUNCTION FUNC_CHECKLIST_INSERT_MIDIA_PERGUNTA(F_UUID_MIDIA UUID,
                                                                 F_COD_CHECKLIST BIGINT,
                                                                 F_COD_PERGUNTA BIGINT,

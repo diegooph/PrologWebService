@@ -19,6 +19,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOffli
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverMultiplosItensOs;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu;
+import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.ProcessoMovimentacao;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoDao;
@@ -26,19 +27,24 @@ import br.com.zalf.prolog.webservice.frota.pneu.servico._model.Servico;
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.VeiculoServico;
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.filtro.VeiculoAberturaServicoFiltro;
 import br.com.zalf.prolog.webservice.frota.pneu.transferencia._model.realizacao.PneuTransferenciaRealizacao;
+import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.VeiculoCadastro;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.InfosVeiculoEditado;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicao;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.listagem.VeiculoListagem;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoDadosColetaKm;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoVisualizacao;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.ProcessoTransferenciaVeiculoRealizacao;
-import br.com.zalf.prolog.webservice.integracao.IntegracaoDao;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Empresa;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.RecursoIntegrado;
+import br.com.zalf.prolog.webservice.integracao.integrador.IntegracaoDao;
 import br.com.zalf.prolog.webservice.integracao.operacoes.OperacoesIntegradas;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemasFactory;
+import br.com.zalf.prolog.webservice.v3.frota.veiculo._model.VeiculoCadastroDto;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -439,7 +445,7 @@ public abstract class Router implements OperacoesIntegradas {
     // #################################################################################################################
     @Override
     public void insert(
-            @NotNull final VeiculoCadastro veiculo,
+            @NotNull final VeiculoCadastroDto veiculo,
             @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
         if (getSistema() != null) {
             getSistema().insert(veiculo, checklistOfflineListener);
@@ -486,11 +492,45 @@ public abstract class Router implements OperacoesIntegradas {
 
     @NotNull
     @Override
-    public Veiculo getVeiculoByPlaca(@NotNull final String placa, final boolean withPneus) throws Exception {
+    public List<VeiculoListagem> getVeiculosByUnidades(@NotNull final List<Long> codUnidades,
+                                                       final boolean apenasAtivos,
+                                                       @Nullable final Long codTipoVeiculo) throws Throwable {
         if (getSistema() != null) {
-            return getSistema().getVeiculoByPlaca(placa, withPneus);
+            return getSistema().getVeiculosByUnidades(codUnidades, apenasAtivos, codTipoVeiculo);
         } else {
-            return integradorProLog.getVeiculoByPlaca(placa, withPneus);
+            return integradorProLog.getVeiculosByUnidades(codUnidades, apenasAtivos, codTipoVeiculo);
+        }
+    }
+
+    @NotNull
+    @Override
+    public VeiculoVisualizacao getVeiculoByCodigo(@NotNull final Long codVeiculo) throws Throwable {
+        if (getSistema() != null) {
+            return getSistema().getVeiculoByCodigo(codVeiculo);
+        } else {
+            return integradorProLog.getVeiculoByCodigo(codVeiculo);
+        }
+    }
+
+    @NotNull
+    @Override
+    public Veiculo getVeiculoByPlaca(@NotNull final String placa,
+                                     @Nullable final Long codUnidade,
+                                     final boolean withPneus) throws Throwable {
+        if (getSistema() != null) {
+            return getSistema().getVeiculoByPlaca(placa, codUnidade, withPneus);
+        } else {
+            return integradorProLog.getVeiculoByPlaca(placa, codUnidade, withPneus);
+        }
+    }
+
+    @NotNull
+    @Override
+    public VeiculoDadosColetaKm getDadosColetaKmByCodigo(@NotNull final Long codVeiculo) throws Throwable {
+        if (getSistema() != null) {
+            return getSistema().getDadosColetaKmByCodigo(codVeiculo);
+        } else {
+            return integradorProLog.getDadosColetaKmByCodigo(codVeiculo);
         }
     }
 
@@ -524,11 +564,13 @@ public abstract class Router implements OperacoesIntegradas {
     // #################################################################################################################
     @NotNull
     @Override
-    public Long insert(@NotNull final Pneu pneu, @NotNull final Long codUnidade) throws Throwable {
+    public Long insert(@NotNull final Pneu pneu,
+                       @NotNull final Long codUnidade,
+                       @NotNull final OrigemAcaoEnum origemCadastro) throws Throwable {
         if (getSistema() != null) {
-            return getSistema().insert(pneu, codUnidade);
+            return getSistema().insert(pneu, codUnidade, origemCadastro);
         } else {
-            return integradorProLog.insert(pneu, codUnidade);
+            return integradorProLog.insert(pneu, codUnidade, origemCadastro);
         }
     }
 
@@ -550,6 +592,17 @@ public abstract class Router implements OperacoesIntegradas {
             getSistema().update(pneu, codUnidade, codOriginalPneu);
         } else {
             integradorProLog.update(pneu, codUnidade, codOriginalPneu);
+        }
+    }
+
+    @NotNull
+    @Override
+    public List<Pneu> getPneusByCodUnidadesByStatus(@NotNull final List<Long> codUnidades,
+                                                    @NotNull final StatusPneu status) throws Throwable {
+        if (getSistema() != null) {
+            return getSistema().getPneusByCodUnidadesByStatus(codUnidades, status);
+        } else {
+            return integradorProLog.getPneusByCodUnidadesByStatus(codUnidades, status);
         }
     }
 
@@ -666,6 +719,21 @@ public abstract class Router implements OperacoesIntegradas {
             getSistema().updateTipoVeiculo(tipoVeiculo);
         } else {
             integradorProLog.updateTipoVeiculo(tipoVeiculo);
+        }
+    }
+
+    // #################################################################################################################
+    // #################################################################################################################
+    // ###################################### OPERAÇÕES INTEGRADAS - EMPRESA ###########################################
+    // #################################################################################################################
+    // #################################################################################################################
+    @NotNull
+    @Override
+    public List<Empresa> getFiltros(@NotNull final Long cpf) throws Throwable {
+        if (getSistema() != null) {
+            return getSistema().getFiltros(cpf);
+        } else {
+            return integradorProLog.getFiltros(cpf);
         }
     }
 

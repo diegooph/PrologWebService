@@ -1,7 +1,3 @@
--- Sobre:
--- Esta função permite estourar um erro que indica um erro genérico, sem especificações.
---
--- Histórico:
 create or replace function public.throw_generic_error(f_message text)
   returns void
 language plpgsql

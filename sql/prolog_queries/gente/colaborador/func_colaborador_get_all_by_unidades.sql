@@ -1,10 +1,3 @@
--- Sobre:
---
--- Esta function retorna uma lista dos colaboradores de acordo com o código de uma ou mais unidades e apenas
--- status ativos.
---
--- Histórico:
--- 2020-06-17 -> Function criada (wvinim - PL-2695).
 CREATE OR REPLACE FUNCTION FUNC_COLABORADOR_GET_ALL_BY_UNIDADES(F_COD_UNIDADES BIGINT[], F_APENAS_ATIVOS BOOLEAN)
     RETURNS TABLE
             (

@@ -1,10 +1,3 @@
--- Sobre:
--- Esta função retorna o tempo de cada marcação que o colaborador realizou, uma flag indica se essa marcação
--- está dentro de uma jornada, também identifica dentre todas as marcações, quais são do tipo jornada.
--- O cálculo dos totais de marcações são realizados em JAVA utilizando os resultados dessa function.
---
--- Histórico:
--- 2020-08-13 -> Function retirado filtro por cod intervalo para retornar sempre todas marcações (gustavocnp95 - PL-2850).
 create or replace function func_marcacao_get_tempo_total_por_tipo_marcacao(f_cod_unidade bigint,
                                                                            f_data_inicial date,
                                                                            f_data_final date)

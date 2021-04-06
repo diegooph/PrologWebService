@@ -41,7 +41,7 @@ select a.codigo                                           as cod_afericao,
        a.cod_unidade                                      as cod_unidade_afericao,
        lpad(a.cpf_aferidor::text, 11, '0')                as cpf_colaborador,
        v.identificador_frota                              as identificador_frota,
-       a.placa_veiculo::text                              as placa_veiculo_aferido,
+       v.placa                                            as placa_veiculo_aferido,
        av.cod_pneu                                        as cod_pneu_aferido,
        p.codigo_cliente::text                             as numero_fogo,
        trunc(av.altura_sulco_interno::numeric, 2)         as altura_sulco_interno,
@@ -59,7 +59,7 @@ select a.codigo                                           as cod_afericao,
 from afericao a
          join afericao_valores av on a.codigo = av.cod_afericao
          join pneu p on av.cod_pneu = p.codigo
-         join veiculo v on v.placa = a.placa_veiculo
+         join veiculo v on v.codigo = a.cod_veiculo
 where a.cod_unidade in (select codigo
                         from unidade
                         where cod_empresa in (select ti.cod_empresa

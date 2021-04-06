@@ -1,23 +1,3 @@
--- Sobre:
---
--- Function disponível na API do ProLog para incrementar a vida de um pneu utilizando o serviço padrão do ProLog.
---
--- Utilizamos essa function para pneus que são cadastrados no ProLog e não estão mais na primeira vida, ou seja, eles
--- já possuem uma banda aplicada. A function cria um serviço genérico indicando que o pneu sofreu uma troca de banda e
--- consequentemente um incremento de vida.
---
--- Essa function deve ser utilizada especificamento em cenários de cadastro de pneus, pois internamente ela utiliza a
--- FONTE_CADASTRO como fonte da geração do serviço de troca de banda.
---
--- Precondições:
--- Para essa function executar com sucesso é necessário que o pneu repassado para ela seja um pneu apto a receber o
--- serviço de incremento de vida, por exemplo, um pneu não pode estar cadastrado na PRIMEIRA VIDA e receber um serviço
--- de troca de banda.
---
--- Histórico:
--- 2019-08-15 -> Function criada (diogenesvanzella - PL-2222).
--- 2019-11-27 -> Altera nome de colunas de algumas tabelas (luizfp - PL-2295).
--- 2020-07-20 -> Muda function de schema: integracao -> public (luiz_fp - PL-2205).
 CREATE OR REPLACE FUNCTION FUNC_PNEU_REALIZA_INCREMENTO_VIDA_CADASTRO(
   F_COD_UNIDADE_PNEU      BIGINT,
   F_COD_PNEU_PROLOG       BIGINT,

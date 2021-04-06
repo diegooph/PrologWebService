@@ -1,9 +1,3 @@
--- Sobre:
---
--- Esta view retorna uma lista de tipos de marcação
---
--- Histórico:
--- 2019-08-29 -> Adicionada coluna de código auxiliar (wvinim - PL-2223).
 CREATE OR REPLACE VIEW VIEW_INTERVALO_TIPO AS
   SELECT
     ROW_NUMBER()

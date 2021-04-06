@@ -13,16 +13,6 @@
 -- relevante neste caso já que um veículo só pode ser transferido sem pneus, o que restringe o impacto negativo de
 -- perder KM).
 -- Por tudo isso, resolvemos deixar passar este cenário.
---
--- Precondições:
--- Veículo não possuir pneus vinculados.
---
--- Histórico:
--- 2019-11-11 -> Function criada (natanrotta - pl-2383).
--- 2020-02-26 -> Adiciona validação de diagrama devido a implementação das amarrações (wvinim - PL-1965).
--- 2020-05-22 -> Adiciona estrutura para atualizar a transferência do veículo integrado (natanrotta - PLI-157).
--- 2020-08-14 -> Adiciona chamada para logar execução da function (gustavocnp95 - PL-3066).
--- 2020-11-09 -> Deleta OSs de checklist abertas do veículo (luizfp - PL-3285).
 create or replace function suporte.func_veiculo_transfere_veiculo_entre_empresas(f_placa_veiculo varchar(7),
                                                                                  f_cod_empresa_origem bigint,
                                                                                  f_cod_unidade_origem bigint,
@@ -49,8 +39,10 @@ declare
     v_lista_cod_pneu_em_afericao_manutencao          bigint[];
     v_qtd_cod_afericao_em_afericao_valores           bigint;
     v_qtd_cod_afericao_deletados_em_afericao_valores bigint;
-
-
+    v_cod_veiculo                                    bigint       := (select v.codigo
+                                                                      from veiculo v
+                                                                      where v.placa = f_placa_veiculo
+                                                                        and v.cod_unidade = f_cod_unidade_origem);
 begin
     perform suporte.func_historico_salva_execucao();
 
@@ -85,10 +77,10 @@ begin
 
     -- Verifica se o tipo de veículo informado tem o mesmo diagrama do veículo.
     if not exists(
-            select vd.codigo
-            from veiculo_data vd
-                     join veiculo_tipo vt on vd.cod_diagrama = vt.cod_diagrama
-            where vd.placa = f_placa_veiculo
+            select v.codigo
+            from veiculo v
+                     join veiculo_tipo vt on v.cod_diagrama = vt.cod_diagrama
+            where v.placa = f_placa_veiculo
               and vt.codigo = f_cod_tipo_veiculo_destino)
     then
         raise exception 'Erro! O diagrama do tipo: % é diferente do veículo: %', f_cod_tipo_veiculo_destino,
@@ -108,12 +100,12 @@ begin
     -- Verifica se placa possui aferição.
     if exists(select a.codigo
               from afericao a
-              where a.placa_veiculo = f_placa_veiculo)
+              where a.cod_veiculo = v_cod_veiculo)
     then
         -- Então coletamos todos os códigos das aferições que a placa possui e adicionamos no array.
         select distinct array_agg(a.codigo)
         from afericao a
-        where a.placa_veiculo = f_placa_veiculo
+        where a.cod_veiculo = v_cod_veiculo
         into v_lista_cod_afericao_placa;
 
         -- Laço for para percorrer todos os valores em f_lista_cod_afericao_placa.
@@ -240,7 +232,7 @@ begin
     end if;
 
     -- Realiza transferência.
-    update veiculo_data
+    update veiculo
     set cod_empresa = f_cod_empresa_destino,
         cod_unidade = f_cod_unidade_destino,
         cod_tipo    = f_cod_tipo_veiculo_destino,

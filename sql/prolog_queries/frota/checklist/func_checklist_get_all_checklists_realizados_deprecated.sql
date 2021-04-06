@@ -1,12 +1,3 @@
--- Sobre:
---
--- Function que gera o relatório checklists realizados
---
--- Histórico:
--- 2020-03-03 -> Atualização de arquivo e documentação (wvinim - PL-2494).
--- 2020-07-07 -> Altera nome da function antiga para manter a compatibilidade (wvinim - PL-2824).
--- 2020-07-13 -> Criação de arquivo e documentação (wvinim - PL-2824).
--- 2020-10-14 -> Adiciona observação ao retorno (luizfp).
 CREATE OR REPLACE FUNCTION FUNC_CHECKLIST_GET_ALL_CHECKLISTS_REALIZADOS_DEPRECATED(F_COD_UNIDADE BIGINT,
                                                                                    F_COD_EQUIPE BIGINT,
                                                                                    F_COD_TIPO_VEICULO BIGINT,
@@ -50,7 +41,7 @@ BEGIN
                C.KM_VEICULO                                         AS KM_VEICULO_MOMENTO_REALIZACAO,
                C.TEMPO_REALIZACAO                                   AS DURACAO_REALIZACAO_MILLIS,
                C.CPF_COLABORADOR                                    AS CPF_COLABORADOR,
-               C.PLACA_VEICULO :: TEXT                              AS PLACA_VEICULO,
+               V.PLACA :: TEXT                                      AS PLACA_VEICULO,
                C.TIPO                                               AS TIPO_CHECKLIST,
                CO.NOME :: TEXT                                      AS NOME_COLABORADOR,
                C.TOTAL_PERGUNTAS_OK                                 AS TOTAL_ITENS_OK,
@@ -68,7 +59,7 @@ BEGIN
           AND C.COD_UNIDADE = F_COD_UNIDADE
           AND (F_HAS_EQUIPE = 0 OR E.CODIGO = F_COD_EQUIPE)
           AND (F_HAS_COD_TIPO_VEICULO = 0 OR V.COD_TIPO = F_COD_TIPO_VEICULO)
-          AND (F_HAS_PLACA_VEICULO = 0 OR C.PLACA_VEICULO = F_PLACA_VEICULO)
+          AND (F_HAS_PLACA_VEICULO = 0 OR V.PLACA = F_PLACA_VEICULO)
         ORDER BY DATA_HORA_SINCRONIZACAO DESC
         LIMIT F_LIMIT OFFSET F_OFFSET;
 END;

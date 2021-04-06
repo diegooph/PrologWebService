@@ -1,11 +1,3 @@
--- Sobre:
--- A lógica aplicada nessa function é a seguinte:
--- Se o token possui permissão e o cargo existir na empresa, ele é deletado.
---
--- Précondições:
---
--- Histórico:
--- 2019-09-17 -> Adiciona SESSION_USER (Natan - PL-2229).
 CREATE OR REPLACE FUNCTION FUNC_CARGOS_DELETA_CARGO(F_COD_EMPRESA BIGINT,
                                                     F_COD_CARGO BIGINT,
                                                     F_TOKEN TEXT)

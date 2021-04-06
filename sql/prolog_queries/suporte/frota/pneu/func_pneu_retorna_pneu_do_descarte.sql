@@ -19,15 +19,9 @@
 -- 1) Para a function funcionar, a última movimentação do pneu deve ser para descarte.
 -- 2) Assumimos que não exista mais de uma movimentação para descarte, o que seria uma inconsistência e não é nem
 -- verificado e nem tratado por essa function.
---
--- Histórico:
--- 2019-07-09 -> Function criada (thaisksf - PL-2090).
--- 2019-09-18 -> Adiciona ao schema suporte (natanrotta - PL-2242).
--- 2020-08-14 -> Adiciona chamada para logar execução da function (gustavocnp95 - PL-3066).
 CREATE OR REPLACE FUNCTION SUPORTE.FUNC_PNEU_RETORNA_PNEU_DO_DESCARTE(F_COD_EMPRESA BIGINT,
                                                                       F_COD_UNIDADE BIGINT,
                                                                       F_COD_PNEU BIGINT,
-                                                                      F_NUMERO_FOGO_PNEU VARCHAR,
                                                                       OUT AVISO_PNEU_RETORNADO TEXT)
     RETURNS TEXT
     LANGUAGE PLPGSQL
@@ -48,17 +42,15 @@ BEGIN
     PERFORM FUNC_GARANTE_INTEGRIDADE_EMPRESA_UNIDADE(F_COD_EMPRESA, F_COD_UNIDADE);
 
     -- VERIFICA SE PNEU EXISTE NA UNIDADE.
-    PERFORM FUNC_GARANTE_PNEU_EXISTE(F_COD_EMPRESA, F_COD_UNIDADE, F_COD_PNEU, F_NUMERO_FOGO_PNEU);
+    PERFORM FUNC_GARANTE_PNEU_EXISTE(F_COD_EMPRESA, F_COD_UNIDADE, F_COD_PNEU);
 
     -- VERIFICA SE O STATUS DO PNEU ESTÁ COMO 'DESCARTE'.
     IF (SELECT P.STATUS
-        FROM PNEU P
-        WHERE P.CODIGO_CLIENTE = F_NUMERO_FOGO_PNEU
-          AND P.CODIGO = F_COD_PNEU
+        FROM PNEU P WHERE P.CODIGO = F_COD_PNEU
           AND P.COD_UNIDADE = F_COD_UNIDADE) != F_STATUS_PNEU_DESCARTE
     THEN
-        RAISE EXCEPTION 'Pneu de número de fogo %, com código % da unidade %, não está com status = %!',
-            F_NUMERO_FOGO_PNEU, F_COD_PNEU, F_COD_UNIDADE, F_STATUS_PNEU_DESCARTE;
+        RAISE EXCEPTION 'Pneu com código % da unidade %, não está com status = %!',
+             F_COD_PNEU, F_COD_UNIDADE, F_STATUS_PNEU_DESCARTE;
     END IF;
 
     -- VAI PEGAR AS INFORMAÇÕES DA ÚLTIMA MOVIMENTAÇÃO DO PNEU ASSUMINDO QUE FOI PARA DESCARTE.
@@ -79,9 +71,9 @@ BEGIN
     -- GARANTE QUE A ÚLTIMA MOVIMENTAÇÃO DO PNEU TENHA SIDO PARA DESCARTE.
     IF F_STATUS_DESTINO_PNEU != F_STATUS_PNEU_DESCARTE
     THEN
-        RAISE EXCEPTION '[INCONSISTÊNCIA] A ultima movimentação do pneu de número de fogo %, com código % da unidade %,
+        RAISE EXCEPTION '[INCONSISTÊNCIA] A ultima movimentação do pneu com código % da unidade %,
       não foi para %!',
-            F_NUMERO_FOGO_PNEU, F_COD_PNEU, F_COD_UNIDADE, F_STATUS_PNEU_DESCARTE;
+           F_COD_PNEU, F_COD_UNIDADE, F_STATUS_PNEU_DESCARTE;
     END IF;
 
     -- DELETA A MOVIMENTAÇÃO QUE MOVEU O PNEU PARA O DESCARTE SE A ORIGEM NÃO FOR 'EM_USO', CASO SEJA, MODIFICA
@@ -119,21 +111,18 @@ BEGIN
         UPDATE PNEU
         SET STATUS = F_STATUS_ORIGEM_PNEU
         WHERE CODIGO = F_COD_PNEU
-          AND CODIGO_CLIENTE = F_NUMERO_FOGO_PNEU
           AND COD_UNIDADE = F_COD_UNIDADE
           AND COD_EMPRESA = F_COD_EMPRESA;
     ELSE
         UPDATE PNEU
         SET STATUS = F_STATUS_PNEU_ESTOQUE
         WHERE CODIGO = F_COD_PNEU
-          AND CODIGO_CLIENTE = F_NUMERO_FOGO_PNEU
           AND COD_UNIDADE = F_COD_UNIDADE
           AND COD_EMPRESA = F_COD_EMPRESA;
     END IF;
 
     SELECT CONCAT('Pneu retornado para ', (SELECT P.STATUS FROM PNEU P WHERE P.CODIGO = F_COD_PNEU),
                   ', Código: ', F_COD_PNEU,
-                  ', Número de fogo: ', F_NUMERO_FOGO_PNEU,
                   ', Unidade: ', F_COD_UNIDADE, ' - ', (SELECT U.NOME FROM UNIDADE U WHERE U.CODIGO = F_COD_UNIDADE),
                   ', Empresa: ', F_COD_EMPRESA, ' - ', (SELECT E.NOME FROM EMPRESA E WHERE E.CODIGO = F_COD_EMPRESA))
     INTO AVISO_PNEU_RETORNADO;

@@ -1,10 +1,3 @@
--- Sobre:
---
--- Esta function retorna um modelo de pneu.
---
---
--- Histórico:
--- 2019-10-15 -> Function criada. (thaisksf PL-2263)
 CREATE OR REPLACE FUNCTION FUNC_PNEU_GET_MODELO_PNEU_VISUALIZACAO(F_COD_MODELO BIGINT)
     RETURNS TABLE
             (

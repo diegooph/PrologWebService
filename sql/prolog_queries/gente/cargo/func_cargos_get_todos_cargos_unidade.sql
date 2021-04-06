@@ -1,11 +1,3 @@
--- Sobre:
---
--- Essa function busca os cargos de uma unidade e a quantidade de permissões vinculadas à ele.
---
--- Histórico:
--- 2020-02-20 -> Adiciona qtd de permissões vinculadas ao cargo (thaisksf - PL-2532).
--- 2020-06-25 -> Removemos as funções bloqueadas da contagem de permissões (diogenesvanzella - PL-2671).
--- 2020-07-08 -> Removemos verificação das funções bloqueadas (diogenesvanzella - PL-2671).
 create or replace function func_cargos_get_todos_cargos_unidade(f_cod_unidade bigint)
     returns table
             (

@@ -1,13 +1,3 @@
--- Sobre:
---
--- Esta função retorna uma lista do cronograma de aferições por placa, em formato de relatório.
---
--- Histórico:
--- 2020-02-26 -> Adiciona novas colunas no relatório de cronograma de aferições (wvinim - PL-2511).
--- 2020-05-15 -> Muda tratativa do status do sulco e pressão (gustavocnp95 - PL-2684)
--- 2020-06-18 -> Adiciona identificador de frota ao relatório. (thaisksf - PL-2760).
--- 2020-07-21 -> Corrige verificação se coleta de sulco/pressão está bloqueada (luiz_fp - PS-1177).
--- 2020-09-10 -> Corrige verificação se coleta de sulco/pressão está bloqueada (diogenesvanzella - PL-3113).
 CREATE OR REPLACE FUNCTION
     FUNC_AFERICAO_RELATORIO_CRONOGRAMA_AFERICOES_PLACAS(F_COD_UNIDADES BIGINT[],
                                                         F_DATA_HORA_ATUAL_UTC TIMESTAMP WITH TIME ZONE,
@@ -43,8 +33,8 @@ BEGIN
                    COALESCE(V.IDENTIFICADOR_FROTA::TEXT, '-')                           AS IDENTIFICADOR_FROTA,
                    (SELECT COUNT(VP.COD_PNEU)
                     FROM VEICULO_PNEU VP
-                    WHERE VP.PLACA = V.PLACA
-                    GROUP BY VP.PLACA)::TEXT                                            AS QTD_PNEUS_APLICADOS,
+                    WHERE VP.COD_VEICULO = V.CODIGO
+                    GROUP BY VP.COD_VEICULO)::TEXT                                      AS QTD_PNEUS_APLICADOS,
                    MV.NOME::TEXT                                                        AS NOME_MODELO_VEICULO,
                    VT.NOME::TEXT                                                        AS NOME_TIPO_VEICULO,
                    TO_CHAR(SULCO.DATA_HORA_ULTIMA_AFERICAO_SULCO, 'DD/MM/YYYY HH24:MI') AS DATA_HORA_ULTIMA_AFERICAO_SULCO,
@@ -84,7 +74,7 @@ BEGIN
                      JOIN FUNC_AFERICAO_GET_CONFIG_TIPO_AFERICAO_VEICULO(V.COD_UNIDADE) CONFIG
                           ON CONFIG.COD_TIPO_VEICULO = V.COD_TIPO
                      LEFT JOIN
-                 (SELECT A.PLACA_VEICULO                                               AS PLACA_INTERVALO,
+                 (SELECT A.COD_VEICULO                                               AS COD_VEICULO_INTERVALO,
                          MAX(A.DATA_HORA AT TIME ZONE
                              TZ_UNIDADE(A.COD_UNIDADE))::DATE                          AS DATA_ULTIMA_AFERICAO_PRESSAO,
                          MAX(A.DATA_HORA AT TIME ZONE
@@ -93,9 +83,9 @@ BEGIN
                   FROM AFERICAO A
                   WHERE A.TIPO_MEDICAO_COLETADA = 'PRESSAO'
                      OR A.TIPO_MEDICAO_COLETADA = 'SULCO_PRESSAO'
-                  GROUP BY A.PLACA_VEICULO) AS PRESSAO ON PRESSAO.PLACA_INTERVALO = V.PLACA
+                  GROUP BY A.COD_VEICULO) AS PRESSAO ON PRESSAO.COD_VEICULO_INTERVALO = V.CODIGO
                      LEFT JOIN
-                 (SELECT A.PLACA_VEICULO                                             AS PLACA_INTERVALO,
+                 (SELECT A.COD_VEICULO                                             AS COD_VEICULO_INTERVALO,
                          MAX(A.DATA_HORA AT TIME ZONE
                              TZ_UNIDADE(A.COD_UNIDADE)) :: DATE                      AS DATA_ULTIMA_AFERICAO_SULCO,
                          MAX(A.DATA_HORA AT TIME ZONE
@@ -104,7 +94,7 @@ BEGIN
                   FROM AFERICAO A
                   WHERE A.TIPO_MEDICAO_COLETADA = 'SULCO'
                      OR A.TIPO_MEDICAO_COLETADA = 'SULCO_PRESSAO'
-                  GROUP BY A.PLACA_VEICULO) AS SULCO ON SULCO.PLACA_INTERVALO = V.PLACA
+                  GROUP BY A.COD_VEICULO) AS SULCO ON SULCO.COD_VEICULO_INTERVALO = V.CODIGO
                      JOIN PNEU_RESTRICAO_UNIDADE PRU
                           ON PRU.COD_UNIDADE = V.COD_UNIDADE
                      JOIN UNIDADE U

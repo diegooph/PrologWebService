@@ -1,17 +1,3 @@
--- Sobre:
---
--- Essa function traz a quantidade de intervalos que existiram no período filtrado, uma linha por dia.
--- Para cada dia, é informado a aderência de intervalos dos motoristas e ajudantes (1 e 2) da unidade,
--- bem como a aderência total do dia.
---
--- Functions de dependência:
---  • f_if
---  • coalesce_percentage
---
--- Histórico:
--- 2019-08-12 -> Function melhorada, documentada e adicionada ao GitHub (luizfp - PL-2220).
--- 2019-08-15 -> Function melhorada, corrigido bug de divisão por 0. (wvinim - PL-2220).
--- 2020-04-28 -> Altera busca para usar nova function base e remove where não mais necessário. (luiz_fp - PL-2720).
 create or replace function func_relatorio_aderencia_intervalo_dias(f_cod_unidade bigint,
                                                                    f_data_inicial date,
                                                                    f_data_final date)

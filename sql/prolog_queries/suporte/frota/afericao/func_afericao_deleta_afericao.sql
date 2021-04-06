@@ -1,15 +1,3 @@
--- Sobre:
--- A lógica aplicada nessa function é a seguinte:
--- Verifica se a unidade possui a aferição, caso tenha e os dados estão corretos ela é deletada.
---
--- Précondições:
---
--- Histórico:
--- 2019-09-17 -> Adiciona SESSION_USER. (natanrotta - PL-2229).
--- 2019-09-18 -> Adiciona no schema suporte. (natanrotta - PL-2242).
--- 2020-07-07 -> Adiciona motivo de deleção. (thaisksf - PL-2801).
--- 2020-08-14 -> Adiciona chamada para logar execução da function (gustavocnp95 - PL-3066).
--- 2020-10-09 -> Remove parâmetro de placa (thaisksf).
 CREATE OR REPLACE FUNCTION SUPORTE.FUNC_AFERICAO_DELETA_AFERICAO(F_COD_UNIDADE BIGINT,
                                                                  F_CODIGO_AFERICAO BIGINT,
                                                                  F_MOTIVO_DELECAO TEXT,

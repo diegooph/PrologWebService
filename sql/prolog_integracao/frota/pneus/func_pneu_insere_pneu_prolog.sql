@@ -48,18 +48,19 @@ CREATE OR REPLACE FUNCTION INTEGRACAO.FUNC_PNEU_INSERE_PNEU_PROLOG(F_COD_PNEU_SI
 AS
 $$
 DECLARE
-    PNEU_PRIMEIRA_VIDA  CONSTANT BIGINT  := 1;
-    PNEU_STATUS_ESTOQUE CONSTANT TEXT    := 'ESTOQUE';
-    PNEU_POSSUI_BANDA   CONSTANT BOOLEAN := F_IF(F_VIDA_ATUAL_PNEU > PNEU_PRIMEIRA_VIDA, TRUE, FALSE);
-    COD_EMPRESA_PNEU    CONSTANT BIGINT  := (SELECT U.COD_EMPRESA
-                                             FROM PUBLIC.UNIDADE U
-                                             WHERE U.CODIGO = F_COD_UNIDADE_PNEU);
-    PNEU_ESTA_NO_PROLOG CONSTANT BOOLEAN := (SELECT EXISTS(SELECT P.CODIGO
-                                                           FROM PUBLIC.PNEU P
-                                                           WHERE P.CODIGO_CLIENTE = F_CODIGO_PNEU_CLIENTE
-                                                             AND P.COD_EMPRESA = COD_EMPRESA_PNEU));
-    COD_PNEU_PROLOG              BIGINT;
-    F_QTD_ROWS_AFETADAS          BIGINT;
+    PNEU_ORIGEM_CADASTRO CONSTANT TEXT    := 'API';
+    PNEU_PRIMEIRA_VIDA   CONSTANT BIGINT  := 1;
+    PNEU_STATUS_ESTOQUE  CONSTANT TEXT    := 'ESTOQUE';
+    PNEU_POSSUI_BANDA    CONSTANT BOOLEAN := F_IF(F_VIDA_ATUAL_PNEU > PNEU_PRIMEIRA_VIDA, TRUE, FALSE);
+    COD_EMPRESA_PNEU     CONSTANT BIGINT  := (SELECT U.COD_EMPRESA
+                                              FROM PUBLIC.UNIDADE U
+                                              WHERE U.CODIGO = F_COD_UNIDADE_PNEU);
+    PNEU_ESTA_NO_PROLOG  CONSTANT BOOLEAN := (SELECT EXISTS(SELECT P.CODIGO
+                                                            FROM PUBLIC.PNEU P
+                                                            WHERE P.CODIGO_CLIENTE = F_CODIGO_PNEU_CLIENTE
+                                                              AND P.COD_EMPRESA = COD_EMPRESA_PNEU));
+    COD_PNEU_PROLOG               BIGINT;
+    F_QTD_ROWS_AFETADAS           BIGINT;
 BEGIN
     PERFORM INTEGRACAO.FUNC_GARANTE_TOKEN_EMPRESA(COD_EMPRESA_PNEU, F_TOKEN_INTEGRACAO);
 
@@ -212,7 +213,8 @@ BEGIN
                                 VALOR,
                                 COD_MODELO_BANDA,
                                 PNEU_NOVO_NUNCA_RODADO,
-                                DATA_HORA_CADASTRO)
+                                DATA_HORA_CADASTRO,
+                                ORIGEM_CADASTRO)
         VALUES (COD_EMPRESA_PNEU,
                 F_COD_UNIDADE_PNEU,
                 F_COD_UNIDADE_PNEU,
@@ -233,7 +235,8 @@ BEGIN
                 F_IF(PNEU_POSSUI_BANDA, F_COD_MODELO_BANDA_PNEU, NULL),
                    -- Forçamos FALSE caso o pneu já possua uma banda aplicada.
                 F_IF(PNEU_POSSUI_BANDA, FALSE, F_PNEU_NOVO_NUNCA_RODADO),
-                F_DATA_HORA_PNEU_CADASTRO)
+                F_DATA_HORA_PNEU_CADASTRO,
+                PNEU_ORIGEM_CADASTRO)
         RETURNING CODIGO INTO COD_PNEU_PROLOG;
 
         -- Precisamos criar um serviço de incremento de vida para o pneu cadastrado já possuíndo uma banda.

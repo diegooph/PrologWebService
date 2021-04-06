@@ -1,17 +1,3 @@
--- Sobre:
---
--- Busca uma marcação em andamento para a unidade, colaborador e tipo de marcação informada. Se não existir uma
--- marcação em andamento com os parâmetros informados, nada será retornado.
---
--- Todos os parâmetros são obrigatórios.
---
--- Uma marcação em andamento é uma marcação de início de um tipo qualquer que não tenha marcação de fim vinculada e
--- onde não existam marcações do mesmo tipo realizadas posteriormente.
---
--- Histórico:
--- 2020-10-14 -> Arquivo específico criado (luizfp).
--- 2020-10-14 -> Otimizado através de remoção de CTE e do uso de view (luizfp - PL-3199).
--- 2020-10-16 -> Corrige function (luizfp - PL-3199).
 create or replace function func_marcacao_busca_marcacao_em_andamento(f_cod_unidade bigint,
                                                                      f_cod_tipo_intervalo bigint,
                                                                      f_cpf_colaborador bigint)

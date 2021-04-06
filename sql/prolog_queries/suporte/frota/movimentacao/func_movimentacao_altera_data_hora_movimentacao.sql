@@ -1,9 +1,3 @@
--- Sobre:
---
--- Altera a data/hora de um processo de movimentação.
---
--- Histórico:
--- 2020-09-30 -> Function criada (luiz_fp - PS-1260).
 create or replace function suporte.func_movimentacao_altera_data_hora_movimentacao(f_cod_unidade_movimentacao bigint,
                                                                                    f_cod_movimentacao_processo bigint,
                                                                                    f_nova_data_hora_movimentacao timestamp without time zone,

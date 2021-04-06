@@ -1,15 +1,3 @@
--- Sobre:
---
--- A lógica aplicada nessa function é a seguinte:
--- Extratifica os Serviços fechados de pneus dentro de um determinado período.
---
--- Histórico:
--- 2019-09-06 -> Altera vínculo da tabela PNEU_ORDEM_NOMENCLATURA_UNIDADE
---               para PNEU_POSICAO_NOMENCLATURA_EMPRESA. (thaisksf PL-2258).
--- 2019-10-14 -> Adiciona verificação da flag 'FECHADO_AUTOMATICAMENTE_INTEGRACAO' (diogenesvanzella - PLI-31).
--- 2020-05-12 -> Altera nome do relatório, forma de receber array de unidades e retorna forma de coleta dos
---               dados no fechamento (luiz_fp - PL-2715).
--- 2020-06-12 -> Adiciona identificador de frota (thaisksf - PL-2761).
 CREATE OR REPLACE FUNCTION FUNC_PNEU_RELATORIO_EXTRATO_SERVICOS_FECHADOS(F_COD_UNIDADES BIGINT[],
                                                                          F_DATA_INICIAL DATE,
                                                                          F_DATA_FINAL DATE)
@@ -50,7 +38,7 @@ SELECT U.NOME                                                                   
              3600)                                                                  AS HORAS_RESOLUCAO,
        TRUNC(
                EXTRACT(EPOCH FROM ((AM.DATA_HORA_RESOLUCAO) - (A.DATA_HORA))) / 60) AS MINUTOS_RESOLUCAO,
-       A.PLACA_VEICULO                                                              AS PLACA_VEICULO,
+       V.PLACA                                                                      AS PLACA_VEICULO,
        COALESCE(V.IDENTIFICADOR_FROTA, '-')                                         AS IDENTIFICADOR_FROTA,
        A.KM_VEICULO                                                                 AS KM_AFERICAO,
        AM.KM_MOMENTO_CONSERTO                                                       AS KM_MOMENTO_CONSERTO,
@@ -70,8 +58,8 @@ SELECT U.NOME                                                                   
        AM.TIPO_SERVICO                                                              AS TIPO_SERVICO,
        COALESCE(INITCAP(C.NOME), '-')                                               AS NOME_MECANICO,
        COALESCE(AA.ALTERNATIVA, '-')                                                AS PROBLEMA_APONTADO,
-       F_IF(AM.FECHADO_AUTOMATICAMENTE_MOVIMENTACAO OR AM.FECHADO_AUTOMATICAMENTE_INTEGRACAO, 'Sim' :: TEXT,
-            'Não')                                                                  AS TIPO_FECHAMENTO,
+       F_IF(AM.FECHADO_AUTOMATICAMENTE_MOVIMENTACAO OR AM.FECHADO_AUTOMATICAMENTE_INTEGRACAO OR
+            AM.FECHADO_AUTOMATICAMENTE_AFERICAO, 'Sim' :: TEXT, 'Não')              AS TIPO_FECHAMENTO,
        COALESCE(AFCD.STATUS_LEGIVEL, '-')                                           AS FORMA_COLETA_DADOS_FECHAMENTO
 FROM AFERICAO_MANUTENCAO AM
          JOIN UNIDADE U
@@ -92,7 +80,7 @@ FROM AFERICAO_MANUTENCAO AM
          LEFT JOIN AFERICAO_ALTERNATIVA_MANUTENCAO_INSPECAO AA
                    ON AA.CODIGO = AM.COD_ALTERNATIVA
          LEFT JOIN VEICULO V
-                   ON V.PLACA = VP.PLACA
+                   ON V.CODIGO = VP.COD_VEICULO
          LEFT JOIN EMPRESA E
                    ON U.COD_EMPRESA = E.CODIGO
          LEFT JOIN VEICULO_TIPO VT

@@ -1,13 +1,7 @@
--- Sobre:
---
--- Essa view retorna a estratificação das ordens de serviço.
---
--- Histórico:
--- 2020-03-03 -> Atualização de arquivo e documentação (wvinim - PL-2494).
 CREATE OR REPLACE VIEW ESTRATIFICACAO_OS AS
 SELECT COS.CODIGO                                                       AS COD_OS,
        REALIZADOR.NOME                                                  AS NOME_REALIZADOR_CHECKLIST,
-       C.PLACA_VEICULO,
+       V.PLACA                                                          AS PLACA_VEICULO,
        C.KM_VEICULO                                                     AS KM,
        C.DATA_HORA_REALIZACAO_TZ_APLICADO                               AS DATA_HORA,
        C.TIPO                                                           AS TIPO_CHECKLIST,
@@ -52,7 +46,7 @@ FROM CHECKLIST_DATA C
          JOIN COLABORADOR REALIZADOR
               ON REALIZADOR.CPF = C.CPF_COLABORADOR
          JOIN VEICULO V
-              ON V.PLACA :: TEXT = C.PLACA_VEICULO :: TEXT
+              ON V.CODIGO = C.COD_VEICULO
          JOIN CHECKLIST_ORDEM_SERVICO COS
               ON C.CODIGO = COS.COD_CHECKLIST
          JOIN CHECKLIST_ORDEM_SERVICO_ITENS COSI

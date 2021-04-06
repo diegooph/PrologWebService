@@ -32,7 +32,9 @@ import br.com.zalf.prolog.webservice.integracao.praxio.IntegracaoPraxioService;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.GlobusPiccoloturRequesterImpl;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.SistemaGlobusPiccoloturDaoImpl;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.model.*;
-import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap.OrdemDeServicoCorretivaPrologVO;
+import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap.OrdemServicoHolderDto;
+import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap.SoapHandlerGlobusPiccolotur;
+import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap.SoapRequesterGlobusPiccolotur;
 import br.com.zalf.prolog.webservice.integracao.response.SuccessResponseIntegracao;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.*;
@@ -1309,12 +1311,14 @@ public final class AberturaOrdemServicoTest extends BaseTest {
         final Long codChecklistInserido1 = checklistService.insert(tokenIntegrado, checklistInsercao1);
         Thread.sleep(100);
         // ############################### ETAPA 3 - Marcar checklist como sincronizado ################################
+        final SoapRequesterGlobusPiccolotur soapRequester =
+                new SoapRequesterGlobusPiccolotur(new SoapHandlerGlobusPiccolotur());
         Executors.newSingleThreadExecutor().execute(
                 new ChecklistItensNokGlobusTask(
                         codChecklistInserido1,
                         true,
                         sistemaGlobusPiccoloturDao,
-                        new GlobusPiccoloturRequesterImpl(),
+                        new GlobusPiccoloturRequesterImpl(soapRequester),
                         null));
         Thread.sleep(500);
         // ################################# ETAPA 4 - Valida informações #################################
@@ -1362,12 +1366,14 @@ public final class AberturaOrdemServicoTest extends BaseTest {
 
         Thread.sleep(1000);
 
+        final SoapRequesterGlobusPiccolotur soapRequester =
+                new SoapRequesterGlobusPiccolotur(new SoapHandlerGlobusPiccolotur());
         Executors.newSingleThreadExecutor().execute(
                 new ChecklistItensNokGlobusTask(
                         codChecklistInserido,
                         true,
                         new SistemaGlobusPiccoloturDaoImpl(),
-                        new GlobusPiccoloturRequesterImpl(),
+                        new GlobusPiccoloturRequesterImpl(soapRequester),
                         null));
 
         Thread.sleep(1000);
@@ -1377,7 +1383,7 @@ public final class AberturaOrdemServicoTest extends BaseTest {
                         codChecklistInserido,
                         true,
                         new SistemaGlobusPiccoloturDaoImpl(),
-                        new GlobusPiccoloturRequesterImpl(),
+                        new GlobusPiccoloturRequesterImpl(soapRequester),
                         null));
 
         Thread.sleep(1000);
@@ -1387,7 +1393,7 @@ public final class AberturaOrdemServicoTest extends BaseTest {
                         codChecklistInserido,
                         true,
                         new SistemaGlobusPiccoloturDaoImpl(),
-                        new GlobusPiccoloturRequesterImpl(),
+                        new GlobusPiccoloturRequesterImpl(soapRequester),
                         null));
         Thread.sleep(1000);
     }
@@ -1412,7 +1418,7 @@ public final class AberturaOrdemServicoTest extends BaseTest {
             final ChecklistToSyncGlobus checklistToSyncGlobus =
                     sistema.getChecklistToSyncGlobus(conn, codChecklistInserido);
             final ChecklistItensNokGlobus checklistItensNokGlobus = checklistToSyncGlobus.getChecklistItensNokGlobus();
-            final OrdemDeServicoCorretivaPrologVO ordemDeServicoCorretivaPrologVO =
+            final OrdemServicoHolderDto ordemDeServicoCorretivaPrologVO =
                     GlobusPiccoloturConverter.convert(checklistItensNokGlobus);
             assertThat(ordemDeServicoCorretivaPrologVO).isNotNull();
         } finally {

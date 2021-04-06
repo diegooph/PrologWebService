@@ -1,10 +1,3 @@
--- Sobre:
---
--- Esta function busca todas as marcações de início bem como o código de fim vinculado, caso exista.
--- Ela é útil para separação de lógica e normalmente será usada em conjunto com a 'view_marcacao_fins'.
---
--- Histórico:
--- 2020-04-28 -> Function criada (luiz_fp - PL-2720).
 create or replace view view_marcacao_inicios as
 select mi.cod_marcacao_inicio,
        mv.cod_marcacao_fim       as cod_marcacao_vinculo,

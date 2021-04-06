@@ -1,9 +1,3 @@
--- Sobre:
---
--- Function responsável por verificar se o código de modelo de banda existe.
---
--- Histórico:
--- 2020-09-08 -> Function criada (luiz_fp - PL-3134).
 create or replace function func_garante_modelo_banda_existe(f_cod_modelo_banda bigint,
                                                             f_error_message text default null)
     returns void

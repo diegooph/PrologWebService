@@ -1,25 +1,3 @@
--- Sobre:
---
--- Esta function retorna os dados gerais das aferições por data e unidades
---
--- Précondições:
--- 1) Function: FUNC_PNEU_FORMAT_SULCO criada.
--- 2) Function: TZ_UNIDADE criada.
---
--- Histórico:
--- 2019-08-28 -> Adicionada coluna com o menor sulco (wvinim - PL-2169).
--- 2019-09-06 -> Altera vínculo da tabela PNEU_ORDEM_NOMENCLATURA_UNIDADE para PNEU_POSICAO_NOMENCLATURA_EMPRESA
---               (thaisksf PL-2258).
--- 2020-05-15 -> Adiciona coluna forma de coleta (gustavocnp95 - PL-2684).
--- 2020-06-18 -> Adiciona identificador de frota ao relatório. (thaisksf - PL-2760).
--- 2020-09-21 -> Corrige joins no relatório removendo cod_unidade (luiz_fp - PS-1247).
--- 2020-10-26 -> Altera function para lower case (luiz_fp - PL-3146).
--- 2020-10-26 -> Corrige join com 'pneu_posicao_nomenclatura_empresa'.
---               Agora usa o 'cod_diagrama' da tabela 'afericao' (luiz_fp - PL-3146).
--- 2020-10-26 -> Otimiza function:
---               * Remove join desnecessário com 'empresa';
---               * Remove join desnecessário com 'veiculo_tipo';
---               * Altera condição de data no where para tornar ela "sargable" (luiz_fp - PL-3146).
 create or replace function func_afericao_relatorio_dados_gerais(f_cod_unidades bigint[],
                                                                 f_data_inicial date,
                                                                 f_data_final date)
@@ -89,7 +67,7 @@ select a.codigo :: text                                                         
                         'DD/MM/YYYY HH24:MI'),
                 '-')                                                                    as data_hora_cadastro,
        coalesce(ppne.nomenclatura, '-')                                                 as posicao,
-       coalesce(a.placa_veiculo :: text, '-')                                           as placa,
+       coalesce(v.placa, '-')                                                           as placa,
        coalesce(v.identificador_frota, '-')                                             as identificador_frota,
        (select pvn.nome
         from pneu_vida_nomenclatura pvn
@@ -126,8 +104,8 @@ from afericao a
          left join modelo_banda modb on modb.codigo = p.cod_modelo_banda
          left join marca_banda marb on marb.codigo = modb.cod_marca
 
-    -- Se foi aferição de pneu avulso, pode não possuir placa.
-         left join veiculo v on v.placa = a.placa_veiculo
+    -- Se foi aferição de pneu avulso, pode não possuir codigo de veiculo.
+         left join veiculo v on v.codigo = a.cod_veiculo
 
          left join pneu_posicao_nomenclatura_empresa ppne
                    on ppne.cod_empresa = p.cod_empresa

@@ -1,17 +1,3 @@
--- Sobre:
--- A lógica aplicada nessa function é a seguinte:
--- Ao validar os dados, todos os itens da ordem de serviço são deletados, logo é deletado a OS.
--- Caso o checklist seja integrado, também realizamos a deleção.
---
--- Précondições:
--- É feito a validação da Unidade.
---
--- Histórico:
--- 2019-07-24 -> Function criada (natanrotta - PL-2171).
--- 2019-09-17 -> Adiciona SESSION_USER (natanrotta - PL-2229).
--- 2019-09-18 -> Adiciona no schema suporte (natanrotta - PL-2242).
--- 2020-05-25 -> Adiciona estrutura para deletar checklist integrado (natanrotta - PLI-157).
--- 2020-08-14 -> Adiciona chamada para logar execução da function (gustavocnp95 - PL-3066).
 CREATE OR REPLACE FUNCTION SUPORTE.FUNC_CHECKLIST_OS_DELETA_OS_CHECKLIST(F_COD_UNIDADE BIGINT,
                                                                          F_COD_OS BIGINT,
                                                                          F_COD_CHECKLIST BIGINT,

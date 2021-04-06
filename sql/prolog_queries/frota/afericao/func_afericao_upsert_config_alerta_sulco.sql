@@ -1,9 +1,3 @@
--- Sobre:
---
--- Esta função realiza o upsert das configurações de aferição por unidade.
---
--- Histórico:
--- 2019-12-10 -> Adição de colunas de bloqueio  (wvinim - PL-1934).
 CREATE OR REPLACE FUNCTION FUNC_AFERICAO_UPSERT_CONFIG_ALERTA_SULCO(F_CODIGO BIGINT,
                                                                     F_COD_UNIDADE BIGINT,
                                                                     F_VARIACAO_SULCO_MENOR DOUBLE PRECISION,

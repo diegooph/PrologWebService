@@ -1,12 +1,3 @@
--- Sobre:
--- A lógica aplicada nessa function é a seguinte:
--- Formata a nomenclatura recebida para que não haja espaços excedentes ou characteres que simulam espaço.
---
--- Precondições:
--- 1) Func remove_extra_spaces criada.
---
--- Histórico:
--- 2019-09-03 -> Function criada (thaisksf PL-2259).
 CREATE OR REPLACE FUNCTION TG_FUNC_PNEU_NOMENCLATURA_FORMATA_NOMENCLATURA()
     RETURNS TRIGGER
     LANGUAGE PLPGSQL

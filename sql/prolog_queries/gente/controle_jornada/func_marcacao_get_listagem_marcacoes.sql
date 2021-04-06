@@ -1,11 +1,3 @@
--- Sobre:
---
--- Function para retornar a listagem de marcações por data.
---
--- Histórico:
--- 2019-06-14 -> Criação do arquivo específico da function (wvinim - PL-2000).
--- 2020-07-17 -> Remove os intervalos inativos desta exibição (wvinim - PL-2832).
--- 2020-08-30 -> Insere marcações inativas (gustavocnp95 - PL-2832).
 CREATE OR REPLACE FUNCTION FUNC_MARCACAO_GET_LISTAGEM_MARCACOES(
   F_COD_UNIDADE        BIGINT,
   F_CPF_COLABORADOR    BIGINT,

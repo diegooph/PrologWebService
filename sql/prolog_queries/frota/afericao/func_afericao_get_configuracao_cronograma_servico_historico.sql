@@ -1,9 +1,3 @@
--- Sobre:
---
--- Esta function retorna uma lista de histórico de alterações das configurações de abertura de serviço por unidade.
---
--- Histórico:
--- 2019-11-27 -> Function criada (wvinim - PL-1989).
 CREATE OR REPLACE FUNCTION FUNC_AFERICAO_GET_CONFIGURACAO_CRONOGRAMA_SERVICO_HISTORICO(F_COD_RESTRICAO_UNIDADE_PNEU BIGINT)
     RETURNS TABLE
             (

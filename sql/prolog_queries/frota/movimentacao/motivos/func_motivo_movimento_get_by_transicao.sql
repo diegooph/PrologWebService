@@ -1,8 +1,3 @@
--- Sobre:
--- Esta função realiza a busca de uma lista de motivos, com base na origem e no destino.
---
--- Histórico:
--- 2020-03-23 -> Function criada (gustavocnp95 - PL-2607).
 CREATE OR REPLACE FUNCTION FUNC_MOTIVO_MOVIMENTO_GET_BY_TRANSICAO(F_ORIGEM MOVIMENTACAO_ORIGEM_DESTINO_TYPE,
                                                                   F_DESTINO MOVIMENTACAO_ORIGEM_DESTINO_TYPE,
                                                                   F_COD_UNIDADE BIGINT)

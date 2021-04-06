@@ -1,10 +1,3 @@
--- Sobre:
--- Busca uma aferição específica com base no código da aferição e da unidade.
---
--- Histórico:
--- 2020-05-18 -> Arquivo especifico da function criado (luiz_fp - PL-2684).
--- 2020-06-18 -> Adiciona identificador de frota (thaisksf - PL-2760).
-DROP FUNCTION FUNC_AFERICAO_GET_AFERICAO_BY_CODIGO(F_COD_UNIDADE BIGINT, F_COD_AFERICAO BIGINT, F_TZ_UNIDADE TEXT);
 CREATE OR REPLACE FUNCTION FUNC_AFERICAO_GET_AFERICAO_BY_CODIGO(F_COD_UNIDADE BIGINT,
                                                                 F_COD_AFERICAO BIGINT,
                                                                 F_TZ_UNIDADE TEXT)
@@ -40,7 +33,7 @@ $$
 SELECT A.CODIGO                              AS COD_AFERICAO,
        A.COD_UNIDADE                         AS COD_UNIDADE,
        A.DATA_HORA AT TIME ZONE F_TZ_UNIDADE AS DATA_HORA,
-       A.PLACA_VEICULO::TEXT                 AS PLACA_VEICULO,
+       V.PLACA                               AS PLACA_VEICULO,
        V.IDENTIFICADOR_FROTA                 AS IDENTIFICADOR_FROTA,
        A.KM_VEICULO                          AS KM_VEICULO,
        A.TEMPO_REALIZACAO                    AS TEMPO_REALIZACAO,
@@ -64,7 +57,7 @@ FROM AFERICAO A
          JOIN AFERICAO_VALORES AV
               ON A.CODIGO = AV.COD_AFERICAO
          JOIN VEICULO V
-              ON V.PLACA = A.PLACA_VEICULO
+              ON V.CODIGO = A.COD_VEICULO
          JOIN PNEU_ORDEM PO
               ON AV.POSICAO = PO.POSICAO_PROLOG
          JOIN PNEU P

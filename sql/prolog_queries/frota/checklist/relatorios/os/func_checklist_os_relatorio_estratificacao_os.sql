@@ -1,15 +1,3 @@
--- Sobre:
--- Retorna o relatório de estratificação de O.S. de acordo com os parâmetros recebidos.
---
--- Précondições:
--- Function: TZ_UNIDADE(BIGINT) criada.
---
--- Histórico:
--- 2019-08-13 -> Function melhorada e adicionada ao tracking (wvinim - PL-2175).
--- 2020-03-03 -> Atualização de arquivo e documentação (wvinim - PL-2494).
--- 2020-03-25 -> Adiciona a coluna de tipo de veículo (wvinim - PL-2546).
--- 2020-04-28 -> Adiciona a coluna de quantidade de apontamentos (diogenesvanzella - PL-2725).
--- 2020-08-05 -> Adiciona a coluna de código do item de OS (luiz_fp - PS-1191).
 CREATE OR REPLACE FUNCTION FUNC_CHECKLIST_OS_RELATORIO_ESTRATIFICACAO_OS(F_COD_UNIDADES BIGINT[],
                                                                          F_PLACA_VEICULO TEXT,
                                                                          F_STATUS_OS TEXT,
@@ -28,6 +16,8 @@ CREATE OR REPLACE FUNCTION FUNC_CHECKLIST_OS_RELATORIO_ESTRATIFICACAO_OS(F_COD_U
                 "STATUS OS"                    TEXT,
                 "PLACA"                        TEXT,
                 "TIPO DE VEÍCULO"              TEXT,
+                "TIPO DO CHECKLIST"            TEXT,
+                "MODELO DO CHECKLIST"          TEXT,
                 "PERGUNTA"                     TEXT,
                 "ALTERNATIVA"                  TEXT,
                 "QTD APONTAMENTOS"             INTEGER,
@@ -44,8 +34,7 @@ CREATE OR REPLACE FUNCTION FUNC_CHECKLIST_OS_RELATORIO_ESTRATIFICACAO_OS(F_COD_U
                 "KM ABERTURA"                  BIGINT,
                 "KM FECHAMENTO"                BIGINT,
                 "KM PERCORRIDO"                TEXT,
-                "MOTORISTA"                    TEXT,
-                "TIPO DO CHECKLIST"            TEXT
+                "MOTORISTA"                    TEXT
             )
     LANGUAGE SQL
 AS
@@ -53,14 +42,19 @@ $$
 SELECT U.NOME                                                                             AS NOME_UNIDADE,
        EO.COD_OS                                                                          AS CODIGO_OS,
        EO.CODIGO                                                                          AS COD_ITEM_OS,
-       FORMAT_TIMESTAMP(DATA_HORA, 'DD/MM/YYYY HH24:MI')                                  AS ABERTURA_OS,
-       FORMAT_TIMESTAMP(DATA_HORA + (PRAZO || ' HOUR') :: INTERVAL, 'DD/MM/YYYY HH24:MI') AS DATA_LIMITE_CONSERTO,
+       FORMAT_TIMESTAMP(EO.DATA_HORA, 'DD/MM/YYYY HH24:MI')                                  AS ABERTURA_OS,
+       FORMAT_TIMESTAMP(EO.DATA_HORA + (EO.PRAZO || ' HOUR') :: INTERVAL, 'DD/MM/YYYY HH24:MI') AS DATA_LIMITE_CONSERTO,
        (CASE
             WHEN STATUS_OS = 'A'
                 THEN 'ABERTA'
             ELSE 'FECHADA' END)                                                           AS STATUS_OS,
-       PLACA_VEICULO                                                                      AS PLACA,
+       EO.PLACA_VEICULO                                                                      AS PLACA,
        VT.NOME                                                                            AS TIPO_VEICULO,
+       CASE
+           WHEN TIPO_CHECKLIST = 'S'
+               THEN 'SAÍDA'
+           ELSE 'RETORNO' END                                                             AS TIPO_CHECKLIST,
+       CM.NOME                                                                            AS CHECKLIST_MODELO,
        PERGUNTA                                                                           AS PERGUNTA,
        ALTERNATIVA                                                                        AS ALTERNATIVA,
        QT_APONTAMENTOS                                                                    AS QTD_APONTAMENTOS,
@@ -81,19 +75,21 @@ SELECT U.NOME                                                                   
        FORMAT_TIMESTAMP(DATA_HORA_CONSERTO, 'DD/MM/YYYY HH24:MI')                         AS DATA_RESOLVIDO_PROLOG,
        NOME_MECANICO                                                                      AS MECANICO,
        FEEDBACK_CONSERTO                                                                  AS DESCRICAO_CONSERTO,
-       TEMPO_REALIZACAO / 1000 / 60                                                       AS TEMPO_CONSERTO_MINUTOS,
+       EO.TEMPO_REALIZACAO / 1000 / 60                                                    AS TEMPO_CONSERTO_MINUTOS,
        KM                                                                                 AS KM_ABERTURA,
        KM_FECHAMENTO                                                                      AS KM_FECHAMENTO,
        COALESCE((KM_FECHAMENTO - KM) :: TEXT, '-')                                        AS KM_PERCORRIDO,
-       NOME_REALIZADOR_CHECKLIST                                                          AS MOTORISTA,
-       CASE
-           WHEN TIPO_CHECKLIST = 'S'
-               THEN 'SAÍDA'
-           ELSE 'RETORNO' END                                                             AS TIPO_CHECKLIST
+       NOME_REALIZADOR_CHECKLIST                                                          AS MOTORISTA
 FROM ESTRATIFICACAO_OS EO
          JOIN UNIDADE U
               ON EO.COD_UNIDADE = U.CODIGO
-         JOIN VEICULO_TIPO VT ON VT.CODIGO = EO.COD_TIPO
+         JOIN VEICULO_TIPO VT
+             ON VT.CODIGO = EO.COD_TIPO
+         JOIN CHECKLIST C
+            ON C.CODIGO = EO.COD_CHECKLIST
+         JOIN CHECKLIST_MODELO CM
+            ON CM.CODIGO = C.COD_CHECKLIST_MODELO
+
 WHERE EO.COD_UNIDADE = ANY (F_COD_UNIDADES)
   AND EO.PLACA_VEICULO LIKE F_PLACA_VEICULO
   AND EO.STATUS_OS LIKE F_STATUS_OS

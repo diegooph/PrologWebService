@@ -1,10 +1,3 @@
--- Sobre:
---
--- Esta função retorna uma lista de marcações agrupadas, filtradas por tipo, colaborador e dia.
---
--- Histórico:
--- 2019-08-01 -> Function alterada para inserir registros de IMEI (wvinim - PL-2152).
--- 2019-08-07 -> Function alterada para inserir registros de marca e modelo do dispositivo (wvinim - PL-2152)
 CREATE OR REPLACE FUNCTION FUNC_MARCACAO_GET_MARCACOES_ACOMPANHAMENTO(
   F_COD_INICIO BIGINT,
   F_COD_FIM    BIGINT,

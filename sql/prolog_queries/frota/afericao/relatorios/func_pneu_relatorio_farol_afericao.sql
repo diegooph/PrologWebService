@@ -1,11 +1,3 @@
--- Sobre:
---
--- Esta function retorna os dados necessários para a construção do relatório de farol de aferições.
--- Este relatório exibe as quantidades e percentuais de pneus que estão aplicados (atualmente) e
--- foram aferidos em um range de data.
---
--- Histórico:
--- 2019-11-22 -> Function criada (wvinim - PL-2268).
 CREATE OR REPLACE FUNCTION FUNC_PNEU_RELATORIO_FAROL_AFERICAO(F_COD_UNIDADES BIGINT[], F_DATA_INICIAL DATE, F_DATA_FINAL DATE)
     RETURNS TABLE
             (
@@ -32,9 +24,9 @@ WITH FAROL_AFERICAO AS (
                    OR A.TIPO_MEDICAO_COLETADA = 'SULCO_PRESSAO') AS TOTAL_SULCO
     FROM VEICULO_DATA V
              JOIN UNIDADE U ON V.COD_UNIDADE = U.CODIGO
-             JOIN VEICULO_PNEU VP ON V.PLACA = VP.PLACA AND V.COD_UNIDADE = VP.COD_UNIDADE
+             JOIN VEICULO_PNEU VP ON V.CODIGO = VP.COD_VEICULO AND V.COD_UNIDADE = VP.COD_UNIDADE
              LEFT JOIN AFERICAO_VALORES AV ON AV.COD_PNEU = VP.COD_PNEU
-             LEFT JOIN AFERICAO A ON V.PLACA = A.PLACA_VEICULO AND A.CODIGO = AV.COD_AFERICAO
+             LEFT JOIN AFERICAO A ON V.CODIGO = A.COD_VEICULO AND A.CODIGO = AV.COD_AFERICAO
     WHERE V.COD_UNIDADE = ANY (F_COD_UNIDADES)
       AND (A.DATA_HORA AT TIME ZONE TZ_UNIDADE(A.COD_UNIDADE))::DATE >= (F_DATA_INICIAL)
       AND (A.DATA_HORA AT TIME ZONE TZ_UNIDADE(A.COD_UNIDADE))::DATE <= (F_DATA_FINAL)

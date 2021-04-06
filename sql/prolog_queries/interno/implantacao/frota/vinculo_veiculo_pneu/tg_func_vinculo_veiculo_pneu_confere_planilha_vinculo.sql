@@ -1,16 +1,3 @@
--- Sobre:
--- A lógica aplicada nessa function é a seguinte:
--- Verifica os dados que são inseridos na tabela de 'pré-vínculo', procurando os códigos correspondentes para efetuar
--- os vinculos entre pneus e veículos.
---
--- Pré-requisitos:
--- functions criadas:
--- REMOVE_ESPACOS_E_CARACTERES_ESPECIAIS.
--- REMOVE_ALL_SPACES.
---
--- Histórico:
--- 2020-08-28 -> Function criada (thaisksf - PL-2771).
--- 2020-09-24 -> Adiciona cod_veiculo (thaisksf - PL-3170).
 create or replace function implantacao.tg_func_vinculo_veiculo_pneu_confere_planilha_vinculo()
     returns trigger
     language plpgsql

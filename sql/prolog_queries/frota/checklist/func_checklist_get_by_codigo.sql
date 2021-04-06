@@ -1,12 +1,3 @@
--- Sobre:
---
--- Function para buscar as informações de um checklist realizado.
---
--- Histórico:
--- 2020-03-03 -> Atualização de arquivo e documentação (wvinim - PL-2494).
--- 2020-07-07 -> Adição das informações de mídias coletadas (wvinim - PL-2705).
--- 2020-07-13 -> Atualização de arquivo e documentação (wvinim - PL-2824).
--- 2020-09-22 -> Insere nova coluna observação no retorno (gustavocnp95 - PL-3164).
 create or replace function func_checklist_get_by_codigo(f_cod_checklist bigint)
     returns table
             (
@@ -58,7 +49,7 @@ begin
                c.observacao                                                        as observacao,
                c.tempo_realizacao                                                  as duracao_realizacao_millis,
                c.cpf_colaborador                                                   as cpf_colaborador,
-               c.placa_veiculo :: text                                             as placa_veiculo,
+               v.placa :: text                                                     as placa_veiculo,
                c.tipo                                                              as tipo_checklist,
                co.nome :: text                                                     as nome_colaborador,
                cp.codigo                                                           as cod_pergunta,
@@ -83,6 +74,7 @@ begin
                crman.url_midia                                                     as url_midia_alternativa,
                crman.tipo_midia                                                    as tipo_midia_alternativa
         from checklist c
+                 join veiculo v on v.codigo = c.cod_veiculo
                  join colaborador co
                       on co.cpf = c.cpf_colaborador
                  join checklist_perguntas cp

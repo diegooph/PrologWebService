@@ -1,10 +1,3 @@
--- Sobre:
--- A lógica aplicada nessa function é a seguinte:
---
--- Précondições:
---
--- Histórico:
--- 2019-09-17 -> Adiciona SESSION_USER (natanrotta - PL-2229).
 CREATE OR REPLACE FUNCTION FUNC_VEICULO_TRANSFERENCIA_DELETA_ITENS_OS_VEICULO(F_COD_VEICULO BIGINT,
                                                                               F_COD_TRANSFERENCIA_VEICULO_INFORMACOES BIGINT,
                                                                               F_DATA_HORA_REALIZACAO_TRANSFERENCIA TIMESTAMP WITH TIME ZONE)

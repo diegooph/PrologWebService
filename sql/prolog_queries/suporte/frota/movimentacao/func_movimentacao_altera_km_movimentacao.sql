@@ -1,19 +1,3 @@
--- Sobre:
--- A lógica aplicada nessa function é a seguinte:
--- Após todas as validações, é atualizado a coluna KM_VEICULO na tabela onde possui a placa, cod_movimentacao e
--- tipo: EM_USO.
---
--- Precondições:
--- Código movimentação não pode ser null.
--- Placa não pode ser null.
--- KM não pode ser null e menor que 0.
---
--- Histórico:
--- 2019-07-31 -> Function criada (natanrotta - PL-2131).
--- 2019-09-18 -> Adiciona no schema suporte (natanrotta - PL-2242).
--- 2020-08-14 -> Adiciona chamada para logar execução da function (gustavocnp95 - PL-3066).
--- 2020-10-16 -> Remove restrição de placa ainda estar na empresa da movimentação (luizfp).
--- 2020-10-16 -> Corrige cenário que apontava erro quando origem e destino são EM_USO (luizfp).
 CREATE OR REPLACE FUNCTION SUPORTE.FUNC_MOVIMENTACAO_ALTERA_KM_MOVIMENTACAO(F_COD_MOVIMENTACAO BIGINT,
                                                                             F_PLACA VARCHAR(7),
                                                                             F_KM_ATUALIZADO INTEGER,
@@ -52,8 +36,9 @@ BEGIN
     IF NOT EXISTS(
             SELECT MD.COD_MOVIMENTACAO
             FROM MOVIMENTACAO_DESTINO MD
+                     INNER JOIN VEICULO V_DESTINO ON V_DESTINO.CODIGO = MD.COD_VEICULO
             WHERE MD.COD_MOVIMENTACAO = F_COD_MOVIMENTACAO
-              AND MD.PLACA = F_PLACA
+              AND V_DESTINO.PLACA = F_PLACA
               AND MD.TIPO_DESTINO = TIPO
         )
     THEN
@@ -64,8 +49,9 @@ BEGIN
     IF NOT EXISTS(
             SELECT MO.COD_MOVIMENTACAO
             FROM MOVIMENTACAO_ORIGEM MO
+                     INNER JOIN VEICULO V_ORIGEM ON V_ORIGEM.CODIGO = MO.COD_VEICULO
             WHERE MO.COD_MOVIMENTACAO = F_COD_MOVIMENTACAO
-              AND MO.PLACA = F_PLACA
+              AND V_ORIGEM.PLACA = F_PLACA
               AND MO.TIPO_ORIGEM = TIPO
         )
     THEN
@@ -94,7 +80,6 @@ BEGIN
         UPDATE MOVIMENTACAO_DESTINO
         SET KM_VEICULO = F_KM_ATUALIZADO
         WHERE COD_MOVIMENTACAO = F_COD_MOVIMENTACAO
-          AND PLACA = F_PLACA
           AND TIPO_DESTINO = TIPO;
         MOVIMENTACAO_ATUALIZADA = 'DESTINO';
         GET DIAGNOSTICS QTD_LINHAS_ATUALIZADAS = ROW_COUNT;
@@ -103,7 +88,6 @@ BEGIN
         UPDATE MOVIMENTACAO_ORIGEM
         SET KM_VEICULO = F_KM_ATUALIZADO
         WHERE COD_MOVIMENTACAO = F_COD_MOVIMENTACAO
-          AND PLACA = F_PLACA
           AND TIPO_ORIGEM = TIPO;
         MOVIMENTACAO_ATUALIZADA = 'ORIGEM';
         GET DIAGNOSTICS QTD_LINHAS_ATUALIZADAS = ROW_COUNT;
@@ -111,7 +95,6 @@ BEGIN
         UPDATE MOVIMENTACAO_DESTINO
         SET KM_VEICULO = F_KM_ATUALIZADO
         WHERE COD_MOVIMENTACAO = F_COD_MOVIMENTACAO
-          AND PLACA = F_PLACA
           AND TIPO_DESTINO = TIPO;
         MOVIMENTACAO_ATUALIZADA = 'DESTINO';
         GET DIAGNOSTICS QTD_LINHAS_ATUALIZADAS = ROW_COUNT;
@@ -119,7 +102,6 @@ BEGIN
         UPDATE MOVIMENTACAO_ORIGEM
         SET KM_VEICULO = F_KM_ATUALIZADO
         WHERE COD_MOVIMENTACAO = F_COD_MOVIMENTACAO
-          AND PLACA = F_PLACA
           AND TIPO_ORIGEM = TIPO;
         MOVIMENTACAO_ATUALIZADA = 'ORIGEM';
         GET DIAGNOSTICS QTD_LINHAS_ATUALIZADAS = ROW_COUNT;

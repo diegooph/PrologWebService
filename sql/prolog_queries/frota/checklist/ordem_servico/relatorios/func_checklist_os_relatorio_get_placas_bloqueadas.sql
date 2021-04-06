@@ -1,8 +1,3 @@
--- Sobre:
--- Retorna placas que possuem itens críticos em aberto e estão bloqueadas.
---
--- Histórico:
--- 2020-10-27 -> Function criada (thaisksf - PL-2791).
 create or replace function func_checklist_os_relatorio_get_placas_bloqueadas(f_cod_unidades bigint[])
     returns table
             (

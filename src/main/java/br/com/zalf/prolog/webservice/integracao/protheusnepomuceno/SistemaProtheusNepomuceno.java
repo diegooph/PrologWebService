@@ -8,17 +8,21 @@ import br.com.zalf.prolog.webservice.errorhandling.ErrorReportSystem;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
-import br.com.zalf.prolog.webservice.integracao.IntegracaoDao;
+import br.com.zalf.prolog.webservice.integracao.IntegracaoPosicaoPneuMapper;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.MetodoIntegrado;
 import br.com.zalf.prolog.webservice.integracao.RecursoIntegrado;
+import br.com.zalf.prolog.webservice.integracao.integrador.IntegracaoDao;
+import br.com.zalf.prolog.webservice.integracao.integrador._model.AfericaoRealizadaAvulsa;
+import br.com.zalf.prolog.webservice.integracao.integrador._model.AfericaoRealizadaPlaca;
+import br.com.zalf.prolog.webservice.integracao.integrador._model.TipoVeiculoConfigAfericao;
+import br.com.zalf.prolog.webservice.integracao.integrador._model.UnidadeRestricao;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.ApiAutenticacaoHolder;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.*;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno._model.error.ProtheusNepomucenoException;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.data.ProtheusNepomucenoRequesterImpl;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.utils.ProtheusNepomucenoConverter;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.utils.ProtheusNepomucenoEncoderDecoder;
-import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.utils.ProtheusNepomucenoPosicaoPneuMapper;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.utils.ProtheusNepomucenoUtils;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
@@ -72,11 +76,13 @@ public final class SistemaProtheusNepomuceno extends Sistema {
             // Podemos, com toda certeza, utilizar codUnidades.get(0) pois no mínimo teremos uma unidade nesta lista.
             final Long codEmpresa = getIntegradorProLog().getCodEmpresaByCodUnidadeProLog(conn, codUnidades.get(0));
 
-            final Map<String, InfosUnidadeRestricao> unidadeRestricao =
-                    sistema.getInfosUnidadeRestricao(conn, codUnidadesMapeadas);
+            final Map<String, UnidadeRestricao> unidadeRestricao =
+                    integracaoDao.getUnidadeRestricaoHolder(conn, codUnidadesMapeadas).getUnidadeRestricao();
             // Apenas tipos de veículos que possuem cod_auxiliar estarão nessa estrutura.
-            final Table<String, String, InfosTipoVeiculoConfiguracaoAfericao> tipoVeiculoConfiguracao =
-                    sistema.getInfosTipoVeiculoConfiguracaoAfericao(conn, codUnidadesMapeadas);
+            final Table<String, String, TipoVeiculoConfigAfericao> tipoVeiculoConfiguracao =
+                    integracaoDao
+                            .getTipoVeiculoConfigAfericaoHolder(conn, codUnidadesMapeadas)
+                            .getTipoVeiculoConfiguracao();
 
             final List<VeiculoListagemProtheusNepomuceno> listagemVeiculos =
                     internalGetVeiculos(conn, codEmpresa, codUnidadesMapeadas, sistema);
@@ -87,8 +93,10 @@ public final class SistemaProtheusNepomuceno extends Sistema {
                     .distinct()
                     .collect(Collectors.toList());
 
-            final Map<String, InfosAfericaoRealizadaPlaca> afericaoRealizadaPlaca =
-                    sistema.getInfosAfericaoRealizadaPlaca(conn, codEmpresa, placasNepomuceno);
+            final Map<String, AfericaoRealizadaPlaca> afericaoRealizadaPlaca =
+                    integracaoDao
+                            .getAfericaoRealizadaPlacaHolder(conn, codEmpresa, placasNepomuceno)
+                            .getAfericoesRealizadasPlacas();
 
             // Aqui começamos a montar o cronograma
             final Map<String, ModeloPlacasAfericao> modelosEstruturaVeiculo = new HashMap<>();
@@ -169,12 +177,13 @@ public final class SistemaProtheusNepomuceno extends Sistema {
                                                          afericaoBusca.getPlacaVeiculo());
 
             final ConfiguracaoNovaAfericaoPlaca configuracaoAfericao =
-                    sistema.getConfigNovaAfericaoPlaca(
-                            conn,
-                            afericaoBusca.getCodUnidade(),
-                            veiculoAfericao.getCodEstruturaVeiculo());
+                    integracaoDao.getConfigNovaAfericaoPlaca(conn,
+                                                             afericaoBusca.getCodUnidade(),
+                                                             veiculoAfericao.getCodEstruturaVeiculo());
             final Short codDiagramaProlog =
-                    sistema.getCodDiagramaByCodEstrutura(conn, codEmpresa, veiculoAfericao.getCodEstruturaVeiculo());
+                    integracaoDao.getCodDiagramaByDeParaTipoVeiculo(conn,
+                                                                    codEmpresa,
+                                                                    veiculoAfericao.getCodEstruturaVeiculo());
             if (codDiagramaProlog <= 0) {
                 throw new ProtheusNepomucenoException(
                         "Identificamos aque a estrutura (" + veiculoAfericao.getCodEstruturaVeiculo() + ") " +
@@ -182,9 +191,12 @@ public final class SistemaProtheusNepomuceno extends Sistema {
                                 "Por favor, solicite que esta esta estrutura seja cadastrada no Prolog para " +
                                 "realizar a aferição.");
             }
-            final ProtheusNepomucenoPosicaoPneuMapper posicaoPneuMapper = new ProtheusNepomucenoPosicaoPneuMapper(
+            final IntegracaoPosicaoPneuMapper posicaoPneuMapper = new IntegracaoPosicaoPneuMapper(
                     veiculoAfericao.getCodEstruturaVeiculo(),
-                    sistema.getMapeamentoPosicoesProlog(conn, codEmpresa, veiculoAfericao.getCodEstruturaVeiculo()));
+                    integracaoDao.getMapeamentoPosicoesPrologByDeParaTipoVeiculo(
+                            conn,
+                            codEmpresa,
+                            veiculoAfericao.getCodEstruturaVeiculo()));
 
             // Garantimos, antes de criar a nova aferição, que todas as posições estão mapeadas. Caso não estiverem,
             // estouramos uma exception mostrando as posições não mapeadas.
@@ -232,12 +244,14 @@ public final class SistemaProtheusNepomuceno extends Sistema {
                     .collect(Collectors.toList());
 
             // Busca as infos de aferição com base nos pneus da lista codPneus.
-            final List<InfosAfericaoAvulsa> infosAfericaoAvulsa =
-                    sistema.getInfosAfericaoAvulsa(conn, codUnidade, codPneus);
+            final List<AfericaoRealizadaAvulsa> infosAfericaoAvulsa =
+                    integracaoDao
+                            .getAfericaoRealizadaAvulsaHolder(conn, codEmpresaProlog, codPneus)
+                            .getAfericoesRealizadasAvulsas();
 
             final List<PneuAfericaoAvulsa> pneusAfericaoAvulsa = new ArrayList<>();
             for (final PneuEstoqueProtheusNepomuceno pneuEstoqueNepomuceno : pneusEstoqueNepomuceno) {
-                final InfosAfericaoAvulsa pneuInfoAfericaoAvulsa = infosAfericaoAvulsa.stream()
+                final AfericaoRealizadaAvulsa pneuInfoAfericaoAvulsa = infosAfericaoAvulsa.stream()
                         .filter(infoPneu ->
                                         infoPneu.getCodPneuCliente().equals(pneuEstoqueNepomuceno.getCodigoCliente()))
                         .findFirst()
@@ -282,20 +296,21 @@ public final class SistemaProtheusNepomuceno extends Sistema {
                             ProtheusNepomucenoEncoderDecoder.decode(codPneu));
 
             // Busca as infos de aferição com base nos pneus da lista codPneus.
-            final List<InfosAfericaoAvulsa> infosAfericaoAvulsa =
-                    sistema.getInfosAfericaoAvulsa(
-                            conn,
-                            codUnidade,
-                            Collections.singletonList(pneuEstoqueNepomuceno.getCodigoCliente()));
+            final List<AfericaoRealizadaAvulsa> infosAfericaoAvulsa =
+                    integracaoDao
+                            .getAfericaoRealizadaAvulsaHolder(conn,
+                                                              codEmpresaProlog,
+                                                              Collections.singletonList(pneuEstoqueNepomuceno.getCodigoCliente()))
+                            .getAfericoesRealizadasAvulsas();
 
-            final InfosAfericaoAvulsa pneuInfoAfericaoAvulsa = infosAfericaoAvulsa.stream()
+            final AfericaoRealizadaAvulsa pneuInfoAfericaoAvulsa = infosAfericaoAvulsa.stream()
                     .filter(infoPneu ->
                                     infoPneu.getCodPneuCliente().equals(pneuEstoqueNepomuceno.getCodigoCliente()))
                     .findFirst()
                     .orElse(null);
 
             final ConfiguracaoNovaAfericaoAvulsa configuracaoAfericao =
-                    sistema.getConfigNovaAfericaoAvulsa(conn, codUnidade);
+                    integracaoDao.getConfigNovaAfericaoAvulsa(conn, codUnidade);
 
             return ProtheusNepomucenoConverter
                     .createNovaAfericaoAvulsaProlog(
@@ -338,7 +353,8 @@ public final class SistemaProtheusNepomuceno extends Sistema {
 
             // Deixamos para inserir a aferição no Prolog logo antes de enviar para o Protheus. Assim garantimos que
             // só teremos um rollback caso tenhamos erro no Protheus.
-            final Long codAfericaoInserida = sistema.insert(conn, codUnidade, codAuxiliarUnidade, afericao);
+            final Long codAfericaoInserida =
+                    integracaoDao.insertAfericao(conn, codUnidade, codAuxiliarUnidade, afericao);
 
             if (afericao instanceof AfericaoPlaca) {
                 final ApiAutenticacaoHolder apiAutenticacaoHolder =

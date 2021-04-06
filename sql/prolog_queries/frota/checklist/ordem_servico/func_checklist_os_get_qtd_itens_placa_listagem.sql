@@ -1,17 +1,3 @@
--- Sobre:
---
--- Método utilizado para buscar a quantidade de Itens apontados como Não Ok (NOK) em uma Placa,
--- agrupando por prioridade do Item. A quantidade de Itens pode ser filtrada
--- pelo status em que o Item se encontra, podendo ser Pendente ou Resolvido
---
--- Para buscar a quantidade de Itens apontados de TODOS os veículos o parâmetro placa deve ser NULL
---
--- Esta busca utiliza paginação, então deve-se explicitar a quantidade de dados que serão buscados
--- através dos parâmetros limit e offset.
---
--- Histórico:
--- 2020-03-02 -> Atualização de arquivo e documentação (wvinim - PL-2494).
--- 2020-11-09 -> Impede de trazer itens de O.S. de outra empresa (luizfp - PL-3285).
 create or replace function func_checklist_os_get_qtd_itens_placa_listagem(f_cod_unidade bigint,
                                                                           f_cod_tipo_veiculo bigint,
                                                                           f_placa_veiculo text,

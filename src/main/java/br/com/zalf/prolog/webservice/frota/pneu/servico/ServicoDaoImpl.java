@@ -99,25 +99,24 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
     }
 
     @Override
-    public void calibragemToInspecao(@NotNull final Connection conn,
-                                     @NotNull final Long codUnidade,
-                                     @NotNull final Long codPneu) throws SQLException {
+    public void convertServico(@NotNull final Connection conn,
+                               @NotNull final Long codUnidade,
+                               @NotNull final Long codPneu,
+                               @NotNull final TipoServico tipoServicoOriginal,
+                               @NotNull final TipoServico tipoServicoNovo) throws SQLException {
         PreparedStatement stmt = null;
         try {
-            stmt = conn.prepareStatement("UPDATE AFERICAO_MANUTENCAO SET QT_APONTAMENTOS = "
-                                                 + "(SELECT QT_APONTAMENTOS FROM AFERICAO_MANUTENCAO WHERE COD_PNEU =" +
-                                                 " ? AND COD_UNIDADE = ? AND "
-                                                 + "TIPO_SERVICO = ? AND DATA_HORA_RESOLUCAO IS NULL) + 1, " +
-                                                 "TIPO_SERVICO = ? "
-                                                 + "WHERE COD_PNEU = ? AND COD_UNIDADE = ? AND TIPO_SERVICO = ? AND " +
-                                                 "DATA_HORA_RESOLUCAO IS NULL;");
-            stmt.setLong(1, codPneu);
-            stmt.setLong(2, codUnidade);
-            stmt.setString(3, TipoServico.CALIBRAGEM.asString());
-            stmt.setString(4, TipoServico.INSPECAO.asString());
-            stmt.setLong(5, codPneu);
-            stmt.setLong(6, codUnidade);
-            stmt.setString(7, TipoServico.CALIBRAGEM.asString());
+            stmt = conn.prepareStatement("UPDATE AFERICAO_MANUTENCAO " +
+                                                 "SET QT_APONTAMENTOS = QT_APONTAMENTOS + 1, " +
+                                                 "TIPO_SERVICO = ? " +
+                                                 "WHERE COD_PNEU = ? " +
+                                                 "AND COD_UNIDADE = ? " +
+                                                 "AND TIPO_SERVICO = ? " +
+                                                 "AND DATA_HORA_RESOLUCAO IS NULL;");
+            stmt.setString(1, tipoServicoNovo.asString());
+            stmt.setLong(2, codPneu);
+            stmt.setLong(3, codUnidade);
+            stmt.setString(4, tipoServicoOriginal.asString());
             stmt.executeUpdate();
         } finally {
             close(stmt);
@@ -269,13 +268,14 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
                             codPneu,
                             conn);
                     if (qtdServicosEmAbertoPneu > 0) {
-                        final int qtdServicosFechadosPneu = fecharAutomaticamenteServicosPneu(
+                        final int qtdServicosFechadosPneu = fecharAutomaticamenteTodosServicosPneu(
                                 conn,
                                 codUnidade,
                                 codPneu,
                                 codProcessoMovimentacao,
                                 dataHorafechamentoServico,
-                                servico.getKmVeiculoMomentoFechamento());
+                                servico.getKmVeiculoMomentoFechamento(),
+                                OrigemFechamentoAutomaticoEnum.MOVIMENTACAO);
                         if (qtdServicosEmAbertoPneu != qtdServicosFechadosPneu) {
                             throw new IllegalStateException("Erro ao fechar os serviços do pneu: " + codPneu + ". " +
                                                                     "Deveriam ser fechados "
@@ -441,21 +441,114 @@ public final class ServicoDaoImpl extends DatabaseConnection implements ServicoD
     }
 
     @Override
-    public int fecharAutomaticamenteServicosPneu(@NotNull final Connection conn,
-                                                 @NotNull final Long codUnidade,
-                                                 @NotNull final Long codPneu,
-                                                 @NotNull final Long codProcessoMovimentacao,
-                                                 @NotNull final OffsetDateTime dataHorafechamentoServico,
-                                                 final long kmColetadoVeiculo) throws SQLException {
+    public int fecharAutomaticamenteTodosServicosPneu(
+            @NotNull final Connection conn,
+            @NotNull final Long codUnidade,
+            @NotNull final Long codPneu,
+            @NotNull final Long codProcesso,
+            @NotNull final OffsetDateTime dataHorafechamentoServico,
+            final long kmColetadoVeiculo,
+            @NotNull final OrigemFechamentoAutomaticoEnum origemFechamentoServico)
+            throws SQLException {
+        int qtdServicosFechados = 0;
+        qtdServicosFechados += fecharAutomaticamenteServicosInspecaoPneu(conn,
+                                                                         codUnidade,
+                                                                         codPneu,
+                                                                         codProcesso,
+                                                                         dataHorafechamentoServico,
+                                                                         kmColetadoVeiculo,
+                                                                         origemFechamentoServico);
+        qtdServicosFechados += fecharAutomaticamenteServicosCalibragemPneu(conn,
+                                                                           codUnidade,
+                                                                           codPneu,
+                                                                           codProcesso,
+                                                                           dataHorafechamentoServico,
+                                                                           kmColetadoVeiculo,
+                                                                           origemFechamentoServico);
+        qtdServicosFechados += fecharAutomaticamenteServicosMovimentacaoPneu(conn,
+                                                                             codUnidade,
+                                                                             codPneu,
+                                                                             codProcesso,
+                                                                             dataHorafechamentoServico,
+                                                                             kmColetadoVeiculo,
+                                                                             origemFechamentoServico);
+        return qtdServicosFechados;
+    }
+
+    @Override
+    public int fecharAutomaticamenteServicosInspecaoPneu(
+            @NotNull final Connection conn,
+            @NotNull final Long codUnidade,
+            @NotNull final Long codPneu,
+            @NotNull final Long codProcesso,
+            @NotNull final OffsetDateTime dataHorafechamentoServico,
+            final long kmColetadoVeiculo,
+            @NotNull final OrigemFechamentoAutomaticoEnum origemFechamentoServico)
+            throws SQLException {
         PreparedStatement stmt = null;
         try {
             stmt = ServicoQueryBinder.fecharAutomaticamenteServicosPneu(
                     conn,
                     codUnidade,
-                    codProcessoMovimentacao,
+                    codProcesso,
                     codPneu,
                     dataHorafechamentoServico,
-                    kmColetadoVeiculo);
+                    kmColetadoVeiculo,
+                    origemFechamentoServico,
+                    TipoServico.INSPECAO);
+            return stmt.executeUpdate();
+        } finally {
+            close(stmt);
+        }
+    }
+
+    @Override
+    public int fecharAutomaticamenteServicosCalibragemPneu(
+            @NotNull final Connection conn,
+            @NotNull final Long codUnidade,
+            @NotNull final Long codPneu,
+            @NotNull final Long codProcesso,
+            @NotNull final OffsetDateTime dataHorafechamentoServico,
+            final long kmColetadoVeiculo,
+            @NotNull final OrigemFechamentoAutomaticoEnum origemFechamentoServico)
+            throws SQLException {
+        PreparedStatement stmt = null;
+        try {
+            stmt = ServicoQueryBinder.fecharAutomaticamenteServicosPneu(
+                    conn,
+                    codUnidade,
+                    codProcesso,
+                    codPneu,
+                    dataHorafechamentoServico,
+                    kmColetadoVeiculo,
+                    origemFechamentoServico,
+                    TipoServico.CALIBRAGEM);
+            return stmt.executeUpdate();
+        } finally {
+            close(stmt);
+        }
+    }
+
+    @Override
+    public int fecharAutomaticamenteServicosMovimentacaoPneu(@NotNull final Connection conn,
+                                                             @NotNull final Long codUnidade,
+                                                             @NotNull final Long codPneu,
+                                                             @NotNull final Long codProcesso,
+                                                             @NotNull final OffsetDateTime dataHorafechamentoServico,
+                                                             final long kmColetadoVeiculo,
+                                                             @NotNull final OrigemFechamentoAutomaticoEnum origemFechamentoServico)
+            throws SQLException {
+        PreparedStatement stmt = null;
+        try {
+            stmt = ServicoQueryBinder.fecharAutomaticamenteServicosPneu(
+                    conn,
+                    codUnidade,
+                    codProcesso,
+                    codPneu,
+                    dataHorafechamentoServico,
+                    kmColetadoVeiculo,
+                    origemFechamentoServico,
+                    TipoServico.MOVIMENTACAO);
             return stmt.executeUpdate();
         } finally {
             close(stmt);

@@ -1,25 +1,25 @@
-CREATE OR REPLACE VIEW PNEU AS
-  SELECT
-    P.CODIGO_CLIENTE,
-    P.COD_MODELO,
-    P.COD_DIMENSAO,
-    P.PRESSAO_RECOMENDADA,
-    P.PRESSAO_ATUAL,
-    P.ALTURA_SULCO_INTERNO,
-    P.ALTURA_SULCO_CENTRAL_INTERNO,
-    P.ALTURA_SULCO_EXTERNO,
-    P.COD_UNIDADE,
-    P.STATUS,
-    P.VIDA_ATUAL,
-    P.VIDA_TOTAL,
-    P.COD_MODELO_BANDA,
-    P.ALTURA_SULCO_CENTRAL_EXTERNO,
-    P.DOT,
-    P.VALOR,
-    P.DATA_HORA_CADASTRO,
-    P.PNEU_NOVO_NUNCA_RODADO,
-    P.CODIGO,
-    P.COD_EMPRESA,
-    P.COD_UNIDADE_CADASTRO
-  FROM PNEU_DATA P
-  WHERE P.DELETADO = FALSE;
+create or replace view pneu as
+select p.codigo_cliente,
+       p.cod_modelo,
+       p.cod_dimensao,
+       p.pressao_recomendada,
+       p.pressao_atual,
+       p.altura_sulco_interno,
+       p.altura_sulco_central_interno,
+       p.altura_sulco_externo,
+       p.cod_unidade,
+       p.status,
+       p.vida_atual,
+       p.vida_total,
+       p.cod_modelo_banda,
+       p.altura_sulco_central_externo,
+       p.dot,
+       p.valor,
+       p.data_hora_cadastro,
+       p.pneu_novo_nunca_rodado,
+       p.codigo,
+       p.cod_empresa,
+       p.cod_unidade_cadastro,
+       p.origem_cadastro
+from pneu_data p
+where p.deletado = false;

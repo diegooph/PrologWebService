@@ -1,9 +1,3 @@
--- Sobre:
--- Function para criar o vínculo entre pneu e veículo no Prolog
---
--- Histórico:
--- 2020-02-25 -> Function criada (wvinim - PL-1965)
--- 2020-09-23 -> Adiciona cod_veiculo (thaisksf - PL-3170).
 create or replace function func_veiculo_insere_veiculo_pneu(f_cod_unidade bigint,
                                                             f_placa text,
                                                             f_cod_veiculo bigint,

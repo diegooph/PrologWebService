@@ -1,5 +1,5 @@
 prolog:
-  version_code: "v2_2.0.3"
+  version_code: "v3.0.1"
 spring:
   profiles: prod
   datasource:
@@ -13,6 +13,7 @@ sentry:
   release: "${prolog.version_code}"
   enable-session-tracking: true
   attach-stacktrace: true
+  send-default-pii: true
   in-app-excludes:
     - "sun"
     - "java"

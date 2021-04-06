@@ -10,8 +10,10 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Created on 2020-11-03
@@ -36,8 +38,9 @@ public final class VeiculoAcoplamentoHistoricoService {
                     dataInicial != null ? PrologDateParser.toLocalDate(dataInicial) : null,
                     dataFinal != null ? PrologDateParser.toLocalDate(dataFinal) : null);
             if (optional.isPresent()) {
+                final List<VeiculoAcoplamentoHistoricoResponse> historico = ordenaHistoricoPorData(optional.get());
                 return Response
-                        .ok(optional.get())
+                        .ok(historico)
                         .type(MediaType.APPLICATION_JSON)
                         .build();
             }
@@ -46,11 +49,20 @@ public final class VeiculoAcoplamentoHistoricoService {
                     .build();
         } catch (final Throwable e) {
             Log.e(TAG,
-                    String.format("Erro ao buscar acoplamentos das unidades %s", codUnidades.toString()),
-                    e);
+                  String.format("Erro ao buscar acoplamentos das unidades %s", codUnidades.toString()),
+                  e);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(e, "Erro ao buscar acoplamentos, tente novamente.");
         }
+    }
+
+    @NotNull
+    private List<VeiculoAcoplamentoHistoricoResponse> ordenaHistoricoPorData(
+            @NotNull final List<VeiculoAcoplamentoHistoricoResponse> historico) {
+        return historico
+                .stream()
+                .sorted(Comparator.comparing(VeiculoAcoplamentoHistoricoResponse::getDataHora).reversed())
+                .collect(Collectors.toList());
     }
 }

@@ -1,16 +1,3 @@
--- Sobre:
--- Esta function finaliza uma solicitação de socorro através dos dados recebidos por parâmetro.
---
--- A finalização consiste em uma atualização de status, na tabela pai socorro_rota, e uma inserção na tabela
--- socorro_rota_finalizacao
---
--- Observação:
--- Verificar permissões TRATAR_SOCORRO.
---
--- Histórico:
--- 2020-01-08 -> Function criada (wvinim - PL-2428).
--- 2020-02-11 -> Atualiza na tabela pai o código de finalização (wvinim PL-2521).
--- 2020-02-14 -> Insere a plataforma de origem e a versão (wvinim PL-2527).
 CREATE OR REPLACE FUNCTION FUNC_SOCORRO_ROTA_FINALIZACAO(F_COD_SOCORRO_ROTA BIGINT,
                                                          F_COD_COLABORADOR_FINALIZACAO BIGINT,
                                                          F_MOTIVO_FINALIZACAO TEXT,

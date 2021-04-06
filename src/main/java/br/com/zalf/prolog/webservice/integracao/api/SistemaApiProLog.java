@@ -9,7 +9,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.servico._model.TipoServico;
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.VeiculoServico;
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.filtro.VeiculoAberturaServicoFiltro;
 import br.com.zalf.prolog.webservice.frota.pneu.transferencia._model.realizacao.PneuTransferenciaRealizacao;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.VeiculoCadastro;
+import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.InfosVeiculoEditado;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicao;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.ProcessoTransferenciaVeiculoRealizacao;
@@ -17,6 +17,7 @@ import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.RecursoIntegrado;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
+import br.com.zalf.prolog.webservice.v3.frota.veiculo._model.VeiculoCadastroDto;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.OffsetDateTime;
@@ -56,7 +57,7 @@ public final class SistemaApiProLog extends Sistema {
 
     @Override
     public void insert(
-            @NotNull final VeiculoCadastro veiculo,
+            @NotNull final VeiculoCadastroDto veiculo,
             @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
         if (unidadeEstaComIntegracaoAtiva(veiculo.getCodUnidadeAlocado())) {
             throw new BloqueadoIntegracaoException("Para inserir veículos utilize o seu sistema de gestão");
@@ -92,11 +93,13 @@ public final class SistemaApiProLog extends Sistema {
 
     @NotNull
     @Override
-    public Long insert(@NotNull final Pneu pneu, @NotNull final Long codUnidade) throws Throwable {
+    public Long insert(@NotNull final Pneu pneu,
+                       @NotNull final Long codUnidade,
+                       @NotNull final OrigemAcaoEnum origemCadastro) throws Throwable {
         if (unidadeEstaComIntegracaoAtiva(codUnidade)) {
             throw new BloqueadoIntegracaoException("Para inserir pneus utilize o seu sistema de gestão");
         }
-        return getIntegradorProLog().insert(pneu, codUnidade);
+        return getIntegradorProLog().insert(pneu, codUnidade, origemCadastro);
     }
 
     @NotNull
@@ -134,12 +137,12 @@ public final class SistemaApiProLog extends Sistema {
     public VeiculoServico getVeiculoAberturaServico(@NotNull final VeiculoAberturaServicoFiltro filtro)
             throws Throwable {
         final Long codUnidadeVeiculo =
-                getIntegradorProLog().getVeiculoByPlaca(filtro.getPlacaVeiculo(), false).getCodUnidadeAlocado();
+                getIntegradorProLog().getVeiculoByPlaca(filtro.getPlacaVeiculo(), null, false).getCodUnidadeAlocado();
         if (unidadeEstaComIntegracaoAtiva(codUnidadeVeiculo)
                 && getSistemaApiProLog().isServicoMovimentacao(filtro.getCodServico())) {
             throw new BloqueadoIntegracaoException(
-                    "O fechamento de serviço de movimentação está sendo integrado e ainda não está disponível.\n" +
-                            "Por enquanto, utilize o seu sistema para movimentar os pneus.");
+                    "O fechamento de serviço de movimentação não está disponível.\n" +
+                            "Utilize o seu sistema para movimentar os pneus.");
         }
         return getIntegradorProLog().getVeiculoAberturaServico(filtro);
     }

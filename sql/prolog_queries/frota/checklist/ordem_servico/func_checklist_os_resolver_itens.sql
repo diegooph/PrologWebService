@@ -1,13 +1,3 @@
--- Sobre:
---
--- Essa function resolve itens de O.S.
---
--- Histórico:
--- 2020-02-28 -> Function criada (wvinim - PL-2500).
--- 2020-07-06 -> Melhora mensagem de erro (natanrotta - PL-2657).
--- 2020-09-24 -> Corrige tipo de variável (BIGINT -> TEXT) (luiz_fp).
--- 2020-11-23 -> Adiciona propagação de km na function (steinert999 - PL-3335).
--- 2020-12-16 -> Corrige propagação de km na function (gustavocnp95|thaisksf - PL-3367).
 create or replace function func_checklist_os_resolver_itens(f_cod_unidade bigint,
                                                             f_cod_veiculo bigint,
                                                             f_cod_itens bigint[],
@@ -23,21 +13,21 @@ create or replace function func_checklist_os_resolver_itens(f_cod_unidade bigint
 as
 $$
 declare
-    v_cod_item                  bigint;
-    v_data_realizacao_checklist timestamp with time zone;
-    v_alternativa_item          text;
-    v_error_message             text                                 := E'Erro! A data de resolução %s não pode ser anterior a data de abertura %s do item "%s".';
-    v_qtd_linhas_atualizadas    bigint;
-    v_total_linhas_atualizadas  bigint                               := 0;
-    v_cod_processo  constant    bigint not null                      := (select nextval('CODIGO_RESOLUCAO_ITEM_OS'));
-    v_tipo_processo constant    types.veiculo_processo_type not null := 'FECHAMENTO_ITEM_CHECKLIST';
-    v_km_real                   bigint;
+    v_cod_item                                   bigint;
+    v_data_realizacao_checklist                  timestamp with time zone;
+    v_alternativa_item                           text;
+    v_error_message                              text            := E'Erro! A data de resolução %s não pode ser anterior a data de abertura %s do item "%s".';
+    v_qtd_linhas_atualizadas                     bigint;
+    v_total_linhas_atualizadas                   bigint          := 0;
+    v_cod_agrupamento_resolucao_em_lote constant bigint not null := (select nextval('CODIGO_RESOLUCAO_ITEM_OS'));
+    v_tipo_processo                     constant text not null   := 'FECHAMENTO_ITEM_CHECKLIST';
+    v_km_real                                    bigint;
 begin
     v_km_real := (select *
                   from func_veiculo_update_km_atual(f_cod_unidade,
                                                     f_cod_veiculo,
                                                     f_km,
-                                                    v_cod_processo,
+                                                    v_cod_agrupamento_resolucao_em_lote,
                                                     v_tipo_processo,
                                                     true,
                                                     CURRENT_TIMESTAMP));
@@ -65,15 +55,15 @@ begin
 
             -- Atualiza os itens
             update checklist_ordem_servico_itens
-            set cpf_mecanico               = f_cpf,
-                tempo_realizacao           = f_tempo_realizacao,
-                km                         = v_km_real,
-                status_resolucao           = f_status_resolucao,
-                data_hora_conserto         = f_data_hora_conserto,
-                data_hora_inicio_resolucao = f_data_hora_inicio_resolucao,
-                data_hora_fim_resolucao    = f_data_hora_fim_resolucao,
-                feedback_conserto          = f_feedback_conserto,
-                cod_processo               = v_cod_processo
+            set cpf_mecanico                      = f_cpf,
+                tempo_realizacao                  = f_tempo_realizacao,
+                km                                = v_km_real,
+                status_resolucao                  = f_status_resolucao,
+                data_hora_conserto                = f_data_hora_conserto,
+                data_hora_inicio_resolucao        = f_data_hora_inicio_resolucao,
+                data_hora_fim_resolucao           = f_data_hora_fim_resolucao,
+                feedback_conserto                 = f_feedback_conserto,
+                cod_agrupamento_resolucao_em_lote = v_cod_agrupamento_resolucao_em_lote
             where cod_unidade = f_cod_unidade
               and codigo = v_cod_item
               and data_hora_conserto is null;

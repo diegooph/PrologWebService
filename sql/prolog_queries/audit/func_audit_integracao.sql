@@ -1,9 +1,3 @@
--- Sobre:
--- Function genérica para logar as alterações realizadas em tabelas de integração.
--- Para mais informações sobre o funcionamento e configuração do audit, veja 'func_audit.sql';
---
--- Histórico:
--- 2020-06-08 -> Function criada (diogenesvanzella - PLI-116).
 create or replace function audit_integracao.func_audit_integracao()
     returns trigger
     language plpgsql

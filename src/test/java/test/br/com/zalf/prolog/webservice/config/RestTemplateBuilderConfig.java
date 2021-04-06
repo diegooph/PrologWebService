@@ -23,7 +23,6 @@ import java.util.List;
  */
 @TestConfiguration
 public class RestTemplateBuilderConfig {
-
     private int port;
 
     @EventListener(WebServerInitializedEvent.class)

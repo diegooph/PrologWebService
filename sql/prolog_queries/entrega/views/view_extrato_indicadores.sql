@@ -1,5 +1,4 @@
 -- Sobre:
--- View que gera o extrato de indicadores.
 --
 -- A ambev adicionou um novo modelo de jornada, chamado de jornada alternativa.
 -- Essa jornada consiste em uma escala diferente, que faz com que o tempo de jornada seja alterado, com isso, a meta
@@ -9,9 +8,6 @@
 --
 -- O desconto de 1 hora serve para termos a meta de tempo em rota, sendo que a coluna tem os dados da meta de
 -- jornada líquida, então meta jornada líquida -1h = meta tempo em rota.
---
--- Histórico:
--- 2020-04-08 -> Altera meta de tempo em rota para utilizar os dados da tabela de mapas (wvinim - PL-2623).
 create or replace view view_extrato_indicadores as
   SELECT dados.cod_empresa,
     dados.cod_regional,

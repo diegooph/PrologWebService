@@ -1,13 +1,3 @@
--- Sobre:
---
--- Esta função retorna uma lista de marcações agrupadas, filtradas por tipo, colaborador e dia.
---
--- Précondições:
--- 1) Depende do funcionamento e retorno da function FUNC_INTERVALOS_AGRUPADOS
---
--- Histórico:
--- 2019-08-01 -> Function alterada para inserir registros de IMEI (wvinim - PL-2152).
--- 2019-08-07 -> Function alterada para inserir registros de marca e modelo de dispositivo (wvinim - PL-2152).
 CREATE OR REPLACE FUNCTION FUNC_MARCACAO_GET_MARCACOES_COLABORADOR_AJUSTE(F_COD_TIPO_MARCACAO BIGINT,
                                                                           F_COD_COLABORADOR   BIGINT,
                                                                           F_DIA DATE)

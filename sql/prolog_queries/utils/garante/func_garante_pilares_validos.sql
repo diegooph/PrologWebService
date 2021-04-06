@@ -1,8 +1,3 @@
--- Sobre:
--- Verifica se os pilares informados existem.
---
--- Histórico:
--- 2019-08-15 -> Function criada (luizfp - PL-2200).
 CREATE OR REPLACE FUNCTION FUNC_GARANTE_PILARES_VALIDOS(F_PILARES_VERIFICACAO INTEGER[])
     RETURNS VOID
     LANGUAGE PLPGSQL

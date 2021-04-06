@@ -1,13 +1,3 @@
--- Sobre:
---
--- Esta function é utilizada para buscar o código de um tipo de serviço que incrementa a vida do pneu. A empresa pode
--- contér vários serviços que realizam o incremento de vida, neste caso a function retorna o código do primeiro tipo
--- de serviço (realizando um ordenamento ASC pelo código dos serviços, ou seja, o mais antigo cadastrado).
--- Caso a empresa não possua nenhum serviço que incrementa a vida, então a function se encarrega de criar este tipo de
--- serviço onde o nome será genérico "RECAPAGEM" e o código deste tipo de serviço será retornado.
---
--- Histórico:
--- 2019-08-23 -> Function criada (diogenesvanzella - PL-2237).
 CREATE OR REPLACE FUNCTION FUNC_PNEU_GET_SERVICO_INCREMENTA_VIDA_PNEU_EMPRESA(F_COD_EMPRESA BIGINT)
   RETURNS BIGINT
 LANGUAGE PLPGSQL

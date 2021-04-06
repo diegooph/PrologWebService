@@ -1,14 +1,3 @@
--- Sobre:
--- A lógica aplicada nessa function é a seguinte:
--- Recebemos o CPF do colaborador para ser deletado. Apartir disso, verificamos se ele tem
--- integridade com a Unidade informada. Caso tenha, o colaborador é deslogado do sistema e deletado.
---
--- Histórico:
--- 2019-09-17 -> Adiciona SESSION_USER (natanrotta - PL-2229).
--- 2019-09-18 -> Adiciona schema suporte (natanrotta - PL-2242).
--- 2020-02-20 -> Desloga colaborador deletado (natanrotta - PL-2482).
--- 2020-07-07 -> Adiciona motivo de deleção. (thaisksf - PL-2801).
--- 2020-08-14 -> Adiciona chamada para logar execução da function (gustavocnp95 - PL-3066).
 CREATE OR REPLACE FUNCTION SUPORTE.FUNC_COLABORADOR_DELETA_COLABORADOR(F_CPF_COLABORADOR BIGINT,
                                                                        F_COD_COLABORADOR BIGINT,
                                                                        F_COD_UNIDADE BIGINT,

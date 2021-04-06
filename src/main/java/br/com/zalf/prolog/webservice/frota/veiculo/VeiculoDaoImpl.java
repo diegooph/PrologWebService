@@ -26,6 +26,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoDad
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoVisualizacao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoVisualizacaoPneu;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculosAcopladosVisualizacao;
+import br.com.zalf.prolog.webservice.v3.frota.veiculo._model.VeiculoCadastroDto;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -43,7 +44,7 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
     }
 
     @Override
-    public void insert(@NotNull final VeiculoCadastro veiculo,
+    public void insert(@NotNull final VeiculoCadastroDto veiculo,
                        @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener)
             throws Throwable {
         Connection conn = null;
@@ -59,7 +60,8 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
                                                  "F_KM_ATUAL := ?, " +
                                                  "F_COD_MODELO := ?, " +
                                                  "F_COD_TIPO := ?," +
-                                                 "F_POSSUI_HUBODOMETRO := ?) AS CODIGO;");
+                                                 "F_POSSUI_HUBODOMETRO := ?," +
+                                                 "F_ORIGEM_CADASTRO := ?) AS CODIGO;");
             stmt.setLong(1, veiculo.getCodUnidadeAlocado());
             stmt.setString(2, veiculo.getPlacaVeiculo().toUpperCase());
             stmt.setString(3, StringUtils.trimToNull(veiculo.getIdentificadorFrota()));
@@ -67,6 +69,7 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
             stmt.setLong(5, veiculo.getCodModeloVeiculo());
             stmt.setLong(6, veiculo.getCodTipoVeiculo());
             stmt.setBoolean(7, veiculo.getPossuiHubodometro());
+            stmt.setString(8, OrigemAcaoEnum.PROLOG_WEB.asString());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 final long codVeiculoInserido = rSet.getLong("CODIGO");
@@ -288,7 +291,9 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
     @Deprecated
     @NotNull
     @Override
-    public Veiculo getVeiculoByPlaca(@NotNull final String placa, final boolean withPneus) throws SQLException {
+    public Veiculo getVeiculoByPlaca(@NotNull final String placa,
+                                     @Nullable final Long codUnidade,
+                                     final boolean withPneus) throws SQLException {
         Connection conn = null;
         try {
             conn = getConnection();
@@ -344,7 +349,7 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
                                                  "f_cod_veiculo => ?," +
                                                  "f_km_coletado => ?," +
                                                  "f_cod_processo => ?," +
-                                                 "f_tipo_processo => ?::types.veiculo_processo_type," +
+                                                 "f_tipo_processo => ?," +
                                                  "f_deve_propagar_km => ?," +
                                                  "f_data_hora => ?) as km_processo;");
             stmt.setLong(1, codUnidade);
@@ -393,10 +398,12 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
 
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT MO.CODIGO AS COD_MODELO, MO.NOME AS MODELO, MA.CODIGO AS COD_MARCA, MA.NOME AS MARCA"
-                    + " FROM MARCA_VEICULO MA left JOIN MODELO_VEICULO MO ON MA.CODIGO = MO.COD_MARCA AND MO.cod_empresa = ? "
-                    + "WHERE MO.COD_EMPRESA = ? OR MO.COD_EMPRESA IS NULL "
-                    + "ORDER BY COD_MARCA, COD_MODELO");
+            stmt = conn.prepareStatement(
+                    "SELECT MO.CODIGO AS COD_MODELO, MO.NOME AS MODELO, MA.CODIGO AS COD_MARCA, MA.NOME AS MARCA"
+                            + " FROM MARCA_VEICULO MA left JOIN MODELO_VEICULO MO ON MA.CODIGO = MO.COD_MARCA AND MO" +
+                            ".cod_empresa = ? "
+                            + "WHERE MO.COD_EMPRESA = ? OR MO.COD_EMPRESA IS NULL "
+                            + "ORDER BY COD_MARCA, COD_MODELO");
             stmt.setLong(1, codEmpresa);
             stmt.setLong(2, codEmpresa);
             rSet = stmt.executeQuery();
@@ -410,7 +417,8 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
                     }
                 } else {
                     Log.d("metodo", "marcas.size > 0");
-                    if (marca.getCodigo() == rSet.getLong("COD_MARCA")) { // se o modelo atual pertence a mesma marca do modelo anterior
+                    if (marca.getCodigo() == rSet.getLong("COD_MARCA")) { // se o modelo atual pertence a mesma marca
+                        // do modelo anterior
                         if (rSet.getString("MODELO") != null) {
                             modelos.add(createModelo(rSet));
                         }
@@ -890,6 +898,33 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
         }
     }
 
+    @Override
+    @NotNull
+    public Set<EixoVeiculo> getEixosDiagrama(final int codDiagrama, final Connection conn) throws SQLException {
+        PreparedStatement stmt = null;
+        ResultSet rSet = null;
+        final Set<EixoVeiculo> eixos = new HashSet<>();
+        try {
+            stmt = conn.prepareStatement("SELECT * " +
+                                                 "FROM veiculo_diagrama_eixos " +
+                                                 "WHERE cod_diagrama = ? " +
+                                                 "ORDER BY posicao;");
+            stmt.setInt(1, codDiagrama);
+            rSet = stmt.executeQuery();
+            while (rSet.next()) {
+                final EixoVeiculo eixoVeiculo = new EixoVeiculo(
+                        TipoEixoVeiculo.fromString(rSet.getString("TIPO_EIXO")),
+                        rSet.getInt("QT_PNEUS"),
+                        rSet.getInt("POSICAO"),
+                        rSet.getBoolean("EIXO_DIRECIONAL"));
+                eixos.add(eixoVeiculo);
+            }
+        } finally {
+            close(stmt, rSet);
+        }
+        return eixos;
+    }
+
     @NotNull
     private Optional<VeiculosAcopladosVisualizacao> getVeiculosAcopladosByCodVeiculo(@NotNull final Connection conn,
                                                                                      @NotNull final Long codVeiculo)
@@ -1033,32 +1068,6 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
                 rSet.getString("NOME"),
                 getEixosDiagrama(rSet.getInt("CODIGO"), conn),
                 rSet.getString("URL_IMAGEM")));
-    }
-
-    @NotNull
-    private Set<EixoVeiculo> getEixosDiagrama(final int codDiagrama, final Connection conn) throws SQLException {
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        final Set<EixoVeiculo> eixos = new HashSet<>();
-        try {
-            stmt = conn.prepareStatement("SELECT * " +
-                                                 "FROM veiculo_diagrama_eixos " +
-                                                 "WHERE cod_diagrama = ? " +
-                                                 "ORDER BY posicao;");
-            stmt.setInt(1, codDiagrama);
-            rSet = stmt.executeQuery();
-            while (rSet.next()) {
-                final EixoVeiculo eixoVeiculo = new EixoVeiculo(
-                        TipoEixoVeiculo.fromString(rSet.getString("TIPO_EIXO")),
-                        rSet.getInt("QT_PNEUS"),
-                        rSet.getInt("POSICAO"),
-                        rSet.getBoolean("EIXO_DIRECIONAL"));
-                eixos.add(eixoVeiculo);
-            }
-        } finally {
-            close(stmt, rSet);
-        }
-        return eixos;
     }
 
     @NotNull

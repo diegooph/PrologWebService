@@ -1,8 +1,3 @@
--- Sobre:
--- Essa function retorna os veículos disponíveis por codigo de unidade.
---
--- Histórico:
--- 2020-03-11 -> Function criada (gustavocnp95 - PL-2577).
 CREATE OR REPLACE FUNCTION FUNC_SOCORRO_ROTA_GET_VEICULOS_DISPONIVEIS_BY_UNIDADE(
     F_COD_UNIDADE BIGINT
 )

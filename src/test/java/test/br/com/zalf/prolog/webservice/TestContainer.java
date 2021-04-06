@@ -20,19 +20,19 @@ import org.testcontainers.utility.DockerImageName;
 @Testcontainers
 @TestConfiguration
 public class TestContainer {
-
     private static final String TEST_DB_NAME = "prolog_test";
     private static final String TEST_USERNAME = "prolog_user_test";
     private static final String TEST_PASSWORD = "testaquevai";
     private static final String DOCKER_IMAGE_REPO = "prologapp/postgres-postgis-pg_similarity:latest";
+
     @ClassRule
     @NotNull
     private static final JdbcDatabaseContainer<?> JDBC_BASE_CONTAINER =
             new PostgreSQLContainer<>(getDockerImageName())
-            .withReuse(true)
-            .withDatabaseName(TEST_DB_NAME)
-            .withUsername(TEST_USERNAME)
-            .withPassword(TEST_PASSWORD);
+                    .withReuse(true)
+                    .withDatabaseName(TEST_DB_NAME)
+                    .withUsername(TEST_USERNAME)
+                    .withPassword(TEST_PASSWORD);
 
     static {
         JDBC_BASE_CONTAINER.start();
@@ -40,8 +40,7 @@ public class TestContainer {
 
     @NotNull
     private static DockerImageName getDockerImageName() {
-        return DockerImageName.parse(DOCKER_IMAGE_REPO)
-                .asCompatibleSubstituteFor("postgres");
+        return DockerImageName.parse(DOCKER_IMAGE_REPO).asCompatibleSubstituteFor("postgres");
     }
 
     @Bean
@@ -63,5 +62,4 @@ public class TestContainer {
             );
         }
     }
-
 }

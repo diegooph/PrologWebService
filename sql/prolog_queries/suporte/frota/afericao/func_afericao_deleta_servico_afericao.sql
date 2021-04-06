@@ -1,18 +1,6 @@
--- Sobre:
--- A lógica aplicada nessa function é a seguinte:
--- Deleta um serviço específico de uma aferição. Os Serviços existem na tabela AFERICAO_MANUTENCAO.
---
--- Précondições:
---
--- Histórico:
--- 2019-09-17 -> Adiciona SESSION_USER. (natanrotta - PL-2229).
--- 2019-09-18 -> Adicona no schema de suporte. (natanrotta - PL-2242).
--- 2020-07-07 -> Adiciona motivo de deleção. (thaisksf - PL-2801).
--- 2020-08-14 -> Adiciona chamada para logar execução da function (gustavocnp95 - PL-3066).
 CREATE OR REPLACE FUNCTION SUPORTE.FUNC_AFERICAO_DELETA_SERVICO_AFERICAO(F_COD_EMPRESA BIGINT,
                                                                          F_COD_UNIDADE BIGINT,
                                                                          F_COD_PNEU BIGINT,
-                                                                         F_NUMERO_FOGO TEXT,
                                                                          F_CODIGO_AFERICAO BIGINT,
                                                                          F_COD_SERVICO_AFERICAO BIGINT,
                                                                          F_TIPO_SERVICO_AFERICAO TEXT,
@@ -30,7 +18,7 @@ BEGIN
     --Garante integridade entre unidade e empresa
     PERFORM FUNC_GARANTE_INTEGRIDADE_EMPRESA_UNIDADE(F_COD_EMPRESA, F_COD_UNIDADE);
     --Verifica se o pneu existe
-    PERFORM FUNC_GARANTE_PNEU_EXISTE(F_COD_EMPRESA, F_COD_UNIDADE, F_COD_PNEU, F_NUMERO_FOGO);
+    PERFORM FUNC_GARANTE_PNEU_EXISTE(F_COD_EMPRESA, F_COD_UNIDADE, F_COD_PNEU);
     --Verifica se existe afericao
     IF NOT EXISTS(SELECT A.CODIGO
                   FROM AFERICAO A

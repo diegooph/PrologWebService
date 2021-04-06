@@ -160,10 +160,10 @@ import br.com.zalf.prolog.webservice.gente.treinamento.relatorios.TreinamentoRel
 import br.com.zalf.prolog.webservice.gente.treinamento.relatorios.TreinamentoRelatorioDaoImpl;
 import br.com.zalf.prolog.webservice.geral.dispositivomovel.DispositivoMovelDao;
 import br.com.zalf.prolog.webservice.geral.dispositivomovel.DispositivoMovelDaoImpl;
-import br.com.zalf.prolog.webservice.integracao.IntegracaoDao;
-import br.com.zalf.prolog.webservice.integracao.IntegracaoDaoImpl;
 import br.com.zalf.prolog.webservice.integracao.autenticacao.AutenticacaoIntegracaoDao;
 import br.com.zalf.prolog.webservice.integracao.autenticacao.AutenticacaoIntegracaoDaoImpl;
+import br.com.zalf.prolog.webservice.integracao.integrador.IntegracaoDao;
+import br.com.zalf.prolog.webservice.integracao.integrador.IntegracaoDaoImpl;
 import br.com.zalf.prolog.webservice.interno.apresentacao.ApresentacaoDao;
 import br.com.zalf.prolog.webservice.interno.apresentacao.ApresentacaoDaoImpl;
 import br.com.zalf.prolog.webservice.interno.autenticacao.AutenticacaoInternaDao;

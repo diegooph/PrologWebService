@@ -1,12 +1,3 @@
--- View simples selecionando apenas os veículos não deletados.
---
--- Histórico:
--- 2019-10-04 -> Adiciona cod_empresa (luizfp - PL-2276).
--- 2020-02-25 -> Adiciona cod_diagrama (wvinim - PL-1965).
--- 2020-09-04 -> Adiciona identificador_frota e foi_editado (luiz_fp - PL-3096).
--- 2020-11-09 -> Adiciona possui_hubodometro (steinert999 - PL-3223).
--- 2020-11-10 -> Adiciona motorizado (steiner999 - PL-3223).
--- 2020-11-20 -> Adiciona flag acoplado (thaisksf - PL-3320).
 create or replace view veiculo
 as
 select v.codigo,
@@ -25,6 +16,7 @@ select v.codigo,
        v.foi_editado,
        v.possui_hubodometro,
        v.motorizado,
-       v.acoplado
+       v.acoplado,
+       v.origem_cadastro
 from veiculo_data v
 where v.deletado = false;
