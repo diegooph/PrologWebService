@@ -292,7 +292,8 @@ begin
                                          cod_diagrama,
                                          identificador_frota,
                                          possui_hubodometro,
-                                         motorizado)
+                                         motorizado,
+                                         origem_cadastro)
                     values (new.placa_formatada_import,
                             new.cod_unidade,
                             new.km_editavel,
@@ -306,7 +307,8 @@ begin
                             v_cod_diagrama_banco,
                             new.identificador_frota_import,
                             v_possui_hubodometro_flag,
-                            v_diagrama_motorizado);
+                            v_diagrama_motorizado,
+                            'INTERNO');
                     new.status_import_realizado = true;
                     new.erros_encontrados = '-';
                 end if;

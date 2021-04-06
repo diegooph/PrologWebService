@@ -16,6 +16,7 @@ Change Log
 
 ### Bug Fixes
 * Corrige checkstyle para detecção de nome de pacote
+* Corrige trigger de import de veículos
 
 <a name="v3.0.0"></a>
 ## Version [v3.0.0](https://github.com/luizfp/PrologWebService/compare/v2.2.0...v3.0.0) (2021-03-30)
