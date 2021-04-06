@@ -5,9 +5,10 @@ CREATE OR REPLACE FUNCTION IMPLANTACAO.TG_FUNC_PNEU_CONFERE_PLANILHA_IMPORTA_PNE
 AS
 $$
 DECLARE
-    F_VALOR_SIMILARIDADE CONSTANT              REAL     := 0.4;
+    F_ORIGEM_PNEU_CADASTRO        CONSTANT     TEXT     := 'INTERNO';
+    F_VALOR_SIMILARIDADE          CONSTANT     REAL     := 0.4;
     F_VALOR_SIMILARIDADE_DIMENSAO CONSTANT     REAL     := 0.55;
-    F_SEM_SIMILARIDADE CONSTANT                REAL     := 0.0;
+    F_SEM_SIMILARIDADE            CONSTANT     REAL     := 0.0;
     F_QTD_ERROS                                SMALLINT := 0;
     F_MSGS_ERROS                               TEXT;
     F_QUEBRA_LINHA                             TEXT     := CHR(10);
@@ -244,7 +245,8 @@ BEGIN
                             INSERT INTO MODELO_PNEU (NOME, COD_MARCA, COD_EMPRESA, QT_SULCOS, ALTURA_SULCOS)
                             VALUES (NEW.MODELO_EDITAVEL, F_COD_MARCA_BANCO, NEW.COD_EMPRESA,
                                     NEW.QTD_SULCOS_FORMATADA_IMPORT,
-                                    NEW.ALTURA_SULCOS_FORMATADA_IMPORT) RETURNING CODIGO INTO F_COD_MODELO_BANCO;
+                                    NEW.ALTURA_SULCOS_FORMATADA_IMPORT)
+                            RETURNING CODIGO INTO F_COD_MODELO_BANCO;
                         END IF;
                     END IF;
                 ELSE
@@ -505,7 +507,8 @@ BEGIN
                 IF (F_SIMILARIDADE_MARCA_BANDA < F_VALOR_SIMILARIDADE OR F_SIMILARIDADE_MARCA_BANDA IS NULL)
                 THEN
                     INSERT INTO MARCA_BANDA (NOME, COD_EMPRESA)
-                    VALUES (NEW.MARCA_BANDA_EDITAVEL, NEW.COD_EMPRESA) RETURNING CODIGO INTO F_COD_MARCA_BANDA_BANCO;
+                    VALUES (NEW.MARCA_BANDA_EDITAVEL, NEW.COD_EMPRESA)
+                    RETURNING CODIGO INTO F_COD_MARCA_BANDA_BANCO;
                 END IF;
 
                 IF (NEW.MODELO_BANDA_FORMATADO_IMPORT IS NULL)
@@ -620,7 +623,8 @@ BEGIN
                             INSERT INTO MODELO_BANDA (NOME, COD_MARCA, COD_EMPRESA, QT_SULCOS, ALTURA_SULCOS)
                             VALUES (NEW.MODELO_BANDA_EDITAVEL, F_COD_MARCA_BANDA_BANCO, NEW.COD_EMPRESA,
                                     NEW.QTD_SULCOS_BANDA_FORMATADA_IMPORT,
-                                    NEW.ALTURA_SULCOS_BANDA_FORMATADA_IMPORT) RETURNING CODIGO INTO F_COD_MODELO_BANDA_BANCO;
+                                    NEW.ALTURA_SULCOS_BANDA_FORMATADA_IMPORT)
+                            RETURNING CODIGO INTO F_COD_MODELO_BANDA_BANCO;
                         END IF;
                     END IF;
                 END IF;
@@ -672,7 +676,8 @@ BEGIN
                               DOT,
                               VALOR,
                               COD_EMPRESA,
-                              COD_UNIDADE_CADASTRO)
+                              COD_UNIDADE_CADASTRO,
+                              ORIGEM_CADASTRO)
             VALUES (NEW.NUMERO_FOGO_FORMATADO_IMPORT,
                     F_COD_MODELO_BANCO,
                     F_COD_DIMENSAO,
@@ -686,7 +691,9 @@ BEGIN
                     NEW.DOT_FORMATADO_IMPORT,
                     NEW.VALOR_PNEU_FORMATADO_IMPORT,
                     NEW.COD_EMPRESA,
-                    NEW.COD_UNIDADE) RETURNING CODIGO INTO F_COD_PNEU;
+                    NEW.COD_UNIDADE,
+                    F_ORIGEM_PNEU_CADASTRO)
+            RETURNING CODIGO INTO F_COD_PNEU;
 
 
             IF (NEW.VIDA_ATUAL_FORMATADA_IMPORT > 1)
@@ -710,7 +717,8 @@ BEGIN
                         F_COD_PNEU,
                         NEW.VALOR_BANDA_FORMATADO_IMPORT,
                         (NEW.VIDA_ATUAL_FORMATADA_IMPORT - 1),
-                        'FONTE_CADASTRO') RETURNING CODIGO INTO F_COD_SERVICO_REALIZADO;
+                        'FONTE_CADASTRO')
+                RETURNING CODIGO INTO F_COD_SERVICO_REALIZADO;
 
                 INSERT INTO PNEU_SERVICO_REALIZADO_INCREMENTA_VIDA (COD_SERVICO_REALIZADO,
                                                                     COD_MODELO_BANDA,

@@ -19970,16 +19970,16 @@ BEGIN
 END
 $$;
 
-CREATE OR REPLACE FUNCTION FUNC_COLABORADOR_VERIFICA_PERMISSOES(F_PERMISSOES_COLABORADOR INTEGER[],
-                                                                F_PERMISSSOES_NECESSARIAS INTEGER[],
-                                                                F_PRECISA_TER_TODAS_AS_PERMISSOES BOOLEAN)
-    RETURNS TABLE
+create or replace function public.func_colaborador_verifica_permissoes(f_permissoes_colaborador integer[],
+                                                                       f_permisssoes_necessarias integer[],
+                                                                       f_precisa_ter_todas_as_permissoes boolean)
+    returns TABLE
             (
-                TOKEN_VALIDO      BOOLEAN,
-                POSSUI_PERMISSSAO BOOLEAN
+                token_valido      boolean,
+                possui_permisssao boolean
             )
-    LANGUAGE PLPGSQL
-AS
+    language plpgsql
+as
 $$
 BEGIN
     -- Se permissões colaborador for null, então o token não existe.
@@ -20009,100 +20009,71 @@ BEGIN
 END;
 $$;
 
-create or replace function func_colaborador_verifica_permissoes_token(f_token text,
-                                                                      f_permisssoes_necessarias integer[],
-                                                                      f_precisa_ter_todas_as_permissoes boolean,
-                                                                      f_apenas_usuarios_ativos boolean)
-    returns table
+create or replace function public.func_colaborador_verifica_permissoes_token(f_token text,
+                                                                             f_permisssoes_necessarias integer[],
+                                                                             f_precisa_ter_todas_as_permissoes boolean,
+                                                                             f_apenas_usuarios_ativos boolean)
+    returns TABLE
             (
                 token_valido      boolean,
-                possui_permisssao boolean,
-                cpf_colaborador   bigint,
-                cod_colaborador   bigint
+                possui_permisssao boolean
             )
     language plpgsql
 as
 $$
-declare
-    v_permissoes_colaborador integer[];
-    v_cpf_colaborador        bigint;
-    v_cod_colaborador        bigint;
-begin
-    select array_agg(cfp.cod_funcao_prolog),
-           c.cpf,
-           c.codigo
-    from token_autenticacao ta
-             join colaborador c on c.cpf = ta.cpf_colaborador
-        -- Usando um LEFT JOIN aqui, caso o token não exista nada será retornado, porém, se o
-        -- token existir mas o usuário não tiver nenhuma permissão, será retornando um array
-        -- contendo null.
-             left join cargo_funcao_prolog_v11 cfp
-                       on cfp.cod_unidade = c.cod_unidade
-                           and cfp.cod_funcao_colaborador = c.cod_funcao
-    where ta.token = f_token
-      and f_if(f_apenas_usuarios_ativos, c.status_ativo = true, true)
-    group by c.cpf, c.codigo
-    into v_permissoes_colaborador, v_cpf_colaborador, v_cod_colaborador;
-
-    return query
-        select f.token_valido      as token_valido,
-               f.possui_permisssao as possui_permissao,
-               v_cpf_colaborador   as cpf_colaborador,
-               v_cod_colaborador   as cod_colaborador
-        from func_colaborador_verifica_permissoes(
-                     v_permissoes_colaborador,
-                     f_permisssoes_necessarias,
-                     f_precisa_ter_todas_as_permissoes) f;
-end;
+BEGIN
+    RETURN QUERY
+        SELECT F.TOKEN_VALIDO      AS TOKEN_VALIDO,
+               F.POSSUI_PERMISSSAO AS POSSUI_PERMISSAO
+        FROM FUNC_COLABORADOR_VERIFICA_PERMISSOES(
+                     (SELECT ARRAY_AGG(CFP.COD_FUNCAO_PROLOG)
+                      FROM TOKEN_AUTENTICACAO TA
+                               JOIN COLABORADOR C ON C.CPF = TA.CPF_COLABORADOR
+                          -- Usando um LEFT JOIN aqui, caso o token não exista nada será retornado, porém, se o
+                          -- token existir mas o usuário não tiver nenhuma permissão, será retornando um array
+                          -- contendo null.
+                               LEFT JOIN CARGO_FUNCAO_PROLOG_V11 CFP
+                                         ON CFP.COD_UNIDADE = C.COD_UNIDADE
+                                             AND CFP.COD_FUNCAO_COLABORADOR = C.COD_FUNCAO
+                      WHERE TA.TOKEN = F_TOKEN
+                        AND F_IF(F_APENAS_USUARIOS_ATIVOS, C.STATUS_ATIVO = TRUE, TRUE)) :: INTEGER[],
+                     F_PERMISSSOES_NECESSARIAS,
+                     F_PRECISA_TER_TODAS_AS_PERMISSOES) F;
+END;
 $$;
 
-create or replace function
-    func_colaborador_verifica_permissoes_cpf_data_nascimento(f_cpf bigint,
-                                                             f_data_nascimento date,
-                                                             f_permisssoes_necessarias integer[],
-                                                             f_precisa_ter_todas_as_permissoes boolean,
-                                                             f_apenas_usuarios_ativos boolean)
-    returns table
+create or replace function public.func_colaborador_verifica_permissoes_cpf_data_nascimento(f_cpf bigint,
+                                                                                           f_data_nascimento date,
+                                                                                           f_permisssoes_necessarias integer[],
+                                                                                           f_precisa_ter_todas_as_permissoes boolean,
+                                                                                           f_apenas_usuarios_ativos boolean)
+    returns TABLE
             (
                 token_valido      boolean,
-                possui_permisssao boolean,
-                cpf_colaborador   bigint,
-                cod_colaborador   bigint
+                possui_permisssao boolean
             )
     language plpgsql
 as
 $$
-declare
-    v_permissoes_colaborador integer[];
-    v_cpf_colaborador        bigint;
-    v_cod_colaborador        bigint;
-begin
-    select array_agg(cfp.cod_funcao_prolog),
-           c.cpf,
-           c.codigo
-    from colaborador c
-             -- Usando um LEFT JOIN aqui, caso o token não exista nada será retornado, porém, se o
-             -- token existir mas o usuário não tiver nenhuma permissão, será retornando um array
-             -- contendo null.
-             left join cargo_funcao_prolog_v11 cfp
-                       on cfp.cod_unidade = c.cod_unidade
-                           and cfp.cod_funcao_colaborador = c.cod_funcao
-    where c.cpf = f_cpf
-      and c.data_nascimento = f_data_nascimento
-      and f_if(f_apenas_usuarios_ativos, c.status_ativo = true, true)
-    group by c.cpf, c.codigo
-    into v_permissoes_colaborador, v_cpf_colaborador, v_cod_colaborador;
-
-    return query
-        select f.token_valido      as token_valido,
-               f.possui_permisssao as possui_permissao,
-               v_cpf_colaborador   as cpf_colaborador,
-               v_cod_colaborador   as cod_colaborador
-        from func_colaborador_verifica_permissoes(
-                     v_permissoes_colaborador,
-                     f_permisssoes_necessarias,
-                     f_precisa_ter_todas_as_permissoes) f;
-end;
+BEGIN
+    RETURN QUERY
+        SELECT F.TOKEN_VALIDO      AS TOKEN_VALIDO,
+               F.POSSUI_PERMISSSAO AS POSSUI_PERMISSAO
+        FROM FUNC_COLABORADOR_VERIFICA_PERMISSOES(
+                     (SELECT ARRAY_AGG(CFP.COD_FUNCAO_PROLOG) AS COD_PERMISSAO
+                      FROM COLABORADOR C
+                               -- Usando um LEFT JOIN aqui, caso o token não exista nada será retornado, porém, se o
+                               -- token existir mas o usuário não tiver nenhuma permissão, será retornando um array
+                               -- contendo null.
+                               LEFT JOIN CARGO_FUNCAO_PROLOG_V11 CFP
+                                         ON CFP.COD_UNIDADE = C.COD_UNIDADE
+                                             AND CFP.COD_FUNCAO_COLABORADOR = C.COD_FUNCAO
+                      WHERE C.CPF = F_CPF
+                        AND C.DATA_NASCIMENTO = F_DATA_NASCIMENTO
+                        AND F_IF(F_APENAS_USUARIOS_ATIVOS, C.STATUS_ATIVO = TRUE, TRUE)) :: INTEGER[],
+                     F_PERMISSSOES_NECESSARIAS,
+                     F_PRECISA_TER_TODAS_AS_PERMISSOES) F;
+END;
 $$;
 
 create or replace function public.func_relatorio_pneus_descartados(f_cod_unidade text[], f_data_inicial date, f_data_final date)
@@ -39209,38 +39180,4 @@ BEGIN
 END ;
 $$;
 
-CREATE OR REPLACE FUNCTION FUNC_LIBERA_TODAS_PERMISSOES(F_CPF BIGINT, OUT F_AVISO_PERMISSOES_INSERIDAS TEXT)
-    RETURNS TEXT
-    LANGUAGE PLPGSQL
-    SECURITY DEFINER
-AS
-$$
-DECLARE
-    F_COD_UNIDADE       BIGINT;
-    F_COD_FUNCAO        BIGINT;
-    F_COD_FUNCAO_PROLOG BIGINT;
-BEGIN
-    -- VERIFICA SE COLABORADOR EXISTE
-    PERFORM FUNC_GARANTE_COLABORADOR_EXISTE(F_CPF);
 
-    SELECT CO.COD_UNIDADE, CO.COD_FUNCAO FROM COLABORADOR CO WHERE CO.CPF = F_CPF INTO F_COD_UNIDADE, F_COD_FUNCAO;
-
-    DELETE FROM CARGO_FUNCAO_PROLOG_V11 WHERE COD_FUNCAO_COLABORADOR = F_COD_FUNCAO AND COD_UNIDADE = F_COD_UNIDADE;
-
-    FOREACH F_COD_FUNCAO_PROLOG IN ARRAY (SELECT ARRAY_AGG(FPV11.CODIGO) FROM FUNCAO_PROLOG_V11 FPV11)
-        LOOP
-            INSERT INTO CARGO_FUNCAO_PROLOG_V11 (COD_UNIDADE, COD_FUNCAO_COLABORADOR, COD_FUNCAO_PROLOG,
-                                                 COD_PILAR_PROLOG)
-            SELECT F_COD_UNIDADE,
-                   F_COD_FUNCAO,
-                   F_COD_FUNCAO_PROLOG,
-                   (SELECT FPV11.COD_PILAR FROM FUNCAO_PROLOG_V11 FPV11 WHERE FPV11.CODIGO = F_COD_FUNCAO_PROLOG);
-
-        END LOOP;
-
-    --MENSAGEM DE SUCESSO.
-    SELECT 'Todas as permissões do Prolog foram atribuídas ao cargo de código ' || F_COD_FUNCAO ||
-           ', unidade: ' || F_COD_UNIDADE || '.'
-    INTO F_AVISO_PERMISSOES_INSERIDAS;
-END;
-$$;

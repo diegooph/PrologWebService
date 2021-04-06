@@ -21,6 +21,10 @@ declare
     v_nome_unidade                  varchar(255) := (select u.nome
                                                      from unidade u
                                                      where u.codigo = f_cod_unidade);
+    v_cod_veiculo                   bigint       := (select codigo
+                                                     from veiculo v
+                                                     where v.placa = f_placa
+                                                       and v.cod_unidade = f_cod_unidade);
 begin
     perform suporte.func_historico_salva_execucao();
 
@@ -44,13 +48,13 @@ begin
         raise exception 'Erro! A Placa: % possui acoplamentos. Favor removê-los', f_placa;
     end if;
 
-    -- Verifica se a placa possui aferição.
-    if exists(select a.codigo from afericao_data a where a.placa_veiculo = f_placa)
+    -- Verifica se placa possui aferição. Optamos por usar _DATA para garantir que tudo será deletado.
+    if exists(select a.codigo from afericao_data a where a.cod_veiculo = v_cod_veiculo)
     then
         -- Coletamos todos os cod_afericao que a placa possui.
         select array_agg(a.codigo)
         from afericao_data a
-        where a.placa_veiculo = f_placa
+        where a.cod_veiculo = v_cod_veiculo
         into v_lista_cod_afericao_placa;
 
         -- Deletamos aferição em afericao_manutencao_data, caso não esteja deletada.

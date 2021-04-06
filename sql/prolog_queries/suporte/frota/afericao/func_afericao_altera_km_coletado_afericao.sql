@@ -1,53 +1,53 @@
-CREATE OR REPLACE FUNCTION SUPORTE.FUNC_AFERICAO_ALTERA_KM_COLETADO_AFERICAO(F_PLACA TEXT,
-                                                                             F_COD_AFERICAO BIGINT,
-                                                                             F_NOVO_KM BIGINT,
-                                                                             OUT AVISO_KM_AFERICAO_ALTERADO TEXT)
-    RETURNS TEXT
-    LANGUAGE PLPGSQL
-    SECURITY DEFINER
-AS
+create or replace function suporte.func_afericao_altera_km_coletado_afericao(f_placa text,
+                                                                             f_cod_afericao bigint,
+                                                                             f_novo_km bigint,
+                                                                             out aviso_km_afericao_alterado text)
+    returns text
+    language plpgsql
+    security definer
+as
 $$
-DECLARE
-    V_QTD_LINHAS_ATUALIZADAS       BIGINT;
+declare
+    v_qtd_linhas_atualizadas bigint;
     -- Não usa NOT NULL para não quebrar aqui com um erro não significativo para quem usar a function.
-    V_COD_UNIDADE_VEICULO CONSTANT BIGINT := (SELECT VD.COD_UNIDADE
-                                              FROM VEICULO_DATA VD
-                                              WHERE VD.PLACA = F_PLACA);
-BEGIN
-    PERFORM SUPORTE.FUNC_HISTORICO_SALVA_EXECUCAO();
-    PERFORM FUNC_GARANTE_UNIDADE_EXISTE(V_COD_UNIDADE_VEICULO);
-    PERFORM FUNC_GARANTE_VEICULO_EXISTE(V_COD_UNIDADE_VEICULO, F_PLACA);
-    PERFORM FUNC_GARANTE_NOVO_KM_MENOR_QUE_ATUAL_VEICULO(V_COD_UNIDADE_VEICULO, F_PLACA, F_NOVO_KM);
+    v_cod_veiculo            bigint;
+    v_km_atual               bigint;
+begin
+    select a.cod_veiculo, vd.km
+    into v_cod_veiculo, v_km_atual
+    from afericao a
+             join veiculo_data vd
+                  on vd.placa = f_placa and a.cod_veiculo = vd.codigo
+    where a.codigo = f_cod_afericao;
 
-    -- Verifica se aferição existe.
-    IF NOT EXISTS(SELECT AF.CODIGO
-                  FROM AFERICAO AF
-                  WHERE AF.PLACA_VEICULO IS NOT NULL
-                    AND AF.PLACA_VEICULO = F_PLACA
-                    AND AF.CODIGO = F_COD_AFERICAO)
-    THEN
-        RAISE EXCEPTION 'Não foi possível encontrar a aferição realizada com estes parâmetros: Placa %,
-                     Código da aferição %', F_PLACA, F_COD_AFERICAO;
-    END IF;
+    perform suporte.func_historico_salva_execucao();
 
-    UPDATE AFERICAO
-    SET KM_VEICULO = F_NOVO_KM
-    WHERE CODIGO = F_COD_AFERICAO
-      AND PLACA_VEICULO = F_PLACA;
+    if (v_cod_veiculo is null)
+    then
+        raise exception 'Não foi possível encontrar a aferição realizada com estes parâmetros: Placa %,
+                     Código da aferição %', f_placa, f_cod_afericao;
+    end if;
 
-    GET DIAGNOSTICS V_QTD_LINHAS_ATUALIZADAS = ROW_COUNT;
+    perform func_garante_novo_km_menor_que_atual_veiculo(v_cod_veiculo, f_novo_km);
 
-    IF (V_QTD_LINHAS_ATUALIZADAS <= 0)
-    THEN
-        RAISE EXCEPTION 'Erro ao atualizar o km da aferição com estes parâemtros: Placa %, Código
-            da aferição %', F_PLACA, F_COD_AFERICAO;
-    END IF;
+    update afericao
+    set km_veiculo = f_novo_km
+    where codigo = f_cod_afericao
+      and cod_veiculo = v_cod_veiculo;
 
-    SELECT 'O KM DO VEÍCULO NA AFERIÇÃO FOI ALTERADO COM SUCESSO '
+    get diagnostics v_qtd_linhas_atualizadas = row_count;
+
+    if (v_qtd_linhas_atualizadas <= 0)
+    then
+        raise exception 'Erro ao atualizar o km da aferição com estes parâemtros: Placa %, Código
+            da aferição %', f_placa, f_cod_afericao;
+    end if;
+
+    select 'O KM DO VEÍCULO NA AFERIÇÃO FOI ALTERADO COM SUCESSO '
                || ', PLACA: '
-               || F_PLACA
+               || f_placa
                || ', CÓDIGO DA AFERIÇÃO: '
-               || F_COD_AFERICAO
-    INTO AVISO_KM_AFERICAO_ALTERADO;
-END;
+               || f_cod_afericao
+    into aviso_km_afericao_alterado;
+end;
 $$;

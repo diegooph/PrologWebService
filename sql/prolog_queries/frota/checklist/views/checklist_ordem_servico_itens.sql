@@ -1,20 +1,20 @@
-CREATE OR REPLACE VIEW CHECKLIST_ORDEM_SERVICO_ITENS AS
-SELECT COSI.COD_UNIDADE,
-       COSI.CODIGO,
-       COSI.COD_OS,
-       COSI.CPF_MECANICO,
-       COSI.COD_PERGUNTA_PRIMEIRO_APONTAMENTO,
-       COSI.COD_CONTEXTO_PERGUNTA,
-       COSI.COD_CONTEXTO_ALTERNATIVA,
-       COSI.COD_ALTERNATIVA_PRIMEIRO_APONTAMENTO,
-       COSI.STATUS_RESOLUCAO,
-       COSI.QT_APONTAMENTOS,
-       COSI.KM,
-       COSI.DATA_HORA_CONSERTO,
-       COSI.DATA_HORA_INICIO_RESOLUCAO,
-       COSI.DATA_HORA_FIM_RESOLUCAO,
-       COSI.TEMPO_REALIZACAO,
-       COSI.FEEDBACK_CONSERTO,
-       COSI.COD_PROCESSO
-FROM CHECKLIST_ORDEM_SERVICO_ITENS_DATA COSI
-WHERE COSI.DELETADO = FALSE;
+create or replace view checklist_ordem_servico_itens as
+select cosi.cod_unidade,
+       cosi.codigo,
+       cosi.cod_os,
+       cosi.cpf_mecanico,
+       cosi.cod_pergunta_primeiro_apontamento,
+       cosi.cod_contexto_pergunta,
+       cosi.cod_contexto_alternativa,
+       cosi.cod_alternativa_primeiro_apontamento,
+       cosi.status_resolucao,
+       cosi.qt_apontamentos,
+       cosi.km,
+       cosi.data_hora_conserto,
+       cosi.data_hora_inicio_resolucao,
+       cosi.data_hora_fim_resolucao,
+       cosi.tempo_realizacao,
+       cosi.feedback_conserto,
+       cosi.cod_agrupamento_resolucao_em_lote
+from checklist_ordem_servico_itens_data cosi
+where cosi.deletado = false;

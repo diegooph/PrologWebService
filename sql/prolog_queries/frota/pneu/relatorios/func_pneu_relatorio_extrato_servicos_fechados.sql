@@ -38,7 +38,7 @@ SELECT U.NOME                                                                   
              3600)                                                                  AS HORAS_RESOLUCAO,
        TRUNC(
                EXTRACT(EPOCH FROM ((AM.DATA_HORA_RESOLUCAO) - (A.DATA_HORA))) / 60) AS MINUTOS_RESOLUCAO,
-       A.PLACA_VEICULO                                                              AS PLACA_VEICULO,
+       V.PLACA                                                                      AS PLACA_VEICULO,
        COALESCE(V.IDENTIFICADOR_FROTA, '-')                                         AS IDENTIFICADOR_FROTA,
        A.KM_VEICULO                                                                 AS KM_AFERICAO,
        AM.KM_MOMENTO_CONSERTO                                                       AS KM_MOMENTO_CONSERTO,
@@ -58,8 +58,8 @@ SELECT U.NOME                                                                   
        AM.TIPO_SERVICO                                                              AS TIPO_SERVICO,
        COALESCE(INITCAP(C.NOME), '-')                                               AS NOME_MECANICO,
        COALESCE(AA.ALTERNATIVA, '-')                                                AS PROBLEMA_APONTADO,
-       F_IF(AM.FECHADO_AUTOMATICAMENTE_MOVIMENTACAO OR AM.FECHADO_AUTOMATICAMENTE_INTEGRACAO, 'Sim' :: TEXT,
-            'Não')                                                                  AS TIPO_FECHAMENTO,
+       F_IF(AM.FECHADO_AUTOMATICAMENTE_MOVIMENTACAO OR AM.FECHADO_AUTOMATICAMENTE_INTEGRACAO OR
+            AM.FECHADO_AUTOMATICAMENTE_AFERICAO, 'Sim' :: TEXT, 'Não')              AS TIPO_FECHAMENTO,
        COALESCE(AFCD.STATUS_LEGIVEL, '-')                                           AS FORMA_COLETA_DADOS_FECHAMENTO
 FROM AFERICAO_MANUTENCAO AM
          JOIN UNIDADE U
@@ -80,7 +80,7 @@ FROM AFERICAO_MANUTENCAO AM
          LEFT JOIN AFERICAO_ALTERNATIVA_MANUTENCAO_INSPECAO AA
                    ON AA.CODIGO = AM.COD_ALTERNATIVA
          LEFT JOIN VEICULO V
-                   ON V.PLACA = VP.PLACA
+                   ON V.CODIGO = VP.COD_VEICULO
          LEFT JOIN EMPRESA E
                    ON U.COD_EMPRESA = E.CODIGO
          LEFT JOIN VEICULO_TIPO VT

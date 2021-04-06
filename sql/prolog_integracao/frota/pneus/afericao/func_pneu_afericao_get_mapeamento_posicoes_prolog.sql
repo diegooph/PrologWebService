@@ -1,14 +1,3 @@
--- Sobre:
---
--- Esta function foi criada para a integração de aferições. Foi desenhada para ser genérica e funcionar com qualquer
--- empresa que queira utilizar a integração de aferição de pneus do Prolog.
---
--- Retornamos as nomenclaturas utilizadas utilizadas para as posições do prolog, filtrados por um tipo de veículo
--- específico.
---
--- Histórico:
--- 2020-03-24 -> Function criada (diogenesvanzella - PL-2563).
--- 2020-05-11 -> Adiciona cod_auxiliar (diogenesvanzella - PLI-142).
 create or replace function
     integracao.func_pneu_afericao_get_mapeamento_posicoes_prolog(f_cod_empresa bigint,
                                                                  f_cod_auxiliar_tipo_veiculo text)

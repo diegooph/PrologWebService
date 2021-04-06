@@ -27,18 +27,11 @@
 --      possuir um veículo motorizado,  então o km inserido no processo será o atual.
 --
 --. Obs: veículos que tiveram o km modificado pela propagação terão seu histórico salvo em uma tabela específica.
---
---* Précondições:
---
---? Histórico:
--- 2020-11-12 -> Function criada (thaisksf - PL-3213).
--- 2020-11-17 -> Adiciona chamada a criação de histórico (gustavocnp95 - PL-3315)
--- 2020-12-17 -> Altera flag de propagação para temporariamente verificar se a empres está liberada (thaisksf - PL-3359)
 create or replace function func_veiculo_update_km_atual(f_cod_unidade bigint,
                                                         f_cod_veiculo bigint,
                                                         f_km_coletado bigint,
                                                         f_cod_processo bigint,
-                                                        f_tipo_processo types.veiculo_processo_type,
+                                                        f_tipo_processo text,
                                                         f_deve_propagar_km boolean,
                                                         f_data_hora timestamp with time zone)
     returns bigint
@@ -61,8 +54,7 @@ begin
     select v.km, v.possui_hubodometro, v.motorizado, vaa.cod_processo, v.cod_empresa
     from veiculo v
              left join veiculo_acoplamento_atual vaa on v.codigo = vaa.cod_veiculo
-    where v.cod_unidade = f_cod_unidade
-      and v.codigo = f_cod_veiculo
+    where v.codigo = f_cod_veiculo
     into strict v_km_atual, v_possui_hubodometro, v_motorizado, v_cod_processo_acoplamento, v_cod_empresa;
 
     case when exists(select vael.cod_empresa
@@ -79,6 +71,8 @@ begin
         if v_km_atual < f_km_coletado
         then
             update veiculo set km = f_km_coletado where codigo = f_cod_veiculo;
+            return f_km_coletado;
+        else
             return f_km_coletado;
         end if;
     end if;

@@ -1,7 +1,6 @@
 create or replace view afericao as
 select ad.codigo,
        ad.data_hora,
-       ad.placa_veiculo,
        ad.cod_veiculo,
        ad.cpf_aferidor,
        ad.km_veiculo,
