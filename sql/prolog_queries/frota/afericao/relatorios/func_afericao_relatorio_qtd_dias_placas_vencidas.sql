@@ -17,6 +17,7 @@ DECLARE
     AFERICAO_SULCO         VARCHAR := 'SULCO';
     AFERICAO_PRESSAO       VARCHAR := 'PRESSAO';
     AFERICAO_SULCO_PRESSAO VARCHAR := 'SULCO_PRESSAO';
+    V_FORMAS_COLETA_DADOS  TEXT[]  := ARRAY ['EQUIPAMENTO', 'MANUAL', 'EQUIPAMENTO_MANUAL'];
 BEGIN
     RETURN QUERY
         WITH VEICULOS_ATIVOS_UNIDADES AS (
@@ -78,14 +79,14 @@ BEGIN
                         V.PLACA                                           AS PLACA_VEICULO,
                         COALESCE(V.IDENTIFICADOR_FROTA, '-')              AS IDENTIFICADOR_FROTA,
                         COALESCE((
-                                     SELECT (FA.FORMA_COLETA_DADOS_SULCO IN ('EQUIPAMENTO', 'MANUAL') OR
-                                             FA.FORMA_COLETA_DADOS_SULCO_PRESSAO IN ('EQUIPAMENTO', 'MANUAL'))
+                                     SELECT (FA.FORMA_COLETA_DADOS_SULCO = ANY (V_FORMAS_COLETA_DADOS) OR
+                                             FA.FORMA_COLETA_DADOS_SULCO_PRESSAO = ANY (V_FORMAS_COLETA_DADOS))
                                      FROM FUNC_AFERICAO_GET_CONFIG_TIPO_AFERICAO_VEICULO(V.COD_UNIDADE) FA
                                      WHERE FA.COD_TIPO_VEICULO = V.COD_TIPO), FALSE)
                                                                           AS PODE_AFERIR_SULCO,
                         COALESCE((
-                                     SELECT (FA.FORMA_COLETA_DADOS_PRESSAO IN ('EQUIPAMENTO', 'MANUAL') OR
-                                             FA.FORMA_COLETA_DADOS_SULCO_PRESSAO IN ('EQUIPAMENTO', 'MANUAL'))
+                                     SELECT (FA.FORMA_COLETA_DADOS_PRESSAO = ANY (V_FORMAS_COLETA_DADOS) OR
+                                             FA.FORMA_COLETA_DADOS_SULCO_PRESSAO = ANY (V_FORMAS_COLETA_DADOS))
                                      FROM FUNC_AFERICAO_GET_CONFIG_TIPO_AFERICAO_VEICULO(V.COD_UNIDADE) FA
                                      WHERE FA.COD_TIPO_VEICULO = V.COD_TIPO), FALSE)
                                                                           AS PODE_AFERIR_PRESSAO,
