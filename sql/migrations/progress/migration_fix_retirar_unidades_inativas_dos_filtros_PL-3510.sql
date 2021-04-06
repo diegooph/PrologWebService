@@ -11,7 +11,7 @@ begin
             perform throw_client_side_error(
                     'Não é possível inativar uma unidade que contenha colaboradores vinculados.');
         elseif
-((select count(*) from veiculo_data where cod_unidade = old.codigo) > 0)
+((select count(*) from veiculo_data where cod_unidade = old.codigo and deletado = false) > 0)
         then
             perform throw_client_side_error(
                     'Não é possível inativar uma unidade que contenha veículos vinculados.');
