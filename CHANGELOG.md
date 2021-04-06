@@ -1,15 +1,13 @@
 Change Log
 ==========
 
-### Stage
-### Features
-* Cria funcionalidade para alterar o km coletado nos processos (PL-3557)
-
 <a name="v3.0.1"></a>
 ## Version [v3.0.1](https://github.com/luizfp/PrologWebService/compare/v3.0.0...v3.0.1) (release-date) [unreleased]
 
 ### Features
 * Adiciona código do colaborador ao Sentry para ser logado junto em caso de erro
+* Cria funcionalidade para alterar o km coletado nos processos (PL-3557)
+* Migra todos os SQLs do repositório de BD para o de WS
 
 ### Refactors
 * Configura swagger para rodar em prod (PL-3559)
