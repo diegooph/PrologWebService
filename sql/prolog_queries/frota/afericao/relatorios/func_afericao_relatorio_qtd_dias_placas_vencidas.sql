@@ -14,9 +14,9 @@ CREATE OR REPLACE FUNCTION FUNC_AFERICAO_RELATORIO_QTD_DIAS_PLACAS_VENCIDAS(F_CO
 AS
 $$
 DECLARE
-    AFERICAO_SULCO         VARCHAR := 'SULCO';
-    AFERICAO_PRESSAO       VARCHAR := 'PRESSAO';
-    AFERICAO_SULCO_PRESSAO VARCHAR := 'SULCO_PRESSAO';
+    V_AFERICAO_SULCO         VARCHAR := 'SULCO';
+    V_AFERICAO_PRESSAO       VARCHAR := 'PRESSAO';
+    V_AFERICAO_SULCO_PRESSAO VARCHAR := 'SULCO_PRESSAO';
     V_FORMAS_COLETA_DADOS  TEXT[]  := ARRAY ['EQUIPAMENTO', 'MANUAL', 'EQUIPAMENTO_MANUAL'];
 BEGIN
     RETURN QUERY
@@ -41,7 +41,7 @@ BEGIN
                                ON (SELECT V.COD_UNIDADE
                                    FROM VEICULO V
                                    WHERE V.CODIGO = A.COD_VEICULO) = PRU.COD_UNIDADE
-                 WHERE A.TIPO_MEDICAO_COLETADA IN (AFERICAO_SULCO, AFERICAO_SULCO_PRESSAO)
+                 WHERE A.TIPO_MEDICAO_COLETADA IN (V_AFERICAO_SULCO, V_AFERICAO_SULCO_PRESSAO)
                    -- Desse modo nós buscamos a última aferição de cada placa que está ativa nas unidades filtradas, independente
                    -- de onde foram foram aferidas.
                    AND COD_VEICULO = ANY (SELECT VAU.CODIGO
@@ -64,7 +64,7 @@ BEGIN
                                    FROM VEICULO V
                                    WHERE V.CODIGO = A.COD_VEICULO) = PRU.COD_UNIDADE
                  WHERE A.COD_UNIDADE = ANY (F_COD_UNIDADES)
-                   AND A.TIPO_MEDICAO_COLETADA IN (AFERICAO_PRESSAO, AFERICAO_SULCO_PRESSAO)
+                   AND A.TIPO_MEDICAO_COLETADA IN (V_AFERICAO_PRESSAO, V_AFERICAO_SULCO_PRESSAO)
                    AND COD_VEICULO = ANY (SELECT VAU.CODIGO
                                             FROM VEICULOS_ATIVOS_UNIDADES VAU)
                  GROUP BY A.DATA_HORA,
