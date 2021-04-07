@@ -50,6 +50,7 @@ public final class OrdemServicoResource {
     @GET
     @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
     @Path("/listagem")
+    @Deprecated
     @Secured(permissions = {
             Pilares.Frota.OrdemServico.Checklist.VISUALIZAR,
             Pilares.Frota.OrdemServico.Checklist.RESOLVER_ITEM})
