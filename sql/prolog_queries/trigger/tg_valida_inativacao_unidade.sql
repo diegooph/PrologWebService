@@ -9,17 +9,17 @@ begin
         if ((select count(*) from colaborador_data where cod_unidade = new.codigo) > 0)
         then
             perform throw_client_side_error(
-                    'Não é possível inativar uma unidade que contenha colaboradores vinculados.');
+                    ''Não é possível inativar uma unidade que contenha colaboradores vinculados.'');
         elseif
-            ((select count(*) from veiculo_data where cod_unidade = old.codigo) > 0)
+            ((select count(*) from veiculo_data where cod_unidade = old.codigo and deletado = false) > 0)
         then
             perform throw_client_side_error(
-                    'Não é possível inativar uma unidade que contenha veículos vinculados.');
+                    ''Não é possível inativar uma unidade que contenha veículos vinculados.'');
         elseif
-            ((select count(*) from pneu_data where cod_unidade = old.codigo) > 0)
+            ((select count(*) from pneu_data where cod_unidade = old.codigo and status <> '' DESCARTE '') > 0)
         then
             perform throw_client_side_error(
-                    'Não é possível inativar uma unidade que contenha pneus vinculados.');
+                    ''Não é possível inativar uma unidade que contenha pneus vinculados.'');
         end if;
     end if;
     return new;
