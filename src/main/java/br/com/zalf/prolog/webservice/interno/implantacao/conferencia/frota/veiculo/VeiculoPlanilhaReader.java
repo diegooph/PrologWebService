@@ -6,8 +6,8 @@ import br.com.zalf.prolog.webservice.interno.implantacao.conferencia.frota.veicu
 import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvParserSettings;
 import org.apache.commons.io.FilenameUtils;
+import org.jetbrains.annotations.NotNull;
 
-import javax.validation.constraints.NotNull;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
