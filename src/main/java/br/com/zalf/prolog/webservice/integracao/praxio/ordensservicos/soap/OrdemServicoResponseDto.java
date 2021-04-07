@@ -21,7 +21,7 @@ public final class OrdemServicoResponseDto {
     public OrdemServicoResponseDto(
             @JsonProperty("Sucesso") final boolean sucesso,
             @JsonProperty("MensagemDeRetorno") @Nullable final String mensagemRetorno,
-            @JsonProperty("CodigoOs") final int codigoOs) {
+            @JsonProperty("CodigoOS") final int codigoOs) {
         this.sucesso = sucesso;
         this.mensagemRetorno = mensagemRetorno;
         this.codigoOs = codigoOs;

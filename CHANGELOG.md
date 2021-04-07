@@ -15,6 +15,7 @@ Change Log
 * Altera para o Sentry enviar informações sensitivas por default, como o token
 
 ### Bug Fixes
+* Corrige sincroniza de  OS na integação da Piccolotur (PL-3599)
 * Corrige checkstyle para detecção de nome de pacote
 * Corrige trigger de import de veículos 
 * Corrige processamento de planilha de import de veículos
