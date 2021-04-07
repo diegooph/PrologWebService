@@ -1,12 +1,3 @@
--- Sobre:
---
--- Function utilizada na integração de ordem de serviço com a Praxio. Essa funtion salva um código de checklist como
--- pendente para ser sincronizado.
---
--- Histórico:
--- 2020-02-14 -> Function criada (diogenesvanzella - PLI-70).
--- 2020-02-25 -> Alteração do nome da function (diogenesvanzella - PLI-70).
--- 2020-07-13 -> Previne erro ao inserir checklist que já existe (luiz_fp).
 create or replace function piccolotur.func_check_os_insere_checklist_pendente_sincronia(f_cod_checklist bigint)
     returns void
     language plpgsql
