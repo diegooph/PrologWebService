@@ -22,10 +22,9 @@ begin
     update unidade
         set cod_regional = f_cod_regional
     where codigo = f_cod_unidade;
-
+    perform func_garante_update_ok(found);
     delete from token_autenticacao where cod_colaborador in (select c.codigo from colaborador c
                                                              where c.cod_unidade = f_cod_unidade);
-
     select concat('Regional da unidade: '
            || f_cod_unidade
            || ' foi alterada de '
