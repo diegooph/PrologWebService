@@ -1,7 +1,7 @@
 package br.com.zalf.prolog.webservice.v3.frota.checklistordemservico;
 
-import br.com.zalf.prolog.webservice.v3.frota.checklistordemservico._model.ChecklistOrdemServicoEntity;
 import br.com.zalf.prolog.webservice.v3.frota.checklistordemservico._model.ChecklistOrdemServicoItemEntity;
+import br.com.zalf.prolog.webservice.v3.frota.checklistordemservico._model.ChecklistOrdemServicoProjection;
 import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.EntityKmColetado;
 import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.KmProcessoAtualizavel;
 import lombok.RequiredArgsConstructor;
@@ -39,8 +39,9 @@ public class ChecklistOrdemServicoService implements KmProcessoAtualizavel {
         updateKmFechamentoItem(codProcesso, novoKm);
     }
 
-    public List<ChecklistOrdemServicoEntity> getOrdensServico() {
-        return checklistOrdemServicoDao.findAll();
+    @Transactional
+    public List<ChecklistOrdemServicoProjection> getOrdensServico() {
+        return checklistOrdemServicoDao.getOrdensServico(215L);
     }
 
     @NotNull
