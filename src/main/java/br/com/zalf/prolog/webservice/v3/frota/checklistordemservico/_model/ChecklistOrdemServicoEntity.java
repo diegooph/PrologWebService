@@ -31,6 +31,6 @@ public final class ChecklistOrdemServicoEntity {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_checklist", nullable = false)
     private ChecklistEntity checklist;
-    @OneToMany(mappedBy = "ordemServico", fetch = FetchType.LAZY)
-    private Set<ChecklistOrdemServicoItemEntity> itensOrdemServido;
+    @OneToMany(mappedBy = "ordemServico", fetch = FetchType.EAGER)
+    private Set<ChecklistOrdemServicoItemEntity> itensOrdemServico;
 }
