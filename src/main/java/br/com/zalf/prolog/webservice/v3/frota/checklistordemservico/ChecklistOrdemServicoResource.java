@@ -3,6 +3,8 @@ package br.com.zalf.prolog.webservice.v3.frota.checklistordemservico;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Optional;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.StatusOrdemServico;
 import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.constraints.Max;
@@ -21,6 +23,13 @@ import java.util.List;
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public final class ChecklistOrdemServicoResource {
+    @NotNull
+    private final ChecklistOrdemServicoService service;
+
+    @Autowired
+    public ChecklistOrdemServicoResource(@NotNull final ChecklistOrdemServicoService service) {
+        this.service = service;
+    }
 
     @GET
     public String getOrdensServico(
