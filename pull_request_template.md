@@ -6,14 +6,13 @@
 <!--- Por que essa mudança é necessária? Que problema ela resolve? -->
 
 ## :green_heart: Como você testou?
-
+<!--- Informe os testes realizados, de forma breve. Também adicione com qual BD os testes foram feitos. -->
 
 ## :pencil: Checklist
 <!--- Coloque um `x` nos boxes que se aplicam -->
 #### Gerais
 - [ ] Atualizar apresentação do Sprint Review
 - [ ] Atualizar o CHANGELOG
-- [ ] Informar banco, servidor e branch utilizados para executar a tarefa
 - [ ] REVISOR: review da tarefa verificando DoDs e/ou critérios de aceitação (1 por 1)
 - [ ] Foi aplicado um ordenamento que faz sentido para os usuários (caso seja uma listagem)?
 
