@@ -17,10 +17,6 @@
 - [ ] REVISOR: review da tarefa verificando DoDs e/ou critérios de aceitação (1 por 1)
 - [ ] Foi aplicado um ordenamento que faz sentido para os usuários (caso seja uma listagem)?
 
-#### [WS] Específicas
-- [ ] Connection, ResulSet e Statement fechados
-- [ ] Integrações testadas
-
 #### [BD] Específicas
 - [ ] Migration funciona no setup do BD local?
 - [ ] Atualizar no github o arquivo específico da function ou view que foi alterada
