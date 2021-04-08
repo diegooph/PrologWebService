@@ -39,7 +39,6 @@ public class ChecklistOrdemServicoService implements KmProcessoAtualizavel {
         updateKmFechamentoItem(codProcesso, novoKm);
     }
 
-    @Transactional
     public List<ChecklistOrdemServicoEntity> getOrdensServico() {
         return checklistOrdemServicoDao.findAll();
     }
