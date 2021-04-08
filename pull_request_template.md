@@ -1,16 +1,15 @@
-## :scroll: Description
-<!--- Describe your changes in detail -->
+## :scroll: Descrição
+<!--- Descreva suas mudanças em detalhes -->
 
 
-## :bulb: Motivation and Context
-<!--- Why is this change required? What problem does it solve? -->
+## :bulb: Motivação e Contexto
+<!--- Por que essa mudança é necessária? Que problema ela resolve? -->
 
-
-## :green_heart: How did you test it?
+## :green_heart: Como você testou?
 
 
 ## :pencil: Checklist
-<!--- Put an `x` in the boxes that apply -->
+<!--- Coloque um `x` nos boxes que se aplicam -->
 #### Gerais
 - [ ] Atualizar apresentação do Sprint Review
 - [ ] Atualizar o CHANGELOG
@@ -39,6 +38,6 @@
 - [ ] Testar cenário de erro
 
 
-## :crystal_ball: Next steps
+## :crystal_ball: Próximos passos
 - [ ] Realizar o merge dos branchs
 - [ ] Informar o suporte
