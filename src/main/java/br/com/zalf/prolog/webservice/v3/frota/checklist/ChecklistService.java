@@ -59,4 +59,32 @@ public class ChecklistService implements KmProcessoAtualizavel {
                 .build();
         update(entity);
     }
+
+    public List<ChecklistGetDto> getChecklists(@NotNull final List<Long> codUnidades,
+                                               @Nullable final Long codColaborador,
+                                               @Nullable final Long codTipoVeiculo,
+                                               @Nullable final Long codVeiculo,
+                                               final boolean incluirRespostas,
+                                               @NotNull final String dataInicial,
+                                               @NotNull final String dataFinal,
+                                               final int limit,
+                                               final long offset) {
+        try {
+            return checklistDao.getChecklists(codUnidades,
+                                              codColaborador,
+                                              codTipoVeiculo,
+                                              codVeiculo,
+                                              incluirRespostas,
+                                              dataInicial,
+                                              dataFinal,
+                                              limit,
+                                              offset);
+        } catch (final Throwable t) {
+            Log.e(TAG, String.format("Erro ao buscar lista de checklists das unidades.Código das Unidades: %d\n",
+                                     codUnidades), t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao buscar listagem de checklists, tente novamente.");
+        }
+    }
 }
