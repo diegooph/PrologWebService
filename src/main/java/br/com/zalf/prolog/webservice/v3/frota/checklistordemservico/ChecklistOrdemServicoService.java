@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.v3.frota.checklistordemservico;
 
+import br.com.zalf.prolog.webservice.v3.frota.checklistordemservico._model.ChecklistOrdemServicoEntity;
 import br.com.zalf.prolog.webservice.v3.frota.checklistordemservico._model.ChecklistOrdemServicoItemEntity;
 import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.EntityKmColetado;
 import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.KmProcessoAtualizavel;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 /**
  * Created on 2021-03-26
@@ -18,6 +20,8 @@ import javax.transaction.Transactional;
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class ChecklistOrdemServicoService implements KmProcessoAtualizavel {
+    @NotNull
+    private final ChecklistOrdemServicoDao checklistOrdemServicoDao;
     @NotNull
     private final ChecklistOrdemServicoItemDao checklistOrdemServicoItemDao;
 
@@ -33,6 +37,11 @@ public class ChecklistOrdemServicoService implements KmProcessoAtualizavel {
                                          @NotNull final Long codVeiculo,
                                          final long novoKm) {
         updateKmFechamentoItem(codProcesso, novoKm);
+    }
+
+    @Transactional
+    public List<ChecklistOrdemServicoEntity> getOrdensServico() {
+        return checklistOrdemServicoDao.findAll();
     }
 
     @NotNull
