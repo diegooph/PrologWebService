@@ -1,8 +1,8 @@
 Change Log
 ==========
 
-<a name="v3.0.1"></a>
-## Version [v3.0.1](https://github.com/luizfp/PrologWebService/compare/v3.0.0...v3.0.1) (release-date) [unreleased]
+<a name="v3.1.0"></a>
+## Version [v3.1.0](https://github.com/luizfp/PrologWebService/compare/v3.1.0...v3.1.1) (2021-04-08)
 
 ### Features
 * Adiciona código do colaborador ao Sentry para ser logado junto em caso de erro
