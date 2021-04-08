@@ -15,19 +15,17 @@
 - [ ] Atualizar o CHANGELOG
 - [ ] Informar banco, servidor e branch utilizados para executar a tarefa
 - [ ] REVISOR: review da tarefa verificando DoDs e/ou critérios de aceitação (1 por 1)
+- [ ] Foi aplicado um ordenamento que faz sentido para os usuários (caso seja uma listagem)?
 
 #### [WS] Específicas
 - [ ] Connection, ResulSet e Statement fechados
 - [ ] Integrações testadas
-- [ ] Foi aplicado um ordenamento que faz sentido para os usuários (caso seja uma listagem)?
 
 #### [BD] Específicas
 - [ ] Migration funciona no setup do BD local?
 - [ ] Atualizar no github o arquivo específico da function ou view que foi alterada
 - [ ] Funciona na versão do Postgres de prod (12.2)?
-- [ ] Foi aplicado um ordenamento que faz sentido para os usuários (caso seja uma listagem)?
 - [ ] Verificado o query plan (explain analyze) para uso de indexes e evitar o uso de disco (disk e batches > 1)?
-- [ ] Mover migration para pasta 'done'
 
 #### Testes
 - [ ] Integrações testadas
@@ -39,5 +37,6 @@
 
 
 ## :crystal_ball: Próximos passos
+- [ ] Mover migration para pasta 'done'
 - [ ] Realizar o merge dos branchs
 - [ ] Informar o suporte
