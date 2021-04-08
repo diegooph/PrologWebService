@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.v3.frota.checklistordemservico;
 
-import br.com.zalf.prolog.webservice.v3.frota.checklistordemservico._model.ChecklistOrdemServicoItemEntity;
+import br.com.zalf.prolog.webservice.v3.frota.checklistordemservico._model.ChecklistOrdemServicoEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
@@ -8,6 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-public interface ChecklistOrdemServicoItemDao extends JpaRepository<ChecklistOrdemServicoItemEntity, Long> {
+public interface ChecklistOrdemServicoItemDao extends JpaRepository<ChecklistOrdemServicoEntity, Long> {
 
 }
