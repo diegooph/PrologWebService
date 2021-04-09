@@ -1,8 +1,11 @@
 Change Log
 ==========
 
-<a name="v3.0.1"></a>
-## Version [v3.0.1](https://github.com/luizfp/PrologWebService/compare/v3.0.0...v3.0.1) (release-date) [unreleased]
+<a name="v3.1.1"></a>
+## Version [v3.1.1](https://github.com/luizfp/PrologWebService/compare/v3.1.0...v3.1.1) (release-date) [unreleased]
+
+<a name="v3.1.0"></a>
+## Version [v3.1.0](https://github.com/luizfp/PrologWebService/compare/v3.0.0...v3.1.0) (2021-04-08)
 
 ### Features
 * Adiciona código do colaborador ao Sentry para ser logado junto em caso de erro
@@ -15,6 +18,7 @@ Change Log
 * Altera para o Sentry enviar informações sensitivas por default, como o token
 
 ### Bug Fixes
+* Corrige sincroniza de O.S. na integração da Piccolotur (PL-3599)
 * Corrige checkstyle para detecção de nome de pacote
 * Corrige trigger de import de veículos 
 * Corrige processamento de planilha de import de veículos
