@@ -24,7 +24,7 @@ public class ChecklistOrdemServicoItemDto {
     @Nullable
     private final Long km;
     @Nullable
-    private final Long codigoProcessoFechamentoItensOs;
+    private final Long codigoAgrupamentoFechamentoEmLote;
     @Nullable
     private final LocalDateTime dataHoraConserto;
     @Nullable
