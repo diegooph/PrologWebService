@@ -18,5 +18,5 @@ public class ChecklistOrdemServicoListagemDto {
     @NotNull
     private final List<ChecklistOrdemServicoItemDto> itensOs;
     @Nullable
-    private LocalDateTime dataHoraFechamentoOs;
+    private final LocalDateTime dataHoraFechamentoOs;
 }
