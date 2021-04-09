@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.v3.frota.checklistordemservico._model;
 
-import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.StatusItemOrdemServico;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.time.LocalDateTime;
@@ -28,7 +27,7 @@ public interface ChecklistOrdemServicoProjection {
     long getCodigoItemOs();
 
     @Value("#{target.cpf_mecanico}")
-    Long getCodigoCpfMecanico();
+    Long getCpfMecanico();
 
     @Value("#{target.codigo_pergunta_primeiro_apontamento}")
     long getCodigoPerguntaPrimeiroApontamento();
@@ -43,7 +42,7 @@ public interface ChecklistOrdemServicoProjection {
     long getCodigoContextoAlternativa();
 
     @Value("#{target.status_resolucao}")
-    StatusItemOrdemServico getStatusItemOs();
+    String getStatusItemOs();
 
     @Value("#{target.quantidade_apontamentos}")
     int getQuantidadeApontamentos();
