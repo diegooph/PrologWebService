@@ -3,12 +3,12 @@ package br.com.zalf.prolog.webservice.v3.frota.checklist;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.v3.frota.checklist._model.ChecklistEntity;
-import br.com.zalf.prolog.webservice.v3.frota.checklist._model.ChecklistGetDto;
+import br.com.zalf.prolog.webservice.v3.frota.checklist._model.ChecklistListagemFiltro;
+import br.com.zalf.prolog.webservice.v3.frota.checklist._model.ChecklistProjection;
 import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.EntityKmColetado;
 import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.KmProcessoAtualizavel;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -60,28 +60,20 @@ public class ChecklistService implements KmProcessoAtualizavel {
         update(entity);
     }
 
-    public List<ChecklistGetDto> getChecklists(@NotNull final List<Long> codUnidades,
-                                               @Nullable final Long codColaborador,
-                                               @Nullable final Long codTipoVeiculo,
-                                               @Nullable final Long codVeiculo,
-                                               final boolean incluirRespostas,
-                                               @NotNull final String dataInicial,
-                                               @NotNull final String dataFinal,
-                                               final int limit,
-                                               final long offset) {
+    public List<ChecklistProjection> getChecklists(@NotNull final ChecklistListagemFiltro checklistListagemFiltro) {
         try {
-            return checklistDao.getChecklists(codUnidades,
-                                              codColaborador,
-                                              codTipoVeiculo,
-                                              codVeiculo,
-                                              incluirRespostas,
-                                              dataInicial,
-                                              dataFinal,
-                                              limit,
-                                              offset);
+            return checklistDao.getChecklists(checklistListagemFiltro.getCodUnidades(),
+                                              checklistListagemFiltro.getCodColaborador(),
+                                              checklistListagemFiltro.getCodTipoVeiculo(),
+                                              checklistListagemFiltro.getCodVeiculo(),
+                                              checklistListagemFiltro.isIncluirRespostas(),
+                                              checklistListagemFiltro.getDataInicial(),
+                                              checklistListagemFiltro.getDataFinal(),
+                                              checklistListagemFiltro.getLimit(),
+                                              checklistListagemFiltro.getOffset());
         } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao buscar lista de checklists das unidades.Código das Unidades: %d\n",
-                                     codUnidades), t);
+                                     checklistListagemFiltro.getCodUnidades()), t);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao buscar listagem de checklists, tente novamente.");
