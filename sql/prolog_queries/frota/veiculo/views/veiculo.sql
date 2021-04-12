@@ -16,6 +16,7 @@ select v.codigo,
        v.foi_editado,
        v.possui_hubodometro,
        v.motorizado,
-       v.acoplado
+       v.acoplado,
+       v.origem_cadastro
 from veiculo_data v
 where v.deletado = false;

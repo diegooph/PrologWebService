@@ -67,7 +67,7 @@ select a.codigo :: text                                                         
                         'DD/MM/YYYY HH24:MI'),
                 '-')                                                                    as data_hora_cadastro,
        coalesce(ppne.nomenclatura, '-')                                                 as posicao,
-       coalesce(a.placa_veiculo :: text, '-')                                           as placa,
+       coalesce(v.placa, '-')                                                           as placa,
        coalesce(v.identificador_frota, '-')                                             as identificador_frota,
        (select pvn.nome
         from pneu_vida_nomenclatura pvn
@@ -104,8 +104,8 @@ from afericao a
          left join modelo_banda modb on modb.codigo = p.cod_modelo_banda
          left join marca_banda marb on marb.codigo = modb.cod_marca
 
-    -- Se foi aferição de pneu avulso, pode não possuir placa.
-         left join veiculo v on v.placa = a.placa_veiculo
+    -- Se foi aferição de pneu avulso, pode não possuir codigo de veiculo.
+         left join veiculo v on v.codigo = a.cod_veiculo
 
          left join pneu_posicao_nomenclatura_empresa ppne
                    on ppne.cod_empresa = p.cod_empresa

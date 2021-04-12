@@ -38,7 +38,7 @@ SELECT U.NOME                                                                   
                'DD/MM/YYYY HH24:MI') :: TEXT                                                    AS DATA_HORA_ABERTURA,
        (F_DATA_ATUAL - ((A.DATA_HORA AT TIME ZONE TZ_UNIDADE(AM.COD_UNIDADE)) :: DATE)) :: TEXT AS DIAS_EM_ABERTO,
        C.NOME                                                                                   AS NOME_COLABORADOR,
-       A.PLACA_VEICULO                                                                          AS PLACA_VEICULO,
+       V.PLACA                                                                                  AS PLACA_VEICULO,
        COALESCE(V.IDENTIFICADOR_FROTA, '-')                                                     AS IDENTIFICADOR_FROTA,
        P.CODIGO_CLIENTE                                                                         AS COD_PNEU_PROBLEMA,
        COALESCE(PPNE.NOMENCLATURA :: TEXT, '-')                                                 AS POSICAO_PNEU_PROBLEMA,
@@ -77,7 +77,7 @@ FROM AFERICAO_MANUTENCAO AM
          JOIN PNEU_RECAPAGEM_NOMENCLATURA PRN
               ON PRN.COD_TOTAL_VIDA = P.VIDA_TOTAL
          JOIN VEICULO V
-              ON A.PLACA_VEICULO = V.PLACA
+              ON A.COD_VEICULO = V.CODIGO
                   AND V.COD_UNIDADE = A.COD_UNIDADE
          LEFT JOIN VEICULO_TIPO VT
                    ON V.COD_TIPO = VT.CODIGO

@@ -33,7 +33,7 @@ $$
 SELECT A.CODIGO                              AS COD_AFERICAO,
        A.COD_UNIDADE                         AS COD_UNIDADE,
        A.DATA_HORA AT TIME ZONE F_TZ_UNIDADE AS DATA_HORA,
-       A.PLACA_VEICULO::TEXT                 AS PLACA_VEICULO,
+       V.PLACA                               AS PLACA_VEICULO,
        V.IDENTIFICADOR_FROTA                 AS IDENTIFICADOR_FROTA,
        A.KM_VEICULO                          AS KM_VEICULO,
        A.TEMPO_REALIZACAO                    AS TEMPO_REALIZACAO,
@@ -57,7 +57,7 @@ FROM AFERICAO A
          JOIN AFERICAO_VALORES AV
               ON A.CODIGO = AV.COD_AFERICAO
          JOIN VEICULO V
-              ON V.PLACA = A.PLACA_VEICULO
+              ON V.CODIGO = A.COD_VEICULO
          JOIN PNEU_ORDEM PO
               ON AV.POSICAO = PO.POSICAO_PROLOG
          JOIN PNEU P

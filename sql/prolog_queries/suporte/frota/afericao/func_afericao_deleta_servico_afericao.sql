@@ -1,7 +1,6 @@
 CREATE OR REPLACE FUNCTION SUPORTE.FUNC_AFERICAO_DELETA_SERVICO_AFERICAO(F_COD_EMPRESA BIGINT,
                                                                          F_COD_UNIDADE BIGINT,
                                                                          F_COD_PNEU BIGINT,
-                                                                         F_NUMERO_FOGO TEXT,
                                                                          F_CODIGO_AFERICAO BIGINT,
                                                                          F_COD_SERVICO_AFERICAO BIGINT,
                                                                          F_TIPO_SERVICO_AFERICAO TEXT,
@@ -19,7 +18,7 @@ BEGIN
     --Garante integridade entre unidade e empresa
     PERFORM FUNC_GARANTE_INTEGRIDADE_EMPRESA_UNIDADE(F_COD_EMPRESA, F_COD_UNIDADE);
     --Verifica se o pneu existe
-    PERFORM FUNC_GARANTE_PNEU_EXISTE(F_COD_EMPRESA, F_COD_UNIDADE, F_COD_PNEU, F_NUMERO_FOGO);
+    PERFORM FUNC_GARANTE_PNEU_EXISTE(F_COD_EMPRESA, F_COD_UNIDADE, F_COD_PNEU);
     --Verifica se existe afericao
     IF NOT EXISTS(SELECT A.CODIGO
                   FROM AFERICAO A

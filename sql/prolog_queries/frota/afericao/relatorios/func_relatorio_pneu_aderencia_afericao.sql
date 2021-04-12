@@ -74,18 +74,18 @@ FROM VEICULO V
                                              THEN 1
                                          ELSE 0 END) / COUNT(CALCULO_AFERICAO_PRESSAO.PLACA)::NUMERIC * 100) ||
                            '%'                                   AS ADERENCIA
-                    FROM (SELECT A.PLACA_VEICULO            AS PLACA,
-                                 A.DATA_HORA,
+                    FROM (SELECT V.PLACA                AS PLACA,
+                                 A.DATA_HORA            AS DATA_HORA_AFERICAO,
                                  A.TIPO_MEDICAO_COLETADA,
                                  R.PERIODO_AFERICAO_PRESSAO AS PERIODO_AFERICAO,
                                  CASE
-                                     WHEN A.PLACA_VEICULO = LAG(A.PLACA_VEICULO) OVER (ORDER BY PLACA_VEICULO, DATA_HORA)
+                                     WHEN V.PLACA = LAG(V.PLACA) OVER (ORDER BY V.PLACA, DATA_HORA)
                                          THEN EXTRACT(DAYS FROM A.DATA_HORA -
-                                                                LAG(A.DATA_HORA) OVER (ORDER BY PLACA_VEICULO, DATA_HORA))
+                                                                LAG(A.DATA_HORA) OVER (ORDER BY V.PLACA, DATA_HORA))
                                      END                    AS DIAS_ENTRE_AFERICOES,
                                  A.COD_UNIDADE
                           FROM AFERICAO A
-                                   JOIN VEICULO V ON V.PLACA = A.PLACA_VEICULO
+                                   JOIN VEICULO V ON V.CODIGO = A.COD_VEICULO
                                    JOIN PNEU_RESTRICAO_UNIDADE R ON R.COD_UNIDADE = V.COD_UNIDADE
                           WHERE V.COD_UNIDADE::TEXT LIKE ANY (F_COD_UNIDADE)
                             -- (PL-1900) Passamos a realizar uma subtração da data inicial pelo periodo em questão
@@ -99,9 +99,9 @@ FROM VEICULO V
                           ORDER BY 1, 2) AS CALCULO_AFERICAO_PRESSAO
                          -- (PL-1900) Aqui retiramos as aferições trazidas que eram de antes da data filtrada, pois eram
                          -- apenas para o calculo da meta da primeira aferição da faixa do filtro.
-                    WHERE (CALCULO_AFERICAO_PRESSAO.DATA_HORA AT TIME ZONE
+                    WHERE (CALCULO_AFERICAO_PRESSAO.DATA_HORA_AFERICAO AT TIME ZONE
                            tz_unidade(CALCULO_AFERICAO_PRESSAO.COD_UNIDADE))::DATE >= F_DATA_INICIAL::DATE
-                      AND (CALCULO_AFERICAO_PRESSAO.DATA_HORA AT TIME ZONE
+                      AND (CALCULO_AFERICAO_PRESSAO.DATA_HORA_AFERICAO AT TIME ZONE
                            tz_unidade(CALCULO_AFERICAO_PRESSAO.COD_UNIDADE))::DATE <= F_DATA_FINAL::DATE
                     GROUP BY CALCULO_AFERICAO_PRESSAO.PLACA) AS CALCULO_PRESSAO
                    ON CALCULO_PRESSAO.PLACA = V.PLACA
@@ -142,19 +142,19 @@ FROM VEICULO V
                                              THEN 1
                                          ELSE 0 END) / COUNT(CALCULO_AFERICAO_SULCO.PLACA)::NUMERIC * 100) ||
                            '%'                                 AS ADERENCIA
-                    FROM (SELECT A.PLACA_VEICULO          AS PLACA,
-                                 A.DATA_HORA,
+                    FROM (SELECT V.PLACA          AS PLACA,
+                                 A.DATA_HORA      AS DATA_HORA_AFERICAO,
                                  A.TIPO_MEDICAO_COLETADA,
                                  R.PERIODO_AFERICAO_SULCO AS PERIODO_AFERICAO,
                                  CASE
-                                     WHEN A.PLACA_VEICULO = LAG(A.PLACA_VEICULO) OVER (ORDER BY PLACA_VEICULO, DATA_HORA)
+                                     WHEN V.PLACA = LAG(V.PLACA) OVER (ORDER BY V.PLACA, DATA_HORA)
                                          THEN EXTRACT(DAYS FROM A.DATA_HORA -
-                                                                LAG(A.DATA_HORA) OVER (ORDER BY PLACA_VEICULO, DATA_HORA))
+                                                                LAG(A.DATA_HORA) OVER (ORDER BY V.PLACA, DATA_HORA))
                                      ELSE 0
                                      END                  AS DIAS_ENTRE_AFERICOES,
                                  A.COD_UNIDADE
                           FROM AFERICAO A
-                                   JOIN VEICULO V ON V.PLACA = A.PLACA_VEICULO
+                                   JOIN VEICULO V ON V.CODIGO = A.COD_VEICULO
                                    JOIN PNEU_RESTRICAO_UNIDADE R ON R.COD_UNIDADE = V.COD_UNIDADE
                           WHERE V.COD_UNIDADE::TEXT LIKE ANY (F_COD_UNIDADE)
                             -- (PL-1900) Passamos a realizar uma subtração da data inicial pelo periodo em questão
@@ -168,9 +168,9 @@ FROM VEICULO V
                           ORDER BY 1, 2) AS CALCULO_AFERICAO_SULCO
                          -- (PL-1900) Aqui retiramos as aferições trazidas que eram de antes da data filtrada, pois eram
                          -- apenas para o calculo da meta da primeira aferição da faixa do filtro.
-                    WHERE CAST(CALCULO_AFERICAO_SULCO.DATA_HORA AT TIME ZONE
+                    WHERE CAST(CALCULO_AFERICAO_SULCO.DATA_HORA_AFERICAO AT TIME ZONE
                                tz_unidade(CALCULO_AFERICAO_SULCO.COD_UNIDADE) AS DATE) >= F_DATA_INICIAL::DATE
-                      AND CAST(CALCULO_AFERICAO_SULCO.DATA_HORA AT TIME ZONE
+                      AND CAST(CALCULO_AFERICAO_SULCO.DATA_HORA_AFERICAO AT TIME ZONE
                                tz_unidade(CALCULO_AFERICAO_SULCO.COD_UNIDADE) AS DATE) <= F_DATA_FINAL::DATE
                     GROUP BY CALCULO_AFERICAO_SULCO.PLACA) AS CALCULO_SULCO
                    ON CALCULO_SULCO.PLACA = V.PLACA

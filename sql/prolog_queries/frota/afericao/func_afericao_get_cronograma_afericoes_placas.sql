@@ -3,6 +3,7 @@ CREATE OR REPLACE FUNCTION FUNC_AFERICAO_GET_CRONOGRAMA_AFERICOES_PLACAS(F_COD_U
     RETURNS TABLE
             (
                 PLACA                            TEXT,
+                COD_VEICULO                      BIGINT,
                 IDENTIFICADOR_FROTA              TEXT,
                 COD_UNIDADE_PLACA                BIGINT,
                 NOME_MODELO                      TEXT,
@@ -23,6 +24,7 @@ $$
 BEGIN
     RETURN QUERY
         SELECT V.PLACA :: TEXT                                              AS PLACA,
+               COALESCE(V.CODIGO, -1)::BIGINT                               AS COD_VEICULO,
                V.IDENTIFICADOR_FROTA ::TEXT                                 AS IDENTIFICADOR_FROTA,
                V.COD_UNIDADE :: BIGINT                                      AS COD_UNIDADE_PLACA,
                MV.NOME :: TEXT                                              AS NOME_MODELO,
@@ -50,30 +52,26 @@ BEGIN
                            ON CONFIG.
                                   COD_TIPO_VEICULO = VT.CODIGO
                                AND CONFIG.COD_UNIDADE = V.COD_UNIDADE
-                 LEFT JOIN (SELECT A.PLACA_VEICULO                                                            AS PLACA_INTERVALO,
-                                   EXTRACT(DAYS FROM (F_DATA_HORA_ATUAL) -
+                 LEFT JOIN (SELECT A.COD_VEICULO AS COD_VEICULO_INTERVALO, EXTRACT(DAYS FROM (F_DATA_HORA_ATUAL) -
                                                      MAX(A.DATA_HORA AT TIME ZONE TZ_UNIDADE(A.COD_UNIDADE))) AS INTERVALO
                             FROM AFERICAO A
                             WHERE A.TIPO_MEDICAO_COLETADA = 'PRESSAO'
                                OR A.TIPO_MEDICAO_COLETADA = 'SULCO_PRESSAO'
-                            GROUP BY A.PLACA_VEICULO) AS INTERVALO_PRESSAO
-                           ON INTERVALO_PRESSAO.
-                                  PLACA_INTERVALO = V.PLACA
-                 LEFT JOIN (SELECT A.PLACA_VEICULO                                                            AS PLACA_INTERVALO,
-                                   EXTRACT(DAYS FROM (F_DATA_HORA_ATUAL) -
+                            GROUP BY A.COD_VEICULO) AS INTERVALO_PRESSAO
+                 ON INTERVALO_PRESSAO.COD_VEICULO_INTERVALO = V.CODIGO
+                 LEFT JOIN (SELECT A.COD_VEICULO AS COD_VEICULO_INTERVALO, EXTRACT(DAYS FROM (F_DATA_HORA_ATUAL) -
                                                      MAX(A.DATA_HORA AT TIME ZONE TZ_UNIDADE(A.COD_UNIDADE))) AS INTERVALO
                             FROM AFERICAO A
                             WHERE A.TIPO_MEDICAO_COLETADA = 'SULCO'
                                OR A.TIPO_MEDICAO_COLETADA = 'SULCO_PRESSAO'
-                            GROUP BY A.PLACA_VEICULO) AS INTERVALO_SULCO
-                           ON INTERVALO_SULCO.
-                                  PLACA_INTERVALO = V.PLACA
-                 LEFT JOIN (SELECT VP.PLACA           AS PLACA_PNEUS,
+                            GROUP BY A.COD_VEICULO) AS INTERVALO_SULCO
+                 ON INTERVALO_SULCO.COD_VEICULO_INTERVALO = V.CODIGO
+                 LEFT JOIN (SELECT VP.COD_VEICULO           AS COD_VEICULOS,
                                    COUNT(VP.COD_PNEU) AS TOTAL
                             FROM VEICULO_PNEU VP
                             WHERE VP.COD_UNIDADE = ANY (F_COD_UNIDADES)
-                            GROUP BY VP.PLACA) AS NUMERO_PNEUS ON
-            PLACA_PNEUS = V.PLACA
+                            GROUP BY VP.COD_VEICULO) AS NUMERO_PNEUS ON
+            COD_VEICULOS = V.CODIGO
         WHERE V.STATUS_ATIVO = TRUE
           AND V.COD_UNIDADE = ANY (F_COD_UNIDADES)
         ORDER BY MV.NOME, INTERVALO_PRESSAO DESC, INTERVALO_SULCO DESC, PNEUS_APLICADOS DESC;

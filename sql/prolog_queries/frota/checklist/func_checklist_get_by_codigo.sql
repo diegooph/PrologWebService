@@ -49,7 +49,7 @@ begin
                c.observacao                                                        as observacao,
                c.tempo_realizacao                                                  as duracao_realizacao_millis,
                c.cpf_colaborador                                                   as cpf_colaborador,
-               c.placa_veiculo :: text                                             as placa_veiculo,
+               v.placa :: text                                                     as placa_veiculo,
                c.tipo                                                              as tipo_checklist,
                co.nome :: text                                                     as nome_colaborador,
                cp.codigo                                                           as cod_pergunta,
@@ -74,6 +74,7 @@ begin
                crman.url_midia                                                     as url_midia_alternativa,
                crman.tipo_midia                                                    as tipo_midia_alternativa
         from checklist c
+                 join veiculo v on v.codigo = c.cod_veiculo
                  join colaborador co
                       on co.cpf = c.cpf_colaborador
                  join checklist_perguntas cp

@@ -17,8 +17,10 @@ declare
                                                                 from checklist
                                                                 where codigo = f_cod_checklist);
 begin
-    insert into piccolotur.checklist_pendente_para_sincronizar (cod_checklist_para_sincronizar, data_hora_realizado)
-    values (f_cod_checklist, v_data_hora_realizado)
+    insert into piccolotur.checklist_pendente_para_sincronizar (cod_checklist_para_sincronizar,
+                                                                data_hora_realizado,
+                                                                bloqueado_sincronia)
+    values (f_cod_checklist, v_data_hora_realizado, true)
     on conflict on constraint unique_cod_checklist_para_sincronizar
         do update set data_hora_realizado = v_data_hora_realizado;
 

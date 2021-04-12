@@ -40,7 +40,7 @@ begin
         with checks_filtrados as (
             select c.codigo                           as cod_checklist,
                    c.cod_checklist_modelo             as cod_checklist_modelo,
-                   c.placa_veiculo                    as placa_veiculo,
+                   c.cod_veiculo                      as cod_veiculo,
                    c.cpf_colaborador                  as cpf_colaborador,
                    c.data_hora_realizacao_tz_aplicado as data_hora_realizacao_tz_aplicado,
                    c.tipo                             as tipo_checklist,
@@ -52,6 +52,7 @@ begin
         ),
              ultimos_checklists_veiculos as (
                  select checks_placas_dias.data                  as data,
+                        checks_placas_dias.cod_veiculo           as cod_veiculo,
                         checks_placas_dias.placa                 as placa,
                         checks_placas_dias.cod_checklist_saida   as cod_checklist_saida,
                         cfs.data_hora_realizacao_tz_aplicado     as data_hora_ultimo_checklist_saida,
@@ -62,13 +63,14 @@ begin
                         cfr.cod_checklist_modelo                 as cod_checklist_modelo_retorno,
                         cfr.nome_colaborador                     as nome_colaborador_checklist_retorno
                  from (select g.day::date                                                      as data,
+                              v.codigo                                                         as cod_veiculo,
                               v.placa                                                          as placa,
                               max(case when cf.tipo_checklist = 'S' then cf.cod_checklist end) as cod_checklist_saida,
                               max(case when cf.tipo_checklist = 'R' then cf.cod_checklist end) as cod_checklist_retorno
                        from veiculo v
                                 cross join generate_series(f_data_inicial, f_data_final, '1 DAY') g(day)
                                 left join checks_filtrados cf
-                                          on cf.placa_veiculo = v.placa and
+                                          on cf.cod_veiculo = v.codigo and
                                              g.day::date = (cf.data_hora_realizacao_tz_aplicado)::date
                        where v.cod_unidade = f_cod_unidade
                          and v.status_ativo = true
@@ -77,15 +79,15 @@ begin
                           left join checks_filtrados cfr on cfr.cod_checklist = checks_placas_dias.cod_checklist_retorno
              ),
              itens_criticos_filtrados as (
-                 select row_number() over (partition by c.placa_veiculo) as row_id,
-                        c.codigo                                         as cod_checklist_item,
-                        c.placa_veiculo                                  as placa_veiculo_checklist_item,
-                        cap.cod_pergunta                                 as cod_pergunta,
-                        cap.codigo                                       as cod_alternativa,
-                        cap.alternativa                                  as descricao_alternativa,
-                        cap.alternativa_tipo_outros                      as alternativa_tipo_outros,
-                        cosi.codigo                                      as cod_item_os,
-                        c.data_hora_realizacao_tz_aplicado               as data_hora_abertura_os
+                 select row_number() over (partition by c.cod_veiculo) as row_id,
+                        c.codigo                                       as cod_checklist_item,
+                        c.cod_veiculo                                  as cod_veiculo_checklist_item,
+                        cap.cod_pergunta                               as cod_pergunta,
+                        cap.codigo                                     as cod_alternativa,
+                        cap.alternativa                                as descricao_alternativa,
+                        cap.alternativa_tipo_outros                    as alternativa_tipo_outros,
+                        cosi.codigo                                    as cod_item_os,
+                        c.data_hora_realizacao_tz_aplicado             as data_hora_abertura_os
                  from checklist_ordem_servico_itens cosi
                           join checklist_ordem_servico cos
                                on cos.codigo = cosi.cod_os and cos.cod_unidade = cosi.cod_unidade
@@ -104,16 +106,16 @@ begin
                  order by cosi.codigo desc
              ),
              itens_criticos_placa as (
-                 select icf.cod_checklist_item           as cod_checklist_item,
-                        icf.placa_veiculo_checklist_item as placa_veiculo_checklist_item,
-                        cp.codigo                        as cod_pergunta,
-                        cp.pergunta                      as descricao_pergunta,
-                        icf.cod_alternativa              as cod_alternativa,
-                        icf.descricao_alternativa        as descricao_alternativa,
-                        icf.alternativa_tipo_outros      as alternativa_tipo_outros,
-                        crn.resposta_outros              as descricao_alternativa_tipo_outros,
-                        icf.cod_item_os                  as cod_item_os,
-                        icf.data_hora_abertura_os        as data_hora_abertura_os
+                 select icf.cod_checklist_item         as cod_checklist_item,
+                        icf.cod_veiculo_checklist_item as cod_veiculo_checklist_item,
+                        cp.codigo                      as cod_pergunta,
+                        cp.pergunta                    as descricao_pergunta,
+                        icf.cod_alternativa            as cod_alternativa,
+                        icf.descricao_alternativa      as descricao_alternativa,
+                        icf.alternativa_tipo_outros    as alternativa_tipo_outros,
+                        crn.resposta_outros            as descricao_alternativa_tipo_outros,
+                        icf.cod_item_os                as cod_item_os,
+                        icf.data_hora_abertura_os      as data_hora_abertura_os
                  from itens_criticos_filtrados icf
                           join checklist_perguntas cp
                                on cp.codigo = icf.cod_pergunta
@@ -142,13 +144,13 @@ begin
                icp.cod_item_os,
                icp.data_hora_abertura_os
         from ultimos_checklists_veiculos ucv
-                 -- O join deve ocorrer pelo código do checklist ou pela placa, mas sem duplicar.
+                 -- O join deve ocorrer pelo código do checklist ou pelo código do veículo, mas sem duplicar.
                  left join itens_criticos_placa icp
                            on case
                                   when icp.cod_checklist_item in (ucv.cod_checklist_saida, ucv.cod_checklist_retorno)
                                       then icp.cod_checklist_item in
                                            (ucv.cod_checklist_saida, ucv.cod_checklist_retorno)
-                                  else icp.placa_veiculo_checklist_item = ucv.placa end
-        order by ucv.data, ucv.placa, icp.cod_item_os;
+                                  else icp.cod_veiculo_checklist_item = ucv.cod_veiculo end
+        order by ucv.data, ucv.cod_veiculo, icp.cod_item_os;
 end;
 $$;

@@ -38,7 +38,7 @@ $$
 select a.codigo                                           as cod_afericao,
        a.cod_unidade                                      as cod_unidade_afericao,
        lpad(a.cpf_aferidor :: text, 11, '0')              as cpf_colaborador,
-       a.placa_veiculo                                    as placa_veiculo_aferido,
+       v.placa                                            as placa_veiculo_aferido,
        av.cod_pneu                                        as cod_pneu_aferido,
        p.codigo_cliente                                   as numero_fogo,
        trunc(av.altura_sulco_interno::numeric, 1)         as altura_sulco_interno,
@@ -54,6 +54,7 @@ select a.codigo                                           as cod_afericao,
        a.tipo_medicao_coletada                            as tipo_medicao_coletada,
        a.tipo_processo_coleta                             as tipo_processo_coleta
 from afericao a
+         left join veiculo v on v.codigo = a.cod_veiculo
          join afericao_valores av on a.codigo = av.cod_afericao
          join pneu p on av.cod_pneu = p.codigo
 where a.cod_unidade in (select codigo

@@ -1,19 +1,3 @@
--- Sobre:
---
--- Esta function foi criada para a integração de aferições. foi desenhada para ser genérica e funcionar com qualquer
--- empresa que queira utilizar a integração de aferição de pneus do prolog.
---
--- A function retorna a configuração de aferição para cada unidade requisitada. limitamos o retorno a apenas
--- configurações de tipos de veículos que possuam 'cod_auxiliar' mapeado para o tipo de veículo. fazemos isso pois a
--- utilização da configuração baseia-se no 'cod_auxiliar' não fazendo sentido retornar nada caso não tiver códigos
--- mapeados.
---
--- Histórico:
--- 2020-03-24 -> Function criada (diogenesvanzella - PL-2563).
--- 2020-04-07 -> Adiciona limit 1 para a busca do código da empresa (diogenesvanzella - PLI-119).
--- 2020-05-12 -> Substitui retorno de booleans "pode aferir" pelas novas colunas "forma coleta" (gustavocnp95 - PL-2689)
--- 2020-06-04 -> Retorna valores padrões caso não possuir configuração (diogenesvanzella - PLI-149).
--- 2020-06-15 -> Adiciona o cod_auxiliar da unidade no retorno (diogenesvanzella - PLI-165).
 create or replace function integracao.func_pneu_afericao_get_infos_configuracao_afericao(f_cod_unidades bigint[])
     returns table
             (
@@ -21,6 +5,11 @@ create or replace function integracao.func_pneu_afericao_get_infos_configuracao_
                 cod_auxiliar_tipo_veiculo        text,
                 cod_unidade                      bigint,
                 cod_tipo_veiculo                 bigint,
+                nome_tipo_veiculo                text,
+                cod_diagrama_veiculo             smallint,
+                nome_diagrama_veiculo            text,
+                qtd_eixo_dianteiro               bigint,
+                qtd_eixo_traseiro                bigint,
                 forma_coleta_dados_sulco         text,
                 forma_coleta_dados_pressao       text,
                 forma_coleta_dados_sulco_pressao text,
@@ -52,6 +41,11 @@ begin
                caau.cod_auxiliar                                          as cod_auxiliar_tipo_veiculo,
                caau.cod_unidade                                           as cod_unidade,
                caau.cod_tipo_veiculo                                      as cod_tipo_veiculo,
+               vt.nome::text                                              as nome_tipo_veiculo,
+               vd.codigo                                                  as cod_diagrama_veiculo,
+               vd.nome::text                                              as nome_diagrama_veiculo,
+               count(vde.tipo_eixo) filter (where vde.tipo_eixo = 'D')    as qtd_eixo_dianteiro,
+               count(vde.tipo_eixo) filter (where vde.tipo_eixo = 'T')    as qtd_eixo_traseiro,
                f_if(actav.codigo is null, 'EQUIPAMENTO',
                     actav.forma_coleta_dados_sulco)                       as forma_coleta_dados_sulco,
                f_if(actav.codigo is null, 'EQUIPAMENTO',
@@ -61,10 +55,15 @@ begin
                f_if(actav.codigo is null, true, actav.pode_aferir_estepe) as pode_aferir_estepe
         from cod_auxiliares_and_unidade caau
                  join unidade u on u.codigo = caau.cod_unidade
+                 join veiculo_tipo vt on caau.cod_tipo_veiculo = vt.codigo
+                 join veiculo_diagrama vd on vt.cod_diagrama = vd.codigo
+                 join veiculo_diagrama_eixos vde on vd.codigo = vde.cod_diagrama
                  left join afericao_configuracao_tipo_afericao_veiculo actav
                            on actav.cod_tipo_veiculo = caau.cod_tipo_veiculo and actav.cod_unidade = caau.cod_unidade
         where caau.cod_unidade = any (f_cod_unidades)
           and caau.cod_auxiliar is not null
+        group by u.cod_auxiliar, caau.cod_auxiliar, caau.cod_unidade, caau.cod_tipo_veiculo, vt.nome, vd.codigo,
+                 vd.nome, actav.codigo
         order by caau.cod_auxiliar;
 end;
 $$;

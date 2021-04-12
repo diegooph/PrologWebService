@@ -1,168 +1,168 @@
-CREATE OR REPLACE FUNCTION INTERNO.FUNC_CLONA_COLABORADORES(F_COD_EMPRESA_BASE BIGINT,
-                                                            F_COD_UNIDADE_BASE BIGINT,
-                                                            F_COD_EMPRESA_USUARIO BIGINT,
-                                                            F_COD_UNIDADE_USUARIO BIGINT)
-    RETURNS VOID
-    LANGUAGE PLPGSQL
-AS
+create or replace function interno.func_clona_colaboradores(f_cod_empresa_base bigint,
+                                                            f_cod_unidade_base bigint,
+                                                            f_cod_empresa_usuario bigint,
+                                                            f_cod_unidade_usuario bigint)
+    returns void
+    language plpgsql
+as
 $$
-DECLARE
-    V_CPF_PREFIXO_PADRAO          TEXT   := '0338328';
-    V_CPF_SUFIXO_PADRAO           BIGINT := 0;
-    V_CPF_VERIFICACAO             BIGINT;
-    V_CPFS_VALIDOS_CADASTRO       BIGINT[];
-    V_TENTATIVA_BUSCAR_CPF_VALIDO BIGINT := 0;
-BEGIN
+declare
+    v_cpf_prefixo_padrao          text   := '0338328';
+    v_cpf_sufixo_padrao           bigint := 0;
+    v_cpf_verificacao             bigint;
+    v_cpfs_validos_cadastro       bigint[];
+    v_tentativa_buscar_cpf_valido bigint := 0;
+begin
     -- VERIFICA SE EXISTEM EQUIPES DE VEÍCULOS PARA COPIAR
-    IF NOT EXISTS(SELECT E.CODIGO FROM EQUIPE E WHERE E.COD_UNIDADE = F_COD_UNIDADE_BASE)
-    THEN
-        RAISE EXCEPTION
-            'Não existem equipes para serem copiadas da unidade de código: %.' , F_COD_UNIDADE_BASE;
-    END IF;
+    if not EXISTS(select e.codigo from equipe e where e.cod_unidade = f_cod_unidade_base)
+    then
+        raise exception
+            'Não existem equipes para serem copiadas da unidade de código: %.' , f_cod_unidade_base;
+    end if;
 
     -- VERIFICA SE EXISTEM SETORES PARA COPIAR
-    IF NOT EXISTS(SELECT SE.CODIGO FROM SETOR SE WHERE SE.COD_UNIDADE = F_COD_UNIDADE_BASE)
-    THEN
-        RAISE EXCEPTION
-            'Não existem setores para serem copiados da unidade de código: %.' , F_COD_UNIDADE_BASE;
-    END IF;
+    if not EXISTS(select se.codigo from setor se where se.cod_unidade = f_cod_unidade_base)
+    then
+        raise exception
+            'Não existem setores para serem copiados da unidade de código: %.' , f_cod_unidade_base;
+    end if;
 
     -- VERIFICA SE EXISTEM CARGOS PARA COPIAR
-    IF NOT EXISTS(SELECT F.CODIGO FROM FUNCAO F WHERE F.COD_EMPRESA = F_COD_EMPRESA_BASE)
-    THEN
-        RAISE EXCEPTION
-            'Não existem cargos para serem copiados da empresa de código: %.' , F_COD_EMPRESA_BASE;
-    END IF;
+    if not EXISTS(select f.codigo from funcao f where f.cod_empresa = f_cod_empresa_base)
+    then
+        raise exception
+            'Não existem cargos para serem copiados da empresa de código: %.' , f_cod_empresa_base;
+    end if;
 
     -- VERIFICA SE EXISTEM COLABORADORES PARA COPIAR
-    IF NOT EXISTS(SELECT CD.CODIGO FROM COLABORADOR_DATA CD WHERE CD.COD_UNIDADE = F_COD_UNIDADE_BASE)
-    THEN
-        RAISE EXCEPTION
-            'Não existem colaboradores para serem copiados da unidade de código: %.' , F_COD_UNIDADE_BASE;
-    END IF;
+    if not EXISTS(select cd.codigo from colaborador_data cd where cd.cod_unidade = f_cod_unidade_base)
+    then
+        raise exception
+            'Não existem colaboradores para serem copiados da unidade de código: %.' , f_cod_unidade_base;
+    end if;
 
     -- COPIA AS EQUIPES
-    INSERT INTO EQUIPE (NOME,
-                        COD_UNIDADE)
-    SELECT E.NOME,
-           F_COD_UNIDADE_USUARIO
-    FROM EQUIPE E
-    WHERE E.COD_UNIDADE = F_COD_UNIDADE_BASE;
+    insert into equipe (nome,
+                        cod_unidade)
+    select e.nome,
+           f_cod_unidade_usuario
+    from equipe e
+    where e.cod_unidade = f_cod_unidade_base;
 
     -- COPIA OS SETORES
-    INSERT INTO SETOR(NOME,
-                      COD_UNIDADE)
-    SELECT SE.NOME,
-           F_COD_UNIDADE_USUARIO
-    FROM SETOR SE
-    WHERE SE.COD_UNIDADE = F_COD_UNIDADE_BASE;
+    insert into setor(nome,
+                      cod_unidade)
+    select se.nome,
+           f_cod_unidade_usuario
+    from setor se
+    where se.cod_unidade = f_cod_unidade_base;
 
     -- COPIA AS FUNÇÕES
-    INSERT INTO FUNCAO_DATA (NOME,
-                             COD_EMPRESA)
-    SELECT F.NOME,
-           F_COD_EMPRESA_USUARIO
-    FROM FUNCAO F
-    WHERE F.COD_EMPRESA = F_COD_EMPRESA_BASE
-    ON CONFLICT DO NOTHING;
+    insert into funcao_data (nome,
+                             cod_empresa)
+    select f.nome,
+           f_cod_empresa_usuario
+    from funcao f
+    where f.cod_empresa = f_cod_empresa_base
+    on conflict do nothing;
 
     --SELECIONA CPFS VÁLIDOS PARA CADASTRO.
-    WHILE (((ARRAY_LENGTH(V_CPFS_VALIDOS_CADASTRO, 1)) < (SELECT COUNT(CD.CPF)
-                                                          FROM COLABORADOR_DATA CD
-                                                          WHERE CD.COD_UNIDADE = F_COD_UNIDADE_BASE)) OR
-           ((ARRAY_LENGTH(V_CPFS_VALIDOS_CADASTRO, 1)) IS NULL))
-        LOOP
-            --EXISTEM 10000 CPFS DISPONÍVEIS PARA CADASTRO (03383280000 ATÉ 03383289999),
-            --CASO EXCEDA O NÚMERO DE TENTATIVAS - UM ERRO É MOSTRADO.
-            IF (V_TENTATIVA_BUSCAR_CPF_VALIDO = 10000)
-            THEN
-                RAISE EXCEPTION
+    while (((ARRAY_LENGTH(v_cpfs_validos_cadastro, 1)) < (select COUNT(cd.cpf)
+                                                          from colaborador_data cd
+                                                          where cd.cod_unidade = f_cod_unidade_base)) or
+           ((ARRAY_LENGTH(v_cpfs_validos_cadastro, 1)) is null))
+        loop
+        --EXISTEM 10000 CPFS DISPONÍVEIS PARA CADASTRO (03383280000 ATÉ 03383289999),
+        --CASO EXCEDA O NÚMERO DE TENTATIVAS - UM ERRO É MOSTRADO.
+            if (v_tentativa_buscar_cpf_valido = 10000)
+            then
+                raise exception
                     'Não existem cpfs disponíveis para serem cadastrados';
-            END IF;
-            V_CPF_VERIFICACAO := (CONCAT(V_CPF_PREFIXO_PADRAO, LPAD(V_CPF_SUFIXO_PADRAO::TEXT, 4, '0')))::BIGINT;
-            IF NOT EXISTS(SELECT CD.CPF FROM COLABORADOR_DATA CD WHERE CD.CPF = V_CPF_VERIFICACAO)
-            THEN
+            end if;
+            v_cpf_verificacao := (CONCAT(v_cpf_prefixo_padrao, LPAD(v_cpf_sufixo_padrao::text, 4, '0')))::bigint;
+            if not EXISTS(select cd.cpf from colaborador_data cd where cd.cpf = v_cpf_verificacao)
+            then
                 -- CPFS VÁLIDOS PARA CADASTRO
-                V_CPFS_VALIDOS_CADASTRO := ARRAY_APPEND(V_CPFS_VALIDOS_CADASTRO, V_CPF_VERIFICACAO);
-            END IF;
-            V_CPF_SUFIXO_PADRAO := V_CPF_SUFIXO_PADRAO + 1;
-            V_TENTATIVA_BUSCAR_CPF_VALIDO := V_TENTATIVA_BUSCAR_CPF_VALIDO + 1;
-        END LOOP;
+                v_cpfs_validos_cadastro := ARRAY_APPEND(v_cpfs_validos_cadastro, v_cpf_verificacao);
+            end if;
+            v_cpf_sufixo_padrao := v_cpf_sufixo_padrao + 1;
+            v_tentativa_buscar_cpf_valido := v_tentativa_buscar_cpf_valido + 1;
+        end loop;
 
-    WITH CPFS_VALIDOS_CADASTRO AS (
-        SELECT ROW_NUMBER() OVER () AS CODIGO,
-               CDN                  AS CPF_NOVO_CADASTRO
-        FROM UNNEST(V_CPFS_VALIDOS_CADASTRO) CDN),
-         COLABORADORES_BASE AS (
-             SELECT ROW_NUMBER() OVER () AS CODIGO,
-                    CO.CPF               AS CPF_BASE,
-                    CO.NOME              AS NOME_BASE,
-                    CO.DATA_NASCIMENTO   AS DATA_NASCIMENTO_BASE,
-                    CO.DATA_ADMISSAO     AS DATA_ADMISSAO_BASE,
-                    CO.COD_EQUIPE        AS COD_EQUIPE_BASE,
-                    CO.COD_SETOR         AS COD_SETOR_BASE,
-                    CO.COD_FUNCAO        AS COD_FUNCAO_BASE,
+    perform setval('colaborador_data_codigo_seq', (select max(cd.codigo + 1) from colaborador_data cd));
 
-                    CO.COD_PERMISSAO     AS COD_PERMISSAO_BASE
-             FROM COLABORADOR CO
-             WHERE COD_UNIDADE = F_COD_UNIDADE_BASE
+    with cpfs_validos_cadastro as (
+        select ROW_NUMBER() over () as codigo,
+               cdn                  as cpf_novo_cadastro
+        from UNNEST(v_cpfs_validos_cadastro) cdn),
+         colaboradores_base as (
+             select ROW_NUMBER() over () as codigo,
+                    co.cpf               as cpf_base,
+                    co.nome              as nome_base,
+                    co.data_nascimento   as data_nascimento_base,
+                    co.data_admissao     as data_admissao_base,
+                    co.cod_equipe        as cod_equipe_base,
+                    co.cod_setor         as cod_setor_base,
+                    co.cod_funcao        as cod_funcao_base,
+                    co.cod_permissao     as cod_permissao_base
+             from colaborador co
+             where cod_unidade = f_cod_unidade_base
          ),
-         DADOS_DE_PARA AS (
-             SELECT CVC.CPF_NOVO_CADASTRO      AS CPF_CADASTRO,
-                    CB.CPF_BASE           AS CPF_BASE,
-                    CB.NOME_BASE          AS NOME_BASE,
-                    CB.DATA_ADMISSAO_BASE AS DATA_NASCIMENTO_BASE,
-                    CB.DATA_ADMISSAO_BASE AS DATA_ADMISSAO_BASE,
-                    CB.COD_PERMISSAO_BASE AS COD_PERMISSAO_BASE,
-                    EB.CODIGO             AS COD_EQUIPE_BASE,
-                    EN.CODIGO             AS COD_EQUIPE_NOVA,
-                    SB.CODIGO             AS COD_SETOR_BASE,
-                    SN.CODIGO             AS COD_SETOR_NOVO,
-                    FB.CODIGO             AS COD_FUNCAO_BASE,
-                    FN.CODIGO             AS COD_FUNCAO_NOVO
-             FROM COLABORADORES_BASE CB
-                      JOIN EQUIPE EB ON EB.CODIGO = CB.COD_EQUIPE_BASE
-                      JOIN EQUIPE EN ON EB.NOME = EN.NOME
-                      JOIN SETOR SB ON CB.COD_SETOR_BASE = SB.CODIGO
-                      JOIN SETOR SN ON SB.NOME = SN.NOME
-                      JOIN FUNCAO FB ON CB.COD_FUNCAO_BASE = FB.CODIGO
-                      JOIN FUNCAO FN ON FB.NOME = FN.NOME
-                      JOIN CPFS_VALIDOS_CADASTRO CVC ON CVC.CODIGO = CB.CODIGO
-             WHERE EB.COD_UNIDADE = F_COD_UNIDADE_BASE
-               AND EN.COD_UNIDADE = F_COD_UNIDADE_USUARIO
-               AND SB.COD_UNIDADE = F_COD_UNIDADE_BASE
-               AND SN.COD_UNIDADE = F_COD_UNIDADE_USUARIO
-               AND FB.COD_EMPRESA = F_COD_EMPRESA_BASE
-               AND FN.COD_EMPRESA = F_COD_EMPRESA_USUARIO)
-
-         -- INSERE AS PLACAS DE->PARA.
-    INSERT
-    INTO COLABORADOR_DATA(CPF,
-                          DATA_NASCIMENTO,
-                          DATA_ADMISSAO,
-                          STATUS_ATIVO,
-                          NOME,
-                          COD_EQUIPE,
-                          COD_FUNCAO,
-                          COD_UNIDADE,
-                          COD_PERMISSAO,
-                          COD_EMPRESA,
-                          COD_SETOR,
-                          COD_UNIDADE_CADASTRO,
-                          DELETADO)
-    SELECT DDP.CPF_CADASTRO,
-           DDP.DATA_NASCIMENTO_BASE,
-           DDP.DATA_ADMISSAO_BASE,
-           TRUE,
-           DDP.NOME_BASE,
-           DDP.COD_EQUIPE_NOVA,
-           DDP.COD_FUNCAO_NOVO,
-           F_COD_UNIDADE_USUARIO,
-           DDP.COD_PERMISSAO_BASE,
-           F_COD_EMPRESA_USUARIO,
-           DDP.COD_SETOR_NOVO,
-           F_COD_UNIDADE_USUARIO,
-           FALSE
-    FROM DADOS_DE_PARA DDP;
-END;
+         dados_de_para as (
+             select cvc.cpf_novo_cadastro   as cpf_cadastro,
+                    cb.cpf_base             as cpf_base,
+                    cb.nome_base            as nome_base,
+                    cb.data_nascimento_base as data_nascimento_base,
+                    cb.data_admissao_base   as data_admissao_base,
+                    cb.cod_permissao_base   as cod_permissao_base,
+                    eb.codigo               as cod_equipe_base,
+                    en.codigo               as cod_equipe_nova,
+                    sb.codigo               as cod_setor_base,
+                    sn.codigo               as cod_setor_novo,
+                    fb.codigo               as cod_funcao_base,
+                    fn.codigo               as cod_funcao_novo
+             from colaboradores_base cb
+                      join equipe eb on eb.codigo = cb.cod_equipe_base
+                      join equipe en on eb.nome = en.nome
+                      join setor sb on cb.cod_setor_base = sb.codigo
+                      join setor sn on sb.nome = sn.nome
+                      join funcao fb on cb.cod_funcao_base = fb.codigo
+                      join funcao fn on fb.nome = fn.nome
+                      join cpfs_validos_cadastro cvc on cvc.codigo = cb.codigo
+             where eb.cod_unidade = f_cod_unidade_base
+               and en.cod_unidade = f_cod_unidade_usuario
+               and sb.cod_unidade = f_cod_unidade_base
+               and sn.cod_unidade = f_cod_unidade_usuario
+               and fb.cod_empresa = f_cod_empresa_base
+               and fn.cod_empresa = f_cod_empresa_usuario)
+         -- INSERE OS COLABORADORES DE->PARA.
+    insert
+    into colaborador_data(cpf,
+                          data_nascimento,
+                          data_admissao,
+                          status_ativo,
+                          nome,
+                          cod_equipe,
+                          cod_funcao,
+                          cod_unidade,
+                          cod_permissao,
+                          cod_empresa,
+                          cod_setor,
+                          cod_unidade_cadastro,
+                          deletado)
+    select ddp.cpf_cadastro,
+           ddp.data_nascimento_base,
+           ddp.data_admissao_base,
+           true,
+           ddp.nome_base,
+           ddp.cod_equipe_nova,
+           ddp.cod_funcao_novo,
+           f_cod_unidade_usuario,
+           ddp.cod_permissao_base,
+           f_cod_empresa_usuario,
+           ddp.cod_setor_novo,
+           f_cod_unidade_usuario,
+           false
+    from dados_de_para ddp;
+end;
 $$;

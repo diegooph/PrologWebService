@@ -25,7 +25,7 @@ begin
     return query
         select a.codigo                                                                        as codigo_afericao,
                'TTO'                                                                           as cabecalho_placa,
-               a.placa_veiculo                                                                 as placa,
+               v.placa                                                                         as placa,
                to_char(a.data_hora at time zone tz_unidade(a.cod_unidade), 'DD/MM/YYYY')::text as data,
                to_char(a.data_hora at time zone tz_unidade(a.cod_unidade), 'HH24:MI')::text    as hora,
                'TTP'                                                                           as cabecalho_pneu,
