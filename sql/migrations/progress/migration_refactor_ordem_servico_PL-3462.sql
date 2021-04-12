@@ -65,3 +65,21 @@ where cos.cod_unidade = any (f_cod_unidades)
 order by cos.codigo, cosi.codigo
 limit f_limit offset f_offset;
 $$;
+
+
+----------------- FUNCTIONS CONVERSORAS PELO NULL --------------------------------------
+create or replace function to_bigint(value anyelement)
+    returns bigint
+    language sql
+as
+$$
+select value::text::bigint
+$$;
+
+create or replace function to_text(value anyelement)
+    returns text
+    language sql
+as
+$$
+select value::text
+$$;
