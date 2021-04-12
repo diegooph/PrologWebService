@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
  * @author Thais Francisco (https://github.com/thaisksf)
  */
 public interface ChecklistProjection {
-    //o que eu recebo do banco
     @Value("#{target.codigo}")
     Long getCodChecklist;
 
