@@ -1,4 +1,10 @@
-create or replace function func_checklist_ordem_servico_listagem(f_cod_unidades bigint[])
+create or replace function func_checklist_ordem_servico_listagem(f_cod_unidades bigint[],
+                                                                 f_cod_tipo_veiculo bigint,
+                                                                 f_cod_veiculo bigint,
+                                                                 f_status_ordem_servico text,
+                                                                 f_incluir_itens_ordem_servico boolean,
+                                                                 f_limit integer,
+                                                                 f_offset integer)
     returns table
             (
                 codigo_os_prolog                        bigint,
@@ -51,5 +57,6 @@ from checklist_ordem_servico cos
          inner join checklist_ordem_servico_itens cosi on cos.cod_unidade = cosi.cod_unidade
     and cos.codigo = cosi.cod_os
 where cos.cod_unidade = any (f_cod_unidades)
-order by cos.codigo, cosi.codigo;
+order by cos.codigo, cosi.codigo
+limit f_limit offset f_offset;
 $$;
