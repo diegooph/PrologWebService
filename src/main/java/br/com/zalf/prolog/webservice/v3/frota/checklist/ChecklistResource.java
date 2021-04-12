@@ -1,11 +1,13 @@
 package br.com.zalf.prolog.webservice.v3.frota.checklist;
 
 import br.com.zalf.prolog.webservice.commons.network.metadata.Optional;
+import br.com.zalf.prolog.webservice.commons.util.datetime.DateUtils;
 import br.com.zalf.prolog.webservice.interceptors.ApiExposed;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
-import br.com.zalf.prolog.webservice.v3.frota.checklist._model.ChecklistGetDto;
+import br.com.zalf.prolog.webservice.v3.frota.checklist._model.ChecklistListagemDto;
+import br.com.zalf.prolog.webservice.v3.frota.checklist._model.ChecklistListagemFiltro;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -29,13 +31,13 @@ public class ChecklistResource implements ChecklistResourceApiDoc {
     @NotNull
     private final ChecklistService checklistService;
     @NotNull
-    private final ChecklistGetMapper checklistGetMapper;
+    private final ChecklistListagemMapper checklistListagemMapper;
 
     @Autowired
     public ChecklistResource(final @NotNull ChecklistService checklistService,
-                             final @NotNull ChecklistGetMapper checklistGetMapper) {
+                             final @NotNull ChecklistListagemMapper checklistListagemMapper) {
         this.checklistService = checklistService;
-        this.checklistGetMapper = checklistGetMapper;
+        this.checklistListagemMapper = checklistListagemMapper;
     }
 
     @Override
