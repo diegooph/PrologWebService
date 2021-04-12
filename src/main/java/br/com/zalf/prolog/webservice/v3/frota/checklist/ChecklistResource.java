@@ -52,18 +52,18 @@ public class ChecklistResource implements ChecklistResourceApiDoc {
                                                     @QueryParam("incluirRespostas") @DefaultValue("true") final boolean incluirRespostas,
                                                     @QueryParam("dataInicial") final @NotNull String dataInicial,
                                                     @QueryParam("dataFinal") final @NotNull String dataFinal,
-                                                    @QueryParam("limit") final int limit /*max 1000*/,
+                                                    @QueryParam("limit") final int limit,
                                                     @QueryParam("offset") final long offset) {
-        final ChecklistListagemFiltro checklistListagemFiltro = ChecklistListagemFiltro.of(codUnidades,
-                                                                                           codColaborador,
-                                                                                           codTipoVeiculo,
-                                                                                           codVeiculo,
-                                                                                           incluirRespostas,
-                                                                                           DateUtils.parseDate(
-                                                                                                   dataInicial),
-                                                                                           DateUtils.parseDate(dataFinal),
-                                                                                           limit,
-                                                                                           offset);
+        final ChecklistListagemFiltro checklistListagemFiltro =
+                ChecklistListagemFiltro.of(codUnidades,
+                                           codColaborador,
+                                           codTipoVeiculo,
+                                           codVeiculo,
+                                           incluirRespostas,
+                                           DateUtils.parseDate(dataInicial),
+                                           DateUtils.parseDate(dataFinal),
+                                           limit,
+                                           offset);
         return checklistListagemMapper.toDto(checklistService.getChecklists(checklistListagemFiltro));
     }
 }
