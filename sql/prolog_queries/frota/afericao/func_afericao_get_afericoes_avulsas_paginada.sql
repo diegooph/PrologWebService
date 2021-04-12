@@ -6,15 +6,23 @@ create or replace function func_afericao_get_afericoes_avulsas_paginada(f_cod_un
                                                                         f_incluir_medidas boolean default false)
     returns table
             (
-                cod_afericao          bigint,
-                cod_unidade           bigint,
-                data_hora             timestamp without time zone,
-                tipo_medicao_coletada text,
-                tipo_processo_coleta  text,
-                forma_coleta_dados    text,
-                cpf                   text,
-                nome                  text,
-                tempo_realizacao      bigint
+                cod_afericao                 bigint,
+                cod_unidade                  bigint,
+                data_hora                    timestamp without time zone,
+                tipo_medicao_coletada        text,
+                tipo_processo_coleta         text,
+                forma_coleta_dados           text,
+                cpf                          text,
+                nome                         text,
+                tempo_realizacao             bigint,
+                cod_pneu                     bigint,
+                posicao                      integer,
+                psi                          real,
+                vida_momento_afericao        integer,
+                altura_sulco_interno         real,
+                altura_sulco_central_interno real,
+                altura_sulco_central_externo real,
+                altura_sulco_externo         real
             )
     language sql
 as
@@ -27,7 +35,15 @@ select a.codigo                                           as cod_afericao,
        a.forma_coleta_dados::text                         as forma_coleta_dados,
        c.cpf::text                                        as cpf,
        c.nome::text                                       as nome,
-       a.tempo_realizacao                                 as tempo_realizacao
+       a.tempo_realizacao                                 as tempo_realizacao,
+       av.cod_pneu                                        as cod_pneu,
+       av.posicao                                         as posicao,
+       av.psi                                             as psi,
+       av.vida_momento_afericao                           as vida_momento_afericao,
+       av.altura_sulco_interno                            as altura_sulco_interno,
+       av.altura_sulco_central_interno                    as altura_sulco_central_interno,
+       av.altura_sulco_central_externo                    as altura_sulco_central_externo,
+       av.altura_sulco_externo                            as altura_sulco_externo
 from afericao a
          join colaborador c on c.cpf = a.cpf_aferidor
          join afericao_valores av on f_incluir_medidas and a.cod_unidade = av.cod_unidade
