@@ -30,6 +30,7 @@ select a.codigo                                           as cod_afericao,
        a.tempo_realizacao                                 as tempo_realizacao
 from afericao a
          join colaborador c on c.cpf = a.cpf_aferidor
+         join afericao_valores av on f_incluir_medidas and a.cod_unidade = av.cod_unidade
 where a.cod_unidade = any (f_cod_unidades)
   and a.tipo_processo_coleta = 'PNEU_AVULSO'
   and (a.data_hora at time zone tz_unidade(a.cod_unidade))::date between f_data_inicial and f_data_final
