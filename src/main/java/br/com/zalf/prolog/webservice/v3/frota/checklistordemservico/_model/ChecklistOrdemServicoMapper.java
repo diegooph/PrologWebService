@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public final class ChecklistOrdemServicoMapper {
@@ -19,35 +20,51 @@ public final class ChecklistOrdemServicoMapper {
         }
 
         final List<ChecklistOrdemServicoListagemDto> ordensDto = new ArrayList<>();
-        long osAntiga = 0;
-        for (final ChecklistOrdemServicoProjection osProjection : ordensServico) {
-            if (osAntiga != osProjection.getCodigoOs()) {
-                ordensDto.add(new ChecklistOrdemServicoListagemDto(osProjection.getCodigoOs(),
-                        osProjection.getCodigoUnidade(),
-                        osProjection.getCodigoChecklist(),
-                        StatusOrdemServico.fromString(osProjection.getStatusOs()),
-                        new ArrayList<>(),
-                        osProjection.getDataHoraFechamento()));
-            }
-            ordensDto.get(ordensDto.size() - 1).getItensOs().add(new ChecklistOrdemServicoItemDto(osProjection.getCodigoItemOs(),
-                    osProjection.getCodigoOs(),
-                    osProjection.getCodigoUnidade(),
-                    osProjection.getCpfMecanico(),
-                    osProjection.getCodigoPerguntaPrimeiroApontamento(),
-                    osProjection.getCodigoContextoPergunta(),
-                    osProjection.getCodigoAlternativaPrimeiroApontamento(),
-                    osProjection.getCodigoContextoAlternativa(),
-                    StatusItemOrdemServico.fromString(osProjection.getStatusItemOs()),
-                    osProjection.getQuantidadeApontamentos(),
-                    osProjection.getKm(),
-                    osProjection.getCodigoAgrupamentoResolucaoEmLote(),
-                    osProjection.getDataHoraConserto(),
-                    osProjection.getDataHoraInicioResolucao(),
-                    osProjection.getDataHoraFimResolucao(),
-                    osProjection.getTempoRealizacao(),
-                    osProjection.getFeedbackConserto()));
-            osAntiga = osProjection.getCodigoOs();
-        }
+        ordensServico.stream()
+                .collect(Collectors.groupingBy(ChecklistOrdemServicoProjection::getCodigoOs))
+                .forEach((codigoOs, checklistOrdemServicoProjections) -> ordensDto.add(
+                        createChecklistOrdemServicoListagemDto(
+                                checklistOrdemServicoProjections)));
         return ordensDto;
+    }
+
+    @NotNull
+    private ChecklistOrdemServicoListagemDto createChecklistOrdemServicoListagemDto(
+            @NotNull final List<ChecklistOrdemServicoProjection> checklistOrdemServicoProjections) {
+        if (checklistOrdemServicoProjections.size() == 0) {
+            throw new IllegalStateException("A lista usada neste método não pode ser vazia.");
+        }
+        return new ChecklistOrdemServicoListagemDto(
+                checklistOrdemServicoProjections.get(0).getCodigoOs(),
+                checklistOrdemServicoProjections.get(0).getCodigoUnidade(),
+                checklistOrdemServicoProjections.get(0).getCodigoChecklist(),
+                StatusOrdemServico.fromString(checklistOrdemServicoProjections.get(0).getStatusOs()),
+                checklistOrdemServicoProjections.stream()
+                        .map(this::createChecklistOrdemServicoItemDto)
+                        .collect(Collectors.toList()),
+                checklistOrdemServicoProjections.get(0).getDataHoraFechamento());
+    }
+
+    @NotNull
+    private ChecklistOrdemServicoItemDto createChecklistOrdemServicoItemDto(
+            @NotNull final ChecklistOrdemServicoProjection checklistOrdemServicoProjection) {
+        return new ChecklistOrdemServicoItemDto(
+                checklistOrdemServicoProjection.getCodigoItemOs(),
+                checklistOrdemServicoProjection.getCodigoOs(),
+                checklistOrdemServicoProjection.getCodigoUnidade(),
+                checklistOrdemServicoProjection.getCpfMecanico(),
+                checklistOrdemServicoProjection.getCodigoPerguntaPrimeiroApontamento(),
+                checklistOrdemServicoProjection.getCodigoContextoPergunta(),
+                checklistOrdemServicoProjection.getCodigoAlternativaPrimeiroApontamento(),
+                checklistOrdemServicoProjection.getCodigoContextoAlternativa(),
+                StatusItemOrdemServico.fromString(checklistOrdemServicoProjection.getStatusItemOs()),
+                checklistOrdemServicoProjection.getQuantidadeApontamentos(),
+                checklistOrdemServicoProjection.getKm(),
+                checklistOrdemServicoProjection.getCodigoAgrupamentoResolucaoEmLote(),
+                checklistOrdemServicoProjection.getDataHoraConserto(),
+                checklistOrdemServicoProjection.getDataHoraInicioResolucao(),
+                checklistOrdemServicoProjection.getDataHoraFimResolucao(),
+                checklistOrdemServicoProjection.getTempoRealizacao(),
+                checklistOrdemServicoProjection.getFeedbackConserto());
     }
 }
