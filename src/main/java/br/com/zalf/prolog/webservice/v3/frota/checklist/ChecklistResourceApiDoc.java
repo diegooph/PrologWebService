@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.v3.frota.checklist;
 
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Optional;
-import br.com.zalf.prolog.webservice.v3.frota.checklist._model.ChecklistGetDto;
+import br.com.zalf.prolog.webservice.v3.frota.checklist._model.ChecklistListagemDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -26,14 +26,13 @@ public interface ChecklistResourceApiDoc {
             @ApiResponse(code = 404, message = "Operação não encontrada"),
             @ApiResponse(code = 500, message = "Erro ao executar operação")
     })
-    List<ChecklistGetDto> getChecklists(@QueryParam("codUnidades") @NotNull final List<Long> codUnidades,
-                                        @QueryParam("codColaborador") @Optional final Long codColaborador,
-                                        @QueryParam("codTipoVeiculo") @Optional final Long codTipoVeiculo,
-                                        @QueryParam("codVeiculo") @Optional final Long codVeiculo,
-                                        @QueryParam("incluirRespostas") final boolean incluirRespostas/*default
-                                          true*/,
-                                        @QueryParam("dataInicial") @NotNull final String dataInicial,
-                                        @QueryParam("dataFinal") @NotNull final String dataFinal,
-                                        @QueryParam("limit") final int limit /*max 1000*/,
-                                        @QueryParam("offset") final long offset);
+    List<ChecklistListagemDto> getChecklists(@QueryParam("codUnidades") @NotNull final List<Long> codUnidades,
+                                             @QueryParam("codColaborador") @Optional final Long codColaborador,
+                                             @QueryParam("codTipoVeiculo") @Optional final Long codTipoVeiculo,
+                                             @QueryParam("codVeiculo") @Optional final Long codVeiculo,
+                                             @QueryParam("incluirRespostas") final boolean incluirRespostas,
+                                             @QueryParam("dataInicial") @NotNull final String dataInicial,
+                                             @QueryParam("dataFinal") @NotNull final String dataFinal,
+                                             @QueryParam("limit") final int limit,
+                                             @QueryParam("offset") final long offset);
 }
