@@ -55,8 +55,13 @@ select cos.codigo_prolog                         as codigo_os_prolog,
        cosi.feedback_conserto                    as feedback_conserto
 from checklist_ordem_servico cos
          inner join checklist_ordem_servico_itens cosi on cos.cod_unidade = cosi.cod_unidade
+         inner join checklist c on c.codigo = cos.cod_checklist
+         inner join veiculo v on v.codigo = c.cod_veiculo
     and cos.codigo = cosi.cod_os
 where cos.cod_unidade = any (f_cod_unidades)
+  and case when f_cod_tipo_veiculo is null then true else v.cod_tipo = f_cod_tipo_veiculo end
+  and case when f_cod_veiculo is null then true else v.codigo = f_cod_veiculo end
+  and case when f_status_ordem_servico is null then true else cos.status = f_status_ordem_servico end
 order by cos.codigo, cosi.codigo
 limit f_limit offset f_offset;
 $$;
