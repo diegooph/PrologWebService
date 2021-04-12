@@ -1,11 +1,13 @@
 package br.com.zalf.prolog.webservice.v3.frota.checklist;
 
 import br.com.zalf.prolog.webservice.v3.frota.checklist._model.ChecklistEntity;
-import br.com.zalf.prolog.webservice.v3.frota.checklist._model.ChecklistListagemDto;
+import br.com.zalf.prolog.webservice.v3.frota.checklist._model.ChecklistProjection;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -26,13 +28,13 @@ public interface ChecklistDao extends JpaRepository<ChecklistEntity, Long> {
             "f_data_final => :dataFinal,       " +
             "f_limit => :limit       " +
             "       );", nativeQuery = true)
-    List<ChecklistListagemDto> getChecklists(List<Long> codUnidades,
-                                             Long codColaborador,
-                                             Long codTipoVeiculo,
-                                             Long codVeiculo,
-                                             boolean incluirRespostas,
-                                             String dataInicial,
-                                             String dataFinal,
-                                             int limit,
-                                             long offset);
+    List<ChecklistProjection> getChecklists(@NotNull final List<Long> codUnidades,
+                                            @Nullable Long codColaborador,
+                                            @Nullable Long codTipoVeiculo,
+                                            @Nullable Long codVeiculo,
+                                            boolean incluirRespostas,
+                                            @NotNull final LocalDate dataInicial,
+                                            @NotNull final LocalDate dataFinal,
+                                            int limit,
+                                            long offset);
 }
