@@ -14,6 +14,7 @@ import java.util.List;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public interface ChecklistOrdemServicoDao extends JpaRepository<ChecklistOrdemServicoEntity, ChecklistOrdemServicoPk> {
-    @Query(value = "select * from func_checklist_ordem_servico_listagem(:codUnidade);", nativeQuery = true)
-    List<ChecklistOrdemServicoProjection> getOrdensServico(final long codUnidade);
+    @Query(value = "select * from func_checklist_ordem_servico_listagem(" +
+            "f_cod_unidade => to_bigint_array(:codUnidade));", nativeQuery = true)
+    List<ChecklistOrdemServicoProjection> getOrdensServico(final List<Long> codUnidade);
 }
