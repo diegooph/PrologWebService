@@ -12,69 +12,71 @@ import java.time.LocalDateTime;
  */
 public interface ChecklistProjection {
     @Value("#{target.codigo}")
-    Long getCodChecklist;
+    Long getCodChecklist();
 
     @Value("#{target.cod_modelo}")
-    Long getCodModeloChecklist;
+    Long getCodModeloChecklist();
 
     @Value("#{target.cod_versao_modelo}")
-    Long getCodVersaoModelo;
+    Long getCodVersaoModelo();
 
     @Value("#{target.data_hora}")
-    LocalDateTime getDataHora;
+    LocalDateTime getDataHora();
+
     @Value("#{target.data_hora_importado_prolog}")
-    LocalDateTime getDataHoraImportadoProlog;
+    LocalDateTime getDataHoraImportadoProlog();
+
     @Value("#{target.km_veiculo_momento_realizacao}")
-    long getKmVeiculoMomentoRealizacao;
+    long getKmVeiculoMomentoRealizacao();
 
     @Value("#{target.duracao_realizacao_in_millis}")
-    long getDuracaoRealizacaoInMillis;
+    long getDuracaoRealizacaoInMillis();
 
     @Value("#{target.cod_colaborador}")
-    Long getCodColaborador;
+    Long getCodColaborador();
 
     @Value("#{target.cpf_colaborador}")
-    Long getCpfColaborador;
+    Long getCpfColaborador();
 
     @Value("#{target.nome_colaborador}")
-    String getNomeColaborador;
+    String getNomeColaborador();
 
     @Value("#{target.cod_veiculo}")
-    Long getCodVeiculo;
+    Long getCodVeiculo();
 
     @Value("#{target.placa_veiculo}")
-    String getPlacaVeiculo;
+    String getPlacaVeiculo();
 
     @Value("#{target.identificador_frota}")
-    String getIdentificadorFrota;
+    String getIdentificadorFrota();
 
     @Value("#{target.tipo}")
-    TipoChecklist getTipo;
+    TipoChecklist getTipo();
 
     @Value("#{target.total_perguntas_ok}")
-    int getTotalPerguntasOk;
+    int getTotalPerguntasOk();
 
     @Value("#{target.total_perguntas_nok}")
-    int getTotalPerguntasNok;
+    int getTotalPerguntasNok();
 
     @Value("#{target.total_alternativas_ok}")
-    int getTotalAlternativasOk;
+    int getTotalAlternativasOk();
 
     @Value("#{target.total_alternativas_nok}")
-    int getTotalAlternativasNok;
+    int getTotalAlternativasNok();
 
     @Value("#{target.total_imagens_perguntas_ok}")
-    int getTotalImagensPerguntasOk;
+    int getTotalImagensPerguntasOk();
 
     @Value("#{target.total_imagens_alternativas_nok}")
-    int getTotalImagensAlternativasNok;
+    int getTotalImagensAlternativasNok();
 
     @Value("#{target.total_nok_baixa}")
-    int getTotalNokBaixa;
+    int getTotalNokBaixa();
 
     @Value("#{target.total_nok_alta}")
-    int getTotalNokAlta;
+    int getTotalNokAlta();
 
     @Value("#{target.total_nok_critica}")
-    int getTotalNokCritica;
+    int getTotalNokCritica();
 }
