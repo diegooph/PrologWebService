@@ -2,7 +2,8 @@ create or replace function func_afericao_get_afericoes_avulsas_paginada(f_cod_un
                                                                         f_data_inicial date,
                                                                         f_data_final date,
                                                                         f_limit bigint,
-                                                                        f_offset bigint)
+                                                                        f_offset bigint,
+                                                                        f_incluir_medidas boolean default false)
     returns table
             (
                 cod_afericao          bigint,

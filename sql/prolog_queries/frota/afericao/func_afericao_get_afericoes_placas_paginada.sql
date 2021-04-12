@@ -4,7 +4,8 @@ create or replace function func_afericao_get_afericoes_placas_paginada(f_cod_uni
                                                                        f_data_inicial date,
                                                                        f_data_final date,
                                                                        f_limit bigint,
-                                                                       f_offset bigint)
+                                                                       f_offset bigint,
+                                                                       f_incluir_medidas boolean default false)
     returns table
             (
                 km_veiculo            bigint,
