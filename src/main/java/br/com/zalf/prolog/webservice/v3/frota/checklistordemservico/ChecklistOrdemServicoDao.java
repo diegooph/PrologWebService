@@ -19,9 +19,9 @@ import java.util.List;
 public interface ChecklistOrdemServicoDao extends JpaRepository<ChecklistOrdemServicoEntity, ChecklistOrdemServicoPk> {
     @Query(value = "select * from func_checklist_ordem_servico_listagem(" +
             "f_cod_unidades => to_bigint_array(:codUnidade)," +
-            "f_cod_tipo_veiculo => :codTipoVeiculo," +
-            "f_cod_veiculo => :codVeiculo," +
-            "f_status_ordem_servico => :statusOrdemServico," +
+            "f_cod_tipo_veiculo => to_bigint(:codTipoVeiculo)," +
+            "f_cod_veiculo => to_bigint(:codVeiculo)," +
+            "f_status_ordem_servico => to_text(:statusOrdemServico)," +
             "f_incluir_itens_ordem_servico => :incluirItensOrdemServico," +
             "f_limit => :limit," +
             "f_offset => :offset);", nativeQuery = true)
