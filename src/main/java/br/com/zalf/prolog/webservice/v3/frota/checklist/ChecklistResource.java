@@ -45,23 +45,25 @@ public class ChecklistResource implements ChecklistResourceApiDoc {
     @GET
     @Secured(permissions = Pilares.Frota.Checklist.VISUALIZAR_TODOS)
     @Path("/")
-    public List<ChecklistGetDto> getChecklists(@NotNull @QueryParam("codUnidades") final List<Long> codUnidades,
-                                               @QueryParam("codColaborador") @Optional final Long codColaborador,
-                                               @QueryParam("codTipoVeiculo") @Optional final Long codTipoVeiculo,
-                                               @QueryParam("codVeiculo") @Optional final Long codVeiculo,
-                                               @QueryParam("incluirRespostas") @DefaultValue("true") final boolean incluirRespostas,
-                                               @QueryParam("dataInicial") final @NotNull String dataInicial,
-                                               @QueryParam("dataFinal") final @NotNull String dataFinal,
-                                               @QueryParam("limit") final int limit /*max 1000*/,
-                                               @QueryParam("offset") final long offset) {
-        return checklistGetMapper.toDto(checklistService.getChecklists(codUnidades,
-                                                                       codColaborador,
-                                                                       codTipoVeiculo,
-                                                                       codVeiculo,
-                                                                       incluirRespostas,
-                                                                       dataInicial,
-                                                                       dataFinal,
-                                                                       limit,
-                                                                       offset));
+    public List<ChecklistListagemDto> getChecklists(@NotNull @QueryParam("codUnidades") final List<Long> codUnidades,
+                                                    @QueryParam("codColaborador") @Optional final Long codColaborador,
+                                                    @QueryParam("codTipoVeiculo") @Optional final Long codTipoVeiculo,
+                                                    @QueryParam("codVeiculo") @Optional final Long codVeiculo,
+                                                    @QueryParam("incluirRespostas") @DefaultValue("true") final boolean incluirRespostas,
+                                                    @QueryParam("dataInicial") final @NotNull String dataInicial,
+                                                    @QueryParam("dataFinal") final @NotNull String dataFinal,
+                                                    @QueryParam("limit") final int limit /*max 1000*/,
+                                                    @QueryParam("offset") final long offset) {
+        final ChecklistListagemFiltro checklistListagemFiltro = ChecklistListagemFiltro.of(codUnidades,
+                                                                                           codColaborador,
+                                                                                           codTipoVeiculo,
+                                                                                           codVeiculo,
+                                                                                           incluirRespostas,
+                                                                                           DateUtils.parseDate(
+                                                                                                   dataInicial),
+                                                                                           DateUtils.parseDate(dataFinal),
+                                                                                           limit,
+                                                                                           offset);
+        return checklistListagemMapper.toDto(checklistService.getChecklists(checklistListagemFiltro));
     }
 }
