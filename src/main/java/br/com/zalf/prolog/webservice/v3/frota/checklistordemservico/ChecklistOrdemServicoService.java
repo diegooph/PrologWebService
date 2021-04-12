@@ -1,11 +1,13 @@
 package br.com.zalf.prolog.webservice.v3.frota.checklistordemservico;
 
+import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.StatusOrdemServico;
 import br.com.zalf.prolog.webservice.v3.frota.checklistordemservico._model.ChecklistOrdemServicoItemEntity;
 import br.com.zalf.prolog.webservice.v3.frota.checklistordemservico._model.ChecklistOrdemServicoProjection;
 import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.EntityKmColetado;
 import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.KmProcessoAtualizavel;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -40,8 +42,14 @@ public class ChecklistOrdemServicoService implements KmProcessoAtualizavel {
     }
 
     @Transactional
-    public List<ChecklistOrdemServicoProjection> getOrdensServico() {
-        return checklistOrdemServicoDao.getOrdensServico(215L);
+    public List<ChecklistOrdemServicoProjection> getOrdensServico(@NotNull final List<Long> codUnidades,
+                                                                  @Nullable final Long codTipoVeiculo,
+                                                                  @Nullable final String codVeiculo,
+                                                                  @Nullable final StatusOrdemServico statusOrdemServico,
+                                                                  final boolean incluirItensOrdemServico,
+                                                                  final int limit,
+                                                                  final int offset) {
+        return checklistOrdemServicoDao.getOrdensServico(codUnidades);
     }
 
     @NotNull

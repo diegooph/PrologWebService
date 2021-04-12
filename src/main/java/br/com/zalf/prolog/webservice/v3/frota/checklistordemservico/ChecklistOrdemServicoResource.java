@@ -46,8 +46,15 @@ public final class ChecklistOrdemServicoResource {
             @QueryParam("incluirItensOrdemServico") @Optional @DefaultValue(
                     value = "true") final boolean incluirItensOrdemServico,
             @QueryParam("limit") @Max(value = 1000,
-                    message = "O limite máximo de registros por página é 1000.") final int limit,
+                                      message = "O limite máximo de registros por página é 1000.") final int limit,
             @QueryParam("offset") final int offset) {
-        return mapper.toDto(service.getOrdensServico());
+        return mapper.toDto(
+                service.getOrdensServico(codUnidades,
+                                         codTipoVeiculo,
+                                         codVeiculo,
+                                         statusOrdemServico,
+                                         incluirItensOrdemServico,
+                                         limit,
+                                         offset));
     }
 }
