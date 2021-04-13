@@ -1,3 +1,9 @@
+drop function if exists func_checklist_os_get_os_listagem(f_cod_unidade bigint,
+    f_cod_tipo_veiculo bigint,
+    f_cod_veiculo bigint,
+    f_status_os text,
+    f_limit integer,
+    f_offset integer);
 create or replace function func_checklist_os_get_os_listagem(f_cod_unidade bigint,
                                                              f_cod_tipo_veiculo bigint,
                                                              f_cod_veiculo bigint,

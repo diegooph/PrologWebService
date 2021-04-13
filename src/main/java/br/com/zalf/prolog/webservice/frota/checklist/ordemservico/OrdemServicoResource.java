@@ -15,6 +15,8 @@ import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resoluca
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.HolderResolucaoOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverMultiplosItensOs;
+import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoBackwardHelper;
+import br.com.zalf.prolog.webservice.interceptors.auth.ColaboradorAutenticado;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.AppVersionCodeHandler;
@@ -24,6 +26,8 @@ import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.VersionNotP
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import org.jetbrains.annotations.NotNull;
 
+import javax.inject.Inject;
+import javax.inject.Provider;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
@@ -46,7 +50,13 @@ import java.util.List;
 public final class OrdemServicoResource {
     @NotNull
     private final OrdemServicoService service = new OrdemServicoService();
+    @Inject
+    private Provider<ColaboradorAutenticado> colaboradorAutenticadoProvider;
 
+    /**
+     * @deprecated at 2021-04-13.
+     */
+    @Deprecated
     @GET
     @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
     @Path("/listagem")
@@ -60,10 +70,14 @@ public final class OrdemServicoResource {
             @QueryParam("statusOrdemServico") @Optional final StatusOrdemServico statusOrdemServico,
             @QueryParam("limit") @Required final int limit,
             @QueryParam("offset") @Required final int offset) throws ProLogException {
+        final Long codColaborador = this.colaboradorAutenticadoProvider.get().getCodigo();
+        final Long codVeiculo = placaVeiculo == null ?
+                null :
+                VeiculoBackwardHelper.getCodVeiculoByPlaca(codColaborador, placaVeiculo);
         return service.getOrdemServicoListagem(
                 codUnidade,
                 codTipoVeiculo,
-                placaVeiculo,
+                codVeiculo,
                 statusOrdemServico,
                 limit,
                 offset);

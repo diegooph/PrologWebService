@@ -71,7 +71,7 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
     @Override
     public List<OrdemServicoListagem> getOrdemServicoListagem(@NotNull final Long codUnidade,
                                                               @Nullable final Long codTipoVeiculo,
-                                                              @Nullable final String placa,
+                                                              @Nullable final Long codVeiculo,
                                                               @Nullable final StatusOrdemServico statusOrdemServico,
                                                               final int limit,
                                                               final int offset) throws Throwable {
@@ -83,7 +83,7 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
             stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_OS_GET_OS_LISTAGEM(?, ?, ?, ?, ?, ?)");
             stmt.setLong(1, codUnidade);
             bindValueOrNull(stmt, 2, codTipoVeiculo, SqlType.BIGINT);
-            bindValueOrNull(stmt, 3, placa, SqlType.TEXT);
+            bindValueOrNull(stmt, 3, codVeiculo, SqlType.BIGINT);
             if (statusOrdemServico != null) {
                 stmt.setString(4, statusOrdemServico.asString());
             } else {

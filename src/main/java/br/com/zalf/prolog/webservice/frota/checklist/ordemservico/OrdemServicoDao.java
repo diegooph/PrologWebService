@@ -33,7 +33,7 @@ public interface OrdemServicoDao {
     @NotNull
     List<OrdemServicoListagem> getOrdemServicoListagem(@NotNull final Long codUnidade,
                                                        @Nullable final Long codTipoVeiculo,
-                                                       @Nullable final String placa,
+                                                       @Nullable final Long codVeiculo,
                                                        @Nullable final StatusOrdemServico statusOrdemServico,
                                                        final int limit,
                                                        final int offset) throws Throwable;

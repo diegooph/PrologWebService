@@ -32,9 +32,44 @@ public final class OrdemServicoService {
     private final OrdemServicoDao dao = Injection.provideOrdemServicoDao();
 
     @NotNull
+    public Response resolverItem(final String token,
+                                 final ResolverItemOrdemServico item) throws ProLogException {
+        try {
+            OrdemServicoValidator.validaResolucaoItem(TimeZoneManager.getZoneIdForToken(token), item);
+            RouterChecklistOrdemServico
+                    .create(dao, token)
+                    .resolverItem(item);
+            return Response.ok("Item resolvido com sucesso");
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao resolver item", t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao resolver item, tente novamente");
+        }
+    }
+
+    @NotNull
+    public Response resolverItens(final String token,
+                                  final ResolverMultiplosItensOs itensResolucao) throws ProLogException {
+        try {
+            OrdemServicoValidator.validaResolucaoMultiplosItens(TimeZoneManager.getZoneIdForToken(token),
+                                                                itensResolucao);
+            RouterChecklistOrdemServico
+                    .create(dao, token)
+                    .resolverItens(itensResolucao);
+            return Response.ok("Itens resolvidos com sucesso");
+        } catch (final Throwable t) {
+            Log.e(TAG, "Erro ao resolver itens", t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao resolver itens, tente novamente");
+        }
+    }
+
+    @NotNull
     List<OrdemServicoListagem> getOrdemServicoListagem(@NotNull final Long codUnidade,
                                                        @Nullable final Long codTipoVeiculo,
-                                                       @Nullable final String placaVeiculo,
+                                                       @Nullable final Long codVeiculo,
                                                        @Nullable final StatusOrdemServico statusOrdemServico,
                                                        final int limit,
                                                        final int offset) throws ProLogException {
@@ -42,7 +77,7 @@ public final class OrdemServicoService {
             return dao.getOrdemServicoListagem(
                     codUnidade,
                     codTipoVeiculo,
-                    placaVeiculo,
+                    codVeiculo,
                     statusOrdemServico,
                     limit,
                     offset);
@@ -117,7 +152,8 @@ public final class OrdemServicoService {
             @Nullable final StatusItemOrdemServico statusItens) throws ProLogException {
         try {
             if (placaVeiculo == null && (codUnidade == null || codOrdemServico == null)) {
-                throw new IllegalStateException("Já que a placa é nula, você deve filtrar por código da unidade e da O.S.");
+                throw new IllegalStateException(
+                        "Já que a placa é nula, você deve filtrar por código da unidade e da O.S.");
             }
 
             return dao.getHolderResolucaoMultiplosItens(codUnidade, codOrdemServico, placaVeiculo, statusItens);
@@ -126,41 +162,6 @@ public final class OrdemServicoService {
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao realizar busca, tente novamente");
-        }
-    }
-
-    @NotNull
-    public Response resolverItem(final String token,
-                                 final ResolverItemOrdemServico item) throws ProLogException {
-        try {
-            OrdemServicoValidator.validaResolucaoItem(TimeZoneManager.getZoneIdForToken(token), item);
-            RouterChecklistOrdemServico
-                    .create(dao, token)
-                    .resolverItem(item);
-            return Response.ok("Item resolvido com sucesso");
-        } catch (final Throwable t) {
-            Log.e(TAG, "Erro ao resolver item", t);
-            throw Injection
-                    .provideProLogExceptionHandler()
-                    .map(t, "Erro ao resolver item, tente novamente");
-        }
-    }
-
-
-    @NotNull
-    public Response resolverItens(final String token,
-                                  final ResolverMultiplosItensOs itensResolucao) throws ProLogException {
-        try {
-            OrdemServicoValidator.validaResolucaoMultiplosItens(TimeZoneManager.getZoneIdForToken(token), itensResolucao);
-            RouterChecklistOrdemServico
-                    .create(dao, token)
-                    .resolverItens(itensResolucao);
-            return Response.ok("Itens resolvidos com sucesso");
-        } catch (final Throwable t) {
-            Log.e(TAG, "Erro ao resolver itens", t);
-            throw Injection
-                    .provideProLogExceptionHandler()
-                    .map(t, "Erro ao resolver itens, tente novamente");
         }
     }
 }
