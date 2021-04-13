@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Created on 2021-02-10
@@ -40,4 +41,6 @@ public class AfericaoPlacaDto {
     String cpfAferidor;
     @NotNull
     String nomeAferidor;
+    @NotNull
+    List<MedidaDto> medidas;
 }
