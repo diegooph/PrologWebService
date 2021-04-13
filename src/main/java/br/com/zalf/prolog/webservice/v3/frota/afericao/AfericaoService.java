@@ -22,8 +22,6 @@ public class AfericaoService implements KmProcessoAtualizavel {
     @NotNull
     private final AfericaoDao afericaoDao;
 
-    private static final boolean INCLUIR_MEDIDA = true;
-
     @NotNull
     @Override
     public EntityKmColetado getEntityKmColetado(@NotNull final Long entityId,
@@ -47,7 +45,7 @@ public class AfericaoService implements KmProcessoAtualizavel {
                                               filtro.getDataFinal(),
                                               filtro.getLimit(),
                                               filtro.getOffset(),
-                                              INCLUIR_MEDIDA);
+                                              filtro.isIncluirMedidas());
     }
 
     @NotNull
@@ -57,7 +55,7 @@ public class AfericaoService implements KmProcessoAtualizavel {
                                                filtro.getDataFinal(),
                                                filtro.getLimit(),
                                                filtro.getOffset(),
-                                               INCLUIR_MEDIDA);
+                                               filtro.isIncluirMedidas());
     }
 
     @Transactional
