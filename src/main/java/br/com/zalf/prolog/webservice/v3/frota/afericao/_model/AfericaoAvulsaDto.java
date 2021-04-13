@@ -18,31 +18,22 @@ import java.util.List;
 public class AfericaoAvulsaDto {
     @NotNull
     Long codigo;
-
     @NotNull
     Long codUnidade;
-
     @NotNull
     LocalDateTime dataHora;
-
     @NotNull
     TipoMedicaoColetadaAfericao tipoMedicaoColetada;
-
     @NotNull
     TipoProcessoColetaAfericao tipoProcessoColeta;
-
     @NotNull
     Long tempoRealizacao;
-
     @NotNull
     FormaColetaDadosAfericaoEnum formaColetaDados;
-
     @NotNull
     String cpfAferidor;
-
     @NotNull
     String nomeAferidor;
-
     @NotNull
     List<MedidaDto> medidas;
 }
