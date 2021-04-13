@@ -59,4 +59,28 @@ public class AfericaoMapper {
                                     afericaoAvulsa.getCpfAferidor(),
                                     afericaoAvulsa.getNomeAferidor());
     }
+
+    @NotNull
+    private MedidaDto generateMedidaFromAfericao(@NotNull final AfericaoAvulsaProjection projection) {
+        return MedidaDto.of(projection.getCodPneu(),
+                            projection.getPosicao(),
+                            projection.getPsi(),
+                            projection.getVidaMomentoAfericao(),
+                            projection.getAlturaSulcoInterno(),
+                            projection.getAlturaSulcoCentralInterno(),
+                            projection.getAlturaSulcoCentralExterno(),
+                            projection.getAlturaSulcoExterno());
+    }
+
+    @NotNull
+    private MedidaDto generateMedidaFromAfericao(@NotNull final AfericaoPlacaProjection projection) {
+        return MedidaDto.of(projection.getCodPneu(),
+                            projection.getPosicao(),
+                            projection.getPsi(),
+                            projection.getVidaMomentoAfericao(),
+                            projection.getAlturaSulcoInterno(),
+                            projection.getAlturaSulcoCentralInterno(),
+                            projection.getAlturaSulcoCentralExterno(),
+                            projection.getAlturaSulcoExterno());
+    }
 }
