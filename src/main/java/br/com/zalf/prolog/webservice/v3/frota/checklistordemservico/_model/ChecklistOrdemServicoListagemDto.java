@@ -15,7 +15,7 @@ public class ChecklistOrdemServicoListagemDto {
     private final long codChecklistAberturaOs;
     @NotNull
     private final StatusOrdemServico statusOs;
-    @NotNull
+    @Nullable
     private final List<ChecklistOrdemServicoItemDto> itensOs;
     @Nullable
     private final LocalDateTime dataHoraFechamentoOs;
