@@ -25,7 +25,8 @@ public class AfericaoMapper {
     }
 
     @NotNull
-    public AfericaoPlacaDto toAfericaoPlacaDto(@NotNull final AfericaoPlacaProjection afericaoPlaca) {
+    public AfericaoPlacaDto toAfericaoPlacaDto(@NotNull final AfericaoPlacaProjection afericaoPlaca,
+                                               @NotNull final List<MedidaDto> medidas) {
         return AfericaoPlacaDto.of(afericaoPlaca.getKmVeiculo(),
                                    afericaoPlaca.getPlacaVeiculo(),
                                    afericaoPlaca.getIdentificadorFrota(),
@@ -37,7 +38,8 @@ public class AfericaoMapper {
                                    afericaoPlaca.getTempoRealizacaoAfericaoInMillis(),
                                    afericaoPlaca.getFormaColetaDadosAfericao(),
                                    afericaoPlaca.getCpfAferidor(),
-                                   afericaoPlaca.getNomeAferidor());
+                                   afericaoPlaca.getNomeAferidor(),
+                                   medidas);
     }
 
     @NotNull
@@ -48,7 +50,8 @@ public class AfericaoMapper {
     }
 
     @NotNull
-    public AfericaoAvulsaDto toAfericaoAvulsaDto(@NotNull final AfericaoAvulsaProjection afericaoAvulsa) {
+    public AfericaoAvulsaDto toAfericaoAvulsaDto(@NotNull final AfericaoAvulsaProjection afericaoAvulsa,
+                                                 @NotNull final List<MedidaDto> medidas) {
         return AfericaoAvulsaDto.of(afericaoAvulsa.getCodigo(),
                                     afericaoAvulsa.getCodUnidade(),
                                     afericaoAvulsa.getDataHora(),
@@ -57,7 +60,8 @@ public class AfericaoMapper {
                                     afericaoAvulsa.getTempoRealizacaoAfericaoInMillis(),
                                     afericaoAvulsa.getFormaColetaDadosAfericao(),
                                     afericaoAvulsa.getCpfAferidor(),
-                                    afericaoAvulsa.getNomeAferidor());
+                                    afericaoAvulsa.getNomeAferidor(),
+                                    medidas);
     }
 
     @NotNull
