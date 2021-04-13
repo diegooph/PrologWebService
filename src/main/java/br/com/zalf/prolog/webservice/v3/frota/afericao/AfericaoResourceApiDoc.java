@@ -40,7 +40,9 @@ public interface AfericaoResourceApiDoc {
             @ApiParam(value = "Uma data final, a qual a aferição tenha sido realizadas.",
                       required = true) @NotNull final String dataFinal,
             @ApiParam(value = "Um limite de registros a serem retornados.") final int limit,
-            @ApiParam(value = "Um deslocamento para realizar a paginação.") final int offset);
+            @ApiParam(value = "Um deslocamento para realizar a paginação.") final int offset,
+            @ApiParam(value = "Uma variavel para indicar se os valores de medidas devem ser " +
+                    "retornados ou não") final boolean incluirMedidas);
 
     @ApiOperation(
             value = "Obtém uma lista de aferições avulsas (apenas pneus avulsos) realizadas.",
@@ -62,5 +64,7 @@ public interface AfericaoResourceApiDoc {
             @ApiParam(value = "Uma data final, a qual a aferição tenha sido realizadas.",
                       required = true) @NotNull final String dataFinal,
             @ApiParam(value = "Um limite de registros a serem retornados.") final int limit,
-            @ApiParam(value = "Um deslocamento para realizar a paginação.") final int offset);
+            @ApiParam(value = "Um deslocamento para realizar a paginação.") final int offset,
+            @ApiParam(value = "Uma variavel para indicar se os valores de medidas devem ser " +
+                    "retornados ou não") final boolean incluirMedidas);
 }

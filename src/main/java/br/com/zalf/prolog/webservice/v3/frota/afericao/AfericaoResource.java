@@ -53,7 +53,8 @@ public class AfericaoResource implements AfericaoResourceApiDoc {
                                                      @QueryParam("dataInicial") @NotNull final String dataInicial,
                                                      @QueryParam("dataFinal") @NotNull final String dataFinal,
                                                      @QueryParam("limit") final int limit,
-                                                     @QueryParam("offset") final int offset) {
+                                                     @QueryParam("offset") final int offset,
+                                                     @QueryParam("incluirMedidas") final boolean incluirMedidas) {
         final FiltroAfericaoPlaca filtro = FiltroAfericaoPlaca.of(codUnidades,
                                                                   placaVeiculo,
                                                                   codTipoVeiculo,
@@ -78,7 +79,8 @@ public class AfericaoResource implements AfericaoResourceApiDoc {
                                                        @QueryParam("dataInicial") @NotNull final String dataInicial,
                                                        @QueryParam("dataFinal") @NotNull final String dataFinal,
                                                        @QueryParam("limit") final int limit,
-                                                       @QueryParam("offset") final int offset) {
+                                                       @QueryParam("offset") final int offset,
+                                                       @QueryParam("incluirMedidas") final boolean incluirMedidas) {
         final FiltroAfericaoAvulsa filtro = FiltroAfericaoAvulsa.of(codUnidades,
                                                                     DateUtils.parseDate(dataInicial),
                                                                     DateUtils.parseDate(dataFinal),
