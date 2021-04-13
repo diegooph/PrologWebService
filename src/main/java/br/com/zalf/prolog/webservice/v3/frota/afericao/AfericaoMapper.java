@@ -61,6 +61,22 @@ public class AfericaoMapper {
     }
 
     @NotNull
+    private Map<Long,
+            List<MedidaDto>> groupMedidasByAfericoesAvulsas(@NotNull final List<AfericaoAvulsaProjection> projections) {
+        return projections.stream()
+                .collect(groupingBy(AfericaoAvulsaProjection::getCodigo,
+                                    mapping(this::generateMedidaFromAfericao, toList())));
+    }
+
+    @NotNull
+    private Map<Long,
+            List<MedidaDto>> groupMedidasByAfericoesPlacas(@NotNull final List<AfericaoPlacaProjection> projections) {
+        return projections.stream()
+                .collect(groupingBy(AfericaoPlacaProjection::getCodigo,
+                                    mapping(this::generateMedidaFromAfericao, toList())));
+    }
+
+    @NotNull
     private MedidaDto generateMedidaFromAfericao(@NotNull final AfericaoAvulsaProjection projection) {
         return MedidaDto.of(projection.getCodPneu(),
                             projection.getPosicao(),
