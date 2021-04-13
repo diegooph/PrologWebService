@@ -52,7 +52,7 @@ select a.codigo                                           as cod_afericao,
        av.altura_sulco_externo                            as altura_sulco_externo
 from afericao a
          join colaborador c on c.cpf = a.cpf_aferidor
-         join afericao_valores av on f_incluir_medidas and av.cod_afericao = a.codigo
+         left join afericao_valores av on f_incluir_medidas and av.cod_afericao = a.codigo
 where a.cod_unidade = any (f_cod_unidades)
   and a.tipo_processo_coleta = 'PNEU_AVULSO'
   and (a.data_hora at time zone tz_unidade(a.cod_unidade))::date between f_data_inicial and f_data_final
@@ -126,7 +126,7 @@ select a.km_veiculo,
 from afericao a
          join veiculo v on v.placa = a.placa_veiculo
          join colaborador c on c.cpf = a.cpf_aferidor
-         join afericao_valores av on f_incluir_medidas and av.cod_afericao = a.codigo
+         left join afericao_valores av on f_incluir_medidas and av.cod_afericao = a.codigo
 where a.cod_unidade = any (f_cod_unidades)
   and case
     -- Estes parâmetros (-1 e '') foram necessários por conta da conversão de null com o Spring data JPA,
