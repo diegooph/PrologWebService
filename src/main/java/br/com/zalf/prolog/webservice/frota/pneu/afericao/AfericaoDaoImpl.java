@@ -713,13 +713,13 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         }
 
         // Caso não tenha sido problema, verifica se está apto a ser inspeção.
-        else if (pneu.getPressaoAtual() < (pneu.getPressaoCorreta() * (1 - restricao.getToleranciaInspecao()))) {
+        else if (pneu.getPressaoAtual() <= (pneu.getPressaoCorreta() * (1 - restricao.getToleranciaInspecao()))) {
             servicos.add(TipoServico.INSPECAO);
         }
 
         // Caso não entre em inspeção, verifica se é uma calibragem.
-        else if (pneu.getPressaoAtual() < (pneu.getPressaoCorreta() * (1 - restricao.getToleranciaCalibragem()))
-                || pneu.getPressaoAtual() > (pneu.getPressaoCorreta() * (1 + restricao.getToleranciaCalibragem()))) {
+        else if (pneu.getPressaoAtual() <= (pneu.getPressaoCorreta() * (1 - restricao.getToleranciaCalibragem()))
+                || pneu.getPressaoAtual() >= (pneu.getPressaoCorreta() * (1 + restricao.getToleranciaCalibragem()))) {
             servicos.add(TipoServico.CALIBRAGEM);
         }
 
@@ -727,11 +727,11 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         if (pneu.getVidaAtual() == pneu.getVidasTotal()) {
             // Se o pneu esta na última vida, então ele irá para descarte,
             // por isso devemos considerar o sulco mínimo para esse caso.
-            if (pneu.getValorMenorSulcoAtual() < restricao.getSulcoMinimoDescarte()) {
+            if (pneu.getValorMenorSulcoAtual() <= restricao.getSulcoMinimoDescarte()) {
                 servicos.add(TipoServico.MOVIMENTACAO);
             }
         } else {
-            if (pneu.getValorMenorSulcoAtual() < restricao.getSulcoMinimoRecape()) {
+            if (pneu.getValorMenorSulcoAtual() <= restricao.getSulcoMinimoRecape()) {
                 servicos.add(TipoServico.MOVIMENTACAO);
             }
         }
