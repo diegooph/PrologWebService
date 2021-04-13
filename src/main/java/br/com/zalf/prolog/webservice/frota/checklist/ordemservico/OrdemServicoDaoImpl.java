@@ -167,7 +167,7 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
     @NotNull
     @Override
     public HolderResolucaoItensOrdemServico getHolderResolucaoItensOrdemServico(
-            @NotNull final String placaVeiculo,
+            @NotNull final Long codVeiculo,
             @Nullable final PrioridadeAlternativa prioridade,
             @Nullable final StatusItemOrdemServico statusItens,
             final int limit,
@@ -182,7 +182,7 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
             stmt.setNull(1, SqlType.BIGINT.asIntTypeJava());
             // Código da Ordem de Serviço.
             stmt.setNull(2, SqlType.BIGINT.asIntTypeJava());
-            stmt.setString(3, placaVeiculo);
+            stmt.setLong(3, codVeiculo);
             if (prioridade != null) {
                 stmt.setString(4, prioridade.asString());
             } else {

@@ -129,15 +129,15 @@ public final class OrdemServicoService {
 
     @NotNull
     HolderResolucaoItensOrdemServico getHolderResolucaoItensOrdemServico(
-            @NotNull final String placaVeiculo,
+            @NotNull final Long codVeiculo,
             @Nullable final PrioridadeAlternativa prioridade,
             @Nullable final StatusItemOrdemServico statusItens,
             final int limit,
             final int offset) throws ProLogException {
         try {
-            return dao.getHolderResolucaoItensOrdemServico(placaVeiculo, prioridade, statusItens, limit, offset);
+            return dao.getHolderResolucaoItensOrdemServico(codVeiculo, prioridade, statusItens, limit, offset);
         } catch (final Throwable t) {
-            Log.e(TAG, "Erro ao buscar holder de resolução de itens de O.S. para a placa: " + placaVeiculo, t);
+            Log.e(TAG, "Erro ao buscar holder de resolução de itens de O.S. para o veículo: " + codVeiculo, t);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao realizar busca, tente novamente");

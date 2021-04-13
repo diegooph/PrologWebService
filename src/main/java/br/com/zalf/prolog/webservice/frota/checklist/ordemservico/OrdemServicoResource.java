@@ -137,7 +137,9 @@ public final class OrdemServicoResource {
             @QueryParam("statusItens") @Optional final StatusItemOrdemServico statusItens,
             @QueryParam("limit") final int limit,
             @QueryParam("offset") final int offset) throws ProLogException {
-        return service.getHolderResolucaoItensOrdemServico(placaVeiculo, prioridade, statusItens, limit, offset);
+        final Long codColaborador = this.colaboradorAutenticadoProvider.get().getCodigo();
+        final Long codVeiculo = VeiculoBackwardHelper.getCodVeiculoByPlaca(codColaborador, placaVeiculo);
+        return service.getHolderResolucaoItensOrdemServico(codVeiculo, prioridade, statusItens, limit, offset);
     }
 
     @GET

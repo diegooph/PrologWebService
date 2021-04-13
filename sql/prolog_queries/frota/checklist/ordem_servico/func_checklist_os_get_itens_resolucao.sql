@@ -1,9 +1,6 @@
--- Sobre:
---
--- Function utilizada para buscar os Itens de uma Ordem de Serviço para serem resolvidos.
 create or replace function func_checklist_os_get_itens_resolucao(f_cod_unidade bigint,
                                                                  f_cod_os bigint,
-                                                                 f_placa_veiculo text,
+                                                                 f_cod_veiculo bigint,
                                                                  f_prioridade_alternativa text,
                                                                  f_status_itens text,
                                                                  f_data_hora_atual_utc timestamp with time zone,
@@ -106,18 +103,16 @@ begin
                                on im.cod_midia_nok = an.codigo
             where f_if(f_cod_unidade is null, true, cos.cod_unidade = f_cod_unidade)
               and f_if(f_cod_os is null, true, cos.codigo = f_cod_os)
-              and f_if(f_placa_veiculo is null, true, c.placa_veiculo = f_placa_veiculo)
+              and f_if(f_cod_veiculo is null, true, c.cod_veiculo = f_cod_veiculo)
               and f_if(f_prioridade_alternativa is null, true, cap.prioridade = f_prioridade_alternativa)
               and f_if(f_status_itens is null, true, cosi.status_resolucao = f_status_itens)
-            limit f_limit
-            offset
-            f_offset
+            limit f_limit offset f_offset
         ),
              dados_veiculo as (
                  select v.placa::text as placa_veiculo,
                         v.km          as km_atual_veiculo
                  from veiculo v
-                 where v.placa = f_placa_veiculo
+                 where v.codigo = f_cod_veiculo
              )
 
              -- Nós usamos esse dados_veiculo com f_if pois pode acontecer de não existir dados para os filtros aplicados e
