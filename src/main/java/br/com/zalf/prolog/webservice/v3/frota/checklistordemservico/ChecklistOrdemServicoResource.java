@@ -55,6 +55,7 @@ public final class ChecklistOrdemServicoResource {
                                          statusOrdemServico,
                                          incluirItensOrdemServico,
                                          limit,
-                                         offset));
+                                         offset),
+                incluirItensOrdemServico);
     }
 }
