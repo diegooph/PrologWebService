@@ -212,7 +212,7 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
     public HolderResolucaoItensOrdemServico getHolderResolucaoMultiplosItens(
             @Nullable final Long codUnidade,
             @Nullable final Long codOrdemServico,
-            @Nullable final String placaVeiculo,
+            @Nullable final Long codVeiculo,
             @Nullable final StatusItemOrdemServico statusItens) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -222,7 +222,7 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
             stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_OS_GET_ITENS_RESOLUCAO(?, ?, ?, ?, ?, ?, ?, ?)");
             bindValueOrNull(stmt, 1, codUnidade, SqlType.BIGINT);
             bindValueOrNull(stmt, 2, codOrdemServico, SqlType.BIGINT);
-            bindValueOrNull(stmt, 3, placaVeiculo, SqlType.TEXT);
+            bindValueOrNull(stmt, 3, codVeiculo, SqlType.BIGINT);
             stmt.setNull(4, SqlType.TEXT.asIntTypeJava());
             bindValueOrNull(stmt, 5, statusItens != null ? statusItens.asString() : null, SqlType.VARCHAR);
             stmt.setObject(6, OffsetDateTime.now(Clock.systemUTC()));

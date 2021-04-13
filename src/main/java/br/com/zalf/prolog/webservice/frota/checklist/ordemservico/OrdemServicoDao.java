@@ -62,7 +62,7 @@ public interface OrdemServicoDao {
     HolderResolucaoItensOrdemServico getHolderResolucaoMultiplosItens(
             @Nullable final Long codUnidade,
             @Nullable final Long codOrdemServico,
-            @Nullable final String placaVeiculo,
+            @Nullable final Long codVeiculo,
             @Nullable final StatusItemOrdemServico statusItens) throws Throwable;
 
     void resolverItem(@NotNull final ResolverItemOrdemServico item) throws Throwable;
