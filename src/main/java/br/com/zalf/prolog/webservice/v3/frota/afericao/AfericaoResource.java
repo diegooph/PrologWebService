@@ -47,7 +47,7 @@ public class AfericaoResource implements AfericaoResourceApiDoc {
             Pilares.Frota.OrdemServico.Pneu.VISUALIZAR,
             Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
     @Override
-    public List<AfericaoPlacaDto> getAfericoesPlacas(@QueryParam("unidades") @NotNull final List<Long> codUnidades,
+    public List<AfericaoPlacaDto> getAfericoesPlacas(@QueryParam("codUnidades") @NotNull final List<Long> codUnidades,
                                                      @QueryParam("placa") @Nullable final String placaVeiculo,
                                                      @QueryParam("codTipoVeiculo") @Nullable final Long codTipoVeiculo,
                                                      @QueryParam("dataInicial") @NotNull final String dataInicial,
@@ -75,7 +75,7 @@ public class AfericaoResource implements AfericaoResourceApiDoc {
             Pilares.Frota.OrdemServico.Pneu.VISUALIZAR,
             Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
     @Override
-    public List<AfericaoAvulsaDto> getAfericoesAvulsas(@QueryParam("unidades") @NotNull final List<Long> codUnidades,
+    public List<AfericaoAvulsaDto> getAfericoesAvulsas(@QueryParam("codUnidades") @NotNull final List<Long> codUnidades,
                                                        @QueryParam("dataInicial") @NotNull final String dataInicial,
                                                        @QueryParam("dataFinal") @NotNull final String dataFinal,
                                                        @QueryParam("limit") final int limit,
