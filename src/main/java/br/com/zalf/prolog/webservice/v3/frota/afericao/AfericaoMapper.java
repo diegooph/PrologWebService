@@ -1,14 +1,14 @@
 package br.com.zalf.prolog.webservice.v3.frota.afericao;
 
-import br.com.zalf.prolog.webservice.v3.frota.afericao._model.AfericaoAvulsaDto;
-import br.com.zalf.prolog.webservice.v3.frota.afericao._model.AfericaoAvulsaProjection;
-import br.com.zalf.prolog.webservice.v3.frota.afericao._model.AfericaoPlacaDto;
-import br.com.zalf.prolog.webservice.v3.frota.afericao._model.AfericaoPlacaProjection;
+import br.com.zalf.prolog.webservice.v3.frota.afericao._model.*;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
+import java.util.Objects;
+
+import static java.util.stream.Collectors.*;
 
 /**
  * Created on 2021-02-11
@@ -19,9 +19,17 @@ import java.util.stream.Collectors;
 public class AfericaoMapper {
     @NotNull
     public List<AfericaoPlacaDto> toAfericaoPlacaDto(@NotNull final List<AfericaoPlacaProjection> afericoesPlacas) {
-        return afericoesPlacas.stream()
-                .map(this::toAfericaoPlacaDto)
-                .collect(Collectors.toList());
+        final var map =
+                this.groupMedidasByAfericoesPlacas(afericoesPlacas);
+        return map.keySet().stream()
+                .map(codigo -> {
+                    final AfericaoPlacaProjection projection = afericoesPlacas.stream()
+                            .filter(afericaoPlaca -> Objects.equals(afericaoPlaca.getCodigo(), codigo))
+                            .findFirst()
+                            .orElseThrow();
+                    return toAfericaoPlacaDto(projection, map.get(projection.getCodigo()));
+                })
+                .collect(toList());
     }
 
     @NotNull
@@ -44,9 +52,18 @@ public class AfericaoMapper {
 
     @NotNull
     public List<AfericaoAvulsaDto> toAfericaoAvulsaDto(@NotNull final List<AfericaoAvulsaProjection> afericoesAvulsas) {
-        return afericoesAvulsas.stream()
-                .map(this::toAfericaoAvulsaDto)
-                .collect(Collectors.toList());
+        final var map =
+                this.groupMedidasByAfericoesAvulsas(afericoesAvulsas);
+        return map.keySet().stream()
+                .map(codigo -> {
+                    final AfericaoAvulsaProjection projection = afericoesAvulsas.stream()
+                            .filter(afericaoAvulsa -> Objects.equals(afericaoAvulsa.getCodigo(), codigo))
+                            .findFirst()
+                            .orElseThrow();
+                    return toAfericaoAvulsaDto(projection, map.get(projection.getCodigo()));
+                })
+
+                .collect(toList());
     }
 
     @NotNull
