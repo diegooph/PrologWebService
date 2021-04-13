@@ -61,7 +61,8 @@ public class AfericaoResource implements AfericaoResourceApiDoc {
                                                                   DateUtils.parseDate(dataInicial),
                                                                   DateUtils.parseDate(dataFinal),
                                                                   limit,
-                                                                  offset);
+                                                                  offset,
+                                                                  incluirMedidas);
         final List<AfericaoPlacaProjection> afericoesPlacas = service.getAfericoesPlacas(filtro);
         return afericaoMapper.toAfericaoPlacaDto(afericoesPlacas);
     }
@@ -85,7 +86,8 @@ public class AfericaoResource implements AfericaoResourceApiDoc {
                                                                     DateUtils.parseDate(dataInicial),
                                                                     DateUtils.parseDate(dataFinal),
                                                                     limit,
-                                                                    offset);
+                                                                    offset,
+                                                                    incluirMedidas);
         final List<AfericaoAvulsaProjection> afericoesAvulsas = service.getAfericoesAvulsas(filtro);
         return afericaoMapper.toAfericaoAvulsaDto(afericoesAvulsas);
     }

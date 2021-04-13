@@ -38,6 +38,7 @@ public class FiltroAfericaoPlaca {
     int limit;
     @Min(value = 0, message = "não pode ser menor que zero.")
     int offset;
+    boolean incluirMedidas;
 
     @NotNull
     public String getPlacaVeiculo() {
