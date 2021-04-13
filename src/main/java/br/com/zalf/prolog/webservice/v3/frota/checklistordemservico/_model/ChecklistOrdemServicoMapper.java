@@ -14,7 +14,8 @@ import java.util.stream.Collectors;
 public final class ChecklistOrdemServicoMapper {
     @NotNull
     public List<ChecklistOrdemServicoListagemDto> toDto(
-            @NotNull final List<ChecklistOrdemServicoProjection> ordensServico) {
+            @NotNull final List<ChecklistOrdemServicoProjection> ordensServico,
+            final boolean incluirItensOrdemServico) {
         if (ordensServico.isEmpty()) {
             return Collections.emptyList();
         }
@@ -24,13 +25,14 @@ public final class ChecklistOrdemServicoMapper {
                 .collect(Collectors.groupingBy(ChecklistOrdemServicoProjection::getCodigoOs))
                 .forEach((codigoOs, checklistOrdemServicoProjections) -> ordensDto.add(
                         createChecklistOrdemServicoListagemDto(
-                                checklistOrdemServicoProjections)));
+                                checklistOrdemServicoProjections, incluirItensOrdemServico)));
         return ordensDto;
     }
 
     @NotNull
     private ChecklistOrdemServicoListagemDto createChecklistOrdemServicoListagemDto(
-            @NotNull final List<ChecklistOrdemServicoProjection> checklistOrdemServicoProjections) {
+            @NotNull final List<ChecklistOrdemServicoProjection> checklistOrdemServicoProjections,
+            final boolean incluirItensOrdemServico) {
         if (checklistOrdemServicoProjections.size() == 0) {
             throw new IllegalStateException("A lista usada neste método não pode ser vazia.");
         }
@@ -39,10 +41,18 @@ public final class ChecklistOrdemServicoMapper {
                 checklistOrdemServicoProjections.get(0).getCodigoUnidade(),
                 checklistOrdemServicoProjections.get(0).getCodigoChecklist(),
                 StatusOrdemServico.fromString(checklistOrdemServicoProjections.get(0).getStatusOs()),
-                checklistOrdemServicoProjections.stream()
-                        .map(this::createChecklistOrdemServicoItemDto)
-                        .collect(Collectors.toList()),
+                incluirItensOrdemServico
+                        ? createChecklistOrdemServicoItens(checklistOrdemServicoProjections)
+                        : null,
                 checklistOrdemServicoProjections.get(0).getDataHoraFechamento());
+    }
+
+    @NotNull
+    private List<ChecklistOrdemServicoItemDto> createChecklistOrdemServicoItens(
+            @NotNull final List<ChecklistOrdemServicoProjection> checklistOrdemServicoProjections) {
+        return checklistOrdemServicoProjections.stream()
+                .map(this::createChecklistOrdemServicoItemDto)
+                .collect(Collectors.toList());
     }
 
     @NotNull
