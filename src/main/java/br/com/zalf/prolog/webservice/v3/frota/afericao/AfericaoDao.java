@@ -24,14 +24,16 @@ public interface AfericaoDao extends JpaRepository<AfericaoEntity, Long> {
             "f_data_inicial => date(:dataInicial),                    " +
             "f_data_final => date(:dataFinal),                        " +
             "f_limit => cast(:limit as bigint),                       " +
-            "f_offset => cast(:offset as bigint));                    ", nativeQuery = true)
+            "f_offset => cast(:offset as bigint),                     " +
+            "f_incluir_medidas => :incluirMedidas);                   ", nativeQuery = true)
     List<AfericaoPlacaProjection> getAfericoesPlacas(@NotNull final List<Long> codUnidades,
                                                      @NotNull final Long codTipoVeiculo,
                                                      @NotNull final String placaVeiculo,
                                                      @NotNull final LocalDate dataInicial,
                                                      @NotNull final LocalDate dataFinal,
                                                      final int limit,
-                                                     final int offset);
+                                                     final int offset,
+                                                     final boolean incluirMedidas);
 
     @NotNull
     @Query(value = "select * from func_afericao_get_afericoes_avulsas_paginada( " +
@@ -39,10 +41,12 @@ public interface AfericaoDao extends JpaRepository<AfericaoEntity, Long> {
             "f_data_inicial => date(:dataInicial),              " +
             "f_data_final => date(:dataFinal),                  " +
             "f_limit => cast(:limit as bigint),                 " +
-            "f_offset => cast(:offset as bigint));              ", nativeQuery = true)
+            "f_offset => cast(:offset as bigint),               " +
+            "f_incluir_medidas => :incluirMedidas);             ", nativeQuery = true)
     List<AfericaoAvulsaProjection> getAfericoesAvulsas(@NotNull final List<Long> codUnidades,
                                                        @NotNull final LocalDate dataInicial,
                                                        @NotNull final LocalDate dataFinal,
                                                        final int limit,
-                                                       final int offset);
+                                                       final int offset,
+                                                       final boolean incluirMedidas);
 }
