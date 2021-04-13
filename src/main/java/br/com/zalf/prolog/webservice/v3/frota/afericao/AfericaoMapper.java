@@ -19,15 +19,16 @@ import static java.util.stream.Collectors.*;
 public class AfericaoMapper {
     @NotNull
     public List<AfericaoPlacaDto> toAfericaoPlacaDto(@NotNull final List<AfericaoPlacaProjection> afericoesPlacas) {
-        final var map =
+        final Map<Long, List<MedidaDto>> medidasAgrupadas =
                 this.groupMedidasByAfericoesPlacas(afericoesPlacas);
-        return map.keySet().stream()
-                .map(codigo -> {
-                    final AfericaoPlacaProjection projection = afericoesPlacas.stream()
-                            .filter(afericaoPlaca -> Objects.equals(afericaoPlaca.getCodigo(), codigo))
+        return medidasAgrupadas.keySet().stream()
+                .map(codAfericao -> {
+                    final AfericaoPlacaProjection primeiraAfericaoByCodigo = afericoesPlacas.stream()
+                            .filter(afericaoPlaca -> Objects.equals(afericaoPlaca.getCodigo(), codAfericao))
                             .findFirst()
                             .orElseThrow();
-                    return toAfericaoPlacaDto(projection, map.get(projection.getCodigo()));
+                    return toAfericaoPlacaDto(primeiraAfericaoByCodigo,
+                                              medidasAgrupadas.get(primeiraAfericaoByCodigo.getCodigo()));
                 })
                 .collect(toList());
     }
@@ -52,15 +53,16 @@ public class AfericaoMapper {
 
     @NotNull
     public List<AfericaoAvulsaDto> toAfericaoAvulsaDto(@NotNull final List<AfericaoAvulsaProjection> afericoesAvulsas) {
-        final var map =
+        final var medidasAgrupadas =
                 this.groupMedidasByAfericoesAvulsas(afericoesAvulsas);
-        return map.keySet().stream()
-                .map(codigo -> {
-                    final AfericaoAvulsaProjection projection = afericoesAvulsas.stream()
-                            .filter(afericaoAvulsa -> Objects.equals(afericaoAvulsa.getCodigo(), codigo))
+        return medidasAgrupadas.keySet().stream()
+                .map(codAfericao -> {
+                    final AfericaoAvulsaProjection primeiraAfericaoByCodigo = afericoesAvulsas.stream()
+                            .filter(afericaoAvulsa -> Objects.equals(afericaoAvulsa.getCodigo(), codAfericao))
                             .findFirst()
                             .orElseThrow();
-                    return toAfericaoAvulsaDto(projection, map.get(projection.getCodigo()));
+                    return toAfericaoAvulsaDto(primeiraAfericaoByCodigo,
+                                               medidasAgrupadas.get(primeiraAfericaoByCodigo.getCodigo()));
                 })
 
                 .collect(toList());
