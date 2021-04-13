@@ -92,7 +92,7 @@ public final class OrdemServicoService {
     @NotNull
     List<QtdItensPlacaListagem> getQtdItensPlacaListagem(@NotNull final Long codUnidade,
                                                          @Nullable final Long codTipoVeiculo,
-                                                         @Nullable final String placaVeiculo,
+                                                         @Nullable final Long codVeiculo,
                                                          @Nullable final StatusItemOrdemServico statusItens,
                                                          final int limit,
                                                          final int offset) throws ProLogException {
@@ -100,7 +100,7 @@ public final class OrdemServicoService {
             return dao.getQtdItensPlacaListagem(
                     codUnidade,
                     codTipoVeiculo,
-                    placaVeiculo,
+                    codVeiculo,
                     statusItens,
                     limit,
                     offset);

@@ -107,7 +107,7 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
     public List<QtdItensPlacaListagem> getQtdItensPlacaListagem(
             @NotNull final Long codUnidade,
             @Nullable final Long codTipoVeiculo,
-            @Nullable final String placaVeiculo,
+            @Nullable final Long codVeiculo,
             @Nullable final StatusItemOrdemServico statusItens,
             final int limit,
             final int offset) throws Throwable {
@@ -120,7 +120,7 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
                     "SELECT * FROM FUNC_CHECKLIST_OS_GET_QTD_ITENS_PLACA_LISTAGEM(?, ?, ?, ?, ?, ?)");
             stmt.setLong(1, codUnidade);
             bindValueOrNull(stmt, 2, codTipoVeiculo, SqlType.BIGINT);
-            bindValueOrNull(stmt, 3, placaVeiculo, SqlType.TEXT);
+            bindValueOrNull(stmt, 3, codVeiculo, SqlType.BIGINT);
             if (statusItens != null) {
                 stmt.setString(4, statusItens.asString());
             } else {

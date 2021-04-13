@@ -83,6 +83,10 @@ public final class OrdemServicoResource {
                 offset);
     }
 
+    /**
+     * @deprecated at 2021-04-13.
+     */
+    @Deprecated
     @GET
     @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
     @Path("/listagem-qtd-itens-placa")
@@ -96,10 +100,14 @@ public final class OrdemServicoResource {
             @QueryParam("statusItens") @Optional final StatusItemOrdemServico statusItens,
             @QueryParam("limit") @Required final int limit,
             @QueryParam("offset") @Required final int offset) throws ProLogException {
+        final Long codColaborador = this.colaboradorAutenticadoProvider.get().getCodigo();
+        final Long codVeiculo = placaVeiculo == null ?
+                null :
+                VeiculoBackwardHelper.getCodVeiculoByPlaca(codColaborador, placaVeiculo);
         return service.getQtdItensPlacaListagem(
                 codUnidade,
                 codTipoVeiculo,
-                placaVeiculo,
+                codVeiculo,
                 statusItens,
                 limit,
                 offset);
