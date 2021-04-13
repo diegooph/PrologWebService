@@ -1,10 +1,11 @@
-create or replace function func_checklist_ordem_servico_listagem(f_cod_unidades bigint[],
-                                                                 f_cod_tipo_veiculo bigint,
-                                                                 f_cod_veiculo bigint,
-                                                                 f_status_ordem_servico text,
-                                                                 f_incluir_itens_ordem_servico boolean,
-                                                                 f_limit integer,
-                                                                 f_offset integer)
+create
+    or replace function func_checklist_ordem_servico_listagem(f_cod_unidades bigint[],
+                                                              f_cod_tipo_veiculo bigint,
+                                                              f_cod_veiculo bigint,
+                                                              f_status_ordem_servico text,
+                                                              f_incluir_itens_ordem_servico boolean,
+                                                              f_limit integer,
+                                                              f_offset integer)
     returns table
             (
                 codigo_os_prolog                        bigint,
@@ -54,10 +55,12 @@ select cos.codigo_prolog                         as codigo_os_prolog,
        cosi.tempo_realizacao                     as tempo_realizacao,
        cosi.feedback_conserto                    as feedback_conserto
 from checklist_ordem_servico cos
-         inner join checklist_ordem_servico_itens cosi on cos.cod_unidade = cosi.cod_unidade
+         left join checklist_ordem_servico_itens cosi
+                   on cos.cod_unidade = cosi.cod_unidade
+                       and cos.codigo = cosi.cod_os
+                       and f_incluir_itens_ordem_servico
          inner join checklist c on c.codigo = cos.cod_checklist
          inner join veiculo v on v.codigo = c.cod_veiculo
-    and cos.codigo = cosi.cod_os
 where cos.cod_unidade = any (f_cod_unidades)
   and case when f_cod_tipo_veiculo is null then true else v.cod_tipo = f_cod_tipo_veiculo end
   and case when f_cod_veiculo is null then true else v.codigo = f_cod_veiculo end
@@ -68,7 +71,8 @@ $$;
 
 
 ----------------- FUNCTIONS CONVERSORAS PELO NULL --------------------------------------
-create or replace function to_bigint(value anyelement)
+create
+    or replace function to_bigint(value anyelement)
     returns bigint
     language sql
 as
@@ -76,7 +80,8 @@ $$
 select value::text::bigint
 $$;
 
-create or replace function to_text(value anyelement)
+create
+    or replace function to_text(value anyelement)
     returns text
     language sql
 as
