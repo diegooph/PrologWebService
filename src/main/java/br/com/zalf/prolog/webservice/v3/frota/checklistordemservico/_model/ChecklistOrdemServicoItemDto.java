@@ -18,6 +18,8 @@ public class ChecklistOrdemServicoItemDto {
     private final long codigoContextoPergunta;
     private final long codigoAlternativaPrimeiroApontamento;
     private final long codigoContextoAlternativa;
+    @Nullable
+    private final String codAuxiliarAlternativaPrimeiroApontamento;
     @NotNull
     private final StatusItemOrdemServico statusItemOs;
     private final int quantidadeApontamentos;

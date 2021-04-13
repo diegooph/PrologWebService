@@ -8,27 +8,28 @@ create
                                                               f_offset integer)
     returns table
             (
-                codigo_os_prolog                        bigint,
-                codigo_os                               bigint,
-                codigo_unidade                          bigint,
-                codigo_checklist                        bigint,
-                status_os                               text,
-                data_hora_fechamento                    timestamp with time zone,
-                codigo_item_os                          bigint,
-                cpf_mecanico                            bigint,
-                codigo_pergunta_primeiro_apontamento    bigint,
-                codigo_contexto_pergunta                bigint,
-                codigo_alternativa_primeiro_apontamento bigint,
-                codigo_contexto_alternativa             bigint,
-                status_resolucao                        text,
-                quantidade_apontamentos                 int,
-                km                                      bigint,
-                codigo_agrupamento_resolucao_em_lote    bigint,
-                data_hora_conserto                      timestamp with time zone,
-                data_hora_inicio_resolucao              timestamp with time zone,
-                data_hora_fim_resolucao                 timestamp with time zone,
-                tempo_realizacao                        bigint,
-                feedback_conserto                       text
+                codigo_os_prolog                                 bigint,
+                codigo_os                                        bigint,
+                codigo_unidade                                   bigint,
+                codigo_checklist                                 bigint,
+                status_os                                        text,
+                data_hora_fechamento                             timestamp with time zone,
+                codigo_item_os                                   bigint,
+                cpf_mecanico                                     bigint,
+                codigo_pergunta_primeiro_apontamento             bigint,
+                codigo_contexto_pergunta                         bigint,
+                codigo_alternativa_primeiro_apontamento          bigint,
+                codigo_contexto_alternativa                      bigint,
+                status_resolucao                                 text,
+                quantidade_apontamentos                          int,
+                km                                               bigint,
+                codigo_agrupamento_resolucao_em_lote             bigint,
+                data_hora_conserto                               timestamp with time zone,
+                data_hora_inicio_resolucao                       timestamp with time zone,
+                data_hora_fim_resolucao                          timestamp with time zone,
+                tempo_realizacao                                 bigint,
+                feedback_conserto                                text,
+                codigo_auxiliar_alternativa_primeiro_apontamento text
             )
     language sql
 as
@@ -53,12 +54,14 @@ select cos.codigo_prolog                         as codigo_os_prolog,
        cosi.data_hora_inicio_resolucao           as data_hora_inicio_resolucao,
        cosi.data_hora_fim_resolucao              as data_hora_fim_resolucao,
        cosi.tempo_realizacao                     as tempo_realizacao,
-       cosi.feedback_conserto                    as feedback_conserto
+       cosi.feedback_conserto                    as feedback_conserto,
+       cap.cod_auxiliar                          as codigo_auxiliar_alternativa_primeiro_apontamento
 from checklist_ordem_servico cos
          left join checklist_ordem_servico_itens cosi
                    on cos.cod_unidade = cosi.cod_unidade
                        and cos.codigo = cosi.cod_os
                        and f_incluir_itens_ordem_servico
+         left join checklist_alternativa_pergunta cap on cap.codigo = cosi.cod_alternativa_primeiro_apontamento
          inner join checklist c on c.codigo = cos.cod_checklist
          inner join veiculo v on v.codigo = c.cod_veiculo
 where cos.cod_unidade = any (f_cod_unidades)

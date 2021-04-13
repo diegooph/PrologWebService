@@ -67,6 +67,7 @@ public final class ChecklistOrdemServicoMapper {
                 checklistOrdemServicoProjection.getCodigoContextoPergunta(),
                 checklistOrdemServicoProjection.getCodigoAlternativaPrimeiroApontamento(),
                 checklistOrdemServicoProjection.getCodigoContextoAlternativa(),
+                checklistOrdemServicoProjection.getCodigoAuxiliarAlternativaPrimeiroApontamento(),
                 StatusItemOrdemServico.fromString(checklistOrdemServicoProjection.getStatusItemOs()),
                 checklistOrdemServicoProjection.getQuantidadeApontamentos(),
                 checklistOrdemServicoProjection.getKm(),

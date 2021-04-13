@@ -38,6 +38,9 @@ public interface ChecklistOrdemServicoProjection {
     @Value("#{target.codigo_alternativa_primeiro_apontamento}")
     long getCodigoAlternativaPrimeiroApontamento();
 
+    @Value("#{target.codigo_auxiliar_alternativa_primeiro_apontamento}")
+    String getCodigoAuxiliarAlternativaPrimeiroApontamento();
+
     @Value("#{target.codigo_contexto_alternativa}")
     long getCodigoContextoAlternativa();
 
