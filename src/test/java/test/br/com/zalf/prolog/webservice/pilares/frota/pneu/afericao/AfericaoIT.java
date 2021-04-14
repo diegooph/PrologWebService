@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import test.br.com.zalf.prolog.webservice.IntegrationTest;
 
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,7 +27,7 @@ public class AfericaoIT extends IntegrationTest {
     @DisplayName("Dado parâmetros corretos, retorne List<AfericaoPlacaDto> e status OK")
     void givenCorrectParameters_ThenReturnListAfericaoPlacaDtoAndStatusOk() {
 
-        final ResponseEntity<List<AfericaoPlacaDto>> response = client.getAfericoesPlacas(Collections.singletonList(5L),
+        final ResponseEntity<List<AfericaoPlacaDto>> response = client.getAfericoesPlacas(List.of(5L),
                                                                                           "PRO0001",
                                                                                           63L,
                                                                                           "2019-01-01",
@@ -48,7 +47,7 @@ public class AfericaoIT extends IntegrationTest {
     void givenCorrectParameters_ThenReturnListAfericaoAvulsaDtoAndStatusOk() {
 
         final ResponseEntity<List<AfericaoAvulsaDto>> response =
-                client.getAfericoesAvulsas(Collections.singletonList(5L),
+                client.getAfericoesAvulsas(List.of(5L),
                                            "2019-01-01",
                                            LocalDate.now()
                                                    .toString(),
