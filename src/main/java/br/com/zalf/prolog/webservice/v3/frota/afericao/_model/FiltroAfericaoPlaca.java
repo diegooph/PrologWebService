@@ -25,8 +25,7 @@ public class FiltroAfericaoPlaca {
     @NotNull
     List<Long> codUnidades;
     @Nullable
-    @Size(max = 7)
-    String placaVeiculo;
+    Long codVeiculo;
     @Nullable
     Long codTipoVeiculo;
     @NotNull

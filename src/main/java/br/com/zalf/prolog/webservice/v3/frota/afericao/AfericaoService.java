@@ -40,7 +40,7 @@ public class AfericaoService implements KmProcessoAtualizavel {
     public List<AfericaoPlacaProjection> getAfericoesPlacas(@NotNull final FiltroAfericaoPlaca filtro) {
         return afericaoDao.getAfericoesPlacas(filtro.getCodUnidades(),
                                               filtro.getCodTipoVeiculo(),
-                                              filtro.getPlacaVeiculo(),
+                                              filtro.getCodVeiculo(),
                                               filtro.getDataInicial(),
                                               filtro.getDataFinal(),
                                               filtro.getLimit(),

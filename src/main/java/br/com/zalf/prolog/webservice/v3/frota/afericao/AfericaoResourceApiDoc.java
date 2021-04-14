@@ -31,8 +31,8 @@ public interface AfericaoResourceApiDoc {
     List<AfericaoPlacaDto> getAfericoesPlacas(
             @ApiParam(value = "Uma lista de códigos de unidade.",
                       required = true) @NotNull final List<Long> codUnidades,
-            @ApiParam(value = "Uma placa de veículo específica para ser buscada. Se nenhuma for informada, todas " +
-                    "placas serão trazidas.") @Nullable final String placaVeiculo,
+            @ApiParam(value = "Um código de veículo específico para ser buscado. Se nenhum for informado, todos " +
+                    "os veículos da unidade serão retornados.") @Nullable final Long codVeiculo,
             @ApiParam(value = "Um código de tipo veículo específico para ser buscado. Se nenhum for informado, todos " +
                     "os tipos serão trazidos.") @Nullable final Long codTipoVeiculo,
             @ApiParam(value = "Uma data inicial, a qual a aferição tenha sido realizadas.",

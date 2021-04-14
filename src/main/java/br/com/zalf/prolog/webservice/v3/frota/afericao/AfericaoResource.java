@@ -48,7 +48,7 @@ public class AfericaoResource implements AfericaoResourceApiDoc {
             Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
     @Override
     public List<AfericaoPlacaDto> getAfericoesPlacas(@QueryParam("codUnidades") @NotNull final List<Long> codUnidades,
-                                                     @QueryParam("placa") @Nullable final String placaVeiculo,
+                                                     @QueryParam("codVeiculo") @Nullable final Long codVeiculo,
                                                      @QueryParam("codTipoVeiculo") @Nullable final Long codTipoVeiculo,
                                                      @QueryParam("dataInicial") @NotNull final String dataInicial,
                                                      @QueryParam("dataFinal") @NotNull final String dataFinal,
@@ -56,7 +56,7 @@ public class AfericaoResource implements AfericaoResourceApiDoc {
                                                      @QueryParam("offset") final int offset,
                                                      @QueryParam("incluirMedidas") final boolean incluirMedidas) {
         final FiltroAfericaoPlaca filtro = FiltroAfericaoPlaca.of(codUnidades,
-                                                                  placaVeiculo,
+                                                                  codVeiculo,
                                                                   codTipoVeiculo,
                                                                   DateUtils.parseDate(dataInicial),
                                                                   DateUtils.parseDate(dataFinal),

@@ -19,16 +19,16 @@ public interface AfericaoDao extends JpaRepository<AfericaoEntity, Long> {
     @NotNull
     @Query(value = "select * from func_afericao_get_afericoes_placas_paginada(        " +
             "f_cod_unidades => to_bigint_array(:codUnidades),         " +
-            "f_cod_tipo_veiculo => cast(:codTipoVeiculo as bigint),   " +
-            "f_placa_veiculo => :placaVeiculo,                        " +
+            "f_cod_tipo_veiculo => to_bigint(:codTipoVeiculo),        " +
+            "f_cod_veiculo => to_bigint(:codVeiculo),                 " +
             "f_data_inicial => date(:dataInicial),                    " +
             "f_data_final => date(:dataFinal),                        " +
             "f_limit => cast(:limit as bigint),                       " +
             "f_offset => cast(:offset as bigint),                     " +
             "f_incluir_medidas => :incluirMedidas);                   ", nativeQuery = true)
     List<AfericaoPlacaProjection> getAfericoesPlacas(@NotNull final List<Long> codUnidades,
-                                                     @NotNull final Long codTipoVeiculo,
-                                                     @NotNull final String placaVeiculo,
+                                                     @Nullable final Long codTipoVeiculo,
+                                                     @Nullable final Long codVeiculo,
                                                      @NotNull final LocalDate dataInicial,
                                                      @NotNull final LocalDate dataFinal,
                                                      final int limit,
