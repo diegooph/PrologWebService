@@ -55,7 +55,7 @@ public class AfericaoApiClient {
                 .accept(MediaType.APPLICATION_JSON)
                 .build();
 
-        return restTemplate.exchange(reqEntity, new ParameterizedTypeReference<List<AfericaoPlacaDto>>() {});
+        return restTemplate.exchange(reqEntity, new ParameterizedTypeReference<>() {});
     }
 
     public ResponseEntity<List<AfericaoAvulsaDto>> getAfericoesAvulsas(final List<Long> codUnidades,
@@ -79,6 +79,6 @@ public class AfericaoApiClient {
                 .get(components.toUri())
                 .accept(MediaType.APPLICATION_JSON)
                 .build();
-        return restTemplate.exchange(reqEntity, new ParameterizedTypeReference<List<AfericaoAvulsaDto>>() {});
+        return restTemplate.exchange(reqEntity, new ParameterizedTypeReference<>() {});
     }
 }
