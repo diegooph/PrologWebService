@@ -6,7 +6,6 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -17,11 +16,6 @@ import java.util.List;
  */
 @Value(staticConstructor = "of")
 public class FiltroAfericaoPlaca {
-    @NotNull
-    private static final Long DEFAULT_VALUE_TIPO_VEICULO = -1L;
-    @NotNull
-    private static final String DEFAULT_VALUE_PLACA_VEICULO = "";
-
     @NotNull
     List<Long> codUnidades;
     @Nullable
@@ -38,14 +32,4 @@ public class FiltroAfericaoPlaca {
     @Min(value = 0, message = "não pode ser menor que zero.")
     int offset;
     boolean incluirMedidas;
-
-    @NotNull
-    public String getPlacaVeiculo() {
-        return placaVeiculo == null ? DEFAULT_VALUE_PLACA_VEICULO : placaVeiculo;
-    }
-
-    @NotNull
-    public Long getCodTipoVeiculo() {
-        return codTipoVeiculo == null ? DEFAULT_VALUE_TIPO_VEICULO : codTipoVeiculo;
-    }
 }
