@@ -1,6 +1,6 @@
 create or replace function func_afericao_get_afericoes_placas_paginada(f_cod_unidades bigint[],
                                                                        f_cod_tipo_veiculo bigint,
-                                                                       f_placa_veiculo text,
+                                                                       f_cod_veiculo bigint,
                                                                        f_data_inicial date,
                                                                        f_data_final date,
                                                                        f_limit bigint,
@@ -65,8 +65,8 @@ where a.cod_unidade = any (f_cod_unidades)
               then v.cod_tipo = f_cod_tipo_veiculo
           else true end
   and case
-          when f_placa_veiculo != '' and f_placa_veiculo is not null
-              then v.placa = f_placa_veiculo
+          when f_cod_veiculo is not null
+              then v.codigo = f_cod_veiculo
           else true end
   and (a.data_hora at time zone tz_unidade(a.cod_unidade))::date between f_data_inicial and f_data_final
 limit f_limit offset f_offset;
