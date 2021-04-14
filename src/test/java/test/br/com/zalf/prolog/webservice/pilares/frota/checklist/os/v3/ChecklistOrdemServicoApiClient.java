@@ -1,5 +1,6 @@
 package test.br.com.zalf.prolog.webservice.pilares.frota.checklist.os.v3;
 
+import br.com.zalf.prolog.webservice.errorhandling.sql.ClientSideErrorException;
 import br.com.zalf.prolog.webservice.v3.frota.checklistordemservico._model.ChecklistOrdemServicoListagemDto;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,27 @@ public final class ChecklistOrdemServicoApiClient {
                 .queryParam("codUnidades", codUnidades.stream()
                         .map(Object::toString)
                         .collect(Collectors.joining(",")))
+                .queryParam("incluirItensOrdemServico", true)
+                .queryParam("limit", limit)
+                .queryParam("offset", offset)
+                .build();
+        final RequestEntity<Void> reqEntity = RequestEntity
+                .get(components.toUri())
+                .accept(MediaType.APPLICATION_JSON)
+                .build();
+
+        return restTemplate.exchange(reqEntity, new ParameterizedTypeReference<>() {});
+    }
+
+    public ResponseEntity<ClientSideErrorException> getOrdensServicoWithWrongUnidades(
+            final List<String> wrongTypeCodUnidades,
+            final int limit,
+            final int offset) {
+
+        final UriComponents components = UriComponentsBuilder
+                .fromPath(RESOURCE)
+                .path("/ordens-servicos")
+                .queryParam("codUnidades", String.join(",", wrongTypeCodUnidades))
                 .queryParam("incluirItensOrdemServico", true)
                 .queryParam("limit", limit)
                 .queryParam("offset", offset)
