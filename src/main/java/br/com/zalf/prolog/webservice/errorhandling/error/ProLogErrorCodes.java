@@ -19,7 +19,8 @@ public enum ProLogErrorCodes {
 	MULTIPLES_AUTHORIZATIONS_HEADERS(15),
 	SERVER_SIDE_ERROR(16),
 	CLIENT_SIDE_ERROR(17),
-	FORBIDDEN(18);
+	FORBIDDEN(18),
+	NOT_FOUND(19);
 
 	private final int errorCode;
 
