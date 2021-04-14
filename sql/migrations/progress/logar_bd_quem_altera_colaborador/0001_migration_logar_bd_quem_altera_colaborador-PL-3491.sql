@@ -183,7 +183,7 @@ begin
     select (jsonb_populate_record(NULL::colaborador_data, cd.row_log)).*
     from audit.colaborador_data_audit cd
     where cd.row_log ->> 'codigo' = f_cod_colaborador::text
-    order by cd.row_log -> 'codigo' desc, cd.data_hora_utc desc;
+    order by cd.data_hora_utc desc;
 end
 $$;
 
