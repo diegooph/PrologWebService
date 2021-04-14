@@ -255,6 +255,7 @@ set cod_unidade                        = f_cod_unidade_destino,
     matricula_trans                    = f_matricula_trans,
     matricula_ambev                    = f_matricula_ambev,
     cod_permissao                      = f_nivel_permissao,
+    cod_colaborador_cadastro           = null,
     cod_colaborador_ultima_atualizacao = null
     where cpf = f_cpf_colaborador
         and cod_unidade = f_cod_unidade_origem;
