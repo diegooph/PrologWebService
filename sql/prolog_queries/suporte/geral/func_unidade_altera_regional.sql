@@ -16,8 +16,8 @@ begin
     perform func_garante_not_null(f_cod_regional, 'Código regional');
     perform func_garante_unidade_existe(f_cod_unidade);
     perform func_garante_regional_existe(f_cod_regional);
-    if(v_cod_regional_atual = f_cod_regional) then
-        raise exception 'A regional para alteração é igual a regional já incluida na unidade.';
+    if (v_cod_regional_atual = f_cod_regional) then
+        raise exception 'A regional para alteração é igual a regional já incluída na unidade.';
     end if;
     update unidade
         set cod_regional = f_cod_regional
