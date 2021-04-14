@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.v3.frota.afericao._model.AfericaoAvulsaProj
 import br.com.zalf.prolog.webservice.v3.frota.afericao._model.AfericaoEntity;
 import br.com.zalf.prolog.webservice.v3.frota.afericao._model.AfericaoPlacaProjection;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -17,7 +18,7 @@ import java.util.List;
  */
 public interface AfericaoDao extends JpaRepository<AfericaoEntity, Long> {
     @NotNull
-    @Query(value = "select * from func_afericao_get_afericoes_placas_paginada(        " +
+    @Query(value = "select * from func_afericao_get_afericoes_placas_paginada(" +
             "f_cod_unidades => to_bigint_array(:codUnidades),         " +
             "f_cod_tipo_veiculo => to_bigint(:codTipoVeiculo),        " +
             "f_cod_veiculo => to_bigint(:codVeiculo),                 " +
