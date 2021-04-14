@@ -1,4 +1,3 @@
-begin transaction;
 CREATE OR REPLACE FUNCTION FUNC_CHECKLIST_GET_ALL_CHECKLISTS_REALIZADOS_DEPRECATED(F_COD_UNIDADE BIGINT,
                                                                                    F_COD_EQUIPE BIGINT,
                                                                                    F_COD_TIPO_VEICULO BIGINT,
@@ -487,7 +486,6 @@ FROM (((((pneu p
 alter table afericao_data
     drop column if exists placa_veiculo;
 
-
 create or replace function func_afericao_insert_afericao(f_cod_unidade bigint,
                                                          f_data_hora timestamp with time zone,
                                                          f_cpf_aferidor bigint,
@@ -543,7 +541,6 @@ begin
     return v_cod_afericao_inserida;
 end
 $$;
-
 
 
 CREATE OR REPLACE FUNCTION FUNC_AFERICAO_GET_AFERICOES_PLACAS_PAGINADA(F_COD_UNIDADE BIGINT, F_COD_TIPO_VEICULO BIGINT,
@@ -985,7 +982,6 @@ where a.cod_unidade in (select codigo
   and a.data_hora > f_data_hora
 order by a.data_hora;
 $$;
-
 
 create or replace function func_afericao_relatorio_exportacao_protheus(f_cod_unidades bigint[],
                                                                        f_cod_veiculos bigint[],
@@ -1903,7 +1899,6 @@ WHERE AM.COD_UNIDADE = ANY (F_COD_UNIDADES)
 ORDER BY U.NOME, A.DATA_HORA;
 $$;
 
-
 --Cria function com outros parametros
 create or replace function func_garante_novo_km_menor_que_atual_veiculo(f_cod_veiculo bigint,
                                                                         f_novo_km bigint)
@@ -1982,7 +1977,6 @@ begin
     into aviso_km_afericao_alterado;
 end;
 $$;
-
 
 alter table integracao.afericao_integrada
     add column if not exists cod_veiculo bigint;
@@ -3386,8 +3380,6 @@ order by case
              else null::date
              end;
 
-
-
 create or replace function func_afericao_insert_afericao(f_cod_unidade bigint,
                                                          f_data_hora timestamp with time zone,
                                                          f_cpf_aferidor bigint,
@@ -3658,7 +3650,6 @@ begin
 end;
 $$;
 
-
 create or replace view estratificacao_os as
 select cos.codigo                                                       as cod_os,
        realizador.nome                                                  as nome_realizador_checklist,
@@ -3771,4 +3762,3 @@ alter table checklist_data
         (cod_unidade, cod_checklist_modelo, data_hora, cpf_colaborador, cod_veiculo, tipo,
          tempo_realizacao, km_veiculo, fonte_data_hora_realizacao, versao_app_momento_realizacao,
          device_id, device_imei, device_uptime_realizacao_millis);
-end transaction;
