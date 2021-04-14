@@ -1,0 +1,36 @@
+package test.br.com.zalf.prolog.webservice.pilares.frota.checklist.os.v3;
+
+import br.com.zalf.prolog.webservice.v3.frota.checklistordemservico._model.ChecklistOrdemServicoListagemDto;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import test.br.com.zalf.prolog.webservice.IntegrationTest;
+
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+/**
+ * Created on 2021-04-13
+ *
+ * @author Gustavo Navarro (https://github.com/gustavocnp95)
+ */
+public final class ChecklistOrdemServicoIT extends IntegrationTest {
+
+    @Autowired
+    private ChecklistOrdemServicoApiClient client;
+
+    @Test
+    @DisplayName("Dado parâmetros corretos, retorne List<AfericaoPlacaDto> e status OK")
+    void givenCorrectParameters_ThenReturnListAfericaoPlacaDtoAndStatusOk() {
+
+        final ResponseEntity<List<ChecklistOrdemServicoListagemDto>> response = client.getOrdensServico(List.of(215L),
+                                                                                                        2,
+                                                                                                        0);
+        final HttpStatus status = response.getStatusCode();
+        System.out.println(response.getBody());
+        assertThat(status).isEqualTo(HttpStatus.OK);
+    }
+}
