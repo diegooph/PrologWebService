@@ -43,7 +43,7 @@ public class AfericaoApiClient {
                 .queryParam("codUnidades", codUnidades.stream()
                         .map(Object::toString)
                         .collect(Collectors.joining(",")))
-                .queryParam("placa", placaVeiculo)
+                .queryParam("codVeiculo", codVeiculo)
                 .queryParam("codTipoVeiculo", codTipoVeiculo)
                 .queryParam("dataInicial", dataInicial)
                 .queryParam("dataFinal", dataFinal)
