@@ -186,3 +186,83 @@ begin
     order by cd.row_log -> 'codigo' desc, cd.data_hora_utc desc;
 end
 $$;
+
+drop function suporte.func_colaborador_transfere_entre_empresas(f_cod_unidade_origem bigint,
+    f_cpf_colaborador bigint,
+    f_cod_unidade_destino integer,
+    f_cod_empresa_destino bigint,
+    f_cod_setor_destino bigint,
+    f_cod_equipe_destino bigint,
+    f_cod_funcao_destino integer,
+    f_matricula_trans integer default null,
+    f_matricula_ambev integer default null,
+    f_nivel_permissao integer default 0,
+    out aviso_colaborador_transferido text);
+
+create or replace function suporte.func_colaborador_transfere_entre_empresas(f_cod_unidade_origem bigint,
+                                                                             f_cpf_colaborador bigint,
+                                                                             f_cod_unidade_destino integer,
+                                                                             f_cod_empresa_destino bigint,
+                                                                             f_cod_setor_destino bigint,
+                                                                             f_cod_equipe_destino bigint,
+                                                                             f_cod_funcao_destino integer,
+                                                                             f_matricula_trans integer default null,
+                                                                             f_matricula_ambev integer default null,
+                                                                             f_nivel_permissao integer default 0,
+                                                                             out aviso_colaborador_transferido text)
+    returns text
+    language plpgsql
+    security definer
+as
+$$
+declare
+empresa_origem bigint := (select u.cod_empresa as empresa_origem
+                              from unidade u
+                              where u.codigo = f_cod_unidade_origem);
+begin
+    perform suporte.func_historico_salva_execucao();
+    -- verifica se empresa origem/destino são distintas
+    perform func_garante_empresas_distintas(empresa_origem, f_cod_empresa_destino);
+
+    -- verifica se unidade destino existe e se pertence a empresa.
+    perform func_garante_integridade_empresa_unidade(f_cod_empresa_destino, f_cod_unidade_destino);
+
+    --verifica se o colaborador está cadastrado e se pertence a unidade origem.
+    perform func_garante_integridade_unidade_colaborador(f_cod_unidade_origem, f_cpf_colaborador);
+
+    -- verifica se o setor existe na unidade destino.
+    perform func_garante_setor_existe(f_cod_unidade_destino, f_cod_setor_destino);
+
+    -- verifica se a equipe existe na unidade destino.
+    perform func_garante_equipe_existe(f_cod_unidade_destino, f_cod_equipe_destino);
+
+    -- verifica se a função existe na empresa destino.
+    perform func_garante_cargo_existe(f_cod_empresa_destino, f_cod_funcao_destino);
+
+    -- verifica se permissão existe
+    if not exists(select p.codigo from permissao p where p.codigo = f_nivel_permissao)
+    then
+        raise exception 'não existe permissão com o código: %', f_nivel_permissao;
+end if;
+
+    -- transfere colaborador
+update colaborador
+set cod_unidade                        = f_cod_unidade_destino,
+    cod_empresa                        = f_cod_empresa_destino,
+    cod_setor                          = f_cod_setor_destino,
+    cod_equipe                         = f_cod_equipe_destino,
+    cod_funcao                         = f_cod_funcao_destino,
+    matricula_trans                    = f_matricula_trans,
+    matricula_ambev                    = f_matricula_ambev,
+    cod_permissao                      = f_nivel_permissao,
+    cod_colaborador_ultima_atualizacao = null
+    where cpf = f_cpf_colaborador
+        and cod_unidade = f_cod_unidade_origem;
+
+select ('COLABORADOR: '
+    || (select c.nome from colaborador c where c.cpf = f_cpf_colaborador)
+    || ' , TRANSFERIDO PARA A UNIDADE: '
+    || (select u.nome from unidade u where u.codigo = f_cod_unidade_destino))
+into aviso_colaborador_transferido;
+end;
+$$;
