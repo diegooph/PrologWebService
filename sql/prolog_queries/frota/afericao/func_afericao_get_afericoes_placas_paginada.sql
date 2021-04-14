@@ -61,7 +61,7 @@ where a.cod_unidade = any (f_cod_unidades)
   and case
     -- Estes parâmetros (-1 e '') foram necessários por conta da conversão de null com o Spring data JPA,
     -- No qual converte null para bytea e mesmo com cast, não consegue converter para o tipo desejado.
-          when f_cod_tipo_veiculo != -1 and f_cod_tipo_veiculo is not null
+          when f_cod_tipo_veiculo is not null
               then v.cod_tipo = f_cod_tipo_veiculo
           else true end
   and case
