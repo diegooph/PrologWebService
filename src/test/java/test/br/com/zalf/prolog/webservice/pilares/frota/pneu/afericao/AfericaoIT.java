@@ -31,8 +31,7 @@ public class AfericaoIT extends IntegrationTest {
                                                                                           "PRO0001",
                                                                                           63L,
                                                                                           "2019-01-01",
-                                                                                          LocalDate.now()
-                                                                                                  .toString(),
+                                                                                          LocalDate.now().toString(),
                                                                                           100,
                                                                                           0);
         final HttpStatus status = response.getStatusCode();
@@ -49,8 +48,7 @@ public class AfericaoIT extends IntegrationTest {
         final ResponseEntity<List<AfericaoAvulsaDto>> response =
                 client.getAfericoesAvulsas(List.of(5L),
                                            "2019-01-01",
-                                           LocalDate.now()
-                                                   .toString(),
+                                           LocalDate.now().toString(),
                                            100,
                                            0);
 
