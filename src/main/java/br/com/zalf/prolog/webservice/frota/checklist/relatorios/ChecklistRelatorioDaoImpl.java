@@ -361,8 +361,8 @@ public class ChecklistRelatorioDaoImpl extends DatabaseConnection implements Che
                                                                      @NotNull final LocalDate dataInicial,
                                                                      @NotNull final LocalDate dataFinal)
             throws Throwable {
-        final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM " +
-                                                                     "FUNC_CHECKLIST_RELATORIO_AMBEV_EXTRATO_REALIZADOS_DIA(?, ?, ?);");
+        final PreparedStatement stmt = conn.prepareStatement(
+                "SELECT * FROM FUNC_CHECKLIST_RELATORIO_AMBEV_EXTRATO_REALIZADOS_DIA(?, ?, ?);");
         stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
         stmt.setObject(2, dataInicial);
         stmt.setObject(3, dataFinal);
