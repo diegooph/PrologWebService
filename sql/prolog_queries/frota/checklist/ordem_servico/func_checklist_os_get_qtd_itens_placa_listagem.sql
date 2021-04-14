@@ -36,7 +36,7 @@ begin
                  join checklist c
             -- Queremos apenas veículos da unidade onde o checklist foi feito.
             -- Isso evita de trazer itens de O.S. de outra empresa em caso de transferência de veículos.
-                      on v.placa = c.placa_veiculo and v.cod_unidade = c.cod_unidade
+                      on v.codigo = c.cod_veiculo and v.cod_unidade = c.cod_unidade
                  join checklist_ordem_servico cos
                       on c.codigo = cos.cod_checklist
                  join checklist_ordem_servico_itens cosi

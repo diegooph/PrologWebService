@@ -44,7 +44,7 @@ begin
     return query
         with dados as (
             select c.cod_veiculo                                                          as cod_veiculo,
-                   c.placa_veiculo::text                                                  as placa_veiculo,
+                   v.placa::text                                                          as placa_veiculo,
                    v.km                                                                   as km_atual_veiculo,
                    cos.codigo                                                             as cod_os,
                    cos.cod_unidade                                                        as cod_unidade_item_os,
@@ -94,7 +94,7 @@ begin
                      join checklist_alternativa_prioridade prio
                           on cap.prioridade = prio.prioridade
                      join veiculo v
-                          on c.placa_veiculo = v.placa
+                          on c.cod_veiculo = v.codigo
                      left join colaborador co
                                on co.cpf = cosi.cpf_mecanico
                      left join checklist_ordem_servico_itens_midia im
