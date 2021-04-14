@@ -30,6 +30,20 @@ public class AfericaoApiClient {
     private TestRestTemplate restTemplate;
 
     public ResponseEntity<List<AfericaoPlacaDto>> getAfericoesPlacas(final List<Long> codUnidades,
+                                                                     final String dataInicial,
+                                                                     final String dataFinal,
+                                                                     final int limit,
+                                                                     final int offset) {
+        return getAfericoesPlacas(codUnidades,
+                                  null,
+                                  null,
+                                  dataInicial,
+                                  dataFinal,
+                                  limit,
+                                  offset);
+    }
+
+    public ResponseEntity<List<AfericaoPlacaDto>> getAfericoesPlacas(final List<Long> codUnidades,
                                                                      final Long codVeiculo,
                                                                      final Long codTipoVeiculo,
                                                                      final String dataInicial,
