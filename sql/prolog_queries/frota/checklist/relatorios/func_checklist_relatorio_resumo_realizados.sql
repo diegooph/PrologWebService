@@ -66,7 +66,7 @@ select u.nome                                                 as nome_unidade,
                  join checklist_alternativa_pergunta cap
                       on crn.cod_alternativa = cap.codigo
         where crn.cod_checklist = c.codigo
-          and cap.prioridade = 'ALTA')                as total_alta,
+          and cap.prioridade = 'ALTA')                        as total_alta,
        (select count(*)
         from checklist_respostas_nok crn
                  join checklist_alternativa_pergunta cap
