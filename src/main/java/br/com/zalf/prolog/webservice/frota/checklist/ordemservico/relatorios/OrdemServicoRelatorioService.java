@@ -21,7 +21,7 @@ class OrdemServicoRelatorioService {
 
     @NotNull
     public Report getEstratificacaoOsReport(@NotNull final List<Long> codUnidades,
-                                            @NotNull final String placa,
+                                            @NotNull final Long codVeiculo,
                                             @NotNull final String statusOs,
                                             @NotNull final String statusItemOs,
                                             @Nullable final String dataInicialAbertura,
@@ -31,7 +31,7 @@ class OrdemServicoRelatorioService {
         try {
             return dao.getEstratificacaoOsReport(
                     codUnidades,
-                    placa,
+                    codVeiculo,
                     statusOs,
                     statusItemOs,
                     StringUtils.isNullOrEmpty(dataInicialAbertura)
@@ -48,22 +48,22 @@ class OrdemServicoRelatorioService {
                             : PrologDateParser.toLocalDate(dataFinalResolucao));
         } catch (final Throwable e) {
             Log.e(TAG, String.format("Erro ao buscar a estratificação das OS (REPORT)\n" +
-                    "Unidades: %s\n" +
-                    "Placa: %s\n" +
-                    "statusOs: %s\n" +
-                    "statusItemOs: %s\n" +
-                    "Data Inicial Abertura: %s\n" +
-                    "Data Final Abertura: %s" +
-                    "Data Inicial Resolução: %s\n" +
-                    "Data Final Resolução: %s" +
-                    codUnidades.toString(),
-                    placa,
-                    statusOs,
-                    statusItemOs,
-                    dataInicialAbertura,
-                    dataFinalAbertura,
-                    dataInicialResolucao,
-                    dataFinalResolucao), e);
+                                             "Unidades: %s\n" +
+                                             "Placa: %s\n" +
+                                             "statusOs: %s\n" +
+                                             "statusItemOs: %s\n" +
+                                             "Data Inicial Abertura: %s\n" +
+                                             "Data Final Abertura: %s\n" +
+                                             "Data Inicial Resolução: %s\n" +
+                                             "Data Final Resolução: %s",
+                                     codUnidades.toString(),
+                                     codVeiculo,
+                                     statusOs,
+                                     statusItemOs,
+                                     dataInicialAbertura,
+                                     dataFinalAbertura,
+                                     dataInicialResolucao,
+                                     dataFinalResolucao), e);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(e, "Erro ao gerar relatório, tente novamente");
@@ -82,10 +82,10 @@ class OrdemServicoRelatorioService {
                     PrologDateParser.toLocalDate(dataFinal));
         } catch (final Throwable e) {
             Log.e(TAG, String.format("Erro ao buscar o relatório com os itens com maior quantidade de apontamentos " +
-                    "nok (CSV)\n" +
-                    "Unidades: %s\n" +
-                    "Data Inicial: %s\n" +
-                    "Data Final: %s", codUnidades.toString(), dataInicial, dataFinal), e);
+                                             "nok (CSV)\n" +
+                                             "Unidades: %s\n" +
+                                             "Data Inicial: %s\n" +
+                                             "Data Final: %s", codUnidades.toString(), dataInicial, dataFinal), e);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(e, "Erro ao gerar relatório, tente novamente");
@@ -103,10 +103,10 @@ class OrdemServicoRelatorioService {
                     PrologDateParser.toLocalDate(dataFinal));
         } catch (final Throwable e) {
             Log.e(TAG, String.format("Erro ao buscar o relatório com os itens com maior quantidade de apontamentos " +
-                    "nok (REPORT)\n" +
-                    "Unidades: %s\n" +
-                    "Data Inicial: %s\n" +
-                    "Data Final: %s", codUnidades.toString(), dataInicial, dataFinal), e);
+                                             "nok (REPORT)\n" +
+                                             "Unidades: %s\n" +
+                                             "Data Inicial: %s\n" +
+                                             "Data Final: %s", codUnidades.toString(), dataInicial, dataFinal), e);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(e, "Erro ao gerar relatório, tente novamente");
@@ -125,9 +125,9 @@ class OrdemServicoRelatorioService {
                     PrologDateParser.toLocalDate(dataFinal));
         } catch (final Throwable e) {
             Log.e(TAG, String.format("Erro ao buscar a média de tempo de conserto dos itens(CSV)\n" +
-                    "Unidades: %s\n" +
-                    "Data Inicial: %s\n" +
-                    "Data Final: %s", codUnidades.toString(), dataInicial, dataFinal), e);
+                                             "Unidades: %s\n" +
+                                             "Data Inicial: %s\n" +
+                                             "Data Final: %s", codUnidades.toString(), dataInicial, dataFinal), e);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(e, "Erro ao gerar relatório, tente novamente");
@@ -145,9 +145,9 @@ class OrdemServicoRelatorioService {
                     PrologDateParser.toLocalDate(dataFinal));
         } catch (final Throwable e) {
             Log.e(TAG, String.format("Erro ao buscar a média de tempo de conserto dos itens (CSV)\n" +
-                    "Unidades: %s\n" +
-                    "Data Inicial: %s\n" +
-                    "Data Final: %s", codUnidades.toString(), dataInicial, dataFinal), e);
+                                             "Unidades: %s\n" +
+                                             "Data Inicial: %s\n" +
+                                             "Data Final: %s", codUnidades.toString(), dataInicial, dataFinal), e);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(e, "Erro ao gerar relatório, tente novamente");
@@ -166,9 +166,9 @@ class OrdemServicoRelatorioService {
                     PrologDateParser.toLocalDate(dataFinal));
         } catch (final Throwable e) {
             Log.e(TAG, String.format("Erro ao o relatório com a produtividade dos mecânicos(CSV)\n" +
-                    "Unidades: %s\n" +
-                    "Data Inicial: %s\n" +
-                    "Data Final: %s", codUnidades.toString(), dataInicial, dataFinal), e);
+                                             "Unidades: %s\n" +
+                                             "Data Inicial: %s\n" +
+                                             "Data Final: %s", codUnidades.toString(), dataInicial, dataFinal), e);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(e, "Erro ao gerar relatório, tente novamente");
@@ -186,9 +186,9 @@ class OrdemServicoRelatorioService {
                     PrologDateParser.toLocalDate(dataFinal));
         } catch (final Throwable e) {
             Log.e(TAG, String.format("Erro ao o relatório com a produtividade dos mecânicos(REPORT)\n" +
-                    "Unidades: %s\n" +
-                    "Data Inicial: %s\n" +
-                    "Data Final: %s", codUnidades.toString(), dataInicial, dataFinal), e);
+                                             "Unidades: %s\n" +
+                                             "Data Inicial: %s\n" +
+                                             "Data Final: %s", codUnidades.toString(), dataInicial, dataFinal), e);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(e, "Erro ao gerar relatório, tente novamente");
@@ -197,7 +197,7 @@ class OrdemServicoRelatorioService {
 
     void getEstratificacaoOsCsv(@NotNull final OutputStream outputStream,
                                 @NotNull final List<Long> codUnidades,
-                                @NotNull final String placa,
+                                @NotNull final Long codVeiculo,
                                 @NotNull final String statusOs,
                                 @NotNull final String statusItemOs,
                                 @Nullable final String dataInicialAbertura,
@@ -208,7 +208,7 @@ class OrdemServicoRelatorioService {
             dao.getEstratificacaoOsCsv(
                     outputStream,
                     codUnidades,
-                    placa,
+                    codVeiculo,
                     statusOs,
                     statusItemOs,
                     StringUtils.isNullOrEmpty(dataInicialAbertura)
@@ -225,22 +225,22 @@ class OrdemServicoRelatorioService {
                             : PrologDateParser.toLocalDate(dataFinalResolucao));
         } catch (final Throwable e) {
             Log.e(TAG, String.format("Erro ao buscar a estratificação das OS (CSV)\n" +
-                    "Unidades: %s\n" +
-                    "Placa: %s\n" +
-                    "statusOs: %s\n" +
-                    "statusItemOs %s\n" +
-                    "Data Inicial Abertura: %s\n" +
-                    "Data Final Abertura: %s\n" +
-                    "Data Inicial Resolução: %s\n" +
-                    "Data Final Resolução: %s",
-                    codUnidades.toString(),
-                    placa,
-                    statusOs,
-                    statusItemOs,
-                    dataInicialAbertura,
-                    dataFinalAbertura,
-                    dataInicialResolucao,
-                    dataFinalResolucao), e);
+                                             "Unidades: %s\n" +
+                                             "Placa: %s\n" +
+                                             "statusOs: %s\n" +
+                                             "statusItemOs %s\n" +
+                                             "Data Inicial Abertura: %s\n" +
+                                             "Data Final Abertura: %s\n" +
+                                             "Data Inicial Resolução: %s\n" +
+                                             "Data Final Resolução: %s",
+                                     codUnidades.toString(),
+                                     codVeiculo,
+                                     statusOs,
+                                     statusItemOs,
+                                     dataInicialAbertura,
+                                     dataFinalAbertura,
+                                     dataInicialResolucao,
+                                     dataFinalResolucao), e);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(e, "Erro ao gerar relatório, tente novamente");

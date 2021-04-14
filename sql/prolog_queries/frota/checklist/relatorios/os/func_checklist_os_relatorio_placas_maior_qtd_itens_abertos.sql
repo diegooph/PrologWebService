@@ -1,10 +1,10 @@
-create or replace function func_checklist_os_relatorio_placas_maior_qtd_itens_abertos(
-    f_cod_unidades bigint[],
-    f_total_placas_para_buscar integer)
+create or replace function
+    func_checklist_os_relatorio_placas_maior_qtd_itens_abertos(f_cod_unidades bigint[],
+                                                               f_total_placas_para_buscar integer)
     returns table
             (
-                nome_unidade                      character varying,
-                placa                             character varying,
+                nome_unidade                      text,
+                placa                             text,
                 quantidade_itens_abertos          bigint,
                 quantidade_itens_criticos_abertos bigint
             )
@@ -17,7 +17,7 @@ declare
 begin
     return query
         with placas as (
-            select c.placa_veiculo           as placa_veiculo,
+            select v.placa                   as placa_veiculo,
                    count(cosi.codigo)        as quantidade_itens_abertos,
                    count(case
                              when cap.prioridade = prioridade_critica
@@ -34,16 +34,17 @@ begin
                           on cosi.cod_alternativa_primeiro_apontamento = cap.codigo
                      join checklist c
                           on c.codigo = cos.cod_checklist
+                     join veiculo v on c.cod_veiculo = v.codigo
             where c.cod_unidade = any (f_cod_unidades)
               and cosi.status_resolucao = status_itens_abertos
-            group by c.placa_veiculo
+            group by v.codigo
             order by quantidade_itens_abertos desc,
-                     c.placa_veiculo asc
+                     v.codigo
             limit f_total_placas_para_buscar
         )
 
-        select u.nome as nome_unidade,
-               p.placa_veiculo,
+        select u.nome::text as nome_unidade,
+               p.placa_veiculo::text,
                p.quantidade_itens_abertos,
                p.quantidade_itens_criticos_abertos
         from placas p

@@ -6,11 +6,11 @@ import br.com.zalf.prolog.webservice.commons.report.ReportTransformer;
 import br.com.zalf.prolog.webservice.commons.util.database.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.database.SqlType;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
-import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.PlacasBloqueadas;
-import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.PlacasBloqueadasResponse;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.OLD.ItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.PlacaItensOsAbertos;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.PlacasBloqueadas;
+import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.PlacasBloqueadasResponse;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -35,8 +35,8 @@ public final class OrdemServicoRelatorioDaoImpl extends DatabaseConnection imple
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM " +
-                    "FUNC_CHECKLIST_OS_RELATORIO_PLACAS_MAIOR_QTD_ITENS_ABERTOS(?, ?);");
+            stmt = conn.prepareStatement(
+                    "SELECT * FROM FUNC_CHECKLIST_OS_RELATORIO_PLACAS_MAIOR_QTD_ITENS_ABERTOS(?, ?);");
             stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
             stmt.setInt(2, qtdPlacasParaBuscar);
             rSet = stmt.executeQuery();
@@ -66,7 +66,7 @@ public final class OrdemServicoRelatorioDaoImpl extends DatabaseConnection imple
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * FROM " +
-                    "FUNC_CHECKLIST_OS_RELATORIO_QTD_ITENS_POR_PRIORIDADE(?, ?);");
+                                                 "FUNC_CHECKLIST_OS_RELATORIO_QTD_ITENS_POR_PRIORIDADE(?, ?);");
             stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
             stmt.setString(2, statusItensContagem.asString());
             rSet = stmt.executeQuery();
@@ -193,7 +193,7 @@ public final class OrdemServicoRelatorioDaoImpl extends DatabaseConnection imple
     @Override
     public void getEstratificacaoOsCsv(@NotNull final OutputStream outputStream,
                                        @NotNull final List<Long> codUnidades,
-                                       @NotNull final String placa,
+                                       @NotNull final Long codVeiculo,
                                        @NotNull final String statusOs,
                                        @NotNull final String statusItemOs,
                                        @Nullable final LocalDate dataInicialAbertura,
@@ -205,11 +205,15 @@ public final class OrdemServicoRelatorioDaoImpl extends DatabaseConnection imple
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = getEstratificacaoOs(conn, codUnidades, placa, statusOs, statusItemOs,
-                    dataInicialAbertura,
-                    dataFinalAbertura,
-                    dataInicialResolucao,
-                    dataFinalResolucao);
+            stmt = getEstratificacaoOs(conn,
+                                       codUnidades,
+                                       codVeiculo,
+                                       statusOs,
+                                       statusItemOs,
+                                       dataInicialAbertura,
+                                       dataFinalAbertura,
+                                       dataInicialResolucao,
+                                       dataFinalResolucao);
             rSet = stmt.executeQuery();
             new CsvWriter
                     .Builder(outputStream)
@@ -224,7 +228,7 @@ public final class OrdemServicoRelatorioDaoImpl extends DatabaseConnection imple
     @NotNull
     @Override
     public Report getEstratificacaoOsReport(@NotNull final List<Long> codUnidades,
-                                            @NotNull final String placa,
+                                            @NotNull final Long codVeiculo,
                                             @NotNull final String statusOs,
                                             @NotNull final String statusItemOs,
                                             @Nullable final LocalDate dataInicialAbertura,
@@ -236,11 +240,15 @@ public final class OrdemServicoRelatorioDaoImpl extends DatabaseConnection imple
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = getEstratificacaoOs(conn, codUnidades, placa, statusOs, statusItemOs,
-                    dataInicialAbertura,
-                    dataFinalAbertura,
-                    dataInicialResolucao,
-                    dataFinalResolucao);
+            stmt = getEstratificacaoOs(conn,
+                                       codUnidades,
+                                       codVeiculo,
+                                       statusOs,
+                                       statusItemOs,
+                                       dataInicialAbertura,
+                                       dataFinalAbertura,
+                                       dataInicialResolucao,
+                                       dataFinalResolucao);
             rSet = stmt.executeQuery();
             return ReportTransformer.createReport(rSet);
         } finally {
@@ -257,7 +265,7 @@ public final class OrdemServicoRelatorioDaoImpl extends DatabaseConnection imple
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("select * from  func_checklist_os_relatorio_get_placas_bloqueadas(" +
-                    "f_cod_unidades => ?);");
+                                                 "f_cod_unidades => ?);");
             stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
 
             rSet = stmt.executeQuery();
@@ -282,17 +290,17 @@ public final class OrdemServicoRelatorioDaoImpl extends DatabaseConnection imple
     @NotNull
     private PreparedStatement getEstratificacaoOs(@NotNull final Connection conn,
                                                   @NotNull final List<Long> codUnidades,
-                                                  @NotNull final String placa,
+                                                  @NotNull final Long codVeiculo,
                                                   @NotNull final String statusOs,
                                                   @NotNull final String statusItemOs,
                                                   @Nullable final LocalDate dataInicialAbertura,
                                                   @Nullable final LocalDate dataFinalAbertura,
                                                   @Nullable final LocalDate dataInicialResolucao,
                                                   @Nullable final LocalDate dataFinalResolucao) throws Throwable {
-        final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM " +
-                "FUNC_CHECKLIST_OS_RELATORIO_ESTRATIFICACAO_OS(?, ?, ?, ?, ?, ?, ?, ?);");
+        final PreparedStatement stmt = conn.prepareStatement(
+                "SELECT * FROM FUNC_CHECKLIST_OS_RELATORIO_ESTRATIFICACAO_OS(?, ?, ?, ?, ?, ?, ?, ?);");
         stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
-        stmt.setString(2, placa);
+        stmt.setLong(2, codVeiculo);
         stmt.setString(3, statusOs);
         stmt.setString(4, statusItemOs);
         stmt.setObject(5, dataInicialAbertura);
@@ -307,8 +315,8 @@ public final class OrdemServicoRelatorioDaoImpl extends DatabaseConnection imple
                                                         @NotNull final List<Long> codUnidades,
                                                         @NotNull final LocalDate dataInicial,
                                                         @NotNull final LocalDate dataFinal) throws Throwable {
-        final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM " +
-                "FUNC_CHECKLIST_OS_RELATORIO_PRODUTIVIDADE_MECANICOS(?, ?, ?);");
+        final PreparedStatement stmt = conn.prepareStatement(
+                "SELECT * FROM FUNC_CHECKLIST_OS_RELATORIO_PRODUTIVIDADE_MECANICOS(?, ?, ?);");
         stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
         stmt.setObject(2, dataInicial);
         stmt.setObject(3, dataFinal);
@@ -320,8 +328,8 @@ public final class OrdemServicoRelatorioDaoImpl extends DatabaseConnection imple
                                                         @NotNull final List<Long> codUnidades,
                                                         @NotNull final LocalDate dataInicial,
                                                         @NotNull final LocalDate dataFinal) throws Throwable {
-        final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM " +
-                "FUNC_CHECKLIST_OS_RELATORIO_MEDIA_TEMPO_CONSERTO_ITEM(?, ?, ?);");
+        final PreparedStatement stmt = conn.prepareStatement(
+                "SELECT * FROM FUNC_CHECKLIST_OS_RELATORIO_MEDIA_TEMPO_CONSERTO_ITEM(?, ?, ?);");
         stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
         stmt.setObject(2, dataInicial);
         stmt.setObject(3, dataFinal);
@@ -333,8 +341,8 @@ public final class OrdemServicoRelatorioDaoImpl extends DatabaseConnection imple
                                                          @NotNull final List<Long> codUnidades,
                                                          @NotNull final LocalDate dataInicial,
                                                          @NotNull final LocalDate dataFinal) throws Throwable {
-        final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM " +
-                "FUNC_CHECKLIST_OS_RELATORIO_ITENS_MAIOR_QUANTIDADE_NOK(?, ?, ?);");
+        final PreparedStatement stmt = conn.prepareStatement(
+                "SELECT * FROM FUNC_CHECKLIST_OS_RELATORIO_ITENS_MAIOR_QUANTIDADE_NOK(?, ?, ?);");
         stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
         stmt.setObject(2, dataInicial);
         stmt.setObject(3, dataFinal);

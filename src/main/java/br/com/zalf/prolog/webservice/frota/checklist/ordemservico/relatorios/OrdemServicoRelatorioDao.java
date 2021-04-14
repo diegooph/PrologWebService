@@ -31,6 +31,7 @@ public interface OrdemServicoRelatorioDao {
                                        @NotNull final List<Long> codUnidades,
                                        @NotNull final LocalDate dataInicial,
                                        @NotNull final LocalDate dataFinal) throws Throwable;
+
     @NotNull
     Report getItensMaiorQuantidadeNokReport(@NotNull final List<Long> codUnidades,
                                             @NotNull final LocalDate dataInicial,
@@ -40,6 +41,7 @@ public interface OrdemServicoRelatorioDao {
                                       @NotNull final List<Long> codUnidades,
                                       @NotNull final LocalDate dataInicial,
                                       @NotNull final LocalDate dataFinal) throws Throwable;
+
     @NotNull
     Report getMediaTempoConsertoItemReport(@NotNull final List<Long> codUnidades,
                                            @NotNull final LocalDate dataInicial,
@@ -49,14 +51,15 @@ public interface OrdemServicoRelatorioDao {
                                       @NotNull final List<Long> codUnidades,
                                       @NotNull final LocalDate dataInicial,
                                       @NotNull final LocalDate dataFinal) throws Throwable;
+
     @NotNull
     Report getProdutividadeMecanicosReport(@NotNull final List<Long> codUnidades,
                                            @NotNull final LocalDate dataInicial,
                                            @NotNull final LocalDate dataFinal) throws Throwable;
 
-    void getEstratificacaoOsCsv(@NotNull final OutputStream outputStream, 
-                                @NotNull final List<Long> codUnidades, 
-                                @NotNull final String placa,
+    void getEstratificacaoOsCsv(@NotNull final OutputStream outputStream,
+                                @NotNull final List<Long> codUnidades,
+                                @NotNull final Long codVeiculo,
                                 @NotNull final String statusOs,
                                 @NotNull final String statusItemOs,
                                 @Nullable final LocalDate dataInicialAbertura,
@@ -66,7 +69,7 @@ public interface OrdemServicoRelatorioDao {
 
     @NotNull
     Report getEstratificacaoOsReport(@NotNull final List<Long> codUnidades,
-                                     @NotNull final String placa,
+                                     @NotNull final Long codVeiculo,
                                      @NotNull final String statusOs,
                                      @NotNull final String statusItemOs,
                                      @Nullable final LocalDate dataInicialAbertura,
