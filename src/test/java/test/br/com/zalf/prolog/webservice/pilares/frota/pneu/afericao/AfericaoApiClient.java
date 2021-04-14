@@ -30,7 +30,7 @@ public class AfericaoApiClient {
     private TestRestTemplate restTemplate;
 
     public ResponseEntity<List<AfericaoPlacaDto>> getAfericoesPlacas(final List<Long> codUnidades,
-                                                                     final String placaVeiculo,
+                                                                     final Long codVeiculo,
                                                                      final Long codTipoVeiculo,
                                                                      final String dataInicial,
                                                                      final String dataFinal,
@@ -40,7 +40,7 @@ public class AfericaoApiClient {
         final UriComponents components = UriComponentsBuilder
                 .fromPath(RESOURCE)
                 .path("/placas")
-                .queryParam("unidades", codUnidades.stream()
+                .queryParam("codUnidades", codUnidades.stream()
                         .map(Object::toString)
                         .collect(Collectors.joining(",")))
                 .queryParam("placa", placaVeiculo)
@@ -66,7 +66,7 @@ public class AfericaoApiClient {
         final UriComponents components = UriComponentsBuilder
                 .fromPath(RESOURCE)
                 .path("/avulsas")
-                .queryParam("unidades", codUnidades.stream()
+                .queryParam("codUnidades", codUnidades.stream()
                         .map(Object::toString)
                         .collect(Collectors.joining(",")))
                 .queryParam("dataInicial", dataInicial)
