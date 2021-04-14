@@ -37,9 +37,9 @@ begin
                      join veiculo v on c.cod_veiculo = v.codigo
             where c.cod_unidade = any (f_cod_unidades)
               and cosi.status_resolucao = status_itens_abertos
-            group by v.codigo
+            group by v.placa
             order by quantidade_itens_abertos desc,
-                     v.codigo
+                     v.placa
             limit f_total_placas_para_buscar
         )
 

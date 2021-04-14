@@ -1,5 +1,4 @@
 CREATE OR REPLACE FUNCTION FUNC_CHECKLIST_OS_RELATORIO_ESTRATIFICACAO_OS(F_COD_UNIDADES BIGINT[],
-                                                                         F_COD_VEICULO BIGINT,
                                                                          F_STATUS_OS TEXT,
                                                                          F_STATUS_ITEM TEXT,
                                                                          F_DATA_INICIAL_ABERTURA DATE,
@@ -89,9 +88,7 @@ FROM ESTRATIFICACAO_OS EO
               ON C.CODIGO = EO.COD_CHECKLIST
          JOIN CHECKLIST_MODELO CM
               ON CM.CODIGO = C.COD_CHECKLIST_MODELO
-
 WHERE EO.COD_UNIDADE = ANY (F_COD_UNIDADES)
-  AND EO.COD_VEICULO LIKE F_COD_VEICULO
   AND EO.STATUS_OS LIKE F_STATUS_OS
   AND EO.STATUS_ITEM LIKE F_STATUS_ITEM
   AND CASE

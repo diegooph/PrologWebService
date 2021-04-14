@@ -59,7 +59,6 @@ public interface OrdemServicoRelatorioDao {
 
     void getEstratificacaoOsCsv(@NotNull final OutputStream outputStream,
                                 @NotNull final List<Long> codUnidades,
-                                @NotNull final Long codVeiculo,
                                 @NotNull final String statusOs,
                                 @NotNull final String statusItemOs,
                                 @Nullable final LocalDate dataInicialAbertura,
@@ -69,7 +68,6 @@ public interface OrdemServicoRelatorioDao {
 
     @NotNull
     Report getEstratificacaoOsReport(@NotNull final List<Long> codUnidades,
-                                     @NotNull final Long codVeiculo,
                                      @NotNull final String statusOs,
                                      @NotNull final String statusItemOs,
                                      @Nullable final LocalDate dataInicialAbertura,

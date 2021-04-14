@@ -1,3 +1,4 @@
+drop view estratificacao_os;
 create or replace view estratificacao_os as
 select cos.codigo                                                       as cod_os,
        realizador.nome                                                  as nome_realizador_checklist,
@@ -75,7 +76,6 @@ drop function func_checklist_os_relatorio_estratificacao_os(f_cod_unidades bigin
     f_data_inicial_resolucao date,
     f_data_final_resolucao date);
 CREATE OR REPLACE FUNCTION FUNC_CHECKLIST_OS_RELATORIO_ESTRATIFICACAO_OS(F_COD_UNIDADES BIGINT[],
-                                                                         F_COD_VEICULO BIGINT,
                                                                          F_STATUS_OS TEXT,
                                                                          F_STATUS_ITEM TEXT,
                                                                          F_DATA_INICIAL_ABERTURA DATE,
@@ -165,9 +165,7 @@ FROM ESTRATIFICACAO_OS EO
               ON C.CODIGO = EO.COD_CHECKLIST
          JOIN CHECKLIST_MODELO CM
               ON CM.CODIGO = C.COD_CHECKLIST_MODELO
-
 WHERE EO.COD_UNIDADE = ANY (F_COD_UNIDADES)
-  AND EO.COD_VEICULO LIKE F_COD_VEICULO
   AND EO.STATUS_OS LIKE F_STATUS_OS
   AND EO.STATUS_ITEM LIKE F_STATUS_ITEM
   AND CASE
@@ -195,6 +193,7 @@ WHERE EO.COD_UNIDADE = ANY (F_COD_UNIDADES)
 ORDER BY U.NOME, EO.COD_OS, EO.PRAZO;
 $$;
 
+drop function func_checklist_os_relatorio_placas_maior_qtd_itens_abertos(bigint[], integer);
 create or replace function
     func_checklist_os_relatorio_placas_maior_qtd_itens_abertos(f_cod_unidades bigint[],
                                                                f_total_placas_para_buscar integer)
@@ -234,9 +233,9 @@ begin
                      join veiculo v on c.cod_veiculo = v.codigo
             where c.cod_unidade = any (f_cod_unidades)
               and cosi.status_resolucao = status_itens_abertos
-            group by v.codigo
+            group by v.placa
             order by quantidade_itens_abertos desc,
-                     v.codigo
+                     v.placa
             limit f_total_placas_para_buscar
         )
 

@@ -193,7 +193,6 @@ public final class OrdemServicoRelatorioDaoImpl extends DatabaseConnection imple
     @Override
     public void getEstratificacaoOsCsv(@NotNull final OutputStream outputStream,
                                        @NotNull final List<Long> codUnidades,
-                                       @NotNull final Long codVeiculo,
                                        @NotNull final String statusOs,
                                        @NotNull final String statusItemOs,
                                        @Nullable final LocalDate dataInicialAbertura,
@@ -207,7 +206,6 @@ public final class OrdemServicoRelatorioDaoImpl extends DatabaseConnection imple
             conn = getConnection();
             stmt = getEstratificacaoOs(conn,
                                        codUnidades,
-                                       codVeiculo,
                                        statusOs,
                                        statusItemOs,
                                        dataInicialAbertura,
@@ -228,7 +226,6 @@ public final class OrdemServicoRelatorioDaoImpl extends DatabaseConnection imple
     @NotNull
     @Override
     public Report getEstratificacaoOsReport(@NotNull final List<Long> codUnidades,
-                                            @NotNull final Long codVeiculo,
                                             @NotNull final String statusOs,
                                             @NotNull final String statusItemOs,
                                             @Nullable final LocalDate dataInicialAbertura,
@@ -242,7 +239,6 @@ public final class OrdemServicoRelatorioDaoImpl extends DatabaseConnection imple
             conn = getConnection();
             stmt = getEstratificacaoOs(conn,
                                        codUnidades,
-                                       codVeiculo,
                                        statusOs,
                                        statusItemOs,
                                        dataInicialAbertura,
@@ -290,7 +286,6 @@ public final class OrdemServicoRelatorioDaoImpl extends DatabaseConnection imple
     @NotNull
     private PreparedStatement getEstratificacaoOs(@NotNull final Connection conn,
                                                   @NotNull final List<Long> codUnidades,
-                                                  @NotNull final Long codVeiculo,
                                                   @NotNull final String statusOs,
                                                   @NotNull final String statusItemOs,
                                                   @Nullable final LocalDate dataInicialAbertura,
@@ -298,15 +293,14 @@ public final class OrdemServicoRelatorioDaoImpl extends DatabaseConnection imple
                                                   @Nullable final LocalDate dataInicialResolucao,
                                                   @Nullable final LocalDate dataFinalResolucao) throws Throwable {
         final PreparedStatement stmt = conn.prepareStatement(
-                "SELECT * FROM FUNC_CHECKLIST_OS_RELATORIO_ESTRATIFICACAO_OS(?, ?, ?, ?, ?, ?, ?, ?);");
+                "SELECT * FROM FUNC_CHECKLIST_OS_RELATORIO_ESTRATIFICACAO_OS(?, ?, ?, ?, ?, ?, ?);");
         stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
-        stmt.setLong(2, codVeiculo);
-        stmt.setString(3, statusOs);
-        stmt.setString(4, statusItemOs);
-        stmt.setObject(5, dataInicialAbertura);
-        stmt.setObject(6, dataFinalAbertura);
-        stmt.setObject(7, dataInicialResolucao);
-        stmt.setObject(8, dataFinalResolucao);
+        stmt.setString(2, statusOs);
+        stmt.setString(3, statusItemOs);
+        stmt.setObject(4, dataInicialAbertura);
+        stmt.setObject(5, dataFinalAbertura);
+        stmt.setObject(6, dataInicialResolucao);
+        stmt.setObject(7, dataFinalResolucao);
         return stmt;
     }
 

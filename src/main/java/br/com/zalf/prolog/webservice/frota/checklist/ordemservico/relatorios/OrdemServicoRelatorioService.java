@@ -21,7 +21,6 @@ class OrdemServicoRelatorioService {
 
     @NotNull
     public Report getEstratificacaoOsReport(@NotNull final List<Long> codUnidades,
-                                            @NotNull final Long codVeiculo,
                                             @NotNull final String statusOs,
                                             @NotNull final String statusItemOs,
                                             @Nullable final String dataInicialAbertura,
@@ -31,7 +30,6 @@ class OrdemServicoRelatorioService {
         try {
             return dao.getEstratificacaoOsReport(
                     codUnidades,
-                    codVeiculo,
                     statusOs,
                     statusItemOs,
                     StringUtils.isNullOrEmpty(dataInicialAbertura)
@@ -49,7 +47,6 @@ class OrdemServicoRelatorioService {
         } catch (final Throwable e) {
             Log.e(TAG, String.format("Erro ao buscar a estratificação das OS (REPORT)\n" +
                                              "Unidades: %s\n" +
-                                             "Placa: %s\n" +
                                              "statusOs: %s\n" +
                                              "statusItemOs: %s\n" +
                                              "Data Inicial Abertura: %s\n" +
@@ -57,7 +54,6 @@ class OrdemServicoRelatorioService {
                                              "Data Inicial Resolução: %s\n" +
                                              "Data Final Resolução: %s",
                                      codUnidades.toString(),
-                                     codVeiculo,
                                      statusOs,
                                      statusItemOs,
                                      dataInicialAbertura,
@@ -197,7 +193,6 @@ class OrdemServicoRelatorioService {
 
     void getEstratificacaoOsCsv(@NotNull final OutputStream outputStream,
                                 @NotNull final List<Long> codUnidades,
-                                @NotNull final Long codVeiculo,
                                 @NotNull final String statusOs,
                                 @NotNull final String statusItemOs,
                                 @Nullable final String dataInicialAbertura,
@@ -208,7 +203,6 @@ class OrdemServicoRelatorioService {
             dao.getEstratificacaoOsCsv(
                     outputStream,
                     codUnidades,
-                    codVeiculo,
                     statusOs,
                     statusItemOs,
                     StringUtils.isNullOrEmpty(dataInicialAbertura)
@@ -226,7 +220,6 @@ class OrdemServicoRelatorioService {
         } catch (final Throwable e) {
             Log.e(TAG, String.format("Erro ao buscar a estratificação das OS (CSV)\n" +
                                              "Unidades: %s\n" +
-                                             "Placa: %s\n" +
                                              "statusOs: %s\n" +
                                              "statusItemOs %s\n" +
                                              "Data Inicial Abertura: %s\n" +
@@ -234,7 +227,6 @@ class OrdemServicoRelatorioService {
                                              "Data Inicial Resolução: %s\n" +
                                              "Data Final Resolução: %s",
                                      codUnidades.toString(),
-                                     codVeiculo,
                                      statusOs,
                                      statusItemOs,
                                      dataInicialAbertura,
