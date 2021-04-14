@@ -1,5 +1,6 @@
 package test.br.com.zalf.prolog.webservice.pilares.frota.checklist.os.v3;
 
+import br.com.zalf.prolog.webservice.errorhandling.sql.ClientSideErrorException;
 import br.com.zalf.prolog.webservice.v3.frota.checklistordemservico._model.ChecklistOrdemServicoListagemDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,14 +24,22 @@ public final class ChecklistOrdemServicoIT extends IntegrationTest {
     private ChecklistOrdemServicoApiClient client;
 
     @Test
-    @DisplayName("Dado parâmetros corretos, retorne List<AfericaoPlacaDto> e status OK")
-    void givenCorrectParameters_ThenReturnListAfericaoPlacaDtoAndStatusOk() {
+    @DisplayName("Dado parâmetros corretos, retorne List<ChecklistOrdemServicoListagemDto> e status OK")
+    void givenMinimumCorrectParameters_ThenReturnListChecklistOrdemServicoStatusOk() {
 
         final ResponseEntity<List<ChecklistOrdemServicoListagemDto>> response = client.getOrdensServico(List.of(215L),
                                                                                                         2,
                                                                                                         0);
-        final HttpStatus status = response.getStatusCode();
-        System.out.println(response.getBody());
-        assertThat(status).isEqualTo(HttpStatus.OK);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
+    @Test
+    @DisplayName("Tipo do dado do parâmetro codUnidades incorreto, retornando ClientSideErrorException.")
+    void givenWrongTypeParameter_ThenReturnClientSideErrorExceptionBadRequest() {
+        final ResponseEntity<ClientSideErrorException> response = client.getOrdensServicoWithWrongUnidades(
+                List.of("a"),
+                2,
+                0);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 }
