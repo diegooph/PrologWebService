@@ -28,8 +28,6 @@ public class AfericaoIT extends IntegrationTest {
     void givenCorrectParameters_ThenReturnListAfericaoPlacaDtoAndStatusOk() {
 
         final ResponseEntity<List<AfericaoPlacaDto>> response = client.getAfericoesPlacas(List.of(5L),
-                                                                                          "PRO0001",
-                                                                                          63L,
                                                                                           "2019-01-01",
                                                                                           LocalDate.now().toString(),
                                                                                           100,
