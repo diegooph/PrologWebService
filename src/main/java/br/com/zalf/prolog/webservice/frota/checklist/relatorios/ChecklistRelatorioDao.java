@@ -57,13 +57,11 @@ public interface ChecklistRelatorioDao {
 
     void getResumoChecklistsCsv(@NotNull final OutputStream outputStream,
                                 @NotNull final List<Long> codUnidade,
-                                @NotNull final Long codVeiculo,
                                 @NotNull final LocalDate dataInicial,
                                 @NotNull final LocalDate dataFinal) throws Throwable;
 
     @NotNull
     Report getResumoChecklistsReport(@NotNull final List<Long> codUnidade,
-                                     @NotNull final Long codVeiculo,
                                      @NotNull final LocalDate dataInicial,
                                      @NotNull final LocalDate dataFinal) throws Throwable;
 
