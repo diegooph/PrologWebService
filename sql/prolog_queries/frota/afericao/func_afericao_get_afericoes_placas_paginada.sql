@@ -54,7 +54,7 @@ select a.km_veiculo,
        av.altura_sulco_externo                            as altura_sulco_externo
 
 from afericao a
-         join veiculo v on v.placa = a.placa_veiculo
+         join veiculo v on v.codigo = a.cod_veiculo
          join colaborador c on c.cpf = a.cpf_aferidor
          left join afericao_valores av on f_incluir_medidas and av.cod_afericao = a.codigo
 where a.cod_unidade = any (f_cod_unidades)
