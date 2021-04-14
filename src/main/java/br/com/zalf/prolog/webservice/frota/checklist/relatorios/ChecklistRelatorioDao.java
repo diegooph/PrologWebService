@@ -67,13 +67,11 @@ public interface ChecklistRelatorioDao {
 
     void getEstratificacaoRespostasNokCsv(@NotNull final OutputStream outputStream,
                                           @NotNull final List<Long> codUnidade,
-                                          @NotNull final Long codVeiculo,
                                           @NotNull final LocalDate dataInicial,
                                           @NotNull final LocalDate dataFinal) throws Throwable;
 
     @NotNull
     Report getEstratificacaoRespostasNokReport(@NotNull final List<Long> codUnidade,
-                                               @NotNull final Long codVeiculo,
                                                @NotNull final LocalDate dataInicial,
                                                @NotNull final LocalDate dataFinal) throws Throwable;
 
