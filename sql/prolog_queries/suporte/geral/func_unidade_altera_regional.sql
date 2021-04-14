@@ -12,8 +12,6 @@ declare
                                                        where u.codigo = f_cod_unidade);
 begin
     perform suporte.func_historico_salva_execucao();
-    perform func_garante_not_null(f_cod_unidade, 'Código unidade');
-    perform func_garante_not_null(f_cod_regional, 'Código regional');
     perform func_garante_unidade_existe(f_cod_unidade);
     perform func_garante_regional_existe(f_cod_regional);
     if (v_cod_regional_atual = f_cod_regional) then
