@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.interno.implantacao.conferencia.gente.colaborador;
 
-import br.com.zalf.prolog.webservice.commons.util.StringUtils;
 import br.com.zalf.prolog.webservice.commons.util.files.XlsxConverter;
 import br.com.zalf.prolog.webservice.interno.implantacao.conferencia.gente.colaborador._model.ColaboradorPlanilha;
 import com.univocity.parsers.csv.CsvParser;
@@ -13,6 +12,9 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
+import static br.com.zalf.prolog.webservice.commons.util.StringUtils.isNullOrEmpty;
 
 /**
  * Created on 29/07/2020.
@@ -46,85 +48,88 @@ public final class ColaboradorPlanilhaReader {
         settings.setNumberOfRowsToSkip(12);
         final CsvParser parser = new CsvParser(settings);
         final List<String[]> rows = parser.parseAll(file);
-        final List<ColaboradorPlanilha> colaboradorPlanilha = new ArrayList<>();
-        for (final String[] row : rows) {
-            final ColaboradorPlanilha item = read(row);
-            if (item != null) {
-                colaboradorPlanilha.add(item);
+        final List<ColaboradorPlanilha> colaboradores = new ArrayList<>();
+        for (int i = 0; i < rows.size(); i++) {
+            final String[] row = rows.get(i);
+            if (row != null) {
+                read(row).ifPresent(colaboradores::add);
+            } else {
+                throw new IllegalStateException("Linha " + i + " nula!");
             }
         }
-        return colaboradorPlanilha;
+        return colaboradores;
     }
 
-    private static ColaboradorPlanilha read(@NotNull final String[] linha) {
-        if (linha[1].isEmpty() &&
-                linha[2].isEmpty() &&
-                linha[3].isEmpty() &&
-                linha[4].isEmpty() &&
-                linha[5].isEmpty() &&
-                linha[6].isEmpty() &&
-                linha[7].isEmpty() &&
-                linha[8].isEmpty() &&
-                linha[9].isEmpty() &&
-                linha[10].isEmpty() &&
-                linha[11].isEmpty() &&
-                linha[12].isEmpty() &&
-                linha[13].isEmpty()) {
-            return null;
+    @NotNull
+    private static Optional<ColaboradorPlanilha> read(@NotNull final String[] linha) {
+        if (isNullOrEmpty(linha[1]) &&
+                isNullOrEmpty(linha[2]) &&
+                isNullOrEmpty(linha[3]) &&
+                isNullOrEmpty(linha[4]) &&
+                isNullOrEmpty(linha[5]) &&
+                isNullOrEmpty(linha[6]) &&
+                isNullOrEmpty(linha[7]) &&
+                isNullOrEmpty(linha[8]) &&
+                isNullOrEmpty(linha[9]) &&
+                isNullOrEmpty(linha[10]) &&
+                isNullOrEmpty(linha[11]) &&
+                isNullOrEmpty(linha[12]) &&
+                isNullOrEmpty(linha[13])) {
+            return Optional.empty();
         }
         final ColaboradorPlanilha item = new ColaboradorPlanilha();
         // CPF.
-        if (!StringUtils.isNullOrEmpty(linha[1])) {
+        if (!isNullOrEmpty(linha[1])) {
             item.setCpf(linha[1]);
         }
         // PIS.
-        if (!StringUtils.isNullOrEmpty(linha[2])) {
+        if (!isNullOrEmpty(linha[2])) {
             item.setPis(linha[2]);
         }
         // NOME.
-        if (!StringUtils.isNullOrEmpty(linha[3])) {
+        if (!isNullOrEmpty(linha[3])) {
             item.setNome(linha[3]);
         }
         // DATA NASCIMENTO.
-        if (!StringUtils.isNullOrEmpty(linha[4])) {
+        if (!isNullOrEmpty(linha[4])) {
             item.setDataNascimento(linha[4]);
         }
         // DATA ADMISSAO.
-        if (!StringUtils.isNullOrEmpty(linha[5])) {
+        if (!isNullOrEmpty(linha[5])) {
             item.setDataAdmissao(linha[5]);
         }
         // MATRICULA PROMAX.
-        if (!StringUtils.isNullOrEmpty(linha[6])) {
+        if (!isNullOrEmpty(linha[6])) {
             item.setMatriculaPromax(linha[6]);
         }
         // MATRICULA PONTO.
-        if (!StringUtils.isNullOrEmpty(linha[7])) {
+        if (!isNullOrEmpty(linha[7])) {
             item.setMatriculaPonto(linha[7]);
         }
         // EQUIPE.
-        if (!StringUtils.isNullOrEmpty(linha[8])) {
+        if (!isNullOrEmpty(linha[8])) {
             item.setEquipe(linha[8]);
         }
         // SETOR.
-        if (!StringUtils.isNullOrEmpty(linha[9])) {
+        if (!isNullOrEmpty(linha[9])) {
             item.setSetor(linha[9]);
         }
         // FUNCAO.
-        if (!StringUtils.isNullOrEmpty(linha[10])) {
+        if (!isNullOrEmpty(linha[10])) {
             item.setFuncao(linha[10]);
         }
         // EMAIL.
-        if (!StringUtils.isNullOrEmpty(linha[11])) {
+        if (!isNullOrEmpty(linha[11])) {
             item.setEmail(linha[11]);
         }
         // TELEFONE.
-        if (!StringUtils.isNullOrEmpty(linha[12])) {
+        if (!isNullOrEmpty(linha[12])) {
             item.setTelefone(linha[12]);
         }
         // PAIS.
-        if (!StringUtils.isNullOrEmpty(linha[13])) {
+        if (!isNullOrEmpty(linha[13])) {
             item.setPais(linha[13]);
         }
-        return item;
+        return Optional.of(item);
     }
 }

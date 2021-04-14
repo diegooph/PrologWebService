@@ -1,8 +1,16 @@
 Change Log
 ==========
 
-<a name="v3.0.1"></a>
-## Version [v3.0.1](https://github.com/luizfp/PrologWebService/compare/v3.0.0...v3.0.1) (release-date) [unreleased]
+<a name="v3.1.1"></a>
+## Version [v3.1.1](https://github.com/luizfp/PrologWebService/compare/v3.1.0...v3.1.1) (release-date) [unreleased]
+
+### Bug Fixes
+* Altera para não retornar unidades inativas (PL-3510)
+* Corrige processamento de planilha de import de pneus
+* Corrige processamento de planilha de import de vínculo de pneus a veículos
+
+<a name="v3.1.0"></a>
+## Version [v3.1.0](https://github.com/luizfp/PrologWebService/compare/v3.0.0...v3.1.0) (2021-04-08)
 
 ### Features
 * Adiciona código do colaborador ao Sentry para ser logado junto em caso de erro
@@ -15,7 +23,11 @@ Change Log
 * Altera para o Sentry enviar informações sensitivas por default, como o token
 
 ### Bug Fixes
+* Corrige sincroniza de O.S. na integração da Piccolotur (PL-3599)
 * Corrige checkstyle para detecção de nome de pacote
+* Corrige trigger de import de veículos 
+* Corrige processamento de planilha de import de veículos
+* Corrige processamento de planilha de import de colaboradores
 
 <a name="v3.0.0"></a>
 ## Version [v3.0.0](https://github.com/luizfp/PrologWebService/compare/v2.2.0...v3.0.0) (2021-03-30)
