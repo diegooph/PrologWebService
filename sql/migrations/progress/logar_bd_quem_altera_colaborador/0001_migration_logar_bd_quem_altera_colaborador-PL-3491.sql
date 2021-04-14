@@ -194,9 +194,9 @@ drop function suporte.func_colaborador_transfere_entre_empresas(f_cod_unidade_or
     f_cod_setor_destino bigint,
     f_cod_equipe_destino bigint,
     f_cod_funcao_destino integer,
-    f_matricula_trans integer default null,
-    f_matricula_ambev integer default null,
-    f_nivel_permissao integer default 0,
+    f_matricula_trans integer,
+    f_matricula_ambev integer,
+    f_nivel_permissao integer,
     out aviso_colaborador_transferido text);
 
 create or replace function suporte.func_colaborador_transfere_entre_empresas(f_cod_unidade_origem bigint,
