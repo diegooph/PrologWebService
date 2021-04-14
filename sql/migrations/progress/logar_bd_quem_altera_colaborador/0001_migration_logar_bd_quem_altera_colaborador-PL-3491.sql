@@ -266,3 +266,140 @@ select ('COLABORADOR: '
 into aviso_colaborador_transferido;
 end;
 $$;
+
+drop function func_colaborador_insert_colaborador(f_cpf bigint,
+                                                  f_matricula_ambev integer,
+                                                  f_matricula_trans integer,
+                                                  f_data_nascimento date,
+                                                  f_data_admissao date,
+                                                  f_nome varchar,
+                                                  f_cod_setor bigint,
+                                                  f_cod_funcao integer,
+                                                  f_cod_unidade integer,
+                                                  f_cod_permissao bigint,
+                                                  f_cod_empresa bigint,
+                                                  f_cod_equipe bigint,
+                                                  f_pis varchar,
+                                                  f_sigla_iso2 character varying,
+                                                  f_prefixo_pais integer,
+                                                  f_telefone text,
+                                                  f_email email,
+                                                  f_cod_unidade_cadastro integer,
+                                                  f_token text);
+
+create or replace function func_colaborador_insert_colaborador(f_cpf bigint,
+                                                               f_matricula_ambev integer,
+                                                               f_matricula_trans integer,
+                                                               f_data_nascimento date,
+                                                               f_data_admissao date,
+                                                               f_nome varchar,
+                                                               f_cod_setor bigint,
+                                                               f_cod_funcao integer,
+                                                               f_cod_unidade integer,
+                                                               f_cod_permissao bigint,
+                                                               f_cod_empresa bigint,
+                                                               f_cod_equipe bigint,
+                                                               f_pis varchar,
+                                                               f_sigla_iso2 character varying,
+                                                               f_prefixo_pais integer,
+                                                               f_telefone text,
+                                                               f_email email,
+                                                               f_cod_unidade_cadastro integer,
+                                                               f_token text)
+    returns bigint
+    language plpgsql
+as
+$$
+declare
+f_cod_colaborador_update constant bigint := (select cod_colaborador
+                                                 from token_autenticacao
+                                                 where token = f_token);
+    f_cod_colaborador_inserido        bigint;
+    f_cod_telefone_inserido           bigint;
+    f_cod_email_inserido              bigint;
+begin
+insert into colaborador (cpf,
+                         matricula_ambev,
+                         matricula_trans,
+                         data_nascimento,
+                         data_admissao,
+                         nome,
+                         cod_setor,
+                         cod_funcao,
+                         cod_unidade,
+                         cod_permissao,
+                         cod_empresa,
+                         cod_equipe,
+                         pis,
+                         cod_unidade_cadastro,
+                         cod_colaborador_cadastro)
+values (f_cpf,
+        f_matricula_ambev,
+        f_matricula_trans,
+        f_data_nascimento,
+        f_data_admissao,
+        f_nome,
+        f_cod_setor,
+        f_cod_funcao,
+        f_cod_unidade,
+        f_cod_permissao,
+        f_cod_empresa,
+        f_cod_equipe,
+        f_pis,
+        f_cod_unidade_cadastro,
+        f_cod_colaborador_update)
+    returning codigo
+into f_cod_colaborador_inserido;
+
+-- Verificamos se o insert de colaborador funcionou.
+if f_cod_colaborador_inserido is null or f_cod_colaborador_inserido <= 0
+    then
+        perform throw_generic_error(
+                        'Não foi possível inserir o colaborador, tente novamente');
+end if;
+
+    if f_prefixo_pais is not null and f_telefone is not null
+    then
+        insert into colaborador_telefone (sigla_iso2,
+                                          prefixo_pais,
+                                          cod_colaborador,
+                                          numero_telefone,
+                                          cod_colaborador_ultima_atualizacao)
+        values (f_sigla_iso2,
+                f_prefixo_pais,
+                f_cod_colaborador_inserido,
+                f_telefone,
+                f_cod_colaborador_update)
+        returning codigo
+            into f_cod_telefone_inserido;
+
+        -- Verificamos se o insert do telefone do colaborador funcionou.
+        if f_cod_telefone_inserido is null or f_cod_telefone_inserido <= 0
+        then
+            perform throw_generic_error(
+                            'Não foi possível inserir o colaborador devido a problemas no telefone, tente novamente');
+end if;
+end if;
+
+    if f_email is not null
+    then
+        insert into colaborador_email (cod_colaborador,
+                                       email,
+                                       cod_colaborador_ultima_atualizacao)
+                                       values (f_cod_colaborador_inserido,
+                                               f_email,
+                                               f_cod_colaborador_update)
+                                               returning codigo
+            into f_cod_email_inserido;
+
+         -- Verificamos se o insert do email funcionou.
+        if f_cod_email_inserido is null or f_cod_email_inserido <= 0
+        then
+            perform throw_generic_error(
+                            'Não foi possível inserir o colaborador devido a problemas no e-mail, tente novamente');
+end if;
+end if;
+
+return f_cod_colaborador_inserido;
+end;
+$$;
