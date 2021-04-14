@@ -12,6 +12,7 @@ Change Log
 * Remove placa na realização de checklist (PL-3545)
 * Remove placa da busca de relatórios de checklist (PL-3548)
 * Remove placa das buscas do checklist (PL-3546)
+* Remove placa das buscas, abertura e fechamento de OSs (PL-3547)
 
 <a name="v3.1.1"></a>
 ## Version [v3.1.1](https://github.com/luizfp/PrologWebService/compare/v3.1.0...v3.1.1) (release-date) [unreleased]
