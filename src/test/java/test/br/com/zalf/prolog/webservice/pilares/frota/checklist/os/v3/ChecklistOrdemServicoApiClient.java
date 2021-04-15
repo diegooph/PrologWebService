@@ -53,7 +53,7 @@ public final class ChecklistOrdemServicoApiClient {
     }
 
     public ResponseEntity<ClientSideErrorException> getOrdensServicoWithWrongUnidades(
-            final List<String> wrongTypeCodUnidades,
+            @NotNull final List<String> wrongTypeCodUnidades,
             final int limit,
             final int offset) {
 
