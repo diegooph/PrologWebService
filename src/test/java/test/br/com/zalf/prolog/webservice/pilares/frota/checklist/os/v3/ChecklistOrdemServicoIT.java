@@ -31,6 +31,7 @@ public final class ChecklistOrdemServicoIT extends IntegrationTest {
                                                                                                         2,
                                                                                                         0);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isNotEmpty();
     }
 
     @Test
