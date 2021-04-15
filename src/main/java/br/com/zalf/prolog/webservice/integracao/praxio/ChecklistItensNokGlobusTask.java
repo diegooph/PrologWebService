@@ -89,7 +89,7 @@ public final class ChecklistItensNokGlobusTask implements Runnable {
                                     conn,
                                     checklistToSyncGlobus.getCodModeloChecklist(),
                                     checklistToSyncGlobus.getCodVersaoModeloChecklist(),
-                                    checklistToSyncGlobus.getPlacaVeiculoChecklist());
+                                    checklistToSyncGlobus.getCodVeiculoChecklist());
             final List<InfosAlternativaAberturaOrdemServico> itensOsIncrementaQtdApontamentos =
                     getItensIncrementaApontamentos(alternativasStatus, checklistItensNokGlobus.getPerguntasNok());
 
@@ -106,7 +106,7 @@ public final class ChecklistItensNokGlobusTask implements Runnable {
                         item -> checklistItensNokGlobus.getPerguntasNok().forEach(
                                 pergunta -> pergunta.getAlternativasNok().removeIf(
                                         alternativa -> item.contains(pergunta.getCodContextoPerguntaNok(),
-                                                alternativa.getCodContextoAlternativaNok()))));
+                                                                     alternativa.getCodContextoAlternativaNok()))));
 
                 // Pode acontecer de a pergunta ficar sem nenhuma alternativa agora. Removemos ela nesse caso.
                 checklistItensNokGlobus.getPerguntasNok().removeIf(pergunta -> pergunta.getAlternativasNok().isEmpty());
