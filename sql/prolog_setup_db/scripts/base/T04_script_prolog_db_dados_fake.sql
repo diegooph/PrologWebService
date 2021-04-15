@@ -10382,5 +10382,10 @@ VALUES (215, 1, 1, '2021-04-08 14:32:59.733039', '2021-04-08 11:32:59.733039', n
 
 INSERT INTO public.checklist_ordem_servico_data (cod_unidade, cod_checklist, status, codigo_prolog)
 values (215, 1, 'A', 1);
-INSERT INTO public.checklist_ordem_servico_data (cod_unidade, cod_checklist, status, codigo_prolog)
-values (215, 1, 'A', 2);
+INSERT INTO public.checklist_ordem_servico_itens (cod_unidade, cod_os, cpf_mecanico,
+                                                  cod_pergunta_primeiro_apontamento, cod_contexto_pergunta,
+                                                  cod_contexto_alternativa, cod_alternativa_primeiro_apontamento,
+                                                  status_resolucao, qt_apontamentos, km, data_hora_conserto,
+                                                  data_hora_inicio_resolucao, data_hora_fim_resolucao, tempo_realizacao,
+                                                  feedback_conserto)
+VALUES (215, 1, null, 1, 1, 2, 2, 'P', 1, null, null, null, null, null, null);
