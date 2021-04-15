@@ -60,8 +60,8 @@ begin
                 (pru.periodo_afericao_sulco || 'DAYS')::interval)::date   as data_vencimento_sulco,
                (pd.data_ultima_afericao +
                 (pru.periodo_afericao_pressao || 'DAYS')::interval)::date as data_vencimento_pressao,
-               pru.periodo_afericao_sulco - sd.dias_ultima_afericao       as dias_vencimento_sulco,
-               pru.periodo_afericao_pressao - pd.dias_ultima_afericao     as dias_vencimento_pressao,
+               sd.dias_ultima_afericao - pru.periodo_afericao_sulco       as dias_vencimento_sulco,
+               pd.dias_ultima_afericao - pru.periodo_afericao_pressao     as dias_vencimento_pressao,
                sd.dias_ultima_afericao                                    as dias_desde_ultima_afericao_sulco,
                pd.dias_ultima_afericao                                    as dias_desde_ultima_afericao_pressao,
                f_if(config.forma_coleta_dados_sulco_pressao != v_status_coleta_dados_bloqueado
