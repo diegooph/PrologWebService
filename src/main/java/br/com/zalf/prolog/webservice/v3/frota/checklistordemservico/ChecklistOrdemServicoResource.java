@@ -24,7 +24,7 @@ import java.util.List;
 @Path("/v3/checklists/ordens-servicos")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-public final class ChecklistOrdemServicoResource {
+public final class ChecklistOrdemServicoResource implements ChecklistOrdemServicoApiDoc {
     @NotNull
     private final ChecklistOrdemServicoService service;
     @NotNull
