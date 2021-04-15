@@ -32,8 +32,6 @@ begin
                         coalesce(v.identificador_frota, '-')  as identificador_frota,
                         cva.pode_aferir_sulco                 as pode_aferir_sulco,
                         cva.pode_aferir_pressao               as pode_aferir_pressao,
-                        -- por conta do filtro no where, agora não é mais a diferença de dias e sim somente as vencidas (ou ainda
-                        -- nunca aferidas).
                         cva.qtd_dias_afericao_sulco_vencida   as qtd_dias_afericao_sulco_vencida,
                         cva.qtd_dias_afericao_pressao_vencida as qtd_dias_afericao_pressao_vencida
                  from unidade u
