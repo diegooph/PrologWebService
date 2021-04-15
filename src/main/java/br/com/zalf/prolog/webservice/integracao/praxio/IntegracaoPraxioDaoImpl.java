@@ -354,15 +354,14 @@ final class IntegracaoPraxioDaoImpl extends DatabaseConnection implements Integr
     }
 
     @Override
-    public VeiculoEdicaoStatus getVeiculoEdicaoStatus(final String placaVeiculo, final Boolean veiculoAtivo)
-            throws Throwable {
-        final String sql = "select  v.codigo,  v.status_ativo, v.acoplado from veiculo v  where v.placa = ?;";
-
+    public VeiculoEdicaoStatus getVeiculoEdicaoStatus(@NotNull final String placaVeiculo,
+                                                      @NotNull final Boolean veiculoAtivo) throws Throwable {
         try (final Connection conn = getConnection();
-             final PreparedStatement stmt = conn.prepareStatement(sql)) {
-
+             final PreparedStatement stmt = conn.prepareStatement(
+                     "select v.codigo, v.status_ativo, v.acoplado " +
+                             "from veiculo v " +
+                             "where v.placa = ?;")) {
             stmt.setString(1, placaVeiculo);
-
             try (final ResultSet rSet = stmt.executeQuery()) {
                 if (rSet.next()) {
                     return new VeiculoEdicaoStatus(
