@@ -16,13 +16,13 @@ $$
 begin
     return query
         with calculo_vencimento_afericoes as (
-            select base.dias_desde_ultima_afericao_pressao as qtd_dias_afericao_pressao_vencida,
-                   base.pode_aferir_pressao                as pode_aferir_pressao,
-                   base.dias_desde_ultima_afericao_sulco   as qtd_dias_afericao_sulco_vencida,
-                   base.pode_aferir_sulco                  as pode_aferir_sulco,
-                   base.cod_veiculo                        as cod_veiculo,
-                   base.afericao_sulco_vencida             as afericao_sulco_vencida,
-                   base.afericao_pressao_vencida           as afericao_pressao_vencida
+            select base.dias_vencimento_pressao  as qtd_dias_afericao_pressao_vencida,
+                   base.pode_aferir_pressao      as pode_aferir_pressao,
+                   base.dias_vencimento_sulco    as qtd_dias_afericao_sulco_vencida,
+                   base.pode_aferir_sulco        as pode_aferir_sulco,
+                   base.cod_veiculo              as cod_veiculo,
+                   base.afericao_sulco_vencida   as afericao_sulco_vencida,
+                   base.afericao_pressao_vencida as afericao_pressao_vencida
             from func_afericao_relatorio_dados_base_validacao_vencimento(f_cod_unidades,
                                                                          f_data_hoje_utc) as base
         ),
