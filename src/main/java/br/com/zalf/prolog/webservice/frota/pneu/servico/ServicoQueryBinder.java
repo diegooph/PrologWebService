@@ -3,7 +3,6 @@ package br.com.zalf.prolog.webservice.frota.pneu.servico;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.commons.util.database.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.datetime.DateUtils;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.TipoMedicaoColetadaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -11,7 +10,6 @@ import org.jetbrains.annotations.Nullable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.SQLType;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 
@@ -62,7 +60,12 @@ final class ServicoQueryBinder {
             + "AV.POSICAO AS POSICAO_PNEU_PROBLEMA, "
             + "AV.VIDA_MOMENTO_AFERICAO AS VIDA_PNEU_PROBLEMA, "
             + "C.NOME AS NOME_RESPONSAVEL_FECHAMENTO, "
-            + "P.PRESSAO_RECOMENDADA "
+            + "P.PRESSAO_RECOMENDADA, "
+            + "P.ALTURA_SULCO_EXTERNO AS SULCO_EXTERNO_ATUAL, "
+            + "P.ALTURA_SULCO_CENTRAL_EXTERNO AS SULCO_CENTRAL_EXTERNO_ATUAL, "
+            + "P.ALTURA_SULCO_CENTRAL_INTERNO AS SULCO_CENTRAL_INTERNO_ATUAL, "
+            + "P.ALTURA_SULCO_INTERNO AS SULCO_INTERNO_ATUAL, "
+            + "P.PRESSAO_ATUAL "
             + "FROM AFERICAO_MANUTENCAO AM "
             + "LEFT JOIN COLABORADOR C ON AM.CPF_MECANICO = C.CPF "
             + "JOIN PNEU P ON AM.COD_PNEU = P.CODIGO "
@@ -225,7 +228,8 @@ final class ServicoQueryBinder {
                                                                            ".FECHADO_AUTOMATICAMENTE_MOVIMENTACAO, " +
                                                                            "   AM.FECHADO_AUTOMATICAMENTE_INTEGRACAO," +
                                                                            "   AM.FECHADO_AUTOMATICAMENTE_AFERICAO, " +
-                                                                           "   AM.COD_AFERICAO_FECHAMENTO_AUTOMATICO, " +
+                                                                           "   AM.COD_AFERICAO_FECHAMENTO_AUTOMATICO," +
+                                                                           " " +
                                                                            " " +
                                                                            "   AM.FORMA_COLETA_DADOS_FECHAMENTO, " +
                                                                            "   AAMI.ALTERNATIVA AS " +
@@ -253,15 +257,17 @@ final class ServicoQueryBinder {
                                                                            "   AV.COD_PNEU AS COD_PNEU_PROBLEMA, " +
                                                                            "   PNEU_PROBLEMA.CODIGO_CLIENTE AS " +
                                                                            "COD_PNEU_PROBLEMA_CLIENTE, " +
-                                                                           "   AV.ALTURA_SULCO_EXTERNO AS " +
-                                                                           "SULCO_EXTERNO_PNEU_PROBLEMA, " +
-                                                                           "   AV.ALTURA_SULCO_CENTRAL_EXTERNO AS " +
-                                                                           "SULCO_CENTRAL_EXTERNO_PNEU_PROBLEMA, " +
-                                                                           "   AV.ALTURA_SULCO_CENTRAL_INTERNO AS " +
-                                                                           "SULCO_CENTRAL_INTERNO_PNEU_PROBLEMA, " +
-                                                                           "   AV.ALTURA_SULCO_INTERNO AS " +
-                                                                           "SULCO_INTERNO_PNEU_PROBLEMA, " +
-                                                                           "   AV.PSI AS PRESSAO_PNEU_PROBLEMA, " +
+                                                                           "PNEU_PROBLEMA.ALTURA_SULCO_EXTERNO AS " +
+                                                                           "SULCO_EXTERNO_ATUAL, " +
+                                                                           "PNEU_PROBLEMA" +
+                                                                           ".ALTURA_SULCO_CENTRAL_EXTERNO AS " +
+                                                                           "SULCO_CENTRAL_EXTERNO_ATUAL, " +
+                                                                           "PNEU_PROBLEMA" +
+                                                                           ".ALTURA_SULCO_CENTRAL_INTERNO AS " +
+                                                                           "SULCO_CENTRAL_INTERNO_ATUAL, " +
+                                                                           "PNEU_PROBLEMA.ALTURA_SULCO_INTERNO AS " +
+                                                                           "SULCO_INTERNO_ATUAL, " +
+                                                                           "PNEU_PROBLEMA.PRESSAO_ATUAL, " +
                                                                            "   AV.POSICAO AS POSICAO_PNEU_PROBLEMA, " +
                                                                            "   AV.VIDA_MOMENTO_AFERICAO AS " +
                                                                            "VIDA_PNEU_PROBLEMA, " +
@@ -512,13 +518,13 @@ final class ServicoQueryBinder {
             @NotNull final Long kmColetadoVeiculo,
             @NotNull final OrigemFechamentoAutomaticoEnum origemFechamentoServico,
             @NotNull final TipoServico tipoServico) throws SQLException {
-        String sql = "UPDATE AFERICAO_MANUTENCAO SET "
+        final String sql = "UPDATE AFERICAO_MANUTENCAO SET "
                 + "DATA_HORA_RESOLUCAO = ?, "
                 + origemFechamentoServico.getCodigoColumnName() + " = ?, "
                 + "KM_MOMENTO_CONSERTO = ?, "
                 + origemFechamentoServico.getFlagColumnName() + " = TRUE "
                 + "WHERE COD_UNIDADE = ? "
-                + "AND TIPO_SERVICO = '"+ tipoServico.asString() +"' "
+                + "AND TIPO_SERVICO = '" + tipoServico.asString() + "' "
                 + "AND COD_PNEU = ? "
                 + "AND DATA_HORA_RESOLUCAO IS NULL";
 
