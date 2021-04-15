@@ -3,6 +3,7 @@ Change Log
 ## Stage
 ### Bug Fixes
 * Altera para não retornar unidades inativas (PL-3510)
+* Cria v3 de ordem de serviço (PL-3462)
 
 <a name="v3.1.1"></a>
 ## Version [v3.1.1](https://github.com/luizfp/PrologWebService/compare/v3.1.0...v3.1.1) (release-date) [unreleased]
