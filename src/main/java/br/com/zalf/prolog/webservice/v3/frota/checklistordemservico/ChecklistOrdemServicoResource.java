@@ -1,7 +1,9 @@
 package br.com.zalf.prolog.webservice.v3.frota.checklistordemservico;
 
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.StatusOrdemServico;
+import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
+import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.v3.frota.checklistordemservico._model.ChecklistOrdemServicoListagemDto;
 import br.com.zalf.prolog.webservice.v3.frota.checklistordemservico._model.ChecklistOrdemServicoMapper;
 import org.jetbrains.annotations.NotNull;
@@ -37,6 +39,8 @@ public final class ChecklistOrdemServicoResource implements ChecklistOrdemServic
 
     @GET
     @Override
+    @Secured(permissions = {
+            Pilares.Frota.OrdemServico.Checklist.VISUALIZAR})
     public List<ChecklistOrdemServicoListagemDto> getOrdensServico(
             @QueryParam("codUnidades") final List<Long> codUnidades,
             @QueryParam("codTipoVeiculo") final Long codTipoVeiculo,
