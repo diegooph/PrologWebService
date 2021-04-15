@@ -34,38 +34,23 @@ BEGIN
                    (SELECT COUNT(VP.COD_PNEU)
                     FROM VEICULO_PNEU VP
                     WHERE VP.COD_VEICULO = V.CODIGO
-                    GROUP BY VP.COD_VEICULO)::TEXT                                      AS QTD_PNEUS_APLICADOS,
-                   MV.NOME::TEXT                                                        AS NOME_MODELO_VEICULO,
-                   VT.NOME::TEXT                                                        AS NOME_TIPO_VEICULO,
-                   TO_CHAR(SULCO.DATA_HORA_ULTIMA_AFERICAO_SULCO, 'DD/MM/YYYY HH24:MI') AS DATA_HORA_ULTIMA_AFERICAO_SULCO,
-                   TO_CHAR(PRESSAO.DATA_HORA_ULTIMA_AFERICAO_PRESSAO,
-                           'DD/MM/YYYY HH24:MI')                                        AS DATA_HORA_ULTIMA_AFERICAO_PRESSAO,
-                   TO_CHAR(SULCO.DATA_ULTIMA_AFERICAO_SULCO
-                               + (PRU.PERIODO_AFERICAO_SULCO || ' DAYS')::INTERVAL,
-                           'DD/MM/YYYY')                                                AS DATA_VENCIMENTO_SULCO,
-                   TO_CHAR(PRESSAO.DATA_ULTIMA_AFERICAO_PRESSAO
-                               + (PRU.PERIODO_AFERICAO_PRESSAO || ' DAYS')::INTERVAL,
-                           'DD/MM/YYYY')                                                AS DATA_VENCIMENTO_PRESSAO,
-                   (PRU.PERIODO_AFERICAO_SULCO - SULCO.DIAS)::TEXT                      AS DIAS_VENCIMENTO_SULCO,
-                   (PRU.PERIODO_AFERICAO_PRESSAO - PRESSAO.DIAS)::TEXT                  AS DIAS_VENCIMENTO_PRESSAO,
-                   SULCO.DIAS::TEXT                                                     AS DIAS_DESDE_ULTIMA_AFERICAO_SULCO,
-                   PRESSAO.DIAS::TEXT                                                   AS DIAS_DESDE_ULTIMA_AFERICAO_PRESSAO,
-                   F_IF(CONFIG.FORMA_COLETA_DADOS_SULCO <> 'BLOQUEADO'
-                            OR CONFIG.FORMA_COLETA_DADOS_SULCO_PRESSAO <> 'BLOQUEADO',
-                        TRUE,
-                        FALSE)                                                          AS PODE_AFERIR_SULCO,
-                   F_IF(CONFIG.FORMA_COLETA_DADOS_PRESSAO <> 'BLOQUEADO'
-                            OR CONFIG.FORMA_COLETA_DADOS_SULCO_PRESSAO <> 'BLOQUEADO',
-                        TRUE,
-                        FALSE)                                                          AS PODE_AFERIR_PRESSAO,
-                   F_IF(SULCO.DIAS IS NULL, TRUE,
-                        FALSE)                                                          AS SULCO_NUNCA_AFERIDO,
-                   F_IF(PRESSAO.DIAS IS NULL, TRUE,
-                        FALSE)                                                          AS PRESSAO_NUNCA_AFERIDA,
-                   F_IF(SULCO.DIAS > PRU.PERIODO_AFERICAO_SULCO, TRUE,
-                        FALSE)                                                          AS AFERICAO_SULCO_VENCIDA,
-                   F_IF(PRESSAO.DIAS > PRU.PERIODO_AFERICAO_PRESSAO, TRUE,
-                        FALSE)                                                          AS AFERICAO_PRESSAO_VENCIDA
+                    GROUP BY VP.COD_VEICULO)::TEXT                                       AS QTD_PNEUS_APLICADOS,
+                   MV.NOME::TEXT                                                         AS NOME_MODELO_VEICULO,
+                   VT.NOME::TEXT                                                         AS NOME_TIPO_VEICULO,
+                   TO_CHAR(BASE.DATA_HORA_ULTIMA_AFERICAO_SULCO, 'DD/MM/YYYY HH24:MI')   AS DATA_HORA_ULTIMA_AFERICAO_SULCO,
+                   TO_CHAR(BASE.DATA_HORA_ULTIMA_AFERICAO_PRESSAO, 'DD/MM/YYYY HH24:MI') AS DATA_HORA_ULTIMA_AFERICAO_PRESSAO,
+                   TO_CHAR(BASE.DATA_VENCIMENTO_SULCO, 'DD/MM/YYYY')                     AS DATA_VENCIMENTO_SULCO,
+                   TO_CHAR(BASE.DATA_VENCIMENTO_PRESSAO, 'DD/MM/YYYY')                   AS DATA_VENCIMENTO_PRESSAO,
+                   BASE.DIAS_VENCIMENTO_SULCO::TEXT                                      AS DIAS_VENCIMENTO_SULCO,
+                   BASE.DIAS_VENCIMENTO_PRESSAO::TEXT                                    AS DIAS_VENCIMENTO_PRESSAO,
+                   BASE.DIAS_DESDE_ULTIMA_AFERICAO_SULCO::TEXT                           AS DIAS_DESDE_ULTIMA_AFERICAO_SULCO,
+                   BASE.DIAS_DESDE_ULTIMA_AFERICAO_PRESSAO::TEXT                         AS DIAS_DESDE_ULTIMA_AFERICAO_PRESSAO,
+                   BASE.PODE_AFERIR_SULCO                                                AS PODE_AFERIR_SULCO,
+                   BASE.PODE_AFERIR_PRESSAO                                              AS PODE_AFERIR_PRESSAO,
+                   BASE.SULCO_NUNCA_AFERIDO                                              AS SULCO_NUNCA_AFERIDO,
+                   BASE.PRESSAO_NUNCA_AFERICO                                            AS PRESSAO_NUNCA_AFERIDA,
+                   BASE.AFERICAO_SULCO_VENCIDA                                           AS AFERICAO_SULCO_VENCIDA,
+                   BASE.AFERICAO_SULCO_VENCIDA                                           AS AFERICAO_PRESSAO_VENCIDA
             FROM VEICULO V
                      JOIN MODELO_VEICULO MV
                           ON MV.CODIGO = V.COD_MODELO
@@ -99,6 +84,9 @@ BEGIN
                           ON PRU.COD_UNIDADE = V.COD_UNIDADE
                      JOIN UNIDADE U
                           ON U.CODIGO = V.COD_UNIDADE
+                     JOIN FUNC_AFERICAO_RELATORIO_DADOS_BASE_VALIDACAO_VENCIMENTO(F_COD_UNIDADES,
+                                                                                  F_DATA_HORA_ATUAL_UTC) AS BASE
+                          ON BASE.COD_VEICULO = V.CODIGO
             WHERE V.STATUS_ATIVO = TRUE
               AND V.COD_UNIDADE = ANY (F_COD_UNIDADES)
             ORDER BY U.CODIGO, V.PLACA
