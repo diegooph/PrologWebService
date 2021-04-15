@@ -56,32 +56,6 @@ BEGIN
                           ON MV.CODIGO = V.COD_MODELO
                      JOIN VEICULO_TIPO VT
                           ON VT.CODIGO = V.COD_TIPO
-                     JOIN FUNC_AFERICAO_GET_CONFIG_TIPO_AFERICAO_VEICULO(V.COD_UNIDADE) CONFIG
-                          ON CONFIG.COD_TIPO_VEICULO = V.COD_TIPO
-                     LEFT JOIN
-                 (SELECT A.COD_VEICULO                                               AS COD_VEICULO_INTERVALO,
-                         MAX(A.DATA_HORA AT TIME ZONE
-                             TZ_UNIDADE(A.COD_UNIDADE))::DATE                          AS DATA_ULTIMA_AFERICAO_PRESSAO,
-                         MAX(A.DATA_HORA AT TIME ZONE
-                             TZ_UNIDADE(A.COD_UNIDADE))                                AS DATA_HORA_ULTIMA_AFERICAO_PRESSAO,
-                         EXTRACT(DAYS FROM (F_DATA_HORA_ATUAL_UTC) - MAX(A.DATA_HORA)) AS DIAS
-                  FROM AFERICAO A
-                  WHERE A.TIPO_MEDICAO_COLETADA = 'PRESSAO'
-                     OR A.TIPO_MEDICAO_COLETADA = 'SULCO_PRESSAO'
-                  GROUP BY A.COD_VEICULO) AS PRESSAO ON PRESSAO.COD_VEICULO_INTERVALO = V.CODIGO
-                     LEFT JOIN
-                 (SELECT A.COD_VEICULO                                             AS COD_VEICULO_INTERVALO,
-                         MAX(A.DATA_HORA AT TIME ZONE
-                             TZ_UNIDADE(A.COD_UNIDADE)) :: DATE                      AS DATA_ULTIMA_AFERICAO_SULCO,
-                         MAX(A.DATA_HORA AT TIME ZONE
-                             TZ_UNIDADE(A.COD_UNIDADE))                              AS DATA_HORA_ULTIMA_AFERICAO_SULCO,
-                         EXTRACT(DAYS FROM F_DATA_HORA_ATUAL_UTC - MAX(A.DATA_HORA)) AS DIAS
-                  FROM AFERICAO A
-                  WHERE A.TIPO_MEDICAO_COLETADA = 'SULCO'
-                     OR A.TIPO_MEDICAO_COLETADA = 'SULCO_PRESSAO'
-                  GROUP BY A.COD_VEICULO) AS SULCO ON SULCO.COD_VEICULO_INTERVALO = V.CODIGO
-                     JOIN PNEU_RESTRICAO_UNIDADE PRU
-                          ON PRU.COD_UNIDADE = V.COD_UNIDADE
                      JOIN UNIDADE U
                           ON U.CODIGO = V.COD_UNIDADE
                      JOIN FUNC_AFERICAO_RELATORIO_DADOS_BASE_VALIDACAO_VENCIMENTO(F_COD_UNIDADES,
