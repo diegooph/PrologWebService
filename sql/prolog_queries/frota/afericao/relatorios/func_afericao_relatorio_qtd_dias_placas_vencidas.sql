@@ -13,11 +13,6 @@ create or replace function func_afericao_relatorio_qtd_dias_placas_vencidas(f_co
     language plpgsql
 as
 $$
-declare
-    v_afericao_sulco         varchar := 'sulco';
-    v_afericao_pressao       varchar := 'pressao';
-    v_afericao_sulco_pressao varchar := 'sulco_pressao';
-    v_formas_coleta_dados  text[]  := array ['equipamento', 'manual', 'equipamento_manual'];
 begin
     return query
         with calculo_vencimento_afericoes as (
@@ -31,54 +26,6 @@ begin
             from func_afericao_relatorio_dados_base_validacao_vencimento(f_cod_unidades,
                                                                          f_data_hoje_utc) as base
         ),
-             -- as ctes ultima_afericao_sulco e ultima_afericao_pressao retornam o codigo de cada veículo e a quantidade de dias
-             -- que a aferição de sulco e pressão, respectivamente, estão vencidas. um número negativo será retornado caso ainda
-             -- esteja com a aferição no prazo e ele indicará quantos dias faltam para vencer. um -20, por exemplo, significa
-             -- que a aferição vai vencer em 20 dias.
-             ultima_afericao_sulco as (
-                 select distinct on (a.cod_veiculo) a.cod_unidade,
-                                                      a.cod_veiculo              as cod_veiculo,
-                                                      date_part('day', f_data_hoje_utc - max(data_hora))
-                                                          -
-                                                      (pru.periodo_afericao_sulco) as qtd_dias_entre_ultima_afericao_sulco_e_hoje
-                 from afericao a
-                          join pneu_restricao_unidade pru
-                               on (select v.cod_unidade
-                                   from veiculo v
-                                   where v.codigo = a.cod_veiculo) = pru.cod_unidade
-                 where a.tipo_medicao_coletada in (v_afericao_sulco, v_afericao_sulco_pressao)
-                   -- desse modo nós buscamos a última aferição de cada placa que está ativa nas unidades filtradas, independente
-                   -- de onde foram foram aferidas.
-                   and cod_veiculo = any (select vau.codigo
-                                            from veiculos_ativos_unidades vau)
-                 group by a.data_hora,
-                          a.cod_unidade,
-                          a.cod_veiculo,
-                          pru.periodo_afericao_sulco
-                 order by a.cod_veiculo, a.data_hora desc
-             ),
-             ultima_afericao_pressao as (
-                 select distinct on (a.cod_veiculo) a.cod_unidade,
-                                                      a.cod_veiculo                as cod_veiculo,
-                                                      date_part('day', f_data_hoje_utc - max(data_hora))
-                                                          -
-                                                      (pru.periodo_afericao_pressao) as qtd_dias_entre_ultima_afericao_pressao_e_hoje
-                 from afericao a
-                          join pneu_restricao_unidade pru
-                               on (select v.cod_unidade
-                                   from veiculo v
-                                   where v.codigo = a.cod_veiculo) = pru.cod_unidade
-                 where a.cod_unidade = any (f_cod_unidades)
-                   and a.tipo_medicao_coletada in (v_afericao_pressao, v_afericao_sulco_pressao)
-                   and cod_veiculo = any (select vau.codigo
-                                            from veiculos_ativos_unidades vau)
-                 group by a.data_hora,
-                          a.cod_unidade,
-                          a.cod_veiculo,
-                          pru.periodo_afericao_pressao
-                 order by a.cod_veiculo, a.data_hora desc
-             ),
-
              pre_select as (
                  select u.nome                                as nome_unidade,
                         v.placa                               as placa_veiculo,
