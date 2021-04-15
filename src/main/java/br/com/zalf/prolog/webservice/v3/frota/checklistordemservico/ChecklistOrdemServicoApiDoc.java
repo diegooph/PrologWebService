@@ -5,6 +5,8 @@ import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.StatusOr
 import br.com.zalf.prolog.webservice.v3.frota.checklistordemservico._model.ChecklistOrdemServicoListagemDto;
 import io.swagger.annotations.*;
 
+import javax.validation.constraints.Max;
+import javax.ws.rs.DefaultValue;
 import java.util.List;
 
 /**
@@ -31,7 +33,10 @@ public interface ChecklistOrdemServicoApiDoc {
             @ApiParam(value = "Um código de tipo de veículo.") final Long codTipoVeiculo,
             @ApiParam(value = "Um código de veículo.") final String codVeiculo,
             @ApiParam(value = "Um status de ordem de serviço.") final StatusOrdemServico statusOrdemServico,
-            @ApiParam(value = "Indica se deve incluir os itens na ordem de serviço.") boolean incluirItensOrdemServico,
-            @ApiParam(value = "Uma quantidade de ordens.") final int limit,
+            @ApiParam(value = "Indica se deve incluir os itens na ordem de serviço.") @DefaultValue(
+                    value = "true") boolean incluirItensOrdemServico,
+            @ApiParam(value = "Uma quantidade de ordens.") @Max(value = 1000,
+                                                                message = "O limite máximo de registros por página é " +
+                                                                        "1000.") final int limit,
             @ApiParam(value = "O index a partir do qual será contada a limitação.") final int offset);
 }

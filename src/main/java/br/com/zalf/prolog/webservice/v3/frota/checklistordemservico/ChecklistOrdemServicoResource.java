@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.v3.frota.checklistordemservico;
 
-import br.com.zalf.prolog.webservice.commons.network.metadata.Optional;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.StatusOrdemServico;
 import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 import br.com.zalf.prolog.webservice.v3.frota.checklistordemservico._model.ChecklistOrdemServicoListagemDto;
@@ -9,7 +8,6 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.constraints.Max;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
@@ -38,15 +36,14 @@ public final class ChecklistOrdemServicoResource implements ChecklistOrdemServic
     }
 
     @GET
+    @Override
     public List<ChecklistOrdemServicoListagemDto> getOrdensServico(
             @QueryParam("codUnidades") final List<Long> codUnidades,
-            @QueryParam("codTipoVeiculo") @Optional final Long codTipoVeiculo,
-            @QueryParam("codVeiculo") @Optional final String codVeiculo,
-            @QueryParam("statusOrdemServico") @Optional final StatusOrdemServico statusOrdemServico,
-            @QueryParam("incluirItensOrdemServico") @Optional @DefaultValue(
-                    value = "true") final boolean incluirItensOrdemServico,
-            @QueryParam("limit") @Max(value = 1000,
-                                      message = "O limite máximo de registros por página é 1000.") final int limit,
+            @QueryParam("codTipoVeiculo") final Long codTipoVeiculo,
+            @QueryParam("codVeiculo") final String codVeiculo,
+            @QueryParam("statusOrdemServico") final StatusOrdemServico statusOrdemServico,
+            @QueryParam("incluirItensOrdemServico") final boolean incluirItensOrdemServico,
+            @QueryParam("limit") final int limit,
             @QueryParam("offset") final int offset) {
         return mapper.toDto(
                 service.getOrdensServico(codUnidades,
