@@ -20,11 +20,16 @@ declare
     v_formas_coleta_dados  text[]  := array ['equipamento', 'manual', 'equipamento_manual'];
 begin
     return query
-        with veiculos_ativos_unidades as (
-            select v.codigo
-            from veiculo v
-            where v.cod_unidade = any (f_cod_unidades)
-              and v.status_ativo
+        with calculo_vencimento_afericoes as (
+            select base.dias_desde_ultima_afericao_pressao as qtd_dias_afericao_pressao_vencida,
+                   base.pode_aferir_pressao                as pode_aferir_pressao,
+                   base.dias_desde_ultima_afericao_sulco   as qtd_dias_afericao_sulco_vencida,
+                   base.pode_aferir_sulco                  as pode_aferir_sulco,
+                   base.cod_veiculo                        as cod_veiculo,
+                   base.afericao_sulco_vencida             as afericao_sulco_vencida,
+                   base.afericao_pressao_vencida           as afericao_pressao_vencida
+            from func_afericao_relatorio_dados_base_validacao_vencimento(f_cod_unidades,
+                                                                         f_data_hoje_utc) as base
         ),
              -- as ctes ultima_afericao_sulco e ultima_afericao_pressao retornam o codigo de cada veículo e a quantidade de dias
              -- que a aferição de sulco e pressão, respectivamente, estão vencidas. um número negativo será retornado caso ainda
@@ -75,43 +80,31 @@ begin
              ),
 
              pre_select as (
-                 select u.nome                                            as nome_unidade,
-                        v.placa                                           as placa_veiculo,
-                        coalesce(v.identificador_frota, '-')              as identificador_frota,
-                        coalesce((
-                                     select (fa.forma_coleta_dados_sulco = any (v_formas_coleta_dados) or
-                                             fa.forma_coleta_dados_sulco_pressao = any (v_formas_coleta_dados))
-                                     from func_afericao_get_config_tipo_afericao_veiculo(v.cod_unidade) fa
-                                     where fa.cod_tipo_veiculo = v.cod_tipo), false)
-                                                                          as pode_aferir_sulco,
-                        coalesce((
-                                     select (fa.forma_coleta_dados_pressao = any (v_formas_coleta_dados) or
-                                             fa.forma_coleta_dados_sulco_pressao = any (v_formas_coleta_dados))
-                                     from func_afericao_get_config_tipo_afericao_veiculo(v.cod_unidade) fa
-                                     where fa.cod_tipo_veiculo = v.cod_tipo), false)
-                                                                          as pode_aferir_pressao,
+                 select u.nome                                as nome_unidade,
+                        v.placa                               as placa_veiculo,
+                        coalesce(v.identificador_frota, '-')  as identificador_frota,
+                        cva.pode_aferir_sulco                 as pode_aferir_sulco,
+                        cva.pode_aferir_pressao               as pode_aferir_pressao,
                         -- por conta do filtro no where, agora não é mais a diferença de dias e sim somente as vencidas (ou ainda
                         -- nunca aferidas).
-                        uas.qtd_dias_entre_ultima_afericao_sulco_e_hoje   as qtd_dias_afericao_sulco_vencida,
-                        uap.qtd_dias_entre_ultima_afericao_pressao_e_hoje as qtd_dias_afericao_pressao_vencida
+                        cva.qtd_dias_afericao_sulco_vencida   as qtd_dias_afericao_sulco_vencida,
+                        cva.qtd_dias_afericao_pressao_vencida as qtd_dias_afericao_pressao_vencida
                  from unidade u
                           join veiculo v
                                on v.cod_unidade = u.codigo
-                          left join ultima_afericao_sulco uas
-                                    on uas.cod_veiculo = v.codigo
-                          left join ultima_afericao_pressao uap
-                                    on uap.cod_veiculo = v.codigo
-                 where
-                     -- se algum dos dois tipos de aferição estiver vencido, retornamos a linha.
-                     (uas.qtd_dias_entre_ultima_afericao_sulco_e_hoje > 0 or
-                      uap.qtd_dias_entre_ultima_afericao_pressao_e_hoje > 0)
+                          join calculo_vencimento_afericoes cva
+                               on cva.cod_veiculo = v.codigo
+                 where cva.afericao_sulco_vencida
+                    or cva.afericao_pressao_vencida
                  group by u.nome,
                           v.placa,
                           v.identificador_frota,
                           v.cod_tipo,
                           v.cod_unidade,
-                          uas.qtd_dias_entre_ultima_afericao_sulco_e_hoje,
-                          uap.qtd_dias_entre_ultima_afericao_pressao_e_hoje
+                          cva.pode_aferir_sulco,
+                          cva.pode_aferir_pressao,
+                          cva.qtd_dias_afericao_sulco_vencida,
+                          cva.qtd_dias_afericao_pressao_vencida
              )
         select ps.nome_unidade::text                         as nome_unidade,
                ps.placa_veiculo::text                        as placa_veiculo,
