@@ -143,61 +143,6 @@
         </module>
         <!-- Fim Indentação -->
 
-        <!-- JavaDoc -->
-        <!-- Valida se o javadoc está posicionado corretamente. -->
-        <module name="InvalidJavadocPosition"/>
-        <!-- Valida se a blocktag do javadoc está posicionada corretamente. -->
-        <module name="JavadocBlockTagLocation">
-            <property name="violateExecutionOnNonTightHtml" value="false"/>
-            <property name="tags"
-                      value="author, deprecated, exception, hidden, param, provides, return, see, serial, serialData, serialField, since, throws, uses, version"/>
-        </module>
-        <!-- Valida que o início da descrição do javadoc está na segunda linha. -->
-        <module name="JavadocContentLocationCheck">
-            <property name="location" value="second_line"/>
-        </module>
-        <!-- Valida, se houver, o javadoc em métodos. -->
-        <module name="JavadocMethod">
-            <property name="allowedAnnotations" value="Override"/>
-            <property name="validateThrows" value="false"/>
-            <property name="scope" value="private"/>
-            <property name="allowMissingParamTags" value="false"/>
-            <property name="allowMissingReturnTag" value="false"/>
-            <property name="tokens" value="METHOD_DEF, CTOR_DEF, ANNOTATION_FIELD_DEF, COMPACT_CTOR_DEF"/>
-        </module>
-        <!-- Valida espaço em branco na descrição do javadoc. -->
-        <module name="JavadocMissingWhitespaceAfterAsterisk">
-            <property name="violateExecutionOnNonTightHtml" value="false"/>
-        </module>
-        <!-- Valida linha em branco na descrição do javadoc. -->
-        <module name="JavadocParagraph">
-            <property name="violateExecutionOnNonTightHtml" value="false"/>
-            <property name="allowNewlineParagraph" value="false"/>
-        </module>
-        <!-- Valida os comentários presentes no javadoc para garantir que estão bem formatados. -->
-        <module name="JavadocStyle">
-            <property name="scope" value="private"/>
-            <property name="checkFirstSentence" value="false"/>
-            <property name="checkEmptyJavadoc" value="false"/>
-            <property name="checkHtml" value="true"/>
-            <property name="tokens"
-                      value="ANNOTATION_DEF, ANNOTATION_FIELD_DEF, CLASS_DEF, CTOR_DEF, ENUM_CONSTANT_DEF, ENUM_DEF, INTERFACE_DEF, METHOD_DEF, PACKAGE_DEF, VARIABLE_DEF, RECORD_DEF, COMPACT_CTOR_DEF"/>
-        </module>
-        <!-- Valida os comentários de javadoc nas classes. -->
-        <module name="JavadocType">
-            <property name="scope" value="private"/>
-            <property name="authorFormat" value=".*\s\(https://github.com/.*\)"/>
-            <property name="allowMissingParamTags" value="false"/>
-            <property name="allowUnknownTags" value="true"/>
-            <property name="allowedAnnotations" value="Generated"/>
-            <property name="tokens" value="INTERFACE_DEF, CLASS_DEF, ENUM_DEF, ANNOTATION_DEF, RECORD_DEF"/>
-        </module>
-        <!-- Valida que o javadoc possue quebra de linha entre as tags. -->
-        <module name="RequireEmptyLineBeforeBlockTagGroup">
-            <property name="violateExecutionOnNonTightHtml" value="false"/>
-        </module>
-        <!-- Fim JavaDoc -->
-
         <!-- Annotations -->
         <module name="AnnotationLocation">
             <property name="allowSamelineMultipleAnnotations" value="false"/>

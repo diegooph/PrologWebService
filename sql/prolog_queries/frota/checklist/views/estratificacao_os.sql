@@ -1,66 +1,67 @@
-CREATE OR REPLACE VIEW ESTRATIFICACAO_OS AS
-SELECT COS.CODIGO                                                       AS COD_OS,
-       REALIZADOR.NOME                                                  AS NOME_REALIZADOR_CHECKLIST,
-       V.PLACA                                                          AS PLACA_VEICULO,
-       C.KM_VEICULO                                                     AS KM,
-       C.DATA_HORA_REALIZACAO_TZ_APLICADO                               AS DATA_HORA,
-       C.TIPO                                                           AS TIPO_CHECKLIST,
-       CP.CODIGO                                                        AS COD_PERGUNTA,
-       CP.CODIGO_CONTEXTO                                               AS COD_CONTEXTO_PERGUNTA,
-       CP.ORDEM                                                         AS ORDEM_PERGUNTA,
-       CP.PERGUNTA,
-       CP.SINGLE_CHOICE,
-       NULL :: UNKNOWN                                                  AS URL_IMAGEM,
-       CAP.PRIORIDADE,
-       CASE CAP.PRIORIDADE
-           WHEN 'CRITICA' :: TEXT
-               THEN 1
-           WHEN 'ALTA' :: TEXT
-               THEN 2
-           WHEN 'BAIXA' :: TEXT
-               THEN 3
-           ELSE NULL :: INTEGER
-           END                                                          AS PRIORIDADE_ORDEM,
-       CAP.CODIGO                                                       AS COD_ALTERNATIVA,
-       CAP.CODIGO_CONTEXTO                                              AS COD_CONTEXTO_ALTERNATIVA,
-       CAP.ALTERNATIVA,
-       PRIO.PRAZO,
-       CRN.RESPOSTA_OUTROS,
-       V.COD_TIPO,
-       COS.COD_UNIDADE,
-       COS.STATUS                                                       AS STATUS_OS,
-       COS.COD_CHECKLIST,
-       TZ_UNIDADE(COS.COD_UNIDADE)                                      AS TIME_ZONE_UNIDADE,
-       COSI.STATUS_RESOLUCAO                                            AS STATUS_ITEM,
-       MECANICO.NOME                                                    AS NOME_MECANICO,
-       COSI.CPF_MECANICO,
-       COSI.TEMPO_REALIZACAO,
-       COSI.DATA_HORA_CONSERTO AT TIME ZONE TZ_UNIDADE(COS.COD_UNIDADE) AS DATA_HORA_CONSERTO,
-       COSI.DATA_HORA_INICIO_RESOLUCAO                                  AS DATA_HORA_INICIO_RESOLUCAO_UTC,
-       COSI.DATA_HORA_FIM_RESOLUCAO                                     AS DATA_HORA_FIM_RESOLUCAO_UTC,
-       COSI.KM                                                          AS KM_FECHAMENTO,
-       COSI.QT_APONTAMENTOS,
-       COSI.FEEDBACK_CONSERTO,
-       COSI.CODIGO
-FROM CHECKLIST_DATA C
-         JOIN COLABORADOR REALIZADOR
-              ON REALIZADOR.CPF = C.CPF_COLABORADOR
-         JOIN VEICULO V
-              ON V.CODIGO = C.COD_VEICULO
-         JOIN CHECKLIST_ORDEM_SERVICO COS
-              ON C.CODIGO = COS.COD_CHECKLIST
-         JOIN CHECKLIST_ORDEM_SERVICO_ITENS COSI
-              ON COS.CODIGO = COSI.COD_OS
-                  AND COS.COD_UNIDADE = COSI.COD_UNIDADE
-         JOIN CHECKLIST_PERGUNTAS CP
-              ON CP.COD_VERSAO_CHECKLIST_MODELO = C.COD_VERSAO_CHECKLIST_MODELO
-                  AND COSI.COD_CONTEXTO_PERGUNTA = CP.CODIGO_CONTEXTO
-         JOIN CHECKLIST_ALTERNATIVA_PERGUNTA CAP
-              ON CAP.COD_PERGUNTA = CP.CODIGO
-                  AND COSI.COD_CONTEXTO_ALTERNATIVA = CAP.CODIGO_CONTEXTO
-         JOIN CHECKLIST_ALTERNATIVA_PRIORIDADE PRIO
-              ON PRIO.PRIORIDADE :: TEXT = CAP.PRIORIDADE :: TEXT
-         JOIN CHECKLIST_RESPOSTAS_NOK CRN
-              ON CRN.COD_CHECKLIST = C.CODIGO
-                  AND CRN.COD_ALTERNATIVA = CAP.CODIGO
-         LEFT JOIN COLABORADOR MECANICO ON MECANICO.CPF = COSI.CPF_MECANICO;
+create or replace view estratificacao_os as
+select cos.codigo                         as cod_os,
+       realizador.nome                    as nome_realizador_checklist,
+       v.codigo                           as cod_veiculo,
+       v.placa                            as placa_veiculo,
+       c.km_veiculo                       as km,
+       c.data_hora_realizacao_tz_aplicado as data_hora,
+       c.tipo                             as tipo_checklist,
+       cp.codigo                          as cod_pergunta,
+       cp.codigo_contexto                 as cod_contexto_pergunta,
+       cp.ordem                           as ordem_pergunta,
+       cp.pergunta,
+       cp.single_choice,
+       null :: unknown                    as url_imagem,
+       cap.prioridade,
+       case cap.prioridade
+           when 'CRITICA' :: text
+               then 1
+           when 'ALTA' :: text
+               then 2
+           when 'BAIXA' :: text
+               then 3
+           else null :: integer
+           end                            as prioridade_ordem,
+       cap.codigo                                                       as cod_alternativa,
+       cap.codigo_contexto                                              as cod_contexto_alternativa,
+       cap.alternativa,
+       prio.prazo,
+       crn.resposta_outros,
+       v.cod_tipo,
+       cos.cod_unidade,
+       cos.status                                                       as status_os,
+       cos.cod_checklist,
+       tz_unidade(cos.cod_unidade)                                      as time_zone_unidade,
+       cosi.status_resolucao                                            as status_item,
+       mecanico.nome                                                    as nome_mecanico,
+       cosi.cpf_mecanico,
+       cosi.tempo_realizacao,
+       cosi.data_hora_conserto at time zone tz_unidade(cos.cod_unidade) as data_hora_conserto,
+       cosi.data_hora_inicio_resolucao                                  as data_hora_inicio_resolucao_utc,
+       cosi.data_hora_fim_resolucao                                     as data_hora_fim_resolucao_utc,
+       cosi.km                                                          as km_fechamento,
+       cosi.qt_apontamentos,
+       cosi.feedback_conserto,
+       cosi.codigo
+from checklist_data c
+         join colaborador realizador
+              on realizador.cpf = c.cpf_colaborador
+         join veiculo v
+              on v.codigo = c.cod_veiculo
+         join checklist_ordem_servico cos
+              on c.codigo = cos.cod_checklist
+         join checklist_ordem_servico_itens cosi
+              on cos.codigo = cosi.cod_os
+                  and cos.cod_unidade = cosi.cod_unidade
+         join checklist_perguntas cp
+              on cp.cod_versao_checklist_modelo = c.cod_versao_checklist_modelo
+                  and cosi.cod_contexto_pergunta = cp.codigo_contexto
+         join checklist_alternativa_pergunta cap
+              on cap.cod_pergunta = cp.codigo
+                  and cosi.cod_contexto_alternativa = cap.codigo_contexto
+         join checklist_alternativa_prioridade prio
+              on prio.prioridade :: text = cap.prioridade :: text
+         join checklist_respostas_nok crn
+              on crn.cod_checklist = c.codigo
+                  and crn.cod_alternativa = cap.codigo
+         left join colaborador mecanico on mecanico.cpf = cosi.cpf_mecanico;
