@@ -1,70 +1,70 @@
-CREATE OR REPLACE FUNCTION FUNC_PNEU_ATUALIZA(F_COD_CLIENTE TEXT,
-                                              F_COD_MODELO BIGINT,
-                                              F_COD_DIMENSAO BIGINT,
-                                              F_COD_MODELO_BANDA BIGINT,
-                                              F_DOT TEXT,
-                                              F_VALOR NUMERIC,
-                                              F_VIDA_TOTAL INT,
-                                              F_PRESSAO_RECOMENDADA DOUBLE PRECISION,
-                                              F_COD_ORIGINAL_PNEU BIGINT,
-                                              F_COD_UNIDADE BIGINT)
-    RETURNS VOID
-    LANGUAGE PLPGSQL
-AS
+create or replace function func_pneu_atualiza(f_cod_cliente text,
+                                              f_cod_modelo bigint,
+                                              f_cod_dimensao bigint,
+                                              f_cod_modelo_banda bigint,
+                                              f_dot text,
+                                              f_valor numeric,
+                                              f_vida_total int,
+                                              f_pressao_recomendada double precision,
+                                              f_cod_original_pneu bigint,
+                                              f_cod_unidade bigint)
+    returns void
+    language plpgsql
+as
 $$
-DECLARE
-    V_COD_CLIENTE         TEXT;
-    V_COD_MODELO          BIGINT;
-    V_COD_DIMENSAO        BIGINT;
-    V_COD_MODELO_BANDA    BIGINT;
-    V_DOT                 TEXT;
-    V_VALOR               NUMERIC;
-    V_VIDA_TOTAL          INT;
-    V_PRESSAO_RECOMENDADA DOUBLE PRECISION;
-    V_COD_UNIDADE         BIGINT;
-BEGIN
-    SELECT CODIGO_CLIENTE,
-           COD_MODELO,
-           COD_DIMENSAO,
-           COD_MODELO_BANDA,
-           COALESCE(DOT, ''),
-           VALOR,
-           VIDA_TOTAL,
-           PRESSAO_RECOMENDADA,
-           COD_UNIDADE
-    INTO STRICT V_COD_CLIENTE,
-        V_COD_MODELO,
-        V_COD_DIMENSAO,
-        V_COD_MODELO_BANDA,
-        V_DOT,
-        V_VALOR,
-        V_VIDA_TOTAL,
-        V_PRESSAO_RECOMENDADA,
-        V_COD_UNIDADE
-    FROM PNEU
-    WHERE CODIGO = F_COD_ORIGINAL_PNEU;
+declare
+    v_cod_cliente         text;
+    v_cod_modelo          bigint;
+    v_cod_dimensao        bigint;
+    v_cod_modelo_banda    bigint;
+    v_dot                 text;
+    v_valor               numeric;
+    v_vida_total          int;
+    v_pressao_recomendada double precision;
+    v_cod_unidade         bigint;
+begin
+    select codigo_cliente,
+           cod_modelo,
+           cod_dimensao,
+           cod_modelo_banda,
+           coalesce(dot, ''),
+           valor,
+           vida_total,
+           pressao_recomendada,
+           cod_unidade
+    into strict v_cod_cliente,
+        v_cod_modelo,
+        v_cod_dimensao,
+        v_cod_modelo_banda,
+        v_dot,
+        v_valor,
+        v_vida_total,
+        v_pressao_recomendada,
+        v_cod_unidade
+    from pneu
+    where codigo = f_cod_original_pneu;
 
-    IF V_COD_CLIENTE != F_COD_CLIENTE
-        OR V_COD_MODELO != F_COD_MODELO
-        OR V_COD_DIMENSAO != F_COD_DIMENSAO
-        OR V_COD_MODELO_BANDA != F_COD_MODELO_BANDA
-        OR V_DOT != F_DOT
-        OR V_VALOR != F_VALOR
-        OR V_VIDA_TOTAL != F_VIDA_TOTAL
-        OR V_PRESSAO_RECOMENDADA != F_PRESSAO_RECOMENDADA
-        OR V_COD_UNIDADE != F_COD_UNIDADE
-    THEN
-        UPDATE PNEU
-        SET CODIGO_CLIENTE      = F_COD_CLIENTE,
-            COD_MODELO          = F_COD_MODELO,
-            COD_DIMENSAO        = F_COD_DIMENSAO,
-            COD_MODELO_BANDA    = F_COD_MODELO_BANDA,
-            DOT                 = F_DOT,
-            VALOR               = F_VALOR,
-            VIDA_TOTAL          = F_VIDA_TOTAL,
-            PRESSAO_RECOMENDADA = F_PRESSAO_RECOMENDADA
-        WHERE CODIGO = F_COD_ORIGINAL_PNEU
-          AND COD_UNIDADE = F_COD_UNIDADE;
-    END IF;
-END
+    if v_cod_cliente != f_cod_cliente
+        or v_cod_modelo != f_cod_modelo
+        or v_cod_dimensao != f_cod_dimensao
+        or v_cod_modelo_banda != f_cod_modelo_banda
+        or v_dot != f_dot
+        or v_valor != f_valor
+        or v_vida_total != f_vida_total
+        or v_pressao_recomendada != f_pressao_recomendada
+        or v_cod_unidade != f_cod_unidade
+    then
+        update pneu
+        set codigo_cliente      = f_cod_cliente,
+            cod_modelo          = f_cod_modelo,
+            cod_dimensao        = f_cod_dimensao,
+            cod_modelo_banda    = f_cod_modelo_banda,
+            dot                 = f_dot,
+            valor               = f_valor,
+            vida_total          = f_vida_total,
+            pressao_recomendada = f_pressao_recomendada
+        where codigo = f_cod_original_pneu
+          and cod_unidade = f_cod_unidade;
+    end if;
+end
 $$;
