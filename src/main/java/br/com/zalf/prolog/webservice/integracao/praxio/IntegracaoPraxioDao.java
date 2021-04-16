@@ -49,5 +49,6 @@ interface IntegracaoPraxioDao {
     ChecklistParaSincronizar getCodChecklistParaSincronizar() throws Throwable;
 
     VeiculoEdicaoStatus getVeiculoEdicaoStatus(@NotNull final String placaVeiculo,
-                                               @NotNull final Boolean veiculoAtivo) throws Throwable;
+                                               @NotNull final Boolean veiculoAtivo,
+                                               @NotNull final String tokenIntegracao) throws Throwable;
 }
