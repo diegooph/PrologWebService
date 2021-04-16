@@ -27,7 +27,7 @@ BEGIN
            COD_MODELO,
            COD_DIMENSAO,
            COD_MODELO_BANDA,
-           DOT,
+           COALESCE(DOT, ''),
            VALOR,
            VIDA_TOTAL,
            PRESSAO_RECOMENDADA,
