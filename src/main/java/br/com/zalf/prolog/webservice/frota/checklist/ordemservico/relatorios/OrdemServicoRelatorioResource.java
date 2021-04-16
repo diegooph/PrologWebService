@@ -98,7 +98,7 @@ public class OrdemServicoRelatorioResource {
 
     @GET
     @Path("/estratificacao-os/report")
-    public Report getEstratificacaoOsReportDeprecated(
+    public Report getEstratificacaoOsReport(
             @QueryParam("codUnidades") final List<Long> codUnidades,
             @QueryParam("statusOs") final String statusOs,
             @QueryParam("statusItem") final String statusItem,
@@ -119,7 +119,7 @@ public class OrdemServicoRelatorioResource {
     @GET
     @Path("/estratificacao-os/csv")
     @UsedBy(platforms = Platform.WEBSITE)
-    public StreamingOutput getEstratificacaoOsCsvDeprecated(
+    public StreamingOutput getEstratificacaoOsCsv(
             @QueryParam("codUnidades") final List<Long> codUnidades,
             @QueryParam("statusOs") final String statusOs,
             @QueryParam("statusItem") final String statusItem,
