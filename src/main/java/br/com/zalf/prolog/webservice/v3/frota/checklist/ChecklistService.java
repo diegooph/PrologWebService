@@ -60,20 +60,39 @@ public class ChecklistService implements KmProcessoAtualizavel {
         update(entity);
     }
 
-    public List<ChecklistProjection> getChecklists(@NotNull final ChecklistListagemFiltro checklistListagemFiltro) {
+    @NotNull
+    public List<ChecklistProjection> getChecklistsListagem(
+            @NotNull final ChecklistListagemFiltro checklistListagemFiltro) {
         try {
-            return checklistDao.getChecklists(checklistListagemFiltro.getCodUnidades(),
-                                              checklistListagemFiltro.getCodColaborador(),
-                                              checklistListagemFiltro.getCodTipoVeiculo(),
-                                              checklistListagemFiltro.getCodVeiculo(),
-                                              checklistListagemFiltro.isIncluirRespostas(),
-                                              checklistListagemFiltro.getDataInicial(),
-                                              checklistListagemFiltro.getDataFinal(),
-                                              checklistListagemFiltro.getLimit(),
-                                              checklistListagemFiltro.getOffset());
+            return checklistDao.getChecklistsListagem(checklistListagemFiltro.getCodUnidades(),
+                                                      checklistListagemFiltro.getDataInicial(),
+                                                      checklistListagemFiltro.getDataFinal(),
+                                                      checklistListagemFiltro.getCodColaborador(),
+                                                      checklistListagemFiltro.getCodTipoVeiculo(),
+                                                      checklistListagemFiltro.getCodVeiculo(),
+                                                      checklistListagemFiltro.isIncluirRespostas(),
+                                                      checklistListagemFiltro.getLimit(),
+                                                      checklistListagemFiltro.getOffset());
         } catch (final Throwable t) {
-            Log.e(TAG, String.format("Erro ao buscar lista de checklists das unidades.Código das Unidades: %d\n",
-                                     checklistListagemFiltro.getCodUnidades()), t);
+            Log.e(TAG, String.format("Erro ao buscar lista de checklists das unidades.\n" +
+                                             "codUnidades: %s\n" +
+                                             "codColaborador: %s\n" +
+                                             "codTipoVeiculo: %s\n" +
+                                             "codVeiculo: %s\n" +
+                                             "isIncluirRespostas: %s\n" +
+                                             "dataInicial: %s\n" +
+                                             "dataFinal: %s\n" +
+                                             "limit: %s\n" +
+                                             "offset: %s\n",
+                                     checklistListagemFiltro.getCodUnidades().toString(),
+                                     checklistListagemFiltro.getCodColaborador(),
+                                     checklistListagemFiltro.getCodTipoVeiculo(),
+                                     checklistListagemFiltro.getCodVeiculo(),
+                                     checklistListagemFiltro.isIncluirRespostas(),
+                                     checklistListagemFiltro.getDataInicial(),
+                                     checklistListagemFiltro.getDataFinal(),
+                                     checklistListagemFiltro.getLimit(),
+                                     checklistListagemFiltro.getOffset()), t);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao buscar listagem de checklists, tente novamente.");

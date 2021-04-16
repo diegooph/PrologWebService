@@ -18,6 +18,10 @@ import java.util.List;
 public class ChecklistListagemFiltro {
     @NotNull
     List<Long> codUnidades;
+    @NotNull
+    LocalDate dataInicial;
+    @NotNull
+    LocalDate dataFinal;
     @Nullable
     Long codColaborador;
     @Nullable
@@ -25,10 +29,6 @@ public class ChecklistListagemFiltro {
     @Nullable
     Long codVeiculo;
     boolean incluirRespostas;
-    @NotNull
-    LocalDate dataInicial;
-    @NotNull
-    LocalDate dataFinal;
     @Max(value = 1000, message = "valor de pesquisa não pode ser maior que 1000 linhas.")
     @Min(value = 0, message = "não pode ser menor que zero.")
     int limit;

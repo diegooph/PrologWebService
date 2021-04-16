@@ -16,8 +16,9 @@ import java.util.stream.Collectors;
 @Component
 public class ChecklistListagemMapper {
 
-    public List<ChecklistListagemDto> toDto(final List<ChecklistProjection> checklistsGet) {
-        return checklistsGet
+    @NotNull
+    public List<ChecklistListagemDto> toDto(final List<ChecklistProjection> checklistsProjection) {
+        return checklistsProjection
                 .stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());

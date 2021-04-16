@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.v3.frota.checklist;
 
 import br.com.zalf.prolog.webservice.commons.network.metadata.Optional;
+import br.com.zalf.prolog.webservice.commons.network.metadata.Required;
 import br.com.zalf.prolog.webservice.commons.util.datetime.DateUtils;
 import br.com.zalf.prolog.webservice.interceptors.ApiExposed;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
@@ -45,25 +46,26 @@ public class ChecklistResource implements ChecklistResourceApiDoc {
     @GET
     @Secured(permissions = Pilares.Frota.Checklist.VISUALIZAR_TODOS)
     @Path("/")
-    public List<ChecklistListagemDto> getChecklists(@NotNull @QueryParam("codUnidades") final List<Long> codUnidades,
-                                                    @QueryParam("codColaborador") @Optional final Long codColaborador,
-                                                    @QueryParam("codTipoVeiculo") @Optional final Long codTipoVeiculo,
-                                                    @QueryParam("codVeiculo") @Optional final Long codVeiculo,
-                                                    @QueryParam("incluirRespostas") @DefaultValue("true") final boolean incluirRespostas,
-                                                    @QueryParam("dataInicial") final @NotNull String dataInicial,
-                                                    @QueryParam("dataFinal") final @NotNull String dataFinal,
-                                                    @QueryParam("limit") final int limit,
-                                                    @QueryParam("offset") final long offset) {
+    public List<ChecklistListagemDto> getChecklistsListagem(
+            @QueryParam("codUnidades") @Required final List<Long> codUnidades,
+            @QueryParam("dataInicial") @Required final String dataInicial,
+            @QueryParam("dataFinal") @Required final String dataFinal,
+            @QueryParam("codColaborador") @Optional final Long codColaborador,
+            @QueryParam("codTipoVeiculo") @Optional final Long codTipoVeiculo,
+            @QueryParam("codVeiculo") @Optional final Long codVeiculo,
+            @QueryParam("incluirRespostas") @DefaultValue("true") final boolean incluirRespostas,
+            @QueryParam("limit") final int limit,
+            @QueryParam("offset") final long offset) {
         final ChecklistListagemFiltro checklistListagemFiltro =
                 ChecklistListagemFiltro.of(codUnidades,
+                                           DateUtils.parseDate(dataInicial),
+                                           DateUtils.parseDate(dataFinal),
                                            codColaborador,
                                            codTipoVeiculo,
                                            codVeiculo,
                                            incluirRespostas,
-                                           DateUtils.parseDate(dataInicial),
-                                           DateUtils.parseDate(dataFinal),
                                            limit,
                                            offset);
-        return checklistListagemMapper.toDto(checklistService.getChecklists(checklistListagemFiltro));
+        return checklistListagemMapper.toDto(checklistService.getChecklistsListagem(checklistListagemFiltro));
     }
 }

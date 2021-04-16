@@ -16,25 +16,24 @@ import java.util.List;
  * @author Luiz Felipe (https://github.com/luizfp)
  */
 public interface ChecklistDao extends JpaRepository<ChecklistEntity, Long> {
-
     @NotNull
     @Query(value = "select * from func_checklist_get_listagem(" +
-            "f_cod_unidades => to_bigint_array(:codUnidades),        " +
-            "f_cod_colaborador => :codColaborador,       " +
-            "f_cod_tipo_veiculo => :codTipoVeiculo,       " +
-            "f_cod_veiculo => :codVeiculo,       " +
-            "f_incluir_respostas => :incluirRespostas,       " +
-            "f_data_inicial => :dataInicial,       " +
-            "f_data_final => :dataFinal,       " +
-            "f_limit => :limit,       " +
-            "f_offset => :offset       );", nativeQuery = true)
-    List<ChecklistProjection> getChecklists(@NotNull final List<Long> codUnidades,
-                                            @Nullable Long codColaborador,
-                                            @Nullable Long codTipoVeiculo,
-                                            @Nullable Long codVeiculo,
-                                            boolean incluirRespostas,
-                                            @NotNull final LocalDate dataInicial,
-                                            @NotNull final LocalDate dataFinal,
-                                            int limit,
-                                            long offset);
+            "f_cod_unidades => to_bigint_array(:codUnidades), " +
+            "f_data_inicial => :dataInicial, " +
+            "f_data_final => :dataFinal, " +
+            "f_cod_colaborador => :codColaborador, " +
+            "f_cod_tipo_veiculo => :codTipoVeiculo, " +
+            "f_cod_veiculo => :codVeiculo, " +
+            "f_incluir_respostas => :incluirRespostas, " +
+            "f_limit => :limit, " +
+            "f_offset => :offset);", nativeQuery = true)
+    List<ChecklistProjection> getChecklistsListagem(@NotNull final List<Long> codUnidades,
+                                                    @NotNull final LocalDate dataInicial,
+                                                    @NotNull final LocalDate dataFinal,
+                                                    @Nullable final Long codColaborador,
+                                                    @Nullable final Long codTipoVeiculo,
+                                                    @Nullable final Long codVeiculo,
+                                                    boolean incluirRespostas,
+                                                    int limit,
+                                                    long offset);
 }
