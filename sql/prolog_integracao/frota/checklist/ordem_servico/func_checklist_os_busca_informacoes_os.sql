@@ -31,21 +31,21 @@ as
 $$
 begin
     return query
-        select cos.cod_unidade                                            as cod_unidade,
-               u.cod_auxiliar                                             as cod_auxiliar_unidade,
-               cos.codigo_prolog                                          as cod_interno_os_prolog,
-               cos.codigo                                                 as cod_os_prolog,
-               c.data_hora_realizacao_tz_aplicado                         as data_hora_abertura_os,
-               v.placa::text                                              as placa_veiculo,
-               c.km_veiculo                                               as km_veiculo_na_abertura,
-               lpad(c.cpf_colaborador::text, 11, '0')                     as cpf_colaborador_checklist,
-               cos.status::text                                           as status_os,
-               cos.data_hora_fechamento at time zone tz_unidade(u.codigo) as data_hora_fechamento_os,
-               cosi.codigo                                                as cod_item_os,
-               cosi.cod_alternativa_primeiro_apontamento                  as cod_alternativa,
-               cap.cod_auxiliar                                           as cod_auxiliar_alternativa,
-               cap.alternativa                                            as descricao_alternativa,
-               cap.alternativa_tipo_outros                                as alternativa_tipo_outros,
+        select cos.cod_unidade                                                   as cod_unidade,
+               u.cod_auxiliar                                                    as cod_auxiliar_unidade,
+               cos.codigo_prolog                                                 as cod_interno_os_prolog,
+               cos.codigo                                                        as cod_os_prolog,
+               c.data_hora_realizacao_tz_aplicado                                as data_hora_abertura_os,
+               v.placa::text                                                     as placa_veiculo,
+               c.km_veiculo                                                      as km_veiculo_na_abertura,
+               lpad(c.cpf_colaborador::text, 11, '0')                            as cpf_colaborador_checklist,
+               cos.status::text                                                  as status_os,
+               cos.data_hora_fechamento at time zone tz_unidade(u.codigo)        as data_hora_fechamento_os,
+               cosi.codigo                                                       as cod_item_os,
+               cosi.cod_alternativa_primeiro_apontamento                         as cod_alternativa,
+               cap.cod_auxiliar                                                  as cod_auxiliar_alternativa,
+               cap.alternativa                                                   as descricao_alternativa,
+               cap.alternativa_tipo_outros                                       as alternativa_tipo_outros,
                case
                    when cap.alternativa_tipo_outros
                        then
@@ -53,10 +53,10 @@ begin
                         from checklist_respostas_nok crn
                         where crn.cod_checklist = c.codigo
                           and crn.cod_alternativa = cap.codigo)::text
-                   end                                                    as descricao_tipo_outros,
-               cap.prioridade::text                                       as prioridade_alternativa,
-               cosi.status_resolucao                                      as status_item_os,
-               cosi.km                                                    as km_veiculo_fechamento_item,
+                   end                                                           as descricao_tipo_outros,
+               cap.prioridade::text                                              as prioridade_alternativa,
+               cosi.status_resolucao                                             as status_item_os,
+               cosi.km                                                           as km_veiculo_fechamento_item,
                cosi.data_hora_conserto at time zone tz_unidade(u.codigo)         as data_hora_fechamento_item_os,
                cosi.data_hora_inicio_resolucao at time zone tz_unidade(u.codigo) as data_hora_inicio_resolucao,
                cosi.data_hora_fim_resolucao at time zone tz_unidade(u.codigo)    as data_hora_fim_resolucao,

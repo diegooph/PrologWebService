@@ -286,19 +286,19 @@ begin
                d.nome_colaborador_resolucao                                              as nome_colaborador_resolucao,
                d.data_hora_resolucao                                                     as data_hora_resolucao,
                d.data_hora_inicio_resolucao                                              as data_hora_inicio_resolucao,
-               d.data_hora_fim_resolucao       as data_hora_fim_resolucao,
-               d.feedback_resolucao            as feedback_resolucao,
-               d.duracao_resolucao_minutos     as duracao_resolucao_minutos,
-               d.km_veiculo_coletado_resolucao as km_veiculo_coletado_resolucao,
-               d.cod_pergunta                  as cod_pergunta,
-               d.descricao_pergunta            as descricao_pergunta,
-               d.cod_alternativa               as cod_alternativa,
-               d.descricao_alternativa         as descricao_alternativa,
-               d.alternativa_tipo_outros       as alternativa_tipo_outros,
-               d.descricao_tipo_outros         as descricao_tipo_outros,
-               d.prioridade_alternativa        as prioridade_alternativa,
-               d.url_midia                     as url_midia,
-               d.cod_checklist                 as cod_checklist
+               d.data_hora_fim_resolucao                                                 as data_hora_fim_resolucao,
+               d.feedback_resolucao                                                      as feedback_resolucao,
+               d.duracao_resolucao_minutos                                               as duracao_resolucao_minutos,
+               d.km_veiculo_coletado_resolucao                                           as km_veiculo_coletado_resolucao,
+               d.cod_pergunta                                                            as cod_pergunta,
+               d.descricao_pergunta                                                      as descricao_pergunta,
+               d.cod_alternativa                                                         as cod_alternativa,
+               d.descricao_alternativa                                                   as descricao_alternativa,
+               d.alternativa_tipo_outros                                                 as alternativa_tipo_outros,
+               d.descricao_tipo_outros                                                   as descricao_tipo_outros,
+               d.prioridade_alternativa                                                  as prioridade_alternativa,
+               d.url_midia                                                               as url_midia,
+               d.cod_checklist                                                           as cod_checklist
         from dados d
                  right join dados_veiculo dv
                             on d.placa_veiculo = dv.placa_veiculo

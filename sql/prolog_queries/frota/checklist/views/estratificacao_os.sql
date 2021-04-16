@@ -1,17 +1,17 @@
 create or replace view estratificacao_os as
-select cos.codigo                         as cod_os,
-       realizador.nome                    as nome_realizador_checklist,
-       v.codigo                           as cod_veiculo,
-       v.placa                            as placa_veiculo,
-       c.km_veiculo                       as km,
-       c.data_hora_realizacao_tz_aplicado as data_hora,
-       c.tipo                             as tipo_checklist,
-       cp.codigo                          as cod_pergunta,
-       cp.codigo_contexto                 as cod_contexto_pergunta,
-       cp.ordem                           as ordem_pergunta,
+select cos.codigo                                                       as cod_os,
+       realizador.nome                                                  as nome_realizador_checklist,
+       v.codigo                                                         as cod_veiculo,
+       v.placa                                                          as placa_veiculo,
+       c.km_veiculo                                                     as km,
+       c.data_hora_realizacao_tz_aplicado                               as data_hora,
+       c.tipo                                                           as tipo_checklist,
+       cp.codigo                                                        as cod_pergunta,
+       cp.codigo_contexto                                               as cod_contexto_pergunta,
+       cp.ordem                                                         as ordem_pergunta,
        cp.pergunta,
        cp.single_choice,
-       null :: unknown                    as url_imagem,
+       null :: unknown                                                  as url_imagem,
        cap.prioridade,
        case cap.prioridade
            when 'CRITICA' :: text
@@ -21,7 +21,7 @@ select cos.codigo                         as cod_os,
            when 'BAIXA' :: text
                then 3
            else null :: integer
-           end                            as prioridade_ordem,
+           end                                                          as prioridade_ordem,
        cap.codigo                                                       as cod_alternativa,
        cap.codigo_contexto                                              as cod_contexto_alternativa,
        cap.alternativa,
