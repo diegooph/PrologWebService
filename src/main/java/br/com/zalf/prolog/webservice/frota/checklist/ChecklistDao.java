@@ -21,17 +21,6 @@ import java.util.List;
 public interface ChecklistDao {
 
     @NotNull
-    Long insert(@NotNull final Connection conn,
-                @NotNull final ChecklistInsercao checklist,
-                final boolean foiOffline,
-                final boolean deveAbrirOs) throws Throwable;
-
-    @NotNull
-    Long insert(@NotNull final ChecklistInsercao checklist,
-                final boolean foiOffline,
-                final boolean deveAbrirOs) throws Throwable;
-
-    @NotNull
     InfosChecklistInserido insertChecklist(@NotNull final Connection conn,
                                            @NotNull final ChecklistInsercao checklist,
                                            final boolean foiOffline,

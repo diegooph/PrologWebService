@@ -3762,3 +3762,19 @@ alter table checklist_data
         (cod_unidade, cod_checklist_modelo, data_hora, cpf_colaborador, cod_veiculo, tipo,
          tempo_realizacao, km_veiculo, fonte_data_hora_realizacao, versao_app_momento_realizacao,
          device_id, device_imei, device_uptime_realizacao_millis);
+
+
+-- Esta function não é mais necessária e o arquivo específico será deletado.
+drop function func_checklist_get_cod_checklist_duplicado(f_cod_unidade_checklist bigint,
+    f_cod_modelo_checklist bigint,
+    f_data_hora_realizacao timestamp with time zone,
+    f_cod_colaborador bigint,
+    f_placa_veiculo text,
+    f_tipo_checklist char,
+    f_km_coletado bigint,
+    f_tempo_realizacao bigint,
+    f_fonte_data_hora_realizacao text,
+    f_versao_app_momento_realizacao integer,
+    f_device_id text,
+    f_device_imei text,
+    f_device_uptime_realizacao_millis bigint);
