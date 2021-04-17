@@ -37,7 +37,7 @@ BEGIN
                C.KM_VEICULO                                         AS KM_VEICULO_MOMENTO_REALIZACAO,
                C.TEMPO_REALIZACAO                                   AS DURACAO_REALIZACAO_MILLIS,
                C.CPF_COLABORADOR                                    AS CPF_COLABORADOR,
-               C.PLACA_VEICULO :: TEXT                              AS PLACA_VEICULO,
+               V.PLACA :: TEXT                                      AS PLACA_VEICULO,
                C.TIPO                                               AS TIPO_CHECKLIST,
                CO.NOME :: TEXT                                      AS NOME_COLABORADOR,
                C.TOTAL_PERGUNTAS_OK                                 AS TOTAL_ITENS_OK,
@@ -46,6 +46,8 @@ BEGIN
         FROM CHECKLIST C
                  JOIN COLABORADOR CO
                       ON CO.CPF = C.CPF_COLABORADOR
+                 JOIN VEICULO V
+                      ON V.CODIGO = C.COD_VEICULO
         WHERE C.CPF_COLABORADOR = F_CPF_COLABORADOR
           AND (F_HAS_DATA_INICIAL = 1 OR (C.DATA_HORA AT TIME ZONE F_TIMEZONE) :: DATE >= F_DATA_INICIAL)
           AND (F_HAS_DATA_FINAL = 1 OR (C.DATA_HORA AT TIME ZONE F_TIMEZONE) :: DATE <= F_DATA_FINAL)
