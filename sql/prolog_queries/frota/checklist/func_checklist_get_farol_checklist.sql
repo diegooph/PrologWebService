@@ -74,7 +74,7 @@ begin
                                              g.day::date = (cf.data_hora_realizacao_tz_aplicado)::date
                        where v.cod_unidade = f_cod_unidade
                          and v.status_ativo = true
-                       group by data, v.placa) as checks_placas_dias
+                       group by data, v.codigo, v.placa) as checks_placas_dias
                           left join checks_filtrados cfs on cfs.cod_checklist = checks_placas_dias.cod_checklist_saida
                           left join checks_filtrados cfr on cfr.cod_checklist = checks_placas_dias.cod_checklist_retorno
              ),

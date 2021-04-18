@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.integracao.operacoes;
 
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.Servico;
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.VeiculoServico;
+import br.com.zalf.prolog.webservice.frota.pneu.servico._model.filtro.VeiculoAberturaServicoFiltro;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.OffsetDateTime;
@@ -13,8 +14,7 @@ import java.time.OffsetDateTime;
  */
 public interface OperacoesIntegradasAfericaoServico {
     @NotNull
-    VeiculoServico getVeiculoAberturaServico(@NotNull final Long codServico,
-                                             @NotNull final String placaVeiculo) throws Throwable;
+    VeiculoServico getVeiculoAberturaServico(@NotNull final VeiculoAberturaServicoFiltro filtro) throws Throwable;
 
     void fechaServico(@NotNull final Long codUnidade,
                       @NotNull final OffsetDateTime dataHorafechamentoServico,

@@ -87,6 +87,7 @@ final class ServicoConverter {
     @NotNull
     static QuantidadeServicosVeiculo createQtdServicosVeiculo(@NotNull final ResultSet resultSet) throws SQLException {
         final QuantidadeServicosVeiculo qtdServicosFechados = new QuantidadeServicosVeiculo();
+        qtdServicosFechados.setCodVeiculo(resultSet.getLong("COD_VEICULO"));
         qtdServicosFechados.setPlacaVeiculo(resultSet.getString("PLACA_VEICULO"));
         qtdServicosFechados.setIdentificadorFrota(resultSet.getString("IDENTIFICADOR_FROTA"));
         qtdServicosFechados.setQtdServicosCalibragem(resultSet.getInt("TOTAL_CALIBRAGENS"));
@@ -175,6 +176,7 @@ final class ServicoConverter {
         servico.setCodUnidade(resultSet.getLong("COD_UNIDADE"));
         servico.setDataHoraAbertura(resultSet.getObject("DATA_HORA_ABERTURA", LocalDateTime.class));
         servico.setDataHoraFechamento(resultSet.getObject("DATA_HORA_FECHAMENTO", LocalDateTime.class));
+        servico.setCodVeiculo(resultSet.getLong("COD_VEICULO"));
         servico.setPlacaVeiculo(resultSet.getString("PLACA_VEICULO"));
         servico.setIdentificadorFrota(resultSet.getString("IDENTIFICADOR_FROTA"));
         servico.setFechadoAutomaticamenteMovimentacao(resultSet.getBoolean("FECHADO_AUTOMATICAMENTE_MOVIMENTACAO"));

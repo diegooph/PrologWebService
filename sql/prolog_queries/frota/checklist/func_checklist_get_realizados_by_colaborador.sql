@@ -1,9 +1,9 @@
-CREATE FUNCTION FUNC_CHECKLIST_GET_REALIZADOS_BY_COLABORADOR(F_COD_COLABORADOR BIGINT,
-                                                             F_DATA_INICIAL DATE,
-                                                             F_DATA_FINAL DATE,
-                                                             F_TIMEZONE TEXT,
-                                                             F_LIMIT INTEGER,
-                                                             F_OFFSET BIGINT)
+CREATE OR REPLACE FUNCTION FUNC_CHECKLIST_GET_REALIZADOS_BY_COLABORADOR(F_COD_COLABORADOR BIGINT,
+                                                                        F_DATA_INICIAL DATE,
+                                                                        F_DATA_FINAL DATE,
+                                                                        F_TIMEZONE TEXT,
+                                                                        F_LIMIT INTEGER,
+                                                                        F_OFFSET BIGINT)
     RETURNS TABLE
             (
                 COD_CHECKLIST                 BIGINT,
@@ -46,7 +46,7 @@ BEGIN
                C.CPF_COLABORADOR                                    AS CPF_COLABORADOR,
                CO.NOME :: TEXT                                      AS NOME_COLABORADOR,
                V.CODIGO                                             AS COD_VEICULO,
-               C.PLACA_VEICULO :: TEXT                              AS PLACA_VEICULO,
+               V.PLACA :: TEXT                                      AS PLACA_VEICULO,
                V.IDENTIFICADOR_FROTA :: TEXT                        AS IDENTIFICADOR_FROTA,
                C.TIPO                                               AS TIPO_CHECKLIST,
                C.TOTAL_PERGUNTAS_OK                                 AS TOTAL_PERGUNTAS_OK,
@@ -77,7 +77,7 @@ BEGIN
                  JOIN COLABORADOR CO
                       ON CO.CPF = C.CPF_COLABORADOR
                  JOIN VEICULO V
-                      ON V.PLACA = C.PLACA_VEICULO
+                      ON V.CODIGO = C.COD_VEICULO
         WHERE CO.CODIGO = F_COD_COLABORADOR
           AND C.DATA_HORA_REALIZACAO_TZ_APLICADO :: DATE >= F_DATA_INICIAL
           AND C.DATA_HORA_REALIZACAO_TZ_APLICADO :: DATE <= F_DATA_FINAL

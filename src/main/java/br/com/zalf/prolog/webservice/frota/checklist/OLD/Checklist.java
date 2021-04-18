@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 public class Checklist {
     public static final char TIPO_SAIDA = 'S';
     public static final char TIPO_RETORNO = 'R';
+    private Long codUnidade;
     private Long codModelo;
     private Long codVersaoModeloChecklist;
     private Long codigo;
@@ -101,6 +102,32 @@ public class Checklist {
                 checklistAntigo.getQtdNokBaixa(),
                 checklistAntigo.getQtdNokAlta(),
                 checklistAntigo.getQtdNokCritica());
+    }
+
+    @Override
+    public String toString() {
+        return "Checklist{" +
+                "codUnidade=" + codUnidade +
+                ", codModelo=" + codModelo +
+                ", codigo=" + codigo +
+                ", colaborador=" + colaborador +
+                ", data=" + data +
+                ", placaVeiculo='" + placaVeiculo + '\'' +
+                ", listRespostas=" + listRespostas +
+                ", tipo=" + tipo +
+                ", kmAtualVeiculo=" + kmAtualVeiculo +
+                ", tempoRealizacaoCheckInMillis=" + tempoRealizacaoCheckInMillis +
+                ", qtdItensOk=" + qtdItensOk +
+                ", qtdItensNok=" + qtdItensNok +
+                '}';
+    }
+
+    public Long getCodUnidade() {
+        return codUnidade;
+    }
+
+    public void setCodUnidade(final Long codUnidade) {
+        this.codUnidade = codUnidade;
     }
 
     public Long getCodModelo() {
@@ -303,22 +330,5 @@ public class Checklist {
         this.setQtdNokBaixa(qtdNokBaixa);
         this.setQtdNokAlta(qtdNokAlta);
         this.setQtdNokCritica(qtdNokCritica);
-    }
-
-    @Override
-    public String toString() {
-        return "Checklist{" +
-                "codModelo=" + codModelo +
-                ", codigo=" + codigo +
-                ", colaborador=" + colaborador +
-                ", data=" + data +
-                ", placaVeiculo='" + placaVeiculo + '\'' +
-                ", listRespostas=" + listRespostas +
-                ", tipo=" + tipo +
-                ", kmAtualVeiculo=" + kmAtualVeiculo +
-                ", tempoRealizacaoCheckInMillis=" + tempoRealizacaoCheckInMillis +
-                ", qtdItensOk=" + qtdItensOk +
-                ", qtdItensNok=" + qtdItensNok +
-                '}';
     }
 }

@@ -1,6 +1,22 @@
 Change Log
 ==========
 
+### Stage
+### Features
+* Cria funcionalidade para alterar o km coletado nos processos (PL-3557)
+* Altera ServicoResource para utilizar código do veículo nos métodos e não placa (PL-3406)
+* Altera métodos do ServicoResource que recebem objeto de filtro de GET para POST
+* Adicionar código do veículo no retorno das buscas de serviço (PL-3524)
+* Remove placa de todo o fluxo de aferições (PL-3403)
+* Adiciona código de veículo no cronograma de aferição (PL-3496)
+* Remove placa na realização de checklist (PL-3545)
+* Remove placa da busca de relatórios de checklist (PL-3548)
+* Remove placa das buscas do checklist (PL-3546)
+* Modifica fechamento massivo de OS via Suporte (PL-3594)
+* Remove placa das buscas, abertura e fechamento de OSs (PL-3547)
+* Remove placa dos relatórios de OSs (PL-3549)
+* Altera integrações para buscar a placa da tabela veículo (PL-3595)
+
 ### Refactors
 * Deleta integração com a Rodalog (PL-3476)
 

@@ -31,26 +31,9 @@ public final class SistemaAvaCorpAvilan extends Sistema {
 
     @Override
     @NotNull
-    public Long insertChecklistOffline(@NotNull final ChecklistInsercao checklist) throws Throwable {
-        final InfosChecklistInserido infosChecklistInserido =
-                Injection.provideChecklistOfflineDao().insereChecklistOffline(checklist);
-        if (infosChecklistInserido.abriuOs()
-                && verificaModeloChecklistIntegrado(checklist.getCodUnidade(), checklist.getCodModelo())) {
-            //noinspection ConstantConditions
-            final Long codInternoOsProlog = Injection
-                    .provideIntegracaoDao()
-                    .insertOsPendente(checklist.getCodUnidade(), infosChecklistInserido.getCodOsAberta());
-            enviaOsIntegrada(Collections.singletonList(codInternoOsProlog));
-        }
-
-        return infosChecklistInserido.getCodChecklist();
-    }
-
-    @Override
-    @NotNull
-    public Long insertChecklist(@NotNull final ChecklistInsercao checklist,
-                                final boolean foiOffline,
-                                final boolean deveAbrirOs) throws Throwable {
+    public InfosChecklistInserido insertChecklist(@NotNull final ChecklistInsercao checklist,
+                                                  final boolean foiOffline,
+                                                  final boolean deveAbrirOs) throws Throwable {
         final InfosChecklistInserido infosChecklistInserido =
                 Injection.provideChecklistDao().insertChecklist(checklist, foiOffline, deveAbrirOs);
         if (infosChecklistInserido.abriuOs()
@@ -62,7 +45,24 @@ public final class SistemaAvaCorpAvilan extends Sistema {
             enviaOsIntegrada(Collections.singletonList(codInternoOsProlog));
         }
 
-        return infosChecklistInserido.getCodChecklist();
+        return infosChecklistInserido;
+    }
+
+    @Override
+    @NotNull
+    public InfosChecklistInserido insertChecklistOffline(@NotNull final ChecklistInsercao checklist) throws Throwable {
+        final InfosChecklistInserido infosChecklistInserido =
+                Injection.provideChecklistOfflineDao().insertChecklistOffline(checklist);
+        if (infosChecklistInserido.abriuOs()
+                && verificaModeloChecklistIntegrado(checklist.getCodUnidade(), checklist.getCodModelo())) {
+            //noinspection ConstantConditions
+            final Long codInternoOsProlog = Injection
+                    .provideIntegracaoDao()
+                    .insertOsPendente(checklist.getCodUnidade(), infosChecklistInserido.getCodOsAberta());
+            enviaOsIntegrada(Collections.singletonList(codInternoOsProlog));
+        }
+
+        return infosChecklistInserido;
     }
 
     @Override
