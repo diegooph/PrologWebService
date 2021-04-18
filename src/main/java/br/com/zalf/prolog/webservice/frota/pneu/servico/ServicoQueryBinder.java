@@ -10,7 +10,6 @@ import org.jetbrains.annotations.Nullable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.SQLType;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
