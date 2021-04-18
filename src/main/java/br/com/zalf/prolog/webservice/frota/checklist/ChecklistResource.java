@@ -171,7 +171,8 @@ public final class ChecklistResource {
                                                       @QueryParam("dataInicial") final String dataInicial,
                                                       @QueryParam("dataFinal") final String dataFinal,
                                                       @QueryParam("itensCriticosRetroativos") final boolean itensCriticosRetroativos,
-                                                      @HeaderParam("Authorization") final String userToken) throws ProLogException {
+                                                      @HeaderParam("Authorization") final String userToken)
+            throws ProLogException {
         return service.getFarolChecklist(codUnidade, dataInicial, dataFinal, itensCriticosRetroativos, userToken);
     }
 
@@ -180,7 +181,8 @@ public final class ChecklistResource {
     @Secured(permissions = Pilares.Frota.FarolStatusPlacas.VISUALIZAR)
     public DeprecatedFarolChecklist getFarolChecklist(@PathParam("codUnidade") final Long codUnidade,
                                                       @QueryParam("itensCriticosRetroativos") final boolean itensCriticosRetroativos,
-                                                      @HeaderParam("Authorization") final String userToken) throws ProLogException {
+                                                      @HeaderParam("Authorization") final String userToken)
+            throws ProLogException {
         return service.getFarolChecklist(codUnidade, itensCriticosRetroativos, userToken);
     }
 
@@ -199,7 +201,7 @@ public final class ChecklistResource {
     @Path("/colaboradores/{cpf}/resumidos")
     @Secured(permissions = {Pilares.Frota.Checklist.VISUALIZAR_TODOS, Pilares.Frota.Checklist.REALIZAR})
     @Deprecated
-    @AppVersionCodeHandler(targetVersionCode = 120,
+    @AppVersionCodeHandler(targetVersionCode = 121,
                            versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
                            actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
     public List<Checklist> getByColaboradorResumidos(
@@ -214,13 +216,13 @@ public final class ChecklistResource {
 
     /**
      * @deprecated at 2020-06-08.
-     * Use {@link ChecklistResource#getListagem(String, Long, Long, Long, String, String, String, int, long)} instead.
+     * Use {@link ChecklistResource#getListagem(String, Long, Long, Long, Long, String, String, int, long)} instead.
      */
     @GET
     @Path("{codUnidade}/resumidos")
     @Secured(permissions = Pilares.Frota.Checklist.VISUALIZAR_TODOS)
     @Deprecated
-    @AppVersionCodeHandler(targetVersionCode = 120,
+    @AppVersionCodeHandler(targetVersionCode = 121,
                            versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
                            actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
     public List<Checklist> getAllResumido(
@@ -243,7 +245,7 @@ public final class ChecklistResource {
     @Path("{codUnidade}/completos")
     @Secured(permissions = Pilares.Frota.Checklist.VISUALIZAR_TODOS)
     @Deprecated
-    @AppVersionCodeHandler(targetVersionCode = 120,
+    @AppVersionCodeHandler(targetVersionCode = 121,
                            versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
                            actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
     public List<Checklist> getAllCompletos(
@@ -345,17 +347,17 @@ public final class ChecklistResource {
     @Path("{codUnidade}/{equipe}/{placa}")
     @Secured(permissions = Pilares.Frota.Checklist.VISUALIZAR_TODOS)
     @Deprecated
-    @AppVersionCodeHandler(targetVersionCode = 120,
+    @AppVersionCodeHandler(targetVersionCode = 121,
                            versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
                            actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
-    public List<Checklist> DEPRECATED_GET_ALL(@PathParam("codUnidade") final Long codUnidade,
-                                              @PathParam("equipe") final String equipe,
-                                              @PathParam("placa") final String placa,
-                                              @QueryParam("dataInicial") final long dataInicial,
-                                              @QueryParam("dataFinal") final long dataFinal,
-                                              @QueryParam("limit") final int limit,
-                                              @QueryParam("offset") final long offset,
-                                              @HeaderParam("Authorization") final String userToken) {
+    public List<Checklist> deprecatedGetAll(@PathParam("codUnidade") final Long codUnidade,
+                                            @PathParam("equipe") final String equipe,
+                                            @PathParam("placa") final String placa,
+                                            @QueryParam("dataInicial") final long dataInicial,
+                                            @QueryParam("dataFinal") final long dataFinal,
+                                            @QueryParam("limit") final int limit,
+                                            @QueryParam("offset") final long offset,
+                                            @HeaderParam("Authorization") final String userToken) {
         return null;
     }
 }
