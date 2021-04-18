@@ -17,8 +17,17 @@ Change Log
 * Remove placa dos relatórios de OSs (PL-3549)
 * Altera integrações para buscar a placa da tabela veículo (PL-3595)
 
+### Refactors
+* Deleta integração com a Rodalog (PL-3476)
+
 <a name="v3.1.1"></a>
 ## Version [v3.1.1](https://github.com/luizfp/PrologWebService/compare/v3.1.0...v3.1.1) (release-date) [unreleased]
+
+### Bug Fixes
+* Altera para não retornar unidades inativas (PL-3510)
+* Corrige processamento de planilha de import de pneus
+* Corrige processamento de planilha de import de vínculo de pneus a veículos
+* Corrige valores retornador para exibição de sulco atual e pressão atual (PL-3578)
 
 <a name="v3.1.0"></a>
 ## Version [v3.1.0](https://github.com/luizfp/PrologWebService/compare/v3.0.0...v3.1.0) (2021-04-08)
