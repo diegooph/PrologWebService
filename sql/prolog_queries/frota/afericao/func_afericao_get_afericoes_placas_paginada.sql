@@ -36,7 +36,7 @@ select a.km_veiculo,
        c.nome::text                                       as nome,
        a.tempo_realizacao                                 as tempo_realizacao
 from afericao a
-         join veiculo v on v.placa = a.placa_veiculo
+         join veiculo v on v.codigo = a.cod_veiculo
          join colaborador c on c.cpf = a.cpf_aferidor
 where a.cod_unidade = any (f_cod_unidades)
   and case
