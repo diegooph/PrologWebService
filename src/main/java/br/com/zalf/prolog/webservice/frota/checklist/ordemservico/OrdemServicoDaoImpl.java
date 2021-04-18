@@ -71,7 +71,7 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
     @Override
     public List<OrdemServicoListagem> getOrdemServicoListagem(@NotNull final Long codUnidade,
                                                               @Nullable final Long codTipoVeiculo,
-                                                              @Nullable final String placa,
+                                                              @Nullable final Long codVeiculo,
                                                               @Nullable final StatusOrdemServico statusOrdemServico,
                                                               final int limit,
                                                               final int offset) throws Throwable {
@@ -83,7 +83,7 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
             stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_OS_GET_OS_LISTAGEM(?, ?, ?, ?, ?, ?)");
             stmt.setLong(1, codUnidade);
             bindValueOrNull(stmt, 2, codTipoVeiculo, SqlType.BIGINT);
-            bindValueOrNull(stmt, 3, placa, SqlType.TEXT);
+            bindValueOrNull(stmt, 3, codVeiculo, SqlType.BIGINT);
             if (statusOrdemServico != null) {
                 stmt.setString(4, statusOrdemServico.asString());
             } else {
@@ -107,7 +107,7 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
     public List<QtdItensPlacaListagem> getQtdItensPlacaListagem(
             @NotNull final Long codUnidade,
             @Nullable final Long codTipoVeiculo,
-            @Nullable final String placaVeiculo,
+            @Nullable final Long codVeiculo,
             @Nullable final StatusItemOrdemServico statusItens,
             final int limit,
             final int offset) throws Throwable {
@@ -120,7 +120,7 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
                     "SELECT * FROM FUNC_CHECKLIST_OS_GET_QTD_ITENS_PLACA_LISTAGEM(?, ?, ?, ?, ?, ?)");
             stmt.setLong(1, codUnidade);
             bindValueOrNull(stmt, 2, codTipoVeiculo, SqlType.BIGINT);
-            bindValueOrNull(stmt, 3, placaVeiculo, SqlType.TEXT);
+            bindValueOrNull(stmt, 3, codVeiculo, SqlType.BIGINT);
             if (statusItens != null) {
                 stmt.setString(4, statusItens.asString());
             } else {
@@ -167,7 +167,7 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
     @NotNull
     @Override
     public HolderResolucaoItensOrdemServico getHolderResolucaoItensOrdemServico(
-            @NotNull final String placaVeiculo,
+            @NotNull final Long codVeiculo,
             @Nullable final PrioridadeAlternativa prioridade,
             @Nullable final StatusItemOrdemServico statusItens,
             final int limit,
@@ -182,7 +182,7 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
             stmt.setNull(1, SqlType.BIGINT.asIntTypeJava());
             // Código da Ordem de Serviço.
             stmt.setNull(2, SqlType.BIGINT.asIntTypeJava());
-            stmt.setString(3, placaVeiculo);
+            stmt.setLong(3, codVeiculo);
             if (prioridade != null) {
                 stmt.setString(4, prioridade.asString());
             } else {
@@ -212,7 +212,7 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
     public HolderResolucaoItensOrdemServico getHolderResolucaoMultiplosItens(
             @Nullable final Long codUnidade,
             @Nullable final Long codOrdemServico,
-            @Nullable final String placaVeiculo,
+            @Nullable final Long codVeiculo,
             @Nullable final StatusItemOrdemServico statusItens) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -222,7 +222,7 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
             stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_OS_GET_ITENS_RESOLUCAO(?, ?, ?, ?, ?, ?, ?, ?)");
             bindValueOrNull(stmt, 1, codUnidade, SqlType.BIGINT);
             bindValueOrNull(stmt, 2, codOrdemServico, SqlType.BIGINT);
-            bindValueOrNull(stmt, 3, placaVeiculo, SqlType.TEXT);
+            bindValueOrNull(stmt, 3, codVeiculo, SqlType.BIGINT);
             stmt.setNull(4, SqlType.TEXT.asIntTypeJava());
             bindValueOrNull(stmt, 5, statusItens != null ? statusItens.asString() : null, SqlType.VARCHAR);
             stmt.setObject(6, OffsetDateTime.now(Clock.systemUTC()));
@@ -327,46 +327,6 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
                     "Não foi possível atualizar a quantidade de apontamentos dos itens");
         } finally {
             close(stmt);
-        }
-    }
-
-    @NotNull
-    @Override
-    public Map<Long, List<InfosAlternativaAberturaOrdemServico>> getItensStatus(
-            @NotNull final Connection conn,
-            @NotNull final Long codModelo,
-            @NotNull final Long codVersaoModelo,
-            @NotNull final String placaVeiculo) throws Throwable {
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_OS_ALTERNATIVAS_ABERTURA_OS(" +
-                                                 "F_COD_MODELO_CHECKLIST        := ?, " +
-                                                 "F_COD_VERSAO_MODELO_CHECKLIST := ?, " +
-                                                 "F_PLACA_VEICULO               := ?)");
-            stmt.setLong(1, codModelo);
-            stmt.setLong(2, codVersaoModelo);
-            stmt.setString(3, placaVeiculo);
-            rSet = stmt.executeQuery();
-            final Map<Long, List<InfosAlternativaAberturaOrdemServico>> map = new HashMap<>();
-            while (rSet.next()) {
-                // TODO: Alterar para usar código de contexto da alternativa.
-                // TESTE: abrir um item de OS em uma versão do modelo, incrementar versão sem mudar alternativa que
-                // abriu o item (manter contexto), realizar novo check apontando mesmo problema.
-                // RESULTADO ESPERADO: deveria incrementar quantidade de apontamentos e não criar novo item.
-                final Long codAlternativa = rSet.getLong("COD_ALTERNATIVA");
-                List<InfosAlternativaAberturaOrdemServico> alternativas = map.get(codAlternativa);
-                if (alternativas != null) {
-                    alternativas.add(OrdemServicoConverter.createAlternativaChecklistAbreOrdemServico(rSet));
-                } else {
-                    alternativas = new ArrayList<>();
-                    alternativas.add(OrdemServicoConverter.createAlternativaChecklistAbreOrdemServico(rSet));
-                    map.put(codAlternativa, alternativas);
-                }
-            }
-            return map;
-        } finally {
-            close(stmt, rSet);
         }
     }
 

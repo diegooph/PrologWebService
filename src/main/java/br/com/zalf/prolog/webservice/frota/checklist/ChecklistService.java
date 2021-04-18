@@ -44,7 +44,8 @@ public final class ChecklistService {
         try {
             return RouterChecklists
                     .create(dao, userToken)
-                    .insertChecklist(checklist, false, true);
+                    .insertChecklist(checklist, false, true)
+                    .getCodChecklist();
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao inserir um checklist", t);
             throw Injection

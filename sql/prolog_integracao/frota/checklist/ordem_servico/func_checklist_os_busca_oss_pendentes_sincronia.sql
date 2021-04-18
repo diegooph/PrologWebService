@@ -6,9 +6,6 @@
 -- 1 - Entre a data de início e fim;
 -- 2 - A partir da data de início;
 -- 3 - Antes da data de fim;
---
--- Histórico:
--- 2020-08-03 -> Function criada (diogenesvanzella - PL-3118).
 create or replace function integracao.func_checklist_os_busca_oss_pendentes_sincronia(f_data_inicio date default null,
                                                                                       f_data_fim date default null)
     returns table
@@ -41,7 +38,7 @@ select u.nome::text                                                            a
        u.codigo                                                                as cod_unidade,
        u.cod_auxiliar::text                                                    as de_para_unidade,
        cos.codigo                                                              as cod_os,
-       c.placa_veiculo::text                                                   as placa_veiculo_os,
+       v.placa::text                                                           as placa_veiculo_os,
        f_if(cos.status = 'F', 'fechada'::text, 'aberta'::text)::text           as status_os,
        c.data_hora_realizacao_tz_aplicado                                      as data_hora_abertura_os,
        cos.data_hora_fechamento at time zone tz_unidade(cos.cod_unidade)       as data_hora_fechamento_os,
@@ -65,6 +62,7 @@ from integracao.checklist_ordem_servico_sincronizacao coss
          join checklist c on c.codigo = cos.cod_checklist
          join colaborador co on c.cpf_colaborador = co.cpf
          join unidade u on cos.cod_unidade = u.codigo
+         join veiculo v on v.codigo = c.cod_veiculo
          left join checklist_respostas_nok crn
                    on crn.cod_checklist = c.codigo
                        and crn.cod_pergunta = cp.codigo

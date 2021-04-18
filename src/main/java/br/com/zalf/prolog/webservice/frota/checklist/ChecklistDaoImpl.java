@@ -49,23 +49,6 @@ public final class ChecklistDaoImpl extends DatabaseConnection implements Checkl
 
     @NotNull
     @Override
-    public Long insert(@NotNull final Connection conn,
-                       @NotNull final ChecklistInsercao checklist,
-                       final boolean foiOffline,
-                       final boolean deveAbrirOs) throws Throwable {
-        return internalInsertChecklist(conn, checklist, foiOffline, deveAbrirOs).getCodChecklist();
-    }
-
-    @NotNull
-    @Override
-    public Long insert(@NotNull final ChecklistInsercao checklist,
-                       final boolean foiOffline,
-                       final boolean deveAbrirOs) throws Throwable {
-        return insertChecklist(checklist, foiOffline, deveAbrirOs).getCodChecklist();
-    }
-
-    @NotNull
-    @Override
     public InfosChecklistInserido insertChecklist(@NotNull final Connection conn,
                                                   @NotNull final ChecklistInsercao checklist,
                                                   final boolean foiOffline,

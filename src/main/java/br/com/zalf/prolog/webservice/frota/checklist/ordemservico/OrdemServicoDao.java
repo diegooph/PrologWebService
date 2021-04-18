@@ -33,7 +33,7 @@ public interface OrdemServicoDao {
     @NotNull
     List<OrdemServicoListagem> getOrdemServicoListagem(@NotNull final Long codUnidade,
                                                        @Nullable final Long codTipoVeiculo,
-                                                       @Nullable final String placa,
+                                                       @Nullable final Long codVeiculo,
                                                        @Nullable final StatusOrdemServico statusOrdemServico,
                                                        final int limit,
                                                        final int offset) throws Throwable;
@@ -41,7 +41,7 @@ public interface OrdemServicoDao {
     @NotNull
     List<QtdItensPlacaListagem> getQtdItensPlacaListagem(@NotNull final Long codUnidade,
                                                          @Nullable final Long codTipoVeiculo,
-                                                         @Nullable final String placaVeiculo,
+                                                         @Nullable final Long codVeiculo,
                                                          @Nullable final StatusItemOrdemServico statusItens,
                                                          final int limit,
                                                          final int offset) throws Throwable;
@@ -52,7 +52,7 @@ public interface OrdemServicoDao {
 
     @NotNull
     HolderResolucaoItensOrdemServico getHolderResolucaoItensOrdemServico(
-            @NotNull final String placaVeiculo,
+            @NotNull final Long codVeiculo,
             @Nullable final PrioridadeAlternativa prioridade,
             @Nullable final StatusItemOrdemServico statusItens,
             final int limit,
@@ -62,7 +62,7 @@ public interface OrdemServicoDao {
     HolderResolucaoItensOrdemServico getHolderResolucaoMultiplosItens(
             @Nullable final Long codUnidade,
             @Nullable final Long codOrdemServico,
-            @Nullable final String placaVeiculo,
+            @Nullable final Long codVeiculo,
             @Nullable final StatusItemOrdemServico statusItens) throws Throwable;
 
     void resolverItem(@NotNull final ResolverItemOrdemServico item) throws Throwable;
@@ -74,20 +74,6 @@ public interface OrdemServicoDao {
             @NotNull final Long codChecklistInserido,
             @NotNull final List<InfosAlternativaAberturaOrdemServico> itensOsIncrementaQtdApontamentos)
             throws Throwable;
-
-    /**
-     * Método usado apenas pela integrção
-     *
-     * @deprecated at 2020-03-15. Use {@link OrdemServicoDao#getItensStatus(Connection, Long, Long, Long)}.
-     * Será retirado em tarefa própria de integração que irá remover placa do checklist - PL.
-     */
-    @Deprecated
-    @NotNull
-    Map<Long, List<InfosAlternativaAberturaOrdemServico>> getItensStatus(
-            @NotNull final Connection conn,
-            @NotNull final Long codModelo,
-            @NotNull final Long codVersaoModelo,
-            @NotNull final String placaVeiculo) throws Throwable;
 
     @NotNull
     Map<Long, List<InfosAlternativaAberturaOrdemServico>> getItensStatus(
