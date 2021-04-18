@@ -50,5 +50,6 @@ where a.cod_unidade = any (f_cod_unidades)
               then v.placa = f_placa_veiculo
           else true end
   and (a.data_hora at time zone tz_unidade(a.cod_unidade))::date between f_data_inicial and f_data_final
+order by a.data_hora desc
 limit f_limit offset f_offset;
 $$;

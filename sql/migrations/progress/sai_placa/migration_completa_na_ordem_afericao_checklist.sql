@@ -4011,8 +4011,10 @@ $$;
 -- Esta function foi também alterada no dev. A versão abaixo é a do dev sem o join com veículo usando placa.
 create or replace function func_afericao_get_afericoes_placas_paginada(f_cod_unidades bigint[],
                                                                        f_cod_tipo_veiculo bigint,
-                                                                       f_placa_veiculo text, f_data_inicial date,
-                                                                       f_data_final date, f_limit bigint,
+                                                                       f_placa_veiculo text,
+                                                                       f_data_inicial date,
+                                                                       f_data_final date,
+                                                                       f_limit bigint,
                                                                        f_offset bigint)
     returns table
             (
@@ -4049,6 +4051,8 @@ from afericao a
          join colaborador c on c.cpf = a.cpf_aferidor
 where a.cod_unidade = any (f_cod_unidades)
   and case
+    -- Estes parâmetros (-1 e '') foram necessários por conta da conversão de null com o Spring data JPA,
+    -- No qual converte null para bytea e mesmo com cast, não consegue converter para o tipo desejado.
           when f_cod_tipo_veiculo != -1 and f_cod_tipo_veiculo is not null
               then v.cod_tipo = f_cod_tipo_veiculo
           else true end
@@ -4057,5 +4061,6 @@ where a.cod_unidade = any (f_cod_unidades)
               then v.placa = f_placa_veiculo
           else true end
   and (a.data_hora at time zone tz_unidade(a.cod_unidade))::date between f_data_inicial and f_data_final
+order by a.data_hora desc
 limit f_limit offset f_offset;
 $$;
