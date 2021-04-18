@@ -80,7 +80,6 @@ public class ModeloPlacasAfericao {
         this.totalVeiculosModelo = totalVieculosModelo;
     }
 
-    @SuppressWarnings("checkstyle:WhitespaceAround")
     public static class PlacaAfericao {
 
         /**
@@ -218,10 +217,13 @@ public class ModeloPlacasAfericao {
             this.placa = placa;
         }
 
-        @SuppressWarnings("checkstyle:WhitespaceAfter")
-        public Long getCodigoVeiculo() { return codigoVeiculo;}
+        public Long getCodigoVeiculo() {
+            return codigoVeiculo;
+        }
 
-        public void setCodigoVeiculo(final Long codigoVeiculo) { this.codigoVeiculo = codigoVeiculo;}
+        public void setCodigoVeiculo(final Long codigoVeiculo) {
+            this.codigoVeiculo = codigoVeiculo;
+        }
 
         public String getIdentificadorFrota() {
             return identificadorFrota;
