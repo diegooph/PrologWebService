@@ -4064,3 +4064,10 @@ where a.cod_unidade = any (f_cod_unidades)
 order by a.data_hora desc
 limit f_limit offset f_offset;
 $$;
+
+-- Dropa function de relatório não utilizado.
+DROP FUNCTION FUNC_CHECKLIST_RELATORIO_DADOS_GERAIS(F_COD_UNIDADES BIGINT[],
+    F_DATA_INICIAL DATE,
+    F_DATA_FINAL DATE,
+    F_PLACA TEXT,
+    F_COD_COLABORADOR BIGINT);
