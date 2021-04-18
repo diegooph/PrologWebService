@@ -1,9 +1,11 @@
 Change Log
 ==========
 
-### Stage
-### Features
-* Cria funcionalidade para alterar o km coletado nos processos (PL-3557)
+<a name="v3.1.1"></a>
+## Version [v3.1.1](https://github.com/luizfp/PrologWebService/compare/v3.1.0...v3.1.1) (release-date) [unreleased]
+
+### Refactors
+* Deleta integração com a Rodalog (PL-3476)
 * Altera ServicoResource para utilizar código do veículo nos métodos e não placa (PL-3406)
 * Altera métodos do ServicoResource que recebem objeto de filtro de GET para POST
 * Adicionar código do veículo no retorno das buscas de serviço (PL-3524)
@@ -16,12 +18,6 @@ Change Log
 * Remove placa das buscas, abertura e fechamento de OSs (PL-3547)
 * Remove placa dos relatórios de OSs (PL-3549)
 * Altera integrações para buscar a placa da tabela veículo (PL-3595)
-
-### Refactors
-* Deleta integração com a Rodalog (PL-3476)
-
-<a name="v3.1.1"></a>
-## Version [v3.1.1](https://github.com/luizfp/PrologWebService/compare/v3.1.0...v3.1.1) (release-date) [unreleased]
 
 ### Bug Fixes
 * Altera para não retornar unidades inativas (PL-3510)
