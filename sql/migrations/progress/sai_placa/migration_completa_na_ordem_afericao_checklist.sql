@@ -4107,3 +4107,10 @@ select gd.nome_unidade::text,
 from geracao_dados gd
 order by gd.qtd_dias_sem_checklist desc, gd.nome_unidade, gd.placa;
 $$;
+
+-- Podemos dropar esta function pois uma nova versão sem receber o TZ foi feita para o v3 com Spring.
+DROP FUNCTION FUNC_AFERICAO_GET_AFERICOES_PLACAS_PAGINADA(F_COD_UNIDADE BIGINT, F_COD_TIPO_VEICULO BIGINT,
+    F_PLACA_VEICULO TEXT, F_DATA_INICIAL DATE,
+    F_DATA_FINAL DATE, F_LIMIT BIGINT,
+    F_OFFSET BIGINT,
+    F_TZ_UNIDADE TEXT);
