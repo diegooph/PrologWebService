@@ -165,8 +165,7 @@ public final class OperacoesIntegradasProtheusNepomucenoTest extends BaseTest {
                                        null,
                                        placa.getPlaca(),
                                        null),
-                getValidToken(CPF_COLABORADOR)
-        );
+                getValidToken(CPF_COLABORADOR));
 
         assertThat(novaAfericaoPlaca).isNotNull();
         assertThat(novaAfericaoPlaca.getVeiculo()).isNotNull();
