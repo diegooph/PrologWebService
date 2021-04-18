@@ -4071,3 +4071,2236 @@ DROP FUNCTION FUNC_CHECKLIST_RELATORIO_DADOS_GERAIS(F_COD_UNIDADES BIGINT[],
     F_DATA_FINAL DATE,
     F_PLACA TEXT,
     F_COD_COLABORADOR BIGINT);
+
+-- 0001_migration_remove_placa_listagem_os_PL-3547.sql.
+drop function if exists func_checklist_os_get_os_listagem(f_cod_unidade bigint,
+    f_cod_tipo_veiculo bigint,
+    f_placa_veiculo text,
+    f_status_os text,
+    f_limit integer,
+    f_offset integer);
+create or replace function func_checklist_os_get_os_listagem(f_cod_unidade bigint,
+                                                             f_cod_tipo_veiculo bigint,
+                                                             f_cod_veiculo bigint,
+                                                             f_status_os text,
+                                                             f_limit integer,
+                                                             f_offset integer)
+    returns table
+            (
+                placa_veiculo        text,
+                cod_os               bigint,
+                cod_unidade_os       bigint,
+                cod_checklist        bigint,
+                data_hora_abertura   timestamp without time zone,
+                data_hora_fechamento timestamp without time zone,
+                status_os            text,
+                qtd_itens_pendentes  integer,
+                qtd_itens_resolvidos integer
+            )
+    language plpgsql
+as
+$$
+declare
+    v_status_item_pendente  constant text not null = 'P';
+    v_status_item_resolvido constant text not null = 'R';
+begin
+    return query
+        with os as (
+            select cos.codigo                                                     as cod_os,
+                   cos.cod_unidade                                                as cod_unidade_os,
+                   count(cos.codigo)
+                   filter (where cosi.status_resolucao = v_status_item_pendente)  as qtd_itens_pendentes,
+                   count(cos.codigo)
+                   filter (where cosi.status_resolucao = v_status_item_resolvido) as qtd_itens_resolvidos
+            from checklist_ordem_servico cos
+                     join checklist_ordem_servico_itens cosi
+                          on cos.codigo = cosi.cod_os
+                              and cos.cod_unidade = cosi.cod_unidade
+            where cos.cod_unidade = f_cod_unidade
+            group by cos.cod_unidade, cos.codigo
+        )
+
+        select v.placa :: text                                                 as placa_veiculo,
+               cos.codigo                                                      as cod_os,
+               cos.cod_unidade                                                 as cod_unidade_os,
+               cos.cod_checklist                                               as cod_checklist,
+               -- A data/hora do check é a abertura da O.S.
+               c.data_hora at time zone tz_unidade(c.cod_unidade)              as data_hora_abertura,
+               cos.data_hora_fechamento at time zone tz_unidade(c.cod_unidade) as data_hora_fechamento,
+               cos.status :: text                                              as status_os,
+               os.qtd_itens_pendentes :: integer                               as qtd_itens_pendentes,
+               os.qtd_itens_resolvidos :: integer                              as qtd_itens_resolvidos
+        from checklist c
+                 join checklist_ordem_servico cos
+                      on cos.cod_checklist = c.codigo
+                 join os
+                      on os.cod_os = cos.codigo
+                          and os.cod_unidade_os = cos.cod_unidade
+                 join veiculo v
+                      on v.codigo = c.cod_veiculo
+                 join veiculo_tipo vt
+                      on v.cod_tipo = vt.codigo
+        where c.cod_unidade = f_cod_unidade
+          and case when f_cod_tipo_veiculo is null then true else f_cod_tipo_veiculo = vt.codigo end
+          and case when f_cod_veiculo is null then true else f_cod_veiculo = c.cod_veiculo end
+          and case when f_status_os is null then true else f_status_os = cos.status end
+        order by cos.codigo desc
+        limit f_limit offset f_offset;
+end;
+$$;
+
+
+drop function if exists func_checklist_os_get_qtd_itens_placa_listagem(f_cod_unidade bigint,
+    f_cod_tipo_veiculo bigint,
+    f_placa_veiculo text,
+    f_status_itens_os text,
+    f_limit integer,
+    f_offset integer);
+create or replace function func_checklist_os_get_qtd_itens_placa_listagem(f_cod_unidade bigint,
+                                                                          f_cod_tipo_veiculo bigint,
+                                                                          f_cod_veiculo bigint,
+                                                                          f_status_itens_os text,
+                                                                          f_limit integer,
+                                                                          f_offset integer)
+    returns table
+            (
+                placa_veiculo                text,
+                qtd_itens_prioridade_critica bigint,
+                qtd_itens_prioridade_alta    bigint,
+                qtd_itens_prioridade_baixa   bigint,
+                total_itens                  bigint
+            )
+    language plpgsql
+as
+$$
+declare
+    tipo_item_prioridade_critica text := 'CRITICA';
+    tipo_item_prioridade_alta    text := 'ALTA';
+    tipo_item_prioridade_baixa   text := 'BAIXA';
+begin
+    return query
+        select v.placa :: text           as placa_veiculo,
+               count(case
+                         when cap.prioridade = tipo_item_prioridade_critica
+                             then 1 end) as qtd_itens_prioridade_critica,
+               count(case
+                         when cap.prioridade = tipo_item_prioridade_alta
+                             then 1 end) as qtd_itens_prioridade_alta,
+               count(case
+                         when cap.prioridade = tipo_item_prioridade_baixa
+                             then 1 end) as qtd_itens_prioridade_baixa,
+               count(cap.prioridade)     as total_itens
+        from veiculo v
+                 join checklist c
+            -- Queremos apenas veículos da unidade onde o checklist foi feito.
+            -- Isso evita de trazer itens de O.S. de outra empresa em caso de transferência de veículos.
+                      on v.codigo = c.cod_veiculo and v.cod_unidade = c.cod_unidade
+                 join checklist_ordem_servico cos
+                      on c.codigo = cos.cod_checklist
+                 join checklist_ordem_servico_itens cosi
+                      on cos.codigo = cosi.cod_os
+                          and cos.cod_unidade = cosi.cod_unidade
+                 join checklist_alternativa_pergunta cap
+                      on cap.codigo = cosi.cod_alternativa_primeiro_apontamento
+                 join veiculo_tipo vt
+                      on v.cod_tipo = vt.codigo
+        where v.cod_unidade = f_cod_unidade
+          and case when f_cod_tipo_veiculo is null then true else vt.codigo = f_cod_tipo_veiculo end
+          and case when f_cod_veiculo is null then true else v.codigo = f_cod_veiculo end
+          and case when f_status_itens_os is null then true else cosi.status_resolucao = f_status_itens_os end
+        group by v.placa
+        order by qtd_itens_prioridade_critica desc,
+                 qtd_itens_prioridade_alta desc,
+                 qtd_itens_prioridade_baixa desc,
+                 placa_veiculo
+        limit f_limit offset f_offset;
+end;
+$$;
+
+
+drop function if exists func_checklist_os_get_itens_resolucao(f_cod_unidade bigint,
+    f_cod_os bigint,
+    f_placa_veiculo text,
+    f_prioridade_alternativa text,
+    f_status_itens text,
+    f_data_hora_atual_utc timestamp with time zone,
+    f_limit integer,
+    f_offset integer);
+create or replace function func_checklist_os_get_itens_resolucao(f_cod_unidade bigint,
+                                                                 f_cod_os bigint,
+                                                                 f_cod_veiculo bigint,
+                                                                 f_prioridade_alternativa text,
+                                                                 f_status_itens text,
+                                                                 f_data_hora_atual_utc timestamp with time zone,
+                                                                 f_limit integer,
+                                                                 f_offset integer)
+    returns table
+            (
+                cod_veiculo                           bigint,
+                placa_veiculo                         text,
+                km_atual_veiculo                      bigint,
+                cod_os                                bigint,
+                cod_unidade_item_os                   bigint,
+                cod_item_os                           bigint,
+                data_hora_primeiro_apontamento_item   timestamp without time zone,
+                status_item_os                        text,
+                prazo_resolucao_item_horas            integer,
+                prazo_restante_resolucao_item_minutos bigint,
+                qtd_apontamentos                      integer,
+                cod_colaborador_resolucao             bigint,
+                nome_colaborador_resolucao            text,
+                data_hora_resolucao                   timestamp without time zone,
+                data_hora_inicio_resolucao            timestamp without time zone,
+                data_hora_fim_resolucao               timestamp without time zone,
+                feedback_resolucao                    text,
+                duracao_resolucao_minutos             bigint,
+                km_veiculo_coletado_resolucao         bigint,
+                cod_pergunta                          bigint,
+                descricao_pergunta                    text,
+                cod_alternativa                       bigint,
+                descricao_alternativa                 text,
+                alternativa_tipo_outros               boolean,
+                descricao_tipo_outros                 text,
+                prioridade_alternativa                text,
+                url_midia                             text,
+                cod_checklist                         bigint
+            )
+    language plpgsql
+as
+$$
+begin
+    return query
+        with dados as (
+            select c.cod_veiculo                                                          as cod_veiculo,
+                   v.placa::text                                                          as placa_veiculo,
+                   v.km                                                                   as km_atual_veiculo,
+                   cos.codigo                                                             as cod_os,
+                   cos.cod_unidade                                                        as cod_unidade_item_os,
+                   cosi.codigo                                                            as cod_item_os,
+                   c.data_hora at time zone tz_unidade(c.cod_unidade)                     as data_hora_primeiro_apontamento_item,
+                   cosi.status_resolucao                                                  as status_item_os,
+                   prio.prazo                                                             as prazo_resolucao_item_horas,
+                   to_minutes_trunc(
+                               (c.data_hora + (prio.prazo || ' HOURS')::interval)
+                               -
+                               f_data_hora_atual_utc)                                     as prazo_restante_resolucao_item_minutos,
+                   cosi.qt_apontamentos                                                   as qtd_apontamentos,
+                   co.codigo                                                              as cod_colaborador_resolucao,
+                   co.nome::text                                                          as nome_colaborador_resolucao,
+                   cosi.data_hora_conserto at time zone tz_unidade(c.cod_unidade)         as data_hora_resolucao,
+                   cosi.data_hora_inicio_resolucao at time zone tz_unidade(c.cod_unidade) as data_hora_inicio_resolucao,
+                   cosi.data_hora_fim_resolucao at time zone tz_unidade(c.cod_unidade)    as data_hora_fim_resolucao,
+                   cosi.feedback_conserto                                                 as feedback_resolucao,
+                   millis_to_minutes(cosi.tempo_realizacao)                               as duracao_resolucao_minutos,
+                   cosi.km                                                                as km_veiculo_coletado_resolucao,
+                   cp.codigo                                                              as cod_pergunta,
+                   cp.pergunta                                                            as descricao_pergunta,
+                   cap.codigo                                                             as cod_alternativa,
+                   cap.alternativa                                                        as descricao_alternativa,
+                   cap.alternativa_tipo_outros                                            as alternativa_tipo_outros,
+                   case
+                       when cap.alternativa_tipo_outros
+                           then
+                           (select crn.resposta_outros
+                            from checklist_respostas_nok crn
+                            where crn.cod_checklist = c.codigo
+                              and crn.cod_alternativa = cap.codigo)::text
+                       end                                                                as descricao_tipo_outros,
+                   cap.prioridade::text                                                   as prioridade_alternativa,
+                   an.url_midia::text                                                     as url_midia,
+                   an.cod_checklist::bigint                                               as cod_checklist
+            from checklist c
+                     join checklist_ordem_servico cos
+                          on c.codigo = cos.cod_checklist
+                     join checklist_ordem_servico_itens cosi
+                          on cos.codigo = cosi.cod_os
+                              and cos.cod_unidade = cosi.cod_unidade
+                     join checklist_perguntas cp
+                          on cosi.cod_pergunta_primeiro_apontamento = cp.codigo
+                     join checklist_alternativa_pergunta cap
+                          on cosi.cod_alternativa_primeiro_apontamento = cap.codigo
+                     join checklist_alternativa_prioridade prio
+                          on cap.prioridade = prio.prioridade
+                     join veiculo v
+                          on c.cod_veiculo = v.codigo
+                     left join colaborador co
+                               on co.cpf = cosi.cpf_mecanico
+                     left join checklist_ordem_servico_itens_midia im
+                               on im.cod_item_os = cosi.codigo
+                     left join checklist_respostas_midias_alternativas_nok an
+                               on im.cod_midia_nok = an.codigo
+            where f_if(f_cod_unidade is null, true, cos.cod_unidade = f_cod_unidade)
+              and f_if(f_cod_os is null, true, cos.codigo = f_cod_os)
+              and f_if(f_cod_veiculo is null, true, c.cod_veiculo = f_cod_veiculo)
+              and f_if(f_prioridade_alternativa is null, true, cap.prioridade = f_prioridade_alternativa)
+              and f_if(f_status_itens is null, true, cosi.status_resolucao = f_status_itens)
+            limit f_limit offset f_offset
+        ),
+             dados_veiculo as (
+                 select v.placa::text as placa_veiculo,
+                        v.km          as km_atual_veiculo
+                 from veiculo v
+                 where v.codigo = f_cod_veiculo
+             )
+
+             -- Nós usamos esse dados_veiculo com f_if pois pode acontecer de não existir dados para os filtros aplicados e
+             -- desse modo acabaríamos não retornando placa e km também, mas essas são informações necessárias pois o objeto
+             -- construído a partir dessa function usa elas.
+        select d.cod_veiculo                                                             as cod_veiculo,
+               f_if(d.placa_veiculo is null, dv.placa_veiculo, d.placa_veiculo)          as placa_veiculo,
+               f_if(d.km_atual_veiculo is null, dv.km_atual_veiculo, d.km_atual_veiculo) as km_atual_veiculo,
+               d.cod_os                                                                  as cod_os,
+               d.cod_unidade_item_os                                                     as cod_unidade_item_os,
+               d.cod_item_os                                                             as cod_item_os,
+               d.data_hora_primeiro_apontamento_item                                     as data_hora_primeiro_apontamento_item,
+               d.status_item_os                                                          as status_item_os,
+               d.prazo_resolucao_item_horas                                              as prazo_resolucao_item_horas,
+               d.prazo_restante_resolucao_item_minutos                                   as prazo_restante_resolucao_item_minutos,
+               d.qtd_apontamentos                                                        as qtd_apontamentos,
+               d.cod_colaborador_resolucao                                               as cod_colaborador_resolucao,
+               d.nome_colaborador_resolucao                                              as nome_colaborador_resolucao,
+               d.data_hora_resolucao                                                     as data_hora_resolucao,
+               d.data_hora_inicio_resolucao                                              as data_hora_inicio_resolucao,
+               d.data_hora_fim_resolucao                                                 as data_hora_fim_resolucao,
+               d.feedback_resolucao                                                      as feedback_resolucao,
+               d.duracao_resolucao_minutos                                               as duracao_resolucao_minutos,
+               d.km_veiculo_coletado_resolucao                                           as km_veiculo_coletado_resolucao,
+               d.cod_pergunta                                                            as cod_pergunta,
+               d.descricao_pergunta                                                      as descricao_pergunta,
+               d.cod_alternativa                                                         as cod_alternativa,
+               d.descricao_alternativa                                                   as descricao_alternativa,
+               d.alternativa_tipo_outros                                                 as alternativa_tipo_outros,
+               d.descricao_tipo_outros                                                   as descricao_tipo_outros,
+               d.prioridade_alternativa                                                  as prioridade_alternativa,
+               d.url_midia                                                               as url_midia,
+               d.cod_checklist                                                           as cod_checklist
+        from dados d
+                 right join dados_veiculo dv
+                            on d.placa_veiculo = dv.placa_veiculo
+        order by cod_os, cod_item_os, cod_checklist;
+end;
+$$;
+
+create or replace function func_checklist_os_get_ordem_servico_resolucao(f_cod_unidade bigint,
+                                                                         f_cod_os bigint,
+                                                                         f_data_hora_atual_utc timestamp with time zone)
+    returns table
+            (
+                cod_veiculo                           bigint,
+                placa_veiculo                         text,
+                km_atual_veiculo                      bigint,
+                cod_os                                bigint,
+                cod_unidade_os                        bigint,
+                status_os                             text,
+                data_hora_abertura_os                 timestamp without time zone,
+                data_hora_fechamento_os               timestamp without time zone,
+                cod_item_os                           bigint,
+                cod_unidade_item_os                   bigint,
+                data_hora_primeiro_apontamento_item   timestamp without time zone,
+                status_item_os                        text,
+                prazo_resolucao_item_horas            integer,
+                prazo_restante_resolucao_item_minutos bigint,
+                qtd_apontamentos                      integer,
+                cod_colaborador_resolucao             bigint,
+                nome_colaborador_resolucao            text,
+                data_hora_resolucao                   timestamp without time zone,
+                data_hora_inicio_resolucao            timestamp without time zone,
+                data_hora_fim_resolucao               timestamp without time zone,
+                feedback_resolucao                    text,
+                duracao_resolucao_minutos             bigint,
+                km_veiculo_coletado_resolucao         bigint,
+                cod_pergunta                          bigint,
+                descricao_pergunta                    text,
+                cod_alternativa                       bigint,
+                descricao_alternativa                 text,
+                alternativa_tipo_outros               boolean,
+                descricao_tipo_outros                 text,
+                prioridade_alternativa                text,
+                url_midia                             text,
+                cod_checklist                         bigint
+            )
+    language plpgsql
+as
+$$
+begin
+    return query
+        select c.cod_veiculo                                                          as cod_veiculo,
+               v.placa::text                                                          as placa_veiculo,
+               v.km                                                                   as km_atual_veiculo,
+               cos.codigo                                                             as cod_os,
+               cos.cod_unidade                                                        as cod_unidade_os,
+               cos.status::text                                                       as status_os,
+               c.data_hora_realizacao_tz_aplicado                                     as data_hora_abertura_os,
+               cos.data_hora_fechamento at time zone tz_unidade(f_cod_unidade)        as data_hora_fechamento_os,
+               cosi.codigo                                                            as cod_item_os,
+               cos.cod_unidade                                                        as cod_unidade_item_os,
+               c.data_hora_realizacao_tz_aplicado                                     as data_hora_primeiro_apontamento_item,
+               cosi.status_resolucao                                                  as status_item_os,
+               prio.prazo                                                             as prazo_resolucao_item_horas,
+               to_minutes_trunc(
+                           (c.data_hora + (prio.prazo || ' HOURS')::interval)
+                           -
+                           f_data_hora_atual_utc)                                     as prazo_restante_resolucao_item_minutos,
+               cosi.qt_apontamentos                                                   as qtd_apontamentos,
+               co.codigo                                                              as cod_colaborador_resolucao,
+               co.nome::text                                                          as nome_colaborador_resolucao,
+               cosi.data_hora_conserto at time zone tz_unidade(c.cod_unidade)         as data_hora_resolucao,
+               cosi.data_hora_inicio_resolucao at time zone tz_unidade(c.cod_unidade) as data_hora_inicio_resolucao,
+               cosi.data_hora_fim_resolucao at time zone tz_unidade(c.cod_unidade)    as data_hora_fim_resolucao,
+               cosi.feedback_conserto                                                 as feedback_resolucao,
+               millis_to_minutes(cosi.tempo_realizacao)                               as duracao_resolucao_minutos,
+               cosi.km                                                                as km_veiculo_coletado_resolucao,
+               cp.codigo                                                              as cod_pergunta,
+               cp.pergunta                                                            as descricao_pergunta,
+               cap.codigo                                                             as cod_alternativa,
+               cap.alternativa                                                        as descricao_alternativa,
+               cap.alternativa_tipo_outros                                            as alternativa_tipo_outros,
+               case
+                   when cap.alternativa_tipo_outros
+                       then
+                       (select crn.resposta_outros
+                        from checklist_respostas_nok crn
+                        where crn.cod_checklist = c.codigo
+                          and crn.cod_alternativa = cap.codigo)::text
+                   end                                                                as descricao_tipo_outros,
+               cap.prioridade::text                                                   as prioridade_alternativa,
+               an.url_midia::text                                                     as url_midia,
+               an.cod_checklist::bigint                                               as cod_checklist
+        from checklist c
+                 join checklist_ordem_servico cos
+                      on c.codigo = cos.cod_checklist
+                 join checklist_ordem_servico_itens cosi
+                      on cos.codigo = cosi.cod_os
+                          and cos.cod_unidade = cosi.cod_unidade
+            -- O join com perguntas e alternativas é feito com a tabela _DATA pois OSs de perguntas e alternativas
+            -- deletadas ainda devem ser exibidas.
+                 join checklist_perguntas_data cp
+                      on cosi.cod_pergunta_primeiro_apontamento = cp.codigo
+                 join checklist_alternativa_pergunta_data cap
+                      on cosi.cod_alternativa_primeiro_apontamento = cap.codigo
+                 join checklist_alternativa_prioridade prio
+                      on cap.prioridade = prio.prioridade
+                 join veiculo v
+                      on c.cod_veiculo = v.codigo
+                 left join colaborador co
+                           on co.cpf = cosi.cpf_mecanico
+                 left join checklist_ordem_servico_itens_midia im
+                           on im.cod_item_os = cosi.codigo
+                 left join checklist_respostas_midias_alternativas_nok an
+                           on im.cod_midia_nok = an.codigo
+        where cos.codigo = f_cod_os
+          and cos.cod_unidade = f_cod_unidade
+        order by cosi.codigo;
+end;
+$$;
+
+-- #####################################################################################################################
+-- #####################################################################################################################
+-- #####################################################################################################################
+-- #####################################################################################################################
+-- Ao setupar o BD local e tentar inserir um checklist, esta function estourou...
+create or replace function func_checklist_insert_checklist_infos(f_cod_unidade_checklist bigint,
+                                                                 f_cod_modelo_checklist bigint,
+                                                                 f_cod_versao_modelo_checklist bigint,
+                                                                 f_data_hora_realizacao timestamp with time zone,
+                                                                 f_cod_colaborador bigint,
+                                                                 f_cod_veiculo bigint,
+                                                                 f_tipo_checklist char,
+                                                                 f_km_coletado bigint,
+                                                                 f_observacao text,
+                                                                 f_tempo_realizacao bigint,
+                                                                 f_data_hora_sincronizacao timestamp with time zone,
+                                                                 f_fonte_data_hora_realizacao text,
+                                                                 f_versao_app_momento_realizacao integer,
+                                                                 f_versao_app_momento_sincronizacao integer,
+                                                                 f_device_id text,
+                                                                 f_device_imei text,
+                                                                 f_device_uptime_realizacao_millis bigint,
+                                                                 f_device_uptime_sincronizacao_millis bigint,
+                                                                 f_foi_offline boolean,
+                                                                 f_total_perguntas_ok integer,
+                                                                 f_total_perguntas_nok integer,
+                                                                 f_total_alternativas_ok integer,
+                                                                 f_total_alternativas_nok integer,
+                                                                 f_total_midias_perguntas_ok integer,
+                                                                 f_total_midias_alternativas_nok integer)
+    returns table
+            (
+                cod_checklist_inserido bigint,
+                checklist_ja_existia   boolean
+            )
+    language plpgsql
+as
+$$
+declare
+    -- Iremos pegar a placa com base no veículo, para evitar a impossibilidade de sincronização caso ela tenha sido
+    -- alterada e o check realizado offiline.
+    v_placa_atual_do_veiculo text    := (select vd.placa
+                                         from veiculo_data vd
+                                         where vd.codigo = f_cod_veiculo);
+    v_cod_novo_checklist     bigint;
+    v_cod_checklist_inserido bigint;
+    v_checklist_ja_existia   boolean := false;
+    v_km_final               bigint;
+begin
+
+    v_cod_novo_checklist := (select nextval(pg_get_serial_sequence('checklist_data', 'codigo')));
+
+
+    v_km_final :=
+            (select *
+             from func_veiculo_update_km_atual(f_cod_unidade_checklist,
+                                               f_cod_veiculo,
+                                               f_km_coletado,
+                                               v_cod_novo_checklist,
+                                               'CHECKLIST',
+                                               true,
+                                               f_data_hora_realizacao));
+
+    insert into checklist_data(codigo,
+                               cod_unidade,
+                               cod_checklist_modelo,
+                               cod_versao_checklist_modelo,
+                               data_hora,
+                               data_hora_realizacao_tz_aplicado,
+                               cpf_colaborador,
+                               tipo,
+                               tempo_realizacao,
+                               km_veiculo,
+                               observacao,
+                               data_hora_sincronizacao,
+                               fonte_data_hora_realizacao,
+                               versao_app_momento_realizacao,
+                               versao_app_momento_sincronizacao,
+                               device_id,
+                               device_imei,
+                               device_uptime_realizacao_millis,
+                               device_uptime_sincronizacao_millis,
+                               foi_offline,
+                               total_perguntas_ok,
+                               total_perguntas_nok,
+                               total_alternativas_ok,
+                               total_alternativas_nok,
+                               total_midias_perguntas_ok,
+                               total_midias_alternativas_nok,
+                               cod_veiculo)
+    values (v_cod_novo_checklist,
+            f_cod_unidade_checklist,
+            f_cod_modelo_checklist,
+            f_cod_versao_modelo_checklist,
+            f_data_hora_realizacao,
+            (f_data_hora_realizacao at time zone tz_unidade(f_cod_unidade_checklist)),
+            (select c.cpf from colaborador c where c.codigo = f_cod_colaborador),
+            f_tipo_checklist,
+            f_tempo_realizacao,
+            v_km_final,
+            f_observacao,
+            f_data_hora_sincronizacao,
+            f_fonte_data_hora_realizacao,
+            f_versao_app_momento_realizacao,
+            f_versao_app_momento_sincronizacao,
+            f_device_id,
+            f_device_imei,
+            f_device_uptime_realizacao_millis,
+            f_device_uptime_sincronizacao_millis,
+            f_foi_offline,
+            f_total_perguntas_ok,
+            f_total_perguntas_nok,
+            f_total_alternativas_ok,
+            f_total_alternativas_nok,
+            nullif(f_total_midias_perguntas_ok, 0),
+            nullif(f_total_midias_alternativas_nok, 0),
+            f_cod_veiculo)
+    on conflict on constraint unique_checklist
+        do update set data_hora_sincronizacao = f_data_hora_sincronizacao
+                      -- https://stackoverflow.com/a/40880200/4744158
+    returning codigo, not (checklist_data.xmax = 0) into v_cod_checklist_inserido, v_checklist_ja_existia;
+
+    -- Verificamos se o insert funcionou.
+    if v_cod_checklist_inserido <= 0
+    then
+        raise exception 'Não foi possível inserir o checklist.';
+    end if;
+
+    return query select v_cod_checklist_inserido, v_checklist_ja_existia;
+end;
+$$;
+
+-- Essa function apresentou erro ao inserir um checklist.
+drop function func_checklist_os_alternativas_abertura_os(f_cod_modelo_checklist bigint,
+    f_cod_versao_modelo_checklist bigint,
+    f_placa_veiculo text);
+create or replace function func_checklist_os_alternativas_abertura_os(f_cod_modelo_checklist bigint,
+                                                                      f_cod_versao_modelo_checklist bigint,
+                                                                      f_cod_veiculo bigint)
+    returns table
+            (
+                cod_alternativa                    bigint,
+                cod_contexto_pergunta              bigint,
+                cod_contexto_alternativa           bigint,
+                cod_item_ordem_servico             bigint,
+                resposta_tipo_outros_abertura_item text,
+                tem_item_os_pendente               boolean,
+                deve_abrir_ordem_servico           boolean,
+                alternativa_tipo_outros            boolean,
+                qtd_apontamentos_item              integer,
+                prioridade_alternativa             text
+            )
+    language plpgsql
+as
+$$
+declare
+    status_item_pendente text = 'P';
+begin
+    return query
+        -- Nessa CTE nós não usamos as tabelas com _DATA pois não queremos incrementar quantidade de itens de OS
+        -- deletados.
+        with itens_pendentes as (
+            select cosi.codigo                               as cod_item_ordem_servico,
+                   cosi.cod_alternativa_primeiro_apontamento as cod_alternativa_primeiro_apontamento,
+                   cosi.cod_contexto_alternativa             as cod_contexto_alternativa,
+                   cosi.qt_apontamentos                      as qtd_apontamentos_item,
+                   cos.cod_checklist                         as cod_checklist,
+                   c.cod_checklist_modelo                    as cod_checklist_modelo
+            from checklist c
+                     join checklist_ordem_servico cos
+                          on c.codigo = cos.cod_checklist
+                     join checklist_ordem_servico_itens cosi
+                          on cos.codigo = cosi.cod_os
+                              and cos.cod_unidade = cosi.cod_unidade
+            where c.cod_veiculo = f_cod_veiculo
+              and c.cod_checklist_modelo = f_cod_modelo_checklist
+              and cosi.status_resolucao = status_item_pendente
+        )
+        select cap.codigo                                          as cod_alternativa,
+               cp.codigo_contexto                                  as cod_contexto_pergunta,
+               cap.codigo_contexto                                 as cod_contexto_alternativa,
+               ip.cod_item_ordem_servico                           as cod_item_ordem_servico,
+               crn.resposta_outros                                 as resposta_tipo_outros_abertura_item,
+               f_if(ip.cod_item_ordem_servico isnull, false, true) as tem_item_os_pendente,
+               cap.deve_abrir_ordem_servico                        as deve_abrir_ordem_servico,
+               cap.alternativa_tipo_outros                         as alternativa_tipo_outros,
+               ip.qtd_apontamentos_item                            as qtd_apontamentos_item,
+               cap.prioridade::text                                as prioridade_alternativa
+               -- Nesse SELECT é utilizado a _DATA, pois um item pode estar pendente e sua alternativa deletada, nesse caso
+               -- a alternativa ainda deve retornar para não quebrar o fluxo de processamento do checklist realizado.
+        from checklist_alternativa_pergunta_data cap
+                 join checklist_perguntas_data cp
+                      on cap.cod_pergunta = cp.codigo
+                 left join itens_pendentes ip
+                           on ip.cod_contexto_alternativa = cap.codigo_contexto
+                 left join checklist_respostas_nok crn
+                           on crn.cod_alternativa = ip.cod_alternativa_primeiro_apontamento
+                               and crn.cod_checklist = ip.cod_checklist
+        where cap.cod_versao_checklist_modelo = f_cod_versao_modelo_checklist;
+end ;
+$$;
+
+
+create or replace function func_checklist_get_farol_checklist(f_cod_unidade bigint,
+                                                              f_data_inicial date,
+                                                              f_data_final date,
+                                                              f_itens_criticos_retroativos boolean)
+    returns table
+            (
+                data                               date,
+                placa                              text,
+                cod_checklist_saida                bigint,
+                data_hora_ultimo_checklist_saida   timestamp without time zone,
+                cod_checklist_modelo_saida         bigint,
+                nome_colaborador_checklist_saida   text,
+                cod_checklist_retorno              bigint,
+                data_hora_ultimo_checklist_retorno timestamp without time zone,
+                cod_checklist_modelo_retorno       bigint,
+                nome_colaborador_checklist_retorno text,
+                codigo_pergunta                    bigint,
+                descricao_pergunta                 text,
+                descricao_alternativa              text,
+                alternativa_tipo_outros            boolean,
+                descricao_alternativa_tipo_outros  text,
+                codigo_item_critico                bigint,
+                data_hora_apontamento_item_critico timestamp without time zone
+            )
+    language plpgsql
+as
+$$
+declare
+    -- Algumas empresas não fecham OS, o que acarreta em um grande número de itens críticos para cada placa. A função
+    -- do Farol é alertar sobre a existência de pendências, não listar um a um, assim limitamos a busca a apenas cinco
+    -- itens críticos por placa e garantimos o desempenho da query.
+    v_qtd_maxima_itens_criticos constant bigint not null := 5;
+begin
+    -- Aumenta memória disponível da function para evitar trabalho em disco.
+    set local work_mem = '8MB';
+
+    return query
+        -- A utilização de uma CTE para filtrar os checklists parece ser desnecessária, porém mostrou uma melhora
+        -- significativa no desempenho da query no geral.
+        with checks_filtrados as (
+            select c.codigo                           as cod_checklist,
+                   c.cod_checklist_modelo             as cod_checklist_modelo,
+                   c.cod_veiculo                      as cod_veiculo,
+                   c.cpf_colaborador                  as cpf_colaborador,
+                   c.data_hora_realizacao_tz_aplicado as data_hora_realizacao_tz_aplicado,
+                   c.tipo                             as tipo_checklist,
+                   co.nome                            as nome_colaborador
+            from checklist c
+                     join colaborador co on co.cpf = c.cpf_colaborador
+            where c.cod_unidade = f_cod_unidade
+              and c.data_hora_realizacao_tz_aplicado::date between f_data_inicial and f_data_final
+        ),
+             ultimos_checklists_veiculos as (
+                 select checks_placas_dias.data                  as data,
+                        checks_placas_dias.cod_veiculo           as cod_veiculo,
+                        checks_placas_dias.placa                 as placa,
+                        checks_placas_dias.cod_checklist_saida   as cod_checklist_saida,
+                        cfs.data_hora_realizacao_tz_aplicado     as data_hora_ultimo_checklist_saida,
+                        cfs.cod_checklist_modelo                 as cod_checklist_modelo_saida,
+                        cfs.nome_colaborador                     as nome_colaborador_checklist_saida,
+                        checks_placas_dias.cod_checklist_retorno as cod_checklist_retorno,
+                        cfr.data_hora_realizacao_tz_aplicado     as data_hora_ultimo_checklist_retorno,
+                        cfr.cod_checklist_modelo                 as cod_checklist_modelo_retorno,
+                        cfr.nome_colaborador                     as nome_colaborador_checklist_retorno
+                 from (select g.day::date                                                      as data,
+                              v.codigo                                                         as cod_veiculo,
+                              v.placa                                                          as placa,
+                              max(case when cf.tipo_checklist = 'S' then cf.cod_checklist end) as cod_checklist_saida,
+                              max(case when cf.tipo_checklist = 'R' then cf.cod_checklist end) as cod_checklist_retorno
+                       from veiculo v
+                                cross join generate_series(f_data_inicial, f_data_final, '1 DAY') g(day)
+                                left join checks_filtrados cf
+                                          on cf.cod_veiculo = v.codigo and
+                                             g.day::date = (cf.data_hora_realizacao_tz_aplicado)::date
+                       where v.cod_unidade = f_cod_unidade
+                         and v.status_ativo = true
+                       group by data, v.codigo, v.placa) as checks_placas_dias
+                          left join checks_filtrados cfs on cfs.cod_checklist = checks_placas_dias.cod_checklist_saida
+                          left join checks_filtrados cfr on cfr.cod_checklist = checks_placas_dias.cod_checklist_retorno
+             ),
+             itens_criticos_filtrados as (
+                 select row_number() over (partition by c.cod_veiculo) as row_id,
+                        c.codigo                                       as cod_checklist_item,
+                        c.cod_veiculo                                  as cod_veiculo_checklist_item,
+                        cap.cod_pergunta                               as cod_pergunta,
+                        cap.codigo                                     as cod_alternativa,
+                        cap.alternativa                                as descricao_alternativa,
+                        cap.alternativa_tipo_outros                    as alternativa_tipo_outros,
+                        cosi.codigo                                    as cod_item_os,
+                        c.data_hora_realizacao_tz_aplicado             as data_hora_abertura_os
+                 from checklist_ordem_servico_itens cosi
+                          join checklist_ordem_servico cos
+                               on cos.codigo = cosi.cod_os and cos.cod_unidade = cosi.cod_unidade
+                          join checklist c on cos.cod_checklist = c.codigo
+                          join checklist_alternativa_pergunta cap
+                               on cap.codigo = cosi.cod_alternativa_primeiro_apontamento
+                 where cosi.cod_unidade = f_cod_unidade
+                   and cosi.status_resolucao = 'P'
+                   and cap.prioridade = 'CRITICA'
+                   -- Buscar itens retroativos é uma decisão de, respeitar ou não a data de apontamento do item.
+                   -- Fazemos isso utilizando a data de realização do checklist.
+                   and case
+                           when f_itens_criticos_retroativos then true
+                           else (c.data_hora_realizacao_tz_aplicado::date between f_data_inicial and f_data_final) end
+                   -- Ordenamento para garantirmos a exibição dos itens mais recentes.
+                 order by cosi.codigo desc
+             ),
+             itens_criticos_placa as (
+                 select icf.cod_checklist_item         as cod_checklist_item,
+                        icf.cod_veiculo_checklist_item as cod_veiculo_checklist_item,
+                        cp.codigo                      as cod_pergunta,
+                        cp.pergunta                    as descricao_pergunta,
+                        icf.cod_alternativa            as cod_alternativa,
+                        icf.descricao_alternativa      as descricao_alternativa,
+                        icf.alternativa_tipo_outros    as alternativa_tipo_outros,
+                        crn.resposta_outros            as descricao_alternativa_tipo_outros,
+                        icf.cod_item_os                as cod_item_os,
+                        icf.data_hora_abertura_os      as data_hora_abertura_os
+                 from itens_criticos_filtrados icf
+                          join checklist_perguntas cp
+                               on cp.codigo = icf.cod_pergunta
+                          join checklist_respostas_nok crn
+                               on crn.cod_checklist = icf.cod_checklist_item
+                                   and crn.cod_alternativa = icf.cod_alternativa
+                 where icf.row_id <= v_qtd_maxima_itens_criticos
+             )
+
+        select ucv.data,
+               ucv.placa::text,
+               ucv.cod_checklist_saida,
+               ucv.data_hora_ultimo_checklist_saida,
+               ucv.cod_checklist_modelo_saida,
+               ucv.nome_colaborador_checklist_saida::text,
+               ucv.cod_checklist_retorno,
+               ucv.data_hora_ultimo_checklist_retorno,
+               ucv.cod_checklist_modelo_retorno,
+               ucv.nome_colaborador_checklist_retorno::text,
+               -- informações dos itens críticos, não necessáriamente relacionados ao checklist
+               icp.cod_pergunta,
+               icp.descricao_pergunta::text,
+               icp.descricao_alternativa::text,
+               icp.alternativa_tipo_outros,
+               icp.descricao_alternativa_tipo_outros::text,
+               icp.cod_item_os,
+               icp.data_hora_abertura_os
+        from ultimos_checklists_veiculos ucv
+                 -- O join deve ocorrer pelo código do checklist ou pelo código do veículo, mas sem duplicar.
+                 left join itens_criticos_placa icp
+                           on case
+                                  when icp.cod_checklist_item in (ucv.cod_checklist_saida, ucv.cod_checklist_retorno)
+                                      then icp.cod_checklist_item in
+                                           (ucv.cod_checklist_saida, ucv.cod_checklist_retorno)
+                                  else icp.cod_veiculo_checklist_item = ucv.cod_veiculo end
+        order by ucv.data, ucv.cod_veiculo, icp.cod_item_os;
+end;
+$$;
+
+-- 0002_migration_remove_placa_relatorios_os_PL-3549.sql.
+drop view estratificacao_os;
+create or replace view estratificacao_os as
+select cos.codigo                                                       as cod_os,
+       realizador.nome                                                  as nome_realizador_checklist,
+       v.codigo                                                         as cod_veiculo,
+       v.placa                                                          as placa_veiculo,
+       c.km_veiculo                                                     as km,
+       c.data_hora_realizacao_tz_aplicado                               as data_hora,
+       c.tipo                                                           as tipo_checklist,
+       cp.codigo                                                        as cod_pergunta,
+       cp.codigo_contexto                                               as cod_contexto_pergunta,
+       cp.ordem                                                         as ordem_pergunta,
+       cp.pergunta,
+       cp.single_choice,
+       null :: unknown                                                  as url_imagem,
+       cap.prioridade,
+       case cap.prioridade
+           when 'CRITICA' :: text
+               then 1
+           when 'ALTA' :: text
+               then 2
+           when 'BAIXA' :: text
+               then 3
+           else null :: integer
+           end                                                          as prioridade_ordem,
+       cap.codigo                                                       as cod_alternativa,
+       cap.codigo_contexto                                              as cod_contexto_alternativa,
+       cap.alternativa,
+       prio.prazo,
+       crn.resposta_outros,
+       v.cod_tipo,
+       cos.cod_unidade,
+       cos.status                                                       as status_os,
+       cos.cod_checklist,
+       tz_unidade(cos.cod_unidade)                                      as time_zone_unidade,
+       cosi.status_resolucao                                            as status_item,
+       mecanico.nome                                                    as nome_mecanico,
+       cosi.cpf_mecanico,
+       cosi.tempo_realizacao,
+       cosi.data_hora_conserto at time zone tz_unidade(cos.cod_unidade) as data_hora_conserto,
+       cosi.data_hora_inicio_resolucao                                  as data_hora_inicio_resolucao_utc,
+       cosi.data_hora_fim_resolucao                                     as data_hora_fim_resolucao_utc,
+       cosi.km                                                          as km_fechamento,
+       cosi.qt_apontamentos,
+       cosi.feedback_conserto,
+       cosi.codigo
+from checklist_data c
+         join colaborador realizador
+              on realizador.cpf = c.cpf_colaborador
+         join veiculo v
+              on v.codigo = c.cod_veiculo
+         join checklist_ordem_servico cos
+              on c.codigo = cos.cod_checklist
+         join checklist_ordem_servico_itens cosi
+              on cos.codigo = cosi.cod_os
+                  and cos.cod_unidade = cosi.cod_unidade
+         join checklist_perguntas cp
+              on cp.cod_versao_checklist_modelo = c.cod_versao_checklist_modelo
+                  and cosi.cod_contexto_pergunta = cp.codigo_contexto
+         join checklist_alternativa_pergunta cap
+              on cap.cod_pergunta = cp.codigo
+                  and cosi.cod_contexto_alternativa = cap.codigo_contexto
+         join checklist_alternativa_prioridade prio
+              on prio.prioridade :: text = cap.prioridade :: text
+         join checklist_respostas_nok crn
+              on crn.cod_checklist = c.codigo
+                  and crn.cod_alternativa = cap.codigo
+         left join colaborador mecanico on mecanico.cpf = cosi.cpf_mecanico;
+
+drop function func_checklist_os_relatorio_estratificacao_os(f_cod_unidades bigint[],
+    f_placa_veiculo text,
+    f_status_os text,
+    f_status_item text,
+    f_data_inicial_abertura date,
+    f_data_final_abertura date,
+    f_data_inicial_resolucao date,
+    f_data_final_resolucao date);
+CREATE OR REPLACE FUNCTION FUNC_CHECKLIST_OS_RELATORIO_ESTRATIFICACAO_OS(F_COD_UNIDADES BIGINT[],
+                                                                         F_STATUS_OS TEXT,
+                                                                         F_STATUS_ITEM TEXT,
+                                                                         F_DATA_INICIAL_ABERTURA DATE,
+                                                                         F_DATA_FINAL_ABERTURA DATE,
+                                                                         F_DATA_INICIAL_RESOLUCAO DATE,
+                                                                         F_DATA_FINAL_RESOLUCAO DATE)
+    RETURNS TABLE
+            (
+                UNIDADE                        TEXT,
+                "CÓDICO OS"                    BIGINT,
+                "CÓDICO ITEM OS"               BIGINT,
+                "ABERTURA OS"                  TEXT,
+                "DATA LIMITE CONSERTO"         TEXT,
+                "STATUS OS"                    TEXT,
+                "PLACA"                        TEXT,
+                "TIPO DE VEÍCULO"              TEXT,
+                "TIPO DO CHECKLIST"            TEXT,
+                "MODELO DO CHECKLIST"          TEXT,
+                "PERGUNTA"                     TEXT,
+                "ALTERNATIVA"                  TEXT,
+                "QTD APONTAMENTOS"             INTEGER,
+                "PRIORIDADE"                   TEXT,
+                "PRAZO EM HORAS"               INTEGER,
+                "DESCRIÇÃO"                    TEXT,
+                "STATUS ITEM"                  TEXT,
+                "DATA INÍCIO RESOLUÇÃO"        TEXT,
+                "DATA FIM RESOLUÇÃO"           TEXT,
+                "DATA RESOLIVDO PROLOG"        TEXT,
+                "MECÂNICO"                     TEXT,
+                "DESCRIÇÃO CONSERTO"           TEXT,
+                "TEMPO DE CONSERTO EM MINUTOS" BIGINT,
+                "KM ABERTURA"                  BIGINT,
+                "KM FECHAMENTO"                BIGINT,
+                "KM PERCORRIDO"                TEXT,
+                "MOTORISTA"                    TEXT
+            )
+    LANGUAGE SQL
+AS
+$$
+SELECT U.NOME                                                                                   AS NOME_UNIDADE,
+       EO.COD_OS                                                                                AS CODIGO_OS,
+       EO.CODIGO                                                                                AS COD_ITEM_OS,
+       FORMAT_TIMESTAMP(EO.DATA_HORA, 'DD/MM/YYYY HH24:MI')                                     AS ABERTURA_OS,
+       FORMAT_TIMESTAMP(EO.DATA_HORA + (EO.PRAZO || ' HOUR') :: INTERVAL, 'DD/MM/YYYY HH24:MI') AS DATA_LIMITE_CONSERTO,
+       (CASE
+            WHEN STATUS_OS = 'A'
+                THEN 'ABERTA'
+            ELSE 'FECHADA' END)                                                                 AS STATUS_OS,
+       EO.PLACA_VEICULO                                                                         AS PLACA,
+       VT.NOME                                                                                  AS TIPO_VEICULO,
+       CASE
+           WHEN TIPO_CHECKLIST = 'S'
+               THEN 'SAÍDA'
+           ELSE 'RETORNO' END                                                                   AS TIPO_CHECKLIST,
+       CM.NOME                                                                                  AS CHECKLIST_MODELO,
+       PERGUNTA                                                                                 AS PERGUNTA,
+       ALTERNATIVA                                                                              AS ALTERNATIVA,
+       QT_APONTAMENTOS                                                                          AS QTD_APONTAMENTOS,
+       PRIORIDADE                                                                               AS PRIORIDADE,
+       PRAZO                                                                                    AS PRAZO_EM_HORAS,
+       RESPOSTA_OUTROS                                                                          AS DESCRICAO,
+       CASE
+           WHEN STATUS_ITEM = 'P'
+               THEN 'PENDENTE'
+           ELSE 'RESOLVIDO' END                                                                 AS STATUS_ITEM,
+       FORMAT_TIMESTAMP(
+               DATA_HORA_INICIO_RESOLUCAO_UTC AT TIME ZONE TIME_ZONE_UNIDADE,
+               'DD/MM/YYYY HH24:MI',
+               '-')                                                                             AS DATA_INICIO_RESOLUCAO,
+       FORMAT_TIMESTAMP(
+               DATA_HORA_FIM_RESOLUCAO_UTC AT TIME ZONE TIME_ZONE_UNIDADE,
+               'DD/MM/YYYY HH24:MI', '-')                                                       AS DATA_FIM_RESOLUCAO,
+       FORMAT_TIMESTAMP(DATA_HORA_CONSERTO, 'DD/MM/YYYY HH24:MI')                               AS DATA_RESOLVIDO_PROLOG,
+       NOME_MECANICO                                                                            AS MECANICO,
+       FEEDBACK_CONSERTO                                                                        AS DESCRICAO_CONSERTO,
+       EO.TEMPO_REALIZACAO / 1000 / 60                                                          AS TEMPO_CONSERTO_MINUTOS,
+       KM                                                                                       AS KM_ABERTURA,
+       KM_FECHAMENTO                                                                            AS KM_FECHAMENTO,
+       COALESCE((KM_FECHAMENTO - KM) :: TEXT, '-')                                              AS KM_PERCORRIDO,
+       NOME_REALIZADOR_CHECKLIST                                                                AS MOTORISTA
+FROM ESTRATIFICACAO_OS EO
+         JOIN UNIDADE U
+              ON EO.COD_UNIDADE = U.CODIGO
+         JOIN VEICULO_TIPO VT
+              ON VT.CODIGO = EO.COD_TIPO
+         JOIN CHECKLIST C
+              ON C.CODIGO = EO.COD_CHECKLIST
+         JOIN CHECKLIST_MODELO CM
+              ON CM.CODIGO = C.COD_CHECKLIST_MODELO
+WHERE EO.COD_UNIDADE = ANY (F_COD_UNIDADES)
+  AND EO.STATUS_OS LIKE F_STATUS_OS
+  AND EO.STATUS_ITEM LIKE F_STATUS_ITEM
+  AND CASE
+    -- O usuário pode filtrar tanto por início e fim de abertura ou por início e fim de resolução ou, ainda,
+    -- por ambos.
+          WHEN (F_DATA_INICIAL_ABERTURA,
+                F_DATA_FINAL_ABERTURA,
+                F_DATA_INICIAL_RESOLUCAO,
+                F_DATA_FINAL_RESOLUCAO) IS NOT NULL
+              THEN (
+                  EO.DATA_HORA :: DATE BETWEEN F_DATA_INICIAL_ABERTURA AND F_DATA_FINAL_ABERTURA
+                  AND
+                  EO.DATA_HORA_CONSERTO :: DATE BETWEEN F_DATA_INICIAL_RESOLUCAO AND F_DATA_FINAL_RESOLUCAO)
+          WHEN (F_DATA_INICIAL_ABERTURA,
+                F_DATA_FINAL_ABERTURA) IS NOT NULL
+              THEN
+              EO.DATA_HORA :: DATE BETWEEN F_DATA_INICIAL_ABERTURA AND F_DATA_FINAL_ABERTURA
+          WHEN (F_DATA_INICIAL_RESOLUCAO,
+                F_DATA_FINAL_RESOLUCAO) IS NOT NULL
+              THEN
+              EO.DATA_HORA_CONSERTO :: DATE BETWEEN F_DATA_INICIAL_RESOLUCAO AND F_DATA_FINAL_RESOLUCAO
+
+    -- Se não entrar em nenhuma condição conhecida, retornamos FALSE para o relatório não retornar dado nenhum.
+          ELSE FALSE END
+ORDER BY U.NOME, EO.COD_OS, EO.PRAZO;
+$$;
+
+drop function func_checklist_os_relatorio_placas_maior_qtd_itens_abertos(bigint[], integer);
+create or replace function
+    func_checklist_os_relatorio_placas_maior_qtd_itens_abertos(f_cod_unidades bigint[],
+                                                               f_total_placas_para_buscar integer)
+    returns table
+            (
+                nome_unidade                      text,
+                placa                             text,
+                quantidade_itens_abertos          bigint,
+                quantidade_itens_criticos_abertos bigint
+            )
+    language plpgsql
+as
+$$
+declare
+    status_itens_abertos char    := 'P';
+    prioridade_critica   varchar := 'CRITICA';
+begin
+    return query
+        with placas as (
+            select v.placa                   as placa_veiculo,
+                   count(cosi.codigo)        as quantidade_itens_abertos,
+                   count(case
+                             when cap.prioridade = prioridade_critica
+                                 then 1 end) as quantidade_itens_criticos_abertos
+            from checklist_ordem_servico_itens cosi
+                     join checklist_ordem_servico cos
+                          on cosi.cod_os = cos.codigo
+                              and cosi.cod_unidade = cos.cod_unidade
+                              -- Este filtro é importante! Ele nos previne de selecionar muitas OSs, filtrando aqui com
+                              -- o index que existe na COS. Vindo menos linhas aqui, menos linhas também são
+                              -- trazidas no join com a CAP abaixo. Assim, preveninos de usar disco.
+                              and cos.cod_unidade = any (f_cod_unidades)
+                     join checklist_alternativa_pergunta cap
+                          on cosi.cod_alternativa_primeiro_apontamento = cap.codigo
+                     join checklist c
+                          on c.codigo = cos.cod_checklist
+                     join veiculo v on c.cod_veiculo = v.codigo
+            where c.cod_unidade = any (f_cod_unidades)
+              and cosi.status_resolucao = status_itens_abertos
+            group by v.placa
+            order by quantidade_itens_abertos desc,
+                     v.placa
+            limit f_total_placas_para_buscar
+        )
+
+        select u.nome::text as nome_unidade,
+               p.placa_veiculo::text,
+               p.quantidade_itens_abertos,
+               p.quantidade_itens_criticos_abertos
+        from placas p
+                 join veiculo v on v.placa = p.placa_veiculo
+                 join unidade u on v.cod_unidade = u.codigo;
+end;
+$$;
+
+-- #####################################################################################################################
+-- #####################################################################################################################
+-- #####################################################################################################################
+-- #####################################################################################################################
+drop function func_checklist_relatorio_resumo_realizados(f_cod_unidades bigint[],
+    f_placa_veiculo text,
+    f_data_inicial date,
+    f_data_final date);
+create or replace function func_checklist_relatorio_resumo_realizados(f_cod_unidades bigint[],
+                                                                      f_data_inicial date,
+                                                                      f_data_final date)
+    returns table
+            (
+                "UNIDADE"                     text,
+                "MODELO CHECKLIST"            text,
+                "CÓDIGO CHECKLIST"            bigint,
+                "DATA REALIZAÇÃO"             text,
+                "DATA IMPORTADO"              text,
+                "COLABORADOR"                 text,
+                "CPF"                         text,
+                "EQUIPE"                      text,
+                "CARGO"                       text,
+                "PLACA"                       text,
+                "TIPO DE VEÍCULO"             text,
+                "KM"                          bigint,
+                "TEMPO REALIZAÇÃO (SEGUNDOS)" bigint,
+                "TIPO"                        text,
+                "TOTAL DE PERGUNTAS"          smallint,
+                "TOTAL NOK"                   bigint,
+                "TOTAL IMAGENS PERGUNTAS"     smallint,
+                "TOTAL IMAGENS ALTERNATIVAS"  smallint,
+                "PRIORIDADE BAIXA"            bigint,
+                "PRIORIDADE ALTA"             bigint,
+                "PRIORIDADE CRÍTICA"          bigint,
+                "OBSERVAÇÃO"                  text
+            )
+    language sql
+as
+$$
+select u.nome                                                 as nome_unidade,
+       cm.nome                                                as nome_modelo,
+       c.codigo                                               as cod_checklist,
+       format_timestamp(
+               c.data_hora_realizacao_tz_aplicado,
+               'DD/MM/YYYY HH24:MI')                          as data_hora_realizacao,
+       format_with_tz(
+               c.data_hora_importado_prolog,
+               tz_unidade(c.cod_unidade),
+               'DD/MM/YYYY HH24:MI',
+               '-')                                           as data_hora_importado,
+       co.nome                                                as nome_colaborador,
+       lpad(co.cpf :: text, 11, '0')                          as cpf_colaborador,
+       e.nome                                                 as equipe_colaborador,
+       f.nome                                                 as cargo_colaborador,
+       v.placa::text                                          as placa_veiculo,
+       vt.nome                                                as tipo_veiculo,
+       c.km_veiculo                                           as km_veiculo,
+       c.tempo_realizacao / 1000                              as tempo_realizacao_segundos,
+       f_if(c.tipo = 'S', 'Saída' :: text, 'Retorno' :: text) as tipo_checklist,
+       c.total_perguntas_ok + c.total_perguntas_nok           as total_perguntas,
+       (select count(*)
+        from checklist_respostas_nok crn
+        where crn.cod_checklist = c.codigo)                   as total_nok,
+       coalesce(c.total_midias_perguntas_ok, 0)::smallint     as total_midias_perguntas,
+       coalesce(c.total_midias_alternativas_nok, 0)::smallint as total_midias_alternativas,
+       (select count(*)
+        from checklist_respostas_nok crn
+                 join checklist_alternativa_pergunta cap
+                      on crn.cod_alternativa = cap.codigo
+        where crn.cod_checklist = c.codigo
+          and cap.prioridade = 'BAIXA')                       as total_baixa,
+       (select count(*)
+        from checklist_respostas_nok crn
+                 join checklist_alternativa_pergunta cap
+                      on crn.cod_alternativa = cap.codigo
+        where crn.cod_checklist = c.codigo
+          and cap.prioridade = 'ALTA')                        as total_alta,
+       (select count(*)
+        from checklist_respostas_nok crn
+                 join checklist_alternativa_pergunta cap
+                      on crn.cod_alternativa = cap.codigo
+        where crn.cod_checklist = c.codigo
+          and cap.prioridade = 'CRITICA')                     as total_critica,
+       c.observacao                                           as observacao
+from checklist c
+         join checklist_perguntas cp
+              on cp.cod_versao_checklist_modelo = c.cod_versao_checklist_modelo
+         join colaborador co
+              on c.cpf_colaborador = co.cpf
+         join equipe e
+              on co.cod_equipe = e.codigo
+         join funcao f
+              on co.cod_funcao = f.codigo
+         join unidade u
+              on c.cod_unidade = u.codigo
+         join checklist_modelo cm on cm.codigo = c.cod_checklist_modelo
+         join veiculo v on v.codigo = c.cod_veiculo
+         join veiculo_tipo vt on vt.codigo = v.cod_tipo
+where c.cod_unidade = any (f_cod_unidades)
+  and c.data_hora_realizacao_tz_aplicado :: date >= f_data_inicial
+  and c.data_hora_realizacao_tz_aplicado :: date <= f_data_final
+group by c.codigo,
+         cm.nome,
+         c.total_perguntas_ok,
+         c.total_midias_perguntas_ok,
+         c.total_midias_alternativas_nok,
+         c.total_perguntas_nok,
+         u.codigo,
+         u.nome,
+         co.nome,
+         co.cpf,
+         e.nome,
+         f.nome,
+         c.data_hora,
+         c.data_hora_realizacao_tz_aplicado,
+         c.data_hora_importado_prolog,
+         c.data_hora_sincronizacao,
+         c.cod_unidade,
+         v.placa,
+         vt.nome,
+         c.km_veiculo,
+         c.observacao,
+         c.tempo_realizacao,
+         c.tipo
+order by u.nome,
+         c.data_hora_sincronizacao desc;
+$$;
+
+
+drop function func_checklist_relatorio_estratificacao_respostas_nok(f_cod_unidades bigint[],
+    f_placa_veiculo character varying,
+    f_data_inicial date,
+    f_data_final date);
+create or replace function func_checklist_relatorio_estratificacao_respostas_nok(f_cod_unidades bigint[],
+                                                                                 f_data_inicial date,
+                                                                                 f_data_final date)
+    returns table
+            (
+                "UNIDADE"                         text,
+                "CODIGO CHECKLIST"                bigint,
+                "DATA"                            character varying,
+                "PLACA"                           character varying,
+                "TIPO DE VEÍCULO"                 text,
+                "TIPO"                            text,
+                "KM"                              bigint,
+                "NOME"                            character varying,
+                "PERGUNTA"                        character varying,
+                "ALTERNATIVA"                     character varying,
+                "RESPOSTA"                        character varying,
+                "IMAGENS ADICIONADAS ALTERNATIVA" bigint,
+                "PRIORIDADE"                      character varying,
+                "PRAZO EM HORAS"                  integer,
+                "AÇÃO GERADA"                     text
+            )
+    language sql
+as
+$$
+select u.nome                                                                     as nome_unidade,
+       c.codigo                                                                   as cod_checklist,
+       format_timestamp(c.data_hora_realizacao_tz_aplicado, 'DD/MM/YYYY HH24:MI') as data_hora_check,
+       v.placa                                                                    as placa_veiculo,
+       vt.nome                                                                    as tipo_veiculo,
+       case
+           when c.tipo = 'S'
+               then 'Saída'
+           else 'Retorno' end                                                     as tipo_checklist,
+       c.km_veiculo                                                               as km_veiculo,
+       co.nome                                                                    as nome_realizador_check,
+       cp.pergunta                                                                as descricao_pergunta,
+       cap.alternativa                                                            as descricao_alternativa,
+       crn.resposta_outros                                                        as resposta,
+       (select count(*)
+        from checklist_respostas_midias_alternativas_nok crman
+        where c.codigo = crman.cod_checklist
+          and crn.cod_alternativa = crman.cod_alternativa)                        as total_midias_alternativa,
+       cap.prioridade                                                             as prioridade,
+       prio.prazo                                                                 as prazo,
+       case
+           when cosia.nova_qtd_apontamentos is null
+               then 'Não abriu O.S.'
+           when cosia.nova_qtd_apontamentos = 1
+               then 'Abriu O.S.'
+           when cosia.nova_qtd_apontamentos > 1
+               then 'Incrementou Apontamentos'
+           end                                                                    as acao_ordem_servico
+from checklist c
+         join veiculo v
+              on v.codigo = c.cod_veiculo
+         join veiculo_tipo vt on vt.codigo = v.cod_tipo
+         join checklist_perguntas cp
+              on cp.cod_checklist_modelo = c.cod_checklist_modelo
+         join checklist_alternativa_pergunta cap
+              on cap.cod_pergunta = cp.codigo
+         join checklist_alternativa_prioridade prio
+              on prio.prioridade::text = cap.prioridade::text
+         join checklist_respostas_nok crn
+              on c.codigo = crn.cod_checklist
+                  and crn.cod_alternativa = cap.codigo
+         join colaborador co
+              on co.cpf = c.cpf_colaborador
+         join unidade u
+              on c.cod_unidade = u.codigo
+         left join checklist_ordem_servico_itens_apontamentos cosia
+                   on cap.deve_abrir_ordem_servico is true
+                       and cosia.cod_checklist_realizado = c.codigo
+                       and cosia.cod_alternativa = crn.cod_alternativa
+where c.cod_unidade = any (f_cod_unidades)
+  and c.data_hora_realizacao_tz_aplicado::date >= f_data_inicial
+  and c.data_hora_realizacao_tz_aplicado::date <= f_data_final
+order by u.nome, c.data_hora_sincronizacao desc, c.codigo
+$$;
+
+
+CREATE OR REPLACE FUNCTION FUNC_CHECKLIST_RELATORIO_AMBEV_EXTRATO_REALIZADOS_DIA(F_COD_UNIDADES BIGINT[],
+                                                                                 F_DATA_INICIAL DATE,
+                                                                                 F_DATA_FINAL DATE)
+    RETURNS TABLE
+            (
+                "UNIDADE"         TEXT,
+                "DATA"            TEXT,
+                "PLACA"           TEXT,
+                "TIPO DE VEÍCULO" TEXT,
+                "CHECKS SAÍDA"    BIGINT,
+                "CHECKS RETORNO"  BIGINT
+            )
+    LANGUAGE SQL
+AS
+$$
+WITH MAPAS AS (
+    SELECT M.DATA AS DATA_MAPA,
+           M.MAPA,
+           M.PLACA
+    FROM MAPA M
+             JOIN VEICULO V ON V.PLACA = M.PLACA
+    WHERE M.COD_UNIDADE = ANY (F_COD_UNIDADES)
+      AND M.DATA >= F_DATA_INICIAL
+      AND M.DATA <= F_DATA_FINAL
+    ORDER BY M.DATA),
+     CHECKS AS (SELECT C.COD_UNIDADE                                              AS COD_UNIDADE,
+                       (C.DATA_HORA AT TIME ZONE TZ_UNIDADE(C.COD_UNIDADE))::DATE AS DATA,
+                       V.PLACA                                                    AS PLACA_VEICULO,
+                       VT.NOME                                                    AS TIPO_VEICULO,
+                       SUM(CASE WHEN C.TIPO = 'S' THEN 1 ELSE 0 END)              AS CHECKS_SAIDA,
+                       SUM(CASE WHEN C.TIPO = 'R' THEN 1 ELSE 0 END)              AS CHECKS_RETORNO
+                FROM CHECKLIST C
+                         JOIN UNIDADE U ON C.COD_UNIDADE = U.CODIGO
+                         JOIN VEICULO V ON V.CODIGO = C.COD_VEICULO
+                         JOIN VEICULO_TIPO VT ON VT.CODIGO = V.COD_TIPO
+                         LEFT JOIN MAPAS AS M
+                                   ON M.DATA_MAPA = (C.DATA_HORA AT TIME ZONE TZ_UNIDADE(C.COD_UNIDADE))::DATE
+                                       AND M.PLACA = V.PLACA
+                WHERE C.COD_UNIDADE = ANY (F_COD_UNIDADES)
+                  AND (C.DATA_HORA AT TIME ZONE TZ_UNIDADE(C.COD_UNIDADE))::DATE >= F_DATA_INICIAL
+                  AND (C.DATA_HORA AT TIME ZONE TZ_UNIDADE(C.COD_UNIDADE))::DATE <= F_DATA_FINAL
+                GROUP BY C.COD_UNIDADE, DATA, V.PLACA, VT.NOME
+                ORDER BY C.COD_UNIDADE, DATA, V.PLACA, VT.NOME)
+
+SELECT (SELECT NOME
+        FROM UNIDADE U
+        WHERE U.CODIGO = C.COD_UNIDADE) AS NOME_UNIDADE,
+       TO_CHAR(C.DATA, 'DD/MM/YYYY')    AS DATA,
+       C.PLACA_VEICULO,
+       C.TIPO_VEICULO,
+       C.CHECKS_SAIDA,
+       C.CHECKS_RETORNO
+FROM CHECKS C
+ORDER BY NOME_UNIDADE, DATA
+$$;
+
+-- 0003_migration_suporte_os_PL-3594.sql.
+CREATE OR REPLACE FUNCTION SUPORTE.TG_FUNC_CHECKLIST_OS_FECHAMENTO_MASSIVO_OS()
+    RETURNS TRIGGER
+    SECURITY DEFINER
+    LANGUAGE PLPGSQL
+AS
+$$
+DECLARE
+    TEM_VALOR_NULL                  BOOLEAN                  := (NEW.CPF_MECANICO IS NULL OR
+                                                                 NEW.DATA_HORA_FIM_RESOLUCAO IS NULL OR
+                                                                 NEW.DATA_HORA_INICIO_RESOLUCAO IS NULL OR
+                                                                 NEW.TEMPO_REALIZACAO IS NULL OR
+                                                                 NEW.PLACA_VEICULO IS NULL OR
+                                                                 NEW.DATA_HORA_CONSERTO IS NULL OR
+                                                                 NEW.FEEDBACK_CONSERTO IS NULL OR
+                                                                 NEW.COD_UNIDADE IS NULL OR
+                                                                 NEW.COD_OS IS NULL OR
+                                                                 NEW.COD_PERGUNTA IS NULL OR
+                                                                 NEW.COD_ALTERNATIVA IS NULL);
+    KM_ATUAL_VEICULO                BIGINT                   := (SELECT V.KM
+                                                                 FROM VEICULO V
+                                                                 WHERE V.PLACA = NEW.PLACA_VEICULO
+                                                                   AND V.COD_EMPRESA =
+                                                                       (SELECT U.COD_EMPRESA
+                                                                        FROM UNIDADE U
+                                                                        WHERE U.CODIGO = NEW.COD_UNIDADE));
+    KM_VEICULO                      BIGINT                   := (CASE
+                                                                     WHEN NEW.KM IS NULL
+                                                                         THEN KM_ATUAL_VEICULO
+                                                                     ELSE NEW.KM END);
+    STATUS_RESOLUCAO_COSI_REALIZADO TEXT                     := 'R';
+    STATUS_RESOLUCAO_COSI_PENDENTE  TEXT                     := 'P';
+    STATUS_COS_FECHADO              TEXT                     := 'F';
+    STATUS_COS_ABERTO               TEXT                     := 'A';
+    QTD_ERROS                       BIGINT                   := 0;
+    SOMA_ERRO                       BIGINT                   := 1;
+    MSGS_ERROS                      TEXT;
+    CODIGO_EMPRESA                  BIGINT                   := (SELECT U.COD_EMPRESA
+                                                                 FROM UNIDADE U
+                                                                 WHERE U.CODIGO = NEW.COD_UNIDADE);
+    CODIGO_CHECKLIST                BIGINT                   := (SELECT COS.COD_CHECKLIST
+                                                                 FROM CHECKLIST_ORDEM_SERVICO COS
+                                                                 WHERE COS.CODIGO = NEW.COD_OS
+                                                                   AND COS.COD_UNIDADE = NEW.COD_UNIDADE);
+    DATA_HORA_CHECKLIST             TIMESTAMP WITH TIME ZONE := (SELECT C.DATA_HORA
+                                                                 FROM CHECKLIST C
+                                                                 WHERE C.CODIGO = CODIGO_CHECKLIST);
+    PLACA_CADASTRADA                BOOLEAN                  := TRUE;
+    QUEBRA_LINHA                    TEXT                     := CHR(10);
+    VERIFICAR_OS                    BOOLEAN                  := FALSE;
+    CODIGO_VEICULO                  BIGINT;
+BEGIN
+    IF (TG_OP = 'UPDATE' AND OLD.STATUS_ITEM_FECHADO IS TRUE)
+    THEN
+        NEW.MENSAGEM_STATUS_ITEM = CONCAT(OLD.MENSAGEM_STATUS_ITEM, QUEBRA_LINHA, 'O ITEM JÁ ESTAVA FECHADO');
+        NEW.MENSAGEM_STATUS_OS = OLD.MENSAGEM_STATUS_OS;
+        NEW.CPF_MECANICO = OLD.CPF_MECANICO;
+        NEW.DATA_HORA_FIM_RESOLUCAO = OLD.DATA_HORA_FIM_RESOLUCAO;
+        NEW.DATA_HORA_INICIO_RESOLUCAO = OLD.DATA_HORA_INICIO_RESOLUCAO;
+        NEW.TEMPO_REALIZACAO = OLD.TEMPO_REALIZACAO;
+        NEW.PLACA_VEICULO = OLD.PLACA_VEICULO;
+        NEW.KM = OLD.KM;
+        NEW.DATA_HORA_CONSERTO = OLD.DATA_HORA_CONSERTO;
+        NEW.FEEDBACK_CONSERTO = OLD.FEEDBACK_CONSERTO;
+        NEW.COD_UNIDADE = OLD.COD_UNIDADE;
+        NEW.COD_OS = OLD.COD_OS;
+        NEW.COD_PERGUNTA = OLD.COD_PERGUNTA;
+        NEW.COD_ALTERNATIVA = OLD.COD_ALTERNATIVA;
+        NEW.STATUS_ITEM_FECHADO = OLD.STATUS_ITEM_FECHADO;
+        NEW.STATUS_OS_FECHADA = OLD.STATUS_OS_FECHADA;
+        NEW.USUARIO := CONCAT(OLD.USUARIO, QUEBRA_LINHA, NEW.USUARIO);
+        NEW.DATA_SOLICITACAO := OLD.DATA_SOLICITACAO;
+        NEW.HORA_SOLICITACAO := OLD.HORA_SOLICITACAO;
+    ELSE
+        NEW.USUARIO := SESSION_USER;
+        NEW.DATA_SOLICITACAO := CURRENT_DATE;
+        NEW.HORA_SOLICITACAO := CURRENT_TIME;
+
+        --VERIFICA INFORMAÇÕES
+        IF (TEM_VALOR_NULL)
+        THEN
+            QTD_ERROS = QTD_ERROS + SOMA_ERRO;
+            MSGS_ERROS = CONCAT(MSGS_ERROS, QUEBRA_LINHA, QTD_ERROS, ' - EXISTEM CAMPOS SEM PREENCHIMENTO');
+        END IF;
+
+        --VERIFICA SE UNIDADE ESTÁ CADASTRADA
+        IF ((NEW.COD_UNIDADE IS NOT NULL) AND
+            NOT EXISTS(SELECT U.CODIGO FROM UNIDADE U WHERE U.CODIGO = NEW.COD_UNIDADE))
+        THEN
+            QTD_ERROS = QTD_ERROS + SOMA_ERRO;
+            MSGS_ERROS = CONCAT(MSGS_ERROS, QUEBRA_LINHA, QTD_ERROS, ' - UNIDADE NÃO CADASTRADA');
+        END IF;
+
+        --VERIFICA SE O COLABORADOR (MECÂNICO) EXISTE
+        IF ((NEW.CPF_MECANICO IS NOT NULL) AND
+            NOT EXISTS(SELECT C.CPF FROM COLABORADOR C WHERE C.CPF = NEW.CPF_MECANICO))
+        THEN
+            QTD_ERROS = QTD_ERROS + SOMA_ERRO;
+            MSGS_ERROS = CONCAT(MSGS_ERROS, QUEBRA_LINHA, QTD_ERROS, ' - MECÂNICO NÃO CADASTRADO');
+            --VERIFICA SE O COLABORADOR (MECÂNICO) É DA EMPRESA
+        ELSEIF ((NEW.CPF_MECANICO IS NOT NULL) AND
+                NOT EXISTS(
+                        SELECT C.CPF
+                        FROM COLABORADOR C
+                        WHERE C.CPF = NEW.CPF_MECANICO
+                          AND C.COD_EMPRESA = CODIGO_EMPRESA))
+        THEN
+            QTD_ERROS = QTD_ERROS + SOMA_ERRO;
+            MSGS_ERROS =
+                    CONCAT(MSGS_ERROS, QUEBRA_LINHA, QTD_ERROS,
+                           ' - MECÂNICO NÃO PERTENCE À EMPRESA DA ORDEM DE SERVIÇO');
+        END IF;
+
+        --VERIFICA SE PLACA ESTÁ CADASTRADA
+        IF ((NEW.PLACA_VEICULO IS NOT NULL) AND
+            NOT EXISTS(SELECT V.PLACA
+                       FROM VEICULO V
+                       WHERE V.PLACA = NEW.PLACA_VEICULO
+                         AND V.COD_EMPRESA = CODIGO_EMPRESA))
+        THEN
+            QTD_ERROS = QTD_ERROS + SOMA_ERRO;
+            MSGS_ERROS = CONCAT(MSGS_ERROS, QUEBRA_LINHA, QTD_ERROS, ' - PLACA NÃO ESTÁ CADASTRADA');
+            PLACA_CADASTRADA = FALSE;
+        ELSE
+            SELECT CODIGO
+            FROM VEICULO V
+            WHERE V.PLACA = NEW.PLACA_VEICULO
+              AND V.COD_EMPRESA = CODIGO_EMPRESA
+            INTO STRICT CODIGO_VEICULO;
+        END IF;
+
+        --VERIFICAÇÕES REFERENTE ÀS DATAS E HORAS
+        ---DATA/H INICIO DA RESOLUÇÃO:
+        ----Verifica e adiciona msg de erro se a data/h atual for menor que a data/h do início da resolução
+        IF ((NEW.DATA_HORA_INICIO_RESOLUCAO IS NOT NULL) AND
+            ((NEW.DATA_SOLICITACAO + NEW.HORA_SOLICITACAO) < NEW.DATA_HORA_INICIO_RESOLUCAO))
+        THEN
+            QTD_ERROS = QTD_ERROS + SOMA_ERRO;
+            MSGS_ERROS = CONCAT(MSGS_ERROS, QUEBRA_LINHA, QTD_ERROS,
+                                ' - A DATA/HORA DE INICIO DA RESOLUÇÃO NÃO PODE SER MAIOR QUE A ATUAL ');
+            ----Verifica e adiciona msg de erro se a  data do inicio da resolução for menor que a data/h do checklist realizado
+        ELSEIF ((NEW.DATA_HORA_INICIO_RESOLUCAO IS NOT NULL)
+            AND (NEW.DATA_HORA_INICIO_RESOLUCAO < DATA_HORA_CHECKLIST))
+        THEN
+            QTD_ERROS = QTD_ERROS + SOMA_ERRO;
+            MSGS_ERROS = CONCAT(MSGS_ERROS, QUEBRA_LINHA, QTD_ERROS,
+                                ' - A DATA/HORA DE INICIO DA RESOLUÇÃO NÃO PODE SER MENOR QUE A DATA/HORA DA REALIZAÇÃO DO CHECKLIST');
+        END IF;
+
+        ---DATA/HR FIM DA RESOLUÇÃO
+        ----Verifica e adiciona msg de erro se a data/h atual for menor que a data/h do fim da resolução
+        IF ((NEW.DATA_HORA_FIM_RESOLUCAO IS NOT NULL) AND
+            ((NEW.DATA_SOLICITACAO + NEW.HORA_SOLICITACAO) < NEW.DATA_HORA_FIM_RESOLUCAO))
+        THEN
+            QTD_ERROS = QTD_ERROS + SOMA_ERRO;
+            MSGS_ERROS = CONCAT(MSGS_ERROS, QUEBRA_LINHA, QTD_ERROS,
+                                ' - A DATA/HORA DE FIM DA RESOLUÇÃO NÃO PODE SER MAIOR QUE A ATUAL');
+            ----Verifica e adiciona msg de erro se a data/h do fim da resolução for menor que a data/h do inicio da resolucao
+        ELSEIF ((NEW.DATA_HORA_FIM_RESOLUCAO IS NOT NULL)
+            AND (NEW.DATA_HORA_FIM_RESOLUCAO < NEW.DATA_HORA_INICIO_RESOLUCAO))
+        THEN
+            QTD_ERROS = QTD_ERROS + SOMA_ERRO;
+            MSGS_ERROS = CONCAT(MSGS_ERROS, QUEBRA_LINHA, QTD_ERROS,
+                                ' - A DATA/HORA DE FIM DA RESOLUÇÃO NÃO PODE SER MENOR QUE A DATA/HORA DE INICIO DA RESOLUCAO');
+            ----Verifica e adiciona msg de erro se a data/h do fim da resolução for menor que a data/h do checklist realizado
+        ELSEIF ((NEW.DATA_HORA_FIM_RESOLUCAO IS NOT NULL)
+            AND (NEW.DATA_HORA_FIM_RESOLUCAO < DATA_HORA_CHECKLIST))
+        THEN
+            QTD_ERROS = QTD_ERROS + SOMA_ERRO;
+            MSGS_ERROS = CONCAT(MSGS_ERROS, QUEBRA_LINHA, QTD_ERROS,
+                                ' - A DATA/HORA DE FIM DA RESOLUÇÃO NÃO PODE SER MENOR QUE A DATA/HORA DA REALIZAÇÃO DO CHECKLIST');
+        END IF;
+
+        ---DATA/H CONSERTO
+        ----Verifica e adiciona msg de erro se a data/h atual for menor que a data/h do conserto
+        IF ((NEW.DATA_HORA_CONSERTO IS NOT NULL) AND
+            ((NEW.DATA_SOLICITACAO + NEW.HORA_SOLICITACAO) < NEW.DATA_HORA_CONSERTO))
+        THEN
+            QTD_ERROS = QTD_ERROS + SOMA_ERRO;
+            MSGS_ERROS = CONCAT(MSGS_ERROS, QUEBRA_LINHA, QTD_ERROS,
+                                ' - A DATA/HORA DO CONSERTO NÃO PODE SER MAIOR QUE A ATUAL');
+            ----Verifica e adiciona msg de erro se a data/h do conserto for menor que a data/h da realização do checklist
+        ELSEIF ((NEW.DATA_HORA_CONSERTO IS NOT NULL)
+            AND (NEW.DATA_HORA_CONSERTO < DATA_HORA_CHECKLIST))
+        THEN
+            QTD_ERROS = QTD_ERROS + SOMA_ERRO;
+            MSGS_ERROS = CONCAT(MSGS_ERROS, QUEBRA_LINHA, QTD_ERROS,
+                                ' - A DATA/HORA DO CONSERTO NÃO PODE SER MENOR QUE A DATA/HORA DA REALIZAÇÃO DO CHECKLIST');
+            ----Verifica e adiciona msg de erro se a data/h do conserto for menor que a data/h do fim da resolucao
+        ELSEIF ((NEW.DATA_HORA_CONSERTO IS NOT NULL) AND (NEW.DATA_HORA_CONSERTO < NEW.DATA_HORA_FIM_RESOLUCAO))
+        THEN
+            QTD_ERROS = QTD_ERROS + SOMA_ERRO;
+            MSGS_ERROS =
+                    CONCAT(MSGS_ERROS, QUEBRA_LINHA, QTD_ERROS,
+                           ' - A DATA/HORA DE CONSERTO NÃO PODE SER MENOR QUE A DATA/HORA DO FIM DA RESOLUCAO');
+        END IF;
+
+        ---VERIFICA SE COD_OS EXISTE
+        IF ((NEW.COD_OS IS NOT NULL AND NEW.COD_UNIDADE IS NOT NULL) AND
+            NOT EXISTS(SELECT COS.CODIGO FROM CHECKLIST_ORDEM_SERVICO COS WHERE COS.CODIGO = NEW.COD_OS))
+        THEN
+            QTD_ERROS = QTD_ERROS + SOMA_ERRO;
+            MSGS_ERROS = CONCAT(MSGS_ERROS, QUEBRA_LINHA, QTD_ERROS, ' - CODIGO DA ORDEM DE SERVIÇO NÃO EXISTE');
+
+            --VERIFICAÇÕES SE A OS EXISTIR
+        ELSEIF ((NEW.COD_OS IS NOT NULL) AND
+                EXISTS(SELECT COSI.COD_OS
+                       FROM CHECKLIST_ORDEM_SERVICO_ITENS COSI
+                       WHERE COSI.COD_OS = NEW.COD_OS))
+        THEN
+            ---VERIFICA SE A PLACA É DO CHECKLIST QUE GEROU A OS
+            IF ((NEW.PLACA_VEICULO IS NOT NULL)
+                AND (PLACA_CADASTRADA)
+                AND NOT EXISTS(SELECT C.COD_VEICULO
+                               FROM CHECKLIST C
+                               WHERE C.CODIGO = CODIGO_CHECKLIST
+                                 AND C.COD_VEICULO = CODIGO_VEICULO))
+            THEN
+                QTD_ERROS = QTD_ERROS + SOMA_ERRO;
+                MSGS_ERROS =
+                        CONCAT(MSGS_ERROS, QUEBRA_LINHA, QTD_ERROS,
+                               ' - A PLACA NÃO PERTENCE AO CHECKLIST DA ORDEM DE SERVIÇO');
+                ---VERIFICA SE OS PERTENCE À UNIDADE
+            END IF;
+            IF ((NEW.COD_UNIDADE IS NOT NULL) AND
+                NOT EXISTS(SELECT COS.CODIGO
+                           FROM CHECKLIST_ORDEM_SERVICO COS
+                           WHERE COS.CODIGO = NEW.COD_OS
+                             AND COS.COD_UNIDADE = NEW.COD_UNIDADE))
+            THEN
+                QTD_ERROS = QTD_ERROS + SOMA_ERRO;
+                MSGS_ERROS =
+                        CONCAT(MSGS_ERROS, QUEBRA_LINHA, QTD_ERROS,
+                               ' - A ORDEM DE SERVIÇO ABERTA NÃO É DA UNIDADE INFORMADA');
+            END IF;
+
+            ---VERIFICA SE A PERGUNTA ESTÁ CONTIDA NA ORDEM DE SERVIÇO ITENS
+            IF ((NEW.COD_PERGUNTA IS NOT NULL) AND
+                NOT EXISTS(SELECT COSI.COD_PERGUNTA_PRIMEIRO_APONTAMENTO
+                           FROM CHECKLIST_ORDEM_SERVICO_ITENS COSI
+                           WHERE COSI.COD_OS = NEW.COD_OS
+                             AND COSI.COD_PERGUNTA_PRIMEIRO_APONTAMENTO = NEW.COD_PERGUNTA))
+            THEN
+                QTD_ERROS = QTD_ERROS + SOMA_ERRO;
+                MSGS_ERROS = CONCAT(MSGS_ERROS, QUEBRA_LINHA, QTD_ERROS,
+                                    ' - A PERGUNTA NÃO EXISTE PARA A ORDEM DE SERVIÇO INFORMADA');
+                ---VERIFICA SE A ALTERNATIVA ESTÁ CONTIDA NA PERGUNTA
+            ELSEIF ((NEW.COD_PERGUNTA IS NOT NULL AND NEW.COD_ALTERNATIVA IS NOT NULL) AND
+                    NOT EXISTS(SELECT COSI.COD_ALTERNATIVA_PRIMEIRO_APONTAMENTO
+                               FROM CHECKLIST_ORDEM_SERVICO_ITENS COSI
+                               WHERE COSI.COD_PERGUNTA_PRIMEIRO_APONTAMENTO = NEW.COD_PERGUNTA
+                                 AND COSI.COD_ALTERNATIVA_PRIMEIRO_APONTAMENTO = NEW.COD_ALTERNATIVA))
+            THEN
+                QTD_ERROS = QTD_ERROS + SOMA_ERRO;
+                MSGS_ERROS = CONCAT(MSGS_ERROS, QUEBRA_LINHA, QTD_ERROS,
+                                    ' - A ALTERNATIVA NÃO EXISTE PARA PERGUNTA INFORMADA');
+            END IF;
+        END IF;
+
+        --REALIZA O FECHAMENTO DOS ITENS SE NÃO HOUVER ERROS
+        IF (QTD_ERROS > 0)
+        THEN
+            NEW.STATUS_ITEM_FECHADO := FALSE;
+            NEW.MENSAGEM_STATUS_ITEM :=
+                    CONCAT('ITEM NÃO FECHADO', QUEBRA_LINHA, 'QUANTIDADE DE ERROS: ', QTD_ERROS, QUEBRA_LINHA,
+                           MSGS_ERROS);
+            NEW.STATUS_OS_FECHADA := FALSE;
+            NEW.MENSAGEM_STATUS_OS := 'FECHAMENTO NÃO REALIZADO';
+        ELSEIF (NOT TEM_VALOR_NULL OR QTD_ERROS = 0)
+        THEN
+            ---VERIFICA SE O ITEM JÁ ESTAVA FECHADO (STATUS REALIZADO)
+            IF ((NEW.COD_OS IS NOT NULL AND NEW.COD_PERGUNTA IS NOT NULL AND NEW.COD_ALTERNATIVA IS NOT NULL) AND
+                EXISTS(SELECT COSI.CODIGO
+                       FROM CHECKLIST_ORDEM_SERVICO_ITENS COSI
+                       WHERE COSI.COD_OS = NEW.COD_OS
+                         AND COSI.COD_PERGUNTA_PRIMEIRO_APONTAMENTO = NEW.COD_PERGUNTA
+                         AND COSI.COD_ALTERNATIVA_PRIMEIRO_APONTAMENTO = NEW.COD_ALTERNATIVA
+                         AND COSI.STATUS_RESOLUCAO = STATUS_RESOLUCAO_COSI_REALIZADO))
+            THEN
+                -- O ITEM JÁ ESTAVA FECHADO
+                NEW.STATUS_ITEM_FECHADO = TRUE;
+                NEW.MENSAGEM_STATUS_ITEM = 'O ITEM JÁ ESTAVA FECHADO';
+                VERIFICAR_OS := TRUE;
+            ELSE
+                -- REALIZADO O FECHAMENTO DO ITEM
+                UPDATE CHECKLIST_ORDEM_SERVICO_ITENS_DATA
+                SET CPF_MECANICO               = NEW.CPF_MECANICO,
+                    DATA_HORA_FIM_RESOLUCAO    = NEW.DATA_HORA_FIM_RESOLUCAO,
+                    DATA_HORA_INICIO_RESOLUCAO = NEW.DATA_HORA_INICIO_RESOLUCAO,
+                    TEMPO_REALIZACAO           = NEW.TEMPO_REALIZACAO,
+                    KM                         = KM_VEICULO,
+                    DATA_HORA_CONSERTO         = NEW.DATA_HORA_CONSERTO,
+                    FEEDBACK_CONSERTO          = NEW.FEEDBACK_CONSERTO,
+                    STATUS_RESOLUCAO           = STATUS_RESOLUCAO_COSI_REALIZADO
+                WHERE COD_UNIDADE = NEW.COD_UNIDADE
+                  AND COD_OS = NEW.COD_OS
+                  AND COD_PERGUNTA_PRIMEIRO_APONTAMENTO = NEW.COD_PERGUNTA
+                  AND COD_ALTERNATIVA_PRIMEIRO_APONTAMENTO = NEW.COD_ALTERNATIVA;
+                NEW.STATUS_ITEM_FECHADO = TRUE;
+                NEW.MENSAGEM_STATUS_ITEM :=
+                        CONCAT('ITEM FECHADO ATRAVÉS DO SUPORTE', QUEBRA_LINHA, 'KM DO VEÍCULO NA HORA DO FECHAMENTO: ',
+                               KM_ATUAL_VEICULO);
+                VERIFICAR_OS := TRUE;
+            END IF;
+        ELSE
+            RAISE EXCEPTION 'ERRO AO FECHAR O ITEM DA ORDEM DE SERVIÇO';
+        END IF;
+
+        IF (VERIFICAR_OS)
+        THEN
+            -- VERIFICA SE EXISTEM ITENS PENDENTES NA OS
+            IF EXISTS(SELECT COSI.CODIGO
+                      FROM CHECKLIST_ORDEM_SERVICO_ITENS COSI
+                      WHERE COSI.COD_OS = NEW.COD_OS
+                        AND COSI.COD_UNIDADE = NEW.COD_UNIDADE
+                        AND COSI.STATUS_RESOLUCAO = STATUS_RESOLUCAO_COSI_PENDENTE)
+            THEN
+                NEW.STATUS_OS_FECHADA := FALSE;
+                NEW.MENSAGEM_STATUS_OS := 'OS ABERTA';
+                -- VERIFICA SE A OS ESTÁ FECHADA MESMO COM ITENS PENDENTES
+                IF EXISTS(SELECT COS.STATUS
+                          FROM CHECKLIST_ORDEM_SERVICO COS
+                          WHERE COS.STATUS = STATUS_COS_FECHADO
+                            AND COS.CODIGO = NEW.COD_OS
+                            AND COS.COD_UNIDADE = NEW.COD_UNIDADE)
+                THEN
+                    -- SE ESTIVER, É UM ERRO. ENTÃO REABRE A OS E EXIBE MSG ESPECÍFICA.
+                    UPDATE CHECKLIST_ORDEM_SERVICO
+                    SET STATUS = STATUS_COS_ABERTO
+                    WHERE CODIGO = NEW.COD_OS
+                      AND COD_UNIDADE = NEW.COD_UNIDADE;
+                    NEW.STATUS_OS_FECHADA := FALSE;
+                    NEW.MENSAGEM_STATUS_OS :=
+                            'ORDEM DE SERVIÇO ESTAVA FECHADA MAS POSSUÍA ITENS PENDENTES - OS FOI REABERTA';
+                END IF;
+            ELSE
+                -- SE NÃO EXISTIR ITENS PENDENTES, A OS PODE SER FECHADA.
+                UPDATE CHECKLIST_ORDEM_SERVICO_DATA
+                SET STATUS               = STATUS_COS_FECHADO,
+                    DATA_HORA_FECHAMENTO = (SELECT COSI.DATA_HORA_FIM_RESOLUCAO
+                                            FROM CHECKLIST_ORDEM_SERVICO_ITENS COSI
+                                            WHERE COSI.COD_UNIDADE = NEW.COD_UNIDADE
+                                              AND COSI.COD_OS = NEW.COD_OS
+                                              AND COSI.COD_PERGUNTA_PRIMEIRO_APONTAMENTO = NEW.COD_PERGUNTA
+                                              AND COSI.COD_ALTERNATIVA_PRIMEIRO_APONTAMENTO = NEW.COD_ALTERNATIVA)
+                WHERE COD_UNIDADE = NEW.COD_UNIDADE
+                  AND CODIGO NOT IN
+                      (SELECT COD_OS
+                       FROM CHECKLIST_ORDEM_SERVICO_ITENS
+                       WHERE COD_UNIDADE = NEW.COD_UNIDADE
+                         AND CPF_MECANICO IS NULL);
+                NEW.STATUS_OS_FECHADA := TRUE;
+                NEW.MENSAGEM_STATUS_OS := 'OS FECHADA';
+            END IF;
+        END IF;
+    END IF;
+    RETURN NEW;
+END
+$$;
+
+
+-- #####################################################################################################################
+-- #####################################################################################################################
+-- #####################################################################################################################
+-- #####################################################################################################################
+CREATE OR REPLACE FUNCTION SUPORTE.FUNC_CHECKLIST_ALTERA_KM_COLETADO_CHECKLIST_REALIZADO(F_COD_UNIDADE BIGINT,
+                                                                                         F_PLACA TEXT,
+                                                                                         F_COD_CHECKLIST_REALIZADO BIGINT,
+                                                                                         F_NOVO_KM BIGINT,
+                                                                                         OUT AVISO_KM_CHECKLIST_ALTERADO TEXT)
+    RETURNS TEXT
+    LANGUAGE PLPGSQL
+    SECURITY DEFINER
+AS
+$$
+DECLARE
+    CODIGO_VEICULO CONSTANT BIGINT := (SELECT CODIGO
+                                       FROM VEICULO V
+                                       WHERE V.PLACA = F_PLACA
+                                         AND V.COD_EMPRESA = (SELECT COD_EMPRESA
+                                                              FROM UNIDADE
+                                                              WHERE CODIGO = F_COD_UNIDADE));
+    QTD_LINHAS_ATUALIZADAS  BIGINT;
+BEGIN
+    PERFORM SUPORTE.FUNC_HISTORICO_SALVA_EXECUCAO();
+    PERFORM FUNC_GARANTE_UNIDADE_EXISTE(F_COD_UNIDADE);
+    PERFORM FUNC_GARANTE_VEICULO_EXISTE(F_COD_UNIDADE, F_PLACA);
+    PERFORM FUNC_GARANTE_NOVO_KM_MENOR_QUE_ATUAL_VEICULO(F_COD_UNIDADE, F_PLACA, F_NOVO_KM);
+
+    -- Verifica se o checklist existe.
+    IF NOT EXISTS(SELECT C.CODIGO
+                  FROM CHECKLIST C
+                  WHERE C.CODIGO = F_COD_CHECKLIST_REALIZADO
+                    AND C.COD_UNIDADE = F_COD_UNIDADE
+                    AND C.COD_VEICULO = CODIGO_VEICULO)
+    THEN
+        RAISE EXCEPTION 'Não foi possível encontrar o checklist realizado com estes parâmetros: Unidade %, Placa %,
+                     Código da realização do checklist %', F_COD_UNIDADE, F_PLACA, F_COD_CHECKLIST_REALIZADO;
+    END IF;
+
+    UPDATE CHECKLIST_DATA
+    SET KM_VEICULO = F_NOVO_KM
+    WHERE CODIGO = F_COD_CHECKLIST_REALIZADO
+      AND COD_UNIDADE = F_COD_UNIDADE
+      AND COD_VEICULO = CODIGO_VEICULO;
+
+    GET DIAGNOSTICS QTD_LINHAS_ATUALIZADAS = ROW_COUNT;
+
+    IF (QTD_LINHAS_ATUALIZADAS <= 0)
+    THEN
+        RAISE EXCEPTION 'Erro ao atualizar o km do checklist realizado com estes parâemtros: Unidade %, Placa %,
+                     Código da realização do checklist %', F_COD_UNIDADE, F_PLACA, F_COD_CHECKLIST_REALIZADO;
+    END IF;
+
+    SELECT 'O KM DO VEÍCULO NO CHECKLIST REALIZADO FOI ALTERADO COM SUCESSO, UNIDADE: '
+               || F_COD_UNIDADE
+               || ', PLACA: '
+               || F_PLACA
+               || ', CÓDIGO DO CHECKLIST REALIZADO: '
+               || F_COD_CHECKLIST_REALIZADO
+    INTO AVISO_KM_CHECKLIST_ALTERADO;
+END;
+$$;
+
+-- 0004_migration_altera_integracoes_os_PL-3595.sql.
+create or replace function integracao.func_checklist_os_busca_informacoes_os(f_cod_interno_os_prolog bigint[],
+                                                                             f_status_os text default null)
+    returns table
+            (
+                cod_unidade                  bigint,
+                cod_auxiliar_unidade         text,
+                cod_interno_os_prolog        bigint,
+                cod_os_prolog                bigint,
+                data_hora_abertura_os        timestamp without time zone,
+                placa_veiculo                text,
+                km_veiculo_na_abertura       bigint,
+                cpf_colaborador_checklist    text,
+                status_os                    text,
+                data_hora_fechamento_os      timestamp without time zone,
+                cod_item_os                  bigint,
+                cod_alternativa              bigint,
+                cod_auxiliar_alternativa     text,
+                descricao_alternativa        text,
+                alternativa_tipo_outros      boolean,
+                descricao_tipo_outros        text,
+                prioridade_alternativa       text,
+                status_item_os               text,
+                km_veiculo_fechamento_item   bigint,
+                data_hora_fechamento_item_os timestamp without time zone,
+                data_hora_inicio_resolucao   timestamp without time zone,
+                data_hora_fim_resolucao      timestamp without time zone,
+                descricao_fechamento_item_os text
+            )
+    language plpgsql
+as
+$$
+begin
+    return query
+        select cos.cod_unidade                                                   as cod_unidade,
+               u.cod_auxiliar                                                    as cod_auxiliar_unidade,
+               cos.codigo_prolog                                                 as cod_interno_os_prolog,
+               cos.codigo                                                        as cod_os_prolog,
+               c.data_hora_realizacao_tz_aplicado                                as data_hora_abertura_os,
+               v.placa::text                                                     as placa_veiculo,
+               c.km_veiculo                                                      as km_veiculo_na_abertura,
+               lpad(c.cpf_colaborador::text, 11, '0')                            as cpf_colaborador_checklist,
+               cos.status::text                                                  as status_os,
+               cos.data_hora_fechamento at time zone tz_unidade(u.codigo)        as data_hora_fechamento_os,
+               cosi.codigo                                                       as cod_item_os,
+               cosi.cod_alternativa_primeiro_apontamento                         as cod_alternativa,
+               cap.cod_auxiliar                                                  as cod_auxiliar_alternativa,
+               cap.alternativa                                                   as descricao_alternativa,
+               cap.alternativa_tipo_outros                                       as alternativa_tipo_outros,
+               case
+                   when cap.alternativa_tipo_outros
+                       then
+                       (select crn.resposta_outros
+                        from checklist_respostas_nok crn
+                        where crn.cod_checklist = c.codigo
+                          and crn.cod_alternativa = cap.codigo)::text
+                   end                                                           as descricao_tipo_outros,
+               cap.prioridade::text                                              as prioridade_alternativa,
+               cosi.status_resolucao                                             as status_item_os,
+               cosi.km                                                           as km_veiculo_fechamento_item,
+               cosi.data_hora_conserto at time zone tz_unidade(u.codigo)         as data_hora_fechamento_item_os,
+               cosi.data_hora_inicio_resolucao at time zone tz_unidade(u.codigo) as data_hora_inicio_resolucao,
+               cosi.data_hora_fim_resolucao at time zone tz_unidade(u.codigo)    as data_hora_fim_resolucao,
+               cosi.feedback_conserto                                            as descricao_fechamento_item_os
+        from checklist_ordem_servico cos
+                 join checklist c on c.codigo = cos.cod_checklist
+                 join checklist_ordem_servico_itens cosi
+                      on cos.codigo = cosi.cod_os and cos.cod_unidade = cosi.cod_unidade
+                 join checklist_alternativa_pergunta cap
+                      on cap.codigo = cosi.cod_alternativa_primeiro_apontamento
+                 join unidade u on u.codigo = cos.cod_unidade
+                 join veiculo v on v.codigo = c.cod_veiculo
+        where cos.codigo_prolog = any (f_cod_interno_os_prolog)
+          and f_if(f_status_os is null, true, cos.status = f_status_os)
+        order by cos.codigo_prolog, cosi.codigo;
+end;
+$$;
+
+create or replace function integracao.func_checklist_os_busca_oss_pendentes_sincronia(f_data_inicio date default null,
+                                                                                      f_data_fim date default null)
+    returns table
+            (
+                nome_unidade               text,
+                cod_unidade                bigint,
+                de_para_unidade            text,
+                cod_os                     bigint,
+                placa_veiculo_os           text,
+                status_os                  text,
+                data_hora_abertura_os      timestamp without time zone,
+                data_hora_fechamento_os    timestamp without time zone,
+                cod_checklist_os           bigint,
+                cpf_motorista              text,
+                nome_motorista             text,
+                cod_item_os                bigint,
+                de_para_alternativa        text,
+                descricao_pergunta         text,
+                descricao_alternativa      text,
+                status_item_os             text,
+                data_hora_resolucao_item   timestamp without time zone,
+                qtd_tentativas_sincronia   bigint,
+                data_hora_ultima_tentativa timestamp without time zone,
+                mensagem_ultima_tentativa  text
+            )
+    language sql
+as
+$$
+select u.nome::text                                                            as nome_unidade,
+       u.codigo                                                                as cod_unidade,
+       u.cod_auxiliar::text                                                    as de_para_unidade,
+       cos.codigo                                                              as cod_os,
+       v.placa::text                                                           as placa_veiculo_os,
+       f_if(cos.status = 'F', 'fechada'::text, 'aberta'::text)::text           as status_os,
+       c.data_hora_realizacao_tz_aplicado                                      as data_hora_abertura_os,
+       cos.data_hora_fechamento at time zone tz_unidade(cos.cod_unidade)       as data_hora_fechamento_os,
+       c.codigo                                                                as cod_checklist_os,
+       lpad(c.cpf_colaborador::text, 11, '0')::text                            as cpf_motorista,
+       co.nome::text                                                           as nome_motorista,
+       cosi.codigo                                                             as cod_item_os,
+       cap.cod_auxiliar::text                                                  as de_para_alternativa,
+       cp.pergunta                                                             as descricao_pergunta,
+       f_if(cap.alternativa_tipo_outros, crn.resposta_outros, cap.alternativa) as descricao_alternativa,
+       f_if(cosi.status_resolucao = 'R', 'resolvido'::text, 'pendente'::text)  as status_item_os,
+       cosi.data_hora_conserto at time zone tz_unidade(cosi.cod_unidade)       as data_hora_resolucao_item,
+       coss.quantidade_tentativas                                              as qtd_tentativas_sincronia,
+       coss.data_ultima_tentativa at time zone tz_unidade(cos.cod_unidade)     as data_hora_ultima_tentativa,
+       coss.mensagem_ultima_tentativa::text                                    as mensagem_ultima_tentativa
+from integracao.checklist_ordem_servico_sincronizacao coss
+         join checklist_ordem_servico cos on cos.codigo_prolog = coss.codigo_os_prolog
+         join checklist_ordem_servico_itens cosi on cosi.cod_os = cos.codigo and cosi.cod_unidade = cos.cod_unidade
+         join checklist_perguntas cp on cp.codigo = cosi.cod_pergunta_primeiro_apontamento
+         join checklist_alternativa_pergunta cap on cap.codigo = cosi.cod_alternativa_primeiro_apontamento
+         join checklist c on c.codigo = cos.cod_checklist
+         join colaborador co on c.cpf_colaborador = co.cpf
+         join unidade u on cos.cod_unidade = u.codigo
+         join veiculo v on v.codigo = c.cod_veiculo
+         left join checklist_respostas_nok crn
+                   on crn.cod_checklist = c.codigo
+                       and crn.cod_pergunta = cp.codigo
+                       and crn.cod_alternativa = cap.codigo
+where coss.pendente_sincronia = true
+  and coss.bloquear_sicronia = false
+  -- Filtramos por OSs que tenham sido abertas ou fechadas nas datas filtradas.
+  and ((f_if(f_data_inicio is null, true, c.data_hora_realizacao_tz_aplicado::date >= f_data_inicio)
+    and f_if(f_data_fim is null, true, c.data_hora_realizacao_tz_aplicado::date <= f_data_fim))
+    or (f_if(f_data_inicio is null, true,
+             (cos.data_hora_fechamento at time zone tz_unidade(cos.cod_unidade))::date >= f_data_inicio)
+        and
+        f_if(f_data_fim is null, true,
+             (cos.data_hora_fechamento at time zone tz_unidade(cos.cod_unidade))::date <= f_data_fim))
+    or (f_if(f_data_inicio is null, true,
+             (cosi.data_hora_conserto at time zone tz_unidade(cosi.cod_unidade))::date >= f_data_inicio)
+        and
+        f_if(f_data_fim is null, true,
+             (cosi.data_hora_conserto at time zone tz_unidade(cosi.cod_unidade))::date <= f_data_fim)))
+order by u.codigo,
+         cos.codigo, cosi.codigo;
+$$;
+
+
+create or replace function
+    piccolotur.func_check_os_insere_item_os_aberta(f_cod_os_globus bigint,
+                                                   f_cod_unidade_os bigint,
+                                                   f_cod_checklist bigint,
+                                                   f_cod_item_os_globus bigint,
+                                                   f_cod_contexto_pergunta_checklist bigint,
+                                                   f_cod_contexto_alternativa_checklist bigint,
+                                                   f_data_hora_sincronizacao_pendencia timestamp with time zone,
+                                                   f_token_integracao text)
+    returns bigint
+    language plpgsql
+as
+$$
+declare
+    v_status_os_aberta        constant text   := 'A';
+    v_status_item_os_pendente constant text   := 'P';
+    v_codigo_pergunta         constant bigint := (select cp.codigo
+                                                  from checklist_perguntas cp
+                                                  where cp.codigo_contexto = f_cod_contexto_pergunta_checklist
+                                                    and cp.cod_versao_checklist_modelo =
+                                                        (select c.cod_versao_checklist_modelo
+                                                         from checklist c
+                                                         where c.codigo = f_cod_checklist));
+    v_codigo_alternativa      constant bigint := (select cap.codigo
+                                                  from checklist_alternativa_pergunta cap
+                                                  where cap.codigo_contexto = f_cod_contexto_alternativa_checklist
+                                                    and cap.cod_pergunta = v_codigo_pergunta
+                                                    and cap.cod_versao_checklist_modelo =
+                                                        (select c.cod_versao_checklist_modelo
+                                                         from checklist c
+                                                         where c.codigo = f_cod_checklist));
+    v_cod_empresa_os          constant bigint := (select ti.cod_empresa
+                                                  from integracao.token_integracao ti
+                                                           join unidade u on u.cod_empresa = ti.cod_empresa
+                                                  where u.codigo = f_cod_unidade_os);
+    v_cod_item_os_prolog               bigint;
+begin
+    -- Antes de processarmos a abertura da O.S e inserção de Itens, validamos todos os códigos de vínculo.
+    -- Validamos se o código da unidade da O.S bate com a empresa do Token
+    if (v_cod_empresa_os is null)
+    then
+        perform public.throw_generic_error(
+                format('[ERRO DE VÍNCULO] O token "%s" não está autorizado para a unidade "%s"',
+                       f_token_integracao,
+                       f_cod_unidade_os));
+    end if;
+
+    -- Validamos se o código do checklist existe.
+    if (select not exists(
+            select c.codigo
+            from public.checklist c
+            where c.codigo = f_cod_checklist
+              and c.cod_unidade = f_cod_unidade_os))
+    then
+        perform public.throw_generic_error(
+                format('[ERRO DE VÍNCULO] O checklist "%s" não encontra-se na base de dados do ProLog',
+                       f_cod_checklist));
+    end if;
+
+    -- Validamos se a pergunta existe e está mesmo vinculada ao checklist realizado.
+    if (select not exists(
+            select crn.cod_pergunta
+            from public.checklist_respostas_nok crn
+            where crn.cod_checklist = f_cod_checklist
+              and crn.cod_pergunta = v_codigo_pergunta))
+    then
+        perform public.throw_generic_error(
+                format('[ERRO DE VÍNCULO] A pergunta "%s" não possui vínculo com o checklist "%s"',
+                       f_cod_contexto_pergunta_checklist,
+                       f_cod_checklist));
+    end if;
+
+    -- Validamos se a alternativa existe e pertence a pergunta do checklist realizado.
+    if (select not exists(
+            select crn.cod_alternativa
+            from public.checklist_respostas_nok crn
+            where crn.cod_checklist = f_cod_checklist
+              and crn.cod_pergunta = v_codigo_pergunta
+              and crn.cod_alternativa = v_codigo_alternativa))
+    then
+        perform public.throw_generic_error(
+                format('[ERRO DE VÍNCULO] A alternativa "%s" não possui vínculo com a pergunta "%s"',
+                       f_cod_contexto_alternativa_checklist,
+                       f_cod_contexto_pergunta_checklist));
+    end if;
+
+    -- Validamos se o Item da O.S pertencem a um checklist que de fato foi enviado para o Globus.
+    if (not (select exists(
+                            select *
+                            from piccolotur.checklist_item_nok_enviado_globus cineg
+                            where cineg.cod_checklist = f_cod_checklist
+                              and cineg.cod_contexto_pergunta = f_cod_contexto_pergunta_checklist
+                              and cineg.cod_contexto_alternativa = f_cod_contexto_alternativa_checklist)))
+    then
+        perform public.throw_generic_error(
+                format(
+                            '[ERRO DE VÍNCULO] Não existe vínculo entre o cod_checklist "%s",' ||
+                            ' cod_pergunta "%s" e cod_alternativa "%s"',
+                            f_cod_checklist,
+                            f_cod_contexto_pergunta_checklist,
+                            f_cod_contexto_alternativa_checklist));
+    end if;
+
+    -- Validamos se estamos tentando abrir uma OS que já existe para um checklist diferente.
+    if (select exists(select cos.codigo
+                      from checklist_ordem_servico cos
+                      where cos.codigo = f_cod_os_globus
+                        and cos.cod_unidade = f_cod_unidade_os
+                        and cos.cod_checklist != f_cod_checklist))
+    then
+        perform public.throw_generic_error(
+                format('[ERRO] A OS %s já está aberta para outro checklist'));
+    end if;
+
+    -- Se chegou nesse estágio, já validamos todos os cenários do item, devemos então inserir.
+    -- Se a Ordem de Serviço não existe, então criamos ela.
+    if (select not exists(
+            select cos.codigo
+            from public.checklist_ordem_servico cos
+            where cos.codigo = f_cod_os_globus
+              and cos.cod_unidade = f_cod_unidade_os
+              and cos.cod_checklist = f_cod_checklist))
+    then
+        insert into public.checklist_ordem_servico(codigo,
+                                                   cod_unidade,
+                                                   cod_checklist,
+                                                   status)
+        values (f_cod_os_globus, f_cod_unidade_os, f_cod_checklist, v_status_os_aberta);
+    else
+        -- Caso a OS estiver fechada, iremos reabrir para inserir o novo item.
+        -- Se estiver aberta, iremos apenas adicionar o item nela.
+        update public.checklist_ordem_servico
+        set status               = v_status_os_aberta,
+            data_hora_fechamento = null
+        where codigo = f_cod_os_globus
+          and cod_unidade = f_cod_unidade_os;
+    end if;
+
+    -- Não precisamos validar novamente se o item já existe no banco de dados, apenas inserimos.
+    insert into public.checklist_ordem_servico_itens(cod_unidade,
+                                                     cod_os,
+                                                     status_resolucao,
+                                                     cod_contexto_pergunta,
+                                                     cod_contexto_alternativa,
+                                                     cod_pergunta_primeiro_apontamento,
+                                                     cod_alternativa_primeiro_apontamento)
+    values (f_cod_unidade_os,
+            f_cod_os_globus,
+            v_status_item_os_pendente,
+            f_cod_contexto_pergunta_checklist,
+            f_cod_contexto_alternativa_checklist,
+            v_codigo_pergunta,
+            v_codigo_alternativa)
+    returning codigo into v_cod_item_os_prolog;
+
+    -- Não chegará nesse ponto um 'item', 'checklist' ou 'alternativa' que não existam, então podemos inserir os
+    -- dados com segurança. Também, não chegará aqui um item que não deveremos inserir ou que devemos aumentar a
+    -- quantidade de apontamentos, nesse estágio o item SEMPRE tera 'NOVA_QTD_APONTAMENTOS' = 1 (primeiro apontamento).
+    insert into public.checklist_ordem_servico_itens_apontamentos(cod_item_ordem_servico,
+                                                                  cod_checklist_realizado,
+                                                                  cod_alternativa,
+                                                                  nova_qtd_apontamentos)
+    values (v_cod_item_os_prolog, f_cod_checklist, v_codigo_alternativa, 1);
+
+    -- Após salvar o item, criamos o vínculo dele na tabela DE-PARA.
+    insert into piccolotur.checklist_ordem_servico_item_vinculo(cod_unidade,
+                                                                cod_os_globus,
+                                                                cod_item_os_globus,
+                                                                cod_item_os_prolog,
+                                                                placa_veiculo_os,
+                                                                cod_checklist_os_prolog,
+                                                                cod_contexto_pergunta_os_prolog,
+                                                                cod_contexto_alternativa_os_prolog,
+                                                                data_hora_sincronia_pendencia)
+    values (f_cod_unidade_os,
+            f_cod_os_globus,
+            f_cod_item_os_globus,
+            v_cod_item_os_prolog,
+            (select v.placa
+             from public.checklist c
+                      join veiculo v on c.cod_veiculo = v.codigo
+             where c.codigo = f_cod_checklist),
+            f_cod_checklist,
+            f_cod_contexto_pergunta_checklist,
+            f_cod_contexto_alternativa_checklist,
+            f_data_hora_sincronizacao_pendencia);
+
+    return v_cod_item_os_prolog;
+end;
+$$;
+
+
+drop function piccolotur.func_check_os_busca_checklist_itens_nok(f_cod_checklist_prolog bigint);
+create or replace function piccolotur.func_check_os_busca_checklist_itens_nok(f_cod_checklist_prolog bigint)
+    returns table
+            (
+                cod_unidade_checklist        bigint,
+                cod_modelo_checklist         bigint,
+                cod_versao_modelo_checklist  bigint,
+                cpf_colaborador_realizacao   text,
+                placa_veiculo_checklist      text,
+                cod_veiculo_checklist        bigint,
+                km_coletado_checklist        bigint,
+                tipo_checklist               text,
+                data_hora_realizacao         timestamp without time zone,
+                total_alternativas_nok       integer,
+                cod_pergunta                 bigint,
+                cod_contexto_pergunta_nok    bigint,
+                descricao_pergunta_nok       text,
+                cod_alternativa_nok          bigint,
+                cod_contexto_alternativa_nok bigint,
+                descricao_alternativa_nok    text,
+                alternativa_tipo_outros      boolean,
+                prioridade_alternativa_nok   text
+            )
+    language sql
+as
+$$
+with alternativas as (
+    select crn.cod_checklist                                                       as cod_checklist,
+           -- Por conta do filtro no WHERE, apenas buscamos alternativas que devem abrir O.S., assim, teremos sempre
+           -- uma única partição.
+           count(cap.codigo) over (partition by cap.deve_abrir_ordem_servico)      as qtd_alternativas_nok,
+           cp.codigo                                                               as cod_pergunta,
+           cp.codigo_contexto                                                      as cod_contexto_pergunta,
+           cp.pergunta                                                             as descricao_pergunta,
+           cap.codigo                                                              as cod_alternativa,
+           cap.codigo_contexto                                                     as cod_contexto_alternativa,
+           f_if(cap.alternativa_tipo_outros, crn.resposta_outros, cap.alternativa) as descricao_alternativa,
+           cap.alternativa_tipo_outros                                             as alternativa_tipo_outros,
+           cap.prioridade                                                          as prioridade_alternativa
+    from checklist_respostas_nok crn
+             join checklist_alternativa_pergunta cap
+        -- Fazemos o JOIN apenas para as alternativas que abrem OS, pois para as demais, não nos interessa nada.
+                  on cap.codigo = crn.cod_alternativa and cap.deve_abrir_ordem_servico
+             join checklist_perguntas cp on crn.cod_pergunta = cp.codigo
+    where crn.cod_checklist = f_cod_checklist_prolog
+)
+
+select c.cod_unidade                                            as cod_unidade_checklist,
+       c.cod_checklist_modelo                                   as cod_modelo_checklist,
+       c.cod_versao_checklist_modelo                            as cod_versao_modelo_checklist,
+       lpad(c.cpf_colaborador::text, 11, '0')                   as cpf_colaborador_realizacao,
+       v.placa::text                                            as placa_veiculo_checklist,
+       v.codigo                                                 as cod_veiculo_checklist,
+       c.km_veiculo                                             as km_coletado_checklist,
+       f_if(c.tipo::text = 'S', 'SAIDA'::text, 'RETORNO'::text) as tipo_checklist,
+       c.data_hora at time zone tz_unidade(c.cod_unidade)       as data_hora_realizacao,
+       coalesce(a.qtd_alternativas_nok, 0)::integer             as total_alternativas_nok,
+       a.cod_pergunta                                           as cod_pergunta,
+       a.cod_contexto_pergunta                                  as cod_contexto_pergunta_nok,
+       a.descricao_pergunta                                     as descricao_pergunta_nok,
+       a.cod_alternativa                                        as cod_alternativa_nok,
+       a.cod_contexto_alternativa                               as cod_contexto_alternativa_nok,
+       a.descricao_alternativa                                  as descricao_alternativa_nok,
+       a.alternativa_tipo_outros                                as alternativa_tipo_outros,
+       a.prioridade_alternativa                                 as prioridade_alternativa_nok
+from checklist c
+         join veiculo v on v.codigo = c.cod_veiculo
+    -- Usamos LEFT JOIN para os cenários onde o check não possuir nenhum item NOK, mesmo para esses cenários
+    -- devemos retornar as infos do checklist mesmo assim.
+         left join alternativas a on a.cod_checklist = c.codigo
+where c.codigo = f_cod_checklist_prolog
+order by a.cod_alternativa;
+$$;
+
+
+CREATE OR REPLACE FUNCTION
+    INTEGRACAO.FUNC_INTEGRACAO_BUSCA_ITENS_OS_EMPRESA(F_COD_ULTIMO_ITEM_PENDENTE_SINCRONIZADO BIGINT,
+                                                      F_TOKEN_INTEGRACAO TEXT)
+    RETURNS TABLE
+            (
+                PLACA_VEICULO                      TEXT,
+                KM_ABERTURA_SERVICO                BIGINT,
+                COD_ORDEM_SERVICO                  BIGINT,
+                COD_UNIDADE_ORDEM_SERVICO          BIGINT,
+                STATUS_ORDEM_SERVICO               TEXT,
+                DATA_HORA_ABERTURA_SERVICO         TIMESTAMP WITHOUT TIME ZONE,
+                COD_ITEM_ORDEM_SERVICO             BIGINT,
+                COD_UNIDADE_ITEM_ORDEM_SERVICO     BIGINT,
+                DATA_HORA_PRIMEIRO_APONTAMENTO     TIMESTAMP WITHOUT TIME ZONE,
+                STATUS_ITEM_ORDEM_SERVICO          TEXT,
+                PRAZO_RESOLUCAO_ITEM_HORAS         INTEGER,
+                QTD_APONTAMENTOS                   INTEGER,
+                COD_CHECKLIST_PRIMEIRO_APONTAMENTO BIGINT,
+                COD_CONTEXTO_PERGUNTA              BIGINT,
+                DESCRICAO_PERGUNTA                 TEXT,
+                COD_CONTEXTO_ALTERNATIVA           BIGINT,
+                DESCRICAO_ALTERNATIVA              TEXT,
+                IS_TIPO_OUTROS                     BOOLEAN,
+                DESCRICAO_TIPO_OUTROS              TEXT,
+                PRIORIDADE_ALTERNATIVA             TEXT
+            )
+    LANGUAGE PLPGSQL
+AS
+$$
+DECLARE
+    F_STATUS_ITEM_ORDEM_SERVICO_PENDENTE TEXT := 'P';
+BEGIN
+    RETURN QUERY
+        SELECT VD.PLACA::TEXT                                       AS PLACA_VEICULO,
+               CD.KM_VEICULO                                        AS KM_ABERTURA_SERVICO,
+               COSD.CODIGO                                          AS COD_ORDEM_SERVICO,
+               COSD.COD_UNIDADE                                     AS COD_UNIDADE_ORDEM_SERVICO,
+               COSD.STATUS::TEXT                                    AS STATUS_ORDEM_SERVICO,
+               CD.DATA_HORA AT TIME ZONE TZ_UNIDADE(CD.COD_UNIDADE) AS DATA_HORA_ABERTURA_SERVICO,
+               COSID.CODIGO                                         AS COD_ITEM_ORDEM_SERVICO,
+               COSID.COD_UNIDADE                                    AS COD_UNIDADE_ITEM_ORDEM_SERVICO,
+               CD.DATA_HORA AT TIME ZONE TZ_UNIDADE(CD.COD_UNIDADE) AS DATA_HORA_PRIMEIRO_APONTAMENTO,
+               COSID.STATUS_RESOLUCAO::TEXT                         AS STATUS_ITEM_ORDEM_SERVICO,
+               CAP.PRAZO                                            AS PRAZO_RESOLUCAO_ITEM_HORAS,
+               COSID.QT_APONTAMENTOS                                AS QTD_APONTAMENTOS,
+               CD.CODIGO                                            AS COD_CHECKLIST_PRIMEIRO_APONTAMENTO,
+               COSID.COD_CONTEXTO_PERGUNTA                          AS COD_CONTEXTO_PERGUNTA,
+               CPD.PERGUNTA                                         AS DESCRICAO_PERGUNTA,
+               COSID.COD_CONTEXTO_ALTERNATIVA                       AS COD_CONTEXTO_ALTERNATIVA,
+               CAPD.ALTERNATIVA                                     AS DESCRICAO_ALTERNATIVA,
+               CAPD.ALTERNATIVA_TIPO_OUTROS                         AS IS_TIPO_OUTROS,
+               CASE
+                   WHEN CAPD.ALTERNATIVA_TIPO_OUTROS
+                       THEN
+                       (SELECT CRN.RESPOSTA_OUTROS
+                        FROM CHECKLIST_RESPOSTAS_NOK CRN
+                        WHERE CRN.COD_CHECKLIST = CD.CODIGO
+                          AND CRN.COD_ALTERNATIVA = CAPD.CODIGO)
+                   END                                              AS DESCRICAO_TIPO_OUTROS,
+               CAPD.PRIORIDADE::TEXT                                AS PRIORIDADE_ALTERNATIVA
+        FROM CHECKLIST_ORDEM_SERVICO_ITENS_DATA COSID
+                 JOIN CHECKLIST_ORDEM_SERVICO_DATA COSD
+                      ON COSID.COD_OS = COSD.CODIGO AND COSID.COD_UNIDADE = COSD.COD_UNIDADE
+                 JOIN CHECKLIST_DATA CD ON COSD.COD_CHECKLIST = CD.CODIGO
+                 JOIN VEICULO_DATA VD ON CD.COD_VEICULO = VD.CODIGO
+                 JOIN CHECKLIST_PERGUNTAS_DATA CPD ON COSID.COD_PERGUNTA_PRIMEIRO_APONTAMENTO = CPD.CODIGO
+                 JOIN CHECKLIST_ALTERNATIVA_PERGUNTA_DATA CAPD
+                      ON COSID.COD_ALTERNATIVA_PRIMEIRO_APONTAMENTO = CAPD.CODIGO
+                 JOIN CHECKLIST_ALTERNATIVA_PRIORIDADE CAP ON CAPD.PRIORIDADE = CAP.PRIORIDADE
+        WHERE COSID.COD_UNIDADE IN (SELECT U.CODIGO
+                                    FROM UNIDADE U
+                                    WHERE U.COD_EMPRESA = (SELECT TI.COD_EMPRESA
+                                                           FROM INTEGRACAO.TOKEN_INTEGRACAO TI
+                                                           WHERE TI.TOKEN_INTEGRACAO = F_TOKEN_INTEGRACAO))
+          AND COSID.STATUS_RESOLUCAO = F_STATUS_ITEM_ORDEM_SERVICO_PENDENTE
+          AND COSID.CODIGO > F_COD_ULTIMO_ITEM_PENDENTE_SINCRONIZADO
+        ORDER BY COSID.CODIGO;
+END;
+$$;
