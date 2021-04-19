@@ -20,8 +20,29 @@ public interface ChecklistOrdemServicoProjection {
     @Value("#{target.status_os}")
     String getStatusOs();
 
-    @Value("#{target.data_hora_fechamento}")
-    LocalDateTime getDataHoraFechamento();
+    @Value("#{target.data_hora_fechamento_utc}")
+    LocalDateTime getDataHoraFechamentoUtc();
+
+    @Value("#{target.data_hora_fechamento_tz_aplicado}")
+    LocalDateTime getDataHoraFechamentoTzAplicado();
+
+    @Value("#{target.codigo_colaborador_abertura}")
+    long getCodigoColaboradorAberturaOs();
+
+    @Value("#{target.cpf_colaborador_abertura}")
+    long getCpfColaboradorAberturaOs();
+
+    @Value("#{target.nome_colaborador_abertura}")
+    String getNomeColaboradorAberturaOs();
+
+    @Value("#{target.codigo_veiculo}")
+    long getCodigoVeiculo();
+
+    @Value("#{target.placa_veiculo}")
+    String getPlacaVeiculo();
+
+    @Value("#{target.identificador_frota}")
+    String getIdentificadorFrota();
 
     @Value("#{target.codigo_item_os}")
     long getCodigoItemOs();

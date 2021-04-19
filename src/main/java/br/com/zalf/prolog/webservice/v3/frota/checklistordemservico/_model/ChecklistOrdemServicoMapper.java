@@ -44,7 +44,7 @@ public final class ChecklistOrdemServicoMapper {
                 incluirItensOrdemServico
                         ? createChecklistOrdemServicoItens(checklistOrdemServicoProjections)
                         : null,
-                checklistOrdemServicoProjections.get(0).getDataHoraFechamento());
+                checklistOrdemServicoProjections.get(0).getDataHoraFechamentoTzAplicado());
     }
 
     @NotNull
