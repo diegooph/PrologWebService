@@ -30,7 +30,7 @@ public interface ChecklistOrdemServicoProjection {
     long getCodigoColaboradorAberturaOs();
 
     @Value("#{target.cpf_colaborador_abertura}")
-    long getCpfColaboradorAberturaOs();
+    String getCpfColaboradorAberturaOs();
 
     @Value("#{target.nome_colaborador_abertura}")
     String getNomeColaboradorAberturaOs();

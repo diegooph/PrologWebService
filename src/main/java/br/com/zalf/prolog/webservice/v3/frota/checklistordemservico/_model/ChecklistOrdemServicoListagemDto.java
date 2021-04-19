@@ -35,8 +35,23 @@ public class ChecklistOrdemServicoListagemDto {
     @Nullable
     private final List<ChecklistOrdemServicoItemDto> itensOs;
     @ApiModelProperty(
-            value = "A data em que a O.S foi totalmente fechada.",
+            value = "A data em que a O.S foi totalmente fechada, em UTC.",
             example = "2019-08-18T10:47:00")
     @Nullable
-    private final LocalDateTime dataHoraFechamentoOs;
+    private final LocalDateTime dataHoraFechamentoOsUtc;
+    @ApiModelProperty(
+            value = "A data em que a O.S foi totalmente fechada, com timezone aplicado.",
+            example = "2019-08-18T10:47:00")
+    @Nullable
+    private final LocalDateTime dataHoraFechamentoOsTimezoneAplicado;
+    private final long codigoColaboradorAberturaOs;
+    @NotNull
+    private final String cpfColaboradorAberturaOs;
+    @NotNull
+    private final String nomeColaboradorAberturaOs;
+    private final long codigoVeiculo;
+    @NotNull
+    private final String placaVeiculo;
+    @Nullable
+    private final String identificadorFrota;
 }
