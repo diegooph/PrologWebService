@@ -26,7 +26,7 @@ Change Log
 * Altera para não retornar unidades inativas (PL-3510)
 * Corrige processamento de planilha de import de pneus
 * Corrige processamento de planilha de import de vínculo de pneus a veículos
-* Corrige valores retornador para exibição de sulco atual e pressão atual (PL-3578)
+* Corrige valores retornados para exibição de sulco atual e pressão atual (PL-3578)
 
 <a name="v3.1.0"></a>
 ## Version [v3.1.0](https://github.com/luizfp/PrologWebService/compare/v3.0.0...v3.1.0) (2021-04-08)
