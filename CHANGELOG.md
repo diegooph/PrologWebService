@@ -1,6 +1,9 @@
 Change Log
 ==========
 
+### Features
+* Cria functions de suporte para alterações em modelo de quiz (PL-3609)
+
 <a name="v3.2.1"></a>
 ## Version [v3.2.1](https://github.com/luizfp/PrologWebService/compare/v3.2.0...v3.2.1) (release-date) [unreleased]
 
