@@ -49,7 +49,7 @@ begin
                    base.sulco_nunca_aferido                                              as sulco_nunca_aferido,
                    base.pressao_nunca_aferico                                            as pressao_nunca_aferida,
                    base.afericao_sulco_vencida                                           as afericao_sulco_vencida,
-                   base.afericao_sulco_vencida                                           as afericao_pressao_vencida
+                   base.afericao_pressao_vencida as afericao_pressao_vencida
             from veiculo v
                      join modelo_veiculo mv
                           on mv.codigo = v.cod_modelo
