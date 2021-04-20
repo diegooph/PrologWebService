@@ -20,10 +20,10 @@ import javax.ws.rs.Path;
 @Path("/v3/movimentacoes")
 public final class MovimentacaoResource {
     @NotNull
-    private final MovimentacaoProcessoService service;
+    private final MovimentacaoService service;
 
     @Autowired
-    public MovimentacaoResource(@NotNull final MovimentacaoProcessoService service) {
+    public MovimentacaoResource(@NotNull final MovimentacaoService service) {
         this.service = service;
     }
 
