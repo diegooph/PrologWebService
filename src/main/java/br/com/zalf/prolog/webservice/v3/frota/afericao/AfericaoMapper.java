@@ -83,12 +83,20 @@ public class AfericaoMapper {
                                     medidas);
     }
 
+    private boolean projectionContainsMedidas(final @NotNull AfericaoAvulsaProjection projection) {
+        return Objects.nonNull(projection.getCodPneu());
+    }
+
+    private boolean projectionContainsMedidas(final @NotNull AfericaoPlacaProjection projection) {
+        return Objects.nonNull(projection.getCodPneu());
+    }
+
     @NotNull
     private Map<Long,
             List<MedidaDto>> groupMedidasByAfericoesAvulsas(@NotNull final List<AfericaoAvulsaProjection> projections) {
         return projections.stream()
                 .collect(groupingBy(AfericaoAvulsaProjection::getCodigo,
-                                    filtering(projection -> Objects.nonNull(projection.getCodPneu()),
+                                    filtering(this::projectionContainsMedidas,
                                               mapping(this::generateMedidaFromAfericao, toUnmodifiableList()))));
     }
 
@@ -97,7 +105,7 @@ public class AfericaoMapper {
             List<MedidaDto>> groupMedidasByAfericoesPlacas(@NotNull final List<AfericaoPlacaProjection> projections) {
         return projections.stream()
                 .collect(groupingBy(AfericaoPlacaProjection::getCodigo,
-                                    filtering(projection -> Objects.nonNull(projection.getCodPneu()),
+                                    filtering(this::projectionContainsMedidas,
                                               mapping(this::generateMedidaFromAfericao, toUnmodifiableList()))));
     }
 
