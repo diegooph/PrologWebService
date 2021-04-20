@@ -88,7 +88,8 @@ public class AfericaoMapper {
             List<MedidaDto>> groupMedidasByAfericoesAvulsas(@NotNull final List<AfericaoAvulsaProjection> projections) {
         return projections.stream()
                 .collect(groupingBy(AfericaoAvulsaProjection::getCodigo,
-                                    mapping(this::generateMedidaFromAfericao, toList())));
+                                    filtering(projection -> Objects.nonNull(projection.getCodPneu()),
+                                              mapping(this::generateMedidaFromAfericao, toUnmodifiableList()))));
     }
 
     @NotNull
@@ -96,7 +97,8 @@ public class AfericaoMapper {
             List<MedidaDto>> groupMedidasByAfericoesPlacas(@NotNull final List<AfericaoPlacaProjection> projections) {
         return projections.stream()
                 .collect(groupingBy(AfericaoPlacaProjection::getCodigo,
-                                    mapping(this::generateMedidaFromAfericao, toList())));
+                                    filtering(projection -> Objects.nonNull(projection.getCodPneu()),
+                                              mapping(this::generateMedidaFromAfericao, toUnmodifiableList()))));
     }
 
     @NotNull
