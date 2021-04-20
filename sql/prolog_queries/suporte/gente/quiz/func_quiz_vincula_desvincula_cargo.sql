@@ -10,11 +10,16 @@ create or replace function
     security definer
 as
 $$
+declare
+    v_cod_empresa constant bigint not null := (select cod_empresa
+                                               from unidade
+                                               where codigo = f_cod_unidade);
 begin
     perform suporte.func_historico_salva_execucao(f_informacoes_extras_suporte);
 
     perform func_garante_unidade_existe(f_cod_unidade);
     perform func_garante_modelo_quiz_existe(f_cod_modelo_quiz);
+    perform func_garante_cargo_existe(v_cod_empresa, f_cod_cargo);
 
     -- Verifica se o modelo de quiz é da unidade informada.
     if (select qm.cod_unidade

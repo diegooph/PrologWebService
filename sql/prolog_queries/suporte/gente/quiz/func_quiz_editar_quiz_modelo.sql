@@ -29,8 +29,17 @@ begin
 
     if (f_nova_data_hora_abertura_quiz > f_nova_data_hora_fechamento_quiz)
     then
-        raise exception
-            'A data/hora de abertura não pode ser posterior à data/hora fechamento.';
+        raise exception 'A data/hora de abertura não pode ser posterior à data/hora fechamento.';
+    end if;
+
+    if (f_novo_nome_quiz is null
+        or f_novo_nome_quiz = ''
+        or f_nova_descricao_quiz is null
+        or f_nova_descricao_quiz = ''
+        or f_nova_data_hora_abertura_quiz is null
+        or f_nova_data_hora_fechamento_quiz is null)
+    then
+        raise exception 'Todos os parâmetros do Modelo de Quiz devem ser fornecidos. Não é permitido valores vazios.';
     end if;
 
     update quiz_modelo
