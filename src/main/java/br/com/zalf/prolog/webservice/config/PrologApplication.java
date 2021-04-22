@@ -7,12 +7,10 @@ import io.swagger.jaxrs.listing.SwaggerSerializers;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.ServerProperties;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
-import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Component;
@@ -33,12 +31,6 @@ public class PrologApplication extends SpringBootServletInitializer {
 
     public static void main(final String[] args) {
         SpringApplication.run(PrologApplication.class, args);
-    }
-
-    @Override
-    protected SpringApplicationBuilder configure(@NotNull final SpringApplicationBuilder builder) {
-        builder.sources(PrologApplication.class);
-        return builder;
     }
 
     @Component
