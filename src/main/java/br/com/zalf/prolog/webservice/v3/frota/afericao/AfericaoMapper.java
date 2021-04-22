@@ -36,7 +36,8 @@ public class AfericaoMapper {
     @NotNull
     public AfericaoPlacaDto toAfericaoPlacaDto(@NotNull final AfericaoPlacaProjection afericaoPlaca,
                                                @NotNull final List<MedidaDto> medidas) {
-        return AfericaoPlacaDto.of(afericaoPlaca.getKmVeiculo(),
+        return AfericaoPlacaDto.of(afericaoPlaca.getCodVeiculo(),
+                                   afericaoPlaca.getKmVeiculo(),
                                    afericaoPlaca.getPlacaVeiculo(),
                                    afericaoPlaca.getIdentificadorFrota(),
                                    afericaoPlaca.getCodigo(),

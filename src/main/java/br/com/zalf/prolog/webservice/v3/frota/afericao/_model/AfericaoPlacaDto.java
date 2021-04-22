@@ -18,6 +18,8 @@ import java.util.List;
 @Value(staticConstructor = "of")
 public class AfericaoPlacaDto {
     @NotNull
+    Long codVeiculo;
+    @NotNull
     Long kmVeiculo;
     @NotNull
     String placaVeiculo;
