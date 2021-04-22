@@ -33,7 +33,7 @@ public interface AfericaoPlacaProjection {
     @Value("#{target.COD_UNIDADE}")
     Long getCodUnidade();
 
-    @Value("#{target.DATA_HORA_AFERICAO_UTC}")
+    @Value("#{@localDateTimeConverter.fromInstantUtc(target.DATA_HORA_AFERICAO_UTC)}")
     LocalDateTime getDataHoraAfericaoUtc();
 
     @Value("#{target.DATA_HORA_AFERICAO_TZ_APLICADO}")
