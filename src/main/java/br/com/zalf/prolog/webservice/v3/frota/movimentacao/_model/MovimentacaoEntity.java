@@ -41,15 +41,15 @@ public final class MovimentacaoEntity {
     @JoinColumn(name = "cod_pneu", referencedColumnName = "codigo", nullable = false)
     private PneuEntity pneu;
     @Column(name = "sulco_interno")
-    private double sulcoInterno;
+    private Double sulcoInterno;
     @Column(name = "sulco_central_interno")
-    private double sulcoCentralInterno;
+    private Double sulcoCentralInterno;
     @Column(name = "sulco_central_externo")
-    private double sulcoCentralExterno;
+    private Double sulcoCentralExterno;
     @Column(name = "sulco_externo")
-    private double sulcoExterno;
-    @Column(name = "sulco_externo")
-    private double pressaoAtual;
+    private Double sulcoExterno;
+    @Column(name = "pressao_atual")
+    private Double pressaoAtual;
     @Column(name = "vida")
     private int vida;
     @Column(name = "observacao")
