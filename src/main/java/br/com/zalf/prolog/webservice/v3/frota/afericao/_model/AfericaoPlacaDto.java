@@ -28,7 +28,9 @@ public class AfericaoPlacaDto {
     @NotNull
     Long codUnidade;
     @NotNull
-    LocalDateTime dataHora;
+    LocalDateTime dataHoraAfericaoUtc;
+    @NotNull
+    LocalDateTime dataHoraAfericaoTzAplicado;
     @NotNull
     TipoMedicaoColetadaAfericao tipoMedicaoColetada;
     @NotNull
@@ -37,6 +39,8 @@ public class AfericaoPlacaDto {
     Long tempoRealizacao;
     @NotNull
     FormaColetaDadosAfericaoEnum formaColetaDados;
+    @NotNull
+    Long codColaboradorAferidor;
     @NotNull
     String cpfAferidor;
     @NotNull
