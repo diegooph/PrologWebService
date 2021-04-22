@@ -6,6 +6,7 @@ Change Log
 
 ### Features
 * Cria functions de suporte para alterações em modelo de quiz (PL-3609)
+* Logar no BD quem altera um colaborador (PL-3491)
 
 ### Refactors
 * Altera paths de v3 para serem precedidos por `api`
