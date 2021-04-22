@@ -55,17 +55,16 @@ public class PrologApplication extends SpringBootServletInitializer {
 
         @PostConstruct
         public void init() {
-            // Register components where DI is needed
             this.register(ApiListingResource.class);
             this.register(SwaggerSerializers.class);
             final BeanConfig swaggerConfigBean = new BeanConfig();
             swaggerConfigBean.setConfigId("Prolog Api Docs");
             swaggerConfigBean.setTitle("Prolog Api Docs");
             swaggerConfigBean.setDescription("Métodos disponíveis para acesso aos dados do Prolog");
-            swaggerConfigBean.setVersion("v1");
+            swaggerConfigBean.setVersion("v3");
             swaggerConfigBean.setContact("diogenes@prologapp.com");
-            swaggerConfigBean.setSchemes(new String[]{"http", "https"});
-            swaggerConfigBean.setHost("localhost:8080");
+            swaggerConfigBean.setSchemes(new String[]{"https"});
+            swaggerConfigBean.setHost("https://prologapp.com");
             swaggerConfigBean.setBasePath("/prolog");
             swaggerConfigBean.setResourcePackage("br.com.zalf.prolog.webservice");
             swaggerConfigBean.setPrettyPrint(true);
