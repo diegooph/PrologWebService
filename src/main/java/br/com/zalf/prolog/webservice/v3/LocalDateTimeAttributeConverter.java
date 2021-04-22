@@ -16,7 +16,7 @@ import java.time.ZoneOffset;
 public final class LocalDateTimeAttributeConverter {
 
     @Nullable
-    public LocalDateTime fromInstant(@Nullable final Instant instant) {
+    public LocalDateTime fromInstantUtc(@Nullable final Instant instant) {
         return instant == null ? null : instant.atZone(ZoneOffset.UTC).toLocalDateTime();
     }
 }
