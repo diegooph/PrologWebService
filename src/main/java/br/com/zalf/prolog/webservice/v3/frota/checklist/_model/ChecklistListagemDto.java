@@ -1,15 +1,14 @@
 package br.com.zalf.prolog.webservice.v3.frota.checklist._model;
 
 import br.com.zalf.prolog.webservice.commons.FonteDataHora;
-import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
 import br.com.zalf.prolog.webservice.frota.checklist.model.TipoChecklist;
-import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.AnexoMidiaChecklistEnum;
 import io.swagger.annotations.ApiModel;
 import lombok.Value;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Created on 2021-04-07
@@ -18,7 +17,7 @@ import java.time.LocalDateTime;
  */
 @ApiModel(description = "Objeto com as informações de um checklist.")
 @Value(staticConstructor = "of")
-public class ChecklistListagemDto {
+public class ChecklistListagemDto { //o que recebemos do banco
     @NotNull
     Long codUnidade;
     @NotNull
@@ -28,86 +27,59 @@ public class ChecklistListagemDto {
     @NotNull
     Long codVersaoModelo;
     @NotNull
-    Long getCodColaborador;
+    Long codColaborador;
     @NotNull
-    Long getCpfColaborador;
+    Long cpfColaborador;
     @NotNull
-    String getNomeColaborador;
+    String nomeColaborador;
     @NotNull
-    Long getCodVeiculo;
+    Long codVeiculo;
     @NotNull
-    String getPlacaVeiculo;
+    String placaVeiculo;
     @Nullable
-    String getIdentificadorFrota;
-    long getKmVeiculoMomentoRealizacao;
+    String identificadorFrota;
+    long kmVeiculoMomentoRealizacao;
     @NotNull
-    TipoChecklist getTipoChecklist;
+    TipoChecklist tipoChecklist;
     @NotNull
-    LocalDateTime getDataHoraRealizacaoUtc;
+    LocalDateTime dataHoraRealizacaoUtc;
     @NotNull
-    LocalDateTime getDataHoraRealizacaoTzAplicado;
+    LocalDateTime dataHoraRealizacaoTzAplicado;
     @Nullable
-    LocalDateTime getDataHoraImportadoUtc;
+    LocalDateTime dataHoraImportadoUtc;
     @Nullable
-    LocalDateTime getDataHoraImportadoTzAplicado;
-    long getDuracaoRealizacaoInMillis;
+    LocalDateTime dataHoraImportadoTzAplicado;
+    long duracaoRealizacaoInMillis;
     @Nullable
-    String getObservacaoChecklist;
-    int getTotalPerguntasOk;
-    int getTotalPerguntasNok;
-    int getTotalAlternativasOk;
-    int getTotalAlternativasNok;
-    int getTotalImagensPerguntasOk;
-    int getTotalMidiasPerguntasOk;
-    int getTotalMidiasAlternativasNok;
-    int getTotalNokBaixa;
-    int getTotalNokAlta;
-    int getTotalNokCritica;
+    String observacaoChecklist;
+    int totalPerguntasOk;
+    int totalPerguntasNok;
+    int totalAlternativasOk;
+    int totalAlternativasNok;
+    int totalImagensPerguntasOk;
+    int totalMidiasPerguntasOk;
+    int totalMidiasAlternativasNok;
+    int totalNokBaixa;
+    int totalNokAlta;
+    int totalNokCritica;
     boolean isOffline;
     @NotNull
-    LocalDateTime getDataHoraSincronizacaoUtc;
+    LocalDateTime dataHoraSincronizacaoUtc;
     @NotNull
-    LocalDateTime getDataHoraSincronizacaoTzAplicado;
+    LocalDateTime dataHoraSincronizacaoTzAplicado;
     @NotNull
-    FonteDataHora getFonteDataHora;
+    FonteDataHora fonteDataHora;
     @Nullable
-    Integer getVersaoAppMomentoRealizacao;
+    Integer versaoAppMomentoRealizacao;
     @Nullable
-    Integer getVersaoAppMomentoSincronizacao;
+    Integer versaoAppMomentoSincronizacao;
     @Nullable
-    String getDeviceId;
+    String deviceId;
     @Nullable
-    String getDeviceImei;
-    long getDeviceUptimeRealizacaoMillis;
-    long getDeviceUptimeSincronizacaoMillis;
-    @NotNull
-    Long getCodPergunta;
-    @NotNull
-    Long getCodContextoPergunta;
-    @NotNull
-    String getDescricaoPergunta;
-    int getOrdemPergunta;
-    boolean isPerguntaSingleChoice;
-    @NotNull
-    AnexoMidiaChecklistEnum getAnexoMidiaPerguntaOk;
-    @NotNull
-    Long getCodAlternativa;
-    @NotNull
-    Long getCodContextoAlternativa;
-    @NotNull
-    String getDescricaoAlternativa;
-    int getOrdemAlternativa;
-    @NotNull
-    PrioridadeAlternativa getPrioridadeAlternativa;
-    boolean getAlternativaTipoOutros;
-    boolean deveAbrirOrdemServico;
-    @NotNull
-    AnexoMidiaChecklistEnum getAnexoMidiaAlternativaNok;
-    @Nullable
-    String getCodAuxiliarAlternativa;
-    boolean isAlternativaSelecionada;
-    @Nullable
-    String getRespostaTipoOutros;
+    String deviceImei;
+    long deviceUptimeRealizacaoMillis;
+    long deviceUptimeSincronizacaoMillis;
     boolean temMidiaPerguntaOk;
     boolean temMidiaAlternativaNok;
+    List<ChecklistPerguntasDto> checklistPerguntasDtos;
 }
