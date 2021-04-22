@@ -5,6 +5,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.TipoProcessoCole
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.FormaColetaDadosAfericaoEnum;
 import lombok.Value;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -38,6 +39,6 @@ public class AfericaoAvulsaDto {
     String cpfAferidor;
     @NotNull
     String nomeAferidor;
-    @NotNull
+    @Nullable
     List<MedidaDto> medidas;
 }

@@ -47,6 +47,6 @@ public class AfericaoPlacaDto {
     String cpfAferidor;
     @NotNull
     String nomeAferidor;
-    @NotNull
+    @Nullable
     List<MedidaDto> medidas;
 }
