@@ -20,9 +20,8 @@ import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.Provider;
 
 /**
- * Created on 2020-09-14
- *
- * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
+ * Para o funcionamento dos endpoints com Jersey, é necessário esta classe estender a
+ * {@link SpringBootServletInitializer}.
  */
 @SpringBootApplication(scanBasePackages = {"br.com.zalf.prolog.webservice"})
 @EntityScan(basePackages = {"br.com.zalf.prolog.webservice"})
