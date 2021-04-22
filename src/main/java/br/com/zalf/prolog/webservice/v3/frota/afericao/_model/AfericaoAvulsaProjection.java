@@ -20,8 +20,11 @@ public interface AfericaoAvulsaProjection {
     @Value("#{target.COD_UNIDADE}")
     Long getCodUnidade();
 
-    @Value("#{target.DATA_HORA}")
-    LocalDateTime getDataHora();
+    @Value("#{target.DATA_HORA_AFERICAO_UTC}")
+    LocalDateTime getDataHoraAfericaoUtc();
+
+    @Value("#{target.DATA_HORA_AFERICAO_TZ_APLICADO}")
+    LocalDateTime getDataHoraAfericaoTzAplicado();
 
     @Value("#{target.TIPO_MEDICAO_COLETADA}")
     TipoMedicaoColetadaAfericao getTipoMedicaoColetadaAfericao();
@@ -34,6 +37,9 @@ public interface AfericaoAvulsaProjection {
 
     @Value("#{target.FORMA_COLETA_DADOS}")
     FormaColetaDadosAfericaoEnum getFormaColetaDadosAfericao();
+
+    @Value("#{target.COD_COLABORADOR}")
+    Long getCodColaboradroAferidor();
 
     @Value("#{target.CPF}")
     String getCpfAferidor();

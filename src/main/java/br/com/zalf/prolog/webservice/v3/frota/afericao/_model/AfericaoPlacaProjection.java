@@ -14,6 +14,10 @@ import java.time.LocalDateTime;
  * @author Guilherme Steinert (https://github.com/steinert999)
  */
 public interface AfericaoPlacaProjection {
+
+    @Value("#{target.COD_VEICULO}")
+    Long getCodVeiculo();
+
     @Value("#{target.PLACA_VEICULO}")
     String getPlacaVeiculo();
 
@@ -29,8 +33,11 @@ public interface AfericaoPlacaProjection {
     @Value("#{target.COD_UNIDADE}")
     Long getCodUnidade();
 
-    @Value("#{target.DATA_HORA}")
-    LocalDateTime getDataHora();
+    @Value("#{target.DATA_HORA_AFERICAO_UTC}")
+    LocalDateTime getDataHoraAfericaoUtc();
+
+    @Value("#{target.DATA_HORA_AFERICAO_TZ_APLICADO}")
+    LocalDateTime getDataHoraAfericaoTzAplicado();
 
     @Value("#{target.TIPO_MEDICAO_COLETADA}")
     TipoMedicaoColetadaAfericao getTipoMedicaoColetadaAfericao();
@@ -43,6 +50,9 @@ public interface AfericaoPlacaProjection {
 
     @Value("#{target.FORMA_COLETA_DADOS}")
     FormaColetaDadosAfericaoEnum getFormaColetaDadosAfericao();
+
+    @Value("#{target.COD_COLABORADOR}")
+    Long getCodColaboradorAferidor();
 
     @Value("#{target.CPF}")
     String getCpfAferidor();
