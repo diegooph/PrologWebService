@@ -18,12 +18,12 @@ import javax.ws.rs.Path;
 @RestController
 @ConsoleDebugLog
 @Path("/v3/movimentacoes")
-public final class MovimentacaoResource {
+public final class MovimentacaoProcessoResource {
     @NotNull
-    private final MovimentacaoService service;
+    private final MovimentacaoProcessoService service;
 
     @Autowired
-    public MovimentacaoResource(@NotNull final MovimentacaoService service) {
+    public MovimentacaoProcessoResource(@NotNull final MovimentacaoProcessoService service) {
         this.service = service;
     }
 
