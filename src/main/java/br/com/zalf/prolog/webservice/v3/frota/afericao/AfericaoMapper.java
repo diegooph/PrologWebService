@@ -51,7 +51,7 @@ public class AfericaoMapper {
                                    afericaoPlaca.getCodColaboradorAferidor(),
                                    afericaoPlaca.getCpfAferidor(),
                                    afericaoPlaca.getNomeAferidor(),
-                                   medidas);
+                                   medidas.isEmpty() ? null : medidas);
     }
 
     @NotNull
@@ -85,7 +85,7 @@ public class AfericaoMapper {
                                     afericaoAvulsa.getCodColaboradroAferidor(),
                                     afericaoAvulsa.getCpfAferidor(),
                                     afericaoAvulsa.getNomeAferidor(),
-                                    medidas);
+                                    medidas.isEmpty() ? null : medidas);
     }
 
     private boolean projectionContainsMedidas(final @NotNull AfericaoAvulsaProjection projection) {
