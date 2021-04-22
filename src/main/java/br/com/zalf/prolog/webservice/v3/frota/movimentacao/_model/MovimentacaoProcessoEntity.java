@@ -32,6 +32,11 @@ public final class MovimentacaoProcessoEntity implements EntityKmColetado {
     private Long codigo;
     @Column(name = "cod_unidade", nullable = false)
     private Long codUnidade;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cpf_responsavel", referencedColumnName = "cpf")
+    private ColaboradorEntity colaboradorRealizacaoProcesso;
+    @Column(name = "observacao")
+    private String observacao;
     @OneToMany(mappedBy = "movimentacaoProcesso", fetch = FetchType.LAZY)
     private Set<MovimentacaoEntity> movimentacoes;
 
