@@ -6,6 +6,10 @@ import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.*;
+import br.com.zalf.prolog.webservice.frota.pneu.servico._model.filtro.ServicoHolderBuscaFiltro;
+import br.com.zalf.prolog.webservice.frota.pneu.servico._model.filtro.ServicosAbertosBuscaFiltro;
+import br.com.zalf.prolog.webservice.frota.pneu.servico._model.filtro.ServicosFechadosVeiculoFiltro;
+import br.com.zalf.prolog.webservice.frota.pneu.servico._model.filtro.VeiculoAberturaServicoFiltro;
 import br.com.zalf.prolog.webservice.integracao.router.RouterAfericaoServico;
 import org.jetbrains.annotations.NotNull;
 
@@ -15,7 +19,7 @@ import java.util.List;
 /**
  * Classe ServicoService responsavel por comunicar-se com a interface DAO.
  */
-public class ServicoService {
+public final class ServicoService {
 
     private static final String TAG = ServicoService.class.getSimpleName();
     private final ServicoDao dao = Injection.provideServicoDao();
@@ -28,37 +32,49 @@ public class ServicoService {
                 return dao.getQuantidadeServicosAbertosVeiculo(codUnidade);
             } catch (final SQLException e) {
                 Log.e(TAG, String.format("Erro ao buscar quantidade de serviços abertos por veículo. \n," +
-                        "Unidade: %d", codUnidade), e);
+                                                 "Unidade: %d", codUnidade), e);
                 return null;
             }
         } else {
-            throw new IllegalArgumentException("O único tipo de agrupamento suportado na busca dos serviços abertos é " +
-                    "por veículo. Agrupamento recebido: " + agrupamento);
+            throw new IllegalArgumentException("O único tipo de agrupamento suportado na busca dos serviços abertos é" +
+                                                       " " +
+                                                       "por veículo. Agrupamento recebido: " + agrupamento);
         }
     }
 
     @NotNull
-    public ServicoHolder getServicoHolder(@NotNull final String placa, @NotNull final Long codUnidade) {
+    public ServicoHolder getServicoHolder(@NotNull final ServicoHolderBuscaFiltro filtro) {
         try {
-            return dao.getServicoHolder(placa, codUnidade);
+            return dao.getServicoHolder(filtro);
         } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao buscar os serviços da placa.\n" +
-                    "Unidade: %d\n" +
-                    "Placa: %s", codUnidade, placa), t);
+                                             "codUnidade: %d\n" +
+                                             "codVeiculo: %d\n" +
+                                             "placaVeiculo: %s",
+                                     filtro.getCodUnidade(),
+                                     filtro.getCodVeiculo(),
+                                     filtro.getPlacaVeiculo()), t);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao buscar serviços, tente novamente");
         }
     }
 
-    public List<Servico> getServicosAbertosByPlaca(final String placa, final String tipoServico) {
+    @NotNull
+    public List<Servico> getServicosAbertos(@NotNull final ServicosAbertosBuscaFiltro filtro) {
         try {
-            return dao.getServicosAbertosByPlaca(placa, tipoServico != null ? TipoServico.fromString(tipoServico) : null);
-        } catch (final SQLException e) {
+            return dao.getServicosAbertos(filtro);
+        } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao buscar os serviços abertos da placa. \n," +
-                    "TipoServico: %s \n" +
-                    "Placa: %s", tipoServico, placa), e);
-            return null;
+                                             "codVeiculo: %d \n" +
+                                             "placaVeiculo: %s \n" +
+                                             "tipoServico: %s",
+                                     filtro.getCodVeiculo(),
+                                     filtro.getPlacaVeiculo(),
+                                     filtro.getTipoServico()), t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao buscar serviços abertos, tente novamente");
         }
     }
 
@@ -73,8 +89,8 @@ public class ServicoService {
             return Response.ok("Serviço consertado com sucesso");
         } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao inserir o conserto de um item\n" +
-                    "userToken: %s\n" +
-                    "codUnidade: %d", userToken, codUnidade), t);
+                                             "userToken: %s\n" +
+                                             "codUnidade: %d", userToken, codUnidade), t);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(t, "Erro ao realizar o conserto de um item");
@@ -86,8 +102,8 @@ public class ServicoService {
             return dao.getServicoByCod(codUnidade, codServico);
         } catch (final SQLException e) {
             final String message = String.format("Erro ao buscar os serviço. \n," +
-                    "Unidade: %d \n" +
-                    "Código serviço: %d", codUnidade, codServico);
+                                                         "Unidade: %d \n" +
+                                                         "Código serviço: %d", codUnidade, codServico);
             Log.e(TAG, message, e);
             throw new RuntimeException(message);
         }
@@ -106,9 +122,9 @@ public class ServicoService {
             }
         } catch (final SQLException e) {
             final String message = String.format("Erro ao buscar os serviços fechados. \n" +
-                    "Unidade: %d \n" +
-                    "Data Inicial: %d \n" +
-                    "Data Final: %d", codUnidade, dataInicial, dataFinal);
+                                                         "Unidade: %d \n" +
+                                                         "Data Inicial: %d \n" +
+                                                         "Data Final: %d", codUnidade, dataInicial, dataFinal);
             Log.e(TAG, message, e);
             throw new RuntimeException(message);
         }
@@ -121,9 +137,9 @@ public class ServicoService {
             return dao.getServicosFechados(codUnidade, dataInicial, dataFinal);
         } catch (final SQLException e) {
             final String message = String.format("Erro ao buscar os serviços fechados. \n," +
-                    "Unidade: %d \n" +
-                    "Data Inicial: %d \n" +
-                    "Data Final: %d", codUnidade, dataInicial, dataFinal);
+                                                         "Unidade: %d \n" +
+                                                         "Data Inicial: %d \n" +
+                                                         "Data Final: %d", codUnidade, dataInicial, dataFinal);
             Log.e(TAG, message, e);
             throw new RuntimeException(message);
         }
@@ -137,45 +153,55 @@ public class ServicoService {
             return dao.getServicosFechadosPneu(codUnidade, codPneu, dataInicial, dataFinal);
         } catch (final SQLException e) {
             final String message = String.format("Erro ao buscar os serviços fechados. \n," +
-                    "Unidade: %d \n" +
-                    "Pneu: %d \n" +
-                    "Data Inicial: %d \n" +
-                    "Data Final: %d", codUnidade, codPneu, dataInicial, dataFinal);
-            Log.e(TAG, message, e);
-            throw new RuntimeException(message);
-        }
-    }
-
-    public List<Servico> getServicosFechadosVeiculo(final Long codUnidade,
-                                                    final String placaVeiculo,
-                                                    final long dataInicial,
-                                                    final long dataFinal) {
-        try {
-            return dao.getServicosFechadosVeiculo(codUnidade, placaVeiculo, dataInicial, dataFinal);
-        } catch (final SQLException e) {
-            final String message = String.format("Erro ao buscar os serviços fechados. \n," +
-                    "Unidade: %d \n" +
-                    "Veículo: %s \n" +
-                    "Data Inicial: %d \n" +
-                    "Data Final: %d", codUnidade, placaVeiculo, dataInicial, dataFinal);
+                                                         "Unidade: %d \n" +
+                                                         "Pneu: %d \n" +
+                                                         "Data Inicial: %d \n" +
+                                                         "Data Final: %d", codUnidade, codPneu, dataInicial, dataFinal);
             Log.e(TAG, message, e);
             throw new RuntimeException(message);
         }
     }
 
     @NotNull
+    public List<Servico> getServicosFechadosVeiculo(@NotNull final ServicosFechadosVeiculoFiltro filtro) {
+        try {
+            return dao.getServicosFechadosVeiculo(filtro);
+        } catch (final Throwable t) {
+            final String message = String.format("Erro ao buscar os serviços fechados.\n," +
+                                                         "codUnidade: %d\n" +
+                                                         "codVeiculo: %d\n" +
+                                                         "placaVeiculo: %s\n" +
+                                                         "dataInicial: %s\n" +
+                                                         "dataFinal: %s",
+                                                 filtro.getCodUnidade(),
+                                                 filtro.getCodVeiculo(),
+                                                 filtro.getPlacaVeiculo(),
+                                                 filtro.getDataInicial(),
+                                                 filtro.getDataFinal());
+            Log.e(TAG, message, t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao buscar serviços fechados, tente novamente");
+        }
+    }
+
+    @NotNull
     public VeiculoServico getVeiculoAberturaServico(@NotNull final String userToken,
-                                                    @NotNull final Long codServico,
-                                                    @NotNull final String placaVeiculo) throws ProLogException {
+                                                    @NotNull final VeiculoAberturaServicoFiltro filtro) {
         try {
             return RouterAfericaoServico
                     .create(dao, userToken)
-                    .getVeiculoAberturaServico(codServico, placaVeiculo);
+                    .getVeiculoAberturaServico(filtro);
         } catch (final Throwable t) {
             final String message = String.format("Erro ao buscar o veículo para um serviço.\n" +
-                    "userToken: %s\n" +
-                    "Serviço: %d\n" +
-                    "Veículo: %s\n", userToken, codServico, placaVeiculo);
+                                                         "userToken: %s\n" +
+                                                         "codVeiculo: %d\n" +
+                                                         "placaVeiculo: %s\n" +
+                                                         "codServico: %d\n",
+                                                 userToken,
+                                                 filtro.getCodVeiculo(),
+                                                 filtro.getPlacaVeiculo(),
+                                                 filtro.getCodServico());
             Log.e(TAG, message, t);
             throw Injection
                     .provideProLogExceptionHandler()

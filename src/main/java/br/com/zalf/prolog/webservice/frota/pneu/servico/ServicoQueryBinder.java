@@ -3,7 +3,6 @@ package br.com.zalf.prolog.webservice.frota.pneu.servico;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.commons.util.database.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.datetime.DateUtils;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.TipoMedicaoColetadaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -11,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.SQLType;
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 
@@ -34,8 +33,8 @@ final class ServicoQueryBinder {
     private static final String BASE_QUERY_BUSCA_SERVICOS = "SELECT "
             + "AM.CODIGO AS CODIGO_SERVICO, "
             + "AM.CPF_MECANICO AS CPF_RESPONSAVEL_FECHAMENTO, "
-            + "AM.DATA_HORA_RESOLUCAO AT TIME ZONE (SELECT FUNC_GET_TIME_ZONE_UNIDADE(AM.COD_UNIDADE)) AS " +
-            "DATA_HORA_FECHAMENTO, "
+            + "AM.DATA_HORA_RESOLUCAO AT TIME ZONE (SELECT FUNC_GET_TIME_ZONE_UNIDADE(AM.COD_UNIDADE)) AS "
+            + "DATA_HORA_FECHAMENTO, "
             + "AM.KM_MOMENTO_CONSERTO AS KM_VEICULO_MOMENTO_FECHAMENTO, "
             + "AM.TEMPO_REALIZACAO_MILLIS AS TEMPO_REALIZACAO_MILLIS, "
             + "AM.COD_UNIDADE AS COD_UNIDADE, "
@@ -48,7 +47,8 @@ final class ServicoQueryBinder {
             + "AM.COD_AFERICAO_FECHAMENTO_AUTOMATICO, "
             + "AM.FORMA_COLETA_DADOS_FECHAMENTO, "
             + "A.DATA_HORA AT TIME ZONE (SELECT FUNC_GET_TIME_ZONE_UNIDADE(AM.COD_UNIDADE)) AS DATA_HORA_ABERTURA, "
-            + "A.PLACA_VEICULO AS PLACA_VEICULO, "
+            + "V.CODIGO AS COD_VEICULO, "
+            + "V.PLACA AS PLACA_VEICULO, "
             + "V.IDENTIFICADOR_FROTA AS IDENTIFICADOR_FROTA, "
             + "A.CODIGO AS COD_AFERICAO, "
             + "A.CODIGO AS COD_AFERICAO, "
@@ -62,12 +62,17 @@ final class ServicoQueryBinder {
             + "AV.POSICAO AS POSICAO_PNEU_PROBLEMA, "
             + "AV.VIDA_MOMENTO_AFERICAO AS VIDA_PNEU_PROBLEMA, "
             + "C.NOME AS NOME_RESPONSAVEL_FECHAMENTO, "
-            + "P.PRESSAO_RECOMENDADA "
+            + "P.PRESSAO_RECOMENDADA, "
+            + "P.ALTURA_SULCO_EXTERNO AS SULCO_EXTERNO_ATUAL, "
+            + "P.ALTURA_SULCO_CENTRAL_EXTERNO AS SULCO_CENTRAL_EXTERNO_ATUAL, "
+            + "P.ALTURA_SULCO_CENTRAL_INTERNO AS SULCO_CENTRAL_INTERNO_ATUAL, "
+            + "P.ALTURA_SULCO_INTERNO AS SULCO_INTERNO_ATUAL, "
+            + "P.PRESSAO_ATUAL "
             + "FROM AFERICAO_MANUTENCAO AM "
             + "LEFT JOIN COLABORADOR C ON AM.CPF_MECANICO = C.CPF "
             + "JOIN PNEU P ON AM.COD_PNEU = P.CODIGO "
             + "JOIN AFERICAO A ON A.CODIGO = AM.COD_AFERICAO "
-            + "JOIN VEICULO V ON V.PLACA = A.PLACA_VEICULO "
+            + "JOIN VEICULO V ON V.CODIGO = A.COD_VEICULO "
             + "JOIN AFERICAO_VALORES AV ON AV.COD_AFERICAO = AM.COD_AFERICAO AND AV.COD_PNEU = AM.COD_PNEU "
             + "JOIN UNIDADE U ON U.CODIGO = AM.COD_UNIDADE ";
 
@@ -79,7 +84,8 @@ final class ServicoQueryBinder {
     static PreparedStatement getQuantidadeServicosAbertosVeiculo(@NotNull final Connection connection,
                                                                  @NotNull final Long codUnidade) throws SQLException {
         final PreparedStatement stmt = connection.prepareStatement("SELECT " +
-                                                                           "  A.PLACA_VEICULO," +
+                                                                           "  V.CODIGO AS COD_VEICULO," +
+                                                                           "  V.PLACA AS PLACA_VEICULO," +
                                                                            "  V.IDENTIFICADOR_FROTA, " +
                                                                            "  SUM(CASE WHEN AM.TIPO_SERVICO = ? THEN " +
                                                                            "1 ELSE 0 END) AS TOTAL_CALIBRAGENS, " +
@@ -91,13 +97,13 @@ final class ServicoQueryBinder {
                                                                            "  JOIN AFERICAO AS A " +
                                                                            "    ON A.CODIGO = AM.COD_AFERICAO " +
                                                                            "  JOIN VEICULO V" +
-                                                                           "    ON V.PLACA = A.PLACA_VEICULO" +
+                                                                           "    ON V.CODIGO = A.COD_VEICULO" +
                                                                            "  JOIN VEICULO_PNEU AS VP " +
                                                                            "    ON AM.COD_PNEU = VP.COD_PNEU AND AM" +
                                                                            ".COD_UNIDADE = VP.COD_UNIDADE " +
                                                                            "WHERE AM.COD_UNIDADE = ? " +
                                                                            "      AND AM.DATA_HORA_RESOLUCAO IS NULL " +
-                                                                           "GROUP BY A.PLACA_VEICULO, V" +
+                                                                           "GROUP BY V.CODIGO, V.PLACA, V" +
                                                                            ".IDENTIFICADOR_FROTA " +
                                                                            "ORDER BY TOTAL_CALIBRAGENS DESC, " +
                                                                            "TOTAL_INSPECOES DESC, TOTAL_MOVIMENTACOES" +
@@ -110,15 +116,16 @@ final class ServicoQueryBinder {
     }
 
     @NotNull
-    static PreparedStatement getServicosAbertosByPlaca(@NotNull final Connection connection,
-                                                       @NotNull final String placa,
-                                                       @Nullable final TipoServico tipoServico) throws SQLException {
+    static PreparedStatement getServicosAbertosByCodVeiculo(@NotNull final Connection connection,
+                                                            @NotNull final Long codVeiculo,
+                                                            @Nullable final TipoServico tipoServico)
+            throws SQLException {
         final PreparedStatement stmt = connection.prepareStatement(BASE_QUERY_BUSCA_SERVICOS
-                                                                           + "WHERE A.PLACA_VEICULO = ? "
+                                                                           + "WHERE V.CODIGO = ? "
                                                                            + "AND AM.DATA_HORA_RESOLUCAO IS NULL "
                                                                            + "AND AM.TIPO_SERVICO LIKE ? "
                                                                            + "ORDER BY AM.TIPO_SERVICO;");
-        stmt.setString(1, placa);
+        stmt.setLong(1, codVeiculo);
         stmt.setString(2, tipoServico != null ? tipoServico.asString() : "%");
         return stmt;
     }
@@ -167,7 +174,8 @@ final class ServicoQueryBinder {
                                                                   final long dataInicial,
                                                                   final long dataFinal) throws SQLException {
         final PreparedStatement stmt = connection.prepareStatement("SELECT" +
-                                                                           "  A.PLACA_VEICULO," +
+                                                                           "  V.CODIGO AS COD_VEICULO," +
+                                                                           "  V.PLACA AS PLACA_VEICULO," +
                                                                            "  V.IDENTIFICADOR_FROTA," +
                                                                            "  SUM(CASE WHEN AM.TIPO_SERVICO = ? THEN " +
                                                                            "1 ELSE 0 END) AS TOTAL_CALIBRAGENS," +
@@ -178,15 +186,15 @@ final class ServicoQueryBinder {
                                                                            " FROM AFERICAO_MANUTENCAO AM  " +
                                                                            "  JOIN AFERICAO A ON A.CODIGO = AM" +
                                                                            ".COD_AFERICAO" +
-                                                                           "  JOIN VEICULO V ON A.PLACA_VEICULO = V" +
-                                                                           ".PLACA" +
+                                                                           "  JOIN VEICULO V ON V.CODIGO = A" +
+                                                                           ".COD_VEICULO" +
                                                                            " WHERE AM.COD_UNIDADE = ?" +
                                                                            "      AND AM.DATA_HORA_RESOLUCAO IS NOT " +
                                                                            "NULL  " +
                                                                            "      AND (AM.DATA_HORA_RESOLUCAO AT TIME" +
                                                                            " ZONE TZ_UNIDADE(AM.COD_UNIDADE))::DATE " +
                                                                            "BETWEEN ? AND ?" +
-                                                                           " GROUP BY A.PLACA_VEICULO, V" +
+                                                                           " GROUP BY V.CODIGO, V.PLACA, V" +
                                                                            ".IDENTIFICADOR_FROTA" +
                                                                            " ORDER BY TOTAL_CALIBRAGENS DESC, " +
                                                                            "TOTAL_INSPECOES DESC, TOTAL_MOVIMENTACOES" +
@@ -225,8 +233,7 @@ final class ServicoQueryBinder {
                                                                            ".FECHADO_AUTOMATICAMENTE_MOVIMENTACAO, " +
                                                                            "   AM.FECHADO_AUTOMATICAMENTE_INTEGRACAO," +
                                                                            "   AM.FECHADO_AUTOMATICAMENTE_AFERICAO, " +
-                                                                           "   AM.COD_AFERICAO_FECHAMENTO_AUTOMATICO, " +
-                                                                           " " +
+                                                                           "   AM.COD_AFERICAO_FECHAMENTO_AUTOMATICO," +
                                                                            "   AM.FORMA_COLETA_DADOS_FECHAMENTO, " +
                                                                            "   AAMI.ALTERNATIVA AS " +
                                                                            "DESCRICAO_ALTERNATIVA_SELECIONADA, " +
@@ -244,7 +251,8 @@ final class ServicoQueryBinder {
                                                                            "   M.VIDA AS VIDA_PNEU_NOVO, " +
                                                                            "   A.DATA_HORA AT TIME ZONE ? AS " +
                                                                            "DATA_HORA_ABERTURA, " +
-                                                                           "   A.PLACA_VEICULO AS PLACA_VEICULO, " +
+                                                                           "   V.CODIGO AS COD_VEICULO, " +
+                                                                           "   V.PLACA AS PLACA_VEICULO, " +
                                                                            "   V.IDENTIFICADOR_FROTA AS " +
                                                                            "IDENTIFICADOR_FROTA, " +
                                                                            "   A.CODIGO AS COD_AFERICAO, " +
@@ -253,15 +261,17 @@ final class ServicoQueryBinder {
                                                                            "   AV.COD_PNEU AS COD_PNEU_PROBLEMA, " +
                                                                            "   PNEU_PROBLEMA.CODIGO_CLIENTE AS " +
                                                                            "COD_PNEU_PROBLEMA_CLIENTE, " +
-                                                                           "   AV.ALTURA_SULCO_EXTERNO AS " +
-                                                                           "SULCO_EXTERNO_PNEU_PROBLEMA, " +
-                                                                           "   AV.ALTURA_SULCO_CENTRAL_EXTERNO AS " +
-                                                                           "SULCO_CENTRAL_EXTERNO_PNEU_PROBLEMA, " +
-                                                                           "   AV.ALTURA_SULCO_CENTRAL_INTERNO AS " +
-                                                                           "SULCO_CENTRAL_INTERNO_PNEU_PROBLEMA, " +
-                                                                           "   AV.ALTURA_SULCO_INTERNO AS " +
-                                                                           "SULCO_INTERNO_PNEU_PROBLEMA, " +
-                                                                           "   AV.PSI AS PRESSAO_PNEU_PROBLEMA, " +
+                                                                           "PNEU_PROBLEMA.ALTURA_SULCO_EXTERNO AS " +
+                                                                           "SULCO_EXTERNO_ATUAL, " +
+                                                                           "PNEU_PROBLEMA" +
+                                                                           ".ALTURA_SULCO_CENTRAL_EXTERNO AS " +
+                                                                           "SULCO_CENTRAL_EXTERNO_ATUAL, " +
+                                                                           "PNEU_PROBLEMA" +
+                                                                           ".ALTURA_SULCO_CENTRAL_INTERNO AS " +
+                                                                           "SULCO_CENTRAL_INTERNO_ATUAL, " +
+                                                                           "PNEU_PROBLEMA.ALTURA_SULCO_INTERNO AS " +
+                                                                           "SULCO_INTERNO_ATUAL, " +
+                                                                           "PNEU_PROBLEMA.PRESSAO_ATUAL, " +
                                                                            "   AV.POSICAO AS POSICAO_PNEU_PROBLEMA, " +
                                                                            "   AV.VIDA_MOMENTO_AFERICAO AS " +
                                                                            "VIDA_PNEU_PROBLEMA, " +
@@ -269,8 +279,8 @@ final class ServicoQueryBinder {
                                                                            "   FROM AFERICAO_MANUTENCAO AM " +
                                                                            "   JOIN AFERICAO A ON A.CODIGO = AM" +
                                                                            ".COD_AFERICAO " +
-                                                                           "   JOIN VEICULO V ON V.PLACA = A" +
-                                                                           ".PLACA_VEICULO " +
+                                                                           "   JOIN VEICULO V ON V.CODIGO = A" +
+                                                                           ".COD_VEICULO " +
                                                                            "   JOIN AFERICAO_VALORES AV ON AV" +
                                                                            ".COD_AFERICAO = AM.COD_AFERICAO AND AV" +
                                                                            ".COD_PNEU = AM.COD_PNEU " +
@@ -341,32 +351,32 @@ final class ServicoQueryBinder {
     @NotNull
     static PreparedStatement getServicosFechadosVeiculo(@NotNull final Connection connection,
                                                         @NotNull final Long codUnidade,
-                                                        @NotNull final String placaVeiculo,
-                                                        final long dataInicial,
-                                                        final long dataFinal) throws SQLException {
+                                                        @NotNull final Long codVeiculo,
+                                                        @NotNull final LocalDate dataInicial,
+                                                        @NotNull final LocalDate dataFinal) throws SQLException {
         final PreparedStatement stmt = connection.prepareStatement(BASE_QUERY_BUSCA_SERVICOS
                                                                            + "WHERE AM.COD_UNIDADE = ? "
-                                                                           + "AND A.PLACA_VEICULO = ? "
+                                                                           + "AND V.CODIGO = ? "
                                                                            + "AND AM.DATA_HORA_RESOLUCAO IS NOT NULL "
                                                                            + "AND (AM.DATA_HORA_RESOLUCAO AT TIME " +
                                                                            "ZONE TZ_UNIDADE(AM.COD_UNIDADE))::DATE " +
                                                                            "BETWEEN ? AND ? "
                                                                            + "ORDER BY DATA_HORA_RESOLUCAO DESC;");
         stmt.setLong(1, codUnidade);
-        stmt.setString(2, placaVeiculo);
-        stmt.setObject(3, DateUtils.toLocalDate(new java.sql.Date(dataInicial)));
-        stmt.setObject(4, DateUtils.toLocalDate(new java.sql.Date(dataFinal)));
+        stmt.setLong(2, codVeiculo);
+        stmt.setObject(3, dataInicial);
+        stmt.setObject(4, dataFinal);
         return stmt;
     }
 
     @NotNull
     static PreparedStatement getVeiculoAberturaServico(@NotNull final Connection connection,
-                                                       @NotNull final Long codServico,
-                                                       @NotNull final String placaVeiculo) throws SQLException {
+                                                       @NotNull final Long codVeiculo,
+                                                       @NotNull final Long codServico) throws Throwable {
         final PreparedStatement stmt = connection.prepareStatement("SELECT " +
-                                                                           "  V.CODIGO AS COD_VEICULO, " +
-                                                                           "  A.PLACA_VEICULO, " +
+                                                                           "  V.PLACA AS PLACA_VEICULO, " +
                                                                            "  V.IDENTIFICADOR_FROTA, " +
+                                                                           "  V.CODIGO AS COD_VEICULO, " +
                                                                            "  A.KM_VEICULO AS KM_ABERTURA_SERVICO, " +
                                                                            "  AV.COD_PNEU AS COD_PNEU, " +
                                                                            "  P.CODIGO_CLIENTE AS COD_PNEU_CLIENTE, " +
@@ -385,13 +395,13 @@ final class ServicoQueryBinder {
                                                                            "    ON AM.COD_AFERICAO = AV.COD_AFERICAO " +
                                                                            "       AND A.CODIGO = AV.COD_AFERICAO " +
                                                                            "  JOIN VEICULO V " +
-                                                                           "    ON V.PLACA = A.PLACA_VEICULO " +
+                                                                           "    ON V.CODIGO = A.COD_VEICULO " +
                                                                            "  JOIN PNEU P " +
                                                                            "    ON P.CODIGO = AV.COD_PNEU " +
                                                                            "WHERE AM.CODIGO = ? " +
-                                                                           "      AND A.PLACA_VEICULO = ?;");
+                                                                           "      AND V.CODIGO = ?;");
         stmt.setLong(1, codServico);
-        stmt.setString(2, placaVeiculo);
+        stmt.setLong(2, codVeiculo);
         return stmt;
     }
 
@@ -512,13 +522,13 @@ final class ServicoQueryBinder {
             @NotNull final Long kmColetadoVeiculo,
             @NotNull final OrigemFechamentoAutomaticoEnum origemFechamentoServico,
             @NotNull final TipoServico tipoServico) throws SQLException {
-        String sql = "UPDATE AFERICAO_MANUTENCAO SET "
+        final String sql = "UPDATE AFERICAO_MANUTENCAO SET "
                 + "DATA_HORA_RESOLUCAO = ?, "
                 + origemFechamentoServico.getCodigoColumnName() + " = ?, "
                 + "KM_MOMENTO_CONSERTO = ?, "
                 + origemFechamentoServico.getFlagColumnName() + " = TRUE "
                 + "WHERE COD_UNIDADE = ? "
-                + "AND TIPO_SERVICO = '"+ tipoServico.asString() +"' "
+                + "AND TIPO_SERVICO = '" + tipoServico.asString() + "' "
                 + "AND COD_PNEU = ? "
                 + "AND DATA_HORA_RESOLUCAO IS NULL";
 

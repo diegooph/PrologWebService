@@ -15,6 +15,8 @@ import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resoluca
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.HolderResolucaoOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverMultiplosItensOs;
+import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoBackwardHelper;
+import br.com.zalf.prolog.webservice.interceptors.auth.ColaboradorAutenticado;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.AppVersionCodeHandler;
@@ -24,6 +26,8 @@ import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.VersionNotP
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import org.jetbrains.annotations.NotNull;
 
+import javax.inject.Inject;
+import javax.inject.Provider;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
@@ -46,7 +50,13 @@ import java.util.List;
 public final class OrdemServicoResource {
     @NotNull
     private final OrdemServicoService service = new OrdemServicoService();
+    @Inject
+    private Provider<ColaboradorAutenticado> colaboradorAutenticadoProvider;
 
+    /**
+     * @deprecated at 2021-04-13.
+     */
+    @Deprecated
     @GET
     @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
     @Path("/listagem")
@@ -61,15 +71,23 @@ public final class OrdemServicoResource {
             @QueryParam("statusOrdemServico") @Optional final StatusOrdemServico statusOrdemServico,
             @QueryParam("limit") @Required final int limit,
             @QueryParam("offset") @Required final int offset) throws ProLogException {
+        final Long codColaborador = this.colaboradorAutenticadoProvider.get().getCodigo();
+        final Long codVeiculo = placaVeiculo == null ?
+                null :
+                VeiculoBackwardHelper.getCodVeiculoByPlaca(codColaborador, placaVeiculo);
         return service.getOrdemServicoListagem(
                 codUnidade,
                 codTipoVeiculo,
-                placaVeiculo,
+                codVeiculo,
                 statusOrdemServico,
                 limit,
                 offset);
     }
 
+    /**
+     * @deprecated at 2021-04-13.
+     */
+    @Deprecated
     @GET
     @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
     @Path("/listagem-qtd-itens-placa")
@@ -83,10 +101,14 @@ public final class OrdemServicoResource {
             @QueryParam("statusItens") @Optional final StatusItemOrdemServico statusItens,
             @QueryParam("limit") @Required final int limit,
             @QueryParam("offset") @Required final int offset) throws ProLogException {
+        final Long codColaborador = this.colaboradorAutenticadoProvider.get().getCodigo();
+        final Long codVeiculo = placaVeiculo == null ?
+                null :
+                VeiculoBackwardHelper.getCodVeiculoByPlaca(codColaborador, placaVeiculo);
         return service.getQtdItensPlacaListagem(
                 codUnidade,
                 codTipoVeiculo,
-                placaVeiculo,
+                codVeiculo,
                 statusItens,
                 limit,
                 offset);
@@ -104,6 +126,10 @@ public final class OrdemServicoResource {
         return service.getHolderResolucaoOrdemServico(codUnidade, codOrdemServico);
     }
 
+    /**
+     * @deprecated at 2021-04-13.
+     */
+    @Deprecated
     @GET
     @UsedBy(platforms = Platform.ANDROID)
     @Path("/resolucao-itens-ordem-servico")
@@ -116,9 +142,15 @@ public final class OrdemServicoResource {
             @QueryParam("statusItens") @Optional final StatusItemOrdemServico statusItens,
             @QueryParam("limit") final int limit,
             @QueryParam("offset") final int offset) throws ProLogException {
-        return service.getHolderResolucaoItensOrdemServico(placaVeiculo, prioridade, statusItens, limit, offset);
+        final Long codColaborador = this.colaboradorAutenticadoProvider.get().getCodigo();
+        final Long codVeiculo = VeiculoBackwardHelper.getCodVeiculoByPlaca(codColaborador, placaVeiculo);
+        return service.getHolderResolucaoItensOrdemServico(codVeiculo, prioridade, statusItens, limit, offset);
     }
 
+    /**
+     * @deprecated at 2021-04-13.
+     */
+    @Deprecated
     @GET
     @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
     @Path("/resolucao-multiplos-itens")
@@ -130,8 +162,12 @@ public final class OrdemServicoResource {
             @QueryParam("codOrdemServico") @Optional final Long codOrdemServico,
             @QueryParam("placaVeiculo") @Optional final String placaVeiculo,
             @QueryParam("statusItens") @Optional final StatusItemOrdemServico statusItens) throws ProLogException {
+        final Long codColaborador = this.colaboradorAutenticadoProvider.get().getCodigo();
+        final Long codVeiculo = placaVeiculo == null ?
+                null :
+                VeiculoBackwardHelper.getCodVeiculoByPlaca(codColaborador, placaVeiculo);
         return service
-                .getHolderResolucaoMultiplosItens(codUnidade, codOrdemServico, placaVeiculo, statusItens);
+                .getHolderResolucaoMultiplosItens(codUnidade, codOrdemServico, codVeiculo, statusItens);
     }
 
     @POST

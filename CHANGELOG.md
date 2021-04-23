@@ -1,12 +1,43 @@
 Change Log
 ==========
 ## Stage
-### Bug Fixes
-* Altera para não retornar unidades inativas (PL-3510)
+### Features
 * Cria v3 de ordem de serviço (PL-3462)
 
-<a name="v3.1.1"></a>
-## Version [v3.1.1](https://github.com/luizfp/PrologWebService/compare/v3.1.0...v3.1.1) (release-date) [unreleased]
+<a name="v3.2.1"></a>
+## Version [v3.2.1](https://github.com/luizfp/PrologWebService/compare/v3.2.0...v3.2.1) (release-date) [unreleased]
+
+### Features
+* Cria functions de suporte para alterações em modelo de quiz (PL-3609)
+* Logar no BD quem altera um colaborador (PL-3491)
+
+### Refactors
+* Altera paths de v3 para serem precedidos por `api`
+* Altera path de unidades para estarem no `v3` e serem precedidos por `api`
+
+<a name="v3.2.0"></a>
+## Version [v3.2.0](https://github.com/luizfp/PrologWebService/compare/v3.1.0...v3.2.0) (2021-04-18)
+
+### Refactors
+* Deleta integração com a Rodalog (PL-3476)
+* Altera ServicoResource para utilizar código do veículo nos métodos e não placa (PL-3406)
+* Altera métodos do ServicoResource que recebem objeto de filtro de GET para POST
+* Adicionar código do veículo no retorno das buscas de serviço (PL-3524)
+* Remove placa de todo o fluxo de aferições (PL-3403)
+* Adiciona código de veículo no cronograma de aferição (PL-3496)
+* Remove placa na realização de checklist (PL-3545)
+* Remove placa da busca de relatórios de checklist (PL-3548)
+* Remove placa das buscas do checklist (PL-3546)
+* Modifica fechamento massivo de OS via Suporte (PL-3594)
+* Remove placa das buscas, abertura e fechamento de OSs (PL-3547)
+* Remove placa dos relatórios de OSs (PL-3549)
+* Altera integrações para buscar a placa da tabela veículo (PL-3595)
+
+### Bug Fixes
+* Altera para não retornar unidades inativas (PL-3510)
+* Corrige processamento de planilha de import de pneus
+* Corrige processamento de planilha de import de vínculo de pneus a veículos
+* Corrige valores retornados para exibição de sulco atual e pressão atual (PL-3578)
 
 <a name="v3.1.0"></a>
 ## Version [v3.1.0](https://github.com/luizfp/PrologWebService/compare/v3.0.0...v3.1.0) (2021-04-08)

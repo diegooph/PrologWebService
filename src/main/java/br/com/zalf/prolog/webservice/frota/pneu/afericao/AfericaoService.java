@@ -56,16 +56,15 @@ public class AfericaoService {
     }
 
     @NotNull
-    public NovaAfericaoPlaca getNovaAfericaoPlaca(@NotNull final String userToken,
-                                                  @NotNull final Long codUnidade,
-                                                  @NotNull final String placa,
-                                                  @NotNull final String tipoAfericao) throws ProLogException {
+    public NovaAfericaoPlaca getNovaAfericaoPlaca(@NotNull final AfericaoBuscaFiltro afericaoBusca,
+                                                  @NotNull final String userToken)
+            throws ProLogException {
         try {
             return RouterAfericao
                     .create(dao, userToken)
-                    .getNovaAfericaoPlaca(codUnidade, placa, tipoAfericao);
+                    .getNovaAfericaoPlaca(afericaoBusca);
         } catch (final Throwable e) {
-            Log.e(TAG, "Erro ao buscar NovaAfericao para a placa: " + placa, e);
+            Log.e(TAG, "Erro ao buscar NovaAfericao para a placa: " + afericaoBusca.getPlacaVeiculo(), e);
             throw exceptionHandler.map(e, "Erro ao iniciar uma nova aferição, tente novamente");
         }
     }

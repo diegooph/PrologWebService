@@ -23,7 +23,7 @@ import javax.ws.rs.core.MediaType;
  */
 @Controller
 @ConsoleDebugLog
-@Path("/v3/pneus")
+@Path("/api/v3/pneus")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class PneuV3Resource implements PneuV3ApiDoc {
