@@ -19,11 +19,11 @@ public interface ChecklistDao extends JpaRepository<ChecklistEntity, Long> {
     @NotNull
     @Query(value = "select * from func_checklist_get_listagem(" +
             "f_cod_unidades => to_bigint_array(:codUnidades), " +
-            "f_data_inicial => :dataInicial, " +
-            "f_data_final => :dataFinal, " +
-            "f_cod_colaborador => :codColaborador, " +
-            "f_cod_tipo_veiculo => :codTipoVeiculo, " +
-            "f_cod_veiculo => :codVeiculo, " +
+            "f_data_inicial => date(:dataInicial), " +
+            "f_data_final => date(:dataFinal), " +
+            "f_cod_colaborador => to_bigint(:codColaborador), " +
+            "f_cod_tipo_veiculo => to_bigint(:codTipoVeiculo), " +
+            "f_cod_veiculo => to_bigint(:codVeiculo), " +
             "f_incluir_respostas => :incluirRespostas, " +
             "f_limit => :limit, " +
             "f_offset => :offset);", nativeQuery = true)
