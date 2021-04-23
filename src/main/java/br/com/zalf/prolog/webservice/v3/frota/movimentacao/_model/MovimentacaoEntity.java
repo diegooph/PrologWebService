@@ -56,21 +56,22 @@ public final class MovimentacaoEntity {
     private String observacao;
 
     public boolean isMovimentacaoNoVeiculo(@NotNull final Long codVeiculo) {
-        return codVeiculo.equals(movimentacaoOrigem.getCodVeiculo())
-                || codVeiculo.equals(movimentacaoDestino.getCodVeiculo());
+        return codVeiculo.equals(movimentacaoOrigem.getVeiculo().getCodigo())
+                || codVeiculo.equals(movimentacaoDestino.getVeiculo().getCodigo());
     }
 
     public boolean isMovimentacaoNoVeiculo() {
-        return movimentacaoOrigem.getCodVeiculo() != null || movimentacaoDestino.getCodVeiculo() != null;
+        return movimentacaoOrigem.getVeiculo().getCodigo() != null
+                || movimentacaoDestino.getVeiculo().getCodigo() != null;
     }
 
     @NotNull
     public Optional<VeiculoMovimentacao> getVeiculo() {
-        if (movimentacaoOrigem.getCodVeiculo() != null) {
-            return Optional.of(new VeiculoMovimentacao(movimentacaoOrigem.getCodVeiculo(),
+        if (movimentacaoOrigem.getVeiculo().getCodigo() != null) {
+            return Optional.of(new VeiculoMovimentacao(movimentacaoOrigem.getVeiculo().getCodigo(),
                                                        movimentacaoOrigem.getKmColetadoVeiculo()));
-        } else if (movimentacaoDestino.getCodVeiculo() != null) {
-            return Optional.of(new VeiculoMovimentacao(movimentacaoDestino.getCodVeiculo(),
+        } else if (movimentacaoDestino.getVeiculo().getCodigo() != null) {
+            return Optional.of(new VeiculoMovimentacao(movimentacaoDestino.getVeiculo().getCodigo(),
                                                        movimentacaoDestino.getKmColetadoVeiculo()));
         }
 
