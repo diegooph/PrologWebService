@@ -81,5 +81,6 @@ public class ChecklistListagemDto { //o que recebemos do banco
     long deviceUptimeSincronizacaoMillis;
     boolean temMidiaPerguntaOk;
     boolean temMidiaAlternativaNok;
+    @Nullable
     List<ChecklistPerguntasDto> checklistPerguntasDtos;
 }
