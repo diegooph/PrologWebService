@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.v3.frota.movimentacao._model;
 
 import br.com.zalf.prolog.webservice.v3.frota.pneu._model.PneuEntity;
+import br.com.zalf.prolog.webservice.v3.frota.pneu.pneuservico.PneuServicoRealizadoEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -55,8 +56,12 @@ public final class MovimentacaoEntity {
     private int vida;
     @Column(name = "observacao")
     private String observacao;
-    @OneToMany(mappedBy = "movimentacao", fetch = FetchType.LAZY)
-    private Set<MovimentacaoPneuServicoRealizadoEntity> servicosRealizados;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "movimentacao_pneu_servico_realizado",
+            joinColumns = @JoinColumn(name = "cod_movimentacao"),
+            inverseJoinColumns = @JoinColumn(name = "cod_servico_realizado"))
+    private Set<PneuServicoRealizadoEntity> servicosRealizados;
 
     public boolean isMovimentacaoNoVeiculo(@NotNull final Long codVeiculo) {
         return codVeiculo.equals(movimentacaoOrigem.getVeiculo().getCodigo())
