@@ -9,6 +9,7 @@ import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.v3.frota.checklist._model.ChecklistListagemDto;
 import br.com.zalf.prolog.webservice.v3.frota.checklist._model.ChecklistListagemFiltro;
+import br.com.zalf.prolog.webservice.v3.frota.checklist._model.ChecklistProjection;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -66,6 +67,7 @@ public class ChecklistResource implements ChecklistResourceApiDoc {
                                            incluirRespostas,
                                            limit,
                                            offset);
-        return checklistListagemMapper.toDto(checklistService.getChecklistsListagem(checklistListagemFiltro));
+        final List<ChecklistProjection> projections = checklistService.getChecklistsListagem(checklistListagemFiltro);
+        return checklistListagemMapper.toDto(projections, incluirRespostas);
     }
 }
