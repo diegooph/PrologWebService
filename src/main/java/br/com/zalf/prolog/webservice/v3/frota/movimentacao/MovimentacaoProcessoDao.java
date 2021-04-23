@@ -16,9 +16,11 @@ public interface MovimentacaoProcessoDao extends JpaRepository<MovimentacaoProce
     @Query("select distinct mpe from MovimentacaoProcessoEntity mpe "
                    + "inner join fetch mpe.colaboradorRealizacaoProcesso "
                    + "inner join fetch mpe.movimentacoes m "
-                   + "inner join fetch m.movimentacaoOrigem "
-                   + "inner join fetch m.movimentacaoDestino "
+                   + "inner join fetch m.movimentacaoOrigem mo "
+                   + "inner join fetch m.movimentacaoDestino md "
                    + "inner join fetch m.pneu "
+                   + "inner join fetch mo.veiculo "
+                   + "inner join fetch md.veiculo "
                    + "where mpe.codUnidade = :codUnidade "
                    + "order by mpe.codigo")
     List<MovimentacaoProcessoEntity> getAll(long codUnidade, Pageable pageable);
