@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.*;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Created on 2021-03-25
@@ -54,6 +55,8 @@ public final class MovimentacaoEntity {
     private int vida;
     @Column(name = "observacao")
     private String observacao;
+    @OneToMany(mappedBy = "movimentacao", fetch = FetchType.LAZY)
+    private Set<MovimentacaoPneuServicoRealizadoEntity> servicosRealizados;
 
     public boolean isMovimentacaoNoVeiculo(@NotNull final Long codVeiculo) {
         return codVeiculo.equals(movimentacaoOrigem.getVeiculo().getCodigo())
