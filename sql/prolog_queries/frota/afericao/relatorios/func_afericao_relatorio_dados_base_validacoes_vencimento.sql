@@ -1,6 +1,5 @@
-create or replace function func_afericao_relatorio_dados_base_validacao_vencimento(
-    f_cod_unidades bigint[],
-    f_data_hora_atual timestamp with time zone)
+create or replace function func_afericao_relatorio_dados_base_validacao_vencimento(f_cod_unidades bigint[],
+                                                                                   f_data_hora_atual timestamp with time zone)
     returns table
             (
                 cod_veiculo                        bigint,
@@ -93,4 +92,4 @@ begin
           and v.cod_unidade = any (f_cod_unidades)
         order by v.codigo;
 end;
-$$
+$$;

@@ -22,7 +22,9 @@ begin
                    base.pode_aferir_sulco        as pode_aferir_sulco,
                    base.cod_veiculo              as cod_veiculo,
                    base.afericao_sulco_vencida   as afericao_sulco_vencida,
-                   base.afericao_pressao_vencida as afericao_pressao_vencida
+                   base.afericao_pressao_vencida as afericao_pressao_vencida,
+                   base.sulco_nunca_aferido      as sulco_nunca_aferido,
+                   base.pressao_nunca_aferico    as pressao_nunca_aferico
             from func_afericao_relatorio_dados_base_validacao_vencimento(f_cod_unidades,
                                                                          f_data_hoje_utc) as base
         ),
@@ -41,6 +43,8 @@ begin
                                on cva.cod_veiculo = v.codigo
                  where cva.afericao_sulco_vencida
                     or cva.afericao_pressao_vencida
+                    or cva.sulco_nunca_aferido
+                    or cva.pressao_nunca_aferico
                  group by u.nome,
                           v.placa,
                           v.identificador_frota,

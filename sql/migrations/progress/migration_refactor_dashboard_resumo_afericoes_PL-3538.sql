@@ -1,6 +1,5 @@
-create or replace function func_afericao_relatorio_dados_base_validacao_vencimento(
-    f_cod_unidades bigint[],
-    f_data_hora_atual timestamp with time zone)
+create or replace function func_afericao_relatorio_dados_base_validacao_vencimento(f_cod_unidades bigint[],
+                                                                                   f_data_hora_atual timestamp with time zone)
     returns table
             (
                 cod_veiculo                        bigint,
@@ -119,7 +118,9 @@ begin
                    base.pode_aferir_sulco        as pode_aferir_sulco,
                    base.cod_veiculo              as cod_veiculo,
                    base.afericao_sulco_vencida   as afericao_sulco_vencida,
-                   base.afericao_pressao_vencida as afericao_pressao_vencida
+                   base.afericao_pressao_vencida as afericao_pressao_vencida,
+                   base.sulco_nunca_aferido      as sulco_nunca_aferido,
+                   base.pressao_nunca_aferico    as pressao_nunca_aferico
             from func_afericao_relatorio_dados_base_validacao_vencimento(f_cod_unidades,
                                                                          f_data_hoje_utc) as base
         ),
@@ -138,6 +139,8 @@ begin
                                on cva.cod_veiculo = v.codigo
                  where cva.afericao_sulco_vencida
                     or cva.afericao_pressao_vencida
+                    or cva.sulco_nunca_aferido
+                    or cva.pressao_nunca_aferico
                  group by u.nome,
                           v.placa,
                           v.identificador_frota,
@@ -164,9 +167,10 @@ begin
 end;
 $$;
 
-create or replace function func_afericao_relatorio_cronograma_afericoes_placas(f_cod_unidades bigint[],
-                                                                               f_data_hora_atual_utc timestamp with time zone,
-                                                                               f_data_hora_geracao_relatorio timestamp with time zone)
+create or replace function
+    func_afericao_relatorio_cronograma_afericoes_placas(f_cod_unidades bigint[],
+                                                        f_data_hora_atual_utc timestamp with time zone,
+                                                        f_data_hora_geracao_relatorio timestamp with time zone)
     returns table
             (
                 UNIDADE                              text,
@@ -241,18 +245,18 @@ begin
                    when not d.pode_aferir_sulco
                        then 'BLOQUEADO AFERIÇÃO'
                    when d.sulco_nunca_aferido
-                       then 'SULCO NUNCA AFERIDO'
+                       then 'VENCIDO (NUNCA AFERIDO)'
                    when d.afericao_sulco_vencida
-                       then 'VENCIDO'
+                       then 'VENCIDO (FORA DO PRAZO)'
                    else 'NO PRAZO'
                    end                                                      as status_sulco,
                case
                    when not d.pode_aferir_pressao
                        then 'BLOQUEADO AFERIÇÃO'
                    when d.pressao_nunca_aferida
-                       then 'PRESSÃO NUNCA AFERIDA'
+                       then 'VENCIDO (NUNCA AFERIDA)'
                    when d.afericao_pressao_vencida
-                       then 'VENCIDO'
+                       then 'VENCIDO (FORA DO PRAZO)'
                    else 'NO PRAZO'
                    end                                                      as status_pressao,
                f_if(d.sulco_nunca_aferido, '-',
@@ -271,5 +275,34 @@ begin
                coalesce(d.data_hora_ultima_afericao_pressao, '-')           as data_hora_ultima_afericao_pressao,
                to_char(f_data_hora_geracao_relatorio, 'dd/mm/yyyy hh24:mi') as data_hora_geracao_relatorio
         from dados d;
+end;
+$$;
+
+CReate or replace function func_pneu_relatorio_status_placas_afericao(f_cod_unidades bigint[],
+                                                                      f_data_hora_atual_utc timestamp with time zone)
+    returns table
+            (
+                total_vencidas bigint,
+                total_no_prazo bigint
+            )
+    language plpgsql
+as
+$$
+declare
+    qtd_placas_ativas bigint := (select count(v.placa)
+                                 from veiculo v
+                                 where v.cod_unidade = any (f_cod_unidades)
+                                   and v.status_ativo = true);
+begin
+    return query
+        with qtd_placas_vencidas as (
+            select (select count(placa)
+                    from func_afericao_relatorio_qtd_dias_placas_vencidas(f_cod_unidades,
+                                                                          f_data_hora_atual_utc)) as qtd_vencidas
+        )
+
+        select qpv.qtd_vencidas                     as qtd_vencidas,
+               qtd_placas_ativas - qpv.qtd_vencidas as qtd_prazo
+        from qtd_placas_vencidas qpv;
 end;
 $$;

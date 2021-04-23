@@ -1,6 +1,7 @@
-create or replace function func_afericao_relatorio_cronograma_afericoes_placas(f_cod_unidades bigint[],
-                                                                               f_data_hora_atual_utc timestamp with time zone,
-                                                                               f_data_hora_geracao_relatorio timestamp with time zone)
+create or replace function
+    func_afericao_relatorio_cronograma_afericoes_placas(f_cod_unidades bigint[],
+                                                        f_data_hora_atual_utc timestamp with time zone,
+                                                        f_data_hora_geracao_relatorio timestamp with time zone)
     returns table
             (
                 UNIDADE                              text,
@@ -75,18 +76,18 @@ begin
                    when not d.pode_aferir_sulco
                        then 'BLOQUEADO AFERIÇÃO'
                    when d.sulco_nunca_aferido
-                       then 'SULCO NUNCA AFERIDO'
+                       then 'VENCIDO (NUNCA AFERIDO)'
                    when d.afericao_sulco_vencida
-                       then 'VENCIDO'
+                       then 'VENCIDO (FORA DO PRAZO)'
                    else 'NO PRAZO'
                    end                                                      as status_sulco,
                case
                    when not d.pode_aferir_pressao
                        then 'BLOQUEADO AFERIÇÃO'
                    when d.pressao_nunca_aferida
-                       then 'PRESSÃO NUNCA AFERIDA'
+                       then 'VENCIDO (NUNCA AFERIDA)'
                    when d.afericao_pressao_vencida
-                       then 'VENCIDO'
+                       then 'VENCIDO (FORA DO PRAZO)'
                    else 'NO PRAZO'
                    end                                                      as status_pressao,
                f_if(d.sulco_nunca_aferido, '-',

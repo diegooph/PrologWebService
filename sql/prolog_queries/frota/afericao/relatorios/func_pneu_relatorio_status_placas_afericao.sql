@@ -1,26 +1,28 @@
-CREATE OR REPLACE FUNCTION FUNC_PNEU_RELATORIO_STATUS_PLACAS_AFERICAO(
-  F_COD_UNIDADES        BIGINT [],
-  F_DATA_HORA_ATUAL_UTC TIMESTAMP WITH TIME ZONE)
-  RETURNS TABLE(
-    TOTAL_VENCIDAS BIGINT,
-    TOTAL_NO_PRAZO BIGINT)
-LANGUAGE PLPGSQL
-AS $$
-DECLARE
-  QTD_PLACAS_ATIVAS BIGINT := (SELECT COUNT(V.PLACA)
-                               FROM VEICULO V
-                               WHERE V.COD_UNIDADE = ANY (F_COD_UNIDADES) AND V.STATUS_ATIVO = TRUE);
-BEGIN
-  RETURN QUERY
-  WITH QTD_PLACAS_VENCIDAS AS (
-      SELECT (SELECT COUNT(PLACA)
-              FROM FUNC_AFERICAO_RELATORIO_QTD_DIAS_PLACAS_VENCIDAS(F_COD_UNIDADES,
-                                                                    F_DATA_HORA_ATUAL_UTC)) AS QTD_VENCIDAS
-  )
+CReate or replace function func_pneu_relatorio_status_placas_afericao(f_cod_unidades bigint[],
+                                                                      f_data_hora_atual_utc timestamp with time zone)
+    returns table
+            (
+                total_vencidas bigint,
+                total_no_prazo bigint
+            )
+    language plpgsql
+as
+$$
+declare
+    qtd_placas_ativas bigint := (select count(v.placa)
+                                 from veiculo v
+                                 where v.cod_unidade = any (f_cod_unidades)
+                                   and v.status_ativo = true);
+begin
+    return query
+        with qtd_placas_vencidas as (
+            select (select count(placa)
+                    from func_afericao_relatorio_qtd_dias_placas_vencidas(f_cod_unidades,
+                                                                          f_data_hora_atual_utc)) as qtd_vencidas
+        )
 
-  SELECT
-    QPV.QTD_VENCIDAS                     AS QTD_VENCIDAS,
-    QTD_PLACAS_ATIVAS - QPV.QTD_VENCIDAS AS QTD_PRAZO
-  FROM QTD_PLACAS_VENCIDAS QPV;
-END;
+        select qpv.qtd_vencidas                     as qtd_vencidas,
+               qtd_placas_ativas - qpv.qtd_vencidas as qtd_prazo
+        from qtd_placas_vencidas qpv;
+end;
 $$;
