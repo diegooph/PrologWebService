@@ -35,5 +35,5 @@ public interface ChecklistDao extends JpaRepository<ChecklistEntity, Long> {
                                                     @Nullable final Long codVeiculo,
                                                     boolean incluirRespostas,
                                                     int limit,
-                                                    long offset);
+                                                    int offset);
 }

@@ -3,16 +3,13 @@ package br.com.zalf.prolog.webservice.v3.frota.checklist;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Optional;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Required;
 import br.com.zalf.prolog.webservice.commons.util.datetime.DateUtils;
-import br.com.zalf.prolog.webservice.interceptors.ApiExposed;
-import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
-import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.v3.frota.checklist._model.ChecklistListagemDto;
 import br.com.zalf.prolog.webservice.v3.frota.checklist._model.ChecklistListagemFiltro;
 import br.com.zalf.prolog.webservice.v3.frota.checklist._model.ChecklistProjection;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -24,9 +21,9 @@ import java.util.List;
  * @author Thais Francisco (https://github.com/thaisksf)
  */
 
-@Controller
+@RestController
 @ConsoleDebugLog
-@Path("/v3/checklist")
+@Path("/v3/checklists")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class ChecklistResource implements ChecklistResourceApiDoc {
@@ -43,9 +40,7 @@ public class ChecklistResource implements ChecklistResourceApiDoc {
     }
 
     @Override
-    @ApiExposed
     @GET
-    @Secured(permissions = Pilares.Frota.Checklist.VISUALIZAR_TODOS)
     @Path("/")
     public List<ChecklistListagemDto> getChecklistsListagem(
             @QueryParam("codUnidades") @Required final List<Long> codUnidades,
@@ -56,7 +51,7 @@ public class ChecklistResource implements ChecklistResourceApiDoc {
             @QueryParam("codVeiculo") @Optional final Long codVeiculo,
             @QueryParam("incluirRespostas") @DefaultValue("true") final boolean incluirRespostas,
             @QueryParam("limit") final int limit,
-            @QueryParam("offset") final long offset) {
+            @QueryParam("offset") final int offset) {
         final ChecklistListagemFiltro checklistListagemFiltro =
                 ChecklistListagemFiltro.of(codUnidades,
                                            DateUtils.parseDate(dataInicial),

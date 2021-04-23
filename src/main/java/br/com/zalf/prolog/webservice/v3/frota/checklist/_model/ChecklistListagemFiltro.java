@@ -33,5 +33,5 @@ public class ChecklistListagemFiltro {
     @Min(value = 0, message = "não pode ser menor que zero.")
     int limit;
     @Min(value = 0, message = "não pode ser menor que zero.")
-    long offset;
+    int offset;
 }

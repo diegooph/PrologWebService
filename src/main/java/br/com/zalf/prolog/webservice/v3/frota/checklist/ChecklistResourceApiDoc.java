@@ -34,5 +34,5 @@ public interface ChecklistResourceApiDoc {
                                                      @QueryParam("codVeiculo") @Optional final Long codVeiculo,
                                                      @QueryParam("incluirRespostas") final boolean incluirRespostas,
                                                      @QueryParam("limit") final int limit,
-                                                     @QueryParam("offset") final long offset);
+                                                     @QueryParam("offset") final int offset);
 }

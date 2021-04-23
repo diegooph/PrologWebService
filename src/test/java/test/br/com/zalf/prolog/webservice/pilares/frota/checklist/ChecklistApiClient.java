@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 @TestComponent
 public class ChecklistApiClient {
     @NotNull
-    private static final String RESOURCE = "/v3/checklist";
+    private static final String RESOURCE = "/v3/checklists";
     @Autowired
     @NotNull
     private TestRestTemplate restTemplate;

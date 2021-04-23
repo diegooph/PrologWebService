@@ -18,7 +18,6 @@ import static com.google.common.truth.Truth.assertThat;
  * @author Thais Francisco (https://github.com/thaisksf)
  */
 public class ChecklistIT extends IntegrationTest {
-
     @Autowired
     private ChecklistApiClient client;
 
