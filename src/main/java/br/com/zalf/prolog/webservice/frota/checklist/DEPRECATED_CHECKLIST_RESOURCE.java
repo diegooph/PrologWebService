@@ -2,7 +2,6 @@ package br.com.zalf.prolog.webservice.frota.checklist;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Required;
-import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.checklist.OLD.Checklist;
@@ -77,17 +76,7 @@ public final class DEPRECATED_CHECKLIST_RESOURCE {
 			@QueryParam("limit") final int limit,
 			@QueryParam("offset") final long offset,
 			@HeaderParam("Authorization") final String userToken) {
-		return service.getAll(
-				codUnidade,
-				null,
-				null,
-				placa.equals("%") ? null : placa,
-				dataInicial,
-				dataFinal,
-				limit,
-				offset,
-				false,
-				userToken);
+		return null;
 	}
 
 	@GET
@@ -142,16 +131,6 @@ public final class DEPRECATED_CHECKLIST_RESOURCE {
 		calendar.set(Calendar.YEAR, 2016);
 		calendar.set(Calendar.MONTH, Calendar.JANUARY);
 		calendar.set(Calendar.DAY_OF_MONTH, 1);
-		return service.getAll(
-				codUnidade,
-				null,
-				null,
-				null,
-				calendar.getTimeInMillis(),
-				Now.getUtcMillis(),
-				limit,
-				offset,
-				true,
-				userToken);
+		return null;
 	}
 }

@@ -10,14 +10,6 @@
 -- 3) Caso o item já exista na OS, não incrementamos a quantidade de apontamentos, pois, esse incremento é feito via
 -- JAVA no momentos que os itens NOK são enviados para o Globus.
 --
--- Histórico:
--- 2019-08-07 -> Function criada (diogenesvanzella - PL-2019).
--- 2019-12-10 -> Altera function para utilizar a nova estrutura de checklist (diogenesvanzella - PL-2416).
--- 2020-01-14 -> Restrutura function para abrir OS com base no código de contexto (diogenesvanzella - PL-2416).
--- 2020-01-21 -> Reabre OS para inserir um novo item, caso ela já esteja fechada (diogenesvanzella - PLI-66).
--- 2020-03-03 -> Remove verificação de código de Serviço Globus (diogenesvanzella - PLI-92).
--- 2020-04-08 -> Permite a validação com tokens duplicados (diogenesvanzella - PLI-117).
--- 2020-06-12 -> Usa o cod_checklist para ver se existe uma OS aberta (diogenesvanzella - PLI-140).
 create or replace function
     piccolotur.func_check_os_insere_item_os_aberta(f_cod_os_globus bigint,
                                                    f_cod_unidade_os bigint,
@@ -196,7 +188,10 @@ begin
             f_cod_os_globus,
             f_cod_item_os_globus,
             v_cod_item_os_prolog,
-            (select c.placa_veiculo from public.checklist c where c.codigo = f_cod_checklist),
+            (select v.placa
+             from public.checklist c
+                      join veiculo v on c.cod_veiculo = v.codigo
+             where c.codigo = f_cod_checklist),
             f_cod_checklist,
             f_cod_contexto_pergunta_checklist,
             f_cod_contexto_alternativa_checklist,

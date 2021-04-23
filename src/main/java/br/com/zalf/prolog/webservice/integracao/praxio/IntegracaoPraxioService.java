@@ -146,7 +146,7 @@ public final class IntegracaoPraxioService extends BaseIntegracaoService {
                 throw new GenericException("A informação para ativar ou desativar o veículo não foi fornecida");
             }
             ensureValidToken(tokenIntegracao, TAG);
-            final VeiculoEdicaoStatus veiculo = dao.getVeiculoEdicaoStatus(placaVeiculo, veiculoAtivo);
+            final VeiculoEdicaoStatus veiculo = dao.getVeiculoEdicaoStatus(placaVeiculo, veiculoAtivo, tokenIntegracao);
             if (!veiculo.isStatusAtivo() && veiculo.isAcoplado()) {
                 throw new GenericException("Não é possível inativar um veículo acoplado.");
             }

@@ -10,8 +10,6 @@ import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap.SoapH
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap.SoapRequesterGlobusPiccolotur;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.SistemaProtheusNepomuceno;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.data.ProtheusNepomucenoRequesterImpl;
-import br.com.zalf.prolog.webservice.integracao.protheusrodalog.ProtheusRodalogRequesterImpl;
-import br.com.zalf.prolog.webservice.integracao.protheusrodalog.SistemaProtheusRodalog;
 import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.SistemaRodoparHorizonte;
 import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.data.RodoparHorizonteRequesterImpl;
 import br.com.zalf.prolog.webservice.integracao.transport.SistemaTransportTranslecchi;
@@ -37,13 +35,6 @@ public final class SistemasFactory {
                 return new SistemaAvaCorpAvilan(sistemaKey, recursoIntegrado, integradorProLog, userToken);
             case TRANSPORT_TRANSLECCHI:
                 return new SistemaTransportTranslecchi(
-                        sistemaKey,
-                        recursoIntegrado,
-                        integradorProLog,
-                        userToken);
-            case PROTHEUS_RODALOG:
-                return new SistemaProtheusRodalog(
-                        new ProtheusRodalogRequesterImpl(),
                         sistemaKey,
                         recursoIntegrado,
                         integradorProLog,

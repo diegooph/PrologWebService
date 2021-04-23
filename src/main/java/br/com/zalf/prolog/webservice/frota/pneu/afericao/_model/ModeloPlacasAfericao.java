@@ -20,6 +20,18 @@ public class ModeloPlacasAfericao {
     public ModeloPlacasAfericao() {
     }
 
+    @Override
+    public String toString() {
+        return "ModeloPlacasAfericao{" +
+                "nomeModelo='" + nomeModelo + '\'' +
+                ", placasAfericao=" + placasAfericao +
+                ", qtdModeloSulcoOk=" + qtdModeloSulcoOk +
+                ", qtdModeloPressaoOk=" + qtdModeloPressaoOk +
+                ", qtdModeloSulcoPressaoOk=" + qtdModeloSulcoPressaoOk +
+                ", totalVeiculosModelo=" + totalVeiculosModelo +
+                '}';
+    }
+
     public String getNomeModelo() {
         return nomeModelo;
     }
@@ -68,18 +80,6 @@ public class ModeloPlacasAfericao {
         this.totalVeiculosModelo = totalVieculosModelo;
     }
 
-    @Override
-    public String toString() {
-        return "ModeloPlacasAfericao{" +
-                "nomeModelo='" + nomeModelo + '\'' +
-                ", placasAfericao=" + placasAfericao +
-                ", qtdModeloSulcoOk=" + qtdModeloSulcoOk +
-                ", qtdModeloPressaoOk=" + qtdModeloPressaoOk +
-                ", qtdModeloSulcoPressaoOk=" + qtdModeloSulcoPressaoOk +
-                ", totalVeiculosModelo=" + totalVeiculosModelo +
-                '}';
-    }
-
     public static class PlacaAfericao {
 
         /**
@@ -92,6 +92,7 @@ public class ModeloPlacasAfericao {
          * Indentificar do veículo.
          */
         private String placa;
+        private Long codigoVeiculo;
         private String identificadorFrota;
 
         /**
@@ -172,6 +173,15 @@ public class ModeloPlacasAfericao {
         public PlacaAfericao() {
         }
 
+        @Override
+        public String toString() {
+            return "PlacaAfericao{" +
+                    "placa='" + placa + '\'' +
+                    ", intervaloUltimaAfericaoSulco=" + intervaloUltimaAfericaoSulco +
+                    ", intervaloUltimaAfericaoPressao=" + intervaloUltimaAfericaoPressao +
+                    '}';
+        }
+
         public FormaColetaDadosAfericaoEnum getFormaColetaDadosSulco() {
             return formaColetaDadosSulco;
         }
@@ -207,11 +217,19 @@ public class ModeloPlacasAfericao {
             this.placa = placa;
         }
 
+        public Long getCodigoVeiculo() {
+            return codigoVeiculo;
+        }
+
+        public void setCodigoVeiculo(final Long codigoVeiculo) {
+            this.codigoVeiculo = codigoVeiculo;
+        }
+
         public String getIdentificadorFrota() {
             return identificadorFrota;
         }
 
-        public void setIdentificadorFrota(String identificadorFrota) {
+        public void setIdentificadorFrota(final String identificadorFrota) {
             this.identificadorFrota = identificadorFrota;
         }
 
@@ -299,15 +317,6 @@ public class ModeloPlacasAfericao {
         private boolean isAfericaoSulcoVencidaOuNuncaAferida(final int metaSulco) {
             return intervaloUltimaAfericaoSulco > metaSulco
                     || intervaloUltimaAfericaoSulco == PlacaAfericao.INTERVALO_INVALIDO;
-        }
-
-        @Override
-        public String toString() {
-            return "PlacaAfericao{" +
-                    "placa='" + placa + '\'' +
-                    ", intervaloUltimaAfericaoSulco=" + intervaloUltimaAfericaoSulco +
-                    ", intervaloUltimaAfericaoPressao=" + intervaloUltimaAfericaoPressao +
-                    '}';
         }
     }
 }

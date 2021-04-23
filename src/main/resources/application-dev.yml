@@ -22,4 +22,8 @@ logging:
     sun: info
     io: info
     jdk: info
+    javax:
+      management:
+        remote:
+          rmi: info
     org.hibernate.SQL: debug

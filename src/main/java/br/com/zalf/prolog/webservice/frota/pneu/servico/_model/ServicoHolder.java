@@ -10,24 +10,17 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-/**
- * Essa classe contém todas as informações necessárias para o fechamento de qualquer tipo de serviço
- * ({@link TipoServico}) bem como os serviços disponíveis para fechamento.
- * <p>
- * Created by jean on 04/04/16.
- */
 @Data
 public final class ServicoHolder {
+    @NotNull
+    private final Long codVeiculo;
     /**
      * Placa do {@link Veiculo} no qual os {@link #servicos} são baseados.
      */
     @NotNull
     private final String placaVeiculo;
-    private String identificadorFrota;
-
     @NotNull
     private final List<Servico> servicos;
-
     /**
      * As restrições utilizadas para verificar os valores coletados no fechamento do serviço.
      * <p>
@@ -35,7 +28,6 @@ public final class ServicoHolder {
      */
     @Nullable
     private final Restricao restricao;
-
     /**
      * Indica quais as formas de coleta possíveis para o fechamento de serviço. Irá conter um dos
      * três valoers:
@@ -50,7 +42,6 @@ public final class ServicoHolder {
      */
     @Nullable
     private final FormaColetaDadosAfericaoEnum formaColetaDadosFechamentoServico;
-
     /**
      * Utilizado para os serviços de inspeção.
      * <p>
@@ -59,4 +50,5 @@ public final class ServicoHolder {
      */
     @Nullable
     private final List<Alternativa> alternativasInspecao;
+    private String identificadorFrota;
 }

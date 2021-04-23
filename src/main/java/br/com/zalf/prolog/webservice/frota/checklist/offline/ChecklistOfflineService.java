@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
+import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.InfosChecklistInserido;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.model.*;
 import br.com.zalf.prolog.webservice.integracao.router.RouterChecklistOffline;
 import org.jetbrains.annotations.NotNull;
@@ -34,9 +35,11 @@ public class ChecklistOfflineService {
             // Buscamos um token para o usuário que realizou o checklist sendo sincronizado
             final Autenticacao autenticacao =
                     Injection.provideAutenticacaoDao().createTokenByCodColaborador(checklist.getCodColaborador());
+            final InfosChecklistInserido infosChecklistInserido =
+                    RouterChecklistOffline.create(dao, autenticacao.getToken()).insertChecklistOffline(checklist);
             return ResponseWithCod.ok(
                     "Checklist inserido com sucesso",
-                    RouterChecklistOffline.create(dao, autenticacao.getToken()).insertChecklistOffline(checklist));
+                    infosChecklistInserido.getCodChecklist());
         } catch (final Throwable t) {
             Log.e(TAG, String.format(
                     "Não foi possível inserir o checklist offline:\n" +
@@ -88,7 +91,7 @@ public class ChecklistOfflineService {
                         EstadoChecklistOfflineSupport.SEM_DADOS,
                         forcarAtualizacao);
             }
-        } catch (Throwable t) {
+        } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao buscar informações para realização de checklist offline: \n" +
                     "CodUnidade: %d\n" +
                     "VersaoDados: %d\n" +
@@ -99,30 +102,10 @@ public class ChecklistOfflineService {
         }
     }
 
-    @NotNull
-    DadosChecklistOfflineUnidade getEstadoDadosChecklistOffline(final String tokenSincronizacao,
-                                                                final Long versaoDadosApp,
-                                                                final Long codUnidade) throws ProLogException {
-        try {
-            // Precisamos verificar o token para ter certeza se o usuário é apto a utilizar os métodos.
-            ensureValidToken(tokenSincronizacao);
-
-            return getDadosChecklistOffline(versaoDadosApp, codUnidade);
-        } catch (final Throwable t) {
-            final String msg = String.format(
-                    "Erro ao buscar estado dos dados do checklist offline para a unidade %d",
-                    codUnidade);
-            Log.e(TAG, msg, t);
-            throw Injection
-                    .provideProLogExceptionHandler()
-                    .map(t, "Erro ao buscar estado dos dados do checklist offline");
-        }
-    }
-
     public boolean getChecklistOfflineAtivoEmpresa(final Long codEmpresa) throws ProLogException {
         try {
             return dao.getChecklistOfflineAtivoEmpresa(codEmpresa);
-        } catch (Throwable t) {
+        } catch (final Throwable t) {
             final String msg = "Erro ao verificar se empresa está liberada para realizar checklist offline";
             Log.e(TAG, msg, t);
             throw Injection
@@ -182,6 +165,26 @@ public class ChecklistOfflineService {
                 throw (NotAuthorizedException) t;
             }
             throw Injection.provideProLogExceptionHandler().map(t, "Erro ao verificar token");
+        }
+    }
+
+    @NotNull
+    DadosChecklistOfflineUnidade getEstadoDadosChecklistOffline(final String tokenSincronizacao,
+                                                                final Long versaoDadosApp,
+                                                                final Long codUnidade) throws ProLogException {
+        try {
+            // Precisamos verificar o token para ter certeza se o usuário é apto a utilizar os métodos.
+            ensureValidToken(tokenSincronizacao);
+
+            return getDadosChecklistOffline(versaoDadosApp, codUnidade);
+        } catch (final Throwable t) {
+            final String msg = String.format(
+                    "Erro ao buscar estado dos dados do checklist offline para a unidade %d",
+                    codUnidade);
+            Log.e(TAG, msg, t);
+            throw Injection
+                    .provideProLogExceptionHandler()
+                    .map(t, "Erro ao buscar estado dos dados do checklist offline");
         }
     }
 }

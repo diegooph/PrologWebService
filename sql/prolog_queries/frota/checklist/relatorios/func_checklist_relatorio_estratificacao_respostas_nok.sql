@@ -1,5 +1,4 @@
 create or replace function func_checklist_relatorio_estratificacao_respostas_nok(f_cod_unidades bigint[],
-                                                                                 f_placa_veiculo character varying,
                                                                                  f_data_inicial date,
                                                                                  f_data_final date)
     returns table
@@ -26,7 +25,7 @@ $$
 select u.nome                                                                     as nome_unidade,
        c.codigo                                                                   as cod_checklist,
        format_timestamp(c.data_hora_realizacao_tz_aplicado, 'DD/MM/YYYY HH24:MI') as data_hora_check,
-       c.placa_veiculo                                                            as placa_veiculo,
+       v.placa                                                                    as placa_veiculo,
        vt.nome                                                                    as tipo_veiculo,
        case
            when c.tipo = 'S'
@@ -53,7 +52,7 @@ select u.nome                                                                   
            end                                                                    as acao_ordem_servico
 from checklist c
          join veiculo v
-              on v.placa = c.placa_veiculo
+              on v.codigo = c.cod_veiculo
          join veiculo_tipo vt on vt.codigo = v.cod_tipo
          join checklist_perguntas cp
               on cp.cod_checklist_modelo = c.cod_checklist_modelo
@@ -73,7 +72,6 @@ from checklist c
                        and cosia.cod_checklist_realizado = c.codigo
                        and cosia.cod_alternativa = crn.cod_alternativa
 where c.cod_unidade = any (f_cod_unidades)
-  and c.placa_veiculo like f_placa_veiculo
   and c.data_hora_realizacao_tz_aplicado::date >= f_data_inicial
   and c.data_hora_realizacao_tz_aplicado::date <= f_data_final
 order by u.nome, c.data_hora_sincronizacao desc, c.codigo

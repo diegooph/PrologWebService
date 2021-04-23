@@ -1,9 +1,6 @@
 package br.com.zalf.prolog.webservice.v3.frota.checklistordemservico._model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
@@ -17,6 +14,7 @@ import java.io.Serializable;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode
 public final class ChecklistOrdemServicoPk implements Serializable {
     @NotNull
     private Long codOrdemServico;

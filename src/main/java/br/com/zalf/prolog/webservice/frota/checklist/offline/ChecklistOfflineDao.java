@@ -16,10 +16,7 @@ import java.util.Optional;
 public interface ChecklistOfflineDao {
 
     @NotNull
-    Long insertChecklistOffline(@NotNull final ChecklistInsercao checklist) throws Throwable;
-
-    @NotNull
-    InfosChecklistInserido insereChecklistOffline(@NotNull final ChecklistInsercao checklist) throws Throwable;
+    InfosChecklistInserido insertChecklistOffline(@NotNull final ChecklistInsercao checklist) throws Throwable;
 
     boolean getChecklistOfflineAtivoEmpresa(@NotNull final Long codEmpresa) throws Throwable;
 

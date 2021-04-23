@@ -58,6 +58,7 @@ public final class SistemaGlobusPiccoloturDaoImpl extends DatabaseConnection imp
                             rSet.getLong("COD_MODELO_CHECKLIST"),
                             rSet.getLong("COD_VERSAO_MODELO_CHECKLIST"),
                             rSet.getString("PLACA_VEICULO_CHECKLIST"),
+                            rSet.getLong("COD_VEICULO_CHECKLIST"),
                             checklistItensNokGlobus);
 
                     if (rSet.getInt("TOTAL_ALTERNATIVAS_NOK") <= 0) {

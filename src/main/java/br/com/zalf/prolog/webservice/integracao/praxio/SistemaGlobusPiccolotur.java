@@ -8,6 +8,7 @@ import br.com.zalf.prolog.webservice.customfields._model.TipoCampoPersonalizado;
 import br.com.zalf.prolog.webservice.database.DatabaseConnectionProvider;
 import br.com.zalf.prolog.webservice.errorhandling.exception.BloqueadoIntegracaoException;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
+import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.InfosChecklistInserido;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.ModeloChecklistEdicao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ModeloChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ResultInsertModeloChecklist;
@@ -105,9 +106,9 @@ public final class SistemaGlobusPiccolotur extends Sistema {
 
     @NotNull
     @Override
-    public Long insertChecklist(@NotNull final ChecklistInsercao checklistNew,
-                                final boolean foiOffline,
-                                final boolean deveAbrirOs) throws Throwable {
+    public InfosChecklistInserido insertChecklist(@NotNull final ChecklistInsercao checklistNew,
+                                                  final boolean foiOffline,
+                                                  final boolean deveAbrirOs) throws Throwable {
         final DatabaseConnectionProvider connectionProvider = new DatabaseConnectionProvider();
         Connection conn = null;
         try {
@@ -120,13 +121,14 @@ public final class SistemaGlobusPiccolotur extends Sistema {
             conn.setAutoCommit(false);
             // Insere checklist na base de dados do ProLog
             // Se deve enviar para o Globus, então não abrimos O.S pois ela virá da integração.
-            final Long codChecklistProLog = Injection
+            final InfosChecklistInserido infosChecklistInserido = Injection
                     .provideChecklistDao()
-                    .insert(conn, checklistNew, foiOffline, !deveEnviarParaGlobus);
+                    .insertChecklist(conn, checklistNew, foiOffline, !deveEnviarParaGlobus);
+            final Long codChecklistProLog = infosChecklistInserido.getCodChecklist();
 
             // Se a unidade está com a integração desativada ou não devemos enviar para o Globus, então retornamos.
             if (!unidadeEstaComIntegracaoAtiva(checklistNew.getCodUnidade()) || !deveEnviarParaGlobus) {
-                return codChecklistProLog;
+                return infosChecklistInserido;
             }
 
             // Se o checklist tem pelo menos um item NOK, precisamos disparar o envio para a integração.
@@ -151,7 +153,7 @@ public final class SistemaGlobusPiccolotur extends Sistema {
                 // foi executado será salvo.
                 conn.commit();
             }
-            return codChecklistProLog;
+            return infosChecklistInserido;
         } catch (final Throwable t) {
             if (conn != null) {
                 conn.rollback();
@@ -164,7 +166,7 @@ public final class SistemaGlobusPiccolotur extends Sistema {
 
     @NotNull
     @Override
-    public Long insertChecklistOffline(@NotNull final ChecklistInsercao checklist) throws Throwable {
+    public InfosChecklistInserido insertChecklistOffline(@NotNull final ChecklistInsercao checklist) throws Throwable {
         return insertChecklist(checklist, true, false);
     }
 

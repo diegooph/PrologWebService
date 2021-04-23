@@ -6,12 +6,6 @@
 -- pergunta e alternativa será retornada, porém, as informações básicas do checklist, serão.
 -- Restringimos a function para não retornar alternativas que não abrem O.S, pois não é necessário.
 --
--- Histórico:
--- 2020-01-21 -> Function criada (diogenesvanzella - PLI-66).
--- 2020-02-25 -> Alteração do nome da function (diogenesvanzella - PLI-70).
--- 2020-03-09 -> Remove busca de alternativas que não abrem O.S (diogenesvanzella - PLI-98).
--- 2020-04-28 -> Adiciona tipo_outros no retorno da function (diogenesvanzella - PLI-138).
--- 2020-06-12 -> Adiciona cod_pergunta no retorno da function (diogenesvanzella - PLI-137).
 create or replace function piccolotur.func_check_os_busca_checklist_itens_nok(f_cod_checklist_prolog bigint)
     returns table
             (
@@ -20,6 +14,7 @@ create or replace function piccolotur.func_check_os_busca_checklist_itens_nok(f_
                 cod_versao_modelo_checklist  bigint,
                 cpf_colaborador_realizacao   text,
                 placa_veiculo_checklist      text,
+                cod_veiculo_checklist        bigint,
                 km_coletado_checklist        bigint,
                 tipo_checklist               text,
                 data_hora_realizacao         timestamp without time zone,
@@ -61,7 +56,8 @@ select c.cod_unidade                                            as cod_unidade_c
        c.cod_checklist_modelo                                   as cod_modelo_checklist,
        c.cod_versao_checklist_modelo                            as cod_versao_modelo_checklist,
        lpad(c.cpf_colaborador::text, 11, '0')                   as cpf_colaborador_realizacao,
-       c.placa_veiculo::text                                    as placa_veiculo_checklist,
+       v.placa::text                                            as placa_veiculo_checklist,
+       v.codigo                                                 as cod_veiculo_checklist,
        c.km_veiculo                                             as km_coletado_checklist,
        f_if(c.tipo::text = 'S', 'SAIDA'::text, 'RETORNO'::text) as tipo_checklist,
        c.data_hora at time zone tz_unidade(c.cod_unidade)       as data_hora_realizacao,
@@ -75,8 +71,9 @@ select c.cod_unidade                                            as cod_unidade_c
        a.alternativa_tipo_outros                                as alternativa_tipo_outros,
        a.prioridade_alternativa                                 as prioridade_alternativa_nok
 from checklist c
-         -- Usamos LEFT JOIN para os cenários onde o check não possuir nenhum item NOK, mesmo para esses cenários
-         -- devemos retornar as infos do checklist mesmo assim.
+         join veiculo v on v.codigo = c.cod_veiculo
+    -- Usamos LEFT JOIN para os cenários onde o check não possuir nenhum item NOK, mesmo para esses cenários
+    -- devemos retornar as infos do checklist mesmo assim.
          left join alternativas a on a.cod_checklist = c.codigo
 where c.codigo = f_cod_checklist_prolog
 order by a.cod_alternativa;

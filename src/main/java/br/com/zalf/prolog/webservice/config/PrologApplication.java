@@ -18,7 +18,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.Provider;
 
@@ -43,7 +42,6 @@ public class PrologApplication extends SpringBootServletInitializer {
     }
 
     @Component
-    @ApplicationPath("/prolog")
     public static class JerseyConfig extends ResourceConfig {
 
         @Autowired

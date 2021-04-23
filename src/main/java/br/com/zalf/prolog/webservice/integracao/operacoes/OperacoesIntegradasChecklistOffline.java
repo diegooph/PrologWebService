@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.integracao.operacoes;
 
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
+import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.InfosChecklistInserido;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -10,5 +11,5 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface OperacoesIntegradasChecklistOffline {
     @NotNull
-    Long insertChecklistOffline(@NotNull final ChecklistInsercao checklist) throws Throwable;
+    InfosChecklistInserido insertChecklistOffline(@NotNull final ChecklistInsercao checklist) throws Throwable;
 }

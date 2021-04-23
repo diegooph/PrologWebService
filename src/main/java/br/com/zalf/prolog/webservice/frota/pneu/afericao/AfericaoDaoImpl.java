@@ -70,19 +70,20 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
 
     @NotNull
     @Override
-    public NovaAfericaoPlaca getNovaAfericaoPlaca(@NotNull final Long codUnidade,
-                                                  @NotNull final String placa,
-                                                  @NotNull final String tipoAfericao) throws Throwable {
+    public NovaAfericaoPlaca getNovaAfericaoPlaca(@NotNull final AfericaoBuscaFiltro afericaoBusca) throws Throwable {
         Connection conn = null;
         try {
             conn = getConnection();
             final NovaAfericaoPlaca novaAfericao = new NovaAfericaoPlaca();
-            final Veiculo veiculo = Injection.provideVeiculoDao().getVeiculoByPlaca(conn, placa, true);
+            final Veiculo veiculo =
+                    Injection.provideVeiculoDao().getVeiculoByPlaca(conn,
+                                                                    afericaoBusca.getPlacaVeiculo(),
+                                                                    true);
             novaAfericao.setEstepesVeiculo(veiculo.getEstepes());
             novaAfericao.setVeiculo(veiculo);
-
             // Configurações/parametrizações necessárias para a aferição.
-            final ConfiguracaoNovaAfericaoPlaca configuracao = getConfiguracaoNovaAfericaoPlaca(conn, placa);
+            final ConfiguracaoNovaAfericaoPlaca configuracao =
+                    getConfiguracaoNovaAfericaoPlaca(conn, afericaoBusca.getPlacaVeiculo());
             novaAfericao.setRestricao(Restricao.createRestricaoFrom(configuracao));
             novaAfericao.setDeveAferirEstepes(configuracao.isPodeAferirEstepe());
             novaAfericao.setVariacaoAceitaSulcoMenorMilimetros(configuracao.getVariacaoAceitaSulcoMenorMilimetros());
@@ -429,16 +430,15 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
         ResultSet rSet = null;
         try {
             stmt = conn.prepareStatement("SELECT * FROM FUNC_AFERICAO_INSERT_AFERICAO(" +
-                                                 "F_COD_UNIDADE => ?," +
-                                                 "F_DATA_HORA => ?, " +
-                                                 "F_CPF_AFERIDOR => ?, " +
-                                                 "F_TEMPO_REALIZACAO => ?, " +
-                                                 "F_TIPO_MEDICAO_COLETADA => ?, " +
-                                                 "F_TIPO_PROCESSO_COLETA => ?, " +
-                                                 "F_FORMA_COLETA_DADOS => ?," +
-                                                 "F_PLACA_VEICULO => ?," +
-                                                 "F_COD_VEICULO => ?, " +
-                                                 "F_KM_VEICULO => ?) AS COD_AFERICAO;");
+                    "F_COD_UNIDADE => ?," +
+                    "F_DATA_HORA => ?, " +
+                    "F_CPF_AFERIDOR => ?, " +
+                    "F_TEMPO_REALIZACAO => ?, " +
+                    "F_TIPO_MEDICAO_COLETADA => ?, " +
+                    "F_TIPO_PROCESSO_COLETA => ?, " +
+                    "F_FORMA_COLETA_DADOS => ?," +
+                    "F_COD_VEICULO => ?, " +
+                    "F_KM_VEICULO => ?) AS COD_AFERICAO;");
             stmt.setLong(1, codUnidade);
             stmt.setObject(2, afericao.getDataHora().atOffset(ZoneOffset.UTC));
             stmt.setLong(3, afericao.getColaborador().getCpf());
@@ -452,13 +452,11 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
 
             if (afericao instanceof AfericaoPlaca) {
                 final AfericaoPlaca afericaoPlaca = (AfericaoPlaca) afericao;
-                stmt.setString(8, afericaoPlaca.getVeiculo().getPlaca());
-                stmt.setLong(9, afericaoPlaca.getVeiculo().getCodigo());
-                stmt.setLong(10, afericaoPlaca.getKmMomentoAfericao());
+                stmt.setLong(8, afericaoPlaca.getVeiculo().getCodigo());
+                stmt.setLong(9, afericaoPlaca.getKmMomentoAfericao());
             } else {
-                stmt.setNull(8, Types.VARCHAR);
+                stmt.setNull(8, Types.BIGINT);
                 stmt.setNull(9, Types.BIGINT);
-                stmt.setNull(10, Types.BIGINT);
             }
             Long codAfericao = null;
             rSet = stmt.executeQuery();
@@ -575,8 +573,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
                     .fromString(rSet.getString("TIPO_PROCESSO_COLETA_ULTIMA_AFERICAO"));
             pneuAvulso.setTipoProcessoAfericao(tipoProcesso);
             pneuAvulso.setPlacaAplicadoQuandoAferido(rSet.getString("PLACA_VEICULO_ULTIMA_AFERICAO"));
-            pneuAvulso.setIdentificadorFrotaAplicadoQuandoAferido(rSet.getString("IDENTIFICADOR_FROTA_ULTIMA_AFERICAO"
-            ));
+            pneuAvulso.setIdentificadorFrotaAplicadoQuandoAferido(rSet.getString("IDENTIFICADOR_FROTA_ULTIMA_AFERICAO"));
         }
         return pneuAvulso;
     }
@@ -605,6 +602,7 @@ public class AfericaoDaoImpl extends DatabaseConnection implements AfericaoDao {
     private ModeloPlacasAfericao.PlacaAfericao createPlacaAfericao(@NotNull final ResultSet rSet) throws Throwable {
         final ModeloPlacasAfericao.PlacaAfericao placa = new ModeloPlacasAfericao.PlacaAfericao();
         placa.setPlaca(rSet.getString("PLACA"));
+        placa.setCodigoVeiculo(rSet.getLong("COD_VEICULO"));
         placa.setIdentificadorFrota(rSet.getString("IDENTIFICADOR_FROTA"));
         placa.setCodUnidadePlaca(rSet.getLong("COD_UNIDADE_PLACA"));
         placa.setIntervaloUltimaAfericaoSulco(rSet.getInt("INTERVALO_SULCO"));
