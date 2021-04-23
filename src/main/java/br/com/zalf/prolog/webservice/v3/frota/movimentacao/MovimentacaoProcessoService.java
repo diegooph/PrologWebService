@@ -9,9 +9,11 @@ import br.com.zalf.prolog.webservice.v3.frota.movimentacao._model.MovimentacaoPr
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 /**
  * Created on 2021-03-26
@@ -61,14 +63,14 @@ public class MovimentacaoProcessoService implements KmProcessoAtualizavel {
                 .forEach(movimentacao -> {
                     final MovimentacaoOrigemEntity origem = movimentacao.getMovimentacaoOrigem();
                     final MovimentacaoDestinoEntity destino = movimentacao.getMovimentacaoDestino();
-                    if (origem.getCodVeiculo() != null) {
+                    if (origem.getVeiculo().getCodigo() != null) {
                         final MovimentacaoOrigemEntity novaOrigem = origem
                                 .toBuilder()
                                 .withKmColetadoVeiculo(novoKm)
                                 .build();
                         movimentacaoOrigemDao.save(novaOrigem);
                     }
-                    if (destino.getCodVeiculo() != null) {
+                    if (destino.getVeiculo().getCodigo() != null) {
                         final MovimentacaoDestinoEntity novoDestino = destino
                                 .toBuilder()
                                 .withKmColetadoVeiculo(novoKm)
@@ -76,5 +78,12 @@ public class MovimentacaoProcessoService implements KmProcessoAtualizavel {
                         movimentacaoDestinoDao.save(novoDestino);
                     }
                 });
+    }
+
+    @Transactional
+    public List<MovimentacaoProcessoEntity> getAll() {
+        final List<MovimentacaoProcessoEntity> listEntity = movimentacaoProcessoDao.getAll(2, PageRequest
+                .of(0, 1000));
+        return null;
     }
 }
