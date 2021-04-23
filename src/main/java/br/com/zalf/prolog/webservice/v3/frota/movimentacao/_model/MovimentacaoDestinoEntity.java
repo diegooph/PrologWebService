@@ -37,8 +37,9 @@ public final class MovimentacaoDestinoEntity {
     private Long codMotivoDescarte;
     @Column(name = "cod_coleta")
     private String codColeta;
-    @Column(name = "cod_recapadora_destino")
-    private Long codRecapadoraDestino;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cod_recapadora_destino", referencedColumnName = "codigo")
+    private RecapadoraEntity recapadora;
     @Column(name = "url_imagem_descarte_1")
     private String urlImagemDescarte1;
     @Column(name = "url_imagem_descarte_2")
