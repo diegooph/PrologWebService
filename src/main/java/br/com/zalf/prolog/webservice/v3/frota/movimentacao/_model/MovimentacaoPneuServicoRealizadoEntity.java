@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.v3.frota.movimentacao._model;
 
+import br.com.zalf.prolog.webservice.v3.frota.pneu.pneuservico.PneuServicoRealizadoEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -30,4 +31,8 @@ public final class MovimentacaoPneuServicoRealizadoEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_movimentacao")
     private MovimentacaoEntity movimentacao;
+    @MapsId
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cod_servico_realizado")
+    private PneuServicoRealizadoEntity pneuServicoRealizado;
 }
