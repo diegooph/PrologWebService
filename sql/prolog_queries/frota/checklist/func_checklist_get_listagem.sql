@@ -1,12 +1,12 @@
-create function func_checklist_get_listagem(f_cod_unidades bigint[],
-                                            f_cod_colaborador bigint,
-                                            f_cod_tipo_veiculo bigint,
-                                            f_cod_veiculo bigint,
-                                            f_incluir_respostas boolean,
-                                            f_data_inicial date,
-                                            f_data_final date,
-                                            f_limit integer,
-                                            f_offset bigint)
+create or replace function func_checklist_get_listagem(f_cod_unidades bigint[],
+                                                       f_data_inicial date,
+                                                       f_data_final date,
+                                                       f_cod_colaborador bigint,
+                                                       f_cod_tipo_veiculo bigint,
+                                                       f_cod_veiculo bigint,
+                                                       f_incluir_respostas boolean,
+                                                       f_limit integer,
+                                                       f_offset bigint)
     returns table
             (
                 cod_unidade                               bigint,
@@ -20,7 +20,7 @@ create function func_checklist_get_listagem(f_cod_unidades bigint[],
                 placa_veiculo                             text,
                 identificador_frota                       text,
                 km_veiculo_momento_realizacao             bigint,
-                tipo_checklist                            text,
+                tipo_checklist                            char,
                 data_hora_realizacao_utc                  timestamp with time zone,
                 data_hora_realizacao_tz_aplicado          timestamp without time zone,
                 data_hora_importado_prolog_utc            timestamp with time zone,
@@ -129,43 +129,43 @@ begin
                   where case when f_cod_colaborador is null then true else co.codigo = f_cod_colaborador end
                     and case when f_cod_tipo_veiculo is null then true else v.cod_tipo = f_cod_tipo_veiculo end
                     and case when f_cod_veiculo is null then true else c.cod_veiculo = f_cod_veiculo end)
-        select cr.cod_unidade                                 as cod_unidade,
-               cr.codigo                                      as cod_checklist,
-               cr.cod_checklist_modelo                        as cod_checklist_modelo,
-               cr.cod_versao_checklist_modelo                 as cod_versao_checklist_modelo,
-               cr.cod_colaborador                             as cod_colaborador,
-               cr.cpf_colaborador                             as cpf_colaborador,
-               cr.nome_colaborador                            as nome_colaborador,
-               cr.cod_veiculo                                 as cod_veiculo,
-               cr.placa ::text                                as placa_veiculo,
-               cr.identificador_frota                         as identificador_frota,
-               cr.km_veiculo                                  as km_veiculo_momento_realizacao,
-               cr.tipo ::text                                 as tipo_checklist,
-               cr.data_hora                                   as data_hora_realizacao_utc,
-               cr.data_hora_realizacao_tz_aplicado            as data_hora_realizacao_tz_aplicado,
-               cr.data_hora_importado_prolog                  as data_hora_importado_prolog_utc,
+        select cr.cod_unidade                                              as cod_unidade,
+               cr.codigo                                                   as cod_checklist,
+               cr.cod_checklist_modelo                                     as cod_checklist_modelo,
+               cr.cod_versao_checklist_modelo                              as cod_versao_checklist_modelo,
+               cr.cod_colaborador                                          as cod_colaborador,
+               cr.cpf_colaborador                                          as cpf_colaborador,
+               cr.nome_colaborador                                         as nome_colaborador,
+               cr.cod_veiculo                                              as cod_veiculo,
+               cr.placa ::text                                             as placa_veiculo,
+               cr.identificador_frota                                      as identificador_frota,
+               cr.km_veiculo                                               as km_veiculo_momento_realizacao,
+               cr.tipo                                                     as tipo_checklist,
+               cr.data_hora                                                as data_hora_realizacao_utc,
+               cr.data_hora_realizacao_tz_aplicado                         as data_hora_realizacao_tz_aplicado,
+               cr.data_hora_importado_prolog                               as data_hora_importado_prolog_utc,
                cr.data_hora_importado_prolog at time zone tz_unidade(cr.cod_unidade)
-                                                              as data_hora_importado_prolog_tz_aplicado,
-               cr.tempo_realizacao                            as duracao_realizacao_millis,
-               cr.observacao                                  as observacao_checklist,
-               cr.total_perguntas_ok                          as total_perguntas_ok,
-               cr.total_perguntas_nok                         as total_perguntas_nok,
-               cr.total_alternativas_ok                       as total_alternativas_ok,
-               cr.total_alternativas_nok                      as total_alternativas_nok,
-               cr.total_midias_perguntas_ok                   as total_midias_perguntas_ok,
-               cr.total_midias_alternativas_nok               as total_midias_alternativas_nok,
+                                                                           as data_hora_importado_prolog_tz_aplicado,
+               cr.tempo_realizacao                                         as duracao_realizacao_millis,
+               cr.observacao                                               as observacao_checklist,
+               cr.total_perguntas_ok                                       as total_perguntas_ok,
+               cr.total_perguntas_nok                                      as total_perguntas_nok,
+               cr.total_alternativas_ok                                    as total_alternativas_ok,
+               cr.total_alternativas_nok                                   as total_alternativas_nok,
+               cr.total_midias_perguntas_ok                                as total_midias_perguntas_ok,
+               cr.total_midias_alternativas_nok                            as total_midias_alternativas_nok,
                (select count(*)
                 from checklist_respostas_nok crn
                          join checklist_alternativa_pergunta cap
                               on crn.cod_alternativa = cap.codigo
                 where crn.cod_checklist = cr.codigo
-                  and cap.prioridade = 'BAIXA') :: smallint   as total_alternativas_nok_prioridade_baixa,
+                  and cap.prioridade = 'BAIXA') :: smallint                as total_alternativas_nok_prioridade_baixa,
                (select count(*)
                 from checklist_respostas_nok crn
                          join checklist_alternativa_pergunta cap
                               on crn.cod_alternativa = cap.codigo
                 where crn.cod_checklist = cr.codigo
-                  and cap.prioridade = 'ALTA') :: smallint    as total_alternativas_nok_prioridade_alta,
+                  and cap.prioridade = 'ALTA') :: smallint as total_alternativas_nok_prioridade_alta,
                (select count(*)
                 from checklist_respostas_nok crn
                          join checklist_alternativa_pergunta cap
