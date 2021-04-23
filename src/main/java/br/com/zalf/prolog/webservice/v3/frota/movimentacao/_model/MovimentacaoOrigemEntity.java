@@ -31,7 +31,6 @@ public final class MovimentacaoOrigemEntity {
     private Long kmColetadoVeiculo;
     @Column(name = "posicao_pneu_origem")
     private Long posicaoPneuOrigem;
-    @Enumerated(EnumType.STRING)
     @Column(name = "tipo_origem")
     private OrigemDestinoEnum tipoOrigem;
     @MapsId

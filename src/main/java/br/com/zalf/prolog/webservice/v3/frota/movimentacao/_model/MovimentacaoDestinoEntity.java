@@ -34,16 +34,15 @@ public final class MovimentacaoDestinoEntity {
     @Column(name = "cod_motivo_descarte")
     private Long codMotivoDescarte;
     @Column(name = "cod_coleta")
-    private Long codColeta;
+    private String codColeta;
     @Column(name = "cod_recapadora_destino")
     private Long codRecapadoraDestino;
     @Column(name = "url_imagem_descarte_1")
-    private Long urlImagemDescarte1;
+    private String urlImagemDescarte1;
     @Column(name = "url_imagem_descarte_2")
-    private Long urlImagemDescarte2;
+    private String urlImagemDescarte2;
     @Column(name = "url_imagem_descarte_3")
-    private Long urlImagemDescarte3;
-    @Enumerated(EnumType.STRING)
+    private String urlImagemDescarte3;
     @Column(name = "tipo_destino")
     private OrigemDestinoEnum tipoDestino;
     @MapsId
