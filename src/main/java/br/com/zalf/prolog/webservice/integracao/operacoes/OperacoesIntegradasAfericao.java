@@ -16,9 +16,7 @@ interface OperacoesIntegradasAfericao {
     CronogramaAfericao getCronogramaAfericao(@NotNull final List<Long> codUnidades) throws Throwable;
 
     @NotNull
-    NovaAfericaoPlaca getNovaAfericaoPlaca(@NotNull final Long codUnidade,
-                                           @NotNull final String placaVeiculo,
-                                           @NotNull final String tipoAfericao) throws Throwable;
+    NovaAfericaoPlaca getNovaAfericaoPlaca(@NotNull final AfericaoBuscaFiltro afericaoBusca) throws Throwable;
 
     @NotNull
     List<PneuAfericaoAvulsa> getPneusAfericaoAvulsa(@NotNull final Long codUnidade) throws Throwable;

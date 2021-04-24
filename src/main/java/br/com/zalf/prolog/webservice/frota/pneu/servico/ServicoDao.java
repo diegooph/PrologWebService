@@ -1,8 +1,11 @@
 package br.com.zalf.prolog.webservice.frota.pneu.servico;
 
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.*;
+import br.com.zalf.prolog.webservice.frota.pneu.servico._model.filtro.ServicoHolderBuscaFiltro;
+import br.com.zalf.prolog.webservice.frota.pneu.servico._model.filtro.ServicosAbertosBuscaFiltro;
+import br.com.zalf.prolog.webservice.frota.pneu.servico._model.filtro.ServicosFechadosVeiculoFiltro;
+import br.com.zalf.prolog.webservice.frota.pneu.servico._model.filtro.VeiculoAberturaServicoFiltro;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -36,10 +39,11 @@ public interface ServicoDao {
     ServicosAbertosHolder getQuantidadeServicosAbertosVeiculo(Long codUnidade) throws SQLException;
 
     @NotNull
-    ServicoHolder getServicoHolder(@NotNull final String placa, @NotNull final Long codUnidade) throws Throwable;
+    ServicoHolder getServicoHolder(@NotNull final ServicoHolderBuscaFiltro filtro) throws Throwable;
 
-    List<Servico> getServicosAbertosByPlaca(@NotNull String placa, @Nullable TipoServico tipoServico)
-            throws SQLException;
+    @NotNull
+    List<Servico> getServicosAbertos(@NotNull final ServicosAbertosBuscaFiltro filtro)
+            throws Throwable;
 
     void fechaServico(@NotNull final Long codUnidade,
                       @NotNull final OffsetDateTime dataHorafechamentoServico,
@@ -64,10 +68,8 @@ public interface ServicoDao {
                                           final long dataInicial,
                                           final long dataFinal) throws SQLException;
 
-    List<Servico> getServicosFechadosVeiculo(final Long codUnidade,
-                                             final String placaVeiculo,
-                                             final long dataInicial,
-                                             final long dataFinal) throws SQLException;
+    @NotNull
+    List<Servico> getServicosFechadosVeiculo(@NotNull final ServicosFechadosVeiculoFiltro filtro) throws Throwable;
 
     int getQuantidadeServicosEmAbertoPneu(final Long codUnidade,
                                           final Long codPneu,
@@ -110,6 +112,5 @@ public interface ServicoDao {
             throws SQLException;
 
     @NotNull
-    VeiculoServico getVeiculoAberturaServico(@NotNull final Long codServico, @NotNull final String placaVeiculo)
-            throws SQLException;
+    VeiculoServico getVeiculoAberturaServico(@NotNull final VeiculoAberturaServicoFiltro filtro) throws Throwable;
 }

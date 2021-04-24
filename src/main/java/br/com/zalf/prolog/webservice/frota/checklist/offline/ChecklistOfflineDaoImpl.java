@@ -1,18 +1,16 @@
 package br.com.zalf.prolog.webservice.frota.checklist.offline;
 
 import br.com.zalf.prolog.webservice.Injection;
-import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
-import br.com.zalf.prolog.webservice.frota.checklist.offline.model.*;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.InfosChecklistInserido;
+import br.com.zalf.prolog.webservice.frota.checklist.offline.model.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -28,37 +26,8 @@ public class ChecklistOfflineDaoImpl extends DatabaseConnection implements Check
 
     @NotNull
     @Override
-    public Long insertChecklistOffline(@NotNull final ChecklistInsercao checklist) throws Throwable {
-        return insereChecklistOffline(checklist).getCodChecklist();
-    }
-
-    @NotNull
-    @Override
-    public InfosChecklistInserido insereChecklistOffline(@NotNull final ChecklistInsercao checklist)
-            throws Throwable {
-        Connection conn = null;
-        try {
-            conn = getConnection();
-            conn.setAutoCommit(false);
-            // Caso o checklist contenha informações que caracterizem uma duplicata nós não iremos inserir,
-            // apenas retornamos o código do checklist que já está no banco de dados.
-            final Optional<Long> optionalCodChecklist = getCodChecklistIfExists(conn, checklist);
-            if (optionalCodChecklist.isPresent()) {
-                conn.commit();
-                return new InfosChecklistInserido(optionalCodChecklist.get(), true, null);
-            } else {
-                final InfosChecklistInserido infosChecklistInserido = internalInsertChecklist(conn, checklist);
-                conn.commit();
-                return infosChecklistInserido;
-            }
-        } catch (final Throwable t) {
-            if (conn != null) {
-                conn.rollback();
-            }
-            throw t;
-        } finally {
-            close(conn);
-        }
+    public InfosChecklistInserido insertChecklistOffline(@NotNull final ChecklistInsercao checklist) throws Throwable {
+        return Injection.provideChecklistDao().insertChecklist(checklist, true, true);
     }
 
     @Override
@@ -302,48 +271,5 @@ public class ChecklistOfflineDaoImpl extends DatabaseConnection implements Check
         } finally {
             close(conn, stmt, rSet);
         }
-    }
-
-    @NotNull
-    private Optional<Long> getCodChecklistIfExists(@NotNull final Connection conn,
-                                                   @NotNull final ChecklistInsercao checklist) throws Throwable {
-        PreparedStatement stmt = null;
-        ResultSet rSet = null;
-        try {
-            stmt = conn.prepareStatement("SELECT * " +
-                    "FROM FUNC_CHECKLIST_GET_COD_CHECKLIST_DUPLICADO(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
-            final ZoneId zoneId = TimeZoneManager.getZoneIdForCodUnidade(checklist.getCodUnidade(), conn);
-            stmt.setLong(1, checklist.getCodUnidade());
-            stmt.setLong(2, checklist.getCodModelo());
-            stmt.setObject(3, checklist.getDataHoraRealizacao().atZone(zoneId).toOffsetDateTime());
-            stmt.setLong(4, checklist.getCodColaborador());
-            stmt.setString(5, checklist.getPlacaVeiculo());
-            stmt.setString(6, String.valueOf(checklist.getTipo().asChar()));
-            stmt.setLong(7, checklist.getKmColetadoVeiculo());
-            stmt.setLong(8, checklist.getTempoRealizacaoCheckInMillis());
-            stmt.setString(9, checklist.getFonteDataHoraRealizacao().asString());
-            stmt.setInt(10, checklist.getVersaoAppMomentoRealizacao());
-            stmt.setString(11, checklist.getDeviceId());
-            stmt.setString(12, checklist.getDeviceImei());
-            stmt.setLong(13, checklist.getDeviceUptimeRealizacaoMillis());
-            rSet = stmt.executeQuery();
-            if (rSet.next()) {
-                if (rSet.getBoolean("CHECKLIST_JA_EXISTE")) {
-                    return Optional.of(rSet.getLong("COD_CHECKLIST"));
-                } else {
-                    return Optional.empty();
-                }
-            } else {
-                throw new SQLException("Não foi possível verificar se checklist já existe");
-            }
-        } finally {
-            close(stmt, rSet);
-        }
-    }
-
-    @NotNull
-    private InfosChecklistInserido internalInsertChecklist(@NotNull final Connection conn,
-                                                           @NotNull final ChecklistInsercao checklist) throws Throwable {
-        return Injection.provideChecklistDao().insertChecklist(conn, checklist, true, true);
     }
 }

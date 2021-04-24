@@ -1,6 +1,3 @@
--- Sobre:
---
--- Function utilizada para buscar uma Ordem de Serviço para ser fechada.
 create or replace function func_checklist_os_get_ordem_servico_resolucao(f_cod_unidade bigint,
                                                                          f_cod_os bigint,
                                                                          f_data_hora_atual_utc timestamp with time zone)
@@ -45,7 +42,7 @@ $$
 begin
     return query
         select c.cod_veiculo                                                          as cod_veiculo,
-               c.placa_veiculo::text                                                  as placa_veiculo,
+               v.placa::text                                                          as placa_veiculo,
                v.km                                                                   as km_atual_veiculo,
                cos.codigo                                                             as cod_os,
                cos.cod_unidade                                                        as cod_unidade_os,
@@ -101,7 +98,7 @@ begin
                  join checklist_alternativa_prioridade prio
                       on cap.prioridade = prio.prioridade
                  join veiculo v
-                      on c.placa_veiculo = v.placa
+                      on c.cod_veiculo = v.codigo
                  left join colaborador co
                            on co.cpf = cosi.cpf_mecanico
                  left join checklist_ordem_servico_itens_midia im

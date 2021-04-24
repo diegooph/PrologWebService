@@ -1,5 +1,4 @@
 create or replace function func_checklist_relatorio_resumo_realizados(f_cod_unidades bigint[],
-                                                                      f_placa_veiculo text,
                                                                       f_data_inicial date,
                                                                       f_data_final date)
     returns table
@@ -45,7 +44,7 @@ select u.nome                                                 as nome_unidade,
        lpad(co.cpf :: text, 11, '0')                          as cpf_colaborador,
        e.nome                                                 as equipe_colaborador,
        f.nome                                                 as cargo_colaborador,
-       c.placa_veiculo                                        as placa_veiculo,
+       v.placa::text                                          as placa_veiculo,
        vt.nome                                                as tipo_veiculo,
        c.km_veiculo                                           as km_veiculo,
        c.tempo_realizacao / 1000                              as tempo_realizacao_segundos,
@@ -87,12 +86,11 @@ from checklist c
          join unidade u
               on c.cod_unidade = u.codigo
          join checklist_modelo cm on cm.codigo = c.cod_checklist_modelo
-         join veiculo v on v.placa = c.placa_veiculo
+         join veiculo v on v.codigo = c.cod_veiculo
          join veiculo_tipo vt on vt.codigo = v.cod_tipo
 where c.cod_unidade = any (f_cod_unidades)
   and c.data_hora_realizacao_tz_aplicado :: date >= f_data_inicial
   and c.data_hora_realizacao_tz_aplicado :: date <= f_data_final
-  and (f_placa_veiculo = '%' or c.placa_veiculo like f_placa_veiculo)
 group by c.codigo,
          cm.nome,
          c.total_perguntas_ok,
@@ -110,7 +108,7 @@ group by c.codigo,
          c.data_hora_importado_prolog,
          c.data_hora_sincronizacao,
          c.cod_unidade,
-         c.placa_veiculo,
+         v.placa,
          vt.nome,
          c.km_veiculo,
          c.observacao,

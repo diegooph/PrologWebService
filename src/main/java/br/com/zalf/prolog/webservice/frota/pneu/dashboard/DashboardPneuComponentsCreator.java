@@ -21,9 +21,9 @@ import br.com.zalf.prolog.webservice.dashboard.components.charts.scatter.Scatter
 import br.com.zalf.prolog.webservice.dashboard.components.charts.scatter.ScatterEntry;
 import br.com.zalf.prolog.webservice.dashboard.components.charts.scatter.ScatterGroup;
 import br.com.zalf.prolog.webservice.dashboard.components.table.*;
+import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.QtdDiasAfericoesVencidas;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.TipoMedicaoColetadaAfericao;
-import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios._model.QuantidadeAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios._model.StatusPlacasAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios._model.SulcoPressao;
@@ -35,9 +35,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static br.com.zalf.prolog.webservice.frota.pneu.afericao._model.TipoMedicaoColetadaAfericao.PRESSAO;
-import static br.com.zalf.prolog.webservice.frota.pneu.afericao._model.TipoMedicaoColetadaAfericao.SULCO;
-import static br.com.zalf.prolog.webservice.frota.pneu.afericao._model.TipoMedicaoColetadaAfericao.SULCO_PRESSAO;
+import static br.com.zalf.prolog.webservice.frota.pneu.afericao._model.TipoMedicaoColetadaAfericao.*;
 import static br.com.zalf.prolog.webservice.frota.pneu.servico._model.TipoServico.*;
 
 /**
@@ -49,7 +47,7 @@ final class DashboardPneuComponentsCreator {
 
     private DashboardPneuComponentsCreator() {
         throw new IllegalStateException(DashboardPneuComponentsCreator.class.getSimpleName() + " cannot be " +
-                "instatiated!");
+                                                "instatiated!");
     }
 
     @NotNull
@@ -235,9 +233,9 @@ final class DashboardPneuComponentsCreator {
         final List<ScatterEntry> entries = new ArrayList<>(valores.size());
         for (final SulcoPressao sulcoPressao : valores) {
             final String infoEntry = String.format("Pneu: %s\nSulco: %s\nPressão: %s",
-                    sulcoPressao.getCodPneuCliente(),
-                    String.valueOf(sulcoPressao.getValorSulco()),
-                    String.valueOf(sulcoPressao.getValorPressao()));
+                                                   sulcoPressao.getCodPneuCliente(),
+                                                   String.valueOf(sulcoPressao.getValorSulco()),
+                                                   String.valueOf(sulcoPressao.getValorPressao()));
             entries.add(ScatterEntry.create(
                     sulcoPressao.getValorPressao(),
                     String.valueOf(sulcoPressao.getValorPressao()),
@@ -368,15 +366,14 @@ final class DashboardPneuComponentsCreator {
                     if (diasVencidos > 0) {
                         columns.add(new TableColumn(String.valueOf(diasVencidos)));
                     } else {
-                        columns.add(new TableColumn("-"));
+                        columns.add(new TableColumn("vencido (nunca aferido)"));
                     }
                 } else {
-                    columns.add(new TableColumn("-"));
+                    columns.add(new TableColumn("vencido (nunca aferido)"));
                 }
             } else {
-                columns.add(new TableColumn("-"));
+                columns.add(new TableColumn("bloqueado aferição"));
             }
-
 
             // Aferição pressão.
             if (afericoesVencidas.isPodeAferirPressao()) {
@@ -385,20 +382,23 @@ final class DashboardPneuComponentsCreator {
                     if (diasVencidos > 0) {
                         columns.add(new TableColumn(String.valueOf(diasVencidos)));
                     } else {
-                        columns.add(new TableColumn("-"));
+                        columns.add(new TableColumn("vencido (nunca aferida)"));
                     }
                 } else {
-                    columns.add(new TableColumn("-"));
+                    columns.add(new TableColumn("vencido (nunca aferida)"));
                 }
             } else {
-                columns.add(new TableColumn("-"));
+                columns.add(new TableColumn("bloqueado aferição"));
             }
 
             lines.add(new TableLine(columns));
         });
 
         final TableData tableData = new TableData(lines);
-        return TableComponent.createDefault(component, tableHeader, tableData, null);
+        final TableFooter tableFooter =
+                new TableFooter(new TableItemFooter("Total de placas vencidas:",
+                                                    String.valueOf(qtdDiasAfericoesVencidas.size())));
+        return TableComponent.createDefault(component, tableHeader, tableData, tableFooter);
     }
 
     @NotNull
@@ -440,15 +440,15 @@ final class DashboardPneuComponentsCreator {
             if (qtdAfericao.teveAfericoesRealizadas()) {
                 if (qtdAfericao.getQtdAfericoesSulco() > 0) {
                     informacaoPonto = String.format("%s\nSulco: %d", informacaoPonto,
-                            qtdAfericao.getQtdAfericoesSulco());
+                                                    qtdAfericao.getQtdAfericoesSulco());
                 }
                 if (qtdAfericao.getQtdAfericoesPressao() > 0) {
                     informacaoPonto = String.format("%s\nPressão: %d", informacaoPonto,
-                            qtdAfericao.getQtdAfericoesPressao());
+                                                    qtdAfericao.getQtdAfericoesPressao());
                 }
                 if (qtdAfericao.getQtdAfericoesSulcoPressao() > 0) {
                     informacaoPonto = String.format("%s\nSulco/Pressão: %d", informacaoPonto,
-                            qtdAfericao.getQtdAfericoesSulcoPressao());
+                                                    qtdAfericao.getQtdAfericoesSulcoPressao());
                 }
             } else {
                 informacaoPonto = String.format("%s\nsem aferições", informacaoPonto);
@@ -461,7 +461,7 @@ final class DashboardPneuComponentsCreator {
         final LineGroup groupSulco = new LineGroup("Sulco", entriesSulco, SULCO.getColor());
         final LineGroup groupPressao = new LineGroup("Pressão", entriesPressao, PRESSAO.getColor());
         final LineGroup groupSulcoPressao = new LineGroup("Sulco/Pressão", entriesSulcoPressao,
-                SULCO_PRESSAO.getColor());
+                                                          SULCO_PRESSAO.getColor());
         groups.add(groupSulco);
         groups.add(groupPressao);
         groups.add(groupSulcoPressao);

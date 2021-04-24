@@ -16,7 +16,7 @@ declare
     v_cod_item                                   bigint;
     v_data_realizacao_checklist                  timestamp with time zone;
     v_alternativa_item                           text;
-    v_error_message                              text            := E'Erro! A data de resolução %s não pode ser anterior a data de abertura %s do item "%s".';
+    v_error_message                              text            := E'Erro! A data de resolução "%s" não pode ser anterior a data de abertura "%s" do item "%s".';
     v_qtd_linhas_atualizadas                     bigint;
     v_total_linhas_atualizadas                   bigint          := 0;
     v_cod_agrupamento_resolucao_em_lote constant bigint not null := (select nextval('CODIGO_RESOLUCAO_ITEM_OS'));
@@ -48,9 +48,11 @@ begin
             -- Bloqueia caso a data de resolução seja menor ou igual que a data de realização do checklist
             if v_data_realizacao_checklist is not null and v_data_realizacao_checklist >= f_data_hora_inicio_resolucao
             then
-                perform throw_generic_error(
-                        FORMAT(v_error_message, v_data_realizacao_checklist, f_data_hora_inicio_resolucao,
-                               v_alternativa_item));
+                perform throw_generic_error(format(
+                        v_error_message,
+                        format_with_tz(f_data_hora_inicio_resolucao, tz_unidade(f_cod_unidade), 'DD/MM/YYYY HH24:MI'),
+                        format_with_tz(v_data_realizacao_checklist, tz_unidade(f_cod_unidade), 'DD/MM/YYYY HH24:MI'),
+                        v_alternativa_item));
             end if;
 
             -- Atualiza os itens

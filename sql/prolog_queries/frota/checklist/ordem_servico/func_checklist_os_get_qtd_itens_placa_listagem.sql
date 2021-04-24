@@ -1,6 +1,6 @@
 create or replace function func_checklist_os_get_qtd_itens_placa_listagem(f_cod_unidade bigint,
                                                                           f_cod_tipo_veiculo bigint,
-                                                                          f_placa_veiculo text,
+                                                                          f_cod_veiculo bigint,
                                                                           f_status_itens_os text,
                                                                           f_limit integer,
                                                                           f_offset integer)
@@ -34,9 +34,9 @@ begin
                count(cap.prioridade)     as total_itens
         from veiculo v
                  join checklist c
-                      -- Queremos apenas veículos da unidade onde o checklist foi feito.
-                      -- Isso evita de trazer itens de O.S. de outra empresa em caso de transferência de veículos.
-                      on v.placa = c.placa_veiculo and v.cod_unidade = c.cod_unidade
+            -- Queremos apenas veículos da unidade onde o checklist foi feito.
+            -- Isso evita de trazer itens de O.S. de outra empresa em caso de transferência de veículos.
+                      on v.codigo = c.cod_veiculo and v.cod_unidade = c.cod_unidade
                  join checklist_ordem_servico cos
                       on c.codigo = cos.cod_checklist
                  join checklist_ordem_servico_itens cosi
@@ -48,13 +48,13 @@ begin
                       on v.cod_tipo = vt.codigo
         where v.cod_unidade = f_cod_unidade
           and case when f_cod_tipo_veiculo is null then true else vt.codigo = f_cod_tipo_veiculo end
-          and case when f_placa_veiculo is null then true else v.placa = f_placa_veiculo end
+          and case when f_cod_veiculo is null then true else v.codigo = f_cod_veiculo end
           and case when f_status_itens_os is null then true else cosi.status_resolucao = f_status_itens_os end
         group by v.placa
         order by qtd_itens_prioridade_critica desc,
                  qtd_itens_prioridade_alta desc,
                  qtd_itens_prioridade_baixa desc,
-                 placa_veiculo asc
+                 placa_veiculo
         limit f_limit offset f_offset;
 end;
 $$;

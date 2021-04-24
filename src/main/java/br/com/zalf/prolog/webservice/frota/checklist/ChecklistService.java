@@ -44,7 +44,8 @@ public final class ChecklistService {
         try {
             return RouterChecklists
                     .create(dao, userToken)
-                    .insertChecklist(checklist, false, true);
+                    .insertChecklist(checklist, false, true)
+                    .getCodChecklist();
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao inserir um checklist", t);
             throw Injection
@@ -155,29 +156,6 @@ public final class ChecklistService {
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(throwable, "Erro ao buscar checklist, tente novamente");
-        }
-    }
-
-    public List<Checklist> getAll(final Long codUnidade,
-                                  final Long codEquipe,
-                                  final Long codTipoVeiculo,
-                                  final String placaVeiculo,
-                                  final long dataInicial,
-                                  final long dataFinal,
-                                  final int limit,
-                                  final long offset,
-                                  final boolean resumido,
-                                  final String userToken) {
-        try {
-            return RouterChecklists
-                    .create(dao, userToken)
-                    .getTodosChecklists(codUnidade, codEquipe, codTipoVeiculo, placaVeiculo, dataInicial, dataFinal,
-                            limit, offset, resumido);
-        } catch (final Throwable t) {
-            Log.e(TAG, "Erro ao buscar checklists", t);
-            throw Injection
-                    .provideProLogExceptionHandler()
-                    .map(t, "Erro ao buscar checklists, tente novamente");
         }
     }
 

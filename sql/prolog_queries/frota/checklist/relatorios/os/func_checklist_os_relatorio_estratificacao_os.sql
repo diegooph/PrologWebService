@@ -1,5 +1,4 @@
 CREATE OR REPLACE FUNCTION FUNC_CHECKLIST_OS_RELATORIO_ESTRATIFICACAO_OS(F_COD_UNIDADES BIGINT[],
-                                                                         F_PLACA_VEICULO TEXT,
                                                                          F_STATUS_OS TEXT,
                                                                          F_STATUS_ITEM TEXT,
                                                                          F_DATA_INICIAL_ABERTURA DATE,
@@ -39,59 +38,57 @@ CREATE OR REPLACE FUNCTION FUNC_CHECKLIST_OS_RELATORIO_ESTRATIFICACAO_OS(F_COD_U
     LANGUAGE SQL
 AS
 $$
-SELECT U.NOME                                                                             AS NOME_UNIDADE,
-       EO.COD_OS                                                                          AS CODIGO_OS,
-       EO.CODIGO                                                                          AS COD_ITEM_OS,
-       FORMAT_TIMESTAMP(EO.DATA_HORA, 'DD/MM/YYYY HH24:MI')                                  AS ABERTURA_OS,
+SELECT U.NOME                                                                                   AS NOME_UNIDADE,
+       EO.COD_OS                                                                                AS CODIGO_OS,
+       EO.CODIGO                                                                                AS COD_ITEM_OS,
+       FORMAT_TIMESTAMP(EO.DATA_HORA, 'DD/MM/YYYY HH24:MI')                                     AS ABERTURA_OS,
        FORMAT_TIMESTAMP(EO.DATA_HORA + (EO.PRAZO || ' HOUR') :: INTERVAL, 'DD/MM/YYYY HH24:MI') AS DATA_LIMITE_CONSERTO,
        (CASE
             WHEN STATUS_OS = 'A'
                 THEN 'ABERTA'
-            ELSE 'FECHADA' END)                                                           AS STATUS_OS,
-       EO.PLACA_VEICULO                                                                      AS PLACA,
-       VT.NOME                                                                            AS TIPO_VEICULO,
+            ELSE 'FECHADA' END)                                                                 AS STATUS_OS,
+       EO.PLACA_VEICULO                                                                         AS PLACA,
+       VT.NOME                                                                                  AS TIPO_VEICULO,
        CASE
            WHEN TIPO_CHECKLIST = 'S'
                THEN 'SAÍDA'
-           ELSE 'RETORNO' END                                                             AS TIPO_CHECKLIST,
-       CM.NOME                                                                            AS CHECKLIST_MODELO,
-       PERGUNTA                                                                           AS PERGUNTA,
-       ALTERNATIVA                                                                        AS ALTERNATIVA,
-       QT_APONTAMENTOS                                                                    AS QTD_APONTAMENTOS,
-       PRIORIDADE                                                                         AS PRIORIDADE,
-       PRAZO                                                                              AS PRAZO_EM_HORAS,
-       RESPOSTA_OUTROS                                                                    AS DESCRICAO,
+           ELSE 'RETORNO' END                                                                   AS TIPO_CHECKLIST,
+       CM.NOME                                                                                  AS CHECKLIST_MODELO,
+       PERGUNTA                                                                                 AS PERGUNTA,
+       ALTERNATIVA                                                                              AS ALTERNATIVA,
+       QT_APONTAMENTOS                                                                          AS QTD_APONTAMENTOS,
+       PRIORIDADE                                                                               AS PRIORIDADE,
+       PRAZO                                                                                    AS PRAZO_EM_HORAS,
+       RESPOSTA_OUTROS                                                                          AS DESCRICAO,
        CASE
            WHEN STATUS_ITEM = 'P'
                THEN 'PENDENTE'
-           ELSE 'RESOLVIDO' END                                                           AS STATUS_ITEM,
+           ELSE 'RESOLVIDO' END                                                                 AS STATUS_ITEM,
        FORMAT_TIMESTAMP(
                DATA_HORA_INICIO_RESOLUCAO_UTC AT TIME ZONE TIME_ZONE_UNIDADE,
                'DD/MM/YYYY HH24:MI',
-               '-')                                                                       AS DATA_INICIO_RESOLUCAO,
+               '-')                                                                             AS DATA_INICIO_RESOLUCAO,
        FORMAT_TIMESTAMP(
                DATA_HORA_FIM_RESOLUCAO_UTC AT TIME ZONE TIME_ZONE_UNIDADE,
-               'DD/MM/YYYY HH24:MI', '-')                                                 AS DATA_FIM_RESOLUCAO,
-       FORMAT_TIMESTAMP(DATA_HORA_CONSERTO, 'DD/MM/YYYY HH24:MI')                         AS DATA_RESOLVIDO_PROLOG,
-       NOME_MECANICO                                                                      AS MECANICO,
-       FEEDBACK_CONSERTO                                                                  AS DESCRICAO_CONSERTO,
-       EO.TEMPO_REALIZACAO / 1000 / 60                                                    AS TEMPO_CONSERTO_MINUTOS,
-       KM                                                                                 AS KM_ABERTURA,
-       KM_FECHAMENTO                                                                      AS KM_FECHAMENTO,
-       COALESCE((KM_FECHAMENTO - KM) :: TEXT, '-')                                        AS KM_PERCORRIDO,
-       NOME_REALIZADOR_CHECKLIST                                                          AS MOTORISTA
+               'DD/MM/YYYY HH24:MI', '-')                                                       AS DATA_FIM_RESOLUCAO,
+       FORMAT_TIMESTAMP(DATA_HORA_CONSERTO, 'DD/MM/YYYY HH24:MI')                               AS DATA_RESOLVIDO_PROLOG,
+       NOME_MECANICO                                                                            AS MECANICO,
+       FEEDBACK_CONSERTO                                                                        AS DESCRICAO_CONSERTO,
+       EO.TEMPO_REALIZACAO / 1000 / 60                                                          AS TEMPO_CONSERTO_MINUTOS,
+       KM                                                                                       AS KM_ABERTURA,
+       KM_FECHAMENTO                                                                            AS KM_FECHAMENTO,
+       COALESCE((KM_FECHAMENTO - KM) :: TEXT, '-')                                              AS KM_PERCORRIDO,
+       NOME_REALIZADOR_CHECKLIST                                                                AS MOTORISTA
 FROM ESTRATIFICACAO_OS EO
          JOIN UNIDADE U
               ON EO.COD_UNIDADE = U.CODIGO
          JOIN VEICULO_TIPO VT
-             ON VT.CODIGO = EO.COD_TIPO
+              ON VT.CODIGO = EO.COD_TIPO
          JOIN CHECKLIST C
-            ON C.CODIGO = EO.COD_CHECKLIST
+              ON C.CODIGO = EO.COD_CHECKLIST
          JOIN CHECKLIST_MODELO CM
-            ON CM.CODIGO = C.COD_CHECKLIST_MODELO
-
+              ON CM.CODIGO = C.COD_CHECKLIST_MODELO
 WHERE EO.COD_UNIDADE = ANY (F_COD_UNIDADES)
-  AND EO.PLACA_VEICULO LIKE F_PLACA_VEICULO
   AND EO.STATUS_OS LIKE F_STATUS_OS
   AND EO.STATUS_ITEM LIKE F_STATUS_ITEM
   AND CASE

@@ -6,11 +6,6 @@
 -- A function lista, exclusivamente, itens de O.S que estão PENDENTES no ProLog, estes itens irão compor uma nova
 -- ordem de serviço no Sistema Parceiro e lá será feita a resolução.
 --
--- Histórico:
--- 2019-02-18 -> Function criada (diogenesvanzella - PL-1603).
--- 2019-11-07 -> Atualiza function para buscar itens de O.S na nova estrutura (diogenesvanzella - PL-2416).
--- 2020-01-08 -> Corrige tipo de retorno das colunas (diogenesvanzella - PL-2416).
--- 2020-01-14 -> Passa a utilizar código do contexto na integração (diogenesvanzella - PL-2416).
 CREATE OR REPLACE FUNCTION
     INTEGRACAO.FUNC_INTEGRACAO_BUSCA_ITENS_OS_EMPRESA(F_COD_ULTIMO_ITEM_PENDENTE_SINCRONIZADO BIGINT,
                                                       F_TOKEN_INTEGRACAO TEXT)
@@ -44,7 +39,7 @@ DECLARE
     F_STATUS_ITEM_ORDEM_SERVICO_PENDENTE TEXT := 'P';
 BEGIN
     RETURN QUERY
-        SELECT CD.PLACA_VEICULO::TEXT                               AS PLACA_VEICULO,
+        SELECT VD.PLACA::TEXT                                       AS PLACA_VEICULO,
                CD.KM_VEICULO                                        AS KM_ABERTURA_SERVICO,
                COSD.CODIGO                                          AS COD_ORDEM_SERVICO,
                COSD.COD_UNIDADE                                     AS COD_UNIDADE_ORDEM_SERVICO,
@@ -69,14 +64,13 @@ BEGIN
                         FROM CHECKLIST_RESPOSTAS_NOK CRN
                         WHERE CRN.COD_CHECKLIST = CD.CODIGO
                           AND CRN.COD_ALTERNATIVA = CAPD.CODIGO)
-                   ELSE
-                       NULL
                    END                                              AS DESCRICAO_TIPO_OUTROS,
                CAPD.PRIORIDADE::TEXT                                AS PRIORIDADE_ALTERNATIVA
         FROM CHECKLIST_ORDEM_SERVICO_ITENS_DATA COSID
                  JOIN CHECKLIST_ORDEM_SERVICO_DATA COSD
                       ON COSID.COD_OS = COSD.CODIGO AND COSID.COD_UNIDADE = COSD.COD_UNIDADE
                  JOIN CHECKLIST_DATA CD ON COSD.COD_CHECKLIST = CD.CODIGO
+                 JOIN VEICULO_DATA VD ON CD.COD_VEICULO = VD.CODIGO
                  JOIN CHECKLIST_PERGUNTAS_DATA CPD ON COSID.COD_PERGUNTA_PRIMEIRO_APONTAMENTO = CPD.CODIGO
                  JOIN CHECKLIST_ALTERNATIVA_PERGUNTA_DATA CAPD
                       ON COSID.COD_ALTERNATIVA_PRIMEIRO_APONTAMENTO = CAPD.CODIGO
