@@ -421,17 +421,6 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
 
     @NotNull
     @Override
-    public Long insertAfericao(@NotNull final Long codUnidade,
-                               @NotNull final Afericao afericao,
-                               final boolean deveAbrirServico) throws Throwable {
-        if (afericaoDao == null) {
-            afericaoDao = Injection.provideAfericaoDao();
-        }
-        return afericaoDao.insert(codUnidade, afericao, deveAbrirServico);
-    }
-
-    @NotNull
-    @Override
     public Afericao getAfericaoByCodigo(@NotNull final Long codUnidade, @NotNull final Long codAfericao)
             throws Throwable {
         if (afericaoDao == null) {
@@ -771,6 +760,16 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
             empresaDao = Injection.provideEmpresaDao();
         }
         return empresaDao.getFiltros(cpf);
+    }
+
+    @NotNull
+    public Long insertAfericao(@NotNull final Long codUnidade,
+                               @NotNull final Afericao afericao,
+                               final boolean deveAbrirServico) throws Throwable {
+        if (afericaoDao == null) {
+            afericaoDao = Injection.provideAfericaoDao();
+        }
+        return afericaoDao.insert(codUnidade, afericao, deveAbrirServico);
     }
 
     public static final class Builder {
