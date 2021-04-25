@@ -1,8 +1,10 @@
-package br.com.zalf.prolog.webservice.integracao.newrouter;
+package br.com.zalf.prolog.webservice.integracao.newimpl;
 
 import br.com.zalf.prolog.webservice.autenticacao.token.TokenCleaner;
 import br.com.zalf.prolog.webservice.integracao.RecursoIntegrado;
 import br.com.zalf.prolog.webservice.integracao.integrador.IntegracaoDao;
+import br.com.zalf.prolog.webservice.integracao.newimpl.sistemas.SistemaFactory;
+import br.com.zalf.prolog.webservice.integracao.newimpl.sistemas.SistemaIntegrado;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.ProceedingJoinPoint;

@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.integracao.newrouter;
+package br.com.zalf.prolog.webservice.integracao.newimpl;
 
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.Afericao;
 import org.jetbrains.annotations.NotNull;

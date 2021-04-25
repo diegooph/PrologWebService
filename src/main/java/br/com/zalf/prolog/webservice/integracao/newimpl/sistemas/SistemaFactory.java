@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.integracao.newrouter;
+package br.com.zalf.prolog.webservice.integracao.newimpl.sistemas;
 
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
 import lombok.RequiredArgsConstructor;

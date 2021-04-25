@@ -1,8 +1,9 @@
-package br.com.zalf.prolog.webservice.integracao.newrouter;
+package br.com.zalf.prolog.webservice.integracao.newimpl.sistemas;
 
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDaoV2;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.Afericao;
+import br.com.zalf.prolog.webservice.integracao.newimpl.AfericaoIntegrada;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
