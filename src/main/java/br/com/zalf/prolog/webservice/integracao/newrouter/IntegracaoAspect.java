@@ -1,8 +1,8 @@
 package br.com.zalf.prolog.webservice.integracao.newrouter;
 
-import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.autenticacao.token.TokenCleaner;
 import br.com.zalf.prolog.webservice.integracao.RecursoIntegrado;
+import br.com.zalf.prolog.webservice.integracao.integrador.IntegracaoDao;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -27,9 +27,10 @@ import java.util.Optional;
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public final class IntegracaoAspect {
-
     @NotNull
     private final SistemaFactory sistemaFactory;
+    @NotNull
+    private final IntegracaoDao integracaoDao;
 
     @Around("@annotation(Integrado)")
     public Object onIntegratedMethodCalled(final ProceedingJoinPoint joinPoint) throws Throwable {
@@ -57,7 +58,7 @@ public final class IntegracaoAspect {
     @NotNull
     private Optional<SistemaKey> getSistemaKey(@NotNull final String requestToken,
                                                @NotNull final RecursoIntegrado recursoIntegrado) throws Exception {
-        return Optional.ofNullable(Injection.provideIntegracaoDao().getSistemaKey(requestToken, recursoIntegrado));
+        return Optional.ofNullable(integracaoDao.getSistemaKey(requestToken, recursoIntegrado));
     }
 
     @NotNull
