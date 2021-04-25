@@ -6,7 +6,6 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -22,14 +21,10 @@ public final class SistemaFactory {
 
     @NotNull
     public SistemaIntegrado createSistema(@NotNull final SistemaKey sistemaKey) {
-        final Optional<SistemaIntegrado> sistema = sistemasIntegrados
+        return sistemasIntegrados
                 .stream()
                 .filter(sistemaIntegrado -> sistemaIntegrado.matchesKey(sistemaKey))
-                .findFirst();
-        if (sistema.isPresent()) {
-            return sistema.get();
-        } else {
-            throw new IllegalArgumentException("Nenhum sistema encontrando com a key: " + sistemaKey);
-        }
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Nenhum sistema encontrando com a key: " + sistemaKey));
     }
 }
