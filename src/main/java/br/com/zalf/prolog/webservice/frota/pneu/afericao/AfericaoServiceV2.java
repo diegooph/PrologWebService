@@ -12,18 +12,26 @@ import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.*;
 import br.com.zalf.prolog.webservice.integracao.router.RouterAfericao;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 /**
  * Classe AfericaoService responsavel por comunicar-se com a interface DAO
  */
-public class AfericaoService {
-    private static final String TAG = AfericaoService.class.getSimpleName();
-    @NotNull
-    private final AfericaoDao dao = Injection.provideAfericaoDao();
+@Service
+public class AfericaoServiceV2 {
+    private static final String TAG = AfericaoServiceV2.class.getSimpleName();
     @NotNull
     private final ProLogExceptionHandler exceptionHandler = Injection.provideProLogExceptionHandler();
+    @NotNull
+    private final AfericaoDaoV2 dao;
+
+    @Autowired
+    public AfericaoServiceV2(@NotNull final AfericaoDaoV2 dao) {
+        this.dao = dao;
+    }
 
     @Nullable
     public Long insert(@NotNull final String userToken,

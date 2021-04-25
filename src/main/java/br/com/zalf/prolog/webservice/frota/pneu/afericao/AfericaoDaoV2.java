@@ -10,7 +10,7 @@ import java.sql.Connection;
 import java.time.LocalDate;
 import java.util.List;
 
-public interface AfericaoDao {
+public interface AfericaoDaoV2 {
 
     @NotNull
     Long insert(@NotNull final Connection conn,

@@ -44,7 +44,7 @@ import br.com.zalf.prolog.webservice.integracao.integrador.IntegracaoDao;
 import br.com.zalf.prolog.webservice.integracao.operacoes.OperacoesIntegradas;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
-import br.com.zalf.prolog.webservice.integracao.sistema.SistemasFactory;
+import br.com.zalf.prolog.webservice.integracao.sistema.SistemasFactoryOld;
 import br.com.zalf.prolog.webservice.v3.frota.veiculo._model.VeiculoCadastroDto;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -748,6 +748,6 @@ public abstract class Router implements OperacoesIntegradas {
             return null;
         }
 
-        return SistemasFactory.createSistema(sistemaKey, recursoIntegrado, integradorProLog, userToken);
+        return SistemasFactoryOld.createSistema(sistemaKey, recursoIntegrado, integradorProLog, userToken);
     }
 }

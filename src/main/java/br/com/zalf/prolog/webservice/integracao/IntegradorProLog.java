@@ -27,7 +27,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.PneuDao;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Restricao;
 import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDaoV2;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.MovimentacaoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.ProcessoMovimentacao;
@@ -90,7 +90,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
     private ServicoDao afericaoServicoDao;
     private MovimentacaoDao movimentacaoDao;
     private VeiculoDao veiculoDao;
-    private AfericaoDao afericaoDao;
+    private AfericaoDaoV2 afericaoDao;
     private ColaboradorDao colaboradorDao;
     private EmpresaDao empresaDao;
     private IntegracaoDao integracaoDao;
@@ -105,7 +105,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
                              final ChecklistOfflineDao checklistOfflineDao,
                              final ChecklistModeloDao checklistModeloDao,
                              final OrdemServicoDao ordemServicoDao,
-                             final AfericaoDao afericaoDao,
+                             final AfericaoDaoV2 afericaoDao,
                              final ServicoDao afericaoServicoDao,
                              final MovimentacaoDao movimentacaoDao,
                              final ColaboradorDao colaboradorDao,
@@ -784,7 +784,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         private ChecklistOfflineDao checklistOfflineDao;
         private ChecklistModeloDao checklistModeloDao;
         private OrdemServicoDao ordemServicoDao;
-        private AfericaoDao afericaoDao;
+        private AfericaoDaoV2 afericaoDao;
         private ServicoDao afericaoServicoDao;
         private MovimentacaoDao movimentacaoDao;
         private ColaboradorDao colaboradorDao;
@@ -840,7 +840,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
             return this;
         }
 
-        public Builder withAfericaoDao(final AfericaoDao afericaoDao) {
+        public Builder withAfericaoDao(final AfericaoDaoV2 afericaoDao) {
             this.afericaoDao = afericaoDao;
             return this;
         }

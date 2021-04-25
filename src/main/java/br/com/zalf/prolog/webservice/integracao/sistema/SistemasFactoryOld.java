@@ -20,10 +20,10 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Created by luiz on 7/17/17.
  */
-public final class SistemasFactory {
+public final class SistemasFactoryOld {
 
-    private SistemasFactory() {
-        throw new IllegalStateException(SistemasFactory.class.getSimpleName() + " cannot be instantiated!");
+    private SistemasFactoryOld() {
+        throw new IllegalStateException(SistemasFactoryOld.class.getSimpleName() + " cannot be instantiated!");
     }
 
     public static Sistema createSistema(@NotNull final SistemaKey sistemaKey,

@@ -13,7 +13,7 @@ import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Restricao;
 import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDao;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDaoV2;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.QtdDiasAfericoesVencidas;
 import br.com.zalf.prolog.webservice.frota.pneu.relatorios._model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.TipoServico;
@@ -499,7 +499,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         ResultSet rSet = null;
 
         final List<Aderencia> aderencias = new ArrayList<>();
-        final AfericaoDao afericaoDao = Injection.provideAfericaoDao();
+        final AfericaoDaoV2 afericaoDao = Injection.provideAfericaoDao();
         final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
         final Restricao restricao = afericaoDao.getRestricaoByCodUnidade(codUnidade);
 
@@ -578,7 +578,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         List<Faixa> faixas = null;
-        final AfericaoDao afericaoDao = Injection.provideAfericaoDao();
+        final AfericaoDaoV2 afericaoDao = Injection.provideAfericaoDao();
         if (!codUnidades.get(0).equals("%")) {
             final Restricao restricao = afericaoDao.getRestricaoByCodUnidade(Long.parseLong(codUnidades.get(0)));
             final Integer base = (int) Math.round(restricao.getToleranciaCalibragem() * 100);

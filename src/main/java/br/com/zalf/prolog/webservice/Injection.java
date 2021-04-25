@@ -48,8 +48,8 @@ import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.relatorios.Ord
 import br.com.zalf.prolog.webservice.frota.checklist.relatorios.ChecklistRelatorioDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.PneuDao;
 import br.com.zalf.prolog.webservice.frota.pneu.PneuDaoImpl;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDao;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDaoImpl;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDaoV2;
+import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDaoV2Impl;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao.ConfiguracaoAfericaoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao.ConfiguracaoAfericaoDaoImpl;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.relatorios.AfericaoRelatorioDao;
@@ -262,8 +262,8 @@ public final class Injection {
     }
 
     @NotNull
-    public static AfericaoDao provideAfericaoDao() {
-        return new AfericaoDaoImpl();
+    public static AfericaoDaoV2 provideAfericaoDao() {
+        return new AfericaoDaoV2Impl();
     }
 
     @NotNull
