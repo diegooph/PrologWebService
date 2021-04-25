@@ -2,18 +2,18 @@ package br.com.zalf.prolog.webservice.integracao.sistema;
 
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.RecursoIntegrado;
-import br.com.zalf.prolog.webservice.integracao.api.SistemaApiProLog;
+import br.com.zalf.prolog.webservice.integracao.api.SistemaApiProLogOld;
 import br.com.zalf.prolog.webservice.integracao.avacorpavilan.SistemaAvaCorpAvilan;
 import br.com.zalf.prolog.webservice.integracao.praxio.SistemaGlobusPiccolotur;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.GlobusPiccoloturRequesterImpl;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap.SoapHandlerGlobusPiccolotur;
 import br.com.zalf.prolog.webservice.integracao.praxio.ordensservicos.soap.SoapRequesterGlobusPiccolotur;
-import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.SistemaProtheusNepomuceno;
+import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.SistemaProtheusNepomucenoOld;
 import br.com.zalf.prolog.webservice.integracao.protheusnepomuceno.data.ProtheusNepomucenoRequesterImpl;
-import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.SistemaRodoparHorizonte;
+import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.SistemaRodoparHorizonteOld;
 import br.com.zalf.prolog.webservice.integracao.rodoparhorizonte.data.RodoparHorizonteRequesterImpl;
 import br.com.zalf.prolog.webservice.integracao.transport.SistemaTransportTranslecchi;
-import br.com.zalf.prolog.webservice.integracao.webfinatto.SistemaWebFinatto;
+import br.com.zalf.prolog.webservice.integracao.webfinatto.SistemaWebFinattoOld;
 import br.com.zalf.prolog.webservice.integracao.webfinatto.data.SistemaWebFinattoRequesterImpl;
 import org.jetbrains.annotations.NotNull;
 
@@ -40,7 +40,7 @@ public final class SistemasFactoryOld {
                         integradorProLog,
                         userToken);
             case PROTHEUS_NEPOMUCENO:
-                return new SistemaProtheusNepomuceno(
+                return new SistemaProtheusNepomucenoOld(
                         new ProtheusNepomucenoRequesterImpl(),
                         sistemaKey,
                         recursoIntegrado,
@@ -56,20 +56,20 @@ public final class SistemasFactoryOld {
                         integradorProLog,
                         userToken);
             case RODOPAR_HORIZONTE:
-                return new SistemaRodoparHorizonte(
+                return new SistemaRodoparHorizonteOld(
                         new RodoparHorizonteRequesterImpl(),
                         integradorProLog,
                         sistemaKey,
                         recursoIntegrado,
                         userToken);
             case API_PROLOG:
-                return new SistemaApiProLog(
+                return new SistemaApiProLogOld(
                         integradorProLog,
                         sistemaKey,
                         recursoIntegrado,
                         userToken);
             case WEB_FINATTO:
-                return new SistemaWebFinatto(
+                return new SistemaWebFinattoOld(
                         new SistemaWebFinattoRequesterImpl(),
                         sistemaKey,
                         recursoIntegrado,

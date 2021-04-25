@@ -25,24 +25,23 @@ import java.sql.Connection;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public class SistemaRodoparHorizonte extends Sistema {
+public class SistemaRodoparHorizonteOld extends Sistema {
     @NotNull
     private final RodoparHorizonteRequester requester;
     @NotNull
     private final IntegracaoDao integracaoDao;
 
-    public SistemaRodoparHorizonte(@NotNull final RodoparHorizonteRequester requester,
-                                   @NotNull final IntegradorProLog integradorProLog,
-                                   @NotNull final SistemaKey sistemaKey,
-                                   @NotNull final RecursoIntegrado recursoIntegrado,
-                                   @NotNull final String userToken) {
+    public SistemaRodoparHorizonteOld(@NotNull final RodoparHorizonteRequester requester,
+                                      @NotNull final IntegradorProLog integradorProLog,
+                                      @NotNull final SistemaKey sistemaKey,
+                                      @NotNull final RecursoIntegrado recursoIntegrado,
+                                      @NotNull final String userToken) {
         super(integradorProLog, sistemaKey, recursoIntegrado, userToken);
         this.integracaoDao = Injection.provideIntegracaoDao();
         this.requester = requester;
     }
 
     @NotNull
-    @Override
     public Long insertAfericao(@NotNull final Long codUnidade,
                                @NotNull final Afericao afericao,
                                final boolean deveAbrirServico) throws Throwable {

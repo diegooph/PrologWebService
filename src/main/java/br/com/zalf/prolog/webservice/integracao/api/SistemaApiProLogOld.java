@@ -28,31 +28,13 @@ import java.util.List;
  *
  * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
  */
-public final class SistemaApiProLog extends Sistema {
+public final class SistemaApiProLogOld extends Sistema {
 
-    public SistemaApiProLog(@NotNull final IntegradorProLog integradorProLog,
-                            @NotNull final SistemaKey sistemaKey,
-                            @NotNull final RecursoIntegrado recursoIntegrado,
-                            @NotNull final String userToken) {
+    public SistemaApiProLogOld(@NotNull final IntegradorProLog integradorProLog,
+                               @NotNull final SistemaKey sistemaKey,
+                               @NotNull final RecursoIntegrado recursoIntegrado,
+                               @NotNull final String userToken) {
         super(integradorProLog, sistemaKey, recursoIntegrado, userToken);
-    }
-
-    @NotNull
-    @Override
-    public Long insertAfericao(@NotNull final Long codUnidade,
-                               @NotNull final Afericao afericao,
-                               final boolean deveAbrirServico) throws Throwable {
-        final boolean abrirServico;
-        if (unidadeEstaComIntegracaoAtiva(codUnidade)) {
-            // Se a unidade possui a integração ativada, precisamos saber se existe algo configurado para abertura
-            // de serviços de pneus nesta unidade.
-            abrirServico = configUnidadeDeveAbrirServicoPneu(codUnidade);
-        } else {
-            // Se a unidade não tem integração ativada, então não nos interessa qualquer outra coisa, devemos abrir
-            // serviços de pneus.
-            abrirServico = true;
-        }
-        return getIntegradorProLog().insertAfericao(codUnidade, afericao, abrirServico);
     }
 
     @Override
@@ -157,6 +139,23 @@ public final class SistemaApiProLog extends Sistema {
                             "Por enquanto, utilize o seu sistema para movimentar os pneus.");
         }
         getIntegradorProLog().fechaServico(codUnidade, dataHorafechamentoServico, servico);
+    }
+
+    @NotNull
+    public Long insertAfericao(@NotNull final Long codUnidade,
+                               @NotNull final Afericao afericao,
+                               final boolean deveAbrirServico) throws Throwable {
+        final boolean abrirServico;
+        if (unidadeEstaComIntegracaoAtiva(codUnidade)) {
+            // Se a unidade possui a integração ativada, precisamos saber se existe algo configurado para abertura
+            // de serviços de pneus nesta unidade.
+            abrirServico = configUnidadeDeveAbrirServicoPneu(codUnidade);
+        } else {
+            // Se a unidade não tem integração ativada, então não nos interessa qualquer outra coisa, devemos abrir
+            // serviços de pneus.
+            abrirServico = true;
+        }
+        return getIntegradorProLog().insertAfericao(codUnidade, afericao, abrirServico);
     }
 
     private boolean unidadeEstaComIntegracaoAtiva(@NotNull final Long codUnidade) throws Throwable {

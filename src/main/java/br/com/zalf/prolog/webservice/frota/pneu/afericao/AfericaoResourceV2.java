@@ -1,13 +1,13 @@
 package br.com.zalf.prolog.webservice.frota.pneu.afericao;
 
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
-import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Optional;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Platform;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Required;
 import br.com.zalf.prolog.webservice.commons.network.metadata.UsedBy;
 import br.com.zalf.prolog.webservice.commons.report.Report;
+import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.VersaoAppBloqueadaException;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Restricao;
@@ -63,12 +63,9 @@ public class AfericaoResourceV2 {
     public AbstractResponse insert(@HeaderParam("Authorization") @Required final String userToken,
                                    @PathParam("codUnidade") @Required final Long codUnidade,
                                    @Required final Afericao afericao) throws ProLogException {
-        final Long codAfericao = service.insert(userToken, codUnidade, afericao);
-        if (codAfericao != null) {
-            return ResponseWithCod.ok("Aferição inserida com sucesso", codAfericao);
-        } else {
-            return Response.error("Erro ao inserir aferição");
-        }
+        afericao.setDataHora(Now.getLocalDateTimeUtc());
+        final Long codAfericao = service.insertAfericao(codUnidade, afericao, true);
+        return ResponseWithCod.ok("Aferição inserida com sucesso", codAfericao);
     }
 
     @GET

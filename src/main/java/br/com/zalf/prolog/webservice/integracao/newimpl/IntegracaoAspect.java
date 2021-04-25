@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.integracao.newimpl;
 
-import br.com.zalf.prolog.webservice.autenticacao.token.TokenCleaner;
 import br.com.zalf.prolog.webservice.integracao.RecursoIntegrado;
 import br.com.zalf.prolog.webservice.integracao.integrador.IntegracaoDao;
 import br.com.zalf.prolog.webservice.integracao.newimpl.sistemas.SistemaFactory;
@@ -14,8 +13,6 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.lang.reflect.Method;
 import java.util.Optional;
@@ -33,10 +30,12 @@ public final class IntegracaoAspect {
     private final SistemaFactory sistemaFactory;
     @NotNull
     private final IntegracaoDao integracaoDao;
+    @NotNull
+    private final RequestIntegrado request;
 
     @Around("@annotation(Integrado)")
     public Object onIntegratedMethodCalled(final ProceedingJoinPoint joinPoint) throws Throwable {
-        final String requestToken = getRequestToken();
+        final String requestToken = request.getRequestToken();
         final Integrado integrado = getIntegradoAnnotation(joinPoint);
         final Optional<SistemaKey> sistemaKey = getSistemaKey(requestToken, integrado.recursoIntegrado());
         if (sistemaKey.isPresent()) {
@@ -70,15 +69,7 @@ public final class IntegracaoAspect {
     }
 
     @NotNull
-    private String getRequestToken() {
-        final ServletRequestAttributes requestAttributes = (ServletRequestAttributes)
-                RequestContextHolder.currentRequestAttributes();
-        final String authorization = requestAttributes.getRequest().getHeader("Authorization");
-        return TokenCleaner.getOnlyToken(authorization);
-    }
-
-    @NotNull
-    private Method getCalledMethod(final @NotNull ProceedingJoinPoint joinPoint) {
+    private Method getCalledMethod(@NotNull final ProceedingJoinPoint joinPoint) {
         final MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         return signature.getMethod();
     }

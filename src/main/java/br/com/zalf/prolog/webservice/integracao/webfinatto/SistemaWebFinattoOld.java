@@ -47,19 +47,19 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class SistemaWebFinatto extends Sistema {
+public class SistemaWebFinattoOld extends Sistema {
     @NotNull
-    private static final String TAG = SistemaWebFinatto.class.getSimpleName();
+    private static final String TAG = SistemaWebFinattoOld.class.getSimpleName();
     @NotNull
     private final SistemaWebFinattoRequester requester;
     @NotNull
     private final IntegracaoDao integracaoDao;
 
-    public SistemaWebFinatto(@NotNull final SistemaWebFinattoRequester requester,
-                             @NotNull final SistemaKey sistemaKey,
-                             @NotNull final RecursoIntegrado recursoIntegrado,
-                             @NotNull final IntegradorProLog integradorProLog,
-                             @NotNull final String userToken) {
+    public SistemaWebFinattoOld(@NotNull final SistemaWebFinattoRequester requester,
+                                @NotNull final SistemaKey sistemaKey,
+                                @NotNull final RecursoIntegrado recursoIntegrado,
+                                @NotNull final IntegradorProLog integradorProLog,
+                                @NotNull final String userToken) {
         super(integradorProLog, sistemaKey, recursoIntegrado, userToken);
         this.integracaoDao = Injection.provideIntegracaoDao();
         this.requester = requester;
@@ -210,33 +210,6 @@ public class SistemaWebFinatto extends Sistema {
                                                                        pneuByCodigo,
                                                                        configuracaoAfericao,
                                                                        afericaoRealizadaAvulsaHolder);
-        } finally {
-            connectionProvider.closeResources(conn);
-        }
-    }
-
-    @Override
-    @NotNull
-    public Long insertAfericao(@NotNull final Long codUnidade,
-                               @NotNull final Afericao afericao,
-                               final boolean deveAbrirServico) throws Throwable {
-        Connection conn = null;
-        final DatabaseConnectionProvider connectionProvider = new DatabaseConnectionProvider();
-        try {
-            conn = connectionProvider.provideDatabaseConnection();
-            conn.setAutoCommit(false);
-            final ZoneId zoneIdForCodUnidade = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn);
-            final UnidadeDeParaHolder unidadeDeParaHolder =
-                    integracaoDao.getCodAuxiliarByCodUnidadeProlog(conn, Collections.singletonList(codUnidade));
-            final Long codAfericaoInserida =
-                    integracaoDao.insertAfericao(conn, codUnidade, unidadeDeParaHolder.getCodFiliais(), afericao);
-            if (afericao instanceof AfericaoPlaca) {
-                internalInsertAfericaoPlaca(conn, unidadeDeParaHolder, zoneIdForCodUnidade, (AfericaoPlaca) afericao);
-            } else {
-                internalInsertAfericaoAvulsa(conn, unidadeDeParaHolder, zoneIdForCodUnidade, (AfericaoAvulsa) afericao);
-            }
-            conn.commit();
-            return codAfericaoInserida;
         } finally {
             connectionProvider.closeResources(conn);
         }
@@ -482,6 +455,32 @@ public class SistemaWebFinatto extends Sistema {
             final List<EmpresaWebFinatto> filtrosClientes =
                     requester.getFiltrosClientes(apiAutenticacaoHolder, SistemaWebFinattoUtils.formatCpfAsString(cpf));
             return SistemaWebFinattoConverter.createEmpresa(unidadeDeParaHolder, filtrosProlog, filtrosClientes);
+        } finally {
+            connectionProvider.closeResources(conn);
+        }
+    }
+
+    @NotNull
+    public Long insertAfericao(@NotNull final Long codUnidade,
+                               @NotNull final Afericao afericao,
+                               final boolean deveAbrirServico) throws Throwable {
+        Connection conn = null;
+        final DatabaseConnectionProvider connectionProvider = new DatabaseConnectionProvider();
+        try {
+            conn = connectionProvider.provideDatabaseConnection();
+            conn.setAutoCommit(false);
+            final ZoneId zoneIdForCodUnidade = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn);
+            final UnidadeDeParaHolder unidadeDeParaHolder =
+                    integracaoDao.getCodAuxiliarByCodUnidadeProlog(conn, Collections.singletonList(codUnidade));
+            final Long codAfericaoInserida =
+                    integracaoDao.insertAfericao(conn, codUnidade, unidadeDeParaHolder.getCodFiliais(), afericao);
+            if (afericao instanceof AfericaoPlaca) {
+                internalInsertAfericaoPlaca(conn, unidadeDeParaHolder, zoneIdForCodUnidade, (AfericaoPlaca) afericao);
+            } else {
+                internalInsertAfericaoAvulsa(conn, unidadeDeParaHolder, zoneIdForCodUnidade, (AfericaoAvulsa) afericao);
+            }
+            conn.commit();
+            return codAfericaoInserida;
         } finally {
             connectionProvider.closeResources(conn);
         }

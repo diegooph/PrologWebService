@@ -17,7 +17,6 @@ import java.util.Set;
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public final class SistemaFactory {
-
     @NotNull
     private final Set<SistemaIntegrado> sistemasIntegrados;
 

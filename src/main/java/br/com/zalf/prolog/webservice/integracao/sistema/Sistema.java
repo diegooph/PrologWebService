@@ -116,14 +116,6 @@ public abstract class Sistema implements OperacoesIntegradas {
 
     @NotNull
     @Override
-    public Long insertAfericao(@NotNull final Long codUnidade,
-                               @NotNull final Afericao afericao,
-                               final boolean deveAbrirServico) throws Throwable {
-        return getIntegradorProLog().insertAfericao(codUnidade, afericao, deveAbrirServico);
-    }
-
-    @NotNull
-    @Override
     public Afericao getAfericaoByCodigo(@NotNull final Long codUnidade,
                                         @NotNull final Long codAfericao) throws Throwable {
         return getIntegradorProLog().getAfericaoByCodigo(codUnidade, codAfericao);

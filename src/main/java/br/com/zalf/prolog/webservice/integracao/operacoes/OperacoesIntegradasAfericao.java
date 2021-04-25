@@ -34,11 +34,6 @@ interface OperacoesIntegradasAfericao {
                                @NotNull final LocalDate dataFinal) throws Throwable;
 
     @NotNull
-    Long insertAfericao(@NotNull final Long codUnidade,
-                        @NotNull final Afericao afericao,
-                        final boolean deveAbrirServico) throws Throwable;
-
-    @NotNull
     Afericao getAfericaoByCodigo(@NotNull final Long codUnidade, @NotNull final Long codAfericao) throws Throwable;
 
     @NotNull
