@@ -15,6 +15,7 @@ import java.util.List;
 public interface MovimentacaoProcessoDao extends JpaRepository<MovimentacaoProcessoEntity, Long> {
     @Query("select distinct mpe from MovimentacaoProcessoEntity mpe "
                    + "inner join fetch mpe.colaboradorRealizacaoProcesso "
+                   + "inner join fetch mpe.colaboradorRealizacaoProcesso.unidade "
                    + "inner join fetch mpe.movimentacoes m "
                    + "inner join fetch m.movimentacaoOrigem mo "
                    + "inner join fetch m.movimentacaoDestino md "
