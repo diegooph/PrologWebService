@@ -52,7 +52,9 @@ public class ChecklistOrdemServicoService implements KmProcessoAtualizavel {
         return checklistOrdemServicoDao.getOrdensServico(codUnidades,
                                                          codTipoVeiculo,
                                                          codVeiculo,
-                                                         statusOrdemServico,
+                                                         statusOrdemServico == null
+                                                                 ? null
+                                                                 : statusOrdemServico.asString(),
                                                          incluirItensOrdemServico,
                                                          limit,
                                                          offset);
