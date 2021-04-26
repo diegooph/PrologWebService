@@ -1,6 +1,5 @@
 package br.com.zalf.prolog.webservice.v3.frota.checklistordemservico;
 
-import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.StatusOrdemServico;
 import br.com.zalf.prolog.webservice.v3.frota.checklistordemservico._model.ChecklistOrdemServicoEntity;
 import br.com.zalf.prolog.webservice.v3.frota.checklistordemservico._model.ChecklistOrdemServicoPk;
 import br.com.zalf.prolog.webservice.v3.frota.checklistordemservico._model.ChecklistOrdemServicoProjection;
@@ -28,7 +27,7 @@ public interface ChecklistOrdemServicoDao extends JpaRepository<ChecklistOrdemSe
     List<ChecklistOrdemServicoProjection> getOrdensServico(@NotNull final List<Long> codUnidade,
                                                            @Nullable final Long codTipoVeiculo,
                                                            @Nullable final String codVeiculo,
-                                                           @Nullable final StatusOrdemServico statusOrdemServico,
+                                                           @Nullable final String statusOrdemServico,
                                                            final boolean incluirItensOrdemServico,
                                                            final int limit,
                                                            final int offset);
