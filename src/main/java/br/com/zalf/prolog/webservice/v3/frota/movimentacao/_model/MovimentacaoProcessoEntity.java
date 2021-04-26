@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.v3.frota.movimentacao._model;
 
+import br.com.zalf.prolog.webservice.v3.LocalDateTimeUtcAttributeConverter;
 import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.EntityKmColetado;
 import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.VeiculoKmColetado;
 import lombok.AllArgsConstructor;
@@ -9,6 +10,7 @@ import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -32,6 +34,9 @@ public final class MovimentacaoProcessoEntity implements EntityKmColetado {
     private Long codigo;
     @Column(name = "cod_unidade", nullable = false)
     private Long codUnidade;
+    @Convert(converter = LocalDateTimeUtcAttributeConverter.class)
+    @Column(name = "data_hora")
+    private LocalDateTime dataHoraRealizacao;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cpf_responsavel", referencedColumnName = "cpf")
     private ColaboradorEntity colaboradorRealizacaoProcesso;
