@@ -28,7 +28,7 @@ public class VeiculoValidator {
             validacaoModelo(veiculo.getCodModeloVeiculo());
             validacaoTipo(veiculo.getCodTipoVeiculo());
         } catch (final Exception e) {
-            throw new GenericException(e.getMessage(), null);
+            throw new GenericException(e.getMessage(), null, GenericException.NO_LOGS_INTO_SENTRY);
         }
         validacaoMotorizadoSemHubodometro(veiculo.getPossuiHubodometro(), veiculo.getCodTipoVeiculo());
     }
@@ -40,7 +40,7 @@ public class VeiculoValidator {
             validacaoModelo(veiculo.getCodModeloVeiculo());
             validacaoTipo(veiculo.getCodTipoVeiculo());
         } catch (final Exception e) {
-            throw new GenericException(e.getMessage(), null);
+            throw new GenericException(e.getMessage(), null, GenericException.NO_LOGS_INTO_SENTRY);
         }
         validacaoMotorizadoSemHubodometro(veiculo.getPossuiHubodometro(), veiculo.getCodTipoVeiculo());
     }
@@ -61,16 +61,19 @@ public class VeiculoValidator {
         Preconditions.checkNotNull(placa, "Você deve fornecer a placa");
 
         if (StringUtils.isNullOrEmpty(placa.trim())) {
-            throw new GenericException("Placa inválida\nA placa não pode estar vazia.", "Placa informada: " + placa);
+            throw new GenericException("Placa inválida\nA placa não pode estar vazia.", "Placa informada: " + placa,
+                                       GenericException.NO_LOGS_INTO_SENTRY);
         }
 
         if (!(StringUtils.stripCharactersWithAccents(placa)).equals(placa)) {
-            throw new GenericException("Placa inválida\nA placa não deve conter acentos", "Placa informada: " + placa);
+            throw new GenericException("Placa inválida\nA placa não deve conter acentos", "Placa informada: " + placa,
+                                       GenericException.NO_LOGS_INTO_SENTRY);
         }
 
         if (!(StringUtils.stripAccents(placa)).equals(placa)) {
             throw new GenericException("Placa inválida\nA placa não deve conter caracteres especiais",
-                                       "Placa informada: " + placa);
+                                       "Placa informada: " + placa,
+                                       GenericException.NO_LOGS_INTO_SENTRY);
         }
     }
 
