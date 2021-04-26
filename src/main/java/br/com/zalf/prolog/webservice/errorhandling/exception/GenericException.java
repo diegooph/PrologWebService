@@ -9,6 +9,8 @@ import javax.ws.rs.core.Response;
 
 public class GenericException extends ProLogException {
 
+    public static final boolean NO_LOGS_INTO_SENTRY = false;
+
     public GenericException(@NotNull final String message,
                             final int httpStatusCode,
                             @Nullable final String developerMessage,
