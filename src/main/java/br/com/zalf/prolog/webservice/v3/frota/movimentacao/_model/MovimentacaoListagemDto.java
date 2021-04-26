@@ -25,4 +25,16 @@ public final class MovimentacaoListagemDto {
     private final Long kmColetadoVeiculoOrigem;
     @NotNull
     private final String tipoOrigem;
+    @Nullable
+    private final Long codVeiculoDestino;
+    @Nullable
+    private final String placaVeiculoDestino;
+    @Nullable
+    private final String idFrotaVeiculoDestino;
+    @Nullable
+    private final Long codDiagramaDestino;
+    @Nullable
+    private final Long kmColetadoVeiculoDestino;
+    @NotNull
+    private final String tipoDestino;
 }
