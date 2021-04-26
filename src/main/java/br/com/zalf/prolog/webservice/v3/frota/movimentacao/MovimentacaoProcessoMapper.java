@@ -56,6 +56,12 @@ public final class MovimentacaoProcessoMapper {
                 veiculoOrigem != null ? veiculoOrigem.getIdentificadorFrota() : null,
                 movimentacaoEntity.getMovimentacaoOrigem().getCodDiagrama(),
                 movimentacaoEntity.getMovimentacaoOrigem().getKmColetadoVeiculo(),
-                movimentacaoEntity.getMovimentacaoOrigem().getTipoOrigem().asString());
+                movimentacaoEntity.getMovimentacaoOrigem().getTipoOrigem().asString(),
+                veiculoDestino != null ? veiculoDestino.getCodigo() : null,
+                veiculoDestino != null ? veiculoDestino.getPlaca() : null,
+                veiculoDestino != null ? veiculoDestino.getIdentificadorFrota() : null,
+                movimentacaoEntity.getMovimentacaoDestino().getCodDiagrama(),
+                movimentacaoEntity.getMovimentacaoDestino().getKmColetadoVeiculo(),
+                movimentacaoEntity.getMovimentacaoDestino().getTipoDestino().asString());
     }
 }

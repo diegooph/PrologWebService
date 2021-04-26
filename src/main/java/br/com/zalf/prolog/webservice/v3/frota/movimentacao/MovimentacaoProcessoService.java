@@ -82,8 +82,6 @@ public class MovimentacaoProcessoService implements KmProcessoAtualizavel {
 
     @Transactional
     public List<MovimentacaoProcessoEntity> getAll() {
-        final List<MovimentacaoProcessoEntity> listEntity = movimentacaoProcessoDao.getAll(2, PageRequest
-                .of(0, 1000));
-        return null;
+        return movimentacaoProcessoDao.getAll(215, PageRequest.of(0, 1000));
     }
 }
