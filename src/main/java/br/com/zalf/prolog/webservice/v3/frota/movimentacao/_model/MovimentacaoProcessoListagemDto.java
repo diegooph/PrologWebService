@@ -27,6 +27,6 @@ public final class MovimentacaoProcessoListagemDto {
     private final String nomeColaboradorResponsavel;
     @Nullable
     private final String observacaoProcesso;
-    @Nullable
+    @NotNull
     private final List<MovimentacaoListagemDto> movimentacoes;
 }
