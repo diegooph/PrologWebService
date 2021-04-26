@@ -49,4 +49,8 @@ public final class MovimentacaoListagemDto {
     private final String urlImagemDescarte2;
     @Nullable
     private final String urlImagemDescarte3;
+    @Nullable
+    private final Long codRecapadora;
+    @Nullable
+    private final String nomeRecapadora;
 }
