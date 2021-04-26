@@ -37,4 +37,16 @@ public final class MovimentacaoListagemDto {
     private final Long kmColetadoVeiculoDestino;
     @NotNull
     private final String tipoDestino;
+    @Nullable
+    private final Long posicaoPneuDestino;
+    @Nullable
+    private final Long codMotivoDescarte;
+    @Nullable
+    private final String codColeta;
+    @Nullable
+    private final String urlImagemDescarte1;
+    @Nullable
+    private final String urlImagemDescarte2;
+    @Nullable
+    private final String urlImagemDescarte3;
 }
