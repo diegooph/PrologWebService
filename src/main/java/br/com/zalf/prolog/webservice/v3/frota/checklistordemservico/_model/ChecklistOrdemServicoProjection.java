@@ -20,7 +20,7 @@ public interface ChecklistOrdemServicoProjection {
     @Value("#{target.status_os}")
     String getStatusOs();
 
-    @Value("#{target.data_hora_fechamento_utc}")
+    @Value("#{@localDateTimeConverter.fromInstantUtc(target.data_hora_fechamento_utc)}")
     LocalDateTime getDataHoraFechamentoUtc();
 
     @Value("#{target.data_hora_fechamento_tz_aplicado}")
@@ -77,14 +77,23 @@ public interface ChecklistOrdemServicoProjection {
     @Value("#{target.codigo_agrupamento_resolucao_em_lote}")
     Long getCodigoAgrupamentoResolucaoEmLote();
 
-    @Value("#{target.data_hora_conserto}")
-    LocalDateTime getDataHoraConserto();
+    @Value("#{@localDateTimeConverter.fromInstantUtc(target.data_hora_conserto_utc)}")
+    LocalDateTime getDataHoraConsertoUtc();
 
-    @Value("#{target.data_hora_inicio_resolucao}")
-    LocalDateTime getDataHoraInicioResolucao();
+    @Value("#{target.data_hora_conserto_tz_aplicado}")
+    LocalDateTime getDataHoraConsertoTzAplicado();
 
-    @Value("#{target.data_hora_fim_resolucao}")
-    LocalDateTime getDataHoraFimResolucao();
+    @Value("#{@localDateTimeConverter.fromInstantUtc(target.data_hora_inicio_resolucao_utc)}")
+    LocalDateTime getDataHoraInicioResolucaoUtc();
+
+    @Value("#{target.data_hora_inicio_resolucao_tz_aplicado}")
+    LocalDateTime getDataHoraInicioResolucaoTzAplicado();
+
+    @Value("#{@localDateTimeConverter.fromInstantUtc(target.data_hora_fim_resolucao_utc)}")
+    LocalDateTime getDataHoraFimResolucaoUtc();
+
+    @Value("#{target.data_hora_fim_resolucao_tz_aplicado}")
+    LocalDateTime getDataHoraFimResolucaoTzAplicado();
 
     @Value("#{target.tempo_realizacao}")
     Long getTempoRealizacao();

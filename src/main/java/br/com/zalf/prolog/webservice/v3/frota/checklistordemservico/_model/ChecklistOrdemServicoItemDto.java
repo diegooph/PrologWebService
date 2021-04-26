@@ -70,20 +70,38 @@ public class ChecklistOrdemServicoItemDto {
     private final Long codigoAgrupamentoFechamentoEmLote;
     @ApiModelProperty(
             value = "A data e a hora em que foi apontado que o conserto necessário no item da " +
-                    "ordem de serviço foi realizado.",
-            example = "2019-08-18T10:47:00")
+                    "ordem de serviço foi realizado, em utc.",
+            example = "2019-08-18T13:47:00")
     @Nullable
-    private final LocalDateTime dataHoraConserto;
+    private final LocalDateTime dataHoraConsertoUtc;
     @ApiModelProperty(
-            value = "A data e a hora em que foi iniciado o conserto necessário no item da ordem de serviço.",
+            value = "A data e a hora em que foi apontado que o conserto necessário no item da " +
+                    "ordem de serviço foi realizado, com timezone do mecânico aplicado.",
             example = "2019-08-18T10:47:00")
     @Nullable
-    private final LocalDateTime dataHoraInicioResolucao;
+    private final LocalDateTime dataHoraConsertoTimezoneAplicado;
     @ApiModelProperty(
-            value = "A data e a hora em que foi finalizado o conserto necessário no item da ordem de serviço.",
+            value = "A data e a hora em que foi iniciado o conserto necessário no item da ordem de serviço, em utc.",
+            example = "2019-08-18T13:47:00")
+    @Nullable
+    private final LocalDateTime dataHoraInicioResolucaoUtc;
+    @ApiModelProperty(
+            value = "A data e a hora em que foi iniciado o conserto necessário no item da ordem de serviço, " +
+                    "com timezone do mecânico aplicado.",
             example = "2019-08-18T10:47:00")
     @Nullable
-    private final LocalDateTime dataHoraFimResolucao;
+    private final LocalDateTime dataHoraInicioResolucaoTimezoneAplicado;
+    @ApiModelProperty(
+            value = "A data e a hora em que foi finalizado o conserto necessário no item da ordem de serviço, em utc.",
+            example = "2019-08-18T13:47:00")
+    @Nullable
+    private final LocalDateTime dataHoraFimResolucaoUtc;
+    @ApiModelProperty(
+            value = "A data e a hora em que foi finalizado o conserto necessário no item da ordem de serviço, " +
+                    "com timezone do mecânico aplicado.",
+            example = "2019-08-18T10:47:00")
+    @Nullable
+    private final LocalDateTime dataHoraFimResolucaoTimezoneAplicado;
     @ApiModelProperty(
             value = "O tempo total para realizar o conserto necessário, em milissegundos.",
             example = "100000")

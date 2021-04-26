@@ -1,5 +1,5 @@
 create
-or replace function func_checklist_ordem_servico_listagem(f_cod_unidades bigint[],
+    or replace function func_checklist_ordem_servico_listagem(f_cod_unidades bigint[],
                                                               f_cod_tipo_veiculo bigint,
                                                               f_cod_veiculo bigint,
                                                               f_status_ordem_servico text,
@@ -31,9 +31,12 @@ or replace function func_checklist_ordem_servico_listagem(f_cod_unidades bigint[
                 quantidade_apontamentos                          int,
                 km                                               bigint,
                 codigo_agrupamento_resolucao_em_lote             bigint,
-                data_hora_conserto                               timestamp with time zone,
-                data_hora_inicio_resolucao                       timestamp with time zone,
-                data_hora_fim_resolucao                          timestamp with time zone,
+                data_hora_conserto_utc                           timestamp with time zone,
+                data_hora_conserto_tz_aplicado                   timestamp without time zone,
+                data_hora_inicio_resolucao_utc                   timestamp with time zone,
+                data_hora_inicio_resolucao_tz_aplicado           timestamp without time zone,
+                data_hora_fim_resolucao_utc                      timestamp with time zone,
+                data_hora_fim_resolucao_tz_aplicado              timestamp without time zone,
                 tempo_realizacao                                 bigint,
                 feedback_conserto                                text,
                 codigo_auxiliar_alternativa_primeiro_apontamento text
@@ -64,9 +67,18 @@ select cos.codigo_prolog                                                as codig
        cosi.qt_apontamentos                                             as quantidade_apontamentos,
        cosi.km                                                          as km,
        cosi.cod_agrupamento_resolucao_em_lote                           as codigo_agrupamento_resolucao_em_lote,
-       cosi.data_hora_conserto                                          as data_hora_conserto,
-       cosi.data_hora_inicio_resolucao                                  as data_hora_inicio_resolucao,
-       cosi.data_hora_fim_resolucao                                     as data_hora_fim_resolucao,
+       cosi.data_hora_conserto                                          as data_hora_conserto_utc,
+       cosi.data_hora_conserto
+           at time zone tz_unidade(cdm.cod_unidade)
+                                                                        as data_hora_conserto_tz_aplicado,
+       cosi.data_hora_inicio_resolucao                                  as data_hora_inicio_resolucao_utc,
+       cosi.data_hora_inicio_resolucao
+           at time zone tz_unidade(cdm.cod_unidade)
+                                                                        as data_hora_inicio_resolucao_tz_aplicado,
+       cosi.data_hora_fim_resolucao                                     as data_hora_fim_resolucao_utc,
+       cosi.data_hora_fim_resolucao
+           at time zone tz_unidade(cdm.cod_unidade)
+                                                                        as data_hora_fim_resolucao_tz_aplicado,
        cosi.tempo_realizacao                                            as tempo_realizacao,
        cosi.feedback_conserto                                           as feedback_conserto,
        cap.cod_auxiliar                                                 as codigo_auxiliar_alternativa_primeiro_apontamento
@@ -78,11 +90,12 @@ from checklist_ordem_servico cos
          left join checklist_alternativa_pergunta cap on cap.codigo = cosi.cod_alternativa_primeiro_apontamento
          inner join checklist c on c.codigo = cos.cod_checklist
          inner join colaborador_data cd on cd.cpf = c.cpf_colaborador
+         left join colaborador_data cdm on cdm.cpf = cosi.cpf_mecanico
          inner join veiculo v on v.codigo = c.cod_veiculo
 where cos.cod_unidade = any (f_cod_unidades)
   and case when f_cod_tipo_veiculo is null then true else v.cod_tipo = f_cod_tipo_veiculo end
   and case when f_cod_veiculo is null then true else v.codigo = f_cod_veiculo end
   and case when f_status_ordem_servico is null then true else cos.status = f_status_ordem_servico end
-order by cos.codigo, cosi.codigo limit f_limit
-offset f_offset;
+order by cos.codigo, cosi.codigo
+limit f_limit offset f_offset;
 $$;

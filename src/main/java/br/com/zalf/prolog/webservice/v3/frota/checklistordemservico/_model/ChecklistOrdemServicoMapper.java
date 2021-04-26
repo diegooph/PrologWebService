@@ -79,9 +79,12 @@ public final class ChecklistOrdemServicoMapper {
                 checklistOrdemServicoProjection.getQuantidadeApontamentos(),
                 checklistOrdemServicoProjection.getKm(),
                 checklistOrdemServicoProjection.getCodigoAgrupamentoResolucaoEmLote(),
-                checklistOrdemServicoProjection.getDataHoraConserto(),
-                checklistOrdemServicoProjection.getDataHoraInicioResolucao(),
-                checklistOrdemServicoProjection.getDataHoraFimResolucao(),
+                checklistOrdemServicoProjection.getDataHoraConsertoUtc(),
+                checklistOrdemServicoProjection.getDataHoraConsertoTzAplicado(),
+                checklistOrdemServicoProjection.getDataHoraInicioResolucaoUtc(),
+                checklistOrdemServicoProjection.getDataHoraInicioResolucaoTzAplicado(),
+                checklistOrdemServicoProjection.getDataHoraFimResolucaoUtc(),
+                checklistOrdemServicoProjection.getDataHoraFimResolucaoTzAplicado(),
                 checklistOrdemServicoProjection.getTempoRealizacao(),
                 checklistOrdemServicoProjection.getFeedbackConserto());
     }
