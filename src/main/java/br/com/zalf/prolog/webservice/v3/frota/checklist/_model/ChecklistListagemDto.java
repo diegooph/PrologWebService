@@ -56,9 +56,8 @@ public class ChecklistListagemDto { //o que recebemos do banco
     int totalPerguntasNok;
     int totalAlternativasOk;
     int totalAlternativasNok;
-    int totalImagensPerguntasOk;
-    int totalMidiasPerguntasOk;
-    int totalMidiasAlternativasNok;
+    Short totalMidiasPerguntasOk;
+    Short totalMidiasAlternativasNok;
     int totalNokBaixa;
     int totalNokAlta;
     int totalNokCritica;
