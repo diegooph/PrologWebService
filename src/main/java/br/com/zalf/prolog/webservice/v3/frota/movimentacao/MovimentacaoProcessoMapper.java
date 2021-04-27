@@ -73,7 +73,12 @@ public final class MovimentacaoProcessoMapper {
                 movimentacaoEntity.getMovimentacaoDestino().getUrlImagemDescarte3(),
                 recapadoraDestino != null ? recapadoraDestino.getCodigo() : null,
                 recapadoraDestino != null ? recapadoraDestino.getNome() : null,
-                createPneuMovimentacaoListagemDto(movimentacaoEntity.getPneu()));
+                createPneuMovimentacaoListagemDto(movimentacaoEntity.getPneu()),
+                movimentacaoEntity.getSulcoInterno(),
+                movimentacaoEntity.getSulcoCentralInterno(),
+                movimentacaoEntity.getSulcoCentralExterno(),
+                movimentacaoEntity.getSulcoExterno(),
+                movimentacaoEntity.getPressaoAtual());
     }
 
     private PneuMovimentacaoListagemDto createPneuMovimentacaoListagemDto(@NotNull final PneuEntity pneuEntity) {
