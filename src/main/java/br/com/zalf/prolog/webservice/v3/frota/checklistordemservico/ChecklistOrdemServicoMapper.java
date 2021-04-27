@@ -1,7 +1,10 @@
-package br.com.zalf.prolog.webservice.v3.frota.checklistordemservico._model;
+package br.com.zalf.prolog.webservice.v3.frota.checklistordemservico;
 
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.StatusItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.StatusOrdemServico;
+import br.com.zalf.prolog.webservice.v3.frota.checklistordemservico._model.ChecklistOrdemServicoItemDto;
+import br.com.zalf.prolog.webservice.v3.frota.checklistordemservico._model.ChecklistOrdemServicoListagemDto;
+import br.com.zalf.prolog.webservice.v3.frota.checklistordemservico._model.ChecklistOrdemServicoProjection;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
