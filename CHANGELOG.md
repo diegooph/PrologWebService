@@ -6,10 +6,14 @@ Change Log
 
 ### Features
 * Cria functions de suporte para alterações em modelo de quiz (PL-3609)
+* Logar no BD quem altera um colaborador (PL-3491)
 
 ### Refactors
 * Altera paths de v3 para serem precedidos por `api`
 * Altera path de unidades para estarem no `v3` e serem precedidos por `api`
+
+### Bug Fixes
+* Corrige function de transferência de veículo entre Empresas para o Suporte (PS-1504)
 
 <a name="v3.2.0"></a>
 ## Version [v3.2.0](https://github.com/luizfp/PrologWebService/compare/v3.1.0...v3.2.0) (2021-04-18)
