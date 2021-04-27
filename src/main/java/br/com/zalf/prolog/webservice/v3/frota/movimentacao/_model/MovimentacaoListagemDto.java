@@ -53,4 +53,6 @@ public final class MovimentacaoListagemDto {
     private final Long codRecapadora;
     @Nullable
     private final String nomeRecapadora;
+    @NotNull
+    private final PneuMovimentacaoListagemDto pneuMovimentacaoListagemDto;
 }
