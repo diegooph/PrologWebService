@@ -81,13 +81,10 @@ public interface ChecklistProjection {
     int getTotalAlternativasNok();
 
     @Value("#{target.total_midias_perguntas_ok}")
-    int getTotalImagensPerguntasOk();
-
-    @Value("#{target.total_midias_perguntas_ok}")
-    int getTotalMidiasPerguntasOk();
+    Short getTotalMidiasPerguntasOk();
 
     @Value("#{target.total_midias_alternativas_nok}")
-    int getTotalMidiasAlternativasNok();
+    Short getTotalMidiasAlternativasNok();
 
     @Value("#{target.total_alternativas_nok_prioridade_baixa}")
     int getTotalNokBaixa();
