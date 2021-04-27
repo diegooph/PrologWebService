@@ -1,6 +1,5 @@
 package test.br.com.zalf.prolog.webservice.pilares.frota.checklist;
 
-import br.com.zalf.prolog.webservice.errorhandling.sql.ClientSideErrorException;
 import br.com.zalf.prolog.webservice.v3.frota.checklist._model.ChecklistListagemDto;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,16 +40,13 @@ public class ChecklistApiClient {
                 .queryParam("dataInicial", dataInicial)
                 .queryParam("dataFinal", dataFinal)
                 .queryParam("incluirRespostas", false)
-                .queryParam("limit", 2)
+                .queryParam("limit", 1)
                 .queryParam("offset", 0)
                 .build();
         final RequestEntity<Void> requestEntity = RequestEntity
                 .get(components.toUri())
                 .accept(MediaType.APPLICATION_JSON)
                 .build();
-        final ResponseEntity<ClientSideErrorException> exchange =
-                restTemplate.exchange(requestEntity,
-                                      new ParameterizedTypeReference<ClientSideErrorException>() {});
-        return null;
+        return restTemplate.exchange(requestEntity, new ParameterizedTypeReference<List<ChecklistListagemDto>>() {});
     }
 }

@@ -30,6 +30,6 @@ public class ChecklistIT extends IntegrationTest {
                                              "2021-03-12");
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(responseEntity.getBody()).isNotNull();
-        assertThat(responseEntity.getBody().size()).isEqualTo(2);
+        assertThat(responseEntity.getBody().size()).isEqualTo(0);
     }
 }
