@@ -1,6 +1,9 @@
 Change Log
 ==========
 
+### Refactors
+* Roteia método de busca de KM atual para a integração da Nepomuceno (PL-3508)
+
 <a name="v3.2.1"></a>
 ## Version [v3.2.1](https://github.com/luizfp/PrologWebService/compare/v3.2.0...v3.2.1) (release-date) [unreleased]
 
