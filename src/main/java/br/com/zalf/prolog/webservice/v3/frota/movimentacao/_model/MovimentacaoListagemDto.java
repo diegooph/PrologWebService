@@ -55,4 +55,14 @@ public final class MovimentacaoListagemDto {
     private final String nomeRecapadora;
     @NotNull
     private final PneuMovimentacaoListagemDto pneuMovimentacao;
+    @Nullable
+    private final Double sulcoInternoMomentoMovimentacaoEmMilimetros;
+    @Nullable
+    private final Double sulcoCentralInternoMomentoMovimentacaoEmMilimetros;
+    @Nullable
+    private final Double sulcoCentralExternoMomentoMovimentacaoEmMilimetros;
+    @Nullable
+    private final Double sulcoExternoMomentoMovimentacaoEmMilimetros;
+    @Nullable
+    private final Double pressaoMomentoMovimentacaoEmMilimetros;
 }
