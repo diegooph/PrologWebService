@@ -22,8 +22,8 @@ public interface ChecklistDao extends JpaRepository<ChecklistEntity, Long> {
             "f_data_inicial => date(:dataInicial), " +
             "f_data_final => date(:dataFinal), " +
             "f_cod_colaborador => to_bigint(:codColaborador), " +
-            "f_cod_tipo_veiculo => to_bigint(:codTipoVeiculo), " +
             "f_cod_veiculo => to_bigint(:codVeiculo), " +
+            "f_cod_tipo_veiculo => to_bigint(:codTipoVeiculo), " +
             "f_incluir_respostas => :incluirRespostas, " +
             "f_limit => :limit, " +
             "f_offset => :offset);", nativeQuery = true)
@@ -31,8 +31,8 @@ public interface ChecklistDao extends JpaRepository<ChecklistEntity, Long> {
                                                     @NotNull final LocalDate dataInicial,
                                                     @NotNull final LocalDate dataFinal,
                                                     @Nullable final Long codColaborador,
-                                                    @Nullable final Long codTipoVeiculo,
                                                     @Nullable final Long codVeiculo,
+                                                    @Nullable final Long codTipoVeiculo,
                                                     boolean incluirRespostas,
                                                     int limit,
                                                     int offset);

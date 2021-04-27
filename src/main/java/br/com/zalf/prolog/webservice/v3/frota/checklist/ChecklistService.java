@@ -68,8 +68,8 @@ public class ChecklistService implements KmProcessoAtualizavel {
                                                       checklistListagemFiltro.getDataInicial(),
                                                       checklistListagemFiltro.getDataFinal(),
                                                       checklistListagemFiltro.getCodColaborador(),
-                                                      checklistListagemFiltro.getCodTipoVeiculo(),
                                                       checklistListagemFiltro.getCodVeiculo(),
+                                                      checklistListagemFiltro.getCodTipoVeiculo(),
                                                       checklistListagemFiltro.isIncluirRespostas(),
                                                       checklistListagemFiltro.getLimit(),
                                                       checklistListagemFiltro.getOffset());
