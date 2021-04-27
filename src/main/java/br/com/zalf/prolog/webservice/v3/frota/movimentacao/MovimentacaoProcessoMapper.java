@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.v3.frota.movimentacao;
 
 import br.com.zalf.prolog.webservice.commons.util.datetime.LocalDateTimeUtils;
 import br.com.zalf.prolog.webservice.v3.frota.movimentacao._model.*;
+import br.com.zalf.prolog.webservice.v3.frota.pneu._model.PneuEntity;
 import br.com.zalf.prolog.webservice.v3.frota.veiculo._model.VeiculoEntity;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
@@ -20,11 +21,14 @@ import java.util.stream.Collectors;
 public final class MovimentacaoProcessoMapper {
     public List<MovimentacaoProcessoListagemDto> toDto(
             @NotNull final List<MovimentacaoProcessoEntity> processosMovimentacao) {
-        return processosMovimentacao.stream().map(this::toDto).collect(Collectors.toList());
+        return processosMovimentacao.stream()
+                .map(this::createMovimentacaoProcessoListagemDto)
+                .collect(Collectors.toList());
     }
 
     @NotNull
-    private MovimentacaoProcessoListagemDto toDto(@NotNull final MovimentacaoProcessoEntity processoEntity) {
+    private MovimentacaoProcessoListagemDto createMovimentacaoProcessoListagemDto(
+            @NotNull final MovimentacaoProcessoEntity processoEntity) {
         return new MovimentacaoProcessoListagemDto(
                 processoEntity.getCodigo(),
                 processoEntity.getCodUnidade(),
@@ -38,11 +42,11 @@ public final class MovimentacaoProcessoMapper {
                 processoEntity.getColaboradorRealizacaoProcesso().getNome(),
                 processoEntity.getObservacao(),
                 processoEntity.getMovimentacoes().stream()
-                        .map(this::toDto)
+                        .map(this::createMovimentacaoListagemDto)
                         .collect(Collectors.toList()));
     }
 
-    private MovimentacaoListagemDto toDto(@NotNull final MovimentacaoEntity movimentacaoEntity) {
+    private MovimentacaoListagemDto createMovimentacaoListagemDto(@NotNull final MovimentacaoEntity movimentacaoEntity) {
         final VeiculoEntity veiculoOrigem = movimentacaoEntity.getMovimentacaoOrigem().getVeiculo();
         final VeiculoEntity veiculoDestino = movimentacaoEntity.getMovimentacaoDestino().getVeiculo();
         final RecapadoraEntity recapadoraDestino = movimentacaoEntity.getMovimentacaoDestino().getRecapadora();
@@ -68,6 +72,20 @@ public final class MovimentacaoProcessoMapper {
                 movimentacaoEntity.getMovimentacaoDestino().getUrlImagemDescarte2(),
                 movimentacaoEntity.getMovimentacaoDestino().getUrlImagemDescarte3(),
                 recapadoraDestino != null ? recapadoraDestino.getCodigo() : null,
-                recapadoraDestino != null ? recapadoraDestino.getNome() : null);
+                recapadoraDestino != null ? recapadoraDestino.getNome() : null,
+                createPneuMovimentacaoListagemDto(movimentacaoEntity.getPneu()));
+    }
+
+    private PneuMovimentacaoListagemDto createPneuMovimentacaoListagemDto(@NotNull final PneuEntity pneuEntity) {
+        return new PneuMovimentacaoListagemDto(pneuEntity.getCodigo(),
+                                               pneuEntity.getCodigoCliente(),
+                                               pneuEntity.getCodModelo(),
+                                               pneuEntity.getCodDimensao(),
+                                               pneuEntity.getVidaAtual(),
+                                               pneuEntity.getPressaoAtual(),
+                                               pneuEntity.getAlturaSulcoInterno(),
+                                               pneuEntity.getAlturaSulcoCentralInterno(),
+                                               pneuEntity.getAlturaSulcoCentralExterno(),
+                                               pneuEntity.getAlturaSulcoExterno());
     }
 }
