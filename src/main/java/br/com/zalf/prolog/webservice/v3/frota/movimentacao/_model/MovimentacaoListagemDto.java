@@ -54,5 +54,5 @@ public final class MovimentacaoListagemDto {
     @Nullable
     private final String nomeRecapadora;
     @NotNull
-    private final PneuMovimentacaoListagemDto pneuMovimentacaoListagemDto;
+    private final PneuMovimentacaoListagemDto pneuMovimentacao;
 }
