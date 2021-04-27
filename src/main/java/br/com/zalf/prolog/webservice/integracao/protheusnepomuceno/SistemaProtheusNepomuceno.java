@@ -391,8 +391,6 @@ public final class SistemaProtheusNepomuceno extends Sistema {
     @Override
     @NotNull
     public VeiculoDadosColetaKm getDadosColetaKmByCodigo(@NotNull final Long codVeiculo) throws Throwable {
-        System.out.println(codVeiculo);
-        System.out.println(ProtheusNepomucenoEncoderDecoder.decode(codVeiculo));
         return VeiculoDadosColetaKm.of(codVeiculo,
                                        ProtheusNepomucenoEncoderDecoder.decode(codVeiculo),
                                        0L,
