@@ -1,10 +1,7 @@
 package br.com.zalf.prolog.webservice.v3.frota.movimentacao;
 
 import br.com.zalf.prolog.webservice.commons.util.datetime.LocalDateTimeUtils;
-import br.com.zalf.prolog.webservice.v3.frota.movimentacao._model.MovimentacaoEntity;
-import br.com.zalf.prolog.webservice.v3.frota.movimentacao._model.MovimentacaoListagemDto;
-import br.com.zalf.prolog.webservice.v3.frota.movimentacao._model.MovimentacaoProcessoEntity;
-import br.com.zalf.prolog.webservice.v3.frota.movimentacao._model.MovimentacaoProcessoListagemDto;
+import br.com.zalf.prolog.webservice.v3.frota.movimentacao._model.*;
 import br.com.zalf.prolog.webservice.v3.frota.veiculo._model.VeiculoEntity;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
@@ -48,6 +45,7 @@ public final class MovimentacaoProcessoMapper {
     private MovimentacaoListagemDto toDto(@NotNull final MovimentacaoEntity movimentacaoEntity) {
         final VeiculoEntity veiculoOrigem = movimentacaoEntity.getMovimentacaoOrigem().getVeiculo();
         final VeiculoEntity veiculoDestino = movimentacaoEntity.getMovimentacaoDestino().getVeiculo();
+        final RecapadoraEntity recapadoraDestino = movimentacaoEntity.getMovimentacaoDestino().getRecapadora();
         return new MovimentacaoListagemDto(
                 movimentacaoEntity.getCodigo(),
                 movimentacaoEntity.getCodUnidade(),
@@ -62,6 +60,14 @@ public final class MovimentacaoProcessoMapper {
                 veiculoDestino != null ? veiculoDestino.getIdentificadorFrota() : null,
                 movimentacaoEntity.getMovimentacaoDestino().getCodDiagrama(),
                 movimentacaoEntity.getMovimentacaoDestino().getKmColetadoVeiculo(),
-                movimentacaoEntity.getMovimentacaoDestino().getTipoDestino().asString());
+                movimentacaoEntity.getMovimentacaoDestino().getTipoDestino().asString(),
+                movimentacaoEntity.getMovimentacaoDestino().getPosicaoPneuDestino(),
+                movimentacaoEntity.getMovimentacaoDestino().getCodMotivoDescarte(),
+                movimentacaoEntity.getMovimentacaoDestino().getCodColeta(),
+                movimentacaoEntity.getMovimentacaoDestino().getUrlImagemDescarte1(),
+                movimentacaoEntity.getMovimentacaoDestino().getUrlImagemDescarte2(),
+                movimentacaoEntity.getMovimentacaoDestino().getUrlImagemDescarte3(),
+                recapadoraDestino != null ? recapadoraDestino.getCodigo() : null,
+                recapadoraDestino != null ? recapadoraDestino.getNome() : null);
     }
 }
