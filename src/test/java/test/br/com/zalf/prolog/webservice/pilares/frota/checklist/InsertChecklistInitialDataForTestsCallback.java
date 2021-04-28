@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.commons.util.Log;
 import org.flywaydb.core.api.callback.BaseCallback;
 import org.flywaydb.core.api.callback.Context;
 import org.flywaydb.core.api.callback.Event;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -26,36 +27,26 @@ public class InsertChecklistInitialDataForTestsCallback extends BaseCallback {
             try (final Statement stmt = context.getConnection().createStatement()) {
                 final ResultSet rSetCodVeiculo = insertVeiculoChecklist(stmt);
                 if (rSetCodVeiculo.next()) {
+                    final Long codVeiculo = rSetCodVeiculo.getLong("codigo");
+                    rSetCodVeiculo.next();
                     int count = 0;
                     do {
                         Log.i(TAG, "Iniciando execução da inclusão de dados de checklist de teste...");
-                        final ResultSet rSetCodChecklist = insertChecklist(stmt, rSetCodVeiculo);
+                        final ResultSet rSetCodChecklist = insertChecklist(stmt, codVeiculo);
                         if (rSetCodChecklist.next()) {
                             Log.i(TAG, "Iniciando execução da inclusão das respostas de checklist de teste...");
-                            insertRespostasChecklist(stmt, rSetCodChecklist);
+                            final Long codChecklist = rSetCodChecklist.getLong("codigo");
+                            insertRespostasChecklist(stmt, codChecklist);
                         }
                         count++;
+                        rSetCodChecklist.close();
                     } while (count < QTD_CHECKLISTS);
                 }
             } catch (final SQLException e) {
                 Log.e(TAG, "Erro ao inserir dados de checklist", e);
             }
-            Log.i(TAG, "Finalizando execução das inserções");
+            Log.i(TAG, "Execução das inserções finalizada");
         }
-    }
-
-    private void insertRespostasChecklist(final Statement stmt, final ResultSet rSetCodChecklist) throws SQLException {
-        final Long codChecklist = rSetCodChecklist.getLong("codigo");
-        int codPergunta = 1;
-        do {
-            final String sqlChecklistAlternativa =
-                    "insert into public.checklist_respostas_nok(cod_unidade," +
-                            " cod_checklist_modelo, cod_versao_checklist_modelo, cod_checklist, " +
-                            "cod_pergunta, cod_alternativa, resposta_outros) " +
-                            "values (215, 1, 1, " + codChecklist + "," + codPergunta + ", 1, 'teste');";
-            stmt.execute(sqlChecklistAlternativa);
-            codPergunta++;
-        } while (codPergunta < 4);
     }
 
     private ResultSet insertVeiculoChecklist(final Statement stmt) throws SQLException {
@@ -67,8 +58,7 @@ public class InsertChecklistInitialDataForTestsCallback extends BaseCallback {
                         "null, null, 3, 2, true, 'INTERNO') returning codigo;");
     }
 
-    private ResultSet insertChecklist(final Statement stmt, final ResultSet rSetCodVeiculo) throws SQLException {
-        final Long codVeiculo = rSetCodVeiculo.getLong("codigo");
+    private ResultSet insertChecklist(final Statement stmt, final Long codVeiculo) throws SQLException {
         final String sqlChecklist = "insert into public.checklist (cod_unidade, cod_checklist_modelo, " +
                 "cod_versao_checklist_modelo, data_hora, data_hora_realizacao_tz_aplicado, " +
                 "data_hora_importado_prolog, cpf_colaborador, cod_veiculo, tipo, tempo_realizacao, " +
@@ -78,12 +68,41 @@ public class InsertChecklistInitialDataForTestsCallback extends BaseCallback {
                 "foi_offline, total_perguntas_ok, total_perguntas_nok, total_alternativas_ok, " +
                 "total_alternativas_nok) " +
                 "values (215, 1, " +
-                "1, '2021-04-08 14:32:59.733039', '2021-04-08 11:32:59.733039', " +
+                "1, '2021-03-08 14:32:59.733039', '2021-03-08 11:32:59.733039', " +
                 "null, 3383283194, " + codVeiculo + ", 'S', 27275, " +
                 "11331, '2021-04-08 14:32:59.733166', 'SERVIDOR', " +
                 "121, 121, '7d6867d2498bd65e', " +
                 "null, 0, 211810, false, 0, 3, 1, 7) returning codigo;";
-        final ResultSet rSetCodChecklist = stmt.executeQuery(sqlChecklist);
-        return rSetCodChecklist;
+        return stmt.executeQuery(sqlChecklist);
+    }
+
+    private void insertRespostasChecklist(final Statement stmt, final Long codChecklist) throws SQLException {
+        int codPergunta = 1;
+        do {
+            final Long codAlternativa = getCodAlternativa(stmt, codPergunta);
+            final String sqlInsertChecklistAlternativa =
+                    "insert into public.checklist_respostas_nok(cod_unidade," +
+                            " cod_checklist_modelo, cod_versao_checklist_modelo, cod_checklist, " +
+                            "cod_pergunta, cod_alternativa, resposta_outros) " +
+                            "values (215, 1, 1, " + codChecklist + "," + codPergunta + ", " + codAlternativa + ", " +
+                            "'teste');";
+            stmt.execute(sqlInsertChecklistAlternativa);
+            codPergunta++;
+        } while (codPergunta < 4);
+    }
+
+    @NotNull
+    private Long getCodAlternativa(final Statement stmt, final int codPergunta) throws SQLException {
+        final String sqlCodAlternativa = "select cap.codigo " +
+                "from checklist_alternativa_pergunta cap " +
+                "where cap.cod_pergunta = " + codPergunta + " order by cap.ordem limit 1;";
+        final ResultSet rSetCodAlternativa = stmt.executeQuery(sqlCodAlternativa);
+        if (rSetCodAlternativa.next()) {
+            final Long codAlternativa = rSetCodAlternativa.getLong("codigo");
+            rSetCodAlternativa.close();
+            return codAlternativa;
+        } else {
+            return null;
+        }
     }
 }
