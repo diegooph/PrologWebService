@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.veiculo.acoplamento.validator;
 
 import br.com.zalf.prolog.webservice.errorhandling.error.ProLogErrorCodes;
+import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import org.jetbrains.annotations.Nullable;
 
@@ -13,6 +14,6 @@ public class VeiculoAcoplamentoValidatorException extends ProLogException {
               ProLogErrorCodes.CLIENT_SIDE_ERROR.errorCode(),
               "Erro ao realizar processo de acoplamento.",
               detailedMessage,
-              true);
+              GenericException.NO_LOGS_INTO_SENTRY);
     }
 }

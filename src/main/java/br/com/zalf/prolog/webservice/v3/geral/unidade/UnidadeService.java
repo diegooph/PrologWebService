@@ -88,4 +88,14 @@ public class UnidadeService {
     public List<UnidadeEntity> getUnidadesByCodEmpresa(@NotNull final Long codEmpresa) {
         return dao.findAllByCodEmpresa(codEmpresa);
     }
+
+    @NotNull
+    public List<UnidadeEntity> getUnidadesByTokenUser(@NotNull final String tokenUser) {
+        return dao.findAllByTokenUser(tokenUser);
+    }
+
+    @NotNull
+    public List<UnidadeEntity> getUnidadesByTokenApi(@NotNull final String tokenApi) {
+        return dao.findAllByTokenApi(tokenApi);
+    }
 }
