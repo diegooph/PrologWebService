@@ -1,5 +1,6 @@
 package test.br.com.zalf.prolog.webservice.pilares.frota.movimentacao;
 
+import br.com.zalf.prolog.webservice.errorhandling.sql.ClientSideErrorException;
 import br.com.zalf.prolog.webservice.v3.frota.movimentacao._model.MovimentacaoProcessoListagemDto;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,7 @@ public final class MovimentacaoProcessoApiClient {
     private TestRestTemplate restTemplate;
 
     @NotNull
-    public ResponseEntity<List<MovimentacaoProcessoListagemDto>> getMovimentacacaoProcessosByCodUnidade(
+    public ResponseEntity<List<MovimentacaoProcessoListagemDto>> getMovimentacacaoProcessos(
             @NotNull final List<Long> codUnidades,
             @NotNull final String dataInicial,
             @NotNull final String dataFinal,
@@ -48,7 +49,23 @@ public final class MovimentacaoProcessoApiClient {
                 .get(components.toUri())
                 .accept(MediaType.APPLICATION_JSON)
                 .build();
-        return restTemplate.exchange(requestEntity,
-                                     ParameterizedTypeReference.forType(MovimentacaoProcessoListagemDto.class));
+        return restTemplate.exchange(requestEntity, new ParameterizedTypeReference<>() {});
+    }
+
+    @NotNull
+    public ResponseEntity<ClientSideErrorException> getMovimentacacaoProcessosBadRequest() {
+        final UriComponents components = UriComponentsBuilder
+                .fromPath(RESOURCE)
+                .queryParam("codUnidades", "a")
+                .queryParam("dataInicial", "2021-01-01")
+                .queryParam("dataFinal", "2021-01-01")
+                .queryParam("limit", 1000)
+                .queryParam("offset", 0)
+                .build();
+        final RequestEntity<Void> requestEntity = RequestEntity
+                .get(components.toUri())
+                .accept(MediaType.APPLICATION_JSON)
+                .build();
+        return restTemplate.exchange(requestEntity, new ParameterizedTypeReference<>() {});
     }
 }
