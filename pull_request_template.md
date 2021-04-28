@@ -32,5 +32,4 @@
 
 ## :crystal_ball: Próximos passos
 - [ ] Mover migration para pasta 'done'
-- [ ] Realizar o merge dos branchs
 - [ ] Informar o suporte
