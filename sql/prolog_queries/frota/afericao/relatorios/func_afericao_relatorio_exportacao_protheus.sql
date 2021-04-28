@@ -33,9 +33,7 @@ begin
                remove_extra_spaces(coalesce(ppne.nomenclatura::text, ''), true)
                                                                                                as nomenclatura_posicao,
                coalesce(round(cast(av.psi as numeric), 2), -1)::real                           as calibragem_aferida,
-               f_if(av.psi is not null,
-                    p.pressao_recomendada::real,
-                    coalesce(round(cast(av.psi as numeric), 2), -1)::real)                     as calibragem_realizada,
+               f_if(av.psi is not null, p.pressao_recomendada::real, -1::real)                 as calibragem_realizada,
                coalesce(round(cast(av.altura_sulco_interno as numeric), 2), -1)::real          as altura_sulco_interno,
                coalesce(round(cast(av.altura_sulco_central_interno as numeric), 2), -1)::real  as sulco_central,
                coalesce(round(cast(av.altura_sulco_externo as numeric), 2), -1)::real          as altura_sulco_externo
