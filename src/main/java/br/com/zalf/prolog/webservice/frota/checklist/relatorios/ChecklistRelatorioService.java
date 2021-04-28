@@ -7,7 +7,6 @@ import br.com.zalf.prolog.webservice.commons.util.datetime.PrologDateParser;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogExceptionHandler;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.OutputStream;
 import java.util.List;
@@ -123,14 +122,12 @@ class ChecklistRelatorioService {
 
     void getResumoChecklistsCsv(@NotNull final OutputStream outputStream,
                                 @NotNull final List<Long> codUnidade,
-                                @NotNull final String placa,
                                 @NotNull final String dataInicial,
                                 @NotNull final String dataFinal) {
         try {
             dao.getResumoChecklistsCsv(
                     outputStream,
                     codUnidade,
-                    placa,
                     PrologDateParser.toLocalDate(dataInicial),
                     PrologDateParser.toLocalDate(dataFinal));
         } catch (final Throwable e) {
@@ -141,13 +138,11 @@ class ChecklistRelatorioService {
 
     @NotNull
     Report getResumoChecklistsReport(@NotNull final List<Long> codUnidade,
-                                     @NotNull final String placa,
                                      @NotNull final String dataInicial,
                                      @NotNull final String dataFinal) throws ProLogException {
         try {
             return dao.getResumoChecklistsReport(
                     codUnidade,
-                    placa,
                     PrologDateParser.toLocalDate(dataInicial),
                     PrologDateParser.toLocalDate(dataFinal));
         } catch (final Throwable e) {
@@ -160,13 +155,11 @@ class ChecklistRelatorioService {
 
     @NotNull
     Report getEstratificacaoRespostasNokReport(@NotNull final List<Long> codUnidade,
-                                               @NotNull final String placa,
                                                @NotNull final String dataInicial,
                                                @NotNull final String dataFinal) throws ProLogException {
         try {
             return dao.getEstratificacaoRespostasNokReport(
                     codUnidade,
-                    placa,
                     PrologDateParser.toLocalDate(dataInicial),
                     PrologDateParser.toLocalDate(dataFinal));
         } catch (final Throwable e) {
@@ -179,14 +172,12 @@ class ChecklistRelatorioService {
 
     void getEstratificacaoRespostasNokCsv(@NotNull final OutputStream outputStream,
                                           @NotNull final List<Long> codUnidade,
-                                          @NotNull final String placa,
                                           @NotNull final String dataInicial,
                                           @NotNull final String dataFinal) {
         try {
             dao.getEstratificacaoRespostasNokCsv(
                     outputStream,
                     codUnidade,
-                    placa,
                     PrologDateParser.toLocalDate(dataInicial),
                     PrologDateParser.toLocalDate(dataFinal));
         } catch (final Throwable e) {
@@ -215,47 +206,6 @@ class ChecklistRelatorioService {
                     codUnidades);
         } catch (final Throwable e) {
             Log.e(TAG, "Erro ao buscar o relatório com a listagem de modelos dos checklists (CSV)", e);
-            throw new RuntimeException(e);
-        }
-    }
-
-    @NotNull
-    Report getDadosGeraisChecklistReport(@NotNull final List<Long> codUnidades,
-                                         @Nullable final Long codColaborador,
-                                         @Nullable final String placa,
-                                         @NotNull final String dataInicial,
-                                         @NotNull final String dataFinal) throws ProLogException {
-        try {
-            return dao.getDadosGeraisChecklistReport(
-                    codUnidades,
-                    codColaborador,
-                    placa,
-                    PrologDateParser.toLocalDate(dataInicial),
-                    PrologDateParser.toLocalDate(dataFinal));
-        } catch (final Throwable e) {
-            Log.e(TAG, "Erro ao buscar o relatório de dados dos checklists (REPORT)", e);
-            throw exceptionHandler.map(e,
-                    "Erro ao buscar o relatório de dados dos checklists," +
-                            " tente novamente");
-        }
-    }
-
-    void getDadosGeraisChecklistCsv(@NotNull final OutputStream outputStream,
-                                    @NotNull final List<Long> codUnidades,
-                                    @Nullable final Long codColaborador,
-                                    @Nullable final String placa,
-                                    @NotNull final String dataInicial,
-                                    @NotNull final String dataFinal) {
-        try {
-            dao.getDadosGeraisChecklistCsv(
-                    outputStream,
-                    codUnidades,
-                    codColaborador,
-                    placa,
-                    PrologDateParser.toLocalDate(dataInicial),
-                    PrologDateParser.toLocalDate(dataFinal));
-        } catch (final Throwable e) {
-            Log.e(TAG, "Erro ao buscar o relatório de dados gerais dos checklists (CSV)", e);
             throw new RuntimeException(e);
         }
     }

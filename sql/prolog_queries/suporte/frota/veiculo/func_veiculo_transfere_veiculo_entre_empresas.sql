@@ -58,7 +58,7 @@ begin
     -- Verifica se a placa possui pneus.
     if exists(select vp.cod_pneu
               from veiculo_pneu vp
-              where vp.placa = f_placa_veiculo
+              where vp.cod_veiculo = v_cod_veiculo
                 and vp.cod_unidade = f_cod_unidade_origem)
     then
         raise exception 'Erro! A placa: % possui pneus vinculados, favor remover os pneus do mesmo', f_placa_veiculo;
@@ -80,11 +80,11 @@ begin
             select v.codigo
             from veiculo v
                      join veiculo_tipo vt on v.cod_diagrama = vt.cod_diagrama
-            where v.placa = f_placa_veiculo
+            where v.codigo = v_cod_veiculo
               and vt.codigo = f_cod_tipo_veiculo_destino)
     then
-        raise exception 'Erro! O diagrama do tipo: % é diferente do veículo: %', f_cod_tipo_veiculo_destino,
-            f_placa_veiculo;
+        raise exception
+            'Erro! O diagrama do tipo: % é diferente do veículo: %', f_cod_tipo_veiculo_destino, f_placa_veiculo;
     end if;
 
     -- Verifica se empresa destino possui modelo do veículo informado.
@@ -182,7 +182,7 @@ begin
     from checklist c
              join checklist_ordem_servico cos
                   on c.codigo = cos.cod_checklist
-    where c.placa_veiculo = f_placa_veiculo
+    where c.cod_veiculo = v_cod_veiculo
       and cos.status = 'A'
     into v_lista_cod_oss_check;
 
@@ -221,14 +221,14 @@ begin
               from integracao.veiculo_cadastrado ivc
               where ivc.cod_empresa_cadastro = f_cod_empresa_origem
                 and ivc.cod_unidade_cadastro = f_cod_unidade_origem
-                and ivc.placa_veiculo_cadastro = f_placa_veiculo)
+                and ivc.cod_veiculo_cadastro_prolog = v_cod_veiculo)
     then
         update integracao.veiculo_cadastrado
         set cod_unidade_cadastro = f_cod_unidade_destino,
             cod_empresa_cadastro = f_cod_empresa_destino
         where cod_empresa_cadastro = f_cod_empresa_origem
           and cod_unidade_cadastro = f_cod_unidade_origem
-          and placa_veiculo_cadastro = f_placa_veiculo;
+          and cod_veiculo_cadastro_prolog = v_cod_veiculo;
     end if;
 
     -- Realiza transferência.
@@ -239,7 +239,7 @@ begin
         cod_modelo  = f_cod_modelo_veiculo_destino
     where cod_empresa = f_cod_empresa_origem
       and cod_unidade = f_cod_unidade_origem
-      and placa = f_placa_veiculo;
+      and codigo = v_cod_veiculo;
 
     -- Mensagem de sucesso.
     select 'Veículo transferido com sucesso! O veículo com placa: ' || f_placa_veiculo ||

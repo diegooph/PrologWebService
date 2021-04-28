@@ -1,148 +1,110 @@
-CREATE OR REPLACE FUNCTION
-    FUNC_AFERICAO_RELATORIO_CRONOGRAMA_AFERICOES_PLACAS(F_COD_UNIDADES BIGINT[],
-                                                        F_DATA_HORA_ATUAL_UTC TIMESTAMP WITH TIME ZONE,
-                                                        F_DATA_HORA_GERACAO_RELATORIO TIMESTAMP WITH TIME ZONE)
-    RETURNS TABLE
+create or replace function
+    func_afericao_relatorio_cronograma_afericoes_placas(f_cod_unidades bigint[],
+                                                        f_data_hora_atual_utc timestamp with time zone,
+                                                        f_data_hora_geracao_relatorio timestamp with time zone)
+    returns table
             (
-                UNIDADE                              TEXT,
-                PLACA                                TEXT,
-                "IDENTIFICADOR FROTA"                TEXT,
-                "QTD PNEUS APLICADOS"                TEXT,
-                "MODELO VEÍCULO"                     TEXT,
-                "TIPO VEÍCULO"                       TEXT,
-                "STATUS SULCO"                       TEXT,
-                "STATUS PRESSÃO"                     TEXT,
-                "DATA VENCIMENTO SULCO"              TEXT,
-                "DATA VENCIMENTO PRESSÃO"            TEXT,
-                "DIAS VENCIMENTO SULCO"              TEXT,
-                "DIAS VENCIMENTO PRESSÃO"            TEXT,
-                "DIAS DESDE ÚLTIMA AFERIÇÃO SULCO"   TEXT,
-                "DATA/HORA ÚLTIMA AFERIÇÃO SULCO"    TEXT,
-                "DIAS DESDE ÚLTIMA AFERIÇÃO PRESSÃO" TEXT,
-                "DATA/HORA ÚLTIMA AFERIÇÃO PRESSÃO"  TEXT,
-                "DATA/HORA GERAÇÃO RELATÓRIO"        TEXT
+                UNIDADE                              text,
+                PLACA                                text,
+                "IDENTIFICADOR FROTA"                text,
+                "QTD PNEUS APLICADOS"                text,
+                "MODELO VEÍCULO"                     text,
+                "TIPO VEÍCULO"                       text,
+                "STATUS SULCO"                       text,
+                "STATUS PRESSÃO"                     text,
+                "DATA VENCIMENTO SULCO"              text,
+                "DATA VENCIMENTO PRESSÃO"            text,
+                "DIAS VENCIMENTO SULCO"              text,
+                "DIAS VENCIMENTO PRESSÃO"            text,
+                "DIAS DESDE ÚLTIMA AFERIÇÃO SULCO"   text,
+                "DATA/HORA ÚLTIMA AFERIÇÃO SULCO"    text,
+                "DIAS DESDE ÚLTIMA AFERIÇÃO PRESSÃO" text,
+                "DATA/HORA ÚLTIMA AFERIÇÃO PRESSÃO"  text,
+                "DATA/HORA GERAÇÃO RELATÓRIO"        text
             )
-    LANGUAGE PLPGSQL
-AS
+    language plpgsql
+as
 $$
-BEGIN
-    RETURN QUERY
-        WITH DADOS AS (
-            SELECT U.NOME::TEXT                                                         AS NOME_UNIDADE,
-                   V.PLACA::TEXT                                                        AS PLACA_VEICULO,
-                   COALESCE(V.IDENTIFICADOR_FROTA::TEXT, '-')                           AS IDENTIFICADOR_FROTA,
-                   (SELECT COUNT(VP.COD_PNEU)
-                    FROM VEICULO_PNEU VP
-                    WHERE VP.COD_VEICULO = V.CODIGO
-                    GROUP BY VP.COD_VEICULO)::TEXT                                      AS QTD_PNEUS_APLICADOS,
-                   MV.NOME::TEXT                                                        AS NOME_MODELO_VEICULO,
-                   VT.NOME::TEXT                                                        AS NOME_TIPO_VEICULO,
-                   TO_CHAR(SULCO.DATA_HORA_ULTIMA_AFERICAO_SULCO, 'DD/MM/YYYY HH24:MI') AS DATA_HORA_ULTIMA_AFERICAO_SULCO,
-                   TO_CHAR(PRESSAO.DATA_HORA_ULTIMA_AFERICAO_PRESSAO,
-                           'DD/MM/YYYY HH24:MI')                                        AS DATA_HORA_ULTIMA_AFERICAO_PRESSAO,
-                   TO_CHAR(SULCO.DATA_ULTIMA_AFERICAO_SULCO
-                               + (PRU.PERIODO_AFERICAO_SULCO || ' DAYS')::INTERVAL,
-                           'DD/MM/YYYY')                                                AS DATA_VENCIMENTO_SULCO,
-                   TO_CHAR(PRESSAO.DATA_ULTIMA_AFERICAO_PRESSAO
-                               + (PRU.PERIODO_AFERICAO_PRESSAO || ' DAYS')::INTERVAL,
-                           'DD/MM/YYYY')                                                AS DATA_VENCIMENTO_PRESSAO,
-                   (PRU.PERIODO_AFERICAO_SULCO - SULCO.DIAS)::TEXT                      AS DIAS_VENCIMENTO_SULCO,
-                   (PRU.PERIODO_AFERICAO_PRESSAO - PRESSAO.DIAS)::TEXT                  AS DIAS_VENCIMENTO_PRESSAO,
-                   SULCO.DIAS::TEXT                                                     AS DIAS_DESDE_ULTIMA_AFERICAO_SULCO,
-                   PRESSAO.DIAS::TEXT                                                   AS DIAS_DESDE_ULTIMA_AFERICAO_PRESSAO,
-                   F_IF(CONFIG.FORMA_COLETA_DADOS_SULCO <> 'BLOQUEADO'
-                            OR CONFIG.FORMA_COLETA_DADOS_SULCO_PRESSAO <> 'BLOQUEADO',
-                        TRUE,
-                        FALSE)                                                          AS PODE_AFERIR_SULCO,
-                   F_IF(CONFIG.FORMA_COLETA_DADOS_PRESSAO <> 'BLOQUEADO'
-                            OR CONFIG.FORMA_COLETA_DADOS_SULCO_PRESSAO <> 'BLOQUEADO',
-                        TRUE,
-                        FALSE)                                                          AS PODE_AFERIR_PRESSAO,
-                   F_IF(SULCO.DIAS IS NULL, TRUE,
-                        FALSE)                                                          AS SULCO_NUNCA_AFERIDO,
-                   F_IF(PRESSAO.DIAS IS NULL, TRUE,
-                        FALSE)                                                          AS PRESSAO_NUNCA_AFERIDA,
-                   F_IF(SULCO.DIAS > PRU.PERIODO_AFERICAO_SULCO, TRUE,
-                        FALSE)                                                          AS AFERICAO_SULCO_VENCIDA,
-                   F_IF(PRESSAO.DIAS > PRU.PERIODO_AFERICAO_PRESSAO, TRUE,
-                        FALSE)                                                          AS AFERICAO_PRESSAO_VENCIDA
-            FROM VEICULO V
-                     JOIN MODELO_VEICULO MV
-                          ON MV.CODIGO = V.COD_MODELO
-                     JOIN VEICULO_TIPO VT
-                          ON VT.CODIGO = V.COD_TIPO
-                     JOIN FUNC_AFERICAO_GET_CONFIG_TIPO_AFERICAO_VEICULO(V.COD_UNIDADE) CONFIG
-                          ON CONFIG.COD_TIPO_VEICULO = V.COD_TIPO
-                     LEFT JOIN
-                 (SELECT A.COD_VEICULO                                               AS COD_VEICULO_INTERVALO,
-                         MAX(A.DATA_HORA AT TIME ZONE
-                             TZ_UNIDADE(A.COD_UNIDADE))::DATE                          AS DATA_ULTIMA_AFERICAO_PRESSAO,
-                         MAX(A.DATA_HORA AT TIME ZONE
-                             TZ_UNIDADE(A.COD_UNIDADE))                                AS DATA_HORA_ULTIMA_AFERICAO_PRESSAO,
-                         EXTRACT(DAYS FROM (F_DATA_HORA_ATUAL_UTC) - MAX(A.DATA_HORA)) AS DIAS
-                  FROM AFERICAO A
-                  WHERE A.TIPO_MEDICAO_COLETADA = 'PRESSAO'
-                     OR A.TIPO_MEDICAO_COLETADA = 'SULCO_PRESSAO'
-                  GROUP BY A.COD_VEICULO) AS PRESSAO ON PRESSAO.COD_VEICULO_INTERVALO = V.CODIGO
-                     LEFT JOIN
-                 (SELECT A.COD_VEICULO                                             AS COD_VEICULO_INTERVALO,
-                         MAX(A.DATA_HORA AT TIME ZONE
-                             TZ_UNIDADE(A.COD_UNIDADE)) :: DATE                      AS DATA_ULTIMA_AFERICAO_SULCO,
-                         MAX(A.DATA_HORA AT TIME ZONE
-                             TZ_UNIDADE(A.COD_UNIDADE))                              AS DATA_HORA_ULTIMA_AFERICAO_SULCO,
-                         EXTRACT(DAYS FROM F_DATA_HORA_ATUAL_UTC - MAX(A.DATA_HORA)) AS DIAS
-                  FROM AFERICAO A
-                  WHERE A.TIPO_MEDICAO_COLETADA = 'SULCO'
-                     OR A.TIPO_MEDICAO_COLETADA = 'SULCO_PRESSAO'
-                  GROUP BY A.COD_VEICULO) AS SULCO ON SULCO.COD_VEICULO_INTERVALO = V.CODIGO
-                     JOIN PNEU_RESTRICAO_UNIDADE PRU
-                          ON PRU.COD_UNIDADE = V.COD_UNIDADE
-                     JOIN UNIDADE U
-                          ON U.CODIGO = V.COD_UNIDADE
-            WHERE V.STATUS_ATIVO = TRUE
-              AND V.COD_UNIDADE = ANY (F_COD_UNIDADES)
-            ORDER BY U.CODIGO, V.PLACA
+begin
+    return query
+        with dados as (
+            select u.nome::text                                                          as nome_unidade,
+                   v.placa::text                                                         as placa_veiculo,
+                   coalesce(v.identificador_frota::text, '-')                            as identificador_frota,
+                   (select count(vp.cod_pneu)
+                    from veiculo_pneu vp
+                    where vp.cod_veiculo = v.codigo
+                    group by vp.cod_veiculo)::text                                       as qtd_pneus_aplicados,
+                   mv.nome::text                                                         as nome_modelo_veiculo,
+                   vt.nome::text                                                         as nome_tipo_veiculo,
+                   to_char(base.data_hora_ultima_afericao_sulco, 'dd/mm/yyyy hh24:mi')   as data_hora_ultima_afericao_sulco,
+                   to_char(base.data_hora_ultima_afericao_pressao, 'dd/mm/yyyy hh24:mi') as data_hora_ultima_afericao_pressao,
+                   to_char(base.data_vencimento_sulco, 'dd/mm/yyyy')                     as data_vencimento_sulco,
+                   to_char(base.data_vencimento_pressao, 'dd/mm/yyyy')                   as data_vencimento_pressao,
+                   base.dias_vencimento_sulco::text                                      as dias_vencimento_sulco,
+                   base.dias_vencimento_pressao::text                                    as dias_vencimento_pressao,
+                   base.dias_desde_ultima_afericao_sulco::text                           as dias_desde_ultima_afericao_sulco,
+                   base.dias_desde_ultima_afericao_pressao::text                         as dias_desde_ultima_afericao_pressao,
+                   base.pode_aferir_sulco                                                as pode_aferir_sulco,
+                   base.pode_aferir_pressao                                              as pode_aferir_pressao,
+                   base.sulco_nunca_aferido                                              as sulco_nunca_aferido,
+                   base.pressao_nunca_aferico                                            as pressao_nunca_aferida,
+                   base.afericao_sulco_vencida                                           as afericao_sulco_vencida,
+                   base.afericao_pressao_vencida as afericao_pressao_vencida
+            from veiculo v
+                     join modelo_veiculo mv
+                          on mv.codigo = v.cod_modelo
+                     join veiculo_tipo vt
+                          on vt.codigo = v.cod_tipo
+                     join unidade u
+                          on u.codigo = v.cod_unidade
+                     join func_afericao_relatorio_dados_base_validacao_vencimento(f_cod_unidades,
+                                                                                  f_data_hora_atual_utc) as base
+                          on base.cod_veiculo = v.codigo
+            where v.status_ativo = true
+              and v.cod_unidade = any (f_cod_unidades)
+            order by u.codigo, v.placa
         )
-             -- Todos os coalesce ficam aqui.
-        SELECT D.NOME_UNIDADE                                               AS NOME_UNIDADE,
-               D.PLACA_VEICULO                                              AS PLACA_VEICULO,
-               D.IDENTIFICADOR_FROTA                                        AS IDENTIFICADOR_FROTA,
-               COALESCE(D.QTD_PNEUS_APLICADOS, '-')                         AS QTD_PNEUS_APLICADOS,
-               D.NOME_MODELO_VEICULO                                        AS NOME_MODELO_VEICULO,
-               D.NOME_TIPO_VEICULO                                          AS NOME_TIPO_VEICULO,
-               CASE
-                   WHEN NOT D.PODE_AFERIR_SULCO
-                       THEN 'BLOQUEADO AFERIÇÃO'
-                   WHEN D.SULCO_NUNCA_AFERIDO
-                       THEN 'SULCO NUNCA AFERIDO'
-                   WHEN D.AFERICAO_SULCO_VENCIDA
-                       THEN 'VENCIDO'
-                   ELSE 'NO PRAZO'
-                   END                                                      AS STATUS_SULCO,
-               CASE
-                   WHEN NOT D.PODE_AFERIR_PRESSAO
-                       THEN 'BLOQUEADO AFERIÇÃO'
-                   WHEN D.PRESSAO_NUNCA_AFERIDA
-                       THEN 'PRESSÃO NUNCA AFERIDA'
-                   WHEN D.AFERICAO_PRESSAO_VENCIDA
-                       THEN 'VENCIDO'
-                   ELSE 'NO PRAZO'
-                   END                                                      AS STATUS_PRESSAO,
-               F_IF(D.SULCO_NUNCA_AFERIDO, '-',
-                    D.DATA_VENCIMENTO_SULCO)                                AS DATA_VENCIMENTO_SULCO,
-               F_IF(D.PRESSAO_NUNCA_AFERIDA, '-',
-                    D.DATA_VENCIMENTO_PRESSAO)                              AS DATA_VENCIMENTO_PRESSAO,
-               F_IF(D.SULCO_NUNCA_AFERIDO, '-',
-                    D.DIAS_VENCIMENTO_SULCO)                                AS DIAS_VENCIMENTO_SULCO,
-               F_IF(D.PRESSAO_NUNCA_AFERIDA, '-',
-                    D.DIAS_VENCIMENTO_PRESSAO)                              AS DIAS_VENCIMENTO_PRESSAO,
-               F_IF(D.SULCO_NUNCA_AFERIDO, '-',
-                    D.DIAS_DESDE_ULTIMA_AFERICAO_SULCO)                     AS DIAS_DESDE_ULTIMA_AFERICAO_SULCO,
-               COALESCE(D.DATA_HORA_ULTIMA_AFERICAO_SULCO, '-')             AS DATA_HORA_ULTIMA_AFERICAO_SULCO,
-               F_IF(D.PRESSAO_NUNCA_AFERIDA, '-',
-                    D.DIAS_DESDE_ULTIMA_AFERICAO_PRESSAO)                   AS DIAS_DESDE_ULTIMA_AFERICAO_PRESSAO,
-               COALESCE(D.DATA_HORA_ULTIMA_AFERICAO_PRESSAO, '-')           AS DATA_HORA_ULTIMA_AFERICAO_PRESSAO,
-               TO_CHAR(F_DATA_HORA_GERACAO_RELATORIO, 'DD/MM/YYYY HH24:MI') AS DATA_HORA_GERACAO_RELATORIO
-        FROM DADOS D;
-END;
+             -- todos os coalesce ficam aqui.
+        select d.nome_unidade                                               as nome_unidade,
+               d.placa_veiculo                                              as placa_veiculo,
+               d.identificador_frota                                        as identificador_frota,
+               coalesce(d.qtd_pneus_aplicados, '-')                         as qtd_pneus_aplicados,
+               d.nome_modelo_veiculo                                        as nome_modelo_veiculo,
+               d.nome_tipo_veiculo                                          as nome_tipo_veiculo,
+               case
+                   when not d.pode_aferir_sulco
+                       then 'BLOQUEADO AFERIÇÃO'
+                   when d.sulco_nunca_aferido
+                       then 'VENCIDO (NUNCA AFERIDO)'
+                   when d.afericao_sulco_vencida
+                       then 'VENCIDO (FORA DO PRAZO)'
+                   else 'NO PRAZO'
+                   end                                                      as status_sulco,
+               case
+                   when not d.pode_aferir_pressao
+                       then 'BLOQUEADO AFERIÇÃO'
+                   when d.pressao_nunca_aferida
+                       then 'VENCIDO (NUNCA AFERIDA)'
+                   when d.afericao_pressao_vencida
+                       then 'VENCIDO (FORA DO PRAZO)'
+                   else 'NO PRAZO'
+                   end                                                      as status_pressao,
+               f_if(d.sulco_nunca_aferido, '-',
+                    d.data_vencimento_sulco)                                as data_vencimento_sulco,
+               f_if(d.pressao_nunca_aferida, '-',
+                    d.data_vencimento_pressao)                              as data_vencimento_pressao,
+               f_if(d.sulco_nunca_aferido, '-',
+                    d.dias_vencimento_sulco)                                as dias_vencimento_sulco,
+               f_if(d.pressao_nunca_aferida, '-',
+                    d.dias_vencimento_pressao)                              as dias_vencimento_pressao,
+               f_if(d.sulco_nunca_aferido, '-',
+                    d.dias_desde_ultima_afericao_sulco)                     as dias_desde_ultima_afericao_sulco,
+               coalesce(d.data_hora_ultima_afericao_sulco, '-')             as data_hora_ultima_afericao_sulco,
+               f_if(d.pressao_nunca_aferida, '-',
+                    d.dias_desde_ultima_afericao_pressao)                   as dias_desde_ultima_afericao_pressao,
+               coalesce(d.data_hora_ultima_afericao_pressao, '-')           as data_hora_ultima_afericao_pressao,
+               to_char(f_data_hora_geracao_relatorio, 'dd/mm/yyyy hh24:mi') as data_hora_geracao_relatorio
+        from dados d;
+end;
 $$;

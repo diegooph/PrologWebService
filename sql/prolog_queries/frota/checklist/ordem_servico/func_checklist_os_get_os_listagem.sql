@@ -1,6 +1,6 @@
 create or replace function func_checklist_os_get_os_listagem(f_cod_unidade bigint,
                                                              f_cod_tipo_veiculo bigint,
-                                                             f_placa_veiculo text,
+                                                             f_cod_veiculo bigint,
                                                              f_status_os text,
                                                              f_limit integer,
                                                              f_offset integer)
@@ -39,7 +39,7 @@ begin
             group by cos.cod_unidade, cos.codigo
         )
 
-        select c.placa_veiculo :: text                                         as placa_veiculo,
+        select v.placa :: text                                                 as placa_veiculo,
                cos.codigo                                                      as cod_os,
                cos.cod_unidade                                                 as cod_unidade_os,
                cos.cod_checklist                                               as cod_checklist,
@@ -56,12 +56,12 @@ begin
                       on os.cod_os = cos.codigo
                           and os.cod_unidade_os = cos.cod_unidade
                  join veiculo v
-                      on v.placa = c.placa_veiculo
+                      on v.codigo = c.cod_veiculo
                  join veiculo_tipo vt
                       on v.cod_tipo = vt.codigo
         where c.cod_unidade = f_cod_unidade
           and case when f_cod_tipo_veiculo is null then true else f_cod_tipo_veiculo = vt.codigo end
-          and case when f_placa_veiculo is null then true else f_placa_veiculo = c.placa_veiculo end
+          and case when f_cod_veiculo is null then true else f_cod_veiculo = c.cod_veiculo end
           and case when f_status_os is null then true else f_status_os = cos.status end
         order by cos.codigo desc
         limit f_limit offset f_offset;

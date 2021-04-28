@@ -24,9 +24,7 @@ public interface AfericaoDao {
                 final boolean deveAbrirServico) throws Throwable;
 
     @NotNull
-    NovaAfericaoPlaca getNovaAfericaoPlaca(@NotNull final Long codUnidade,
-                                           @NotNull final String placa,
-                                           @NotNull final String tipoAfericao) throws Throwable;
+    NovaAfericaoPlaca getNovaAfericaoPlaca(@NotNull final AfericaoBuscaFiltro afericaoBusca) throws Throwable;
 
     @NotNull
     NovaAfericaoAvulsa getNovaAfericaoAvulsa(

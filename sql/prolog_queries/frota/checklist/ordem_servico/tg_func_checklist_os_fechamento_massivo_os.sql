@@ -18,9 +18,14 @@ DECLARE
                                                                  NEW.COD_ALTERNATIVA IS NULL);
     KM_ATUAL_VEICULO                BIGINT                   := (SELECT V.KM
                                                                  FROM VEICULO V
-                                                                 WHERE V.PLACA = NEW.PLACA_VEICULO);
+                                                                 WHERE V.PLACA = NEW.PLACA_VEICULO
+                                                                   AND V.COD_EMPRESA =
+                                                                       (SELECT U.COD_EMPRESA
+                                                                        FROM UNIDADE U
+                                                                        WHERE U.CODIGO = NEW.COD_UNIDADE));
     KM_VEICULO                      BIGINT                   := (CASE
-                                                                     WHEN NEW.KM IS NULL THEN KM_ATUAL_VEICULO
+                                                                     WHEN NEW.KM IS NULL
+                                                                         THEN KM_ATUAL_VEICULO
                                                                      ELSE NEW.KM END);
     STATUS_RESOLUCAO_COSI_REALIZADO TEXT                     := 'R';
     STATUS_RESOLUCAO_COSI_PENDENTE  TEXT                     := 'P';
@@ -41,7 +46,8 @@ DECLARE
                                                                  WHERE C.CODIGO = CODIGO_CHECKLIST);
     PLACA_CADASTRADA                BOOLEAN                  := TRUE;
     QUEBRA_LINHA                    TEXT                     := CHR(10);
-    VERIFICAR_OS BOOLEAN := FALSE;
+    VERIFICAR_OS                    BOOLEAN                  := FALSE;
+    CODIGO_VEICULO                  BIGINT;
 BEGIN
     IF (TG_OP = 'UPDATE' AND OLD.STATUS_ITEM_FECHADO IS TRUE)
     THEN
@@ -106,17 +112,27 @@ BEGIN
 
         --VERIFICA SE PLACA ESTÁ CADASTRADA
         IF ((NEW.PLACA_VEICULO IS NOT NULL) AND
-            NOT EXISTS(SELECT V.PLACA FROM VEICULO V WHERE V.PLACA = NEW.PLACA_VEICULO))
+            NOT EXISTS(SELECT V.PLACA
+                       FROM VEICULO V
+                       WHERE V.PLACA = NEW.PLACA_VEICULO
+                         AND V.COD_EMPRESA = CODIGO_EMPRESA))
         THEN
             QTD_ERROS = QTD_ERROS + SOMA_ERRO;
             MSGS_ERROS = CONCAT(MSGS_ERROS, QUEBRA_LINHA, QTD_ERROS, ' - PLACA NÃO ESTÁ CADASTRADA');
             PLACA_CADASTRADA = FALSE;
+        ELSE
+            SELECT CODIGO
+            FROM VEICULO V
+            WHERE V.PLACA = NEW.PLACA_VEICULO
+              AND V.COD_EMPRESA = CODIGO_EMPRESA
+            INTO STRICT CODIGO_VEICULO;
         END IF;
 
         --VERIFICAÇÕES REFERENTE ÀS DATAS E HORAS
         ---DATA/H INICIO DA RESOLUÇÃO:
         ----Verifica e adiciona msg de erro se a data/h atual for menor que a data/h do início da resolução
-        IF ((NEW.DATA_HORA_INICIO_RESOLUCAO IS NOT NULL) AND ((NEW.DATA_SOLICITACAO + NEW.HORA_SOLICITACAO) < NEW.DATA_HORA_INICIO_RESOLUCAO))
+        IF ((NEW.DATA_HORA_INICIO_RESOLUCAO IS NOT NULL) AND
+            ((NEW.DATA_SOLICITACAO + NEW.HORA_SOLICITACAO) < NEW.DATA_HORA_INICIO_RESOLUCAO))
         THEN
             QTD_ERROS = QTD_ERROS + SOMA_ERRO;
             MSGS_ERROS = CONCAT(MSGS_ERROS, QUEBRA_LINHA, QTD_ERROS,
@@ -132,7 +148,8 @@ BEGIN
 
         ---DATA/HR FIM DA RESOLUÇÃO
         ----Verifica e adiciona msg de erro se a data/h atual for menor que a data/h do fim da resolução
-        IF ((NEW.DATA_HORA_FIM_RESOLUCAO IS NOT NULL) AND ((NEW.DATA_SOLICITACAO + NEW.HORA_SOLICITACAO) < NEW.DATA_HORA_FIM_RESOLUCAO))
+        IF ((NEW.DATA_HORA_FIM_RESOLUCAO IS NOT NULL) AND
+            ((NEW.DATA_SOLICITACAO + NEW.HORA_SOLICITACAO) < NEW.DATA_HORA_FIM_RESOLUCAO))
         THEN
             QTD_ERROS = QTD_ERROS + SOMA_ERRO;
             MSGS_ERROS = CONCAT(MSGS_ERROS, QUEBRA_LINHA, QTD_ERROS,
@@ -155,7 +172,8 @@ BEGIN
 
         ---DATA/H CONSERTO
         ----Verifica e adiciona msg de erro se a data/h atual for menor que a data/h do conserto
-        IF ((NEW.DATA_HORA_CONSERTO IS NOT NULL) AND ((NEW.DATA_SOLICITACAO + NEW.HORA_SOLICITACAO) < NEW.DATA_HORA_CONSERTO))
+        IF ((NEW.DATA_HORA_CONSERTO IS NOT NULL) AND
+            ((NEW.DATA_SOLICITACAO + NEW.HORA_SOLICITACAO) < NEW.DATA_HORA_CONSERTO))
         THEN
             QTD_ERROS = QTD_ERROS + SOMA_ERRO;
             MSGS_ERROS = CONCAT(MSGS_ERROS, QUEBRA_LINHA, QTD_ERROS,
@@ -190,10 +208,12 @@ BEGIN
                        WHERE COSI.COD_OS = NEW.COD_OS))
         THEN
             ---VERIFICA SE A PLACA É DO CHECKLIST QUE GEROU A OS
-            IF ((NEW.PLACA_VEICULO IS NOT NULL) AND (PLACA_CADASTRADA) AND NOT EXISTS(SELECT C.PLACA_VEICULO
-                                                                                      FROM CHECKLIST C
-                                                                                      WHERE C.CODIGO = CODIGO_CHECKLIST
-                                                                                        AND C.PLACA_VEICULO = NEW.PLACA_VEICULO))
+            IF ((NEW.PLACA_VEICULO IS NOT NULL)
+                AND (PLACA_CADASTRADA)
+                AND NOT EXISTS(SELECT C.COD_VEICULO
+                               FROM CHECKLIST C
+                               WHERE C.CODIGO = CODIGO_CHECKLIST
+                                 AND C.COD_VEICULO = CODIGO_VEICULO))
             THEN
                 QTD_ERROS = QTD_ERROS + SOMA_ERRO;
                 MSGS_ERROS =
@@ -276,7 +296,9 @@ BEGIN
                   AND COD_PERGUNTA_PRIMEIRO_APONTAMENTO = NEW.COD_PERGUNTA
                   AND COD_ALTERNATIVA_PRIMEIRO_APONTAMENTO = NEW.COD_ALTERNATIVA;
                 NEW.STATUS_ITEM_FECHADO = TRUE;
-                NEW.MENSAGEM_STATUS_ITEM := CONCAT('ITEM FECHADO ATRAVÉS DO SUPORTE', QUEBRA_LINHA, 'KM DO VEÍCULO NA HORA DO FECHAMENTO: ', KM_ATUAL_VEICULO);
+                NEW.MENSAGEM_STATUS_ITEM :=
+                        CONCAT('ITEM FECHADO ATRAVÉS DO SUPORTE', QUEBRA_LINHA, 'KM DO VEÍCULO NA HORA DO FECHAMENTO: ',
+                               KM_ATUAL_VEICULO);
                 VERIFICAR_OS := TRUE;
             END IF;
         ELSE
@@ -296,10 +318,10 @@ BEGIN
                 NEW.MENSAGEM_STATUS_OS := 'OS ABERTA';
                 -- VERIFICA SE A OS ESTÁ FECHADA MESMO COM ITENS PENDENTES
                 IF EXISTS(SELECT COS.STATUS
-                    FROM CHECKLIST_ORDEM_SERVICO COS
-                    WHERE COS.STATUS = STATUS_COS_FECHADO
-                      AND COS.CODIGO = NEW.COD_OS
-                      AND COS.COD_UNIDADE = NEW.COD_UNIDADE)
+                          FROM CHECKLIST_ORDEM_SERVICO COS
+                          WHERE COS.STATUS = STATUS_COS_FECHADO
+                            AND COS.CODIGO = NEW.COD_OS
+                            AND COS.COD_UNIDADE = NEW.COD_UNIDADE)
                 THEN
                     -- SE ESTIVER, É UM ERRO. ENTÃO REABRE A OS E EXIBE MSG ESPECÍFICA.
                     UPDATE CHECKLIST_ORDEM_SERVICO

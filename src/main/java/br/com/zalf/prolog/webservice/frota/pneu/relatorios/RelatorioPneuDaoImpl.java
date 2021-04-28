@@ -531,7 +531,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
             final double meta = totalVeiculos / restricao.getPeriodoDiasAfericaoPressao();
             stmt = conn.prepareStatement("SELECT EXTRACT(DAY from (A.DATA_HORA AT TIME ZONE ?)) AS DIA," +
                     " COUNT(EXTRACT(DAY from (A.DATA_HORA AT TIME ZONE ?))) AS REALIZADAS\n" +
-                    "FROM AFERICAO A JOIN VEICULO V ON V.PLACA = A.PLACA_VEICULO\n" +
+                    "FROM AFERICAO A JOIN VEICULO V ON V.CODIGO = A.COD_VEICULO\n" +
                     "WHERE A.DATA_HORA >= (? AT TIME ZONE ?) AND A.DATA_HORA <= (? AT TIME ZONE ?) AND\n" +
                     "      V.COD_UNIDADE = ?\n" +
                     "GROUP BY 1\n" +
@@ -720,7 +720,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM PUBLIC.FUNC_PNEU_RELATORIO_STATUS_PLACAS_AFERICAO(?, ?);");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_PNEU_RELATORIO_STATUS_PLACAS_AFERICAO(?, ?);");
             stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
             stmt.setObject(2, Now.getOffsetDateTimeUtc());
             rSet = stmt.executeQuery();
@@ -919,7 +919,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_AFERICAO_RELATORIO_QTD_DIAS_PLACAS_VENCIDAS(?, ?);");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_AFERICAO_RELATORIO_QTD_DIAS_PLACAS_VENCIDAS_2(?, ?);");
             stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
             stmt.setObject(2, Now.getOffsetDateTimeUtc());
             rSet = stmt.executeQuery();

@@ -1,14 +1,3 @@
--- Sobre:
---
--- Essa function busca todas as informações pertinentes a uma O.S, de forma genérica, para que seja realizada uma
--- integração.
---
--- Histórico:
--- 2020-08-25 -> Function criada (gustavocnp95 - PL-2903).
--- 2020-08-27 -> Adiciona código interno da os (diogenesvanzella - PL-2903).
--- 2020-09-01 -> Altera nome da function (diogenesvanzella - PL-3114).
--- 2020-11-07 -> Adiciona filtro de status da OS (diogenesvanzella - PL-3283).
--- 2020-11-07 -> Adiciona mais informações no retorno da OS (diogenesvanzella - PL-3283).
 create or replace function integracao.func_checklist_os_busca_informacoes_os(f_cod_interno_os_prolog bigint[],
                                                                              f_status_os text default null)
     returns table
@@ -47,7 +36,7 @@ begin
                cos.codigo_prolog                                                 as cod_interno_os_prolog,
                cos.codigo                                                        as cod_os_prolog,
                c.data_hora_realizacao_tz_aplicado                                as data_hora_abertura_os,
-               c.placa_veiculo::text                                             as placa_veiculo,
+               v.placa::text                                                     as placa_veiculo,
                c.km_veiculo                                                      as km_veiculo_na_abertura,
                lpad(c.cpf_colaborador::text, 11, '0')                            as cpf_colaborador_checklist,
                cos.status::text                                                  as status_os,
@@ -79,6 +68,7 @@ begin
                  join checklist_alternativa_pergunta cap
                       on cap.codigo = cosi.cod_alternativa_primeiro_apontamento
                  join unidade u on u.codigo = cos.cod_unidade
+                 join veiculo v on v.codigo = c.cod_veiculo
         where cos.codigo_prolog = any (f_cod_interno_os_prolog)
           and f_if(f_status_os is null, true, cos.status = f_status_os)
         order by cos.codigo_prolog, cosi.codigo;
