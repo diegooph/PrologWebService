@@ -3,6 +3,7 @@ Change Log
 ## Stage
 ### Features
 * Cria v3 de ordem de serviço (PL-3462)
+* Cria v3 de listagem de movimentações (PL-3602)
 
 ### Features
 * Cria anotações para garantir os códigos acessados pelas requisições (PL-3551)
