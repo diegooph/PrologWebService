@@ -74,11 +74,6 @@ public class ChecklistIT extends IntegrationTest {
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(responseEntity.getBody()).isNotNull();
         assertThat(responseEntity.getBody().get(0).getChecklistPerguntasDtos()).isNotNull();
-        assertThat(responseEntity.getBody()
-                           .get(0)
-                           .getChecklistPerguntasDtos()
-                           .get(0)
-                           .getChecklistAlternativaDtos()).isNotNull();
     }
 
     @Test

@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.AnexoMidiaChec
 import io.swagger.annotations.ApiModel;
 import lombok.Value;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -25,5 +26,6 @@ public class ChecklistPerguntasDto {
     boolean isPerguntaSingleChoice;
     @NotNull
     AnexoMidiaChecklistEnum anexoMidiaPerguntaOk;
+    @Nullable
     List<ChecklistAlternativaDto> checklistAlternativaDtos;
 }
