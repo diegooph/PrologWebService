@@ -14,6 +14,7 @@ Change Log
 ### Refactors
 * Altera paths de v3 para serem precedidos por `api`
 * Altera path de unidades para estarem no `v3` e serem precedidos por `api`
+* Realiza pequenas melhorias na PrologApplication (PL-3606)
 
 ### Bug Fixes
 * Corrige function de transferência de veículo entre Empresas para o Suporte (PS-1504)
