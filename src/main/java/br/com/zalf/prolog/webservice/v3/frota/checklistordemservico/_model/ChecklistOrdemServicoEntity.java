@@ -32,5 +32,5 @@ public final class ChecklistOrdemServicoEntity {
     @JoinColumn(name = "cod_checklist", nullable = false)
     private ChecklistEntity checklist;
     @OneToMany(mappedBy = "ordemServico", fetch = FetchType.LAZY)
-    private Set<ChecklistOrdemServicoItemEntity> itensOrdemServido;
+    private Set<ChecklistOrdemServicoItemEntity> itensOrdemServico;
 }
