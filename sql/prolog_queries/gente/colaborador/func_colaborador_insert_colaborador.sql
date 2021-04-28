@@ -42,7 +42,8 @@ BEGIN
                              COD_EMPRESA,
                              COD_EQUIPE,
                              PIS,
-                             COD_UNIDADE_CADASTRO)
+                             COD_UNIDADE_CADASTRO,
+                             COD_COLABORADOR_CADASTRO)
     VALUES (F_CPF,
             F_MATRICULA_AMBEV,
             F_MATRICULA_TRANS,
@@ -56,7 +57,8 @@ BEGIN
             F_COD_EMPRESA,
             F_COD_EQUIPE,
             F_PIS,
-            F_COD_UNIDADE_CADASTRO)
+            F_COD_UNIDADE_CADASTRO,
+            F_COD_COLABORADOR_UPDATE)
     RETURNING CODIGO
         INTO F_COD_COLABORADOR_INSERIDO;
 

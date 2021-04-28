@@ -1,129 +1,72 @@
-CREATE OR REPLACE FUNCTION FUNC_AFERICAO_RELATORIO_QTD_DIAS_PLACAS_VENCIDAS(F_COD_UNIDADES BIGINT[],
-                                                                            F_DATA_HOJE_UTC TIMESTAMP WITH TIME ZONE)
-    RETURNS TABLE
+create or replace function func_afericao_relatorio_qtd_dias_placas_vencidas(f_cod_unidades bigint[],
+                                                                            f_data_hoje_utc timestamp with time zone)
+    returns table
             (
-                UNIDADE                           TEXT,
-                PLACA                             TEXT,
-                IDENTIFICADOR_FROTA               TEXT,
-                PODE_AFERIR_SULCO                 BOOLEAN,
-                PODE_AFERIR_PRESSAO               BOOLEAN,
-                QTD_DIAS_AFERICAO_SULCO_VENCIDA   INTEGER,
-                QTD_DIAS_AFERICAO_PRESSAO_VENCIDA INTEGER
+                unidade                           text,
+                placa                             text,
+                identificador_frota               text,
+                pode_aferir_sulco                 boolean,
+                pode_aferir_pressao               boolean,
+                qtd_dias_afericao_sulco_vencida   integer,
+                qtd_dias_afericao_pressao_vencida integer
             )
-    LANGUAGE PLPGSQL
-AS
+    language plpgsql
+as
 $$
-DECLARE
-    AFERICAO_SULCO         VARCHAR := 'SULCO';
-    AFERICAO_PRESSAO       VARCHAR := 'PRESSAO';
-    AFERICAO_SULCO_PRESSAO VARCHAR := 'SULCO_PRESSAO';
-BEGIN
-    RETURN QUERY
-        WITH VEICULOS_ATIVOS_UNIDADES AS (
-            SELECT V.CODIGO
-            FROM VEICULO V
-            WHERE V.COD_UNIDADE = ANY (F_COD_UNIDADES)
-              AND V.STATUS_ATIVO
+begin
+    return query
+        with calculo_vencimento_afericoes as (
+            select base.dias_vencimento_pressao  as qtd_dias_afericao_pressao_vencida,
+                   base.pode_aferir_pressao      as pode_aferir_pressao,
+                   base.dias_vencimento_sulco    as qtd_dias_afericao_sulco_vencida,
+                   base.pode_aferir_sulco        as pode_aferir_sulco,
+                   base.cod_veiculo              as cod_veiculo,
+                   base.afericao_sulco_vencida   as afericao_sulco_vencida,
+                   base.afericao_pressao_vencida as afericao_pressao_vencida,
+                   base.sulco_nunca_aferido      as sulco_nunca_aferido,
+                   base.pressao_nunca_aferico    as pressao_nunca_aferico
+            from func_afericao_relatorio_dados_base_validacao_vencimento(f_cod_unidades,
+                                                                         f_data_hoje_utc) as base
         ),
-             -- As CTEs ULTIMA_AFERICAO_SULCO e ULTIMA_AFERICAO_PRESSAO retornam o codigo de cada veículo e a quantidade de dias
-             -- que a aferição de sulco e pressão, respectivamente, estão vencidas. Um número negativo será retornado caso ainda
-             -- esteja com a aferição no prazo e ele indicará quantos dias faltam para vencer. Um -20, por exemplo, significa
-             -- que a aferição vai vencer em 20 dias.
-             ULTIMA_AFERICAO_SULCO AS (
-                 SELECT DISTINCT ON (A.COD_VEICULO) A.COD_UNIDADE,
-                                                      A.COD_VEICULO              AS COD_VEICULO,
-                                                      DATE_PART('DAY', F_DATA_HOJE_UTC - MAX(DATA_HORA))
-                                                          -
-                                                      (PRU.PERIODO_AFERICAO_SULCO) AS QTD_DIAS_ENTRE_ULTIMA_AFERICAO_SULCO_E_HOJE
-                 FROM AFERICAO A
-                          JOIN PNEU_RESTRICAO_UNIDADE PRU
-                               ON (SELECT V.COD_UNIDADE
-                                   FROM VEICULO V
-                                   WHERE V.CODIGO = A.COD_VEICULO) = PRU.COD_UNIDADE
-                 WHERE A.TIPO_MEDICAO_COLETADA IN (AFERICAO_SULCO, AFERICAO_SULCO_PRESSAO)
-                   -- Desse modo nós buscamos a última aferição de cada placa que está ativa nas unidades filtradas, independente
-                   -- de onde foram foram aferidas.
-                   AND COD_VEICULO = ANY (SELECT VAU.CODIGO
-                                            FROM VEICULOS_ATIVOS_UNIDADES VAU)
-                 GROUP BY A.DATA_HORA,
-                          A.COD_UNIDADE,
-                          A.COD_VEICULO,
-                          PRU.PERIODO_AFERICAO_SULCO
-                 ORDER BY A.COD_VEICULO, A.DATA_HORA DESC
-             ),
-             ULTIMA_AFERICAO_PRESSAO AS (
-                 SELECT DISTINCT ON (A.COD_VEICULO) A.COD_UNIDADE,
-                                                      A.COD_VEICULO                AS COD_VEICULO,
-                                                      DATE_PART('DAY', F_DATA_HOJE_UTC - MAX(DATA_HORA))
-                                                          -
-                                                      (PRU.PERIODO_AFERICAO_PRESSAO) AS QTD_DIAS_ENTRE_ULTIMA_AFERICAO_PRESSAO_E_HOJE
-                 FROM AFERICAO A
-                          JOIN PNEU_RESTRICAO_UNIDADE PRU
-                               ON (SELECT V.COD_UNIDADE
-                                   FROM VEICULO V
-                                   WHERE V.CODIGO = A.COD_VEICULO) = PRU.COD_UNIDADE
-                 WHERE A.COD_UNIDADE = ANY (F_COD_UNIDADES)
-                   AND A.TIPO_MEDICAO_COLETADA IN (AFERICAO_PRESSAO, AFERICAO_SULCO_PRESSAO)
-                   AND COD_VEICULO = ANY (SELECT VAU.CODIGO
-                                            FROM VEICULOS_ATIVOS_UNIDADES VAU)
-                 GROUP BY A.DATA_HORA,
-                          A.COD_UNIDADE,
-                          A.COD_VEICULO,
-                          PRU.PERIODO_AFERICAO_PRESSAO
-                 ORDER BY A.COD_VEICULO, A.DATA_HORA DESC
-             ),
-
-             PRE_SELECT AS (
-                 SELECT U.NOME                                            AS NOME_UNIDADE,
-                        V.PLACA                                           AS PLACA_VEICULO,
-                        COALESCE(V.IDENTIFICADOR_FROTA, '-')              AS IDENTIFICADOR_FROTA,
-                        COALESCE((
-                                     SELECT (FA.FORMA_COLETA_DADOS_SULCO IN ('EQUIPAMENTO', 'MANUAL') OR
-                                             FA.FORMA_COLETA_DADOS_SULCO_PRESSAO IN ('EQUIPAMENTO', 'MANUAL'))
-                                     FROM FUNC_AFERICAO_GET_CONFIG_TIPO_AFERICAO_VEICULO(V.COD_UNIDADE) FA
-                                     WHERE FA.COD_TIPO_VEICULO = V.COD_TIPO), FALSE)
-                                                                          AS PODE_AFERIR_SULCO,
-                        COALESCE((
-                                     SELECT (FA.FORMA_COLETA_DADOS_PRESSAO IN ('EQUIPAMENTO', 'MANUAL') OR
-                                             FA.FORMA_COLETA_DADOS_SULCO_PRESSAO IN ('EQUIPAMENTO', 'MANUAL'))
-                                     FROM FUNC_AFERICAO_GET_CONFIG_TIPO_AFERICAO_VEICULO(V.COD_UNIDADE) FA
-                                     WHERE FA.COD_TIPO_VEICULO = V.COD_TIPO), FALSE)
-                                                                          AS PODE_AFERIR_PRESSAO,
-                        -- Por conta do filtro no where, agora não é mais a diferença de dias e sim somente as vencidas (ou ainda
-                        -- nunca aferidas).
-                        UAS.QTD_DIAS_ENTRE_ULTIMA_AFERICAO_SULCO_E_HOJE   AS QTD_DIAS_AFERICAO_SULCO_VENCIDA,
-                        UAP.QTD_DIAS_ENTRE_ULTIMA_AFERICAO_PRESSAO_E_HOJE AS QTD_DIAS_AFERICAO_PRESSAO_VENCIDA
-                 FROM UNIDADE U
-                          JOIN VEICULO V
-                               ON V.COD_UNIDADE = U.CODIGO
-                          LEFT JOIN ULTIMA_AFERICAO_SULCO UAS
-                                    ON UAS.COD_VEICULO = V.CODIGO
-                          LEFT JOIN ULTIMA_AFERICAO_PRESSAO UAP
-                                    ON UAP.COD_VEICULO = V.CODIGO
-                 WHERE
-                     -- Se algum dos dois tipos de aferição estiver vencido, retornamos a linha.
-                     (UAS.QTD_DIAS_ENTRE_ULTIMA_AFERICAO_SULCO_E_HOJE > 0 OR
-                      UAP.QTD_DIAS_ENTRE_ULTIMA_AFERICAO_PRESSAO_E_HOJE > 0)
-                 GROUP BY U.NOME,
-                          V.PLACA,
-                          V.IDENTIFICADOR_FROTA,
-                          V.COD_TIPO,
-                          V.COD_UNIDADE,
-                          UAS.QTD_DIAS_ENTRE_ULTIMA_AFERICAO_SULCO_E_HOJE,
-                          UAP.QTD_DIAS_ENTRE_ULTIMA_AFERICAO_PRESSAO_E_HOJE
+             pre_select as (
+                 select u.nome                                as nome_unidade,
+                        v.placa                               as placa_veiculo,
+                        coalesce(v.identificador_frota, '-')  as identificador_frota,
+                        cva.pode_aferir_sulco                 as pode_aferir_sulco,
+                        cva.pode_aferir_pressao               as pode_aferir_pressao,
+                        cva.qtd_dias_afericao_sulco_vencida   as qtd_dias_afericao_sulco_vencida,
+                        cva.qtd_dias_afericao_pressao_vencida as qtd_dias_afericao_pressao_vencida
+                 from unidade u
+                          join veiculo v
+                               on v.cod_unidade = u.codigo
+                          join calculo_vencimento_afericoes cva
+                               on cva.cod_veiculo = v.codigo
+                 where cva.afericao_sulco_vencida
+                    or cva.afericao_pressao_vencida
+                    or cva.sulco_nunca_aferido
+                    or cva.pressao_nunca_aferico
+                 group by u.nome,
+                          v.placa,
+                          v.identificador_frota,
+                          v.cod_tipo,
+                          v.cod_unidade,
+                          cva.pode_aferir_sulco,
+                          cva.pode_aferir_pressao,
+                          cva.qtd_dias_afericao_sulco_vencida,
+                          cva.qtd_dias_afericao_pressao_vencida
              )
-        SELECT PS.NOME_UNIDADE::TEXT                         AS NOME_UNIDADE,
-               PS.PLACA_VEICULO::TEXT                        AS PLACA_VEICULO,
-               PS.IDENTIFICADOR_FROTA::TEXT                  AS IDENTIFICADOR_FROTA,
-               PS.PODE_AFERIR_SULCO                          AS PODE_AFERIR_SULCO,
-               PS.PODE_AFERIR_PRESSAO                        AS PODE_AFERIR_PRESSAO,
-               PS.QTD_DIAS_AFERICAO_SULCO_VENCIDA::INTEGER   AS QTD_DIAS_AFERICAO_SULCO_VENCIDA,
-               PS.QTD_DIAS_AFERICAO_PRESSAO_VENCIDA::INTEGER AS QTD_DIAS_AFERICAO_PRESSAO_VENCIDA
-        FROM PRE_SELECT PS
-             -- Para a placa ser exibida, ao menos um dos tipos de aferições, de sulco ou pressão, devem estar habilitadas.
-        WHERE PS.PODE_AFERIR_SULCO <> FALSE
-           OR PS.PODE_AFERIR_PRESSAO <> FALSE
-        ORDER BY PS.QTD_DIAS_AFERICAO_SULCO_VENCIDA DESC,
-                 PS.QTD_DIAS_AFERICAO_PRESSAO_VENCIDA DESC;
-END;
+        select ps.nome_unidade::text                         as nome_unidade,
+               ps.placa_veiculo::text                        as placa_veiculo,
+               ps.identificador_frota::text                  as identificador_frota,
+               ps.pode_aferir_sulco                          as pode_aferir_sulco,
+               ps.pode_aferir_pressao                        as pode_aferir_pressao,
+               ps.qtd_dias_afericao_sulco_vencida::integer   as qtd_dias_afericao_sulco_vencida,
+               ps.qtd_dias_afericao_pressao_vencida::integer as qtd_dias_afericao_pressao_vencida
+        from pre_select ps
+             -- para a placa ser exibida, ao menos um dos tipos de aferições, de sulco ou pressão, devem estar habilitadas.
+        where ps.pode_aferir_sulco <> false
+           or ps.pode_aferir_pressao <> false
+        order by ps.qtd_dias_afericao_sulco_vencida desc,
+                 ps.qtd_dias_afericao_pressao_vencida desc;
+end;
 $$;

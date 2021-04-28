@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.frota.veiculo.validator;
 
+import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.errorhandling.sql.DuplicateKeyException;
 
 /**
@@ -10,6 +11,6 @@ import br.com.zalf.prolog.webservice.errorhandling.sql.DuplicateKeyException;
 public class VeiculoDuplicadoException extends DuplicateKeyException {
 
     VeiculoDuplicadoException() {
-        super("ERRO!\nEste veículo já está cadastrado");
+        super("ERRO!\nEste veículo já está cadastrado", "", "", GenericException.NO_LOGS_INTO_SENTRY);
     }
 }

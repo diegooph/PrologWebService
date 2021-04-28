@@ -53,7 +53,8 @@ public final class PermissoesMovimentacaoValidator {
                     throw new GenericException(String.format(
                             "Você não tem permissão para realizar uma movimentação do(a) %s para o(a) %s",
                             tipoOrigem.getStringPermissoesValidator(),
-                            tipoDestino.getStringPermissoesValidator()));
+                            tipoDestino.getStringPermissoesValidator()),
+                                               GenericException.NO_LOGS_INTO_SENTRY);
                 }
             } else {
                 throw new IllegalStateException("Código de permisssão não mapeada para movimentação");

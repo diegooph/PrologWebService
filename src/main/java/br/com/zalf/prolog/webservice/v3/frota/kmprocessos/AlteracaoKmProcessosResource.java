@@ -27,7 +27,7 @@ import javax.ws.rs.core.SecurityContext;
  */
 @Controller
 @ConsoleDebugLog
-@Path("/v3/processos-coleta-km")
+@Path("/api/v3/processos-coleta-km")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public final class AlteracaoKmProcessosResource {
