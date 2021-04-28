@@ -1,6 +1,9 @@
 Change Log
 ==========
 
+### Refactors
+* Altera relatório de exportação de Aferições para o Protheus (PL-3610)
+
 <a name="v3.2.1"></a>
 ## Version [v3.2.1](https://github.com/luizfp/PrologWebService/compare/v3.2.0...v3.2.1) (release-date) [unreleased]
 
