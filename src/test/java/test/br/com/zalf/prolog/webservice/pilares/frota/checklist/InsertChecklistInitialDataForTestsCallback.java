@@ -51,7 +51,7 @@ public class InsertChecklistInitialDataForTestsCallback extends BaseCallback {
 
     private ResultSet insertVeiculoChecklist(final Statement stmt) throws SQLException {
         return stmt.executeQuery(
-                "INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo," +
+                "insert into public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo," +
                         " cod_eixos, data_hora_cadastro, cod_unidade_cadastro, deletado, data_hora_deletado, " +
                         "pg_username_delecao, cod_empresa, cod_diagrama, motorizado, origem_cadastro) " +
                         "values ('CHE0001', 215, 1000, true, 64, 1207, 1, '2020-01-21 19:15:31.971416', 5, false, " +
