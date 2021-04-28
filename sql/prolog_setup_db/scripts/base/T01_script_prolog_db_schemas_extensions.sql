@@ -5,7 +5,7 @@ create extension citext;
 create extension fuzzystrmatch;
 create extension pg_trgm;
 create extension unaccent;
-create extension postgis;
+create extension if not exists postgis;
 
 create schema aferidor;
 create schema agendador;
