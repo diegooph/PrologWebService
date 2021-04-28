@@ -25,9 +25,9 @@ public class ChecklistListagemFiltro {
     @Nullable
     Long codColaborador;
     @Nullable
-    Long codTipoVeiculo;
-    @Nullable
     Long codVeiculo;
+    @Nullable
+    Long codTipoVeiculo;
     boolean incluirRespostas;
     @Max(value = 1000, message = "valor de pesquisa não pode ser maior que 1000 linhas.")
     @Min(value = 0, message = "não pode ser menor que zero.")
