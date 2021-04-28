@@ -37,8 +37,8 @@ final class ChecklistModeloValidator {
                                          @NotNull final List<PerguntaModeloChecklist> perguntas) {
         // Verifica se temos perguntas no modelo.
         if (perguntas.isEmpty()) {
-            throw new GenericException(String.format("O modelo '%s' não pode ser salvo sem perguntas", nomeModelo,
-                                                     GenericException.NO_LOGS_INTO_SENTRY));
+            throw new GenericException(String.format("O modelo '%s' não pode ser salvo sem perguntas", nomeModelo),
+                                       GenericException.NO_LOGS_INTO_SENTRY);
         }
 
         for (final PerguntaModeloChecklist p : perguntas) {
