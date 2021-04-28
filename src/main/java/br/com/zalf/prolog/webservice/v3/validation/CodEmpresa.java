@@ -14,7 +14,7 @@ import java.lang.annotation.Target;
 @Constraint(validatedBy = CodEmpresaValidator.class)
 public @interface CodEmpresa {
     @NotNull
-    String message() default "Código da empresa inválido";
+    String message() default "Você não tem acesso à esse código de empresa";
 
     @NotNull
     Class<?>[] groups() default {};

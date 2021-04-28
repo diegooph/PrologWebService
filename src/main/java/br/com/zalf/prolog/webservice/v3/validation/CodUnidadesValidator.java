@@ -47,7 +47,6 @@ public final class CodUnidadesValidator implements ConstraintValidator<CodUnidad
 
     private boolean containsCodUnidade(@NotNull final List<UnidadeEntity> unidades,
                                        @NotNull final List<Long> codUnidades) {
-
         return unidades.stream()
                 .map(UnidadeEntity::getCodigo)
                 .collect(Collectors.toList()).containsAll(codUnidades);

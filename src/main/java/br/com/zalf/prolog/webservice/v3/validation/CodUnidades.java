@@ -14,7 +14,7 @@ import java.lang.annotation.Target;
 @Constraint(validatedBy = CodUnidadesValidator.class)
 public @interface CodUnidades {
     @NotNull
-    String message() default "Algum dos códigos de unidades é inválido";
+    String message() default "Você não tem acesso à algum desses códigos de unidades";
 
     @NotNull
     Class<?>[] groups() default {};
