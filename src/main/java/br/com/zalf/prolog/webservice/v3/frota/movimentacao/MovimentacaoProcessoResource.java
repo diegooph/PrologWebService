@@ -23,7 +23,7 @@ import java.util.List;
 @RestController
 @ConsoleDebugLog
 @Path("/v3/movimentacoes")
-public final class MovimentacaoProcessoResource {
+public final class MovimentacaoProcessoResource implements MovimentacaoProcessoApiDoc {
     @NotNull
     private final MovimentacaoProcessoService service;
     @NotNull
@@ -37,6 +37,7 @@ public final class MovimentacaoProcessoResource {
         this.mapper = mapper;
     }
 
+    @Override
     @GET
     @Secured(permissions = {
             Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_VEICULO_ESTOQUE,
