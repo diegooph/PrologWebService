@@ -1,5 +1,6 @@
 package test.br.com.zalf.prolog.webservice.pilares.frota.movimentacao;
 
+import br.com.zalf.prolog.webservice.errorhandling.sql.ClientSideErrorException;
 import br.com.zalf.prolog.webservice.v3.frota.movimentacao._model.MovimentacaoProcessoListagemDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,11 +26,11 @@ public final class MovimentacaoProcessoIT extends IntegrationTest {
     @DisplayName("Dado mínimos parâmetros corretos, retorne List<MovimentacaoProcessoListagemDto> e status OK")
     void givenMinimumCorrectParameters_ThenReturnListMovimentacaoProcessoStatusOk() {
         final ResponseEntity<List<MovimentacaoProcessoListagemDto>> response =
-                client.getMovimentacacaoProcessosByCodUnidade(List.of(215L),
-                                                              "2018-01-01",
-                                                              "2021-12-12",
-                                                              2,
-                                                              0);
+                client.getMovimentacacaoProcessos(List.of(215L),
+                                                  "2018-01-01",
+                                                  "2021-12-12",
+                                                  2,
+                                                  0);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotEmpty();
     }
@@ -37,5 +38,7 @@ public final class MovimentacaoProcessoIT extends IntegrationTest {
     @Test
     @DisplayName("Tipo do dado do parâmetro codUnidades incorreto, retornando ClientSideErrorException.")
     void givenWrongTypeParameter_ThenReturnClientSideErrorExceptionBadRequest() {
+        final ResponseEntity<ClientSideErrorException> response = client.getMovimentacacaoProcessosBadRequest();
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 }
