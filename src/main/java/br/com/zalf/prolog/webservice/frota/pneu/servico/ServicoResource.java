@@ -1,14 +1,16 @@
 package br.com.zalf.prolog.webservice.frota.pneu.servico;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
-import br.com.zalf.prolog.webservice.commons.network.metadata.Optional;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Required;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.*;
+import br.com.zalf.prolog.webservice.frota.pneu.servico._model.filtro.ServicoHolderBuscaFiltro;
+import br.com.zalf.prolog.webservice.frota.pneu.servico._model.filtro.ServicosAbertosBuscaFiltro;
+import br.com.zalf.prolog.webservice.frota.pneu.servico._model.filtro.ServicosFechadosVeiculoFiltro;
+import br.com.zalf.prolog.webservice.frota.pneu.servico._model.filtro.VeiculoAberturaServicoFiltro;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.AppVersionCodeHandler;
-import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.DefaultAppVersionCodeHandler;
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.VersionCodeHandlerMode;
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.VersionNotPresentAction;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
@@ -17,16 +19,15 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
 
-@Path("/servicos")
+@Path("/v2/servicos")
 @ConsoleDebugLog
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @AppVersionCodeHandler(
-        implementation = DefaultAppVersionCodeHandler.class,
-        targetVersionCode = 64,
+        targetVersionCode = 121,
         versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
         actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
-public class ServicoResource {
+public final class ServicoResource {
 
     private final ServicoService service = new ServicoService();
 
@@ -55,25 +56,18 @@ public class ServicoResource {
         return service.getQuantidadeServicosAbertosVeiculo(codUnidade, agrupamento);
     }
 
-    @GET
+    @POST
     @Secured(permissions = {Pilares.Frota.OrdemServico.Pneu.VISUALIZAR, Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
-    @Path("/abertos/veiculos/{placaVeiculo}/completo")
-    @AppVersionCodeHandler(
-            implementation = DefaultAppVersionCodeHandler.class,
-            targetVersionCode = 101,
-            versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
-            actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
-    public ServicoHolder getServicoHolder(@PathParam("placaVeiculo") @Required final String placa,
-                                          @QueryParam("codUnidade") @Required final Long codUnidade) {
-        return service.getServicoHolder(placa, codUnidade);
+    @Path("/abertos")
+    public ServicoHolder getServicoHolder(@Required final ServicoHolderBuscaFiltro filtro) {
+        return service.getServicoHolder(filtro);
     }
 
-    @GET
+    @POST
     @Secured(permissions = {Pilares.Frota.OrdemServico.Pneu.VISUALIZAR, Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
-    @Path("/abertos/veiculos/{placaVeiculo}")
-    public List<Servico> getServicosAbertosByPlaca(@PathParam("placaVeiculo") @Required final String placa,
-                                                   @QueryParam("tipoServico") @Optional final String tipoServico) {
-        return service.getServicosAbertosByPlaca(placa, tipoServico);
+    @Path("/abertos/veiculos")
+    public List<Servico> getServicosAbertos(@Required final ServicosAbertosBuscaFiltro filtro) {
+        return service.getServicosAbertos(filtro);
     }
 
     @GET
@@ -105,23 +99,19 @@ public class ServicoResource {
         return service.getServicosFechadosPneu(codUnidade, codPneu, dataInicial, dataFinal);
     }
 
-    @GET
+    @POST
     @Secured(permissions = {Pilares.Frota.OrdemServico.Pneu.VISUALIZAR, Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
-    @Path("/fechados/{codUnidade}/veiculos/{placaVeiculo}")
-    public List<Servico> getServicosFechadosVeiculo(@PathParam("codUnidade") @Required final Long codUnidade,
-                                                    @PathParam("placaVeiculo") @Required final String placaVeiculo,
-                                                    @QueryParam("dataInicial") @Required final long dataInicial,
-                                                    @QueryParam("dataFinal") @Required final long dataFinal) {
-        return service.getServicosFechadosVeiculo(codUnidade, placaVeiculo, dataInicial, dataFinal);
+    @Path("/fechados/veiculos")
+    public List<Servico> getServicosFechadosVeiculo(@Required final ServicosFechadosVeiculoFiltro filtro) {
+        return service.getServicosFechadosVeiculo(filtro);
     }
 
-    @GET
+    @POST
     @Secured(permissions = {Pilares.Frota.OrdemServico.Pneu.VISUALIZAR, Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
-    @Path("/{codServico}/veiculos/{placaVeiculo}")
+    @Path("/veiculos")
     public VeiculoServico getVeiculoAberturaServico(
             @HeaderParam("Authorization") @Required final String userToken,
-            @PathParam("codServico") @Required final Long codServico,
-            @PathParam("placaVeiculo") @Required final String placaVeiculo) throws ProLogException {
-        return service.getVeiculoAberturaServico(userToken, codServico, placaVeiculo);
+            @Required final VeiculoAberturaServicoFiltro filtro) throws ProLogException {
+        return service.getVeiculoAberturaServico(userToken, filtro);
     }
 }

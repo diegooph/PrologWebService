@@ -1,0 +1,27 @@
+-- Sobre:
+--
+-- Nessa seção você deve escrever como essa function funciona. O que ela faz e quais os possíveis impactos do que
+-- ela faz. Você pode subdividir essa seção como bem entender para melhor organizar / estruturar a explicação da
+-- function.
+--
+-- Precondições (opcional):
+-- Aqui você vai listar o que precisa ser verdade para essa function funcionar. O que ela assumi como certo (mesmo que
+-- valide internamente). É melhor se ater a coisas não tão triviais como a verificação se uma unidade existe, assim
+-- você não cresce demais essa seção.
+-- 1) Cada précondição será numerada. Essa é uma.
+-- 2) Essa é outra.
+--
+-- Histórico:
+-- Aqui você deve listar brevemente o histórico de cada alteração da function, separado por data.
+-- Data -> Descrição da alteração (username_do_github_de_quem_alterou - PL do jira, se houver).
+-- Exemplos:
+-- 2019-06-26 -> Function criada (wvinim - PL-2115).
+-- 2019-07-23 -> Alterado parâmetro recebido de INTEGER para BIGINT (luizfp)
+-- Consulte as outras functions já documentadas para mais exemplos.
+--
+--
+-- Exemplos de functions já documentadas:
+-- • FUNC_PNEU_RETORNA_PNEU_DO_DESCARTE
+-- • FUNC_RELATO_COPIA_ALTERNATIVAS_RELATO
+-- • FUNC_AUDIT
+-- • TG_FUNC_CHECKLIST_INSERE_TOKEN_UNIDADE_CHECKLIST_OFFLINE

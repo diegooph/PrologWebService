@@ -1,8 +1,8 @@
 package br.com.zalf.prolog.webservice.integracao;
 
 import br.com.zalf.prolog.webservice.Injection;
-import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.autenticacao.token.TokenCleaner;
+import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.customfields.CampoPersonalizadoDao;
 import br.com.zalf.prolog.webservice.customfields._model.CampoPersonalizadoParaRealizacao;
 import br.com.zalf.prolog.webservice.frota.checklist.ChecklistDao;
@@ -11,6 +11,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.model.ChecklistListagem;
 import br.com.zalf.prolog.webservice.frota.checklist.model.TipoChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.farol.DeprecatedFarolChecklist;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
+import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.InfosChecklistInserido;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.ChecklistModeloDao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.edicao.ModeloChecklistEdicao;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.insercao.ModeloChecklistInsercao;
@@ -25,6 +26,7 @@ import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resoluca
 import br.com.zalf.prolog.webservice.frota.pneu.PneuDao;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Restricao;
+import br.com.zalf.prolog.webservice.frota.pneu._model.StatusPneu;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.AfericaoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.*;
 import br.com.zalf.prolog.webservice.frota.pneu.movimentacao.MovimentacaoDao;
@@ -32,24 +34,32 @@ import br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.ProcessoMovi
 import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoDao;
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.Servico;
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.VeiculoServico;
+import br.com.zalf.prolog.webservice.frota.pneu.servico._model.filtro.VeiculoAberturaServicoFiltro;
 import br.com.zalf.prolog.webservice.frota.pneu.transferencia.PneuTransferenciaDao;
 import br.com.zalf.prolog.webservice.frota.pneu.transferencia._model.realizacao.PneuTransferenciaRealizacao;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
+import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.VeiculoCadastro;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.InfosVeiculoEditado;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicao;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.listagem.VeiculoListagem;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoDadosColetaKm;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoVisualizacao;
 import br.com.zalf.prolog.webservice.frota.veiculo.tipoveiculo.TipoVeiculoDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.VeiculoTransferenciaDao;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.ProcessoTransferenciaVeiculoRealizacao;
 import br.com.zalf.prolog.webservice.gente.colaborador.ColaboradorDao;
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Empresa;
+import br.com.zalf.prolog.webservice.gente.empresa.EmpresaDao;
+import br.com.zalf.prolog.webservice.integracao.integrador.IntegracaoDao;
 import br.com.zalf.prolog.webservice.integracao.operacoes.OperacoesIntegradas;
 import br.com.zalf.prolog.webservice.integracao.praxio.data.ApiAutenticacaoHolder;
 import br.com.zalf.prolog.webservice.integracao.sistema.Sistema;
 import br.com.zalf.prolog.webservice.integracao.sistema.SistemaKey;
+import br.com.zalf.prolog.webservice.v3.frota.veiculo._model.VeiculoCadastroDto;
 import com.google.common.annotations.VisibleForTesting;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -82,6 +92,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
     private VeiculoDao veiculoDao;
     private AfericaoDao afericaoDao;
     private ColaboradorDao colaboradorDao;
+    private EmpresaDao empresaDao;
     private IntegracaoDao integracaoDao;
 
     private IntegradorProLog(@NotNull final String userToken,
@@ -98,6 +109,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
                              final ServicoDao afericaoServicoDao,
                              final MovimentacaoDao movimentacaoDao,
                              final ColaboradorDao colaboradorDao,
+                             final EmpresaDao empresaDao,
                              final IntegracaoDao integracaoDao) {
         this.userToken = TokenCleaner.getOnlyToken(userToken);
         this.veiculoDao = veiculoDao;
@@ -113,6 +125,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         this.afericaoServicoDao = afericaoServicoDao;
         this.movimentacaoDao = movimentacaoDao;
         this.colaboradorDao = colaboradorDao;
+        this.empresaDao = empresaDao;
         this.integracaoDao = integracaoDao;
     }
 
@@ -133,6 +146,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
                 Injection.provideServicoDao(),
                 Injection.provideMovimentacaoDao(),
                 Injection.provideColaboradorDao(),
+                Injection.provideEmpresaDao(),
                 Injection.provideIntegracaoDao());
     }
 
@@ -170,7 +184,8 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
 
     @NotNull
     @Override
-    public Optional<DiagramaVeiculo> getDiagramaVeiculoByCodDiagrama(@NotNull final Short codDiagrama) throws Exception {
+    public Optional<DiagramaVeiculo> getDiagramaVeiculoByCodDiagrama(@NotNull final Short codDiagrama)
+            throws Exception {
         if (veiculoDao == null) {
             veiculoDao = Injection.provideVeiculoDao();
         }
@@ -235,7 +250,8 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
     @Override
     public List<Long> getCodUnidadesIntegracaoBloqueada(@NotNull final String userToken,
                                                         @NotNull final SistemaKey sistemaKey,
-                                                        @NotNull final RecursoIntegrado recursoIntegrado) throws Throwable {
+                                                        @NotNull final RecursoIntegrado recursoIntegrado)
+            throws Throwable {
         if (integracaoDao == null) {
             integracaoDao = Injection.provideIntegracaoDao();
         }
@@ -252,7 +268,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
 
     @Override
     public void insert(
-            @NotNull final VeiculoCadastro veiculo,
+            @NotNull final VeiculoCadastroDto veiculo,
             @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable {
         if (veiculoDao == null) {
             veiculoDao = Injection.provideVeiculoDao();
@@ -279,7 +295,8 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
     //
     @NotNull
     @Override
-    public List<Veiculo> getVeiculosAtivosByUnidade(@NotNull final Long codUnidade, @Nullable final Boolean ativos) throws
+    public List<Veiculo> getVeiculosAtivosByUnidade(@NotNull final Long codUnidade, @Nullable final Boolean ativos)
+            throws
             Exception {
         if (veiculoDao == null) {
             veiculoDao = Injection.provideVeiculoDao();
@@ -289,7 +306,8 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
 
     @NotNull
     @Override
-    public List<String> getPlacasVeiculosByTipo(@NotNull final Long codUnidade, @NotNull final String codTipo) throws Exception {
+    public List<String> getPlacasVeiculosByTipo(@NotNull final Long codUnidade, @NotNull final String codTipo)
+            throws Exception {
         if (veiculoDao == null) {
             veiculoDao = Injection.provideVeiculoDao();
         }
@@ -298,11 +316,42 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
 
     @NotNull
     @Override
-    public Veiculo getVeiculoByPlaca(@NotNull final String placa, final boolean withPneus) throws Exception {
+    public List<VeiculoListagem> getVeiculosByUnidades(@NotNull final List<Long> codUnidades,
+                                                       final boolean apenasAtivos,
+                                                       @Nullable final Long codTipoVeiculo) throws Throwable {
         if (veiculoDao == null) {
             veiculoDao = Injection.provideVeiculoDao();
         }
-        return veiculoDao.getVeiculoByPlaca(placa, withPneus);
+        return veiculoDao.getVeiculosByUnidades(codUnidades, apenasAtivos, codTipoVeiculo);
+    }
+
+    @NotNull
+    @Override
+    public VeiculoVisualizacao getVeiculoByCodigo(@NotNull final Long codVeiculo) throws Throwable {
+        if (veiculoDao == null) {
+            veiculoDao = Injection.provideVeiculoDao();
+        }
+        return veiculoDao.getVeiculoByCodigo(codVeiculo);
+    }
+
+    @NotNull
+    @Override
+    public Veiculo getVeiculoByPlaca(@NotNull final String placa,
+                                     @Nullable final Long codUnidade,
+                                     final boolean withPneus) throws Throwable {
+        if (veiculoDao == null) {
+            veiculoDao = Injection.provideVeiculoDao();
+        }
+        return veiculoDao.getVeiculoByPlaca(placa, codUnidade, withPneus);
+    }
+
+    @NotNull
+    @Override
+    public VeiculoDadosColetaKm getDadosColetaKmByCodigo(@NotNull final Long codVeiculo) throws Throwable {
+        if (veiculoDao == null) {
+            veiculoDao = Injection.provideVeiculoDao();
+        }
+        return veiculoDao.getDadosColetaKmByCodigo(codVeiculo);
     }
 
     @NotNull
@@ -330,13 +379,11 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
 
     @NotNull
     @Override
-    public NovaAfericaoPlaca getNovaAfericaoPlaca(@NotNull final Long codUnidade,
-                                                  @NotNull final String placaVeiculo,
-                                                  @NotNull final String tipoAfericao) throws Throwable {
+    public NovaAfericaoPlaca getNovaAfericaoPlaca(@NotNull final AfericaoBuscaFiltro afericaoBusca) throws Throwable {
         if (afericaoDao == null) {
             afericaoDao = Injection.provideAfericaoDao();
         }
-        return afericaoDao.getNovaAfericaoPlaca(codUnidade, placaVeiculo, tipoAfericao);
+        return afericaoDao.getNovaAfericaoPlaca(afericaoBusca);
     }
 
     @NotNull
@@ -385,7 +432,8 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
 
     @NotNull
     @Override
-    public Afericao getAfericaoByCodigo(@NotNull final Long codUnidade, @NotNull final Long codAfericao) throws Throwable {
+    public Afericao getAfericaoByCodigo(@NotNull final Long codUnidade, @NotNull final Long codAfericao)
+            throws Throwable {
         if (afericaoDao == null) {
             afericaoDao = Injection.provideAfericaoDao();
         }
@@ -405,7 +453,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
             afericaoDao = Injection.provideAfericaoDao();
         }
         return afericaoDao.getAfericoesPlacas(codUnidade, codTipoVeiculo, placaVeiculo, dataInicial, dataFinal, limit,
-                offset);
+                                              offset);
     }
 
     @NotNull
@@ -418,7 +466,10 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         if (checklistModeloDao == null) {
             checklistModeloDao = Injection.provideChecklistModeloDao();
         }
-        return checklistModeloDao.insertModeloChecklist(modeloChecklist, checklistOfflineListener, statusAtivo, userToken);
+        return checklistModeloDao.insertModeloChecklist(modeloChecklist,
+                                                        checklistOfflineListener,
+                                                        statusAtivo,
+                                                        userToken);
     }
 
     @Override
@@ -461,18 +512,21 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         if (checklistModeloDao == null) {
             checklistModeloDao = Injection.provideChecklistModeloDao();
         }
-        return checklistModeloDao.getModeloChecklistRealizacao(codModeloChecklist, codVeiculo, placaVeiculo, tipoChecklist);
+        return checklistModeloDao.getModeloChecklistRealizacao(codModeloChecklist,
+                                                               codVeiculo,
+                                                               placaVeiculo,
+                                                               tipoChecklist);
     }
 
     @NotNull
     @Override
-    public Long insertChecklist(@NotNull final ChecklistInsercao checklist,
-                                final boolean foiOffline,
-                                final boolean deveAbrirOs) throws Throwable {
+    public InfosChecklistInserido insertChecklist(@NotNull final ChecklistInsercao checklist,
+                                                  final boolean foiOffline,
+                                                  final boolean deveAbrirOs) throws Throwable {
         if (checklistDao == null) {
             checklistDao = Injection.provideChecklistDao();
         }
-        return checklistDao.insert(checklist, foiOffline, deveAbrirOs);
+        return checklistDao.insertChecklist(checklist, foiOffline, deveAbrirOs);
     }
 
     @NotNull
@@ -518,11 +572,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
                                               final int limit,
                                               final long offset,
                                               final boolean resumido) throws Exception {
-        if (checklistDao == null) {
-            checklistDao = Injection.provideChecklistDao();
-        }
-        return checklistDao.getAll(codUnidade, codEquipe, codTipoVeiculo, placaVeiculo, dataInicial, dataFinal,
-                limit, offset, resumido);
+        return null;
     }
 
     @NotNull
@@ -576,7 +626,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
 
     @NotNull
     @Override
-    public Long insertChecklistOffline(@NotNull final ChecklistInsercao checklist) throws Throwable {
+    public InfosChecklistInserido insertChecklistOffline(@NotNull final ChecklistInsercao checklist) throws Throwable {
         if (checklistOfflineDao == null) {
             checklistOfflineDao = Injection.provideChecklistOfflineDao();
         }
@@ -601,11 +651,13 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
 
     @NotNull
     @Override
-    public Long insert(@NotNull final Pneu pneu, @NotNull final Long codUnidade) throws Throwable {
+    public Long insert(@NotNull final Pneu pneu,
+                       @NotNull final Long codUnidade,
+                       @NotNull final OrigemAcaoEnum origemCadastro) throws Throwable {
         if (pneuDao == null) {
             pneuDao = Injection.providePneuDao();
         }
-        return pneuDao.insert(pneu, codUnidade);
+        return pneuDao.insert(pneu, codUnidade, origemCadastro);
     }
 
     @NotNull
@@ -629,6 +681,16 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
 
     @NotNull
     @Override
+    public List<Pneu> getPneusByCodUnidadesByStatus(@NotNull final List<Long> codUnidades,
+                                                    @NotNull final StatusPneu status) throws Throwable {
+        if (pneuDao == null) {
+            pneuDao = Injection.providePneuDao();
+        }
+        return pneuDao.getPneusByCodUnidadesByStatus(codUnidades, status);
+    }
+
+    @NotNull
+    @Override
     public Long insertTransferencia(@NotNull final PneuTransferenciaRealizacao pneuTransferenciaRealizacao,
                                     @NotNull final OffsetDateTime dataHoraSincronizacao,
                                     final boolean isTransferenciaFromVeiculo) throws Throwable {
@@ -641,12 +703,12 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
 
     @NotNull
     @Override
-    public VeiculoServico getVeiculoAberturaServico(@NotNull final Long codServico,
-                                                    @NotNull final String placaVeiculo) throws Throwable {
+    public VeiculoServico getVeiculoAberturaServico(@NotNull final VeiculoAberturaServicoFiltro filtro)
+            throws Throwable {
         if (afericaoServicoDao == null) {
             afericaoServicoDao = Injection.provideServicoDao();
         }
-        return afericaoServicoDao.getVeiculoAberturaServico(codServico, placaVeiculo);
+        return afericaoServicoDao.getVeiculoAberturaServico(filtro);
     }
 
     @Override
@@ -702,6 +764,15 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         tipoVeiculoDao.updateTipoVeiculo(tipoVeiculo);
     }
 
+    @NotNull
+    @Override
+    public List<Empresa> getFiltros(@NotNull final Long cpf) throws Throwable {
+        if (empresaDao == null) {
+            empresaDao = Injection.provideEmpresaDao();
+        }
+        return empresaDao.getFiltros(cpf);
+    }
+
     public static final class Builder {
         private final String userToken;
         private VeiculoDao veiculoDao;
@@ -717,6 +788,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
         private ServicoDao afericaoServicoDao;
         private MovimentacaoDao movimentacaoDao;
         private ColaboradorDao colaboradorDao;
+        private EmpresaDao empresaDao;
         private IntegracaoDao integracaoDao;
 
         public Builder(@NotNull final String userToken) {
@@ -788,6 +860,11 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
             return this;
         }
 
+        public Builder withEmpresaDao(final EmpresaDao empresaDao) {
+            this.empresaDao = empresaDao;
+            return this;
+        }
+
         public Builder withIntegracaoDao(final IntegracaoDao integracaoDao) {
             this.integracaoDao = integracaoDao;
             return this;
@@ -809,6 +886,7 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
                     afericaoServicoDao,
                     movimentacaoDao,
                     colaboradorDao,
+                    empresaDao,
                     integracaoDao);
         }
     }

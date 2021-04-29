@@ -1,0 +1,106 @@
+DROP FUNCTION FUNC_COLABORADOR_VERIFICA_PERMISSOES_TOKEN(F_TOKEN TEXT,
+    F_PERMISSSOES_NECESSARIAS INTEGER[],
+    F_PRECISA_TER_TODAS_AS_PERMISSOES BOOLEAN,
+    F_APENAS_USUARIOS_ATIVOS BOOLEAN);
+
+CREATE OR REPLACE FUNCTION FUNC_COLABORADOR_VERIFICA_PERMISSOES_TOKEN(F_TOKEN TEXT,
+                                                                      F_PERMISSSOES_NECESSARIAS INTEGER[],
+                                                                      F_PRECISA_TER_TODAS_AS_PERMISSOES BOOLEAN,
+                                                                      F_APENAS_USUARIOS_ATIVOS BOOLEAN)
+    RETURNS TABLE
+            (
+                TOKEN_VALIDO      BOOLEAN,
+                POSSUI_PERMISSSAO BOOLEAN,
+                CPF_COLABORADOR   BIGINT,
+                COD_COLABORADOR   BIGINT
+            )
+    LANGUAGE PLPGSQL
+AS
+$$
+DECLARE
+    V_PERMISSOES_COLABORADOR INTEGER[];
+    V_CPF_COLABORADOR        BIGINT;
+    V_COD_COLABORADOR        BIGINT;
+BEGIN
+    SELECT ARRAY_AGG(CFP.COD_FUNCAO_PROLOG),
+           C.CPF,
+           C.CODIGO
+    FROM TOKEN_AUTENTICACAO TA
+             JOIN COLABORADOR C ON C.CPF = TA.CPF_COLABORADOR
+        -- Usando um LEFT JOIN aqui, caso o token não exista nada será retornado, porém, se o
+        -- token existir mas o usuário não tiver nenhuma permissão, será retornando um array
+        -- contendo null.
+             LEFT JOIN CARGO_FUNCAO_PROLOG_V11 CFP
+                       ON CFP.COD_UNIDADE = C.COD_UNIDADE
+                           AND CFP.COD_FUNCAO_COLABORADOR = C.COD_FUNCAO
+    WHERE TA.TOKEN = F_TOKEN
+      AND F_IF(F_APENAS_USUARIOS_ATIVOS, C.STATUS_ATIVO = TRUE, TRUE)
+    GROUP BY C.CPF, C.CODIGO
+    INTO V_PERMISSOES_COLABORADOR, V_CPF_COLABORADOR, V_COD_COLABORADOR;
+
+    RETURN QUERY
+        SELECT F.TOKEN_VALIDO      AS TOKEN_VALIDO,
+               F.POSSUI_PERMISSSAO AS POSSUI_PERMISSAO,
+               V_CPF_COLABORADOR   AS CPF_COLABORADOR,
+               V_COD_COLABORADOR   AS COD_COLABORADOR
+        FROM FUNC_COLABORADOR_VERIFICA_PERMISSOES(
+                     V_PERMISSOES_COLABORADOR,
+                     F_PERMISSSOES_NECESSARIAS,
+                     F_PRECISA_TER_TODAS_AS_PERMISSOES) F;
+END;
+$$;
+
+DROP FUNCTION FUNC_COLABORADOR_VERIFICA_PERMISSOES_CPF_DATA_NASCIMENTO(F_CPF BIGINT,
+    F_DATA_NASCIMENTO DATE,
+    F_PERMISSSOES_NECESSARIAS INTEGER[],
+    F_PRECISA_TER_TODAS_AS_PERMISSOES BOOLEAN,
+    F_APENAS_USUARIOS_ATIVOS BOOLEAN);
+
+CREATE OR REPLACE FUNCTION
+    FUNC_COLABORADOR_VERIFICA_PERMISSOES_CPF_DATA_NASCIMENTO(F_CPF BIGINT,
+                                                             F_DATA_NASCIMENTO DATE,
+                                                             F_PERMISSSOES_NECESSARIAS INTEGER[],
+                                                             F_PRECISA_TER_TODAS_AS_PERMISSOES BOOLEAN,
+                                                             F_APENAS_USUARIOS_ATIVOS BOOLEAN)
+    RETURNS TABLE
+            (
+                TOKEN_VALIDO      BOOLEAN,
+                POSSUI_PERMISSSAO BOOLEAN,
+                CPF_COLABORADOR   BIGINT,
+                COD_COLABORADOR   BIGINT
+            )
+    LANGUAGE PLPGSQL
+AS
+$$
+DECLARE
+    V_PERMISSOES_COLABORADOR INTEGER[];
+    V_CPF_COLABORADOR        BIGINT;
+    V_COD_COLABORADOR        BIGINT;
+BEGIN
+    SELECT ARRAY_AGG(CFP.COD_FUNCAO_PROLOG),
+           C.CPF,
+           C.CODIGO
+    FROM COLABORADOR C
+             -- Usando um LEFT JOIN aqui, caso o token não exista nada será retornado, porém, se o
+             -- token existir mas o usuário não tiver nenhuma permissão, será retornando um array
+             -- contendo null.
+             LEFT JOIN CARGO_FUNCAO_PROLOG_V11 CFP
+                       ON CFP.COD_UNIDADE = C.COD_UNIDADE
+                           AND CFP.COD_FUNCAO_COLABORADOR = C.COD_FUNCAO
+    WHERE C.CPF = F_CPF
+      AND C.DATA_NASCIMENTO = F_DATA_NASCIMENTO
+      AND F_IF(F_APENAS_USUARIOS_ATIVOS, C.STATUS_ATIVO = TRUE, TRUE)
+    GROUP BY C.CPF, C.CODIGO
+    INTO V_PERMISSOES_COLABORADOR, V_CPF_COLABORADOR, V_COD_COLABORADOR;
+
+    RETURN QUERY
+        SELECT F.TOKEN_VALIDO      AS TOKEN_VALIDO,
+               F.POSSUI_PERMISSSAO AS POSSUI_PERMISSAO,
+               V_CPF_COLABORADOR   AS CPF_COLABORADOR,
+               V_COD_COLABORADOR   AS COD_COLABORADOR
+        FROM FUNC_COLABORADOR_VERIFICA_PERMISSOES(
+                     V_PERMISSOES_COLABORADOR,
+                     F_PERMISSSOES_NECESSARIAS,
+                     F_PRECISA_TER_TODAS_AS_PERMISSOES) F;
+END;
+$$;

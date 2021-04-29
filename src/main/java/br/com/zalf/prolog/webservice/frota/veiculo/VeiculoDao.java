@@ -1,16 +1,24 @@
 package br.com.zalf.prolog.webservice.frota.veiculo;
 
 import br.com.zalf.prolog.webservice.frota.checklist.offline.DadosChecklistOfflineChangedListener;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.*;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Modelo;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.VeiculoTipoProcesso;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.DiagramaVeiculo;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.diagrama.EixoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.InfosVeiculoEditado;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicao;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.listagem.VeiculoListagem;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoDadosColetaKm;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoVisualizacao;
+import br.com.zalf.prolog.webservice.v3.frota.veiculo._model.VeiculoCadastroDto;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -20,7 +28,7 @@ import java.util.Set;
  */
 public interface VeiculoDao {
 
-    void insert(@NotNull final VeiculoCadastro veiculo,
+    void insert(@NotNull final VeiculoCadastroDto veiculo,
                 @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener) throws Throwable;
 
     @NotNull
@@ -29,9 +37,9 @@ public interface VeiculoDao {
                                @NotNull final DadosChecklistOfflineChangedListener checklistOfflineListener)
             throws Throwable;
 
-    List<VeiculoListagem> buscaVeiculosByUnidades(@NotNull final List<Long> codUnidades,
-                                                  final boolean apenasAtivos,
-                                                  @Nullable final Long codTipoVeiculo) throws Throwable;
+    List<VeiculoListagem> getVeiculosByUnidades(@NotNull final List<Long> codUnidades,
+                                                final boolean apenasAtivos,
+                                                @Nullable final Long codTipoVeiculo) throws Throwable;
 
     List<Veiculo> getVeiculosAtivosByUnidadeByColaborador(Long cpf)
             throws SQLException;
@@ -45,7 +53,9 @@ public interface VeiculoDao {
 
     @Deprecated
     @NotNull
-    Veiculo getVeiculoByPlaca(@NotNull final String placa, final boolean withPneus) throws SQLException;
+    Veiculo getVeiculoByPlaca(@NotNull final String placa,
+                              @Nullable final Long codUnidade,
+                              final boolean withPneus) throws SQLException;
 
     @Deprecated
     @NotNull
@@ -55,6 +65,16 @@ public interface VeiculoDao {
 
     void updateKmByPlaca(String placa, long km, Connection conn) throws SQLException;
 
+    @NotNull
+    Long updateKmByCodVeiculo(@NotNull final Connection conn,
+                              @NotNull final Long codUnidade,
+                              @NotNull final Long codVeiculo,
+                              @NotNull final Long veiculoCodProcesso,
+                              @NotNull final VeiculoTipoProcesso veiculoTipoProcesso,
+                              @NotNull final OffsetDateTime dataHoraProcesso,
+                              final long kmVeiculo,
+                              final boolean devePropagarKmParaReboques);
+
     @Deprecated
     List<Marca> getMarcaModeloVeiculoByCodEmpresa(Long codEmpresa) throws SQLException;
 
@@ -62,7 +82,8 @@ public interface VeiculoDao {
     List<Marca> getMarcasVeiculosNivelProLog() throws Throwable;
 
     @NotNull
-    List<Marca> getMarcasModelosVeiculosByEmpresa(@NotNull final Long codEmpresa) throws Throwable;
+    List<Marca> 
+    getMarcasModelosVeiculosByEmpresa(@NotNull final Long codEmpresa) throws Throwable;
 
     @NotNull
     Long insertModeloVeiculo(@NotNull final Modelo modelo,
@@ -111,4 +132,10 @@ public interface VeiculoDao {
 
     @Deprecated
     List<Veiculo> getVeiculosAtivosByUnidade(Long codUnidade, @Nullable Boolean ativos) throws SQLException;
+
+    @NotNull
+    VeiculoDadosColetaKm getDadosColetaKmByCodigo(@NotNull final Long codVeiculo) throws Throwable;
+
+    @NotNull
+    Set<EixoVeiculo> getEixosDiagrama(final int codDiagrama, final Connection conn) throws SQLException;
 }

@@ -3,6 +3,8 @@ package br.com.zalf.prolog.webservice.integracao.praxio;
 import br.com.zalf.prolog.webservice.commons.util.database.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
+import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicaoStatus;
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import br.com.zalf.prolog.webservice.integracao.praxio.afericao.AfericaoIntegracaoPraxioConverter;
 import br.com.zalf.prolog.webservice.integracao.praxio.afericao.MedicaoIntegracaoPraxio;
@@ -50,7 +52,8 @@ final class IntegracaoPraxioDaoImpl extends DatabaseConnection implements Integr
                                                  " F_COD_MODELO_VEICULO_CADASTRADO := ?," +
                                                  " F_COD_TIPO_VEICULO_CADASTRADO   := ?," +
                                                  " F_DATA_HORA_VEICULO_CADASTRO    := ?," +
-                                                 " F_TOKEN_INTEGRACAO              := ?) AS COD_VEICULO_PROLOG;");
+                                                 " F_TOKEN_INTEGRACAO              := ?," +
+                                                 " F_ORIGEM_CADASTRO               := ?) AS COD_VEICULO_PROLOG;");
             stmt.setLong(1, veiculoCadastroPraxio.getCodUnidadeAlocado());
             stmt.setString(2, veiculoCadastroPraxio.getPlacaVeiculo());
             stmt.setLong(3, veiculoCadastroPraxio.getKmAtualVeiculo());
@@ -58,6 +61,7 @@ final class IntegracaoPraxioDaoImpl extends DatabaseConnection implements Integr
             stmt.setLong(5, veiculoCadastroPraxio.getCodTipoVeiculo());
             stmt.setObject(6, Now.getOffsetDateTimeUtc());
             stmt.setString(7, tokenIntegracao);
+            stmt.setString(8, OrigemAcaoEnum.API.asString());
             rSet = stmt.executeQuery();
             if (rSet.next()) {
                 final long codVeiculoProlog = rSet.getLong("COD_VEICULO_PROLOG");
@@ -346,6 +350,33 @@ final class IntegracaoPraxioDaoImpl extends DatabaseConnection implements Integr
             }
         } finally {
             close(conn, stmt, rSet);
+        }
+    }
+
+    @Override
+    public VeiculoEdicaoStatus getVeiculoEdicaoStatus(@NotNull final String placaVeiculo,
+                                                      @NotNull final Boolean veiculoAtivo,
+                                                      @NotNull final String tokenIntegracao) throws Throwable {
+        try (final Connection conn = getConnection();
+             final PreparedStatement stmt = conn.prepareStatement(
+                     "select v.codigo, v.status_ativo, v.acoplado " +
+                             "from veiculo v " +
+                             "where v.placa = ? " +
+                             "and v.cod_empresa = (select ti.cod_empresa " +
+                             "from integracao.token_integracao ti " +
+                             "where ti.token_integracao = ?);")) {
+            stmt.setString(1, placaVeiculo);
+            stmt.setString(2, tokenIntegracao);
+            try (final ResultSet rSet = stmt.executeQuery()) {
+                if (rSet.next()) {
+                    return new VeiculoEdicaoStatus(
+                            rSet.getLong("codigo"),
+                            veiculoAtivo,
+                            rSet.getBoolean("acoplado"));
+                } else {
+                    throw new SQLException("Não foi possível inativar o veículo.");
+                }
+            }
         }
     }
 }

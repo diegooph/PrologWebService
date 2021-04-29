@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.frota.pneu;
 
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
+import br.com.zalf.prolog.webservice.commons.network.PrologCustomHeaders;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Required;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
@@ -8,7 +9,9 @@ import br.com.zalf.prolog.webservice.frota.pneu._model.Pneu;
 import br.com.zalf.prolog.webservice.frota.pneu._model.PneuComum;
 import br.com.zalf.prolog.webservice.frota.pneu._model.PneuRetornoDescarte;
 import br.com.zalf.prolog.webservice.frota.pneu._model.PneuRetornoDescarteResponse;
+import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
+import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.AppVersionCodeHandler;
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.DefaultAppVersionCodeHandler;
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.VersionCodeHandlerMode;
@@ -23,7 +26,8 @@ import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
 
-@Path("/pneus")
+@ConsoleDebugLog
+@Path("/v2/pneus")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @AppVersionCodeHandler(
@@ -47,10 +51,17 @@ public final class PneuResource {
     @Secured(permissions = Pilares.Frota.Pneu.CADASTRAR)
     @Path("/{codUnidade}")
     public AbstractResponse insert(@HeaderParam("Authorization") @Required final String userToken,
+                                   @HeaderParam(PrologCustomHeaders.AppVersionAndroid.PROLOG_APP_VERSION)
+                                   @Required final Integer appVersion,
                                    @PathParam("codUnidade") @Required final Long codUnidade,
                                    @QueryParam("ignoreDotValidation") final boolean ignoreDotValidation,
                                    @Required final Pneu pneu) throws ProLogException {
-        return service.insert(userToken, codUnidade, pneu, ignoreDotValidation);
+        return service.insert(
+                userToken,
+                codUnidade,
+                pneu,
+                appVersion != null ? OrigemAcaoEnum.PROLOG_ANDROID : OrigemAcaoEnum.PROLOG_WEB,
+                ignoreDotValidation);
     }
 
     @POST
@@ -86,9 +97,10 @@ public final class PneuResource {
             targetVersionCode = 68,
             versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
             actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
-    public List<Pneu> getPneuByCodUnidadeByStatus(@PathParam("codUnidade") final Long codUnidade,
+    public List<Pneu> getPneuByCodUnidadeByStatus(@HeaderParam("Authorization") @Required final String userToken,
+                                                  @PathParam("codUnidade") final Long codUnidade,
                                                   @PathParam("status") final String status) throws ProLogException {
-        return service.getPneusByCodUnidadesByStatus(Collections.singletonList(codUnidade), status);
+        return service.getPneusByCodUnidadesByStatus(userToken, Collections.singletonList(codUnidade), status);
     }
 
     @GET
@@ -105,9 +117,10 @@ public final class PneuResource {
             targetVersionCode = 68,
             versionCodeHandlerMode = VersionCodeHandlerMode.BLOCK_THIS_VERSION_AND_BELOW,
             actionIfVersionNotPresent = VersionNotPresentAction.BLOCK_ANYWAY)
-    public List<Pneu> getPneuByCodUnidadesByStatus(@QueryParam("codUnidades") @Required final List<Long> codUnidades,
+    public List<Pneu> getPneuByCodUnidadesByStatus(@HeaderParam("Authorization") @Required final String userToken,
+                                                   @QueryParam("codUnidades") @Required final List<Long> codUnidades,
                                                    @QueryParam("status") @Required final String status) {
-        return service.getPneusByCodUnidadesByStatus(codUnidades, status);
+        return service.getPneusByCodUnidadesByStatus(userToken, codUnidades, status);
     }
 
     @GET

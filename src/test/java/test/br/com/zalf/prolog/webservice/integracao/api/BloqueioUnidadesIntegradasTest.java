@@ -13,12 +13,13 @@ import br.com.zalf.prolog.webservice.frota.pneu.servico._model.ServicoMovimentac
 import br.com.zalf.prolog.webservice.frota.pneu.transferencia.PneuTransferenciaService;
 import br.com.zalf.prolog.webservice.frota.pneu.transferencia._model.realizacao.PneuTransferenciaRealizacao;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoService;
+import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Marca;
-import br.com.zalf.prolog.webservice.frota.veiculo.model.VeiculoCadastro;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicaoStatus;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.VeiculoTransferenciaService;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.ProcessoTransferenciaVeiculoRealizacao;
+import br.com.zalf.prolog.webservice.v3.frota.veiculo._model.VeiculoCadastroDto;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -54,15 +55,15 @@ final class BloqueioUnidadesIntegradasTest {
 
     @Test
     void testInsertVeiculoUnidadeLiberada() {
-        final VeiculoCadastro veiculoCadastro = new VeiculoCadastro(
+        final VeiculoCadastroDto veiculoCadastro = new VeiculoCadastroDto(
                 COD_EMPRESA_INTEGRADA,
                 COD_UNIDADE_LIBERADA,
                 "PRO-001",
                 null,
-                10L,
                 13L,
                 1L,
-                1111L);
+                1111L,
+                false);
 
         final Throwable throwable = assertThrows(
                 ProLogException.class, () -> new VeiculoService().insert(USER_TOKEN_INTEGRADO, veiculoCadastro));
@@ -71,15 +72,15 @@ final class BloqueioUnidadesIntegradasTest {
 
     @Test
     void testInsertVeiculoUnidadeBloqueada() {
-        final VeiculoCadastro veiculoCadastro = new VeiculoCadastro(
+        final VeiculoCadastroDto veiculoCadastro = new VeiculoCadastroDto(
                 COD_EMPRESA_INTEGRADA,
                 COD_UNIDADE_BLOQUEADA,
                 "PRO-001",
                 null,
-                10L,
                 13L,
                 1L,
-                1111L);
+                1111L,
+                false);
 
         final Throwable throwable = assertThrows(
                 ProLogException.class, () -> new VeiculoService().insert(USER_TOKEN_INTEGRADO, veiculoCadastro));
@@ -96,8 +97,9 @@ final class BloqueioUnidadesIntegradasTest {
                 null,
                 -1L,
                 -1L,
+                true,
                 1,
-                true);
+                false);
         final Throwable throwable = assertThrows(
                 ProLogException.class,
                 () -> new VeiculoService().update(-1L, USER_TOKEN_INTEGRADO, edicao));
@@ -114,8 +116,9 @@ final class BloqueioUnidadesIntegradasTest {
                 null,
                 -1L,
                 -1L,
+                true,
                 1,
-                true);
+                false);
         final Throwable throwable = assertThrows(
                 ProLogException.class,
                 () -> new VeiculoService().update(-1L, USER_TOKEN_INTEGRADO, edicao));
@@ -125,7 +128,7 @@ final class BloqueioUnidadesIntegradasTest {
     @Test
     void testUpdateStatusVeiculoUnidadeLiberada() {
         // TODO:
-        final VeiculoEdicaoStatus edicaoStatus = new VeiculoEdicaoStatus(-1L, true);
+        final VeiculoEdicaoStatus edicaoStatus = new VeiculoEdicaoStatus(-1L, true, false);
         final Throwable throwable = assertThrows(
                 ProLogException.class,
                 () -> new VeiculoService()
@@ -135,7 +138,7 @@ final class BloqueioUnidadesIntegradasTest {
 
     @Test
     void testUpdateStatusVeiculoUnidadeBloqueada() {
-        final VeiculoEdicaoStatus edicaoStatus = new VeiculoEdicaoStatus(-1L, true);
+        final VeiculoEdicaoStatus edicaoStatus = new VeiculoEdicaoStatus(-1L, true, false);
         final Throwable throwable = assertThrows(
                 ProLogException.class,
                 () -> new VeiculoService()
@@ -165,7 +168,7 @@ final class BloqueioUnidadesIntegradasTest {
         final Throwable throwable = assertThrows(
                 ProLogException.class,
                 () -> new PneuService()
-                        .insert(USER_TOKEN_INTEGRADO, COD_UNIDADE_LIBERADA, pneu, true));
+                        .insert(USER_TOKEN_INTEGRADO, COD_UNIDADE_LIBERADA, pneu, OrigemAcaoEnum.PROLOG_WEB, true));
         assertThat(throwable).isInstanceOf(BloqueadoIntegracaoException.class);
     }
 
@@ -191,7 +194,7 @@ final class BloqueioUnidadesIntegradasTest {
         final Throwable throwable = assertThrows(
                 ProLogException.class,
                 () -> new PneuService()
-                        .insert(USER_TOKEN_INTEGRADO, COD_UNIDADE_BLOQUEADA, pneu, true));
+                        .insert(USER_TOKEN_INTEGRADO, COD_UNIDADE_BLOQUEADA, pneu, OrigemAcaoEnum.PROLOG_WEB, true));
         assertThat(throwable).isNotInstanceOf(BloqueadoIntegracaoException.class);
     }
 

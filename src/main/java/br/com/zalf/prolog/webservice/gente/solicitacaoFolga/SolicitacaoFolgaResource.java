@@ -11,7 +11,7 @@ import javax.ws.rs.core.MediaType;
 import java.util.Date;
 import java.util.List;
 
-@Path("/solicitacoes-folga")
+@Path("/v2/solicitacoes-folga")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class SolicitacaoFolgaResource {

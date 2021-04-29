@@ -28,7 +28,7 @@ import java.util.List;
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
 @Secured
-@Path("/movimentacoes/motivos/transicoes")
+@Path("/v2/movimentacoes/motivos/transicoes")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public final class MotivoMovimentoTransicaoResource {

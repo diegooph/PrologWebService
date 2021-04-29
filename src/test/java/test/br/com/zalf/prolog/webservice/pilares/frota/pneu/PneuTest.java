@@ -57,7 +57,9 @@ public class PneuTest extends BaseTest {
 
     @Test
     public void getPneusMovimentacao() throws Exception {
-        final List<Pneu> pneusAnalise = service.getPneusByCodUnidadesByStatus(Collections.singletonList(5L), StatusPneu.ANALISE.asString());
+        final List<Pneu> pneusAnalise = service.getPneusByCodUnidadesByStatus("PROLOG_DEV",
+                                                                              Collections.singletonList(5L),
+                                                                              StatusPneu.ANALISE.asString());
         System.out.println(pneusAnalise);
         Assert.assertNotNull(pneusAnalise);
         Assert.assertFalse(pneusAnalise.isEmpty());

@@ -1,0 +1,34 @@
+ -- Na criação de functions que serão utilizadas pelo nosso setor de suporte, temos algumas boas práticas que devem ser
+-- seguidas:
+--
+-- 1 - Sempre receba os parâmetros da function em ordem hierárquica (F_COD_EMPRESA, F_COD_UNIDADE, F_PLACA_VEICULO
+--     e etc).
+-- 2 - Nunca solicite parâmetros que não existam na tabela onde a function irá atuar. Por exemplo: em uma funcion de
+--     deleção de aferição, não solicite código da empresa, já que essa informação não existe na tabela de aferição.
+--     Devemos solicitar as principais chaves da tabela para tornar mais improvável uma deleção incorreta, mas também
+--     temos que considerar o trabalho e otimização de tempo do pessoal do suporte, por isso evitamos de solicitar
+--     informações que não estão na tabela principal, assim eles não precisam consultar mais de um local.
+-- 3 - Atente-se a mensagens de erro "User Friendly". Lembre-se que nem sempre quem estará usando a function é alguém
+--     que tem conhecimento de banco de dados. Então devemos retornar mensagens de erro excelentes caso qualquer
+--     parâmetro passado na function não exista ou se algo na execução der errado.
+-- 4 - Se uma function recebe parâmetros de entidades do banco, é sua obrigação verificar a existência de cada entidade
+--     antes de executar a lógica da function em si. Por exemplo: em uma function de deleção de aferição, verifique se
+--     existe uma aferição com os parâmetros informados antes de tentar deletar de fato. Assim você pode retornar uma
+--     mensagem de erro clara.
+-- 5 - Em mensagens de erro ou de sucesso, sempre adicione parâmetros ao retorno. Por exemplo: nunca diga apenas que a
+--     aferição com os parâmetros informados não existe. Retorne na mensagem de erro os parâmetros também. Lembre-se
+--     que essas functions podem ser usadas em transactions para deleções massivas e mensagens de erro sem detalhamento
+--     atrasam a vida.
+-- 6 - Utilize functions utilitárias de garantia. As existentes estão na pasta /pilares/utils/garante/.
+-- 7 - Se a function criada altera diversos registros simultaneamente, considere solicitar como parâmetro o número
+--     de registros que serão afetados. Isso força quem vai utilzar a function a ver esse número antes e deixará
+--     mais fácil identificar um possível erro. Veja esse exemplo: FUNC_PNEU_ALTERA_PRESSAO_IDEAL_BY_DIMENSAO
+-- 8 - Documente suas functions seguindo nosso padrão de documentação encontrado em: template_documentacao_func_view.sql.
+--
+--
+-- Exemplos de functions já criadas:
+-- • FUNC_PNEU_RETORNA_PNEU_DO_DESCARTE
+-- • FUNC_RELATO_COPIA_ALTERNATIVAS_RELATO
+-- • FUNC_PNEU_ALTERA_PRESSAO_IDEAL_BY_DIMENSAO
+-- • FUNC_AFERICAO_DELETA_AFERICAO
+-- • FUNC_CHECKLIST_DELETA_MODELO_CHECKLIST

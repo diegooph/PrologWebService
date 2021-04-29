@@ -1,12 +1,170 @@
 Change Log
 ==========
+## Stage
+### Features
+* Cria v3 de ordem de serviço (PL-3462)
 
-<a name="v1.5.5"></a>
-## Version [v1.5.5](https://github.com/luizfp/PrologWebService/compare/v1.5.4...v1.5.5) (release-date) [unreleased]
+### Features
+* Cria anotações para garantir os códigos acessados pelas requisições (PL-3551)
+
+<a name="v3.2.1"></a>
+## Version [v3.2.1](https://github.com/luizfp/PrologWebService/compare/v3.2.0...v3.2.1) (release-date) [unreleased]
+
+### Features
+* Cria functions de suporte para alterações em modelo de quiz (PL-3609)
+* Logar no BD quem altera um colaborador (PL-3491)
+
+### Refactors
+* Altera paths de v3 para serem precedidos por `api`
+* Altera path de unidades para estarem no `v3` e serem precedidos por `api`
+* Altera calculo de vencidas da function de geraçao dos dashboards e do relatorio de cronograma (PL-3538)
+* Realiza pequenas melhorias na PrologApplication (PL-3606)
+
+### Bug Fixes
+* Corrige function de transferência de veículo entre Empresas para o Suporte (PS-1504)
+* Ajusta erros logados no sentry do package frota (PL-3593)
+
+<a name="v3.2.0"></a>
+## Version [v3.2.0](https://github.com/luizfp/PrologWebService/compare/v3.1.0...v3.2.0) (2021-04-18)
+
+### Refactors
+* Deleta integração com a Rodalog (PL-3476)
+* Altera ServicoResource para utilizar código do veículo nos métodos e não placa (PL-3406)
+* Altera métodos do ServicoResource que recebem objeto de filtro de GET para POST
+* Adicionar código do veículo no retorno das buscas de serviço (PL-3524)
+* Remove placa de todo o fluxo de aferições (PL-3403)
+* Adiciona código de veículo no cronograma de aferição (PL-3496)
+* Remove placa na realização de checklist (PL-3545)
+* Remove placa da busca de relatórios de checklist (PL-3548)
+* Remove placa das buscas do checklist (PL-3546)
+* Modifica fechamento massivo de OS via Suporte (PL-3594)
+* Remove placa das buscas, abertura e fechamento de OSs (PL-3547)
+* Remove placa dos relatórios de OSs (PL-3549)
+* Altera integrações para buscar a placa da tabela veículo (PL-3595)
+
+### Bug Fixes
+* Altera para não retornar unidades inativas (PL-3510)
+* Corrige processamento de planilha de import de pneus
+* Corrige processamento de planilha de import de vínculo de pneus a veículos
+* Corrige valores retornados para exibição de sulco atual e pressão atual (PL-3578)
+
+<a name="v3.1.0"></a>
+## Version [v3.1.0](https://github.com/luizfp/PrologWebService/compare/v3.0.0...v3.1.0) (2021-04-08)
+
+### Features
+* Adiciona código do colaborador ao Sentry para ser logado junto em caso de erro
+* Cria funcionalidade para alterar o km coletado nos processos (PL-3557)
+* Migra todos os SQLs do repositório de BD para o de WS
+
+### Refactors
+* Configura swagger para rodar em prod (PL-3559)
+* Altera versão do Sentry para 4.3.0
+* Altera para o Sentry enviar informações sensitivas por default, como o token
+
+### Bug Fixes
+* Corrige sincroniza de O.S. na integração da Piccolotur (PL-3599)
+* Corrige checkstyle para detecção de nome de pacote
+* Corrige trigger de import de veículos 
+* Corrige processamento de planilha de import de veículos
+* Corrige processamento de planilha de import de colaboradores
+
+<a name="v3.0.0"></a>
+## Version [v3.0.0](https://github.com/luizfp/PrologWebService/compare/v2.2.0...v3.0.0) (2021-03-30)
+
+### Features
+* Migra projeto do Java 8 para o 11 (PL-3475)
+* Finaliza cadastro de pneus na API v3 (PL-3459)
+* Finaliza cadastro de veículos na API v3 (PL-3460)
+
+### Refactors
+* Deleta integração antiga da Avilan que era em XML (PL-3475)
+* Altera integração com Globus/Piccolotur de envio de OS para utilizar implementação própria do SOAP (PL-3475)
+* Adiciona mais uma opção no enum de evolução de km (PL-3562)
+
+<a name="v2.2.0"></a>
+## Version [v2.2.0](https://github.com/luizfp/PrologWebService/compare/v2.1.0...v2.2.0) (2021-03-21)
+
+### Features
+* Cria versão inicial de endpoint de cadastro de pneus na API v3 (PL-3459)
+* Cria versão inicial de endpoint de cadastro de veículos na API v3 (PL-3460)
+
+### Refactors
+* Remove classes depreciadas e não utilizadas de O.S. de checklist
+* Ordena busca de tipos de veículo por nome
+* Alterar buscas de serviços fechados para considerar flag de fechado por aferição (PL-3561)
+* Alterar processo de inserção de aferição para fechar serviços automaticamente (PL-3541)
+
+### Bug Fixes
+* Corrige listagem de relatos realizados (PL-3572)
+* Corrige leitura dos headers de Logs de integração (PL-3519)
+* Corrige busca do relatório de aferições integrado (PL-3568)
+* Corrige permissões ao listar veículos
+* Corrige filtro de unidades/clientes vindas da integração (PL-3560)
+
+<a name="v2.1.0"></a>
+## Version [v2.1.0](https://github.com/luizfp/PrologWebService/compare/v2.0.2...v2.1.0) (2021-03-07)
+
+### Features
+* Adiciona estrutura de testes e2e com testcontainers e Flyway (PL-3307)
+* Cria integração com sistema WebFinatto (PL-2874)
+
+### Refactors
+* Ordena lista de histórico de acoplamentos por data/hora
+
+### Bug Fixes
+* Corrige path de resource de histórico de acoplamentos
+
+<a name="v2.0.2"></a>
+## Version [v2.0.2](https://github.com/luizfp/PrologWebService/compare/v2.0.1...v2.0.2) (2021-02-22)
+
+### Refactors
+* Altera root path do projeto removendo o v2 e colocando em cada Resource (PL-3500)
+* Altera pesquisa de NPS para salvar origem da resposta e do bloqueio
+
+<a name="v2.0.1"></a>
+## Version [v2.0.1](https://github.com/luizfp/PrologWebService/compare/v2.0.0...v2.0.1) (2021-02-16)
+
+### Bug Fixes
+* Adiciona código veículo no fluxo da integração (PL-3521)
+
+<a name="v2.0.0"></a>
+## Version [v2.0.0](https://github.com/luizfp/PrologWebService/compare/v1.6.0...v2.0.0) (2021-02-14)
+
+#### Features
+* Cria funcionalidade de insert de processo de acoplamento (PL-3210)
+* Cria funcionalidade de verificação de dados de coleta de km (PL-3291)
+* Cria update único de KM de veiculo por código (PL-3213)
+* Corrige bug em propagação de km ao realizar aferição (PL-3439)
 
 #### Refactors
-* Considera bônus no pré-contracheque apenas se número de viagens for acima ou igual o parametrizado (PL-3368)
+* Adiciona flag "motorizado" no tipo de veículo (PL-3387).
+* Realiza modificação mo CRUD de veiculos, incluindo os campos ```motorizado``` e ```possuiHubodometro``` (PL-3223)
+* Adiciona os veículos acoplados no objeto de `VeiculoVisualizacao` (PL-3212)
+* Adiciona os veículos acoplados no objeto de `VeiculoListagem` (PL-3211)
+* Adiciona propagação de km no fechamento de OS (PL-3335)
+* Adiciona novas ações no insert do histórico de acoplamento (PL-3344)
+* Adiciona novas validações no import massivo de veículos (PL-3288)
+* Realiza ajustes no acoplamento para funcionar apenas com MUDOU_POSICAO (PL-3355)
+* Refatora updates de km dos processos para usarem function centralizadora (PL-3290)
+* Adiciona erro especifico ao tentar por hubodômetro em veículos motorizados (PL-3386)
+* Adiciona validação para impedir que veículos acoplados sejam inativados (PL-3397)
+* Adiciona código de posição e informação de se o veículo é motorizado para uso no front (PL-3498)
+* Adiciona código veiculo nos objetos de O.S (PL-3472)
+
+### Bug Fixes
+* Corrige diferenças entre branches na edição de veículo (PL-3326)
+
+<a name="v1.6.0"></a>
+## Version [v1.6.0](https://github.com/luizfp/PrologWebService/compare/v1.5.4...v1.6.0) (2021-02-09)
+
+### Features
 * Cria método para verificar se uma marcação está finalizada (PL-3191)
+
+#### Refactors
+* Remove classe EnvironmentHelper (PL-3414)
+* Altera API de e-mail para utilizar gerenciamento pelo Spring (PL-3414)
+* Altera Firebase para utilizar gerenciamento pelo Spring (PL-3414)
+* Considera bônus no pré-contracheque apenas se número de viagens for acima ou igual o parametrizado (PL-3368)
 
 ### Bug Fixes
 * Corrige uso de autoCommit no salvamento de imagens do checklist

@@ -11,7 +11,7 @@ import java.util.Date;
 /**
  * Created by Zart on 02/05/17.
  */
-@Path("/fale-conosco/relatorios")
+@Path("/v2/fale-conosco/relatorios")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class FaleConoscoRelatorioResource {

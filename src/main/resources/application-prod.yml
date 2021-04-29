@@ -1,5 +1,5 @@
 prolog:
-  version_code: "v2_1.5.5"
+  version_code: "v3.2.1"
 spring:
   profiles: prod
   datasource:
@@ -13,9 +13,21 @@ sentry:
   release: "${prolog.version_code}"
   enable-session-tracking: true
   attach-stacktrace: true
+  send-default-pii: true
   in-app-excludes:
     - "sun"
     - "java"
     - "org"
   in-app-includes:
     - "br.com.zalf"
+firebase:
+  database:
+    url: "https://prolog-prod.firebaseio.com"
+  credentials: "${google-application-credentials}"
+
+mailjet:
+  api-key: "${mailjet-apikey-public}"
+  api-secret-key: "${mailjet-apikey-private}"
+logging:
+  level:
+    root: info

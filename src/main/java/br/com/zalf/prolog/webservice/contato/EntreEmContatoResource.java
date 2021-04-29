@@ -15,7 +15,7 @@ import javax.ws.rs.core.MediaType;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-@Path("/comercial/mensagens")
+@Path("/v2/comercial/mensagens")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public final class EntreEmContatoResource {

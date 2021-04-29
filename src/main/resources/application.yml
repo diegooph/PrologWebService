@@ -1,7 +1,10 @@
+prolog:
+  debug: "@prolog-debug@"
+
 server:
   port: 8080
   servlet:
-    context-path: /prolog/v2
+    context-path: /prolog
 
 spring:
   profiles:
@@ -28,19 +31,16 @@ spring:
     hikari:
       connection-init-sql: "SET application_name = 'ProLog WS'"
       connection-test-query: "SELECT 1"
-
       idle-timeout: 60000
       auto-commit: true
       connection-timeout: 30000
       validation-timeout: 30000
 
-logging:
-  level:
-    org:
-      springframework: error
+  flyway:
+    enabled: false
 
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
-    url: /prolog/v2/swagger.json
+    url: /prolog/swagger.json
     operations-sorter: method

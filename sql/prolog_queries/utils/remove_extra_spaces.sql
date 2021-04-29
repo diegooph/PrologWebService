@@ -1,0 +1,14 @@
+--! Remove espaços excedentes e "characteres" que simulam espaço.
+CREATE OR REPLACE FUNCTION REMOVE_EXTRA_SPACES(F_TEXT TEXT, F_REMOVE_CHAR_LIKE_SPACE BOOLEAN DEFAULT FALSE) RETURNS TEXT
+    LANGUAGE PLPGSQL
+AS
+$$
+BEGIN
+    IF F_REMOVE_CHAR_LIKE_SPACE
+    THEN
+        RETURN REGEXP_REPLACE(TRIM(REGEXP_REPLACE((F_TEXT), '[\u0080-\u00ff]', '', 'g')), '\s+', ' ', 'g');
+        ELSE
+        RETURN TRIM(REGEXP_REPLACE(F_TEXT, '\s+', ' ', 'g'));
+    END IF;
+END;
+$$;

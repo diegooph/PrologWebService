@@ -23,7 +23,7 @@ import java.util.List;
  * @author Thais Francisco (https://github.com/thaisksf)
  */
 @ConsoleDebugLog
-@Path("pneus/transferencias")
+@Path("/v2/pneus/transferencias")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Secured(permissions = Pilares.Frota.TRANSFERENCIA_PNEUS_VEICULOS)

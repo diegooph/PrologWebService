@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.errorhandling;
 
 import io.sentry.Sentry;
 import io.sentry.SentryEvent;
+import io.sentry.protocol.User;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -25,5 +26,11 @@ public final class ErrorReportSystem {
 
     public static void logMessage(@NotNull final String message) {
         Sentry.captureMessage(message);
+    }
+
+    public static void addCodColaborador(@NotNull final Long codColaborador) {
+        final User user = new User();
+        user.setId(String.valueOf(codColaborador));
+        Sentry.setUser(user);
     }
 }

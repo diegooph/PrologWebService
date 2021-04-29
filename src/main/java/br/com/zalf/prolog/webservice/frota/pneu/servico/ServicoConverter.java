@@ -87,6 +87,7 @@ final class ServicoConverter {
     @NotNull
     static QuantidadeServicosVeiculo createQtdServicosVeiculo(@NotNull final ResultSet resultSet) throws SQLException {
         final QuantidadeServicosVeiculo qtdServicosFechados = new QuantidadeServicosVeiculo();
+        qtdServicosFechados.setCodVeiculo(resultSet.getLong("COD_VEICULO"));
         qtdServicosFechados.setPlacaVeiculo(resultSet.getString("PLACA_VEICULO"));
         qtdServicosFechados.setIdentificadorFrota(resultSet.getString("IDENTIFICADOR_FROTA"));
         qtdServicosFechados.setQtdServicosCalibragem(resultSet.getInt("TOTAL_CALIBRAGENS"));
@@ -109,6 +110,7 @@ final class ServicoConverter {
     @NotNull
     static VeiculoServico createVeiculoAberturaServico(@NotNull final ResultSet resultSet) throws SQLException {
         final VeiculoServico veiculo = new VeiculoServico();
+        veiculo.setCodigo(resultSet.getLong("COD_VEICULO"));
         veiculo.setPlaca(resultSet.getString("PLACA_VEICULO"));
         veiculo.setIdentificadorFrota(resultSet.getString("IDENTIFICADOR_FROTA"));
         veiculo.setKmAtual(resultSet.getLong("KM_ATUAL_VEICULO"));
@@ -174,19 +176,26 @@ final class ServicoConverter {
         servico.setCodUnidade(resultSet.getLong("COD_UNIDADE"));
         servico.setDataHoraAbertura(resultSet.getObject("DATA_HORA_ABERTURA", LocalDateTime.class));
         servico.setDataHoraFechamento(resultSet.getObject("DATA_HORA_FECHAMENTO", LocalDateTime.class));
+        servico.setCodVeiculo(resultSet.getLong("COD_VEICULO"));
         servico.setPlacaVeiculo(resultSet.getString("PLACA_VEICULO"));
         servico.setIdentificadorFrota(resultSet.getString("IDENTIFICADOR_FROTA"));
         servico.setFechadoAutomaticamenteMovimentacao(resultSet.getBoolean("FECHADO_AUTOMATICAMENTE_MOVIMENTACAO"));
         servico.setFechadoAutomaticamenteIntegracao(resultSet.getBoolean("FECHADO_AUTOMATICAMENTE_INTEGRACAO"));
+        servico.setFechadoAutomaticamenteAfericao(resultSet.getBoolean("FECHADO_AUTOMATICAMENTE_AFERICAO"));
         final String formaColetaDadosFechamento = resultSet.getString("FORMA_COLETA_DADOS_FECHAMENTO");
         if (formaColetaDadosFechamento != null) {
             servico.setFormaColetaDadosFechamento(FormaColetaDadosAfericaoEnum.fromString(formaColetaDadosFechamento));
         }
-        if (!servico.isFechadoAutomaticamenteIntegracao() && !servico.isFechadoAutomaticamenteMovimentacao()) {
+        if (!servico.isFechadoAutomaticamenteIntegracao() && !servico.isFechadoAutomaticamenteMovimentacao() &&
+                !servico.isFechadoAutomaticamenteAfericao()) {
             final Colaborador colaborador = new Colaborador();
             colaborador.setCpf(resultSet.getLong("CPF_RESPONSAVEL_FECHAMENTO"));
             colaborador.setNome(resultSet.getString("NOME_RESPONSAVEL_FECHAMENTO"));
             servico.setColaboradorResponsavelFechamento(colaborador);
+        }
+
+        if (servico.isFechadoAutomaticamenteAfericao()) {
+            servico.setCodAfericaoFechamentoAutomatico(resultSet.getLong("COD_AFERICAO_FECHAMENTO_AUTOMATICO"));
         }
 
         // Cria pneu com problema, responsável por originar o serviço.
@@ -195,13 +204,13 @@ final class ServicoConverter {
         pneuProblema.setCodigoCliente(resultSet.getString("COD_PNEU_PROBLEMA_CLIENTE"));
         pneuProblema.setPosicao(resultSet.getInt("POSICAO_PNEU_PROBLEMA"));
         pneuProblema.setVidaAtual(resultSet.getInt("VIDA_PNEU_PROBLEMA"));
-        pneuProblema.setPressaoAtual(resultSet.getDouble("PRESSAO_PNEU_PROBLEMA"));
+        pneuProblema.setPressaoAtual(resultSet.getDouble("PRESSAO_ATUAL"));
         pneuProblema.setPressaoCorreta(resultSet.getDouble("PRESSAO_RECOMENDADA"));
         final Sulcos sulcosProblema = new Sulcos();
-        sulcosProblema.setExterno(resultSet.getDouble("SULCO_EXTERNO_PNEU_PROBLEMA"));
-        sulcosProblema.setCentralExterno(resultSet.getDouble("SULCO_CENTRAL_EXTERNO_PNEU_PROBLEMA"));
-        sulcosProblema.setCentralInterno(resultSet.getDouble("SULCO_CENTRAL_INTERNO_PNEU_PROBLEMA"));
-        sulcosProblema.setInterno(resultSet.getDouble("SULCO_INTERNO_PNEU_PROBLEMA"));
+        sulcosProblema.setExterno(resultSet.getDouble("SULCO_EXTERNO_ATUAL"));
+        sulcosProblema.setCentralExterno(resultSet.getDouble("SULCO_CENTRAL_EXTERNO_ATUAL"));
+        sulcosProblema.setCentralInterno(resultSet.getDouble("SULCO_CENTRAL_INTERNO_ATUAL"));
+        sulcosProblema.setInterno(resultSet.getDouble("SULCO_INTERNO_ATUAL"));
         pneuProblema.setSulcosAtuais(sulcosProblema);
         servico.setPneuComProblema(pneuProblema);
 

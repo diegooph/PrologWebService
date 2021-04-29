@@ -89,7 +89,7 @@ public final class ChecklistItensNokGlobusTask implements Runnable {
                                     conn,
                                     checklistToSyncGlobus.getCodModeloChecklist(),
                                     checklistToSyncGlobus.getCodVersaoModeloChecklist(),
-                                    checklistToSyncGlobus.getPlacaVeiculoChecklist());
+                                    checklistToSyncGlobus.getCodVeiculoChecklist());
             final List<InfosAlternativaAberturaOrdemServico> itensOsIncrementaQtdApontamentos =
                     getItensIncrementaApontamentos(alternativasStatus, checklistItensNokGlobus.getPerguntasNok());
 
@@ -106,7 +106,7 @@ public final class ChecklistItensNokGlobusTask implements Runnable {
                         item -> checklistItensNokGlobus.getPerguntasNok().forEach(
                                 pergunta -> pergunta.getAlternativasNok().removeIf(
                                         alternativa -> item.contains(pergunta.getCodContextoPerguntaNok(),
-                                                alternativa.getCodContextoAlternativaNok()))));
+                                                                     alternativa.getCodContextoAlternativaNok()))));
 
                 // Pode acontecer de a pergunta ficar sem nenhuma alternativa agora. Removemos ela nesse caso.
                 checklistItensNokGlobus.getPerguntasNok().removeIf(pergunta -> pergunta.getAlternativasNok().isEmpty());
@@ -153,8 +153,7 @@ public final class ChecklistItensNokGlobusTask implements Runnable {
             }
         } catch (final Throwable throwable) {
             // Não logamos mais exception no Sentry para não exceder a contagem do plano.
-            // Log.e(TAG, "Erro ao tentar sincronizar o checklist com o Globus", throwable);
-            Log.d(TAG, "Erro ao tentar sincronizar o checklist com o Globus");
+            Log.e(TAG, "Erro ao tentar sincronizar o checklist com o Globus", throwable);
             try {
                 // Se tivemos um erro ao sincronizar o checklist, precisamos logar para saber como proceder na solução
                 // do erro e conseguir sincronizar esse checklist.

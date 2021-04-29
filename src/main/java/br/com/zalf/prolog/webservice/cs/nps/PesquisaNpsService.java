@@ -6,8 +6,10 @@ import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.cs.nps.model.PesquisaNpsBloqueio;
 import br.com.zalf.prolog.webservice.cs.nps.model.PesquisaNpsDisponivel;
 import br.com.zalf.prolog.webservice.cs.nps.model.PesquisaNpsRealizada;
+import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
 import com.google.common.annotations.VisibleForTesting;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -49,17 +51,18 @@ public final class PesquisaNpsService {
 
     @VisibleForTesting
     @NotNull
-    public ResponseWithCod insertRespostasPesquisaNps(@NotNull final PesquisaNpsRealizada pesquisaRealizada) {
+    public ResponseWithCod insertRespostasPesquisaNps(@Nullable final Integer versaoApp,
+                                                      @NotNull final PesquisaNpsRealizada pesquisaRealizada) {
         try {
             return ResponseWithCod.ok(
                     "Recebemos sua resposta, obrigado!",
-                    dao.insereRespostasPesquisaNps(pesquisaRealizada));
+                    dao.insereRespostasPesquisaNps(getOrigemFromVersaoApp(versaoApp), pesquisaRealizada));
         } catch (final Throwable throwable) {
             final String errorMessage = String.format("Erro ao inserir pesquisa de NPS.\n" +
-                            "codPesquisaNps: %d\n" +
-                            "codColaborador: %d",
-                    pesquisaRealizada.getCodPesquisaNps(),
-                    pesquisaRealizada.getCodColaboradorRealizacao());
+                                                              "codPesquisaNps: %d\n" +
+                                                              "codColaborador: %d",
+                                                      pesquisaRealizada.getCodPesquisaNps(),
+                                                      pesquisaRealizada.getCodColaboradorRealizacao());
             Log.e(TAG, errorMessage, throwable);
             throw Injection
                     .provideProLogExceptionHandler()
@@ -68,19 +71,25 @@ public final class PesquisaNpsService {
     }
 
     @VisibleForTesting
-    public void bloqueiaPesquisaNpsColaborador(@NotNull final PesquisaNpsBloqueio pesquisaBloqueio) {
+    public void bloqueiaPesquisaNpsColaborador(@Nullable final Integer versaoApp,
+                                               @NotNull final PesquisaNpsBloqueio pesquisaBloqueio) {
         try {
-            dao.bloqueiaPesquisaNpsColaborador(pesquisaBloqueio);
+            dao.bloqueiaPesquisaNpsColaborador(getOrigemFromVersaoApp(versaoApp), pesquisaBloqueio);
         } catch (final Throwable throwable) {
             final String errorMessage = String.format("Erro ao bloquear pesquisa de NPS.\n" +
-                            "codPesquisaNps: %d\n" +
-                            "codColaborador: %d",
-                    pesquisaBloqueio.getCodPesquisaNps(),
-                    pesquisaBloqueio.getCodColaboradorBloqueio());
+                                                              "codPesquisaNps: %d\n" +
+                                                              "codColaborador: %d",
+                                                      pesquisaBloqueio.getCodPesquisaNps(),
+                                                      pesquisaBloqueio.getCodColaboradorBloqueio());
             Log.e(TAG, errorMessage, throwable);
             throw Injection
                     .provideProLogExceptionHandler()
                     .map(throwable, "Erro ao bloquear pesquisa de NPS");
         }
+    }
+
+    @NotNull
+    private OrigemAcaoEnum getOrigemFromVersaoApp(@Nullable final Integer versaoApp) {
+        return versaoApp != null ? OrigemAcaoEnum.PROLOG_ANDROID : OrigemAcaoEnum.PROLOG_WEB;
     }
 }

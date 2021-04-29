@@ -23,7 +23,10 @@ import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico.PneuServicoReali
 import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico._model.PneuServicoRealizado;
 import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico._model.PneuServicoRealizadoIncrementaVida;
 import br.com.zalf.prolog.webservice.frota.pneu.servico.ServicoDao;
+import br.com.zalf.prolog.webservice.frota.pneu.servico._model.OrigemFechamentoAutomaticoEnum;
 import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.VeiculoTipoProcesso;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
@@ -35,6 +38,9 @@ import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
+import static br.com.zalf.prolog.webservice.frota.pneu.movimentacao._model.OrigemDestinoEnum.VEICULO;
 
 /**
  * Created by Zart on 03/03/17.
@@ -59,7 +65,8 @@ public final class MovimentacaoDaoImpl extends DatabaseConnection implements Mov
                     campoPersonalizadoDao,
                     processoMovimentacao,
                     dataHoraMovimentacao,
-                    fecharServicosAutomaticamente);
+                    fecharServicosAutomaticamente,
+                    false);
             conn.commit();
             return codigoProcessoMovimentacao;
         } catch (final Throwable e) {
@@ -80,6 +87,24 @@ public final class MovimentacaoDaoImpl extends DatabaseConnection implements Mov
                        @NotNull final ProcessoMovimentacao processoMovimentacao,
                        @NotNull final OffsetDateTime dataHoraMovimentacao,
                        final boolean fecharServicosAutomaticamente) throws Throwable {
+        return insert(conn,
+                      servicoDao,
+                      campoPersonalizadoDao,
+                      processoMovimentacao,
+                      dataHoraMovimentacao,
+                      fecharServicosAutomaticamente,
+                      false);
+    }
+
+    @NotNull
+    @Override
+    public Long insert(@NotNull final Connection conn,
+                       @NotNull final ServicoDao servicoDao,
+                       @NotNull final CampoPersonalizadoDao campoPersonalizadoDao,
+                       @NotNull final ProcessoMovimentacao processoMovimentacao,
+                       @NotNull final OffsetDateTime dataHoraMovimentacao,
+                       final boolean fecharServicosAutomaticamente,
+                       final boolean veioDoServico) throws Throwable {
         validaMovimentacoes(processoMovimentacao.getMovimentacoes());
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -101,6 +126,7 @@ public final class MovimentacaoDaoImpl extends DatabaseConnection implements Mov
                         processoMovimentacao,
                         dataHoraMovimentacao,
                         fecharServicosAutomaticamente);
+                updateKmVeiculoIfNeeded(conn, processoMovimentacao, dataHoraMovimentacao, veioDoServico);
                 final List<CampoPersonalizadoResposta> respostas =
                         processoMovimentacao.getRespostasCamposPersonalizados();
                 if (respostas != null && !respostas.isEmpty()) {
@@ -120,6 +146,23 @@ public final class MovimentacaoDaoImpl extends DatabaseConnection implements Mov
         } finally {
             close(stmt, rSet);
         }
+    }
+
+    @NotNull
+    @Override
+    public Long insertMovimentacaoServicoAfericao(@NotNull final Connection conn,
+                                                  @NotNull final ServicoDao servicoDao,
+                                                  @NotNull final CampoPersonalizadoDao campoPersonalizadoDao,
+                                                  @NotNull final ProcessoMovimentacao processoMovimentacao,
+                                                  @NotNull final OffsetDateTime dataHoraMovimentacao,
+                                                  final boolean fecharServicosAutomaticamente) throws Throwable {
+        return insert(conn,
+                      servicoDao,
+                      campoPersonalizadoDao,
+                      processoMovimentacao,
+                      dataHoraMovimentacao,
+                      fecharServicosAutomaticamente,
+                      true);
     }
 
     @NotNull
@@ -213,6 +256,7 @@ public final class MovimentacaoDaoImpl extends DatabaseConnection implements Mov
         return motivo;
     }
 
+    @SuppressWarnings("checkstyle:SingleSpaceSeparator")
     private void insertMovimentacoes(@NotNull final Connection conn,
                                      @NotNull final ServicoDao servicoDao,
                                      @NotNull final ProcessoMovimentacao processoMov,
@@ -241,7 +285,7 @@ public final class MovimentacaoDaoImpl extends DatabaseConnection implements Mov
                 rSet = stmt.executeQuery();
                 if (rSet.next()) {
                     mov.setCodigo(rSet.getLong("V_COD_MOVIMENTACAO_REALIZADA"));
-                    insertOrigem(conn, pneuDao, veiculoDao, pneuServicoRealizadoDao, codUnidade, mov);
+                    insertOrigem(conn, pneuDao, pneuServicoRealizadoDao, codUnidade, mov);
                     insertDestino(conn, veiculoDao, codUnidade, mov);
                     if (mov.getCodMotivoMovimento() != null) {
                         insertMotivoMovimento(conn, mov.getCodigo(), mov.getCodMotivoMovimento());
@@ -255,13 +299,54 @@ public final class MovimentacaoDaoImpl extends DatabaseConnection implements Mov
                                 mov,
                                 dataHoraMovimentacao);
                     }
-                    // Atualiza o status do pneu.
                     pneuDao.updateStatus(conn, pneu, mov.getDestino().getTipo().toStatusPneu());
                 }
             }
         } finally {
             close(stmt, rSet);
         }
+    }
+
+    private void updateKmVeiculoIfNeeded(@NotNull final Connection conn,
+                                         @NotNull final ProcessoMovimentacao processoMovimentacao,
+                                         @NotNull final OffsetDateTime dataHoraMovimentacao,
+                                         final boolean veioDoServico) {
+        final Optional<Veiculo> veiculoMovimentacao = getVeiculoMovimentacao(processoMovimentacao);
+        veiculoMovimentacao
+                .ifPresent(veiculo -> {
+                    if (!veioDoServico) {
+                        //noinspection ConstantConditions
+                        Injection
+                                .provideVeiculoDao()
+                                .updateKmByCodVeiculo(conn,
+                                                      processoMovimentacao.getUnidade().getCodigo(),
+                                                      veiculo.getCodigo(),
+                                                      processoMovimentacao.getCodigo(),
+                                                      VeiculoTipoProcesso.MOVIMENTACAO,
+                                                      dataHoraMovimentacao,
+                                                      veiculo.getKmAtual(),
+                                                      true);
+                    }
+                });
+    }
+
+    @NotNull
+    private Optional<Veiculo> getVeiculoMovimentacao(@NotNull final ProcessoMovimentacao processoMovimentacao) {
+        final Optional<Movimentacao> movimentacao = processoMovimentacao
+                .getMovimentacoes()
+                .stream()
+                .filter(mov -> mov.isFrom(VEICULO) || mov.isTo(VEICULO))
+                .findFirst();
+
+        if (movimentacao.isPresent()) {
+            final Movimentacao mov = movimentacao.get();
+            return Optional.of(
+                    mov.isFrom(VEICULO)
+                            ? ((OrigemVeiculo) mov.getOrigem()).getVeiculo()
+                            : ((DestinoVeiculo) mov.getDestino()).getVeiculo());
+        }
+
+        return Optional.empty();
     }
 
     /**
@@ -275,7 +360,7 @@ public final class MovimentacaoDaoImpl extends DatabaseConnection implements Mov
                                              @NotNull final ProcessoMovimentacao processoMovimentacao)
             throws Throwable {
         for (final Movimentacao mov : processoMovimentacao.getMovimentacoes()) {
-            if (mov.getOrigem().getTipo().equals(OrigemDestinoEnum.VEICULO)) {
+            if (mov.getOrigem().getTipo().equals(VEICULO)) {
                 final OrigemVeiculo origem = (OrigemVeiculo) mov.getOrigem();
                 veiculoDao.removePneuVeiculo(
                         conn,
@@ -330,13 +415,12 @@ public final class MovimentacaoDaoImpl extends DatabaseConnection implements Mov
 
     private void insertOrigem(@NotNull final Connection conn,
                               @NotNull final PneuDao pneuDao,
-                              @NotNull final VeiculoDao veiculoDao,
                               @NotNull final PneuServicoRealizadoDao pneuServicoRealizadoDao,
                               @NotNull final Long codUnidade,
                               @NotNull final Movimentacao movimentacao) throws Throwable {
         switch (movimentacao.getOrigem().getTipo()) {
             case VEICULO:
-                insertMovimentacaoOrigemVeiculo(conn, veiculoDao, codUnidade, movimentacao);
+                insertMovimentacaoOrigemVeiculo(conn, codUnidade, movimentacao);
                 break;
             case ESTOQUE:
                 insertMovimentacaoOrigemEstoque(conn, codUnidade, movimentacao);
@@ -550,7 +634,6 @@ public final class MovimentacaoDaoImpl extends DatabaseConnection implements Mov
     }
 
     private void insertMovimentacaoOrigemVeiculo(@NotNull final Connection conn,
-                                                 @NotNull final VeiculoDao veiculoDao,
                                                  @NotNull final Long codUnidade,
                                                  @NotNull final Movimentacao movimentacao) throws Throwable {
         PreparedStatement stmt = null;
@@ -561,20 +644,14 @@ public final class MovimentacaoDaoImpl extends DatabaseConnection implements Mov
                                             "f_tipo_origem => ?, " +
                                             "f_cod_movimentacao => ?, " +
                                             "f_cod_veiculo => ?," +
-                                            "f_km_atual => ?, " +
                                             "f_posicao_prolog => ?)}");
             stmt.setLong(1, movimentacao.getPneu().getCodigo());
             stmt.setLong(2, codUnidade);
             stmt.setString(3, movimentacao.getOrigem().getTipo().asString());
             stmt.setLong(4, movimentacao.getCodigo());
             final OrigemVeiculo origemVeiculo = (OrigemVeiculo) movimentacao.getOrigem();
-            veiculoDao.updateKmByPlaca(
-                    origemVeiculo.getVeiculo().getPlaca(),
-                    origemVeiculo.getVeiculo().getKmAtual(),
-                    conn);
             stmt.setLong(5, origemVeiculo.getVeiculo().getCodigo());
-            stmt.setLong(6, origemVeiculo.getVeiculo().getKmAtual());
-            stmt.setInt(7, origemVeiculo.getPosicaoOrigemPneu());
+            stmt.setInt(6, origemVeiculo.getPosicaoOrigemPneu());
             stmt.execute();
         } finally {
             close(stmt);
@@ -593,24 +670,17 @@ public final class MovimentacaoDaoImpl extends DatabaseConnection implements Mov
                 destinoVeiculo.getVeiculo().getPlaca(),
                 movimentacao.getPneu().getCodigo(),
                 destinoVeiculo.getPosicaoDestinoPneu());
-        veiculoDao.updateKmByPlaca(
-                destinoVeiculo.getVeiculo().getPlaca(),
-                destinoVeiculo.getVeiculo().getKmAtual(),
-                conn);
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareCall("{call func_movimentacao_insert_movimentacao_veiculo_destino(" +
                                             "f_cod_movimentacao => ?, " +
                                             "f_tipo_destino => ?, " +
                                             "f_cod_veiculo => ?," +
-                                            "f_km_atual => ?, " +
                                             "f_posicao_prolog => ?)}");
-
             stmt.setLong(1, movimentacao.getCodigo());
             stmt.setString(2, destinoVeiculo.getTipo().asString());
             stmt.setLong(3, destinoVeiculo.getVeiculo().getCodigo());
-            stmt.setLong(4, destinoVeiculo.getVeiculo().getKmAtual());
-            stmt.setInt(5, destinoVeiculo.getPosicaoDestinoPneu());
+            stmt.setInt(4, destinoVeiculo.getPosicaoDestinoPneu());
             stmt.execute();
         } finally {
             close(stmt);
@@ -686,7 +756,7 @@ public final class MovimentacaoDaoImpl extends DatabaseConnection implements Mov
                                     @NotNull final Long codProcessoMovimentacao,
                                     @NotNull final Movimentacao movimentacao,
                                     @NotNull final OffsetDateTime dataHoraMovimentacao) throws Throwable {
-        if (movimentacao.isFromOrigemToDestino(OrigemDestinoEnum.VEICULO, OrigemDestinoEnum.VEICULO)) {
+        if (movimentacao.isFromOrigemToDestino(VEICULO, VEICULO)) {
             Log.d(TAG, "O pneu " + movimentacao.getPneu().getCodigo()
                     + " está sendo movido dentro do mesmo veículo, não é preciso fechar seus serviços");
             return;
@@ -698,15 +768,16 @@ public final class MovimentacaoDaoImpl extends DatabaseConnection implements Mov
                 codPneu,
                 conn);
         if (qtdServicosEmAbertoPneu > 0) {
-            if (movimentacao.isFrom(OrigemDestinoEnum.VEICULO)) {
+            if (movimentacao.isFrom(VEICULO)) {
                 final OrigemVeiculo origemVeiculo = (OrigemVeiculo) movimentacao.getOrigem();
-                final int qtdServicosFechadosPneu = servicoDao.fecharAutomaticamenteServicosPneu(
+                final int qtdServicosFechadosPneu = servicoDao.fecharAutomaticamenteTodosServicosPneu(
                         conn,
                         codUnidade,
                         codPneu,
                         codProcessoMovimentacao,
                         dataHoraMovimentacao,
-                        origemVeiculo.getVeiculo().getKmAtual());
+                        origemVeiculo.getVeiculo().getKmAtual(),
+                        OrigemFechamentoAutomaticoEnum.MOVIMENTACAO);
 
                 if (qtdServicosEmAbertoPneu != qtdServicosFechadosPneu) {
                     throw new IllegalStateException("Erro ao fechar os serviços do pneu: " + codPneu + ". Deveriam " +

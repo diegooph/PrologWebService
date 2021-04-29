@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.autenticacao.AutenticacaoService;
 import br.com.zalf.prolog.webservice.commons.network.PrologCustomHeaders;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.StringUtils;
+import br.com.zalf.prolog.webservice.errorhandling.ErrorReportSystem;
 import br.com.zalf.prolog.webservice.errorhandling.exception.MultiAuthorizationHeadersException;
 import br.com.zalf.prolog.webservice.integracao.BaseIntegracaoService;
 import br.com.zalf.prolog.webservice.interceptors.ApiExposed;
@@ -91,7 +92,7 @@ public final class AuthenticationFilter implements ContainerRequestFilter {
                     methodAnnot.permissions(),
                     methodAnnot.needsToHaveAllPermissions(),
                     methodAnnot.considerOnlyActiveUsers());
-            requestContext.setSecurityContext(new PrologSecurityContext(colaboradorAutenticado));
+            injectColaboradorAutenticado(requestContext, colaboradorAutenticado);
             // Retornamos agora para impedir a verificação por classe. A por método tem prioridade, e, se existir,
             // apenas ela deve ser considerada.
             return;
@@ -105,8 +106,24 @@ public final class AuthenticationFilter implements ContainerRequestFilter {
                     classAnnot.permissions(),
                     classAnnot.needsToHaveAllPermissions(),
                     classAnnot.considerOnlyActiveUsers());
-            requestContext.setSecurityContext(new PrologSecurityContext(colaboradorAutenticado));
+            injectColaboradorAutenticado(requestContext, colaboradorAutenticado);
         }
+    }
+
+    private void injectColaboradorAutenticado(@NotNull final ContainerRequestContext requestContext,
+                                              @NotNull final ColaboradorAutenticado colaboradorAutenticado) {
+        addColaboradorAutenticadoOnErrorReportSystem(colaboradorAutenticado);
+        addColaboradorAutenticadoOnRequestScope(requestContext, colaboradorAutenticado);
+    }
+
+    private void addColaboradorAutenticadoOnErrorReportSystem(
+            @NotNull final ColaboradorAutenticado colaboradorAutenticado) {
+        ErrorReportSystem.addCodColaborador(colaboradorAutenticado.getCodigo());
+    }
+
+    private void addColaboradorAutenticadoOnRequestScope(final @NotNull ContainerRequestContext requestContext,
+                                                         final @NotNull ColaboradorAutenticado colaboradorAutenticado) {
+        requestContext.setSecurityContext(new PrologSecurityContext(colaboradorAutenticado));
     }
 
     private void ensureCorrectAuthType(@NotNull final AuthType[] permitedAuthTypes,

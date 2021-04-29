@@ -8,6 +8,7 @@ import br.com.zalf.prolog.webservice.commons.util.database.SqlType;
 import br.com.zalf.prolog.webservice.commons.util.database.StatementUtils;
 import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
+import br.com.zalf.prolog.webservice.errorhandling.sql.ServerSideErrorException;
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
 import br.com.zalf.prolog.webservice.frota.checklist.model.insercao.ChecklistInsercao;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.InfosAlternativaAberturaOrdemServico;
@@ -19,15 +20,13 @@ import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resoluca
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.HolderResolucaoOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverItemOrdemServico;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.resolucao.ResolverMultiplosItensOs;
-import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoDao;
+import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoBackwardHelper;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.simmetrics.metrics.StringMetrics;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Types;
+import java.sql.*;
 import java.time.Clock;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
@@ -58,7 +57,7 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
                         conn,
                         checklist.getCodModelo(),
                         checklist.getCodVersaoModeloChecklist(),
-                        checklist.getPlacaVeiculo());
+                        checklist.getCodVeiculo());
         final TipoOutrosSimilarityFinder similarityFinder = new TipoOutrosSimilarityFinder(StringMetrics.jaro());
 
         return new OrdemServicoProcessor(
@@ -72,7 +71,7 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
     @Override
     public List<OrdemServicoListagem> getOrdemServicoListagem(@NotNull final Long codUnidade,
                                                               @Nullable final Long codTipoVeiculo,
-                                                              @Nullable final String placa,
+                                                              @Nullable final Long codVeiculo,
                                                               @Nullable final StatusOrdemServico statusOrdemServico,
                                                               final int limit,
                                                               final int offset) throws Throwable {
@@ -84,7 +83,7 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
             stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_OS_GET_OS_LISTAGEM(?, ?, ?, ?, ?, ?)");
             stmt.setLong(1, codUnidade);
             bindValueOrNull(stmt, 2, codTipoVeiculo, SqlType.BIGINT);
-            bindValueOrNull(stmt, 3, placa, SqlType.TEXT);
+            bindValueOrNull(stmt, 3, codVeiculo, SqlType.BIGINT);
             if (statusOrdemServico != null) {
                 stmt.setString(4, statusOrdemServico.asString());
             } else {
@@ -108,7 +107,7 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
     public List<QtdItensPlacaListagem> getQtdItensPlacaListagem(
             @NotNull final Long codUnidade,
             @Nullable final Long codTipoVeiculo,
-            @Nullable final String placaVeiculo,
+            @Nullable final Long codVeiculo,
             @Nullable final StatusItemOrdemServico statusItens,
             final int limit,
             final int offset) throws Throwable {
@@ -121,7 +120,7 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
                     "SELECT * FROM FUNC_CHECKLIST_OS_GET_QTD_ITENS_PLACA_LISTAGEM(?, ?, ?, ?, ?, ?)");
             stmt.setLong(1, codUnidade);
             bindValueOrNull(stmt, 2, codTipoVeiculo, SqlType.BIGINT);
-            bindValueOrNull(stmt, 3, placaVeiculo, SqlType.TEXT);
+            bindValueOrNull(stmt, 3, codVeiculo, SqlType.BIGINT);
             if (statusItens != null) {
                 stmt.setString(4, statusItens.asString());
             } else {
@@ -168,7 +167,7 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
     @NotNull
     @Override
     public HolderResolucaoItensOrdemServico getHolderResolucaoItensOrdemServico(
-            @NotNull final String placaVeiculo,
+            @NotNull final Long codVeiculo,
             @Nullable final PrioridadeAlternativa prioridade,
             @Nullable final StatusItemOrdemServico statusItens,
             final int limit,
@@ -183,7 +182,7 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
             stmt.setNull(1, SqlType.BIGINT.asIntTypeJava());
             // Código da Ordem de Serviço.
             stmt.setNull(2, SqlType.BIGINT.asIntTypeJava());
-            stmt.setString(3, placaVeiculo);
+            stmt.setLong(3, codVeiculo);
             if (prioridade != null) {
                 stmt.setString(4, prioridade.asString());
             } else {
@@ -213,7 +212,7 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
     public HolderResolucaoItensOrdemServico getHolderResolucaoMultiplosItens(
             @Nullable final Long codUnidade,
             @Nullable final Long codOrdemServico,
-            @Nullable final String placaVeiculo,
+            @Nullable final Long codVeiculo,
             @Nullable final StatusItemOrdemServico statusItens) throws Throwable {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -223,7 +222,7 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
             stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_OS_GET_ITENS_RESOLUCAO(?, ?, ?, ?, ?, ?, ?, ?)");
             bindValueOrNull(stmt, 1, codUnidade, SqlType.BIGINT);
             bindValueOrNull(stmt, 2, codOrdemServico, SqlType.BIGINT);
-            bindValueOrNull(stmt, 3, placaVeiculo, SqlType.TEXT);
+            bindValueOrNull(stmt, 3, codVeiculo, SqlType.BIGINT);
             stmt.setNull(4, SqlType.TEXT.asIntTypeJava());
             bindValueOrNull(stmt, 5, statusItens != null ? statusItens.asString() : null, SqlType.VARCHAR);
             stmt.setObject(6, OffsetDateTime.now(Clock.systemUTC()));
@@ -253,30 +252,32 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
         try {
             conn = getConnection();
             conn.setAutoCommit(false);
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_OS_RESOLVER_ITENS(" +
-                    "F_COD_UNIDADE := ?," +
-                    "F_COD_ITENS := ?," +
-                    "F_CPF := ?," +
-                    "F_TEMPO_REALIZACAO := ?," +
-                    "F_KM := ?," +
-                    "F_STATUS_RESOLUCAO := ?," +
-                    "F_DATA_HORA_CONSERTO := ?," +
-                    "F_DATA_HORA_INICIO_RESOLUCAO := ?," +
-                    "F_DATA_HORA_FIM_RESOLUCAO := ?," +
-                    "F_FEEDBACK_CONSERTO := ?);");
+            stmt = conn.prepareStatement("select * from func_checklist_os_resolver_itens(" +
+                                                 "f_cod_unidade => ?," +
+                                                 "f_cod_veiculo => ?," +
+                                                 "f_cod_itens => ?," +
+                                                 "f_cpf => ?," +
+                                                 "f_tempo_realizacao => ?," +
+                                                 "f_km => ?," +
+                                                 "f_status_resolucao => ?," +
+                                                 "f_data_hora_conserto => ?," +
+                                                 "f_data_hora_inicio_resolucao => ?," +
+                                                 "f_data_hora_fim_resolucao => ?," +
+                                                 "f_feedback_conserto => ?);");
             final OffsetDateTime now = Now.getOffsetDateTimeUtc();
             final ZoneId zoneId =
                     TimeZoneManager.getZoneIdForCodUnidade(itensResolucao.getCodUnidadeOrdemServico(), conn);
             stmt.setLong(1, itensResolucao.getCodUnidadeOrdemServico());
-            stmt.setArray(2, PostgresUtils.listToArray(conn, SqlType.BIGINT, itensResolucao.getCodigosItens()));
-            stmt.setLong(3, itensResolucao.getCpfColaboradorResolucao());
-            stmt.setLong(4, itensResolucao.getDuracaoResolucaoMillis());
-            stmt.setLong(5, itensResolucao.getKmColetadoVeiculo());
-            stmt.setString(6, StatusItemOrdemServico.RESOLVIDO.asString());
-            stmt.setObject(7, now);
-            stmt.setObject(8, itensResolucao.getDataHoraInicioResolucao().atZone(zoneId).toOffsetDateTime());
-            stmt.setObject(9, itensResolucao.getDataHoraFimResolucao().atZone(zoneId).toOffsetDateTime());
-            stmt.setString(10, StringUtils.trimToNull(itensResolucao.getFeedbackResolucao()));
+            stmt.setLong(2, getCodVeiculoOs(itensResolucao));
+            stmt.setArray(3, PostgresUtils.listToArray(conn, SqlType.BIGINT, itensResolucao.getCodigosItens()));
+            stmt.setLong(4, itensResolucao.getCpfColaboradorResolucao());
+            stmt.setLong(5, itensResolucao.getDuracaoResolucaoMillis());
+            stmt.setLong(6, itensResolucao.getKmColetadoVeiculo());
+            stmt.setString(7, StatusItemOrdemServico.RESOLVIDO.asString());
+            stmt.setObject(8, now);
+            stmt.setObject(9, itensResolucao.getDataHoraInicioResolucao().atZone(zoneId).toOffsetDateTime());
+            stmt.setObject(10, itensResolucao.getDataHoraFimResolucao().atZone(zoneId).toOffsetDateTime());
+            stmt.setString(11, StringUtils.trimToNull(itensResolucao.getFeedbackResolucao()));
             rSet = stmt.executeQuery();
             if (rSet.next() && rSet.getInt(1) == itensResolucao.getCodigosItens().size()) {
                 fechaOrdensServicosComBaseItens(
@@ -284,15 +285,10 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
                         itensResolucao.getCodUnidadeOrdemServico(),
                         itensResolucao.getCodigosItens(),
                         now);
-                final VeiculoDao veiculoDao = Injection.provideVeiculoDao();
-                veiculoDao.updateKmByPlaca(
-                        itensResolucao.getPlacaVeiculo(),
-                        itensResolucao.getKmColetadoVeiculo(),
-                        conn);
                 conn.commit();
             } else {
                 throw new Throwable("Erro ao marcar os itens como resolvidos: "
-                        + itensResolucao.getCodigosItens());
+                                            + itensResolucao.getCodigosItens());
             }
         } catch (final Throwable t) {
             if (conn != null) {
@@ -340,17 +336,17 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
             @NotNull final Connection conn,
             @NotNull final Long codModelo,
             @NotNull final Long codVersaoModelo,
-            @NotNull final String placaVeiculo) throws Throwable {
+            @NotNull final Long codVeiculo) throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             stmt = conn.prepareStatement("SELECT * FROM FUNC_CHECKLIST_OS_ALTERNATIVAS_ABERTURA_OS(" +
-                    "F_COD_MODELO_CHECKLIST        := ?, " +
-                    "F_COD_VERSAO_MODELO_CHECKLIST := ?, " +
-                    "F_PLACA_VEICULO               := ?)");
+                                                 "F_COD_MODELO_CHECKLIST        := ?, " +
+                                                 "F_COD_VERSAO_MODELO_CHECKLIST := ?, " +
+                                                 "F_COD_VEICULO               := ?)");
             stmt.setLong(1, codModelo);
             stmt.setLong(2, codVersaoModelo);
-            stmt.setString(3, placaVeiculo);
+            stmt.setLong(3, codVeiculo);
             rSet = stmt.executeQuery();
             final Map<Long, List<InfosAlternativaAberturaOrdemServico>> map = new HashMap<>();
             while (rSet.next()) {
@@ -374,6 +370,31 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
         }
     }
 
+    @NotNull
+    private Long getCodVeiculoOs(@NotNull final ResolverMultiplosItensOs itensResolucao) throws SQLException {
+        return VeiculoBackwardHelper.getCodVeiculoByPlaca(
+                getColaboradorOs(itensResolucao.getCpfColaboradorResolucao()).getCodigo(),
+                itensResolucao.getPlacaVeiculo());
+    }
+
+    @NotNull
+    private Colaborador getColaboradorOs(@NotNull final Long cpfColaborador) throws SQLException {
+        final Colaborador colaboradorOs = Injection.provideColaboradorDao().getByCpf(cpfColaborador, true);
+        if (colaboradorNotFound(colaboradorOs)) {
+            throw new ServerSideErrorException("Houve um erro ao buscar o colaborador.",
+                                               "O colaborador não existe ou está inativo.",
+                                               "Ao realizar a busca do colaborador através do cpf da O.S, ele não foi" +
+                                                       " encontrado. Possívelmente o colaborador está inativo ou " +
+                                                       "então não existe.",
+                                               true);
+        }
+        return colaboradorOs;
+    }
+
+    private boolean colaboradorNotFound(final Colaborador colaboradorOs) {
+        return colaboradorOs == null;
+    }
+
     private void fechaOrdensServicosComBaseItens(@NotNull final Connection conn,
                                                  @NotNull final Long codUnidade,
                                                  @NotNull final List<Long> codigosItens,
@@ -383,8 +404,8 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
         try {
             // Primeiro recuperamos os códigos de O.S. baseado nos códigos dos itens.
             stmt = conn.prepareStatement("SELECT DISTINCT COD_OS " +
-                    "FROM CHECKLIST_ORDEM_SERVICO_ITENS COSI " +
-                    "WHERE COSI.CODIGO = ANY (?);");
+                                                 "FROM CHECKLIST_ORDEM_SERVICO_ITENS COSI " +
+                                                 "WHERE COSI.CODIGO = ANY (?);");
             stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codigosItens));
             rSet = stmt.executeQuery();
             final List<Long> codigosOrdensServicos = new ArrayList<>(codigosItens.size());
@@ -399,12 +420,13 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
             // Depois podemos verificar se as Ordens de Serviços podem ser fechadas (caso não possuam mais itens
             // pendentes).
             stmt = conn.prepareStatement("UPDATE CHECKLIST_ORDEM_SERVICO " +
-                    "SET STATUS = ?, DATA_HORA_FECHAMENTO = ? " +
-                    "WHERE COD_UNIDADE = ? " +
-                    "      AND CODIGO = ? " +
-                    "      AND NOT EXISTS((SELECT COSI.CODIGO " +
-                    "           FROM CHECKLIST_ORDEM_SERVICO_ITENS COSI " +
-                    "           WHERE COSI.COD_UNIDADE = ? AND COSI.COD_OS = ? AND COSI.STATUS_RESOLUCAO = ?));");
+                                                 "SET STATUS = ?, DATA_HORA_FECHAMENTO = ? " +
+                                                 "WHERE COD_UNIDADE = ? " +
+                                                 "      AND CODIGO = ? " +
+                                                 "      AND NOT EXISTS((SELECT COSI.CODIGO " +
+                                                 "           FROM CHECKLIST_ORDEM_SERVICO_ITENS COSI " +
+                                                 "           WHERE COSI.COD_UNIDADE = ? AND COSI.COD_OS = ? AND COSI" +
+                                                 ".STATUS_RESOLUCAO = ?));");
             for (final Long codOs : codigosOrdensServicos) {
                 stmt.setString(1, StatusOrdemServico.FECHADA.asString());
                 stmt.setObject(2, now);
@@ -420,5 +442,4 @@ public final class OrdemServicoDaoImpl extends DatabaseConnection implements Ord
             close(stmt, rSet);
         }
     }
-
 }

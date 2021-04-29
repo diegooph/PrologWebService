@@ -1,0 +1,27 @@
+CREATE OR REPLACE FUNCTION SUPORTE.FUNC_COLABORADOR_BUSCA_VINCULAR_PERMISSAO(F_COD_EMPRESA BIGINT)
+    RETURNS TABLE
+            (
+                FUNCIONALIDADE  TEXT,
+                PERMISSAO       TEXT,
+                COD_EMPRESA     BIGINT,
+                EMPRESA         TEXT,
+                COD_UNIDADE     BIGINT,
+                UNIDADE         TEXT,
+                COD_COLABORADOR BIGINT,
+                COLABORADOR     TEXT,
+                CPF             BIGINT,
+                DATA_NASCIMENTO DATE,
+                CARGO           TEXT
+            )
+    LANGUAGE PLPGSQL
+AS
+$$
+DECLARE
+    F_COD_FUNCAO BIGINT := 329;
+BEGIN
+    PERFORM SUPORTE.FUNC_HISTORICO_SALVA_EXECUCAO();
+    RETURN QUERY
+        SELECT *
+        FROM SUPORTE.FUNC_COLABORADOR_BUSCA_POR_PERMISSAO_EMPRESA(F_COD_EMPRESA, F_COD_FUNCAO);
+END;
+$$;

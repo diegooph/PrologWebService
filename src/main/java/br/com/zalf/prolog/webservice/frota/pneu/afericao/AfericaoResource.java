@@ -3,15 +3,17 @@ package br.com.zalf.prolog.webservice.frota.pneu.afericao;
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
-import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Optional;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Platform;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Required;
 import br.com.zalf.prolog.webservice.commons.network.metadata.UsedBy;
+import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.VersaoAppBloqueadaException;
 import br.com.zalf.prolog.webservice.frota.pneu._model.Restricao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.*;
+import br.com.zalf.prolog.webservice.frota.veiculo.VeiculoBackwardHelper;
+import br.com.zalf.prolog.webservice.interceptors.auth.ColaboradorAutenticado;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.AppVersionCodeHandler;
@@ -20,6 +22,8 @@ import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.VersionNotP
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import org.jetbrains.annotations.NotNull;
 
+import javax.inject.Inject;
+import javax.inject.Provider;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.Collections;
@@ -30,7 +34,7 @@ import java.util.List;
  *
  * @author Luiz Felipe (https://github.com/luizfp)
  */
-@Path("/afericoes")
+@Path("/v2/afericoes")
 @ConsoleDebugLog
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
@@ -42,6 +46,9 @@ public class AfericaoResource {
 
     @NotNull
     private final AfericaoService service = new AfericaoService();
+
+    @Inject
+    private Provider<ColaboradorAutenticado> colaboradorAutenticadoProvider;
 
     @POST
     @Secured(permissions = {
@@ -91,6 +98,17 @@ public class AfericaoResource {
         return service.getPneusAfericaoAvulsa(userToken, codUnidade);
     }
 
+    /**
+     * @deprecated Este método foi depreciado, visto que, há uma versão com uma abstração usando
+     * o body da requisição
+     * para receber os dados:
+     * <br>
+     * {@link #getNovaAfericaoPlaca(String, Long, Long, String, TipoMedicaoColetadaAfericao)}
+     * getNovaAfericaoPlaca(afericaoBuscaFiltro, userToken)}
+     * <br>
+     * Porém há sistemas dependentes desse endpoint ainda (WS, Android).
+     */
+    @Deprecated
     @GET
     @Path("/unidades/{codUnidade}/nova-afericao-placa/{placaVeiculo}")
     @Secured(permissions = Pilares.Frota.Afericao.REALIZAR_AFERICAO_PLACA)
@@ -100,7 +118,29 @@ public class AfericaoResource {
             @PathParam("codUnidade") @Required final Long codUnidade,
             @PathParam("placaVeiculo") @Required final String placa,
             @QueryParam("tipoAfericao") @Required final String tipoAfericao) throws ProLogException {
-        return service.getNovaAfericaoPlaca(userToken, codUnidade, placa, tipoAfericao);
+
+        final Long codigoColaborador = this.colaboradorAutenticadoProvider.get().getCodigo();
+        final Long codigoVeiculo = VeiculoBackwardHelper.getCodVeiculoByPlaca(codigoColaborador, placa);
+        final TipoMedicaoColetadaAfericao tipoAfericaoEnum = TipoMedicaoColetadaAfericao.fromString(tipoAfericao);
+        final AfericaoBuscaFiltro afericaoBusca =
+                AfericaoBuscaFiltro.of(codUnidade, codigoVeiculo, placa, tipoAfericaoEnum);
+        return service.getNovaAfericaoPlaca(afericaoBusca, userToken);
+    }
+
+    @GET
+    @Path("/nova-afericao-placa")
+    @Secured(permissions = Pilares.Frota.Afericao.REALIZAR_AFERICAO_PLACA)
+    @UsedBy(platforms = Platform.ANDROID)
+    public NovaAfericaoPlaca getNovaAfericaoPlaca(@HeaderParam("Authorization") @Required final String userToken,
+                                                  @QueryParam("codUnidade") @Required final Long codUnidade,
+                                                  @QueryParam("codVeiculo") @Required final Long codVeiculo,
+                                                  @QueryParam("placaVeiculo") @Required final String placaVeiculo,
+                                                  @QueryParam("tipoAfericao") @Required final TipoMedicaoColetadaAfericao tipoAfericao)
+            throws ProLogException {
+        final TipoMedicaoColetadaAfericao tipoAfericaoEnum = tipoAfericao;
+        final AfericaoBuscaFiltro afericaoBusca =
+                AfericaoBuscaFiltro.of(codUnidade, codVeiculo, placaVeiculo, tipoAfericaoEnum);
+        return service.getNovaAfericaoPlaca(afericaoBusca, userToken);
     }
 
     @GET
@@ -115,6 +155,13 @@ public class AfericaoResource {
         return service.getNovaAfericaoAvulsa(userToken, codUnidade, codPneu, tipoAfericao);
     }
 
+    /**
+     * @deprecated <p>
+     * Há nova versão em outra classe.
+     * Segue método referencia: <br>
+     * {@link br.com.zalf.prolog.webservice.frota.pneu.afericao.v3.AfericaoV3Resource#getAfericoesPlacas}
+     * </p>
+     */
     @GET
     @Path("/unidades/{codUnidade}/tipos-veiculos/{codTipoVeiculo}/placas/{placaVeiculo}")
     @Secured(permissions = {
@@ -123,6 +170,7 @@ public class AfericaoResource {
             Pilares.Frota.OrdemServico.Pneu.VISUALIZAR,
             Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
     @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
+    @Deprecated
     public List<AfericaoPlaca> getAfericoesPlacas(
             @PathParam("codUnidade") final Long codUnidade,
             @PathParam("codTipoVeiculo") final String codTipoVeiculo,
@@ -143,6 +191,13 @@ public class AfericaoResource {
                 userToken);
     }
 
+    /**
+     * @deprecated <p>
+     * Há nova versão em outra classe.
+     * Segue método referencia: <br>
+     * {@link br.com.zalf.prolog.webservice.frota.pneu.afericao.v3.AfericaoV3Resource#getAfericoesAvulsas}
+     * </p>
+     */
     @GET
     @Path("/unidades/{codUnidade}/avulsas")
     @Secured(permissions = {
@@ -151,6 +206,7 @@ public class AfericaoResource {
             Pilares.Frota.OrdemServico.Pneu.VISUALIZAR,
             Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
     @UsedBy(platforms = {Platform.ANDROID, Platform.WEBSITE})
+    @Deprecated
     public List<AfericaoAvulsa> getAfericoesAvulsas(
             @PathParam("codUnidade") final Long codUnidade,
             @QueryParam("dataInicial") final String dataInicial,
@@ -160,12 +216,20 @@ public class AfericaoResource {
         return service.getAfericoesAvulsas(codUnidade, dataInicial, dataFinal, limit, offset);
     }
 
+    /**
+     * @deprecated <p>
+     * Há nova versão em outra classe.
+     * Segue método referencia: <br>
+     * {@link br.com.zalf.prolog.webservice.frota.pneu.afericao.v3.AfericaoV3Resource#getAfericoesAvulsas}
+     * </p>
+     */
     @GET
     @Path("/unidades/{codUnidade}/avulsas-report")
     @Secured(permissions = {
             Pilares.Frota.Afericao.REALIZAR_AFERICAO_PNEU_AVULSO,
             Pilares.Frota.Afericao.VISUALIZAR_TODAS_AFERICOES})
     @UsedBy(platforms = Platform.ANDROID)
+    @Deprecated
     public Report getAfericoesAvulsas(
             @PathParam("codUnidade") @Required final Long codUnidade,
             @QueryParam("codColaborador") @Optional final Long codColaborador,

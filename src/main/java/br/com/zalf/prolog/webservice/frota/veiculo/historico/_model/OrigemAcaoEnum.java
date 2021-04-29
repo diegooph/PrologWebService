@@ -3,6 +3,8 @@ package br.com.zalf.prolog.webservice.frota.veiculo.historico._model;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.stream.Stream;
+
 /**
  * Created on 2020-09-14
  *
@@ -15,9 +17,14 @@ public enum OrigemAcaoEnum {
     API("API"),
 
     /**
-     * Ação com origem no próprio sistema do Prolog, seja via web ou app.
+     * Ação com origem no próprio sistema do Prolog via web.
      */
-    PROLOG("PROLOG"),
+    PROLOG_WEB("PROLOG_WEB"),
+
+    /**
+     * Ação com origem no próprio sistema do Prolog via app android.
+     */
+    PROLOG_ANDROID("PROLOG_ANDROID"),
 
     /**
      * Ação com origem no sistema interno do Prolog. Usado para auxiliar em demandas de suporte e implantação.
@@ -37,15 +44,11 @@ public enum OrigemAcaoEnum {
     }
 
     @NotNull
-    public static OrigemAcaoEnum fromString(@Nullable final String text) throws IllegalArgumentException {
-        if (text != null) {
-            for (final OrigemAcaoEnum origemAcaoEnum : OrigemAcaoEnum.values()) {
-                if (text.equalsIgnoreCase(origemAcaoEnum.asString())) {
-                    return origemAcaoEnum;
-                }
-            }
-        }
-        throw new IllegalArgumentException("Nenhuma origem encontrada para a String: " + text);
+    public static OrigemAcaoEnum fromString(@NotNull final String text) throws IllegalArgumentException {
+        return Stream.of(OrigemAcaoEnum.values())
+                .filter(origemAcao -> origemAcao.stringRepresentation.equalsIgnoreCase(text))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Nenhuma origem encontrada para a String: " + text));
     }
 
     @Override

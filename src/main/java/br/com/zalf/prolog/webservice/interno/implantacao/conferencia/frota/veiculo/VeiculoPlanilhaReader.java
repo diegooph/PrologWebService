@@ -6,13 +6,14 @@ import br.com.zalf.prolog.webservice.interno.implantacao.conferencia.frota.veicu
 import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvParserSettings;
 import org.apache.commons.io.FilenameUtils;
+import org.jetbrains.annotations.NotNull;
 
-import javax.validation.constraints.NotNull;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created on 24/07/19.
@@ -41,22 +42,25 @@ public final class VeiculoPlanilhaReader {
         final CsvParserSettings settings = new CsvParserSettings();
         settings.setDelimiterDetectionEnabled(true, ',', ';');
         settings.setHeaderExtractionEnabled(true);
-        settings.setNumberOfRowsToSkip(13);
+        settings.setNumberOfRowsToSkip(14);
         final CsvParser parser = new CsvParser(settings);
         final List<String[]> rows = parser.parseAll(file);
-        final List<VeiculoPlanilha> veiculoPlanilha = new ArrayList<>();
-        for (final String[] row : rows) {
-            final VeiculoPlanilha item = read(row);
-            if (item != null) {
-                veiculoPlanilha.add(item);
+        final List<VeiculoPlanilha> veiculos = new ArrayList<>();
+        for (int i = 0; i < rows.size(); i++) {
+            final String[] row = rows.get(i);
+            if (row != null) {
+                read(row).ifPresent(veiculos::add);
+            } else {
+                throw new IllegalStateException("Linha " + i + " nula!");
             }
         }
-        return veiculoPlanilha;
+        return veiculos;
     }
 
-    private static VeiculoPlanilha read(@NotNull final String[] linha) {
-        if (linha[1].isEmpty()) {
-            return null;
+    @NotNull
+    private static Optional<VeiculoPlanilha> read(@NotNull final String[] linha) {
+        if (StringUtils.isNullOrEmpty(linha[1])) {
+            return Optional.empty();
         }
         final VeiculoPlanilha item = new VeiculoPlanilha();
         // PLACA.
@@ -85,6 +89,9 @@ public final class VeiculoPlanilhaReader {
         }
         // IDENTIFICADOR FROTA.
         item.setIdentificadorFrota(linha[7]);
-        return item;
+
+        // POSSUI HUBODOMETRO.
+        item.setPossuiHubodometro(linha[8]);
+        return Optional.of(item);
     }
 }
