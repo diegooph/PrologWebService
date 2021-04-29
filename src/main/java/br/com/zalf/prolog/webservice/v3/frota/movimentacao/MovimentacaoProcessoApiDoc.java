@@ -36,9 +36,9 @@ public interface MovimentacaoProcessoApiDoc {
             @ApiParam(value = "Um código de veículo no qual a movimentação ocorreu.") @Optional final Long codVeiculo,
             @ApiParam(value = "Um código de pneu no qual a movimentação ocorreu.") @Optional final Long codPneu,
             @ApiParam(value = "Uma data inicial para o filtro de faixa de quando as movimentações foram realizadas, " +
-                    "no formato dd-MM-yyyy.", required = true) @NotNull final String dataInicial,
+                    "no formato yyyy-MM-dd.", required = true) @NotNull final String dataInicial,
             @ApiParam(value = "Uma data final para o filtro de faixa de quando as movimentações foram realizadas, no " +
-                    "formato dd-MM-yyyy.", required = true) @NotNull final String dataFinal,
+                    "formato yyyy-MM-dd.", required = true) @NotNull final String dataFinal,
             @ApiParam(value = "Um limite de registros a serem retornados, no máximo 1000.",
                       required = true) @Max(value = 1000,
                                             message = "O limite pode ser no máximo 1000.") final int limit,
