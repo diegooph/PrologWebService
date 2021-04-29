@@ -11,6 +11,8 @@ import java.nio.file.Files;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
@@ -25,7 +27,7 @@ import java.util.stream.Collectors;
 public final class FileUtils {
 
     private static final String TAG = FileUtils.class.getSimpleName();
-
+    private static final long DAYS_TO_OUTDATED = 2;
     private static final String TEMP_DIR_REF = System.getProperty("java.io.tmpdir");
 
     private FileUtils() {
@@ -57,6 +59,14 @@ public final class FileUtils {
                 .filter(subDir -> DateUtils.isValid(subDir.getName(), "dd-MM-yyyy"))
                 .peek(subDir -> Log.i(TAG, "Diretório adquirido: " + subDir.getName()))
                 .collect(Collectors.toList());
+    }
+
+    public static boolean isOutdated(final File file) {
+        final FileTime fileTime = getFileTimeFromFile(file)
+                .orElseThrow();
+        final LocalDateTime fileTimeToTimestamp = LocalDateTime.ofInstant(fileTime.toInstant(),
+                                                                          ZoneId.systemDefault());
+        return DateUtils.isBeforeNDays(fileTimeToTimestamp, DAYS_TO_OUTDATED);
     }
 
     @NotNull
