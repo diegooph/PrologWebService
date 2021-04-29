@@ -41,7 +41,7 @@ public interface AfericaoResourceApiDoc {
                       required = true) @NotNull final String dataFinal,
             @ApiParam(value = "Um limite de registros a serem retornados.") final int limit,
             @ApiParam(value = "Um deslocamento para realizar a paginação.") final int offset,
-            @ApiParam(value = "Uma variavel para indicar se os valores de medidas devem ser " +
+            @ApiParam(value = "Uma variável para indicar se os valores de medidas devem ser " +
                     "retornados ou não") final boolean incluirMedidas);
 
     @ApiOperation(
@@ -65,6 +65,6 @@ public interface AfericaoResourceApiDoc {
                       required = true) @NotNull final String dataFinal,
             @ApiParam(value = "Um limite de registros a serem retornados.") final int limit,
             @ApiParam(value = "Um deslocamento para realizar a paginação.") final int offset,
-            @ApiParam(value = "Uma variavel para indicar se os valores de medidas devem ser " +
+            @ApiParam(value = "Uma variável para indicar se os valores de medidas devem ser " +
                     "retornados ou não") final boolean incluirMedidas);
 }
