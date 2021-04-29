@@ -62,16 +62,14 @@ create or replace function func_checklist_get_listagem(f_cod_unidades bigint[],
                 anexo_midia_alternativa_nok               text,
                 cod_auxiliar_alternativa                  text,
                 alternativa_selecionada                   boolean,
-                resposta_outros                           text,
-                tem_midia_pergunta_ok                     boolean,
-                tem_midia_alternativa_nok                 boolean
+                resposta_outros text
             )
     language plpgsql
 as
 $$
 begin
     return query
-        with checks as (
+        with checklists_filtrados as (
             select c.*
             from checklist c
             where c.cod_unidade = any (f_cod_unidades)
@@ -80,8 +78,8 @@ begin
             order by c.data_hora_sincronizacao desc
             limit f_limit offset f_offset
         ),
-             checks_resto as --!ver outro nome
-                 (select c.*,
+             dados_checklists as
+                 (select cf.*,
                          co.codigo                     as cod_colaborador,
                          co.cod_equipe                 as cod_equipe_colaborador,
                          co.nome :: text               as nome_colaborador,
@@ -103,108 +101,98 @@ begin
                          cap.anexo_midia               as anexo_midia_alternativa_nok,
                          cap.cod_auxiliar              as cod_auxiliar_alternativa,
                          crn.codigo is not null        as alternativa_selecionada,
-                         crn.resposta_outros           as resposta_outros,
-                         crmpo.uuid is not null        as tem_midia_pergunta_ok,
-                         crman.uuid is not null        as tem_midia_alternativa_nok
-                  from checks c
-                           left join checklist_perguntas cp on f_incluir_respostas
-                      and cp.cod_versao_checklist_modelo = c.cod_versao_checklist_modelo
-                      and cp.cod_unidade = any (f_cod_unidades)
-                           left join checklist_alternativa_pergunta cap on f_incluir_respostas
-                      and cap.cod_pergunta = cp.codigo
-                           left join checklist_respostas_nok crn on f_incluir_respostas
-                      and c.codigo = crn.cod_checklist
-                      and crn.cod_alternativa = cap.codigo
-                           left join checklist_respostas_midias_perguntas_ok crmpo on f_incluir_respostas
-                      and crmpo.cod_checklist = c.codigo
-                      and crmpo.cod_pergunta = cp.codigo
-                      and crn.codigo is null
-                           left join checklist_respostas_midias_alternativas_nok crman on f_incluir_respostas
-                      and crman.cod_checklist = c.codigo and crman.cod_alternativa = cap.codigo
-                      and crn.codigo is not null
+                         crn.resposta_outros           as resposta_outros
+                  from checklists_filtrados cf
+                           left join checklist_perguntas cp
+                                     on f_incluir_respostas
+                                         and cp.cod_versao_checklist_modelo = cf.cod_versao_checklist_modelo
+                                         and cp.cod_unidade = any (f_cod_unidades)
+                           left join checklist_alternativa_pergunta cap
+                                     on f_incluir_respostas and cap.cod_pergunta = cp.codigo
+                           left join checklist_respostas_nok crn
+                                     on f_incluir_respostas and cf.codigo = crn.cod_checklist
+                                         and crn.cod_alternativa = cap.codigo
                            join colaborador co
-                                on co.cpf = c.cpf_colaborador
+                                on co.cpf = cf.cpf_colaborador
                            join veiculo v
-                                on v.codigo = c.cod_veiculo
+                                on v.codigo = cf.cod_veiculo
                   where case when f_cod_colaborador is null then true else co.codigo = f_cod_colaborador end
                     and case when f_cod_tipo_veiculo is null then true else v.cod_tipo = f_cod_tipo_veiculo end
-                    and case when f_cod_veiculo is null then true else c.cod_veiculo = f_cod_veiculo end)
-        select cr.cod_unidade                                            as cod_unidade,
-               cr.codigo                                                 as cod_checklist,
-               cr.cod_checklist_modelo                                   as cod_checklist_modelo,
-               cr.cod_versao_checklist_modelo                            as cod_versao_checklist_modelo,
-               cr.cod_colaborador                                        as cod_colaborador,
-               cr.cpf_colaborador                                        as cpf_colaborador,
-               cr.nome_colaborador                                       as nome_colaborador,
-               cr.cod_veiculo                                            as cod_veiculo,
-               cr.placa ::text                                           as placa_veiculo,
-               cr.identificador_frota                                    as identificador_frota,
-               cr.km_veiculo                                             as km_veiculo_momento_realizacao,
-               f_if(cr.tipo = 'R', 'RETORNO'::text, 'SAIDA'::text)::text as tipo_checklist,
-               cr.data_hora                                              as data_hora_realizacao_utc,
-               cr.data_hora_realizacao_tz_aplicado                       as data_hora_realizacao_tz_aplicado,
-               cr.data_hora_importado_prolog                             as data_hora_importado_prolog_utc,
-               cr.data_hora_importado_prolog at time zone tz_unidade(cr.cod_unidade)
+                    and case when f_cod_veiculo is null then true else cf.cod_veiculo = f_cod_veiculo end)
+        select dc.cod_unidade                                            as cod_unidade,
+               dc.codigo                                                 as cod_checklist,
+               dc.cod_checklist_modelo                                   as cod_checklist_modelo,
+               dc.cod_versao_checklist_modelo                            as cod_versao_checklist_modelo,
+               dc.cod_colaborador                                        as cod_colaborador,
+               dc.cpf_colaborador                                        as cpf_colaborador,
+               dc.nome_colaborador                                       as nome_colaborador,
+               dc.cod_veiculo                                            as cod_veiculo,
+               dc.placa ::text                                           as placa_veiculo,
+               dc.identificador_frota                                    as identificador_frota,
+               dc.km_veiculo                                             as km_veiculo_momento_realizacao,
+               f_if(dc.tipo = 'R', 'RETORNO'::text, 'SAIDA'::text)::text as tipo_checklist,
+               dc.data_hora                                              as data_hora_realizacao_utc,
+               dc.data_hora_realizacao_tz_aplicado                       as data_hora_realizacao_tz_aplicado,
+               dc.data_hora_importado_prolog                             as data_hora_importado_prolog_utc,
+               dc.data_hora_importado_prolog at time zone tz_unidade(dc.cod_unidade)
                                                                          as data_hora_importado_prolog_tz_aplicado,
-               cr.tempo_realizacao                                       as duracao_realizacao_millis,
-               cr.observacao                                             as observacao_checklist,
-               cr.total_perguntas_ok                                     as total_perguntas_ok,
-               cr.total_perguntas_nok                                    as total_perguntas_nok,
-               cr.total_alternativas_ok                                  as total_alternativas_ok,
-               cr.total_alternativas_nok                                 as total_alternativas_nok,
-               cr.total_midias_perguntas_ok                              as total_midias_perguntas_ok,
-               cr.total_midias_alternativas_nok                          as total_midias_alternativas_nok,
+               dc.tempo_realizacao                                       as duracao_realizacao_millis,
+               dc.observacao                                             as observacao_checklist,
+               dc.total_perguntas_ok                                     as total_perguntas_ok,
+               dc.total_perguntas_nok                                    as total_perguntas_nok,
+               dc.total_alternativas_ok                                  as total_alternativas_ok,
+               dc.total_alternativas_nok                                 as total_alternativas_nok,
+               dc.total_midias_perguntas_ok                              as total_midias_perguntas_ok,
+               dc.total_midias_alternativas_nok                          as total_midias_alternativas_nok,
                (select count(*)
                 from checklist_respostas_nok crn
                          join checklist_alternativa_pergunta cap
                               on crn.cod_alternativa = cap.codigo
-                where crn.cod_checklist = cr.codigo
+                where crn.cod_checklist = dc.codigo
                   and cap.prioridade = 'BAIXA') :: smallint              as total_alternativas_nok_prioridade_baixa,
                (select count(*)
                 from checklist_respostas_nok crn
                          join checklist_alternativa_pergunta cap
                               on crn.cod_alternativa = cap.codigo
-                where crn.cod_checklist = cr.codigo
+                where crn.cod_checklist = dc.codigo
                   and cap.prioridade = 'ALTA') :: smallint               as total_alternativas_nok_prioridade_alta,
                (select count(*)
                 from checklist_respostas_nok crn
                          join checklist_alternativa_pergunta cap
                               on crn.cod_alternativa = cap.codigo
-                where crn.cod_checklist = cr.codigo
+                where crn.cod_checklist = dc.codigo
                   and cap.prioridade = 'CRITICA') :: smallint            as total_alternativas_nok_prioridade_critica,
-               cr.foi_offline                                            as foi_offline,
-               cr.data_hora_sincronizacao                                as data_hora_sincronizacao_utc,
-               cr.data_hora_sincronizacao at time zone tz_unidade(cr.cod_unidade)
+               dc.foi_offline                                            as foi_offline,
+               dc.data_hora_sincronizacao                                as data_hora_sincronizacao_utc,
+               dc.data_hora_sincronizacao at time zone tz_unidade(dc.cod_unidade)
                                                                          as data_hora_sincronizacao_tz_aplicado,
-               cr.fonte_data_hora_realizacao                             as fonte_data_hora,
-               cr.versao_app_momento_realizacao                          as versao_app_momento_realizacao,
-               cr.versao_app_momento_sincronizacao                       as versao_app_momento_sincronizacao,
-               cr.device_id                                              as device_id,
-               cr.device_imei                                            as device_imei,
-               cr.device_uptime_realizacao_millis                        as device_uptime_realizacao_millis,
-               cr.device_uptime_sincronizacao_millis                     as device_uptime_sincronizacao_millis,
-               cr.cod_pergunta                                           as cod_pergunta,
-               cr.cod_contexto_pergunta                                  as cod_contexto_pergunta,
-               cr.descricao_pergunta                                     as descricao_pergunta,
-               cr.ordem_pergunta                                         as ordem_pergunta,
-               cr.pergunta_single_choice                                 as pergunta_single_choice,
-               cr.anexo_midia_pergunta_ok                                as anexo_midia_pergunta_ok,
-               cr.cod_alternativa                                        as cod_alternativa,
-               cr.cod_contexto_alternativa                               as cod_contexto_alternativa,
-               cr.descricao_alternativa                                  as descricao_alternativa,
-               cr.ordem_alternativa                                      as ordem_alternativa,
-               cr.prioridade_alternativa                                 as prioridade_alternativa,
-               cr.alternativa_tipo_outros                                as alternativa_tipo_outros,
-               cr.deve_abrir_ordem_servico                               as deve_abrir_ordem_servico,
-               cr.anexo_midia_alternativa_nok                            as anexo_midia_alternativa_nok,
-               cr.cod_auxiliar_alternativa                               as cod_auxiliar_alternativa,
-               cr.alternativa_selecionada                                as alternativa_selecionada,
-               cr.resposta_outros                                        as resposta_outros,
-               cr.tem_midia_pergunta_ok                                  as tem_midia_pergunta_ok,
-               cr.tem_midia_alternativa_nok                              as tem_midia_alternativa_nok
-        from checks_resto cr
+               dc.fonte_data_hora_realizacao                             as fonte_data_hora,
+               dc.versao_app_momento_realizacao                          as versao_app_momento_realizacao,
+               dc.versao_app_momento_sincronizacao                       as versao_app_momento_sincronizacao,
+               dc.device_id                                              as device_id,
+               dc.device_imei                                            as device_imei,
+               dc.device_uptime_realizacao_millis                        as device_uptime_realizacao_millis,
+               dc.device_uptime_sincronizacao_millis                     as device_uptime_sincronizacao_millis,
+               dc.cod_pergunta                                           as cod_pergunta,
+               dc.cod_contexto_pergunta                                  as cod_contexto_pergunta,
+               dc.descricao_pergunta                                     as descricao_pergunta,
+               dc.ordem_pergunta                                         as ordem_pergunta,
+               dc.pergunta_single_choice                                 as pergunta_single_choice,
+               dc.anexo_midia_pergunta_ok                                as anexo_midia_pergunta_ok,
+               dc.cod_alternativa                                        as cod_alternativa,
+               dc.cod_contexto_alternativa                               as cod_contexto_alternativa,
+               dc.descricao_alternativa                                  as descricao_alternativa,
+               dc.ordem_alternativa                                      as ordem_alternativa,
+               dc.prioridade_alternativa                                 as prioridade_alternativa,
+               dc.alternativa_tipo_outros                                as alternativa_tipo_outros,
+               dc.deve_abrir_ordem_servico                               as deve_abrir_ordem_servico,
+               dc.anexo_midia_alternativa_nok                            as anexo_midia_alternativa_nok,
+               dc.cod_auxiliar_alternativa                               as cod_auxiliar_alternativa,
+               dc.alternativa_selecionada                                as alternativa_selecionada,
+               dc.resposta_outros                                        as resposta_outros
+        from dados_checklists dc
                  join equipe e
-                      on e.codigo = cr.cod_equipe_colaborador
-        order by cr.data_hora_sincronizacao desc;
+                      on e.codigo = dc.cod_equipe_colaborador
+        order by dc.data_hora_sincronizacao desc;
 end;
 $$;
