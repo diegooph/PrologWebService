@@ -12,8 +12,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -30,27 +28,24 @@ public class DeleteTempFileScheduler implements Scheduler {
     @Override
     @EveryTwoDaysAtTwoHours
     public void doWork() {
-        final List<File> allTempDirs = FileUtils.getAllCreatedTempDirs();
-        allTempDirs.stream()
-                .peek(dir -> {
-                    final String message = String.format("Iniciando execução do schedule para limpeza da pasta %s",
-                                                         dir.getName());
-                    Log.i(TAG, message);
-                })
-                .forEach(this::deleteFiles);
+        final File baseTempDir = FileUtils.getTempDir();
+        deleteFiles(baseTempDir);
     }
 
     private void deleteFiles(@NotNull final File dir) {
         Log.i(TAG, "Diretório analisado: " + dir.getAbsolutePath());
         final Path absolutePath = Paths.get(dir.toURI());
         try (final Stream<Path> walk = Files.walk(absolutePath)) {
-            final List<File> files = walk
-                    .filter(Files::isRegularFile)
+            final boolean allFillesDeleted = walk
                     .map(Path::toFile)
-                    .collect(Collectors.toList());
-            files.stream()
-                 .peek(file -> Log.i(TAG, "Arquivo à ser deletado: " + file.getName()))
-                 .forEach(File::delete);
+                    .filter(FileUtils::isOutdated)
+                    .peek(file -> Log.i(TAG, "Arquivo ou diretório à ser deletado: " + file.getName()))
+                    .allMatch(File::delete);
+            if (allFillesDeleted) {
+                Log.i(TAG, "Arquivos e diretórios temporários deletados com sucesso!");
+                return;
+            }
+            throw new IllegalStateException("Não foi possivel deletar todos os arquivos e diretórios!");
         } catch (final IOException exception) {
             Log.e(TAG, "Erro ao realizar deleção dos arquivos", exception);
         }
