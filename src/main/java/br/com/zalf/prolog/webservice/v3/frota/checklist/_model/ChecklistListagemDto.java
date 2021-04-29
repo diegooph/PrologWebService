@@ -17,7 +17,7 @@ import java.util.List;
  */
 @ApiModel(description = "Objeto com as informações de um checklist.")
 @Value(staticConstructor = "of")
-public class ChecklistListagemDto { //o que recebemos do banco
+public class ChecklistListagemDto {
     @NotNull
     Long codUnidade;
     @NotNull
@@ -49,15 +49,15 @@ public class ChecklistListagemDto { //o que recebemos do banco
     LocalDateTime dataHoraImportadoUtc;
     @Nullable
     LocalDateTime dataHoraImportadoTzAplicado;
-    long duracaoRealizacaoInMillis;
+    long tempoRealizacaoInMillis;
     @Nullable
     String observacaoChecklist;
     int totalPerguntasOk;
     int totalPerguntasNok;
     int totalAlternativasOk;
     int totalAlternativasNok;
-    Short totalMidiasPerguntasOk;
-    Short totalMidiasAlternativasNok;
+    int totalMidiasPerguntasOk;
+    int totalMidiasAlternativasNok;
     int totalNokBaixa;
     int totalNokAlta;
     int totalNokCritica;
@@ -78,8 +78,6 @@ public class ChecklistListagemDto { //o que recebemos do banco
     String deviceImei;
     long deviceUptimeRealizacaoMillis;
     long deviceUptimeSincronizacaoMillis;
-    boolean temMidiaPerguntaOk;
-    boolean temMidiaAlternativaNok;
     @Nullable
     List<ChecklistPerguntasDto> checklistPerguntasDtos;
 }

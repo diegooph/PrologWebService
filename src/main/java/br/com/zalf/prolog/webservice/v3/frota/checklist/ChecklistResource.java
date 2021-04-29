@@ -33,8 +33,8 @@ public class ChecklistResource implements ChecklistResourceApiDoc {
     private final ChecklistListagemMapper checklistListagemMapper;
 
     @Autowired
-    public ChecklistResource(final @NotNull ChecklistService checklistService,
-                             final @NotNull ChecklistListagemMapper checklistListagemMapper) {
+    public ChecklistResource(@NotNull final ChecklistService checklistService,
+                             @NotNull final ChecklistListagemMapper checklistListagemMapper) {
         this.checklistService = checklistService;
         this.checklistListagemMapper = checklistListagemMapper;
     }
