@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.v3.frota.movimentacao;
 
+import br.com.zalf.prolog.webservice.commons.util.datetime.DateUtils;
 import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.EntityKmColetado;
 import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.KmProcessoAtualizavel;
 import br.com.zalf.prolog.webservice.v3.frota.movimentacao._model.MovimentacaoDestinoEntity;
@@ -8,6 +9,7 @@ import br.com.zalf.prolog.webservice.v3.frota.movimentacao._model.MovimentacaoOr
 import br.com.zalf.prolog.webservice.v3.frota.movimentacao._model.MovimentacaoProcessoEntity;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -81,7 +83,20 @@ public class MovimentacaoProcessoService implements KmProcessoAtualizavel {
     }
 
     @Transactional
-    public List<MovimentacaoProcessoEntity> getAll() {
-        return movimentacaoProcessoDao.getAll(215, PageRequest.of(0, 1000));
+    public List<MovimentacaoProcessoEntity> getAll(@NotNull final List<Long> codUnidades,
+                                                   @Nullable final Long codColaborador,
+                                                   @Nullable final Long codVeiculo,
+                                                   @Nullable final Long codPneu,
+                                                   @NotNull final String dataInicial,
+                                                   @NotNull final String dataFinal,
+                                                   final int limit,
+                                                   final int offset) {
+        return movimentacaoProcessoDao.getAll(codUnidades,
+                                              codColaborador,
+                                              codVeiculo,
+                                              codPneu,
+                                              DateUtils.parseDate(dataInicial),
+                                              DateUtils.parseDate(dataFinal),
+                                              PageRequest.of(offset, limit));
     }
 }
