@@ -5,12 +5,12 @@ import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
+import br.com.zalf.prolog.webservice.commons.util.files.FileUtils;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.interno.PrologInternalUser;
 import br.com.zalf.prolog.webservice.interno.autenticacao.AutenticacaoInternaService;
 import br.com.zalf.prolog.webservice.interno.implantacao.conferencia._model.TipoImport;
 import br.com.zalf.prolog.webservice.interno.implantacao.conferencia.frota.veiculo._model.VeiculoPlanilha;
-import com.google.common.io.Files;
 import org.apache.commons.io.IOUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.jetbrains.annotations.NotNull;
@@ -60,7 +60,7 @@ public final class VeiculoConferenciaService {
         try {
             final String fileName = String.valueOf(Now.getUtcMillis()) + "_" + codUnidade
                     + "_" + fileDetail.getFileName().replace(" ", "_");
-            final File tmpDir = Files.createTempDir();
+            final File tmpDir = FileUtils.getTempDir();
             final File file = new File(tmpDir, fileName);
             final FileOutputStream out = new FileOutputStream(file);
             IOUtils.copy(fileInputStream, out);
