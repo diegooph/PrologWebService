@@ -14,7 +14,7 @@ import java.util.List;
  *
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
-@Api(value = "Gestão de Pneus")
+@Api(value = "Movimentações")
 public interface MovimentacaoProcessoApiDoc {
     @ApiOperation(
             value = "Lista os processos de movimentação e suas informações.",
@@ -29,13 +29,19 @@ public interface MovimentacaoProcessoApiDoc {
             @ApiResponse(code = 500, message = "Erro ao executar operação", response = Response.class)
     })
     List<MovimentacaoProcessoListagemDto> getMovimentacoes(
-            @ApiParam(value = "Uma lista de código de unidades que serão usadas para filtras as movimentações.",
+            @ApiParam(value = "Uma lista de código de unidades que serão usadas para filtrar as movimentações.",
                       required = true) @NotNull final List<Long> codUnidades,
+            @ApiParam(value = "Um código de colaborador especifico que tenha realizado a movimentação.")
             @Optional final Long codColaborador,
-            @Optional final Long codVeiculo,
-            @Optional final Long codPneu,
-            @NotNull final String dataInicial,
-            @NotNull final String dataFinal,
-            @Max(value = 1000, message = "O limite pode ser no máximo 1000.") final int limit,
-            final int offset);
+            @ApiParam(value = "Um código de veículo no qual a movimentação ocorreu.") @Optional final Long codVeiculo,
+            @ApiParam(value = "Um código de pneu no qual a movimentação ocorreu.") @Optional final Long codPneu,
+            @ApiParam(value = "Uma data inicial para o filtro de faixa de quando as movimentações foram realizadas, " +
+                    "no formato dd-MM-yyyy.", required = true) @NotNull final String dataInicial,
+            @ApiParam(value = "Uma data final para o filtro de faixa de quando as movimentações foram realizadas, no " +
+                    "formato dd-MM-yyyy.", required = true) @NotNull final String dataFinal,
+            @ApiParam(value = "Um limite de registros a serem retornados, no máximo 1000.",
+                      required = true) @Max(value = 1000,
+                                            message = "O limite pode ser no máximo 1000.") final int limit,
+            @ApiParam(value = "Um index de página, começando em 0.",
+                      required = true) final int offset);
 }
