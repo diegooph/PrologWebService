@@ -23,7 +23,7 @@ import java.util.List;
 
 @RestController
 @ConsoleDebugLog
-@Path("/v3/checklists")
+@Path("api/v3/checklists")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class ChecklistResource implements ChecklistResourceApiDoc {

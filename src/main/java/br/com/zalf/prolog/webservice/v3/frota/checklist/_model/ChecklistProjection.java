@@ -81,10 +81,10 @@ public interface ChecklistProjection {
     int getTotalAlternativasNok();
 
     @Value("#{target.total_midias_perguntas_ok}")
-    Short getTotalMidiasPerguntasOk();
+    int getTotalMidiasPerguntasOk();
 
     @Value("#{target.total_midias_alternativas_nok}")
-    Short getTotalMidiasAlternativasNok();
+    int getTotalMidiasAlternativasNok();
 
     @Value("#{target.total_alternativas_nok_prioridade_baixa}")
     int getTotalNokBaixa();
@@ -175,10 +175,4 @@ public interface ChecklistProjection {
 
     @Value("#{target.resposta_outros}")
     String getRespostaTipoOutros();
-
-    @Value("#{target.tem_midia_pergunta_ok}")
-    boolean temMidiaPerguntaOk();
-
-    @Value("#{target.tem_midia_alternativa_nok}")
-    boolean temMidiaAlternativaNok();
 }

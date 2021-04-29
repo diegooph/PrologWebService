@@ -70,8 +70,6 @@ public class ChecklistListagemMapper {
                                        projection.getDeviceImei(),
                                        projection.getDeviceUptimeRealizacaoMillis(),
                                        projection.getDeviceUptimeSincronizacaoMillis(),
-                                       projection.temMidiaPerguntaOk(),
-                                       projection.temMidiaAlternativaNok(),
                                        incluirRespostas ? toChecklistPerguntaDto(checklistProjections) : null);
     }
 
