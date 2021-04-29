@@ -27,9 +27,9 @@ public class FiltroAfericaoPlaca {
     @NotNull
     LocalDate dataFinal;
     @Max(value = 1000, message = "valor de pesquisa não pode ser maior que 1000 linhas.")
-    @Min(value = 0, message = "não pode ser menor que zero.")
+    @Min(value = 0, message = "O limite máximo de registros por página é 1000.")
     int limit;
-    @Min(value = 0, message = "não pode ser menor que zero.")
+    @Min(value = 0, message = "O limite minimo de registros por página é 0.")
     int offset;
     boolean incluirMedidas;
 }
