@@ -42,11 +42,11 @@ public class AfericaoPlacaDto {
     @NotNull
     FormaColetaDadosAfericaoEnum formaColetaDados;
     @NotNull
-    Long codColaboradorAferidor;
+    Long codColaborador;
     @NotNull
-    String cpfAferidor;
+    String cpfColaborador;
     @NotNull
-    String nomeAferidor;
+    String nomeColaborador;
     @Nullable
     List<MedidaDto> medidas;
 }
