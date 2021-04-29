@@ -33,7 +33,7 @@ public final class FileUtils {
         return new File(TEMP_DIR_REF);
     }
 
-    public static boolean isOutdated(final File file) {
+    public static boolean isOutdated(@NotNull final File file) {
         final FileTime fileTime = getFileTimeFromFile(file)
                 .orElseThrow();
         final LocalDateTime fileTimeToTimestamp = LocalDateTime.ofInstant(fileTime.toInstant(),
@@ -41,7 +41,8 @@ public final class FileUtils {
         return DateUtils.isBeforeNDays(fileTimeToTimestamp, DAYS_TO_OUTDATED);
     }
 
-    public static Optional<FileTime> getFileTimeFromFile(final File file) {
+    @NotNull
+    public static Optional<FileTime> getFileTimeFromFile(@NotNull final File file) {
         try {
             final var fileTime = Files.readAttributes(file.toPath(), BasicFileAttributes.class)
                     .creationTime();
