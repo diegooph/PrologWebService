@@ -52,6 +52,13 @@ public final class MovimentacaoProcessoResource implements MovimentacaoProcessoA
             @QueryParam("dataFinal") @NotNull final String dataFinal,
             @QueryParam("limit") @Max(value = 1000, message = "O limite pode ser no máximo 1000.") final int limit,
             @QueryParam("offset") final int offset) {
-        return mapper.toDto(service.getAll());
+        return mapper.toDto(service.getAll(codUnidades,
+                                           codColaborador,
+                                           codVeiculo,
+                                           codPneu,
+                                           dataInicial,
+                                           dataFinal,
+                                           limit,
+                                           offset));
     }
 }
