@@ -12,6 +12,6 @@ import org.hibernate.type.LocalDateType;
 public class PrologDialect extends PostgreSQL10Dialect {
 
     public PrologDialect() {
-        registerFunction("to_date", new StandardSQLFunction("to_date", LocalDateType.INSTANCE));
+        registerFunction("date", new StandardSQLFunction("date", LocalDateType.INSTANCE));
     }
 }
