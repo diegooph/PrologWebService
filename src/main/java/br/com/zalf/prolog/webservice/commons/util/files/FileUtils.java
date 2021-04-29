@@ -41,8 +41,7 @@ public final class FileUtils {
 
     @NotNull
     public static File getTempDir() {
-        final String baseName = getBaseName();
-        return new File(TEMP_DIR_REF, baseName);
+        return new File(TEMP_DIR_REF);
     }
 
     @NotNull
