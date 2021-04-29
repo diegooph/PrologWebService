@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.v3.frota.afericao;
 
+import br.com.zalf.prolog.webservice.commons.network.metadata.Optional;
 import br.com.zalf.prolog.webservice.commons.util.datetime.DateUtils;
 import br.com.zalf.prolog.webservice.interceptors.ApiExposed;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
@@ -7,7 +8,6 @@ import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.v3.frota.afericao._model.*;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -48,8 +48,8 @@ public class AfericaoResource implements AfericaoResourceApiDoc {
             Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
     @Override
     public List<AfericaoPlacaDto> getAfericoesPlacas(@QueryParam("codUnidades") @NotNull final List<Long> codUnidades,
-                                                     @QueryParam("codVeiculo") @Nullable final Long codVeiculo,
-                                                     @QueryParam("codTipoVeiculo") @Nullable final Long codTipoVeiculo,
+                                                     @QueryParam("codVeiculo") @Optional final Long codVeiculo,
+                                                     @QueryParam("codTipoVeiculo") @Optional final Long codTipoVeiculo,
                                                      @QueryParam("dataInicial") @NotNull final String dataInicial,
                                                      @QueryParam("dataFinal") @NotNull final String dataFinal,
                                                      @QueryParam("limit") final int limit,

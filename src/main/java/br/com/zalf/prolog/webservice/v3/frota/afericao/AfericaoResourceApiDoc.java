@@ -1,11 +1,11 @@
 package br.com.zalf.prolog.webservice.v3.frota.afericao;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
+import br.com.zalf.prolog.webservice.commons.network.metadata.Optional;
 import br.com.zalf.prolog.webservice.v3.frota.afericao._model.AfericaoAvulsaDto;
 import br.com.zalf.prolog.webservice.v3.frota.afericao._model.AfericaoPlacaDto;
 import io.swagger.annotations.*;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -32,9 +32,9 @@ public interface AfericaoResourceApiDoc {
             @ApiParam(value = "Uma lista de códigos de unidade.",
                       required = true) @NotNull final List<Long> codUnidades,
             @ApiParam(value = "Um código de veículo específico para ser buscado. Se nenhum for informado, todos " +
-                    "os veículos da unidade serão retornados.") @Nullable final Long codVeiculo,
+                    "os veículos da unidade serão retornados.") @Optional final Long codVeiculo,
             @ApiParam(value = "Um código de tipo veículo específico para ser buscado. Se nenhum for informado, todos " +
-                    "os tipos serão trazidos.") @Nullable final Long codTipoVeiculo,
+                    "os tipos serão trazidos.") @Optional final Long codTipoVeiculo,
             @ApiParam(value = "Uma data inicial, a qual a aferição tenha sido realizadas.",
                       required = true) @NotNull final String dataInicial,
             @ApiParam(value = "Uma data final, a qual a aferição tenha sido realizadas.",
