@@ -1,10 +1,13 @@
 package br.com.zalf.prolog.webservice.v3.frota.movimentacao;
 
 import br.com.zalf.prolog.webservice.v3.frota.movimentacao._model.MovimentacaoProcessoEntity;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -27,7 +30,17 @@ public interface MovimentacaoProcessoDao extends JpaRepository<MovimentacaoProce
                    + "left join fetch md.recapadora r "
                    + "left join fetch r.colaboradorCadastro "
                    + "left join fetch r.colaboradorAlteracaoStatus "
-                   + "where mpe.codUnidade = :codUnidade "
+                   + "where mpe.codUnidade in :codUnidades "
+                   + "and to_date(mpe.dataHoraRealizacao) between :dataInicial and :dataFinal "
+                   + "and (:codColaborador is null or mpe.colaboradorRealizacaoProcesso.codigo = :codColaborador) "
+                   + "and (:codVeiculo is null or m.movimentacaoOrigem.veiculo.codigo = :codVeiculo) "
+                   + "and (:codPneu is null or m.pneu.codigo = :codPneu) "
                    + "order by mpe.codigo")
-    List<MovimentacaoProcessoEntity> getAll(long codUnidade, Pageable pageable);
+    List<MovimentacaoProcessoEntity> getAll(@NotNull final List<Long> codUnidades,
+                                            @Nullable final Long codColaborador,
+                                            @Nullable final Long codVeiculo,
+                                            @Nullable final Long codPneu,
+                                            @NotNull final LocalDate dataInicial,
+                                            @NotNull final LocalDate dataFinal,
+                                            @NotNull Pageable pageable);
 }
