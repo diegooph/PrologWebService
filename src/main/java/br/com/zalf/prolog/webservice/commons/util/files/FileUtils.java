@@ -6,10 +6,15 @@ import org.apache.commons.io.FilenameUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.attribute.FileTime;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -57,5 +62,16 @@ public final class FileUtils {
     @NotNull
     private static String getBaseName() {
         return LocalDate.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+    }
+
+    public static Optional<FileTime> getFileTimeFromFile(final File file) {
+        try {
+            final var fileTime = Files.readAttributes(file.toPath(), BasicFileAttributes.class)
+                    .creationTime();
+            return Optional.of(fileTime);
+        } catch (final IOException e) {
+            Log.e(TAG, "Erro ao tentar ler arquivo: " + file.getName());
+            return Optional.empty();
+        }
     }
 }
