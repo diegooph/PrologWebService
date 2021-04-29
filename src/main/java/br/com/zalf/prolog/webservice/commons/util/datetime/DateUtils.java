@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.time.format.ResolverStyle;
+import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -117,5 +117,9 @@ public final class DateUtils {
             valid = false;
         }
         return valid;
+    }
+
+    public static boolean isBeforeNDays(LocalDateTime date, long nthDay) {
+        return ChronoUnit.DAYS.between(date, LocalDateTime.now()) > nthDay;
     }
 }
