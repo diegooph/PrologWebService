@@ -103,6 +103,6 @@ public class ChecklistIT extends IntegrationTest {
                 "2021-03-30",
                 2,
                 0);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 }
