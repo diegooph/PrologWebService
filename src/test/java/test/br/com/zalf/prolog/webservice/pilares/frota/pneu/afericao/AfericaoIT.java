@@ -1,7 +1,7 @@
 package test.br.com.zalf.prolog.webservice.pilares.frota.pneu.afericao;
 
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.v3._model.dto.AfericaoAvulsaDto;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.v3._model.dto.AfericaoPlacaDto;
+import br.com.zalf.prolog.webservice.v3.frota.afericao._model.AfericaoAvulsaDto;
+import br.com.zalf.prolog.webservice.v3.frota.afericao._model.AfericaoPlacaDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import test.br.com.zalf.prolog.webservice.IntegrationTest;
 
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -21,30 +20,23 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Guilherme Steinert (https://github.com/steinert999)
  */
 public class AfericaoIT extends IntegrationTest {
-
     @Autowired
     private AfericaoApiClient client;
-
 
     @Test
     @DisplayName("Dado parâmetros corretos, retorne List<AfericaoPlacaDto> e status OK")
     void givenCorrectParameters_ThenReturnListAfericaoPlacaDtoAndStatusOk() {
 
-        final ResponseEntity<List<AfericaoPlacaDto>> response = client.getAfericoesPlacas(Collections.singletonList(5L),
-                                                                                          "PRO0001",
-                                                                                          63L,
+        final ResponseEntity<List<AfericaoPlacaDto>> response = client.getAfericoesPlacas(List.of(5L),
                                                                                           "2019-01-01",
-                                                                                          LocalDate.now()
-                                                                                                  .toString(),
+                                                                                          LocalDate.now().toString(),
                                                                                           100,
                                                                                           0);
         final HttpStatus status = response.getStatusCode();
         final List<AfericaoPlacaDto> body = response.getBody();
         assertThat(status).isEqualTo(HttpStatus.OK);
         assertThat(body).isNotNull();
-        assertThat(body.stream()
-                           .findFirst()
-                           .get().getPlacaVeiculo()).isEqualTo("PRO0001");
+        assertThat(body.stream().findFirst().get().getPlacaVeiculo()).isEqualTo("PRO0001");
     }
 
     @Test
@@ -52,10 +44,9 @@ public class AfericaoIT extends IntegrationTest {
     void givenCorrectParameters_ThenReturnListAfericaoAvulsaDtoAndStatusOk() {
 
         final ResponseEntity<List<AfericaoAvulsaDto>> response =
-                client.getAfericoesAvulsas(Collections.singletonList(5L),
+                client.getAfericoesAvulsas(List.of(5L),
                                            "2019-01-01",
-                                           LocalDate.now()
-                                                   .toString(),
+                                           LocalDate.now().toString(),
                                            100,
                                            0);
 
@@ -63,8 +54,6 @@ public class AfericaoIT extends IntegrationTest {
         final List<AfericaoAvulsaDto> body = response.getBody();
         assertThat(status).isEqualTo(HttpStatus.OK);
         assertThat(body).isNotNull();
-        assertThat(body.stream()
-                           .findFirst()
-                           .get()).isNotNull();
+        assertThat(body.stream().findFirst().get()).isNotNull();
     }
 }
