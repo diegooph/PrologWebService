@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 @TestComponent
 public class AfericaoApiClient {
     @NotNull
-    private static final String RESOURCE = "/v3/afericoes";
+    private static final String RESOURCE = "/api/v3/afericoes";
     @Autowired
     @NotNull
     private TestRestTemplate restTemplate;
