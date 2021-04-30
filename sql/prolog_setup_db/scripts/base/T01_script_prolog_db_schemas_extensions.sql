@@ -1,6 +1,7 @@
 --
 -- file: scripts/01_script_prolog_db_schemas_extensions.sql
 --
+
 create extension if not exists citext;
 create extension if not exists fuzzystrmatch;
 create extension if not exists pg_trgm;
