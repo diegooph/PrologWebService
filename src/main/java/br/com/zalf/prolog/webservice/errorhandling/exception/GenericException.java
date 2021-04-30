@@ -9,6 +9,8 @@ import javax.ws.rs.core.Response;
 
 public class GenericException extends ProLogException {
 
+    public static final boolean NO_LOGS_INTO_SENTRY = false;
+
     public GenericException(@NotNull final String message,
                             final int httpStatusCode,
                             @Nullable final String developerMessage,
@@ -39,9 +41,27 @@ public class GenericException extends ProLogException {
                 developerMessage);
     }
 
+    public GenericException(@NotNull final String message,
+                            @Nullable final String developerMessage,
+                            final boolean isLoggable) {
+        super(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
+              ProLogErrorCodes.GENERIC.errorCode(),
+              message,
+              null,
+              developerMessage,
+              isLoggable);
+    }
+
     public GenericException(@NotNull final String message) {
         super(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
                 ProLogErrorCodes.GENERIC.errorCode(),
                 message);
+    }
+
+    public GenericException(@NotNull final String message, final boolean isLoggable) {
+        super(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
+              ProLogErrorCodes.GENERIC.errorCode(),
+              message,
+              isLoggable);
     }
 }

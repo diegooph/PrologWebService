@@ -151,20 +151,21 @@ public final class OperacoesIntegradasProtheusNepomucenoTest extends BaseTest {
                 .map(ModeloPlacasAfericao::getPlacasAfericao)
                 .map(Collection::stream)
                 .map(placaAfericaoStream ->
-                        placaAfericaoStream
-                                .filter(placaAfericao -> placaAfericao.getQuantidadePneus() > 0)
-                                .findAny()
-                                .orElse(null))
+                             placaAfericaoStream
+                                     .filter(placaAfericao -> placaAfericao.getQuantidadePneus() > 0)
+                                     .findAny()
+                                     .orElse(null))
                 .findFirst()
                 .orElse(null);
 
         assertThat(placa).isNotNull();
 
         final NovaAfericaoPlaca novaAfericaoPlaca = service.getNovaAfericaoPlaca(
-                getValidToken(CPF_COLABORADOR),
-                placa.getCodUnidadePlaca(),
-                placa.getPlaca(),
-                TipoProcessoColetaAfericao.PLACA.asString());
+                AfericaoBuscaFiltro.of(placa.getCodUnidadePlaca(),
+                                       null,
+                                       placa.getPlaca(),
+                                       null),
+                getValidToken(CPF_COLABORADOR));
 
         assertThat(novaAfericaoPlaca).isNotNull();
         assertThat(novaAfericaoPlaca.getVeiculo()).isNotNull();
@@ -192,10 +193,11 @@ public final class OperacoesIntegradasProtheusNepomucenoTest extends BaseTest {
         assertThat(placa).isNotNull();
 
         final NovaAfericaoPlaca novaAfericaoPlaca = service.getNovaAfericaoPlaca(
-                getValidToken(CPF_COLABORADOR),
-                placa.getCodUnidadePlaca(),
-                placa.getPlaca(),
-                "PLACA");
+                AfericaoBuscaFiltro.of(null,
+                                       placa.getCodigoVeiculo(),
+                                       placa.getPlaca(),
+                                       null),
+                getValidToken(CPF_COLABORADOR));
 
         final Long codAfericao =
                 service.insert(

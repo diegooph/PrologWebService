@@ -37,40 +37,44 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
     private static final String BUSCA_UNIDADE_BY_REGIONAL = " SELECT DISTINCT U.CODIGO, U.NOME "
             + " FROM UNIDADE U JOIN REGIONAL REG ON REG.CODIGO = U.COD_REGIONAL "
             + " JOIN EMPRESA E ON U.COD_EMPRESA = E.CODIGO"
-            + " WHERE REG.CODIGO = ? AND E.CODIGO = ? ORDER BY 2 ";
+            + " WHERE REG.CODIGO = ? AND E.CODIGO = ? AND U.STATUS_ATIVO = TRUE ORDER BY 2 ";
     private static final String BUSCA_EQUIPE_BY_UNIDADE = "SELECT DISTINCT E.NOME, E.CODIGO "
             + "FROM EQUIPE E JOIN UNIDADE U ON U.CODIGO = E.COD_UNIDADE "
-            + "WHERE U.CODIGO = ?"
+            + "WHERE U.CODIGO = ? AND U.STATUS_ATIVO = TRUE "
             + "ORDER BY 1";
-    private static final String BUSCA_EMPRESA_REGIONAL_UNIDADE_BY_CPF = "select emp.codigo as cod_empresa, emp.nome as nome_empresa,"
-            + " reg.codigo as cod_regional, reg.regiao nome_regional,"
-            + " u.codigo as cod_unidade, u.nome as nome_unidade "
-            + "from colaborador c join unidade u on u.codigo = c.cod_unidade "
-            + "join empresa emp on emp.codigo = u.cod_empresa "
-            + "join regional reg on reg.codigo = u.cod_regional "
-            + "where c.cpf = ?";
+    private static final String BUSCA_EMPRESA_REGIONAL_UNIDADE_BY_CPF =
+            "select emp.codigo as cod_empresa, emp.nome as nome_empresa,"
+                    + " reg.codigo as cod_regional, reg.regiao nome_regional,"
+                    + " u.codigo as cod_unidade, u.nome as nome_unidade "
+                    + "from colaborador c join unidade u on u.codigo = c.cod_unidade and u.status_ativo = true "
+                    + "join empresa emp on emp.codigo = u.cod_empresa "
+                    + "join regional reg on reg.codigo = u.cod_regional "
+                    + "where c.cpf = ?";
     private static final String BUSCA_CODIGO_PERMISSAO_BY_CPF = "select c.cod_permissao "
             + "from colaborador c "
             + "where c.cpf = ?";
-    private static final String BUSCA_REGIONAL = "select distinct reg.codigo, reg.regiao, e.codigo as codigo_empresa, e.nome as nome_empresa "
-            + "from unidade u join empresa e on e.codigo = u.cod_empresa "
-            + "join regional reg on reg.codigo = u.cod_regional	"
-            + "where e.codigo in (select c.cod_empresa	"
-            + "from colaborador c	where c.cpf = ?"
-            + " ORDER BY 1)";
-    private static final String BUSCA_REGIONAL_BY_CPF = "select distinct reg.codigo, reg.regiao, e.codigo as cod_empresa, e.nome as nome_empresa "
-            + "from regional reg "
-            + "left join unidade u on u.cod_regional = reg.codigo "
-            + "join empresa e on e.codigo = u.cod_empresa join colaborador c on c.cod_unidade = u.codigo and c.cpf=? "
-            + "where reg.codigo in ( "
-            + "select r.codigo "
-            + "from colaborador c join unidade u on u.codigo = c.cod_unidade "
-            + "join regional r on r.codigo = u.cod_regional	"
-            + "where c.cpf=?)";
+    private static final String BUSCA_REGIONAL =
+            "select distinct reg.codigo, reg.regiao, e.codigo as codigo_empresa, e.nome as nome_empresa "
+                    + "from unidade u join empresa e on e.codigo = u.cod_empresa "
+                    + "join regional reg on reg.codigo = u.cod_regional	"
+                    + "where e.codigo in (select c.cod_empresa	"
+                    + "from colaborador c	where c.cpf = ?"
+                    + " ORDER BY 1)";
+    private static final String BUSCA_REGIONAL_BY_CPF =
+            "select distinct reg.codigo, reg.regiao, e.codigo as cod_empresa, e.nome as nome_empresa "
+                    + "from regional reg "
+                    + "left join unidade u on u.cod_regional = reg.codigo "
+                    + "join empresa e on e.codigo = u.cod_empresa join colaborador c on c.cod_unidade = u.codigo and "
+                    + "c.cpf = ? "
+                    + "where reg.codigo in ( "
+                    + "select r.codigo "
+                    + "from colaborador c join unidade u on u.codigo = c.cod_unidade and u.status_ativo = true "
+                    + "join regional r on r.codigo = u.cod_regional	"
+                    + "where c.cpf=?)";
     private final String TAG = EmpresaDaoImpl.class.getSimpleName();
     private final String BUSCA_EQUIPES_BY_COD_UNIDADE = "SELECT E.CODIGO, E.NOME "
             + "FROM EQUIPE E JOIN UNIDADE U ON U.CODIGO = E.COD_UNIDADE "
-            + "WHERE U.CODIGO = ?";
+            + "WHERE U.CODIGO = ? and u.status_ativo = true ";
     private final String UPDATE_EQUIPE = "UPDATE EQUIPE SET NOME = (?) "
             + "FROM TOKEN_AUTENTICACAO TA WHERE CODIGO = ?	"
             + "AND TA.CPF_COLABORADOR=? "
@@ -115,8 +119,8 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
         try {
             conn = getConnection();
             stmt = conn.prepareStatement("INSERT INTO EQUIPE "
-                    + "(NOME, COD_UNIDADE) VALUES "
-                    + "(?,?) RETURNING CODIGO;");
+                                                 + "(NOME, COD_UNIDADE) VALUES "
+                                                 + "(?,?) RETURNING CODIGO;");
             stmt.setString(1, equipe.getNome());
             stmt.setLong(2, codUnidade);
             rSet = stmt.executeQuery();
@@ -242,7 +246,8 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
     @Override
     public List<HolderMapaTracking> getResumoAtualizacaoDados(final int ano,
                                                               final int mes,
-                                                              final Long codUnidade) throws SQLException, NoContentException {
+                                                              final Long codUnidade)
+            throws SQLException, NoContentException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -253,12 +258,17 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
 
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT A.DATA AS DATA, M.MAPA, coalesce(M.placa, tracking.placa_tracking,M.placa) as placa, TRACKING.MAPA_TRACKING\n" +
-                    "FROM MAPA M FULL OUTER JOIN\n" +
-                    "(SELECT DISTINCT DATA AS DATA_TRACKING, MAPA AS MAPA_TRACKINg, código_transportadora as codigo, placa as placa_tracking FROM TRACKING) AS TRACKING ON MAPA_TRACKING = M.MAPA and m.cod_unidade = codigo\n" +
-                    "JOIN aux_data A ON (A.data = M.data OR A.DATA = tracking.DATA_TRACKING)\n" +
-                    "WHERE (tracking.codigo = ? or m.cod_unidade = ?) and extract(YEAR FROM a.data) = ? and extract(MONTH FROM a.data) = ?\n" +
-                    "ORDER BY 1;");
+            stmt = conn.prepareStatement(
+                    "SELECT A.DATA AS DATA, M.MAPA, coalesce(M.placa, tracking.placa_tracking,M.placa) as placa, " +
+                            "TRACKING.MAPA_TRACKING\n" +
+                            "FROM MAPA M FULL OUTER JOIN\n" +
+                            "(SELECT DISTINCT DATA AS DATA_TRACKING, MAPA AS MAPA_TRACKINg, código_transportadora as " +
+                            "codigo, placa as placa_tracking FROM TRACKING) AS TRACKING ON MAPA_TRACKING = M.MAPA and" +
+                            " m.cod_unidade = codigo\n" +
+                            "JOIN aux_data A ON (A.data = M.data OR A.DATA = tracking.DATA_TRACKING)\n" +
+                            "WHERE (tracking.codigo = ? or m.cod_unidade = ?) and extract(YEAR FROM a.data) = ? and " +
+                            "extract(MONTH FROM a.data) = ?\n" +
+                            "ORDER BY 1;");
             stmt.setLong(1, codUnidade);
             stmt.setLong(2, codUnidade);
             stmt.setInt(3, ano);
@@ -748,7 +758,8 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
         return listEmpresa;
     }
 
-    // buscar permissoes para colaboradores com permissao = 0 = local, supervisor, busca apenas a sala que o cpf pertence
+    // buscar permissoes para colaboradores com permissao = 0 = local, supervisor, busca apenas a sala que o cpf
+    // pertence
     private List<Empresa> getPermissao0(final Long cpf) throws SQLException {
         final List<Empresa> listEmpresa = new ArrayList<>();
         final List<Regional> listRegional = new ArrayList<>();
@@ -819,7 +830,6 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
             closeConnection(conn, stmt, rSet);
         }
         regional.setListUnidade(listUnidades);
-
     }
 
     private void setEquipesByUnidade(final Unidade unidade) throws SQLException {
@@ -855,10 +865,10 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
         ResultSet rSet = null;
         try {
             stmt = conn.prepareStatement("select * " +
-                    "from func_empresa_tem_permissao_funcao_prolog(" +
-                    "f_cod_unidade => ?, " +
-                    "f_cod_funcao_colaborador => ?, " +
-                    "f_cod_funcao_prolog => ?) as tem_permissao;");
+                                                 "from func_empresa_tem_permissao_funcao_prolog(" +
+                                                 "f_cod_unidade => ?, " +
+                                                 "f_cod_funcao_colaborador => ?, " +
+                                                 "f_cod_funcao_prolog => ?) as tem_permissao;");
             stmt.setLong(1, codUnidade);
             stmt.setLong(2, codCargo);
             stmt.setInt(3, codFuncaoProLog);
@@ -877,8 +887,9 @@ public class EmpresaDaoImpl extends DatabaseConnection implements EmpresaDao {
                                          final Long codUnidade,
                                          final Connection conn) throws SQLException {
         final PreparedStatement stmt = conn.prepareStatement("DELETE FROM CARGO_FUNCAO_PROLOG_V11 WHERE " +
-                "COD_UNIDADE = ? AND COD_FUNCAO_COLABORADOR = ? " +
-                "AND COD_PILAR_PROLOG IN (SELECT COD_PILAR FROM UNIDADE_PILAR_PROLOG WHERE COD_UNIDADE = ?);");
+                                                                     "COD_UNIDADE = ? AND COD_FUNCAO_COLABORADOR = ? " +
+                                                                     "AND COD_PILAR_PROLOG IN (SELECT COD_PILAR FROM " +
+                                                                     "UNIDADE_PILAR_PROLOG WHERE COD_UNIDADE = ?);");
         stmt.setLong(1, codUnidade);
         stmt.setLong(2, codCargo);
         stmt.setLong(3, codUnidade);

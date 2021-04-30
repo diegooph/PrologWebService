@@ -105,20 +105,19 @@ public class SistemaWebFinatto extends Sistema {
 
     @Override
     @NotNull
-    public NovaAfericaoPlaca getNovaAfericaoPlaca(@NotNull final Long codUnidade,
-                                                  @NotNull final String placaVeiculo,
-                                                  @NotNull final String tipoAfericao) throws Throwable {
+    public NovaAfericaoPlaca getNovaAfericaoPlaca(@NotNull final AfericaoBuscaFiltro filtro) throws Throwable {
         Connection conn = null;
         final DatabaseConnectionProvider connectionProvider = new DatabaseConnectionProvider();
         try {
             conn = connectionProvider.provideDatabaseConnection();
-            final UnidadeDeParaHolder unidadeDeParaHolder =
-                    integracaoDao.getCodAuxiliarByCodUnidadeProlog(conn, Collections.singletonList(codUnidade));
+            final UnidadeDeParaHolder unidadeDeParaHolder = integracaoDao.getCodAuxiliarByCodUnidadeProlog(
+                    conn,
+                    Collections.singletonList(filtro.getCodUnidade()));
             final VeiculoWebFinatto veiculoByPlaca =
                     internalGetVeiculoByPlaca(conn,
                                               unidadeDeParaHolder.getCodEmpresaProlog(),
                                               unidadeDeParaHolder.getCodFiliais(),
-                                              placaVeiculo);
+                                              filtro.getPlacaVeiculo());
             final Short codDiagramaProlog =
                     integracaoDao.getCodDiagramaByDeParaTipoVeiculo(conn,
                                                                     unidadeDeParaHolder.getCodEmpresaProlog(),
@@ -132,7 +131,7 @@ public class SistemaWebFinatto extends Sistema {
             }
             final ConfiguracaoNovaAfericaoPlaca configNovaAfericaoPlaca =
                     integracaoDao.getConfigNovaAfericaoPlaca(conn,
-                                                             codUnidade,
+                                                             filtro.getCodUnidade(),
                                                              veiculoByPlaca.getCodEstruturaVeiculo());
             final IntegracaoPosicaoPneuMapper posicaoPneuMapper = new IntegracaoPosicaoPneuMapper(
                     veiculoByPlaca.getCodEstruturaVeiculo(),
@@ -140,7 +139,7 @@ public class SistemaWebFinatto extends Sistema {
                             conn,
                             unidadeDeParaHolder.getCodEmpresaProlog(),
                             veiculoByPlaca.getCodEstruturaVeiculo()));
-            return SistemaWebFinattoConverter.createNovaAfericaoPlacaProlog(codUnidade,
+            return SistemaWebFinattoConverter.createNovaAfericaoPlacaProlog(filtro.getCodUnidade(),
                                                                             codDiagramaProlog,
                                                                             veiculoByPlaca,
                                                                             posicaoPneuMapper,

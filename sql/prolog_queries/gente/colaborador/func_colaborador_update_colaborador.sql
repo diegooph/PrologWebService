@@ -27,19 +27,20 @@ DECLARE
                                                  WHERE TOKEN = F_TOKEN);
 BEGIN
     UPDATE COLABORADOR
-    SET CPF             = F_CPF,
-        MATRICULA_AMBEV = F_MATRICULA_AMBEV,
-        MATRICULA_TRANS = F_MATRICULA_TRANS,
-        DATA_NASCIMENTO = F_DATA_NASCIMENTO,
-        DATA_ADMISSAO   = F_DATA_ADMISSAO,
-        NOME            = F_NOME,
-        COD_SETOR       = F_COD_SETOR,
-        COD_FUNCAO      = F_COD_FUNCAO,
-        COD_UNIDADE     = F_COD_UNIDADE,
-        COD_PERMISSAO   = F_COD_PERMISSAO,
-        COD_EMPRESA     = F_COD_EMPRESA,
-        COD_EQUIPE      = F_COD_EQUIPE,
-        PIS             = F_PIS
+    SET CPF                                = F_CPF,
+        MATRICULA_AMBEV                    = F_MATRICULA_AMBEV,
+        MATRICULA_TRANS                    = F_MATRICULA_TRANS,
+        DATA_NASCIMENTO                    = F_DATA_NASCIMENTO,
+        DATA_ADMISSAO                      = F_DATA_ADMISSAO,
+        NOME                               = F_NOME,
+        COD_SETOR                          = F_COD_SETOR,
+        COD_FUNCAO                         = F_COD_FUNCAO,
+        COD_UNIDADE                        = F_COD_UNIDADE,
+        COD_PERMISSAO                      = F_COD_PERMISSAO,
+        COD_EMPRESA                        = F_COD_EMPRESA,
+        COD_EQUIPE                         = F_COD_EQUIPE,
+        PIS                                = F_PIS,
+        COD_COLABORADOR_ULTIMA_ATUALIZACAO = F_COD_COLABORADOR_UPDATE
     WHERE CODIGO = F_COD_COLABORADOR;
 
     -- Validamos se houve alguma atualização dos valores.

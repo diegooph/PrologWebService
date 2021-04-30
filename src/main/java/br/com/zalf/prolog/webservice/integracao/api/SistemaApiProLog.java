@@ -7,6 +7,7 @@ import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.Afericao;
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.Servico;
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.TipoServico;
 import br.com.zalf.prolog.webservice.frota.pneu.servico._model.VeiculoServico;
+import br.com.zalf.prolog.webservice.frota.pneu.servico._model.filtro.VeiculoAberturaServicoFiltro;
 import br.com.zalf.prolog.webservice.frota.pneu.transferencia._model.realizacao.PneuTransferenciaRealizacao;
 import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.InfosVeiculoEditado;
@@ -133,16 +134,17 @@ public final class SistemaApiProLog extends Sistema {
 
     @NotNull
     @Override
-    public VeiculoServico getVeiculoAberturaServico(@NotNull final Long codServico,
-                                                    @NotNull final String placaVeiculo) throws Throwable {
+    public VeiculoServico getVeiculoAberturaServico(@NotNull final VeiculoAberturaServicoFiltro filtro)
+            throws Throwable {
         final Long codUnidadeVeiculo =
-                getIntegradorProLog().getVeiculoByPlaca(placaVeiculo, null, false).getCodUnidadeAlocado();
-        if (unidadeEstaComIntegracaoAtiva(codUnidadeVeiculo) && getSistemaApiProLog().isServicoMovimentacao(codServico)) {
+                getIntegradorProLog().getVeiculoByPlaca(filtro.getPlacaVeiculo(), null, false).getCodUnidadeAlocado();
+        if (unidadeEstaComIntegracaoAtiva(codUnidadeVeiculo)
+                && getSistemaApiProLog().isServicoMovimentacao(filtro.getCodServico())) {
             throw new BloqueadoIntegracaoException(
                     "O fechamento de serviço de movimentação não está disponível.\n" +
                             "Utilize o seu sistema para movimentar os pneus.");
         }
-        return getIntegradorProLog().getVeiculoAberturaServico(codServico, placaVeiculo);
+        return getIntegradorProLog().getVeiculoAberturaServico(filtro);
     }
 
     @Override

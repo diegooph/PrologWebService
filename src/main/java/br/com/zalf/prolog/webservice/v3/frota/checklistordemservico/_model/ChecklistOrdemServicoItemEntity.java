@@ -27,7 +27,7 @@ public final class ChecklistOrdemServicoItemEntity implements EntityKmColetado {
     @Column(name = "codigo", nullable = false)
     private Long codigo;
     @Column(name = "km")
-    private long kmColetadoVeiculoFechamentoItem;
+    private Long kmColetadoVeiculoFechamentoItem;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumns({
                          @JoinColumn(name = "cod_unidade", referencedColumnName = "cod_unidade"),

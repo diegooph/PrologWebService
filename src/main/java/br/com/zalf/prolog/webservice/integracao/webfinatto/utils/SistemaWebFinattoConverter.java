@@ -929,8 +929,11 @@ public class SistemaWebFinattoConverter {
             @NotNull final Short codDiagramaProlog,
             @NotNull final VeiculoWebFinatto veiculoByPlaca,
             @NotNull final IntegracaoPosicaoPneuMapper posicaoPneuMapper) {
+        final Long codVeiculo =
+                SistemaWebFinattoEncoderDecoder.generateCodVeiculo(codUnidadeProlog,
+                                                                   Long.valueOf(veiculoByPlaca.getCodVeiculo()));
         final Veiculo veiculo = new Veiculo();
-        veiculo.setCodigo(Long.parseLong(veiculoByPlaca.getCodVeiculo()));
+        veiculo.setCodigo(codVeiculo);
         veiculo.setPlaca(veiculoByPlaca.getPlacaVeiculo());
         veiculo.setIdentificadorFrota(veiculoByPlaca.getCodigoFrota());
         veiculo.setKmAtual(veiculoByPlaca.getKmAtualVeiculo());

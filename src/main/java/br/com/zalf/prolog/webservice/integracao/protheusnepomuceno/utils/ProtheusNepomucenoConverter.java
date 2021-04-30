@@ -109,6 +109,7 @@ public final class ProtheusNepomucenoConverter {
             @NotNull final TipoVeiculoConfigAfericao tipoVeiculoConfigAfericao,
             @NotNull final AfericaoRealizadaPlaca afericaoRealizadaPlaca) {
         final ModeloPlacasAfericao.PlacaAfericao placaAfericao = new ModeloPlacasAfericao.PlacaAfericao();
+        placaAfericao.setCodigoVeiculo(-1L);
         placaAfericao.setPlaca(veiculo.getPlacaVeiculo());
         if (!veiculo.getCodVeiculo().equals(veiculo.getPlacaVeiculo())) {
             placaAfericao.setIdentificadorFrota(veiculo.getCodVeiculo());
@@ -357,8 +358,8 @@ public final class ProtheusNepomucenoConverter {
             // Antes de criar o pneu fazemos uma validação em todas as posições e identificamos se existe algo não
             // mapeado. É 'quase' impossível essa exception estourar, porém, preferimos pecar pelo excesso.
             throw new IllegalStateException("Posição de pneu não mapeada:\n" +
-                    "posicaoNaoMapeada: " + pneuAplicado.getPosicaoAplicado() + "\n" +
-                    "posicaoProlog: " + posicaoProlog);
+                                                    "posicaoNaoMapeada: " + pneuAplicado.getPosicaoAplicado() + "\n" +
+                                                    "posicaoProlog: " + posicaoProlog);
         }
         pneu.setPosicao(posicaoProlog);
         pneu.setPressaoAtual(pneuAplicado.getPressaoAtualPneu());

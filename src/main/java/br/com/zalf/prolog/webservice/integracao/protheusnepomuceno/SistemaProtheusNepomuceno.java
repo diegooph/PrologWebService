@@ -8,6 +8,7 @@ import br.com.zalf.prolog.webservice.errorhandling.ErrorReportSystem;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoDadosColetaKm;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoPosicaoPneuMapper;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.MetodoIntegrado;
@@ -147,19 +148,23 @@ public final class SistemaProtheusNepomuceno extends Sistema {
 
     @Override
     @NotNull
-    public NovaAfericaoPlaca getNovaAfericaoPlaca(@NotNull final Long codUnidade,
-                                                  @NotNull final String placaVeiculo,
-                                                  @NotNull final String tipoAfericao) throws Throwable {
+    public NovaAfericaoPlaca getNovaAfericaoPlaca(@NotNull final AfericaoBuscaFiltro afericaoBusca) throws Throwable {
         Connection conn = null;
         final DatabaseConnectionProvider connectionProvider = new DatabaseConnectionProvider();
         try {
             conn = connectionProvider.provideDatabaseConnection();
             final SistemaProtheusNepomucenoDao sistema = new SistemaProtheusNepomucenoDaoImpl();
-            final Long codEmpresa = getIntegradorProLog().getCodEmpresaByCodUnidadeProLog(conn, codUnidade);
+            final Long codEmpresa =
+                    getIntegradorProLog().getCodEmpresaByCodUnidadeProLog(conn, afericaoBusca.getCodUnidade());
 
-            String codEmpresaFilial = getIntegradorProLog().getCodAuxiliarByCodUnidadeProlog(conn, codUnidade);
+            String codEmpresaFilial =
+                    getIntegradorProLog().getCodAuxiliarByCodUnidadeProlog(conn, afericaoBusca.getCodUnidade());
             if (ProtheusNepomucenoUtils.containsMoreThanOneCodAuxiliar(codEmpresaFilial)) {
-                codEmpresaFilial = getCodFilialByPlacaCronograma(conn, codEmpresa, codUnidade, placaVeiculo, sistema);
+                codEmpresaFilial = getCodFilialByPlacaCronograma(conn,
+                                                                 codEmpresa,
+                                                                 afericaoBusca.getCodUnidade(),
+                                                                 afericaoBusca.getPlacaVeiculo(),
+                                                                 sistema);
             }
 
             final ApiAutenticacaoHolder apiAutenticacaoHolder =
@@ -168,11 +173,13 @@ public final class SistemaProtheusNepomuceno extends Sistema {
                                                            getSistemaKey(),
                                                            MetodoIntegrado.GET_VEICULO_NOVA_AFERICAO_PLACA);
             final VeiculoAfericaoProtheusNepomuceno veiculoAfericao =
-                    requester.getPlacaPneusAfericaoPlaca(apiAutenticacaoHolder, codEmpresaFilial, placaVeiculo);
+                    requester.getPlacaPneusAfericaoPlaca(apiAutenticacaoHolder,
+                                                         codEmpresaFilial,
+                                                         afericaoBusca.getPlacaVeiculo());
 
             final ConfiguracaoNovaAfericaoPlaca configuracaoAfericao =
                     integracaoDao.getConfigNovaAfericaoPlaca(conn,
-                                                             codUnidade,
+                                                             afericaoBusca.getCodUnidade(),
                                                              veiculoAfericao.getCodEstruturaVeiculo());
             final Short codDiagramaProlog =
                     integracaoDao.getCodDiagramaByDeParaTipoVeiculo(conn,
@@ -203,7 +210,7 @@ public final class SistemaProtheusNepomuceno extends Sistema {
             final Veiculo veiculo =
                     ProtheusNepomucenoConverter
                             .createVeiculoProlog(
-                                    codUnidade,
+                                    afericaoBusca.getCodUnidade(),
                                     codDiagramaProlog,
                                     veiculoAfericao,
                                     posicaoPneuMapper);
@@ -379,6 +386,23 @@ public final class SistemaProtheusNepomuceno extends Sistema {
         } finally {
             connectionProvider.closeResources(conn);
         }
+    }
+
+    @Override
+    @NotNull
+    public VeiculoDadosColetaKm getDadosColetaKmByCodigo(@NotNull final Long codVeiculo) throws Throwable {
+        return VeiculoDadosColetaKm.of(codVeiculo,
+                                       ProtheusNepomucenoEncoderDecoder.decode(codVeiculo),
+                                       0L,
+                                       null,
+                                       true,
+                                       false,
+                                       false,
+                                       true,
+                                       VeiculoDadosColetaKm
+                                               .VeiculoDadosTratorColetaKm
+                                               .builder()
+                                               .build());
     }
 
     @NotNull

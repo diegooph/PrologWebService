@@ -37,13 +37,15 @@ final class ChecklistModeloValidator {
                                          @NotNull final List<PerguntaModeloChecklist> perguntas) {
         // Verifica se temos perguntas no modelo.
         if (perguntas.isEmpty()) {
-            throw new GenericException(String.format("O modelo '%s' não pode ser salvo sem perguntas", nomeModelo));
+            throw new GenericException(String.format("O modelo '%s' não pode ser salvo sem perguntas", nomeModelo),
+                                       GenericException.NO_LOGS_INTO_SENTRY);
         }
 
         for (final PerguntaModeloChecklist p : perguntas) {
             // Verifica se a pergunta tem alternativas.
             if (p.getAlternativas().isEmpty()) {
-                throw new GenericException(String.format("A pergunta '%s' está sem alternativas", p.getDescricao()));
+                throw new GenericException(String.format("A pergunta '%s' está sem alternativas", p.getDescricao()),
+                                           GenericException.NO_LOGS_INTO_SENTRY);
             }
 
             // Verifica se a pergunta tem uma, e apenas uma, alternativa do tipo_outros.
@@ -55,7 +57,8 @@ final class ChecklistModeloValidator {
             if (totalTipoOutros != 1) {
                 throw new GenericException(String.format(
                         "Toda pergunta deve ter uma alternativa '%s' com digitação livre",
-                        DEFAULT_DESCRICAO_TIPO_OUTROS_WEB));
+                        DEFAULT_DESCRICAO_TIPO_OUTROS_WEB),
+                                           GenericException.NO_LOGS_INTO_SENTRY);
             }
 
             // Verifica se a alternativa do tipo_outros contém a descrição padrão dessa alternativa aceita pelo ProLog.
@@ -66,7 +69,8 @@ final class ChecklistModeloValidator {
             if (tipoOutrosSemDescricaoPadrao) {
                 throw new GenericException(String.format(
                         "A alternativa que requer a digitação do usuário precisa ter o nome '%s'",
-                        DEFAULT_DESCRICAO_TIPO_OUTROS_WEB));
+                        DEFAULT_DESCRICAO_TIPO_OUTROS_WEB),
+                                           GenericException.NO_LOGS_INTO_SENTRY);
             }
 
             // Verifica se a alternativa do tipo_outros está por último na pergunta.
@@ -76,7 +80,8 @@ final class ChecklistModeloValidator {
                         String.format(
                                 "A alternativa '%s' da pergunta '%s' deve ser a última",
                                 DEFAULT_DESCRICAO_TIPO_OUTROS_WEB,
-                                p.getDescricao()));
+                                p.getDescricao()),
+                        GenericException.NO_LOGS_INTO_SENTRY);
             }
         }
     }

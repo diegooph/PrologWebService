@@ -15,16 +15,20 @@ public final class ChecklistToSyncGlobus {
     @NotNull
     private final String placaVeiculoChecklist;
     @NotNull
+    private final Long codVeiculoChecklist;
+    @NotNull
     private final ChecklistItensNokGlobus checklistItensNokGlobus;
 
     public ChecklistToSyncGlobus(
             @NotNull final Long codModeloChecklist,
             @NotNull final Long codVersaoModeloChecklist,
             @NotNull final String placaVeiculoChecklist,
+            @NotNull final Long codVeiculoChecklist,
             @NotNull final ChecklistItensNokGlobus checklistItensNokGlobus) {
         this.codModeloChecklist = codModeloChecklist;
         this.codVersaoModeloChecklist = codVersaoModeloChecklist;
         this.placaVeiculoChecklist = placaVeiculoChecklist;
+        this.codVeiculoChecklist = codVeiculoChecklist;
         this.checklistItensNokGlobus = checklistItensNokGlobus;
     }
 
@@ -41,6 +45,11 @@ public final class ChecklistToSyncGlobus {
     @NotNull
     public String getPlacaVeiculoChecklist() {
         return placaVeiculoChecklist;
+    }
+
+    @NotNull
+    public Long getCodVeiculoChecklist() {
+        return codVeiculoChecklist;
     }
 
     @NotNull

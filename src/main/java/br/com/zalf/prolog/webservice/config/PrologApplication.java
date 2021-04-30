@@ -7,25 +7,21 @@ import io.swagger.jaxrs.listing.SwaggerSerializers;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.ServerProperties;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
-import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.Provider;
 
 /**
- * Created on 2020-09-14
- *
- * @author Diogenes Vanzela (https://github.com/diogenesvanzella)
+ * Para o funcionamento dos endpoints com Jersey, é necessário esta classe estender a
+ * {@link SpringBootServletInitializer}.
  */
 @SpringBootApplication(scanBasePackages = {"br.com.zalf.prolog.webservice"})
 @EntityScan(basePackages = {"br.com.zalf.prolog.webservice"})
@@ -36,14 +32,7 @@ public class PrologApplication extends SpringBootServletInitializer {
         SpringApplication.run(PrologApplication.class, args);
     }
 
-    @Override
-    protected SpringApplicationBuilder configure(@NotNull final SpringApplicationBuilder builder) {
-        builder.sources(PrologApplication.class);
-        return builder;
-    }
-
     @Component
-    @ApplicationPath("/prolog")
     public static class JerseyConfig extends ResourceConfig {
 
         @Autowired
@@ -57,17 +46,16 @@ public class PrologApplication extends SpringBootServletInitializer {
 
         @PostConstruct
         public void init() {
-            // Register components where DI is needed
             this.register(ApiListingResource.class);
             this.register(SwaggerSerializers.class);
             final BeanConfig swaggerConfigBean = new BeanConfig();
             swaggerConfigBean.setConfigId("Prolog Api Docs");
             swaggerConfigBean.setTitle("Prolog Api Docs");
             swaggerConfigBean.setDescription("Métodos disponíveis para acesso aos dados do Prolog");
-            swaggerConfigBean.setVersion("v1");
+            swaggerConfigBean.setVersion("v3");
             swaggerConfigBean.setContact("diogenes@prologapp.com");
-            swaggerConfigBean.setSchemes(new String[]{"http", "https"});
-            swaggerConfigBean.setHost("localhost:8080");
+            swaggerConfigBean.setSchemes(new String[]{"https"});
+            swaggerConfigBean.setHost("https://prologapp.com");
             swaggerConfigBean.setBasePath("/prolog");
             swaggerConfigBean.setResourcePackage("br.com.zalf.prolog.webservice");
             swaggerConfigBean.setPrettyPrint(true);
