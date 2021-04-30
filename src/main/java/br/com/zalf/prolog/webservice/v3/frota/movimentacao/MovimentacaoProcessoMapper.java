@@ -1,15 +1,13 @@
 package br.com.zalf.prolog.webservice.v3.frota.movimentacao;
 
-import br.com.zalf.prolog.webservice.commons.util.datetime.LocalDateTimeUtils;
 import br.com.zalf.prolog.webservice.v3.frota.movimentacao._model.*;
 import br.com.zalf.prolog.webservice.v3.frota.pneu._model.PneuEntity;
 import br.com.zalf.prolog.webservice.v3.frota.veiculo._model.VeiculoEntity;
-import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
-import java.time.ZoneId;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -19,6 +17,7 @@ import java.util.stream.Collectors;
  */
 @Component
 public final class MovimentacaoProcessoMapper {
+    @NotNull
     public List<MovimentacaoProcessoListagemDto> toDto(
             @NotNull final List<MovimentacaoProcessoEntity> processosMovimentacao) {
         return processosMovimentacao.stream()
@@ -29,68 +28,53 @@ public final class MovimentacaoProcessoMapper {
     @NotNull
     private MovimentacaoProcessoListagemDto createMovimentacaoProcessoListagemDto(
             @NotNull final MovimentacaoProcessoEntity processoEntity) {
-        return new MovimentacaoProcessoListagemDto(
-                processoEntity.getCodigo(),
-                processoEntity.getCodUnidade(),
-                processoEntity.getDataHoraRealizacao(),
-                LocalDateTimeUtils.applyTimezone(
-                        processoEntity.getDataHoraRealizacao(),
-                        ZoneId.of(processoEntity.getColaboradorRealizacaoProcesso().getUnidade().getTimezone())),
-                processoEntity.getColaboradorRealizacaoProcesso().getCodigo(),
-                StringUtils.leftPad(
-                        processoEntity.getColaboradorRealizacaoProcesso().getCpf().toString(), 11, "0"),
-                processoEntity.getColaboradorRealizacaoProcesso().getNome(),
-                processoEntity.getObservacao(),
-                processoEntity.getMovimentacoes().stream()
-                        .map(this::createMovimentacaoListagemDto)
-                        .collect(Collectors.toList()));
+        final Optional<VeiculoEntity> veiculo = processoEntity.getVeiculo();
+        return new MovimentacaoProcessoListagemDto(processoEntity.getCodigo(),
+                                                   processoEntity.getCodUnidade(),
+                                                   processoEntity.getDataHoraRealizacao(),
+                                                   processoEntity.getDataHoraRealizacaoTzAplicado(),
+                                                   processoEntity.getColaboradorRealizacaoProcesso().getCodigo(),
+                                                   processoEntity.getColaboradorRealizacaoProcesso().getCpfFormatado(),
+                                                   processoEntity.getColaboradorRealizacaoProcesso().getNome(),
+                                                   veiculo.map(VeiculoEntity::getCodigo).orElse(null),
+                                                   veiculo.map(VeiculoEntity::getPlaca).orElse(null),
+                                                   veiculo.map(VeiculoEntity::getIdentificadorFrota).orElse(null),
+                                                   veiculo.map(VeiculoEntity::getKm).orElse(null),
+                                                   veiculo.map(VeiculoEntity::getCodDiagrama).orElse(null),
+                                                   processoEntity.getObservacao(),
+                                                   processoEntity.getMovimentacoes().stream()
+                                                           .map(this::createMovimentacaoListagemDto)
+                                                           .collect(Collectors.toList()));
     }
 
-    private MovimentacaoListagemDto createMovimentacaoListagemDto(@NotNull final MovimentacaoEntity movimentacaoEntity) {
-        final VeiculoEntity veiculoOrigem = movimentacaoEntity.getMovimentacaoOrigem().getVeiculo();
-        final VeiculoEntity veiculoDestino = movimentacaoEntity.getMovimentacaoDestino().getVeiculo();
-        final RecapadoraEntity recapadoraDestino = movimentacaoEntity.getMovimentacaoDestino().getRecapadora();
-        return new MovimentacaoListagemDto(
-                movimentacaoEntity.getCodigo(),
-                movimentacaoEntity.getCodUnidade(),
-                veiculoOrigem != null ? veiculoOrigem.getCodigo() : null,
-                veiculoOrigem != null ? veiculoOrigem.getPlaca() : null,
-                veiculoOrigem != null ? veiculoOrigem.getIdentificadorFrota() : null,
-                movimentacaoEntity.getMovimentacaoOrigem().getCodDiagrama(),
-                movimentacaoEntity.getMovimentacaoOrigem().getKmColetadoVeiculo(),
-                movimentacaoEntity.getMovimentacaoOrigem().getTipoOrigem().asString(),
-                veiculoDestino != null ? veiculoDestino.getCodigo() : null,
-                veiculoDestino != null ? veiculoDestino.getPlaca() : null,
-                veiculoDestino != null ? veiculoDestino.getIdentificadorFrota() : null,
-                movimentacaoEntity.getMovimentacaoDestino().getCodDiagrama(),
-                movimentacaoEntity.getMovimentacaoDestino().getKmColetadoVeiculo(),
-                movimentacaoEntity.getMovimentacaoDestino().getTipoDestino().asString(),
-                movimentacaoEntity.getMovimentacaoDestino().getPosicaoPneuDestino(),
-                movimentacaoEntity.getMovimentacaoDestino().getCodMotivoDescarte(),
-                movimentacaoEntity.getMovimentacaoDestino().getCodColeta(),
-                movimentacaoEntity.getMovimentacaoDestino().getUrlImagemDescarte1(),
-                movimentacaoEntity.getMovimentacaoDestino().getUrlImagemDescarte2(),
-                movimentacaoEntity.getMovimentacaoDestino().getUrlImagemDescarte3(),
-                recapadoraDestino != null ? recapadoraDestino.getCodigo() : null,
-                recapadoraDestino != null ? recapadoraDestino.getNome() : null,
-                createPneuMovimentacaoListagemDto(movimentacaoEntity.getPneu()),
-                movimentacaoEntity.getSulcoInterno(),
-                movimentacaoEntity.getSulcoCentralInterno(),
-                movimentacaoEntity.getSulcoCentralExterno(),
-                movimentacaoEntity.getSulcoExterno(),
-                movimentacaoEntity.getPressaoAtual());
-    }
-
-    private PneuMovimentacaoListagemDto createPneuMovimentacaoListagemDto(@NotNull final PneuEntity pneuEntity) {
-        return new PneuMovimentacaoListagemDto(pneuEntity.getCodigo(),
-                                               pneuEntity.getCodigoCliente(),
-                                               pneuEntity.getCodModelo(),
-                                               pneuEntity.getCodDimensao(),
-                                               pneuEntity.getVidaAtual(),
-                                               pneuEntity.getPressaoAtual(),
-                                               pneuEntity.getAlturaSulcoInterno(),
-                                               pneuEntity.getAlturaSulcoCentralInterno(),
-                                               pneuEntity.getAlturaSulcoCentralExterno(),
-                                               pneuEntity.getAlturaSulcoExterno());
+    @NotNull
+    private MovimentacaoListagemDto createMovimentacaoListagemDto(
+            @NotNull final MovimentacaoEntity movimentacaoEntity) {
+        final MovimentacaoOrigemEntity movimentacaoOrigem = movimentacaoEntity.getMovimentacaoOrigem();
+        final MovimentacaoDestinoEntity movimentacaoDestino = movimentacaoEntity.getMovimentacaoDestino();
+        final PneuEntity pneu = movimentacaoEntity.getPneu();
+        final RecapadoraEntity recapadoraDestino = movimentacaoDestino.getRecapadora();
+        return new MovimentacaoListagemDto(movimentacaoEntity.getCodigo(),
+                                           pneu.getCodigo(),
+                                           pneu.getCodigoCliente(),
+                                           pneu.getCodDimensao(),
+                                           movimentacaoEntity.getVida(),
+                                           movimentacaoEntity.getSulcoInterno(),
+                                           movimentacaoEntity.getSulcoCentralInterno(),
+                                           movimentacaoEntity.getSulcoCentralExterno(),
+                                           movimentacaoEntity.getSulcoExterno(),
+                                           movimentacaoEntity.getPressaoAtual(),
+                                           movimentacaoOrigem.getTipoOrigem().asString(),
+                                           movimentacaoOrigem.getPosicaoPneuOrigem(),
+                                           movimentacaoDestino.getTipoDestino().asString(),
+                                           movimentacaoDestino.getPosicaoPneuDestino(),
+                                           movimentacaoEntity.getObservacao(),
+                                           movimentacaoDestino.getCodMotivoDescarte(),
+                                           movimentacaoDestino.getUrlImagemDescarte1(),
+                                           movimentacaoDestino.getUrlImagemDescarte2(),
+                                           movimentacaoDestino.getUrlImagemDescarte3(),
+                                           recapadoraDestino != null ? recapadoraDestino.getCodigo() : null,
+                                           recapadoraDestino != null ? recapadoraDestino.getNome() : null,
+                                           movimentacaoDestino.getCodColeta());
     }
 }

@@ -14,19 +14,32 @@ import java.util.List;
  */
 @Data
 public final class MovimentacaoProcessoListagemDto {
-    private final long codProcesso;
-    private final long codUnidade;
+    @NotNull
+    private final Long codProcessoMovimentacao;
+    @NotNull
+    private final Long codUnidadeProcessoMovimentacao;
     @NotNull
     private final LocalDateTime dataHoraRealizacaoUtc;
     @NotNull
     private final LocalDateTime dataHoraRealizacaoTimeZoneAplicado;
-    private final long codColaboradorResponsavel;
+    @NotNull
+    private final Long codColaboradorResponsavel;
     @NotNull
     private final String cpfColaboradorResponsavel;
     @NotNull
     private final String nomeColaboradorResponsavel;
     @Nullable
-    private final String observacaoProcesso;
+    private final Long codVeiculo;
+    @Nullable
+    private final String placaVeiculo;
+    @Nullable
+    private final String identificadorFrotaVeiculo;
+    @Nullable
+    private final Long kmColetadoVeiculo;
+    @Nullable
+    private final Long codDiagramaVeiculo;
+    @Nullable
+    private final String observacaoProcessoMovimentacao;
     @NotNull
-    private final List<MovimentacaoListagemDto> movimentacoes;
+    private final List<MovimentacaoListagemDto> movimentacoesRealizadas;
 }

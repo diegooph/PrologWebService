@@ -1,8 +1,10 @@
 package br.com.zalf.prolog.webservice.v3.frota.movimentacao._model;
 
+import br.com.zalf.prolog.webservice.commons.util.datetime.TimezoneUtils;
 import br.com.zalf.prolog.webservice.v3.LocalDateTimeUtcAttributeConverter;
 import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.EntityKmColetado;
 import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.VeiculoKmColetado;
+import br.com.zalf.prolog.webservice.v3.frota.veiculo._model.VeiculoEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -48,10 +50,10 @@ public final class MovimentacaoProcessoEntity implements EntityKmColetado {
     @NotNull
     @Override
     public VeiculoKmColetado getVeiculoKmColetado() {
-        final Optional<VeiculoMovimentacao> veiculo = getVeiculo();
+        final Optional<VeiculoEntity> veiculo = getVeiculo();
         if (veiculo.isPresent()) {
-            final VeiculoMovimentacao veiculoMovimentacao = veiculo.get();
-            return VeiculoKmColetado.of(veiculoMovimentacao.getCodVeiculo(), veiculoMovimentacao.getKmColetado());
+            final VeiculoEntity veiculoEntity = veiculo.get();
+            return VeiculoKmColetado.of(veiculoEntity.getCodigo(), veiculoEntity.getKm());
         } else {
             throw new IllegalStateException(String.format(
                     "O processo de movimentação %d não possui veículo associado.",
@@ -68,16 +70,22 @@ public final class MovimentacaoProcessoEntity implements EntityKmColetado {
     }
 
     @NotNull
-    public Optional<VeiculoMovimentacao> getVeiculo() {
+    public Optional<VeiculoEntity> getVeiculo() {
         for (final MovimentacaoEntity movimentacao : movimentacoes) {
             // Movimentações no Prolog só podem envolver um veículo. Dessa forma, ao encontrar um veículo podemos
             // retornar imediatamente.
-            final Optional<VeiculoMovimentacao> veiculo = movimentacao.getVeiculo();
+            final Optional<VeiculoEntity> veiculo = movimentacao.getVeiculo();
             if (veiculo.isPresent()) {
                 return veiculo;
             }
         }
 
         return Optional.empty();
+    }
+
+    @NotNull
+    public LocalDateTime getDataHoraRealizacaoTzAplicado() {
+        return TimezoneUtils.applyTimezone(this.dataHoraRealizacao,
+                                           this.colaboradorRealizacaoProcesso.getColaboradorZoneId());
     }
 }

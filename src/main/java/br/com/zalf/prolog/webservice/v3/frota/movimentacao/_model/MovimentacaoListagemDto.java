@@ -11,38 +11,38 @@ import org.jetbrains.annotations.Nullable;
  */
 @Data
 public final class MovimentacaoListagemDto {
-    private final long codMovimentacao;
-    private final long codUnidade;
+    @NotNull
+    private final Long codMovimentacao;
+    @NotNull
+    private final Long codPneu;
+    @NotNull
+    private final String codigoClientePneu;
+    @NotNull
+    private final Long codDimensaoPneu;
+    @NotNull
+    private final Integer vidaPneu;
     @Nullable
-    private final Long codVeiculoOrigem;
+    private final Double sulcoInternoMomentoMovimentacaoEmMilimetros;
     @Nullable
-    private final String placaVeiculoOrigem;
+    private final Double sulcoCentralInternoMomentoMovimentacaoEmMilimetros;
     @Nullable
-    private final String idFrotaVeiculoOrigem;
+    private final Double sulcoCentralExternoMomentoMovimentacaoEmMilimetros;
     @Nullable
-    private final Long codDiagramaOrigem;
+    private final Double sulcoExternoMomentoMovimentacaoEmMilimetros;
     @Nullable
-    private final Long kmColetadoVeiculoOrigem;
+    private final Double pressaoMomentoMovimentacaoEmPsi;
     @NotNull
     private final String tipoOrigem;
     @Nullable
-    private final Long codVeiculoDestino;
-    @Nullable
-    private final String placaVeiculoDestino;
-    @Nullable
-    private final String idFrotaVeiculoDestino;
-    @Nullable
-    private final Long codDiagramaDestino;
-    @Nullable
-    private final Long kmColetadoVeiculoDestino;
+    private final Long posicaoPneuOrigem;
     @NotNull
     private final String tipoDestino;
     @Nullable
     private final Long posicaoPneuDestino;
     @Nullable
-    private final Long codMotivoDescarte;
+    private final String observacao;
     @Nullable
-    private final String codColeta;
+    private final Long codMotivoDescarte;
     @Nullable
     private final String urlImagemDescarte1;
     @Nullable
@@ -53,16 +53,6 @@ public final class MovimentacaoListagemDto {
     private final Long codRecapadora;
     @Nullable
     private final String nomeRecapadora;
-    @NotNull
-    private final PneuMovimentacaoListagemDto pneuMovimentacao;
     @Nullable
-    private final Double sulcoInternoMomentoMovimentacaoEmMilimetros;
-    @Nullable
-    private final Double sulcoCentralInternoMomentoMovimentacaoEmMilimetros;
-    @Nullable
-    private final Double sulcoCentralExternoMomentoMovimentacaoEmMilimetros;
-    @Nullable
-    private final Double sulcoExternoMomentoMovimentacaoEmMilimetros;
-    @Nullable
-    private final Double pressaoMomentoMovimentacaoEmMilimetros;
+    private final String codColeta;
 }

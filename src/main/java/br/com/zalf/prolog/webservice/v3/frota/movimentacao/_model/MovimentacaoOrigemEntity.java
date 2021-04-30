@@ -25,7 +25,7 @@ public final class MovimentacaoOrigemEntity {
     @Column(name = "cod_movimentacao", nullable = false)
     private Long codMovimentacao;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cod_veiculo", referencedColumnName = "codigo", nullable = false)
+    @JoinColumn(name = "cod_veiculo", referencedColumnName = "codigo")
     private VeiculoEntity veiculo;
     @Column(name = "cod_diagrama")
     private Long codDiagrama;

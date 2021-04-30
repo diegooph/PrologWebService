@@ -82,21 +82,22 @@ public class MovimentacaoProcessoService implements KmProcessoAtualizavel {
                 });
     }
 
+    @NotNull
     @Transactional
-    public List<MovimentacaoProcessoEntity> getAll(@NotNull final List<Long> codUnidades,
-                                                   @Nullable final Long codColaborador,
-                                                   @Nullable final Long codVeiculo,
-                                                   @Nullable final Long codPneu,
-                                                   @NotNull final String dataInicial,
-                                                   @NotNull final String dataFinal,
-                                                   final int limit,
-                                                   final int offset) {
-        return movimentacaoProcessoDao.getAll(codUnidades,
-                                              codColaborador,
-                                              codVeiculo,
-                                              codPneu,
-                                              DateUtils.parseDate(dataInicial),
-                                              DateUtils.parseDate(dataFinal),
-                                              PageRequest.of(offset, limit));
+    public List<MovimentacaoProcessoEntity> getListagemMovimentacoes(@NotNull final List<Long> codUnidades,
+                                                                     @NotNull final String dataInicial,
+                                                                     @NotNull final String dataFinal,
+                                                                     @Nullable final Long codColaborador,
+                                                                     @Nullable final Long codVeiculo,
+                                                                     @Nullable final Long codPneu,
+                                                                     final int limit,
+                                                                     final int offset) {
+        return movimentacaoProcessoDao.getListagemMovimentacoes(codUnidades,
+                                                                DateUtils.parseDate(dataInicial),
+                                                                DateUtils.parseDate(dataFinal),
+                                                                codColaborador,
+                                                                codVeiculo,
+                                                                codPneu,
+                                                                PageRequest.of(offset, limit));
     }
 }

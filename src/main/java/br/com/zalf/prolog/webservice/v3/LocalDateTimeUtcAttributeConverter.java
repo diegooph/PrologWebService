@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice.v3;
 
+import org.jetbrains.annotations.Nullable;
+
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 import java.sql.Timestamp;
@@ -14,12 +16,12 @@ import java.time.ZoneOffset;
 @Converter
 public class LocalDateTimeUtcAttributeConverter implements AttributeConverter<LocalDateTime, Timestamp> {
     @Override
-    public Timestamp convertToDatabaseColumn(final LocalDateTime localDateTime) {
-        return Timestamp.valueOf(localDateTime);
+    public Timestamp convertToDatabaseColumn(@Nullable final LocalDateTime localDateTime) {
+        return localDateTime == null ? null : Timestamp.valueOf(localDateTime);
     }
 
     @Override
-    public LocalDateTime convertToEntityAttribute(final Timestamp timestamp) {
+    public LocalDateTime convertToEntityAttribute(@Nullable final Timestamp timestamp) {
         return timestamp == null ? null : timestamp.toInstant().atZone(ZoneOffset.UTC).toLocalDateTime();
     }
 }

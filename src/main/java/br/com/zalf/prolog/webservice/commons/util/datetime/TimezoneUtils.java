@@ -11,7 +11,8 @@ import java.time.ZoneOffset;
  *
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
-public final class LocalDateTimeUtils {
+public final class TimezoneUtils {
+    @NotNull
     public static LocalDateTime applyTimezone(@NotNull final LocalDateTime localDateTimeToApplyTimezone,
                                               @NotNull final ZoneId timezoneId) {
         return localDateTimeToApplyTimezone.atOffset(ZoneOffset.UTC).atZoneSameInstant(timezoneId).toLocalDateTime();
