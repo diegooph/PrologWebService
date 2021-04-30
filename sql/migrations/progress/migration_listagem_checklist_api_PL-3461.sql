@@ -142,8 +142,12 @@ begin
                dc.total_perguntas_nok                                    as total_perguntas_nok,
                dc.total_alternativas_ok                                  as total_alternativas_ok,
                dc.total_alternativas_nok                                 as total_alternativas_nok,
-               dc.total_midias_perguntas_ok                              as total_midias_perguntas_ok,
-               dc.total_midias_alternativas_nok                          as total_midias_alternativas_nok,
+               f_if(dc.total_midias_perguntas_ok is null,
+                    0::smallint,
+                    dc.total_midias_perguntas_ok)                        as total_midias_perguntas_ok,
+               f_if(dc.total_midias_alternativas_nok is null,
+                    0::smallint,
+                    dc.total_midias_alternativas_nok)                    as total_midias_alternativas_nok,
                (select count(*)
                 from checklist_respostas_nok crn
                          join checklist_alternativa_pergunta cap
