@@ -38,9 +38,11 @@ public class DeleteTempFileScheduler implements Scheduler {
         try (final Stream<Path> walk = Files.walk(absolutePath)) {
             final boolean allFillesDeleted = walk
                     .map(Path::toFile)
+                    .peek(file -> Log.i(TAG, "Arquivos ou diretórios em analise: " + file.getAbsolutePath()))
+                    .filter(File::canRead)
                     .filter(FileUtils::isOutdated)
-                    .peek(file -> Log.i(TAG, "Arquivo ou diretório à ser deletado: " + file.getName()))
-                    .allMatch(File::delete);
+                    .peek(file -> Log.i(TAG, "Arquivos ou diretórios para deleção: " + file.getAbsolutePath()))
+                    .allMatch(FileUtils::delete);
             if (allFillesDeleted) {
                 Log.i(TAG, "Arquivos e diretórios temporários deletados com sucesso!");
                 return;
