@@ -1,7 +1,7 @@
 package test.br.com.zalf.prolog.webservice.pilares.frota.pneu.afericao;
 
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.v3._model.dto.AfericaoAvulsaDto;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.v3._model.dto.AfericaoPlacaDto;
+import br.com.zalf.prolog.webservice.v3.frota.afericao._model.AfericaoAvulsaDto;
+import br.com.zalf.prolog.webservice.v3.frota.afericao._model.AfericaoPlacaDto;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestComponent;
@@ -23,28 +23,41 @@ import java.util.stream.Collectors;
  */
 @TestComponent
 public class AfericaoApiClient {
-
+    @NotNull
     private static final String RESOURCE = "/v3/afericoes";
-
     @Autowired
     @NotNull
     private TestRestTemplate restTemplate;
 
     public ResponseEntity<List<AfericaoPlacaDto>> getAfericoesPlacas(final List<Long> codUnidades,
-                                                                    final String placaVeiculo,
-                                                                    final Long codTipoVeiculo,
-                                                                    final String dataInicial,
-                                                                    final String dataFinal,
-                                                                    final int limit,
-                                                                    final int offset) {
+                                                                     final String dataInicial,
+                                                                     final String dataFinal,
+                                                                     final int limit,
+                                                                     final int offset) {
+        return getAfericoesPlacas(codUnidades,
+                                  null,
+                                  null,
+                                  dataInicial,
+                                  dataFinal,
+                                  limit,
+                                  offset);
+    }
+
+    public ResponseEntity<List<AfericaoPlacaDto>> getAfericoesPlacas(final List<Long> codUnidades,
+                                                                     final Long codVeiculo,
+                                                                     final Long codTipoVeiculo,
+                                                                     final String dataInicial,
+                                                                     final String dataFinal,
+                                                                     final int limit,
+                                                                     final int offset) {
 
         final UriComponents components = UriComponentsBuilder
                 .fromPath(RESOURCE)
                 .path("/placas")
-                .queryParam("unidades", codUnidades.stream()
+                .queryParam("codUnidades", codUnidades.stream()
                         .map(Object::toString)
                         .collect(Collectors.joining(",")))
-                .queryParam("placa", placaVeiculo)
+                .queryParam("codVeiculo", codVeiculo)
                 .queryParam("codTipoVeiculo", codTipoVeiculo)
                 .queryParam("dataInicial", dataInicial)
                 .queryParam("dataFinal", dataFinal)
@@ -56,18 +69,18 @@ public class AfericaoApiClient {
                 .accept(MediaType.APPLICATION_JSON)
                 .build();
 
-        return restTemplate.exchange(reqEntity, new ParameterizedTypeReference<List<AfericaoPlacaDto>>() {});
+        return restTemplate.exchange(reqEntity, new ParameterizedTypeReference<>() {});
     }
 
     public ResponseEntity<List<AfericaoAvulsaDto>> getAfericoesAvulsas(final List<Long> codUnidades,
-                                                       final String dataInicial,
-                                                       final String dataFinal,
-                                                       final int limit,
-                                                       final int offset) {
+                                                                       final String dataInicial,
+                                                                       final String dataFinal,
+                                                                       final int limit,
+                                                                       final int offset) {
         final UriComponents components = UriComponentsBuilder
                 .fromPath(RESOURCE)
                 .path("/avulsas")
-                .queryParam("unidades", codUnidades.stream()
+                .queryParam("codUnidades", codUnidades.stream()
                         .map(Object::toString)
                         .collect(Collectors.joining(",")))
                 .queryParam("dataInicial", dataInicial)
@@ -80,6 +93,6 @@ public class AfericaoApiClient {
                 .get(components.toUri())
                 .accept(MediaType.APPLICATION_JSON)
                 .build();
-        return restTemplate.exchange(reqEntity, new ParameterizedTypeReference<List<AfericaoAvulsaDto>>() {});
+        return restTemplate.exchange(reqEntity, new ParameterizedTypeReference<>() {});
     }
 }

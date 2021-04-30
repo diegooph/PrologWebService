@@ -1,47 +1,44 @@
-package br.com.zalf.prolog.webservice.frota.pneu.afericao.v3._model.dto;
+package br.com.zalf.prolog.webservice.v3.frota.afericao._model;
 
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.TipoMedicaoColetadaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.TipoProcessoColetaAfericao;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.FormaColetaDadosAfericaoEnum;
-import lombok.Builder;
 import lombok.Value;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
- * Created on 2021-02-10
+ * Created on 2021-02-11
  *
  * @author Guilherme Steinert (https://github.com/steinert999)
  */
-@Builder
-@Value
-public class DadosGeraisAfericao {
-
+@Value(staticConstructor = "of")
+public class AfericaoAvulsaDto {
     @NotNull
     Long codigo;
-
     @NotNull
     Long codUnidade;
-
     @NotNull
-    LocalDateTime dataHora;
-
+    LocalDateTime dataHoraAfericaoUtc;
+    @NotNull
+    LocalDateTime dataHoraAfericaoTzAplicado;
     @NotNull
     TipoMedicaoColetadaAfericao tipoMedicaoColetada;
-
     @NotNull
     TipoProcessoColetaAfericao tipoProcessoColeta;
-
     @NotNull
     Long tempoRealizacao;
-
     @NotNull
     FormaColetaDadosAfericaoEnum formaColetaDados;
-
     @NotNull
-    String cpfAferidor;
-
+    Long codColaborador;
     @NotNull
-    String nomeAferidor;
+    String cpfColaborador;
+    @NotNull
+    String nomeColaborador;
+    @Nullable
+    List<MedidaDto> medidas;
 }

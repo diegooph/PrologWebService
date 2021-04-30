@@ -1,10 +1,11 @@
 --
 -- file: scripts/01_script_prolog_db_schemas_extensions.sql
 --
-create extension citext;
-create extension fuzzystrmatch;
-create extension pg_trgm;
-create extension unaccent;
+
+create extension if not exists citext;
+create extension if not exists fuzzystrmatch;
+create extension if not exists pg_trgm;
+create extension if not exists unaccent;
 create extension if not exists postgis;
 
 create schema aferidor;

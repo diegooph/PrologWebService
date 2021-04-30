@@ -26,6 +26,7 @@ Change Log
 * Altera path de unidades para estarem no `v3` e serem precedidos por `api`
 * Altera calculo de vencidas da function de geraçao dos dashboards e do relatorio de cronograma (PL-3538)
 * Realiza pequenas melhorias na PrologApplication (PL-3606)
+* adiciona valores de medidas na API de aferição (PL-3570)
 
 ### Bug Fixes
 * Corrige function de transferência de veículo entre Empresas para o Suporte (PS-1504)
