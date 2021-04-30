@@ -41,7 +41,7 @@ public final class PneuValidator {
         } catch (final GenericException e) {
             throw e;
         } catch (final Exception e) {
-            throw new GenericException(e.getMessage(), null);
+            throw new GenericException(e.getMessage(), null, GenericException.NO_LOGS_INTO_SENTRY);
         }
     }
 
@@ -54,7 +54,8 @@ public final class PneuValidator {
         Preconditions.checkNotNull(codigoCliente, "Você precisa fornecer o código do pneu");
         if (!StringUtils.stripAccents(codigoCliente).equals(codigoCliente)) {
             throw new GenericException("Código inválido\nO código não deve conter acentos", "Código informado: "
-                    + codigoCliente);
+                    + codigoCliente,
+                                       GenericException.NO_LOGS_INTO_SENTRY);
         }
     }
 
@@ -79,12 +80,14 @@ public final class PneuValidator {
 
         if (vidaAtual > VIDA_MAXIMA) {
             throw new GenericException("Vida inválida\nO máximo de vidas que um pneu deve ter é 11",
-                                       "vidaAtual: " + vidaAtual);
+                                       "vidaAtual: " + vidaAtual,
+                                       GenericException.NO_LOGS_INTO_SENTRY);
         }
 
         if (vidaAtual < VIDA_PNEU_NOVO) {
             throw new GenericException("Vida inválida\nO pneu deve ter pelo menos vida 1",
-                                       "vidaAtual: " + vidaAtual);
+                                       "vidaAtual: " + vidaAtual,
+                                       GenericException.NO_LOGS_INTO_SENTRY);
         }
     }
 
@@ -93,7 +96,8 @@ public final class PneuValidator {
         if (vidaAtual > VIDA_PNEU_NOVO && pneuNovoNuncaRodado) {
             throw new GenericException("Campo Pneu novo (nunca rodado) inválido\n" +
                                                "O pneu não pode ser novo (nunca rodado) e estar na primeira vida, " +
-                                               "simultaneamente", "vidaAtual: " + vidaAtual);
+                                               "simultaneamente", "vidaAtual: " + vidaAtual,
+                                       GenericException.NO_LOGS_INTO_SENTRY);
         }
     }
 
@@ -101,7 +105,8 @@ public final class PneuValidator {
         if (vidaTotal < vidaAtual) {
             throw new GenericException("A vida do pneu precisa ser menor ou igual ao máximo de recapagens",
                                        "vidaTotal é menor que vidaAtual\nvidaAtual: " + vidaAtual +
-                                               " vidaTotal: " + vidaTotal);
+                                               " vidaTotal: " + vidaTotal,
+                                       GenericException.NO_LOGS_INTO_SENTRY);
         }
     }
 
@@ -146,7 +151,8 @@ public final class PneuValidator {
 
     public static void validacaoDot(@Nullable final String dot) {
         if (!StringUtils.isNullOrEmpty(dot) && !isDotValid(dot)) {
-            throw new GenericException("DOT inválido", "DOT informado: " + dot);
+            throw new GenericException("DOT inválido", "DOT informado: " + dot,
+                                       GenericException.NO_LOGS_INTO_SENTRY);
         }
     }
 }

@@ -8,6 +8,7 @@ import com.google.common.collect.ImmutableMap;
 import io.sentry.SentryEvent;
 import io.sentry.SentryLevel;
 import io.sentry.protocol.Message;
+import org.glassfish.jersey.server.ParamException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -15,6 +16,7 @@ import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.NotAuthorizedException;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.Map;
@@ -42,6 +44,16 @@ public final class InternalExceptionMapper {
             return createResponse(
                     Response.Status.BAD_REQUEST.getStatusCode(),
                     createPrologError(convertToClientSideErrorException((ConstraintViolationException) throwable)));
+        }
+        if (throwable instanceof ParamException) {
+            return createResponse(
+                    Response.Status.BAD_REQUEST.getStatusCode(),
+                    createPrologError(convertToClientSideErrorException((ParamException) throwable)));
+        }
+        if (throwable instanceof NotFoundException) {
+            return createResponse(
+                    Response.Status.NOT_FOUND.getStatusCode(),
+                    createPrologError((NotFoundException) throwable));
         }
 
         final ProLogException proLogException = convertToPrologException(throwable);
@@ -76,17 +88,34 @@ public final class InternalExceptionMapper {
     }
 
     @NotNull
-    private static ProLogError createPrologError(final ProLogException proLogException) {
+    private static ClientSideErrorException convertToClientSideErrorException(
+            @NotNull final ParamException exception) {
+        return new ClientSideErrorException(
+                String.format("O parâmetro %s possuí valores inválidos.", exception.getParameterName()),
+                String.format(
+                        "Não foi possível processar as informações passadas no parâmetro %s.",
+                        exception.getParameterName()),
+                exception.getCause().getMessage(),
+                false);
+    }
+
+    @NotNull
+    private static ProLogError createPrologError(@NotNull final ProLogException proLogException) {
         return ProLogErrorFactory.create(proLogException);
     }
 
     @NotNull
-    private static ProLogError createPrologError(final NotAuthorizedException proLogException) {
+    private static ProLogError createPrologError(@NotNull final NotAuthorizedException proLogException) {
         return ProLogErrorFactory.create(proLogException);
     }
 
     @NotNull
-    private static ProLogError createPrologError(final ForbiddenException proLogException) {
+    private static ProLogError createPrologError(@NotNull final ForbiddenException proLogException) {
+        return ProLogErrorFactory.create(proLogException);
+    }
+
+    @NotNull
+    private static ProLogError createPrologError(@NotNull final NotFoundException proLogException) {
         return ProLogErrorFactory.create(proLogException);
     }
 

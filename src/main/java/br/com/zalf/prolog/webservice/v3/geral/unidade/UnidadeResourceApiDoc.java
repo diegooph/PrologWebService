@@ -4,6 +4,8 @@ import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
 import br.com.zalf.prolog.webservice.v3.geral.unidade._model.UnidadeEdicaoDto;
 import br.com.zalf.prolog.webservice.v3.geral.unidade._model.UnidadeVisualizacaoListagemDto;
+import br.com.zalf.prolog.webservice.v3.validation.CodEmpresa;
+import br.com.zalf.prolog.webservice.v3.validation.CodUnidade;
 import io.swagger.annotations.*;
 
 import javax.validation.Valid;
@@ -40,7 +42,8 @@ public interface UnidadeResourceApiDoc {
             @ApiResponse(code = 500, message = "Erro ao executar operação", response = Response.class)
     })
     UnidadeVisualizacaoListagemDto getUnidadeByCodigo(
-            @ApiParam(value = "O código da unidade que será buscada.", required = true) final Long codUnidade);
+            @ApiParam(value = "O código da unidade que será buscada.",
+                      required = true) @CodUnidade final Long codUnidade);
 
     @ApiOperation(
             value = "Lista informações das unidades de uma empresa possibilitando filtrar por regional.",
@@ -55,7 +58,7 @@ public interface UnidadeResourceApiDoc {
             @ApiResponse(code = 500, message = "Erro ao executar operação", response = Response.class)
     })
     List<UnidadeVisualizacaoListagemDto> getUnidadesListagem(
-            @ApiParam(value = "Um código de empresa existente.", required = true) final Long codEmpresa,
+            @ApiParam(value = "Um código de empresa existente.", required = true) @CodEmpresa final Long codEmpresa,
             @ApiParam(value = "Um ou mais códigos de regional, existentes." +
                     "<br><b>Importante:</b> Se nenhum código for informado, será realizada a busca por todas as " +
                     "regionais da empresa.") final List<Long> codigosRegionais);

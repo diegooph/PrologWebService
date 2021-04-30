@@ -43,7 +43,8 @@ final class OrdemServicoValidator {
                                                          @NotNull final LocalDateTime dataHoraFimResolucao,
                                                          @NotNull final ZoneId zoneIdCliente) throws ProLogException {
         if (dataHoraInicioResolucao.isAfter(dataHoraFimResolucao)) {
-            throw new GenericException("A data/hora de início da resolução não pode ser posterior a data/hora de fim");
+            throw new GenericException("A data/hora de início da resolução não pode ser posterior a data/hora de fim",
+                                       GenericException.NO_LOGS_INTO_SENTRY);
         }
 
         final LocalDateTime dataHoraAtualUtc = Now.getLocalDateTimeUtc();
@@ -56,10 +57,12 @@ final class OrdemServicoValidator {
                 .withZoneSameInstant(ZoneOffset.UTC)
                 .toLocalDateTime();
         if (dataHoraInicioUtc.isAfter(dataHoraAtualUtc)) {
-            throw new GenericException("A data/hora de início da resolução não pode ser posterior a data/hora atual");
+            throw new GenericException("A data/hora de início da resolução não pode ser posterior a data/hora atual",
+                                       GenericException.NO_LOGS_INTO_SENTRY);
         }
         if (dataHoraFimUtc.isAfter(dataHoraAtualUtc)) {
-            throw new GenericException("A data/hora de fim da resolução não pode ser posterior a data/hora atual");
+            throw new GenericException("A data/hora de fim da resolução não pode ser posterior a data/hora atual",
+                                       GenericException.NO_LOGS_INTO_SENTRY);
         }
     }
 }

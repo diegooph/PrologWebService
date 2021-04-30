@@ -8,6 +8,7 @@ import br.com.zalf.prolog.webservice.errorhandling.ErrorReportSystem;
 import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.*;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.TipoVeiculo;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.Veiculo;
+import br.com.zalf.prolog.webservice.frota.veiculo.model.visualizacao.VeiculoDadosColetaKm;
 import br.com.zalf.prolog.webservice.integracao.IntegracaoPosicaoPneuMapper;
 import br.com.zalf.prolog.webservice.integracao.IntegradorProLog;
 import br.com.zalf.prolog.webservice.integracao.MetodoIntegrado;
@@ -385,6 +386,23 @@ public final class SistemaProtheusNepomuceno extends Sistema {
         } finally {
             connectionProvider.closeResources(conn);
         }
+    }
+
+    @Override
+    @NotNull
+    public VeiculoDadosColetaKm getDadosColetaKmByCodigo(@NotNull final Long codVeiculo) throws Throwable {
+        return VeiculoDadosColetaKm.of(codVeiculo,
+                                       ProtheusNepomucenoEncoderDecoder.decode(codVeiculo),
+                                       0L,
+                                       null,
+                                       true,
+                                       false,
+                                       false,
+                                       true,
+                                       VeiculoDadosColetaKm
+                                               .VeiculoDadosTratorColetaKm
+                                               .builder()
+                                               .build());
     }
 
     @NotNull

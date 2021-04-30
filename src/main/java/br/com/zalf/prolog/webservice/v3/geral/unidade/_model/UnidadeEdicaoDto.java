@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.v3.geral.unidade._model;
 
+import br.com.zalf.prolog.webservice.v3.validation.CodUnidade;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Builder;
@@ -26,6 +27,7 @@ public final class UnidadeEdicaoDto {
             value = "Código da unidade",
             example = "215")
     @NotNull(message = "O código da unidade é obrigatório.")
+    @CodUnidade
     private final Long codUnidade;
     @ApiModelProperty(
             value = "Nome da unidade.",
