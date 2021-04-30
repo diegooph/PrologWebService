@@ -21,7 +21,7 @@ import java.util.List;
  * @author Guilherme Steinert (https://github.com/steinert999)
  */
 @ConsoleDebugLog
-@Path("/v3/afericoes")
+@Path("/api/v3/afericoes")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @Controller
