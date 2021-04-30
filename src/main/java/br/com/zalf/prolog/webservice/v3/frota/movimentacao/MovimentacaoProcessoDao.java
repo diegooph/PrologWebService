@@ -33,10 +33,10 @@ public interface MovimentacaoProcessoDao extends JpaRepository<MovimentacaoProce
                    + "left join fetch r.colaboradorAlteracaoStatus "
                    + "where mpe.codUnidade in :codUnidades "
                    + "and tz_date(mpe.dataHoraRealizacao, u.timezone) between :dataInicial and :dataFinal "
-                   + "and (:codColaborador is null or mpe.colaboradorRealizacaoProcesso.codigo = :codColaborador) "
-                   + "and (:codVeiculo is null or m.movimentacaoOrigem.veiculo.codigo = :codVeiculo) "
+                   + "and (:codColaborador is null or crp.codigo = :codColaborador) "
+                   + "and (:codVeiculo is null or mo.veiculo.codigo = :codVeiculo or md.veiculo.codigo = :codVeiculo) "
                    + "and (:codPneu is null or m.pneu.codigo = :codPneu) "
-                   + "order by mpe.codigo")
+                   + "order by mpe.codigo, m.codigo")
     List<MovimentacaoProcessoEntity> getListagemMovimentacoes(@NotNull final List<Long> codUnidades,
                                                               @NotNull final LocalDate dataInicial,
                                                               @NotNull final LocalDate dataFinal,
