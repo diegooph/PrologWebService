@@ -6,7 +6,7 @@ create or replace function func_checklist_get_listagem(f_cod_unidades bigint[],
                                                        f_cod_tipo_veiculo bigint,
                                                        f_incluir_respostas boolean,
                                                        f_limit integer,
-                                                       f_offset bigint)
+                                                       f_offset integer)
     returns table
             (
                 cod_unidade                               bigint,
