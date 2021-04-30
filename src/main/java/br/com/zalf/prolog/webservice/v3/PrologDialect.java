@@ -2,7 +2,6 @@ package br.com.zalf.prolog.webservice.v3;
 
 import org.hibernate.dialect.PostgreSQL10Dialect;
 import org.hibernate.dialect.function.StandardSQLFunction;
-import org.hibernate.type.LocalDateTimeType;
 import org.hibernate.type.LocalDateType;
 
 /**
@@ -13,8 +12,6 @@ import org.hibernate.type.LocalDateType;
 public class PrologDialect extends PostgreSQL10Dialect {
 
     public PrologDialect() {
-        registerFunction("date", new StandardSQLFunction("date", LocalDateType.INSTANCE));
-        registerFunction(
-                "apply_timezone", new StandardSQLFunction("apply_timezone", LocalDateTimeType.INSTANCE));
+        registerFunction("tz_date", new StandardSQLFunction("tz_date", LocalDateType.INSTANCE));
     }
 }
