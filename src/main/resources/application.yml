@@ -23,8 +23,7 @@ spring:
       hibernate:
         temp:
           use_jdbc_metadata_defaults: false
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
-
+    database-platform: br.com.zalf.prolog.webservice.v3.PrologDialect
   datasource:
     driver-class-name: org.postgresql.Driver
 

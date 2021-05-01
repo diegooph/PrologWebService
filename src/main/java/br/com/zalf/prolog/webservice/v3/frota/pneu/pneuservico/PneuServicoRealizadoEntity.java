@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.v3.frota.pneu.pneuservico;
 
+import br.com.zalf.prolog.webservice.v3.frota.pneu.pneuservico.tiposervico.PneuTipoServicoEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,8 +25,9 @@ public class PneuServicoRealizadoEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "codigo", nullable = false)
     private Long codigo;
-    @Column(name = "cod_tipo_servico", nullable = false)
-    private Long codTipoServico;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cod_tipo_servico", nullable = false)
+    private PneuTipoServicoEntity tipoServico;
     @Column(name = "cod_unidade", nullable = false)
     private Long codUnidade;
     @Column(name = "cod_pneu", nullable = false)

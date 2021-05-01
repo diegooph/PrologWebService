@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestComponent;
 import org.springframework.core.annotation.Order;
+import test.br.com.zalf.prolog.webservice.pilares.frota.movimentacao.InsertMovimentacaoProcessoInitialDataForTestsCallback;
 import test.br.com.zalf.prolog.webservice.pilares.frota.checklist.InsertChecklistInitialDataForTestsCallback;
 import test.br.com.zalf.prolog.webservice.pilares.frota.pneu.afericao.InsertAfericaoInitialDataForTestsCallback;
 
@@ -34,6 +35,7 @@ public class DoneMigrationsFlywayProvider implements FlywayInstanceProvider {
                 .sqlMigrationSeparator("_")
                 .callbacks(new AfterVersionedCallback(),
                            new InsertAfericaoInitialDataForTestsCallback(),
+                           new InsertMovimentacaoProcessoInitialDataForTestsCallback()),
                            new InsertChecklistInitialDataForTestsCallback())
                 .load();
     }

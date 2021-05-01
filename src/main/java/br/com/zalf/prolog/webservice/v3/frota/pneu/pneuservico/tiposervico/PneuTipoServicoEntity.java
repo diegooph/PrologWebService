@@ -38,7 +38,7 @@ public class PneuTipoServicoEntity {
     @Column(name = "cod_colaborador_criacao", nullable = false)
     private Long codColaboradorCriacao;
     @Column(name = "data_hora_criacao", nullable = false)
-    private LocalDateTime dataCriacao;
+    private LocalDateTime dataHoraCriacao;
     @Column(name = "cod_colaborador_edicao")
     private Long codColaboradorEdicao;
     @Column(name = "data_hora_edicao")
