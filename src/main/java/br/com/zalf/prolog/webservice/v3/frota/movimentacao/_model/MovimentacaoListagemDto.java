@@ -4,6 +4,8 @@ import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
+
 /**
  * Created on 2021-04-26
  *
@@ -55,4 +57,6 @@ public final class MovimentacaoListagemDto {
     private final String nomeRecapadora;
     @Nullable
     private final String codColeta;
+    @Nullable
+    private final List<MovimentacaoPneuServicoRealizadoDto> servicosRealizados;
 }
