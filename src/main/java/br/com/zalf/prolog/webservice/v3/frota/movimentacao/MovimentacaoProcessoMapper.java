@@ -2,12 +2,15 @@ package br.com.zalf.prolog.webservice.v3.frota.movimentacao;
 
 import br.com.zalf.prolog.webservice.v3.frota.movimentacao._model.*;
 import br.com.zalf.prolog.webservice.v3.frota.pneu._model.PneuEntity;
+import br.com.zalf.prolog.webservice.v3.frota.pneu.pneuservico.PneuServicoRealizadoEntity;
 import br.com.zalf.prolog.webservice.v3.frota.veiculo._model.VeiculoEntity;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -54,6 +57,8 @@ public final class MovimentacaoProcessoMapper {
         final MovimentacaoDestinoEntity movimentacaoDestino = movimentacaoEntity.getMovimentacaoDestino();
         final PneuEntity pneu = movimentacaoEntity.getPneu();
         final RecapadoraEntity recapadoraDestino = movimentacaoDestino.getRecapadora();
+        final Optional<Set<PneuServicoRealizadoEntity>> servicosRealizadosOptional =
+                Optional.ofNullable(movimentacaoEntity.getServicosRealizados());
         return new MovimentacaoListagemDto(movimentacaoEntity.getCodigo(),
                                            pneu.getCodigo(),
                                            pneu.getCodigoCliente(),
@@ -75,6 +80,29 @@ public final class MovimentacaoProcessoMapper {
                                            movimentacaoDestino.getUrlImagemDescarte3(),
                                            recapadoraDestino != null ? recapadoraDestino.getCodigo() : null,
                                            recapadoraDestino != null ? recapadoraDestino.getNome() : null,
-                                           movimentacaoDestino.getCodColeta());
+                                           movimentacaoDestino.getCodColeta(),
+                                           servicosRealizadosOptional
+                                                   .map(this::createMovimentacaoPneuServicoRealizadoDtos)
+                                                   .orElse(null));
+    }
+
+    @Nullable
+    private List<MovimentacaoPneuServicoRealizadoDto> createMovimentacaoPneuServicoRealizadoDtos(
+            @NotNull final Set<PneuServicoRealizadoEntity> pneuServicoRealizadoEntities) {
+        return pneuServicoRealizadoEntities.size() == 0
+                ? null
+                : pneuServicoRealizadoEntities.stream()
+                        .map(this::createMovimentacaoPneuServicoRealizadoDto)
+                        .collect(Collectors.toList());
+    }
+
+    @NotNull
+    private MovimentacaoPneuServicoRealizadoDto createMovimentacaoPneuServicoRealizadoDto(
+            @NotNull final PneuServicoRealizadoEntity pneuServicoRealizadoEntity) {
+        return new MovimentacaoPneuServicoRealizadoDto(pneuServicoRealizadoEntity.getCodigo(),
+                                                       pneuServicoRealizadoEntity.getTipoServico().getNome(),
+                                                       pneuServicoRealizadoEntity.getTipoServico().isIncrementaVida(),
+                                                       pneuServicoRealizadoEntity.getCusto(),
+                                                       pneuServicoRealizadoEntity.getVida());
     }
 }
