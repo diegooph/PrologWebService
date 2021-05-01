@@ -37,13 +37,13 @@ public final class MovimentacaoProcessoResource implements MovimentacaoProcessoA
         this.mapper = mapper;
     }
 
-    @ApiExposed
-    @Override
     @GET
+    @ApiExposed
     @Secured(permissions = {
             Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_VEICULO_ESTOQUE,
             Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE,
             Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_DESCARTE})
+    @Override
     public List<MovimentacaoProcessoListagemDto> getListagemMovimentacoes(
             @QueryParam("codUnidades") @Required final List<Long> codUnidades,
             @QueryParam("dataInicial") @Required final String dataInicial,

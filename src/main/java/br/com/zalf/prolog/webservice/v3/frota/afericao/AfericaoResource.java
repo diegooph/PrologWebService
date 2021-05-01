@@ -9,7 +9,7 @@ import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.v3.frota.afericao._model.*;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -24,7 +24,7 @@ import java.util.List;
 @Path("/api/v3/afericoes")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-@Controller
+@RestController
 public class AfericaoResource implements AfericaoResourceApiDoc {
     @NotNull
     private final AfericaoService service;
@@ -38,9 +38,9 @@ public class AfericaoResource implements AfericaoResourceApiDoc {
         this.afericaoMapper = afericaoMapper;
     }
 
-    @ApiExposed
     @GET
     @Path("/placas")
+    @ApiExposed
     @Secured(permissions = {
             Pilares.Frota.Afericao.VISUALIZAR_TODAS_AFERICOES,
             Pilares.Frota.Afericao.REALIZAR_AFERICAO_PLACA,
@@ -67,9 +67,9 @@ public class AfericaoResource implements AfericaoResourceApiDoc {
         return afericaoMapper.toAfericaoPlacaDto(afericoesPlacas);
     }
 
-    @ApiExposed
     @GET
     @Path("/avulsas")
+    @ApiExposed
     @Secured(permissions = {
             Pilares.Frota.Afericao.VISUALIZAR_TODAS_AFERICOES,
             Pilares.Frota.Afericao.REALIZAR_AFERICAO_PNEU_AVULSO,

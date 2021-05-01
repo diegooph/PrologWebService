@@ -3,7 +3,10 @@ package br.com.zalf.prolog.webservice.v3.frota.checklist;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Optional;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Required;
 import br.com.zalf.prolog.webservice.commons.util.datetime.DateUtils;
+import br.com.zalf.prolog.webservice.interceptors.ApiExposed;
+import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
+import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import br.com.zalf.prolog.webservice.v3.frota.checklist._model.ChecklistListagemDto;
 import br.com.zalf.prolog.webservice.v3.frota.checklist._model.ChecklistListagemFiltro;
 import br.com.zalf.prolog.webservice.v3.frota.checklist._model.ChecklistProjection;
@@ -39,9 +42,13 @@ public class ChecklistResource implements ChecklistResourceApiDoc {
         this.checklistListagemMapper = checklistListagemMapper;
     }
 
-    @Override
     @GET
     @Path("/")
+    @ApiExposed
+    @Secured(permissions = {
+            Pilares.Frota.Checklist.VISUALIZAR_TODOS,
+            Pilares.Frota.Checklist.REALIZAR})
+    @Override
     public List<ChecklistListagemDto> getChecklistsListagem(
             @QueryParam("codUnidades") @Required final List<Long> codUnidades,
             @QueryParam("dataInicial") @Required final String dataInicial,

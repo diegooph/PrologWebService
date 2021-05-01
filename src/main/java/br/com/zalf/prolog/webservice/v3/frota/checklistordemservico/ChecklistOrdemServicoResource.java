@@ -1,6 +1,7 @@
 package br.com.zalf.prolog.webservice.v3.frota.checklistordemservico;
 
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.StatusOrdemServico;
+import br.com.zalf.prolog.webservice.interceptors.ApiExposed;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
@@ -20,7 +21,7 @@ import java.util.List;
  */
 @RestController
 @ConsoleDebugLog
-@Path("/v3/checklists/ordens-servicos")
+@Path("api/v3/checklists/ordens-servicos")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public final class ChecklistOrdemServicoResource implements ChecklistOrdemServicoApiDoc {
@@ -37,9 +38,9 @@ public final class ChecklistOrdemServicoResource implements ChecklistOrdemServic
     }
 
     @GET
+    @Secured(permissions = {Pilares.Frota.OrdemServico.Checklist.VISUALIZAR})
+    @ApiExposed
     @Override
-    @Secured(permissions = {
-            Pilares.Frota.OrdemServico.Checklist.VISUALIZAR})
     public List<ChecklistOrdemServicoListagemDto> getOrdensServico(
             @QueryParam("codUnidades") final List<Long> codUnidades,
             @QueryParam("codTipoVeiculo") final Long codTipoVeiculo,
