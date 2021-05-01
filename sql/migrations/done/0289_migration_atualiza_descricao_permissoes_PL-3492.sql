@@ -1,5 +1,3 @@
-begin transaction;
-
 update funcao_prolog_v11
 set descricao = 'Permite ao usuário acessar a listagem de grupos e unidades.'
 where codigo = 503;
@@ -23,5 +21,3 @@ where codigo = 412;
 update funcao_prolog_v11
 set descricao = 'Permite ao usuário cadastrar novos usuários à sua empresa no Prolog.'
 where codigo = 310;
-
-end transaction;

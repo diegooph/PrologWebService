@@ -1,11 +1,11 @@
-package br.com.zalf.prolog.webservice.frota.pneu.afericao.v3;
+package br.com.zalf.prolog.webservice.v3.frota.afericao;
 
 import br.com.zalf.prolog.webservice.commons.network.Response;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.v3._model.dto.AfericaoAvulsaDto;
-import br.com.zalf.prolog.webservice.frota.pneu.afericao.v3._model.dto.AfericaoPlacaDto;
+import br.com.zalf.prolog.webservice.commons.network.metadata.Optional;
+import br.com.zalf.prolog.webservice.v3.frota.afericao._model.AfericaoAvulsaDto;
+import br.com.zalf.prolog.webservice.v3.frota.afericao._model.AfericaoPlacaDto;
 import io.swagger.annotations.*;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -15,7 +15,7 @@ import java.util.List;
  * @author Guilherme Steinert (https://github.com/steinert999)
  */
 @Api(value = "Aferições")
-public interface AfericaoV3ResourceApiDoc {
+public interface AfericaoResourceApiDoc {
     @ApiOperation(
             value = "Obtém uma lista de aferições de placas realizadas.",
             response = List.class)
@@ -31,16 +31,18 @@ public interface AfericaoV3ResourceApiDoc {
     List<AfericaoPlacaDto> getAfericoesPlacas(
             @ApiParam(value = "Uma lista de códigos de unidade.",
                       required = true) @NotNull final List<Long> codUnidades,
-            @ApiParam(value = "Uma placa de veículo específica para ser buscada. Se nenhuma for informada, todas " +
-                    "placas serão trazidas.") @Nullable final String placaVeiculo,
+            @ApiParam(value = "Um código de veículo específico para ser buscado. Se nenhum for informado, todos " +
+                    "os veículos da unidade serão retornados.") @Optional final Long codVeiculo,
             @ApiParam(value = "Um código de tipo veículo específico para ser buscado. Se nenhum for informado, todos " +
-                    "os tipos serão trazidos.") @Nullable final Long codTipoVeiculo,
+                    "os tipos serão trazidos.") @Optional final Long codTipoVeiculo,
             @ApiParam(value = "Uma data inicial, a qual a aferição tenha sido realizadas.",
                       required = true) @NotNull final String dataInicial,
             @ApiParam(value = "Uma data final, a qual a aferição tenha sido realizadas.",
                       required = true) @NotNull final String dataFinal,
             @ApiParam(value = "Um limite de registros a serem retornados.") final int limit,
-            @ApiParam(value = "Um deslocamento para realizar a paginação.") final int offset);
+            @ApiParam(value = "Um deslocamento para realizar a paginação.") final int offset,
+            @ApiParam(value = "Uma variável para indicar se os valores de medidas devem ser " +
+                    "retornados ou não") final boolean incluirMedidas);
 
     @ApiOperation(
             value = "Obtém uma lista de aferições avulsas (apenas pneus avulsos) realizadas.",
@@ -62,5 +64,7 @@ public interface AfericaoV3ResourceApiDoc {
             @ApiParam(value = "Uma data final, a qual a aferição tenha sido realizadas.",
                       required = true) @NotNull final String dataFinal,
             @ApiParam(value = "Um limite de registros a serem retornados.") final int limit,
-            @ApiParam(value = "Um deslocamento para realizar a paginação.") final int offset);
+            @ApiParam(value = "Um deslocamento para realizar a paginação.") final int offset,
+            @ApiParam(value = "Uma variável para indicar se os valores de medidas devem ser " +
+                    "retornados ou não") final boolean incluirMedidas);
 }

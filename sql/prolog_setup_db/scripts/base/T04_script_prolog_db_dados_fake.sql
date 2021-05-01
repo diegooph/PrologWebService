@@ -10369,23 +10369,3 @@ VALUES (1, 215, 'Outros', 3, 3, 8, true, 'BAIXA', true, false, null, null, 1, 8)
 SELECT setval('checklist_alternativa_pergunta_data_codigo_contexto_seq', 8, true);
 SELECT setval('checklist_alternativa_pergunta_data_codigo_seq', 8, true);
 
-INSERT INTO public.checklist (cod_unidade, cod_checklist_modelo, cod_versao_checklist_modelo, data_hora,
-                              data_hora_realizacao_tz_aplicado, data_hora_importado_prolog, cpf_colaborador,
-                              placa_veiculo, tipo, tempo_realizacao, km_veiculo,
-                              data_hora_sincronizacao, fonte_data_hora_realizacao, versao_app_momento_realizacao,
-                              versao_app_momento_sincronizacao, device_id, device_imei, device_uptime_realizacao_millis,
-                              device_uptime_sincronizacao_millis, foi_offline, total_perguntas_ok, total_perguntas_nok,
-                              total_alternativas_ok, total_alternativas_nok)
-VALUES (215, 1, 1, '2021-04-08 14:32:59.733039', '2021-04-08 11:32:59.733039', null, 3383283194, '31', 'S',
-        27275, 11331, '2021-04-08 14:32:59.733166', 'SERVIDOR', 121, 121, '7d6867d2498bd65e', null, 0, 211810,
-        false, 0, 3, 1, 7);
-
-INSERT INTO public.checklist_ordem_servico_data (cod_unidade, cod_checklist, status, codigo_prolog)
-values (215, 1, 'A', 1);
-INSERT INTO public.checklist_ordem_servico_itens (cod_unidade, cod_os, cpf_mecanico,
-                                                  cod_pergunta_primeiro_apontamento, cod_contexto_pergunta,
-                                                  cod_contexto_alternativa, cod_alternativa_primeiro_apontamento,
-                                                  status_resolucao, qt_apontamentos, km, data_hora_conserto,
-                                                  data_hora_inicio_resolucao, data_hora_fim_resolucao, tempo_realizacao,
-                                                  feedback_conserto)
-VALUES (215, 1, null, 1, 1, 2, 2, 'P', 1, null, null, null, null, null, null);
