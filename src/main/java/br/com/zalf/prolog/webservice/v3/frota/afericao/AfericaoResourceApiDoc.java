@@ -17,7 +17,7 @@ import java.util.List;
 @Api(value = "Aferições")
 public interface AfericaoResourceApiDoc {
     @ApiOperation(
-            value = "Obtém uma lista de aferições de placas realizadas.",
+            value = "Lista as aferições de veículos.",
             response = List.class)
     @ApiResponses(value = {
             @ApiResponse(
@@ -29,23 +29,36 @@ public interface AfericaoResourceApiDoc {
             @ApiResponse(code = 500, message = "Erro ao executar operação", response = Response.class)
     })
     List<AfericaoPlacaDto> getAfericoesPlacas(
-            @ApiParam(value = "Uma lista de códigos de unidade.",
+            @ApiParam(value = "Lista de códigos de unidade.",
+                      example = "215",
                       required = true) @NotNull final List<Long> codUnidades,
-            @ApiParam(value = "Um código de veículo específico para ser buscado. Se nenhum for informado, todos " +
-                    "os veículos da unidade serão retornados.") @Optional final Long codVeiculo,
-            @ApiParam(value = "Um código de tipo veículo específico para ser buscado. Se nenhum for informado, todos " +
-                    "os tipos serão trazidos.") @Optional final Long codTipoVeiculo,
-            @ApiParam(value = "Uma data inicial, a qual a aferição tenha sido realizadas.",
+            @ApiParam(value = "Data Inicial - Utilizada para filtrar as aferições realizadas.",
+                      format = "yyyy-MM-dd",
+                      example = "2021-01-01",
                       required = true) @NotNull final String dataInicial,
-            @ApiParam(value = "Uma data final, a qual a aferição tenha sido realizadas.",
+            @ApiParam(value = "Data Final - Utilizada para filtrar as aferições realizadas.",
+                      format = "yyyy-MM-dd",
+                      example = "2021-02-01",
                       required = true) @NotNull final String dataFinal,
-            @ApiParam(value = "Um limite de registros a serem retornados.") final int limit,
-            @ApiParam(value = "Um deslocamento para realizar a paginação.") final int offset,
-            @ApiParam(value = "Uma variável para indicar se os valores de medidas devem ser " +
-                    "retornados ou não") final boolean incluirMedidas);
+            @ApiParam(value = "Código de Tipo Veículo - Utilizado para filtrar aferições de apenas um tipo de " +
+                    "veículo. Caso não deseje filtrar, basta não enviar esse parâmetro.")
+            @Optional final Long codTipoVeiculo,
+            @ApiParam(value = "Código de Veículo - Utilizado para filtar aferições de um veículo específico. " +
+                    "Caso não deseje filtrar, basta não enviar esse parâmetro.") @Optional final Long codVeiculo,
+            @ApiParam(value = "Flag utilizada para retornar as medidas (altura de sulco e pressão) coletadas no " +
+                    "processo de aferição. Por padrão é sempre retornado as medidas, para não retornar as medidas " +
+                    "envie 'false'.",
+                      defaultValue = "true") final boolean incluirMedidas,
+            @ApiParam(value = "Limite de aferições retornados pela busca. O valor máximo é 1000.",
+                      example = "1000",
+                      required = true) final int limit,
+            @ApiParam(value = "Offset de aferições. A partir de qual aferição deve-se começar a busca.",
+                      example = "0",
+                      required = true) final int offset);
 
     @ApiOperation(
-            value = "Obtém uma lista de aferições avulsas (apenas pneus avulsos) realizadas.",
+            value = "Lista as aferições avulsas.",
+            notes = "Aferição Avulsa é uma processo realizado em pneus que não estão aplicados à veículos.",
             response = List.class)
     @ApiResponses(value = {
             @ApiResponse(
@@ -57,14 +70,25 @@ public interface AfericaoResourceApiDoc {
             @ApiResponse(code = 500, message = "Erro ao executar operação", response = Response.class)
     })
     List<AfericaoAvulsaDto> getAfericoesAvulsas(
-            @ApiParam(value = "Uma lista de códigos de unidade.",
+            @ApiParam(value = "Lista de códigos de unidade.",
+                      example = "215",
                       required = true) @NotNull final List<Long> codUnidades,
-            @ApiParam(value = "Uma data inicial, a qual a aferição tenha sido realizadas.",
+            @ApiParam(value = "Data Inicial - Utilizada para filtrar as aferições realizadas.",
+                      format = "yyyy-MM-dd",
+                      example = "2021-01-01",
                       required = true) @NotNull final String dataInicial,
-            @ApiParam(value = "Uma data final, a qual a aferição tenha sido realizadas.",
+            @ApiParam(value = "Data Final - Utilizada para filtrar as aferições realizadas.",
+                      format = "yyyy-MM-dd",
+                      example = "2021-02-01",
                       required = true) @NotNull final String dataFinal,
-            @ApiParam(value = "Um limite de registros a serem retornados.") final int limit,
-            @ApiParam(value = "Um deslocamento para realizar a paginação.") final int offset,
-            @ApiParam(value = "Uma variável para indicar se os valores de medidas devem ser " +
-                    "retornados ou não") final boolean incluirMedidas);
+            @ApiParam(value = "Flag utilizada para retornar as medidas (altura de sulco e pressão) coletadas no " +
+                    "processo de aferição. Por padrão é sempre retornado as medidas, para não retornar as medidas " +
+                    "envie 'false'.",
+                      defaultValue = "true") final boolean incluirMedidas,
+            @ApiParam(value = "Limite de aferições retornados pela busca. O valor máximo é 1000.",
+                      example = "1000",
+                      required = true) final int limit,
+            @ApiParam(value = "Offset de aferições. A partir de qual aferição deve-se começar a busca.",
+                      example = "0",
+                      required = true) final int offset);
 }
