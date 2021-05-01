@@ -39,7 +39,7 @@ public class AfericaoResource implements AfericaoResourceApiDoc {
     }
 
     @GET
-    @Path("/placas")
+    @Path("/veiculos")
     @ApiExposed
     @Secured(permissions = {
             Pilares.Frota.Afericao.VISUALIZAR_TODAS_AFERICOES,
@@ -47,14 +47,15 @@ public class AfericaoResource implements AfericaoResourceApiDoc {
             Pilares.Frota.OrdemServico.Pneu.VISUALIZAR,
             Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
     @Override
-    public List<AfericaoPlacaDto> getAfericoesPlacas(@QueryParam("codUnidades") @NotNull final List<Long> codUnidades,
-                                                     @QueryParam("codVeiculo") @Optional final Long codVeiculo,
-                                                     @QueryParam("codTipoVeiculo") @Optional final Long codTipoVeiculo,
-                                                     @QueryParam("dataInicial") @NotNull final String dataInicial,
-                                                     @QueryParam("dataFinal") @NotNull final String dataFinal,
-                                                     @QueryParam("limit") final int limit,
-                                                     @QueryParam("offset") final int offset,
-                                                     @QueryParam("incluirMedidas") final boolean incluirMedidas) {
+    public List<AfericaoPlacaDto> getAfericoesPlacas(
+            @QueryParam("codUnidades") @NotNull final List<Long> codUnidades,
+            @QueryParam("dataInicial") @NotNull final String dataInicial,
+            @QueryParam("dataFinal") @NotNull final String dataFinal,
+            @QueryParam("codTipoVeiculo") @Optional final Long codTipoVeiculo,
+            @QueryParam("codVeiculo") @Optional final Long codVeiculo,
+            @QueryParam("incluirMedidas") @DefaultValue("true") final boolean incluirMedidas,
+            @QueryParam("limit") final int limit,
+            @QueryParam("offset") final int offset) {
         final FiltroAfericaoPlaca filtro = FiltroAfericaoPlaca.of(codUnidades,
                                                                   codVeiculo,
                                                                   codTipoVeiculo,
@@ -76,12 +77,13 @@ public class AfericaoResource implements AfericaoResourceApiDoc {
             Pilares.Frota.OrdemServico.Pneu.VISUALIZAR,
             Pilares.Frota.OrdemServico.Pneu.CONSERTAR_ITEM})
     @Override
-    public List<AfericaoAvulsaDto> getAfericoesAvulsas(@QueryParam("codUnidades") @NotNull final List<Long> codUnidades,
-                                                       @QueryParam("dataInicial") @NotNull final String dataInicial,
-                                                       @QueryParam("dataFinal") @NotNull final String dataFinal,
-                                                       @QueryParam("limit") final int limit,
-                                                       @QueryParam("offset") final int offset,
-                                                       @QueryParam("incluirMedidas") final boolean incluirMedidas) {
+    public List<AfericaoAvulsaDto> getAfericoesAvulsas(
+            @QueryParam("codUnidades") @NotNull final List<Long> codUnidades,
+            @QueryParam("dataInicial") @NotNull final String dataInicial,
+            @QueryParam("dataFinal") @NotNull final String dataFinal,
+            @QueryParam("incluirMedidas") @DefaultValue("true") final boolean incluirMedidas,
+            @QueryParam("limit") final int limit,
+            @QueryParam("offset") final int offset) {
         final FiltroAfericaoAvulsa filtro = FiltroAfericaoAvulsa.of(codUnidades,
                                                                     DateUtils.parseDate(dataInicial),
                                                                     DateUtils.parseDate(dataFinal),
