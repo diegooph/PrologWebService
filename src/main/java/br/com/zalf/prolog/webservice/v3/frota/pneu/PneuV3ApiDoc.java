@@ -12,7 +12,7 @@ import javax.validation.Valid;
  *
  * @author Guilherme Steinert (https://github.com/steinert999)
  */
-@Api(value = "Gestão de Frota")
+@Api(value = "Gestão de Pneus")
 public interface PneuV3ApiDoc {
     @ApiOperation(value = "Método utilizado para inserir um pneu.", response = SuccessResponse.class)
     @ApiResponses(value = {

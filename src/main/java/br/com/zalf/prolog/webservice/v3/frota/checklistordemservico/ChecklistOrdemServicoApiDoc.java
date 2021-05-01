@@ -14,7 +14,7 @@ import java.util.List;
  *
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
-@Api(value = "Checklist")
+@Api(value = "Ordens de Serviço")
 public interface ChecklistOrdemServicoApiDoc {
     @ApiOperation(
             value = "Lista as ordens de serviço e possivelmente os itens das ordens de serviço por unidade.",

@@ -6,7 +6,7 @@ import io.swagger.annotations.*;
 
 import javax.validation.Valid;
 
-@Api(value = "Gestão de Frota")
+@Api(value = "Gestão de Veículos")
 public interface VeiculoV3ResourceApiDoc {
     @ApiOperation(value = "Método utilizado para inserir um veículo.", response = SuccessResponse.class)
     @ApiResponses(value = {

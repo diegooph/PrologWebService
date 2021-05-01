@@ -14,7 +14,7 @@ import java.util.List;
  *
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
-@Api(value = "Movimentações")
+@Api(value = "Movimentação de Pneus")
 public interface MovimentacaoProcessoApiDoc {
     @ApiOperation(
             value = "Lista os processos de movimentação e suas informações.",

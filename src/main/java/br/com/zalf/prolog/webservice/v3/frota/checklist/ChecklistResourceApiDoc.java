@@ -17,7 +17,7 @@ import java.util.List;
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-@Api(value = "Gestão de Frota")
+@Api(value = "Checklists")
 public interface ChecklistResourceApiDoc {
     @ApiOperation(value = "Método utilizado para buscar checklists realizados.", response = SuccessResponse.class)
     @ApiResponses(value = {
