@@ -9,7 +9,7 @@ import org.hibernate.type.LocalDateType;
  *
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
-public class PrologDialect extends PostgreSQL10Dialect {
+public final class PrologDialect extends PostgreSQL10Dialect {
 
     public PrologDialect() {
         registerFunction("tz_date", new StandardSQLFunction("tz_date", LocalDateType.INSTANCE));

@@ -14,7 +14,7 @@ import java.time.ZoneOffset;
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
 @Converter
-public class LocalDateTimeUtcAttributeConverter implements AttributeConverter<LocalDateTime, Timestamp> {
+public final class LocalDateTimeUtcAttributeConverter implements AttributeConverter<LocalDateTime, Timestamp> {
     @Override
     public Timestamp convertToDatabaseColumn(@Nullable final LocalDateTime localDateTime) {
         return localDateTime == null ? null : Timestamp.valueOf(localDateTime);
