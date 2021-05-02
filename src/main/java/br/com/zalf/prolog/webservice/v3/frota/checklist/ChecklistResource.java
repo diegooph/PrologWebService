@@ -43,7 +43,6 @@ public class ChecklistResource implements ChecklistResourceApiDoc {
     }
 
     @GET
-    @Path("/")
     @ApiExposed
     @Secured(permissions = {
             Pilares.Frota.Checklist.VISUALIZAR_TODOS,

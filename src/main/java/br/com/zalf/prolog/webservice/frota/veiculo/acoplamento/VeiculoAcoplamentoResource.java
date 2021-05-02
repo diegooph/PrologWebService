@@ -38,7 +38,6 @@ public final class VeiculoAcoplamentoResource {
     @POST
     @Secured(permissions = {Pilares.Frota.Veiculo.CADASTRAR, Pilares.Frota.Veiculo.ALTERAR})
     @UsedBy(platforms = {Platform.WEBSITE, Platform.ANDROID})
-    @Path("/")
     public AbstractResponse insertProcessoAcoplamento(
             @Valid final VeiculoAcoplamentoProcessoRealizacao processoRealizacao) {
         final Long codProcessoInserido = service.insertProcessoAcoplamento(

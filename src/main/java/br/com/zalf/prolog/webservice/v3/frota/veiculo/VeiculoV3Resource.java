@@ -39,7 +39,6 @@ public class VeiculoV3Resource implements VeiculoV3ResourceApiDoc {
     @ApiExposed
     @POST
     @Secured(permissions = Pilares.Frota.Veiculo.CADASTRAR)
-    @Path("/")
     public SuccessResponse insert(
             @HeaderParam(PrologCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Optional final String tokenIntegracao,
             @Valid final VeiculoCadastroDto veiculoCadastroDto) {
