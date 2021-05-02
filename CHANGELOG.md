@@ -1,40 +1,30 @@
 Change Log
 ==========
-## Stage
-### Features
-* Cria v3 de ordem de serviço (PL-3462)
-* Cria v3 de listagem de movimentações (PL-3602)
-
-### Bug Fixes
-* Corrige regex de validação de commit message (PL-3588)
-
-### Features
-* Cria anotações para garantir os códigos acessados pelas requisições (PL-3551)
-
-### Refactors
-* Roteia método de busca de KM atual para a integração da Nepomuceno (PL-3508)
-
-### Refactors
-* Altera relatório de exportação de Aferições para o Protheus (PL-3610)
 
 <a name="v3.2.1"></a>
 ## Version [v3.2.1](https://github.com/luizfp/PrologWebService/compare/v3.2.0...v3.2.1) (release-date) [unreleased]
 
 ### Features
+* Cria anotações para garantir os códigos acessados pelas requisições (PL-3551)
 * Cria functions de suporte para alterações em modelo de quiz (PL-3609)
 * Logar no BD quem altera um colaborador (PL-3491)
 * Cria v3 de listagem de checklist (PL-3461)
+* Cria v3 de ordem de serviço de checklist (PL-3462)
+* Cria v3 de listagem de movimentações (PL-3602)
 
 ### Refactors
 * Altera paths de v3 para serem precedidos por `api`
 * Altera path de unidades para estarem no `v3` e serem precedidos por `api`
 * Altera calculo de vencidas da function de geraçao dos dashboards e do relatorio de cronograma (PL-3538)
 * Realiza pequenas melhorias na PrologApplication (PL-3606)
-* adiciona valores de medidas na API de aferição (PL-3570)
+* Adiciona valores de medidas na API de aferição (PL-3570)
+* Altera relatório de exportação de Aferições para o Protheus (PL-3610)
+* Roteia método de busca de KM atual para a integração da Nepomuceno (PL-3508)
 
 ### Bug Fixes
 * Corrige function de transferência de veículo entre Empresas para o Suporte (PS-1504)
 * Ajusta erros logados no sentry do package frota (PL-3593)
+* Corrige regex de validação de commit message (PL-3588)
 
 <a name="v3.2.0"></a>
 ## Version [v3.2.0](https://github.com/luizfp/PrologWebService/compare/v3.1.0...v3.2.0) (2021-04-18)
