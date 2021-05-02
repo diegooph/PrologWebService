@@ -159,7 +159,7 @@ public class AfericaoResource {
      * @deprecated <p>
      * Há nova versão em outra classe.
      * Segue método referencia: <br>
-     * {@link AfericaoResource#getAfericoesPlacas}
+     * {@link br.com.zalf.prolog.webservice.v3.frota.afericao.AfericaoResource#getAfericoesPlacas(List, String, String, Long, Long, boolean, int, int)}
      * </p>
      */
     @GET
