@@ -21,7 +21,7 @@ import java.util.List;
  */
 @RestController
 @ConsoleDebugLog
-@Path("api/v3/checklists/ordens-servicos")
+@Path("api/v3/checklists/ordens-servico")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public final class ChecklistOrdemServicoResource implements ChecklistOrdemServicoApiDoc {
