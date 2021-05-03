@@ -18,27 +18,27 @@ import java.util.List;
 @Value(staticConstructor = "of")
 public class AfericaoAvulsaDto {
     @NotNull
-    Long codigo;
+    Long codAfericao;
     @NotNull
-    Long codUnidade;
-    @NotNull
-    LocalDateTime dataHoraAfericaoUtc;
-    @NotNull
-    LocalDateTime dataHoraAfericaoTzAplicado;
-    @NotNull
-    TipoMedicaoColetadaAfericao tipoMedicaoColetada;
-    @NotNull
-    TipoProcessoColetaAfericao tipoProcessoColeta;
-    @NotNull
-    Long tempoRealizacao;
-    @NotNull
-    FormaColetaDadosAfericaoEnum formaColetaDados;
+    Long codUnidadeAfericao;
     @NotNull
     Long codColaborador;
     @NotNull
     String cpfColaborador;
     @NotNull
     String nomeColaborador;
+    @NotNull
+    LocalDateTime dataHoraAfericaoUtc;
+    @NotNull
+    LocalDateTime dataHoraAfericaoTimeZoneAplicado;
+    @NotNull
+    TipoMedicaoColetadaAfericao tipoMedicaoColetada;
+    @NotNull
+    TipoProcessoColetaAfericao tipoProcessoColeta;
+    @NotNull
+    Long tempoRealizacaoAfericaoEmMilisegundos;
+    @NotNull
+    FormaColetaDadosAfericaoEnum formaColetaDados;
     @Nullable
-    List<MedidaDto> medidas;
+    List<MedidaDto> medidasColetadas;
 }
