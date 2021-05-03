@@ -39,7 +39,7 @@ begin
     end if;
 
     -- Verifica se possui acoplamento.
-    if EXISTS(select vd.codigo
+    if exists(select vd.codigo
               from veiculo_data vd
               where vd.placa = f_placa
                 and vd.cod_unidade = f_cod_unidade

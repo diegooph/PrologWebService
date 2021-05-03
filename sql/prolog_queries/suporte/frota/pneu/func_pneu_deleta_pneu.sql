@@ -1,191 +1,191 @@
-CREATE OR REPLACE FUNCTION SUPORTE.FUNC_PNEU_DELETA_PNEU(F_COD_UNIDADE BIGINT,
-                                                         F_CODIGO_PNEU BIGINT,
-                                                         F_CODIGO_CLIENTE TEXT,
-                                                         F_MOTIVO_DELECAO TEXT,
-                                                         OUT AVISO_PNEU_DELETADO TEXT)
-    RETURNS TEXT
-    LANGUAGE PLPGSQL
-    SECURITY DEFINER
-AS
+create or replace function suporte.func_pneu_deleta_pneu(f_cod_unidade bigint,
+                                                         f_codigo_pneu bigint,
+                                                         f_codigo_cliente text,
+                                                         f_motivo_delecao text,
+                                                         out aviso_pneu_deletado text)
+    returns text
+    language plpgsql
+    security definer
+as
 $$
-DECLARE
-    V_STATUS_PNEU_ANALISE CONSTANT   TEXT := 'ANALISE';
-    V_QTD_LINHAS_ATUALIZADAS         BIGINT;
-    V_COD_AFERICAO                   BIGINT[];
-    V_COD_AFERICAO_FOREACH           BIGINT;
-    V_QTD_AFERICAO_VALORES           BIGINT;
-    V_QTD_AFERICAO_VALORES_DELETADOS BIGINT;
-BEGIN
-    PERFORM SUPORTE.FUNC_HISTORICO_SALVA_EXECUCAO();
-    -- Verifica se o pneu existe.
-    IF ((SELECT COUNT(P.CODIGO)
-         FROM PNEU_DATA P
-         WHERE P.CODIGO = F_CODIGO_PNEU
-           AND P.COD_UNIDADE = F_COD_UNIDADE
-           AND P.CODIGO_CLIENTE = F_CODIGO_CLIENTE) <= 0)
-    THEN
-        RAISE EXCEPTION 'Nenhum pneu encontrado com estes parâmetros: Código %, Código cliente % e Unidade %',
-            F_CODIGO_PNEU, F_CODIGO_CLIENTE, F_COD_UNIDADE;
-    END IF;
+declare
+    v_status_pneu_analise constant   text := 'ANALISE';
+    v_qtd_linhas_atualizadas         bigint;
+    v_cod_afericao                   bigint[];
+    v_cod_afericao_foreach           bigint;
+    v_qtd_afericao_valores           bigint;
+    v_qtd_afericao_valores_deletados bigint;
+begin
+    perform suporte.func_historico_salva_execucao();
+    -- verifica se o pneu existe.
+    if ((select count(p.codigo)
+         from pneu_data p
+         where p.codigo = f_codigo_pneu
+           and p.cod_unidade = f_cod_unidade
+           and p.codigo_cliente = f_codigo_cliente) <= 0)
+    then
+        raise exception 'Nenhum pneu encontrado com estes parâmetros: Código %, Código cliente % e Unidade %',
+            f_codigo_pneu, f_codigo_cliente, f_cod_unidade;
+    end if;
 
-    -- Verifica se o pneu está aplicado.
-    IF ((SELECT COUNT(VP.COD_VEICULO)
-         FROM VEICULO_PNEU VP
-         WHERE VP.COD_PNEU = F_CODIGO_PNEU
-           AND VP.COD_UNIDADE = F_COD_UNIDADE) > 0)
-    THEN
-        RAISE EXCEPTION 'O pneu não pode ser deletado pois está aplicado! Parâmetros: Código %, Código cliente % e
-            Unidade %', F_CODIGO_PNEU, F_CODIGO_CLIENTE, F_COD_UNIDADE;
-    END IF;
+    -- verifica se o pneu está aplicado.
+    if ((select count(vp.cod_veiculo)
+         from veiculo_pneu vp
+         where vp.cod_pneu = f_codigo_pneu
+           and vp.cod_unidade = f_cod_unidade) > 0)
+    then
+        raise exception 'O pneu não pode ser deletado pois está aplicado! Parâmetros: Código %, Código cliente % e
+            Unidade %', f_codigo_pneu, f_codigo_cliente, f_cod_unidade;
+    end if;
 
-    -- Verifica se o pneu está em análise.
-    IF ((SELECT COUNT(P.CODIGO)
-         FROM PNEU_DATA P
-         WHERE P.CODIGO = F_CODIGO_PNEU
-           AND P.COD_UNIDADE = F_COD_UNIDADE
-           AND P.CODIGO_CLIENTE = F_CODIGO_CLIENTE
-           AND P.STATUS = V_STATUS_PNEU_ANALISE) > 0)
-    THEN
-        RAISE EXCEPTION 'O pneu não pode ser deletado pois está em análise! Parâmetros: Código %, Código cliente % e
-            Unidade %', F_CODIGO_PNEU, F_CODIGO_CLIENTE, F_COD_UNIDADE;
-    END IF;
+    -- verifica se o pneu está em análise.
+    if ((select count(p.codigo)
+         from pneu_data p
+         where p.codigo = f_codigo_pneu
+           and p.cod_unidade = f_cod_unidade
+           and p.codigo_cliente = f_codigo_cliente
+           and p.status = v_status_pneu_analise) > 0)
+    then
+        raise exception 'O pneu não pode ser deletado pois está em análise! Parâmetros: Código %, Código cliente % e
+            Unidade %', f_codigo_pneu, f_codigo_cliente, f_cod_unidade;
+    end if;
 
-    -- Verifica se pneu é integrado
-    IF EXISTS(SELECT IPC.COD_PNEU_CADASTRO_PROLOG
-              FROM INTEGRACAO.PNEU_CADASTRADO IPC
-              WHERE IPC.COD_PNEU_CADASTRO_PROLOG = F_CODIGO_PNEU
-                AND IPC.COD_UNIDADE_CADASTRO = F_COD_UNIDADE)
-    THEN
-        -- Deleta Pneu (Não temos deleção lógica)
-        DELETE
-        FROM INTEGRACAO.PNEU_CADASTRADO
-        WHERE COD_PNEU_CADASTRO_PROLOG = F_CODIGO_PNEU
-          AND COD_UNIDADE_CADASTRO = F_COD_UNIDADE;
-    END IF;
+    -- verifica se pneu é integrado
+    if exists(select ipc.cod_pneu_cadastro_prolog
+              from integracao.pneu_cadastrado ipc
+              where ipc.cod_pneu_cadastro_prolog = f_codigo_pneu
+                and ipc.cod_unidade_cadastro = f_cod_unidade)
+    then
+        -- deleta pneu (não temos deleção lógica)
+        delete
+        from integracao.pneu_cadastrado
+        where cod_pneu_cadastro_prolog = f_codigo_pneu
+          and cod_unidade_cadastro = f_cod_unidade;
+    end if;
 
-    -- Deleta pneu Prolog.
-    UPDATE PNEU_DATA
-    SET DELETADO            = TRUE,
-        DATA_HORA_DELETADO  = NOW(),
-        PG_USERNAME_DELECAO = SESSION_USER,
-        MOTIVO_DELECAO      = F_MOTIVO_DELECAO
-    WHERE CODIGO = F_CODIGO_PNEU
-      AND COD_UNIDADE = F_COD_UNIDADE
-      AND CODIGO_CLIENTE = F_CODIGO_CLIENTE;
+    -- deleta pneu prolog.
+    update pneu_data
+    set deletado            = true,
+        data_hora_deletado  = now(),
+        pg_username_delecao = session_user,
+        motivo_delecao      = f_motivo_delecao
+    where codigo = f_codigo_pneu
+      and cod_unidade = f_cod_unidade
+      and codigo_cliente = f_codigo_cliente;
 
-    GET DIAGNOSTICS V_QTD_LINHAS_ATUALIZADAS = ROW_COUNT;
+    get diagnostics v_qtd_linhas_atualizadas = row_count;
 
-    IF (V_QTD_LINHAS_ATUALIZADAS IS NULL OR V_QTD_LINHAS_ATUALIZADAS <= 0)
-    THEN
-        RAISE EXCEPTION 'Erro ao deletar o pneu de Código %, Código cliente % e Unidade %',
-            F_CODIGO_PNEU, F_CODIGO_CLIENTE, F_COD_UNIDADE;
-    END IF;
+    if (v_qtd_linhas_atualizadas is null or v_qtd_linhas_atualizadas <= 0)
+    then
+        raise exception 'Erro ao deletar o pneu de Código %, Código cliente % e Unidade %',
+            f_codigo_pneu, f_codigo_cliente, f_cod_unidade;
+    end if;
 
-    -- Verifica se o pneu está em afericao_manutencao_data.
-    IF (SELECT EXISTS(SELECT AM.COD_AFERICAO
-                      FROM AFERICAO_MANUTENCAO_DATA AM
-                      WHERE AM.COD_PNEU = F_CODIGO_PNEU
-                        AND AM.COD_UNIDADE = F_COD_UNIDADE
-                        AND AM.DELETADO = FALSE))
-    THEN
-        UPDATE AFERICAO_MANUTENCAO_DATA
-        SET DELETADO            = TRUE,
-            DATA_HORA_DELETADO  = NOW(),
-            PG_USERNAME_DELECAO = SESSION_USER,
-            MOTIVO_DELECAO      = F_MOTIVO_DELECAO
-        WHERE COD_PNEU = F_CODIGO_PNEU
-          AND COD_UNIDADE = F_COD_UNIDADE
-          AND DELETADO = FALSE;
+    -- verifica se o pneu está em afericao_manutencao_data.
+    if (select exists(select am.cod_afericao
+                      from afericao_manutencao_data am
+                      where am.cod_pneu = f_codigo_pneu
+                        and am.cod_unidade = f_cod_unidade
+                        and am.deletado = false))
+    then
+        update afericao_manutencao_data
+        set deletado            = true,
+            data_hora_deletado  = now(),
+            pg_username_delecao = session_user,
+            motivo_delecao      = f_motivo_delecao
+        where cod_pneu = f_codigo_pneu
+          and cod_unidade = f_cod_unidade
+          and deletado = false;
 
-        GET DIAGNOSTICS V_QTD_LINHAS_ATUALIZADAS = ROW_COUNT;
+        get diagnostics v_qtd_linhas_atualizadas = row_count;
 
-        -- Garante que a deleção foi realizada.
-        IF (V_QTD_LINHAS_ATUALIZADAS IS NULL OR V_QTD_LINHAS_ATUALIZADAS <= 0)
-        THEN
-            RAISE EXCEPTION 'Erro ao deletar o pneu de Código %, Código Cliente % e Unidade % '
-                'em afericao_manutencao_data', F_CODIGO_PNEU, F_CODIGO_CLIENTE, F_COD_UNIDADE;
-        END IF;
-    END IF;
+        -- garante que a deleção foi realizada.
+        if (v_qtd_linhas_atualizadas is null or v_qtd_linhas_atualizadas <= 0)
+        then
+            raise exception 'Erro ao deletar o pneu de Código %, Código Cliente % e Unidade % '
+                'em afericao_manutencao_data', f_codigo_pneu, f_codigo_cliente, f_cod_unidade;
+        end if;
+    end if;
 
-    -- Verifica se o pneu está em afericao_valores_data.
-    IF (SELECT EXISTS(SELECT AV.COD_AFERICAO
-                      FROM AFERICAO_VALORES_DATA AV
-                      WHERE AV.COD_PNEU = F_CODIGO_PNEU
-                        AND AV.COD_UNIDADE = F_COD_UNIDADE
-                        AND AV.DELETADO = FALSE))
-    THEN
-        UPDATE AFERICAO_VALORES_DATA
-        SET DELETADO            = TRUE,
-            DATA_HORA_DELETADO  = NOW(),
-            PG_USERNAME_DELECAO = SESSION_USER,
-            MOTIVO_DELECAO      = F_MOTIVO_DELECAO
-        WHERE COD_PNEU = F_CODIGO_PNEU
-          AND COD_UNIDADE = F_COD_UNIDADE
-          AND DELETADO = FALSE;
+    -- verifica se o pneu está em afericao_valores_data.
+    if (select exists(select av.cod_afericao
+                      from afericao_valores_data av
+                      where av.cod_pneu = f_codigo_pneu
+                        and av.cod_unidade = f_cod_unidade
+                        and av.deletado = false))
+    then
+        update afericao_valores_data
+        set deletado            = true,
+            data_hora_deletado  = now(),
+            pg_username_delecao = session_user,
+            motivo_delecao      = f_motivo_delecao
+        where cod_pneu = f_codigo_pneu
+          and cod_unidade = f_cod_unidade
+          and deletado = false;
 
-        GET DIAGNOSTICS V_QTD_LINHAS_ATUALIZADAS = ROW_COUNT;
+        get diagnostics v_qtd_linhas_atualizadas = row_count;
 
-        -- Garante que a deleção foi realizada.
-        IF (V_QTD_LINHAS_ATUALIZADAS IS NULL OR V_QTD_LINHAS_ATUALIZADAS <= 0)
-        THEN
-            RAISE EXCEPTION 'Erro ao deletar o pneu de Código %, Código cliente % e Unidade % em afericao_valores_data',
-                F_CODIGO_PNEU, F_CODIGO_CLIENTE, F_COD_UNIDADE;
-        END IF;
-    END IF;
+        -- garante que a deleção foi realizada.
+        if (v_qtd_linhas_atualizadas is null or v_qtd_linhas_atualizadas <= 0)
+        then
+            raise exception 'Erro ao deletar o pneu de Código %, Código cliente % e Unidade % em afericao_valores_data',
+                f_codigo_pneu, f_codigo_cliente, f_cod_unidade;
+        end if;
+    end if;
 
-    --Busca todos os cod_afericao deletados a partir do pneu.
-    SELECT ARRAY_AGG(AV.COD_AFERICAO)
-    FROM AFERICAO_VALORES_DATA AV
-    WHERE AV.COD_PNEU = F_CODIGO_PNEU
-      AND AV.COD_UNIDADE = F_COD_UNIDADE
-      AND AV.DELETADO IS TRUE
-    INTO V_COD_AFERICAO;
+    --busca todos os cod_afericao deletados a partir do pneu.
+    select array_agg(av.cod_afericao)
+    from afericao_valores_data av
+    where av.cod_pneu = f_codigo_pneu
+      and av.cod_unidade = f_cod_unidade
+      and av.deletado is true
+    into v_cod_afericao;
 
-    -- Verifica se algum valor foi deletado em afericao_valores_data.
-    IF (V_COD_AFERICAO IS NOT NULL AND ARRAY_LENGTH(V_COD_AFERICAO, 1) > 0)
-    THEN
-        -- Iteração com cada cod_afericao deletado em afericao_valores_data.
-        FOREACH V_COD_AFERICAO_FOREACH IN ARRAY V_COD_AFERICAO
-            LOOP
-                -- Coleta a quantidade de aferições em afericao_valores_data.
-                V_QTD_AFERICAO_VALORES = (SELECT COUNT(AVD.COD_AFERICAO)
-                                          FROM AFERICAO_VALORES_DATA AVD
-                                          WHERE AVD.COD_AFERICAO = V_COD_AFERICAO_FOREACH);
+    -- verifica se algum valor foi deletado em afericao_valores_data.
+    if (v_cod_afericao is not null and array_length(v_cod_afericao, 1) > 0)
+    then
+        -- iteração com cada cod_afericao deletado em afericao_valores_data.
+        foreach v_cod_afericao_foreach in array v_cod_afericao
+            loop
+                -- coleta a quantidade de aferições em afericao_valores_data.
+                v_qtd_afericao_valores = (select count(avd.cod_afericao)
+                                          from afericao_valores_data avd
+                                          where avd.cod_afericao = v_cod_afericao_foreach);
 
-                -- Coleta a quantidade de aferições deletadas em afericao_valores_data.
-                V_QTD_AFERICAO_VALORES_DELETADOS = (SELECT COUNT(AVD.COD_AFERICAO)
-                                                    FROM AFERICAO_VALORES_DATA AVD
-                                                    WHERE AVD.COD_AFERICAO = V_COD_AFERICAO_FOREACH
-                                                      AND AVD.DELETADO IS TRUE);
+                -- coleta a quantidade de aferições deletadas em afericao_valores_data.
+                v_qtd_afericao_valores_deletados = (select count(avd.cod_afericao)
+                                                    from afericao_valores_data avd
+                                                    where avd.cod_afericao = v_cod_afericao_foreach
+                                                      and avd.deletado is true);
 
-                -- Verifica se todos os valores da aferição foram deletados, para que assim seja deletada a aferição também.
-                IF (V_QTD_AFERICAO_VALORES = V_QTD_AFERICAO_VALORES_DELETADOS)
-                THEN
-                    UPDATE AFERICAO_DATA
-                    SET DELETADO            = TRUE,
-                        DATA_HORA_DELETADO  = NOW(),
-                        PG_USERNAME_DELECAO = SESSION_USER,
-                        MOTIVO_DELECAO      = F_MOTIVO_DELECAO
-                    WHERE CODIGO = V_COD_AFERICAO_FOREACH;
+                -- verifica se todos os valores da aferição foram deletados, para que assim seja deletada a aferição também.
+                if (v_qtd_afericao_valores = v_qtd_afericao_valores_deletados)
+                then
+                    update afericao_data
+                    set deletado            = true,
+                        data_hora_deletado  = now(),
+                        pg_username_delecao = session_user,
+                        motivo_delecao      = f_motivo_delecao
+                    where codigo = v_cod_afericao_foreach;
 
-                    GET DIAGNOSTICS V_QTD_LINHAS_ATUALIZADAS = ROW_COUNT;
+                    get diagnostics v_qtd_linhas_atualizadas = row_count;
 
-                    -- Garante que a deleção foi realizada.
-                    IF (V_QTD_LINHAS_ATUALIZADAS IS NULL OR V_QTD_LINHAS_ATUALIZADAS <= 0)
-                    THEN
-                        RAISE EXCEPTION 'Erro ao deletar aferição com Código: %, Unidade: %',
-                            V_COD_AFERICAO_FOREACH, F_COD_UNIDADE;
-                    END IF;
-                END IF;
-            END LOOP;
-    END IF;
+                    -- garante que a deleção foi realizada.
+                    if (v_qtd_linhas_atualizadas is null or v_qtd_linhas_atualizadas <= 0)
+                    then
+                        raise exception 'Erro ao deletar aferição com Código: %, Unidade: %',
+                            v_cod_afericao_foreach, f_cod_unidade;
+                    end if;
+                end if;
+            end loop;
+    end if;
 
-    SELECT 'PNEU DELETADO: '
-               || F_CODIGO_PNEU
+    select 'PNEU DELETADO: '
+               || f_codigo_pneu
                || ', CÓDIGO DO CLIENTE: '
-               || F_CODIGO_CLIENTE
+               || f_codigo_cliente
                || ', CÓDIGO DA UNIDADE: '
-               || F_COD_UNIDADE
-    INTO AVISO_PNEU_DELETADO;
-END
+               || f_cod_unidade
+    into aviso_pneu_deletado;
+end
 $$;
