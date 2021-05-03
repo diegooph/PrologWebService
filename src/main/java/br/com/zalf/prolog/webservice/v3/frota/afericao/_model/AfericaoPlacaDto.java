@@ -34,17 +34,17 @@ public class AfericaoPlacaDto {
     @Nullable
     String identificadorFrota;
     @NotNull
-    Long kmVeiculoMomentoAfericao;
+    Long kmVeiculoAfericao;
     @NotNull
-    LocalDateTime dataHoraAfericaoUtc;
+    LocalDateTime dataHoraRealizacaoUtc;
     @NotNull
-    LocalDateTime dataHoraAfericaoTimeZoneAplicado;
+    LocalDateTime dataHoraRealizacaoTimeZoneAplicado;
     @NotNull
     TipoMedicaoColetadaAfericao tipoMedicaoColetada;
     @NotNull
     TipoProcessoColetaAfericao tipoProcessoColeta;
     @NotNull
-    Long tempoRealizacaoAfericaoEmMilisegundos;
+    Long tempoRealizacaoEmMilisegundos;
     @NotNull
     FormaColetaDadosAfericaoEnum formaColetaDados;
     @Nullable
