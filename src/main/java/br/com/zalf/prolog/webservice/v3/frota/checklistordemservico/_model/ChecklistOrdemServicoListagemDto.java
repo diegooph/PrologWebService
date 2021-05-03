@@ -16,42 +16,41 @@ public class ChecklistOrdemServicoListagemDto {
     @ApiModelProperty(
             value = "Código da ordem de serviço.",
             example = "23")
-    private final long codigoOs;
+    private final long codOrdemServico;
     @ApiModelProperty(
             value = "Código único da unidade.",
             example = "215")
-    private final long codUnidade;
+    private final long codUnidadeOrdemServico;
     @ApiModelProperty(
             value = "Código do checklist que abriu essa ordem de serviço.",
             example = "10")
-    private final long codChecklistAberturaOs;
-    @ApiModelProperty(
-            value = "O status da ordem de serviço, aberta ou fechada.",
-            example = "A")
+    private final long codChecklistAbertura;
+    private final long codColaboradorAbertura;
     @NotNull
-    private final StatusOrdemServico statusOs;
-    @ApiModelProperty(
-            value = "Os itens da ordem de serviço.")
-    @Nullable
-    private final List<ChecklistOrdemServicoItemDto> itensOs;
-    @ApiModelProperty(
-            value = "A data em que a O.S foi totalmente fechada, em UTC.",
-            example = "2019-08-18T10:47:00")
-    @Nullable
-    private final LocalDateTime dataHoraFechamentoOsUtc;
-    @ApiModelProperty(
-            value = "A data em que a O.S foi totalmente fechada, com timezone aplicado.",
-            example = "2019-08-18T10:47:00")
-    @Nullable
-    private final LocalDateTime dataHoraFechamentoOsTimezoneAplicado;
-    private final long codigoColaboradorAberturaOs;
+    private final String cpfColaboradorAbertura;
     @NotNull
-    private final String cpfColaboradorAberturaOs;
-    @NotNull
-    private final String nomeColaboradorAberturaOs;
-    private final long codigoVeiculo;
+    private final String nomeColaboradorAbertura;
+    private final long codVeiculo;
     @NotNull
     private final String placaVeiculo;
     @Nullable
     private final String identificadorFrota;
+    @ApiModelProperty(
+            value = "O status da ordem de serviço, aberta ou fechada.",
+            example = "A")
+    @NotNull
+    private final StatusOrdemServico statusOrdemServico;
+    @ApiModelProperty(
+            value = "A data em que a O.S foi totalmente fechada, em UTC.",
+            example = "2019-08-18T10:47:00")
+    @Nullable
+    private final LocalDateTime dataHoraFechamentoUtc;
+    @ApiModelProperty(
+            value = "A data em que a O.S foi totalmente fechada, com timezone aplicado.",
+            example = "2019-08-18T10:47:00")
+    @Nullable
+    private final LocalDateTime dataHoraFechamentoTimeZoneAplicado;
+    @ApiModelProperty(value = "Os itens da ordem de serviço.")
+    @Nullable
+    private final List<ChecklistOrdemServicoItemDto> itensOrdemServico;
 }

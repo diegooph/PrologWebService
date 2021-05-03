@@ -13,36 +13,31 @@ public class ChecklistOrdemServicoItemDto {
     @ApiModelProperty(
             value = "Código do item de ordem de serviço.",
             example = "2")
-    private final long codigoItemOs;
+    private final long codItemOrdemServico;
     @ApiModelProperty(
             value = "Código da ordem de serviço.",
             example = "23")
-    private final long codigoOs;
+    private final long codOrdemServico;
     @ApiModelProperty(
             value = "Código da unidade a que o item da ordem de serviço pertence.",
             example = "215")
-    private final long codUnidade;
-    @ApiModelProperty(
-            value = "Cpf do mecânico que fechou o item de ordem de serviço.",
-            example = "97599336087")
-    @Nullable
-    private final Long cpfMecanico;
+    private final long codUnidadeItemOrdemServico;
     @ApiModelProperty(
             value = "Código da pergunta que abriu a ordem de serviço.",
             example = "3")
-    private final long codigoPerguntaPrimeiroApontamento;
+    private final long codPerguntaPrimeiroApontamento;
     @ApiModelProperty(
             value = "Código que muda apenas qunado o contexto ou significado da pergunta é altrado.",
             example = "5")
-    private final long codigoContextoPergunta;
+    private final long codContextoPergunta;
     @ApiModelProperty(
             value = "Código da alternativa que abriu a ordem de serviço.",
             example = "7")
-    private final long codigoAlternativaPrimeiroApontamento;
+    private final long codAlternativaPrimeiroApontamento;
     @ApiModelProperty(
             value = "Código que muda apenas qunado o contexto ou significado da alternativa é alterado.",
             example = "9")
-    private final long codigoContextoAlternativa;
+    private final long codContextoAlternativa;
     @ApiModelProperty(
             value = "Código auxiliar da alternativa que abriu a ordem de serviço.",
             example = "AA:BB")
@@ -52,22 +47,27 @@ public class ChecklistOrdemServicoItemDto {
             value = "Status do item da ordem de serviço: aberto ou fechado.",
             example = "F")
     @NotNull
-    private final StatusItemOrdemServico statusItemOs;
+    private final StatusItemOrdemServico statusItemOrdemServico;
     @ApiModelProperty(
             value = "Quantidade de vezes que esse item de ordem de serviço já foi apontado.",
             example = "45")
     private final int quantidadeApontamentos;
     @ApiModelProperty(
+            value = "Cpf do mecânico que fechou o item de ordem de serviço.",
+            example = "97599336087")
+    @Nullable
+    private final Long cpfMecanicoResolucao;
+    @ApiModelProperty(
             value = "Quilometragem do veículo quando o item de ordem de serviço foi criado.",
             example = "53246")
     @Nullable
-    private final Long km;
+    private final Long kmVeiculoMomentoResolucao;
     @ApiModelProperty(
             value = "Código do processo de fechamento de itens de ordem de serviço, " +
                     "quando vários itens são fechados em lote.",
             example = "84")
     @Nullable
-    private final Long codigoAgrupamentoFechamentoEmLote;
+    private final Long codAgrupamentoResolucaoEmLote;
     @ApiModelProperty(
             value = "A data e a hora em que foi apontado que o conserto necessário no item da " +
                     "ordem de serviço foi realizado, em utc.",
@@ -79,7 +79,7 @@ public class ChecklistOrdemServicoItemDto {
                     "ordem de serviço foi realizado, com timezone do mecânico aplicado.",
             example = "2019-08-18T10:47:00")
     @Nullable
-    private final LocalDateTime dataHoraConsertoTimezoneAplicado;
+    private final LocalDateTime dataHoraConsertoTimeZoneAplicado;
     @ApiModelProperty(
             value = "A data e a hora em que foi iniciado o conserto necessário no item da ordem de serviço, em utc.",
             example = "2019-08-18T13:47:00")
@@ -90,7 +90,7 @@ public class ChecklistOrdemServicoItemDto {
                     "com timezone do mecânico aplicado.",
             example = "2019-08-18T10:47:00")
     @Nullable
-    private final LocalDateTime dataHoraInicioResolucaoTimezoneAplicado;
+    private final LocalDateTime dataHoraInicioResolucaoTimeZoneAplicado;
     @ApiModelProperty(
             value = "A data e a hora em que foi finalizado o conserto necessário no item da ordem de serviço, em utc.",
             example = "2019-08-18T13:47:00")
@@ -101,15 +101,15 @@ public class ChecklistOrdemServicoItemDto {
                     "com timezone do mecânico aplicado.",
             example = "2019-08-18T10:47:00")
     @Nullable
-    private final LocalDateTime dataHoraFimResolucaoTimezoneAplicado;
+    private final LocalDateTime dataHoraFimResolucaoTimeZoneAplicado;
     @ApiModelProperty(
             value = "O tempo total para realizar o conserto necessário, em milissegundos.",
             example = "100000")
     @Nullable
-    private final Long tempoRealizacao;
+    private final Long tempoResolucaoEmMilisegundos;
     @ApiModelProperty(
             value = "Uma observação referente o conserto..",
             example = "O pneu só irá conseguir rodar mais 10000 KM.")
     @Nullable
-    private final String feedbackConserto;
+    private final String observacaoResolucao;
 }
