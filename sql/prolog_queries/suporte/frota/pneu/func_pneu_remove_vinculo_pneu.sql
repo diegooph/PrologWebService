@@ -49,7 +49,7 @@ BEGIN
         FOREACH COD_PNEU_DA_VEZ IN ARRAY F_LISTA_COD_PNEUS
             LOOP
                 -- Verifica se pneu não está vinculado a placa informada;
-                IF NOT EXISTS(SELECT VP.PLACA
+                IF NOT EXISTS(SELECT VP.COD_VEICULO
                               FROM VEICULO_PNEU VP
                               WHERE VP.COD_VEICULO = F_COD_VEICULO
                                 AND VP.COD_PNEU = COD_PNEU_DA_VEZ)

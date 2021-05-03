@@ -29,7 +29,7 @@ BEGIN
     END IF;
 
     -- Verifica se o pneu está aplicado.
-    IF ((SELECT COUNT(VP.PLACA)
+    IF ((SELECT COUNT(VP.COD_VEICULO)
          FROM VEICULO_PNEU VP
          WHERE VP.COD_PNEU = F_CODIGO_PNEU
            AND VP.COD_UNIDADE = F_COD_UNIDADE) > 0)

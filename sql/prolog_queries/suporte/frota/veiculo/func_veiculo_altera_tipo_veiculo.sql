@@ -47,12 +47,12 @@ begin
     end if;
 
     -- Verifica se placa tem pneus aplicados.
-    if exists(select vp.placa from veiculo_pneu vp where vp.placa = f_placa_veiculo)
+    if exists(select vp.cod_veiculo from veiculo_pneu vp where vp.cod_veiculo = v_cod_veiculo)
     then
         -- Se existirem pneus, verifica se os pneus que aplicados possuem as mesmas posições do novo tipo.
         if ((select array_agg(vp.posicao)
              from veiculo_pneu vp
-             where vp.placa = f_placa_veiculo) <@
+             where vp.cod_veiculo = v_cod_veiculo) <@
             (select array_agg(vdpp.posicao_prolog :: integer)
              from veiculo_diagrama_posicao_prolog vdpp
              where cod_diagrama = v_cod_diagrama_novo) = false)
@@ -94,7 +94,7 @@ begin
             f_cod_veiculo_tipo_novo;
     end if;
 
-    if exists(select vp.placa from veiculo_pneu vp where vp.placa = f_placa_veiculo)
+    if exists(select vp.cod_veiculo from veiculo_pneu vp where vp.cod_veiculo = v_cod_veiculo)
         and v_cod_diagrama_antigo <> v_cod_diagrama_novo
     then
         -- Assim conseguimos alterar o cod_diagrama na VEICULO_PNEU sem ele ainda estar alterado na tabela VEICULO_DATA.
@@ -102,7 +102,7 @@ begin
 
         update veiculo_pneu
         set cod_diagrama = v_cod_diagrama_novo
-        where placa = f_placa_veiculo
+        where cod_veiculo = v_cod_veiculo
           and cod_unidade = f_cod_unidade
           and cod_diagrama = v_cod_diagrama_antigo;
 
