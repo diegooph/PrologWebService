@@ -33,7 +33,9 @@ begin
     perform func_garante_veiculo_existe(f_cod_unidade, f_placa);
 
     -- Verifica se veiculo possui pneus aplicados.
-    if exists(select vp.cod_pneu from veiculo_pneu vp where vp.placa = f_placa and vp.cod_unidade = f_cod_unidade)
+    if exists(select vp.cod_pneu
+              from veiculo_pneu vp
+              where cod_veiculo = v_cod_veiculo and vp.cod_unidade = f_cod_unidade)
     then
         raise exception 'Erro! A Placa: % possui pneus aplicados. Favor removê-los', f_placa;
     end if;

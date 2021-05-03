@@ -49,7 +49,7 @@ begin
         foreach cod_pneu_da_vez in array f_lista_cod_pneus
             loop
                 -- verifica se pneu não está vinculado a placa informada;
-                if not exists(select vp.placa
+                if not exists(select vp.cod_veiculo
                               from veiculo_pneu vp
                               where vp.cod_veiculo = f_cod_veiculo
                                 and vp.cod_pneu = cod_pneu_da_vez)
