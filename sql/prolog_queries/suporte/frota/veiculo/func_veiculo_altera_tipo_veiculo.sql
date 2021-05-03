@@ -46,23 +46,6 @@ begin
             V_cod_empresa;
     end if;
 
-    -- Verifica se placa tem pneus aplicados.
-    if exists(select vp.cod_veiculo from veiculo_pneu vp where vp.cod_veiculo = v_cod_veiculo)
-    then
-        -- Se existirem pneus, verifica se os pneus que aplicados possuem as mesmas posições do novo tipo.
-        if ((select array_agg(vp.posicao)
-             from veiculo_pneu vp
-             where vp.cod_veiculo = v_cod_veiculo) <@
-            (select array_agg(vdpp.posicao_prolog :: integer)
-             from veiculo_diagrama_posicao_prolog vdpp
-             where cod_diagrama = v_cod_diagrama_novo) = false)
-        then
-            raise exception
-                'Existem pneus aplicados em posições que não fazem parte do tipo de veículo de código: %',
-                f_cod_veiculo_tipo_novo;
-        end if;
-    end if;
-
     -- Busca os dados necessários para mandarmos para a function de update.
     select v.codigo,
            v.identificador_frota,
@@ -84,6 +67,23 @@ begin
     from veiculo v
     where v.placa = f_placa_veiculo
       and v.cod_unidade = f_cod_unidade;
+
+    -- Verifica se placa tem pneus aplicados.
+    if exists(select vp.cod_veiculo from veiculo_pneu vp where vp.cod_veiculo = v_cod_veiculo)
+    then
+        -- Se existirem pneus, verifica se os pneus que aplicados possuem as mesmas posições do novo tipo.
+        if ((select array_agg(vp.posicao)
+             from veiculo_pneu vp
+             where vp.cod_veiculo = v_cod_veiculo) <@
+            (select array_agg(vdpp.posicao_prolog :: integer)
+             from veiculo_diagrama_posicao_prolog vdpp
+             where cod_diagrama = v_cod_diagrama_novo) = false)
+        then
+            raise exception
+                'Existem pneus aplicados em posições que não fazem parte do tipo de veículo de código: %',
+                f_cod_veiculo_tipo_novo;
+        end if;
+    end if;
 
     -- Verifica se o tipo_veiculo_novo é o atual.
     if v_cod_tipo_antigo = f_cod_veiculo_tipo_novo
