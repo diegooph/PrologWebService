@@ -14,19 +14,19 @@ import java.math.BigDecimal;
 @Value(staticConstructor = "of")
 public class MedidaDto {
     @NotNull
-    Long codPneu;
+    Long codPneuAfericao;
     @NotNull
-    Integer posicao;
-    @Nullable
-    BigDecimal psi;
+    Integer posicaoPneuAplicadoMomentoAfericao;
     @NotNull
-    Integer vidaMomentoAfericao;
+    Integer vidaPneuMomentoAfericao;
     @Nullable
-    BigDecimal alturaSulcoInterno;
+    BigDecimal pressaoPneuEmPsi;
     @Nullable
-    BigDecimal alturaSulcoCentralInterno;
+    BigDecimal alturaSulcoInternoEmMilimetros;
     @Nullable
-    BigDecimal alturaSulcoCentralExterno;
+    BigDecimal alturaSulcoCentralInternoEmMilimetros;
     @Nullable
-    BigDecimal alturaSulcoExterno;
+    BigDecimal alturaSulcoCentralExternoEmMilimetros;
+    @Nullable
+    BigDecimal alturaSulcoExternoEmMilimetros;
 }
