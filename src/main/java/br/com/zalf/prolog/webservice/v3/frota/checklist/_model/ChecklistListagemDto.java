@@ -19,13 +19,13 @@ import java.util.List;
 @Value(staticConstructor = "of")
 public class ChecklistListagemDto {
     @NotNull
-    Long codUnidade;
-    @NotNull
     Long codChecklist;
+    @NotNull
+    Long codUnidadeChecklist;
     @NotNull
     Long codModeloChecklist;
     @NotNull
-    Long codVersaoModelo;
+    Long codVersaoModeloChecklist;
     @NotNull
     Long codColaborador;
     @NotNull
@@ -38,18 +38,18 @@ public class ChecklistListagemDto {
     String placaVeiculo;
     @Nullable
     String identificadorFrota;
-    long kmVeiculoMomentoRealizacao;
+    long kmVeiculoChecklist;
     @NotNull
     TipoChecklist tipoChecklist;
     @NotNull
     LocalDateTime dataHoraRealizacaoUtc;
     @NotNull
-    LocalDateTime dataHoraRealizacaoTzAplicado;
+    LocalDateTime dataHoraRealizacaoTimeZoneAplicado;
     @Nullable
-    LocalDateTime dataHoraImportadoUtc;
+    LocalDateTime dataHoraImportacaoUtc;
     @Nullable
-    LocalDateTime dataHoraImportadoTzAplicado;
-    long tempoRealizacaoInMillis;
+    LocalDateTime dataHoraImportacaoTimeZoneAplicado;
+    long tempoRealizacaoEmMilisegundos;
     @Nullable
     String observacaoChecklist;
     int totalPerguntasOk;
@@ -65,7 +65,7 @@ public class ChecklistListagemDto {
     @NotNull
     LocalDateTime dataHoraSincronizacaoUtc;
     @NotNull
-    LocalDateTime dataHoraSincronizacaoTzAplicado;
+    LocalDateTime dataHoraSincronizacaoTimeZoneAplicado;
     @NotNull
     FonteDataHora fonteDataHora;
     @Nullable
@@ -76,8 +76,8 @@ public class ChecklistListagemDto {
     String deviceId;
     @Nullable
     String deviceImei;
-    long deviceUptimeRealizacaoMillis;
-    long deviceUptimeSincronizacaoMillis;
+    long deviceUptimeRealizacaoEmMilisegundos;
+    long deviceUptimeSincronizacaoEmMilisegundos;
     @Nullable
-    List<ChecklistPerguntasDto> checklistPerguntasDtos;
+    List<ChecklistPerguntasDto> perguntasChecklist;
 }

@@ -26,5 +26,5 @@ public class ChecklistPerguntasDto {
     @NotNull
     AnexoMidiaChecklistEnum anexoMidiaPerguntaOk;
     @NotNull
-    List<ChecklistAlternativaDto> checklistAlternativaDtos;
+    List<ChecklistAlternativaDto> alternativaPergunta;
 }
