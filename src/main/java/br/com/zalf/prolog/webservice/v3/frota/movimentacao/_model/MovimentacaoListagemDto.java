@@ -22,7 +22,7 @@ public final class MovimentacaoListagemDto {
     @NotNull
     private final Long codDimensaoPneu;
     @NotNull
-    private final Integer vidaPneu;
+    private final Integer vidaPneuMomentoMovimentacao;
     @Nullable
     private final Double sulcoInternoMomentoMovimentacaoEmMilimetros;
     @Nullable
@@ -42,7 +42,7 @@ public final class MovimentacaoListagemDto {
     @Nullable
     private final Long posicaoPneuDestino;
     @Nullable
-    private final String observacao;
+    private final String observacaoMovimentacao;
     @Nullable
     private final Long codMotivoDescarte;
     @Nullable

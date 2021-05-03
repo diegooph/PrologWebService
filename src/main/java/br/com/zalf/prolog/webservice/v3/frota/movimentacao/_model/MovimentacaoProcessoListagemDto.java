@@ -23,17 +23,17 @@ public final class MovimentacaoProcessoListagemDto {
     @NotNull
     private final LocalDateTime dataHoraRealizacaoTimeZoneAplicado;
     @NotNull
-    private final Long codColaboradorResponsavel;
+    private final Long codColaborador;
     @NotNull
-    private final String cpfColaboradorResponsavel;
+    private final String cpfColaborador;
     @NotNull
-    private final String nomeColaboradorResponsavel;
+    private final String nomeColaborador;
     @Nullable
     private final Long codVeiculo;
     @Nullable
     private final String placaVeiculo;
     @Nullable
-    private final String identificadorFrotaVeiculo;
+    private final String identificadorFrota;
     @Nullable
     private final Long kmColetadoVeiculo;
     @Nullable

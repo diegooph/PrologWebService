@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 @Data
 public final class MovimentacaoPneuServicoRealizadoDto {
     @NotNull
-    private final Long codigo;
+    private final Long codServico;
     @NotNull
     private final String nomeServico;
     @NotNull
