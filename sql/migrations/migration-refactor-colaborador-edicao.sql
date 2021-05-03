@@ -1,3 +1,4 @@
+drop function suporte.func_colaborador_busca_historico_edicoes(f_cod_colaborador bigint);
 create or replace function suporte.func_colaborador_busca_historico_edicoes(f_cod_colaborador bigint)
     returns table
             (
