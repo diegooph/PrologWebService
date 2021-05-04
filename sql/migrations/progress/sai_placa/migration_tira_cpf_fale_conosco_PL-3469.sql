@@ -16,3 +16,8 @@ set cod_colaborador          = (select codigo from colaborador_data where cpf = 
 
 alter table fale_conosco
     alter column cod_colaborador set not null;
+
+alter table fale_conosco
+    drop column cpf_colaborador;
+alter table fale_conosco
+    drop column cpf_feedback;
