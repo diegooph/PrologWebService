@@ -1032,7 +1032,11 @@ public class SistemaWebFinattoConverter {
             @NotNull final UnidadeRestricao unidadeRestricao,
             @NotNull final TipoVeiculoConfigAfericao tipoVeiculoConfigAfericao,
             @NotNull final AfericaoRealizadaPlaca afericaoRealizadaPlaca) {
+        final Long codVeiculo =
+                SistemaWebFinattoEncoderDecoder.generateCodVeiculo(unidadeRestricao.getCodUnidade(),
+                                                                   Long.valueOf(veiculo.getCodVeiculo()));
         final ModeloPlacasAfericao.PlacaAfericao placaAfericao = new ModeloPlacasAfericao.PlacaAfericao();
+        placaAfericao.setCodigoVeiculo(codVeiculo);
         placaAfericao.setPlaca(veiculo.getPlacaVeiculo());
         placaAfericao.setIdentificadorFrota(veiculo.getCodigoFrota());
 
