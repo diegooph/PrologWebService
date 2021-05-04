@@ -366,7 +366,7 @@ final class DashboardPneuComponentsCreator {
                     if (diasVencidos > 0) {
                         columns.add(new TableColumn(String.valueOf(diasVencidos)));
                     } else {
-                        columns.add(new TableColumn("vencido (nunca aferido)"));
+                        columns.add(new TableColumn("no prazo"));
                     }
                 } else {
                     columns.add(new TableColumn("vencido (nunca aferido)"));
