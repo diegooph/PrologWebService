@@ -70,17 +70,27 @@ public final class MovimentacaoEntity {
 
     @NotNull
     public Optional<VeiculoMovimentacao> getVeiculo() {
-        final VeiculoEntity veiculo = movimentacaoOrigem.getVeiculo() != null
-                ? movimentacaoOrigem.getVeiculo()
-                : movimentacaoDestino.getVeiculo();
-        if (veiculo != null) {
-            return Optional.of(new VeiculoMovimentacao(veiculo.getCodigo(),
-                                                       veiculo.getPlaca(),
-                                                       veiculo.getIdentificadorFrota(),
-                                                       movimentacaoOrigem.getKmColetadoVeiculo(),
-                                                       veiculo.getCodDiagrama()));
+        if (movimentacaoOrigem.getVeiculo() != null) {
+            return createVeiculoMovimentacao(movimentacaoOrigem.getVeiculo(),
+                                             movimentacaoOrigem.getKmColetadoVeiculo(),
+                                             movimentacaoOrigem.getCodDiagrama());
+        } else if (movimentacaoDestino.getVeiculo() != null) {
+            return createVeiculoMovimentacao(movimentacaoDestino.getVeiculo(),
+                                             movimentacaoDestino.getKmColetadoVeiculo(),
+                                             movimentacaoDestino.getCodDiagrama());
         }
 
         return Optional.empty();
+    }
+
+    @NotNull
+    private Optional<VeiculoMovimentacao> createVeiculoMovimentacao(@NotNull final VeiculoEntity veiculo,
+                                                                    @NotNull final Long kmColetadoVeiculo,
+                                                                    @NotNull final Long codDiagrama) {
+        return Optional.of(new VeiculoMovimentacao(veiculo.getCodigo(),
+                                                   veiculo.getPlaca(),
+                                                   veiculo.getIdentificadorFrota(),
+                                                   kmColetadoVeiculo,
+                                                   codDiagrama));
     }
 }
