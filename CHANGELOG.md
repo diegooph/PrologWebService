@@ -3,6 +3,10 @@ Change Log
 
 ## UNRELEASED
 
+### Bug Fixes
+* Corrige edição de KM de processo de movimentação
+* Corrige KM coletado enviado na listagem de movimentações da API v3
+
 <a name="v3.3.0"></a>
 ## Version [v3.3.0](https://github.com/luizfp/PrologWebService/compare/v3.2.0...v3.2.1) (2021-05-02)
 
