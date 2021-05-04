@@ -4,7 +4,6 @@ import br.com.zalf.prolog.webservice.commons.util.datetime.TimezoneUtils;
 import br.com.zalf.prolog.webservice.v3.LocalDateTimeUtcAttributeConverter;
 import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.EntityKmColetado;
 import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.VeiculoKmColetado;
-import br.com.zalf.prolog.webservice.v3.frota.veiculo._model.VeiculoEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,10 +12,8 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * Created on 2021-03-25
@@ -50,31 +47,21 @@ public final class MovimentacaoProcessoEntity implements EntityKmColetado {
     @NotNull
     @Override
     public VeiculoKmColetado getVeiculoKmColetado() {
-        final Optional<VeiculoEntity> veiculo = getVeiculo();
-        if (veiculo.isPresent()) {
-            final VeiculoEntity veiculoEntity = veiculo.get();
-            return VeiculoKmColetado.of(veiculoEntity.getCodigo(), veiculoEntity.getKm());
-        } else {
-            throw new IllegalStateException(String.format(
-                    "O processo de movimentação %d não possui veículo associado.",
-                    codigo));
-        }
+        return getVeiculo()
+                .orElseThrow(() -> {
+                    throw new IllegalStateException(String.format(
+                            "O processo de movimentação %d não possui veículo associado.",
+                            codigo));
+                })
+                .toVeiculoKmColetado();
     }
 
     @NotNull
-    public List<MovimentacaoEntity> getMovimentacoesNoVeiculo(@NotNull final Long codVeiculo) {
-        return movimentacoes
-                .stream()
-                .filter(m -> m.isMovimentacaoNoVeiculo(codVeiculo))
-                .collect(Collectors.toList());
-    }
-
-    @NotNull
-    public Optional<VeiculoEntity> getVeiculo() {
+    public Optional<VeiculoMovimentacao> getVeiculo() {
         for (final MovimentacaoEntity movimentacao : movimentacoes) {
             // Movimentações no Prolog só podem envolver um veículo. Dessa forma, ao encontrar um veículo podemos
             // retornar imediatamente.
-            final Optional<VeiculoEntity> veiculo = movimentacao.getVeiculo();
+            final Optional<VeiculoMovimentacao> veiculo = movimentacao.getVeiculo();
             if (veiculo.isPresent()) {
                 return veiculo;
             }

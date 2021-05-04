@@ -64,22 +64,21 @@ public final class MovimentacaoEntity {
             inverseJoinColumns = @JoinColumn(name = "cod_servico_realizado"))
     private Set<PneuServicoRealizadoEntity> servicosRealizados;
 
-    public boolean isMovimentacaoNoVeiculo(@NotNull final Long codVeiculo) {
-        return codVeiculo.equals(movimentacaoOrigem.getVeiculo().getCodigo())
-                || codVeiculo.equals(movimentacaoDestino.getVeiculo().getCodigo());
-    }
-
     public boolean isMovimentacaoNoVeiculo() {
-        return movimentacaoOrigem.getVeiculo().getCodigo() != null
-                || movimentacaoDestino.getVeiculo().getCodigo() != null;
+        return movimentacaoOrigem.getVeiculo() != null || movimentacaoDestino.getVeiculo() != null;
     }
 
     @NotNull
-    public Optional<VeiculoEntity> getVeiculo() {
-        if (movimentacaoOrigem.getVeiculo() != null) {
-            return Optional.of(movimentacaoOrigem.getVeiculo());
-        } else if (movimentacaoDestino.getVeiculo() != null) {
-            return Optional.of(movimentacaoDestino.getVeiculo());
+    public Optional<VeiculoMovimentacao> getVeiculo() {
+        final VeiculoEntity veiculo = movimentacaoOrigem.getVeiculo() != null
+                ? movimentacaoOrigem.getVeiculo()
+                : movimentacaoDestino.getVeiculo();
+        if (veiculo != null) {
+            return Optional.of(new VeiculoMovimentacao(veiculo.getCodigo(),
+                                                       veiculo.getPlaca(),
+                                                       veiculo.getIdentificadorFrota(),
+                                                       movimentacaoOrigem.getKmColetadoVeiculo(),
+                                                       veiculo.getCodDiagrama()));
         }
 
         return Optional.empty();

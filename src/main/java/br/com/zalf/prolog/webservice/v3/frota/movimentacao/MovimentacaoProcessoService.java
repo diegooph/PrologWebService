@@ -65,14 +65,14 @@ public class MovimentacaoProcessoService implements KmProcessoAtualizavel {
                 .forEach(movimentacao -> {
                     final MovimentacaoOrigemEntity origem = movimentacao.getMovimentacaoOrigem();
                     final MovimentacaoDestinoEntity destino = movimentacao.getMovimentacaoDestino();
-                    if (origem.getVeiculo().getCodigo() != null) {
+                    if (origem.getVeiculo() != null) {
                         final MovimentacaoOrigemEntity novaOrigem = origem
                                 .toBuilder()
                                 .withKmColetadoVeiculo(novoKm)
                                 .build();
                         movimentacaoOrigemDao.save(novaOrigem);
                     }
-                    if (destino.getVeiculo().getCodigo() != null) {
+                    if (destino.getVeiculo() != null) {
                         final MovimentacaoDestinoEntity novoDestino = destino
                                 .toBuilder()
                                 .withKmColetadoVeiculo(novoKm)
