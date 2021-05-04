@@ -1,3 +1,6 @@
+drop function suporte.func_afericao_altera_km_coletado_afericao(f_placa text,
+    f_cod_afericao bigint,
+    f_novo_km bigint);
 create or replace function suporte.func_afericao_altera_km_coletado_afericao(f_cod_veiculo bigint,
                                                                              f_cod_afericao bigint,
                                                                              f_novo_km bigint,
