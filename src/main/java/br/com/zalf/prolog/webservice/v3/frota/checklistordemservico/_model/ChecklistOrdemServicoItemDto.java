@@ -15,10 +15,6 @@ public class ChecklistOrdemServicoItemDto {
             example = "2")
     private final Long codItemOrdemServico;
     @ApiModelProperty(
-            value = "Código da unidade a que o item da ordem de serviço pertence.",
-            example = "215")
-    private final Long codUnidadeItemOrdemServico;
-    @ApiModelProperty(
             value = "Código da pergunta que abriu a ordem de serviço.",
             example = "3")
     private final Long codPerguntaPrimeiroApontamento;
