@@ -75,7 +75,7 @@ public class FaleConoscoDaoImpl extends DatabaseConnection implements FaleConosc
                                                  + "from fale_conosco f "
                                                  + "join colaborador c on c.codigo = f.cod_colaborador "
                                                  + "left join colaborador c2 "
-                                                 + "on c2.cod_colaborador_feedback = f.cpf_feedback "
+                                                 + "on c2.codigo = f.cod_colaborador_feedback "
                                                  + "where f.codigo = ? and f.cod_unidade = ?");
             final ZoneId zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn);
             stmt.setString(1, zoneId.getId());
@@ -108,31 +108,31 @@ public class FaleConoscoDaoImpl extends DatabaseConnection implements FaleConosc
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT " +
-                                                 "  F.STATUS AS STATUS, " +
-                                                 "  F.CODIGO AS CODIGO, " +
-                                                 "  F.DATA_HORA AT TIME ZONE ? AS DATA_HORA, " +
-                                                 "  F.DESCRICAO AS DESCRICAO, " +
-                                                 "  F.CATEGORIA AS CATEGORIA, " +
-                                                 "  F.FEEDBACK AS FEEDBACK, " +
-                                                 "  F.DATA_HORA_FEEDBACK AT TIME ZONE ? AS DATA_HORA_FEEDBACK, " +
-                                                 "  C.CPF AS CPF_COLABORADOR, " +
-                                                 "  C.NOME AS NOME_COLABORADOR, " +
-                                                 "  C2.CPF AS CPF_FEEDBACK, " +
-                                                 "  C2.NOME AS NOME_FEEDBACK " +
-                                                 "FROM FALE_CONOSCO F JOIN colaborador C ON C.cpf = F.CPF_COLABORADOR" +
-                                                 " " +
-                                                 "  JOIN EQUIPE E ON E.codigo = C.cod_equipe " +
-                                                 "  LEFT JOIN COLABORADOR C2 ON C2.CPF = F.CPF_FEEDBACK " +
-                                                 "WHERE E.nome LIKE ? " +
-                                                 "      AND F.cod_unidade = ? " +
-                                                 "      AND F.status LIKE ? " +
-                                                 "      AND F.categoria LIKE ? " +
-                                                 "      AND C.CPF::TEXT LIKE ? " +
-                                                 "      AND F.DATA_HORA::date >= (? AT TIME ZONE ?)::date " +
-                                                 "      AND F.DATA_HORA::date <= (? AT TIME ZONE ?)::date " +
-                                                 "ORDER BY F.DATA_HORA " +
-                                                 "LIMIT ? OFFSET ?");
+            stmt = conn.prepareStatement("select "
+                                                 + "f.status as status, "
+                                                 + "f.codigo as codigo, "
+                                                 + "f.data_hora at time zone ? as data_hora, "
+                                                 + "f.descricao as descricao, "
+                                                 + "f.categoria as categoria, "
+                                                 + "f.feedback as feedback, "
+                                                 + "f.data_hora_feedback at time zone ? as data_hora_feedback, "
+                                                 + "c.cpf as cpf_colaborador, "
+                                                 + "c.nome as nome_colaborador, "
+                                                 + "c2.cpf as cpf_feedback, "
+                                                 + "c2.nome as nome_feedback "
+                                                 + "from fale_conosco f "
+                                                 + "join colaborador c on c.codigo = f.cod_colaborador "
+                                                 + "join equipe e on e.codigo = c.cod_equipe "
+                                                 + "left join colaborador c2 on c2.codigo = f.cod_colaborador_feedback "
+                                                 + "where e.nome like ? "
+                                                 + "and f.cod_unidade = ? "
+                                                 + "and f.status like ? "
+                                                 + "and f.categoria like ? "
+                                                 + "and c.cpf::text like ? "
+                                                 + "and f.data_hora::date >= (? at time zone ?)::date "
+                                                 + "and f.data_hora::date <= (? at time zone ?)::date "
+                                                 + "order by f.data_hora "
+                                                 + "limit ? offset ?");
             final ZoneId zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn);
             stmt.setString(1, zoneId.getId());
             stmt.setString(2, zoneId.getId());
