@@ -41,7 +41,7 @@ SELECT VAP."UNIDADE ALOCADO",
        VAP."MARCA",
        VAP."MODELO",
        VAP."MEDIDAS",
-       VP.PLACA                                 AS PLACA_APLICADO,
+       V.PLACA                                  AS PLACA_APLICADO,
        COALESCE(PPNE.NOMENCLATURA, '-') :: TEXT AS POSICAO_APLICADO,
        VAP."QTD DE AFERIÇÕES",
        VAP."DTA 1a AFERIÇÃO",
@@ -64,7 +64,7 @@ FROM VIEW_PNEU_ANALISE_VIDA_ATUAL AS VAP
          JOIN VEICULO_PNEU VP
               ON VAP."COD PNEU" = VP.COD_PNEU
          JOIN VEICULO V
-              ON VP.PLACA = V.PLACA
+              ON VP.COD_VEICULO = V.CODIGO
          LEFT JOIN VEICULO_TIPO VT
                    ON V.COD_TIPO = VT.CODIGO
          JOIN EMPRESA E ON VT.COD_EMPRESA = E.CODIGO
