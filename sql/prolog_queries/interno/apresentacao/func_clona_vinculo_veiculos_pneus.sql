@@ -14,6 +14,7 @@ begin
     then
         with veiculos_base as (
             select row_number() over () as codigo_comparacao,
+                   v.codigo             as cod_veiculo,
                    v.placa,
                    vdpp.posicao_prolog
             from veiculo_data v
@@ -35,8 +36,9 @@ begin
                         vn.cod_diagrama   as cod_diagrama_novo,
                         pdn.codigo        as cod_pneu_novo
                  from veiculos_base vb
-                          join veiculos_novos vn on vb.codigo_comparacao = vn.codigo_comparacao and vb.posicao_prolog = vn.posicao_prolog
-                          join veiculo_pneu vp on vb.placa = vp.placa and vb.posicao_prolog = vp.posicao
+                          join veiculos_novos vn
+                               on vb.codigo_comparacao = vn.codigo_comparacao and vb.posicao_prolog = vn.posicao_prolog
+                          join veiculo_pneu vp on vb.cod_veiculo = vp.cod_veiculo and vb.posicao_prolog = vp.posicao
                           join pneu_data pdb
                                on vp.status_pneu = pdb.status and vp.cod_unidade = pdb.cod_unidade and
                                   vp.cod_pneu = pdb.codigo
