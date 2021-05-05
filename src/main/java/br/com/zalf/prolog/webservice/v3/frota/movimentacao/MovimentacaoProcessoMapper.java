@@ -3,7 +3,6 @@ package br.com.zalf.prolog.webservice.v3.frota.movimentacao;
 import br.com.zalf.prolog.webservice.v3.frota.movimentacao._model.*;
 import br.com.zalf.prolog.webservice.v3.frota.pneu._model.PneuEntity;
 import br.com.zalf.prolog.webservice.v3.frota.pneu.pneuservico.PneuServicoRealizadoEntity;
-import br.com.zalf.prolog.webservice.v3.frota.veiculo._model.VeiculoEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Component;
@@ -31,7 +30,7 @@ public final class MovimentacaoProcessoMapper {
     @NotNull
     private MovimentacaoProcessoListagemDto createMovimentacaoProcessoListagemDto(
             @NotNull final MovimentacaoProcessoEntity processoEntity) {
-        final Optional<VeiculoEntity> veiculo = processoEntity.getVeiculo();
+        final Optional<VeiculoMovimentacao> veiculo = processoEntity.getVeiculo();
         return new MovimentacaoProcessoListagemDto(processoEntity.getCodigo(),
                                                    processoEntity.getCodUnidade(),
                                                    processoEntity.getDataHoraRealizacao(),
@@ -39,11 +38,11 @@ public final class MovimentacaoProcessoMapper {
                                                    processoEntity.getColaboradorRealizacaoProcesso().getCodigo(),
                                                    processoEntity.getColaboradorRealizacaoProcesso().getCpfFormatado(),
                                                    processoEntity.getColaboradorRealizacaoProcesso().getNome(),
-                                                   veiculo.map(VeiculoEntity::getCodigo).orElse(null),
-                                                   veiculo.map(VeiculoEntity::getPlaca).orElse(null),
-                                                   veiculo.map(VeiculoEntity::getIdentificadorFrota).orElse(null),
-                                                   veiculo.map(VeiculoEntity::getKm).orElse(null),
-                                                   veiculo.map(VeiculoEntity::getCodDiagrama).orElse(null),
+                                                   veiculo.map(VeiculoMovimentacao::getCodVeiculo).orElse(null),
+                                                   veiculo.map(VeiculoMovimentacao::getPlacaVeiculo).orElse(null),
+                                                   veiculo.map(VeiculoMovimentacao::getIdentificadorFrota).orElse(null),
+                                                   veiculo.map(VeiculoMovimentacao::getKmColetado).orElse(null),
+                                                   veiculo.map(VeiculoMovimentacao::getCodDiagramaVeiculo).orElse(null),
                                                    processoEntity.getObservacao(),
                                                    processoEntity.getMovimentacoes().stream()
                                                            .map(this::createMovimentacaoListagemDto)

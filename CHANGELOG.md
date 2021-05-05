@@ -1,10 +1,16 @@
 Change Log
 ==========
 
-## UNRELEASED
+<a name="v3.3.1"></a>
+## Version [v3.3.1](https://github.com/luizfp/PrologWebService/compare/v3.3.0...v3.3.1) (2021-05-04)
+
+### Bug Fixes
+* Corrige edição de KM de processo de movimentação
+* Corrige KM coletado enviado na listagem de movimentações da API v3
+* Corrige problema ao gerar cronograma de aferição para a Finatto
 
 <a name="v3.3.0"></a>
-## Version [v3.3.0](https://github.com/luizfp/PrologWebService/compare/v3.2.0...v3.2.1) (2021-05-02)
+## Version [v3.3.0](https://github.com/luizfp/PrologWebService/compare/v3.2.0...v3.3.0) (2021-05-02)
 
 ### Features
 * Cria anotações para garantir os códigos acessados pelas requisições (PL-3551)

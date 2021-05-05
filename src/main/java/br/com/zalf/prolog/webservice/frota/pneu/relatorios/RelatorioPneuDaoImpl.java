@@ -919,7 +919,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT * FROM FUNC_AFERICAO_RELATORIO_QTD_DIAS_PLACAS_VENCIDAS_2(?, ?);");
+            stmt = conn.prepareStatement("SELECT * FROM FUNC_AFERICAO_RELATORIO_QTD_DIAS_PLACAS_VENCIDAS(?, ?);");
             stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
             stmt.setObject(2, Now.getOffsetDateTimeUtc());
             rSet = stmt.executeQuery();

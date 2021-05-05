@@ -64,24 +64,33 @@ public final class MovimentacaoEntity {
             inverseJoinColumns = @JoinColumn(name = "cod_servico_realizado"))
     private Set<PneuServicoRealizadoEntity> servicosRealizados;
 
-    public boolean isMovimentacaoNoVeiculo(@NotNull final Long codVeiculo) {
-        return codVeiculo.equals(movimentacaoOrigem.getVeiculo().getCodigo())
-                || codVeiculo.equals(movimentacaoDestino.getVeiculo().getCodigo());
-    }
-
     public boolean isMovimentacaoNoVeiculo() {
-        return movimentacaoOrigem.getVeiculo().getCodigo() != null
-                || movimentacaoDestino.getVeiculo().getCodigo() != null;
+        return movimentacaoOrigem.getVeiculo() != null || movimentacaoDestino.getVeiculo() != null;
     }
 
     @NotNull
-    public Optional<VeiculoEntity> getVeiculo() {
+    public Optional<VeiculoMovimentacao> getVeiculo() {
         if (movimentacaoOrigem.getVeiculo() != null) {
-            return Optional.of(movimentacaoOrigem.getVeiculo());
+            return createVeiculoMovimentacao(movimentacaoOrigem.getVeiculo(),
+                                             movimentacaoOrigem.getKmColetadoVeiculo(),
+                                             movimentacaoOrigem.getCodDiagrama());
         } else if (movimentacaoDestino.getVeiculo() != null) {
-            return Optional.of(movimentacaoDestino.getVeiculo());
+            return createVeiculoMovimentacao(movimentacaoDestino.getVeiculo(),
+                                             movimentacaoDestino.getKmColetadoVeiculo(),
+                                             movimentacaoDestino.getCodDiagrama());
         }
 
         return Optional.empty();
+    }
+
+    @NotNull
+    private Optional<VeiculoMovimentacao> createVeiculoMovimentacao(@NotNull final VeiculoEntity veiculo,
+                                                                    @NotNull final Long kmColetadoVeiculo,
+                                                                    @NotNull final Long codDiagrama) {
+        return Optional.of(new VeiculoMovimentacao(veiculo.getCodigo(),
+                                                   veiculo.getPlaca(),
+                                                   veiculo.getIdentificadorFrota(),
+                                                   kmColetadoVeiculo,
+                                                   codDiagrama));
     }
 }

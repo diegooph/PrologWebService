@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.jetbrains.annotations.Nullable;
 
 import javax.persistence.*;
 
@@ -24,6 +25,7 @@ public final class MovimentacaoDestinoEntity {
     @Id
     @Column(name = "cod_movimentacao", nullable = false)
     private Long codMovimentacao;
+    @Nullable
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cod_veiculo", referencedColumnName = "codigo")
     private VeiculoEntity veiculo;
