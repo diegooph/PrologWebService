@@ -324,3 +324,116 @@ where p.cod_unidade = any (f_cod_unidades)
 order by u.codigo asc, p.codigo_cliente asc;
 end;
 $$;
+
+create or replace function func_pneu_relatorio_validade_dot(f_cod_unidades bigint[],
+                                                            f_data_atual timestamp without time zone)
+    returns table
+            (
+                "UNIDADE"         text,
+                "COD PNEU"        text,
+                "PLACA"           text,
+                "POSIÇÃO"         text,
+                "DOT CADASTRADO"  text,
+                "DOT VÁLIDO"      text,
+                "TEMPO DE USO"    text,
+                "TEMPO RESTANTE"  text,
+                "DATA VENCIMENTO" text,
+                "VENCIDO"         text,
+                "DATA GERAÇÃO"    text
+            )
+    language plpgsql
+as
+$$
+declare
+    date_format        text := 'YY "ano(s)" MM "mes(es)" DD "dia(s)"';
+    dia_mes_ano_format text := 'DD/MM/YYYY';
+    data_hora_format   text := 'DD/MM/YYYY HH24:MI';
+    date_converter     text := 'YYYYWW';
+    prefixo_ano        text := substring(f_data_atual::text, 1, 2);
+begin
+return query
+    with informacoes_pneu as (
+            select p.codigo_cliente                               as cod_pneu,
+                   p.dot                                          as dot_cadastrado,
+                   -- Remove letras, characteres especiais e espaços do dot.
+                   -- A flag 'g' indica que serão removidas todas as aparições do padrão específicado não somente o primeiro caso.
+                   trim(regexp_replace(p.dot, '[^0-9]', '', 'g')) as dot_limpo,
+                   p.cod_unidade                                  as cod_unidade,
+                   u.nome                                         as unidade,
+                   v.placa                                        as placa_aplicado,
+                   ppne.nomenclatura                              as posicao_pneu
+            from pneu p
+                     join unidade u on p.cod_unidade = u.codigo
+                     join empresa e on e.codigo = u.cod_empresa
+                     left join veiculo_pneu vp on vp.cod_pneu = p.codigo
+                     left join veiculo v on vp.cod_veiculo = v.codigo and vp.cod_unidade = v.cod_unidade
+                     left join veiculo_tipo vt on v.cod_tipo = vt.codigo
+                     left join veiculo_diagrama vd on vt.cod_diagrama = vd.codigo
+                     left join pneu_posicao_nomenclatura_empresa ppne on ppne.cod_empresa = e.codigo
+                and ppne.cod_diagrama = vd.codigo
+                and ppne.posicao_prolog = vp.posicao
+            where p.cod_unidade = any (f_cod_unidades)
+        ),
+
+             data_dot as (
+                 select ip.cod_pneu,
+                        -- Transforma o DOT_FORMATADO em data
+                        case
+                            when (char_length(ip.dot_limpo) = 4)
+                                then
+                                to_date(concat(prefixo_ano, (substring(ip.dot_limpo, 3, 4)),
+                                               (substring(ip.dot_limpo, 1, 2))),
+                                        date_converter)
+                            else null end as dot_em_data
+                 from informacoes_pneu ip
+             ),
+
+             vencimento_dot as (
+                 select dd.cod_pneu,
+                        -- Verifica se a data do DOT que foi transformado é menor ou igual a data atual. Se for maior está errado,
+                        -- então retornará NULL, senão somará 5 dias e 5 anos à data do dot para gerar a data de vencimento.
+                        -- O vencimento de um pneu é de 5 anos, como o DOT é fornecido em "SEMANA DO ANO/ANO", para que o vencimento
+                        -- tenha seu prazo máximo (1 dia antes da próxima semana) serão adicionados + 5 dias ao cálculo.
+                        case
+                            when dd.dot_em_data <= (f_data_atual::date)
+                                then dd.dot_em_data + interval '5 days 5 years'
+                            else null end as data_vencimento
+                 from data_dot dd
+             ),
+
+             calculos as (
+                 select dd.cod_pneu,
+                        -- Verifica se o dot é válido
+                        -- Apenas os DOTs que, após formatados, possuiam tamanho = 4 tiveram data de vencimento gerada, portanto
+                        -- podemos considerar inválidos os que possuem vencimento = null.
+                        case when vd.data_vencimento is null then 'INVÁLIDO' else 'VÁLIDO' end        as dot_valido,
+                        -- Cálculo tempo de uso
+                        case
+                            when vd.data_vencimento is null
+                                then null
+                            else
+                                to_char(age((f_data_atual :: date), dd.dot_em_data), date_format) end as tempo_de_uso,
+                        -- Cálculo dias restantes
+                        to_char(age(vd.data_vencimento, f_data_atual), date_format)                   as tempo_restante,
+                        -- Boolean vencimento (Se o inteiro for negativo, então o dot está vencido, senão não está vencido.
+                        f_if(((vd.data_vencimento::date) - (f_data_atual::date)) < 0, true, false)    as vencido
+                 from data_dot dd
+                          join vencimento_dot vd on dd.cod_pneu = vd.cod_pneu
+             )
+select ip.unidade::text,
+       ip.cod_pneu::text,
+       coalesce(ip.placa_aplicado::text, '-'),
+       coalesce(ip.posicao_pneu::text, '-'),
+       coalesce(ip.dot_cadastrado::text, '-'),
+       ca.dot_valido,
+       coalesce(ca.tempo_de_uso, '-'),
+       coalesce(ca.tempo_restante, '-'),
+       coalesce(to_char(vd.data_vencimento, dia_mes_ano_format)::text, '-'),
+       f_if(ca.vencido, 'SIM' :: text, 'NÃO' :: text),
+       to_char(f_data_atual, data_hora_format)::text
+from informacoes_pneu ip
+         join vencimento_dot vd on ip.cod_pneu = vd.cod_pneu
+         join calculos ca on ca.cod_pneu = vd.cod_pneu and ca.cod_pneu = ip.cod_pneu
+order by vd.data_vencimento asc, ip.placa_aplicado;
+end;
+$$;
