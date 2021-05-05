@@ -119,9 +119,9 @@ begin
                               and ppne.cod_empresa = new.cod_empresa;
                             if (v_posicao_prolog is not null)
                             then
-                                if exists(select vp.placa
+                                if exists(select vp.cod_veiculo
                                           from veiculo_pneu vp
-                                          where remove_all_spaces(vp.placa) = new.placa_formatada_vinculo
+                                          where vp.cod_veiculo = v_cod_veiculo
                                             and vp.posicao = v_posicao_prolog
                                             and vp.cod_unidade = new.cod_unidade)
                                 then
