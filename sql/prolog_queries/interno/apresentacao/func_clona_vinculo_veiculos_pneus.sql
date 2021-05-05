@@ -5,12 +5,12 @@ create or replace function
 as
 $$
 declare
-    v_placas_com_vinculo text := (select array_agg(vp.placa)
-                                  from veiculo_pneu vp
-                                  where vp.cod_unidade = f_cod_unidade_base);
+    v_cod_veiculos_com_vinculo text := (select array_agg(vp.cod_veiculo)
+                                        from veiculo_pneu vp
+                                        where vp.cod_unidade = f_cod_unidade_base);
 begin
     -- COPIA VÍNCULOS, CASO EXISTAM.
-    if (v_placas_com_vinculo is not null)
+    if (v_cod_veiculos_com_vinculo is not null)
     then
         with veiculos_base as (
             select row_number() over () as codigo_comparacao,
