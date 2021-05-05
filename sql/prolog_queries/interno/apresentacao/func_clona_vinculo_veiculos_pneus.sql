@@ -47,9 +47,8 @@ begin
                                   pdn.cod_unidade = f_cod_unidade_usuario and
                                   pdn.status = 'EM_USO')
         insert
-        into veiculo_pneu (placa, cod_pneu, cod_unidade, posicao, cod_diagrama, cod_veiculo)
-        select ddp.placa_nova,
-               ddp.cod_pneu_novo,
+        into veiculo_pneu (cod_pneu, cod_unidade, posicao, cod_diagrama, cod_veiculo)
+        select ddp.cod_pneu_novo,
                f_cod_unidade_usuario,
                ddp.posicao_prolog_novo,
                ddp.cod_diagrama_novo,
