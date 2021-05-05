@@ -212,13 +212,16 @@ public class FaleConoscoDaoImpl extends DatabaseConnection implements FaleConosc
         PreparedStatement stmt = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement(" UPDATE FALE_CONOSCO SET "
-                                                 + "DATA_HORA_FEEDBACK = ?, CPF_FEEDBACK = ?," +
-                                                 "FEEDBACK = ?, STATUS = ? "
-                                                 + "WHERE CODIGO = ? AND COD_UNIDADE = ? ");
+            stmt = conn.prepareStatement(" update fale_conosco set "
+                                                 + "data_hora_feedback = ?, "
+                                                 + "cod_colaborador_feedback = ?, "
+                                                 + "feedback = ?, "
+                                                 + " status = ? "
+                                                 + "where codigo = ? "
+                                                 + "and cod_unidade = ? ");
 
             stmt.setObject(1, OffsetDateTime.now(Clock.systemUTC()));
-            stmt.setLong(2, faleConosco.getColaboradorFeedback().getCpf());
+            stmt.setLong(2, faleConosco.getColaboradorFeedback().getCodigo());
             stmt.setString(3, faleConosco.getFeedback());
             stmt.setString(4, FaleConosco.STATUS_RESPONDIDO);
             stmt.setLong(5, faleConosco.getCodigo());
