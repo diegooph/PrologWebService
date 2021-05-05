@@ -46,7 +46,7 @@ public final class ChecklistOrdemServicoResource implements ChecklistOrdemServic
             @QueryParam("codTipoVeiculo") final Long codTipoVeiculo,
             @QueryParam("codVeiculo") final String codVeiculo,
             @QueryParam("statusOrdemServico") final StatusOrdemServico statusOrdemServico,
-            @QueryParam("incluirItensOrdemServico") final boolean incluirItensOrdemServico,
+            @QueryParam("incluirItensOrdemServico") @DefaultValue("true") final boolean incluirItensOrdemServico,
             @QueryParam("limit") final int limit,
             @QueryParam("offset") final int offset) {
         return mapper.toDto(
