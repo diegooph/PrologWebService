@@ -65,7 +65,6 @@ public class AfericaoMapper {
                     return toAfericaoAvulsaDto(primeiraAfericaoByCodigo,
                                                medidasAgrupadas.get(primeiraAfericaoByCodigo.getCodigo()));
                 })
-
                 .collect(toList());
     }
 

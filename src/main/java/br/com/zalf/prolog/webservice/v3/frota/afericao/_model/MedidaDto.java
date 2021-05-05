@@ -4,8 +4,6 @@ import lombok.Value;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.math.BigDecimal;
-
 /**
  * Created on 2021-04-12
  *
@@ -20,13 +18,13 @@ public class MedidaDto {
     @NotNull
     Integer vidaPneuMomentoAfericao;
     @Nullable
-    BigDecimal pressaoPneuEmPsi;
+    Double pressaoPneuEmPsi;
     @Nullable
-    BigDecimal alturaSulcoInternoEmMilimetros;
+    Double alturaSulcoInternoEmMilimetros;
     @Nullable
-    BigDecimal alturaSulcoCentralInternoEmMilimetros;
+    Double alturaSulcoCentralInternoEmMilimetros;
     @Nullable
-    BigDecimal alturaSulcoCentralExternoEmMilimetros;
+    Double alturaSulcoCentralExternoEmMilimetros;
     @Nullable
-    BigDecimal alturaSulcoExternoEmMilimetros;
+    Double alturaSulcoExternoEmMilimetros;
 }

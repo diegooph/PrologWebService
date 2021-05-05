@@ -35,8 +35,7 @@ public class AfericaoAvulsaDto {
     TipoMedicaoColetadaAfericao tipoMedicaoColetada;
     @NotNull
     TipoProcessoColetaAfericao tipoProcessoColeta;
-    @NotNull
-    Long tempoRealizacaoEmMilisegundos;
+    long tempoRealizacaoEmMilisegundos;
     @NotNull
     FormaColetaDadosAfericaoEnum formaColetaDados;
     @Nullable

@@ -33,8 +33,7 @@ public class AfericaoPlacaDto {
     String placaVeiculo;
     @Nullable
     String identificadorFrota;
-    @NotNull
-    Long kmVeiculoAfericao;
+    long kmVeiculoAfericao;
     @NotNull
     LocalDateTime dataHoraRealizacaoUtc;
     @NotNull
@@ -43,8 +42,7 @@ public class AfericaoPlacaDto {
     TipoMedicaoColetadaAfericao tipoMedicaoColetada;
     @NotNull
     TipoProcessoColetaAfericao tipoProcessoColeta;
-    @NotNull
-    Long tempoRealizacaoEmMilisegundos;
+    long tempoRealizacaoEmMilisegundos;
     @NotNull
     FormaColetaDadosAfericaoEnum formaColetaDados;
     @Nullable
