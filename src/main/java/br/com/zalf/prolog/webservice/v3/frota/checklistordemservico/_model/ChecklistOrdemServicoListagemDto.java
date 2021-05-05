@@ -35,6 +35,10 @@ public class ChecklistOrdemServicoListagemDto {
     private final String placaVeiculo;
     @Nullable
     private final String identificadorFrota;
+    @NotNull
+    private final LocalDateTime dataHoraAberturaUtc;
+    @NotNull
+    private final LocalDateTime dataHoraAberturaTimeZoneAplicado;
     @ApiModelProperty(
             value = "O status da ordem de serviço, aberta ou fechada.",
             example = "A")

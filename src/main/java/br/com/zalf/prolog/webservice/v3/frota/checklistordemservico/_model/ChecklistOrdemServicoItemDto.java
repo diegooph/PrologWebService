@@ -45,10 +45,20 @@ public class ChecklistOrdemServicoItemDto {
             example = "45")
     private final int quantidadeApontamentos;
     @ApiModelProperty(
-            value = "Cpf do mecânico que fechou o item de ordem de serviço.",
+            value = "Código do colaborador que fechou o item de ordem de serviço.",
+            example = "1234")
+    @Nullable
+    private final Long codColaboradorResolucao;
+    @ApiModelProperty(
+            value = "Cpf do colaborador que fechou o item de ordem de serviço.",
             example = "97599336087")
     @Nullable
-    private final Long cpfMecanicoResolucao;
+    private final Long cpfColaboradorResolucao;
+    @ApiModelProperty(
+            value = "Nome do colaborador que fechou o item de ordem de serviço.",
+            example = "Jean")
+    @Nullable
+    private final String nomeColaboradorResolucao;
     @ApiModelProperty(
             value = "Quilometragem do veículo quando o item de ordem de serviço foi criado.",
             example = "53246")
