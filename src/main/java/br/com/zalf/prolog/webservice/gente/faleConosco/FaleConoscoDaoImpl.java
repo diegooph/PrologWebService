@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.gente.faleConosco;
 import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -159,34 +160,41 @@ public class FaleConoscoDaoImpl extends DatabaseConnection implements FaleConosc
     }
 
     @Override
-    public List<FaleConosco> getByColaborador(final Long cpf, final String status) throws Exception {
+    @NotNull
+    public List<FaleConosco> getByColaborador(@NotNull final Long codEmpresa,
+                                              @NotNull final Long cpf,
+                                              @NotNull final String status) throws Exception {
         final List<FaleConosco> list = new ArrayList<>();
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = conn.prepareStatement("SELECT " +
-                                                 "F.STATUS AS STATUS, " +
-                                                 "F.CODIGO AS CODIGO, " +
-                                                 "F.DATA_HORA AT TIME ZONE ? AS DATA_HORA, " +
-                                                 "F.DESCRICAO AS DESCRICAO, " +
-                                                 "F.CATEGORIA AS CATEGORIA, " +
-                                                 "F.FEEDBACK AS FEEDBACK, " +
-                                                 "F.DATA_HORA_FEEDBACK AT TIME ZONE ? AS DATA_HORA_FEEDBACK, " +
-                                                 "C.CPF AS CPF_COLABORADOR, " +
-                                                 "C.NOME AS NOME_COLABORADOR, " +
-                                                 "C2.CPF AS CPF_FEEDBACK, " +
-                                                 "C2.NOME AS NOME_FEEDBACK " +
-                                                 "FROM FALE_CONOSCO F JOIN colaborador C ON F.cpf_colaborador = C.cpf" +
-                                                 " " +
-                                                 "LEFT JOIN colaborador C2 ON C2.cpf = F.CPF_FEEDBACK WHERE " +
-                                                 "CPF_COLABORADOR = ? and f.status like ? ORDER BY F.data_hora");
+            stmt = conn.prepareStatement("select "
+                                                 + "f.status as status, "
+                                                 + "f.codigo as codigo, "
+                                                 + "f.data_hora at time zone ? as data_hora, "
+                                                 + "f.descricao as descricao, "
+                                                 + "f.categoria as categoria, "
+                                                 + "f.feedback as feedback, "
+                                                 + "f.data_hora_feedback at time zone ? as data_hora_feedback, "
+                                                 + "c.cpf as cpf_colaborador, "
+                                                 + "c.nome as nome_colaborador, "
+                                                 + "c2.cpf as cpf_feedback, "
+                                                 + "c2.nome as nome_feedback "
+                                                 + "from fale_conosco f "
+                                                 + "join colaborador c on f.cod_colaborador = c.codigo "
+                                                 + "left join colaborador c2 on c2.codigo = f.cod_colaborador_feedback "
+                                                 + "where c.cpf_colaborador = ? "
+                                                 + "and c.cod_empresa = ? "
+                                                 + "and f.status like ? "
+                                                 + "order by f.data_hora");
             final ZoneId zoneId = TimeZoneManager.getZoneIdForCpf(cpf, conn);
             stmt.setString(1, zoneId.getId());
             stmt.setString(2, zoneId.getId());
             stmt.setLong(3, cpf);
-            stmt.setString(4, status);
+            stmt.setLong(4, codEmpresa);
+            stmt.setString(5, status);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
                 final FaleConosco faleConosco = createFaleConosco(rSet);
