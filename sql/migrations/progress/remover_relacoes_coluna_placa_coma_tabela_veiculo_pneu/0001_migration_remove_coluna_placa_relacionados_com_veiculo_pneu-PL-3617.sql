@@ -267,3 +267,60 @@ where p.cod_unidade = any (f_cod_unidades)
 order by verif_desgaste.nivel_desgaste_irregular desc, u.nome, p.codigo_cliente;
 end;
 $$;
+
+create or replace function func_pneu_relatorio_status_atual_pneus(
+    f_cod_unidades bigint[])
+    returns table
+            (
+                "unidade alocado"    text,
+                "pneu"               text,
+                "status atual"       text,
+                "placa aplicado"     text,
+                "posição aplicado"   text,
+                "recapadora alocado" text
+            )
+    language plpgsql
+as
+$$
+declare
+f_status_analise text := 'ANALISE';
+begin
+return query
+select u.nome :: text                           as unidade_alocado,
+        p.codigo_cliente :: text                as cod_pneu,
+        p.status :: text                        as status_atual,
+        coalesce(v.placa :: text, '-')          as placa_aplicado,
+       coalesce(ppne.nomenclatura :: text, '-') as posicao_aplicado,
+       coalesce(
+               case
+                   when p.status = f_status_analise
+                       then (select r.nome as nome_recapadora
+                             from movimentacao m
+                                      join movimentacao_destino md
+                                           on m.codigo = md.cod_movimentacao
+                                      join recapadora r on md.cod_recapadora_destino = r.codigo
+                             where m.cod_pneu = p.codigo
+                             order by m.codigo desc
+                       limit 1)
+                           end,
+                       '-')                             as recapadora_alocado
+from pneu p
+         join unidade u
+              on p.cod_unidade = u.codigo
+         join empresa e on u.cod_empresa = e.codigo
+         left join veiculo_pneu vp
+                   on p.codigo = vp.cod_pneu
+                       and p.cod_unidade = vp.cod_unidade
+         left join veiculo v
+                   on vp.cod_veiculo = v.codigo
+                       and vp.cod_unidade = v.cod_unidade
+         left join veiculo_tipo vt
+                   on v.cod_tipo = vt.codigo
+         left join veiculo_diagrama vd on vt.cod_diagrama = vd.codigo
+         left join pneu_posicao_nomenclatura_empresa ppne on ppne.cod_empresa = e.codigo
+    and ppne.cod_diagrama = vd.codigo
+    and ppne.posicao_prolog = vp.posicao
+where p.cod_unidade = any (f_cod_unidades)
+order by u.codigo asc, p.codigo_cliente asc;
+end;
+$$;
