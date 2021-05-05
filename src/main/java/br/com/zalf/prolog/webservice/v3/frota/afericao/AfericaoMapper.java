@@ -114,6 +114,7 @@ public class AfericaoMapper {
     @NotNull
     private MedidaDto generateMedidaFromAfericao(@NotNull final AfericaoAvulsaProjection projection) {
         return MedidaDto.of(projection.getCodPneu(),
+                            projection.getCodigClientePneu(),
                             projection.getPosicao(),
                             projection.getVidaMomentoAfericao(),
                             projection.getPsi(),
@@ -126,6 +127,7 @@ public class AfericaoMapper {
     @NotNull
     private MedidaDto generateMedidaFromAfericao(@NotNull final AfericaoPlacaProjection projection) {
         return MedidaDto.of(projection.getCodPneu(),
+                            projection.getCodigClientePneu(),
                             projection.getPosicao(),
                             projection.getVidaMomentoAfericao(),
                             projection.getPsi(),

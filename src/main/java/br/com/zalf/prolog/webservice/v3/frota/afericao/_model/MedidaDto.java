@@ -14,6 +14,8 @@ public class MedidaDto {
     @NotNull
     Long codPneuAfericao;
     @NotNull
+    String codigoClientePneuAfericao;
+    @NotNull
     Integer posicaoPneuAplicadoMomentoAfericao;
     @NotNull
     Integer vidaPneuMomentoAfericao;

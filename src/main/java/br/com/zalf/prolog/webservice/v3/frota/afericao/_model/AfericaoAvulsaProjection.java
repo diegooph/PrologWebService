@@ -49,6 +49,9 @@ public interface AfericaoAvulsaProjection {
     @Value("#{target.COD_PNEU}")
     Long getCodPneu();
 
+    @Value("#{target.CODIGO_CLIENTE_PNEU}")
+    String getCodigClientePneu();
+
     @Value("#{target.POSICAO}")
     Integer getPosicao();
 
