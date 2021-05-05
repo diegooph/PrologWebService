@@ -7,7 +7,6 @@ import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import org.jetbrains.annotations.NotNull;
 
-import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
@@ -31,18 +30,31 @@ public class FaleConoscoService {
         }
     }
 
-    public boolean insertFeedback(final FaleConosco faleConosco, final Long codUnidade) {
+    public boolean insertFeedback(@NotNull final FaleConosco faleConosco,
+                                  @NotNull final Long codUnidade,
+                                  @NotNull final String token) {
         try {
+            final Long codEmpresaColaborador = Injection.provideColaboradorDao().getByToken(token).getCodEmpresa();
+            faleConosco.getColaboradorFeedback().setCodigo(
+                    Injection.provideColaboradorDao().getCodColaboradorByCpf(
+                            codEmpresaColaborador, faleConosco.getColaboradorFeedback().getCpfAsString()));
             return dao.insertFeedback(faleConosco, codUnidade);
-        } catch (final SQLException e) {
+        } catch (final Throwable e) {
             Log.e(TAG, String.format("Erro ao inserir o feedback no fale conosco. \n" +
                                              "codUnidade: %d", codUnidade), e);
             return false;
         }
     }
 
-    public List<FaleConosco> getAll(final long dataInicial, final long dataFinal, final int limit, final int offset,
-                                    final String cpf, final String equipe, final Long codUnidade, final String status, final String categoria) {
+    public List<FaleConosco> getAll(final long dataInicial,
+                                    final long dataFinal,
+                                    final int limit,
+                                    final int offset,
+                                    final String cpf,
+                                    final String equipe,
+                                    final Long codUnidade,
+                                    final String status,
+                                    final String categoria) {
 
         try {
             return dao.getAll(dataInicial, dataFinal, limit, offset, cpf, equipe, codUnidade, status, categoria);
@@ -64,15 +76,19 @@ public class FaleConoscoService {
                                      categoria,
                                      limit,
                                      offset,
-                                     new Date(dataInicial).toString(),
-                                     new Date(dataFinal).toString()), e);
+                                     new Date(dataInicial),
+                                     new Date(dataFinal)), e);
             return null;
         }
     }
 
-    public List<FaleConosco> getByColaborador(final Long cpf, final String status) {
+    public List<FaleConosco> getByColaborador(@NotNull final String token,
+                                              @NotNull final Long cpf,
+                                              @NotNull final String status) {
         try {
-            return dao.getByColaborador(cpf, status);
+            return dao.getByColaborador(Injection.provideColaboradorDao().getByToken(token).getCodEmpresa(),
+                                        cpf,
+                                        status);
         } catch (final Exception e) {
             Log.e(TAG, String.format("Erro ao buscar os fale conosco do colaborador. \n" +
                                              "cpf: %d \n" +
