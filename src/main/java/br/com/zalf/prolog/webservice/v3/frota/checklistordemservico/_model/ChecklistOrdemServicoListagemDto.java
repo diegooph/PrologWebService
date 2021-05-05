@@ -16,21 +16,21 @@ public class ChecklistOrdemServicoListagemDto {
     @ApiModelProperty(
             value = "Código da ordem de serviço.",
             example = "23")
-    private final long codOrdemServico;
+    private final Long codOrdemServico;
     @ApiModelProperty(
             value = "Código único da unidade.",
             example = "215")
-    private final long codUnidadeOrdemServico;
+    private final Long codUnidadeOrdemServico;
     @ApiModelProperty(
             value = "Código do checklist que abriu essa ordem de serviço.",
             example = "10")
-    private final long codChecklistAbertura;
-    private final long codColaboradorAbertura;
+    private final Long codChecklistAbertura;
+    private final Long codColaboradorAbertura;
     @NotNull
     private final String cpfColaboradorAbertura;
     @NotNull
     private final String nomeColaboradorAbertura;
-    private final long codVeiculo;
+    private final Long codVeiculo;
     @NotNull
     private final String placaVeiculo;
     @Nullable

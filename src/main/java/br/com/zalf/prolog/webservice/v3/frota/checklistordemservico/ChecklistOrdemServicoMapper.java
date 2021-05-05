@@ -68,7 +68,6 @@ public final class ChecklistOrdemServicoMapper {
             @NotNull final ChecklistOrdemServicoProjection checklistOrdemServicoProjection) {
         return new ChecklistOrdemServicoItemDto(
                 checklistOrdemServicoProjection.getCodigoItemOs(),
-                checklistOrdemServicoProjection.getCodigoOs(),
                 checklistOrdemServicoProjection.getCodigoUnidade(),
                 checklistOrdemServicoProjection.getCodigoPerguntaPrimeiroApontamento(),
                 checklistOrdemServicoProjection.getCodigoContextoPergunta(),

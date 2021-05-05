@@ -13,31 +13,27 @@ public class ChecklistOrdemServicoItemDto {
     @ApiModelProperty(
             value = "Código do item de ordem de serviço.",
             example = "2")
-    private final long codItemOrdemServico;
-    @ApiModelProperty(
-            value = "Código da ordem de serviço.",
-            example = "23")
-    private final long codOrdemServico;
+    private final Long codItemOrdemServico;
     @ApiModelProperty(
             value = "Código da unidade a que o item da ordem de serviço pertence.",
             example = "215")
-    private final long codUnidadeItemOrdemServico;
+    private final Long codUnidadeItemOrdemServico;
     @ApiModelProperty(
             value = "Código da pergunta que abriu a ordem de serviço.",
             example = "3")
-    private final long codPerguntaPrimeiroApontamento;
+    private final Long codPerguntaPrimeiroApontamento;
     @ApiModelProperty(
             value = "Código que muda apenas qunado o contexto ou significado da pergunta é altrado.",
             example = "5")
-    private final long codContextoPergunta;
+    private final Long codContextoPergunta;
     @ApiModelProperty(
             value = "Código da alternativa que abriu a ordem de serviço.",
             example = "7")
-    private final long codAlternativaPrimeiroApontamento;
+    private final Long codAlternativaPrimeiroApontamento;
     @ApiModelProperty(
             value = "Código que muda apenas qunado o contexto ou significado da alternativa é alterado.",
             example = "9")
-    private final long codContextoAlternativa;
+    private final Long codContextoAlternativa;
     @ApiModelProperty(
             value = "Código auxiliar da alternativa que abriu a ordem de serviço.",
             example = "AA:BB")
