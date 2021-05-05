@@ -213,14 +213,12 @@ begin
             new.erros_encontrados = v_msgs_erros;
         else
             update pneu_data set status = 'EM_USO' where codigo = v_cod_pneu;
-            insert into veiculo_pneu (placa,
-                                      cod_pneu,
+            insert into veiculo_pneu (cod_pneu,
                                       cod_unidade,
                                       posicao,
                                       cod_diagrama,
                                       cod_veiculo)
-            values (v_placa,
-                    v_cod_pneu,
+            values (v_cod_pneu,
                     new.cod_unidade,
                     v_posicao_prolog,
                     v_cod_diagrama_veiculo,
