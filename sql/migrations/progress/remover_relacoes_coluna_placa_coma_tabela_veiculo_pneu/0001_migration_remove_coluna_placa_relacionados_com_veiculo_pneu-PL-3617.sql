@@ -437,3 +437,117 @@ from informacoes_pneu ip
 order by vd.data_vencimento asc, ip.placa_aplicado;
 end;
 $$;
+
+create or replace function func_relatorio_pneu_resumo_geral_pneus(f_cod_unidade text[],
+                                                                  f_status_pneu text)
+    returns table
+            (
+                "UNIDADE ALOCADO"       text,
+                "PNEU"                  text,
+                "STATUS"                text,
+                "VALOR DE AQUISIÇÃO"    text,
+                "DATA/HORA CADASTRO"    text,
+                "MARCA"                 text,
+                "MODELO"                text,
+                "BANDA APLICADA"        text,
+                "VALOR DA BANDA"        text,
+                "MEDIDAS"               text,
+                "PLACA"                 text,
+                "IDENTIFICADOR FROTA"   text,
+                "TIPO"                  text,
+                "POSIÇÃO"               text,
+                "QUANTIDADE DE SULCOS"  text,
+                "ALTURA DO SULCO NOVO"  text,
+                "SULCO INTERNO"         text,
+                "SULCO CENTRAL INTERNO" text,
+                "SULCO CENTRAL EXTERNO" text,
+                "SULCO EXTERNO"         text,
+                "MENOR SULCO"           text,
+                "PRESSÃO ATUAL (PSI)"   text,
+                "PRESSÃO IDEAL (PSI)"   text,
+                "VIDA ATUAL"            text,
+                "DOT"                   text,
+                "ÚLTIMA AFERIÇÃO"       text
+            )
+    language sql
+as
+$$
+select u.nome                                                                   as unidade_alocado,
+       p.codigo_cliente                                                         as cod_pneu,
+       p.status                                                                 as status,
+       coalesce(trunc(p.valor :: numeric, 2) :: text, '-')                      as valor_aquisicao,
+       coalesce(to_char(p.data_hora_cadastro at time zone tz_unidade(p.cod_unidade_cadastro), 'DD/MM/YYYY HH24:MI'),
+           '-')                                                                 as data_hora_cadastro,
+       map.nome                                                                 as nome_marca_pneu,
+       mp.nome                                                                  as nome_modelo_pneu,
+       case
+           when marb.codigo is null
+               then 'NUNCA RECAPADO'
+           else marb.nome || ' - ' || modb.nome
+           end                                                                  as banda_aplicada,
+       coalesce(trunc(pvv.valor :: numeric, 2) :: text, '-')                    as valor_banda,
+       ((((dp.largura || '/' :: text) || dp.altura) || ' R' :: text) || dp.aro) as medidas,
+       coalesce(posicao_pneu_veiculo.placa_veiculo_pneu, '-')                   as placa,
+       coalesce(posicao_pneu_veiculo.identificador_frota, '-')                  as identificador_frota,
+       coalesce(posicao_pneu_veiculo.veiculo_tipo, '-')                         as tipo_veiculo,
+       coalesce(posicao_pneu_veiculo.posicao_pneu, '-') :: text                 as posicao_pneu,
+       coalesce(modb.qt_sulcos, mp.qt_sulcos) :: text                           as qtd_sulcos,
+       case p.vida_atual
+       when 1 then
+           func_pneu_format_sulco(mp.altura_sulcos)
+       else
+           func_pneu_format_sulco(modb.altura_sulcos) end                       as altura_sulco_novo,
+       func_pneu_format_sulco(p.altura_sulco_interno)                           as sulco_interno,
+       func_pneu_format_sulco(p.altura_sulco_central_interno)                   as sulco_central_interno,
+       func_pneu_format_sulco(p.altura_sulco_central_externo)                   as sulco_central_externo,
+       func_pneu_format_sulco(p.altura_sulco_externo)                           as sulco_externo,
+       func_pneu_format_sulco(least(p.altura_sulco_externo, p.altura_sulco_central_externo,
+                                    p.altura_sulco_central_interno,
+                                    p.altura_sulco_interno))                    as menor_sulco,
+       coalesce(trunc(p.pressao_atual) :: text, '-')                            as pressao_atual,
+       p.pressao_recomendada :: text                                            as pressao_recomendada,
+       pvn.nome :: text                                                         as vida_atual,
+       coalesce(p.dot, '-')                                                     as dot,
+       coalesce(
+               to_char(f.data_hora_ultima_afericao at time zone tz_unidade(f.cod_unidade_ultima_afericao),
+                       'DD/MM/YYYY HH24:MI'), 'NUNCA AFERIDO')                  as ultima_afericao
+from pneu p
+         join dimensao_pneu dp on dp.codigo = p.cod_dimensao
+         join unidade u on u.codigo = p.cod_unidade
+         join modelo_pneu mp on mp.codigo = p.cod_modelo and mp.cod_empresa = u.cod_empresa
+         join marca_pneu map on map.codigo = mp.cod_marca
+         join pneu_vida_nomenclatura pvn on pvn.cod_vida = p.vida_atual
+         left join modelo_banda modb on modb.codigo = p.cod_modelo_banda
+         left join marca_banda marb on marb.codigo = modb.cod_marca
+         left join pneu_valor_vida pvv on p.codigo = pvv.cod_pneu and pvv.vida = p.vida_atual
+         left join (select ppne.nomenclatura     as posicao_pneu,
+                           vp.cod_pneu           as codigo_pneu,
+                           v.placa               as placa_veiculo_pneu,
+                           vp.cod_unidade        as cod_unidade_pneu,
+                           vt.nome               as veiculo_tipo,
+                           v.identificador_frota as identificador_frota
+                    from veiculo v
+                             join veiculo_pneu vp
+                                  on vp.cod_veiculo = v.codigo and vp.cod_unidade = v.cod_unidade
+                             join veiculo_tipo vt
+                                  on v.cod_tipo = vt.codigo
+                             join empresa e on vt.cod_empresa = e.codigo
+                        -- left join porque unidade pode não ter nomenclatura.
+                             left join veiculo_diagrama vd on vt.cod_diagrama = vd.codigo
+                             left join pneu_posicao_nomenclatura_empresa ppne
+                                       on ppne.cod_empresa = e.codigo
+                                           and ppne.cod_diagrama = vd.codigo
+                                           and vp.posicao = ppne.posicao_prolog
+                    where v.cod_unidade :: text like any (f_cod_unidade)
+                    order by vp.cod_pneu) as posicao_pneu_veiculo
+                   on p.codigo = posicao_pneu_veiculo.codigo_pneu
+         left join func_pneu_get_primeira_ultima_afericao(p.codigo) f
+                   on f.cod_pneu = p.codigo
+where p.cod_unidade :: text like any (f_cod_unidade)
+  and case
+          when f_status_pneu is null
+              then true
+          else p.status = f_status_pneu
+end
+order by u.nome, p.codigo_cliente;
+$$;
