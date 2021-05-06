@@ -1,36 +1,36 @@
 create or replace function func_relatorio_dados_ultima_afericao_pneu(f_cod_unidades text[])
     returns table
             (
-                "unidade alocado"               text,
-                "pneu"                          text,
-                "status atual"                  text,
-                "marca pneu"                    text,
-                "modelo pneu"                   text,
-                "medidas"                       text,
-                "placa aplicado"                text,
-                "identificador frota"           text,
-                "marca veículo"                 text,
-                "modelo veículo"                text,
-                "tipo veículo"                  text,
-                "posição aplicado"              text,
-                "sulco interno"                 text,
-                "sulco central interno"         text,
-                "sulco central externo"         text,
-                "sulco externo"                 text,
-                "menor sulco"                   text,
-                "pressão (psi)"                 text,
-                "vida atual"                    text,
-                "dot"                           text,
-                "última aferição"               text,
-                "tipo processo última aferição" text,
-                "forma de coleta dos dados"     text
+                "UNIDADE ALOCADO"               text,
+                "PNEU"                          text,
+                "STATUS ATUAL"                  text,
+                "MARCA PNEU"                    text,
+                "MODELO PNEU"                   text,
+                "MEDIDAS"                       text,
+                "PLACA APLICADO"                text,
+                "IDENTIFICADOR FROTA"           text,
+                "MARCA VEÍCULO"                 text,
+                "MODELO VEÍCULO"                text,
+                "TIPO VEÍCULO"                  text,
+                "POSIÇÃO APLICADO"              text,
+                "SULCO INTERNO"                 text,
+                "SULCO CENTRAL INTERNO"         text,
+                "SULCO CENTRAL EXTERNO"         text,
+                "SULCO EXTERNO"                 text,
+                "MENOR SULCO"                   text,
+                "PRESSÃO (PSI)"                 text,
+                "VIDA ATUAL"                    text,
+                "DOT"                           text,
+                "ÚLTIMA AFERIÇÃO"               text,
+                "TIPO PROCESSO ÚLTIMA AFERIÇÃO" text,
+                "FORMA DE COLETA DOS DADOS"     text
             )
     language plpgsql
 as
 $$
 begin
-    -- essa cte busca o código da última aferição de cada pneu.
-    -- com o código nós conseguimos buscar depois qualquer outra informação da aferição.
+    -- Essa CTE busca o código da última aferição de cada pneu.
+    -- Com o código nós conseguimos buscar depois qualquer outra informação da aferição.
 return query
     with cods_afericoes as (
             select av.cod_pneu   as cod_pneu_aferido,
@@ -57,9 +57,9 @@ select u.nome :: text                                                   as unida
         p.status :: text                                                 as status_atual,
         map.nome :: text                                                 as nome_marca,
         mp.nome :: text                                                  as nome_modelo,
-        ((((dp.largura || '/' :: text) || dp.altura) || ' r' :: text) ||
+        ((((dp.largura || '/' :: text) || dp.altura) || ' R' :: text) ||
                 dp.aro)                                                         as medidas,
-               coalesce(v.placa, '-') :: text                                  as placa,
+               coalesce(v.placa, '-') :: text                                   as placa,
                coalesce(v.identificador_frota, '-') :: text                     as identificador_frota,
                coalesce(marv.nome, '-') :: text                                 as marca_veiculo,
                coalesce(modv.nome, '-') :: text                                 as modelo_veiculo,
@@ -77,14 +77,14 @@ select u.nome :: text                                                   as unida
                coalesce(p.dot, '-') :: text                                     as dot,
                coalesce(to_char(ua.data_hora_afericao at time zone
                                 tz_unidade(ua.cod_unidade_afericao),
-                                'dd/mm/yyyy hh24:mi'),
-                        'nunca aferido')                                        as ultima_afericao,
+                                'DD/MM/YYYY HH24:MI'),
+                                'Nunca Aferido')                                as ultima_afericao,
                case
                    when ua.tipo_processo_coleta is null
-                       then 'nunca aferido'
-                   when ua.tipo_processo_coleta = 'placa'
-                       then 'aferido em uma placa'
-                   else 'aferido avulso (em estoque)' end                       as tipo_processo_ultima_afericao,
+                       then 'Nunca Aferido'
+                   when ua.tipo_processo_coleta = 'PLACA'
+                       then 'Aferido em uma placa'
+                   else 'Aferido Avulso (em estoque)' end                       as tipo_processo_ultima_afericao,
                coalesce(tafcd.status_legivel, '-')::text                        as forma_coleta_dados
         from pneu p
                  join dimensao_pneu dp on dp.codigo = p.cod_dimensao
