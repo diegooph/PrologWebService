@@ -107,7 +107,7 @@ public final class DateUtils {
         return anoExtraido >= anoMaximoPermitido || anoExtraido <= anoMinimoPermitido;
     }
 
-    public static boolean isBeforeNDays(@NotNull final LocalDateTime date, final long nthDay) {
+    public static boolean isAfterNDays(@NotNull final LocalDateTime date, final long nthDay) {
         return ChronoUnit.DAYS.between(date, LocalDateTime.now()) > nthDay;
     }
 }

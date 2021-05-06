@@ -42,7 +42,7 @@ public class DeleteTempFileScheduler implements Scheduler {
                 .orElseThrow();
         final LocalDateTime fileTimeToTimestamp = LocalDateTime.ofInstant(fileTime.toInstant(),
                                                                           ZoneId.systemDefault());
-        return DateUtils.isBeforeNDays(fileTimeToTimestamp, DAYS_TO_OUTDATED);
+        return DateUtils.isAfterNDays(fileTimeToTimestamp, DAYS_TO_OUTDATED);
     }
 
     private void deleteFiles(@NotNull final File dir) {
