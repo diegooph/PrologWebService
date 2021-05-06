@@ -2,7 +2,6 @@ package br.com.zalf.prolog.webservice.gente.faleconosco;
 
 import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
-import br.com.zalf.prolog.webservice.commons.network.metadata.Required;
 import br.com.zalf.prolog.webservice.interceptors.auth.ColaboradorAutenticado;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
@@ -46,10 +45,9 @@ public class FaleConoscoResource {
     @GET
     @Secured(permissions = {Pilares.Gente.FaleConosco.REALIZAR})
     @Path("/colaborador/{status}/{cpf}")
-    public List<FaleConosco> getByColaborador(@HeaderParam("Authorization") @Required final String userToken,
-                                              @PathParam("cpf") final Long cpf,
-                                              @PathParam("status") final String status) {
-        return service.getByColaborador(userToken, cpf, status);
+    public List<FaleConosco> getByColaboradorAutenticado(@PathParam("cpf") final Long cpf,
+                                                         @PathParam("status") final String status) {
+        return service.getByColaborador(colaboradorAutenticadoProvider.get().getCodigo(), status);
     }
 
     @GET
