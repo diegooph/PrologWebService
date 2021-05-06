@@ -9,7 +9,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Date;
@@ -108,18 +107,7 @@ public final class DateUtils {
         return anoExtraido >= anoMaximoPermitido || anoExtraido <= anoMinimoPermitido;
     }
 
-    public static boolean isValid(final String date, final String pattern) {
-        boolean valid;
-        try {
-            LocalDate.parse(date, DateTimeFormatter.ofPattern(pattern));
-            valid = true;
-        } catch (DateTimeParseException e) {
-            valid = false;
-        }
-        return valid;
-    }
-
-    public static boolean isBeforeNDays(LocalDateTime date, long nthDay) {
+    public static boolean isBeforeNDays(final LocalDateTime date, final long nthDay) {
         return ChronoUnit.DAYS.between(date, LocalDateTime.now()) > nthDay;
     }
 }
