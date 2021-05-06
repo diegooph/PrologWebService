@@ -32,7 +32,7 @@ public class AfericaoPlacaDto {
                       example = "3383283194")
     @NotNull
     String cpfColaborador;
-    @ApiModelProperty(value = "Nome do colaborador que realizou a aferição", required = true, example = "3383283194")
+    @ApiModelProperty(value = "Nome do colaborador que realizou a aferição", required = true, example = "Jean")
     @NotNull
     String nomeColaborador;
     @ApiModelProperty(value = "Código do veículo que foi aferido", required = true, example = "12345")
