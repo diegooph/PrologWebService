@@ -631,3 +631,96 @@ where vap.cod_unidade :: text like any (f_cod_unidade)
   and vap."status pneu" like f_status_pneu
 order by vap."unidade alocado";
 $$;
+
+create or replace function func_veiculo_relatorio_listagem_veiculos_by_unidade(f_cod_unidades bigint[])
+    returns table
+            (
+                UNIDADE                  text,
+                PLACA                    text,
+                "IDENTIFICADOR FROTA"    text,
+                MARCA                    text,
+                MODELO                   text,
+                TIPO                     text,
+                "DIAGRAMA VINCULADO?"    text,
+                "KM ATUAL"               text,
+                STATUS                   text,
+                "DATA/HORA CADASTRO"     text,
+                "VEÍCULO COMPLETO"       text,
+                "QTD PNEUS VINCULADOS"   text,
+                "QTD POSIÇÕES DIAGRAMA"  text,
+                "QTD POSIÇÕES SEM PNEUS" text,
+                "QTD ESTEPES"            text
+            )
+    language plpgsql
+as
+$$
+declare
+estepes            integer := 900;
+    posicoes_sem_pneus integer = 0;
+    sim                text    := 'SIM';
+    nao                text    := 'NÃO';
+begin
+return query
+    -- Calcula a quantidade de pneus e estepes que estão vinculados na placa.
+    with qtd_pneus_vinculados_placa as (
+            select v.placa,
+                   count(v.placa)
+                   filter (where vp.posicao < estepes)  as qtd_pneus_vinculados,
+                   count(vp.cod_veiculo)
+                   filter (where vp.posicao >= estepes) as qtd_estepes_vinculados,
+                   vt.cod_diagrama
+            from veiculo v
+                     join veiculo_tipo vt on v.cod_tipo = vt.codigo
+                     left join veiculo_pneu vp on v.codigo = vp.cod_veiculo and v.cod_unidade = vp.cod_unidade
+            where v.cod_unidade = any (f_cod_unidades)
+            group by v.placa,
+                     vt.cod_diagrama
+        ),
+
+             -- Calcula a quantidade de posições nos diagramas que existem no prolog.
+             qtd_posicoes_diagrama as (
+                 select vde.cod_diagrama,
+                        sum(vde.qt_pneus) as qtd_posicoes_diagrama
+                 from veiculo_diagrama_eixos vde
+                 group by cod_diagrama
+             )
+
+select u.nome :: text                                                     as unidade,
+        v.placa :: text                                                   as placa,
+        v.identificador_frota :: text                                     as identificador_frota,
+        ma.nome :: text                                                   as marca,
+        mo.nome :: text                                                   as modelo,
+        vt.nome :: text                                                   as tipo,
+        case
+            when qpvp.cod_diagrama is null
+                then 'NÃO'
+            else 'SIM' end                                                as possui_diagrama,
+       v.km :: text                                                       as km_atual,
+       f_if(v.status_ativo, 'ATIVO' :: text, 'INATIVO' :: text)           as status,
+       coalesce(to_char(v.data_hora_cadastro, 'DD/MM/YYYY HH24:MI'), '-') as data_hora_cadastro,
+       -- Caso a quantidade de posições sem pneus seja 0 é porque o veículo está com todos os pneus - veículo completo.
+       case
+           when (qsd.qtd_posicoes_diagrama - qpvp.qtd_pneus_vinculados) = posicoes_sem_pneus
+               then sim
+           else nao end                                                   as veiculo_completo,
+       qpvp.qtd_pneus_vinculados :: text                                  as qtd_pneus_vinculados,
+        qsd.qtd_posicoes_diagrama :: text                                 as qtd_posicoes_diagrama,
+               -- Calcula a quantidade de posições sem pneus.
+        (qsd.qtd_posicoes_diagrama - qpvp.qtd_pneus_vinculados) :: text   as qtd_posicoes_sem_pneus,
+        qpvp.qtd_estepes_vinculados :: text                               as qtd_estepes_vinculados
+from veiculo v
+         join unidade u on v.cod_unidade = u.codigo
+         join modelo_veiculo mo on v.cod_modelo = mo.codigo
+         join marca_veiculo ma on mo.cod_marca = ma.codigo
+         join veiculo_tipo vt on v.cod_tipo = vt.codigo
+         right join qtd_pneus_vinculados_placa qpvp on qpvp.placa = v.placa
+         left join qtd_posicoes_diagrama qsd on qsd.cod_diagrama = qpvp.cod_diagrama
+order by u.nome asc,
+         status asc,
+         v.placa asc,
+         ma.nome asc,
+         mo.nome asc,
+         vt.nome asc,
+         qtd_posicoes_sem_pneus desc;
+end;
+$$;
