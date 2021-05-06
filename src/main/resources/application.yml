@@ -37,9 +37,3 @@ spring:
 
   flyway:
     enabled: false
-
-springdoc:
-  swagger-ui:
-    path: /swagger-ui.html
-    url: /prolog/swagger.json
-    operations-sorter: method
