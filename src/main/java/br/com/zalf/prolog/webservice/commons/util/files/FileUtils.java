@@ -33,6 +33,10 @@ public final class FileUtils {
         return file.delete();
     }
 
+    public static boolean isAFile(@NotNull final File file) {
+        return !file.isDirectory();
+    }
+
     public static boolean isDirEmpty(@NotNull final File file) throws IOException {
         return !Files.newDirectoryStream(file.toPath()).iterator().hasNext();
     }
