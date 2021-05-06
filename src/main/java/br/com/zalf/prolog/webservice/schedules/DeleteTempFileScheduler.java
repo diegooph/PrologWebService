@@ -68,6 +68,15 @@ public class DeleteTempFileScheduler implements Scheduler {
     private boolean canDeleteFileOrDir(@NotNull final File fileOrDir) {
         return fileOrDir.canRead()
                 && this.isOutdated(fileOrDir)
-                && (FileUtils.isAFile(fileOrDir) || this.isAValidDir(fileOrDir));
+                && (FileUtils.isAFile(fileOrDir) || this.isAValidDirForDeletion(fileOrDir));
+    }
+
+    private boolean isAValidDirForDeletion(@NotNull final File directory) {
+        try {
+            return directory.isDirectory() && FileUtils.isDirEmpty(directory);
+        } catch (final IOException e) {
+            Log.e(TAG, "Erro ao analisar o diretório: " + directory.getAbsolutePath());
+            return false;
+        }
     }
 }
