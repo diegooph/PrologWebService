@@ -5,6 +5,7 @@ import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.gente.colaborador.ColaboradorService;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Date;
@@ -18,10 +19,8 @@ public class FaleConoscoService {
     private final FaleConoscoDao dao = Injection.provideFaleConoscoDao();
 
     public AbstractResponse insert(@NotNull final FaleConosco faleConosco,
-                                   @NotNull final Long codUnidade,
-                                   @NotNull final String token) {
+                                   @NotNull final Long codUnidade) {
         try {
-            faleConosco.getColaborador().setCodigo(Injection.provideColaboradorDao().getByToken(token).getCodigo());
             return ResponseWithCod.ok("Fale conosco inserido com sucesso.", dao.insert(faleConosco, codUnidade));
         } catch (final Exception e) {
             Log.e(TAG, String.format("Erro ao inserir o fale conosco. \n" +
@@ -31,13 +30,8 @@ public class FaleConoscoService {
     }
 
     public boolean insertFeedback(@NotNull final FaleConosco faleConosco,
-                                  @NotNull final Long codUnidade,
-                                  @NotNull final String token) {
+                                  @NotNull final Long codUnidade) {
         try {
-            final Long codEmpresaColaborador = Injection.provideColaboradorDao().getByToken(token).getCodEmpresa();
-            faleConosco.getColaboradorFeedback().setCodigo(
-                    Injection.provideColaboradorDao().getCodColaboradorByCpf(
-                            codEmpresaColaborador, faleConosco.getColaboradorFeedback().getCpfAsString()));
             return dao.insertFeedback(faleConosco, codUnidade);
         } catch (final Throwable e) {
             Log.e(TAG, String.format("Erro ao inserir o feedback no fale conosco. \n" +
@@ -86,7 +80,7 @@ public class FaleConoscoService {
                                               @NotNull final Long cpf,
                                               @NotNull final String status) {
         try {
-            return dao.getByColaborador(Injection.provideColaboradorDao().getByToken(token).getCodEmpresa(),
+            return dao.getByColaborador(new ColaboradorService().getByToken(token).getCodEmpresa(),
                                         cpf,
                                         status);
         } catch (final Exception e) {
