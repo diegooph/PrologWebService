@@ -66,8 +66,15 @@ public class FaleConoscoResource {
             @QueryParam("offset") final int offset,
             @QueryParam("status") final String status,
             @QueryParam("categoria") final String categoria) {
-
-        return service.getAll(dataInicial, dataFinal, limit, offset, cpf, equipe, codUnidade, status, categoria);
+        return service.getAll(dataInicial,
+                              dataFinal,
+                              limit,
+                              offset,
+                              colaboradorAutenticadoProvider.get().getCodigo(),
+                              equipe,
+                              codUnidade,
+                              status,
+                              categoria);
     }
 
     /**
@@ -87,7 +94,14 @@ public class FaleConoscoResource {
             @QueryParam("offset") final int offset,
             @QueryParam("status") final String status,
             @QueryParam("categoria") final String categoria) {
-
-        return service.getAll(dataInicial, dataFinal, limit, offset, "%", equipe, codUnidade, status, categoria);
+        return service.getAll(dataInicial,
+                              dataFinal,
+                              limit,
+                              offset,
+                              colaboradorAutenticadoProvider.get().getCodigo(),
+                              equipe,
+                              codUnidade,
+                              status,
+                              categoria);
     }
 }

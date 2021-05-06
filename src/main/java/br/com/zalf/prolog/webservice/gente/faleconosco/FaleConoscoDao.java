@@ -14,8 +14,15 @@ public interface FaleConoscoDao {
 
     FaleConosco getByCod(Long codigo, Long codUnidade) throws Exception;
 
-    List<FaleConosco> getAll(long dataInicial, long dataFinal, int limit, int offset, String cpf,
-                             String equipe, Long codUnidade, String status, String categoria) throws Exception;
+    List<FaleConosco> getAll(final long dataInicial,
+                             final long dataFinal,
+                             final int limit,
+                             final int offset,
+                             final Long codColaborador,
+                             final String equipe,
+                             final Long codUnidade,
+                             final String status,
+                             final String categoria) throws Exception;
 
     @NotNull
     List<FaleConosco> getByColaborador(@NotNull final Long codColaborador,

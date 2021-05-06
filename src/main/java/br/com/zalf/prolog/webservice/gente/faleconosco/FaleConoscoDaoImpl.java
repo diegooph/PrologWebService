@@ -98,7 +98,7 @@ public class FaleConoscoDaoImpl extends DatabaseConnection implements FaleConosc
                                     final long dataFinal,
                                     final int limit,
                                     final int offset,
-                                    final String cpf,
+                                    final Long codColaborador,
                                     final String equipe,
                                     final Long codUnidade,
                                     final String status,
@@ -129,7 +129,7 @@ public class FaleConoscoDaoImpl extends DatabaseConnection implements FaleConosc
                                                  + "and f.cod_unidade = ? "
                                                  + "and f.status like ? "
                                                  + "and f.categoria like ? "
-                                                 + "and c.cpf::text like ? "
+                                                 + "and f.cod_colaborador like ? "
                                                  + "and f.data_hora::date >= (? at time zone ?)::date "
                                                  + "and f.data_hora::date <= (? at time zone ?)::date "
                                                  + "order by f.data_hora "
@@ -141,7 +141,7 @@ public class FaleConoscoDaoImpl extends DatabaseConnection implements FaleConosc
             stmt.setLong(4, codUnidade);
             stmt.setString(5, status);
             stmt.setString(6, categoria);
-            stmt.setString(7, cpf);
+            stmt.setLong(7, codColaborador);
             stmt.setDate(8, new java.sql.Date(dataInicial));
             stmt.setString(9, zoneId.getId());
             stmt.setDate(10, new java.sql.Date(dataFinal));

@@ -43,19 +43,27 @@ public class FaleConoscoService {
                                     final long dataFinal,
                                     final int limit,
                                     final int offset,
-                                    final String cpf,
+                                    final Long codColaborador,
                                     final String equipe,
                                     final Long codUnidade,
                                     final String status,
                                     final String categoria) {
 
         try {
-            return dao.getAll(dataInicial, dataFinal, limit, offset, cpf, equipe, codUnidade, status, categoria);
+            return dao.getAll(dataInicial,
+                              dataFinal,
+                              limit,
+                              offset,
+                              codColaborador,
+                              equipe,
+                              codUnidade,
+                              status,
+                              categoria);
         } catch (final Exception e) {
             Log.e(TAG, String.format("Erro ao buscar os fale conosco. \n" +
                                              "codUnidade: %d \n" +
                                              "equipe: %s \n" +
-                                             "cpf: %s \n" +
+                                             "codColaborador: %s \n" +
                                              "status: %s \n" +
                                              "categoria: %s \n" +
                                              "limit: %d \n" +
@@ -64,7 +72,7 @@ public class FaleConoscoService {
                                              "dataFinal: %s",
                                      codUnidade,
                                      equipe,
-                                     cpf,
+                                     codColaborador,
                                      status,
                                      categoria,
                                      limit,
