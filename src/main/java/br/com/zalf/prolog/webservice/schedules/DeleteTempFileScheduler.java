@@ -52,8 +52,7 @@ public class DeleteTempFileScheduler implements Scheduler {
             final boolean allFillesDeleted = walk
                     .map(Path::toFile)
                     .peek(file -> Log.i(TAG, "Arquivos ou diretórios em analise: " + file.getAbsolutePath()))
-                    .filter(File::canRead)
-                    .filter(FileUtils::isOutdated)
+                    .filter(this::canDeleteFileOrDir)
                     .peek(file -> Log.i(TAG, "Arquivos ou diretórios para deleção: " + file.getAbsolutePath()))
                     .allMatch(FileUtils::delete);
             if (allFillesDeleted) {
@@ -66,4 +65,9 @@ public class DeleteTempFileScheduler implements Scheduler {
         }
     }
 
+    private boolean canDeleteFileOrDir(@NotNull final File fileOrDir) {
+        return fileOrDir.canRead()
+                && this.isOutdated(fileOrDir)
+                && (FileUtils.isAFile(fileOrDir) || this.isAValidDir(fileOrDir));
+    }
 }
