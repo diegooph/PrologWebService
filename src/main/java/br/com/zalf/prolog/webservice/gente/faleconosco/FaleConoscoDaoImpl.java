@@ -129,7 +129,7 @@ public class FaleConoscoDaoImpl extends DatabaseConnection implements FaleConosc
                                                  + "and f.cod_unidade = ? "
                                                  + "and f.status like ? "
                                                  + "and f.categoria like ? "
-                                                 + "and f.cod_colaborador like ? "
+                                                 + "and f.cod_colaborador = ? "
                                                  + "and f.data_hora::date >= (? at time zone ?)::date "
                                                  + "and f.data_hora::date <= (? at time zone ?)::date "
                                                  + "order by f.data_hora "
