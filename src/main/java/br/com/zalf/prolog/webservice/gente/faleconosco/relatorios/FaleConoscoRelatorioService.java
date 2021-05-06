@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.gente.faleConosco.relatorios;
+package br.com.zalf.prolog.webservice.gente.faleconosco.relatorios;
 
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.report.Report;
@@ -16,10 +16,10 @@ public class FaleConoscoRelatorioService {
     private static final String TAG = FaleConoscoRelatorioService.class.getSimpleName();
     private final FaleConoscoRelatorioDao dao = Injection.provideFaleConoscoRelatorioDao();
 
-    public void getResumoCsv(Long codUnidade, OutputStream outputStream, Date dataInicial, Date dataFinal) {
+    public void getResumoCsv(final Long codUnidade, final OutputStream outputStream, final Date dataInicial, final Date dataFinal) {
         try {
             dao.getResumoCsv(codUnidade, outputStream, dataInicial, dataFinal);
-        } catch (SQLException | IOException e) {
+        } catch (final SQLException | IOException e) {
             Log.e(TAG, String.format("Erro ao buscar relatório de resumo dos " +
                     "fale conosco da unidade: %d\n" +
                     "Período: %s à %s", codUnidade, dataInicial.toString(), dataFinal.toString()), e);
@@ -27,10 +27,10 @@ public class FaleConoscoRelatorioService {
         }
     }
 
-    public Report getResumoReport(Long codUnidade, Date dataInicial, Date dataFinal) {
+    public Report getResumoReport(final Long codUnidade, final Date dataInicial, final Date dataFinal) {
         try {
             return dao.getResumoReport(codUnidade, dataInicial, dataFinal);
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar relatório de resumo dos " +
                     "fale conosco da unidade: %d\n" +
                     "Período: %s à %s", codUnidade, dataInicial.toString(), dataFinal.toString()), e);

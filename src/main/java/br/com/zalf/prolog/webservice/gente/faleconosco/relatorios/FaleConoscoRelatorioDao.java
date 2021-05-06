@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.gente.faleConosco.relatorios;
+package br.com.zalf.prolog.webservice.gente.faleconosco.relatorios;
 
 import br.com.zalf.prolog.webservice.commons.report.Report;
 

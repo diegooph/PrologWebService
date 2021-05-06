@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.gente.faleConosco;
+package br.com.zalf.prolog.webservice.gente.faleconosco;
 
 import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
