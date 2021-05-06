@@ -30,19 +30,7 @@ public final class FileUtils {
     }
 
     public static boolean delete(@NotNull final File file) {
-        try {
-            if (file.isDirectory()) {
-                if (isDirEmpty(file)) {
-                    return file.delete();
-                }
-                // esse return true é somente para não disparar um erro ao tentar deletar um diretório com arquivos
-                return true;
-            }
-            return file.delete();
-        } catch (IOException e) {
-            Log.e(TAG, "Erro ao tentar excluir diretório: " + file.getAbsolutePath());
-            return false;
-        }
+        return file.delete();
     }
 
     public static boolean isDirEmpty(@NotNull final File file) throws IOException {
