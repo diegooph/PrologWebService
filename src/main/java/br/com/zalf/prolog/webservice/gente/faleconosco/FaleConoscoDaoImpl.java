@@ -161,8 +161,7 @@ public class FaleConoscoDaoImpl extends DatabaseConnection implements FaleConosc
 
     @Override
     @NotNull
-    public List<FaleConosco> getByColaborador(@NotNull final Long codEmpresa,
-                                              @NotNull final Long cpf,
+    public List<FaleConosco> getByColaborador(@NotNull final Long codColaborador,
                                               @NotNull final String status) throws Exception {
         final List<FaleConosco> list = new ArrayList<>();
         Connection conn = null;
@@ -185,16 +184,14 @@ public class FaleConoscoDaoImpl extends DatabaseConnection implements FaleConosc
                                                  + "from fale_conosco f "
                                                  + "join colaborador c on f.cod_colaborador = c.codigo "
                                                  + "left join colaborador c2 on c2.codigo = f.cod_colaborador_feedback "
-                                                 + "where c.cpf_colaborador = ? "
-                                                 + "and c.cod_empresa = ? "
+                                                 + "where f.cod_colaborador = ? "
                                                  + "and f.status like ? "
                                                  + "order by f.data_hora");
-            final ZoneId zoneId = TimeZoneManager.getZoneIdForCpf(cpf, conn);
+            final ZoneId zoneId = TimeZoneManager.getZoneIdForCodColaborador(codColaborador, conn);
             stmt.setString(1, zoneId.getId());
             stmt.setString(2, zoneId.getId());
-            stmt.setLong(3, cpf);
-            stmt.setLong(4, codEmpresa);
-            stmt.setString(5, status);
+            stmt.setLong(3, codColaborador);
+            stmt.setString(4, status);
             rSet = stmt.executeQuery();
             while (rSet.next()) {
                 final FaleConosco faleConosco = createFaleConosco(rSet);

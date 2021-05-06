@@ -18,8 +18,7 @@ public interface FaleConoscoDao {
                              String equipe, Long codUnidade, String status, String categoria) throws Exception;
 
     @NotNull
-    List<FaleConosco> getByColaborador(@NotNull final Long codEmpresa,
-                                       @NotNull final Long cpf,
+    List<FaleConosco> getByColaborador(@NotNull final Long codColaborador,
                                        @NotNull final String status) throws Exception;
 
     boolean insertFeedback(FaleConosco faleConosco, Long codUnidade) throws SQLException;
