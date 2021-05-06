@@ -44,7 +44,7 @@ public final class FileUtils {
     @NotNull
     public static Optional<FileTime> getFileTimeFromFile(@NotNull final File file) {
         try {
-            final var fileTime = Files.readAttributes(file.toPath(), BasicFileAttributes.class)
+            final FileTime fileTime = Files.readAttributes(file.toPath(), BasicFileAttributes.class)
                     .creationTime();
             return Optional.of(fileTime);
         } catch (final IOException e) {
