@@ -5,7 +5,6 @@ import br.com.zalf.prolog.webservice.commons.network.AbstractResponse;
 import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.ResponseWithCod;
 import br.com.zalf.prolog.webservice.commons.util.Log;
-import br.com.zalf.prolog.webservice.gente.colaborador.ColaboradorService;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Date;
@@ -76,17 +75,15 @@ public class FaleConoscoService {
         }
     }
 
-    public List<FaleConosco> getByColaborador(@NotNull final String token,
-                                              @NotNull final Long cpf,
+    public List<FaleConosco> getByColaborador(@NotNull final Long codColaborador,
                                               @NotNull final String status) {
         try {
-            return dao.getByColaborador(new ColaboradorService().getByToken(token).getCodEmpresa(),
-                                        cpf,
+            return dao.getByColaborador(codColaborador,
                                         status);
         } catch (final Exception e) {
             Log.e(TAG, String.format("Erro ao buscar os fale conosco do colaborador. \n" +
-                                             "cpf: %d \n" +
-                                             "status: %s", cpf, status), e);
+                                             "codigoColaborador: %d \n" +
+                                             "status: %s", codColaborador, status), e);
             return null;
         }
     }
