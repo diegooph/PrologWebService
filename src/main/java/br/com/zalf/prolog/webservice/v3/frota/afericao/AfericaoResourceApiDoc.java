@@ -48,6 +48,7 @@ public interface AfericaoResourceApiDoc {
             @ApiParam(value = "Flag utilizada para retornar as medidas (altura de sulco e pressão) coletadas no " +
                     "processo de aferição. Por padrão é sempre retornado as medidas, para não retornar as medidas " +
                     "envie 'false'.",
+                      required = true,
                       defaultValue = "true") final boolean incluirMedidas,
             @ApiParam(value = "Limite de aferições retornados pela busca. O valor máximo é 1000.",
                       example = "1000",
@@ -59,7 +60,8 @@ public interface AfericaoResourceApiDoc {
     @ApiOperation(
             value = "Lista as aferições avulsas.",
             notes = "Aferição Avulsa é uma processo realizado em pneus que não estão aplicados à veículos.",
-            response = List.class)
+            response = AfericaoAvulsaDto.class,
+            responseContainer = "List")
     @ApiResponses(value = {
             @ApiResponse(
                     code = 200, message = "Operação efetuada com sucesso.",
@@ -84,6 +86,7 @@ public interface AfericaoResourceApiDoc {
             @ApiParam(value = "Flag utilizada para retornar as medidas (altura de sulco e pressão) coletadas no " +
                     "processo de aferição. Por padrão é sempre retornado as medidas, para não retornar as medidas " +
                     "envie 'false'.",
+                      required = true,
                       defaultValue = "true") final boolean incluirMedidas,
             @ApiParam(value = "Limite de aferições retornados pela busca. O valor máximo é 1000.",
                       example = "1000",
