@@ -44,10 +44,10 @@ public class FaleConoscoResource {
 
     @GET
     @Secured(permissions = {Pilares.Gente.FaleConosco.REALIZAR})
-    @Path("/colaborador/{status}/{cpf}")
-    public List<FaleConosco> getByColaboradorAutenticado(@PathParam("cpf") final Long cpf,
-                                                         @PathParam("status") final String status) {
-        return service.getByColaborador(colaboradorAutenticadoProvider.get().getCodigo(), status);
+    @Path("/colaborador/{status}/{codColaborador}")
+    public List<FaleConosco> getByColaborador(@PathParam("codColaborador") final Long codColaborador,
+                                              @PathParam("status") final String status) {
+        return service.getByColaborador(codColaborador, status);
     }
 
     @GET
@@ -55,7 +55,39 @@ public class FaleConoscoResource {
             Pilares.Gente.FaleConosco.REALIZAR,
             Pilares.Gente.FaleConosco.VISUALIZAR_TODOS,
             Pilares.Gente.FaleConosco.FEEDBACK})
+    @Path("/{codUnidade}/{nomeEquipe}/{codColaborador}")
+    public List<FaleConosco> getAll(
+            @PathParam("codUnidade") final Long codUnidade,
+            @PathParam("nomeEquipe") final String equipe,
+            @PathParam("codColaborador") final Long codColaborador,
+            @QueryParam("dataInicial") final long dataInicial,
+            @QueryParam("dataFinal") final long dataFinal,
+            @QueryParam("limit") final int limit,
+            @QueryParam("offset") final int offset,
+            @QueryParam("status") final String status,
+            @QueryParam("categoria") final String categoria) {
+        return service.getAll(dataInicial,
+                              dataFinal,
+                              limit,
+                              offset,
+                              codColaborador,
+                              equipe,
+                              codUnidade,
+                              status,
+                              categoria);
+    }
+
+    /**
+     * @deprecated at 06/05/2021.
+     * Use {@link FaleConoscoResource#getAll(Long, String, Long, long, long, int, int, String, String)} instead.
+     */
+    @GET
+    @Secured(permissions = {
+            Pilares.Gente.FaleConosco.REALIZAR,
+            Pilares.Gente.FaleConosco.VISUALIZAR_TODOS,
+            Pilares.Gente.FaleConosco.FEEDBACK})
     @Path("/{codUnidade}/{nomeEquipe}/{cpf}")
+    @Deprecated
     public List<FaleConosco> getAll(
             @PathParam("codUnidade") final Long codUnidade,
             @PathParam("nomeEquipe") final String equipe,
@@ -75,6 +107,18 @@ public class FaleConoscoResource {
                               codUnidade,
                               status,
                               categoria);
+    }
+
+    /**
+     * @deprecated at 06/05/2021. Use {@link FaleConoscoResource#getByColaborador} instead.
+     */
+    @GET
+    @Secured(permissions = {Pilares.Gente.FaleConosco.REALIZAR})
+    @Path("/colaborador/{status}/{cpf}")
+    @Deprecated
+    public List<FaleConosco> getByColaboradorAutenticado(@PathParam("cpf") final Long cpf,
+                                                         @PathParam("status") final String status) {
+        return service.getByColaborador(colaboradorAutenticadoProvider.get().getCodigo(), status);
     }
 
     /**
