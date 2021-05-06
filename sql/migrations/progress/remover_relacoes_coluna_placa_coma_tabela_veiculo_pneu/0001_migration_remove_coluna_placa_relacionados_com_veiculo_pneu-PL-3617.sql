@@ -560,65 +560,65 @@ create or replace function func_relatorio_previsao_troca(f_data_inicial date,
                                                          f_status_pneu character varying)
     returns table
             (
-                "unidade alocado"         text,
-                "cod pneu"                text,
-                "status"                  text,
-                "vida atual"              integer,
-                "marca"                   text,
-                "modelo"                  text,
-                "medidas"                 text,
-                "placa aplicado"          text,
-                "posição aplicado"        text,
-                "qtd de aferições"        bigint,
-                "data 1ª aferição"        text,
-                "data última aferição"    text,
-                "dias ativo"              integer,
-                "média km por dia"        numeric,
-                "maior medição vida"      numeric,
-                "menor sulco atual"       numeric,
-                "milímetros gastos"       numeric,
-                "kms por milímetro"       numeric,
-                "valor vida"              real,
-                "valor acumulado"         real,
-                "valor por km vida atual" numeric,
-                "valor por km acumulado"  numeric,
-                "kms a percorrer"         numeric,
-                "dias restantes"          double precision,
-                "previsão de troca"       text,
-                "destino"                 text
+                "UNIDADE ALOCADO"         text,
+                "COD PNEU"                text,
+                "STATUS"                  text,
+                "VIDA ATUAL"              integer,
+                "MARCA"                   text,
+                "MODELO"                  text,
+                "MEDIDAS"                 text,
+                "PLACA APLICADO"          text,
+                "POSIÇÃO APLICADO"        text,
+                "QTD DE AFERIÇÕES"        bigint,
+                "DATA 1ª AFERIÇÃO"        text,
+                "DATA ÚLTIMA AFERIÇÃO"    text,
+                "DIAS ATIVO"              integer,
+                "MÉDIA KM POR DIA"        numeric,
+                "MAIOR MEDIÇÃO VIDA"      numeric,
+                "MENOR SULCO ATUAL"       numeric,
+                "MILÍMETROS GASTOS"       numeric,
+                "KMS POR MILÍMETRO"       numeric,
+                "VALOR VIDA"              real,
+                "VALOR ACUMULADO"         real,
+                "VALOR POR KM VIDA ATUAL" numeric,
+                "VALOR POR KM ACUMULADO"  numeric,
+                "KMS A PERCORRER"         numeric,
+                "DIAS RESTANTES"          double precision,
+                "PREVISÃO DE TROCA"       text,
+                "DESTINO"                 text
             )
     language sql
 as
 $$
-select vap."unidade alocado",
-       vap."cod pneu cliente",
-       vap."status pneu",
-       vap."vida atual",
-       vap."marca",
-       vap."modelo",
-       vap."medidas",
+select vap."UNIDADE ALOCADO",
+       vap."COD PNEU CLIENTE",
+       vap."STATUS PNEU",
+       vap."VIDA ATUAL",
+       vap."MARCA",
+       vap."MODELO",
+       vap."MEDIDAS",
        v.placa                                  as placa_aplicado,
        coalesce(ppne.nomenclatura, '-') :: text as posicao_aplicado,
-       vap."qtd de aferições",
-       vap."dta 1a aferição",
-       vap."dta última aferição",
-       vap."dias ativo",
-       vap."média km por dia",
-       vap."maior medição vida",
-       vap."menor sulco atual",
-       vap."milimetros gastos",
-       vap."kms por milimetro",
-       vap.valor_vida_atual,
-       vap.valor_acumulado,
-       vap."valor por km",
-       vap."valor por km acumulado",
-       vap."kms a percorrer",
-       vap."dias restantes",
-       to_char(vap."previsão de troca", 'DD/MM/YYYY'),
-       vap."destino"
+       vap."QTD DE AFERIÇÕES",
+       vap."DTA 1a AFERIÇÃO",
+       vap."DTA ÚLTIMA AFERIÇÃO",
+       vap."DIAS ATIVO",
+       vap."MÉDIA KM POR DIA",
+       vap."MAIOR MEDIÇÃO VIDA",
+       vap."MENOR SULCO ATUAL",
+       vap."MILIMETROS GASTOS",
+       vap."KMS POR MILIMETRO",
+       vap.VALOR_VIDA_ATUAL,
+       vap.VALOR_ACUMULADO,
+       vap."VALOR POR KM",
+       vap."VALOR POR KM ACUMULADO",
+       vap."KMS A PERCORRER",
+       vap."DIAS RESTANTES",
+       TO_CHAR(VAP."PREVISÃO DE TROCA", 'DD/MM/YYYY'),
+       vap."DESTINO"
 from view_pneu_analise_vida_atual as vap
          join veiculo_pneu vp
-              on vap."cod pneu" = vp.cod_pneu
+              on vap."COD PNEU" = vp.cod_pneu
          join veiculo v
               on vp.cod_veiculo = v.codigo
          left join veiculo_tipo vt
@@ -629,9 +629,9 @@ from view_pneu_analise_vida_atual as vap
     and ppne.cod_diagrama = vd.codigo
     and vp.posicao = ppne.posicao_prolog
 where vap.cod_unidade :: text like any (f_cod_unidade)
-  and vap."previsão de troca" <= f_data_final
-  and vap."status pneu" like f_status_pneu
-order by vap."unidade alocado";
+  and vap."PREVISÃO DE TROCA" <= f_data_final
+  and vap."STATUS PNEU" like f_status_pneu
+order by vap."UNIDADE ALOCADO";
 $$;
 
 create or replace function func_veiculo_relatorio_listagem_veiculos_by_unidade(f_cod_unidades bigint[])
