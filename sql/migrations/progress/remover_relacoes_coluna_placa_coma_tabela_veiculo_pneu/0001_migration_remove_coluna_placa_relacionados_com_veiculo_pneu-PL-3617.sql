@@ -268,6 +268,8 @@ order by verif_desgaste.nivel_desgaste_irregular desc, u.nome, p.codigo_cliente;
 end;
 $$;
 
+drop function func_pneu_relatorio_status_atual_pneus(bigint[]);
+
 create or replace function func_pneu_relatorio_status_atual_pneus(
     f_cod_unidades bigint[])
     returns table
