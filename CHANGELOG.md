@@ -4,6 +4,7 @@ Change Log
 ## UNRELEASED
 
 ### Bug Fixes
+* Corrige linha duplicada histórico de veículos (PL-3516)
 * Corrige atualização km ao realizar movimentação (PL-3630)
 
 ### Refactors
