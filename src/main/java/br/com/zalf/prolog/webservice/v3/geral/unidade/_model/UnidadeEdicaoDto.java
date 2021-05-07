@@ -18,9 +18,9 @@ import javax.validation.constraints.Size;
 @Builder
 @Getter
 public final class UnidadeEdicaoDto {
+    @CodUnidade
     @ApiModelProperty(value = "Código da unidade.", required = true, example = "215")
     @NotNull(message = "O código da unidade é obrigatório.")
-    @CodUnidade
     private final Long codUnidade;
     @ApiModelProperty(value = "Nome da unidade.", required = true, example = "Unidade de testes")
     @NotBlank(message = "O nome da unidade não pode estar vazio.")

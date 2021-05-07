@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice.v3.frota.veiculo._model;
 
+import br.com.zalf.prolog.webservice.v3.validation.CodEmpresa;
+import br.com.zalf.prolog.webservice.v3.validation.CodUnidade;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.jetbrains.annotations.Nullable;
@@ -15,9 +17,11 @@ import javax.validation.constraints.Size;
  */
 @Data
 public final class VeiculoCadastroDto {
+    @CodEmpresa
     @ApiModelProperty(value = "Código da empresa onde o veículo será cadastrado.", required = true, example = "10")
     @NotNull(message = "O código da empresa não pode ser nulo.")
     private final Long codEmpresaAlocado;
+    @CodUnidade
     @ApiModelProperty(value = "Código da unidade onde o veículo será cadastrado.", required = true, example = "215")
     @NotNull(message = "O código da unidade não pode ser nulo.")
     private final Long codUnidadeAlocado;

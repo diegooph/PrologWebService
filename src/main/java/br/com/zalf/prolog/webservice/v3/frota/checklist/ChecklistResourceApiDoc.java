@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Optional;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Required;
 import br.com.zalf.prolog.webservice.v3.frota.checklist._model.ChecklistListagemDto;
+import br.com.zalf.prolog.webservice.v3.validation.CodUnidades;
 import io.swagger.annotations.*;
 
 import java.util.List;
@@ -30,7 +31,7 @@ public interface ChecklistResourceApiDoc {
     List<ChecklistListagemDto> getChecklistsListagem(
             @ApiParam(value = "Lista de códigos de unidade.",
                       example = "215",
-                      required = true) @Required final List<Long> codUnidades,
+                      required = true) @Required @CodUnidades final List<Long> codUnidades,
             @ApiParam(value = "Data Inicial - Utilizada para filtrar os checklists realizados.",
                       format = "yyyy-MM-dd",
                       example = "2021-01-01",
