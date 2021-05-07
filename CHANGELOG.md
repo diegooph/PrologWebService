@@ -1,6 +1,9 @@
 Change Log
 ==========
 
+### Refactors
+* Padroniza documentação da API (PL-3621)
+
 <a name="v3.3.1"></a>
 ## Version [v3.3.1](https://github.com/luizfp/PrologWebService/compare/v3.3.0...v3.3.1) (2021-05-04)
 
