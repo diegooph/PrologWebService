@@ -17,7 +17,7 @@ public class MedidaDto {
     Long codPneuAfericao;
     @ApiModelProperty(value = "Código de cliente do pneu aferido. Usualmente se trata do número de fogo do pneu.",
                       required = true,
-                      example = "12345")
+                      example = "PN0001")
     @NotNull
     String codigoClientePneuAfericao;
     @ApiModelProperty(value = "Posição em que o pneu estava aplicado no momento da aferição. Essa informação não será" +
@@ -26,8 +26,8 @@ public class MedidaDto {
     @NotNull
     Integer posicaoPneuAplicadoMomentoAfericao;
     @ApiModelProperty(value = "Vida do pneu no momento que a aferição foi realizada. No Prolog, a vida do pneu é um " +
-            "numéro de 1 à 11 onde 1 é usado para o pneu novo, nunca recapado.",
-                      example = "111")
+            "número de 1 à 11 onde 1 é usado para o pneu novo, nunca recapado.",
+                      example = "1")
     @NotNull
     Integer vidaPneuMomentoAfericao;
     @ApiModelProperty(value = "Pressão coletada. Esse valor pode não ser fornecido no caso de uma aferição apenas de " +
