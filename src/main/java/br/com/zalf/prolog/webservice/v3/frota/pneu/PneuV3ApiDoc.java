@@ -1,5 +1,6 @@
 package br.com.zalf.prolog.webservice.v3.frota.pneu;
 
+import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
 import br.com.zalf.prolog.webservice.v3.frota.pneu._model.PneuCadastroDto;
 import io.swagger.annotations.*;
@@ -14,15 +15,20 @@ import javax.validation.Valid;
  */
 @Api(value = "Gestão de Pneus")
 public interface PneuV3ApiDoc {
-    @ApiOperation(value = "Método utilizado para inserir um pneu.", response = SuccessResponse.class)
+    @ApiOperation(value = "Insere um pneu.", response = SuccessResponse.class)
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Operação efetuada com sucesso."),
-            @ApiResponse(code = 401, message = "Operação não autorizada"),
-            @ApiResponse(code = 404, message = "Operação não encontrada"),
-            @ApiResponse(code = 500, message = "Erro ao executar operação")
+            @ApiResponse(code = 200, message = "Operação efetuada com sucesso.", response = SuccessResponse.class),
+            @ApiResponse(code = 401, message = "Operação não autorizada", response = Response.class),
+            @ApiResponse(code = 404, message = "Operação não encontrada", response = Response.class),
+            @ApiResponse(code = 500, message = "Erro ao executar operação", response = Response.class)
     })
     @NotNull
     SuccessResponse insert(@ApiParam(hidden = true) final String tokenIntegracao,
-                           final boolean ignoreDotValidation,
-                           @Valid final PneuCadastroDto pneuCadastro);
+                           @ApiParam(value = "Flag que controla se o Prolog deve aplicar validações no DOT do pneu. " +
+                                   "Um DOT válido contém 4 caracteres numéricos, correspondentes à semana e ano de " +
+                                   "fabricação do pneu.",
+                                     required = true,
+                                     defaultValue = "true") final boolean ignoreDotValidation,
+                           @ApiParam(value = "Dados do pneu para inserir.",
+                                     required = true) @Valid final PneuCadastroDto pneuCadastro);
 }
