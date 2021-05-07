@@ -48,9 +48,8 @@ public interface ChecklistResourceApiDoc {
             @ApiParam(value = "Código de Veículo - Utilizado para filtrar checklists de apenas um veículo. Caso não " +
                     "deseje filtrar, basta não enviar esse parâmetro.")
             @Optional final Long codVeiculo,
-            @ApiParam(value = "Flag utilizada para retornar as medidas (altura de sulco e pressão) coletadas no " +
-                    "processo de aferição. Por padrão é sempre retornado as medidas, para não retornar as medidas " +
-                    "envie 'false'.",
+            @ApiParam(value = "Flag utilizada para retornar as respostas preenchidas pelo colaborador. Por padrão é " +
+                    "sempre retornado, para não retornar envie 'false'.",
                       required = true,
                       defaultValue = "true") final boolean incluirRespostas,
             @ApiParam(value = "Limite de checklists retornados pela busca. O valor máximo é 1000.",

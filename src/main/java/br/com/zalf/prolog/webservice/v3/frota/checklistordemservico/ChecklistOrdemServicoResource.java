@@ -1,5 +1,7 @@
 package br.com.zalf.prolog.webservice.v3.frota.checklistordemservico;
 
+import br.com.zalf.prolog.webservice.commons.network.metadata.Optional;
+import br.com.zalf.prolog.webservice.commons.network.metadata.Required;
 import br.com.zalf.prolog.webservice.frota.checklist.ordemservico.model.StatusOrdemServico;
 import br.com.zalf.prolog.webservice.interceptors.ApiExposed;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
@@ -42,10 +44,10 @@ public final class ChecklistOrdemServicoResource implements ChecklistOrdemServic
     @ApiExposed
     @Override
     public List<ChecklistOrdemServicoListagemDto> getOrdensServico(
-            @QueryParam("codUnidades") final List<Long> codUnidades,
-            @QueryParam("codTipoVeiculo") final Long codTipoVeiculo,
-            @QueryParam("codVeiculo") final String codVeiculo,
-            @QueryParam("statusOrdemServico") final StatusOrdemServico statusOrdemServico,
+            @QueryParam("codUnidades") @Required final List<Long> codUnidades,
+            @QueryParam("codTipoVeiculo") @Optional final Long codTipoVeiculo,
+            @QueryParam("codVeiculo") @Optional final String codVeiculo,
+            @QueryParam("statusOrdemServico") @Optional final StatusOrdemServico statusOrdemServico,
             @QueryParam("incluirItensOrdemServico") @DefaultValue("true") final boolean incluirItensOrdemServico,
             @QueryParam("limit") final int limit,
             @QueryParam("offset") final int offset) {

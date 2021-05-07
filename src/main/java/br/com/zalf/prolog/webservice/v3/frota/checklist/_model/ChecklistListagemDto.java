@@ -2,7 +2,6 @@ package br.com.zalf.prolog.webservice.v3.frota.checklist._model;
 
 import br.com.zalf.prolog.webservice.commons.FonteDataHora;
 import br.com.zalf.prolog.webservice.frota.checklist.model.TipoChecklist;
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Value;
 import org.jetbrains.annotations.NotNull;
@@ -16,7 +15,6 @@ import java.util.List;
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-@ApiModel(description = "Objeto com as informações de um checklist.")
 @Value(staticConstructor = "of")
 public class ChecklistListagemDto {
     @ApiModelProperty(value = "Código do checklist", required = true, example = "12345")

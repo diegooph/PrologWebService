@@ -2,7 +2,6 @@ package br.com.zalf.prolog.webservice.v3.frota.checklist._model;
 
 import br.com.zalf.prolog.webservice.frota.checklist.model.PrioridadeAlternativa;
 import br.com.zalf.prolog.webservice.frota.checklist.modelo.model.AnexoMidiaChecklistEnum;
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Value;
 import org.jetbrains.annotations.NotNull;
@@ -13,7 +12,6 @@ import org.jetbrains.annotations.Nullable;
  *
  * @author Thais Francisco (https://github.com/thaisksf)
  */
-@ApiModel(description = "Objeto com as informações de um checklist.")
 @Value(staticConstructor = "of")
 public class ChecklistAlternativaDto {
     @ApiModelProperty(value = "Código da alternativa", required = true, example = "12345")

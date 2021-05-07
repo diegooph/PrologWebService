@@ -10,108 +10,96 @@ import java.time.LocalDateTime;
 
 @Data
 public class ChecklistOrdemServicoItemDto {
-    @ApiModelProperty(
-            value = "Código do item de ordem de serviço.",
-            example = "2")
+    @ApiModelProperty(value = "Código do item da ordem de serviço", required = true, example = "12345")
+    @NotNull
     private final Long codItemOrdemServico;
-    @ApiModelProperty(
-            value = "Código da pergunta que abriu a ordem de serviço.",
-            example = "3")
+    @ApiModelProperty(value = "Código da pergunta que abriu o item",
+                      required = true,
+                      example = "12345")
+    @NotNull
     private final Long codPerguntaPrimeiroApontamento;
-    @ApiModelProperty(
-            value = "Código que muda apenas qunado o contexto ou significado da pergunta é altrado.",
-            example = "5")
+    @ApiModelProperty(value = "Código de contexto da pergunta que abriu o item",
+                      required = true,
+                      example = "12345")
+    @NotNull
     private final Long codContextoPergunta;
-    @ApiModelProperty(
-            value = "Código da alternativa que abriu a ordem de serviço.",
-            example = "7")
+    @ApiModelProperty(value = "Código da alternativa que abriu o item",
+                      required = true,
+                      example = "12345")
+    @NotNull
     private final Long codAlternativaPrimeiroApontamento;
-    @ApiModelProperty(
-            value = "Código que muda apenas qunado o contexto ou significado da alternativa é alterado.",
-            example = "9")
+    @ApiModelProperty(value = "Código de contexto da alternativa que abriu o item",
+                      required = true,
+                      example = "12345")
+    @NotNull
     private final Long codContextoAlternativa;
-    @ApiModelProperty(
-            value = "Código auxiliar da alternativa que abriu a ordem de serviço.",
-            example = "AA:BB")
+    @ApiModelProperty(value = "Código auxiliar da alternativa que abriu o item. Esta propriedade só é enviada caso " +
+            "for configurada na alternativa.",
+                      example = "Serviço=FREIO")
     @Nullable
     private final String codAuxiliarAlternativaPrimeiroApontamento;
-    @ApiModelProperty(
-            value = "Status do item da ordem de serviço: aberto ou fechado.",
-            example = "F")
+    @ApiModelProperty(value = "Status do item. Podendo ser RESOLVIDO ou PENDENTE.",
+                      required = true,
+                      example = "RESOLVIDO")
     @NotNull
     private final StatusItemOrdemServico statusItemOrdemServico;
-    @ApiModelProperty(
-            value = "Quantidade de vezes que esse item de ordem de serviço já foi apontado.",
-            example = "45")
+    @ApiModelProperty(value = "Quantidade de vezes que esse item foi apontado antes de ser corrigido. Sempre que um " +
+            "checklist é realizado na placa, e o item não está RESOLVIDO, é incrementado a quantidade de apontamentos.",
+                      required = true,
+                      example = "12345")
     private final int quantidadeApontamentos;
-    @ApiModelProperty(
-            value = "Código do colaborador que fechou o item de ordem de serviço.",
-            example = "1234")
+    @ApiModelProperty(value = "Código do colaborador que resolveu o item.", example = "272")
     @Nullable
     private final Long codColaboradorResolucao;
-    @ApiModelProperty(
-            value = "Cpf do colaborador que fechou o item de ordem de serviço.",
-            example = "97599336087")
+    @ApiModelProperty(value = "Cpf do colaborador que resolveu o item. Esse campo não possui nenhuma formatação.",
+                      example = "3383283194")
     @Nullable
     private final Long cpfColaboradorResolucao;
-    @ApiModelProperty(
-            value = "Nome do colaborador que fechou o item de ordem de serviço.",
-            example = "Jean")
+    @ApiModelProperty(value = "Nome do colaborador que resolveu o item.", example = "Jean")
     @Nullable
     private final String nomeColaboradorResolucao;
-    @ApiModelProperty(
-            value = "Quilometragem do veículo quando o item de ordem de serviço foi criado.",
-            example = "53246")
+    @ApiModelProperty(value = "Km do veículo que no momento de resolução do item.", required = true, example = "111111")
     @Nullable
     private final Long kmVeiculoMomentoResolucao;
-    @ApiModelProperty(
-            value = "Código do processo de fechamento de itens de ordem de serviço, " +
-                    "quando vários itens são fechados em lote.",
-            example = "84")
+    @ApiModelProperty(value = "Código do lote resolvido. Caso o item tenha sido fechado através do processo de " +
+            "resolução em lote.",
+                      example = "11")
     @Nullable
     private final Long codAgrupamentoResolucaoEmLote;
-    @ApiModelProperty(
-            value = "A data e a hora em que foi apontado que o conserto necessário no item da " +
-                    "ordem de serviço foi realizado, em utc.",
-            example = "2019-08-18T13:47:00")
+    @ApiModelProperty(value = "Data e hora que os dados de resolução do item foram enviados para o Prolog. Valor " +
+            "expresso em UTC.",
+                      example = "2021-01-01T17:00:00")
     @Nullable
     private final LocalDateTime dataHoraConsertoUtc;
-    @ApiModelProperty(
-            value = "A data e a hora em que foi apontado que o conserto necessário no item da " +
-                    "ordem de serviço foi realizado, com timezone do mecânico aplicado.",
-            example = "2019-08-18T10:47:00")
+    @ApiModelProperty(value = "Data e hora que os dados de resolução do item foram enviados para o Prolog. Valor " +
+            "expresso com Time Zone do cliente aplicado. O Time Zone do cliente é configurado por Unidade.",
+                      example = "2021-01-01T14:00:00")
     @Nullable
     private final LocalDateTime dataHoraConsertoTimeZoneAplicado;
-    @ApiModelProperty(
-            value = "A data e a hora em que foi iniciado o conserto necessário no item da ordem de serviço, em utc.",
-            example = "2019-08-18T13:47:00")
+    @ApiModelProperty(value = "Data e hora que o colaborador iniciou a resolução do item. Valor expresso em UTC.",
+                      example = "2021-01-01T17:00:00")
     @Nullable
     private final LocalDateTime dataHoraInicioResolucaoUtc;
-    @ApiModelProperty(
-            value = "A data e a hora em que foi iniciado o conserto necessário no item da ordem de serviço, " +
-                    "com timezone do mecânico aplicado.",
-            example = "2019-08-18T10:47:00")
+    @ApiModelProperty(value = "Data e hora que o colaborador iniciou a resolução do item. Valor expresso com Time " +
+            "Zone do cliente aplicado. O Time Zone do cliente é configurado por Unidade.",
+                      example = "2021-01-01T14:00:00")
     @Nullable
     private final LocalDateTime dataHoraInicioResolucaoTimeZoneAplicado;
-    @ApiModelProperty(
-            value = "A data e a hora em que foi finalizado o conserto necessário no item da ordem de serviço, em utc.",
-            example = "2019-08-18T13:47:00")
+    @ApiModelProperty(value = "Data e hora que o colaborador finalizou a resolução do item. Valor expresso em UTC.",
+                      example = "2021-01-01T17:00:00")
     @Nullable
     private final LocalDateTime dataHoraFimResolucaoUtc;
-    @ApiModelProperty(
-            value = "A data e a hora em que foi finalizado o conserto necessário no item da ordem de serviço, " +
-                    "com timezone do mecânico aplicado.",
-            example = "2019-08-18T10:47:00")
+    @ApiModelProperty(value = "Data e hora que o colaborador finalizou a resolução do item. Valor expresso com Time " +
+            "Zone do cliente aplicado. O Time Zone do cliente é configurado por Unidade.",
+                      example = "2021-01-01T14:00:00")
     @Nullable
     private final LocalDateTime dataHoraFimResolucaoTimeZoneAplicado;
-    @ApiModelProperty(
-            value = "O tempo total para realizar o conserto necessário, em milissegundos.",
-            example = "100000")
+    @ApiModelProperty(value = "Diferença de tempo em o início e a finalização do item.",
+                      example = "36000")
     @Nullable
     private final Long tempoResolucaoEmMilisegundos;
-    @ApiModelProperty(
-            value = "Uma observação referente o conserto..",
-            example = "O pneu só irá conseguir rodar mais 10000 KM.")
+    @ApiModelProperty(value = "Observação inserida pelo colaborador ao resolver o item.",
+                      example = "Item resolvido")
     @Nullable
     private final String observacaoResolucao;
 }
