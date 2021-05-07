@@ -83,13 +83,13 @@ FROM PNEU P
          LEFT JOIN PNEU_VALOR_VIDA PVV ON P.CODIGO = PVV.COD_PNEU AND PVV.VIDA = P.VIDA_ATUAL
          LEFT JOIN (SELECT PPNE.NOMENCLATURA     AS POSICAO_PNEU,
                            VP.COD_PNEU           AS CODIGO_PNEU,
-                           VP.PLACA              AS PLACA_VEICULO_PNEU,
+                           V.PLACA               AS PLACA_VEICULO_PNEU,
                            VP.COD_UNIDADE        AS COD_UNIDADE_PNEU,
                            VT.NOME               AS VEICULO_TIPO,
                            V.IDENTIFICADOR_FROTA AS IDENTIFICADOR_FROTA
                     FROM VEICULO V
                              JOIN VEICULO_PNEU VP
-                                  ON VP.PLACA = V.PLACA AND VP.COD_UNIDADE = V.COD_UNIDADE
+                                  ON VP.COD_VEICULO = V.CODIGO AND VP.COD_UNIDADE = V.COD_UNIDADE
                              JOIN VEICULO_TIPO VT
                                   ON V.COD_TIPO = VT.CODIGO
                              JOIN EMPRESA E ON VT.COD_EMPRESA = E.CODIGO

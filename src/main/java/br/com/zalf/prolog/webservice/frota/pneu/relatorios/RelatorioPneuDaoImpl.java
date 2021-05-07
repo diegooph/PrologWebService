@@ -797,7 +797,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
             conn = getConnection();
             stmt = conn.prepareStatement("SELECT * " +
                     "FROM (SELECT " +
-                    "        VP.PLACA AS PLACA_VEICULO, " +
+                    "        V.PLACA AS PLACA_VEICULO, " +
                     "        SUM(CASE " +
                     "            WHEN LEAST(P.ALTURA_SULCO_INTERNO, P.ALTURA_SULCO_EXTERNO, " +
                     "                       P.ALTURA_SULCO_CENTRAL_EXTERNO, P.ALTURA_SULCO_CENTRAL_INTERNO) " +
@@ -806,10 +806,11 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
                     "            ELSE 0 END) AS QT_PNEUS_ABAIXO_LIMITE " +
                     "      FROM VEICULO_PNEU VP JOIN PNEU P " +
                     "          ON P.CODIGO = VP.COD_PNEU AND VP.COD_UNIDADE = P.COD_UNIDADE " +
+                    "        JOIN VEICULO V ON V.CODIGO = VP.COD_VEICULO" +
                     "        JOIN PNEU_RESTRICAO_UNIDADE ERP " +
                     "          ON ERP.COD_UNIDADE = VP.COD_UNIDADE " +
                     "      WHERE VP.COD_UNIDADE::TEXT LIKE ANY (ARRAY[?]) " +
-                    "      GROUP BY VP.PLACA " +
+                    "      GROUP BY V.PLACA " +
                     "      ORDER BY 2 DESC) AS PLACA_PNEUS WHERE QT_PNEUS_ABAIXO_LIMITE > 0;");
             stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.TEXT, codUnidades));
             rSet = stmt.executeQuery();
@@ -835,10 +836,10 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
                     "FROM AFERICAO_MANUTENCAO AM " +
                     "  JOIN VEICULO_PNEU VP " +
                     "    ON VP.COD_UNIDADE = AM.COD_UNIDADE AND AM.COD_PNEU = VP.COD_PNEU " +
-                    "WHERE AM.COD_UNIDADE::TEXT LIKE ANY (ARRAY[?]) " +
+                    "WHERE AM.COD_UNIDADE::TEXT = ANY (ARRAY[?]) " +
                     "      AND (AM.TIPO_SERVICO = ? OR AM.TIPO_SERVICO = ?) " +
                     "      AND AM.DATA_HORA_RESOLUCAO IS NULL;");
-            stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.TEXT, codUnidades));
+            stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.BIGINT, codUnidades));
             stmt.setString(2, TipoServico.CALIBRAGEM.asString());
             stmt.setString(3, TipoServico.INSPECAO.asString());
             rSet = stmt.executeQuery();
