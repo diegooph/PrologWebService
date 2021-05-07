@@ -836,7 +836,7 @@ public class RelatorioPneuDaoImpl extends DatabaseConnection implements Relatori
                     "FROM AFERICAO_MANUTENCAO AM " +
                     "  JOIN VEICULO_PNEU VP " +
                     "    ON VP.COD_UNIDADE = AM.COD_UNIDADE AND AM.COD_PNEU = VP.COD_PNEU " +
-                    "WHERE AM.COD_UNIDADE::TEXT LIKE ANY (ARRAY[?]) " +
+                    "WHERE AM.COD_UNIDADE::BIGINT = ANY (ARRAY[?]) " +
                     "      AND (AM.TIPO_SERVICO = ? OR AM.TIPO_SERVICO = ?) " +
                     "      AND AM.DATA_HORA_RESOLUCAO IS NULL;");
             stmt.setArray(1, PostgresUtils.listToArray(conn, SqlType.TEXT, codUnidades));
