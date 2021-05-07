@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+## STAGE
+
+### Refactors
+* Alterar relatórios e dashboards que utilizam a coluna placa da tabela veiculo_pneu (PL-3617)
+
 ## UNRELEASED
 
 ### Refactors
