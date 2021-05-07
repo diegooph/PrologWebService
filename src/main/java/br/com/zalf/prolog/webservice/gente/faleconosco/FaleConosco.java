@@ -41,7 +41,7 @@ public class FaleConosco {
 			this.s = s;
 		}
 
-		public static Categoria fromString(final String text) throws IllegalArgumentException{
+		public static Categoria fromString(final String text) throws IllegalArgumentException {
 			if (text != null) {
 				for (final Categoria b : Categoria.values()) {
 					if (text.equalsIgnoreCase(b.s)) {
