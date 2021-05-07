@@ -1,9 +1,13 @@
 Change Log
 ==========
 
-### Bug Fixes
+## UNRELEASED
 
+### Bug Fixes
 * Corrige atualização km ao realizar movimentação (PL-3630)
+
+### Refactors
+* Remove dependências e configurações não utilizadas do swagger
 
 <a name="v3.3.1"></a>
 
