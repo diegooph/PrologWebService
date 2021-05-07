@@ -36,9 +36,9 @@ begin
                       join movimentacao m on mp.codigo = m.cod_movimentacao_processo
                  and mp.cod_unidade = m.cod_unidade
                       join movimentacao_destino md on m.codigo = md.cod_movimentacao
-                      join veiculo v_destino on v_destino.codigo = md.cod_veiculo
+                      left join veiculo v_destino on v_destino.codigo = md.cod_veiculo
                       join movimentacao_origem mo on m.codigo = mo.cod_movimentacao
-                      join veiculo v_origem on v_origem.codigo = mo.cod_veiculo
+                      left join veiculo v_origem on v_origem.codigo = mo.cod_veiculo
              where coalesce(mo.cod_veiculo, md.cod_veiculo) = f_cod_veiculo
              group by m.codigo, mp.cod_unidade, mp.codigo, v_origem.codigo, v_destino.codigo, mo.km_veiculo,
                       md.km_veiculo)
