@@ -75,7 +75,7 @@ public class DeleteTempFileScheduler implements Scheduler {
         try {
             return directory.isDirectory() && FileUtils.isDirEmpty(directory);
         } catch (final IOException e) {
-            Log.e(TAG, "Erro ao analisar o diretório: " + directory.getAbsolutePath());
+            Log.e(TAG, "Erro ao analisar o diretório: " + directory.getAbsolutePath(), e);
             return false;
         }
     }
