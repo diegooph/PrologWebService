@@ -258,9 +258,11 @@ public class SistemaWebFinattoConverter {
             throw new IllegalStateException("Nenhum código de unidade mapeado para o código auxiliar:" +
                                                     "\ncodAuxiliar: " + veiculoByPlaca.getCodEmpresaFilialVeiculo());
         }
-
+        final Long codVeiculo =
+                SistemaWebFinattoEncoderDecoder.generateCodVeiculo(unidadeDePara.getCodUnidadeProlog(),
+                                                                   Long.parseLong(veiculoByPlaca.getCodVeiculo()));
         final Veiculo veiculo = new Veiculo();
-        veiculo.setCodigo(Long.parseLong(veiculoByPlaca.getCodVeiculo()));
+        veiculo.setCodigo(codVeiculo);
         veiculo.setPlaca(veiculoByPlaca.getPlacaVeiculo());
         veiculo.setIdentificadorFrota(veiculoByPlaca.getCodigoFrota());
         veiculo.setAtivo(true);

@@ -1,7 +1,14 @@
 Change Log
 ==========
 
+## UNRELEASED
+
+### Bug Fixes
+* Corrige linha duplicada histórico de veículos (PL-3516)
+* Corrige atualização km ao realizar movimentação (PL-3630)
+
 ### Refactors
+* Remove dependências e configurações não utilizadas do swagger
 * Padroniza documentação da API (PL-3621)
 
 <a name="v3.3.1"></a>
