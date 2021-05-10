@@ -16,6 +16,8 @@ import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -49,17 +51,19 @@ public class DeleteTempFileScheduler implements Scheduler {
         Log.i(TAG, "Diretório analisado: " + dir.getAbsolutePath());
         final Path absolutePath = Paths.get(dir.toURI());
         try (final Stream<Path> walk = Files.walk(absolutePath)) {
-            final boolean allFillesDeleted = walk
+            final Map<Boolean, Long> countedDeletedFiles = walk
                     .map(Path::toFile)
-                    .peek(file -> Log.i(TAG, "Arquivos ou diretórios em analise: " + file.getAbsolutePath()))
                     .filter(this::canDeleteFileOrDir)
-                    .peek(file -> Log.i(TAG, "Arquivos ou diretórios para deleção: " + file.getAbsolutePath()))
-                    .allMatch(FileUtils::delete);
-            if (allFillesDeleted) {
-                Log.i(TAG, "Arquivos e diretórios temporários deletados com sucesso!");
-                return;
+                    .collect(Collectors.groupingBy(FileUtils::delete,
+                                                   Collectors.counting()));
+            if (countedDeletedFiles.containsKey(false)) {
+                final Long countNotDeleted = countedDeletedFiles.get(false);
+                final String errMessage = String.format("Não foram possivel deletar %d arquivos", countNotDeleted);
+                throw new IllegalStateException(errMessage);
             }
-            throw new IllegalStateException("Não foi possivel deletar todos os arquivos e diretórios!");
+            final Long countDeleted = countedDeletedFiles.getOrDefault(true, 0L);
+            final String message = String.format("Foram deletados %d arquivos", countDeleted);
+            Log.i(TAG, message);
         } catch (final IOException exception) {
             Log.e(TAG, "Erro ao realizar deleção dos arquivos", exception);
         }
