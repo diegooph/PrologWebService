@@ -5,7 +5,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
 import java.util.Optional;
@@ -38,7 +40,10 @@ public final class FileUtils {
     }
 
     public static boolean isDirEmpty(@NotNull final File file) throws IOException {
-        return !Files.newDirectoryStream(file.toPath()).iterator().hasNext();
+        // Using try-with-resources we ensure that the stream's close() method is called.
+        try (final DirectoryStream<Path> directoryStream = Files.newDirectoryStream(file.toPath())) {
+            return !directoryStream.iterator().hasNext();
+        }
     }
 
     @NotNull
