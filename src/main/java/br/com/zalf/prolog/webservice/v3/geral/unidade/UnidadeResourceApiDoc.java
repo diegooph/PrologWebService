@@ -18,20 +18,23 @@ import java.util.List;
  */
 @Api(value = "Gestão de Unidades")
 public interface UnidadeResourceApiDoc {
-    @ApiOperation(value = "Atualiza as informações de uma unidade.", response = Response.class)
+    @ApiOperation(value = "Atualiza informações de uma unidade.",
+                  notes = "Se tratando de sobrescrita, caso alguma propriedade não for fornecida, assumiremos null. " +
+                          "\nPara sobrescrever apenas uma propriedade envie as demais contendo o valor original. " +
+                          "\nPara remover uma propriedade, envie null e as demais contendo o valor original.",
+                  response = Response.class)
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Operação efetuada com sucesso."),
-            @ApiResponse(code = 401, message = "Operação não autorizada"),
-            @ApiResponse(code = 404, message = "Operação não encontrada"),
-            @ApiResponse(code = 500, message = "Erro ao executar operação")
+            @ApiResponse(code = 200, message = "Operação efetuada com sucesso.", response = Response.class),
+            @ApiResponse(code = 401, message = "Operação não autorizada", response = Response.class),
+            @ApiResponse(code = 404, message = "Operação não encontrada", response = Response.class),
+            @ApiResponse(code = 500, message = "Erro ao executar operação", response = Response.class)
     })
     SuccessResponse updateUnidade(
-            @ApiParam(
-                    value = "Um json contendo informações de uma unidade para atualizá-la.",
-                    required = true) @Valid final UnidadeEdicaoDto unidade);
+            @ApiParam(value = "Dados da unidade para atualizar.",
+                      required = true) @Valid final UnidadeEdicaoDto unidade);
 
     @ApiOperation(
-            value = "Busca as informações de uma unidade através de um código específico.",
+            value = "Lista uma unidade específica.",
             response = UnidadeVisualizacaoListagemDto.class)
     @ApiResponses(value = {
             @ApiResponse(
@@ -42,11 +45,12 @@ public interface UnidadeResourceApiDoc {
             @ApiResponse(code = 500, message = "Erro ao executar operação", response = Response.class)
     })
     UnidadeVisualizacaoListagemDto getUnidadeByCodigo(
-            @ApiParam(value = "O código da unidade que será buscada.",
-                      required = true) @CodUnidade final Long codUnidade);
+            @ApiParam(value = "Código da unidade.",
+                      required = true,
+                      example = "215") @CodUnidade final Long codUnidade);
 
     @ApiOperation(
-            value = "Lista informações das unidades de uma empresa possibilitando filtrar por regional.",
+            value = "Lista as unidades de uma empresa.",
             response = List.class)
     @ApiResponses(value = {
             @ApiResponse(
@@ -58,8 +62,8 @@ public interface UnidadeResourceApiDoc {
             @ApiResponse(code = 500, message = "Erro ao executar operação", response = Response.class)
     })
     List<UnidadeVisualizacaoListagemDto> getUnidadesListagem(
-            @ApiParam(value = "Um código de empresa existente.", required = true) @CodEmpresa final Long codEmpresa,
-            @ApiParam(value = "Um ou mais códigos de regional, existentes." +
-                    "<br><b>Importante:</b> Se nenhum código for informado, será realizada a busca por todas as " +
-                    "regionais da empresa.") final List<Long> codigosRegionais);
+            @ApiParam(value = "Código de empresa.", required = true, example = "10") @CodEmpresa final Long codEmpresa,
+            @ApiParam(value = "Lista de códigos de regional - Utilizado para filtrar unidades de grupos específicos. " +
+                    "Caso não deseje filtrar, basta não enviar esse parâmetro.",
+                      example = "1") final List<Long> codigosRegionais);
 }

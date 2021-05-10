@@ -17,6 +17,12 @@ public interface ChecklistOrdemServicoProjection {
     @Value("#{target.codigo_checklist}")
     long getCodigoChecklist();
 
+    @Value("#{@localDateTimeConverter.fromInstantUtc(target.data_hora_abertura_utc)}")
+    LocalDateTime getDataHoraAberturaUtc();
+
+    @Value("#{target.data_hora_abertura_tz_aplicado}")
+    LocalDateTime getDataHoraAberturaTzAplicado();
+
     @Value("#{target.status_os}")
     String getStatusOs();
 
@@ -47,8 +53,14 @@ public interface ChecklistOrdemServicoProjection {
     @Value("#{target.codigo_item_os}")
     long getCodigoItemOs();
 
-    @Value("#{target.cpf_mecanico}")
-    Long getCpfMecanico();
+    @Value("#{target.codigo_colaborador_fechamento}")
+    Long getCodColaboradorFechamento();
+
+    @Value("#{target.cpf_colaborador_fechamento}")
+    Long getCpfColaboradorFechamento();
+
+    @Value("#{target.nome_colaborador_fechamento}")
+    String getNomeColaboradorFechamento();
 
     @Value("#{target.codigo_pergunta_primeiro_apontamento}")
     long getCodigoPerguntaPrimeiroApontamento();

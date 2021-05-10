@@ -9,13 +9,12 @@ Change Log
 
 ### Refactors
 * Remove dependências e configurações não utilizadas do swagger
+* Padroniza documentação da API (PL-3621)
 
 <a name="v3.3.1"></a>
-
 ## Version [v3.3.1](https://github.com/luizfp/PrologWebService/compare/v3.3.0...v3.3.1) (2021-05-04)
 
 ### Bug Fixes
-
 * Corrige edição de KM de processo de movimentação
 * Corrige KM coletado enviado na listagem de movimentações da API v3
 * Corrige problema ao gerar cronograma de aferição para a Finatto

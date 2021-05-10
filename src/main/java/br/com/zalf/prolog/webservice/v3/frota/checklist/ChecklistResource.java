@@ -53,8 +53,8 @@ public class ChecklistResource implements ChecklistResourceApiDoc {
             @QueryParam("dataInicial") @Required final String dataInicial,
             @QueryParam("dataFinal") @Required final String dataFinal,
             @QueryParam("codColaborador") @Optional final Long codColaborador,
-            @QueryParam("codVeiculo") @Optional final Long codVeiculo,
             @QueryParam("codTipoVeiculo") @Optional final Long codTipoVeiculo,
+            @QueryParam("codVeiculo") @Optional final Long codVeiculo,
             @QueryParam("incluirRespostas") @DefaultValue("true") final boolean incluirRespostas,
             @QueryParam("limit") final int limit,
             @QueryParam("offset") final int offset) {
