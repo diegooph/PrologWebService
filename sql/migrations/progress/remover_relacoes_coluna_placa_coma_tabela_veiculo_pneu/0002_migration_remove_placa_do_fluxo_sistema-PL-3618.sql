@@ -416,3 +416,27 @@ from pneu p
 where vei.placa = f_placa
 order by po.ordem_exibicao asc;
 $$;
+
+create or replace function func_veiculo_transferencia_veiculos_selecao(f_cod_unidade_origem bigint)
+  returns table(
+    COD_VEICULO                 bigint,
+    PLACA_VEICULO               text,
+    KM_ATUAL_VEICULO            bigint,
+    QTD_PNEUS_APLICADOS_VEICULO bigint)
+language plpgsql
+as $$
+begin
+return query
+select
+    v.codigo                                 as cod_veiculo,
+    v.placa :: text                          as placa_veiculo,
+    v.km                                     as km_atual_veiculo,
+    count(*)
+    -- Com esse filter veículos sem pneu retornam 0 na quantidade e não 1.
+    filter (where vp.cod_pneu is not null) as qtd_pneus_aplicados_veiculo
+from veiculo v
+         left join veiculo_pneu vp on vp.cod_veiculo = v.codigo and vp.cod_unidade = v.cod_unidade
+where v.cod_unidade = f_cod_unidade_origem
+group by v.codigo, v.placa, v.km;
+end;
+$$;
