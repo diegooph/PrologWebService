@@ -1,6 +1,6 @@
 package br.com.zalf.prolog.webservice.commons.imagens;
 
-import com.google.common.io.Files;
+import br.com.zalf.prolog.webservice.commons.util.files.FileUtils;
 import org.jetbrains.annotations.NotNull;
 
 import javax.imageio.IIOImage;
@@ -39,7 +39,7 @@ public class ImageCompressUtils {
             throw new FileFormatNotSupportException("O arquivo precisa ser uma imagem");
         }
 
-        final File output = new File(Files.createTempDir(), imageName);
+        final File output = new File(FileUtils.getTempDir(), imageName);
         final OutputStream out = new FileOutputStream(output);
 
         final ImageWriter writer = ImageIO.getImageWritersByFormatName(imageType).next();

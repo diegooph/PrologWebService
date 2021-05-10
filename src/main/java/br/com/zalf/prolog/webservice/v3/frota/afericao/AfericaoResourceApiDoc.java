@@ -4,6 +4,7 @@ import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.network.metadata.Optional;
 import br.com.zalf.prolog.webservice.v3.frota.afericao._model.AfericaoAvulsaDto;
 import br.com.zalf.prolog.webservice.v3.frota.afericao._model.AfericaoPlacaDto;
+import br.com.zalf.prolog.webservice.v3.validation.CodUnidades;
 import io.swagger.annotations.*;
 import org.jetbrains.annotations.NotNull;
 
@@ -31,7 +32,7 @@ public interface AfericaoResourceApiDoc {
     List<AfericaoPlacaDto> getAfericoesPlacas(
             @ApiParam(value = "Lista de códigos de unidade.",
                       example = "215",
-                      required = true) @NotNull final List<Long> codUnidades,
+                      required = true) @NotNull @CodUnidades final List<Long> codUnidades,
             @ApiParam(value = "Data Inicial - Utilizada para filtrar as aferições realizadas.",
                       format = "yyyy-MM-dd",
                       example = "2021-01-01",
@@ -48,6 +49,7 @@ public interface AfericaoResourceApiDoc {
             @ApiParam(value = "Flag utilizada para retornar as medidas (altura de sulco e pressão) coletadas no " +
                     "processo de aferição. Por padrão é sempre retornado as medidas, para não retornar as medidas " +
                     "envie 'false'.",
+                      required = true,
                       defaultValue = "true") final boolean incluirMedidas,
             @ApiParam(value = "Limite de aferições retornados pela busca. O valor máximo é 1000.",
                       example = "1000",
@@ -59,7 +61,8 @@ public interface AfericaoResourceApiDoc {
     @ApiOperation(
             value = "Lista as aferições avulsas.",
             notes = "Aferição Avulsa é uma processo realizado em pneus que não estão aplicados à veículos.",
-            response = List.class)
+            response = AfericaoAvulsaDto.class,
+            responseContainer = "List")
     @ApiResponses(value = {
             @ApiResponse(
                     code = 200, message = "Operação efetuada com sucesso.",
@@ -72,7 +75,7 @@ public interface AfericaoResourceApiDoc {
     List<AfericaoAvulsaDto> getAfericoesAvulsas(
             @ApiParam(value = "Lista de códigos de unidade.",
                       example = "215",
-                      required = true) @NotNull final List<Long> codUnidades,
+                      required = true) @NotNull @CodUnidades final List<Long> codUnidades,
             @ApiParam(value = "Data Inicial - Utilizada para filtrar as aferições realizadas.",
                       format = "yyyy-MM-dd",
                       example = "2021-01-01",
@@ -84,6 +87,7 @@ public interface AfericaoResourceApiDoc {
             @ApiParam(value = "Flag utilizada para retornar as medidas (altura de sulco e pressão) coletadas no " +
                     "processo de aferição. Por padrão é sempre retornado as medidas, para não retornar as medidas " +
                     "envie 'false'.",
+                      required = true,
                       defaultValue = "true") final boolean incluirMedidas,
             @ApiParam(value = "Limite de aferições retornados pela busca. O valor máximo é 1000.",
                       example = "1000",

@@ -5,7 +5,6 @@ import br.com.zalf.prolog.webservice.frota.pneu.afericao._model.TipoProcessoCole
 import br.com.zalf.prolog.webservice.frota.pneu.afericao.configuracao._model.FormaColetaDadosAfericaoEnum;
 import org.springframework.beans.factory.annotation.Value;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
@@ -50,24 +49,27 @@ public interface AfericaoAvulsaProjection {
     @Value("#{target.COD_PNEU}")
     Long getCodPneu();
 
+    @Value("#{target.CODIGO_CLIENTE_PNEU}")
+    String getCodigClientePneu();
+
     @Value("#{target.POSICAO}")
     Integer getPosicao();
 
     @Value("#{target.PSI}")
-    BigDecimal getPsi();
+    Double getPsi();
 
     @Value("#{target.VIDA_MOMENTO_AFERICAO}")
     Integer getVidaMomentoAfericao();
 
     @Value("#{target.ALTURA_SULCO_INTERNO}")
-    BigDecimal getAlturaSulcoInterno();
+    Double getAlturaSulcoInterno();
 
     @Value("#{target.ALTURA_SULCO_CENTRAL_INTERNO}")
-    BigDecimal getAlturaSulcoCentralInterno();
+    Double getAlturaSulcoCentralInterno();
 
     @Value("#{target.ALTURA_SULCO_CENTRAL_EXTERNO}")
-    BigDecimal getAlturaSulcoCentralExterno();
+    Double getAlturaSulcoCentralExterno();
 
     @Value("#{target.ALTURA_SULCO_EXTERNO}")
-    BigDecimal getAlturaSulcoExterno();
+    Double getAlturaSulcoExterno();
 }
