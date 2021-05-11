@@ -5,6 +5,7 @@ Change Log
 
 ### Refactors
 * Alterar relatórios e dashboards que utilizam a coluna placa da tabela veiculo_pneu (PL-3617)
+* Remover usos da coluna placa da tabela veiculo_pneu nos fluxos de sistema (WS e BD) (PL-3618)
 
 ## UNRELEASED
 
