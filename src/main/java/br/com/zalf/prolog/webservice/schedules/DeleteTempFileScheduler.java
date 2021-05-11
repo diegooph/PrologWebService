@@ -58,7 +58,7 @@ public class DeleteTempFileScheduler implements Scheduler {
                                                    Collectors.counting()));
             if (countedDeletedFiles.containsKey(false)) {
                 final Long countNotDeleted = countedDeletedFiles.get(false);
-                final String errMessage = String.format("Não foram possivel deletar %d arquivos", countNotDeleted);
+                final String errMessage = String.format("Não foi possivel deletar %d arquivos", countNotDeleted);
                 throw new IllegalStateException(errMessage);
             }
             final Long countDeleted = countedDeletedFiles.getOrDefault(true, 0L);
