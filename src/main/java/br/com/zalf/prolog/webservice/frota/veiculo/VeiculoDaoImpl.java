@@ -739,7 +739,7 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
             stmt.setLong(3, codPneu);
             final int count = stmt.executeUpdate();
             if (count == 0) {
-                throw new SQLException("Erro ao remover o pneu " + codPneu + " da placa " + codVeiculo);
+                throw new SQLException("Erro ao remover o pneu " + codPneu + " do veículo com código " + codVeiculo);
             }
         } finally {
             close(stmt);
