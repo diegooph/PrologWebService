@@ -365,7 +365,7 @@ public final class MovimentacaoDaoImpl extends DatabaseConnection implements Mov
                 veiculoDao.removePneuVeiculo(
                         conn,
                         processoMovimentacao.getUnidade().getCodigo(),
-                        origem.getVeiculo().getPlaca(),
+                        origem.getVeiculo().getCodigo(),
                         mov.getPneu().getCodigo());
             }
         }
