@@ -59,7 +59,7 @@ begin
     -- Validamos se a placa possui algum outro pneu aplicado na posição.
     if (select exists(select *
                       from public.veiculo_pneu vp
-                      where vp.placa = f_placa_veiculo_pneu_aplicado
+                      where vp.cod_veiculo = f_cod_veiculo_prolog
                         and vp.cod_unidade = f_cod_unidade_pneu
                         and vp.posicao = f_posicao_veiculo_pneu_aplicado))
     then
@@ -69,14 +69,12 @@ begin
     end if;
 
     -- Vincula pneu a placa.
-    insert into public.veiculo_pneu(placa,
-                                    cod_pneu,
+    insert into public.veiculo_pneu(cod_pneu,
                                     cod_unidade,
                                     posicao,
                                     cod_diagrama,
                                     cod_veiculo)
-    values (f_placa_veiculo_pneu_aplicado,
-            f_cod_pneu_prolog,
+    values (f_cod_pneu_prolog,
             f_cod_unidade_pneu,
             f_posicao_veiculo_pneu_aplicado,
             (select vt.cod_diagrama
@@ -97,7 +95,7 @@ begin
     -- Retornamos sucesso se o pneu estiver aplicado na placa e posição que deveria estar.
     if (select exists(select vp.posicao
                       from public.veiculo_pneu vp
-                      where vp.placa = f_placa_veiculo_pneu_aplicado
+                      where vp.cod_veiculo = f_cod_veiculo_prolog
                         and vp.cod_pneu = f_cod_pneu_prolog
                         and vp.posicao = f_posicao_veiculo_pneu_aplicado
                         and vp.cod_unidade = f_cod_unidade_pneu))
