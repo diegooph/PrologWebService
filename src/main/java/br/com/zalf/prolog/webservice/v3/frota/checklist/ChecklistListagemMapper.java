@@ -33,8 +33,8 @@ public class ChecklistListagemMapper {
     private ChecklistListagemDto toChecklistListagemDto(@NotNull final List<ChecklistProjection> checklistProjections,
                                                         final boolean incluirRespostas) {
         final ChecklistProjection projection = checklistProjections.get(0);
-        return ChecklistListagemDto.of(projection.getCodUnidade(),
-                                       projection.getCodChecklist(),
+        return ChecklistListagemDto.of(projection.getCodChecklist(),
+                                       projection.getCodUnidade(),
                                        projection.getCodModeloChecklist(),
                                        projection.getCodVersaoModelo(),
                                        projection.getCodColaborador(),

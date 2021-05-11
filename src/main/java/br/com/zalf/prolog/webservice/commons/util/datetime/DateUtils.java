@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -104,5 +105,9 @@ public final class DateUtils {
                                       final int anoMinimoPermitido) {
         final int anoExtraido = dataASerVerificada.getYear();
         return anoExtraido >= anoMaximoPermitido || anoExtraido <= anoMinimoPermitido;
+    }
+
+    public static boolean isAfterNDays(@NotNull final LocalDateTime date, final long nthDay) {
+        return ChronoUnit.DAYS.between(date, LocalDateTime.now()) > nthDay;
     }
 }

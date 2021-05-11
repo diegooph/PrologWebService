@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.commons.network.Response;
 import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.commons.util.datetime.Now;
 import br.com.zalf.prolog.webservice.commons.util.datetime.PrologDateParser;
+import br.com.zalf.prolog.webservice.commons.util.files.FileUtils;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogExceptionHandler;
 import br.com.zalf.prolog.webservice.raizen.produtividade.error.RaizenProdutividadeValidator;
@@ -15,7 +16,6 @@ import br.com.zalf.prolog.webservice.raizen.produtividade.model.RaizenProdutivid
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.insert.RaizenProdutividadeItemInsert;
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.insert.RaizenProdutividadeReader;
 import br.com.zalf.prolog.webservice.raizen.produtividade.model.itens.RaizenProdutividadeItemVisualizacao;
-import com.google.common.io.Files;
 import org.apache.commons.io.IOUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.jetbrains.annotations.NotNull;
@@ -183,7 +183,7 @@ public class RaizenProdutividadeService {
         final String fileName = String.valueOf(Now.getUtcMillis()) + "_" + codUnidade
                 + "_" + fileDetail.getFileName().replace(" ", "_");
         // Pasta temporária
-        final File tmpDir = Files.createTempDir();
+        final File tmpDir = FileUtils.getTempDir();
         final File file = new File(tmpDir, fileName);
         final FileOutputStream out = new FileOutputStream(file);
         IOUtils.copy(fileInputStream, out);

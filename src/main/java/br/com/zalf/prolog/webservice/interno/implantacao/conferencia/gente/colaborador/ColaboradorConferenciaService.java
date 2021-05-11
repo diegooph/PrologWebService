@@ -61,7 +61,7 @@ public final class ColaboradorConferenciaService {
         try {
             final String fileName = Now.getUtcMillis() + "_" + codUnidade
                     + "_" + fileDetail.getFileName().replace(" ", "_");
-            final File tmpDir = FileUtils.createTempDir();
+            final File tmpDir = FileUtils.getTempDir();
             final File file = new File(tmpDir, fileName);
             final FileOutputStream out = new FileOutputStream(file);
             IOUtils.copy(fileInputStream, out);

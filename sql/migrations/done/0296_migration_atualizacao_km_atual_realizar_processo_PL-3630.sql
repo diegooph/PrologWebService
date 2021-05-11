@@ -112,14 +112,13 @@ begin
                 and sr.cod_unidade = any (v_cod_unidades)
              )
              union
-             (select distinct on (veh.km) 'EDICAO_DE_VEICULOS'             as processo,
-                                          veh.codigo                       as codigo,
-                                          veh.data_hora_edicao_tz_aplicado as data_hora,
-                                          veh.cod_veiculo_edicao           as cod_veiculo,
-                                          veh.km                           as km_coletado
-              from veiculo_edicao_historico veh
-              where veh.estado_antigo = false
-                and veh.cod_veiculo_edicao = f_cod_veiculo
+             (select distinct on (func.km_veiculo) 'EDICAO_DE_VEICULOS'       as processo,
+                                                   func.codigo_historico      as codigo,
+                                                   func.data_hora_edicao      as data_hora,
+                                                   func.codigo_veiculo_edicao as cod_veiculo,
+                                                   func.km_veiculo            as km_coletado
+              from func_veiculo_listagem_historico_edicoes(f_cod_empresa, f_cod_veiculo) as func
+              where func.codigo_historico is not null
              )
              union
              (

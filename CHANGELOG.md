@@ -6,10 +6,26 @@ Change Log
 ### Refactors
 * Alterar relatórios e dashboards que utilizam a coluna placa da tabela veiculo_pneu (PL-3617)
 
-## UNRELEASED
+<a name="v3.3.3"></a>
+## Version [v3.3.3](https://github.com/luizfp/PrologWebService/compare/v3.3.2...v3.3.3) (2021-05-10)
+
+### Refactors
+* Adiciona validação para erros mapeados pelo `SpringDataJpa` (PL-3605)
+
+### Bug Fixes
+* Corrige problema de limpeza de arquivos/pastas temporárias
+
+<a name="v3.3.2"></a>
+## Version [v3.3.2](https://github.com/luizfp/PrologWebService/compare/v3.3.1...v3.3.2) (2021-05-09)
+
+### Bug Fixes
+* Corrige linha duplicada histórico de veículos (PL-3516)
+* Corrige atualização km ao realizar movimentação (PL-3630)
 
 ### Refactors
 * Remove dependências e configurações não utilizadas do swagger
+* Padroniza documentação da API (PL-3622)
+* Melhora scheduler de limpeza de arquivos (PL-3536)
 
 <a name="v3.3.1"></a>
 ## Version [v3.3.1](https://github.com/luizfp/PrologWebService/compare/v3.3.0...v3.3.1) (2021-05-04)

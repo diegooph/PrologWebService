@@ -42,7 +42,7 @@ public class PneuV3Resource implements PneuV3ApiDoc {
     @NotNull
     public SuccessResponse insert(
             @HeaderParam(PrologCustomHeaders.HEADER_TOKEN_INTEGRACAO) @Optional final String tokenIntegracao,
-            @QueryParam("ignoreDotValidation") final boolean ignoreDotValidation,
+            @QueryParam("ignoreDotValidation") @DefaultValue("true") final boolean ignoreDotValidation,
             @Valid final PneuCadastroDto pneuCadastro) {
         return this.service.insert(tokenIntegracao, pneuCadastro, ignoreDotValidation);
     }

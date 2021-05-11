@@ -50,13 +50,13 @@ public interface ChecklistProjection {
     @Value("#{target.tipo_checklist}")
     TipoChecklist getTipoChecklist();
 
-    @Value("#{target.data_hora_realizacao_utc}")
+    @Value("#{@localDateTimeConverter.fromInstantUtc(target.data_hora_realizacao_utc)}")
     LocalDateTime getDataHoraRealizacaoUtc();
 
     @Value("#{target.data_hora_realizacao_tz_aplicado}")
     LocalDateTime getDataHoraRealizacaoTzAplicado();
 
-    @Value("#{target.data_hora_importado_prolog_utc}")
+    @Value("#{@localDateTimeConverter.fromInstantUtc(target.data_hora_importado_prolog_utc)}")
     LocalDateTime getDataHoraImportadoUtc();
 
     @Value("#{target.data_hora_importado_prolog_tz_aplicado}")
@@ -98,7 +98,7 @@ public interface ChecklistProjection {
     @Value("#{target.foi_offline}")
     boolean isOffline();
 
-    @Value("#{target.data_hora_sincronizacao_utc}")
+    @Value("#{@localDateTimeConverter.fromInstantUtc(target.data_hora_sincronizacao_utc)}")
     LocalDateTime getDataHoraSincronizacaoUtc();
 
     @Value("#{target.data_hora_sincronizacao_tz_aplicado}")

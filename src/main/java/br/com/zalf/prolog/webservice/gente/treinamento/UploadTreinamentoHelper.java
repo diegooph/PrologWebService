@@ -2,9 +2,9 @@ package br.com.zalf.prolog.webservice.gente.treinamento;
 
 import br.com.zalf.prolog.webservice.AmazonConstants;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.commons.util.files.FileUtils;
 import br.com.zalf.prolog.webservice.commons.util.files.S3FileSender;
 import br.com.zalf.prolog.webservice.gente.treinamento.model.Treinamento;
-import com.google.common.io.Files;
 import org.apache.commons.io.IOUtils;
 
 import java.io.File;
@@ -33,7 +33,7 @@ public class UploadTreinamentoHelper {
                 AmazonConstants.AWS_SECRET_KEY);
         final String pdfName = TreinamentoHelper.createPDFFileName(treinamento);
         // Pasta temporária da JVM
-        final File tmpDir = Files.createTempDir();
+        final File tmpDir = FileUtils.getTempDir();
 
         // Envia arquivo
         final File pdfFile = createFile(tmpDir, inputStream, pdfName);
