@@ -107,8 +107,7 @@ begin
     if ((v_antigo_cod_tipo <> f_novo_cod_tipo)
         and (select count(vp.*)
              from veiculo_pneu vp
-             join veiculo v on v.codigo = vp.cod_veiculo
-             where v.codigo = f_cod_veiculo) > 0)
+             where vp.cod_veiculo = f_cod_veiculo) > 0)
     then
         perform throw_generic_error(
                 'O tipo do veículo não pode ser alterado se a placa contém pneus aplicados.');
