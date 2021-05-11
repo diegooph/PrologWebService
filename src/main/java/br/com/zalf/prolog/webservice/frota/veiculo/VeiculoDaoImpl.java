@@ -728,7 +728,7 @@ public final class VeiculoDaoImpl extends DatabaseConnection implements VeiculoD
     @Override
     public void removePneuVeiculo(@NotNull final Connection conn,
                                   @NotNull final Long codUnidade,
-                                  final @NotNull Long codVeiculo,
+                                  @NotNull final Long codVeiculo,
                                   @NotNull final Long codPneu) throws Throwable {
         PreparedStatement stmt = null;
         try {
