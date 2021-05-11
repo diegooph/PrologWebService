@@ -4,6 +4,9 @@ Change Log
 <a name="v3.3.3"></a>
 ## Version [v3.3.3](https://github.com/luizfp/PrologWebService/compare/v3.3.2...v3.3.3) (2021-05-10)
 
+### Refactors
+* Adiciona validação para erros mapeados pelo `SpringDataJpa` (PL-3605)
+
 ### Bug Fixes
 * Corrige problema de limpeza de arquivos/pastas temporárias
 
@@ -15,7 +18,6 @@ Change Log
 * Corrige atualização km ao realizar movimentação (PL-3630)
 
 ### Refactors
-* Adiciona validação para erros mapeados pelo `SpringDataJpa` (PL-3605)
 * Remove dependências e configurações não utilizadas do swagger
 * Padroniza documentação da API (PL-3621)
 * Melhora scheduler de limpeza de arquivos (PL-3436)
