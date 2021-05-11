@@ -1,7 +1,8 @@
 Change Log
 ==========
 
-## UNRELEASED
+<a name="v3.3.3"></a>
+## Version [v3.3.3](https://github.com/luizfp/PrologWebService/compare/v3.3.2...v3.3.3) (2021-05-10)
 
 ### Bug Fixes
 * Corrige problema de limpeza de arquivos/pastas temporárias
