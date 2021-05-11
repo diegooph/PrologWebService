@@ -80,7 +80,8 @@ begin
                 v_cod_empresa_placa
             from veiculo v
             where remove_all_spaces(v.placa) ilike
-                  new.placa_formatada_vinculo;
+                  new.placa_formatada_vinculo
+              and v.cod_empresa = new.cod_empresa;
             if (v_placa is null)
             then
                 v_qtd_erros = v_qtd_erros + 1;
