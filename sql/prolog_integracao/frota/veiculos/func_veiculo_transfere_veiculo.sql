@@ -1,21 +1,3 @@
--- Sobre:
--- Functions responsável por transferir um veículo.
--- Lógica aplicada:
--- Ao receber um placa, validamos todos os cenários dela, passando pelas func_garante. Caso a placa possuir pneus
--- aplicados, transferimos eles junto com a placa para a unidade destino. Depois de realizar esses processos,
--- realizamos a transferência do veículo.
---
--- Precondição
--- FUNC_GARANTE_EMPRESA_EXISTE
--- FUNC_GARANTE_UNIDADE_EXISTE
--- FUNC_GARANTE_EMPRESA_POSSUI_UNIDADE
--- FUNC_GARANTE_VEICULO_EXISTE
---
--- Histórico:
--- 2020-03-27 -> Function criada (natanrotta - PLI-80).
--- 2020-04-07 -> Corrige chamada da function de transferencia de pneus (diogenesvanzella - PLI-115).
--- 2020-07-27 -> Volta arquivo base para versão de Prod (diogenesvanzella - PLI-189).
--- 2020-08-05 -> Adapta function para token duplicado (diogenesvanzella - PLI-175).
 CREATE OR REPLACE FUNCTION INTEGRACAO.FUNC_VEICULO_TRANSFERE_VEICULO(F_COD_UNIDADE_ORIGEM BIGINT,
                                                                      F_COD_UNIDADE_DESTINO BIGINT,
                                                                      F_CPF_COLABORADOR_TRANSFERENCIA BIGINT,

@@ -1,11 +1,3 @@
--- Sobre:
--- Essa function é responsável por vincular um pneu ao veículo.
---
--- Precondição
--- A posição precisa existir no veículo.
---
--- Histórico:
--- 2020-04-28 -> Function criada (natanrotta - PLI-102).
 CREATE OR REPLACE FUNCTION INTEGRACAO.FUNC_PNEU_INTERNAL_VINCULA_PNEU_POSICAO_PLACA(F_PLACA TEXT,
                                                                                     F_COD_PNEU BIGINT,
                                                                                     F_POSICAO INTEGER)

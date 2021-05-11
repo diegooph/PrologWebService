@@ -1,19 +1,3 @@
--- Sobre:
---
--- Function disponível na API do ProLog para vincular um pneu à uma placa.
---
--- Essa function recebe as informações de placa, pneu, posição e unidade, verifica e aplica o pneu na placa caso não
--- haja nenhum outro aplicado no mesmo local.
---
--- Precondições:
--- Para que a function consiga aplicar o pneu na devida placa e posição é necessário que o pneu e a placa estejam
--- cadastrados na mesma unidade.
---
--- Histórico:
--- 2019-08-15 -> Function criada (diogenesvanzella - PL-2222).
--- 2020-01-03 -> Adiciona informação da unidade na mensagem de erro (diogenesvanzella - PLI-30).
--- 2020-19-03 -> Corrige insert de vinculo entre pneu e placa adicionando o cod_diagrama (diogenesvanzella - PLI-105).
--- 2020-08-10 -> Corrige insert de vinculo entre pneu e placa adicionando o cod_veiculo (didivz - PL-3194).
 create or replace function integracao.func_pneu_vincula_pneu_posicao_placa(f_cod_veiculo_prolog bigint,
                                                                            f_placa_veiculo_pneu_aplicado text,
                                                                            f_cod_pneu_prolog bigint,
