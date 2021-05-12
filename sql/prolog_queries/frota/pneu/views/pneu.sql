@@ -20,6 +20,8 @@ select p.codigo_cliente,
        p.codigo,
        p.cod_empresa,
        p.cod_unidade_cadastro,
-       p.origem_cadastro
+       p.origem_cadastro,
+       p.cod_colaborador_cadastro,
+       p.cod_colaborador_ultima_atualizacao
 from pneu_data p
 where p.deletado = false;
