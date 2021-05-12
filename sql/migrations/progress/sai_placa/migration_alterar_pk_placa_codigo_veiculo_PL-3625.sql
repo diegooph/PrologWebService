@@ -28,6 +28,7 @@ alter table afericao_data
 
 alter table checklist_data
     drop constraint if exists fk_checklist_cod_veiculo;
+
 alter table veiculo_data
     drop constraint if exists veiculo_codigo_key;
 
@@ -36,6 +37,9 @@ alter table veiculo_data
 
 alter table veiculo_data
     add constraint pk_cod_veiculo primary key (codigo);
+
+alter table veiculo_data
+    add constraint unique_cod_empresa_placa unique (cod_empresa, placa);
 
 alter table socorro_rota_abertura
     add constraint fk_socorro_rota_abertura_veiculo_codigo foreign key (cod_veiculo_problema) references veiculo_data;
