@@ -1,12 +1,12 @@
 begin transaction;
 alter table veiculo_data
-    add constraint cod_veiculo_unidade_unique unique (codigo, cod_unidade);
+    add constraint unique_cod_veiculo_unidade unique (codigo, cod_unidade);
 
 alter table veiculo_pneu
     drop constraint if exists veiculo_pneu_placa_posicao_key;
 
 alter table veiculo_pneu
-    add constraint veiculo_pneu_cod_veiculo_posicao_key unique (cod_veiculo, posicao);
+    add constraint unique_cod_veiculo_posicao unique (cod_veiculo, posicao);
 
 alter table veiculo_pneu
     drop constraint if exists fk_veiculo_pneu_cod_veiculo_placa;
