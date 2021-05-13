@@ -214,7 +214,8 @@ final class BloqueioUnidadesIntegradasTest {
         final Throwable throwable = assertThrows(
                 ProLogException.class,
                 () -> new PneuService()
-                        .update(USER_TOKEN_INTEGRADO, COD_UNIDADE_LIBERADA, COD_UNIDADE_LIBERADA, pneu));
+                        .update(colaboradorAutenticadoProvider.get().getCodigo(),
+                                USER_TOKEN_INTEGRADO, COD_UNIDADE_LIBERADA, COD_UNIDADE_LIBERADA, pneu));
         assertThat(throwable).isInstanceOf(BloqueadoIntegracaoException.class);
     }
 
@@ -226,7 +227,8 @@ final class BloqueioUnidadesIntegradasTest {
         final Throwable throwable = assertThrows(
                 ProLogException.class,
                 () -> new PneuService()
-                        .update(USER_TOKEN_INTEGRADO, COD_UNIDADE_BLOQUEADA, COD_UNIDADE_BLOQUEADA, pneu));
+                        .update(colaboradorAutenticadoProvider.get().getCodigo(),
+                                USER_TOKEN_INTEGRADO, COD_UNIDADE_BLOQUEADA, COD_UNIDADE_BLOQUEADA, pneu));
         assertThat(throwable).isNotInstanceOf(BloqueadoIntegracaoException.class);
     }
 
