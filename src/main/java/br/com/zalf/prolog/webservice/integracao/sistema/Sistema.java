@@ -400,16 +400,18 @@ public abstract class Sistema implements OperacoesIntegradas {
 
     @NotNull
     @Override
-    public Long insert(@NotNull final Pneu pneu,
+    public Long insert(@NotNull final Long codigoColaboradorCadastro,
+                       @NotNull final Pneu pneu,
                        @NotNull final Long codUnidade,
                        @NotNull final OrigemAcaoEnum origemCadastro) throws Throwable {
-        return getIntegradorProLog().insert(pneu, codUnidade, origemCadastro);
+        return getIntegradorProLog().insert(codigoColaboradorCadastro, pneu, codUnidade, origemCadastro);
     }
 
     @NotNull
     @Override
-    public List<Long> insert(@NotNull final List<Pneu> pneus) throws Throwable {
-        return getIntegradorProLog().insert(pneus);
+    public List<Long> insert(@NotNull final Long codigoColaboradorCadastro,
+                             @NotNull final List<Pneu> pneus) throws Throwable {
+        return getIntegradorProLog().insert(codigoColaboradorCadastro, pneus);
     }
 
     @Override

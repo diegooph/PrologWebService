@@ -565,23 +565,25 @@ public abstract class Router implements OperacoesIntegradas {
     // #################################################################################################################
     @NotNull
     @Override
-    public Long insert(@NotNull final Pneu pneu,
+    public Long insert(@NotNull final Long codigoColaboradorCadastro,
+                       @NotNull final Pneu pneu,
                        @NotNull final Long codUnidade,
                        @NotNull final OrigemAcaoEnum origemCadastro) throws Throwable {
         if (getSistema() != null) {
-            return getSistema().insert(pneu, codUnidade, origemCadastro);
+            return getSistema().insert(codigoColaboradorCadastro, pneu, codUnidade, origemCadastro);
         } else {
-            return integradorProLog.insert(pneu, codUnidade, origemCadastro);
+            return integradorProLog.insert(codigoColaboradorCadastro, pneu, codUnidade, origemCadastro);
         }
     }
 
     @NotNull
     @Override
-    public List<Long> insert(@NotNull final List<Pneu> pneus) throws Throwable {
+    public List<Long> insert(@NotNull final Long codigoColaboradorCadastro,
+                             @NotNull final List<Pneu> pneus) throws Throwable {
         if (getSistema() != null) {
-            return getSistema().insert(pneus);
+            return getSistema().insert(codigoColaboradorCadastro, pneus);
         } else {
-            return integradorProLog.insert(pneus);
+            return integradorProLog.insert(codigoColaboradorCadastro, pneus);
         }
     }
 
