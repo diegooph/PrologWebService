@@ -15,12 +15,14 @@ public interface PneuDao {
     List<Pneu> getPneusByPlaca(String placa) throws SQLException;
 
     @NotNull
-    Long insert(@NotNull final Pneu pneu,
+    Long insert(@NotNull final Long codigoColaboradorCadastro,
+                @NotNull final Pneu pneu,
                 @NotNull final Long codUnidade,
                 @NotNull final OrigemAcaoEnum origemCadastro) throws Throwable;
 
     @NotNull
-    List<Long> insert(@NotNull final List<Pneu> pneus) throws Throwable;
+    List<Long> insert(@NotNull final Long codigoColaboradorCadastro,
+                      @NotNull final List<Pneu> pneus) throws Throwable;
 
     @CanIgnoreReturnValue
     boolean updateMedicoes(@NotNull final Connection conn,

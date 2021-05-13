@@ -50,7 +50,7 @@ public final class PneuResource {
     public List<Long> insert(
             @HeaderParam("Authorization") @Required final String userToken,
             @FormDataParam("file") @Required final InputStream fileInputStream) throws ProLogException {
-        return service.insert(userToken, fileInputStream);
+        return service.insert(colaboradorAutenticadoProvider.get().getCodigo(), userToken, fileInputStream);
     }
 
     @POST
@@ -63,6 +63,7 @@ public final class PneuResource {
                                    @QueryParam("ignoreDotValidation") final boolean ignoreDotValidation,
                                    @Required final Pneu pneu) throws ProLogException {
         return service.insert(
+                colaboradorAutenticadoProvider.get().getCodigo(),
                 userToken,
                 codUnidade,
                 pneu,
