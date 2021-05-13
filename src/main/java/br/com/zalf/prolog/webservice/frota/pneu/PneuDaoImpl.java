@@ -128,7 +128,8 @@ public final class PneuDaoImpl extends DatabaseConnection implements PneuDao {
     }
 
     @Override
-    public void update(@NotNull final Pneu pneu,
+    public void update(@NotNull final Long codigoColaboradorEdicao,
+                       @NotNull final Pneu pneu,
                        @NotNull final Long codUnidade,
                        @NotNull final Long codOriginalPneu) throws Throwable {
         PreparedStatement stmt = null;
@@ -145,7 +146,8 @@ public final class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                                                  "F_VIDA_TOTAL := ?," +
                                                  "F_PRESSAO_RECOMENDADA := ?," +
                                                  "F_COD_ORIGINAL_PNEU := ?," +
-                                                 "F_COD_UNIDADE := ?);");
+                                                 "F_COD_UNIDADE := ?," +
+                                                 "F_COD_COLABORADOR_RESPONSAVEL_EDICAO := ?);");
             stmt.setString(1, pneu.getCodigoCliente());
             stmt.setLong(2, pneu.getModelo().getCodigo());
             stmt.setLong(3, pneu.getDimensao().codigo);
@@ -165,6 +167,7 @@ public final class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             stmt.setDouble(8, pneu.getPressaoCorreta());
             stmt.setLong(9, codOriginalPneu);
             stmt.setLong(10, codUnidade);
+            stmt.setLong(11, codigoColaboradorEdicao);
 
             stmt.executeQuery();
 

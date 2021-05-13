@@ -415,10 +415,11 @@ public abstract class Sistema implements OperacoesIntegradas {
     }
 
     @Override
-    public void update(@NotNull final Pneu pneu,
+    public void update(@NotNull final Long codigoColaboradorEdicao,
+                       @NotNull final Pneu pneu,
                        @NotNull final Long codUnidade,
                        @NotNull final Long codOriginalPneu) throws Throwable {
-        getIntegradorProLog().update(pneu, codUnidade, codOriginalPneu);
+        getIntegradorProLog().update(codigoColaboradorEdicao, pneu, codUnidade, codOriginalPneu);
     }
 
     @NotNull

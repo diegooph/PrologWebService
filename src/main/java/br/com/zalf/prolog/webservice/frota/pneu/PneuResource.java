@@ -87,7 +87,7 @@ public final class PneuResource {
             @PathParam("codUnidade") @Required final Long codUnidade,
             @PathParam("codPneuOriginal") @Required final Long codOriginalPneu,
             @Required final Pneu pneu) throws ProLogException {
-        return service.update(userToken, codUnidade, codOriginalPneu, pneu);
+        return service.update(colaboradorAutenticadoProvider.get().getCodigo(), userToken, codUnidade, codOriginalPneu, pneu);
     }
 
     @GET

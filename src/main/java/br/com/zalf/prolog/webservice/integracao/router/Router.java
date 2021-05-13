@@ -588,13 +588,14 @@ public abstract class Router implements OperacoesIntegradas {
     }
 
     @Override
-    public void update(@NotNull final Pneu pneu,
+    public void update(@NotNull final Long codigoColaboradorEdicao,
+                       @NotNull final Pneu pneu,
                        @NotNull final Long codUnidade,
                        @NotNull final Long codOriginalPneu) throws Throwable {
         if (getSistema() != null) {
-            getSistema().update(pneu, codUnidade, codOriginalPneu);
+            getSistema().update(codigoColaboradorEdicao, pneu, codUnidade, codOriginalPneu);
         } else {
-            integradorProLog.update(pneu, codUnidade, codOriginalPneu);
+            integradorProLog.update(codigoColaboradorEdicao, pneu, codUnidade, codOriginalPneu);
         }
     }
 

@@ -672,13 +672,14 @@ public final class IntegradorProLog implements InformacoesProvidas, OperacoesInt
     }
 
     @Override
-    public void update(@NotNull final Pneu pneu,
+    public void update(@NotNull final Long codigoColaboradorEdicao,
+                       @NotNull final Pneu pneu,
                        @NotNull final Long codUnidade,
                        @NotNull final Long codOriginalPneu) throws Throwable {
         if (pneuDao == null) {
             pneuDao = Injection.providePneuDao();
         }
-        pneuDao.update(pneu, codUnidade, codOriginalPneu);
+        pneuDao.update(codigoColaboradorEdicao, pneu, codUnidade, codOriginalPneu);
     }
 
     @NotNull

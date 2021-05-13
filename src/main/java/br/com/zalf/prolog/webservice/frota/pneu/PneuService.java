@@ -67,7 +67,8 @@ public final class PneuService {
     }
 
     @NotNull
-    public Response update(@NotNull final String userToken,
+    public Response update(@NotNull final Long codigoColaboradorEdicao,
+                           @NotNull final String userToken,
                            @NotNull final Long codUnidade,
                            @NotNull final Long codOriginal,
                            @NotNull final Pneu pneu) throws ProLogException {
@@ -75,7 +76,7 @@ public final class PneuService {
             PneuValidator.validacaoAtributosPneu(pneu, codUnidade, false);
             RouterPneu
                     .create(dao, userToken)
-                    .update(pneu, codUnidade, codOriginal);
+                    .update(codigoColaboradorEdicao, pneu, codUnidade, codOriginal);
             return Response.ok("Pneu atualizado com sucesso");
         } catch (final Throwable t) {
             final String errorMessage = "Erro ao atualizar pneu: " + codOriginal;

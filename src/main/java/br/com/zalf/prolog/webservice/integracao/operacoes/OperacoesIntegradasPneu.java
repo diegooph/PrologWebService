@@ -23,7 +23,8 @@ public interface OperacoesIntegradasPneu {
     List<Long> insert(final @NotNull Long codigoColaboradorCadastro,
                       @NotNull final List<Pneu> pneus) throws Throwable;
 
-    void update(@NotNull final Pneu pneu,
+    void update(final @NotNull Long codigoColaboradorEdicao,
+                @NotNull final Pneu pneu,
                 @NotNull final Long codUnidade,
                 @NotNull final Long codOriginalPneu) throws Throwable;
 
