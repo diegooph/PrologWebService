@@ -44,4 +44,16 @@ set veiculo_fonte_processo = true
 from temp_infos_update tiu
 where veiculo_processo_km_historico.codigo = tiu.cod_processo_km_historico;
 
+create table if not exists checklist_ordem_servico_itens_data_bkp
+as
+select *
+from checklist_ordem_servico_itens_data cosid
+where cosid.codigo in (select cod_item from temp_infos_update);
+
+create table if not exists veiculo_processo_km_historico_bkp
+as
+select *
+from veiculo_processo_km_historico
+where codigo in (select cod_processo_km_historico from temp_infos_update);
+
 drop table temp_infos_update;
