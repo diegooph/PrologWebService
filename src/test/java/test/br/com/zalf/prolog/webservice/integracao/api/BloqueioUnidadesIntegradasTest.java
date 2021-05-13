@@ -19,12 +19,15 @@ import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicao;
 import br.com.zalf.prolog.webservice.frota.veiculo.model.edicao.VeiculoEdicaoStatus;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.VeiculoTransferenciaService;
 import br.com.zalf.prolog.webservice.frota.veiculo.transferencia.model.realizacao.ProcessoTransferenciaVeiculoRealizacao;
+import br.com.zalf.prolog.webservice.interceptors.auth.ColaboradorAutenticado;
 import br.com.zalf.prolog.webservice.v3.frota.veiculo._model.VeiculoCadastroDto;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
+import javax.inject.Inject;
+import javax.inject.Provider;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
@@ -42,6 +45,9 @@ final class BloqueioUnidadesIntegradasTest {
     private static final Long COD_EMPRESA_INTEGRADA = 48L;
     private static final Long COD_UNIDADE_LIBERADA = 228L;
     private static final Long COD_UNIDADE_BLOQUEADA = 230L;
+
+    @Inject
+    private Provider<ColaboradorAutenticado> colaboradorAutenticadoProvider;
 
     @BeforeAll
     public void initialize() throws Throwable {
@@ -168,7 +174,8 @@ final class BloqueioUnidadesIntegradasTest {
         final Throwable throwable = assertThrows(
                 ProLogException.class,
                 () -> new PneuService()
-                        .insert(USER_TOKEN_INTEGRADO, COD_UNIDADE_LIBERADA, pneu, OrigemAcaoEnum.PROLOG_WEB, true));
+                        .insert(colaboradorAutenticadoProvider.get().getCodigo(),
+                                USER_TOKEN_INTEGRADO, COD_UNIDADE_LIBERADA, pneu, OrigemAcaoEnum.PROLOG_WEB, true));
         assertThat(throwable).isInstanceOf(BloqueadoIntegracaoException.class);
     }
 
@@ -194,7 +201,8 @@ final class BloqueioUnidadesIntegradasTest {
         final Throwable throwable = assertThrows(
                 ProLogException.class,
                 () -> new PneuService()
-                        .insert(USER_TOKEN_INTEGRADO, COD_UNIDADE_BLOQUEADA, pneu, OrigemAcaoEnum.PROLOG_WEB, true));
+                        .insert(colaboradorAutenticadoProvider.get().getCodigo(),
+                                USER_TOKEN_INTEGRADO, COD_UNIDADE_BLOQUEADA, pneu, OrigemAcaoEnum.PROLOG_WEB, true));
         assertThat(throwable).isNotInstanceOf(BloqueadoIntegracaoException.class);
     }
 
