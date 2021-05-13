@@ -42,6 +42,6 @@ select pd.data_hora_utc       as data_hora_log,
        (jsonb_populate_record(NULL::pneu_data, pd.row_log)).*
 from audit.pneu_data_audit pd
 where pd.row_log ->> 'codigo_cliente' = f_cod_pneu
-order by pd.row_log -> 'codigo', pd.data_hora_utc asc;
+order by pd.data_hora_utc desc;
 end
 $$;
