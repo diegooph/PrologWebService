@@ -1,152 +1,152 @@
-CREATE OR REPLACE FUNCTION SUPORTE.FUNC_PNEU_REMOVE_VINCULO_PNEU(F_CPF_SOLICITANTE BIGINT,
-                                                                 F_COD_UNIDADE BIGINT,
-                                                                 F_COD_VEICULO BIGINT,
-                                                                 F_LISTA_COD_PNEUS BIGINT[],
-                                                                 OUT AVISO_PNEUS_DESVINCULADOS TEXT)
-    RETURNS TEXT
-    LANGUAGE PLPGSQL
-    SECURITY DEFINER
-AS
+create or replace function suporte.func_pneu_remove_vinculo_pneu(f_cpf_solicitante bigint,
+                                                                 f_cod_unidade bigint,
+                                                                 f_cod_veiculo bigint,
+                                                                 f_lista_cod_pneus bigint[],
+                                                                 out aviso_pneus_desvinculados text)
+    returns text
+    language plpgsql
+    security definer
+as
 $$
-DECLARE
-    STATUS_PNEU_ESTOQUE              TEXT                     := 'ESTOQUE';
-    STATUS_PNEU_EM_USO               TEXT                     := 'EM_USO';
-    DATA_HORA_ATUAL                  TIMESTAMP WITH TIME ZONE := NOW();
-    COD_PNEU_DA_VEZ                  BIGINT;
-    COD_MOVIMENTACAO_CRIADA          BIGINT;
-    COD_PROCESSO_MOVIMENTACAO_CRIADO BIGINT;
-    VIDA_ATUAL_PNEU                  BIGINT;
-    POSICAO_PNEU                     INTEGER;
-    KM_ATUAL_VEICULO                 BIGINT                   := (SELECT V.KM
-                                                                  FROM VEICULO V
-                                                                  WHERE V.COD_UNIDADE = F_COD_UNIDADE
-                                                                    AND V.CODIGO = F_COD_VEICULO);
-    NOME_COLABORADOR                 TEXT                     := (SELECT C.NOME
-                                                                  FROM COLABORADOR C
-                                                                  WHERE C.CPF = F_CPF_SOLICITANTE);
-BEGIN
-    PERFORM SUPORTE.FUNC_HISTORICO_SALVA_EXECUCAO();
-    -- Verifica se colaborador possui integridade com unidade;
-    PERFORM FUNC_GARANTE_INTEGRIDADE_UNIDADE_COLABORADOR(F_COD_UNIDADE, F_CPF_SOLICITANTE);
+declare
+    status_pneu_estoque              text                     := 'ESTOQUE';
+    status_pneu_em_uso               text                     := 'EM_USO';
+    data_hora_atual                  timestamp with time zone := now();
+    cod_pneu_da_vez                  bigint;
+    cod_movimentacao_criada          bigint;
+    cod_processo_movimentacao_criado bigint;
+    vida_atual_pneu                  bigint;
+    posicao_pneu                     integer;
+    km_atual_veiculo                 bigint                   := (select v.km
+                                                                  from veiculo v
+                                                                  where v.cod_unidade = f_cod_unidade
+                                                                    and v.codigo = f_cod_veiculo);
+    nome_colaborador                 text                     := (select c.nome
+                                                                  from colaborador c
+                                                                  where c.cpf = f_cpf_solicitante);
+begin
+    perform suporte.func_historico_salva_execucao();
+    -- verifica se colaborador possui integridade com unidade;
+    perform func_garante_integridade_unidade_colaborador(f_cod_unidade, f_cpf_solicitante);
 
-    -- Verifica se unidade existe;
-    PERFORM FUNC_GARANTE_UNIDADE_EXISTE(F_COD_UNIDADE);
+    -- verifica se unidade existe;
+    perform func_garante_unidade_existe(f_cod_unidade);
 
-    -- Verifica se veículo existe;
+    -- verifica se veículo existe;
     perform func_garante_veiculo_existe_by_codigo(f_cod_unidade, f_cod_veiculo);
 
-    -- Verifica quantiade de pneus recebida;
-    IF (ARRAY_LENGTH(F_LISTA_COD_PNEUS, 1) > 0)
-    THEN
-        -- Cria processo para movimentação
-        INSERT INTO MOVIMENTACAO_PROCESSO(COD_UNIDADE, DATA_HORA, CPF_RESPONSAVEL, OBSERVACAO)
-        VALUES (F_COD_UNIDADE,
-                DATA_HORA_ATUAL,
-                F_CPF_SOLICITANTE,
+    -- verifica quantiade de pneus recebida;
+    if (array_length(f_lista_cod_pneus, 1) > 0)
+    then
+        -- cria processo para movimentação
+        insert into movimentacao_processo(cod_unidade, data_hora, cpf_responsavel, observacao)
+        values (f_cod_unidade,
+                data_hora_atual,
+                f_cpf_solicitante,
                 'Processo para desvincular o pneu de uma placa')
-        RETURNING CODIGO INTO COD_PROCESSO_MOVIMENTACAO_CRIADO;
+        returning codigo into cod_processo_movimentacao_criado;
 
-        FOREACH COD_PNEU_DA_VEZ IN ARRAY F_LISTA_COD_PNEUS
-            LOOP
-                -- Verifica se pneu não está vinculado a placa informada;
-                IF NOT EXISTS(SELECT VP.PLACA
-                              FROM VEICULO_PNEU VP
-                              WHERE VP.COD_VEICULO = F_COD_VEICULO
-                                AND VP.COD_PNEU = COD_PNEU_DA_VEZ)
-                THEN
-                    RAISE EXCEPTION 'Erro! O pneu com código: % não está vinculado ao veículo de código %',
-                        COD_PNEU_DA_VEZ, F_COD_VEICULO;
-                END IF;
+        foreach cod_pneu_da_vez in array f_lista_cod_pneus
+            loop
+                -- verifica se pneu não está vinculado a placa informada;
+                if not exists(select vp.cod_veiculo
+                              from veiculo_pneu vp
+                              where vp.cod_veiculo = f_cod_veiculo
+                                and vp.cod_pneu = cod_pneu_da_vez)
+                then
+                    raise exception 'Erro! O pneu com código: % não está vinculado ao veículo de código %',
+                        cod_pneu_da_vez, f_cod_veiculo;
+                end if;
 
-                -- Busca vida atual e posicao do pneu;
-                SELECT P.VIDA_ATUAL, VP.POSICAO
-                FROM PNEU P
-                         JOIN VEICULO_PNEU VP ON P.CODIGO = VP.COD_PNEU
-                WHERE P.CODIGO = COD_PNEU_DA_VEZ
-                INTO VIDA_ATUAL_PNEU, POSICAO_PNEU;
+                -- busca vida atual e posicao do pneu;
+                select p.vida_atual, vp.posicao
+                from pneu p
+                         join veiculo_pneu vp on p.codigo = vp.cod_pneu
+                where p.codigo = cod_pneu_da_vez
+                into vida_atual_pneu, posicao_pneu;
 
-                IF (COD_PROCESSO_MOVIMENTACAO_CRIADO > 0)
-                THEN
-                    -- Insere movimentação retornando o código da mesma;
-                    INSERT INTO MOVIMENTACAO(COD_MOVIMENTACAO_PROCESSO,
-                                             COD_UNIDADE,
-                                             COD_PNEU,
-                                             SULCO_INTERNO,
-                                             SULCO_CENTRAL_INTERNO,
-                                             SULCO_EXTERNO,
-                                             VIDA,
-                                             OBSERVACAO,
-                                             SULCO_CENTRAL_EXTERNO)
-                    SELECT COD_PROCESSO_MOVIMENTACAO_CRIADO,
-                           F_COD_UNIDADE,
-                           COD_PNEU_DA_VEZ,
-                           P.ALTURA_SULCO_INTERNO,
-                           P.ALTURA_SULCO_CENTRAL_INTERNO,
-                           P.ALTURA_SULCO_EXTERNO,
-                           VIDA_ATUAL_PNEU,
-                           NULL,
-                           P.ALTURA_SULCO_CENTRAL_EXTERNO
-                    FROM PNEU P
-                    WHERE P.CODIGO = COD_PNEU_DA_VEZ
-                    RETURNING CODIGO INTO COD_MOVIMENTACAO_CRIADA;
+                if (cod_processo_movimentacao_criado > 0)
+                then
+                    -- insere movimentação retornando o código da mesma;
+                    insert into movimentacao(cod_movimentacao_processo,
+                                             cod_unidade,
+                                             cod_pneu,
+                                             sulco_interno,
+                                             sulco_central_interno,
+                                             sulco_externo,
+                                             vida,
+                                             observacao,
+                                             sulco_central_externo)
+                    select cod_processo_movimentacao_criado,
+                           f_cod_unidade,
+                           cod_pneu_da_vez,
+                           p.altura_sulco_interno,
+                           p.altura_sulco_central_interno,
+                           p.altura_sulco_externo,
+                           vida_atual_pneu,
+                           null,
+                           p.altura_sulco_central_externo
+                    from pneu p
+                    where p.codigo = cod_pneu_da_vez
+                    returning codigo into cod_movimentacao_criada;
 
-                    -- Insere destino da movimentação;
-                    INSERT INTO MOVIMENTACAO_DESTINO(COD_MOVIMENTACAO, TIPO_DESTINO)
-                    VALUES (COD_MOVIMENTACAO_CRIADA, STATUS_PNEU_ESTOQUE);
+                    -- insere destino da movimentação;
+                    insert into movimentacao_destino(cod_movimentacao, tipo_destino)
+                    values (cod_movimentacao_criada, status_pneu_estoque);
 
-                    -- Insere origem da movimentação;
-                    PERFORM FUNC_MOVIMENTACAO_INSERT_MOVIMENTACAO_VEICULO_ORIGEM(COD_PNEU_DA_VEZ,
-                                                                                 F_COD_UNIDADE,
-                                                                                 STATUS_PNEU_EM_USO,
-                                                                                 COD_MOVIMENTACAO_CRIADA,
-                                                                                 F_COD_VEICULO,
-                                                                                 KM_ATUAL_VEICULO,
-                                                                                 POSICAO_PNEU);
+                    -- insere origem da movimentação;
+                    perform func_movimentacao_insert_movimentacao_veiculo_origem(cod_pneu_da_vez,
+                                                                                 f_cod_unidade,
+                                                                                 status_pneu_em_uso,
+                                                                                 cod_movimentacao_criada,
+                                                                                 f_cod_veiculo,
+                                                                                 km_atual_veiculo,
+                                                                                 posicao_pneu);
 
-                    -- Remove pneu do vinculo;
-                    DELETE FROM VEICULO_PNEU WHERE COD_PNEU = COD_PNEU_DA_VEZ AND COD_VEICULO = F_COD_VEICULO;
+                    -- remove pneu do vinculo;
+                    delete from veiculo_pneu where cod_pneu = cod_pneu_da_vez and cod_veiculo = f_cod_veiculo;
 
-                    -- Atualiza status do pneu
-                    UPDATE PNEU
-                    SET STATUS = STATUS_PNEU_ESTOQUE
-                    WHERE CODIGO = COD_PNEU_DA_VEZ
-                      AND COD_UNIDADE = F_COD_UNIDADE;
+                    -- atualiza status do pneu
+                    update pneu
+                    set status = status_pneu_estoque
+                    where codigo = cod_pneu_da_vez
+                      and cod_unidade = f_cod_unidade;
 
-                    -- Verifica se o pneu possui serviços em aberto;
-                    IF EXISTS(SELECT AM.COD_PNEU
-                              FROM AFERICAO_MANUTENCAO AM
-                              WHERE AM.COD_UNIDADE = F_COD_UNIDADE
-                                AND AM.COD_PNEU = COD_PNEU_DA_VEZ
-                                AND AM.DATA_HORA_RESOLUCAO IS NULL
-                                AND AM.CPF_MECANICO IS NULL
-                                AND AM.FECHADO_AUTOMATICAMENTE_MOVIMENTACAO IS FALSE
-                                AND AM.FECHADO_AUTOMATICAMENTE_INTEGRACAO IS FALSE)
-                    THEN
-                        -- Remove serviços em aberto;
-                        UPDATE AFERICAO_MANUTENCAO
-                        SET FECHADO_AUTOMATICAMENTE_MOVIMENTACAO = TRUE,
-                            COD_PROCESSO_MOVIMENTACAO            = COD_PROCESSO_MOVIMENTACAO_CRIADO,
-                            DATA_HORA_RESOLUCAO                  = DATA_HORA_ATUAL
-                        WHERE COD_UNIDADE = F_COD_UNIDADE
-                          AND COD_PNEU = COD_PNEU_DA_VEZ
-                          AND DATA_HORA_RESOLUCAO IS NULL
-                          AND CPF_MECANICO IS NULL
-                          AND FECHADO_AUTOMATICAMENTE_MOVIMENTACAO IS FALSE
-                          AND FECHADO_AUTOMATICAMENTE_INTEGRACAO IS FALSE;
-                    END IF;
-                ELSE
-                    RAISE EXCEPTION 'Erro! Não foi possível realizar o processo de movimentação para o pneu código: %',
-                        COD_PNEU_DA_VEZ;
-                END IF;
-            END LOOP;
-    ELSE
-        RAISE EXCEPTION 'Erro! Precisa-se de pelo menos um (1) pneu para realizar a operação!';
-    END IF;
+                    -- verifica se o pneu possui serviços em aberto;
+                    if exists(select am.cod_pneu
+                              from afericao_manutencao am
+                              where am.cod_unidade = f_cod_unidade
+                                and am.cod_pneu = cod_pneu_da_vez
+                                and am.data_hora_resolucao is null
+                                and am.cpf_mecanico is null
+                                and am.fechado_automaticamente_movimentacao is false
+                                and am.fechado_automaticamente_integracao is false)
+                    then
+                        -- remove serviços em aberto;
+                        update afericao_manutencao
+                        set fechado_automaticamente_movimentacao = true,
+                            cod_processo_movimentacao            = cod_processo_movimentacao_criado,
+                            data_hora_resolucao                  = data_hora_atual
+                        where cod_unidade = f_cod_unidade
+                          and cod_pneu = cod_pneu_da_vez
+                          and data_hora_resolucao is null
+                          and cpf_mecanico is null
+                          and fechado_automaticamente_movimentacao is false
+                          and fechado_automaticamente_integracao is false;
+                    end if;
+                else
+                    raise exception 'Erro! Não foi possível realizar o processo de movimentação para o pneu código: %',
+                        cod_pneu_da_vez;
+                end if;
+            end loop;
+    else
+        raise exception 'Erro! Precisa-se de pelo menos um (1) pneu para realizar a operação!';
+    end if;
 
-    -- Mensagem de sucesso;
-    SELECT 'Movimentação realizada com sucesso!! Autorizada por ' || NOME_COLABORADOR ||
-           ' com CPF: ' || F_CPF_SOLICITANTE || '. Os pneus que estavam na placa de código ' || F_COD_VEICULO ||
+    -- mensagem de sucesso;
+    select 'Movimentação realizada com sucesso!! Autorizada por ' || nome_colaborador ||
+           ' com CPF: ' || f_cpf_solicitante || '. Os pneus que estavam na placa de código ' || f_cod_veiculo ||
            ' foram movidos para estoque.'
-    INTO AVISO_PNEUS_DESVINCULADOS;
-END
+    into aviso_pneus_desvinculados;
+end
 $$;
