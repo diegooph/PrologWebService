@@ -5,15 +5,16 @@ create or replace function
 as
 $$
 declare
-    v_placas_com_vinculo text := (select array_agg(vp.placa)
-                                  from veiculo_pneu vp
-                                  where vp.cod_unidade = f_cod_unidade_base);
+    v_cod_veiculos_com_vinculo text := (select array_agg(vp.cod_veiculo)
+                                        from veiculo_pneu vp
+                                        where vp.cod_unidade = f_cod_unidade_base);
 begin
     -- COPIA VÍNCULOS, CASO EXISTAM.
-    if (v_placas_com_vinculo is not null)
+    if (v_cod_veiculos_com_vinculo is not null)
     then
         with veiculos_base as (
             select row_number() over () as codigo_comparacao,
+                   v.codigo             as cod_veiculo,
                    v.placa,
                    vdpp.posicao_prolog
             from veiculo_data v
@@ -35,8 +36,9 @@ begin
                         vn.cod_diagrama   as cod_diagrama_novo,
                         pdn.codigo        as cod_pneu_novo
                  from veiculos_base vb
-                          join veiculos_novos vn on vb.codigo_comparacao = vn.codigo_comparacao and vb.posicao_prolog = vn.posicao_prolog
-                          join veiculo_pneu vp on vb.placa = vp.placa and vb.posicao_prolog = vp.posicao
+                          join veiculos_novos vn
+                               on vb.codigo_comparacao = vn.codigo_comparacao and vb.posicao_prolog = vn.posicao_prolog
+                          join veiculo_pneu vp on vb.cod_veiculo = vp.cod_veiculo and vb.posicao_prolog = vp.posicao
                           join pneu_data pdb
                                on vp.status_pneu = pdb.status and vp.cod_unidade = pdb.cod_unidade and
                                   vp.cod_pneu = pdb.codigo
@@ -45,9 +47,8 @@ begin
                                   pdn.cod_unidade = f_cod_unidade_usuario and
                                   pdn.status = 'EM_USO')
         insert
-        into veiculo_pneu (placa, cod_pneu, cod_unidade, posicao, cod_diagrama, cod_veiculo)
-        select ddp.placa_nova,
-               ddp.cod_pneu_novo,
+        into veiculo_pneu (cod_pneu, cod_unidade, posicao, cod_diagrama, cod_veiculo)
+        select ddp.cod_pneu_novo,
                f_cod_unidade_usuario,
                ddp.posicao_prolog_novo,
                ddp.cod_diagrama_novo,
