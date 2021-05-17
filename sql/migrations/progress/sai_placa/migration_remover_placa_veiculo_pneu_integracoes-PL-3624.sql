@@ -1,3 +1,145 @@
+CREATE OR REPLACE FUNCTION INTEGRACAO.FUNC_PNEU_INTERNAL_VINCULA_PNEU_POSICAO_PLACA(F_PLACA TEXT,
+                                                                                    F_COD_PNEU BIGINT,
+                                                                                    F_POSICAO INTEGER)
+    RETURNS VOID
+    LANGUAGE PLPGSQL
+AS
+$$
+DECLARE
+    V_COD_VEICULO  BIGINT;
+    V_COD_UNIDADE  BIGINT;
+    V_COD_DIAGRAMA BIGINT := (SELECT COD_DIAGRAMA
+                              FROM VEICULO_TIPO
+                              WHERE CODIGO = (SELECT COD_TIPO FROM VEICULO_DATA WHERE PLACA = F_PLACA));
+BEGIN
+    SELECT V.CODIGO, V.COD_UNIDADE
+    FROM VEICULO_DATA V
+    WHERE V.PLACA = F_PLACA
+    INTO V_COD_VEICULO, V_COD_UNIDADE;
+
+    -- Valida se posição existe no diagrama.
+    IF NOT EXISTS(SELECT VDPP.POSICAO_PROLOG
+                  FROM VEICULO_DIAGRAMA_POSICAO_PROLOG VDPP
+                  WHERE VDPP.COD_DIAGRAMA = (SELECT V.COD_DIAGRAMA FROM VEICULO_DATA V WHERE V.PLACA = F_PLACA))
+    THEN
+        PERFORM PUBLIC.THROW_GENERIC_ERROR(FORMAT('A posição %s não existe no diagrama do veículo de placa %s',
+                                                  F_POSICAO,
+                                                  F_PLACA));
+    END IF;
+
+    -- Verifica se tem pneu aplicado nessa posição, caso tenha é prq não passou pelo método
+    -- do Java de removePneusAplicados;
+    IF EXISTS(SELECT VP.COD_PNEU FROM VEICULO_PNEU VP WHERE VP.POSICAO = F_POSICAO AND VP.COD_VEICULO = V_COD_VEICULO)
+    THEN
+        PERFORM PUBLIC.THROW_GENERIC_ERROR(FORMAT('Erro! O veículo %s já possui pneu aplicado na posição %s',
+                                                  F_PLACA,
+                                                  F_POSICAO));
+    END IF;
+
+    -- Deleta a posição.
+    DELETE FROM VEICULO_PNEU WHERE POSICAO = F_POSICAO AND COD_VEICULO = V_COD_VEICULO;
+
+    -- Não tem pneu aplicado a posição, então eu adiciono.
+    INSERT INTO VEICULO_PNEU(COD_PNEU, COD_UNIDADE, POSICAO, COD_DIAGRAMA, COD_VEICULO)
+    VALUES (F_COD_PNEU, V_COD_UNIDADE, F_POSICAO, V_COD_DIAGRAMA, V_COD_VEICULO);
+END;
+$$;
+
+create or replace function integracao.func_pneu_vincula_pneu_posicao_placa(f_cod_veiculo_prolog bigint,
+                                                                           f_placa_veiculo_pneu_aplicado text,
+                                                                           f_cod_pneu_prolog bigint,
+                                                                           f_codigo_pneu_cliente text,
+                                                                           f_cod_unidade_pneu bigint,
+                                                                           f_posicao_veiculo_pneu_aplicado integer,
+                                                                           f_is_posicao_estepe boolean)
+    returns boolean
+    language plpgsql
+as
+$$
+declare
+    f_qtd_rows_alteradas bigint;
+begin
+    -- Validamos se a placa existe no ProLog.
+    if (f_cod_veiculo_prolog is null or f_cod_veiculo_prolog <= 0)
+    then
+        perform public.throw_generic_error(format('A placa informada %s não está presente no Sistema ProLog',
+                                                  f_placa_veiculo_pneu_aplicado));
+    end if;
+
+    -- Validamos se o placa e o pneu pertencem a mesma unidade.
+    if ((select v.cod_unidade from public.veiculo v where v.codigo = f_cod_veiculo_prolog) <> f_cod_unidade_pneu)
+    then
+        perform public.throw_generic_error(
+                format('A placa informada %s está em uma Unidade diferente do pneu informado %s,
+               unidade da placa %s, unidade do pneu %s',
+                       f_placa_veiculo_pneu_aplicado,
+                       f_codigo_pneu_cliente,
+                       (select v.cod_unidade from public.veiculo v where v.codigo = f_cod_veiculo_prolog),
+                       f_cod_unidade_pneu));
+    end if;
+
+    -- Validamos se a posição repassada é uma posição válida no ProLog.
+    if (not is_placa_posicao_pneu_valida(f_cod_veiculo_prolog, f_posicao_veiculo_pneu_aplicado, f_is_posicao_estepe))
+    then
+        perform public.throw_generic_error(
+                format('A posição informada %s para o pneu, não é uma posição válida para a placa %s',
+                       f_posicao_veiculo_pneu_aplicado,
+                       f_placa_veiculo_pneu_aplicado));
+    end if;
+
+    -- Validamos se a placa possui algum outro pneu aplicado na posição.
+    if (select exists(select *
+                      from public.veiculo_pneu vp
+                      where vp.cod_veiculo = f_cod_veiculo_prolog
+                        and vp.cod_unidade = f_cod_unidade_pneu
+                        and vp.posicao = f_posicao_veiculo_pneu_aplicado))
+    then
+        perform public.throw_generic_error(format('Já existe um pneu na placa %s, posição %s',
+                                                  f_placa_veiculo_pneu_aplicado,
+                                                  f_posicao_veiculo_pneu_aplicado));
+    end if;
+
+    -- Vincula pneu a placa.
+    insert into public.veiculo_pneu(cod_pneu,
+                                    cod_unidade,
+                                    posicao,
+                                    cod_diagrama,
+                                    cod_veiculo)
+    values (f_cod_pneu_prolog,
+            f_cod_unidade_pneu,
+            f_posicao_veiculo_pneu_aplicado,
+            (select vt.cod_diagrama
+             from veiculo_tipo vt
+             where vt.codigo = (select v.cod_tipo from veiculo v where v.codigo = f_cod_veiculo_prolog)),
+            f_cod_veiculo_prolog);
+
+    get diagnostics f_qtd_rows_alteradas = row_count;
+
+    -- Verificamos se o update ocorreu como deveria
+    if (f_qtd_rows_alteradas <= 0)
+    then
+        perform public.throw_generic_error(format('Não foi possível aplicar o pneu %s na placa %s',
+                                                  f_codigo_pneu_cliente,
+                                                  f_placa_veiculo_pneu_aplicado));
+    end if;
+
+    -- Retornamos sucesso se o pneu estiver aplicado na placa e posição que deveria estar.
+    if (select exists(select vp.posicao
+                      from public.veiculo_pneu vp
+                      where vp.cod_veiculo = f_cod_veiculo_prolog
+                        and vp.cod_pneu = f_cod_pneu_prolog
+                        and vp.posicao = f_posicao_veiculo_pneu_aplicado
+                        and vp.cod_unidade = f_cod_unidade_pneu))
+    then
+        return true;
+    else
+        perform public.throw_generic_error(format('Não foi possível aplicar o pneu %s na placa %s',
+                                                  f_codigo_pneu_cliente,
+                                                  f_placa_veiculo_pneu_aplicado));
+    end if;
+end ;
+$$;
+
 CREATE OR REPLACE FUNCTION INTEGRACAO.FUNC_VEICULO_TRANSFERE_VEICULO(F_COD_UNIDADE_ORIGEM BIGINT,
                                                                      F_COD_UNIDADE_DESTINO BIGINT,
                                                                      F_CPF_COLABORADOR_TRANSFERENCIA BIGINT,

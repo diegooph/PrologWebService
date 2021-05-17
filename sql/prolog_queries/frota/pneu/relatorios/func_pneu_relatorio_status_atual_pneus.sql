@@ -19,7 +19,7 @@ BEGIN
         SELECT U.NOME :: TEXT                           AS UNIDADE_ALOCADO,
                P.CODIGO_CLIENTE :: TEXT                 AS COD_PNEU,
                P.STATUS :: TEXT                         AS STATUS_ATUAL,
-               COALESCE(VP.PLACA :: TEXT, '-')          AS PLACA_APLICADO,
+               COALESCE(V.PLACA :: TEXT, '-')           AS PLACA_APLICADO,
                COALESCE(PPNE.NOMENCLATURA :: TEXT, '-') AS POSICAO_APLICADO,
                COALESCE(
                        CASE
@@ -42,7 +42,7 @@ BEGIN
                            ON P.CODIGO = VP.COD_PNEU
                                AND P.COD_UNIDADE = VP.COD_UNIDADE
                  LEFT JOIN VEICULO V
-                           ON VP.PLACA = V.PLACA
+                           ON VP.COD_VEICULO = V.CODIGO
                                AND VP.COD_UNIDADE = V.COD_UNIDADE
                  LEFT JOIN VEICULO_TIPO VT
                            ON V.COD_TIPO = VT.CODIGO

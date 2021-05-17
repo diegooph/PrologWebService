@@ -59,7 +59,7 @@ BEGIN
                MP.NOME :: TEXT                                                  AS NOME_MODELO,
                ((((DP.LARGURA || '/' :: TEXT) || DP.ALTURA) || ' R' :: TEXT) ||
                 DP.ARO)                                                         AS MEDIDAS,
-               COALESCE(VP.PLACA, '-') :: TEXT                                  AS PLACA,
+               COALESCE(V.PLACA, '-') :: TEXT                                   AS PLACA,
                COALESCE(V.IDENTIFICADOR_FROTA, '-') :: TEXT                     AS IDENTIFICADOR_FROTA,
                COALESCE(MARV.NOME, '-') :: TEXT                                 AS MARCA_VEICULO,
                COALESCE(MODV.NOME, '-') :: TEXT                                 AS MODELO_VEICULO,
@@ -96,7 +96,7 @@ BEGIN
                            ON P.CODIGO = VP.COD_PNEU
                                AND P.COD_UNIDADE = VP.COD_UNIDADE
                  LEFT JOIN VEICULO V
-                           ON VP.PLACA = V.PLACA
+                           ON VP.COD_VEICULO = V.CODIGO
                                AND VP.COD_UNIDADE = V.COD_UNIDADE
                  LEFT JOIN VEICULO_TIPO VT
                            ON V.COD_TIPO = VT.CODIGO

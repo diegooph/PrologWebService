@@ -33,13 +33,13 @@ BEGIN
                    TRIM(REGEXP_REPLACE(P.DOT, '[^0-9]', '', 'g')) AS DOT_LIMPO,
                    P.COD_UNIDADE                                  AS COD_UNIDADE,
                    U.NOME                                         AS UNIDADE,
-                   VP.PLACA                                       AS PLACA_APLICADO,
+                   V.PLACA                                        AS PLACA_APLICADO,
                    PPNE.NOMENCLATURA                              AS POSICAO_PNEU
             FROM PNEU P
                      JOIN UNIDADE U ON P.COD_UNIDADE = U.CODIGO
                      JOIN EMPRESA E ON E.CODIGO = U.COD_EMPRESA
                      LEFT JOIN VEICULO_PNEU VP ON VP.COD_PNEU = P.CODIGO
-                     LEFT JOIN VEICULO V ON VP.PLACA = V.PLACA AND VP.COD_UNIDADE = V.COD_UNIDADE
+                     LEFT JOIN VEICULO V ON VP.COD_VEICULO = V.CODIGO AND VP.COD_UNIDADE = V.COD_UNIDADE
                      LEFT JOIN VEICULO_TIPO VT
                                ON V.COD_TIPO = VT.CODIGO
                      LEFT JOIN VEICULO_DIAGRAMA VD ON VT.COD_DIAGRAMA = VD.CODIGO
