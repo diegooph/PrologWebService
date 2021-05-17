@@ -26,7 +26,8 @@ public final class PneuService {
     private final PneuDao dao = Injection.providePneuDao();
 
     @NotNull
-    public AbstractResponse insert(@NotNull final String userToken,
+    public AbstractResponse insert(@NotNull final Long codigoColaboradorCadastro,
+                                   @NotNull final String userToken,
                                    @NotNull final Long codUnidade,
                                    @NotNull final Pneu pneu,
                                    @NotNull final OrigemAcaoEnum origemCadastro,
@@ -37,7 +38,7 @@ public final class PneuService {
                     "Pneu inserido com sucesso",
                     RouterPneu
                             .create(dao, userToken)
-                            .insert(pneu, codUnidade, origemCadastro));
+                            .insert(codigoColaboradorCadastro, pneu, codUnidade, origemCadastro));
         } catch (final Throwable t) {
             Log.e(TAG, "Erro ao inserir pneu:" +
                     "\nuserToken: " + userToken +
@@ -49,12 +50,13 @@ public final class PneuService {
     }
 
     @NotNull
-    public List<Long> insert(@NotNull final String userToken,
+    public List<Long> insert(@NotNull final Long codigoColaboradorCadastro,
+                             @NotNull final String userToken,
                              @NotNull final InputStream fileInputStream) throws ProLogException {
         try {
             return RouterPneu
                     .create(dao, userToken)
-                    .insert(PneuImportReader.readFromCsv(fileInputStream));
+                    .insert(codigoColaboradorCadastro, PneuImportReader.readFromCsv(fileInputStream));
         } catch (final Throwable t) {
             final String errorMessage = "Erro ao inserir pneus -- " + t.getMessage();
             Log.e(TAG, errorMessage, t);
@@ -65,7 +67,8 @@ public final class PneuService {
     }
 
     @NotNull
-    public Response update(@NotNull final String userToken,
+    public Response update(@NotNull final Long codigoColaboradorEdicao,
+                           @NotNull final String userToken,
                            @NotNull final Long codUnidade,
                            @NotNull final Long codOriginal,
                            @NotNull final Pneu pneu) throws ProLogException {
@@ -73,7 +76,7 @@ public final class PneuService {
             PneuValidator.validacaoAtributosPneu(pneu, codUnidade, false);
             RouterPneu
                     .create(dao, userToken)
-                    .update(pneu, codUnidade, codOriginal);
+                    .update(codigoColaboradorEdicao, pneu, codUnidade, codOriginal);
             return Response.ok("Pneu atualizado com sucesso");
         } catch (final Throwable t) {
             final String errorMessage = "Erro ao atualizar pneu: " + codOriginal;
