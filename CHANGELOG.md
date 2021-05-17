@@ -2,7 +2,7 @@ Change Log
 ==========
 
 <a name="v3.3.4"></a>
-## Version [v3.3.4](https://github.com/luizfp/PrologWebService/compare/v3.3.3...v3.3.4) [unreleased]
+## Version [v3.3.4](https://github.com/luizfp/PrologWebService/compare/v3.3.3...v3.3.4) (2021-05-17)
 
 ### Features
 * Cria function para o suporte consultar atualizações num pneu (PL-3490)
