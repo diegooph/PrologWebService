@@ -9,6 +9,6 @@ import org.springframework.stereotype.Repository;
  * @author Guilherme Steinert (https://github.com/steinert999)
  */
 @Repository
-public interface PneuServicoRealizadoIncrementaVidaV3Dao
+public interface PneuServicoRealizadoIncrementaVidaDao
         extends JpaRepository<PneuServicoRealizadoIncrementaVidaEntity, Long> {
 }

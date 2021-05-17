@@ -8,7 +8,7 @@ import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEn
 import br.com.zalf.prolog.webservice.integracao.OperacoesBloqueadasYaml;
 import br.com.zalf.prolog.webservice.v3.frota.pneu._model.PneuCadastroDto;
 import br.com.zalf.prolog.webservice.v3.frota.pneu._model.PneuEntity;
-import br.com.zalf.prolog.webservice.v3.frota.pneu.pneuservico.PneuServicoV3Service;
+import br.com.zalf.prolog.webservice.v3.frota.pneu.pneuservico.PneuServicoService;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,23 +22,23 @@ import javax.transaction.Transactional;
  * @author Guilherme Steinert (https://github.com/steinert999)
  */
 @Service
-public class PneuV3Service {
+public class PneuService {
     @NotNull
-    private static final String TAG = PneuV3Service.class.getSimpleName();
+    private static final String TAG = PneuService.class.getSimpleName();
     @NotNull
-    private final PneuV3Dao pneuDao;
+    private final PneuDao pneuDao;
     @NotNull
     private final PneuCadastroMapper pneuCadastroMapper;
     @NotNull
-    private final PneuServicoV3Service pneuServicoService;
+    private final PneuServicoService pneuServicoService;
     @NotNull
     private final OperacoesBloqueadasYaml operacoesBloqueadas;
 
     @Autowired
-    public PneuV3Service(@NotNull final PneuV3Dao pneuDao,
-                         @NotNull final PneuServicoV3Service pneuServicoService,
-                         @NotNull final PneuCadastroMapper pneuCadastroMapper,
-                         @NotNull final OperacoesBloqueadasYaml operacoesBloqueadas) {
+    public PneuService(@NotNull final PneuDao pneuDao,
+                       @NotNull final PneuServicoService pneuServicoService,
+                       @NotNull final PneuCadastroMapper pneuCadastroMapper,
+                       @NotNull final OperacoesBloqueadasYaml operacoesBloqueadas) {
         this.pneuDao = pneuDao;
         this.pneuServicoService = pneuServicoService;
         this.operacoesBloqueadas = operacoesBloqueadas;
