@@ -12,12 +12,12 @@ import javax.transaction.Transactional;
  * @author Guilherme Steinert (https://github.com/steinert999)
  */
 @Service
-public class PneuTipoServicoV3Service {
+public class PneuTipoServicoService {
     @NotNull
-    private final PneuTipoServicoV3Dao dao;
+    private final PneuTipoServicoDao dao;
 
     @Autowired
-    public PneuTipoServicoV3Service(@NotNull final PneuTipoServicoV3Dao dao) {
+    public PneuTipoServicoService(@NotNull final PneuTipoServicoDao dao) {
         this.dao = dao;
     }
 

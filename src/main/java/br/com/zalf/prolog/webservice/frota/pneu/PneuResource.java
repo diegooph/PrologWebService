@@ -10,6 +10,7 @@ import br.com.zalf.prolog.webservice.frota.pneu._model.PneuComum;
 import br.com.zalf.prolog.webservice.frota.pneu._model.PneuRetornoDescarte;
 import br.com.zalf.prolog.webservice.frota.pneu._model.PneuRetornoDescarteResponse;
 import br.com.zalf.prolog.webservice.frota.veiculo.historico._model.OrigemAcaoEnum;
+import br.com.zalf.prolog.webservice.interceptors.auth.ColaboradorAutenticado;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
 import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 import br.com.zalf.prolog.webservice.interceptors.versioncodebarrier.AppVersionCodeHandler;
@@ -20,6 +21,8 @@ import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.jetbrains.annotations.NotNull;
 
+import javax.inject.Inject;
+import javax.inject.Provider;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.io.InputStream;
@@ -38,13 +41,16 @@ import java.util.List;
 public final class PneuResource {
     private final PneuService service = new PneuService();
 
+    @Inject
+    private Provider<ColaboradorAutenticado> colaboradorAutenticadoProvider;
+
     @POST
     @Secured
     @Consumes({MediaType.MULTIPART_FORM_DATA})
     public List<Long> insert(
             @HeaderParam("Authorization") @Required final String userToken,
             @FormDataParam("file") @Required final InputStream fileInputStream) throws ProLogException {
-        return service.insert(userToken, fileInputStream);
+        return service.insert(colaboradorAutenticadoProvider.get().getCodigo(), userToken, fileInputStream);
     }
 
     @POST
@@ -57,6 +63,7 @@ public final class PneuResource {
                                    @QueryParam("ignoreDotValidation") final boolean ignoreDotValidation,
                                    @Required final Pneu pneu) throws ProLogException {
         return service.insert(
+                colaboradorAutenticadoProvider.get().getCodigo(),
                 userToken,
                 codUnidade,
                 pneu,
@@ -80,7 +87,7 @@ public final class PneuResource {
             @PathParam("codUnidade") @Required final Long codUnidade,
             @PathParam("codPneuOriginal") @Required final Long codOriginalPneu,
             @Required final Pneu pneu) throws ProLogException {
-        return service.update(userToken, codUnidade, codOriginalPneu, pneu);
+        return service.update(colaboradorAutenticadoProvider.get().getCodigo(), userToken, codUnidade, codOriginalPneu, pneu);
     }
 
     @GET

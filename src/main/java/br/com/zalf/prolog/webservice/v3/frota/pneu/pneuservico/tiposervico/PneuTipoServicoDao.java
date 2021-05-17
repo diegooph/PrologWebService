@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
  * @author Guilherme Steinert (https://github.com/steinert999)
  */
 @Repository
-public interface PneuTipoServicoV3Dao extends JpaRepository<PneuTipoServicoEntity, Long> {
+public interface PneuTipoServicoDao extends JpaRepository<PneuTipoServicoEntity, Long> {
     @NotNull
     @Query("select pts from PneuTipoServicoEntity pts " +
                    "where pts.codEmpresa is null " +

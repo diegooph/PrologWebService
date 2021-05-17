@@ -26,12 +26,12 @@ import javax.ws.rs.core.MediaType;
 @Path("/api/v3/pneus")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-public class PneuV3Resource implements PneuV3ApiDoc {
+public class PneuResource implements PneuApiDoc {
     @NotNull
-    private final PneuV3Service service;
+    private final PneuService service;
 
     @Autowired
-    public PneuV3Resource(@NotNull final PneuV3Service service) {
+    public PneuResource(@NotNull final PneuService service) {
         this.service = service;
     }
 

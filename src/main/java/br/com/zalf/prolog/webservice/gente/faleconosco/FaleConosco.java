@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.gente.faleConosco;
+package br.com.zalf.prolog.webservice.gente.faleconosco;
 
 
 import br.com.zalf.prolog.webservice.gente.colaborador.model.Colaborador;
@@ -37,17 +37,13 @@ public class FaleConosco {
 
 		private final String s;
 
-		Categoria(String s) {
+		Categoria(final String s) {
 			this.s = s;
 		}
 
-		public String asString() {
-			return s;
-		}
-
-		public static Categoria fromString(String text) throws IllegalArgumentException{
+		public static Categoria fromString(final String text) throws IllegalArgumentException {
 			if (text != null) {
-				for (Categoria b : Categoria.values()) {
+				for (final Categoria b : Categoria.values()) {
 					if (text.equalsIgnoreCase(b.s)) {
 						return b;
 					}
@@ -55,82 +51,14 @@ public class FaleConosco {
 			}
 			throw new IllegalArgumentException("Nenhum enum com esse valor encontrado");
 		}
+
+		public String asString() {
+			return s;
+		}
 	}
 
 	public FaleConosco() {
 
-	}
-
-	public Colaborador getColaborador() {
-		return colaborador;
-	}
-
-	public void setColaborador(Colaborador colaborador) {
-		this.colaborador = colaborador;
-	}
-
-	public Long getCodigo() {
-		return codigo;
-	}
-
-	public void setCodigo(Long codigo) {
-		this.codigo = codigo;
-	}
-
-	public LocalDateTime getData() {
-		return data;
-	}
-
-	public void setData(LocalDateTime data) {
-		this.data = data;
-	}
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public Categoria getCategoria() {
-		return categoria;
-	}
-
-	public void setCategoria(Categoria categoria) {
-		this.categoria = categoria;
-	}
-
-	public String getDescricao() {
-		return descricao;
-	}
-
-	public void setDescricao(String descricao) {
-		this.descricao = descricao;
-	}
-
-	public String getFeedback() {
-		return feedback;
-	}
-
-	public void setFeedback(String feedback) {
-		this.feedback = feedback;
-	}
-
-	public Colaborador getColaboradorFeedback() {
-		return colaboradorFeedback;
-	}
-
-	public void setColaboradorFeedback(Colaborador colaboradorFeedback) {
-		this.colaboradorFeedback = colaboradorFeedback;
-	}
-
-	public LocalDateTime getDataFeedback() {
-		return dataFeedback;
-	}
-
-	public void setDataFeedback(LocalDateTime dataFeedback) {
-		this.dataFeedback = dataFeedback;
 	}
 
     @Override
@@ -147,4 +75,76 @@ public class FaleConosco {
                 ", feedback='" + feedback + '\'' +
                 '}';
     }
+
+	public Colaborador getColaborador() {
+		return colaborador;
+	}
+
+	public void setColaborador(final Colaborador colaborador) {
+		this.colaborador = colaborador;
+	}
+
+	public Long getCodigo() {
+		return codigo;
+	}
+
+	public void setCodigo(final Long codigo) {
+		this.codigo = codigo;
+	}
+
+	public LocalDateTime getData() {
+		return data;
+	}
+
+	public void setData(final LocalDateTime data) {
+		this.data = data;
+	}
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(final String status) {
+        this.status = status;
+    }
+
+    public Categoria getCategoria() {
+		return categoria;
+	}
+
+	public void setCategoria(final Categoria categoria) {
+		this.categoria = categoria;
+	}
+
+	public String getDescricao() {
+		return descricao;
+	}
+
+	public void setDescricao(final String descricao) {
+		this.descricao = descricao;
+	}
+
+	public String getFeedback() {
+		return feedback;
+	}
+
+	public void setFeedback(final String feedback) {
+		this.feedback = feedback;
+	}
+
+	public Colaborador getColaboradorFeedback() {
+		return colaboradorFeedback;
+	}
+
+	public void setColaboradorFeedback(final Colaborador colaboradorFeedback) {
+		this.colaboradorFeedback = colaboradorFeedback;
+	}
+
+	public LocalDateTime getDataFeedback() {
+		return dataFeedback;
+	}
+
+	public void setDataFeedback(final LocalDateTime dataFeedback) {
+		this.dataFeedback = dataFeedback;
+	}
 }

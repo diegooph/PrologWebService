@@ -22,15 +22,15 @@ import javax.ws.rs.core.MediaType;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @Controller
-public class VeiculoV3Resource implements VeiculoV3ResourceApiDoc {
+public class VeiculoResource implements VeiculoResourceApiDoc {
     @NotNull
-    private final VeiculoV3Service veiculoService;
+    private final VeiculoService veiculoService;
     @NotNull
     private final VeiculoMapper veiculoMapper;
 
     @Autowired
-    public VeiculoV3Resource(@NotNull final VeiculoV3Service veiculoService,
-                             @NotNull final VeiculoMapper veiculoMapper) {
+    public VeiculoResource(@NotNull final VeiculoService veiculoService,
+                           @NotNull final VeiculoMapper veiculoMapper) {
         this.veiculoService = veiculoService;
         this.veiculoMapper = veiculoMapper;
     }

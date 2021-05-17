@@ -14,7 +14,7 @@ import javax.validation.Valid;
  * @author Guilherme Steinert (https://github.com/steinert999)
  */
 @Api(value = "Gestão de Pneus")
-public interface PneuV3ApiDoc {
+public interface PneuApiDoc {
     @ApiOperation(value = "Insere um pneu.", response = SuccessResponse.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Operação efetuada com sucesso.", response = SuccessResponse.class),
