@@ -1,4 +1,4 @@
-package br.com.zalf.prolog.webservice.gente.faleConosco.relatorios;
+package br.com.zalf.prolog.webservice.gente.faleconosco.relatorios;
 
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
@@ -21,16 +21,16 @@ public class FaleConoscoRelatorioResource {
     @GET
     @Secured
     @Path("/resumos/{codUnidade}/csv")
-    public StreamingOutput getResumoCsv(@PathParam("codUnidade") Long codUnidade, @QueryParam("dataInicial") long dataInicial,
-                                        @QueryParam("dataFinal") long dataFinal) {
+    public StreamingOutput getResumoCsv(@PathParam("codUnidade") final Long codUnidade, @QueryParam("dataInicial") final long dataInicial,
+                                        @QueryParam("dataFinal") final long dataFinal) {
         return outputStream -> service.getResumoCsv(codUnidade, outputStream, new Date(dataInicial), new Date(dataFinal));
     }
 
     @GET
     @Secured
     @Path("/resumos/{codUnidade}/report")
-    public Report getResumoReport(@PathParam("codUnidade") Long codUnidade, @QueryParam("dataInicial") long dataInicial,
-                                  @QueryParam("dataFinal") long dataFinal) {
+    public Report getResumoReport(@PathParam("codUnidade") final Long codUnidade, @QueryParam("dataInicial") final long dataInicial,
+                                  @QueryParam("dataFinal") final long dataFinal) {
         return service.getResumoReport(codUnidade, new Date(dataInicial),  new Date(dataFinal));
     }
 

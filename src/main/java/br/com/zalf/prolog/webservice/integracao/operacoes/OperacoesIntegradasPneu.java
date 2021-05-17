@@ -14,14 +14,17 @@ import java.util.List;
  */
 public interface OperacoesIntegradasPneu {
     @NotNull
-    Long insert(@NotNull final Pneu pneu,
+    Long insert(final @NotNull Long codigoColaboradorCadastro,
+                @NotNull final Pneu pneu,
                 @NotNull final Long codUnidade,
                 @NotNull final OrigemAcaoEnum origemCadastro) throws Throwable;
 
     @NotNull
-    List<Long> insert(@NotNull final List<Pneu> pneus) throws Throwable;
+    List<Long> insert(final @NotNull Long codigoColaboradorCadastro,
+                      @NotNull final List<Pneu> pneus) throws Throwable;
 
-    void update(@NotNull final Pneu pneu,
+    void update(final @NotNull Long codigoColaboradorEdicao,
+                @NotNull final Pneu pneu,
                 @NotNull final Long codUnidade,
                 @NotNull final Long codOriginalPneu) throws Throwable;
 

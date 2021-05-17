@@ -2,12 +2,12 @@ package br.com.zalf.prolog.webservice.gente.colaborador;
 
 import br.com.zalf.prolog.webservice.AmazonCredentialsProvider;
 import br.com.zalf.prolog.webservice.Injection;
-import br.com.zalf.prolog.webservice.gente.colaborador.model.*;
-import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.autenticacao.token.TokenCleaner;
+import br.com.zalf.prolog.webservice.commons.util.Log;
 import br.com.zalf.prolog.webservice.errorhandling.exception.ProLogException;
 import br.com.zalf.prolog.webservice.frota.checklist.ChecklistService;
 import br.com.zalf.prolog.webservice.frota.checklist.offline.ChecklistOfflineService;
+import br.com.zalf.prolog.webservice.gente.colaborador.model.*;
 import br.com.zalf.prolog.webservice.gente.controlejornada.ControleJornadaService;
 import br.com.zalf.prolog.webservice.gente.controlejornada.model.IntervaloOfflineSupport;
 import br.com.zalf.prolog.webservice.gente.controlejornada.tipomarcacao.TipoMarcacao;
@@ -34,7 +34,7 @@ public class ColaboradorService {
                     Injection.provideDadosIntervaloChangedListener(),
                     Injection.provideDadosChecklistOfflineChangedListener(),
                     TokenCleaner.getOnlyToken(userToken));
-        } catch (Throwable e) {
+        } catch (final Throwable e) {
             final String errorMessage = "Erro ao inserir o colaborador, tente novamente.";
             Log.e(TAG, errorMessage, e);
             throw Injection
@@ -50,7 +50,7 @@ public class ColaboradorService {
                     Injection.provideDadosIntervaloChangedListener(),
                     Injection.provideDadosChecklistOfflineChangedListener(),
                     TokenCleaner.getOnlyToken(userToken));
-        } catch (Throwable e) {
+        } catch (final Throwable e) {
             final String errorMessage = "Erro ao atualizar colaborador, tente novamente.";
             Log.e(TAG, String.format("Erro ao atualizar o colaborador de código: %d", colaborador.getCodigo()), e);
             throw Injection
@@ -59,24 +59,24 @@ public class ColaboradorService {
         }
     }
 
-    public boolean updateStatus(Long cpf, Colaborador colaborador) {
+    public boolean updateStatus(final Long cpf, final Colaborador colaborador) {
         try {
             dao.updateStatus(cpf, colaborador, Injection.provideDadosChecklistOfflineChangedListener());
             return true;
-        } catch (Throwable e) {
+        } catch (final Throwable e) {
             Log.e(TAG, String.format("Erro ao atualizar o status do colaborador %d", cpf), e);
             return false;
         }
     }
 
-    public boolean delete(Long cpf) {
+    public boolean delete(final Long cpf) {
         try {
             dao.delete(
                     cpf,
                     Injection.provideDadosIntervaloChangedListener(),
                     Injection.provideDadosChecklistOfflineChangedListener());
             return true;
-        } catch (Throwable e) {
+        } catch (final Throwable e) {
             Log.e(TAG, String.format("Erro ao deletar o colaborador %d", cpf), e);
             return false;
         }
@@ -109,14 +109,14 @@ public class ColaboradorService {
     public Long getCodUnidadeByCpf(@NotNull final Long cpf) {
         try {
             return dao.getCodUnidadeByCpf(cpf);
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar o código da unidade para o CPF: %d", cpf), e);
             return null;
         }
     }
 
     @NotNull
-    public List<Colaborador> getAllByUnidade(Long codUnidade, boolean apenasAtivos) throws ProLogException {
+    public List<Colaborador> getAllByUnidade(final Long codUnidade, final boolean apenasAtivos) throws ProLogException {
         try {
             return dao.getAllByUnidade(codUnidade, apenasAtivos);
         } catch (final Throwable e) {
@@ -154,10 +154,10 @@ public class ColaboradorService {
         }
     }
 
-    public List<Colaborador> getMotoristasAndAjudantes(Long codUnidade) {
+    public List<Colaborador> getMotoristasAndAjudantes(final Long codUnidade) {
         try {
             return dao.getMotoristasAndAjudantes(codUnidade);
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             Log.e(TAG, String.format("Erro ao buscar todos os ajudantes e motoristas da unidade %d", codUnidade), e);
             return null;
         }
@@ -185,9 +185,11 @@ public class ColaboradorService {
                 loginHolder.setAlternativasRelato(relatoDao.getAlternativas(
                         colaborador.getUnidade().getCodigo(),
                         colaborador.getSetor().getCodigo()));
-            } else if (colaborador.getVisao().hasAccessToFunction(Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_VEICULO_ESTOQUE)
+            } else if (colaborador.getVisao()
+                    .hasAccessToFunction(Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_VEICULO_ESTOQUE)
                     || colaborador.getVisao().hasAccessToFunction(Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_ANALISE)
-                    || colaborador.getVisao().hasAccessToFunction(Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_DESCARTE)) {
+                    || colaborador.getVisao()
+                    .hasAccessToFunction(Pilares.Frota.Pneu.Movimentacao.MOVIMENTAR_DESCARTE)) {
                 loginHolder.setAmazonCredentials(new AmazonCredentialsProvider().getAmazonCredentials());
             } else if (colaborador.getVisao().hasAccessToFunction(Pilares.Frota.Pneu.CADASTRAR)) {
                 loginHolder.setAmazonCredentials(new AmazonCredentialsProvider().getAmazonCredentials());
@@ -209,8 +211,7 @@ public class ColaboradorService {
             final boolean checklistDiferentesUnidadesAtivoEmpresa =
                     checklistService.getChecklistDiferentesUnidadesAtivoEmpresa(colaborador.getCodEmpresa());
             loginHolder.setChecklistDiferentesUnidadesAtivoEmpresa(checklistDiferentesUnidadesAtivoEmpresa);
-
-        } catch (Throwable e) {
+        } catch (final Throwable e) {
             Log.e(TAG, "Erro ao buscar o loginHolder", e);
             throw new RuntimeException("Erro ao criar LoginHolder");
         }
@@ -223,15 +224,17 @@ public class ColaboradorService {
                                                                       final int codFuncaoProLog) {
         try {
             return dao.getColaboradoresComAcessoFuncaoByUnidade(codUnidade, codFuncaoProLog);
-        } catch (SQLException e) {
-            Log.e(TAG, String.format("Erro ao buscar colaboradores com acesso a uma determinada " +
-                    "função(%d) de uma determinada unidade(%d)", codFuncaoProLog, codUnidade), e);
+        } catch (final SQLException e) {
+            Log.e(TAG,
+                  String.format("Erro ao buscar colaboradores com acesso a uma determinada " +
+                                        "função(%d) de uma determinada unidade(%d)", codFuncaoProLog, codUnidade),
+                  e);
             throw new RuntimeException("Erro ao buscar colaboradores com acesso a unidade");
         }
     }
 
     @Deprecated
-    public LoginHolder getLoginHolder(Long cpf) {
+    public LoginHolder getLoginHolder(final Long cpf) {
         final LoginHolder loginHolder = new LoginHolder();
         try {
             loginHolder.setColaborador(dao.getByCpf(cpf, true));
@@ -260,5 +263,19 @@ public class ColaboradorService {
             throw new RuntimeException("Erro ao criar LoginHolder");
         }
         return loginHolder;
+    }
+
+    @NotNull
+    public Long getCodColaboradorByCpf(@NotNull final Long codEmpresa, @NotNull final String cpfColaborador)
+            throws Throwable {
+        try {
+            return dao.getCodColaboradorByCpf(codEmpresa, cpfColaborador);
+        } catch (final SQLException e) {
+            Log.e(TAG,
+                  String.format("Erro ao buscar o código do colaborador " +
+                                        "codEmpresa: %d, cpfColaborador: %s", codEmpresa, cpfColaborador),
+                  e);
+            throw new RuntimeException("Erro ao buscar colaboradores com acesso a unidade");
+        }
     }
 }

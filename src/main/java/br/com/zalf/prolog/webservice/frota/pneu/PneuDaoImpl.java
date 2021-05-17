@@ -51,14 +51,16 @@ public final class PneuDaoImpl extends DatabaseConnection implements PneuDao {
 
     @Override
     @NotNull
-    public Long insert(@NotNull final Pneu pneu,
+    public Long insert(@NotNull final Long codigoColaboradorCadastro,
+                       @NotNull final Pneu pneu,
                        @NotNull final Long codUnidade,
                        @NotNull final OrigemAcaoEnum origemCadastro) throws Throwable {
         Connection conn = null;
         try {
             conn = getConnection();
             conn.setAutoCommit(false);
-            final Long codPneuInserido = internalInsert(conn, pneu, codUnidade, origemCadastro);
+            final Long codPneuInserido = internalInsert(conn, pneu, codUnidade, origemCadastro,
+                                                        codigoColaboradorCadastro);
             conn.commit();
             return codPneuInserido;
         } catch (final Throwable e) {
@@ -73,7 +75,8 @@ public final class PneuDaoImpl extends DatabaseConnection implements PneuDao {
 
     @NotNull
     @Override
-    public List<Long> insert(@NotNull final List<Pneu> pneus) throws Throwable {
+    public List<Long> insert(@NotNull final Long codigoColaboradorCadastro,
+                             @NotNull final List<Pneu> pneus) throws Throwable {
         Connection conn = null;
         int linha = 1;
         try {
@@ -81,7 +84,8 @@ public final class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             conn.setAutoCommit(false);
             final List<Long> codigosPneus = new ArrayList<>(pneus.size());
             for (final Pneu pneu : pneus) {
-                codigosPneus.add(internalInsert(conn, pneu, pneu.getCodUnidadeAlocado(), OrigemAcaoEnum.PROLOG_WEB));
+                codigosPneus.add(internalInsert(conn, pneu, pneu.getCodUnidadeAlocado(), OrigemAcaoEnum.PROLOG_WEB,
+                                                codigoColaboradorCadastro));
                 linha++;
             }
             conn.commit();
@@ -124,7 +128,8 @@ public final class PneuDaoImpl extends DatabaseConnection implements PneuDao {
     }
 
     @Override
-    public void update(@NotNull final Pneu pneu,
+    public void update(@NotNull final Long codigoColaboradorEdicao,
+                       @NotNull final Pneu pneu,
                        @NotNull final Long codUnidade,
                        @NotNull final Long codOriginalPneu) throws Throwable {
         PreparedStatement stmt = null;
@@ -141,7 +146,8 @@ public final class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                                                  "F_VIDA_TOTAL := ?," +
                                                  "F_PRESSAO_RECOMENDADA := ?," +
                                                  "F_COD_ORIGINAL_PNEU := ?," +
-                                                 "F_COD_UNIDADE := ?);");
+                                                 "F_COD_UNIDADE := ?," +
+                                                 "F_COD_COLABORADOR_RESPONSAVEL_EDICAO := ?);");
             stmt.setString(1, pneu.getCodigoCliente());
             stmt.setLong(2, pneu.getModelo().getCodigo());
             stmt.setLong(3, pneu.getDimensao().codigo);
@@ -161,6 +167,7 @@ public final class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             stmt.setDouble(8, pneu.getPressaoCorreta());
             stmt.setLong(9, codOriginalPneu);
             stmt.setLong(10, codUnidade);
+            stmt.setLong(11, codigoColaboradorEdicao);
 
             stmt.executeQuery();
 
@@ -457,7 +464,8 @@ public final class PneuDaoImpl extends DatabaseConnection implements PneuDao {
     private Long internalInsert(@NotNull final Connection conn,
                                 @NotNull final Pneu pneu,
                                 @NotNull final Long codUnidade,
-                                @NotNull final OrigemAcaoEnum origemCadastro) throws Throwable {
+                                @NotNull final OrigemAcaoEnum origemCadastro,
+                                @NotNull final Long codigoColaboradorCadastro) throws Throwable {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
@@ -467,9 +475,10 @@ public final class PneuDaoImpl extends DatabaseConnection implements PneuDao {
                             "altura_sulco_central_externo, "
                             + "altura_sulco_externo, cod_unidade, status, vida_atual, vida_total, cod_modelo_banda, " +
                             "dot, valor, "
-                            + "pneu_novo_nunca_rodado, cod_empresa, cod_unidade_cadastro, origem_cadastro) " +
+                            + "pneu_novo_nunca_rodado, cod_empresa, cod_unidade_cadastro, origem_cadastro, " +
+                            "cod_colaborador_cadastro) " +
                             "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?, "
-                            + "(SELECT U.COD_EMPRESA FROM UNIDADE U WHERE U.CODIGO = ?),?,?) RETURNING CODIGO");
+                            + "(SELECT U.COD_EMPRESA FROM UNIDADE U WHERE U.CODIGO = ?),?,?,?) RETURNING CODIGO");
             stmt.setString(1, pneu.getCodigoCliente());
             stmt.setLong(2, pneu.getModelo().getCodigo());
             stmt.setLong(3, pneu.getDimensao().codigo);
@@ -507,6 +516,7 @@ public final class PneuDaoImpl extends DatabaseConnection implements PneuDao {
             stmt.setLong(18, codUnidade);
             stmt.setLong(19, codUnidade);
             stmt.setString(20, origemCadastro.asString());
+            stmt.setLong(21, codigoColaboradorCadastro);
 
             rSet = stmt.executeQuery();
             final Long codPneu;

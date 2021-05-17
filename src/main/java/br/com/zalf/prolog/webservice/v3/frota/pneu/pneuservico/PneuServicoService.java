@@ -3,7 +3,7 @@ package br.com.zalf.prolog.webservice.v3.frota.pneu.pneuservico;
 import br.com.zalf.prolog.webservice.frota.pneu.pneutiposervico._model.PneuServicoRealizado;
 import br.com.zalf.prolog.webservice.v3.frota.pneu._model.PneuEntity;
 import br.com.zalf.prolog.webservice.v3.frota.pneu.pneuservico.tiposervico.PneuTipoServicoEntity;
-import br.com.zalf.prolog.webservice.v3.frota.pneu.pneuservico.tiposervico.PneuTipoServicoV3Service;
+import br.com.zalf.prolog.webservice.v3.frota.pneu.pneuservico.tiposervico.PneuTipoServicoService;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,22 +17,22 @@ import java.math.BigDecimal;
  * @author Guilherme Steinert (https://github.com/steinert999)
  */
 @Service
-public class PneuServicoV3Service {
+public class PneuServicoService {
     @NotNull
-    private final PneuServicoRealizadoV3Dao pneuServicoDao;
+    private final PneuServicoRealizadoDao pneuServicoDao;
     @NotNull
-    private final PneuServicoRealizadoIncrementaVidaV3Dao pneuServicoRealizadoIncrementaVidaDao;
+    private final PneuServicoRealizadoIncrementaVidaDao pneuServicoRealizadoIncrementaVidaDao;
     @NotNull
-    private final PneuServicoCadastroV3Dao pneuServicoCadastroDao;
+    private final PneuServicoCadastroDao pneuServicoCadastroDao;
     @NotNull
-    private final PneuTipoServicoV3Service pneuTipoServicoService;
+    private final PneuTipoServicoService pneuTipoServicoService;
 
     @Autowired
-    public PneuServicoV3Service(
-            @NotNull final PneuServicoRealizadoV3Dao pneuServicoDao,
-            @NotNull final PneuServicoRealizadoIncrementaVidaV3Dao pneuServicoRealizadoIncrementaVidaDao,
-            @NotNull final PneuServicoCadastroV3Dao pneuServicoCadastroDao,
-            @NotNull final PneuTipoServicoV3Service pneuTipoServicoService) {
+    public PneuServicoService(
+            @NotNull final PneuServicoRealizadoDao pneuServicoDao,
+            @NotNull final PneuServicoRealizadoIncrementaVidaDao pneuServicoRealizadoIncrementaVidaDao,
+            @NotNull final PneuServicoCadastroDao pneuServicoCadastroDao,
+            @NotNull final PneuTipoServicoService pneuTipoServicoService) {
         this.pneuServicoDao = pneuServicoDao;
         this.pneuServicoRealizadoIncrementaVidaDao = pneuServicoRealizadoIncrementaVidaDao;
         this.pneuServicoCadastroDao = pneuServicoCadastroDao;

@@ -19,11 +19,11 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 
 @Service
-public class VeiculoV3Service {
+public class VeiculoService {
     @NotNull
-    private static final String TAG = VeiculoV3Service.class.getSimpleName();
+    private static final String TAG = VeiculoService.class.getSimpleName();
     @NotNull
-    private final VeiculoV3Dao veiculoDao;
+    private final VeiculoDao veiculoDao;
     @NotNull
     private final TipoVeiculoV3Service tipoVeiculoService;
     @NotNull
@@ -32,10 +32,10 @@ public class VeiculoV3Service {
     private final OperacoesBloqueadasYaml operacoesBloqueadas;
 
     @Autowired
-    public VeiculoV3Service(@NotNull final VeiculoV3Dao veiculoDao,
-                            @NotNull final TipoVeiculoV3Service tipoVeiculoService,
-                            @NotNull final DiagramaService diagramaService,
-                            @NotNull final OperacoesBloqueadasYaml operacoesBloqueadas) {
+    public VeiculoService(@NotNull final VeiculoDao veiculoDao,
+                          @NotNull final TipoVeiculoV3Service tipoVeiculoService,
+                          @NotNull final DiagramaService diagramaService,
+                          @NotNull final OperacoesBloqueadasYaml operacoesBloqueadas) {
         this.veiculoDao = veiculoDao;
         this.tipoVeiculoService = tipoVeiculoService;
         this.diagramaService = diagramaService;

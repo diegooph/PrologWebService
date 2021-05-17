@@ -1,11 +1,19 @@
 Change Log
 ==========
 
-## STAGE
+<a name="v3.3.4"></a>
+## Version [v3.3.4](https://github.com/luizfp/PrologWebService/compare/v3.3.3...v3.3.4) [unreleased]
+
+### Features
+* Cria function para o suporte consultar atualizações num pneu (PL-3490)
 
 ### Refactors
+* Atualiza insert/update de pneu para logar o colaborador que inseriu/alterou um pneu (PL-3490)
 * Alterar relatórios e dashboards que utilizam a coluna placa da tabela veiculo_pneu (PL-3617)
 * Remover usos da coluna placa da tabela veiculo_pneu nos fluxos de sistema (WS e BD) (PL-3618)
+
+### Bug Fixes
+* Erro ao editar diagrama de veiculo (PL-3637)
 
 <a name="v3.3.3"></a>
 ## Version [v3.3.3](https://github.com/luizfp/PrologWebService/compare/v3.3.2...v3.3.3) (2021-05-10)

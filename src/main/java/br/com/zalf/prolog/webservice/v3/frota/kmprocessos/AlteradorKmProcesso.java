@@ -2,7 +2,7 @@ package br.com.zalf.prolog.webservice.v3.frota.kmprocessos;
 
 import br.com.zalf.prolog.webservice.errorhandling.exception.GenericException;
 import br.com.zalf.prolog.webservice.v3.frota.kmprocessos._model.*;
-import br.com.zalf.prolog.webservice.v3.frota.veiculo.VeiculoV3Service;
+import br.com.zalf.prolog.webservice.v3.frota.veiculo.VeiculoService;
 import br.com.zalf.prolog.webservice.v3.frota.veiculo._model.VeiculoEntity;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public final class AlteradorKmProcesso {
     @NotNull
-    private final VeiculoV3Service veiculoService;
+    private final VeiculoService veiculoService;
 
     @NotNull
     public AlteracaoKmResponse updateKmProcesso(@NotNull final KmProcessoAtualizavel kmProcessoAtualizavel,
