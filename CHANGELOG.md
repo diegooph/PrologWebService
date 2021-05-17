@@ -11,6 +11,7 @@ Change Log
 * Atualiza insert/update de pneu para logar o colaborador que inseriu/alterou um pneu (PL-3490)
 * Alterar relatórios e dashboards que utilizam a coluna placa da tabela veiculo_pneu (PL-3617)
 * Remover usos da coluna placa da tabela veiculo_pneu nos fluxos de sistema (WS e BD) (PL-3618)
+* Altera limite máximo permitido na listagem de checklists
 
 ### Bug Fixes
 * Erro ao editar diagrama de veiculo (PL-3637)
