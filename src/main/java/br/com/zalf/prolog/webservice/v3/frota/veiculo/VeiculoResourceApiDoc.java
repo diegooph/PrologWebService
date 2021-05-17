@@ -8,7 +8,7 @@ import io.swagger.annotations.*;
 import javax.validation.Valid;
 
 @Api(value = "Gestão de Veículos")
-public interface VeiculoV3ResourceApiDoc {
+public interface VeiculoResourceApiDoc {
     @ApiOperation(value = "Insere um veículo.", response = SuccessResponse.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Operação efetuada com sucesso.", response = SuccessResponse.class),
