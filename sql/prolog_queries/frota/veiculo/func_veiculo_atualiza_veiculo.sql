@@ -70,6 +70,7 @@ declare
                                                        from veiculo_diagrama vd
                                                        where vd.codigo = v_novo_cod_diagrama);
     v_antigo_possui_hubodometro   boolean;
+    v_acoplado                    boolean;
 begin
     select v.cod_unidade,
            v.placa,
@@ -80,7 +81,8 @@ begin
            mv.cod_marca,
            v.cod_modelo,
            v.status_ativo,
-           v.possui_hubodometro
+           v.possui_hubodometro,
+           v.acoplado
     into strict
         v_cod_unidade,
         v_antiga_placa,
@@ -91,7 +93,8 @@ begin
         v_antigo_cod_marca,
         v_antigo_cod_modelo,
         v_antigo_status,
-        v_antigo_possui_hubodometro
+        v_antigo_possui_hubodometro,
+        v_acoplado
     from veiculo v
              join modelo_veiculo mv on v.cod_modelo = mv.codigo
     where v.codigo = f_cod_veiculo;
@@ -114,10 +117,7 @@ begin
     end if;
 
     -- Validamos se o tipo foi alterado mesmo com o veículo fazendo parte de um acoplamento.
-    if ((v_antigo_cod_tipo <> f_novo_cod_tipo)
-        and (select count(vaa.*)
-             from veiculo_acoplamento_atual vaa
-             where vaa.cod_veiculo = (select v.codigo from veiculo v where v.codigo = f_cod_veiculo)) > 0)
+    if ((v_antigo_cod_tipo <> f_novo_cod_tipo) and v_acoplado)
     then
         perform throw_generic_error(
                 'O tipo do veículo não pode ser alterado se a placa faz parte de um acoplamento.');
