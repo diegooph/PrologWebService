@@ -382,228 +382,95 @@ SELECT setval('colaborador_data_codigo_seq', 30745, true);
 --######################################################################################################################
 -- Cria dependências necessárias do veículo e insere veículos.
 INSERT INTO public.veiculo_tipo (codigo, nome, status_ativo, cod_diagrama, cod_empresa)
-VALUES (13, '12 BAIAS', true, 1, 3);
-INSERT INTO public.veiculo_tipo (codigo, nome, status_ativo, cod_diagrama, cod_empresa)
 VALUES (63, 'TOCO', true, 1, 3);
 INSERT INTO public.veiculo_tipo (codigo, nome, status_ativo, cod_diagrama, cod_empresa)
 VALUES (64, 'TRUCK', true, 2, 3);
 INSERT INTO public.veiculo_tipo (codigo, nome, status_ativo, cod_diagrama, cod_empresa)
 VALUES (65, 'CARRETA', true, 3, 3);
-INSERT INTO public.veiculo_tipo (codigo, nome, status_ativo, cod_diagrama, cod_empresa)
-VALUES (411, 'TOCO', true, null, 3);
-INSERT INTO public.veiculo_tipo (codigo, nome, status_ativo, cod_diagrama, cod_empresa)
-VALUES (579, 'Carreta 4 Eixos', true, 9, 3);
-INSERT INTO public.veiculo_tipo (codigo, nome, status_ativo, cod_diagrama, cod_empresa)
-VALUES (610, 'EMPILHADEIRA', true, 6, 3);
-INSERT INTO public.veiculo_tipo (codigo, nome, status_ativo, cod_diagrama, cod_empresa)
-VALUES (617, 'Truck Elétrico', true, 10, 3);
-INSERT INTO public.veiculo_tipo (codigo, nome, status_ativo, cod_diagrama, cod_empresa)
-VALUES (633, 'Fiscalização', true, 8, 3);
-INSERT INTO public.veiculo_tipo (codigo, nome, status_ativo, cod_diagrama, cod_empresa)
-VALUES (634, 'Leitura', true, 12, 3);
-INSERT INTO public.veiculo_tipo (codigo, nome, status_ativo, cod_diagrama, cod_empresa)
-VALUES (635, 'Caminhões', true, 1, 3);
-INSERT INTO public.veiculo_tipo (codigo, nome, status_ativo, cod_diagrama, cod_empresa)
-VALUES (641, 'Toco (ROTA)', true, 1, 3);
-INSERT INTO public.veiculo_tipo (codigo, nome, status_ativo, cod_diagrama, cod_empresa)
-VALUES (642, 'Carreta 3 eixos', true, 3, 3);
-INSERT INTO public.veiculo_tipo (codigo, nome, status_ativo, cod_diagrama, cod_empresa)
-VALUES (643, 'Toco', true, 1, 3);
-INSERT INTO public.veiculo_tipo (codigo, nome, status_ativo, cod_diagrama, cod_empresa)
-VALUES (665, 'teste', true, 1, 3);
-INSERT INTO public.veiculo_tipo (codigo, nome, status_ativo, cod_diagrama, cod_empresa)
-VALUES (702, 'MOTO', true, 12, 3);
-INSERT INTO public.veiculo_tipo (codigo, nome, status_ativo, cod_diagrama, cod_empresa)
-VALUES (774, 'OF 1721PL', true, 1, 3);
-INSERT INTO public.veiculo_tipo (codigo, nome, status_ativo, cod_diagrama, cod_empresa)
-VALUES (775, 'VW-16-210PL', true, 1, 3);
-INSERT INTO public.veiculo_tipo (codigo, nome, status_ativo, cod_diagrama, cod_empresa)
-VALUES (776, 'VW-8140-PL', true, 1, 3);
-INSERT INTO public.veiculo_tipo (codigo, nome, status_ativo, cod_diagrama, cod_empresa)
-VALUES (973, 'Prancha 6 eixos', true, 20, 3);
-INSERT INTO public.veiculo_tipo (codigo, nome, status_ativo, cod_diagrama, cod_empresa)
-VALUES (974, 'Prancha 8 eixos', true, 21, 3);
-INSERT INTO public.veiculo_tipo (codigo, nome, status_ativo, cod_diagrama, cod_empresa)
-VALUES (975, 'Prancha 4 eixos', true, 22, 3);
-SELECT setval('veiculo_tipo_codigo_seq', 975, true);
+SELECT setval('veiculo_tipo_codigo_seq', 65, true);
 
-INSERT INTO public.modelo_veiculo (codigo, nome, cod_marca, cod_empresa)
-VALUES (118, 'Carreta 4 eixos', 1, 3);
 INSERT INTO public.modelo_veiculo (codigo, nome, cod_marca, cod_empresa)
 VALUES (119, 'VW 10160', 1, 3);
 INSERT INTO public.modelo_veiculo (codigo, nome, cod_marca, cod_empresa)
 VALUES (120, 'VW 2220', 1, 3);
-INSERT INTO public.modelo_veiculo (codigo, nome, cod_marca, cod_empresa)
-VALUES (121, 'VW 17190', 4, 3);
-INSERT INTO public.modelo_veiculo (codigo, nome, cod_marca, cod_empresa)
-VALUES (1015, 'ATEGO 2426', 4, 3);
-INSERT INTO public.modelo_veiculo (codigo, nome, cod_marca, cod_empresa)
-VALUES (1069, 'Saveiro', 1, 3);
-INSERT INTO public.modelo_veiculo (codigo, nome, cod_marca, cod_empresa)
-VALUES (1070, 'BROS', 44, 3);
-INSERT INTO public.modelo_veiculo (codigo, nome, cod_marca, cod_empresa)
-VALUES (1076, 'Modelo 1', 3, 3);
-INSERT INTO public.modelo_veiculo (codigo, nome, cod_marca, cod_empresa)
-VALUES (1077, 'Modelo1', 4, 3);
-INSERT INTO public.modelo_veiculo (codigo, nome, cod_marca, cod_empresa)
-VALUES (1187, 'vw 17190', 1, 3);
-INSERT INTO public.modelo_veiculo (codigo, nome, cod_marca, cod_empresa)
-VALUES (1207, 'FH16', 2, 3);
-INSERT INTO public.modelo_veiculo (codigo, nome, cod_marca, cod_empresa)
-VALUES (1491, 'SUZ', 53, 3);
-INSERT INTO public.modelo_veiculo (codigo, nome, cod_marca, cod_empresa)
-VALUES (1709, 'OF-1721PL', 4, 3);
-INSERT INTO public.modelo_veiculo (codigo, nome, cod_marca, cod_empresa)
-VALUES (1710, 'VW-16-210PL', 1, 3);
-INSERT INTO public.modelo_veiculo (codigo, nome, cod_marca, cod_empresa)
-VALUES (1711, 'VW-8140PL', 1, 3);
-INSERT INTO public.modelo_veiculo (codigo, nome, cod_marca, cod_empresa)
-VALUES (2171, '1241254', 17, 3);
-INSERT INTO public.modelo_veiculo (codigo, nome, cod_marca, cod_empresa)
-VALUES (2172, 'dasdas1', 12, 3);
-INSERT INTO public.modelo_veiculo (codigo, nome, cod_marca, cod_empresa)
-VALUES (2338, 'tr 123', 6, 3);
-INSERT INTO public.modelo_veiculo (codigo, nome, cod_marca, cod_empresa)
-VALUES (2339, 'tTEACX', 20, 3);
-SELECT setval('modelo_veiculo_codigo_seq', 2339, true);
+SELECT setval('modelo_veiculo_codigo_seq', 120, true);
 
 INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
                                  data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
                                  pg_username_delecao, cod_empresa)
-VALUES ('AAA1111', 5, 897641, true, 63, 119, 1, '2019-01-03 17:30:13.496945', 5, 354, true,
-        '2019-10-23 17:31:29.990601', 'prolog_user_thais', 3);
+VALUES ('PRO0001', 5, 869900, true, 63, 120, 1, '2019-08-19 17:04:46.675294', 5, 3195, false, null, null, 3);
 INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
                                  data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
                                  pg_username_delecao, cod_empresa)
-VALUES ('PRO0006', 5, 30984, true, 64, 118, 2, null, 5, 705, false, null, null, 3);
+VALUES ('PRO0003', 5, 4848, true, 64, 119, 2, '2019-08-19 17:04:46.675294', 5, 3121, false, null, null, 3);
 INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
                                  data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
                                  pg_username_delecao, cod_empresa)
-VALUES ('PRO0014', 5, 54822, false, 63, 120, 1, null, 5, 1593, false, null, null, 3);
+VALUES ('PRO0004', 5, 24284, true, 64, 119, 2, '2019-08-19 17:04:46.675294', 5, 3103, false, null, null, 3);
 INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
                                  data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
                                  pg_username_delecao, cod_empresa)
-VALUES ('GGG2222', 5, 0, true, 65, 118, 5, '2018-06-03 20:36:30.741481', 5, 2257, false, null, null, 3);
+VALUES ('PRO0006', 5, 30984, true, 64, 119, 2, '2019-08-19 17:04:46.675294', 5, 705, false, null, null, 3);
 INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
                                  data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
                                  pg_username_delecao, cod_empresa)
-VALUES ('FFF2222', 5, 322232, true, 64, 120, 2, '2018-05-17 20:04:23.105235', 5, 2385, false, null, null, 3);
+VALUES ('PRO0014', 5, 54822, true, 63, 120, 1, '2019-08-19 17:04:46.675294', 5, 1593, false, null, null, 3);
 INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
                                  data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
                                  pg_username_delecao, cod_empresa)
-VALUES ('MMM0001', 5, 246996, true, 65, 121, 4, null, 5, 2901, false, null, null, 3);
+VALUES ('PRO0015', 5, 28541, true, 63, 120, 1, '2019-08-19 17:04:46.675294', 5, 3513, false, null, null, 3);
 INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
                                  data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
                                  pg_username_delecao, cod_empresa)
-VALUES ('PRO0020', 5, 36370, false, 63, 120, 1, null, 5, 3031, false, null, null, 3);
+VALUES ('PRO0019', 5, 32529, true, 64, 120, 2, null, 5, 3118, false, null, null, 3);
 INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
                                  data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
                                  pg_username_delecao, cod_empresa)
-VALUES ('PRO0021', 5, 25837, false, 63, 120, 1, null, 5, 3032, false, null, null, 3);
+VALUES ('PRO0020', 5, 36370, true, 63, 120, 1, null, 5, 3031, false, null, null, 3);
 INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
                                  data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
                                  pg_username_delecao, cod_empresa)
-VALUES ('PRO0022', 5, 25261, false, 64, 121, 2, null, 5, 3033, false, null, null, 3);
+VALUES ('PRO0021', 5, 25837, true, 65, 120, 1, null, 5, 3032, false, null, null, 3);
 INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
                                  data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
                                  pg_username_delecao, cod_empresa)
-VALUES ('PRO0023', 5, 50746, false, 64, 118, 2, null, 5, 3034, false, null, null, 3);
+VALUES ('PRO0022', 5, 25261, true, 65, 120, 2, null, 5, 3033, false, null, null, 3);
 INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
                                  data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
                                  pg_username_delecao, cod_empresa)
-VALUES ('PRO0004', 5, 24284, true, 64, 118, 2, null, 5, 3103, false, null, null, 3);
+VALUES ('PRO0023', 5, 50746, true, 65, 119, 2, null, 5, 3034, false, null, null, 3);
 INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
                                  data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
                                  pg_username_delecao, cod_empresa)
-VALUES ('PRO0019', 5, 32529, false, 64, 121, 2, null, 5, 3118, false, null, null, 3);
+VALUES ('PRO0024', 5, 200, true, 65, 119, 2, null, 5, 3514, false, null, null, 3);
 INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
                                  data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
                                  pg_username_delecao, cod_empresa)
-VALUES ('PRO0042', 5, 27057, false, 64, 121, 2, null, 5, 3119, false, null, null, 3);
+VALUES ('PRO0041', 5, 26411, true, 65, 119, 2, null, 5, 3516, false, null, null, 3);
 INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
                                  data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
                                  pg_username_delecao, cod_empresa)
-VALUES ('PRO0003', 5, 4848, true, 64, 118, 2, null, 5, 3121, false, null, null, 3);
+VALUES ('PRO0042', 5, 27057, true, 65, 120, 2, null, 5, 3119, false, null, null, 3);
 INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
                                  data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
                                  pg_username_delecao, cod_empresa)
-VALUES ('PRO0001', 5, 869900, true, 63, 120, 1, null, 5, 3195, false, null, null, 3);
+VALUES ('PRO0043', 5, 37856, true, 64, 120, 2, null, 5, 3517, false, null, null, 3);
 INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
                                  data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
                                  pg_username_delecao, cod_empresa)
-VALUES ('PRO0015', 5, 28541, false, 63, 120, 1, null, 5, 3513, false, null, null, 3);
+VALUES ('PRO0044', 5, 27312, true, 64, 120, 2, null, 5, 3518, false, null, null, 3);
 INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
                                  data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
                                  pg_username_delecao, cod_empresa)
-VALUES ('PRO0024', 5, 200, false, 64, 118, 2, null, 5, 3514, false, null, null, 3);
+VALUES ('PRO0046', 5, 26339, true, 64, 120, 2, null, 5, 3519, false, null, null, 3);
 INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
                                  data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
                                  pg_username_delecao, cod_empresa)
-VALUES ('PRO0041', 5, 26411, false, 64, 121, 2, null, 5, 3516, false, null, null, 3);
+VALUES ('PRO0047', 5, 23401, false, 65, 119, 2, null, 5, 3531, false, null, null, 3);
 INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
                                  data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
                                  pg_username_delecao, cod_empresa)
-VALUES ('PRO0043', 5, 37856, false, 64, 121, 2, null, 5, 3517, false, null, null, 3);
-INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
-                                 data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
-                                 pg_username_delecao, cod_empresa)
-VALUES ('PRO0044', 5, 27312, false, 64, 121, 2, null, 5, 3518, false, null, null, 3);
-INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
-                                 data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
-                                 pg_username_delecao, cod_empresa)
-VALUES ('PRO0046', 5, 26339, false, 64, 121, 2, null, 5, 3519, false, null, null, 3);
-INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
-                                 data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
-                                 pg_username_delecao, cod_empresa)
-VALUES ('PRO0012', 5, 23780, false, 63, 120, 1, null, 5, 3520, false, null, null, 3);
-INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
-                                 data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
-                                 pg_username_delecao, cod_empresa)
-VALUES ('PRO0025', 5, 1202, false, 64, 118, 2, null, 5, 3521, false, null, null, 3);
-INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
-                                 data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
-                                 pg_username_delecao, cod_empresa)
-VALUES ('PRO0026', 5, 24156, false, 64, 118, 2, null, 5, 3522, false, null, null, 3);
-INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
-                                 data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
-                                 pg_username_delecao, cod_empresa)
-VALUES ('PRO0027', 5, 23473, false, 63, 120, 1, null, 5, 3523, false, null, null, 3);
-INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
-                                 data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
-                                 pg_username_delecao, cod_empresa)
-VALUES ('PRO0028', 5, 21132, false, 63, 120, 1, null, 5, 3524, false, null, null, 3);
-INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
-                                 data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
-                                 pg_username_delecao, cod_empresa)
-VALUES ('PRO0029', 5, 27991, false, 64, 121, 2, null, 5, 3525, false, null, null, 3);
-INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
-                                 data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
-                                 pg_username_delecao, cod_empresa)
-VALUES ('PRO0030', 5, 24613, false, 64, 121, 2, null, 5, 3526, false, null, null, 3);
-INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
-                                 data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
-                                 pg_username_delecao, cod_empresa)
-VALUES ('PRO0031', 5, 25003, false, 64, 118, 2, null, 5, 3527, false, null, null, 3);
-INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
-                                 data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
-                                 pg_username_delecao, cod_empresa)
-VALUES ('PRO0032', 5, 22292, false, 64, 118, 2, null, 5, 3528, false, null, null, 3);
-INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
-                                 data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
-                                 pg_username_delecao, cod_empresa)
-VALUES ('PRO0033', 5, 29423, false, 64, 121, 2, null, 5, 3529, false, null, null, 3);
-INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
-                                 data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
-                                 pg_username_delecao, cod_empresa)
-VALUES ('PRO0011', 103, 41969, true, 63, 120, 1, null, 103, 3530, false, null, null, 3);
-INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
-                                 data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
-                                 pg_username_delecao, cod_empresa)
-VALUES ('PRO0047', 5, 23401, false, 64, 121, 2, null, 5, 3531, false, null, null, 3);
-INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
-                                 data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
-                                 pg_username_delecao, cod_empresa)
-VALUES ('PRO0048', 5, 35794, false, 64, 121, 2, null, 5, 3532, false, null, null, 3);
+VALUES ('PRO0048', 5, 35794, false, 65, 119, 2, null, 5, 3532, false, null, null, 3);
 INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
                                  data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
                                  pg_username_delecao, cod_empresa)
@@ -611,228 +478,78 @@ VALUES ('PRO0049', 5, 20924, false, 64, 119, 2, null, 5, 3533, false, null, null
 INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
                                  data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
                                  pg_username_delecao, cod_empresa)
-VALUES ('PRO0034', 5, 18056, false, 64, 118, 2, null, 5, 3534, false, null, null, 3);
-INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
-                                 data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
-                                 pg_username_delecao, cod_empresa)
-VALUES ('PRO0016', 5, 21449, false, 64, 118, 2, null, 5, 3535, false, null, null, 3);
-INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
-                                 data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
-                                 pg_username_delecao, cod_empresa)
-VALUES ('PRO0017', 5, 31254, false, 64, 118, 2, null, 5, 3536, false, null, null, 3);
-INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
-                                 data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
-                                 pg_username_delecao, cod_empresa)
-VALUES ('PRO0018', 5, 25952, false, 64, 118, 2, null, 5, 3537, false, null, null, 3);
-INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
-                                 data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
-                                 pg_username_delecao, cod_empresa)
-VALUES ('PRO0035', 5, 45109, false, 64, 121, 2, null, 5, 3538, false, null, null, 3);
-INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
-                                 data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
-                                 pg_username_delecao, cod_empresa)
-VALUES ('PRO0050', 5, 94511, false, 63, 120, 1, null, 5, 3539, false, null, null, 3);
+VALUES ('PRO0050', 5, 94511, false, 64, 120, 1, null, 5, 3539, false, null, null, 3);
 INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
                                  data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
                                  pg_username_delecao, cod_empresa)
 VALUES ('PRO0051', 5, 342, false, 63, 120, 1, null, 5, 3540, false, null, null, 3);
+
+
 INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
                                  data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
                                  pg_username_delecao, cod_empresa)
-VALUES ('PRO0013', 5, 25888, false, 63, 120, 1, null, 5, 3541, false, null, null, 3);
+VALUES ('PRO0179', 215, 150498, true, 63, 119, 1, '2019-06-04 16:54:54.671068', 215, 7944, false, null, null, 3);
 INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
                                  data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
                                  pg_username_delecao, cod_empresa)
-VALUES ('PRO0036', 5, 19263, false, 64, 119, 2, null, 5, 3542, false, null, null, 3);
+VALUES ('PRO0180', 215, 214561, false, 63, 119, 1, '2019-06-04 16:54:54.671068', 215, 7945, false, null, null, 3);
 INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
                                  data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
                                  pg_username_delecao, cod_empresa)
-VALUES ('PRO0037', 5, 23513, false, 64, 118, 2, null, 5, 3543, false, null, null, 3);
+VALUES ('PRO0181', 215, 111321, true, 63, 120, 1, '2019-06-04 16:54:54.671068', 215, 7946, false, null, null, 3);
 INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
                                  data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
                                  pg_username_delecao, cod_empresa)
-VALUES ('PRO0038', 5, 27299, false, 64, 121, 2, null, 5, 3544, false, null, null, 3);
+VALUES ('PRO0182', 215, 152292, true, 63, 119, 1, '2019-06-04 16:54:54.671068', 215, 7947, false, null, null, 3);
 INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
                                  data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
                                  pg_username_delecao, cod_empresa)
-VALUES ('PRO0039', 103, 30778, false, 64, 121, 2, null, 103, 3545, false, null, null, 3);
+VALUES ('PRO0183', 215, 11506, true, 63, 120, 1, '2019-06-04 16:54:54.671068', 215, 7948, false, null, null, 3);
 INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
                                  data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
                                  pg_username_delecao, cod_empresa)
-VALUES ('PRO0045', 103, 24016, false, 64, 121, 2, null, 103, 3546, false, null, null, 3);
+VALUES ('PRO0184', 215, 106965, true, 64, 120, 1, '2019-06-04 16:54:54.671068', 215, 7949, false, null, null, 3);
 INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
                                  data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
                                  pg_username_delecao, cod_empresa)
-VALUES ('PRO0040', 5, 48110, false, 64, 121, 2, null, 5, 3547, false, null, null, 3);
+VALUES ('PRO0185', 215, 3194, true, 64, 120, 1, '2019-06-04 16:54:54.671068', 215, 7950, false, null, null, 3);
 INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
                                  data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
                                  pg_username_delecao, cod_empresa)
-VALUES ('PRO0007', 5, 39072, true, 63, 121, 2, null, 5, 3548, false, null, null, 3);
+VALUES ('PRO0186', 215, 164638, true, 64, 120, 2, '2019-06-04 16:54:54.671068', 215, 7951, false, null, null, 3);
 INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
                                  data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
                                  pg_username_delecao, cod_empresa)
-VALUES ('PRO0008', 5, 22977, true, 64, 118, 2, null, 5, 3549, false, null, null, 3);
+VALUES ('PRO0187', 215, 174005, true, 64, 120, 1, '2019-06-04 16:54:54.671068', 215, 7952, false, null, null, 3);
 INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
                                  data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
                                  pg_username_delecao, cod_empresa)
-VALUES ('PRO0009', 103, 45692, true, 63, 120, 1, null, 103, 3552, false, null, null, 3);
+VALUES ('PRO0188', 215, 134254, true, 64, 120, 1, '2019-06-04 16:54:54.671068', 215, 7953, false, null, null, 3);
 INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
                                  data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
                                  pg_username_delecao, cod_empresa)
-VALUES ('PRO0010', 103, 28310, true, 63, 120, 1, null, 103, 3567, false, null, null, 3);
+VALUES ('PRO0189', 215, 139480, true, 64, 120, 1, '2019-06-04 16:54:54.671068', 215, 7954, false, null, null, 3);
 INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
                                  data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
                                  pg_username_delecao, cod_empresa)
-VALUES ('PRO0005', 5, 57742, true, 63, 120, 1, null, 5, 3568, false, null, null, 3);
+VALUES ('PRO0190', 215, 137997, true, 64, 120, 1, '2019-06-04 16:54:54.671068', 215, 7955, false, null, null, 3);
 INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
                                  data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
                                  pg_username_delecao, cod_empresa)
-VALUES ('PRO0002', 5, 90300, true, 63, 120, 1, null, 5, 4035, false, null, null, 3);
+VALUES ('PRO0191', 215, 170845, true, 610, 120, 1, '2019-06-04 16:54:54.671068', 215, 7956, false, null, null, 3);
 INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
                                  data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
                                  pg_username_delecao, cod_empresa)
-VALUES ('99EMP55', 5, 45491, true, 65, 119, 1, '2019-03-21 17:27:16.358036', 5, 5549, false, null, null, 3);
+VALUES ('PRO0192', 215, 130636, true, 610, 120, 1, '2019-06-04 16:54:54.671068', 215, 7957, false, null, null, 3);
 INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
                                  data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
                                  pg_username_delecao, cod_empresa)
-VALUES ('PRO1234', 103, 911, true, 579, 119, 1, '2019-04-13 21:03:02.252587', 103, 6482, false, null, null, 3);
+VALUES ('PRO0193', 215, 147290, true, 610, 120, 1, '2019-06-04 16:54:54.671068', 215, 7958, false, null, null, 3);
 INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
                                  data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
                                  pg_username_delecao, cod_empresa)
-VALUES ('AAA1232', 103, 10061, true, 579, 121, 1, '2019-04-22 19:36:24.037065', 103, 6698, false, null, null, 3);
-INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
-                                 data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
-                                 pg_username_delecao, cod_empresa)
-VALUES ('MEL4999', 103, 123, true, 63, 119, 1, '2019-05-15 19:40:42.463701', 103, 7496, false, null, null, 3);
-INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
-                                 data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
-                                 pg_username_delecao, cod_empresa)
-VALUES ('TST0001', 5, 100110, true, 64, 120, 1, '2019-05-16 13:49:25.228329', 5, 7600, false, null, null, 3);
-INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
-                                 data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
-                                 pg_username_delecao, cod_empresa)
-VALUES ('PRO0179', 179, 150498, true, 63, 119, 1, '2019-06-04 16:54:54.671068', 179, 7944, false, null, null, 3);
-INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
-                                 data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
-                                 pg_username_delecao, cod_empresa)
-VALUES ('PRO0180', 179, 214561, false, 63, 119, 1, '2019-06-04 16:54:54.671068', 179, 7945, false, null, null, 3);
-INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
-                                 data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
-                                 pg_username_delecao, cod_empresa)
-VALUES ('PRO0181', 179, 111321, true, 63, 121, 1, '2019-06-04 16:54:54.671068', 179, 7946, false, null, null, 3);
-INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
-                                 data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
-                                 pg_username_delecao, cod_empresa)
-VALUES ('PRO0182', 179, 152292, true, 63, 119, 1, '2019-06-04 16:54:54.671068', 179, 7947, false, null, null, 3);
-INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
-                                 data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
-                                 pg_username_delecao, cod_empresa)
-VALUES ('PRO0183', 179, 11506, true, 63, 120, 1, '2019-06-04 16:54:54.671068', 179, 7948, false, null, null, 3);
-INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
-                                 data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
-                                 pg_username_delecao, cod_empresa)
-VALUES ('PRO0184', 179, 106965, true, 64, 120, 1, '2019-06-04 16:54:54.671068', 179, 7949, false, null, null, 3);
-INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
-                                 data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
-                                 pg_username_delecao, cod_empresa)
-VALUES ('PRO0185', 179, 3194, true, 64, 120, 1, '2019-06-04 16:54:54.671068', 179, 7950, false, null, null, 3);
-INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
-                                 data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
-                                 pg_username_delecao, cod_empresa)
-VALUES ('PRO0186', 179, 164638, true, 64, 121, 2, '2019-06-04 16:54:54.671068', 179, 7951, false, null, null, 3);
-INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
-                                 data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
-                                 pg_username_delecao, cod_empresa)
-VALUES ('PRO0187', 179, 174005, true, 64, 120, 1, '2019-06-04 16:54:54.671068', 179, 7952, false, null, null, 3);
-INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
-                                 data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
-                                 pg_username_delecao, cod_empresa)
-VALUES ('PRO0188', 179, 134254, true, 64, 120, 1, '2019-06-04 16:54:54.671068', 179, 7953, false, null, null, 3);
-INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
-                                 data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
-                                 pg_username_delecao, cod_empresa)
-VALUES ('PRO0189', 179, 139480, true, 64, 120, 1, '2019-06-04 16:54:54.671068', 179, 7954, false, null, null, 3);
-INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
-                                 data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
-                                 pg_username_delecao, cod_empresa)
-VALUES ('PRO0190', 179, 137997, true, 64, 120, 1, '2019-06-04 16:54:54.671068', 179, 7955, false, null, null, 3);
-INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
-                                 data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
-                                 pg_username_delecao, cod_empresa)
-VALUES ('PRO0191', 179, 170845, true, 610, 120, 1, '2019-06-04 16:54:54.671068', 179, 7956, false, null, null, 3);
-INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
-                                 data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
-                                 pg_username_delecao, cod_empresa)
-VALUES ('PRO0192', 179, 130636, true, 610, 120, 1, '2019-06-04 16:54:54.671068', 179, 7957, false, null, null, 3);
-INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
-                                 data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
-                                 pg_username_delecao, cod_empresa)
-VALUES ('PRO0193', 179, 147290, true, 610, 120, 1, '2019-06-04 16:54:54.671068', 179, 7958, false, null, null, 3);
-INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
-                                 data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
-                                 pg_username_delecao, cod_empresa)
-VALUES ('PRO0194', 179, 12943, true, 610, 120, 1, '2019-06-04 16:54:54.671068', 179, 7959, false, null, null, 3);
-INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
-                                 data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
-                                 pg_username_delecao, cod_empresa)
-VALUES ('PRI1010', 5, 1000, true, 63, 119, 1, '2019-07-09 14:30:15.555985', 5, 8310, false, null, null, 3);
-INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
-                                 data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
-                                 pg_username_delecao, cod_empresa)
-VALUES ('QJI5667', 5, 12000, true, 633, 1069, 1, '2019-08-13 16:32:39.338470', 5, 8983, false, null, null, 3);
-INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
-                                 data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
-                                 pg_username_delecao, cod_empresa)
-VALUES ('LLL1234', 5, 25000, true, 64, 1076, 1, '2019-08-18 13:40:49.008644', 5, 9369, false, null, null, 3);
-INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
-                                 data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
-                                 pg_username_delecao, cod_empresa)
-VALUES ('ABC1234', 5, 45410, true, 63, 1077, 1, '2019-08-18 14:00:53.196949', 5, 9370, false, null, null, 3);
-INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
-                                 data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
-                                 pg_username_delecao, cod_empresa)
-VALUES ('MEE0499', 5, 310100, true, 641, 1207, 1, '2019-09-16 18:59:02.113893', 5, 10626, false, null, null, 3);
-INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
-                                 data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
-                                 pg_username_delecao, cod_empresa)
-VALUES ('MOT1111', 215, 1001, true, 702, 1491, 1, '2019-09-26 16:44:54.162804', 215, 14334, false, null, null, 3);
-INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
-                                 data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
-                                 pg_username_delecao, cod_empresa)
-VALUES ('MEE1313', 5, 10090, true, 64, 1207, 1, '2019-10-16 12:25:19.653003', 5, 17462, false, null, null, 3);
-INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
-                                 data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
-                                 pg_username_delecao, cod_empresa)
-VALUES ('31', 215, 11331, true, 579, 2172, 1, '2019-11-13 12:29:03.160291', 215, 23364, false, null, null, 3);
-INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
-                                 data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
-                                 pg_username_delecao, cod_empresa)
-VALUES ('ABC2222', 215, 1000, true, 610, 119, 1, '2019-11-17 15:18:49.226438', 215, 23410, false, null, null, 3);
-INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
-                                 data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
-                                 pg_username_delecao, cod_empresa)
-VALUES ('1', 215, 1501, true, 610, 2171, 1, '2019-11-18 12:07:49.163321', 215, 23411, false, null, null, 3);
-INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
-                                 data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
-                                 pg_username_delecao, cod_empresa)
-VALUES ('''ASD134', 215, 1, true, 579, 2338, 1, '2019-12-03 19:46:07.612884', 215, 24327, false, null, null, 3);
-INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
-                                 data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
-                                 pg_username_delecao, cod_empresa)
-VALUES ('''AVA312', 215, 1, true, 617, 2339, 1, '2019-12-03 19:47:06.484230', 215, 24328, false, null, null, 3);
-INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
-                                 data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
-                                 pg_username_delecao, cod_empresa)
-VALUES ('JHT1000', 5, 1000, true, 973, 119, 1, '2020-01-20 21:01:14.198201', 5, 41169, false, null, null, 3);
-INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
-                                 data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
-                                 pg_username_delecao, cod_empresa)
-VALUES ('DIA0021', 5, 1000, true, 974, 1076, 1, '2020-01-21 17:13:51.711592', 5, 41170, false, null, null, 3);
-INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo, cod_modelo, cod_eixos,
-                                 data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
-                                 pg_username_delecao, cod_empresa)
-VALUES ('DIA0020', 215, 1000, true, 975, 1207, 1, '2020-01-21 19:15:31.971416', 5, 41171, false, null, null, 3);
-SELECT setval('veiculo_data_codigo_seq', 41171, true);
+VALUES ('PRO0194', 215, 12943, true, 610, 120, 1, '2019-06-04 16:54:54.671068', 215, 7959, false, null, null, 3);
+SELECT setval('veiculo_data_codigo_seq', 7959, true);
 --######################################################################################################################
 --######################################################################################################################
 --######################################################################################################################
@@ -842,210 +559,28 @@ SELECT setval('veiculo_data_codigo_seq', 41171, true);
 --######################################################################################################################
 -- Cria dependências necessárias do pneu e insere pneus.
 INSERT INTO public.modelo_pneu (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
-VALUES (28, 'H2R', 1, 3, 4, 15);
-INSERT INTO public.modelo_pneu (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
-VALUES (129, 'G685', 1, 3, 4, 15);
-INSERT INTO public.modelo_pneu (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
-VALUES (130, 'Regional RHS', 1, 3, 4, 15);
-INSERT INTO public.modelo_pneu (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
 VALUES (131, 'R268', 4, 3, 4, 15);
-INSERT INTO public.modelo_pneu (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
-VALUES (132, 'R155', 4, 3, 4, 15);
-INSERT INTO public.modelo_pneu (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
-VALUES (133, 'M814', 4, 3, 4, 15);
-INSERT INTO public.modelo_pneu (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
-VALUES (134, 'R297', 4, 3, 4, 15);
 INSERT INTO public.modelo_pneu (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
 VALUES (135, 'G658', 4, 3, 4, 15);
 INSERT INTO public.modelo_pneu (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
-VALUES (136, 'KS461', 4, 3, 4, 15);
-INSERT INTO public.modelo_pneu (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
 VALUES (137, 'HSR', 3, 3, 4, 15);
-INSERT INTO public.modelo_pneu (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
-VALUES (138, 'HSR2', 3, 3, 4, 15);
 INSERT INTO public.modelo_pneu (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
 VALUES (139, 'FS511', 2, 3, 4, 15);
 INSERT INTO public.modelo_pneu (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
-VALUES (140, 'FS557', 2, 3, 4, 15);
-INSERT INTO public.modelo_pneu (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
-VALUES (141, 'Drive II', 5, 3, 4, 15);
-INSERT INTO public.modelo_pneu (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
-VALUES (142, 'G665', 1, 3, 4, 15);
-INSERT INTO public.modelo_pneu (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
-VALUES (143, 'G658', 1, 3, 4, 15);
-INSERT INTO public.modelo_pneu (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
-VALUES (144, 'R268', 1, 3, 4, 15);
-INSERT INTO public.modelo_pneu (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
-VALUES (145, 'RHS', 1, 3, 4, 15);
-INSERT INTO public.modelo_pneu (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
-VALUES (146, 'KRS03', 8, 3, 4, 15);
-INSERT INTO public.modelo_pneu (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
-VALUES (147, 'XZE2', 7, 3, 4, 15);
-INSERT INTO public.modelo_pneu (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
 VALUES (148, 'XZU', 7, 3, 4, 15);
-INSERT INTO public.modelo_pneu (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
-VALUES (149, 'XZE2 PLUS', 7, 3, 4, 15);
-INSERT INTO public.modelo_pneu (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
-VALUES (150, 'FR85', 6, 3, 4, 15);
-INSERT INTO public.modelo_pneu (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
-VALUES (151, 'MC45', 6, 3, 4, 15);
-INSERT INTO public.modelo_pneu (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
-VALUES (152, 'FR01', 6, 3, 4, 15);
-INSERT INTO public.modelo_pneu (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
-VALUES (153, 'XZE2', 6, 3, 4, 15);
-INSERT INTO public.modelo_pneu (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
-VALUES (154, 'R155', 6, 3, 4, 15);
-INSERT INTO public.modelo_pneu (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
-VALUES (155, 'DSR115', 9, 3, 4, 15);
-INSERT INTO public.modelo_pneu (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
-VALUES (156, 'XDE2', 7, 3, 4, 15);
-INSERT INTO public.modelo_pneu (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
-VALUES (157, 'R163', 4, 3, 4, 15);
-INSERT INTO public.modelo_pneu (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
-VALUES (158, 'FS400', 2, 3, 4, 15);
-INSERT INTO public.modelo_pneu (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
-VALUES (159, 'R250', 4, 3, 4, 15);
-INSERT INTO public.modelo_pneu (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
-VALUES (160, 'R227', 4, 3, 4, 15);
-INSERT INTO public.modelo_pneu (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
-VALUES (161, 'X MULT', 7, 3, 4, 15);
-INSERT INTO public.modelo_pneu (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
-VALUES (162, 'G667', 1, 3, 4, 15);
-INSERT INTO public.modelo_pneu (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
-VALUES (163, 'KMax S', 1, 3, 4, 15);
-INSERT INTO public.modelo_pneu (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
-VALUES (164, 'kunh', 219, 3, 4, 13);
-INSERT INTO public.modelo_pneu (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
-VALUES (165, 'ModeloB', 4, 3, 5, 15);
-INSERT INTO public.modelo_pneu (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
-VALUES (291, 'gol plus', 3, 3, 3, 16);
-INSERT INTO public.modelo_pneu (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
-VALUES (292, 'mc01', 6, 3, 3, 16);
-INSERT INTO public.modelo_pneu (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
-VALUES (1051, 'Front Rubber', 198, 3, 4, 15);
-INSERT INTO public.modelo_pneu (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
-VALUES (1052, 'D601', 187, 3, 4, 14.5);
-INSERT INTO public.modelo_pneu (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
-VALUES (1053, 'bomlog3', 11, 3, 4, 15);
-INSERT INTO public.modelo_pneu (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
-VALUES (1057, 'Nome', 183, 3, 4, 15);
-INSERT INTO public.modelo_pneu (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
-VALUES (1152, 'teste', 217, 3, 4, 10);
-INSERT INTO public.modelo_pneu (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
-VALUES (1273, 'XZE5', 7, 3, 4, 15);
-INSERT INTO public.modelo_pneu (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
-VALUES (1331, '4005B', 227, 3, 4, 15);
-INSERT INTO public.modelo_pneu (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
-VALUES (1492, 'Modelo2', 6, 3, 3, 18);
-INSERT INTO public.modelo_pneu (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
-VALUES (1666, 'Teste', 12, 3, 4, 16);
-INSERT INTO public.modelo_pneu (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
-VALUES (2378, 'FR302', 4, 3, 4, 18);
-INSERT INTO public.modelo_pneu (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
-VALUES (2480, '17 MC-45PL', 7, 3, 4, 18);
-INSERT INTO public.modelo_pneu (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
-VALUES (2481, 'G-359 - PL', 1, 3, 4, 18);
-INSERT INTO public.modelo_pneu (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
-VALUES (2482, 'PT-11 - PL', 6, 3, 4, 18);
-INSERT INTO public.modelo_pneu (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
-VALUES (2827, 'abcd', 12, 3, 4, 15);
-INSERT INTO public.modelo_pneu (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
-VALUES (2912, '412', 165, 3, 2, 1);
-SELECT setval('modelo_pneu_codigo_seq', 2912, true);
+SELECT setval('modelo_pneu_codigo_seq', 148, true);
 
-INSERT INTO public.marca_banda (codigo, nome, cod_empresa)
-VALUES (5, 'Banda teste', 3);
 INSERT INTO public.marca_banda (codigo, nome, cod_empresa)
 VALUES (6, 'Bandag', 3);
 INSERT INTO public.marca_banda (codigo, nome, cod_empresa)
-VALUES (7, 'Marca 1', 3);
-INSERT INTO public.marca_banda (codigo, nome, cod_empresa)
-VALUES (8, 'Marca 2', 3);
-INSERT INTO public.marca_banda (codigo, nome, cod_empresa)
-VALUES (9, 'Marca Banda', 3);
-INSERT INTO public.marca_banda (codigo, nome, cod_empresa)
-VALUES (17, 'adsadsa', 3);
-INSERT INTO public.marca_banda (codigo, nome, cod_empresa)
-VALUES (19, 'Bandag2', 3);
-INSERT INTO public.marca_banda (codigo, nome, cod_empresa)
-VALUES (23, 'hhgl', 3);
-INSERT INTO public.marca_banda (codigo, nome, cod_empresa)
 VALUES (25, 'Vipal', 3);
-INSERT INTO public.marca_banda (codigo, nome, cod_empresa)
-VALUES (45, 'banda 1', 3);
-INSERT INTO public.marca_banda (codigo, nome, cod_empresa)
-VALUES (108, 'RECAPADORA TVL', 3);
-INSERT INTO public.marca_banda (codigo, nome, cod_empresa)
-VALUES (137, 'VUC TRUCK', 3);
-INSERT INTO public.marca_banda (codigo, nome, cod_empresa)
-VALUES (138, 'Marc 1', 3);
-INSERT INTO public.marca_banda (codigo, nome, cod_empresa)
-VALUES (139, 'Marc 2', 3);
-INSERT INTO public.marca_banda (codigo, nome, cod_empresa)
-VALUES (160, 'BandaTeste2', 3);
-INSERT INTO public.marca_banda (codigo, nome, cod_empresa)
-VALUES (270, 'Vipal 1', 3);
-INSERT INTO public.marca_banda (codigo, nome, cod_empresa)
-VALUES (290, 'MICHELIN-PL', 3);
-INSERT INTO public.marca_banda (codigo, nome, cod_empresa)
-VALUES (291, 'GOODYEAR-PL', 3);
-INSERT INTO public.marca_banda (codigo, nome, cod_empresa)
-VALUES (292, 'PIRELLI-PL', 3);
-SELECT setval('marca_banda_codigo_seq', 292, true);
+SELECT setval('marca_banda_codigo_seq', 25, true);
 
-INSERT INTO public.modelo_banda (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
-VALUES (9, 'modelo banda teste ', 5, 3, 3, 10);
-INSERT INTO public.modelo_banda (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
-VALUES (10, 'modelo banda teste 2', 5, 3, 4, 12);
 INSERT INTO public.modelo_banda (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
 VALUES (11, 'BTLSA2', 6, 3, 5, 15);
 INSERT INTO public.modelo_banda (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
-VALUES (12, 'Modelo 1', 7, 3, 6, 15.5);
-INSERT INTO public.modelo_banda (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
-VALUES (13, 'Modelo 2', 7, 3, 3, 16);
-INSERT INTO public.modelo_banda (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
-VALUES (14, 'Teste 1', 6, 3, 4, 124.11);
-INSERT INTO public.modelo_banda (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
-VALUES (31, 'ModeloTeste', 19, 3, 4, 15);
-INSERT INTO public.modelo_banda (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
-VALUES (56, 'vl530l', 25, 3, 3, 16);
-INSERT INTO public.modelo_banda (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
 VALUES (57, 'vlw110', 25, 3, 3, 16);
-INSERT INTO public.modelo_banda (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
-VALUES (58, 'dvum3b258', 25, 3, 3, 16);
-INSERT INTO public.modelo_banda (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
-VALUES (91, 'teste2', 19, 3, 6, 33);
-INSERT INTO public.modelo_banda (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
-VALUES (104, 'teste', 17, 3, 4, 15);
-INSERT INTO public.modelo_banda (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
-VALUES (395, 'Banda Klabin', 45, 3, 4, 16);
-INSERT INTO public.modelo_banda (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
-VALUES (461, 'Bandag333', 6, 3, 4, 18);
-INSERT INTO public.modelo_banda (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
-VALUES (478, 'ABC123', 108, 3, 4, 16);
-INSERT INTO public.modelo_banda (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
-VALUES (507, 'BTLSA3', 6, 3, 4, 18);
-INSERT INTO public.modelo_banda (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
-VALUES (580, 'Brid 1', 138, 3, 3, 15);
-INSERT INTO public.modelo_banda (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
-VALUES (666, 'ModeloTeste2', 160, 3, 4, 15);
-INSERT INTO public.modelo_banda (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
-VALUES (667, 'ModeloTesteVipal', 25, 3, 5, 18);
-INSERT INTO public.modelo_banda (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
-VALUES (722, 'Teste', 25, 3, 4, 20);
-INSERT INTO public.modelo_banda (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
-VALUES (780, 'tESTE', 8, 3, 3, 2.1);
-INSERT INTO public.modelo_banda (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
-VALUES (1249, 'TR 12', 270, 3, 3, 16);
-INSERT INTO public.modelo_banda (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
-VALUES (1330, 'P510', 292, 3, 4, 18);
-INSERT INTO public.modelo_banda (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
-VALUES (1331, 'G-500PL', 291, 3, 4, 18);
-INSERT INTO public.modelo_banda (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
-VALUES (1332, 'M-700PL', 290, 3, 4, 18);
-INSERT INTO public.modelo_banda (codigo, nome, cod_marca, cod_empresa, qt_sulcos, altura_sulcos)
-VALUES (1333, 'G359-PL', 292, 3, 4, 18);
-SELECT setval('modelo_banda_codigo_seq', 1333, true);
+SELECT setval('modelo_banda_codigo_seq', 57, true);
 
 
 create table public.pneu_script
