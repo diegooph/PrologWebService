@@ -1,3 +1,6 @@
+-- Index utilizado pela view_produtividade_extrato.
+create index idx_tracking_codigo_transportadora on tracking ("código_transportadora");
+
 create or replace view view_produtividade_extrato
             (cod_unidade, matricula_ambev, data, cpf, nome_colaborador, data_nascimento,
              funcao, cod_funcao, nome_equipe, fator, cargaatual, entrega, mapa, placa,
