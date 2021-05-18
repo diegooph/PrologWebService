@@ -4,6 +4,8 @@ Change Log
 ###
 ### UNRELASED
 ###
+### Refactors
+* Melhora mapeamento de exceptions do SQL
 
 
 <a name="v3.3.4"></a>
