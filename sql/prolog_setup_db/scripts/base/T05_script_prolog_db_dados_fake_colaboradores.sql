@@ -9,139 +9,95 @@ VALUES (951, 'Gerente', 3);
 SELECT setval('funcao_data_codigo_seq', 951, true);
 
 INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (5, 159, 10, 1);
+VALUES (215, 159, 100, 1);
 INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (5, 159, 11, 1);
+VALUES (215, 159, 140, 1);
 INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (5, 159, 12, 1);
+VALUES (215, 159, 117, 1);
 INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (5, 159, 13, 1);
+VALUES (215, 159, 18, 1);
 INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (5, 159, 14, 1);
+VALUES (215, 159, 114, 1);
 INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (5, 159, 15, 1);
+VALUES (215, 159, 118, 1);
 INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (5, 159, 16, 1);
+VALUES (215, 159, 13, 1);
 INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (5, 159, 17, 1);
+VALUES (215, 159, 113, 1);
 INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (5, 159, 18, 1);
+VALUES (215, 159, 10, 1);
 INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (5, 159, 19, 1);
+VALUES (215, 159, 121, 1);
 INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (5, 159, 100, 1);
+VALUES (215, 159, 12, 1);
 INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (5, 159, 110, 1);
+VALUES (215, 159, 112, 1);
 INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (5, 159, 111, 1);
+VALUES (215, 159, 11, 1);
 INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (5, 159, 112, 1);
+VALUES (215, 159, 141, 1);
 INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (5, 159, 113, 1);
+VALUES (215, 159, 144, 1);
 INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (5, 159, 114, 1);
+VALUES (215, 159, 143, 1);
 INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (5, 159, 115, 1);
+VALUES (215, 159, 124, 1);
 INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (5, 159, 116, 1);
+VALUES (215, 159, 123, 1);
 INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (5, 159, 117, 1);
+VALUES (215, 159, 142, 1);
 INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (5, 159, 118, 1);
+VALUES (215, 159, 17, 1);
 INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (5, 159, 119, 1);
+VALUES (215, 159, 135, 1);
 INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (5, 159, 121, 1);
+VALUES (215, 159, 133, 1);
 INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (5, 159, 122, 1);
+VALUES (215, 159, 15, 1);
 INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (5, 159, 123, 1);
+VALUES (215, 159, 110, 1);
 INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (5, 159, 124, 1);
+VALUES (215, 159, 134, 1);
 INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (5, 159, 140, 1);
+VALUES (215, 159, 116, 1);
 INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (5, 159, 142, 1);
+VALUES (215, 159, 19, 1);
 INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (5, 159, 143, 1);
+VALUES (215, 159, 111, 1);
 INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (5, 159, 144, 1);
+VALUES (215, 159, 119, 1);
 INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (5, 159, 319, 3);
+VALUES (215, 159, 131, 1);
 INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (5, 159, 324, 3);
+VALUES (215, 159, 132, 1);
 INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (5, 159, 32, 3);
+VALUES (215, 159, 130, 1);
 INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (5, 159, 328, 3);
+VALUES (215, 159, 14, 1);
 INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (5, 159, 310, 3);
+VALUES (215, 159, 16, 1);
 INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (5, 159, 316, 3);
+VALUES (215, 159, 115, 1);
 INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (5, 159, 344, 3);
+VALUES (215, 159, 122, 1);
 INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (5, 159, 340, 3);
+VALUES (215, 159, 329, 3);
 INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (5, 159, 338, 3);
+VALUES (215, 159, 328, 3);
 INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (5, 159, 341, 3);
+VALUES (215, 159, 310, 3);
 INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (5, 159, 336, 3);
+VALUES (215, 159, 325, 3);
 INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (5, 159, 342, 3);
+VALUES (215, 159, 316, 3);
 INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (5, 159, 337, 3);
+VALUES (215, 159, 313, 3);
 INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (5, 159, 311, 3);
+VALUES (215, 159, 311, 3);
 INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (5, 159, 317, 3);
+VALUES (215, 159, 317, 3);
 INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (5, 159, 314, 3);
-INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (5, 159, 315, 3);
-INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (5, 159, 331, 3);
-INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (5, 159, 322, 3);
-INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (5, 159, 34, 3);
-INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (5, 159, 35, 3);
-INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (5, 159, 333, 3);
-INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (5, 159, 334, 3);
-INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (5, 159, 335, 3);
-INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (5, 159, 321, 3);
-INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (5, 159, 37, 3);
-INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (5, 159, 36, 3);
-INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (5, 159, 320, 3);
-INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (5, 159, 326, 3);
-INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (5, 159, 330, 3);
-INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (5, 159, 38, 3);
-INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (5, 159, 39, 3);
-INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (5, 159, 327, 3);
-INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (5, 159, 332, 3);
-INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (5, 159, 318, 3);
-INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (5, 159, 323, 3);
-INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (5, 159, 30, 3);
-INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (5, 159, 501, 5);
+VALUES (215, 159, 501, 5);
 
 INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
 VALUES (215, 951, 100, 1);
@@ -232,71 +188,11 @@ VALUES (215, 951, 325, 3);
 INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
 VALUES (215, 951, 316, 3);
 INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (215, 951, 338, 3);
-INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (215, 951, 341, 3);
-INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (215, 951, 340, 3);
-INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (215, 951, 344, 3);
-INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (215, 951, 337, 3);
-INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (215, 951, 342, 3);
-INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (215, 951, 336, 3);
-INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
 VALUES (215, 951, 313, 3);
 INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
 VALUES (215, 951, 311, 3);
 INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
 VALUES (215, 951, 317, 3);
-INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (215, 951, 322, 3);
-INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (215, 951, 315, 3);
-INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (215, 951, 331, 3);
-INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (215, 951, 314, 3);
-INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (215, 951, 333, 3);
-INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (215, 951, 335, 3);
-INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (215, 951, 334, 3);
-INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (215, 951, 34, 3);
-INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (215, 951, 35, 3);
-INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (215, 951, 321, 3);
-INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (215, 951, 37, 3);
-INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (215, 951, 326, 3);
-INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (215, 951, 320, 3);
-INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (215, 951, 330, 3);
-INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (215, 951, 36, 3);
-INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (215, 951, 39, 3);
-INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (215, 951, 332, 3);
-INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (215, 951, 327, 3);
-INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (215, 951, 38, 3);
-INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (215, 951, 343, 3);
-INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (215, 951, 323, 3);
-INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (215, 951, 30, 3);
-INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (215, 951, 318, 3);
 INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
 VALUES (215, 951, 501, 5);
 
