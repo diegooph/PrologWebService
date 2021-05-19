@@ -1,5 +1,10 @@
--- Obs.: um mapa pode retornar mais de uma vez, sendo o máximo de 3: uma para o motorista e outras duas para os
+-- Para identificar se um mapa tem um colaborador vinculado no Prolog, é preciso que o código da unidade do colaborador
+-- e a matrícula ambev tenham um correspondente na tabela mapa.
+--
+-- Um mapa pode retornar mais de uma vez, sendo o máximo de 3: uma para o motorista e outras duas para os
 -- dois ajudantes.
+--
+-- Obs.: existem casos em que podem vir dados duplicados, precisamos manter com 'union'.
 create or replace view view_mapa_colaborador as
 select m.mapa        as mapa,
        c.cpf         as cpf,
