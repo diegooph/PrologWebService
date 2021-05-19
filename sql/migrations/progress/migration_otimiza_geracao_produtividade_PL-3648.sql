@@ -404,9 +404,9 @@ create or replace function func_get_produtividade_colaborador(f_mes integer, f_a
 as
 $$
 select *
-from view_produtividade_extrato
-where data between func_get_data_inicio_produtividade(f_ano, f_mes, f_cpf, null) and
+from view_produtividade_extrato vpe
+where vpe.data between func_get_data_inicio_produtividade(f_ano, f_mes, f_cpf, null) and
     func_get_data_fim_produtividade(f_ano, f_mes, f_cpf, null)
-  and cpf = f_cpf
-order by data asc
+  and vpe.cpf = f_cpf
+order by vpe.data
 $$;
