@@ -16,16 +16,12 @@ create or replace view view_produtividade_extrato
              valor_as, valor)
 as
 with internal_tracking as (
-    select t.mapa                         as tracking_mapa,
-           t."código_transportadora"      as cod_transportadora,
-           sum(case
-                   when (t.disp_apont_cadastrado <= um_1.meta_raio_tracking)
-                       then 1
-                   else 0
-               end)                       as apontamentos_ok,
-           count(t.disp_apont_cadastrado) as total_apontamentos
+    select t.mapa                                                                 as tracking_mapa,
+           t."código_transportadora"                                              as cod_unidade,
+           sum(1) filter (where t.disp_apont_cadastrado <= um.meta_raio_tracking) as apontamentos_ok,
+           count(t.disp_apont_cadastrado)                                         as total_apontamentos
     from tracking t
-             join unidade_metas um_1 on um_1.cod_unidade = t."código_transportadora"
+             join unidade_metas um on um.cod_unidade = t."código_transportadora"
     group by t.mapa, t."código_transportadora"
 ),
      dados as (
@@ -331,7 +327,7 @@ with internal_tracking as (
                   left join unidade_valores_rm uv on uv.cod_unidade = m.cod_unidade
                   left join internal_tracking it
                             on it.tracking_mapa = m.mapa
-                                and it.cod_transportadora = m.cod_unidade
+                                and it.cod_unidade = m.cod_unidade
      )
 
 select d.*,
