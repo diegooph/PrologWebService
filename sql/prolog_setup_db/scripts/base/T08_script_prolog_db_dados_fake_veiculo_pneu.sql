@@ -81,29 +81,29 @@ VALUES ('PRO0180', 1005, 215, 222, '2019-07-09 14:46:17.166982');
 
 
 INSERT INTO public.veiculo_pneu (placa, cod_pneu, cod_unidade, posicao, data_hora_cadastro)
-VALUES ('PRO0190', 1005, 215, 111, '2019-07-09 14:46:17.166982');
+VALUES ('PRO0190', 1006, 215, 111, '2019-07-09 14:46:17.166982');
 INSERT INTO public.veiculo_pneu (placa, cod_pneu, cod_unidade, posicao, data_hora_cadastro)
-VALUES ('PRO0190', 1006, 215, 121, '2019-07-09 14:46:17.166982');
+VALUES ('PRO0190', 1007, 215, 121, '2019-07-09 14:46:17.166982');
 INSERT INTO public.veiculo_pneu (placa, cod_pneu, cod_unidade, posicao, data_hora_cadastro)
-VALUES ('PRO0190', 1007, 215, 211, '2019-07-09 14:46:17.166982');
+VALUES ('PRO0190', 1008, 215, 211, '2019-07-09 14:46:17.166982');
 INSERT INTO public.veiculo_pneu (placa, cod_pneu, cod_unidade, posicao, data_hora_cadastro)
-VALUES ('PRO0190', 1008, 215, 212, '2019-07-09 14:46:17.166982');
+VALUES ('PRO0190', 1009, 215, 212, '2019-07-09 14:46:17.166982');
 INSERT INTO public.veiculo_pneu (placa, cod_pneu, cod_unidade, posicao, data_hora_cadastro)
-VALUES ('PRO0190', 1009, 215, 221, '2019-07-09 14:46:17.166982');
+VALUES ('PRO0190', 1010, 215, 221, '2019-07-09 14:46:17.166982');
 INSERT INTO public.veiculo_pneu (placa, cod_pneu, cod_unidade, posicao, data_hora_cadastro)
-VALUES ('PRO0190', 1010, 215, 222, '2019-07-09 14:46:17.166982');
+VALUES ('PRO0190', 1011, 215, 222, '2019-07-09 14:46:17.166982');
 INSERT INTO public.veiculo_pneu (placa, cod_pneu, cod_unidade, posicao, data_hora_cadastro)
-VALUES ('PRO0190', 1011, 215, 311, '2019-07-09 14:46:17.166982');
+VALUES ('PRO0190', 1012, 215, 311, '2019-07-09 14:46:17.166982');
 INSERT INTO public.veiculo_pneu (placa, cod_pneu, cod_unidade, posicao, data_hora_cadastro)
-VALUES ('PRO0190', 1012, 215, 312, '2019-07-09 14:46:17.166982');
+VALUES ('PRO0190', 1013, 215, 312, '2019-07-09 14:46:17.166982');
 INSERT INTO public.veiculo_pneu (placa, cod_pneu, cod_unidade, posicao, data_hora_cadastro)
-VALUES ('PRO0190', 1013, 215, 321, '2019-07-09 14:46:17.166982');
+VALUES ('PRO0190', 1014, 215, 321, '2019-07-09 14:46:17.166982');
 INSERT INTO public.veiculo_pneu (placa, cod_pneu, cod_unidade, posicao, data_hora_cadastro)
-VALUES ('PRO0190', 1014, 215, 322, '2019-07-09 14:46:17.166982');
+VALUES ('PRO0190', 1015, 215, 322, '2019-07-09 14:46:17.166982');
 
 
 INSERT INTO public.veiculo_pneu (placa, cod_pneu, cod_unidade, posicao, data_hora_cadastro)
-VALUES ('PRO0191', 1015, 215, 211, '2019-07-09 14:46:17.166982');
+VALUES ('PRO0191', 1027, 215, 211, '2019-07-09 14:46:17.166982');
 INSERT INTO public.veiculo_pneu (placa, cod_pneu, cod_unidade, posicao, data_hora_cadastro)
 VALUES ('PRO0191', 1016, 215, 212, '2019-07-09 14:46:17.166982');
 INSERT INTO public.veiculo_pneu (placa, cod_pneu, cod_unidade, posicao, data_hora_cadastro)
