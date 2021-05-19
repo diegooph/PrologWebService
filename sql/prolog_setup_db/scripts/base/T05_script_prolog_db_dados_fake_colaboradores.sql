@@ -298,22 +298,26 @@ VALUES (215, 951, 30, 3);
 INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
 VALUES (215, 951, 318, 3);
 INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (215, 942, 336, 3);
-INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
-VALUES (215, 159, 336, 3);
-INSERT INTO public.cargo_funcao_prolog_v11 (cod_unidade, cod_funcao_colaborador, cod_funcao_prolog, cod_pilar_prolog)
 VALUES (215, 951, 501, 5);
 
 INSERT INTO public.setor (codigo, cod_unidade, nome)
-VALUES (13, 5, 'Administrativo');
+VALUES (1, 5, 'Administrativo');
 INSERT INTO public.setor (codigo, cod_unidade, nome)
-VALUES (356, 5, 'Frota');
+VALUES (2, 5, 'Frota');
+INSERT INTO public.setor (codigo, cod_unidade, nome)
+VALUES (13, 215, 'Administrativo');
+INSERT INTO public.setor (codigo, cod_unidade, nome)
+VALUES (356, 215, 'Frota');
 SELECT setval('setor_codigo_seq', 356, true);
 
 INSERT INTO public.equipe (codigo, nome, cod_unidade)
-VALUES (7, 'Sala 1', 5);
+VALUES (1, 'Sala 1', 5);
 INSERT INTO public.equipe (codigo, nome, cod_unidade)
-VALUES (38, 'Sala 2', 5);
+VALUES (2, 'Sala 2', 5);
+INSERT INTO public.equipe (codigo, nome, cod_unidade)
+VALUES (7, 'Sala 1', 215);
+INSERT INTO public.equipe (codigo, nome, cod_unidade)
+VALUES (38, 'Sala 2', 215);
 SELECT setval('equipe_codigo_seq', 38, true);
 
 
@@ -321,7 +325,7 @@ INSERT INTO public.colaborador_data (cpf, matricula_ambev, matricula_trans, data
                                      data_demissao, status_ativo, nome, cod_equipe, cod_funcao, cod_unidade,
                                      cod_permissao, cod_empresa, cod_setor, pis, data_hora_cadastro, codigo,
                                      cod_unidade_cadastro, deletado, data_hora_deletado, pg_username_delecao)
-VALUES (3383283194, 4, null, '2018-02-26', '2018-02-20', null, true, 'John Doe', 7, 159, 5, 3, 3, 356, '', null,
+VALUES (3383283194, 4, null, '2018-02-26', '2018-02-20', null, true, 'John Doe', 7, 159, 215, 3, 3, 356, '', null,
         2272, 215, false, null, null);
 INSERT INTO public.colaborador_data (cpf, matricula_ambev, matricula_trans, data_nascimento, data_admissao,
                                      data_demissao, status_ativo, nome, cod_equipe, cod_funcao, cod_unidade,
