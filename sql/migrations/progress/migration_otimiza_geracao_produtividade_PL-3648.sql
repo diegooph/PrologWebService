@@ -25,63 +25,63 @@ with internal_tracking as (
     group by t.mapa, t."código_transportadora"
 ),
      dados as (
-         select vmc.cod_unidade                                              as cod_unidade,
-                c.matricula_ambev                                            as matricula_ambev,
-                m.data                                                       as data,
-                vmc.cpf                                                      as cpf,
-                c.nome                                                       as nome_colaborador,
-                c.data_nascimento                                            as data_nascimento,
-                f.nome                                                       as funcao,
-                f.codigo                                                     as cod_funcao,
-                e.nome                                                       as nome_equipe,
-                m.fator                                                      as fator,
-                m.cargaatual                                                 as cargaatual,
-                m.entrega                                                    as entrega,
-                m.mapa                                                       as mapa,
-                m.placa                                                      as placa,
-                m.cxcarreg                                                   as cxcarreg,
-                m.cxentreg                                                   as cxentreg,
-                m.qthlcarregados                                             as qthlcarregados,
-                m.qthlentregues                                              as qthlentregues,
-                m.qtnfcarregadas                                             as qtnfcarregadas,
-                m.qtnfentregues                                              as qtnfentregues,
-                m.entregascompletas                                          as entregascompletas,
-                m.entregasnaorealizadas                                      as entregasnaorealizadas,
-                m.entregasparciais                                           as entregasparciais,
-                m.kmprevistoroad                                             as kmprevistoroad,
-                m.kmsai                                                      as kmsai,
-                m.kmentr                                                     as kmentr,
-                to_seconds((m.tempoprevistoroad)::text)                      as tempoprevistoroad,
-                m.hrsai                                                      as hrsai,
-                m.hrentr                                                     as hrentr,
-                to_seconds(m.hrentr - m.hrsai)                               as tempo_rota,
-                to_seconds((m.tempointerno)::text)                           as tempointerno,
-                m.hrmatinal                                                  as hrmatinal,
-                it.apontamentos_ok                                           as apontamentos_ok,
-                it.total_apontamentos                                        as total_tracking,
+         select vmc.cod_unidade                                    as cod_unidade,
+                c.matricula_ambev                                  as matricula_ambev,
+                m.data                                             as data,
+                vmc.cpf                                            as cpf,
+                c.nome                                             as nome_colaborador,
+                c.data_nascimento                                  as data_nascimento,
+                f.nome                                             as funcao,
+                f.codigo                                           as cod_funcao,
+                e.nome                                             as nome_equipe,
+                m.fator                                            as fator,
+                m.cargaatual                                       as cargaatual,
+                m.entrega                                          as entrega,
+                m.mapa                                             as mapa,
+                m.placa                                            as placa,
+                m.cxcarreg                                         as cxcarreg,
+                m.cxentreg                                         as cxentreg,
+                m.qthlcarregados                                   as qthlcarregados,
+                m.qthlentregues                                    as qthlentregues,
+                m.qtnfcarregadas                                   as qtnfcarregadas,
+                m.qtnfentregues                                    as qtnfentregues,
+                m.entregascompletas                                as entregascompletas,
+                m.entregasnaorealizadas                            as entregasnaorealizadas,
+                m.entregasparciais                                 as entregasparciais,
+                m.kmprevistoroad                                   as kmprevistoroad,
+                m.kmsai                                            as kmsai,
+                m.kmentr                                           as kmentr,
+                to_seconds(m.tempoprevistoroad)                    as tempoprevistoroad,
+                m.hrsai                                            as hrsai,
+                m.hrentr                                           as hrentr,
+                to_seconds(m.hrentr - m.hrsai)                     as tempo_rota,
+                to_seconds(m.tempointerno)                         as tempointerno,
+                m.hrmatinal                                        as hrmatinal,
+                it.apontamentos_ok                                 as apontamentos_ok,
+                it.total_apontamentos                              as total_tracking,
                 to_seconds((
                     case
                         when (((m.hrsai)::time without time zone < m.hrmatinal) or
                               (m.hrmatinal = '00:00:00'::time without time zone)) then um.meta_tempo_largada_horas
                         else ((m.hrsai - (m.hrmatinal)::interval))::time without time zone
-                        end)::text)                                          as tempo_largada,
-                um.meta_tracking                                             as meta_tracking,
-                um.meta_tempo_rota_mapas                                     as meta_tempo_rota_mapas,
-                um.meta_caixa_viagem                                         as meta_caixa_viagem,
-                um.meta_dev_hl                                               as meta_dev_hl,
-                um.meta_dev_nf                                               as meta_dev_nf,
-                um.meta_dev_pdv                                              as meta_dev_pdv,
-                um.meta_dispersao_km                                         as meta_dispersao_km,
-                um.meta_dispersao_tempo                                      as meta_dispersao_tempo,
-                um.meta_jornada_liquida_mapas                                as meta_jornada_liquida_mapas,
-                um.meta_raio_tracking                                        as meta_raio_tracking,
-                um.meta_tempo_interno_mapas                                  as meta_tempo_interno_mapas,
-                um.meta_tempo_largada_mapas                                  as meta_tempo_largada_mapas,
-                to_seconds(((m.hrmetajornada - '01:00:00'::interval))::text) as meta_tempo_rota_horas,
-                to_seconds((um.meta_tempo_interno_horas)::text)              as meta_tempo_interno_horas,
-                to_seconds((um.meta_tempo_largada_horas)::text)              as meta_tempo_largada_horas,
-                to_seconds((m.hrmetajornada)::text)                          as meta_jornada_liquida_horas,
-                uv.rm_numero_viagens                                         as rm_numero_viagens,
+                        end))                                      as tempo_largada,
+                um.meta_tracking                                   as meta_tracking,
+                um.meta_tempo_rota_mapas                           as meta_tempo_rota_mapas,
+                um.meta_caixa_viagem                               as meta_caixa_viagem,
+                um.meta_dev_hl                                     as meta_dev_hl,
+                um.meta_dev_nf                                     as meta_dev_nf,
+                um.meta_dev_pdv                                    as meta_dev_pdv,
+                um.meta_dispersao_km                               as meta_dispersao_km,
+                um.meta_dispersao_tempo                            as meta_dispersao_tempo,
+                um.meta_jornada_liquida_mapas                      as meta_jornada_liquida_mapas,
+                um.meta_raio_tracking                              as meta_raio_tracking,
+                um.meta_tempo_interno_mapas                        as meta_tempo_interno_mapas,
+                um.meta_tempo_largada_mapas                        as meta_tempo_largada_mapas,
+                to_seconds(m.hrmetajornada - '01:00:00'::interval) as meta_tempo_rota_horas,
+                to_seconds(um.meta_tempo_interno_horas)            as meta_tempo_interno_horas,
+                to_seconds(um.meta_tempo_largada_horas)            as meta_tempo_largada_horas,
+                to_seconds(m.hrmetajornada)                        as meta_jornada_liquida_horas,
+                uv.rm_numero_viagens                               as rm_numero_viagens,
                 -- Verifica se o mapa é de DISTRIBUIÇÃO e NÃO é RECARGA.
                 round(case
                           when m.entrega <> 'AS' and m.cargaatual <> 'Recarga' then
@@ -98,7 +98,7 @@ with internal_tracking as (
                                   else 0
                                   end
                           else 0
-                          end::numeric, 2)::real                             as valor_rota,
+                          end::numeric, 2)::real                   as valor_rota,
 
                 -- Calcula mapas de recarga (somando tanto DISTRIBUIÇÃO quanto AS).
                 -- Primeiro cálculo: mapas de DISTRIBUIÇÃO.
@@ -174,7 +174,7 @@ with internal_tracking as (
                                    else 0
                                    end
                            else 0
-                           end)::numeric, 2)::real                           as valor_recarga,
+                           end)::numeric, 2)::real                 as valor_recarga,
                 -- Calcula da diferença a ser paga em mapas com tempo previsto superior a meta.
                 -- Verifica se é mapa de DISTRIBUIÇÃO.
                 round(case
@@ -193,7 +193,7 @@ with internal_tracking as (
                                   else 0
                                   end
                           else 0
-                          end::numeric, 2)::double precision                 as diferenca_eld,
+                          end::numeric, 2)::double precision       as diferenca_eld,
                 --
                 -- Cálculo dos mapas de AS NÃO RECARGA.
                 --
@@ -311,7 +311,7 @@ with internal_tracking as (
                                   else 0
                                   end
                           else 0
-                          end::numeric, 2)::real                             as valor_as
+                          end::numeric, 2)::real                   as valor_as
          from view_mapa_colaborador vmc
                   join colaborador_data c on vmc.cpf = c.cpf
                   join funcao f on f.codigo = c.cod_funcao
