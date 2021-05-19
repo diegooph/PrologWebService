@@ -506,21 +506,21 @@ INSERT INTO public.pneu_script (codigo_cliente, cod_modelo, cod_dimensao, pressa
                                 status, vida_atual, vida_total, cod_modelo_banda, altura_sulco_central_externo, dot,
                                 valor, data_hora_cadastro, pneu_novo_nunca_rodado, codigo, cod_empresa,
                                 cod_unidade_cadastro, deletado, data_hora_deletado, pg_username_delecao)
-VALUES ('18', 158, 3, 115, 6.57, 9.6, 9.02, 10.35, 5, 'ANALISE', 1, 4, null, 9.02, '', 1200, null, false, 967, 3, 5,
+VALUES ('18', 148, 3, 115, 6.57, 9.6, 9.02, 10.35, 5, 'ANALISE', 1, 4, null, 9.02, '', 1200, null, false, 967, 3, 5,
         false, null, null);
 INSERT INTO public.pneu_script (codigo_cliente, cod_modelo, cod_dimensao, pressao_recomendada, pressao_atual,
                                 altura_sulco_interno, altura_sulco_central_interno, altura_sulco_externo, cod_unidade,
                                 status, vida_atual, vida_total, cod_modelo_banda, altura_sulco_central_externo, dot,
                                 valor, data_hora_cadastro, pneu_novo_nunca_rodado, codigo, cod_empresa,
                                 cod_unidade_cadastro, deletado, data_hora_deletado, pg_username_delecao)
-VALUES ('20', 158, 3, 115, 109.44, 5.12, 4.02, 5.64, 5, 'ANALISE', 1, 4, null, 4.02, '', 1200, null, false, 969, 3, 5,
+VALUES ('20', 148, 3, 115, 109.44, 5.12, 4.02, 5.64, 5, 'ANALISE', 1, 4, null, 4.02, '', 1200, null, false, 969, 3, 5,
         false, null, null);
 INSERT INTO public.pneu_script (codigo_cliente, cod_modelo, cod_dimensao, pressao_recomendada, pressao_atual,
                                 altura_sulco_interno, altura_sulco_central_interno, altura_sulco_externo, cod_unidade,
                                 status, vida_atual, vida_total, cod_modelo_banda, altura_sulco_central_externo, dot,
                                 valor, data_hora_cadastro, pneu_novo_nunca_rodado, codigo, cod_empresa,
                                 cod_unidade_cadastro, deletado, data_hora_deletado, pg_username_delecao)
-VALUES ('24', 158, 3, 115, 112.07, 6.29, 7.62, 10.15, 5, 'ANALISE', 1, 4, null, 7.62, '', 1200, null, false, 972, 3, 5,
+VALUES ('24', 148, 3, 115, 112.07, 6.29, 7.62, 10.15, 5, 'ANALISE', 1, 4, null, 7.62, '', 1200, null, false, 972, 3, 5,
         false, null, null);
 
 -- #####################################################################################################################
@@ -584,14 +584,14 @@ INSERT INTO public.pneu_script (codigo_cliente, cod_modelo, cod_dimensao, pressa
                                 status, vida_atual, vida_total, cod_modelo_banda, altura_sulco_central_externo, dot,
                                 valor, data_hora_cadastro, pneu_novo_nunca_rodado, codigo, cod_empresa,
                                 cod_unidade_cadastro, deletado, data_hora_deletado, pg_username_delecao)
-VALUES ('30', 137, 2, 105, 120.29, 11.97, 12.1, 12.46, 215, 'EM_USO', 1, 4, null, 12.07, '', 1200, null, false, 1006, 3,
+VALUES ('30', 137, 2, 105, 120.29, 11.97, 12.1, 12.46, 215, 'EM_USO', 1, 4, null, 12.07, '', 1200, null, false, 1007, 3,
         215, false, null, null);
 INSERT INTO public.pneu_script (codigo_cliente, cod_modelo, cod_dimensao, pressao_recomendada, pressao_atual,
                                 altura_sulco_interno, altura_sulco_central_interno, altura_sulco_externo, cod_unidade,
                                 status, vida_atual, vida_total, cod_modelo_banda, altura_sulco_central_externo, dot,
                                 valor, data_hora_cadastro, pneu_novo_nunca_rodado, codigo, cod_empresa,
                                 cod_unidade_cadastro, deletado, data_hora_deletado, pg_username_delecao)
-VALUES ('32', 148, 1, 115, 117.41, 9.23, 9.26, 8.41, 215, 'EM_USO', 1, 4, null, 6.9, '', 1200, null, false, 1007, 3,
+VALUES ('32', 148, 1, 115, 117.41, 9.23, 9.26, 8.41, 215, 'EM_USO', 1, 4, null, 6.9, '', 1200, null, false, 1008, 3,
         215,
         false, null, null);
 INSERT INTO public.pneu_script (codigo_cliente, cod_modelo, cod_dimensao, pressao_recomendada, pressao_atual,
@@ -599,49 +599,49 @@ INSERT INTO public.pneu_script (codigo_cliente, cod_modelo, cod_dimensao, pressa
                                 status, vida_atual, vida_total, cod_modelo_banda, altura_sulco_central_externo, dot,
                                 valor, data_hora_cadastro, pneu_novo_nunca_rodado, codigo, cod_empresa,
                                 cod_unidade_cadastro, deletado, data_hora_deletado, pg_username_delecao)
-VALUES ('33', 148, 1, 115, 116, 7.21, 6.59, 7.07, 215, 'EM_USO', 1, 4, null, 6.39, '', 1200, null, false, 1008, 3, 215,
+VALUES ('33', 148, 1, 115, 116, 7.21, 6.59, 7.07, 215, 'EM_USO', 1, 4, null, 6.39, '', 1200, null, false, 1009, 3, 215,
         false, null, null);
 INSERT INTO public.pneu_script (codigo_cliente, cod_modelo, cod_dimensao, pressao_recomendada, pressao_atual,
                                 altura_sulco_interno, altura_sulco_central_interno, altura_sulco_externo, cod_unidade,
                                 status, vida_atual, vida_total, cod_modelo_banda, altura_sulco_central_externo, dot,
                                 valor, data_hora_cadastro, pneu_novo_nunca_rodado, codigo, cod_empresa,
                                 cod_unidade_cadastro, deletado, data_hora_deletado, pg_username_delecao)
-VALUES ('487', 148, 4, 105, 0, 17.59, 21.31, 21.99, 215, 'EM_USO', 1, 4, null, 22.45, '', 1200, null, false, 1009, 3,
+VALUES ('487', 148, 4, 105, 0, 17.59, 21.31, 21.99, 215, 'EM_USO', 1, 4, null, 22.45, '', 1200, null, false, 1010, 3,
         215, false, null, null);
 INSERT INTO public.pneu_script (codigo_cliente, cod_modelo, cod_dimensao, pressao_recomendada, pressao_atual,
                                 altura_sulco_interno, altura_sulco_central_interno, altura_sulco_externo, cod_unidade,
                                 status, vida_atual, vida_total, cod_modelo_banda, altura_sulco_central_externo, dot,
                                 valor, data_hora_cadastro, pneu_novo_nunca_rodado, codigo, cod_empresa,
                                 cod_unidade_cadastro, deletado, data_hora_deletado, pg_username_delecao)
-VALUES ('488', 148, 4, 105, 0, 16, 9.77, 18.8, 215, 'EM_USO', 1, 4, null, 16.06, '', 1200, null, false, 1010, 3, 215,
+VALUES ('488', 148, 4, 105, 0, 16, 9.77, 18.8, 215, 'EM_USO', 1, 4, null, 16.06, '', 1200, null, false, 1011, 3, 215,
         false, null, null);
 INSERT INTO public.pneu_script (codigo_cliente, cod_modelo, cod_dimensao, pressao_recomendada, pressao_atual,
                                 altura_sulco_interno, altura_sulco_central_interno, altura_sulco_externo, cod_unidade,
                                 status, vida_atual, vida_total, cod_modelo_banda, altura_sulco_central_externo, dot,
                                 valor, data_hora_cadastro, pneu_novo_nunca_rodado, codigo, cod_empresa,
                                 cod_unidade_cadastro, deletado, data_hora_deletado, pg_username_delecao)
-VALUES ('489', 148, 4, 105, 0, 16.26, 16.26, 18.37, 215, 'EM_USO', 1, 4, null, 16.22, '', 1200, null, false, 1011, 3,
+VALUES ('489', 148, 4, 105, 0, 16.26, 16.26, 18.37, 215, 'EM_USO', 1, 4, null, 16.22, '', 1200, null, false, 1012, 3,
         215, false, null, null);
 INSERT INTO public.pneu_script (codigo_cliente, cod_modelo, cod_dimensao, pressao_recomendada, pressao_atual,
                                 altura_sulco_interno, altura_sulco_central_interno, altura_sulco_externo, cod_unidade,
                                 status, vida_atual, vida_total, cod_modelo_banda, altura_sulco_central_externo, dot,
                                 valor, data_hora_cadastro, pneu_novo_nunca_rodado, codigo, cod_empresa,
                                 cod_unidade_cadastro, deletado, data_hora_deletado, pg_username_delecao)
-VALUES ('490', 148, 4, 105, 0, 16.26, 16.52, 16.58, 215, 'EM_USO', 1, 4, null, 16.32, '', 1200, null, false, 1012, 3,
+VALUES ('490', 148, 4, 105, 0, 16.26, 16.52, 16.58, 215, 'EM_USO', 1, 4, null, 16.32, '', 1200, null, false, 1013, 3,
         215, false, null, null);
 INSERT INTO public.pneu_script (codigo_cliente, cod_modelo, cod_dimensao, pressao_recomendada, pressao_atual,
                                 altura_sulco_interno, altura_sulco_central_interno, altura_sulco_externo, cod_unidade,
                                 status, vida_atual, vida_total, cod_modelo_banda, altura_sulco_central_externo, dot,
                                 valor, data_hora_cadastro, pneu_novo_nunca_rodado, codigo, cod_empresa,
                                 cod_unidade_cadastro, deletado, data_hora_deletado, pg_username_delecao)
-VALUES ('40563', 148, 1, 115, 4.34, 15.5, 15.5, 15.5, 215, 'EM_USO', 1, 4, null, 15.5, '3217', 1200, null, false, 1013,
+VALUES ('40563', 148, 1, 115, 4.34, 15.5, 15.5, 15.5, 215, 'EM_USO', 1, 4, null, 15.5, '3217', 1200, null, false, 1014,
         3, 215, false, null, null);
 INSERT INTO public.pneu_script (codigo_cliente, cod_modelo, cod_dimensao, pressao_recomendada, pressao_atual,
                                 altura_sulco_interno, altura_sulco_central_interno, altura_sulco_externo, cod_unidade,
                                 status, vida_atual, vida_total, cod_modelo_banda, altura_sulco_central_externo, dot,
                                 valor, data_hora_cadastro, pneu_novo_nunca_rodado, codigo, cod_empresa,
                                 cod_unidade_cadastro, deletado, data_hora_deletado, pg_username_delecao)
-VALUES ('493', 137, 4, 105, 0, 16.06, 16.13, 16.16, 215, 'EM_USO', 1, 4, null, 16.09, '', 1200, null, false, 1014, 3,
+VALUES ('493', 137, 4, 105, 0, 16.06, 16.13, 16.16, 215, 'EM_USO', 1, 4, null, 16.09, '', 1200, null, false, 1015, 3,
         215, false, null, null);
 
 
@@ -651,7 +651,7 @@ INSERT INTO public.pneu_script (codigo_cliente, cod_modelo, cod_dimensao, pressa
                                 status, vida_atual, vida_total, cod_modelo_banda, altura_sulco_central_externo, dot,
                                 valor, data_hora_cadastro, pneu_novo_nunca_rodado, codigo, cod_empresa,
                                 cod_unidade_cadastro, deletado, data_hora_deletado, pg_username_delecao)
-VALUES ('494', 137, 4, 105, 0, 2.28, 2.7, 8.92, 215, 'EM_USO', 1, 4, null, 4.49, '', 1200, null, false, 1015, 3, 215,
+VALUES ('494', 137, 4, 105, 0, 2.28, 2.7, 8.92, 215, 'EM_USO', 1, 4, null, 4.49, '', 1200, null, false, 1027, 3, 215,
         false, null, null);
 INSERT INTO public.pneu_script (codigo_cliente, cod_modelo, cod_dimensao, pressao_recomendada, pressao_atual,
                                 altura_sulco_interno, altura_sulco_central_interno, altura_sulco_externo, cod_unidade,
