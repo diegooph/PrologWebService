@@ -1,0 +1,7 @@
+alter sequence checklist_modelo_data_codigo_seq rename to checklist_modelo_codigo_seq;
+
+alter sequence pneu_data_codigo_seq rename to pneu_codigo_seq;
+
+alter sequence checklist_perguntas_data_codigo_seq rename to checklist_perguntas_codigo_seq1;
+
+alter sequence checklist_alternativa_pergunta_data_codigo_seq rename to checklist_alternativa_pergunta_codigo_seq1;
