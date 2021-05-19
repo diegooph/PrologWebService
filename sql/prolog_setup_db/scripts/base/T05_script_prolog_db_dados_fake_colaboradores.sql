@@ -330,3 +330,12 @@ INSERT INTO public.colaborador_data (cpf, matricula_ambev, matricula_trans, data
 VALUES (53439478084, null, 500, '1991-10-26', '2019-08-19', '2019-10-30', true, 'Maria Silva', 38, 951, 215, 1, 3, 13,
         '88558403410', '2019-08-19 17:04:46.675294', 30745, 215, false, null, null);
 SELECT setval('colaborador_data_codigo_seq', 30745, true);
+
+
+-- Seta um token default para o usuário John Doe:
+INSERT INTO public.token_autenticacao (cpf_colaborador, token, data_hora, cod_colaborador)
+VALUES (3383283194, 'token_teste', now(), 2272);
+
+-- Seta o token default que usado no Postman para o usuário John Doe:
+INSERT INTO public.token_autenticacao (cpf_colaborador, token, data_hora, cod_colaborador)
+VALUES (3383283194, 'PROLOG_DEV_TEAM', now(), 2272);

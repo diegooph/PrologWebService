@@ -2,6 +2,14 @@
 --######################################################################################################################
 --######################################################################################################################
 -- Cria dependências necessárias dos checklists e insere alguns.
+-- Seta tokens fixos para o checklist offline:
+UPDATE public.checklist_offline_dados_unidade
+SET token_sincronizacao_checklist = 'token_teste_unidade_5'
+WHERE cod_unidade = 5;
+UPDATE public.checklist_offline_dados_unidade
+SET token_sincronizacao_checklist = 'token_teste_unidade_215'
+WHERE cod_unidade = 215;
+
 SET CONSTRAINTS ALL DEFERRED;
 INSERT INTO public.checklist_modelo_versao (cod_versao_checklist_modelo, cod_versao_user_friendly, cod_checklist_modelo,
                                             data_hora_criacao_versao, cod_colaborador_criacao_versao)
