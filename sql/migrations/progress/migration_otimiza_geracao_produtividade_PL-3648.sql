@@ -330,7 +330,7 @@ with internal_tracking as (
      )
 
 select d.*,
-       (d.valor_as + d.valor_as + d.valor_recarga + diferenca_eld)::double precision as valor
+       (d.valor_rota + d.valor_as + d.valor_recarga + diferenca_eld)::double precision as valor
 from dados d;
 
 -- Remove view que não era mais utilizada.
