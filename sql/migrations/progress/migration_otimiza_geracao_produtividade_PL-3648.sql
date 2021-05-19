@@ -319,7 +319,6 @@ with internal_tracking as (
                        on m.cod_unidade = vmc.cod_unidade
                            and m.mapa = vmc.mapa
                   join unidade_metas um on um.cod_unidade = m.cod_unidade
-                  join view_valor_cx_unidade on view_valor_cx_unidade.cod_unidade = m.cod_unidade
                   join equipe e on c.cod_equipe = e.codigo
                   join unidade_funcao_produtividade ufp
                        on ufp.cod_unidade = c.cod_unidade
@@ -333,3 +332,7 @@ with internal_tracking as (
 select d.*,
        (d.valor_as + d.valor_as + d.valor_recarga + diferenca_eld)::double precision as valor
 from dados d;
+
+-- Remove view que não era mais utilizada.
+-- Ela possuia um join com view_extrato_produtividade mas seus dados não eram utilizados.
+drop view view_valor_cx_unidade;
