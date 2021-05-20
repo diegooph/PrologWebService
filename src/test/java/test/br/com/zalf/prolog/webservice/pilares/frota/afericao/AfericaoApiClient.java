@@ -1,4 +1,4 @@
-package test.br.com.zalf.prolog.webservice.pilares.frota.pneu.afericao;
+package test.br.com.zalf.prolog.webservice.pilares.frota.afericao;
 
 import br.com.zalf.prolog.webservice.v3.frota.afericao._model.AfericaoAvulsaDto;
 import br.com.zalf.prolog.webservice.v3.frota.afericao._model.AfericaoPlacaDto;
@@ -52,7 +52,7 @@ public class AfericaoApiClient {
                 .accept(MediaType.APPLICATION_JSON)
                 .build();
 
-        return restTemplate.exchange(reqEntity, new ParameterizedTypeReference<>() {});
+        return restTemplate.exchange(reqEntity, new ParameterizedTypeReference<List<AfericaoPlacaDto>>() {});
     }
 
     @NotNull
@@ -77,6 +77,6 @@ public class AfericaoApiClient {
                 .get(components.toUri())
                 .accept(MediaType.APPLICATION_JSON)
                 .build();
-        return restTemplate.exchange(reqEntity, new ParameterizedTypeReference<>() {});
+        return restTemplate.exchange(reqEntity, new ParameterizedTypeReference<List<AfericaoAvulsaDto>>() {});
     }
 }
