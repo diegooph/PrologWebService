@@ -12,6 +12,9 @@ alter table tracking rename column aderência_sequencia_entrega to aderencia_seq
 alter table tracking rename column aderência_janela_entrega to aderencia_janela_entrega;
 alter table tracking rename column código_transportadora to cod_unidade;
 
+-- Coluna de cod_unidade pode ser not null.
+alter table tracking alter column cod_unidade set not null;
+
 -- Index utilizado pela view_produtividade_extrato.
 create index idx_tracking_cod_unidade on tracking (cod_unidade);
 
