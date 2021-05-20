@@ -1,4 +1,4 @@
-package test.br.com.zalf.prolog.webservice.pilares.frota.checklist.os;
+package test.br.com.zalf.prolog.webservice.pilares.frota.checklistordemservico;
 
 import br.com.zalf.prolog.webservice.commons.FonteDataHora;
 import br.com.zalf.prolog.webservice.commons.gson.GsonUtils;
