@@ -254,10 +254,10 @@ FROM (SELECT u.cod_empresa,
              um.meta_raio_tracking,
              um.meta_tempo_interno_mapas,
              um.meta_tempo_largada_mapas,
-             to_seconds((m.hrmetajornada - interval '1 hour')::text)                         AS meta_tempo_rota_horas,
-             to_seconds((um.meta_tempo_interno_horas)::text)                                 AS meta_tempo_interno_horas,
-             to_seconds((um.meta_tempo_largada_horas)::text)                                 AS meta_tempo_largada_horas,
-             to_seconds((um.meta_jornada_liquida_horas)::text)                               AS meta_jornada_liquida_horas
+             to_seconds(m.hrmetajornada - interval '1 hour')                                 AS meta_tempo_rota_horas,
+             to_seconds(um.meta_tempo_interno_horas)                                         AS meta_tempo_interno_horas,
+             to_seconds(um.meta_tempo_largada_horas)                                         AS meta_tempo_largada_horas,
+             to_seconds(um.meta_jornada_liquida_horas)                                       AS meta_jornada_liquida_horas
       from view_mapa_colaborador vmc
                join colaborador c on c.cpf = vmc.cpf and c.cod_unidade = vmc.cod_unidade
                join mapa m on m.mapa = vmc.mapa and m.cod_unidade = vmc.cod_unidade
