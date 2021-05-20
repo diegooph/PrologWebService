@@ -260,11 +260,11 @@ from (select u.cod_empresa                                             as cod_em
              to_seconds(um.meta_jornada_liquida_horas)                           as meta_jornada_liquida_horas
       from view_mapa_colaborador vmc
                join colaborador c on c.cpf = vmc.cpf and c.cod_unidade = vmc.cod_unidade
-               join mapa m on m.mapa = vmc.mapa and m.cod_unidade = vmc.cod_unidade
+               join mapa m on m.cod_unidade = vmc.cod_unidade and m.mapa = vmc.mapa
                join unidade u on u.codigo = m.cod_unidade
                join regional r on r.codigo = u.cod_regional
                join unidade_metas um on um.cod_unidade = u.codigo
-               join equipe e on e.cod_unidade = c.cod_unidade and c.cod_equipe = e.codigo
+               join equipe e on c.cod_equipe = e.codigo
                join funcao f on f.codigo = c.cod_funcao
                left join internal_tracking it
                          on it.tracking_mapa = m.mapa
