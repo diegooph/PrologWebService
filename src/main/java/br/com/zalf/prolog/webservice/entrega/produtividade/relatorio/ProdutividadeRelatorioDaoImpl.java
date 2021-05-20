@@ -1,7 +1,6 @@
 package br.com.zalf.prolog.webservice.entrega.produtividade.relatorio;
 
 import br.com.zalf.prolog.webservice.Filtros;
-import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.commons.report.CsvWriter;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.report.ReportTransformer;
@@ -246,16 +245,12 @@ public class ProdutividadeRelatorioDaoImpl extends DatabaseConnection implements
                         "   round(valor_as :: NUMERIC, 2) AS \"VALOR AS\", " +
                         "   round(valor :: NUMERIC, 2) AS \"PRODUTIVIDADE TOTAL\" " +
                         "   FROM view_produtividade_extrato_com_total " +
-                        "   WHERE cpf::TEXT LIKE ? AND data BETWEEN (? AT TIME ZONE ?) AND (? AT TIME ZONE ?) AND " +
-                        "cod_unidade = ? " +
+                        "   WHERE cpf::TEXT LIKE ? AND data BETWEEN ? AND ? AND cod_unidade = ? " +
                         "   ORDER BY data;");
-        final String zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId();
         stmt.setString(1, cpf);
         stmt.setDate(2, dataInicial);
-        stmt.setString(3, zoneId);
-        stmt.setDate(4, dataFinal);
-        stmt.setString(5, zoneId);
-        stmt.setLong(6, codUnidade);
+        stmt.setDate(3, dataFinal);
+        stmt.setLong(4, codUnidade);
         return stmt;
     }
 
