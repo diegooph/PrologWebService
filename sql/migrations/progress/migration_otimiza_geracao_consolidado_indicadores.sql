@@ -157,28 +157,28 @@ SELECT dados.cod_empresa,
            when ((dados.resultado_tracking)::double precision >= dados.meta_tracking) then 1
            else 0
            end as gol_tracking
-from (select u.cod_empresa,
-             u.cod_regional,
-             u.codigo                                                            as cod_unidade,
-             e.codigo                                                            as cod_equipe,
-             c.cpf                                                               as cpf,
-             c.nome                                                              as nome,
-             e.nome                                                              as equipe,
-             f.nome                                                              as funcao,
-             m.data                                                              as data,
-             m.mapa                                                              as mapa,
-             m.placa                                                             as placa,
-             m.cxcarreg                                                          as cxcarreg,
-             m.qthlcarregados                                                    as qthlcarregados,
-             m.qthlentregues                                                     as qthlentregues,
-             trunc(((m.qthlcarregados - m.qthlentregues))::numeric, 2)           as qthldevolvidos,
+from (select u.cod_empresa                                             as cod_empresa,
+             u.cod_regional                                            as cod_regional,
+             u.codigo                                                  as cod_unidade,
+             e.codigo                                                  as cod_equipe,
+             c.cpf                                                     as cpf,
+             c.nome                                                    as nome,
+             e.nome                                                    as equipe,
+             f.nome                                                    as funcao,
+             m.data                                                    as data,
+             m.mapa                                                    as mapa,
+             m.placa                                                   as placa,
+             m.cxcarreg                                                as cxcarreg,
+             m.qthlcarregados                                          as qthlcarregados,
+             m.qthlentregues                                           as qthlentregues,
+             trunc(((m.qthlcarregados - m.qthlentregues))::numeric, 2) as qthldevolvidos,
              trunc((
                        case
                            when (m.qthlcarregados > (0)::double precision)
                                then ((m.qthlcarregados - m.qthlentregues) / m.qthlcarregados)
                            else (0)::real
                            end)::numeric,
-                   4)                                                            as resultado_devolucao_hectolitro,
+                   4)                                                  as resultado_devolucao_hectolitro,
              m.qtnfcarregadas,
              m.qtnfentregues,
              (m.qtnfcarregadas - m.qtnfentregues)                                as qtnfdevolvidas,
@@ -262,7 +262,6 @@ from (select u.cod_empresa,
                join colaborador c on c.cpf = vmc.cpf and c.cod_unidade = vmc.cod_unidade
                join mapa m on m.mapa = vmc.mapa and m.cod_unidade = vmc.cod_unidade
                join unidade u on u.codigo = m.cod_unidade
-               join empresa em on em.codigo = u.cod_empresa
                join regional r on r.codigo = u.cod_regional
                join unidade_metas um on um.cod_unidade = u.codigo
                join equipe e on e.cod_unidade = c.cod_unidade and c.cod_equipe = e.codigo
