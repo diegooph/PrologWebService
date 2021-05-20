@@ -1,3 +1,17 @@
+-- Renomeia colunas que possuem acento.
+-- Isso é necessário pois precisamos aplicar um index na coluna "código_transportadora" e como ela possui acento a
+-- aplicação do index nas queries acaba não ocorrendo.
+alter table tracking rename column horário_matinal to horario_matinal;
+alter table tracking rename column saída_cdd to saida_cdd;
+alter table tracking rename column tempo_almoço to tempo_almoco;
+alter table tracking rename column unidade_negócio to unidade_negocio;
+alter table tracking rename column distância_prev to distancia_prev;
+alter table tracking rename column vel_média_km_h to vel_media_km_h;
+alter table tracking rename column distância_perc_apontamento to distancia_perc_apontamento;
+alter table tracking rename column aderência_sequencia_entrega to aderencia_sequencia_entrega;
+alter table tracking rename column aderência_janela_entrega to aderencia_janela_entrega;
+alter table tracking rename column código_transportadora to cod_unidade;
+
 -- Index utilizado pela view_produtividade_extrato.
 create index idx_tracking_codigo_transportadora on tracking ("código_transportadora");
 
