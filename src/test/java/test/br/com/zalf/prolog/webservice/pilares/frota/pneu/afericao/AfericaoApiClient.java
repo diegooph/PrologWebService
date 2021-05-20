@@ -29,36 +29,19 @@ public class AfericaoApiClient {
     @NotNull
     private TestRestTemplate restTemplate;
 
-    public ResponseEntity<List<AfericaoPlacaDto>> getAfericoesPlacas(final List<Long> codUnidades,
-                                                                     final String dataInicial,
-                                                                     final String dataFinal,
-                                                                     final int limit,
-                                                                     final int offset) {
-        return getAfericoesPlacas(codUnidades,
-                                  null,
-                                  null,
-                                  dataInicial,
-                                  dataFinal,
-                                  limit,
-                                  offset);
-    }
-
-    public ResponseEntity<List<AfericaoPlacaDto>> getAfericoesPlacas(final List<Long> codUnidades,
-                                                                     final Long codVeiculo,
-                                                                     final Long codTipoVeiculo,
-                                                                     final String dataInicial,
-                                                                     final String dataFinal,
+    @NotNull
+    public ResponseEntity<List<AfericaoPlacaDto>> getAfericoesPlacas(@NotNull final List<Long> codUnidades,
+                                                                     @NotNull final String dataInicial,
+                                                                     @NotNull final String dataFinal,
                                                                      final int limit,
                                                                      final int offset) {
 
         final UriComponents components = UriComponentsBuilder
                 .fromPath(RESOURCE)
-                .path("/placas")
+                .path("/veiculos")
                 .queryParam("codUnidades", codUnidades.stream()
                         .map(Object::toString)
                         .collect(Collectors.joining(",")))
-                .queryParam("codVeiculo", codVeiculo)
-                .queryParam("codTipoVeiculo", codTipoVeiculo)
                 .queryParam("dataInicial", dataInicial)
                 .queryParam("dataFinal", dataFinal)
                 .queryParam("limit", limit)
@@ -72,9 +55,10 @@ public class AfericaoApiClient {
         return restTemplate.exchange(reqEntity, new ParameterizedTypeReference<>() {});
     }
 
-    public ResponseEntity<List<AfericaoAvulsaDto>> getAfericoesAvulsas(final List<Long> codUnidades,
-                                                                       final String dataInicial,
-                                                                       final String dataFinal,
+    @NotNull
+    public ResponseEntity<List<AfericaoAvulsaDto>> getAfericoesAvulsas(@NotNull final List<Long> codUnidades,
+                                                                       @NotNull final String dataInicial,
+                                                                       @NotNull final String dataFinal,
                                                                        final int limit,
                                                                        final int offset) {
         final UriComponents components = UriComponentsBuilder

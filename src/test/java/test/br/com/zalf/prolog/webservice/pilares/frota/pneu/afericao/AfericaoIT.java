@@ -26,25 +26,24 @@ public class AfericaoIT extends IntegrationTest {
     @Test
     @DisplayName("Dado parâmetros corretos, retorne List<AfericaoPlacaDto> e status OK")
     void givenCorrectParameters_ThenReturnListAfericaoPlacaDtoAndStatusOk() {
-
-        final ResponseEntity<List<AfericaoPlacaDto>> response = client.getAfericoesPlacas(List.of(5L),
-                                                                                          "2019-01-01",
-                                                                                          LocalDate.now().toString(),
-                                                                                          100,
-                                                                                          0);
+        final ResponseEntity<List<AfericaoPlacaDto>> response =
+                client.getAfericoesPlacas(List.of(215L),
+                                          "2019-01-01",
+                                          LocalDate.now().toString(),
+                                          100,
+                                          0);
         final HttpStatus status = response.getStatusCode();
         final List<AfericaoPlacaDto> body = response.getBody();
         assertThat(status).isEqualTo(HttpStatus.OK);
         assertThat(body).isNotNull();
-        assertThat(body.stream().findFirst().get().getPlacaVeiculo()).isEqualTo("PRO0001");
+        assertThat(body.stream().findFirst().get()).isNotNull();
     }
 
     @Test
     @DisplayName("Dado parâmetros corretos, retorne List<AfericaoAvulsaDto> e status OK")
     void givenCorrectParameters_ThenReturnListAfericaoAvulsaDtoAndStatusOk() {
-
         final ResponseEntity<List<AfericaoAvulsaDto>> response =
-                client.getAfericoesAvulsas(List.of(5L),
+                client.getAfericoesAvulsas(List.of(215L),
                                            "2019-01-01",
                                            LocalDate.now().toString(),
                                            100,
