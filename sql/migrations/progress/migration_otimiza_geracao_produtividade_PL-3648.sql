@@ -569,3 +569,532 @@ $$;
 
 comment on function func_relatorio_produtividade_remuneracao_acumulada_colaborador(bigint, bigint, date, date)
     is 'Busca a produtividade do colaborador para um período.';
+
+-- Altera usos do código_transportadora por cod_unidade.
+create or replace function func_relatorio_mapa_estratificado(f_cod_unidade bigint, f_data_inicial date, f_data_final date)
+    returns table
+            (
+                data                           character varying,
+                placa                          character varying,
+                mapa                           integer,
+                "MATRIC MOTORISTA"             integer,
+                "NOME MOTORISTA"               text,
+                "MATRIC AJUDANTE 1"            integer,
+                "NOME AJUDANTE 1"              text,
+                "MATRIC AJUDANTE 2"            integer,
+                "NOME AJUDANTE 2"              text,
+                entregas                       integer,
+                cxcarreg                       real,
+                cxentreg                       real,
+                transp                         integer,
+                entrega                        character varying,
+                cargaatual                     text,
+                frota                          text,
+                custospot                      real,
+                regiao                         integer,
+                veiculo                        integer,
+                veiculoindisp                  real,
+                placaindisp                    real,
+                frotaindisp                    real,
+                tipoindisp                     integer,
+                ocupacao                       real,
+                cxrota                         real,
+                cxas                           real,
+                veicbm                         real,
+                rshow                          integer,
+                entrvol                        character varying,
+                hrsai                          timestamp without time zone,
+                hrentr                         timestamp without time zone,
+                kmsai                          integer,
+                kmentr                         integer,
+                custovariavel                  real,
+                lucro                          real,
+                lucrounit                      real,
+                valorfrete                     real,
+                tipoimposto                    character varying,
+                percimposto                    real,
+                valorimposto                   real,
+                valorfaturado                  real,
+                valorunitcxentregue            real,
+                valorpgcxentregsemimp          real,
+                valorpgcxentregcomimp          real,
+                tempoprevistoroad              time without time zone,
+                kmprevistoroad                 real,
+                valorunitpontomot              real,
+                valorunitpontoajd              real,
+                valorequipeentrmot             real,
+                valorequipeentrajd             real,
+                custovariavelcedbz             real,
+                lucrounitcedbz                 real,
+                lucrovariavelcxentregueffcedbz real,
+                tempointerno                   time without time zone,
+                valordropdown                  real,
+                veiccaddd                      character varying,
+                kmlaco                         real,
+                kmdeslocamento                 real,
+                tempolaco                      time without time zone,
+                tempodeslocamento              time without time zone,
+                sitmulticdd                    real,
+                unborigem                      integer,
+                valorctedifere                 character varying,
+                qtnfcarregadas                 integer,
+                qtnfentregues                  integer,
+                inddevcx                       real,
+                inddevnf                       real,
+                fator                          real,
+                recarga                        character varying,
+                hrmatinal                      time without time zone,
+                hrjornadaliq                   time without time zone,
+                hrmetajornada                  time without time zone,
+                vlbateujornmot                 real,
+                vlnaobateujornmot              real,
+                vlrecargamot                   real,
+                vlbateujornaju                 real,
+                vlnaobateujornaju              real,
+                vlrecargaaju                   real,
+                vltotalmapa                    real,
+                qthlcarregados                 real,
+                qthlentregues                  real,
+                indicedevhl                    real,
+                regiao2                        character varying,
+                qtnfcarreggeral                integer,
+                qtnfentreggeral                integer,
+                capacidadeveiculokg            real,
+                pesocargakg                    real,
+                capacveiculocx                 integer,
+                entregascompletas              integer,
+                entregasparciais               integer,
+                entregasnaorealizadas          integer,
+                codfilial                      integer,
+                nomefilial                     character varying,
+                codsupervtrs                   integer,
+                nomesupervtrs                  character varying,
+                codspot                        integer,
+                nomespot                       text,
+                equipcarregados                integer,
+                equipdevolvidos                integer,
+                equiprecolhidos                integer,
+                cxentregtracking               real,
+                hrcarreg                       timestamp without time zone,
+                hrpcfisica                     timestamp without time zone,
+                hrpcfinanceira                 timestamp without time zone,
+                stmapa                         character varying,
+                totalapontamentostracking      bigint,
+                apontamentosok                 bigint,
+                apontamentosnok                bigint,
+                aderencia                      double precision,
+                data_hora_import               character varying
+            )
+    language sql
+as
+$$
+select to_char(m.data, 'DD/MM/YYYY'),
+       placa,
+       mapa,
+       matricmotorista,
+       coalesce(motorista.nome, '-')                                                  as nome_motorista,
+       matricajud1,
+       coalesce(ajudante1.nome, '-')                                                  as nome_ajudante1,
+       matricajud2,
+       coalesce(ajudante2.nome, '-')                                                  as nome_ajudante2,
+       entregas                                                                       as entregas,
+       cxcarreg                                                                       as cxcarreg,
+       cxentreg                                                                       as cxentreg,
+       transp                                                                         as transp,
+       entrega                                                                        as entrega,
+       cargaatual                                                                     as cargaatual,
+       frota                                                                          as frota,
+       custospot                                                                      as custospot,
+       regiao                                                                         as regiao,
+       veiculo                                                                        as veiculo,
+       veiculoindisp                                                                  as veiculoindisp,
+       placaindisp                                                                    as placaindisp,
+       frotaindisp                                                                    as frotaindisp,
+       tipoindisp                                                                     as tipoindisp,
+       ocupacao                                                                       as ocupacao,
+       cxrota                                                                         as cxrota,
+       cxas                                                                           as cxas,
+       veicbm                                                                         as veicbm,
+       rshow                                                                          as rshow,
+       entrvol                                                                        as entrvol,
+       hrsai                                                                          as hrsai,
+       hrentr                                                                         as hrentr,
+       kmsai                                                                          as kmsai,
+       kmentr                                                                         as kmentr,
+       custovariavel                                                                  as custovariavel,
+       lucro                                                                          as lucro,
+       lucrounit                                                                      as lucrounit,
+       valorfrete                                                                     as valorfrete,
+       tipoimposto                                                                    as tipoimposto,
+       percimposto                                                                    as percimposto,
+       valorimposto                                                                   as valorimposto,
+       valorfaturado                                                                  as valorfaturado,
+       valorunitcxentregue                                                            as valorunitcxentregue,
+       valorpgcxentregsemimp                                                          as valorpgcxentregsemimp,
+       valorpgcxentregcomimp                                                          as valorpgcxentregcomimp,
+       tempoprevistoroad                                                              as tempoprevistoroad,
+       kmprevistoroad                                                                 as kmprevistoroad,
+       valorunitpontomot                                                              as valorunitpontomot,
+       valorunitpontoajd                                                              as valorunitpontoajd,
+       valorequipeentrmot                                                             as valorequipeentrmot,
+       valorequipeentrajd                                                             as valorequipeentrajd,
+       custovariavelcedbz                                                             as custovariavelcedbz,
+       lucrounitcedbz                                                                 as lucrounitcedbz,
+       lucrovariavelcxentregueffcedbz                                                 as lucrovariavelcxentregueffcedbz,
+       tempointerno                                                                   as tempointerno,
+       valordropdown                                                                  as valordropdown,
+       veiccaddd                                                                      as veiccaddd,
+       kmlaco                                                                         as kmlaco,
+       kmdeslocamento                                                                 as kmdeslocamento,
+       tempolaco                                                                      as tempolaco,
+       tempodeslocamento                                                              as tempodeslocamento,
+       sitmulticdd                                                                    as sitmulticdd,
+       unborigem                                                                      as unborigem,
+       valorctedifere                                                                 as valorctedifere,
+       qtnfcarregadas                                                                 as qtnfcarregadas,
+       qtnfentregues                                                                  as qtnfentregues,
+       inddevcx                                                                       as inddevcx,
+       inddevnf                                                                       as inddevnf,
+       fator                                                                          as fator,
+       recarga                                                                        as recarga,
+       hrmatinal                                                                      as hrmatinal,
+       hrjornadaliq                                                                   as hrjornadaliq,
+       hrmetajornada                                                                  as hrmetajornada,
+       vlbateujornmot                                                                 as vlbateujornmot,
+       vlnaobateujornmot                                                              as vlnaobateujornmot,
+       vlrecargamot                                                                   as vlrecargamot,
+       vlbateujornaju                                                                 as vlbateujornaju,
+       vlnaobateujornaju                                                              as vlnaobateujornaju,
+       vlrecargaaju                                                                   as vlrecargaaju,
+       vltotalmapa                                                                    as vltotalmapa,
+       qthlcarregados                                                                 as qthlcarregados,
+       qthlentregues                                                                  as qthlentregues,
+       indicedevhl                                                                    as indicedevhl,
+       regiao2                                                                        as regiao2,
+       qtnfcarreggeral                                                                as qtnfcarreggeral,
+       qtnfentreggeral                                                                as qtnfentreggeral,
+       capacidadeveiculokg                                                            as capacidadeveiculokg,
+       pesocargakg                                                                    as pesocargakg,
+       capacveiculocx                                                                 as capacveiculocx,
+       entregascompletas                                                              as entregascompletas,
+       entregasparciais                                                               as entregasparciais,
+       entregasnaorealizadas                                                          as entregasnaorealizadas,
+       codfilial                                                                      as codfilial,
+       nomefilial                                                                     as nomefilial,
+       codsupervtrs                                                                   as codsupervtrs,
+       nomesupervtrs                                                                  as nomesupervtrs,
+       codspot                                                                        as codspot,
+       nomespot                                                                       as nomespot,
+       equipcarregados                                                                as equipcarregados,
+       equipdevolvidos                                                                as equipdevolvidos,
+       equiprecolhidos                                                                as equiprecolhidos,
+       cxentregtracking                                                               as cxentregtracking,
+       hrcarreg                                                                       as hrcarreg,
+       hrpcfisica                                                                     as hrpcfisica,
+       hrpcfinanceira                                                                 as hrpcfinanceira,
+       stmapa                                                                         as stmapa,
+       tracking.total_apontamentos                                                    as total_apontamentos,
+       tracking.apontamentos_ok                                                       as apontamentos_ok,
+       tracking.total_apontamentos - tracking.apontamentos_ok                         as apontamentos_nok,
+       trunc((tracking.apontamentos_ok :: float / tracking.total_apontamentos) * 100) as aderencia,
+       to_char(m.data_hora_import, 'DD/MM/YYYY HH24:MI')                              as data_hora_import
+from mapa m
+         join unidade_funcao_produtividade ufp on ufp.cod_unidade = m.cod_unidade
+         left join colaborador motorista
+                   on motorista.cod_unidade = m.cod_unidade and motorista.cod_funcao = ufp.cod_funcao_motorista
+                       and motorista.matricula_ambev = m.matricmotorista
+         left join colaborador ajudante1
+                   on ajudante1.cod_unidade = m.cod_unidade and ajudante1.cod_funcao = ufp.cod_funcao_ajudante
+                       and ajudante1.matricula_ambev = m.matricajud1
+         left join colaborador ajudante2
+                   on ajudante2.cod_unidade = m.cod_unidade and ajudante2.cod_funcao = ufp.cod_funcao_ajudante
+                       and ajudante2.matricula_ambev = m.matricajud2
+         left join (select t.mapa                         as tracking_mapa,
+                           t.cod_unidade                     tracking_unidade,
+                           count(t.disp_apont_cadastrado) as total_apontamentos,
+                           sum(case
+                                   when t.disp_apont_cadastrado <= um.meta_raio_tracking
+                                       then 1
+                                   else 0 end)            as apontamentos_ok
+                    from tracking t
+                             join unidade_metas um on um.cod_unidade = t.cod_unidade
+                    group by 1, 2) as tracking on tracking_mapa = m.mapa and tracking_unidade = m.cod_unidade
+where m.cod_unidade = f_cod_unidade
+  and m.data between f_data_inicial and f_data_final
+order by m.mapa
+$$;
+
+-- Altera usos do código_transportadora por cod_unidade.
+create or replace view view_extrato_indicadores as
+SELECT dados.cod_empresa,
+       dados.cod_regional,
+       dados.cod_unidade,
+       dados.cod_equipe,
+       dados.cpf,
+       dados.nome,
+       dados.equipe,
+       dados.funcao,
+       dados.data,
+       dados.mapa,
+       dados.placa,
+       dados.cxcarreg,
+       dados.qthlcarregados,
+       dados.qthlentregues,
+       dados.qthldevolvidos,
+       dados.resultado_devolucao_hectolitro,
+       dados.qtnfcarregadas,
+       dados.qtnfentregues,
+       dados.qtnfdevolvidas,
+       dados.resultado_devolucao_nf,
+       dados.entregascompletas,
+       dados.entregasnaorealizadas,
+       dados.entregasparciais,
+       dados.entregas_carregadas,
+       dados.resultado_devolucao_pdv,
+       dados.kmprevistoroad,
+       dados.kmsai,
+       dados.kmentr,
+       dados.km_percorrido,
+       dados.resultado_dispersao_km,
+       dados.hrsai,
+       dados.hr_sai,
+       dados.hrentr,
+       dados.hr_entr,
+       dados.tempo_rota,
+       dados.tempoprevistoroad,
+       dados.resultado_tempo_rota_segundos,
+       dados.resultado_dispersao_tempo,
+       dados.resultado_tempo_interno_segundos,
+       dados.tempo_interno,
+       dados.hrmatinal,
+       dados.resultado_tempo_largada_segundos,
+       dados.tempo_largada,
+       dados.total_tracking,
+       dados.apontamentos_ok,
+       dados.apontamentos_nok,
+       dados.resultado_tracking,
+       dados.meta_tracking,
+       dados.meta_tempo_rota_mapas,
+       dados.meta_caixa_viagem,
+       dados.meta_dev_hl,
+       dados.meta_dev_pdv,
+       dados.meta_dev_nf,
+       dados.meta_dispersao_km,
+       dados.meta_dispersao_tempo,
+       dados.meta_jornada_liquida_mapas,
+       dados.meta_raio_tracking,
+       dados.meta_tempo_interno_mapas,
+       dados.meta_tempo_largada_mapas,
+       dados.meta_tempo_rota_horas,
+       dados.meta_tempo_interno_horas,
+       dados.meta_tempo_largada_horas,
+       dados.meta_jornada_liquida_horas,
+       CASE
+           WHEN ((dados.resultado_devolucao_pdv)::double precision <= dados.meta_dev_pdv) THEN 'SIM'::text
+           ELSE 'NÃO'::text
+           END AS bateu_dev_pdv,
+       CASE
+           WHEN ((dados.resultado_devolucao_hectolitro)::double precision <= dados.meta_dev_hl) THEN 'SIM'::text
+           ELSE 'NÃO'::text
+           END AS bateu_dev_hl,
+       CASE
+           WHEN ((dados.resultado_devolucao_nf)::double precision <= dados.meta_dev_nf) THEN 'SIM'::text
+           ELSE 'NÃO'::text
+           END AS bateu_dev_nf,
+       CASE
+           WHEN (dados.resultado_dispersao_tempo <= dados.meta_dispersao_tempo) THEN 'SIM'::text
+           ELSE 'NÃO'::text
+           END AS bateu_dispersao_tempo,
+       CASE
+           WHEN ((dados.resultado_dispersao_km)::double precision <= dados.meta_dispersao_km) THEN 'SIM'::text
+           ELSE 'NÃO'::text
+           END AS bateu_dispersao_km,
+       CASE
+           WHEN (dados.resultado_tempo_interno_segundos <= (dados.meta_tempo_interno_horas)::double precision)
+               THEN 'SIM'::text
+           ELSE 'NÃO'::text
+           END AS bateu_tempo_interno,
+       CASE
+           WHEN (dados.resultado_tempo_rota_segundos <= (dados.meta_tempo_rota_horas)::double precision) THEN 'SIM'::text
+           ELSE 'NÃO'::text
+           END AS bateu_tempo_rota,
+       CASE
+           WHEN (dados.resultado_tempo_largada_segundos <= (dados.meta_tempo_largada_horas)::double precision)
+               THEN 'SIM'::text
+           ELSE 'NÃO'::text
+           END AS bateu_tempo_largada,
+       CASE
+           WHEN ((((dados.resultado_tempo_largada_segundos + dados.resultado_tempo_rota_segundos) +
+                   dados.resultado_tempo_interno_segundos) <= (dados.meta_jornada_liquida_horas)::double precision) OR
+                 (dados.tempoprevistoroad > (dados.meta_tempo_rota_horas)::double precision)) THEN 'SIM'::text
+           ELSE 'NÃO'::text
+           END AS bateu_jornada,
+       CASE
+           WHEN ((dados.resultado_tracking)::double precision >= dados.meta_tracking) THEN 'SIM'::text
+           ELSE 'NÃO'::text
+           END AS bateu_tracking,
+       CASE
+           WHEN ((dados.resultado_devolucao_pdv)::double precision <= dados.meta_dev_pdv) THEN 1
+           ELSE 0
+           END AS gol_dev_pdv,
+       CASE
+           WHEN ((dados.resultado_devolucao_hectolitro)::double precision <= dados.meta_dev_hl) THEN 1
+           ELSE 0
+           END AS gol_dev_hl,
+       CASE
+           WHEN ((dados.resultado_devolucao_nf)::double precision <= dados.meta_dev_nf) THEN 1
+           ELSE 0
+           END AS gol_dev_nf,
+       CASE
+           WHEN (dados.resultado_dispersao_tempo <= dados.meta_dispersao_tempo) THEN 1
+           ELSE 0
+           END AS gol_dispersao_tempo,
+       CASE
+           WHEN ((dados.resultado_dispersao_km)::double precision <= dados.meta_dispersao_km) THEN 1
+           ELSE 0
+           END AS gol_dispersao_km,
+       CASE
+           WHEN (dados.resultado_tempo_interno_segundos <= (dados.meta_tempo_interno_horas)::double precision) THEN 1
+           ELSE 0
+           END AS gol_tempo_interno,
+       CASE
+           WHEN (dados.resultado_tempo_rota_segundos <= (dados.meta_tempo_rota_horas)::double precision) THEN 1
+           ELSE 0
+           END AS gol_tempo_rota,
+       CASE
+           WHEN (dados.resultado_tempo_largada_segundos <= (dados.meta_tempo_largada_horas)::double precision) THEN 1
+           ELSE 0
+           END AS gol_tempo_largada,
+       CASE
+           WHEN ((((dados.resultado_tempo_largada_segundos + dados.resultado_tempo_rota_segundos) +
+                   dados.resultado_tempo_interno_segundos) <= (dados.meta_jornada_liquida_horas)::double precision) OR
+                 (dados.tempoprevistoroad > (dados.meta_tempo_rota_horas)::double precision)) THEN 1
+           ELSE 0
+           END AS gol_jornada,
+       CASE
+           WHEN ((dados.resultado_tracking)::double precision >= dados.meta_tracking) THEN 1
+           ELSE 0
+           END AS gol_tracking
+FROM (SELECT u.cod_empresa,
+             u.cod_regional,
+             u.codigo                                                                        AS cod_unidade,
+             e.codigo                                                                        AS cod_equipe,
+             c.cpf,
+             c.nome,
+             e.nome                                                                          AS equipe,
+             f.nome                                                                          AS funcao,
+             m.data,
+             m.mapa,
+             m.placa,
+             m.cxcarreg,
+             m.qthlcarregados,
+             m.qthlentregues,
+             trunc(((m.qthlcarregados - m.qthlentregues))::numeric, 2)                       AS qthldevolvidos,
+             trunc((
+                       CASE
+                           WHEN (m.qthlcarregados > (0)::double precision)
+                               THEN ((m.qthlcarregados - m.qthlentregues) / m.qthlcarregados)
+                           ELSE (0)::real
+                           END)::numeric,
+                   4)                                                                        AS resultado_devolucao_hectolitro,
+             m.qtnfcarregadas,
+             m.qtnfentregues,
+             (m.qtnfcarregadas - m.qtnfentregues)                                            AS qtnfdevolvidas,
+             trunc((
+                       CASE
+                           WHEN (m.qtnfcarregadas > 0) THEN (((m.qtnfcarregadas - m.qtnfentregues))::double precision /
+                                                             (m.qtnfcarregadas)::real)
+                           ELSE (0)::double precision
+                           END)::numeric, 4)                                                 AS resultado_devolucao_nf,
+             m.entregascompletas,
+             m.entregasnaorealizadas,
+             m.entregasparciais,
+             (m.entregascompletas + m.entregasnaorealizadas)                                 AS entregas_carregadas,
+             trunc((
+                       CASE
+                           WHEN (((m.entregascompletas + m.entregasnaorealizadas) + m.entregasparciais) > 0) THEN (
+                                   ((m.entregasnaorealizadas)::real + (m.entregasparciais)::double precision) /
+                                   (((m.entregascompletas + m.entregasnaorealizadas) + m.entregasparciais))::double precision)
+                           ELSE (0)::double precision
+                           END)::numeric, 4)                                                 AS resultado_devolucao_pdv,
+             m.kmprevistoroad,
+             m.kmsai,
+             m.kmentr,
+             (m.kmentr - m.kmsai)                                                            AS km_percorrido,
+             CASE
+                 WHEN (m.kmprevistoroad > (0)::double precision) THEN trunc(
+                         (((((m.kmentr - m.kmsai))::double precision - m.kmprevistoroad) / m.kmprevistoroad))::numeric,
+                         4)
+                 ELSE NULL::numeric
+                 END                                                                         AS resultado_dispersao_km,
+             to_char(m.hrsai, 'DD/MM/YYYY HH24:MI:SS'::text)                                 AS hrsai,
+             m.hrsai                                                                         AS hr_sai,
+             to_char(m.hrentr, 'DD/MM/YYYY HH24:MI:SS'::text)                                AS hrentr,
+             m.hrentr                                                                        AS hr_entr,
+             to_char((m.hrentr - m.hrsai), 'HH24:MI:SS'::text)                               AS tempo_rota,
+             date_part('epoch'::text, m.tempoprevistoroad)                                   AS tempoprevistoroad,
+             date_part('epoch'::text, (m.hrentr - m.hrsai))                                  AS resultado_tempo_rota_segundos,
+             CASE
+                 WHEN (date_part('epoch'::text, m.tempoprevistoroad) > (0)::double precision) THEN (
+                         (date_part('epoch'::text, (m.hrentr - m.hrsai)) -
+                          date_part('epoch'::text, m.tempoprevistoroad)) /
+                         date_part('epoch'::text, m.tempoprevistoroad))
+                 ELSE (0)::double precision
+                 END                                                                         AS resultado_dispersao_tempo,
+             date_part('epoch'::text, m.tempointerno)                                        AS resultado_tempo_interno_segundos,
+             m.tempointerno                                                                  AS tempo_interno,
+             m.hrmatinal,
+             date_part('epoch'::text,
+                       CASE
+                           WHEN ((m.hrsai)::time without time zone < m.hrmatinal) THEN um.meta_tempo_largada_horas
+                           ELSE ((m.hrsai - (m.hrmatinal)::interval))::time without time zone
+                           END)                                                              AS resultado_tempo_largada_segundos,
+             CASE
+                 WHEN ((m.hrsai)::time without time zone < m.hrmatinal) THEN um.meta_tempo_largada_horas
+                 ELSE ((m.hrsai - (m.hrmatinal)::interval))::time without time zone
+                 END                                                                         AS tempo_largada,
+             COALESCE(tracking.total_apontamentos, (0)::bigint)                              AS total_tracking,
+             COALESCE(tracking.apontamentos_ok, (0)::bigint)                                 AS apontamentos_ok,
+             COALESCE((tracking.total_apontamentos - tracking.apontamentos_ok), (0)::bigint) AS apontamentos_nok,
+             CASE
+                 WHEN (tracking.total_apontamentos > 0) THEN (tracking.apontamentos_ok / tracking.total_apontamentos)
+                 ELSE (0)::bigint
+                 END                                                                         AS resultado_tracking,
+             um.meta_tracking,
+             um.meta_tempo_rota_mapas,
+             um.meta_caixa_viagem,
+             um.meta_dev_hl,
+             um.meta_dev_pdv,
+             um.meta_dev_nf,
+             um.meta_dispersao_km,
+             um.meta_dispersao_tempo,
+             um.meta_jornada_liquida_mapas,
+             um.meta_raio_tracking,
+             um.meta_tempo_interno_mapas,
+             um.meta_tempo_largada_mapas,
+             to_seconds((m.hrmetajornada - interval '1 hour')::text)                         AS meta_tempo_rota_horas,
+             to_seconds((um.meta_tempo_interno_horas)::text)                                 AS meta_tempo_interno_horas,
+             to_seconds((um.meta_tempo_largada_horas)::text)                                 AS meta_tempo_largada_horas,
+             to_seconds((um.meta_jornada_liquida_horas)::text)                               AS meta_jornada_liquida_horas
+      FROM (((((((((view_mapa_colaborador vmc
+          JOIN colaborador c ON (((c.cpf = vmc.cpf) AND (c.cod_unidade = vmc.cod_unidade))))
+          JOIN mapa m ON (((m.mapa = vmc.mapa) AND (m.cod_unidade = vmc.cod_unidade))))
+          JOIN unidade u ON ((u.codigo = m.cod_unidade)))
+          JOIN empresa em ON ((em.codigo = u.cod_empresa)))
+          JOIN regional r ON ((r.codigo = u.cod_regional)))
+          JOIN unidade_metas um ON ((um.cod_unidade = u.codigo)))
+          JOIN equipe e ON (((e.cod_unidade = c.cod_unidade) AND (c.cod_equipe = e.codigo))))
+          JOIN funcao f ON (((f.codigo = c.cod_funcao) AND (f.cod_empresa = em.codigo))))
+               LEFT JOIN (SELECT t.mapa                         AS tracking_mapa,
+                                 t.cod_unidade                  AS tracking_unidade,
+                                 count(t.disp_apont_cadastrado) AS total_apontamentos,
+                                 sum(
+                                         CASE
+                                             WHEN (t.disp_apont_cadastrado <= um_1.meta_raio_tracking) THEN 1
+                                             ELSE 0
+                                             END)               AS apontamentos_ok
+                          FROM (tracking t
+                                   JOIN unidade_metas um_1 ON ((um_1.cod_unidade = t.cod_unidade)))
+                          GROUP BY t.mapa, t.cod_unidade) tracking
+                         ON (((tracking.tracking_mapa = m.mapa) AND (tracking.tracking_unidade = m.cod_unidade))))
+      ORDER BY m.data) dados;
