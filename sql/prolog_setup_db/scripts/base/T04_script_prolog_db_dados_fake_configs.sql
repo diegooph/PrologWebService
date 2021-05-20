@@ -35,21 +35,4 @@ INSERT INTO public.unidade_pilar_prolog (cod_unidade, cod_pilar)
 VALUES (215, 4);
 INSERT INTO public.unidade_pilar_prolog (cod_unidade, cod_pilar)
 VALUES (215, 5);
---######################################################################################################################
---######################################################################################################################
---######################################################################################################################
-INSERT INTO public.movimentacao_motivo_descarte_empresa (cod_empresa, motivo, ativo, data_hora_insercao,
-                                                         data_hora_ultima_alteracao)
-VALUES (3, 'Desgaste localizado', true, '2018-02-08 21:25:25.612143', null);
-INSERT INTO public.movimentacao_motivo_descarte_empresa (cod_empresa, motivo, ativo, data_hora_insercao,
-                                                         data_hora_ultima_alteracao)
-VALUES (3, 'Dano próximo ao talão', true, '2018-02-08 21:25:25.612143', null);
-INSERT INTO public.movimentacao_motivo_descarte_empresa (cod_empresa, motivo, ativo, data_hora_insercao,
-                                                         data_hora_ultima_alteracao)
-VALUES (3, 'Rodagem vazio ou com baixa pressão', true, '2018-02-08 21:25:25.612143', null);
-
-INSERT INTO public.recapadora (nome, cod_empresa, ativa, data_hora_cadastro)
-VALUES ('Itaruban', 3, true, '2018-07-26 18:13:32.140000');
-INSERT INTO public.recapadora (nome, cod_empresa, ativa, data_hora_cadastro)
-VALUES ('Borracharia 01', 3, true, '2019-04-16 18:17:29.331000');
 
