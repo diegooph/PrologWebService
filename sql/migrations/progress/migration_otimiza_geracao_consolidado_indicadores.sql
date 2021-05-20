@@ -1,4 +1,13 @@
 create or replace view view_extrato_indicadores as
+with internal_tracking as (
+    select t.mapa                                                                 as tracking_mapa,
+           t."código_transportadora"                                              as cod_unidade,
+           sum(1) filter (where t.disp_apont_cadastrado <= um.meta_raio_tracking) as apontamentos_ok,
+           count(t.disp_apont_cadastrado)                                         as total_apontamentos
+    from tracking t
+             join unidade_metas um on um.cod_unidade = t."código_transportadora"
+    group by t.mapa, t."código_transportadora"
+)
 SELECT dados.cod_empresa,
        dados.cod_regional,
        dados.cod_unidade,
@@ -226,11 +235,11 @@ FROM (SELECT u.cod_empresa,
                  WHEN ((m.hrsai)::time without time zone < m.hrmatinal) THEN um.meta_tempo_largada_horas
                  ELSE ((m.hrsai - (m.hrmatinal)::interval))::time without time zone
                  END                                                                         AS tempo_largada,
-             COALESCE(tracking.total_apontamentos, (0)::bigint)                              AS total_tracking,
-             COALESCE(tracking.apontamentos_ok, (0)::bigint)                                 AS apontamentos_ok,
-             COALESCE((tracking.total_apontamentos - tracking.apontamentos_ok), (0)::bigint) AS apontamentos_nok,
+             COALESCE(it.total_apontamentos, (0)::bigint)                                    AS total_tracking,
+             COALESCE(it.apontamentos_ok, (0)::bigint)                                       AS apontamentos_ok,
+             COALESCE((it.total_apontamentos - it.apontamentos_ok), (0)::bigint)             AS apontamentos_nok,
              CASE
-                 WHEN (tracking.total_apontamentos > 0) THEN (tracking.apontamentos_ok / tracking.total_apontamentos)
+                 WHEN (it.total_apontamentos > 0) THEN (it.apontamentos_ok / it.total_apontamentos)
                  ELSE (0)::bigint
                  END                                                                         AS resultado_tracking,
              um.meta_tracking,
@@ -249,25 +258,16 @@ FROM (SELECT u.cod_empresa,
              to_seconds((um.meta_tempo_interno_horas)::text)                                 AS meta_tempo_interno_horas,
              to_seconds((um.meta_tempo_largada_horas)::text)                                 AS meta_tempo_largada_horas,
              to_seconds((um.meta_jornada_liquida_horas)::text)                               AS meta_jornada_liquida_horas
-      FROM view_mapa_colaborador vmc
-               JOIN colaborador c ON c.cpf = vmc.cpf AND c.cod_unidade = vmc.cod_unidade
-               JOIN mapa m ON m.mapa = vmc.mapa AND m.cod_unidade = vmc.cod_unidade
-               JOIN unidade u ON u.codigo = m.cod_unidade
-               JOIN empresa em ON em.codigo = u.cod_empresa
-               JOIN regional r ON r.codigo = u.cod_regional
-               JOIN unidade_metas um ON um.cod_unidade = u.codigo
-               JOIN equipe e ON e.cod_unidade = c.cod_unidade AND c.cod_equipe = e.codigo
-               JOIN funcao f ON f.codigo = c.cod_funcao AND f.cod_empresa = em.codigo
-               LEFT JOIN (SELECT t.mapa                         AS tracking_mapa,
-                                 t."código_transportadora"      AS tracking_unidade,
-                                 count(t.disp_apont_cadastrado) AS total_apontamentos,
-                                 sum(
-                                         CASE
-                                             WHEN (t.disp_apont_cadastrado <= um_1.meta_raio_tracking) THEN 1
-                                             ELSE 0
-                                             END)               AS apontamentos_ok
-                          FROM tracking t
-                                   JOIN unidade_metas um_1 ON um_1.cod_unidade = t."código_transportadora"
-                          GROUP BY t.mapa, t."código_transportadora") tracking
-                         ON tracking.tracking_mapa = m.mapa AND tracking.tracking_unidade = m.cod_unidade
+      from view_mapa_colaborador vmc
+               join colaborador c on c.cpf = vmc.cpf and c.cod_unidade = vmc.cod_unidade
+               join mapa m on m.mapa = vmc.mapa and m.cod_unidade = vmc.cod_unidade
+               join unidade u on u.codigo = m.cod_unidade
+               join empresa em on em.codigo = u.cod_empresa
+               join regional r on r.codigo = u.cod_regional
+               join unidade_metas um on um.cod_unidade = u.codigo
+               join equipe e on e.cod_unidade = c.cod_unidade and c.cod_equipe = e.codigo
+               join funcao f on f.codigo = c.cod_funcao and f.cod_empresa = em.codigo
+               left join internal_tracking it
+                         on it.tracking_mapa = m.mapa
+                             and it.cod_unidade = m.cod_unidade
       ORDER BY m.data) dados;
