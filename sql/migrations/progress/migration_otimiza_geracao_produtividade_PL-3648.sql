@@ -506,7 +506,7 @@ select matricula_ambev,
                                                       pci.bonus_ajudante
                                                   else 0 end)
                                     else 0 end) +
-                               sum(valor)) :: numeric, 2), '.', ',')                        as "VALOR TOTAL"
+                               sum(valor)) :: numeric, 2), '.', ',') as "VALOR TOTAL"
 from view_produtividade_extrato_com_total vpe
          left join pre_contracheque_informacoes pci on pci.cod_unidade = vpe.cod_unidade
          left join unidade_funcao_produtividade ufp on ufp.cod_unidade = vpe.cod_unidade
@@ -516,3 +516,38 @@ group by matricula_ambev, nome_colaborador, vpe.cod_funcao, funcao, meta_dev_pdv
          ufp.cod_funcao_motorista, pci.bonus_ajudante, pci.bonus_motorista, vpe.rm_numero_viagens
 order by nome_colaborador;
 $$;
+
+create or replace function func_relatorio_produtividade_remuneracao_acumulada_colaborador(f_cod_unidade bigint,
+                                                                                          f_cpf_colaborador bigint,
+                                                                                          f_data_inicial date,
+                                                                                          f_data_final date)
+    returns table
+            (
+                "CPF_COLABORADOR"  bigint,
+                "NOME_COLABORADOR" text,
+                "DATA"             date,
+                "CAIXAS_ENTREGUES" numeric,
+                "FATOR"            real,
+                "VALOR"            double precision
+            )
+    language sql
+as
+$$
+select vpe.cpf,
+       vpe.nome_colaborador,
+       vpe.data,
+       round(vpe.cxentreg::numeric, 2),
+       vpe.fator,
+       vpe.valor
+from view_produtividade_extrato_com_total as vpe
+where vpe.cod_unidade = f_cod_unidade
+  and case
+          when f_cpf_colaborador is null then true
+          else vpe.cpf = f_cpf_colaborador
+    end
+  and vpe.data between f_data_inicial and f_data_final
+order by vpe.cpf, vpe.data;
+$$;
+
+comment on function func_relatorio_produtividade_remuneracao_acumulada_colaborador(bigint, bigint, date, date)
+    is 'Busca a produtividade do colaborador para um período.';
