@@ -14,12 +14,12 @@ create or replace view view_produtividade_extrato
 as
 with internal_tracking as (
     select t.mapa                                                                 as tracking_mapa,
-           t."código_transportadora"                                              as cod_unidade,
+           t.cod_unidade                                                          as cod_unidade,
            sum(1) filter (where t.disp_apont_cadastrado <= um.meta_raio_tracking) as apontamentos_ok,
            count(t.disp_apont_cadastrado)                                         as total_apontamentos
     from tracking t
-             join unidade_metas um on um.cod_unidade = t."código_transportadora"
-    group by t.mapa, t."código_transportadora"
+             join unidade_metas um on um.cod_unidade = t.cod_unidade
+    group by t.mapa, t.cod_unidade
 )
 
 select vmc.cod_unidade                                    as cod_unidade,
@@ -87,11 +87,11 @@ select vmc.cod_unidade                                    as cod_unidade,
                          -- Motorista.
                          when c.matricula_ambev = m.matricmotorista and c.cod_funcao = ufp.cod_funcao_motorista
                              then
-                             m.vlbateujornmot + m.vlnaobateujornmot
+                                 m.vlbateujornmot + m.vlnaobateujornmot
                          -- Ajudante.
                          when (c.matricula_ambev = m.matricajud1 or c.matricula_ambev = m.matricajud2) and
                               c.cod_funcao = ufp.cod_funcao_ajudante and m.fator > 0 then
-                             (m.vlbateujornaju + m.vlnaobateujornaju) / fator
+                                 (m.vlbateujornaju + m.vlnaobateujornaju) / fator
                          else 0
                          end
                  else 0
@@ -111,7 +111,7 @@ select vmc.cod_unidade                                    as cod_unidade,
                           -- Ajudante.
                           when (c.matricula_ambev = m.matricajud1 or c.matricula_ambev = m.matricajud2) and
                                c.cod_funcao = ufp.cod_funcao_ajudante and m.fator > 0 then
-                              m.vlrecargaaju / m.fator
+                                  m.vlrecargaaju / m.fator
                           else 0
                           end
                   else 0
@@ -131,11 +131,11 @@ select vmc.cod_unidade                                    as cod_unidade,
                                           -- Motorista.
                                           when c.matricula_ambev = m.matricmotorista and
                                                c.cod_funcao = ufp.cod_funcao_motorista then
-                                              m.cxentreg * uv.rm_motorista_as_recarga_cx_fator1
+                                                  m.cxentreg * uv.rm_motorista_as_recarga_cx_fator1
                                           -- ajudante.
                                           when (c.matricula_ambev = m.matricajud1 or c.matricula_ambev = m.matricajud2) and
                                                c.cod_funcao = ufp.cod_funcao_ajudante and m.fator > 0 then
-                                              m.cxentreg * uv.rm_ajudante_as_recarga_cx_fator1
+                                                  m.cxentreg * uv.rm_ajudante_as_recarga_cx_fator1
                                           else 0
                                           end
                                   when m.fator = 2 then
@@ -144,11 +144,11 @@ select vmc.cod_unidade                                    as cod_unidade,
                                           -- Motorista.
                                           when c.matricula_ambev = m.matricmotorista and
                                                c.cod_funcao = ufp.cod_funcao_motorista then
-                                              m.cxentreg * uv.rm_motorista_as_recarga_cx_fator2
+                                                  m.cxentreg * uv.rm_motorista_as_recarga_cx_fator2
                                           -- Ajudante.
                                           when (c.matricula_ambev = m.matricajud1 or c.matricula_ambev = m.matricajud2) and
                                                c.cod_funcao = ufp.cod_funcao_ajudante and m.fator > 0 then
-                                              m.cxentreg * uv.rm_ajudante_as_recarga_cx_fator2
+                                                  m.cxentreg * uv.rm_ajudante_as_recarga_cx_fator2
                                           else 0
                                           end
                                   else 0
@@ -183,7 +183,7 @@ select vmc.cod_unidade                                    as cod_unidade,
                          -- Motorista
                          when c.matricula_ambev = m.matricmotorista and c.cod_funcao = ufp.cod_funcao_motorista
                              then
-                             (m.cxentreg * uv.rm_motorista_rota_jornada) - m.vlnaobateujornmot
+                                 (m.cxentreg * uv.rm_motorista_rota_jornada) - m.vlnaobateujornmot
                          when (c.matricula_ambev = m.matricajud1 or c.matricula_ambev = m.matricajud2) and
                               c.cod_funcao = ufp.cod_funcao_ajudante then
                                  (m.cxentreg * uv.rm_ajudante_rota_jornada) - (m.vlnaobateujornaju / m.fator)
@@ -211,12 +211,12 @@ select vmc.cod_unidade                                    as cod_unidade,
                                                  -- Motorista.
                                                  when c.matricula_ambev = m.matricmotorista and
                                                       c.cod_funcao = ufp.cod_funcao_motorista then
-                                                     m.cxentreg * uv.rm_motorista_as_cx_jornada_fator1
+                                                         m.cxentreg * uv.rm_motorista_as_cx_jornada_fator1
                                                  -- Ajudante.
                                                  when (c.matricula_ambev = m.matricajud1 or c.matricula_ambev = m.matricajud2) and
                                                       c.cod_funcao = ufp.cod_funcao_ajudante and m.fator > 0
                                                      then
-                                                     m.cxentreg * uv.rm_ajudante_as_cx_jornada_fator1
+                                                         m.cxentreg * uv.rm_ajudante_as_cx_jornada_fator1
                                                  else 0
                                                  end
                                          when m.hrjornadaliq > m.hrmetajornada then
@@ -225,12 +225,12 @@ select vmc.cod_unidade                                    as cod_unidade,
                                                  -- Motorista.
                                                  when c.matricula_ambev = m.matricmotorista and
                                                       c.cod_funcao = ufp.cod_funcao_motorista then
-                                                     m.cxentreg * uv.rm_motorista_as_cx_sem_jornada_fator1
+                                                         m.cxentreg * uv.rm_motorista_as_cx_sem_jornada_fator1
                                                  -- Ajudante.
                                                  when (c.matricula_ambev = m.matricajud1 or c.matricula_ambev = m.matricajud2) and
                                                       c.cod_funcao = ufp.cod_funcao_ajudante and m.fator > 0
                                                      then
-                                                     m.cxentreg * uv.rm_ajudante_as_cx_sem_jornada_fator1
+                                                         m.cxentreg * uv.rm_ajudante_as_cx_sem_jornada_fator1
                                                  else 0
                                                  end
                                          else 0
@@ -244,12 +244,12 @@ select vmc.cod_unidade                                    as cod_unidade,
                                                  -- Motorista.
                                                  when c.matricula_ambev = m.matricmotorista and
                                                       c.cod_funcao = ufp.cod_funcao_motorista then
-                                                     m.cxentreg * uv.rm_motorista_as_cx_jornada_fator2
+                                                         m.cxentreg * uv.rm_motorista_as_cx_jornada_fator2
                                                  -- Ajudante.
                                                  when (c.matricula_ambev = m.matricajud1 or c.matricula_ambev = m.matricajud2) and
                                                       c.cod_funcao = ufp.cod_funcao_ajudante and m.fator > 0
                                                      then
-                                                     m.cxentreg * uv.rm_ajudante_as_cx_jornada_fator2
+                                                         m.cxentreg * uv.rm_ajudante_as_cx_jornada_fator2
                                                  else 0
                                                  end
                                          when m.hrjornadaliq > m.hrmetajornada then
@@ -258,12 +258,12 @@ select vmc.cod_unidade                                    as cod_unidade,
                                                  -- Motorista.
                                                  when c.matricula_ambev = m.matricmotorista and
                                                       c.cod_funcao = ufp.cod_funcao_motorista then
-                                                     m.cxentreg * uv.rm_motorista_as_cx_sem_jornada_fator2
+                                                         m.cxentreg * uv.rm_motorista_as_cx_sem_jornada_fator2
                                                  -- ajudante
                                                  when (c.matricula_ambev = m.matricajud1 or c.matricula_ambev = m.matricajud2) and
                                                       c.cod_funcao = ufp.cod_funcao_ajudante and m.fator > 0
                                                      then
-                                                     m.cxentreg * uv.rm_ajudante_as_cx_sem_jornada_fator2
+                                                         m.cxentreg * uv.rm_ajudante_as_cx_sem_jornada_fator2
                                                  else 0
                                                  end
                                          else 0
