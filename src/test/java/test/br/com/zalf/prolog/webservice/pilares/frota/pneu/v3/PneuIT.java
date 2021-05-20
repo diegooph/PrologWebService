@@ -24,6 +24,6 @@ public class PneuIT extends IntegrationTest {
     void givenCorrectPneuCadastroToInsert_ThenReturnStatusCreated() {
         final PneuCadastroDto pneuForCreation = PneuCadastroFactory.createCorrectPneuCadastro();
         final ResponseEntity<SuccessResponse> response = client.insert(pneuForCreation);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 }
