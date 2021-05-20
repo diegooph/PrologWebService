@@ -13,7 +13,7 @@ alter table tracking rename column aderência_janela_entrega to aderencia_janela
 alter table tracking rename column código_transportadora to cod_unidade;
 
 -- Index utilizado pela view_produtividade_extrato.
-create index idx_tracking_codigo_transportadora on tracking ("código_transportadora");
+create index idx_tracking_cod_unidade on tracking (cod_unidade);
 
 drop view view_produtividade_extrato;
 create or replace view view_produtividade_extrato
@@ -32,12 +32,12 @@ create or replace view view_produtividade_extrato
 as
 with internal_tracking as (
     select t.mapa                                                                 as tracking_mapa,
-           t."código_transportadora"                                              as cod_unidade,
+           t.cod_unidade                                                          as cod_unidade,
            sum(1) filter (where t.disp_apont_cadastrado <= um.meta_raio_tracking) as apontamentos_ok,
            count(t.disp_apont_cadastrado)                                         as total_apontamentos
     from tracking t
-             join unidade_metas um on um.cod_unidade = t."código_transportadora"
-    group by t.mapa, t."código_transportadora"
+             join unidade_metas um on um.cod_unidade = t.cod_unidade
+    group by t.mapa, t.cod_unidade
 )
 
 select vmc.cod_unidade                                    as cod_unidade,
@@ -523,7 +523,7 @@ select matricula_ambev,
                                                       pci.bonus_ajudante
                                                   else 0 end)
                                     else 0 end) +
-                               sum(valor)) :: numeric, 2), '.', ',') as "VALOR TOTAL"
+                               sum(valor)) :: numeric, 2), '.', ',')                        as "VALOR TOTAL"
 from view_produtividade_extrato_com_total vpe
          left join pre_contracheque_informacoes pci on pci.cod_unidade = vpe.cod_unidade
          left join unidade_funcao_produtividade ufp on ufp.cod_unidade = vpe.cod_unidade
