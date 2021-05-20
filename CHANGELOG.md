@@ -6,6 +6,7 @@ Change Log
 ###
 ### Refactors
 * Melhora mapeamento de exceptions do SQL
+* Otimiza geração da produtividade (PL-3648)
 
 
 <a name="v3.3.4"></a>
