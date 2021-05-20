@@ -1,9 +1,8 @@
 Change Log
 ==========
 
-###
-### UNRELASED
-###
+<a name="v3.3.5"></a>
+## Version [v3.3.5](https://github.com/luizfp/PrologWebService/compare/v3.3.4...v3.3.5) (2021-05-20)
 ### Refactors
 * Melhora mapeamento de exceptions do SQL
 * Otimiza geração da produtividade (PL-3648)
