@@ -1,13 +1,11 @@
-package test.br.com.zalf.prolog.webservice.config;
+package test.br.com.zalf.prolog.webservice.config.flyway;
 
 import org.flywaydb.core.Flyway;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestComponent;
 import org.springframework.core.annotation.Order;
-import test.br.com.zalf.prolog.webservice.pilares.frota.checklist.InsertChecklistInitialDataForTestsCallback;
-import test.br.com.zalf.prolog.webservice.pilares.frota.movimentacao.InsertMovimentacaoProcessoInitialDataForTestsCallback;
-import test.br.com.zalf.prolog.webservice.pilares.frota.pneu.afericao.InsertAfericaoInitialDataForTestsCallback;
+import test.br.com.zalf.prolog.webservice.config.LiberaTodasPermissoesCallback;
 
 import javax.sql.DataSource;
 
@@ -25,7 +23,7 @@ public class DoneMigrationsFlywayProvider implements FlywayInstanceProvider {
     @NotNull
     @Override
     public Flyway getFlyway() {
-        return Flyway.configure()
+        final Flyway load = Flyway.configure()
                 .locations("filesystem:sql/migrations/done")
                 .baselineOnMigrate(true)
                 .dataSource(dataSource)
@@ -33,10 +31,9 @@ public class DoneMigrationsFlywayProvider implements FlywayInstanceProvider {
                 .sqlMigrationPrefix("0")
                 .repeatableSqlMigrationPrefix("")
                 .sqlMigrationSeparator("_")
-                .callbacks(new AfterVersionedCallback(),
-                           new InsertAfericaoInitialDataForTestsCallback(),
-                           new InsertMovimentacaoProcessoInitialDataForTestsCallback(),
-                           new InsertChecklistInitialDataForTestsCallback())
+                .table("migrations_done")
+                .callbacks(new LiberaTodasPermissoesCallback())
                 .load();
+        return load;
     }
 }

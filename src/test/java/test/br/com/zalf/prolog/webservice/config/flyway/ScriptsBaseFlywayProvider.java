@@ -1,4 +1,4 @@
-package test.br.com.zalf.prolog.webservice.config;
+package test.br.com.zalf.prolog.webservice.config.flyway;
 
 import org.flywaydb.core.Flyway;
 import org.jetbrains.annotations.NotNull;
@@ -29,6 +29,7 @@ public class ScriptsBaseFlywayProvider implements FlywayInstanceProvider {
                 .baselineVersion("0")
                 .sqlMigrationPrefix("T")
                 .sqlMigrationSeparator("_")
+                .table("scripts")
                 .load();
     }
 }

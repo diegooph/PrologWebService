@@ -1,4 +1,4 @@
-package test.br.com.zalf.prolog.webservice.config;
+package test.br.com.zalf.prolog.webservice.config.flyway;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
@@ -14,10 +14,8 @@ import java.util.List;
  */
 @TestConfiguration
 public class FlywayInstanceCallConfig {
-
     @Autowired
     private List<FlywayInstanceProvider> providers;
-
 
     @EventListener(WebServerInitializedEvent.class)
     public void onServletContainerInitialized(final WebServerInitializedEvent event) {
@@ -28,5 +26,4 @@ public class FlywayInstanceCallConfig {
                     flyway.migrate();
                 });
     }
-
 }
