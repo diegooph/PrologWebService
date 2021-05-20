@@ -265,7 +265,7 @@ from (select u.cod_empresa                                             as cod_em
                join regional r on r.codigo = u.cod_regional
                join unidade_metas um on um.cod_unidade = u.codigo
                join equipe e on e.cod_unidade = c.cod_unidade and c.cod_equipe = e.codigo
-               join funcao f on f.codigo = c.cod_funcao and f.cod_empresa = em.codigo
+               join funcao f on f.codigo = c.cod_funcao
                left join internal_tracking it
                          on it.tracking_mapa = m.mapa
                              and it.cod_unidade = m.cod_unidade
