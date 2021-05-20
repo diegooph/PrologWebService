@@ -352,8 +352,9 @@ select vpe.*,
            + vpe.valor_diferenca_eld)::numeric, 2)::double precision as valor
 from view_produtividade_extrato vpe;
 
--- Remove view que não era mais utilizada.
--- Ela possuia um join com view_extrato_produtividade mas seus dados não eram utilizados.
+-- Remove views que não eram mais utilizadas.
+drop view resumo_dados;
+-- Essa abaixo possuia um join com view_extrato_produtividade mas seus dados não eram utilizados.
 drop view view_valor_cx_unidade;
 
 -- Altera colunas de segundos de integer para bigint.
