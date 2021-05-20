@@ -17,7 +17,7 @@ import java.net.URI;
  */
 @TestComponent
 public class PneuApiClient {
-    private static final String RESOURCE = "/v3/pneus";
+    private static final String RESOURCE = "/api/v3/pneus";
 
     @Autowired
     @NotNull

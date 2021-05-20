@@ -13,9 +13,9 @@ public class PneuCadastroFactory {
 
     public static PneuCadastroDto createCorrectPneuCadastro() {
         return PneuCadastroDto.of(3L,
-                                  5L,
+                                  215L,
                                   "teste04",
-                                  28L,
+                                  131L,
                                   10L,
                                   2,
                                   3,
@@ -23,7 +23,7 @@ public class PneuCadastroFactory {
                                   "0001",
                                   new BigDecimal("1500"),
                                   false,
-                                  9L,
+                                  11L,
                                   new BigDecimal("100"));
     }
 }

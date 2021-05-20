@@ -16,7 +16,6 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Guilherme Steinert (https://github.com/steinert999)
  */
 public class PneuIT extends IntegrationTest {
-
     @Autowired
     private PneuApiClient client;
 
@@ -26,6 +25,5 @@ public class PneuIT extends IntegrationTest {
         final PneuCadastroDto pneuForCreation = PneuCadastroFactory.createCorrectPneuCadastro();
         final ResponseEntity<SuccessResponse> response = client.insert(pneuForCreation);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-
     }
 }
