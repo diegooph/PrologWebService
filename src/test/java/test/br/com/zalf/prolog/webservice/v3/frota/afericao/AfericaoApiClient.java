@@ -1,4 +1,4 @@
-package test.br.com.zalf.prolog.webservice.pilares.frota.afericao;
+package test.br.com.zalf.prolog.webservice.v3.frota.afericao;
 
 import br.com.zalf.prolog.webservice.v3.frota.afericao._model.AfericaoAvulsaDto;
 import br.com.zalf.prolog.webservice.v3.frota.afericao._model.AfericaoPlacaDto;

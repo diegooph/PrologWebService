@@ -1,4 +1,4 @@
-package test.br.com.zalf.prolog.webservice.pilares.frota.pneu.v3;
+package test.br.com.zalf.prolog.webservice.v3.frota.pneu;
 
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
 import br.com.zalf.prolog.webservice.v3.frota.pneu._model.PneuCadastroDto;

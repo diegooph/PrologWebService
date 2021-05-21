@@ -1,4 +1,4 @@
-package test.br.com.zalf.prolog.webservice.pilares.frota.checklistordemservico.v3;
+package test.br.com.zalf.prolog.webservice.v3.frota.checklistordemservico;
 
 import br.com.zalf.prolog.webservice.errorhandling.sql.ClientSideErrorException;
 import br.com.zalf.prolog.webservice.v3.frota.checklistordemservico._model.ChecklistOrdemServicoListagemDto;

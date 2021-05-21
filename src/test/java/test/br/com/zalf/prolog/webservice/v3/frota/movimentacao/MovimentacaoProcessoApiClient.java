@@ -1,7 +1,7 @@
-package test.br.com.zalf.prolog.webservice.pilares.frota.checklistordemservico.v3;
+package test.br.com.zalf.prolog.webservice.v3.frota.movimentacao;
 
 import br.com.zalf.prolog.webservice.errorhandling.sql.ClientSideErrorException;
-import br.com.zalf.prolog.webservice.v3.frota.checklistordemservico._model.ChecklistOrdemServicoListagemDto;
+import br.com.zalf.prolog.webservice.v3.frota.movimentacao._model.MovimentacaoProcessoListagemDto;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestComponent;
@@ -17,59 +17,56 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Created on 2021-04-13
+ * Created on 2021-04-27
  *
  * @author Gustavo Navarro (https://github.com/gustavocnp95)
  */
 @TestComponent
-public final class ChecklistOrdemServicoApiClient {
-    private static final String RESOURCE = "/api/v3/checklists/ordens-servico";
+public final class MovimentacaoProcessoApiClient {
+    private static final String RESOURCE = "/api/v3/movimentacoes";
     @Autowired
+    @NotNull
     private TestRestTemplate restTemplate;
 
     @NotNull
-    public ResponseEntity<List<ChecklistOrdemServicoListagemDto>> getOrdensServico(
+    public ResponseEntity<List<MovimentacaoProcessoListagemDto>> getMovimentacacaoProcessos(
             @NotNull final List<Long> codUnidades,
+            @NotNull final String dataInicial,
+            @NotNull final String dataFinal,
             final int limit,
             final int offset) {
-
         final UriComponents components = UriComponentsBuilder
                 .fromPath(RESOURCE)
-                .path("/")
                 .queryParam("codUnidades", codUnidades.stream()
                         .map(Object::toString)
                         .collect(Collectors.joining(",")))
-                .queryParam("incluirItensOrdemServico", true)
+                .queryParam("dataInicial", dataInicial)
+                .queryParam("dataFinal", dataFinal)
                 .queryParam("limit", limit)
                 .queryParam("offset", offset)
                 .build();
-        final RequestEntity<Void> reqEntity = RequestEntity
+        final RequestEntity<Void> requestEntity = RequestEntity
                 .get(components.toUri())
                 .accept(MediaType.APPLICATION_JSON)
                 .build();
-
-        return restTemplate.exchange(reqEntity, new ParameterizedTypeReference<>() {});
+        return restTemplate.exchange(requestEntity,
+                                     new ParameterizedTypeReference<List<MovimentacaoProcessoListagemDto>>() {});
     }
 
     @NotNull
-    public ResponseEntity<ClientSideErrorException> getOrdensServicoWithWrongUnidades(
-            @NotNull final List<String> wrongTypeCodUnidades,
-            final int limit,
-            final int offset) {
-
+    public ResponseEntity<ClientSideErrorException> getMovimentacacaoProcessosBadRequest() {
         final UriComponents components = UriComponentsBuilder
                 .fromPath(RESOURCE)
-                .path("/")
-                .queryParam("codUnidades", String.join(",", wrongTypeCodUnidades))
-                .queryParam("incluirItensOrdemServico", true)
-                .queryParam("limit", limit)
-                .queryParam("offset", offset)
+                .queryParam("codUnidades", "a")
+                .queryParam("dataInicial", "2021-01-01")
+                .queryParam("dataFinal", "2021-01-01")
+                .queryParam("limit", 1000)
+                .queryParam("offset", 0)
                 .build();
-        final RequestEntity<Void> reqEntity = RequestEntity
+        final RequestEntity<Void> requestEntity = RequestEntity
                 .get(components.toUri())
                 .accept(MediaType.APPLICATION_JSON)
                 .build();
-
-        return restTemplate.exchange(reqEntity, new ParameterizedTypeReference<>() {});
+        return restTemplate.exchange(requestEntity, new ParameterizedTypeReference<ClientSideErrorException>() {});
     }
 }

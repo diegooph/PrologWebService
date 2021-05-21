@@ -1,4 +1,4 @@
-package test.br.com.zalf.prolog.webservice.pilares.frota.checklist;
+package test.br.com.zalf.prolog.webservice.v3.frota.checklist;
 
 import br.com.zalf.prolog.webservice.errorhandling.sql.ClientSideErrorException;
 import br.com.zalf.prolog.webservice.v3.frota.checklist._model.ChecklistListagemDto;
@@ -58,7 +58,8 @@ public class ChecklistApiClient {
                 .get(components.toUri())
                 .accept(MediaType.APPLICATION_JSON)
                 .build();
-        return restTemplate.exchange(requestEntity, new ParameterizedTypeReference<>() {});
+        final Object forObject = restTemplate.getForObject(components.toUri(), Object.class);
+        return restTemplate.exchange(requestEntity, new ParameterizedTypeReference<List<ChecklistListagemDto>>() {});
     }
 
     public ResponseEntity<ClientSideErrorException> getChecklistsWithWrongTypeUnidades(
@@ -80,6 +81,6 @@ public class ChecklistApiClient {
                 .get(components.toUri())
                 .accept(MediaType.APPLICATION_JSON)
                 .build();
-        return restTemplate.exchange(reqEntity, new ParameterizedTypeReference<>() {});
+        return restTemplate.exchange(reqEntity, new ParameterizedTypeReference<ClientSideErrorException>() {});
     }
 }
