@@ -170,4 +170,4 @@ INSERT INTO public.veiculo_data (placa, cod_unidade, km, status_ativo, cod_tipo,
                                  data_hora_cadastro, cod_unidade_cadastro, codigo, deletado, data_hora_deletado,
                                  pg_username_delecao, cod_empresa)
 VALUES ('PRO0194', 215, 12943, true, 65, 120, 1, '2019-06-04 16:54:54.671068', 215, 7959, false, null, null, 3);
-SELECT setval('veiculo_data_codigo_seq', 7959, true);
+SELECT setval('veiculo_codigo_seq', 7959, true);

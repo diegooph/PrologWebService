@@ -15,3 +15,5 @@ alter sequence afericao_data_codigo_seq rename to afericao_codigo_seq;
 alter sequence afericao_manutencao_data_codigo_seq rename to afericao_manutencao_codigo_seq;
 
 alter sequence pneu_servico_realizado_data_codigo_seq rename to pneu_servico_realizado_codigo_seq;
+
+alter sequence veiculo_data_codigo_seq rename to veiculo_codigo_seq;
