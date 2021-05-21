@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
  */
 @TestComponent
 public final class MovimentacaoProcessoApiClient {
-    private static final String RESOURCE = "/v3/movimentacoes";
+    private static final String RESOURCE = "/api/v3/movimentacoes";
     @Autowired
     @NotNull
     private TestRestTemplate restTemplate;
