@@ -1,7 +1,6 @@
 package br.com.zalf.prolog.webservice.entrega.produtividade.relatorio;
 
 import br.com.zalf.prolog.webservice.Filtros;
-import br.com.zalf.prolog.webservice.TimeZoneManager;
 import br.com.zalf.prolog.webservice.commons.report.CsvWriter;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.report.ReportTransformer;
@@ -229,32 +228,29 @@ public class ProdutividadeRelatorioDaoImpl extends DatabaseConnection implements
                                                                 @NotNull final Long codUnidade,
                                                                 @NotNull final Date dataInicial,
                                                                 @NotNull final Date dataFinal) throws SQLException {
-        final PreparedStatement stmt = conn.prepareStatement("SELECT " +
-                "   to_char(data, 'DD/MM/YYYY') AS \"DATA\", " +
-                "   nome_colaborador AS \"COLABORADOR\", " +
-                "   placa AS \"PLACA\", " +
-                "   mapa AS \"MAPA\", " +
-                "   cargaatual AS \"CARGA\", " +
-                "   entrega AS \"ENTREGA\", " +
-                "   fator AS \"FATOR\", " +
-                "   trunc(cxentreg) AS \"CXS ENTREGUES\", " +
-                "   entregascompletas + view_produtividade_extrato.entregasnaorealizadas + view_produtividade_extrato.entregasparciais AS \"ENTREGAS\", " +
-                "   CASE WHEN cxentreg > 0 THEN round((valor / cxentreg) :: NUMERIC, 2) " +
-                "     else 0 end AS \"VALOR/CX\", " +
-                "   round(valor_rota :: NUMERIC, 2) AS \"VALOR ROTA\", " +
-                "   round(valor_diferenca_eld :: NUMERIC, 2) AS \"DIFERENÇA ELD\", " +
-                "   round(valor_as :: NUMERIC, 2) AS \"VALOR AS\", " +
-                "   round(valor :: NUMERIC, 2) AS \"PRODUTIVIDADE TOTAL\" " +
-                "   FROM view_produtividade_extrato " +
-                "   WHERE cpf::TEXT LIKE ? AND data BETWEEN (? AT TIME ZONE ?) AND (? AT TIME ZONE ?) AND cod_unidade = ? " +
-                "   ORDER BY data ASC;");
-        final String zoneId = TimeZoneManager.getZoneIdForCodUnidade(codUnidade, conn).getId();
+        final PreparedStatement stmt = conn.prepareStatement(
+                "SELECT to_char(data, 'DD/MM/YYYY') AS \"DATA\", " +
+                        "   nome_colaborador AS \"COLABORADOR\", " +
+                        "   placa AS \"PLACA\", " +
+                        "   mapa AS \"MAPA\", " +
+                        "   cargaatual AS \"CARGA\", " +
+                        "   entrega AS \"ENTREGA\", " +
+                        "   fator AS \"FATOR\", " +
+                        "   trunc(cxentreg) AS \"CXS ENTREGUES\", " +
+                        "   entregascompletas + entregasnaorealizadas + entregasparciais AS \"ENTREGAS\", " +
+                        "   CASE WHEN cxentreg > 0 THEN round((valor / cxentreg) :: NUMERIC, 2) " +
+                        "     else 0 end AS \"VALOR/CX\", " +
+                        "   round(valor_rota :: NUMERIC, 2) AS \"VALOR ROTA\", " +
+                        "   round(valor_diferenca_eld :: NUMERIC, 2) AS \"DIFERENÇA ELD\", " +
+                        "   round(valor_as :: NUMERIC, 2) AS \"VALOR AS\", " +
+                        "   round(valor :: NUMERIC, 2) AS \"PRODUTIVIDADE TOTAL\" " +
+                        "   FROM view_produtividade_extrato_com_total " +
+                        "   WHERE cpf::TEXT LIKE ? AND data BETWEEN ? AND ? AND cod_unidade = ? " +
+                        "   ORDER BY data;");
         stmt.setString(1, cpf);
         stmt.setDate(2, dataInicial);
-        stmt.setString(3, zoneId);
-        stmt.setDate(4, dataFinal);
-        stmt.setString(5, zoneId);
-        stmt.setLong(6, codUnidade);
+        stmt.setDate(3, dataFinal);
+        stmt.setLong(4, codUnidade);
         return stmt;
     }
 

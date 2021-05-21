@@ -134,10 +134,10 @@ public class IndicadorDaoImpl extends DatabaseConnection implements IndicadorDao
 			"JOIN regional R ON R.codigo = U.cod_regional\n" +
 			"JOIN unidade_metas um on um.cod_unidade = u.codigo\n" +
 			"JOIN equipe E ON E.cod_unidade = c.cod_unidade AND C.cod_equipe = E.codigo\n" +
-			"LEFT JOIN (SELECT T.MAPA AS TRACKING_MAPA, T.código_transportadora TRACKING_UNIDADE, COUNT(T.disp_apont_cadastrado) AS TOTAL_APONTAMENTOS,\n" +
+			"LEFT JOIN (SELECT T.MAPA AS TRACKING_MAPA, T.cod_unidade TRACKING_UNIDADE, COUNT(T.disp_apont_cadastrado) AS TOTAL_APONTAMENTOS,\n" +
 			"  SUM(CASE WHEN T.disp_apont_cadastrado <= UM.meta_raio_tracking THEN 1\n" +
 			"      ELSE 0 END) AS APONTAMENTOS_OK\n" +
-			"FROM TRACKING T JOIN UNIDADE_METAS UM ON UM.COD_UNIDADE = T.código_transportadora\n" +
+			"FROM TRACKING T JOIN UNIDADE_METAS UM ON UM.COD_UNIDADE = T.cod_unidade\n" +
 			"GROUP BY 1,2) AS TRACKING ON TRACKING_MAPA = M.MAPA AND TRACKING_UNIDADE = M.cod_unidade\n" +
 			"  where\n" +
 			"VMC.CPF::TEXT LIKE ? and\n" +
@@ -155,7 +155,7 @@ public class IndicadorDaoImpl extends DatabaseConnection implements IndicadorDao
 			"sum(case when t.disp_apont_cadastrado <= um.meta_raio_tracking then 1 \n"  +
 			"else 0 end) as apontamentos_ok, \n"  +
 			"count(t.disp_apont_cadastrado) as total_apontamentos \n"  +
-			"from tracking t join unidade_metas um on um.cod_unidade = t.código_transportadora \n"  +
+			"from tracking t join unidade_metas um on um.cod_unidade = t.cod_unidade \n"  +
 			"group by 1) as tracking on tracking_mapa = m.mapa \n" +
             "JOIN VIEW_MAPA_COLABORADOR VMC ON VMC.COD_UNIDADE = M.COD_UNIDADE AND M.MAPA = VMC.MAPA \n"  +
 //			"JOIN mapa_colaborador MC ON MC.mapa = M.mapa AND MC.cod_unidade = M.cod_unidade \n"  +
