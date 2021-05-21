@@ -58,7 +58,6 @@ public class ChecklistApiClient {
                 .get(components.toUri())
                 .accept(MediaType.APPLICATION_JSON)
                 .build();
-        final Object forObject = restTemplate.getForObject(components.toUri(), Object.class);
         return restTemplate.exchange(requestEntity, new ParameterizedTypeReference<List<ChecklistListagemDto>>() {});
     }
 
