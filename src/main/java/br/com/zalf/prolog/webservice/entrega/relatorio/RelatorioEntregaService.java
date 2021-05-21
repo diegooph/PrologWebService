@@ -158,7 +158,6 @@ public class RelatorioEntregaService {
 
     public void getConsolidadoMapasIndicadorCsv(final OutputStream out,
                                                 final Long codEmpresa,
-                                                final String codRegional,
                                                 final String codUnidade,
                                                 final String codEquipe,
                                                 final String cpf,
@@ -168,7 +167,6 @@ public class RelatorioEntregaService {
             dao.getConsolidadoMapasIndicadorCsv(
                     out,
                     codEmpresa,
-                    codRegional,
                     codUnidade,
                     codEquipe,
                     cpf,
@@ -177,18 +175,16 @@ public class RelatorioEntregaService {
         } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao gerar o relatório consolidado dos indicadores.\n" +
                     "codEmpresa: %d\n" +
-                    "codRegional: %s\n" +
                     "codUnidade: %s\n" +
                     "codEquipe: %s\n" +
                     "cpf: %s\n" +
-                    "Período: %d a %d", codEmpresa, codRegional, codUnidade, codEquipe, cpf, dataInicial, dataFinal), t);
+                    "Período: %d a %d", codEmpresa, codUnidade, codEquipe, cpf, dataInicial, dataFinal), t);
             throw new RuntimeException(t);
         }
     }
 
     @NotNull
     public Report getConsolidadoMapasIndicadorReport(final Long codEmpresa,
-                                                     final String codRegional,
                                                      final String codUnidade,
                                                      final String codEquipe,
                                                      final String cpf,
@@ -197,7 +193,6 @@ public class RelatorioEntregaService {
         try {
             return dao.getConsolidadoMapasIndicadorReport(
                     codEmpresa,
-                    codRegional,
                     codUnidade,
                     codEquipe,
                     cpf,
@@ -206,11 +201,10 @@ public class RelatorioEntregaService {
         } catch (final Throwable t) {
             Log.e(TAG, String.format("Erro ao gerar o relatório consolidado dos indicadores.\n" +
                     "codEmpresa: %d\n" +
-                    "codRegional: %s\n" +
                     "codUnidade: %s\n" +
                     "codEquipe: %s\n" +
                     "cpf: %s\n" +
-                    "Período: %d a %d", codEmpresa, codRegional, codUnidade, codEquipe, cpf, dataInicial, dataFinal), t);
+                    "Período: %d a %d", codEmpresa, codUnidade, codEquipe, cpf, dataInicial, dataFinal), t);
             throw new RuntimeException(t);
         }
     }

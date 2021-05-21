@@ -160,7 +160,6 @@ public class RelatorioEntregaResource {
         return outputstream -> service.getConsolidadoMapasIndicadorCsv(
                 outputstream,
                 codEmpresa,
-                codRegional,
                 codUnidade,
                 codEquipe,
                 cpf,
@@ -180,7 +179,6 @@ public class RelatorioEntregaResource {
                                                      @QueryParam("dataFinal") final Long dataFinal) {
         return service.getConsolidadoMapasIndicadorReport(
                 codEmpresa,
-                codRegional,
                 codUnidade,
                 codEquipe,
                 cpf,

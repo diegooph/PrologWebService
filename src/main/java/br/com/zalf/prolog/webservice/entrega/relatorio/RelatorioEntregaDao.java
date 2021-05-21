@@ -73,7 +73,6 @@ public interface RelatorioEntregaDao {
 
     void getConsolidadoMapasIndicadorCsv(@NotNull final OutputStream out,
                                          @NotNull final Long codEmpresa,
-                                         @NotNull final String codRegional,
                                          @NotNull final String codUnidade,
                                          @NotNull final String equipe,
                                          @NotNull final String cpf,
@@ -82,7 +81,6 @@ public interface RelatorioEntregaDao {
 
     @NotNull
     Report getConsolidadoMapasIndicadorReport(@NotNull final Long codEmpresa,
-                                              @NotNull final String codRegional,
                                               @NotNull final String codUnidade,
                                               @NotNull final String equipe,
                                               @NotNull final String cpf,

@@ -266,8 +266,14 @@ from (select u.codigo                                                           
                          on it.cod_unidade = m.cod_unidade
                              and it.tracking_mapa = m.mapa) dados;
 
+drop function func_indicador_relatorio_consolidado_mapas_indicadores(f_cod_empresa bigint,
+    f_cod_regional bigint,
+    f_cod_unidade bigint,
+    f_cod_equipe bigint,
+    f_cpf bigint,
+    f_data_inicial date,
+    f_data_final date);
 create or replace function func_indicador_relatorio_consolidado_mapas_indicadores(f_cod_empresa bigint,
-                                                                                  f_cod_regional bigint,
                                                                                   f_cod_unidade bigint,
                                                                                   f_cod_equipe bigint,
                                                                                   f_cpf bigint,

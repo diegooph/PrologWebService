@@ -343,7 +343,6 @@ public class RelatorioEntregaDaoImpl extends DatabaseConnection implements Relat
     @Override
     public void getConsolidadoMapasIndicadorCsv(@NotNull final OutputStream out,
                                                 @NotNull final Long codEmpresa,
-                                                @NotNull final String codRegional,
                                                 @NotNull final String codUnidade,
                                                 @NotNull final String codEquipe,
                                                 @NotNull final String cpf,
@@ -357,7 +356,6 @@ public class RelatorioEntregaDaoImpl extends DatabaseConnection implements Relat
             stmt = getConsolidadoMapasIndicadorStatement(
                     conn,
                     codEmpresa,
-                    codRegional,
                     codUnidade,
                     codEquipe,
                     cpf,
@@ -373,7 +371,6 @@ public class RelatorioEntregaDaoImpl extends DatabaseConnection implements Relat
     @NotNull
     @Override
     public Report getConsolidadoMapasIndicadorReport(@NotNull final Long codEmpresa,
-                                                     @NotNull final String codRegional,
                                                      @NotNull final String codUnidade,
                                                      @NotNull final String codEquipe,
                                                      @NotNull final String cpf,
@@ -387,7 +384,6 @@ public class RelatorioEntregaDaoImpl extends DatabaseConnection implements Relat
             stmt = getConsolidadoMapasIndicadorStatement(
                     conn,
                     codEmpresa,
-                    codRegional,
                     codUnidade,
                     codEquipe,
                     cpf,
@@ -403,7 +399,6 @@ public class RelatorioEntregaDaoImpl extends DatabaseConnection implements Relat
     @NotNull
     private PreparedStatement getConsolidadoMapasIndicadorStatement(@NotNull final Connection conn,
                                                                     @NotNull final Long codEmpresa,
-                                                                    @NotNull final String codRegional,
                                                                     @NotNull final String codUnidade,
                                                                     @NotNull final String codEquipe,
                                                                     @NotNull final String cpf,
@@ -412,18 +407,12 @@ public class RelatorioEntregaDaoImpl extends DatabaseConnection implements Relat
         final PreparedStatement stmt = conn.prepareStatement("select * " +
                 "from func_indicador_relatorio_consolidado_mapas_indicadores(" +
                 "f_cod_empresa  =>?," +
-                "f_cod_regional =>?," +
                 "f_cod_unidade  =>?," +
                 "f_cod_equipe   =>?," +
                 "f_cpf          =>?," +
                 "f_data_inicial =>?," +
                 "f_data_final   =>?);");
         stmt.setLong(1, codEmpresa);
-        if (Filtros.isFiltroTodos(codRegional)) {
-            stmt.setNull(2, SqlType.BIGINT.asIntTypeJava());
-        } else {
-            stmt.setLong(2, Long.parseLong(codRegional));
-        }
         if (Filtros.isFiltroTodos(codUnidade)) {
             stmt.setNull(3, SqlType.BIGINT.asIntTypeJava());
         } else {
