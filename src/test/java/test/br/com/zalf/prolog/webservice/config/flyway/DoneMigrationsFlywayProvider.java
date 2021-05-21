@@ -23,7 +23,7 @@ public class DoneMigrationsFlywayProvider implements FlywayInstanceProvider {
     @NotNull
     @Override
     public Flyway getFlyway() {
-        final Flyway load = Flyway.configure()
+        return Flyway.configure()
                 .locations("filesystem:sql/migrations/done")
                 .baselineOnMigrate(true)
                 .dataSource(dataSource)
@@ -34,6 +34,5 @@ public class DoneMigrationsFlywayProvider implements FlywayInstanceProvider {
                 .table("migrations_done")
                 .callbacks(new LiberaTodasPermissoesCallback())
                 .load();
-        return load;
     }
 }

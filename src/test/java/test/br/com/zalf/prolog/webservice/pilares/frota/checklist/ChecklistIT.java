@@ -27,17 +27,17 @@ public class ChecklistIT extends IntegrationTest {
     void givenCorrectParameters_ThenReturnChecksSize() {
         final ResponseEntity<List<ChecklistListagemDto>> responseEntity =
                 client.getChecklistsByFitlro(List.of(215L),
-                                             "2021-03-01",
+                                             "2019-01-01",
                                              "2021-03-30",
                                              null,
                                              null,
                                              null,
                                              false,
-                                             10,
+                                             2,
                                              0);
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(responseEntity.getBody()).isNotNull();
-        assertThat(responseEntity.getBody().size()).isEqualTo(10);
+        assertThat(responseEntity.getBody().size()).isEqualTo(2);
     }
 
     @Test
@@ -45,7 +45,7 @@ public class ChecklistIT extends IntegrationTest {
     void givenCorrectParametersWithoutIncluirRespostas_ThenReturnListChecklistDtoAndStatusOk() {
         final ResponseEntity<List<ChecklistListagemDto>> responseEntity =
                 client.getChecklistsByFitlro(List.of(215L),
-                                             "2021-03-01",
+                                             "2019-01-01",
                                              "2021-03-30",
                                              null,
                                              null,
@@ -63,7 +63,7 @@ public class ChecklistIT extends IntegrationTest {
     void givenCorrectParametersWithIncluirRespostas_ThenReturnListChecklistDtoAndStatusOk() {
         final ResponseEntity<List<ChecklistListagemDto>> responseEntity =
                 client.getChecklistsByFitlro(List.of(215L),
-                                             "2021-03-01",
+                                             "2019-01-01",
                                              "2021-03-30",
                                              null,
                                              null,
