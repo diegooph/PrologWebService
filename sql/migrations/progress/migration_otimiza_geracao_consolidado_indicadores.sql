@@ -9,9 +9,7 @@ with internal_tracking as (
              join unidade_metas um on um.cod_unidade = t.cod_unidade
     group by t.mapa, t.cod_unidade
 )
-SELECT dados.cod_empresa,
-       dados.cod_regional,
-       dados.cod_unidade,
+SELECT dados.cod_unidade,
        dados.cod_equipe,
        dados.cpf,
        dados.nome,
@@ -158,9 +156,7 @@ SELECT dados.cod_empresa,
            when ((dados.resultado_tracking)::double precision >= dados.meta_tracking) then 1
            else 0
            end as gol_tracking
-from (select u.cod_empresa                                                       as cod_empresa,
-             u.cod_regional                                                      as cod_regional,
-             u.codigo                                                            as cod_unidade,
+from (select u.codigo                                                            as cod_unidade,
              e.codigo                                                            as cod_equipe,
              c.cpf                                                               as cpf,
              c.nome                                                              as nome,
@@ -268,5 +264,4 @@ from (select u.cod_empresa                                                      
                join funcao f on f.codigo = c.cod_funcao
                left join internal_tracking it
                          on it.cod_unidade = m.cod_unidade
-                             and it.tracking_mapa = m.mapa
-      order by m.data) dados;
+                             and it.tracking_mapa = m.mapa) dados;
