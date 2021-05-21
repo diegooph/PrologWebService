@@ -1,4 +1,4 @@
-package test.br.com.zalf.prolog.webservice.pilares.geral.unidade;
+package test.br.com.zalf.prolog.webservice.v3.geral.unidade;
 
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
 import br.com.zalf.prolog.webservice.v3.geral.unidade._model.UnidadeEdicaoDto;
@@ -25,7 +25,7 @@ import java.util.List;
 @TestComponent
 public class UnidadeApiClient {
 
-    private static final String RESOURCE = "/v2/unidades";
+    private static final String RESOURCE = "/api/v3/unidades";
     @Autowired
     @NotNull
     private TestRestTemplate restTemplate;

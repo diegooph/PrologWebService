@@ -1,4 +1,4 @@
-package test.br.com.zalf.prolog.webservice.pilares.geral.unidade;
+package test.br.com.zalf.prolog.webservice.v3.geral.unidade;
 
 import br.com.zalf.prolog.webservice.v3.geral.unidade._model.UnidadeEdicaoDto;
 import br.com.zalf.prolog.webservice.v3.geral.unidade._model.UnidadeEntity;

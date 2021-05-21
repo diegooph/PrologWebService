@@ -1,4 +1,4 @@
-package test.br.com.zalf.prolog.webservice.pilares.geral.unidade;
+package test.br.com.zalf.prolog.webservice.v3.geral.unidade;
 
 import br.com.zalf.prolog.webservice.commons.network.SuccessResponse;
 import br.com.zalf.prolog.webservice.errorhandling.exception.BadRequestException;
@@ -22,14 +22,11 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static test.br.com.zalf.prolog.webservice.config.TestConstants.TEST_UNIDADE_ID;
 
 public class UnidadeIT extends IntegrationTest {
-
-    private static final Long TEST_UNIDADE_ID = 5L;
-
     @Autowired
     private UnidadeApiClient client;
-
     @Autowired
     private UnidadeDao dao;
 
@@ -43,8 +40,7 @@ public class UnidadeIT extends IntegrationTest {
     void givenCodUnidadeToRequest_ThenReturnUnidadeVisualizacaoListagemAndStatusOK() {
         final ResponseEntity<UnidadeVisualizacaoListagemDto> response = client.getUnidadeByCodigo(TEST_UNIDADE_ID);
         assertBaseValidations(response);
-        assertThat(response.getBody().getCodUnidade())
-                .isEqualTo(TEST_UNIDADE_ID);
+        assertThat(response.getBody().getCodUnidade()).isEqualTo(TEST_UNIDADE_ID);
     }
 
     @Test
@@ -52,8 +48,8 @@ public class UnidadeIT extends IntegrationTest {
     void givenCodUnidadeAndCodRegionais_ThenReturnListUnidadeVisualizacaoListagemAndStatusOk() {
         final Long codEmpresa = 3L;
         final List<Long> codsRegionais = Collections.singletonList(1L);
-        final ResponseEntity<List<UnidadeVisualizacaoListagemDto>> response = client.getUnidadesListagem(codEmpresa,
-                                                                                                         codsRegionais);
+        final ResponseEntity<List<UnidadeVisualizacaoListagemDto>> response =
+                client.getUnidadesListagem(codEmpresa, codsRegionais);
         assertBaseValidations(response);
         response.getBody().stream()
                 .map(Assertions::assertThat)
@@ -62,7 +58,6 @@ public class UnidadeIT extends IntegrationTest {
 
     @Nested
     class PersistenceTests {
-
         private UnidadeEntity baseEntity;
 
         @BeforeEach
@@ -88,7 +83,7 @@ public class UnidadeIT extends IntegrationTest {
             final ResponseEntity<BadRequestException> response =
                     client.updateUnidade(dtoWithInvalidCodUnidade, BadRequestException.class);
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-            assertThat(response.getBody().getHttpStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+            assertThat(response.getBody().getHttpStatusCode()).isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY.value());
         }
     }
 }
