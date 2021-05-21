@@ -176,7 +176,7 @@ public class TrackingDaoImpl extends DatabaseConnection implements TrackingDao {
                     + " Aderencia_Sequencia_Entrega = ?, "
                     + " Aderencia_Janela_Entrega = ?, "
                     + " PDV_Lacrado = ?, "
-                    + " Codigo_Transportadora = ?, "
+                    + " cod_unidade = ?, "
                     + "data_hora_import = ? "
                     + " WHERE Mapa = ? AND data = ? AND placa = ? AND cod_cliente =?;");
 
