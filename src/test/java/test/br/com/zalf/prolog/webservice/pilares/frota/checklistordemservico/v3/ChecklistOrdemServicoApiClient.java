@@ -23,12 +23,11 @@ import java.util.stream.Collectors;
  */
 @TestComponent
 public final class ChecklistOrdemServicoApiClient {
-    private static final String RESOURCE = "/v3/checklists";
-
+    private static final String RESOURCE = "/api/v3/checklists/ordens-servico";
     @Autowired
-    @NotNull
     private TestRestTemplate restTemplate;
 
+    @NotNull
     public ResponseEntity<List<ChecklistOrdemServicoListagemDto>> getOrdensServico(
             @NotNull final List<Long> codUnidades,
             final int limit,
@@ -36,7 +35,7 @@ public final class ChecklistOrdemServicoApiClient {
 
         final UriComponents components = UriComponentsBuilder
                 .fromPath(RESOURCE)
-                .path("/ordens-servicos")
+                .path("/")
                 .queryParam("codUnidades", codUnidades.stream()
                         .map(Object::toString)
                         .collect(Collectors.joining(",")))
@@ -52,6 +51,7 @@ public final class ChecklistOrdemServicoApiClient {
         return restTemplate.exchange(reqEntity, new ParameterizedTypeReference<>() {});
     }
 
+    @NotNull
     public ResponseEntity<ClientSideErrorException> getOrdensServicoWithWrongUnidades(
             @NotNull final List<String> wrongTypeCodUnidades,
             final int limit,
@@ -59,7 +59,7 @@ public final class ChecklistOrdemServicoApiClient {
 
         final UriComponents components = UriComponentsBuilder
                 .fromPath(RESOURCE)
-                .path("/ordens-servicos")
+                .path("/")
                 .queryParam("codUnidades", String.join(",", wrongTypeCodUnidades))
                 .queryParam("incluirItensOrdemServico", true)
                 .queryParam("limit", limit)
