@@ -1,12 +1,13 @@
+drop view view_extrato_indicadores;
 create or replace view view_extrato_indicadores as
 with internal_tracking as (
     select t.mapa                                                                 as tracking_mapa,
-           t."código_transportadora"                                              as cod_unidade,
+           t.cod_unidade                                                          as cod_unidade,
            sum(1) filter (where t.disp_apont_cadastrado <= um.meta_raio_tracking) as apontamentos_ok,
            count(t.disp_apont_cadastrado)                                         as total_apontamentos
     from tracking t
-             join unidade_metas um on um.cod_unidade = t."código_transportadora"
-    group by t.mapa, t."código_transportadora"
+             join unidade_metas um on um.cod_unidade = t.cod_unidade
+    group by t.mapa, t.cod_unidade
 )
 SELECT dados.cod_empresa,
        dados.cod_regional,
@@ -157,28 +158,28 @@ SELECT dados.cod_empresa,
            when ((dados.resultado_tracking)::double precision >= dados.meta_tracking) then 1
            else 0
            end as gol_tracking
-from (select u.cod_empresa                                             as cod_empresa,
-             u.cod_regional                                            as cod_regional,
-             u.codigo                                                  as cod_unidade,
-             e.codigo                                                  as cod_equipe,
-             c.cpf                                                     as cpf,
-             c.nome                                                    as nome,
-             e.nome                                                    as equipe,
-             f.nome                                                    as funcao,
-             m.data                                                    as data,
-             m.mapa                                                    as mapa,
-             m.placa                                                   as placa,
-             m.cxcarreg                                                as cxcarreg,
-             m.qthlcarregados                                          as qthlcarregados,
-             m.qthlentregues                                           as qthlentregues,
-             trunc(((m.qthlcarregados - m.qthlentregues))::numeric, 2) as qthldevolvidos,
+from (select u.cod_empresa                                                       as cod_empresa,
+             u.cod_regional                                                      as cod_regional,
+             u.codigo                                                            as cod_unidade,
+             e.codigo                                                            as cod_equipe,
+             c.cpf                                                               as cpf,
+             c.nome                                                              as nome,
+             e.nome                                                              as equipe,
+             f.nome                                                              as funcao,
+             m.data                                                              as data,
+             m.mapa                                                              as mapa,
+             m.placa                                                             as placa,
+             m.cxcarreg                                                          as cxcarreg,
+             m.qthlcarregados                                                    as qthlcarregados,
+             m.qthlentregues                                                     as qthlentregues,
+             trunc(((m.qthlcarregados - m.qthlentregues))::numeric, 2)           as qthldevolvidos,
              trunc((
                        case
                            when (m.qthlcarregados > (0)::double precision)
                                then ((m.qthlcarregados - m.qthlentregues) / m.qthlcarregados)
                            else (0)::real
                            end)::numeric,
-                   4)                                                  as resultado_devolucao_hectolitro,
+                   4)                                                            as resultado_devolucao_hectolitro,
              m.qtnfcarregadas,
              m.qtnfentregues,
              (m.qtnfcarregadas - m.qtnfentregues)                                as qtnfdevolvidas,
@@ -266,6 +267,6 @@ from (select u.cod_empresa                                             as cod_em
                join equipe e on c.cod_equipe = e.codigo
                join funcao f on f.codigo = c.cod_funcao
                left join internal_tracking it
-                         on it.tracking_mapa = m.mapa
-                             and it.cod_unidade = m.cod_unidade
+                         on it.cod_unidade = m.cod_unidade
+                             and it.tracking_mapa = m.mapa
       order by m.data) dados;
