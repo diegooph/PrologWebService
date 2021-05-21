@@ -5,6 +5,9 @@ Change Log
 ### UNRELEASED
 ###
 
+### Refactors
+* Corrige estrutura de testes (PL-3643)
+
 ### Bug Fixes
 * Corrige upload de planilha de tracking
 
