@@ -8,6 +8,7 @@ import br.com.zalf.prolog.webservice.v3.frota.checklistordemservico._model.Check
 import br.com.zalf.prolog.webservice.v3.validation.CodUnidades;
 import io.swagger.annotations.*;
 
+import javax.validation.constraints.Max;
 import java.util.List;
 
 /**
@@ -49,6 +50,7 @@ public interface ChecklistOrdemServicoApiDoc {
                     "retornado, para não retornar envie 'false'.",
                       required = true,
                       defaultValue = "true") final boolean incluirItensOrdemServico,
+            @Max(value = 1000, message = "O limite de busca é 1000 registros.")
             @ApiParam(value = "Limite de ordens de serviço retornados pela busca. O valor máximo é 1000.",
                       example = "1000",
                       required = true) final int limit,

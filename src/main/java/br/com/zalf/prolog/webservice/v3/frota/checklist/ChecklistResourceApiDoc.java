@@ -7,6 +7,7 @@ import br.com.zalf.prolog.webservice.v3.frota.checklist._model.ChecklistListagem
 import br.com.zalf.prolog.webservice.v3.validation.CodUnidades;
 import io.swagger.annotations.*;
 
+import javax.validation.constraints.Max;
 import java.util.List;
 
 /**
@@ -53,8 +54,9 @@ public interface ChecklistResourceApiDoc {
                     "sempre retornado, para não retornar envie 'false'.",
                       required = true,
                       defaultValue = "true") final boolean incluirRespostas,
-            @ApiParam(value = "Limite de checklists retornados pela busca. O valor máximo é 1000.",
-                      example = "1000",
+            @Max(value = 100, message = "O limite de busca é 100 registros.")
+            @ApiParam(value = "Limite de checklists retornados pela busca. O valor máximo é 100.",
+                      example = "100",
                       required = true) final int limit,
             @ApiParam(value = "Offset de checklists. A partir de qual checklist deve-se começar a busca.",
                       example = "0",
