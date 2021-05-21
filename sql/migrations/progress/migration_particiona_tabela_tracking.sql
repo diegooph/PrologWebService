@@ -1,5 +1,6 @@
 alter table tracking rename to tracking_old;
 alter table tracking_old drop constraint pk_tracking;
+alter table tracking_old drop constraint fk_tracking_unidade;
 alter table tracking_old set schema backup;
 
 create table tracking
