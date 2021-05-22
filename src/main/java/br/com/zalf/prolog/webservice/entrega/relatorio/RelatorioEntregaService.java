@@ -3,6 +3,7 @@ package br.com.zalf.prolog.webservice.entrega.relatorio;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.report.Report;
 import br.com.zalf.prolog.webservice.commons.util.Log;
+import br.com.zalf.prolog.webservice.commons.util.datetime.DateUtils;
 import br.com.zalf.prolog.webservice.entrega.indicador.Indicador;
 import br.com.zalf.prolog.webservice.entrega.indicador.acumulado.IndicadorAcumulado;
 import org.jetbrains.annotations.NotNull;
@@ -124,35 +125,54 @@ public class RelatorioEntregaService {
         }
     }
 
-    public void getExtratoMapasIndicadorCsv(final Long codEmpresa, final String codRegional, final String codUnidade, final String cpf,
-                                            final Long dataInicial, final Long dataFinal, final String equipe, final OutputStream out) {
+    public void getExtratoMapasIndicadorCsv(@NotNull final OutputStream out,
+                                            @NotNull final Long codEmpresa,
+                                            @NotNull final String codUnidade,
+                                            @NotNull final String codEquipe,
+                                            @NotNull final String cpf,
+                                            final long dataInicial,
+                                            final long dataFinal) {
         try {
-            dao.getExtratoMapasIndicadorCsv(codEmpresa, codRegional, codUnidade, cpf, new Date(dataInicial), new Date(dataFinal), equipe, out);
+            dao.getExtratoMapasIndicadorCsv(out,
+                                            codEmpresa,
+                                            codUnidade,
+                                            codEquipe,
+                                            cpf,
+                                            DateUtils.toLocalDateUtc(dataInicial),
+                                            DateUtils.toLocalDateUtc(dataFinal));
         } catch (final SQLException | IOException e) {
             Log.e(TAG, String.format("Erro ao gerar o relatório que estratifica os indicadores de cada mapa. \n" +
                     "codEmpresa: %d \n" +
-                    "codRegional: %s \n" +
                     "codUnidade: %s \n" +
                     "equipe: %s \n" +
                     "cpf: %s \n" +
-                    "Período: %d a %d", codEmpresa, codRegional, codUnidade, equipe, cpf, dataInicial, dataFinal), e);
-            throw new RuntimeException();
+                    "Período: %d a %d", codEmpresa, codUnidade, codEquipe, cpf, dataInicial, dataFinal), e);
+            throw new RuntimeException(e);
         }
     }
 
-    public Report getExtratoMapasIndicadorReport(final Long codEmpresa, final String codRegional, final String codUnidade, final String cpf,
-                                                 final Long dataInicial, final Long dataFinal, final String equipe) {
+    @NotNull
+    public Report getExtratoMapasIndicadorReport(@NotNull final Long codEmpresa,
+                                                 @NotNull final String codUnidade,
+                                                 @NotNull final String codEquipe,
+                                                 @NotNull final String cpf,
+                                                 final long dataInicial,
+                                                 final long dataFinal) {
         try {
-            return dao.getExtratoMapasIndicadorReport(codEmpresa, codRegional, codUnidade, cpf, new Date(dataInicial), new Date(dataFinal), equipe);
+            return dao.getExtratoMapasIndicadorReport(codEmpresa,
+                                                      codUnidade,
+                                                      codEquipe,
+                                                      cpf,
+                                                      DateUtils.toLocalDateUtc(dataInicial),
+                                                      DateUtils.toLocalDateUtc(dataFinal));
         } catch (final SQLException e) {
             Log.e(TAG, String.format("Erro ao gerar o relatório que estratifica os indicadores de cada mapa. \n" +
                     "codEmpresa: %d \n" +
-                    "codRegional: %s \n" +
                     "codUnidade: %s \n" +
                     "equipe: %s \n" +
                     "cpf: %s \n" +
-                    "Período: %d a %d", codEmpresa, codRegional, codUnidade, equipe, cpf, dataInicial, dataFinal), e);
-            throw new RuntimeException();
+                    "Período: %d a %d", codEmpresa, codUnidade, codEquipe, cpf, dataInicial, dataFinal), e);
+            throw new RuntimeException(e);
         }
     }
 

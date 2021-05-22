@@ -295,14 +295,25 @@ public class RelatorioEntregaDaoImpl extends DatabaseConnection implements Relat
     }
 
     @Override
-    public void getExtratoMapasIndicadorCsv(final Long codEmpresa, final String codRegional, final String codUnidade, final String cpf,
-                                            final Date dataInicial, final Date dataFinal, final String equipe, final OutputStream out) throws SQLException, IOException {
+    public void getExtratoMapasIndicadorCsv(@NotNull final OutputStream out,
+                                            @NotNull final Long codEmpresa,
+                                            @NotNull final String codUnidade,
+                                            @NotNull final String codEquipe,
+                                            @NotNull final String cpf,
+                                            @NotNull final LocalDate dataInicial,
+                                            @NotNull final LocalDate dataFinal) throws SQLException, IOException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = getExtratoMapasIndicadorStatement(codEmpresa, codRegional, codUnidade, cpf, dataInicial, dataFinal, equipe, conn);
+            stmt = getExtratoMapasIndicadorStatement(conn,
+                                                     codEmpresa,
+                                                     codUnidade,
+                                                     codEquipe,
+                                                     cpf,
+                                                     dataInicial,
+                                                     dataFinal);
             rSet = stmt.executeQuery();
             new CsvWriter().write(rSet, out);
         } finally {
@@ -310,15 +321,26 @@ public class RelatorioEntregaDaoImpl extends DatabaseConnection implements Relat
         }
     }
 
+    @NotNull
     @Override
-    public Report getExtratoMapasIndicadorReport(final Long codEmpresa, final String codRegional, final String codUnidade, final String cpf,
-                                                 final Date dataInicial, final Date dataFinal, final String equipe) throws SQLException {
+    public Report getExtratoMapasIndicadorReport(@NotNull final Long codEmpresa,
+                                                 @NotNull final String codUnidade,
+                                                 @NotNull final String codEquipe,
+                                                 @NotNull final String cpf,
+                                                 @NotNull final LocalDate dataInicial,
+                                                 @NotNull final LocalDate dataFinal) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         try {
             conn = getConnection();
-            stmt = getExtratoMapasIndicadorStatement(codEmpresa, codRegional, codUnidade, cpf, dataInicial, dataFinal, equipe, conn);
+            stmt = getExtratoMapasIndicadorStatement(conn,
+                                                     codEmpresa,
+                                                     codUnidade,
+                                                     codEquipe,
+                                                     cpf,
+                                                     dataInicial,
+                                                     dataFinal);
             rSet = stmt.executeQuery();
             return ReportTransformer.createReport(rSet);
         } finally {
@@ -327,16 +349,40 @@ public class RelatorioEntregaDaoImpl extends DatabaseConnection implements Relat
     }
 
     @NotNull
-    private PreparedStatement getExtratoMapasIndicadorStatement(final Long codEmpresa, final String codRegional, final String codUnidade, final String cpf,
-                                                                final Date dataInicial, final Date dataFinal, final String equipe, final Connection conn) throws SQLException {
-        final PreparedStatement stmt = conn.prepareStatement("select * from func_relatorio_extrato_mapas_indicadores(?,?,?,?,?,?,?);");
-        stmt.setDate(1, DateUtils.toSqlDate(dataInicial));
-        stmt.setDate(2, DateUtils.toSqlDate(dataFinal));
-        stmt.setString(3, cpf);
-        stmt.setString(4, codUnidade);
-        stmt.setString(5, equipe);
-        stmt.setLong(6, codEmpresa);
-        stmt.setString(7, codRegional);
+    private PreparedStatement getExtratoMapasIndicadorStatement(@NotNull final Connection conn,
+                                                                @NotNull final Long codEmpresa,
+                                                                @NotNull final String codUnidade,
+                                                                @NotNull final String codEquipe,
+                                                                @NotNull final String cpf,
+                                                                @NotNull final LocalDate dataInicial,
+                                                                @NotNull final LocalDate dataFinal)
+            throws SQLException {
+        final PreparedStatement stmt =
+                conn.prepareStatement("select * from func_indicador_relatorio_extrato_mapas_indicadores(" +
+                                              "f_cod_empresa => ?," +
+                                              "f_cod_unidade => ?," +
+                                              "f_cod_equipe => ?," +
+                                              "f_cpf => ?," +
+                                              "f_data_inicial => ?," +
+                                              "f_data_final => ?);");
+        stmt.setLong(1, codEmpresa);
+        if (Filtros.isFiltroTodos(codUnidade)) {
+            stmt.setNull(2, SqlType.BIGINT.asIntTypeJava());
+        } else {
+            stmt.setLong(2, Long.parseLong(codUnidade));
+        }
+        if (Filtros.isFiltroTodos(codEquipe)) {
+            stmt.setNull(3, SqlType.BIGINT.asIntTypeJava());
+        } else {
+            stmt.setLong(3, Long.parseLong(codEquipe));
+        }
+        if (Filtros.isFiltroTodos(cpf)) {
+            stmt.setNull(4, SqlType.BIGINT.asIntTypeJava());
+        } else {
+            stmt.setLong(4, Long.parseLong(cpf));
+        }
+        stmt.setObject(5, dataInicial);
+        stmt.setObject(6, dataFinal);
         return stmt;
     }
 

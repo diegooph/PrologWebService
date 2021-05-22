@@ -122,29 +122,39 @@ public class RelatorioEntregaResource {
 
     @GET
     @Secured(permissions = {Pilares.Entrega.Relatorios.PRODUTIVIDADE, Pilares.Entrega.Relatorios.INDICADORES})
-    @Path("/indicadores/extratos/{codEmpresa}/{codRegional}/{codUnidade}/{equipe}/{cpf}/csv")
+    @Path("/indicadores/extratos/{codEmpresa}/{codRegional}/{codUnidade}/{codEquipe}/{cpf}/csv")
     public StreamingOutput getExtratoMapasIndicadorCsv(@PathParam("codEmpresa") final Long codEmpresa,
                                                        @PathParam("codRegional") final String codRegional,
                                                        @PathParam("codUnidade") final String codUnidade,
+                                                       @PathParam("codEquipe") final String codEquipe,
                                                        @PathParam("cpf") final String cpf,
-                                                       @QueryParam("dataInicial") final Long dataInicial,
-                                                       @QueryParam("dataFinal") final Long dataFinal,
-                                                       @PathParam("equipe") final String equipe) {
-        return outputstream -> service.getExtratoMapasIndicadorCsv(codEmpresa, codRegional, codUnidade, cpf,
-                dataInicial, dataFinal, equipe, outputstream);
+                                                       @QueryParam("dataInicial") final long dataInicial,
+                                                       @QueryParam("dataFinal") final long dataFinal) {
+        return outputstream -> service.getExtratoMapasIndicadorCsv(outputstream,
+                                                                   codEmpresa,
+                                                                   codUnidade,
+                                                                   codEquipe,
+                                                                   cpf,
+                                                                   dataInicial,
+                                                                   dataFinal);
     }
 
     @GET
     @Secured(permissions = {Pilares.Entrega.Relatorios.PRODUTIVIDADE, Pilares.Entrega.Relatorios.INDICADORES})
-    @Path("/indicadores/extratos/{codEmpresa}/{codRegional}/{codUnidade}/{equipe}/{cpf}/report")
+    @Path("/indicadores/extratos/{codEmpresa}/{codRegional}/{codUnidade}/{codEquipe}/{cpf}/report")
     public Report getExtratoMapasIndicadorReport(@PathParam("codEmpresa") final Long codEmpresa,
                                                  @PathParam("codRegional") final String codRegional,
                                                  @PathParam("codUnidade") final String codUnidade,
+                                                 @PathParam("codEquipe") final String codEquipe,
                                                  @PathParam("cpf") final String cpf,
-                                                 @QueryParam("dataInicial") final Long dataInicial,
-                                                 @QueryParam("dataFinal") final Long dataFinal,
-                                                 @PathParam("equipe") final String equipe) {
-        return service.getExtratoMapasIndicadorReport(codEmpresa, codRegional, codUnidade, cpf, dataInicial, dataFinal, equipe);
+                                                 @QueryParam("dataInicial") final long dataInicial,
+                                                 @QueryParam("dataFinal") final long dataFinal) {
+        return service.getExtratoMapasIndicadorReport(codEmpresa,
+                                                      codUnidade,
+                                                      codEquipe,
+                                                      cpf,
+                                                      dataInicial,
+                                                      dataFinal);
     }
 
     @GET
