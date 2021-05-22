@@ -460,22 +460,22 @@ public class RelatorioEntregaDaoImpl extends DatabaseConnection implements Relat
                 "f_data_final   =>?);");
         stmt.setLong(1, codEmpresa);
         if (Filtros.isFiltroTodos(codUnidade)) {
-            stmt.setNull(3, SqlType.BIGINT.asIntTypeJava());
+            stmt.setNull(2, SqlType.BIGINT.asIntTypeJava());
         } else {
-            stmt.setLong(3, Long.parseLong(codUnidade));
+            stmt.setLong(2, Long.parseLong(codUnidade));
         }
         if (Filtros.isFiltroTodos(codEquipe)) {
-            stmt.setNull(4, SqlType.BIGINT.asIntTypeJava());
+            stmt.setNull(3, SqlType.BIGINT.asIntTypeJava());
         } else {
-            stmt.setLong(4, Long.parseLong(codEquipe));
+            stmt.setLong(3, Long.parseLong(codEquipe));
         }
         if (Filtros.isFiltroTodos(cpf)) {
-            stmt.setNull(5, SqlType.BIGINT.asIntTypeJava());
+            stmt.setNull(4, SqlType.BIGINT.asIntTypeJava());
         } else {
-            stmt.setLong(5, Long.parseLong(cpf));
+            stmt.setLong(4, Long.parseLong(cpf));
         }
-        stmt.setObject(6, dataInicial);
-        stmt.setObject(7, dataFinal);
+        stmt.setObject(5, dataInicial);
+        stmt.setObject(6, dataFinal);
         return stmt;
     }
 }
