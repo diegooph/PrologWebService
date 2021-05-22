@@ -6,6 +6,7 @@ import br.com.zalf.prolog.webservice.entrega.indicador.acumulado.IndicadorAcumul
 import br.com.zalf.prolog.webservice.entrega.produtividade.PeriodoProdutividade;
 import br.com.zalf.prolog.webservice.entrega.produtividade.ProdutividadeService;
 import br.com.zalf.prolog.webservice.interceptors.auth.Secured;
+import br.com.zalf.prolog.webservice.interceptors.debug.ConsoleDebugLog;
 import br.com.zalf.prolog.webservice.permissao.pilares.Pilares;
 import org.jetbrains.annotations.NotNull;
 
@@ -20,6 +21,7 @@ import java.util.List;
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Secured(permissions = Pilares.Entrega.Indicadores.INDICADORES)
+@ConsoleDebugLog
 public class IndicadorResource {
     @NotNull
     private final IndicadorService service = new IndicadorService();
