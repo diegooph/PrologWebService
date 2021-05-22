@@ -5,6 +5,9 @@ Change Log
 ### UNRELEASED
 ###
 
+### Refactors
+* Otimiza busca dos indicadores individuais
+
 ### Bug Fixes
 * Corrige upload de planilha de tracking
 * Corrige falha ao movimentar pneus na integração com a finatto
