@@ -185,6 +185,7 @@ public class IndicadorDaoImpl extends DatabaseConnection implements IndicadorDao
 
     }
 
+    @NotNull
     @Override
     public List<IndicadorAcumulado> getAcumuladoIndicadoresIndividual(@NotNull final Long cpf,
                                                                       @NotNull final LocalDate dataInicial,
