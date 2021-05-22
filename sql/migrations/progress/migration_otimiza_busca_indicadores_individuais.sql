@@ -48,6 +48,15 @@ create or replace function func_indicador_get_acumulado_individual(f_cpf bigint,
     language sql
 as
 $$
+with internal_tracking as (
+    select t.mapa                                                                 as mapa,
+           sum(1) filter (where t.disp_apont_cadastrado <= um.meta_raio_tracking) as apontamentos_ok,
+           count(t.disp_apont_cadastrado)                                         as total_apontamentos
+    from tracking t
+             join unidade_metas um on um.cod_unidade = t.cod_unidade
+    where t.cod_unidade = (select c.cod_unidade from colaborador c where c.cpf = f_cpf)
+    group by t.mapa
+)
 select sum(m.cxcarreg)                                                         as carregadas_total,
        count(m.mapa)                                                           as viagens_total,
        sum(m.qthlcarregados)                                                   as hl_carregados_total,
@@ -159,14 +168,9 @@ select sum(m.cxcarreg)                                                         a
        um.meta_dev_nf                                                          as meta_dev_nf
 from mapa m
          join unidade_metas um on um.cod_unidade = m.cod_unidade
-         left join (select t.mapa                                                                 as mapa,
-                           sum(1) filter (where t.disp_apont_cadastrado <= um.meta_raio_tracking) as apontamentos_ok,
-                           count(t.disp_apont_cadastrado)                                         as total_apontamentos
-                    from tracking t
-                             join unidade_metas um on um.cod_unidade = t.cod_unidade
-                    group by t.mapa) as it on it.mapa = m.mapa
          join view_mapa_colaborador vmc on vmc.cod_unidade = m.cod_unidade and m.mapa = vmc.mapa
          join colaborador c on c.cod_unidade = vmc.cod_unidade and c.cpf = vmc.cpf
+         left join internal_tracking as it on it.mapa = m.mapa
 where m.data between f_data_inicial and f_data_final
   and c.cpf = f_cpf
 group by um.cod_unidade, um.meta_tracking, um.meta_tempo_rota_horas, um.meta_tempo_rota_mapas, um.meta_caixa_viagem,
