@@ -171,7 +171,8 @@ from mapa m
          join view_mapa_colaborador vmc on vmc.cod_unidade = m.cod_unidade and m.mapa = vmc.mapa
          join colaborador c on c.cod_unidade = vmc.cod_unidade and c.cpf = vmc.cpf
          left join internal_tracking as it on it.mapa = m.mapa
-where m.data between f_data_inicial and f_data_final
+where m.cod_unidade = (select c.cod_unidade from colaborador c where c.cpf = f_cpf)
+  and m.data between f_data_inicial and f_data_final
   and c.cpf = f_cpf
 group by um.cod_unidade, um.meta_tracking, um.meta_tempo_rota_horas, um.meta_tempo_rota_mapas, um.meta_caixa_viagem,
          um.meta_dev_hl, um.meta_dev_pdv, um.meta_dispersao_km, um.meta_dispersao_tempo, um.meta_jornada_liquida_horas,
