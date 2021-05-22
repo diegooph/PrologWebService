@@ -5,6 +5,8 @@ Change Log
 ### UNRELEASED
 ###
 
+### Refactors
+* Melhora busca de indicadores consolidados e do extrato dos mapas (PL-3613)
 
 <a name="v3.3.6"></a>
 ## Version [v3.3.6](https://github.com/luizfp/PrologWebService/compare/v3.3.5...v3.3.6) (2021-05-22)
