@@ -156,7 +156,7 @@ SELECT dados.cod_unidade,
            when ((dados.resultado_tracking)::double precision >= dados.meta_tracking) then 1
            else 0
            end as gol_tracking
-from (select u.codigo                                                            as cod_unidade,
+from (select m.cod_unidade                                                       as cod_unidade,
              e.codigo                                                            as cod_equipe,
              c.cpf                                                               as cpf,
              c.nome                                                              as nome,
@@ -258,8 +258,7 @@ from (select u.codigo                                                           
       from view_mapa_colaborador vmc
                join colaborador c on c.cpf = vmc.cpf and c.cod_unidade = vmc.cod_unidade
                join mapa m on m.cod_unidade = vmc.cod_unidade and m.mapa = vmc.mapa
-               join unidade u on u.codigo = m.cod_unidade
-               join unidade_metas um on um.cod_unidade = u.codigo
+               join unidade_metas um on um.cod_unidade = m.cod_unidade
                join equipe e on c.cod_equipe = e.codigo
                join funcao f on f.codigo = c.cod_funcao
                left join internal_tracking it
