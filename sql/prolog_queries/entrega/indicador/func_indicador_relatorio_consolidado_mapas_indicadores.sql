@@ -1,5 +1,4 @@
 create or replace function func_indicador_relatorio_consolidado_mapas_indicadores(f_cod_empresa bigint,
-                                                                                  f_cod_regional bigint,
                                                                                   f_cod_unidade bigint,
                                                                                   f_cod_equipe bigint,
                                                                                   f_cpf bigint,
@@ -85,6 +84,101 @@ create or replace function func_indicador_relatorio_consolidado_mapas_indicadore
     language sql
 as
 $$
+with dados as (
+    select m.nome                                                                                  as nome,
+           m.equipe                                                                                as equipe,
+           m.funcao                                                                                as funcao,
+           count(m.mapa)                                                                           as total_mapas,
+           -- Dev Hl.
+           sum(m.qthlcarregados)                                                                   as hl_carregados_total,
+           sum(qthlcarregados - qthlentregues)                                                     as hl_devolvidos_total,
+           -- Dev Nf.
+           sum(m.qtnfcarregadas)                                                                   as nf_carregadas_total,
+           sum(qtnfcarregadas - qtnfentregues)                                                     as nf_devolvidas_total,
+           -- Dev Pdv.
+           sum(
+                       m.entregascompletas + m.entregasnaorealizadas + m.entregasparciais)             as pdv_carregados_total,
+           sum(m.entregasnaorealizadas + m.entregasparciais)                                       as pdv_devolvidos_total,
+           -- Dispersão Km.
+           sum(case
+                   when (kmentr - m.kmsai) > 0 and (kmentr - m.kmsai) < 2000 then m.kmprevistoroad
+                   else 0 end)                                                                     as km_planejado_total,
+           sum(case
+                   when (kmentr - m.kmsai) > 0 and (kmentr - m.kmsai) < 2000 then (m.kmentr - m.kmsai)
+                   else 0 end)                                                                     as km_percorrido_total,
+           -- Dispersão de tempo.
+           sum(case
+                   when m.bateu_dispersao_tempo = 'SIM' then 1
+                   else 0 end)                                                                     as total_mapas_bateram_dispersao_tempo,
+           to_char((avg(m.tempoprevistoroad) || ' second')::interval,
+                   'HH24:MI:SS')                                                                   as media_tempo_planejado,
+           -- Jornada.
+           to_char((avg(m.RESULTADO_tempo_largada_SEGUNDOS + m.RESULTADO_TEMPO_ROTA_SEGUNDOS +
+                        m.RESULTADO_TEMPO_INTERNO_SEGUNDOS) || ' second')::interval, 'HH24:MI:SS') as media_jornada,
+           sum(case when m.bateu_jornada = 'SIM' then 1 else 0 end)                                as total_mapas_bateu_jornada,
+           -- Tempo Interno.
+           sum(case when m.bateu_tempo_interno = 'SIM' then 1 else 0 end)                          as total_mapas_bateu_tempo_interno,
+           sum(case
+                   when to_char((m.tempo_interno || ' second')::interval, 'HH24:MI:SS')::TIME <= '05:00' and
+                        m.resultado_tempo_interno_segundos > 0 then 1
+                   else 0
+               end)                                                                                as total_mapas_validos_tempo_interno,
+           to_char((avg(m.resultado_tempo_interno_segundos) || ' second')::interval,
+                   'HH24:MI:SS')                                                                   as media_tempo_interno,
+           -- Tempo largada.
+           sum(case when m.bateu_tempo_largada = 'SIM' then 1 else 0 end)                          as total_mapas_bateu_tempo_largada,
+           sum(case
+                   when
+                           (case
+                                when m.hr_sai::time < m.hrmatinal then to_char(
+                                        (M.meta_tempo_largada_horas || ' second')::interval, 'HH24:MI:SS')::time
+                                else (m.hr_sai - m.hrmatinal)::time
+                               end) <= '05:00' then 1
+                   else 0 end)                                                                     as total_mapas_validos_tempo_largada,
+           to_char((AVG(resultado_tempo_largada_segundos) || ' second')::interval,
+                   'HH24:MI:SS')                                                                   as media_tempo_largada,
+           -- Tempo Rota.
+           sum(case when m.bateu_tempo_rota = 'SIM' then 1 else 0 end)                             as total_mapas_bateu_tempo_rota,
+           to_char((avg(m.resultado_tempo_rota_segundos) || ' second')::interval,
+                   'HH24:MI:SS')                                                                   as media_tempo_rota,
+           -- Tracking.
+           sum(M.apontamentos_ok)                                                                  as total_apontamentos_ok,
+           sum(M.total_tracking)                                                                   as total_apontamentos,
+           m.meta_tracking                                                                         as meta_tracking,
+           m.meta_tempo_rota_mapas                                                                 as meta_tempo_rota_mapas,
+           m.meta_dev_hl                                                                           as meta_dev_hl,
+           m.meta_dev_pdv                                                                          as meta_dev_pdv,
+           m.meta_dispersao_km                                                                     as meta_dispersao_km,
+           m.meta_dispersao_tempo                                                                  as meta_dispersao_tempo,
+           m.meta_jornada_liquida_mapas                                                            as meta_jornada_liquida_mapas,
+           m.meta_tempo_interno_mapas                                                              as meta_tempo_interno_mapas,
+           m.meta_tempo_largada_mapas                                                              as meta_tempo_largada_mapas,
+           m.meta_dev_nf                                                                           as meta_dev_nf,
+           sum(m.gol_dev_pdv)                                                                      as gols_dev_pdv,
+           sum(m.gol_dev_nf)                                                                       as gols_dev_nf,
+           sum(m.gol_dev_hl)                                                                       as gols_dev_hl,
+           sum(m.gol_jornada)                                                                      as gols_jornada,
+           sum(m.gol_tempo_interno)                                                                as gols_tempo_interno,
+           sum(m.gol_tempo_rota)                                                                   as gols_tempo_rota,
+           sum(m.gol_dispersao_tempo)                                                              as gols_dispersao_tempo,
+           sum(m.gol_dispersao_km)                                                                 as gols_dispersao_km,
+           sum(m.gol_tracking)                                                                     as gols_tracking,
+           sum(m.gol_tempo_largada)                                                                as gols_tempo_largada
+    from view_extrato_indicadores m
+    where case
+              when f_cod_unidade is null
+                  then m.cod_unidade in (select u.codigo from unidade u where u.cod_empresa = f_cod_empresa)
+              else m.cod_unidade = f_cod_unidade
+        end
+      and m.data between f_data_inicial and f_data_final
+      and case when f_cod_equipe is null then true else m.cod_equipe = f_cod_equipe end
+      and case when f_cpf is null then true else m.cpf = f_cpf end
+    group by m.equipe, m.cpf, m.nome, m.cod_unidade, m.meta_tracking,
+             m.meta_tempo_rota_horas, m.meta_tempo_rota_mapas, m.meta_caixa_viagem, m.meta_dev_hl, m.meta_dev_pdv,
+             m.meta_dispersao_km, m.meta_dispersao_tempo, m.meta_jornada_liquida_horas, m.meta_jornada_liquida_mapas,
+             m.meta_raio_tracking, m.meta_tempo_interno_horas, m.meta_tempo_interno_mapas, m.meta_tempo_largada_horas,
+             m.meta_tempo_largada_mapas, m.meta_dev_nf, m.funcao
+)
 select dados.nome                                                                 as nome,
        dados.equipe                                                               as equipe,
        dados.funcao                                                               as funcao,
@@ -243,96 +337,6 @@ select dados.nome                                                               
         dados.gols_tempo_largada +
         dados.gols_tempo_rota +
         dados.gols_dispersao_km)                                                  as total_gols
-from (select m.nome                                                                                  as nome,
-             m.equipe                                                                                as equipe,
-             m.funcao                                                                                as funcao,
-             count(m.mapa)                                                                           as total_mapas,
-             -- Dev Hl.
-             sum(m.qthlcarregados)                                                                   as hl_carregados_total,
-             sum(qthlcarregados - qthlentregues)                                                     as hl_devolvidos_total,
-             -- Dev Nf.
-             sum(m.qtnfcarregadas)                                                                   as nf_carregadas_total,
-             sum(qtnfcarregadas - qtnfentregues)                                                     as nf_devolvidas_total,
-             -- Dev Pdv.
-             sum(
-                     m.entregascompletas + m.entregasnaorealizadas + m.entregasparciais)             as pdv_carregados_total,
-             sum(m.entregasnaorealizadas + m.entregasparciais)                                       as pdv_devolvidos_total,
-             -- Dispersão Km.
-             sum(case
-                     when (kmentr - m.kmsai) > 0 and (kmentr - m.kmsai) < 2000 then m.kmprevistoroad
-                     else 0 end)                                                                     as km_planejado_total,
-             sum(case
-                     when (kmentr - m.kmsai) > 0 and (kmentr - m.kmsai) < 2000 then (m.kmentr - m.kmsai)
-                     else 0 end)                                                                     as km_percorrido_total,
-             -- Dispersão de tempo.
-             sum(case
-                     when m.bateu_dispersao_tempo = 'SIM' then 1
-                     else 0 end)                                                                     as total_mapas_bateram_dispersao_tempo,
-             to_char((avg(m.tempoprevistoroad) || ' second')::interval,
-                     'HH24:MI:SS')                                                                   as media_tempo_planejado,
-             -- Jornada.
-             to_char((avg(m.RESULTADO_tempo_largada_SEGUNDOS + m.RESULTADO_TEMPO_ROTA_SEGUNDOS +
-                          m.RESULTADO_TEMPO_INTERNO_SEGUNDOS) || ' second')::interval, 'HH24:MI:SS') as media_jornada,
-             sum(case when m.bateu_jornada = 'SIM' then 1 else 0 end)                                as total_mapas_bateu_jornada,
-             -- Tempo Interno.
-             sum(case when m.bateu_tempo_interno = 'SIM' then 1 else 0 end)                          as total_mapas_bateu_tempo_interno,
-             sum(case
-                     when to_char((m.tempo_interno || ' second')::interval, 'HH24:MI:SS')::TIME <= '05:00' and
-                          m.resultado_tempo_interno_segundos > 0 then 1
-                     else 0
-                 end)                                                                                as total_mapas_validos_tempo_interno,
-             to_char((avg(m.resultado_tempo_interno_segundos) || ' second')::interval,
-                     'HH24:MI:SS')                                                                   as media_tempo_interno,
-             -- Tempo largada.
-             sum(case when m.bateu_tempo_largada = 'SIM' then 1 else 0 end)                          as total_mapas_bateu_tempo_largada,
-             sum(case
-                     when
-                             (case
-                                  when m.hr_sai::time < m.hrmatinal then to_char(
-                                          (M.meta_tempo_largada_horas || ' second')::interval, 'HH24:MI:SS')::time
-                                  else (m.hr_sai - m.hrmatinal)::time
-                                 end) <= '05:00' then 1
-                     else 0 end)                                                                     as total_mapas_validos_tempo_largada,
-             to_char((AVG(resultado_tempo_largada_segundos) || ' second')::interval,
-                     'HH24:MI:SS')                                                                   as media_tempo_largada,
-             -- Tempo Rota.
-             sum(case when m.bateu_tempo_rota = 'SIM' then 1 else 0 end)                             as total_mapas_bateu_tempo_rota,
-             to_char((avg(m.resultado_tempo_rota_segundos) || ' second')::interval,
-                     'HH24:MI:SS')                                                                   as media_tempo_rota,
-             -- Tracking.
-             sum(M.apontamentos_ok)                                                                  as total_apontamentos_ok,
-             sum(M.total_tracking)                                                                   as total_apontamentos,
-             m.meta_tracking                                                                         as meta_tracking,
-             m.meta_tempo_rota_mapas                                                                 as meta_tempo_rota_mapas,
-             m.meta_dev_hl                                                                           as meta_dev_hl,
-             m.meta_dev_pdv                                                                          as meta_dev_pdv,
-             m.meta_dispersao_km                                                                     as meta_dispersao_km,
-             m.meta_dispersao_tempo                                                                  as meta_dispersao_tempo,
-             m.meta_jornada_liquida_mapas                                                            as meta_jornada_liquida_mapas,
-             m.meta_tempo_interno_mapas                                                              as meta_tempo_interno_mapas,
-             m.meta_tempo_largada_mapas                                                              as meta_tempo_largada_mapas,
-             m.meta_dev_nf                                                                           as meta_dev_nf,
-             sum(m.gol_dev_pdv)                                                                      as gols_dev_pdv,
-             sum(m.gol_dev_nf)                                                                       as gols_dev_nf,
-             sum(m.gol_dev_hl)                                                                       as gols_dev_hl,
-             sum(m.gol_jornada)                                                                      as gols_jornada,
-             sum(m.gol_tempo_interno)                                                                as gols_tempo_interno,
-             sum(m.gol_tempo_rota)                                                                   as gols_tempo_rota,
-             sum(m.gol_dispersao_tempo)                                                              as gols_dispersao_tempo,
-             sum(m.gol_dispersao_km)                                                                 as gols_dispersao_km,
-             sum(m.gol_tracking)                                                                     as gols_tracking,
-             sum(m.gol_tempo_largada)                                                                as gols_tempo_largada
-      from view_extrato_indicadores m
-      where m.cod_empresa = f_cod_empresa
-        and case when f_cod_regional is null then true else m.cod_regional = f_cod_regional end
-        and case when f_cod_unidade is null then true else m.cod_unidade = f_cod_unidade end
-        and case when f_cod_equipe is null then true else m.cod_equipe = f_cod_equipe end
-        and case when f_cpf is null then true else m.cpf = f_cpf end
-        and m.data between f_data_inicial and f_data_final
-      group by m.equipe, m.cpf, m.nome, m.cod_unidade, m.meta_tracking,
-               m.meta_tempo_rota_horas, m.meta_tempo_rota_mapas, m.meta_caixa_viagem, m.meta_dev_hl, m.meta_dev_pdv,
-               m.meta_dispersao_km, m.meta_dispersao_tempo, m.meta_jornada_liquida_horas, m.meta_jornada_liquida_mapas,
-               m.meta_raio_tracking, m.meta_tempo_interno_horas, m.meta_tempo_interno_mapas, m.meta_tempo_largada_horas,
-               m.meta_tempo_largada_mapas, m.meta_dev_nf, m.funcao) as dados
+from dados
 order by total_gols desc
 $$;

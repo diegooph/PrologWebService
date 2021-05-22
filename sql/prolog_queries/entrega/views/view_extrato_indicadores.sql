@@ -9,9 +9,16 @@
 -- O desconto de 1 hora serve para termos a meta de tempo em rota, sendo que a coluna tem os dados da meta de
 -- jornada líquida, então meta jornada líquida -1h = meta tempo em rota.
 create or replace view view_extrato_indicadores as
-SELECT dados.cod_empresa,
-       dados.cod_regional,
-       dados.cod_unidade,
+with internal_tracking as (
+    select t.mapa                                                                 as tracking_mapa,
+           t.cod_unidade                                                          as cod_unidade,
+           sum(1) filter (where t.disp_apont_cadastrado <= um.meta_raio_tracking) as apontamentos_ok,
+           count(t.disp_apont_cadastrado)                                         as total_apontamentos
+    from tracking t
+             join unidade_metas um on um.cod_unidade = t.cod_unidade
+    group by t.mapa, t.cod_unidade
+)
+SELECT dados.cod_unidade,
        dados.cod_equipe,
        dados.cpf,
        dados.nome,
@@ -72,212 +79,197 @@ SELECT dados.cod_empresa,
        dados.meta_tempo_interno_horas,
        dados.meta_tempo_largada_horas,
        dados.meta_jornada_liquida_horas,
-       CASE
-           WHEN ((dados.resultado_devolucao_pdv)::double precision <= dados.meta_dev_pdv) THEN 'SIM'::text
-           ELSE 'NÃO'::text
-           END AS bateu_dev_pdv,
-       CASE
-           WHEN ((dados.resultado_devolucao_hectolitro)::double precision <= dados.meta_dev_hl) THEN 'SIM'::text
-           ELSE 'NÃO'::text
-           END AS bateu_dev_hl,
-       CASE
-           WHEN ((dados.resultado_devolucao_nf)::double precision <= dados.meta_dev_nf) THEN 'SIM'::text
-           ELSE 'NÃO'::text
+       case
+           when ((dados.resultado_devolucao_pdv)::double precision <= dados.meta_dev_pdv) then 'SIM'::text
+           else 'NÃO'::text
+           end as bateu_dev_pdv,
+       case
+           when ((dados.resultado_devolucao_hectolitro)::double precision <= dados.meta_dev_hl) then 'SIM'::text
+           else 'NÃO'::text
+           end as bateu_dev_hl,
+       case
+           when ((dados.resultado_devolucao_nf)::double precision <= dados.meta_dev_nf) then 'SIM'::text
+           else 'NÃO'::text
            END AS bateu_dev_nf,
-       CASE
-           WHEN (dados.resultado_dispersao_tempo <= dados.meta_dispersao_tempo) THEN 'SIM'::text
-           ELSE 'NÃO'::text
-           END AS bateu_dispersao_tempo,
-       CASE
-           WHEN ((dados.resultado_dispersao_km)::double precision <= dados.meta_dispersao_km) THEN 'SIM'::text
-           ELSE 'NÃO'::text
-           END AS bateu_dispersao_km,
-       CASE
-           WHEN (dados.resultado_tempo_interno_segundos <= (dados.meta_tempo_interno_horas)::double precision)
-               THEN 'SIM'::text
-           ELSE 'NÃO'::text
-           END AS bateu_tempo_interno,
-       CASE
-           WHEN (dados.resultado_tempo_rota_segundos <= (dados.meta_tempo_rota_horas)::double precision) THEN 'SIM'::text
-           ELSE 'NÃO'::text
-           END AS bateu_tempo_rota,
-       CASE
-           WHEN (dados.resultado_tempo_largada_segundos <= (dados.meta_tempo_largada_horas)::double precision)
-               THEN 'SIM'::text
-           ELSE 'NÃO'::text
-           END AS bateu_tempo_largada,
-       CASE
-           WHEN ((((dados.resultado_tempo_largada_segundos + dados.resultado_tempo_rota_segundos) +
-                   dados.resultado_tempo_interno_segundos) <= (dados.meta_jornada_liquida_horas)::double precision) OR
-                 (dados.tempoprevistoroad > (dados.meta_tempo_rota_horas)::double precision)) THEN 'SIM'::text
-           ELSE 'NÃO'::text
-           END AS bateu_jornada,
-       CASE
-           WHEN ((dados.resultado_tracking)::double precision >= dados.meta_tracking) THEN 'SIM'::text
-           ELSE 'NÃO'::text
-           END AS bateu_tracking,
-       CASE
-           WHEN ((dados.resultado_devolucao_pdv)::double precision <= dados.meta_dev_pdv) THEN 1
-           ELSE 0
-           END AS gol_dev_pdv,
-       CASE
-           WHEN ((dados.resultado_devolucao_hectolitro)::double precision <= dados.meta_dev_hl) THEN 1
-           ELSE 0
-           END AS gol_dev_hl,
-       CASE
-           WHEN ((dados.resultado_devolucao_nf)::double precision <= dados.meta_dev_nf) THEN 1
-           ELSE 0
-           END AS gol_dev_nf,
-       CASE
-           WHEN (dados.resultado_dispersao_tempo <= dados.meta_dispersao_tempo) THEN 1
-           ELSE 0
-           END AS gol_dispersao_tempo,
-       CASE
-           WHEN ((dados.resultado_dispersao_km)::double precision <= dados.meta_dispersao_km) THEN 1
-           ELSE 0
-           END AS gol_dispersao_km,
-       CASE
-           WHEN (dados.resultado_tempo_interno_segundos <= (dados.meta_tempo_interno_horas)::double precision) THEN 1
-           ELSE 0
-           END AS gol_tempo_interno,
-       CASE
-           WHEN (dados.resultado_tempo_rota_segundos <= (dados.meta_tempo_rota_horas)::double precision) THEN 1
-           ELSE 0
-           END AS gol_tempo_rota,
-       CASE
-           WHEN (dados.resultado_tempo_largada_segundos <= (dados.meta_tempo_largada_horas)::double precision) THEN 1
-           ELSE 0
-           END AS gol_tempo_largada,
-       CASE
-           WHEN ((((dados.resultado_tempo_largada_segundos + dados.resultado_tempo_rota_segundos) +
-                   dados.resultado_tempo_interno_segundos) <= (dados.meta_jornada_liquida_horas)::double precision) OR
-                 (dados.tempoprevistoroad > (dados.meta_tempo_rota_horas)::double precision)) THEN 1
-           ELSE 0
-           END AS gol_jornada,
-       CASE
-           WHEN ((dados.resultado_tracking)::double precision >= dados.meta_tracking) THEN 1
-           ELSE 0
-           END AS gol_tracking
-FROM (SELECT u.cod_empresa,
-             u.cod_regional,
-             u.codigo                                                                        AS cod_unidade,
-             e.codigo                                                                        AS cod_equipe,
-             c.cpf,
-             c.nome,
-             e.nome                                                                          AS equipe,
-             f.nome                                                                          AS funcao,
-             m.data,
-             m.mapa,
-             m.placa,
-             m.cxcarreg,
-             m.qthlcarregados,
-             m.qthlentregues,
-             trunc(((m.qthlcarregados - m.qthlentregues))::numeric, 2)                       AS qthldevolvidos,
+       case
+           when (dados.resultado_dispersao_tempo <= dados.meta_dispersao_tempo) then 'SIM'::text
+           else 'NÃO'::text
+           end as bateu_dispersao_tempo,
+       case
+           when ((dados.resultado_dispersao_km)::double precision <= dados.meta_dispersao_km) then 'SIM'::text
+           else 'NÃO'::text
+           end as bateu_dispersao_km,
+       case
+           when (dados.resultado_tempo_interno_segundos <= (dados.meta_tempo_interno_horas)::double precision)
+               then 'SIM'::text
+           else 'NÃO'::text
+           end as bateu_tempo_interno,
+       case
+           when (dados.resultado_tempo_rota_segundos <= (dados.meta_tempo_rota_horas)::double precision) then 'SIM'::text
+           else 'NÃO'::text
+           end as bateu_tempo_rota,
+       case
+           when (dados.resultado_tempo_largada_segundos <= (dados.meta_tempo_largada_horas)::double precision)
+               then 'SIM'::text
+           else 'NÃO'::text
+           end as bateu_tempo_largada,
+       case
+           when ((((dados.resultado_tempo_largada_segundos + dados.resultado_tempo_rota_segundos) +
+                   dados.resultado_tempo_interno_segundos) <= (dados.meta_jornada_liquida_horas)::double precision) or
+                 (dados.tempoprevistoroad > (dados.meta_tempo_rota_horas)::double precision)) then 'SIM'::text
+           else 'NÃO'::text
+           end as bateu_jornada,
+       case
+           when ((dados.resultado_tracking)::double precision >= dados.meta_tracking) then 'SIM'::text
+           else 'NÃO'::text
+           end as bateu_tracking,
+       case
+           when ((dados.resultado_devolucao_pdv)::double precision <= dados.meta_dev_pdv) then 1
+           else 0
+           end as gol_dev_pdv,
+       case
+           when ((dados.resultado_devolucao_hectolitro)::double precision <= dados.meta_dev_hl) then 1
+           else 0
+           end as gol_dev_hl,
+       case
+           when ((dados.resultado_devolucao_nf)::double precision <= dados.meta_dev_nf) then 1
+           else 0
+           end as gol_dev_nf,
+       case
+           when (dados.resultado_dispersao_tempo <= dados.meta_dispersao_tempo) then 1
+           else 0
+           end as gol_dispersao_tempo,
+       case
+           when ((dados.resultado_dispersao_km)::double precision <= dados.meta_dispersao_km) then 1
+           else 0
+           end as gol_dispersao_km,
+       case
+           when (dados.resultado_tempo_interno_segundos <= (dados.meta_tempo_interno_horas)::double precision) then 1
+           else 0
+           end as gol_tempo_interno,
+       case
+           when (dados.resultado_tempo_rota_segundos <= (dados.meta_tempo_rota_horas)::double precision) then 1
+           else 0
+           end as gol_tempo_rota,
+       case
+           when (dados.resultado_tempo_largada_segundos <= (dados.meta_tempo_largada_horas)::double precision) then 1
+           else 0
+           end as gol_tempo_largada,
+       case
+           when ((((dados.resultado_tempo_largada_segundos + dados.resultado_tempo_rota_segundos) +
+                   dados.resultado_tempo_interno_segundos) <= (dados.meta_jornada_liquida_horas)::double precision) or
+                 (dados.tempoprevistoroad > (dados.meta_tempo_rota_horas)::double precision)) then 1
+           else 0
+           end as gol_jornada,
+       case
+           when ((dados.resultado_tracking)::double precision >= dados.meta_tracking) then 1
+           else 0
+           end as gol_tracking
+from (select m.cod_unidade                                                       as cod_unidade,
+             e.codigo                                                            as cod_equipe,
+             c.cpf                                                               as cpf,
+             c.nome                                                              as nome,
+             e.nome                                                              as equipe,
+             f.nome                                                              as funcao,
+             m.data                                                              as data,
+             m.mapa                                                              as mapa,
+             m.placa                                                             as placa,
+             m.cxcarreg                                                          as cxcarreg,
+             m.qthlcarregados                                                    as qthlcarregados,
+             m.qthlentregues                                                     as qthlentregues,
+             trunc(((m.qthlcarregados - m.qthlentregues))::numeric, 2)           as qthldevolvidos,
              trunc((
-                       CASE
-                           WHEN (m.qthlcarregados > (0)::double precision)
-                               THEN ((m.qthlcarregados - m.qthlentregues) / m.qthlcarregados)
-                           ELSE (0)::real
-                           END)::numeric,
-                   4)                                                                        AS resultado_devolucao_hectolitro,
+                       case
+                           when (m.qthlcarregados > (0)::double precision)
+                               then ((m.qthlcarregados - m.qthlentregues) / m.qthlcarregados)
+                           else (0)::real
+                           end)::numeric,
+                   4)                                                            as resultado_devolucao_hectolitro,
              m.qtnfcarregadas,
              m.qtnfentregues,
-             (m.qtnfcarregadas - m.qtnfentregues)                                            AS qtnfdevolvidas,
+             (m.qtnfcarregadas - m.qtnfentregues)                                as qtnfdevolvidas,
              trunc((
-                       CASE
-                           WHEN (m.qtnfcarregadas > 0) THEN (((m.qtnfcarregadas - m.qtnfentregues))::double precision /
+                       case
+                           when (m.qtnfcarregadas > 0) then (((m.qtnfcarregadas - m.qtnfentregues))::double precision /
                                                              (m.qtnfcarregadas)::real)
-                           ELSE (0)::double precision
-                           END)::numeric, 4)                                                 AS resultado_devolucao_nf,
+                           else (0)::double precision
+                           end)::numeric, 4)                                     as resultado_devolucao_nf,
              m.entregascompletas,
              m.entregasnaorealizadas,
              m.entregasparciais,
-             (m.entregascompletas + m.entregasnaorealizadas)                                 AS entregas_carregadas,
+             (m.entregascompletas + m.entregasnaorealizadas)                     as entregas_carregadas,
              trunc((
-                       CASE
-                           WHEN (((m.entregascompletas + m.entregasnaorealizadas) + m.entregasparciais) > 0) THEN (
+                       case
+                           when (((m.entregascompletas + m.entregasnaorealizadas) + m.entregasparciais) > 0) then (
                                    ((m.entregasnaorealizadas)::real + (m.entregasparciais)::double precision) /
                                    (((m.entregascompletas + m.entregasnaorealizadas) + m.entregasparciais))::double precision)
-                           ELSE (0)::double precision
-                           END)::numeric, 4)                                                 AS resultado_devolucao_pdv,
+                           else (0)::double precision
+                           end)::numeric, 4)                                     as resultado_devolucao_pdv,
              m.kmprevistoroad,
              m.kmsai,
              m.kmentr,
-             (m.kmentr - m.kmsai)                                                            AS km_percorrido,
-             CASE
-                 WHEN (m.kmprevistoroad > (0)::double precision) THEN trunc(
+             (m.kmentr - m.kmsai)                                                as km_percorrido,
+             case
+                 when (m.kmprevistoroad > (0)::double precision) then trunc(
                          (((((m.kmentr - m.kmsai))::double precision - m.kmprevistoroad) / m.kmprevistoroad))::numeric,
                          4)
-                 ELSE NULL::numeric
-                 END                                                                         AS resultado_dispersao_km,
-             to_char(m.hrsai, 'DD/MM/YYYY HH24:MI:SS'::text)                                 AS hrsai,
-             m.hrsai                                                                         AS hr_sai,
-             to_char(m.hrentr, 'DD/MM/YYYY HH24:MI:SS'::text)                                AS hrentr,
-             m.hrentr                                                                        AS hr_entr,
-             to_char((m.hrentr - m.hrsai), 'HH24:MI:SS'::text)                               AS tempo_rota,
-             date_part('epoch'::text, m.tempoprevistoroad)                                   AS tempoprevistoroad,
-             date_part('epoch'::text, (m.hrentr - m.hrsai))                                  AS resultado_tempo_rota_segundos,
-             CASE
-                 WHEN (date_part('epoch'::text, m.tempoprevistoroad) > (0)::double precision) THEN (
+                 else null::numeric
+                 end                                                             as resultado_dispersao_km,
+             to_char(m.hrsai, 'DD/MM/YYYY HH24:MI:SS'::text)                     as hrsai,
+             m.hrsai                                                             as hr_sai,
+             to_char(m.hrentr, 'DD/MM/YYYY HH24:MI:SS'::text)                    as hrentr,
+             m.hrentr                                                            as hr_entr,
+             to_char((m.hrentr - m.hrsai), 'HH24:MI:SS'::text)                   as tempo_rota,
+             date_part('epoch'::text, m.tempoprevistoroad)                       as tempoprevistoroad,
+             date_part('epoch'::text, (m.hrentr - m.hrsai))                      as resultado_tempo_rota_segundos,
+             case
+                 when (date_part('epoch'::text, m.tempoprevistoroad) > (0)::double precision) then (
                          (date_part('epoch'::text, (m.hrentr - m.hrsai)) -
                           date_part('epoch'::text, m.tempoprevistoroad)) /
                          date_part('epoch'::text, m.tempoprevistoroad))
-                 ELSE (0)::double precision
-                 END                                                                         AS resultado_dispersao_tempo,
-             date_part('epoch'::text, m.tempointerno)                                        AS resultado_tempo_interno_segundos,
-             m.tempointerno                                                                  AS tempo_interno,
+                 else (0)::double precision
+                 end                                                             as resultado_dispersao_tempo,
+             date_part('epoch'::text, m.tempointerno)                            as resultado_tempo_interno_segundos,
+             m.tempointerno                                                      as tempo_interno,
              m.hrmatinal,
              date_part('epoch'::text,
-                       CASE
-                           WHEN ((m.hrsai)::time without time zone < m.hrmatinal) THEN um.meta_tempo_largada_horas
-                           ELSE ((m.hrsai - (m.hrmatinal)::interval))::time without time zone
-                           END)                                                              AS resultado_tempo_largada_segundos,
-             CASE
-                 WHEN ((m.hrsai)::time without time zone < m.hrmatinal) THEN um.meta_tempo_largada_horas
-                 ELSE ((m.hrsai - (m.hrmatinal)::interval))::time without time zone
-                 END                                                                         AS tempo_largada,
-             COALESCE(tracking.total_apontamentos, (0)::bigint)                              AS total_tracking,
-             COALESCE(tracking.apontamentos_ok, (0)::bigint)                                 AS apontamentos_ok,
-             COALESCE((tracking.total_apontamentos - tracking.apontamentos_ok), (0)::bigint) AS apontamentos_nok,
-             CASE
-                 WHEN (tracking.total_apontamentos > 0) THEN (tracking.apontamentos_ok / tracking.total_apontamentos)
-                 ELSE (0)::bigint
-                 END                                                                         AS resultado_tracking,
-             um.meta_tracking,
-             um.meta_tempo_rota_mapas,
-             um.meta_caixa_viagem,
-             um.meta_dev_hl,
-             um.meta_dev_pdv,
-             um.meta_dev_nf,
-             um.meta_dispersao_km,
-             um.meta_dispersao_tempo,
-             um.meta_jornada_liquida_mapas,
-             um.meta_raio_tracking,
-             um.meta_tempo_interno_mapas,
-             um.meta_tempo_largada_mapas,
-             to_seconds((m.hrmetajornada - interval '1 hour')::text)                         AS meta_tempo_rota_horas,
-             to_seconds((um.meta_tempo_interno_horas)::text)                                 AS meta_tempo_interno_horas,
-             to_seconds((um.meta_tempo_largada_horas)::text)                                 AS meta_tempo_largada_horas,
-             to_seconds((um.meta_jornada_liquida_horas)::text)                               AS meta_jornada_liquida_horas
-      FROM (((((((((view_mapa_colaborador vmc
-          JOIN colaborador c ON (((c.cpf = vmc.cpf) AND (c.cod_unidade = vmc.cod_unidade))))
-          JOIN mapa m ON (((m.mapa = vmc.mapa) AND (m.cod_unidade = vmc.cod_unidade))))
-          JOIN unidade u ON ((u.codigo = m.cod_unidade)))
-          JOIN empresa em ON ((em.codigo = u.cod_empresa)))
-          JOIN regional r ON ((r.codigo = u.cod_regional)))
-          JOIN unidade_metas um ON ((um.cod_unidade = u.codigo)))
-          JOIN equipe e ON (((e.cod_unidade = c.cod_unidade) AND (c.cod_equipe = e.codigo))))
-          JOIN funcao f ON (((f.codigo = c.cod_funcao) AND (f.cod_empresa = em.codigo))))
-               LEFT JOIN (SELECT t.mapa                         AS tracking_mapa,
-                                 t.cod_unidade                  AS tracking_unidade,
-                                 count(t.disp_apont_cadastrado) AS total_apontamentos,
-                                 sum(
-                                         CASE
-                                             WHEN (t.disp_apont_cadastrado <= um_1.meta_raio_tracking) THEN 1
-                                             ELSE 0
-                                             END)               AS apontamentos_ok
-                          FROM (tracking t
-                                   JOIN unidade_metas um_1 ON ((um_1.cod_unidade = t.cod_unidade)))
-                          GROUP BY t.mapa, t.cod_unidade) tracking
-                         ON (((tracking.tracking_mapa = m.mapa) AND (tracking.tracking_unidade = m.cod_unidade))))
-      ORDER BY m.data) dados;
+                       case
+                           when ((m.hrsai)::time without time zone < m.hrmatinal) then um.meta_tempo_largada_horas
+                           else ((m.hrsai - (m.hrmatinal)::interval))::time without time zone
+                           end)                                                  as resultado_tempo_largada_segundos,
+             case
+                 when ((m.hrsai)::time without time zone < m.hrmatinal) then um.meta_tempo_largada_horas
+                 else ((m.hrsai - (m.hrmatinal)::interval))::time without time zone
+                 end                                                             as tempo_largada,
+             coalesce(it.total_apontamentos, (0)::bigint)                        as total_tracking,
+             coalesce(it.apontamentos_ok, (0)::bigint)                           as apontamentos_ok,
+             coalesce((it.total_apontamentos - it.apontamentos_ok), (0)::bigint) as apontamentos_nok,
+             case
+                 when (it.total_apontamentos > 0) then (it.apontamentos_ok / it.total_apontamentos)
+                 else (0)::bigint
+                 end                                                             as resultado_tracking,
+             um.meta_tracking                                                    as meta_tracking,
+             um.meta_tempo_rota_mapas                                            as meta_tempo_rota_mapas,
+             um.meta_caixa_viagem                                                as meta_caixa_viagem,
+             um.meta_dev_hl                                                      as meta_dev_hl,
+             um.meta_dev_pdv                                                     as meta_dev_pdv,
+             um.meta_dev_nf                                                      as meta_dev_nf,
+             um.meta_dispersao_km                                                as meta_dispersao_km,
+             um.meta_dispersao_tempo                                             as meta_dispersao_tempo,
+             um.meta_jornada_liquida_mapas                                       as meta_jornada_liquida_mapas,
+             um.meta_raio_tracking                                               as meta_raio_tracking,
+             um.meta_tempo_interno_mapas                                         as meta_tempo_interno_mapas,
+             um.meta_tempo_largada_mapas                                         as meta_tempo_largada_mapas,
+             to_seconds(m.hrmetajornada - interval '1 hour')                     as meta_tempo_rota_horas,
+             to_seconds(um.meta_tempo_interno_horas)                             as meta_tempo_interno_horas,
+             to_seconds(um.meta_tempo_largada_horas)                             as meta_tempo_largada_horas,
+             to_seconds(um.meta_jornada_liquida_horas)                           as meta_jornada_liquida_horas
+      from view_mapa_colaborador vmc
+               join colaborador c on c.cpf = vmc.cpf and c.cod_unidade = vmc.cod_unidade
+               join mapa m on m.cod_unidade = vmc.cod_unidade and m.mapa = vmc.mapa
+               join unidade_metas um on um.cod_unidade = m.cod_unidade
+               join equipe e on c.cod_equipe = e.codigo
+               join funcao f on f.codigo = c.cod_funcao
+               left join internal_tracking it
+                         on it.cod_unidade = m.cod_unidade
+                             and it.tracking_mapa = m.mapa) dados;
