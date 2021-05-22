@@ -2,6 +2,7 @@ package br.com.zalf.prolog.webservice.gente.contracheque;
 
 import br.com.zalf.prolog.webservice.commons.util.database.PostgresUtils;
 import br.com.zalf.prolog.webservice.commons.util.database.SqlType;
+import br.com.zalf.prolog.webservice.commons.util.datetime.DateUtils;
 import br.com.zalf.prolog.webservice.database.DatabaseConnection;
 import br.com.zalf.prolog.webservice.Injection;
 import br.com.zalf.prolog.webservice.commons.util.Log;
@@ -37,7 +38,7 @@ public class ContrachequeDaoImpl extends DatabaseConnection implements Contrache
 
     @NotNull
     @Override
-    public Contracheque getPreContracheque(Long cpf, Long codUnidade, int ano, int mes) throws SQLException {
+    public Contracheque getPreContracheque(final Long cpf, final Long codUnidade, final int ano, final int mes) throws SQLException {
         Connection conn = null;
         Contracheque contracheque = null;
         final ProdutividadeDao produtividadeDao = Injection.provideProdutividadeDao();
@@ -112,11 +113,11 @@ public class ContrachequeDaoImpl extends DatabaseConnection implements Contrache
     }
 
     @Override
-    public boolean insertOrUpdateItemImportContracheque(List<ItemImportContracheque> itens, int ano, int mes, Long codUnidade) throws SQLException {
+    public boolean insertOrUpdateItemImportContracheque(final List<ItemImportContracheque> itens, final int ano, final int mes, final Long codUnidade) throws SQLException {
         Connection conn = null;
         try {
             conn = getConnection();
-            for (ItemImportContracheque item : itens) {
+            for (final ItemImportContracheque item : itens) {
                 if (updateItemImportContracheque(item, ano, mes, codUnidade)) {
                     Log.d(TAG, "Atualizado o item:" + item.toString());
                 } else {
@@ -130,7 +131,7 @@ public class ContrachequeDaoImpl extends DatabaseConnection implements Contrache
     }
 
     @Override
-    public boolean updateItemImportContracheque(ItemImportContracheque item, int ano, int mes, Long codUnidade) throws SQLException {
+    public boolean updateItemImportContracheque(final ItemImportContracheque item, final int ano, final int mes, final Long codUnidade) throws SQLException {
         PreparedStatement stmt = null;
         Connection conn = null;
         try {
@@ -145,7 +146,7 @@ public class ContrachequeDaoImpl extends DatabaseConnection implements Contrache
             stmt.setLong(6, item.getCpf());
             stmt.setLong(7, codUnidade);
             stmt.setString(8, item.getCodigoItem());
-            int count = stmt.executeUpdate();
+            final int count = stmt.executeUpdate();
             if (count == 0) {
                 return false;
             }
@@ -156,7 +157,7 @@ public class ContrachequeDaoImpl extends DatabaseConnection implements Contrache
     }
 
     @Override
-    public boolean deleteItemImportContracheque(ItemImportContracheque item, int ano, int mes, Long codUnidade, Long cpf, String codItem) throws SQLException {
+    public boolean deleteItemImportContracheque(final ItemImportContracheque item, final int ano, final int mes, final Long codUnidade, final Long cpf, final String codItem) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
@@ -168,7 +169,7 @@ public class ContrachequeDaoImpl extends DatabaseConnection implements Contrache
             stmt.setLong(3, cpf);
             stmt.setLong(4, codUnidade);
             stmt.setString(5, codItem);
-            int count = stmt.executeUpdate();
+            final int count = stmt.executeUpdate();
             if (count == 0) {
                 return false;
             }
@@ -180,7 +181,7 @@ public class ContrachequeDaoImpl extends DatabaseConnection implements Contrache
 
     @NotNull
     @Override
-    public List<ItemImportContracheque> getItemImportContracheque(Long codUnidade, int ano, int mes, String cpf) throws SQLException {
+    public List<ItemImportContracheque> getItemImportContracheque(final Long codUnidade, final int ano, final int mes, final String cpf) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rSet = null;
@@ -226,7 +227,7 @@ public class ContrachequeDaoImpl extends DatabaseConnection implements Contrache
         }
     }
 
-    private List<ItemContracheque> getItensContracheque(Connection conn, Long cpf, int ano, int mes, Long codUnidade) throws SQLException {
+    private List<ItemContracheque> getItensContracheque(final Connection conn, final Long cpf, final int ano, final int mes, final Long codUnidade) throws SQLException {
         PreparedStatement stmt = null;
         ResultSet rSet = null;
         final List<ItemContracheque> itens = new ArrayList<>();
@@ -250,7 +251,7 @@ public class ContrachequeDaoImpl extends DatabaseConnection implements Contrache
         return itens;
     }
 
-    private ItemContracheque createItemContracheque(ResultSet rSet) throws SQLException {
+    private ItemContracheque createItemContracheque(final ResultSet rSet) throws SQLException {
         final ItemContracheque item = new ItemContracheque();
         item.setCodigo(rSet.getString("CODIGO_ITEM"));
         item.setDescricao(rSet.getString("DESCRICAO"));
@@ -259,7 +260,7 @@ public class ContrachequeDaoImpl extends DatabaseConnection implements Contrache
         return item;
     }
 
-    private RestricoesContracheque getRestricaoCalculoContracheque(Connection conn, Long cpf) throws SQLException {
+    private RestricoesContracheque getRestricaoCalculoContracheque(final Connection conn, final Long cpf) throws SQLException {
         ResultSet rSet = null;
         PreparedStatement stmt = null;
         try {
@@ -307,15 +308,17 @@ public class ContrachequeDaoImpl extends DatabaseConnection implements Contrache
         }
     }
 
-    private boolean recebeBonus(int ano, int mes, Long cpf, String indicador) throws SQLException {
+    private boolean recebeBonus(final int ano, final int mes, final Long cpf, final String indicador) throws SQLException {
         final IndicadorDao indicadorDao = Injection.provideIndicadorDao();
         final ProdutividadeService produtividadeService = new ProdutividadeService();
-        final PeriodoProdutividade periodoProdutividade = produtividadeService.getPeriodoProdutividade(ano, mes, null, cpf);
-        final List<IndicadorAcumulado> indicadores =
-                indicadorDao.getAcumuladoIndicadoresIndividual(periodoProdutividade.getDataInicio().getTime(),
-                        periodoProdutividade.getDataTermino().getTime(), cpf);
+        final PeriodoProdutividade periodoProdutividade =
+                produtividadeService.getPeriodoProdutividade(ano, mes, null, cpf);
+        final List<IndicadorAcumulado> indicadores = indicadorDao.getAcumuladoIndicadoresIndividual(
+                cpf,
+                DateUtils.toLocalDate(periodoProdutividade.getDataInicio()),
+                DateUtils.toLocalDate(periodoProdutividade.getDataTermino()));
 
-        for (IndicadorAcumulado indicadorAcumulado : indicadores) {
+        for (final IndicadorAcumulado indicadorAcumulado : indicadores) {
             if (indicadorAcumulado.getTipo().equals(indicador)) {
                 return indicadorAcumulado.isBateuMeta();
             }
@@ -323,8 +326,8 @@ public class ContrachequeDaoImpl extends DatabaseConnection implements Contrache
         return false;
     }
 
-    private double getPremio(Connection conn, Long codUnidade, List<ItemContracheque> itensContracheque,
-                             double bonus, double recarga, double produtividade) throws SQLException {
+    private double getPremio(final Connection conn, final Long codUnidade, final List<ItemContracheque> itensContracheque,
+                             final double bonus, final double recarga, final double produtividade) throws SQLException {
         PreparedStatement stmt= null;
         ResultSet rSet = null;
         try {
@@ -341,7 +344,7 @@ public class ContrachequeDaoImpl extends DatabaseConnection implements Contrache
             }
 
             double outrasVerbas = 0;
-            for (ItemContracheque item : itensContracheque) {
+            for (final ItemContracheque item : itensContracheque) {
                 if (codigosPremio.contains(item.getCodigo())) {
                     outrasVerbas += item.getValor();
                 }
@@ -360,7 +363,7 @@ public class ContrachequeDaoImpl extends DatabaseConnection implements Contrache
         }
     }
 
-    private boolean insertItemImportContracheque(ItemImportContracheque item, int ano, int mes, Connection conn, Long codUnidade) throws SQLException {
+    private boolean insertItemImportContracheque(final ItemImportContracheque item, final int ano, final int mes, final Connection conn, final Long codUnidade) throws SQLException {
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement("INSERT INTO PRE_CONTRACHEQUE_ITENS VALUES (?,?,?,?,?,?,?,?)");
@@ -372,7 +375,7 @@ public class ContrachequeDaoImpl extends DatabaseConnection implements Contrache
             stmt.setString(6, item.getDescricao());
             stmt.setString(7, item.getSubDescricao());
             stmt.setDouble(8, item.getValor());
-            int count = stmt.executeUpdate();
+            final int count = stmt.executeUpdate();
             if (count == 0) {
                 throw new SQLException("Erro ao inserir o item: " + item.toString());
             }
@@ -385,14 +388,14 @@ public class ContrachequeDaoImpl extends DatabaseConnection implements Contrache
     private class CustomComparator implements Comparator<ItemContracheque> {
 
         @Override
-        public int compare(ItemContracheque o1, ItemContracheque o2) {
+        public int compare(final ItemContracheque o1, final ItemContracheque o2) {
             return Double.compare(o2.getValor(), o1.getValor());
         }
     }
 
 
 
-    private ItemImportContracheque createItemImportContracheque(ResultSet rSet) throws SQLException {
+    private ItemImportContracheque createItemImportContracheque(final ResultSet rSet) throws SQLException {
         final ItemImportContracheque item = new ItemImportContracheque();
         item.setCodigo(rSet.getString("CODIGO"));
         item.setCodigoItem(rSet.getString("CODIGO_ITEM"));
@@ -410,17 +413,17 @@ public class ContrachequeDaoImpl extends DatabaseConnection implements Contrache
         return item;
     }
 
-    private double getTotalItens(List<ItemProdutividade> itens) {
+    private double getTotalItens(final List<ItemProdutividade> itens) {
         double total = 0;
-        for (ItemProdutividade item : itens) {
+        for (final ItemProdutividade item : itens) {
             total += item.getValor();
         }
         return total;
     }
 
-    private double getValorTotalRecargas(List<ItemProdutividade> itens) {
+    private double getValorTotalRecargas(final List<ItemProdutividade> itens) {
         double total = 0;
-        for (ItemProdutividade item : itens) {
+        for (final ItemProdutividade item : itens) {
             if (item.getCargaAtual().equals(ItemProdutividade.CargaAtual.RECARGA)) {
                 total += item.getValor();
             }
@@ -428,9 +431,9 @@ public class ContrachequeDaoImpl extends DatabaseConnection implements Contrache
         return total;
     }
 
-    private int getQtRecargas(List<ItemProdutividade> itens) {
+    private int getQtRecargas(final List<ItemProdutividade> itens) {
         int quantidade = 0;
-        for (ItemProdutividade item : itens) {
+        for (final ItemProdutividade item : itens) {
             if (item.getCargaAtual().equals(ItemProdutividade.CargaAtual.RECARGA)) {
                 quantidade++;
             }
